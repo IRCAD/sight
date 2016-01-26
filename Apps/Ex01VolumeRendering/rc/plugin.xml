@@ -30,19 +30,21 @@ Comment: Name inside the drawing are the uid of the service defined below.
 
  -->
 
-<plugin id="Ex01VolumeRendering">
+<plugin id="Ex01VolumeRendering" version="@DASH_VERSION@" >
 
+    <requirement id="dataReg" />
     <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+    <requirement id="scene2D" />
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>Ex01VolumeRendering</id>
-        <type>parameters</type>
         <config>
 
             <object type="::fwData::Composite">   <!--  Root object of the application -->
 
                 <!--  Service entrance point for interface creation -->
-                <service uid="IHM" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+                <service uid="IHM" impl="::gui::frame::SDefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
                     <gui>
                         <frame>
                             <name>Ex01VolumeRendering</name>
@@ -55,7 +57,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                         <view sid="multiView" start="yes" />
                     </registry>
                 </service>
-                <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
+                <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no" >
                     <gui>
                         <layout>
                             <menu name="File" />
@@ -66,7 +68,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     </registry>
                 </service>
 
-                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
+                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
                     <gui>
                         <layout>
                             <menuItem name="Open file" shortcut="Ctrl+O" />
@@ -82,17 +84,17 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     </registry>
                 </service>
 
-                <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                <service uid="action_openFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                     <start uid="readerPathFile" />
                 </service>
 
-                <service uid="action_saveFile" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                <service uid="action_saveFile" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                     <start uid="writerPathFile" />
                 </service>
 
-                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
-                <service uid="multiView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+                <service uid="multiView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
                     <gui>
                         <layout type="::fwGui::CardinalLayoutManager" >
                             <view align="center"  />
@@ -105,7 +107,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     </registry>
                 </service>
 
-                <service uid="leftMultiView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+                <service uid="leftMultiView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
                     <gui>
                         <layout type="::fwGui::LineLayoutManager" >
                             <orientation value="vertical" />
@@ -119,7 +121,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     </registry>
                 </service>
 
-                <service uid="leftUpperMultiView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+                <service uid="leftUpperMultiView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
                     <gui>
                         <layout type="::fwGui::LineLayoutManager" >
                             <orientation value="horizontal" />
@@ -133,7 +135,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     </registry>
                 </service>
 
-                <service uid="leftBottomMultiView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+                <service uid="leftBottomMultiView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
                     <gui>
                         <layout type="::fwGui::LineLayoutManager" >
                             <orientation value="horizontal" />
@@ -147,7 +149,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     </registry>
                 </service>
 
-                <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+                <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
                     <gui>
                         <layout type="::fwGui::CardinalLayoutManager" >
                             <view align="center" />
@@ -159,7 +161,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                         <view sid="multiView_scene1_bottom" start="yes" />
                     </registry>
                 </service>
-                <service uid="multiView_scene1_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="multiView_scene1_bottom" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::LineLayoutManager" >
                             <orientation value="horizontal" />
@@ -175,7 +177,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     </registry>
                 </service>
 
-                <service uid="rightMultiView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no" >
+                <service uid="rightMultiView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
                     <gui>
                         <layout type="::fwGui::LineLayoutManager" >
                             <orientation value="vertical" />
@@ -197,11 +199,11 @@ Comment: Name inside the drawing are the uid of the service defined below.
                 <item key="image">
                     <object uid="imageUID" type="::fwData::Image">
 
-                        <service uid="readerPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                        <service uid="readerPathFile" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
                         </service>
 
-                        <service uid="writerPathFile" impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" autoConnect="no">
+                        <service uid="writerPathFile" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="writer" />
                         </service>
 
@@ -218,8 +220,9 @@ Comment: Name inside the drawing are the uid of the service defined below.
                 <item key="compositeVisu">
                     <object uid="compositeVisu" type="::fwData::Composite">
 
-                        <service uid="updaterUID" impl="::ctrlSelection::updater::ObjFromMsgUpdaterSrv" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                            <update compositeKey="image" onEvent="NEW_IMAGE" fromUID="imageUID" actionType="ADD_OR_SWAP"/>
+                        <service uid="updaterUID" impl="::ctrlSelection::updater::SObjFromUid" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                            <uid>imageUID</uid>
+                            <compositeKey>image</compositeKey>
                         </service>
 
                         <!-- Manager to start/stop/swap services when  image is added/deleted/swapped -->
@@ -235,12 +238,24 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                         <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                                     </service>
 
-                                    <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor" autoConnect="yes">
-                                        <negatoAdaptor uid="MPRNegatoScene3D" slices="3" />
+                                    <service uid="sliceListEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSelectionMenuButton" autoConnect="no">
+                                        <toolTip>Manage slice visibility</toolTip>
+                                        <selected>3</selected>
+                                        <items>
+                                            <item text="One slice" value="1" />
+                                            <item text="three slices" value="3" />
+                                        </items>
                                     </service>
 
-                                    <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::uiImage::ShowScanEditor" autoConnect="no">
-                                        <negatoAdaptor uid="MPRNegatoScene3D" />
+                                    <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
+                                        <config>
+                                            <checkable>true</checkable>
+                                            <icon>Bundles/media_0-1/icons/sliceHide.png</icon>
+                                            <icon2>Bundles/media_0-1/icons/sliceShow.png</icon2>
+                                            <iconWidth>40</iconWidth>
+                                            <iconHeight>16</iconHeight>
+                                            <checked>true</checked>
+                                        </config>
                                     </service>
 
                                     <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes" >
@@ -258,13 +273,18 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                             </field>
                                         </config>
                                     </service>
+
+                                    <connect>
+                                        <signal>showScanEditor/toggled</signal>
+                                        <slot>sliceListEditor/setEnabled</slot>
+                                    </connect>
                                 </object>
 
                             </config>
                         </service>
 
                         <!-- Comment: This generic scene (genericScene1) uses the transfert function stores with key = SelectedTF in TFSelections -->
-                        <service uid="genericScene1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="genericScene1" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
 
@@ -287,7 +307,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                         </service>
 
                         <!-- Comment: This generic scene (genericScene2) uses the default transfert function (CT-GreyLevel) -->
-                        <service uid="genericScene2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="genericScene2" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
 
@@ -298,7 +318,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                 </adaptor>
 
                                 <!-- Adaptor to visualize the medical image (image) in a 3D multi-planar rendering -->
-                                <adaptor id="MPRNegato3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
+                                <adaptor id="MPRNegato3D" uid="MPRNegatoScene3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
                                     <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" />
                                 </adaptor>
 
@@ -310,11 +330,21 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                     <config renderer="default" sliceIndex="axial" />
                                 </adaptor>
 
+                                <connect waitForKey="image">
+                                    <signal>showScanEditor/toggled</signal>
+                                    <slot>MPRNegatoScene3D/showSlice</slot>
+                                </connect>
+
+                                <connect waitForKey="image">
+                                    <signal>sliceListEditor/selected</signal>
+                                    <slot>MPRNegatoScene3D/updateSliceMode</slot>
+                                </connect>
+
                             </scene>
                         </service>
 
                         <!-- Comment: This negato (negato1) uses the transfert function stores with key = SelectedTF in TFSelections -->
-                        <service uid="negato1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="negato1" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
 
@@ -340,7 +370,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                         </service>
 
                         <!-- Comment : This negato (negato2) uses the default transfert function (CT-GreyLevel) -->
-                        <service uid="negato2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="negato2" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <picker id="picker" vtkclass="fwVtkCellPicker" />
 
@@ -385,8 +415,8 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                 </adaptor>
 
                                 <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
-                                    <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" 
-                                        yAxis="yAxis" zValue="5" pointSize="12" viewportUID="Viewport" 
+                                    <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis"
+                                        yAxis="yAxis" zValue="5" pointSize="12" viewportUID="Viewport"
                                         selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                                 </adaptor>
 
@@ -453,7 +483,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                                 <axis id="axeHistogramY" origin="0.0" scale="-0.000005" scaleType="LINEAR" />
 
                                 <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
-                                    <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" 
+                                    <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis"
                                         yAxis="yAxis" zValue="5" pointSize="12" viewportUID="Viewport"
                                         selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                                 </adaptor>
@@ -468,10 +498,10 @@ Comment: Name inside the drawing are the uid of the service defined below.
                             <object uid="Viewport" type="::scene2D::data::Viewport" />
                         </item>
 
-                        <proxy channel="UPDATER_CHANNEL" >
-                            <signal>imageUID/objectModified</signal>
-                            <slot>updaterUID/receive</slot>
-                        </proxy>
+                        <connect>
+                            <signal>imageUID/modified</signal>
+                            <slot>updaterUID/addOrSwap</slot>
+                        </connect>
 
                     </object>
                 </item>

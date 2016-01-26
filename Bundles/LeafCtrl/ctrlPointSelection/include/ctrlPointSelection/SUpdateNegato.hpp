@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,21 +25,21 @@ namespace ctrlPointSelection
 class CTRLPOINTSELECTION_CLASS_API SUpdateNegato : public ::fwServices::IController
 {
 
-public :
+public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SUpdateNegato)(::fwServices::IController) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SUpdateNegato)(::fwServices::IController) );
 
     /**
      * @name Constructor/Destructor.
      * @{ */
-    CTRLPOINTSELECTION_API SUpdateNegato() throw() ;
-    CTRLPOINTSELECTION_API virtual ~SUpdateNegato() throw() ;
+    CTRLPOINTSELECTION_API SUpdateNegato() throw();
+    CTRLPOINTSELECTION_API virtual ~SUpdateNegato() throw();
     /**  @} */
 
     /**
      * @name Slots.
      * @{ */
-    typedef ::fwCom::Slot<void(::fwData::Point::sptr)> SelectNewPointSlotType;
+    typedef ::fwCom::Slot<void (::fwData::Point::sptr)> SelectNewPointSlotType;
     CTRLPOINTSELECTION_API static const ::fwCom::Slots::SlotKeyType s_SELECT_NEW_POINT_SLOT;
     /**  @} */
 
@@ -52,7 +52,6 @@ protected:
     virtual void stopping() throw(::fwTools::Failed);
     virtual void configuring() throw(::fwTools::Failed);
     virtual void updating() throw(::fwTools::Failed);
-    virtual void receiving(CSPTR(::fwServices::ObjectMsg) _msg) throw(::fwTools::Failed);
     /**  @} */
 
     /**

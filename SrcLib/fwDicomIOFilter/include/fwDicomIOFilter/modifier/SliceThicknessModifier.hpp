@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,10 @@
 #ifndef __FWDICOMIOFILTER_MODIFIER_SLICETHICKNESSMODIFIER_HPP__
 #define __FWDICOMIOFILTER_MODIFIER_SLICETHICKNESSMODIFIER_HPP__
 
-#include <fwDicomData/DicomSeries.hpp>
-#include "fwDicomIOFilter/modifier/IModifier.hpp"
 #include "fwDicomIOFilter/config.hpp"
+#include "fwDicomIOFilter/modifier/IModifier.hpp"
+
+#include <fwDicomData/DicomSeries.hpp>
 
 namespace fwDicomIOFilter
 {
@@ -26,7 +27,7 @@ class FWDICOMIOFILTER_CLASS_API SliceThicknessModifier : public IModifier
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (SliceThicknessModifier)(IModifier),
-            (()), ::fwDicomIOFilter::factory::New< SliceThicknessModifier > );
+                                            (()), ::fwDicomIOFilter::factory::New< SliceThicknessModifier > );
 
     /// Constructor
     FWDICOMIOFILTER_API SliceThicknessModifier(::fwDicomIOFilter::IFilter::Key key);
@@ -35,8 +36,9 @@ public:
     FWDICOMIOFILTER_API virtual ~SliceThicknessModifier();
 
     /// Override
-    FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(::fwDicomData::DicomSeries::sptr series) const
-        throw(::fwDicomIOFilter::exceptions::FilterFailure);
+    FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(
+        const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
+    throw(::fwDicomIOFilter::exceptions::FilterFailure);
 
     /// Return the name of the filter
     FWDICOMIOFILTER_API virtual std::string getName() const;

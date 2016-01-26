@@ -1,8 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "PoC07TimeLine/SConsumer.hpp"
+#include "PoC07TimeLine/MessageTL.hpp"
 
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
@@ -11,8 +14,7 @@
 #include <fwThread/Timer.hpp>
 #include <fwTools/Object.hpp>
 
-#include "PoC07TimeLine/SConsumer.hpp"
-#include "PoC07TimeLine/MessageTL.hpp"
+#include <functional>
 
 fwServicesRegisterMacro( ::fwServices::IService, ::PoC07TimeLine::SConsumer, ::PoC07TimeLine::MessageTL );
 
@@ -51,7 +53,7 @@ void SConsumer::starting() throw( ::fwTools::Failed )
     if(m_period)
     {
         m_timer = m_associatedWorker->createTimer();
-        m_timer->setFunction( ::boost::bind(&SConsumer::updating, this) );
+        m_timer->setFunction( std::bind(&SConsumer::updating, this) );
         m_timer->setDuration( ::boost::chrono::milliseconds( m_period ) );
         m_timer->start();
     }
@@ -78,14 +80,8 @@ void SConsumer::updating() throw( ::fwTools::Failed )
         const ::PoC07TimeLine::MsgData& element = buffer->getElement(0);
 
         std::cout << "Message received (timer): CONSUMER: " << m_receiverId << " SENDER: " << element.uidSender <<
-        " MESSAGE: \"" << element.szMsg << "\"" << std::endl;
+            " MESSAGE: \"" << element.szMsg << "\"" << std::endl;
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SConsumer::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
 }
 
 //------------------------------------------------------------------------------
@@ -129,7 +125,7 @@ void SConsumer::consume(fwCore::HiResClock::HiResClockType timestamp)
         const ::PoC07TimeLine::MsgData& element = buffer->getElement(0);
 
         std::cout << "Message received (slot) : CONSUMER: " << m_receiverId << " SENDER: " << element.uidSender <<
-        " MESSAGE: \"" << element.szMsg << "\"" << std::endl;
+            " MESSAGE: \"" << element.szMsg << "\"" << std::endl;
     }
 }
 

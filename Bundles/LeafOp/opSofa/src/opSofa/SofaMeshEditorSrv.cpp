@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -65,7 +65,8 @@ void SofaMeshEditorSrv::configuring() throw ( ::fwTools::Failed )
 void SofaMeshEditorSrv::starting() throw ( ::fwTools::Failed )
 {
     //this->create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     assert(container);
 
@@ -114,28 +115,37 @@ void SofaMeshEditorSrv::updating() throw ( ::fwTools::Failed )
  */
 void SofaMeshEditorSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
 {
-    if (msg->hasEvent("NEW_RECONSTRUCTION_SELECTED")) {
+    if (msg->hasEvent("NEW_RECONSTRUCTION_SELECTED"))
+    {
         m_idReconstruction = ::fwData::String::dynamicConstCast(msg->getDataInfo("NEW_RECONSTRUCTION_SELECTED"));
     }
 }
 
 void SofaMeshEditorSrv::onStrengthSlider(int value)
 {
-    if (m_idReconstruction) {
+    if (m_idReconstruction)
+    {
         // Get acquisition
         ::fwMedData::ModelSeries::sptr ms = this->getObject< ::fwMedData::ModelSeries >();
         SLM_ASSERT("Invalid object", ms);
 
         ::fwData::Vector::sptr data = ::fwData::Vector::New();
-        ::fwData::String::sptr v1 = ::fwData::String::New(m_idReconstruction->value());
-        ::fwData::Integer::sptr v2 = ::fwData::Integer::New(value);
+        ::fwData::String::sptr v1   = ::fwData::String::New(m_idReconstruction->value());
+        ::fwData::Integer::sptr v2  = ::fwData::Integer::New(value);
         data->getContainer().push_back(v2);
         data->getContainer().push_back(v1);
 
         // Notification
         ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
         msg->addEvent("EDITOR_MESH_SOFA", data);
-        ::fwServices::IEditionService::notify(this->getSptr(), ms, msg);
+        msg->setSource(this->getSptr());
+        msg->setSubject( ms);
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig = ms->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
 }
 
@@ -148,18 +158,36 @@ void SofaMeshEditorSrv::moveOrgan(QKeyEvent* event)
     static int y = 0;
     static int z = 0;
 
-    if (event->key() == Qt::Key_Up) y += 1;
-    if (event->key() == Qt::Key_Down) y -= 1;
-    if (event->key() == Qt::Key_Left) x -= 1;
-    if (event->key() == Qt::Key_Right) x += 1;
-    if (event->key() == Qt::Key_A) z += 1;
-    if (event->key() == Qt::Key_Q) z -= 1;
+    if (event->key() == Qt::Key_Up)
+    {
+        y += 1;
+    }
+    if (event->key() == Qt::Key_Down)
+    {
+        y -= 1;
+    }
+    if (event->key() == Qt::Key_Left)
+    {
+        x -= 1;
+    }
+    if (event->key() == Qt::Key_Right)
+    {
+        x += 1;
+    }
+    if (event->key() == Qt::Key_A)
+    {
+        z += 1;
+    }
+    if (event->key() == Qt::Key_Q)
+    {
+        z -= 1;
+    }
 
     ::fwData::Vector::sptr data = ::fwData::Vector::New();
-    ::fwData::String::sptr v1 = ::fwData::String::New(m_idReconstruction->value());
-    ::fwData::Integer::sptr v2 = ::fwData::Integer::New(x);
-    ::fwData::Integer::sptr v3 = ::fwData::Integer::New(y);
-    ::fwData::Integer::sptr v4 = ::fwData::Integer::New(z);
+    ::fwData::String::sptr v1   = ::fwData::String::New(m_idReconstruction->value());
+    ::fwData::Integer::sptr v2  = ::fwData::Integer::New(x);
+    ::fwData::Integer::sptr v3  = ::fwData::Integer::New(y);
+    ::fwData::Integer::sptr v4  = ::fwData::Integer::New(z);
     data->getContainer().push_back(v1);
     data->getContainer().push_back(v2);
     data->getContainer().push_back(v3);
@@ -168,7 +196,14 @@ void SofaMeshEditorSrv::moveOrgan(QKeyEvent* event)
     // Notification
     ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
     msg->addEvent("MOVE_MESH_SOFA", data);
-    ::fwServices::IEditionService::notify(this->getSptr(), ms, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( ms);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = ms->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 }

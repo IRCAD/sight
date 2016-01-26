@@ -1,25 +1,31 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "beginnerTraining/tuto03/SStringEditor.hpp"
+
+// Communication
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
+// Service associated data
+#include <fwData/String.hpp>
+
+// To manipulate QtContainer
+#include <fwGuiQt/container/QtContainer.hpp>
+
+// Services tools
+#include <fwServices/Base.hpp>
 
 // Qt objects
 #include <qwidget.h>
 #include <qpalette.h>
 #include <qboxlayout.h>
 
-// Service associated data
-#include <fwData/String.hpp>
 
-// Services tools
-#include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
-
-// To manipulate QtContainer
-#include <fwGuiQt/container/QtContainer.hpp>
-
-#include "beginnerTraining/tuto03/SStringEditor.hpp"
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::beginnerTraining::tuto03::SStringEditor, ::fwData::String );
 
@@ -31,11 +37,11 @@ namespace tuto03
 
 SStringEditor::SStringEditor()
 {
-//    addNewHandledEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT );
 }
 
 SStringEditor::~SStringEditor() throw()
-{}
+{
+}
 
 void SStringEditor::configuring() throw ( ::fwTools::Failed )
 {
@@ -49,7 +55,8 @@ void SStringEditor::starting() throw ( ::fwTools::Failed )
     this->create(); // start with this inherited function
 
     // Retrieve Qt container
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =  ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer() );
     QWidget* container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -88,17 +95,6 @@ void SStringEditor::updating() throw ( ::fwTools::Failed )
     m_textEditor->setPlainText( myAssociatedData->getValue().c_str() );
 }
 
-void SStringEditor::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
-    // If event is UPDATED_OBJECT
-    if(_msg->hasEvent(::fwServices::ObjectMsg::UPDATED_OBJECT))
-    {
-        m_textEditor->blockSignals(true);
-        this->updating();
-        m_textEditor->blockSignals(false);
-    }
-}
-
 void SStringEditor::swapping() throw ( ::fwTools::Failed )
 {
     // Classic default approach to update service when object change
@@ -121,12 +117,12 @@ void SStringEditor::notifyMessage()
     SLM_TRACE_FUNC();
     ::fwData::String::sptr associatedObj = this->getObject< ::fwData::String >();
 
-    // Creation of an object message to say that data is modified
-    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
-    msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT ) ;
-
-    // Notifies message to all service listeners
-    ::fwServices::IEditionService::notify( this->getSptr(), associatedObj, msg );
+    ::fwData::Object::ModifiedSignalType::sptr sig;
+    sig = associatedObj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
+    }
 }
 } // namespace tuto03
 } // namespace beginnerTraining

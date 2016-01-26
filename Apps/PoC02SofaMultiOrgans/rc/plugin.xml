@@ -1,15 +1,12 @@
-<plugin id="DemoComSofa">
-
-<requirement id="servicesReg" />
+<plugin id="DemoComSofa" version="@DASH_VERSION@" >
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>DemoComSofaID</id>
-        <type>parameters</type>
         <config>
 
             <object type="::fwData::Composite">
 
-                <service uid="ihm" impl="::gui::frame::DefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+                <service uid="ihm" impl="::gui::frame::SDefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
                     <gui>
                         <frame>
                             <name>Altran-Est - Medic@ : PoC 2 Demo integration SOFA-FW4SPL</name>
@@ -23,7 +20,7 @@
                     </registry>
                 </service>
 
-                <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::DefaultMenuBarSrv" autoConnect="no" >
+                <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no" >
                     <gui>
                         <layout>
                             <menu name="File" />
@@ -36,7 +33,7 @@
                     </registry>
                 </service>
 
-                <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::CardinalLayoutManager" >
                             <view align="center" minWidth="200"/>
@@ -51,7 +48,7 @@
                         <view sid="multiView_scene1_bottom" start="yes" />
                     </registry>
                 </service>
-                <service uid="multiView_scene1_bottom" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="multiView_scene1_bottom" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::LineLayoutManager">
                             <orientation value="horizontal" />
@@ -63,7 +60,7 @@
                     </gui>
                 </service>
 
-                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
+                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
                     <gui>
                         <layout>
                             <menuItem name="Open image..." shortcut="Ctrl+I" />
@@ -79,7 +76,7 @@
                     </registry>
                 </service>
 
-                <service uid="menu_Sofa" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no" >
+                <service uid="menu_Sofa" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
                     <gui>
                         <layout>
                             <menuItem name="Create scene" />
@@ -92,24 +89,24 @@
                     </registry>
                 </service>
 
-                <service uid="action_openImage" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv"  autoConnect="no" >
+                <service uid="action_openImage" impl="::gui::action::SStarter" type="::fwGui::IActionSrv"  autoConnect="no" >
                     <start uid="readerPathImageFile"/>
                 </service>
 
-                <service uid="action_openMesh" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv"  autoConnect="no" >
+                <service uid="action_openMesh" impl="::gui::action::SStarter" type="::fwGui::IActionSrv"  autoConnect="no" >
                     <start uid="readerPathMeshFile"/>
                 </service>
 
-                <service uid="action_saveFile" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv"  autoConnect="no" >
+                <service uid="action_saveFile" impl="::gui::action::SStarter" type="::fwGui::IActionSrv"  autoConnect="no" >
                     <start uid="readerPathMeshFile"/>
                 </service>
 
-                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::QuitAction" autoConnect="no" />
+                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
                 <item key="image">
                     <object uid="imageUID" type="::fwData::Image">
 
-                        <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor" uid="readerPathImageFile" autoConnect="no">
+                        <service impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" uid="readerPathImageFile" autoConnect="no">
                             <type mode="reader" />
                         </service>
 
@@ -119,7 +116,7 @@
                 <item key="modelSeries">
                     <object uid="modelSeriesUID" type="::fwMedData::ModelSeries">
 
-                        <service impl="::uiIO::editor::IOSelectorService" type="::gui::editor::IDialogEditor"
+                        <service impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor"
                             uid="readerPathMeshFile" autoConnect="no">
                             <type mode="reader" />
                         </service>
@@ -153,7 +150,7 @@
                                   <service uid="sofaCore" impl="::opSofa::SofaCoreSrv" type="::fwGui::IActionSrv" autoConnect="yes" >
                                   </service>
 
-                                  <service  uid="sofaWriterAction" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv" autoConnect="no" >
+                                  <service  uid="sofaWriterAction" impl="::gui::action::SStarter" type="::fwGui::IActionSrv" autoConnect="no" >
                                         <start uid="sofaWriter"/>
                                   </service>
 
@@ -161,7 +158,7 @@
                                       <writeTrian>no</writeTrian>
                                   </service>
 
-                                  <service  uid="sofaReaderAction" impl="::gui::action::StarterActionService" type="::fwGui::IActionSrv" autoConnect="no" >
+                                  <service  uid="sofaReaderAction" impl="::gui::action::SStarter" type="::fwGui::IActionSrv" autoConnect="no" >
                                       <start uid="sofaReader"/>
                                   </service>
 
@@ -173,7 +170,7 @@
 
                             </config>
                         </service>
-                        <service uid="genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                        <service uid="genericScene" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                             <scene>
                                 <picker id="defaultPicker" vtkclass="fwVtkCellPicker" />
                                 <renderer id="default" background="0.0" />
@@ -211,4 +208,3 @@
         </config>
     </extension>
 </plugin>
-

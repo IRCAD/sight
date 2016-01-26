@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,8 +21,8 @@ GenericObjectBase::GenericObjectBase(unsigned int maxElementNum, ::fwCore::HiRes
     m_presenceMask(0),
     m_maxElementNum(maxElementNum)
 {
-    OSLM_ASSERT("m_maxElementNum can't be more than " << sizeof(::boost::uint64_t) * 8,
-                m_maxElementNum < sizeof(::boost::uint64_t) * 8);
+    OSLM_ASSERT("m_maxElementNum can't be more than " << sizeof(uint64_t) * 8,
+                m_maxElementNum < sizeof(uint64_t) * 8);
 }
 
 //-----------------------------------------------------------------------------
@@ -42,12 +42,12 @@ unsigned int GenericObjectBase::getPresentElementNum() const
 
 bool GenericObjectBase::isPresent(unsigned int index) const
 {
-    return m_presenceMask & (::boost::uint64_t(1) << index);
+    return m_presenceMask & (uint64_t(1) << index);
 }
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t GenericObjectBase::getMask() const
+uint64_t GenericObjectBase::getMask() const
 {
     return m_presenceMask;
 }

@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef OPSOFA_SOFA_MESHF4S_H
-#define OPSOFA_SOFA_MESHF4S_H
+#ifndef __OPSOFA_SOFA_MESHF4S_HPP__
+#define __OPSOFA_SOFA_MESHF4S_HPP__
 
 #include <sofa/helper/io/Mesh.h>
 #include <fwData/Mesh.hpp>
@@ -22,4 +22,4 @@ public:
 
 };
 
-#endif // OPSOFA_SOFA_MESHF4S_H
+#endif // __OPSOFA_SOFA_MESHF4S_HPP__

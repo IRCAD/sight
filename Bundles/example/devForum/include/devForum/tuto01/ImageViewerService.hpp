@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _DEVFORUM_TUTO1_IMAGEVIEWERSERVICE_HPP_
-#define _DEVFORUM_TUTO1_IMAGEVIEWERSERVICE_HPP_
+#ifndef __DEVFORUM_TUTO01_IMAGEVIEWERSERVICE_HPP__
+#define __DEVFORUM_TUTO01_IMAGEVIEWERSERVICE_HPP__
 
 // Include vtk tools used to render an image with a negato
 #include  <vtkRenderer.h>
@@ -33,33 +33,33 @@ namespace tuto01
 class DEVFORUM_CLASS_API ImageViewerService : public ::fwRender::IRender
 {
 
-public :
+public:
 
     // Build some class definition like sptr, etc.
     fwCoreServiceClassDefinitionsMacro ( (ImageViewerService)(::fwRender::IRender) );
 
     /// Constructor, does nothing.
-    DEVFORUM_API ImageViewerService() throw() ;
+    DEVFORUM_API ImageViewerService() throw();
 
     /// Destructor, does nothing.
-    DEVFORUM_API virtual ~ImageViewerService() throw() ;
+    DEVFORUM_API virtual ~ImageViewerService() throw();
 
 
-protected :
+protected:
 
     /**
-    * @brief This method is called when the service starts.
-    *
-    * This method builds le layout manager of panel, create the vtk render and the vtk interactor and create a vtk pipeline to visualizate associated image in the vtk render.
-    * @post if the associated image was not allocated, then an synthetic image is created.
-    */
+     * @brief This method is called when the service starts.
+     *
+     * This method builds le layout manager of panel, create the vtk render and the vtk interactor and create a vtk pipeline to visualizate associated image in the vtk render.
+     * @post if the associated image was not allocated, then an synthetic image is created.
+     */
     DEVFORUM_API virtual void starting() throw(fwTools::Failed);
 
     /**
-    * @brief This method is called when the service stops.
-    *
-    * This method destroys vtk components and wxWidget containers
-    */
+     * @brief This method is called when the service stops.
+     *
+     * This method destroys vtk components and wxWidget containers
+     */
     DEVFORUM_API virtual void stopping() throw(fwTools::Failed);
 
     /// This method does nothing here.
@@ -67,11 +67,6 @@ protected :
 
     /// Try to retrieve the guiContainerId defines in the service configuration
     DEVFORUM_API virtual void configuring() throw(::fwTools::Failed);
-
-    /// This method is called on msg notification, here does nothing
-    DEVFORUM_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
-
-
 
     /// Initialize image with a synthetic image which represents a sphere.
     DEVFORUM_API void createSyntheticImage( ::fwData::Image::sptr _pImage );
@@ -86,7 +81,7 @@ protected :
     ::fwRenderVTK::IVtkRenderWindowInteractorManager::sptr m_interactorManager;
 
     /// @brief vtk renderer
-    vtkRenderer * m_render ;
+    vtkRenderer * m_render;
 
     /// vtk plane widget used in the negatoscope axial plane.
     vtkImagePlaneWidget* m_negatoAxial;
@@ -103,4 +98,4 @@ protected :
 } // end namespace devForum
 
 
-#endif // _DEVFORUM_TUTO1_IMAGEVIEWERSERVICE_HPP_
+#endif // __DEVFORUM_TUTO01_IMAGEVIEWERSERVICE_HPP__

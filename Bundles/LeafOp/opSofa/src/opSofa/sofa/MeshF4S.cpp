@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,7 @@ void MeshF4S::loadMesh(::fwData::Mesh::sptr pMesh)
     ::fwComEd::helper::Mesh meshHelper(pMesh);
     ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
     vertices.resize(nbPoints);
-    for (int p=0;p<nbPoints;p++)
+    for (int p = 0; p<nbPoints; p++)
     {
         vertices[p][0] = (SReal)points[p][0];
         vertices[p][1] = (SReal)points[p][1];
@@ -34,7 +34,7 @@ void MeshF4S::loadMesh(::fwData::Mesh::sptr pMesh)
     const size_t nbCells = pMesh->getNumberOfCells();
     ::fwData::Mesh::CellDataMultiArrayType cells = meshHelper.getCellData();
     facets.resize(nbCells);
-    for (int i=0, f=0; f<nbCells; f++,i+=3)
+    for (int i = 0, f = 0; f<nbCells; f++,i += 3)
     {
         facets[f].resize(3);
         facets[f][0].resize(3);

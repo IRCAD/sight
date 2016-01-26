@@ -1,11 +1,10 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>config00</id>
-    <type>parameters</type>
     <config>
 
         <object type="::fwData::Image">
 
-            <service uid="myMainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+            <service uid="myMainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
                 <gui>
                     <frame>
                         <name>Tuto 00</name>

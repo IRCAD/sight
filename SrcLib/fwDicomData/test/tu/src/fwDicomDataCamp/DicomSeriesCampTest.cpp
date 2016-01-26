@@ -1,25 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fstream>
-#include <boost/assign/list_of.hpp>
-#include <boost/filesystem/operations.hpp>
-
-#include <fwTools/Type.hpp>
-#include <fwTools/System.hpp>
-#include <fwData/Array.hpp>
-
-#include <fwDicomData/DicomSeries.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
-#include <fwMedData/Equipment.hpp>
-
 #include "DataCampHelper.hpp"
 #include "fwDicomDataCamp/DicomSeriesCampTest.hpp"
 
+#include <fwData/Array.hpp>
+#include <fwDicomData/DicomSeries.hpp>
+#include <fwMedData/Equipment.hpp>
+#include <fwMedData/Patient.hpp>
+#include <fwMedData/Study.hpp>
+#include <fwTools/System.hpp>
+#include <fwTools/Type.hpp>
+
+#include <boost/assign/list_of.hpp>
+#include <boost/filesystem/operations.hpp>
+
+#include <fstream>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDicomDataCamp::ut::DicomSeriesCampTest );
@@ -47,32 +46,35 @@ void DicomSeriesCampTest::tearDown()
 
 void DicomSeriesCampTest::propertiesTest()
 {
-    const std::string instance_uid = "123456789";
-    const std::string modality = "CT";
-    const std::string date = "20130214";
-    const std::string time = "143328";
+    const std::string instance_uid               = "123456789";
+    const std::string modality                   = "CT";
+    const std::string date                       = "20130214";
+    const std::string time                       = "143328";
     const std::string performing_physicians_name = "John Doe";
-    const std::string description = "description";
+    const std::string description                = "description";
     //DicomSeries
-    const std::string dicom_availability = "PATHS";
+    const std::string dicom_availability  = "PATHS";
     const std::string number_of_instances = "100";
     ::DataCampHelper::PropertiesNameType dataProperties = ::boost::assign::list_of("fields")
-                                                                  ("dicom_availability")
-                                                                  ("number_of_instances")
-                                                                  ("local_dicom_paths")
-                                                                  ("dicom_binaries")
-                                                                  ("patient")
-                                                                  ("study")
-                                                                  ("equipment")
-                                                                  ("instance_uid")
-                                                                  ("modality")
-                                                                  ("date")
-                                                                  ("time")
-                                                                  ("performing_physicians_name")
-                                                                  ("description");
+                                                              ("dicom_availability")
+                                                              ("number_of_instances")
+                                                              ("local_dicom_paths")
+                                                              ("dicom_binaries")
+                                                              ("patient")
+                                                              ("study")
+                                                              ("equipment")
+                                                              ("instance_uid")
+                                                              ("modality")
+                                                              ("date")
+                                                              ("time")
+                                                              ("performing_physicians_name")
+                                                              ("description")
+                                                              ("sop_class_uids")
+                                                              ("computed_tag_values")
+                                                              ("first_instance_number");
 
 
-    ::fwData::Array::sptr binary = ::fwData::Array::New();
+    ::fwData::Array::sptr binary   = ::fwData::Array::New();
     ::boost::filesystem::path path = "mypath";
 
     ::fwMedData::DicomValuesType performing_physicians_names;
@@ -89,7 +91,9 @@ void DicomSeriesCampTest::propertiesTest()
     obj->setDicomAvailability(::fwDicomData::DicomSeries::PATHS);
     obj->addDicomPath(42, path);
     obj->addBinary(path.string(),binary);
-
+    obj->addSOPClassUID("1.2.840.10008.5.1.4.1.1.2");
+    obj->addComputedTagValue("(0020,0100)", "1664");
+    obj->setFirstInstanceNumber(1);
 
 
     ::DataCampHelper::visitProperties(obj->getClassname(), dataProperties);
@@ -118,7 +122,21 @@ void DicomSeriesCampTest::propertiesTest()
     // Dicom binaries
     ::DataCampHelper::compareObjectPropertyValue(obj, "@dicom_binaries.mypath", obj->getDicomBinaries().at("mypath"));
 
+    // SOP class UID
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@sop_class_uids.0", "1.2.840.10008.5.1.4.1.1.2");
+    // SOP class UID
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@sop_class_uids.0", "1.2.840.10008.5.1.4.1.1.2");
 
+    // Computed tag values
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@computed_tag_values.(0020,0100)", "1664");
+
+    // First instance number
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@first_instance_number", "1");
+    // Computed tag values
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@computed_tag_values.(0020,0100)", "1664");
+
+    // First instance number
+    ::DataCampHelper::compareSimplePropertyValue(obj, "@first_instance_number", "1");
 }
 
 //------------------------------------------------------------------------------

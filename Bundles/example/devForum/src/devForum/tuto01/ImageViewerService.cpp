@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,25 +37,27 @@ namespace tuto01
 //-----------------------------------------------------------------------------
 
 // Declare a new service of type IRender for render Image
-fwServicesRegisterMacro( ::fwRender::IRender , ::devForum::tuto01::ImageViewerService , ::fwData::Image ) ;
+fwServicesRegisterMacro( ::fwRender::IRender, ::devForum::tuto01::ImageViewerService, ::fwData::Image );
 
 
 //-----------------------------------------------------------------------------
 
 ImageViewerService::ImageViewerService() throw()
     : m_render( 0 )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 ImageViewerService::~ImageViewerService() throw()
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
 void ImageViewerService::configuring() throw ( ::fwTools::Failed )
 {
-this->initialize();
+    this->initialize();
 }
 
 //-----------------------------------------------------------------------------
@@ -91,7 +93,10 @@ void ImageViewerService::starting() throw ( ::fwTools::Failed )
 
 void ImageViewerService::stopping() throw ( ::fwTools::Failed )
 {
-    if( m_render == 0 ) return;
+    if( m_render == 0 )
+    {
+        return;
+    }
 
     m_negatoSagittal->Delete();
     m_negatoFrontal->Delete();
@@ -110,12 +115,8 @@ void ImageViewerService::stopping() throw ( ::fwTools::Failed )
 //-----------------------------------------------------------------------------
 
 void ImageViewerService::updating() throw ( ::fwTools::Failed )
-{}
-
-//-----------------------------------------------------------------------------
-
-void ImageViewerService::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{}
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -200,7 +201,8 @@ void ImageViewerService::createSyntheticImage( ::fwData::Image::sptr _pImage )
         {
             for ( int x = 0; x < 100; x++ )
             {
-                int val = sqrt ( (double)(( 50 - z ) * ( 50 - z ) + ( 50 - y ) * ( 50 - y ) + ( 50 - x ) * ( 50 - x ) ) );
+                int val =
+                    sqrt ( (double)(( 50 - z ) * ( 50 - z ) + ( 50 - y ) * ( 50 - y ) + ( 50 - x ) * ( 50 - x ) ) );
                 buffer[ x + y * 100 + z * 10000 ] = ( val / 5 ) * 10;
             }
         }
@@ -215,8 +217,8 @@ void ImageViewerService::alignNegatoOnImageCenter()
     ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();
 
     // Compute image center
-    unsigned int axialIndex = associatedImage->getSize()[2]/2;
-    unsigned int frontalIndex = associatedImage->getSize()[1]/2;
+    unsigned int axialIndex    = associatedImage->getSize()[2]/2;
+    unsigned int frontalIndex  = associatedImage->getSize()[1]/2;
     unsigned int sagittalIndex = associatedImage->getSize()[0]/2;
 
     // Modify negato to align slice on the center

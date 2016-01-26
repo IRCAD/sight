@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,7 +7,6 @@
 #include <fwTools/UUID.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
 
@@ -16,7 +15,7 @@
 namespace opSofa
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::opSofa::SofaStartSrv, ::fwMedData::ModelSeries ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::opSofa::SofaStartSrv, ::fwMedData::ModelSeries );
 
 /**
  * @brief Constructor
@@ -75,7 +74,14 @@ void SofaStartSrv::updating() throw ( ::fwTools::Failed )
     msg->addEvent("START_STOP_SOFA");
 
     // Send message
-    ::fwServices::IEditionService::notify(this->getSptr(), ms, msg);
+    msg->setSource(this->getSptr());
+    msg->setSubject( ms);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = ms->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
 /**

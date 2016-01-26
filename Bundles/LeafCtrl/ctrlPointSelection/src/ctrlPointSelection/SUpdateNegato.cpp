@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwServices/IEditionService.hpp>
+#include "ctrlPointSelection/SUpdateNegato.hpp"
+
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
@@ -14,9 +15,9 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/ImageMsg.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
-#include "ctrlPointSelection/SUpdateNegato.hpp"
 
 namespace ctrlPointSelection
 {
@@ -32,38 +33,38 @@ SUpdateNegato::SUpdateNegato() throw()
 
     // Set default worker to new slot
     this->setWorker(::fwServices::registry::ActiveWorkers::getDefault()->
-            getWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER));
+                    getWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER));
 }
 
 //-------------------------------------------------------------------------------------------------------------
 
 SUpdateNegato::~SUpdateNegato() throw()
-{}
+{
+}
 
 //-------------------------------------------------------------------------------------------------------------
 
 void SUpdateNegato::configuring() throw(::fwTools::Failed)
-{}
+{
+}
 
 //-------------------------------------------------------------------------------------------------------------
 
 void SUpdateNegato::starting() throw(::fwTools::Failed)
-{}
+{
+}
 
 //-------------------------------------------------------------------------------------------------------------
 
 void SUpdateNegato::stopping() throw(::fwTools::Failed)
-{}
+{
+}
 
 //-------------------------------------------------------------------------------------------------------------
 
 void SUpdateNegato::updating() throw (::fwTools::Failed)
-{}
-
-//-------------------------------------------------------------------------------------------------------------
-
-void SUpdateNegato::receiving(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
-{}
+{
+}
 
 //-------------------------------------------------------------------------------------------------------------
 
@@ -78,22 +79,24 @@ void SUpdateNegato::updateSlices(::fwData::Point::sptr selectedPoint)
 
     // Sets the slices for the negato
     paramA->value() = static_cast<int>(
-            (selectedPoint->getRefCoord()[2] - image->getOrigin()[2]) / image->getSpacing()[2] + 0.5);
+        (selectedPoint->getRefCoord()[2] - image->getOrigin()[2]) / image->getSpacing()[2] + 0.5);
 
     paramF->value() = static_cast<int>(
-            (selectedPoint->getRefCoord()[1] - image->getOrigin()[1]) / image->getSpacing()[1] + 0.5);
+        (selectedPoint->getRefCoord()[1] - image->getOrigin()[1]) / image->getSpacing()[1] + 0.5);
 
     paramS->value() = static_cast<int>(
-            (selectedPoint->getRefCoord()[0] - image->getOrigin()[0]) / image->getSpacing()[0] + 0.5);
+        (selectedPoint->getRefCoord()[0] - image->getOrigin()[0]) / image->getSpacing()[0] + 0.5);
 
     if(paramS->value() >= 0 && paramF->value() >= 0 && paramA->value() >= 0
-            && image->getSize()[0] > paramS->value()
-            && image->getSize()[1] > paramF->value()
-            && image->getSize()[2] > paramA->value())
+       && image->getSize()[0] > paramS->value()
+       && image->getSize()[1] > paramF->value()
+       && image->getSize()[2] > paramA->value())
     {
-        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-        msg->setSliceIndex(paramA, paramF, paramS);
-        ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
+        auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
+        }
     }
 }
 

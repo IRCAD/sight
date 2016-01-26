@@ -1,8 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "fwDicomIOFilter/splitter/SOPClassUIDSplitter.hpp"
+#include "fwDicomIOFilter/registry/macros.hpp"
+#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/diutil.h>
@@ -11,10 +15,6 @@
 #include <dcmtk/dcmdata/dcuid.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
 
-#include "fwDicomIOFilter/registry/macros.hpp"
-#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
-#include "fwDicomIOFilter/splitter/SOPClassUIDSplitter.hpp"
-
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilter::splitter::SOPClassUIDSplitter );
 
 namespace fwDicomIOFilter
@@ -22,14 +22,14 @@ namespace fwDicomIOFilter
 namespace splitter
 {
 
-const std::string SOPClassUIDSplitter::s_FILTER_NAME = "SOPClassUID splitter";
+const std::string SOPClassUIDSplitter::s_FILTER_NAME        = "SOPClassUID splitter";
 const std::string SOPClassUIDSplitter::s_FILTER_DESCRIPTION =
-        "Split instances according to <i>SOPClassUID</i> tag.";
+    "Split instances according to <i>SOPClassUID</i> tag.";
 
 //-----------------------------------------------------------------------------
 
 SOPClassUIDSplitter::SOPClassUIDSplitter(::fwDicomIOFilter::IFilter::Key key) :
-        ::fwDicomIOFilter::splitter::TagValueSplitter(key)
+    ::fwDicomIOFilter::splitter::TagValueSplitter(key)
 {
     this->setTag(DCM_SOPClassUID);
 }
@@ -56,7 +56,7 @@ std::string SOPClassUIDSplitter::getDescription() const
 
 //-----------------------------------------------------------------------------
 
-bool SOPClassUIDSplitter::isConfigurationRequired()
+bool SOPClassUIDSplitter::isConfigurationRequired() const
 {
     return false;
 }
@@ -64,11 +64,12 @@ bool SOPClassUIDSplitter::isConfigurationRequired()
 //-----------------------------------------------------------------------------
 
 SOPClassUIDSplitter::DicomSeriesContainerType SOPClassUIDSplitter::apply(
-        ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+    const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
+const throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
-    DicomSeriesContainerType result = ::fwDicomIOFilter::splitter::TagValueSplitter::apply(series);
+    DicomSeriesContainerType result = ::fwDicomIOFilter::splitter::TagValueSplitter::apply(series, logger);
 
-    BOOST_FOREACH(const ::fwDicomData::DicomSeries::sptr& s, result)
+    for(const ::fwDicomData::DicomSeries::sptr& s :  result)
     {
 
         DcmFileFormat fileFormat;
@@ -83,12 +84,18 @@ SOPClassUIDSplitter::DicomSeriesContainerType SOPClassUIDSplitter::apply(
 
         // Read SOPClassUID
         dataset = fileFormat.getDataset();
-        status = dataset->findAndGetOFString(DCM_SOPClassUID,data);
+        status  = dataset->findAndGetOFStringArray(DCM_SOPClassUID,data);
         FW_RAISE_IF("Unable to read tags: \""+filename+"\"", status.bad());
 
         ::fwDicomData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer;
         sopClassUIDContainer.insert(data.c_str());
         s->setSOPClassUIDs(sopClassUIDContainer);
+    }
+
+    if(result.size() > 1)
+    {
+        logger->warning("The same series instance UID has been used for several instances "
+                        "with different SOP class UID. The series has been split.");
     }
 
     return result;

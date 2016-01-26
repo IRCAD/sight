@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,10 @@
 #ifndef __FWDICOMIOFILTER_SORTER_INSTANCENUMBERSORTER_HPP__
 #define __FWDICOMIOFILTER_SORTER_INSTANCENUMBERSORTER_HPP__
 
-#include <fwDicomData/DicomSeries.hpp>
-
-#include "fwDicomIOFilter/sorter/TagValueSorter.hpp"
 #include "fwDicomIOFilter/config.hpp"
+#include "fwDicomIOFilter/sorter/TagValueSorter.hpp"
+
+#include <fwDicomData/DicomSeries.hpp>
 
 namespace fwDicomIOFilter
 {
@@ -26,7 +26,7 @@ class FWDICOMIOFILTER_CLASS_API InstanceNumberSorter : public ::fwDicomIOFilter:
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (InstanceNumberSorter)(::fwDicomIOFilter::sorter::TagValueSorter),
-            (()), ::fwDicomIOFilter::factory::New< InstanceNumberSorter > );
+                                            (()), ::fwDicomIOFilter::factory::New< InstanceNumberSorter > );
 
     /// Constructor
     FWDICOMIOFILTER_API InstanceNumberSorter(::fwDicomIOFilter::IFilter::Key key);
@@ -41,7 +41,7 @@ public:
     FWDICOMIOFILTER_API virtual std::string getDescription() const;
 
     /// Return true if a configuration is required
-    FWDICOMIOFILTER_API virtual bool isConfigurationRequired();
+    FWDICOMIOFILTER_API virtual bool isConfigurationRequired() const;
 
 protected:
     /// Filter name

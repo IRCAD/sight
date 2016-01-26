@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,9 @@
 
 // Services tools
 #include <fwServices/Base.hpp>
-#include <fwServices/IEditionService.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include "beginnerTraining/tuto03/SStringReader.hpp"
 
@@ -90,11 +92,6 @@ void SStringReader::updating() throw ( ::fwTools::Failed )
     this->notifyMessage();
 }
 
-void SStringReader::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-}
-
 void SStringReader::swapping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
@@ -119,12 +116,13 @@ void SStringReader::notifyMessage()
     SLM_TRACE_FUNC();
     ::fwData::String::sptr associatedObj = this->getObject< ::fwData::String >();
 
-    // Creation of an object message to say that data is modified
-    ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
-    msg->addEvent( ::fwServices::ObjectMsg::UPDATED_OBJECT ) ;
-
-    // Notifies message to all service listeners
-    ::fwServices::IEditionService::notify( this->getSptr(), associatedObj, msg );
+    // Notifies to all service listeners
+    ::fwData::Object::ModifiedSignalType::sptr sig;
+    sig = associatedObj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
+    }
 }
 
 } // namespace tuto03

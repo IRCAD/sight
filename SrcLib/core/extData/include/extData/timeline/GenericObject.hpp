@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,7 @@ public:
     EXTDATA_API bool isPresent(unsigned int index) const;
 
     /// Return the raw presence mask
-    EXTDATA_API ::boost::uint64_t getMask() const;
+    EXTDATA_API uint64_t getMask() const;
 
     /// Return the maximum number of elements in the buffer
     EXTDATA_API unsigned int getMaxElementNum() const;
@@ -58,7 +58,7 @@ protected:
     /// Number of elements that are actually set
     unsigned int m_numPresent;
     /// Binary mask that indicates which element are set
-    ::boost::uint64_t m_presenceMask;
+    uint64_t m_presenceMask;
     /// Maximum number of elements in an object
     unsigned int m_maxElementNum;
 };
@@ -84,7 +84,10 @@ public:
         void operator++();
 
         /// True if the current element is valid.
-        bool isValid() const { return m_currentIndex < m_maxElement; }
+        bool isValid() const
+        {
+            return m_currentIndex < m_maxElement;
+        }
 
         /// Get the current element
         const ElementType& operator*() const;

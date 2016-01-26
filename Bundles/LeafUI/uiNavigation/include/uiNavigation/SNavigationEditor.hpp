@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,19 +35,20 @@ namespace uiNavigation
  * @brief   SNavigationEditor is an editor to navigate in a scene.
  * @class   SNavigationEditor
  */
-class UINAVIGATION_CLASS_API SNavigationEditor : public QObject, public ::gui::editor::IEditor
+class UINAVIGATION_CLASS_API SNavigationEditor : public QObject,
+                                                 public ::gui::editor::IEditor
 {
-    Q_OBJECT
+Q_OBJECT
 
-public :
+public:
 
     fwCoreServiceClassDefinitionsMacro((SNavigationEditor)(::gui::editor::IEditor));
 
     /// Constructor.
-    UINAVIGATION_API SNavigationEditor() throw() ;
+    UINAVIGATION_API SNavigationEditor() throw();
 
     /// Destructor.
-    UINAVIGATION_API virtual ~SNavigationEditor() throw() ;
+    UINAVIGATION_API virtual ~SNavigationEditor() throw();
 
     /**
      * @name Signal key and type for slider changes.
@@ -63,20 +64,19 @@ protected:
      * @{ */
     virtual void starting() throw(::fwTools::Failed);
     virtual void stopping() throw(::fwTools::Failed);
-    virtual void receiving(CSPTR(::fwServices::ObjectMsg) _msg) throw(::fwTools::Failed);
     virtual void updating() throw(::fwTools::Failed);
     /**  @} */
 
     /**
      * @brief Overrides IService::configuring().
      * Configuration example :
-     @verbatim
-     <config>
+       @verbatim
+       <config>
         <sliderLength value="..." />     <!-- Length of slider showing progression in navigation (default = 100) -->
         <timerDuration value="..." />    <!-- Timer duration between iterations in milliseconds (default = 50)   -->
         <iterationsNumber value="..." /> <!-- Number of iterations within slider length (default = 100)          -->
-     </config>
-     @endverbatim
+       </config>
+       @endverbatim
      *
      * @throw fwTools::Failed
      */

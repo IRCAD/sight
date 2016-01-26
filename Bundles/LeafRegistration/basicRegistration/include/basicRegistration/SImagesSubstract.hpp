@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _BASICREGISTRATION_SIMAGESSUBSTRACT_HPP_
-#define _BASICREGISTRATION_SIMAGESSUBSTRACT_HPP_
+#ifndef __BASICREGISTRATION_SIMAGESSUBSTRACT_HPP__
+#define __BASICREGISTRATION_SIMAGESSUBSTRACT_HPP__
 
 #include <QObject>
 #include <QPointer>
@@ -19,19 +19,20 @@ class QPushButton;
 namespace basicRegistration
 {
 
-class BASICREGISTRATION_CLASS_API SImagesSubstract : public QObject, public ::gui::editor::IEditor
+class BASICREGISTRATION_CLASS_API SImagesSubstract : public QObject,
+                                                     public ::gui::editor::IEditor
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SImagesSubstract)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SImagesSubstract)(::gui::editor::IEditor) );
 
     BASICREGISTRATION_API SImagesSubstract() throw();
 
     BASICREGISTRATION_API virtual ~SImagesSubstract() throw();
 
-protected :
+protected:
 
     BASICREGISTRATION_API virtual void configuring() throw ( ::fwTools::Failed );
 
@@ -45,9 +46,6 @@ protected :
     BASICREGISTRATION_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Overrides
-    BASICREGISTRATION_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
-
-    /// Overrides
     BASICREGISTRATION_API virtual void swapping() throw ( ::fwTools::Failed );
 
 
@@ -58,7 +56,7 @@ private Q_SLOTS:
     /// Compute the subtraction between two images.
     void OnCompute();
 
-private :
+private:
     QPointer< QPushButton > mpComputeButton;
 
 
@@ -68,5 +66,5 @@ private :
 
 } // namespace basicRegistration
 
-#endif /*_BASICREGISTRATION_SIMAGESSUBSTRACT_HPP_*/
+#endif /*__BASICREGISTRATION_SIMAGESSUBSTRACT_HPP__*/
 

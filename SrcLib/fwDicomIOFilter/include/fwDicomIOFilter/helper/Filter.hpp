@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,10 @@
 #ifndef __FWDICOMIOFILTER_HELPER_FILTER_HPP__
 #define __FWDICOMIOFILTER_HELPER_FILTER_HPP__
 
-#include <fwDicomData/DicomSeries.hpp>
-
 #include "fwDicomIOFilter/IFilter.hpp"
 #include "fwDicomIOFilter/config.hpp"
+
+#include <fwDicomData/DicomSeries.hpp>
 
 namespace fwDicomIOFilter
 {
@@ -31,9 +31,11 @@ public:
      * @brief Apply a filter to the DicomSeries
      * @param[in,out] dicomSeriesContainer DicomSeries that must be filtered
      * @param[in] filter Filter that must be applied
+     * @return Return true if errors have been ignored
      */
-    FWDICOMIOFILTER_API static void applyFilter(DicomSeriesContainerType& dicomSeriesContainer,
-            ::fwDicomIOFilter::IFilter::sptr filter, bool forcedApply = false);
+    FWDICOMIOFILTER_API static bool applyFilter(DicomSeriesContainerType& dicomSeriesContainer,
+                                                ::fwDicomIOFilter::IFilter::sptr filter, bool forcedApply = false,
+                                                const ::fwLog::Logger::sptr& logger = ::fwLog::Logger::New());
 
 };
 

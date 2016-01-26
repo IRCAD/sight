@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,11 +24,11 @@ namespace opSofa
 class SofaCoreSrv : public ::fwGui::IActionSrv
 {
 
-public :
+public:
     fwCoreServiceClassDefinitionsMacro ( (SofaCoreSrv)(::fwGui::IActionSrv) );
 
-    SofaCoreSrv() throw() ;
-    virtual ~SofaCoreSrv() throw() ;
+    SofaCoreSrv() throw();
+    virtual ~SofaCoreSrv() throw();
 
 protected:
 
@@ -62,7 +62,7 @@ protected:
     /**
      * @brief info of the class
      */
-    void info ( std::ostream &_sstream ) ;
+    void info ( std::ostream &_sstream );
 
     /**
      * @brief Add a triangularMesh to the model series data
@@ -72,7 +72,7 @@ protected:
      */
     void addMesh(std::string, std::string);
 
-private :
+private:
 
     /**
      * @brief SofaBusiness pointer

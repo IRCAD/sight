@@ -1,7 +1,6 @@
-<plugin id="extDataReg" class="::extDataReg::Plugin" >
+<plugin id="extDataReg" class="::extDataReg::Plugin" version="@DASH_VERSION@" >
     
     <library name="extDataReg" />
-    <requirement id="dataReg" />
 
 </plugin>
 

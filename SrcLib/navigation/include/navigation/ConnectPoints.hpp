@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,6 @@
 #include <utility>
 #include <vector>
 
-#include <boost/make_shared.hpp>
 
 #include <fwCore/BaseObject.hpp>
 
@@ -21,13 +20,13 @@
 
 namespace fwCom
 {
-    class HasSignals;
-    class HasSlots;
+class HasSignals;
+class HasSlots;
 }
 
 namespace fwData
 {
-    class PointList;
+class PointList;
 }
 
 namespace navigation
@@ -42,13 +41,13 @@ class NAVIGATION_CLASS_API ConnectPoints : public ::fwCore::BaseObject
 public:
 
     fwCoreClassDefinitionsWithFactoryMacro( (ConnectPoints)(::fwCore::BaseObject),
-            (()),
-            ::boost::make_shared< ConnectPoints > );
+                                            (()),
+                                            std::make_shared< ConnectPoints > );
 
     /**
      * @name Typedefs
      * @{ */
-    typedef std::map< ::fwCom::HasSignals::sptr , ::fwCom::Connection >                 ConnectionContainerType;
+    typedef std::map< ::fwCom::HasSignals::sptr, ::fwCom::Connection >                 ConnectionContainerType;
     typedef std::pair< ::fwCom::Signals::SignalKeyType, ::fwCom::Slots::SlotKeyType >   KeyConnectionType;
     typedef std::vector< KeyConnectionType >                                            KeyConnectionsType;
     /**  @} */
@@ -61,24 +60,24 @@ public:
 
     /// Connect signal to slot, and register this new connection in  m_connections
     NAVIGATION_API void connectPointToService(
-            const SPTR(::fwCom::HasSignals)& hasSignals,
-            const ::fwCom::Signals::SignalKeyType& signalKey,
-            const SPTR(::fwCom::HasSlots)& hasSlots,
-            const ::fwCom::Slots::SlotKeyType& slotKey);
+        const SPTR(::fwCom::HasSignals)& hasSignals,
+        const ::fwCom::Signals::SignalKeyType& signalKey,
+        const SPTR(::fwCom::HasSlots)& hasSlots,
+        const ::fwCom::Slots::SlotKeyType& slotKey);
 
     /// Connect signal to slot, and register this new connection in  m_connections
     NAVIGATION_API void disconnectPointToService(const SPTR(::fwCom::HasSignals)& hasSignals);
 
     /// Connect signal to slot, and register this new connection in  m_connections
     NAVIGATION_API void connectAllSplinePoints(
-            const SPTR(::fwData::PointList)& pointList,
-            const SPTR(::fwCom::HasSlots)& hasSlots,
-            const ::fwCom::Slots::SlotKeyType& slotKey );
+        const SPTR(::fwData::PointList)& pointList,
+        const SPTR(::fwCom::HasSlots)& hasSlots,
+        const ::fwCom::Slots::SlotKeyType& slotKey );
 
     /// Connect signal to slot, and register this new connection in  m_connections
     NAVIGATION_API void disconnectSplinePoints();
 
-private :
+private:
 
     /// Connections storage
     ConnectionContainerType m_connections;

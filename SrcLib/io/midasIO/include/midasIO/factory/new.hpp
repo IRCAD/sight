@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,6 @@
 
 #include <string>
 
-#include <boost/make_shared.hpp>
 
 #include <fwTools/macros.hpp>
 
@@ -34,21 +33,23 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
  */
 class Key
 {
-    template<typename CLASSNAME>
-    friend SPTR( CLASSNAME ) midasIO::configurationFactory::New();
+template<typename CLASSNAME>
+friend SPTR( CLASSNAME ) midasIO::configurationFactory::New();
 
-    Key(){};
+Key()
+{
+}
 };
 
 
-    template<class CLASSNAME > SPTR( CLASSNAME )  New()
-    {
-        SPTR(CLASSNAME) obj = ::boost::make_shared< CLASSNAME >( Key() );
-        return obj;
-    }
+template<class CLASSNAME > SPTR( CLASSNAME )  New()
+{
+    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
+    return obj;
+}
 
-    MIDASIO_API SPTR(::midasIO::IConfiguration) New(
-            const ::midasIO::registry::KeyType & classname );
+MIDASIO_API SPTR(::midasIO::IConfiguration) New(
+    const ::midasIO::registry::KeyType & classname );
 }
 
 namespace responseHandlerFactory
@@ -62,21 +63,23 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New();
  */
 class Key
 {
-    template<typename CLASSNAME>
-    friend SPTR( CLASSNAME ) midasIO::responseHandlerFactory::New();
+template<typename CLASSNAME>
+friend SPTR( CLASSNAME ) midasIO::responseHandlerFactory::New();
 
-    Key(){};
+Key()
+{
+}
 };
 
 
-    template<class CLASSNAME > SPTR( CLASSNAME )  New()
-    {
-        SPTR(CLASSNAME) obj = ::boost::make_shared< CLASSNAME >( Key() );
-        return obj;
-    }
+template<class CLASSNAME > SPTR( CLASSNAME )  New()
+{
+    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
+    return obj;
+}
 
-    MIDASIO_API SPTR(::midasIO::IResponseHandler) New(
-            const ::midasIO::registry::KeyType & classname );
+MIDASIO_API SPTR(::midasIO::IResponseHandler) New(
+    const ::midasIO::registry::KeyType & classname );
 } // responseHandlerFactory
 
 } // namespace midasIO

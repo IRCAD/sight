@@ -1,9 +1,6 @@
-<plugin id="basicRegistration" class="::basicRegistration::Plugin">
+<plugin id="basicRegistration" class="::basicRegistration::Plugin" version="@DASH_VERSION@" >
     
     <library name="basicRegistration" />
-
-    <requirement id="dataReg"/>
-    <requirement id="servicesReg"/>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>

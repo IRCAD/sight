@@ -1,72 +1,71 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <math.h>
-#include <vector>
+#include "ctrlComputeCPR/SComputeCPR2D.hpp"
 
-#include <fwServices/Base.hpp>
-#include <fwServices/op/Get.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/IEditionService.hpp>
-#include <fwServices/ObjectMsg.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <fwTools/fwID.hpp>
-#include <fwTools/Object.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwCom/Slots.hxx>
+#include <fwComEd/Dictionary.hpp>
 
 #include <fwData/String.hpp>
 #include <fwData/PointList.hpp>
 
-#include <fwComEd/PointListMsg.hpp>
-#include <fwComEd/ImageMsg.hpp>
-#include <fwComEd/Dictionary.hpp>
+#include <fwServices/Base.hpp>
+#include <fwServices/op/Get.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <cpr/functions.hpp>
 
-#include "ctrlComputeCPR/SComputeCPR2D.hpp"
+#include <math.h>
+#include <vector>
 
 fwServicesRegisterMacro(::fwServices::IController,::ctrlComputeCPR::SComputeCPR2D, ::fwData::Image);
 
 namespace ctrlComputeCPR
 {
 
-const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_CHANGE_HEIGHT_SLOT = "changeHeight";
+const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_CHANGE_HEIGHT_SLOT  = "changeHeight";
 const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_CHANGE_SPACING_SLOT = "changeSpacing";
-const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_CHANGE_ANGLE_SLOT = "changeAngle";
-const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_SELECT_POINT_SLOT = "selectPoint";
+const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_CHANGE_ANGLE_SLOT   = "changeAngle";
+const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_SELECT_POINT_SLOT   = "selectPoint";
+
+static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT     = "addPoint";
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT  = "removePoint";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLINE_SLOT = "updateSpline";
 
 //----------------------------------------------------------------------------------------------------------------
 
 SComputeCPR2D::SComputeCPR2D() throw ()
     : m_nbSplinePoints(0),
-    m_angle(0),
-    m_height(50.0),
-    m_selectedPointIndex(0)
+      m_angle(0),
+      m_height(50.0),
+      m_selectedPointIndex(0)
 {
-    m_slotChangeHeight = ::fwCom::newSlot(&SComputeCPR2D::setHeight, this);
-    ::fwCom::HasSlots::m_slots(s_CHANGE_HEIGHT_SLOT, m_slotChangeHeight);
-
-    m_slotChangeSpacing = ::fwCom::newSlot(&SComputeCPR2D::setSpacing, this);
-    ::fwCom::HasSlots::m_slots(s_CHANGE_SPACING_SLOT, m_slotChangeSpacing);
-
-    m_slotChangeAngle = ::fwCom::newSlot(&SComputeCPR2D::setNormalRotation, this);
-    ::fwCom::HasSlots::m_slots(s_CHANGE_ANGLE_SLOT, m_slotChangeAngle);
-
-     m_slotSelectPoint = ::fwCom::newSlot(&SComputeCPR2D::fillVisualizePointList, this);
-     ::fwCom::HasSlots::m_slots(s_SELECT_POINT_SLOT, m_slotSelectPoint);
-
-     // Set default worker to new slots
-     this->setWorker( ::fwServices::registry::ActiveWorkers::getDefault()->
-               getWorker( ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER ) );
+    m_slotChangeHeight  = newSlot(s_CHANGE_HEIGHT_SLOT, &SComputeCPR2D::setHeight, this);
+    m_slotChangeSpacing = newSlot(s_CHANGE_SPACING_SLOT, &SComputeCPR2D::setSpacing, this);
+    m_slotChangeAngle   = newSlot(s_CHANGE_ANGLE_SLOT, &SComputeCPR2D::setNormalRotation, this);
+    m_slotSelectPoint   = newSlot(s_SELECT_POINT_SLOT, &SComputeCPR2D::fillVisualizePointList, this);
+    newSlot(s_ADD_POINT_SLOT, &SComputeCPR2D::addPoint, this);
+    newSlot(s_REMOVE_POINT_SLOT, &SComputeCPR2D::removePoint, this);
+    newSlot(s_UPDATE_SPLINE_SLOT, &SComputeCPR2D::updateSpline, this);
 }
 
 //----------------------------------------------------------------------------------------------------------------
 
 SComputeCPR2D::~SComputeCPR2D() throw ()
-{}
+{
+}
 
 //----------------------------------------------------------------------------------------------------------------
 
@@ -115,58 +114,64 @@ void SComputeCPR2D::configuring() throw (fwTools::Failed)
     const std::vector<ConfigurationType>& visuPointsConfig = m_configuration->find("visuPoints");
     if (!visuPointsConfig.empty())
     {
-       SLM_ASSERT("UID attribute is missing", visuPointsConfig.at(0)->hasAttribute("uid"));
-       m_visuPointsUID = (visuPointsConfig.at(0)->getAttributeValue("uid"));
+        SLM_ASSERT("UID attribute is missing", visuPointsConfig.at(0)->hasAttribute("uid"));
+        m_visuPointsUID = (visuPointsConfig.at(0)->getAttributeValue("uid"));
     }
 }
 
 //----------------------------------------------------------------------------------------------------------------
 
 void SComputeCPR2D::updating() throw (::fwTools::Failed)
-{}
+{
+}
 
 //----------------------------------------------------------------------------------------------------------------
 
-void SComputeCPR2D::receiving(::fwServices::ObjectMsg::csptr msg) throw (::fwTools::Failed)
+void SComputeCPR2D::addPoint(::fwData::Point::sptr /*point*/)
 {
-    if(msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_ADDED))
+    ::fwTools::Object::sptr splineObj = ::fwTools::fwID::getObject(m_splinePointsUID);
+    OSLM_ASSERT("Failed to retrieve object with UID '" << m_splinePointsUID << "'", splineObj);
+    ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(splineObj);
+    OSLM_ASSERT("Failed to retrieve point list", pointList);
+
+    m_nbSplinePoints = pointList->getRefPoints().size();
+    this->updateSpline();
+}
+
+//----------------------------------------------------------------------------------------------------------------
+
+void SComputeCPR2D::removePoint(::fwData::Point::sptr /*point*/)
+{
+    ::fwTools::Object::sptr splineObj = ::fwTools::fwID::getObject(m_splinePointsUID);
+    OSLM_ASSERT("Failed to retrieve object with UID '" << m_splinePointsUID << "'", splineObj);
+    ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(splineObj);
+    OSLM_ASSERT("Failed to retrieve point list", pointList);
+
+    m_nbSplinePoints = pointList->getRefPoints().size();
+    this->clearVisualizePointList();
+
+    // Visualize the last points
+    if (m_nbSplinePoints > 0)
     {
-        ::fwTools::Object::sptr splineObj = ::fwTools::fwID::getObject(m_splinePointsUID);
-        OSLM_ASSERT("Failed to retrieve object with UID '" << m_splinePointsUID << "'", splineObj);
-        ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(splineObj);
-        OSLM_ASSERT("Failed to retrieve point list", pointList);
-
-        m_nbSplinePoints = pointList->getRefPoints().size();
-        //m_nbSplinePoints++;
+        this->fillVisualizePointList(m_nbSplinePoints - 1);
     }
+    this->updateSpline();
+}
 
-    if(msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED))
-    {
-        ::fwTools::Object::sptr splineObj = ::fwTools::fwID::getObject(m_splinePointsUID);
-        OSLM_ASSERT("Failed to retrieve object with UID '" << m_splinePointsUID << "'", splineObj);
-        ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(splineObj);
-        OSLM_ASSERT("Failed to retrieve point list", pointList);
+//----------------------------------------------------------------------------------------------------------------
 
-        m_nbSplinePoints = pointList->getRefPoints().size();
-        this->clearVisualizePointList();
-
-        // Visualize the last points
-        if (m_nbSplinePoints > 0)
-        {
-            this->fillVisualizePointList(m_nbSplinePoints - 1);
-        }
-    }
-
-    if(msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_MODIFIED) && m_nbSplinePoints > 2)
+void SComputeCPR2D::updateSpline()
+{
+    if(m_nbSplinePoints == 2)
     {
         this->computeCPRImage();
         this->fillVisualizePointList(m_selectedPointIndex);
     }
-    else if(m_nbSplinePoints >= 3)
+    else if (m_nbSplinePoints > 2)
     {
         this->computeCPRImage();
     }
-    else if(m_nbSplinePoints < 3) // Set an empty image
+    if(m_nbSplinePoints < 3) // Set an empty image
     {
         ::fwData::Image::sptr image = this->getObject< ::fwData::Image>();
         SLM_ASSERT("Image not valid", image);
@@ -178,9 +183,11 @@ void SComputeCPR2D::receiving(::fwServices::ObjectMsg::csptr msg) throw (::fwToo
 
         image->setSize(imageSize);
 
-        ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-        msg->addEvent(::fwComEd::ImageMsg::NEW_IMAGE);
-        ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
+        auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
+        }
     }
 }
 
@@ -219,10 +226,11 @@ void SComputeCPR2D::computeCPRImage()
     OSLM_DEBUG("Number of pixels in height " << nbRow);
 
     // Notify
-    ::fwComEd::ImageMsg::sptr msg = ::fwComEd::ImageMsg::New();
-    msg->addEvent(::fwComEd::ImageMsg::NEW_IMAGE);
-    msg->addEvent(::fwComEd::ImageMsg::MODIFIED);
-    ::fwServices::IEditionService::notify(this->getSptr(), image, msg);
+    auto sig = image->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------------
@@ -233,8 +241,8 @@ void SComputeCPR2D::setHeight(double height)
 
     if(m_nbSplinePoints > 2 && m_selectedPointIndex > 0)
     {
-         this->computeCPRImage();
-         this->fillVisualizePointList(m_selectedPointIndex);
+        this->computeCPRImage();
+        this->fillVisualizePointList(m_selectedPointIndex);
     }
 }
 
@@ -246,7 +254,7 @@ void SComputeCPR2D::setSpacing(double spacing)
 
     if(m_nbSplinePoints > 2)
     {
-         this->computeCPRImage();
+        this->computeCPRImage();
     }
 }
 
@@ -258,7 +266,7 @@ void SComputeCPR2D::setNormalRotation(double angle)
 
     if(m_nbSplinePoints > 2)
     {
-         this->computeCPRImage();
+        this->computeCPRImage();
     }
 }
 
@@ -317,16 +325,16 @@ void SComputeCPR2D::fillVisualizePointList(int selectedPointIndex)
 //----------------------------------------------------------------------------------------------------------------
 
 void SComputeCPR2D::addPointToVisualizePointList(
-        const ::fwData::PointList::sptr& pointList,
-        const int indexSelectedPoint,
-        const ::fwData::PointList::sptr& visualizePointList)
+    const ::fwData::PointList::sptr& pointList,
+    const int indexSelectedPoint,
+    const ::fwData::PointList::sptr& visualizePointList)
 {
     OSLM_ASSERT("Point of index '" << indexSelectedPoint << "' not found in point list of size '"
-            << pointList->getRefPoints().size() << "'",
-            indexSelectedPoint >= 0 && indexSelectedPoint < pointList->getRefPoints().size());
+                                   << pointList->getRefPoints().size() << "'",
+                indexSelectedPoint >= 0 && indexSelectedPoint < pointList->getRefPoints().size());
 
     // Initialize the points
-    ::fwData::Point::sptr srcPoint = pointList->getRefPoints()[indexSelectedPoint];
+    ::fwData::Point::sptr srcPoint  = pointList->getRefPoints()[indexSelectedPoint];
     ::fwData::Point::sptr destPoint = ::fwData::Point::New();
 
     // Point label
@@ -334,15 +342,15 @@ void SComputeCPR2D::addPointToVisualizePointList(
     destPoint->setField(::fwComEd::Dictionary::m_labelId, text);
 
     // Compute destPoint coordinates
-    double yCoord = floor(m_height/m_spacing) + 1;
-    double position = 0;
-    fwVec3d vec0 = destPoint->getCoord();
+    double yCoord   = floor(m_height/m_spacing) + 1.;
+    double position = 0.;
+    ::fwData::Point::PointCoordArrayType vec0 = destPoint->getCoord();
 
     ::cpr::computePositionOfPointOnSpline(pointList, indexSelectedPoint, position);
 
     vec0 [0] = position;
     vec0 [1] = yCoord * m_spacing;
-    vec0 [2] = 0;
+    vec0 [2] = 0.;
 
     destPoint->setCoord(vec0);
 
@@ -353,9 +361,12 @@ void SComputeCPR2D::addPointToVisualizePointList(
     visualizePointList->getRefPoints().push_back(destPoint);
 
     // Notify
-    ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
-    msg->addEvent(::fwComEd::PointListMsg::ELEMENT_ADDED);
-    ::fwServices::IEditionService::notify(this->getSptr(), visualizePointList, msg);
+    auto sig = visualizePointList->signal< ::fwData::PointList::PointAddedSignalType >(
+        ::fwData::PointList::s_POINT_ADDED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_POINT_SLOT)));
+        sig->asyncEmit(destPoint);
+    }
 }
 
 //----------------------------------------------------------------------------------------------------------------
@@ -375,9 +386,12 @@ void SComputeCPR2D::clearVisualizePointList()
         {
             ::fwData::Point::sptr point = visualizePointList->getRefPoints()[i];
 
-            ::fwComEd::PointListMsg::sptr msg = ::fwComEd::PointListMsg::New();
-            msg->addEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED, point);
-            ::fwServices::IEditionService::notify(this->getSptr(), visualizePointList, msg);
+            auto sig = visualizePointList->signal< ::fwData::PointList::PointRemovedSignalType >(
+                ::fwData::PointList::s_POINT_REMOVED_SIG);
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_POINT_SLOT)));
+                sig->asyncEmit(point);
+            }
         }
 
         // Clear the pointList

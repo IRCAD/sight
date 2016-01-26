@@ -1,7 +1,6 @@
 
 <extension implements="::fwServices::registry::AppConfig">
     <id>SDBVRRenderExt</id>
-    <type>parameters</type>
     <parameters>
         <param name="GENERIC_UID" />
         <param name="SERIESDB" />
@@ -102,7 +101,35 @@
                         </config>
                     </service>
 
-                    <service uid="${GENERIC_UID}_action_DicomRetriever" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                    <service uid="${GENERIC_UID}_action_DicomPacsReader" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                        <config>
+                            <parameters>
+                                <parameter replace="SERIESDB" by="seriesDB"  />
+                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                                <parameter replace="APP_NAME" by="VRRenderExt" />
+                            </parameters>
+                            <filter>
+                                <mode>include</mode>
+                                <id>DicomPacsReader</id>
+                            </filter>
+                        </config>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_action_DicomPacsWriter" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+                        <config>
+                            <parameters>
+                                <parameter replace="SERIESDB" by="seriesDB"  />
+                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                                <parameter replace="APP_NAME" by="VRRenderExt" />
+                            </parameters>
+                            <filter>
+                                <mode>include</mode>
+                                <id>DicomPacsWriter</id>
+                            </filter>
+                        </config>
+                    </service>
+
+                    <service uid="${GENERIC_UID}_action_DicomFiltering" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
                         <config>
                             <parameters>
                                 <parameter replace="SERIESDB" by="seriesDB"  />
@@ -110,23 +137,12 @@
                             </parameters>
                             <filter>
                                 <mode>include</mode>
-                                <id>DicomRetriever</id>
+                                <id>DicomFiltering</id>
                             </filter>
                         </config>
                     </service>
-                    
-                    <service uid="${GENERIC_UID}_action_DicomReader" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
-                        <config>
-                            <parameters>
-                                <parameter replace="SERIESDB" by="seriesDB"  />
-                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
-                            </parameters>
-                            <filter>
-                                <mode>include</mode>
-                                <id>DicomReader</id>
-                            </filter>
-                        </config>
-                    </service>
+
+                    <service uid="progress_statusbar" impl="::gui::editor::SJobBar" autoConnect="no" />
 
                 </object>
             </item>
@@ -136,13 +152,19 @@
                 <slot>${GENERIC_UID}_action_newActivity/launchSeries</slot>
             </connect>
 
+            <connect>
+                <signal>${GENERIC_UID}_action_import/jobCreated</signal>
+                <slot>progress_statusbar/showJob</slot>
+            </connect>
+
             <proxy channel="${DYNAMICVIEW_CHANNEL}">
                 <signal>${GENERIC_UID}_action_newActivity/activityLaunched</signal>
                 <signal>${GENERIC_UID}_action_2DVisualization/activityLaunched</signal>
                 <signal>${GENERIC_UID}_action_3DVisualization/activityLaunched</signal>
                 <signal>${GENERIC_UID}_action_volumeRendering/activityLaunched</signal>
-                <signal>${GENERIC_UID}_action_DicomRetriever/activityLaunched</signal>
-                <signal>${GENERIC_UID}_action_DicomReader/activityLaunched</signal>
+                <signal>${GENERIC_UID}_action_DicomPacsReader/activityLaunched</signal>
+                <signal>${GENERIC_UID}_action_DicomPacsWriter/activityLaunched</signal>
+                <signal>${GENERIC_UID}_action_DicomFiltering/activityLaunched</signal>
             </proxy>
 
             <start uid="${GENERIC_UID}_mainview" />

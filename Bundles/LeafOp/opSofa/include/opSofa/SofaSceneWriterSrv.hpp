@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,24 +21,24 @@ namespace opSofa
  */
 class SofaSceneWriterSrv : public ::io::IWriter
 {
-    public :
+public:
 
-        fwCoreServiceClassDefinitionsMacro ( (SofaSceneWriterSrv)(::io::IWriter) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SofaSceneWriterSrv)(::io::IWriter) );
 
-        SofaSceneWriterSrv() throw();
-        virtual ~SofaSceneWriterSrv() throw();
-        void configuring() throw ( ::fwTools::Failed );
-        void starting() throw ( ::fwTools::Failed );
-        void stopping() throw ( ::fwTools::Failed );
-        void updating() throw ( ::fwTools::Failed );
-        void receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed );
-        void info( std::ostream & ostr );
-        void configureWithIHM();
+    SofaSceneWriterSrv() throw();
+    virtual ~SofaSceneWriterSrv() throw();
+    void configuring() throw ( ::fwTools::Failed );
+    void starting() throw ( ::fwTools::Failed );
+    void stopping() throw ( ::fwTools::Failed );
+    void updating() throw ( ::fwTools::Failed );
+    void receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed );
+    void info( std::ostream & ostr );
+    void configureWithIHM();
 
-    private :
-        bool writeTrian;
-        std::string m_sceneTemplate;
-        bool m_useTempPath;
+private:
+    bool writeTrian;
+    std::string m_sceneTemplate;
+    bool m_useTempPath;
 
 };
 

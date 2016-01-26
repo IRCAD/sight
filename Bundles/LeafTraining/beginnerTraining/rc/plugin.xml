@@ -1,9 +1,7 @@
-<plugin id="beginnerTraining" class="::beginnerTraining::Plugin">
+<plugin id="beginnerTraining" class="::beginnerTraining::Plugin" version="@DASH_VERSION@" >
     
     <library name="beginnerTraining" />
 
-    <requirement id="dataReg"/>
-    <requirement id="servicesReg"/>
     <requirement id="io"/>
     <requirement id="gui"/>
 

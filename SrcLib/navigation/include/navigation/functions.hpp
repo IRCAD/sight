@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,11 +33,11 @@ namespace navigation
  * @param[out] length length of computed spline
  */
 NAVIGATION_API void computeSpline(
-        const ::fwData::PointList::sptr& pointList,
-        const int pointIndex,
-        const vtkSmartPointer<vtkPoints>& points,
-        const vtkSmartPointer<vtkParametricSpline>& computedSpline,
-        double& length);
+    const ::fwData::PointList::sptr& pointList,
+    const int pointIndex,
+    const vtkSmartPointer<vtkPoints>& points,
+    const vtkSmartPointer<vtkParametricSpline>& computedSpline,
+    double& length);
 
 /**
  * @brief Compute spline when a point is removed: recompute the whole spline
@@ -48,16 +48,16 @@ NAVIGATION_API void computeSpline(
  * @param[out] length length of computed spline
  */
 NAVIGATION_API void updateSpline(
-        const ::fwData::PointList::sptr& pointList,
-        const vtkSmartPointer<vtkPoints>& points,
-        const vtkSmartPointer<vtkParametricSpline>& computedSpline,
-        double& length);
+    const ::fwData::PointList::sptr& pointList,
+    const vtkSmartPointer<vtkPoints>& points,
+    const vtkSmartPointer<vtkParametricSpline>& computedSpline,
+    double& length);
 
 /**
  * @brief Computes view up position relative to given point.
  *
  * @param[in] x point to compute view up
- * @param[out] viewUp view up 
+ * @param[out] viewUp view up
  */
 NAVIGATION_API void computeViewUp(const double x[3], double* viewUp);
 
@@ -78,10 +78,10 @@ NAVIGATION_API void computeSplineLength(const vtkSmartPointer<vtkParametricSplin
  * @param[in] angle angle to initialize the vectors
  */
 NAVIGATION_API void initializeVectors(
-        const ::fwData::PointList::sptr& pointList,
-        const vtkSmartPointer<vtkParametricSpline>& computedSpline,
-        double* yfirst,
-        double angle = 0);
+    const ::fwData::PointList::sptr& pointList,
+    const vtkSmartPointer<vtkParametricSpline>& computedSpline,
+    double* yfirst,
+    double angle = 0);
 
 /**
  * @brief Checks if given points are coplanar.
@@ -104,12 +104,12 @@ NAVIGATION_API bool arePointsCoplanar(const ::fwData::PointList::sptr& pointList
  * @param[in] axis axis (x, y, z)
  */
 NAVIGATION_API void computePolyData(
-        const vtkSmartPointer<vtkParametricSpline>& computedSpline,
-        vtkSmartPointer<vtkPolyData>& polyLine,
-        vtkSmartPointer<vtkPolyData>& splineNormals,
-        double* yprevious,
-        const double& step,
-        std::string axis = "z");
+    const vtkSmartPointer<vtkParametricSpline>& computedSpline,
+    vtkSmartPointer<vtkPolyData>& polyLine,
+    vtkSmartPointer<vtkPolyData>& splineNormals,
+    double* yprevious,
+    const double& step,
+    std::string axis = "z");
 
 }   // namespace navigation
 

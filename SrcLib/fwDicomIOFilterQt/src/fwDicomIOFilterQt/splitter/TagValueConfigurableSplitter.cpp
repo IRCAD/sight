@@ -1,8 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "fwDicomIOFilterQt/splitter/TagValueConfigurableSplitter.hpp"
+#include "fwDicomIOFilterQt/widget/QTagSelectorWidget.hpp"
+
+#include <fwDicomIOFilter/registry/macros.hpp>
 
 #include <QApplication>
 #include <QDialog>
@@ -13,11 +18,6 @@
 
 #include <dcmtk/dcmdata/dcdeftag.h>
 
-#include <fwDicomIOFilter/registry/macros.hpp>
-
-#include "fwDicomIOFilterQt/widget/QTagSelectorWidget.hpp"
-#include "fwDicomIOFilterQt/splitter/TagValueConfigurableSplitter.hpp"
-
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilterQt::splitter::TagValueConfigurableSplitter );
 
 namespace fwDicomIOFilterQt
@@ -25,14 +25,14 @@ namespace fwDicomIOFilterQt
 namespace splitter
 {
 
-const std::string TagValueConfigurableSplitter::s_FILTER_NAME = "Tag value configurable splitter";
+const std::string TagValueConfigurableSplitter::s_FILTER_NAME        = "Tag value configurable splitter";
 const std::string TagValueConfigurableSplitter::s_FILTER_DESCRIPTION =
-        "Split instances using a tag value.";
+    "Split instances using a tag value.";
 
 //-----------------------------------------------------------------------------
 
 TagValueConfigurableSplitter::TagValueConfigurableSplitter(::fwDicomIOFilter::IFilter::Key key) :
-        ::fwDicomIOFilter::splitter::TagValueSplitter(key)
+    ::fwDicomIOFilter::splitter::TagValueSplitter(key)
 {
 }
 
@@ -54,19 +54,19 @@ std::string TagValueConfigurableSplitter::getName() const
 std::string TagValueConfigurableSplitter::getDescription() const
 {
 
-    return TagValueConfigurableSplitter::s_FILTER_DESCRIPTION ;
+    return TagValueConfigurableSplitter::s_FILTER_DESCRIPTION;
 }
 
 //-----------------------------------------------------------------------------
 
-bool TagValueConfigurableSplitter::isConfigurationRequired()
+bool TagValueConfigurableSplitter::isConfigurationRequired() const
 {
     return true;
 }
 
 //-----------------------------------------------------------------------------
 
-bool TagValueConfigurableSplitter::isConfigurableWithGUI()
+bool TagValueConfigurableSplitter::isConfigurableWithGUI() const
 {
     return true;
 }
@@ -83,14 +83,14 @@ void TagValueConfigurableSplitter::configureWithGUI()
 
     // Create tag selectors
     ::fwDicomIOFilterQt::widget::QTagSelectorWidget* tagSelector =
-            new ::fwDicomIOFilterQt::widget::QTagSelectorWidget();
+        new ::fwDicomIOFilterQt::widget::QTagSelectorWidget();
     tagSelector->setTagValue(m_tag);
     mainLayout->addWidget(tagSelector);
 
     // Create buttons
     QDialogButtonBox* buttonBox = new QDialogButtonBox(dialog);
     mainLayout->addWidget(buttonBox);
-    QPushButton* okButton = buttonBox->addButton(QDialogButtonBox::Ok);
+    QPushButton* okButton     = buttonBox->addButton(QDialogButtonBox::Ok);
     QPushButton* cancelButton = buttonBox->addButton(QDialogButtonBox::Cancel);
 
     QObject::connect(okButton, SIGNAL(clicked(void)), dialog, SLOT(accept(void)));

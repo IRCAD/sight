@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,6 @@
 #include <fwData/Exception.hpp>
 
 #include <boost/bind.hpp>
-#include <boost/foreach.hpp>
 #include <boost/pool/pool.hpp>
 
 fwDataRegisterMacro( ::extData::FrameTL );
@@ -22,7 +21,7 @@ namespace extData
 //------------------------------------------------------------------------------
 
 FrameTL::FrameTL ( ::fwData::Object::Key key ) :
-    GenericTL< ::boost::uint8_t >(key),
+    GenericTL< uint8_t >(key),
     m_width(0),
     m_height(0),
     m_numberOfComponents(3),
@@ -53,7 +52,7 @@ void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &ca
     ::fwCore::mt::WriteLock writeLock(m_tlMutex);
     ::fwCore::mt::WriteLock readLock(other->m_tlMutex);
 
-    BOOST_FOREACH(TimelineType::value_type elt, other->m_timeline)
+    for(TimelineType::value_type elt :  other->m_timeline)
     {
         SPTR(::extData::timeline::Buffer) tlObj = this->createBuffer(elt.first);
         tlObj->deepCopy(*elt.second);

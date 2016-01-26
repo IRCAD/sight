@@ -1,10 +1,7 @@
-<plugin id="visuNavigation" class="::visuNavigation::Plugin">
+<plugin id="visuNavigation" class="::visuNavigation::Plugin" version="@DASH_VERSION@" >
 
     <library name="visuNavigation" />
 
-    <requirement id="dataReg"/>
-    <requirement id="servicesReg"/>
-    <requirement id="visu" />
     <requirement id="visuVTK" />
 
     <extension implements="::fwServices::registry::ServiceFactory">

@@ -1,15 +1,17 @@
 
 set( NAME BeginnerTraining02 )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE APP )
 set( DEPENDENCIES  )
-set( REQUIREMENTS servicesReg
-                  dataReg
-                  gui
-                  guiQt
-                  io
-                  launcher
-                  appXml
-                  beginnerTraining
-                  )
+set( REQUIREMENTS 
+    servicesReg
+    dataReg
+    gui
+    guiQt
+    io
+    launcher
+    appXml
+    beginnerTraining
+)
 
+bundleParam(appXml PARAM_LIST config PARAM_VALUES BeginnerTraining02Config)

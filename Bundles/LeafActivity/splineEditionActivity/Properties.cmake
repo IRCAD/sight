@@ -2,7 +2,9 @@
 set( NAME splineEditionActivity )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
-set( DEPENDENCIES
+set( DEPENDENCIES )
+
+set( REQUIREMENTS
     gui
     io
     ioData
@@ -22,9 +24,6 @@ set( DEPENDENCIES
     uiReconstructionQt
     uiMeasurement
     uiMeasurementQt
-    )
-
-set( REQUIREMENTS
     2DVisualizationActivity
     3DVisualizationActivity
     media

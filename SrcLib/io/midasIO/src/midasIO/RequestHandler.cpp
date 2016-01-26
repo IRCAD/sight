@@ -1,8 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
-* FW4SPL - Copyright (C) IRCAD, 2009-2013.
-* Distributed under the terms of the GNU Lesser General Public License (LGPL) as
-* published by the Free Software Foundation.
-* ****** END LICENSE BLOCK ****** */
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
 
 #include <fstream>
 
@@ -21,7 +21,7 @@ void RequestHandler::setLicence(const std::string& itemId, const int& licenseId)
     ::fwNetwork::http::ClientQt client;
     ::midasIO::IResponseHandler::sptr h = ::midasIO::responseHandlerFactory::New(m_config->getMidasVersion());
     const std::string& licenseUrl = m_config->getSetLicenseUrl(itemId, licenseId);
-    std::string reply = "";
+    std::string reply             = "";
 
     try
     {
@@ -31,7 +31,7 @@ void RequestHandler::setLicence(const std::string& itemId, const int& licenseId)
     catch(::fwNetwork::exceptions::Base& e)
     {
         SLM_ERROR(
-                "Failed to set licence '" + std::string("" + licenseId) + "' for item '" + itemId + "' : " + e.what());
+            "Failed to set licence '" + std::string("" + licenseId) + "' for item '" + itemId + "' : " + e.what());
     }
 
     if(!h->isSuccess())
@@ -41,7 +41,7 @@ void RequestHandler::setLicence(const std::string& itemId, const int& licenseId)
 }
 
 void RequestHandler::performRequest(
-        const std::string& url, RequestHandler::RequestType reqType, const std::string& postData)
+    const std::string& url, RequestHandler::RequestType reqType, const std::string& postData)
 {
     ::fwNetwork::http::Request::sptr req = ::fwNetwork::http::Request::New(url);
     ::fwNetwork::http::ClientQt client;
@@ -71,7 +71,7 @@ void RequestHandler::performRequest(
     }
 
     const std::size_t start = data.find_first_of("{");
-    const std::size_t end = data.find_last_of("}");
+    const std::size_t end   = data.find_last_of("}");
 
     if(start == std::string::npos || end == std::string::npos)
     {
@@ -93,7 +93,8 @@ RequestHandler::RequestHandler( ::midasIO::IConfiguration::sptr config )
 }
 
 RequestHandler::~RequestHandler()
-{}
+{
+}
 
 SPTR(::midasIO::IResponseHandler) RequestHandler::getCommunityList()
 {
@@ -111,7 +112,7 @@ SPTR(::midasIO::IResponseHandler) RequestHandler::login()
     if(m_handler->isSuccess())
     {
         ::midasIO::IResponseHandler::ObjectType respData = m_handler->getObjectData();
-        ::midasIO::IResponseHandler::ObjectType resp = m_handler->get();
+        ::midasIO::IResponseHandler::ObjectType resp     = m_handler->get();
 
         std::string apiKey = respData["apikey"].get_str();
         m_config->setApiKey(apiKey);
@@ -141,7 +142,7 @@ SPTR(::midasIO::IResponseHandler) RequestHandler::getChildren(const std::string&
 }
 
 SPTR(::midasIO::IResponseHandler) RequestHandler::createFolder(
-        const std::string& name, const std::string& desc, const std::string& parentFolderId)
+    const std::string& name, const std::string& desc, const std::string& parentFolderId)
 {
     const std::string& url = m_config->getCreateFolderUrl(name, desc, parentFolderId);
     this->performRequest(url, POST);
@@ -149,9 +150,9 @@ SPTR(::midasIO::IResponseHandler) RequestHandler::createFolder(
 }
 
 SPTR(::midasIO::IResponseHandler) RequestHandler::uploadFile(
-        const ::boost::filesystem::path& filePath,
-        const std::string& targetDirId,
-        const int& licenseId) throw( ::fwCore::Exception)
+    const ::boost::filesystem::path& filePath,
+    const std::string& targetDirId,
+    const int& licenseId) throw( ::fwCore::Exception)
 {
     SLM_DEBUG("Uploading file '" + filePath.string() + "' to remote directory '" + targetDirId + "'");
     const std::string filename = filePath.filename().string();
@@ -184,7 +185,7 @@ SPTR(::midasIO::IResponseHandler) RequestHandler::uploadFile(
 
             if(name == filename)
             {
-                itemId = obj["item_id"].get_str();
+                itemId     = obj["item_id"].get_str();
                 createItem = false;
                 break;
             }
@@ -201,7 +202,7 @@ SPTR(::midasIO::IResponseHandler) RequestHandler::uploadFile(
         {
             ::midasIO::IResponseHandler::ObjectType dataItem = m_handler->getObjectData();
             SLM_ASSERT("Didn't find 'item_id' attribute in response",
-                        dataItem.find("item_id") != dataItem.end());
+                       dataItem.find("item_id") != dataItem.end());
             itemId = dataItem["item_id"].get_str();
         }
         else
@@ -241,7 +242,7 @@ SPTR(::midasIO::IResponseHandler) RequestHandler::uploadFile(
             is.close();
 
             const std::string& uploadUrl = m_config->getPerformUploadUrl(
-                        data["token"].get_str(), filename, itemId, length);
+                data["token"].get_str(), filename, itemId, length);
 
             SLM_DEBUG("POST url : '" + uploadUrl + "'");
             ::fwNetwork::http::Request::sptr req = ::fwNetwork::http::Request::New(uploadUrl);

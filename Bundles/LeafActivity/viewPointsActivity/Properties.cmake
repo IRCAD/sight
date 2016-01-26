@@ -2,7 +2,9 @@
 set( NAME viewPointsActivity )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
-set( DEPENDENCIES
+set( DEPENDENCIES )
+
+set( REQUIREMENTS
     gui
     io
     ioData
@@ -20,9 +22,6 @@ set( DEPENDENCIES
     uiMeasurement
     uiMeasurementQt
     uiReconstructionQt
-    )
-
-set( REQUIREMENTS
     media
     2DVisualizationActivity
     3DVisualizationActivity

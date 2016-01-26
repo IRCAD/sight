@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,8 +18,12 @@ class Midas326 : public ::midasIO::IResponseHandler
 
 public:
 
-    Midas326(::midasIO::IResponseHandler::Key key) {}
-    ~Midas326() {}
+    Midas326(::midasIO::IResponseHandler::Key key)
+    {
+    }
+    ~Midas326()
+    {
+    }
 
     virtual bool isSuccess() const;
     virtual std::string getErrorMsg() const;
@@ -47,13 +51,13 @@ std::string Midas326::getErrorMsg() const
 
 void Midas326::setErrorMsg(const std::string& errorMsg)
 {
-    m_obj["stat"] = "error";
+    m_obj["stat"]    = "error";
     m_obj["message"] = ::json_spirit::mValue(errorMsg);
 }
 
 ::midasIO::IResponseHandler::ObjectType Midas326::get() const
 {
-    return m_obj; 
+    return m_obj;
 }
 
 ::midasIO::IResponseHandler::ObjectType Midas326::getObjectData() const

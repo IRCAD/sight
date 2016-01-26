@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,6 @@
 
 #include <fwDataIO/reader/MeshReader.hpp>
 
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwTools/UUID.hpp>
@@ -26,7 +25,7 @@
 namespace opSofa
 {
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv , ::opSofa::SofaCoreSrv, ::fwMedData::ModelSeries ) ;
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::opSofa::SofaCoreSrv, ::fwMedData::ModelSeries );
 
 SofaCoreSrv::SofaCoreSrv() throw()
 {
@@ -40,7 +39,8 @@ void SofaCoreSrv::configuring() throw ( ::fwTools::Failed )
 {
     if(m_configuration->findConfigurationElement("addTools"))
     {
-        if (m_configuration->findConfigurationElement("addTools")->getValue() == "yes") {
+        if (m_configuration->findConfigurationElement("addTools")->getValue() == "yes")
+        {
             this->addMesh("./Bundles/opSofa_0-1/mors2.trian", "mors2");
             this->addMesh("./Bundles/opSofa_0-1/cam.trian", "cam");
         }
@@ -108,8 +108,9 @@ void SofaCoreSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTo
     {
         if (m_sofa)
         {
-            ::fwData::Vector::csptr data = ::fwData::Vector::dynamicConstCast(msg->getDataInfo("EDITOR_MESH_SOFA"));
-            ::fwData::String::csptr idMesh = ::fwData::String::dynamicConstCast(data->at(0));
+            ::fwData::Vector::csptr data =
+                ::fwData::Vector::dynamicConstCast(msg->getDataInfo("EDITOR_MESH_SOFA"));
+            ::fwData::String::csptr idMesh    = ::fwData::String::dynamicConstCast(data->at(0));
             ::fwData::Integer::csptr strength = ::fwData::Integer::dynamicConstCast(data->at(1));
             m_sofa->shakeMesh(idMesh->value(), strength->value());
         }
@@ -118,15 +119,16 @@ void SofaCoreSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTo
     {
         if (m_sofa)
         {
-            ::fwData::Vector::csptr data = ::fwData::Vector::dynamicConstCast(msg->getDataInfo("MOVE_MESH_SOFA"));
+            ::fwData::Vector::csptr data   = ::fwData::Vector::dynamicConstCast(msg->getDataInfo("MOVE_MESH_SOFA"));
             ::fwData::String::csptr idMesh = ::fwData::String::dynamicConstCast(data->at(0));
-            ::fwData::Integer::csptr x = ::fwData::Integer::dynamicConstCast(data->at(1));
-            ::fwData::Integer::csptr y = ::fwData::Integer::dynamicConstCast(data->at(2));
-            ::fwData::Integer::csptr z = ::fwData::Integer::dynamicConstCast(data->at(3));
-            ::fwData::Float::csptr rx = ::fwData::Float::dynamicConstCast(data->at(4));
-            ::fwData::Float::csptr ry = ::fwData::Float::dynamicConstCast(data->at(5));
-            ::fwData::Float::csptr rz = ::fwData::Float::dynamicConstCast(data->at(6));
-            m_sofa->moveMesh(idMesh->value(), x->value(), y->value(), z->value(), rx->value(), ry->value(), rz->value());
+            ::fwData::Integer::csptr x     = ::fwData::Integer::dynamicConstCast(data->at(1));
+            ::fwData::Integer::csptr y     = ::fwData::Integer::dynamicConstCast(data->at(2));
+            ::fwData::Integer::csptr z     = ::fwData::Integer::dynamicConstCast(data->at(3));
+            ::fwData::Float::csptr rx      = ::fwData::Float::dynamicConstCast(data->at(4));
+            ::fwData::Float::csptr ry      = ::fwData::Float::dynamicConstCast(data->at(5));
+            ::fwData::Float::csptr rz      = ::fwData::Float::dynamicConstCast(data->at(6));
+            m_sofa->moveMesh(idMesh->value(), x->value(), y->value(), z->value(), rx->value(), ry->value(),
+                             rz->value());
         }
     }
     else if (msg->hasEvent("KINECT_NEW_POSITION_HAND"))
@@ -134,10 +136,11 @@ void SofaCoreSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTo
         if (m_sofa)
         {
             // Get the position x y z of the main and his id
-            ::fwData::Vector::csptr data = ::fwData::Vector::dynamicConstCast(msg->getDataInfo("KINECT_NEW_POSITION_HAND"));
-            ::fwData::Integer::csptr x = ::fwData::Integer::dynamicConstCast(data->at(0));
-            ::fwData::Integer::csptr y = ::fwData::Integer::dynamicConstCast(data->at(1));
-            ::fwData::Integer::csptr z = ::fwData::Integer::dynamicConstCast(data->at(2));
+            ::fwData::Vector::csptr data =
+                ::fwData::Vector::dynamicConstCast(msg->getDataInfo("KINECT_NEW_POSITION_HAND"));
+            ::fwData::Integer::csptr x  = ::fwData::Integer::dynamicConstCast(data->at(0));
+            ::fwData::Integer::csptr y  = ::fwData::Integer::dynamicConstCast(data->at(1));
+            ::fwData::Integer::csptr z  = ::fwData::Integer::dynamicConstCast(data->at(2));
             ::fwData::Integer::csptr id = ::fwData::Integer::dynamicConstCast(data->at(3));
 
             static int idTool1 = 0;

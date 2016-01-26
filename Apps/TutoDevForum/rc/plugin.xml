@@ -1,5 +1,6 @@
-<plugin id="TutoDevForum">
+<plugin id="TutoDevForum" version="@DASH_VERSION@" >
 
+    <requirement id="dataReg" />
     <requirement id="servicesReg" />
 
     <xi:include href="configurations/config-00.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

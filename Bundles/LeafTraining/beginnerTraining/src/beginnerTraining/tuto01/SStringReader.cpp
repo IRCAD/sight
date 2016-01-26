@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -84,11 +84,6 @@ void SStringReader::updating() throw ( ::fwTools::Failed )
     {
         SLM_WARN("Be careful, reader failed because no file location is defined." );
     }
-}
-
-void SStringReader::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
 }
 
 void SStringReader::swapping() throw ( ::fwTools::Failed )

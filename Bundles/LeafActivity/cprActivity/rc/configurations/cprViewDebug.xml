@@ -1,9 +1,9 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>cprViewDebug</id>
-    <type>parameters</type>
     <parameters>
         <param name="GENERIC_UID" />
         <param name="ICON_PATH" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!--  defined by SConfigLauncher -->
         <param name="imageUid" />
         <param name="CurrentViewPointUid"/>
         <param name="splinePointsListUid"/>
@@ -16,7 +16,7 @@
 
 
             <!-- MAIN FRAME -->
-            <service uid="${GENERIC_UID}_viewDebugFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+            <service uid="${GENERIC_UID}_viewDebugFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
                 <window onclose="notify" />
                 <gui>
                     <frame>
@@ -31,7 +31,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_view" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_view" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -45,17 +45,13 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_vr2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+            <service uid="${GENERIC_UID}_vr2" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                 <scene>
                     <vtkObject id="camPosMatrixTransform" class="vtkTransform" />
 
                     <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
 
                     <renderer id="default" background="0.0" />
-
-                    <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                        <config renderer="default" />
-                    </adaptor>
 
                     <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                         <config renderer="default" style="InteractorStyle3DForNegato" />
@@ -84,6 +80,10 @@
                     <adaptor id="PointList" class="::visuVTKAdaptor::LabeledPointList" objectId="selectedPointsKey">
                         <config renderer="default" picker="negatodefault" />
                     </adaptor>
+                    <connect>
+                        <signal>${GENERIC_UID}_sliceListNegatoEditor/selected</signal>
+                        <slot>${GENERIC_UID}_MPRNegato/updateSliceMode</slot>
+                    </connect>
 
                 </scene>
             </service>
@@ -91,10 +91,16 @@
             <item key="imageKey">
                 <object uid="${imageUid}" src="ref" type="::fwData::Image">
 
-                    <service uid="${GENERIC_UID}_sliceListNegatoEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceListEditor2" autoConnect="yes">
-                        <negatoAdaptor uid="${GENERIC_UID}_MPRNegato" slices="3" />
+                    <service uid="${GENERIC_UID}_sliceListNegatoEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSelectionMenuButton" autoConnect="no">
+                        <toolTip>Manage slice visibility</toolTip>
+                        <selected>3</selected>
+                        <items>
+                            <item text="No slice" value="0" />
+                            <item text="One slice" value="1" />
+                            <item text="three slices" value="3" />
+                        </items>
                     </service>
-
+                    
                 </object>
             </item>
 
@@ -121,8 +127,16 @@
             </item>
 
             <connect>
-                <signal>${splinePointsListUid}/objectModified</signal>
-                <slot>${GENERIC_UID}_ComputeCPR3D/receive</slot>
+                <signal>${splinePointsListUid}/modified</signal>
+                <slot>${GENERIC_UID}_ComputeCPR3D/updateSpline</slot>
+            </connect> 
+            <connect>
+                <signal>${splinePointsListUid}/pointAdded</signal>
+                <slot>${GENERIC_UID}_ComputeCPR3D/updateSpline</slot>
+            </connect> 
+            <connect>
+                <signal>${splinePointsListUid}/pointRemoved</signal>
+                <slot>${GENERIC_UID}_ComputeCPR3D/updateSpline</slot>
             </connect> 
 
             <connect>
@@ -139,6 +153,10 @@
                 <signal>${cprEditorUid}/sliderProgressed</signal>
                 <slot>${GENERIC_UID}_ComputeCPR3D/changeAngle</slot>
             </connect> 
+
+            <proxy channel="${CLOSE_CONFIG_CHANNEL}">
+                <signal>${GENERIC_UID}_viewDebugFrame/closed</signal>
+            </proxy>
 
             <start uid="${GENERIC_UID}_viewDebugFrame" />
             <start uid="${GENERIC_UID}_ComputeCPR3D" />

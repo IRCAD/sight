@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,10 @@
 #ifndef __FWDICOMIOFILTER_COMPOSITE_ICOMPOSITE_HPP__
 #define __FWDICOMIOFILTER_COMPOSITE_ICOMPOSITE_HPP__
 
-#include <fwDicomData/DicomSeries.hpp>
-
 #include "fwDicomIOFilter/IFilter.hpp"
 #include "fwDicomIOFilter/config.hpp"
+
+#include <fwDicomData/DicomSeries.hpp>
 
 namespace fwDicomIOFilter
 {
@@ -36,21 +36,25 @@ public:
     FWDICOMIOFILTER_API FilterType getFilterType() const;
 
     /// Override
-    FWDICOMIOFILTER_API DicomSeriesContainerType apply(::fwDicomData::DicomSeries::sptr series) const
-        throw(::fwDicomIOFilter::exceptions::FilterFailure);
+    FWDICOMIOFILTER_API DicomSeriesContainerType apply(
+        const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
+    throw(::fwDicomIOFilter::exceptions::FilterFailure);
 
     /**
      * @brief Apply every filters without throwing any exceptions.
      * If an exception is thrown, it is ignored and the next filter is applied.
      * @return Returns one or more Dicom Instance Group
      */
-    FWDICOMIOFILTER_API DicomSeriesContainerType forcedApply(::fwDicomData::DicomSeries::sptr series) const;
+    FWDICOMIOFILTER_API DicomSeriesContainerType forcedApply(
+        const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const;
 
     /// Add a filter to the composite
-    FWDICOMIOFILTER_API void addChild(::fwDicomIOFilter::IFilter::sptr filter);
+    FWDICOMIOFILTER_API void addChild(
+        const ::fwDicomIOFilter::IFilter::sptr& filter);
 
     /// Remove a filter from the composite
-    FWDICOMIOFILTER_API void removeChild(::fwDicomIOFilter::IFilter::sptr filter);
+    FWDICOMIOFILTER_API void removeChild(
+        const ::fwDicomIOFilter::IFilter::sptr& filter);
 
     /// Return composite container
     FWDICOMIOFILTER_API FilterContainerType &getChildren();

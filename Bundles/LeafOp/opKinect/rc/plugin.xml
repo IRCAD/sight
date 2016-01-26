@@ -1,9 +1,7 @@
-<plugin id="opKinect" class="::opKinect::Plugin">
+<plugin id="opKinect" class="::opKinect::Plugin" version="@DASH_VERSION@" >
 
     <library name="opKinect" />
 
-    <requirement id="dataReg" />
-    <requirement id="servicesReg" />
     <requirement id="io" />
 
     <extension implements="::fwServices::registry::ServiceFactory">

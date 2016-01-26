@@ -1,23 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <dcmtk/config/osconfig.h>
+
+#include "fwDicomIOFilter/composite/CTImageStorageDefaultComposite.hpp"
+#include "fwDicomIOFilter/composite/IComposite.hpp"
+#include "fwDicomIOFilter/custom/DefaultDicomFilter.hpp"
+#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
+#include "fwDicomIOFilter/registry/macros.hpp"
+#include "fwDicomIOFilter/splitter/SOPClassUIDSplitter.hpp"
+
 #include <dcmtk/dcmnet/diutil.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
-
-#include "fwDicomIOFilter/registry/macros.hpp"
-
-#include "fwDicomIOFilter/composite/CTImageStorageDefaultComposite.hpp"
-#include "fwDicomIOFilter/composite/IComposite.hpp"
-#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
-#include "fwDicomIOFilter/splitter/SOPClassUIDSplitter.hpp"
-
-#include "fwDicomIOFilter/custom/DefaultDicomFilter.hpp"
 
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilter::custom::DefaultDicomFilter );
 
@@ -26,7 +25,7 @@ namespace fwDicomIOFilter
 namespace custom
 {
 
-const std::string DefaultDicomFilter::s_FILTER_NAME = "Default DICOM filter";
+const std::string DefaultDicomFilter::s_FILTER_NAME        = "Default DICOM filter";
 const std::string DefaultDicomFilter::s_FILTER_DESCRIPTION = "Default DICOM filter.";
 
 //-----------------------------------------------------------------------------
@@ -58,17 +57,18 @@ std::string DefaultDicomFilter::getDescription() const
 //-----------------------------------------------------------------------------
 
 DefaultDicomFilter::DicomSeriesContainerType DefaultDicomFilter::apply(
-        ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+    const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
+const throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
     DicomSeriesContainerType result;
 
-     //Split series depending on SOPClassUIDs
+    //Split series depending on SOPClassUIDs
     ::fwDicomIOFilter::splitter::SOPClassUIDSplitter::sptr sopFilter =
-            ::fwDicomIOFilter::splitter::SOPClassUIDSplitter::New();
-    DicomSeriesContainerType seriesContainer = sopFilter->apply(series);
+        ::fwDicomIOFilter::splitter::SOPClassUIDSplitter::New();
+    DicomSeriesContainerType seriesContainer = sopFilter->apply(series, logger);
 
     // Apply default filters depending on SOPClassUIDs
-    BOOST_FOREACH(const ::fwDicomData::DicomSeries::sptr& s, seriesContainer)
+    for(const ::fwDicomData::DicomSeries::sptr& s :  seriesContainer)
     {
         DicomSeriesContainerType tempo;
 
@@ -88,7 +88,7 @@ DefaultDicomFilter::DicomSeriesContainerType DefaultDicomFilter::apply(
 
         // CT Image Storage
         if(sopClassUID == "CTImageStorage" || sopClassUID == "MRImageStorage" ||
-                sopClassUID == "SecondaryCaptureImageStorage")
+           sopClassUID == "SecondaryCaptureImageStorage")
         {
             filter = ::fwDicomIOFilter::composite::CTImageStorageDefaultComposite::New();
         }
@@ -97,15 +97,15 @@ DefaultDicomFilter::DicomSeriesContainerType DefaultDicomFilter::apply(
         if(filter)
         {
             SLM_TRACE("Applying default filter for SOPClassUID: \""+sopClassUID+"\".");
-            tempo = filter->forcedApply(s);
+            tempo = filter->forcedApply(s, logger);
         }
         else
         {
-            SLM_WARN("Can't apply any filter : \""+sopClassUID+"\" SOPClassUID is not supported.");
+            logger->information("Can't apply any filter : \""+sopClassUID+"\" SOPClassUID is not supported.");
             tempo.push_back(s);
         }
 
-        BOOST_FOREACH(::fwDicomData::DicomSeries::sptr filteredSeries, tempo)
+        for(::fwDicomData::DicomSeries::sptr filteredSeries :  tempo)
         {
             result.push_back(filteredSeries);
         }

@@ -1,9 +1,7 @@
-<plugin id="ctrlSplineNavigation" class="::ctrlSplineNavigation::Plugin">
+<plugin id="ctrlSplineNavigation" class="::ctrlSplineNavigation::Plugin" version="@DASH_VERSION@" >
 
     <library name="ctrlSplineNavigation" />
 
-    <requirement id="dataReg"/>
-    <requirement id="servicesReg"/>
     <requirement id="io"/>
 
     <extension implements="::fwServices::registry::ServiceFactory">

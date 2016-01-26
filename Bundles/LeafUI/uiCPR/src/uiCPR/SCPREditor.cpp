@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,9 +23,7 @@
 #include <fwServices/op/Get.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IEditionService.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
-#include <fwServices/ObjectMsg.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
@@ -34,6 +32,8 @@
 
 #include "uiCPR/SCPREditor.hpp"
 
+#include <fwCom/Signal.hxx>
+
 
 fwServicesRegisterMacro(::gui::editor::IEditor, ::uiCPR::SCPREditor, ::fwData::Object);
 
@@ -41,17 +41,17 @@ namespace uiCPR
 {
 
 const double SCPREditor::s_MIN_HEIGHT = 20;
-const int MAX_ANGLE = 180;
+const int MAX_ANGLE                   = 180;
 
-const ::fwCom::Signals::SignalKeyType SCPREditor:: s_HEIGHT_CHANGED_SIG = "heightChanged";
-const ::fwCom::Signals::SignalKeyType SCPREditor:: s_SPACING_CHANGED_SIG = "spacingChanged";
+const ::fwCom::Signals::SignalKeyType SCPREditor:: s_HEIGHT_CHANGED_SIG    = "heightChanged";
+const ::fwCom::Signals::SignalKeyType SCPREditor:: s_SPACING_CHANGED_SIG   = "spacingChanged";
 const ::fwCom::Signals::SignalKeyType SCPREditor:: s_SLIDER_PROGRESSED_SIG = "sliderProgressed";
 
 SCPREditor::SCPREditor() throw() : m_spacing(0.5), m_height(50), m_angle(0)
 {
     // Init
-    m_sigHeightChanged = HeightChangedSignalType::New();
-    m_sigSpacingChanged = SpacingChangedSignalType::New();
+    m_sigHeightChanged    = HeightChangedSignalType::New();
+    m_sigSpacingChanged   = SpacingChangedSignalType::New();
     m_sigSliderProgressed = SliderProgressedSignalType::New();
 
     // Register
@@ -63,7 +63,8 @@ SCPREditor::SCPREditor() throw() : m_spacing(0.5), m_height(50), m_angle(0)
 //------------------------------------------------------------------------------------------------------
 
 SCPREditor::~SCPREditor() throw()
-{}
+{
+}
 
 //------------------------------------------------------------------------------------------------------
 
@@ -84,14 +85,14 @@ void SCPREditor::starting() throw(::fwTools::Failed)
     ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(imgObj);
     OSLM_ASSERT("Failed to retrieve iamge", image);
 
-    m_spacing = ::cpr::getImageMinSpacing(image);
+    m_spacing    = ::cpr::getImageMinSpacing(image);
     m_minSpacing = m_spacing;
     m_maxSpacing = ::cpr::getImageMaxSpacing(image) * 2;
 
     m_maxHeight = ::cpr::getImageMaxSize(image) / 2.0;
 
     m_heightSpinBox = new QDoubleSpinBox();
-    m_heightSpinBox->setRange(s_MIN_HEIGHT , m_maxHeight);
+    m_heightSpinBox->setRange(s_MIN_HEIGHT, m_maxHeight);
     m_heightSpinBox->setSingleStep(1);
     m_heightSpinBox->setValue(50);
 
@@ -164,15 +165,9 @@ void SCPREditor::configuring() throw(fwTools::Failed)
 void SCPREditor::updating() throw(::fwTools::Failed)
 {
     // Send the signals to update the CPR mesh when the view debug is launched
-    fwServicesNotifyMacro(this->getLightID(), m_sigSpacingChanged, (m_spacing));
-    fwServicesNotifyMacro(this->getLightID(), m_sigHeightChanged, (m_height));
-    fwServicesNotifyMacro(this->getLightID(), m_sigSliderProgressed, (m_angle));
-}
-
-//------------------------------------------------------------------------------------------------------
-
-void SCPREditor::receiving(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
-{
+    m_sigSpacingChanged->asyncEmit(m_spacing);
+    m_sigHeightChanged->asyncEmit(m_height);
+    m_sigSliderProgressed->asyncEmit(m_angle);
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -183,7 +178,7 @@ void SCPREditor::onChangeSliderValue(int newSliderValue)
     std::stringstream ss;
     ss << " " << newSliderValue << " / " << MAX_ANGLE << " ";
     m_angleText->setText(QString::fromStdString(ss.str()));
-    fwServicesNotifyMacro( this->getLightID(), m_sigSliderProgressed, (newSliderValue));
+    m_sigSliderProgressed->asyncEmit(newSliderValue);
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -202,7 +197,7 @@ void SCPREditor::onChangeHeightValue(double newHeight)
     }
 
     OSLM_DEBUG("Change Height : " << m_height);
-    fwServicesNotifyMacro(this->getLightID(), m_sigHeightChanged, (m_height));
+    m_sigHeightChanged->asyncEmit(m_height);
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -224,9 +219,11 @@ void SCPREditor::onChangeSpacingValue(double newSpacing)
     m_computeButton->setEnabled(true);
 }
 
+//------------------------------------------------------------------------------------------------------
+
 void SCPREditor::onClickComputeSlotType()
 {
-    fwServicesNotifyMacro(this->getLightID(), m_sigSpacingChanged, (m_spacing));
+    m_sigSpacingChanged->asyncEmit(m_spacing);
     m_computeButton->setEnabled(false);
 }
 

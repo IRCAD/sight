@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,11 @@
 #ifndef __EXTDATA_GENERICTL_HXX__
 #define __EXTDATA_GENERICTL_HXX__
 
-#include <boost/make_shared.hpp>
 #include <boost/pool/pool.hpp>
 
 #include <fwData/Exception.hpp>
+
+#include <functional>
 
 namespace extData
 {
@@ -48,7 +49,7 @@ void GenericTL<BUFFER_TYPE>::cachedDeepCopy(const Object::csptr& _source, DeepCo
     ::fwCore::mt::WriteLock writeLock(m_tlMutex);
     ::fwCore::mt::WriteLock readLock(other->m_tlMutex);
 
-    BOOST_FOREACH(TimelineType::value_type elt, other->m_timeline)
+    for(TimelineType::value_type elt : other->m_timeline)
     {
         SPTR(BufferType) tlObj = this->createBuffer(elt.first);
         tlObj->deepCopy(*elt.second);
@@ -64,7 +65,7 @@ GenericTL<BUFFER_TYPE>::getClosestBuffer( ::fwCore::HiResClock::HiResClockType t
                                           DirectionType direction) const
 {
     CSPTR(::extData::timeline::Object) buffer = this->getClosestObject(timestamp, direction);
-    return ::boost::dynamic_pointer_cast< const BufferType >(buffer);
+    return std::dynamic_pointer_cast< const BufferType >(buffer);
 }
 
 //------------------------------------------------------------------------------
@@ -74,7 +75,7 @@ CSPTR(typename GenericTL<BUFFER_TYPE>::BufferType)
 GenericTL<BUFFER_TYPE>::getBuffer(::fwCore::HiResClock::HiResClockType timestamp) const
 {
     CSPTR(::extData::timeline::Object) buffer = this->getObject(timestamp);
-    return ::boost::dynamic_pointer_cast< const BufferType >(buffer);
+    return std::dynamic_pointer_cast< const BufferType >(buffer);
 }
 
 //------------------------------------------------------------------------------
@@ -101,7 +102,7 @@ template < class BUFFER_TYPE >
 SPTR(typename GenericTL<BUFFER_TYPE>::BufferType)
 GenericTL<BUFFER_TYPE>::createBuffer(::fwCore::HiResClock::HiResClockType timestamp)
 {
-    SPTR(BufferType) obj = ::boost::make_shared< BufferType >(
+    SPTR(BufferType) obj = std::make_shared< BufferType >(
         m_maxElementNum, timestamp,
         (::extData::timeline::Buffer::BufferDataType) m_pool->malloc(),
         m_pool->get_requested_size(),
@@ -115,7 +116,7 @@ GenericTL<BUFFER_TYPE>::createBuffer(::fwCore::HiResClock::HiResClockType timest
 template < class BUFFER_TYPE >
 bool GenericTL<BUFFER_TYPE>::isObjectValid(const CSPTR(::extData::timeline::Object) &obj) const
 {
-    CSPTR(BufferType) srcObj = ::boost::dynamic_pointer_cast< const BufferType >(obj);
+    CSPTR(BufferType) srcObj = std::dynamic_pointer_cast< const BufferType >(obj);
     return srcObj != NULL;
 }
 

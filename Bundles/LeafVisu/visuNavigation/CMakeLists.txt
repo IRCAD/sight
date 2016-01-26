@@ -1,16 +1,31 @@
 fwLoadProperties()
 
-
-
-add_definitions("-DQT_NO_KEYWORDS")
-
+fwUseForwardInclude(
+    fwCom
+    fwCore
+    fwData
+    fwServices
+    fwRuntime
+    fwRenderVTK
+    fwTools
+    fwComEd
+    navigation
+)
 
 find_package(Boost REQUIRED)
-find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
-include(${QT_USE_FILE})
+fwForwardInclude(${Boost_INCLUDE_DIRS})
 
-
-fwForwardInclude(${Boost_INCLUDE_DIRS} ${QT_INCLUDE_DIR})
+find_package(Qt5 COMPONENTS Core Gui REQUIRED)
+fwForwardInclude(${QT_INCLUDE_DIR})
 fwLink(${QT_LIBRARIES})
+
+find_package(VTK REQUIRED)
+fwLink(
+    vtkCommonCore
+    vtkCommonDataModel
+    vtkRenderingCore
+    vtkCommonComputationalGeometry
+    vtkFiltersSources
+    )
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)

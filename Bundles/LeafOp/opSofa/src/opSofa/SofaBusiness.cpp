@@ -1,10 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
-#include <boost/foreach.hpp>
 
 #include <fwComEd/helper/Array.hpp>
 
@@ -50,12 +48,13 @@ SofaBusiness::~SofaBusiness()
 }
 
 
-void SofaBusiness::loadScn(std::string fileScn, ::fwMedData::ModelSeries::sptr ms,  ::fwServices::IService::sptr service)
+void SofaBusiness::loadScn(std::string fileScn, ::fwMedData::ModelSeries::sptr ms,
+                           ::fwServices::IService::sptr service)
 {
     // init attributs
     this->timeStepAnimation = 100;
-    meshs = new std::vector<fwData::Mesh::sptr>();
-    springs = new std::map<std::string, StiffSpringForceField3*>();
+    meshs                   = new std::vector<fwData::Mesh::sptr>();
+    springs                 = new std::map<std::string, StiffSpringForceField3*>();
 
     // initialize Sofa
     sofa::component::init();
@@ -79,11 +78,14 @@ void SofaBusiness::loadScn(std::string fileScn, ::fwMedData::ModelSeries::sptr m
     this->fillSpringForceField(groot.get(), springs);
 
     // Add correspond between mesh sofa and fw4spl
-    for (int i=0; i<visuals.size(); ++i) {
+    for (int i = 0; i<visuals.size(); ++i)
+    {
         std::string name = visuals[i]->getName();
-        for (int j=0; j<meshsF4s.size(); ++j) {
+        for (int j = 0; j<meshsF4s.size(); ++j)
+        {
             std::string name2 = meshsF4s[j]->getName();
-            if (name == name2) {
+            if (name == name2)
+            {
                 // Add mesh to vector refresh by vtk
                 meshs->push_back(meshsF4s[j]);
 
@@ -236,7 +238,7 @@ void SofaBusiness::setTimeStepAnimation(unsigned int timeStepAnimation)
 
 
 
- unsigned int SofaBusiness::getTimeStepAnimation()
+unsigned int SofaBusiness::getTimeStepAnimation()
 {
     return timeStepAnimation;
 }
@@ -245,7 +247,8 @@ void SofaBusiness::setTimeStepAnimation(unsigned int timeStepAnimation)
 
 void SofaBusiness::shakeMesh(std::string idMesh, int value)
 {
-    if (springs->count(idMesh)) {
+    if (springs->count(idMesh))
+    {
         StiffSpringForceField3 *spring = (*springs)[idMesh];
 
         spring->clear();
@@ -255,8 +258,10 @@ void SofaBusiness::shakeMesh(std::string idMesh, int value)
 
 void SofaBusiness::moveMesh(std::string idMesh, int x, int y, int z, float rx, float ry, float rz)
 {
-    GNode::SPtr souris = groot;
-    MechanicalObjectRigid3f *mechanical = (MechanicalObjectRigid3f*) (souris->getObject(sofa::core::objectmodel::TClassInfo<MechanicalObjectRigid3f>::get(), idMesh));
+    GNode::SPtr souris                  = groot;
+    MechanicalObjectRigid3f *mechanical =
+        (MechanicalObjectRigid3f*) (souris->getObject(sofa::core::objectmodel::TClassInfo<MechanicalObjectRigid3f>::get(),
+                                                      idMesh));
     sofa::core::objectmodel::Data< MechanicalObjectRigid3f::VecCoord >* data;
     data = mechanical->write(sofa::core::VecCoordId::position());
     MechanicalObjectRigid3f::VecCoord coord = data->getValue();
@@ -271,12 +276,13 @@ void SofaBusiness::moveMesh(std::string idMesh, int x, int y, int z, float rx, f
 void SofaBusiness::fillOglModelVector(GNode *node, std::vector<OglModel*> *model)
 {
     sofa::helper::vector<sofa::core::objectmodel::BaseNode*> gchild = node->getChildren();
-    for (unsigned int i=0; i<gchild.size(); i++)
+    for (unsigned int i = 0; i<gchild.size(); i++)
     {
         GNode *children;
         GNode::dynamicCast(children, node->getChild(gchild[i]->getName()));
         OglModel *visu = (OglModel*) (children->getObject(sofa::core::objectmodel::TClassInfo<OglModel>::get(), ""));
-        if (visu != NULL) {
+        if (visu != NULL)
+        {
             model->push_back(visu);
         }
         this->fillOglModelVector(children, model);
@@ -287,12 +293,17 @@ void SofaBusiness::fillOglModelVector(GNode *node, std::vector<OglModel*> *model
 
 void SofaBusiness::fillSpringForceField(GNode *node, std::map<std::string, StiffSpringForceField3*> *springs)
 {
-   sofa::helper::vector<sofa::core::objectmodel::BaseNode*> gchild = node->getChildren();
-   for (unsigned int i=0; i<gchild.size(); i++) {
+    sofa::helper::vector<sofa::core::objectmodel::BaseNode*> gchild = node->getChildren();
+    for (unsigned int i = 0; i<gchild.size(); i++)
+    {
         GNode *children;
         GNode::dynamicCast(children, node->getChild(gchild[i]->getName()));
-        StiffSpringForceField3 *spring = (StiffSpringForceField3*) (children->getObject(sofa::core::objectmodel::TClassInfo<StiffSpringForceField3>::get(), ""));
-        if (spring != NULL) {
+        StiffSpringForceField3 *spring =
+            (StiffSpringForceField3*) (children->getObject(sofa::core::objectmodel::TClassInfo<StiffSpringForceField3>::
+                                                           get(),
+                                                           ""));
+        if (spring != NULL)
+        {
             std::string name = spring->getName();
             (*springs)[name] = spring;
         }
@@ -304,7 +315,7 @@ void SofaBusiness::fillSpringForceField(GNode *node, std::map<std::string, Stiff
 
 void SofaBusiness::fillMeshVector(::fwMedData::ModelSeries::sptr ms, std::vector<fwData::Mesh::sptr> *meshs)
 {
-    BOOST_FOREACH(::fwData::Reconstruction::sptr rec, ms->getReconstructionDB())
+    for(::fwData::Reconstruction::sptr rec :  ms->getReconstructionDB())
     {
         // Info
         std::string organName = rec->getOrganName();
@@ -325,29 +336,29 @@ void SofaBusiness::translationPointer(OglModel *visual, ::fwData::Mesh::sptr pMe
     ::fwData::Array::sptr pointArray = pMesh->getPointsArray();
     ::fwComEd::helper::Array arrayHelper(pointArray);
     arrayHelper.setBuffer(
-            verticesSofa,
-            false,
-            pointArray->getType(),
-            pointArray->getSize(),
-            pointArray->getNumberOfComponents()
-            );
+        verticesSofa,
+        false,
+        pointArray->getType(),
+        pointArray->getSize(),
+        pointArray->getNumberOfComponents()
+        );
 }
 
 
 
- void SofaBusiness::clearTranslationPointer()
- {
-     // Reset organs position
-     sofa::simulation::tree::getSimulation()->reset(groot.get());
-     thread->refreshVtk();
+void SofaBusiness::clearTranslationPointer()
+{
+    // Reset organs position
+    sofa::simulation::tree::getSimulation()->reset(groot.get());
+    thread->refreshVtk();
 
-     // Travel each Mesh
-     for (int i=0; i<meshs->size(); ++i)
-     {
+    // Travel each Mesh
+    for (int i = 0; i<meshs->size(); ++i)
+    {
         ::fwData::Mesh::sptr pMesh = meshs->at(i);
 
         ::fwData::Array::sptr pointArray;
         pointArray = ::fwData::Object::copy(pMesh->getPointsArray());
         pMesh->setPointsArray(pointArray);
-     }
- }
+    }
+}

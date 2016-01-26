@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,19 +30,20 @@ IFilter::FilterType IComposite::getFilterType() const
 
 //-----------------------------------------------------------------------------
 
-IComposite::DicomSeriesContainerType IComposite::apply(::fwDicomData::DicomSeries::sptr series) const
+IComposite::DicomSeriesContainerType IComposite::apply(
+    const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
 throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
     DicomSeriesContainerType result;
     result.push_back(series);
     // For every filter
-    BOOST_FOREACH(const ::fwDicomIOFilter::IFilter::sptr& filter, m_filterContainer)
+    for(const ::fwDicomIOFilter::IFilter::sptr& filter :  m_filterContainer)
     {
         DicomSeriesContainerType filtered;
         // For every serie
-        BOOST_FOREACH(const ::fwDicomData::DicomSeries::sptr& s, result)
+        for(const ::fwDicomData::DicomSeries::sptr& s :  result)
         {
-            DicomSeriesContainerType tempo = filter->apply(s);
+            DicomSeriesContainerType tempo = filter->apply(s, logger);
             filtered.reserve(filtered.size() + tempo.size());
             std::copy(tempo.begin(), tempo.end(), std::back_inserter(filtered));
         }
@@ -53,20 +54,21 @@ throw(::fwDicomIOFilter::exceptions::FilterFailure)
 
 //-----------------------------------------------------------------------------
 
-IComposite::DicomSeriesContainerType IComposite::forcedApply(::fwDicomData::DicomSeries::sptr series) const
+IComposite::DicomSeriesContainerType IComposite::forcedApply(
+    const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
 {
     DicomSeriesContainerType result;
     result.push_back(series);
     // For every filters
-    BOOST_FOREACH(const ::fwDicomIOFilter::IFilter::sptr& filter, m_filterContainer)
+    for(const ::fwDicomIOFilter::IFilter::sptr& filter :  m_filterContainer)
     {
         DicomSeriesContainerType filtered;
         // For every series
-        BOOST_FOREACH(const ::fwDicomData::DicomSeries::sptr& s, result)
+        for(const ::fwDicomData::DicomSeries::sptr& s :  result)
         {
             try
             {
-                DicomSeriesContainerType tempo = filter->apply(s);
+                DicomSeriesContainerType tempo = filter->apply(s, logger);
                 filtered.reserve(filtered.size() + tempo.size());
                 std::copy(tempo.begin(), tempo.end(), std::back_inserter(filtered));
             }
@@ -83,14 +85,14 @@ IComposite::DicomSeriesContainerType IComposite::forcedApply(::fwDicomData::Dico
 
 //-----------------------------------------------------------------------------
 
-void IComposite::addChild(::fwDicomIOFilter::IFilter::sptr filter)
+void IComposite::addChild(const ::fwDicomIOFilter::IFilter::sptr& filter)
 {
     m_filterContainer.push_back(filter);
 }
 
 //-----------------------------------------------------------------------------
 
-void IComposite::removeChild(::fwDicomIOFilter::IFilter::sptr filter)
+void IComposite::removeChild(const ::fwDicomIOFilter::IFilter::sptr& filter)
 {
     FilterContainerType::iterator it = std::find(m_filterContainer.begin(), m_filterContainer.end(), filter);
     if(it != m_filterContainer.end())

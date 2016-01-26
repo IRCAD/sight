@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _BEGINNERTRAINING_TUTO03_SSTRINGEDITOR_HPP_
-#define _BEGINNERTRAINING_TUTO03_SSTRINGEDITOR_HPP_
+#ifndef __BEGINNERTRAINING_TUTO03_SSTRINGEDITOR_HPP__
+#define __BEGINNERTRAINING_TUTO03_SSTRINGEDITOR_HPP__
 
 // Qt objects
 #include <qtextedit.h>
@@ -20,13 +20,14 @@ namespace beginnerTraining
 namespace tuto03
 {
 
-class BEGINNERTRAINING_CLASS_API SStringEditor : public  QObject, public ::gui::editor::IEditor
+class BEGINNERTRAINING_CLASS_API SStringEditor : public QObject,
+                                                 public ::gui::editor::IEditor
 {
-    Q_OBJECT
+Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SStringEditor)(::gui::editor::IEditor) ) ;
+    fwCoreServiceClassDefinitionsMacro ( (SStringEditor)(::gui::editor::IEditor) );
 
     BEGINNERTRAINING_API SStringEditor();
 
@@ -36,7 +37,7 @@ protected Q_SLOTS:
 
     BEGINNERTRAINING_API void onTextChanged();
 
-protected :
+protected:
 
     /// Overrides
     BEGINNERTRAINING_API virtual void configuring() throw ( ::fwTools::Failed );
@@ -49,9 +50,6 @@ protected :
 
     /// Overrides
     BEGINNERTRAINING_API virtual void updating() throw ( ::fwTools::Failed );
-
-    /// Overrides
-    BEGINNERTRAINING_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed );
 
     /// Overrides
     BEGINNERTRAINING_API virtual void swapping() throw ( ::fwTools::Failed );
@@ -68,5 +66,5 @@ protected :
 } // namespace tuto03
 } // namespace beginnerTraining
 
-#endif /*_BEGINNERTRAINING_TUTO03_SSTRINGEDITOR_HPP_*/
+#endif /*__BEGINNERTRAINING_TUTO03_SSTRINGEDITOR_HPP__*/
 

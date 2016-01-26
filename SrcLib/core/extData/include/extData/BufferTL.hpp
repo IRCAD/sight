@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -65,6 +65,15 @@ public:
     /// Push a buffer to the timeline
     EXTDATA_API virtual void pushObject(const SPTR(::extData::timeline::Object) &obj);
 
+    /// Remove a buffer to the timeline
+    EXTDATA_API virtual SPTR(::extData::timeline::Object) popObject(TimestampType timestamp);
+
+    /// Change a buffer timestamp to the timeline
+    EXTDATA_API virtual void modifyTime(TimestampType timestamp, TimestampType newTimestamp);
+
+    /// Change a buffer object to the specified timestamp
+    EXTDATA_API virtual void setObject(TimestampType timestamp, const SPTR(::extData::timeline::Object) &obj);
+
     /// Return the last object in the timeline
     EXTDATA_API CSPTR(::extData::timeline::Object) getNewerObject() const;
 
@@ -72,7 +81,10 @@ public:
     EXTDATA_API ::fwCore::HiResClock::HiResClockType getNewerTimestamp() const;
 
     /// Change the maximum size of the timeline
-    void setMaximumSize(size_t maximumSize) { m_maximumSize = maximumSize; }
+    void setMaximumSize(size_t maximumSize)
+    {
+        m_maximumSize = maximumSize;
+    }
 
     /// Default Timeline Size
     EXTDATA_API static const size_t s_DEFAULT_TIMELINE_MAX_SIZE;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -59,7 +59,7 @@ void RawBufferTLTest::pushTest()
 
     CSPTR(::extData::timeline::Object) dataPushed1Bis = timeline->getClosestObject(time1 + 1.5);
     CSPTR(::extData::timeline::RawBuffer) buff        =
-        boost::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(dataPushed1Bis);
+        std::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(dataPushed1Bis);
     CPPUNIT_ASSERT(buff);
     CPPUNIT_ASSERT_EQUAL(buff, timeline->getClosestBuffer(time1 + 1.5));
     float* buffData = buff->getBuffer<float>();
@@ -116,6 +116,12 @@ void RawBufferTLTest::getObjectTest()
     obj = timeline->getObject(2);
     CPPUNIT_ASSERT(data2 == obj);
     obj = timeline->getClosestObject(1.8);
+    CPPUNIT_ASSERT(data2 == obj);
+    obj = timeline->getClosestObject(2, ::extData::BufferTL::PAST);
+    CPPUNIT_ASSERT(data2 == obj);
+    obj = timeline->getClosestObject(2, ::extData::BufferTL::FUTURE);
+    CPPUNIT_ASSERT(data2 == obj);
+    obj = timeline->getClosestObject(2, ::extData::BufferTL::BOTH);
     CPPUNIT_ASSERT(data2 == obj);
     obj = timeline->getClosestObject(2.2);
     CPPUNIT_ASSERT(data2 == obj);
@@ -178,6 +184,109 @@ void RawBufferTLTest::getObjectTest()
 
 //------------------------------------------------------------------------------
 
+void RawBufferTLTest::setObjectTest()
+{
+    ::extData::RawBufferTL::sptr timeline = ::extData::RawBufferTL::New();
+    timeline->initPoolSize(3* sizeof(float));
+
+    float values[3] = {1.0f, 5.2f, 7.5f};
+
+    SPTR(::extData::timeline::RawBuffer) data1 = timeline->createBuffer(1);
+    std::copy(values, values + 3, data1->getBuffer<float>());
+    SPTR(::extData::timeline::RawBuffer) data2 = timeline->createBuffer(2);
+    std::copy(values, values + 3, data2->getBuffer<float>());
+    SPTR(::extData::timeline::RawBuffer) data3 = timeline->createBuffer(3);
+    std::copy(values, values + 3, data3->getBuffer<float>());
+    SPTR(::extData::timeline::RawBuffer) data4 = timeline->createBuffer(4);
+    std::copy(values, values + 3, data4->getBuffer<float>());
+
+    timeline->pushObject(data1);
+    timeline->pushObject(data2);
+    timeline->pushObject(data3);
+    timeline->pushObject(data4);
+
+
+    CSPTR(::extData::timeline::Object) obj;
+
+    timeline->setObject(1, data2);
+    timeline->setObject(2, data3);
+    timeline->setObject(4, data3);
+
+    obj = timeline->getObject(1);
+    CPPUNIT_ASSERT(data2 == obj);
+
+    obj = timeline->getClosestObject(2.2);
+    CPPUNIT_ASSERT(data3 == obj);
+
+    obj = timeline->getClosestObject(3.8);
+    CPPUNIT_ASSERT(data3 == obj);
+
+    obj = timeline->getObject(3);
+    CPPUNIT_ASSERT(data3 == obj);
+
+    timeline->setObject(3, data1);
+
+    obj = timeline->getObject(3);
+    CPPUNIT_ASSERT(data1 == obj);
+}
+
+//------------------------------------------------------------------------------
+
+void RawBufferTLTest::modifyTimeTest()
+{
+    ::extData::RawBufferTL::sptr timeline = ::extData::RawBufferTL::New();
+    timeline->initPoolSize(3* sizeof(float));
+
+    float values[3] = {2.0f, 1.2f, 6.5f};
+
+    SPTR(::extData::timeline::RawBuffer) data1 = timeline->createBuffer(1);
+    std::copy(values, values + 3, data1->getBuffer<float>());
+    SPTR(::extData::timeline::RawBuffer) data2 = timeline->createBuffer(2);
+    std::copy(values, values + 3, data2->getBuffer<float>());
+    SPTR(::extData::timeline::RawBuffer) data3 = timeline->createBuffer(3);
+    std::copy(values, values + 3, data3->getBuffer<float>());
+    SPTR(::extData::timeline::RawBuffer) data4 = timeline->createBuffer(4);
+    std::copy(values, values + 3, data4->getBuffer<float>());
+
+    timeline->pushObject(data1);
+    timeline->pushObject(data2);
+    timeline->pushObject(data3);
+    timeline->pushObject(data4);
+
+    CSPTR(::extData::timeline::Object) obj;
+
+    obj = timeline->getObject(1);
+    CPPUNIT_ASSERT(data1 == obj);
+    obj = timeline->getClosestObject(0.1);
+    CPPUNIT_ASSERT(data1 == obj);
+    obj = timeline->getClosestObject(1.1);
+    CPPUNIT_ASSERT(data1 == obj);
+
+    obj = timeline->getObject(2);
+    CPPUNIT_ASSERT(data2 == obj);
+    obj = timeline->getClosestObject(4.1);
+    CPPUNIT_ASSERT(data4 == obj);
+
+    timeline->modifyTime(1, 5);
+    timeline->modifyTime(2, 1);
+    timeline->modifyTime(5, 6);
+    timeline->modifyTime(3, 7);
+
+    obj = timeline->getObject(1);
+    CPPUNIT_ASSERT(data2 == obj);
+
+    obj = timeline->getClosestObject(6.2);
+    CPPUNIT_ASSERT(data1 == obj);
+
+    obj = timeline->getClosestObject(3.1);
+    CPPUNIT_ASSERT(data4 == obj);
+
+    obj = timeline->getObject(7);
+    CPPUNIT_ASSERT(data3 == obj);
+}
+
+//------------------------------------------------------------------------------
+
 void RawBufferTLTest::copyTest()
 {
     ::extData::RawBufferTL::sptr timeline = ::extData::RawBufferTL::New();
@@ -203,7 +312,7 @@ void RawBufferTLTest::copyTest()
     CPPUNIT_ASSERT(deepDataPushed1);
     CPPUNIT_ASSERT(data1 != deepDataPushed1);
     CSPTR(::extData::timeline::RawBuffer) buff1 =
-        ::boost::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(deepDataPushed1);
+        std::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(deepDataPushed1);
     CPPUNIT_ASSERT(buff1);
     CPPUNIT_ASSERT_EQUAL(buff1, deepTimeline->getBuffer(time1));
     float* buffData1 = buff1->getBuffer<float>();
@@ -215,7 +324,7 @@ void RawBufferTLTest::copyTest()
     CPPUNIT_ASSERT(deepDataPushed2);
     CPPUNIT_ASSERT(data2 != deepDataPushed2);
     CSPTR(::extData::timeline::RawBuffer) buff2 =
-        ::boost::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(deepDataPushed2);
+        std::dynamic_pointer_cast< const ::extData::timeline::RawBuffer >(deepDataPushed2);
     CPPUNIT_ASSERT(buff2);
     float* buffData2 = buff2->getBuffer<float>();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(8.0, buffData2[0], 0.00001);

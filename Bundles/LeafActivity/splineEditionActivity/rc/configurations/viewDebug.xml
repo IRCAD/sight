@@ -1,8 +1,8 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>viewDebug</id>
-    <type>parameters</type>
     <parameters>
         <param name="GENERIC_UID" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!--  defined by SConfigLauncher -->
         <param name="ICON_PATH" />
         <param name="visuUid" />
         <param name="imageUid" />
@@ -22,7 +22,7 @@
 
 
             <!-- MAIN FRAME -->
-            <service uid="${GENERIC_UID}_viewDebugFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+            <service uid="${GENERIC_UID}_viewDebugFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
                 <window onclose="notify" />
                 <gui>
                     <frame>
@@ -37,17 +37,13 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_vr2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+            <service uid="${GENERIC_UID}_vr2" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                 <scene>
                     <vtkObject id="camPosMatrixTransform" class="vtkTransform" />
 
                     <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
 
                     <renderer id="default" background="0.0" />
-
-                    <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                        <config renderer="default" />
-                    </adaptor>
 
                     <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                         <config renderer="default" style="InteractorStyle3DForNegato" />
@@ -86,6 +82,10 @@
                     </adaptor>
                 </scene>
             </service>
+
+            <proxy channel="${CLOSE_CONFIG_CHANNEL}">
+                <signal>${GENERIC_UID}_viewDebugFrame/closed</signal>
+            </proxy>
 
             <start uid="${GENERIC_UID}_viewDebugFrame" />
 

@@ -1,18 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "fwDicomIOFilter/sorter/TagValueSorter.hpp"
+#include "fwDicomIOFilter/registry/macros.hpp"
+#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/diutil.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
-
-#include "fwDicomIOFilter/registry/macros.hpp"
-#include "fwDicomIOFilter/exceptions/FilterFailure.hpp"
-#include "fwDicomIOFilter/sorter/TagValueSorter.hpp"
 
 fwDicomIOFilterRegisterMacro( ::fwDicomIOFilter::sorter::TagValueSorter );
 
@@ -21,9 +21,9 @@ namespace fwDicomIOFilter
 namespace sorter
 {
 
-const std::string TagValueSorter::s_FILTER_NAME = "Tag value sorter";
+const std::string TagValueSorter::s_FILTER_NAME        = "Tag value sorter";
 const std::string TagValueSorter::s_FILTER_DESCRIPTION =
-        "Sort instances using a tag value.";
+    "Sort instances using a tag value.";
 
 //-----------------------------------------------------------------------------
 
@@ -54,7 +54,7 @@ std::string TagValueSorter::getDescription() const
 
 //-----------------------------------------------------------------------------
 
-bool TagValueSorter::isConfigurationRequired()
+bool TagValueSorter::isConfigurationRequired() const
 {
     return true;
 }
@@ -62,7 +62,8 @@ bool TagValueSorter::isConfigurationRequired()
 //-----------------------------------------------------------------------------
 
 TagValueSorter::DicomSeriesContainerType TagValueSorter::apply(
-        ::fwDicomData::DicomSeries::sptr series) const throw(::fwDicomIOFilter::exceptions::FilterFailure)
+    const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger)
+const throw(::fwDicomIOFilter::exceptions::FilterFailure)
 {
 
     if(m_tag == DCM_UndefinedTagKey)
@@ -73,13 +74,13 @@ TagValueSorter::DicomSeriesContainerType TagValueSorter::apply(
 
     DicomSeriesContainerType result;
 
-    typedef std::map< double, std::string > SortedFileMapType;
+    typedef std::map< unsigned int, std::string > SortedFileMapType;
     SortedFileMapType sortedFiles;
 
     DcmFileFormat fileFormat;
     OFCondition status;
     DcmDataset* dataset;
-    BOOST_FOREACH(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& file, series->getLocalDicomPaths())
+    for(const ::fwDicomData::DicomSeries::DicomPathContainerType::value_type& file :  series->getLocalDicomPaths())
     {
         const std::string& filename = file.second.string();
         status = fileFormat.loadFile(filename.c_str());
@@ -95,19 +96,26 @@ TagValueSorter::DicomSeriesContainerType TagValueSorter::apply(
     if(sortedFiles.size() != series->getLocalDicomPaths().size())
     {
         const std::string msg = "Unable to sort the series using the specified tag. The tag may be missing in "
-                "some instances or several instances may have the same tag value.";
+                                "some instances or several instances may have the same tag value.";
         throw ::fwDicomIOFilter::exceptions::FilterFailure(msg);
     }
 
     ::fwDicomData::DicomSeries::DicomPathContainerType dicomPathContainer;
     series->setLocalDicomPaths(dicomPathContainer);
 
-    BOOST_FOREACH(SortedFileMapType::value_type file, sortedFiles)
+    for(SortedFileMapType::value_type file :  sortedFiles)
     {
         series->addDicomPath(file.first, file.second);
     }
 
     result.push_back(series);
+
+    std::stringstream ss;
+    ss << "The instances have been sorted using the value of tag (" <<
+        std::hex << std::setfill('0') << std::setw(4) << m_tag.getGroup() << "," <<
+        std::hex << std::setfill('0') << std::setw(4) << m_tag.getElement() << ").";
+    logger->information(ss.str());
+
     return result;
 
 }

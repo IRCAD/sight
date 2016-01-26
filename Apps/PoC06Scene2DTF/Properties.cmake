@@ -1,28 +1,29 @@
 
 set( NAME PoC06Scene2DTF)
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE APP )
+set( UNIQUE TRUE)
 set( DEPENDENCIES  )
-set( REQUIREMENTS servicesReg
-                  dataReg
-                  gui
-                  guiQt
-                  io
-                  launcher
-                  uiIO
-                  visuVTK
-                  visuVTKQt
-                  visuVTKAdaptor
-                  visu
-                  ioVTK
-                  ioData
-                  uiImageQt
-                  uiVisuQt
-                  ctrlSelection
-                  ioAtoms
-                  appXml
-                  scene2D
-                  uiTF
-                  )
-                    
+set( REQUIREMENTS
+    servicesReg
+    dataReg
+    gui
+    guiQt
+    io
+    launcher
+    uiIO
+    visuVTK
+    visuVTKQt
+    visuVTKAdaptor
+    ioVTK
+    ioData
+    uiImageQt
+    uiVisuQt
+    ctrlSelection
+    ioAtoms
+    appXml
+    scene2D
+    uiTF
+)
 
+bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoScene2DTFConfig)

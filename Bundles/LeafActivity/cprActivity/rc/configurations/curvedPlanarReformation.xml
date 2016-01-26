@@ -1,6 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>curvedPlanarReformation</id>
-    <type>parameters</type>
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
@@ -16,7 +15,7 @@
 
         <object type="::fwData::Composite">
 
-            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view caption="Negato" align="left" minWidth="350"/>
@@ -36,7 +35,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_view2" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_view2" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -48,7 +47,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_view2Tab" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_view2Tab" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::TabLayoutManager">
                         <view caption="SplineEditor" />
@@ -62,7 +61,7 @@
             </service>
 
 
-            <service uid="${GENERIC_UID}_view_negato1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_view_negato1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -76,7 +75,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_view_negato2" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_view_negato2" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -90,7 +89,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_view_negato3" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_view_negato3" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -106,7 +105,7 @@
 
 
 
-            <service uid="${GENERIC_UID}_SplineEditor" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_SplineEditor" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -118,7 +117,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_view4" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_view4" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -132,7 +131,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Export Activity" icon="Bundles/media_0-1/icons/Export.svg" />
@@ -146,7 +145,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_menu" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+            <service uid="${GENERIC_UID}_menu" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="View Debug" style="check"/>
@@ -190,16 +189,12 @@
                 <object uid="${GENERIC_UID}_VisuComposite" type="::fwData::Composite">
 
                     <!-- Negato1-->
-                    <service uid="${GENERIC_UID}_negato1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_negato1" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
 
                             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
 
                             <renderer id="default" background="0.0" />
-
-                            <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                                <config renderer="default" />
-                            </adaptor>
 
                             <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
@@ -213,28 +208,28 @@
                                 <config renderer="default" picker="negatodefault" text="" />
                             </adaptor>
 
-                            <adaptor id="PickerInteractor" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
+                            <adaptor id="PickerInteractor" uid="${GENERIC_UID}_Picker1" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
 
                             <adaptor id="PointList" class="::visuVTKAdaptor::LabeledPointList" objectId="selectedPoints">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
+                            
+                            <proxy channel="interaction_channel">
+                                <signal>${GENERIC_UID}_Picker1/picked</signal>
+                            </proxy>
 
                         </scene>
                     </service>
 
                     <!-- Negato2 -->
-                    <service uid="${GENERIC_UID}_negato2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_negato2" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
 
                             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
 
                             <renderer id="default" background="0.0" />
-
-                            <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                                <config renderer="default" />
-                            </adaptor>
 
                             <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
@@ -256,29 +251,29 @@
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
 
-                            <adaptor id="Picker" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
+                            <adaptor id="Picker" uid="${GENERIC_UID}_Picker2" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
 
                             <adaptor id="PointList" class="::visuVTKAdaptor::LabeledPointList" objectId="selectedPoints">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
+                            
+                            <proxy channel="interaction_channel">
+                                <signal>${GENERIC_UID}_Picker2/picked</signal>
+                            </proxy>
 
                         </scene>
                     </service>
 
                     <!-- Negato3 -->
 
-                    <service uid="${GENERIC_UID}_negato3" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_negato3" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
 
                             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
 
                             <renderer id="default" background="0.0" />
-
-                            <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                                <config renderer="default" />
-                            </adaptor>
 
                             <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
@@ -300,7 +295,7 @@
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
 
-                            <adaptor id="Picker" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
+                            <adaptor id="Picker" uid="${GENERIC_UID}_Picker3" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
 
@@ -308,10 +303,13 @@
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
 
+                            <proxy channel="interaction_channel">
+                                <signal>${GENERIC_UID}_Picker3/picked</signal>
+                            </proxy>
                         </scene>
                     </service>
 
-                    <service uid="${GENERIC_UID}_CurvedPlanarReformation2D" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_CurvedPlanarReformation2D" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
 
                             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
@@ -404,13 +402,18 @@
             </connect>
 
             <connect>
-                <signal>${GENERIC_UID}_VisuComposite/objectModified</signal>
-                <slot>${GENERIC_UID}_splinePointsEditor/receive</slot>
+                <signal>${SplinePointListUid}/pointAdded</signal>
+                <slot>${GENERIC_UID}_ComputeCPR2D/addPoint</slot>
             </connect>
 
             <connect>
-                <signal>${SplinePointListUid}/objectModified</signal>
-                <slot>${GENERIC_UID}_ComputeCPR2D/receive</slot>
+                <signal>${SplinePointListUid}/pointRemoved</signal>
+                <slot>${GENERIC_UID}_ComputeCPR2D/removePoint</slot>
+            </connect>
+
+            <connect>
+                <signal>${SplinePointListUid}/modified</signal>
+                <slot>${GENERIC_UID}_ComputeCPR2D/updateSpline</slot>
             </connect>
 
             <connect>
@@ -442,6 +445,10 @@
                 <signal>${GENERIC_UID}_splinePointsEditor/indexPointSelected</signal>
                 <slot>${GENERIC_UID}_ComputeCPR2D/selectPoint</slot>
             </connect>
+            
+            <proxy channel="interaction_channel">
+                <slot>${GENERIC_UID}_splinePointsEditor/getInteraction</slot>
+            </proxy>
 
             <!-- START AND STOP SERVICES -->
             <start uid="${GENERIC_UID}_mainView" />

@@ -1,6 +1,5 @@
-﻿<plugin id="PoC07TimeLine" class="::PoC07TimeLine::Plugin">
+﻿<plugin id="PoC07TimeLine" class="::PoC07TimeLine::Plugin" version="@DASH_VERSION@" >
 
-    <requirement id="servicesReg" />
     <library name="PoC07TimeLine" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
@@ -23,7 +22,6 @@
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>PoC07TimeLineConfig</id>
-        <type>parameters</type>
         <config>
 
             <object type="::fwData::Composite">

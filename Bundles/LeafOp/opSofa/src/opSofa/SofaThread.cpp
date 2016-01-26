@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,19 +10,19 @@
 
 #include <fwData/Mesh.hpp>
 
-#include <fwServices/IEditionService.hpp>
 #include <fwTools/UUID.hpp>
 
 #include "opSofa/SofaThread.hpp"
 
 
-SofaThread::SofaThread(SofaBusiness* sofa, std::vector< ::fwData::Mesh::sptr > *meshs, ::fwServices::IService::sptr service)
+SofaThread::SofaThread(SofaBusiness* sofa, std::vector< ::fwData::Mesh::sptr > *meshs,
+                       ::fwServices::IService::sptr service)
 {
     // Update attributs
-    this->sofa = sofa;
-    this->meshs = meshs;
+    this->sofa    = sofa;
+    this->meshs   = meshs;
     this->service = service;
-    this->msg = ::fwComEd::MeshMsg::New();
+    this->msg     = ::fwComEd::MeshMsg::New();
 
     stopRun = true;
     // Create message
@@ -38,7 +38,8 @@ void SofaThread::run()
     QTime time;
 
     unsigned int step = sofa->getTimeStepAnimation();
-    while(!stopRun) {
+    while(!stopRun)
+    {
         time.start();
 
         // Locks the mutex
@@ -58,9 +59,12 @@ void SofaThread::run()
 
         // Put the thread to sleep
         unsigned int sec = (unsigned int)time.elapsed();
-        if (sec < step) {
+        if (sec < step)
+        {
             this->msleep((unsigned long)(step-sec));
-        } else {
+        }
+        else
+        {
             this->msleep(1);
         }
     }
@@ -72,8 +76,17 @@ void SofaThread::refreshVtk()
 
     // Send message of each mesh at vtk to refresh screen
     int size = meshs->size();
-    for (int i=0; i<size; ++i) {
-        ::fwServices::IEditionService::notify(service, meshs->at(i), msg);
+    for (int i = 0; i<size; ++i)
+    {
+        msg->setSource(service);
+        msg->setSubject( meshs->at(i));
+        ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+        sig =
+            meshs->at(i)->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+            sig->asyncEmit( msg);
+        }
     }
 
     // wake thread sofa

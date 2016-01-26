@@ -1,8 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
-* FW4SPL - Copyright (C) IRCAD, 2009-2013.
-* Distributed under the terms of the GNU Lesser General Public License (LGPL) as
-* published by the Free Software Foundation.
-* ****** END LICENSE BLOCK ****** */
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
 
 #include <QVBoxLayout>
 #include <QFormLayout>
@@ -46,12 +46,12 @@ FolderDialog::FolderDialog() : m_folderID(""), m_extraInformation(""), m_separat
     QObject::connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     QObject::connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-    QObject::connect(m_txtFolderID, SIGNAL(textChanged(const QString&)),
-            this, SLOT(onFolderIDChanged(const QString&)));
-    QObject::connect(m_txtExtraInformation, SIGNAL(textChanged(const QString&)),
-            this, SLOT(onExtraInformationChanged(const QString&)));
+    QObject::connect(m_txtFolderID, SIGNAL(textChanged(const QString &)),
+                     this, SLOT(onFolderIDChanged(const QString &)));
+    QObject::connect(m_txtExtraInformation, SIGNAL(textChanged(const QString &)),
+                     this, SLOT(onExtraInformationChanged(const QString &)));
 
-    m_folderID =  m_txtFolderID->text().toStdString();
+    m_folderID = m_txtFolderID->text().toStdString();
 
     this->setTxtMidasFolderName();
 }

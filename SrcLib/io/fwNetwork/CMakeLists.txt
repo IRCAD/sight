@@ -1,13 +1,18 @@
 fwLoadProperties()
-add_definitions("-DQT_NO_KEYWORDS")
-
 
 find_package(Boost REQUIRED)
-find_package(Qt4 COMPONENTS QtCore QtGui QtNetwork REQUIRED)
-include(${QT_USE_FILE})
+fwForwardInclude(${Boost_INCLUDE_DIRS})
 
-
-fwForwardInclude(${Boost_INCLUDE_DIRS} ${QT_INCLUDE_DIR})
-fwLink(${QT_LIBRARIES})
+find_package(Qt5 COMPONENTS Core Gui Network REQUIRED)
+fwForwardInclude(
+    ${Qt5Core_INCLUDE_DIR}
+    ${Qt5Gui_INCLUDE_DIR}
+    ${Qt5NetWork_INCLUDE_DIR}
+)
+fwLink(
+    ${Qt5Core_LIBRARIES}
+    ${Qt5Gui_LIBRARIES}
+    ${Qt5Network_LIBRARIES}
+)
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)

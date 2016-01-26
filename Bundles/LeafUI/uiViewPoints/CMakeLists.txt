@@ -1,15 +1,26 @@
 fwLoadProperties()
-
-
-add_definitions("-DQT_NO_KEYWORDS")
-
+fwUseForwardInclude(
+    fwData
+    fwServices
+    fwComEd
+    fwRuntime
+    fwTools
+    fwGui
+    fwGuiQt
+    fwCom
+    fwCore
+    gui
+)
 
 find_package(Boost REQUIRED)
-find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
-include(${QT_USE_FILE})
+fwForwardInclude(${Boost_INCLUDE_DIRS})
 
-
-fwForwardInclude(${Boost_INCLUDE_DIRS} ${QT_INCLUDE_DIR})
-fwLink(${QT_LIBRARIES})
+find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
+fwLink(
+    ${Qt5Core_LIBRARIES} 
+    ${Qt5Gui_LIBRARIES} 
+    ${Qt5Widgets_LIBRARIES} 
+)
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
+

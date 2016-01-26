@@ -1,12 +1,11 @@
-<profile name="PoC05Kinect" version="0.1" check-single-instance="true"> 
+<profile name="PoC05Kinect" version="0.1" check-single-instance="true">
 
     <activate id="dataReg" version="0-1" />
-    <activate id="servicesReg" version="0-1" /> 
+    <activate id="servicesReg" version="0-1" />
 
     <activate id="gui" version="0-1" />
     <activate id="guiQt" version="0-1" />
     <activate id="io" version="0-1" />
-    <activate id="visu" version="0-1" />
 
     <activate id="ctrlSelection" version="0-1" />
 

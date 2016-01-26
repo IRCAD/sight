@@ -1,13 +1,12 @@
-<plugin id="BeginnerTraining02">
+<plugin id="BeginnerTraining02" version="@DASH_VERSION@">
 
     <extension implements="::fwServices::registry::AppConfig">
         <id>BeginnerTraining02Config</id>
-        <type>parameters</type>
         <config>
 
             <object type="::fwData::String">
 
-                <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::DefaultFrame" autoConnect="no">
+                <service uid="myFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
                     <gui>
                         <frame>
                             <name>BeginnerTraining02 App</name>
@@ -19,7 +18,7 @@
                     </registry>
                 </service>
 
-                <service uid="view" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+                <service uid="view" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                     <gui>
                         <layout type="::fwGui::LineLayoutManager">
                             <orientation value="horizontal" />

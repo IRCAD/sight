@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,7 +23,7 @@ namespace extData
  * @class   FrameTL
  * @brief   This class defines a timeline of images.
  */
-class EXTDATA_CLASS_API FrameTL : public GenericTL< ::boost::uint8_t >
+class EXTDATA_CLASS_API FrameTL : public GenericTL< uint8_t >
 {
 
 public:
@@ -48,16 +48,28 @@ public:
                                   unsigned int maxElementNum = 1);
 
     /// Returns the width of an image in the timeline
-    size_t getWidth() const { return m_width; }
+    size_t getWidth() const
+    {
+        return m_width;
+    }
 
     /// Returns the height of an image in the timeline
-    size_t getHeight() const { return m_height; }
+    size_t getHeight() const
+    {
+        return m_height;
+    }
 
     /// Returns the number of components of an image in the timeline
-    size_t getNumberOfComponents() const { return m_numberOfComponents; }
+    size_t getNumberOfComponents() const
+    {
+        return m_numberOfComponents;
+    }
 
     /// Returns the type of the frame pixel
-    ::fwTools::Type getType() const { return m_type; }
+    ::fwTools::Type getType() const
+    {
+        return m_type;
+    }
 
 private:
 

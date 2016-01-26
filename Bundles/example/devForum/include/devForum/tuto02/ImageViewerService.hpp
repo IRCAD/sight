@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _DEVFORUM_TUTO2_IMAGEVIEWERSERVICE_HPP_
-#define _DEVFORUM_TUTO2_IMAGEVIEWERSERVICE_HPP_
+#ifndef __DEVFORUM_TUTO02_IMAGEVIEWERSERVICE_HPP__
+#define __DEVFORUM_TUTO02_IMAGEVIEWERSERVICE_HPP__
 
 
 // Include vtk tools used to render an image with a negato
@@ -32,19 +32,19 @@ namespace tuto02
 class DEVFORUM_CLASS_API ImageViewerService : public ::devForum::tuto01::ImageViewerService
 {
 
-public :
+public:
 
     // Build some class definition like sptr, etc.
     fwCoreServiceClassDefinitionsMacro ( (ImageViewerService)(::fwRender::IRender) );
 
     /// Constructor, does nothing.
-    DEVFORUM_API ImageViewerService() throw() ;
+    DEVFORUM_API ImageViewerService() throw();
 
     /// Destructor, does nothing.
-    DEVFORUM_API virtual ~ImageViewerService() throw() ;
+    DEVFORUM_API virtual ~ImageViewerService() throw();
 
 
-protected :
+protected:
 
     /// Try to retrieve the guiContainerId defines in the service configuration
     DEVFORUM_API virtual void configuring() throw(::fwTools::Failed);
@@ -63,4 +63,4 @@ protected :
 } // end namespace devForum
 
 
-#endif // _DEVFORUM_TUTO2_IMAGEVIEWERSERVICE_HPP_
+#endif // __DEVFORUM_TUTO02_IMAGEVIEWERSERVICE_HPP__

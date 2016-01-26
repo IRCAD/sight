@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,9 @@ class Float3TL : public GenericTL< float[3] >
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Float3TL)(::extData::TimeLine),(()), ::fwData::factory::New< Float3TL >)
-    Float3TL( ::fwData::Object::Key key ) : GenericTL< float[3] >(key) {}
+    Float3TL( ::fwData::Object::Key key ) : GenericTL< float[3] >(key)
+    {
+    }
 };
 fwDataRegisterMacro( ::extData::Float3TL )
 
@@ -39,7 +41,9 @@ class Float4TL : public GenericTL< float4 >
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (Float4TL)(::extData::TimeLine),(()), ::fwData::factory::New< Float4TL >)
-    Float4TL( ::fwData::Object::Key key ) : GenericTL< float4 >(key) {}
+    Float4TL( ::fwData::Object::Key key ) : GenericTL< float4 >(key)
+    {
+    }
 };
 fwDataRegisterMacro( ::extData::Float4TL )
 
@@ -58,7 +62,9 @@ class TestClassTL : public GenericTL< TestContained >
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (TestClassTL)(::extData::TimeLine),(()),
                                             ::fwData::factory::New< TestClassTL >)
-    TestClassTL( ::fwData::Object::Key key ) : GenericTL< TestContained >(key) {}
+    TestClassTL( ::fwData::Object::Key key ) : GenericTL< TestContained >(key)
+    {
+    }
 };
 fwDataRegisterMacro( ::extData::TestClassTL )
 
@@ -84,13 +90,14 @@ void GenericTLTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void GenericTLTest::pushTest()
+void GenericTLTest::pushPopTest()
 {
     ::extData::Float4TL::sptr timeline = ::extData::Float4TL::New();
     timeline->initPoolSize(3);
 
     ::fwCore::HiResClock::HiResClockType time1 = ::fwCore::HiResClock::getTimeInMilliSec();
     ::fwCore::HiResClock::HiResClockType time2 = time1 + 42;
+    ::fwCore::HiResClock::HiResClockType time3 = time1 + 81;
 
     float4 values1 = {1.0f, 5.2f, 7.5f, 1.f};
     float4 values2 = {4.0f, 5.5f, 1.5f, 2.f};
@@ -112,99 +119,147 @@ void GenericTLTest::pushTest()
 
     // Second element missing
     SPTR(::extData::Float4TL::BufferType) data2 = timeline->createBuffer(time2);
-    data2->setElement(values4, 0);
+    data2->setElement(values3, 0);
+    data2->setElement(values4, 1);
+    data2->setElement(values1, 2);
+
+    SPTR(::extData::Float4TL::BufferType) data3 = timeline->createBuffer(time3);
+    data3->setElement(values4, 0);
 
     // Another way to set element
-    data2->addElement(2);
-    float4* newValues = data2->addElement(2);
+    data3->addElement(2);
+    float4* newValues = data3->addElement(2);
     memcpy(newValues, values6, sizeof(float4));
 
     timeline->pushObject(data1);
     timeline->pushObject(data2);
+    timeline->pushObject(data3);
 
     CPPUNIT_ASSERT(data1->getTimestamp() == time1);
     CPPUNIT_ASSERT(data2->getTimestamp() == time2);
+    CPPUNIT_ASSERT(data3->getTimestamp() == time3);
 
-    ////////////////////////////////////////////////////////////////////////////////
-    // Check first data with all elements set
+    ////////////////////////////////////////////////////////////////////////////
+    /// Check first data with all elements set
+    {
+        CSPTR(::extData::timeline::Object) dataPushed1 = timeline->getObject(time1);
+        CPPUNIT_ASSERT(data1 == dataPushed1);
+        CPPUNIT_ASSERT(dataPushed1->getTimestamp() == time1);
 
-    CSPTR(::extData::timeline::Object) dataPushed1 = timeline->getObject(time1);
-    CPPUNIT_ASSERT(data1 == dataPushed1);
-    CPPUNIT_ASSERT(dataPushed1->getTimestamp() == time1);
+        CSPTR(::extData::timeline::Object) dataPushed2 = timeline->getObject(time2);
+        CPPUNIT_ASSERT(data2 == dataPushed2);
+        CPPUNIT_ASSERT(dataPushed2->getTimestamp() == time2);
 
-    CSPTR(::extData::timeline::Object) dataPushed2 = timeline->getObject(time2);
-    CPPUNIT_ASSERT(data2 == dataPushed2);
-    CPPUNIT_ASSERT(dataPushed2->getTimestamp() == time2);
+        CSPTR(::extData::timeline::Object) dataPushed3 = timeline->getObject(time3);
+        CPPUNIT_ASSERT(data3 == dataPushed3);
+        CPPUNIT_ASSERT(dataPushed3->getTimestamp() == time3);
 
-    CSPTR(::extData::timeline::Object) dataPushed1Bis = timeline->getClosestObject(time1 + 1.5);
-    CSPTR(::extData::Float4TL::BufferType) obj        =
-        boost::dynamic_pointer_cast< const ::extData::Float4TL::BufferType >(dataPushed1Bis);
-    CPPUNIT_ASSERT(obj);
-    CPPUNIT_ASSERT_EQUAL(obj, timeline->getClosestBuffer(time1 + 1.5));
+        CSPTR(::extData::timeline::Object) dataPushed1Bis = timeline->getClosestObject(time1 + 1.5);
+        CSPTR(::extData::Float4TL::BufferType) obj        =
+            std::dynamic_pointer_cast< const ::extData::Float4TL::BufferType >(dataPushed1Bis);
+        CPPUNIT_ASSERT(obj);
+        CPPUNIT_ASSERT_EQUAL(obj, timeline->getClosestBuffer(time1 + 1.5));
 
-    CPPUNIT_ASSERT_EQUAL(3u, obj->getPresentElementNum());
-    CPPUNIT_ASSERT_EQUAL(size_t(16), obj->getElementSize());
-    CPPUNIT_ASSERT_EQUAL(3u, obj->getMaxElementNum());
-    CPPUNIT_ASSERT_EQUAL(true, obj->isPresent(0));
-    CPPUNIT_ASSERT_EQUAL(true, obj->isPresent(1));
-    CPPUNIT_ASSERT_EQUAL(true, obj->isPresent(2));
-    CPPUNIT_ASSERT_EQUAL(::boost::uint64_t(7), obj->getMask());
+        CPPUNIT_ASSERT_EQUAL(3u, obj->getPresentElementNum());
+        CPPUNIT_ASSERT_EQUAL(size_t(16), obj->getElementSize());
+        CPPUNIT_ASSERT_EQUAL(3u, obj->getMaxElementNum());
+        CPPUNIT_ASSERT_EQUAL(true, obj->isPresent(0));
+        CPPUNIT_ASSERT_EQUAL(true, obj->isPresent(1));
+        CPPUNIT_ASSERT_EQUAL(true, obj->isPresent(2));
+        CPPUNIT_ASSERT_EQUAL(uint64_t(7), obj->getMask());
 
-    const float* buffData = obj->getElement(0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, buffData[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.2, buffData[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(7.5, buffData[2], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, buffData[3], 0.00001);
+        const float* buffData = obj->getElement(0);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, buffData[0], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(5.2, buffData[1], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(7.5, buffData[2], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, buffData[3], 0.00001);
 
-    buffData = obj->getElement(1);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, buffData[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.5, buffData[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.5, buffData[2], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, buffData[3], 0.00001);
+        buffData = obj->getElement(1);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(4.0, buffData[0], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(5.5, buffData[1], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1.5, buffData[2], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(2.0, buffData[3], 0.00001);
 
-    buffData = obj->getElement(2);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, buffData[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(3.2, buffData[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(2.5, buffData[2], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, buffData[3], 0.00001);
+        buffData = obj->getElement(2);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, buffData[0], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(3.2, buffData[1], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(2.5, buffData[2], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, buffData[3], 0.00001);
+    }
 
-    ////////////////////////////////////////////////////////////////////////////////
-    // Check second data with one missing element
+    ////////////////////////////////////////////////////////////////////////////
+    /// Check second data with one missing element
+    {
+        CSPTR(::extData::timeline::Object) dataPushed3Bis = timeline->getNewerObject();
+        CPPUNIT_ASSERT(data3 == dataPushed3Bis);
 
-    CSPTR(::extData::timeline::Object) dataPushed2Bis = timeline->getNewerObject();
-    CPPUNIT_ASSERT(data2 == dataPushed2Bis);
+        ::fwCore::HiResClock::HiResClockType time3Pushed = timeline->getNewerTimestamp();
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(time3, time3Pushed, 0.00001);
 
-    ::fwCore::HiResClock::HiResClockType time2Pushed = timeline->getNewerTimestamp();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(time2, time2Pushed, 0.00001);
+        CSPTR(::extData::Float4TL::BufferType) obj =
+            std::dynamic_pointer_cast< const ::extData::Float4TL::BufferType >(dataPushed3Bis);
+        CPPUNIT_ASSERT(obj);
 
-    obj = boost::dynamic_pointer_cast< const ::extData::Float4TL::BufferType >(dataPushed2Bis);
-    CPPUNIT_ASSERT(obj);
+        CPPUNIT_ASSERT_EQUAL(2u, obj->getPresentElementNum());
+        CPPUNIT_ASSERT_EQUAL(size_t(16), obj->getElementSize());
+        CPPUNIT_ASSERT_EQUAL(3u, obj->getMaxElementNum());
+        CPPUNIT_ASSERT_EQUAL(true, obj->isPresent(0));
+        CPPUNIT_ASSERT_EQUAL(false, obj->isPresent(1));
+        CPPUNIT_ASSERT_EQUAL(true, obj->isPresent(2));
+        CPPUNIT_ASSERT_EQUAL(uint64_t(5), obj->getMask());
 
-    CPPUNIT_ASSERT_EQUAL(2u, obj->getPresentElementNum());
-    CPPUNIT_ASSERT_EQUAL(size_t(16), obj->getElementSize());
-    CPPUNIT_ASSERT_EQUAL(3u, obj->getMaxElementNum());
-    CPPUNIT_ASSERT_EQUAL(true, obj->isPresent(0));
-    CPPUNIT_ASSERT_EQUAL(false, obj->isPresent(1));
-    CPPUNIT_ASSERT_EQUAL(true, obj->isPresent(2));
-    CPPUNIT_ASSERT_EQUAL(::boost::uint64_t(5), obj->getMask());
+        const float* buffData = obj->getElement(0);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-1., buffData[0], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1.1, buffData[1], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, buffData[2], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-1., buffData[3], 0.00001);
 
-    buffData = obj->getElement(0);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-1., buffData[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.1, buffData[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, buffData[2], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-1., buffData[3], 0.00001);
+        buffData = obj->getElement(1);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, buffData[0], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, buffData[1], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, buffData[2], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, buffData[3], 0.00001);
 
-    buffData = obj->getElement(1);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, buffData[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, buffData[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, buffData[2], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, buffData[3], 0.00001);
+        buffData = obj->getElement(2);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 2.0, buffData[0], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 2.2, buffData[1], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.9, buffData[2], 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.2, buffData[3], 0.00001);
+    }
 
-    buffData = obj->getElement(2);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 2.0, buffData[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 2.2, buffData[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.9, buffData[2], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.2, buffData[3], 0.00001);
+    ////////////////////////////////////////////////////////////////////////////
+    /// Check pop method
+    {
+        CSPTR(::extData::timeline::Object) dataPushed2Bis = timeline->getClosestObject(time2);
+        CPPUNIT_ASSERT(data2 == dataPushed2Bis);
+
+        CSPTR(::extData::timeline::Object) dataPopped2 = timeline->popObject(time2);
+        CPPUNIT_ASSERT(data2 == dataPopped2);
+
+        CSPTR(::extData::timeline::Object) dataPushed3Bis = timeline->getClosestObject(time2);
+        CPPUNIT_ASSERT(data3 == dataPushed3Bis);
+
+        timeline->pushObject(data2);
+
+        dataPushed2Bis = timeline->getClosestObject(time2);
+        CPPUNIT_ASSERT(data2 == dataPushed2Bis);
+
+        dataPushed2Bis = timeline->getClosestObject(time3);
+        CPPUNIT_ASSERT(data3 == dataPushed3Bis);
+
+        CSPTR(::extData::timeline::Object) dataPopped3 = timeline->popObject(time3);
+        CPPUNIT_ASSERT(data3 == dataPopped3);
+
+        dataPushed2Bis = timeline->getClosestObject(time3);
+        CPPUNIT_ASSERT(data2 == dataPushed2Bis);
+
+        dataPushed2Bis = timeline->getNewerObject();
+        CPPUNIT_ASSERT(data2 == dataPushed2Bis);
+
+        CSPTR(::extData::timeline::Object) dataPushed1Bis = timeline->getClosestObject(time1);
+        CPPUNIT_ASSERT(data1 == dataPushed1Bis);
+    }
+
 
     timeline->clearTimeline();
     CSPTR(::extData::timeline::Object) nullObj = timeline->getNewerObject();
@@ -260,8 +315,8 @@ void GenericTLTest::pushClassTest()
     timeline->pushObject(data1);
     timeline->pushObject(data2);
 
-    ////////////////////////////////////////////////////////////////////////////////
-    // Check first data
+    ////////////////////////////////////////////////////////////////////////////
+    /// Check first data
 
     CSPTR(::extData::TestClassTL::BufferType) dataPushed1 = timeline->getBuffer(time1);
     CPPUNIT_ASSERT(dataPushed1);
@@ -272,7 +327,7 @@ void GenericTLTest::pushClassTest()
     CPPUNIT_ASSERT_EQUAL(false, dataPushed1->isPresent(0));
     CPPUNIT_ASSERT_EQUAL(true, dataPushed1->isPresent(1));
     CPPUNIT_ASSERT_EQUAL(true, dataPushed1->isPresent(2));
-    CPPUNIT_ASSERT_EQUAL(::boost::uint64_t(6), dataPushed1->getMask());
+    CPPUNIT_ASSERT_EQUAL(uint64_t(6), dataPushed1->getMask());
 
     {
         const TestContained& testData = dataPushed1->getElement(1);
@@ -297,8 +352,8 @@ void GenericTLTest::pushClassTest()
         }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////
-    // Check second data
+    ////////////////////////////////////////////////////////////////////////////
+    /// Check second data
 
     CSPTR(::extData::TestClassTL::BufferType) dataPushed2 = timeline->getBuffer(time2);
     CPPUNIT_ASSERT(dataPushed2);
@@ -309,7 +364,7 @@ void GenericTLTest::pushClassTest()
     CPPUNIT_ASSERT_EQUAL(false, dataPushed2->isPresent(0));
     CPPUNIT_ASSERT_EQUAL(false, dataPushed2->isPresent(1));
     CPPUNIT_ASSERT_EQUAL(true, dataPushed2->isPresent(2));
-    CPPUNIT_ASSERT_EQUAL(::boost::uint64_t(4), dataPushed2->getMask());
+    CPPUNIT_ASSERT_EQUAL(uint64_t(4), dataPushed2->getMask());
 
     {
         const TestContained& testData = dataPushed2->getElement(2);
@@ -331,10 +386,12 @@ void GenericTLTest::copyTest()
     ::extData::Float3TL::sptr timeline = ::extData::Float3TL::New();
     timeline->initPoolSize(3);
 
-    ::fwCore::HiResClock::HiResClockType time1 = ::fwCore::HiResClock::getTimeInMilliSec();
-    ::fwCore::HiResClock::HiResClockType time2 = time1 + 42;
-    ::fwCore::HiResClock::HiResClockType time3 = time2 + 52;
-    ::fwCore::HiResClock::HiResClockType time4 = time3 + 52;
+    ::fwCore::HiResClock::HiResClockType time1  = ::fwCore::HiResClock::getTimeInMilliSec();
+    ::fwCore::HiResClock::HiResClockType time2  = time1 + 42;
+    ::fwCore::HiResClock::HiResClockType time2b = time2 + 12;
+    ::fwCore::HiResClock::HiResClockType time3  = time2 + 52;
+    ::fwCore::HiResClock::HiResClockType time4  = time3 + 52;
+    ::fwCore::HiResClock::HiResClockType time4b = time4 + 12;
 
     float values1[3] = {1.0f, 5.2f, 7.5f};
     float values2[3] = {4.0f, 5.5f, 1.5f};
@@ -353,17 +410,34 @@ void GenericTLTest::copyTest()
     data2->setElement(values4, 2);
     CPPUNIT_ASSERT(data2->getTimestamp() == time2);
 
+    SPTR(::extData::Float3TL::BufferType) data2b = timeline->createBuffer(time2b);
+    data2b->setElement(values1, 0);
+    data2b->setElement(values4, 1);
+    CPPUNIT_ASSERT(data2b->getTimestamp() == time2b);
+
     SPTR(::extData::Float3TL::BufferType) data3 = timeline->createBuffer(time3);
     data3->setElement(values5, 1);
     data3->setElement(values6, 2);
     CPPUNIT_ASSERT(data3->getTimestamp() == time3);
 
     SPTR(::extData::Float3TL::BufferType) data4 = timeline->createBuffer(time4);
+    CPPUNIT_ASSERT(data4->getTimestamp() == time4);
+
+    SPTR(::extData::Float3TL::BufferType) data4b = timeline->createBuffer(time4b);
+    data4b->setElement(values5, 0);
+    data4b->setElement(values3, 2);
+    CPPUNIT_ASSERT(data4b->getTimestamp() == time4b);
+
     timeline->pushObject(data1);
     timeline->pushObject(data2);
+    timeline->pushObject(data2b);
     timeline->pushObject(data3);
     timeline->pushObject(data4);
-    CPPUNIT_ASSERT(data4->getTimestamp() == time4);
+    timeline->pushObject(data4b);
+
+    // remove some objects
+    timeline->popObject(time2b);
+    timeline->popObject(time4b);
 
     // deepCopy test
     ::extData::Float3TL::sptr deepTimeline = ::extData::Float3TL::New();
@@ -374,7 +448,7 @@ void GenericTLTest::copyTest()
     CPPUNIT_ASSERT(deepDataPushed1);
     CPPUNIT_ASSERT(data1 != deepDataPushed1);
     CSPTR(::extData::Float3TL::BufferType) obj1 =
-        ::boost::dynamic_pointer_cast< const ::extData::Float3TL::BufferType >(deepDataPushed1);
+        std::dynamic_pointer_cast< const ::extData::Float3TL::BufferType >(deepDataPushed1);
     CPPUNIT_ASSERT(obj1);
     CPPUNIT_ASSERT_EQUAL(obj1, deepTimeline->getBuffer(time1));
 
@@ -385,7 +459,7 @@ void GenericTLTest::copyTest()
     CPPUNIT_ASSERT_EQUAL(true, obj1->isPresent(0));
     CPPUNIT_ASSERT_EQUAL(false, obj1->isPresent(1));
     CPPUNIT_ASSERT_EQUAL(false, obj1->isPresent(2));
-    CPPUNIT_ASSERT_EQUAL(::boost::uint64_t(1), obj1->getMask());
+    CPPUNIT_ASSERT_EQUAL(uint64_t(1), obj1->getMask());
     CPPUNIT_ASSERT(obj1->getTimestamp() == time1);
 
     const float* buffData = obj1->getElement(0);
@@ -412,7 +486,7 @@ void GenericTLTest::copyTest()
     CPPUNIT_ASSERT_EQUAL(true, obj2->isPresent(0));
     CPPUNIT_ASSERT_EQUAL(true, obj2->isPresent(1));
     CPPUNIT_ASSERT_EQUAL(true, obj2->isPresent(2));
-    CPPUNIT_ASSERT_EQUAL(::boost::uint64_t(7), obj2->getMask());
+    CPPUNIT_ASSERT_EQUAL(uint64_t(7), obj2->getMask());
     CPPUNIT_ASSERT(obj2->getTimestamp() == time2);
 
     buffData = obj2->getElement(0);
@@ -439,7 +513,7 @@ void GenericTLTest::copyTest()
     CPPUNIT_ASSERT_EQUAL(false, obj3->isPresent(0));
     CPPUNIT_ASSERT_EQUAL(true, obj3->isPresent(1));
     CPPUNIT_ASSERT_EQUAL(true, obj3->isPresent(2));
-    CPPUNIT_ASSERT_EQUAL(::boost::uint64_t(6), obj3->getMask());
+    CPPUNIT_ASSERT_EQUAL(uint64_t(6), obj3->getMask());
     CPPUNIT_ASSERT(obj3->getTimestamp() == time3);
 
     buffData = obj3->getElement(0);
@@ -466,7 +540,7 @@ void GenericTLTest::copyTest()
     CPPUNIT_ASSERT_EQUAL(false, obj4->isPresent(0));
     CPPUNIT_ASSERT_EQUAL(false, obj4->isPresent(1));
     CPPUNIT_ASSERT_EQUAL(false, obj4->isPresent(2));
-    CPPUNIT_ASSERT_EQUAL(::boost::uint64_t(0), obj4->getMask());
+    CPPUNIT_ASSERT_EQUAL(uint64_t(0), obj4->getMask());
     CPPUNIT_ASSERT(obj4->getTimestamp() == time4);
 
     buffData = obj4->getElement(0);

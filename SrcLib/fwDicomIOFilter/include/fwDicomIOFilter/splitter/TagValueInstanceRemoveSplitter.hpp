@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,12 @@
 #ifndef __FWDICOMIOFILTER_SPLITTER_TAGVALUEINSTANCEREMOVESPLITTER_HPP__
 #define __FWDICOMIOFILTER_SPLITTER_TAGVALUEINSTANCEREMOVESPLITTER_HPP__
 
-#include <fwDicomData/DicomSeries.hpp>
-#include "fwDicomIOFilter/splitter/ISplitter.hpp"
 #include "fwDicomIOFilter/config.hpp"
+#include "fwDicomIOFilter/splitter/ISplitter.hpp"
+
+#include <fwDicomData/DicomSeries.hpp>
+
+#include <dcmtk/dcmdata/dctagkey.h>
 
 namespace fwDicomIOFilter
 {
@@ -25,7 +28,7 @@ class FWDICOMIOFILTER_CLASS_API TagValueInstanceRemoveSplitter : public ISplitte
 {
 public:
     fwCoreClassDefinitionsWithFactoryMacro( (TagValueInstanceRemoveSplitter)(ISplitter),
-            (()), ::fwDicomIOFilter::factory::New< TagValueInstanceRemoveSplitter > );
+                                            (()), ::fwDicomIOFilter::factory::New< TagValueInstanceRemoveSplitter > );
 
     /// Constructor
     FWDICOMIOFILTER_API TagValueInstanceRemoveSplitter(::fwDicomIOFilter::IFilter::Key key);
@@ -34,8 +37,9 @@ public:
     FWDICOMIOFILTER_API virtual ~TagValueInstanceRemoveSplitter();
 
     /// Override
-    FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(::fwDicomData::DicomSeries::sptr series) const
-        throw(::fwDicomIOFilter::exceptions::FilterFailure);
+    FWDICOMIOFILTER_API virtual DicomSeriesContainerType apply(
+        const ::fwDicomData::DicomSeries::sptr& series, const ::fwLog::Logger::sptr& logger) const
+    throw(::fwDicomIOFilter::exceptions::FilterFailure);
 
     /// Return the name of the filter
     FWDICOMIOFILTER_API virtual std::string getName() const;
@@ -44,11 +48,49 @@ public:
     FWDICOMIOFILTER_API virtual std::string getDescription() const;
 
     /// Return true if a configuration is required
-    FWDICOMIOFILTER_API virtual bool isConfigurationRequired();
+    FWDICOMIOFILTER_API virtual bool isConfigurationRequired() const;
 
-    fwGettersSettersDocMacro(Tag, tag, DcmTagKey, Tag used to sort instances);
-    fwGettersSettersDocMacro(TagValue, tagValue, std::string,
-            Tag value used to determine if an instance must be removed);
+    /**
+     * @brief Tag used to sort instances
+     * @{ */
+    const DcmTagKey getTag () const
+    {
+        return m_tag;
+    }
+    DcmTagKey& getRefTag ()
+    {
+        return this->m_tag;
+    }
+    const DcmTagKey &getCRefTag() const
+    {
+        return this->m_tag;
+    }
+    void setTag (const DcmTagKey& _tag)
+    {
+        this->m_tag = _tag;
+    }
+    /**  @} */
+
+    /**
+     * @brief Tag value used to determine if an instance must be removed
+     * @{ */
+    const std::string  getTagValue() const
+    {
+        return m_tagValue;
+    }
+    std::string & getRefTagValue()
+    {
+        return this->m_tagValue;
+    }
+    const std::string &getCRefTagValue() const
+    {
+        return this->m_tagValue;
+    }
+    void setTagValue(const std::string&  _tagValue)
+    {
+        this->m_tagValue = _tagValue;
+    }
+    /**  @} */
 
 protected:
     /// Filter name

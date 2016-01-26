@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,22 +30,23 @@ namespace opKinect
 //-----------------------------------------------------------------------------
 
 // Callback for when the focus is in progress
-void XN_CALLBACK_TYPE SessionProgress(const XnChar* strFocus, const XnPoint3D& ptFocusPoint, XnFloat fProgress, void* UserCxt)
+void XN_CALLBACK_TYPE SessionProgress(const XnChar* strFocus, const XnPoint3D& ptFocusPoint, XnFloat fProgress,
+                                      void* UserCxt)
 {
-    OSLM_TRACE("Session progress (" 
-                        << ptFocusPoint.X << ", " 
-                        << ptFocusPoint.Y << ", " 
-                        << ptFocusPoint.Z << ") - " 
-                        << fProgress << "[" <<strFocus << "]");
+    OSLM_TRACE("Session progress ("
+               << ptFocusPoint.X << ", "
+               << ptFocusPoint.Y << ", "
+               << ptFocusPoint.Z << ") - "
+               << fProgress << "[" <<strFocus << "]");
 }
 
 // callback for session start
 void XN_CALLBACK_TYPE SessionStart(const XnPoint3D& ptFocusPoint, void* UserCxt)
 {
-    OSLM_TRACE("Session started. Please wave (" 
-                        << ptFocusPoint.X << ", " 
-                        << ptFocusPoint.Y << ", " 
-                        << ptFocusPoint.Z << ")");
+    OSLM_TRACE("Session started. Please wave ("
+               << ptFocusPoint.X << ", "
+               << ptFocusPoint.Y << ", "
+               << ptFocusPoint.Z << ")");
 }
 
 // Callback for session end
@@ -62,12 +63,12 @@ void XN_CALLBACK_TYPE OnWaveCB(void* cxt)
 // callback for a new position of any hand
 void XN_CALLBACK_TYPE Kinect::OnPointUpdate(const XnVHandPointContext* pContext, void* cxt)
 {
-     // data
+    // data
     ::fwData::Vector::sptr data = ::fwData::Vector::New();
-    ::fwData::Integer::sptr v1 = ::fwData::Integer::New(pContext->ptPosition.X);
-    ::fwData::Integer::sptr v2 = ::fwData::Integer::New(pContext->ptPosition.Y);
-    ::fwData::Integer::sptr v3 = ::fwData::Integer::New(pContext->ptPosition.Z);
-    ::fwData::Integer::sptr v4 = ::fwData::Integer::New(pContext->nID);
+    ::fwData::Integer::sptr v1  = ::fwData::Integer::New(pContext->ptPosition.X);
+    ::fwData::Integer::sptr v2  = ::fwData::Integer::New(pContext->ptPosition.Y);
+    ::fwData::Integer::sptr v3  = ::fwData::Integer::New(pContext->ptPosition.Z);
+    ::fwData::Integer::sptr v4  = ::fwData::Integer::New(pContext->nID);
 
     std::vector< ::fwData::Integer::sptr > points;
     points.push_back(v1);
@@ -80,10 +81,17 @@ void XN_CALLBACK_TYPE Kinect::OnPointUpdate(const XnVHandPointContext* pContext,
     // Notification
     ::fwServices::ObjectMsg::sptr msg = ::fwServices::ObjectMsg::New();
     msg->addEvent("KINECT_NEW_POSITION_HAND", data);
-    ::fwServices::IEditionService::notify(g_service, g_modelSeries, msg);
+    msg->setSource(g_service);
+    msg->setSubject( g_modelSeries);
+    ::fwData::Object::ObjectModifiedSignalType::sptr sig;
+    sig = g_modelSeries->signal< ::fwData::Object::ObjectModifiedSignalType >(::fwData::Object::s_OBJECT_MODIFIED_SIG);
+    {
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotReceive));
+        sig->asyncEmit( msg);
+    }
 }
 
-void XN_CALLBACK_TYPE Kinect::onPush(XnFloat  fVelocity,  XnFloat  fAngle, void *cxt)
+void XN_CALLBACK_TYPE Kinect::onPush(XnFloat fVelocity,  XnFloat fAngle, void *cxt)
 {
 }
 
@@ -99,7 +107,7 @@ Kinect::Kinect(::fwServices::IService::sptr service, ::fwMedData::ModelSeries::s
 {
     // init variables
     g_modelSeries = ms;
-    g_service = service;
+    g_service     = service;
 }
 
 /**
@@ -121,10 +129,11 @@ void Kinect::run()
     // Create the Session Manager
     XnVSessionGenerator* pSessionGenerator;
     pSessionGenerator = new XnVSessionManager();
-    rc = ((XnVSessionManager*)pSessionGenerator)->Initialize(&context, "Click", "RaiseHand");
+    rc                = ((XnVSessionManager*)pSessionGenerator)->Initialize(&context, "Click", "RaiseHand");
     if (rc != XN_STATUS_OK)
     {
-        QMessageBox::critical(0, "Critical error", "Session Manager couldn't initialize: " + QString(xnGetStatusString(rc)));
+        QMessageBox::critical(0, "Critical error",
+                              "Session Manager couldn't initialize: " + QString(xnGetStatusString(rc)));
         delete pSessionGenerator;
     }
 
@@ -147,7 +156,7 @@ void Kinect::run()
 
 
     // start loop
-    while(!stopRun) 
+    while(!stopRun)
     {
         context.WaitAndUpdateAll();
         ((XnVSessionManager*)pSessionGenerator)->Update(&context);

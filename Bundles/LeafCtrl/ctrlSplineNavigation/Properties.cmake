@@ -3,6 +3,7 @@ set( NAME ctrlSplineNavigation )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
 set( DEPENDENCIES
+    fwCom
     fwData
     fwServices
     fwComEd
@@ -10,4 +11,4 @@ set( DEPENDENCIES
     fwTools
     fwCore
     navigation
-    )
+)

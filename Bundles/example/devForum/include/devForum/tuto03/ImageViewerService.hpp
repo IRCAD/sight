@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2012.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef _DEVFORUM_TUTO3_IMAGEVIEWERSERVICE_HPP_
-#define _DEVFORUM_TUTO3_IMAGEVIEWERSERVICE_HPP_
+#ifndef __DEVFORUM_TUTO03_IMAGEVIEWERSERVICE_HPP__
+#define __DEVFORUM_TUTO03_IMAGEVIEWERSERVICE_HPP__
 
 
 // Include vtk tools used to render an image with a negato
@@ -32,21 +32,19 @@ namespace tuto03
 class DEVFORUM_CLASS_API ImageViewerService : public ::devForum::tuto02::ImageViewerService
 {
 
-public :
+public:
 
     // Build some class definition like sptr, etc.
     fwCoreServiceClassDefinitionsMacro ( (ImageViewerService)(::fwRender::IRender) );
 
     /// Constructor, does nothing.
-    DEVFORUM_API ImageViewerService() throw() ;
+    DEVFORUM_API ImageViewerService() throw();
 
     /// Destructor, does nothing.
-    DEVFORUM_API virtual ~ImageViewerService() throw() ;
+    DEVFORUM_API virtual ~ImageViewerService() throw();
 
-protected :
+protected:
 
-    /// This method is called on msg notification, force updating of vtk render from current image.
-    DEVFORUM_API virtual void receiving( ::fwServices::ObjectMsg::csptr _msg ) throw(::fwTools::Failed);
     DEVFORUM_API virtual void configuring() throw(::fwTools::Failed);
     DEVFORUM_API virtual void stopping() throw(::fwTools::Failed);
 
@@ -57,4 +55,4 @@ protected :
 } // end namespace devForum
 
 
-#endif // _DEVFORUM_TUTO3_IMAGEVIEWERSERVICE_HPP_
+#endif // __DEVFORUM_TUTO03_IMAGEVIEWERSERVICE_HPP__

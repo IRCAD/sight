@@ -1,8 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
-* FW4SPL - Copyright (C) IRCAD, 2009-2013.
-* Distributed under the terms of the GNU Lesser General Public License (LGPL) as
-* published by the Free Software Foundation.
-* ****** END LICENSE BLOCK ****** */
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
 
 #ifndef __MIDASIO_REQUESTHANDLER_HPP__
 #define __MIDASIO_REQUESTHANDLER_HPP__
@@ -36,7 +36,7 @@ public:
     /**
      * @name Constructor/Destructor
      * @{ */
-    MIDASIO_API RequestHandler(SPTR(::midasIO::IConfiguration) config);
+    MIDASIO_API RequestHandler(SPTR(::midasIO::IConfiguration)config);
     MIDASIO_API ~RequestHandler();
     /**  @} */
 
@@ -56,7 +56,7 @@ public:
      * @return a response handler
      */
     MIDASIO_API SPTR(::midasIO::IResponseHandler) createFolder(
-            const std::string& name, const std::string& desc, const std::string& parentFolderId);
+        const std::string& name, const std::string& desc, const std::string& parentFolderId);
 
     /**
      * @brief Gets the list of Midas communities.
@@ -86,9 +86,9 @@ public:
      * @throw ::fwCore::Exception if any exception occurs while processing files
      */
     MIDASIO_API SPTR(::midasIO::IResponseHandler) uploadFile(
-            const ::boost::filesystem::path& filePath,
-            const std::string& targetDirId,
-            const int& licenseId = IConfiguration::PRIVATE_ARR) throw(::fwCore::Exception);
+        const ::boost::filesystem::path& filePath,
+        const std::string& targetDirId,
+        const int& licenseId = IConfiguration::PRIVATE_ARR) throw(::fwCore::Exception);
 
 private:
 

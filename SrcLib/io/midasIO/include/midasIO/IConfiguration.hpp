@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,14 +19,14 @@
 #include "midasIO/config.hpp"
 
 #define __MIDASIO_GET_SET_MACRO(Name, Type) \
-    const Type& get##Name() \
-    {\
-        return m_attr##Name;\
-    }\
-    void set##Name(const Type& value) \
-    {\
-        m_attr##Name = value;\
-    }\
+    const Type &get ## Name() \
+    { \
+        return m_attr ## Name; \
+    } \
+    void set ## Name(const Type &value) \
+    { \
+        m_attr ## Name = value; \
+    } \
 
 
 namespace midasIO
@@ -49,14 +49,14 @@ public:
     /// Defines identifiers for Midas supported licenses.
     MIDASIO_API enum LicenseIDType
     {
-        PUBLIC_PDDL = 0,
-        PUBLIC_ODC_BY = 1,
-        PUBLIC_ODBL = 2,
-        PRIVATE_ARR = 3,
-        PUBLIC_CC_BY_3 = 4,
-        PUBLIC_CC_BY_SA_3 = 5,
-        PUBLIC_CC_BY_ND_3 = 6,
-        PUBLIC_CC_BY_NC_3 = 7,
+        PUBLIC_PDDL          = 0,
+        PUBLIC_ODC_BY        = 1,
+        PUBLIC_ODBL          = 2,
+        PRIVATE_ARR          = 3,
+        PUBLIC_CC_BY_3       = 4,
+        PUBLIC_CC_BY_SA_3    = 5,
+        PUBLIC_CC_BY_ND_3    = 6,
+        PUBLIC_CC_BY_NC_3    = 7,
         PUBLIC_CC_BY_NC_SA_3 = 8,
         PUBLIC_CC_BY_NC_ND_3 = 9
     };
@@ -77,7 +77,7 @@ public:
         Registrar(std::string functorKey)
         {
             ::midasIO::registry::getConfigurationRegistry()->addFactory(
-                    functorKey, &::midasIO::configurationFactory::New<T>);
+                functorKey, &::midasIO::configurationFactory::New<T>);
         }
     };
 
@@ -89,7 +89,9 @@ public:
      * @{ */
     MIDASIO_API IConfiguration();
 
-    MIDASIO_API virtual ~IConfiguration() {}
+    MIDASIO_API virtual ~IConfiguration()
+    {
+    }
     /**  @} */
 
     /// Privacy type.
@@ -154,7 +156,7 @@ public:
      * @return URL to perform this operation
      */
     MIDASIO_API virtual std::string getCreateFolderUrl(
-            const std::string& name, const std::string& description, const std::string& parentFolderId) const = 0;
+        const std::string& name, const std::string& description, const std::string& parentFolderId) const = 0;
 
     /**
      * @brief Returns URL to get children of given folder ID.
@@ -219,7 +221,7 @@ public:
      * @see getUploadTokenUrl()
      */
     MIDASIO_API virtual std::string getPerformUploadUrl(
-            const std::string& token, const std::string& filename, const std::string &itemId, const int& length) const = 0;
+        const std::string& token, const std::string& filename, const std::string &itemId, const int& length) const = 0;
 
     /// Maps privacies to display name.
     MIDASIO_API static const Privacy2NameType s_PRIVACY_NAMES;

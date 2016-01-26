@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2014.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,24 +46,26 @@ namespace midasIO
 
 const ModelSeriesWriter::OrganClass2LayerType ModelSeriesWriter::s_ORGAN_LAYERS
     = ::boost::assign::map_list_of
-            (::fwData::StructureTraits::TOOL, "1")
-            (::fwData::StructureTraits::NO_CONSTRAINT, "1")
-            (::fwData::StructureTraits::LESION, "2")
-            (::fwData::StructureTraits::FUNCTIONAL, "2")
-            (::fwData::StructureTraits::VESSEL, "3")
-            (::fwData::StructureTraits::ORGAN, "4")
-            (::fwData::StructureTraits::ENVIRONMENT, "5");
+          (::fwData::StructureTraits::TOOL, "1")
+          (::fwData::StructureTraits::NO_CONSTRAINT, "1")
+          (::fwData::StructureTraits::LESION, "2")
+          (::fwData::StructureTraits::FUNCTIONAL, "2")
+          (::fwData::StructureTraits::VESSEL, "3")
+          (::fwData::StructureTraits::ORGAN, "4")
+          (::fwData::StructureTraits::ENVIRONMENT, "5");
 
 //------------------------------------------------------------------------------
 
 ModelSeriesWriter::ModelSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key)
-: ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
-{}
+    : ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this)
+{
+}
 
 //------------------------------------------------------------------------------
 
 ModelSeriesWriter::~ModelSeriesWriter()
-{}
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -87,7 +89,7 @@ void ModelSeriesWriter::write()
     int nbSerie = 0;
     xmlDocPtr xmlDoc;
     xmlNodePtr root_node, item_node;
-    xmlDoc = xmlNewDoc(BAD_CAST "1.0");
+    xmlDoc    = xmlNewDoc(BAD_CAST "1.0");
     root_node = xmlNewNode(NULL, BAD_CAST "Items");
     xmlDocSetRootElement(xmlDoc, root_node);
 
@@ -100,12 +102,12 @@ void ModelSeriesWriter::write()
 
     const ::fwData::StructureTraitsDictionary::StructureTypeNameContainer& names = structDico->getStructureTypeNames();
 
-    BOOST_FOREACH( ::fwData::Reconstruction::sptr rec, pModelSeries->getReconstructionDB() )
+    for( ::fwData::Reconstruction::sptr rec :  pModelSeries->getReconstructionDB() )
     {
         nbSerie++;
 
         vtkRenderer *renderer = vtkRenderer::New();
-        vtkActor * actor = this->createActor(rec);
+        vtkActor * actor      = this->createActor(rec);
         renderer->AddActor(actor);
 
         vtkRenderWindow *renderWindow = vtkRenderWindow::New();
@@ -120,10 +122,10 @@ void ModelSeriesWriter::write()
 
         // retrieves reconstruction color
         ::fwData::Material::sptr material = rec->getMaterial();
-        ::fwData::Color::sptr color = material->ambient();
-        double red = color->red();
+        ::fwData::Color::sptr color       = material->diffuse();
+        double red   = color->red();
         double green = color->green();
-        double blue = color->blue();
+        double blue  = color->blue();
 
         if(std::find(names.begin(), names.end(), rec->getStructureType()) != names.end())
         {
@@ -149,7 +151,7 @@ void ModelSeriesWriter::write()
         xmlNewChild(item_node, NULL, BAD_CAST "FileName", BAD_CAST ( fileName + ".obj" ).c_str() );
         xmlNewChild(item_node, NULL, BAD_CAST "Layer", BAD_CAST layer.c_str());
         xmlNewChild(item_node, NULL, BAD_CAST "IsVisible",
-                BAD_CAST ( ::fwTools::getString< bool > (rec->getIsVisible()) ).c_str());
+                    BAD_CAST ( ::fwTools::getString< bool > (rec->getIsVisible()) ).c_str());
         xmlNewChild(item_node, NULL, BAD_CAST "Url", NULL);
 
         actor->Delete();
@@ -168,25 +170,28 @@ vtkActor * ModelSeriesWriter::createActor( ::fwData::Reconstruction::sptr pRecon
 {
     vtkActor* actor = vtkActor::New();
 
-    ::fwData::Mesh::sptr mesh = pReconstruction->getMesh();
+    ::fwData::Mesh::sptr mesh         = pReconstruction->getMesh();
     ::fwData::Material::sptr material = pReconstruction->getMaterial();
 
     vtkSmartPointer< vtkPolyData > polyData = vtkSmartPointer< vtkPolyData >::New();
     ::fwVtkIO::helper::Mesh::toVTKMesh( mesh, polyData);
-    vtkSmartPointer<vtkPolyDataMapper> mapper  = vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetInput(polyData);
+    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+    mapper->SetInputData(polyData);
     actor->SetMapper(mapper);
 
-    ::fwData::Color::sptr color = material->ambient();
     vtkProperty *property = actor->GetProperty();
-    property->SetColor( color->red(), color->green(), color->blue());
+
+    ::fwData::Color::sptr diffuse = material->diffuse();
+    property->SetDiffuseColor(diffuse->red(), diffuse->green(), diffuse->blue());
+    property->SetOpacity( diffuse->alpha() );
+
+    ::fwData::Color::sptr ambient = material->ambient();
+    property->SetAmbientColor(ambient->red(), ambient->green(), ambient->blue());
+
     property->SetSpecularColor(1.,1.,1.);
     property->SetSpecularPower(100.); //Shininess
-    property->SetAmbient(.05);
-    property->SetDiffuse(1.);
-    property->SetSpecular(1.);
+
     property->SetInterpolationToPhong();
-    property->SetOpacity( color->alpha() );
 
     return actor;
 }

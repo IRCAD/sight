@@ -1,6 +1,5 @@
 <extension implements="::fwServices::registry::AppConfig">
     <id>splineEdition</id>
-    <type>parameters</type>
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
@@ -16,7 +15,7 @@
 
         <object type="::fwData::Composite">
 
-            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view caption="LeftView" align="left"/>
@@ -33,7 +32,7 @@
             </service>
 
 
-            <service uid="${GENERIC_UID}_leftView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_leftView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -45,7 +44,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_leftViewTab" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_leftViewTab" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::TabLayoutManager">
                         <view caption="Negatos" />
@@ -58,7 +57,7 @@
                 </registry>
             </service> 
 
-            <service uid="${GENERIC_UID}_view_negatos" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_view_negatos" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -72,7 +71,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_view_negato1" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_view_negato1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -86,7 +85,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_view_negato2" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_view_negato2" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -101,7 +100,7 @@
             </service>
 
 
-            <service uid="${GENERIC_UID}_rightView" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_rightView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -113,7 +112,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_rightViewTab" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_rightViewTab" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::TabLayoutManager">
                         <view caption="SplineEditor" />
@@ -130,7 +129,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_view_negato3" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_view_negato3" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -146,7 +145,7 @@
 
 
 
-            <service uid="${GENERIC_UID}_SplineEditor" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_SplineEditor" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
@@ -160,7 +159,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::DefaultToolBarSrv" autoConnect="no">
+            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="Hide cross" icon="Bundles/media_0-1/icons/HideCross.png" style="radio" />
@@ -172,7 +171,7 @@
                         <menuItem name="Show volume rendering" icon="Bundles/media_0-1/icons/icon-VR.png" style="check" />
                         <menuItem name="Manage organs color" icon="Bundles/media_0-1/icons/ManageOrgan.png" style="check" />
                         <separator />
-                        <menuItem name="Show/hide box cropping" icon="Bundles/media_0-1/icons/icon-box.png" />
+                        <menuItem name="Show/hide box cropping" icon="Bundles/media_0-1/icons/icon-box.png" style="check" />
                         <menuItem name="Reset box cropping" icon="Bundles/media_0-1/icons/icon-box-reset.png" />
                         <separator />
                         <menuItem name="Snapshot VR" icon="Bundles/media_0-1/icons/camera-photo.png" />
@@ -202,7 +201,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_menu" type="::fwGui::IMenuSrv" impl="::gui::aspect::DefaultMenuSrv" autoConnect="no">
+            <service uid="${GENERIC_UID}_menu" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
                 <gui>
                     <layout>
                         <menuItem name="View Debug" style="check"/>
@@ -233,7 +232,7 @@
                 </config>
             </service>
 
-            <service uid="${GENERIC_UID}_TFScene2D" type="::gui::view::IView" impl="::gui::view::DefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_TFScene2D" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" /> 
@@ -267,15 +266,15 @@
             <item key="visuConfig">
                 <object uid="${GENERIC_UID}_VisuComposite" type="::fwData::Composite">
 
-                    <service uid="${GENERIC_UID}_ActionShowVR" impl="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_ActionShowVR" impl="::gui::action::SPushObject" type="::fwGui::IActionSrv" autoConnect="yes">
                         <push src="${GENERIC_UID}_VisuComposite[imageKey]" key="image" />
                     </service>
 
-                    <service uid="${GENERIC_UID}_ActionShowMesh" impl="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_ActionShowMesh" impl="::gui::action::SPushObject" type="::fwGui::IActionSrv" autoConnect="yes">
                         <push src="${ModelSeriesCompositeUid}[OptionalModelSeriesKey]" key="modelSeries" />
                     </service>
 
-                    <service uid="${GENERIC_UID}_ActionShowSliceCursor" impl="::gui::action::PushObjectSrv" type="::fwGui::IActionSrv" autoConnect="no">
+                    <service uid="${GENERIC_UID}_ActionShowSliceCursor" impl="::gui::action::SPushObject" type="::fwGui::IActionSrv" autoConnect="no">
                         <push src="${GENERIC_UID}_VisuComposite[image]" key="imageCursor" />
                     </service>
 
@@ -295,6 +294,7 @@
                                                 <parameter replace="TFSelectionsUid" by="${GENERIC_UID}_TFSelections" />
                                                 <parameter replace="selectedTFKey" by="SelectedTF" />
                                                 <parameter replace="WID_PARENT" by="${GENERIC_UID}_view_negato" />
+                                                <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
                                             </parameters>
                                         </appConfig>
                                     </config>
@@ -313,12 +313,17 @@
                                     <crossType>full</crossType>
                                 </service>
 
-                                <service uid="${GENERIC_UID}_ActionShowHideBoxWidget" type="::fwGui::IActionSrv" impl="::gui::action::ActionNotifyService" autoConnect="no">
-                                    <notify type="::fwServices::ObjectMsg" event="SHOWHIDE_BOX_WIDGET" />
+                                <service uid="${GENERIC_UID}_ActionShowHideBoxWidget" type="::fwGui::IActionSrv" impl="::gui::action::SBooleanSlotCaller" autoConnect="no">
+                                    <slots>
+                                        <slot>${GENERIC_UID}_VolumeScene3DA/activateBoxClipping</slot>
+                                    </slots>
+                                    <state active="true" />
                                 </service>
-
-                                <service uid="${GENERIC_UID}_ActionResetBoxWidget" type="::fwGui::IActionSrv" impl="::gui::action::ActionNotifyService" autoConnect="no">
-                                    <notify type="::fwServices::ObjectMsg" event="RESET_BOX_WIDGET" />
+    
+                                <service uid="${GENERIC_UID}_ActionResetBoxWidget" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
+                                    <slots>
+                                        <slot>${GENERIC_UID}_VolumeScene3DA/resetBoxWidget</slot>
+                                    </slots>
                                 </service>
 
                                 <service uid="${GENERIC_UID}_FieldManager" impl="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
@@ -338,6 +343,12 @@
                                     <binsWidth>5.0</binsWidth>
                                 </service>
 
+                                <proxy channel="crossTypeChannel">
+                                    <signal>${GENERIC_UID}_ActionHideCross/crossTypeModified</signal>
+                                    <signal>${GENERIC_UID}_ActionShowNormalCross/crossTypeModified</signal>
+                                    <signal>${GENERIC_UID}_ActionShowFullCross/crossTypeModified</signal>
+                                </proxy>
+
                             </object>
                         </config>
                     </service>
@@ -347,33 +358,31 @@
                         <config>
 
                             <object id="modelSeries" type="::fwMedData::ModelSeries">
-                                <service uid="${GENERIC_UID}_action_organManager" type="::fwGui::IActionSrv" impl="::gui::action::ConfigActionSrvWithKey" autoConnect="yes">
-                                    <config id="OrganManagerWithSeries" title="Organ manager" />
-                                    <key id="self" pattern="ORGAN_MANAGER_MODELSERIES" />
-                                    <replace pattern="ICON_PATH" val="${ICON_PATH}" />
-                                    <replace pattern="GENERIC_UID" val="${GENERIC_UID}" /> 
+                                <service uid="${GENERIC_UID}_action_organManager" impl="::gui::action::SConfigLauncher" type="::fwGui::IActionSrv" autoConnect="yes">
+                                   <config>
+                                        <appConfig id="OrganManagerWithSeries" >
+                                            <parameters>
+                                                <parameter replace="ORGAN_MANAGER_MODELSERIES" by="self"  />
+                                                <parameter replace="ICON_PATH" by="${ICON_PATH}"  />
+                                                <parameter replace="ModelRepresentationChannel" by="ModelRepresentationChannel"  />
+                                                <parameter replace="ModelDisplayChannel" by="ModelDisplayChannel" />
+                                            </parameters>
+                                        </appConfig>
+                                    </config>
                                 </service>
                             </object>
                         </config>
                     </service>
 
-                    <service uid="${GENERIC_UID}_ActionSnapshotVR" impl="::uiVisu::action::SSnapshot" type="::fwGui::IActionSrv" autoConnect="no">
-                        <snap>
-                            <scene uid="${GENERIC_UID}_camView" />
-                        </snap>
-                    </service>
+                    <service uid="${GENERIC_UID}_ActionSnapshotVR" impl="::uiVisu::action::SSnapshot" type="::fwGui::IActionSrv" autoConnect="no"/>
 
                     <!-- Negato1-->
-                    <service uid="${GENERIC_UID}_negato1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_negato1" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
 
                             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
 
                             <renderer id="default" background="0.0" />
-
-                            <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                                <config renderer="default" />
-                            </adaptor>
 
                             <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
@@ -387,28 +396,28 @@
                                 <config renderer="default" picker="negatodefault" text="" />
                             </adaptor>
 
-                            <adaptor id="PickerInteractor" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
+                            <adaptor id="PickerInteractor" uid="${GENERIC_UID}_Picker1" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
 
                             <adaptor id="PointList" class="::visuVTKAdaptor::PointList" objectId="selectedPoints">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
+                            
+                            <proxy channel="interaction_channel">
+                                <signal>${GENERIC_UID}_Picker1/picked</signal>
+                            </proxy>
 
                         </scene>
                     </service>
 
                     <!-- Negato2 -->
-                    <service uid="${GENERIC_UID}_negato2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_negato2" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
 
                             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
 
                             <renderer id="default" background="0.0" />
-
-                            <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                                <config renderer="default" />
-                            </adaptor>
 
                             <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
@@ -422,29 +431,29 @@
                                 <config renderer="default" picker="negatodefault" text="" />
                             </adaptor>
 
-                            <adaptor id="Picker" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
+                            <adaptor id="Picker" uid="${GENERIC_UID}_Picker2" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
 
                             <adaptor id="PointList" class="::visuVTKAdaptor::PointList" objectId="selectedPoints">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
+                            
+                            <proxy channel="interaction_channel">
+                                <signal>${GENERIC_UID}_Picker2/picked</signal>
+                            </proxy>
 
                         </scene>
                     </service>
 
                     <!-- Negato3 -->
 
-                    <service uid="${GENERIC_UID}_negato3" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_negato3" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
 
                             <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
 
                             <renderer id="default" background="0.0" />
-
-                            <adaptor id="snapshot" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                                <config renderer="default" />
-                            </adaptor>
 
                             <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                                 <config renderer="default" style="InteractorStyle2DForNegato" />
@@ -458,26 +467,30 @@
                                 <config renderer="default" picker="negatodefault" text="" />
                             </adaptor>
 
-                            <adaptor id="Picker" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
+                            <adaptor id="Picker" uid="${GENERIC_UID}_Picker3" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
 
                             <adaptor id="PointList" class="::visuVTKAdaptor::PointList" objectId="selectedPoints">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
+                            
+                            <proxy channel="interaction_channel">
+                                <signal>${GENERIC_UID}_Picker3/picked</signal>
+                            </proxy>
 
                         </scene>
                     </service>
 
                     <!-- Generic Scene VR -->
-                    <service uid="${GENERIC_UID}_camView" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_camView" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                         <scene>
 
                             <picker id="negato1default" vtkclass="fwVtkCellPicker" />
 
                             <renderer id="default" background="0.0" />
 
-                            <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                            <adaptor id="snapshot1" uid="${GENERIC_UID}_snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
                                 <config renderer="default" />
                             </adaptor>
 
@@ -489,17 +502,30 @@
                                 <config renderer="default" />
                             </adaptor>
 
-                            <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                            <adaptor id="modelSeriesAdaptor" uid="${GENERIC_UID}_modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
                                 <config renderer="default" picker="negato1default" autoresetcamera="no" />
                             </adaptor>
 
-                            <adaptor id="VolumeScene3DA" class="::visuVTKVRAdaptor::Volume" objectId="image">
+                            <adaptor id="VolumeScene3DA" uid="${GENERIC_UID}_VolumeScene3DA" class="::visuVTKVRAdaptor::Volume" objectId="image">
                                 <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="${GENERIC_UID}_TFSelections" />
                             </adaptor>
 
                             <adaptor id="CamPosMatrix" class="::visuVTKAdaptor::Camera2" objectId="CurrentViewPoint">
                                 <config renderer="default" picker="" />
                             </adaptor>
+                            
+                            <proxy channel="ModelRepresentationChannel" waitForKey="modelSeries">
+                                <slot>${GENERIC_UID}_modelSeriesAdaptorUid/updateNormalMode</slot>
+                            </proxy>
+                                                                                    
+                            <proxy channel="ModelDisplayChannel" waitForKey="modelSeries">
+                                <slot>${GENERIC_UID}_modelSeriesAdaptorUid/showReconstructions</slot>
+                            </proxy>
+                            
+                            <connect>
+                                <signal>${GENERIC_UID}_ActionSnapshotVR/snapped</signal>
+                                <slot>${GENERIC_UID}_snapshotUID/snap</slot>
+                            </connect>
 
                         </scene>
                     </service>
@@ -621,8 +647,9 @@
 
                     </service>
 
-                    <service uid="${GENERIC_UID}_translateUpdater" impl="::ctrlSelection::updater::TranslateUpdater" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                        <translate fromUID="${GENERIC_UID}_VRParam" fromKey="Lights" toKey="VisuLights" />
+                    <service uid="${GENERIC_UID}_translateUpdater" impl="::ctrlSelection::updater::STranslate" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                        <source>${GENERIC_UID}_VRParam</source>
+                        <translate fromKey="Lights" toKey="VisuLights" />
                     </service>
 
                     <service uid="${GENERIC_UID}_navigationEditor" type="::gui::editor::IEditor" impl="::uiNavigation::SNavigationEditor" autoConnect="yes">
@@ -641,24 +668,12 @@
                                 <sliceIndex>axial</sliceIndex>
                             </service> 
 
-                            <service uid="${GENERIC_UID}_distanceNegatoEditor1" type="::gui::editor::IEditor" impl="::uiMeasurement::editor::Distance" autoConnect="no">
-                                <placeInScene uid="${GENERIC_UID}_negato1" />
-                            </service>
-
                             <service uid="${GENERIC_UID}_slider_negato2" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
                                 <sliceIndex>frontal</sliceIndex>
                             </service>
 
-                            <service uid="${GENERIC_UID}_distanceNegatoEditor2" type="::gui::editor::IEditor" impl="::uiMeasurement::editor::Distance" autoConnect="no">
-                                <placeInScene uid="${GENERIC_UID}_negato2" />
-                            </service>
-
                             <service uid="${GENERIC_UID}_slider_negato3" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
                                 <sliceIndex>sagittal</sliceIndex>
-                            </service>
-
-                            <service uid="${GENERIC_UID}_distanceNegatoEditor3" type="::gui::editor::IEditor" impl="::uiMeasurement::editor::Distance" autoConnect="no">
-                                <placeInScene uid="${GENERIC_UID}_negato3" />
                             </service>
 
                             <service uid="${GENERIC_UID}_updateNegato" type="::fwServices::IController" impl="::ctrlPointSelection::SUpdateNegato" autoConnect="yes"/>
@@ -705,10 +720,10 @@
                     <item key="VRParam">
                         <object uid="${GENERIC_UID}_VRParam" type="::fwData::Composite">
 
-                            <service uid="${GENERIC_UID}_action_exportVRParam" type="::fwGui::IActionSrv" impl="::gui::action::StarterActionService" autoConnect="no">
+                            <service uid="${GENERIC_UID}_action_exportVRParam" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
                                 <start uid="${GENERIC_UID}_writerVRParam" />
                             </service>
-                            <service uid="${GENERIC_UID}_writerVRParam" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::IOSelectorService" autoConnect="no">
+                            <service uid="${GENERIC_UID}_writerVRParam" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::SIOSelector" autoConnect="no">
                                 <type mode="writer" />
                                 <selection mode="include" />
                                 <addSelection service="::ioXML::FwXMLGenericWriterService" />
@@ -750,19 +765,13 @@
             </connect>
 
             <connect>
-                <signal>${GENERIC_UID}_VisuComposite/objectModified</signal>
-                <slot>${GENERIC_UID}_splinePointsEditor/receive</slot>
-            </connect> 
-
-            <connect>
-                <signal>${GENERIC_UID}_VRParam/objectModified</signal>
-                <slot>${GENERIC_UID}_translateUpdater/receive</slot>  
-            </connect>
-
-            <connect>
                 <signal>${GENERIC_UID}_splinePointsEditor/pointSelected</signal>
                 <slot>${GENERIC_UID}_updateNegato/selectNewPoint</slot>
             </connect>
+            
+            <proxy channel="interaction_channel">
+                <slot>${GENERIC_UID}_splinePointsEditor/getInteraction</slot>
+            </proxy>
 
             <!-- START AND STOP SERVICES -->
             <start uid="${GENERIC_UID}_translateUpdater" />

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,27 +14,43 @@ namespace helper
 {
 
 
-void Filter::applyFilter(DicomSeriesContainerType& dicomSeriesContainer, ::fwDicomIOFilter::IFilter::sptr filter,
-        bool forcedApply)
+bool Filter::applyFilter(DicomSeriesContainerType& dicomSeriesContainer, ::fwDicomIOFilter::IFilter::sptr filter,
+                         bool forcedApply, const ::fwLog::Logger::sptr& logger)
 {
+    bool ignoredError = false;
     DicomSeriesContainerType result;
 
     // On every DicomSeries
-    BOOST_FOREACH(const ::fwDicomData::DicomSeries::sptr& dicomSeries, dicomSeriesContainer)
+    for(const ::fwDicomData::DicomSeries::sptr& dicomSeries :  dicomSeriesContainer)
     {
-        // Apply filter and and copy result
+        // Apply filter and copy result
         DicomSeriesContainerType tempo;
-        // Regular apply
+        // Regular filter application
         if(!forcedApply || filter->getFilterType() != ::fwDicomIOFilter::IFilter::COMPOSITE)
         {
-            tempo = filter->apply(dicomSeries);
+            try
+            {
+                tempo = filter->apply(dicomSeries, logger);
+            }
+            catch(::fwDicomIOFilter::exceptions::FilterFailure& e)
+            {
+                if(!forcedApply)
+                {
+                    throw e;
+                }
+                else
+                {
+                    ignoredError = true;
+                    tempo.push_back(dicomSeries);
+                }
+            }
         }
-        // Forced apply for composite
+        // Forced filter application for composite
         else
         {
             ::fwDicomIOFilter::composite::IComposite::sptr composite =
-                    ::fwDicomIOFilter::composite::IComposite::dynamicCast(filter);
-            tempo = composite->forcedApply(dicomSeries);
+                ::fwDicomIOFilter::composite::IComposite::dynamicCast(filter);
+            tempo = composite->forcedApply(dicomSeries, logger);
         }
         result.reserve(result.size() + tempo.size());
         std::copy(tempo.begin(), tempo.end(), std::back_inserter(result));
@@ -42,6 +58,8 @@ void Filter::applyFilter(DicomSeriesContainerType& dicomSeriesContainer, ::fwDic
 
     // Copy result to DicomSeries container
     dicomSeriesContainer = result;
+
+    return ignoredError;
 }
 
 } // namespace helper

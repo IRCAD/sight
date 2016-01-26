@@ -1,23 +1,28 @@
 
 set( NAME VRRenderExt )
 set( VERSION 0.9 )
-set( TYPE BUNDLE )
-set( DEPENDENCIES  )
+set( TYPE APP )
+set( DEPENDENCIES )
 set( REQUIREMENTS
     servicesReg
     dataReg
-    visu
     visuVTK
     visuVTKQt
     visuVTKAdaptor
+    visuVTKVRAdaptor
     gui
     guiQt
+    guiQtExt
     memory
     monitor
     monitorQt
     ctrlMemory
     launcher
+    ioDicom
+    io
     ioGdcm
+    ioDcmtk
+    ioPacs
     ioITK
     ioVTK
     ioVtkGdcm
@@ -33,12 +38,13 @@ set( REQUIREMENTS
     3DVisualizationActivity
     blendActivity
     volumeRenderingActivity
-    dicomActivity
-    dicomReaderActivity
+    dicomPacsReaderActivity
+    dicomPacsWriterActivity
+    dicomFilteringActivity
+    dicomAppConfig
     media
     ioAtoms
     patchMedicalData
-    ioDicomExt
     mediaExt
     uiViewPoints
     uiNavigation
@@ -51,5 +57,13 @@ set( REQUIREMENTS
     cprActivity
     viewPointsActivity
     splineEditionActivity
-    )
+    scene2D
+    uiVisu
+    uiVisuQt
+    uiMeasurement
+    uiMeasurementQt
+    uiTF
+    filterVRRender
+)
 
+bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES VRRenderExtBase VRRenderExtAppBase)

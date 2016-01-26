@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,12 @@
 #ifndef __CTRLCOMPUTECPR_SCOMPUTECPR3D_HPP__
 #define __CTRLCOMPUTECPR_SCOMPUTECPR3D_HPP__
 
+#include "ctrlComputeCPR/config.hpp"
+
+#include <cpr/ComputeCPRFunctor.hxx>
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/Mesh.hpp>
 
@@ -17,16 +20,7 @@
 
 #include <fwServices/IController.hpp>
 
-#include <fwTools/Failed.hpp> 
-
-#include <cpr/ComputeCPRFunctor.hxx>
-
-#include "ctrlComputeCPR/config.hpp"
-
-namespace fwServices
-{
-    class ObjectMsg;
-}
+#include <fwTools/Failed.hpp>
 
 namespace ctrlComputeCPR
 {
@@ -78,19 +72,18 @@ protected:
      * @{ */
     virtual void starting() throw(::fwTools::Failed);
     virtual void stopping() throw(::fwTools::Failed);
-    virtual void receiving(CSPTR(::fwServices::ObjectMsg) _msg) throw(::fwTools::Failed);
     virtual void updating() throw(::fwTools::Failed);
     /**  @} */
 
     /**
      * @brief Overrides IService::configuring().
      * Configuration example :
-     @verbatim
-     <config>
+       @verbatim
+       <config>
         <splinePoints uid="..." />  <!-- ::fwData::PointList containing spline points -->
         <sourceImage uid="..." />   <!-- source image (::fwData::Image)               -->
-     </config>
-     @endverbatim
+       </config>
+       @endverbatim
      *
      * @throw fwTools::Failed
      */
@@ -107,6 +100,9 @@ protected:
 
     /// Set rotation of CPR according to the slider value.
     void setNormalRotation(double angle);
+
+    /// Slot: Updates the spline's points
+    void updateSpline();
 
 private:
 
@@ -127,7 +123,7 @@ private:
     /**  @} */
 
     /// Number of spline points.
-    int m_nbSplinePoints;
+    size_t m_nbSplinePoints;
 
     /**
      * @name CPR properties.

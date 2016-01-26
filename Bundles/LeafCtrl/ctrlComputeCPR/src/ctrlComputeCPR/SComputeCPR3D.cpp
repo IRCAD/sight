@@ -1,29 +1,29 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2013.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <math.h>
+#include "ctrlComputeCPR/SComputeCPR3D.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/PointList.hpp>
 
-#include <fwServices/IEditionService.hpp>
-#include <fwServices/ObjectMsg.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <fwTools/fwID.hpp>
-
-#include <fwComEd/MeshMsg.hpp>
-#include <fwComEd/PointListMsg.hpp>
-
 #include <cpr/functions.hpp>
-
-#include "ctrlComputeCPR/SComputeCPR3D.hpp"
+#include <math.h>
 
 fwServicesRegisterMacro(::fwServices::IController,::ctrlComputeCPR::SComputeCPR3D, ::fwData::Mesh);
 
@@ -31,33 +31,29 @@ fwServicesRegisterMacro(::fwServices::IController,::ctrlComputeCPR::SComputeCPR3
 namespace ctrlComputeCPR
 {
 
-const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_CHANGE_HEIGHT_SLOT = "changeHeight";
+const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_CHANGE_HEIGHT_SLOT  = "changeHeight";
 const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_CHANGE_SPACING_SLOT = "changeSpacing";
-const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_CHANGE_ANGLE_SLOT = "changeAngle";
+const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_CHANGE_ANGLE_SLOT   = "changeAngle";
+
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLIPNE_SLOT = "updateSpline";
 
 //----------------------------------------------------------------------------------------------------------
 
 SComputeCPR3D::SComputeCPR3D() throw ()
     : m_nbSplinePoints(0), m_angle (0), m_height(50.0)
 {
-    m_slotChangeHeight = ::fwCom::newSlot(&SComputeCPR3D::setHeight, this);
-    ::fwCom::HasSlots::m_slots(s_CHANGE_HEIGHT_SLOT, m_slotChangeHeight);
+    m_slotChangeHeight  = newSlot(s_CHANGE_HEIGHT_SLOT, &SComputeCPR3D::setHeight, this);
+    m_slotChangeSpacing = newSlot(s_CHANGE_SPACING_SLOT, &SComputeCPR3D::setSpacing, this);
+    m_slotChangeAngle   = newSlot(s_CHANGE_ANGLE_SLOT, &SComputeCPR3D::setNormalRotation, this);
+    newSlot(s_UPDATE_SPLIPNE_SLOT, &SComputeCPR3D::updateSpline, this);
 
-    m_slotChangeSpacing = ::fwCom::newSlot(&SComputeCPR3D::setSpacing, this);
-    ::fwCom::HasSlots::m_slots(s_CHANGE_SPACING_SLOT, m_slotChangeSpacing);
-
-    m_slotChangeAngle = ::fwCom::newSlot(&SComputeCPR3D::setNormalRotation, this);
-    ::fwCom::HasSlots::m_slots(s_CHANGE_ANGLE_SLOT, m_slotChangeAngle);
-
-    // Set default worker to new slots
-    this->setWorker(::fwServices::registry::ActiveWorkers::getDefault()->getWorker(
-                    ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER));
 }
 
 //----------------------------------------------------------------------------------------------------------
 
 SComputeCPR3D::~SComputeCPR3D() throw ()
-{}
+{
+}
 
 //----------------------------------------------------------------------------------------------------------
 
@@ -112,33 +108,26 @@ void SComputeCPR3D::configuring() throw (fwTools::Failed)
     if (!sourceImageConfig.empty())
     {
         SLM_ASSERT("UID attribute is missing", sourceImageConfig.at(0)->hasAttribute("uid"));
-        m_sourceImageUID =(sourceImageConfig.at(0)->getAttributeValue("uid"));
+        m_sourceImageUID = (sourceImageConfig.at(0)->getAttributeValue("uid"));
     }
 }
 
 //----------------------------------------------------------------------------------------------------------
 
 void SComputeCPR3D::updating() throw (::fwTools::Failed)
-{}
+{
+}
 
 //----------------------------------------------------------------------------------------------------------
 
-void SComputeCPR3D::receiving(::fwServices::ObjectMsg::csptr msg) throw(::fwTools::Failed)
+void SComputeCPR3D::updateSpline()
 {
-    if(msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_ADDED) || msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_REMOVED))
-    {
-        ::fwTools::Object::sptr splineObj = ::fwTools::fwID::getObject(m_splinePointsUID);
-        OSLM_ASSERT("Failed to retrieve object with UID '" << m_splinePointsUID << "'", splineObj);
-        ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(splineObj);
-        OSLM_ASSERT("Failed to retrieve point list", pointList);
+    ::fwTools::Object::sptr splineObj = ::fwTools::fwID::getObject(m_splinePointsUID);
+    OSLM_ASSERT("Failed to retrieve object with UID '" << m_splinePointsUID << "'", splineObj);
+    ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(splineObj);
+    OSLM_ASSERT("Failed to retrieve point list", pointList);
 
-        m_nbSplinePoints = pointList->getRefPoints().size();
-    }
-
-    if(msg->hasEvent(::fwComEd::PointListMsg::ELEMENT_MODIFIED) && m_nbSplinePoints > 2 )
-    {
-        this->computeMesh();
-    }
+    m_nbSplinePoints = pointList->getRefPoints().size();
 
     if(m_nbSplinePoints > 2)
     {
@@ -151,10 +140,9 @@ void SComputeCPR3D::receiving(::fwServices::ObjectMsg::csptr msg) throw(::fwTool
 
         mesh->clear();
 
-        ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
-        msg->addEvent(::fwComEd::MeshMsg::NEW_MESH);
-        msg->addEvent(::fwComEd::MeshMsg::VERTEX_MODIFIED);
-        ::fwServices::IEditionService::notify(this->getSptr(), mesh, msg);
+        ::fwData::Object::ModifiedSignalType::sptr sig;
+        sig = mesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        sig->asyncEmit();
     }
 }
 
@@ -194,10 +182,9 @@ void SComputeCPR3D::computeMesh()
     OSLM_DEBUG("Mesh nb points => " << mesh->getNumberOfPoints());
     OSLM_DEBUG("Mesh nb cells => " << mesh->getNumberOfCells());
 
-    ::fwComEd::MeshMsg::sptr msg = ::fwComEd::MeshMsg::New();
-    msg->addEvent( ::fwComEd::MeshMsg::NEW_MESH);
-    msg->addEvent( ::fwComEd::MeshMsg::VERTEX_MODIFIED);
-    ::fwServices::IEditionService::notify(this->getSptr(), mesh, msg);
+    ::fwData::Object::ModifiedSignalType::sptr sig;
+    sig = mesh->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    sig->asyncEmit();
 }
 
 //----------------------------------------------------------------------------------------------------------

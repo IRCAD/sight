@@ -1,16 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2015.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "PoC07TimeLine/SProducer.hpp"
-
 #include "PoC07TimeLine/MessageTL.hpp"
 
+#include <fwCom/Signal.hxx>
 #include <fwServices/macros.hpp>
 #include <fwThread/Timer.hpp>
 #include <fwTools/Object.hpp>
+
+#include <functional>
 
 fwServicesRegisterMacro( ::fwServices::IService, ::PoC07TimeLine::SProducer, ::PoC07TimeLine::MessageTL );
 
@@ -37,7 +39,7 @@ void SProducer::starting() throw( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     m_timer = m_associatedWorker->createTimer();
-    m_timer->setFunction( ::boost::bind(&SProducer::updating, this) );
+    m_timer->setFunction( std::bind(&SProducer::updating, this) );
     m_timer->setDuration( ::boost::chrono::milliseconds( m_period ) );
 
     m_timer->start();
@@ -124,12 +126,6 @@ void SProducer::configuring() throw( ::fwTools::Failed )
 
         m_timelineSize = ::boost::lexical_cast<unsigned int>(timeline);
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SProducer::receiving( ::fwServices::ObjectMsg::csptr _msg ) throw ( ::fwTools::Failed )
-{
 }
 
 //------------------------------------------------------------------------------

@@ -1,9 +1,0 @@
-TYPE = "exec"
-VERSION = '0-1'
-CONSOLE="yes"
-USE=['boost', 'boostProgramOptions']
-LIB=[
-    'fwCore_0-1',
-    'fwDicomIOExt_0-1',
-]
-BUNDLES = []
