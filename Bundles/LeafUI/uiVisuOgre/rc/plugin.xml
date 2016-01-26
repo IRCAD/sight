@@ -1,0 +1,47 @@
+<plugin id="uiVisuOgre" class="::uiVisuOgre::Plugin"  version="@DASH_VERSION@" >
+
+    <library name="uiVisuOgre" />
+
+    <requirement id="dataReg"/>
+    <requirement id="servicesReg"/>
+
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiVisuOgre::SMaterialSelector</service>
+        <object>::fwData::Reconstruction</object>
+        <desc>service description</desc>
+    </extension>
+
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiVisuOgre::STextureSelector</service>
+        <object>::fwData::Reconstruction</object>
+        <desc>service description</desc>
+    </extension>
+
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiVisuOgre::SShaderParameterEditor</service>
+        <object>::fwData::Reconstruction</object>
+        <desc>service description</desc>
+    </extension>
+
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiVisuOgre::SCompositorSelector</service>
+        <object>::fwData::Composite</object>
+        <desc>service description</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiVisuOgre::SDefaultCompositorEditor</service>
+        <object>::fwData::Composite</object>
+        <desc>service description</desc>
+    </extension>
+
+</plugin>
