@@ -83,10 +83,6 @@ public:
     /// Return if cel shading is used
     FWRENDEROGRE_API bool isCelShadingActivated();
 
-    /// Allow or disallow OIT technique depending of materials support
-    FWRENDEROGRE_API void updateTechniquesSupported(::Ogre::String materialName,
-                                                    std::vector< Ogre::String > schemesSupported);
-
     /// Re/Activate OIT compositor
     FWRENDEROGRE_API void update();
 
@@ -111,12 +107,6 @@ private:
 
     /// Setup OIT current compositor
     FWRENDEROGRE_API void setupTransparency();
-
-    /// Update list of OIT supported
-    FWRENDEROGRE_API void updateTechniqueSupported();
-
-    /// Return if an input OIT is currently supported
-    FWRENDEROGRE_API bool isOITTechniqueSupported(transparencyTechnique technique);
 
     /// Return if cel shading is supported
     FWRENDEROGRE_API bool isCelShadingSupported();
@@ -161,14 +151,6 @@ private:
 
     /// Viewport linked to compositor
     ::Ogre::Viewport* m_viewport;
-
-    /// Map of OIT techniques + cel shading supported per material
-    /// DepthPeeling - DualDepthPeeling - WeightedBlended - HybridTransparency
-    std::map< Ogre::String, std::array< std::pair< bool, bool >, NB_OF_TECH > > m_OITTechniquesSupportedPerMaterial;
-
-    /// OIT techniques supported + Cel Shading supported :
-    /// DepthPeeling - DualDepthPeeling - WeightedBlended - HybridTransparency
-    std::array< std::pair< bool, bool >, NB_OF_TECH > m_OITTechniquesSupported;
 
     /// Name of the last compositor put in the compositor chain.
     /// This compositor is used to have a blend in order to get a correct final render

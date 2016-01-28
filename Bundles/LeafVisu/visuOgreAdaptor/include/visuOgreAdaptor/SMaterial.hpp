@@ -180,9 +180,6 @@ private:
     /// Slot called to remove the texture adaptor when the texture is removed from the material
     void removeTextureAdaptor();
 
-    /// Checks support of technique's schemes
-    void updateSchemeSupport();
-
     /// Generates a normal length according to the mesh's bounding box
     ::Ogre::Real computeNormalLength();
 

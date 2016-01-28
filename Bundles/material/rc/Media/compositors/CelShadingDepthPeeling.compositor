@@ -10,14 +10,14 @@ compositor CelShadingDepthPeeling
         texture gbuffer target_width target_height PF_R8G8B8A8
         // Ping buffer
         // Color Depth Alpha Normal
-        texture ping_buffer target_width target_height PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R
+        texture pingBuffer target_width target_height PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R
         // Pong buffer
         // Color Depth Alpha Normal
-        texture pong_buffer target_width target_height PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R
+        texture pongBuffer target_width target_height PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R
         // Depth map
         texture depth_map target_width target_height PF_FLOAT32_R
         // Fake texture for the first peel
-        texture peel_init target_width target_height PF_FLOAT32_R depth_pool 0
+        texture peelInit target_width target_height PF_FLOAT32_R depth_pool 0
 
         // Depth map buffer
         // Used as a stencil for the surrounding background
@@ -29,7 +29,7 @@ compositor CelShadingDepthPeeling
             }
 
             shadows off
-            material_scheme CelShadingDepthPeeling_depth_map
+            material_scheme CelShadingDepthPeeling/depthMap
 
             pass render_scene
             {
@@ -37,7 +37,7 @@ compositor CelShadingDepthPeeling
         }
 
         // Init the fake depth texture used for the first peel
-        target peel_init
+        target peelInit
         {
             input none
             pass render_quad
@@ -47,7 +47,7 @@ compositor CelShadingDepthPeeling
         }
 
          // Peel 0
-         target ping_buffer
+         target pingBuffer
          {
              input none
              pass clear
@@ -55,7 +55,7 @@ compositor CelShadingDepthPeeling
              }
 
              shadows off
-             material_scheme CelShadingDepthPeeling_peel_init
+             material_scheme CelShadingDepthPeeling/peelInit
 
              pass render_scene
              {
@@ -72,20 +72,20 @@ compositor CelShadingDepthPeeling
              }
              pass render_quad
              {
-                 material CelShadingDepthPeeling_Blend
+                 material CelShadingDepthPeeling/Blend
                  // color
-                 input 0 ping_buffer 0
+                 input 0 pingBuffer 0
                  // depth
-                 input 1 ping_buffer 1
+                 input 1 pingBuffer 1
                  // alpha
-                 input 2 ping_buffer 2
+                 input 2 pingBuffer 2
                  // normal
-                 input 3 ping_buffer 3
+                 input 3 pingBuffer 3
              }
          }
 
          // Peel 1
-         target pong_buffer
+         target pongBuffer
          {
              input none
              pass clear
@@ -93,7 +93,7 @@ compositor CelShadingDepthPeeling
              }
 
              shadows off
-             material_scheme CelShadingDepthPeeling_peel_pong
+             material_scheme CelShadingDepthPeeling/peelPong
 
              pass render_scene
              {
@@ -106,20 +106,20 @@ compositor CelShadingDepthPeeling
              input none
              pass render_quad
              {
-                 material CelShadingDepthPeeling_Blend
+                 material CelShadingDepthPeeling/Blend
                  // color
-                 input 0 pong_buffer 0
+                 input 0 pongBuffer 0
                  // depth
-                 input 1 pong_buffer 1
+                 input 1 pongBuffer 1
                  // alpha
-                 input 2 pong_buffer 2
+                 input 2 pongBuffer 2
                  // normal
-                 input 3 pong_buffer 3
+                 input 3 pongBuffer 3
              }
          }
 
          // Peel 2
-         target ping_buffer
+         target pingBuffer
          {
              input none
              pass clear
@@ -127,7 +127,7 @@ compositor CelShadingDepthPeeling
              }
 
              shadows off
-             material_scheme CelShadingDepthPeeling_peel_ping
+             material_scheme CelShadingDepthPeeling/peelPing
 
              pass render_scene
              {
@@ -140,20 +140,20 @@ compositor CelShadingDepthPeeling
              input none
              pass render_quad
              {
-                 material CelShadingDepthPeeling_Blend
+                 material CelShadingDepthPeeling/Blend
                  // color
-                 input 0 ping_buffer 0
+                 input 0 pingBuffer 0
                  // depth
-                 input 1 ping_buffer 1
+                 input 1 pingBuffer 1
                  // alpha
-                 input 2 ping_buffer 2
+                 input 2 pingBuffer 2
                  // normal
-                 input 3 ping_buffer 3
+                 input 3 pingBuffer 3
              }
          }
 
          // Peel 3
-         target pong_buffer
+         target pongBuffer
          {
              input none
              pass clear
@@ -161,7 +161,7 @@ compositor CelShadingDepthPeeling
              }
 
              shadows off
-             material_scheme CelShadingDepthPeeling_peel_pong
+             material_scheme CelShadingDepthPeeling/peelPong
 
              pass render_scene
              {
@@ -174,20 +174,20 @@ compositor CelShadingDepthPeeling
              input none
              pass render_quad
              {
-                 material CelShadingDepthPeeling_Blend
+                 material CelShadingDepthPeeling/Blend
                  // color
-                 input 0 pong_buffer 0
+                 input 0 pongBuffer 0
                  // depth
-                 input 1 pong_buffer 1
+                 input 1 pongBuffer 1
                  // alpha
-                 input 2 pong_buffer 2
+                 input 2 pongBuffer 2
                  // normal
-                 input 3 pong_buffer 3
+                 input 3 pongBuffer 3
              }
          }
 
          // Peel 4
-         target ping_buffer
+         target pingBuffer
          {
              input none
              pass clear
@@ -195,7 +195,7 @@ compositor CelShadingDepthPeeling
              }
 
              shadows off
-             material_scheme CelShadingDepthPeeling_peel_ping
+             material_scheme CelShadingDepthPeeling/peelPing
 
              pass render_scene
              {
@@ -208,15 +208,15 @@ compositor CelShadingDepthPeeling
              input none
              pass render_quad
              {
-                 material CelShadingDepthPeeling_Blend
+                 material CelShadingDepthPeeling/Blend
                  // color
-                 input 0 ping_buffer 0
+                 input 0 pingBuffer 0
                  // depth
-                 input 1 ping_buffer 1
+                 input 1 pingBuffer 1
                  // alpha
-                 input 2 ping_buffer 2
+                 input 2 pingBuffer 2
                  // normal
-                 input 3 ping_buffer 3
+                 input 3 pingBuffer 3
              }
          }
 
@@ -226,7 +226,7 @@ compositor CelShadingDepthPeeling
             input none
             pass render_quad
             {
-                material CelShadingDepthPeeling_Final
+                material CelShadingDepthPeeling/Final
                 input 0 gbuffer
                 input 1 depth_map // stencil
             }

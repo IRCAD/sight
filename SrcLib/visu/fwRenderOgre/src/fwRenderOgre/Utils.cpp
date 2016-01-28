@@ -11,6 +11,7 @@
 #include <fwComEd/helper/Image.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
+#include <fwRenderOgre/compositor/MaterialMgrListener.hpp>
 #include "fwRenderOgre/factory/R2VBRenderable.hpp"
 
 #include <OgreConfigFile.h>
@@ -170,8 +171,12 @@ void Utils::addResourcesPath(const std::string& path)
             Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
         }
 
+        // Register factory for R2VB renderables objects
         s_R2VBRenderableFactory = OGRE_NEW ::fwRenderOgre::factory::R2VBRenderable();
         ::Ogre::Root::getSingleton().addMovableObjectFactory(s_R2VBRenderableFactory);
+
+        // Add the material manager listener that allows us to generate OIT techniques
+        ::Ogre::MaterialManager::getSingleton().addListener(new ::fwRenderOgre::compositor::MaterialMgrListener());
     }
 
     return root;

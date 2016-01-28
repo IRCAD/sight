@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -83,8 +83,6 @@ void Plane::initializeMaterial()
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
     defaultMat->copyDetailsTo(m_texMaterial);
-    m_texMaterial->setCullingMode(::Ogre::CULL_NONE);
-    m_texMaterial->setTextureFiltering(::Ogre::TFO_NONE);
 
     ::Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
     m_texMaterial->setDiffuse(diffuse);
@@ -119,7 +117,8 @@ void Plane::initializeMaterial()
         {
             ::Ogre::Pass* pass = tech->getPass(0);
 
-            ::Ogre::TextureUnitState* texState = pass->createTextureUnitState();
+            ::Ogre::TextureUnitState* texState = pass->getTextureUnitState("image");
+            SLM_ASSERT("'image' texture unit is not found", texState);
             texState->setTexture(m_texture);
 
             ::Ogre::TextureFilterOptions filterType;
@@ -138,8 +137,6 @@ void Plane::initializeMaterial()
 
             // Sets the texture filtering in the current texture unit state according to the negato's interpolation flag
             texState->setTextureFiltering(filterType);
-
-            texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
             pass->getVertexProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
             pass->getFragmentProgramParameters()->setNamedConstant("u_orientation", orientationIndex);
@@ -406,22 +403,17 @@ void Plane::setEntityOpacity(float _f)
     ::Ogre::ColourValue diffuse(1.f, 1.f, 1.f, m_entityOpacity);
     m_texMaterial->setDiffuse(diffuse);
 
-    ::Ogre::Material::TechniqueIterator techIt = m_texMaterial->getSupportedTechniqueIterator();
+    ::Ogre::Technique* tech = m_texMaterial->getTechnique(0);
+    SLM_ASSERT("Technique is not set", tech);
 
-    while( techIt.hasMoreElements())
+    if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech) &&
+       !::fwRenderOgre::helper::Shading::isPeelTechnique(*tech))
     {
-        ::Ogre::Technique* tech = techIt.getNext();
-        SLM_ASSERT("Technique is not set", tech);
+        ::Ogre::Pass* pass = tech->getPass(0);
 
-        if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech) &&
-           !::fwRenderOgre::helper::Shading::isPeelTechnique(*tech))
-        {
-            ::Ogre::Pass* pass = tech->getPass(0);
-
-            // We don't want a depth check if we have non-OIT transparency
-            const bool needDepthCheck = (m_entityOpacity == 1.f);
-            pass->setDepthCheckEnabled(needDepthCheck);
-        }
+        // We don't want a depth check if we have non-OIT transparency
+        const bool needDepthCheck = (m_entityOpacity == 1.f);
+        pass->setDepthCheckEnabled(needDepthCheck);
     }
 }
 

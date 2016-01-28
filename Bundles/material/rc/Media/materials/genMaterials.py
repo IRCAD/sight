@@ -79,9 +79,6 @@ ambientParams = [ '// Ambient',
 
 ## Diffuse or negato textures parameters, they should be bound at different unit depending on OIT technique
 texParams = ['// Diffuse texture', 'param_named u_texture int 0']
-dpTexParams = ['// Diffuse texture', 'param_named u_texture int 1']
-ddpTexParams = ['// Diffuse texture', 'param_named u_texture int 4']
-htwbTexParams = ['// Diffuse texture', 'param_named u_texture int 2']
 
 texAlphaParams = ['// Use alpha channel from the texture', 'param_named u_useTextureAlpha int 0']
 
@@ -118,10 +115,10 @@ cfgEdgeNormal = ['Edge_Normal', 'EDGE_NORMAL=1', '', '', '', { } ]
 cfgVertexColor = ['VT', 'VERTEX_COLOR=1', '', '', '', { } ]
 
 cfgDiffuseTex = ['DfsTex', 'DIFFUSE_TEX=1', '', '', '', { 'defaultFP' : texParams + texAlphaParams,
-                                                          'depthPeelingFP' : dpTexParams + texAlphaParams,
-                                                          'dualDepthPeelingFP' : ddpTexParams + texAlphaParams,
-                                                          'HT_weight_blendFP' : htwbTexParams + texAlphaParams,
-                                                          'weighted_blendFP' : dpTexParams + texAlphaParams } ]
+                                                          'depthPeelingFP' : texParams + texAlphaParams,
+                                                          'dualDepthPeelingFP' : texParams + texAlphaParams,
+                                                          'HT_weight_blendFP' : texParams + texAlphaParams,
+                                                          'weighted_blendFP' : texParams + texAlphaParams } ]
 
 cfgTriangles = ['Triangles', 'TRIANGLES=1', '', '', '', { 'renderSceneGP' : [], } ]
 cfgQuad = ['Quad', 'QUAD=1', '', '', '1', { } ]

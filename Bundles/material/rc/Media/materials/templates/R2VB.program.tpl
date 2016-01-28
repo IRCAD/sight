@@ -13,7 +13,7 @@
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_{{ shading }}_VP_glsl glsl
+vertex_program R2VB/{{ shading }}_VP glsl
 {
     source RenderScene_VP.glsl
 
@@ -30,7 +30,7 @@ vertex_program RenderScene_R2VB_{{ shading }}_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_{{ shading }}_GP_glsl glsl
+geometry_program R2VB/{{ shading }}_GP glsl
 {
     source RenderScene_GP.glsl
 

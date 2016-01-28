@@ -487,6 +487,11 @@ void SMaterial::doConfigure() throw(fwTools::Failed)
     {
         m_materialName = m_configuration->getAttributeValue("materialName");
     }
+    else
+    {
+        // Choose a default name if not provided
+        m_materialName = this->getID();
+    }
 
     if(m_configuration->hasAttribute("textureAdaptor"))
     {
@@ -585,27 +590,7 @@ void SMaterial::doUpdate() throw(fwTools::Failed)
     this->updateOptionsMode( material->getOptionsMode() );
     this->updateShadingMode( material->getShadingMode() );
     this->updateRGBAMode( material );
-    this->updateSchemeSupport();
     this->requestRender();
-}
-
-//------------------------------------------------------------------------------
-
-void SMaterial::updateSchemeSupport()
-{
-    m_schemesSupported.clear();
-    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
-    while( techIt.hasMoreElements())
-    {
-        ::Ogre::String techSchemeName = techIt.getNext()->getSchemeName();
-        m_schemesSupported.push_back(techSchemeName);
-    }
-    ::fwRenderOgre::Layer::sptr currentLayer = this->getRenderService()->getLayer(m_layerID);
-    if(currentLayer->isCoreCompositorEnabled())
-    {
-        currentLayer->getCoreCompositor()->updateTechniquesSupported(m_materialName, m_schemesSupported);
-        currentLayer->getCoreCompositor()->update();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -644,12 +629,9 @@ void SMaterial::swapTexture()
 {
     SLM_ASSERT("Missing texture adaptor", m_texAdaptor);
 
-    this->getRenderService()->makeCurrent();
-
     ::Ogre::TexturePtr currentTexture = m_texAdaptor->getTexture();
     SLM_ASSERT("Texture not set in Texture adaptor", !currentTexture.isNull());
 
-    bool bEmptyTexture = (currentTexture->getSrcWidth() == 0 && currentTexture->getSrcHeight() == 0);
 
     ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
     while( techIt.hasMoreElements())
@@ -662,25 +644,19 @@ void SMaterial::swapTexture()
             ::Ogre::Pass* pass                     = technique->getPass(0);
             ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("diffuseTexture");
 
-            if(bEmptyTexture)
+            if(texUnitState)
             {
-                if(texUnitState)
-                {
-                    // If the texture is empty, we remove the texture unit state
-                    auto texUnitStateIndex = pass->getTextureUnitStateIndex(texUnitState);
-                    pass->removeTextureUnitState(texUnitStateIndex);
-                    continue;
-                }
-            }
+                // This needs to be done *first* before setting the texture,
+                // otherwise the texture does'nt show up :/
+                technique->_notifyNeedsRecompile();
 
-            if(!texUnitState)
-            {
-                texUnitState = pass->createTextureUnitState();
-                texUnitState->setName("diffuseTexture");
-                texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
-                texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_WRAP);
+                texUnitState->setTexture(currentTexture);
             }
-            texUnitState->setTexture(currentTexture);
+            else
+            {
+                SLM_ERROR("No 'diffuseTexture' texture unit state found in .material."
+                          " STexture adaptor will not work properly.");
+            }
         }
     }
 
@@ -690,6 +666,9 @@ void SMaterial::swapTexture()
 
     this->requestRender();
 }
+
+
+
 
 //------------------------------------------------------------------------------
 
@@ -742,9 +721,9 @@ void SMaterial::updateOptionsMode(int optionsMode)
                 normalsPass->setName(s_NORMALS_PASS);
 
                 // Vertex shader
-                normalsPass->setVertexProgram("Default_Normal_VP_glsl");
+                normalsPass->setVertexProgram("Default/Normal_VP");
 
-                std::string gpName = depthOnly ? "DepthPeeling_depth_map_" : "";
+                std::string gpName = depthOnly ? "DepthPeeling/depthMap/" : "";
                 gpName += (optionsMode == ::fwData::Material::NORMALS) ?
                           "VerticesNormalsDisplay_GP" :
                           "CellsNormalsDisplay_GP";
@@ -788,8 +767,8 @@ void SMaterial::updatePolygonMode(int polygonMode)
 
             if( ::fwRenderOgre::helper::Shading::isGeometricTechnique(*tech) )
             {
-                ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
-                ::Ogre::Pass* firstPass                = passIt.getNext();
+                ::Ogre::Pass* firstPass = tech->getPass(0);
+                SLM_ASSERT("No pass found", firstPass);
 
                 firstPass->setPolygonMode(::Ogre::PM_SOLID);
                 firstPass->setPointSpritesEnabled(false);
@@ -803,7 +782,7 @@ void SMaterial::updatePolygonMode(int polygonMode)
                     edgePass->setName(s_EDGE_PASS);
 
                     // Then we switch the vertex shader...
-                    edgePass->setVertexProgram("Default_Edge_VP_glsl");
+                    edgePass->setVertexProgram("Default/Edge_VP");
 
                     // ... and the fragment shader
                     auto fpName = edgePass->getFragmentProgramName();
@@ -824,32 +803,35 @@ void SMaterial::updatePolygonMode(int polygonMode)
 
             ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
 
-            while ( passIt.hasMoreElements() )
+            if( ::fwRenderOgre::helper::Shading::isGeometricTechnique(*tech) )
             {
-                ::Ogre::Pass* ogrePass = passIt.getNext();
-
-                switch( polygonMode )
+                while ( passIt.hasMoreElements() )
                 {
-                    case ::fwData::Material::SURFACE:
-                        ogrePass->setPolygonMode(::Ogre::PM_SOLID );
-                        ogrePass->setPointSpritesEnabled(false);
-                        break;
+                    ::Ogre::Pass* ogrePass = passIt.getNext();
 
-                    case ::fwData::Material::WIREFRAME:
-                        ogrePass->setPolygonMode(::Ogre::PM_WIREFRAME);
-                        break;
+                    switch( polygonMode )
+                    {
+                        case ::fwData::Material::SURFACE:
+                            ogrePass->setPolygonMode(::Ogre::PM_SOLID );
+                            ogrePass->setPointSpritesEnabled(false);
+                            break;
 
-                    case ::fwData::Material::POINT:
-                        ogrePass->setPolygonMode(::Ogre::PM_POINTS);
-                        ogrePass->setPointSpritesEnabled(false);
-                        ogrePass->setPointSize(1.f);
-                        break;
+                        case ::fwData::Material::WIREFRAME:
+                            ogrePass->setPolygonMode(::Ogre::PM_WIREFRAME);
+                            break;
 
-                    default:
-                        if( polygonMode != ::fwData::Material::EDGE )
-                        {
-                            SLM_ASSERT("Unhandled material representation mode : " << polygonMode, false );
-                        }
+                        case ::fwData::Material::POINT:
+                            ogrePass->setPolygonMode(::Ogre::PM_POINTS);
+                            ogrePass->setPointSpritesEnabled(false);
+                            ogrePass->setPointSize(1.f);
+                            break;
+
+                        default:
+                            if( polygonMode != ::fwData::Material::EDGE )
+                            {
+                                SLM_ASSERT("Unhandled material representation mode : " << polygonMode, false );
+                            }
+                    }
                 }
             }
         }
@@ -895,7 +877,7 @@ void SMaterial::updateShadingMode( int shadingMode  )
                 // We need a geometry shader (primitive generation and per-primitive color)
                 // and thus we rely on the render to vertex buffer pipeline
 
-                ogrePass->setVertexProgram("RenderScene_R2VB_" + prgSuffix + "_VP_glsl");
+                ogrePass->setVertexProgram("R2VB/" + prgSuffix + "_VP");
                 ogrePass->setGeometryProgram(r2vbGSName);
                 ogrePass->setFragmentProgram("");
 
@@ -1045,8 +1027,11 @@ void SMaterial::removeTextureAdaptor()
             ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("diffuseTexture");
             if(texUnitState)
             {
-                auto texUnitStateIndex = pass->getTextureUnitStateIndex(texUnitState);
-                pass->removeTextureUnitState(texUnitStateIndex);
+                // This needs to be done *first* before setting the texture,
+                // otherwise the texture does'nt show up :/
+                technique->_notifyNeedsRecompile();
+
+                texUnitState->setTextureName("");
             }
         }
     }

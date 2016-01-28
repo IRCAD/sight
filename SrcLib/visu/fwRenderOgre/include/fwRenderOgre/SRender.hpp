@@ -180,6 +180,11 @@ protected:
      *  - \b renderer : mandatory, defines the scene's layer
      *    - \b id (mandatory): the identifier of the layer
      *    - \b layer (mandatory): the depth of the layer, starting from 1
+     *    - \b transparency (optional): the transparency technique to use: DepthPeeling, DualDepthPeeling,
+     *                                  WeightedBlended or HybridTransparency.
+     *    - \b numPeels (optional): number of peels for the selected transparency technique.
+     *                              Not used for WeightedBlended OIT
+     *    - \b useCelShading (optional): enable celShading (yes|no)
      *    - \b compositors (optional): defines the default compositor chain. The compositors are separated by semicolons
      */
     FWRENDEROGRE_API virtual void configuring() throw( ::fwTools::Failed);

@@ -46,7 +46,7 @@ material HybridTransparency_Blend
 
 //---------------------------------------------------------------------------
 
-material HybridTransparency_Blend_Final
+material HybridTransparency/BlendFinal
 {
     technique
     {
@@ -63,7 +63,7 @@ material HybridTransparency_Blend_Final
             {
             }
 
-            fragment_program_ref DepthPeeling_blend_FP
+            fragment_program_ref DepthPeeling/Blend_FP
             {
             }
 
@@ -80,7 +80,7 @@ material HybridTransparency_Blend_Final
 
 /// WBOIT blended render
 
-fragment_program HybridTransparency_WBOIT_Blend_FP glsl
+fragment_program HybridTransparency/WBOITBlend_FP glsl
 {
         source HybridTransparency_WBOIT_Blend_FP.glsl
         default_params
@@ -93,21 +93,7 @@ fragment_program HybridTransparency_WBOIT_Blend_FP glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program HybridTransparency_WBOIT_Blend_vs unified
-{
-        delegate HybridTransparency_WBOIT_Blend_vs_glsl
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program HybridTransparency_WBOIT_Blend_FP unified
-{
-        delegate HybridTransparency_WBOIT_Blend_FP
-}
-
-//---------------------------------------------------------------------------
-
-material HybridTransparency_WBOIT_Blend
+material HybridTransparency/WBOITBlend
 {
     technique
     {
@@ -117,7 +103,7 @@ material HybridTransparency_WBOIT_Blend
             {
             }
 
-            fragment_program_ref HybridTransparency_WBOIT_Blend_FP
+            fragment_program_ref HybridTransparency/WBOITBlend_FP
             {
             }
 
@@ -137,7 +123,7 @@ material HybridTransparency_WBOIT_Blend
 
 //---------------------------------------------------------------------------
 
-material HybridTransparency_Final
+material HybridTransparency/Final
 {
     technique
     {
@@ -147,7 +133,7 @@ material HybridTransparency_Final
             {
             }
 
-            fragment_program_ref DepthPeeling_final_FP
+            fragment_program_ref DepthPeeling/Final_FP
             {
             }
 

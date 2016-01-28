@@ -70,13 +70,20 @@ public:
 
     /**
      * @brief Replace the suffix in the program name with the suffix in parameters.
-     *        For instance, given
      *
      * @param[in] _prgName name of the program
      * @param[in] _suffix new suffix to use
      */
     FWRENDEROGRE_API static std::string replaceProgramSuffix(const std::string& _prgName, const std::string& _suffix);
 
+    /**
+     * @brief Replace the prefix in the program name with the prefix in parameters.
+     *        Actually this correspond to replacing the technique and the pass name.
+     *
+     * @param[in] _prgName name of the program
+     * @param[in] _suffix new suffix to use
+     */
+    FWRENDEROGRE_API static std::string replaceProgramPrefix(const std::string& _prgName, const std::string& prefix);
 };
 
 } // namespace helper

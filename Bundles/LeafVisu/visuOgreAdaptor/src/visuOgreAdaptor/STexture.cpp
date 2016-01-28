@@ -61,6 +61,12 @@ void STexture::doConfigure() throw(fwTools::Failed)
     {
         m_textureName = m_configuration->getAttributeValue("textureName");
     }
+    else
+    {
+        // Choose a default name if not provided, this is very important otherwise
+        // the texture may be lost if it is unloaded (which is very likely to happen when playing with techniques)
+        m_textureName = this->getID();
+    }
 
     if ( m_configuration->hasAttribute( "filtering" ) )
     {

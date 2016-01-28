@@ -9,9 +9,10 @@
 // Vertex shader materials
 //-----------------------------------------------------------------------------
 
+
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_Ambient_VP_glsl glsl
+vertex_program R2VB/Ambient_VP glsl
 {
     source RenderScene_VP.glsl
 
@@ -20,7 +21,7 @@ vertex_program RenderScene_R2VB_Ambient_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_Ambient+VT_VP_glsl glsl
+vertex_program R2VB/Ambient+VT_VP glsl
 {
     source RenderScene_VP.glsl
 
@@ -29,7 +30,7 @@ vertex_program RenderScene_R2VB_Ambient+VT_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_Ambient+DfsTex_VP_glsl glsl
+vertex_program R2VB/Ambient+DfsTex_VP glsl
 {
     source RenderScene_VP.glsl
 
@@ -38,7 +39,7 @@ vertex_program RenderScene_R2VB_Ambient+DfsTex_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_Ambient+VT+DfsTex_VP_glsl glsl
+vertex_program R2VB/Ambient+VT+DfsTex_VP glsl
 {
     source RenderScene_VP.glsl
 
@@ -47,7 +48,7 @@ vertex_program RenderScene_R2VB_Ambient+VT+DfsTex_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_Flat_VP_glsl glsl
+vertex_program R2VB/Flat_VP glsl
 {
     source RenderScene_VP.glsl
 
@@ -56,7 +57,7 @@ vertex_program RenderScene_R2VB_Flat_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_Flat+VT_VP_glsl glsl
+vertex_program R2VB/Flat+VT_VP glsl
 {
     source RenderScene_VP.glsl
 
@@ -65,7 +66,7 @@ vertex_program RenderScene_R2VB_Flat+VT_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_Flat+DfsTex_VP_glsl glsl
+vertex_program R2VB/Flat+DfsTex_VP glsl
 {
     source RenderScene_VP.glsl
 
@@ -74,7 +75,7 @@ vertex_program RenderScene_R2VB_Flat+DfsTex_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_Flat+VT+DfsTex_VP_glsl glsl
+vertex_program R2VB/Flat+VT+DfsTex_VP glsl
 {
     source RenderScene_VP.glsl
 
@@ -83,7 +84,7 @@ vertex_program RenderScene_R2VB_Flat+VT+DfsTex_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_Gouraud_VP_glsl glsl
+vertex_program R2VB/Gouraud_VP glsl
 {
     source RenderScene_VP.glsl
 
@@ -92,7 +93,7 @@ vertex_program RenderScene_R2VB_Gouraud_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_Gouraud+VT_VP_glsl glsl
+vertex_program R2VB/Gouraud+VT_VP glsl
 {
     source RenderScene_VP.glsl
 
@@ -101,7 +102,7 @@ vertex_program RenderScene_R2VB_Gouraud+VT_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_Gouraud+DfsTex_VP_glsl glsl
+vertex_program R2VB/Gouraud+DfsTex_VP glsl
 {
     source RenderScene_VP.glsl
 
@@ -110,7 +111,7 @@ vertex_program RenderScene_R2VB_Gouraud+DfsTex_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_Gouraud+VT+DfsTex_VP_glsl glsl
+vertex_program R2VB/Gouraud+VT+DfsTex_VP glsl
 {
     source RenderScene_VP.glsl
 
@@ -119,7 +120,7 @@ vertex_program RenderScene_R2VB_Gouraud+VT+DfsTex_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_PixelLit_VP_glsl glsl
+vertex_program R2VB/PixelLit_VP glsl
 {
     source RenderScene_VP.glsl
 
@@ -128,7 +129,7 @@ vertex_program RenderScene_R2VB_PixelLit_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_PixelLit+VT_VP_glsl glsl
+vertex_program R2VB/PixelLit+VT_VP glsl
 {
     source RenderScene_VP.glsl
 
@@ -137,7 +138,7 @@ vertex_program RenderScene_R2VB_PixelLit+VT_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_PixelLit+DfsTex_VP_glsl glsl
+vertex_program R2VB/PixelLit+DfsTex_VP glsl
 {
     source RenderScene_VP.glsl
 
@@ -146,7 +147,7 @@ vertex_program RenderScene_R2VB_PixelLit+DfsTex_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_R2VB_PixelLit+VT+DfsTex_VP_glsl glsl
+vertex_program R2VB/PixelLit+VT+DfsTex_VP glsl
 {
     source RenderScene_VP.glsl
 
@@ -160,12 +161,12 @@ vertex_program RenderScene_R2VB_PixelLit+VT+DfsTex_VP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Triangles_GP_glsl glsl
+geometry_program R2VB/Triangles_GP glsl
 {
     source RenderScene_GP.glsl
 
     preprocessor_defines TRIANGLES=1
-
+    
     default_params
     {
     }
@@ -173,12 +174,12 @@ geometry_program RenderScene_Triangles_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Triangles+VT_GP_glsl glsl
+geometry_program R2VB/Triangles+VT_GP glsl
 {
     source RenderScene_GP.glsl
 
     preprocessor_defines TRIANGLES=1,VERTEX_COLOR=1
-
+    
     default_params
     {
     }
@@ -186,12 +187,12 @@ geometry_program RenderScene_Triangles+VT_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Triangles+DfsTex_GP_glsl glsl
+geometry_program R2VB/Triangles+DfsTex_GP glsl
 {
     source RenderScene_GP.glsl
 
     preprocessor_defines TRIANGLES=1,DIFFUSE_TEX=1
-
+    
     default_params
     {
     }
@@ -199,12 +200,12 @@ geometry_program RenderScene_Triangles+DfsTex_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Triangles+VT+DfsTex_GP_glsl glsl
+geometry_program R2VB/Triangles+VT+DfsTex_GP glsl
 {
     source RenderScene_GP.glsl
 
     preprocessor_defines TRIANGLES=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
-
+    
     default_params
     {
     }
@@ -212,12 +213,12 @@ geometry_program RenderScene_Triangles+VT+DfsTex_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Triangles+PPColor_GP_glsl glsl
+geometry_program R2VB/Triangles+PPColor_GP glsl
 {
     source RenderScene_GP.glsl
 
     preprocessor_defines TRIANGLES=1,PER_PRIMITIVE_COLOR=1
-
+    
     default_params
     {
         param_named u_colorPrimitiveTexture int 10
@@ -227,12 +228,12 @@ geometry_program RenderScene_Triangles+PPColor_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Triangles+VT+PPColor_GP_glsl glsl
+geometry_program R2VB/Triangles+VT+PPColor_GP glsl
 {
     source RenderScene_GP.glsl
 
     preprocessor_defines TRIANGLES=1,VERTEX_COLOR=1,PER_PRIMITIVE_COLOR=1
-
+    
     default_params
     {
         param_named u_colorPrimitiveTexture int 10
@@ -242,12 +243,12 @@ geometry_program RenderScene_Triangles+VT+PPColor_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Triangles+DfsTex+PPColor_GP_glsl glsl
+geometry_program R2VB/Triangles+DfsTex+PPColor_GP glsl
 {
     source RenderScene_GP.glsl
 
     preprocessor_defines TRIANGLES=1,DIFFUSE_TEX=1,PER_PRIMITIVE_COLOR=1
-
+    
     default_params
     {
         param_named u_colorPrimitiveTexture int 10
@@ -257,12 +258,12 @@ geometry_program RenderScene_Triangles+DfsTex+PPColor_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Triangles+VT+DfsTex+PPColor_GP_glsl glsl
+geometry_program R2VB/Triangles+VT+DfsTex+PPColor_GP glsl
 {
     source RenderScene_GP.glsl
 
     preprocessor_defines TRIANGLES=1,VERTEX_COLOR=1,DIFFUSE_TEX=1,PER_PRIMITIVE_COLOR=1
-
+    
     default_params
     {
         param_named u_colorPrimitiveTexture int 10
@@ -272,7 +273,7 @@ geometry_program RenderScene_Triangles+VT+DfsTex+PPColor_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Quad_GP_glsl glsl
+geometry_program R2VB/Quad_GP glsl
 {
     source RenderScene_GP.glsl
 
@@ -285,7 +286,7 @@ geometry_program RenderScene_Quad_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Quad+VT_GP_glsl glsl
+geometry_program R2VB/Quad+VT_GP glsl
 {
     source RenderScene_GP.glsl
 
@@ -298,7 +299,7 @@ geometry_program RenderScene_Quad+VT_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Quad+DfsTex_GP_glsl glsl
+geometry_program R2VB/Quad+DfsTex_GP glsl
 {
     source RenderScene_GP.glsl
 
@@ -311,7 +312,7 @@ geometry_program RenderScene_Quad+DfsTex_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Quad+VT+DfsTex_GP_glsl glsl
+geometry_program R2VB/Quad+VT+DfsTex_GP glsl
 {
     source RenderScene_GP.glsl
 
@@ -324,7 +325,7 @@ geometry_program RenderScene_Quad+VT+DfsTex_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Quad+PPColor_GP_glsl glsl
+geometry_program R2VB/Quad+PPColor_GP glsl
 {
     source RenderScene_GP.glsl
 
@@ -339,7 +340,7 @@ geometry_program RenderScene_Quad+PPColor_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Quad+VT+PPColor_GP_glsl glsl
+geometry_program R2VB/Quad+VT+PPColor_GP glsl
 {
     source RenderScene_GP.glsl
 
@@ -354,7 +355,7 @@ geometry_program RenderScene_Quad+VT+PPColor_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Quad+DfsTex+PPColor_GP_glsl glsl
+geometry_program R2VB/Quad+DfsTex+PPColor_GP glsl
 {
     source RenderScene_GP.glsl
 
@@ -369,7 +370,7 @@ geometry_program RenderScene_Quad+DfsTex+PPColor_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Quad+VT+DfsTex+PPColor_GP_glsl glsl
+geometry_program R2VB/Quad+VT+DfsTex+PPColor_GP glsl
 {
     source RenderScene_GP.glsl
 
@@ -384,7 +385,7 @@ geometry_program RenderScene_Quad+VT+DfsTex+PPColor_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Tetra_GP_glsl glsl
+geometry_program R2VB/Tetra_GP glsl
 {
     source RenderScene_GP.glsl
 
@@ -397,7 +398,7 @@ geometry_program RenderScene_Tetra_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Tetra+VT_GP_glsl glsl
+geometry_program R2VB/Tetra+VT_GP glsl
 {
     source RenderScene_GP.glsl
 
@@ -410,7 +411,7 @@ geometry_program RenderScene_Tetra+VT_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Tetra+DfsTex_GP_glsl glsl
+geometry_program R2VB/Tetra+DfsTex_GP glsl
 {
     source RenderScene_GP.glsl
 
@@ -423,7 +424,7 @@ geometry_program RenderScene_Tetra+DfsTex_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Tetra+VT+DfsTex_GP_glsl glsl
+geometry_program R2VB/Tetra+VT+DfsTex_GP glsl
 {
     source RenderScene_GP.glsl
 
@@ -436,7 +437,7 @@ geometry_program RenderScene_Tetra+VT+DfsTex_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Tetra+PPColor_GP_glsl glsl
+geometry_program R2VB/Tetra+PPColor_GP glsl
 {
     source RenderScene_GP.glsl
 
@@ -451,7 +452,7 @@ geometry_program RenderScene_Tetra+PPColor_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Tetra+VT+PPColor_GP_glsl glsl
+geometry_program R2VB/Tetra+VT+PPColor_GP glsl
 {
     source RenderScene_GP.glsl
 
@@ -466,7 +467,7 @@ geometry_program RenderScene_Tetra+VT+PPColor_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Tetra+DfsTex+PPColor_GP_glsl glsl
+geometry_program R2VB/Tetra+DfsTex+PPColor_GP glsl
 {
     source RenderScene_GP.glsl
 
@@ -481,7 +482,7 @@ geometry_program RenderScene_Tetra+DfsTex+PPColor_GP_glsl glsl
 
 //---------------------------------------------------------------------------
 
-geometry_program RenderScene_Tetra+VT+DfsTex+PPColor_GP_glsl glsl
+geometry_program R2VB/Tetra+VT+DfsTex+PPColor_GP glsl
 {
     source RenderScene_GP.glsl
 

@@ -47,12 +47,6 @@ Core::Core() :
     m_numPass(8),
     m_viewport(nullptr)
 {
-    // Every OIT technique supposed supported
-    for(int i = 0; i < NB_OF_TECH; i++)
-    {
-        m_OITTechniquesSupported[static_cast<size_t>(i)].first  = true;
-        m_OITTechniquesSupported[static_cast<size_t>(i)].second = true;
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -88,16 +82,9 @@ bool Core::setTransparencyTechnique(transparencyTechnique technique)
 {
     ::Ogre::CompositorManager::getSingletonPtr()->setCompositorEnabled( m_viewport, m_transparencyTechniqueName,
                                                                         false );
-    if( this->isOITTechniqueSupported(technique) )
-    {
-        m_transparencyTechnique = technique;
-        return true;
-    }
-    else
-    {
-        m_transparencyTechnique = DEFAULT;
-        return false;
-    }
+    m_transparencyTechnique = technique;
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -236,12 +223,12 @@ void Core::setTransparencyDepthOfDepthPeeling(int depth)
     // Ping pong peel and blend
     for(int i = 0; i<depth; i++)
     {
-        std::string pingPong = (i%2) ? "ping" : "pong";
+        std::string pingPong = (i%2) ? "ing" : "ong";
 
         // Peel buffer
         {
             ::Ogre::CompositionTargetPass* dpCompTargetPeel = dpCompTech->createTargetPass();
-            dpCompTargetPeel->setOutputName(pingPong+"_buffer");
+            dpCompTargetPeel->setOutputName("p" + pingPong + "Buffer");
 
             // No previous input
             dpCompTargetPeel->setInputMode(::Ogre::CompositionTargetPass::IM_NONE);
@@ -253,7 +240,7 @@ void Core::setTransparencyDepthOfDepthPeeling(int depth)
             }
 
             // Material scheme
-            dpCompTargetPeel->setMaterialScheme(m_celShadingName+"DepthPeeling_peel_"+pingPong);
+            dpCompTargetPeel->setMaterialScheme(m_celShadingName+"DepthPeeling/peelP"+pingPong);
 
             // No shadow
             dpCompTargetPeel->setShadowsEnabled(false);
@@ -277,13 +264,13 @@ void Core::setTransparencyDepthOfDepthPeeling(int depth)
             {
                 ::Ogre::CompositionPass* dpCompPassRenderQuad = dpCompTargetBlend->createPass();
                 dpCompPassRenderQuad->setType(::Ogre::CompositionPass::PT_RENDERQUAD);
-                dpCompPassRenderQuad->setMaterialName(m_celShadingName+"DepthPeeling_Blend");
-                dpCompPassRenderQuad->setInput(0, pingPong+"_buffer",0);
+                dpCompPassRenderQuad->setMaterialName(m_celShadingName+"DepthPeeling/Blend");
+                dpCompPassRenderQuad->setInput(0, "p" + pingPong + "Buffer",0);
                 if(m_useCelShading)
                 {
-                    dpCompPassRenderQuad->setInput(1, pingPong+"_buffer",1);
-                    dpCompPassRenderQuad->setInput(2, pingPong+"_buffer",2);
-                    dpCompPassRenderQuad->setInput(3, pingPong+"_buffer",3);
+                    dpCompPassRenderQuad->setInput(1, "p" + pingPong + "Buffer",1);
+                    dpCompPassRenderQuad->setInput(2, "p" + pingPong + "Buffer",2);
+                    dpCompPassRenderQuad->setInput(3, "p" + pingPong + "Buffer",3);
                 }
 
             }
@@ -315,12 +302,12 @@ void Core::setTransparencyDepthOfDualDepthPeeling(int depth)
     // Ping pong peel and blend
     for(int i = 0; i<depth; i++)
     {
-        std::string pingPong = (i%2) ? "ping" : "pong";
+        std::string pingPong = (i%2) ? "ing" : "ong";
 
         // Peel buffer
         {
             ::Ogre::CompositionTargetPass* dpCompTargetPeel = dpCompTech->createTargetPass();
-            dpCompTargetPeel->setOutputName(pingPong+"_buffer");
+            dpCompTargetPeel->setOutputName("p" + pingPong + "Buffer");
 
             // No previous input
             dpCompTargetPeel->setInputMode(::Ogre::CompositionTargetPass::IM_NONE);
@@ -333,7 +320,7 @@ void Core::setTransparencyDepthOfDualDepthPeeling(int depth)
             }
 
             // Material scheme
-            dpCompTargetPeel->setMaterialScheme("DualDepthPeeling_peel_"+pingPong);
+            dpCompTargetPeel->setMaterialScheme("DualDepthPeeling/peelP"+pingPong);
 
             // No shadow
             dpCompTargetPeel->setShadowsEnabled(false);
@@ -357,9 +344,9 @@ void Core::setTransparencyDepthOfDualDepthPeeling(int depth)
             {
                 ::Ogre::CompositionPass* dpCompPassRenderQuad = dpCompTargetBlend->createPass();
                 dpCompPassRenderQuad->setType(::Ogre::CompositionPass::PT_RENDERQUAD);
-                dpCompPassRenderQuad->setMaterialName("DualDepthPeeling_Blend");
-                dpCompPassRenderQuad->setInput(0, pingPong+"_buffer",3);
-                dpCompPassRenderQuad->setInput(1, pingPong+"_buffer",5);
+                dpCompPassRenderQuad->setMaterialName("DualDepthPeeling/Blend");
+                dpCompPassRenderQuad->setInput(0, "p" + pingPong + "Buffer",3);
+                dpCompPassRenderQuad->setInput(1, "p" + pingPong + "Buffer",5);
             }
         }
     }
@@ -389,12 +376,12 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
     // Ping pong peel and blend
     for(int i = 0; i<(depth/2)*2; i++)
     {
-        std::string pingPong = (i%2) ? "ping" : "pong";
+        std::string pingPong = (i%2) ? "ing" : "ong";
 
         // Peel buffer
         {
             ::Ogre::CompositionTargetPass* dpCompTargetPeel = dpCompTech->createTargetPass();
-            dpCompTargetPeel->setOutputName(pingPong+"_buffer");
+            dpCompTargetPeel->setOutputName("p" + pingPong + "Buffer");
 
             // No previous input
             dpCompTargetPeel->setInputMode(::Ogre::CompositionTargetPass::IM_NONE);
@@ -406,7 +393,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
             }
 
             // Material scheme
-            dpCompTargetPeel->setMaterialScheme("HybridTransparency_peel_"+pingPong);
+            dpCompTargetPeel->setMaterialScheme("HybridTransparency/peelP"+pingPong);
 
             // No shadow
             dpCompTargetPeel->setShadowsEnabled(false);
@@ -430,8 +417,8 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
             {
                 ::Ogre::CompositionPass* dpCompPassRenderQuad = dpCompTargetBlend->createPass();
                 dpCompPassRenderQuad->setType(::Ogre::CompositionPass::PT_RENDERQUAD);
-                dpCompPassRenderQuad->setMaterialName("DepthPeeling_Blend");
-                dpCompPassRenderQuad->setInput(0, pingPong+"_buffer",0);
+                dpCompPassRenderQuad->setMaterialName("DepthPeeling/Blend");
+                dpCompPassRenderQuad->setInput(0, "p" + pingPong + "Buffer",0);
             }
         }
     }
@@ -452,7 +439,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
         }
 
         // Material scheme
-        dpCompTargetOcclusion->setMaterialScheme("HybridTransparency_occlusion_map");
+        dpCompTargetOcclusion->setMaterialScheme("HybridTransparency/occlusionMap");
 
         // No shadow
         dpCompTargetOcclusion->setShadowsEnabled(false);
@@ -480,7 +467,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
         }
 
         // Material scheme
-        dpCompTargetWeightBlend->setMaterialScheme("HybridTransparency_weight_blend");
+        dpCompTargetWeightBlend->setMaterialScheme("HybridTransparency/weightBlend");
 
         // No shadow
         dpCompTargetWeightBlend->setShadowsEnabled(false);
@@ -508,7 +495,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
         }
 
         // Material scheme
-        dpCompTargetTransmittance->setMaterialScheme("HybridTransparency_transmittance_blend");
+        dpCompTargetTransmittance->setMaterialScheme("HybridTransparency/transmittanceBlend");
 
         // No shadow
         dpCompTargetTransmittance->setShadowsEnabled(false);
@@ -533,7 +520,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
         {
             ::Ogre::CompositionPass* dpCompPassRenderQuad = dpCompTargetWBOITBlend->createPass();
             dpCompPassRenderQuad->setType(::Ogre::CompositionPass::PT_RENDERQUAD);
-            dpCompPassRenderQuad->setMaterialName("HybridTransparency_WBOIT_Blend");
+            dpCompPassRenderQuad->setMaterialName("HybridTransparency/WBOITBlend");
             dpCompPassRenderQuad->setInput(0, "weightedColor");
             dpCompPassRenderQuad->setInput(1, "transmittance");
         }
@@ -552,7 +539,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
         {
             ::Ogre::CompositionPass* dpCompPassRenderQuad = dpCompTargetFinalBlend->createPass();
             dpCompPassRenderQuad->setType(::Ogre::CompositionPass::PT_RENDERQUAD);
-            dpCompPassRenderQuad->setMaterialName("HybridTransparency_Blend_Final");
+            dpCompPassRenderQuad->setMaterialName("HybridTransparency/BlendFinal");
             dpCompPassRenderQuad->setInput(0, "WBOIT_output");
         }
     }
@@ -741,101 +728,11 @@ bool Core::isCelShadingActivated()
     return m_useCelShading;
 }
 
-
 //-----------------------------------------------------------------------------
 
 bool Core::isCelShadingSupported()
 {
-    return m_OITTechniquesSupported[m_transparencyTechnique].second;
-}
-
-//-----------------------------------------------------------------------------
-
-void Core::updateTechniquesSupported(::Ogre::String materialName,
-                                     std::vector< Ogre::String > schemesSupported)
-{
-    // OIT techniques supported + Cel Shading supported :
-    // DepthPeeling - DualDepthPeeling - WeightedBlended - HybridTransparency
-    std::array< std::pair< bool, bool >, NB_OF_TECH > OITSupported = {std::pair< bool, bool >(false, false),
-                                                                      std::pair< bool, bool >(false, false),
-                                                                      std::pair< bool, bool >(false, false),
-                                                                      std::pair< bool, bool >(false, false)};
-    m_OITTechniquesSupportedPerMaterial[materialName] = OITSupported;
-
-    std::array< std::string, 2*NB_OF_TECH > OITRegex = { "Default", "CelShading", "DepthPeeling.*",
-                                                         "CelShadingDepthPeeling.*", "DualDepthPeeling.*",
-                                                         "CelShadingDualDepthPeeling.*", "WeightedBlended.*",
-                                                         "CelShadingWeightedBlended.*", "HybridTransparency.*",
-                                                         "CelShadingHybridTransparency.*"};
-
-    // Detect OIT techniques supported by input material
-    for (std::vector< Ogre::String >::iterator schemesSupportedIterator = schemesSupported.begin();
-         schemesSupportedIterator != schemesSupported.end(); ++schemesSupportedIterator)
-    {
-        for(int i = 0; i < 2*NB_OF_TECH; i++)
-        {
-            std::regex regex(OITRegex[static_cast<size_t>(i)]);
-            if(std::regex_match(*schemesSupportedIterator, regex))
-            {
-                if(i%2 == 0)
-                {
-                    OITSupported[static_cast<size_t>(i)/2].first = true; // OIT
-                }
-                else
-                {
-                    OITSupported[static_cast<size_t>(i)/2].second = true; // CelShading
-                }
-            }
-        }
-    }
-
-    m_OITTechniquesSupportedPerMaterial[materialName] = OITSupported;
-    this->updateTechniqueSupported();
-}
-
-//-----------------------------------------------------------------------------
-
-void Core::updateTechniqueSupported()
-{
-    // Every OIT technique supposed supported
-    for(int i = 0; i < NB_OF_TECH; i++)
-    {
-        m_OITTechniquesSupported[static_cast<size_t>(i)].first  = true;
-        m_OITTechniquesSupported[static_cast<size_t>(i)].second = true;
-    }
-
-    // Check for each material if OIT technique is supported
-    for (std::map< Ogre::String, std::array< std::pair< bool, bool >, NB_OF_TECH > >::iterator matIt =
-             m_OITTechniquesSupportedPerMaterial.begin();
-         matIt!=m_OITTechniquesSupportedPerMaterial.end(); ++matIt)
-    {
-        for(int i = 0; i < NB_OF_TECH; i++)
-        {
-            m_OITTechniquesSupported[static_cast<size_t>(i)].first =
-                m_OITTechniquesSupported[static_cast<size_t>(i)].first &&
-                matIt->second[static_cast<size_t>(i)].first;
-
-            m_OITTechniquesSupported[static_cast<size_t>(i)].second =
-                m_OITTechniquesSupported[static_cast<size_t>(i)].second &&
-                matIt->second[static_cast<size_t>(i)].second;
-        }
-    }
-
-    if(!this->isOITTechniqueSupported(m_transparencyTechnique))
-    {
-        this->setTransparencyTechnique(DEFAULT);
-    }
-    if(!this->isCelShadingSupported() && m_useCelShading)
-    {
-        this->setCelShadingActivated(false);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-bool Core::isOITTechniqueSupported(transparencyTechnique technique)
-{
-    return m_OITTechniquesSupported[technique].first;
+    return m_transparencyTechniqueName == "DepthPeeling";
 }
 
 //-----------------------------------------------------------------------------

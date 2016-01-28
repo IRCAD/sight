@@ -2,7 +2,7 @@
 
 //---------------------------------------------------------------------------
 
-fragment_program CelShadingDepthPeeling_depth_map_FP glsl
+fragment_program CelShadingDepthPeeling/depthMap_FP glsl
 {
         source CelShadingDepthPeelingDepthMap_FP.glsl
         default_params
@@ -13,7 +13,7 @@ fragment_program CelShadingDepthPeeling_depth_map_FP glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program CelShadingDepthPeeling_blend_FP glsl
+fragment_program CelShadingDepthPeeling/Blend_FP glsl
 {
         source CelShadingDepthPeelingBlend_FP.glsl
         attach DepthPeelingCommon_FP
@@ -31,7 +31,7 @@ fragment_program CelShadingDepthPeeling_blend_FP glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program CelShadingDepthPeeling_final_FP glsl
+fragment_program CelShadingDepthPeeling/Final_FP glsl
 {
         source CelShadingDepthPeelingFinal_FP.glsl
         default_params
@@ -43,7 +43,7 @@ fragment_program CelShadingDepthPeeling_final_FP glsl
 
 //---------------------------------------------------------------------------
 
-material CelShadingDepthPeeling_Final
+material CelShadingDepthPeeling/Final
 {
     technique
     {
@@ -53,7 +53,7 @@ material CelShadingDepthPeeling_Final
             {
             }
 
-            fragment_program_ref CelShadingDepthPeeling_final_FP
+            fragment_program_ref CelShadingDepthPeeling/Final_FP
             {
             }
 
@@ -73,7 +73,7 @@ material CelShadingDepthPeeling_Final
 
 //---------------------------------------------------------------------------
 
-material CelShadingDepthPeeling_Blend
+material CelShadingDepthPeeling/Blend
 {
     technique
     {
@@ -91,7 +91,7 @@ material CelShadingDepthPeeling_Blend
             {
             }
 
-            fragment_program_ref CelShadingDepthPeeling_blend_FP
+            fragment_program_ref CelShadingDepthPeeling/Blend_FP
             {
             }
 

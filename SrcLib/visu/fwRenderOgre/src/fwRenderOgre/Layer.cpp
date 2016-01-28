@@ -59,7 +59,7 @@ Layer::Layer() :
     m_coreCompositor(nullptr),
     m_transparencyTechnique(DEFAULT),
     m_useCelShading(false),
-    m_nbPeel(8),
+    m_numPeels(8),
     m_compositorChainManager(),
     m_depth(1),
     m_topColor("#333333"),
@@ -595,7 +595,7 @@ void Layer::setBackgroundScale(float topScale, float botScale)
 //-------------------------------------------------------------------------------------
 
 void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechnique,
-                                     std::string useCelShading, std::string nbPeel)
+                                     std::string useCelShading, std::string numPeels)
 {
     m_hasCoreCompositor = enabled;
     if(transparencyTechnique != "")
@@ -608,7 +608,7 @@ void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechn
         {
             m_transparencyTechnique = DUALDEPTHPEELING;
         }
-        else if(transparencyTechnique == "WeightedBlendedOIT")
+        else if(transparencyTechnique == "WeightedBlended")
         {
             m_transparencyTechnique = WEIGHTEDBLENDEDOIT;
         }
@@ -621,16 +621,14 @@ void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechn
             OSLM_ERROR("Unknown transparency technique : " << transparencyTechnique);
         }
     }
-    if(useCelShading != "")
+
+    if(useCelShading == "yes")
     {
-        if(useCelShading == "yes")
-        {
-            m_useCelShading = true;
-        }
+        m_useCelShading = true;
     }
-    if(nbPeel != "")
+    if(!numPeels.empty())
     {
-        m_nbPeel = atoi(nbPeel.c_str());
+        m_numPeels = std::stoi(numPeels);
     }
 }
 
@@ -671,7 +669,7 @@ void Layer::setupCore()
     m_coreCompositor->setViewport(m_viewport);
     m_coreCompositor->setTransparencyTechnique(m_transparencyTechnique);
     m_coreCompositor->setCelShadingActivated(m_useCelShading);
-    m_coreCompositor->setTransparencyDepth(m_nbPeel);
+    m_coreCompositor->setTransparencyDepth(m_numPeels);
     m_coreCompositor->update();
 }
 

@@ -205,11 +205,10 @@ void SRender::configureLayer( ConfigurationType conf )
 {
     const std::string id                    = conf->getAttributeValue("id");
     const std::string layer                 = conf->getAttributeValue("layer");
-    const std::string background            = conf->getAttributeValue("background");
     const std::string compositors           = conf->getAttributeValue("compositors");
-    const std::string transparencyTechnique = conf->getAttributeValue("transparencyTechnique");
+    const std::string transparencyTechnique = conf->getAttributeValue("transparency");
     const std::string useCelShading         = conf->getAttributeValue("useCelShading");
-    const std::string nbPeel                = conf->getAttributeValue("nbPeel");
+    const std::string numPeels              = conf->getAttributeValue("numPeels");
 
     SLM_ASSERT( "'id' required attribute missing or empty", !id.empty() );
     SLM_ASSERT( "'layer' required attribute missing or empty", !layer.empty() );
@@ -224,7 +223,7 @@ void SRender::configureLayer( ConfigurationType conf )
     ogreLayer->setWorker(m_associatedWorker);
     ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
 
-    ogreLayer->setCoreCompositorEnabled(id == "default", transparencyTechnique, useCelShading, nbPeel);
+    ogreLayer->setCoreCompositorEnabled(id == "default", transparencyTechnique, useCelShading, numPeels);
     ogreLayer->setCompositorChainEnabled(compositors != "", compositors);
 
     // Finally, the layer is pushed in the map

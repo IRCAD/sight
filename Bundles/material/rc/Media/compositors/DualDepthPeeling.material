@@ -2,7 +2,7 @@
 
 //---------------------------------------------------------------------------
 
-fragment_program DualDepthPeeling_blend_FP glsl
+fragment_program DualDepthPeeling/Blend_FP glsl
 {
     source DualDepthPeelingBlend_FP.glsl
     attach DepthPeelingCommon_FP
@@ -17,7 +17,7 @@ fragment_program DualDepthPeeling_blend_FP glsl
 
 /// Dual depth peeling quad final render
 
-fragment_program DualDepthPeeling_final_FP glsl
+fragment_program DualDepthPeeling/Final_FP glsl
 {
     source DualDepthPeelingFinal_FP.glsl
     attach DepthPeelingCommon_FP
@@ -31,7 +31,7 @@ fragment_program DualDepthPeeling_final_FP glsl
 
 //---------------------------------------------------------------------------
 
-material DualDepthPeeling_Final
+material DualDepthPeeling/Final
 {
     technique
     {
@@ -41,7 +41,7 @@ material DualDepthPeeling_Final
             {
             }
 
-            fragment_program_ref DualDepthPeeling_final_FP
+            fragment_program_ref DualDepthPeeling/Final_FP
             {
             }
 
@@ -66,7 +66,7 @@ material DualDepthPeeling_Final
 
 //---------------------------------------------------------------------------
 
-material DualDepthPeeling_Blend
+material DualDepthPeeling/Blend
 {
     technique
     {
@@ -81,7 +81,7 @@ material DualDepthPeeling_Blend
             {
             }
 
-            fragment_program_ref DualDepthPeeling_blend_FP
+            fragment_program_ref DualDepthPeeling/Blend_FP
             {
             }
 

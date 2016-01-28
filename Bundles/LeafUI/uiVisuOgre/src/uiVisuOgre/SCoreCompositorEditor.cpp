@@ -43,7 +43,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SCoreCompositorEd
 //------------------------------------------------------------------------------
 
 SCoreCompositorEditor::SCoreCompositorEditor() throw() :
-    m_currentCore(nullptr),
+    m_currentCoreCompositor(nullptr),
     m_isLayerSelected(false)
 {
 }
@@ -218,7 +218,7 @@ void SCoreCompositorEditor::configuring() throw(::fwTools::Failed)
 
 void SCoreCompositorEditor::updating() throw(::fwTools::Failed)
 {
-    m_currentCore->update();
+    m_currentCoreCompositor->update();
     m_currentLayer->requestRender();
 }
 
@@ -243,13 +243,13 @@ void SCoreCompositorEditor::onSelectedLayerItem(int index)
     }
 
     // Reloads buttons to match layer's parameters
-    m_currentLayer = m_layers[static_cast<size_t>(index)];
-    m_currentCore  = m_currentLayer->getCoreCompositor();
+    m_currentLayer          = m_layers[static_cast<size_t>(index)];
+    m_currentCoreCompositor = m_currentLayer->getCoreCompositor();
 
     // If the layer is not yet started, we can't use its default compositor
-    if(m_currentCore)
+    if(m_currentCoreCompositor)
     {
-        switch (m_currentCore->getTransparencyTechnique())
+        switch (m_currentCoreCompositor->getTransparencyTechnique())
         {
             case DEFAULT:
                 m_transparencyButtonGroup->button(0)->setChecked(true);
@@ -267,8 +267,8 @@ void SCoreCompositorEditor::onSelectedLayerItem(int index)
                 m_transparencyButtonGroup->button(4)->setChecked(true);
                 break;
         }
-        m_useCelShadingCheckBox->setChecked(m_currentCore->isCelShadingActivated());
-        m_transparencyDepthSlider->setValue(m_currentCore->getTransparencyDepth());
+        m_useCelShadingCheckBox->setChecked(m_currentCoreCompositor->isCelShadingActivated());
+        m_transparencyDepthSlider->setValue(m_currentCoreCompositor->getTransparencyDepth());
         this->update();
     }
 }
@@ -277,9 +277,9 @@ void SCoreCompositorEditor::onSelectedLayerItem(int index)
 
 void SCoreCompositorEditor::onUseCelShading(int state)
 {
-    if(m_currentCore)
+    if(m_currentCoreCompositor)
     {
-        bool celShadingSupported = m_currentCore->setCelShadingActivated(state == Qt::Checked);
+        bool celShadingSupported = m_currentCoreCompositor->setCelShadingActivated(state == Qt::Checked);
         if(!celShadingSupported)
         {
             m_useCelShadingCheckBox->setChecked(false);
@@ -293,9 +293,9 @@ void SCoreCompositorEditor::onUseCelShading(int state)
 
 void SCoreCompositorEditor::onEditTransparencyDepth(int depth)
 {
-    if(m_currentCore)
+    if(m_currentCoreCompositor)
     {
-        m_currentCore->setTransparencyDepth(depth);
+        m_currentCoreCompositor->setTransparencyDepth(depth);
         this->update();
     }
 }
@@ -304,39 +304,39 @@ void SCoreCompositorEditor::onEditTransparencyDepth(int depth)
 
 void SCoreCompositorEditor::onEditTransparency(int index)
 {
-    if(m_currentCore)
+    if(m_currentCoreCompositor)
     {
         bool transparencyUpdated = false;
         switch (index)
         {
             case 0:
-                transparencyUpdated = m_currentCore->setTransparencyTechnique(DEFAULT);
+                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(DEFAULT);
                 break;
             case 1:
-                transparencyUpdated = m_currentCore->setTransparencyTechnique(DEPTHPEELING);
+                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(DEPTHPEELING);
                 break;
             case 2:
-                transparencyUpdated = m_currentCore->setTransparencyTechnique(DUALDEPTHPEELING);
+                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(DUALDEPTHPEELING);
                 break;
             case 3:
-                transparencyUpdated = m_currentCore->setTransparencyTechnique(WEIGHTEDBLENDEDOIT);
+                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(WEIGHTEDBLENDEDOIT);
                 break;
             case 4:
-                transparencyUpdated = m_currentCore->setTransparencyTechnique(HYBRIDTRANSPARENCY);
+                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(HYBRIDTRANSPARENCY);
                 break;
         }
 
         if(transparencyUpdated)
         {
             bool celShadingSupported =
-                m_currentCore->setCelShadingActivated(m_useCelShadingCheckBox->isChecked());
-            m_useCelShadingCheckBox->setChecked(m_currentCore->isCelShadingActivated());
+                m_currentCoreCompositor->setCelShadingActivated(m_useCelShadingCheckBox->isChecked());
+            m_useCelShadingCheckBox->setChecked(m_currentCoreCompositor->isCelShadingActivated());
             m_useCelShadingCheckBox->setCheckable(celShadingSupported);
         }
         else
         {
             m_transparencyButtonGroup->button(0)->setChecked(true);
-            m_currentCore->setCelShadingActivated(false);
+            m_currentCoreCompositor->setCelShadingActivated(false);
             m_useCelShadingCheckBox->setChecked(false);
             m_useCelShadingCheckBox->setCheckable(false);
         }

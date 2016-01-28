@@ -8,7 +8,7 @@ fragment_program DepthPeelingCommon_FP glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DepthPeeling_depth_map_FP glsl
+fragment_program DepthPeeling/depthMap_FP glsl
 {
     source DepthPeelingDepthMap_FP.glsl
     attach DepthPeelingCommon_FP
@@ -20,7 +20,7 @@ fragment_program DepthPeeling_depth_map_FP glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DepthPeeling_blend_FP glsl
+fragment_program DepthPeeling/Blend_FP glsl
 {
     source DepthPeelingBlend_FP.glsl
     default_params
@@ -31,7 +31,7 @@ fragment_program DepthPeeling_blend_FP glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DepthPeeling_final_FP glsl
+fragment_program DepthPeeling/Final_FP glsl
 {
     source DepthPeelingFinal_FP.glsl
     attach DepthPeelingCommon_FP
@@ -44,7 +44,55 @@ fragment_program DepthPeeling_final_FP glsl
 
 //-----------------------------------------------------------------------------
 
-geometry_program DepthPeeling_depth_map_VerticesNormalsDisplay_GP glsl
+vertex_program Default/Edge_VP glsl
+{
+    source DefaultEdge_VP.glsl
+    default_params
+    {
+        param_named_auto u_worldView worldview_matrix
+        param_named_auto u_proj projection_matrix
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+vertex_program Default/Normal_VP glsl
+{
+    source NormalsDisplay_VP.glsl
+}
+
+//-----------------------------------------------------------------------------
+
+geometry_program VerticesNormalsDisplay_GP glsl
+{
+    source NormalsDisplay_GP.glsl
+    preprocessor_defines POINT=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named u_normalLength float 10.
+        param_named u_normalColor float4 1. 0. 0. 1.
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+geometry_program CellsNormalsDisplay_GP glsl
+{
+    source NormalsDisplay_GP.glsl
+    preprocessor_defines CELL=1
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named u_normalLength float 10.
+        param_named u_normalColor float4 1. 1. 0. 1.
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+geometry_program DepthPeeling/depthMap/VerticesNormalsDisplay_GP glsl
 {
     source NormalsDisplay_GP.glsl
     preprocessor_defines POINT=1,DEPTH=1
@@ -57,7 +105,7 @@ geometry_program DepthPeeling_depth_map_VerticesNormalsDisplay_GP glsl
 
 //-----------------------------------------------------------------------------
 
-geometry_program DepthPeeling_depth_map_CellsNormalsDisplay_GP glsl
+geometry_program DepthPeeling/depthMap/CellsNormalsDisplay_GP glsl
 {
     source NormalsDisplay_GP.glsl
     preprocessor_defines CELL=1,DEPTH=1
@@ -70,21 +118,21 @@ geometry_program DepthPeeling_depth_map_CellsNormalsDisplay_GP glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DualDepthPeeling_peel_init_FP_glsl glsl
+fragment_program DualDepthPeeling/peelInit_FP glsl
 {
     source DualDepthPeelingInit_FP.glsl
 }
 
 //---------------------------------------------------------------------------
 
-fragment_program DualDepthPeeling_Edge_Normal_FP_glsl glsl
+fragment_program DualDepthPeeling_Edge_Normal_FP glsl
 {
     source DualDepthPeelingInit_FP.glsl
 }
 
 //---------------------------------------------------------------------------
 
-fragment_program HybridTransparency_transmittance_blend_FP glsl
+fragment_program HybridTransparency/transmittanceBlend_FP glsl
 {
     source WeightedBlended_Transmittance_Blend_FP.glsl
     preprocessor_defines HYBRID=1
@@ -101,7 +149,7 @@ fragment_program HybridTransparency_transmittance_blend_FP glsl
 
 //------------------------------------------------------------------
 
-fragment_program HybridTransparency_occlusion_map_FP glsl
+fragment_program HybridTransparency/occlusionMap_FP glsl
 {
     source HybridTransparency_Occlusion_Map_FP.glsl
     default_params
@@ -112,7 +160,7 @@ fragment_program HybridTransparency_occlusion_map_FP glsl
 
 //------------------------------------------------------------------
 
-fragment_program WeightedBlended_occlusion_map_FP glsl
+fragment_program WeightedBlended/occlusionMap_FP glsl
 {
     source WeightedBlended_Occlusion_Map_FP.glsl
     default_params
@@ -123,7 +171,7 @@ fragment_program WeightedBlended_occlusion_map_FP glsl
 
 //------------------------------------------------------------------
 
-fragment_program WeightedBlended_transmittance_blend_FP glsl
+fragment_program WeightedBlended/transmittanceBlend_FP glsl
 {
     source WeightedBlended_Transmittance_Blend_FP.glsl
     default_params
@@ -148,7 +196,7 @@ vertex_program Render_VP glsl
 
 //---------------------------------------------------------------------------
 
-vertex_program RenderScene_VP glsl
+vertex_program Default_VP glsl
 {
     source RenderScene_VP.glsl
     default_params

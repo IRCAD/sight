@@ -6,13 +6,13 @@ compositor HybridTransparency
         // Color buffer - used for blending
         texture gbuffer target_width target_height PF_R8G8B8A8
         // Ping buffer
-        texture ping_buffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8
+        texture pingBuffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8
         // Pong buffer
-        texture pong_buffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8
+        texture pongBuffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8
         // Depth map
-        texture back_depth target_width target_height PF_R8G8B8A8
+        texture backDepth target_width target_height PF_R8G8B8A8
         // Fake texture for the first
-        texture peel_init target_width target_height PF_R8G8B8A8 depth_pool 0
+        texture peelInit target_width target_height PF_R8G8B8A8 depth_pool 0
 
         // WBOIT texture
         // Occlusion computing
@@ -25,7 +25,7 @@ compositor HybridTransparency
         texture WBOIT_output target_width target_height PF_R8G8B8A8
 
         // Back depth buffer
-        target back_depth
+        target backDepth
         {
             input none
             pass clear
@@ -38,7 +38,7 @@ compositor HybridTransparency
             }
 
             shadows off
-            material_scheme HybridTransparency_back_depth
+            material_scheme HybridTransparency/backDepth
 
             pass render_scene
             {
@@ -46,7 +46,7 @@ compositor HybridTransparency
         }
 
         // Init the fake depth texture used for the first peel
-        target peel_init
+        target peelInit
         {
             input none
             pass render_quad
@@ -58,7 +58,7 @@ compositor HybridTransparency
         /// Depth Peeling - core kernels
 
         // Init peel buffer
-        target ping_buffer
+        target pingBuffer
         {
             input none
             pass clear
@@ -66,7 +66,7 @@ compositor HybridTransparency
             }
 
             shadows off
-            material_scheme HybridTransparency_peel_init
+            material_scheme HybridTransparency/peelInit
 
             pass render_scene
             {
@@ -83,13 +83,13 @@ compositor HybridTransparency
             }
             pass render_quad
             {
-                material DepthPeeling_Blend
-                input 0 ping_buffer 0
+                material DepthPeeling/Blend
+                input 0 pingBuffer 0
             }
         }
 
         // Peel 1
-        target pong_buffer
+        target pongBuffer
         {
             input none
             pass clear
@@ -97,7 +97,7 @@ compositor HybridTransparency
             }
 
             shadows off
-            material_scheme HybridTransparency_peel_pong
+            material_scheme HybridTransparency/peelPong
 
             pass render_scene
             {
@@ -110,13 +110,13 @@ compositor HybridTransparency
             input none
             pass render_quad
             {
-                material DepthPeeling_Blend
-                input 0 pong_buffer 0
+                material DepthPeeling/Blend
+                input 0 pongBuffer 0
             }
         }
 
         // Peel 2
-        target ping_buffer
+        target pingBuffer
         {
             input none
             pass clear
@@ -124,7 +124,7 @@ compositor HybridTransparency
             }
 
             shadows off
-            material_scheme HybridTransparency_peel_ping
+            material_scheme HybridTransparency/peelPing
 
             pass render_scene
             {
@@ -137,8 +137,8 @@ compositor HybridTransparency
             input none
             pass render_quad
             {
-                material DepthPeeling_Blend
-                input 0 ping_buffer 0
+                material DepthPeeling/Blend
+                input 0 pingBuffer 0
             }
         }
 
@@ -155,7 +155,7 @@ compositor HybridTransparency
             }
 
             shadows off
-            material_scheme HybridTransparency_occlusion_map
+            material_scheme HybridTransparency/occlusionMap
 
             pass render_scene
             {
@@ -173,7 +173,7 @@ compositor HybridTransparency
             }
 
             shadows off
-            material_scheme HybridTransparency_weight_blend
+            material_scheme HybridTransparency/weightBlend
 
             pass render_scene
             {
@@ -191,7 +191,7 @@ compositor HybridTransparency
             }
 
             shadows off
-            material_scheme HybridTransparency_transmittance_blend
+            material_scheme HybridTransparency/transmittanceBlend
 
             pass render_scene
             {
@@ -204,7 +204,7 @@ compositor HybridTransparency
             input none
             pass render_quad
             {
-                material HybridTransparency_WBOIT_Blend
+                material HybridTransparency/WBOITBlend
                 input 0 weightedColor
                 input 1 transmittance
             }
@@ -216,7 +216,7 @@ compositor HybridTransparency
             input none
             pass render_quad
             {
-                material HybridTransparency_Blend_Final
+                material HybridTransparency/BlendFinal
                 input 0 WBOIT_output
             }
         }
@@ -228,9 +228,9 @@ compositor HybridTransparency
             input none
             pass render_quad
             {
-                material HybridTransparency_Final
+                material HybridTransparency/Final
                 input 0 gbuffer
-                input 1 back_depth
+                input 1 backDepth
             }
         }
     }

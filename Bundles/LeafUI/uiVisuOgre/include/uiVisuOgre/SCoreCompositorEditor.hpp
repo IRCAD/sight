@@ -77,7 +77,7 @@ protected:
 
     std::vector< ::fwRenderOgre::Layer::sptr > m_layers;
     ::fwRenderOgre::Layer::sptr m_currentLayer;
-    ::fwRenderOgre::compositor::Core::sptr m_currentCore;
+    ::fwRenderOgre::compositor::Core::sptr m_currentCoreCompositor;
 
 protected Q_SLOTS:
 

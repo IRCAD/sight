@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,6 +29,7 @@ CPPUNIT_TEST( isDepthOnlyTechnique );
 CPPUNIT_TEST( getProgramSuffix );
 CPPUNIT_TEST( getR2VBGeometryProgramName );
 CPPUNIT_TEST( replaceProgramSuffix );
+CPPUNIT_TEST( replaceProgramPrefix );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,6 +44,7 @@ public:
     void getProgramSuffix();
     void getR2VBGeometryProgramName();
     void replaceProgramSuffix();
+    void replaceProgramPrefix();
 
 private:
     /// Ogre root necessary to setup up everything properly
