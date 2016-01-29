@@ -76,7 +76,7 @@ bool Shading::isDepthOnlyTechnique(const ::Ogre::Technique& _tech)
 }
 
 //-----------------------------------------------------------------------------
-std::string Shading::getProgramSuffix(::fwData::Material::ShadingType _mode, bool _diffuseTexture, bool _vertexColor)
+std::string Shading::getPermutation(::fwData::Material::ShadingType _mode, bool _diffuseTexture, bool _vertexColor)
 {
     std::string suffix;
 
@@ -150,31 +150,30 @@ std::string Shading::getR2VBGeometryProgramName(::fwData::Mesh::CellTypesEnum _p
 
 //-----------------------------------------------------------------------------
 
-std::string Shading::replaceProgramSuffix(const std::string& _prgName, const std::string& _suffix)
+std::string Shading::setPermutationInProgramName(const std::string& _name, const std::string& _permutation)
 {
     std::string prgName;
 
     // Clear the suffix in shader names (+VT+...)
     static const ::boost::regex regexConcat("\\N{plus-sign}.*(_[FV]P)", ::boost::regex::extended);
-    prgName = ::boost::regex_replace(_prgName, regexConcat, "$1");
+    prgName = ::boost::regex_replace(_name, regexConcat, "$1");
 
     // Replace the shading technique
     static const ::boost::regex regexShading("("+s_AMBIENT+")|("+s_FLAT+")|("+s_GOURAUD+")|("+s_PIXELLIGHTING+")");
-    prgName = ::boost::regex_replace(prgName, regexShading, _suffix);
+    prgName = ::boost::regex_replace(prgName, regexShading, _permutation);
 
     return prgName;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string Shading::replaceProgramPrefix(const std::string& _prgName, const std::string& _prefix)
+std::string Shading::setTechniqueInProgramName(const std::string& _name, const std::string& _tech)
 {
     std::string prgName;
 
     // Replace the technique and the pass names
     static const ::boost::regex regex(".*/");
-    prgName = ::boost::regex_replace(_prgName, regex, _prefix + "/");
-
+    prgName = ::boost::regex_replace(_name, regex, _tech + "/");
 
     return prgName;
 }

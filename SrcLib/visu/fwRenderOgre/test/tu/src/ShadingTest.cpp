@@ -216,29 +216,29 @@ void ShadingTest::isDepthOnlyTechnique()
 
 //------------------------------------------------------------------------------
 
-void ShadingTest::getProgramSuffix()
+void ShadingTest::getPermutation()
 {
     std::string suffix;
 
-    suffix = Shading::getProgramSuffix(::fwData::Material::AMBIENT, false, true);
+    suffix = Shading::getPermutation(::fwData::Material::AMBIENT, false, true);
     CPPUNIT_ASSERT_EQUAL(std::string("Ambient+VT"), suffix);
 
-    suffix = Shading::getProgramSuffix(::fwData::Material::FLAT, false, false);
+    suffix = Shading::getPermutation(::fwData::Material::FLAT, false, false);
     CPPUNIT_ASSERT_EQUAL(std::string("Flat"), suffix);
 
-    suffix = Shading::getProgramSuffix(::fwData::Material::FLAT, false, true);
+    suffix = Shading::getPermutation(::fwData::Material::FLAT, false, true);
     CPPUNIT_ASSERT_EQUAL(std::string("Flat+VT"), suffix);
 
-    suffix = Shading::getProgramSuffix(::fwData::Material::GOURAUD, true, false);
+    suffix = Shading::getPermutation(::fwData::Material::GOURAUD, true, false);
     CPPUNIT_ASSERT_EQUAL(std::string("Gouraud+DfsTex"), suffix);
 
-    suffix = Shading::getProgramSuffix(::fwData::Material::GOURAUD, true, true);
+    suffix = Shading::getPermutation(::fwData::Material::GOURAUD, true, true);
     CPPUNIT_ASSERT_EQUAL(std::string("Gouraud+VT+DfsTex"), suffix);
 
-    suffix = Shading::getProgramSuffix(::fwData::Material::PHONG, true, true);
+    suffix = Shading::getPermutation(::fwData::Material::PHONG, true, true);
     CPPUNIT_ASSERT_EQUAL(std::string("PixelLit+VT+DfsTex"), suffix);
 
-    suffix = Shading::getProgramSuffix(::fwData::Material::PHONG, false, true);
+    suffix = Shading::getPermutation(::fwData::Material::PHONG, false, true);
     CPPUNIT_ASSERT_EQUAL(std::string("PixelLit+VT"), suffix);
 
 }
@@ -270,33 +270,33 @@ void ShadingTest::getR2VBGeometryProgramName()
 
 //------------------------------------------------------------------------------
 
-void ShadingTest::replaceProgramSuffix()
+void ShadingTest::setPermutationInProgramName()
 {
     std::string prgName;
 
-    prgName = Shading::replaceProgramSuffix("Default/PixelLit+VT+DfsTex_VP", "Gouraud+DfsTex");
+    prgName = Shading::setPermutationInProgramName("Default/PixelLit+VT+DfsTex_VP", "Gouraud+DfsTex");
     CPPUNIT_ASSERT_EQUAL(std::string("Default/Gouraud+DfsTex_VP"), prgName);
 
-    prgName = Shading::replaceProgramSuffix("CelShadingDepthPeeling/peel_PixelLit+VT+DfsTex_FP", "Flat+VT");
+    prgName = Shading::setPermutationInProgramName("CelShadingDepthPeeling/peel_PixelLit+VT+DfsTex_FP", "Flat+VT");
     CPPUNIT_ASSERT_EQUAL(std::string("CelShadingDepthPeeling/peel_Flat+VT_FP"), prgName);
 
-    prgName = Shading::replaceProgramSuffix("HybridTransparency/peel_Ambient+VT_FP", "Flat");
+    prgName = Shading::setPermutationInProgramName("HybridTransparency/peel_Ambient+VT_FP", "Flat");
     CPPUNIT_ASSERT_EQUAL(std::string("HybridTransparency/peel_Flat_FP"), prgName);
 }
 
 //------------------------------------------------------------------------------
 
-void ShadingTest::replaceProgramPrefix()
+void ShadingTest::setTechniqueInProgramName()
 {
     std::string prgName;
 
-    prgName = Shading::replaceProgramPrefix("Default/PixelLit_FP", "DepthPeeling/peel");
+    prgName = Shading::setTechniqueInProgramName("Default/PixelLit_FP", "DepthPeeling/peel");
     CPPUNIT_ASSERT_EQUAL(std::string("DepthPeeling/peel/PixelLit_FP"), prgName);
 
-    prgName = Shading::replaceProgramPrefix("DepthPeeling/PeelInit/PixelLit_FP", "Default");
+    prgName = Shading::setTechniqueInProgramName("DepthPeeling/PeelInit/PixelLit_FP", "Default");
     CPPUNIT_ASSERT_EQUAL(std::string("Default/PixelLit_FP"), prgName);
 
-    prgName = Shading::replaceProgramPrefix("Default/Flat+VT_FP", "HybridTransparency/peel");
+    prgName = Shading::setTechniqueInProgramName("Default/Flat+VT_FP", "HybridTransparency/peel");
     CPPUNIT_ASSERT_EQUAL(std::string("HybridTransparency/peel/Flat+VT_FP"), prgName);
 }
 

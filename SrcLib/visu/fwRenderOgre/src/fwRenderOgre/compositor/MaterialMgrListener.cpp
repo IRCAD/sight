@@ -10,6 +10,8 @@
 
 #include <fwRenderOgre/helper/Shading.hpp>
 
+#include <OGRE/OgreHighLevelGpuProgram.h>
+#include <OGRE/OgreHighLevelGpuProgramManager.h>
 #include <OGRE/OgreTechnique.h>
 
 namespace fwRenderOgre
@@ -54,11 +56,12 @@ MaterialMgrListener::~MaterialMgrListener()
                    "' Order Independent Transparency will probably not be supported.");
         depthTech = defaultTech;
     }
+
     if(_schemeName == "CelShadingDepthPeeling/depthMap" ||
        _schemeName == "DepthPeeling/depthMap" ||
        _schemeName == "HybridTransparency/backDepth")
     {
-        newTech = copyTechnique(depthTech, _schemeName, _originalMaterial);
+        newTech = this->copyTechnique(depthTech, _schemeName, _originalMaterial);
 
         ::Ogre::Technique::PassIterator passIt = newTech->getPassIterator();
         while ( passIt.hasMoreElements() )
@@ -89,7 +92,7 @@ MaterialMgrListener::~MaterialMgrListener()
              ::Ogre::StringUtil::startsWith(_schemeName, "CelShadingDepthPeeling/peel", false) ||
              ::Ogre::StringUtil::startsWith(_schemeName, "HybridTransparency/peel", false) )
     {
-        newTech = copyTechnique(defaultTech, _schemeName, _originalMaterial);
+        newTech = this->copyTechnique(defaultTech, _schemeName, _originalMaterial);
 
         ::Ogre::Technique::PassIterator passIt = newTech->getPassIterator();
         while ( passIt.hasMoreElements() )
@@ -106,10 +109,14 @@ MaterialMgrListener::~MaterialMgrListener()
             {
                 pass->setVertexProgram("CelShadingDepthPeeling/PixelLit_VP");
             }
-            auto fpName = pass->getFragmentProgramName();
-            fpName = ::fwRenderOgre::helper::Shading::replaceProgramPrefix(fpName, algoName + "/peel");
-            pass->setFragmentProgram(fpName);
 
+            // replace fragment program and build it if needed
+            auto fpName  = pass->getFragmentProgramName();
+            auto newName = ::fwRenderOgre::helper::Shading::setTechniqueInProgramName(fpName, algoName + "/peel");
+            this->ensureFPCreated(newName, algoName, algoPassName, fpName);
+            pass->setFragmentProgram(newName);
+
+            auto numTexUnit = pass->getNumTextureUnitStates();
             ::Ogre::TextureUnitState* texState = pass->createTextureUnitState();
             texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
             texState->setTextureFiltering(::Ogre::TFO_NONE);
@@ -132,12 +139,18 @@ MaterialMgrListener::~MaterialMgrListener()
             {
                 OSLM_FATAL("DepthPeeling logical error");
             }
+
+            auto params = pass->getFragmentProgramParameters();
+            params->setNamedConstant("u_nearestDepthBuffer", numTexUnit);
+            params->setNamedAutoConstant("u_vpWidth", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_WIDTH);
+            params->setNamedAutoConstant("u_vpHeight", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_HEIGHT);
+            params->setNamedAutoConstant("u_diffuse", ::Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
         }
     }
     else if(_schemeName == "WeightedBlended/occlusionMap" ||
             _schemeName == "HybridTransparency/occlusionMap")
     {
-        newTech = copyTechnique(depthTech, _schemeName, _originalMaterial);
+        newTech = this->copyTechnique(depthTech, _schemeName, _originalMaterial);
 
         ::Ogre::Technique::PassIterator passIt = newTech->getPassIterator();
         while ( passIt.hasMoreElements() )
@@ -154,20 +167,26 @@ MaterialMgrListener::~MaterialMgrListener()
     else if(_schemeName == "WeightedBlended/weightBlend" ||
             _schemeName == "HybridTransparency/weightBlend")
     {
-        newTech = copyTechnique(defaultTech, _schemeName, _originalMaterial);
+        newTech = this->copyTechnique(defaultTech, _schemeName, _originalMaterial);
 
         ::Ogre::Technique::PassIterator passIt = newTech->getPassIterator();
         while ( passIt.hasMoreElements() )
         {
             ::Ogre::Pass* pass = passIt.getNext();
-            auto fpName = pass->getFragmentProgramName();
-            fpName = ::fwRenderOgre::helper::Shading::replaceProgramPrefix(fpName, algoName + "/weightBlend");
-            pass->setFragmentProgram(fpName);
+
+            // replace fragment program and build it if needed
+            auto fpName  = pass->getFragmentProgramName();
+            auto newName = ::fwRenderOgre::helper::Shading::setTechniqueInProgramName(fpName, algoName+ "/weightBlend");
+            this->ensureFPCreated(newName, algoName, algoPassName, fpName);
+            pass->setFragmentProgram(newName);
 
             pass->setDepthCheckEnabled(false);
             pass->setCullingMode(::Ogre::CULL_NONE);
             pass->setManualCullingMode(::Ogre::MANUAL_CULL_NONE);
             pass->setSceneBlending(::Ogre::SBT_ADD);
+
+            auto numTexUnit = pass->getNumTextureUnitStates();
+            auto params     = pass->getFragmentProgramParameters();
 
             if(algoName == "HybridTransparency")
             {
@@ -176,18 +195,26 @@ MaterialMgrListener::~MaterialMgrListener()
                 texState->setTextureFiltering(::Ogre::TFO_NONE);
                 texState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
                 texState->setCompositorReference(algoName, "pingBuffer", 1);
+
+                params->setNamedConstant("u_frontDepthBuffer", numTexUnit++);
             }
             ::Ogre::TextureUnitState* texState = pass->createTextureUnitState();
             texState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
             texState->setTextureFiltering(::Ogre::TFO_NONE);
             texState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
             texState->setCompositorReference(algoName, "occlusion", 0);
+
+            params->setNamedConstant("u_occlusionDepthBuffer", numTexUnit);
+            params->setNamedAutoConstant("u_vpWidth", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_WIDTH);
+            params->setNamedAutoConstant("u_vpHeight", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_HEIGHT);
+            params->setNamedAutoConstant("u_near", ::Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
+            params->setNamedAutoConstant("u_far", ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
         }
     }
     else if(_schemeName == "WeightedBlended/transmittanceBlend"||
             _schemeName == "HybridTransparency/transmittanceBlend")
     {
-        newTech = copyTechnique(depthTech, _schemeName, _originalMaterial);
+        newTech = this->copyTechnique(depthTech, _schemeName, _originalMaterial);
 
         ::Ogre::Technique::PassIterator passIt = newTech->getPassIterator();
         while ( passIt.hasMoreElements() )
@@ -217,7 +244,7 @@ MaterialMgrListener::~MaterialMgrListener()
     }
     else if( ::Ogre::StringUtil::startsWith(_schemeName, "DualDepthPeeling/peelInit", false) )
     {
-        newTech = copyTechnique(depthTech, _schemeName, _originalMaterial);
+        newTech = this->copyTechnique(depthTech, _schemeName, _originalMaterial);
 
         ::Ogre::Technique::PassIterator passIt = newTech->getPassIterator();
         while ( passIt.hasMoreElements() )
@@ -236,7 +263,7 @@ MaterialMgrListener::~MaterialMgrListener()
     }
     else if( ::Ogre::StringUtil::startsWith(_schemeName, "DualDepthPeeling/peel", false) )
     {
-        newTech = copyTechnique(defaultTech, _schemeName, _originalMaterial);
+        newTech = this->copyTechnique(defaultTech, _schemeName, _originalMaterial);
 
         ::Ogre::Technique::PassIterator passIt = newTech->getPassIterator();
         while ( passIt.hasMoreElements() )
@@ -249,9 +276,11 @@ MaterialMgrListener::~MaterialMgrListener()
             pass->setSceneBlending(::Ogre::SBT_ADD);
             pass->setSceneBlendingOperation(::Ogre::SBO_MAX);
 
-            auto fpName = pass->getFragmentProgramName();
-            fpName = ::fwRenderOgre::helper::Shading::replaceProgramPrefix(fpName, algoName + "/peel");
-            pass->setFragmentProgram(fpName);
+            // replace fragment program and build it if needed
+            auto fpName  = pass->getFragmentProgramName();
+            auto newName = ::fwRenderOgre::helper::Shading::setTechniqueInProgramName(fpName, algoName + "/peel");
+            this->ensureFPCreated(newName, algoName, algoPassName, fpName);
+            pass->setFragmentProgram(newName);
 
             std::string inputBuffer;
             if(algoPassName == "peelPing")
@@ -267,6 +296,8 @@ MaterialMgrListener::~MaterialMgrListener()
                 OSLM_FATAL("DualDepthPeeling logical error");
             }
 
+            auto numTexUnit = pass->getNumTextureUnitStates();
+
             // Modify texture input according to the requested pass
             for(size_t i = 0; i < 4; ++i)
             {
@@ -276,13 +307,21 @@ MaterialMgrListener::~MaterialMgrListener()
                 texState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
                 texState->setCompositorReference(algoName, inputBuffer, i == 3 ? 4 : i);
             }
+
+            auto params = pass->getFragmentProgramParameters();
+            params->setNamedConstant("u_nearestDepthBuffer", numTexUnit);
+            params->setNamedConstant("u_farthestDepthBuffer", numTexUnit + 1);
+            params->setNamedConstant("u_forwardColorBuffer", numTexUnit + 2);
+            params->setNamedConstant("u_forwardAlphasBuffer", numTexUnit + 3);
+            params->setNamedAutoConstant("u_vpWidth", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_WIDTH);
+            params->setNamedAutoConstant("u_vpHeight", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_HEIGHT);
+            params->setNamedAutoConstant("u_diffuse", ::Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
         }
     }
     else
     {
         OSLM_ERROR("not found : " << _schemeName );
     }
-
 
     return newTech;
 }
@@ -302,6 +341,75 @@ Ogre::Technique* MaterialMgrListener::copyTechnique(Ogre::Technique* _tech,
     SLM_ASSERT("Empty pass", pass);
 
     return newTech;
+}
+
+// ----------------------------------------------------------------------------
+
+::Ogre::GpuProgramPtr MaterialMgrListener::ensureFPCreated(const std::string& _name,
+                                                           const std::string& _algoName,
+                                                           const std::string& _algoPassName,
+                                                           const std::string& _baseName)
+{
+    auto& mgr = ::Ogre::HighLevelGpuProgramManager::getSingleton();
+
+    auto resource = mgr.getResourceByName(_name, "materials");
+    if( !resource.isNull() )
+    {
+        return resource.dynamicCast< ::Ogre::GpuProgram>();
+    }
+    resource = mgr.getResourceByName(_baseName, ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+    auto srcProgram = resource.dynamicCast< ::Ogre::GpuProgram>();
+
+    // Create shader object
+    ::Ogre::HighLevelGpuProgramPtr newProgram;
+    newProgram = mgr.createProgram(_name, "materials", "glsl", ::Ogre::GPT_FRAGMENT_PROGRAM);
+
+    // Set specific shader according to the algo and the pass
+    if(_algoName == "DepthPeeling")
+    {
+        newProgram->setSourceFile("DepthPeelingPeel_FP.glsl");
+        newProgram->setParameter("attach", "DepthPeelingCommon_FP");
+    }
+    else if(_algoName == "DualDepthPeeling")
+    {
+        newProgram->setSourceFile("DualDepthPeelingPeel_FP.glsl");
+        newProgram->setParameter("attach", "DepthPeelingCommon_FP");
+    }
+    else if(_algoName == "HybridTransparency")
+    {
+        if(_algoPassName == "peel" || _algoPassName == "peelInit")
+        {
+            newProgram->setSourceFile("DepthPeelingPeel_FP.glsl");
+            newProgram->setParameter("attach", "DepthPeelingCommon_FP");
+        }
+        else
+        {
+            newProgram->setSourceFile("WeightedBlended_Weight_Blend_FP.glsl");
+            newProgram->setParameter("attach", "DepthPeelingCommon_FP");
+            newProgram->setParameter("preprocessor_defines", "HYBRID=1");
+        }
+    }
+    else if(_algoName == "WeightedBlended")
+    {
+        newProgram->setSourceFile("WeightedBlended_Weight_Blend_FP.glsl");
+    }
+    else if(_algoName == "CelShadingDepthPeeling")
+    {
+        newProgram->setSourceFile("CelShadingDepthPeelingPeel_FP.glsl");
+        newProgram->setParameter("attach", "DepthPeelingCommon_FP");
+    }
+
+    // Grab previous attached shaders and add them to the new program
+    ::Ogre::String attachedShaders = srcProgram->getParameter("attach");
+    newProgram->setParameter("attach", attachedShaders);
+
+    // Copy parameters from the source program
+    const ::Ogre::GpuProgramParametersSharedPtr& baseParams = srcProgram->getDefaultParameters();
+    const ::Ogre::GpuProgramParametersSharedPtr& params     = newProgram->getDefaultParameters();
+    params->copyMatchingNamedConstantsFrom(*baseParams);
+
+    newProgram->load();
+    return ::Ogre::GpuProgramPtr(newProgram);
 }
 
 // ----------------------------------------------------------------------------

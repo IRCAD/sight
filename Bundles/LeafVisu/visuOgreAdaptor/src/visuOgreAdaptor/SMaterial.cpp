@@ -695,10 +695,11 @@ void SMaterial::doStop() throw(fwTools::Failed)
 
 void SMaterial::updateOptionsMode(int optionsMode)
 {
+    this->cleanTransparencyTechniques();
     // First remove the normals pass if there is already one
     this->removePass(s_NORMALS_PASS);
 
-    ::Ogre::Material::TechniqueIterator techIt = m_material->getSupportedTechniqueIterator();
+    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
     const ::Ogre::Real normalLength = this->computeNormalLength();
 
     if(optionsMode != ::fwData::Material::STANDARD)
@@ -732,9 +733,8 @@ void SMaterial::updateOptionsMode(int optionsMode)
 
                 if(!depthOnly)
                 {
-                    auto fpName = normalsPass->getFragmentProgramName();
-
-                    fpName = ::fwRenderOgre::helper::Shading::replaceProgramSuffix(fpName, "Edge_Normal");
+                    std::string fpName = normalsPass->getFragmentProgramName();
+                    fpName = ::fwRenderOgre::helper::Shading::setPermutationInProgramName(fpName, "Edge_Normal");
                     normalsPass->setFragmentProgram(fpName);
                 }
 
@@ -753,10 +753,12 @@ void SMaterial::updatePolygonMode(int polygonMode)
     // is null when we call this method on the first time (from doStart() for instance)
     m_material->touch();
 
+    this->cleanTransparencyTechniques();
+
     // First remove a previous normal pass if it exists
     this->removePass(s_EDGE_PASS);
 
-    ::Ogre::Material::TechniqueIterator techIt = m_material->getSupportedTechniqueIterator();
+    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
 
     if(polygonMode == ::fwData::Material::EDGE)
     {
@@ -765,32 +767,30 @@ void SMaterial::updatePolygonMode(int polygonMode)
             ::Ogre::Technique* tech = techIt.getNext();
             SLM_ASSERT("Technique is not set", tech);
 
-            if( ::fwRenderOgre::helper::Shading::isGeometricTechnique(*tech) )
+            ::Ogre::Pass* firstPass = tech->getPass(0);
+            SLM_ASSERT("No pass found", firstPass);
+
+            firstPass->setPolygonMode(::Ogre::PM_SOLID);
+            firstPass->setPointSpritesEnabled(false);
+
+            ::Ogre::Pass* edgePass = tech->getPass(s_EDGE_PASS);
+            if(!edgePass)
             {
-                ::Ogre::Pass* firstPass = tech->getPass(0);
-                SLM_ASSERT("No pass found", firstPass);
+                // We copy the first pass, thus keeping all rendering states
+                edgePass  = tech->createPass();
+                *edgePass = *firstPass;
+                edgePass->setName(s_EDGE_PASS);
 
-                firstPass->setPolygonMode(::Ogre::PM_SOLID);
-                firstPass->setPointSpritesEnabled(false);
+                // Then we switch the vertex shader...
+                edgePass->setVertexProgram("Default/Edge_VP");
 
-                ::Ogre::Pass* edgePass = tech->getPass(s_EDGE_PASS);
-                if(!edgePass)
-                {
-                    // We copy the first pass, thus keeping all rendering states
-                    edgePass  = tech->createPass();
-                    *edgePass = *firstPass;
-                    edgePass->setName(s_EDGE_PASS);
+                // ... and the fragment shader
+                std::string fpName = edgePass->getFragmentProgramName();
+                fpName = ::fwRenderOgre::helper::Shading::setPermutationInProgramName(fpName, "Edge_Normal");
+                edgePass->setFragmentProgram(fpName);
 
-                    // Then we switch the vertex shader...
-                    edgePass->setVertexProgram("Default/Edge_VP");
 
-                    // ... and the fragment shader
-                    auto fpName = edgePass->getFragmentProgramName();
-                    fpName = ::fwRenderOgre::helper::Shading::replaceProgramSuffix(fpName, "Edge_Normal");
-                    edgePass->setFragmentProgram(fpName);
-
-                    edgePass->setPolygonMode(::Ogre::PM_WIREFRAME);
-                }
+                edgePass->setPolygonMode(::Ogre::PM_WIREFRAME);
             }
         }
     }
@@ -803,35 +803,32 @@ void SMaterial::updatePolygonMode(int polygonMode)
 
             ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
 
-            if( ::fwRenderOgre::helper::Shading::isGeometricTechnique(*tech) )
+            while ( passIt.hasMoreElements() )
             {
-                while ( passIt.hasMoreElements() )
+                ::Ogre::Pass* ogrePass = passIt.getNext();
+
+                switch( polygonMode )
                 {
-                    ::Ogre::Pass* ogrePass = passIt.getNext();
+                    case ::fwData::Material::SURFACE:
+                        ogrePass->setPolygonMode(::Ogre::PM_SOLID );
+                        ogrePass->setPointSpritesEnabled(false);
+                        break;
 
-                    switch( polygonMode )
-                    {
-                        case ::fwData::Material::SURFACE:
-                            ogrePass->setPolygonMode(::Ogre::PM_SOLID );
-                            ogrePass->setPointSpritesEnabled(false);
-                            break;
+                    case ::fwData::Material::WIREFRAME:
+                        ogrePass->setPolygonMode(::Ogre::PM_WIREFRAME);
+                        break;
 
-                        case ::fwData::Material::WIREFRAME:
-                            ogrePass->setPolygonMode(::Ogre::PM_WIREFRAME);
-                            break;
+                    case ::fwData::Material::POINT:
+                        ogrePass->setPolygonMode(::Ogre::PM_POINTS);
+                        ogrePass->setPointSpritesEnabled(false);
+                        ogrePass->setPointSize(1.f);
+                        break;
 
-                        case ::fwData::Material::POINT:
-                            ogrePass->setPolygonMode(::Ogre::PM_POINTS);
-                            ogrePass->setPointSpritesEnabled(false);
-                            ogrePass->setPointSize(1.f);
-                            break;
-
-                        default:
-                            if( polygonMode != ::fwData::Material::EDGE )
-                            {
-                                SLM_ASSERT("Unhandled material representation mode : " << polygonMode, false );
-                            }
-                    }
+                    default:
+                        if( polygonMode != ::fwData::Material::EDGE )
+                        {
+                            SLM_ASSERT("Unhandled material representation mode : " << polygonMode, false );
+                        }
                 }
             }
         }
@@ -844,14 +841,16 @@ void SMaterial::updateShadingMode( int shadingMode  )
 {
     ::fwData::Material::ShadingType mode = static_cast< ::fwData::Material::ShadingType >(shadingMode);
 
-    ::Ogre::String prgSuffix;
-    prgSuffix = ::fwRenderOgre::helper::Shading::getProgramSuffix(mode, this->hasDiffuseTexture(),
+    ::Ogre::String permutation;
+    permutation = ::fwRenderOgre::helper::Shading::getPermutation(mode, this->hasDiffuseTexture(),
                                                                   m_hasVertexColor);
     ::Ogre::String r2vbGSName;
     r2vbGSName = ::fwRenderOgre::helper::Shading::getR2VBGeometryProgramName(m_primitiveType,
                                                                              this->hasDiffuseTexture(),
                                                                              m_hasVertexColor,
                                                                              m_hasPrimitiveColor);
+
+    this->cleanTransparencyTechniques();
 
     // Iterate through each technique found in the material and switch the shading mode
     ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
@@ -877,7 +876,7 @@ void SMaterial::updateShadingMode( int shadingMode  )
                 // We need a geometry shader (primitive generation and per-primitive color)
                 // and thus we rely on the render to vertex buffer pipeline
 
-                ogrePass->setVertexProgram("R2VB/" + prgSuffix + "_VP");
+                ogrePass->setVertexProgram("R2VB/" + permutation + "_VP");
                 ogrePass->setGeometryProgram(r2vbGSName);
                 ogrePass->setFragmentProgram("");
 
@@ -925,12 +924,11 @@ void SMaterial::updateShadingMode( int shadingMode  )
                     // "Regular" pipeline
 
                     std::string vpName = ogrePass->getVertexProgramName();
-                    std::string fpName = ogrePass->getFragmentProgramName();
-
-                    vpName = ::fwRenderOgre::helper::Shading::replaceProgramSuffix(vpName, prgSuffix);
-                    fpName = ::fwRenderOgre::helper::Shading::replaceProgramSuffix(fpName, prgSuffix);
-
+                    vpName = ::fwRenderOgre::helper::Shading::setPermutationInProgramName(vpName, permutation);
                     ogrePass->setVertexProgram(vpName);
+
+                    std::string fpName = ogrePass->getFragmentProgramName();
+                    fpName = ::fwRenderOgre::helper::Shading::setPermutationInProgramName(fpName, permutation);
                     ogrePass->setFragmentProgram(fpName);
 
                     if(m_texAdaptor)
@@ -1053,7 +1051,7 @@ void SMaterial::removePass(const std::string& _name)
 {
     SLM_ASSERT("Material is not set", !m_material.isNull());
 
-    ::Ogre::Material::TechniqueIterator techIt = m_material->getSupportedTechniqueIterator();
+    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
 
     while( techIt.hasMoreElements())
     {
@@ -1061,23 +1059,59 @@ void SMaterial::removePass(const std::string& _name)
         SLM_ASSERT("Technique is not set", technique);
 
         ::Ogre::Technique::PassIterator passIt = technique->getPassIterator();
-        std::vector< ::Ogre::Pass* > removeEdgePassVector;
+        std::vector< ::Ogre::Pass* > removePassVector;
 
+        // Collect the passes to remove
         while ( passIt.hasMoreElements() )
         {
             ::Ogre::Pass* ogrePass = passIt.getNext();
             if(ogrePass->getName() == _name)
             {
-                removeEdgePassVector.push_back(ogrePass);
+                removePassVector.push_back(ogrePass);
                 continue;
             }
         }
 
-        // We have to remove the edge passes
-        for(auto edgePass : removeEdgePassVector)
+        // Perform the removal
+        for(auto edgePass : removePassVector)
         {
             technique->removePass(edgePass->getIndex());
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SMaterial::cleanTransparencyTechniques()
+{
+    SLM_ASSERT("Material is not set", !m_material.isNull());
+
+    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
+
+    std::vector< unsigned short > removeTechniqueVector;
+
+    unsigned short index = 0;
+    while( techIt.hasMoreElements())
+    {
+        ::Ogre::Technique* technique = techIt.getNext();
+        SLM_ASSERT("Technique is not set", technique);
+
+        auto scheme = technique->getSchemeName();
+        if( ::Ogre::StringUtil::startsWith( scheme, "CelShadingDepthPeeling", false) ||
+            ::Ogre::StringUtil::startsWith( scheme, "DepthPeeling", false) ||
+            ::Ogre::StringUtil::startsWith( scheme, "DualDepthPeeling", false) ||
+            ::Ogre::StringUtil::startsWith( scheme, "HybridTransparency", false) ||
+            ::Ogre::StringUtil::startsWith( scheme, "WeightedBlended", false) )
+        {
+            removeTechniqueVector.push_back(index);
+        }
+        ++index;
+    }
+
+    // Remove in inverse order otherwise the index we stored becomes invalid ;-)
+    for(auto it = removeTechniqueVector.rbegin(); it != removeTechniqueVector.rend(); ++it )
+    {
+        m_material->removeTechnique(*it);
     }
 }
 

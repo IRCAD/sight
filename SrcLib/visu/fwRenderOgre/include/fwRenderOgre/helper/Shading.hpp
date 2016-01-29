@@ -54,8 +54,8 @@ public:
      * @param[in] _vertexColor is vertex color enabled ?
      * @param[in] _diffuseTexture is diffuse texture bound ?
      */
-    FWRENDEROGRE_API static std::string getProgramSuffix(::fwData::Material::ShadingType _mode, bool _diffuseTexture,
-                                                         bool _vertexColor);
+    FWRENDEROGRE_API static std::string getPermutation(::fwData::Material::ShadingType _mode, bool _diffuseTexture,
+                                                       bool _vertexColor);
 
     /**
      * @brief Constructs the name of the geometry program to use in render to vertex buffer pipeline.
@@ -69,21 +69,28 @@ public:
                                                                    bool _hasPrimitiveColor);
 
     /**
-     * @brief Replace the suffix in the program name with the suffix in parameters.
+     * @brief Modify the program name according to the permutation given in parameter.
+     *        For instance, given "HybridTransparency/peel_Ambient+VT_FP" and "Flat" permutation,
+     *        the returned program name will be "HybridTransparency/peel_Flat_FP"
      *
-     * @param[in] _prgName name of the program
-     * @param[in] _suffix new suffix to use
+     * @param[in] _name name of the program
+     * @param[in] _permutation new permutation to use
      */
-    FWRENDEROGRE_API static std::string replaceProgramSuffix(const std::string& _prgName, const std::string& _suffix);
+    FWRENDEROGRE_API static std::string setPermutationInProgramName(const std::string& _name,
+                                                                    const std::string& _permutation);
 
     /**
      * @brief Replace the prefix in the program name with the prefix in parameters.
-     *        Actually this correspond to replacing the technique and the pass name.
+     *        Actually this corresponds to replace the technique and the pass name.
      *
-     * @param[in] _prgName name of the program
+     *        For instance, given "HybridTransparency/peel_Ambient+VT_FP" and "Default" technique,
+     *        the returned program name will be "Default/Ambient+VT_FP"
+     *
+     * @param[in] _name name of the program
      * @param[in] _suffix new suffix to use
      */
-    FWRENDEROGRE_API static std::string replaceProgramPrefix(const std::string& _prgName, const std::string& prefix);
+    FWRENDEROGRE_API static std::string setTechniqueInProgramName(const std::string& _name, const std::string& _tech);
+
 };
 
 } // namespace helper

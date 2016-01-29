@@ -35,6 +35,19 @@ private:
     /// Helper function to copy the given technique and return the first pass
     ::Ogre::Technique* copyTechnique(::Ogre::Technique* _tech, const ::Ogre::String &_schemeName,
                                      ::Ogre::Material *_originalMaterial);
+
+    /**
+     * @brief Ensure that a given fragment program is created.
+     *
+     * @param[in] _name name of the program
+     * @param[in] _algoName name of the algorithm
+     * @param[in] _algoPassName new suffix to use
+     * @param[in] _baseName new suffix to use
+     */
+    FWRENDEROGRE_API static ::Ogre::GpuProgramPtr ensureFPCreated(const std::string& _name,
+                                                                  const std::string& _algoName,
+                                                                  const std::string& _algoPassName,
+                                                                  const std::string& _baseName);
 };
 
 } // namespace compositor

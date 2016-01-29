@@ -186,6 +186,11 @@ private:
     /// Remove a rendering pass in all techniques on the current material
     void removePass(const std::string& _name);
 
+    /// Remove all techniques related to order independent transparency support
+    /// Each time we have to modify the shader programs, we clean everything
+    /// and we let the MaterialMgrListener generate the techniques from the basic techniques defined in the .material
+    void cleanTransparencyTechniques();
+
     /// Associated Ogre material
     ::Ogre::MaterialPtr m_material;
     /// Material name. It is auto generated.

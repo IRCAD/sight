@@ -1,5 +1,5 @@
 #version 330
-uniform sampler2D u_bufferDepth;
+uniform sampler2D u_nearestDepthBuffer;
 uniform float u_vpWidth;
 uniform float u_vpHeight;
 uniform vec4 u_diffuse;
@@ -30,7 +30,7 @@ void main()
     vec2 texCoord = gl_FragCoord.xy / vec2( u_vpWidth, u_vpHeight );
 
     // Front depth buffer
-    float frontDepthBuffer = texture(u_bufferDepth, texCoord).r;
+    float frontDepthBuffer = texture(u_nearestDepthBuffer, texCoord).r;
 
     float currentDepth = gl_FragCoord.z;
 

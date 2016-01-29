@@ -26,10 +26,10 @@ CPPUNIT_TEST( isColorTechnique );
 CPPUNIT_TEST( isPeelTechnique );
 CPPUNIT_TEST( isGeometricTechnique );
 CPPUNIT_TEST( isDepthOnlyTechnique );
-CPPUNIT_TEST( getProgramSuffix );
+CPPUNIT_TEST( getPermutation );
 CPPUNIT_TEST( getR2VBGeometryProgramName );
-CPPUNIT_TEST( replaceProgramSuffix );
-CPPUNIT_TEST( replaceProgramPrefix );
+CPPUNIT_TEST( setPermutationInProgramName );
+CPPUNIT_TEST( setTechniqueInProgramName );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,10 +41,10 @@ public:
     void isPeelTechnique();
     void isGeometricTechnique();
     void isDepthOnlyTechnique();
-    void getProgramSuffix();
+    void getPermutation();
     void getR2VBGeometryProgramName();
-    void replaceProgramSuffix();
-    void replaceProgramPrefix();
+    void setPermutationInProgramName();
+    void setTechniqueInProgramName();
 
 private:
     /// Ogre root necessary to setup up everything properly
