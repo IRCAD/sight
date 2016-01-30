@@ -1,6 +1,17 @@
 
 //---------------------------------------------------------------------------
 
+vertex_program Render_VP glsl
+{
+    source Render_VP.glsl
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
 fragment_program DepthPeelingCommon_FP glsl
 {
     source DepthPeelingCommon_FP.glsl
@@ -15,30 +26,6 @@ fragment_program DepthPeeling/depthMap_FP glsl
     default_params
     {
         param_named_auto u_diffuse surface_diffuse_colour
-    }
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program DepthPeeling/Blend_FP glsl
-{
-    source DepthPeelingBlend_FP.glsl
-    default_params
-    {
-        param_named u_fragData0 int 0
-    }
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program DepthPeeling/Final_FP glsl
-{
-    source DepthPeelingFinal_FP.glsl
-    attach DepthPeelingCommon_FP
-    default_params
-    {
-        param_named u_fragData0 int 0
-        param_named u_fragData1 int 1
     }
 }
 
@@ -180,50 +167,6 @@ fragment_program WeightedBlended/transmittanceBlend_FP glsl
         param_named_auto u_vpWidth viewport_width
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
-    }
-}
-
-//---------------------------------------------------------------------------
-
-vertex_program Render_VP glsl
-{
-    source Render_VP.glsl
-    default_params
-    {
-        param_named_auto u_worldViewProj worldviewproj_matrix
-    }
-}
-
-//---------------------------------------------------------------------------
-
-vertex_program Default_VP glsl
-{
-    source RenderScene_VP.glsl
-    default_params
-    {
-        param_named_auto u_worldViewProj worldviewproj_matrix
-    }
-}
-
-//---------------------------------------------------------------------------
-
-vertex_program RenderQuad_VP glsl
-{
-    source RenderQuad_VP.glsl
-    default_params
-    {
-        param_named_auto u_worldViewProj worldviewproj_matrix
-    }
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program RenderQuad_FP glsl
-{
-    source RenderQuad_FP.glsl
-    default_params
-    {
-        param_named u_fragData int 0
     }
 }
 

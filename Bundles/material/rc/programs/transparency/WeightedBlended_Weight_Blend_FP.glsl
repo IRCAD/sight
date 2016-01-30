@@ -8,7 +8,7 @@ uniform sampler2D u_occlusionDepthBuffer;
 uniform float u_vpWidth;
 uniform float u_vpHeight;
 
-vec4 getMaterialColor();
+vec4 getFragmentColor();
 float unpackFloatFromVec4(vec4 value);
 
 uniform float u_near;
@@ -37,7 +37,7 @@ void main()
         discard;
     }
 
-    vec4 colorOut = getMaterialColor();
+    vec4 colorOut = getFragmentColor();
 
     float linearDepth = linearizeDepth(gl_FragCoord.z);
     linearDepth = linearDepth*2.5;

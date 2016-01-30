@@ -32,7 +32,7 @@ float windowLevel(vec4 color, float min, float max)
     return outputColor;
 }
 
-vec4 getMaterialColor()
+vec4 getFragmentColor()
 {
     vec4 color;
     if (u_orientation == 0) // Sagittal

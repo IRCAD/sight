@@ -15,7 +15,7 @@ namespace material
 {
 
 static const std::string s_MATERIAL_RESOURCEGROUP_NAME         = "materialsTemplate";
-static const std::string s_COMPOSITOR_RESOURCEGROUP_NAME       = "compositorsTemplate";
+static const std::string s_COMPOSITOR_RESOURCEGROUP_NAME       = "compositorsPostFX";
 static const std::string s_DEFAULT_MATERIAL_RESOURCEGROUP_NAME = "materials";
 
 /**

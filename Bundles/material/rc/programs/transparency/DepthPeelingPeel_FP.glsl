@@ -4,7 +4,7 @@ uniform float u_vpWidth;
 uniform float u_vpHeight;
 uniform vec4 u_diffuse;
 
-vec4 getMaterialColor();
+vec4 getFragmentColor();
 
 layout(location = 0) out vec4 frontColor;
 layout(location = 1) out vec4 frontDepth;
@@ -43,7 +43,7 @@ void main()
             discard;
         }
 
-        vec4 colorOut = getMaterialColor();
+        vec4 colorOut = getFragmentColor();
 
         colorOut.rgb *= colorOut.a;
 

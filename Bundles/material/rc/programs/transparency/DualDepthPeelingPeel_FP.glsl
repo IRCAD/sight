@@ -7,7 +7,7 @@ uniform float u_vpWidth;
 uniform float u_vpHeight;
 uniform vec4 u_diffuse;
 
-vec4 getMaterialColor();
+vec4 getFragmentColor();
 
 layout(location = 0) out vec4 frontDepth;
 layout(location = 1) out vec4 backDepth;
@@ -76,7 +76,7 @@ void main()
         return;
     }
 
-    vec4 colorOut = getMaterialColor();
+    vec4 colorOut = getFragmentColor();
 
     // If we made it here, this fragment is on the peeled layer from last pass
     // therefore, we need to shade it, and make sure it is not peeled any farther

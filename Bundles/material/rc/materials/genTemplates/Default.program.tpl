@@ -20,13 +20,6 @@ fragment_program Lighting_FP glsl
     preprocessor_defines NUM_LIGHTS=1
 }
 
-//---------------------------------------------------------------------------
-
-fragment_program DepthPeelingCommon_FP glsl
-{
-    source DepthPeelingCommon_FP.glsl
-}
-
 //-----------------------------------------------------------------------------
 // Vertex shader materials
 //-----------------------------------------------------------------------------
@@ -81,7 +74,7 @@ fragment_program MaterialColor/{{ shading }}_FP glsl
 
 fragment_program Default/{{ shading }}_FP glsl
 {
-    source Default_FP.glsl
+    source Main_FP.glsl
     attach MaterialColor/{{ shading }}_FP
     {% if shadersFP %}attach {{ shadersFP }}{% endif %}
 

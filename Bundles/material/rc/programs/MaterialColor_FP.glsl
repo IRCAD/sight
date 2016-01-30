@@ -37,7 +37,7 @@ in PixelDataIn
 uniform sampler2D u_texture;
 #endif // DIFFUSE_TEX
 
-vec4 getMaterialColor()
+vec4 getFragmentColor()
 {
 
 #ifdef PIXEL_LIT

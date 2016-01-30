@@ -20,13 +20,6 @@ fragment_program Lighting_FP glsl
     preprocessor_defines NUM_LIGHTS=1
 }
 
-//---------------------------------------------------------------------------
-
-fragment_program DepthPeelingCommon_FP glsl
-{
-    source DepthPeelingCommon_FP.glsl
-}
-
 //-----------------------------------------------------------------------------
 // Vertex shader materials
 //-----------------------------------------------------------------------------
@@ -506,7 +499,7 @@ fragment_program MaterialColor/Edge_Normal_FP glsl
 
 fragment_program Default/Ambient_FP glsl
 {
-    source Default_FP.glsl
+    source Main_FP.glsl
     attach MaterialColor/Ambient_FP
     
     default_params
@@ -518,7 +511,7 @@ fragment_program Default/Ambient_FP glsl
 
 fragment_program Default/Ambient+VT_FP glsl
 {
-    source Default_FP.glsl
+    source Main_FP.glsl
     attach MaterialColor/Ambient+VT_FP
     
     default_params
@@ -530,7 +523,7 @@ fragment_program Default/Ambient+VT_FP glsl
 
 fragment_program Default/Ambient+DfsTex_FP glsl
 {
-    source Default_FP.glsl
+    source Main_FP.glsl
     attach MaterialColor/Ambient+DfsTex_FP
     
     default_params
@@ -546,7 +539,7 @@ fragment_program Default/Ambient+DfsTex_FP glsl
 
 fragment_program Default/Ambient+VT+DfsTex_FP glsl
 {
-    source Default_FP.glsl
+    source Main_FP.glsl
     attach MaterialColor/Ambient+VT+DfsTex_FP
     
     default_params
@@ -562,7 +555,7 @@ fragment_program Default/Ambient+VT+DfsTex_FP glsl
 
 fragment_program Default/Flat_FP glsl
 {
-    source Default_FP.glsl
+    source Main_FP.glsl
     attach MaterialColor/Flat_FP
     
     default_params
@@ -574,7 +567,7 @@ fragment_program Default/Flat_FP glsl
 
 fragment_program Default/Flat+VT_FP glsl
 {
-    source Default_FP.glsl
+    source Main_FP.glsl
     attach MaterialColor/Flat+VT_FP
     
     default_params
@@ -586,7 +579,7 @@ fragment_program Default/Flat+VT_FP glsl
 
 fragment_program Default/Flat+DfsTex_FP glsl
 {
-    source Default_FP.glsl
+    source Main_FP.glsl
     attach MaterialColor/Flat+DfsTex_FP
     
     default_params
@@ -602,7 +595,7 @@ fragment_program Default/Flat+DfsTex_FP glsl
 
 fragment_program Default/Flat+VT+DfsTex_FP glsl
 {
-    source Default_FP.glsl
+    source Main_FP.glsl
     attach MaterialColor/Flat+VT+DfsTex_FP
     
     default_params
@@ -618,7 +611,7 @@ fragment_program Default/Flat+VT+DfsTex_FP glsl
 
 fragment_program Default/Gouraud_FP glsl
 {
-    source Default_FP.glsl
+    source Main_FP.glsl
     attach MaterialColor/Gouraud_FP
     
     default_params
@@ -630,7 +623,7 @@ fragment_program Default/Gouraud_FP glsl
 
 fragment_program Default/Gouraud+VT_FP glsl
 {
-    source Default_FP.glsl
+    source Main_FP.glsl
     attach MaterialColor/Gouraud+VT_FP
     
     default_params
@@ -642,7 +635,7 @@ fragment_program Default/Gouraud+VT_FP glsl
 
 fragment_program Default/Gouraud+DfsTex_FP glsl
 {
-    source Default_FP.glsl
+    source Main_FP.glsl
     attach MaterialColor/Gouraud+DfsTex_FP
     
     default_params
@@ -658,7 +651,7 @@ fragment_program Default/Gouraud+DfsTex_FP glsl
 
 fragment_program Default/Gouraud+VT+DfsTex_FP glsl
 {
-    source Default_FP.glsl
+    source Main_FP.glsl
     attach MaterialColor/Gouraud+VT+DfsTex_FP
     
     default_params
@@ -674,7 +667,7 @@ fragment_program Default/Gouraud+VT+DfsTex_FP glsl
 
 fragment_program Default/PixelLit_FP glsl
 {
-    source Default_FP.glsl
+    source Main_FP.glsl
     attach MaterialColor/PixelLit_FP
     attach Lighting_FP
     default_params
@@ -693,7 +686,7 @@ fragment_program Default/PixelLit_FP glsl
 
 fragment_program Default/PixelLit+VT_FP glsl
 {
-    source Default_FP.glsl
+    source Main_FP.glsl
     attach MaterialColor/PixelLit+VT_FP
     attach Lighting_FP
     default_params
@@ -712,7 +705,7 @@ fragment_program Default/PixelLit+VT_FP glsl
 
 fragment_program Default/PixelLit+DfsTex_FP glsl
 {
-    source Default_FP.glsl
+    source Main_FP.glsl
     attach MaterialColor/PixelLit+DfsTex_FP
     attach Lighting_FP
     default_params
@@ -735,7 +728,7 @@ fragment_program Default/PixelLit+DfsTex_FP glsl
 
 fragment_program Default/PixelLit+VT+DfsTex_FP glsl
 {
-    source Default_FP.glsl
+    source Main_FP.glsl
     attach MaterialColor/PixelLit+VT+DfsTex_FP
     attach Lighting_FP
     default_params
@@ -758,7 +751,7 @@ fragment_program Default/PixelLit+VT+DfsTex_FP glsl
 
 fragment_program Default/Edge_Normal_FP glsl
 {
-    source Default_FP.glsl
+    source Main_FP.glsl
     attach MaterialColor/Edge_Normal_FP
     
     default_params

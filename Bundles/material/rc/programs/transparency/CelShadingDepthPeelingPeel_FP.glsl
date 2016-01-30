@@ -5,7 +5,7 @@ uniform float u_vpHeight;
 uniform vec4 u_diffuse;
 in vec3 normal_VS;
 
-vec4 getMaterialColor();
+vec4 getFragmentColor();
 
 layout(location = 0) out vec4 bufferColorRG;
 layout(location = 1) out vec4 bufferDepth;
@@ -57,7 +57,7 @@ void main()
         // Depth sent to the next peel
         bufferDepth.r = currentDepth;
 
-        vec4 colorOut = getMaterialColor();
+        vec4 colorOut = getFragmentColor();
         colorOut.rgb = computeCelShading(colorOut.rgb);
 
         colorOut.rgb *= colorOut.a;

@@ -2,14 +2,6 @@
 
 //---------------------------------------------------------------------------
 
-fragment_program ClearDepth_FP glsl
-{
-    source ClearDepth.glsl
-    attach DepthPeelingCommon_FP
-}
-
-//---------------------------------------------------------------------------
-
 material ClearDepth
 {
     technique
