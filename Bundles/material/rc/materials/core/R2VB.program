@@ -221,7 +221,7 @@ geometry_program R2VB/Triangles+PPColor_GP glsl
     
     default_params
     {
-        param_named u_colorPrimitiveTexture int 10
+        param_named u_colorPrimitiveTexture int 0
         param_named u_colorPrimitiveTextureSize float2 0 0
     }
 }
@@ -236,7 +236,7 @@ geometry_program R2VB/Triangles+VT+PPColor_GP glsl
     
     default_params
     {
-        param_named u_colorPrimitiveTexture int 10
+        param_named u_colorPrimitiveTexture int 0
         param_named u_colorPrimitiveTextureSize float2 0 0
     }
 }
@@ -251,7 +251,7 @@ geometry_program R2VB/Triangles+DfsTex+PPColor_GP glsl
     
     default_params
     {
-        param_named u_colorPrimitiveTexture int 10
+        param_named u_colorPrimitiveTexture int 0
         param_named u_colorPrimitiveTextureSize float2 0 0
     }
 }
@@ -266,7 +266,7 @@ geometry_program R2VB/Triangles+VT+DfsTex+PPColor_GP glsl
     
     default_params
     {
-        param_named u_colorPrimitiveTexture int 10
+        param_named u_colorPrimitiveTexture int 0
         param_named u_colorPrimitiveTextureSize float2 0 0
     }
 }
@@ -333,7 +333,7 @@ geometry_program R2VB/Quad+PPColor_GP glsl
     uses_adjacency_information true
     default_params
     {
-        param_named u_colorPrimitiveTexture int 10
+        param_named u_colorPrimitiveTexture int 0
         param_named u_colorPrimitiveTextureSize float2 0 0
     }
 }
@@ -348,7 +348,7 @@ geometry_program R2VB/Quad+VT+PPColor_GP glsl
     uses_adjacency_information true
     default_params
     {
-        param_named u_colorPrimitiveTexture int 10
+        param_named u_colorPrimitiveTexture int 0
         param_named u_colorPrimitiveTextureSize float2 0 0
     }
 }
@@ -363,7 +363,7 @@ geometry_program R2VB/Quad+DfsTex+PPColor_GP glsl
     uses_adjacency_information true
     default_params
     {
-        param_named u_colorPrimitiveTexture int 10
+        param_named u_colorPrimitiveTexture int 0
         param_named u_colorPrimitiveTextureSize float2 0 0
     }
 }
@@ -378,7 +378,7 @@ geometry_program R2VB/Quad+VT+DfsTex+PPColor_GP glsl
     uses_adjacency_information true
     default_params
     {
-        param_named u_colorPrimitiveTexture int 10
+        param_named u_colorPrimitiveTexture int 0
         param_named u_colorPrimitiveTextureSize float2 0 0
     }
 }
@@ -445,7 +445,7 @@ geometry_program R2VB/Tetra+PPColor_GP glsl
     uses_adjacency_information true
     default_params
     {
-        param_named u_colorPrimitiveTexture int 10
+        param_named u_colorPrimitiveTexture int 0
         param_named u_colorPrimitiveTextureSize float2 0 0
     }
 }
@@ -460,7 +460,7 @@ geometry_program R2VB/Tetra+VT+PPColor_GP glsl
     uses_adjacency_information true
     default_params
     {
-        param_named u_colorPrimitiveTexture int 10
+        param_named u_colorPrimitiveTexture int 0
         param_named u_colorPrimitiveTextureSize float2 0 0
     }
 }
@@ -475,7 +475,7 @@ geometry_program R2VB/Tetra+DfsTex+PPColor_GP glsl
     uses_adjacency_information true
     default_params
     {
-        param_named u_colorPrimitiveTexture int 10
+        param_named u_colorPrimitiveTexture int 0
         param_named u_colorPrimitiveTextureSize float2 0 0
     }
 }
@@ -490,7 +490,7 @@ geometry_program R2VB/Tetra+VT+DfsTex+PPColor_GP glsl
     uses_adjacency_information true
     default_params
     {
-        param_named u_colorPrimitiveTexture int 10
+        param_named u_colorPrimitiveTexture int 0
         param_named u_colorPrimitiveTextureSize float2 0 0
     }
 }

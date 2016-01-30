@@ -57,6 +57,19 @@ MaterialMgrListener::~MaterialMgrListener()
         depthTech = defaultTech;
     }
 
+    // The R2VB material does not need to fill the OIT schemes, though Ogre get us here to know what to do
+    // We simply return the main technique in this case
+    ::Ogre::Technique::PassIterator passIt = defaultTech->getPassIterator();
+    while ( passIt.hasMoreElements() )
+    {
+        ::Ogre::Pass* pass = passIt.getNext();
+
+        if(  ::Ogre::StringUtil::startsWith(pass->getGeometryProgramName(), "R2VB/" ) )
+        {
+            return defaultTech;
+        }
+    }
+
     if(_schemeName == "CelShadingDepthPeeling/depthMap" ||
        _schemeName == "DepthPeeling/depthMap" ||
        _schemeName == "HybridTransparency/backDepth")
