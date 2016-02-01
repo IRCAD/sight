@@ -365,7 +365,7 @@ Ogre::Technique* MaterialMgrListener::copyTechnique(Ogre::Technique* _tech,
 {
     auto& mgr = ::Ogre::HighLevelGpuProgramManager::getSingleton();
 
-    auto resource = mgr.getResourceByName(_name, "materials");
+    auto resource = mgr.getResourceByName(_name, "Materials");
     if( !resource.isNull() )
     {
         return resource.dynamicCast< ::Ogre::GpuProgram>();
@@ -375,7 +375,7 @@ Ogre::Technique* MaterialMgrListener::copyTechnique(Ogre::Technique* _tech,
 
     // Create shader object
     ::Ogre::HighLevelGpuProgramPtr newProgram;
-    newProgram = mgr.createProgram(_name, "materials", "glsl", ::Ogre::GPT_FRAGMENT_PROGRAM);
+    newProgram = mgr.createProgram(_name, "Materials", "glsl", ::Ogre::GPT_FRAGMENT_PROGRAM);
 
     // Set specific shader according to the algo and the pass
     if(_algoName == "DepthPeeling")

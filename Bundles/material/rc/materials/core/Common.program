@@ -105,20 +105,6 @@ geometry_program DepthPeeling/depthMap/CellsNormalsDisplay_GP glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DualDepthPeeling/peelInit_FP glsl
-{
-    source DualDepthPeelingInit_FP.glsl
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program DualDepthPeeling_Edge_Normal_FP glsl
-{
-    source DualDepthPeelingInit_FP.glsl
-}
-
-//---------------------------------------------------------------------------
-
 fragment_program HybridTransparency/transmittanceBlend_FP glsl
 {
     source WeightedBlended_Transmittance_Blend_FP.glsl
@@ -168,6 +154,74 @@ fragment_program WeightedBlended/transmittanceBlend_FP glsl
         param_named_auto u_vpHeight viewport_height
         param_named_auto u_diffuse surface_diffuse_colour
     }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program ClearDepth_FP glsl
+{
+    source ClearDepth.glsl
+    attach DepthPeelingCommon_FP
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program RenderQuad_VP glsl
+{
+    source RenderQuad_VP.glsl
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program RenderQuad_FP glsl
+{
+    source RenderQuad_FP.glsl
+    default_params
+    {
+        param_named u_fragData int 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DepthPeeling/Blend_FP glsl
+{
+    source DepthPeelingBlend_FP.glsl
+    default_params
+    {
+        param_named u_fragData0 int 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DepthPeeling/Final_FP glsl
+{
+    source DepthPeelingFinal_FP.glsl
+    attach DepthPeelingCommon_FP
+    default_params
+    {
+        param_named u_fragData0 int 0
+        param_named u_fragData1 int 1
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DualDepthPeeling/peelInit_FP glsl
+{
+    source DualDepthPeelingInit_FP.glsl
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program DualDepthPeeling_Edge_Normal_FP glsl
+{
+    source DualDepthPeelingInit_FP.glsl
 }
 
 //---------------------------------------------------------------------------
