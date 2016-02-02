@@ -35,6 +35,16 @@ public:
         GEOMETRY
     } ShaderEnumType;
 
+    /**
+     * @name Slots API
+     * @{
+     */
+
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_FLOAT_PARAMETER_SLOT;
+
+    ///@}
+
     /// Constructor.
     VISUOGREADAPTOR_API SShaderParameter() throw();
 
@@ -91,6 +101,12 @@ private:
      * - \b m_paramType is the type (from the enum Types) of the data which values are stored in m_paramValues.
      */
     void updateValue();
+
+    /// SLOT : Set the uniform from an integer value
+    void setIntParameter(int value);
+
+    /// SLOT : Set the uniform from an float value
+    void setFloatParameter(float value);
 
     /// Contains the different parameters for the shader
     ::Ogre::GpuProgramParametersSharedPtr m_params;

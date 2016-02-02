@@ -7,6 +7,8 @@
 #include "visuOgreAdaptor/SShaderParameter.hpp"
 
 #include <fwComEd/helper/Array.hpp>
+#include <fwCom/Slots.hxx>
+
 
 #include <fwData/Array.hpp>
 #include <fwData/Boolean.hpp>
@@ -34,6 +36,9 @@ namespace visuOgreAdaptor
 
 fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SShaderParameter, ::fwData::Object);
 
+const ::fwCom::Slots::SlotKeyType SShaderParameter::s_SET_INT_PARAMETER_SLOT   = "setIntParameter";
+const ::fwCom::Slots::SlotKeyType SShaderParameter::s_SET_FLOAT_PARAMETER_SLOT = "setFloatParameter";
+
 //------------------------------------------------------------------------------
 
 SShaderParameter::SShaderParameter() throw() :
@@ -42,6 +47,8 @@ SShaderParameter::SShaderParameter() throw() :
     m_paramElemMultiple(1),
     m_shaderType(VERTEX)
 {
+    newSlot(s_SET_INT_PARAMETER_SLOT, &SShaderParameter::setIntParameter, this);
+    newSlot(s_SET_FLOAT_PARAMETER_SLOT, &SShaderParameter::setFloatParameter, this);
 }
 
 //------------------------------------------------------------------------------
@@ -101,6 +108,7 @@ void SShaderParameter::setParamName(std::string paramName)
 
 void SShaderParameter::doStart() throw(::fwTools::Failed)
 {
+    this->updateValue();
 }
 
 //------------------------------------------------------------------------------
@@ -332,11 +340,35 @@ void SShaderParameter::updateValue()
         SLM_ASSERT("The given vector object is null", vectorValue);
         OSLM_ERROR("This Type  " << objClass << " isn't supported yet.");
     }
-    else
+    else if(objClass != "::fwData::Composite")
     {
+        // We allow to work on the composite and interact with slots
         OSLM_ERROR("This Type  " << objClass << " isn't supported yet.");
     }
 }
+
+//------------------------------------------------------------------------------
+
+void SShaderParameter::setIntParameter(int value)
+{
+    m_paramValues  = new float;
+    *m_paramValues = value;
+
+    m_paramNbElem = 1;
+    m_params->setNamedConstant(m_paramName, value);
+}
+
+//------------------------------------------------------------------------------
+
+void SShaderParameter::setFloatParameter(float value)
+{
+    m_paramValues  = new float;
+    *m_paramValues = value;
+
+    m_paramNbElem = 1;
+    m_params->setNamedConstant(m_paramName, *m_paramValues);
+}
+
 //------------------------------------------------------------------------------
 
 } // namespace visuOgreAdaptor
