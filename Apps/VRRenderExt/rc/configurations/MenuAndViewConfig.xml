@@ -29,6 +29,7 @@
                 <menuItem name="DICOM PACS Reader" icon="Bundles/mediaExt_0-1/icons/Pull.svg" />
                 <menuItem name="DICOM PACS Writer" icon="Bundles/mediaExt_0-1/icons/Push.svg" />
                 <menuItem name="DICOM Filtering" icon="Bundles/mediaExt_0-1/icons/icon-DICOM-Filtering.svg" />
+                <menuItem name="Mesher CGOGN" icon="Bundles/mesherActivity_0-1/icons/cgogn.png" />
             </layout>
         </gui>
         <registry>
@@ -42,6 +43,7 @@
             <menuItem sid="${GENERIC_UID}_action_DicomPacsReader" start="yes" />
             <menuItem sid="${GENERIC_UID}_action_DicomPacsWriter" start="yes" />
             <menuItem sid="${GENERIC_UID}_action_DicomFiltering" start="yes" />
+            <menuItem sid="${GENERIC_UID}_action_MesherCGOGN" start="yes" />
         </registry>
     </service>
 

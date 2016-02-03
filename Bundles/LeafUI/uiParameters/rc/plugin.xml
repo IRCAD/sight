@@ -1,0 +1,15 @@
+<plugin id="uiParameters" class="::uiParameters::Plugin" version="@DASH_VERSION@">
+
+    <library name="uiParameters" />
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="gui" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+       <type>::gui::editor::IEditor</type>
+        <service>::uiParameters::editor::InputParameters</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+</plugin>

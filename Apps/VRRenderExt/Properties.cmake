@@ -42,6 +42,7 @@ set( REQUIREMENTS
     dicomPacsWriterActivity
     dicomFilteringActivity
     dicomAppConfig
+    mesherActivity
     media
     ioAtoms
     patchMedicalData

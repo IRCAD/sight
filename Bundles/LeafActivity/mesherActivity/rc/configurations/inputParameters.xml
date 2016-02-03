@@ -1,0 +1,64 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>mesherParametersCfg</id>
+    <parameters>
+        <param name="GENERIC_UID" />
+        <param name="MESHER_UID" />
+        <param name="CLOSE_CONFIG_CHANNEL" />
+    </parameters>
+
+    <config>
+
+        <object type="::fwData::Composite">
+
+            <service uid="${GENERIC_UID}_frame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="yes">
+                <window onclose="notify" />
+                <gui>
+                    <frame>
+                        <name>Mesher parameters</name>
+                        <style mode="STAY_ON_TOP" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="${GENERIC_UID}_input_parameters" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_input_parameters" impl="::uiParameters::editor::InputParameters" autoConnect="no">
+                <parameters>
+                    <param type="::fwData::Integer" name="Value min to mesh" key="valueMin" defaultValue="1" min="0" max = "255" />
+                    <param type="::fwData::Integer" name="Value max to mesh" key="valueMax" defaultValue="255" min="0" max = "255" />
+                    <param type="::fwData::Integer" name="Adapt" key="adapt" defaultValue="50" min="0" max = "100" />
+                    <param type="::fwData::Integer" name="Radius" key="radius" defaultValue="5" min="1" max = "100" />
+                    <param type="::fwData::Integer" name="Faces" key="faces" defaultValue="5" min="0" max = "1000000" />
+                    <param type="::fwData::Boolean" name="Faces in percent" key="percentage" defaultValue="true" />
+                    <param type="::fwData::Boolean" name="Close the mesh" key="closing" defaultValue="false" />
+                </parameters>
+            </service>
+
+            <connect>
+                <signal>${GENERIC_UID}_input_parameters/triggered</signal>
+                <slot>${MESHER_UID}/update</slot>
+            </connect>
+
+            <connect>
+                <signal>${GENERIC_UID}_input_parameters/integerChanged</signal>
+                <slot>${MESHER_UID}/setInteger</slot>
+            </connect>
+
+            <connect>
+                <signal>${GENERIC_UID}_input_parameters/booleanChanged</signal>
+                <slot>${MESHER_UID}/setBoolean</slot>
+            </connect>
+
+            <proxy channel="${CLOSE_CONFIG_CHANNEL}">
+                <signal>${GENERIC_UID}_frame/closed</signal>
+            </proxy>
+
+            <start uid="${GENERIC_UID}_frame" />
+
+
+        </object>
+
+    </config>
+</extension>
+
