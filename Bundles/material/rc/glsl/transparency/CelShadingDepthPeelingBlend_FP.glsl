@@ -3,7 +3,6 @@
 in vec2 uv;
 uniform sampler2D u_bufferColor;
 uniform sampler2D u_bufferDepth;
-uniform sampler2D u_bufferAlpha;
 uniform sampler2D u_bufferNormal;
 uniform vec4 u_invTexSize;
 uniform float u_near;
@@ -30,8 +29,8 @@ float linearizeDepth(in float depth) {
 
 //---------------------------------------------------------------------------------------------------------------------
 
-vec2 unpackColor(float value);
-vec3 unpackNormal(float value);
+vec3 unpackNormal(vec3 packedNormal);
+float unpackFloatFromVec4(vec4 value);
 
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -46,9 +45,10 @@ vec3 computeFilterInterpolateWithDistance(sampler2D map, float[9] filters)
     float lowPass = u_near + depthRange * lowPercent;
     float highCut = u_near + depthRange * highPercent;
 
-    float centerDepth = linearizeDepth(texture(u_bufferDepth, uv).r);
+    float depth = unpackFloatFromVec4(texture(u_bufferDepth, uv));
+    float centerDepth = linearizeDepth(depth);
 
-    vec3 centerPixel = normalize(unpackNormal(texture(map, uv).r) * 2.0 - 1.0);
+    vec3 centerPixel = unpackNormal(texture(map, uv).xyz);
     vec3 currentPixel, interpolatedPixel;
 
     // Compute linear function for interpolation coefficient
@@ -61,7 +61,7 @@ vec3 computeFilterInterpolateWithDistance(sampler2D map, float[9] filters)
 
     for(int i = 0; i < 9; i++)
     {
-        currentPixel = normalize(unpackNormal(texture(map, uv + (offs[i] * u_invTexSize.rg) ).r) * 2.0 - 1.0);
+        currentPixel = unpackNormal(texture(map, uv + (offs[i] * u_invTexSize.rg) ).xyz);
 
         if (centerDepth < lowPercent)
         {
@@ -171,8 +171,11 @@ float computeSobel() {
 void main()
 {
     float sobel = 1.;
-    if(texture(u_bufferDepth, uv).r!=1.)
+    float frontDepthBuffer = unpackFloatFromVec4(texture(u_bufferDepth, uv));
+    if( frontDepthBuffer != 1. )
+    {
         sobel = computeSobel();
-    vec4 colorOut = vec4(unpackColor(texture(u_bufferColor, uv).r), unpackColor(texture(u_bufferAlpha, uv).r));
+    }
+    vec4 colorOut = texture(u_bufferColor, uv);
     FragColor = vec4(colorOut.rgb*sobel, colorOut.a);
 }

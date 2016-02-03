@@ -1,4 +1,4 @@
-#version 150
+#version 410
 
 layout(triangles) in;
 
@@ -21,10 +21,9 @@ in VertexDataIn
 
 #    ifndef DEPTH
 uniform vec4 u_normalColor;
-out VertexDataOut
-{
-    vec4 oColor;
-} vertexOut;
+
+// Output semantics
+layout(location = 2) out vec4 outColor;
 
 #    endif
 
@@ -40,7 +39,7 @@ void main()
             gl_Position = u_worldViewProj * P;
 
 #        ifndef DEPTH
-            vertexOut.oColor = u_normalColor;
+            outColor = u_normalColor;
 #        endif
 
             EmitVertex();
@@ -49,7 +48,7 @@ void main()
             gl_Position = u_worldViewProj * (P + vec4(N, 0.) * u_normalLength);
 
 #        ifndef DEPTH
-            vertexOut.oColor = u_normalColor;
+            outColor = u_normalColor;
 #        endif
 
             EmitVertex();
@@ -75,7 +74,7 @@ void main()
         gl_Position = u_worldViewProj * P;
 
 #        ifndef DEPTH
-            vertexOut.oColor = u_normalColor;
+            outColor = u_normalColor;
 #        endif
 
         EmitVertex();
@@ -84,7 +83,7 @@ void main()
         gl_Position = u_worldViewProj * (P + vec4(N, 0.) * u_normalLength);
 
 #        ifndef DEPTH
-            vertexOut.oColor = u_normalColor;
+            outColor = u_normalColor;
 #        endif
 
         EmitVertex();

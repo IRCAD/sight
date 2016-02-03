@@ -2,17 +2,6 @@
 
 //---------------------------------------------------------------------------
 
-fragment_program CelShadingDepthPeeling/depthMap_FP glsl
-{
-        source CelShadingDepthPeelingDepthMap_FP.glsl
-        default_params
-        {
-            param_named_auto u_diffuse surface_diffuse_colour
-        }
-}
-
-//---------------------------------------------------------------------------
-
 fragment_program CelShadingDepthPeeling/Blend_FP glsl
 {
         source CelShadingDepthPeelingBlend_FP.glsl
@@ -21,54 +10,11 @@ fragment_program CelShadingDepthPeeling/Blend_FP glsl
         {
                 param_named u_bufferColor int 0
                 param_named u_bufferDepth int 1
-                param_named u_bufferAlpha int 2
-                param_named u_bufferNormal int 3
+                param_named u_bufferNormal int 2
                 param_named_auto u_invTexSize inverse_texture_size 0
                 param_named_auto u_near near_clip_distance
                 param_named_auto u_far far_clip_distance
         }
-}
-
-//---------------------------------------------------------------------------
-
-fragment_program CelShadingDepthPeeling/Final_FP glsl
-{
-        source CelShadingDepthPeelingFinal_FP.glsl
-        default_params
-        {
-                param_named u_fragData0 int 0
-                param_named u_fragData1 int 1
-        }
-}
-
-//---------------------------------------------------------------------------
-
-material CelShadingDepthPeeling/Final
-{
-    technique
-    {
-        pass final
-        {
-            vertex_program_ref RenderQuad_VP
-            {
-            }
-
-            fragment_program_ref CelShadingDepthPeeling/Final_FP
-            {
-            }
-
-            texture_unit
-            {
-                tex_address_mode clamp
-                filtering none
-            }
-            texture_unit
-            {
-                tex_address_mode clamp
-                filtering none
-            }
-        }
-    }
 }
 
 //---------------------------------------------------------------------------
@@ -95,11 +41,6 @@ material CelShadingDepthPeeling/Blend
             {
             }
 
-            texture_unit
-            {
-                tex_address_mode clamp
-                filtering none
-            }
             texture_unit
             {
                 tex_address_mode clamp

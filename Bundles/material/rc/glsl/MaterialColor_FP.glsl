@@ -1,53 +1,46 @@
-#version 150
+#version 410
 
+// Uniforms
 #ifdef DIFFUSE_TEX
 uniform int u_useTextureAlpha;
 #endif // DIFFUSE_TEX
 
+// Extern functions
 #ifdef PIXEL_LIT
 vec4 lighting(vec3 _normal, vec3 _position);
 #endif // PIXEL_LIT
 
-in PixelDataIn
-{
+// Input semantics
+layout(location = 0) in vec3 inNormal_WS;
+
 #ifdef PIXEL_LIT
+layout(location = 1) in vec3 inPosition_WS;
+ #endif
 
-    vec3 oPosition_WS;
-    vec3 oNormal_WS;
-    vec4 oColor;
-
-#else
-
-#   ifdef FLAT
-    flat vec4 oColor;
+#ifdef FLAT
+flat layout(location = 2) in vec4 inColor;
 #   else
-    vec4 oColor;
+layout(location = 2) in vec4 inColor;
 #   endif // FLAT
 
-#endif // PIXEL_LIT
-
-#ifdef DIFFUSE_TEX
-    vec2 oTexCoord;
-#endif // DIFFUSE_TEX
-
-} pixelIn;
-
+layout(location = 3) in vec2 inTexCoord;
 
 #ifdef DIFFUSE_TEX
 uniform sampler2D u_texture;
 #endif // DIFFUSE_TEX
 
+// Compute illumination or forward illumination received from the vertex shader
 vec4 getFragmentColor()
 {
 
 #ifdef PIXEL_LIT
-    vec4 colorOut = lighting(normalize(pixelIn.oNormal_WS), pixelIn.oPosition_WS) * pixelIn.oColor;
+    vec4 colorOut = lighting(normalize(inNormal_WS), inPosition_WS) * inColor;
 #else
-    vec4 colorOut = pixelIn.oColor;
+    vec4 colorOut = inColor;
 #endif
 
 #ifdef DIFFUSE_TEX
-    vec4 colorTex = texture(u_texture, pixelIn.oTexCoord);
+    vec4 colorTex = texture(u_texture, inTexCoord);
 
     if(u_useTextureAlpha == 0)
     {

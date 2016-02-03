@@ -70,8 +70,7 @@ MaterialMgrListener::~MaterialMgrListener()
         }
     }
 
-    if(_schemeName == "CelShadingDepthPeeling/depthMap" ||
-       _schemeName == "DepthPeeling/depthMap" ||
+    if(_schemeName == "DepthPeeling/depthMap" ||
        _schemeName == "HybridTransparency/backDepth")
     {
         newTech = this->copyTechnique(depthTech, _schemeName, _originalMaterial);
@@ -84,16 +83,7 @@ MaterialMgrListener::~MaterialMgrListener()
             pass->setCullingMode(::Ogre::CULL_NONE);
             pass->setManualCullingMode(::Ogre::MANUAL_CULL_NONE);
             pass->setSceneBlending(::Ogre::SBT_REPLACE);
-
-            if(algoName == "CelShadingDepthPeeling" )
-            {
-                auto fpName = pass->getFragmentProgramName();
-                pass->setFragmentProgram("CelShadingDepthPeeling/depthMap_FP");
-            }
-            else
-            {
-                pass->setFragmentProgram("DepthPeeling/depthMap_FP");
-            }
+            pass->setFragmentProgram("DepthPeeling/depthMap_FP");
 
             if(algoName == "HybridTransparency")
             {
@@ -120,7 +110,9 @@ MaterialMgrListener::~MaterialMgrListener()
             if(algoName == "CelShadingDepthPeeling" && pass->getName() != "NormalsPass" &&
                pass->getName() != "EdgePass")
             {
-                pass->setVertexProgram("CelShadingDepthPeeling/PixelLit_VP");
+                auto vpName  = pass->getVertexProgramName();
+                auto newName = ::fwRenderOgre::helper::Shading::setTechniqueInProgramName(vpName, algoName);
+                pass->setVertexProgram(newName);
             }
 
             // replace fragment program and build it if needed
@@ -410,6 +402,10 @@ Ogre::Technique* MaterialMgrListener::copyTechnique(Ogre::Technique* _tech,
     {
         newProgram->setSourceFile("CelShadingDepthPeelingPeel_FP.glsl");
         newProgram->setParameter("attach", "DepthPeelingCommon_FP");
+    }
+    else
+    {
+        OSLM_FATAL("Unreachable code");
     }
 
     // Grab previous attached shaders and add them to the new program

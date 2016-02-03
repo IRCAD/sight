@@ -1,12 +1,19 @@
+
+//-----------------------------------------------------------------------------
+
 vertex_program myFractalVertexShader glsl
 {
   source Fractal_VP.glsl
 }
 
+//-----------------------------------------------------------------------------
+
 fragment_program myFractalFragmentShader glsl
 {
   source Fractal_FP.glsl
 }
+
+//-----------------------------------------------------------------------------
 
 // Template material for fractal
 material Fractal

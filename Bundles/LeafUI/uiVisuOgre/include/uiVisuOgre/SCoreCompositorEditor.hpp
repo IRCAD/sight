@@ -82,7 +82,6 @@ protected:
 protected Q_SLOTS:
 
     void onSelectedLayerItem(int index);
-    void onUseCelShading(int state);
     void onEditTransparencyDepth(int depth);
     void onEditTransparency(int index);
 
@@ -94,17 +93,18 @@ private:
     QPointer<QComboBox> m_layersBox;
     QPointer<QSlider> m_transparencyDepthSlider;
     QPointer<QComboBox> m_comboBox;
-    QPointer<QCheckBox> m_useCelShadingCheckBox;
     QRadioButton* m_buttonDefault;
     QRadioButton* m_buttonDepthPeeling;
     QRadioButton* m_buttonDualDepthPeeling;
     QRadioButton* m_buttonWeightedBlendedOIT;
     QRadioButton* m_buttonHybridTransparency;
+    QRadioButton* m_buttonCelShadingDepthPeeling;
     QLabel* m_labelDefault;
     QLabel* m_labelDepthPeeling;
     QLabel* m_labelDualDepthPeeling;
     QLabel* m_labelWeightedBlendedOIT;
     QLabel* m_labelHybridTransparency;
+    QLabel* m_labelCelShadingDepthPeeling;
     bool m_isLayerSelected;
 };
 

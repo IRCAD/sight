@@ -1,11 +1,12 @@
-#version 150
+#version 410
 
 uniform mat4 u_worldView;
 uniform mat4 u_proj;
 uniform vec4 u_diffuse;
 
 in vec4 vertex;
-out vec4 oColor;
+
+layout(location = 2) out vec4 outColor;
 
 void main()
 {
@@ -14,5 +15,5 @@ void main()
     gl_Position = u_proj * position;
 
     // Default to black, only keep opacity setting
-    oColor = vec4(0, 0, 0, u_diffuse.a);
+    outColor = vec4(0, 0, 0, u_diffuse.a);
 }

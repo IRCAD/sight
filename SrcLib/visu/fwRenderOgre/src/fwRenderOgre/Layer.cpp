@@ -58,7 +58,6 @@ Layer::Layer() :
     m_rawCompositorChain(""),
     m_coreCompositor(nullptr),
     m_transparencyTechnique(DEFAULT),
-    m_useCelShading(false),
     m_numPeels(8),
     m_compositorChainManager(),
     m_depth(1),
@@ -594,8 +593,7 @@ void Layer::setBackgroundScale(float topScale, float botScale)
 
 //-------------------------------------------------------------------------------------
 
-void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechnique,
-                                     std::string useCelShading, std::string numPeels)
+void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechnique, std::string numPeels)
 {
     m_hasCoreCompositor = enabled;
     if(transparencyTechnique != "")
@@ -603,6 +601,10 @@ void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechn
         if(transparencyTechnique == "DepthPeeling")
         {
             m_transparencyTechnique = DEPTHPEELING;
+        }
+        else if(transparencyTechnique == "CelShadingDepthPeeling")
+        {
+            m_transparencyTechnique = CELSHADING_DEPTHPEELING;
         }
         else if(transparencyTechnique == "DualDepthPeeling")
         {
@@ -622,10 +624,6 @@ void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechn
         }
     }
 
-    if(useCelShading == "yes")
-    {
-        m_useCelShading = true;
-    }
     if(!numPeels.empty())
     {
         m_numPeels = std::stoi(numPeels);
@@ -668,7 +666,6 @@ void Layer::setupCore()
     m_coreCompositor = fwRenderOgre::compositor::Core::New();
     m_coreCompositor->setViewport(m_viewport);
     m_coreCompositor->setTransparencyTechnique(m_transparencyTechnique);
-    m_coreCompositor->setCelShadingActivated(m_useCelShading);
     m_coreCompositor->setTransparencyDepth(m_numPeels);
     m_coreCompositor->update();
 }

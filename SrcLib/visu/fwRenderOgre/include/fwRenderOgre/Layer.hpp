@@ -171,7 +171,7 @@ public:
 
     /// Sets if this layer need a layer's 3D scene
     FWRENDEROGRE_API void setCoreCompositorEnabled(bool enabled, std::string transparencyTechnique = "",
-                                                   std::string useCelShading = "", std::string numPeels = "");
+                                                   std::string numPeels = "");
 
     /// Sets if this layer has a configured compositor chain
     FWRENDEROGRE_API void setCompositorChainEnabled(bool hasCoreChain, std::string compositorChain);
@@ -235,9 +235,6 @@ private:
 
     /// Ogre default compositor default transparency technique
     transparencyTechnique m_transparencyTechnique;
-
-    /// Ogre default compositor default cel shading behavior
-    bool m_useCelShading;
 
     int m_numPeels;
 

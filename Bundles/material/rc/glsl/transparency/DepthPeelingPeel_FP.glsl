@@ -1,14 +1,17 @@
 #version 330
+
+// Uniforms
 uniform sampler2D u_nearestDepthBuffer;
 uniform float u_vpWidth;
 uniform float u_vpHeight;
 uniform vec4 u_diffuse;
 
-vec4 getFragmentColor();
-
+// Output render targets
 layout(location = 0) out vec4 frontColor;
 layout(location = 1) out vec4 frontDepth;
 
+// Extern functions
+vec4 getFragmentColor();
 vec4 packFloatToVec4(float value);
 float unpackFloatFromVec4(vec4 value);
 

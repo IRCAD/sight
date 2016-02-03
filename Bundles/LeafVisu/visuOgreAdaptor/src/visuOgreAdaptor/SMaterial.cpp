@@ -632,6 +632,7 @@ void SMaterial::swapTexture()
     ::Ogre::TexturePtr currentTexture = m_texAdaptor->getTexture();
     SLM_ASSERT("Texture not set in Texture adaptor", !currentTexture.isNull());
 
+    this->cleanTransparencyTechniques();
 
     ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
     while( techIt.hasMoreElements())
@@ -646,10 +647,6 @@ void SMaterial::swapTexture()
 
             if(texUnitState)
             {
-                // This needs to be done *first* before setting the texture,
-                // otherwise the texture does'nt show up :/
-                technique->_notifyNeedsRecompile();
-
                 texUnitState->setTexture(currentTexture);
             }
             else
@@ -666,9 +663,6 @@ void SMaterial::swapTexture()
 
     this->requestRender();
 }
-
-
-
 
 //------------------------------------------------------------------------------
 
@@ -1025,10 +1019,6 @@ void SMaterial::removeTextureAdaptor()
             ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("diffuseTexture");
             if(texUnitState)
             {
-                // This needs to be done *first* before setting the texture,
-                // otherwise the texture does'nt show up :/
-                technique->_notifyNeedsRecompile();
-
                 texUnitState->setTextureName("");
             }
         }
