@@ -11,7 +11,7 @@ See [documentation](http://fw4spl-doc.readthedocs.org/) for more details.
 Install
 =======
 
-See how to install fw4spl [here](http://fw4spl-doc.readthedocs.org/en/fw4spl_0.10.2/Installation/index.html)
+See how to install fw4spl [here](http://fw4spl-doc.readthedocs.org/en/fw4spl_0.11.0/Installation/index.html)
 
 Documentation
 =============
