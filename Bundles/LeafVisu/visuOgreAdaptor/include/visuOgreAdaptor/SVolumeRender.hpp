@@ -51,13 +51,9 @@ private:
 
     Polygon cubePlaneIntersection(const ::Ogre::Vector3& _planeNormal, const ::Ogre::Vector3& _planeVertex, const unsigned closestVertexIndex) const;
 
-    void orderVertices(Polygon& _polygon, const ::Ogre::Vector3& _normal) const;
-
     unsigned closestVertex(::Ogre::Plane& cameraPlane) const;
 
-    void updateSlice(Polygon &_polygon, unsigned _sliceIndex);
-
-    ::Ogre::ManualObject * makeRenderablePolygon(const Polygon& _slice, const unsigned id);
+    void updateSlice(Polygon& _polygon, unsigned _sliceIndex);
 
     ::Ogre::SceneManager *m_sceneManager;
 

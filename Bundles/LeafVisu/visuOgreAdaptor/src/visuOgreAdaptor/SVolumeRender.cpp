@@ -27,19 +27,9 @@ public:
     {
     }
 
-//    void objectMoved(Ogre::MovableObject *)
-//    {
-//        m_parent->doUpdate();
-//    }
-
     void cameraPreRenderScene(Ogre::Camera *)
     {
         m_parent->doUpdate();
-    }
-
-    bool objectRendering(const Ogre::MovableObject *obj, const Ogre::Camera *)
-    {
-        std::cout << obj->getName() << std::endl;
     }
 
 private:
@@ -48,7 +38,7 @@ private:
 };
 
 // /!\ TODO: Hardcoded variables, must be removed later
-const uint16_t SVolumeRender::s_NB_SLICES = 512;
+const uint16_t SVolumeRender::s_NB_SLICES = 1024;
 
 //-----------------------------------------------------------------------------
 
@@ -94,9 +84,8 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 
     m_intersectingPolygons = m_sceneManager->createManualObject("Slices");
 
-//    createSlices();
     initSlices();
-    createSlices();
+    updateAllSlices();
 }
 
 //-----------------------------------------------------------------------------
@@ -109,7 +98,7 @@ void SVolumeRender::doStop() throw ( ::fwTools::Failed )
 
 void SVolumeRender::doUpdate() throw ( ::fwTools::Failed )
 {
-    createSlices();
+    updateAllSlices();
 }
 
 //-----------------------------------------------------------------------------
@@ -164,7 +153,7 @@ void SVolumeRender::initSlices()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::createSlices()
+void SVolumeRender::updateAllSlices()
 {
     ::Ogre::Vector3 planeNormal    = m_camera->getRealDirection();
     ::Ogre::Vector3 cameraPosition = m_camera->getRealPosition();
@@ -184,12 +173,6 @@ void SVolumeRender::createSlices()
 
     ::Ogre::Plane cameraPlane(planeNormal, cameraPosition);
 
-    // sort cube vertices according to their distance to the camera plane
-//    auto distanceToPlaneComparator =  [&cameraPlane] (const ::Ogre::Vector3& v1, const ::Ogre::Vector3& v2)
-//            { return cameraPlane.getDistance(v1) < cameraPlane.getDistance(v2); };
-
-//    std::sort(worldSpaceCubePositions, worldSpaceCubePositions + 8, distanceToPlaneComparator);
-
     unsigned closest = closestVertex(cameraPlane);
 
     ::Ogre::Vector3 closestVertexToCamera  = m_worldSpaceCubePositions[closest];
@@ -202,16 +185,6 @@ void SVolumeRender::createSlices()
 
     float distanceBetweenSlices =  distanceBetweenClosestAndFuthest / s_NB_SLICES;
 
-//    m_volumeSceneNode->detachAllObjects();
-
-//    for(auto slice : m_intersectingPolygons)
-//    {
-////        delete slice->getSection(0);
-//        m_sceneManager->destroyManualObject(slice);
-////        delete slice;
-//    }
-//    m_intersectingPolygons.clear();
-
     ::Ogre::Vector3 planeVertex = furthestVertexToCamera - planeNormal * distanceBetweenSlices;
 
     for(uint16_t sliceNumber = s_NB_SLICES - 1; sliceNumber > 0; --sliceNumber)
@@ -220,21 +193,7 @@ void SVolumeRender::createSlices()
 
         if(intersections.size() >= 3)
         {
-            // create renderable polygon and add it to the scene and render queue
-            // use hardware buffer or ManualObject
             updateSlice(intersections, sliceNumber);
-//            ::Ogre::ManualObject *renderablePolygon = makeRenderablePolygon(intersections, sliceNumber);
-
-//            m_volumeSceneNode->attachObject(renderablePolygon);
-//            m_intersectingPolygons.push_back(renderablePolygon);
-
-//            ::Ogre::Renderable *slice = renderablePolygon->getSection(0);
-
-//            m_sceneRenderQueue->addRenderable(
-//                        slice,
-//                        ::Ogre::RENDER_QUEUE_MAIN,
-//                        sliceNumber //Priority level
-//            );
         }
 
         planeVertex -= planeNormal * distanceBetweenSlices;
@@ -265,8 +224,6 @@ unsigned SVolumeRender::closestVertex(::Ogre::Plane& cameraPlane) const
 
 void SVolumeRender::updateSlice(Polygon& _polygon ,unsigned _sliceIndex)
 {
-//    ::Ogre::Renderable *slice = renderablePolygon->getSection(sliceIndex);
-
     ::Ogre::Vector3 center(0, 0, 0);
 
     for(unsigned i = 0; i < _polygon.size(); ++ i)
@@ -376,75 +333,6 @@ SVolumeRender::Polygon SVolumeRender::cubePlaneIntersection(const ::Ogre::Vector
 //    orderVertices(intersections, _planeNormal);
 
     return intersections;
-}
-
-//-----------------------------------------------------------------------------
-
-static inline ::Ogre::Radian angleBetween(const ::Ogre::Vector3& v1, const ::Ogre::Vector3& v2, const ::Ogre::Vector3& normal)
-{
-    ::Ogre::Vector3 n = v1.crossProduct(v2);
-
-    bool direction = std::signbit(n.dotProduct(normal));
-
-    const ::Ogre::Radian twoPi = ::Ogre::Radian(2.f * M_PI);
-    ::Ogre::Radian angle = v1.angleBetween(v2);
-
-    return direction ? twoPi - angle : angle;
-}
-
-//-----------------------------------------------------------------------------
-
-void SVolumeRender::orderVertices(Polygon& _polygon, const ::Ogre::Vector3& _normal) const
-{
-    ::Ogre::Vector3 center(0, 0, 0);
-
-    for(unsigned i = 0; i < _polygon.size(); ++ i)
-    {
-        center += _polygon[i];
-    }
-    center /= static_cast<float>(_polygon.size());
-
-    ::Ogre::Vector3 first = _polygon[0] - center;
-
-    auto angleComparator = [&first, &center, &_normal] (const ::Ogre::Vector3& v1, const ::Ogre::Vector3& v2)
-            { return angleBetween(first, v1 - center, _normal) < angleBetween(first, v2 - center, _normal); } ;
-
-    std::sort(_polygon.begin() + 1, _polygon.end(), angleComparator);
-}
-
-//-----------------------------------------------------------------------------
-
-Ogre::ManualObject* SVolumeRender::makeRenderablePolygon(const Polygon& _slice, const unsigned _id)
-{
-    ::Ogre::Vector3 sliceCenter(0, 0, 0);
-
-    for(unsigned i = 0; i < _slice.size(); ++ i)
-    {
-        sliceCenter += _slice[i];
-    }
-    sliceCenter /= static_cast<float>(_slice.size());
-
-    std::string name = "Slice_" + ::boost::lexical_cast<std::string>(_id);
-
-    ::Ogre::ManualObject *renderablePolygon =
-            m_sceneManager->createManualObject(name);
-
-    renderablePolygon->clear();
-
-    renderablePolygon->begin("test", ::Ogre::RenderOperation::OT_TRIANGLE_LIST);
-
-    const size_t nbVertices = _slice.size();
-
-    for(unsigned i = 0; i < nbVertices ; ++ i)
-    {
-        renderablePolygon->position(sliceCenter);
-        renderablePolygon->position(_slice[i]);
-        renderablePolygon->position(_slice[(i + 1) % nbVertices]);
-    }
-
-    renderablePolygon->end();
-
-    return renderablePolygon;
 }
 
 //-----------------------------------------------------------------------------
