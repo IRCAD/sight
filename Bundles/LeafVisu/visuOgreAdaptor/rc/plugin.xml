@@ -84,4 +84,11 @@
         <desc>service description</desc>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderOgre::IAdaptor</type>
+        <service>::visuOgreAdaptor::SVolumeRender</service>
+        <object>::fwData::Image</object>
+        <desc>service description</desc>
+    </extension>
+
 </plugin>
