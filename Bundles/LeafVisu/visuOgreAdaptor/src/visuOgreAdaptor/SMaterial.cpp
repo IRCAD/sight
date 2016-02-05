@@ -514,6 +514,7 @@ void SMaterial::doConfigure() throw(fwTools::Failed)
 
 void SMaterial::doStart() throw(fwTools::Failed)
 {
+
     if(!m_shadingMode.empty())
     {
         ::fwData::Material::ShadingType shadingMode = ::fwData::Material::PHONG;
@@ -537,6 +538,14 @@ void SMaterial::doStart() throw(fwTools::Failed)
 
     m_material = ::Ogre::MaterialManager::getSingleton().create(
         m_materialName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+    ::fwData::String::sptr string = ::fwData::String::New();
+    string->setValue(m_materialTemplateName);
+
+    ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
+    ::fwComEd::helper::Field helper(material);
+    helper.setField("ogreMaterial", string);
+    helper.notify();
 
     this->loadMaterialParameters();
 
@@ -617,8 +626,7 @@ void SMaterial::updateField( ::fwData::Object::FieldsContainerType fields )
 
             this->unregisterServices("::visuOgreAdaptor::SShaderParameter");
             this->loadMaterialParameters();
-
-            this->requestRender();
+            this->doUpdate();
         }
     }
 }

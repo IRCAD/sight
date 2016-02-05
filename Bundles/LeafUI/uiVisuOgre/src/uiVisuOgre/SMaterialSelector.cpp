@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -52,7 +52,6 @@ SMaterialSelector::~SMaterialSelector() throw()
 
 void SMaterialSelector::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     this->create();
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
@@ -89,18 +88,16 @@ void SMaterialSelector::starting() throw(::fwTools::Failed)
 
     container->setLayout( layout );
 
+    this->updating();
+
     QObject::connect(m_materialBox, SIGNAL(activated(const QString &)), this,
                      SLOT(onSelectedModeItem(const QString &)));
-
-    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
 void SMaterialSelector::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     QObject::disconnect(m_materialBox, SIGNAL(activated(const QString &)), this,
                         SLOT(onSelectedModeItem(const QString &)));
 
