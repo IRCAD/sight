@@ -184,7 +184,6 @@ void SNegato3D::doConfigure() throw(::fwTools::Failed)
 
 void SNegato3D::doUpdate() throw(::fwTools::Failed)
 {
-
     this->requestRender();
 }
 

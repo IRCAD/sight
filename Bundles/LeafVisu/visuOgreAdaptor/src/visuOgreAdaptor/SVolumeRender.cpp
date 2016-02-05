@@ -2,15 +2,24 @@
 
 #include <boost/lexical_cast.hpp>
 
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hxx>
+
 #include <fwData/Image.hpp>
 
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 
 #include <OGRE/OgreCamera.h>
+#include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreManualObject.h>
+#include <OGRE/OgreMaterial.h>
+#include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgrePlane.h>
 #include <OGRE/OgreSceneNode.h>
+#include <OGRE/OgreTextureManager.h>
+#include <OGRE/OgreTechnique.h>
 
 #include <sstream>
 
@@ -37,8 +46,9 @@ private:
 
 };
 
-// /!\ TODO: Hardcoded variables, must be removed later
-const uint16_t SVolumeRender::s_NB_SLICES = 1024;
+//-----------------------------------------------------------------------------
+
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWIMAGE_SLOT   = "newImage";
 
 //-----------------------------------------------------------------------------
 
@@ -46,8 +56,11 @@ SVolumeRender::SVolumeRender() throw() :
     m_volumeSceneNode      (nullptr),
     m_sceneRenderQueue     (nullptr),
     m_camera               (nullptr),
-    m_intersectingPolygons (nullptr)
+    m_intersectingPolygons (nullptr),
+    m_nbSlices             (512)
 {
+    this->installTFSlots(this);
+    newSlot(s_NEWIMAGE_SLOT, &SVolumeRender::newImage, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -70,19 +83,38 @@ void SVolumeRender::doConfigure() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
+fwServices::IService::KeyConnectionsType SVolumeRender::getObjSrvConnections() const
+{
+    ::fwServices::IService::KeyConnectionsType connections;
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT ) );
+    return connections;
+}
+
+//-----------------------------------------------------------------------------
+
 void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 {
-    m_sceneManager = this->getSceneManager();
-    m_volumeSceneNode = m_sceneManager->getRootSceneNode()->createChildSceneNode();
+    m_sceneManager     = this->getSceneManager();
+    m_volumeSceneNode  = m_sceneManager->getRootSceneNode()->createChildSceneNode();
     m_sceneRenderQueue = m_sceneManager->getRenderQueue();
-    m_camera = m_sceneManager->getCamera("PlayerCam");
+    m_camera           = m_sceneManager->getCamera("PlayerCam");
 
 //    ::Ogre::MovableObject *movableCamera = dynamic_cast< ::Ogre::MovableObject * >(m_camera);
     m_camera->addListener(new CameraMotionListener(this));
 
     m_volumeSceneNode->setPosition(0, 0, 0);
 
-    m_intersectingPolygons = m_sceneManager->createManualObject("Slices");
+    m_3DOgreTexture = ::Ogre::TextureManager::getSingletonPtr()->create(
+        this->getID() + "_Texture",
+        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+        true);
+
+    ::Ogre::MaterialPtr volumeMtl = ::Ogre::MaterialManager::getSingletonPtr()->getByName("SliceVolume");
+    ::Ogre::TextureUnitState *texState = volumeMtl->getTechnique(0)->getPass(0)->getTextureUnitState("image");
+
+    SLM_ASSERT("'image' texture unit is not found", texState);
+
+    texState->setTexture(m_3DOgreTexture);
 
     initSlices();
     updateAllSlices();
@@ -122,21 +154,21 @@ void SVolumeRender::initSlices()
         m_sceneManager->destroyManualObject(m_intersectingPolygons);
     }
 
-    m_intersectingPolygons = m_sceneManager->createManualObject("Slices");
+    m_intersectingPolygons = m_sceneManager->createManualObject("__VolumeRenderSlices__");
 
-    // create s_NB_SLICES slices
-    m_intersectingPolygons->estimateVertexCount(3 * 6 * s_NB_SLICES);
+    // create m_nbSlices slices
+    m_intersectingPolygons->estimateVertexCount(6 * m_nbSlices);
 
-    for(uint16_t sliceNumber = 0; sliceNumber < s_NB_SLICES; ++ sliceNumber)
+    for(uint16_t sliceNumber = 0; sliceNumber < m_nbSlices; ++ sliceNumber)
     {
-        m_intersectingPolygons->begin("test", ::Ogre::RenderOperation::OT_TRIANGLE_LIST);
-
-        // initialize slice with 6 triangles
-        for(unsigned i = 0; i < 6 ; ++ i)
+        m_intersectingPolygons->begin("SliceVolume", ::Ogre::RenderOperation::OT_TRIANGLE_STRIP);
         {
-            m_intersectingPolygons->position(0, 0, 0);
-            m_intersectingPolygons->position(0, 0, 0);
-            m_intersectingPolygons->position(0, 0, 0);
+            // initialize slice with a 4 triangle strip
+            for(unsigned i = 0; i < 6 ; ++ i)
+            {
+                m_intersectingPolygons->position(0, 0, 0);
+                m_intersectingPolygons->textureCoord(0, 0, 0);
+            }
         }
         m_intersectingPolygons->end();
 
@@ -154,61 +186,68 @@ void SVolumeRender::initSlices()
 //-----------------------------------------------------------------------------
 
 void SVolumeRender::updateAllSlices()
-{
-    ::Ogre::Vector3 planeNormal    = m_camera->getRealDirection();
-    ::Ogre::Vector3 cameraPosition = m_camera->getRealPosition();
-
-    planeNormal.normalise();
-
+{    
     // set transform for testing only
     m_transform = ::Ogre::Matrix4::IDENTITY;
-//    m_transform.setScale(::Ogre::Vector3(2.f, 2.f, 2.f));
-//    ::Ogre::Matrix4 rot(::Ogre::Quaternion(::Ogre::Radian(45), ::Ogre::Vector3(0.5, 0.5, 0.5)));
-//    m_transform = rot * m_transform;
 
+    // intersections are done in world space
     for(int i = 0; i < 8; ++i)
     {
         m_worldSpaceCubePositions[i] = m_transform * m_boundingCubePositions[i];
     }
 
+    ::Ogre::Vector3 planeNormal    = m_camera->getRealDirection();
+    ::Ogre::Vector3 cameraPosition = m_camera->getRealPosition();
+
+    planeNormal.normalise();
+
     ::Ogre::Plane cameraPlane(planeNormal, cameraPosition);
 
-    unsigned closest = closestVertex(cameraPlane);
+    // get the cube's closest and furthest vertex to the camera
+    unsigned closestVtxIndex = closestVertexIndex(cameraPlane);
 
-    ::Ogre::Vector3 closestVertexToCamera  = m_worldSpaceCubePositions[closest];
-    ::Ogre::Vector3 furthestVertexToCamera = m_worldSpaceCubePositions[7];
+    auto comp = [&cameraPlane](const ::Ogre::Vector3& v1, const ::Ogre::Vector3& v2)
+            { return cameraPlane.getDistance(v1) < cameraPlane.getDistance(v2); };
 
-    float closestVtxDistanceToCamera  = cameraPlane.getDistance(closestVertexToCamera);
-    float furthestVtxDistanceToCamera = cameraPlane.getDistance(furthestVertexToCamera);
+    ::Ogre::Vector3 furthestVtx = *std::max_element(m_worldSpaceCubePositions, m_worldSpaceCubePositions + 8, comp);
+    ::Ogre::Vector3 closestVtx  = m_worldSpaceCubePositions[ closestVtxIndex ];
 
-    float distanceBetweenClosestAndFuthest = std::abs(closestVtxDistanceToCamera - furthestVtxDistanceToCamera);
+    // get distance between slices
+    float closestVtxDistance  = cameraPlane.getDistance(closestVtx);
+    float furthestVtxDistance = cameraPlane.getDistance(furthestVtx);
 
-    float distanceBetweenSlices =  distanceBetweenClosestAndFuthest / s_NB_SLICES;
+    float firstToLastSliceDistance = std::abs(closestVtxDistance - furthestVtxDistance);
 
-    ::Ogre::Vector3 planeVertex = furthestVertexToCamera - planeNormal * distanceBetweenSlices;
+    float distanceBetweenSlices =  firstToLastSliceDistance / m_nbSlices;
 
-    for(uint16_t sliceNumber = s_NB_SLICES - 1; sliceNumber > 0; --sliceNumber)
+    // set first plane
+    ::Ogre::Vector3 planeVertex = furthestVtx - planeNormal * distanceBetweenSlices;
+
+    // compute all slices
+    for(uint16_t sliceNumber = m_nbSlices - 1; sliceNumber > 0; --sliceNumber)
     {
-        Polygon intersections = cubePlaneIntersection(planeNormal, planeVertex, closest);
+        Polygon intersections = cubePlaneIntersection(planeNormal, planeVertex, closestVtxIndex);
 
-        if(intersections.size() >= 3)
+        if(intersections.m_vertices.size() >= 3)
         {
             updateSlice(intersections, sliceNumber);
         }
 
+        // set next plane
         planeVertex -= planeNormal * distanceBetweenSlices;
     }
-
 }
 
-unsigned SVolumeRender::closestVertex(::Ogre::Plane& cameraPlane) const
+//-----------------------------------------------------------------------------
+
+unsigned SVolumeRender::closestVertexIndex(const ::Ogre::Plane& _cameraPlane) const
 {
     int min = 0;
-    float minDist = cameraPlane.getDistance(m_worldSpaceCubePositions[0]);
+    float minDist = _cameraPlane.getDistance(m_worldSpaceCubePositions[0]);
 
     for(int i = 1; i < 8; ++ i)
     {
-        float dist = cameraPlane.getDistance(m_worldSpaceCubePositions[i]);
+        float dist = _cameraPlane.getDistance(m_worldSpaceCubePositions[i]);
 
         if(dist < minDist)
         {
@@ -222,25 +261,30 @@ unsigned SVolumeRender::closestVertex(::Ogre::Plane& cameraPlane) const
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateSlice(Polygon& _polygon ,unsigned _sliceIndex)
+void SVolumeRender::updateSlice(const Polygon& _polygon ,const unsigned _sliceIndex)
 {
-    ::Ogre::Vector3 center(0, 0, 0);
+    const size_t nbVertices = _polygon.m_vertices.size();
 
-    for(unsigned i = 0; i < _polygon.size(); ++ i)
-    {
-        center += _polygon[i];
-    }
-    center /= static_cast<float>(_polygon.size());
-
-    const size_t nbVertices = _polygon.size();
-
+    // triangulate polygon into a triangle strip
     m_intersectingPolygons->beginUpdate(_sliceIndex);
     {
-        for(unsigned i = 0; i < nbVertices ; ++ i)
+        m_intersectingPolygons->position( _polygon.m_vertices[1] );
+        m_intersectingPolygons->textureCoord( _polygon.m_textureUVW[1] );
+        m_intersectingPolygons->position( _polygon.m_vertices[0] );
+        m_intersectingPolygons->textureCoord( _polygon.m_textureUVW[0] );
+        m_intersectingPolygons->position( _polygon.m_vertices[2] );
+        m_intersectingPolygons->textureCoord( _polygon.m_textureUVW[2] );
+
+        for(unsigned i = 0; i < nbVertices - 3; ++ i)
         {
-            m_intersectingPolygons->position(center);
-            m_intersectingPolygons->position(_polygon[i]);
-            m_intersectingPolygons->position(_polygon[(i + 1) % nbVertices]);
+            m_intersectingPolygons->position( _polygon.m_vertices[nbVertices - 1 - i] );
+            m_intersectingPolygons->textureCoord( _polygon.m_textureUVW[nbVertices - 1 - i] );
+
+            if(i + 3 < nbVertices - 1)
+            {
+                m_intersectingPolygons->position( _polygon.m_vertices[i + 3] );
+                m_intersectingPolygons->textureCoord( _polygon.m_textureUVW[i + 3] );
+            }
         }
     }
     m_intersectingPolygons->end();
@@ -248,34 +292,56 @@ void SVolumeRender::updateSlice(Polygon& _polygon ,unsigned _sliceIndex)
 
 //-----------------------------------------------------------------------------
 
-bool SVolumeRender::planeEdgeIntersection(const ::Ogre::Vector3& _planeNormal, const ::Ogre::Vector3& _planeVertex,
-                                          const ::Ogre::Vector3& _edgePoint0, const ::Ogre::Vector3& _edgePoint1,
-                                          ::Ogre::Vector3& result) const
+bool SVolumeRender::planeEdgeIntersection(const ::Ogre::Vector3& _planeNormal,
+                                          const ::Ogre::Vector3& _planeVertex,
+                                          const unsigned _edgeVertexIndex0,
+                                          const unsigned _edgeVertexIndex1,
+                                          Polygon& _result
+                                         ) const
 {
     bool planeIntersectsEdge = false;
 
-    if(_planeNormal.dotProduct(_edgePoint1 - _edgePoint0) != 0) // plane and edge are not parallel
+    const ::Ogre::Vector3 edgePoint0 = m_worldSpaceCubePositions[_edgeVertexIndex0];
+    const ::Ogre::Vector3 edgePoint1 = m_worldSpaceCubePositions[_edgeVertexIndex1];
+
+    const ::Ogre::Vector3 uvw0 = m_boundingCubePositions[_edgeVertexIndex0];
+    const ::Ogre::Vector3 uvw1 = m_boundingCubePositions[_edgeVertexIndex1];
+
+    if(_planeNormal.dotProduct(edgePoint1 - edgePoint0) != 0) // plane and edge are not parallel
     {
         // intersectPoint represents the intersection point on the parametric line
         // S(r) = _egdePoint0 + r * (_edgePoint1 - _edgePoint0)
-        ::Ogre::Real intersectPoint = _planeNormal.dotProduct(_planeVertex - _edgePoint0)
-                / _planeNormal.dotProduct(_edgePoint1 - _edgePoint0);
+        ::Ogre::Real intersectPoint = _planeNormal.dotProduct(_planeVertex - edgePoint0)
+                / _planeNormal.dotProduct(edgePoint1 - edgePoint0);
 
-        result = _edgePoint0 + intersectPoint * (_edgePoint1 - _edgePoint0);
+        planeIntersectsEdge = (intersectPoint >= 0) && (intersectPoint <= 1);
 
-        planeIntersectsEdge = (intersectPoint > 0) && (intersectPoint < 1);
-    } //TODO: else check if _planeVertex == _edgePoint0 or _edgePoint1
+        if(planeIntersectsEdge)
+        {
+            const ::Ogre::Vector3 position = edgePoint0 + intersectPoint * (edgePoint1 - edgePoint0);
+            const ::Ogre::Vector3 uvw      = uvw0       + intersectPoint * (uvw1       - uvw0      );
+
+            _result.m_vertices.push_back(position);
+            _result.m_textureUVW.push_back(uvw);
+        }
+    }
+    //TODO: else check if _planeVertex == _edgePoint0 or _edgePoint1
 
     return planeIntersectsEdge;
 }
 
 //-----------------------------------------------------------------------------
 
-SVolumeRender::Polygon SVolumeRender::cubePlaneIntersection(const ::Ogre::Vector3& _planeNormal, const ::Ogre::Vector3& _planeVertex, const unsigned closestVertexIndex) const
+SVolumeRender::Polygon SVolumeRender::cubePlaneIntersection(const ::Ogre::Vector3& _planeNormal,
+                                                            const ::Ogre::Vector3& _planeVertex,
+                                                            const unsigned _closestVertexIndex) const
 {
     Polygon intersections;
-    intersections.reserve(6); // there is a maximum of 6 intersections
+    intersections.m_vertices.reserve(6); // there is a maximum of 6 intersections
+    intersections.m_textureUVW.reserve(6);
 
+    // sequence[i] represents the order in which we must traverse
+    // the cube's edges starting with the ith vertex
     const unsigned sequences[8][8] = {
         { 0, 1, 2, 3, 4, 5, 6, 7 },
         { 1, 4, 5, 0, 3, 7, 2, 6 },
@@ -295,44 +361,52 @@ SVolumeRender::Polygon SVolumeRender::cubePlaneIntersection(const ::Ogre::Vector
     for(int pathNum = 0; pathNum < 3; ++ pathNum)
     {
         bool hasIntersection = false;
-
-        ::Ogre::Vector3 intersection;
-        ::Ogre::Vector3 v1, v2;
+        unsigned v1, v2;
 
         const unsigned path[] = {
-            sequences[closestVertexIndex][0],
-            sequences[closestVertexIndex][pathNum + 1],
-            sequences[closestVertexIndex][pathNum + 4],
-            sequences[closestVertexIndex][7]
+            sequences[_closestVertexIndex][0],
+            sequences[_closestVertexIndex][pathNum + 1],
+            sequences[_closestVertexIndex][pathNum + 4],
+            sequences[_closestVertexIndex][7],
+            sequences[_closestVertexIndex][ lastEdge[ pathNum ] ]
         };
 
         for(int i = 0; i < 3 && !hasIntersection; ++ i)
         {
-            v1 = m_worldSpaceCubePositions[ path[i    ] ];
-            v2 = m_worldSpaceCubePositions[ path[i + 1] ];
+            v1 = path[i    ];
+            v2 = path[i + 1];
 
-            hasIntersection = planeEdgeIntersection(_planeNormal, _planeVertex, v1, v2, intersection);
-
-            if(hasIntersection)
-            {
-                intersections.push_back(intersection);
-            }
+            hasIntersection = planeEdgeIntersection(_planeNormal, _planeVertex, v1, v2, intersections);
         }
 
-        const unsigned lastEdgeIndex = sequences[ closestVertexIndex ][ lastEdge[pathNum] ];
+        v1 = path[1];
+        v2 = path[4];
 
-        v1 = m_worldSpaceCubePositions[ path[ 1 ]     ];
-        v2 = m_worldSpaceCubePositions[ lastEdgeIndex ];
-
-        if( hasIntersection && planeEdgeIntersection(_planeNormal, _planeVertex, v1, v2, intersection) )
+        if( hasIntersection )
         {
-            intersections.push_back(intersection);
+            planeEdgeIntersection(_planeNormal, _planeVertex, v1, v2, intersections);
         }
     }
 
-//    orderVertices(intersections, _planeNormal);
-
     return intersections;
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::newImage()
+{
+    this->updateImageInfos(this->getObject< ::fwData::Image >());
+
+    this->getRenderService()->makeCurrent();
+
+    ::fwData::Image::sptr image = this->getImage();
+
+    // Retrieves or creates the slice index fields
+    this->updateImageInfos(image);
+
+    ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------

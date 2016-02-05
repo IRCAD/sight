@@ -1,11 +1,17 @@
 #ifndef __VISUOGREADAPTOR_SVOLUMERENDER_HPP__
 #define __VISUOGREADAPTOR_SVOLUMERENDER_HPP__
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slots.hpp>
+
+#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgrePolygon.h>
+#include <OGRE/OgreTexture.h>
 
 #include <vector>
 
@@ -14,11 +20,14 @@
 namespace visuOgreAdaptor
 {
 class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
-                                                public ::fwRenderOgre::ITransformable
+                                                public ::fwRenderOgre::ITransformable,
+                                                public ::fwComEd::helper::MedicalImageAdaptor
 {
 public:
 
     fwCoreServiceClassDefinitionsMacro ( (SVolumeRender)(::fwRenderOgre::IAdaptor) );
+
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT;
 
     VISUOGREADAPTOR_API SVolumeRender() throw();
     VISUOGREADAPTOR_API virtual ~SVolumeRender() throw();
@@ -33,11 +42,17 @@ protected:
     VISUOGREADAPTOR_API virtual void doUpdate() throw ( ::fwTools::Failed );
     VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
 
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
+
 private:
 
     friend class CameraMotionListener;
 
-    typedef std::vector< ::Ogre::Vector3 > Polygon;
+    struct Polygon
+    {
+        std::vector< ::Ogre::Vector3 > m_vertices;
+        std::vector< ::Ogre::Vector3 > m_textureUVW;
+    };
 
     void createTransformService();
 
@@ -45,15 +60,17 @@ private:
 
     void updateAllSlices();
 
+    void updateSlice(const Polygon& _polygon, const unsigned _sliceIndex);
+
+    unsigned closestVertexIndex(const ::Ogre::Plane& _cameraPlane) const;
+
     bool planeEdgeIntersection(const ::Ogre::Vector3& _planeNormal, const ::Ogre::Vector3& _planeVertex,
-                               const ::Ogre::Vector3& _edgePoint0, const ::Ogre::Vector3& _edgePoint1,
-                               ::Ogre::Vector3& result) const;
+                               const unsigned _edgeVertexIndex0, const unsigned _edgeVertexIndex1,
+                               Polygon& _result) const;
 
-    Polygon cubePlaneIntersection(const ::Ogre::Vector3& _planeNormal, const ::Ogre::Vector3& _planeVertex, const unsigned closestVertexIndex) const;
+    Polygon cubePlaneIntersection(const ::Ogre::Vector3& _planeNormal, const ::Ogre::Vector3& _planeVertex, const unsigned _closestVertexIndex) const;
 
-    unsigned closestVertex(::Ogre::Plane& cameraPlane) const;
-
-    void updateSlice(Polygon& _polygon, unsigned _sliceIndex);
+    void newImage();
 
     ::Ogre::SceneManager *m_sceneManager;
 
@@ -63,12 +80,14 @@ private:
 
     ::Ogre::Camera *m_camera;
 
-    ::Ogre::ManualObject* m_intersectingPolygons;
+    ::Ogre::ManualObject *m_intersectingPolygons;
+
+    ::Ogre::TexturePtr m_3DOgreTexture;
 
     ::Ogre::Vector3 m_worldSpaceCubePositions[8];
 
-    // /!\ TODO: Hardcoded variables, must be removed later
-    static const uint16_t s_NB_SLICES;
+    uint16_t m_nbSlices;
+
     ::Ogre::Vector3 m_boundingCubePositions[8] = {
         ::Ogre::Vector3(1, 1, 1),
         ::Ogre::Vector3(1, 0, 1),
