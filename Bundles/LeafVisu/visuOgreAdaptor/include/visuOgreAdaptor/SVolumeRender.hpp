@@ -56,6 +56,8 @@ private:
 
     void createTransformService();
 
+    void scaleCube(const ::fwData::Image::SpacingType& spacing);
+
     void initSlices();
 
     void updateAllSlices();

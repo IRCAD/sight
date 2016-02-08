@@ -61,6 +61,9 @@ SVolumeRender::SVolumeRender() throw() :
 {
     this->installTFSlots(this);
     newSlot(s_NEWIMAGE_SLOT, &SVolumeRender::newImage, this);
+
+    // set transform for testing only
+    m_transform = ::Ogre::Matrix4::IDENTITY;
 }
 
 //-----------------------------------------------------------------------------
@@ -147,6 +150,24 @@ void SVolumeRender::createTransformService()
 
 //-----------------------------------------------------------------------------
 
+void SVolumeRender::scaleCube(const fwData::Image::SpacingType& spacing)
+{
+    double width  = static_cast< double > (m_3DOgreTexture->getWidth() ) * spacing[0];
+    double height = static_cast< double > (m_3DOgreTexture->getHeight()) * spacing[1];
+    double depth  = static_cast< double > (m_3DOgreTexture->getDepth() ) * spacing[2];
+
+    double maxDim = std::max(width, std::max(height, depth));
+
+    ::Ogre::Vector3 scaleFactors(
+                width  / maxDim,
+                height / maxDim,
+                depth  / maxDim);
+
+    m_transform.setScale(scaleFactors);
+}
+
+//-----------------------------------------------------------------------------
+
 void SVolumeRender::initSlices()
 {
     if(m_intersectingPolygons)
@@ -157,7 +178,7 @@ void SVolumeRender::initSlices()
     m_intersectingPolygons = m_sceneManager->createManualObject("__VolumeRenderSlices__");
 
     // create m_nbSlices slices
-    m_intersectingPolygons->estimateVertexCount(6 * m_nbSlices);
+    m_intersectingPolygons->estimateVertexCount(6 /** m_nbSlices*/ * 2);
 
     for(uint16_t sliceNumber = 0; sliceNumber < m_nbSlices; ++ sliceNumber)
     {
@@ -187,9 +208,6 @@ void SVolumeRender::initSlices()
 
 void SVolumeRender::updateAllSlices()
 {    
-    // set transform for testing only
-    m_transform = ::Ogre::Matrix4::IDENTITY;
-
     // intersections are done in world space
     for(int i = 0; i < 8; ++i)
     {
@@ -224,7 +242,7 @@ void SVolumeRender::updateAllSlices()
     ::Ogre::Vector3 planeVertex = furthestVtx - planeNormal * distanceBetweenSlices;
 
     // compute all slices
-    for(uint16_t sliceNumber = m_nbSlices - 1; sliceNumber > 0; --sliceNumber)
+    for(uint16_t sliceNumber = 0; sliceNumber < m_nbSlices; ++ sliceNumber)
     {
         Polygon intersections = cubePlaneIntersection(planeNormal, planeVertex, closestVtxIndex);
 
@@ -405,6 +423,8 @@ void SVolumeRender::newImage()
     this->updateImageInfos(image);
 
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
+
+    scaleCube(image->getSpacing());
 
     this->requestRender();
 }
