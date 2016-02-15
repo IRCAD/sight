@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -107,21 +107,23 @@ void SMatrixTLSynchronizer::synchronize()
 
                 ::fwTools::Object::sptr obj                   = ::fwTools::fwID::getObject(el.second);
                 ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::dynamicCast(obj);
-
-                SLM_ASSERT("Matrix '" + el.second + "' not found.", matrix);
-                matrixPrint << std::endl << "Matrix : " << el.second << std::endl;
-
-                for(unsigned int i = 0; i < 4; ++i)
                 {
-                    for(unsigned int j = 0; j < 4; ++j)
+                    ::fwData::mt::ObjectWriteLock lock(matrix);
+
+                    SLM_ASSERT("Matrix '" + el.second + "' not found.", matrix);
+                    matrixPrint << std::endl << "Matrix : " << el.second << std::endl;
+
+                    for(unsigned int i = 0; i < 4; ++i)
                     {
-                        matrix->setCoefficient(i,j,values[i*4+j]);
-                        matrixPrint << values[i*4+j] << " ; ";
+                        for(unsigned int j = 0; j < 4; ++j)
+                        {
+                            matrix->setCoefficient(i,j,values[i*4+j]);
+                            matrixPrint << values[i*4+j] << " ; ";
 
+                        }
+                        matrixPrint << std::endl;
                     }
-                    matrixPrint << std::endl;
                 }
-
                 auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(
                     ::fwData::Object::s_MODIFIED_SIG);
                 sig->asyncEmit();

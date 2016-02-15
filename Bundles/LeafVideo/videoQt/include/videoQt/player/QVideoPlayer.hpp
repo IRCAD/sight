@@ -52,7 +52,8 @@ public:
 
     VIDEOQT_API void initCameraStream(const std::string& strVideoUrl);
 
-    VIDEOQT_API void initCameraDevice(const std::string& cameraID, size_t width, size_t height, float maximumFrameRate);
+    VIDEOQT_API void initCameraDevice(const std::string& cameraID, size_t width, size_t height, float maximumFrameRate,
+                                      ::QVideoFrame::PixelFormat pxFormat);
 
 Q_SIGNALS:
 

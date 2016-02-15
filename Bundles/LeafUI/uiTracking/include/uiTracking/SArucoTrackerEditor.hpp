@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -106,14 +106,6 @@ public:
      * @brief Updating method : This method is used to update the service.
      */
     UITRACKING_API void updating() throw (fwTools::Failed);
-
-protected:
-
-    /**
-     * @brief Add a new point acquisition.
-     * @param[in] capture Composite containing the point acquisitions from the two cameras.
-     */
-    UITRACKING_API void update();
 
 protected Q_SLOTS:
 

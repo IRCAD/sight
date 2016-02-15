@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,19 +8,24 @@
 #define __VIDEOQT_SFRAMEGRABBER_HPP__
 
 #include "videoQt/config.hpp"
-#include <fwTools/Failed.hpp>
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
 #include <fwServices/IController.hpp>
+
+#include <fwTools/Failed.hpp>
+
 #include <videoQt/player/QVideoPlayer.hpp>
 
 #include <QObject>
 #include <QPointer>
 #include <QImage>
 
-fwCorePredeclare( (arData)(Camera) )
+namespace arData
+{
+class Camera;
+}
 
 namespace videoQt
 {
@@ -87,11 +92,11 @@ protected:
     VIDEOQT_API virtual void updating() throw(::fwTools::Failed);
 
     /**
-     * @verbatim
+     * @code{.xml}
        <service uid="${GENERIC_UID}_VideoGrabber" impl="::videoQt::SFrameGrabber" autoConnect="no">
            <cameraFwId>cameraID</cameraFwId>
        </service>
-       @endverbatim
+       @endcode
      * - \b cameraFwId: fwID of the arData::Camera used to display video.
      **/
     VIDEOQT_API virtual void configuring() throw( ::fwTools::Failed );
@@ -159,5 +164,3 @@ private:
 } // namespace videoQt
 
 #endif /*__VIDEOQT_SFRAMEGRABBER_HPP__*/
-
-

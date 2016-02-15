@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -81,13 +81,13 @@ protected:
      * @brief Configure the service
      *
      * Example of this service configuration with two calibration informations.
-     * @verbatim
+     * @code{.xml}
      *
        <service impl="::uiCalibration::SDisplayCalibrationInfo" type="::fwServices::IController">
            <CalInfo1>calInfo1</CalInfo1>
            <CalInfo2>calInfo2</CalInfo2>
        </service>
-        @endverbatim
+        @endcode
      * It MUST have at least one calibration tag and at most two calibration tags.
      */
 

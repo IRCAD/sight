@@ -43,7 +43,7 @@ public:
     /// destructor
     VIDEOQT_API ~CameraDeviceDlg();
 
-    VIDEOQT_API bool getSelectedCamera( SPTR(::arData::Camera) camera);
+    VIDEOQT_API bool getSelectedCamera( SPTR(::arData::Camera)& camera);
 
 private Q_SLOTS:
 

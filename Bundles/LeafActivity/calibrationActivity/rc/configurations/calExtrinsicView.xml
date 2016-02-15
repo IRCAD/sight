@@ -213,7 +213,7 @@
                 <framerate>30</framerate>
             </service>
 
-            <service uid="${GENERIC_UID}_camera1" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+            <service uid="${GENERIC_UID}_camera1" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                 <scene renderMode="timer">
                     <renderer id="default" background="0.0" />
                     <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="frame1">
@@ -225,7 +225,7 @@
                 </scene>
             </service>
 
-            <service uid="${GENERIC_UID}_camera2" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes">
+            <service uid="${GENERIC_UID}_camera2" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
                 <scene renderMode="timer">
                     <renderer id="default" background="0.0" />
                     <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="frame2">

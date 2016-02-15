@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -81,10 +81,9 @@ SVideoAdapter::~SVideoAdapter() throw()
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::configuring() throw(fwTools::Failed)
+void SVideoAdapter::doConfigure() throw(fwTools::Failed)
 {
     assert(m_configuration->getName() == "config");
-    this->setRenderId( m_configuration->getAttributeValue("renderer") );
 
     m_cameraUID = m_configuration->getAttributeValue("cameraUID");
 
@@ -110,13 +109,8 @@ void SVideoAdapter::doStart() throw(fwTools::Failed)
         m_actor->RotateZ(180);
         m_actor->RotateY(180);
     }
-    this->setVtkPipelineModified();
-    this->doUpdate();
-    if (this->getPicker())
-    {
-        this->addToPicker(m_actor);
-    }
 
+    // Set camera pointer, it will be used if present in doUpdate()
     if (!m_cameraUID.empty())
     {
         ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_cameraUID);
@@ -125,6 +119,13 @@ void SVideoAdapter::doStart() throw(fwTools::Failed)
 
         m_connections->connect(m_camera, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG,
                                this->getSptr(), s_CALIBRATE_SLOT);
+    }
+
+    this->doUpdate();
+
+    if (this->getPicker())
+    {
+        this->addToPicker(m_actor);
     }
 }
 
@@ -171,7 +172,6 @@ void SVideoAdapter::doUpdate() throw(fwTools::Failed)
         this->getRenderer()->GetActiveCamera()->ParallelProjectionOn();
         this->getRenderer()->ResetCamera();
         this->getRenderer()->GetActiveCamera()->SetParallelScale(size[1] / 2.0);
-
         this->offsetOpticalCenter();
     }
 

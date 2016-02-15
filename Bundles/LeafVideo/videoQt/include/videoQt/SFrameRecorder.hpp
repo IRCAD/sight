@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -79,10 +79,11 @@ protected:
     VIDEOQT_API virtual void updating() throw(::fwTools::Failed);
 
     /**
-     * @verbatim
+     * @code{.xml}
        <service impl="::videoQt::SFrameRecorder" autoConnect="yes">
-        <path>...</path>
+           <path>...</path>
        </service>
+       @endcode
      * - \b path: path to the directory where the frames are saved
      **/
     VIDEOQT_API virtual void configuring() throw( ::fwTools::Failed );

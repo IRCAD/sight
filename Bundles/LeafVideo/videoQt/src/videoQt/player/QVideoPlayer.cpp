@@ -5,16 +5,19 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "videoQt/player/QVideoPlayer.hpp"
-#include "videoQt/player/QVideoSurface.hpp"
 
 #include <fwCore/spyLog.hpp>
 #include <fwCore/exceptionmacros.hpp>
+
+#include "videoQt/helper/formats.hpp"
+#include "videoQt/player/QVideoSurface.hpp"
+
+#include <boost/filesystem/operations.hpp>
 
 #include <QAbstractVideoSurface>
 #include <QVideoSurfaceFormat>
 #include <QCameraViewfinderSettings>
 
-#include <boost/filesystem/operations.hpp>
 
 namespace videoQt
 {
@@ -83,12 +86,14 @@ void QVideoPlayer::initCameraStream(const std::string& strVideoUrl)
 
 //-----------------------------------------------------------------------------
 
-void QVideoPlayer::initCameraDevice(const std::string& cameraID, size_t width, size_t height, float maximumFrameRate)
+void QVideoPlayer::initCameraDevice(const std::string& cameraID, size_t width, size_t height, float maximumFrameRate,
+                                    ::QVideoFrame::PixelFormat pxFormat)
 {
     m_camera = new QCamera(QByteArray(cameraID.c_str(), static_cast<int>(cameraID.size())));
     QCameraViewfinderSettings viewfinderSettings;
     viewfinderSettings.setResolution(static_cast<int>(width), static_cast<int>(height));
     viewfinderSettings.setMaximumFrameRate(maximumFrameRate);
+    viewfinderSettings.setPixelFormat(pxFormat);
     m_camera->setViewfinderSettings(viewfinderSettings);
 
     if(m_camera->error() != QCamera::NoError)

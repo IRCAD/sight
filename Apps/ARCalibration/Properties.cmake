@@ -1,6 +1,6 @@
 
 set( NAME ARCalibration )
-set( VERSION 0.1 )
+set( VERSION 0.2 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
@@ -38,6 +38,7 @@ set( REQUIREMENTS
     videoCalibration
     launcher
     uiTools
+    trackerAruco
     )
 
 bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES ARCalibrationBase ARCalibrationAppBase)

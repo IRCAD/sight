@@ -33,12 +33,15 @@
                         <separator />
                         <menuItem name="Calibration activity" icon="Bundles/arMedia_0-1/icons/calibrationActivity.svg" />
                         <menuItem name="Export CameraSeries calibration" icon="Bundles/media_0-1/icons/Export.svg" />
+                        <separator/>
+                        <menuItem name="Tools Calibration activity" icon="Bundles/arMedia_0-1/icons/calibrationActivity.svg"/>
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="${GENERIC_UID}_action_newActivity" start="yes" />
                     <menuItem sid="${GENERIC_UID}_action_calibrationActivity" start="yes" />
                     <menuItem sid="${GENERIC_UID}_action_exportCameraActivity" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_toolsCalibrationActivity" start="yes" />
                 </registry>
             </service>
 
@@ -55,7 +58,6 @@
 
             <item key="selections">
                 <object uid="${GENERIC_UID}_selections" type="::fwData::Vector">
-
                     <service uid="${GENERIC_UID}_action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes">
                         <config>
                             <parameters>
@@ -90,6 +92,20 @@
                             </filter>
                         </config>
                     </service>
+
+                    <service uid="${GENERIC_UID}_action_toolsCalibrationActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes">
+                        <config>
+                            <parameters>
+                                <parameter replace="SERIESDB" by="seriesDB" />
+                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                            </parameters>
+                            <filter>
+                                <mode>include</mode>
+                                <id>toolsCalibration</id>
+                            </filter>
+                        </config>
+                    </service>
+
                 </object>
             </item>
 
@@ -101,6 +117,7 @@
             <proxy channel="${DYNAMICVIEW_CHANNEL}">
                 <signal>${GENERIC_UID}_action_newActivity/activityLaunched</signal>
                 <signal>${GENERIC_UID}_action_calibrationActivity/activityLaunched</signal>
+                <signal>${GENERIC_UID}_action_toolsCalibrationActivity/activityLaunched</signal>
             </proxy>
 
             <start uid="${GENERIC_UID}_mainview" />

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -51,16 +51,16 @@ protected:
     VISUVTKARADAPTOR_API void doStop() throw(fwTools::Failed);
 
     /**
-     * @verbatim
+     * @code{.xml}
        <adaptor id="points" class="::visuVTKARAdaptor::SPointList" objectId="pointListKey">
         <config renderer="default" imageId="${imageId1}" color="#cb1f72"/>
        </adaptor>
-       @endverbatim
+       @endcode
      * - \b renderer : defines the renderer to show the arrow. It must be different from the 3D objects renderer.
      * - \b imageId : Id of the image used to extract the resolution of the source image.
      * - \b color(optional) : color used to display the points.
      */
-    VISUVTKARADAPTOR_API void configuring() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
     /// Restart the service (stop-start)
     VISUVTKARADAPTOR_API void doSwap() throw(fwTools::Failed);

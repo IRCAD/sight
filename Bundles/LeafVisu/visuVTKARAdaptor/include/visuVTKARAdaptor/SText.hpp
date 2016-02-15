@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -105,7 +105,7 @@ protected:
      * @brief Configure the adaptor
      *
      * Example :
-       @verbatim
+       @code{.xml}
        <adaptor id="text" class="::visuVTKARAdaptor::SText" objectId="text">
         <config renderer="default" seshat="@patient.name" >
             <style>
@@ -121,7 +121,7 @@ protected:
             </style>
         </config>
        </adaptor>
-       @endverbatim
+       @endcode
      * - seshat : seshat path, optional, if present it's used to extract text value in associated data.
      * - style : described the look and formatting of the displayed text on the scene. Available options are :
      *     - fontSize : font size in points of displayed text (not mandatory, default value is set to 20)
@@ -138,7 +138,7 @@ protected:
      *       (not mandatory, default value is set to 1.0)
      *     - shadow : enable/disable text shadow (not mandatory, default value is set to false)
      */
-    VISUVTKARADAPTOR_API virtual void configuring() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API virtual void doConfigure() throw(fwTools::Failed);
 
 
 private:
