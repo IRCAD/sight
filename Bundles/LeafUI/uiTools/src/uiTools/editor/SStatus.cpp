@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,21 +37,23 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiTools::editor::SStatus, ::f
 const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_GREEN_SLOT  = "changeToGreen";
 const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_RED_SLOT    = "changeToRed";
 const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_ORANGE_SLOT = "changeToOrange";
+const ::fwCom::Slots::SlotKeyType SStatus::s_TOGGLE_GREEN_RED_SLOT = "toggleGreenRed";
 
 
 //-----------------------------------------------------------------------------
 
-SStatus::SStatus() throw()
+SStatus::SStatus() throw() : m_isCircular(false), m_width(20), m_height(20)
 {
-
     m_slotChangeToGreen  = ::fwCom::newSlot( &SStatus::changeToGreen,  this );
-    m_slotChangeToRed    = ::fwCom::newSlot( &SStatus::changeToRed,  this );
-    m_slotChangeToOrange = ::fwCom::newSlot( &SStatus::changeToOrange,  this );
+    m_slotChangeToRed    = ::fwCom::newSlot( &SStatus::changeToRed,    this );
+    m_slotChangeToOrange = ::fwCom::newSlot( &SStatus::changeToOrange, this );
+    m_slotToggleGreenRed = ::fwCom::newSlot( &SStatus::toggleGreenRed, this );
 
     ::fwCom::HasSlots::m_slots
         ( s_CHANGE_TO_GREEN_SLOT, m_slotChangeToGreen   )
         ( s_CHANGE_TO_RED_SLOT, m_slotChangeToRed    )
         ( s_CHANGE_TO_ORANGE_SLOT, m_slotChangeToOrange    )
+        ( s_TOGGLE_GREEN_RED_SLOT, m_slotToggleGreenRed )
     ;
 
 
@@ -78,10 +80,12 @@ void SStatus::starting() throw(::fwTools::Failed)
 
     QHBoxLayout * layout = new QHBoxLayout();
 
-    m_label = new QLabel();
-    m_label->setMinimumSize(16, 16);
+    m_indicator = new QLabel();
+    m_indicator->setFixedWidth(m_width);
+    m_indicator->setFixedHeight(m_height);
 
-    layout->addWidget(m_label);
+    layout->addWidget(m_indicator);
+    layout->addWidget(m_labelStatus);
 
     container->setLayout(layout);
 
@@ -107,9 +111,14 @@ void SStatus::configuring() throw(fwTools::Failed)
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigType;
 
-    ConfigType greenCfg  = m_configuration->findConfigurationElement("green");
-    ConfigType redCfg    = m_configuration->findConfigurationElement("red");
-    ConfigType orangeCfg = m_configuration->findConfigurationElement("orange");
+    ConfigType greenCfg       = m_configuration->findConfigurationElement("green");
+    ConfigType redCfg         = m_configuration->findConfigurationElement("red");
+    ConfigType orangeCfg      = m_configuration->findConfigurationElement("orange");
+    ConfigType labelStatusCfg = m_configuration->findConfigurationElement("labelStatus");
+    ConfigType formCfg        = m_configuration->findConfigurationElement("form");
+    ConfigType sizeCfg        = m_configuration->findConfigurationElement("size");
+
+    m_labelStatus = new QLabel();
 
     if (greenCfg)
     {
@@ -122,6 +131,28 @@ void SStatus::configuring() throw(fwTools::Failed)
     if (orangeCfg)
     {
         m_orangeTooltip = orangeCfg->getValue();
+    }
+    if (labelStatusCfg)
+    {
+        m_labelStatus->setText(QString::fromStdString(labelStatusCfg->getValue()));
+    }
+    if (formCfg)
+    {
+        m_isCircular = (formCfg->getValue() == "circle");
+    }
+    if(sizeCfg)
+    {
+        ConfigType widthCfg  = sizeCfg->findConfigurationElement("width");
+        ConfigType heightCfg = sizeCfg->findConfigurationElement("height");
+
+        if(widthCfg)
+        {
+            m_width = std::stoi(widthCfg->getValue());
+        }
+        if(heightCfg)
+        {
+            m_height = std::stoi(heightCfg->getValue());
+        }
     }
 }
 
@@ -148,24 +179,33 @@ void SStatus::info( std::ostream &_sstream )
 
 void SStatus::changeToGreen()
 {
-    m_label->setStyleSheet("QLabel { background-color : green;}");
-    m_label->setToolTip(QString::fromStdString(m_greenTooltip));
+    m_indicator->setStyleSheet("background-color: green; border-radius: "+QString(m_isCircular ? "10px;" : "0")+";");
+    m_indicator->setToolTip(QString::fromStdString(m_greenTooltip));
 }
 
 //------------------------------------------------------------------------------
 
 void SStatus::changeToRed()
 {
-    m_label->setStyleSheet("QLabel { background-color : red;}");
-    m_label->setToolTip(QString::fromStdString(m_redTooltip));
+    m_indicator->setStyleSheet("background-color: red; border-radius: "+QString(m_isCircular ? "10px;" : "0")+";");
+    m_indicator->setToolTip(QString::fromStdString(m_redTooltip));
 }
 
 //------------------------------------------------------------------------------
 
 void SStatus::changeToOrange()
 {
-    m_label->setStyleSheet("QLabel { background-color : orange;}");
-    m_label->setToolTip(QString::fromStdString(m_orangeTooltip));
+    m_indicator->setStyleSheet("background-color: orange; border-radius: "+QString(m_isCircular ? "10px;" : "0")+";");
+    m_indicator->setToolTip(QString::fromStdString(m_orangeTooltip));
+}
+
+//------------------------------------------------------------------------------
+
+void SStatus::toggleGreenRed(bool green)
+{
+    m_indicator->setStyleSheet("background-color:"+ QString(green ? "green" : "red")+"; border-radius: "+
+                               QString(m_isCircular ? "10px;" : "0")+";");
+    m_indicator->setToolTip(green ? QString::fromStdString(m_greenTooltip) : QString::fromStdString(m_redTooltip));
 }
 
 //------------------------------------------------------------------------------
