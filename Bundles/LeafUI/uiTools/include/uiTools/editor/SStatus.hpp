@@ -28,7 +28,7 @@ namespace editor
  * @brief   SStatus service shows a colored square (red, orange, green) representing a status.
  * @class   SStatus
  *
- * To change the status color, you should call the slots 'changeToGreen', 'changeToOrange' or 'changeToRed'.
+ * To change the status color, you should call the slots 'changeToGreen', 'changeToOrange', 'changeToRed' or 'toggleGreenRed'.
  */
 class UITOOLS_CLASS_API SStatus : public QObject,
                                   public ::gui::editor::IEditor
@@ -56,6 +56,9 @@ public:
 
     UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_TO_ORANGE_SLOT;
     typedef ::fwCom::Slot<void ()> ChangeToOrangeSlotType;
+
+    UITOOLS_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_GREEN_RED_SLOT;
+    typedef ::fwCom::Slot< void ( bool ) > ToggleGreenRedSlotType;
     /** @} */
 
 protected:
@@ -82,7 +85,13 @@ protected:
      * @brief Configures the status tooltip
      *
      * @code{.xml}
-       <service uid="..." impl="::uiTools::editor::SStatus>
+       <service uid="..." impl="::uiTools::editor::SStatus">
+           <form>circle</form>
+           <size>
+               <width>20</width>
+               <height>20</height>
+           </size>
+           <labelStatus>SCP Server</labelStatus>
            <red>Stopped</red>
            <green>Tracking</green>
            <orange>Started</orange>
@@ -103,9 +112,13 @@ protected:
     /// SLOT : change label color
     void changeToOrange();
 
+    /// SLOT : change label color (true = green, false = red)
+    void toggleGreenRed(bool green);
+
 private:
 
-    QPointer< QLabel > m_label;
+    QPointer< QLabel > m_indicator;
+    QPointer< QLabel > m_labelStatus;
 
     /// Slot to call changeToGreen()
     ChangeToGreenSlotType::sptr m_slotChangeToGreen;
@@ -116,9 +129,17 @@ private:
     /// Slot to call changeToOrange()
     ChangeToOrangeSlotType::sptr m_slotChangeToOrange;
 
+    /// Slot to call changeToGreenRed()
+    ToggleGreenRedSlotType::sptr m_slotToggleGreenRed;
+
     std::string m_greenTooltip; ///< Tooltip for green status
     std::string m_redTooltip; ///< Tooltip for red status
     std::string m_orangeTooltip; ///< Tooltip for orange status
+
+    bool m_isCircular; ///< label is a circle if true (else it's a square)
+
+    size_t m_width; ///< width of idicator
+    size_t m_height; ///< height of idicator
 
 };
 

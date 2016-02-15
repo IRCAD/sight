@@ -7,6 +7,12 @@
         <service>::maths::SConcatenateMatrices</service>
         <object>::fwData::TransformationMatrix3D</object>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::maths::SAddMatrices</service>
+        <object>::fwData::TransformationMatrix3D</object>
+    </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
