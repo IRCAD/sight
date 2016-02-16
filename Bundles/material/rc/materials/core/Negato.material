@@ -35,6 +35,31 @@ vertex_program Negato3D_VP glsl
     }
 }
 
+//-----------------------------------------------------------------------------
+
+fragment_program Negato_FP glsl
+{
+    source Negato_FP.glsl
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/Negato_FP glsl
+{
+    source Main_FP.glsl
+    attach Negato_FP
+    default_params
+    {
+        // Negato
+        param_named u_minValue float 0.0
+        param_named u_maxValue float 1.0
+        param_named u_slice float 0
+        param_named u_orientation int 2
+        param_named u_texture int 0
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
 //---------------------------------------------------------------------------
 
 // Default Negato2D material
