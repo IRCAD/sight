@@ -207,17 +207,22 @@ bool SShaderParameter::setParameter(::Ogre::Technique& technique, const fwData::
     ::Ogre::GpuProgramParametersSharedPtr params;
 
     // Get the parameters
+    auto pass = technique.getPass(0);
     if (m_shaderType == VERTEX)
     {
-        params = technique.getPass(0)->getVertexProgramParameters();
+        params = pass->getVertexProgramParameters();
     }
-    else if (m_shaderType == FRAGMENT)
+    else if (m_shaderType == FRAGMENT && pass->hasFragmentProgram())
     {
-        params = technique.getPass(0)->getFragmentProgramParameters();
+        params = pass->getFragmentProgramParameters();
     }
     else if (m_shaderType == GEOMETRY)
     {
-        params = technique.getPass(0)->getGeometryProgramParameters();
+        params = pass->getGeometryProgramParameters();
+    }
+    else
+    {
+        return false;
     }
 
     if(!params->_findNamedConstantDefinition(m_paramName))
