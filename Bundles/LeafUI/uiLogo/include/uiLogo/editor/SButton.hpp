@@ -65,13 +65,13 @@ public:
      * @brief Configure the service.
      * @see fwGui::IGuiContainerSrv::initialize()
      *
-     * @verbatim
+     * @code{.xml}
             <service uid="${GENERIC_UID}_logo_button" impl="::uiLogo::editor::SButton" autoConnect="no">
                 <image>Bundles/media_0-1/icons/*.png</image>
                 <label>Label</label>
                 <tooltip>Tooltip</tooltip>
             </service>
-       @endverbatim
+       @endcode
      */
     UILOGO_API void configuring() throw (::fwTools::Failed);
 

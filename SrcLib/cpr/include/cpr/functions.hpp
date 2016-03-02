@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,7 @@ namespace cpr
 /**
  * @brief Get the minimum image spacing.
  *
- * @param ::fwData::Image source image
+ * @param imageSource ::fwData::Image source image
  *
  * @return lowest spacing value
  */
@@ -30,7 +30,7 @@ CPR_API double getImageMinSpacing(const SPTR(::fwData::Image)& imageSource);
 /**
  * @brief Get the maximum image spacing
  *
- * @param ::fwData::Image source image
+ * @param imageSource ::fwData::Image source image
  *
  * @return highest spacing value
  */
@@ -39,7 +39,7 @@ CPR_API double getImageMaxSpacing(const SPTR(::fwData::Image)& imageSource);
 /**
  * @brief Get the maximum image size (size in millimeters : spacing value by pixel size).
  *
- * @param ::fwData::Image source image
+ * @param imageSource ::fwData::Image source image
  *
  * @return highest size in millimeters
  */

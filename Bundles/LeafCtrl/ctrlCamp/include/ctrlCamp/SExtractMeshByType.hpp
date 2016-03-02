@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,12 +46,12 @@ protected:
     /**
      * @brief Configure the service
      *
-     * @verbatim
+     * @code{.xml}
         <service uid="..." type="::fwServices::IController" impl="::ctrlCamp::SExtractMeshByType" autoConnect="no">
             <extract from="@values.myobject1" to="objKey1" type="organ1" />
             <extract from="@values.myobject2" to="objKey2" type="organ2" />
         </service>
-       @endverbatim
+       @endcode
      * - \b from (mandatory) : introspection path to the object to extract
      * - \b to (mandatory) : key where to push extracted object
      * - \b type (mandatory) : the structure type of the mesh

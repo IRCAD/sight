@@ -76,7 +76,7 @@ protected:
      * @brief Declare the configuration to define percent of reduction, image source and ModelSeries destination.
      *
      * Example of this service configuration
-     * @verbatim
+     * @code{.xml}
        <service impl="::opPOCMesher::CGoGNMesher" type="::opVTKMesh::IMesher">
            <config>
                 <image>IMAGE_KEY</image>
@@ -92,7 +92,7 @@ protected:
                 <closing>true</closing>
             </config>
        </service>
-       @endverbatim
+       @endcode
      */
     OPPOCMESHER_API void configuring() throw (::fwTools::Failed);
 

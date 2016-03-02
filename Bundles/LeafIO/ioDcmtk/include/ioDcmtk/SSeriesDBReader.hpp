@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -51,14 +51,14 @@ protected:
      * The reader can be configured as a regular reader.
      * You can select the SOP Classes that can be read using this reader.
      * It is also possible to define a filter that must be applied prior the reading process.
-     * @verbatim
+     * @code{.xml}
        <config filterType="::fwDicomIOFilter::custom::NoFilter" />
        <SOPClassSelection>
            <SOPClass name="CT Image Storage" uid="1.2.840.10008.5.1.4.1.1.2" />
        </SOPClassSelection>
-       @endverbatim
+       @endcode
      * On the other hand, you can specify a service configuration using the FilterSelectorSrvConfig element:
-     * @verbatim
+     * @code{.xml}
         <extension implements="::fwServices::registry::ServiceConfig">
             <id>FilterSelectorConfig</id>
             <service>::ioDicom::SFilterSelectorDialog</service>
@@ -69,7 +69,7 @@ protected:
                 <addSelection filter="::fwDicomIOFilter::custom::NoFilter" />
             </config>
         </extension>
-       @endverbatim
+       @endcode
      */
     IODCMTK_API virtual void configuring() throw (fwTools::Failed);
 

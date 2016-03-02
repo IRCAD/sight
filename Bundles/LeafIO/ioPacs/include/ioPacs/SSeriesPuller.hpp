@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -79,14 +79,14 @@ protected:
      * @brief Configuring method. This method is used to configure the service.
      *
      * XML configuration sample:
-       @verbatim
+       @code{.xml}
        <service uid="pullSeriesController" impl="::ioPacs::SSeriesPuller">
          <config pacsConfigurationUID="pacsConfiguration"
          dicomReader="::ioGdcm::SSeriesDBReader"
          dicomReaderSrvConfig="config"
          destinationSeriesDBUID="localSeriesDB" />
        </service>
-       @endverbatim
+       @endcode
      */
     IOPACS_API virtual void configuring() throw(::fwTools::Failed);
 

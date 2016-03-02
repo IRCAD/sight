@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,10 @@
 
 #include "PoC07TimeLine/config.hpp"
 
-fwCorePredeclare((fwThread)(Timer));
+namespace fwThread
+{
+class Timer;
+}
 
 namespace PoC07TimeLine
 {
@@ -51,12 +54,12 @@ protected:
     /**
      * @brief Configures the service.
      *
-     * @verbatim
+     * @code{.xml}
        <service type="::fwServices::IService" impl="::PoC07TimeLine::SConsumer" autoConnect="yes">
            <id>0</id>
            <period>1000</period>
        </service>
-       @endverbatim
+       @endcode
      * - \b id : id of the receiver.
      * - \b period (optional): time between two messages display, in milliseconds.
      */

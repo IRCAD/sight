@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -49,7 +49,7 @@ public:
     /**
      * @brief configure the service and initialize the ConnectorModel
      *
-     * @verbatim
+     * @code{.xml}
         <service uid="${GENERIC_UID}_object_connector_view" type="::gui::editor::IEditor" impl="::uiNetwork::SObjectConnectorTree" autoConnect="yes">
             <filter>T.*</filter>
             <config impl="::ioZMQ::SZeroMQSender">
@@ -59,7 +59,7 @@ public:
                <!-- service configuration -->
             </config>
         </service>
-       @endverbatim
+       @endcode
      *
      * - \b filter (optional): regex to filter objects
      * - \b config (optional): specific configuration of the listener/sender service to create

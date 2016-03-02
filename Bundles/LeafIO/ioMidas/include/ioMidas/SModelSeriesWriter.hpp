@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,7 +47,7 @@ protected:
      * @brief Configures the service
      *
      * Example :
-       @verbatim
+       @code{.xml}
        <config>
         <url>http://midasserverurl.org/midas</url>  <!-- mandatory -->
         <serverVersion>3.2.8</serverVersion>        <!-- not mandatory, default value is "3.2.6" -->
@@ -56,7 +56,7 @@ protected:
         <privacy>Private</privacy>                  <!-- not mandatory, default value is "Private" -->
         <rootFolder>Patients</rootFolder>           <!-- not mandatory, default value is "Patients" -->
        </config>
-       @endverbatim
+       @endcode
      *
      * XML attributes :
      * - url : URL of the server

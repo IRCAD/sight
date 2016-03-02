@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -94,12 +94,12 @@ protected:
     /**
      * The reader can be configured as a regular reader.
      * You can also specify how dicomdir support is handled
-     * @verbatim
+     * @code{.xml}
        <config>
        <dicomdirSupport>always|never|user_selection</dicomdirSupport> <!-- optional, default set to user_selection -->
        <mode>direct|copy|user_selection</mode> <!-- optional, default set to user_selection -->
        </config>
-       @endverbatim
+       @endcode
      */
     IOGDCM_API virtual void configuring() throw (fwTools::Failed);
 

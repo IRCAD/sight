@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,7 @@ namespace ioZMQ
 /**
  * @class ZeroMQConfigurationParser
  *
- * @verbatim
+ * @code{.xml}
    <service uid="sender" type="::ioNetwork::INetworkSender" impl="::ioZMQ::SZeroMQSender" autoConnect="yes">
       <protocol type="tcp">
           <host>127.0.0.1</host>
@@ -30,7 +30,7 @@ namespace ioZMQ
       </protocol>
       <pattern>Subscribe</pattern>
    </service>
- * @endverbatim
+ * @endcode
  * - \b protocol: 'tcp' or 'ipc'
  *   - if protocol = tcp
  *      - \b port: port used for connection

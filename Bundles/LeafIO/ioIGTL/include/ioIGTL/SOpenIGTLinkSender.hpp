@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -58,7 +58,7 @@ protected:
 
     /**
      * @brief configure the server. Need the port in xml
-     * @verbatim
+     * @code{.xml}
      * <service type="::ioNetwork::INetworkSender" impl="::ioIGTL::SOpenIGTSender" uid="networkSender" autoConnect="no">
      *      <port>4242</port>
      *      <deviceName>FW4SPL</deviceName>
@@ -66,7 +66,7 @@ protected:
      *
      * - deviceName is optional (if set,sended message have 'deviceName' name).
      *
-     * @endverbatim
+     * @endcode
      */
     IOIGTL_API virtual void configuring() throw ( ::fwTools::Failed );
 

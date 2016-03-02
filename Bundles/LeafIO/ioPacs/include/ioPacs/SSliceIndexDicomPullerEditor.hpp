@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -93,7 +93,7 @@ protected:
      * @brief Configuring method. This method is used to configure the service.
      *
      * XML configuration sample:
-       @verbatim
+       @code{.xml}
        <service uid="sliderIndexDicomPullerEditor" type="::gui::editor::IEditor"
          impl="::ioPacs::SSliceIndexDicomPullerEditor" autoConnect="yes">
          <config compositeUID="previewComposite" imageKey="image" dicomReader="::ioGdcm::SSeriesDBReader"
@@ -103,7 +103,7 @@ protected:
             </dicomReaderConfig>
          </config>
        </service>
-       @endverbatim
+       @endcode
      */
     IOPACS_API virtual void configuring() throw(::fwTools::Failed);
 
@@ -132,8 +132,7 @@ protected:
     IOPACS_API void pullInstance();
 
     /**
-     * @brief Update the seriesDB with the series retrieved from the pacs
-     * @param[in] series Series which must be added to the SeriesDB
+     * @brief Displays a dialog box with the error message
      */
     IOPACS_API void displayErrorMessage(const std::string& message) const;
 

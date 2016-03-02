@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -89,13 +89,13 @@ protected:
     /**
      * @brief Overrides IService::configuring().
      * Configuration example :
-       @verbatim
+       @code{.xml}
        <config>
         <splinePoints uid="..." />  <!-- ::fwData::PointList containing spline points            -->
         <sourceImage uid="..." />   <!-- source image (::fwData::Image)                          -->
         <visuPoints uid="..." />    <!-- ::fwData::PointList containing spline points to display -->
        </config>
-       @endverbatim
+       @endcode
      *
      * @throw fwTools::Failed
      */
@@ -135,9 +135,9 @@ protected:
     /**
      * @brief Adds point to the visualize point list
      *
-     * @param ::fwData::PointList source points
+     * @param pointList ::fwData::PointList source points
      * @param indexSelectedPoint index of point
-     * @param ::fwData::PointList target point list
+     * @param visualizePointList  ::fwData::PointList target point list
      */
     void addPointToVisualizePointList(
         const SPTR(::fwData::PointList)& pointList,

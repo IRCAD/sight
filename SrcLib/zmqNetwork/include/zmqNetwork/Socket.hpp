@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -141,7 +141,7 @@ public:
 
     /**
      * @brief set device Name when igtl message are sended
-     * @param[in] std::string deviceName
+     * @param[in] deviceName std::string deviceName
      */
     ZMQNETWORK_API void setDeviceNameOut(std::string deviceName);
 

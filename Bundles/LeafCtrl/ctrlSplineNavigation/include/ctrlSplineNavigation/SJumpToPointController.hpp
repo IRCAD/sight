@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -59,7 +59,7 @@ protected:
     /**
      * @brief Jumps to given point.
      *
-     * @param ::fwData::TransformationMatrix3D new point associated to this service
+     * @param matrix ::fwData::TransformationMatrix3D new point associated to this service
      */
     void jumpToViewPoint(::fwData::TransformationMatrix3D::sptr matrix);
 

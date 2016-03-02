@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,7 @@ namespace basicRegistration
  * @brief   Register a point list against a reference point list. Each point in the list to register is matched
  *          with a point in the reference list according to its label.
  *          The output is a transformation matrix.
- * @class SLTagRegistration
+ * @class SPointListRegistration
  */
 class BASICREGISTRATION_CLASS_API SPointListRegistration : public ::fwServices::IController
 {
@@ -36,11 +36,11 @@ protected:
     /**
      * @brief Configure the service
      *
-       @verbatim
+       @code{.xml}
        <registeredPoints compositeKey="pointList2" />
        <referencePoints compositeKey="pointList1" />
        <matrix compositeKey="registrationMatrix" />
-       @endverbatim
+       @endcode
      **/
     BASICREGISTRATION_API virtual void configuring() throw ( ::fwTools::Failed );
 
@@ -71,4 +71,3 @@ protected:
 } // namespace basicRegistration
 
 #endif /*__BASICREGISTRATION_SPOINTLISTREGISTRATION_HPP__*/
-

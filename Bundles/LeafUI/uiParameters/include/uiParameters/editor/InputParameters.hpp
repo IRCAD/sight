@@ -80,7 +80,7 @@ public:
      * @brief Configure the service.
      * @see fwGui::IGuiContainerSrv::initialize()
      *
-     * @verbatim
+     * @code{.xml}
        <service uid="${GENERIC_UID}_input_parameters" impl="::uiParameters::editor::InputParameters" autoConnect="no">
         <parameters>
             <param type="::fwData::Integer" name="Value min to mesh" key="valueMin" defaultValue="1" min="0" max = "255" />
@@ -88,7 +88,7 @@ public:
             <param type="::fwData::Boolean" name="Close the mesh" key="closing" defaultValue="false" />
         </parameters>
        </service>
-       @endverbatim
+       @endcode
      */
     UIPARAMETERS_API void configuring() throw (::fwTools::Failed);
 

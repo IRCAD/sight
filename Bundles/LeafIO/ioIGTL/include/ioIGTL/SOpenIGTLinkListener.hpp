@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,8 +26,6 @@ namespace ioIGTL
 {
 
 /**
- * @class OpenIGTLinkListener
- *
  * @brief class for network client service use OpenIGTLink
  */
 class IOIGTL_CLASS_API SOpenIGTLinkListener : public ::ioNetwork::INetworkListener
@@ -50,14 +48,14 @@ protected:
     /**
      * @brief configure method to configure the network client. Need hostname and port in this format addr:port
      *
-     * @verbatim
+     * @code{.xml}
      * <service type="::ioNetwork::INetworkListener" impl="::ioIGTL::SOpenIGTLinkListener" uid="networkListener" autoConnect="no">
      *      <server>127.0.0.1:4242</server>
      *      <deviceName>Name1</deviceName>
      *      <deviceName>...</deviceName>
      *      ...
      * </service>
-     * @endverbatim
+     * @endcode
      *
      * - deviceName(optional) : filter by device Name in Message, by default all message will be processed
      *

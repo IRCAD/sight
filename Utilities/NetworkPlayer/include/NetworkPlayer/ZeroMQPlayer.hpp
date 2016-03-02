@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -55,7 +55,7 @@ public:
     /**
      * @brief play the matrix sequence in the input stream
      *
-     * @param[in] inputStream
+     * @param[in] stream input stream
      */
     void play(std::istream &stream) throw (std::runtime_error);
 
@@ -64,7 +64,7 @@ public:
      * @brief create a ZeroMQPlayer with a player user-defined function(play is like a incomplete method which user have to complete with the playFunction)
      *
      * @param[in] playFunction
-     * @return a instance of a ZeroMQPlayer in a smart pointer of INetworkPlayer
+     * @return playOperation a instance of a ZeroMQPlayer in a smart pointer of INetworkPlayer
      */
     static INetworkPlayer::sptr create(FunctionType const &playOperation);
 
