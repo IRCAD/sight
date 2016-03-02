@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -74,14 +74,14 @@ protected:
      * Thanks to this method, SIOSelector::m_selectedServices value is up to date (cleared before reconfiguring).
      *
      * Sample of configuration :
-     * @verbatim
+     * @code{.xml}
           <service uid="GENERIC_UID_writer" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::SIOSelector" autoConnect="no">
               <type mode="writer" />
               <selection mode="include" />
               <addSelection service="::ioAtoms::SWriter" />
               <config id="ioAtomsConfig" service="::ioAtoms::SWriter" />
           </service>
-     * @endverbatim
+     * @endcode
      * With :
      * None of these parameters are mandatory.
      *  - \b type

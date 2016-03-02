@@ -80,7 +80,7 @@ protected:
      * @brief Initialize the action.
      * @see fwGui::IActionSrv::initialize()
      *
-     * @verbatim
+     * @code{.xml}
        <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
          <config>
              <!-- SActivityLauncher mode : immediate or message(default)
@@ -109,7 +109,7 @@ protected:
 
          </config>
        </service>
-       @endverbatim
+       @endcode
      *
      * - \b mode (optional): there are two mode: "message" and "immediate"
      *    - \b message (used by défaut): the action send a signal containing the information needed to launch the
@@ -122,7 +122,7 @@ protected:
      *    - \b parameter: defines a parameter
      *        - \b replace: name of the parameter as defined in the AppConfig
      *        - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
-     *          frontal) or define a sesh@ path (ex. @values.myImage). The root object of the sesh@ path if the
+     *          frontal) or define a sesh@ path (ex. \@values.myImage). The root object of the sesh@ path if the
      *          composite contained in the ActivitySeries.
      * - \b filter (optional): it allows to filter the activity that can be proposed.
      *    - \b mode: 'include' or 'exclude'. Defines if the activity in the following list are proposed (include) or not

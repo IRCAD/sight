@@ -72,7 +72,7 @@ protected:
      * @brief Configure the editor.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
        <service uid="sliceListNegato3DEditor" type="::gui::editor::IEditor" impl="::uiImage::SSelectionMenuButton">
            <text>...</text>
            <toolTip>...</toolTip>
@@ -83,7 +83,7 @@ protected:
            </items>
            <selected>2</selected>
        </service>
-       @endverbatim
+       @endcode
 
      */
     virtual void configuring() throw(fwTools::Failed);

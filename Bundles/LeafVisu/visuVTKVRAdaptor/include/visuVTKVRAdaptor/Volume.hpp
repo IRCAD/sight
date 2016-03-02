@@ -77,11 +77,11 @@ protected:
      * @brief Configures the service
      *
      * Configuration example :
-       @verbatim
+       @code{.xml}
        <adaptor id="VolumeScene3D" class="::visuVTKVRAdaptor::Volume" objectId="imageKey">
          <config renderer="default" clippingplanes="clippingPlanesId" autoresetcamera="yes|no" croppingBox="yes|no" reductionFactor="0.5"/>
        </adaptor>
-       @endverbatim
+       @endcode
      *
      * \b renderer : ID of renderer the adaptor must use
      * \b clippingplanes : id of VTK object for clipping planes

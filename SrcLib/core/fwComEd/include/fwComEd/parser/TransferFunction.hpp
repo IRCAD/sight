@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -46,7 +46,7 @@ public:
     }
 
     /**
-     * @verbatim
+     * @code{.xml}
        <object type="::fwData::TransferFunction">
            <colors>
                <step color="#ffffff" value="0" />
@@ -57,7 +57,7 @@ public:
                <step color="#000000" value="5000" />
            </colors>
        </object>
-       @endverbatim
+       @endcode
      * - \b step : defines a step in the legend given with the arguments color in hex-code and the max value.
      */
     FWCOMED_API void createConfig( ::fwTools::Object::sptr _obj );

@@ -58,7 +58,7 @@ public:
     VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
 
     /**
-     * @Signals
+     * @name Signals
      * @{
      */
     /// Type of signal when plane interaction is started (store current plane)

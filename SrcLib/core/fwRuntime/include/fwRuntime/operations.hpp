@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -185,7 +185,7 @@ void getAllConfigurationElementsForPoint(
  *          specified identifier.
  *
  * This method use the container type specified by the template parameter. The
- * type of the elements of the container must be \std::shared_ptr< ConfigurationElement >
+ * type of the elements of the container must be std::shared_ptr< ConfigurationElement >
  * or the compilation will fail.
  *
  * @return  a container containing shared pointers to all found configuration
@@ -215,7 +215,7 @@ const Container getAllConfigurationElementsForPoint(const std::string & identifi
  *                      the executable identifier (default is "class")
  *
  * This method use the container type specified by the template parameter. The
- * type of the elements of the container must be \std::shared_ptr< T >
+ * type of the elements of the container must be std::shared_ptr< T >
  * or the compilation will fail (where T is the type of the executable you want to create).
  *
  * @return  a container containing shared pointers to all created executable instances

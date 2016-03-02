@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -64,13 +64,13 @@ protected:
 
     /**
      * @brief This method is used to configure the service parameters: specifies which slots must be called.
-     * @verbatim
+     * @code{.xml}
        <service uid="..." type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
           <slots>
               <slot>hasSlotsId/slotKey</slot>
           </slots>
        </service>
-       @endverbatim
+       @endcode
      */
     GUI_API void configuring() throw( ::fwTools::Failed );
 

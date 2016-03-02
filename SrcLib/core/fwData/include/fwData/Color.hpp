@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -63,11 +63,7 @@ public:
     /** @} */
 
     ///@{
-    ///@brief set RGBA color
-    ///@param[in] red
-    ///@param[in] green
-    ///@param[in] blue
-    ///@param[in] alpha
+    /// Set RGBA color
     FWDATA_API void setRGBA( const ColorType red, const ColorType green, const ColorType blue,
                              const ColorType alpha = 1.0 );
 

@@ -102,7 +102,7 @@ public:
      * @brief Initialize layout managers.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
        <service uid="myMenu" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
             <gui>
                 <layout>
@@ -124,7 +124,7 @@ public:
                 <menuItem sid="actionQuit" start="no" />
             </registry>
        </service>
-       @endverbatim
+       @endcode
      * This method analyzes the gui section of the configuration.
      * - \<layout\> (mandatory) : give the list of the menu item that will appear in the menu.
      * - \<menuItem name="My item 1" shortcut="1" style="check" specialAction="NEW" /\> :

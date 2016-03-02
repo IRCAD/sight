@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,15 +31,15 @@ namespace action
  * @brief   This action allows to load a new SeriesDB and merge it with the current SeriesDB
  *
  * The available reader can be configured
- * @verbatim
+ * @code{.xml}
     <service uid="action_seriesDBMerger" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger" autoConnect="no">
         <IOSelectorSrvConfig name="seriesDBImporterConfig" />
     </service>
-   @endverbatim
+   @endcode
  * With :
  *  - \b seriesDBImporterConfig : the id of a configuration for SIOSelector
  *  for example
- *  @verbatim
+ *  @code{.xml}
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>seriesDBImporterConfig</id>
         <service>::uiIO::editor::SIOSelector</service>
@@ -50,7 +50,7 @@ namespace action
             <addSelection service="::ioAtoms::SReader" />
         </config>
     </extension>
-    @endverbatim
+    @endcode
  */
 class UIIO_CLASS_API SSeriesDBMerger : public ::fwGui::IActionSrv
 {
@@ -69,11 +69,11 @@ protected:
     /**
      * @brief Configure action. Retrieves the IOSelector config.
      *
-     * @verbatim
+     * @code{.xml}
         <service impl="::uiIO::action::SSeriesDBMerger" autoConnect="no">
             <IOSelectorSrvConfig name="myConfig" />
         </service>
-       @endverbatim
+       @endcode
      * - \b IOSelectorSrvConfig: identifier of the ServiceConfig used for SIOSelector
      */
     void configuring() throw( ::fwTools::Failed );

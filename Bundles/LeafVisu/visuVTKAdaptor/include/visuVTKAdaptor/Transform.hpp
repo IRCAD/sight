@@ -52,11 +52,11 @@ protected:
 
     /**
      * @brief Configure the adaptor.
-     * @verbatim
+     * @code{.xml}
        <adaptor id="tmAdaptor" class="::visuVTKAdaptor::Transform" objectId="tm3dKey" >
         <config transform="transform" autoRender="true" parent="parentTransform" />
        </adaptor>
-       @endverbatim
+       @endcode
      * With :
      *  - \b transform (mandatory) : the vtkTransform to associate to the adaptor
      *  - \b autoRender (optional, "true" by default): if autoRender=true,  the scene is automatically rendered after

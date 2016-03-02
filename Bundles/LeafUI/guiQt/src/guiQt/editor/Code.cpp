@@ -180,4 +180,3 @@ void Code::onModifyValue()
 } // namespace editor
 
 } // namespace guiQt
-

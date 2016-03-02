@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,13 +40,13 @@ protected:
     /**
      * @brief Configure the service:
      *
-     * @verbatim
+     * @code{.xml}
         <service uid="actionCreateMesh" type="::fwGui::IActionSrv" impl="::opVTKMesh::action::SMeshCreation">
             <image uid="myImage" />
             <mesh uid="myMesh" />
             <percentReduction value="0" />
         </service>
-       @endverbatim
+       @endcode
      * - \b image: uid of the source image
      * - \b mesh: uid of the target mesh
      * - \b percentReduction: Specify the desired reduction in the total number of polygons (e.g., if

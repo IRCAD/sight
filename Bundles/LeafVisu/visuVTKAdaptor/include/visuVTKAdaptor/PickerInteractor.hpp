@@ -68,11 +68,11 @@ protected:
      * @brief Configure the adaptor
      *
      * Example :
-           @verbatim
+           @code{.xml}
            <adaptor id="text" class="::visuVTKRDAdaptor::SCellPickerInteractor" objectId="self">
             <config renderer="default" picker="myPicker" event="MOUSE_RIGHT_UP" />
            </adaptor>
-           @endverbatim
+           @endcode
      * - renderer : the identifier of the renderer.
      * - picker : the identifier of the picker.
      * - event : the identifier(s) of the event on which the adaptor is picking.

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -140,12 +140,12 @@ protected:
      * @brief Initialize the action.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
            <service uid="item" type="::fwGui::IActionSrv" impl="::gui::action::SDoNothing" autoConnect="no" >
               <state active="false" executable="false" inverse="true" visible="true" />
               <confirmation value="yes" message="..." />
            </service>
-       @endverbatim
+       @endcode
      * - \<state active="false" executable="false" /\> : fix the state of the action in the menu and Toolbar.
      *   - \b executable not mandatory (Default value true ) : allows to enable/disable the execution of the action.
      *     If the action appears in the interface it will be enable/disable.

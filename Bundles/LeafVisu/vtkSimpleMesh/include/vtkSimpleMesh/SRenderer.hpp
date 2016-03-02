@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -98,9 +98,9 @@ protected:
      * @brief This method is used to configure the service. Initialize the qt container.
      *
      * XML configuration sample:
-     * @verbatim
+     * @code{.xml}
        <service impl="::vtkSimpleMesh::SRenderer" type="::fwRender::IRender" autoConnect="yes" />
-       @endverbatim
+       @endcode
      */
     VTKSIMPLEMESH_API virtual void configuring() throw(::fwTools::Failed);
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -68,7 +68,7 @@ protected:
 
     /**
      * @brief Configures the reader.
-     * @verbatim
+     * @code{.xml}
        <config>
         <inject>ReadData</inject>
         <uuidPolicy>Strict|Change|Reuse</uuidPolicy>
@@ -92,7 +92,7 @@ protected:
         </extensions>
 
        </config>
-       @endverbatim
+       @endcode
      *
      * archive : defines custom file extensions. The file to be read with an extension given in 'archive' tag will be
      * processed with the given backend in archive tag (the 'backend' attribute is mandatory). Extensions must begin

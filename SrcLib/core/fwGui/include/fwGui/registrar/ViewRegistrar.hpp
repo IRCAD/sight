@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,7 +50,7 @@ public:
      * @brief Initialize managers.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
         <service uid="subView1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
             <gui>
                 <layout type="::fwGui::LineLayoutManager" >
@@ -71,7 +71,7 @@ public:
                 <view wid="subView5" />
             </registry>
         </service>
-       @endverbatim
+       @endcode
      * - \<parent wid="myView" /\> : This section isn't mandatory. When the parent section is present, the wid attribute is used to find its parent container.
      * Otherwise, the service uid is used to find its parent container.
      * - \<toolBar sid="toolbar1" start="yes" /\> : This section isn't mandatory.

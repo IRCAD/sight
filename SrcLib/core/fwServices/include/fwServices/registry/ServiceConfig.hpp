@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -56,7 +56,7 @@ public:
  *
  *
  * Registry config like :
- * @verbatim
+ * @code{.xml}
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>SDBOpenIOSelectorConfig</id>
         <service>::uiIO::editor::SIOSelector</service>
@@ -68,7 +68,7 @@ public:
             <config id="MDAtomsConfig" service="::ioAtoms::SReader" />
         </config>
     </extension>
-   @endverbatim
+   @endcode
  */
 class FWSERVICES_CLASS_API ServiceConfig : public ::fwCore::BaseObject
 {

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -58,10 +58,12 @@ struct AppConfig
 
 
 /**
- * @class   DynamicView
- * @brief   This editor manages tabs. It receive message with NEW_CONFIGURATION_HELPER event containing the view config id.
+ * @brief   This editor manages tabs containing sub-configurations.
  *
- * @note The ::activities::action::SActivityLauncher action sends message to be receive by the editor.
+ * It receives signals with ::fwActivities::registry::ActivityMsg containing the view
+ *          information (config Id, parameters, ...).
+ *
+ * @note The ::activities::action::SActivityLauncher action sends the signals to be received by this editor.
  */
 class GUIQT_CLASS_API DynamicView : public QObject,
                                     public ::gui::view::IView
@@ -107,18 +109,26 @@ protected:
      * @brief Configure the view
      * @see fwGui::IGuiContainerSrv::initialize()
      *
-     * @verbatim
+     * @code{.xml}
        <service type="::gui::view::IView" impl="::guiQt::editor::DynamicView" autoConnect="yes" >
-        <config dynamicConfigStartStop="false">
-            <appConfig id="Visu2DID" title="Visu2D" >
-                <parameters>
-                    <parameter replace="SERIESDB" by="medicalData"  />
-                    <parameter replace="IMAGE" by="@values.image"  />
-                </parameters>
-            </appConfig>
-        </config>
+           <config dynamicConfigStartStop="false">
+               <appConfig id="Visu2DID" title="Visu2D" >
+                   <parameters>
+                       <parameter replace="SERIESDB" by="medicalData"  />
+                       <parameter replace="IMAGE" by="@values.image"  />
+                   </parameters>
+               </appConfig>
+           </config>
        </service>
-       @endverbatim
+       @endcode
+     * - \b appConfig: information needed to launch the main sub-configuration. This configuration is launched in the
+     *      first tab, it can not be closed by the user.
+     *   - \b id: config identifier
+     *   - \b title: title of the created tab
+     *   - \b parameters: list of the parameters needed to launch the configuration.
+     *     - \b replace: name of the parameter as defined in the AppConfig
+     *     - \b by: defines the string that will replace the parameter name. It should be a simple string (ex. frontal)
+     *       or define a sesh@ path (ex. @values.myImage). The root object of the sesh@ path is this service object.
      */
     virtual void configuring() throw(fwTools::Failed);
 

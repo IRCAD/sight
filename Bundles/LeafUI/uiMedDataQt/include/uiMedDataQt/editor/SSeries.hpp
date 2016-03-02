@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -88,13 +88,13 @@ protected:
 
     /**
      *
-     * @verbatim
+     * @code{.xml}
        <service uid="selector" impl="::uiMedData::editor::SSeries" type="::gui::editor::IEditor" autoConnect="yes">
         <selectionId>selections</selectionId>
         <selectionMode>single|extended</selectionMode>
         <allowedRemove>yes|no</allowedRemove>
        </service>
-       @endverbatim
+       @endcode
      * - \b selectionId : defines the fwId of the ::fwData::Vector where the selection will be put or get.
      * - \b selectionMode : defines the selection mode for the series
      * - \b allowedRemove : allows user to remove series

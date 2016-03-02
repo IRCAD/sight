@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -104,7 +104,7 @@ protected:
      * @brief Configuring the Render service.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
        <service uid="GENERIC_UID_Scene2D" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
 
         <scene>
@@ -141,7 +141,7 @@ protected:
         </scene>
 
        </service>
-       @endverbatim
+       @endcode
      *
      * - \<scene x="-1100" y="-1.1" width="2500" height="1.2" /\> : Set the scene coordinates
      *

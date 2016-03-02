@@ -13,29 +13,16 @@
 namespace fwActivities
 {
 
-/**
- * @brief       The namespace fwActivities::builder contains the base interface for data ActivitySeries builder.
- * @namespace   fwActivities::builder
- * @date        2013.
- *
- */
+/// The namespace fwActivities::builder contains the base interface for data ActivitySeries builder.
 namespace builder
 {
 
-/**
- * @brief       Contains fwActivities::builder::registry details
- * @namespace   fwActivities::builder::registry
- * @date        2013
- */
+/// Contains fwActivities::builder::registry details
 namespace registry
 {
 } // namespace registry
 
-/**
- * @brief       Contains fwActivities::builder::factory utilities
- * @namespace   fwActivities::builder::factory
- * @date        2013
- */
+/// Contains fwActivities::builder::factory utilities
 namespace factory
 {
 } // namespace factory
@@ -45,21 +32,13 @@ namespace factory
 namespace validator
 {
 
-/**
- * @brief       Contains fwActivities::validator::registry details
- * @namespace   fwActivities::validator::registry
- * @date        2013
- */
+/// Contains fwActivities::validator::registry details
 namespace registry
 {
 } // namespace registry
 
 
-/**
- * @brief       Contains fwActivities::validator::factory utilities
- * @namespace   fwActivities::validator::factory
- * @date        2013
- */
+/// Contains fwActivities::validator::factory utilities
 namespace factory
 {
 } // namespace factory
@@ -83,7 +62,7 @@ namespace factory
  * - ::guiQt::editor::DynamicView  displays the activity in the application.
  * - ::fwData::Vector contains the set of selected data .
  *
- * @verbatim
+ * @code{.xml}
      <extension implements="::fwActivities::registry::Activities">
          <id>myActivityId</id>
          <title>3D Visu</title>
@@ -110,7 +89,7 @@ namespace factory
             </parameters>
          </appConfig>
      </extension>
-   @endverbatim
+   @endcode
  *
  * The activity parameters are (in this order):
  *
@@ -150,7 +129,6 @@ namespace factory
  *          - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
  *               frontal) or define a sesh@ path (ex. @values.myImage). The root object of the sesh@ path if the
  *               composite contained in the ActivitySeries.
-
  */
 
 } // namespace fwActivities

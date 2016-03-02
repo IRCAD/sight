@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -70,7 +70,7 @@ protected:
     /**
      * @brief This method is used to configure the service parameters: specifies which views to show/hide/mode.
      *
-     * @verbatim
+     * @code{.xml}
        <config>
          <move uid="srv_uid" wid="new_view_wid" />
          <show wid="view_to_show" />
@@ -79,14 +79,14 @@ protected:
          <enable uid="action_to_enabled" />
          <disable uid="action_to_disabled" />
        </config>
-       @endverbatim
-     * - \b <move> configures the services to move in the new view given by wid
-     * - \b <show> configures the element to show
-     * - \b <hide> configures the element to hide
-     * - \b <show_or_hide> configures the element to show or hide.
+       @endcode
+     * - \b move configures the services to move in the new view given by wid
+     * - \b show configures the element to show
+     * - \b hide configures the element to hide
+     * - \b show_or_hide configures the element to show or hide.
      *      If action is activated, element is shown else it is hidden.
      *
-     * <show>, <hide> and <show_or_hide> tags can have 2 type of attribute :
+     * \<show\>, \<hide\> and \<show_or_hide\> tags can have 2 type of attribute :
      * - wid to show  or hide windows container (view)
      * - sid  to show or hide a gui container service (IEditor, IView, IRender...)
      *

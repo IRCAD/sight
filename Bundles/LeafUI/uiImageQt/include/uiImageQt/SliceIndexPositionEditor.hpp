@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -79,11 +79,11 @@ protected:
      * @brief Configure the editor.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
        <service uid="slider_negato1" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
         <sliceIndex>axial</sliceIndex>
        </service>
-       @endverbatim
+       @endcode
        \b sliceIndex must be "axial", "frontal" or "sagittal".
      */
     virtual void configuring() throw(fwTools::Failed);

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -60,7 +60,7 @@ protected:
      * @brief Initialize frame managers.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
         <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
             <window onclose="notify" />
             <gui>
@@ -79,7 +79,7 @@ protected:
                 <view sid="myView" start="yes" />
             </registry>
         </service>
-       @endverbatim
+       @endcode
      * - \<window onclose="notify" /\> : defines what to do when the frame is closed
      *   - \b exit (by default) : the application is closed. Use it for the main frame.
      *   - \b notify : send signal 'closed'

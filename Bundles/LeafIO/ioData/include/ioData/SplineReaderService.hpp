@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -97,7 +97,7 @@ protected:
      * @brief Configure service. This method is called by configure() from base service ( ::fwServices::IService )
      *
      * XML configuration sample:
-     * @verbatim
+     * @code{.xml}
        <service uid="tubeReader" type="::io::IReader" impl="::ioData::SplineReaderService">
        <spline id="0" matrix="../matrix.trf" nbSides="10" radius="10">
         <point id="0"/>
@@ -106,7 +106,7 @@ protected:
         <point id="5"/>
        </spline>
        </service>
-       @endverbatim
+       @endcode
      */
     IODATA_API virtual void configuring( ) throw(::fwTools::Failed);
 

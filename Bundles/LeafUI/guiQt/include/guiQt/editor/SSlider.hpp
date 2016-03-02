@@ -92,7 +92,7 @@ protected:
      *  Default slider params : value 0, range 0-100, no text, no reset button and edit box.
      *  NB : value, defaultValue, min and max must be integers.
      *
-     * @verbatim
+     * @code{.xml}
         <service uid="..." type="::gui::editor::IEditor" impl="::guiQt::editor::SSlider" autoConnect="no"/>
             <editBox>false</editBox>
             <resetButton>false</resetButton>
@@ -105,7 +105,7 @@ protected:
                 <max>600</max>
             </range>
         </service>
-       @endverbatim
+       @endcode
      */
     virtual void configuring() throw(fwTools::Failed);
 

@@ -52,14 +52,14 @@ protected:
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
     /**
-     * @verbatim
+     * @code{.xml}
        <adaptor id="GENERIC_UID_ImagesProbeCursor" class="::visuVTKAdaptor::ImagesProbeCursor" objectId="self">
          <config renderer="default" picker="myPicker">
              <image objectId="myRefImage" name="background" />
              <image objectId="myObject" name="working" />
          </config>
        </adaptor>
-       @endverbatim
+       @endcode
      */
     VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);

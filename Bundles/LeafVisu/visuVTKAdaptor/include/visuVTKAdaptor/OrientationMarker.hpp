@@ -46,11 +46,11 @@ protected:
      * @brief Configure the adaptor
      *
      * Example :
-       @verbatim
+       @code{.xml}
        <adaptor id="visu" class="::visuVTKAdaptor::Text" objectId="self">
          <config renderer="default" hAlign="right" />
        </adaptor>
-       @endverbatim
+       @endcode
      */
     void doConfigure() throw(fwTools::Failed);
 

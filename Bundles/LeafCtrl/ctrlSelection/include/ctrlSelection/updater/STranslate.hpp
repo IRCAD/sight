@@ -56,13 +56,13 @@ protected:
 
     /**
      * @brief Configure the services : declare the events to react.
-     * @verbatim
+     * @code{.xml}
          <service uid="myUpdater" impl="::ctrlSelection::updater::STranslate" type="::ctrlSelection::IUpdaterSrv" autoConnect="no"  >
             <source>compositeSrcUid</source>
             <translate fromKey="myObject1Key1" toKey="myObject1Key2" />
             <translate fromKey="myObject2Key1" toKey="myObject2Key2" />
         </service>
-       @endverbatim
+       @endcode
      * - \b source (optional): composite used to translate objects. If it is defined, the service's slot saddObjects,
      *      changeObjects, removeObjects are connected to composite signal,  and the objects are translated on start if
      *      they are present.

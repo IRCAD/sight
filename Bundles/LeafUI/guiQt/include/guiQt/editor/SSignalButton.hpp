@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,7 @@ namespace editor
  * @brief   This editor shows a button and send a signal when it is clicked.
  * @class   SSignalButton
  *
- * @note If the mode is "checkable", it sends a signal with a boolean in parameter representing the "check" mode.
+ * @note If the mode is "checkable", it sends a signal with a boolean in parameter representing the "check" state.
  */
 class GUIQT_CLASS_API SSignalButton : public QObject,
                                       public ::gui::editor::IEditor
@@ -66,7 +66,7 @@ protected:
 
     /**
      * @brief This method is used to configure the class parameters.
-     * @verbatim
+     * @code{.xml}
        <service uid="..." impl="::guiQt::editor::SSignalButton" >
         <config>
             <checkable>true|false</checkable>
@@ -79,7 +79,7 @@ protected:
             <iconHeight>...</iconHeight>
         </config>
        </service>
-       @endverbatim
+       @endcode
      * - \b text (optional): text displayed on the button
      * - \b icon (optional): icon displayed on the button
      * - \b checkable (optional, default: false): if true, the button is checkable

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -43,11 +43,11 @@ protected:
     CTRLSELECTION_API virtual void swapping()  throw ( ::fwTools::Failed );
 
     /**
-     * @verbatim
+     * @code{.xml}
        <service impl="::ctrlSelection::BookmarkSrv" type="::fwServices::IController" autoConnect="no">
            <bookmark fromString="..." name="..." />
        </service>
-       @endverbatim
+       @endcode
      * - \b fromString : prefix of the bookmark key
      * - \b name : name of the bookmark
      * The prefix and the name are concatenated as 'prefix_name'.

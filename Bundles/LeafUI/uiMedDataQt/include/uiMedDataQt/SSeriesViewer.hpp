@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -54,7 +54,7 @@ protected:
 
     /**
      * @brief Configures the service.
-     * @verbatim
+     * @code{.xml}
        <service uid="seriesViewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
         <parentView>preview</parentView>
         <configs>
@@ -67,7 +67,7 @@ protected:
             <config id="3DSimpleConfig" type="::fwMedData::ModelSeries" />
         </configs>
        </service>
-       @endverbatim
+       @endcode
      * - \b parentView : wid of the view where the config will install its windows.
      * - \b config : gives the available association between data type and associated config.
      *   - \b id : identifier of the AppConfig to launch

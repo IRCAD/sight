@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -42,12 +42,12 @@ protected:
     /**
      * @brief Configure the service:
      *
-     * @verbatim
+     * @code{.xml}
         <service uid="actionImageFilter" impl="::opImageFilter::action::ImageFilter">
             <imageIn uid="myImage1" />
             <imageOut uid="myImage2" />
         </service>
-       @endverbatim
+       @endcode
      * - \b imageIn: uid of the source image
      * - \b imageOut: uid of the target image (ie the filtered image)
      */

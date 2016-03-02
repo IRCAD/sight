@@ -25,7 +25,7 @@ namespace fwServices
  *
  * The xml configuration for an application is defines with the extension ``::fwServices::registry::AppConfig``.
  *
- * @verbatim
+ * @code{.xml}
      <extension implements="::fwServices::registry::AppConfig">
          <id>myAppConfigId</id>
          <parameters>
@@ -97,7 +97,7 @@ namespace fwServices
 
          </config>
      </extension>
-   @endverbatim
+   @endcode
  *
  * - \b id: it is the configuration identifier
  * - \b parameters (optional): it defines the list of the parameters used by the configuration
@@ -130,7 +130,7 @@ namespace fwServices
  * - \b matrix (optional): it works only for ::fwData::TransformationMatrix3D objects. It defines the value of the
  *   matrix.
  *
- * @verbatim
+ * @code{.xml}
     <object uid="matrix" type="::fwData::TransformationMatrix3D">
         <matrix>
          <![CDATA[
@@ -141,31 +141,31 @@ namespace fwServices
          ]]>
          </matrix>
     </object>
-   @endverbatim
+   @endcode
  *
  * - \b value (optional): it works only for ::fwData::Boolean, ::fwData::Integer, ::fwData::Float and
  *   ::fwData::String. It allows to define the value of the object.
  *
- * @verbatim
+ * @code{.xml}
     <object type="::fwData::Integer">
         <value>42</value>
     </object>
-   @endverbatim
+   @endcode
  *
  * - \b item (optional): it defines a sub-object of a composite. It can only be used if the parent object is a
  *   ::fwData::Composite.
  *    - \b key: key of the object in the composite
  *    - \b object: the 'item' tag can only contain 'object' tags that represents the composite sub-object
  *
- * @verbatim
+ * @code{.xml}
     <item key="myImage">
         <object uid="myImageUid" type="::fwData::Image" />
     </item>
-   @endverbatim
+   @endcode
  *
  * - \b colors (optional): it works only for ::fwData::TransferFunction. It allows to fill the transfer function values.
  *
- * @verbatim
+ * @code{.xml}
      <object type="::fwData::TransferFunction">
          <colors>
              <step color="#ff0000ff" value="1" />
@@ -176,41 +176,41 @@ namespace fwServices
              <step color="#000000ff" value="4000" />
          </colors>
      </object>
-   @endverbatim
+   @endcode
  *
  * - \b connect (optional): allows to connect a signal to one or more slot(s). The signal and slots must be
  *   compatible.
  *
- * @verbatim
+ * @code{.xml}
      <connect>
          <signal>object_uid/signal_name</signal>
          <slot>service_uid/slot_name</slot>
      </connect>
-   @endverbatim
+   @endcode
  *
  * - \b proxy (optional): allows to connect one or more signal(s) to one or more slot(s). The signals and slots must
  *   be compatible.
  *    - \b channel: name of the channel use for the proxy.
  *
- * @verbatim
+ * @code{.xml}
     <proxy channel="myChannel">
         <signal>object_uid/signal_name</signal>
         <slot>service_uid/slot_name</slot>
     </proxy>
-    @endverbatim
+    @endcode
  *
  * - \b start: defines the service to start when the AppConfig is launched. The services will be automatically
  *   stopped in the reverse order when the AppConfig is stopped.
  *
- * @verbatim
+ * @code{.xml}
     <start uid="service_uid" />
-   @endverbatim
+   @endcode
  *
  * - \b update: defines the service to update when the AppConfig is launched.
  *
- * @verbatim
+ * @code{.xml}
     <update uid="service_uid" />
-   @endverbatim
+   @endcode
  */
 
 }

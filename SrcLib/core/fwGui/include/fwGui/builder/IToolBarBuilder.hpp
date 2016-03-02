@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -60,11 +60,11 @@ public:
      * @brief Initialize the tool bar.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
         <toolBar align="top">
             <toolBitmapSize height= "50" width="50" />
         </toolBar>
-       @endverbatim
+       @endcode
         - \b align : toolbar alignment (top, bottom, left, right)
      *  - \<toolBitmapSize height= "50" width="50"/\> : give the size of the icon.
      */

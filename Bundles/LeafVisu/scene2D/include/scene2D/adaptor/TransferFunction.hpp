@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -54,11 +54,11 @@ protected:
      * @brief Configuring the TransferFunction adaptor.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
        <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="myImage">
         <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"/>
        </adaptor>
-       @endverbatim
+       @endcode
      * - \<config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="4"/\> : Set the config.
      *
      * \b lineColor : no mandatory (default value : black) : Set the color of the lines between the TF points.

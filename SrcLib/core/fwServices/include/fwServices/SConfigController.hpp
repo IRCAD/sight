@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@ namespace fwServices
  *  configuration is launch several times.
  *
  * Example of this service configuration
- * @verbatim
+ * @code{.xml}
    <service impl="::fwServices::SConfigController" type="::fwServices::IController">
        <config>
            <appConfig id="IdOfConfig" >
@@ -43,7 +43,7 @@ namespace fwServices
            </appConfig>
        </config>
    </service>
-   @endverbatim
+   @endcode
  */
 class FWSERVICES_CLASS_API SConfigController : public ::fwServices::IController
 {
@@ -76,7 +76,7 @@ protected:
      * Call the IAction::configuring()
      *
      * Example of this service configuration
-     * @verbatim
+     * @code{.xml}
        <service impl="::fwServices::SConfigController" type="::fwServices::IController">
             <config>
                 <appConfig id="IdOfConfig" >
@@ -87,7 +87,7 @@ protected:
                 </appConfig>
             </config>
        </service>
-        @endverbatim
+        @endcode
      * It MUST have at least one key node and at least one replace node.
      */
     virtual void configuring() throw(fwTools::Failed);

@@ -65,7 +65,7 @@ protected:
      *
      * Sample of declaration configuration for a simple swapper service
      *
-     * @verbatim
+     * @code{.xml}
         <service uid="myManager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
             <mode type="dummy" />
             <config>
@@ -91,7 +91,7 @@ protected:
                 </object>
             </config>
         </service>
-       @endverbatim
+       @endcode
      * With:
      * @li \b mode : must be "stop", "dummy" or "startAndUpdate".
      *     - The mode "stop", used by default, starts the services when their attached object is added in the compsite

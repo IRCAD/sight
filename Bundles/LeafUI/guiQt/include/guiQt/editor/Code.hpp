@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -68,7 +68,18 @@ protected:
     /// Update the value from the String object.
     virtual void swapping() throw(::fwTools::Failed);
 
-    /// Do nothing.
+    /**
+     * @brief Configures the editor
+     *
+     * @code{.xml}
+       <service uid="codeEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::Code" autoConnect="yes">
+           <config>
+               <language name="Python" />
+           </config>
+       </service>
+       @endcode
+     * - \b language name can be "Python" or "Cpp"
+     */
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
@@ -97,5 +108,3 @@ private:
 } // namespace guiQt
 
 #endif /*__GUIQT_EDITOR_CODE_HPP__*/
-
-

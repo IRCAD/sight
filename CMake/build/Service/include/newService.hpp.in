@@ -29,11 +29,11 @@ protected:
 
     /**
      * @brief method description:
-     * @verbatim
+     * @code{.xml}
         <service uid="@SERVICE_NAME@Instance" impl="::@BUNDLE_NAME@::@SERVICE_NAME@" type="::@SUPERCLASS_NAMESPACE@::@SUPERCLASS@">
              <parameter>param</parameter>
         </service>
-       @endverbatim
+       @endcode
      * - \b Parameter : parameter description.
      */
     @BUNDLE_NAME_UPPER@_API virtual void configuring()  throw ( ::fwTools::Failed );

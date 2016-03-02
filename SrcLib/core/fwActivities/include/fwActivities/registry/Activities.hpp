@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -100,31 +100,33 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
  * @brief Holds Activities configuration.
  *
  * Activity parameters are (in this order) :
- * - <id>...</id> : activity id
- * - <title>...</title> : activity title (displayed in tab if tabinfo isn't specified)
- * - <tabinfo>...</tabinfo> : activity title (displayed in tab)
- * - <desc>...</desc> : activity description
- * - <icon>...</icon> : path to the icon activity
- * - <requirements> : required elements to launch specified activity (must be present in vector selection)
- *   - <requirement> : a required element
+ * - \b id : activity id
+ * - \b title : activity title (displayed in tab if tabinfo isn't specified)
+ * - \b tabinfo : activity title (displayed in tab)
+ * - \b desc : activity description
+ * - \b icon : path to the icon activity
+ * - \b requirements : required elements to launch specified activity (must be present in vector selection)
+ *   - \b requirement : a required element
  *     - name : element key in ActivitySeries composite
  *     - type : object type
  *     - minOccurs (optional, default value = 1) : minimal number of object (with specified type) in vector
  *     - maxOccurs (optional, default value = 1) : maximal number of object (with specified type) in vector
  *       - key : if maxOccurs > 1, then you must defined keys for each objects
  *     - container (optional, default value = composite) : container type (vector or composite) to store required parameters
- * - <builder>...</builder> : implementation of builder associate to the activity, the builder creates ActivitySeries.
+ * - \b builder : implementation of builder associate to the activity, the builder creates ActivitySeries.
  *   - default builder is ::fwActivities::builder::ActivitySeries
- * - <validator> : check if specified activity can be launched with selected objects
- * - <appConfig> : defined AppConfig launched by this activity
+ * - \b validator : check if specified activity can be launched with selected objects
+ * - \b validators (optional) : defines validators implementations instantiated to validate activity launch
+ *   -  \b validator : implementation name for a validator
+ * - \b appConfig : defined AppConfig launched by this activity
  *   - id : AppConfig id
- *   - <parameters> : parameters required by the AppConfig
- *     - <parameter> : defined an AppConfig parameter
+ *   - \b parameters : parameters required by the AppConfig
+ *     - \b parameter : defined an AppConfig parameter
  *       - replace : parameter name to replace in AppConfig
  *       - by : value to use for replacement (can be a string or sesh@ path)
  *
  * Example of activity configuration:
- * @verbatim
+ * @code{.xml}
     <extension implements="::fwActivities::registry::Activities">
         <id>3DVisualization</id>
         <title>3D Visu</title>
@@ -155,10 +157,7 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
             </parameters>
         </appConfig>
     </extension>
- * @endverbatim
- *
- * - validators (optional) : defines validators implementations instantiated to validate activity launch
- *   - validator : implementation name for a validator
+ * @endcode
  */
 struct FWACTIVITIES_CLASS_API ActivityInfo
 {

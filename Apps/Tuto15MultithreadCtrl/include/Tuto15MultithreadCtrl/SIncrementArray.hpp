@@ -11,7 +11,10 @@
 
 #include <fwServices/IController.hpp>
 
-fwCorePredeclare((fwThread)(Timer));
+namespace fwThread
+{
+class Timer;
+}
 
 namespace Tuto15MultithreadCtrl
 {

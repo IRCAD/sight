@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,11 +22,11 @@ namespace adaptor
  * managed ::scene2D::data::Viewport object.
  *
  * Configuration example:
-   @verbatim
+   @code{.xml}
    <adaptor id="viewportRangeUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="myViewport">
        <config xAxis="xAxis" yAxis="yAxis" zValue="7" />
    </adaptor>
-   @endverbatim
+   @endcode
  *
  * \b objectID  : the viewport object this updater takes values from.
  *

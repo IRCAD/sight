@@ -51,7 +51,7 @@ protected:
      * @brief Configure the adaptor
      *
      * Example :
-       @verbatim
+       @code{.xml}
        <adaptor id="text" class="::visuVTKAdaptor::Text" objectId="imageSeries">
         <config renderer="default" text="@patient.name" color="#ff0000" fontSize="16" />
        </adaptor>
@@ -61,11 +61,11 @@ protected:
         <text>Text to display<text>
         </config>
        </adaptor>
-       @endverbatim
+       @endcode
      *
      * - text : text to display. If a valid Seshat object attribute path is detected, the associated
      *   value is used. Otherwise, it uses the given value in XML configuration.
-     * - color : text color in hexadecimal format : #rrggbb or #rrggbbaa (optional, default: white)
+     * - color : text color in hexadecimal format : \#rrggbb or \#rrggbbaa (optional, default: white)
      * - fontSize : font size in points of displayed text (optional, default: 20)
      * - hAlign : horizontal alignment (left, center or right, optional, default: 'left')
      * - vAlign : vertical alignment (top, center or bottom, optional, default: 'bottom')

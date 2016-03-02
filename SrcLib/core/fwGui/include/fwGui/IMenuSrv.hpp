@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -58,7 +58,7 @@ protected:
      * @brief Initialize the layout and registry managers.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
         <service uid="myMenu" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
             <gui>
                 <layout hideAction="false">
@@ -80,7 +80,7 @@ protected:
                 <menuItem sid="actionQuit" start="no" />
             </registry>
         </service>
-       @endverbatim
+       @endcode
      * - \<gui\> \</gui\> : (mandatory) describe the interface of the service. It must contain a layout section.
      *   - \<layout\> \</layout\> : (mandatory) describe the layout of the service
      *     - \b hideAction: (optional, default=false): if true, the actions are hidden when they are stopped.

@@ -84,13 +84,13 @@ protected:
     /**
      * @brief Configures the service
      *
-     * @verbatim
+     * @code{.xml}
        <adaptor id="negato" class="::visuVTKAdaptor::NegatoMPR" objectId="imageKey">
            <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="axial"
                    transform="trf" tfalpha="yes" interpolation="off" vtkimagesource="imgSource" actorOpacity="1.0"
                    selectedTFKey="tkKey" tfSelectionFwID="selectionID" />
        </adaptor>
-       @endverbatim
+       @endcode
      * - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects renderer.
      * - \b picker (mandatory): identifier of the picker
      * - \b mode (optional, 2d or 3d): defines the scene mode. In 2d mode, the camera follow the negato in

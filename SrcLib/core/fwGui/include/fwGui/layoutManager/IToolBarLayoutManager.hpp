@@ -103,7 +103,7 @@ public:
      * @brief Initialize layout managers.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
        <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
            <gui>
                <layout>
@@ -127,7 +127,7 @@ public:
                <editor sid="editor" />
            </registry>
        </service>
-       @endverbatim
+       @endcode
      * This method analyzes the gui section of the configuration.
      *
      *  - \<layout\> (mandatory) : give the list of the menu item that will appear in the toolbar.

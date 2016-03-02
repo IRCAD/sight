@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -84,13 +84,13 @@ protected:
      * @brief Configures the editor.
      *
      * Configuration example :
-       @verbatim
+       @code{.xml}
        <enable_hide_all>true</enable_hide_all>
        <columns>
          <organ_name>@organ_name</organ_name>
          <volume_cc view="positive" >@volume</volume_cc>
        </columns>
-       @endverbatim
+       @endcode
      *
      * \b enable_hide_all : if 'true', allows to hide all models through a single checkbox displayed in UI (default
      * value is 'true', allowed values are 'true' and 'false').

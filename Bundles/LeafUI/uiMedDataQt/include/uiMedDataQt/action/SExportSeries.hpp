@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -49,11 +49,11 @@ protected:
 
     /**
      *
-     * @verbatim
+     * @code{.xml}
        <service uid="selector" impl="::uiMedData::action::SExportSeries" type="::fwGui::IActionSrv" autoConnect="yes">
         <seriesId>activitySeries</seriesId>
        </service>
-       @endverbatim
+       @endcode
      * - \b seriesId : defines the fwId of the series to export in the current SeriesDB.
      */
     virtual void configuring() throw (::fwTools::Failed);

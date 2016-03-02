@@ -74,13 +74,13 @@ protected:
     /**
      * @brief Configures the service
      *
-     * @verbatim
+     * @code{.xml}
        <adaptor id="negatoOneSlice" class="::visuVTKAdaptor::NegatoOneSlice" objectId="imageKey">
            <config renderer="default" picker="negatodefault" sliceIndex="axial"
                    transform="trf" tfalpha="yes" interpolation="off" vtkimagesource="imgSource" actorOpacity="1.0"
                    selectedTFKey="tkKey" tfSelectionFwID="selectionID" />
        </adaptor>
-       @endverbatim
+       @endcode
      * - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects renderer.
      * - \b picker (mandatory): identifier of the picker
      * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato

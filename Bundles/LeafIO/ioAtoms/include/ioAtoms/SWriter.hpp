@@ -56,7 +56,7 @@ protected:
 
     /**
      * @brief Configures the writer
-       @verbatim
+       @code{.xml}
        <config>
         <patcher context="..." version="..." />
 
@@ -78,7 +78,7 @@ protected:
         </extensions>
 
        </config>
-       @endverbatim
+       @endcode
      *
      * archive : defines custom file extensions. The file to be saved with an extension given in 'archive' tag will be
      * written with the given backend in archive tag (the 'backend' attribute is mandatory). Extensions must begin with

@@ -46,7 +46,7 @@ protected:
      * @brief Configure the adaptor
      *
      * Example :
-       @verbatim
+       @code{.xml}
        <adaptor id="medicalCamera" class="::visuVTKAdaptor::Medical3DCamera" objectId="object">
         <config renderer="default" sliceIndex="axial" resetAtStart="yes" />
        </adaptor>
@@ -58,7 +58,7 @@ protected:
         <slot>medicalCamera/setAxial</slot> <!-- Connect to adaptor's axial view slot -->
        </connect>
 
-       @endverbatim
+       @endcode
      *
      * - renderer : mandatory, renderer used by the adaptor
      * - sliceIndex : not mandatory, defines view orientation. Available values are axial, frontal, sagittal;

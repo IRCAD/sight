@@ -15,7 +15,10 @@
 
 class VISUVTKADAPTOR_CLASS_API vtkProperty;
 
-fwCorePredeclare( (fwData)(Material) )
+namespace fwData
+{
+class Material;
+}
 
 namespace visuVTKAdaptor
 {

@@ -45,7 +45,7 @@ static const ::fwCom::Slots::SlotKeyType s_CREATE_TAB_SLOT = "createTab";
 
 fwServicesRegisterMacro( ::gui::view::IView, ::guiQt::editor::DynamicView, ::fwData::Object );
 
-AppConfig::AppConfig(const DynamicView::ConfigType& config) :
+AppConfig::AppConfig(const ConfigType& config) :
     id(config.get<std::string>("<xmlattr>.id")),
     title(config.get<std::string>("<xmlattr>.title"))
 {

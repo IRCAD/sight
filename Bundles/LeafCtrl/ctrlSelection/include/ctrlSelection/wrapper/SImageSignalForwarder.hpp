@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -51,13 +51,13 @@ protected:
     /**
      * @brief Configures the service.
      *
-     * @verbatim
+     * @code{.xml}
        <service uid="forwarderMsg" impl="::ctrlSelection::wrapper::SImageSignalForwarder" type="::ctrlSelection::IWrapperSrv" autoConnect="no">
            <fromUid></fromUid>
            <fromKey>compositeUID[imageKey]</fromKey>
            <forward></forward>
        </service>
-       @endverbatim
+       @endcode
      * With :
      * - \b fromUid: uid of the source image
      * - \b fromKey: uid of the composite containig the imageKey

@@ -11,7 +11,10 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-fwCorePredeclare( (fwData)(Material) )
+namespace fwData
+{
+class Material;
+}
 
 namespace visuVTKAdaptor
 {
@@ -58,11 +61,11 @@ protected:
 
     /**
      * @brief Configure the adaptor.
-     * @verbatim
+     * @code{.xml}
        <adaptor id="texAdaptor" class="::visuVTKAdaptor::Texture" objectId="imageKey" >
         <config texture="texture" autoRender="true" meshAdaptor="meshAdaptor" filtering="linear" wrapping="repeat" />
        </adaptor>
-       @endverbatim
+       @endcode
      * With :
      *  - \b texture (mandatory) : the vtkTexture to associate to the adaptor
      *  - \b autoRender (optional, "true" by default): if autoRender=true,  the scene is automatically rendered after

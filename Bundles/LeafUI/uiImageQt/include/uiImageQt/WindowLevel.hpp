@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,6 +28,13 @@ class QToolButton;
 class QSignalMapper;
 
 fwCorePredeclare( (fwGuiQt)(widget)(QRangeSlider) );
+namespace fwGuiQt
+{
+namespace widget
+{
+class QRangeSlider;
+}
+}
 
 namespace uiImage
 {
@@ -89,11 +96,11 @@ protected:
      * @brief Configure the editor.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
          <service uid="windowLevel" impl="::uiImage::WindowLevel" type="::gui::editor::IEditor" autoConnect="yes">
              <config autoWindowing="yes" selectedTFKey="mySelectedTF" tfSelectionFwID="myTFSelection" useImageGreyLevelTF="yes" />
          </service>
-       @endverbatim
+       @endcode
      * With :
      *  - \b autoWindowing : if 'yes', image windowing will be automatically compute from image pixel min/max
      *  intensity when this service receive BUFFER event
@@ -175,5 +182,3 @@ private:
 } // uiImage
 
 #endif /*__UIIMAGEQT_WINDOWLEVEL_HPP__*/
-
-

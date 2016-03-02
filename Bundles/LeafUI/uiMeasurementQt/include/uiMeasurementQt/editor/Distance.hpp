@@ -78,11 +78,11 @@ protected:
      * @brief Configure the editor.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
        <service uid="distanceEditor" type="::gui::editor::IEditor" impl="::uiMeasurement::editor::Distance" autoConnect="no">
         <placeInScene uid="genericScene" />
        </service>
-       @endverbatim
+       @endcode
        \b genericScene is the uid of the ::fwRenderVTK::SRender representing the generic scene which will be printed.
      */
     virtual void configuring() throw(fwTools::Failed);

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -62,7 +62,7 @@ protected:
      *
      * Sample of declaration configuration for a simple swapper service
      *
-     * @verbatim
+     * @code{.xml}
         <service uid="FieldManager" impl="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
             <mode type="dummy" />
             <config>
@@ -84,7 +84,7 @@ protected:
                 </field>
             </config>
         </service>
-       @endverbatim
+       @endcode
      * With:
      * @li mode : must be "stop" or "dummy". The dummy mode doesn't stop the services when its attached field is deleted but swap it on a dummy field.
      * @li the fields, services, connect and proxy tags are defined as same as the configuration of fields and services.

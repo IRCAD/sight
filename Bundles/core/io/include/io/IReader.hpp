@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -138,25 +138,25 @@ protected:
      * else you must use this generic approach.
      *
      * Sample configuration for a file:
-     * @verbatim
+     * @code{.xml}
        <service ... >
         <file>/home/user/myFile.jpg</file>
        </service>
-       @endverbatim
+       @endcode
      * Sample configuration for many files:
-     * @verbatim
+     * @code{.xml}
        <service ... >
         <file>/home/user/myFile01.jpg</file>
         <file>/home/user/myFile02.jpg</file>
         <file>/home/user/myFile03.jpg</file>
        </service>
-       @endverbatim
+       @endcode
      * Sample configuration for a folder:
-     * @verbatim
+     * @code{.xml}
        <service ... >
         <folder>/home/user/myFolder</folder>
        </service>
-       @endverbatim
+       @endcode
      */
     IO_API virtual void configuring() throw (fwTools::Failed);
 

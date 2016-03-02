@@ -53,14 +53,14 @@ protected:
      * @brief Configure the adaptor
      *
      * Example :
-       @verbatim
+       @code{.xml}
         <adaptor id="adaptorID" class="::visuVTKAdaptor::ImageSliceOrientationText" objectId="imageKey">
             <config renderer="default" >
                 <locations>R,L,A,P,S,I</locations>
                 <initialOrientation>${orientation}</initialOrientation>
             </config>
         </adaptor>
-       @endverbatim
+       @endcode
      *
      * - locations : comma-separated location terms to use, in this order :
      *   Right,Left,Anterior,Posterior,Superior,Inferior
