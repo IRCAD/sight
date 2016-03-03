@@ -19,6 +19,7 @@
                         <view caption="Material" expanded="true" />
                         <view caption="Representation" expanded="true" />
                         <view caption="Texture" expanded="true" />
+                        <view caption="Material selector" expanded="true" />
                     </layout>
                 </gui>
                 <registry>
@@ -27,6 +28,7 @@
                     <view sid="${GENERIC_UID}_organMaterialEditor" start="no" />
                     <view sid="${GENERIC_UID}_representationEditor" start="no" />
                     <view sid="${GENERIC_UID}_textureSelector" start="no" />
+                    <view sid="${GENERIC_UID}_materialSelector" start="no" />
                 </registry>
             </service>
 
@@ -44,6 +46,7 @@
                                 <service uid="${GENERIC_UID}_organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="no" />
                                 <service uid="${GENERIC_UID}_representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="no" />
                                 <service uid="${GENERIC_UID}_textureSelector" impl="::uiVisuOgre::STextureSelector" type="::gui::editor::IEditor" autoConnect="no" />
+                                <service uid="${GENERIC_UID}_materialSelector" impl="::uiVisuOgre::SMaterialSelector" type="::gui::editor::IEditor" autoConnect="no" />
                             </object>
                         </config>
                     </service>

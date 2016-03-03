@@ -21,7 +21,15 @@
 #define NB_OF_TECH 5
 
 /// OIT (Ordrer Independent Transparency) techniques supported
-enum transparencyTechnique { DEFAULT, DEPTHPEELING, DUALDEPTHPEELING, WEIGHTEDBLENDEDOIT, HYBRIDTRANSPARENCY};
+enum transparencyTechnique
+{
+    DEFAULT,
+    DEPTHPEELING,
+    DUALDEPTHPEELING,
+    WEIGHTEDBLENDEDOIT,
+    HYBRIDTRANSPARENCY,
+    CELSHADING_DEPTHPEELING,
+};
 
 namespace fwRenderOgre
 {
@@ -74,15 +82,6 @@ public:
     /// Deactivate OIT compositor
     FWRENDEROGRE_API void setTransparencyDepth(int depth);
 
-    //FWRENDEROGRE_API void setTransparencyMaxDepth(int depth);
-
-    /// Allow cel shading
-    /// Deactivate OIT compositor
-    FWRENDEROGRE_API bool setCelShadingActivated(bool celShadingActivated);
-
-    /// Return if cel shading is used
-    FWRENDEROGRE_API bool isCelShadingActivated();
-
     /// Re/Activate OIT compositor
     FWRENDEROGRE_API void update();
 
@@ -108,9 +107,6 @@ private:
     /// Setup OIT current compositor
     FWRENDEROGRE_API void setupTransparency();
 
-    /// Return if cel shading is supported
-    FWRENDEROGRE_API bool isCelShadingSupported();
-
     //FWRENDEROGRE_API void setupQueries();
 
     //FWRENDEROGRE_API virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
@@ -125,9 +121,6 @@ private:
 
     /// OIT compositor instance used
     ::Ogre::CompositorInstance* m_compositorInstance;
-
-    /// Is cel shading activated
-    bool m_useCelShading;
 
     /// Cel shading activated
     ::Ogre::String m_celShadingName;

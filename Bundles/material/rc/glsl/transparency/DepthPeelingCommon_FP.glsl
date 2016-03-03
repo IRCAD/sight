@@ -1,19 +1,13 @@
 #version 150
 
-float packNormal(vec3 normal)
+vec3 packNormal(vec3 normal)
 {
-    return clamp(int(256. * normal.r), 0, 256)/256.
-            + clamp(int(256. * normal.g), 0, 256)/65536.
-            + clamp(int(256. * normal.b), 0, 256)/16777216.;
+    return normal.xyz + 1.0 * 0.5;
 }
 
-vec3 unpackNormal(float value)
+vec3 unpackNormal(vec3 packedNormal)
 {
-    vec3 normal;
-    normal.r = clamp(int(256. * value), 0, 256)/256.;
-    normal.g = clamp(int(65536. * (value-normal.r)), 0, 256)/256.;
-    normal.b = clamp(int(16777216. * (value-normal.r-normal.g/256.)), 0, 256)/256.;
-    return normal;
+    return normalize(packedNormal * 2. - 1.0);
 }
 
 float packColor(vec2 color)

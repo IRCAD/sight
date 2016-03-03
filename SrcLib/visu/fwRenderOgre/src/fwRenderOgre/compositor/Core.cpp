@@ -42,7 +42,6 @@ Core::Core() :
     //m_currNumPass(0),
     //m_isPing(false),
     //m_isPong(false),
-    m_useCelShading(false),
     m_celShadingName(""),
     m_numPass(8),
     m_viewport(nullptr)
@@ -80,8 +79,7 @@ void Core::setViewport(::Ogre::Viewport* viewport)
 
 bool Core::setTransparencyTechnique(transparencyTechnique technique)
 {
-    ::Ogre::CompositorManager::getSingletonPtr()->setCompositorEnabled( m_viewport, m_transparencyTechniqueName,
-                                                                        false );
+    ::Ogre::CompositorManager::getSingleton().setCompositorEnabled( m_viewport, m_transparencyTechniqueName, false );
     m_transparencyTechnique = technique;
 
     return true;
@@ -91,6 +89,8 @@ bool Core::setTransparencyTechnique(transparencyTechnique technique)
 
 void Core::update()
 {
+    m_celShadingName = "";
+
     switch (m_transparencyTechnique)
     {
         case DEFAULT:
@@ -98,6 +98,8 @@ void Core::update()
             this->setupTransparency();
             this->setupDefaultTransparency();
             break;
+        case CELSHADING_DEPTHPEELING:
+            m_celShadingName = "CelShading";
         case DEPTHPEELING:
             m_transparencyTechniqueName = m_celShadingName+"DepthPeeling";
             this->setupTransparency();
@@ -111,7 +113,7 @@ void Core::update()
         case WEIGHTEDBLENDEDOIT:
             m_transparencyTechniqueName = "WeightedBlended";
             this->setupTransparency();
-            ::Ogre::CompositorManager::getSingletonPtr()->setCompositorEnabled( m_viewport, "WeightedBlended", true );
+            ::Ogre::CompositorManager::getSingleton().setCompositorEnabled( m_viewport, "WeightedBlended", true );
             break;
         case HYBRIDTRANSPARENCY:
             m_transparencyTechniqueName = "HybridTransparency";
@@ -124,17 +126,9 @@ void Core::update()
 
 //-----------------------------------------------------------------------------
 
-/*void Core::setTransparencyMaxDepth(int depth)
-   {
-    m_transparencyTechniqueMaxDepth = depth;
-   }*/
-
-//-----------------------------------------------------------------------------
-
 void Core::setTransparencyDepth(int depth)
 {
-    ::Ogre::CompositorManager::getSingletonPtr()->setCompositorEnabled( m_viewport, m_transparencyTechniqueName,
-                                                                        false );
+    ::Ogre::CompositorManager::getSingleton().setCompositorEnabled( m_viewport, m_transparencyTechniqueName, false );
     m_numPass = depth;
 }
 
@@ -142,7 +136,7 @@ void Core::setTransparencyDepth(int depth)
 
 void Core::setupDefaultTransparency()
 {
-    ::Ogre::CompositorManager::getSingletonPtr()->setCompositorEnabled( m_viewport, "Default", true );
+    ::Ogre::CompositorManager::getSingleton().setCompositorEnabled( m_viewport, "Default", true );
 }
 
 //-----------------------------------------------------------------------------
@@ -150,8 +144,8 @@ void Core::setupDefaultTransparency()
 void Core::setupTransparency()
 {
     // Check if compositor is already existing
-    ::Ogre::CompositorChain* compChain =
-        ::Ogre::CompositorManager::getSingletonPtr()->getCompositorChain(m_viewport);
+    ::Ogre::CompositorChain* compChain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
+        m_viewport);
     ::Ogre::CompositorChain::InstanceIterator compIter = compChain->getCompositors();
 
     m_compositorInstance = nullptr;
@@ -168,29 +162,29 @@ void Core::setupTransparency()
     // If we didn't retrieve the good compositor
     if(m_compositorInstance == nullptr)
     {
-        ::Ogre::CompositorManager* compositorManager = ::Ogre::CompositorManager::getSingletonPtr();
+        ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
         bool needFinalCompositorSwap(false);
 
         // If the compositor chain already contains the final compositor, we have to remove it
-        if(!(compositorManager->getByName(FINAL_CHAIN_COMPOSITOR)).isNull())
+        if(!(compositorManager.getByName(FINAL_CHAIN_COMPOSITOR)).isNull())
         {
-            compositorManager->setCompositorEnabled(m_viewport, FINAL_CHAIN_COMPOSITOR, false);
-            compositorManager->removeCompositor(m_viewport, FINAL_CHAIN_COMPOSITOR);
+            compositorManager.setCompositorEnabled(m_viewport, FINAL_CHAIN_COMPOSITOR, false);
+            compositorManager.removeCompositor(m_viewport, FINAL_CHAIN_COMPOSITOR);
             needFinalCompositorSwap = true;
         }
 
         // Now, we can add the new compositor to the compositor chain
-        m_compositorInstance = compositorManager->addCompositor( m_viewport,
-                                                                 m_transparencyTechniqueName,
-                                                                 0.);
-        compositorManager->setCompositorEnabled( m_viewport, m_transparencyTechniqueName,
-                                                 true );
+        m_compositorInstance = compositorManager.addCompositor( m_viewport,
+                                                                m_transparencyTechniqueName,
+                                                                0.);
+        compositorManager.setCompositorEnabled( m_viewport, m_transparencyTechniqueName,
+                                                true );
 
         // If the final compositor has been removed, we need to add it to the compositor chain
         if(needFinalCompositorSwap)
         {
-            compositorManager->addCompositor(m_viewport, FINAL_CHAIN_COMPOSITOR);
-            compositorManager->setCompositorEnabled(m_viewport, FINAL_CHAIN_COMPOSITOR, true);
+            compositorManager.addCompositor(m_viewport, FINAL_CHAIN_COMPOSITOR);
+            compositorManager.setCompositorEnabled(m_viewport, FINAL_CHAIN_COMPOSITOR, true);
         }
 
         if(m_compositorInstance == nullptr)
@@ -266,19 +260,18 @@ void Core::setTransparencyDepthOfDepthPeeling(int depth)
                 dpCompPassRenderQuad->setType(::Ogre::CompositionPass::PT_RENDERQUAD);
                 dpCompPassRenderQuad->setMaterialName(m_celShadingName+"DepthPeeling/Blend");
                 dpCompPassRenderQuad->setInput(0, "p" + pingPong + "Buffer",0);
-                if(m_useCelShading)
+                if(!m_celShadingName.empty())
                 {
                     dpCompPassRenderQuad->setInput(1, "p" + pingPong + "Buffer",1);
                     dpCompPassRenderQuad->setInput(2, "p" + pingPong + "Buffer",2);
-                    dpCompPassRenderQuad->setInput(3, "p" + pingPong + "Buffer",3);
                 }
 
             }
         }
     }
 
-    ::Ogre::CompositorManager::getSingletonPtr()->setCompositorEnabled( m_viewport, m_celShadingName+"DepthPeeling",
-                                                                        true );
+    ::Ogre::CompositorManager::getSingleton().setCompositorEnabled( m_viewport, m_celShadingName+"DepthPeeling",
+                                                                    true );
 }
 
 //-----------------------------------------------------------------------------
@@ -351,7 +344,7 @@ void Core::setTransparencyDepthOfDualDepthPeeling(int depth)
         }
     }
 
-    ::Ogre::CompositorManager::getSingletonPtr()->setCompositorEnabled( m_viewport, "DualDepthPeeling", true );
+    ::Ogre::CompositorManager::getSingleton().setCompositorEnabled( m_viewport, "DualDepthPeeling", true );
 }
 
 //-----------------------------------------------------------------------------
@@ -544,7 +537,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
         }
     }
 
-    ::Ogre::CompositorManager::getSingletonPtr()->setCompositorEnabled( m_viewport, "HybridTransparency", true );
+    ::Ogre::CompositorManager::getSingleton().setCompositorEnabled( m_viewport, "HybridTransparency", true );
 
 }
 
@@ -700,40 +693,6 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
        }
     return true;
    }*/
-
-//-----------------------------------------------------------------------------
-
-bool Core::setCelShadingActivated(bool celShadingActivated)
-{
-    ::Ogre::CompositorManager::getSingletonPtr()->setCompositorEnabled( m_viewport, m_transparencyTechniqueName,
-                                                                        false );
-    if(this->isCelShadingSupported())
-    {
-        m_useCelShading  = celShadingActivated;
-        m_celShadingName = (celShadingActivated) ? "CelShading" : "";
-        return true;
-    }
-    else
-    {
-        m_useCelShading  = false;
-        m_celShadingName = "";
-        return false;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-bool Core::isCelShadingActivated()
-{
-    return m_useCelShading;
-}
-
-//-----------------------------------------------------------------------------
-
-bool Core::isCelShadingSupported()
-{
-    return m_transparencyTechniqueName == "DepthPeeling";
-}
 
 //-----------------------------------------------------------------------------
 

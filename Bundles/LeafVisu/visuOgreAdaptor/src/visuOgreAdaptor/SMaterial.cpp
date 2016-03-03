@@ -514,6 +514,7 @@ void SMaterial::doConfigure() throw(fwTools::Failed)
 
 void SMaterial::doStart() throw(fwTools::Failed)
 {
+
     if(!m_shadingMode.empty())
     {
         ::fwData::Material::ShadingType shadingMode = ::fwData::Material::PHONG;
@@ -537,6 +538,14 @@ void SMaterial::doStart() throw(fwTools::Failed)
 
     m_material = ::Ogre::MaterialManager::getSingleton().create(
         m_materialName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+    ::fwData::String::sptr string = ::fwData::String::New();
+    string->setValue(m_materialTemplateName);
+
+    ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
+    ::fwComEd::helper::Field helper(material);
+    helper.setField("ogreMaterial", string);
+    helper.notify();
 
     this->loadMaterialParameters();
 
@@ -617,8 +626,7 @@ void SMaterial::updateField( ::fwData::Object::FieldsContainerType fields )
 
             this->unregisterServices("::visuOgreAdaptor::SShaderParameter");
             this->loadMaterialParameters();
-
-            this->requestRender();
+            this->doUpdate();
         }
     }
 }
@@ -632,6 +640,7 @@ void SMaterial::swapTexture()
     ::Ogre::TexturePtr currentTexture = m_texAdaptor->getTexture();
     SLM_ASSERT("Texture not set in Texture adaptor", !currentTexture.isNull());
 
+    this->cleanTransparencyTechniques();
 
     ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
     while( techIt.hasMoreElements())
@@ -646,10 +655,6 @@ void SMaterial::swapTexture()
 
             if(texUnitState)
             {
-                // This needs to be done *first* before setting the texture,
-                // otherwise the texture does'nt show up :/
-                technique->_notifyNeedsRecompile();
-
                 texUnitState->setTexture(currentTexture);
             }
             else
@@ -666,9 +671,6 @@ void SMaterial::swapTexture()
 
     this->requestRender();
 }
-
-
-
 
 //------------------------------------------------------------------------------
 
@@ -1025,10 +1027,6 @@ void SMaterial::removeTextureAdaptor()
             ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("diffuseTexture");
             if(texUnitState)
             {
-                // This needs to be done *first* before setting the texture,
-                // otherwise the texture does'nt show up :/
-                technique->_notifyNeedsRecompile();
-
                 texUnitState->setTextureName("");
             }
         }

@@ -13,11 +13,11 @@
 
 #include <gui/editor/IEditor.hpp>
 
-#include <QObject>
-#include <QPointer>
 #include <QComboBox>
-#include <QString>
 #include <QLabel>
+#include <QPointer>
+#include <QPushButton>
+#include <QString>
 
 #include "uiVisuOgre/config.hpp"
 
@@ -67,14 +67,18 @@ protected:
 
 protected Q_SLOTS:
 
+    /// SLOT: Called when a material is selected
     void onSelectedModeItem(const QString& text);
+
+    /// SLOT: Called when the reload button is pushed
+    void onReloadMaterial();
 
 private:
 
     void updateMaterial();
 
-    QPointer<QLabel> m_materialText;
     QPointer<QComboBox> m_materialBox;
+    QPointer<QPushButton> m_reloadButton;
 };
 
 } // uiVisuOgre

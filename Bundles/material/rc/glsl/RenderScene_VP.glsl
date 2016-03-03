@@ -1,4 +1,4 @@
-#version 330
+#version 410
 
 uniform mat4 u_worldViewProj;
 uniform mat4 u_world;
@@ -15,41 +15,38 @@ in vec2 uv0;
 in vec4 colour;
 #endif // VERTEX_COLOR
 
-out VertexDataOut
-{
-#ifdef R2VB
-    vec3 oNormal;
 
+#ifdef R2VB
+
+out vec3 oNormal;
 #   ifdef VERTEX_COLOR
-    vec4 oColor;
+out vec3 oColor;
 #   endif // VERTEX_COLOR
+#   ifdef DIFFUSE_TEX
+out vec2 oTexCoord;
+#   endif // DIFFUSE_TEX
 
 #else
-    #ifdef PIXEL_LIT
-    vec3 oPosition_WS;
-    vec3 oNormal_WS;
-    vec4 oColor;
 
-    #else
+#if defined(PIXEL_LIT) || defined(CEL_SHADING)
+layout(location = 0) out vec3 outNormal_WS;
+#   endif
 
-    #   ifdef FLAT
-    flat vec4 oColor;
-    #   else
-    vec4 oColor;
-    #   endif // FLAT
+#   ifdef PIXEL_LIT
+layout(location = 1) out vec3 outPosition_WS;
+#   endif
 
-    #endif // PIXEL_LIT
+#   ifdef FLAT
+flat layout(location = 2) out vec4 outColor;
+#   else
+layout(location = 2) out vec4 outColor;
+#   endif // FLAT
 
-#   ifdef CEL_SHADING
-    vec3 normal_VS;
-#   endif // CEL_SHADING
-
+#   ifdef DIFFUSE_TEX
+layout(location = 3) out vec2 outTexCoord;
+#   endif // DIFFUSE_TEX
 #endif // R2VB
 
-    #ifdef DIFFUSE_TEX
-    vec2 oTexCoord;
-    #endif // DIFFUSE_TEX
-} vertexOut;
 
 #ifndef AMBIENT
 vec4 lighting(vec3 _normal, vec3 _position);
@@ -62,55 +59,53 @@ void main(void)
 {
 #ifdef R2VB
     gl_Position = position;
-    vertexOut.oNormal = normal;
+    oNormal = normal;
 
 #   ifdef VERTEX_COLOR
-    vertexOut.oColor = colour/255.f;
+    oColor = colour/255.f;
 #   endif // VERTEX_COLOR
 
 #   ifdef DIFFUSE_TEX
-    vertexOut.oTexCoord = uv0;
+    oTexCoord = uv0;
 #   endif // DIFFUSE_TEX
 
 #else
 
     gl_Position = u_worldViewProj * position;
 
-#   ifdef CEL_SHADING
-    // TODO: merge with oNormal_WS
-    vertexOut.normal_VS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
+#   if defined(PIXEL_LIT) || defined(CEL_SHADING)
+    outNormal_WS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
 #   endif
 
 #   ifdef PIXEL_LIT
-    vertexOut.oPosition_WS = (u_world * position).xyz;
-    vertexOut.oNormal_WS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
+    outPosition_WS = (u_world * position).xyz;
 
 #       ifdef VERTEX_COLOR
 
     // We could skip this division, however r2vb in Ogre doesn't allow us to output the color in the correct format.
     // So we use VET_UBYTE4 for both pipelines (r2vb/regular) to avoid a new #define.
-    vertexOut.oColor = colour/255.f;
+    outColor = colour/255.f;
 #       else
-    vertexOut.oColor = vec4(1.,1.,1.,1.);
+    outColor = vec4(1.,1.,1.,1.);
 #       endif // VERTEX_COLOR
 
 #   else
 #       ifdef AMBIENT
-    vertexOut.oColor = vec4(u_ambient.rgb + u_diffuse.rgb, u_diffuse.a);
+    outColor = vec4(u_ambient.rgb + u_diffuse.rgb, u_diffuse.a);
 #       else
     vec3 position_WS = (u_world * position).xyz;
     vec3 normal_WS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;
-    vertexOut.oColor = lighting(normal_WS, position_WS);
+    outColor = lighting(normal_WS, position_WS);
 #       endif // AMBIENT
 
 #       ifdef VERTEX_COLOR
-    vertexOut.oColor *= colour/255.f;
+    outColor *= colour/255.f;
 #       endif // VERTEX_COLOR
 
 #   endif // PIXEL_LIT
 
 #   ifdef DIFFUSE_TEX
-    vertexOut.oTexCoord = uv0;
+    outTexCoord = uv0;
 #   endif // DIFFUSE_TEX
 
 #endif // R2VB

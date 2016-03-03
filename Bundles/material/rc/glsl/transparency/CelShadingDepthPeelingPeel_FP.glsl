@@ -1,25 +1,30 @@
-#version 330
+#version 410
+
+// Uniforms
 uniform sampler2D u_nearestDepthBuffer;
 uniform float u_vpWidth;
 uniform float u_vpHeight;
 uniform vec4 u_diffuse;
-in vec3 normal_VS;
 
+// Input semantics
+layout(location = 0) in vec3 inNormal_WS;
+
+// Output render targets
+layout(location = 0) out vec4 frontColor;
+layout(location = 1) out vec4 frontDepth;
+layout(location = 2) out vec4 bufferNormal;
+
+// Extern functions
 vec4 getFragmentColor();
-
-layout(location = 0) out vec4 bufferColorRG;
-layout(location = 1) out vec4 bufferDepth;
-layout(location = 2) out vec4 bufferColorBA;
-layout(location = 3) out vec4 bufferNormal;
-
-float packColor(vec2 color);
-float packNormal(vec3 normal);
+vec4 packFloatToVec4(float value);
+float unpackFloatFromVec4(vec4 value);
+vec3 packNormal(vec3 normal);
 
 vec3 computeCelShading(vec3 color)
 {
     // TODO : share as parameter
     float celShadingFactor = 5.;
-    return floor(pow(color,vec3(1./4.))*celShadingFactor)/celShadingFactor;
+    return floor(pow(color,vec3(1./2.))*celShadingFactor)/celShadingFactor;
 }
 
 /** Peel shader :
@@ -30,19 +35,18 @@ void main()
     vec2 texCoord = gl_FragCoord.xy / vec2( u_vpWidth, u_vpHeight );
 
     // Front depth buffer
-    float frontDepthBuffer = texture(u_nearestDepthBuffer, texCoord).r;
+    float frontDepthBuffer = unpackFloatFromVec4(texture(u_nearestDepthBuffer, texCoord));
 
     float currentDepth = gl_FragCoord.z;
 
     // Disallow repetition of last passes
     if(frontDepthBuffer == 0.)
     {
-        bufferColorRG.r = 0.;
-        bufferColorBA.r = 0.;
+        frontColor = vec4(0,0,0,0);
     }
     else
     {
-        if(frontDepthBuffer == 1.)
+        if(frontDepthBuffer >= 1.)
         {
             frontDepthBuffer = 0.;
         }
@@ -54,16 +58,15 @@ void main()
             discard;
         }
 
-        // Depth sent to the next peel
-        bufferDepth.r = currentDepth;
-
         vec4 colorOut = getFragmentColor();
         colorOut.rgb = computeCelShading(colorOut.rgb);
 
         colorOut.rgb *= colorOut.a;
-        bufferColorRG.r = packColor(colorOut.rg);
-        bufferColorBA.r = packColor(colorOut.ba);
 
-        bufferNormal.r = packNormal(normalize(normal_VS) * 0.5 + 0.5);
+        // Depth sent to the next peel
+        frontDepth = packFloatToVec4(currentDepth);
+        frontColor = colorOut;
+
+        bufferNormal.rgb = packNormal(normalize(inNormal_WS));
     }
 }

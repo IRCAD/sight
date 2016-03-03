@@ -35,6 +35,16 @@ public:
         GEOMETRY
     } ShaderEnumType;
 
+    /**
+     * @name Slots API
+     * @{
+     */
+
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_FLOAT_PARAMETER_SLOT;
+
+    ///@}
+
     /// Constructor.
     VISUOGREADAPTOR_API SShaderParameter() throw();
 
@@ -90,17 +100,16 @@ private:
      * - \b m_paramvalues is an array filled with the corresponding data
      * - \b m_paramType is the type (from the enum Types) of the data which values are stored in m_paramValues.
      */
-    void updateValue();
+    void updateValue(const fwData::Object::sptr& paramObject);
 
-    /// Contains the different parameters for the shader
-    ::Ogre::GpuProgramParametersSharedPtr m_params;
+    /// Set the parameter for a given technique
+    bool setParameter(::Ogre::Technique& technique, const ::fwData::Object::sptr& paramObject);
 
-    /// Pointer containing the value(s) of the shader parameter
-    float* m_paramValues;
-    /// Number of values contained by the shader parameter
-    int m_paramNbElem;
-    /// Indicates by what multiple are grouped the values of the shader parameter
-    int m_paramElemMultiple;
+    /// SLOT : Set the uniform from an integer value
+    void setIntParameter(int value);
+
+    /// SLOT : Set the uniform from an float value
+    void setFloatParameter(float value);
 
     /// Material name
     std::string m_materialName;
@@ -110,7 +119,8 @@ private:
     std::string m_techniqueName;
     /// Stores the value of the enum representing the shader's type.
     ShaderEnumType m_shaderType;
-
+    /// Dummy object to store the value when we use signal/slot instead of a real object
+    ::fwData::Object::sptr m_paramObject;
 };
 
 } // visuOgreAdaptor

@@ -159,7 +159,7 @@ configsListGP += generatePermutations(cfgTetra, cfgVertexColor, cfgDiffuseTex, c
 
 env = Environment(loader=PackageLoader('genDefaultMaterial', 'genTemplates'),trim_blocks=True)
 template = env.get_template('Default.program.tpl')
-template.stream(configsVP=configsListVP, configsFP=configsListFP).dump('Default.program')
+template.stream(configsVP=configsListVP, configsFP=configsListFP).dump('scene/Default.program')
 
 template = env.get_template('R2VB.program.tpl')
 template.stream(configsVP=configsListVP, configsGP=configsListGP).dump('core/R2VB.program')

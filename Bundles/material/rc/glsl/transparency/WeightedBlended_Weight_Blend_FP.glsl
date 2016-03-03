@@ -1,18 +1,19 @@
 #version 330
 
+// Uniforms
 #ifdef HYBRID
 uniform sampler2D u_frontDepthBuffer;
 #endif
-
 uniform sampler2D u_occlusionDepthBuffer;
 uniform float u_vpWidth;
 uniform float u_vpHeight;
+uniform float u_near;
+uniform float u_far;
 
+// Extern functions
 vec4 getFragmentColor();
 float unpackFloatFromVec4(vec4 value);
 
-uniform float u_near;
-uniform float u_far;
 out vec4 FragColor;
 
 float linearizeDepth(in float depth) {

@@ -207,7 +207,6 @@ void SRender::configureLayer( ConfigurationType conf )
     const std::string layer                 = conf->getAttributeValue("layer");
     const std::string compositors           = conf->getAttributeValue("compositors");
     const std::string transparencyTechnique = conf->getAttributeValue("transparency");
-    const std::string useCelShading         = conf->getAttributeValue("useCelShading");
     const std::string numPeels              = conf->getAttributeValue("numPeels");
 
     SLM_ASSERT( "'id' required attribute missing or empty", !id.empty() );
@@ -223,7 +222,7 @@ void SRender::configureLayer( ConfigurationType conf )
     ogreLayer->setWorker(m_associatedWorker);
     ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
 
-    ogreLayer->setCoreCompositorEnabled(id == "default", transparencyTechnique, useCelShading, numPeels);
+    ogreLayer->setCoreCompositorEnabled(id == "default", transparencyTechnique, numPeels);
     ogreLayer->setCompositorChainEnabled(compositors != "", compositors);
 
     // Finally, the layer is pushed in the map
@@ -406,7 +405,7 @@ void SRender::startObject()
     for (auto iter : *m_sceneConfiguration)
     {
         if(iter->getName() == "connect")
-        {   // Selected movable object
+        {
             if(iter->hasAttribute("waitForKey"))
             {
                 ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();

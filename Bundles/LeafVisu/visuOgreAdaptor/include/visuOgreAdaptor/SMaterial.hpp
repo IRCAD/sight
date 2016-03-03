@@ -138,10 +138,10 @@ protected:
 
 private:
 
-    /// Slot called when the material's field changed
+    /// SLOT: called when the material's field changed
     void updateField( ::fwData::Object::FieldsContainerType fields);
 
-    /// Slot called when the texture is swapped in the texture adaptor
+    /// SLOT: called when the texture is swapped in the texture adaptor
     void swapTexture();
 
     /// Creates a new object from loaded shader

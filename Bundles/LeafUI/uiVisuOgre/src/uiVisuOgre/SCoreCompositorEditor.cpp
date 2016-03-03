@@ -72,18 +72,7 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
     m_layersBox = new QComboBox(m_container);
     layout->addWidget(m_layersBox);
 
-
-    // Cel Shading managment
-    {
-        QLabel* labelCelShading = new QLabel(tr("Using Cel Shading"),m_container);
-        layout->addWidget(labelCelShading);
-        m_useCelShadingCheckBox = new QCheckBox(m_container);
-        m_useCelShadingCheckBox->setCheckable(false);
-        m_useCelShadingCheckBox->setCheckState(Qt::CheckState(false));
-        layout->addWidget(m_useCelShadingCheckBox);
-    }
-
-    // Transparency depth managment
+    // Transparency depth management
     {
         QLabel* labelTransparency = new QLabel(tr("Transparency depth"),m_container);
         layout->addWidget(labelTransparency);
@@ -153,6 +142,17 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
             new QLabel(tr("<i>Depth Peeling + Weighted Blended OIT = half exact half fast</i>"),m_container);
         m_labelHybridTransparency->setEnabled(false);
         layoutGroupBox->addWidget(m_labelHybridTransparency);
+
+        m_buttonCelShadingDepthPeeling = new QRadioButton ( tr("CelShading + Depth Peeling"), groupBox );
+        m_buttonCelShadingDepthPeeling->setMinimumSize(m_buttonDepthPeeling->sizeHint());
+        m_buttonCelShadingDepthPeeling->setEnabled(false);
+        m_transparencyButtonGroup->addButton(m_buttonCelShadingDepthPeeling, 5);
+        layoutGroupBox->addWidget(m_buttonCelShadingDepthPeeling);
+        m_labelCelShadingDepthPeeling = new QLabel(tr(
+                                                       "<i>Depth peeling with an edge detection per layer.</i>"),
+                                                   m_container);
+        m_labelCelShadingDepthPeeling->setEnabled(false);
+        layoutGroupBox->addWidget(m_labelCelShadingDepthPeeling);
     }
 
     m_container->setLayout( layout );
@@ -160,7 +160,6 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
     this->refreshRenderers();
 
     QObject::connect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
-    QObject::connect(m_useCelShadingCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onUseCelShading(int)));
     QObject::connect( m_transparencyDepthSlider, SIGNAL(valueChanged(int)), this, SLOT(onEditTransparencyDepth(int)) );
     QObject::connect(m_transparencyButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onEditTransparency(int)));
 }
@@ -228,18 +227,19 @@ void SCoreCompositorEditor::onSelectedLayerItem(int index)
 {
     if(!m_isLayerSelected)
     {
-        m_useCelShadingCheckBox->setCheckable(true);
         m_transparencyDepthSlider->setEnabled(true);
         m_buttonDefault->setEnabled(true);
         m_buttonDepthPeeling->setEnabled(true);
         m_buttonDualDepthPeeling->setEnabled(true);
         m_buttonWeightedBlendedOIT->setEnabled(true);
         m_buttonHybridTransparency->setEnabled(true);
+        m_buttonCelShadingDepthPeeling->setEnabled(true);
         m_labelDefault->setEnabled(true);
         m_labelDepthPeeling->setEnabled(true);
         m_labelDualDepthPeeling->setEnabled(true);
         m_labelWeightedBlendedOIT->setEnabled(true);
         m_labelHybridTransparency->setEnabled(true);
+        m_labelCelShadingDepthPeeling->setEnabled(true);
     }
 
     // Reloads buttons to match layer's parameters
@@ -266,25 +266,11 @@ void SCoreCompositorEditor::onSelectedLayerItem(int index)
             case HYBRIDTRANSPARENCY:
                 m_transparencyButtonGroup->button(4)->setChecked(true);
                 break;
+            case CELSHADING_DEPTHPEELING:
+                m_transparencyButtonGroup->button(5)->setChecked(true);
+                break;
         }
-        m_useCelShadingCheckBox->setChecked(m_currentCoreCompositor->isCelShadingActivated());
         m_transparencyDepthSlider->setValue(m_currentCoreCompositor->getTransparencyDepth());
-        this->update();
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SCoreCompositorEditor::onUseCelShading(int state)
-{
-    if(m_currentCoreCompositor)
-    {
-        bool celShadingSupported = m_currentCoreCompositor->setCelShadingActivated(state == Qt::Checked);
-        if(!celShadingSupported)
-        {
-            m_useCelShadingCheckBox->setChecked(false);
-            m_useCelShadingCheckBox->setCheckable(false);
-        }
         this->update();
     }
 }
@@ -324,21 +310,14 @@ void SCoreCompositorEditor::onEditTransparency(int index)
             case 4:
                 transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(HYBRIDTRANSPARENCY);
                 break;
+            case 5:
+                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(CELSHADING_DEPTHPEELING);
+                break;
         }
 
-        if(transparencyUpdated)
-        {
-            bool celShadingSupported =
-                m_currentCoreCompositor->setCelShadingActivated(m_useCelShadingCheckBox->isChecked());
-            m_useCelShadingCheckBox->setChecked(m_currentCoreCompositor->isCelShadingActivated());
-            m_useCelShadingCheckBox->setCheckable(celShadingSupported);
-        }
-        else
+        if(!transparencyUpdated)
         {
             m_transparencyButtonGroup->button(0)->setChecked(true);
-            m_currentCoreCompositor->setCelShadingActivated(false);
-            m_useCelShadingCheckBox->setChecked(false);
-            m_useCelShadingCheckBox->setCheckable(false);
         }
 
         this->update();
