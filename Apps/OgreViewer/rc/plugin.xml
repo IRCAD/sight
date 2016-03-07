@@ -197,7 +197,7 @@
                                 </layout>
                             </gui>
                             <registry>
-                                <view sid="defaultCompositorEditor" />
+                                <view sid="CoreEditor" />
                             </registry>
                         </service>
 
@@ -205,7 +205,7 @@
 
                         <service uid="compositorSelector" impl="::uiVisuOgre::SCompositorSelector" type="::gui::editor::IEditor" autoConnect="no" />
 
-                        <service uid="defaultCompositorEditor" impl="::uiVisuOgre::SDefaultCompositorEditor" type="::gui::editor::IEditor" autoConnect="no" />
+                        <service uid="CoreEditor" impl="::uiVisuOgre::SCoreCompositorEditor" type="::gui::editor::IEditor" autoConnect="no" />
 
                         <service uid="updaterReconstUID" impl="::ctrlSelection::updater::SObjFromSlot" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
                             <compositeKey>reconstruction</compositeKey>
@@ -259,7 +259,7 @@
                 <start uid="cfgOgreNegato2D" />
                 <start uid="cfgOrganManagerConfig" />
                 <start uid="compositorSelector" />
-                <start uid="defaultCompositorEditor" />
+                <start uid="CoreEditor" />
 
             </object>
         </config>

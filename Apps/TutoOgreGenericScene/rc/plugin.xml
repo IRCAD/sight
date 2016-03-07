@@ -120,7 +120,7 @@
                                 </adaptor>
 
                                 <adaptor id="materialAdaptor" uid="materialAdaptorUID" class="::visuOgreAdaptor::SMaterial" objectId="materialKey">
-                                    <config renderer="default" materialTemplate="1 - Default" textureAdaptor="textureAdaptorUID" normalLength="1.0" />
+                                    <config renderer="default" textureAdaptor="textureAdaptorUID" normalLength="1.0"/>
                                 </adaptor>
 
                                 <!-- 3D Negato -->
@@ -131,7 +131,7 @@
                                 </adaptor>
 
                                 <adaptor id="textureAdaptor" uid="textureAdaptorUID" class="::visuOgreAdaptor::STexture" objectId="textureImage">
-                                    <config renderer="default" textureName="meshTexture" autoRender="true" filtering="linear" wrapping="repeat" />
+                                    <config renderer="default" textureName="meshTexture" filtering="linear" wrapping="repeat" />
                                 </adaptor>
                             </scene>
                         </service>

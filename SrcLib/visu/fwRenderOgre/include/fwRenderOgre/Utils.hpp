@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,6 +21,14 @@
 #include "fwRenderOgre/config.hpp"
 
 fwCorePredeclare((fwRenderOgre)(factory)(R2VBRenderable))
+
+namespace fwRenderOgre
+{
+namespace factory
+{
+class R2VBRenderable;
+}
+}
 
 namespace fwRenderOgre
 {
@@ -71,9 +79,10 @@ public:
      * @param _image The FW4SPL Image to convert
      * @param _texture The target texture
      * @param _texType Type of the texture (::Ogre::TEX_TYPE_2D, ::Ogre::TEX_TYPE_3D, ...)
+     * @param _dynamic
      */
     FWRENDEROGRE_API static void loadOgreTexture(const ::fwData::Image::sptr& _image, ::Ogre::TexturePtr _texture,
-                                                 ::Ogre::TextureType _texType);
+                                                 ::Ogre::TextureType _texType, bool _dynamic);
 
     /**
      * @brief convertImageForNegato

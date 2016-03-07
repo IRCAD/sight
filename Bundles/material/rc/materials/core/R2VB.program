@@ -1,0 +1,496 @@
+//---------------------------------------------------------------------------
+// File generated with genMaterials.py
+//
+// DO NOT EDIT MANUALLY !!!
+//
+//---------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// Vertex shader materials
+//-----------------------------------------------------------------------------
+
+
+//---------------------------------------------------------------------------
+
+vertex_program R2VB/Ambient_VP glsl
+{
+    source RenderScene_VP.glsl
+
+    preprocessor_defines R2VB=1, AMBIENT=1
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program R2VB/Ambient+VT_VP glsl
+{
+    source RenderScene_VP.glsl
+
+    preprocessor_defines R2VB=1, AMBIENT=1,VERTEX_COLOR=1
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program R2VB/Ambient+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+
+    preprocessor_defines R2VB=1, AMBIENT=1,DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program R2VB/Ambient+VT+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+
+    preprocessor_defines R2VB=1, AMBIENT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program R2VB/Flat_VP glsl
+{
+    source RenderScene_VP.glsl
+
+    preprocessor_defines R2VB=1, FLAT=1
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program R2VB/Flat+VT_VP glsl
+{
+    source RenderScene_VP.glsl
+
+    preprocessor_defines R2VB=1, FLAT=1,VERTEX_COLOR=1
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program R2VB/Flat+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+
+    preprocessor_defines R2VB=1, FLAT=1,DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program R2VB/Flat+VT+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+
+    preprocessor_defines R2VB=1, FLAT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program R2VB/Gouraud_VP glsl
+{
+    source RenderScene_VP.glsl
+
+    preprocessor_defines R2VB=1
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program R2VB/Gouraud+VT_VP glsl
+{
+    source RenderScene_VP.glsl
+
+    preprocessor_defines R2VB=1, VERTEX_COLOR=1
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program R2VB/Gouraud+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+
+    preprocessor_defines R2VB=1, DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program R2VB/Gouraud+VT+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+
+    preprocessor_defines R2VB=1, VERTEX_COLOR=1,DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program R2VB/PixelLit_VP glsl
+{
+    source RenderScene_VP.glsl
+
+    preprocessor_defines R2VB=1, PIXEL_LIT=1
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program R2VB/PixelLit+VT_VP glsl
+{
+    source RenderScene_VP.glsl
+
+    preprocessor_defines R2VB=1, PIXEL_LIT=1,VERTEX_COLOR=1
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program R2VB/PixelLit+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+
+    preprocessor_defines R2VB=1, PIXEL_LIT=1,DIFFUSE_TEX=1
+}
+
+//---------------------------------------------------------------------------
+
+vertex_program R2VB/PixelLit+VT+DfsTex_VP glsl
+{
+    source RenderScene_VP.glsl
+
+    preprocessor_defines R2VB=1, PIXEL_LIT=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+}
+
+//-----------------------------------------------------------------------------
+// Geometry shader materials
+//-----------------------------------------------------------------------------
+
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Triangles_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines TRIANGLES=1
+    
+    default_params
+    {
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Triangles+VT_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines TRIANGLES=1,VERTEX_COLOR=1
+    
+    default_params
+    {
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Triangles+DfsTex_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines TRIANGLES=1,DIFFUSE_TEX=1
+    
+    default_params
+    {
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Triangles+VT+DfsTex_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines TRIANGLES=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+    
+    default_params
+    {
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Triangles+PPColor_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines TRIANGLES=1,PER_PRIMITIVE_COLOR=1
+    
+    default_params
+    {
+        param_named u_colorPrimitiveTexture int 0
+        param_named u_colorPrimitiveTextureSize float2 0 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Triangles+VT+PPColor_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines TRIANGLES=1,VERTEX_COLOR=1,PER_PRIMITIVE_COLOR=1
+    
+    default_params
+    {
+        param_named u_colorPrimitiveTexture int 0
+        param_named u_colorPrimitiveTextureSize float2 0 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Triangles+DfsTex+PPColor_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines TRIANGLES=1,DIFFUSE_TEX=1,PER_PRIMITIVE_COLOR=1
+    
+    default_params
+    {
+        param_named u_colorPrimitiveTexture int 0
+        param_named u_colorPrimitiveTextureSize float2 0 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Triangles+VT+DfsTex+PPColor_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines TRIANGLES=1,VERTEX_COLOR=1,DIFFUSE_TEX=1,PER_PRIMITIVE_COLOR=1
+    
+    default_params
+    {
+        param_named u_colorPrimitiveTexture int 0
+        param_named u_colorPrimitiveTextureSize float2 0 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Quad_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines QUAD=1
+    uses_adjacency_information true
+    default_params
+    {
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Quad+VT_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines QUAD=1,VERTEX_COLOR=1
+    uses_adjacency_information true
+    default_params
+    {
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Quad+DfsTex_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines QUAD=1,DIFFUSE_TEX=1
+    uses_adjacency_information true
+    default_params
+    {
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Quad+VT+DfsTex_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines QUAD=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+    uses_adjacency_information true
+    default_params
+    {
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Quad+PPColor_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines QUAD=1,PER_PRIMITIVE_COLOR=1
+    uses_adjacency_information true
+    default_params
+    {
+        param_named u_colorPrimitiveTexture int 0
+        param_named u_colorPrimitiveTextureSize float2 0 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Quad+VT+PPColor_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines QUAD=1,VERTEX_COLOR=1,PER_PRIMITIVE_COLOR=1
+    uses_adjacency_information true
+    default_params
+    {
+        param_named u_colorPrimitiveTexture int 0
+        param_named u_colorPrimitiveTextureSize float2 0 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Quad+DfsTex+PPColor_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines QUAD=1,DIFFUSE_TEX=1,PER_PRIMITIVE_COLOR=1
+    uses_adjacency_information true
+    default_params
+    {
+        param_named u_colorPrimitiveTexture int 0
+        param_named u_colorPrimitiveTextureSize float2 0 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Quad+VT+DfsTex+PPColor_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines QUAD=1,VERTEX_COLOR=1,DIFFUSE_TEX=1,PER_PRIMITIVE_COLOR=1
+    uses_adjacency_information true
+    default_params
+    {
+        param_named u_colorPrimitiveTexture int 0
+        param_named u_colorPrimitiveTextureSize float2 0 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Tetra_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines TETRA=1
+    uses_adjacency_information true
+    default_params
+    {
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Tetra+VT_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines TETRA=1,VERTEX_COLOR=1
+    uses_adjacency_information true
+    default_params
+    {
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Tetra+DfsTex_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines TETRA=1,DIFFUSE_TEX=1
+    uses_adjacency_information true
+    default_params
+    {
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Tetra+VT+DfsTex_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines TETRA=1,VERTEX_COLOR=1,DIFFUSE_TEX=1
+    uses_adjacency_information true
+    default_params
+    {
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Tetra+PPColor_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines TETRA=1,PER_PRIMITIVE_COLOR=1
+    uses_adjacency_information true
+    default_params
+    {
+        param_named u_colorPrimitiveTexture int 0
+        param_named u_colorPrimitiveTextureSize float2 0 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Tetra+VT+PPColor_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines TETRA=1,VERTEX_COLOR=1,PER_PRIMITIVE_COLOR=1
+    uses_adjacency_information true
+    default_params
+    {
+        param_named u_colorPrimitiveTexture int 0
+        param_named u_colorPrimitiveTextureSize float2 0 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Tetra+DfsTex+PPColor_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines TETRA=1,DIFFUSE_TEX=1,PER_PRIMITIVE_COLOR=1
+    uses_adjacency_information true
+    default_params
+    {
+        param_named u_colorPrimitiveTexture int 0
+        param_named u_colorPrimitiveTextureSize float2 0 0
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program R2VB/Tetra+VT+DfsTex+PPColor_GP glsl
+{
+    source RenderScene_GP.glsl
+
+    preprocessor_defines TETRA=1,VERTEX_COLOR=1,DIFFUSE_TEX=1,PER_PRIMITIVE_COLOR=1
+    uses_adjacency_information true
+    default_params
+    {
+        param_named u_colorPrimitiveTexture int 0
+        param_named u_colorPrimitiveTextureSize float2 0 0
+    }
+}

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -53,7 +53,7 @@ const ::fwCom::Slots::SlotKeyType SMaterial::s_REMOVE_TEXTURE_SLOT = "removeText
 
 //-----------------------------------------------------------------------------
 
-const std::string SMaterial::DEFAULT_MATERIAL_TEMPLATE_NAME = "1 - Default";
+const std::string SMaterial::DEFAULT_MATERIAL_TEMPLATE_NAME = "Default";
 
 static const std::string s_EDGE_PASS    = "EdgePass";
 static const std::string s_NORMALS_PASS = "NormalsPass";
@@ -91,6 +91,8 @@ void SMaterial::loadMaterialParameters()
 {
     // We retrieve the parameters of the base material in a temporary material
     ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_materialTemplateName);
+
+    OSLM_ASSERT( "Material '" << m_materialTemplateName << "'' not found", !material.isNull() );
 
     // Then we copy these parameters in m_material.
     // We can now alter this new instance without changing the default material
@@ -462,6 +464,12 @@ void SMaterial::setTextureAdaptor(const std::string& textureAdaptorUID)
     }
 }
 
+//------------------------------------------------------------------------------
+
+int SMaterial::getStartPriority()
+{
+    return -10;
+}
 
 //------------------------------------------------------------------------------
 
@@ -478,6 +486,11 @@ void SMaterial::doConfigure() throw(fwTools::Failed)
     if(m_configuration->hasAttribute("materialName"))
     {
         m_materialName = m_configuration->getAttributeValue("materialName");
+    }
+    else
+    {
+        // Choose a default name if not provided
+        m_materialName = this->getID();
     }
 
     if(m_configuration->hasAttribute("textureAdaptor"))
@@ -501,6 +514,7 @@ void SMaterial::doConfigure() throw(fwTools::Failed)
 
 void SMaterial::doStart() throw(fwTools::Failed)
 {
+
     if(!m_shadingMode.empty())
     {
         ::fwData::Material::ShadingType shadingMode = ::fwData::Material::PHONG;
@@ -525,6 +539,14 @@ void SMaterial::doStart() throw(fwTools::Failed)
     m_material = ::Ogre::MaterialManager::getSingleton().create(
         m_materialName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
+    ::fwData::String::sptr string = ::fwData::String::New();
+    string->setValue(m_materialTemplateName);
+
+    ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
+    ::fwComEd::helper::Field helper(material);
+    helper.setField("ogreMaterial", string);
+    helper.notify();
+
     this->loadMaterialParameters();
 
     // A texture adaptor is configured in the XML scene, we can retrieve it
@@ -544,7 +566,10 @@ void SMaterial::doStart() throw(fwTools::Failed)
         m_textureConnection->connect(m_texAdaptor, ::visuOgreAdaptor::STexture::s_TEXTURE_SWAPPED_SIG, this->getSptr(),
                                      ::visuOgreAdaptor::SMaterial::s_SWAP_TEXTURE_SLOT);
 
-        this->swapTexture();
+        if(m_texAdaptor->isStarted())
+        {
+            this->swapTexture();
+        }
     }
     else
     {
@@ -574,27 +599,7 @@ void SMaterial::doUpdate() throw(fwTools::Failed)
     this->updateOptionsMode( material->getOptionsMode() );
     this->updateShadingMode( material->getShadingMode() );
     this->updateRGBAMode( material );
-    this->updateSchemeSupport();
     this->requestRender();
-}
-
-//------------------------------------------------------------------------------
-
-void SMaterial::updateSchemeSupport()
-{
-    m_schemesSupported.clear();
-    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
-    while( techIt.hasMoreElements())
-    {
-        ::Ogre::String techSchemeName = techIt.getNext()->getSchemeName();
-        m_schemesSupported.push_back(techSchemeName);
-    }
-    ::fwRenderOgre::Layer::sptr currentLayer = this->getRenderService()->getLayer(m_layerID);
-    if(currentLayer->isDefaultCompositorEnabled())
-    {
-        currentLayer->getDefaultCompositor()->updateTechniquesSupported(m_materialName, m_schemesSupported);
-        currentLayer->getDefaultCompositor()->update();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -621,8 +626,7 @@ void SMaterial::updateField( ::fwData::Object::FieldsContainerType fields )
 
             this->unregisterServices("::visuOgreAdaptor::SShaderParameter");
             this->loadMaterialParameters();
-
-            this->requestRender();
+            this->doUpdate();
         }
     }
 }
@@ -633,12 +637,10 @@ void SMaterial::swapTexture()
 {
     SLM_ASSERT("Missing texture adaptor", m_texAdaptor);
 
-    this->getRenderService()->makeCurrent();
-
     ::Ogre::TexturePtr currentTexture = m_texAdaptor->getTexture();
     SLM_ASSERT("Texture not set in Texture adaptor", !currentTexture.isNull());
 
-    bool bEmptyTexture = (currentTexture->getSrcWidth() == 0 && currentTexture->getSrcHeight() == 0);
+    this->cleanTransparencyTechniques();
 
     ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
     while( techIt.hasMoreElements())
@@ -651,25 +653,15 @@ void SMaterial::swapTexture()
             ::Ogre::Pass* pass                     = technique->getPass(0);
             ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("diffuseTexture");
 
-            if(bEmptyTexture)
+            if(texUnitState)
             {
-                if(texUnitState)
-                {
-                    // If the texture is empty, we remove the texture unit state
-                    auto texUnitStateIndex = pass->getTextureUnitStateIndex(texUnitState);
-                    pass->removeTextureUnitState(texUnitStateIndex);
-                    continue;
-                }
+                texUnitState->setTexture(currentTexture);
             }
-
-            if(!texUnitState)
+            else
             {
-                texUnitState = pass->createTextureUnitState();
-                texUnitState->setName("diffuseTexture");
-                texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
-                texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_WRAP);
+                SLM_ERROR("No 'diffuseTexture' texture unit state found in .material."
+                          " STexture adaptor will not work properly.");
             }
-            texUnitState->setTexture(currentTexture);
         }
     }
 
@@ -705,10 +697,11 @@ void SMaterial::doStop() throw(fwTools::Failed)
 
 void SMaterial::updateOptionsMode(int optionsMode)
 {
+    this->cleanTransparencyTechniques();
     // First remove the normals pass if there is already one
     this->removePass(s_NORMALS_PASS);
 
-    ::Ogre::Material::TechniqueIterator techIt = m_material->getSupportedTechniqueIterator();
+    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
     const ::Ogre::Real normalLength = this->computeNormalLength();
 
     if(optionsMode != ::fwData::Material::STANDARD)
@@ -731,9 +724,9 @@ void SMaterial::updateOptionsMode(int optionsMode)
                 normalsPass->setName(s_NORMALS_PASS);
 
                 // Vertex shader
-                normalsPass->setVertexProgram("Default_Normal_VP_glsl");
+                normalsPass->setVertexProgram("Default/Normal_VP");
 
-                std::string gpName = depthOnly ? "DepthPeeling_depth_map_" : "";
+                std::string gpName = depthOnly ? "DepthPeeling/depthMap/" : "";
                 gpName += (optionsMode == ::fwData::Material::NORMALS) ?
                           "VerticesNormalsDisplay_GP" :
                           "CellsNormalsDisplay_GP";
@@ -742,9 +735,8 @@ void SMaterial::updateOptionsMode(int optionsMode)
 
                 if(!depthOnly)
                 {
-                    auto fpName = normalsPass->getFragmentProgramName();
-
-                    fpName = ::fwRenderOgre::helper::Shading::replaceProgramSuffix(fpName, "Edge_Normal");
+                    std::string fpName = normalsPass->getFragmentProgramName();
+                    fpName = ::fwRenderOgre::helper::Shading::setPermutationInProgramName(fpName, "Edge_Normal");
                     normalsPass->setFragmentProgram(fpName);
                 }
 
@@ -763,10 +755,12 @@ void SMaterial::updatePolygonMode(int polygonMode)
     // is null when we call this method on the first time (from doStart() for instance)
     m_material->touch();
 
+    this->cleanTransparencyTechniques();
+
     // First remove a previous normal pass if it exists
     this->removePass(s_EDGE_PASS);
 
-    ::Ogre::Material::TechniqueIterator techIt = m_material->getSupportedTechniqueIterator();
+    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
 
     if(polygonMode == ::fwData::Material::EDGE)
     {
@@ -775,32 +769,30 @@ void SMaterial::updatePolygonMode(int polygonMode)
             ::Ogre::Technique* tech = techIt.getNext();
             SLM_ASSERT("Technique is not set", tech);
 
-            if( ::fwRenderOgre::helper::Shading::isGeometricTechnique(*tech) )
+            ::Ogre::Pass* firstPass = tech->getPass(0);
+            SLM_ASSERT("No pass found", firstPass);
+
+            firstPass->setPolygonMode(::Ogre::PM_SOLID);
+            firstPass->setPointSpritesEnabled(false);
+
+            ::Ogre::Pass* edgePass = tech->getPass(s_EDGE_PASS);
+            if(!edgePass)
             {
-                ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
-                ::Ogre::Pass* firstPass                = passIt.getNext();
+                // We copy the first pass, thus keeping all rendering states
+                edgePass  = tech->createPass();
+                *edgePass = *firstPass;
+                edgePass->setName(s_EDGE_PASS);
 
-                firstPass->setPolygonMode(::Ogre::PM_SOLID);
-                firstPass->setPointSpritesEnabled(false);
+                // Then we switch the vertex shader...
+                edgePass->setVertexProgram("Default/Edge_VP");
 
-                ::Ogre::Pass* edgePass = tech->getPass(s_EDGE_PASS);
-                if(!edgePass)
-                {
-                    // We copy the first pass, thus keeping all rendering states
-                    edgePass  = tech->createPass();
-                    *edgePass = *firstPass;
-                    edgePass->setName(s_EDGE_PASS);
+                // ... and the fragment shader
+                std::string fpName = edgePass->getFragmentProgramName();
+                fpName = ::fwRenderOgre::helper::Shading::setPermutationInProgramName(fpName, "Edge_Normal");
+                edgePass->setFragmentProgram(fpName);
 
-                    // Then we switch the vertex shader...
-                    edgePass->setVertexProgram("Default_Edge_VP_glsl");
 
-                    // ... and the fragment shader
-                    auto fpName = edgePass->getFragmentProgramName();
-                    fpName = ::fwRenderOgre::helper::Shading::replaceProgramSuffix(fpName, "Edge_Normal");
-                    edgePass->setFragmentProgram(fpName);
-
-                    edgePass->setPolygonMode(::Ogre::PM_WIREFRAME);
-                }
+                edgePass->setPolygonMode(::Ogre::PM_WIREFRAME);
             }
         }
     }
@@ -849,95 +841,96 @@ void SMaterial::updatePolygonMode(int polygonMode)
 
 void SMaterial::updateShadingMode( int shadingMode  )
 {
-    if(m_materialTemplateName == DEFAULT_MATERIAL_TEMPLATE_NAME)
+    ::fwData::Material::ShadingType mode = static_cast< ::fwData::Material::ShadingType >(shadingMode);
+
+    ::Ogre::String permutation;
+    permutation = ::fwRenderOgre::helper::Shading::getPermutation(mode, this->hasDiffuseTexture(),
+                                                                  m_hasVertexColor);
+    ::Ogre::String r2vbGSName;
+    r2vbGSName = ::fwRenderOgre::helper::Shading::getR2VBGeometryProgramName(m_primitiveType,
+                                                                             this->hasDiffuseTexture(),
+                                                                             m_hasVertexColor,
+                                                                             m_hasPrimitiveColor);
+
+    this->cleanTransparencyTechniques();
+
+    // Iterate through each technique found in the material and switch the shading mode
+    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
+    while( techIt.hasMoreElements())
     {
-        ::fwData::Material::ShadingType mode = static_cast< ::fwData::Material::ShadingType >(shadingMode);
+        ::Ogre::Technique* tech = techIt.getNext();
+        SLM_ASSERT("Technique is not set", tech);
 
-        ::Ogre::String prgSuffix;
-        prgSuffix = ::fwRenderOgre::helper::Shading::getProgramSuffix(mode, this->hasDiffuseTexture(),
-                                                                      m_hasVertexColor);
-        ::Ogre::String r2vbGSName;
-        r2vbGSName = ::fwRenderOgre::helper::Shading::getR2VBGeometryProgramName(m_primitiveType,
-                                                                                 this->hasDiffuseTexture(),
-                                                                                 m_hasVertexColor,
-                                                                                 m_hasPrimitiveColor);
+        ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
 
-        // Iterate through each technique found in the material and switch the shading mode
-        ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
-        while( techIt.hasMoreElements())
+        while ( passIt.hasMoreElements() )
         {
-            ::Ogre::Technique* tech = techIt.getNext();
-            SLM_ASSERT("Technique is not set", tech);
+            ::Ogre::Pass* ogrePass = passIt.getNext();
 
-            ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
-
-            while ( passIt.hasMoreElements() )
+            // Discard edge pass
+            if (ogrePass->getName() == s_EDGE_PASS || ogrePass->getName() == s_NORMALS_PASS )
             {
-                ::Ogre::Pass* ogrePass = passIt.getNext();
+                continue;
+            }
 
-                // Discard edge pass
-                if (ogrePass->getName() == s_EDGE_PASS || ogrePass->getName() == s_NORMALS_PASS )
+            if(m_primitiveType != ::fwData::Mesh::TRIANGLE || m_hasPrimitiveColor)
+            {
+                // We need a geometry shader (primitive generation and per-primitive color)
+                // and thus we rely on the render to vertex buffer pipeline
+
+                ogrePass->setVertexProgram("R2VB/" + permutation + "_VP");
+                ogrePass->setGeometryProgram(r2vbGSName);
+                ogrePass->setFragmentProgram("");
+
+                if(m_hasPrimitiveColor)
                 {
-                    continue;
-                }
+                    const std::string texUnitName = "PerPrimitiveColor";
+                    ::Ogre::TextureUnitState* texUnitState = ogrePass->getTextureUnitState(texUnitName);
 
-                if(m_primitiveType != ::fwData::Mesh::TRIANGLE || m_hasPrimitiveColor)
-                {
-                    // We need a geometry shader (primitive generation and per-primitive color)
-                    // and thus we rely on the render to vertex buffer pipeline
+                    const auto result = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
+                        m_perPrimitiveColorTextureName,
+                        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 
-                    ogrePass->setVertexProgram("RenderScene_R2VB_" + prgSuffix + "_VP_glsl");
-                    ogrePass->setGeometryProgram(r2vbGSName);
-                    ogrePass->setFragmentProgram("");
+                    SLM_ASSERT("Texture should have been created before in SMesh !", !result.second);
 
-                    if(m_hasPrimitiveColor)
+                    ::Ogre::TexturePtr tex = result.first.dynamicCast< ::Ogre::Texture>();
+
+                    if(texUnitState == nullptr)
                     {
-                        const std::string texUnitName = "PerPrimitiveColor";
-                        ::Ogre::TextureUnitState* texUnitState = ogrePass->getTextureUnitState(texUnitName);
+                        OSLM_DEBUG("create unit state: " << m_perPrimitiveColorTextureName);
 
-                        const auto result = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
-                            m_perPrimitiveColorTextureName,
-                            ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
+                        ::Ogre::TextureUnitState* texUnitState = ogrePass->createTextureUnitState();
+                        texUnitState->setName(texUnitName);
+                        texUnitState->setTexture(tex);
+                        texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
+                        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
-                        SLM_ASSERT("Texture should have been created before in SMesh !", !result.second);
+                        const auto unitStateCount = ogrePass->getNumTextureUnitStates();
 
-                        ::Ogre::TexturePtr tex = result.first.dynamicCast< ::Ogre::Texture>();
-
-                        if(texUnitState == nullptr)
-                        {
-                            OSLM_DEBUG("create unit state: " << m_perPrimitiveColorTextureName);
-
-                            ::Ogre::TextureUnitState* texUnitState = ogrePass->createTextureUnitState();
-                            texUnitState->setName(texUnitName);
-                            texUnitState->setTexture(tex);
-                            texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
-                            texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-
-                            const auto unitStateCount = ogrePass->getNumTextureUnitStates();
-
-                            // Unit state is set to 10 in the material file, but the real index is set here
-                            // Ogre packs texture unit indices so we can't use spare indices :'(
-                            ogrePass->getGeometryProgramParameters()->setNamedConstant("u_colorPrimitiveTexture",
-                                                                                       unitStateCount - 1);
-                        }
-
-                        // Set size outside the scope of texture creation because the size could vary
-                        ::Ogre::Vector2 size(static_cast<float>(tex->getWidth()),
-                                             static_cast<float>(tex->getHeight() - 1));
-                        ogrePass->getGeometryProgramParameters()->setNamedConstant("u_colorPrimitiveTextureSize", size);
+                        // Unit state is set to 10 in the material file, but the real index is set here
+                        // Ogre packs texture unit indices so we can't use spare indices :'(
+                        ogrePass->getGeometryProgramParameters()->setNamedConstant("u_colorPrimitiveTexture",
+                                                                                   unitStateCount - 1);
                     }
+
+                    // Set size outside the scope of texture creation because the size could vary
+                    ::Ogre::Vector2 size(static_cast<float>(tex->getWidth()),
+                                         static_cast<float>(tex->getHeight() - 1));
+                    ogrePass->getGeometryProgramParameters()->setNamedConstant("u_colorPrimitiveTextureSize", size);
                 }
-                else
+            }
+            else
+            {
+                if(m_materialTemplateName == DEFAULT_MATERIAL_TEMPLATE_NAME)
                 {
                     // "Regular" pipeline
 
                     std::string vpName = ogrePass->getVertexProgramName();
-                    std::string fpName = ogrePass->getFragmentProgramName();
-
-                    vpName = ::fwRenderOgre::helper::Shading::replaceProgramSuffix(vpName, prgSuffix);
-                    fpName = ::fwRenderOgre::helper::Shading::replaceProgramSuffix(fpName, prgSuffix);
-
+                    vpName = ::fwRenderOgre::helper::Shading::setPermutationInProgramName(vpName, permutation);
                     ogrePass->setVertexProgram(vpName);
+
+                    std::string fpName = ogrePass->getFragmentProgramName();
+                    fpName = ::fwRenderOgre::helper::Shading::setPermutationInProgramName(fpName, permutation);
                     ogrePass->setFragmentProgram(fpName);
 
                     if(m_texAdaptor)
@@ -1034,8 +1027,7 @@ void SMaterial::removeTextureAdaptor()
             ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("diffuseTexture");
             if(texUnitState)
             {
-                auto texUnitStateIndex = pass->getTextureUnitStateIndex(texUnitState);
-                pass->removeTextureUnitState(texUnitStateIndex);
+                texUnitState->setTextureName("");
             }
         }
     }
@@ -1057,7 +1049,7 @@ void SMaterial::removePass(const std::string& _name)
 {
     SLM_ASSERT("Material is not set", !m_material.isNull());
 
-    ::Ogre::Material::TechniqueIterator techIt = m_material->getSupportedTechniqueIterator();
+    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
 
     while( techIt.hasMoreElements())
     {
@@ -1065,23 +1057,59 @@ void SMaterial::removePass(const std::string& _name)
         SLM_ASSERT("Technique is not set", technique);
 
         ::Ogre::Technique::PassIterator passIt = technique->getPassIterator();
-        std::vector< ::Ogre::Pass* > removeEdgePassVector;
+        std::vector< ::Ogre::Pass* > removePassVector;
 
+        // Collect the passes to remove
         while ( passIt.hasMoreElements() )
         {
             ::Ogre::Pass* ogrePass = passIt.getNext();
             if(ogrePass->getName() == _name)
             {
-                removeEdgePassVector.push_back(ogrePass);
+                removePassVector.push_back(ogrePass);
                 continue;
             }
         }
 
-        // We have to remove the edge passes
-        for(auto edgePass : removeEdgePassVector)
+        // Perform the removal
+        for(auto edgePass : removePassVector)
         {
             technique->removePass(edgePass->getIndex());
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SMaterial::cleanTransparencyTechniques()
+{
+    SLM_ASSERT("Material is not set", !m_material.isNull());
+
+    ::Ogre::Material::TechniqueIterator techIt = m_material->getTechniqueIterator();
+
+    std::vector< unsigned short > removeTechniqueVector;
+
+    unsigned short index = 0;
+    while( techIt.hasMoreElements())
+    {
+        ::Ogre::Technique* technique = techIt.getNext();
+        SLM_ASSERT("Technique is not set", technique);
+
+        auto scheme = technique->getSchemeName();
+        if( ::Ogre::StringUtil::startsWith( scheme, "CelShadingDepthPeeling", false) ||
+            ::Ogre::StringUtil::startsWith( scheme, "DepthPeeling", false) ||
+            ::Ogre::StringUtil::startsWith( scheme, "DualDepthPeeling", false) ||
+            ::Ogre::StringUtil::startsWith( scheme, "HybridTransparency", false) ||
+            ::Ogre::StringUtil::startsWith( scheme, "WeightedBlended", false) )
+        {
+            removeTechniqueVector.push_back(index);
+        }
+        ++index;
+    }
+
+    // Remove in inverse order otherwise the index we stored becomes invalid ;-)
+    for(auto it = removeTechniqueVector.rbegin(); it != removeTechniqueVector.rend(); ++it )
+    {
+        m_material->removeTechnique(*it);
     }
 }
 

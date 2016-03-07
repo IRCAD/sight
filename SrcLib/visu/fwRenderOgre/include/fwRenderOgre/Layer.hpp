@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,8 +17,8 @@
 #include <fwRenderOgre/interactor/IMovementInteractor.hpp>
 #include <fwRenderOgre/interactor/IPickerInteractor.hpp>
 #include <fwRenderOgre/interactor/IInteractor.hpp>
-#include <fwRenderOgre/compositor/CompositorChainManager.hpp>
-#include <fwRenderOgre/compositor/DefaultCompositor.hpp>
+#include <fwRenderOgre/compositor/ChainManager.hpp>
+#include <fwRenderOgre/compositor/Core.hpp>
 #include <fwRenderOgre/compositor/SaoCompositorChainManager.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
@@ -30,7 +30,10 @@
 
 #include "fwRenderOgre/config.hpp"
 
-fwCorePredeclare( (fwRenderOgre)(SRender) )
+namespace fwRenderOgre
+{
+class SRender;
+}
 
 namespace fwRenderOgre
 {
@@ -100,10 +103,10 @@ public:
     /// Create the scene
     FWRENDEROGRE_API void createScene();
 
-    /// Add a disabled compositor name to the CompositorChainManager
+    /// Add a disabled compositor name to the ChainManager
     FWRENDEROGRE_API void addAvailableCompositor(std::string compositorName);
 
-    // Removes all available compositors from the CompositorChainManager
+    // Removes all available compositors from the ChainManager
     FWRENDEROGRE_API void clearAvailableCompositors();
 
     /// Enables/Disables a compositor according to the isEnabled flag
@@ -168,20 +171,20 @@ public:
     FWRENDEROGRE_API void setBackgroundScale(float topScale, float botScale);
 
     /// Sets if this layer need a layer's 3D scene
-    FWRENDEROGRE_API void setDefaultCompositorEnabled(bool hasDefaultCompositor, std::string transparencyTechnique = "",
-                                                      std::string useCelShading = "", std::string nbPeel = "");
+    FWRENDEROGRE_API void setCoreCompositorEnabled(bool enabled, std::string transparencyTechnique = "",
+                                                   std::string numPeels = "");
 
     /// Sets if this layer has a configured compositor chain
-    FWRENDEROGRE_API void setCompositorChainEnabled(bool hasDefaultCompositorChain, std::string compositorChain);
+    FWRENDEROGRE_API void setCompositorChainEnabled(bool hasCoreChain, std::string compositorChain);
 
     /// Gets if this layer needs a layer's 3D scene
-    FWRENDEROGRE_API bool isDefaultCompositorEnabled();
+    FWRENDEROGRE_API bool isCoreCompositorEnabled();
 
     /// Gets if there is an XML configured compositor chain
     FWRENDEROGRE_API bool isCompositorChainEnabled();
 
     /// Checks if this layer has a default compositor
-    FWRENDEROGRE_API ::fwRenderOgre::DefaultCompositor::sptr getDefaultCompositor();
+    FWRENDEROGRE_API ::fwRenderOgre::compositor::Core::sptr getCoreCompositor();
 
     // farid
     // return the sao manager for this layer
@@ -189,7 +192,7 @@ public:
     FWRENDEROGRE_API ::fwRenderOgre::SaoCompositorChainManager::sptr getSaoManager();
 
 
-    FWRENDEROGRE_API CompositorChainManager::CompositorChainType getCompositorChain();
+    FWRENDEROGRE_API ::fwRenderOgre::compositor::ChainManager::CompositorChainType getCompositorChain();
 
     FWRENDEROGRE_API std::string getFinalChainCompositorName() const;
 
@@ -208,7 +211,7 @@ private:
     ::Ogre::AxisAlignedBox computeCameraParameters() const;
 
     /// Setups default compositor for a layer's 3D scene
-    void setupDefaultCompositor();
+    void setupCore();
 
     /// For a list of semicolon-separated words, returns a vector of these words
     std::vector< std::string > trimSemicolons(std::string input);
@@ -223,7 +226,7 @@ private:
     ::Ogre::Viewport* m_viewport;
 
     /// This boolean enables default compositor's widgets (gui displays before scene creation)
-    bool m_hasDefaultCompositor;
+    bool m_hasCoreCompositor;
 
     /// Indicates if a compositor chain is attached to the layer
     bool m_hasCompositorChain;
@@ -235,20 +238,17 @@ private:
     std::string m_rawCompositorChain;
 
     /// Ogre default compositor for this layer
-    ::fwRenderOgre::DefaultCompositor::sptr m_defaultCompositor;
+    ::fwRenderOgre::compositor::Core::sptr m_coreCompositor;
 
 
     /// Ogre default compositor default transparency technique
-    transparencyTechnique m_defaultCompositorTransaprencyTechnique;
+    transparencyTechnique m_transparencyTechnique;
 
-    /// Ogre default compositor default cel shading behavior
-    bool m_defaultCompositorUseCelShading;
-
-    int m_nbPeel;
+    int m_numPeels;
 
     /// Manages the list of available compositors.
     /// The names are associated to a boolean value which indicates whether the compositor is enabled or not
-    CompositorChainManager m_compositorChainManager;
+    ::fwRenderOgre::compositor::ChainManager m_compositorChainManager;
 
     // Farid
 

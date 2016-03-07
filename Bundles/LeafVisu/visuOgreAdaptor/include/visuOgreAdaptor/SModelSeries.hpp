@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,7 @@ namespace visuOgreAdaptor
 
 /**
  * @brief This adaptor shows ModelSeries. Creates adaptors for each reconstruction in model.
- * @class ModelSeries
+ * @class SModelSeries
  */
 class VISUOGREADAPTOR_CLASS_API SModelSeries : public ::fwRenderOgre::IAdaptor,
                                                public ::fwRenderOgre::ITransformable
@@ -47,11 +47,11 @@ protected:
 
     /**
      * @brief Configure the ModelSeries adaptor.
-     * @verbatim
+     * @code{.xml}
        <adaptor id="msAdaptorId" class="::visuOgreAdaptor::ModelSeries" objectId="objectId">
         <config transform="transform" texture="texture" autoresetcamera="autoresetcamera" />
        </adaptor>
-       @endverbatim
+       @endcode
      * With :
      *  - \b transform (mandatory) : the transformation matrix to associate to the adaptor
      *  - \b dynamic (optional) : if the modelSeries is likely to be updated frequently (performance hint)

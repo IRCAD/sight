@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -62,11 +62,11 @@ protected:
     /**
      * @brief Configuring method.
      * Catch interaptor style
-     * @verbatim
+     * @code{.xml}
          <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
              <config render="layerID" type="InteractionType" style="InteractorStyle" />
          </adaptor>
-       @endverbatim
+       @endcode
      * - \b render Layer on which the interactions will be done
      * - \b type Type of the interactor either Movement or Selection
      * - \b Style Style of the interactor depending on the type. if \b Movement, Default or Fixed can be used,

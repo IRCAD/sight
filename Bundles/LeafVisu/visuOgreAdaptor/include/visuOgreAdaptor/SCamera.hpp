@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,14 +22,17 @@
 
 #include "visuOgreAdaptor/config.hpp"
 
-fwCorePredeclare( (arData)(Camera) )
+namespace arData
+{
+class Camera;
+}
 
 namespace visuOgreAdaptor
 {
 
 /**
  * @brief   Adaptor from fw4 Camera to Ogre Camera
- * @class   Camera
+ * @class   SCamera
  */
 class VISUOGREADAPTOR_CLASS_API SCamera : public ::fwRenderOgre::IAdaptor
 {
@@ -52,7 +55,7 @@ public:
     VISUOGREADAPTOR_API void updateTF3D();
 
     /// Returns proposals to connect service slots to associated object signals
-    ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
 
 protected:
     /// Starting method. Do nothing
@@ -64,9 +67,9 @@ protected:
     /**
      * @brief Configuring method.
      *
-     * @verbatim
+     * @code{.xml}
          <adaptor id="cameraAdaptor" class="::visuOgreAdaptor::Camera" objectId="cameraTF" />
-       @endverbatim
+       @endcode
      */
     VISUOGREADAPTOR_API void doConfigure() throw(fwTools::Failed);
 

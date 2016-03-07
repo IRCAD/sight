@@ -1,0 +1,234 @@
+compositor DualDepthPeeling
+{
+    technique
+    {
+
+        // temporary textures
+        // Color buffer - used for blending
+        texture gbuffer target_width target_height PF_R8G8B8A8
+        // Ping buffer
+        texture pingBuffer target_width target_height PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R
+        // Pong buffer
+        texture pongBuffer target_width target_height PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R
+
+         // Init peel buffer
+         target pingBuffer
+         {
+             input none
+             pass clear
+             {
+                 buffers colour depth
+                 colour_value -1 0 0 0
+             }
+
+             shadows off
+             material_scheme DualDepthPeeling/peelInit
+
+             pass render_scene
+             {
+             }
+         }
+
+         // Blend clean
+         target gbuffer
+         {
+             input none
+             pass clear
+             {
+             }
+         }
+
+         // Peel 1
+         target pongBuffer
+         {
+             input none
+             pass clear
+             {
+             buffers colour depth
+             colour_value -1 0 0 0
+             }
+
+             shadows off
+             material_scheme DualDepthPeeling/peelPong
+
+             pass render_scene
+             {
+             }
+         }
+
+         // Blend 1
+         target gbuffer
+         {
+            input none
+            pass render_quad
+            {
+                material DualDepthPeeling/Blend
+                input 0 pongBuffer 3
+                input 1 pongBuffer 5
+            }
+         }
+
+         // Peel 2
+         target pingBuffer
+         {
+             input none
+             pass clear
+             {
+             buffers colour depth
+             colour_value -1 0 0 0
+             }
+
+             shadows off
+             material_scheme DualDepthPeeling/peelPing
+
+             pass render_scene
+             {
+             }
+         }
+
+         // Blend 2
+         target gbuffer
+         {
+         input none
+         pass render_quad
+         {
+         material DualDepthPeeling/Blend
+         input 0 pingBuffer 3
+         input 1 pingBuffer 5
+         }
+         }
+
+         // Peel 3
+         target pongBuffer
+         {
+             input none
+             pass clear
+             {
+             buffers colour depth
+             colour_value -1 0 0 0
+             }
+
+             shadows off
+             material_scheme DualDepthPeeling/peelPong
+
+             pass render_scene
+             {
+             }
+         }
+
+         // Blend 3
+         target gbuffer
+         {
+         input none
+         pass render_quad
+         {
+         material DualDepthPeeling/Blend
+         input 0 pongBuffer 3
+         input 1 pongBuffer 5
+         }
+         }
+
+         // Peel 4
+         target pingBuffer
+         {
+             input none
+             pass clear
+             {
+             buffers colour depth
+             colour_value -1 0 0 0
+             }
+
+             shadows off
+             material_scheme DualDepthPeeling/peelPing
+
+             pass render_scene
+             {
+             }
+         }
+
+         // Blend 4
+         target gbuffer
+         {
+         input none
+         pass render_quad
+         {
+         material DualDepthPeeling/Blend
+         input 0 pingBuffer 3
+         input 1 pingBuffer 5
+         }
+         }
+
+         // Peel 5
+         target pongBuffer
+         {
+             input none
+             pass clear
+             {
+             buffers colour depth
+             colour_value -1 0 0 0
+             }
+
+             shadows off
+             material_scheme DualDepthPeeling/peelPong
+
+             pass render_scene
+             {
+             }
+         }
+
+         // Blend 5
+         target gbuffer
+         {
+         input none
+         pass render_quad
+         {
+         material DualDepthPeeling/Blend
+         input 0 pongBuffer 3
+         input 1 pongBuffer 5
+         }
+         }
+
+         // Peel 6
+         target pingBuffer
+         {
+             input none
+             pass clear
+             {
+             buffers colour depth
+             colour_value -1 0 0 0
+             }
+
+             shadows off
+             material_scheme DualDepthPeeling/peelPing
+
+             pass render_scene
+             {
+             }
+         }
+
+         // Blend 6
+         target gbuffer
+         {
+             input none
+             pass render_quad
+             {
+                 material DualDepthPeeling/Blend
+                 input 0 pingBuffer 3
+                 input 1 pingBuffer 5
+             }
+         }
+
+        // Final pass
+        target_output
+        {
+            input none
+            pass render_quad
+            {
+                material DualDepthPeeling/Final
+                input 0 gbuffer
+                input 1 pingBuffer 2
+                input 2 pingBuffer 4
+            }
+        }
+    }
+}

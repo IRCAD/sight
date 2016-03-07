@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,9 +50,9 @@ static const char* s_ogreBackgroundId = "ogreBackground";
 
 SRender::SRender() throw() :
     m_interactorManager(nullptr),
-    m_sceneManager(nullptr),
     m_showOverlay(false),
-    m_startAdaptor(false)
+    m_startAdaptor(false),
+    m_renderOnDemand(true)
 {
     m_connections = ::fwServices::helper::SigSlotConnection::New();
 
@@ -95,6 +95,16 @@ void SRender::configuring() throw(fwTools::Failed)
             m_showOverlay = true;
         }
     }
+
+    std::string renderMode = m_sceneConfiguration->getAttributeValue("renderMode");
+    if (renderMode == "auto")
+    {
+        m_renderOnDemand = true;
+    }
+    else if (renderMode == "always")
+    {
+        m_renderOnDemand = false;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -118,42 +128,6 @@ void SRender::starting() throw(fwTools::Failed)
         else if (iter->getName() == "adaptor")
         {
             this->configureObject(iter);
-        } // Configure connections
-        else if(iter->getName() == "connect")
-        {   // Selected movable object
-            if(iter->hasAttribute("waitForKey"))
-            {
-                ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-                std::string key = iter->getAttributeValue("waitForKey");
-                ::fwData::Composite::const_iterator iterComposite = composite->find(key);
-                if(iterComposite != composite->end())
-                {
-                    this->manageConnection(key, iterComposite->second, iter);
-                }
-                m_connect.push_back(iter);
-            }
-            else
-            {
-                ::fwServices::helper::Config::createConnections(iter, m_connections);
-            }
-        }
-        else if(iter->getName() == "proxy")
-        {
-            if(iter->hasAttribute("waitForKey"))
-            {
-                ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-                std::string key = iter->getAttributeValue("waitForKey");
-                ::fwData::Composite::const_iterator iterComposite = composite->find(key);
-                if(iterComposite != composite->end())
-                {
-                    this->manageProxy(key, iterComposite->second, iter);
-                }
-                m_proxies.push_back(iter);
-            }
-            else
-            {
-                ::fwServices::helper::Config::createProxy("self", iter, m_proxyMap);
-            }
         }
         else if(iter->getName() == "background")
         {
@@ -161,7 +135,10 @@ void SRender::starting() throw(fwTools::Failed)
             this->configureBackgroundLayer(iter);
             bHasBackground = true;
         }
-        // Unknown node, throw an error
+        else if(iter->getName() == "connect" || iter->getName() == "proxy")
+        {
+            // Connect later in startObject() slot
+        }
         else
         {
             OSLM_ASSERT("Bad scene configurationType, unknown xml node : " << iter->getName(), false);
@@ -191,7 +168,7 @@ void SRender::stopping() throw(fwTools::Failed)
     SLM_TRACE_FUNC();
 
     // Stop associated adaptors
-    for ( auto adaptorIter : m_sceneAdaptors )
+    for ( auto& adaptorIter : m_sceneAdaptors )
     {
         SLM_ASSERT("SceneAdaptor expired", adaptorIter.second.getService());
         if(adaptorIter.second.getService()->isStarted())
@@ -228,11 +205,9 @@ void SRender::configureLayer( ConfigurationType conf )
 {
     const std::string id                    = conf->getAttributeValue("id");
     const std::string layer                 = conf->getAttributeValue("layer");
-    const std::string background            = conf->getAttributeValue("background");
     const std::string compositors           = conf->getAttributeValue("compositors");
-    const std::string transparencyTechnique = conf->getAttributeValue("transparencyTechnique");
-    const std::string useCelShading         = conf->getAttributeValue("useCelShading");
-    const std::string nbPeel                = conf->getAttributeValue("nbPeel");
+    const std::string transparencyTechnique = conf->getAttributeValue("transparency");
+    const std::string numPeels              = conf->getAttributeValue("numPeels");
 
     SLM_ASSERT( "'id' required attribute missing or empty", !id.empty() );
     SLM_ASSERT( "'layer' required attribute missing or empty", !layer.empty() );
@@ -247,7 +222,7 @@ void SRender::configureLayer( ConfigurationType conf )
     ogreLayer->setWorker(m_associatedWorker);
     ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
 
-    ogreLayer->setDefaultCompositorEnabled(id == "default", transparencyTechnique, useCelShading, nbPeel);
+    ogreLayer->setCoreCompositorEnabled(id == "default", transparencyTechnique, numPeels);
     ogreLayer->setCompositorChainEnabled(compositors != "", compositors);
 
     // Finally, the layer is pushed in the map
@@ -403,16 +378,68 @@ void SRender::startObject()
     // Everything is started now, we can safely create connections and thus receive interactions from the widget
     m_interactorManager->connectToContainer();
 
+
+    // Instantiate ogre object, class...
     if (this->isStarted())
     {
-        // Erm... We start scene adaptors from the back because of texture adaptors
-        // We want them to be started first because of texture resources creation that must be done before meshes.
-        // We could handle this with sig/slots but this is simpler like that... if you are aware of it. ;-)
-        for(auto adaptor = m_sceneAdaptors.rbegin(); adaptor != m_sceneAdaptors.rend(); ++adaptor)
+        std::vector< WPTR(IAdaptor) > startAdaptors;
+
+        for(auto& sceneAdaptor : m_sceneAdaptors)
         {
-            adaptor->second.getService()->start();
+            startAdaptors.emplace_back(sceneAdaptor.second.getService());
+        }
+
+        std::sort(startAdaptors.begin(), startAdaptors.end(), [](const WPTR(IAdaptor)& a, const WPTR(IAdaptor)& b)
+            {
+                return b.lock()->getStartPriority() > a.lock()->getStartPriority();
+            });
+
+        for(auto& adaptor : startAdaptors)
+        {
+            adaptor.lock()->start();
         }
         m_startAdaptor = true;
+    }
+
+    // Configure connections
+    for (auto iter : *m_sceneConfiguration)
+    {
+        if(iter->getName() == "connect")
+        {
+            if(iter->hasAttribute("waitForKey"))
+            {
+                ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+                std::string key = iter->getAttributeValue("waitForKey");
+                ::fwData::Composite::const_iterator iterComposite = composite->find(key);
+                if(iterComposite != composite->end())
+                {
+                    this->manageConnection(key, iterComposite->second, iter);
+                }
+                m_connect.push_back(iter);
+            }
+            else
+            {
+                ::fwServices::helper::Config::createConnections(iter, m_connections);
+            }
+        }
+        else if(iter->getName() == "proxy")
+        {
+            if(iter->hasAttribute("waitForKey"))
+            {
+                ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+                std::string key = iter->getAttributeValue("waitForKey");
+                ::fwData::Composite::const_iterator iterComposite = composite->find(key);
+                if(iterComposite != composite->end())
+                {
+                    this->manageProxy(key, iterComposite->second, iter);
+                }
+                m_proxies.push_back(iter);
+            }
+            else
+            {
+                ::fwServices::helper::Config::createProxy("self", iter, m_proxyMap);
+            }
+        }
     }
 }
 
@@ -483,7 +510,7 @@ void SRender::startContext()
 {
     m_interactorManager = ::fwRenderOgre::IRenderWindowInteractorManager::createManager();
     m_interactorManager->setRenderService(this->getSptr());
-    m_interactorManager->createContainer( this->getContainer(), m_showOverlay );
+    m_interactorManager->createContainer( this->getContainer(), m_showOverlay, m_renderOnDemand );
 }
 
 //-----------------------------------------------------------------------------

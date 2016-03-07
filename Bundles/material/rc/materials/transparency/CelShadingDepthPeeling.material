@@ -1,0 +1,61 @@
+/// Cel shading depth peeling material's programs
+
+//---------------------------------------------------------------------------
+
+fragment_program CelShadingDepthPeeling/Blend_FP glsl
+{
+        source CelShadingDepthPeelingBlend_FP.glsl
+        attach DepthPeelingCommon_FP
+        default_params
+        {
+                param_named u_bufferColor int 0
+                param_named u_bufferDepth int 1
+                param_named u_bufferNormal int 2
+                param_named_auto u_invTexSize inverse_texture_size 0
+                param_named_auto u_near near_clip_distance
+                param_named_auto u_far far_clip_distance
+        }
+}
+
+//---------------------------------------------------------------------------
+
+material CelShadingDepthPeeling/Blend
+{
+    technique
+    {
+        pass blend
+        {
+            cull_hardware none
+            cull_software none
+
+            depth_check off
+            // Blend compositor render with previous layer's render
+            scene_blend_op add
+            separate_scene_blend dest_alpha one zero one_minus_src_alpha
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref CelShadingDepthPeeling/Blend_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}

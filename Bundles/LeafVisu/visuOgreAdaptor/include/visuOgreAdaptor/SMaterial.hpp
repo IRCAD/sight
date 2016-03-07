@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,10 @@
 
 #include "visuOgreAdaptor/STexture.hpp"
 
-fwCorePredeclare( (fwData)(Material) )
+namespace fwData
+{
+class Material;
+}
 
 namespace visuOgreAdaptor
 {
@@ -71,6 +74,9 @@ public:
     /// Retrieves the associated texture adaptor
     VISUOGREADAPTOR_API void setTextureAdaptor(const std::string& textureAdaptorId);
 
+    /// Returns the priority of the adaptor
+    VISUOGREADAPTOR_API virtual int getStartPriority();
+
     /// Set material name
     void setMaterialName(const std::string &materialName);
 
@@ -103,12 +109,12 @@ protected:
 
     /**
      * @brief Configures the adaptor
-     * @verbatim
+     * @code{.xml}
        <adaptor id="materialAdaptor" class="::visuOgreAdaptor::SMaterial" objectId="materialKey">
         <config materialTemplate="materialTemplateName" materialName="meshMaterial" textureAdaptor="texAdaptorUID"
                 shadingMode="gouraud" normalLength="0.1" />
        </adaptor>
-       @endverbatim
+       @endcode
      * With :
      *  - \b materialTemplate (mandatory) : name of the base Ogre material
      *  - \b materialName (optional) : name of the managed Ogre material
@@ -132,10 +138,10 @@ protected:
 
 private:
 
-    /// Slot called when the material's field changed
+    /// SLOT: called when the material's field changed
     void updateField( ::fwData::Object::FieldsContainerType fields);
 
-    /// Slot called when the texture is swapped in the texture adaptor
+    /// SLOT: called when the texture is swapped in the texture adaptor
     void swapTexture();
 
     /// Creates a new object from loaded shader
@@ -174,14 +180,16 @@ private:
     /// Slot called to remove the texture adaptor when the texture is removed from the material
     void removeTextureAdaptor();
 
-    /// Checks support of technique's schemes
-    void updateSchemeSupport();
-
     /// Generates a normal length according to the mesh's bounding box
     ::Ogre::Real computeNormalLength();
 
     /// Remove a rendering pass in all techniques on the current material
     void removePass(const std::string& _name);
+
+    /// Remove all techniques related to order independent transparency support
+    /// Each time we have to modify the shader programs, we clean everything
+    /// and we let the MaterialMgrListener generate the techniques from the basic techniques defined in the .material
+    void cleanTransparencyTechniques();
 
     /// Associated Ogre material
     ::Ogre::MaterialPtr m_material;

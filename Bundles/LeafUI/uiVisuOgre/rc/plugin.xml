@@ -39,7 +39,7 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
-        <service>::uiVisuOgre::SDefaultCompositorEditor</service>
+        <service>::uiVisuOgre::SCoreCompositorEditor</service>
         <object>::fwData::Composite</object>
         <desc>service description</desc>
     </extension>

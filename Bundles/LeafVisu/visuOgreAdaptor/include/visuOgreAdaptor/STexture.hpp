@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -61,16 +61,17 @@ protected:
 
     /**
      * @brief Configure the adaptor.
-     * @verbatim
+     * @code{.xml}
        <adaptor id="texAdaptor" class="::visuOgreAdaptor::STexture" objectId="imageKey" >
         <config textureName="texName" filtering="linear" wrapping="repeat" useAlpha="false" />
        </adaptor>
-       @endverbatim
+       @endcode
      * With :
      *  - \b textureName (optional) : the name of the ogre texture managed by the adaptor
      *  - \b filtering (optional nearest/linear, default=linear) : filtering of the texture
      *  - \b wrapping (optional, clamp/repeat, default=repeat) : wrapping of the texture
-     *  - \b useAlpha (optional, true/false, default=true) : whether or not the texture has variable alpha
+     *  - \b useAlpha (optional, true/false, default=true) : whether or not the alpha channel is used
+     *  - \b dynamic (optional, true/false, default=false) : whether or not the texture is updated frequently
      */
     VISUOGREADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
@@ -104,6 +105,9 @@ private:
 
     /// Signal emitted when the texture has to be changed on the associated material
     TextureSwappedSignalType::sptr m_sigTextureSwapped;
+
+    /// defines if the texture changes dynamically, defined in m_configuration
+    bool m_isDynamic;
 };
 
 //------------------------------------------------------------------------------

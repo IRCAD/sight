@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,55 +27,69 @@ public:
 
     /**
      * @brief Returns true if the given technique computes a pixel color.
-     * @param _tech[in] Ogre technique
+     * @param[in] _tech Ogre technique
      */
     FWRENDEROGRE_API static bool isColorTechnique(const ::Ogre::Technique& _tech);
 
     /**
      * @brief Returns true if the given technique is used for a peel pass in a depth peeling.
-     * @param _tech[in] Ogre technique
+     * @param[in] _tech Ogre technique
      */
     FWRENDEROGRE_API static bool isPeelTechnique(const ::Ogre::Technique& _tech);
 
     /**
      * @brief Returns true if the given technique is used in a geometric pass (as opposed to a fullscreen pass).
-     * @param _tech[in] Ogre technique
+     * @param[in] _tech Ogre technique
      */
     FWRENDEROGRE_API static bool isGeometricTechnique(const ::Ogre::Technique& _tech);
 
     /**
      * @brief Returns true if the given technique is used in a depth-only pass.
-     * @param _tech[in] Ogre technique
+     * @param[in] _tech Ogre technique
      */
     FWRENDEROGRE_API static bool isDepthOnlyTechnique(const ::Ogre::Technique& _tech);
 
     /**
      * @brief Constructs a suffix to use in vertex and fragment programs names.
-     * @param _vertexColor[in] is vertex color enabled ?
-     * @param _diffuseTexture[in] is diffuse texture bound ?
+     * @param[in] _vertexColor is vertex color enabled ?
+     * @param[in] _diffuseTexture is diffuse texture bound ?
      */
-    FWRENDEROGRE_API static std::string getProgramSuffix(::fwData::Material::ShadingType _mode, bool _diffuseTexture,
-                                                         bool _vertexColor);
+    FWRENDEROGRE_API static std::string getPermutation(::fwData::Material::ShadingType _mode, bool _diffuseTexture,
+                                                       bool _vertexColor);
 
     /**
      * @brief Constructs the name of the geometry program to use in render to vertex buffer pipeline.
-     * @param _primitiveType[in] type of the primitive (only triangles, quads and tetrahedrons supported right now)
-     * @param _vertexColor[in] is vertex color enabled ?
-     * @param _diffuseTexture[in] is diffuse texture bound ?
-     * @param _diffuseTexture[in] is primitive color enabled bound ?
+     * @param[in] _primitiveType type of the primitive (only triangles, quads and tetrahedrons supported right now)
+     * @param[in] _diffuseTexture is diffuse texture bound ?
+     * @param[in] _vertexColor is vertex color enabled ?
+     * @param[in] _hasPrimitiveColor is primitive color enabled bound ?
      */
     FWRENDEROGRE_API static std::string getR2VBGeometryProgramName(::fwData::Mesh::CellTypesEnum _primitiveType,
                                                                    bool _diffuseTexture, bool _vertexColor,
                                                                    bool _hasPrimitiveColor);
 
     /**
-     * @brief Replace the suffix in the program name with the suffix in parameters.
-     *        For instance, given
+     * @brief Modify the program name according to the permutation given in parameter.
+     *        For instance, given "HybridTransparency/peel_Ambient+VT_FP" and "Flat" permutation,
+     *        the returned program name will be "HybridTransparency/peel_Flat_FP"
      *
-     * @param _prgName[in] name of the program
-     * @param _suffix[in] new suffix to use
+     * @param[in] _name name of the program
+     * @param[in] _permutation new permutation to use
      */
-    FWRENDEROGRE_API static std::string replaceProgramSuffix(const std::string& _prgName, const std::string& _suffix);
+    FWRENDEROGRE_API static std::string setPermutationInProgramName(const std::string& _name,
+                                                                    const std::string& _permutation);
+
+    /**
+     * @brief Replace the prefix in the program name with the prefix in parameters.
+     *        Actually this corresponds to replace the technique and the pass name.
+     *
+     *        For instance, given "HybridTransparency/peel_Ambient+VT_FP" and "Default" technique,
+     *        the returned program name will be "Default/Ambient+VT_FP"
+     *
+     * @param[in] _name name of the program
+     * @param[in] _suffix new suffix to use
+     */
+    FWRENDEROGRE_API static std::string setTechniqueInProgramName(const std::string& _name, const std::string& _tech);
 
 };
 

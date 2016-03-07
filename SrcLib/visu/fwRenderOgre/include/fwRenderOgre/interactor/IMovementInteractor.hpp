@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -60,23 +60,23 @@ public:
     fwCoreNonInstanciableClassDefinitionsMacro( (IMovementInteractor)(::fwCore::BaseObject) )
 
     /// Constructor.
-    /// Retrieves the Ogre root and the <sceneID> scene manager
+    /// Retrieves the Ogre root and the \<sceneID\> scene manager
     FWRENDEROGRE_API IMovementInteractor();
     /// Destructor
     FWRENDEROGRE_API virtual ~IMovementInteractor();
 
     /**
      * @brief Behaviour on a MouseMoveEvent
-     * @param x The mouse X screen displacement
-     * @param y The mouse Y screen displacement
+     * @param dx The mouse X screen displacement
+     * @param dy The mouse Y screen displacement
      */
     FWRENDEROGRE_API virtual void mouseMoveEvent(int dx, int dy) = 0;
 
     /**
      * @brief Behaviour on a WheelEvent
      * @param delta The mouse's wheel displacement
-     * @param mouseX The mouse X screen coordinate
-     * @param mouseY The mouse Y screen coordinate
+     * @param x The mouse X screen coordinate
+     * @param y The mouse Y screen coordinate
      */
     FWRENDEROGRE_API virtual void wheelEvent(int delta, int x, int y) = 0;
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,9 +23,19 @@
 #include "visuOgreAdaptor/STransform.hpp"
 
 
-fwCorePredeclare( (fwData)(Material) )
-fwCorePredeclare( (fwData)(Mesh) )
-fwCorePredeclare( (fwRenderOgre)(R2VBRenderable) )
+namespace fwData
+{
+class Material;
+}
+namespace fwData
+{
+class Mesh;
+}
+namespace fwRenderOgre
+{
+class R2VBRenderable;
+}
+
 
 namespace visuOgreAdaptor
 {
@@ -88,7 +98,7 @@ public:
     VISUOGREADAPTOR_API void setIsReconstructionManaged(bool _isReconstructionManaged);
 
     /// Returns proposals to connect service slots to associated object signals
-    ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
 
     /// Ask the render service (SRender) to update - we also flag the r2vb objects as dirty
     VISUOGREADAPTOR_API virtual void requestRender();
@@ -105,12 +115,12 @@ private:
 
     /**
      * @brief Configures the adaptor
-     * @verbatim
+     * @code{.xml}
        <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
         <config renderer="rendererId" transform="transformUID" materialAdaptor="materialName" shadingMode="gouraud"
                 textureAdaptor="texAdaptorUID" />
        </adaptor>
-       @endverbatim
+       @endcode
      * With :
      *  - \b renderer (mandatory) : defines the mesh's layer
      *  - \b transform (optional) : the transformation matrix to associate to the adaptor

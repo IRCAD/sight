@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,7 @@
 
 #include <gui/editor/IEditor.hpp>
 #include <fwRenderOgre/Layer.hpp>
-#include <fwRenderOgre/compositor/CompositorChainManager.hpp>
+#include <fwRenderOgre/compositor/ChainManager.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -63,11 +63,11 @@ protected:
 
     /**
      * @brief method description:
-     * @verbatim
+     * @code{.xml}
         <service uid="SCompositorSelectorInstance" impl="::uiVisuOgre::SCompositorSelector" type="::gui::editor::IEditor">
              <parameter>param</parameter>
         </service>
-       @endverbatim
+       @endcode
      * - \b Parameter : parameter description.
      */
     UIVISUOGRE_API virtual void configuring()  throw ( ::fwTools::Failed );
@@ -111,7 +111,7 @@ private:
     void uncheckCompositors();
 
     /// Indicates if a compositor is enabled on the layer
-    bool isEnabledCompositor(::fwRenderOgre::CompositorChainManager::CompositorIdType compositorName);
+    bool isEnabledCompositor(::fwRenderOgre::compositor::ChainManager::CompositorIdType compositorName);
 
     QPointer<QComboBox> m_layersBox;
 
@@ -120,7 +120,7 @@ private:
     std::vector< ::fwRenderOgre::Layer::sptr > m_layers;
     ::fwRenderOgre::Layer::sptr m_currentLayer;
 
-    ::fwRenderOgre::CompositorChainManager::CompositorChainType m_layerCompositorChain;
+    ::fwRenderOgre::compositor::ChainManager::CompositorChainType m_layerCompositorChain;
 
     ///Connection service, needed for slot/signal association
     ::fwServices::helper::SigSlotConnection::sptr m_connections;

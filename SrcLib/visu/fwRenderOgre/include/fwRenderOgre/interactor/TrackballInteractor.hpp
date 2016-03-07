@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,12 +41,15 @@ public:
      * @brief Mouse's wheel rotation callback.
      *        This callback will prompt the camera's scene node to zoom in or zoom out in the scene.
      * @param delta The mouse's wheel displacement
+     * @param x
+     * @param y
      */
     FWRENDEROGRE_API void wheelEvent(int delta, int x, int y);
 
     /**
      * @brief Horizontal movement callback.
      *        The camera's scene node will translate along it's local horizontal space.
+     * @param x
      * @param move The horizontal displacement
      */
     FWRENDEROGRE_API void horizontalMoveEvent(int x, int move);
@@ -54,6 +57,7 @@ public:
     /**
      * @brief Vertical movement callback.
      *        The camera's scene node will translate along it's local vertical space.
+     * @param y
      * @param move The vertical displacement
      */
     FWRENDEROGRE_API void verticalMoveEvent(int y, int move);

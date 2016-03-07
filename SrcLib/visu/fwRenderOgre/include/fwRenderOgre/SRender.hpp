@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -129,9 +129,9 @@ protected:
 
     /**
      * @brief Configures the adaptor
-     * @verbatim
+     * @code{.xml}
        <service uid="generiSceneUID" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoconnect="yes">
-        <scene>
+        <scene renderMode="auto">
             <renderer id="rendererId" layer="1" compositors="Invert;Laplace;Posterize" />
 
             <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
@@ -160,14 +160,17 @@ protected:
             </proxy>
         </scene>
        </service>
-       @endverbatim
+       @endcode
      * With :
+     *  - \b scene
+     *    - \b renderMode (optional): 'auto' (only when something has changed) or 'always' (render continuously).
+     *         Default is 'auto'.
      *  - \b adaptor
      *    - \b id (mandatory): the identifier of the adaptor
      *    - \b class (mandatory): the classname of the adaptor service
      *    - \b uid (optional): the fwID to specify for the adaptor service
      *    - \b objectId (mandatory): the key of the adaptor's object in the scene's composite. The "self" key is used
-     *     when the adaptor works on the scene's composite.
+     *         when the adaptor works on the scene's composite.
      *    - \b config: adaptor's configuration. It is parsed in the adaptor's configuring() method.
      *  - \b connect/proxy : not mandatory, connects signal to slot
      *    - \b waitForKey : not mandatory, defines the required object key for the signal/slot connection
@@ -177,6 +180,10 @@ protected:
      *  - \b renderer : mandatory, defines the scene's layer
      *    - \b id (mandatory): the identifier of the layer
      *    - \b layer (mandatory): the depth of the layer, starting from 1
+     *    - \b transparency (optional): the transparency technique to use: DepthPeeling, DualDepthPeeling,
+     *                                  WeightedBlended, HybridTransparency or CelShadingDepthPeeling.
+     *    - \b numPeels (optional): number of peels for the selected transparency technique.
+     *                              Not used for WeightedBlended OIT
      *    - \b compositors (optional): defines the default compositor chain. The compositors are separated by semicolons
      */
     FWRENDEROGRE_API virtual void configuring() throw( ::fwTools::Failed);
@@ -191,7 +198,7 @@ private:
     {
     public:
 
-        SPTR (IAdaptor) getService()
+        SPTR (IAdaptor) getService() const
         {
             return m_service.lock();
         }
@@ -282,14 +289,14 @@ private:
     /// Ogre root
     ::Ogre::Root* m_ogreRoot;
 
-    /// Ogre SceneManager
-    ::Ogre::SceneManager* m_sceneManager;
-
     /// Show or not ogre overlay
     bool m_showOverlay;
 
     /// True is the slot startObject has been called, so the adaptors can be started in the configureObject() method.
     bool m_startAdaptor;
+
+    /// True if the rendering is done only when requested
+    bool m_renderOnDemand;
 };
 
 }

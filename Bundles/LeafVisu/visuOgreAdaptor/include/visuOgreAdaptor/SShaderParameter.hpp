@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,7 +18,7 @@ namespace visuOgreAdaptor
 
 /**
  * @brief   Send a FW4SPL data as a shader parameter
- * @class   ShaderParameter
+ * @class   SShaderParameter
  */
 class VISUOGREADAPTOR_CLASS_API SShaderParameter : public ::fwRenderOgre::IAdaptor
 {
@@ -34,6 +34,16 @@ public:
         FRAGMENT,
         GEOMETRY
     } ShaderEnumType;
+
+    /**
+     * @name Slots API
+     * @{
+     */
+
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_FLOAT_PARAMETER_SLOT;
+
+    ///@}
 
     /// Constructor.
     VISUOGREADAPTOR_API SShaderParameter() throw();
@@ -58,15 +68,17 @@ protected:
     /**
      * @brief Configure the ShaderParameter adaptor
      *
-     * Actually can just send parameters to vertex and fragment shaders
+     * Send parameters to vertex and fragment shaders
      *
-     * @verbatim
-        <service uid="ShaderParameterInstance"
-                 impl="::visuOgreAdaptor::SShaderParameter" type="::fwRenderOgre::IAdaptor">
-             <parameter>param</parameter>
+     * @code{.xml}
+        <service uid="paramAdaptor" impl="::visuOgreAdaptor::SShaderParameter">
+            <config materialAdaptor="mtlAdaptorUID" parameter="u_value" shaderType="fragment" />
         </service>
-       @endverbatim
-     * - \b Parameter : parameter description.
+       @endcode
+     *  - \b materialName (mandatory) : the name of the associated Ogre material
+     *  - \b parameter (mandatory) : name of the shader parameter to set
+     *  - \b technique (optional) : name of the technique, default to the first in the material
+     *  - \b shaderType (optional) : the type of the shader (vertex, geometry, fragment). Default to vertex.
      */
     VISUOGREADAPTOR_API virtual void doConfigure()  throw ( ::fwTools::Failed );
     /// Does Nothing
@@ -88,25 +100,27 @@ private:
      * - \b m_paramvalues is an array filled with the corresponding data
      * - \b m_paramType is the type (from the enum Types) of the data which values are stored in m_paramValues.
      */
-    void updateValue();
+    void updateValue(const fwData::Object::sptr& paramObject);
 
-    /// Contains the different parameters for the shader
-    ::Ogre::GpuProgramParametersSharedPtr m_params;
+    /// Set the parameter for a given technique
+    bool setParameter(::Ogre::Technique& technique, const ::fwData::Object::sptr& paramObject);
 
-    /// Pointer containing the value(s) of the shader parameter
-    float* m_paramValues;
-    /// Number of values contained by the shader parameter
-    int m_paramNbElem;
-    /// Indicates by what multiple are grouped the values of the shader parameter
-    int m_paramElemMultiple;
+    /// SLOT : Set the uniform from an integer value
+    void setIntParameter(int value);
 
-    /// Material's name
+    /// SLOT : Set the uniform from an float value
+    void setFloatParameter(float value);
+
+    /// Material name
     std::string m_materialName;
-    /// Parameter's name
+    /// Parameter name
     std::string m_paramName;
+    /// Technique name
+    std::string m_techniqueName;
     /// Stores the value of the enum representing the shader's type.
     ShaderEnumType m_shaderType;
-
+    /// Dummy object to store the value when we use signal/slot instead of a real object
+    ::fwData::Object::sptr m_paramObject;
 };
 
 } // visuOgreAdaptor

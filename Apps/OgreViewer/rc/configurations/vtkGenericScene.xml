@@ -23,7 +23,7 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_genericScene" impl="::fwRenderVTK::VtkRenderService" type="::fwRender::IRender" autoConnect="yes" >
+            <service uid="${GENERIC_UID}_genericScene" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes" >
                 <!-- <scene autoRender="false"> -->
                 <scene >
                     <picker id="defaultPicker" vtkclass="fwVtkCellPicker" />

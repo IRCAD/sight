@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -80,16 +80,16 @@ protected:
     /**
      * @brief Configure the editor to associate with each object type
      *
-     * @verbatim
+     * @code{.xml}
        <service uid="paramView" implementation="::uiVisuOgre::SShaderParameterEditor" type="::gui::editor::IEditor" autoComChannel="yes">
          <association type="::fwData::Float" editor="::uiData::SFloatEditor" />
          <association type="::fwData::Boolean" editor="::uiData::SBooleanEditor" />
          <association type="::fwData::Integer" editor="::uiData::SIntegerEditor" />
          <association type="::fwData::Image" editor="::uiData::SImageSceneEditorSrv" />
        </service>
-       @endverbatim
+       @endcode
      * for which:\n
-     * - Each <association> node must contain a type attribute and an editor attribute.\n
+     * - Each \<association\> node must contain a type attribute and an editor attribute.\n
      * It defines a rule for all the data which has the specify type in type attribute.
      * - type attribute is a fw4spl data type
      * - editor attribute is the editor associated to the type given in association.

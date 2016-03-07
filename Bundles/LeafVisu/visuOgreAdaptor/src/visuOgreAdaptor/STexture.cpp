@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,8 @@ STexture::STexture() throw() :
     m_textureName(""),
     m_filtering("linear"),
     m_wrapping("repeat"),
-    m_useAlpha(true)
+    m_useAlpha(true),
+    m_isDynamic(false)
 {
     m_sigTextureSwapped = newSignal< TextureSwappedSignalType >( s_TEXTURE_SWAPPED_SIG );
 }
@@ -60,6 +61,12 @@ void STexture::doConfigure() throw(fwTools::Failed)
     {
         m_textureName = m_configuration->getAttributeValue("textureName");
     }
+    else
+    {
+        // Choose a default name if not provided, this is very important otherwise
+        // the texture may be lost if it is unloaded (which is very likely to happen when playing with techniques)
+        m_textureName = this->getID();
+    }
 
     if ( m_configuration->hasAttribute( "filtering" ) )
     {
@@ -75,6 +82,11 @@ void STexture::doConfigure() throw(fwTools::Failed)
     {
         bool useAlpha = (m_configuration->getAttributeValue("useAlpha") == "true");
         m_useAlpha = useAlpha;
+    }
+    if(m_configuration->hasAttribute("dynamic"))
+    {
+        std::string dynamic = m_configuration->getAttributeValue("dynamic");
+        m_isDynamic = ( dynamic == "true" );
     }
 }
 
@@ -104,7 +116,8 @@ void STexture::doUpdate() throw(fwTools::Failed)
         ::fwData::mt::ObjectReadLock lock(imageF4s);
 
         // Loads the new image
-        ::fwRenderOgre::Utils::loadOgreTexture(imageF4s, m_texture, ::Ogre::TEX_TYPE_2D);
+        this->getRenderService()->makeCurrent();
+        ::fwRenderOgre::Utils::loadOgreTexture(imageF4s, m_texture, ::Ogre::TEX_TYPE_2D, m_isDynamic);
         lock.unlock();
 
         m_sigTextureSwapped->asyncEmit();

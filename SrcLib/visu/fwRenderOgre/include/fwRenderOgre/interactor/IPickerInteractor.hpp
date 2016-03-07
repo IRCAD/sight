@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -53,7 +53,7 @@ public:
     fwCoreNonInstanciableClassDefinitionsMacro( (IPickerInteractor)(::fwCore::BaseObject) )
 
     /// Constructor.
-    /// Retrieves the Ogre root and the <sceneID> scene manager
+    /// Retrieves the Ogre root and the \<sceneID\> scene manager
     FWRENDEROGRE_API IPickerInteractor();
     /// Destructor
     FWRENDEROGRE_API virtual ~IPickerInteractor();
