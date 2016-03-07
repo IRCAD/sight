@@ -1,6 +1,11 @@
-#ifndef __FWRENDEROGE_COMPOSITOR_SAOCOMPOSITORCHAINMANAGER_HPP
-#define __FWRENDEROGE_COMPOSITOR_SAOCOMPOSITORCHAINMANAGER_HPP
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
 
+#ifndef __FWRENDEROGRE_COMPOSITOR_SAOCOMPOSITORCHAINMANAGER_HPP__
+#define __FWRENDEROGRE_COMPOSITOR_SAOCOMPOSITORCHAINMANAGER_HPP__
 
 // used to view the content of the Ogre Compositor Chain
 #include <OGRE/OgreCompositorChain.h>
@@ -79,7 +84,7 @@ public:
 
 
 
-private :
+private:
     /// Getter for the Ogre CompositorManager
     ::Ogre::CompositorManager* getCompositorManager();
 
@@ -142,4 +147,4 @@ inline void SaoCompositorChainManager::setSceneCamera(const ::Ogre::Camera* came
 }// namespace fwRenderOgre
 
 
-#endif // __FWRENDEROGE_COMPOSITOR_SAOCOMPOSITORCHAINMANAGER_HPP
+#endif // __FWRENDEROGRE_COMPOSITOR_SAOCOMPOSITORCHAINMANAGER_HPP__

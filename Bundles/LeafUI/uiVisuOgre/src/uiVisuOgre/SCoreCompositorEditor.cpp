@@ -414,11 +414,9 @@ void SCoreCompositorEditor::onEditTransparency(int index)
     }
 }
 
-// --- Farid
+//------------------------------------------------------------------------------
 
-// here we add the method which is called when the sao button is checked
-
-void SDefaultCompositorEditor::onSaoCheck(int state)
+void SCoreCompositorEditor::onSaoCheck(int state)
 {
 
     // need to change the behaviour of the 3D layer selector -> when selected a good layer, set enable the sao Button
@@ -437,7 +435,7 @@ void SDefaultCompositorEditor::onSaoCheck(int state)
 //------------------------------------------------------------------------------
 
 
-void SDefaultCompositorEditor::onSaoRadiusChange(double value)
+void SCoreCompositorEditor::onSaoRadiusChange(double value)
 {
     // change the value of the radius in the SAO Chain Manager class
     m_saoChainManager->setSaoRadius(value);
@@ -446,7 +444,7 @@ void SDefaultCompositorEditor::onSaoRadiusChange(double value)
 
 //------------------------------------------------------------------------------
 
-void SDefaultCompositorEditor::onSaoSampleChange(int value)
+void SCoreCompositorEditor::onSaoSampleChange(int value)
 {
     // change the value in the Sao Chain Manager
     m_saoChainManager->setSaoSamples(value);
@@ -455,7 +453,7 @@ void SDefaultCompositorEditor::onSaoSampleChange(int value)
 
 //------------------------------------------------------------------------------
 
-void SDefaultCompositorEditor::onSaoBlendChange(int state)
+void SCoreCompositorEditor::onSaoBlendChange(int state)
 {
 
     m_saoChainManager->enableBlend(state == Qt::Checked);
@@ -464,16 +462,13 @@ void SDefaultCompositorEditor::onSaoBlendChange(int state)
 
 //------------------------------------------------------------------------------
 
-void SDefaultCompositorEditor::onAoIntensityChange(double value)
+void SCoreCompositorEditor::onAoIntensityChange(double value)
 {
     // change the value of the radius in the SAO Chain Manager class
     m_saoChainManager->setAoIntensity(value);
     this->update();
 }
 
-
 //------------------------------------------------------------------------------
-
-
 
 } // namespace uiVisuOgre

@@ -42,7 +42,7 @@ material Default
         }
     }
 
-
+    // TODO: Move this in cpp
     technique Mip_0
     {
         scheme Mip_0

@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include "fwRenderOgre/compositor/SaoCompositorChainManager.hpp"
 
 #include <fwCore/spyLog.hpp>
@@ -6,7 +12,8 @@
 
 #include "OGRE/OgreCamera.h"
 
-namespace fwRenderOgre {
+namespace fwRenderOgre
+{
 
 //-----------------------------------------------------------------------------
 
@@ -15,50 +22,59 @@ namespace fwRenderOgre {
 class FWRENDEROGRE_CLASS_API SaoListener : public ::Ogre::CompositorInstance::Listener
 {
 public:
-    SaoListener():m_VP(nullptr),m_Parent(nullptr){}
-    SaoListener(::Ogre::Viewport* vp,SaoCompositorChainManager* saoChainManager):m_VP(vp),m_Parent(saoChainManager){}
-    ~SaoListener(){}
+    SaoListener() : m_VP(nullptr),m_Parent(nullptr)
+    {
+    }
+    SaoListener(::Ogre::Viewport* vp,SaoCompositorChainManager* saoChainManager) : m_VP(vp),m_Parent(saoChainManager)
+    {
+    }
+    ~SaoListener()
+    {
+    }
 
-    SaoCompositorChainManager* getParent(){return m_Parent;}
+    SaoCompositorChainManager* getParent()
+    {
+        return m_Parent;
+    }
 
 
     void notifyMaterialRender(::Ogre::uint32 pass_id, ::Ogre::MaterialPtr& mat)
-        // method called before a render_target operation involving a material to set dynamically the material parameters
+    // method called before a render_target operation involving a material to set dynamically the material parameters
     {
         // Test with the two separated compositor
 
         /*
 
-        //§ When entering in this method, the Mip Map compositor has finished its work
+           //§ When entering in this method, the Mip Map compositor has finished its work
 
-        if (mat.get()->getName() == ::Ogre::MaterialManager::getSingletonPtr()->getByName("AO_mat").get()->getName())
+           if (mat.get()->getName() == ::Ogre::MaterialManager::getSingletonPtr()->getByName("AO_mat").get()->getName())
             std::cout << "Mat Ao_mat appelé" << std::endl;
 
-//                if (pass_id == 1)
-//                {
-        // no way to do a if with the material name
+           //                if (pass_id == 1)
+           //                {
+           // no way to do a if with the material name
 
-        std::cout << "No? " << std::endl;
-        std::cout << mat.get()->getName() << std::endl;
-
-
-        // ---------------------------------------------------
-        //  Try to change the content of the Second Compositor
-        // ---------------------------------------------------
+           std::cout << "No? " << std::endl;
+           std::cout << mat.get()->getName() << std::endl;
 
 
-        // get a pointer on the precedent compositor
+           // ---------------------------------------------------
+           //  Try to change the content of the Second Compositor
+           // ---------------------------------------------------
 
 
-        ::Ogre::CompositorChain* compChain =
+           // get a pointer on the precedent compositor
+
+
+           ::Ogre::CompositorChain* compChain =
             ::Ogre::CompositorManager::getSingletonPtr()->getCompositorChain(m_VP);
-        ::Ogre::CompositorChain::InstanceIterator compIter = compChain->getCompositors();
+           ::Ogre::CompositorChain::InstanceIterator compIter = compChain->getCompositors();
 
 
-//                ::Ogre::Compositor *MipMap,*Test;
-        ::Ogre::TexturePtr mip0,mip1,mip2,mip3,mip4,mip5,mip6,mip7,mip8, rt0;
-        while( compIter.hasMoreElements())
-        {
+           //                ::Ogre::Compositor *MipMap,*Test;
+           ::Ogre::TexturePtr mip0,mip1,mip2,mip3,mip4,mip5,mip6,mip7,mip8, rt0;
+           while( compIter.hasMoreElements())
+           {
             ::Ogre::CompositorInstance* targetComp = compIter.getNext();
             if (targetComp->getCompositor()->getName() == "MipMap")
             {
@@ -76,51 +92,51 @@ public:
             {
                 rt0 = targetComp->getTextureInstance("rt0",0);
             }
-        }
+           }
 
 
-        // ---------------------------------------------------
-        //  Copy the content of mip0,mip1... in rt0
-        // ---------------------------------------------------
+           // ---------------------------------------------------
+           //  Copy the content of mip0,mip1... in rt0
+           // ---------------------------------------------------
 
 
-        rt0.get()->freeInternalResources();
+           rt0.get()->freeInternalResources();
 
-        rt0.get()->changeGroupOwnership(mip0.get()->getGroup());
-        rt0.get()->setWidth(mip0.get()->getWidth());
-        rt0.get()->setHeight(mip0.get()->getHeight());
-        rt0.get()->setNumMipmaps(8);
-        rt0.get()->setFormat(::Ogre::PixelFormat::PF_FLOAT32_R);
-        rt0.get()->setUsage(::Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
-        rt0.get()->setTextureType(::Ogre::TextureType::TEX_TYPE_2D);
+           rt0.get()->changeGroupOwnership(mip0.get()->getGroup());
+           rt0.get()->setWidth(mip0.get()->getWidth());
+           rt0.get()->setHeight(mip0.get()->getHeight());
+           rt0.get()->setNumMipmaps(8);
+           rt0.get()->setFormat(::Ogre::PixelFormat::PF_FLOAT32_R);
+           rt0.get()->setUsage(::Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
+           rt0.get()->setTextureType(::Ogre::TextureType::TEX_TYPE_2D);
 
-        rt0.get()->createInternalResources();
+           rt0.get()->createInternalResources();
 
-        // copy the content of the mip textures in the mipmap (rt0)
-        // essayer de le faire de manière automatique avec une boucle + fonction qui récupèrerai l'ensemble des textures de MipMap dans un conteneur
+           // copy the content of the mip textures in the mipmap (rt0)
+           // essayer de le faire de manière automatique avec une boucle + fonction qui récupèrerai l'ensemble des textures de MipMap dans un conteneur
 
-        rt0.get()->getBuffer(0,0)->blit(mip0.get()->getBuffer());
-        rt0.get()->getBuffer(0,1)->blit(mip1.get()->getBuffer());
-        rt0.get()->getBuffer(0,2)->blit(mip2.get()->getBuffer());
-        rt0.get()->getBuffer(0,3)->blit(mip3.get()->getBuffer());
-        rt0.get()->getBuffer(0,4)->blit(mip4.get()->getBuffer());
-        rt0.get()->getBuffer(0,5)->blit(mip5.get()->getBuffer());
-        rt0.get()->getBuffer(0,6)->blit(mip6.get()->getBuffer());
-        rt0.get()->getBuffer(0,7)->blit(mip7.get()->getBuffer());
-        rt0.get()->getBuffer(0,8)->blit(mip8.get()->getBuffer());
+           rt0.get()->getBuffer(0,0)->blit(mip0.get()->getBuffer());
+           rt0.get()->getBuffer(0,1)->blit(mip1.get()->getBuffer());
+           rt0.get()->getBuffer(0,2)->blit(mip2.get()->getBuffer());
+           rt0.get()->getBuffer(0,3)->blit(mip3.get()->getBuffer());
+           rt0.get()->getBuffer(0,4)->blit(mip4.get()->getBuffer());
+           rt0.get()->getBuffer(0,5)->blit(mip5.get()->getBuffer());
+           rt0.get()->getBuffer(0,6)->blit(mip6.get()->getBuffer());
+           rt0.get()->getBuffer(0,7)->blit(mip7.get()->getBuffer());
+           rt0.get()->getBuffer(0,8)->blit(mip8.get()->getBuffer());
 
-        if (pass_id == 1)
-        {
+           if (pass_id == 1)
+           {
             std::cout << "AO_mat material called" << std::endl;
-//                    mat.get()->getTechnique(0)->getPass(0)->getFragmentProgram().get()->setParameter("r",::Ogre::StringConverter::toString(this->getParent()->getSaoRadius()));
+           //                    mat.get()->getTechnique(0)->getPass(0)->getFragmentProgram().get()->setParameter("r",::Ogre::StringConverter::toString(this->getParent()->getSaoRadius()));
 
             mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("r",static_cast<float>(this->getParent()->getSaoRadius()));
 
             mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("s",this->getParent()->getSaoSamples());
 
-        }
+           }
 
-        */
+         */
 
 
         // test with only one compositor
@@ -128,9 +144,6 @@ public:
         // try to go here only when the AO_mat is called
         if (pass_id  == 1)
         {
-
-            std::cout << "we are in the pass with the identifier 1" << std::endl;
-
             ::Ogre::CompositorChain* compChain =
                 ::Ogre::CompositorManager::getSingletonPtr()->getCompositorChain(m_VP);
 
@@ -147,7 +160,7 @@ public:
             mip6 = Sao_compositor->getTextureInstance("mip6",0);
             mip7 = Sao_compositor->getTextureInstance("mip7",0);
             mip8 = Sao_compositor->getTextureInstance("mip8",0);
-            rt0 = Sao_compositor->getTextureInstance("rt0",0);
+            rt0  = Sao_compositor->getTextureInstance("rt0",0);
 
             // ---------------------------------------------------
             //  Copy the content of mip0,mip1... in rt0
@@ -185,9 +198,16 @@ public:
 
 //            std::cout << "radius " << getParent()->getSaoRadius() << std::endl;
 
-            mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("u_radius",static_cast<float>(this->getParent()->getSaoRadius()));
+            mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("u_radius",
+                                                                                                           static_cast<
+                                                                                                               float>(
+                                                                                                               this->
+                                                                                                               getParent()
+                                                                                                               ->
+                                                                                                               getSaoRadius()));
 
-            mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("u_numSamples",this->getParent()->getSaoSamples());
+            mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant(
+                "u_numSamples",this->getParent()->getSaoSamples());
 
 
 
@@ -195,11 +215,12 @@ public:
             const ::Ogre::Matrix4& proj = m_Parent->getSceneCamera()->getProjectionMatrix();
 
             const ::Ogre::Vector4 projInfo( float(-2.0 / (static_cast<float>(mip0.get()->getWidth() * proj[0][0]))),
-                                             float(-2.0 / (static_cast<float>(mip0.get()->getWidth() * proj[1][1]))),
-                                             float((1.0 - (double)proj[0][2]) / proj[0][0]),
-                                             float((1.0 + (double)proj[1][2]) / proj[1][1])
+                                            float(-2.0 / (static_cast<float>(mip0.get()->getWidth() * proj[1][1]))),
+                                            float((1.0 - (double)proj[0][2]) / proj[0][0]),
+                                            float((1.0 + (double)proj[1][2]) / proj[1][1])
                                             );
-            mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("u_projInfo", projInfo);
+            mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("u_projInfo",
+                                                                                                           projInfo);
 
 
 //            std::cout << "no problem here ! " << std::endl;
@@ -212,10 +233,21 @@ public:
 
             ::Ogre::TexturePtr prevMip;
             ::Ogre::CompositorInstance * Sao_compositor = compChain->getCompositor("SAO_complet");
-            prevMip = Sao_compositor->getTextureInstance("mip" + std::to_string(pass_id - 41), 0);
+            prevMip                                     =
+                Sao_compositor->getTextureInstance("mip" + std::to_string(pass_id - 41), 0);
 
-            mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("u_vpWidth", static_cast<float>(prevMip.get()->getWidth()));
-           mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("u_vpHeight", static_cast<float>(prevMip.get()->getHeight()));
+            mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("u_vpWidth",
+                                                                                                           static_cast<
+                                                                                                               float>(
+                                                                                                               prevMip.
+                                                                                                               get()->
+                                                                                                               getWidth()));
+            mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("u_vpHeight",
+                                                                                                           static_cast<
+                                                                                                               float>(
+                                                                                                               prevMip.
+                                                                                                               get()->
+                                                                                                               getHeight()));
         }
 
         if (pass_id == 4)
@@ -225,16 +257,22 @@ public:
             // setNamedConstant doesn't work with bool value
             int state;
             if (this->getParent()->getBlend())
+            {
                 state = 0;
+            }
             else
+            {
                 state = 1;
+            }
 
             // change the blend state
-            mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("u_blend", state);
+            mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("u_blend",
+                                                                                                           state);
 
             // Change the AO Intensity value
 
-            mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant("aoIntensity",static_cast<float>(this->getParent()->getAoIntensity()));
+            mat.get()->getTechnique(0)->getPass(0)->getFragmentProgramParameters().get()->setNamedConstant(
+                "aoIntensity",static_cast<float>(this->getParent()->getAoIntensity()));
         }
     }
 
@@ -250,7 +288,8 @@ private:
 
 
 
-SaoCompositorChainManager::SaoCompositorChainManager(): m_ogreViewport(0),m_SaoRadius(0.85),m_SaoSamples(11),m_blend(false),m_AoIntensity(1.0)
+SaoCompositorChainManager::SaoCompositorChainManager() : m_ogreViewport(0),m_SaoRadius(0.85),m_SaoSamples(11),m_blend(
+                                                             false),m_AoIntensity(1.0)
 {
 //    m_saoChain.push_back("Test");
 //    m_saoChain.push_back("MipMap");
@@ -269,7 +308,9 @@ SaoCompositorChainManager::SaoCompositorChainManager(): m_ogreViewport(0),m_SaoR
 
 }
 
-SaoCompositorChainManager::SaoCompositorChainManager(::Ogre::Viewport* viewport): m_ogreViewport(viewport),m_SaoRadius(0.85),m_SaoSamples(11),m_blend(false),m_AoIntensity(1.0)
+SaoCompositorChainManager::SaoCompositorChainManager(::Ogre::Viewport* viewport) : m_ogreViewport(viewport),m_SaoRadius(
+                                                                                       0.85),m_SaoSamples(11),m_blend(
+                                                                                       false),m_AoIntensity(1.0)
 {
     // create the chain
 //    m_saoChain.push_back("Test");
@@ -290,7 +331,6 @@ SaoCompositorChainManager::SaoCompositorChainManager(::Ogre::Viewport* viewport)
 }
 
 
-
 // This method can let the manager change the content of the original Ogre's compositor chain
 ::Ogre::CompositorManager* SaoCompositorChainManager::getCompositorManager()
 {
@@ -301,9 +341,6 @@ SaoCompositorChainManager::SaoCompositorChainManager(::Ogre::Viewport* viewport)
 // fonction that set the Sao Compositor
 void SaoCompositorChainManager::setSaoState(bool state)
 {
-    std::cout << "try to change the state of the sao manager" << std::endl;
-
-
     // get the Compositor Manager of Ogre (of the scene)
     ::Ogre::CompositorManager* compositorManager = this->getCompositorManager();
 
@@ -328,10 +365,10 @@ void SaoCompositorChainManager::setSaoState(bool state)
 
         if (compChain->getCompositor("AO_Samples") == nullptr)
             compositorManager->addCompositor(m_ogreViewport,"AO_Samples");
-//         Attach à listener to the AO_samples compositor
+   //         Attach à listener to the AO_samples compositor
         compChain->getCompositor("AO_Samples")->addListener(new SaoListener(m_ogreViewport,this));
 
-        */
+ */
 
 /*
  * Test with previous removing compositor in the chain
@@ -340,22 +377,22 @@ void SaoCompositorChainManager::setSaoState(bool state)
 
         /*
 
-        if (compChain->getCompositor("MipMap") != nullptr)
-        {
+           if (compChain->getCompositor("MipMap") != nullptr)
+           {
             compositorManager->removeCompositor(m_ogreViewport,"MipMap"); // suppression pour ajout à la fin de la chaine
-        }
+           }
 
-        if (compChain->getCompositor("AO_Samples") != nullptr)
-        {
+           if (compChain->getCompositor("AO_Samples") != nullptr)
+           {
             compositorManager->removeCompositor(m_ogreViewport,"AO_Samples");
-        }
+           }
 
             compositorManager->addCompositor(m_ogreViewport,"MipMap");
             compositorManager->addCompositor(m_ogreViewport,"AO_Samples");
-//         Attach à listener to the AO_samples compositor
-        compChain->getCompositor("AO_Samples")->addListener(new SaoListener(m_ogreViewport,this));
+           //         Attach à listener to the AO_samples compositor
+           compChain->getCompositor("AO_Samples")->addListener(new SaoListener(m_ogreViewport,this));
 
-        */
+         */
 
 
         // FINAL VERSION (for the moment)
@@ -410,7 +447,6 @@ void SaoCompositorChainManager::setSaoState(bool state)
         while( compIter.hasMoreElements())
         {
             ::Ogre::CompositorInstance* targetComp = compIter.getNext();
-            std::cout << "Compositor place : " << ++index << " " << targetComp->getCompositor()->getName() << std::endl;
 //            if (targetComp->getEnabled())
 //                targetComp->setEnabled(false);
 //  //              std::cout << "      Enable" << std::endl;
@@ -421,18 +457,17 @@ void SaoCompositorChainManager::setSaoState(bool state)
 
 
         // add all the compositor of the chain
-        std::cout << "try to enable the sao chain" << std::endl;
         for(SaoCompositorIdType compositorName : m_saoChain)
         {
-            std::cout << "compositor found in the sao chain" << std::endl;
             if(this->getCompositorManager()->resourceExists(compositorName))
             {
-                std::cout << "Le compositor " << static_cast<std::string>(compositorName) << " existe et a correctement été chargé " << std::endl;
                 //compositorManager->addCompositor(m_ogreViewport, compositorName);
                 compositorManager->setCompositorEnabled(m_ogreViewport, compositorName, true);
             }
             else
+            {
                 OSLM_WARN("\"" << compositorName << "\" does not refer to an existing compositor");
+            }
 
         }
 
@@ -462,8 +497,6 @@ double SaoCompositorChainManager::getSaoRadius()
 // fonction to change the sampling radius
 void SaoCompositorChainManager::setSaoRadius(double newRadius)
 {
-    std::cout << "try to change the r value " << newRadius << std::endl;
-
     m_SaoRadius = newRadius;
 }
 

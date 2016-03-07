@@ -88,40 +88,6 @@ void ChainManager::updateCompositorState(CompositorIdType compositorName, bool i
             this->getCompositorManager()->setCompositorEnabled(m_ogreViewport, compositorName, isEnabled);
         }
     }
-
-    // check the content of the Ogre Compositor chain
-
-    ::Ogre::CompositorChain* compChain =
-        ::Ogre::CompositorManager::getSingletonPtr()->getCompositorChain(m_ogreViewport);
-    ::Ogre::CompositorChain::InstanceIterator compIter = compChain->getCompositors();
-
-    std::cout << "Liste des compositors actuellement dans la chaine " << std::endl;
-
-    while( compIter.hasMoreElements())
-    {
-        ::Ogre::CompositorInstance* targetComp = compIter.getNext();
-        std::cout << targetComp->getCompositor()->getName() << std::endl;
-        if (targetComp->getEnabled())
-        {
-            std::cout << "      Enable" << std::endl;
-        }
-    }
-
-    compIter = compChain->getCompositors();
-
-    compIter = compChain->getCompositors();
-    int index = 0;
-
-    while( compIter.hasMoreElements())
-    {
-        ::Ogre::CompositorInstance* targetComp = compIter.getNext();
-        std::cout << "Compositor place : " << ++index << " " << targetComp->getCompositor()->getName() << std::endl;
-//            if (targetComp->getEnabled())
-//                targetComp->setEnabled(false);
-//  //              std::cout << "      Enable" << std::endl;
-    }
-
-
 }
 
 //-----------------------------------------------------------------------------
@@ -136,8 +102,6 @@ void ChainManager::setCompositorChain(std::vector<CompositorIdType> compositors)
     {
         if(this->getCompositorManager()->resourceExists(compositorName))
         {
-            std::cout << "Le compositor " << static_cast<std::string>(compositorName) <<
-                "existe et a correctement été chargé " << std::endl;
             m_compositorChain.push_back(CompositorType(compositorName, true));
             compositorManager->addCompositor(m_ogreViewport, compositorName);
             compositorManager->setCompositorEnabled(m_ogreViewport, compositorName, true);
