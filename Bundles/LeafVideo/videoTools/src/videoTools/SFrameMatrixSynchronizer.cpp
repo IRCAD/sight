@@ -31,6 +31,8 @@ fwServicesRegisterMacro(::arServices::ISynchronizer, ::videoTools::SFrameMatrixS
 namespace videoTools
 {
 
+const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZATION_DONE_SIG = "synchronizationDone";
+
 // ----------------------------------------------------------------------------
 
 SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() throw () :
@@ -38,6 +40,7 @@ SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() throw () :
     m_imagesInitialized(false),
     m_timeStep(33)
 {
+    m_sigSynchronizationDone = newSignal<SynchronizationDoneSignalType>(s_SYNCHRONIZATION_DONE_SIG);
 }
 
 // ----------------------------------------------------------------------------
@@ -276,7 +279,7 @@ void SFrameMatrixSynchronizer::synchronize()
         sig->asyncEmit();
     }
 
-
+    bool matrixFound = false;
     for(TimelineType::value_type key : availableMatricesTL)
     {
         ::extData::MatrixTL::sptr matrixTL            = m_matrixTLs[key];
@@ -309,6 +312,8 @@ void SFrameMatrixSynchronizer::synchronize()
                         auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(
                             ::fwData::Object::s_MODIFIED_SIG);
                         sig->asyncEmit();
+
+                        matrixFound = true;
                     }
                 }
                 else
@@ -317,6 +322,11 @@ void SFrameMatrixSynchronizer::synchronize()
                 }
             }
         }
+    }
+
+    if (matrixFound)
+    {
+        m_sigSynchronizationDone->asyncEmit(frameTimestamp);
     }
 }
 
