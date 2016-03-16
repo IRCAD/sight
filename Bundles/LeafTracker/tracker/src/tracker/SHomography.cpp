@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -309,7 +309,9 @@ void SHomography::initARLCameras()
     {
         ++count;
         ::arData::Camera::sptr camera = comp->at< ::arData::Camera >(camKey);
-        ::arlCore::Camera* arlCamera  = new ::arlCore::Camera(*m_planeSystem);
+        OSLM_FATAL_IF("Camera with key '" << camKey << "' not found", !camera);
+
+        ::arlCore::Camera* arlCamera = new ::arlCore::Camera(*m_planeSystem);
 
         arlCamera->init();
 
@@ -331,6 +333,8 @@ void SHomography::initARLCameras()
         {
             ::fwData::TransformationMatrix3D::sptr extrinsicMatrix =
                 comp->at< ::fwData::TransformationMatrix3D >(m_extrinsicKey);
+
+            OSLM_FATAL_IF("Extrinsic matrix with key '" << m_extrinsicKey << "' not found", !extrinsicMatrix);
 
             for (unsigned int i = 0; i < 4; ++i)
             {
