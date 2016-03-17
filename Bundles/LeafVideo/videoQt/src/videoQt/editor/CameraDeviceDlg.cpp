@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,6 +12,8 @@
 
 #include "videoQt/helper/formats.hpp"
 
+
+#include <QtMultimedia>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QPushButton>
@@ -117,7 +119,11 @@ bool CameraDeviceDlg::getSelectedCamera(::arData::Camera::sptr& camera)
             OSLM_ERROR("No camera setting selected, using default...");
         }
 
+
+//FIXME : Setting the pixel format generate an error (gstreamer)
+#ifndef __linux__
         camera->setPixelFormat(format);
+#endif
         camera->setCameraSource(::arData::Camera::DEVICE);
         camera->setCameraID(camInfo.deviceName().toStdString());
         camera->setDescription(camInfo.description().toStdString());
@@ -134,9 +140,58 @@ void CameraDeviceDlg::onSelectDevice(int index)
     if(index >= 0)
     {
         QCameraInfo camInfo = qvariant_cast<QCameraInfo>(m_devicesComboBox->itemData(index));
-        QCamera cam(camInfo);
-        cam.load();
-        QList<QCameraViewfinderSettings> settingsList = cam.supportedViewfinderSettings();
+        QCamera* cam        = new QCamera(camInfo);
+        cam->load();
+
+#ifdef __linux__
+
+        //NOTE : Work arround for the camera resolution settings on linux (maybe on OSX too)
+        QCameraImageCapture *imageCapture            = new QCameraImageCapture(cam);
+        QList<QSize> res                             = imageCapture->supportedResolutions();
+        QList< QVideoFrame::PixelFormat > pixFormats = imageCapture->supportedBufferFormats();
+
+        for(const QSize& supportedSize : res)
+        {
+            for(const QVideoFrame::PixelFormat& pixFormat : pixFormats)
+            {
+                ::arData::Camera::PixelFormat format = ::arData::Camera::PixelFormat::INVALID;
+
+                ::videoQt::helper::PixelFormatTranslatorType::left_const_iterator iter;
+                iter = ::videoQt::helper::pixelFormatTranslator.left.find(pixFormat);
+
+                if(iter != ::videoQt::helper::pixelFormatTranslator.left.end())
+                {
+                    format = iter->second;
+                }
+                else
+                {
+                    OSLM_ERROR("No compatible pixel format found");
+                }
+
+                //Create QCameraViewfinderSettings from the informations of the QCameraImageCapture
+                QCameraViewfinderSettings settings;
+                //TODO : Can we get the maximum frameRate from an other way ?
+                settings.setMaximumFrameRate(30.0f);
+                settings.setResolution(supportedSize);
+                //FIXME : Setting the pixel format generate an error (gstreamer) (see getSelectedCamera method)
+                settings.setPixelFormat(pixFormat);
+
+
+                std::stringstream stream;
+                stream << "[" << settings.resolution().width() << "X" << settings.resolution().height() << "]";
+                stream << "\t" << settings.maximumFrameRate() << " fps";
+                stream << "\tFormat:" << ::arData::Camera::getPixelFormatName(format);
+                QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(stream.str()));
+                item->setData(Qt::UserRole, QVariant::fromValue(settings));
+                m_camSettings->addItem(item);
+            }
+
+
+        }
+
+        delete imageCapture;
+#else
+        QList<QCameraViewfinderSettings> settingsList = cam->supportedViewfinderSettings();
         for(const QCameraViewfinderSettings& settings : settingsList )
         {
             ::arData::Camera::PixelFormat format = ::arData::Camera::PixelFormat::INVALID;
@@ -161,7 +216,12 @@ void CameraDeviceDlg::onSelectDevice(int index)
             item->setData(Qt::UserRole, QVariant::fromValue(settings));
             m_camSettings->addItem(item);
         }
-        cam.unload();
+
+#endif //linux
+
+        cam->unload();
+
+        delete cam;
     }
 }
 
