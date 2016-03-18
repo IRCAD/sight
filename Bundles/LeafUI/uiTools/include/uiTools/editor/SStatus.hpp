@@ -28,7 +28,39 @@ namespace editor
  * @brief   SStatus service shows a colored square (red, orange, green) representing a status.
  * @class   SStatus
  *
- * To change the status color, you should call the slots 'changeToGreen', 'changeToOrange', 'changeToRed' or 'toggleGreenRed'.
+ * @note To change the status color, you should call the slots 'changeToGreen', * 'changeToOrange', 'changeToRed'
+ * or 'toggleGreenRed'.
+ *
+ * @brief Configures the status tooltip
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+   <service uid="..." impl="::uiTools::editor::SStatus">
+       <form>square|circle</form>
+       <size>
+           <width>20</width>
+           <height>20</height>
+       </size>
+       <labelStatus>SCP Server</labelStatus>
+       <red>Stopped</red>
+       <green>Tracking</green>
+       <orange>Started</orange>
+   </service>
+   @endcode
+ * - \b form (optionnal, 'square' by default) : the form of the indicator
+ * - \b size (optionnal) : the size of the indicator
+ *   - \b width (optionnal, 20 by default) : the width of the indicator
+ *   - \b height (optionnal, 20 by default) : the height of the indicator
+ * - \b labelStatus (optionnal) : the description associated to the indicator
+ * - \b red (optionnal) : the description associated to the red status
+ * - \b green (optionnal) : the description associated to the green status
+ * - \b orange (optionnal) : the description associated to the orange status
+ *
+ * @section Slots Slots
+ * - \b changeToGreen()      : This slot allows to change the indicator color to green.
+ * - \b changeToRed()        : This slot allows to change the indicator color to red.
+ * - \b changeToOrange()     : This slot allows to change the indicator color to orange.
+ * - \b toggleGreenRed(bool) : This slot allows to change the indicator color to green or red.
  */
 class UITOOLS_CLASS_API SStatus : public QObject,
                                   public ::gui::editor::IEditor
@@ -81,23 +113,7 @@ protected:
     /// Does nothing
     virtual void swapping() throw(::fwTools::Failed);
 
-    /**
-     * @brief Configures the status tooltip
-     *
-     * @code{.xml}
-       <service uid="..." impl="::uiTools::editor::SStatus">
-           <form>circle</form>
-           <size>
-               <width>20</width>
-               <height>20</height>
-           </size>
-           <labelStatus>SCP Server</labelStatus>
-           <red>Stopped</red>
-           <green>Tracking</green>
-           <orange>Started</orange>
-       </service>
-       @endcode
-     */
+    /// Configures the service
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
