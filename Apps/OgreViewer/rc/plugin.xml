@@ -143,7 +143,6 @@
                                 <appConfig id="OgreOrganManagerWithSeries">
                                     <parameters>
                                         <parameter replace="ORGAN_MANAGER_MODELSERIES" by="modelSeriesUID" />
-                                        <parameter replace="RECONSTRUCTION_SELECTED" by="reconstruction" />
                                         <parameter replace="WID_PARENT" by="${GENERIC_UID}_organView" />
                                         <parameter replace="ICON_PATH" by="Bundles/arMedia_0-1/icons/app.ico" />
                                     </parameters>
@@ -205,10 +204,6 @@
 
                         <service uid="CoreEditor" impl="::uiVisuOgre::SCoreCompositorEditor" type="::gui::editor::IEditor" autoConnect="no" />
 
-                        <service uid="updaterReconstUID" impl="::ctrlSelection::updater::SObjFromSlot" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                            <compositeKey>reconstruction</compositeKey>
-                        </service>
-
                         <service uid="cfgVTKGenericScene" impl="::fwServices::SConfigController" autoConnect="no">
                             <config>
                                 <appConfig id="VTKGenericScene" >
@@ -251,7 +246,6 @@
                 </item>
 
                 <start uid="ihm" />
-                <start uid="updaterReconstUID" />
                 <start uid="cfgVTKGenericScene" />
                 <start uid="cfgOgreGenericScene" />
                 <start uid="cfgOgreNegato2D" />
