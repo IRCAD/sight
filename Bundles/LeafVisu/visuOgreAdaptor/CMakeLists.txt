@@ -8,6 +8,3 @@ fwUseForwardInclude(
     fwRenderOgre
     arData
 )
-
-useOgre()
-

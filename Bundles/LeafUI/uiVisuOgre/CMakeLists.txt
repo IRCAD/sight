@@ -1,14 +1,12 @@
 fwLoadProperties()
 fwUseForwardInclude(
-        fwComEd 
-        fwRuntime 
-        fwServices 
+        fwComEd
+        fwRuntime
+        fwServices
         fwTools
         fwRenderOgre
         gui
 )
-
-useOgre()
 
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 
