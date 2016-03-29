@@ -153,6 +153,12 @@ void SFrameGrabber::stopCamera()
     {
         m_videoPlayer->stop();
 
+        auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
+        sigPosition->asyncEmit(static_cast<std::int64_t>(-1));
+
+        auto sigDuration = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
+        sigDuration->asyncEmit(static_cast<std::int64_t>(-1));
+
         QObject::disconnect(m_videoPlayer, SIGNAL(durationChanged(qint64)), this, SLOT(onDurationChanged(qint64)));
         QObject::disconnect(m_videoPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(onPositionChanged(qint64)));
         QObject::disconnect(m_videoPlayer, SIGNAL(frameAvailable(QVideoFrame)), this, SLOT(presentFrame(QVideoFrame)));
