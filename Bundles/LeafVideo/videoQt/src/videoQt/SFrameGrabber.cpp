@@ -167,6 +167,23 @@ void SFrameGrabber::stopCamera()
         registry.releasePlayer(m_videoPlayer);
 
         m_videoPlayer = nullptr;
+
+        // Reset the timeline and send a black frame
+        ::extData::FrameTL::sptr timeline = this->getObject< ::extData::FrameTL >();
+        const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec() + 1;
+        SPTR(::extData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
+        ::boost::uint8_t* destBuffer                = reinterpret_cast< ::boost::uint8_t* >( buffer->addElement(0) );
+
+        std::fill(destBuffer,
+                  destBuffer + timeline->getWidth() * timeline->getHeight() * timeline->getNumberOfComponents(), 0);
+
+        // push buffer and notify
+        timeline->clearTimeline();
+        timeline->pushObject(buffer);
+
+        auto sigTL = timeline->signal< ::extData::TimeLine::ObjectPushedSignalType >(
+            ::extData::TimeLine::s_OBJECT_PUSHED_SIG );
+        sigTL->asyncEmit(timestamp);
     }
 }
 
