@@ -125,6 +125,16 @@ void SHomography::starting() throw (::fwTools::Failed)
     m_3dModel.push_back(::arlCore::Point::PointFactory(halfWidth, halfWidth, 0));
     m_3dModel.push_back(::arlCore::Point::PointFactory(halfWidth, -halfWidth, 0));
     m_3dModel.push_back(::arlCore::Point::PointFactory(-halfWidth, -halfWidth, 0));
+
+
+    //Connections
+    for(const VectKeyType::value_type& elt : m_markerTLKeys)
+    {
+        ::arData::MarkerTL::sptr timeline = comp->at< ::arData::MarkerTL >(elt);
+        m_connections->connect(timeline, ::extData::TimeLine::s_OBJECT_PUSHED_SIG, this->getSptr(),
+                               ::tracker::SHomography::s_REGISTER_SLOT);
+    }
+
 }
 
 //-----------------------------------------------------------------------------
@@ -294,8 +304,6 @@ void SHomography::initialize()
     for(const VectKeyType::value_type& elt : m_markerTLKeys)
     {
         ::arData::MarkerTL::sptr timeline = comp->at< ::arData::MarkerTL >(elt);
-        m_connections->connect(timeline, ::extData::TimeLine::s_OBJECT_PUSHED_SIG, this->getSptr(),
-                               ::tracker::SHomography::s_REGISTER_SLOT);
 
         SLM_ASSERT("Timelines should have the same maximum number of elements",
                    maxElementNum == timeline->getMaxElementNum());
