@@ -15,6 +15,7 @@
 #include <fwRenderOgre/interactor/IInteractor.hpp>
 #include <fwRenderOgre/interactor/IMovementInteractor.hpp>
 #include <fwRenderOgre/interactor/IPickerInteractor.hpp>
+#include <fwRenderOgre/interactor/VRWidgetsInteractor.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -40,6 +41,7 @@ SInteractorStyle::SInteractorStyle() throw()
     m_interactorStyles["Mesh"]      = "::fwRenderOgre::interactor::MeshPickerInteractor";
     m_interactorStyles["Video"]     = "::fwRenderOgre::interactor::VideoPickerInteractor";
     m_interactorStyles["Negato2D"]  = "::fwRenderOgre::interactor::Negato2DInteractor";
+    m_interactorStyles["VR"]        = "::fwRenderOgre::interactor::VRWidgetsInteractor";
 
     //Create the connection slot object
     m_connections = ::fwServices::helper::SigSlotConnection::New();
@@ -69,7 +71,8 @@ void SInteractorStyle::doStart() throw(fwTools::Failed)
 {
     this->setInteractorStyle();
 
-    if(!std::strcmp("Mesh",m_configuredStyle.c_str()) || !std::strcmp("Video",m_configuredStyle.c_str()))
+    if(!std::strcmp("Mesh",m_configuredStyle.c_str())
+            || !std::strcmp("Video",m_configuredStyle.c_str()))
     {
         ::fwRenderOgre::interactor::IPickerInteractor::sptr pickerInteractor =
             this->getRenderService()->getLayer(m_layerID)->getSelectInteractor();
@@ -114,17 +117,37 @@ void SInteractorStyle::setInteractorStyle()
 
     OSLM_ASSERT("Unknown interactor style : " << style, interactor);
 
-    if(!std::strcmp("Trackball", m_configuredStyle.c_str())
-       || !std::strcmp("Fixed", m_configuredStyle.c_str())
-       || !std::strcmp("Negato2D", m_configuredStyle.c_str()))
+    if( m_configuredStyle == "VR" )
     {
         this->getRenderService()->getLayer(m_layerID)->setMoveInteractor(
             ::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(interactor));
+
+        auto VRInteractor =
+                std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
+
+        VRInteractor->initPicker();
+        VRInteractor->attachSignal(
+                    newSignal< ::fwRenderOgre::interactor::VRWidgetsInteractor::WidgetDragSigType>
+                    ( ::fwRenderOgre::interactor::VRWidgetsInteractor::s_DRAG_WIDGET_SIG ));
+
+        VRInteractor->attachSignal(
+                    newSignal< ::fwRenderOgre::interactor::VRWidgetsInteractor::WidgetDropSigType>
+                    ( ::fwRenderOgre::interactor::VRWidgetsInteractor::s_DROP_WIDGET_SIG ));
     }
-    if(!std::strcmp("Mesh",m_configuredStyle.c_str()) || !std::strcmp("Video",m_configuredStyle.c_str()))
+    else
     {
-        this->getRenderService()->getLayer(m_layerID)->setSelectInteractor(
-            ::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(interactor));
+        if(!std::strcmp("Trackball", m_configuredStyle.c_str())
+                || !std::strcmp("Fixed", m_configuredStyle.c_str())
+                || !std::strcmp("Negato2D", m_configuredStyle.c_str()))
+        {
+            this->getRenderService()->getLayer(m_layerID)->setMoveInteractor(
+                        ::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(interactor));
+        }
+        if(!std::strcmp("Mesh",m_configuredStyle.c_str()) || !std::strcmp("Video",m_configuredStyle.c_str()))
+        {
+            this->getRenderService()->getLayer(m_layerID)->setSelectInteractor(
+                        ::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(interactor));
+        }
     }
 }
 

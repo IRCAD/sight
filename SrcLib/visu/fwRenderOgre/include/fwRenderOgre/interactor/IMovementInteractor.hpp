@@ -67,10 +67,13 @@ public:
 
     /**
      * @brief Behaviour on a MouseMoveEvent
+     * @param x  The mouse X position
+     * @param y  The mouse Y position
      * @param dx The mouse X screen displacement
      * @param dy The mouse Y screen displacement
+     * @param click Whether or not the left button has been clicked
      */
-    FWRENDEROGRE_API virtual void mouseMoveEvent(int dx, int dy) = 0;
+    FWRENDEROGRE_API virtual void mouseMoveEvent(int x, int y, int dx, int dy, bool click) = 0;
 
     /**
      * @brief Behaviour on a WheelEvent
@@ -106,6 +109,9 @@ public:
      * @param key key pressed on the keyboard
      * */
     FWRENDEROGRE_API virtual void keyPressEvent(int key) = 0;
+
+    /// Called when left button is released, does nothing if not overridden.
+    FWRENDEROGRE_API virtual void buttonReleaseEvent();
 
     /// Update camera's move scale
     FWRENDEROGRE_API virtual void setMouseScale(float mouseScale);

@@ -30,7 +30,7 @@ public:
     FWRENDEROGRE_API FixedStyleInteractor();
 
     /// Behaviour on mouseMoveEvent
-    FWRENDEROGRE_API void mouseMoveEvent(int x, int y);
+    FWRENDEROGRE_API void mouseMoveEvent(int x, int y, int dx, int dy, bool click);
     /// Behaviour on a wheelEvent
     FWRENDEROGRE_API void wheelEvent(int delta, int x, int y);
     /// Behaviour on an HorizontalMoveEvent

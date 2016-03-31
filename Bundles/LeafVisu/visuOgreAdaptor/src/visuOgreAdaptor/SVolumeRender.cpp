@@ -1,5 +1,8 @@
 #include "visuOgreAdaptor/SVolumeRender.hpp"
 
+#include <algorithm>
+
+#include <boost/algorithm/clamp.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <fwCom/Signal.hxx>
@@ -11,7 +14,12 @@
 #include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 
+#include <fwRenderOgre/interactor/VRWidgetsInteractor.hpp>
+
+#include <numeric>
+
 #include <OGRE/OgreCamera.h>
+#include <OGRE/OgreEntity.h>
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreMaterial.h>
@@ -20,10 +28,13 @@
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreTechnique.h>
+#include <OGRE/OgreRay.h>
 
 #include <sstream>
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVolumeRender, ::fwData::Image);
+
+//-----------------------------------------------------------------------------
 
 namespace visuOgreAdaptor
 {
@@ -48,19 +59,45 @@ private:
 
 //-----------------------------------------------------------------------------
 
+const std::map< SVolumeRender::CubeFace, SVolumeRender::CubeFacePositionList> SVolumeRender::s_cubeFaces = {
+    { SVolumeRender::Z_POSITIVE, { 0, 1, 4, 3 } },
+    { SVolumeRender::Z_NEGATIVE, { 2, 5, 7, 6 } },
+    { SVolumeRender::Y_POSITIVE, { 0, 3, 6, 2 } },
+    { SVolumeRender::Y_NEGATIVE, { 1, 4, 7, 5 } },
+    { SVolumeRender::X_POSITIVE, { 0, 1, 5, 2 } },
+    { SVolumeRender::X_NEGATIVE, { 3, 4, 7, 6 } }
+};
+
+//-----------------------------------------------------------------------------
+
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWIMAGE_SLOT   = "newImage";
 
 //-----------------------------------------------------------------------------
 
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_DRAG_WIDGET_SLOT = "dragWidgetSlot";
+
+//-----------------------------------------------------------------------------
+
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_DROP_WIDGET_SLOT = "dropWidgetSlot";
+
+//-----------------------------------------------------------------------------
+
 SVolumeRender::SVolumeRender() throw() :
+    m_sceneManager         (nullptr),
     m_volumeSceneNode      (nullptr),
     m_sceneRenderQueue     (nullptr),
     m_camera               (nullptr),
     m_intersectingPolygons (nullptr),
+    m_boundingBox          (nullptr),
+    m_selectedFace         (nullptr),
     m_nbSlices             (512)
 {
     this->installTFSlots(this);
     newSlot(s_NEWIMAGE_SLOT, &SVolumeRender::newImage, this);
+    newSlot(s_DRAG_WIDGET_SLOT, &SVolumeRender::widgetPicked, this);
+    newSlot(s_DROP_WIDGET_SLOT, &SVolumeRender::widgetReleased, this);
+
+    updateClippingCube();
 
     // set transform for testing only
     m_transform = ::Ogre::Matrix4::IDENTITY;
@@ -78,10 +115,39 @@ void SVolumeRender::doConfigure() throw ( ::fwTools::Failed )
 {
     SLM_ASSERT("No config tag", m_configuration->getName() == "config");
 
-    if(m_configuration->hasAttribute(""))
-    {
+//    if(m_configuration->hasAttribute(""))
+//    {
 
-    }
+//    }
+
+    this->parseTFConfig(m_configuration);
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::updatingTFPoints()
+{
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+    this->updateTransferFunction(this->getImage());
+
+    m_gpuTF.updateTexture(tf);
+
+    ::Ogre::MaterialPtr volumeMtl = ::Ogre::MaterialManager::getSingletonPtr()->getByName("SliceVolume");
+    ::Ogre::Pass *pass = volumeMtl->getTechnique(0)->getPass(0);
+    ::Ogre::TextureUnitState *texTFState = pass->getTextureUnitState("transferFunction");
+
+    texTFState->setTexture(m_gpuTF.getTexture());
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::updatingTFWindowing(double window, double level)
+{
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+
+    m_gpuTF.updateTexture(tf);
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -89,7 +155,9 @@ void SVolumeRender::doConfigure() throw ( ::fwTools::Failed )
 fwServices::IService::KeyConnectionsType SVolumeRender::getObjSrvConnections() const
 {
     ::fwServices::IService::KeyConnectionsType connections;
+
     connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT ) );
+
     return connections;
 }
 
@@ -97,30 +165,43 @@ fwServices::IService::KeyConnectionsType SVolumeRender::getObjSrvConnections() c
 
 void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 {
+    this->updateImageInfos(this->getObject< ::fwData::Image >());
+    this->updateTransferFunction(this->getImage());
+
+    this->installTFConnections();
+
     m_sceneManager     = this->getSceneManager();
     m_volumeSceneNode  = m_sceneManager->getRootSceneNode()->createChildSceneNode();
     m_sceneRenderQueue = m_sceneManager->getRenderQueue();
     m_camera           = m_sceneManager->getCamera("PlayerCam");
 
-//    ::Ogre::MovableObject *movableCamera = dynamic_cast< ::Ogre::MovableObject * >(m_camera);
+    //    ::Ogre::MovableObject *movableCamera = dynamic_cast< ::Ogre::MovableObject * >(m_camera);
     m_camera->addListener(new CameraMotionListener(this));
 
-    m_volumeSceneNode->setPosition(0, 0, 0);
-
+    // Create textures
     m_3DOgreTexture = ::Ogre::TextureManager::getSingletonPtr()->create(
         this->getID() + "_Texture",
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
         true);
 
+    m_gpuTF.createTexture(this->getID());
+
     ::Ogre::MaterialPtr volumeMtl = ::Ogre::MaterialManager::getSingletonPtr()->getByName("SliceVolume");
-    ::Ogre::TextureUnitState *texState = volumeMtl->getTechnique(0)->getPass(0)->getTextureUnitState("image");
+    ::Ogre::Pass *pass = volumeMtl->getTechnique(0)->getPass(0);
+    ::Ogre::TextureUnitState *tex3DState = pass->getTextureUnitState("image");
+    ::Ogre::TextureUnitState *texTFState = pass->getTextureUnitState("transferFunction");
 
-    SLM_ASSERT("'image' texture unit is not found", texState);
+    SLM_ASSERT("'image' texture unit is not found", tex3DState);
 
-    texState->setTexture(m_3DOgreTexture);
+    tex3DState->setTexture(m_3DOgreTexture);
+    texTFState->setTexture(m_gpuTF.getTexture());
 
     initSlices();
     updateAllSlices();
+    initWidgets();
+
+    // This must be called to set the camera once all our geometry has been created
+    this->getRenderService()->resetCameraCoordinates(m_layerID);
 }
 
 //-----------------------------------------------------------------------------
@@ -134,6 +215,7 @@ void SVolumeRender::doStop() throw ( ::fwTools::Failed )
 void SVolumeRender::doUpdate() throw ( ::fwTools::Failed )
 {
     updateAllSlices();
+    requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -144,26 +226,83 @@ void SVolumeRender::doSwap() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::createTransformService()
+std::array< ::Ogre::Vector3, 4 > SVolumeRender::getFacePositions(SVolumeRender::CubeFace _faceName) const
 {
+    const CubeFacePositionList positionIndices = s_cubeFaces.at(_faceName);
+    std::array< ::Ogre::Vector3, 4 > facePositions;
+
+    auto BBpositions = getClippingBoxPositions();
+
+    std::transform(positionIndices.begin(), positionIndices.end(), facePositions.begin(),
+                   [&](unsigned i){ return BBpositions[i]; });
+
+    return facePositions;
+}
+
+//-----------------------------------------------------------------------------
+
+Ogre::Vector3 SVolumeRender::getFaceCenter(SVolumeRender::CubeFace _faceName) const
+{
+    const auto facePositions = getFacePositions(_faceName);
+    return std::accumulate(facePositions.cbegin() + 1, facePositions.cend(), facePositions[0]) / 4.f;
+}
+
+//-----------------------------------------------------------------------------
+
+std::array< ::Ogre::Vector3, 8 > SVolumeRender::getClippingBoxPositions() const
+{
+    return {
+        ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[1].y, m_clippingCube[1].z),
+        ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[0].y, m_clippingCube[1].z),
+        ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[1].y, m_clippingCube[0].z),
+        ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[1].y, m_clippingCube[1].z),
+        ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[0].y, m_clippingCube[1].z),
+        ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[0].y, m_clippingCube[0].z),
+        ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[1].y, m_clippingCube[0].z),
+        ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[0].y, m_clippingCube[0].z)
+    };
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::selectFace(SVolumeRender::CubeFace _faceName)
+{
+    m_selectedFace->beginUpdate(0);
+    {
+        std::array< ::Ogre::Vector3, 4 > facePositions = getFacePositions(_faceName);
+        m_selectedFace->position(facePositions[1]);
+        m_selectedFace->position(facePositions[0]);
+        m_selectedFace->position(facePositions[2]);
+        m_selectedFace->position(facePositions[3]);
+    }
+    m_selectedFace->end();
+
+    m_volumeSceneNode->attachObject(m_selectedFace);
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::deselectFace()
+{
+    m_volumeSceneNode->detachObject(m_selectedFace->getName());
 }
 
 //-----------------------------------------------------------------------------
 
 void SVolumeRender::scaleCube(const fwData::Image::SpacingType& spacing)
 {
-    double width  = static_cast< double > (m_3DOgreTexture->getWidth() ) * spacing[0];
-    double height = static_cast< double > (m_3DOgreTexture->getHeight()) * spacing[1];
-    double depth  = static_cast< double > (m_3DOgreTexture->getDepth() ) * spacing[2];
+    const double width  = static_cast< double > (m_3DOgreTexture->getWidth() ) * spacing[0];
+    const double height = static_cast< double > (m_3DOgreTexture->getHeight()) * spacing[1];
+    const double depth  = static_cast< double > (m_3DOgreTexture->getDepth() ) * spacing[2];
 
-    double maxDim = std::max(width, std::max(height, depth));
+    const double maxDim = std::max(width, std::max(height, depth));
 
     ::Ogre::Vector3 scaleFactors(
-                width  / maxDim,
-                height / maxDim,
-                depth  / maxDim);
+                static_cast<float>(width  / maxDim),
+                static_cast<float>(height / maxDim),
+                static_cast<float>(depth  / maxDim));
 
-    m_transform.setScale(scaleFactors);
+    m_volumeSceneNode->setScale(scaleFactors);
 }
 
 //-----------------------------------------------------------------------------
@@ -179,6 +318,7 @@ void SVolumeRender::initSlices()
 
     // create m_nbSlices slices
     m_intersectingPolygons->estimateVertexCount(6 /** m_nbSlices*/ * 2);
+    m_intersectingPolygons->setDynamic(true);
 
     for(uint16_t sliceNumber = 0; sliceNumber < m_nbSlices; ++ sliceNumber)
     {
@@ -206,37 +346,99 @@ void SVolumeRender::initSlices()
 
 //-----------------------------------------------------------------------------
 
+void SVolumeRender::initWidgets()
+{
+    m_boundingBox = m_sceneManager->createManualObject("__VolumeBB__");
+    m_selectedFace = m_sceneManager->createManualObject("__VRSelectedFace__");
+
+    updateClippingCube();
+
+    const auto clippingBoxPositions = getClippingBoxPositions();
+
+    m_boundingBox->begin("Default", Ogre::RenderOperation::OT_LINE_LIST);
+    {
+        const unsigned edges[][2] = {
+            { 0, 1 }, { 1, 4 }, { 4, 3 }, { 3, 0 },
+            { 0, 2 }, { 1, 5 }, { 4, 7 }, { 3, 6 },
+            { 2, 5 }, { 5, 7 }, { 7, 6 }, { 6, 2 }
+        };
+
+        for(unsigned i = 0; i < 12; ++ i)
+        {
+            m_boundingBox->position(clippingBoxPositions[edges[i][0]]);
+            m_boundingBox->position(clippingBoxPositions[edges[i][1]]);
+        }
+
+        // Cross
+        for(unsigned i = 0; i < 6; i += 2)
+        {
+            m_boundingBox->position(getFaceCenter(static_cast<CubeFace>(i  )));
+            m_boundingBox->position(getFaceCenter(static_cast<CubeFace>(i+1)));
+        }
+    }
+    m_boundingBox->end();
+
+    m_volumeSceneNode->attachObject(m_boundingBox);
+
+    m_selectedFace->begin("Default", Ogre::RenderOperation::OT_TRIANGLE_STRIP);
+    {
+        for(unsigned i = 0; i < 4; ++ i)
+        {
+            m_selectedFace->position(0, 0, 0);
+        }
+    }
+    m_selectedFace->end();
+
+    // Create a pickable sphere for each cube face
+    for(unsigned i = 0; i < 6; ++ i)
+    {
+        CubeFace currentFace = static_cast<CubeFace>(i);
+
+        ::Ogre::Entity *newWidget = m_sceneManager->createEntity( ::Ogre::SceneManager::PT_SPHERE );
+        newWidget->setMaterialName("Default");
+
+        ::Ogre::SceneNode *widgetSceneNode = m_volumeSceneNode->createChildSceneNode();
+
+        m_widgets[newWidget] = std::make_pair(currentFace, widgetSceneNode);
+
+        ::Ogre::Vector3 faceCenter = getFaceCenter(currentFace);
+
+        widgetSceneNode->setPosition(faceCenter);
+        widgetSceneNode->setInheritScale(false);
+        widgetSceneNode->setScale(0.0002f, 0.0002f, 0.0002f);
+
+        widgetSceneNode->attachObject(newWidget);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void SVolumeRender::updateAllSlices()
 {    
-    // intersections are done in world space
-    for(int i = 0; i < 8; ++i)
-    {
-        m_worldSpaceCubePositions[i] = m_transform * m_boundingCubePositions[i];
-    }
-
-    ::Ogre::Vector3 planeNormal    = m_camera->getRealDirection();
-    ::Ogre::Vector3 cameraPosition = m_camera->getRealPosition();
+    // intersections are done in object space
+    ::Ogre::Vector3 planeNormal    = m_volumeSceneNode->convertWorldToLocalPosition(m_camera->getRealDirection());
+    const ::Ogre::Vector3 cameraPosition = m_volumeSceneNode->convertWorldToLocalPosition(m_camera->getRealPosition());
 
     planeNormal.normalise();
 
-    ::Ogre::Plane cameraPlane(planeNormal, cameraPosition);
+    const ::Ogre::Plane cameraPlane(planeNormal, cameraPosition);
 
     // get the cube's closest and furthest vertex to the camera
-    unsigned closestVtxIndex = closestVertexIndex(cameraPlane);
+    const unsigned closestVtxIndex = closestVertexIndex(cameraPlane);
 
-    auto comp = [&cameraPlane](const ::Ogre::Vector3& v1, const ::Ogre::Vector3& v2)
+    const auto comp = [&cameraPlane](const ::Ogre::Vector3& v1, const ::Ogre::Vector3& v2)
             { return cameraPlane.getDistance(v1) < cameraPlane.getDistance(v2); };
 
-    ::Ogre::Vector3 furthestVtx = *std::max_element(m_worldSpaceCubePositions, m_worldSpaceCubePositions + 8, comp);
-    ::Ogre::Vector3 closestVtx  = m_worldSpaceCubePositions[ closestVtxIndex ];
+    const ::Ogre::Vector3 furthestVtx = *std::max_element(m_clippedImagePositions, m_clippedImagePositions + 8, comp);
+    const ::Ogre::Vector3 closestVtx  = m_clippedImagePositions[ closestVtxIndex ];
 
     // get distance between slices
-    float closestVtxDistance  = cameraPlane.getDistance(closestVtx);
-    float furthestVtxDistance = cameraPlane.getDistance(furthestVtx);
+    const float closestVtxDistance  = cameraPlane.getDistance(closestVtx);
+    const float furthestVtxDistance = cameraPlane.getDistance(furthestVtx);
 
-    float firstToLastSliceDistance = std::abs(closestVtxDistance - furthestVtxDistance);
+    const float firstToLastSliceDistance = std::abs(closestVtxDistance - furthestVtxDistance);
 
-    float distanceBetweenSlices =  firstToLastSliceDistance / m_nbSlices;
+    const float distanceBetweenSlices =  firstToLastSliceDistance / m_nbSlices;
 
     // set first plane
     ::Ogre::Vector3 planeVertex = furthestVtx - planeNormal * distanceBetweenSlices;
@@ -246,7 +448,7 @@ void SVolumeRender::updateAllSlices()
     {
         Polygon intersections = cubePlaneIntersection(planeNormal, planeVertex, closestVtxIndex);
 
-        if(intersections.m_vertices.size() >= 3)
+        if(intersections.size() >= 3)
         {
             updateSlice(intersections, sliceNumber);
         }
@@ -261,11 +463,11 @@ void SVolumeRender::updateAllSlices()
 unsigned SVolumeRender::closestVertexIndex(const ::Ogre::Plane& _cameraPlane) const
 {
     int min = 0;
-    float minDist = _cameraPlane.getDistance(m_worldSpaceCubePositions[0]);
+    float minDist = _cameraPlane.getDistance(m_clippedImagePositions[0]);
 
     for(int i = 1; i < 8; ++ i)
     {
-        float dist = _cameraPlane.getDistance(m_worldSpaceCubePositions[i]);
+        float dist = _cameraPlane.getDistance(m_clippedImagePositions[i]);
 
         if(dist < minDist)
         {
@@ -281,31 +483,86 @@ unsigned SVolumeRender::closestVertexIndex(const ::Ogre::Plane& _cameraPlane) co
 
 void SVolumeRender::updateSlice(const Polygon& _polygon ,const unsigned _sliceIndex)
 {
-    const size_t nbVertices = _polygon.m_vertices.size();
+    const size_t nbVertices = _polygon.size();
 
     // triangulate polygon into a triangle strip
     m_intersectingPolygons->beginUpdate(_sliceIndex);
     {
-        m_intersectingPolygons->position( _polygon.m_vertices[1] );
-        m_intersectingPolygons->textureCoord( _polygon.m_textureUVW[1] );
-        m_intersectingPolygons->position( _polygon.m_vertices[0] );
-        m_intersectingPolygons->textureCoord( _polygon.m_textureUVW[0] );
-        m_intersectingPolygons->position( _polygon.m_vertices[2] );
-        m_intersectingPolygons->textureCoord( _polygon.m_textureUVW[2] );
+        m_intersectingPolygons->position( _polygon[1] );
+        m_intersectingPolygons->textureCoord( _polygon[1] );
+        m_intersectingPolygons->position( _polygon[0] );
+        m_intersectingPolygons->textureCoord( _polygon[0] );
+        m_intersectingPolygons->position( _polygon[2] );
+        m_intersectingPolygons->textureCoord( _polygon[2] );
 
         for(unsigned i = 0; i < nbVertices - 3; ++ i)
         {
-            m_intersectingPolygons->position( _polygon.m_vertices[nbVertices - 1 - i] );
-            m_intersectingPolygons->textureCoord( _polygon.m_textureUVW[nbVertices - 1 - i] );
+            m_intersectingPolygons->position( _polygon[nbVertices - 1 - i] );
+            m_intersectingPolygons->textureCoord( _polygon[nbVertices - 1 - i] );
 
             if(i + 3 < nbVertices - 1)
             {
-                m_intersectingPolygons->position( _polygon.m_vertices[i + 3] );
-                m_intersectingPolygons->textureCoord( _polygon.m_textureUVW[i + 3] );
+                m_intersectingPolygons->position( _polygon[i + 3] );
+                m_intersectingPolygons->textureCoord( _polygon[i + 3] );
             }
         }
     }
     m_intersectingPolygons->end();
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::updateClippingCube()
+{
+    const ::Ogre::Vector3 min = m_clippingCube[0];
+    const ::Ogre::Vector3 max = m_clippingCube[1];
+
+    for(unsigned i = 0; i < 8; ++ i)
+    {
+        m_clippedImagePositions[i] = ::Ogre::Vector3(
+                    ::boost::algorithm::clamp(m_imagePositions[i].x, min.x, max.x),
+                    ::boost::algorithm::clamp(m_imagePositions[i].y, min.y, max.y),
+                    ::boost::algorithm::clamp(m_imagePositions[i].z, min.z, max.z));
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::updateWidgets()
+{
+    const auto clippingBoxPositions = getClippingBoxPositions();
+
+    m_boundingBox->beginUpdate(0);
+    {
+        const unsigned edges[][2] = {
+            { 0, 1 }, { 1, 4 }, { 4, 3 }, { 3, 0 },
+            { 0, 2 }, { 1, 5 }, { 4, 7 }, { 3, 6 },
+            { 2, 5 }, { 5, 7 }, { 7, 6 }, { 6, 2 }
+        };
+
+        for(unsigned i = 0; i < 12; ++ i)
+        {
+            m_boundingBox->position(clippingBoxPositions[edges[i][0]]);
+            m_boundingBox->position(clippingBoxPositions[edges[i][1]]);
+        }
+
+        // Cross
+        for(unsigned i = 0; i < 6; i += 2)
+        {
+            m_boundingBox->position(getFaceCenter(static_cast<CubeFace>(i  )));
+            m_boundingBox->position(getFaceCenter(static_cast<CubeFace>(i+1)));
+        }
+    }
+    m_boundingBox->end();
+
+    // Recenter widgets
+    for(auto& widget : m_widgets)
+    {
+        CubeFace cf = widget.second.first;
+        ::Ogre::Vector3 faceCenter = getFaceCenter(cf);
+
+        widget.second.second->setPosition(faceCenter);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -319,11 +576,8 @@ bool SVolumeRender::planeEdgeIntersection(const ::Ogre::Vector3& _planeNormal,
 {
     bool planeIntersectsEdge = false;
 
-    const ::Ogre::Vector3 edgePoint0 = m_worldSpaceCubePositions[_edgeVertexIndex0];
-    const ::Ogre::Vector3 edgePoint1 = m_worldSpaceCubePositions[_edgeVertexIndex1];
-
-    const ::Ogre::Vector3 uvw0 = m_boundingCubePositions[_edgeVertexIndex0];
-    const ::Ogre::Vector3 uvw1 = m_boundingCubePositions[_edgeVertexIndex1];
+    const ::Ogre::Vector3 edgePoint0 = m_clippedImagePositions[_edgeVertexIndex0];
+    const ::Ogre::Vector3 edgePoint1 = m_clippedImagePositions[_edgeVertexIndex1];
 
     if(_planeNormal.dotProduct(edgePoint1 - edgePoint0) != 0) // plane and edge are not parallel
     {
@@ -337,10 +591,8 @@ bool SVolumeRender::planeEdgeIntersection(const ::Ogre::Vector3& _planeNormal,
         if(planeIntersectsEdge)
         {
             const ::Ogre::Vector3 position = edgePoint0 + intersectPoint * (edgePoint1 - edgePoint0);
-            const ::Ogre::Vector3 uvw      = uvw0       + intersectPoint * (uvw1       - uvw0      );
 
-            _result.m_vertices.push_back(position);
-            _result.m_textureUVW.push_back(uvw);
+            _result.push_back(position);
         }
     }
     //TODO: else check if _planeVertex == _edgePoint0 or _edgePoint1
@@ -355,8 +607,7 @@ SVolumeRender::Polygon SVolumeRender::cubePlaneIntersection(const ::Ogre::Vector
                                                             const unsigned _closestVertexIndex) const
 {
     Polygon intersections;
-    intersections.m_vertices.reserve(6); // there is a maximum of 6 intersections
-    intersections.m_textureUVW.reserve(6);
+    intersections.reserve(6); // there is a maximum of 6 intersections
 
     // sequence[i] represents the order in which we must traverse
     // the cube's edges starting with the ith vertex
@@ -426,7 +677,75 @@ void SVolumeRender::newImage()
 
     scaleCube(image->getSpacing());
 
+    updatingTFPoints();
+
     this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::widgetPicked(::Ogre::MovableObject * _pickedWidget, int _screenX, int _screenY)
+{
+
+    int height = m_camera->getViewport()->getActualHeight();
+    int width  = m_camera->getViewport()->getActualWidth();
+
+    auto face = m_widgets.find(_pickedWidget);
+
+    if(m_selectedFace->isAttached())
+    {
+        deselectFace();
+    }
+
+    if(face != m_widgets.end())
+    {
+        CubeFace widgetFace = face->second.first;
+        ::Ogre::SceneNode *widgetSceneNode = face->second.second;
+
+        ::Ogre::Ray mouseRay = m_camera->getCameraToViewportRay(
+            static_cast< ::Ogre::Real>(_screenX) / static_cast< ::Ogre::Real>(width),
+            static_cast< ::Ogre::Real>(_screenY) / static_cast< ::Ogre::Real>(height));
+
+
+        ::Ogre::Vector3 scale    = widgetSceneNode->getParent()->getScale();
+        ::Ogre::Vector3 invScale = 1.f / scale;
+
+        ::Ogre::Real distance = mouseRay.getOrigin().distance(scale * widgetSceneNode->getPosition());
+
+        ::Ogre::Vector3 newPos = invScale * mouseRay.getPoint(distance);
+
+        switch(widgetFace)
+        {
+        case X_NEGATIVE: m_clippingCube[0].x = newPos.x; break;
+        case X_POSITIVE: m_clippingCube[1].x = newPos.x; break;
+        case Y_NEGATIVE: m_clippingCube[0].y = newPos.y; break;
+        case Y_POSITIVE: m_clippingCube[1].y = newPos.y; break;
+        case Z_NEGATIVE: m_clippingCube[0].z = newPos.z; break;
+        case Z_POSITIVE: m_clippingCube[1].z = newPos.z; break;
+        }
+
+        updateClippingCube();
+        updateWidgets();
+        updateAllSlices();
+        selectFace(widgetFace);
+
+        this->requestRender();
+    }
+    else
+    {
+        OSLM_WARN("The object picked is not a VR widget.");
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::widgetReleased()
+{
+    if(m_selectedFace->isAttached())
+    {
+        deselectFace();
+        this->requestRender();
+    }
 }
 
 //-----------------------------------------------------------------------------

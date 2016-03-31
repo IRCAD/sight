@@ -24,7 +24,7 @@ FixedStyleInteractor::FixedStyleInteractor() :
 
 // ----------------------------------------------------------------------------
 
-void FixedStyleInteractor::mouseMoveEvent(int dx, int dy)
+void FixedStyleInteractor::mouseMoveEvent(int x, int y, int dx, int dy, bool click)
 {
 }
 

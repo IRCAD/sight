@@ -259,7 +259,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
     {
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE:
         {
-            m_moveInteractor->mouseMoveEvent(info.dx, info.dy);
+            m_moveInteractor->mouseMoveEvent(info.x, info.y, info.dx, info.dy, info.click);
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::HORIZONTALMOVE:
@@ -285,6 +285,11 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS:
         {
             m_moveInteractor->keyPressEvent(info.key);
+            break;
+        }
+        case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONRELEASE:
+        {
+            m_moveInteractor->buttonReleaseEvent();
             break;
         }
     }

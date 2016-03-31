@@ -32,7 +32,7 @@ TrackballInteractor::TrackballInteractor() :
 
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::mouseMoveEvent(int dx, int dy)
+void TrackballInteractor::mouseMoveEvent(int, int, int dx, int dy, bool)
 {
     ::Ogre::Real dx_float = static_cast< ::Ogre::Real>(dx);
     ::Ogre::Real dy_float = static_cast< ::Ogre::Real>(dy);

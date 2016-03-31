@@ -50,6 +50,7 @@ public:
             WHEELMOVE,
             RESIZE,
             KEYPRESS,
+            BUTTONRELEASE
         } InteractionEnumType;
 
         /**
@@ -63,6 +64,7 @@ public:
         int dy;
         int delta;
         int key;
+        bool click;
         InteractionEnumType interactionType;
     };
 

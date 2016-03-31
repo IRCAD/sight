@@ -35,7 +35,7 @@ public:
      * @param dx The mouse's X displacement
      * @param dy The mouse's Y displacement
      */
-    FWRENDEROGRE_API void mouseMoveEvent(int dx, int dy);
+    FWRENDEROGRE_API void mouseMoveEvent(int x, int y, int dx, int dy, bool click);
 
     /**
      * @brief Mouse's wheel rotation callback.

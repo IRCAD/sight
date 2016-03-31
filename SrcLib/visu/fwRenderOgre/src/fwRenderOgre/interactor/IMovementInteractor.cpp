@@ -48,5 +48,12 @@ void IMovementInteractor::setMouseScale(float mouseScale)
 
 // ----------------------------------------------------------------------------
 
+void IMovementInteractor::buttonReleaseEvent()
+{
+
+}
+
+// ----------------------------------------------------------------------------
+
 } // namespace interactor
 } // namespace fwRenderOgre

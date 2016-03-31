@@ -390,6 +390,7 @@ void Window::mouseMoveEvent( QMouseEvent* e )
         info.y               = y;
         info.dx              = dx;
         info.dy              = dy;
+        info.click           = !m_mousedMoved;
         Q_EMIT interacted(info);
         m_lastPosLeftClick->setX(e->x());
         m_lastPosLeftClick->setY(e->y());
@@ -470,6 +471,18 @@ void Window::mouseReleaseEvent( QMouseEvent* e )
                                     e->y(),
                                     static_cast<int>(m_ogreRenderWindow->getWidth()),
                                     static_cast<int>(m_ogreRenderWindow->getHeight()));
+        }
+        else
+        {
+            ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
+            info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONRELEASE;
+            info.delta           = 0;
+            info.x               = e->x();
+            info.y               = e->y();
+            info.dx              = 0;
+            info.dy              = 0;
+
+            Q_EMIT interacted(info);
         }
 
         delete m_lastPosLeftClick;

@@ -42,7 +42,7 @@ public:
     FWRENDEROGRE_API virtual void verticalMoveEvent(int y, int move);
 
     /// No mouse movement handling needed here
-    FWRENDEROGRE_API virtual void mouseMoveEvent(int dx, int dy)
+    FWRENDEROGRE_API virtual void mouseMoveEvent(int x, int y, int dx, int dy, bool click)
     {
     }
 

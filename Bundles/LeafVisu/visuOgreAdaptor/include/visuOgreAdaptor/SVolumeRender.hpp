@@ -1,6 +1,8 @@
 #ifndef __VISUOGREADAPTOR_SVOLUMERENDER_HPP__
 #define __VISUOGREADAPTOR_SVOLUMERENDER_HPP__
 
+#include <array>
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
@@ -8,6 +10,7 @@
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
+#include <fwRenderOgre/TransferFunction.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgrePolygon.h>
@@ -28,6 +31,8 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SVolumeRender)(::fwRenderOgre::IAdaptor) );
 
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_DRAG_WIDGET_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_DROP_WIDGET_SLOT;
 
     VISUOGREADAPTOR_API SVolumeRender() throw();
     VISUOGREADAPTOR_API virtual ~SVolumeRender() throw();
@@ -42,27 +47,59 @@ protected:
     VISUOGREADAPTOR_API virtual void doUpdate() throw ( ::fwTools::Failed );
     VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
 
+    VISUOGREADAPTOR_API virtual void updatingTFPoints();
+    VISUOGREADAPTOR_API virtual void updatingTFWindowing(double window, double level);
+
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
 
 private:
 
     friend class CameraMotionListener;
 
-    struct Polygon
+//    struct Polygon
+//    {
+//        std::vector< ::Ogre::Vector3 > m_vertices;
+//        std::vector< ::Ogre::Vector3 > m_textureUVW;
+//    };
+    enum CubeFace
     {
-        std::vector< ::Ogre::Vector3 > m_vertices;
-        std::vector< ::Ogre::Vector3 > m_textureUVW;
+        Z_POSITIVE = 0,
+        Z_NEGATIVE = 1,
+        Y_POSITIVE = 2,
+        Y_NEGATIVE = 3,
+        X_POSITIVE = 4,
+        X_NEGATIVE = 5
     };
 
-    void createTransformService();
+    typedef std::vector< ::Ogre::Vector3 > Polygon;
+
+    typedef std::array< unsigned, 4 > CubeFacePositionList;
+
+    static const std::map< CubeFace, CubeFacePositionList> s_cubeFaces;
+
+    std::array< ::Ogre::Vector3, 4 > getFacePositions(CubeFace _faceName) const;
+
+    ::Ogre::Vector3 getFaceCenter(CubeFace _faceName) const;
+
+    std::array< ::Ogre::Vector3, 8 > getClippingBoxPositions() const;
+
+    void selectFace(CubeFace _faceName);
+
+    void deselectFace();
 
     void scaleCube(const ::fwData::Image::SpacingType& spacing);
 
     void initSlices();
 
+    void initWidgets();
+
     void updateAllSlices();
 
     void updateSlice(const Polygon& _polygon, const unsigned _sliceIndex);
+
+    void updateClippingCube();
+
+    void updateWidgets();
 
     unsigned closestVertexIndex(const ::Ogre::Plane& _cameraPlane) const;
 
@@ -74,6 +111,14 @@ private:
 
     void newImage();
 
+    void widgetPicked(::Ogre::MovableObject *_pickedWidget, int _screenX, int _screenY);
+
+    void widgetReleased();
+
+    std::map< ::Ogre::MovableObject *, std::pair< CubeFace, ::Ogre::SceneNode * > >  m_widgets;
+
+    ::fwRenderOgre::TransferFunction m_gpuTF;
+
     ::Ogre::SceneManager *m_sceneManager;
 
     ::Ogre::SceneNode *m_volumeSceneNode;
@@ -84,13 +129,19 @@ private:
 
     ::Ogre::ManualObject *m_intersectingPolygons;
 
+    ::Ogre::ManualObject *m_boundingBox;
+
+    ::Ogre::ManualObject *m_selectedFace;
+
+    ::Ogre::Entity *m_sphereEntity;
+
     ::Ogre::TexturePtr m_3DOgreTexture;
 
-    ::Ogre::Vector3 m_worldSpaceCubePositions[8];
+    ::Ogre::Vector3 m_oldPos;
 
     uint16_t m_nbSlices;
 
-    ::Ogre::Vector3 m_boundingCubePositions[8] = {
+    const ::Ogre::Vector3 m_imagePositions[8] = {
         ::Ogre::Vector3(1, 1, 1),
         ::Ogre::Vector3(1, 0, 1),
         ::Ogre::Vector3(1, 1, 0),
@@ -100,6 +151,13 @@ private:
         ::Ogre::Vector3(0, 1, 0),
         ::Ogre::Vector3(0, 0, 0)
     }; // /!\ Order matters
+
+    ::Ogre::Vector3 m_clippingCube[2] = {
+        ::Ogre::Vector3(0, 0, 0),
+        ::Ogre::Vector3(1, 1, 1)
+    }; // aligned with image, defined in image space
+
+    ::Ogre::Vector3 m_clippedImagePositions[8];
 };
 
 } // visuOgreAdaptor
