@@ -133,6 +133,10 @@ void SInteractorStyle::setInteractorStyle()
         VRInteractor->attachSignal(
                     newSignal< ::fwRenderOgre::interactor::VRWidgetsInteractor::WidgetDropSigType>
                     ( ::fwRenderOgre::interactor::VRWidgetsInteractor::s_DROP_WIDGET_SIG ));
+
+        VRInteractor->attachSignal(
+                    newSignal< ::fwRenderOgre::interactor::VRWidgetsInteractor::ClippingBoxDragSigType>
+                    ( ::fwRenderOgre::interactor::VRWidgetsInteractor::s_MOVE_CLIPPING_BOX_SIG ));
     }
     else
     {

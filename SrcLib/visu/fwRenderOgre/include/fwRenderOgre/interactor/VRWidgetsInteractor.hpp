@@ -36,6 +36,9 @@ public:
 
     typedef ::fwCom::Signal< void () > WidgetDropSigType;
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_DROP_WIDGET_SIG;
+
+    typedef ::fwCom::Signal< void (int, int, int, int) > ClippingBoxDragSigType;
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_MOVE_CLIPPING_BOX_SIG;
     /** @} */
 
     /// Constructor.
@@ -47,6 +50,23 @@ public:
     /// Rotate the camera (see TrackballInteractor) or displace widgets if in drag mode.
     FWRENDEROGRE_API virtual void mouseMoveEvent(int x, int y, int dx, int dy, bool click);
 
+    /**
+     * @brief Horizontal movement callback.
+     *        The VR's clipping box will translate along the screen's horizontal axis.
+     * @param x
+     * @param move The horizontal displacement
+     */
+    FWRENDEROGRE_API void horizontalMoveEvent(int x, int move);
+
+    /**
+     * @brief Vertical movement callback.
+     *        The VR's clipping box will translate along the screen's vertical axis.
+     * @param y
+     * @param move The vertical displacement
+     */
+    FWRENDEROGRE_API void verticalMoveEvent(int y, int move);
+
+
     /// Used to signal the end of drag mode.
     FWRENDEROGRE_API virtual void buttonReleaseEvent();
 
@@ -55,6 +75,9 @@ public:
 
     /// Attaches signal used to end dragging tasks.
     FWRENDEROGRE_API inline void attachSignal(WidgetDropSigType::sptr _mouseReleaseSignal);
+
+    /// Attaches signal used to move clipping cube.
+    FWRENDEROGRE_API inline void attachSignal(ClippingBoxDragSigType::sptr _clippingBoxMoveSignal);
 
     /// Initializes the picker.
     FWRENDEROGRE_API inline void initPicker();
@@ -69,6 +92,9 @@ private:
 
     /// Signal emitted when drag ends.
     WidgetDropSigType::sptr m_widgetDropSignal;
+
+    /// Signal emitted to move clipping box.
+    ClippingBoxDragSigType::sptr m_moveClippingBoxSignal;
 
     /// The picker used by this interactor.
     fwRenderOgre::picker::IPicker m_picker;
@@ -90,6 +116,13 @@ void VRWidgetsInteractor::attachSignal(WidgetDragSigType::sptr _widgetDraggedSig
 void VRWidgetsInteractor::attachSignal(WidgetDropSigType::sptr _mouseReleaseSignal)
 {
     m_widgetDropSignal = _mouseReleaseSignal;
+}
+
+//------------------------------------------------------------------------------
+
+void VRWidgetsInteractor::attachSignal(ClippingBoxDragSigType::sptr _clippingBoxMoveSignal)
+{
+    m_moveClippingBoxSignal = _clippingBoxMoveSignal;
 }
 
 //------------------------------------------------------------------------------

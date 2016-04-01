@@ -82,6 +82,10 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_DROP_WIDGET_SLOT = "dropWidge
 
 //-----------------------------------------------------------------------------
 
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_MOVE_CLIPPING_BOX_SLOT = "moveClippingBoxSlot";
+
+//-----------------------------------------------------------------------------
+
 SVolumeRender::SVolumeRender() throw() :
     m_sceneManager         (nullptr),
     m_volumeSceneNode      (nullptr),
@@ -90,12 +94,14 @@ SVolumeRender::SVolumeRender() throw() :
     m_intersectingPolygons (nullptr),
     m_boundingBox          (nullptr),
     m_selectedFace         (nullptr),
+    m_selectedWidget       (nullptr),
     m_nbSlices             (512)
 {
     this->installTFSlots(this);
     newSlot(s_NEWIMAGE_SLOT, &SVolumeRender::newImage, this);
     newSlot(s_DRAG_WIDGET_SLOT, &SVolumeRender::widgetPicked, this);
     newSlot(s_DROP_WIDGET_SLOT, &SVolumeRender::widgetReleased, this);
+    newSlot(s_MOVE_CLIPPING_BOX_SLOT, &SVolumeRender::moveClippingBox, this);
 
     updateClippingCube();
 
@@ -137,6 +143,8 @@ void SVolumeRender::updatingTFPoints()
     ::Ogre::TextureUnitState *texTFState = pass->getTextureUnitState("transferFunction");
 
     texTFState->setTexture(m_gpuTF.getTexture());
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -215,7 +223,7 @@ void SVolumeRender::doStop() throw ( ::fwTools::Failed )
 void SVolumeRender::doUpdate() throw ( ::fwTools::Failed )
 {
     updateAllSlices();
-    requestRender();
+//    requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -284,7 +292,10 @@ void SVolumeRender::selectFace(SVolumeRender::CubeFace _faceName)
 
 void SVolumeRender::deselectFace()
 {
-    m_volumeSceneNode->detachObject(m_selectedFace->getName());
+    if(m_selectedFace->isAttached())
+    {
+        m_volumeSceneNode->detachObject(m_selectedFace->getName());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -297,7 +308,7 @@ void SVolumeRender::scaleCube(const fwData::Image::SpacingType& spacing)
 
     const double maxDim = std::max(width, std::max(height, depth));
 
-    ::Ogre::Vector3 scaleFactors(
+    const ::Ogre::Vector3 scaleFactors(
                 static_cast<float>(width  / maxDim),
                 static_cast<float>(height / maxDim),
                 static_cast<float>(depth  / maxDim));
@@ -348,6 +359,29 @@ void SVolumeRender::initSlices()
 
 void SVolumeRender::initWidgets()
 {
+    // Create widget materials
+    {
+        ::Ogre::MaterialPtr sphereMtl = ::Ogre::MaterialManager::getSingletonPtr()->getByName("Default");
+        ::Ogre::MaterialPtr sphereHighlightMtl = sphereMtl->clone("SphereHighlight");
+
+        sphereHighlightMtl->setAmbient(0.3f, 0.f, 0.f);
+        sphereHighlightMtl->setDiffuse(0.5f, 0.1f, 0.1f, 1.f);
+
+        ::Ogre::MaterialPtr frameMtl = sphereMtl->clone("Frame");
+        frameMtl->setAmbient(1.f, 1.f, 1.f);
+        frameMtl->setDiffuse(0.f, 0.f, 0.f, 1.f);
+        frameMtl->setSpecular(0.f, 0.f, 0.f, 1.f);
+
+        ::Ogre::MaterialPtr faceMtl = sphereMtl->clone("FaceHighlight");
+        faceMtl->setAmbient(1.f, 1.f, 0.f);
+        faceMtl->setDiffuse(0.f, 0.f, 0.f, 0.6f);
+        faceMtl->setSpecular(0.f, 0.f, 0.f, 0.6f);
+//        faceMtl->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
+//        faceMtl->getTechnique(0)->getPass(0)->setSceneBlendingOperation(::Ogre::SBO_ADD);
+        faceMtl->setDepthCheckEnabled(false);
+//        faceMtl->setDepthWriteEnabled(false);
+    }
+
     m_boundingBox = m_sceneManager->createManualObject("__VolumeBB__");
     m_selectedFace = m_sceneManager->createManualObject("__VRSelectedFace__");
 
@@ -355,7 +389,7 @@ void SVolumeRender::initWidgets()
 
     const auto clippingBoxPositions = getClippingBoxPositions();
 
-    m_boundingBox->begin("Default", Ogre::RenderOperation::OT_LINE_LIST);
+    m_boundingBox->begin("Frame", Ogre::RenderOperation::OT_LINE_LIST);
     {
         const unsigned edges[][2] = {
             { 0, 1 }, { 1, 4 }, { 4, 3 }, { 3, 0 },
@@ -380,7 +414,7 @@ void SVolumeRender::initWidgets()
 
     m_volumeSceneNode->attachObject(m_boundingBox);
 
-    m_selectedFace->begin("Default", Ogre::RenderOperation::OT_TRIANGLE_STRIP);
+    m_selectedFace->begin("FaceHighlight", Ogre::RenderOperation::OT_TRIANGLE_STRIP);
     {
         for(unsigned i = 0; i < 4; ++ i)
         {
@@ -388,6 +422,9 @@ void SVolumeRender::initWidgets()
         }
     }
     m_selectedFace->end();
+
+    // Render this last.
+    m_selectedFace->setRenderQueueGroup(::Ogre::RENDER_QUEUE_WORLD_GEOMETRY_1);
 
     // Create a pickable sphere for each cube face
     for(unsigned i = 0; i < 6; ++ i)
@@ -686,16 +723,12 @@ void SVolumeRender::newImage()
 
 void SVolumeRender::widgetPicked(::Ogre::MovableObject * _pickedWidget, int _screenX, int _screenY)
 {
-
     int height = m_camera->getViewport()->getActualHeight();
     int width  = m_camera->getViewport()->getActualWidth();
 
     auto face = m_widgets.find(_pickedWidget);
 
-    if(m_selectedFace->isAttached())
-    {
-        deselectFace();
-    }
+    deselectFace();
 
     if(face != m_widgets.end())
     {
@@ -714,20 +747,42 @@ void SVolumeRender::widgetPicked(::Ogre::MovableObject * _pickedWidget, int _scr
 
         ::Ogre::Vector3 newPos = invScale * mouseRay.getPoint(distance);
 
+        ::Ogre::Vector3 tmpClippingCube[2];
+         std::copy(m_clippingCube, m_clippingCube + 2, tmpClippingCube);
+
         switch(widgetFace)
         {
-        case X_NEGATIVE: m_clippingCube[0].x = newPos.x; break;
-        case X_POSITIVE: m_clippingCube[1].x = newPos.x; break;
-        case Y_NEGATIVE: m_clippingCube[0].y = newPos.y; break;
-        case Y_POSITIVE: m_clippingCube[1].y = newPos.y; break;
-        case Z_NEGATIVE: m_clippingCube[0].z = newPos.z; break;
-        case Z_POSITIVE: m_clippingCube[1].z = newPos.z; break;
+        case X_NEGATIVE: tmpClippingCube[0].x = newPos.x; break;
+        case X_POSITIVE: tmpClippingCube[1].x = newPos.x; break;
+        case Y_NEGATIVE: tmpClippingCube[0].y = newPos.y; break;
+        case Y_POSITIVE: tmpClippingCube[1].y = newPos.y; break;
+        case Z_NEGATIVE: tmpClippingCube[0].z = newPos.z; break;
+        case Z_POSITIVE: tmpClippingCube[1].z = newPos.z; break;
         }
+
+        // Check for overlap.
+        const float eps = 0.001f;
+        for(int i = 0; i < 3; ++ i)
+        {
+            if(tmpClippingCube[0][i] > m_clippingCube[1][i])
+            {
+                tmpClippingCube[0][i] = m_clippingCube[1][i] - eps;
+            }
+            if(tmpClippingCube[1][i] < m_clippingCube[0][i])
+            {
+                tmpClippingCube[1][i] = m_clippingCube[0][i] + eps;
+            }
+        }
+
+        std::copy(tmpClippingCube, tmpClippingCube + 2, m_clippingCube);
 
         updateClippingCube();
         updateWidgets();
         updateAllSlices();
         selectFace(widgetFace);
+
+        m_selectedWidget = dynamic_cast< ::Ogre::Entity *>(_pickedWidget);
+        m_selectedWidget->setMaterialName("SphereHighlight");
 
         this->requestRender();
     }
@@ -741,11 +796,66 @@ void SVolumeRender::widgetPicked(::Ogre::MovableObject * _pickedWidget, int _scr
 
 void SVolumeRender::widgetReleased()
 {
-    if(m_selectedFace->isAttached())
+    deselectFace();
+    m_selectedWidget->setMaterialName("Default");
+    m_selectedWidget = nullptr;
+    this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::moveClippingBox(int x, int y, int dx, int dy)
+{
+    int width  = m_camera->getViewport()->getActualWidth();
+    int height = m_camera->getViewport()->getActualHeight();
+
+    ::Ogre::Ray mouseRay = m_camera->getCameraToViewportRay(
+        static_cast< ::Ogre::Real>(x) / static_cast< ::Ogre::Real>(width),
+        static_cast< ::Ogre::Real>(y) / static_cast< ::Ogre::Real>(height));
+
+    // Get ray in image space.
+    mouseRay = ::Ogre::Ray(
+                m_volumeSceneNode->convertWorldToLocalPosition(mouseRay.getOrigin()),
+                m_volumeSceneNode->convertWorldToLocalDirection(mouseRay.getDirection(), true)
+    );
+
+
+    const ::Ogre::Vector3 min = m_clippingCube[0];
+    const ::Ogre::Vector3 max = m_clippingCube[1];
+
+    // Ray clipping box intersection
+    std::pair<bool, float> inter = mouseRay.intersects(::Ogre::AxisAlignedBox(min, max));
+
+    if(inter.first)
     {
-        deselectFace();
-        this->requestRender();
+        ::Ogre::Vector3 interPos = m_volumeSceneNode->convertLocalToWorldPosition(mouseRay.getPoint(inter.second));
+        ::Ogre::Vector3 camDir   = m_camera->getRealDirection();
+
+        ::Ogre::Plane intersectionPlane(camDir, interPos);
+
+        ::Ogre::Ray newPosRay = m_camera->getCameraToViewportRay(
+                    static_cast< ::Ogre::Real>(x + dx) / static_cast< ::Ogre::Real>(width),
+                    static_cast< ::Ogre::Real>(y + dy) / static_cast< ::Ogre::Real>(height));
+
+        std::pair<bool, float> planeInter = newPosRay.intersects(intersectionPlane);
+
+        ::Ogre::Vector3 newPos = newPosRay.getPoint(planeInter.second);
+
+        ::Ogre::Vector3 d = newPos - interPos;
+        d = m_volumeSceneNode->convertWorldToLocalDirection(d, true);
+
+        m_clippingCube[0] += d;
+        m_clippingCube[1] += d;
     }
+    else
+    {
+        // TODO : Translate the whole scene node.
+    }
+
+    updateClippingCube();
+    updateWidgets();
+    updateAllSlices();
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
