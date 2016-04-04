@@ -138,21 +138,21 @@ void SStatus::configuring() throw(fwTools::Failed)
     }
     if (formCfg)
     {
-        m_isCircular = (formCfg->getValue() == "circle");
+        std::string form = formCfg->getValue();
+        SLM_ASSERT("value for element 'form' should be 'circle' or 'square'.", form == "circle" || form == "square");
+
+        m_isCircular = (form == "circle");
     }
     if(sizeCfg)
     {
         ConfigType widthCfg  = sizeCfg->findConfigurationElement("width");
         ConfigType heightCfg = sizeCfg->findConfigurationElement("height");
 
-        if(widthCfg)
-        {
-            m_width = std::stoi(widthCfg->getValue());
-        }
-        if(heightCfg)
-        {
-            m_height = std::stoi(heightCfg->getValue());
-        }
+        SLM_ASSERT("element 'width' is missing.", widthCfg);
+        SLM_ASSERT("element 'height' is missing.", heightCfg);
+
+        m_width  = std::stoi(widthCfg->getValue());
+        m_height = std::stoi(heightCfg->getValue());
     }
 }
 

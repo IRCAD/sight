@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -42,7 +42,7 @@ const ::fwCom::Slots::SlotKeyType SHomography::s_REGISTER_SLOT = "register";
 SHomography::SHomography() throw () :
     m_lastTimestamp(0),
     m_patternWidth(80),
-    m_isCamInitialized(false),
+    m_isInitialized(false),
     m_planeSystem(NULL)
 {
     m_slotRegister = ::fwCom::newSlot(&SHomography::doRegistration, this);
@@ -126,23 +126,15 @@ void SHomography::starting() throw (::fwTools::Failed)
     m_3dModel.push_back(::arlCore::Point::PointFactory(halfWidth, -halfWidth, 0));
     m_3dModel.push_back(::arlCore::Point::PointFactory(-halfWidth, -halfWidth, 0));
 
-    ::arData::MarkerTL::sptr firstTimeline = comp->at< ::arData::MarkerTL >(m_markerTLKeys[0]);
 
-    const unsigned int maxElementNum = firstTimeline->getMaxElementNum();
-
+    //Connections
     for(const VectKeyType::value_type& elt : m_markerTLKeys)
     {
         ::arData::MarkerTL::sptr timeline = comp->at< ::arData::MarkerTL >(elt);
         m_connections->connect(timeline, ::extData::TimeLine::s_OBJECT_PUSHED_SIG, this->getSptr(),
                                ::tracker::SHomography::s_REGISTER_SLOT);
-
-        SLM_ASSERT("Timelines should have the same maximum number of elements",
-                   maxElementNum == timeline->getMaxElementNum());
     }
 
-    ::extData::MatrixTL::sptr matrixTL = comp->at< ::extData::MatrixTL >(m_matrixKey);
-    // initialized matrix timeline
-    matrixTL->initPoolSize(maxElementNum);
 }
 
 //-----------------------------------------------------------------------------
@@ -159,8 +151,8 @@ void SHomography::stopping() throw (::fwTools::Failed)
     m_arlCameras.clear();
     m_3dModel.clear();
     m_connections->disconnect();
-    m_lastTimestamp    = 0;
-    m_isCamInitialized = false;
+    m_lastTimestamp = 0;
+    m_isInitialized = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -177,9 +169,9 @@ void SHomography::doRegistration(::fwCore::HiResClock::HiResClockType timestamp)
 
     SLM_WARN_IF("Invoking doRegistration while service is STOPPED", this->isStopped() );
 
-    if(!m_isCamInitialized)
+    if(!m_isInitialized)
     {
-        this->initARLCameras();
+        this->initialize();
     }
 
     if (this->isStarted())
@@ -299,17 +291,41 @@ void SHomography::doRegistration(::fwCore::HiResClock::HiResClockType timestamp)
 
 //-----------------------------------------------------------------------------
 
-void SHomography::initARLCameras()
+void SHomography::initialize()
 {
-    m_planeSystem                  = new ::arlCore::PlaneSystem();
+    // Initialization of timelines
+
     ::fwData::Composite::sptr comp = this->getObject< ::fwData::Composite >();
+
+    ::arData::MarkerTL::sptr firstTimeline = comp->at< ::arData::MarkerTL >(m_markerTLKeys[0]);
+
+    const unsigned int maxElementNum = firstTimeline->getMaxElementNum();
+
+    for(const VectKeyType::value_type& elt : m_markerTLKeys)
+    {
+        ::arData::MarkerTL::sptr timeline = comp->at< ::arData::MarkerTL >(elt);
+
+        SLM_ASSERT("Timelines should have the same maximum number of elements",
+                   maxElementNum == timeline->getMaxElementNum());
+    }
+
+    ::extData::MatrixTL::sptr matrixTL = comp->at< ::extData::MatrixTL >(m_matrixKey);
+    // initialized matrix timeline
+    matrixTL->initPoolSize(maxElementNum);
+
+
+    // Initialization of ARLCameras
+    m_planeSystem = new ::arlCore::PlaneSystem();
+
     unsigned int count = 0;
 
     for(const VectKeyType::value_type& camKey : m_cameraKeys)
     {
         ++count;
         ::arData::Camera::sptr camera = comp->at< ::arData::Camera >(camKey);
-        ::arlCore::Camera* arlCamera  = new ::arlCore::Camera(*m_planeSystem);
+        OSLM_FATAL_IF("Camera with key '" << camKey << "' not found", !camera);
+
+        ::arlCore::Camera* arlCamera = new ::arlCore::Camera(*m_planeSystem);
 
         arlCamera->init();
 
@@ -332,6 +348,8 @@ void SHomography::initARLCameras()
             ::fwData::TransformationMatrix3D::sptr extrinsicMatrix =
                 comp->at< ::fwData::TransformationMatrix3D >(m_extrinsicKey);
 
+            OSLM_FATAL_IF("Extrinsic matrix with key '" << m_extrinsicKey << "' not found", !extrinsicMatrix);
+
             for (unsigned int i = 0; i < 4; ++i)
             {
                 for (unsigned int j = 0; j < 4; ++j)
@@ -343,7 +361,7 @@ void SHomography::initARLCameras()
         arlCamera->setExtrinsic(matrix);
         m_arlCameras.push_back(arlCamera);
     }
-    m_isCamInitialized = true;
+    m_isInitialized = true;
 }
 
 //-----------------------------------------------------------------------------

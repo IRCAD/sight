@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,23 +30,24 @@ namespace editor
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::videoQt::editor::SSlider, ::fwData::Object );
 
-
 const ::fwCom::Signals::SignalKeyType SSlider::s_POSITION_CHANGED_SIG = "positionChanged";
 
 const ::fwCom::Slots::SlotKeyType SSlider::s_SET_POSITION_SLIDER_SLOT = "setPositionSlider";
 const ::fwCom::Slots::SlotKeyType SSlider::s_SET_DURATION_SLIDER_SLOT = "setDurationSlider";
 
+static const char* s_UNKNOWN_TIME = "--:--:--";
 
 QString convertMSecToHHMMSS(int64_t milliseconds)
 {
     std::chrono::milliseconds ms(milliseconds);
-    std::chrono::seconds seconds = std::chrono::duration_cast<std::chrono::seconds>(ms);
+    std::chrono::hours hours = std::chrono::duration_cast<std::chrono::hours>(ms);
+    ms -= hours;
     std::chrono::minutes minutes = std::chrono::duration_cast<std::chrono::minutes>(ms);
-    std::chrono::hours hours     = std::chrono::duration_cast<std::chrono::hours>(ms);
+    ms -= minutes;
+    std::chrono::seconds seconds = std::chrono::duration_cast<std::chrono::seconds>(ms);
 
-    QTime time(hours.count(), minutes.count(), seconds.count());
+    QTime time(hours.count(), minutes.count(), static_cast<std::int32_t>(seconds.count()));
     return time.toString("hh:mm:ss");
-
 }
 
 //------------------------------------------------------------------------------
@@ -85,10 +86,10 @@ void SSlider::starting() throw(::fwTools::Failed)
     QObject::connect(m_positionSlider, SIGNAL(sliderReleased()), this, SLOT(changePosition()));
 
     m_currentPosition = new QLabel();
-    m_currentPosition->setText("--:--:--");
+    m_currentPosition->setText(s_UNKNOWN_TIME);
 
     m_totalDuration = new QLabel();
-    m_totalDuration->setText("--:--:--");
+    m_totalDuration->setText(s_UNKNOWN_TIME);
 
     layout->addWidget(m_currentPosition);
     layout->addWidget(m_positionSlider);
@@ -131,8 +132,15 @@ void SSlider::swapping() throw(::fwTools::Failed)
 void SSlider::changePosition()
 {
     int64_t newPos = m_positionSlider->sliderPosition();
-    m_positionSlider->setSliderPosition(newPos);
-    m_currentPosition->setText(convertMSecToHHMMSS(newPos));
+    m_positionSlider->setSliderPosition(static_cast<int>(newPos));
+    if(newPos == -1)
+    {
+        m_currentPosition->setText(s_UNKNOWN_TIME);
+    }
+    else
+    {
+        m_currentPosition->setText(convertMSecToHHMMSS(newPos));
+    }
 
     // Notify the new position
     m_sigPositionChanged->asyncEmit(newPos);
@@ -152,8 +160,16 @@ void SSlider::setPosition(int64_t newPos)
 {
     if(!m_sliderPressed)
     {
-        m_positionSlider->setValue(newPos);
-        m_currentPosition->setText(convertMSecToHHMMSS(newPos));
+        m_positionSlider->setValue(static_cast<int>(newPos));
+
+        if(newPos == -1)
+        {
+            m_currentPosition->setText(s_UNKNOWN_TIME);
+        }
+        else
+        {
+            m_currentPosition->setText(convertMSecToHHMMSS(newPos));
+        }
     }
 }
 
@@ -161,12 +177,19 @@ void SSlider::setPosition(int64_t newPos)
 
 void SSlider::setDuration(int64_t duration)
 {
-    m_positionSlider->setRange(0, duration);
-    m_totalDuration->setText(convertMSecToHHMMSS(duration));
+    m_positionSlider->setRange(0, static_cast<int>(duration));
+
+    if(duration == -1)
+    {
+        m_totalDuration->setText(s_UNKNOWN_TIME);
+    }
+    else
+    {
+        m_totalDuration->setText(convertMSecToHHMMSS(duration));
+    }
 }
 
 //------------------------------------------------------------------------------
 
 } //namespace editor
 } //namespace videoQt
-

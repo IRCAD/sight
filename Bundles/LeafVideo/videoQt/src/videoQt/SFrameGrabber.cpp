@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,7 +7,6 @@
 #include "videoQt/player/VideoRegistry.hpp"
 
 #include "videoQt/SFrameGrabber.hpp"
-#include "videoQt/helper/preferences.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -154,6 +153,12 @@ void SFrameGrabber::stopCamera()
     {
         m_videoPlayer->stop();
 
+        auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
+        sigPosition->asyncEmit(static_cast<std::int64_t>(-1));
+
+        auto sigDuration = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
+        sigDuration->asyncEmit(static_cast<std::int64_t>(-1));
+
         QObject::disconnect(m_videoPlayer, SIGNAL(durationChanged(qint64)), this, SLOT(onDurationChanged(qint64)));
         QObject::disconnect(m_videoPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(onPositionChanged(qint64)));
         QObject::disconnect(m_videoPlayer, SIGNAL(frameAvailable(QVideoFrame)), this, SLOT(presentFrame(QVideoFrame)));
@@ -162,6 +167,23 @@ void SFrameGrabber::stopCamera()
         registry.releasePlayer(m_videoPlayer);
 
         m_videoPlayer = nullptr;
+
+        // Reset the timeline and send a black frame
+        ::extData::FrameTL::sptr timeline = this->getObject< ::extData::FrameTL >();
+        const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec() + 1;
+        SPTR(::extData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
+        ::boost::uint8_t* destBuffer                = reinterpret_cast< ::boost::uint8_t* >( buffer->addElement(0) );
+
+        std::fill(destBuffer,
+                  destBuffer + timeline->getWidth() * timeline->getHeight() * timeline->getNumberOfComponents(), 0);
+
+        // push buffer and notify
+        timeline->clearTimeline();
+        timeline->pushObject(buffer);
+
+        auto sigTL = timeline->signal< ::extData::TimeLine::ObjectPushedSignalType >(
+            ::extData::TimeLine::s_OBJECT_PUSHED_SIG );
+        sigTL->asyncEmit(timestamp);
     }
 }
 

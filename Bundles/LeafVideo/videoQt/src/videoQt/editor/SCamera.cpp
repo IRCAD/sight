@@ -1,35 +1,31 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "videoQt/editor/SCamera.hpp"
-#include "videoQt/editor/CameraDeviceDlg.hpp"
-#include "videoQt/helper/preferences.hpp"
 
-#include <fwCore/base.hpp>
+#include <arData/Camera.hpp>
+#include <arUtils/preferences.hpp>
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
 
 #include <fwData/Object.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/location/Folder.hpp>
 
-#include <arData/Camera.hpp>
-
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
-
-#include <fwServices/Base.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGui/dialog/InputDialog.hpp>
 
+#include <fwServices/Base.hpp>
 #include <fwTools/pathDifference.hpp>
+
+#include "videoQt/editor/CameraDeviceDlg.hpp"
 
 #include <QByteArray>
 #include <QCamera>
@@ -148,7 +144,7 @@ void SCamera::onChooseFile()
     ::arData::Camera::sptr camera = this->getObject< ::arData::Camera >();
 
     // Check preferences
-    std::string videoDir = helper::getVideoDir();
+    std::string videoDir = ::arUtils::getVideoDir();
 
     static ::boost::filesystem::path _sDefaultPath;
 

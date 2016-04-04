@@ -28,4 +28,6 @@ set( REQUIREMENTS
         uiIO
         uiCalibration
         videoCalibration
+        videoTools
+        trackerAruco
         )

@@ -2,7 +2,7 @@
 set( NAME videoQt )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
-set( DEPENDENCIES 
+set( DEPENDENCIES
         fwComEd
         fwCore
         extData
@@ -15,6 +15,7 @@ set( DEPENDENCIES
         fwServices
         fwTools
         arData
+        arUtils
         fwThread
         gui
         )

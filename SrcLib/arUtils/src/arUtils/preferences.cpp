@@ -1,23 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "videoQt/helper/preferences.hpp"
+#include "arUtils/preferences.hpp"
 
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
-namespace videoQt
-{
-namespace helper
+namespace arUtils
 {
 
 const std::string s_VIDEORENDER_PREF = "VIDEORENDER_PREF";
 const std::string s_VIDEO_DIR_PREF   = "VIDEO_DIR_PREF";
+
+//-----------------------------------------------------------------------------
 
 std::string getVideoDir()
 {
@@ -36,7 +36,7 @@ std::string getVideoDir()
             prefComposite = ::fwData::Composite::dynamicCast(iterPref->second);
 
             ::fwData::Composite::IteratorType iterVideoDir = prefComposite->find( s_VIDEO_DIR_PREF );
-            bool videoFound = (iterVideoDir  != prefComposite->end());
+            const bool videoFound = (iterVideoDir  != prefComposite->end());
             if (videoFound)
             {
                 ::fwData::String::sptr videoDir = ::fwData::String::dynamicCast(iterVideoDir->second);
@@ -49,5 +49,6 @@ std::string getVideoDir()
     return videoDirectory;
 }
 
-} // namespace helper
-} // namespace videoQt
+//-----------------------------------------------------------------------------
+
+} // namespace arUtils
