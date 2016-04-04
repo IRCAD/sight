@@ -39,23 +39,20 @@ fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVolumeRend
 namespace visuOgreAdaptor
 {
 
-class CameraMotionListener : public Ogre::Camera::Listener
+//-----------------------------------------------------------------------------
+
+SVolumeRender::CameraMotionListener::CameraMotionListener(SVolumeRender *parent) :
+    m_parent(parent)
 {
-public:
-    CameraMotionListener(SVolumeRender *parent) :
-        m_parent(parent)
-    {
-    }
 
-    void cameraPreRenderScene(Ogre::Camera *)
-    {
-        m_parent->doUpdate();
-    }
+}
 
-private:
-    ::visuOgreAdaptor::SVolumeRender *m_parent;
+//-----------------------------------------------------------------------------
 
-};
+void SVolumeRender::CameraMotionListener::cameraPreRenderScene(Ogre::Camera *)
+{
+    m_parent->updateAllSlices();
+}
 
 //-----------------------------------------------------------------------------
 
@@ -222,8 +219,6 @@ void SVolumeRender::doStop() throw ( ::fwTools::Failed )
 
 void SVolumeRender::doUpdate() throw ( ::fwTools::Failed )
 {
-    updateAllSlices();
-//    requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -376,10 +371,8 @@ void SVolumeRender::initWidgets()
         faceMtl->setAmbient(1.f, 1.f, 0.f);
         faceMtl->setDiffuse(0.f, 0.f, 0.f, 0.6f);
         faceMtl->setSpecular(0.f, 0.f, 0.f, 0.6f);
-//        faceMtl->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
-//        faceMtl->getTechnique(0)->getPass(0)->setSceneBlendingOperation(::Ogre::SBO_ADD);
-        faceMtl->setDepthCheckEnabled(false);
-//        faceMtl->setDepthWriteEnabled(false);
+        faceMtl->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
+        faceMtl->setDepthWriteEnabled(false);
     }
 
     m_boundingBox = m_sceneManager->createManualObject("__VolumeBB__");
@@ -424,7 +417,7 @@ void SVolumeRender::initWidgets()
     m_selectedFace->end();
 
     // Render this last.
-    m_selectedFace->setRenderQueueGroup(::Ogre::RENDER_QUEUE_WORLD_GEOMETRY_1);
+    m_selectedFace->setRenderQueueGroup(::Ogre::RENDER_QUEUE_BACKGROUND);
 
     // Create a pickable sphere for each cube face
     for(unsigned i = 0; i < 6; ++ i)
@@ -453,9 +446,8 @@ void SVolumeRender::initWidgets()
 void SVolumeRender::updateAllSlices()
 {    
     // intersections are done in object space
-    ::Ogre::Vector3 planeNormal    = m_volumeSceneNode->convertWorldToLocalPosition(m_camera->getRealDirection());
     const ::Ogre::Vector3 cameraPosition = m_volumeSceneNode->convertWorldToLocalPosition(m_camera->getRealPosition());
-
+    ::Ogre::Vector3 planeNormal = m_volumeSceneNode->convertWorldToLocalDirection(m_camera->getRealDirection(), true);
     planeNormal.normalise();
 
     const ::Ogre::Plane cameraPlane(planeNormal, cameraPosition);
@@ -599,6 +591,7 @@ void SVolumeRender::updateWidgets()
         ::Ogre::Vector3 faceCenter = getFaceCenter(cf);
 
         widget.second.second->setPosition(faceCenter);
+        widget.second.second->needUpdate();
     }
 }
 
@@ -739,13 +732,11 @@ void SVolumeRender::widgetPicked(::Ogre::MovableObject * _pickedWidget, int _scr
             static_cast< ::Ogre::Real>(_screenX) / static_cast< ::Ogre::Real>(width),
             static_cast< ::Ogre::Real>(_screenY) / static_cast< ::Ogre::Real>(height));
 
+        ::Ogre::Vector3 oldPos = m_volumeSceneNode->convertLocalToWorldPosition(widgetSceneNode->getPosition());
 
-        ::Ogre::Vector3 scale    = widgetSceneNode->getParent()->getScale();
-        ::Ogre::Vector3 invScale = 1.f / scale;
+        ::Ogre::Real distance = mouseRay.getOrigin().distance(oldPos);
 
-        ::Ogre::Real distance = mouseRay.getOrigin().distance(scale * widgetSceneNode->getPosition());
-
-        ::Ogre::Vector3 newPos = invScale * mouseRay.getPoint(distance);
+        ::Ogre::Vector3 newPos = m_volumeSceneNode->convertWorldToLocalPosition(mouseRay.getPoint(distance));
 
         ::Ogre::Vector3 tmpClippingCube[2];
          std::copy(m_clippingCube, m_clippingCube + 2, tmpClippingCube);
@@ -809,14 +800,16 @@ void SVolumeRender::moveClippingBox(int x, int y, int dx, int dy)
     int width  = m_camera->getViewport()->getActualWidth();
     int height = m_camera->getViewport()->getActualHeight();
 
-    ::Ogre::Ray mouseRay = m_camera->getCameraToViewportRay(
-        static_cast< ::Ogre::Real>(x) / static_cast< ::Ogre::Real>(width),
-        static_cast< ::Ogre::Real>(y) / static_cast< ::Ogre::Real>(height));
+    ::Ogre::Vector2 cursor(
+                static_cast< ::Ogre::Real>(x) / static_cast< ::Ogre::Real>(width),
+                static_cast< ::Ogre::Real>(y) / static_cast< ::Ogre::Real>(height));
+
+    ::Ogre::Ray oldPosRay = m_camera->getCameraToViewportRay(cursor.x, cursor.y);
 
     // Get ray in image space.
-    mouseRay = ::Ogre::Ray(
-                m_volumeSceneNode->convertWorldToLocalPosition(mouseRay.getOrigin()),
-                m_volumeSceneNode->convertWorldToLocalDirection(mouseRay.getDirection(), true)
+    ::Ogre::Ray mouseRayImgSpace(
+                m_volumeSceneNode->convertWorldToLocalPosition(oldPosRay.getOrigin()),
+                m_volumeSceneNode->convertWorldToLocalDirection(oldPosRay.getDirection(), true)
     );
 
 
@@ -824,24 +817,54 @@ void SVolumeRender::moveClippingBox(int x, int y, int dx, int dy)
     const ::Ogre::Vector3 max = m_clippingCube[1];
 
     // Ray clipping box intersection
-    std::pair<bool, float> inter = mouseRay.intersects(::Ogre::AxisAlignedBox(min, max));
+    const std::pair<bool, float> inter = mouseRayImgSpace.intersects(::Ogre::AxisAlignedBox(min, max));
+
+    const ::Ogre::Vector3 camDir = m_camera->getRealDirection();
+
+    ::Ogre::Vector3 oldPos;
+    ::Ogre::Plane intersectionPlane;
 
     if(inter.first)
     {
-        ::Ogre::Vector3 interPos = m_volumeSceneNode->convertLocalToWorldPosition(mouseRay.getPoint(inter.second));
-        ::Ogre::Vector3 camDir   = m_camera->getRealDirection();
+        oldPos = m_volumeSceneNode->convertLocalToWorldPosition(mouseRayImgSpace.getPoint(inter.second));
+        intersectionPlane = ::Ogre::Plane(camDir, oldPos);
+    }
+    else
+    {
+        // Get closest vertex to cursor in screen space.
+        ::Ogre::Matrix4 camTransform = m_camera->getProjectionMatrix() * m_camera->getViewMatrix();
 
-        ::Ogre::Plane intersectionPlane(camDir, interPos);
+        const auto sortFunc = [&](::Ogre::Vector3 v1, ::Ogre::Vector3 v2)
+        {
+            const auto cursorDistFunc = [&](::Ogre::Vector3 v)
+            {
+                const auto vtmp = camTransform * m_volumeSceneNode->convertLocalToWorldPosition(v);
+                return cursor.distance(::Ogre::Vector2(vtmp.x, vtmp.y));
+            };
 
-        ::Ogre::Ray newPosRay = m_camera->getCameraToViewportRay(
-                    static_cast< ::Ogre::Real>(x + dx) / static_cast< ::Ogre::Real>(width),
-                    static_cast< ::Ogre::Real>(y + dy) / static_cast< ::Ogre::Real>(height));
+            return cursorDistFunc(v1) < cursorDistFunc(v2);
+        };
 
-        std::pair<bool, float> planeInter = newPosRay.intersects(intersectionPlane);
+        ::Ogre::Vector3 closestVertToCursor = *std::min_element(m_imagePositions, m_imagePositions + 8, sortFunc);
 
-        ::Ogre::Vector3 newPos = newPosRay.getPoint(planeInter.second);
+        intersectionPlane = ::Ogre::Plane(camDir, m_volumeSceneNode->getPosition());
 
-        ::Ogre::Vector3 d = newPos - interPos;
+        oldPos = oldPosRay.getPoint(oldPosRay.intersects(intersectionPlane).second);
+    }
+
+    const ::Ogre::Ray newPosRay = m_camera->getCameraToViewportRay(
+                static_cast< ::Ogre::Real>(x + dx) / static_cast< ::Ogre::Real>(width),
+                static_cast< ::Ogre::Real>(y + dy) / static_cast< ::Ogre::Real>(height));
+
+    const std::pair<bool, float> planeInter = newPosRay.intersects(intersectionPlane);
+
+    const ::Ogre::Vector3 newPos = newPosRay.getPoint(planeInter.second);
+
+    ::Ogre::Vector3 d = newPos - oldPos;
+
+    if(inter.first)
+    {
+         // Translate clipping box.
         d = m_volumeSceneNode->convertWorldToLocalDirection(d, true);
 
         m_clippingCube[0] += d;
@@ -849,7 +872,8 @@ void SVolumeRender::moveClippingBox(int x, int y, int dx, int dy)
     }
     else
     {
-        // TODO : Translate the whole scene node.
+        // Translate the whole scene node.
+        m_volumeSceneNode->translate(d, ::Ogre::Node::TS_WORLD);
     }
 
     updateClippingCube();

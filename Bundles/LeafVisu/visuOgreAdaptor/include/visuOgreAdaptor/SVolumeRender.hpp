@@ -31,7 +31,7 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SVolumeRender)(::fwRenderOgre::IAdaptor) );
 
     /**
-     * @name Signals API
+     * @name Slot API
      * @{
      */
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT;
@@ -57,7 +57,7 @@ protected:
     /// Does nothing.
     VISUOGREADAPTOR_API virtual void doSwap() throw ( ::fwTools::Failed );
 
-    /// Updates proxy geometry called before rendering.
+    /// Does nothing.
     VISUOGREADAPTOR_API virtual void doUpdate() throw ( ::fwTools::Failed );
 
     /// Configures this service.
@@ -74,13 +74,26 @@ protected:
 
 private:
 
+    /// Camera listener, updates proxy geometry on camera move.
+    class CameraMotionListener : public Ogre::Camera::Listener
+    {
+    public:
+
+        /// Constructor.
+        CameraMotionListener(SVolumeRender *parent);
+
+        /// Called before scene render.
+        void cameraPreRenderScene(Ogre::Camera *);
+
+    private:
+        /// The volume to update.
+        ::visuOgreAdaptor::SVolumeRender *m_parent;
+
+    };
+
     friend class CameraMotionListener;
 
-//    struct Polygon
-//    {
-//        std::vector< ::Ogre::Vector3 > m_vertices;
-//        std::vector< ::Ogre::Vector3 > m_textureUVW;
-//    };
+    /// Clipping cube faces.
     enum CubeFace
     {
         X_NEGATIVE = 0,
@@ -95,6 +108,7 @@ private:
 
     typedef std::array< unsigned, 4 > CubeFacePositionList;
 
+    /// Maps each cube faces to 4 vertex indices.
     static const std::map< CubeFace, CubeFacePositionList> s_cubeFaces;
 
     /// Get the face's image positions.
