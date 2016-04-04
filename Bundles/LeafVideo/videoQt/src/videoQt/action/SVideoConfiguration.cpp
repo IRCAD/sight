@@ -1,12 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 
 #include "videoQt/action/SVideoConfiguration.hpp"
-#include "videoQt/helper/preferences.hpp"
+
+#include <arUtils/preferences.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -64,15 +65,15 @@ void SVideoConfiguration::starting() throw(::fwTools::Failed)
         ::fwServices::IService::sptr prefService = preferencesServicesList[0];
         ::fwData::Composite::sptr prefs          = prefService->getObject< ::fwData::Composite >();
 
-        ::fwData::Composite::IteratorType iterPref = prefs->find( helper::s_VIDEORENDER_PREF );
+        ::fwData::Composite::IteratorType iterPref = prefs->find( ::arUtils::s_VIDEORENDER_PREF );
         if ( iterPref != prefs->end() )
         {
             m_videoPref = ::fwData::Composite::dynamicCast(iterPref->second);
         }
         else
         {
-            m_videoPref                          = ::fwData::Composite::New();
-            (*prefs)[helper::s_VIDEORENDER_PREF] = m_videoPref;
+            m_videoPref                             = ::fwData::Composite::New();
+            (*prefs)[::arUtils::s_VIDEORENDER_PREF] = m_videoPref;
         }
     }
 }
@@ -98,12 +99,12 @@ void SVideoConfiguration::updating() throw(::fwTools::Failed)
     if (m_videoPref)
     {
         ::fwData::String::sptr videoDir;
-        ::fwData::Composite::IteratorType iterVideoDir = m_videoPref->find( helper::s_VIDEO_DIR_PREF );
+        ::fwData::Composite::IteratorType iterVideoDir = m_videoPref->find( ::arUtils::s_VIDEO_DIR_PREF );
         bool videoFound = (iterVideoDir  != m_videoPref->end());
         if (videoFound)
         {
             videoDir = ::fwData::String::dynamicCast(iterVideoDir->second);
-            SLM_ERROR_IF("Wrong type of preference : '" + helper::s_VIDEO_DIR_PREF + "' parameter must be a string",
+            SLM_ERROR_IF("Wrong type of preference : '" + ::arUtils::s_VIDEO_DIR_PREF + "' parameter must be a string",
                          !videoDir);
         }
         else
@@ -148,7 +149,7 @@ void SVideoConfiguration::updating() throw(::fwTools::Failed)
                 videoDir->value() = m_videoDirEdit->text().toStdString();
                 if (!videoFound)
                 {
-                    (*m_videoPref)[helper::s_VIDEO_DIR_PREF] = videoDir;
+                    (*m_videoPref)[::arUtils::s_VIDEO_DIR_PREF] = videoDir;
                 }
             }
         }
