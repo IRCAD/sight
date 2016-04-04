@@ -93,7 +93,7 @@ protected:
 private:
 
     /// Initialized ARL cameras
-    void initARLCameras();
+    void initialize();
 
     /// Last timestamp
     ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
@@ -113,8 +113,8 @@ private:
     /// Extrinsic matrix key in composite
     std::string m_extrinsicKey;
 
-    /// True if ARL cameras not initialized
-    bool m_isCamInitialized;
+    /// True if the service is initialized (timelines and ARLCameras)
+    bool m_isInitialized;
 
     /// ARL planeSystem
     ::arlCore::PlaneSystem* m_planeSystem;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -106,7 +106,9 @@ void SFrameMatrixSynchronizer::starting() throw (fwTools::Failed)
     for(FrameKeysType::value_type elt : m_frameKeys)
     {
         ::extData::FrameTL::sptr frameTL = comp->at< ::extData::FrameTL >(elt.first);
-        ::fwData::Image::sptr frame      = comp->at< ::fwData::Image >(elt.second);
+        SLM_ASSERT("::extData::FrameTL is not valid", frameTL);
+        ::fwData::Image::sptr frame = comp->at< ::fwData::Image >(elt.second);
+        SLM_ASSERT("::fwData::Image is not valid", frame);
 
         m_frameTLs[elt.first] = frameTL;
         m_images[elt.first]   = frame;
