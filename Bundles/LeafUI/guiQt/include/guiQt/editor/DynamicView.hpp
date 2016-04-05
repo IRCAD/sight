@@ -60,10 +60,40 @@ struct AppConfig
 /**
  * @brief   This editor manages tabs containing sub-configurations.
  *
- * It receives signals with ::fwActivities::registry::ActivityMsg containing the view
- *          information (config Id, parameters, ...).
+ * It receives signals with ::fwActivities::registry::ActivityMsg containing the view information (config Id,
+ * parameters, ...).
  *
- * @note The ::activities::action::SActivityLauncher action sends the signals to be received by this editor.
+ * It is usually used with the ::activities::action::SActivityLauncher action. This action sends the signals containing
+ * the view information.
+ *
+ * In our applications, we mostly use the Series selector as main configuration. The main configuration is launched in
+ * the first tab and is not closable.
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+   <service type="::gui::view::IView" impl="::guiQt::editor::DynamicView" autoConnect="yes" >
+       <config dynamicConfigStartStop="false">
+           <appConfig id="Visu2DID" title="Visu2D" >
+               <parameters>
+                   <parameter replace="SERIESDB" by="medicalData"  />
+                   <parameter replace="IMAGE" by="@values.image"  />
+               </parameters>
+           </appConfig>
+       </config>
+   </service>
+   @endcode
+ * - \b appConfig: information needed to launch the main sub-configuration. This configuration is launched in the
+ *      first tab, it can not be closed by the user.
+ *   - \b id: config identifier
+ *   - \b title: title of the created tab
+ *   - \b parameters: list of the parameters needed to launch the configuration.
+ *     - \b replace: name of the parameter as defined in the AppConfig
+ *     - \b by: defines the string that will replace the parameter name. It should be a simple string (ex. frontal)
+ *       or define a sesh@ path (ex. \@values.myImage). The root object of the sesh@ path is this service object.
+ *
+ * @section Slot Slot
+ * - \b createTab( ::fwActivities::registry::ActivityMsg ): This slot allows to create a tab with the given activity
+ *   information.
  */
 class GUIQT_CLASS_API DynamicView : public QObject,
                                     public ::gui::view::IView
@@ -108,27 +138,6 @@ protected:
     /**
      * @brief Configure the view
      * @see fwGui::IGuiContainerSrv::initialize()
-     *
-     * @code{.xml}
-       <service type="::gui::view::IView" impl="::guiQt::editor::DynamicView" autoConnect="yes" >
-           <config dynamicConfigStartStop="false">
-               <appConfig id="Visu2DID" title="Visu2D" >
-                   <parameters>
-                       <parameter replace="SERIESDB" by="medicalData"  />
-                       <parameter replace="IMAGE" by="@values.image"  />
-                   </parameters>
-               </appConfig>
-           </config>
-       </service>
-       @endcode
-     * - \b appConfig: information needed to launch the main sub-configuration. This configuration is launched in the
-     *      first tab, it can not be closed by the user.
-     *   - \b id: config identifier
-     *   - \b title: title of the created tab
-     *   - \b parameters: list of the parameters needed to launch the configuration.
-     *     - \b replace: name of the parameter as defined in the AppConfig
-     *     - \b by: defines the string that will replace the parameter name. It should be a simple string (ex. frontal)
-     *       or define a sesh@ path (ex. @values.myImage). The root object of the sesh@ path is this service object.
      */
     virtual void configuring() throw(fwTools::Failed);
 
@@ -190,5 +199,3 @@ protected Q_SLOTS:
 } // guiQt
 
 #endif /*__GUIQT_EDITOR_DYNAMICVIEW_HPP__*/
-
-

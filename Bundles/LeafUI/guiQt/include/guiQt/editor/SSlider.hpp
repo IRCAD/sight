@@ -32,7 +32,33 @@ namespace editor
 
 /**
  * @brief   This editor allows to draw a slider with an integer data.
- * @class   SSlider
+ *
+ * Default slider params : value 0, range 0-100, no text, no reset button and edit box.
+ * @note value, defaultValue, min and max must be integers.
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+    <service uid="..." type="::gui::editor::IEditor" impl="::guiQt::editor::SSlider" autoConnect="no"/>
+        <editBox>false</editBox>
+        <resetButton>false</resetButton>
+        <defaultValue>200</defaultValue>
+        <updateOnRelease>false</updateOnRelease>
+        <value>200</value>
+        <text>opacity value</text>
+        <range>
+            <min>1</min>
+            <max>600</max>
+        </range>
+    </service>
+   @endcode
+ *
+ * @section Signals Signals
+ * - \b valueChanged(int): This editor emits the signal "valueChanged" with the changed slider value.
+ *
+ * @section Slots Slots
+ * - \b setValue(int, bool): This slot allows to update the slider value.
+ * - \b setMinValue(int): This slot allows to set minimum value.
+ * - \b setMaxValue(int): This slot allows to set maximum value.
  */
 class GUIQT_CLASS_API SSlider : public QObject,
                                 public ::gui::editor::IEditor
@@ -86,27 +112,7 @@ protected:
     /// Does nothing
     virtual void swapping() throw(::fwTools::Failed);
 
-    /**
-     * @brief Configure the service
-     *
-     *  Default slider params : value 0, range 0-100, no text, no reset button and edit box.
-     *  NB : value, defaultValue, min and max must be integers.
-     *
-     * @code{.xml}
-        <service uid="..." type="::gui::editor::IEditor" impl="::guiQt::editor::SSlider" autoConnect="no"/>
-            <editBox>false</editBox>
-            <resetButton>false</resetButton>
-            <defaultValue>200</defaultValue>
-            <updateOnRelease>false</updateOnRelease>
-            <value>200</value>
-            <text>opacity value</text>
-            <range>
-                <min>1</min>
-                <max>600</max>
-            </range>
-        </service>
-       @endcode
-     */
+    /// Configure the service
     virtual void configuring() throw(fwTools::Failed);
 
     /// Signal when the position os the slider changed

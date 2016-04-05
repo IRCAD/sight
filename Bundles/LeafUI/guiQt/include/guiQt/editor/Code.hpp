@@ -27,9 +27,19 @@ namespace editor
 
 /**
  * @class   Code
- * @brief   Code Editor working on a ::fwData::String
+ * @brief   This service displays a code editor and works on a ::fwData::String.
  *
- * @date    2010.
+ * It provides highlighting for python and C++.
+ *
+ * XML Configuration
+ *  @code{.xml}
+    <service uid="codeEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::Code" autoConnect="yes">
+        <config>
+            <language name="Python" />
+        </config>
+    </service>
+    @endcode
+ * - \b language name can be "Python" or "Cpp"
  */
 class GUIQT_CLASS_API Code : public QObject,
                              public ::gui::editor::IEditor
@@ -68,18 +78,7 @@ protected:
     /// Update the value from the String object.
     virtual void swapping() throw(::fwTools::Failed);
 
-    /**
-     * @brief Configures the editor
-     *
-     * @code{.xml}
-       <service uid="codeEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::Code" autoConnect="yes">
-           <config>
-               <language name="Python" />
-           </config>
-       </service>
-       @endcode
-     * - \b language name can be "Python" or "Cpp"
-     */
+    /// Parses the configuration
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
