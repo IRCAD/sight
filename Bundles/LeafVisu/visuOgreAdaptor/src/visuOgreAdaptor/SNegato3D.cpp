@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,7 +45,7 @@ SNegato3D::SNegato3D() throw() :
     m_autoResetCamera(true),
     m_activePlane(nullptr),
     m_negatoSceneNode(nullptr),
-    m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::LINEAR )
+    m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::NONE )
 {
     this->installTFSlots(this);
 
