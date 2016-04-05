@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/fw4spl-org/fw4spl.svg?branch=fw4spl_0.11.0)](https://travis-ci.org/fw4spl-org/fw4spl)
+
 Description
 ===========
 
