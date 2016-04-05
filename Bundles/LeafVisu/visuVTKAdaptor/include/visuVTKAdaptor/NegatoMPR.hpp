@@ -139,6 +139,10 @@ private:
 
     std::string m_imageSourceId;
 
+    std::string m_slicingStartingProxy; ///< channel of the proxy used to start slicing
+    std::string m_slicingStoppingProxy; ///< channel of the proxy used to stop slicing
+
+
     ::boost::logic::tribool m_3dModeEnabled;
     SliceMode m_sliceMode;
     SliceMode m_backupedSliceMode;

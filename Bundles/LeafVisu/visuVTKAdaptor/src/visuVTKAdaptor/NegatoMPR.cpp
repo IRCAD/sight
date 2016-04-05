@@ -83,8 +83,6 @@ void NegatoMPR::doStop() throw(fwTools::Failed)
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     //disconnect proxy
     ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
-    const std::string slicingStartingProxy = image->getID() + s_slicingStartingProxy;
-    const std::string slicingStoppingProxy = image->getID() + s_slicingStoppingProxy;
 
     for (auto srv : this->getRegisteredServices())
     {
@@ -92,19 +90,19 @@ void NegatoMPR::doStop() throw(fwTools::Failed)
         SlicesCursor::sptr sliceCursor                        = SlicesCursor::dynamicCast(srv.lock());
         if (negatoSlicingInteractor)
         {
-            proxy->disconnect(slicingStartingProxy, negatoSlicingInteractor->signal(
+            proxy->disconnect(m_slicingStartingProxy, negatoSlicingInteractor->signal(
                                   NegatoSlicingInteractor::s_SLICING_STARTED_SIG));
-            proxy->disconnect(slicingStoppingProxy, negatoSlicingInteractor->signal(
+            proxy->disconnect(m_slicingStoppingProxy, negatoSlicingInteractor->signal(
                                   NegatoSlicingInteractor::s_SLICING_STOPPED_SIG));
         }
 
         if (sliceCursor)
         {
-            proxy->disconnect(slicingStartingProxy, sliceCursor->slot(
+            proxy->disconnect(m_slicingStartingProxy, sliceCursor->slot(
                                   SlicesCursor::s_SHOW_FULL_CROSS_SLOT));
 
 
-            proxy->disconnect(slicingStoppingProxy, sliceCursor->slot(
+            proxy->disconnect(m_slicingStoppingProxy, sliceCursor->slot(
                                   SlicesCursor::s_SHOW_NORMAL_CROSS_SLOT));
         }
     }
@@ -174,16 +172,16 @@ void NegatoMPR::doUpdate() throw(::fwTools::Failed)
 
             /// Connect slicing signals/slots from NegatoSlicingInteractor to SlicesCursor using the image slicing proxy
             ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
-            const std::string slicingStartingProxy = image->getID() + s_slicingStartingProxy;
-            const std::string slicingStoppingProxy = image->getID() + s_slicingStoppingProxy;
-            proxy->connect(slicingStartingProxy, negatoSlicingInteractor->signal(
+            m_slicingStartingProxy                    = image->getID() + s_slicingStartingProxy;
+            m_slicingStoppingProxy                    = image->getID() + s_slicingStoppingProxy;
+            proxy->connect(m_slicingStartingProxy, negatoSlicingInteractor->signal(
                                NegatoSlicingInteractor::s_SLICING_STARTED_SIG));
-            proxy->connect(slicingStartingProxy, sliceCursor->slot(
+            proxy->connect(m_slicingStartingProxy, sliceCursor->slot(
                                SlicesCursor::s_SHOW_FULL_CROSS_SLOT));
 
-            proxy->connect(slicingStoppingProxy, negatoSlicingInteractor->signal(
+            proxy->connect(m_slicingStoppingProxy, negatoSlicingInteractor->signal(
                                NegatoSlicingInteractor::s_SLICING_STOPPED_SIG));
-            proxy->connect(slicingStoppingProxy, sliceCursor->slot(
+            proxy->connect(m_slicingStoppingProxy, sliceCursor->slot(
                                SlicesCursor::s_SHOW_NORMAL_CROSS_SLOT));
             m_sliceCursor = sliceCursor;
         }
