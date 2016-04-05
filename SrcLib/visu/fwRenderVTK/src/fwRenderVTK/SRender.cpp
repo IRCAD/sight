@@ -645,7 +645,7 @@ bool SRender::isShownOnScreen()
 
 void SRender::requestRender()
 {
-    if ( !this->getPendingRenderRequest())
+    if ( this->isShownOnScreen() && !this->getPendingRenderRequest())
     {
         this->setPendingRenderRequest(true);
         this->slot(SRender::s_RENDER_SLOT)->asyncRun();
