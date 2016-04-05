@@ -11,6 +11,10 @@ function(eclipseGenerator)
     endif()
     
     foreach(PROJECT ${ARGV})
+        if(NOT TARGET ${PROJECT})
+            message("Project target ${PROJECT} doesn't exist")
+            continue()
+        endif()
         message(STATUS "Generating ${PROJECT} Eclipse project")
         #configure eclipse project template
         set(BUILD_PATH ${CMAKE_BINARY_DIR})
@@ -32,10 +36,19 @@ function(eclipseGenerator)
         endif()
         set(MAKE ${CMAKE_MAKE_PROGRAM})
         set(DEPS_INCLUDES "")
+        
         get_target_property(PROJECT_INCLUDE_DIRECTORIES ${PROJECT} INCLUDE_DIRECTORIES)
         list(REMOVE_DUPLICATES PROJECT_INCLUDE_DIRECTORIES)
-        foreach(DEPENDENCY ${PROJECT_INCLUDE_DIRECTORIES})
-            set(DEPS_INCLUDES "${DEPS_INCLUDES}\n<listOptionValue builtIn=\"false\" value=\"${DEPENDENCY}\"/>")
+        foreach(INCLUDE_DIR ${PROJECT_INCLUDE_DIRECTORIES})
+            set(DEPS_INCLUDES "${DEPS_INCLUDES}\n<listOptionValue builtIn=\"false\" value=\"${INCLUDE_DIR}\"/>")
+        endforeach()
+        
+        foreach(DEPENDENCY ${${PROJECT}_DEPENDENCIES})
+            get_target_property(DEPENDENCY_INCLUDE_DIRECTORIES ${DEPENDENCY} INCLUDE_DIRECTORIES)
+            list(REMOVE_DUPLICATES DEPENDENCY_INCLUDE_DIRECTORIES)
+            foreach(INCLUDE_DIR ${DEPENDENCY_INCLUDE_DIRECTORIES})
+                set(DEPS_INCLUDES "${DEPS_INCLUDES}\n<listOptionValue builtIn=\"false\" value=\"${INCLUDE_DIR}\"/>")
+            endforeach()
         endforeach()
         
         #add system include dirs
