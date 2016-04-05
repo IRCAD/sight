@@ -84,7 +84,7 @@
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_progressBarController" impl="::ioPacs::SProgressBarController" autoConnect="no">
+        <service uid="${GENERIC_UID}_progressBarController" impl="::ioPacs::SProgressBarController" autoConnect="no" worker="progress">
         </service>
 
 

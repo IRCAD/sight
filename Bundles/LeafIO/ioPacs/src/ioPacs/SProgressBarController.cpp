@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -80,13 +80,15 @@ void SProgressBarController::updating() throw(::fwTools::Failed)
 
 void SProgressBarController::startProgress(std::string id)
 {
-    m_progressDialogs[id] = ::fwGuiQt::dialog::ProgressDialog::New();
+    ::fwCore::mt::ScopedLock lock(m_mutex);
+    m_progressDialogs[id] = ::fwGui::dialog::ProgressDialog::New();
 }
 
 //------------------------------------------------------------------------------
 
 void SProgressBarController::updateProgress(std::string id, float percentage, std::string message)
 {
+    ::fwCore::mt::ScopedLock lock(m_mutex);
     if(m_progressDialogs.find(id) != m_progressDialogs.end())
     {
         (*m_progressDialogs[id])(percentage, message);
@@ -96,12 +98,14 @@ void SProgressBarController::updateProgress(std::string id, float percentage, st
     {
         SLM_WARN("Trying to update a progress bar which is not started !");
     }
+
 }
 
 //------------------------------------------------------------------------------
 
 void SProgressBarController::stopProgress(std::string id)
 {
+    ::fwCore::mt::ScopedLock lock(m_mutex);
     m_progressDialogs.erase(id);
 }
 

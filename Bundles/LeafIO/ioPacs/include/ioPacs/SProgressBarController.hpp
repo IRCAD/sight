@@ -10,8 +10,10 @@
 #include "ioPacs/config.hpp"
 
 #include <fwCom/Slot.hpp>
-#include <fwGuiQt/dialog/ProgressDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwServices/IController.hpp>
+
+#include <fwCore/mt/types.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -31,7 +33,7 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SProgressBarController)( ::fwServices::IController ) );
 
     /// Type of progress bar container
-    typedef std::map< std::string, ::fwGuiQt::dialog::ProgressDialog::sptr > ProgressDialogContainerType;
+    typedef std::map< std::string, ::fwGui::dialog::ProgressDialog::sptr > ProgressDialogContainerType;
 
     /**
      * @brief constructor
@@ -85,6 +87,7 @@ protected:
     /// Progress Dialog
     ProgressDialogContainerType m_progressDialogs;
 
+    ::fwCore::mt::Mutex m_mutex; ///< mutex for progress dialog access
 
 };
 

@@ -10,6 +10,7 @@ set( REQUIREMENTS
     dataReg
     gui
     guiQt
+    guiQtExt
     ioGdcm
     ioPacs
     media
