@@ -80,7 +80,7 @@
                                 <config renderer="default" style="InteractorStyle3DForNegato" />
                             </adaptor>
 
-                            <adaptor id="medicalCamera" uid="${Medical3DCameraUID}" class="::visuVTKAdaptor::Medical3DCamera" objectId="imageKey">
+                            <adaptor id="medicalCamera" uid="${Medical3DCameraUID}" class="::visuVTKAdaptor::Medical3DCamera" objectId="self">
                                 <config renderer="default" sliceIndex="${orientation}" resetAtStart="yes" />
                             </adaptor>
 
@@ -89,7 +89,7 @@
                             </adaptor>
 
                             <adaptor id="modelSeries" uid="${GENERIC_UID}_modelSeriesUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeriesKey">
-                                <config renderer="default" picker="negatodefault" autoresetcamera="no" />
+                                <config renderer="default" picker="negatodefault" autoresetcamera="yes" />
                             </adaptor>
 
                             <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="imageKey">
