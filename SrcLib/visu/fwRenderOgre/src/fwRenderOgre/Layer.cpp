@@ -259,19 +259,20 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
     {
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE:
         {
-            m_moveInteractor->mouseMoveEvent(info.x, info.y, info.dx, info.dy, info.click);
+            m_moveInteractor->mouseMoveEvent(info.button, info.x, info.y, info.dx, info.dy);
             break;
         }
-        case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::HORIZONTALMOVE:
-        {
-            m_moveInteractor->horizontalMoveEvent(info.x, info.dx);
-            break;
-        }
-        case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::VERTICALMOVE:
-        {
-            m_moveInteractor->verticalMoveEvent(info.y, info.dy);
-            break;
-        }
+//        case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::HORIZONTALMOVE:
+//        {
+////            m_moveInteractor->horizontalMoveEvent(info.x, info.dx);
+//            m_moveInteractor->wheelPressedMoveEvent(info.x, info.y, info.dx, info.dy);
+//            break;
+//        }
+//        case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::VERTICALMOVE:
+//        {
+////            m_moveInteractor->verticalMoveEvent(info.y, info.dy);
+//            break;
+//        }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE:
         {
             m_moveInteractor->wheelEvent(info.delta, info.x, info.y);
@@ -289,7 +290,12 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONRELEASE:
         {
-            m_moveInteractor->buttonReleaseEvent();
+            m_moveInteractor->buttonReleaseEvent(info.button, info.x, info.y);
+            break;
+        }
+        case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONPRESS:
+        {
+            m_moveInteractor->buttonPressEvent(info.button, info.x, info.y);
             break;
         }
     }

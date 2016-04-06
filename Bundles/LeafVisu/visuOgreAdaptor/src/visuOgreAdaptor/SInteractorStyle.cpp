@@ -117,45 +117,23 @@ void SInteractorStyle::setInteractorStyle()
 
     OSLM_ASSERT("Unknown interactor style : " << style, interactor);
 
-    if( m_configuredStyle == "VR" )
+    if(!std::strcmp("Trackball", m_configuredStyle.c_str())
+            || !std::strcmp("Fixed", m_configuredStyle.c_str())
+            || !std::strcmp("Negato2D", m_configuredStyle.c_str())
+            || !std::strcmp("VR", m_configuredStyle.c_str()))
     {
         this->getRenderService()->getLayer(m_layerID)->setMoveInteractor(
-            ::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(interactor));
-
-        auto VRInteractor =
-                std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
-
-        VRInteractor->initPicker();
-        VRInteractor->attachSignal(
-                    newSignal< ::fwRenderOgre::interactor::VRWidgetsInteractor::WidgetDragSigType>
-                    ( ::fwRenderOgre::interactor::VRWidgetsInteractor::s_DRAG_WIDGET_SIG ));
-
-        VRInteractor->attachSignal(
-                    newSignal< ::fwRenderOgre::interactor::VRWidgetsInteractor::WidgetDropSigType>
-                    ( ::fwRenderOgre::interactor::VRWidgetsInteractor::s_DROP_WIDGET_SIG ));
-
-        VRInteractor->attachSignal(
-                    newSignal< ::fwRenderOgre::interactor::VRWidgetsInteractor::ClippingBoxDragSigType>
-                    ( ::fwRenderOgre::interactor::VRWidgetsInteractor::s_MOVE_CLIPPING_BOX_SIG ));
+                    ::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(interactor));
     }
-    else
+    if(!std::strcmp("Mesh",m_configuredStyle.c_str()) || !std::strcmp("Video",m_configuredStyle.c_str()))
     {
-        if(!std::strcmp("Trackball", m_configuredStyle.c_str())
-                || !std::strcmp("Fixed", m_configuredStyle.c_str())
-                || !std::strcmp("Negato2D", m_configuredStyle.c_str()))
-        {
-            this->getRenderService()->getLayer(m_layerID)->setMoveInteractor(
-                        ::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(interactor));
-        }
-        if(!std::strcmp("Mesh",m_configuredStyle.c_str()) || !std::strcmp("Video",m_configuredStyle.c_str()))
-        {
-            this->getRenderService()->getLayer(m_layerID)->setSelectInteractor(
-                        ::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(interactor));
-        }
+        this->getRenderService()->getLayer(m_layerID)->setSelectInteractor(
+                    ::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(interactor));
     }
 }
 
 //------------------------------------------------------------------------------
+
 void SInteractorStyle::clickedPoint( ::fwData::Object::sptr obj )
 {
     m_sigPointClicked->asyncEmit( obj );

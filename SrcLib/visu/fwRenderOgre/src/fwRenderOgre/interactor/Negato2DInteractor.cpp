@@ -109,6 +109,30 @@ void Negato2DInteractor::verticalMoveEvent(int y, int move)
 
 // ----------------------------------------------------------------------------
 
+void Negato2DInteractor::wheelPressedMoveEvent(int x, int y, int dx, int dy)
+{
+    if(m_totalWidth >1)
+    {
+        m_cameraPos.x += m_currentWidth / m_renderWindowWidth * static_cast< ::Ogre::Real >(dx);
+        m_cameraPos.y -= m_currentHeight / m_renderWindowHeight * static_cast< ::Ogre::Real >(dy);
+        this->updateCameraPosition();
+    }
+}
+
+// ----------------------------------------------------------------------------
+
+void Negato2DInteractor::mouseMoveEvent(IInteractor::MouseButton button, int x, int y, int dx, int dy)
+{
+    if(button == MIDDLE && m_totalWidth > 1)
+    {
+        m_cameraPos.x += m_currentWidth / m_renderWindowWidth * static_cast< ::Ogre::Real >(dx);
+        m_cameraPos.y -= m_currentHeight / m_renderWindowHeight * static_cast< ::Ogre::Real >(dy);
+        this->updateCameraPosition();
+    }
+}
+
+// ----------------------------------------------------------------------------
+
 void Negato2DInteractor::updateTotalSize()
 {
     ::Ogre::SceneNode* rootSceneNode = m_sceneManager->getRootSceneNode();

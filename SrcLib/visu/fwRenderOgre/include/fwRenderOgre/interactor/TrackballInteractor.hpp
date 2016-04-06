@@ -35,7 +35,7 @@ public:
      * @param dx The mouse's X displacement
      * @param dy The mouse's Y displacement
      */
-    FWRENDEROGRE_API void mouseMoveEvent(int x, int y, int dx, int dy, bool click);
+    FWRENDEROGRE_API void mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy);
 
     /**
      * @brief Mouse's wheel rotation callback.
@@ -63,6 +63,23 @@ public:
     FWRENDEROGRE_API void verticalMoveEvent(int y, int move);
 
     /**
+     * @brief Vertical movement callback.
+     *        The camera's scene node will translate along it's local vertical and horizontal space.
+     * @param x
+     * @param y
+     * @param dx The horizontal displacement
+     * @param dy The vertical displacement
+     */
+    FWRENDEROGRE_API virtual void wheelPressedMoveEvent(int x, int y, int dx, int dy);
+
+    /// Not used here.
+    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton button, int x, int y);
+
+    /// Not used here.
+    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton button, int x, int y);
+
+
+    /**
      * @brief Called when the window is resized
      * @param x The width of the window
      * @param y The height of the window
@@ -76,6 +93,19 @@ public:
     FWRENDEROGRE_API virtual void keyPressEvent(int key);
 
 private:
+    /**
+     * @brief The camera's scene node will rotate around it's point of interest (lookAt).
+     * @param dx The mouse's X displacement
+     * @param dy The mouse's Y displacement
+     */
+    void cameraRotate(int dx, int dy);
+
+    /**
+     * @brief The camera's scene node will translate along it's local vertical and horizontal space.
+     * @param dx The horizontal displacement
+     * @param dy The vertical displacement
+     */
+    void cameraTranslate(int dx, int dy);
 
     /// Current width of the render window
     int m_width;

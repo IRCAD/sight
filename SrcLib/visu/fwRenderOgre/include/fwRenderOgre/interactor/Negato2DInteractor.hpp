@@ -41,10 +41,11 @@ public:
     /// Moves the camera vertically according to the mouse movement
     FWRENDEROGRE_API virtual void verticalMoveEvent(int y, int move);
 
+    /// Moves the camera vertically and horizontally.
+    FWRENDEROGRE_API virtual void wheelPressedMoveEvent(int x, int y, int dx, int dy);
+
     /// No mouse movement handling needed here
-    FWRENDEROGRE_API virtual void mouseMoveEvent(int x, int y, int dx, int dy, bool click)
-    {
-    }
+    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy);
 
     /// No resize event handling needed here
     FWRENDEROGRE_API virtual void resizeEvent(int x, int y)
@@ -53,6 +54,16 @@ public:
 
     /// No key press event handling needed here
     FWRENDEROGRE_API virtual void keyPressEvent(int key)
+    {
+    }
+
+    /// No need to handle button release events.
+    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton button, int x, int y)
+    {
+    }
+
+    /// No need to handle button press events.
+    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton button, int x, int y)
     {
     }
 

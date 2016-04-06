@@ -48,7 +48,7 @@ public:
     FWRENDEROGRE_API virtual ~VRWidgetsInteractor() throw();
 
     /// Rotate the camera (see TrackballInteractor) or displace widgets if in drag mode.
-    FWRENDEROGRE_API virtual void mouseMoveEvent(int x, int y, int dx, int dy, bool click);
+    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy);
 
     /**
      * @brief Horizontal movement callback.
@@ -66,9 +66,13 @@ public:
      */
     FWRENDEROGRE_API void verticalMoveEvent(int y, int move);
 
+    FWRENDEROGRE_API virtual void wheelPressedMoveEvent(int x, int y, int dx, int dy);
 
     /// Used to signal the end of drag mode.
-    FWRENDEROGRE_API virtual void buttonReleaseEvent();
+    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton button, int x, int y);
+
+    /// Starts object picking.
+    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton button, int x, int y);
 
     /// Attaches signal used to emit dragging tasks.
     FWRENDEROGRE_API inline void attachSignal(WidgetDragSigType::sptr _widgetDraggedSignal);

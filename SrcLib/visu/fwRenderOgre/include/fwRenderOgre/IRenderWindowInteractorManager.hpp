@@ -50,7 +50,8 @@ public:
             WHEELMOVE,
             RESIZE,
             KEYPRESS,
-            BUTTONRELEASE
+            BUTTONRELEASE,
+            BUTTONPRESS
         } InteractionEnumType;
 
         /**
@@ -64,7 +65,7 @@ public:
         int dy;
         int delta;
         int key;
-        bool click;
+        interactor::IInteractor::MouseButton button;
         InteractionEnumType interactionType;
     };
 

@@ -30,13 +30,20 @@ public:
     FWRENDEROGRE_API FixedStyleInteractor();
 
     /// Behaviour on mouseMoveEvent
-    FWRENDEROGRE_API void mouseMoveEvent(int x, int y, int dx, int dy, bool click);
+    FWRENDEROGRE_API void mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy);
     /// Behaviour on a wheelEvent
     FWRENDEROGRE_API void wheelEvent(int delta, int x, int y);
     /// Behaviour on an HorizontalMoveEvent
     FWRENDEROGRE_API void horizontalMoveEvent(int x, int move);
     /// Behaviour on a VerticalMoveEvent
     FWRENDEROGRE_API void verticalMoveEvent(int y, int move);
+    /// Behaviour on wheel pressed move.
+    FWRENDEROGRE_API virtual void wheelPressedMoveEvent(int x, int y, int dx, int dy);
+    /// Behaviour on button release.
+    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton button, int x, int y);
+    /// Behaviour on button press.
+    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton button, int x, int y);
+
     /**
      * @brief Behaviour on a ResizeEvent
      * @param x The width of the window

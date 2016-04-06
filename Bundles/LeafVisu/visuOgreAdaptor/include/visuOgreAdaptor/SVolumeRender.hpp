@@ -11,6 +11,7 @@
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 #include <fwRenderOgre/TransferFunction.hpp>
+#include <fwRenderOgre/ui/VRWidget.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgrePolygon.h>
@@ -31,13 +32,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SVolumeRender)(::fwRenderOgre::IAdaptor) );
 
     /**
-     * @name Slot API
+     * @name Slots API
      * @{
      */
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_DRAG_WIDGET_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_DROP_WIDGET_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_MOVE_CLIPPING_BOX_SLOT;
     /** @} */
 
     /// Constructor.
@@ -91,40 +89,10 @@ private:
 
     };
 
-    friend class CameraMotionListener;
-
-    /// Clipping cube faces.
-    enum CubeFace
-    {
-        X_NEGATIVE = 0,
-        X_POSITIVE = 1,
-        Y_NEGATIVE = 2,
-        Y_POSITIVE = 3,
-        Z_NEGATIVE = 4,
-        Z_POSITIVE = 5
-    };
-
     typedef std::vector< ::Ogre::Vector3 > Polygon;
 
-    typedef std::array< unsigned, 4 > CubeFacePositionList;
-
     /// Maps each cube faces to 4 vertex indices.
-    static const std::map< CubeFace, CubeFacePositionList> s_cubeFaces;
-
-    /// Get the face's image positions.
-    std::array< ::Ogre::Vector3, 4 > getFacePositions(CubeFace _faceName) const;
-
-    /// Get the center of a clipping box face
-    ::Ogre::Vector3 getFaceCenter(CubeFace _faceName) const;
-
-    /// Returns the clipping box's image space positions.
-    std::array< ::Ogre::Vector3, 8 > getClippingBoxPositions() const;
-
-    /// Highlight a clipping box face.
-    void selectFace(CubeFace _faceName);
-
-    /// Unhighlight face.
-    void deselectFace();
+    static const ::fwRenderOgre::ui::VRWidget::CubeFacePositionsMap s_cubeFaces;
 
     /// Scale the volume based on the image's spacing.
     void scaleCube(const ::fwData::Image::SpacingType& spacing);
@@ -132,20 +100,11 @@ private:
     /// Initializes the manual object containing the slices.
     void initSlices();
 
-    /// Creates the widget objects and scene nodes.
-    void initWidgets();
-
     /// Updates all the proxy geometry.
     void updateAllSlices();
 
     /// Updates a slice's mesh.
     void updateSlice(const Polygon& _polygon, const unsigned _sliceIndex);
-
-    /// Recomputes the intersection between the volume and it's clipping box.
-    void updateClippingCube();
-
-    /// Updates the widget's positions based on the clipping box.
-    void updateWidgets();
 
     /// Returns the bounding cube's vertex who's closest to the camera.
     unsigned closestVertexIndex(const ::Ogre::Plane& _cameraPlane) const;
@@ -161,30 +120,11 @@ private:
     /// Slot called when a new image is loaded.
     void newImage();
 
-    /**
-     * @brief Drags a widget toward a screen position.
-     *
-     * @param _pickedWidget picked widget.
-     * @param _screenX cursor's horizontal position.
-     * @param _screenY cursor's vertical position.
-     */
-    void widgetPicked(::Ogre::MovableObject *_pickedWidget, int _screenX, int _screenY);
+    /// Creates widgets and connects its slots to interactor signals.
+    void initWidgets();
 
-    /// Drops the currently selected widget.
-    void widgetReleased();
-
-    /**
-     * @brief Translates the clipping box along the screen's axes.
-     *
-     * @param x  cursor horizontal position before move
-     * @param y  cursor vertical position before move
-     * @param dx displacement along the horizontal axis.
-     * @param dy displacement along the vertical axis.
-     */
-    void moveClippingBox(int x, int y, int dx, int dy);
-
-    /// Maps widget objects to their scene node and to a cube face.
-    std::map< ::Ogre::MovableObject *, std::pair< CubeFace, ::Ogre::SceneNode * > >  m_widgets;
+    /// 3D Image texture.
+    ::Ogre::TexturePtr m_3DOgreTexture;
 
     /// TF texture used for rendering.
     ::fwRenderOgre::TransferFunction m_gpuTF;
@@ -204,17 +144,8 @@ private:
     /// Object containing the proxy geometry used for slice based VR.
     ::Ogre::ManualObject *m_intersectingPolygons;
 
-    /// Object used to display the clipping box.
-    ::Ogre::ManualObject *m_boundingBox;
-
-    /// Oject holding the highlighted face geometry.
-    ::Ogre::ManualObject *m_selectedFace;
-
-    /// Widget currently being dragged.
-    ::Ogre::Entity *m_selectedWidget;
-
-    /// 3D Image texture.
-    ::Ogre::TexturePtr m_3DOgreTexture;
+    /// Widgets used for clipping.
+    ::fwRenderOgre::ui::VRWidget::sptr m_widgets;
 
     /// Sampling rate.
     uint16_t m_nbSlices;
@@ -229,12 +160,6 @@ private:
         ::Ogre::Vector3(1, 0, 0),
         ::Ogre::Vector3(0, 1, 0),
         ::Ogre::Vector3(0, 0, 0)
-    };
-
-    /// Image aligned clipping box.
-    ::Ogre::Vector3 m_clippingCube[2] = {
-        ::Ogre::Vector3(0, 0, 0),
-        ::Ogre::Vector3(1, 1, 1)
     };
 
     /// Intersection between the image and the clipping box.
