@@ -21,6 +21,9 @@ class VRWidget : public ::fwCom::HasSlots
 {
 public:
 
+    /// Shared pointer type.
+    typedef std::shared_ptr< VRWidget > sptr;
+
     /// Clipping cube faces.
     enum CubeFace
     {
@@ -38,14 +41,8 @@ public:
     /// Maps a face name to an array of 4 vertex indices.
     typedef std::map< CubeFace, CubeFacePositionList > CubeFacePositionsMap;
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_DRAG_WIDGET_SLOT;
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_DROP_WIDGET_SLOT;
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_MOVE_CLIPPING_BOX_SLOT;
-    /** @} */
+    /// Lists vertex indices pairs that form edges.
+    typedef std::array< std::pair<unsigned, unsigned>, 12 > CubeEdgeList;
 
     /// Constructor.
     FWRENDEROGRE_API VRWidget(const std::string id,
@@ -53,11 +50,36 @@ public:
                               ::Ogre::Camera    *camera,
                               SRender::sptr renderService,
                               const CubeFacePositionsMap& cubeFaces,
+                              const CubeEdgeList& edges,
                               const ::Ogre::Vector3 *imgPositions,
                               ::Ogre::Vector3 *imgClippedPositions) throw();
 
     /// Destructor.
     FWRENDEROGRE_API virtual ~VRWidget() throw();
+
+    /**
+     * @brief Drags a widget toward a screen position.
+     *
+     * @param _pickedWidget picked widget.
+     * @param _screenX cursor's horizontal position.
+     * @param _screenY cursor's vertical position.
+     */
+    FWRENDEROGRE_API void widgetPicked(::Ogre::MovableObject *_pickedWidget, int _screenX, int _screenY);
+
+    /// Drops the currently selected widget.
+    FWRENDEROGRE_API void widgetReleased();
+
+    /**
+     * @brief Translates the clipping box along the screen's axes.
+     *
+     * @param x  cursor horizontal position before move
+     * @param y  cursor vertical position before move
+     * @param dx displacement along the horizontal axis.
+     * @param dy displacement along the vertical axis.
+     */
+    FWRENDEROGRE_API void moveClippingBox(int x, int y, int dx, int dy);
+
+    FWRENDEROGRE_API void scaleClippingBox(int x, int y, int dx, int dy);
 
 private:
 
@@ -72,7 +94,7 @@ private:
     /// Get the face's image positions.
     std::array< ::Ogre::Vector3, 4 > getFacePositions(CubeFace _faceName) const;
 
-    /// Get the center of a clipping box face
+    /// Get the center of a clipping box face.
     ::Ogre::Vector3 getFaceCenter(CubeFace _faceName) const;
 
     /// Returns the clipping box's image space positions.
@@ -93,29 +115,7 @@ private:
     /// Unhighlight face.
     void deselectFace();
 
-    /**
-     * @brief Drags a widget toward a screen position.
-     *
-     * @param _pickedWidget picked widget.
-     * @param _screenX cursor's horizontal position.
-     * @param _screenY cursor's vertical position.
-     */
-    void widgetPicked(::Ogre::MovableObject *_pickedWidget, int _screenX, int _screenY);
-
-    /// Drops the currently selected widget.
-    void widgetReleased();
-
-    /**
-     * @brief Translates the clipping box along the screen's axes.
-     *
-     * @param x  cursor horizontal position before move
-     * @param y  cursor vertical position before move
-     * @param dx displacement along the horizontal axis.
-     * @param dy displacement along the vertical axis.
-     */
-    void moveClippingBox(int x, int y, int dx, int dy);
-
-    /// ID of the service using this widget
+    /// ID of the service using this widget.
     const std::string m_id;
 
     /// This object's scene manager.
@@ -133,13 +133,16 @@ private:
     /// Maps widget objects to their scene node and to a cube face.
     std::map< ::Ogre::MovableObject *, std::pair< CubeFace, ::Ogre::SceneNode * > >  m_widgets;
 
-    /// Maps face name to index positions
+    /// Maps face name to index positions.
     const CubeFacePositionsMap& m_cubeFaces;
+
+    /// Cube edges.
+    const CubeEdgeList& m_edges;
 
     /// Image positions (in image space).
     const ::Ogre::Vector3 *m_imagePositions;
 
-    /// Image positions after clipping (in image space);
+    /// Image positions after clipping (in image space).
     ::Ogre::Vector3 *m_clippedImagePositions;
 
     /// Axis aligned clipping cube.

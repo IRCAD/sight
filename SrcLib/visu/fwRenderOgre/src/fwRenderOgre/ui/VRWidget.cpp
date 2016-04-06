@@ -25,23 +25,12 @@ namespace ui
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType VRWidget::s_DRAG_WIDGET_SLOT = "dragWidgetSlot";
-
-//-----------------------------------------------------------------------------
-
-const ::fwCom::Slots::SlotKeyType VRWidget::s_DROP_WIDGET_SLOT = "dropWidgetSlot";
-
-//-----------------------------------------------------------------------------
-
-const ::fwCom::Slots::SlotKeyType VRWidget::s_MOVE_CLIPPING_BOX_SLOT = "moveClippingBoxSlot";
-
-//-----------------------------------------------------------------------------
-
 VRWidget::VRWidget(const std::string id,
                    ::Ogre::SceneNode *parentSceneNode,
                    ::Ogre::Camera    *camera,
                    SRender::sptr renderService,
                    const CubeFacePositionsMap& cubeFaces,
+                   const CubeEdgeList& edges,
                    const ::Ogre::Vector3 *imgPositions,
                    ::Ogre::Vector3 *imgClippedPositions) throw() :
     m_selectionMode        (NONE),
@@ -51,16 +40,13 @@ VRWidget::VRWidget(const std::string id,
     m_renderService        (renderService),
     m_volumeSceneNode      (parentSceneNode),
     m_cubeFaces            (cubeFaces),
+    m_edges                (edges),
     m_imagePositions       (imgPositions),
     m_clippedImagePositions(imgClippedPositions),
     m_boundingBox          (nullptr),
     m_selectedFace         (nullptr),
     m_selectedWidget       (nullptr)
 {
-    newSlot(s_DRAG_WIDGET_SLOT, &VRWidget::widgetPicked, this);
-    newSlot(s_DROP_WIDGET_SLOT, &VRWidget::widgetReleased, this);
-    newSlot(s_MOVE_CLIPPING_BOX_SLOT, &VRWidget::moveClippingBox, this);
-
     initWidgets();
 }
 
@@ -133,16 +119,11 @@ void VRWidget::updateWidgets()
 
     m_boundingBox->beginUpdate(0);
     {
-        const unsigned edges[][2] = {
-            { 0, 1 }, { 1, 4 }, { 4, 3 }, { 3, 0 },
-            { 0, 2 }, { 1, 5 }, { 4, 7 }, { 3, 6 },
-            { 2, 5 }, { 5, 7 }, { 7, 6 }, { 6, 2 }
-        };
-
+        // Box
         for(unsigned i = 0; i < 12; ++ i)
         {
-            m_boundingBox->position(clippingBoxPositions[edges[i][0]]);
-            m_boundingBox->position(clippingBoxPositions[edges[i][1]]);
+            m_boundingBox->position(clippingBoxPositions[m_edges[i].first ]);
+            m_boundingBox->position(clippingBoxPositions[m_edges[i].second]);
         }
 
         // Cross
@@ -202,16 +183,10 @@ void VRWidget::initWidgets()
 
     m_boundingBox->begin(m_id + "_Frame", Ogre::RenderOperation::OT_LINE_LIST);
     {
-        const unsigned edges[][2] = {
-            { 0, 1 }, { 1, 4 }, { 4, 3 }, { 3, 0 },
-            { 0, 2 }, { 1, 5 }, { 4, 7 }, { 3, 6 },
-            { 2, 5 }, { 5, 7 }, { 7, 6 }, { 6, 2 }
-        };
-
         for(unsigned i = 0; i < 12; ++ i)
         {
-            m_boundingBox->position(clippingBoxPositions[edges[i][0]]);
-            m_boundingBox->position(clippingBoxPositions[edges[i][1]]);
+            m_boundingBox->position(clippingBoxPositions[m_edges[i].first ]);
+            m_boundingBox->position(clippingBoxPositions[m_edges[i].second]);
         }
 
         // Cross
@@ -234,7 +209,7 @@ void VRWidget::initWidgets()
     }
     m_selectedFace->end();
 
-    // Render this last.
+    // Render this first.
     m_selectedFace->setRenderQueueGroup(::Ogre::RENDER_QUEUE_BACKGROUND);
 
     // Create a pickable sphere for each cube face
@@ -467,6 +442,7 @@ void VRWidget::moveClippingBox(int x, int y, int dx, int dy)
 
     updateClippingCube();
     updateWidgets();
+
     m_renderService->requestRender();
 }
 

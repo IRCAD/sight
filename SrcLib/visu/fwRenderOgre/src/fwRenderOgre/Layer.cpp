@@ -262,17 +262,6 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
             m_moveInteractor->mouseMoveEvent(info.button, info.x, info.y, info.dx, info.dy);
             break;
         }
-//        case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::HORIZONTALMOVE:
-//        {
-////            m_moveInteractor->horizontalMoveEvent(info.x, info.dx);
-//            m_moveInteractor->wheelPressedMoveEvent(info.x, info.y, info.dx, info.dy);
-//            break;
-//        }
-//        case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::VERTICALMOVE:
-//        {
-////            m_moveInteractor->verticalMoveEvent(info.y, info.dy);
-//            break;
-//        }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE:
         {
             m_moveInteractor->wheelEvent(info.delta, info.x, info.y);

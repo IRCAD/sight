@@ -87,40 +87,6 @@ void Negato2DInteractor::wheelEvent(int delta, int mouseX, int mouseY)
 
 // ----------------------------------------------------------------------------
 
-void Negato2DInteractor::horizontalMoveEvent(int x, int move)
-{
-    if(m_totalWidth >1)
-    {
-        m_cameraPos.x += m_currentWidth / m_renderWindowWidth * static_cast< ::Ogre::Real >(move);
-        this->updateCameraPosition();
-    }
-}
-
-// ----------------------------------------------------------------------------
-
-void Negato2DInteractor::verticalMoveEvent(int y, int move)
-{
-    if(m_totalWidth >1)
-    {
-        m_cameraPos.y -= m_currentHeight / m_renderWindowHeight * (::Ogre::Real) move;
-        this->updateCameraPosition();
-    }
-}
-
-// ----------------------------------------------------------------------------
-
-void Negato2DInteractor::wheelPressedMoveEvent(int x, int y, int dx, int dy)
-{
-    if(m_totalWidth >1)
-    {
-        m_cameraPos.x += m_currentWidth / m_renderWindowWidth * static_cast< ::Ogre::Real >(dx);
-        m_cameraPos.y -= m_currentHeight / m_renderWindowHeight * static_cast< ::Ogre::Real >(dy);
-        this->updateCameraPosition();
-    }
-}
-
-// ----------------------------------------------------------------------------
-
 void Negato2DInteractor::mouseMoveEvent(IInteractor::MouseButton button, int x, int y, int dx, int dy)
 {
     if(button == MIDDLE && m_totalWidth > 1)

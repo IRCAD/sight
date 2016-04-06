@@ -94,6 +94,9 @@ private:
     /// Maps each cube faces to 4 vertex indices.
     static const ::fwRenderOgre::ui::VRWidget::CubeFacePositionsMap s_cubeFaces;
 
+    /// List of vertex indices pairs that make an edge.
+    static const ::fwRenderOgre::ui::VRWidget::CubeEdgeList s_cubeEdges;
+
     /// Scale the volume based on the image's spacing.
     void scaleCube(const ::fwData::Image::SpacingType& spacing);
 

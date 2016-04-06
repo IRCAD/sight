@@ -69,44 +69,6 @@ void TrackballInteractor::wheelEvent(int delta, int x, int y)
 
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::horizontalMoveEvent(int x, int move)
-{
-    float dx = static_cast<float>(move) / (m_mouseScale * 10.f);
-    ::Ogre::Camera* camera     = m_sceneManager->getCamera("PlayerCam");
-    ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
-    ::Ogre::Vector3 vec(dx, 0.f, 0.f);
-
-    camNode->translate(vec, ::Ogre::Node::TS_LOCAL);
-}
-
-// ----------------------------------------------------------------------------
-
-void TrackballInteractor::verticalMoveEvent(int y, int move)
-{
-    float dy = static_cast<float>(-move) / (m_mouseScale * 10.f);
-    ::Ogre::Camera* camera     = m_sceneManager->getCamera("PlayerCam");
-    ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
-    ::Ogre::Vector3 vec(0.f, dy, 0.f);
-
-    camNode->translate(vec, ::Ogre::Node::TS_LOCAL);
-}
-
-// ----------------------------------------------------------------------------
-
-void TrackballInteractor::wheelPressedMoveEvent(int, int, int xmove, int ymove)
-{
-    float dx = static_cast<float>(xmove) / (m_mouseScale * 10.f);
-    float dy = static_cast<float>(-ymove) / (m_mouseScale * 10.f);
-    ::Ogre::Camera* camera     = m_sceneManager->getCamera("PlayerCam");
-    ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
-
-    ::Ogre::Vector3 vec(dx, dy, 0.f);
-
-    camNode->translate(vec, ::Ogre::Node::TS_LOCAL);
-}
-
-// ----------------------------------------------------------------------------
-
 void TrackballInteractor::buttonReleaseEvent(IInteractor::MouseButton, int, int)
 {
 

@@ -19,16 +19,13 @@
 #include <numeric>
 
 #include <OGRE/OgreCamera.h>
-#include <OGRE/OgreEntity.h>
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMaterialManager.h>
-#include <OGRE/OgrePlane.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreTechnique.h>
-#include <OGRE/OgreRay.h>
 
 #include <sstream>
 
@@ -64,6 +61,14 @@ const ::fwRenderOgre::ui::VRWidget::CubeFacePositionsMap SVolumeRender::s_cubeFa
     { ::fwRenderOgre::ui::VRWidget::X_POSITIVE, { 0, 1, 5, 2 } },
     { ::fwRenderOgre::ui::VRWidget::X_NEGATIVE, { 3, 4, 7, 6 } }
 };
+
+//-----------------------------------------------------------------------------
+
+const ::fwRenderOgre::ui::VRWidget::CubeEdgeList SVolumeRender::s_cubeEdges = { {
+    { 0, 1 }, { 1, 4 }, { 4, 3 }, { 3, 0 },
+    { 0, 2 }, { 1, 5 }, { 4, 7 }, { 3, 6 },
+    { 2, 5 }, { 5, 7 }, { 7, 6 }, { 6, 2 }
+} };
 
 //-----------------------------------------------------------------------------
 
@@ -489,6 +494,7 @@ void SVolumeRender::initWidgets()
                                                        m_camera,
                                                        this->getRenderService(),
                                                        s_cubeFaces,
+                                                       s_cubeEdges,
                                                        m_imagePositions,
                                                        m_clippedImagePositions);
 
@@ -504,21 +510,7 @@ void SVolumeRender::initWidgets()
                 std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
 
         vrInteractor->initPicker();
-
-        m_connections->connect(vrInteractor,
-                               ::fwRenderOgre::interactor::VRWidgetsInteractor::s_DRAG_WIDGET_SIG,
-                               m_widgets,
-                               ::fwRenderOgre::ui::VRWidget::s_DRAG_WIDGET_SLOT);
-
-        m_connections->connect(vrInteractor,
-                               ::fwRenderOgre::interactor::VRWidgetsInteractor::s_DROP_WIDGET_SIG,
-                               m_widgets,
-                               ::fwRenderOgre::ui::VRWidget::s_DROP_WIDGET_SLOT);
-
-        m_connections->connect(vrInteractor,
-                               ::fwRenderOgre::interactor::VRWidgetsInteractor::s_MOVE_CLIPPING_BOX_SIG,
-                               m_widgets,
-                               ::fwRenderOgre::ui::VRWidget::s_MOVE_CLIPPING_BOX_SLOT);
+        vrInteractor->attachWidget(m_widgets);
     }
 }
 

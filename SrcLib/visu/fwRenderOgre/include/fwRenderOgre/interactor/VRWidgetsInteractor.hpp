@@ -12,6 +12,7 @@
 
 #include "fwRenderOgre/interactor/TrackballInteractor.hpp"
 #include "fwRenderOgre/picker/IPicker.hpp"
+#include "fwRenderOgre/ui/VRWidget.hpp"
 
 #include <OGRE/OgreMovableObject.h>
 
@@ -27,20 +28,6 @@ class FWRENDEROGRE_CLASS_API VRWidgetsInteractor : public ::fwRenderOgre::intera
 {
 public:
 
-    /**
-     * @name Signals API
-     * @{
-     */
-    typedef ::fwCom::Signal< void ( ::Ogre::MovableObject * ,int ,int ) > WidgetDragSigType;
-    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_DRAG_WIDGET_SIG;
-
-    typedef ::fwCom::Signal< void () > WidgetDropSigType;
-    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_DROP_WIDGET_SIG;
-
-    typedef ::fwCom::Signal< void (int, int, int, int) > ClippingBoxDragSigType;
-    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_MOVE_CLIPPING_BOX_SIG;
-    /** @} */
-
     /// Constructor.
     FWRENDEROGRE_API VRWidgetsInteractor() throw();
 
@@ -50,38 +37,14 @@ public:
     /// Rotate the camera (see TrackballInteractor) or displace widgets if in drag mode.
     FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy);
 
-    /**
-     * @brief Horizontal movement callback.
-     *        The VR's clipping box will translate along the screen's horizontal axis.
-     * @param x
-     * @param move The horizontal displacement
-     */
-    FWRENDEROGRE_API void horizontalMoveEvent(int x, int move);
-
-    /**
-     * @brief Vertical movement callback.
-     *        The VR's clipping box will translate along the screen's vertical axis.
-     * @param y
-     * @param move The vertical displacement
-     */
-    FWRENDEROGRE_API void verticalMoveEvent(int y, int move);
-
-    FWRENDEROGRE_API virtual void wheelPressedMoveEvent(int x, int y, int dx, int dy);
-
     /// Used to signal the end of drag mode.
     FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton button, int x, int y);
 
     /// Starts object picking.
     FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton button, int x, int y);
 
-    /// Attaches signal used to emit dragging tasks.
-    FWRENDEROGRE_API inline void attachSignal(WidgetDragSigType::sptr _widgetDraggedSignal);
-
-    /// Attaches signal used to end dragging tasks.
-    FWRENDEROGRE_API inline void attachSignal(WidgetDropSigType::sptr _mouseReleaseSignal);
-
-    /// Attaches signal used to move clipping cube.
-    FWRENDEROGRE_API inline void attachSignal(ClippingBoxDragSigType::sptr _clippingBoxMoveSignal);
+    /// Attaches a widget.
+    FWRENDEROGRE_API inline void attachWidget(ui::VRWidget::sptr widget);
 
     /// Initializes the picker.
     FWRENDEROGRE_API inline void initPicker();
@@ -89,16 +52,10 @@ public:
 private:
 
     /// Currently selected widget.
-    ::Ogre::MovableObject *m_selectedWidget;
+    ::Ogre::MovableObject *m_pickedObject;
 
-    /// Signal emitted when a widget is being dragged.
-    WidgetDragSigType::sptr m_widgetDragSignal;
-
-    /// Signal emitted when drag ends.
-    WidgetDropSigType::sptr m_widgetDropSignal;
-
-    /// Signal emitted to move clipping box.
-    ClippingBoxDragSigType::sptr m_moveClippingBoxSignal;
+    /// All widgets with whom we interact.
+    ui::VRWidget::sptr m_widget;
 
     /// The picker used by this interactor.
     fwRenderOgre::picker::IPicker m_picker;
@@ -110,23 +67,10 @@ private:
 
 //------------------------------------------------------------------------------
 
-void VRWidgetsInteractor::attachSignal(WidgetDragSigType::sptr _widgetDraggedSignal)
+void VRWidgetsInteractor::attachWidget(ui::VRWidget::sptr widget)
 {
-    m_widgetDragSignal = _widgetDraggedSignal;
-}
-
-//------------------------------------------------------------------------------
-
-void VRWidgetsInteractor::attachSignal(WidgetDropSigType::sptr _mouseReleaseSignal)
-{
-    m_widgetDropSignal = _mouseReleaseSignal;
-}
-
-//------------------------------------------------------------------------------
-
-void VRWidgetsInteractor::attachSignal(ClippingBoxDragSigType::sptr _clippingBoxMoveSignal)
-{
-    m_moveClippingBoxSignal = _clippingBoxMoveSignal;
+    OSLM_ASSERT("Only one widget can be attached to a VR interactor", !m_widget);
+    m_widget = widget;
 }
 
 //------------------------------------------------------------------------------

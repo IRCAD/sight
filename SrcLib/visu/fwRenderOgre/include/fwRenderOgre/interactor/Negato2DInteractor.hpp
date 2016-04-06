@@ -33,17 +33,6 @@ public:
     /// It will prompt the camera's scene node to zoom in or zoom out in the scene.
     FWRENDEROGRE_API virtual void wheelEvent(int delta, int mouseX, int mouseY);
 
-    /// Horizontal mouse move event callback.
-    /// Moves the camera horizontally according to the mouse movement
-    FWRENDEROGRE_API virtual void horizontalMoveEvent(int x, int move);
-
-    /// Vertical mouse move event callback.
-    /// Moves the camera vertically according to the mouse movement
-    FWRENDEROGRE_API virtual void verticalMoveEvent(int y, int move);
-
-    /// Moves the camera vertically and horizontally.
-    FWRENDEROGRE_API virtual void wheelPressedMoveEvent(int x, int y, int dx, int dy);
-
     /// No mouse movement handling needed here
     FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy);
 

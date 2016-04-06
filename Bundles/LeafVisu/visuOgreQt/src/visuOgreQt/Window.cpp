@@ -414,14 +414,28 @@ void Window::mouseMoveEvent( QMouseEvent* e )
         info.button          = ::fwRenderOgre::interactor::IInteractor::MIDDLE;
         Q_EMIT interacted(info);
 
-//        ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info2;
-//        info2.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::VERTICALMOVE;
-//        info2.y               = y;
-//        info2.dy              = dy;
-//        Q_EMIT interacted(info2);
-
         m_lastPosMiddleClick->setX(e->x());
         m_lastPosMiddleClick->setY(e->y());
+        this->requestRender();
+    }
+    else if (e->buttons() & ::Qt::RightButton && m_lastPosRightClick )
+    {
+        int x  = m_lastPosRightClick->x();
+        int y  = m_lastPosRightClick->y();
+        int dx = x - e->x();
+        int dy = y - e->y();
+
+        ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
+        info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
+        info.x               = x;
+        info.y               = y;
+        info.dx              = dx;
+        info.dy              = dy;
+        info.button          = ::fwRenderOgre::interactor::IInteractor::RIGHT;
+        Q_EMIT interacted(info);
+
+        m_lastPosRightClick->setX(e->x());
+        m_lastPosRightClick->setY(e->y());
         this->requestRender();
     }
 }
@@ -471,6 +485,12 @@ void Window::mousePressEvent( QMouseEvent* e )
 
         info.button = ::fwRenderOgre::interactor::IInteractor::MIDDLE;
     }
+    else if(e->button() == Qt::RightButton)
+    {
+        m_lastPosRightClick = new QPoint(e->x(), e->y());
+
+        info.button = ::fwRenderOgre::interactor::IInteractor::RIGHT;
+    }
 
     Q_EMIT interacted(info);
     this->requestRender();
@@ -513,6 +533,9 @@ void Window::mouseReleaseEvent( QMouseEvent* e )
     }
     else if(e->button() == Qt::RightButton)
     {
+        delete m_lastPosRightClick;
+        m_lastPosRightClick = nullptr;
+
         info.button = ::fwRenderOgre::interactor::IInteractor::RIGHT;
     }
 

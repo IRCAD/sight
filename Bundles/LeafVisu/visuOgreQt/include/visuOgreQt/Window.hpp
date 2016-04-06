@@ -145,6 +145,9 @@ protected:
     QPoint* m_lastPosLeftClick;
     /// Used to log position of middle clic.
     QPoint* m_lastPosMiddleClick;
+    /// Used to log position of right clic.
+    QPoint* m_lastPosRightClick;
+
 
     /// Has the mouse moved since clicked
     bool m_mousedMoved;

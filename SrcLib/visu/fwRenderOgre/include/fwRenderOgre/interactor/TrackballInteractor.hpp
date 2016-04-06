@@ -46,38 +46,11 @@ public:
      */
     FWRENDEROGRE_API void wheelEvent(int delta, int x, int y);
 
-    /**
-     * @brief Horizontal movement callback.
-     *        The camera's scene node will translate along it's local horizontal space.
-     * @param x
-     * @param move The horizontal displacement
-     */
-    FWRENDEROGRE_API void horizontalMoveEvent(int x, int move);
-
-    /**
-     * @brief Vertical movement callback.
-     *        The camera's scene node will translate along it's local vertical space.
-     * @param y
-     * @param move The vertical displacement
-     */
-    FWRENDEROGRE_API void verticalMoveEvent(int y, int move);
-
-    /**
-     * @brief Vertical movement callback.
-     *        The camera's scene node will translate along it's local vertical and horizontal space.
-     * @param x
-     * @param y
-     * @param dx The horizontal displacement
-     * @param dy The vertical displacement
-     */
-    FWRENDEROGRE_API virtual void wheelPressedMoveEvent(int x, int y, int dx, int dy);
-
     /// Not used here.
     FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton button, int x, int y);
 
     /// Not used here.
     FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton button, int x, int y);
-
 
     /**
      * @brief Called when the window is resized

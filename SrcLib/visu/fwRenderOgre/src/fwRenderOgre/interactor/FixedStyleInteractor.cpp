@@ -36,24 +36,6 @@ void FixedStyleInteractor::wheelEvent(int delta, int x, int y)
 
 // ----------------------------------------------------------------------------
 
-void FixedStyleInteractor::horizontalMoveEvent(int x, int move)
-{
-}
-
-// ----------------------------------------------------------------------------
-
-void FixedStyleInteractor::verticalMoveEvent(int y, int move)
-{
-}
-
-// ----------------------------------------------------------------------------
-
-void FixedStyleInteractor::wheelPressedMoveEvent(int x, int y, int dx, int dy)
-{
-}
-
-// ----------------------------------------------------------------------------
-
 void FixedStyleInteractor::buttonReleaseEvent(IInteractor::MouseButton, int, int)
 {
 

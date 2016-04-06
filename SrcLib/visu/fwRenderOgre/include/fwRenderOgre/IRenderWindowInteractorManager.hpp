@@ -45,8 +45,6 @@ public:
         typedef enum InteractionEnum
         {
             MOUSEMOVE,
-            HORIZONTALMOVE,
-            VERTICALMOVE,
             WHEELMOVE,
             RESIZE,
             KEYPRESS,

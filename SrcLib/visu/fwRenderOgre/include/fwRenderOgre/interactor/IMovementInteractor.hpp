@@ -84,29 +84,6 @@ public:
     FWRENDEROGRE_API virtual void wheelEvent(int delta, int x, int y) = 0;
 
     /**
-     * @brief Behaviour on a HorizontalMoveEvent
-     * @param x The mouse X screen position before movement
-     * @param move The mouse X screen displacement
-     */
-    FWRENDEROGRE_API virtual void horizontalMoveEvent(int x, int move) = 0;
-
-    /**
-     * @brief Behaviour on a VerticalMoveEvent
-     * @param y The mouse Y screen position before movement
-     * @param move The mouse Y screen displacement
-     */
-    FWRENDEROGRE_API virtual void verticalMoveEvent(int y, int move) = 0;
-
-    /**
-     * @brief Behaviour on movement with wheel pressed.
-     * @param x The mouse X screen position before movement.
-     * @param y The mouse Y screen position before movement.
-     * @param dx The mouse X screen displacement.
-     * @param dy The mouse Y screen displacement.
-     */
-    FWRENDEROGRE_API virtual void wheelPressedMoveEvent(int x, int y, int dx, int dy) = 0;
-
-    /**
      * @brief Called when the window is resized
      * @param x The width of the window
      * @param y The height of the window
