@@ -1,0 +1,113 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>cameraView</id>
+    <parameters>
+        <param name="GENERIC_UID" />
+    </parameters>
+    <config>
+
+        <object type="::fwData::Composite">
+
+            <service uid="${GENERIC_UID}_BasicViewerFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
+                <window onclose="notify" />
+                <gui>
+                    <frame>
+                        <name>Camera View</name>
+                        <minSize width="900" height="600" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="${GENERIC_UID}_cameraView" start="yes" />
+                </registry>
+
+            </service>
+            <service uid="${GENERIC_UID}_cameraView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view align="center" />
+                    </layout>
+                    <toolBar />
+                </gui>
+                <registry>
+                    <toolBar sid="${GENERIC_UID}_toolBar" start="yes" />
+                    <view sid="${GENERIC_UID}_camera" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
+                <gui>
+                    <layout>
+                        <editor />
+                        <menuItem name="Start camera" icon="Bundles/arMedia_0-1/icons/start-cam.svg" />
+                        <menuItem name="Stop camera" icon="Bundles/arMedia_0-1/icons/stop-cam.svg" />
+                    </layout>
+                </gui>
+                <registry>
+                    <editor sid="${GENERIC_UID}_CameraSelector" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionStartCamera" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_ActionStopCamera" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_ActionStartCamera" impl="::gui::action::SSlotCaller" autoConnect="no">
+                <slots>
+                    <slot>${GENERIC_UID}_VideoGrabber/startCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="${GENERIC_UID}_ActionStopCamera" impl="::gui::action::SSlotCaller" autoConnect="no">
+                <slots>
+                    <slot>${GENERIC_UID}_VideoGrabber/stopCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="${GENERIC_UID}_FrameUpdater" type="::fwServices::IController" impl="::videoTools::SFrameUpdater" autoConnect="no">
+                <config>
+                    <frameTLKey>frameTL</frameTLKey>
+                    <imageKey>frame</imageKey>
+                </config>
+            </service>
+
+            <service uid="${GENERIC_UID}_camera" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
+                <scene autoRender="false">
+                    <renderer id="default" background="0.0" />
+                    <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="frame">
+                        <config renderer="default" />
+                    </adaptor>
+                    <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                        <config renderer="default" style="InteractorStyle2DForNegato" />
+                    </adaptor>
+                </scene>
+            </service>
+
+            <item key="frameTL">
+                <object uid="${GENERIC_UID}_timeline" type="::extData::FrameTL" >
+                    <service uid="${GENERIC_UID}_VideoGrabber" impl="::videoQt::SFrameGrabber" autoConnect="no">
+                        <cameraFwId>${GENERIC_UID}_cameraObj</cameraFwId>
+                    </service>
+                </object>
+            </item>
+
+            <item key="frame">
+                <object type="::fwData::Image" />
+            </item>
+
+            <item key="camera">
+                <object uid="${GENERIC_UID}_cameraObj" type="::arData::Camera" >
+                    <service uid="${GENERIC_UID}_CameraSelector" impl="::videoQt::editor::SCamera" type="::gui::editor::IEditor" autoConnect="no">
+                        <videoSupport>yes</videoSupport>
+                    </service>
+                </object>
+            </item>
+
+            <connect>
+                <signal>${GENERIC_UID}_cameraObj/idModified</signal>
+                <slot>${GENERIC_UID}_VideoGrabber/stopCamera</slot>
+            </connect>
+
+            <start uid="${GENERIC_UID}_BasicViewerFrame" />
+            <start uid="${GENERIC_UID}_VideoGrabber" />
+            <start uid="${GENERIC_UID}_FrameUpdater" />
+
+        </object>
+    </config>
+</extension>
