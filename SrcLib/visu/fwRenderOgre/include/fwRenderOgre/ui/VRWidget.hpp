@@ -79,7 +79,7 @@ public:
      */
     FWRENDEROGRE_API void moveClippingBox(int x, int y, int dx, int dy);
 
-    FWRENDEROGRE_API void scaleClippingBox(int x, int y, int dx, int dy);
+    FWRENDEROGRE_API void scaleClippingBox(int x, int y, int dy);
 
 private:
 
@@ -161,7 +161,8 @@ private:
     ::Ogre::Entity *m_selectedWidget;
 
     /// Picked box point.
-    ::Ogre::Vector3 pickedBoxPoint;
+    ::Ogre::Vector3 m_pickedBoxPoint;
+
 };
 
 } // namespace ui

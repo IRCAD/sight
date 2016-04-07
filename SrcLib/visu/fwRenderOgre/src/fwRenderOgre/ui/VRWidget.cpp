@@ -388,7 +388,7 @@ void VRWidget::moveClippingBox(int x, int y, int dx, int dy)
         if(inter.first)
         {
             // Get picked point in box space.
-            pickedBoxPoint = (mouseRayImgSpace.getPoint(inter.second) - min) / (max - min);
+            m_pickedBoxPoint = (mouseRayImgSpace.getPoint(inter.second) - min) / (max - min);
             m_selectionMode = BOX;
 
             m_boundingBox->setMaterialName(0, m_id + "_FrameHighlight");
@@ -404,7 +404,7 @@ void VRWidget::moveClippingBox(int x, int y, int dx, int dy)
     if(boxSelected)
     {
         // Box to image space.
-        const ::Ogre::Vector3 boxPos = pickedBoxPoint * (max - min) + min;
+        const ::Ogre::Vector3 boxPos = m_pickedBoxPoint * (max - min) + min;
 
         // Image to world space.
         oldPos = m_volumeSceneNode->convertLocalToWorldPosition(boxPos);
@@ -445,6 +445,84 @@ void VRWidget::moveClippingBox(int x, int y, int dx, int dy)
 
     m_renderService->requestRender();
 }
+
+//-----------------------------------------------------------------------------
+
+void VRWidget::scaleClippingBox(int x, int y, int dy)
+{
+    int width  = m_camera->getViewport()->getActualWidth();
+    int height = m_camera->getViewport()->getActualHeight();
+
+    ::Ogre::Vector2 cursor(
+                static_cast< ::Ogre::Real>(x) / static_cast< ::Ogre::Real>(width),
+                static_cast< ::Ogre::Real>(y) / static_cast< ::Ogre::Real>(height));
+
+    ::Ogre::Ray oldPosRay = m_camera->getCameraToViewportRay(cursor.x, cursor.y);
+
+    // Get ray in image space.
+    ::Ogre::Ray mouseRayImgSpace(
+                m_volumeSceneNode->convertWorldToLocalPosition(oldPosRay.getOrigin()),
+                m_volumeSceneNode->convertWorldToLocalDirection(oldPosRay.getDirection(), true)
+    );
+
+
+    const ::Ogre::Vector3 min = m_clippingCube[0];
+    const ::Ogre::Vector3 max = m_clippingCube[1];
+
+    // Ray clipping box intersection
+    const std::pair<bool, float> inter = mouseRayImgSpace.intersects(::Ogre::AxisAlignedBox(min, max));
+
+    if(m_selectionMode == NONE)
+    {
+        if(inter.first)
+        {
+            // Get picked point in box space.
+            m_selectionMode = BOX;
+
+            m_boundingBox->setMaterialName(0, m_id + "_FrameHighlight");
+        }
+        else
+        {
+            m_selectionMode = CAMERA;
+        }
+    }
+
+    const float speed = m_volumeSceneNode->getScale().z / static_cast<float>(height) * 10.f;
+
+    if(m_selectionMode == CAMERA)
+    {
+        const float dz = static_cast<float>(dy) * speed;
+
+        ::Ogre::Vector3 transVec(0.f, 0.f, dz);
+
+        m_camera->getParentNode()->translate(transVec, ::Ogre::Node::TS_LOCAL);
+    }
+    else if(m_selectionMode == BOX)
+    {
+        const float scale = 1.0f + static_cast<float>(dy) * speed;
+
+        ::Ogre::Vector3 ccCenter = (m_clippingCube[1] + m_clippingCube[0]) / 2.f;
+
+        // Scale clipping cube along it's center.
+        ::Ogre::Vector3 cc[2] = {
+            (m_clippingCube[0] - ccCenter) / (::Ogre::Vector3(1.f, 1.f, 1.f) - ccCenter),
+            (m_clippingCube[1] - ccCenter) / (::Ogre::Vector3(1.f, 1.f, 1.f) - ccCenter)
+        };
+
+        cc[0] *= scale;
+        cc[1] *= scale;
+
+        m_clippingCube[0] = cc[0] * (::Ogre::Vector3(1.f, 1.f, 1.f) - ccCenter) + ccCenter;
+        m_clippingCube[1] = cc[1] * (::Ogre::Vector3(1.f, 1.f, 1.f) - ccCenter) + ccCenter;
+    }
+
+    updateClippingCube();
+    updateWidgets();
+
+    m_renderService->requestRender();
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace ui
 } // namespace fwRenderOgre

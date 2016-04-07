@@ -76,6 +76,10 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWIMAGE_SLOT   = "newImage";
 
 //-----------------------------------------------------------------------------
 
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWSAMPLING_SLOT = "updateSampling";
+
+//-----------------------------------------------------------------------------
+
 SVolumeRender::SVolumeRender() throw() :
     m_sceneManager         (nullptr),
     m_volumeSceneNode      (nullptr),
@@ -86,6 +90,7 @@ SVolumeRender::SVolumeRender() throw() :
 {
     this->installTFSlots(this);
     newSlot(s_NEWIMAGE_SLOT, &SVolumeRender::newImage, this);
+    newSlot(s_NEWSAMPLING_SLOT, &SVolumeRender::samplingChanged, this);
 
     m_transform = ::Ogre::Matrix4::IDENTITY;
 }
@@ -479,6 +484,19 @@ void SVolumeRender::newImage()
     scaleCube(image->getSpacing());
 
     updatingTFPoints();
+
+    this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::samplingChanged(int nbSamples)
+{
+    OSLM_ASSERT("Sampling rate must fit in a 16 bit uint.", nbSamples < 65536 && nbSamples >= 0);
+    m_nbSlices = static_cast<uint16_t>(nbSamples);
+
+    initSlices();
+    updateAllSlices();
 
     this->requestRender();
 }
