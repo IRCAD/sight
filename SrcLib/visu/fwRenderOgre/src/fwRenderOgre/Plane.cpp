@@ -20,6 +20,7 @@
 
 namespace fwRenderOgre
 {
+unsigned int Plane::s_id = 0;
 
 //-----------------------------------------------------------------------------
 
@@ -79,8 +80,9 @@ void Plane::initializeMaterial()
                                      : ::Ogre::MaterialManager::getSingleton().getByName("Negato2D");
 
     m_texMaterial = ::Ogre::MaterialManager::getSingleton().create(
-        "NegatoMat",
+        "NegatoMat" + std::to_string(s_id),
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    s_id++;
 
     defaultMat->copyDetailsTo(m_texMaterial);
 

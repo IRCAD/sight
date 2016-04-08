@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -85,6 +85,21 @@ public:
 
 private:
 
+    /// Sets the plane's original position.
+    void initializePosition();
+
+    /// Creates a material for the mesh plane with the negato texture
+    void initializeMaterial();
+
+    /// Sets the relativePosition, then
+    void setRelativePosition(float _relativePosition);
+
+    /// Moves plane along its Normal.
+    void moveAlongAxis();
+
+    /// Sets the dimensions for the related members, and also creates a movable plane to instanciate the entity.
+    Ogre::MovablePlane* setDimensions();
+
     /// Indicates whether the plane is used by a 3D negato or not
     bool m_is3D;
 
@@ -136,20 +151,7 @@ private:
     /// As said in the name, opacity applied to the entity.
     float m_entityOpacity;
 
-    /// Sets the plane's original position.
-    void initializePosition();
-
-    /// Creates a material for the mesh plane with the negato texture
-    void initializeMaterial();
-
-    /// Sets the relativePosition, then
-    void setRelativePosition(float _relativePosition);
-
-    /// Moves plane along its Normal.
-    void moveAlongAxis();
-
-    /// Sets the dimensions for the related members, and also creates a movable plane to instanciate the entity.
-    Ogre::MovablePlane* setDimensions();
+    static unsigned int s_id;
 };
 
 //------------------------------------------------------------------------------

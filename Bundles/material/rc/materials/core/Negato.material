@@ -1,14 +1,4 @@
 
-//---------------------------------------------------------------------------
-
-vertex_program Render_VP glsl
-{
-    source Render_VP.glsl
-    default_params
-    {
-        param_named_auto u_worldViewProj worldviewproj_matrix
-    }
-}
 
 //---------------------------------------------------------------------------
 
