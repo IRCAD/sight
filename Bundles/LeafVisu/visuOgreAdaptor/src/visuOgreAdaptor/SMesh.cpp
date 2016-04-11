@@ -112,6 +112,7 @@ SMesh::SMesh() throw() :
     m_hasUV(false),
     m_isReconstructionManaged(false),
     m_useNewMaterialAdaptor(false),
+    m_isVisible(true),
     m_r2vbEntity(nullptr)
 {
     m_material = ::fwData::Material::New();
@@ -141,6 +142,28 @@ SMesh::~SMesh() throw()
     {
         ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
         sceneMgr->destroyEntity(m_entity);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void visuOgreAdaptor::SMesh::updateVisibility(bool isVisible)
+{
+    m_isVisible = isVisible;
+    if(m_entity)
+    {
+        m_entity->setVisible(isVisible);
+
+        if(m_r2vbEntity)
+        {
+            m_r2vbEntity->setVisible(isVisible);
+        }
+        for(auto& it : m_r2vbObject)
+        {
+            it.second->setVisible(m_isVisible);
+        }
+
+        this->requestRender();
     }
 }
 
@@ -563,6 +586,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
     if(!m_entity)
     {
         m_entity = sceneMgr->createEntity(m_ogreMesh);
+        m_entity->setVisible(m_isVisible);
         sceneMgr->getRootSceneNode()->detachObject(m_entity);
     }
 
@@ -614,6 +638,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
         if(!m_r2vbEntity)
         {
             m_r2vbEntity = sceneMgr->createEntity(m_r2vbMesh);
+            m_r2vbEntity->setVisible(m_isVisible);
             sceneMgr->getRootSceneNode()->detachObject(m_r2vbEntity);
         }
 
@@ -668,6 +693,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
                 // Attach r2vb object in the scene graph
                 this->attachNode(m_r2vbObject[cellType]);
+                m_r2vbObject[cellType]->setVisible(m_isVisible);
             }
 
             m_r2vbObject[cellType]->setOutputSettings(static_cast<unsigned int>(subMesh->indexData->indexCount),
