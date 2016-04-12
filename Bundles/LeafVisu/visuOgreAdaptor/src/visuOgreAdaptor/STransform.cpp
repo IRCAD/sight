@@ -51,16 +51,16 @@ void STransform::doConfigure() throw(fwTools::Failed)
 
     // Base class configuration
     SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
-    this->setTransformUID( m_configuration->getAttributeValue("transform") );
+    this->setTransformId( m_configuration->getAttributeValue("transform") );
 
     if ( m_configuration->hasAttribute( "parent" ) )
     {
-        m_parentTransformUID = m_configuration->getAttributeValue("parent");
+        m_parentTransformId = m_configuration->getAttributeValue("parent");
 
-        if(m_parentTransformUID.empty())
+        if(m_parentTransformId.empty())
         {
             OSLM_ERROR(
-                "visuOgreAdaptor->Transform: Can't find parent: '"<< m_parentTransformUID <<
+                "visuOgreAdaptor->Transform: Can't find parent: '"<< m_parentTransformId <<
                 "'. Check XML configuration"
                 );
         }
@@ -72,9 +72,9 @@ void STransform::doConfigure() throw(fwTools::Failed)
 void STransform::doStart() throw(fwTools::Failed)
 {
     ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    if(!this->getTransformUID().empty())
+    if(!this->getTransformId().empty())
     {
-        m_transformNode = ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformUID(), rootSceneNode);
+        m_transformNode = ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformId(), rootSceneNode);
     }
 
     if(m_transformNode)
@@ -83,18 +83,18 @@ void STransform::doStart() throw(fwTools::Failed)
         return;
     }
 
-    if (!m_parentTransformUID.empty())
+    if (!m_parentTransformId.empty())
     {
-        m_parentTransformNode = ::fwRenderOgre::helper::Scene::getNodeById(m_parentTransformUID, rootSceneNode);
+        m_parentTransformNode = ::fwRenderOgre::helper::Scene::getNodeById(m_parentTransformId, rootSceneNode);
     }
 
     ::Ogre::SceneManager* sceneManager = this->getSceneManager();
 
     if (!m_parentTransformNode)
     {
-        if (!m_parentTransformUID.empty())
+        if (!m_parentTransformId.empty())
         {
-            m_parentTransformNode = sceneManager->getRootSceneNode()->createChildSceneNode(m_parentTransformUID);
+            m_parentTransformNode = sceneManager->getRootSceneNode()->createChildSceneNode(m_parentTransformId);
         }
         else
         {
@@ -102,7 +102,7 @@ void STransform::doStart() throw(fwTools::Failed)
         }
     }
 
-    m_transformNode = m_parentTransformNode->createChildSceneNode(this->getTransformUID());
+    m_transformNode = m_parentTransformNode->createChildSceneNode(this->getTransformId());
     this->doUpdate();
 }
 

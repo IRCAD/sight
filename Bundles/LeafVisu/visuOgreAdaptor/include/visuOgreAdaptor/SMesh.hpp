@@ -123,7 +123,8 @@ private:
        @endcode
      * With :
      *  - \b renderer (mandatory) : defines the mesh's layer
-     *  - \b transform (optional) : the transformation matrix to associate to the adaptor
+     *  - \b transform (optional) : the name of the Ogre transform node where to attach the mesh, as it was specified
+     * in the STransform adaptor.
      * Either of the following (whether a material is configured in the XML scene or not) :
      *  - \b materialAdaptor (optional) : the name of the associated material adaptor
      * Only if there is no material adaptor configured in the XML scene (in this case, it has to retrieve the material

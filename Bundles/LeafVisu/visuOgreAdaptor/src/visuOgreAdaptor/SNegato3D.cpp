@@ -158,7 +158,7 @@ void SNegato3D::doConfigure() throw(::fwTools::Failed)
     }
     if(m_configuration->hasAttribute("transform"))
     {
-        this->setTransformUID(m_configuration->getAttributeValue("transform"));
+        this->setTransformId(m_configuration->getAttributeValue("transform"));
     }
     if(m_configuration->hasAttribute("filtering"))
     {

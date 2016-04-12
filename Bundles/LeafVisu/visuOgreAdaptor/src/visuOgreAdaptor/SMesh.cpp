@@ -227,7 +227,7 @@ void SMesh::doConfigure() throw(fwTools::Failed)
 
     if(m_configuration->hasAttribute("transform"))
     {
-        this->setTransformUID(m_configuration->getAttributeValue("transform"));
+        this->setTransformId(m_configuration->getAttributeValue("transform"));
     }
 }
 
@@ -1137,46 +1137,25 @@ void SMesh::updateXMLMaterialAdaptor()
 
 void SMesh::createTransformService()
 {
-    // We need to create a transform service only one time
+    // We need to create a transform service only once
     if(m_transformService.expired())
     {
         ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
 
-        ::fwData::TransformationMatrix3D::sptr fieldTransform;
-
-        // Get existing TransformationMatrix3D, else create an empty one
-        if(!this->getTransformUID().empty())
-        {
-            auto object = ::fwTools::fwID::getObject(this->getTransformUID());
-            if(!object)
-            {
-                fieldTransform = ::fwData::TransformationMatrix3D::New();
-            }
-            else
-            {
-                fieldTransform = ::fwData::TransformationMatrix3D::dynamicCast(object);
-                OSLM_ASSERT("Object is not a transform", fieldTransform);
-            }
-        }
-        else
-        {
-            fieldTransform = ::fwData::TransformationMatrix3D::New();
-        }
-
-        // Try to set fieldTransform as default transform of the mesh
+        // Create a transform and set it as a field of the mesh
+        auto fieldTransform = ::fwData::TransformationMatrix3D::New();
         mesh->setField("TransformMatrix", fieldTransform);
 
         m_transformService = ::fwServices::add< ::fwRenderOgre::IAdaptor >(fieldTransform,
                                                                            "::visuOgreAdaptor::STransform");
         SLM_ASSERT("Transform service is null", m_transformService.lock());
-        ::visuOgreAdaptor::STransform::sptr transformService = ::visuOgreAdaptor::STransform::dynamicCast(
-            m_transformService.lock());
+        auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
 
         transformService->setID(this->getID() + "_" + transformService->getID());
         transformService->setRenderService ( this->getRenderService() );
         transformService->setLayerID(m_layerID);
-        transformService->setTransformUID(this->getTransformUID());
-        transformService->setParentTransformUID(this->getParentTransformUID());
+        transformService->setTransformId(this->getTransformId());
+        transformService->setParentTransformId(this->getParentTransformId());
 
         transformService->start();
         this->registerService(transformService);
@@ -1282,8 +1261,7 @@ void SMesh::modifyTexCoords()
 
 void SMesh::attachNode(Ogre::MovableObject *_node)
 {
-    ::visuOgreAdaptor::STransform::sptr transformService = ::visuOgreAdaptor::STransform::dynamicCast(
-        m_transformService.lock());
+    auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
 
     ::Ogre::SceneNode* transNode = transformService->getSceneNode();
     ::Ogre::SceneNode* node      = _node->getParentSceneNode();

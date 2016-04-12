@@ -62,7 +62,7 @@ void SModelSeries::doConfigure() throw(::fwTools::Failed)
 
     if (m_configuration->hasAttribute("transform"))
     {
-        this->setTransformUID(m_configuration->getAttributeValue("transform"));
+        this->setTransformId(m_configuration->getAttributeValue("transform"));
     }
 
     if (m_configuration->hasAttribute("autoresetcamera"))
@@ -124,9 +124,9 @@ void SModelSeries::doUpdate() throw(::fwTools::Failed)
         service->setLayerID(m_layerID);
         auto reconstructionAdaptor = ::visuOgreAdaptor::SReconstruction::dynamicCast(service);
 
-        reconstructionAdaptor->setTransformUID(reconstructionAdaptor->getID() + "_TF");
+        reconstructionAdaptor->setTransformId(reconstructionAdaptor->getID() + "_TF");
         reconstructionAdaptor->setMaterialTemplateName(m_materialTemplateName);
-        reconstructionAdaptor->setParentTransformUID(this->getTransformUID());
+        reconstructionAdaptor->setParentTransformId(this->getTransformId());
         reconstructionAdaptor->setAutoResetCamera(m_autoResetCamera);
 
         service->start();
