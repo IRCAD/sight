@@ -315,7 +315,7 @@ bool SShaderParameter::setParameter(::Ogre::Technique& technique, const fwData::
 
         params->setNamedConstant(m_paramName, paramValues, static_cast<size_t>(nbPoints), static_cast<size_t>(3));
 
-        delete(paramValues);
+        delete [] paramValues;
     }
     else if(objClass == "::fwData::TransformationMatrix3D")
     {
