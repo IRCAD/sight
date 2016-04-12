@@ -135,8 +135,6 @@ void STransform::updateFromOgre()
 
 void STransform::doUpdate() throw(fwTools::Failed)
 {
-    this->getRenderService()->makeCurrent();
-
     ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
 
     ::fwData::mt::ObjectReadLock lock(trf);
