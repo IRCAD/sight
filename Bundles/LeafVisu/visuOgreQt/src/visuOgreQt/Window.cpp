@@ -97,7 +97,6 @@ void Window::initialise()
     parameters["parentWindowHandle"]   = Ogre::StringConverter::toString((size_t)(this->winId()));
 #else
     parameters["externalWindowHandle"] = Ogre::StringConverter::toString((unsigned long)(this->winId()));
-    parameters["parentWindowHandle"]   = Ogre::StringConverter::toString((unsigned long)(this->winId()));
 #endif
 
 #if defined(Q_OS_MAC)
@@ -327,7 +326,6 @@ bool Window::eventFilter(QObject *target, QEvent *event)
 
                 this->makeCurrent();
 
-//              m_ogreRenderWindow->reposition(x(), y());
 #if defined(linux) || defined(__linux) ||(__APPLE__)
                 m_ogreRenderWindow->resize(static_cast< unsigned int >(this->width()),
                                            static_cast< unsigned int >(this->height()));
