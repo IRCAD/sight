@@ -6,9 +6,6 @@
 
 #include "ShadingTest.hpp"
 
-#include <fwTest/helper/compare.hpp>
-#include <fwTest/Data.hpp>
-
 #include "fwRenderOgre/helper/Shading.hpp"
 #include "fwRenderOgre/Utils.hpp"
 

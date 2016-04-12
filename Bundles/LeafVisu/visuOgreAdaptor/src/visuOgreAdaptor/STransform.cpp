@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,14 +12,14 @@
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/IAdaptor.hpp>
+#include <fwRenderOgre/helper/Scene.hpp>
+
 #include <fwServices/macros.hpp>
 
-#include <stack>
-
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::STransform,
-                        ::fwData::TransformationMatrix3D);
+fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::STransform, ::fwData::TransformationMatrix3D);
 
 namespace visuOgreAdaptor
 {
@@ -31,7 +31,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF = "updateTransformation";
 //------------------------------------------------------------------------------
 
 STransform::STransform() throw() :
-    m_ogreTransformNode(nullptr),
+    m_transformNode(nullptr),
     m_parentTransformNode(nullptr)
 {
     newSlot(s_UPDATE_TF, &STransform::update, this);
@@ -71,12 +71,13 @@ void STransform::doConfigure() throw(fwTools::Failed)
 
 void STransform::doStart() throw(fwTools::Failed)
 {
+    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
     if(!this->getTransformUID().empty())
     {
-        m_ogreTransformNode = this->getNodeById(this->getTransformUID());
+        m_transformNode = ::fwRenderOgre::helper::Scene::getNodeById(this->getTransformUID(), rootSceneNode);
     }
 
-    if(m_ogreTransformNode)
+    if(m_transformNode)
     {
         this->doUpdate();
         return;
@@ -84,7 +85,7 @@ void STransform::doStart() throw(fwTools::Failed)
 
     if (!m_parentTransformUID.empty())
     {
-        m_parentTransformNode = getNodeById(m_parentTransformUID);
+        m_parentTransformNode = ::fwRenderOgre::helper::Scene::getNodeById(m_parentTransformUID, rootSceneNode);
     }
 
     ::Ogre::SceneManager* sceneManager = this->getSceneManager();
@@ -101,39 +102,8 @@ void STransform::doStart() throw(fwTools::Failed)
         }
     }
 
-    m_ogreTransformNode = m_parentTransformNode->createChildSceneNode(this->getTransformUID());
+    m_transformNode = m_parentTransformNode->createChildSceneNode(this->getTransformUID());
     this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-::Ogre::SceneNode* STransform::getNodeById(::fwRenderOgre::SRender::OgreObjectIdType transformId)
-{
-    ::Ogre::SceneNode* sceneNode                 = nullptr;
-    ::Ogre::SceneManager* sceneManager           = this->getSceneManager();
-    ::Ogre::SceneNode::ChildNodeIterator rootMap = sceneManager->getRootSceneNode()->getChildIterator();
-
-    std::stack< ::Ogre::SceneNode::ChildNodeIterator > stack;
-    stack.push(rootMap);
-
-    // Recursive search in the graph
-    do
-    {
-        ::Ogre::SceneNode::ChildNodeIterator map = stack.top();
-        stack.pop();
-        for(auto it : map)
-        {
-            if (it.first == transformId)
-            {
-                sceneNode = static_cast< ::Ogre::SceneNode* >(it.second);
-                break;
-            }
-            stack.push(it.second->getChildIterator());
-        }
-    }
-    while( !stack.empty() );
-
-    return sceneNode;
 }
 
 //------------------------------------------------------------------------------
@@ -183,9 +153,9 @@ void STransform::doUpdate() throw(fwTools::Failed)
     ::Ogre::Quaternion orientation;
     m_transform.decomposition(position, scale, orientation);
 
-    m_ogreTransformNode->setOrientation(orientation);
-    m_ogreTransformNode->setPosition(position);
-    m_ogreTransformNode->setScale(scale);
+    m_transformNode->setOrientation(orientation);
+    m_transformNode->setPosition(position);
+    m_transformNode->setScale(scale);
 
     this->requestRender();
 }
@@ -209,7 +179,7 @@ const ::Ogre::Matrix4& STransform::getTransform() const
 
 ::Ogre::SceneNode* STransform::getSceneNode()
 {
-    return m_ogreTransformNode;
+    return m_transformNode;
 }
 
 //------------------------------------------------------------------------------
