@@ -281,6 +281,18 @@ void Window::exposeEvent(QExposeEvent *event)
 
 // ----------------------------------------------------------------------------
 
+void Window::moveEvent(QMoveEvent *event)
+{
+    Q_UNUSED(event);
+
+    if (m_ogreRenderWindow != nullptr)
+    {
+        m_ogreRenderWindow->reposition(x(), y());
+    }
+}
+
+// ----------------------------------------------------------------------------
+
 void Window::renderNow()
 {
     if (!isExposed())
@@ -310,10 +322,6 @@ bool Window::eventFilter(QObject *target, QEvent *event)
     {
         if (m_ogreRenderWindow != nullptr)
         {
-            if (event->type() == QEvent::Move)
-            {
-                m_ogreRenderWindow->reposition(x(), y());
-            }
             if (event->type() == QEvent::Resize )
             {
 
