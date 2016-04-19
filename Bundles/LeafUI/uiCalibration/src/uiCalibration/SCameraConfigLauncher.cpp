@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -226,7 +226,7 @@ void SCameraConfigLauncher::onRemoveClicked()
         sig->asyncEmit(camera);
 
         // Remove calibrationInfo
-        std::string calibrationInfoKey = "calibrationInfo" + camera->getID();
+        std::string calibrationInfoKey = "calibrationInfo_" + std::to_string(index);
         m_activitySeries->getData()->getContainer().erase(calibrationInfoKey);
 
         const size_t nbCam = m_cameraSeries->getNumberOfCameras();
@@ -276,7 +276,7 @@ void SCameraConfigLauncher::startIntrinsicConfig(size_t index)
 
     ::arData::Camera::sptr camera = m_cameraSeries->getCamera(index);
 
-    std::string calibrationInfoKey = "calibrationInfo" + camera->getID();
+    std::string calibrationInfoKey = "calibrationInfo_" + std::to_string(index);
     ::fwData::Composite::sptr data            = m_activitySeries->getData();
     ::arData::CalibrationInfo::sptr calibInfo =
         ::arData::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfoKey]);
@@ -351,7 +351,7 @@ void SCameraConfigLauncher::addCamera()
     ::arData::Camera::sptr camera = ::arData::Camera::New();
 
     // Add the CalibrationInfo in activitySeries to be saved in activity
-    std::string calibrationInfoKey = "calibrationInfo" + camera->getID();
+    std::string calibrationInfoKey = "calibrationInfo_" + std::to_string(nbCam);
     ::arData::CalibrationInfo::sptr calibInfo                       = ::arData::CalibrationInfo::New();
     m_activitySeries->getData()->getContainer()[calibrationInfoKey] = calibInfo;
 
