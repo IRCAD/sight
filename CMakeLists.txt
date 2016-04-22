@@ -28,7 +28,10 @@ set_property(GLOBAL PROPERTY AUTOGEN_TARGETS_FOLDER automoc)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")  #racy backward compatibility
 
-set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
+option(USE_SYSTEM_LIB "Use system libraries to compile fw4spl" OFF)
+if(NOT USE_SYSTEM_LIB)
+    set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
+endif()
 set(CREATE_SUBPROJECTS OFF CACHE BOOL "Create a project for each subproject")
 set(BUILD_TESTS ON CACHE BOOL "Configures projects associated tests (<project>Test projects)")
 set(ADDITIONAL_PROJECTS CACHE PATH
@@ -54,7 +57,7 @@ if(ADDITIONAL_PROJECTS)
             add_subdirectory(${ADDITIONAL_PROJECT} ${DIR_NAME})
         endif()
     endforeach()
-endif(ADDITIONAL_PROJECTS)
+endif()
 
 # Set warning level and function export visibility on Unix
 if(UNIX)
@@ -165,7 +168,7 @@ macro(initProject PRJNAME )
 
         list(APPEND ${FWPROJECT_NAME}_HEADERS ${HEADERS})
         list(APPEND ${FWPROJECT_NAME}_SOURCES ${SOURCES})
-    endforeach(SUBDIR)
+    endforeach()
 
     set (${FWPROJECT_NAME}_INCLUDE_DIR ${${FWPROJECT_NAME}_INCLUDE_DIR} PARENT_SCOPE)
     set (${FWPROJECT_NAME}_DIR     ${CMAKE_CURRENT_SOURCE_DIR}  PARENT_SCOPE)
@@ -189,7 +192,7 @@ macro(initProject PRJNAME )
     endif()
 
     groupMaker(${FWPROJECT_NAME})
-endmacro(initProject)
+endmacro()
 
 
 macro(setVersion FWPROJECT_NAME PROJECT_VERSION)
@@ -234,7 +237,7 @@ macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
     endif()
     unset(SPYLOG_VALID_VALUE)
 
-endmacro(configureProject)
+endmacro()
 
 
 macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
@@ -326,7 +329,7 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
 
     # Adds project into folder exec
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "exec")
-endmacro(fwExec)
+endmacro()
 
 macro(fwCppunitTest FWPROJECT_NAME)
     set(options)
@@ -401,7 +404,7 @@ macro(fwCppunitTest FWPROJECT_NAME)
             "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/${FWPROJECT_NAME}.vcxproj.user"
             IMMEDIATE @ONLY)
     endif()
-endmacro(fwCppunitTest)
+endmacro()
 
 macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     initProject( ${FWPROJECT_NAME} )
@@ -453,7 +456,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     
     fwLibExtra()
 
-endmacro(fwLib)
+endmacro()
 
 macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     initProject( ${FWPROJECT_NAME} )
@@ -542,7 +545,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         createResourcesInstallTarget( "${BUNDLE_DIR}" Bundles/${FWPROJECT_NAME}_${DASH_VERSION} )
     endif()
     fwBundleExtra()
-endmacro(fwBundle)
+endmacro()
 
 # Include the projects in parameter and their public dependencies and export them.
 # Public dependencies of a project are those defined either with fwForwardInclude or fwUseForwardInclude.
@@ -551,37 +554,37 @@ macro(fwUseForwardInclude)
         get_target_property(PROJECT_INCLUDE_DIRECTORIES ${PROJECT} INTERFACE_INCLUDE_DIRECTORIES)
         list(REMOVE_DUPLICATES PROJECT_INCLUDE_DIRECTORIES)
         target_include_directories(${FWPROJECT_NAME} PUBLIC ${PROJECT_INCLUDE_DIRECTORIES})
-    endforeach(PROJECT)
-endmacro(fwUseForwardInclude)
+    endforeach()
+endmacro()
 
 macro(fwUseForwardLink)
     target_link_libraries(${FWPROJECT_NAME} PUBLIC ${ARGV})
-endmacro(fwUseForwardLink)
+endmacro()
 
 macro(fwUseForward)
     fwUseForwardInclude(${ARGV})
     fwUseForwardLink(${ARGV})
-endmacro(fwUseForward)
+endmacro()
 
 # Include the projects in parameter and export them.
 # Compiling warnings will not be reported (because of SYSTEM).
 macro(fwForwardInclude)
     target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC ${ARGV})
-endmacro(fwForwardInclude)
+endmacro()
 
 macro(fwForwardLink)
     target_link_libraries(${FWPROJECT_NAME} PUBLIC ${ARGV})
-endmacro(fwForwardLink)
+endmacro()
 
 # Include the projects in parameter but do not export them.
 # Compiling warnings will not be reported (because of SYSTEM).
 macro(fwInclude)
     target_include_directories(${FWPROJECT_NAME} SYSTEM PRIVATE ${ARGV})
-endmacro(fwInclude)
+endmacro()
 
 macro(fwLink)
     target_link_libraries(${FWPROJECT_NAME} PRIVATE ${ARGV})
-endmacro(fwLink)
+endmacro()
 
 
 # Defines project's linked dependencies on others projects
@@ -600,14 +603,14 @@ macro(fwUse)
     foreach(PROJECT ${ARGV})
         list(APPEND ${FWPROJECT_NAME}_DEPENDENCIES ${PROJECT})
         list(APPEND ${FWPROJECT_NAME}_${${PROJECT}_TYPE}_DEPENDENCIES ${PROJECT})
-    endforeach(PROJECT)
+    endforeach()
 
     set(${FWPROJECT_NAME}_DEPENDENCIES ${${FWPROJECT_NAME}_DEPENDENCIES} PARENT_SCOPE)
     set(${FWPROJECT_NAME}_EXECUTABLE_DEPENDENCIES ${${FWPROJECT_NAME}_EXECUTABLE_DEPENDENCIES} PARENT_SCOPE)
     set(${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES ${${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES} PARENT_SCOPE)
     set(${FWPROJECT_NAME}_LIBRARY_DEPENDENCIES ${${FWPROJECT_NAME}_LIBRARY_DEPENDENCIES} PARENT_SCOPE)
 
-endmacro(fwUse)
+endmacro()
 
 
 
@@ -626,14 +629,14 @@ macro(fwReq)
     foreach(PROJECT ${ARGV})
         list(APPEND ${FWPROJECT_NAME}_REQUIREMENTS ${PROJECT})
         list(APPEND ${FWPROJECT_NAME}_${${PROJECT}_TYPE}_REQUIREMENTS ${PROJECT})
-    endforeach(PROJECT)
+    endforeach()
 
     set(${FWPROJECT_NAME}_REQUIREMENTS ${${FWPROJECT_NAME}_REQUIREMENTS} PARENT_SCOPE)
     set(${FWPROJECT_NAME}_EXECUTABLE_REQUIREMENTS ${${FWPROJECT_NAME}_EXECUTABLE_REQUIREMENTS} PARENT_SCOPE)
     set(${FWPROJECT_NAME}_BUNDLE_REQUIREMENTS ${${FWPROJECT_NAME}_BUNDLE_REQUIREMENTS} PARENT_SCOPE)
     set(${FWPROJECT_NAME}_LIBRARY_REQUIREMENTS ${${FWPROJECT_NAME}_LIBRARY_REQUIREMENTS} PARENT_SCOPE)
 
-endmacro(fwReq)
+endmacro()
 
 
 function(checkMissingDependencies DIR KEYWORD RESULT)
@@ -651,10 +654,10 @@ function(checkMissingDependencies DIR KEYWORD RESULT)
     foreach(DEPENDENCY ${DEPENDENCIES})
         if(NOT ${DEPENDENCY}_TYPE)
             list(APPEND DEPENDENCY_LIST ${DEPENDENCY})
-        endif(NOT ${DEPENDENCY}_TYPE)
-    endforeach(DEPENDENCY)
+        endif()
+    endforeach()
     set(${RESULT} ${DEPENDENCY_LIST} PARENT_SCOPE)
-endfunction(checkMissingDependencies)
+endfunction()
 
 
 function(findAllDependencies FWPROJECT_NAMES RESULT_VAR)
@@ -777,8 +780,17 @@ if(EXTERNAL_LIBRARIES)
     foreach(LIB_CONFIG ${LIB_CONFIGS})
         message(STATUS "include : ${LIB_CONFIG}")
         include("${LIB_CONFIG}")
-    endforeach(LIB_CONFIG)
-endif(EXTERNAL_LIBRARIES)
+    endforeach()
+elseif(USE_SYSTEM_LIB)
+    list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+    list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+    list(APPEND CMAKE_FIND_ROOT_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+    file(GLOB LIB_CONFIGS ${FWCMAKE_RESOURCE_PATH}/modules/fw-*.cmake )
+    foreach(LIB_CONFIG ${LIB_CONFIGS})
+        message(STATUS "include : ${LIB_CONFIG}")
+        include("${LIB_CONFIG}")
+    endforeach()
+endif()
 
 
 set(PROJECTS_TO_BUILD CACHE STRING
@@ -802,7 +814,7 @@ if(ADDITIONAL_PROJECTS)
         list(APPEND PROJECTS_PROPERTIES ${ADDITIONAL_PROJECTS_PROPERTIES})
         set(ADDITIONAL_PROJECTS_SOURCE_DIR "${ADDITIONAL_PROJECTS_SOURCE_DIR} ${ADDITIONAL_PROJECT}")
     endforeach()
-endif(ADDITIONAL_PROJECTS)
+endif()
 
 foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
     get_filename_component(PROJECT_DIR ${PROPERTIES_FILE} PATH)
@@ -884,7 +896,7 @@ if(PROJECTS_TO_INSTALL)
     unset(PROJECT_FOUND)
 endif()
 
-if(EXTERNAL_LIBRARIES)
+if(EXTERNAL_LIBRARIES OR USE_SYSTEM_LIB)
     set(APP_TO_BUILD)
     foreach(PROJECT ${PROJECT_LIST})
         addProject(${PROJECT})
@@ -898,7 +910,6 @@ if(EXTERNAL_LIBRARIES)
             endif()
         endif()
     endforeach()
-
 else()
     message("EXTERNAL_LIBRARIES variable is missing. Please, specify external libraries location to genereate CMake projects.")
 endif()

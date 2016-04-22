@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,12 +9,14 @@
 #include "fwRenderVTK/vtk/fwVtkCellPicker.hpp"
 #include "fwRenderVTK/vtk/InteractorStyle2DForNegato.hpp"
 #include "fwRenderVTK/vtk/InteractorStyle3DForNegato.hpp"
-
-#include <fwCore/base.hpp>
-#include <vtkInstantiator.h>
-
 #include "fwRenderVTK/vtk/Instantiator.hpp"
 
+#include <fwCore/base.hpp>
+
+#include <vtkInstantiator.h>
+#include <vtkVersion.h>
+
+#if VTK_MAJOR_VERSION >= 6 && VTK_MINOR_VERSION > 1
 #ifndef ANDROID
 vtkInstantiatorNewMacro(fwVtkBoxRepresentation);
 #endif
@@ -22,6 +24,15 @@ vtkInstantiatorNewMacro(fwVtkPicker);
 vtkInstantiatorNewMacro(fwVtkCellPicker);
 vtkInstantiatorNewMacro(InteractorStyle2DForNegato);
 vtkInstantiatorNewMacro(InteractorStyle3DForNegato);
+#else
+#ifndef ANDROID
+extern vtkObject* vtkInstantiatorfwVtkBoxRepresentationNew();
+#endif
+extern vtkObject* vtkInstantiatorfwVtkPickerNew();
+extern vtkObject* vtkInstantiatorfwVtkCellPickerNew();
+extern vtkObject* vtkInstantiatorInteractorStyle2DForNegatoNew();
+extern vtkObject* vtkInstantiatorInteractorStyle3DForNegatoNew();
+#endif
 
 namespace fwRenderVTK
 {
