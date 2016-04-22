@@ -816,6 +816,7 @@ if(ADDITIONAL_PROJECTS)
     endforeach()
 endif()
 
+unset(PROJECT_LIST)
 foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
     get_filename_component(PROJECT_DIR ${PROPERTIES_FILE} PATH)
 
@@ -877,7 +878,12 @@ endif()
 
 if(BUILD_TESTS)
     findTests("${PROJECT_LIST}" PROJECT_TESTS)
-    set(PROJECT_LIST ${PROJECT_LIST};${PROJECT_TESTS})
+    list(APPEND PROJECT_LIST ${PROJECT_TESTS})
+else()
+    findTests("${PROJECT_LIST}" PROJECT_TESTS)
+    if(PROJECT_TESTS)
+        list(REMOVE_ITEM PROJECT_LIST ${PROJECT_TESTS})
+    endif()
 endif()
 
 if(PROJECTS_TO_INSTALL)
