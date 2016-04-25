@@ -1,0 +1,12 @@
+{
+    "context" : "MedicalData",
+    "origin_version" : "V09ALA",
+    "target_version" : "V08ALA",
+    "patcher" : "DefaultPatcher",
+    "links" : [
+        {
+            "::fwData::Material" : "4",
+            "::fwData::Material" : "3"
+        }
+    ]
+}
