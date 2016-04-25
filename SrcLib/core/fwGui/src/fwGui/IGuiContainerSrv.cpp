@@ -7,6 +7,11 @@
 #include "fwGui/IGuiContainerSrv.hpp"
 #include "fwGui/registry/worker.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwCore/base.hpp>
 #include <fwServices/Base.hpp>
 #include <fwTools/fwID.hpp>
@@ -14,10 +19,25 @@
 namespace fwGui
 {
 
+const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_SET_ENABLED_SLOT = "setEnabled";
+const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_ENABLE_SLOT      = "enable";
+const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_DISABLE_SLOT     = "disable";
+const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_SET_VISIBLE_SLOT = "setVisible";
+const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_SHOW_SLOT        = "show";
+const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_HIDE_SLOT        = "hide";
+
+//-----------------------------------------------------------------------------
+
 IGuiContainerSrv::IGuiContainerSrv()
     : m_viewLayoutManagerIsCreated (false),
       m_hasToolBar(false)
 {
+    newSlot(s_SET_ENABLED_SLOT, &IGuiContainerSrv::setEnabled, this);
+    newSlot(s_ENABLE_SLOT, &IGuiContainerSrv::enable, this);
+    newSlot(s_DISABLE_SLOT, &IGuiContainerSrv::disable, this);
+    newSlot(s_SET_VISIBLE_SLOT, &IGuiContainerSrv::setVisible, this);
+    newSlot(s_SHOW_SLOT, &IGuiContainerSrv::show, this);
+    newSlot(s_HIDE_SLOT,&IGuiContainerSrv::hide, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -193,6 +213,50 @@ void IGuiContainerSrv::setParent(std::string wid)
             SLM_ASSERT("Parent container is unknown.", parent);
             m_containerBuilder->setParent(parent);
         } ));
+}
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainerSrv::setEnabled(bool isEnabled)
+{
+    ::fwGui::container::fwContainer::sptr container = m_viewRegistrar->getParent();
+    container->setEnabled(isEnabled);
+}
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainerSrv::enable()
+{
+    this->setEnabled(true);
+}
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainerSrv::disable()
+{
+    this->setEnabled(false);
+}
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainerSrv::setVisible(bool isVisible)
+{
+    ::fwGui::container::fwContainer::sptr container = m_viewRegistrar->getParent();
+    container->setVisible(isVisible);
+}
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainerSrv::show()
+{
+    this->setVisible(true);
+}
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainerSrv::hide()
+{
+    this->setVisible(false);
 }
 
 //-----------------------------------------------------------------------------
