@@ -29,23 +29,18 @@ VRWidget::VRWidget(const std::string id,
                    ::Ogre::SceneNode *parentSceneNode,
                    ::Ogre::Camera    *camera,
                    SRender::sptr renderService,
-                   const CubeFacePositionsMap& cubeFaces,
-                   const CubeEdgeList& edges,
-                   const ::Ogre::Vector3 *imgPositions,
-                   ::Ogre::Vector3 *imgClippedPositions) throw() :
-    m_selectionMode        (NONE),
-    m_id                   (id),
-    m_sceneManager         (renderService->getSceneManager()),
-    m_camera               (camera),
-    m_renderService        (renderService),
-    m_volumeSceneNode      (parentSceneNode),
-    m_cubeFaces            (cubeFaces),
-    m_edges                (edges),
-    m_imagePositions       (imgPositions),
-    m_clippedImagePositions(imgClippedPositions),
-    m_boundingBox          (nullptr),
-    m_selectedFace         (nullptr),
-    m_selectedWidget       (nullptr)
+                   IVolumeRenderer* renderer) throw() :
+    m_selectionMode   (NONE),
+    m_id              (id),
+    m_sceneManager    (renderService->getSceneManager()),
+    m_camera          (camera),
+    m_renderService   (renderService),
+    m_volumeSceneNode (parentSceneNode),
+    m_widgetSceneNode (m_volumeSceneNode->createChildSceneNode()),
+    m_renderer        (renderer),
+    m_boundingBox     (nullptr),
+    m_selectedFace    (nullptr),
+    m_selectedWidget  (nullptr)
 {
     initWidgets();
 }
@@ -58,9 +53,9 @@ VRWidget::~VRWidget()
 
 //-----------------------------------------------------------------------------
 
-std::array< ::Ogre::Vector3, 4 > VRWidget::getFacePositions(VRWidget::CubeFace _faceName) const
+std::array< ::Ogre::Vector3, 4 > VRWidget::getFacePositions(IVolumeRenderer::CubeFace _faceName) const
 {
-    const CubeFacePositionList positionIndices = m_cubeFaces.at(_faceName);
+    const IVolumeRenderer::CubeFacePositionList positionIndices = m_renderer->s_cubeFaces.at(_faceName);
     std::array< ::Ogre::Vector3, 4 > facePositions;
 
     auto BBpositions = getClippingBoxPositions();
@@ -73,7 +68,7 @@ std::array< ::Ogre::Vector3, 4 > VRWidget::getFacePositions(VRWidget::CubeFace _
 
 //-----------------------------------------------------------------------------
 
-Ogre::Vector3 VRWidget::getFaceCenter(VRWidget::CubeFace _faceName) const
+Ogre::Vector3 VRWidget::getFaceCenter(IVolumeRenderer::CubeFace _faceName) const
 {
     const auto facePositions = getFacePositions(_faceName);
     return std::accumulate(facePositions.cbegin() + 1, facePositions.cend(), facePositions[0]) / 4.f;
@@ -102,13 +97,7 @@ void VRWidget::updateClippingCube()
     const ::Ogre::Vector3 min = m_clippingCube[0];
     const ::Ogre::Vector3 max = m_clippingCube[1];
 
-    for(unsigned i = 0; i < 8; ++ i)
-    {
-        m_clippedImagePositions[i] = ::Ogre::Vector3(
-                    ::boost::algorithm::clamp(m_imagePositions[i].x, min.x, max.x),
-                    ::boost::algorithm::clamp(m_imagePositions[i].y, min.y, max.y),
-                    ::boost::algorithm::clamp(m_imagePositions[i].z, min.z, max.z));
-    }
+    m_renderer->clipImage(::Ogre::AxisAlignedBox(min, max));
 }
 
 //-----------------------------------------------------------------------------
@@ -122,15 +111,15 @@ void VRWidget::updateWidgets()
         // Box
         for(unsigned i = 0; i < 12; ++ i)
         {
-            m_boundingBox->position(clippingBoxPositions[m_edges[i].first ]);
-            m_boundingBox->position(clippingBoxPositions[m_edges[i].second]);
+            m_boundingBox->position(clippingBoxPositions[m_renderer->s_cubeEdges[i].first ]);
+            m_boundingBox->position(clippingBoxPositions[m_renderer->s_cubeEdges[i].second]);
         }
 
         // Cross
         for(unsigned i = 0; i < 6; i += 2)
         {
-            m_boundingBox->position(getFaceCenter(static_cast<CubeFace>(i  )));
-            m_boundingBox->position(getFaceCenter(static_cast<CubeFace>(i+1)));
+            m_boundingBox->position(getFaceCenter(static_cast<IVolumeRenderer::CubeFace>(i  )));
+            m_boundingBox->position(getFaceCenter(static_cast<IVolumeRenderer::CubeFace>(i+1)));
         }
     }
     m_boundingBox->end();
@@ -138,7 +127,7 @@ void VRWidget::updateWidgets()
     // Recenter widgets
     for(auto& widget : m_widgets)
     {
-        CubeFace cf = widget.second.first;
+        IVolumeRenderer::CubeFace cf = widget.second.first;
         ::Ogre::Vector3 faceCenter = getFaceCenter(cf);
 
         widget.second.second->setPosition(faceCenter);
@@ -185,20 +174,20 @@ void VRWidget::initWidgets()
     {
         for(unsigned i = 0; i < 12; ++ i)
         {
-            m_boundingBox->position(clippingBoxPositions[m_edges[i].first ]);
-            m_boundingBox->position(clippingBoxPositions[m_edges[i].second]);
+            m_boundingBox->position(clippingBoxPositions[m_renderer->s_cubeEdges[i].first ]);
+            m_boundingBox->position(clippingBoxPositions[m_renderer->s_cubeEdges[i].second]);
         }
 
         // Cross
         for(unsigned i = 0; i < 6; i += 2)
         {
-            m_boundingBox->position(getFaceCenter(static_cast<CubeFace>(i  )));
-            m_boundingBox->position(getFaceCenter(static_cast<CubeFace>(i+1)));
+            m_boundingBox->position(getFaceCenter(static_cast<IVolumeRenderer::CubeFace>(i  )));
+            m_boundingBox->position(getFaceCenter(static_cast<IVolumeRenderer::CubeFace>(i+1)));
         }
     }
     m_boundingBox->end();
 
-    m_volumeSceneNode->attachObject(m_boundingBox);
+    m_widgetSceneNode->attachObject(m_boundingBox);
 
     m_selectedFace->begin(m_id + "_FaceHighlight", Ogre::RenderOperation::OT_TRIANGLE_STRIP);
     {
@@ -215,28 +204,28 @@ void VRWidget::initWidgets()
     // Create a pickable sphere for each cube face
     for(unsigned i = 0; i < 6; ++ i)
     {
-        CubeFace currentFace = static_cast<CubeFace>(i);
+        IVolumeRenderer::CubeFace currentFace = static_cast<IVolumeRenderer::CubeFace>(i);
 
         ::Ogre::Entity *newWidget = m_sceneManager->createEntity( ::Ogre::SceneManager::PT_SPHERE );
         newWidget->setMaterialName("Default");
 
-        ::Ogre::SceneNode *widgetSceneNode = m_volumeSceneNode->createChildSceneNode();
+        ::Ogre::SceneNode *sphereSceneNode = m_widgetSceneNode->createChildSceneNode();
 
-        m_widgets[newWidget] = std::make_pair(currentFace, widgetSceneNode);
+        m_widgets[newWidget] = std::make_pair(currentFace, sphereSceneNode);
 
         ::Ogre::Vector3 faceCenter = getFaceCenter(currentFace);
 
-        widgetSceneNode->setPosition(faceCenter);
-        widgetSceneNode->setInheritScale(false);
-        widgetSceneNode->setScale(0.0002f, 0.0002f, 0.0002f);
+        sphereSceneNode->setPosition(faceCenter);
+        sphereSceneNode->setInheritScale(false);
+        sphereSceneNode->setScale(0.0002f, 0.0002f, 0.0002f);
 
-        widgetSceneNode->attachObject(newWidget);
+        sphereSceneNode->attachObject(newWidget);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void VRWidget::selectFace(VRWidget::CubeFace _faceName)
+void VRWidget::selectFace(IVolumeRenderer::CubeFace _faceName)
 {
     m_selectedFace->beginUpdate(0);
     {
@@ -248,7 +237,7 @@ void VRWidget::selectFace(VRWidget::CubeFace _faceName)
     }
     m_selectedFace->end();
 
-    m_volumeSceneNode->attachObject(m_selectedFace);
+    m_widgetSceneNode->attachObject(m_selectedFace);
 }
 
 //-----------------------------------------------------------------------------
@@ -257,7 +246,7 @@ void VRWidget::deselectFace()
 {
     if(m_selectedFace->isAttached())
     {
-        m_volumeSceneNode->detachObject(m_selectedFace->getName());
+        m_widgetSceneNode->detachObject(m_selectedFace->getName());
     }
 }
 
@@ -274,7 +263,7 @@ void VRWidget::widgetPicked(::Ogre::MovableObject * _pickedWidget, int _screenX,
 
     if(face != m_widgets.end())
     {
-        CubeFace widgetFace = face->second.first;
+        IVolumeRenderer::CubeFace widgetFace = face->second.first;
         ::Ogre::SceneNode *widgetSceneNode = face->second.second;
 
         ::Ogre::Ray mouseRay = m_camera->getCameraToViewportRay(
@@ -292,12 +281,12 @@ void VRWidget::widgetPicked(::Ogre::MovableObject * _pickedWidget, int _screenX,
 
         switch(widgetFace)
         {
-        case X_NEGATIVE: tmpClippingCube[0].x = newPos.x; break;
-        case X_POSITIVE: tmpClippingCube[1].x = newPos.x; break;
-        case Y_NEGATIVE: tmpClippingCube[0].y = newPos.y; break;
-        case Y_POSITIVE: tmpClippingCube[1].y = newPos.y; break;
-        case Z_NEGATIVE: tmpClippingCube[0].z = newPos.z; break;
-        case Z_POSITIVE: tmpClippingCube[1].z = newPos.z; break;
+        case IVolumeRenderer::X_NEGATIVE: tmpClippingCube[0].x = newPos.x; break;
+        case IVolumeRenderer::X_POSITIVE: tmpClippingCube[1].x = newPos.x; break;
+        case IVolumeRenderer::Y_NEGATIVE: tmpClippingCube[0].y = newPos.y; break;
+        case IVolumeRenderer::Y_POSITIVE: tmpClippingCube[1].y = newPos.y; break;
+        case IVolumeRenderer::Z_NEGATIVE: tmpClippingCube[0].z = newPos.z; break;
+        case IVolumeRenderer::Z_POSITIVE: tmpClippingCube[1].z = newPos.z; break;
         }
 
         // Check for overlap.
@@ -465,7 +454,6 @@ void VRWidget::scaleClippingBox(int x, int y, int dy)
                 m_volumeSceneNode->convertWorldToLocalDirection(oldPosRay.getDirection(), true)
     );
 
-
     const ::Ogre::Vector3 min = m_clippingCube[0];
     const ::Ogre::Vector3 max = m_clippingCube[1];
 
@@ -520,6 +508,20 @@ void VRWidget::scaleClippingBox(int x, int y, int dy)
     updateWidgets();
 
     m_renderService->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void VRWidget::hide()
+{
+    m_widgetSceneNode->setVisible(false);
+}
+
+//-----------------------------------------------------------------------------
+
+void VRWidget::show()
+{
+    m_widgetSceneNode->setVisible(true);
 }
 
 //-----------------------------------------------------------------------------

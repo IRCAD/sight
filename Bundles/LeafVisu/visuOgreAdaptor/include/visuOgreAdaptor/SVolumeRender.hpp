@@ -10,6 +10,9 @@
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
+#include <fwRenderOgre/PreIntegrationTable.hpp>
+#include <fwRenderOgre/RayTracingVolumeRenderer.hpp>
+#include <fwRenderOgre/SliceVolumeRenderer.hpp>
 #include <fwRenderOgre/TransferFunction.hpp>
 #include <fwRenderOgre/ui/VRWidget.hpp>
 
@@ -50,7 +53,7 @@ protected:
     /// Starts the service initializes scene objects.
     VISUOGREADAPTOR_API virtual void doStart() throw ( ::fwTools::Failed );
 
-    /// Does nothing.
+    /// Cleans up memory.
     VISUOGREADAPTOR_API virtual void doStop() throw ( ::fwTools::Failed );
 
     /// Does nothing.
@@ -59,7 +62,7 @@ protected:
     /// Does nothing.
     VISUOGREADAPTOR_API virtual void doUpdate() throw ( ::fwTools::Failed );
 
-    /// Configures this service.
+    /// Configure volume rendering service.
     VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
 
     /// Slot called on TF update.
@@ -92,35 +95,6 @@ private:
 
     typedef std::vector< ::Ogre::Vector3 > Polygon;
 
-    /// Maps each cube faces to 4 vertex indices.
-    static const ::fwRenderOgre::ui::VRWidget::CubeFacePositionsMap s_cubeFaces;
-
-    /// List of vertex indices pairs that make an edge.
-    static const ::fwRenderOgre::ui::VRWidget::CubeEdgeList s_cubeEdges;
-
-    /// Scale the volume based on the image's spacing.
-    void scaleCube(const ::fwData::Image::SpacingType& spacing);
-
-    /// Initializes the manual object containing the slices.
-    void initSlices();
-
-    /// Updates all the proxy geometry.
-    void updateAllSlices();
-
-    /// Updates a slice's mesh.
-    void updateSlice(const Polygon& _polygon, const unsigned _sliceIndex);
-
-    /// Returns the bounding cube's vertex who's closest to the camera.
-    unsigned closestVertexIndex(const ::Ogre::Plane& _cameraPlane) const;
-
-    /// Adds the intersection (if it exists) between a plane and a segment in the _result polygon.
-    bool planeEdgeIntersection(const ::Ogre::Vector3& _planeNormal, const ::Ogre::Vector3& _planeVertex,
-                               const unsigned _edgeVertexIndex0, const unsigned _edgeVertexIndex1,
-                               Polygon& _result) const;
-
-    /// Returns the intersection between the bounding cube and a plane.
-    Polygon cubePlaneIntersection(const ::Ogre::Vector3& _planeNormal, const ::Ogre::Vector3& _planeVertex, const unsigned _closestVertexIndex) const;
-
     /// Slot called when a new image is loaded.
     void newImage();
 
@@ -130,11 +104,24 @@ private:
     /// Creates widgets and connects its slots to interactor signals.
     void initWidgets();
 
+    /// Rendering mode.
+    enum
+    {
+        VR_MODE_SLICE,
+        VR_MODE_RAY_TRACING
+    } m_renderingMode;
+
+    /// Renders the volume.
+    ::fwRenderOgre::IVolumeRenderer *m_volumeRenderer;
+
     /// 3D Image texture.
     ::Ogre::TexturePtr m_3DOgreTexture;
 
     /// TF texture used for rendering.
     ::fwRenderOgre::TransferFunction m_gpuTF;
+
+    /// Pre-integration table.
+    ::fwRenderOgre::PreIntegrationTable m_preIntegrationTable;
 
     /// This object's scene manager.
     ::Ogre::SceneManager *m_sceneManager;
@@ -142,14 +129,8 @@ private:
     /// This object's scene node.
     ::Ogre::SceneNode *m_volumeSceneNode;
 
-    /// The scene manager's render queue.
-    ::Ogre::RenderQueue *m_sceneRenderQueue;
-
     /// Camera used for rendering.
     ::Ogre::Camera *m_camera;
-
-    /// Object containing the proxy geometry used for slice based VR.
-    ::Ogre::ManualObject *m_intersectingPolygons;
 
     /// Widgets used for clipping.
     ::fwRenderOgre::ui::VRWidget::sptr m_widgets;
@@ -157,20 +138,8 @@ private:
     /// Sampling rate.
     uint16_t m_nbSlices;
 
-    /// Image local and texture coordinates /!\ This order matters to our intersection algorithm.
-    const ::Ogre::Vector3 m_imagePositions[8] = {
-        ::Ogre::Vector3(1, 1, 1),
-        ::Ogre::Vector3(1, 0, 1),
-        ::Ogre::Vector3(1, 1, 0),
-        ::Ogre::Vector3(0, 1, 1),
-        ::Ogre::Vector3(0, 0, 1),
-        ::Ogre::Vector3(1, 0, 0),
-        ::Ogre::Vector3(0, 1, 0),
-        ::Ogre::Vector3(0, 0, 0)
-    };
-
-    /// Intersection between the image and the clipping box.
-    ::Ogre::Vector3 m_clippedImagePositions[8];
+    /// Use pre-integration.
+    bool m_preIntegratedRendering;
 };
 
 } // visuOgreAdaptor

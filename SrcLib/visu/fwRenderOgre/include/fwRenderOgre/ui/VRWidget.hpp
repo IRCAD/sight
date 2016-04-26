@@ -6,6 +6,8 @@
 #include <fwCom/Slots.hpp>
 
 #include <fwRenderOgre/registry/macros.hpp>
+
+#include <fwRenderOgre/IVolumeRenderer.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
 #include <OGRE/OgreCamera.h>
@@ -14,9 +16,13 @@
 
 namespace fwRenderOgre
 {
+
 namespace ui
 {
 
+/**
+ * @brief Holds the clipping widgets, used to clip/move/scale the volume.
+ */
 class VRWidget : public ::fwCom::HasSlots
 {
 public:
@@ -24,35 +30,23 @@ public:
     /// Shared pointer type.
     typedef std::shared_ptr< VRWidget > sptr;
 
-    /// Clipping cube faces.
-    enum CubeFace
-    {
-        X_NEGATIVE = 0,
-        X_POSITIVE = 1,
-        Y_NEGATIVE = 2,
-        Y_POSITIVE = 3,
-        Z_NEGATIVE = 4,
-        Z_POSITIVE = 5
-    };
-
-    /// Array of 4 vertex indices.
-    typedef std::array< unsigned, 4 > CubeFacePositionList;
-
-    /// Maps a face name to an array of 4 vertex indices.
-    typedef std::map< CubeFace, CubeFacePositionList > CubeFacePositionsMap;
-
-    /// Lists vertex indices pairs that form edges.
-    typedef std::array< std::pair<unsigned, unsigned>, 12 > CubeEdgeList;
-
-    /// Constructor.
+    /**
+     * @brief Constructor.
+     *
+     * @param id                   parent service id.
+     * @param parentSceneNode      holds the volume object.
+     * @param camera               render target.
+     * @param renderService        service that renders this scene.
+     * @param cubeFaces            maps cube faces to vertex indices.
+     * @param edges                all pairs of vertex indices forming edges.
+     * @param imgPositions         image bounding box positions.
+     * @param imgClippedPositions  image positions after clipping.
+     */
     FWRENDEROGRE_API VRWidget(const std::string id,
                               ::Ogre::SceneNode *parentSceneNode,
                               ::Ogre::Camera    *camera,
                               SRender::sptr renderService,
-                              const CubeFacePositionsMap& cubeFaces,
-                              const CubeEdgeList& edges,
-                              const ::Ogre::Vector3 *imgPositions,
-                              ::Ogre::Vector3 *imgClippedPositions) throw();
+                              IVolumeRenderer *renderer) throw();
 
     /// Destructor.
     FWRENDEROGRE_API virtual ~VRWidget() throw();
@@ -72,14 +66,27 @@ public:
     /**
      * @brief Translates the clipping box along the screen's axes.
      *
-     * @param x  cursor horizontal position before move
-     * @param y  cursor vertical position before move
+     * @param x  cursor current horizontal position.
+     * @param y  cursor current vertical position.
      * @param dx displacement along the horizontal axis.
      * @param dy displacement along the vertical axis.
      */
     FWRENDEROGRE_API void moveClippingBox(int x, int y, int dx, int dy);
 
+    /**
+     * @brief Scales the clipping box.
+     *
+     * @param x  cursor current horizontal position.
+     * @param y  cursor current vertical position.
+     * @param dy displacement along the vertical axis, used to compute scale factor.
+     */
     FWRENDEROGRE_API void scaleClippingBox(int x, int y, int dy);
+
+    /// Hides the clipping box and widgets.
+    FWRENDEROGRE_API void hide();
+
+    /// Shows the clipping box and widgets.
+    FWRENDEROGRE_API void show();
 
 private:
 
@@ -92,10 +99,10 @@ private:
     } m_selectionMode;
 
     /// Get the face's image positions.
-    std::array< ::Ogre::Vector3, 4 > getFacePositions(CubeFace _faceName) const;
+    std::array< ::Ogre::Vector3, 4 > getFacePositions(IVolumeRenderer::CubeFace _faceName) const;
 
     /// Get the center of a clipping box face.
-    ::Ogre::Vector3 getFaceCenter(CubeFace _faceName) const;
+    ::Ogre::Vector3 getFaceCenter(IVolumeRenderer::CubeFace _faceName) const;
 
     /// Returns the clipping box's image space positions.
     std::array< ::Ogre::Vector3, 8 > getClippingBoxPositions() const;
@@ -110,7 +117,7 @@ private:
     void updateWidgets();
 
     /// Highlight a clipping box face.
-    void selectFace(CubeFace _faceName);
+    void selectFace(IVolumeRenderer::CubeFace _faceName);
 
     /// Unhighlight face.
     void deselectFace();
@@ -130,20 +137,14 @@ private:
     /// Parent node containing the volume.
     ::Ogre::SceneNode *m_volumeSceneNode;
 
+    /// Node holding widget objects.
+    ::Ogre::SceneNode *m_widgetSceneNode;
+
     /// Maps widget objects to their scene node and to a cube face.
-    std::map< ::Ogre::MovableObject *, std::pair< CubeFace, ::Ogre::SceneNode * > >  m_widgets;
+    std::map< ::Ogre::MovableObject *, std::pair< IVolumeRenderer::CubeFace, ::Ogre::SceneNode * > >  m_widgets;
 
-    /// Maps face name to index positions.
-    const CubeFacePositionsMap& m_cubeFaces;
-
-    /// Cube edges.
-    const CubeEdgeList& m_edges;
-
-    /// Image positions (in image space).
-    const ::Ogre::Vector3 *m_imagePositions;
-
-    /// Image positions after clipping (in image space).
-    ::Ogre::Vector3 *m_clippedImagePositions;
+    /// Renders the volume.
+    IVolumeRenderer *m_renderer;
 
     /// Axis aligned clipping cube.
     ::Ogre::Vector3 m_clippingCube[2] = {

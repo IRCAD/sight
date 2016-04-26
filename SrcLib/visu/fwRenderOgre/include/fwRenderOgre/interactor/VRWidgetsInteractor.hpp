@@ -22,8 +22,9 @@ namespace fwRenderOgre
 namespace interactor
 {
 
-//------------------------------------------------------------------------------
-
+/**
+ * @brief Picks VR widgets and updates clipping cube.
+*/
 class FWRENDEROGRE_CLASS_API VRWidgetsInteractor : public ::fwRenderOgre::interactor::TrackballInteractor
 {
 public:

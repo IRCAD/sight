@@ -1,0 +1,100 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>OgreVolumeRendering</id>
+    <parameters>
+        <param name="GENERIC_UID" />
+        <param name="WID_PARENT" />
+        <param name="imageUID" />
+        <param name="TFSelections" />
+    </parameters>
+    <config>
+
+        <object type="::fwData::Composite">
+
+            <service uid="${GENERIC_UID}_OgreVolumeRendering" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <parent wid="${WID_PARENT}" />
+                    <view sid="${GENERIC_UID}_volumeRenderingScene" start="yes" />
+                    <view sid="${GENERIC_UID}_volumeRenderingInteractor" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_volumeRenderingScene" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoConnect="yes" >
+                <scene >
+
+                    <!-- Fix afterglow bug when dezooming -->
+                    <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+
+                    <!-- Default Layer -->
+                    <renderer id="default" layer="1"/>
+
+                    <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
+                        <config renderer="default" style="VR" />
+                    </adaptor>
+
+                    <adaptor id="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image" uid="${GENERIC_UID}_VR" >
+                        <config renderer="default" preintegration="no" mode="raycasting" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}"/>
+                    </adaptor>
+
+                    <connect>
+                        <signal>${GENERIC_UID}_samplingSlider/valueChanged</signal>
+                        <slot>${GENERIC_UID}_VR/updateSampling</slot>
+                    </connect>
+
+                </scene>
+            </service>
+
+            <service uid="${GENERIC_UID}_volumeRenderingInteractor" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager" >
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="${GENERIC_UID}_samplingSlider" start="yes" />
+                    <view sid="${GENERIC_UID}_windowLevelVR" start="yes" />
+                </registry>
+            </service>
+
+            <!-- Negato source image -->
+            <item key="image">
+                <object uid="${imageUID}"  type="::fwData::Image" src="ref" >
+                    <!-- Negato windowing service -->
+                    <service uid="${GENERIC_UID}_windowLevelVR" type="::gui::editor::IEditor" impl="::uiImage::WindowLevel" autoConnect="yes">
+                        <config selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
+                    </service>
+                </object>
+            </item>
+
+            <item key="sampling">
+                <object uid="${GENERIC_UID}_samplingSliderValue" type="::fwData::Integer">
+                    <service uid="${GENERIC_UID}_samplingSlider" impl="::guiQt::editor::SSlider" autoConnect="yes">
+                        <defaultValue>512</defaultValue>
+                        <value>512</value>
+                        <text>Samples</text>
+                        <range>
+                            <min>128</min>
+                            <max>4096</max>
+                        </range>
+                    </service>
+                </object>
+            </item>
+
+
+            <item key="TFSelectionsKey">
+                <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
+            </item>
+
+            <start uid="${GENERIC_UID}_OgreVolumeRendering" />
+        </object>
+
+    </config>
+</extension>
