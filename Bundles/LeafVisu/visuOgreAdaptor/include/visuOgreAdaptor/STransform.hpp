@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -65,12 +65,10 @@ protected:
     VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
     /// Updates m_transform and m_ogreTransformNode from ::fwData::TransformationMatrix3D
     VISUOGREADAPTOR_API void doUpdate() throw(fwTools::Failed);
-    /// returns the adress of the parentSceneNode from its transformId
-    VISUOGREADAPTOR_API ::Ogre::SceneNode* getNodeById(::fwRenderOgre::SRender::OgreObjectIdType transformId);
     /**
      * @brief Ogre transform node.
      */
-    ::Ogre::SceneNode* m_ogreTransformNode;
+    ::Ogre::SceneNode* m_transformNode;
     /// Ogre parent Transform sceneNode
     ::Ogre::SceneNode* m_parentTransformNode;
 

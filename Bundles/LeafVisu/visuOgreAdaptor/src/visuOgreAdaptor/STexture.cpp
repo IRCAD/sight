@@ -94,10 +94,10 @@ void STexture::doConfigure() throw(fwTools::Failed)
 
 void STexture::doStart() throw(fwTools::Failed)
 {
-    m_texture = ::Ogre::TextureManager::getSingletonPtr()->create(
+    m_texture = ::Ogre::TextureManager::getSingletonPtr()->createOrRetrieve(
         m_textureName,
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-        true);
+        true).first.dynamicCast< ::Ogre::Texture>();
 
     this->doUpdate();
 }

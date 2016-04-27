@@ -70,8 +70,6 @@ protected:
     VISUOGREADAPTOR_API void addReconstruction();
     /// calls doStop.
     VISUOGREADAPTOR_API void removeReconstruction();
-    /// Creates the transform adaptor managing the associated transform matrix
-    VISUOGREADAPTOR_API void createTransformService();
 
 private:
 

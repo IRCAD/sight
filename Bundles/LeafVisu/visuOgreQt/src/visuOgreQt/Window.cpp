@@ -97,7 +97,6 @@ void Window::initialise()
     parameters["parentWindowHandle"]   = Ogre::StringConverter::toString((size_t)(this->winId()));
 #else
     parameters["externalWindowHandle"] = Ogre::StringConverter::toString((unsigned long)(this->winId()));
-//    parameters["parentWindowHandle"]   = Ogre::StringConverter::toString((unsigned long)(this->winId()));
 #endif
 
 #if defined(Q_OS_MAC)
@@ -213,8 +212,8 @@ void Window::render()
     m_ogreRoot->_fireFrameStarted();
     m_ogreRenderWindow->update();
     m_ogreRoot->_fireFrameRenderingQueued();
-//    Ogre::FrameEvent evt;
-//    m_trayMgr->frameRenderingQueued(evt);
+    //    Ogre::FrameEvent evt;
+    //    m_trayMgr->frameRenderingQueued(evt);
     m_ogreRoot->_fireFrameEnded();
 
 #ifdef FW_PROFILING_DISABLED
@@ -281,6 +280,18 @@ void Window::exposeEvent(QExposeEvent *event)
 
 // ----------------------------------------------------------------------------
 
+void Window::moveEvent(QMoveEvent *event)
+{
+    Q_UNUSED(event);
+
+    if (m_ogreRenderWindow != nullptr)
+    {
+        m_ogreRenderWindow->reposition(x(), y());
+    }
+}
+
+// ----------------------------------------------------------------------------
+
 void Window::renderNow()
 {
     if (!isExposed())
@@ -308,14 +319,14 @@ bool Window::eventFilter(QObject *target, QEvent *event)
 {
     if (target == this)
     {
-        if (event->type() == QEvent::Resize)
+        if (m_ogreRenderWindow != nullptr)
         {
-            if (m_ogreRenderWindow != nullptr)
+            if (event->type() == QEvent::Resize )
             {
+
                 this->makeCurrent();
 
-                m_ogreRenderWindow->reposition(x(), y());
-#if defined(linux) || defined(__linux)
+#if defined(linux) || defined(__linux) ||(__APPLE__)
                 m_ogreRenderWindow->resize(static_cast< unsigned int >(this->width()),
                                            static_cast< unsigned int >(this->height()));
 #endif
@@ -360,7 +371,6 @@ bool Window::eventFilter(QObject *target, QEvent *event)
             }
         }
     }
-
     return false;
 }
 

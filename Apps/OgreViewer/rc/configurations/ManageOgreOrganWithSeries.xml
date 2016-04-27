@@ -4,14 +4,13 @@
         <param name="GENERIC_UID" />
         <param name="WID_PARENT" />
         <param name="ORGAN_MANAGER_MODELSERIES" />
-        <param name="RECONSTRUCTION_SELECTED" />
         <param name="ICON_PATH" />
     </parameters>
 
     <config>
         <object type="::fwData::Composite">
 
-            <service uid="${GENERIC_UID}_organView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+            <service uid="${GENERIC_UID}_organView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::ToolboxLayoutManager" >
                         <orientation value="horizontal" />
@@ -35,14 +34,14 @@
             <item key="selection">
                 <object type="::fwData::Composite">
 
-                    <service uid="${GENERIC_UID}_myUpdaterReconst" impl="::ctrlSelection::updater::SObjFromSlot" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                    <service uid="${GENERIC_UID}_myUpdaterReconst" impl="::ctrlSelection::updater::SObjFromSlot" autoConnect="no">
                         <compositeKey>reconstruction</compositeKey>
                     </service>
 
-                    <service uid="${GENERIC_UID}_myManagerForOrgansFrame" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_myManagerForOrgansFrame" impl="::ctrlSelection::manager::SwapperSrv" autoConnect="yes">
                         <mode type="stop" />
                         <config>
-                            <object id="${RECONSTRUCTION_SELECTED}" src="ref" type="::fwData::Reconstruction">
+                            <object id="reconstruction" src="ref" type="::fwData::Reconstruction">
                                 <service uid="${GENERIC_UID}_organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="no" />
                                 <service uid="${GENERIC_UID}_representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="no" />
                                 <service uid="${GENERIC_UID}_textureSelector" impl="::uiVisuOgre::STextureSelector" type="::gui::editor::IEditor" autoConnect="no" />
@@ -57,7 +56,7 @@
             <item key="modelSeries">
                 <object uid="${ORGAN_MANAGER_MODELSERIES}" src="ref" type="::fwMedData::ModelSeries">
 
-                    <service uid="${GENERIC_UID}_listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" type="::gui::editor::IEditor" autoConnect="yes" >
+                    <service uid="${GENERIC_UID}_listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" autoConnect="yes" >
                         <columns>
                             <organ_name>@organ_name</organ_name>
                             <volume_cc view="positive" >@volume</volume_cc>

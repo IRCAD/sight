@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -62,7 +62,7 @@ void SModelSeries::doConfigure() throw(::fwTools::Failed)
 
     if (m_configuration->hasAttribute("transform"))
     {
-        this->setTransformUID(m_configuration->getAttributeValue("transform"));
+        this->setTransformId(m_configuration->getAttributeValue("transform"));
     }
 
     if (m_configuration->hasAttribute("autoresetcamera"))
@@ -93,8 +93,6 @@ void SModelSeries::doConfigure() throw(::fwTools::Failed)
 
 void SModelSeries::doStart() throw(::fwTools::Failed)
 {
-    this->createTransformService();
-
     this->doUpdate();
 }
 
@@ -116,8 +114,7 @@ void SModelSeries::doUpdate() throw(::fwTools::Failed)
     for(auto reconstruction : modelSeries->getReconstructionDB())
     {
         ::fwRenderOgre::IAdaptor::sptr service =
-            ::fwServices::add< ::fwRenderOgre::IAdaptor >(reconstruction,
-                                                          "::visuOgreAdaptor::SReconstruction");
+            ::fwServices::add< ::fwRenderOgre::IAdaptor >(reconstruction, "::visuOgreAdaptor::SReconstruction");
         SLM_ASSERT("service not instantiated", service);
 
         // We use the default service ID to get a unique number because a ModelSeries contains several Reconstructions
@@ -125,12 +122,11 @@ void SModelSeries::doUpdate() throw(::fwTools::Failed)
 
         service->setRenderService(this->getRenderService());
         service->setLayerID(m_layerID);
-        ::visuOgreAdaptor::SReconstruction::sptr reconstructionAdaptor =
-            ::visuOgreAdaptor::SReconstruction::dynamicCast(service);
+        auto reconstructionAdaptor = ::visuOgreAdaptor::SReconstruction::dynamicCast(service);
 
-        reconstructionAdaptor->setTransformUID(reconstructionAdaptor->getID() + "_TF");
+        reconstructionAdaptor->setTransformId(reconstructionAdaptor->getID() + "_TF");
         reconstructionAdaptor->setMaterialTemplateName(m_materialTemplateName);
-        reconstructionAdaptor->setParentTransformUID(this->getTransformUID());
+        reconstructionAdaptor->setParentTransformId(this->getTransformId());
         reconstructionAdaptor->setAutoResetCamera(m_autoResetCamera);
 
         service->start();
@@ -155,11 +151,6 @@ void SModelSeries::doSwap() throw(::fwTools::Failed)
 
 void SModelSeries::doStop() throw(::fwTools::Failed)
 {
-    if(m_transformService.lock())
-    {
-        m_transformService.lock()->stop();
-        ::fwServices::OSR::unregisterService(m_transformService.lock());
-    }
     m_connections->disconnect();
     this->unregisterServices();
 }
@@ -176,44 +167,6 @@ void SModelSeries::addReconstruction()
 void SModelSeries::removeReconstruction()
 {
     this->doStop();
-}
-
-//------------------------------------------------------------------------------
-
-void SModelSeries::createTransformService()
-{
-    ::fwMedData::ModelSeries::sptr modelSeries = this->getObject < ::fwMedData::ModelSeries >();
-
-    ::fwData::TransformationMatrix3D::sptr fieldTransform;
-
-    // Get existing TransformationMatrix3D, else create an empty one
-    if(!this->getTransformUID().empty())
-    {
-        fieldTransform =
-            ::fwData::TransformationMatrix3D::dynamicCast(::fwTools::fwID::getObject(this->getTransformUID()));
-    }
-    else
-    {
-        this->setTransformUID(this->getID() + "_TF");
-        fieldTransform = ::fwData::TransformationMatrix3D::New();
-    }
-
-    // Try to set fieldTransform as default transform of the mesh
-    fieldTransform = modelSeries->setDefaultField("TransformMatrix", ::fwData::TransformationMatrix3D::New());
-
-    m_transformService = ::fwServices::add< ::fwRenderOgre::IAdaptor >(fieldTransform, "::visuOgreAdaptor::STransform");
-    SLM_ASSERT("Transform service is null", m_transformService.lock());
-    ::visuOgreAdaptor::STransform::sptr transformService = ::visuOgreAdaptor::STransform::dynamicCast(
-        m_transformService.lock());
-
-    transformService->setID(this->getID() + "_" + transformService->getID());
-    transformService->setLayerID(m_layerID);
-    transformService->setRenderService(this->getRenderService());
-    transformService->setTransformUID(this->getTransformUID());
-    transformService->setParentTransformUID(this->getParentTransformUID());
-
-    transformService->start();
-    this->registerService(transformService);
 }
 
 //-----------------------------------------------------------------------------

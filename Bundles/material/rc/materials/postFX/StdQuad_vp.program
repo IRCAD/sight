@@ -1,0 +1,8 @@
+vertex_program StdQuad_Tex2a_VP glsl
+{
+    source StdQuad_Tex2a_VP.glsl
+    default_params
+    {
+        param_named_auto worldViewProj worldviewproj_matrix
+    }
+}

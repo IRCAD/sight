@@ -15,10 +15,7 @@ fwUseForwardInclude(
 
 find_package(CppUnit)
 
-useOgre()
-
 fwInclude(${CPPUNIT_INCLUDE_DIR})
 fwLink(
     ${CPPUNIT_LIBRARY}
 )
-

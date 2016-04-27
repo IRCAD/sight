@@ -6,8 +6,6 @@ fwUseForwardInclude(
     fwRuntime
 )
 
-useOgre()
-
 add_definitions("-DQT_NO_KEYWORDS")
 
 if(UNIX AND NOT APPLE)

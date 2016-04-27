@@ -123,7 +123,8 @@ private:
        @endcode
      * With :
      *  - \b renderer (mandatory) : defines the mesh's layer
-     *  - \b transform (optional) : the transformation matrix to associate to the adaptor
+     *  - \b transform (optional) : the name of the Ogre transform node where to attach the mesh, as it was specified
+     * in the STransform adaptor.
      * Either of the following (whether a material is configured in the XML scene or not) :
      *  - \b materialAdaptor (optional) : the name of the associated material adaptor
      * Only if there is no material adaptor configured in the XML scene (in this case, it has to retrieve the material
@@ -244,6 +245,9 @@ private:
     bool m_isReconstructionManaged;
     /// Indicates if the mesh adaptor has to create a new material adaptor or simply use the one that is XML configured
     bool m_useNewMaterialAdaptor;
+    /// Is the entity visible or not ? We need to store it in the adaptor because the information may be received
+    /// before the entity is created.
+    bool m_isVisible;
 
     /// The configured shading mode
     std::string m_shadingMode;
@@ -294,22 +298,6 @@ inline void SMesh::setAutoResetCamera(bool autoResetCamera)
 inline ::Ogre::Entity* SMesh::getEntity() const
 {
     return m_entity;
-}
-
-//------------------------------------------------------------------------------
-
-inline void SMesh::updateVisibility(bool isVisible)
-{
-    if(m_entity)
-    {
-        m_entity->setVisible(isVisible);
-
-        if(m_r2vbEntity)
-        {
-            m_r2vbEntity->setVisible(isVisible);
-        }
-        this->requestRender();
-    }
 }
 
 //------------------------------------------------------------------------------

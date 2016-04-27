@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -51,7 +51,7 @@ void SReconstruction::doConfigure() throw(::fwTools::Failed)
     SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
 
     // The transform attribute is mandatory in the XML configuration
-    this->setTransformUID(m_configuration->getAttributeValue("transform"));
+    this->setTransformId(m_configuration->getAttributeValue("transform"));
 
     if (m_configuration->hasAttribute("autoresetcamera"))
     {
@@ -97,8 +97,8 @@ void SReconstruction::createMeshService()
         meshAdaptor->setMaterial(reconstruction->getMaterial());
         meshAdaptor->setMaterialTemplateName(m_materialTemplateName);
         meshAdaptor->setAutoResetCamera(m_autoResetCamera);
-        meshAdaptor->setTransformUID(this->getTransformUID());
-        meshAdaptor->setParentTransformUID(this->getParentTransformUID());
+        meshAdaptor->setTransformId(this->getTransformId());
+        meshAdaptor->setParentTransformId(this->getParentTransformId());
         meshAdaptor->updateVisibility(reconstruction->getIsVisible());
         meshAdaptor->setDynamic(m_isDynamic);
         meshAdaptor->setDynamicVertices(m_isDynamicVertices);

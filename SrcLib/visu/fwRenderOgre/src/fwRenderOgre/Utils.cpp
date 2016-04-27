@@ -251,6 +251,10 @@ void Utils::destroyOgreRoot()
             // int16
             return ::Ogre::PF_L16;
         }
+        else if (pixelType == "float")
+        {
+            return ::Ogre::PF_FLOAT32_R;
+        }
     }
 
     if(numberOfComponent == 2)
@@ -310,7 +314,7 @@ void Utils::destroyOgreRoot()
     }
     else if (pixelType == "float")
     {
-        return numberOfComponent == 3 ? ::Ogre::PF_FLOAT16_RGB : ::Ogre::PF_FLOAT16_RGBA;
+        return numberOfComponent == 3 ? ::Ogre::PF_FLOAT32_RGB : ::Ogre::PF_FLOAT32_RGBA;
     }
     else if (pixelType == "double")
     {

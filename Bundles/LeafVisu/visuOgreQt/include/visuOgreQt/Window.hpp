@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -166,6 +166,8 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent* e);
     /// Qt event to manage when window visibility in the windowing system changes.
     virtual void exposeEvent(QExposeEvent *event);
+    /// Qt event to manage when window is moved.
+    virtual void moveEvent(QMoveEvent *event);
     /// Qt event to manage generic events
     virtual bool event(QEvent *event);
 

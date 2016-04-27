@@ -58,7 +58,7 @@ protected:
      *      renderer.
      * - \b picker (optional): identifier of the picker
      * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
-     * - \b filtering (optional, none/linear/anisotropic, default=linear): texture filter type of the negato
+     * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato
      */
     VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
     /// Performs stop, start and update.
