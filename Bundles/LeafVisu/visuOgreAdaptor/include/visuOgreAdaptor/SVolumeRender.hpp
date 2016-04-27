@@ -26,6 +26,10 @@
 
 namespace visuOgreAdaptor
 {
+
+/**
+ * @brief Adaptor for volume rendering.
+ */
 class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
                                                 public ::fwRenderOgre::ITransformable,
                                                 public ::fwComEd::helper::MedicalImageAdaptor
@@ -62,7 +66,21 @@ protected:
     /// Does nothing.
     VISUOGREADAPTOR_API virtual void doUpdate() throw ( ::fwTools::Failed );
 
-    /// Configure volume rendering service.
+    /**
+     * @brief Configures the service
+     * @code{.xml}
+        <adaptor uid="SNegato3D" class="::visuOgreAdaptor::SNegato3D" objectId="image">
+             <config renderer="default"
+                     preintegration="yes" mode="slice"
+                     selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+        </adaptor>
+       @endcode
+     * - \b renderer (optional): defines the renderer displaying the volume.
+     * - \b preintegration (optional, yes/no, default=no): use pre-integration.
+     * - \b mode (optional, slice/raycasting, default=raycasting): Rendering mode.
+     * - \b selectedTFKey (mandatory): TF key.
+     * - \b tfSelectionFwID (mandatory): TF selection.
+     */
     VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
 
     /// Slot called on TF update.

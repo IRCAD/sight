@@ -144,7 +144,7 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
         m_preIntegrationParameters->setNamedConstant("u_boundingBoxMin", ::Ogre::Vector3(NAN));
         m_preIntegrationParameters->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3(NAN));
     }
-    else // Infinite extent
+    else // Infinite box
     {
         m_preIntegrationParameters->setNamedConstant("u_boundingBoxMin", ::Ogre::Vector3::ZERO);
         m_preIntegrationParameters->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3(1.f, 1.f, 1.f));

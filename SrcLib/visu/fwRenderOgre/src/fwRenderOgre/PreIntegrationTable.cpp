@@ -11,6 +11,7 @@
 
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreTextureManager.h>
+#include <OGRE/OgreVector4.h>
 
 namespace fwRenderOgre
 {
@@ -132,8 +133,7 @@ void PreIntegrationTable::tfUpdate(const fwData::TransferFunction::sptr& _tf, un
 
     const double invWindow = 1./_tf->getWindow();
 
-    IntegralPixel tmp;
-    std::memset(&tmp, 0, sizeof tmp);
+    ::glm::dvec4 tmp(0.);
 
     _tf->setIsClamped(false);
 
@@ -146,11 +146,7 @@ void PreIntegrationTable::tfUpdate(const fwData::TransferFunction::sptr& _tf, un
         ::fwData::TransferFunction::TFColor interpolatedColor = _tf->getInterpolatedColor(value);
 
         double alpha = interpolatedColor.a;
-
-        tmp.r += interpolatedColor.r;
-        tmp.g += interpolatedColor.g;
-        tmp.b += interpolatedColor.b;
-        tmp.a += alpha;
+        tmp += ::glm::dvec4(interpolatedColor.r, interpolatedColor.g, interpolatedColor.b , alpha);
 
         m_integralTable[k] = tmp;
     }
@@ -163,18 +159,17 @@ void PreIntegrationTable::tfUpdate(const fwData::TransferFunction::sptr& _tf, un
         for(int sf = 0; sf < (int)m_textureSize; ++ sf)
         {
 
-            IntegralPixel res;
-            std::memset(&res, 0, sizeof res);
+            ::glm::dvec4 res(0.);
 
-            const double d =  distanceBetweenSamples  / static_cast<double>(sb - sf);
+            const double d = distanceBetweenSamples / static_cast<double>(sb - sf);
 
             if(sb != sf)
             {
-                res.a = 1. - std::exp( -d * (m_integralTable[sb].a - m_integralTable[sf].a));
+                const double opacity = 1. - std::exp( -d * (m_integralTable[sb].a - m_integralTable[sf].a));
 
-                res.r = d * (m_integralTable[sb].r - m_integralTable[sf].r);
-                res.g = d * (m_integralTable[sb].g - m_integralTable[sf].g);
-                res.b = d * (m_integralTable[sb].b - m_integralTable[sf].b);
+                const ::glm::dvec3 colour = d * (m_integralTable[sb].rgb() - m_integralTable[sf].rgb());
+
+                res = ::glm::dvec4(colour, opacity);
             }
             else
             {
@@ -191,10 +186,7 @@ void PreIntegrationTable::tfUpdate(const fwData::TransferFunction::sptr& _tf, un
                 res.b = interpolatedColor.b;
             }
 
-            res.r = boost::algorithm::clamp(res.r, 0., 1.);
-            res.g = boost::algorithm::clamp(res.g, 0., 1.);
-            res.b = boost::algorithm::clamp(res.b, 0., 1.);
-            res.a = boost::algorithm::clamp(res.a, 0., 1.);
+            res = ::glm::clamp(res, 0., 1.);
 
             m_table[sb * m_textureSize + sf] = (TablePixel) {
                     static_cast<uint8_t>(res.b * 255.),

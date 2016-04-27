@@ -164,16 +164,9 @@
                             <type mode="reader" />
                         </service>
 
-                        <service uid="cfgOgreVolumeRendering" impl="::fwServices::SConfigController" type="::fwServices::IController" autoConnect="no">
-                            <config>
-                                <appConfig id="OgreVolumeRendering">
-                                    <parameters>
-                                        <parameter replace="WID_PARENT" by="${GENERIC_UID}_OgreVolumeRenderingView" />
-                                        <parameter replace="imageUID" by="imageUID" />
-                                        <parameter replace="TFSelections" by="TFSelections" />
-                                    </parameters>
-                                </appConfig>
-                            </config>
+                        <service uid="computeHistogram" type="::fwServices::IController" impl="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
+                            <histogramId>histogram</histogramId>
+                            <binsWidth>5.0</binsWidth>
                         </service>
 
                     </object>
@@ -255,6 +248,18 @@
                                 <appConfig id="OgreNegato2D">
                                     <parameters>
                                         <parameter replace="WID_PARENT" by="${GENERIC_UID}_OgreNegato2DView" />
+                                        <parameter replace="imageUID" by="imageUID" />
+                                        <parameter replace="TFSelections" by="TFSelections" />
+                                    </parameters>
+                                </appConfig>
+                            </config>
+                        </service>
+
+                        <service uid="cfgOgreVolumeRendering" impl="::fwServices::SConfigController" type="::fwServices::IController" autoConnect="no">
+                            <config>
+                                <appConfig id="OgreVolumeRendering">
+                                    <parameters>
+                                        <parameter replace="WID_PARENT" by="${GENERIC_UID}_OgreVolumeRenderingView" />
                                         <parameter replace="imageUID" by="imageUID" />
                                         <parameter replace="TFSelections" by="TFSelections" />
                                     </parameters>
