@@ -1,0 +1,137 @@
+//-----------------------------------------------
+
+vertex_program VR/RayTracedVolume_VP glsl
+{
+    source RayTracedVolume_VP.glsl
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_cameraPos camera_position_object_space
+    }
+}
+
+//----------------------------------------------
+
+fragment_program VR/RayTracedVolume_FP glsl
+{
+    source RayTracedVolume_FP.glsl
+    default_params
+    {
+        param_named_auto u_lightDir light_position_object_space 0
+        param_named u_boundingBoxMin float3 0 0 0
+        param_named u_boundingBoxMax float3 1 1 1
+        param_named u_sampleDistance float 0.002f
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+    }
+}
+
+//-----------------------------------------------
+
+vertex_program VR/PreIntegrated_RayTracedVolume_VP glsl
+{
+    source RayTracedVolume_VP.glsl
+    preprocessor_defines PREINTEGRATION=1
+
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_cameraPos camera_position_object_space
+    }
+}
+
+//----------------------------------------------
+
+fragment_program VR/PreIntegrated_RayTracedVolume_FP glsl
+{
+    source RayTracedVolume_FP.glsl
+    preprocessor_defines PREINTEGRATION=1
+
+    default_params
+    {
+        param_named_auto u_lightDir light_position_object_space 0
+        param_named u_boundingBoxMin float3 0 0 0
+        param_named u_boundingBoxMax float3 1 1 1
+        param_named u_sampleDistance float 0.002f
+        param_named u_min float 0
+        param_named u_max float 0
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+    }
+}
+
+//----------------------------------------------
+
+material RayTracedVolume
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware clockwise
+            //cull_software clockwise
+            scene_blend alpha_blend
+            //transparent_sorting on
+
+            vertex_program_ref VR/RayTracedVolume_VP
+            {
+            }
+
+            fragment_program_ref VR/RayTracedVolume_FP
+            {
+            }
+
+            texture_unit image
+            {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering trilinear
+            }
+
+            texture_unit transferFunction
+            {
+                tex_coord_set 1
+                //tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//----------------------------------------------
+
+material PreIntegratedRayTracedVolume
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware clockwise
+            //cull_software clockwise
+            scene_blend alpha_blend
+            //transparent_sorting on
+
+            vertex_program_ref VR/PreIntegrated_RayTracedVolume_VP
+            {
+            }
+
+            fragment_program_ref VR/PreIntegrated_RayTracedVolume_FP
+            {
+            }
+
+            texture_unit image
+            {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering trilinear
+            }
+
+            texture_unit transferFunction
+            {
+                tex_coord_set 1
+                //tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
