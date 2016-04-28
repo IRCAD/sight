@@ -4,7 +4,6 @@
 #include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#define GLM_SWIZZLE
 #include <glm/glm.hpp>
 
 #include <OGRE/OgreTexture.h>

@@ -155,7 +155,7 @@ void PreIntegrationTable::tfUpdate(const fwData::TransferFunction::sptr& _tf, un
 
     for(int sb = 0; sb < (int)m_textureSize; ++ sb)
     {
-//#pragma omp parallel for
+#pragma omp parallel for
         for(int sf = 0; sf < (int)m_textureSize; ++ sf)
         {
             ::glm::dvec4 res(0.);
@@ -166,7 +166,7 @@ void PreIntegrationTable::tfUpdate(const fwData::TransferFunction::sptr& _tf, un
             {
                 const double opacity = 1. - std::exp( -d * (m_integralTable[sb].a - m_integralTable[sf].a));
 
-                const ::glm::dvec3 colour = d * (m_integralTable[sb].rgb() - m_integralTable[sf].rgb());
+                const ::glm::dvec3 colour = d * (::glm::dvec3(m_integralTable[sb]) - ::glm::dvec3(m_integralTable[sf]));
 
                 res = ::glm::dvec4(colour, opacity);
             }

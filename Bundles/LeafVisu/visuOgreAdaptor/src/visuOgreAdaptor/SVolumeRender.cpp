@@ -41,21 +41,6 @@ namespace visuOgreAdaptor
 
 //-----------------------------------------------------------------------------
 
-SVolumeRender::CameraMotionListener::CameraMotionListener(SVolumeRender *parent) :
-    m_parent(parent)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-
-void SVolumeRender::CameraMotionListener::cameraPreRenderScene(Ogre::Camera *)
-{
-    m_parent->m_volumeRenderer->updateGeometry();
-}
-
-//-----------------------------------------------------------------------------
-
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWIMAGE_SLOT   = "newImage";
 
 //-----------------------------------------------------------------------------
@@ -125,12 +110,6 @@ void SVolumeRender::updatingTFPoints()
 
     m_gpuTF.updateTexture(tf);
 
-//    ::Ogre::MaterialPtr volumeMtl = ::Ogre::MaterialManager::getSingletonPtr()->getByName("SliceVolume");
-//    ::Ogre::Pass *pass = volumeMtl->getTechnique(0)->getPass(0);
-//    ::Ogre::TextureUnitState *texTFState = pass->getTextureUnitState("transferFunction");
-
-//    texTFState->setTexture(m_gpuTF.getTexture());
-
     if(m_preIntegratedRendering)
     {
         m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_nbSlices);
@@ -178,8 +157,6 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     m_sceneManager     = this->getSceneManager();
     m_volumeSceneNode  = m_sceneManager->getRootSceneNode()->createChildSceneNode();
     m_camera           = m_sceneManager->getCamera("PlayerCam");
-
-    m_camera->addListener(new CameraMotionListener(this));
 
     // Create textures
     m_3DOgreTexture = ::Ogre::TextureManager::getSingletonPtr()->create(

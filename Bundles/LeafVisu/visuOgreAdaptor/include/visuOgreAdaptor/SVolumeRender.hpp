@@ -94,24 +94,6 @@ protected:
 
 private:
 
-    /// Camera listener, updates proxy geometry on camera move.
-    class CameraMotionListener : public Ogre::Camera::Listener
-    {
-    public:
-
-        /// Constructor.
-        CameraMotionListener(SVolumeRender *parent);
-
-        /// Called before scene render.
-        void cameraPreRenderScene(Ogre::Camera *);
-
-    private:
-        /// The volume to update.
-        ::visuOgreAdaptor::SVolumeRender *m_parent;
-
-    };
-
-    typedef std::vector< ::Ogre::Vector3 > Polygon;
 
     /// Slot called when a new image is loaded.
     void newImage();

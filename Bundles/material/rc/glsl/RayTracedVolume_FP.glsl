@@ -128,9 +128,9 @@ void main(void)
 
         if(tfColour.a > 0)
         {
-//            vec3 N = gradientNormal(rayPos);
+            vec3 N = gradientNormal(rayPos);
 
-//            tfColour.rgb = tfColour.rgb * abs(dot(N, u_lightDir));
+            tfColour.rgb = tfColour.rgb * abs(dot(N, u_lightDir));
 
             // Adjust opacity to sample distance.
             // This could be done when generating the TF texture to improve performance.

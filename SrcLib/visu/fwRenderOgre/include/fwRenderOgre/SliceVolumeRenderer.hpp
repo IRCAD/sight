@@ -3,6 +3,8 @@
 
 #include "fwRenderOgre/IVolumeRenderer.hpp"
 
+#include <OGRE/OgreNode.h>
+
 namespace fwRenderOgre
 {
 
@@ -71,6 +73,25 @@ private:
 
     /// Object containing the proxy geometry used for slice based VR.
     ::Ogre::ManualObject *m_intersectingPolygons;
+
+    /// Listener used to update slices when the object is being rendered.
+    struct RenderListener : public ::Ogre::MovableObject::Listener
+    {
+        SliceVolumeRenderer *m_renderer;
+
+        RenderListener(SliceVolumeRenderer *renderer) :
+            m_renderer(renderer)
+        {
+        }
+
+        virtual bool objectRendering(const ::Ogre::MovableObject *, const ::Ogre::Camera *)
+        {
+            m_renderer->updateAllSlices();
+
+            return true; // Always render object
+        }
+
+    } *m_renderListener;
 
 };
 

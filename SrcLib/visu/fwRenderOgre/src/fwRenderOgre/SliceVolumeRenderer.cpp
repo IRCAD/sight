@@ -54,7 +54,6 @@ SliceVolumeRenderer::SliceVolumeRenderer(std::string parentId,
 
                 if(mtlName == "PreIntegratedSliceVolume")
                 {
-//                    m_preIntegrationTableTexState = texTFState;
                     texTFState->setTexture(m_preIntegrationTable->getTexture());
                     m_preIntegrationParameters = pass->getFragmentProgramParameters();
                 }
@@ -65,6 +64,8 @@ SliceVolumeRenderer::SliceVolumeRenderer(std::string parentId,
             }
         }
     }
+
+    m_renderListener = new RenderListener(this);
 
     initSlices();
     updateAllSlices();
@@ -131,6 +132,7 @@ void SliceVolumeRenderer::initSlices()
     }
 
     m_intersectingPolygons = m_sceneManager->createManualObject(m_parentId + "_VolumeRenderSlices");
+    m_intersectingPolygons->setListener(m_renderListener);
 
     // create m_nbSlices slices
     m_intersectingPolygons->estimateVertexCount(6 /* * m_nbSlices*/ * 2);
