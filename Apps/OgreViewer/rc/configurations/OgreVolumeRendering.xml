@@ -39,7 +39,7 @@
                     </adaptor>
 
                     <adaptor id="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image" uid="${GENERIC_UID}_VR" >
-                        <config renderer="default" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}"/>
+                        <config renderer="default" preintegration="yes" mode="raytracing" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}"/>
                     </adaptor>
 
                     <connect>

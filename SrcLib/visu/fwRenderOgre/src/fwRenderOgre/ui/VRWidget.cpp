@@ -9,6 +9,7 @@
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreEntity.h>
+#include <OGRE/OgreLogManager.h>
 #include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMaterialManager.h>
@@ -202,6 +203,7 @@ void VRWidget::initWidgets()
     m_selectedFace->setRenderQueueGroup(::Ogre::RENDER_QUEUE_BACKGROUND);
 
     // Create a pickable sphere for each cube face
+//    ::Ogre::LogManager::getSingletonPtr()->getDefaultLog()->logMessage("Creating widget Spheres ...");
     for(unsigned i = 0; i < 6; ++ i)
     {
         IVolumeRenderer::CubeFace currentFace = static_cast<IVolumeRenderer::CubeFace>(i);

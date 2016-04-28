@@ -19,7 +19,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_entryPointGeometry(nullptr)
 {
     const std::vector<std::string> vrMaterials {
-        "RayTracedVolume"
+        "RayTracedVolume",
+        "PreIntegratedRayTracedVolume"
     };
 
     for(const std::string& mtlName : vrMaterials)
@@ -44,7 +45,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
                 tex3DState->setTexture(m_3DOgreTexture);
 
-                if(mtlName == "PreIntegratedSliceVolume")
+                if(mtlName == "PreIntegratedRayTracedVolume")
                 {
 //                    m_preIntegrationTableTexState = texTFState;
                     texTFState->setTexture(m_preIntegrationTable->getTexture());
@@ -53,7 +54,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                 else
                 {
                     texTFState->setTexture(m_gpuTF->getTexture());
-                    m_preIntegrationParameters = pass->getFragmentProgramParameters();
+                    m_rayCasterParameters = pass->getFragmentProgramParameters();
+                    m_currentShaderParameters = m_rayCasterParameters;
                 }
             }
         }
@@ -83,6 +85,16 @@ void RayTracingVolumeRenderer::updateGeometry()
 void RayTracingVolumeRenderer::imageUpdate(fwData::Image::sptr image, fwData::TransferFunction::sptr tf)
 {
     scaleCube(image->getSpacing());
+
+    if(m_preIntegratedRendering)
+    {
+        m_preIntegrationTable->imageUpdate(image, tf, m_nbSlices);
+
+        auto minMax = m_preIntegrationTable->getMinMax();
+
+        m_preIntegrationParameters->setNamedConstant("u_min", minMax.first);
+        m_preIntegrationParameters->setNamedConstant("u_max", minMax.second);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -114,7 +126,7 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
 
 //    if(m_preIntegratedRendering)
 //    {
-        m_preIntegrationParameters->setNamedConstant("u_sampleDistance", sliceDistance);
+        m_currentShaderParameters->setNamedConstant("u_sampleDistance", sliceDistance);
 //    }
 }
 
@@ -122,7 +134,15 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
 
 void RayTracingVolumeRenderer::setPreIntegratedRendering(bool preIntegratedRendering)
 {
+    m_preIntegratedRendering = preIntegratedRendering;
 
+    m_currentShaderParameters = m_preIntegratedRendering ? m_preIntegrationParameters : m_rayCasterParameters;
+
+    const std::string mtlName = m_preIntegratedRendering ? "PreIntegratedRayTracedVolume" : "RayTracedVolume";
+
+    m_entryPointGeometry->setMaterialName(0, mtlName);
+
+    setSampling(m_nbSlices);
 }
 
 //-----------------------------------------------------------------------------
@@ -136,18 +156,18 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
 
     if(realClippingBox.isFinite())
     {
-        m_preIntegrationParameters->setNamedConstant("u_boundingBoxMin", realClippingBox.getMinimum());
-        m_preIntegrationParameters->setNamedConstant("u_boundingBoxMax", realClippingBox.getMaximum());
+        m_currentShaderParameters->setNamedConstant("u_boundingBoxMin", realClippingBox.getMinimum());
+        m_currentShaderParameters->setNamedConstant("u_boundingBoxMax", realClippingBox.getMaximum());
     }
     else if(realClippingBox.isNull())
     {
-        m_preIntegrationParameters->setNamedConstant("u_boundingBoxMin", ::Ogre::Vector3(NAN));
-        m_preIntegrationParameters->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3(NAN));
+        m_currentShaderParameters->setNamedConstant("u_boundingBoxMin", ::Ogre::Vector3(NAN));
+        m_currentShaderParameters->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3(NAN));
     }
     else // Infinite box
     {
-        m_preIntegrationParameters->setNamedConstant("u_boundingBoxMin", ::Ogre::Vector3::ZERO);
-        m_preIntegrationParameters->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3(1.f, 1.f, 1.f));
+        m_currentShaderParameters->setNamedConstant("u_boundingBoxMin", ::Ogre::Vector3::ZERO);
+        m_currentShaderParameters->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3(1.f, 1.f, 1.f));
     }
 }
 
@@ -155,9 +175,11 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
 
 void RayTracingVolumeRenderer::initEntryPoints()
 {
+    const std::string mtlName = m_preIntegratedRendering ? "PreIntegratedRayTracedVolume" : "RayTracedVolume";
+
     m_entryPointGeometry = m_sceneManager->createManualObject(m_parentId + "_RayTracingVREntryPoints");
 
-    m_entryPointGeometry->begin("RayTracedVolume", ::Ogre::RenderOperation::OT_TRIANGLE_LIST);
+    m_entryPointGeometry->begin(mtlName, ::Ogre::RenderOperation::OT_TRIANGLE_LIST);
     {
         for(const auto& face : s_cubeFaces)
         {

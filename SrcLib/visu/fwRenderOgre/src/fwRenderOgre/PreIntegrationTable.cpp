@@ -155,10 +155,9 @@ void PreIntegrationTable::tfUpdate(const fwData::TransferFunction::sptr& _tf, un
 
     for(int sb = 0; sb < (int)m_textureSize; ++ sb)
     {
-#pragma omp parallel for
+//#pragma omp parallel for
         for(int sf = 0; sf < (int)m_textureSize; ++ sf)
         {
-
             ::glm::dvec4 res(0.);
 
             const double d = distanceBetweenSamples / static_cast<double>(sb - sf);

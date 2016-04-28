@@ -159,6 +159,7 @@
                 <!-- Negato image -->
                 <item key="image">
                     <object uid="imageUID" type="::fwData::Image">
+
                         <service uid="imageReader" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
                         </service>

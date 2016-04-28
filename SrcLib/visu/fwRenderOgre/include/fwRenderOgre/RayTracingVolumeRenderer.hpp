@@ -61,6 +61,12 @@ private:
     /// Object containing the proxy geometry, this is a cube for now.
     ::Ogre::ManualObject *m_entryPointGeometry;
 
+    /// Ray caster fragment program parameters.
+    ::Ogre::GpuProgramParametersSharedPtr m_rayCasterParameters;
+
+    /// The material being used's fragment program parameters.
+    ::Ogre::GpuProgramParametersSharedPtr m_currentShaderParameters;
+
 };
 
 } // namespace fwRenderOgre
