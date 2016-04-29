@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -187,10 +187,23 @@ void GetObject::visit(const camp::ArrayProperty& property)
 
         size_t index = ::boost::lexical_cast< size_t >( key );
 
-        ::camp::Value elemValue = property.get( m_campObj, index );
+        m_pathVisitor->addObject(key);
+
+        // If the index is out of range, camp throws an exception
+        // We need to catch it because this means we failed to reach the object
+        ::camp::Value elemValue;
+        try
+        {
+            elemValue = property.get( m_campObj, index );
+        }
+        catch(::camp::OutOfRange e)
+        {
+            FW_RAISE_EXCEPTION_MSG( ::fwDataCamp::exception::NullPointer,
+                                    "Index '" << index << "' not found in array property '" << name << "'.");
+        }
+
         GetCampValueVisitor visitor(m_newSubObjPath, m_pathVisitor);
         m_subObject = elemValue.visit( visitor );
-        m_pathVisitor->addObject(key);
     }
 }
 

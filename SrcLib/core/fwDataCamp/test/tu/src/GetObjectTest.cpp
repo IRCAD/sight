@@ -1,23 +1,25 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwData/Image.hpp>
-#include <fwData/Float.hpp>
-#include <fwData/String.hpp>
-#include <fwData/Reconstruction.hpp>
 #include <fwData/Composite.hpp>
+#include <fwData/Float.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/Reconstruction.hpp>
+#include <fwData/String.hpp>
+#include <fwData/Vector.hpp>
+
+#include <fwDataCamp/getObject.hpp>
+#include <fwDataCamp/exception/NullPointer.hpp>
+#include <fwDataCamp/exception/ObjectNotFound.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/Patient.hpp>
 
 #include <fwTest/generator/Image.hpp>
-
-#include <fwDataCamp/getObject.hpp>
-#include <fwDataCamp/exception/NullPointer.hpp>
-#include <fwDataCamp/exception/ObjectNotFound.hpp>
 
 #include "GetObjectTest.hpp"
 
@@ -84,8 +86,24 @@ void GetObjectTest::invalidPathTest()
     ::fwData::Composite::sptr composite = ::fwData::Composite::New();
     ::fwData::String::sptr text         = ::fwData::String::New("Text");
     (*composite)["string"]              = text;
+    ::fwData::Integer::sptr intValue    = ::fwData::Integer::New(321);
+    ::fwData::Float::sptr floatValue    = ::fwData::Float::New(1.234f);
+    ::fwData::Vector::sptr vector       = ::fwData::Vector::New();
+    ::fwData::Image::sptr img           = ::fwData::Image::New();
+    ::fwTest::generator::Image::generateRandomImage(img, ::fwTools::Type::create("int16"));
 
+    auto& internalVector = vector->getContainer();
+    internalVector.push_back(intValue);
+    internalVector.push_back(floatValue);
+    internalVector.push_back(img);
+    (*composite)["vector"] = vector;
+
+    // no exception version
     ::fwData::Object::sptr obj = ::fwDataCamp::getObject( composite, "@values.string" );
+    CPPUNIT_ASSERT_MESSAGE("fwData::String must be equal", obj ==  text );
+
+    // with exception version
+    obj = ::fwDataCamp::getObject( composite, "@values.string", true );
     CPPUNIT_ASSERT_MESSAGE("fwData::String must be equal", obj ==  text );
 
     // no exception version
@@ -97,8 +115,7 @@ void GetObjectTest::invalidPathTest()
         ::fwDataCamp::getObject( composite, "@values.invalidPath", true ),
         ::fwDataCamp::exception::ObjectNotFound
         );
-    CPPUNIT_ASSERT_EQUAL(size_t(1), composite->size() );
-
+    CPPUNIT_ASSERT_EQUAL(size_t(2), composite->size() );
 
     ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::New();
     // no exception version
@@ -110,6 +127,42 @@ void GetObjectTest::invalidPathTest()
         ::fwDataCamp::getObject( imgSeries, "@image.type", true ),
         ::fwDataCamp::exception::NullPointer
         );
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /// Vector tests
+
+    // no exception version
+    obj = ::fwDataCamp::getObject( composite, "@values.vector.values.0" );
+    CPPUNIT_ASSERT_MESSAGE("fwData::Integer must be equal", obj ==  intValue );
+
+    // with exception version
+    obj = ::fwDataCamp::getObject( composite, "@values.vector.values.0", true );
+    CPPUNIT_ASSERT_MESSAGE("fwData::Integer must be equal", obj ==  intValue );
+
+    /// This is important to test vectors subobjects properties to ensure the visitor path is correct
+
+    // no exception version
+    obj                            = ::fwDataCamp::getObject( composite, "@values.vector.values.2.spacing.2" );
+    ::fwData::Float::sptr zspacing = ::std::dynamic_pointer_cast< ::fwData::Float >(obj);
+    CPPUNIT_ASSERT_MESSAGE("spacing must be equal",
+                           img->getSpacing()[2] - 0.001 < zspacing->value() &&
+                           zspacing->value() < img->getSpacing()[2] + 0.001 );
+
+    // with exception version
+    obj      = ::fwDataCamp::getObject( composite, "@values.vector.values.2.spacing.2", true );
+    zspacing = ::std::dynamic_pointer_cast< ::fwData::Float >(obj);
+    CPPUNIT_ASSERT_MESSAGE("spacing must be equal",
+                           img->getSpacing()[2] - 0.001 < zspacing->value() &&
+                           zspacing->value() < img->getSpacing()[2] + 0.001 );
+
+    // out of bounds, no exception version
+    invalidObj = ::fwDataCamp::getObject( composite, "@values.vector.values.2.spacing.15", false );
+    CPPUNIT_ASSERT_MESSAGE("Object must not exist", !invalidObj );
+
+    // out of bounds, with exception version
+    CPPUNIT_ASSERT_THROW( ::fwDataCamp::getObject( composite, "@values.vector.values.2.spacing.15", true ),
+                          ::fwDataCamp::exception::NullPointer);
+
 }
 
 //-----------------------------------------------------------------------------
