@@ -1,14 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwCom
-    fwComEd
-    fwData
-    fwDataCamp
-    fwRenderVTK
-    fwRuntime
-    fwServices
-    arData
-)
 
 find_package(VTK REQUIRED)
 

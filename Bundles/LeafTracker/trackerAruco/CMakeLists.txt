@@ -1,18 +1,6 @@
 link_directories(${CMAKE_PREFIX_PATH}/lib)
 
 fwLoadProperties()
-fwUseForwardInclude(
-    fwRuntime
-    fwCore
-    fwData
-    fwDataTools
-    fwServices
-    fwCom
-    fwComEd
-    fwTools
-    fwMath
-    arData
-)
 
 find_package(VTK REQUIRED)
 find_package(OpenCV REQUIRED) #used by aruco
