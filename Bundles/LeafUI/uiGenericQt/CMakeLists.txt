@@ -1,9 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwGui
-    fwRuntime
-    fwTools
-)
 
 find_package(Qt5 COMPONENTS Core Gui Help Widgets REQUIRED)
 

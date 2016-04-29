@@ -1,5 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(fwCore fwCamp fwTools fwCom)
 
 find_package (Boost COMPONENTS regex signals iostreams REQUIRED)
 
@@ -9,4 +8,3 @@ if(CMAKE_SYSTEM_NAME MATCHES "Windows")
     #TODO write FindPsAPI ...
     target_link_libraries(${FWPROJECT_NAME} PRIVATE psapi)
 endif()
-

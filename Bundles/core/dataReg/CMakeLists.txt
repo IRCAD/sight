@@ -1,8 +1,5 @@
 fwLoadProperties()
 
-fwUseForwardInclude(
-    fwRuntime
-)
 
 find_package (Boost COMPONENTS thread system filesystem REQUIRED)
 

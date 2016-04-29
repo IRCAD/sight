@@ -1,8 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwCore
-    fwTest
-)
 
 find_package(CppUnit)
 find_package(Boost COMPONENTS chrono regex REQUIRED)

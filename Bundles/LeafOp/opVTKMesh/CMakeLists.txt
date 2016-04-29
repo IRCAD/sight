@@ -1,9 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwGui
-    fwRuntime
-    fwServices
-)
 
 find_package(VTK REQUIRED)
 

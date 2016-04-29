@@ -1,11 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwComEd
-    fwCore
-    fwData
-    fwDataIO
-    fwTools
-)
 
 find_package(ITK REQUIRED)
 find_package(JPEG REQUIRED)

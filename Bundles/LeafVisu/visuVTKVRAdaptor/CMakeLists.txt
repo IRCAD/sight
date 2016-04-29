@@ -1,10 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwComEd
-    fwData
-    fwRenderVTK
-    fwRuntime
-)
 
 find_package(VTK 
     COMPONENTS

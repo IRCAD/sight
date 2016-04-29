@@ -1,16 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwComEd
-    fwData
-    fwTools
-    fwRender
-    fwRuntime
-    fwServices
-    fwGui
-    fwCom
-    fwGui
-    fwCom
-)
 add_definitions("-DQT_NO_KEYWORDS")
 
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)

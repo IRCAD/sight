@@ -1,13 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwCom
-    fwGui
-    fwMemory
-    fwRuntime
-    fwTools
-
-    gui
-)
 
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 find_package (LibXml2)

@@ -1,9 +1,6 @@
 
 fwLoadProperties()
 
-fwUseForwardInclude(fwCore)
-
-
 find_package (Boost COMPONENTS regex REQUIRED)
 find_package (LibXml2)
 find_package (Iconv REQUIRED)

@@ -1,7 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwTools
-)
 
 
 find_package(Boost COMPONENTS python REQUIRED)

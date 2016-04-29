@@ -1,11 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwCore
-    fwTest
-    fwThread
-    fwGuiQt
-    fwServices
-)
 
 find_package(CppUnit)
 find_package(Boost COMPONENTS chrono REQUIRED)

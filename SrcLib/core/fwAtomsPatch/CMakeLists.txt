@@ -1,11 +1,5 @@
 fwLoadProperties()
 
-fwUseForwardInclude(
-    fwAtomConversion
-    fwAtoms
-    fwCore
-    fwTools
-)
 
 find_package(CAMP REQUIRED)
 if(NOT ANDROID)

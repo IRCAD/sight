@@ -1,10 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwCore
-    fwGui
-    fwRuntime
-    fwTools
-)
 
 configure_file("${CMAKE_CURRENT_LIST_DIR}/bin/qt.conf" "${CMAKE_BINARY_DIR}/bin/qt.conf")
 

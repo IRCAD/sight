@@ -1,15 +1,5 @@
 fwLoadProperties()
 
-fwUseForwardInclude(
-    fwData
-    fwGui
-    fwMedData
-    fwRuntime
-    fwServices
-    fwTools
-
-    gui
-)
 
 fwReq(
     visuVTKAdaptor

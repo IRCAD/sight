@@ -593,7 +593,7 @@ endmacro()
 # WARNING : some part of this cmake file relies on this macro signature
 
 macro(fwUse)
-    target_link_libraries(${FWPROJECT_NAME} PRIVATE ${ARGV})
+    target_link_libraries(${FWPROJECT_NAME} PUBLIC ${ARGV})
 
     set(${FWPROJECT_NAME}_DEPENDENCIES)
     set(${FWPROJECT_NAME}_EXECUTABLE_DEPENDENCIES)
