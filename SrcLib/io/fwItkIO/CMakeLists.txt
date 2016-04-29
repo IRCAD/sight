@@ -28,20 +28,25 @@ fwForwardInclude(
     ${VNL_INCLUDE_PATH}/vxl/core
     ${VNL_INCLUDE_PATH}/vxl/vcl
 )
+
 fwLink(
+    ${ZLIB_LIBRARIES}
+    ${JPEG_LIBRARY}
+)
+
+# Since ITK is template-based, this make sense to force the link for dependencies
+fwForwardLink(
+    ${VNL_LIBRARY}
+    ${VNL_ALGO_LIBRARY}
+    ${VCL_LIBRARY}
+    ${VGL_ALGO_LIBRARY}
+    ${V3P_NETLIB_LIBRARY}
+
     ITKCommon
     ITKIOImageBase
     ITKIOJPEG
     ITKMetaIO
     itksys
     itkopenjpeg
-
-    ${ZLIB_LIBRARIES}
-    ${JPEG_LIBRARY}
-    ${VGL_ALGO_LIBRARY}
-    ${VNL_ALGO_LIBRARY}
-    ${VNL_LIBRARY}
-    ${VCL_LIBRARY}
-    ${V3P_NETLIB_LIBRARY}
 )
 
