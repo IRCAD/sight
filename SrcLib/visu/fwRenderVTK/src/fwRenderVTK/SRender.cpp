@@ -483,15 +483,24 @@ void SRender::starting() throw(fwTools::Failed)
         m_interactorManager->getInteractor()->GetRenderWindow()->AddRenderer(renderer);
     }
 
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+    // Start adaptors according to their starting priority
+    std::vector< SPTR(IVtkAdaptorService) > startAdaptors;
 
-    SceneAdaptorsMapType::iterator adaptorIter;
-    for ( adaptorIter = m_sceneAdaptors.begin();
-          adaptorIter != m_sceneAdaptors.end();
-          ++adaptorIter)
+    for(auto& sceneAdaptor : m_sceneAdaptors)
     {
-        adaptorIter->second.getService()->start();
-        assert(adaptorIter->second.getService()->isStarted());
+        startAdaptors.emplace_back(sceneAdaptor.second.getService());
+    }
+
+    std::sort(startAdaptors.begin(), startAdaptors.end(),
+              [](const SPTR(IVtkAdaptorService)& a, const SPTR(IVtkAdaptorService)& b)
+        {
+            return b->getStartPriority() > a->getStartPriority();
+        });
+
+    for(auto& adaptor : startAdaptors)
+    {
+        adaptor->start();
+        SLM_ASSERT("Adaptor is not started", adaptor->isStarted());
     }
 
     if(m_timer)
@@ -515,16 +524,28 @@ void SRender::stopping() throw(fwTools::Failed)
         m_timer->stop();
     }
 
-    SceneAdaptorsMapType::iterator adaptorIter;
+    // Stop adaptors in the reverse order of their starting priority
+    std::vector< SPTR(IVtkAdaptorService) > stopAdaptors;
 
-    for ( adaptorIter = m_sceneAdaptors.begin();
-          adaptorIter != m_sceneAdaptors.end();
-          ++adaptorIter)
+    for(auto& sceneAdaptor : m_sceneAdaptors)
     {
-        adaptorIter->second.getService()->stop();
-        ::fwServices::OSR::unregisterService(adaptorIter->second.getService());
-        adaptorIter->second.getService().reset();
+        stopAdaptors.emplace_back(sceneAdaptor.second.getService());
     }
+
+    std::sort(stopAdaptors.begin(), stopAdaptors.end(),
+              [](const SPTR(IVtkAdaptorService)& a, const SPTR(IVtkAdaptorService)& b)
+        {
+            return b->getStartPriority() < a->getStartPriority();
+        });
+
+    for(auto& adaptor : stopAdaptors)
+    {
+        adaptor->stop();
+        SLM_ASSERT("Adaptor is not stopped", adaptor->isStopped());
+        ::fwServices::OSR::unregisterService(adaptor);
+    }
+    stopAdaptors.clear();
+    m_sceneAdaptors.clear();
 
     this->stopContext();
 
@@ -533,8 +554,6 @@ void SRender::stopping() throw(fwTools::Failed)
         this->getContainer()->clean();
         this->destroy();
     }
-
-    m_sceneAdaptors.clear();
 }
 
 //------------------------------------------------------------------------------

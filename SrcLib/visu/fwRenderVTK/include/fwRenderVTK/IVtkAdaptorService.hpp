@@ -68,8 +68,7 @@ public:
 
     FWRENDERVTK_API void getAllSubProps(vtkPropCollection *propc, int depth = -1);
 
-    /// set the pipeline modified so a render request can be send. end-user have to call this
-    /// method when it have modified a  vtk structure
+    /// End-user have to call this method when a vtk structure has been modified, thus a render request will be sent.
     FWRENDERVTK_API void setVtkPipelineModified();
 
     /// Returns true if the service automatically triggers the rendering.
@@ -95,6 +94,14 @@ public:
     {
         m_autoConnect = autoConnect;
     }
+
+    /**
+     * @brief   Returns the starting priority of the adaptor.
+     *
+     * Some adaptors may have to be started before others.
+     * @return priority, the lesser will be the first to be launched and the last be to stopped (default: 0)
+     */
+    FWRENDERVTK_API virtual int getStartPriority();
 
 protected:
 

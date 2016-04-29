@@ -45,6 +45,9 @@ public:
     /// Updates the TransformationMatrix3D from the vtkTransform
     VISUVTKADAPTOR_API void updateFromVtk();
 
+    /// Returns the priority of the adaptor - some adaptors may have to be started before other ones
+    VISUVTKADAPTOR_API virtual int getStartPriority();
+
 protected:
 
     /// Calls doUpdate()

@@ -129,6 +129,13 @@ void IVtkAdaptorService::setVtkPipelineModified()
 
 //------------------------------------------------------------------------------
 
+int IVtkAdaptorService::getStartPriority()
+{
+    return 0;
+}
+
+//------------------------------------------------------------------------------
+
 void IVtkAdaptorService::requestRender()
 {
     if ( this->getRenderService()->isShownOnScreen() && m_vtkPipelineModified && m_autoRender )

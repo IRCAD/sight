@@ -160,6 +160,14 @@ void Transform::updateFromVtk()
     vtkTrf->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
 }
 
+
+//------------------------------------------------------------------------------
+
+int Transform::getStartPriority()
+{
+    return -10;
+}
+
 //------------------------------------------------------------------------------
 
 void Transform::doUpdate() throw(fwTools::Failed)
