@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,6 +12,7 @@
 
 #include <fwData/mt/ObjectWriteLock.hpp>
 
+#include <fwDataCamp/exception/NullPointer.hpp>
 #include <fwDataCamp/getObject.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
@@ -120,18 +121,34 @@ void SExtractObj::extract()
         std::string from = elt.first;
         std::string to   = elt.second;
 
-        ::fwData::Object::sptr object = ::fwDataCamp::getObject( composite, from );
-        SLM_WARN_IF("Object from '"+ from +"' not found", !object);
-        if(object)
+        try
         {
-            if (composite->find(to) == composite->end())
+            ::fwData::Object::sptr object = ::fwDataCamp::getObject( composite, from, true );
+
+            SLM_WARN_IF("Object from '"+ from +"' not found", !object);
+            if(object)
             {
-                compHelper.add(to, object);
+                if (composite->find(to) == composite->end())
+                {
+                    compHelper.add(to, object);
+                }
+                else
+                {
+                    compHelper.swap(to, object);
+                }
             }
-            else
+        }
+        catch(::fwDataCamp::exception::NullPointer& np)
+        {
+            if (composite->find(to) != composite->end())
             {
-                compHelper.swap(to, object);
+                compHelper.remove(to);
             }
+
+        }
+        catch(std::exception& e)
+        {
+            OSLM_FATAL("Unhandled exception: " << e.what());
         }
     }
     compHelper.notify();
