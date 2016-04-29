@@ -6,9 +6,6 @@ find_library(VNL_LIBRARY vnl)
 find_library(VNL_ALGO_LIBRARY vnl_algo)
 find_library(VCL_LIBRARY vcl )
 
-fwUseForwardInclude(
-    ARLcore
-)
 
 fwInclude(
     ${Boost_INCLUDE_DIRS}

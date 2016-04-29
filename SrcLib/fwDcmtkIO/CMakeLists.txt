@@ -1,19 +1,5 @@
 fwLoadProperties()
 
-fwUseForwardInclude(
-    fwCore
-    fwDataIO
-    fwTools
-    fwThread
-    fwMedData
-    fwCom
-    fwComEd
-    fwDicomData
-    fwZip
-    fwDicomIOFilter
-    fwDicomTools
-    fwDcmtkTools
-)
 
 #racy compatibility
 

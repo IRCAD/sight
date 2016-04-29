@@ -1,12 +1,5 @@
 
 fwLoadProperties()
-fwUseForwardInclude(
-    fwCore
-    fwData
-    fwComEd
-    fwTools
-    igtlProtocol
-)
 
 find_package(ZEROMQ REQUIRED)
 find_package(OpenIGTLink REQUIRED)

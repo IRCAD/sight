@@ -1,11 +1,5 @@
 fwLoadProperties()
 
-fwUseForwardInclude(
-        fwTools
-        fwData
-        fwDataCamp
-        igtlProtocol
-)
 
 find_package(CppUnit)
 

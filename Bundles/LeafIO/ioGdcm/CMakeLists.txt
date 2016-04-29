@@ -1,8 +1,7 @@
 fwLoadProperties()
 
-fwUseForwardInclude(ioGdcm)
-
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
+
 fwLink(
     ${Qt5Core_LIBRARIES}
     ${Qt5Gui_LIBRARIES}

@@ -1,17 +1,5 @@
 
 fwLoadProperties()
-fwUseForwardInclude(
-        fwRuntime
-        fwData
-        fwServices
-        fwComEd
-        fwTools
-        fwZip
-        fwAtoms
-        fwAtomConversion
-        fwAtomsBoostIO
-        fwVtkIO
-)
 
 find_package(LibArchive REQUIRED)
 find_package(OpenIGTLink REQUIRED)

@@ -1,9 +1,5 @@
 fwLoadProperties()
 
-fwUseForwardInclude(
-    fwCore
-    fwDataTools
-)
 
 find_package( ZLIB REQUIRED )
 fwInclude(${ZLIB_INCLUDE_DIRS})

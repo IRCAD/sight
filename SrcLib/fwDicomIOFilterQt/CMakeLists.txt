@@ -1,15 +1,5 @@
 fwLoadProperties()
 
-fwUseForwardInclude(
-    fwCore
-    fwTools
-    fwMedData
-    fwDicomData
-    fwDicomIOFilter
-    fwGui
-    fwGuiQt
-    fwDcmtkTools
-)
 
 find_package (Boost REQUIRED)
 fwForwardInclude(${Boost_INCLUDE_DIRS})

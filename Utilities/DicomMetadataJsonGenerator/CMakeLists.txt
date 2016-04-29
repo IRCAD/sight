@@ -1,12 +1,5 @@
 fwLoadProperties()
 
-fwUseForwardInclude(
-    fwCore
-    fwDicomData
-    fwMedData
-    fwDcmtkIO
-    fwDicomIOFilter
-)
 
 find_package(Boost COMPONENTS filesystem program_options REQUIRED)
 fwForwardInclude(${Boost_INCLUDE_DIRS})

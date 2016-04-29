@@ -1,14 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwData
-    fwRender
-    fwVtkIO
-    fwDataIO
-    fwComEd
-    fwRenderVTK
-    io
-    gui
-)
 
 
 find_package(Boost COMPONENTS filesystem system REQUIRED)

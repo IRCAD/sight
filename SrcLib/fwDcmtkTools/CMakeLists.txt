@@ -1,10 +1,5 @@
 fwLoadProperties()
 
-fwUseForwardInclude(
-    fwCore
-    fwTools
-    fwComEd
-)
 
 find_package(Boost COMPONENTS filesystem REQUIRED)
 

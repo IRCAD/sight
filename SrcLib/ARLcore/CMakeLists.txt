@@ -1,8 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwCore
-    fwTools
-)
 
 
 find_library( ANN_LIBRARY ANN )

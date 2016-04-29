@@ -1,18 +1,5 @@
 fwLoadProperties()
 
-fwUseForwardInclude(
-    fwGdcmIO
-    fwTools
-    fwCore
-    fwData
-    fwMedData
-    fwTest
-    fwDataTools
-    fwMemory
-    fwComEd
-    fwThread
-    fwZip
-)
 
 find_package (Boost REQUIRED)
 fwForwardInclude(${Boost_INCLUDE_DIRS})

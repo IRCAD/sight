@@ -1,12 +1,5 @@
 
 fwLoadProperties()
-fwUseForwardInclude(
-    fwCore
-    fwData
-    fwComEd
-    fwTools
-    igtlProtocol
-)
 
 find_package(OpenIGTLink REQUIRED)
 find_library(OpenIGTLink_LIBRARY NAMES ${OpenIGTLink_LIBRARIES} PATHS ${OpenIGTLink_LIBRARY_DIRS})

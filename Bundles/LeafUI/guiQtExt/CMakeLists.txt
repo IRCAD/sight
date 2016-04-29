@@ -1,7 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwGuiQtExt
-)
 
 find_package(Qt5 COMPONENTS Core Gui REQUIRED)
 fwLink(

@@ -1,9 +1,5 @@
 fwLoadProperties()
 
-fwUseForwardInclude(
-    fwRuntime
-    extData
-)
 
 find_package(Boost COMPONENTS system REQUIRED)
 

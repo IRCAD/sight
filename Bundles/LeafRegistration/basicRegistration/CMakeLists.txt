@@ -1,14 +1,5 @@
 
 fwLoadProperties()
-fwUseForwardInclude(
-    gui
-    fwData
-    fwServices
-    fwComEd
-    fwDataTools
-    fwGuiQt
-    fwItkIO
-)
 
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 find_package(ITK REQUIRED)

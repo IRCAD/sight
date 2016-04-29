@@ -1,17 +1,5 @@
 
 fwLoadProperties()
-fwUseForwardInclude(
-    fwData
-    fwServices
-    fwCom
-    fwComEd
-    fwRuntime
-    fwGui
-    fwGuiQt
-    gui
-    ioNetwork
-    uiIO
-)
 
 find_package(Boost COMPONENTS regex REQUIRED)
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
