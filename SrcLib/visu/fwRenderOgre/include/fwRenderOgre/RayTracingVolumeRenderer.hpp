@@ -35,9 +35,6 @@ public:
     /// Does nothing.
     FWRENDEROGRE_API virtual ~RayTracingVolumeRenderer();
 
-    /// Does nothing.
-    FWRENDEROGRE_API virtual void updateGeometry();
-
     /// Function called when a new image is being rendered.
     FWRENDEROGRE_API virtual void imageUpdate(::fwData::Image::sptr image, ::fwData::TransferFunction::sptr tf);
 
@@ -60,12 +57,6 @@ private:
 
     /// Object containing the proxy geometry, this is a cube for now.
     ::Ogre::ManualObject *m_entryPointGeometry;
-
-    /// Ray caster fragment program parameters.
-    ::Ogre::GpuProgramParametersSharedPtr m_rayCasterParameters;
-
-    /// The material being used's fragment program parameters.
-    ::Ogre::GpuProgramParametersSharedPtr m_currentShaderParameters;
 
 };
 

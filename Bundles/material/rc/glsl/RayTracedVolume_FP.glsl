@@ -115,8 +115,8 @@ void main(void)
         float sf = texture(u_image, rayPos).r;
         float sb = texture(u_image, rayPos + rayDir).r;
 
-        sf = ((sf * 65535.f) + float(u_min)) / float(u_max - u_min);
-        sb = ((sb * 65535.f) + float(u_min)) / float(u_max - u_min);
+        sf = ((sf * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
+        sb = ((sb * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
 
         vec4 tfColour = texture(u_tfTexture, vec2(sf, sb));
 
@@ -132,9 +132,11 @@ void main(void)
 
             tfColour.rgb = tfColour.rgb * abs(dot(N, u_lightDir));
 
+#ifndef PREINTEGRATION
             // Adjust opacity to sample distance.
             // This could be done when generating the TF texture to improve performance.
             tfColour.a   = 1 - pow(1 - tfColour.a, u_sampleDistance * opacityCorrectionFactor);
+#endif
 
             composite(result, tfColour);
 

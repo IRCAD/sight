@@ -31,10 +31,10 @@ public:
     FWRENDEROGRE_API void createTexture(const std::string& _parentId);
 
     /// Sets the table resolution based on the new image and recomputes it.
-    FWRENDEROGRE_API void imageUpdate(const ::fwData::Image::sptr& _img, const ::fwData::TransferFunction::sptr& _tf, unsigned _nbSamples);
+    FWRENDEROGRE_API void imageUpdate(const ::fwData::Image::sptr& _img, const ::fwData::TransferFunction::sptr& _tf, float _samplingRate);
 
     /// Computes the table based on the given TF and slice distance.
-    FWRENDEROGRE_API void tfUpdate(const ::fwData::TransferFunction::sptr& _tf, unsigned _nbSamples);
+    FWRENDEROGRE_API void tfUpdate(const ::fwData::TransferFunction::sptr& _tf, float _sampleDistance);
 
     /// Get the texture holding the pre-integration table.
     FWRENDEROGRE_API inline ::Ogre::TexturePtr getTexture() const;
@@ -54,7 +54,7 @@ private:
     };
 
     /// Pixel structure used when computing the table.
-    typedef ::glm::dvec4 IntegralPixel;
+    typedef ::glm::vec4 IntegralPixel;
 
     /// Array storing table values.
     TablePixel *m_table;

@@ -89,4 +89,39 @@ void IVolumeRenderer::scaleCube(const fwData::Image::SpacingType& spacing)
 
 //-----------------------------------------------------------------------------
 
+::Ogre::Plane IVolumeRenderer::getCameraPlane() const
+{
+    return ::Ogre::Plane(
+                m_volumeSceneNode->convertWorldToLocalDirection(m_camera->getRealDirection(), true).normalisedCopy(),
+                m_volumeSceneNode->convertWorldToLocalPosition(m_camera->getRealPosition())
+           );
+}
+
+//-----------------------------------------------------------------------------
+
+unsigned IVolumeRenderer::computeSampleDistance(const ::Ogre::Plane& cameraPlane)
+{
+    // get the cube's closest and furthest vertex to the camera
+    const auto comp = [&cameraPlane](const ::Ogre::Vector3& v1, const ::Ogre::Vector3& v2)
+            { return cameraPlane.getDistance(v1) < cameraPlane.getDistance(v2); };
+
+    const auto closestVtxIterator = std::min_element(m_clippedImagePositions, m_clippedImagePositions + 8, comp);
+    const auto closestVtxIndex    = std::distance(m_clippedImagePositions, closestVtxIterator);
+
+    const ::Ogre::Vector3 furthestVtx = *std::max_element(m_clippedImagePositions, m_clippedImagePositions + 8, comp);
+    const ::Ogre::Vector3 closestVtx  = *closestVtxIterator;
+
+    // get distance between slices
+    const float closestVtxDistance  = cameraPlane.getDistance(closestVtx);
+    const float furthestVtxDistance = cameraPlane.getDistance(furthestVtx);
+
+    const float firstToLastSliceDistance = std::abs(closestVtxDistance - furthestVtxDistance);
+
+    m_sampleDistance = firstToLastSliceDistance / m_nbSlices;
+
+    return static_cast<unsigned>(closestVtxIndex);
+}
+
+//-----------------------------------------------------------------------------
+
 } // namespace fwRenderOgre

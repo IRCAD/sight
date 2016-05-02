@@ -34,9 +34,6 @@ public:
     /// Destructor, does nothing.
     FWRENDEROGRE_API virtual ~SliceVolumeRenderer();
 
-    /// Updates the proxy geometry so that the polygons always face the camera.
-    FWRENDEROGRE_API virtual void updateGeometry();
-
     /// Function called when a new image is being rendered.
     FWRENDEROGRE_API virtual void imageUpdate(::fwData::Image::sptr image, ::fwData::TransferFunction::sptr tf);
 

@@ -39,7 +39,7 @@
                     </adaptor>
 
                     <adaptor id="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image" uid="${GENERIC_UID}_VR" >
-                        <config renderer="default" preintegration="no" mode="slice" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}"/>
+                        <config renderer="default" preintegration="yes" mode="slice" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}"/>
                     </adaptor>
 
                     <connect>
@@ -68,9 +68,14 @@
             <item key="image">
                 <object uid="${imageUID}"  type="::fwData::Image" src="ref" >
                     <!-- Negato windowing service -->
-                    <service uid="${GENERIC_UID}_windowLevelVR" type="::gui::editor::IEditor" impl="::uiImage::WindowLevel" autoConnect="yes">
+                    <service uid="${GENERIC_UID}_windowLevelVR" type="::gui::editor::IEditor" impl="::uiImage::WindowLevel" autoConnect="no">
                         <config selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
                     </service>
+<!--
+                    <service impl="::ioVTK::SImageReader" type="::io::IReader" uid="debugReader" autoConnect="no">
+                        <file>../../VolumeData/patient1.vtk</file>
+                    </service>
+-->
                 </object>
             </item>
 
@@ -94,6 +99,9 @@
             </item>
 
             <start uid="${GENERIC_UID}_OgreVolumeRendering" />
+<!--            <start uid="debugReader" />
+            <update uid="debugReader" />-->
+
         </object>
 
     </config>

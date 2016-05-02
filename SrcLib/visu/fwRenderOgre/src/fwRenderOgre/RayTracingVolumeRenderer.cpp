@@ -47,15 +47,14 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
                 if(mtlName == "PreIntegratedRayTracedVolume")
                 {
-//                    m_preIntegrationTableTexState = texTFState;
                     texTFState->setTexture(m_preIntegrationTable->getTexture());
-                    m_preIntegrationParameters = pass->getFragmentProgramParameters();
+                    m_preIntegrationShaderParameters = pass->getFragmentProgramParameters();
                 }
                 else
                 {
                     texTFState->setTexture(m_gpuTF->getTexture());
-                    m_rayCasterParameters = pass->getFragmentProgramParameters();
-                    m_currentShaderParameters = m_rayCasterParameters;
+                    m_defaultShaderParameters = pass->getFragmentProgramParameters();
+                    m_currentShaderParameters = m_defaultShaderParameters;
                 }
             }
         }
@@ -75,25 +74,18 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::updateGeometry()
-{
-    updateEntryPoints();
-}
-
-//-----------------------------------------------------------------------------
-
 void RayTracingVolumeRenderer::imageUpdate(fwData::Image::sptr image, fwData::TransferFunction::sptr tf)
 {
     scaleCube(image->getSpacing());
 
     if(m_preIntegratedRendering)
     {
-        m_preIntegrationTable->imageUpdate(image, tf, m_nbSlices);
+        m_preIntegrationTable->imageUpdate(image, tf, m_sampleDistance);
 
         auto minMax = m_preIntegrationTable->getMinMax();
 
-        m_preIntegrationParameters->setNamedConstant("u_min", minMax.first);
-        m_preIntegrationParameters->setNamedConstant("u_max", minMax.second);
+        m_preIntegrationShaderParameters->setNamedConstant("u_min", minMax.first);
+        m_preIntegrationShaderParameters->setNamedConstant("u_max", minMax.second);
     }
 }
 
@@ -103,31 +95,9 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
 {
     m_nbSlices = nbSamples;
 
-    const ::Ogre::Vector3 cameraPosition = m_volumeSceneNode->convertWorldToLocalPosition(m_camera->getRealPosition());
-    ::Ogre::Vector3 planeNormal = m_volumeSceneNode->convertWorldToLocalDirection(m_camera->getRealDirection(), true);
-    planeNormal.normalise();
+    computeSampleDistance(getCameraPlane());
 
-    const ::Ogre::Plane cameraPlane(planeNormal, cameraPosition);
-
-    // get the cube's closest and furthest vertex to the camera
-    const auto comp = [&cameraPlane](const ::Ogre::Vector3& v1, const ::Ogre::Vector3& v2)
-            { return cameraPlane.getDistance(v1) < cameraPlane.getDistance(v2); };
-
-    const ::Ogre::Vector3 furthestVtx = *std::max_element(m_clippedImagePositions, m_clippedImagePositions + 8, comp);
-    const ::Ogre::Vector3 closestVtx  = *std::min_element(m_clippedImagePositions, m_clippedImagePositions + 8, comp);
-
-    // get distance between slices
-    const float closestVtxDistance  = cameraPlane.getDistance(closestVtx);
-    const float furthestVtxDistance = cameraPlane.getDistance(furthestVtx);
-
-    const float firstToLastSliceDistance = std::abs(closestVtxDistance - furthestVtxDistance);
-
-    const float sliceDistance =  firstToLastSliceDistance / m_nbSlices;
-
-//    if(m_preIntegratedRendering)
-//    {
-        m_currentShaderParameters->setNamedConstant("u_sampleDistance", sliceDistance);
-//    }
+    m_currentShaderParameters->setNamedConstant("u_sampleDistance", m_sampleDistance);
 }
 
 //-----------------------------------------------------------------------------
@@ -136,7 +106,7 @@ void RayTracingVolumeRenderer::setPreIntegratedRendering(bool preIntegratedRende
 {
     m_preIntegratedRendering = preIntegratedRendering;
 
-    m_currentShaderParameters = m_preIntegratedRendering ? m_preIntegrationParameters : m_rayCasterParameters;
+    m_currentShaderParameters = m_preIntegratedRendering ? m_preIntegrationShaderParameters : m_defaultShaderParameters;
 
     const std::string mtlName = m_preIntegratedRendering ? "PreIntegratedRayTracedVolume" : "RayTracedVolume";
 
@@ -169,6 +139,8 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
         m_currentShaderParameters->setNamedConstant("u_boundingBoxMin", ::Ogre::Vector3::ZERO);
         m_currentShaderParameters->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3(1.f, 1.f, 1.f));
     }
+
+    updateEntryPoints();
 }
 
 //-----------------------------------------------------------------------------

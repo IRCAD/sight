@@ -71,9 +71,6 @@ public:
     /// Destructor, does nothing.
     FWRENDEROGRE_API virtual ~IVolumeRenderer();
 
-    /// Updates the proxy geometry (if there is any). Called when the camera or the volume moves.
-    FWRENDEROGRE_API virtual void updateGeometry() = 0;
-
     /// Called when the image being rendered is modified.
     FWRENDEROGRE_API virtual void imageUpdate(::fwData::Image::sptr image, ::fwData::TransferFunction::sptr tf) = 0;
 
@@ -83,7 +80,7 @@ public:
     /// Sets/unsets pre-integrated rendering.
     FWRENDEROGRE_API virtual void setPreIntegratedRendering(bool preIntegratedRendering) = 0;
 
-    /// Computes image positions
+    /// Computes image positions.
     FWRENDEROGRE_API virtual void clipImage(const ::Ogre::AxisAlignedBox& clippingBox);
 
     /// Sets the TF used for rendering.
@@ -92,10 +89,19 @@ public:
     /// Sets the pre-integration table used for rendering.
     FWRENDEROGRE_API void setPreIntegrationTable(PreIntegrationTable *preIntegrationTable);
 
+    /// Returns the sampling rate.
+    FWRENDEROGRE_API float getSamplingRate() const;
+
 protected:
 
     /// Scale the volume based on the image's spacing.
     FWRENDEROGRE_API void scaleCube(const fwData::Image::SpacingType& spacing);
+
+    /// Computes the camera's plane.
+    FWRENDEROGRE_API ::Ogre::Plane getCameraPlane() const;
+
+    /// Computes the sample distance and returns the index to the closest vertex to the camera.
+    FWRENDEROGRE_API unsigned computeSampleDistance(const ::Ogre::Plane& cameraPlane);
 
     /// ID of this object's parent.
     std::string m_parentId;
@@ -112,11 +118,14 @@ protected:
     /// Pre-integration table.
     PreIntegrationTable *m_preIntegrationTable;
 
-    /// Pre-integrated rendering shader parameters.
-    ::Ogre::GpuProgramParametersSharedPtr m_preIntegrationParameters;
+    /// Default shader parameters.
+    ::Ogre::GpuProgramParametersSharedPtr m_defaultShaderParameters;
 
-    /// Pre-integration table binding point.
-    ::Ogre::TextureUnitState *m_preIntegrationTableTexState;
+    /// Pre-integration shader parameters.
+    ::Ogre::GpuProgramParametersSharedPtr m_preIntegrationShaderParameters;
+
+    /// Shader parameters for the material currently in use.
+    ::Ogre::GpuProgramParametersSharedPtr m_currentShaderParameters;
 
     /// This object's scene node.
     ::Ogre::SceneNode *m_volumeSceneNode;
@@ -126,6 +135,9 @@ protected:
 
     /// Sampling rate.
     uint16_t m_nbSlices;
+
+    /// Distance between samples in local space.
+    float m_sampleDistance;
 
     /// Use pre-integration.
     bool m_preIntegratedRendering;
@@ -160,6 +172,13 @@ inline void IVolumeRenderer::setTransferFunction(TransferFunction *gpuTF)
 inline void IVolumeRenderer::setPreIntegrationTable(PreIntegrationTable *preIntegrationTable)
 {
     m_preIntegrationTable = preIntegrationTable;
+}
+
+//-----------------------------------------------------------------------------
+
+inline float IVolumeRenderer::getSamplingRate() const
+{
+    return m_sampleDistance;
 }
 
 //-----------------------------------------------------------------------------

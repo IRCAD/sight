@@ -4,11 +4,11 @@ uniform sampler3D u_image;
 uniform sampler2D u_tfTexture;
 
 uniform vec3 u_lightDir;
-//uniform vec3 u_diffuse;
+
+uniform float u_sampleDistance;
 
 #ifdef PREINTEGRATION
 uniform vec3  u_viewDirection;
-uniform float u_sampleDistance;
 
 uniform int u_min;
 uniform int u_max;
@@ -70,8 +70,8 @@ void main(void)
     float sf = texture(u_image, vs_uvw).r;
     float sb = texture(u_image, sbPos ).r;
 
-    sf = ((sf * 65535.f) + float(u_min)) / float(u_max - u_min);
-    sb = ((sb * 65535.f) + float(u_min)) / float(u_max - u_min);
+    sf = ((sf * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
+    sb = ((sb * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
 
     vec4 colourTf = texture(u_tfTexture, vec2(sf, sb));
 #else
@@ -79,13 +79,15 @@ void main(void)
 
     vec4 colourTf = transferFunction(intensity);
 
+    // Adjust opacity to sample distance.
+    // This could be done when generating the TF texture to improve performance.
+    colourTf.a = 1 - pow(1 - colourTf.a, u_sampleDistance * 200);
+
 #endif // PREINTEGRATION
 
     vec3 N = gradientNormal(vs_uvw);
 
     vec3 outColour = colourTf.rgb * abs(dot(N, u_lightDir));
 
-//    colourTf.a = 1 - pow(1 - colourTf.a, u_sampleDistance * 200);
-
-    fragColor = vec4(outColour, colourTf.a);
+    fragColor = vec4(outColour.rgb, colourTf.a);
 }

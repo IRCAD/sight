@@ -112,7 +112,7 @@ void SVolumeRender::updatingTFPoints()
 
     if(m_preIntegratedRendering)
     {
-        m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_nbSlices);
+        m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_volumeRenderer->getSamplingRate());
     }
 
     this->requestRender();
@@ -128,7 +128,7 @@ void SVolumeRender::updatingTFWindowing(double window, double level)
 
     if(m_preIntegratedRendering)
     {
-        m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_nbSlices);
+        m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_volumeRenderer->getSamplingRate());
     }
 
     this->requestRender();
@@ -259,12 +259,12 @@ void SVolumeRender::samplingChanged(int nbSamples)
     OSLM_ASSERT("Sampling rate must fit in a 16 bit uint.", nbSamples < 65536 && nbSamples >= 0);
     m_nbSlices = static_cast<uint16_t>(nbSamples);
 
+    m_volumeRenderer->setSampling(m_nbSlices);
+
     if(m_preIntegratedRendering)
     {
-        m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_nbSlices);
+        m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_volumeRenderer->getSamplingRate());
     }
-
-    m_volumeRenderer->setSampling(m_nbSlices);
 
     this->requestRender();
 }
