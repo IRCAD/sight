@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -139,7 +139,7 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
         std::ostringstream os;
         os << idx;
 
-        ::fwServices::registry::AppConfig::FieldAdaptorType replaceMap;
+        ::fwServices::registry::FieldAdaptorType replaceMap;
         replaceMap["GENERIC_UID"] = ::fwServices::registry::AppConfig::getUniqueIdentifier(strConfig);
 
         ::fwData::Image::sptr img1           = calInfo1->getImage(idx);
@@ -162,7 +162,7 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
 
         // Launch configuration
         m_configMgr = ::fwServices::AppConfigManager::New();
-        m_configMgr->setConfig( config );
+        m_configMgr->::fwServices::IAppConfigManager::setConfig( config );
         m_configMgr->launch();
 
         // Proxy to be notified of the window closure
