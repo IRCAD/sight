@@ -139,7 +139,7 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
         std::ostringstream os;
         os << idx;
 
-        ::fwServices::registry::FieldAdaptorType replaceMap;
+        ::fwServices::registry::AppConfig::FieldAdaptorType replaceMap;
         replaceMap["GENERIC_UID"] = ::fwServices::registry::AppConfig::getUniqueIdentifier(strConfig);
 
         ::fwData::Image::sptr img1           = calInfo1->getImage(idx);
@@ -162,7 +162,7 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
 
         // Launch configuration
         m_configMgr = ::fwServices::AppConfigManager::New();
-        m_configMgr->::fwServices::IAppConfigManager::setConfig( config );
+        m_configMgr->setConfig( config );
         m_configMgr->launch();
 
         // Proxy to be notified of the window closure
