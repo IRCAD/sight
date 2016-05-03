@@ -17,9 +17,9 @@
 #include <fwRuntime/ConfigurationElementContainer.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <fwTools/fwID.hpp>
 

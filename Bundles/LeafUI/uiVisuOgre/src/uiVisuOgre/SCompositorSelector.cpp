@@ -12,8 +12,9 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/IService.hxx>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwRenderOgre/SRender.hpp>
 

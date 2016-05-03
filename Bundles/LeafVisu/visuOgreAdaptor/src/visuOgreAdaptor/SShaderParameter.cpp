@@ -21,7 +21,7 @@
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <OgreGpuProgramParams.h>
 #include <OgreMaterial.h>
