@@ -16,7 +16,7 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/Proxy.hpp>
 

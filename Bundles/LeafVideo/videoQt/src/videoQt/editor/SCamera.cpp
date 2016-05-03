@@ -22,7 +22,7 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGui/dialog/InputDialog.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwTools/pathDifference.hpp>
 
 #include "videoQt/editor/CameraDeviceDlg.hpp"

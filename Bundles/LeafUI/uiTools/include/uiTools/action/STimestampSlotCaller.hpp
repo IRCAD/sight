@@ -10,7 +10,7 @@
 #include <fwCore/base.hpp>
 
 #include <fwServices/IService.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <fwGui/IActionSrv.hpp>
 

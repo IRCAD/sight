@@ -17,9 +17,8 @@
 #include <fwData/Composite.hpp>
 #include <fwData/location/Folder.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IService.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
@@ -58,11 +57,10 @@ void SVideoConfiguration::starting() throw(::fwTools::Failed)
     this->actionServiceStarting();
 
     // Check preferences
-    std::vector< ::fwServices::IService::sptr > preferencesServicesList;
-    preferencesServicesList = ::fwServices::OSR::getServices("::preferences::IPreferencesService");
+    auto preferencesServicesList = ::fwServices::OSR::getServices("::preferences::IPreferencesService");
     if(!preferencesServicesList.empty())
     {
-        ::fwServices::IService::sptr prefService = preferencesServicesList[0];
+        ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();
         ::fwData::Composite::sptr prefs          = prefService->getObject< ::fwData::Composite >();
 
         ::fwData::Composite::IteratorType iterPref = prefs->find( ::arUtils::s_VIDEORENDER_PREF );

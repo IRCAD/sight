@@ -20,8 +20,7 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/macros.hpp>
 
 #include <QHBoxLayout>
 

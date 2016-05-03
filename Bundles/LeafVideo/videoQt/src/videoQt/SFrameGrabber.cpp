@@ -17,7 +17,7 @@
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwTools/Type.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <extData/FrameTL.hpp>
 #include <arData/Camera.hpp>

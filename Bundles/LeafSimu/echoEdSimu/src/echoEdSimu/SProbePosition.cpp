@@ -13,7 +13,7 @@
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 namespace echoEdSimu
 {

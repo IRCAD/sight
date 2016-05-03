@@ -16,9 +16,8 @@
 
 #include <fwComEd/helper/Array.hpp>
 
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <arlcore/PointsList.h>
 

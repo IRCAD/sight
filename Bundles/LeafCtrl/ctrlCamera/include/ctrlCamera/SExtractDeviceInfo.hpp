@@ -13,7 +13,7 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/IController.hpp>
 
 

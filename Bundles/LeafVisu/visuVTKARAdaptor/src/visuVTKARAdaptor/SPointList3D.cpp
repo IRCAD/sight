@@ -14,8 +14,7 @@
 
 #include <fwData/PointList.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/macros.hpp>
 
 #include <vtkPoints.h>
 #include <vtkSphereSource.h>

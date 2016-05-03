@@ -17,7 +17,7 @@
 #include <fwData/Composite.hpp>
 #include <fwData/Reconstruction.hpp>
 #include <fwMedData/ModelSeries.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>

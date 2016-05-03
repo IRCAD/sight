@@ -21,8 +21,7 @@
 #include <fwCom/Signal.hxx>
 #include <fwComEd/helper/Array.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/macros.hpp>
 
 #include <functional>
 

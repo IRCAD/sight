@@ -14,7 +14,7 @@
 #include <fwCore/HiResClock.hpp>
 #include <fwCore/mt/types.hpp>
 #include <fwData/Composite.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/IController.hpp>
 
 #include <arlcore/Point.h>
