@@ -322,8 +322,30 @@ void SActivityLauncher::updateState()
     if(selection->size() == 1 && ::fwMedData::ActivitySeries::dynamicCast((*selection)[0]))
     {
         ::fwMedData::ActivitySeries::sptr as = ::fwMedData::ActivitySeries::dynamicCast((*selection)[0]);
-        isExecutable                         = ::fwActivities::registry::Activities::getDefault()->hasInfo(
-            as->getActivityConfigId());
+
+
+        if(m_filterMode == "include" || m_filterMode == "exclude")
+        {
+            const bool isIncludeMode = m_filterMode == "include";
+
+            KeysType::iterator keyIt = std::find(m_keys.begin(), m_keys.end(), as->getActivityConfigId());
+
+            if(keyIt != m_keys.end() && isIncludeMode)
+            {
+                isExecutable = true;
+            }
+            else if(keyIt == m_keys.end() && !isIncludeMode)
+            {
+                isExecutable = true;
+            }
+            isExecutable &= ::fwActivities::registry::Activities::getDefault()->hasInfo(
+                as->getActivityConfigId());
+        }
+        else
+        {
+            isExecutable = ::fwActivities::registry::Activities::getDefault()->hasInfo(
+                as->getActivityConfigId());
+        }
     }
     else
     {
