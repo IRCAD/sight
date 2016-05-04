@@ -262,19 +262,13 @@ void SWriter::updating() throw(::fwTools::Failed)
         extension = firstAllowedExt;
     }
     FW_RAISE_IF( "Extension is empty", extension.empty() );
+    FW_RAISE_IF("The file extension '" << extension << "' is not managed",
+                m_allowedExts.find(extension) == m_allowedExts.end());
 
     // Find in custom extensions if our extension exists.
     if (m_customExts.find(extension) != m_customExts.end())
     {
         extension = "." + m_customExts[extension];
-    }
-    FW_RAISE_IF("The file extension '" << extension << "' is not managed",
-                m_allowedExts.find(extension) == m_allowedExts.end());
-
-    // Replace the extension of the filename and the filePath.
-    {
-        filePath.replace_extension(extension);
-        filename.replace_extension(extension);
     }
 
     // Mutex data lock
