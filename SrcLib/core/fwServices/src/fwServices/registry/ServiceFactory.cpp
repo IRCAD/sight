@@ -9,6 +9,8 @@
 
 #include <fwCore/util/LazyInstantiator.hpp>
 
+#include <fwData/Exception.hpp>
+
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/helper.hpp>
@@ -182,11 +184,11 @@ IService::sptr ServiceFactory::create( const std::string & _srvImpl ) const
 
         ::fwRuntime::profile::getCurrentProfile()->setup();
 
-        SLM_ASSERT(
-            "After loading the bundle " << info->bundle->getIdentifier() << " , factory "
-                                        << _srvImpl << " is still missing. The service declaration might be missing (or misspelled) "
-            "in a cpp file.",
-            info->factory );
+        FW_RAISE_EXCEPTION_IF(
+            ::fwData::Exception( "After loading the bundle " + info->bundle->getIdentifier() + " , factory " + _srvImpl
+                                 + " is still missing. The service declaration might be missing (or misspelled) "
+                                 "in a cpp file."),
+            !info->factory );
 
         service = info->factory();
     }

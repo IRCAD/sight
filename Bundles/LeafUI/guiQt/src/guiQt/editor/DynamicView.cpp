@@ -280,13 +280,23 @@ void DynamicView::launchTab(DynamicViewInfo& info)
     ::fwServices::AppConfigManager::sptr helper = ::fwServices::AppConfigManager::New();
     helper->setConfig( info.viewConfigID, info.replaceMap );
 
-    if (!m_dynamicConfigStartStop)
+    try
     {
-        helper->launch();
+        if (!m_dynamicConfigStartStop)
+        {
+            helper->launch();
+        }
+        else
+        {
+            helper->create();
+        }
     }
-    else
+    catch( std::exception & e )
     {
-        helper->create();
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch failed",
+                                                          e.what(),
+                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
+        OSLM_ERROR(e.what());
     }
 
     info.container = subContainer;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -123,10 +123,8 @@ namespace fwServices
     {
         srv = srvFactory->create(typestr, ::boost::get<0>(implType));
     }
-
-#ifndef COM_LOG
-    OSLM_ASSERT("Service already has an UID.", !srv->hasID());
-#endif
+    SLM_ASSERT("Factory could not create service of type <" + ::boost::get<0>(implType) + ">.", srv);
+    SLM_ASSERT("Service already has an UID.", !srv->hasID());
 
     OSLM_FATAL_IF("UID " << ::boost::get<0>(uid) << " already exists.", ::fwTools::fwID::exist(::boost::get<0>(uid)));
     if (::boost::get<1>(uid))

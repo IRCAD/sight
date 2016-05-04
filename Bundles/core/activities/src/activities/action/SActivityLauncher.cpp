@@ -368,7 +368,11 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
 
     if( !actSeries )
     {
-        OSLM_INFO("Activity <" << info.builderImpl << ">launch aborted");
+        std::string msg = "The activity <" + info.title + "> can't be launched. Builder <" + info.builderImpl +
+                          "> failed.";
+        ::fwGui::dialog::MessageDialog::showMessageDialog( "Activity can not be launched", msg,
+                                                           ::fwGui::dialog::IMessageDialog::WARNING);
+        OSLM_ERROR(msg);
         return;
     }
 
