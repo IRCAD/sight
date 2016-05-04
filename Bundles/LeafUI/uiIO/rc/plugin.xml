@@ -18,5 +18,12 @@
         <object>::fwMedData::SeriesDB</object>
         <desc>Merge SeriesDB</desc>
     </extension>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiIO::action::SExportWithSeriesDB</service>
+        <object>::fwData::Object</object>
+        <desc>Export the series using a SeriesDB</desc>
+    </extension>
 
 </plugin>
