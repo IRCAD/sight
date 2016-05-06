@@ -13,7 +13,6 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwRenderOgre/helper/Shading.hpp>
@@ -41,7 +40,7 @@ namespace visuOgreAdaptor
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWIMAGE_SLOT   = "newImage";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWIMAGE_SLOT = "newImage";
 
 //-----------------------------------------------------------------------------
 
@@ -61,7 +60,7 @@ SVolumeRender::SVolumeRender() throw() :
     newSlot(s_NEWIMAGE_SLOT, &SVolumeRender::newImage, this);
     newSlot(s_NEWSAMPLING_SLOT, &SVolumeRender::samplingChanged, this);
 
-    m_transform = ::Ogre::Matrix4::IDENTITY;
+    m_transform     = ::Ogre::Matrix4::IDENTITY;
     m_renderingMode = VR_MODE_RAY_TRACING;
 }
 
@@ -154,9 +153,9 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 
     this->installTFConnections();
 
-    m_sceneManager     = this->getSceneManager();
-    m_volumeSceneNode  = m_sceneManager->getRootSceneNode()->createChildSceneNode();
-    m_camera           = m_sceneManager->getCamera("PlayerCam");
+    m_sceneManager    = this->getSceneManager();
+    m_volumeSceneNode = m_sceneManager->getRootSceneNode()->createChildSceneNode();
+    m_camera          = m_sceneManager->getCamera("PlayerCam");
 
     // Create textures
     m_3DOgreTexture = ::Ogre::TextureManager::getSingletonPtr()->create(
@@ -286,11 +285,11 @@ void SVolumeRender::initWidgets()
 
     // Connect widgets to interactor.
     {
-        ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
+        ::fwRenderOgre::Layer::sptr layer                        = this->getRenderService()->getLayer(m_layerID);
         ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getInteractor();
 
         auto vrInteractor =
-                std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
+            std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
 
         vrInteractor->initPicker();
         vrInteractor->attachWidget(m_widgets);
