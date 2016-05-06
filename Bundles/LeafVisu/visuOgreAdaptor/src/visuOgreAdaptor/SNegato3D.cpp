@@ -20,7 +20,6 @@
 
 #include <fwRenderOgre/Utils.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 
 #include <algorithm>

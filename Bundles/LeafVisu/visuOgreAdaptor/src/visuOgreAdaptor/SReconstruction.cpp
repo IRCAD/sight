@@ -6,13 +6,13 @@
 
 #include "visuOgreAdaptor/SReconstruction.hpp"
 
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <visuOgreAdaptor/defines.hpp>
 

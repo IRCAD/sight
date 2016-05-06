@@ -9,7 +9,8 @@
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 namespace fwRenderOgre
 {
