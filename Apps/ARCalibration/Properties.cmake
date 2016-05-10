@@ -36,7 +36,7 @@ set( REQUIREMENTS
     videoTools
     ioCalibration
     videoCalibration
-    launcher
+    fwlauncher
     uiTools
     trackerAruco
     )

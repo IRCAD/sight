@@ -29,7 +29,7 @@ set( REQUIREMENTS
     visuVTKARAdaptor
     visuVTK
     visuVTKQt
-    launcher
+    fwlauncher
     videoQt
     patchMedicalData
     )
