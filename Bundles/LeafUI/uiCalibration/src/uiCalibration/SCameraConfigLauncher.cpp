@@ -322,7 +322,7 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
             calibInfo2 = ::arData::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfo2Key]);
         }
 
-        ::fwServices::registry::AppConfig::FieldAdaptorType replaceMap;
+        ::fwServices::registry::FieldAdaptorType replaceMap;
 
         replaceMap["camera1Uid"]          = camera1->getID();
         replaceMap["camera2Uid"]          = camera2->getID();
