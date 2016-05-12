@@ -254,7 +254,7 @@ private:
 
     /// Node containing inputs for the r2vb objects - it will never be inserted in the scene
     ::Ogre::Entity* m_r2vbEntity;
-    /// Mesh data for r2vb input - contains only line lists with adjency information primitives
+    /// Mesh data for r2vb input - contains only line lists with adjacency information primitives
     ::Ogre::MeshPtr m_r2vbMesh;
     /// Name of the r2vb mesh
     std::string m_r2vbMeshName;
