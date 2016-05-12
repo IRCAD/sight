@@ -104,7 +104,7 @@ void IAdaptor::setRenderService( SRender::sptr service)
 
 //------------------------------------------------------------------------------
 
-SRender::sptr IAdaptor::getRenderService()
+SRender::sptr IAdaptor::getRenderService() const
 {
     return m_renderService.lock();
 }

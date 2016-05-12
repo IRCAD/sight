@@ -159,6 +159,9 @@
                         <service uid="imageReader" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
                         </service>
+
+                        <service uid="medicalImage" impl="::ctrlSelection::MedicalImageSrv" autoConnect="no" />
+
                     </object>
                 </item>
 
@@ -245,6 +248,7 @@
 
                 </item>
 
+                <start uid="medicalImage" />
                 <start uid="ihm" />
                 <start uid="cfgVTKGenericScene" />
                 <start uid="cfgOgreGenericScene" />
