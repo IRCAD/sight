@@ -19,5 +19,5 @@ endif()
 fwForwardInclude(
     ${VTK_INCLUDE_DIRS}
 )
-fwLink( ${VTK_LIBARIES} )
+fwLink( ${VTK_LIBRARIES} )
         
