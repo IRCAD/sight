@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -130,25 +130,30 @@ void SCopy::copy()
     if (m_source.substr(0,1) == "@")
     {
         source = ::fwDataCamp::getObject(this->getObject(), m_source);
-        SLM_ASSERT("Invalid seshat path : '" + m_source + "'", source);
+        SLM_ERROR_IF("Invalid seshat path '" + m_source + "' or object does not exist", !source);
     }
     else
     {
         ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_source);
         SLM_ASSERT("Object '" + m_source + "' is not found", obj);
         source = ::fwData::Object::dynamicCast(obj);
-        SLM_ASSERT("Object '" + m_source + "' is not a fwData::Object (" + obj->getClassname() + ")", source);
+        SLM_ERROR_IF(
+            "Object '" + m_source + "' is not a valid fwData::Object (" + obj->getClassname() + ") or does not exist",
+            !source);
     }
 
-    ::fwData::mt::ObjectWriteLock lock(target);
-
-    // copy the image
-    target->deepCopy(source);
-
-    auto sig = target->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    if(source)
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-        sig->asyncEmit();
+        ::fwData::mt::ObjectWriteLock lock(target);
+
+        // copy the object
+        target->deepCopy(source);
+
+        auto sig = target->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        {
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
+        }
     }
 }
 
