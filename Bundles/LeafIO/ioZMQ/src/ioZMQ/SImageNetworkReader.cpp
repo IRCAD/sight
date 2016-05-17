@@ -12,7 +12,7 @@
 
 #include <fwData/Image.hpp>
 #include <fwData/String.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/InputDialog.hpp>
 

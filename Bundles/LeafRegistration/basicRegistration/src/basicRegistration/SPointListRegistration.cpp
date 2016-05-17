@@ -17,7 +17,7 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <vtkPoints.h>
 #include <vtkMatrix4x4.h>

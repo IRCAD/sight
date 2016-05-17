@@ -17,9 +17,8 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwMedData/SeriesDB.hpp>
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 #include <fwTools/ProgressToLogger.hpp>
 #include <io/IReader.hpp>

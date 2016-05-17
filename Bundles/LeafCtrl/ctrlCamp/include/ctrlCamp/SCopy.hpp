@@ -12,7 +12,7 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/IService.hpp>
 
 namespace ctrlCamp

@@ -26,7 +26,7 @@
 #include <fwTools/Failed.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <string>
 #include <functional>

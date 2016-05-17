@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -80,13 +80,12 @@ std::pair< ::fwServices::IService::sptr, ::fwData::Composite::sptr> getPreferenc
 {
     ::fwData::Composite::sptr prefs;
 
-    std::vector< ::fwServices::IService::sptr > preferencesServicesList;
-    preferencesServicesList = ::fwServices::OSR::getServices("::preferences::IPreferencesService");
+    auto preferencesServicesList = ::fwServices::OSR::getServices("::preferences::IPreferencesService");
 
     ::fwServices::IService::sptr prefService;
     if(!preferencesServicesList.empty())
     {
-        prefService = preferencesServicesList[0];
+        prefService = *preferencesServicesList.begin();
     }
 
     if(prefService)
