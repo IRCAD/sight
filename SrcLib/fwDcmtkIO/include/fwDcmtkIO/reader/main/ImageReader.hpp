@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -100,11 +100,18 @@ public:
         OFCondition status;
         DcmDataset* dataset;
 
-        // Create temporary buffer
-        T* tempoBuffer = new T[rows*columns*depth];
+        T* tempoBuffer     = new T[rows*columns*depth];
+        uint32_t sliceSize = rows*columns;
 
-        // Compute slice size
-        std::size_t sliceSize = rows*columns*sizeof(T);
+        uint32_t copySize;
+        if(instances.size() == 1 )
+        {
+            copySize = rows*columns*depth;
+        }
+        else
+        {
+            copySize = rows*columns;
+        }
 
         // Slice index
         unsigned short z = 0;
@@ -127,8 +134,8 @@ public:
             if(pixelData)
             {
                 //Add the slice to the temporary buffer
-                memcpy(tempoBuffer+z*(rows*columns), pixelData, sliceSize);
-                ++z; //Next frame
+                memcpy(tempoBuffer+z*sliceSize, pixelData, copySize*sizeof(T));
+                ++z;
             }
             else
             {

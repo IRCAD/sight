@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -48,8 +48,6 @@ ImageStorageReader::~ImageStorageReader()
 {
     ::fwDicomData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = series->getSOPClassUIDs();
     std::string sopClassUID = dcmFindNameOfUID(sopClassUIDContainer.begin()->c_str());
-    FW_RAISE_IF("DICOM files not supported", sopClassUID != "CTImageStorage" && sopClassUID != "MRImageStorage" &&
-                sopClassUID != "SecondaryCaptureImageStorage");
 
     ::fwMedData::ImageSeries::sptr imageSeries = ::fwDicomTools::Series::convertToImageSeries(series);
     DicomPathContainerType instances = series->getLocalDicomPaths();
@@ -108,18 +106,27 @@ ImageStorageReader::~ImageStorageReader()
     image->setOrigin(::boost::assign::list_of(imagePosition[0])(imagePosition[1])(imagePosition[2]));
 
     //Size
-    unsigned short rows, columns, depth;
+    unsigned short rows, columns;
     dataset->findAndGetUint16(DCM_Rows,rows);
     dataset->findAndGetUint16(DCM_Columns,columns);
-    depth = static_cast<unsigned short>(instances.size());
-    if(depth == 1)
+
+    uint32_t depth;
+    if(instances.size() == 1)
     {
-        //If there is only one file, we check how many frames it contains.
-        depth = (depth==0) ? 1 : depth;
-        if(depth > 1)
+        OFString sframesNumber = "";
+
+        if(dataset->findAndGetOFString(DCM_NumberOfFrames, sframesNumber).good())
         {
-            FW_RAISE ( "Reading a file containing multiple frames is not yet supported by this reader.");
+            depth = static_cast<uint32_t>(std::stoi(sframesNumber.c_str()));
         }
+        else
+        {
+            depth = 1;
+        }
+    }
+    else
+    {
+        depth = static_cast<unsigned short>(instances.size());
     }
 
     //FIXME: Remove depth for 2D images ?
