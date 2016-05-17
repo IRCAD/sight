@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,6 +14,7 @@
 #include <boost/foreach.hpp>
 
 #include <dcmtk/dcmdata/dcfilefo.h>
+#include <dcmtk/ofstd/ofcond.h>
 
 namespace fwDcmtkIO
 {
@@ -27,7 +28,7 @@ void DicomSearch::searchRecursively(const ::boost::filesystem::path &dirPath, st
     ::boost::algorithm::split( extensions, strIgnoreFile, ::boost::algorithm::is_any_of("|"),
                                ::boost::algorithm::token_compress_on);
 
-    std::string lowerFilename;
+    std::string filePath;
     std::string filename;
     DcmFileFormat fileFormat;
     for( ::boost::filesystem::recursive_directory_iterator it(dirPath);
@@ -35,28 +36,20 @@ void DicomSearch::searchRecursively(const ::boost::filesystem::path &dirPath, st
     {
         if(!::boost::filesystem::is_directory(*it))
         {
-#if BOOST_FILESYSTEM_VERSION > 2
-            lowerFilename = filename = it->path().string();
-#else
-            lowerFilename = filename = it->string();
-#endif
-            std::transform ( lowerFilename.begin(), lowerFilename.end(), lowerFilename.begin(), tolower );
-            if(!DicomSearch::checkFilenameExtension( lowerFilename, &extensions) )
+            filePath = it->path().string();
+            filename = it->path().filename().string();
+
+            if(!DicomSearch::checkFilenameExtension( filePath, &extensions) )
             {
-                try
+                OFCondition ofCondition = fileFormat.loadFile(filePath.c_str());
+                if(ofCondition.good())
                 {
-                    if(fileFormat.loadFile(filename.c_str()).good())
-                    {
-                        dicomFiles.push_back( filename.c_str() );
-                    }
-                    else
-                    {
-                        SLM_WARN("Failed to read: " + filename );
-                    }
+                    dicomFiles.push_back( filePath.c_str() );
                 }
-                catch (...)
+                else
                 {
-                    OSLM_ERROR("Try with another reader for this file : " << filename.c_str());
+                    throw std::runtime_error("failed to read " + filename + "\n"
+                                             + "dcmtk error: " + ofCondition.text());
                 }
             }
         }

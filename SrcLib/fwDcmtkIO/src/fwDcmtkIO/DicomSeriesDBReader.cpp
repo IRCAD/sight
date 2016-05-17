@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -53,6 +53,9 @@ DicomSeriesDBReader::DicomSeriesDBReader(::fwDataIO::reader::IObjectReader::Key 
 
     // Register codecs
     ::fwDcmtkIO::helper::Codec::registerCodecs();
+
+    // Added to avoid parsing error while reading radioscopic/fluoroscopic dicoms.
+    dcmIgnoreParsingErrors.set(OFTrue);
 }
 
 //------------------------------------------------------------------------------
@@ -76,7 +79,14 @@ DicomSeriesDBReader::FilenameContainerType DicomSeriesDBReader::getFilenames()
                                                                                    filenames)))
         {
             // Recursively search for dicom files
-            ::fwDcmtkIO::helper::DicomSearch::searchRecursively(this->getFolder(), filenames);
+            try
+            {
+                ::fwDcmtkIO::helper::DicomSearch::searchRecursively(this->getFolder(), filenames);
+            }
+            catch(const std::runtime_error& e)
+            {
+                throw e;
+            }
         }
     }
     else if(::fwData::location::have < ::fwData::location::MultiFiles, ::fwDataIO::reader::IObjectReader > (this))

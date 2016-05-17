@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -123,17 +123,9 @@ std::string SDicomTagSeriesDBReader::getSelectorDialogTitle()
         myLoader->addHandler( progressMeterGUI );
         myLoader->read();
     }
-    catch (const std::exception & e)
+    catch (const std::runtime_error & e)
     {
-        std::stringstream ss;
-        ss << "Warning during loading : " << e.what();
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
-            "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
-    }
-    catch( ... )
-    {
-        ::fwGui::dialog::MessageDialog::showMessageDialog(
-            "Warning", "Warning during loading", ::fwGui::dialog::IMessageDialog::WARNING);
+        throw e;
     }
 
     return myLoader->getConcreteObject();
@@ -146,25 +138,32 @@ void SDicomTagSeriesDBReader::updating() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     if( this->hasLocationDefined() )
     {
-        ::fwMedData::SeriesDB::sptr seriesDB = createSeriesDB( this->getFolder() );
-
-        if( seriesDB->size() > 0 )
+        try
         {
-            // Retrieve dataStruct associated with this service
-            ::fwMedData::SeriesDB::sptr associatedSeriesDB = this->getObject< ::fwMedData::SeriesDB >();
-            SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
-            associatedSeriesDB->shallowCopy( seriesDB );
+            ::fwMedData::SeriesDB::sptr seriesDB = createSeriesDB( this->getFolder() );
+            if( seriesDB->size() > 0 )
+            {
+                // Retrieve dataStruct associated with this service
+                ::fwMedData::SeriesDB::sptr associatedSeriesDB = this->getObject< ::fwMedData::SeriesDB >();
+                SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
+                associatedSeriesDB->shallowCopy( seriesDB );
 
-            ::fwGui::Cursor cursor;
-            cursor.setCursor(::fwGui::ICursor::BUSY);
-            this->notificationOfDBUpdate();
-            cursor.setDefaultCursor();
+                ::fwGui::Cursor cursor;
+                cursor.setCursor(::fwGui::ICursor::BUSY);
+                this->notificationOfDBUpdate();
+                cursor.setDefaultCursor();
+            }
+            else
+            {
+                throw std::runtime_error("An uncaught exception occurred while reading file.");
+            }
         }
-        else
+        catch (const std::exception & e)
         {
+            std::stringstream ss;
+            ss << "Warning during loading : " << e.what();
             ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Image Reader","This file can not be read. Retry with another file reader.",
-                ::fwGui::dialog::IMessageDialog::WARNING);
+                "Warning", ss.str(), ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
 }
