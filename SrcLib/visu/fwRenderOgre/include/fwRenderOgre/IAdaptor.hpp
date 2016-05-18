@@ -138,14 +138,7 @@ SPTR(DATATYPE) IAdaptor::getSafeInOut(const std::string& key) const
 {
     if( ::fwServices::IService::isVersion2() )
     {
-        if(this->getRenderService()->hasInOut(key))
-        {
-            return this->getRenderService()->getInOut<DATATYPE>(key);
-        }
-        else
-        {
-            return nullptr;
-        }
+        return this->getRenderService()->getInOut<DATATYPE>(key);
     }
     else
     {
