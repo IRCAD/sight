@@ -75,7 +75,14 @@
                 </registry>
             </service>
 
-            <service uid="action_videoDir" impl="::videoQt::action::SVideoConfiguration" type="::fwGui::IActionSrv" autoConnect="no" />
+            <service uid="action_videoDir" type="::fwGui::IActionSrv" impl="::uiPreferences::action::SPreferencesConfiguration" autoConnect="no">
+                <preference>
+                    <type>path</type>
+                    <name>Video directory</name>
+                    <key>VIDEO_DIR_PREF</key>
+                    <default_value>...</default_value>
+                </preference>
+            </service>
 
             <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 

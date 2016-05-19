@@ -7,7 +7,7 @@
 #include "videoQt/editor/SCamera.hpp"
 
 #include <arData/Camera.hpp>
-#include <arUtils/preferences.hpp>
+#include <fwPreferences/preferences.hpp>
 
 #include <fwCom/Signal.hxx>
 
@@ -144,7 +144,7 @@ void SCamera::onChooseFile()
     ::arData::Camera::sptr camera = this->getObject< ::arData::Camera >();
 
     // Check preferences
-    std::string videoDir = ::arUtils::getVideoDir();
+    std::string videoDir = ::fwPreferences::getVideoDir();
 
     static ::boost::filesystem::path _sDefaultPath;
 

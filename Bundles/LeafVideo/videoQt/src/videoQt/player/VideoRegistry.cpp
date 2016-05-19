@@ -6,7 +6,7 @@
 
 #include "videoQt/player/VideoRegistry.hpp"
 
-#include <arUtils/preferences.hpp>
+#include <fwPreferences/preferences.hpp>
 
 #include <fwCore/spyLog.hpp>
 #include <fwCore/exceptionmacros.hpp>
@@ -87,7 +87,7 @@ QVideoPlayer* VideoRegistry::requestPlayer(const ::arData::Camera::sptr& camera)
             {
                 /// Path of the video file stored in the camera description
                 ::boost::filesystem::path videoPath(camera->getVideoFile());
-                ::boost::filesystem::path videoDir(::arUtils::getVideoDir());
+                ::boost::filesystem::path videoDir(::fwPreferences::getVideoDir());
 
                 // For compatibility with old calibration with absolute path
                 if (!videoPath.is_absolute())
