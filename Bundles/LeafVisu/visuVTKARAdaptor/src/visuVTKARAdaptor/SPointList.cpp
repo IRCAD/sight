@@ -10,8 +10,6 @@
 #include <fwData/PointList.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <iterator>
 #include <algorithm>

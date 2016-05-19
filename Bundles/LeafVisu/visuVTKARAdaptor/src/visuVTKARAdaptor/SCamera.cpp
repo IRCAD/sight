@@ -20,8 +20,7 @@
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/macros.hpp>
 
 #include <vtkCamera.h>
 #include <vtkCommand.h>

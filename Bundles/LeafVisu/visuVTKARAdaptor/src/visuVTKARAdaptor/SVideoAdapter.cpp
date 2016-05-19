@@ -19,8 +19,7 @@
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/macros.hpp>
 
 #include <fwVtkIO/vtk.hpp>
 

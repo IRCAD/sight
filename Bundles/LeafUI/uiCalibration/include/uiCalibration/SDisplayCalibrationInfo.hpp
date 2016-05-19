@@ -114,7 +114,7 @@ private:
      */
 
     /// AppConfig manager, used to launch the config
-    ::fwServices::AppConfigManager::sptr m_configMgr;
+    ::fwServices::IAppConfigManager::sptr m_configMgr;
 
     /// Calibration information
     std::vector< std::string > m_calInfoKeys;

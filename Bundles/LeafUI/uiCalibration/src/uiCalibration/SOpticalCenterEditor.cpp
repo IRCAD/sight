@@ -12,7 +12,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <QComboBox>
 
 #include <QVBoxLayout>

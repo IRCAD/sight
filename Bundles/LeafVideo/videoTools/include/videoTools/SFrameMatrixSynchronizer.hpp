@@ -16,6 +16,9 @@
 #include <fwServices/IController.hpp>
 #include <fwThread/Timer.hpp>
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
+
 
 namespace extData
 {
@@ -41,6 +44,14 @@ class VIDEOTOOLS_CLASS_API SFrameMatrixSynchronizer : public ::arServices::ISync
 public:
 
     fwCoreServiceClassDefinitionsMacro((SFrameMatrixSynchronizer)(fwServices::IController));
+
+    /**
+     * @name Signal API
+     * @{
+     */
+    typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > SynchronizationDoneSignalType;
+    VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_SYNCHRONIZATION_DONE_SIG;
+    /** @} */
 
     /**
      * @brief Constructor.
@@ -144,6 +155,9 @@ private:
 
     /// Timer used for the update
     ::fwThread::Timer::sptr m_timer;
+
+    /// Signal emitted when the synchronization of the frame timeline and the matrix timeline is done.
+    SynchronizationDoneSignalType::sptr m_sigSynchronizationDone;
 };
 
 } //namespace videoTools

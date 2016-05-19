@@ -17,7 +17,7 @@
 
 #include <fwCore/HiResClock.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <aruco/markerdetector.h>
 

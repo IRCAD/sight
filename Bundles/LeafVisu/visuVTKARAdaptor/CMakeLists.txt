@@ -1,30 +1,23 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwCom
-    fwComEd
-    fwData
-    fwDataCamp
-    fwRenderVTK
-    fwRuntime
-    fwServices
-    arData
-)
 
-find_package(VTK REQUIRED)
-
+if(ANDROID)
+    find_package(VTK
+                 COMPONENTS
+                 vtkRenderingOpenGL2
+                 vtkFiltersSource
+                 vtkInteractionStyle
+                 NO_MODULE
+                 REQUIRED)
+else()
+    find_package(VTK
+                COMPONENTS
+                vtkInteractionWidgets
+                vtkInteractionWidgets
+                NO_MODULE
+                REQUIRED)
+endif()
 fwForwardInclude(
     ${VTK_INCLUDE_DIRS}
 )
-
-if(ANDROID)
-    fwLink(
-        vtkRenderingOpenGL2
-        vtkFiltersSources
-        vtkInteractionStyle
-    )
-else()
-    fwLink(
-        vtkInteractionWidgets
-        vtkInteractionStyle
-    )
-endif()
+fwLink( ${VTK_LIBRARIES} )
+        

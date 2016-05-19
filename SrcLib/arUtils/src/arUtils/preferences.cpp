@@ -21,19 +21,17 @@ const std::string s_VIDEO_DIR_PREF   = "VIDEO_DIR_PREF";
 
 std::string getVideoDir()
 {
-    ::fwData::Composite::sptr prefComposite;
     std::string videoDirectory;
-    std::vector< ::fwServices::IService::sptr > preferencesServicesList;
-    preferencesServicesList = ::fwServices::OSR::getServices("::preferences::IPreferencesService");
+    auto preferencesServicesList = ::fwServices::OSR::getServices("::preferences::IPreferencesService");
     if(!preferencesServicesList.empty())
     {
-        ::fwServices::IService::sptr prefService = preferencesServicesList[0];
+        ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();
         ::fwData::Composite::sptr prefs          = prefService->getObject< ::fwData::Composite >();
 
         ::fwData::Composite::IteratorType iterPref = prefs->find( s_VIDEORENDER_PREF );
         if ( iterPref != prefs->end() )
         {
-            prefComposite = ::fwData::Composite::dynamicCast(iterPref->second);
+            ::fwData::Composite::sptr prefComposite = ::fwData::Composite::dynamicCast(iterPref->second);
 
             ::fwData::Composite::IteratorType iterVideoDir = prefComposite->find( s_VIDEO_DIR_PREF );
             const bool videoFound = (iterVideoDir  != prefComposite->end());

@@ -11,7 +11,7 @@ set( REQUIREMENTS
     gui
     guiQt
     servicesReg
-    launcher
+    fwlauncher
     appXml
     visuVTK
     visuVTKQt

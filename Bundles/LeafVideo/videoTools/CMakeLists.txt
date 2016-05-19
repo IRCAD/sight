@@ -1,15 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-        fwComEd 
-        fwCore 
-        fwData 
-        fwMath 
-        fwRuntime 
-        fwServices 
-        fwTools 
-        arData
-        extData
-)
 
 find_package(OpenCV REQUIRED)
 

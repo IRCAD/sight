@@ -22,7 +22,7 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGui/dialog/InputDialog.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwTools/pathDifference.hpp>
 
 #include "videoQt/editor/CameraDeviceDlg.hpp"
@@ -155,6 +155,7 @@ void SCamera::onChooseFile()
     dialogFile.addFilter("avi","*.avi");
     dialogFile.addFilter("m4v","*.m4v");
     dialogFile.addFilter("mkv","*.mkv");
+    dialogFile.addFilter("All files","*.*");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 

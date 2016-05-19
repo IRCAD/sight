@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -94,9 +94,26 @@ void SExtractDeviceInfo::updating() throw( ::fwTools::Failed )
 
 #ifdef ANDROID
     char model_string[PROP_VALUE_MAX+1];
-    __system_property_get("ro.product.model", model_string);
+    // __system_property_get("ro.product.model", model_string); this is deprecated
 
-    device = std::string(model_string);
+    std::string command = "getprop ro.product.model";
+    FILE* file          = popen(command.c_str(), "r");
+    SLM_ASSERT("Unable to get the device name", file);
+
+    char buffer[128];
+    while (!feof(file))
+    {
+        if ( fgets (buffer, 128, file) == NULL )
+        {
+            break;
+        }
+        fputs (buffer, stdout);
+    }
+
+    pclose(file);
+
+    device = std::string(buffer);
+    device.pop_back(); // To remove a newline character
 #else
     device = "desktop";
 #endif
