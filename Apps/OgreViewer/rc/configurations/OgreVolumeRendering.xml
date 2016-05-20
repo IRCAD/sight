@@ -39,12 +39,17 @@
                     </adaptor>
 
                     <adaptor id="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image" uid="${GENERIC_UID}_VR" >
-                        <config renderer="default" preintegration="yes" mode="slice" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}"/>
+                        <config renderer="default" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}"/>
                     </adaptor>
 
                     <connect>
                         <signal>${GENERIC_UID}_samplingSlider/valueChanged</signal>
                         <slot>${GENERIC_UID}_VR/updateSampling</slot>
+                    </connect>
+
+                    <connect>
+                        <signal>${GENERIC_UID}_preIntButton/toggled</signal>
+                        <slot>${GENERIC_UID}_VR/togglePreintegration</slot>
                     </connect>
 
                 </scene>
@@ -59,8 +64,22 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="${GENERIC_UID}_samplingSlider" start="yes" />
+                    <view sid="${GENERIC_UID}_volumeRenderingSamplingInteractor" start="yes" />
                     <view sid="${GENERIC_UID}_windowLevelVR" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_volumeRenderingSamplingInteractor" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager" >
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="${GENERIC_UID}_samplingSlider" start="yes" />
+                    <view sid="${GENERIC_UID}_preIntButton" start="yes" />
                 </registry>
             </service>
 
@@ -71,6 +90,7 @@
                     <service uid="${GENERIC_UID}_windowLevelVR" type="::gui::editor::IEditor" impl="::uiImage::WindowLevel" autoConnect="no">
                         <config selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
                     </service>
+
 <!--
                     <service impl="::ioVTK::SImageReader" type="::io::IReader" uid="debugReader" autoConnect="no">
                         <file>../../VolumeData/patient1.vtk</file>
@@ -89,6 +109,18 @@
                             <min>128</min>
                             <max>4096</max>
                         </range>
+                    </service>
+                </object>
+            </item>
+
+            <item key="preIntegration" >
+                <object uid="${GENERIC_UID}_preIntValue" type="::fwData::Boolean">
+                    <service uid="${GENERIC_UID}_preIntButton" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
+                        <config>
+                           <checkable>true</checkable>
+                           <text>Pre-integration</text>
+                           <checked>false</checked>
+                        </config>
                     </service>
                 </object>
             </item>

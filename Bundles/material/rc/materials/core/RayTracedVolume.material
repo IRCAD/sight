@@ -17,12 +17,17 @@ fragment_program VR/RayTracedVolume_FP glsl
     source RayTracedVolume_FP.glsl
     default_params
     {
-        param_named_auto u_lightDir light_position_object_space 0
-        param_named u_boundingBoxMin float3 0 0 0
-        param_named u_boundingBoxMax float3 1 1 1
+        //param_named_auto u_lightDir light_position_object_space 0
+        param_named_auto u_lightDirs light_direction_object_space_array 2
+        param_named_auto u_viewportWidth viewport_width
+        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_clippingNear near_clip_distance
+        param_named_auto u_clippingFar far_clip_distance
+        param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
         param_named u_sampleDistance float 0.002f
         param_named u_image int 0
         param_named u_tfTexture int 1
+        param_named u_entryPoints int 2
     }
 }
 
@@ -49,14 +54,19 @@ fragment_program VR/PreIntegrated_RayTracedVolume_FP glsl
 
     default_params
     {
-        param_named_auto u_lightDir light_position_object_space 0
-        param_named u_boundingBoxMin float3 0 0 0
-        param_named u_boundingBoxMax float3 1 1 1
+        //param_named_auto u_lightDir light_position_object_space 0
+        param_named_auto u_lightDirs light_direction_object_space_array 2
+        param_named_auto u_viewportWidth viewport_width
+        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_clippingNear near_clip_distance
+        param_named_auto u_clippingFar far_clip_distance
+        param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
         param_named u_sampleDistance float 0.002f
-        param_named u_min float 0
-        param_named u_max float 0
         param_named u_image int 0
         param_named u_tfTexture int 1
+        param_named u_entryPoints int 2
+        param_named u_min float 0
+        param_named u_max float 0
     }
 }
 
@@ -68,8 +78,8 @@ material RayTracedVolume
     {
         pass
         {
-            cull_hardware clockwise
-            //cull_software clockwise
+            cull_hardware anticlockwise
+            cull_software none
             scene_blend alpha_blend
             //transparent_sorting on
 
@@ -94,6 +104,13 @@ material RayTracedVolume
                 //tex_address_mode clamp
                 filtering none
             }
+
+            texture_unit entryPoints
+            {
+                tex_coord_set 2
+                tex_address_mode clamp
+                filtering none
+            }
         }
     }
 }
@@ -106,10 +123,9 @@ material PreIntegratedRayTracedVolume
     {
         pass
         {
-            cull_hardware clockwise
-            //cull_software clockwise
+            cull_hardware anticlockwise
+            cull_software none
             scene_blend alpha_blend
-            //transparent_sorting on
 
             vertex_program_ref VR/PreIntegrated_RayTracedVolume_VP
             {
@@ -130,6 +146,13 @@ material PreIntegratedRayTracedVolume
             {
                 tex_coord_set 1
                 //tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit entryPoints
+            {
+                tex_coord_set 2
+                tex_address_mode clamp
                 filtering none
             }
         }

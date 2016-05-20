@@ -61,6 +61,10 @@ public:
     /// Mark the output verex buffer as dirty, the r2vb process will be run on next update
     void setDirty();
 
+    /// Runs the R2VB process.
+    void manualUpdate();
+
+
 protected:
     /// Source object of the r2vb process
     ::Ogre::SubEntity* m_srcObject;
@@ -112,6 +116,11 @@ inline void R2VBRenderable::setDirty()
 }
 
 //-----------------------------------------------------------------------------
+
+inline void R2VBRenderable::manualUpdate()
+{
+    m_r2vbBuffer->update(mParentSceneManager);
+}
 
 
 } // namespace fwRenderOgre

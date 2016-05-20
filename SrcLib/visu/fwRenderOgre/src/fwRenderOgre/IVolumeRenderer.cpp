@@ -55,6 +55,14 @@ IVolumeRenderer::~IVolumeRenderer()
 
 //-----------------------------------------------------------------------------
 
+
+void IVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr tf)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+
 void IVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingBox)
 {
     const ::Ogre::Vector3 min = clippingBox.getMinimum();

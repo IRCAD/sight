@@ -3,23 +3,25 @@
 uniform sampler3D u_image;
 uniform sampler2D u_tfTexture;
 
-uniform vec3 u_lightDir;
+uniform sampler2D u_entryPoints;
+
+uniform vec3 u_lightDirs[2];
 //uniform vec3 u_diffuse;
 
 uniform float u_sampleDistance;
 
-uniform vec3 u_boundingBoxMin;
-uniform vec3 u_boundingBoxMax;
+uniform float u_viewportWidth;
+uniform float u_viewportHeight;
+
+uniform float u_clippingNear;
+uniform float u_clippingFar;
+
+uniform mat4 u_invWorldViewProj;
 
 #ifdef PREINTEGRATION
 uniform int u_min;
 uniform int u_max;
 #endif // PREINTEGRATION
-
-in vec3 vs_uvw;
-
-in vec4 vs_rayEntryPoint;
-in vec3 vs_cameraDir;
 
 out vec4 fragColor;
 
@@ -58,28 +60,19 @@ vec3 gradientNormal(vec3 uvw)
 
 //-----------------------------------------------------------------------------
 
-vec3 getExitPoint(in vec3 rayPos, in vec3 rayDir)
+vec3 getFragmentImageSpacePosition(in float depth)
 {
-    // compute Ray-Box intersection.
-    vec3 tmin = (u_boundingBoxMin - rayPos) / rayDir;
-    vec3 tmax = (u_boundingBoxMax - rayPos) / rayDir;
+    vec3 screenPos = vec3(gl_FragCoord.xy / vec2(u_viewportWidth, u_viewportHeight), depth);
+    screenPos -= 0.5;
+    screenPos *= 2.0;
 
-    vec3 real_min = min(tmin, tmax);
-    vec3 real_max = max(tmin, tmax);
+    vec4 clipPos;
+    clipPos.w   = (2 * u_clippingNear * u_clippingFar) / (u_clippingNear + u_clippingFar + screenPos.z * (u_clippingNear - u_clippingFar));
+    clipPos.xyz = screenPos * clipPos.w;
 
-    float entry = min( min(real_max.x, real_max.y), real_max.z);
-    float exit  = max( max(real_min.x, real_min.y), real_min.z);
+    vec4 imgPos = u_invWorldViewProj * clipPos;
 
-    // If rayPos is inside the cube, exit = entry.
-    exit = max(entry, exit);
-
-    if(exit <= 0 || isnan(exit))
-    {
-        discard;
-    }
-
-    // Return the point where the ray exists the box.
-    return vec3(vs_rayEntryPoint) + exit * rayDir;
+    return imgPos.xyz / imgPos.w;
 }
 
 //-----------------------------------------------------------------------------
@@ -94,22 +87,34 @@ void composite(inout vec4 result, in vec4 colour)
 
 void main(void)
 {
-    float t, tend;
+    vec2 rayEntryExit = texelFetch(u_entryPoints, ivec2(gl_FragCoord.xy), 0).rg;
 
-    vec3 rayPos = vec3(vs_rayEntryPoint);
-    vec3 rayDir = normalize(vs_cameraDir) * u_sampleDistance;
+    float entryDepth =  rayEntryExit.r;
+    float exitDepth  = -rayEntryExit.g;
 
-    vec3 rayEnd = getExitPoint(rayPos, rayDir);
+    if(/*gl_FragCoord.z > entryDepth ||*/ exitDepth == -1)
+    {
+        discard;
+    }
 
-    tend = length(rayEnd - rayPos);
+    gl_FragDepth = entryDepth;
+
+    vec3 rayEntry = getFragmentImageSpacePosition(entryDepth);
+    vec3 rayExit  = getFragmentImageSpacePosition(exitDepth);
+
+    vec3 rayDir   = normalize(rayExit - rayEntry) * u_sampleDistance;
+
+    float rayLength = length(rayExit - rayEntry);
 
     vec4 result = vec4(0);
 
     // Opacity correction factor =
     // Inverse of the sampling rate accounted by the TF.
-    const float opacityCorrectionFactor = 200.;
+    float opacityCorrectionFactor = 200.;
 
-    for(t = 0 ; t < tend; t += u_sampleDistance)
+    vec3 rayPos = rayEntry;
+
+    for(float t = 0; t < rayLength; t += u_sampleDistance)
     {
 #ifdef PREINTEGRATION
         float sf = texture(u_image, rayPos).r;
@@ -130,7 +135,7 @@ void main(void)
         {
             vec3 N = gradientNormal(rayPos);
 
-            tfColour.rgb = tfColour.rgb * abs(dot(N, u_lightDir));
+            tfColour.rgb = tfColour.rgb * abs(dot(N, u_lightDirs[0])) * 0.7 + tfColour.rgb * abs(dot(N, u_lightDirs[1])) * 1.0;
 
 #ifndef PREINTEGRATION
             // Adjust opacity to sample distance.

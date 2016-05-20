@@ -74,6 +74,9 @@ public:
     /// Called when the image being rendered is modified.
     FWRENDEROGRE_API virtual void imageUpdate(::fwData::Image::sptr image, ::fwData::TransferFunction::sptr tf) = 0;
 
+    /// Called when the transfer function is updated.
+    FWRENDEROGRE_API virtual void tfUpdate(::fwData::TransferFunction::sptr tf);
+
     /// Sets the number of samples per view ray.
     FWRENDEROGRE_API virtual void setSampling(uint16_t nbSamples) = 0;
 

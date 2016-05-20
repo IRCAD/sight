@@ -49,6 +49,10 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWSAMPLING_SLOT = "updateSam
 
 //-----------------------------------------------------------------------------
 
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLEPREINTEGRATION_SLOT = "togglePreintegration";
+
+//-----------------------------------------------------------------------------
+
 SVolumeRender::SVolumeRender() throw() :
     m_volumeRenderer         (nullptr),
     m_sceneManager           (nullptr),
@@ -60,6 +64,7 @@ SVolumeRender::SVolumeRender() throw() :
     this->installTFSlots(this);
     newSlot(s_NEWIMAGE_SLOT, &SVolumeRender::newImage, this);
     newSlot(s_NEWSAMPLING_SLOT, &SVolumeRender::samplingChanged, this);
+    newSlot(s_TOGGLEPREINTEGRATION_SLOT, &SVolumeRender::togglePreintegration, this);
 
     m_transform = ::Ogre::Matrix4::IDENTITY;
     m_renderingMode = VR_MODE_RAY_TRACING;
@@ -115,6 +120,8 @@ void SVolumeRender::updatingTFPoints()
         m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_volumeRenderer->getSamplingRate());
     }
 
+    m_volumeRenderer->tfUpdate(tf);
+
     this->requestRender();
 }
 
@@ -130,6 +137,8 @@ void SVolumeRender::updatingTFWindowing(double window, double level)
     {
         m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_volumeRenderer->getSamplingRate());
     }
+
+    m_volumeRenderer->tfUpdate(tf);
 
     this->requestRender();
 }
@@ -167,6 +176,16 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     m_gpuTF.createTexture(this->getID());
     m_preIntegrationTable.createTexture(this->getID());
 
+    ::Ogre::Light *mainLight = m_sceneManager->getLight("MainLight");
+    ::Ogre::Light *newLight  = m_sceneManager->createLight(getID() + "_TestLight");
+
+    newLight->setType(::Ogre::Light::LT_DIRECTIONAL);
+    newLight->setDiffuseColour(::Ogre::ColourValue());
+    newLight->setSpecularColour(::Ogre::ColourValue());
+
+    newLight->setDirection(::Ogre::Quaternion(::Ogre::Degree(-45), ::Ogre::Vector3(1,0,0)) * ::Ogre::Quaternion(::Ogre::Degree(90), ::Ogre::Vector3(0,1,0)) * mainLight->getDirection());
+
+    m_camera->getParentSceneNode()->attachObject(newLight);
 
     if(m_renderingMode == VR_MODE_SLICE)
     {
@@ -204,6 +223,7 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     }
 
     this->getRenderService()->resetCameraCoordinates(m_layerID);
+    m_volumeRenderer->tfUpdate(this->getTransferFunction());
     this->requestRender();
 }
 
@@ -263,6 +283,23 @@ void SVolumeRender::samplingChanged(int nbSamples)
 
     if(m_preIntegratedRendering)
     {
+        m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_volumeRenderer->getSamplingRate());
+    }
+
+    this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::togglePreintegration(bool preintegration)
+{
+    m_preIntegratedRendering = preintegration;
+
+    m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
+
+    if(m_preIntegratedRendering)
+    {
+        m_volumeRenderer->imageUpdate(this->getImage(), this->getTransferFunction());
         m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_volumeRenderer->getSamplingRate());
     }
 

@@ -85,9 +85,9 @@
                     <gui>
                         <layout type="::fwGui::TabLayoutManager">
                             <view caption="VTK" selected="no" />
-                            <view caption="Ogre" selected="no" />
+                            <view caption="Ogre" selected="yes" />
                             <view caption="2D Negato Ogre" selected="no" />
-                            <view caption="Ogre VR" selected="yes" />
+                            <view caption="Ogre VR" selected="no" />
                         </layout>
                     </gui>
                     <registry>

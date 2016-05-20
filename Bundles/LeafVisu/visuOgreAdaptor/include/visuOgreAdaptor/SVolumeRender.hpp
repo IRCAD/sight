@@ -44,6 +44,7 @@ public:
      */
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEWSAMPLING_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLEPREINTEGRATION_SLOT;
     /** @} */
 
     /// Constructor.
@@ -100,6 +101,9 @@ private:
 
     /// Slot called when the sampling is changed.
     void samplingChanged(int nbSamples);
+
+    /// Slot called when pre-integration is toggled.
+    void togglePreintegration(bool preintegration);
 
     /// Creates widgets and connects its slots to interactor signals.
     void initWidgets();
