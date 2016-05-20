@@ -312,7 +312,8 @@ void SArucoTracker::detectMarker(::fwCore::HiResClock::HiResClockType timestamp)
             // aruco expects a grey image and make a conversion at the beginning of the detect() method if it receives
             // a RGB image. However we have a RGBA image so we must make the conversion ourselves.
             cv::Mat grey;
-            cv::cvtColor(inImage, grey, CV_RGBA2GRAY);
+            //inImage is BGRA (see constructor of ::cv::Mat)
+            cv::cvtColor(inImage, grey, CV_BGRA2GRAY);
 
             //Ok, let's detect
             m_arUcoTracker->detect(grey, detectedMarkers, *m_camParameters, static_cast<float>(m_patternWidth/1000.));
