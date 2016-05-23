@@ -53,22 +53,6 @@ public:
 
 private:
 
-//    struct RenderListener : public ::Ogre::MovableObject::Listener
-//    {
-//        RayTracingVolumeRenderer *m_renderer;
-
-//        RenderListener(RayTracingVolumeRenderer *renderer) :
-//            m_renderer(renderer)
-//        {
-//        }
-
-//        virtual bool objectRendering(const ::Ogre::MovableObject *, const ::Ogre::Camera *)
-//        {
-//            m_renderer->computeEntryPoints();
-//            return true; // Always render object
-//        }
-
-//    } *m_renderListener;
     struct CameraListener : public ::Ogre::Camera::Listener
     {
         RayTracingVolumeRenderer *m_renderer;
@@ -80,7 +64,7 @@ private:
 
         virtual void cameraPreRenderScene(::Ogre::Camera*)
         {
-            m_renderer->computeEntryPoints();
+            m_renderer->computeEntryPointsTexture();
         }
     };
 
@@ -88,10 +72,11 @@ private:
     /// Creates the proxy geometry defining the entry points for rays.
     void initEntryPoints();
 
-    /// Updates the proxy geometry.
-    void updateEntryPoints();
+    /// Creates a new grid texture and sets shader parameters for volume bricking.
+    void createGridTexture();
 
-    void computeEntryPoints();
+    /// Renders the proxy geometry too fill the entry point texture.
+    void computeEntryPointsTexture();
 
     /// Object containing the proxy geometry, this is a cube for now.
     ::Ogre::ManualObject *m_entryPointGeometry;
@@ -99,12 +84,26 @@ private:
     /// Creates and updates the proxy geometry;
     R2VBRenderable *m_proxyGeometryGenerator;
 
+    /// Entity holding the source geometry used for proxy geometry rendering.
+    ::Ogre::Entity *m_r2vbSource;
+
+    /// Grid defining volume bricks.
     ::Ogre::TexturePtr m_gridTexture;
 
+    /// Texture holding ray entry and exit points for each screen pixel.
     ::Ogre::TexturePtr m_entryPointsTexture;
 
+    /// Render operation used to compute the brick grid.
     ::Ogre::RenderOperation m_gridRenderOp;
 
+    /// Image dimensions.
+    ::fwData::Image::SizeType m_imageSize;
+
+    /// Brick Grid dimensions.
+    int m_gridSize[3];
+
+    /// Size of a volume brick.
+    int m_bricksSize[3];
 };
 
 } // namespace fwRenderOgre
