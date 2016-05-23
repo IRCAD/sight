@@ -15,7 +15,7 @@ set( DEPENDENCIES
         fwServices
         fwTools
         arData
-        fwPreferences
+        arPreferences
         fwThread
         gui
         )
