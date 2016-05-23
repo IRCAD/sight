@@ -4,11 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuOgreAdaptor/SShaderParameter.hpp"
+#include "visuOgreAdaptor/SCompositorParameter.hpp"
+
+#include "visuOgreAdaptor/defines.hpp"
+#include "visuOgreAdaptor/SMaterial.hpp"
 
 #include <fwComEd/helper/Array.hpp>
 #include <fwCom/Slots.hxx>
-
 
 #include <fwData/Array.hpp>
 #include <fwData/Boolean.hpp>
@@ -21,37 +23,69 @@
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 
+#include <fwRenderOgre/compositor/ChainManager.hpp>
+
 #include <fwServices/macros.hpp>
 
+#include <algorithm>
+
+#include <OgreCompositorChain.h>
+#include <OgreCompositorManager.h>
+#include <OgreCompositorInstance.h>
 #include <OgreGpuProgramParams.h>
 #include <OgreMaterial.h>
 #include <OgreMaterialManager.h>
 #include <OgreTechnique.h>
 
-#include "visuOgreAdaptor/defines.hpp"
-#include "visuOgreAdaptor/SMaterial.hpp"
-
 namespace visuOgreAdaptor
 {
 
-fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SShaderParameter, ::fwData::Object);
+fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SCompositorParameter, ::fwData::Object);
 
 //------------------------------------------------------------------------------
 
-SShaderParameter::SShaderParameter() throw() :
+class CompositorListener : public ::Ogre::CompositorInstance::Listener
+{
+public:
+    CompositorListener() : m_viewport(nullptr), m_adaptor(nullptr)
+    {
+    }
+    CompositorListener(::Ogre::Viewport* _vp, SCompositorParameter::sptr _adaptor)
+        : m_viewport(_vp), m_adaptor(_adaptor)
+    {
+    }
+    ~CompositorListener()
+    {
+    }
+
+    void notifyMaterialRender(::Ogre::uint32 pass_id, ::Ogre::MaterialPtr& mat)
+    {
+        m_adaptor->updateValue(mat);
+    }
+
+private:
+    /// Ogre viewport
+    ::Ogre::Viewport* m_viewport;
+    /// Associated f4s adaptor
+    ::visuOgreAdaptor::SCompositorParameter::sptr m_adaptor;
+};
+
+//------------------------------------------------------------------------------
+
+SCompositorParameter::SCompositorParameter() throw() :
     m_shaderType(VERTEX)
 {
 }
 
 //------------------------------------------------------------------------------
 
-SShaderParameter::~SShaderParameter() throw()
+SCompositorParameter::~SCompositorParameter() throw()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::setShaderType(std::string shaderType)
+void SCompositorParameter::setShaderType(std::string shaderType)
 {
     if (shaderType == "vp")
     {
@@ -73,52 +107,67 @@ void SShaderParameter::setShaderType(std::string shaderType)
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::setShaderType(ShaderEnumType shaderType)
+void SCompositorParameter::setShaderType(ShaderEnumType shaderType)
 {
     m_shaderType = shaderType;
 }
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::setMaterialName(std::string matName)
+void SCompositorParameter::setMaterialName(std::string matName)
 {
-    m_materialName = matName;
+    m_compositorName = matName;
 }
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::setParamName(std::string paramName)
+void SCompositorParameter::setParamName(std::string paramName)
 {
     m_paramName = paramName;
 }
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::doStart() throw(::fwTools::Failed)
+void SCompositorParameter::doStart() throw(::fwTools::Failed)
 {
-    this->updateValue(nullptr);
+    ::fwRenderOgre::Layer::sptr layer =
+        this->getRenderService()->getLayer();
+    ::fwRenderOgre::compositor::ChainManager::CompositorChainType compositorChain = layer->getCompositorChain();
+
+    std::pair< std::string, bool> compositorPair(m_compositorName,true);
+
+    auto result = std::find(compositorChain.begin(), compositorChain.end(),compositorPair);
+    SLM_ASSERT("The given compositor doesn't exist in the compositor chain", result != compositorChain.end());
+
+    ::Ogre::CompositorChain* compChain =
+        ::Ogre::CompositorManager::getSingletonPtr()->getCompositorChain(layer->getViewport());
+
+    // Association of a listener attached to this adaptor to the configured compositor
+    compChain->getCompositor(m_compositorName)->addListener(new CompositorListener(layer->getViewport(),
+                                                                                   SCompositorParameter::dynamicCast(
+                                                                                       this->getSptr())));
 }
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::doStop() throw(::fwTools::Failed)
+void SCompositorParameter::doStop() throw(::fwTools::Failed)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::doSwap() throw(::fwTools::Failed)
+void SCompositorParameter::doSwap() throw(::fwTools::Failed)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::doConfigure() throw(::fwTools::Failed)
+void SCompositorParameter::doConfigure() throw(::fwTools::Failed)
 {
     SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
 
-    m_materialName = m_configuration->getAttributeValue("materialName");
-    OSLM_ERROR_IF("material attribute not set", m_materialName.empty());
+    m_compositorName = m_configuration->getAttributeValue("compositorName");
+    OSLM_ERROR_IF("material attribute not set", m_compositorName.empty());
 
     m_paramName = m_configuration->getAttributeValue("parameter");
     OSLM_ERROR_IF("parameter attribute not set", m_paramName.empty());
@@ -149,54 +198,49 @@ void SShaderParameter::doConfigure() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::doUpdate() throw(::fwTools::Failed)
+void SCompositorParameter::doUpdate() throw(::fwTools::Failed)
 {
-    this->updateValue(nullptr);
-    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::updateValue(const fwData::Object::sptr& paramObject)
+void SCompositorParameter::updateValue(Ogre::MaterialPtr& _mat)
 {
-    // Retrieves the associated material
-    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_materialName);
-
     if(m_techniqueName.empty())
     {
         bool bSet = false;
-        ::Ogre::Material::TechniqueIterator techIt = material->getTechniqueIterator();
+        ::Ogre::Material::TechniqueIterator techIt = _mat->getTechniqueIterator();
         while( techIt.hasMoreElements())
         {
             ::Ogre::Technique* tech = techIt.getNext();
             SLM_ASSERT("Technique is not set", tech);
 
-            bSet |= this->setParameter(*tech, paramObject);
+            bSet |= this->setParameter(*tech);
         }
 
         if( !bSet )
         {
-            SLM_ERROR("Couldn't set parameter '" + m_paramName + "' in any technique of material '"
-                      + m_materialName + "'");
+            SLM_ERROR("Couldn't set parameter '" + m_paramName + "' in any technique of compositor '"
+                      + m_compositorName + "'");
         }
     }
     else
     {
         ::Ogre::Technique* tech = nullptr;
-        tech                    = material->getTechnique(m_techniqueName);
+        tech                    = _mat->getTechnique(m_techniqueName);
         OSLM_FATAL_IF("Can't find technique " << m_techniqueName, !tech);
 
-        if( this->setParameter(*tech, paramObject) )
+        if( this->setParameter(*tech) )
         {
             SLM_ERROR("Couldn't set parameter '" + m_paramName + "' in technique '" + m_techniqueName +
-                      "' from material '" + m_materialName + "'");
+                      "' from compositor '" + m_compositorName + "'");
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-bool SShaderParameter::setParameter(::Ogre::Technique& technique, const fwData::Object::sptr& paramObject)
+bool SCompositorParameter::setParameter(::Ogre::Technique& technique)
 {
     /// Contains the different parameters for the shader
     ::Ogre::GpuProgramParametersSharedPtr params;
@@ -226,10 +270,6 @@ bool SShaderParameter::setParameter(::Ogre::Technique& technique, const fwData::
     }
 
     ::fwData::Object::sptr obj = this->getObject();
-    if(paramObject != nullptr)
-    {
-        obj = paramObject;
-    }
 
     // Set shader parameters
     std::string objClass = obj->getClassname();
@@ -272,18 +312,6 @@ bool SShaderParameter::setParameter(::Ogre::Technique& technique, const fwData::
     }
     else if(objClass == "::fwData::Point")
     {
-//        ::fwData::Point::sptr pointValue = ::fwData::Point::dynamicCast(obj);
-//        SLM_ASSERT("Sorry, the object is null", pointValue);
-
-//        m_paramValues = new float[3];
-
-//        m_paramValues[0] = static_cast<float>(pointValue->getCoord()[0]);
-//        m_paramValues[1] = static_cast<float>(pointValue->getCoord()[1]);
-//        m_paramValues[2] = static_cast<float>(pointValue->getCoord()[2]);
-
-//        m_paramNbElem = 3;
-//        ::Ogre::Vector3 point(m_paramValues);
-//        m_params->setNamedConstant(m_paramName, point);
         OSLM_ERROR("This Type  " << objClass << " isn't supported yet.");
     }
     else if(objClass == "::fwData::PointList")
@@ -328,20 +356,6 @@ bool SShaderParameter::setParameter(::Ogre::Technique& technique, const fwData::
     }
     else if(objClass == "::fwData::Array")
     {
-//        ::fwData::Array::sptr arrayValue = ::fwData::Array::dynamicCast(obj);
-//        SLM_ASSERT("Sorry, the object is null", arrayValue);
-
-//        ::fwComEd::helper::Array arrayHelper(arrayValue);
-//        float* floatValue = static_cast<float *>(arrayHelper.getBuffer());
-//        int dimension = arrayValue->getNumberOfComponents();
-//        m_paramValues = new float[dimension];
-//        for(int i = 0; i < dimension; i++)
-//        {
-//            m_paramValues[i] = floatValue[i];
-//        }
-
-//        m_paramNbElem = dimension;
-//        m_params->setNamedConstant(m_paramName, m_paramValues, static_cast<size_t>(m_paramNbElem, 1));
         OSLM_ERROR("This Type  " << objClass << " isn't supported yet.");
     }
     else if(objClass == "::fwData::Vector")

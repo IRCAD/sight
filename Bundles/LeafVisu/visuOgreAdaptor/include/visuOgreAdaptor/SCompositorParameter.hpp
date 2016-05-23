@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VISUOGREADAPTOR_SSHADERPARAMETER_HPP__
-#define __VISUOGREADAPTOR_SSHADERPARAMETER_HPP__
+#ifndef __VISUOGREADAPTOR_SCOMPOSITORPARAMETER_HPP__
+#define __VISUOGREADAPTOR_SCOMPOSITORPARAMETER_HPP__
 
 
 
@@ -17,15 +17,31 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief   Send a FW4SPL data as a shader parameter
- * @class   SShaderParameter
+ * @brief   Binds a FW4SPL data to a shader uniform from a specific compositor
+ * @class   SCompositorParameter
  */
-class VISUOGREADAPTOR_CLASS_API SShaderParameter : public ::fwRenderOgre::IAdaptor
+
+/**
+ * @brief Binds a FW4SPL data to a shader uniform from a specific compositor
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+    <adaptor uid="paramAdaptor" impl="::visuOgreAdaptor::SShaderParameter">
+        <config compositorName="compositor" parameter="u_value" shaderType="fragment" />
+    </adaptor>
+   @endcode
+ *
+ * - \b compositorName (mandatory) : the name of the associated Ogre compositor
+ * - \b parameter (mandatory) : name of the shader parameter to set
+ * - \b technique (optional) : name of the technique, default to the first in the compositor
+ * - \b shaderType (optional) : the type of the shader (vertex, geometry, fragment). Default to vertex.
+ */
+class VISUOGREADAPTOR_CLASS_API SCompositorParameter : public ::fwRenderOgre::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SShaderParameter)(::fwRenderOgre::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro ( (SCompositorParameter)(::fwRenderOgre::IAdaptor) );
 
     /// Enum containing the different values for the supported shader types.
     typedef enum ShaderEnum
@@ -36,10 +52,10 @@ public:
     } ShaderEnumType;
 
     /// Constructor.
-    VISUOGREADAPTOR_API SShaderParameter() throw();
+    VISUOGREADAPTOR_API SCompositorParameter() throw();
 
     /// Destructor. Does nothing
-    VISUOGREADAPTOR_API virtual ~SShaderParameter() throw();
+    VISUOGREADAPTOR_API virtual ~SCompositorParameter() throw();
 
     /// Sets the shaderType by passing the value of the ShaderEnumType of this adaptor.
     VISUOGREADAPTOR_API void setShaderType(ShaderEnumType shaderType);
@@ -53,23 +69,11 @@ public:
     /// Sets the name of the parameter m_paramName.
     VISUOGREADAPTOR_API void setParamName(std::string paramName);
 
+    /// Updates parameter according to the attached fwData::Object
+    VISUOGREADAPTOR_API void updateValue(::Ogre::MaterialPtr& _mat);
+
 protected:
 
-    /**
-     * @brief Configure the ShaderParameter adaptor
-     *
-     * Send parameters to vertex and fragment shaders
-     *
-     * @code{.xml}
-        <adaptor uid="paramAdaptor" impl="::visuOgreAdaptor::SShaderParameter">
-            <config materialAdaptor="mtlAdaptorUID" parameter="u_value" shaderType="fragment" />
-        </adaptor>
-       @endcode
-     *  - \b materialName (mandatory) : the name of the associated Ogre material
-     *  - \b parameter (mandatory) : name of the shader parameter to set
-     *  - \b technique (optional) : name of the technique, default to the first in the material
-     *  - \b shaderType (optional) : the type of the shader (vertex, geometry, fragment). Default to vertex.
-     */
     VISUOGREADAPTOR_API virtual void doConfigure()  throw ( ::fwTools::Failed );
     /// Does Nothing
     VISUOGREADAPTOR_API virtual void doStart()  throw ( ::fwTools::Failed );
@@ -77,26 +81,16 @@ protected:
     VISUOGREADAPTOR_API virtual void doStop()  throw ( ::fwTools::Failed );
     /// Does Nothing
     VISUOGREADAPTOR_API virtual void doSwap() throw ( ::fwTools::Failed );
-    /// Updates the shaderparameter values via the private method updateValue(), and requests a render of the scene.
+    /// Does Nothing
     VISUOGREADAPTOR_API virtual void doUpdate() throw ( ::fwTools::Failed );
 
 private:
 
-    /**
-     * @brief updateValue(), updates parameters function of the attached fwData::Object
-     * Updates some ::Ogre::GpuProgramParametersSharedPtr
-     * and directly sends them to the programmable pipeline of the GPU.
-     *
-     * - \b m_paramvalues is an array filled with the corresponding data
-     * - \b m_paramType is the type (from the enum Types) of the data which values are stored in m_paramValues.
-     */
-    void updateValue(const fwData::Object::sptr& paramObject);
-
     /// Set the parameter for a given technique
-    bool setParameter(::Ogre::Technique& technique, const ::fwData::Object::sptr& paramObject);
+    bool setParameter(::Ogre::Technique& technique);
 
     /// Material name
-    std::string m_materialName;
+    std::string m_compositorName;
     /// Parameter name
     std::string m_paramName;
     /// Technique name
@@ -109,4 +103,4 @@ private:
 
 } // visuOgreAdaptor
 
-#endif // __VISUOGREADAPTOR_SSHADERPARAMETER_HPP__
+#endif // __VISUOGREADAPTOR_SCOMPOSITORPARAMETER_HPP__

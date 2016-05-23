@@ -10,6 +10,11 @@
         <!-- 3D negato image -->
         <param name="imageUID" />
         <param name="TFSelections" />
+
+        <!-- Ellipŝe mask -->
+        <param name="ellipseX" />
+        <param name="ellipseY" />
+        <param name="ellipseTheta" />
     </parameters>
     <config>
 
@@ -62,6 +67,19 @@
                     <adaptor id="negato3DAdaptor" class="::visuOgreAdaptor::SNegato3D" objectId="image">
                          <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
                     </adaptor>
+
+                    <!-- Ellipse mask parameters adaptors -->
+                    <!-- <adaptor id="ellipseXParameter" class="::visuOgreAdaptor::SShaderParameter" objectId="ellipseXKey">
+                        <config />
+                    </adaptor>
+
+                    <adaptor id="ellipseYParameter" class="::visuOgreAdaptor::SShaderParameter" objectId="ellipseYKey">
+                        <config />
+                    </adaptor>
+
+                    <adaptor id="ellipseThetaParameter" class="::visuOgreAdaptor::SShaderParameter" objectId="ellipseThetaKey">
+                        <config />
+                    </adaptor> -->
                 </scene>
             </service>
 
@@ -121,6 +139,19 @@
 
             <item key="cameraTF">
                 <object uid="${cameraTF}" type="::fwData::TransformationMatrix3D" src="ref" />
+            </item>
+
+            <!-- Ellipse mask parameters -->
+            <item key="ellipseXKey">
+                <object uid="${ellipseX}" type="::fwData::Float" src="ref" />
+            </item>
+
+            <item key="ellipseYKey">
+                <object uid="${ellipseY}" type="::fwData::Float" src="ref" />
+            </item>
+
+            <item key="ellipseThetaKey">
+                <object uid="${ellipseTheta}" type="::fwData::Float" src="ref" />
             </item>
 
             <start uid="${GENERIC_UID}_OgreSceneView" />

@@ -72,11 +72,13 @@
                         <layout type="::fwGui::TabLayoutManager">
                             <view caption="Compositor" />
                             <view caption="OrganManager" selected="yes" />
+                            <view caption="EllipseManager" />
                         </layout>
                     </gui>
                     <registry>
                         <view sid="CompositorView" start="yes"/>
                         <view wid="${GENERIC_UID}_organView" start="yes"/>
+                        <view sid="${GENERIC_UID}_ellipseManagerView" start="yes"/>
                     </registry>
                 </service>
 
@@ -92,6 +94,23 @@
                         <view wid="${GENERIC_UID}_VTKSceneView" start="yes" />
                         <view wid="${GENERIC_UID}_OgreSceneView" start="yes" />
                         <view wid="${GENERIC_UID}_OgreNegato2DView" start="yes" />
+                    </registry>
+                </service>
+
+                <service uid="${GENERIC_UID}_ellipseManagerView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+                    <gui>
+                        <layout type="::fwGui::LineLayoutManager">
+                            <orientation value="vertical" />
+                            <view proportion="0" />
+                            <view proportion="0" />
+                            <view proportion="0" />
+                        </layout>
+                        <toolBar/>
+                    </gui>
+                    <registry>
+                        <view sid="${GENERIC_UID}_ellipseXSlider" start="yes" />
+                        <view sid="${GENERIC_UID}_ellipseYSlider" start="yes" />
+                        <view sid="${GENERIC_UID}_ellipseThetaSlider" start="yes" />
                     </registry>
                 </service>
 
@@ -227,6 +246,9 @@
                                         <parameter replace="cameraTF" by="cameraTF_UID" />
                                         <parameter replace="imageUID" by="imageUID" />
                                         <parameter replace="TFSelections" by="TFSelections" />
+                                        <parameter replace="ellipseX" by="${GENERIC_UID}_ellipseX" />
+                                        <parameter replace="ellipseY" by="${GENERIC_UID}_ellipseY" />
+                                        <parameter replace="ellipseTheta" by="${GENERIC_UID}_ellipseTheta" />
                                     </parameters>
                                 </appConfig>
                             </config>
@@ -247,6 +269,28 @@
                     </object>
 
                 </item>
+
+            <!-- Ellipse mask parameters -->
+            <item key="ellipseXKey">
+                <object uid="${GENERIC_UID}_ellipseX" type="::fwData::Float">
+                    <service uid="${GENERIC_UID}_ellipseXSlider" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
+                    <value>10</value>
+                </object>
+            </item>
+
+            <item key="ellipseYKey">
+                <object uid="${GENERIC_UID}_ellipseY" type="::fwData::Float">
+                    <service uid="${GENERIC_UID}_ellipseYSlider" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
+                    <value>20</value>
+                </object>
+            </item>
+
+            <item key="ellipseThetaKey">
+                <object uid="${GENERIC_UID}_ellipseTheta" type="::fwData::Float">
+                    <service uid="${GENERIC_UID}_ellipseThetaSlider" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
+                    <value>0</value>
+                </object>
+            </item>
 
                 <start uid="medicalImage" />
                 <start uid="ihm" />

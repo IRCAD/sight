@@ -15,6 +15,7 @@ set( REQUIREMENTS
     io
     ioVTK
     servicesReg
+    uiData
     uiVisuQt
     uiImageQt
     uiReconstructionQt
