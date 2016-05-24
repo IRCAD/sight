@@ -36,7 +36,43 @@ namespace videoTools
 {
 /**
  * @brief   SFrameMatrixSynchronizer service synchronizes video frame and tracking matrix.
- * @class   SFrameMatrixSynchronizer
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service impl="::videoTools::SFrameMatrixSynchronizer" type="::arServices::ISynchronizer">
+            <in group="frameTL">
+                <key uid="frameTL1" />
+                <key uid="frameTL4" />
+                <key uid="frameTL6" />
+            </in>
+            <inout group="image">
+                <key uid="videoImage1" />
+                <key uid="videoImage2" />
+                <key uid="videoImage3" />
+            </inout>
+            <matrices>
+                <timeline from="matrixTL1">
+                    <matrix index="0" to="matrix0" />
+                    <matrix index="1" to="matrix1" />
+                    <matrix index="2" to="matrix2" />
+                </timeline>
+                <timeline from="matrixTL2">
+                    <matrix index="0" to="matrix3" />
+                    <matrix index="8" to="matrix4" />
+                </timeline>
+            </matrices>
+            <framerate>30</framerate>
+       </service>
+   @endcode
+ * With :
+ * - \b frameTL defines the frameTL to synchronize.
+ * - \b image: defines the images where to extract the image.
+ * - \b matrices defines the matrixTL to synchronize.
+ *   - \b from: key of the matrix timeline to extract matrix.
+ *   - \b to: key of the TransformationMatrix3D where to extract the matrix.
+ * - \b framerate defines the framerate to call synchronization.
+ * @note If the matrix timeline last update delay is greater than 500ms, the matrix is not synchronized.
  */
 class VIDEOTOOLS_CLASS_API SFrameMatrixSynchronizer : public ::arServices::ISynchronizer
 {
@@ -51,6 +87,14 @@ public:
      */
     typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > SynchronizationDoneSignalType;
     VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_SYNCHRONIZATION_DONE_SIG;
+    /** @} */
+
+    /**
+     * @name data API
+     * @{
+     */
+    VIDEOTOOLS_API static const ::fwServices::IService::KeyType s_FRAMETL_INPUT;
+    VIDEOTOOLS_API static const ::fwServices::IService::KeyType s_IMAGE_INOUT;
     /** @} */
 
     /**
@@ -69,8 +113,8 @@ public:
     typedef std::pair< std::string, unsigned int > MatrixVectorTypePair;
     typedef std::vector<MatrixVectorTypePair> MatrixVectorType;
     typedef std::map<std::string, MatrixVectorType> MatrixKeysType;
-    typedef std::map<std::string, SPTR(::extData::FrameTL)> FrameTLKeyType;
-    typedef std::map<std::string, SPTR(::extData::MatrixTL)> MatrixTLKeyType;
+    typedef std::map<std::string, CSPTR(::extData::FrameTL)> FrameTLKeyType;
+    typedef std::map<std::string, CSPTR(::extData::MatrixTL)> MatrixTLKeyType;
     typedef std::map<std::string, SPTR(::fwData::Image)> ImageKeyType;
     typedef std::pair< SPTR(::fwData::TransformationMatrix3D), unsigned int > MatrixKeyVectorTypePair;
     typedef std::vector<MatrixKeyVectorTypePair> MatrixKeyVectorType;
@@ -79,35 +123,6 @@ public:
 protected:
     /**
      * @brief This method is used to configure the service.
-     *
-     * @code{.xml}
-       <service impl="::videoTools::SFrameMatrixSynchronizer" type="::arServices::ISynchronizer">
-           <frames>
-               <frame from="frame1TL" to="frame1" />
-               <frame from="frame2TL" to="frame2" />
-           </frames>
-           <matrices>
-               <timeline from="matrixTL1">
-                   <matrix index="0" to="matrix0" />
-                   <matrix index="1" to="matrix1" />
-                   <matrix index="2" to="matrix2" />
-               </timeline>
-               <timeline from="matrixTL2">
-                   <matrix index="0" to="matrix3" />
-                   <matrix index="8" to="matrix4" />
-               </timeline>
-           </matrices>
-           <framerate>30</framerate>
-       </service>
-       @endcode
-     * - \b frames defines the frameTL to synchronize.
-     *   - \b from: key of the frame timeline to extract image.
-     *   - \b to: key of the image where to extract the image.
-     * - \b matrices defines the matrixTL to synchronize.
-     *   - \b from: key of the matrix timeline to extract matrix.
-     *   - \b to: key of the TransformationMatrix3D where to extract the matrix.
-     * - \b framerate defines the framerate to call synchronization.
-     * @note If the matrix timeline last update delay is greater than 500ms, the matrix is not synchronized.
      */
     VIDEOTOOLS_API void configuring() throw (fwTools::Failed);
 

@@ -32,7 +32,18 @@ namespace videoQt
 
 /**
  * @brief   Defines the service which grab video frame.
- * @class   SFrameGrabber
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service uid="${GENERIC_UID}_VideoGrabber" impl="::videoQt::SFrameGrabber" autoConnect="no">
+            <in key="camera" uid="camera" />
+            <inout key="frameTL" uid="frameTL" />
+        </service>
+   @endcode
+ * With :
+ * - \b camera: camera used to display video.
+ * - \b frameTL: timeline where to extract the video frames.
  */
 class VIDEOQT_CLASS_API SFrameGrabber : public QObject,
                                         public ::fwServices::IController
@@ -85,20 +96,13 @@ protected:
     /// Initialize the layout and the camera.
     VIDEOQT_API virtual void starting() throw( ::fwTools::Failed );
 
-    /// Destroys the layout.
+    /// Destroy the layout.
     VIDEOQT_API virtual void stopping() throw( ::fwTools::Failed );
 
-    /// Does nothing.
+    /// Do nothing.
     VIDEOQT_API virtual void updating() throw(::fwTools::Failed);
 
-    /**
-     * @code{.xml}
-       <service uid="${GENERIC_UID}_VideoGrabber" impl="::videoQt::SFrameGrabber" autoConnect="no">
-           <cameraFwId>cameraID</cameraFwId>
-       </service>
-       @endcode
-     * - \b cameraFwId: fwID of the arData::Camera used to display video.
-     **/
+    /// Do nothing.
     VIDEOQT_API virtual void configuring() throw( ::fwTools::Failed );
 
     /// SLOT : Initialize and start camera (restart camera if is already started)
@@ -117,7 +121,7 @@ protected:
     void setPosition(int64_t position);
 
     /// Gets camera from m_cameraID
-    SPTR(::arData::Camera) getCamera();
+    CSPTR(::arData::Camera) getCamera();
 
     /// Mirrored the frame in the desired direction
     void setMirror(bool horizontallyFlip = false, bool verticallyFlip = false)

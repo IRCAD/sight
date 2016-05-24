@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,7 +29,7 @@ public:
 
     VIDEOQT_API static VideoRegistry& getInstance();
 
-    VIDEOQT_API QVideoPlayer* requestPlayer(const ::arData::Camera::sptr& camera);
+    VIDEOQT_API QVideoPlayer* requestPlayer(const ::arData::Camera::csptr& camera);
 
     VIDEOQT_API void releasePlayer(QVideoPlayer* player);
 
