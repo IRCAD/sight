@@ -54,7 +54,7 @@
                     <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
 
                     <!-- Default Layer -->
-                    <renderer id="default" layer="1" />
+                    <renderer id="default" layer="1" compositors="Default;Ellipse" />
 
                     <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
                         <config renderer="default" style="Trackball" />
@@ -69,17 +69,18 @@
                     </adaptor>
 
                     <!-- Ellipse mask parameters adaptors -->
-                    <!-- <adaptor id="ellipseXParameter" class="::visuOgreAdaptor::SShaderParameter" objectId="ellipseXKey">
-                        <config />
+
+                    <adaptor id="ellipseXParameter" class="::visuOgreAdaptor::SCompositorParameter" objectId="ellipseXKey">
+                        <config compositorName="Ellipse" parameter="u_r" shaderType="fragment"/>
                     </adaptor>
 
-                    <adaptor id="ellipseYParameter" class="::visuOgreAdaptor::SShaderParameter" objectId="ellipseYKey">
-                        <config />
+                    <adaptor id="ellipseYParameter" class="::visuOgreAdaptor::SCompositorParameter" objectId="ellipseYKey">
+                        <config compositorName="Ellipse" parameter="u_g" shaderType="fragment"/>
                     </adaptor>
 
-                    <adaptor id="ellipseThetaParameter" class="::visuOgreAdaptor::SShaderParameter" objectId="ellipseThetaKey">
-                        <config />
-                    </adaptor> -->
+                    <adaptor id="ellipseThetaParameter" class="::visuOgreAdaptor::SCompositorParameter" objectId="ellipseThetaKey">
+                        <config compositorName="Ellipse" parameter="u_b" shaderType="fragment"/>
+                    </adaptor>
                 </scene>
             </service>
 

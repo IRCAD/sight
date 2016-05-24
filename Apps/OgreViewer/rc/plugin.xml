@@ -274,21 +274,21 @@
             <item key="ellipseXKey">
                 <object uid="${GENERIC_UID}_ellipseX" type="::fwData::Float">
                     <service uid="${GENERIC_UID}_ellipseXSlider" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
-                    <value>10</value>
+                    <value>0.5</value>
                 </object>
             </item>
 
             <item key="ellipseYKey">
                 <object uid="${GENERIC_UID}_ellipseY" type="::fwData::Float">
                     <service uid="${GENERIC_UID}_ellipseYSlider" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
-                    <value>20</value>
+                    <value>0.5</value>
                 </object>
             </item>
 
             <item key="ellipseThetaKey">
                 <object uid="${GENERIC_UID}_ellipseTheta" type="::fwData::Float">
                     <service uid="${GENERIC_UID}_ellipseThetaSlider" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
-                    <value>0</value>
+                    <value>0.5</value>
                 </object>
             </item>
 

@@ -188,6 +188,21 @@ fragment_program RenderQuad_FP glsl
 
 //---------------------------------------------------------------------------
 
+fragment_program EllipseMask_FP glsl
+{
+    source EllipseMask_FP.glsl
+    default_params
+    {
+        param_named u_fragData int 0
+        param_named u_ellipseTex int 1
+        param_named u_r float 0.5
+        param_named u_g float 0.5
+        param_named u_b float 0.5
+    }
+}
+
+//---------------------------------------------------------------------------
+
 fragment_program DepthPeeling/Blend_FP glsl
 {
     source DepthPeelingBlend_FP.glsl

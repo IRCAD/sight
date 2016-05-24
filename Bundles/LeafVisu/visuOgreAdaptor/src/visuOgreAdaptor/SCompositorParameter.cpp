@@ -32,6 +32,7 @@
 #include <OgreCompositorChain.h>
 #include <OgreCompositorManager.h>
 #include <OgreCompositorInstance.h>
+#include <OgreCompositor.h>
 #include <OgreGpuProgramParams.h>
 #include <OgreMaterial.h>
 #include <OgreMaterialManager.h>
