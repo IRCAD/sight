@@ -132,15 +132,12 @@ void SCompositorParameter::doStart() throw(::fwTools::Failed)
 {
     ::fwRenderOgre::Layer::sptr layer =
         this->getRenderService()->getLayer();
-    ::fwRenderOgre::compositor::ChainManager::CompositorChainType compositorChain = layer->getCompositorChain();
-
-    std::pair< std::string, bool> compositorPair(m_compositorName,true);
-
-    auto result = std::find(compositorChain.begin(), compositorChain.end(),compositorPair);
-    SLM_ASSERT("The given compositor doesn't exist in the compositor chain", result != compositorChain.end());
 
     ::Ogre::CompositorChain* compChain =
         ::Ogre::CompositorManager::getSingletonPtr()->getCompositorChain(layer->getViewport());
+
+    SLM_ASSERT("The given compositor '" + m_compositorName
+               + "' doesn't exist in the compositor chain",compChain->getCompositor(m_compositorName));
 
     // Association of a listener attached to this adaptor to the configured compositor
     compChain->getCompositor(m_compositorName)->addListener(new CompositorListener(layer->getViewport(),
@@ -200,6 +197,8 @@ void SCompositorParameter::doConfigure() throw(::fwTools::Failed)
 
 void SCompositorParameter::doUpdate() throw(::fwTools::Failed)
 {
+    //request a new render pass when a f4s Data is modified (call the CompositorListener::notifyMaterialRender)
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
