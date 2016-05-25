@@ -101,11 +101,11 @@
                     <gui>
                         <layout type="::fwGui::LineLayoutManager">
                             <orientation value="vertical" />
-                            <view proportion="0" />
-                            <view proportion="0" />
-                            <view proportion="0" />
-                            <view proportion="0" />
-                            <view proportion="0" />
+                            <view proportion="0" caption="Position X" />
+                            <view proportion="0" caption="Position Y" />
+                            <view proportion="0" caption="Width" />
+                            <view proportion="0" caption="height" />
+                            <view proportion="0" caption="Orientation" />
                         </layout>
                         <toolBar/>
                     </gui>
