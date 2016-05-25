@@ -67,7 +67,7 @@ material EllipseMask
             {
                 texture ellipse.png 2d
                 tex_coord_set 1
-                //tex_address_mode clamp
+                tex_address_mode clamp
                 filtering linear linear linear
             }
         }

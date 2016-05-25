@@ -14,6 +14,8 @@
         <!-- Ellipŝe mask -->
         <param name="ellipseX" />
         <param name="ellipseY" />
+        <param name="ellipseA" />
+        <param name="ellipseB" />
         <param name="ellipseTheta" />
     </parameters>
     <config>
@@ -69,17 +71,24 @@
                     </adaptor>
 
                     <!-- Ellipse mask parameters adaptors -->
-
                     <adaptor id="ellipseXParameter" class="::visuOgreAdaptor::SCompositorParameter" objectId="ellipseXKey">
-                        <config compositorName="Ellipse" parameter="u_r" shaderType="fragment"/>
+                        <config compositorName="Ellipse" parameter="u_x" shaderType="fragment"/>
                     </adaptor>
 
                     <adaptor id="ellipseYParameter" class="::visuOgreAdaptor::SCompositorParameter" objectId="ellipseYKey">
-                        <config compositorName="Ellipse" parameter="u_g" shaderType="fragment"/>
+                        <config compositorName="Ellipse" parameter="u_y" shaderType="fragment"/>
+                    </adaptor>
+
+                    <adaptor id="ellipseAParameter" class="::visuOgreAdaptor::SCompositorParameter" objectId="ellipseAKey">
+                        <config compositorName="Ellipse" parameter="u_a" shaderType="fragment"/>
+                    </adaptor>
+
+                    <adaptor id="ellipseBParameter" class="::visuOgreAdaptor::SCompositorParameter" objectId="ellipseBKey">
+                        <config compositorName="Ellipse" parameter="u_b" shaderType="fragment"/>
                     </adaptor>
 
                     <adaptor id="ellipseThetaParameter" class="::visuOgreAdaptor::SCompositorParameter" objectId="ellipseThetaKey">
-                        <config compositorName="Ellipse" parameter="u_b" shaderType="fragment"/>
+                        <config compositorName="Ellipse" parameter="u_theta" shaderType="fragment"/>
                     </adaptor>
                 </scene>
             </service>
@@ -149,6 +158,14 @@
 
             <item key="ellipseYKey">
                 <object uid="${ellipseY}" type="::fwData::Float" src="ref" />
+            </item>
+
+            <item key="ellipseAKey">
+                <object uid="${ellipseA}" type="::fwData::Float" src="ref" />
+            </item>
+
+            <item key="ellipseBKey">
+                <object uid="${ellipseB}" type="::fwData::Float" src="ref" />
             </item>
 
             <item key="ellipseThetaKey">

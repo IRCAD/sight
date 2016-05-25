@@ -104,13 +104,17 @@
                             <view proportion="0" />
                             <view proportion="0" />
                             <view proportion="0" />
+                            <view proportion="0" />
+                            <view proportion="0" />
                         </layout>
                         <toolBar/>
                     </gui>
                     <registry>
-                        <view sid="${GENERIC_UID}_ellipseXSlider" start="yes" />
-                        <view sid="${GENERIC_UID}_ellipseYSlider" start="yes" />
-                        <view sid="${GENERIC_UID}_ellipseThetaSlider" start="yes" />
+                        <view sid="${GENERIC_UID}_ellipseXEditor" start="yes" />
+                        <view sid="${GENERIC_UID}_ellipseYEditor" start="yes" />
+                        <view sid="${GENERIC_UID}_ellipseAEditor" start="yes" />
+                        <view sid="${GENERIC_UID}_ellipseBEditor" start="yes" />
+                        <view sid="${GENERIC_UID}_ellipseThetaEditor" start="yes" />
                     </registry>
                 </service>
 
@@ -248,6 +252,8 @@
                                         <parameter replace="TFSelections" by="TFSelections" />
                                         <parameter replace="ellipseX" by="${GENERIC_UID}_ellipseX" />
                                         <parameter replace="ellipseY" by="${GENERIC_UID}_ellipseY" />
+                                        <parameter replace="ellipseA" by="${GENERIC_UID}_ellipseA" />
+                                        <parameter replace="ellipseB" by="${GENERIC_UID}_ellipseB" />
                                         <parameter replace="ellipseTheta" by="${GENERIC_UID}_ellipseTheta" />
                                     </parameters>
                                 </appConfig>
@@ -270,25 +276,39 @@
 
                 </item>
 
-            <!-- Ellipse mask parameters -->
+            <!-- Ellipse mask parameters (x, y, a, b, theta) -->
             <item key="ellipseXKey">
                 <object uid="${GENERIC_UID}_ellipseX" type="::fwData::Float">
-                    <service uid="${GENERIC_UID}_ellipseXSlider" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
+                    <service uid="${GENERIC_UID}_ellipseXEditor" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
                     <value>0.5</value>
                 </object>
             </item>
 
             <item key="ellipseYKey">
                 <object uid="${GENERIC_UID}_ellipseY" type="::fwData::Float">
-                    <service uid="${GENERIC_UID}_ellipseYSlider" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
+                    <service uid="${GENERIC_UID}_ellipseYEditor" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
+                    <value>0.5</value>
+                </object>
+            </item>
+
+            <item key="ellipseAKey">
+                <object uid="${GENERIC_UID}_ellipseA" type="::fwData::Float">
+                    <service uid="${GENERIC_UID}_ellipseAEditor" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
+                    <value>0.5</value>
+                </object>
+            </item>
+
+            <item key="ellipseBKey">
+                <object uid="${GENERIC_UID}_ellipseB" type="::fwData::Float">
+                    <service uid="${GENERIC_UID}_ellipseBEditor" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
                     <value>0.5</value>
                 </object>
             </item>
 
             <item key="ellipseThetaKey">
                 <object uid="${GENERIC_UID}_ellipseTheta" type="::fwData::Float">
-                    <service uid="${GENERIC_UID}_ellipseThetaSlider" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
-                    <value>0.5</value>
+                    <service uid="${GENERIC_UID}_ellipseThetaEditor" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
+                    <value>0</value>
                 </object>
             </item>
 
