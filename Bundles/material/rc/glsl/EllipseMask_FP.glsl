@@ -19,15 +19,19 @@ vec2 ellipseCoord()
     float sin_theta = sin(u_theta);
 
     vec2 result = uv;
-    vec2 origin = vec2(u_x, u_y);
+    vec2 origin = vec2(u_x,u_y);
 
-    result = (result - origin) * mat2(cos_theta, sin_theta, -sin_theta, cos_theta);
+    //translation
     result += origin;
 
-    result -= origin;
-    result.x =  result.x / u_a;
-    result.y =  result.y / u_b;
-    result += origin;
+    //rotation
+    result -= 0.5f;
+    result = result * mat2(cos_theta, -sin_theta, sin_theta, cos_theta);
+
+    //Scale in percentage
+    result =  result / vec2( u_a /100, u_b/100);
+
+    result += 0.5f;
 
     return result;
 }
@@ -35,15 +39,16 @@ vec2 ellipseCoord()
 void main()
 {
     vec4 frontColorBuffer = texture(u_fragData, uv);
-
     vec4 ellipse_sample = texture(u_ellipseTex, ellipseCoord());
 
     if(ellipse_sample.r < 1.0)
     {
-        FragColor = frontColorBuffer;
+        //FragColor = mix(frontColorBuffer, ellipse_sample, 0.5);
+
+        FragColor = vec4(frontColorBuffer.rgb, 1 - ellipse_sample.r);
     }
     else
     {
-        FragColor = mix(frontColorBuffer, ellipse_sample, 0.5);
+        //discard;
     }
 }

@@ -280,14 +280,14 @@
             <item key="ellipseXKey">
                 <object uid="${GENERIC_UID}_ellipseX" type="::fwData::Float">
                     <service uid="${GENERIC_UID}_ellipseXEditor" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
-                    <value>0.5</value>
+                    <value>0</value>
                 </object>
             </item>
 
             <item key="ellipseYKey">
                 <object uid="${GENERIC_UID}_ellipseY" type="::fwData::Float">
                     <service uid="${GENERIC_UID}_ellipseYEditor" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
-                    <value>0.5</value>
+                    <value>0</value>
                 </object>
             </item>
 
