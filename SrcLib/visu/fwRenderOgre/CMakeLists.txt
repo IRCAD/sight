@@ -1,16 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwCore
-    fwData
-    fwDataTools
-    fwGui
-    fwGuiQt
-    fwMath
-    fwRender
-    fwRuntime
-    fwServices
-    fwTools
-)
 
 find_package (Boost COMPONENTS regex REQUIRED)
 

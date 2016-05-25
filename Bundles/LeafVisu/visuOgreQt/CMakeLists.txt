@@ -1,10 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwCore
-    fwGui
-    fwRenderOgre
-    fwRuntime
-)
 
 add_definitions("-DQT_NO_KEYWORDS")
 

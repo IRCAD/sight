@@ -16,7 +16,7 @@ set( REQUIREMENTS
     uiVisuQt
     uiImageQt
     uiIO
-    launcher
+    fwlauncher
     visuOgre
     visuOgreQt
     visuOgreAdaptor

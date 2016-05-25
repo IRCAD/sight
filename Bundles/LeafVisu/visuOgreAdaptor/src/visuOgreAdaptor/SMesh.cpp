@@ -22,7 +22,8 @@
 #include <fwRenderOgre/helper/Mesh.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/op/Add.hpp>
+#include <fwServices/op/Get.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 
