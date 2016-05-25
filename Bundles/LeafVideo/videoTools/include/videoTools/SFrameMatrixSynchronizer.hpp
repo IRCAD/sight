@@ -35,12 +35,15 @@ class TransformationMatrix3D;
 namespace videoTools
 {
 /**
- * @brief   SFrameMatrixSynchronizer service synchronizes video frame and tracking matrix.
+ * @brief SFrameMatrixSynchronizer service synchronizes video frame and tracking matrix.
+ *
+ * @section Signals Signals
+ * - \b synchronizationDone(::fwCore::HiResClock::HiResClockType) : Emitted when the sync is done.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service impl="::videoTools::SFrameMatrixSynchronizer" type="::arServices::ISynchronizer">
+        <service impl="::videoTools::SFrameMatrixSynchronizer">
             <in group="frameTL">
                 <key uid="frameTL1" />
                 <key uid="frameTL4" />
@@ -65,9 +68,13 @@ namespace videoTools
             <framerate>30</framerate>
        </service>
    @endcode
- * With :
- * - \b frameTL defines the frameTL to synchronize.
- * - \b image: defines the images where to extract the image.
+ * @subsection Input Input
+ * - ::extData::FrameTL \b frameTL defines the frameTL to synchronize.
+ *
+ * @subsection In-Out In-Out
+ * - ::fwData::Image \b image: defines the images where to extract the image.
+ *
+ * @subsection Configuration Configuration
  * - \b matrices defines the matrixTL to synchronize.
  *   - \b from: key of the matrix timeline to extract matrix.
  *   - \b to: key of the TransformationMatrix3D where to extract the matrix.
@@ -76,7 +83,6 @@ namespace videoTools
  */
 class VIDEOTOOLS_CLASS_API SFrameMatrixSynchronizer : public ::arServices::ISynchronizer
 {
-
 public:
 
     fwCoreServiceClassDefinitionsMacro((SFrameMatrixSynchronizer)(fwServices::IController));
@@ -87,14 +93,6 @@ public:
      */
     typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > SynchronizationDoneSignalType;
     VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_SYNCHRONIZATION_DONE_SIG;
-    /** @} */
-
-    /**
-     * @name data API
-     * @{
-     */
-    VIDEOTOOLS_API static const ::fwServices::IService::KeyType s_FRAMETL_INPUT;
-    VIDEOTOOLS_API static const ::fwServices::IService::KeyType s_IMAGE_INOUT;
     /** @} */
 
     /**

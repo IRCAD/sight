@@ -48,9 +48,9 @@ const ::fwCom::Slots::SlotKeyType SArucoTracker::s_DISPLAY_TAGS_SLOT            
 
 const ::fwCom::Slots::SlotKeyType SArucoTracker::s_DETECT_MARKER_SLOT = "detectMarker";
 
-const ::fwServices::IService::KeyType SArucoTracker::s_FRAMETL_INPUT     = "frameTL";
-const ::fwServices::IService::KeyType SArucoTracker::s_CAMERA_INPUT      = "camera";
-const ::fwServices::IService::KeyType SArucoTracker::s_TAGTL_INOUT_GROUP = "tagTL";
+const ::fwServices::IService::KeyType s_FRAMETL_INPUT     = "frameTL";
+const ::fwServices::IService::KeyType s_CAMERA_INPUT      = "camera";
+const ::fwServices::IService::KeyType s_TAGTL_INOUT_GROUP = "tagTL";
 
 //-----------------------------------------------------------------------------
 

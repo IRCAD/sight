@@ -34,8 +34,8 @@ namespace trackerAruco
  *
  * @code{.xml}
         <service uid="..." impl="::trackerAruco::SArucoTracker" >
-            <in key="timelineA" id="frameTLUid" autoConnect="yes"/>
-            <in key="camera1" id="cameraUid" />
+            <in key="frameTL" id="frameTLUid" autoConnect="yes"/>
+            <in key="camera" id="cameraUid" />
             <inout group="tagTL" >
                 <key id="WireTimeline" />
                 <key id="PatientTimeline" />
@@ -57,7 +57,15 @@ namespace trackerAruco
             </config>
         </service>
    @endcode
- * With :
+ * @subsection Input Input
+ * - ::extData::FrameTL \b frameTL : camera used to display video.
+ * - ::arData::Camera \b camera : camera calibration.
+ *
+ * @subsection In-Out In-Out
+ * - ::arData::MarkerTL \b tagTL : list of marker timeline where to extract the tags. The number of tagTL inout keys
+ * must match the number of markers entries in the config below.
+ *
+ * @subsection Configuration Configuration
  *  - \b track (mandatory)
  *      - \b markers (mandatory) : list of the tracked markers.
  *           - \b id (mandatory) : ids of the markers to detect.
@@ -97,10 +105,6 @@ public:
     TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_SPEED_SLOT;
     ///Slot called when marker is detected
     TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_DETECT_MARKER_SLOT;
-
-    TRACKERARUCO_API static const ::fwServices::IService::KeyType s_FRAMETL_INPUT;
-    TRACKERARUCO_API static const ::fwServices::IService::KeyType s_CAMERA_INPUT;
-    TRACKERARUCO_API static const ::fwServices::IService::KeyType s_TAGTL_INOUT_GROUP;
 
     typedef std::vector< int >          MarkerIDType;
     typedef std::vector< MarkerIDType > MarkerIDVectorType;

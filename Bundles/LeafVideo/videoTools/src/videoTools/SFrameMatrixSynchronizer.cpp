@@ -32,8 +32,8 @@ namespace videoTools
 
 const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZATION_DONE_SIG = "synchronizationDone";
 
-const ::fwServices::IService::KeyType SFrameMatrixSynchronizer::s_FRAMETL_INPUT = "frameTL";
-const ::fwServices::IService::KeyType SFrameMatrixSynchronizer::s_IMAGE_INOUT   = "image";
+const ::fwServices::IService::KeyType s_FRAMETL_INPUT = "frameTL";
+const ::fwServices::IService::KeyType s_IMAGE_INOUT   = "image";
 
 // ----------------------------------------------------------------------------
 

@@ -33,24 +33,35 @@ namespace videoQt
 /**
  * @brief   Defines the service which grab video frame.
  *
+ * @section Signals Signals
+ * - \b positionModified(std::int64_t) : Emitted when the position in the video is modified during playing.
+ * - \b durationModified(std::int64_t) : Emitted when the duration of the video is modified.
+ *
+ * @section Slots Slots
+ * - \b startCamera() : Start playing the camera or the video.
+ * - \b stopCamera() : Stop playing the camera or the video.
+ * - \b pauseCamera() : Pause the video, it has no effect when playing a camera.
+ * - \b loopVideo() : Toggle the loop of the playing.
+ * - \b setPositionVideo(int) : Force the current time in the video.
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="${GENERIC_UID}_VideoGrabber" impl="::videoQt::SFrameGrabber" autoConnect="no">
+        <service impl="::videoQt::SFrameGrabber">
             <in key="camera" uid="camera" />
             <inout key="frameTL" uid="frameTL" />
         </service>
    @endcode
- * With :
- * - \b camera: camera used to display video.
- * - \b frameTL: timeline where to extract the video frames.
+ * @subsection Input Input
+ * - ::arData::Camera \b camera : camera used to display video.
+ * @subsection In-Out In-Out
+ * - ::extData::FrameTL \b frameTL : timeline where to extract the video frames.
  */
 class VIDEOQT_CLASS_API SFrameGrabber : public QObject,
                                         public ::fwServices::IController
 {
 Q_OBJECT;
 public:
-
 
     fwCoreServiceClassDefinitionsMacro ( (SFrameGrabber)(::fwServices::IController) );
 
