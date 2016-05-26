@@ -353,7 +353,7 @@ void SFrameMatrixSynchronizer::synchronize()
 
 // ----------------------------------------------------------------------------
 
-void SFrameMatrixSynchronizer::updating()
+void SFrameMatrixSynchronizer::updating() throw (fwTools::Failed)
 {
 }
 
