@@ -192,9 +192,6 @@
                     <object uid="TFSelections" type="::fwData::Composite" />
                 </item>
 
-                <item key="cameraTF">
-                    <object uid="cameraTF_UID" type="::fwData::TransformationMatrix3D" />
-                </item>
 
                 <!-- CompositeVisu description -->
                 <item key="compositeVisu">
@@ -247,7 +244,6 @@
                                     <parameters>
                                         <parameter replace="WID_PARENT" by="${GENERIC_UID}_OgreSceneView" />
                                         <parameter replace="modelSeriesUID" by="modelSeriesUID" />
-                                        <parameter replace="cameraTF" by="cameraTF_UID" />
                                         <parameter replace="imageUID" by="imageUID" />
                                         <parameter replace="TFSelections" by="TFSelections" />
                                         <parameter replace="ellipseX" by="${GENERIC_UID}_ellipseX" />
@@ -294,14 +290,14 @@
             <item key="ellipseAKey">
                 <object uid="${GENERIC_UID}_ellipseA" type="::fwData::Float">
                     <service uid="${GENERIC_UID}_ellipseAEditor" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
-                    <value>0.5</value>
+                    <value>50</value>
                 </object>
             </item>
 
             <item key="ellipseBKey">
                 <object uid="${GENERIC_UID}_ellipseB" type="::fwData::Float">
                     <service uid="${GENERIC_UID}_ellipseBEditor" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
-                    <value>0.5</value>
+                    <value>50</value>
                 </object>
             </item>
 

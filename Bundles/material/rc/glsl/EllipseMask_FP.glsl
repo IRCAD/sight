@@ -41,14 +41,22 @@ void main()
     vec4 frontColorBuffer = texture(u_fragData, uv);
     vec4 ellipse_sample = texture(u_ellipseTex, ellipseCoord());
 
-    if(ellipse_sample.r < 1.0)
+#ifdef BACKGROUND
+    if(ellipse_sample.r == 1.0)
     {
-        //FragColor = mix(frontColorBuffer, ellipse_sample, 0.5);
-
-        FragColor = vec4(frontColorBuffer.rgb, 1 - ellipse_sample.r);
+        FragColor = frontColorBuffer;
     }
     else
     {
-        //discard;
+        FragColor = vec4(frontColorBuffer.rgb, ellipse_sample.r);
     }
+
+#else
+    if(ellipse_sample.r < 1.0)
+    {
+        float alpha = 1.0 - ellipse_sample.r;
+        FragColor = vec4(frontColorBuffer.rgb,alpha);
+
+    }
+#endif
 }

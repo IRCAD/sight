@@ -1,4 +1,4 @@
-compositor Ellipse
+compositor Ellipse_inv
 {
     technique
     {
@@ -10,7 +10,7 @@ compositor Ellipse
          // Init peel buffer
          target render_target
          {
-            input previous
+             input previous
          }
 
         // Final pass
@@ -20,7 +20,7 @@ compositor Ellipse
             pass render_quad
             {
                 //material RenderQuad
-                material EllipseMask
+                material EllipseMask_inv
                 input 0 render_target
             }
 
