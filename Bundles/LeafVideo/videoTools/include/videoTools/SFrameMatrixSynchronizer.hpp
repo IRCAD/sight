@@ -135,6 +135,9 @@ protected:
     /// Synchronizes TLs
     VIDEOTOOLS_API void synchronize();
 
+    /// Do nothing.
+    VIDEOTOOLS_API void updating() throw (fwTools::Failed);
+
 private:
 
     ::fwCore::HiResClock::HiResClockType m_tolerance; ///< Tolerance to take into account matrix

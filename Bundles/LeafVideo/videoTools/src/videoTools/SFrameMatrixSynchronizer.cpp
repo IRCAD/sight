@@ -353,5 +353,11 @@ void SFrameMatrixSynchronizer::synchronize()
 
 // ----------------------------------------------------------------------------
 
+void SFrameMatrixSynchronizer::updating()
+{
+}
+
+// ----------------------------------------------------------------------------
+
 
 }  // namespace videoTools
