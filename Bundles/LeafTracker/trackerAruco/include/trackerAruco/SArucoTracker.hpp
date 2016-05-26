@@ -58,12 +58,12 @@ namespace trackerAruco
         </service>
    @endcode
  * @subsection Input Input
- * - ::extData::FrameTL \b frameTL : camera used to display video.
- * - ::arData::Camera \b camera : camera calibration.
+ * - \b frameTL [::extData::FrameTL]: camera used to display video.
+ * - \b camera [::arData::Camera]: camera calibration.
  *
  * @subsection In-Out In-Out
- * - ::arData::MarkerTL \b tagTL : list of marker timeline where to extract the tags. The number of tagTL inout keys
- * must match the number of markers entries in the config below.
+ * - \b tagTL [::arData::MarkerTL]: list of markers timelines where to extract the tags. The number of tagTL inout keys
+ * must match the number of \b markers entries in the config below.
  *
  * @subsection Configuration Configuration
  *  - \b track (mandatory)

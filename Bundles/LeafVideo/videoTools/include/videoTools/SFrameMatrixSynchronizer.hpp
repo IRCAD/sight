@@ -69,10 +69,12 @@ namespace videoTools
        </service>
    @endcode
  * @subsection Input Input
- * - ::extData::FrameTL \b frameTL defines the frameTL to synchronize.
+ * - \b frameTL [::extData::FrameTL]: defines the frameTL to synchronize. The number of \b frameTL keys must match the
+ * number of \b image keys.
  *
  * @subsection In-Out In-Out
- * - ::fwData::Image \b image: defines the images where to extract the image.
+ * - \b image [::fwData::Image]: defines the images where to extract the image. The number of \b image keys must match
+ * the number of \b frameTL keys.
  *
  * @subsection Configuration Configuration
  * - \b matrices defines the matrixTL to synchronize.
@@ -129,16 +131,6 @@ protected:
 
     /// Stops timer and clear TLs & Matrixes.
     VIDEOTOOLS_API void stopping() throw (fwTools::Failed);
-
-    /// Does nothing.
-    VIDEOTOOLS_API void swapping() throw (fwTools::Failed)
-    {
-    }
-
-    /// Does nothing.
-    VIDEOTOOLS_API void updating() throw (fwTools::Failed)
-    {
-    }
 
     /// Synchronizes TLs
     VIDEOTOOLS_API void synchronize();
