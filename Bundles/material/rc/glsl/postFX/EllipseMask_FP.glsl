@@ -29,7 +29,7 @@ vec2 ellipseCoord()
     result = result * mat2(cos_theta, -sin_theta, sin_theta, cos_theta);
 
     //Scale in percentage
-    result =  result / vec2( u_a /100, u_b/100);
+    result =  result / vec2(u_a / 100, u_b / 100);
 
     result += 0.5f;
 
@@ -41,22 +41,6 @@ void main()
     vec4 frontColorBuffer = texture(u_fragData, uv);
     vec4 ellipse_sample = texture(u_ellipseTex, ellipseCoord());
 
-#ifdef BACKGROUND
-    if(ellipse_sample.r == 1.0)
-    {
-        FragColor = frontColorBuffer;
-    }
-    else
-    {
-        FragColor = vec4(frontColorBuffer.rgb, ellipse_sample.r);
-    }
-
-#else
-    if(ellipse_sample.r < 1.0)
-    {
-        float alpha = 1.0 - ellipse_sample.r;
-        FragColor = vec4(frontColorBuffer.rgb,alpha);
-
-    }
-#endif
+    float alpha = 1.0 - ellipse_sample.r;
+    FragColor = vec4(frontColorBuffer.rgb,alpha);
 }

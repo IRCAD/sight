@@ -62,10 +62,9 @@
             <service uid="${GENERIC_UID}_genericScene" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoConnect="yes" >
                 <scene overlay="true" >
                     <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+                    <renderer id="video" layer="1" />
                     <!-- Default Layer -->
-
-                    <renderer id="video" layer="1" compositors="Default;Ellipse_inv"/>
-                   -<renderer id="default" layer="2" compositors="Default;Ellipse" />
+                    <renderer id="default" layer="2" compositors="Ellipse" />
 
                     <adaptor id="videoAdapter" class="::visuOgreAdaptor::SVideo" objectId="videoImage">
                         <config renderer="video" cameraUID="${GENERIC_UID}_camera" />
