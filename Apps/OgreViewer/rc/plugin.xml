@@ -105,7 +105,7 @@
                             <view proportion="0" caption="Position Y" />
                             <view proportion="0" caption="Width" />
                             <view proportion="0" caption="height" />
-                            <view proportion="0" caption="Orientation" />
+                            <view proportion="0" caption="Orientation (degrees)" />
                         </layout>
                         <toolBar/>
                     </gui>
