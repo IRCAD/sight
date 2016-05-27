@@ -83,6 +83,8 @@ protected:
 
 private:
 
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+
     /// Slots used when the frame have been refreshed
     UpdateFrameSlotType::sptr m_slotUpdateFrame;
 
@@ -96,7 +98,7 @@ private:
     std::string m_frameTLKey;
 
     /// Frame timeline
-    ::extData::FrameTL::sptr m_frameTL;
+    ::extData::FrameTL::csptr m_frameTL;
 
     /// Image key
     std::string m_imageKey;
