@@ -27,7 +27,7 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
     <adaptor uid="paramAdaptor" impl="::visuOgreAdaptor::SShaderParameter">
-        <config compositorName="compositor" parameter="u_value" shaderType="fragment" />
+        <config renderer="layerName" compositorName="compositor" parameter="u_value" shaderType="fragment" />
     </adaptor>
    @endcode
  *

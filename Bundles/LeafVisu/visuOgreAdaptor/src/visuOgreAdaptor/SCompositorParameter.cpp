@@ -132,7 +132,7 @@ void SCompositorParameter::setParamName(std::string paramName)
 void SCompositorParameter::doStart() throw(::fwTools::Failed)
 {
     ::fwRenderOgre::Layer::sptr layer =
-        this->getRenderService()->getLayer();
+        this->getRenderService()->getLayer(m_layerID);
 
     ::Ogre::CompositorChain* compChain =
         ::Ogre::CompositorManager::getSingletonPtr()->getCompositorChain(layer->getViewport());
