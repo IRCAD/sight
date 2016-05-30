@@ -43,7 +43,7 @@ namespace videoTools
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service impl="::videoTools::SFrameMatrixSynchronizer">
+        <service type="::videoTools::SFrameMatrixSynchronizer">
             <in group="frameTL">
                 <key uid="frameTL1" />
                 <key uid="frameTL4" />

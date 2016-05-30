@@ -47,7 +47,7 @@ namespace videoQt
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service impl="::videoQt::SFrameGrabber">
+        <service type="::videoQt::SFrameGrabber">
             <in key="camera" uid="camera" />
             <inout key="frameTL" uid="frameTL" />
         </service>

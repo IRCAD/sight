@@ -33,7 +33,7 @@ namespace trackerAruco
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service uid="..." impl="::trackerAruco::SArucoTracker" >
+        <service uid="..." type="::trackerAruco::SArucoTracker" >
             <in key="frameTL" id="frameTLUid" autoConnect="yes"/>
             <in key="camera" id="cameraUid" />
             <inout group="tagTL" >
