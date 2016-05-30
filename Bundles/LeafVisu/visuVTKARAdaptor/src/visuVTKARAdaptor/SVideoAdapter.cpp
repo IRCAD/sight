@@ -96,7 +96,6 @@ void SVideoAdapter::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-
 void SVideoAdapter::doStart() throw(fwTools::Failed)
 {
     vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
@@ -112,8 +111,7 @@ void SVideoAdapter::doStart() throw(fwTools::Failed)
     // Set camera pointer, it will be used if present in doUpdate()
     if (!m_cameraUID.empty())
     {
-        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_cameraUID);
-        m_camera                    = ::arData::Camera::dynamicCast(obj);
+        m_camera = this->getSafeInput< ::arData::Camera>(m_cameraUID);
         SLM_ASSERT("Missing camera", m_camera);
 
         m_connections->connect(m_camera, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG,

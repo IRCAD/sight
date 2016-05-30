@@ -101,7 +101,7 @@ private:
 
     std::string m_cameraUID; ///< uid of the camera
 
-    SPTR(::arData::Camera) m_camera; ///< camera used to calibrate vtk camera
+    CSPTR(::arData::Camera) m_camera; ///< camera used to calibrate vtk camera
 
     vtkPerspectiveTransform* m_transOrig; ///<  VTK original perspective transform.
     vtkCommand* m_cameraCommand; ///< VTK camera command.

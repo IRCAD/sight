@@ -97,7 +97,7 @@ private:
 
     bool m_reverse; ///< if true, the actor is rotated in z and y axis.
 
-    SPTR(::arData::Camera) m_camera; ///< camera used to retrieve the optical center
+    CSPTR(::arData::Camera) m_camera; ///< camera used to retrieve the optical center
 };
 
 } //namespace visuVTKARAdaptor
