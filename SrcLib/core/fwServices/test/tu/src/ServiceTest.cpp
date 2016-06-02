@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ServiceTest.hpp"
+
 #include <fwData/Object.hpp>
-#include <fwTools/fwID.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
@@ -13,9 +14,6 @@
 
 #include <fwServices/IService.hpp>
 #include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ServiceFactory.hpp>
-#include <fwServices/AppConfigManager.hpp>
 #include <fwServices/helper/SigSlotConnection.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
@@ -23,7 +21,6 @@
 #include <fwRuntime/helper.hpp>
 
 #include "TestService.hpp"
-#include "ServiceTest.hpp"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::ServiceTest );

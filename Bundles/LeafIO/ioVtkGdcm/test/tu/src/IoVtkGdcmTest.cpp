@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,17 +13,16 @@
 
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
+
 #include <fwRuntime/EConfigurationElement.hpp>
-#include <fwRuntime/profile/Profile.hpp>
-#include <fwServices/AppConfigManager.hpp>
 
 #include <fwServices/Base.hpp>
-#include <fwServices/registry/AppConfig.hpp>
+
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
-
 #include <fwTest/generator/SeriesDB.hpp>
 #include <fwTest/helper/compare.hpp>
+
 #include <fwThread/Worker.hpp>
 
 #include <fwTools/dateAndTime.hpp>

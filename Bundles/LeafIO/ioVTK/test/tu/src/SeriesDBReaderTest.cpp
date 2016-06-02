@@ -1,18 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fstream>
-#include <fwRuntime/EConfigurationElement.hpp>
-#include <fwRuntime/profile/Profile.hpp>
+#include "SeriesDBReaderTest.hpp"
 
-#include <fwTools/System.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/AppConfigManager.hpp>
-#include <fwServices/registry/AppConfig.hpp>
+#include <fwComEd/helper/Image.hpp>
 
 #include <fwData/location/ILocation.hpp>
 
@@ -28,11 +22,13 @@
 
 #include <fwDataTools/Image.hpp>
 
-#include <fwComEd/helper/Image.hpp>
+#include <fwRuntime/EConfigurationElement.hpp>
+
+#include <fwServices/Base.hpp>
 
 #include <fwTest/Data.hpp>
 
-#include "SeriesDBReaderTest.hpp"
+#include <fwTools/System.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioVTK::ut::SeriesDBReaderTest );
