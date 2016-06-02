@@ -30,7 +30,7 @@ namespace fwRenderOgre
 
 /**
  * @class Plane
- * Manages a plane mesh on which a slice texture will be applied
+ * @brief Manages a plane mesh on which a slice texture will be applied
  */
 class FWRENDEROGRE_CLASS_API Plane
 {
@@ -67,7 +67,10 @@ public:
     FWRENDEROGRE_API void setDepthSpacing(std::vector<double> _spacing);
 
     FWRENDEROGRE_API void setEntityOpacity( float _f );
-    FWRENDEROGRE_API void setWindowing( float _minVal, float _maxVal );
+
+    /// Adds or updates the texture containing the transfer function datas in the negato passes
+    FWRENDEROGRE_API void setTFData(const ::Ogre::TexturePtr _tfTexture);
+
     FWRENDEROGRE_API void switchThresholding(bool _threshold);
 
     FWRENDEROGRE_API ::Ogre::Real getWidth() const;
@@ -80,6 +83,8 @@ public:
     FWRENDEROGRE_API double getSliceWorldPosition() const;
 
     FWRENDEROGRE_API OrientationMode getOrientationMode() const;
+
+    FWRENDEROGRE_API ::Ogre::MaterialPtr getMaterial() const;
 
     FWRENDEROGRE_API void removeAndDestroyPlane();
 
@@ -148,7 +153,7 @@ private:
     /// Where are we insite the depth range?
     float m_relativePosition;
 
-    /// As said in the name, opacity applied to the entity.
+    /// Opacity applied to the entity.
     float m_entityOpacity;
 
     static unsigned int s_id;
@@ -174,6 +179,13 @@ inline std::vector< ::Ogre::Real > Plane::getDepthSpacing()
 inline Plane::OrientationMode Plane::getOrientationMode() const
 {
     return m_orientation;
+}
+
+//------------------------------------------------------------------------------
+
+inline ::Ogre::MaterialPtr Plane::getMaterial() const
+{
+    return m_texMaterial;
 }
 
 //------------------------------------------------------------------------------

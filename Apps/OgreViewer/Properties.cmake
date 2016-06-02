@@ -20,6 +20,7 @@ set( REQUIREMENTS
     uiReconstructionQt
     uiMedDataQt
     uiIO
+    uiTF
     visuVTK
     visuVTKQt
     visuVTKAdaptor
@@ -31,6 +32,7 @@ set( REQUIREMENTS
     visuOgreQt
     visuOgreAdaptor
     uiVisuOgre
+    scene2D
     material
     media
     preferences

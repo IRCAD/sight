@@ -20,7 +20,6 @@
 
 #include <algorithm>
 
-#include <OgreHardwarePixelBuffer.h>
 #include <OgreCamera.h>
 #include <OgreSceneNode.h>
 #include <OgreTextureManager.h>
@@ -70,11 +69,14 @@ void SNegato2D::doStart() throw(::fwTools::Failed)
     this->updateImageInfos(this->getObject< ::fwData::Image >());
     this->updateTransferFunction(this->getImage());
 
-    // Texture instantiation
+    // 3D source texture instantiation
     m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
         this->getID() + "_Texture",
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
         true);
+
+    // TF texture initialization
+    m_gpuTF.createTexture(this->getID());
 
     // Scene node's instanciation
     m_negatoSceneNode = this->getSceneManager()->getRootSceneNode()->createChildSceneNode();
@@ -186,10 +188,7 @@ void SNegato2D::newImage()
     // Update Slice
     this->changeSliceIndex(m_axialIndex->value(), m_frontalIndex->value(), m_sagittalIndex->value());
 
-    // Update TF
-    this->updatingTFWindowing(this->getTransferFunction()->getWindow(), this->getTransferFunction()->getLevel());
-
-    // Update threshold if necessary
+    // Update tranfer function in Gpu programs
     this->updatingTFPoints();
 
     this->requestRender();
@@ -259,18 +258,25 @@ void SNegato2D::updateShaderSliceIndexParameter()
 
 void SNegato2D::updatingTFPoints()
 {
-    m_plane->switchThresholding(this->getTransferFunction()->getIsClamped());
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+
+    m_gpuTF.updateTexture(tf);
+
+    m_plane->switchThresholding(tf->getIsClamped());
+
+    // Sends the TF texture to the negato-related passes
+    m_plane->setTFData(m_gpuTF.getTexture());
 
     this->requestRender();
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-void SNegato2D::updatingTFWindowing(double _window, double _level)
+void SNegato2D::updatingTFWindowing(double window, double level)
 {
-    float minVal = static_cast<float>(_level) - static_cast<float>(_window) / 2.f;
-    float maxVal = static_cast<float>(_level) + static_cast<float>(_window) / 2.f;
-    m_plane->setWindowing(minVal, maxVal);
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+
+    m_gpuTF.updateTexture(tf);
 
     this->requestRender();
 }

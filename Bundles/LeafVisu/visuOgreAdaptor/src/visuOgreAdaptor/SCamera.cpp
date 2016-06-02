@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -214,7 +214,10 @@ void SCamera::calibrate()
         ::Ogre::Camera* camera = getCurrentCamera();
 
         double fy = m_camera->getFy();
-        camera->setFOVy( ::Ogre::Radian(static_cast< ::Ogre::Real >(2.0 * atan(m_camera->getHeight() / 2.0 / fy))) );
+        camera->setFOVy(
+            ::Ogre::Radian(static_cast< ::Ogre::Real >(2.0 *
+                                                       atan(static_cast< double >(m_camera->getHeight() / 2.0)) /
+                                                       fy)));
 
         this->doUpdate();
     }
