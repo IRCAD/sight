@@ -23,7 +23,8 @@
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <fwTools/fwID.hpp>
 

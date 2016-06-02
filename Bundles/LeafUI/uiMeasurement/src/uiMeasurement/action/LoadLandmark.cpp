@@ -21,7 +21,6 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwServices/AppConfigManager.hpp>
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>

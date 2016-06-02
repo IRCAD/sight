@@ -25,7 +25,8 @@
 #include <fwRenderVTK/vtk/Helpers.hpp>
 #include <fwRenderVTK/vtk/MarkedSphereHandleRepresentation.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <vtkActor.h>
 #include <vtkPlaneCollection.h>

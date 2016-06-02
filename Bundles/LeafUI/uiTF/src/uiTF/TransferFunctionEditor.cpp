@@ -21,7 +21,7 @@
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <io/IReader.hpp>

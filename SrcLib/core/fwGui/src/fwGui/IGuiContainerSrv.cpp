@@ -13,7 +13,7 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwCore/base.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwTools/fwID.hpp>
 
 namespace fwGui

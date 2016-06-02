@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <fwTools/fwID.hpp>
 #include <fwData/Composite.hpp>

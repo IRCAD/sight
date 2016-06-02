@@ -10,7 +10,6 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
 
 #include <fwTools/fwID.hpp>
 

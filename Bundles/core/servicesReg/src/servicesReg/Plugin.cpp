@@ -6,7 +6,6 @@
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 

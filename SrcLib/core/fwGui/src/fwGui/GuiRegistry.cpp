@@ -5,11 +5,13 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwTools/fwID.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include "fwGui/IMenuSrv.hpp"
 #include "fwGui/IToolBarSrv.hpp"
 #include "fwGui/GuiRegistry.hpp"
+
+#include <fwServices/op/Get.hpp>
 
 namespace fwGui
 {

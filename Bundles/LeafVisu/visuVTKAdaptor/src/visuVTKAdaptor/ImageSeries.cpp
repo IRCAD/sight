@@ -14,7 +14,6 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkActor.h>
 #include <vtkPolyDataMapper.h>

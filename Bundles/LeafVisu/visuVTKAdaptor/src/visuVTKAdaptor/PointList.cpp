@@ -17,8 +17,8 @@
 #include <fwData/PointList.hpp>
 #include <fwData/Reconstruction.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <algorithm>
 #include <iterator>

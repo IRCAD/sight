@@ -20,9 +20,8 @@
 #include <fwData/Plane.hpp>
 #include <fwData/PlaneList.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <vtkActor.h>
 #include <vtkAssemblyNode.h>

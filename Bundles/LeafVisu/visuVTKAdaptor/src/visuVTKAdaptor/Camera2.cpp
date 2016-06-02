@@ -15,8 +15,6 @@
 #include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwComEd/Dictionary.hpp>
 

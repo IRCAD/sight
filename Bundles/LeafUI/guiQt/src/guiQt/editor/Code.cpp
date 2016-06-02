@@ -10,8 +10,7 @@
 
 #include <fwData/String.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/macros.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>

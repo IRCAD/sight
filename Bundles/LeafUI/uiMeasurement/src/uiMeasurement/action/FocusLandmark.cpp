@@ -23,7 +23,6 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 
 namespace uiMeasurement

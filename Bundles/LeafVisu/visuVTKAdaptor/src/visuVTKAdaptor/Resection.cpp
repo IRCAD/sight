@@ -11,9 +11,7 @@
 #include <fwData/Reconstruction.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
+#include <fwServices/op/Add.hpp>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Resection, ::fwData::Resection );
 

@@ -23,8 +23,8 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 

@@ -23,8 +23,6 @@
 #include <fwRenderVTK/vtk/Helpers.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/Base.hpp>
 
 #include <boost/format.hpp>
 

@@ -13,10 +13,8 @@
 #include <fwData/Reconstruction.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwServices/Base.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkCommand.h>
 #include <vtkMatrix4x4.h>

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,6 @@
 #include <fwCore/base.hpp>
 
 #include <fwData/Boolean.hpp>
-#include <fwServices/Base.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -76,8 +75,7 @@ void ShowLandmark::updating() throw(::fwTools::Failed)
     bool toShow = !isShown;
     image->setField("ShowLandmarks",  ::fwData::Boolean::New(toShow));
 
-    std::vector< ::fwServices::IService::sptr > services = ::fwServices::OSR::getServices < ::fwServices::IService > (
-        image);
+    auto services = ::fwServices::OSR::getServices < ::fwServices::IService > (image);
 
     this->::fwGui::IActionSrv::setIsActive(isShown);
 

@@ -13,7 +13,11 @@
 #include <fwData/Integer.hpp>
 
 #include <fwServices/IService.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+
+#include <fwServices/op/Add.hpp>
+#include <fwServices/op/Get.hpp>
+
 #include <fwServices/helper/SigSlotConnection.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 

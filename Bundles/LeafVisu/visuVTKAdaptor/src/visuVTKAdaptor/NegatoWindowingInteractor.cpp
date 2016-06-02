@@ -20,10 +20,8 @@
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 #include <fwRenderVTK/vtk/fwVtkCellPicker.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkCommand.h>
 #include <vtkInteractorStyleImage.h>

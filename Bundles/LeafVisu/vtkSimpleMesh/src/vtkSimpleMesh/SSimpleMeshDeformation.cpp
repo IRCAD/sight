@@ -14,7 +14,7 @@
 #include <fwData/mt/ObjectReadToWriteLock.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwDataTools/Mesh.hpp>

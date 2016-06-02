@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/AppConfigParameters.hpp>
 

@@ -18,8 +18,8 @@
 
 #include <fwMedData/Series.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
 namespace uiIO

@@ -13,8 +13,8 @@
 #include <fwRuntime/Extension.hpp>
 #include <fwRuntime/helper.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
+#include <fwServices/op/Get.hpp>
 
 #include <fwTools/fwID.hpp>
 

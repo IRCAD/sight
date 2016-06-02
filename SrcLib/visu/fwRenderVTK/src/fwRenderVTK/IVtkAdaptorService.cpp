@@ -13,7 +13,8 @@
 #include <fwData/String.hpp>
 #include <fwTools/fwID.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include "fwRenderVTK/IVtkAdaptorService.hpp"
 

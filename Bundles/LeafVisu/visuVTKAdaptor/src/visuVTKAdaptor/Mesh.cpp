@@ -22,8 +22,8 @@
 
 #include <fwData/mt/ObjectReadLock.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <fwVtkIO/helper/Mesh.hpp>
 #include <fwVtkIO/vtk.hpp>

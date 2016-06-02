@@ -15,7 +15,7 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <vtkActor2D.h>
 #include <vtkRenderer.h>

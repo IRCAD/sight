@@ -13,10 +13,8 @@
 
 #include <fwData/String.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
-#include <fwServices/Base.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <boost/assign/list_of.hpp>
 

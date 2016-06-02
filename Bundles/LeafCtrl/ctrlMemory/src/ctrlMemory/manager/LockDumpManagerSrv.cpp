@@ -14,7 +14,6 @@
 #include <fwData/Composite.hpp>
 #include <fwData/ObjectLock.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 
 

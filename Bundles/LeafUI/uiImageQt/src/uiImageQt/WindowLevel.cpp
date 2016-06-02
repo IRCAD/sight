@@ -23,9 +23,7 @@
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGuiQt/widget/QRangeSlider.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <boost/math/special_functions/fpclassify.hpp>
 

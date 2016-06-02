@@ -31,7 +31,7 @@
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/AppConfigManager.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 

@@ -20,7 +20,9 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwMath/Compare.hpp>
-#include <fwServices/Base.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <fwVtkIO/vtk.hpp>
 

@@ -21,7 +21,8 @@
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <fwVtkIO/vtk.hpp>
 

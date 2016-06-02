@@ -19,13 +19,14 @@
 #include <fwData/Color.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
-#include <fwTools/fwID.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <fwRuntime/ConfigurationElementContainer.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+
+#include <fwTools/fwID.hpp>
 
 #include <fwVtkIO/vtk.hpp>
 

@@ -15,8 +15,6 @@
 #include <fwData/Material.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkActor.h>
 #include <vtkCommand.h>

@@ -21,10 +21,8 @@
 #include <fwData/Reconstruction.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
-#include <fwServices/Base.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTexture.h>

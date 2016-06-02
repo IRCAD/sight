@@ -16,7 +16,7 @@
 #include <fwRuntime/Extension.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/op/Get.hpp>
 
 #include <fwTools/fwID.hpp>
 

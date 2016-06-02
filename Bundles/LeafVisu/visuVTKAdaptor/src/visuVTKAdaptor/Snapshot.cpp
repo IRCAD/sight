@@ -17,7 +17,7 @@
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/IService.hpp>
 
 #include <vtkActor.h>

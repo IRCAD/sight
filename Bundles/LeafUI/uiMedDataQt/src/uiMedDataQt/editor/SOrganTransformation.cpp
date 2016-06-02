@@ -19,7 +19,6 @@
 #include <fwMedData/ModelSeries.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwTools/fwID.hpp>
 
 #include <QListWidget>

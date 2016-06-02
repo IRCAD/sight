@@ -23,9 +23,7 @@
 #include <fwData/Plane.hpp>
 #include <fwData/PlaneList.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneSelectionNotifier,

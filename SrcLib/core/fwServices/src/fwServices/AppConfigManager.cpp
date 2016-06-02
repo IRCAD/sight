@@ -5,8 +5,9 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwServices/AppConfigManager.hpp"
-#include "fwServices/Base.hpp"
+#include "fwServices/macros.hpp"
 #include "fwServices/helper/Config.hpp"
+#include <fwServices/op/Get.hpp>
 #include "fwServices/registry/ActiveWorkers.hpp"
 #include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/registry/Proxy.hpp"

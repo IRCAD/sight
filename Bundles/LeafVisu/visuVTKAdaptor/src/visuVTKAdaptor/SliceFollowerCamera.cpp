@@ -13,8 +13,7 @@
 
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/macros.hpp>
 
 #include <vtkActor.h>
 #include <vtkCamera.h>

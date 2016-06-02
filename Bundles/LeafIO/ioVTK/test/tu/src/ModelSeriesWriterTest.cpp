@@ -6,20 +6,21 @@
 
 #include "ModelSeriesWriterTest.hpp"
 
-#include <fwRuntime/EConfigurationElement.hpp>
-
-#include <fwServices/Base.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/SeriesDB.hpp>
-
 #include <fwData/Reconstruction.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Array.hpp>
 
-#include <fwTools/System.hpp>
+#include <fwMedData/ModelSeries.hpp>
+#include <fwMedData/SeriesDB.hpp>
+
+#include <fwRuntime/EConfigurationElement.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwTest/generator/SeriesDB.hpp>
+
+#include <fwTools/System.hpp>
 
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>

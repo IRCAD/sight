@@ -25,9 +25,7 @@
 #include <fwRenderVTK/vtk/fwVtkCellPicker.hpp>
 #include <fwRenderVTK/vtk/Helpers.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkActor.h>
 #include <vtkActorCollection.h>

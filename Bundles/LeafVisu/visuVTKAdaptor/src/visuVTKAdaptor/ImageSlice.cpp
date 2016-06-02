@@ -16,7 +16,6 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwVtkIO/vtk.hpp>

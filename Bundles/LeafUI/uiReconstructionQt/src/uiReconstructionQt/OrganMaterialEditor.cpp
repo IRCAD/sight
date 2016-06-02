@@ -23,9 +23,7 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
 #include <fwServices/op/Get.hpp>
 

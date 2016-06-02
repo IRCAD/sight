@@ -22,10 +22,9 @@
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/Proxy.hpp>
 
 #include <fwTools/fwID.hpp>

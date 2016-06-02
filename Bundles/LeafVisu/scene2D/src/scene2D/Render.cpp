@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,9 +13,10 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/helper/SigSlotConnection.hpp>
 #include <fwServices/helper/Config.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 

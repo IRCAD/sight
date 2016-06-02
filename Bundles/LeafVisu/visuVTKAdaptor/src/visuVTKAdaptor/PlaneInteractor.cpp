@@ -16,9 +16,8 @@
 
 #include <fwMath/PlaneFunctions.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkRenderWindowInteractor.h>
 #include <vtkCommand.h>

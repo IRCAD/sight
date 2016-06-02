@@ -10,8 +10,6 @@
 
 #include <fwCom/Slots.hxx>
 #include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkProperty.h>
 #include <vtkRenderer.h>

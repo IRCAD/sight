@@ -18,9 +18,7 @@
 #include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 namespace fwComEd
 {

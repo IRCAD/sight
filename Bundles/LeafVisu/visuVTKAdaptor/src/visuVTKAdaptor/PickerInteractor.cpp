@@ -18,8 +18,7 @@
 
 #include <fwRenderVTK/vtk/Helpers.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/macros.hpp>
 
 #include <vtkAbstractPropPicker.h>
 #include <vtkActor.h>

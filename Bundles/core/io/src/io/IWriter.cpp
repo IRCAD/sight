@@ -6,7 +6,7 @@
 #include "io/IWriter.hpp"
 
 #include <fwCore/base.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 namespace io
 {

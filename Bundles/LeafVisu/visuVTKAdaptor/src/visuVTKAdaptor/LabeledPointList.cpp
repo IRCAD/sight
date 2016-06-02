@@ -14,8 +14,8 @@
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <vtkActor.h>
 #include <vtkAssemblyNode.h>

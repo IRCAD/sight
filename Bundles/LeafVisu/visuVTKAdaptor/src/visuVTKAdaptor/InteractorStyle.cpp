@@ -9,10 +9,8 @@
 #include <fwData/Object.hpp>
 
 #include <fwRenderVTK/IInteractorStyle.hpp>
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkInstantiator.h>
 #include <vtkInteractorStyleImage.h>

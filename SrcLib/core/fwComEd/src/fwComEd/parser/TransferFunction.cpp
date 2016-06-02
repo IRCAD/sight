@@ -9,7 +9,7 @@
 #include <fwData/Color.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 fwServicesRegisterMacro( ::fwServices::IXMLParser, ::fwComEd::parser::TransferFunction, ::fwData::TransferFunction );
 

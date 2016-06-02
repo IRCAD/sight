@@ -5,7 +5,6 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 

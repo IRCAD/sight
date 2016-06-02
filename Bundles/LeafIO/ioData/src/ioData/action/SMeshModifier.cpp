@@ -6,7 +6,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 
 #include <fwData/Mesh.hpp>
