@@ -547,25 +547,6 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     fwBundleExtra()
 endmacro()
 
-# Include the projects in parameter and their public dependencies and export them.
-# Public dependencies of a project are those defined either with fwForwardInclude or fwUseForwardInclude.
-macro(fwUseForwardInclude)
-    foreach(PROJECT ${ARGV})
-        get_target_property(PROJECT_INCLUDE_DIRECTORIES ${PROJECT} INTERFACE_INCLUDE_DIRECTORIES)
-        list(REMOVE_DUPLICATES PROJECT_INCLUDE_DIRECTORIES)
-        target_include_directories(${FWPROJECT_NAME} PUBLIC ${PROJECT_INCLUDE_DIRECTORIES})
-    endforeach()
-endmacro()
-
-macro(fwUseForwardLink)
-    target_link_libraries(${FWPROJECT_NAME} PUBLIC ${ARGV})
-endmacro()
-
-macro(fwUseForward)
-    fwUseForwardInclude(${ARGV})
-    fwUseForwardLink(${ARGV})
-endmacro()
-
 # Include the projects in parameter and export them.
 # Compiling warnings will not be reported (because of SYSTEM).
 macro(fwForwardInclude)
