@@ -17,10 +17,29 @@
 
 namespace ctrlCamp
 {
+
 /**
- * @class SCopy
  * @brief This service copies an object and updates its own object or the defined target.
  * It can either copy the data when starting or when updating (default).
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+       <service uid="..." type="::ctrlCamp::SCopy" >
+           <in key="source" uid="sourceObject">
+           <inout key="target" uid="targetObject">
+           <mode>copyOnStart</mode>
+       </service>
+      @endcode
+ * @subsection Input Input
+ * - \b source [::fwData::Object]: define the source object to copy.
+ *
+ * @subsection In-Out In-Out
+ * - \b target [::fwData::Object]: define the target object to update.
+ *
+ * @subsection Configuration Configuration
+ * - \b mode (optional) : The service can copy the data either when starting ("copyOnStart") or when
+ * updating ("copyOnUpdate" - default).
  */
 class CTRLCAMP_CLASS_API SCopy : public ::ctrlCamp::ICamp
 {
@@ -45,22 +64,7 @@ protected:
     /// Does nothing
     CTRLCAMP_API virtual void starting() throw( ::fwTools::Failed );
 
-    /**
-     * @brief Configure the service
-     *
-     * @code{.xml}
-        <service uid="..." type="::ctrlCamp::ICamp" impl="::ctrlCamp::SCopy" autoConnect="no">
-            <source>imageUID</source>
-            <target>@values.myTarget<target>
-            <mode>copyOnStart</mode>
-        </service>
-       @endcode
-     * - \b source (mandatory) : parameter defines the source to copy. It can be defined by its uid or by a sesh@ path
-     * (beginning with @ : ex. @value.myImageKey).
-     * - \b target (optional) : The path of the object to update. If it is not defined, the current object is updated.
-     * - \b mode (optional) : The service can copy the data either when starting ("copyOnStart") or when
-     * updating ("copyOnUpdate" - default).
-     */
+    //// Configure the service
     CTRLCAMP_API virtual void configuring() throw( ::fwTools::Failed );
 
     /// Does nothing

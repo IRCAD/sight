@@ -21,6 +21,8 @@ namespace ctrlCamp
 
 fwServicesRegisterMacro(::ctrlCamp::ICamp, ::ctrlCamp::SCopy, ::fwData::Object);
 
+const ::fwServices::IService::KeyType s_SOURCE_INPUT = "source";
+const ::fwServices::IService::KeyType s_TARGET_INOUT = "target";
 
 //-----------------------------------------------------------------------------
 
@@ -42,15 +44,19 @@ void SCopy::configuring() throw( ::fwTools::Failed )
 {
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
-    const ConfigurationType srcConfig = m_configuration->findConfigurationElement("source");
-    SLM_ASSERT("element 'source' is missing.", srcConfig);
-    m_source = srcConfig->getValue();
-    SLM_ASSERT("Missing source.", srcConfig->getValue() != "");
-
-    const ConfigurationType tgtConfig = m_configuration->findConfigurationElement("target");
-    if (tgtConfig)
+    if(!this->isVersion2())
     {
-        m_target = tgtConfig->getValue();
+        const ConfigurationType srcConfig = m_configuration->findConfigurationElement("source");
+        SLM_ASSERT("element 'source' is missing.", srcConfig);
+        m_source = srcConfig->getValue();
+        SLM_ASSERT("Missing source.", srcConfig->getValue() != "");
+
+        const ConfigurationType tgtConfig = m_configuration->findConfigurationElement("target");
+        if (tgtConfig)
+        {
+            m_target = tgtConfig->getValue();
+
+        }
     }
 
     const ConfigurationType modeConfig = m_configuration->findConfigurationElement("mode");
@@ -107,10 +113,17 @@ void SCopy::stopping() throw( ::fwTools::Failed )
 void SCopy::copy()
 {
     ::fwData::Object::sptr target;
-    ::fwData::Object::sptr source;
+    ::fwData::Object::csptr source;
     if (m_target.empty())
     {
-        target = this->getObject< ::fwData::Object >();
+        if(this->isVersion2())
+        {
+            target = this->getInOut< ::fwData::Object >(s_TARGET_INOUT);
+        }
+        else
+        {
+            target = this->getObject< ::fwData::Object >();
+        }
     }
     else
     {
@@ -134,12 +147,19 @@ void SCopy::copy()
     }
     else
     {
-        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_source);
-        SLM_ASSERT("Object '" + m_source + "' is not found", obj);
-        source = ::fwData::Object::dynamicCast(obj);
-        SLM_ERROR_IF(
-            "Object '" + m_source + "' is not a valid fwData::Object (" + obj->getClassname() + ") or does not exist",
-            !source);
+        if(this->isVersion2())
+        {
+            source = this->getInput< ::fwData::Object >(s_SOURCE_INPUT);
+        }
+        else
+        {
+            ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_source);
+            SLM_ASSERT("Object '" + m_source + "' is not found", obj);
+            source = ::fwData::Object::dynamicCast(obj);
+            SLM_ERROR_IF(
+                "Object '" + m_source + "' is not a valid fwData::Object (" + obj->getClassname() + ") or does not exist",
+                !source);
+        }
     }
 
     if(source)

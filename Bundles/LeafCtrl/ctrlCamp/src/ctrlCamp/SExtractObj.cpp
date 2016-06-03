@@ -13,9 +13,12 @@
 #include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataCamp/exception/NullPointer.hpp>
+#include <fwDataCamp/exception/ObjectNotFound.hpp>
 #include <fwDataCamp/getObject.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
+
+#include <fwServices/registry/ObjectService.hpp>
 
 
 namespace ctrlCamp
@@ -43,37 +46,60 @@ SExtractObj::~SExtractObj()
 void SExtractObj::configuring() throw( ::fwTools::Failed )
 {
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-    std::vector< ConfigurationType > extractCfg = m_configuration->find("extract");
-    SLM_ASSERT("At least one 'extract' tag is required.", !extractCfg.empty());
 
-    for(ConfigurationType cfg : extractCfg)
+    if(this->isVersion2())
     {
-        SLM_ASSERT("Missing attribute 'from'.", cfg->hasAttribute("from"));
-        SLM_ASSERT("Missing attribute 'to'.", cfg->hasAttribute("to"));
+        const ConfigurationType inoutCfg = m_configuration->findConfigurationElement("inout");
+        SLM_ASSERT("At one 'inout' tag is required.", inoutCfg);
 
-        std::string from = cfg->getAttributeValue("from");
-        std::string to   = cfg->getAttributeValue("to");
+        const std::vector< ConfigurationType > extractCfg = inoutCfg->find("extract");
+        SLM_ASSERT("At least one 'extract' tag is required.", !extractCfg.empty());
 
-        SLM_ASSERT("'from' attribute must begin with '@'", from.substr(0,1) == "@");
+        const std::vector< ConfigurationType > outCfg = m_configuration->find("out");
+        SLM_ASSERT("You must have as many 'from' tags as 'out' keys.", extractCfg.size() == outCfg.size());
 
-        m_extract[from] = to;
+        for(ConfigurationType cfg : extractCfg)
+        {
+            SLM_ASSERT("Missing attribute 'from'.", cfg->hasAttribute("from"));
+            const std::string from = cfg->getAttributeValue("from");
+
+            m_sourcePaths.push_back(from);
+        }
     }
-
-    const ConfigurationType modeConfig = m_configuration->findConfigurationElement("mode");
-    if (modeConfig)
+    else
     {
-        auto mode = modeConfig->getValue();
-        if(mode == "extractOnStart")
+        std::vector< ConfigurationType > extractCfg = m_configuration->find("extract");
+        SLM_ASSERT("At least one 'extract' tag is required.", !extractCfg.empty());
+
+        for(ConfigurationType cfg : extractCfg)
         {
-            m_mode = ModeType::START;
+            SLM_ASSERT("Missing attribute 'from'.", cfg->hasAttribute("from"));
+            SLM_ASSERT("Missing attribute 'to'.", cfg->hasAttribute("to"));
+
+            std::string from = cfg->getAttributeValue("from");
+            std::string to   = cfg->getAttributeValue("to");
+
+            SLM_ASSERT("'from' attribute must begin with '@'", from.substr(0,1) == "@");
+
+            m_extract[from] = to;
         }
-        else if(mode == "extractOnUpdate")
+
+        const ConfigurationType modeConfig = m_configuration->findConfigurationElement("mode");
+        if (modeConfig)
         {
-            m_mode = ModeType::UPDATE;
-        }
-        else
-        {
-            SLM_ERROR("Mode " + mode + " unknown. It should be either 'extractOnStart' or 'extractOnUpdate'");
+            auto mode = modeConfig->getValue();
+            if(mode == "extractOnStart")
+            {
+                m_mode = ModeType::START;
+            }
+            else if(mode == "extractOnUpdate")
+            {
+                m_mode = ModeType::UPDATE;
+            }
+            else
+            {
+                SLM_ERROR("Mode " + mode + " unknown. It should be either 'extractOnStart' or 'extractOnUpdate'");
+            }
         }
     }
 }
@@ -112,46 +138,89 @@ void SExtractObj::stopping() throw( ::fwTools::Failed )
 
 void SExtractObj::extract()
 {
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-    ::fwData::mt::ObjectWriteLock lock(composite);
-    ::fwComEd::helper::Composite compHelper(composite);
-
-    for(ExtractMapType::value_type elt : m_extract)
+    if(this->isVersion2())
     {
-        std::string from = elt.first;
-        std::string to   = elt.second;
+        auto sourceObject = this->getInOut< ::fwData::Object >("source");
 
-        try
+        size_t index = 0;
+        for(auto path : m_sourcePaths)
         {
-            ::fwData::Object::sptr object = ::fwDataCamp::getObject( composite, from, true );
+            const std::string from = path;
+
+            ::fwData::Object::sptr object;
+            try
+            {
+                object = ::fwDataCamp::getObject( sourceObject, from, true );
+            }
+            catch(::fwDataCamp::exception::NullPointer& np)
+            {
+                this->unregisterOutput("target", index);
+            }
+            catch(::fwDataCamp::exception::ObjectNotFound& nf)
+            {
+                SLM_WARN("Object from '"+ from +"' not found");
+            }
+            catch(std::exception& e)
+            {
+                OSLM_FATAL("Unhandled exception: " << e.what());
+            }
 
             SLM_WARN_IF("Object from '"+ from +"' not found", !object);
             if(object)
             {
-                if (composite->find(to) == composite->end())
-                {
-                    compHelper.add(to, object);
-                }
-                else
-                {
-                    compHelper.swap(to, object);
-                }
+                this->registerOutput("target", object, index);
             }
-        }
-        catch(::fwDataCamp::exception::NullPointer& np)
-        {
-            if (composite->find(to) != composite->end())
-            {
-                compHelper.remove(to);
-            }
-
-        }
-        catch(std::exception& e)
-        {
-            OSLM_FATAL("Unhandled exception: " << e.what());
+            ++index;
         }
     }
-    compHelper.notify();
+    else
+    {
+        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+
+        ::fwData::mt::ObjectWriteLock lock(composite);
+        ::fwComEd::helper::Composite compHelper(composite);
+
+        for(ExtractMapType::value_type elt : m_extract)
+        {
+            std::string from = elt.first;
+            std::string to   = elt.second;
+
+            try
+            {
+                ::fwData::Object::sptr object = ::fwDataCamp::getObject( composite, from, true );
+
+                SLM_WARN_IF("Object from '"+ from +"' not found", !object);
+                if(object)
+                {
+                    if (composite->find(to) == composite->end())
+                    {
+                        compHelper.add(to, object);
+                    }
+                    else
+                    {
+                        compHelper.swap(to, object);
+                    }
+                }
+            }
+            catch(::fwDataCamp::exception::NullPointer& np)
+            {
+                if (composite->find(to) != composite->end())
+                {
+                    compHelper.remove(to);
+                }
+
+            }
+            catch(::fwDataCamp::exception::ObjectNotFound& nf)
+            {
+                SLM_WARN("Object from '"+ from +"' not found");
+            }
+            catch(std::exception& e)
+            {
+                OSLM_FATAL("Unhandled exception: " << e.what());
+            }
+        }
+        compHelper.notify();
+    }
 }
 //-----------------------------------------------------------------------------
 

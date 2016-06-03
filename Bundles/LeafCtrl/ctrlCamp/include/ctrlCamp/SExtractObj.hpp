@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,8 +20,34 @@
 namespace ctrlCamp
 {
 /**
- * @class SExtractObj
- * @brief This service get an object from one place to push it in the composite.
+ * @brief This service get objects from a source object and expose them as new objects.
+ *
+ * The output objects must be marked as "deferred" in the XML configuration.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service uid="..." type="::ctrlCamp::SExtractObj" >
+           <inout key="source" uid="...">
+               <extract from="@values.myobject1" />
+               <extract from="@values.myobject2" />
+           </inout>
+           <out group="target">
+               <key uid="..."/>
+               <key uid="..."/>
+           </out>
+        </service>
+       @endcode
+ * @subsection In-Out In-Out
+ * - \b source [::fwData::Object]: define the source object where objects are extracted from.
+ *
+ * @subsection Output Output
+ * - \b target [::fwData::Object]: define the target objects. The number of \b target keys must match
+ * the number of \b from tags.
+ *
+ * @subsection Configuration Configuration
+ * - \b from (mandatory) : key to extract from the source object. The number of \b from tags must match
+ * the number of \b target keys.
  */
 class CTRLCAMP_CLASS_API SExtractObj : public ::ctrlCamp::ICamp
 {
@@ -48,21 +74,7 @@ protected:
     /// Does nothing
     CTRLCAMP_API virtual void starting() throw( ::fwTools::Failed );
 
-    /**
-     * @brief Configure the service
-     *
-     * @code{.xml}
-        <service uid="..." type="::ctrlCamp::ICamp" impl="::ctrlCamp::SExtractObj" autoConnect="no">
-            <extract from="@values.myobject1" to="objKey1" />
-            <extract from="@values.myobject2" to="objKey2" />
-            <mode>extractOnStart</mode>
-        </service>
-       @endcode
-     * - \b from (mandatory) : introspection path to the object to extract
-     * - \b to (mandatory) : key where to push extracted object
-     * - \b mode (optional) : The service can extract the data either when starting ("extractOnStart") or when
-     * updating ("extractOnUpdate" - default).
-     */
+    /// Configure the service
     CTRLCAMP_API virtual void configuring() throw( ::fwTools::Failed );
 
     /// Does nothing
@@ -79,7 +91,11 @@ private:
     /// Map to associate \<from, to\> for object extraction
     ExtractMapType m_extract;
 
+    /// Vector to associate source paths
+    std::vector<std::string> m_sourcePaths;
+
     /// Determine when the data is copied (start or update)
+    /// @deprecated no longer needed with appXml2
     ModeType m_mode;
 };
 

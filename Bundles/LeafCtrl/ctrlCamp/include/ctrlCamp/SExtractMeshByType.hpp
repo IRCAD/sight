@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,9 +20,39 @@
 namespace ctrlCamp
 {
 /**
- * @class SExtractMeshByType
- * @brief This service get a mesh of a specific structure type from one place to push it in the composite.
- *        If the model series have some meshes with the same structure type if will treat the first one only
+ * @brief This service extract meshes of a specific structure type from ::fwMedData::ModelSeries.
+ * If the model series have some meshes with the same structure type, it will extract the first found.
+ * Additionnaly, it can also match the organ name with a regular expression.
+ *
+ * The output objects must be marked as "deferred" in the XML configuration.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service uid="..." type="::ctrlCamp::SExtractMeshByType" >
+           <inout key="source" uid="...">
+               <extract type="organ1" />
+               <extract type="organ2" matching="(.*)surface(.*)"/>
+           </inout>
+           <out group="target">
+               <key uid="..."/>
+               <key uid="..."/>
+           </out>
+        </service>
+       @endcode
+
+ * @subsection In-Out In-Out
+ * - \b source [::fwMedData::ModelSeries]: define the source models where meshes are extracted from.
+ *
+ * @subsection Output Output
+ * - \b target [::fwData::Mesh]: define the target meshes. The number of \b target keys must match
+ * the number of \b from tags.
+ *
+ * @subsection Configuration Configuration
+ * - \b type (mandatory) : structure type of the mesh to extract from the source model. The number of \b from tags must
+ * match the number of \b target keys.
+ * - \b matching (optional) : regex to match the organ name, that can be used for instance when you have several
+ * organs with the same structure type.
  */
 class CTRLCAMP_CLASS_API SExtractMeshByType : public ::ctrlCamp::ICamp
 {
@@ -30,7 +60,8 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SExtractMeshByType)(::ctrlCamp::ICamp) );
 
-    typedef std::map<std::string, std::pair< std::string, std::string > > ExtractMapType;
+    typedef std::map<std::string, std::tuple< std::string, std::string, std::string > > ExtractMapType;
+    typedef std::vector<std::pair< std::string, std::string > > ExtractVectorType;
 
     /// Constructor
     CTRLCAMP_API SExtractMeshByType();
@@ -43,20 +74,7 @@ protected:
     /// Does nothing
     CTRLCAMP_API virtual void starting() throw( ::fwTools::Failed );
 
-    /**
-     * @brief Configure the service
-     *
-     * @code{.xml}
-        <service uid="..." type="::fwServices::IController" impl="::ctrlCamp::SExtractMeshByType" autoConnect="no">
-            <extract from="@values.myobject1" to="objKey1" type="organ1" />
-            <extract from="@values.myobject2" to="objKey2" type="organ2" />
-        </service>
-       @endcode
-     * - \b from (mandatory) : introspection path to the object to extract
-     * - \b to (mandatory) : key where to push extracted object
-     * - \b type (mandatory) : the structure type of the mesh
-     * - \b matching (optional) : the name of the extrtacting organ must match the regex.
-     */
+    /// Configure the service
     CTRLCAMP_API virtual void configuring() throw( ::fwTools::Failed );
 
     /// Does nothing
@@ -68,9 +86,11 @@ protected:
 private:
 
     /// Map to associate \<from, to\> for object extraction
-    ExtractMapType m_extract;
+    /// @deprecated
+    ExtractMapType m_extractOld;
 
-    std::string m_regex;
+    /// Vector to associate \<from, to\> for object extraction
+    ExtractVectorType m_extract;
 };
 
 }// namespace ctrlCamp

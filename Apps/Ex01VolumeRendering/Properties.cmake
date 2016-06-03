@@ -6,6 +6,7 @@ set( UNIQUE TRUE )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     dataReg
+    ctrlCamp
     ctrlSelection
     gui
     guiQt
@@ -22,9 +23,10 @@ set( REQUIREMENTS
     visuVTKAdaptor
     visuVTKVRAdaptor
     fwlauncher
-    appXml
+    appXml2
     scene2D
     uiTF
+    preferences
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex01VolumeRendering)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex01VolumeRendering)

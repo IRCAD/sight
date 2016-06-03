@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,9 +19,10 @@
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
+#include <fwServices/registry/ObjectService.hpp>
+
 #include <boost/regex.hpp>
 #include <boost/algorithm/string.hpp>
-
 
 namespace ctrlCamp
 {
@@ -31,9 +32,8 @@ fwServicesRegisterMacro(::ctrlCamp::ICamp, ::ctrlCamp::SExtractMeshByType, ::fwD
 
 //-----------------------------------------------------------------------------
 
-SExtractMeshByType::SExtractMeshByType() : m_regex("")
+SExtractMeshByType::SExtractMeshByType()
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -47,26 +47,61 @@ SExtractMeshByType::~SExtractMeshByType()
 void SExtractMeshByType::configuring() throw( ::fwTools::Failed )
 {
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigType;
-    std::vector< ConfigType > extractCfg = m_configuration->find("extract");
-    SLM_ASSERT("At least one 'extract' tag is required.", !extractCfg.empty());
 
-    for(ConfigType cfg : extractCfg)
+    if(this->isVersion2())
     {
-        SLM_ASSERT("Missing attribute 'from'.", cfg->hasAttribute("from"));
-        SLM_ASSERT("Missing attribute 'to'.", cfg->hasAttribute("to"));
+        const ConfigType inoutCfg = m_configuration->findConfigurationElement("inout");
+        SLM_ASSERT("At one 'inout' tag is required.", inoutCfg);
 
-        std::string from = cfg->getAttributeValue("from");
-        std::string to   = cfg->getAttributeValue("to");
-        std::string type = cfg->getAttributeValue("type");
-        m_regex = cfg->getAttributeValue("matching");
+        const std::vector< ConfigType > extractCfg = inoutCfg->find("extract");
+        SLM_ASSERT("At least one 'extract' tag is required.", !extractCfg.empty());
 
-        SLM_ASSERT("'from' attribute must begin with '@'", from.substr(0,1) == "@");
+        bool ok = false;
 
-        std::pair< std::string, std::string > pair;
-        pair.first  = to;
-        pair.second = type;
+        const std::vector< ConfigType > outCfg = m_configuration->find("out");
+        for (const auto& cfg : outCfg)
+        {
+            if(cfg->hasAttribute("group"))
+            {
+                if(cfg->getAttributeValue("group") == "target")
+                {
+                    const std::vector< ConfigType > keyCfg = m_configuration->find("out");
+                    SLM_ASSERT("You must have as many 'extract' tags as 'out' keys.",
+                               extractCfg.size() == keyCfg.size());
+                    ok = true;
+                }
+            }
+        }
+        SLM_ASSERT("Missing 'target' output keys", ok);
 
-        m_extract[from] = pair;
+        for(ConfigType cfg : extractCfg)
+        {
+            std::string type  = cfg->getAttributeValue("type");
+            std::string regex = cfg->getAttributeValue("matching");
+
+            m_extract.push_back(std::make_pair(type, regex));
+        }
+    }
+    else
+    {
+        /// Old way
+        std::vector< ConfigType > extractCfg = m_configuration->find("extract");
+        SLM_ASSERT("At least one 'extract' tag is required.", !extractCfg.empty());
+
+        for(ConfigType cfg : extractCfg)
+        {
+            SLM_ASSERT("Missing attribute 'from'.", cfg->hasAttribute("from"));
+            SLM_ASSERT("Missing attribute 'to'.", cfg->hasAttribute("to"));
+
+            std::string from  = cfg->getAttributeValue("from");
+            std::string to    = cfg->getAttributeValue("to");
+            std::string type  = cfg->getAttributeValue("type");
+            std::string regex = cfg->getAttributeValue("matching");
+
+            SLM_ASSERT("'from' attribute must begin with '@'", from.substr(0,1) == "@");
+
+            m_extractOld[from] = std::make_tuple(to, type, regex);
+        }
     }
 }
 
@@ -74,59 +109,100 @@ void SExtractMeshByType::configuring() throw( ::fwTools::Failed )
 
 void SExtractMeshByType::starting() throw( ::fwTools::Failed )
 {
-    this->updating();
 }
 
 //-----------------------------------------------------------------------------
 
 void SExtractMeshByType::updating() throw( ::fwTools::Failed )
 {
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-    ::fwData::mt::ObjectWriteLock lock(composite);
-    ::fwComEd::helper::Composite compHelper(composite);
-
-    for(ExtractMapType::value_type elt : m_extract)
+    if(this->isVersion2())
     {
-        std::string from = elt.first;
-        std::string to   = elt.second.first;
-        std::string type = elt.second.second;
+        ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries>("source");
+        OSLM_ASSERT("ModelSeries not found", modelSeries);
 
-        ::fwData::Object::sptr object = ::fwDataCamp::getObject( composite, from );
-        OSLM_ASSERT("Object from '"<< from <<"' not found", object);
-
-        ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(object);
-
-        OSLM_ASSERT("Object from '"<< from <<"' is not a model series", modelSeries);
-
-        ::fwMedData::ModelSeries::ReconstructionVectorType recs = modelSeries->getReconstructionDB();
-        for(::fwData::Reconstruction::sptr element : recs)
+        size_t index = 0;
+        for(const auto& elt : m_extract)
         {
-            if(element->getCRefStructureType() == type)
+            std::string type  = elt.first;
+            std::string regex = elt.second;
+
+
+            bool found = false;
+            ::fwMedData::ModelSeries::ReconstructionVectorType recs = modelSeries->getReconstructionDB();
+            for(::fwData::Reconstruction::sptr element : recs)
             {
-                ::boost::regex regSurface(m_regex);
-                ::boost::smatch match;
-                std::string name = element->getOrganName();
-
-                if(m_regex.empty() || ::boost::regex_match(name,match,regSurface))
+                if(element->getCRefStructureType() == type)
                 {
-                    ::fwData::Mesh::sptr obj = element->getMesh();
-                    if (composite->find(to) == composite->end())
-                    {
-                        compHelper.add(to, obj);
-                    }
-                    else
-                    {
-                        OSLM_INFO("A key named '"<< to << "' already exists in the composite. object doesn't added.");
-                    }
+                    ::boost::regex regSurface(regex);
+                    ::boost::smatch match;
+                    std::string name = element->getOrganName();
 
-                    break;
+                    if(regex.empty() || ::boost::regex_match(name, match, regSurface))
+                    {
+                        ::fwData::Mesh::sptr obj = element->getMesh();
+
+                        this->registerOutput("target", obj, index);
+                        found = true;
+                        break;
+                    }
                 }
             }
+            OSLM_INFO_IF(
+                "Mesh with organ name matching '" << regex << "' and structure type'" << type << "' didn't find",
+                !found);
         }
-        OSLM_INFO_IF("Mesh with organ name matching '" << m_regex << "' and structure type'" << type << "' didn't find", composite->find(
-                         to) == composite->end());
     }
-    compHelper.notify();
+    else
+    {
+        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+        ::fwData::mt::ObjectWriteLock lock(composite);
+        ::fwComEd::helper::Composite compHelper(composite);
+
+        for(ExtractMapType::value_type elt : m_extractOld)
+        {
+            std::string from  = elt.first;
+            std::string to    = std::get<0>(elt.second);
+            std::string type  = std::get<1>(elt.second);
+            std::string regex = std::get<2>(elt.second);
+
+            ::fwData::Object::sptr object = ::fwDataCamp::getObject( composite, from );
+            OSLM_ASSERT("Object from '"<< from <<"' not found", object);
+
+            ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(object);
+            OSLM_ASSERT("Object from '"<< from <<"' is not a model series", modelSeries);
+
+            ::fwMedData::ModelSeries::ReconstructionVectorType recs = modelSeries->getReconstructionDB();
+            for(::fwData::Reconstruction::sptr element : recs)
+            {
+                if(element->getCRefStructureType() == type)
+                {
+                    ::boost::regex regSurface(regex);
+                    ::boost::smatch match;
+                    std::string name = element->getOrganName();
+
+                    if(regex.empty() || ::boost::regex_match(name, match, regSurface))
+                    {
+                        ::fwData::Mesh::sptr obj = element->getMesh();
+                        if (composite->find(to) == composite->end())
+                        {
+                            compHelper.add(to, obj);
+                        }
+                        else
+                        {
+                            OSLM_INFO("A key named '"<< to <<
+                                      "' already exists in the composite. object doesn't added.");
+                        }
+
+                        break;
+                    }
+                }
+            }
+            OSLM_INFO_IF(
+                "Mesh with organ name matching '" << regex << "' and structure type'" << type << "' didn't find",
+                composite->find(to) == composite->end());
+        }
+        compHelper.notify();
+    }
 }
 
 //-----------------------------------------------------------------------------
