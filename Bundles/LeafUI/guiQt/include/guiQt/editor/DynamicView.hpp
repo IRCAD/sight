@@ -94,6 +94,13 @@ struct AppConfig
  * @section Slot Slot
  * - \b createTab( ::fwActivities::registry::ActivityMsg ): This slot allows to create a tab with the given activity
  *   information.
+ *
+ * @deprecated
+ * This service will be replaced by the ::guiQt::editor::SDynamicView.
+ * The usage is similar, the main difference is that the SDinamicView service only manage Activities.
+ * In the configuration, you must replace the 'appConfig' tag by a 'mainActivity' tag, and create a simple Activity that
+ * launchs your appConfig.
+ *
  */
 class GUIQT_CLASS_API DynamicView : public QObject,
                                     public ::gui::view::IView

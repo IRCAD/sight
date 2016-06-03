@@ -104,6 +104,7 @@
                                 <mode>exclude</mode>
                                 <id>ImageSeriesExport</id>
                                 <id>ModelSeriesExport</id>
+                                <id>SDBVRRender</id>
                             </filter>
                         </config>
                     </service>
@@ -152,6 +153,7 @@
                             <mode>exclude</mode>
                             <id>ImageSeriesExport</id>
                             <id>ModelSeriesExport</id>
+                            <id>SDBVRRender</id>
                         </filter>
                     </service>
 
