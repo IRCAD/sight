@@ -60,6 +60,7 @@ ActivityRequirement::ActivityRequirement(const ConfigType &config) :
     type(config.get<std::string>("<xmlattr>.type")),
     container(config.get_optional<std::string>("<xmlattr>.container").get_value_or("")),
     description(config.get_optional<std::string>("desc").get_value_or("")),
+    validator(config.get_optional<std::string>("validator").get_value_or("")),
     minOccurs(config.get_optional<unsigned int>("<xmlattr>.minOccurs").get_value_or(1)),
     maxOccurs(config.get_optional<unsigned int>("<xmlattr>.maxOccurs").get_value_or(1))
 {
@@ -155,6 +156,12 @@ ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension) &ext) :
         {
             validatorsImpl.push_back( validator.second.get_value<std::string>() );
         }
+    }
+
+    // Set Default validator if none is defined
+    if (validatorsImpl.empty())
+    {
+        validatorsImpl.push_back("::fwActivities::validator::DefaultActivity");
     }
 }
 

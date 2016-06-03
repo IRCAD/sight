@@ -8,6 +8,7 @@
 
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
+#include <fwActivities/IActivityValidator.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -397,6 +398,34 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
         return;
     }
 
+    // Applies activity validator on activity series to check the data
+    if (!info.validatorsImpl.empty())
+    {
+        for (std::string validatorImpl : info.validatorsImpl)
+        {
+            /// Process activity validator
+            ::fwActivities::IValidator::sptr validator = ::fwActivities::validator::factory::New(validatorImpl);
+
+            ::fwActivities::IActivityValidator::sptr activityValidator =
+                ::fwActivities::IActivityValidator::dynamicCast(validator);
+
+            if (activityValidator)
+            {
+                ::fwActivities::IValidator::ValidationType validation = activityValidator->validate(actSeries);
+                if(!validation.first)
+                {
+                    std::string message = "The activity '" + info.title + "' can not be launched:\n" +
+                                          validation.second;
+                    ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch",
+                                                                      message,
+                                                                      ::fwGui::dialog::IMessageDialog::CRITICAL);
+                    return;
+                }
+            }
+        }
+    }
+
+
     ParametersType parameters = this->translateParameters(m_parameters);
     ::fwActivities::registry::ActivityMsg msg = ::fwActivities::registry::ActivityMsg(actSeries, info, parameters);
 
@@ -486,12 +515,7 @@ bool SActivityLauncher::launchAS(::fwData::Vector::sptr &selection)
             }
             else
             {
-                ::fwActivities::registry::ActivityInfo info;
-                info = ::fwActivities::registry::Activities::getDefault()->getInfo(as->getActivityConfigId());
-                ParametersType parameters = this->translateParameters(m_parameters);
-                ::fwActivities::registry::ActivityMsg msg = ::fwActivities::registry::ActivityMsg(as, info, parameters);
-
-                m_sigActivityLaunched->asyncEmit(msg);
+                this->launchActivitySeries(as);
                 launchAS = true;
             }
         }
@@ -540,6 +564,35 @@ void SActivityLauncher::launchActivitySeries(::fwMedData::ActivitySeries::sptr s
 {
     ::fwActivities::registry::ActivityInfo info;
     info = ::fwActivities::registry::Activities::getDefault()->getInfo(series->getActivityConfigId());
+
+    // Applies activity validator on activity series to check the data
+    if (!info.validatorsImpl.empty())
+    {
+        for (std::string validatorImpl : info.validatorsImpl)
+        {
+            /// Process activity validator
+            ::fwActivities::IValidator::sptr validator = ::fwActivities::validator::factory::New(validatorImpl);
+
+            ::fwActivities::IActivityValidator::sptr activityValidator =
+                ::fwActivities::IActivityValidator::dynamicCast(validator);
+
+            if (activityValidator)
+            {
+                ::fwActivities::IValidator::ValidationType validation = activityValidator->validate(series);
+                if(!validation.first)
+                {
+                    std::string message = "The activity '" + info.title + "' can not be launched:\n" +
+                                          validation.second;
+                    ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch",
+                                                                      message,
+                                                                      ::fwGui::dialog::IMessageDialog::CRITICAL);
+                    return;
+                }
+            }
+        }
+    }
+
+
     ParametersType parameters = this->translateParameters(m_parameters);
     ::fwActivities::registry::ActivityMsg msg = ::fwActivities::registry::ActivityMsg(series, info, parameters);
 
@@ -594,4 +647,3 @@ SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const 
 
 }
 }
-

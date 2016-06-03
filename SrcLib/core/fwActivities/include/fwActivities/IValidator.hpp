@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,13 @@
 #ifndef __FWACTIVITIES_IVALIDATOR_HPP__
 #define __FWACTIVITIES_IVALIDATOR_HPP__
 
-#include <fwCore/base.hpp>
-#include <fwMedData/ActivitySeries.hpp>
-
+#include "fwActivities/config.hpp"
+#include "fwActivities/registry/Activities.hpp"
 #include "fwActivities/validator/factory/new.hpp"
 #include "fwActivities/validator/registry/detail.hpp"
-#include "fwActivities/registry/Activities.hpp"
 
-#include "fwActivities/config.hpp"
+#include <fwCore/base.hpp>
+#include <fwMedData/ActivitySeries.hpp>
 
 namespace fwData
 {

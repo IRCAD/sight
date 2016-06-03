@@ -69,14 +69,19 @@ namespace factory
          <desc>Activity description ...</desc>
          <icon>Bundles/media_0-1/icons/icon-3D.png</icon>
          <requirements>
-             <requirement name="param1" type="::fwData::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
-             <requirement name="param2" type="::fwData::Mesh" maxOccurs="3" container="composite">
-                 <key>Item1</key>
-                 <key>Item2</key>
-                 <key>Item3</key>
-             </requirement>
-             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="2" />
-             <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="param1" type="::fwData::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
+            <requirement name="param2" type="::fwData::Mesh" maxOccurs="3" >
+                <key>Item1</key>
+                <key>Item2</key>
+                <key>Item3</key>
+            </requirement>
+            <requirement name="param3" type="::fwData::Mesh" maxOccurs="*" container="vector" />
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="2" />
+            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1">
+                 <desc>Description of the required data....</desc>
+                 <validator>::fwActivities::validator::ImageProperties</validator>
+            </requirement>
+            <requirement name="transformationMatrix" type="::fwData::TransformationMatrix3D" minOccurs="0" maxOccurs="1" create="true" />
              <!-- ...-->
          </requirements>
          <builder>::fwActivities::builder::ActivitySeries</builder>
@@ -99,8 +104,7 @@ namespace factory
  *   be launched with the selected data.
  * - \b icon: it is the path to the activity icon. It is displayed by the SActivityLauncher when several activity can be
  *   launched with the selected data.
- * - \b requirements: it is the list of the data required to launch the activity. This data must be selected in the
- *   vector (``::fwData::Vector``).
+ * - \b requirements: it is the list of the data required to launch the activity.
  *     - \b requirement: a required data.
  *         - \b name: key used to add the data in the activity Composite.
  *         - \b type: the data type (ex: ``::fwMedData::ImageSeries``).
@@ -111,6 +115,11 @@ namespace factory
  *         - \b container (optional, "vector" or "composite", default: composite): container used to contain the data if
  *           minOccurs or maxOccurs are not "1". if the container is "composite", you need to specify the "key" of each
  *           object in the composite.
+ *         - \b create (optional, default "false"): if true and (minOccurrs == 0 && maxOccurs == 1), the data will be
+ *           automatically created if it is not present.
+ *         - \b desc (optional): description of the parameter
+ *         - \b validator (optional): validator to check if the associated data is well formed (inherited of
+ *           ::fwAtivities::IObjectValidator)
  * - \b builder: implementation of the activity builder. The default builder is
  *   ``::fwActivities::builder::ActivitySeries`` : it creates the ``::fwMedData::ActivitySeries`` and adds the required
  *   data in its composite with de defined key.
@@ -129,6 +138,45 @@ namespace factory
  *          - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
  *               frontal) or define a sesh@ path (ex. @values.myImage). The root object of the sesh@ path if the
  *               composite contained in the ActivitySeries.
+ *
+ * @section Validators Validators
+ *
+ * There is three types of validator :
+ *
+ * @subsection prebuild Pre-build validator
+ *
+ * This type of validators checks if the current selection of data is correct to build the activity. It inherits of
+ * ::fwActivities::IValidator and must implement the methods:
+ *
+ * @code {.cpp}
+   ValidationType validate(
+           const ::fwActivities::registry::ActivityInfo& activityInfo,
+           SPTR(::fwData::Vector) currentSelection ) const;
+   @endcode
+ *
+ * @subsection activity Activity validator
+ *
+ * This type of validator checks if the ::fwMedData::ActivitySeries is correct to launch its associated activity.
+ * It inherits of ::fwActivities::IActivityValidator and must implement the method:
+ *
+ * @code {.cpp}
+   ValidationType validate(const CSPTR(::fwMedData::ActivitySeries) &activity ) const;
+   @endcode
+ *
+ * The validator ::fwActivities::validator::DefaultActivity is applied if no other validator is defined. It checks if
+ * all the required objets are present in the series and if all the parameters delivered to the AppConfig are present.
+ *
+ * It provides some method useful to implement your own validator.
+ *
+ * @subsection object Object validator
+ *
+ * This type of validator checks if the required object is well formed. It can check a single object or a Vector or
+ * a Composite containing one type of object. It inherits of ::fwActivities::IObjectValidator and must implement the
+ * method:
+ *
+ * @code {.cpp}
+   ValidationType validate(const CSPTR(::fwData::Object) &currentData ) const;
+   @endcode
  */
 
 } // namespace fwActivities

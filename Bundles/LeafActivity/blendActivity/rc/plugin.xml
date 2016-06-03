@@ -24,8 +24,9 @@
         <requirements>
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="2" maxOccurs="2" >
                 <desc>Images series to superimpose. They must have the same size, spacing and origin.</desc>
-              <key>FrontImage</key>
-              <key>BackImage</key>
+                <validator>::fwActivities::validator::ImageProperties</validator>
+                <key>FrontImage</key>
+                <key>BackImage</key>
             </requirement>
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>

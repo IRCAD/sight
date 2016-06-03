@@ -6,6 +6,9 @@
 
 #include "guiQt/editor/SDynamicView.hpp"
 
+#include <fwActivities/IActivityValidator.hpp>
+#include <fwActivities/IValidator.hpp>
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
@@ -180,6 +183,33 @@ void SDynamicView::swapping() throw(::fwTools::Failed)
 
 void SDynamicView::launchActivity(::fwMedData::ActivitySeries::sptr activitySeries)
 {
+    // Applies validator on activity series to check the data
+    ::fwActivities::registry::ActivityInfo info;
+    info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
+    if (!info.validatorsImpl.empty())
+    {
+        for (std::string validatorImpl : info.validatorsImpl)
+        {
+            /// Process activity validator
+            ::fwActivities::IValidator::sptr validator = ::fwActivities::validator::factory::New(validatorImpl);
+
+            ::fwActivities::IActivityValidator::sptr activityValidator =
+                ::fwActivities::IActivityValidator::dynamicCast(validator);
+            SLM_ASSERT("Validator '" + validatorImpl + "' instantiation failed", activityValidator);
+
+            ::fwActivities::IValidator::ValidationType validation = activityValidator->validate(activitySeries);
+            if(!validation.first)
+            {
+                std::string message = "The activity '" + info.title + "' can not be launched:\n" + validation.second;
+                ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch",
+                                                                  message,
+                                                                  ::fwGui::dialog::IMessageDialog::CRITICAL);
+                return;
+            }
+        }
+    }
+
+
     SDynamicViewInfo viewInfo = this->createViewInfo(activitySeries);
     viewInfo.closable = true;
 
@@ -534,4 +564,3 @@ void SDynamicView::translateParameters( ::fwData::Object::sptr sourceObj, const 
 
 }// namespace editor
 }// namespace guiQt
-

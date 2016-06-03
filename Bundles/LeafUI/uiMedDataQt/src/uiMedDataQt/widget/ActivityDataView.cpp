@@ -6,6 +6,10 @@
 
 #include "uiMedDataQt/widget/ActivityDataView.hpp"
 
+#include <fwActivities/IActivityValidator.hpp>
+#include <fwActivities/IObjectValidator.hpp>
+#include <fwActivities/IValidator.hpp>
+
 #include <fwData/Boolean.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Float.hpp>
@@ -386,7 +390,7 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr &
             else
             {
                 ok        = false;
-                errorMsg += "\n - The parameter '" + req.name + "' must be a " + req.type + ".";
+                errorMsg += "\n - The parameter '" + req.name + "' must be a '" + req.type + "'.";
             }
         }
         else
@@ -485,6 +489,21 @@ void ActivityDataView::fillInformation(const ::fwMedData::ActivitySeries::sptr &
         }
     }
 
+    if (data && !req.validator.empty())
+    {
+        /// Process object validator
+        ::fwActivities::IValidator::sptr validator           = ::fwActivities::validator::factory::New(req.validator);
+        ::fwActivities::IObjectValidator::sptr dataValidator = ::fwActivities::IObjectValidator::dynamicCast(validator);
+        SLM_ASSERT("Validator '" + req.validator + "' instantiation failed", dataValidator);
+
+        ::fwActivities::IValidator::ValidationType validation = dataValidator->validate(data);
+        if(!validation.first)
+        {
+            errorMsg += "\n" + validation.second;
+            data      = nullptr;
+        }
+    }
+
     return data;
 }
 
@@ -517,23 +536,20 @@ bool ActivityDataView::checkAndComputeData(const ::fwMedData::ActivitySeries::sp
         }
     }
 
-    // Check if all the activity config parameters are present
-    ::fwActivities::registry::ActivityAppConfig appConfigInfo = m_activityInfo.appConfig;
-    for (auto param : appConfigInfo.parameters)
+    for (std::string validatotImpl : m_activityInfo.validatorsImpl)
     {
-        if (param.isSeshat())
+        /// Process activity validator
+        ::fwActivities::IValidator::sptr validator = ::fwActivities::validator::factory::New(validatotImpl);
+
+        ::fwActivities::IActivityValidator::sptr activityValidator =
+            ::fwActivities::IActivityValidator::dynamicCast(validator);
+        SLM_ASSERT("Validator '" + validatotImpl + "' instantiation failed", activityValidator);
+
+        ::fwActivities::IValidator::ValidationType validation = activityValidator->validate(actSeries);
+        if(!validation.first)
         {
-            std::string path = param.by;
-            if (path.substr(0,1) == "!")
-            {
-                path.replace(0, 1, "@");
-            }
-            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(data, path);
-            if (!obj)
-            {
-                ok        = false;
-                errorMsg += "\n - invalid sesh@ path : '" + path + "'";
-            }
+            ok        = false;
+            errorMsg += "\n" + validation.second;
         }
     }
 

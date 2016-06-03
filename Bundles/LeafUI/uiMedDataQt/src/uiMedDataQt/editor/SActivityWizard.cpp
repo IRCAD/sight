@@ -450,7 +450,9 @@ void SActivityWizard::onBuildActivity()
             }
             else
             {
-                QMessageBox::warning(qApp->activeWindow(), "Error", QString::fromStdString(errorMsg));
+                QString message = "This activity can not be created : \n";
+                message.append(QString::fromStdString(errorMsg));
+                QMessageBox::warning(qApp->activeWindow(), "Activity Creation", message);
                 SLM_ERROR(errorMsg);
             }
         }

@@ -92,6 +92,7 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
     std::string type; /// parameter type (ie. ::fwMedData::ImageSeries)
     std::string container; /// data container if maxOccurs > 1 ("vector" or "composite", default: "composite")
     std::string description; /// parameter description
+    std::string validator;  /// Implementation of data validator
     unsigned int minOccurs; /// minimum number of data required
     unsigned int maxOccurs; /// maximum number of data required
     bool create; /// True if the data must be created if it is not present (only if minOccurs = 0 and maxOccurs = 1)
@@ -119,6 +120,7 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
  *     - \b create (optional) : true if the data must be created if it is not present (only available if minOccurs = 0
  *       and maxOccurs = 1)
  *     - \b desc (optional) : description of the requirement
+ *     - \b validator (optional) : validate the current data
  * - \b builder (optional): implementation of builder associate to the activity, the builder creates ActivitySeries.
  *   - default builder is ::fwActivities::builder::ActivitySeries
  * - \b validator (optional): check if specified activity can be launched with selected objects
@@ -150,6 +152,7 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="2" />
             <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1">
                  <desc>Description of the required data....</desc>
+                 <validator>::fwActivities::validator::ImageProperties</validator>
             </requirement>
             <requirement name="transformationMatrix" type="::fwData::TransformationMatrix3D" minOccurs="0" maxOccurs="1" create="true" />
             <!--# ...-->
