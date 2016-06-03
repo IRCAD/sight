@@ -75,6 +75,31 @@ void ServiceTest::testServiceCreation()
 
 //------------------------------------------------------------------------------
 
+void ServiceTest::testServiceCreationWithMultipleData()
+{
+    ::fwData::Integer::sptr obj = ::fwData::Integer::New();
+    ::fwServices::IService::sptr service;
+
+    // Test if the object support the service
+    CPPUNIT_ASSERT( ::fwServices::registry::ServiceFactory::getDefault()->support(obj->getClassname(),
+                                                                                  "::fwServices::ut::TestService") );
+
+    // Test adding service
+    ::fwServices::add(obj, "::fwServices::ut::TestService", "::fwServices::ut::TestServiceImplementation");
+    CPPUNIT_ASSERT(::fwServices::OSR::has(obj, "::fwServices::ut::TestService") );
+
+    // Test getting the service its object
+    service = ::fwServices::get(obj, "::fwServices::ut::TestService");
+    CPPUNIT_ASSERT(service);
+    CPPUNIT_ASSERT_EQUAL(obj, service->getObject< ::fwData::Integer >());
+
+    // Test erasing service
+    ::fwServices::OSR::unregisterService(service);
+    CPPUNIT_ASSERT( ::fwServices::OSR::has(obj, "::fwServices::ut::TestService") == false );
+}
+
+//------------------------------------------------------------------------------
+
 void ServiceTest::testServiceCreationWithTemplateMethods()
 {
     ::fwData::Integer::sptr obj = ::fwData::Integer::New();

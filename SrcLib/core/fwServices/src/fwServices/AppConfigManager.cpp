@@ -47,7 +47,7 @@ namespace fwServices
 
     ::fwData::Object::sptr obj;
     obj = ::fwData::factory::New(::boost::get<0>(type));
-    OSLM_ASSERT("Factory failed to build object : " <<  ::boost::get<0>(type), obj);
+    OSLM_ASSERT("Factory failed to build object : " << ::boost::get<0>(type), obj);
 
     if (::boost::get<1>(uid))
     {
@@ -238,7 +238,7 @@ void AppConfigManager::processUpdateItems()
             {
                 std::string type = elem->getExistingAttributeValue("type");
 
-                std::vector<fwServices::IService::sptr> servicesToUpdate = ::fwServices::OSR::getServices(type);
+                auto servicesToUpdate = ::fwServices::OSR::getServices(type);
 
                 OSLM_ASSERT("No services of type \"" << type << "\" found.", !servicesToUpdate.empty());
 
@@ -491,8 +491,10 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
 // Constructors / Destructors
 // ------------------------------------------------------------------------
 
-AppConfigManager::AppConfigManager() : m_state(STATE_DESTROYED), m_connections( helper::SigSlotConnection::New() )
+AppConfigManager::AppConfigManager() : m_connections( helper::SigSlotConnection::New() )
 {
+    SLM_ASSERT("Can't mix V1 and V2 appConfigs", s_VERSION == 0 || s_VERSION == 1);
+    s_VERSION = 1;
 }
 
 // ------------------------------------------------------------------------
@@ -587,6 +589,11 @@ void AppConfigManager::stopAndDestroy()
 {
     this->stop();
     this->destroy();
+}
+
+fwData::Object::sptr AppConfigManager::getConfigRoot() const
+{
+    return m_configuredObject;
 }
 
 // ------------------------------------------------------------------------

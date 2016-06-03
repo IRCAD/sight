@@ -157,12 +157,12 @@ IService::sptr ServiceFactory::create( const std::string & _srvImpl ) const
     ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( _srvImpl );
 
-    OSLM_ASSERT("The service called " << _srvImpl << " does not exist in the ServiceFactory "
-                , iter != m_srvImplTosrvInfo.end() );
+    OSLM_ASSERT("The service called '" << _srvImpl << "' does not exist in the ServiceFactory ",
+                iter != m_srvImplTosrvInfo.end() );
 
     ServiceInfo::sptr info = iter->second;
 
-    OSLM_DEBUG("SR create a new service ( classname = " << _srvImpl << " )");
+    OSLM_DEBUG("SR creates a new service ( classname = " << _srvImpl << " )");
 
     if ( info->factory )
     {
@@ -192,8 +192,6 @@ IService::sptr ServiceFactory::create( const std::string & _srvImpl ) const
 
         service = info->factory();
     }
-
-    this->checkServicesNotDeclaredInPluginXml();
 
     // Setup worker here, this is a better place than the constructor
     // because here, the service slots are also setup

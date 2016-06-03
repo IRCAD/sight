@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,9 +33,9 @@ class TestService : public ::fwServices::IService
 public:
 
     fwCoreServiceClassDefinitionsMacro ( (TestService)(::fwServices::IService) );
-    TestService() throw()
-        :   m_isUpdated(false),
-          m_isUpdatedMessage(false)
+    TestService() throw() :
+        m_isUpdated(false),
+        m_isUpdatedMessage(false)
     {
     }
 
@@ -43,16 +43,16 @@ public:
     {
     }
 
-    virtual void configuring() throw( ::fwTools::Failed )
+    virtual void configuring() throw( ::fwTools::Failed ) final
     {
     }
-    virtual void starting() throw(::fwTools::Failed)
+    virtual void starting() throw(::fwTools::Failed)override
     {
     }
-    virtual void stopping() throw(::fwTools::Failed)
+    virtual void stopping() throw(::fwTools::Failed) final
     {
     }
-    virtual void updating() throw(::fwTools::Failed)
+    virtual void updating() throw(::fwTools::Failed)override
     {
     }
     virtual void info(std::ostream &_sstream )
@@ -61,15 +61,21 @@ public:
     }
 
     /// return true if the service is updated with update() method
-    bool getIsUpdated()
+    bool getIsUpdated() const
     {
         return m_isUpdated;
     }
 
     /// return true if the service is updated with update(msg) method
-    bool getIsUpdatedMessage()
+    bool getIsUpdatedMessage() const
     {
         return m_isUpdatedMessage;
+    }
+
+    /// return true if the service is updated with update() method
+    void resetIsUpdated()
+    {
+        m_isUpdated = false;
     }
 
 protected:
@@ -94,38 +100,161 @@ public:
     /// Type os signal
     typedef ::fwCom::Signal< void (std::string)> MsgSentSignalType;
 
+    //-------------------------------------------------------------------------
     TestServiceImplementation() throw()
     {
         newSignal<MsgSentSignalType>(s_MSG_SENT_SIG);
         newSlot(s_RECEIVE_MSG_SLOT, &TestServiceImplementation::receiveMsg, this);
     }
+    //-------------------------------------------------------------------------
     virtual ~TestServiceImplementation() throw()
     {
     }
 
-    virtual void configuring() throw( ::fwTools::Failed )
+    //-------------------------------------------------------------------------
+    virtual void starting() throw(::fwTools::Failed) final
     {
     }
-    virtual void starting() throw(::fwTools::Failed)
-    {
-    }
-    virtual void stopping() throw(::fwTools::Failed)
-    {
-    }
-    virtual void updating() throw(::fwTools::Failed)
+
+    //-------------------------------------------------------------------------
+    virtual void updating() throw(::fwTools::Failed)override
     {
         m_isUpdated = true;
     }
 
-    virtual void receiveMsg(std::string msg)
+    //-------------------------------------------------------------------------
+    virtual void swapping(const KeyType& key) throw(::fwTools::Failed)override
+    {
+        m_swappedObjectKey = key;
+        m_swappedObject    = this->getInput< ::fwData::Object>(key);
+    }
+
+    //-------------------------------------------------------------------------
+    void receiveMsg(std::string msg)
     {
         m_isUpdatedMessage = true;
     }
 
-    virtual void info(std::ostream &_sstream )
+    //-------------------------------------------------------------------------
+    virtual void info(std::ostream &_sstream ) override
     {
         _sstream << "TestServiceImplementation";
     }
+
+    //-------------------------------------------------------------------------
+
+    const std::string& getSwappedObjectKey() const
+    {
+        return m_swappedObjectKey;
+    }
+
+    //-------------------------------------------------------------------------
+
+    ::fwData::Object::csptr getSwappedObject() const
+    {
+        return m_swappedObject;
+    }
+
+    //-------------------------------------------------------------------------
+
+private:
+    std::string m_swappedObjectKey;
+    ::fwData::Object::csptr m_swappedObject;
+};
+
+/**
+ * @brief Service implementation for test
+ */
+class TestServiceImplementation2 : public TestService
+{
+
+public:
+    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementation2)(::fwServices::ut::TestService) );
+
+    //-------------------------------------------------------------------------
+    TestServiceImplementation2() throw()
+    {
+    }
+    //-------------------------------------------------------------------------
+    virtual ~TestServiceImplementation2() throw()
+    {
+    }
+};
+
+/**
+ * @brief Service implementation for autoconnect test
+ */
+class TestSrvAutoconnect : public TestService
+{
+
+public:
+    fwCoreServiceClassDefinitionsMacro ( (TestSrvAutoconnect)(::fwServices::ut::TestService) );
+
+    /// Keys to register Signal
+    static const ::fwCom::Signals::SignalKeyType s_SIG_1;
+    /// Keys to register Slot
+    static const ::fwCom::Slots::SlotKeyType s_SLOT_1;
+
+    /// Type os signal
+    typedef ::fwCom::Signal< void (int)> MsgSentSignalType;
+
+    //-------------------------------------------------------------------------
+
+    TestSrvAutoconnect() throw() :
+        m_received(false)
+    {
+        newSignal<MsgSentSignalType>(s_SIG_1);
+        newSlot(s_SLOT_1, &TestSrvAutoconnect::receiveSlot, this);
+    }
+    //-------------------------------------------------------------------------
+    virtual ~TestSrvAutoconnect() throw()
+    {
+    }
+    //-------------------------------------------------------------------------
+
+    virtual void updating() throw(::fwTools::Failed)override
+    {
+        m_isUpdated = true;
+    }
+    //-------------------------------------------------------------------------
+
+    virtual void info(std::ostream &_sstream ) override
+    {
+        _sstream << "TestSrvAutoconnect";
+    }
+    //-------------------------------------------------------------------------
+    void receiveSlot()
+    {
+        m_received = true;
+    }
+    //-------------------------------------------------------------------------
+
+    void resetReceive()
+    {
+        m_received = false;
+    }
+    //-------------------------------------------------------------------------
+
+    bool getReceived() const
+    {
+        return m_received;
+    }
+    //-------------------------------------------------------------------------
+
+    virtual IService::KeyConnectionsMap getAutoConnections() const override
+    {
+        KeyConnectionsMap connections;
+        connections.push("data1", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data2", ::fwData::Object::s_MODIFIED_SIG, s_SLOT_1);
+        connections.push("data3", ::fwData::Object::s_MODIFIED_SIG, s_SLOT_1);
+
+        return connections;
+    }
+    //-------------------------------------------------------------------------
+
+private:
+
+    int m_received;
 };
 
 } //namespace ut

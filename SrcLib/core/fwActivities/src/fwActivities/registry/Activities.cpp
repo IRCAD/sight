@@ -23,9 +23,14 @@ namespace registry
 {
 
 ActivityAppConfigParam::ActivityAppConfigParam(const ConfigType &config) :
-    replace(config.get<std::string>("<xmlattr>.replace")),
-    by(config.get<std::string>("<xmlattr>.by"))
+    replace(config.get<std::string>("<xmlattr>.replace"))
 {
+    by = config.get_optional<std::string>("<xmlattr>.uid").get_value_or("");
+    if(by.empty())
+    {
+        by = config.get<std::string>("<xmlattr>.by");
+    }
+
 }
 
 //-----------------------------------------------------------------------------

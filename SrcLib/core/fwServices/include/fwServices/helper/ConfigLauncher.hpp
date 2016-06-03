@@ -7,7 +7,7 @@
 #ifndef __FWSERVICES_HELPER_CONFIGLAUNCHER_HPP__
 #define __FWSERVICES_HELPER_CONFIGLAUNCHER_HPP__
 
-#include "fwServices/AppConfigManager.hpp"
+#include "fwServices/IAppConfigManager.hpp"
 #include "fwServices/helper/SigSlotConnection.hpp"
 #include "fwServices/registry/AppConfig.hpp"
 #include "fwServices/config.hpp"
@@ -28,9 +28,7 @@ class IService;
 namespace helper
 {
 
-
 /**
- * @class   ConfigLauncher
  * @brief   This class provides few methods to manage AppConfig (parsing, starting, stopping...).
  */
 class FWSERVICES_CLASS_API ConfigLauncher : public ::fwCore::BaseObject
@@ -42,7 +40,7 @@ public:
                                             (()),
                                             std::make_shared< ConfigLauncher > );
 
-    typedef ::fwServices::registry::AppConfig::FieldAdaptorType FieldAdaptorType;
+    typedef ::fwServices::registry::FieldAdaptorType FieldAdaptorType;
 
     /// Constructor. Do nothing.
     FWSERVICES_API ConfigLauncher();
@@ -99,7 +97,7 @@ protected:
     bool m_configIsRunning;
 
     // config manager
-    ::fwServices::AppConfigManager::sptr m_appConfigManager;
+    ::fwServices::IAppConfigManager::sptr m_appConfigManager;
 
 private:
 

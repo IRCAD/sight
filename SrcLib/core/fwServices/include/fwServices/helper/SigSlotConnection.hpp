@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,8 +27,6 @@ namespace helper
 
 /**
  * @brief  This class provides few tools to connect/disconnect signals/slots between obj/srv
- *
- * @class  SigSlotConnection
  */
 class FWSERVICES_CLASS_API SigSlotConnection : public ::fwCore::BaseObject
 {
@@ -52,12 +50,12 @@ public:
     FWSERVICES_API virtual ~SigSlotConnection();
 
     /// Connect signal to slot, and register this new connection in  m_connections
-    FWSERVICES_API void connect( ::fwCom::HasSignals::sptr hasSignals, ::fwCom::Signals::SignalKeyType signalKey,
-                                 ::fwCom::HasSlots::sptr hasSlots, ::fwCom::Slots::SlotKeyType slotKey );
+    FWSERVICES_API void connect(::fwCom::HasSignals::csptr hasSignals, ::fwCom::Signals::SignalKeyType signalKey,
+                                ::fwCom::HasSlots::csptr hasSlots, ::fwCom::Slots::SlotKeyType slotKey );
 
     /// Connect signals to slots, and register these new connections in  m_connections
-    FWSERVICES_API void connect( ::fwCom::HasSignals::sptr hasSignals, ::fwCom::HasSlots::sptr hasSlots,
-                                 const KeyConnectionsType & keyConnections );
+    FWSERVICES_API void connect(::fwCom::HasSignals::csptr hasSignals, ::fwCom::HasSlots::csptr hasSlots,
+                                const KeyConnectionsType & keyConnections );
 
     /// Add a connection
     FWSERVICES_API void addConnection( ::fwCom::Connection connection );

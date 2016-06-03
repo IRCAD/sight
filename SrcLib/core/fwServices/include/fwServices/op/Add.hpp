@@ -29,7 +29,7 @@ FWSERVICES_API ::fwServices::IService::sptr add( ::fwData::Object::sptr obj, std
                                                  std::string _implementationId, std::string _id = "");
 
 template<class SERVICE>
-SPTR(SERVICE) add( ::fwData::Object::sptr obj, std::string _implementationId, std::string _id = "");
+SPTR(SERVICE) add( ::fwData::Object::csptr obj, std::string _implementationId, std::string _id = "");
 
 //@}
 

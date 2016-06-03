@@ -89,6 +89,14 @@ void registerService( ::fwData::Object::sptr obj, ::fwServices::IService::sptr s
 
 //------------------------------------------------------------------------------
 
+void registerService( ::fwData::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
+                      ::fwServices::IService::AccessType access,::fwServices::IService::sptr service )
+{
+    ::fwServices::OSR::get()->registerService(obj, objKey, access, service);
+}
+
+//------------------------------------------------------------------------------
+
 void swapService( ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service )
 {
     ::fwServices::OSR::get()->swapService(objDst, service);
@@ -101,95 +109,42 @@ void unregisterService(  ::fwServices::IService::sptr service )
     ::fwServices::OSR::get()->unregisterService(service);
 }
 
+//------------------------------------------------------------------------------
+
+void unregisterService(const ::fwServices::IService::KeyType& objKey, ::fwServices::IService::AccessType access,
+                       IService::sptr service)
+{
+    ::fwServices::OSR::get()->unregisterService(objKey, access, service);
+}
+
+//------------------------------------------------------------------------------
+
+bool isRegistered(const ::fwServices::IService::KeyType& objKey,
+                  ::fwServices::IService::AccessType access, IService::sptr service)
+{
+    return ::fwServices::OSR::get()->isRegistered(objKey, access, service);
+}
+
+//------------------------------------------------------------------------------
+
 } //namespace OSR
 
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-
-
-
 namespace registry
 {
 
-void ObjectService::registerService( ::fwData::Object::sptr object, ::fwServices::IService::sptr service)
-{
-    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
-    this->internalRegisterService(object, service);
-}
+const ::fwCom::Signals::SignalKeyType ObjectService::s_REGISTERED_SIG   = "registered";
+const ::fwCom::Signals::SignalKeyType ObjectService::s_UNREGISTERED_SIG = "unregistered";
 
 //------------------------------------------------------------------------------
 
-void ObjectService::internalRegisterService( ::fwData::Object::sptr object, ::fwServices::IService::sptr service)
+ObjectService::ObjectService()
 {
-    OSLM_ASSERT("This service "<< service->getClassname()
-                               << " is not valid for the object " << object->getClassname(),
-                ServiceFactory::getDefault()->checkServiceValidity(object->getClassname(), service->getClassname())
-                );
-
-    OSLM_ASSERT("Service "<< service->getID()<<" already registered",
-                m_container.right.find(service) == m_container.right.end());
-    OSLM_ASSERT("Service "<< service->getID()<<" has already a valid associated object",
-                service->m_associatedObject.expired() || object != service->m_associatedObject.lock());
-
-    service->m_associatedObject = object;
-    m_container.insert( ServiceContainerType::value_type( object->getOSRKey()->getLogicStamp(), service ) );
-}
-
-//------------------------------------------------------------------------------
-
-void ObjectService::swapService( ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service )
-{
-    ::fwCore::mt::WriteLock lock(m_containerMutex);
-    OSLM_ASSERT("Object "<< service->getObject()->getID()<<" is not registered in OSR",
-                m_container.left.find(service->getObject()->getOSRKey()->getLogicStamp()) != m_container.left.end());
-
-    OSLM_ASSERT("Service "<< service->getID()<<" is not registered in OSR",
-                m_container.right.find(service) != m_container.right.end());
-
-    m_container.right.erase(service);
-    this->internalRegisterService(objDst, service);
-}
-
-//------------------------------------------------------------------------------
-
-void ObjectService::unregisterService( ::fwServices::IService::sptr service )
-{
-    SLM_TRACE_FUNC();
-    OSLM_ASSERT( "The service ( "<< service->getID() <<" ) must be stop before being unregistered.",
-                 service->isStopped() );
-    // TODO verify that there are no com channel on this service.
-    this->removeFromContainer( service );
-}
-
-//------------------------------------------------------------------------------
-
-void ObjectService::removeFromContainer( ::fwServices::IService::sptr service )
-{
-    SLM_TRACE_FUNC();
-    ::fwCore::mt::WriteLock lock(m_containerMutex);
-    OSLM_ASSERT("Unknown service "<<service->getID()<<" in OSR",
-                m_container.right.find(service) != m_container.right.end());
-    m_container.right.erase(service);
-}
-
-//------------------------------------------------------------------------------
-
-ObjectService::ObjectVectorType ObjectService::getObjects() const
-{
-    ObjectVectorType objects;
-    ::fwCore::mt::ReadLock lock(m_containerMutex);
-    const ServiceContainerType::right_map & right = m_container.right;
-    for( const ServiceContainerType::right_map::value_type &elt :  right)
-    {
-        if ( std::find(objects.begin(), objects.end(), elt.first->getObject()) == objects.end() )
-        {
-            objects.push_back( elt.first->getObject() );
-        }
-    }
-    SLM_WARN_IF( "No object registered for the requested type of service", objects.empty() );
-    return objects;
+    newSignal<RegisterSignalType>(s_REGISTERED_SIG);
+    newSignal<RegisterSignalType>(s_UNREGISTERED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -197,7 +152,7 @@ ObjectService::ObjectVectorType ObjectService::getObjects() const
 std::string ObjectService::getRegistryInformation() const
 {
     std::stringstream info;
-    ::fwCore::LogicStamp::LogicStampType previousKey = -1;
+    ::fwCore::LogicStamp::LogicStampType previousKey = ~0ul;
     ::fwCore::mt::ReadLock lock(m_containerMutex);
     for( const ServiceContainerType::left_map::value_type &objSrvMap :  m_container.left)
     {
@@ -219,6 +174,229 @@ std::string ObjectService::getRegistryInformation() const
 
 //------------------------------------------------------------------------------
 
+void ObjectService::registerService( ::fwData::Object::sptr object, ::fwServices::IService::sptr service )
+{
+    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+    this->internalRegisterService(object, service, "", ::fwServices::IService::AccessType::INOUT);
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectService::registerService( ::fwData::Object::sptr object, const ::fwServices::IService::KeyType& objKey,
+                                     ::fwServices::IService::AccessType access, ::fwServices::IService::sptr service)
+{
+    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+    this->internalRegisterService(object, service, objKey, access);
+
+    const auto id = service->getObjectId(objKey);
+    this->signal<RegisterSignalType>(s_REGISTERED_SIG)->asyncEmit(object, id);
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectService::swapService( ::fwData::Object::sptr objDst, ::fwServices::IService::sptr service )
+{
+    ::fwCore::mt::WriteLock lock(m_containerMutex);
+    OSLM_ASSERT("Object "<< service->getObject()->getID()<<" is not registered in OSR",
+                m_container.left.find(service->getObject()->getOSRKey()->getLogicStamp()) != m_container.left.end());
+
+    OSLM_ASSERT("Service "<< service->getID()<<" is not registered in OSR",
+                m_container.right.find(service) != m_container.right.end());
+
+    // TODO: swap pour chaque objet !
+    m_container.right.erase(service);
+    this->internalRegisterService(objDst, service, "", ::fwServices::IService::AccessType::INOUT);
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectService::unregisterService( ::fwServices::IService::sptr service )
+{
+    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+
+    SLM_ASSERT( "The service ( " + service->getID() + " ) must be stop before being unregistered.",
+                service->isStopped() );
+
+    this->removeFromContainer( service );
+    service->m_inputsMap.clear();
+    service->m_inOutsMap.clear();
+    service->m_outputsMap.clear();
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectService::unregisterService(const ::fwServices::IService::KeyType& objKey,
+                                      ::fwServices::IService::AccessType access,
+                                      ::fwServices::IService::sptr service )
+{
+    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+
+    ::fwData::Object::cwptr obj;
+
+    if(access == ::fwServices::IService::AccessType::INPUT)
+    {
+        obj = service->m_inputsMap[objKey];
+    }
+    else if(access == ::fwServices::IService::AccessType::INOUT)
+    {
+        obj = service->m_inOutsMap[objKey];
+    }
+    else
+    {
+        obj = service->m_outputsMap[objKey];
+    }
+
+    SLM_ASSERT("Object key '" + objKey + "' not found in service '" + service->getID() + "'", !obj.expired());
+
+    // Remove from the left part
+    {
+        auto range = m_container.left.equal_range(obj.lock()->getOSRKey()->getLogicStamp());
+        for(auto it = range.first; it != range.second; )
+        {
+            if(it->second == service)
+            {
+                it = m_container.left.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+    }
+
+    // Remove from the right part
+    {
+        auto range = m_container.right.equal_range(service);
+        for(auto it = range.first; it != range.second; )
+        {
+            if(it->second == obj.lock()->getOSRKey()->getLogicStamp())
+            {
+                it = m_container.right.erase(it);
+            }
+            else
+            {
+                ++it;
+            }
+        }
+    }
+
+    if(access == ::fwServices::IService::AccessType::INPUT)
+    {
+        service->m_inputsMap.erase(objKey);
+    }
+    else if(access == ::fwServices::IService::AccessType::INOUT)
+    {
+        service->m_inOutsMap.erase(objKey);
+    }
+    else
+    {
+        service->m_outputsMap.erase(objKey);
+    }
+
+    const auto id = service->getObjectId(objKey);
+
+    // TODO: Remove this constCast asap
+    this->signal<RegisterSignalType>(s_UNREGISTERED_SIG)->asyncEmit(::fwData::Object::constCast(obj.lock()), id);
+}
+
+//------------------------------------------------------------------------------
+
+bool ObjectService::isRegistered(const ::fwServices::IService::KeyType& objKey,
+                                 ::fwServices::IService::AccessType access, IService::sptr service)
+{
+    ::fwCore::mt::WriteLock writeLock(m_containerMutex);
+
+    if(access == ::fwServices::IService::AccessType::INPUT)
+    {
+        return service->m_inputsMap.find(objKey) != service->m_inputsMap.end();
+    }
+    else if(access == ::fwServices::IService::AccessType::INOUT)
+    {
+        return service->m_inOutsMap.find(objKey) != service->m_inOutsMap.end();
+    }
+    else
+    {
+        return service->m_outputsMap.find(objKey) != service->m_outputsMap.end();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectService::internalRegisterService(::fwData::Object::sptr object, ::fwServices::IService::sptr service,
+                                            const ::fwServices::IService::KeyType &objKey,
+                                            ::fwServices::IService::AccessType access)
+{
+    SLM_ASSERT("Can't register a null service in OSR.", service);
+    SLM_ASSERT("Can't register a null object in OSR.", object);
+    OSLM_ASSERT("Service "<< service->getID()<<" has already a valid associated object",
+                service->m_associatedObject.expired() || object != service->m_associatedObject.lock());
+
+    if(objKey.empty())
+    {
+        // Old behavior with 1 object -> N Services
+        OSLM_ASSERT("This service "<< service->getClassname()
+                                   << " is not valid for the object " << object->getClassname(),
+                    ServiceFactory::getDefault()->checkServiceValidity(object->getClassname(), service->getClassname())
+                    );
+
+        OSLM_ASSERT("Service "<< service->getID()<<" already registered",
+                    m_container.right.find(service) == m_container.right.end());
+
+        service->m_associatedObject = object;
+    }
+    else
+    {
+        if(service->m_inputsMap.empty() && service->m_inOutsMap.empty() && service->m_outputsMap.empty())
+        {
+            // If we have an appXml2 but with an old service implementation,
+            // we consider that the primary object is the first one we added
+            service->m_associatedObject = object;
+        }
+        // new behavior with N objects -> N Services
+        if(access == ::fwServices::IService::AccessType::INPUT)
+        {
+            service->m_inputsMap[objKey] = object;
+        }
+        else if(access == ::fwServices::IService::AccessType::INOUT)
+        {
+            service->m_inOutsMap[objKey] = object;
+        }
+        else
+        {
+            service->m_outputsMap[objKey] = object;
+        }
+    }
+    m_container.insert( ServiceContainerType::value_type( object->getOSRKey()->getLogicStamp(), service ) );
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectService::removeFromContainer( ::fwServices::IService::sptr service )
+{
+    SLM_TRACE_FUNC();
+    OSLM_ASSERT("Unknown service "<<service->getID()<<" in OSR",
+                m_container.right.find(service) != m_container.right.end());
+    m_container.right.erase(service);
+}
+
+//------------------------------------------------------------------------------
+
+ObjectService::ObjectVectorType ObjectService::getObjects() const
+{
+    ObjectVectorType objects;
+    ::fwCore::mt::ReadLock lock(m_containerMutex);
+
+    for( const ServiceContainerType::right_map::value_type &elt : m_container.right)
+    {
+        auto srvObjects = elt.first->getObjects();
+        std::move(srvObjects.begin(), srvObjects.end(), std::inserter(objects, objects.begin()));
+    }
+    SLM_WARN_IF( "No object registered for the requested type of service", objects.empty() );
+    return objects;
+}
+
+//------------------------------------------------------------------------------
+
 ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::sptr obj,
                                                              const std::string & serviceType ) const
 {
@@ -230,7 +408,7 @@ ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::s
     {
         if( srv->isA(serviceType) )
         {
-            services.push_back( srv );
+            services.insert( srv );
         }
     }
     return services;
@@ -248,7 +426,7 @@ ObjectService::ServiceVectorType ObjectService::getServices( const std::string &
         ::fwServices::IService::sptr service = elt.first;
         if ( service->isA(serviceType) )
         {
-            services.push_back( service );
+            services.insert( service );
         }
     }
     SLM_DEBUG_IF("No service registered", services.empty());
@@ -269,7 +447,7 @@ ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::s
         ServiceContainerType::left_map::const_iterator lastElement  = m_container.left.upper_bound(key);
         for (iter = firstElement; iter != lastElement; ++iter)
         {
-            services.push_back( iter->second );
+            services.insert( iter->second );
         }
     }
     return services;
@@ -277,7 +455,7 @@ ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::s
 
 //------------------------------------------------------------------------------
 
-bool ObjectService::has( ::fwData::Object::sptr obj, const std::string & srvType) const
+bool ObjectService::has( ::fwData::Object::sptr obj, const std::string& srvType) const
 {
     bool hasServices = false;
     ::fwCore::mt::ReadLock lock(m_containerMutex);

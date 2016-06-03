@@ -29,9 +29,7 @@ namespace fwServices
     ::fwServices::OSR::registerService( obj, srv );
     if(!uid.empty())
     {
-#ifndef COM_LOG
         OSLM_ASSERT( "Try to set ID: "<<uid<<" but already has an ID: "<<srv->getID(), !srv->hasID() );
-#endif
         srv->setID( uid );
     }
     return srv;

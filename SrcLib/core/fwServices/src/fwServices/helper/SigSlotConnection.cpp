@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,7 @@
 #include "fwServices/helper/SigSlotConnection.hpp"
 
 #include <fwCom/SignalBase.hpp>
+#include <fwCore/spyLog.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -24,22 +25,26 @@ SigSlotConnection::~SigSlotConnection()
     this->disconnect();
 }
 
-void SigSlotConnection::connect(  ::fwCom::HasSignals::sptr hasSignals, ::fwCom::Signals::SignalKeyType signalKey,
-                                  ::fwCom::HasSlots::sptr hasSlots, ::fwCom::Slots::SlotKeyType slotKey )
+void SigSlotConnection::connect(  ::fwCom::HasSignals::csptr hasSignals, ::fwCom::Signals::SignalKeyType signalKey,
+                                  ::fwCom::HasSlots::csptr hasSlots, ::fwCom::Slots::SlotKeyType slotKey )
 {
     ::fwCom::Connection connection;
     connection = hasSignals->signal( signalKey )->connect( hasSlots->slot( slotKey ) );
     m_connections.push_back(connection);
 }
 
-void SigSlotConnection::connect(::fwCom::HasSignals::sptr hasSignals,
-                                ::fwCom::HasSlots::sptr hasSlots,
+void SigSlotConnection::connect(::fwCom::HasSignals::csptr hasSignals,
+                                ::fwCom::HasSlots::csptr hasSlots,
                                 const KeyConnectionsType & keyConnections )
 {
     ::fwCom::Connection connection;
     for( KeyConnectionType keys : keyConnections )
     {
-        connection = hasSignals->signal( keys.first )->connect( hasSlots->slot( keys.second ) );
+        auto signal = hasSignals->signal( keys.first );
+        SLM_ASSERT("Signal '" + keys.first + "' not found.", signal);
+        auto slot = hasSlots->slot( keys.second );
+        SLM_ASSERT("Slot '" + keys.second + "' not found.", slot);
+        connection = signal->connect( slot );
         m_connections.push_back(connection);
     }
 }

@@ -50,12 +50,12 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 
     if( m_parametersName.empty() )
     {
-        const ::fwServices::registry::AppConfig::FieldAdaptorType fields;
+        const ::fwServices::registry::FieldAdaptorType fields;
         m_appConfigMng->setConfig( m_configurationName, fields );
     }
     else
     {
-        const ::fwServices::registry::AppConfig::FieldAdaptorType & fields =
+        const ::fwServices::registry::FieldAdaptorType & fields =
             ::fwServices::registry::AppConfigParameters::getDefault()->getParameters( m_parametersName );
         m_appConfigMng->setConfig( m_configurationName, fields );
     }

@@ -29,17 +29,7 @@ ActivityMsg::ActivityMsg(const ::fwMedData::ActivitySeries::sptr &series,
 {
     SLM_ASSERT("ActivitySeries instantiation failed", series);
 
-    const std::string eventID           = "NEW_CONFIGURATION_HELPER";
-    const std::string fieldID           = "APPCONFIG";
-    const std::string viewConfigFieldID = "VIEWCONFIGID";
-    const std::string closableFieldID   = "CLOSABLE";
-    const std::string iconFieldID       = "ICON";
-    const std::string tooltipFieldID    = "TOOLTIP";
-    const std::string tabIDFieldID      = "TABID";
-    const std::string tabInfoID         = "TABINFO";
-    const std::string asFieldID         = "ACTIVITYSERIES";
-    const std::string asUID             = "AS_UID";
-    const std::string genericUID        = "GENERIC_UID";
+    const std::string asUID = "AS_UID";
 
     m_title       = info.title;
     m_appConfigID = info.appConfig.id;

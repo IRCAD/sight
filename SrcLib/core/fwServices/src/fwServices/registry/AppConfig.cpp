@@ -11,7 +11,6 @@
 #include <fwData/String.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/Extension.hpp>
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/Runtime.hpp>
 
@@ -43,9 +42,8 @@ AppConfig::~AppConfig()
 
 void AppConfig::parseBundleInformation()
 {
-    std::vector< std::shared_ptr< ::fwRuntime::Extension > >  extensions =
-        ::fwRuntime::getAllExtensionsForPoint("::fwServices::registry::AppConfig");
-    for( std::shared_ptr< ::fwRuntime::Extension > ext :  extensions )
+    auto extensions = ::fwRuntime::getAllExtensionsForPoint("::fwServices::registry::AppConfig");
+    for( const auto& ext :  extensions )
     {
         // Get id
         std::string configId = ext->findConfigurationElement("id")->getValue();
@@ -63,7 +61,7 @@ void AppConfig::parseBundleInformation()
             desc = ext->findConfigurationElement("desc")->getValue();
         }
 
-        AppInfo::ParamatersType parameters;
+        AppInfo::ParametersType parameters;
         if ( ext->hasConfigurationElement("parameters") )
         {
             ::fwRuntime::ConfigurationElement::csptr parametersConfig = ext->findConfigurationElement("parameters");
@@ -103,7 +101,7 @@ void AppConfig::addAppInfo
     (   const std::string & configId,
     const std::string & group,
     const std::string & desc,
-    const AppInfo::ParamatersType & parameters,
+    const AppInfo::ParametersType & parameters,
     ::fwRuntime::ConfigurationElement::csptr config,
     const std::string bundleId,
     const std::string bundleVersion)
@@ -156,8 +154,8 @@ void AppConfig::clearRegistry()
     ::fwRuntime::ConfigurationElement::sptr newConfig;
 
     FieldAdaptorType fields;
-    AppInfo::ParamatersType parameters = iter->second->parameters;
-    for( AppInfo::ParamatersType::value_type param :  parameters )
+    AppInfo::ParametersType parameters = iter->second->parameters;
+    for( AppInfo::ParametersType::value_type param :  parameters )
     {
         FieldAdaptorType::const_iterator iter = fieldAdaptors.find( param.first );
         std::stringstream key;
@@ -222,7 +220,7 @@ std::vector< std::string > AppConfig::getConfigsFromGroup(const std::string & gr
 
 //-----------------------------------------------------------------------------
 
-AppConfig::FieldAdaptorType AppConfig::compositeToFieldAdaptor( ::fwData::Composite::csptr fieldAdaptors ) const
+FieldAdaptorType AppConfig::compositeToFieldAdaptor( ::fwData::Composite::csptr fieldAdaptors ) const
 {
     FieldAdaptorType fields;
     for(const ::fwData::Composite::value_type &elem :  *fieldAdaptors )

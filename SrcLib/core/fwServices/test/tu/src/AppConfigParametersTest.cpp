@@ -79,11 +79,11 @@ void AppConfigParametersTest::appConfigParametersTest()
     ::fwServices::registry::AppConfigParameters::sptr appConfigParam;
     appConfigParam = ::fwServices::registry::AppConfigParameters::getDefault();
 
-    ::fwServices::registry::AppConfig::FieldAdaptorType parameters = appConfigParam->getParameters("id1");
+    ::fwServices::registry::FieldAdaptorType parameters = appConfigParam->getParameters("id1");
     CPPUNIT_ASSERT(!parameters.empty());
     CPPUNIT_ASSERT_EQUAL(std::string("value1"), parameters["param1"]);
 
-    ::fwServices::registry::AppConfig::FieldAdaptorType parameters2 = appConfigParam->getParameters("id2");
+    ::fwServices::registry::FieldAdaptorType parameters2 = appConfigParam->getParameters("id2");
     CPPUNIT_ASSERT(!parameters2.empty());
     CPPUNIT_ASSERT_EQUAL(std::string("value3"), parameters2["param3"]);
 }

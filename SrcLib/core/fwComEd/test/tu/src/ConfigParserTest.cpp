@@ -51,7 +51,7 @@ void ConfigParserTest::testObjectCreationWithConfig()
 
     // Create the object and its services from the configuration
     ::fwServices::AppConfigManager::sptr configManager = ::fwServices::AppConfigManager::New();
-    configManager->setConfig( config );
+    configManager->::fwServices::IAppConfigManager::setConfig( config );
     configManager->create();
     ::fwData::Image::sptr image = configManager->getConfigRoot< ::fwData::Image >();
 
@@ -95,7 +95,7 @@ void ConfigParserTest::testBuildComposite()
 
     // Create the object and its services from the configuration
     ::fwServices::AppConfigManager::sptr configManager = ::fwServices::AppConfigManager::New();
-    configManager->setConfig( config );
+    configManager->::fwServices::IAppConfigManager::setConfig( config );
     configManager->create();
     ::fwData::Composite::sptr compo = configManager->getConfigRoot< ::fwData::Composite >();
 

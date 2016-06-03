@@ -102,7 +102,7 @@ void ConfigLauncher::startConfig(::fwServices::IService::sptr srv,
     }
 
     // Init manager
-    m_appConfigManager = ::fwServices::AppConfigManager::New();
+    m_appConfigManager = ::fwServices::IAppConfigManager::New();
     m_appConfigManager->setConfig( m_appConfig.id, replaceMap );
 
     // Launch config

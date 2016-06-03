@@ -25,10 +25,15 @@ namespace fwServices
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType IService::s_START_SLOT  = "start";
-const ::fwCom::Slots::SlotKeyType IService::s_STOP_SLOT   = "stop";
-const ::fwCom::Slots::SlotKeyType IService::s_UPDATE_SLOT = "update";
-const ::fwCom::Slots::SlotKeyType IService::s_SWAP_SLOT   = "swap";
+const ::fwCom::Slots::SlotKeyType IService::s_START_SLOT   = "start";
+const ::fwCom::Slots::SlotKeyType IService::s_STOP_SLOT    = "stop";
+const ::fwCom::Slots::SlotKeyType IService::s_UPDATE_SLOT  = "update";
+const ::fwCom::Slots::SlotKeyType IService::s_SWAP_SLOT    = "swap";
+const ::fwCom::Slots::SlotKeyType IService::s_SWAPKEY_SLOT = "swapKey";
+
+const std::string IService::s_DEFAULT_OBJECT = "defaultObject";
+
+int IService::s_version = 1;
 
 //-----------------------------------------------------------------------------
 
@@ -40,17 +45,11 @@ IService::IService() :
 {
     // by default a weak_ptr have a use_count == 0
 
-    m_slotStart  = ::fwCom::newSlot( &IService::start, this );
-    m_slotStop   = ::fwCom::newSlot( &IService::stop, this );
-    m_slotUpdate = ::fwCom::newSlot( &IService::update, this );
-    m_slotSwap   = ::fwCom::newSlot( &IService::swap, this );
-
-    ::fwCom::HasSlots::m_slots
-        ( s_START_SLOT, m_slotStart   )
-        ( s_STOP_SLOT, m_slotStop    )
-        ( s_UPDATE_SLOT, m_slotUpdate  )
-        ( s_SWAP_SLOT, m_slotSwap    )
-    ;
+    m_slotStart   = newSlot( s_START_SLOT, &IService::start, this );
+    m_slotStop    = newSlot( s_STOP_SLOT, &IService::stop, this );
+    m_slotUpdate  = newSlot( s_UPDATE_SLOT, &IService::update, this );
+    m_slotSwap    = newSlot( s_SWAP_SLOT, &IService::swap, this );
+    m_slotSwapKey = newSlot( s_SWAPKEY_SLOT, &IService::swapKey, this );
 }
 
 //-----------------------------------------------------------------------------
@@ -67,12 +66,82 @@ void IService::info( std::ostream &_sstream )
 
 //-----------------------------------------------------------------------------
 
+void IService::registerOutput(const IService::KeyType &key, const fwData::Object::sptr& object, size_t index)
+{
+    std::string outKey = key;
+
+    if(m_keyGroupSize.find(key) != m_keyGroupSize.end())
+    {
+        outKey += std::to_string(index);
+    }
+    if(::fwServices::OSR::isRegistered(outKey, ::fwServices::IService::AccessType::OUTPUT, this->getSptr()))
+    {
+        ::fwServices::OSR::unregisterService(outKey, ::fwServices::IService::AccessType::OUTPUT, this->getSptr());
+    }
+
+    ::fwServices::OSR::registerService(object, outKey, ::fwServices::IService::AccessType::OUTPUT, this->getSptr());
+}
+
+//-----------------------------------------------------------------------------
+
+void IService::unregisterOutput(const IService::KeyType &key, size_t index)
+{
+    std::string outKey = key;
+
+    if(m_keyGroupSize.find(key) != m_keyGroupSize.end())
+    {
+        outKey += std::to_string(index);
+    }
+
+    if(::fwServices::OSR::isRegistered(outKey, ::fwServices::IService::AccessType::OUTPUT, this->getSptr()))
+    {
+        ::fwServices::OSR::unregisterService(outKey, ::fwServices::IService::AccessType::OUTPUT, this->getSptr());
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 ::fwData::Object::sptr IService::getObject()
 {
-    SLM_ASSERT(
-        "Associated Object of " <<this->getID()<<" ["<<this->getClassname()<<"] is expired",
-        !m_associatedObject.expired() );
+    // Handle compatibility with new behavior
+    if(m_associatedObject.expired())
+    {
+        // If we have an appXml2 but with an old service definition, we consider that the old primary object is the
+        // first one in the map
+        if(!m_inputsMap.empty())
+        {
+            return ::fwData::Object::constCast(m_inputsMap.begin()->second.lock());
+        }
+        else if(!m_inOutsMap.empty())
+        {
+            return m_inOutsMap.begin()->second.lock();
+        }
+        else if(!m_outputsMap.empty())
+        {
+            return m_outputsMap.begin()->second.lock();
+        }
+        else
+        {
+            OSLM_ASSERT("Associated Object of " <<this->getID()<<" ["<<this->getClassname()<<"] is expired", false );
+        }
+    }
     return m_associatedObject.lock();
+}
+
+//-----------------------------------------------------------------------------
+
+IService::IdType IService::getObjectId(const IService::KeyType& _key) const
+{
+    auto it = m_idsMap.find(_key);
+    SLM_ASSERT("Object key '" + _key + "' not found in service " + this->getID() + ".", it != m_idsMap.end());
+    return it->second;
+}
+
+//-----------------------------------------------------------------------------
+
+void IService::setObjectId(const IService::KeyType &_key, const IService::IdType &_id)
+{
+    m_idsMap[_key] = _id;
 }
 
 //-----------------------------------------------------------------------------
@@ -165,7 +234,7 @@ void IService::reconfiguring() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-IService::SharedFutureType IService::start() //throw( ::fwTools::Failed)
+IService::SharedFutureType IService::start()
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
@@ -192,7 +261,7 @@ IService::SharedFutureType IService::start() //throw( ::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-IService::SharedFutureType IService::stop() //throw( ::fwTools::Failed)
+IService::SharedFutureType IService::stop()
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
@@ -219,7 +288,7 @@ IService::SharedFutureType IService::stop() //throw( ::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-IService::SharedFutureType IService::update() //throw( ::fwTools::Failed)
+IService::SharedFutureType IService::update()
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
@@ -251,7 +320,7 @@ IService::SharedFutureType IService::update() //throw( ::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj ) //throw(::fwTools::Failed)
+IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj )
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
@@ -278,6 +347,37 @@ IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj ) //throw
     else
     {
         return m_slotSwap->asyncRun( _obj );
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+IService::SharedFutureType IService::swapKey(const IService::KeyType &_key, fwData::Object::sptr _obj)
+{
+    if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
+    {
+        OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(),
+                    m_associatedObject.lock() != _obj );
+        OSLM_FATAL_IF(
+            "Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(),
+            m_globalState != STARTED);
+
+        PackagedTaskType task( ::boost::bind(&IService::swapping, this, _key) );
+        UniqueFutureType ufuture = task.get_future();
+
+        m_globalState = SWAPPING;
+        task();
+        m_globalState = STARTED;
+
+        if ( ufuture.has_exception() )
+        {
+            ufuture.get();
+        }
+        return ::boost::move(ufuture);
+    }
+    else
+    {
+        return m_slotSwapKey->asyncRun( _key, _obj );
     }
 }
 
@@ -333,6 +433,14 @@ void IService::setWorker( ::fwThread::Worker::sptr worker )
 
 //-----------------------------------------------------------------------------
 
+IService::KeyConnectionsMap IService::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    return connections;
+}
+
+//-----------------------------------------------------------------------------
+
 IService::KeyConnectionsType IService::getObjSrvConnections() const
 {
     KeyConnectionsType connections;
@@ -353,6 +461,20 @@ std::ostream & operator<<(std::ostream & _ostream, IService& _service)
     return _ostream;
 }
 
+//-----------------------------------------------------------------------------
 
+bool IService::isVersion2()
+{
+    return s_version == 2;
 }
 
+//-----------------------------------------------------------------------------
+
+void IService::setVersion(int version)
+{
+    s_version = version;
+}
+
+//-----------------------------------------------------------------------------
+
+}

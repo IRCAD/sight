@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2004-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2004-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -98,8 +98,6 @@ struct Options
 
     bool parse(int argc, char* argv[])
     {
-        bool error = false;
-
         if (argc < 1)
         {
             return true;
@@ -107,7 +105,6 @@ struct Options
 
         std::string programName( *argv != 0 ? *argv : "test_runner" );
 
-        int argn       = 0;
         char** args    = argv + 1;
         char** argsEnd = argv + argc;
         while (args < argsEnd)
