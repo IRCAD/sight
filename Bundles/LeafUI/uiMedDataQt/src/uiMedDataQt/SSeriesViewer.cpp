@@ -18,8 +18,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-
-
 namespace uiMedData
 {
 
@@ -110,7 +108,7 @@ void SSeriesViewer::updating() throw(::fwTools::Failed)
             }
 
             // Init manager
-            m_configTemplateManager = ::fwServices::AppConfigManager::New();
+            m_configTemplateManager = ::fwServices::IAppConfigManager::New();
             m_configTemplateManager->setConfig( configId, replaceMap );
 
             // Launch config
@@ -125,8 +123,17 @@ void SSeriesViewer::configuring() throw(::fwTools::Failed)
 {
     std::vector < ::fwRuntime::ConfigurationElement::sptr > viewCfg = m_configuration->find("parentView");
     SLM_ASSERT("Missing tag 'parentView'", viewCfg.size() == 1);
-    m_parentView = viewCfg[0]->getValue();
-    SLM_ASSERT("'parentView' value must not be empty ", !m_parentView.empty());
+
+    if(this->isVersion2())
+    {
+        m_parentView = viewCfg[0]->getAttributeValue("wid");
+        SLM_ASSERT("'wid' attribute missing for tag 'parentView'.", !m_parentView.empty());
+    }
+    else
+    {
+        m_parentView = viewCfg[0]->getValue();
+        SLM_ASSERT("'parentView' value must not be empty ", !m_parentView.empty());
+    }
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > configsCfg = m_configuration->find("configs");
     SLM_ASSERT("Missing tag 'configs'", configsCfg.size() == 1);
@@ -158,6 +165,10 @@ void SSeriesViewer::configuring() throw(::fwTools::Failed)
             std::string replace = param->getAttributeValue("replace");
             SLM_ASSERT("'replace' attribute must not be empty", !replace.empty());
             std::string by = param->getAttributeValue("by");
+            if(by.empty())
+            {
+                by = param->getAttributeValue("uid");
+            }
             SLM_ASSERT("'by' attribute must not be empty", !by.empty());
             info.parameters[replace] = by;
         }

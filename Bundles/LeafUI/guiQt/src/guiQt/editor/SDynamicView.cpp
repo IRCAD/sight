@@ -35,7 +35,6 @@
 #include <fwServices/registry/AppConfig.hpp>
 
 #include <fwTools/dateAndTime.hpp>
-#include <fwTools/fwID.hpp>
 #include <fwTools/UUID.hpp>
 
 #include <QtGui>
@@ -108,6 +107,10 @@ void SDynamicView::configuring() throw(fwTools::Failed)
         {
             std::string replace = cfg->getAttributeValue("replace");
             std::string by      = cfg->getAttributeValue("by");
+            if(by.empty())
+            {
+                by = cfg->getAttributeValue("uid");
+            }
             SLM_ASSERT("'parameter' tag must contain valid 'replace' and 'by' attributes.",
                        !replace.empty() && !by.empty());
             ParameterType param;
@@ -281,7 +284,7 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
     std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(info.viewConfigID);
     info.replaceMap["GENERIC_UID"] = genericUidAdaptor;
 
-    ::fwServices::AppConfigManager::sptr helper = ::fwServices::AppConfigManager::New();
+    ::fwServices::IAppConfigManager::sptr helper = ::fwServices::IAppConfigManager::New();
 
     try
     {

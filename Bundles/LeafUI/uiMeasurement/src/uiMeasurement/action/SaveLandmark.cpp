@@ -21,7 +21,7 @@
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
 
-#include <fwServices/AppConfigManager.hpp>
+#include <fwServices/IAppConfigManager.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
@@ -133,7 +133,7 @@ void SaveLandmark::save(const ::boost::filesystem::path& path)
     ::fwRuntime::ConfigurationElement::csptr config =
         ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig("SaveLandmark", replaceMap);
 
-    ::fwServices::AppConfigManager::sptr helper = ::fwServices::AppConfigManager::New();
+    ::fwServices::IAppConfigManager::sptr helper = ::fwServices::IAppConfigManager::New();
     helper->setConfig( config );
     helper->launch();
 

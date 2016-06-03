@@ -14,7 +14,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/AppConfigManager.hpp>
+#include <fwServices/IAppConfigManager.hpp>
 
 #include <fwTools/Failed.hpp>
 
@@ -155,7 +155,7 @@ protected:
     struct DynamicViewInfo
     {
         ::fwGuiQt::container::QtContainer::sptr container;
-        ::fwServices::AppConfigManager::sptr helper;
+        ::fwServices::IAppConfigManager::sptr helper;
         std::string wid;
         std::string title;
         bool closable;

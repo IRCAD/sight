@@ -28,8 +28,6 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include <fwTools/fwID.hpp>
-
 #include <QtGui>
 #include <QTabWidget>
 #include <QBoxLayout>
@@ -277,7 +275,7 @@ void DynamicView::launchTab(DynamicViewInfo& info)
     std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(info.viewConfigID);
     info.replaceMap["GENERIC_UID"] = genericUidAdaptor;
 
-    ::fwServices::AppConfigManager::sptr helper = ::fwServices::AppConfigManager::New();
+    ::fwServices::IAppConfigManager::sptr helper = ::fwServices::IAppConfigManager::New();
     helper->setConfig( info.viewConfigID, info.replaceMap );
 
     try

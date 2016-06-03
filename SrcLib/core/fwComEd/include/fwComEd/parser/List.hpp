@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,7 +14,7 @@
 
 #include <fwServices/IXMLParser.hpp>
 
-#include <fwServices/AppConfigManager.hpp>
+#include <fwServices/IAppConfigManager.hpp>
 
 #include "fwComEd/config.hpp"
 
@@ -24,10 +24,6 @@ namespace parser
 {
 /**
  * @brief   Specific service for the construction of a List and its associated services from an XML-based description.
- * @class   List
- *
-
- * @date    2007-2009
  * @see     ::fwServices::IXMLParser
  */
 class FWCOMED_CLASS_API List : public ::fwServices::IXMLParser
@@ -74,7 +70,7 @@ private:
     /// To verify some conditions in xml file
     bool refObjectValidator( ::fwRuntime::ConfigurationElement::sptr _cfgElement );
 
-    std::vector< ::fwServices::AppConfigManager::sptr > m_ctmContainer;
+    std::vector< ::fwServices::IAppConfigManager::sptr > m_ctmContainer;
 };
 
 } //namespace parser

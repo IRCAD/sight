@@ -31,12 +31,11 @@
 #include <fwRuntime/Convert.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwServices/AppConfigManager.hpp>
+#include <fwServices/IAppConfigManager.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include <fwTools/fwID.hpp>
 #include <fwTools/UUID.hpp>
 
 #include <boost/foreach.hpp>
@@ -442,7 +441,7 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
         replaceMap["GENERIC_UID"]                                        =
             ::fwServices::registry::AppConfig::getUniqueIdentifier();
 
-        ::fwServices::AppConfigManager::sptr helper = ::fwServices::AppConfigManager::New();
+        ::fwServices::IAppConfigManager::sptr helper = ::fwServices::IAppConfigManager::New();
         helper->setConfig( viewConfigID, replaceMap );
         helper->launch();
         helper->stopAndDestroy();

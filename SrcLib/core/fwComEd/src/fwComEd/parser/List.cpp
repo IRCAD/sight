@@ -83,11 +83,18 @@ void List::createConfig( ::fwTools::Object::sptr _obj )
             {
 
                 // Create and manage object config
-                ::fwServices::AppConfigManager::sptr ctm = ::fwServices::AppConfigManager::New();
-                ctm->setConfig( *( elem->getElements().begin() ) );
+                ::fwServices::IAppConfigManager::sptr ctm = ::fwServices::IAppConfigManager::New();
+                if( ::fwServices::IService::isVersion2())
+                {
+                    ctm->::fwServices::IAppConfigManager::setConfig( elem );
+                }
+                else
+                {
+                    ctm->::fwServices::IAppConfigManager::setConfig( *( elem->getElements().begin() ) );
+                }
                 m_ctmContainer.push_back( ctm );
                 ctm->create();
-                ::fwData::Object::sptr localObj = ctm->getConfigRoot< ::fwData::Object >();
+                ::fwData::Object::sptr localObj = ctm->getConfigRoot();
 
                 // Add object
                 SLM_ASSERT("A ::fwData::List can contain only ::fwData::Object", localObj );
@@ -106,7 +113,7 @@ void List::createConfig( ::fwTools::Object::sptr _obj )
 
 void List::startConfig()
 {
-    for( ::fwServices::AppConfigManager::sptr ctm :  m_ctmContainer )
+    for( ::fwServices::IAppConfigManager::sptr ctm :  m_ctmContainer )
     {
         ctm->start();
     }
@@ -116,7 +123,7 @@ void List::startConfig()
 
 void List::updateConfig()
 {
-    for( ::fwServices::AppConfigManager::sptr ctm :  m_ctmContainer )
+    for( ::fwServices::IAppConfigManager::sptr ctm :  m_ctmContainer )
     {
         ctm->update();
     }
@@ -126,7 +133,7 @@ void List::updateConfig()
 
 void List::stopConfig()
 {
-    BOOST_REVERSE_FOREACH( ::fwServices::AppConfigManager::sptr ctm, m_ctmContainer )
+    BOOST_REVERSE_FOREACH( ::fwServices::IAppConfigManager::sptr ctm, m_ctmContainer )
     {
         ctm->stop();
     }
@@ -136,7 +143,7 @@ void List::stopConfig()
 
 void List::destroyConfig()
 {
-    BOOST_REVERSE_FOREACH( ::fwServices::AppConfigManager::sptr ctm, m_ctmContainer )
+    BOOST_REVERSE_FOREACH( ::fwServices::IAppConfigManager::sptr ctm, m_ctmContainer )
     {
         ctm->destroy();
     }

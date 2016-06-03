@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,7 @@
 
 #include <fwTools/Object.hpp>
 #include <fwServices/IXMLParser.hpp>
-#include <fwServices/AppConfigManager.hpp>
+#include <fwServices/IAppConfigManager.hpp>
 
 #include "fwComEd/config.hpp"
 
@@ -19,10 +19,11 @@ namespace parser
 {
 
 /**
- * @class Object
- * @brief Specific ::fwTools::Object parser. Does nothing as no IService method is specialized: IXMLParser base class methods are therefore considered.
+ * @brief Specific ::fwTools::Object parser. Does nothing as no IService method is specialized: IXMLParser base class
+ *  methods are therefore considered.
  *
- * @note This implementation is only written to avoid the mixing both the service type IXMLParser and the ::fwTools::Object implementation (for homogeneity).
+ * @note This implementation is only written to avoid the mix between the service type IXMLParser and the
+ * ::fwTools::Object implementation (for homogeneity).
  *
  */
 class FWCOMED_CLASS_API Object : public ::fwServices::IXMLParser
@@ -44,7 +45,7 @@ protected:
     bool refObjectValidator( ::fwRuntime::ConfigurationElement::csptr _cfgElement );
     void updating() throw( fwTools::Failed );
 
-    std::vector< ::fwServices::AppConfigManager::sptr > m_ctmContainer;
+    std::vector< ::fwServices::IAppConfigManager::sptr > m_ctmContainer;
 };
 
 } //namespace parser

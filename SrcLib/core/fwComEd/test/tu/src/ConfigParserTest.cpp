@@ -53,7 +53,7 @@ void ConfigParserTest::testObjectCreationWithConfig()
     ::fwServices::AppConfigManager::sptr configManager = ::fwServices::AppConfigManager::New();
     configManager->::fwServices::IAppConfigManager::setConfig( config );
     configManager->create();
-    ::fwData::Image::sptr image = configManager->getConfigRoot< ::fwData::Image >();
+    auto image = ::fwData::Image::dynamicCast(configManager->getConfigRoot());
 
     // Test object uid
     CPPUNIT_ASSERT_EQUAL(objectUUID, image->getID());
@@ -97,7 +97,7 @@ void ConfigParserTest::testBuildComposite()
     ::fwServices::AppConfigManager::sptr configManager = ::fwServices::AppConfigManager::New();
     configManager->::fwServices::IAppConfigManager::setConfig( config );
     configManager->create();
-    ::fwData::Composite::sptr compo = configManager->getConfigRoot< ::fwData::Composite >();
+    auto compo = ::fwData::Composite::dynamicCast(configManager->getConfigRoot());
 
     // test composite
     CPPUNIT_ASSERT_EQUAL(compositeUUID, compo->getID());

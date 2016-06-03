@@ -10,7 +10,7 @@
 #include <map>
 
 #include <fwServices/IController.hpp>
-#include <fwServices/AppConfigManager.hpp>
+#include <fwServices/IAppConfigManager.hpp>
 
 #include "uiMedDataQt/config.hpp"
 
@@ -19,9 +19,6 @@ namespace uiMedData
 /**
  * @brief  This Service allows to preview the selected series in the Vector. For the moment, it works only on a
  * single selection.
- * @class   SSeriesViewer
- *
- * @date    2013.
  */
 class UIMEDDATAQT_CLASS_API SSeriesViewer : public ::fwServices::IController
 {
@@ -111,7 +108,7 @@ private:
     typedef std::map<std::string, SeriesConfigInfo> SeriesConfigMapType;
 
     /// Config manager
-    ::fwServices::AppConfigManager::sptr m_configTemplateManager;
+    ::fwServices::IAppConfigManager::sptr m_configTemplateManager;
 
     /// Stores the wid of the view where the config will install its windows.
     std::string m_parentView;
