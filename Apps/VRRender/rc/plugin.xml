@@ -12,8 +12,9 @@
     <extension implements="::fwServices::registry::AppConfigParameters">
         <id>VRRenderAppBase</id>
         <parameters>
-            <param name="appName" value="VRRender 0.9.6" />
+            <param name="appName" value="VRRender 0.9.7" />
             <param name="appIconPath" value="Bundles/VRRender_0-9/vrrender.ico" />
+            <param name="appVersion" value="0-9" />
         </parameters>
     </extension>
 

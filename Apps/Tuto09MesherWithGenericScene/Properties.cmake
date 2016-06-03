@@ -23,7 +23,7 @@ set( REQUIREMENTS
     opVTKMesh
     ctrlSelection
     fwlauncher
-    appXml
+    appXml2
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Tuto09MesherWithGenericScene)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Tuto09MesherWithGenericScene)

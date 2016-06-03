@@ -1,0 +1,130 @@
+<extension implements="::fwServices::registry::AppConfig2">
+    <id>2DNegatoWithTF</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="image" />
+        <param name="selectedTFKey" />
+        <param name="TFSelections" />
+        <param name="patient_name" default="" />
+        <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
+        <param name="CrossTypeChannel" default="crossTypeChannel"/>
+    </parameters>
+    <config>
+
+        <object uid="${image}" type="::fwData::Image" src="ref" />
+        <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
+
+        <service uid="mainView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" minHeight="30" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="negato" start="yes" />
+                <view sid="multiView_negato_bottom" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="multiView_negato_bottom" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" minWidth="30" />
+                    <view proportion="1" />
+                    <view proportion="0" minWidth="30" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="snapshotNegatoEditor" start="yes" />
+                <view sid="slider_negato" start="yes" />
+                <view sid="distanceNegatoEditor" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="snapshotNegatoEditor" type="::uiVisu::SnapshotEditor" />
+
+        <!-- Generic Scene Negato -->
+        <service uid="negato" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <in key="imageKey" uid="${image}" />
+            <inout key="TFSelections" uid="${TFSelections}" />
+            <scene>
+
+                <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
+
+                <renderer id="default" background="0.0" />
+
+                <adaptor id="snapshot" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                    <config renderer="default" />
+                </adaptor>
+
+                <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="InteractorStyle2DForNegato" />
+                </adaptor>
+
+                <adaptor id="MPRNegato" uid="negatoMPRUID" class="::visuVTKAdaptor::NegatoMPR" objectId="imageKey">
+                    <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="${orientation}" selectedTFKey="${selectedTFKey}" tfSelectionFwID="TFSelections" />
+                </adaptor>
+
+                <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="imageKey">
+                    <config renderer="default" picker="negatodefault" text="" selectedTFKey="${selectedTFKey}" tfSelectionFwID="TFSelections" />
+                </adaptor>
+
+                <adaptor id="multiDistances"  uid="multiDistancesUID" class="::visuVTKAdaptor::ImageMultiDistances" objectId="imageKey">
+                    <config filter="true" renderer="default" picker="negatodefault" />
+                </adaptor>
+
+                <adaptor id="landmarksNegato" class="::visuVTKAdaptor::ImageLandmarks" objectId="imageKey">
+                    <config renderer="default" picker="negatodefault" />
+                </adaptor>
+
+                <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="imageKey">
+                    <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
+                </adaptor>
+
+                <adaptor id="imageSliceOrientationText" class="::visuVTKAdaptor::ImageSliceOrientationText" objectId="imageKey">
+                    <config renderer="default">
+                        <locations>default</locations>
+                        <initialOrientation>${orientation}</initialOrientation>
+                    </config>
+                </adaptor>
+
+                <connect>
+                    <signal>snapshotNegatoEditor/snapped</signal>
+                    <slot>snapshotUID/snap</slot>
+                </connect>
+
+                <connect waitForKey="imageKey">
+                    <signal>distanceNegatoEditor/distanceRequested</signal>
+                    <slot>multiDistancesUID/createDistance</slot>
+                </connect>
+
+                <proxy channel="${CrossTypeChannel}" waitForKey="imageKey">
+                    <slot>negatoMPRUID/setCrossScale</slot>
+                </proxy>
+            </scene>
+        </service>
+
+        <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv" >
+            <in key="image" uid="${image}" />
+        </service>
+
+        <service uid="slider_negato" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <in key="image" uid="${image}" />
+            <sliceIndex>${orientation}</sliceIndex>
+        </service>
+
+        <service uid="distanceNegatoEditor" type="::uiMeasurement::editor::Distance">
+            <in key="image" uid="${image}" />
+            <placeInScene uid="negato" />
+        </service>
+
+        <!-- START AND STOP SERVICES -->
+        <start uid="LockImageSrv" />
+        <start uid="mainView" />
+
+    </config>
+</extension>

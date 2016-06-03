@@ -136,17 +136,16 @@
     <extension implements="::fwServices::registry::AppConfig2">
         <id>2DSimpleConfig2</id>
         <parameters>
-            <param name="GENERIC_UID" />
             <param name="WID_PARENT" />
             <param name="objectID" />
             <param name="imageID" />
             <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
         </parameters>
         <config>
-            <object id="${objectID}" type="::fwMedData::ImageSeries" src="ref" />
-            <object id="${imageID}" type="::fwData::Image" src="ref" />
+            <object uid="${objectID}" type="::fwMedData::ImageSeries" src="ref" />
+            <object uid="${imageID}" type="::fwData::Image" src="ref" />
 
-            <service uid="${GENERIC_UID}_mainview" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+            <service uid="mainview" type="::gui::view::SDefaultView">
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view align="center" />
@@ -155,14 +154,14 @@
                 </gui>
                 <registry>
                     <parent wid="${WID_PARENT}" />
-                    <view sid="${GENERIC_UID}_gs" start="yes" />
-                    <view sid="${GENERIC_UID}_sliderIndexEditor" start="yes" />
+                    <view sid="gs" start="yes" />
+                    <view sid="sliderIndexEditor" start="yes" />
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_gs" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
-                <in key="imageSeries" id="${objectID}"/>
-                <in key="image" id="${imageID}"/>
+            <service uid="gs" type="::fwRenderVTK::SRender" autoConnect="yes">
+                <in key="imageSeries" uid="${objectID}" />
+                <in key="image" uid="${imageID}" />
                 <scene>
                     <picker id="picker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
@@ -187,20 +186,20 @@
                 </scene>
             </service>
 
-            <service uid="${GENERIC_UID}_imageDumpLocker" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no">
-                <in key="image" id="${imageID}"/>
+            <service uid="imageDumpLocker" type="::ctrlMemory::LockDumpSrv">
+                <in key="image" uid="${imageID}" />
             </service>
-            <service uid="${GENERIC_UID}_medicalImgConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no">
-                <in key="image" id="${imageID}"/>
+            <service uid="medicalImgConverter" type="::ctrlSelection::MedicalImageSrv">
+                <in key="image" uid="${imageID}" />
             </service>
-            <service uid="${GENERIC_UID}_sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
-                <in key="image" id="${imageID}"/>
+            <service uid="sliderIndexEditor" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+                <in key="image" uid="${imageID}" />
                 <sliceIndex>${orientation}</sliceIndex>
             </service>
 
-            <start uid="${GENERIC_UID}_imageDumpLocker" />
-            <start uid="${GENERIC_UID}_medicalImgConverter" />
-            <start uid="${GENERIC_UID}_mainview" />
+            <start uid="imageDumpLocker" />
+            <start uid="medicalImgConverter" />
+            <start uid="mainview" />
         </config>
     </extension>
 
@@ -247,16 +246,15 @@
     <extension implements="::fwServices::registry::AppConfig2">
         <id>3DSimpleConfig2</id>
         <parameters>
-            <param name="GENERIC_UID" />
             <param name="WID_PARENT" />
             <param name="objectID" />
         </parameters>
         <config>
 
-            <object id="${objectID}" type="::fwMedData::ModelSeries" src="ref" />
+            <object uid="${objectID}" type="::fwMedData::ModelSeries" src="ref" />
 
-            <service uid="${GENERIC_UID}_gs" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
-                <in key="modelSeries" id="${objectID}"/>
+            <service uid="gs" type="::fwRenderVTK::SRender" autoConnect="yes">
+                <in key="modelSeries" uid="${objectID}" />
                 <registry>
                     <parent wid="${WID_PARENT}" />
                 </registry>
@@ -277,7 +275,7 @@
                 </scene>
             </service>
 
-            <start uid="${GENERIC_UID}_gs" />
+            <start uid="gs" />
         </config>
     </extension>
 
@@ -291,12 +289,12 @@
         </parameters>
         <desc>Configuration to update the given activity series.</desc>
         <config>
-            <object id="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
-            <object id="${objectID}" type="::fwMedData::ActivitySeries" src="ref" />
+            <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
+            <object uid="${objectID}" type="::fwMedData::ActivitySeries" src="ref" />
 
-                <service uid="${GENERIC_UID}_activityCreator" impl="::uiMedData::editor::SActivityCreator" autoConnect="no">
-                <inout key="seriesDB" id="${SERIESDB}" />
-                <inout key="activitySeries" id="${objectID}" />
+            <service uid="activityCreator" type="::uiMedData::editor::SActivityWizard">
+                <inout key="seriesDB" uid="${SERIESDB}" />
+                <inout key="activitySeries" uid="${objectID}" />
                 <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
                 <icons>
                     <icon type="::fwMedData::ImageSeries" icon="Bundles/media_0-1/icons/ImageSeries.svg" />
@@ -307,8 +305,8 @@
                 </registry>
             </service>
 
-            <start uid="${GENERIC_UID}_activityCreator" />
-            <update uid="${GENERIC_UID}_activityCreator" />
+            <start uid="activityCreator" />
+            <update uid="activityCreator" />
         </config>
     </extension>
 </plugin>

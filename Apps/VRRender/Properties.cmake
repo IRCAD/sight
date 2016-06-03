@@ -25,14 +25,14 @@ set( REQUIREMENTS
     uiImageQt
     uiVisu
     uiVisuQt
-    appXml
+    appXml2
     activities
     ctrlSelection
     uiReconstructionQt
-    2DVisualizationActivity
-    3DVisualizationActivity
+    2DVisualizationActivity2
+    3DVisualizationActivity2
+    volumeRenderingActivity2
     blendActivity
-    volumeRenderingActivity
     ioActivity
     media
     ioAtoms
@@ -45,4 +45,4 @@ set( REQUIREMENTS
     uiTF
 )
 
-bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES VRRenderBase VRRenderAppBase)
+bundleParam(appXml2 PARAM_LIST config parameters PARAM_VALUES VRRenderBase VRRenderAppBase)

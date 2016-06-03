@@ -16,7 +16,7 @@ set( REQUIREMENTS
     visuVTKQt
     vtkSimpleNegato
     fwlauncher
-    appXml
+    appXml2
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES TutoLaunchBasicConfig)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES TutoLaunchBasicConfig)
