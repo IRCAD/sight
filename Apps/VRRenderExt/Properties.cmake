@@ -17,7 +17,7 @@ set( REQUIREMENTS
     monitor
     monitorQt
     ctrlMemory
-    launcher
+    fwlauncher
     ioDicom
     io
     ioGdcm

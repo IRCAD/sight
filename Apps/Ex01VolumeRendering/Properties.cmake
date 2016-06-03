@@ -21,7 +21,7 @@ set( REQUIREMENTS
     visuVTKQt
     visuVTKAdaptor
     visuVTKVRAdaptor
-    launcher
+    fwlauncher
     appXml
     scene2D
     uiTF

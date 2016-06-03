@@ -18,7 +18,7 @@ set( REQUIREMENTS
     appXml 
     extDataReg 
     servicesReg 
-    launcher
+    fwlauncher
     dataReg
 )
 
