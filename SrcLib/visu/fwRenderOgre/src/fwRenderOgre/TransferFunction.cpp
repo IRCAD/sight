@@ -10,6 +10,9 @@
 #include <OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreTextureManager.h>
 
+#include <cstdint>  // for std::uint_8
+
+
 namespace fwRenderOgre
 {
 
