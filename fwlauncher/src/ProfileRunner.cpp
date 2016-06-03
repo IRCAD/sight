@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -182,7 +182,7 @@ int main(int argc, char* argv[])
     if (vm.count("help"))
     {
         std::cout << "usage: " << argv[0] << " [options] [profile(=profile.xml)] [profile-args ...]" << std::endl;
-        std::cout << "  use '--' to stop processing args for launcher" << std::endl  << std::endl;
+        std::cout << "  use '--' to stop processing args for fwlauncher" << std::endl  << std::endl;
         std::cout << options << std::endl << logOptions << std::endl;
         return 0;
     }

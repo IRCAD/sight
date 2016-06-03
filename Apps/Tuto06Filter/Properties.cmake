@@ -15,7 +15,7 @@ set( REQUIREMENTS
     visuVTKQt
     vtkSimpleNegato
     opImageFilter # bundle containing the action to performs a threshold
-    launcher
+    fwlauncher
     appXml
 )
 

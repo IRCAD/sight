@@ -13,7 +13,7 @@ set( REQUIREMENTS
     visuVTK # loads VTK rendering library (fwRenderVTK).
     visuVTKQt # containsthe vtk Renderer window interactor manager using Qt.
     vtkSimpleNegato # contains a visualization service of medical image.
-    launcher
+    fwlauncher
     appXml
 )
 

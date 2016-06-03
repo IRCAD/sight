@@ -23,7 +23,7 @@ macro(win_install PRJ_NAME)
     set(ICON_FILENAME ${LOWER_PRJ_NAME}.ico)
     
     if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
-        set(LAUNCHER_PATH "bin/launcher.exe")
+        set(LAUNCHER_PATH "bin/fwlauncher.exe")
         set(PROFILE_PATH "${${PRJ_NAME}_BUNDLE_DIR}/profile.xml")
     elseif("${${PRJ_NAME}_TYPE}" STREQUAL  "EXECUTABLE")
         set(LAUNCHER_PATH "bin/${PRJ_NAME}.exe")

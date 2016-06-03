@@ -18,7 +18,7 @@ set( REQUIREMENTS
     visuVTK
     visuVTKQt
     visuVTKAdaptor # contains adaptors for the generic scene
-    launcher
+    fwlauncher
     appXml
 )
 

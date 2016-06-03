@@ -10,7 +10,7 @@ set( REQUIREMENTS
     guiQt
     dataReg
     servicesReg
-    launcher
+    fwlauncher
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoGuiConfig)

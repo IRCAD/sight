@@ -11,7 +11,7 @@ set( REQUIREMENTS
     uiVisu
     uiVisuQt
     scene2D
-    launcher
+    fwlauncher
     appXml
 )
 

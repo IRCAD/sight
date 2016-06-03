@@ -7,7 +7,7 @@ set( REQUIREMENTS # The bundles used by this application
     servicesReg # to load the service registry
     gui # to load gui
     guiQt # to load qt implementation of gui
-    launcher # executable to run the application
+    fwlauncher # executable to run the application
     appXml # to parse the application configuration
 )
 

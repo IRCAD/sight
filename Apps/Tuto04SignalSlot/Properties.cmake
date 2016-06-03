@@ -14,7 +14,7 @@ set( REQUIREMENTS
     visuVTK
     visuVTKQt
     vtkSimpleMesh # contains a visualization service of mesh.
-    launcher
+    fwlauncher
     appXml
 )
 

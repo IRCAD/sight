@@ -15,7 +15,7 @@ set( REQUIREMENTS
     visuVTK
     visuVTKQt
     vtkSimpleMesh
-    launcher
+    fwlauncher
     appXml
 )
 

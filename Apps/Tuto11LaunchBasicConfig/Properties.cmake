@@ -15,7 +15,7 @@ set( REQUIREMENTS
     visuVTK
     visuVTKQt
     vtkSimpleNegato
-    launcher
+    fwlauncher
     appXml
 )
 

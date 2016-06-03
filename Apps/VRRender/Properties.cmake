@@ -14,7 +14,7 @@ set( REQUIREMENTS
     guiQt
     memory
     ctrlMemory
-    launcher
+    fwlauncher
     io
     ioVTK
     ioVtkGdcm

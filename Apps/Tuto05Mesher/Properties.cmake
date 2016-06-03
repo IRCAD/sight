@@ -16,7 +16,7 @@ set( REQUIREMENTS
     vtkSimpleNegato
     vtkSimpleMesh
     opVTKMesh # provides services to generate a mesh from an image.
-    launcher
+    fwlauncher
     appXml
 )
 

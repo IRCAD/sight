@@ -16,5 +16,5 @@ set( DEPENDENCIES
 set( REQUIREMENTS 
     dataReg
     servicesReg
-    launcher
+    fwlauncher
 )

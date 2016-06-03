@@ -20,5 +20,5 @@ set( REQUIREMENTS
     ioData
     ioVTK
     vtkSimpleNegato
-    launcher
+    fwlauncher
 )

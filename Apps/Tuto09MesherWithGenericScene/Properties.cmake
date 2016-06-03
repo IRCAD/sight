@@ -22,7 +22,7 @@ set( REQUIREMENTS
     visuVTKAdaptor
     opVTKMesh
     ctrlSelection
-    launcher
+    fwlauncher
     appXml
 )
 

@@ -514,7 +514,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "app")
         if(MSVC_IDE)
             # create the launch config for the current app
-            set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/launcher.exe")
+            set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/fwlauncher.exe")
             set(PROFILE "${CMAKE_BINARY_DIR}/Bundles/${FWPROJECT_NAME}_${DASH_VERSION}/profile.xml")
             set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
             include(${FWCMAKE_RESOURCE_PATH}/install/win_install.cmake)

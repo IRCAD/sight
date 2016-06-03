@@ -134,10 +134,10 @@ namespace fwServices
     <object uid="matrix" type="::fwData::TransformationMatrix3D">
         <matrix>
          <![CDATA[
-         1  0  0  0
-         0  1  0  0
-         0  0  1  0
-         0  0  0  1
+         1  0  0  0
+         0  1  0  0
+         0  0  1  0
+         0  0  0  1
          ]]>
          </matrix>
     </object>

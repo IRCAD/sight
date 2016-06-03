@@ -9,7 +9,7 @@ function(osx_install PRJ_NAME)
     set_source_files_properties(rc/${ICON_FILENAME} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
 
     if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
-        add_executable(${EXECUTABLE_NAME} MACOSX_BUNDLE ${launcher_HEADERS} ${launcher_SOURCES} rc/${ICON_FILENAME})
+        add_executable(${EXECUTABLE_NAME} MACOSX_BUNDLE ${fwlauncher_HEADERS} ${fwlauncher_SOURCES} rc/${ICON_FILENAME})
         add_definitions(-DDEFAULT_PROFILE=Bundles/${PRJ_NAME}_${${PRJ_NAME}_DASH_VERSION}/profile.xml)
         find_package (Boost COMPONENTS program_options REQUIRED )
         target_link_libraries(${EXECUTABLE_NAME}

@@ -15,7 +15,7 @@ set( REQUIREMENTS
     dataReg
     servicesReg
     appXml
-    launcher
+    fwlauncher
 )
 
 bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoPythonConfig)
