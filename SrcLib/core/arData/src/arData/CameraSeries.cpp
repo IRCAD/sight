@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -107,7 +107,7 @@ void CameraSeries::addCamera(const ::arData::Camera::sptr & camera)
 
 //------------------------------------------------------------------------------
 
-::arData::Camera::sptr CameraSeries::getCamera(size_t index)
+::arData::Camera::sptr CameraSeries::getCamera(size_t index) const
 {
     FW_RAISE_IF("Number of cameras is less than " << index, index >= m_cameras.size() );
 
@@ -138,7 +138,7 @@ void CameraSeries::setExtrinsicMatrix(size_t index, ::fwData::TransformationMatr
 
 //------------------------------------------------------------------------------
 
-::fwData::TransformationMatrix3D::sptr CameraSeries::getExtrinsicMatrix(size_t index)
+::fwData::TransformationMatrix3D::sptr CameraSeries::getExtrinsicMatrix(size_t index) const
 {
     FW_RAISE_IF("Number of cameras is less than " << index, index >= m_cameras.size() );
     return m_extrinsicMatrices[index];

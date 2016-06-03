@@ -39,16 +39,16 @@ ContainOneSkin::~ContainOneSkin()
 //-----------------------------------------------------------------------------
 
 
-::fwActivities::IValidator::ValidationType ContainOneSkin::validate(::fwData::Object::sptr currentData ) const
+::fwActivities::IValidator::ValidationType ContainOneSkin::validate(const ::fwData::Object::csptr &currentData ) const
 {
     IValidator::ValidationType validation;
 
     validation.first  = true;
     validation.second = "";
 
-    ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(currentData);
-    ::fwData::Vector::sptr vector              = ::fwData::Vector::dynamicCast(currentData);
-    ::fwData::Composite::sptr composite        = ::fwData::Composite::dynamicCast(currentData);
+    ::fwMedData::ModelSeries::csptr modelSeries = ::fwMedData::ModelSeries::dynamicConstCast(currentData);
+    ::fwData::Vector::csptr vector              = ::fwData::Vector::dynamicConstCast(currentData);
+    ::fwData::Composite::csptr composite        = ::fwData::Composite::dynamicConstCast(currentData);
 
     if (modelSeries)
     {
