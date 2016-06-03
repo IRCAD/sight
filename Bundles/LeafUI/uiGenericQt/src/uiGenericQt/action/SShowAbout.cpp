@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -99,7 +99,7 @@ void SShowAbout::configuring() throw(::fwTools::Failed)
 void SShowAbout::updating( ) throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    SLM_ASSERT("The about service isn't configured properly.", m_bServiceIsConfigured );
+    SLM_ASSERT("The service 'SShowAbout' isn't configured properly.", m_bServiceIsConfigured );
 
     QDialog* dialog = new QDialog(qApp->activeWindow());
     dialog->setWindowTitle(QString::fromStdString(m_title));

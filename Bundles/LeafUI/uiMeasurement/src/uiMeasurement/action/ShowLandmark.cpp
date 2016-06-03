@@ -140,6 +140,16 @@ void ShowLandmark::stopping() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsMap ShowLandmark::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( "image", ::fwData::Image::s_LANDMARK_DISPLAYED_SIG, s_SHOW_LANDMARK_SLOT );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 
 } // namespace action
 } // namespace uiMeasurement

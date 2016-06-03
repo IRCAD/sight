@@ -71,8 +71,6 @@ protected:
      * \b zValue : no mandatory (default value : 0) : Set the zValue of the grid layer
      * (the higher the zValue, the higher the layer is).
      *
-     * \b viewportUID : mandatory : a viewport that help us to manage the scaling of the graphic object
-     *
      */
     SCENE2D_API void configuring() throw ( ::fwTools::Failed );
 

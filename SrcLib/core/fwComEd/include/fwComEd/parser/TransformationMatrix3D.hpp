@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,10 +23,6 @@ namespace parser
 {
 /**
  * @brief   Specific service for the construction of a TransformationMatrix3D and its associated services from an XML-based description.
- * @class   TransformationMatrix3D
- *
-
- * @date    2007-2009
  * @see     ::fwServices::IXMLParser
  */
 class FWCOMED_CLASS_API TransformationMatrix3D : public ::fwServices::IXMLParser

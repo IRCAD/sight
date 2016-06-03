@@ -156,6 +156,9 @@ protected:
     /// Unregister all adaptors
     SCENE2D_API void unregisterServices();
 
+    template< class DATATYPE >
+    SPTR(DATATYPE) getSafeInOut(const std::string& key) const;
+
 private:
 
     /// Register automatic connection on object
@@ -168,6 +171,23 @@ private:
     ::scene2D::Render::wptr m_scene2DRender;
 
 };
+
+//------------------------------------------------------------------------------
+
+template< class DATATYPE >
+SPTR(DATATYPE) IAdaptor::getSafeInOut(const std::string& key) const
+{
+    if( ::fwServices::IService::isVersion2() )
+    {
+        return this->getScene2DRender()->getInOut<DATATYPE>(key);
+    }
+    else
+    {
+        return std::dynamic_pointer_cast<DATATYPE>( ::fwTools::fwID::getObject(key) );
+    }
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace adaptor
 } // namespace scene2D

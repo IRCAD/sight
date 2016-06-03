@@ -515,7 +515,7 @@ void TransferFunction::doStart() throw ( ::fwTools::Failed )
     m_circlePen.setCosmetic( true );
     m_circlePen.setWidthF( 0 );
 
-    m_viewport = ::scene2D::data::Viewport::dynamicCast( ::fwTools::fwID::getObject( m_viewportID ) );
+    m_viewport = this->getSafeInOut< ::scene2D::data::Viewport>( m_viewportID );
 
     m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
         this->slot(::fwServices::IService::s_UPDATE_SLOT));
@@ -528,6 +528,9 @@ void TransferFunction::doStart() throw ( ::fwTools::Failed )
 
 void TransferFunction::doUpdate() throw ( ::fwTools::Failed )
 {
+    ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+    this->setTransferFunctionSelection(tfSelection);
+
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
     this->updateTransferFunction(image);

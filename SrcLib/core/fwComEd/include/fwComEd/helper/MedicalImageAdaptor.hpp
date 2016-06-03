@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,10 +30,7 @@ namespace helper
 {
 
 /**
- * @class   MedicalImageAdaptor
  * @brief   Helpers for medical image.
- *
- * @date    2010
  */
 class FWCOMED_CLASS_API MedicalImageAdaptor
 {
@@ -62,18 +59,14 @@ public:
         return m_orientation;
     }
 
-
-
-    /**
-     * @brief Set the tf pool and the key that represents the current selection of TransferFunction.
-     */
-    FWCOMED_API void setTFParameters( ::fwData::Composite::sptr tfPool, std::string tfSelectionId );
-
     /// Set TF Selection fwID
     FWCOMED_API void setTFSelectionFwID( const std::string & fwid );
 
     /// Get TF Selection fwID
     FWCOMED_API const std::string & getTFSelectionFwID() const;
+
+    /// Set TF Selection fwID
+    FWCOMED_API void setTransferFunctionSelection( ::fwData::Composite::wptr selection );
 
     /// Set selected TF Key
     FWCOMED_API void setSelectedTFKey( const std::string & key );
@@ -327,7 +320,6 @@ private:
 
     /// Identifier of the key containing the current selection of TransferFunction in TFSelection
     std::string m_selectedTFKey;
-
 };
 
 struct Image0 {};

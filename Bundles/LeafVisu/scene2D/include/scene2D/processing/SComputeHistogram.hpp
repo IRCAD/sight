@@ -22,8 +22,6 @@ namespace processing
 
 /**
  * @brief The SComputeHistogram service computes the histogram of the image.
- * @class SComputeHistogram
- * @date 2013
  */
 class SCENE2D_CLASS_API SComputeHistogram : public ::fwServices::IController
 {
@@ -46,6 +44,15 @@ public:
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
     SCENE2D_API virtual KeyConnectionsType getObjSrvConnections() const;
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    SCENE2D_API virtual KeyConnectionsMap getAutoConnections() const;
 
 protected:
 

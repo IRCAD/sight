@@ -152,14 +152,14 @@ void IVtkAdaptorService::requestRender()
 
 //------------------------------------------------------------------------------
 
-SRender::RendererIdType IVtkAdaptorService::getRenderId()
+SRender::RendererIdType IVtkAdaptorService::getRenderId() const
 {
     return m_rendererId;
 }
 
 //------------------------------------------------------------------------------
 
-SRender::sptr IVtkAdaptorService:: getRenderService()
+SRender::sptr IVtkAdaptorService:: getRenderService() const
 {
     return m_renderService.lock();
 }
@@ -180,7 +180,7 @@ void IVtkAdaptorService::setPickerId(SRender::PickerIdType newID)
 
 //------------------------------------------------------------------------------
 
-SRender::PickerIdType IVtkAdaptorService::getPickerId()
+SRender::PickerIdType IVtkAdaptorService::getPickerId() const
 {
     return m_pickerId;
 }
@@ -205,7 +205,7 @@ void IVtkAdaptorService::setTransformId(SRender::VtkObjectIdType newID)
 
 //------------------------------------------------------------------------------
 
-SRender::VtkObjectIdType IVtkAdaptorService::getTransformId()
+SRender::VtkObjectIdType IVtkAdaptorService::getTransformId() const
 {
     return m_transformId;
 }

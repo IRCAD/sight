@@ -42,11 +42,14 @@ SComputeHistogram::~SComputeHistogram() throw()
 
 void SComputeHistogram::configuring() throw ( ::fwTools::Failed )
 {
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > cfg = m_configuration->find("histogramId");
-    SLM_ASSERT("Missing tag 'histogramId'", !cfg.empty());
+    if(!this->isVersion2())
+    {
+        std::vector < ::fwRuntime::ConfigurationElement::sptr > cfg = m_configuration->find("histogramId");
+        SLM_ASSERT("Missing tag 'histogramId'", !cfg.empty());
 
-    m_histogramId = cfg.front()->getValue();
-    SLM_ASSERT("'histogramId' must not be empty", !m_histogramId.empty());
+        m_histogramId = cfg.front()->getValue();
+        SLM_ASSERT("'histogramId' must not be empty", !m_histogramId.empty());
+    }
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > binsWidthCfg = m_configuration->find("binsWidth");
     SLM_ASSERT("Missing tag 'binsWidth'", !binsWidthCfg.empty());
@@ -110,11 +113,19 @@ void SComputeHistogram::stopping() throw ( ::fwTools::Failed )
 
 ::fwData::Histogram::sptr SComputeHistogram::getHistogram()
 {
-    SLM_ASSERT("Object " << m_histogramId << " doesn't exist", ::fwTools::fwID::exist(m_histogramId));
+    ::fwData::Histogram::sptr histogram;
+    if(!this->isVersion2())
+    {
+        SLM_ASSERT("Object " << m_histogramId << " doesn't exist", ::fwTools::fwID::exist(m_histogramId));
 
-    ::fwTools::Object::sptr obj         = ::fwTools::fwID::getObject(m_histogramId);
-    ::fwData::Histogram::sptr histogram = ::fwData::Histogram::dynamicCast(obj);
-    SLM_ASSERT("Object " << m_histogramId << " is not a '::fwData::Histogram'", histogram);
+        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_histogramId);
+        histogram                   = ::fwData::Histogram::dynamicCast(obj);
+        SLM_ASSERT("Object " << m_histogramId << " is not a '::fwData::Histogram'", histogram);
+    }
+    else
+    {
+        histogram = this->getInOut< ::fwData::Histogram>("histogram");
+    }
 
     return histogram;
 }
@@ -126,6 +137,17 @@ void SComputeHistogram::stopping() throw ( ::fwTools::Failed )
     KeyConnectionsType connections;
     connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SComputeHistogram::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( "image", ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( "image", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }

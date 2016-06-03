@@ -88,8 +88,16 @@ void SExportSeries::stopping() throw(::fwTools::Failed)
 
 void SExportSeries::updating() throw(::fwTools::Failed)
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-    ::fwMedData::Series::sptr series     = this->getSeries();
+    ::fwMedData::SeriesDB::sptr seriesDB;
+    if(this->isVersion2())
+    {
+        seriesDB = this->getInOut< ::fwMedData::SeriesDB>("seriesDB");
+    }
+    else
+    {
+        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    }
+    ::fwMedData::Series::sptr series = this->getSeries();
 
     std::string description = series->getDescription();
 
@@ -139,23 +147,31 @@ void SExportSeries::configuring() throw(::fwTools::Failed)
 {
     this->::fwGui::IActionSrv::initialize();
 
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > seriesCfg = m_configuration->find("seriesId");
-    SLM_ASSERT("Missing tag 'seriesId'", !seriesCfg.empty());
-
-    m_seriesId = seriesCfg.front()->getValue();
-    SLM_ASSERT("seriesId must not be empty", !m_seriesId.empty());
+    if(!this->isVersion2())
+    {
+        std::vector < ::fwRuntime::ConfigurationElement::sptr > seriesCfg = m_configuration->find("seriesId");
+        m_seriesId = seriesCfg.front()->getValue();
+        SLM_ASSERT("seriesId must not be empty", !m_seriesId.empty());
+    }
 }
 
 //------------------------------------------------------------------------------
 
 ::fwMedData::Series::sptr SExportSeries::getSeries()
 {
-    SLM_ASSERT("Object " << m_seriesId << " doesn't exist", ::fwTools::fwID::exist(m_seriesId));
+    ::fwMedData::Series::sptr series;
 
-    ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(m_seriesId);
-    ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
-    SLM_ASSERT("Object " << m_seriesId << " is not a '::fwMedData::Series'", series);
-
+    if(this->isVersion2())
+    {
+        series = this->getInOut< ::fwMedData::Series>("series");
+    }
+    else
+    {
+        SLM_ASSERT("Object " << m_seriesId << " doesn't exist", ::fwTools::fwID::exist(m_seriesId));
+        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_seriesId);
+        series                      = ::fwMedData::Series::dynamicCast(obj);
+        SLM_ASSERT("Object " << m_seriesId << " is not a '::fwMedData::Series'", series);
+    }
     return series;
 }
 

@@ -33,7 +33,6 @@ namespace editor
 /**
  * @brief   This editor shows information about the medical data. It allows to manipulate
  *          (select, erase, ...) studies and series.
- * @class   SSelector
  */
 class UIMEDDATAQT_CLASS_API SSelector : public QObject,
                                         public ::gui::editor::IEditor
@@ -62,6 +61,14 @@ public:
      */
     UIMEDDATAQT_API virtual KeyConnectionsType getObjSrvConnections() const;
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect SeriesDB::s_ADDED_SERIES_SIG to this::s_ADD_SERIES_SLOT
+     * Connect SeriesDB::s_REMOVED_SERIES_SIG to this::s_REMOVE_SERIES_SLOT
+     */
+    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const;
 
 protected:
 
@@ -75,17 +82,20 @@ protected:
      *
      * @code{.xml}
        <service uid="selector" impl="::uiMedData::editor::SSelector" type="::gui::editor::IEditor" autoConnect="yes">
-        <selectionId>selections</selectionId>
-        <selectionMode>single|extended</selectionMode>
-        <allowedRemove>yes|no</allowedRemove>
-        <insertMode>yes|no</insertMode>
-        <icons>
-            <icon series="::fwMedData::ImageSeries" icon="Bundles/media_0-1/icons/ImageSeries.svg" />
-            <icon series="::fwMedData::ModelSeries" icon="Bundles/media_0-1/icons/ModelSeries.svg" />
-        </icons>
+           <in key="seriesDB" uid="seriesDBId" />
+           <inout key="selection" uid="selectionsVector" />
+           <selectionMode>single|extended</selectionMode>
+           <allowedRemove>yes|no</allowedRemove>
+           <insertMode>yes|no</insertMode>
+           <icons>
+               <icon series="::fwMedData::ImageSeries" icon="Bundles/media_0-1/icons/ImageSeries.svg" />
+               <icon series="::fwMedData::ModelSeries" icon="Bundles/media_0-1/icons/ModelSeries.svg" />
+           </icons>
        </service>
        @endcode
-     * - \b selectionId : defines the fwId of the ::fwData::Vector where the selection will be put or get.
+     * - \b seriesDB : defines the SSeriesDB to operate on.
+     * - \b selection : defines the id of the ::fwData::Vector where the selection will be put or get.
+     *  TODO: this should be in and not inout.
      * - \b selectionMode : defines the selection mode for the series
      * - \b allowedRemove : allows user to remove series
      * - \b insertMode : only allows selection of uiMedData::InsertSeries

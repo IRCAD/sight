@@ -126,11 +126,10 @@ void SliceIndexPositionEditor::configuring() throw(fwTools::Failed)
 
     if( this->m_configuration->size() > 0 )
     {
-        ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin();
-        SLM_ASSERT("Only one xml element \"sliceIndex\" is accepted.",
-                   this->m_configuration->size() == 1 && (*iter)->getName() == "sliceIndex" );
-        SLM_ASSERT("The xml element \"sliceIndex\" is empty.", !(*iter)->getValue().empty() );
-        std::string orientation = (*iter)->getValue();
+        std::vector< ::fwRuntime::ConfigurationElement::sptr > slideIndexCfg = m_configuration->find("sliceIndex");
+        SLM_ASSERT("Only one xml element \"sliceIndex\" is accepted.", slideIndexCfg.size() == 1 );
+        SLM_ASSERT("The xml element \"sliceIndex\" is empty.", !(*slideIndexCfg.begin())->getValue().empty() );
+        std::string orientation = (*slideIndexCfg.begin())->getValue();
         ::boost::algorithm::trim(orientation);
         ::boost::algorithm::to_lower(orientation);
 

@@ -19,9 +19,7 @@ namespace updater
 {
 
 /**
- * @class  SObjFromSlot
  * @brief  Updates the composite from object given from slots.
- *
  */
 class CTRLSELECTION_CLASS_API SObjFromSlot : public ::ctrlSelection::IUpdaterSrv
 {
@@ -105,6 +103,7 @@ private:
 
     std::string m_compositeKey; ///< key of the object to manage in the composite
 
+    std::string m_objectUid; ///< Uid of the object to output
 };
 
 } // updater

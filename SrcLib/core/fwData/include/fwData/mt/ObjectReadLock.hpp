@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,7 +29,7 @@ public:
      * @brief Constructor : owns an read lock on object mutex.
      * If adopt_lock==false : the mutex is not locked (call lock() to lock mutex)
      */
-    FWDATA_API ObjectReadLock( ::fwData::Object::sptr obj, bool lock = true );
+    FWDATA_API ObjectReadLock( ::fwData::Object::csptr obj, bool lock = true );
 
     /// Destructor. Does nothing
     FWDATA_API ~ObjectReadLock();

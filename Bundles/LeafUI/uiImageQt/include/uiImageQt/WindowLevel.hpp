@@ -41,12 +41,8 @@ namespace uiImage
 
 /**
  * @brief   WindowLevel service allows to change the min / max value of windowing.
- * @class   WindowLevel
  *
- * @date    2010-2011.
- *
- * This is represented by
- *  - two sliders to modify the min, max value of windowing
+ * This is represented by two sliders to modify the min and max values of windowing
  */
 class UIIMAGEQT_CLASS_API WindowLevel : public QObject,
                                         public ::fwComEd::helper::MedicalImageAdaptor,
@@ -73,6 +69,15 @@ public:
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
      */
     UIIMAGEQT_API virtual KeyConnectionsType getObjSrvConnections() const;
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     */
+    UIIMAGEQT_API virtual KeyConnectionsMap getAutoConnections() const;
 
 protected:
 

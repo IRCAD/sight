@@ -98,6 +98,16 @@ public:
      */
     SCENE2D_API virtual KeyConnectionsType getObjSrvConnections() const;
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     */
+    SCENE2D_API virtual KeyConnectionsMap  getAutoConnections() const;
+
 protected:
 
     /**
@@ -213,6 +223,9 @@ private:
     /// A ConfigurationElement type representing a configuration.
     typedef SPTR (::fwRuntime::ConfigurationElement) ConfigurationType;
 
+    /// Map used to reference input objects
+    typedef std::map< std::string, ::fwData::Object::csptr > ConstObjectMapType;
+
     /// An internal class to store adaptors representations.
     class SceneAdaptor2D
     {
@@ -272,17 +285,17 @@ private:
     void configureAdaptor ( ConfigurationType _conf );
 
     /// Get all the objects of the render related composite, and start all their related adaptors.
-    void startAdaptorsFromComposite(const ::fwData::Composite::ContainerType& objects);
+    void startAdaptorsFromComposite(const ConstObjectMapType& objects);
 
     /// Get all the objects of the render related composite, and stop all their related adaptors.
-    void stopAdaptorsFromComposite(const ::fwData::Composite::ContainerType& objects);
+    void stopAdaptorsFromComposite(const ConstObjectMapType& objects);
 
     /// Get all the objects of the render related composite, and swap all their related adaptors.
     void swapAdaptorsFromComposite(const ::fwData::Composite::ContainerType& objects);
 
     /// Get the SceneAdaptor2D related to the _adaptorID key in the m_adaptorID2SceneAdaptor2D map, add a service corresponding to _object,
     ///  set its render, its configuration, configure it, star it, check if its zValue is unique, store it in the m_zValue2AdaptorID map.
-    void startAdaptor(const AdaptorIDType& _adaptorID, const SPTR(::fwData::Object)& _object);
+    void startAdaptor(const AdaptorIDType& _adaptorID, const CSPTR(::fwData::Object)& _object);
 
     /// Swap the SceneAdaptor2D to _object.
     void swapAdaptor(const AdaptorIDType& _adaptorID, const SPTR(::fwData::Object)& _object);

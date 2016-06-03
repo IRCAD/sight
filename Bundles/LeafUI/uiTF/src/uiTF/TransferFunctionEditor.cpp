@@ -64,18 +64,25 @@ void TransferFunctionEditor::configuring() throw( ::fwTools::Failed )
     SLM_TRACE_FUNC();
     this->initialize();
     ::fwRuntime::ConfigurationElement::sptr configuration = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("Analyzed configuration is not conformed, config element is missing.", configuration);
 
-    SLM_ASSERT("Analyzed configuration is not conformed.", configuration->getName() == "config");
+    SLM_ASSERT("Missing 'config' element.", configuration);
+
     if ( configuration->hasAttribute("selectedTFKey") )
     {
         m_selectedTFKey = configuration->getAttributeValue("selectedTFKey");
         SLM_FATAL_IF("'selectedTFKey' must not be empty", m_selectedTFKey.empty());
     }
-    if ( configuration->hasAttribute("tfSelectionFwID") )
+    if(!this->isVersion2())
     {
-        m_tfSelectionFwID = configuration->getAttributeValue("tfSelectionFwID");
-        SLM_FATAL_IF("'tfSelectionFwID' must not be empty", m_tfSelectionFwID.empty());
+        if ( configuration->hasAttribute("tfSelectionFwID") )
+        {
+            m_tfSelectionFwID = configuration->getAttributeValue("tfSelectionFwID");
+            SLM_FATAL_IF("'tfSelectionFwID' must not be empty", m_tfSelectionFwID.empty());
+        }
+    }
+    else
+    {
+        m_tfSelectionFwID = this->getInOut< ::fwData::Composite>("TFSelections")->getID();
     }
 
     std::vector< ::fwRuntime::ConfigurationElement::sptr > pathsCfg = configuration->find("path");
@@ -154,13 +161,13 @@ void TransferFunctionEditor::starting() throw( ::fwTools::Failed )
     m_container->setLayout(layout);
 
     // Qt signals management ( connection to buttons )
-    QObject::connect(m_pTransferFunctionPreset, SIGNAL(   activated(int)), this, SLOT(presetChoice(int)));
-    QObject::connect(m_deleteButton, SIGNAL(   clicked()), this, SLOT(deleteTF()));
-    QObject::connect(m_newButton, SIGNAL(   clicked()), this, SLOT(newTF()));
-    QObject::connect(m_reinitializeButton, SIGNAL(   clicked()), this, SLOT(reinitializeTFPool()));
-    QObject::connect(m_renameButton, SIGNAL(   clicked()), this, SLOT(renameTF()));
-    QObject::connect(m_importButton, SIGNAL(   clicked()), this, SLOT(importTF()));
-    QObject::connect(m_exportButton, SIGNAL(   clicked()), this, SLOT(exportTF()));
+    QObject::connect(m_pTransferFunctionPreset, SIGNAL(activated(int)), this, SLOT(presetChoice(int)));
+    QObject::connect(m_deleteButton, SIGNAL(clicked()), this, SLOT(deleteTF()));
+    QObject::connect(m_newButton, SIGNAL(clicked()), this, SLOT(newTF()));
+    QObject::connect(m_reinitializeButton, SIGNAL(clicked()), this, SLOT(reinitializeTFPool()));
+    QObject::connect(m_renameButton, SIGNAL(clicked()), this, SLOT(renameTF()));
+    QObject::connect(m_importButton, SIGNAL(clicked()), this, SLOT(importTF()));
+    QObject::connect(m_exportButton, SIGNAL(clicked()), this, SLOT(exportTF()));
 
     // preset initialization
     this->initTransferFunctions();
@@ -225,14 +232,12 @@ void TransferFunctionEditor::deleteTF()
 
     if (answerCopy != ::fwGui::dialog::IMessageDialog::CANCEL)
     {
-        ::fwData::Composite::sptr poolTF = this->getObject< ::fwData::Composite > ();
+        ::fwData::Composite::sptr poolTF = this->getTFPool();
 
         if( poolTF->size() > 1 )
         {
             int indexSelectedTF       = m_pTransferFunctionPreset->currentIndex();
             std::string selectedTFKey = m_pTransferFunctionPreset->currentText().toStdString();
-
-            ::fwData::Composite::sptr poolTF = this->getObject< ::fwData::Composite >();
 
             ::fwComEd::helper::Composite compositeHelper(poolTF);
             OSLM_ASSERT("TF "<< m_selectedTFKey <<" missing in pool", this->hasTransferFunctionName(selectedTFKey));
@@ -281,7 +286,7 @@ void TransferFunctionEditor::newTF()
 
             pNewTransferFunction = ::fwData::Object::copy(selectedTF);
             pNewTransferFunction->setName(newName);
-            ::fwData::Composite::sptr poolTF = this->getObject< ::fwData::Composite >();
+            ::fwData::Composite::sptr poolTF = this->getTFPool();
             ::fwComEd::helper::Composite compositeHelper(poolTF);
             compositeHelper.add(newName, pNewTransferFunction);
 
@@ -315,9 +320,8 @@ void TransferFunctionEditor::reinitializeTFPool()
 
     if (answerCopy != ::fwGui::dialog::IMessageDialog::CANCEL)
     {
-        ::fwData::Composite::sptr tfPool = this->getObject< ::fwData::Composite > ();
-
-        ::fwComEd::helper::Composite compositeHelper(tfPool);
+        ::fwData::Composite::sptr poolTF = this->getTFPool();
+        ::fwComEd::helper::Composite compositeHelper(poolTF);
         compositeHelper.clear();
         compositeHelper.notify();
 
@@ -356,13 +360,12 @@ void TransferFunctionEditor::renameTF()
     {
         if( !this->hasTransferFunctionName(newName) )
         {
-
-            ::fwData::Composite::sptr tfPool = this->getObject< ::fwData::Composite >();
+            ::fwData::Composite::sptr poolTF = this->getTFPool();
             ::fwData::TransferFunction::sptr pTF;
-            pTF = ::fwData::TransferFunction::dynamicCast((*tfPool)[str]);
+            pTF = ::fwData::TransferFunction::dynamicCast((*poolTF)[str]);
             pTF->setName(newName);
 
-            ::fwComEd::helper::Composite compositeHelper(tfPool);
+            ::fwComEd::helper::Composite compositeHelper(poolTF);
             compositeHelper.remove(str);
             compositeHelper.add(newName, pTF);
             compositeHelper.notify();
@@ -397,8 +400,8 @@ void TransferFunctionEditor::renameTF()
 
 void TransferFunctionEditor::importTF()
 {
-    ::fwData::Composite::sptr tfPool = this->getObject< ::fwData::Composite >();
-    ::fwComEd::helper::Composite compositeHelper(tfPool);
+    ::fwData::Composite::sptr poolTF = this->getTFPool();
+    ::fwComEd::helper::Composite compositeHelper(poolTF);
 
     ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
     ::fwServices::IService::sptr srv    =
@@ -422,7 +425,7 @@ void TransferFunctionEditor::importTF()
 
         compositeHelper.add(tf->getName(), tf);
         m_pTransferFunctionPreset->addItem(QString(tf->getName().c_str()));
-        this->presetChoice(static_cast<int>((*tfPool).size()-1));
+        this->presetChoice(static_cast<int>((*poolTF).size()-1));
 
         compositeHelper.notify();
     }
@@ -463,7 +466,7 @@ void TransferFunctionEditor::exportTF()
 void TransferFunctionEditor::initTransferFunctions()
 {
     // Get transfer function composite (pool TF)
-    ::fwData::Composite::sptr poolTF = this->getObject< ::fwData::Composite >( );
+    ::fwData::Composite::sptr poolTF = this->getTFPool();
 
     ::fwComEd::helper::Composite compositeHelper(poolTF);
 
@@ -539,7 +542,7 @@ void TransferFunctionEditor::initTransferFunctions()
 
 void TransferFunctionEditor::updateTransferFunctionPreset()
 {
-    ::fwData::Composite::sptr poolTF = this->getObject< ::fwData::Composite >( );
+    ::fwData::Composite::sptr poolTF = this->getTFPool();
     const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
     // Manage TF preset
     m_pTransferFunctionPreset->clear();
@@ -567,8 +570,8 @@ void TransferFunctionEditor::updateTransferFunctionPreset()
 
 bool TransferFunctionEditor::hasTransferFunctionName(const std::string & _sName)
 {
-    ::fwData::Composite::sptr poolTf = this->getObject< ::fwData::Composite >();
-    return poolTf->find(_sName) != poolTf->end();
+    ::fwData::Composite::sptr poolTF = this->getTFPool();
+    return poolTF->find(_sName) != poolTF->end();
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -600,7 +603,7 @@ void TransferFunctionEditor::updateTransferFunction()
     ::fwData::Composite::sptr tfSelection = this->getTFSelection();
 
     OSLM_ASSERT("TF "<< newSelectedTFKey <<" missing in pool", this->hasTransferFunctionName(newSelectedTFKey));
-    ::fwData::Composite::sptr poolTF     = this->getObject< ::fwData::Composite >();
+    ::fwData::Composite::sptr poolTF     = this->getTFPool();
     ::fwData::Object::sptr newSelectedTF = (*poolTF)[newSelectedTFKey];
     if(this->getSelectedTransferFunction() != newSelectedTF)
     {
@@ -621,8 +624,9 @@ void TransferFunctionEditor::updateTransferFunction()
 
 ::fwData::Composite::sptr TransferFunctionEditor::getTFSelection() const
 {
-    ::fwData::Composite::sptr tfSelection =
-        ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( m_tfSelectionFwID ) );
+    ::fwData::Composite::sptr tfSelection = this->isVersion2() ? this->getInOut< ::fwData::Composite>("TFSelections")
+                                            : ::fwData::Composite::dynamicCast(::fwTools::fwID::getObject(
+                                                                                   m_tfSelectionFwID ));
     return tfSelection;
 }
 
@@ -631,7 +635,16 @@ void TransferFunctionEditor::updateTransferFunction()
 ::fwData::TransferFunction::sptr TransferFunctionEditor::getSelectedTransferFunction() const
 {
     ::fwData::Composite::sptr tfSelection = this->getTFSelection();
+    SLM_ASSERT("Transfer function composite is null", tfSelection);
     return ::fwData::TransferFunction::dynamicCast((*tfSelection)[m_selectedTFKey]);
+}
+
+//------------------------------------------------------------------------------
+
+fwData::Composite::sptr TransferFunctionEditor::getTFPool()
+{
+    return this->isVersion2() ? this->getInOut< ::fwData::Composite>("transferFunctions")
+           : this->getObject< ::fwData::Composite > ();
 }
 
 //------------------------------------------------------------------------------

@@ -14,7 +14,7 @@
 
 #include <fwTools/DynamicType.hpp>
 
-#include <fwComEd/helper/Image.hpp>
+#include <fwComEd/helper/ImageGetter.hpp>
 #include <fwComEd/helper/Array.hpp>
 
 namespace fwItkIO
@@ -90,13 +90,13 @@ void itkImageToFwDataImage( ITKIMAGE_PTR itkImage, ::fwData::Image::sptr _dataIm
 //------------------------------------------------------------------------------
 
 template< class ITKIMAGE>
-typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::sptr imageData, bool bufferManagerIsDataImage )
+typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::csptr imageData, bool bufferManagerIsDataImage )
 {
     // Pre Condition
     SLM_ASSERT("Sorry, itk image dimension not correspond to fwData image",
                imageData->getNumberOfDimensions() == ITKIMAGE::ImageDimension );
 
-    ::fwComEd::helper::Image imageHelper(imageData);
+    ::fwComEd::helper::ImageGetter imageHelper(imageData);
 
     typename ITKIMAGE::Pointer itkImage = ITKIMAGE::New();
 
@@ -148,7 +148,7 @@ typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::sptr imageDat
 //------------------------------------------------------------------------------
 
 template< class ITKIMAGE>
-typename ITKIMAGE::Pointer itkImageFactory( ::fwData::Image::sptr imageData, bool bufferManagerIsDataImage )
+typename ITKIMAGE::Pointer itkImageFactory( ::fwData::Image::csptr imageData, bool bufferManagerIsDataImage )
 {
     return fwDataImageToItkImage<ITKIMAGE>( imageData, bufferManagerIsDataImage );
 }

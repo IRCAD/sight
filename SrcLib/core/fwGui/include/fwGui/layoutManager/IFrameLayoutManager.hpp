@@ -1,19 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __FWGUI_LAYOUTMANAGER_IFRAMELAYOUTMANAGER_HPP__
 #define __FWGUI_LAYOUTMANAGER_IFRAMELAYOUTMANAGER_HPP__
-
-/**
- * @file fwGui/layoutManager/IFrameLayoutManager.hpp
- * @brief This file defines the interface of the base class for managing a frame.
- *
- *
- * @date 2009-2010
- */
 
 #include <list>
 
@@ -34,11 +26,7 @@ namespace layoutManager
 {
 
 /**
- * @brief   Defines the frame layout manager.
- * @class   IFrameLayoutManager
- *
- * @date    2009-2010.
- *
+ * @brief   Defines an interface for managing a frame.
  */
 class FWGUI_CLASS_API IFrameLayoutManager : public ::fwGui::GuiBaseObject
 {

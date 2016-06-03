@@ -142,8 +142,9 @@ void ModelSeries::doUpdate() throw(fwTools::Failed)
 
             ::fwServices::registry::ObjectService::ServiceVectorType servicesVector;
             servicesVector = ::fwServices::OSR::getServices(mesh, "::visuVTKAdaptor::Mesh");
+            SLM_ASSERT("Missing material adaptor", !servicesVector.empty());
 
-            ::visuVTKAdaptor::Mesh::sptr meshAdaptor = ::visuVTKAdaptor::Mesh::dynamicCast(servicesVector[0]);
+            ::visuVTKAdaptor::Mesh::sptr meshAdaptor = ::visuVTKAdaptor::Mesh::dynamicCast(*servicesVector.begin());
 
             ::fwData::Material::sptr material = meshAdaptor->getMaterial();
             SLM_ASSERT("Missing material", material);

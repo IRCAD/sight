@@ -92,7 +92,7 @@ void HistogramValue::doStart() throw( ::fwTools::Failed)
     m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
     m_layer->setZValue(m_zValue);
 
-    m_viewport = ::scene2D::data::Viewport::dynamicCast( ::fwTools::fwID::getObject( m_viewportID ) );
+    m_viewport = this->getSafeInOut< ::scene2D::data::Viewport>( m_viewportID );
 
     m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
         this->slot(::fwServices::IService::s_UPDATE_SLOT));
@@ -161,7 +161,7 @@ void HistogramValue::doUpdate() throw( ::fwTools::Failed)
         QTransform transform;
         transform.scale(scaleX, scaleY);
 
-        ::fwData::Point::sptr point = ::fwData::Point::dynamicCast( ::fwTools::fwID::getObject( m_histogramPointUID ) );
+        ::fwData::Point::sptr point = this->getSafeInOut< ::fwData::Point>( m_histogramPointUID );
 
         m_text->setTransform( transform );
         m_text->setPos( point->getRefCoord()[0] + diameterH * 2, point->getRefCoord()[1] - diameterV * 2 );

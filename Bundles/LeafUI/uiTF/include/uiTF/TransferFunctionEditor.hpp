@@ -25,9 +25,6 @@ namespace uiTF
 
 /**
  * @brief   TransferFunctionEditor service.
- * @class   TransferFunctionEditor
- *
- * @date    2011.
  */
 class UITF_CLASS_API TransferFunctionEditor : public QObject,
                                               public ::gui::editor::IEditor
@@ -111,6 +108,9 @@ protected:
 
     /// Get the current transfer function
     UITF_API ::fwData::TransferFunction::sptr getSelectedTransferFunction() const;
+
+    /// TEMP_V2: Return the transfer functions set composite
+    UITF_API ::fwData::Composite::sptr getTFPool();
 
 private Q_SLOTS:
 

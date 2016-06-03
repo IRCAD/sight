@@ -37,7 +37,7 @@ Axis::~Axis() throw()
 
 void Axis::doStart() throw( ::fwTools::Failed)
 {
-    m_viewport = ::scene2D::data::Viewport::dynamicCast( ::fwTools::fwID::getObject( m_viewportID ) );
+    m_viewport = this->getSafeInOut< ::scene2D::data::Viewport>( m_viewportID );
 
     m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
         this->slot(::fwServices::IService::s_UPDATE_SLOT));

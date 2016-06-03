@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,8 +27,9 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-Image::Image( ::fwData::Image::sptr image )
-    : m_image(image)
+Image::Image( ::fwData::Image::sptr image ) :
+    m_image(image),
+    m_sliceModified(false)
 {
     if ( image )
     {
@@ -148,26 +149,46 @@ bool Image::createImageSliceIndex()
         );
 
     // Get value
-    if( axialIdx->value() < 0 ||  imageSize[2] < axialIdx->value() )
+    if( axialIdx->value() < 0 || static_cast< int>(imageSize[2]) < axialIdx->value() )
     {
         axialIdx->value() = static_cast< ::fwData::Integer::ValueType >(imageSize[2] / 2);
         fieldIsCreated    = true;
     }
 
-    if( frontalIdx->value() < 0 ||  imageSize[1] < frontalIdx->value() )
+    if( frontalIdx->value() < 0 || static_cast< int>(imageSize[1]) < frontalIdx->value() )
     {
         frontalIdx->value() = static_cast< ::fwData::Integer::ValueType >(imageSize[1] / 2);
         fieldIsCreated      = true;
     }
 
-    if( sagittalIdx->value() < 0 ||  imageSize[0] < sagittalIdx->value() )
+    if( sagittalIdx->value() < 0 || static_cast< int>(imageSize[0]) < sagittalIdx->value() )
     {
         sagittalIdx->value() = static_cast< ::fwData::Integer::ValueType >(imageSize[0] / 2);
         fieldIsCreated       = true;
     }
 
+    m_sliceModified |= fieldIsCreated;
     return fieldIsCreated;
 }
+
+//-----------------------------------------------------------------------------
+
+void Image::notify()
+{
+    if(m_sliceModified)
+    {
+        auto axialIdx    = m_image->getField< ::fwData::Integer >( ::fwComEd::Dictionary::m_axialSliceIndexId );
+        auto frontalIdx  = m_image->getField< ::fwData::Integer >( ::fwComEd::Dictionary::m_frontalSliceIndexId);
+        auto sagittalIdx = m_image->getField< ::fwData::Integer >( ::fwComEd::Dictionary::m_sagittalSliceIndexId );
+        auto sig         = m_image->signal< ::fwData::Image::SliceIndexModifiedSignalType >(
+            ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG);
+        sig->asyncEmit(axialIdx->getValue(), frontalIdx->getValue(), sagittalIdx->getValue());
+    }
+
+    auto sig = m_image->signal< ::fwData::Image::ModifiedSignalType >( ::fwData::Image::s_MODIFIED_SIG);
+    sig->asyncEmit();
+}
+
 
 //-----------------------------------------------------------------------------
 

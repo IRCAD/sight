@@ -184,6 +184,9 @@ void Volume::setVtkClippingPlanes(vtkPlaneCollection *planes)
 
 void Volume::doStart() throw(fwTools::Failed)
 {
+    ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+    this->setTransferFunctionSelection(tfSelection);
+
     this->addToRenderer(m_volume);
 
     this->getInteractor()->GetRenderWindow()->AddObserver("AbortCheckEvent", m_abortCommand);
@@ -245,6 +248,10 @@ void Volume::doUpdate() throw(::fwTools::Failed)
         this->buildPipeline();
         this->updateImage(image);
         this->updateVolumeTransferFunction(image);
+    }
+    else
+    {
+        this->updateTransferFunction(image);
     }
 }
 

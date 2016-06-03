@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,10 +40,7 @@ template <class T> struct bitwise_or : std::binary_function <T,T,T>
 
 
 /**
- * @class   MedicalImageHelpers
  * @brief   This class contains helpers for medical image fields.
- *
- * @date    2009.
  */
 class FWCOMED_CLASS_API MedicalImageHelpers
 {
@@ -67,7 +64,7 @@ public:
      * @param[in]   _pImg   image checked.
      * @return      true if the image is valid.
      */
-    FWCOMED_API static bool checkImageValidity( ::fwData::Image::sptr _pImg );
+    FWCOMED_API static bool checkImageValidity( ::fwData::Image::csptr _pImg );
 
     /**
      * @brief       Check if the image has slice index fields.

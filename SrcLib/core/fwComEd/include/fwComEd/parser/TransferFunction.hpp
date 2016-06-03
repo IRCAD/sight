@@ -24,8 +24,6 @@ namespace parser
 /**
  * @brief   Specific service for the construction of a TransferFunction and its associated services from an XML-based
  * description.
- * @class   TransferFunction
- *
  * @see     ::fwServices::IXMLParser
  */
 class FWCOMED_CLASS_API TransferFunction : public ::fwServices::IXMLParser

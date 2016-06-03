@@ -83,8 +83,8 @@ public:
     bool empty() const;
     SizeType size() const;
 
-    ValueType front();
-    ValueType back();
+    ValueType front() const;
+    ValueType back() const;
 
     ReferenceType operator[] ( size_type n );
     ConstReferenceType operator[] ( size_type n ) const;
@@ -207,14 +207,14 @@ inline Vector::SizeType Vector::size() const
 
 //-----------------------------------------------------------------------------
 
-inline Vector::ValueType Vector::front()
+inline Vector::ValueType Vector::front() const
 {
     return m_container.front();
 }
 
 //-----------------------------------------------------------------------------
 
-inline Vector::ValueType Vector::back()
+inline Vector::ValueType Vector::back() const
 {
     return m_container.back();
 }

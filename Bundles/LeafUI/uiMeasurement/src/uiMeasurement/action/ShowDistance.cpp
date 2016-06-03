@@ -140,5 +140,15 @@ void ShowDistance::stopping() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsMap ShowDistance::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( "image", ::fwData::Image::s_DISTANCE_DISPLAYED_SIG, s_SHOW_DISTANCE_SLOT );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace action
 } // namespace uiMeasurement

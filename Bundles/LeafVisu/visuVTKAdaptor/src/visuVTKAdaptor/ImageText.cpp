@@ -54,6 +54,9 @@ ImageText::~ImageText() throw()
 
 void ImageText::doStart() throw(::fwTools::Failed)
 {
+    ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+    this->setTransferFunctionSelection(tfSelection);
+
     this->Text::doStart();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);

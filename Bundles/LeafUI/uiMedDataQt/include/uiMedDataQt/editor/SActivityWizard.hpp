@@ -183,7 +183,6 @@ private:
     QPointer<QLabel> m_description; ///< Label to show activity description
 
     std::string m_ioSelectorConfig; ///< configuration used to import data
-    std::string m_activitySeriesUID; ///< uid of the activity series to update
 
     widget::ActivityDataView::ObjectIconMapType m_objectIcons; ///< Map defining the icon associated to an object.
 

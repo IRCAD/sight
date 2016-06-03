@@ -149,11 +149,13 @@ void SSelector::configuring() throw(::fwTools::Failed)
 {
     this->::fwGui::IGuiContainerSrv::initialize();
 
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > selectionCfg = m_configuration->find("selectionId");
-    SLM_ASSERT("Missing tag 'selectionId'", !selectionCfg.empty());
-
-    m_selectionId = selectionCfg.front()->getValue();
-    SLM_ASSERT("selectionId must not be empty", !m_selectionId.empty());
+    if(!this->isVersion2())
+    {
+        std::vector < ::fwRuntime::ConfigurationElement::sptr > selectionCfg = m_configuration->find("selectionId");
+        SLM_ASSERT("Missing tag 'selectionId'", !selectionCfg.empty());
+        m_selectionId = selectionCfg.front()->getValue();
+        SLM_ASSERT("selectionId must not be empty", !m_selectionId.empty());
+    }
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > selectionModeCfg = m_configuration->find("selectionMode");
     if(!selectionModeCfg.empty())
@@ -312,10 +314,18 @@ void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection)
 
 ::fwData::Vector::sptr SSelector::getSelection()
 {
-    SLM_ASSERT("Object " << m_selectionId << " doesn't exist", ::fwTools::fwID::exist(m_selectionId));
+    ::fwData::Vector::sptr selection;
+    if(this->isVersion2())
+    {
+        selection = this->getInOut< ::fwData::Vector>("selection");
+    }
+    else
+    {
+        SLM_ASSERT("Object " << m_selectionId << " doesn't exist", ::fwTools::fwID::exist(m_selectionId));
 
-    ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(m_selectionId);
-    ::fwData::Vector::sptr selection = ::fwData::Vector::dynamicCast(obj);
+        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_selectionId);
+        selection                   = ::fwData::Vector::dynamicCast(obj);
+    }
     SLM_ASSERT("Object " << m_selectionId << " is not a '::fwData::Vector'", selection);
 
     return selection;
@@ -348,6 +358,17 @@ void SSelector::removeSeries(::fwMedData::SeriesDB::ContainerType removedSeries)
     KeyConnectionsType connections;
     connections.push_back( std::make_pair( ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_ADD_SERIES_SLOT ) );
     connections.push_back( std::make_pair( ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG, s_REMOVE_SERIES_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SSelector::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( "seriesDB", ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_ADD_SERIES_SLOT );
+    connections.push( "seriesDB", ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG, s_REMOVE_SERIES_SLOT );
 
     return connections;
 }

@@ -42,7 +42,7 @@ bool MedicalImageHelpers::checkLandmarks( ::fwData::Image::sptr _pImg )
 
 //------------------------------------------------------------------------------
 
-bool MedicalImageHelpers::checkImageValidity( ::fwData::Image::sptr _pImg )
+bool MedicalImageHelpers::checkImageValidity( ::fwData::Image::csptr _pImg )
 {
     SLM_TRACE_FUNC();
 

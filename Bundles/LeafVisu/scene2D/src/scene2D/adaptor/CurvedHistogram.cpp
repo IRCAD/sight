@@ -469,9 +469,7 @@ void CurvedHistogram::updateCurrentPoint(const ::scene2D::data::Event::sptr& _ev
         const double percent = m_painterPath->percentAtLength( key );
         QPointF qPoint       = m_painterPath->pointAtPercent( percent );
 
-        ::fwData::Point::sptr point =
-            ::fwData::Point::dynamicCast( ::fwTools::fwID::getObject( m_histogramPointUID ) );
-
+        ::fwData::Point::sptr point = this->getSafeInOut< ::fwData::Point>( m_histogramPointUID );
         SLM_ASSERT("m_histogramPointUID can't be null here.", point);
 
         point->getRefCoord()[0] = sceneCoord.getX();

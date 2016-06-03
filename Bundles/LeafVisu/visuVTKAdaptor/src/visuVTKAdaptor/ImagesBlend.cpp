@@ -143,52 +143,55 @@ bool ImagesBlend::checkImageInformations()
 
     for(std::string id :  m_imageIds)
     {
-        if (composite->find(id) != composite->end())
+        ::fwData::Image::csptr img;
+        if (!this->isVersion2() && composite->find(id) != composite->end())
         {
-            ::fwData::Image::sptr img = ::fwData::Image::dynamicCast((*composite)[id]);
-
-            bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
-            if (imageIsValid)
+            img = ::fwData::Image::dynamicCast((*composite)[id]);
+        }
+        else
+        {
+            img = this->getSafeInput< ::fwData::Image >(id);
+        }
+        if (img && ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img ))
+        {
+            if (size.empty() && spacing.empty() && origin.empty())
             {
-                if (size.empty() && spacing.empty() && origin.empty())
+                size    = img->getSize();
+                spacing = img->getSpacing();
+                origin  = img->getOrigin();
+            }
+            else
+            {
+                if (  size != img->getSize() ||
+                      !::fwMath::isContainerEqual< const ::fwData::Image::SpacingType >(spacing,
+                                                                                        img->getSpacing()) ||
+                      !::fwMath::isContainerEqual< const ::fwData::Image::OriginType >(origin,
+                                                                                       img->getOrigin()) )
                 {
-                    size    = img->getSize();
-                    spacing = img->getSpacing();
-                    origin  = img->getOrigin();
-                }
-                else
-                {
-                    if (  size != img->getSize() ||
-                          !::fwMath::isContainerEqual< const ::fwData::Image::SpacingType >(spacing,
-                                                                                            img->getSpacing()) ||
-                          !::fwMath::isContainerEqual< const ::fwData::Image::OriginType >(origin,
-                                                                                           img->getOrigin()) )
-                    {
-                        OSLM_ERROR("imgA size : " << size[0] << " / " << size[1] << " / "<< size[2] );
-                        OSLM_ERROR("imgA spacing : " << spacing[0] << " / " << spacing[1] << " / "<< spacing[2] );
-                        OSLM_ERROR("imgA origin : " << origin[0] << " / " << origin[1] << " / "<< origin[2] );
+                    OSLM_ERROR("imgA size : " << size[0] << " / " << size[1] << " / "<< size[2] );
+                    OSLM_ERROR("imgA spacing : " << spacing[0] << " / " << spacing[1] << " / "<< spacing[2] );
+                    OSLM_ERROR("imgA origin : " << origin[0] << " / " << origin[1] << " / "<< origin[2] );
 
-                        OSLM_ERROR(
-                            "imgB size : " << img->getSize()[0] << " / " << img->getSize()[1] << " / "<<
-                            img->getSize()[2] );
-                        OSLM_ERROR(
-                            "imgB spacing : " << img->getSpacing()[0] << " / " << img->getSpacing()[1] << " / "<<
-                            img->getSpacing()[2] );
-                        OSLM_ERROR(
-                            "imgB origin : " << img->getOrigin()[0] << " / " << img->getOrigin()[1] << " / "<<
-                            img->getOrigin()[2] );
+                    OSLM_ERROR(
+                        "imgB size : " << img->getSize()[0] << " / " << img->getSize()[1] << " / "<<
+                        img->getSize()[2] );
+                    OSLM_ERROR(
+                        "imgB spacing : " << img->getSpacing()[0] << " / " << img->getSpacing()[1] << " / "<<
+                        img->getSpacing()[2] );
+                    OSLM_ERROR(
+                        "imgB origin : " << img->getOrigin()[0] << " / " << img->getOrigin()[1] << " / "<<
+                        img->getOrigin()[2] );
 
-                        haveSameInfo = false;
-                        std::string errorMsg = "Warning : images in blend have not the same";
-                        errorMsg += (size != img->getSize()) ? " size" : "";
-                        errorMsg += (spacing != img->getSpacing()) ? " spacing" : "";
-                        errorMsg += (origin != img->getOrigin()) ? " origin" : "";
-                        errorMsg += ".\n Background image size, spacing and origin are use.";
-                        ::fwGui::dialog::MessageDialog::showMessageDialog("Images blending",
-                                                                          errorMsg,
-                                                                          ::fwGui::dialog::IMessageDialog::WARNING);
-                        break;
-                    }
+                    haveSameInfo = false;
+                    std::string errorMsg = "Warning : images in blend have not the same";
+                    errorMsg += (size != img->getSize()) ? " size" : "";
+                    errorMsg += (spacing != img->getSpacing()) ? " spacing" : "";
+                    errorMsg += (origin != img->getOrigin()) ? " origin" : "";
+                    errorMsg += ".\n Background image size, spacing and origin are use.";
+                    ::fwGui::dialog::MessageDialog::showMessageDialog("Images blending",
+                                                                      errorMsg,
+                                                                      ::fwGui::dialog::IMessageDialog::WARNING);
+                    break;
                 }
             }
         }
@@ -207,10 +210,18 @@ void ImagesBlend::addImageAdaptors()
 
     for(std::string id :  m_imageIds)
     {
-        if (composite->find(id) != composite->end())
+        ::fwData::Image::csptr img;
+        if (!this->isVersion2() && composite->find(id) != composite->end())
         {
-            ::fwData::Image::sptr img = ::fwData::Image::dynamicCast((*composite)[id]);
+            img = ::fwData::Image::dynamicCast((*composite)[id]);
+        }
+        else
+        {
+            img = this->getSafeInput< ::fwData::Image >(id);
 
+        }
+        if (img)
+        {
             SPTR(ImageInfo) info = m_imagesInfo[id];
 
             SLM_ASSERT("No image with the id '" << id << "' found", img);
@@ -223,13 +234,15 @@ void ImagesBlend::addImageAdaptors()
 
             info->m_connections = ::fwServices::helper::SigSlotConnection::New();
             info->m_connections->connect(img, ::fwData::Image::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
-            info->m_connections->connect(img, ::fwData::Image::s_BUFFER_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
+            info->m_connections->connect(img, ::fwData::Image::s_BUFFER_MODIFIED_SIG, this->getSptr(),
+                                         s_UPDATE_SLOT);
 
             bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
             if (imageIsValid)
             {
                 ::fwRenderVTK::IVtkAdaptorService::sptr imageAdaptor;
-                imageAdaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( img, "::visuVTKAdaptor::Image");
+                imageAdaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( img,
+                                                                                       "::visuVTKAdaptor::Image");
                 imageAdaptor->setRenderService(this->getRenderService());
                 imageAdaptor->setRenderId( this->getRenderId() );
                 imageAdaptor->setPickerId( this->getPickerId() );

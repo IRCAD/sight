@@ -4,14 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-/**
- * @file fwGui/layoutManager/IFrameLayoutManager.cpp
- * @brief This file defines the implementation of the base class for managing a frame.
- *
- *
- * @date 2009-2010
- */
-
 #include <boost/filesystem/operations.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/bind.hpp>
@@ -213,11 +205,10 @@ void IFrameLayoutManager::writeConfig()
     ::fwData::Composite::sptr prefUI;
 
     // Get preferences
-    std::vector< ::fwServices::IService::sptr > preferencesServicesList = ::fwServices::OSR::getServices(
-        "::preferences::IPreferencesService");
+    auto preferencesServicesList = ::fwServices::OSR::getServices("::preferences::IPreferencesService");
     if(!preferencesServicesList.empty())
     {
-        ::fwServices::IService::sptr prefService = preferencesServicesList[0];
+        ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();
         ::fwData::Composite::sptr prefs          = prefService->getObject< ::fwData::Composite >();
 
         ::fwData::Composite::sptr framesUI;

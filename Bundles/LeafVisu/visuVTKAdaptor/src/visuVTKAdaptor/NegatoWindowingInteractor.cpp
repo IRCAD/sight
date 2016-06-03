@@ -184,6 +184,9 @@ void NegatoWindowingInteractor::doConfigure() throw(fwTools::Failed)
 
 void NegatoWindowingInteractor::doStart() throw(fwTools::Failed)
 {
+    ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+    this->setTransferFunctionSelection(tfSelection);
+
     NegatoWindowingCallback *observer = NegatoWindowingCallback::New();
     observer->setAdaptor( NegatoWindowingInteractor::dynamicCast(this->getSptr()) );
     observer->setPicker(this->getPicker());

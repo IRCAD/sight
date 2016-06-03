@@ -105,7 +105,7 @@ void NegatoOneSlice::cleanImageSource()
         ::fwData::Composite::sptr sceneComposite;
 
         image          = this->getObject< ::fwData::Image >();
-        sceneComposite = this->getRenderService()->getObject< ::fwData::Composite >();
+        sceneComposite = this->getRenderService()->getComposite();
 
         adaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
             sceneComposite,

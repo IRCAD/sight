@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,7 @@ namespace mt
 
 //-----------------------------------------------------------------------------
 
-ObjectReadLock::ObjectReadLock(::fwData::Object::sptr obj, bool lock)
+ObjectReadLock::ObjectReadLock(::fwData::Object::csptr obj, bool lock)
 {
     if (lock)
     {

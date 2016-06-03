@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,10 +22,7 @@ namespace helper
 {
 
 /**
- * @class   Mesh
  * @brief   Helper to manage Mesh. Lock the mesh buffer before to modify it.
- *
- * @date    2012
  */
 class FWCOMED_CLASS_API Mesh
 {

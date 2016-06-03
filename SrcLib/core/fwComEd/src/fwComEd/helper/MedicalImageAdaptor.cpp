@@ -266,34 +266,31 @@ void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image )
 {
     if ( !m_tfSelectionFwID.empty() )
     {
-        if ( m_tfSelection.expired() )
-        {
-            ::fwData::Composite::sptr tfSelection =
-                ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( m_tfSelectionFwID ) );
-            OSLM_ASSERT( "The object with the fwID '" + m_tfSelectionFwID + "' doesn't exist.", tfSelection );
-            OSLM_ASSERT( "The selectedTFKey must be defined, check your configuration.", !m_selectedTFKey.empty() );
-            if ( tfSelection->find( m_selectedTFKey ) == tfSelection->end() )
-            {
-                ::fwData::TransferFunction::sptr tfGreyLevel = ::fwData::TransferFunction::createDefaultTF();
-                if (image->getWindowWidth() != 0 )
-                {
-                    tfGreyLevel->setWindow( image->getWindowWidth() );
-                    tfGreyLevel->setLevel( image->getWindowCenter() );
-                }
-                else if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
-                {
-                    double min, max;
-                    ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
-                    ::fwData::TransferFunction::TFValuePairType wlMinMax(min, max);
-                    tfGreyLevel->setWLMinMax(wlMinMax);
-                }
+        ::fwData::Composite::sptr tfSelection = m_tfSelection.lock();
 
-                ::fwComEd::helper::Composite compositeHelper(tfSelection);
-                compositeHelper.add(m_selectedTFKey, tfGreyLevel);
-                compositeHelper.notify();
+        OSLM_ASSERT( "The object with the fwID '" + m_tfSelectionFwID + "' doesn't exist.", tfSelection );
+        OSLM_ASSERT( "The selectedTFKey must be defined, check your configuration.", !m_selectedTFKey.empty() );
+        if ( tfSelection->find( m_selectedTFKey ) == tfSelection->end() )
+        {
+            ::fwData::TransferFunction::sptr tfGreyLevel = ::fwData::TransferFunction::createDefaultTF();
+            if (image->getWindowWidth() != 0 )
+            {
+                tfGreyLevel->setWindow( image->getWindowWidth() );
+                tfGreyLevel->setLevel( image->getWindowCenter() );
             }
-            m_tfSelection = tfSelection;
+            else if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+            {
+                double min, max;
+                ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+                ::fwData::TransferFunction::TFValuePairType wlMinMax(min, max);
+                tfGreyLevel->setWLMinMax(wlMinMax);
+            }
+
+            ::fwComEd::helper::Composite compositeHelper(tfSelection);
+            compositeHelper.add(m_selectedTFKey, tfGreyLevel);
+            compositeHelper.notify();
         }
+        m_tfSelection = tfSelection;
     }
     else
     {
@@ -339,17 +336,6 @@ void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image )
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::setTFParameters( ::fwData::Composite::sptr tfPool, std::string tfSelectionId )
-{
-    if (!tfSelectionId.empty())
-    {
-        m_selectedTFKey = tfSelectionId;
-        m_tfSelection   = tfPool;
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void MedicalImageAdaptor::setTFSelectionFwID( const std::string & fwid )
 {
     m_tfSelectionFwID = fwid;
@@ -367,6 +353,13 @@ void MedicalImageAdaptor::setSelectedTFKey( const std::string & key )
 const std::string & MedicalImageAdaptor::getTFSelectionFwID() const
 {
     return m_tfSelectionFwID;
+}
+
+//------------------------------------------------------------------------------
+
+void MedicalImageAdaptor::setTransferFunctionSelection(fwData::Composite::wptr selection)
+{
+    m_tfSelection = selection;
 }
 
 //------------------------------------------------------------------------------
@@ -435,25 +428,25 @@ void MedicalImageAdaptor::installTFConnections()
 {
     SLM_ASSERT( "TF connections already exist",!m_tfSelectionConnections && !m_tfConnections);
 
-    ::fwData::Composite::sptr composite = this->getTransferFunctionSelection();
+    ::fwData::Composite::sptr tfComposite = this->getTransferFunctionSelection();
+    SLM_ASSERT( "Missing transfer function selection composite",tfComposite);
 
     m_tfSelectionConnections = ::fwServices::helper::SigSlotConnection::New();
     m_tfConnections          = ::fwServices::helper::SigSlotConnection::New();
 
     ::fwCom::Connection connection;
-    connection = composite->signal(::fwData::Composite::s_ADDED_OBJECTS_SIG)->connect(m_slotAddedObjects);
+    connection = tfComposite->signal(::fwData::Composite::s_ADDED_OBJECTS_SIG)->connect(m_slotAddedObjects);
     m_tfSelectionConnections->addConnection(connection);
-    connection = composite->signal(::fwData::Composite::s_CHANGED_OBJECTS_SIG)->connect(m_slotChangedObjects);
+    connection = tfComposite->signal(::fwData::Composite::s_CHANGED_OBJECTS_SIG)->connect(m_slotChangedObjects);
     m_tfSelectionConnections->addConnection(connection);
-    connection = composite->signal(::fwData::Composite::s_REMOVED_OBJECTS_SIG)->connect(m_slotRemovedObjects);
+    connection = tfComposite->signal(::fwData::Composite::s_REMOVED_OBJECTS_SIG)->connect(m_slotRemovedObjects);
     m_tfSelectionConnections->addConnection(connection);
 
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
-    connection                          = tf->signal(::fwData::TransferFunction::s_POINTS_MODIFIED_SIG)->connect(
-        m_slotUpdateTFPoints);
+
+    connection = tf->signal(::fwData::TransferFunction::s_POINTS_MODIFIED_SIG)->connect(m_slotUpdateTFPoints);
     m_tfConnections->addConnection(connection);
-    connection = tf->signal(::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG)->connect(
-        m_slotUpdateTFWindowing);
+    connection = tf->signal(::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG)->connect(m_slotUpdateTFWindowing);
     m_tfConnections->addConnection(connection);
 }
 

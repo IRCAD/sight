@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __GUI_ACTION_SPUSHOBJECT_HPP__
-#define __GUI_ACTION_SPUSHOBJECT_HPP__
+#ifndef __GUI_ACTION_SPUSHFIELD_HPP__
+#define __GUI_ACTION_SPUSHFIELD_HPP__
 
 #include "gui/config.hpp"
 
@@ -27,47 +27,36 @@ namespace action
  * @section XML Configuration
  *
  * @code{.xml}
-       <service impl="::gui::action::SPushObject">
+       <service impl="::gui::action::SPushField">
            <inout key="source" uid="compositeId" />
            <out key="destination" uid="objectId" />
-           <push srcKey="item" />
+           <push field="item" />
        </service>
    @endcode
  */
-class GUI_CLASS_API SPushObject : public ::fwGui::IActionSrv
+class GUI_CLASS_API SPushField : public ::fwGui::IActionSrv
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SPushObject)(::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro ( (SPushField)(::fwGui::IActionSrv) );
 
     /// Constructor. Do nothing.
-    GUI_API SPushObject() throw();
+    GUI_API SPushField() throw();
 
     /// Destructor. Do nothing.
-    GUI_API virtual ~SPushObject() throw();
-
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     * @deprecated
-     *
-     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
-     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
-     */
-    GUI_API virtual KeyConnectionsType getObjSrvConnections() const;
+    GUI_API virtual ~SPushField() throw();
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect source Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
-     * Connect source Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     * Connect source Composite::s_ADDED_FIELDS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     * Connect source Composite::s_REMOVED_FIELDS_SIG to this::s_UPDATE_OBJECTS_SLOT
      */
     GUI_API virtual KeyConnectionsMap getAutoConnections() const;
 
 protected:
-
 
     /// Configure the service.
     virtual void configuring() throw(fwTools::Failed);
@@ -89,24 +78,12 @@ private:
      */
     void updateObjects();
 
-    // [src_map]->[(src_key1, src_key2, ...)]
-    typedef std::map< std::string, std::set< std::string > > SrcKeyMapType;
-    // [dest_key]->[<src_map, src_key>]
-    typedef std::map< std::string, std::pair< std::string, std::string > > DestKeyMapType;
-    /**
-     * @brief keep the association between associated key and source object
-     */
-    DestKeyMapType m_key2src;
-    SrcKeyMapType m_srcMap;
-
     /// Key in the source composite to extract
-    std::string m_srcKey;
+    std::string m_field;
 };
 
 } // namespace action
 
 } // namespace gui
 
-#endif // __GUI_ACTION_SPUSHOBJECT_HPP__
-
-
+#endif // __GUI_ACTION_SPUSHFIELD_HPP__

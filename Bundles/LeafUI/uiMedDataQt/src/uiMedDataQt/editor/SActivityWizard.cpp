@@ -113,13 +113,6 @@ void SActivityWizard::configuring() throw(fwTools::Failed)
         m_isCancelable = (cancelStr == "true");
     }
 
-    ::fwRuntime::ConfigurationElement::sptr asConfig = m_configuration->findConfigurationElement("activitySeries");
-    if (asConfig)
-    {
-        m_activitySeriesUID = asConfig->getValue();
-    }
-
-
     std::vector < ::fwRuntime::ConfigurationElement::sptr > iconsCfg = m_configuration->find("icons");
     if (!iconsCfg.empty())
     {
@@ -221,17 +214,13 @@ void SActivityWizard::stopping() throw(::fwTools::Failed)
 
 void SActivityWizard::updating() throw(::fwTools::Failed)
 {
-    if (!m_activitySeriesUID.empty())
+    auto as = this->getInOut< ::fwMedData::ActivitySeries>("activitySeries");
+    if (as)
     {
-        ::fwTools::Object::sptr obj          = ::fwTools::fwID::getObject(m_activitySeriesUID);
-        ::fwMedData::ActivitySeries::sptr as = ::fwMedData::ActivitySeries::dynamicCast(obj);
-        SLM_ERROR_IF("Object '" + m_activitySeriesUID + "' is not a '::fwMedData::ActivitySeries'", !as);
-        if (as)
-        {
-            this->updateActivity(as);
-        }
+        this->updateActivity(as);
     }
-    SLM_DEBUG_IF("activity series is not defined, it cannot be updated", m_activitySeriesUID.empty());
+
+    SLM_DEBUG_IF("activity series is not defined, it cannot be updated", !as);
 }
 
 //------------------------------------------------------------------------------

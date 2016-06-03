@@ -111,11 +111,10 @@ void ILocationDialog::saveDefaultLocation(::fwData::location::ILocation::sptr lo
     ::fwData::Composite::sptr prefUI;
 
     // Get preferences
-    std::vector< ::fwServices::IService::sptr > preferencesServicesList = ::fwServices::OSR::getServices(
-        "::preferences::IPreferencesService");
+    auto preferencesServicesList = ::fwServices::OSR::getServices("::preferences::IPreferencesService");
     if(!preferencesServicesList.empty())
     {
-        ::fwServices::IService::sptr prefService = preferencesServicesList[0];
+        ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();
         ::fwData::Composite::sptr prefs          = prefService->getObject< ::fwData::Composite >();
 
         ::fwData::Composite::sptr framesUI;

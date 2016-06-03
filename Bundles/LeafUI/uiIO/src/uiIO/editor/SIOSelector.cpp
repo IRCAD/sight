@@ -379,7 +379,7 @@ void SIOSelector::updating() throw( ::fwTools::Failed )
         {
             ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Reader not found");
-            messageBox.setMessage( "There are not available readers for this data type." );
+            messageBox.setMessage( "There are no available readers for this data type." );
             messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
             messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();
@@ -388,7 +388,7 @@ void SIOSelector::updating() throw( ::fwTools::Failed )
         {
             ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Writer not found");
-            messageBox.setMessage( "There are not available writers for this data type." );
+            messageBox.setMessage( "There are no available writers for this data type." );
             messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
             messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();

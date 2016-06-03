@@ -214,14 +214,25 @@ void WindowLevel::updating() throw(::fwTools::Failed)
     bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     this->setEnabled(imageIsValid);
 
+    ::fwData::Composite::sptr tfSelection;
+    if( ::fwServices::IService::isVersion2() )
+    {
+        tfSelection = this->getInOut< ::fwData::Composite>("TFSelections");
+        this->setTFSelectionFwID(tfSelection->getID());
+    }
+    else
+    {
+        tfSelection = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject(this->getTFSelectionFwID()) );
+    }
+    this->setTransferFunctionSelection(tfSelection);
+
     this->updateTransferFunction(image);
     if(imageIsValid)
     {
         this->updateImageInfos(image);
 
         // test if service must use image grey level tf ( when another tf pool is defined )
-        if( m_useImageGreyLevelTF &&
-            !this->getTFSelectionFwID().empty() )
+        if( m_useImageGreyLevelTF && !this->getTFSelectionFwID().empty() )
         {
             ::fwData::TransferFunction::sptr newTF = this->getImageGreyLevelTF();
             this->swapCurrentTFAndNotify( newTF );
@@ -424,8 +435,7 @@ void WindowLevel::onToggleTF(bool squareTF)
     else
     {
         // test if service must use image grey level tf ( when another tf pool is defined )
-        if(     m_useImageGreyLevelTF &&
-                !this->getTFSelectionFwID().empty() )
+        if( m_useImageGreyLevelTF && !this->getTFSelectionFwID().empty() )
         {
             newTF           = this->getImageGreyLevelTF();
             usedGreyLevelTF = true;
@@ -571,6 +581,17 @@ void WindowLevel::swapCurrentTFAndNotify( ::fwData::TransferFunction::sptr newTF
     KeyConnectionsType connections;
     connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap WindowLevel::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( "image", ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( "image", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }

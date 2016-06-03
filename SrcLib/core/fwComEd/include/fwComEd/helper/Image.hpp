@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -67,7 +67,7 @@ public:
     FWCOMED_API bool createImageSliceIndex();
 
     /// Send the message of modification
-    FWCOMED_API void notify( ::fwServices::IService::sptr _serviceSource );
+    FWCOMED_API void notify();
 
     /// Returns image buffer
     FWCOMED_API void * getBuffer();
@@ -94,6 +94,9 @@ private:
     ::fwData::Image::sptr m_image;
 
     ::fwMemory::BufferObject::Lock m_lock;
+
+    /// modification flags
+    bool m_sliceModified;
 };
 
 } // helper

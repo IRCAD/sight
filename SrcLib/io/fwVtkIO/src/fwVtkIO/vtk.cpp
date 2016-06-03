@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,6 +40,7 @@
 #include <fwData/ObjectLock.hpp>
 
 #include <fwComEd/helper/Image.hpp>
+#include <fwComEd/helper/ImageGetter.hpp>
 
 #include "fwVtkIO/vtk.hpp"
 
@@ -128,7 +129,7 @@ const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk
 
 //-----------------------------------------------------------------------------
 
-void toVTKImage( ::fwData::Image::sptr data,  vtkImageData *dst)
+void toVTKImage( ::fwData::Image::csptr data,  vtkImageData *dst)
 {
     vtkSmartPointer< vtkImageImport > importer = vtkSmartPointer< vtkImageImport >::New();
 
@@ -303,9 +304,9 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
 //------------------------------------------------------------------------------
 
-void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image::sptr _pDataImage )
+void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image::csptr _pDataImage )
 {
-    ::fwComEd::helper::Image imageHelper(_pDataImage);
+    ::fwComEd::helper::ImageGetter imageHelper(_pDataImage);
 
     _pImageImport->SetDataSpacing(  _pDataImage->getSpacing().at(0),
                                     _pDataImage->getSpacing().at(1),

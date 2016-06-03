@@ -71,6 +71,9 @@ Image::~Image() throw()
 
 void Image::doStart() throw(fwTools::Failed)
 {
+    ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+    this->setTransferFunctionSelection(tfSelection);
+
     this->doUpdate();
     this->installTFConnections();
 }
