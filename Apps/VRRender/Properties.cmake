@@ -13,8 +13,6 @@ set( REQUIREMENTS
     gui
     guiQt
     memory
-    monitor
-    monitorQt
     ctrlMemory
     launcher
     io
