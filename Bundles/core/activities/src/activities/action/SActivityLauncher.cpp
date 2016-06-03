@@ -62,9 +62,10 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::activities::action::SActivityLau
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_LAUNCH_SERIES_SLOT        = "launchSeries";
-const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_UPDATE_STATE_SLOT         = "updateState";
-const ::fwCom::Signals::SignalKeyType SActivityLauncher::s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
+const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_LAUNCH_SERIES_SLOT          = "launchSeries";
+const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_LAUNCH_ACTIVITY_SERIES_SLOT = "launchActivitySeries";
+const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_UPDATE_STATE_SLOT           = "updateState";
+const ::fwCom::Signals::SignalKeyType SActivityLauncher::s_ACTIVITY_LAUNCHED_SIG   = "activityLaunched";
 
 //------------------------------------------------------------------------------
 
@@ -74,10 +75,8 @@ SActivityLauncher::SActivityLauncher() throw() :
     m_sigActivityLaunched = newSignal< ActivityLaunchedSignalType >(s_ACTIVITY_LAUNCHED_SIG);
 
     newSlot(s_LAUNCH_SERIES_SLOT, &SActivityLauncher::launchSeries, this);
+    newSlot(s_LAUNCH_ACTIVITY_SERIES_SLOT, &SActivityLauncher::launchActivitySeries, this);
     newSlot(s_UPDATE_STATE_SLOT, &SActivityLauncher::updateState, this);
-
-
-    this->setWorker( m_associatedWorker );
 }
 
 //------------------------------------------------------------------------------
@@ -507,12 +506,7 @@ void SActivityLauncher::launchSeries(::fwMedData::Series::sptr series)
     ::fwMedData::ActivitySeries::sptr as = ::fwMedData::ActivitySeries::dynamicCast(series);
     if (as)
     {
-        ::fwActivities::registry::ActivityInfo info;
-        info = ::fwActivities::registry::Activities::getDefault()->getInfo(as->getActivityConfigId());
-        ParametersType parameters = this->translateParameters(m_parameters);
-        ::fwActivities::registry::ActivityMsg msg = ::fwActivities::registry::ActivityMsg(as, info, parameters);
-
-        m_sigActivityLaunched->asyncEmit(msg);
+        this->launchActivitySeries(as);
     }
     else
     {
@@ -538,6 +532,18 @@ void SActivityLauncher::launchSeries(::fwMedData::Series::sptr series)
                                                               ::fwGui::dialog::MessageDialog::WARNING);
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SActivityLauncher::launchActivitySeries(::fwMedData::ActivitySeries::sptr series)
+{
+    ::fwActivities::registry::ActivityInfo info;
+    info = ::fwActivities::registry::Activities::getDefault()->getInfo(series->getActivityConfigId());
+    ParametersType parameters = this->translateParameters(m_parameters);
+    ::fwActivities::registry::ActivityMsg msg = ::fwActivities::registry::ActivityMsg(series, info, parameters);
+
+    m_sigActivityLaunched->asyncEmit(msg);
 }
 
 //------------------------------------------------------------------------------

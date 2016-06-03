@@ -23,5 +23,6 @@ set( REQUIREMENTS
     visuVTKAdaptor
     uiImageQt
     ctrlSelection
+    io
+    uiIO
     )
-

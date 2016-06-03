@@ -20,6 +20,7 @@ set( REQUIREMENTS
     io
     ioVTK
     ioVtkGdcm
+    ioData
     uiIO
     uiGenericQt
     uiMedDataQt

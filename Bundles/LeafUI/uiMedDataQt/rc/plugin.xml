@@ -1,4 +1,4 @@
-<plugin id="uiMedDataQt" class="::uiMedDataQt::Plugin" version="@DASH_VERSION@" >
+<plugin id="uiMedDataQt" class="::uiMedDataQt::Plugin" version="@DASH_VERSION@">
     <library name="uiMedDataQt" />
 
     <requirement id="dataReg" />
@@ -54,6 +54,12 @@
         <object>::fwMedData::ModelSeries</object>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiMedData::editor::SActivityWizard</service>
+        <object>::fwMedData::SeriesDB</object>
+    </extension>
+
     <extension implements="::fwServices::registry::AppConfig">
         <id>2DSimpleConfig</id>
         <parameters>
@@ -97,7 +103,7 @@
                             <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
                         </adaptor>
                         <adaptor id="imageSliceOrientationText" class="::visuVTKAdaptor::ImageSliceOrientationText" objectId="image">
-                            <config renderer="default" >
+                            <config renderer="default">
                                 <locations>default</locations>
                                 <initialOrientation>${orientation}</initialOrientation>
                             </config>
@@ -151,7 +157,7 @@
                         <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="modelSeries">
                             <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
                         </adaptor>
-                        <adaptor  id="orientationMarker" class="::visuVTKAdaptor::OrientationMarker" objectId="self">
+                        <adaptor id="orientationMarker" class="::visuVTKAdaptor::OrientationMarker" objectId="self">
                             <config renderer="default" />
                         </adaptor>
                     </scene>
@@ -163,6 +169,45 @@
                 </item>
 
                 <start uid="${GENERIC_UID}_gs" />
+            </object>
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>ActivityCreatorConfig</id>
+        <parameters>
+            <param name="GENERIC_UID" />
+            <param name="WID_PARENT" />
+            <param name="SERIESDB" />
+            <param name="objectID" />
+        </parameters>
+        <desc>Configuration to update the given activity series.</desc>
+        <config>
+            <object type="::fwData::Composite">
+
+                <item key="seriesDB">
+                    <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref">
+                        <service uid="${GENERIC_UID}_activityCreator" impl="::uiMedData::editor::SActivityWizard" autoConnect="no">
+                            <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
+                            <icons>
+                                <icon type="::fwMedData::ImageSeries" icon="Bundles/media_0-1/icons/ImageSeries.svg" />
+                                <icon type="::fwMedData::ModelSeries" icon="Bundles/media_0-1/icons/ModelSeries.svg" />
+                            </icons>
+                            <activitySeries>${objectID}</activitySeries>
+                            <registry>
+                                <parent wid="${WID_PARENT}" />
+                            </registry>
+                        </service>
+                    </object>
+                </item>
+
+                <item key="activitySeries">
+                    <object uid="${objectID}" type="::fwMedData::ActivitySeries" src="ref">
+                    </object>
+                </item>
+
+                <start uid="${GENERIC_UID}_activityCreator" />
+                <update uid="${GENERIC_UID}_activityCreator" />
             </object>
         </config>
     </extension>

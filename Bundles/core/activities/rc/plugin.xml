@@ -13,6 +13,18 @@
         <object>::fwData::Vector</object>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::activities::action::SCreateActivity</service>
+        <object>::fwData::Vector</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::activities::SSeriesSignal</service>
+        <object>::fwMedData::SeriesDB</object>
+    </extension>
+
     <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
     <extension-point id="::fwActivities::registry::Activities" schema="activities.xsd"/>
 
