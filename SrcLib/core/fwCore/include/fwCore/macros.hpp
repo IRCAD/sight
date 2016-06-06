@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,8 +50,10 @@
 #define __FWCORE_TYPEDEF_SELF_NAME               SelfType
 #define __FWCORE_TYPEDEF_SHARED_PTR_NAME         sptr
 #define __FWCORE_TYPEDEF_WEAK_PTR_NAME           wptr
+#define __FWCORE_TYPEDEF_UNIQUE_PTR_NAME         uptr
 #define __FWCORE_TYPEDEF_SHARED_PTR_CONST_NAME   csptr
 #define __FWCORE_TYPEDEF_WEAK_PTR_CONST_NAME     cwptr
+#define __FWCORE_TYPEDEF_UNIQUE_PTR_CONST_NAME   cuptr
 #define __FWCORE_FACTORY_NAME                    New
 #define __FWCORE_TYPEDEF_SUPERCLASS_NAME         BaseClass
 #define __FWCORE_TYPEDEF_ROOTCLASS_NAME          RootClass
@@ -76,6 +78,10 @@
 #define WPTR(_cls_)  std::weak_ptr   < _cls_ >
 /** Expand to weak_ptr < const _cls_ > */
 #define CWPTR(_cls_) std::weak_ptr   < const _cls_ >
+/** Expand to unique_ptr < _cls_ > */
+#define UPTR(_cls_)  std::unique_ptr < _cls_ >
+/** Expand to unique_ptr < const _cls_ > */
+#define CUPTR(_cls_) std::unique_ptr < const _cls_ >
 /**  @} */
 
 
@@ -216,10 +222,14 @@
     typedef SPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_SHARED_PTR_NAME;                          \
     /** Weak pointer type  */                                                                              \
     typedef WPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_WEAK_PTR_NAME;                            \
+    /** Unique pointer type  */                                                                            \
+    typedef UPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_UNIQUE_PTR_NAME;                          \
     /** Const shared pointer type  */                                                                      \
-    typedef CSPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_SHARED_PTR_CONST_NAME;                    \
+    typedef CSPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_SHARED_PTR_CONST_NAME;                   \
     /** Const weak pointer type  */                                                                        \
-    typedef CWPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_WEAK_PTR_CONST_NAME
+    typedef CWPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_WEAK_PTR_CONST_NAME;                     \
+    /** Const unique pointer type  */                                                                      \
+    typedef CUPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_UNIQUE_PTR_CONST_NAME;
 
 /*
  * Cast definition for casting from baseclassname and derived to _classname_
