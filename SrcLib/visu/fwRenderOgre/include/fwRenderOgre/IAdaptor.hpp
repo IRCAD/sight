@@ -41,7 +41,7 @@ public:
     FWRENDEROGRE_API void setRenderService( SRender::sptr service );
 
     /// Get the render service using this adaptor
-    FWRENDEROGRE_API SRender::sptr getRenderService();
+    FWRENDEROGRE_API SRender::sptr getRenderService() const;
 
     /// Returns True or False wether a given adaptor is registered or not
     FWRENDEROGRE_API bool isAdaptorRegistered(::fwTools::fwID::IDType _adaptorID) const;
@@ -50,10 +50,7 @@ public:
      * @brief Get all subservices linked to this adaptor
      * @return The vector of linked services
      */
-    AdaptorVector& getRegisteredAdaptors()
-    {
-        return m_subAdaptors;
-    }
+    AdaptorVector& getRegisteredAdaptors();
 
     /// Returns the priority of the adaptor - some adaptors may have to be started before other ones
     FWRENDEROGRE_API virtual int getStartPriority();
@@ -108,6 +105,9 @@ protected:
      */
     FWRENDEROGRE_API void unregisterServices(std::string classname = "");
 
+    template< class DATATYPE >
+    SPTR(DATATYPE) getSafeInOut(const std::string& key) const;
+
     /// Ask the render service (SRender) to update
     FWRENDEROGRE_API virtual void requestRender();
 
@@ -124,6 +124,29 @@ protected:
     AdaptorVector m_subAdaptors;
 };
 
+//------------------------------------------------------------------------------
+
+inline IAdaptor::AdaptorVector &IAdaptor::getRegisteredAdaptors()
+{
+    return m_subAdaptors;
+}
+
+//------------------------------------------------------------------------------
+
+template< class DATATYPE >
+SPTR(DATATYPE) IAdaptor::getSafeInOut(const std::string& key) const
+{
+    if( ::fwServices::IService::isVersion2() )
+    {
+        return this->getRenderService()->getInOut<DATATYPE>(key);
+    }
+    else
+    {
+        return std::dynamic_pointer_cast<DATATYPE>( ::fwTools::fwID::getObject(key) );
+    }
+}
+
+//------------------------------------------------------------------------------
 
 } //namespace fwRenderOgre
 

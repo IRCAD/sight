@@ -18,7 +18,7 @@ fragment_program VR/RayTracedVolume_FP glsl
     default_params
     {
         //param_named_auto u_lightDir light_position_object_space 0
-        param_named_auto u_lightDirs light_direction_object_space_array 2
+        param_named_auto u_lightDirs light_direction_object_space_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
@@ -81,7 +81,6 @@ material RayTracedVolume
             cull_hardware anticlockwise
             cull_software none
             scene_blend alpha_blend
-            //transparent_sorting on
 
             vertex_program_ref VR/RayTracedVolume_VP
             {
@@ -95,7 +94,7 @@ material RayTracedVolume
             {
                 tex_coord_set 0
                 tex_address_mode clamp
-                filtering trilinear
+                filtering bilinear
             }
 
             texture_unit transferFunction
@@ -139,7 +138,7 @@ material PreIntegratedRayTracedVolume
             {
                 tex_coord_set 0
                 tex_address_mode clamp
-                filtering trilinear
+                filtering bilinear
             }
 
             texture_unit transferFunction

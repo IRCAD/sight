@@ -5,7 +5,7 @@ uniform sampler2D u_tfTexture;
 
 uniform sampler2D u_entryPoints;
 
-uniform vec3 u_lightDirs[2];
+uniform vec3 u_lightDirs[1];
 //uniform vec3 u_diffuse;
 
 uniform float u_sampleDistance;
@@ -135,7 +135,7 @@ void main(void)
         {
             vec3 N = gradientNormal(rayPos);
 
-            tfColour.rgb = tfColour.rgb * abs(dot(N, u_lightDirs[0])) * 0.7 + tfColour.rgb * abs(dot(N, u_lightDirs[1])) * 1.0;
+            tfColour.rgb = tfColour.rgb * abs(dot(N, u_lightDirs[0]))/* * 0.7 + tfColour.rgb * abs(dot(N, u_lightDirs[1])) * 1.0*/;
 
 #ifndef PREINTEGRATION
             // Adjust opacity to sample distance.

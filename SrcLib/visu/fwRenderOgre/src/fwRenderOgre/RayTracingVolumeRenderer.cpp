@@ -249,12 +249,19 @@ void RayTracingVolumeRenderer::initEntryPoints()
 
     m_entryPointGeometry = m_sceneManager->createManualObject(m_parentId + "_RayTracingVREntryPoints");
 
-    m_entryPointGeometry->begin(mtlName, ::Ogre::RenderOperation::OT_TRIANGLE_STRIP);
+    m_entryPointGeometry->begin(mtlName, ::Ogre::RenderOperation::OT_TRIANGLE_LIST);
     {
-        m_entryPointGeometry->position(-1, -1, 0);
-        m_entryPointGeometry->position( 1, -1, 0);
-        m_entryPointGeometry->position(-1,  1, 0);
-        m_entryPointGeometry->position( 1,  1, 0);
+        for(const auto& face : s_cubeFaces)
+        {
+            const CubeFacePositionList& facePositionList = face.second;
+
+            m_entryPointGeometry->position(m_clippedImagePositions[facePositionList[0]]);
+            m_entryPointGeometry->position(m_clippedImagePositions[facePositionList[1]]);
+            m_entryPointGeometry->position(m_clippedImagePositions[facePositionList[2]]);
+            m_entryPointGeometry->position(m_clippedImagePositions[facePositionList[2]]);
+            m_entryPointGeometry->position(m_clippedImagePositions[facePositionList[3]]);
+            m_entryPointGeometry->position(m_clippedImagePositions[facePositionList[0]]);
+        }
     }
     m_entryPointGeometry->end();
 
@@ -360,12 +367,64 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 
     ::Ogre::RenderOperation renderOp;
     m_proxyGeometryGenerator->getRenderOperation(renderOp);
+//    m_entryPointGeometry->getSection(0)->getRenderOperation(renderOp);
 
     ::Ogre::Matrix4 worldMat;
     m_proxyGeometryGenerator->getWorldTransforms(&worldMat);
 
     ::Ogre::Pass *pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass(0);
     m_sceneManager->manualRender(&renderOp, pass, renderTexture->getViewport(0), worldMat, m_camera->getViewMatrix(), m_camera->getProjectionMatrix());
+
+    // TEST
+//    size_t nbPixels = m_entryPointsTexture->getHeight() * m_entryPointsTexture->getWidth();
+//    size_t dataSize = nbPixels * 3 * sizeof(float);
+
+//    float *optiText = new float[dataSize];
+
+//    ::Ogre::HardwarePixelBufferSharedPtr textBuffer = m_entryPointsTexture->getBuffer();
+
+//    void *pixBuff = textBuffer->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY);
+//    {
+//        std::memcpy(optiText, pixBuff, dataSize);
+//    }
+//    textBuffer->unlock();
+
+//    m_entryPointGeometry->getSection(0)->getRenderOperation(renderOp);
+//    m_sceneManager->manualRender(&renderOp, pass, renderTexture->getViewport(0), worldMat, m_camera->getViewMatrix(), m_camera->getProjectionMatrix());
+
+//    float *cubeText = new float[dataSize];
+
+//    textBuffer =  m_entryPointsTexture->getBuffer();
+//    pixBuff = textBuffer->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY);
+//    {
+//        std::memcpy(cubeText, pixBuff, dataSize);
+//    }
+//    textBuffer->unlock();
+
+
+//    double totalSkippedDistance = 0;
+
+//    for(size_t i = 0; i < nbPixels * 3; i +=3)
+//    {
+////        std::cout << "r " << cubeText[i] << " g " << cubeText[i+1] << " b " << cubeText[i + 2] << std::endl;
+
+//        double cubeDist = 0, optiDist = 0;
+//        if(optiText[i+1] != 1)
+//        {
+//            optiDist = -optiText[i+1] - optiText[i];
+//        }
+//        if(cubeText[i+1] != 1)
+//        {
+//            cubeDist = -cubeText[i+1] - cubeText[i];
+//        }
+
+//        totalSkippedDistance += (cubeDist - optiDist);
+//    }
+
+//    std::cout << "Total skipped distance : " << totalSkippedDistance << std::endl;
+
+//    delete[] optiText;
+//    delete[] cubeText;
 }
 
 //-----------------------------------------------------------------------------
@@ -447,7 +506,7 @@ void RayTracingVolumeRenderer::createGridTexture()
         ::Ogre::GpuProgramParametersSharedPtr geomGeneratorGeomParams = geomGenerationPass->getGeometryProgramParameters();
 
         // Cast size_t to int.
-        std::vector<int> imageSize(m_imageSize.begin(), m_imageSize.end());
+        const std::vector<int> imageSize(m_imageSize.begin(), m_imageSize.end());
 
         geomGeneratorGeomParams->setNamedConstant("u_imageResolution", imageSize.data(), 3, 1);
         geomGeneratorGeomParams->setNamedConstant("u_gridResolution", m_gridSize, 3, 1);

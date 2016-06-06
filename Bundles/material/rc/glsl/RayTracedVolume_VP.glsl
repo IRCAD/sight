@@ -10,5 +10,5 @@ in vec3 uv0;
 
 void main(void)
 {
-    gl_Position = /*u_worldViewProj **/ position;
+    gl_Position = u_worldViewProj * position;
 }

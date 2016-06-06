@@ -85,16 +85,16 @@
                     <gui>
                         <layout type="::fwGui::TabLayoutManager">
                             <view caption="VTK" selected="no" />
-                            <view caption="Ogre" selected="yes" />
+                            <view caption="Ogre" selected="no" />
                             <view caption="2D Negato Ogre" selected="no" />
-                            <view caption="Ogre VR" selected="no" />
+                            <view caption="Ogre VR" selected="yes" />
                         </layout>
                     </gui>
                     <registry>
                         <view wid="${GENERIC_UID}_VTKSceneView" start="yes" />
                         <view wid="${GENERIC_UID}_OgreSceneView" start="yes" />
                         <view wid="${GENERIC_UID}_OgreNegato2DView" start="yes" />
-                        <view wid="${GENERIC_UID}_OgreVolumeRenderingView" start="yes" />
+                        <view wid="${GENERIC_UID}_OgreVolumeRendering" start="yes" />
                     </registry>
                 </service>
 
@@ -159,15 +159,11 @@
                 <!-- Negato image -->
                 <item key="image">
                     <object uid="imageUID" type="::fwData::Image">
-
                         <service uid="imageReader" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
                             <type mode="reader" />
                         </service>
 
-                        <service uid="computeHistogram" type="::fwServices::IController" impl="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
-                            <histogramId>histogram</histogramId>
-                            <binsWidth>5.0</binsWidth>
-                        </service>
+                        <service uid="medicalImage" impl="::ctrlSelection::MedicalImageSrv" autoConnect="no" />
 
                     </object>
                 </item>
@@ -255,7 +251,7 @@
                             <config>
                                 <appConfig id="OgreVolumeRendering">
                                     <parameters>
-                                        <parameter replace="WID_PARENT" by="${GENERIC_UID}_OgreVolumeRenderingView" />
+                                        <parameter replace="WID_PARENT" by="${GENERIC_UID}_OgreVolumeRendering" />
                                         <parameter replace="imageUID" by="imageUID" />
                                         <parameter replace="TFSelections" by="TFSelections" />
                                     </parameters>
@@ -267,6 +263,7 @@
 
                 </item>
 
+                <start uid="medicalImage" />
                 <start uid="ihm" />
                 <start uid="cfgVTKGenericScene" />
                 <start uid="cfgOgreGenericScene" />

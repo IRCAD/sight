@@ -1,3 +1,4 @@
+
 <extension implements="::fwServices::registry::AppConfig">
     <id>OgreVolumeRendering</id>
     <parameters>
@@ -91,11 +92,11 @@
                         <config selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
                     </service>
 
-<!--
+
                     <service impl="::ioVTK::SImageReader" type="::io::IReader" uid="debugReader" autoConnect="no">
-                        <file>../../VolumeData/patient1.vtk</file>
+                        <file>../../data/Volumes/patient1.vtk</file>
                     </service>
--->
+
                 </object>
             </item>
 
@@ -131,8 +132,8 @@
             </item>
 
             <start uid="${GENERIC_UID}_OgreVolumeRendering" />
-<!--            <start uid="debugReader" />
-            <update uid="debugReader" />-->
+            <start uid="debugReader" />
+            <update uid="debugReader" />
 
         </object>
 
