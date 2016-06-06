@@ -93,9 +93,9 @@
                     </service>
 
 
-                    <service impl="::ioVTK::SImageReader" type="::io::IReader" uid="debugReader" autoConnect="no">
+<!--                    <service impl="::ioVTK::SImageReader" type="::io::IReader" uid="debugReader" autoConnect="no">
                         <file>../../data/Volumes/patient1.vtk</file>
-                    </service>
+                    </service>-->
 
                 </object>
             </item>
@@ -132,8 +132,8 @@
             </item>
 
             <start uid="${GENERIC_UID}_OgreVolumeRendering" />
-            <start uid="debugReader" />
-            <update uid="debugReader" />
+<!--            <start uid="debugReader" />
+            <update uid="debugReader" />-->
 
         </object>
 

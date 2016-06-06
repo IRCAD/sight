@@ -410,6 +410,7 @@
                 <start uid="cfgVTKGenericScene" />
                 <start uid="cfgOgreGenericScene" />
                 <start uid="cfgOgreNegato2D" />
+                <start uid="cfgOgreVolumeRendering" />
                 <start uid="cfgOrganManagerConfig" />
                 <start uid="compositorSelector" />
                 <start uid="CoreEditor" />

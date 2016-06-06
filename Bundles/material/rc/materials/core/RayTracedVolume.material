@@ -6,7 +6,7 @@ vertex_program VR/RayTracedVolume_VP glsl
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_cameraPos camera_position_object_space
+        //param_named_auto u_cameraPos camera_position_object_space
     }
 }
 
@@ -41,7 +41,7 @@ vertex_program VR/PreIntegrated_RayTracedVolume_VP glsl
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_cameraPos camera_position_object_space
+        //param_named_auto u_cameraPos camera_position_object_space
     }
 }
 
@@ -55,7 +55,7 @@ fragment_program VR/PreIntegrated_RayTracedVolume_FP glsl
     default_params
     {
         //param_named_auto u_lightDir light_position_object_space 0
-        param_named_auto u_lightDirs light_direction_object_space_array 2
+        param_named_auto u_lightDirs light_direction_object_space_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
