@@ -11,6 +11,7 @@
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/Plane.hpp>
+#include <fwRenderOgre/TransferFunction.hpp>
 
 #include "visuOgreAdaptor/config.hpp"
 
@@ -71,7 +72,7 @@ protected:
     VISUOGREADAPTOR_API virtual void updatingTFPoints();
 
     /// Called when transfer function windowing is modified.
-    VISUOGREADAPTOR_API virtual void updatingTFWindowing(double _window, double _level);
+    VISUOGREADAPTOR_API virtual void updatingTFWindowing(double window, double level);
 
 private:
 
@@ -95,6 +96,9 @@ private:
 
     /// Ogre texture which will be displayed on the negato
     ::Ogre::TexturePtr m_3DOgreTexture;
+
+    /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view)
+    ::fwRenderOgre::TransferFunction m_gpuTF;
 
     /// The plane on which we will apply our texture
     ::fwRenderOgre::Plane* m_plane;
