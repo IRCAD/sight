@@ -18,7 +18,7 @@ fragment_program Default/OrenNayar_FP glsl
         param_named_auto u_cameraPos camera_position
         param_named_auto u_lightDir light_position 0
         param_named_auto u_diffuse surface_diffuse_colour
-        param_named u_roughness int 5
+        param_named u_roughness int 35
     }
 }
 

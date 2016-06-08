@@ -48,11 +48,8 @@ fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SComposito
 class CompositorListener : public ::Ogre::CompositorInstance::Listener
 {
 public:
-    CompositorListener() : m_viewport(nullptr), m_adaptor(nullptr)
-    {
-    }
     CompositorListener(::Ogre::Viewport* _vp, SCompositorParameter::sptr _adaptor)
-        : m_viewport(_vp), m_adaptor(_adaptor)
+        : m_adaptor(_adaptor)
     {
     }
     ~CompositorListener()
@@ -65,8 +62,6 @@ public:
     }
 
 private:
-    /// Ogre viewport
-    ::Ogre::Viewport* m_viewport;
     /// Associated f4s adaptor
     ::visuOgreAdaptor::SCompositorParameter::sptr m_adaptor;
 };
@@ -74,7 +69,7 @@ private:
 //------------------------------------------------------------------------------
 
 SCompositorParameter::SCompositorParameter() throw() :
-    m_shaderType(VERTEX)
+    m_shaderType(FRAGMENT)
 {
 }
 

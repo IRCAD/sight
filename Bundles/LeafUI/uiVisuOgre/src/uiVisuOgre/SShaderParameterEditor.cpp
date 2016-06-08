@@ -42,21 +42,19 @@ SShaderParameterEditor::~SShaderParameterEditor() throw()
 
 void SShaderParameterEditor::starting() throw(::fwTools::Failed)
 {
-    m_connections                      = ::fwServices::helper::SigSlotConnection::New();
     ::fwData::Reconstruction::sptr rec = this->getObject< ::fwData::Reconstruction >();
     ::fwData::Material::sptr material  = rec->getMaterial();
-    m_connections->connect(material, this->getSptr(), this->getSptr()->getObjSrvConnections() );
+    m_connections.connect(material, this->getSptr(), this->getSptr()->getObjSrvConnections() );
 
     this->create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer() );
+    auto qtContainer         = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instantiated", container);
-    m_gridSizer = new QGridLayout(container);
-    m_gridSizer->setContentsMargins(0,0,0,0);
+    m_sizer = new QVBoxLayout(container);
+    m_sizer->setContentsMargins(0,0,0,0);
 
-    container->setLayout(m_gridSizer);
+    container->setLayout(m_sizer);
 
     this->updating();
 }
@@ -65,6 +63,7 @@ void SShaderParameterEditor::starting() throw(::fwTools::Failed)
 
 void SShaderParameterEditor::stopping() throw(::fwTools::Failed)
 {
+    m_connections.disconnect();
     this->clear();
 
     this->getContainer()->clean();
@@ -75,10 +74,10 @@ void SShaderParameterEditor::stopping() throw(::fwTools::Failed)
 
 void SShaderParameterEditor::swapping() throw(::fwTools::Failed)
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
     ::fwData::Reconstruction::sptr rec = this->getObject< ::fwData::Reconstruction >();
     ::fwData::Material::sptr material  = rec->getMaterial();
-    m_connections->connect(material, this->getSptr(), this->getSptr()->getObjSrvConnections() );
+    m_connections.connect(material, this->getSptr(), this->getSptr()->getObjSrvConnections() );
 
     this->updating();
 }
@@ -88,24 +87,6 @@ void SShaderParameterEditor::swapping() throw(::fwTools::Failed)
 void SShaderParameterEditor::configuring() throw(::fwTools::Failed)
 {
     this->initialize();
-
-    SLM_ASSERT("Not a service configuration", m_configuration->getName() == "service");
-
-    OSLM_WARN_IF(
-        "missing associations for " << this->getID() << "configuration",
-        !m_configuration->findConfigurationElement("association") );
-
-    std::vector < Configuration > vectConfig = m_configuration->find("association");
-
-    for(auto element : vectConfig)
-    {
-        OSLM_FATAL_IF( "missing 'type' attribute for " << this->getID() << "configuration",
-                       !element->hasAttribute("type") );
-        OSLM_FATAL_IF( "missing 'editor' attribute for " << this->getID() << "configuration",
-                       !element->hasAttribute("editor") );
-
-        m_associatedEditor[element->getAttributeValue("type")] = element->getAttributeValue("editor");
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -124,26 +105,17 @@ void SShaderParameterEditor::clear()
     {
         info.connections->disconnect();
 
-        ::fwServices::IService::sptr objService   = info.objService.lock();
-        ::fwServices::IService::sptr labelService = info.labelService.lock();
+        ::fwServices::IService::sptr objService = info.objService.lock();
 
         objService->stop();
-        labelService->stop();
 
-        ::fwGui::GuiRegistry::unregisterSIDContainer(info.labelUUID);
         ::fwGui::GuiRegistry::unregisterSIDContainer(info.editorUUID);
 
         ::fwServices::OSR::unregisterService(objService);
-        ::fwServices::OSR::unregisterService(labelService);
 
-        m_gridSizer->removeWidget(info.editorPanel->getQtContainer());
+        m_sizer->removeWidget(info.editorPanel->getQtContainer());
         info.editorPanel->destroyContainer();
         info.editorPanel.reset();
-
-        m_gridSizer->removeWidget(info.labelPanel->getQtContainer());
-        info.labelPanel->destroyContainer();
-        info.labelPanel.reset();
-        info.label.reset();
     }
 
     m_shaderEditorInfos.clear();
@@ -201,9 +173,9 @@ void SShaderParameterEditor::updateGuiInfo()
             std::string uuid = this->getID();
             std::string editor;
 
-            if (m_associatedEditor.find(objType) != m_associatedEditor.end())
+            if(objType == "::fwData::Integer")
             {
-                editor = m_associatedEditor[objType];
+                editor = "::guiQt::editor::SSlider";
             }
             else
             {
@@ -215,38 +187,32 @@ void SShaderParameterEditor::updateGuiInfo()
             {
                 ShaderEditorInfo info;
 
-                info.labelPanel = ::fwGuiQt::container::QtContainer::New();
-                QWidget * p1 = new QWidget( container);
-                info.labelPanel->setQtContainer(p1);
-
-                info.editorPanel = ::fwGuiQt::container::QtContainer::New();
                 QWidget * p2 = new QWidget( container );
+                info.editorPanel = ::fwGuiQt::container::QtContainer::New();
                 info.editorPanel->setQtContainer(p2);
 
-                info.labelUUID  = uuid + "-label-" + key;
                 info.editorUUID = uuid + "-editee-" + key;
 
-                ::fwGui::GuiRegistry::registerSIDContainer(info.labelUUID, info.labelPanel);
                 ::fwGui::GuiRegistry::registerSIDContainer(info.editorUUID, info.editorPanel);
 
-                info.label = ::fwData::String::New(name);
-
                 ::fwServices::IService::sptr objService;
-                ::fwServices::IService::sptr labelService;
-                objService   = ::fwServices::add( shaderObj, "::gui::editor::IEditor", editor, info.editorUUID );
-                labelService = ::fwServices::add( info.label, "::gui::editor::IEditor", "::uiData::SStaticTextEditor",
-                                                  info.labelUUID );
+                objService = ::fwServices::add( shaderObj, "::gui::editor::IEditor", editor, info.editorUUID );
 
-                info.objService   = objService;
-                info.labelService = labelService;
+                info.objService = objService;
 
+                ::fwServices::IService::ConfigType config;
+                config.add("config.range.min", 0);
+                config.add("config.range.max", 100);
+                config.add("config.defaultValue", 10);
+                config.add("config.value", 10);
+                config.add("config.text", name);
+
+                objService->setConfiguration(config);
                 objService->configure();
-                labelService->configure();
 
                 objService->start();
-                labelService->start();
 
-                info.connections->connect( shaderObj, objService, objService->getObjSrvConnections() );
+                info.connections->connect(objService, "valueChanged", shaderSrv, "setIntParameter");
 
                 m_shaderEditorInfos.push_back(info);
 
@@ -264,8 +230,7 @@ void SShaderParameterEditor::fillGui()
 
     for(auto info : m_shaderEditorInfos)
     {
-        m_gridSizer->addWidget( info.labelPanel->getQtContainer(), line, 0 );
-        m_gridSizer->addWidget( info.editorPanel->getQtContainer(), line, 1 );
+        m_sizer->addWidget( info.editorPanel->getQtContainer(), line );
         line++;
     }
 }

@@ -18,7 +18,19 @@ namespace visuOgreAdaptor
 
 /**
  * @brief   Send a FW4SPL data as a shader parameter
- * @class   SShaderParameter
+ *
+ *
+ * Send parameters to vertex and fragment shaders
+ *
+ * @code{.xml}
+        <service uid="paramAdaptor" class="::visuOgreAdaptor::SShaderParameter">
+            <config materialAdaptor="mtlAdaptorUID" parameter="u_value" shaderType="fragment" />
+        </service>
+       @endcode
+ *  - \b materialName (mandatory) : the name of the associated Ogre material
+ *  - \b parameter (mandatory) : name of the shader parameter to set
+ *  - \b technique (optional) : name of the technique, default to the first in the material
+ *  - \b shaderType (optional) : the type of the shader (vertex, geometry, fragment). Default to vertex.
  */
 class VISUOGREADAPTOR_CLASS_API SShaderParameter : public ::fwRenderOgre::IAdaptor
 {
@@ -34,6 +46,16 @@ public:
         FRAGMENT,
         GEOMETRY
     } ShaderEnumType;
+
+    /**
+     * @name Slots API
+     * @{
+     */
+
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_FLOAT_PARAMETER_SLOT;
+
+    ///@}
 
     /// Constructor.
     VISUOGREADAPTOR_API SShaderParameter() throw();
@@ -55,27 +77,13 @@ public:
 
 protected:
 
-    /**
-     * @brief Configure the ShaderParameter adaptor
-     *
-     * Send parameters to vertex and fragment shaders
-     *
-     * @code{.xml}
-        <adaptor uid="paramAdaptor" impl="::visuOgreAdaptor::SShaderParameter">
-            <config materialAdaptor="mtlAdaptorUID" parameter="u_value" shaderType="fragment" />
-        </adaptor>
-       @endcode
-     *  - \b materialName (mandatory) : the name of the associated Ogre material
-     *  - \b parameter (mandatory) : name of the shader parameter to set
-     *  - \b technique (optional) : name of the technique, default to the first in the material
-     *  - \b shaderType (optional) : the type of the shader (vertex, geometry, fragment). Default to vertex.
-     */
+    /// Configure the adaptor
     VISUOGREADAPTOR_API virtual void doConfigure()  throw ( ::fwTools::Failed );
-    /// Does Nothing
+    /// Do nothing
     VISUOGREADAPTOR_API virtual void doStart()  throw ( ::fwTools::Failed );
-    /// Does Nothing
+    /// Do nothing
     VISUOGREADAPTOR_API virtual void doStop()  throw ( ::fwTools::Failed );
-    /// Does Nothing
+    /// Do nothing
     VISUOGREADAPTOR_API virtual void doSwap() throw ( ::fwTools::Failed );
     /// Updates the shaderparameter values via the private method updateValue(), and requests a render of the scene.
     VISUOGREADAPTOR_API virtual void doUpdate() throw ( ::fwTools::Failed );
@@ -94,6 +102,12 @@ private:
 
     /// Set the parameter for a given technique
     bool setParameter(::Ogre::Technique& technique, const ::fwData::Object::sptr& paramObject);
+
+    /// SLOT : Set the uniform from an integer value
+    void setIntParameter(int value);
+
+    /// SLOT : Set the uniform from an float value
+    void setFloatParameter(float value);
 
     /// Material name
     std::string m_materialName;

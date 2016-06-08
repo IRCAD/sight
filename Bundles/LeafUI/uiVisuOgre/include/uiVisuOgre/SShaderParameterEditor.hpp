@@ -19,7 +19,7 @@
 
 #include <gui/editor/IEditor.hpp>
 
-#include <QGridLayout>
+#include <QVBoxLayout>
 
 #include "uiVisuOgre/config.hpp"
 
@@ -50,7 +50,7 @@ public:
 
 protected:
 
-    /// Internal class that will contain the Qt components foa one specific shader.
+    /// Internal class that will contain the Qt components for one specific shader.
     class ShaderEditorInfo
     {
 
@@ -61,15 +61,10 @@ protected:
             connections = ::fwServices::helper::SigSlotConnection::New();
         }
 
-        ::fwGuiQt::container::QtContainer::sptr labelPanel;
         ::fwGuiQt::container::QtContainer::sptr editorPanel;
 
-        std::string labelUUID;
         std::string editorUUID;
 
-        ::fwData::String::sptr label;
-
-        ::fwServices::IService::wptr labelService;
         ::fwServices::IService::wptr objService;
 
         ::fwServices::helper::SigSlotConnection::sptr connections;
@@ -81,11 +76,7 @@ protected:
      * @brief Configure the editor to associate with each object type
      *
      * @code{.xml}
-       <service uid="paramView" implementation="::uiVisuOgre::SShaderParameterEditor" type="::gui::editor::IEditor" autoComChannel="yes">
-         <association type="::fwData::Float" editor="::uiData::SFloatEditor" />
-         <association type="::fwData::Boolean" editor="::uiData::SBooleanEditor" />
-         <association type="::fwData::Integer" editor="::uiData::SIntegerEditor" />
-         <association type="::fwData::Image" editor="::uiData::SImageSceneEditorSrv" />
+       <service uid="paramView" impl="::uiVisuOgre::SShaderParameterEditor" type="::gui::editor::IEditor" autoConnect="yes">
        </service>
        @endcode
      * for which:\n
@@ -111,7 +102,8 @@ protected:
     ShaderEditorInfoContainerType m_shaderEditorInfos;
     EditorMapType m_associatedEditor;
 
-    ::fwServices::helper::SigSlotConnection::sptr m_connections; ///< Connection to image
+    /// Connection to the material
+    ::fwServices::helper::SigSlotConnection m_connections;
 
 private:
 
@@ -122,7 +114,7 @@ private:
     /// Instanciates the needed ui editors according to the stored informations
     void fillGui();
 
-    QGridLayout* m_gridSizer;
+    QVBoxLayout* m_sizer;
 
 };
 

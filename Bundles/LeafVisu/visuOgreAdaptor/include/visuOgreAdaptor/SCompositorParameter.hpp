@@ -7,8 +7,6 @@
 #ifndef __VISUOGREADAPTOR_SCOMPOSITORPARAMETER_HPP__
 #define __VISUOGREADAPTOR_SCOMPOSITORPARAMETER_HPP__
 
-
-
 #include <fwRenderOgre/IAdaptor.hpp>
 
 #include "visuOgreAdaptor/config.hpp"
@@ -18,15 +16,10 @@ namespace visuOgreAdaptor
 
 /**
  * @brief   Binds a FW4SPL data to a shader uniform from a specific compositor
- * @class   SCompositorParameter
- */
-
-/**
- * @brief Binds a FW4SPL data to a shader uniform from a specific compositor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <adaptor uid="paramAdaptor" impl="::visuOgreAdaptor::SShaderParameter">
+    <adaptor uid="paramAdaptor" class="::visuOgreAdaptor::SCompositorParameter">
         <config renderer="layerName" compositorName="compositor" parameter="u_value" shaderType="fragment" />
     </adaptor>
    @endcode
@@ -34,7 +27,7 @@ namespace visuOgreAdaptor
  * - \b compositorName (mandatory) : the name of the associated Ogre compositor
  * - \b parameter (mandatory) : name of the shader parameter to set
  * - \b technique (optional) : name of the technique, default to the first in the compositor
- * - \b shaderType (optional) : the type of the shader (vertex, geometry, fragment). Default to vertex.
+ * - \b shaderType (optional) : the type of the shader (vertex, geometry, fragment). Default to fragment.
  */
 class VISUOGREADAPTOR_CLASS_API SCompositorParameter : public ::fwRenderOgre::IAdaptor
 {
@@ -74,14 +67,15 @@ public:
 
 protected:
 
+    /// Configure the adaptor
     VISUOGREADAPTOR_API virtual void doConfigure()  throw ( ::fwTools::Failed );
-    /// Does Nothing
+    /// Do nothing
     VISUOGREADAPTOR_API virtual void doStart()  throw ( ::fwTools::Failed );
-    /// Does Nothing
+    /// Do nothing
     VISUOGREADAPTOR_API virtual void doStop()  throw ( ::fwTools::Failed );
-    /// Does Nothing
+    /// Do nothing
     VISUOGREADAPTOR_API virtual void doSwap() throw ( ::fwTools::Failed );
-    /// Does Nothing
+    /// Do nothing
     VISUOGREADAPTOR_API virtual void doUpdate() throw ( ::fwTools::Failed );
 
 private:
@@ -97,8 +91,6 @@ private:
     std::string m_techniqueName;
     /// Stores the value of the enum representing the shader's type.
     ShaderEnumType m_shaderType;
-    /// Dummy object to store the value when we use signal/slot instead of a real object
-    ::fwData::Object::sptr m_paramObject;
 };
 
 } // visuOgreAdaptor

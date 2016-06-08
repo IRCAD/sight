@@ -36,11 +36,16 @@ namespace visuOgreAdaptor
 
 fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SShaderParameter, ::fwData::Object);
 
+const ::fwCom::Slots::SlotKeyType SShaderParameter::s_SET_INT_PARAMETER_SLOT   = "setIntParameter";
+const ::fwCom::Slots::SlotKeyType SShaderParameter::s_SET_FLOAT_PARAMETER_SLOT = "setFloatParameter";
+
 //------------------------------------------------------------------------------
 
 SShaderParameter::SShaderParameter() throw() :
     m_shaderType(VERTEX)
 {
+    newSlot(s_SET_INT_PARAMETER_SLOT, &SShaderParameter::setIntParameter, this);
+    newSlot(s_SET_FLOAT_PARAMETER_SLOT, &SShaderParameter::setFloatParameter, this);
 }
 
 //------------------------------------------------------------------------------
@@ -96,7 +101,6 @@ void SShaderParameter::setParamName(std::string paramName)
 
 void SShaderParameter::doStart() throw(::fwTools::Failed)
 {
-    this->updateValue(nullptr);
 }
 
 //------------------------------------------------------------------------------
@@ -152,7 +156,6 @@ void SShaderParameter::doConfigure() throw(::fwTools::Failed)
 void SShaderParameter::doUpdate() throw(::fwTools::Failed)
 {
     this->updateValue(nullptr);
-    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -179,6 +182,10 @@ void SShaderParameter::updateValue(const fwData::Object::sptr& paramObject)
             SLM_ERROR("Couldn't set parameter '" + m_paramName + "' in any technique of material '"
                       + m_materialName + "'");
         }
+        else
+        {
+            this->requestRender();
+        }
     }
     else
     {
@@ -190,6 +197,10 @@ void SShaderParameter::updateValue(const fwData::Object::sptr& paramObject)
         {
             SLM_ERROR("Couldn't set parameter '" + m_paramName + "' in technique '" + m_techniqueName +
                       "' from material '" + m_materialName + "'");
+        }
+        else
+        {
+            this->requestRender();
         }
     }
 }
@@ -357,6 +368,34 @@ bool SShaderParameter::setParameter(::Ogre::Technique& technique, const fwData::
     }
 
     return true;
+}
+
+//------------------------------------------------------------------------------
+
+void SShaderParameter::setIntParameter(int value)
+{
+    if(m_paramObject == nullptr)
+    {
+        m_paramObject = ::fwData::Integer::New();
+    }
+    ::fwData::Integer::sptr paramObject = ::fwData::Integer::dynamicCast(m_paramObject);
+    paramObject->setValue(value);
+
+    this->updateValue(paramObject);
+}
+
+//------------------------------------------------------------------------------
+
+void SShaderParameter::setFloatParameter(float value)
+{
+    if(m_paramObject == nullptr)
+    {
+        m_paramObject = ::fwData::Float::New();
+    }
+    ::fwData::Float::sptr paramObject = ::fwData::Float::dynamicCast(m_paramObject);
+    paramObject->setValue(value);
+
+    this->updateValue(paramObject);
 }
 
 //------------------------------------------------------------------------------

@@ -64,7 +64,7 @@
                     <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
                     <renderer id="video" layer="1" />
                     <!-- Default Layer -->
-                    <renderer id="default" layer="2" compositors="Ellipse" />
+                    <renderer id="default" layer="2"  />
 
                     <adaptor id="videoAdapter" class="::visuOgreAdaptor::SVideo" objectId="videoImage">
                         <config renderer="video" cameraUID="${GENERIC_UID}_camera" />
@@ -79,7 +79,7 @@
                     </adaptor>
 
                     <adaptor id="modelSeriesAdaptor" class="::visuOgreAdaptor::SModelSeries" objectId="modelSeries">
-                        <config renderer="default" dynamic="true" />
+                        <config renderer="default" />
                     </adaptor>
 
                     <adaptor id="negato3DAdaptor" class="::visuOgreAdaptor::SNegato3D" objectId="image">
@@ -87,7 +87,7 @@
                     </adaptor>
 
                     <!-- Ellipse mask parameters adaptors -->
-                    <adaptor id="ellipseXParameter" class="::visuOgreAdaptor::SCompositorParameter" objectId="ellipseXKey">
+<!--                    <adaptor id="ellipseXParameter" class="::visuOgreAdaptor::SCompositorParameter" objectId="ellipseXKey">
                         <config renderer="default" compositorName="Ellipse" parameter="u_x" shaderType="fragment"/>
                     </adaptor>
 
@@ -105,7 +105,7 @@
 
                     <adaptor id="ellipseThetaParameter" class="::visuOgreAdaptor::SCompositorParameter" objectId="ellipseThetaKey">
                         <config renderer="default" compositorName="Ellipse" parameter="u_theta" shaderType="fragment"/>
-                    </adaptor>
+                    </adaptor>-->
                 </scene>
             </service>
 
