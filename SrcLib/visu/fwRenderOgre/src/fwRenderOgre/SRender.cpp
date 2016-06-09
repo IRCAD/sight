@@ -166,23 +166,57 @@ void SRender::starting() throw(fwTools::Failed)
 void SRender::stopping() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+    m_connections->disconnect();
 
-    // Stop associated adaptors
-    for ( auto& adaptorIter : m_sceneAdaptors )
+    if(this->isVersion2())
     {
-        SLM_ASSERT("SceneAdaptor expired", adaptorIter.second.getService());
-        if(adaptorIter.second.getService()->isStarted())
+        ConstObjectMapType container;
+        for(auto obj : this->getInputs())
         {
-            adaptorIter.second.getService()->stop();
+            if(obj.first != s_DEFAULT_OBJECT)
+            {
+                container[obj.first] = obj.second.lock();
+            }
         }
-        ::fwServices::OSR::unregisterService(adaptorIter.second.getService());
-        adaptorIter.second.getService().reset();
+        for(auto obj : this->getInOuts())
+        {
+            if(obj.first != s_DEFAULT_OBJECT)
+            {
+                container[obj.first] = obj.second.lock();
+            }
+        }
+        this->disconnect(container);
+        ::fwServices::helper::Config::disconnectProxies("self", m_proxyMap);
+    }
+    else
+    {
+        this->disconnect(this->getComposite()->getContainer());
     }
 
+    // Stop adaptors in the reverse order of their starting priority
+    std::vector< SPTR(IAdaptor) > stopAdaptors;
+
+    for(auto& sceneAdaptor : m_sceneAdaptors)
+    {
+        stopAdaptors.emplace_back(sceneAdaptor.second.getService());
+    }
+
+    std::sort(stopAdaptors.begin(), stopAdaptors.end(),
+              [](const SPTR(IAdaptor)& a, const SPTR(IAdaptor)& b)
+        {
+            return b->getStartPriority() < a->getStartPriority();
+        });
+
+    for(auto& adaptor : stopAdaptors)
+    {
+        adaptor->stop();
+        SLM_ASSERT("Adaptor is not stopped", adaptor->isStopped());
+        ::fwServices::OSR::unregisterService(adaptor);
+    }
+    stopAdaptors.clear();
     m_sceneAdaptors.clear();
 
     this->stopContext();
-
     this->destroy();
 }
 
@@ -271,7 +305,7 @@ void SRender::configureBackgroundLayer( ConfigurationType conf )
 void SRender::configureObject( ConfigurationType conf )
 {
     SLM_ASSERT("Not an \"adaptor\" configuration", conf->getName() == "adaptor");
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+    ::fwData::Composite::sptr composite = this->getComposite();
 
     const std::string id            = conf->getAttributeValue("id");
     const std::string objectId      = conf->getAttributeValue("objectId");
@@ -283,12 +317,12 @@ void SRender::configureObject( ConfigurationType conf )
     SLM_ASSERT( "'objectId' required attribute missing or empty", !objectId.empty() );
     SLM_ASSERT( "'adaptor' required attribute missing or empty", !adaptor.empty() );
 
-    const long unsigned int compositeObjectCount = composite->getContainer().count(objectId);
+    const size_t compositeObjectCount = composite->getContainer().count(objectId);
 
     OSLM_TRACE_IF(objectId << " not found in composite. If it exists, associated Adaptor will be destroyed",
                   !(compositeObjectCount == 1 || objectId == compositeName) );
 
-    ::fwData::Object::sptr object;
+    ::fwData::Object::csptr object;
     if (compositeObjectCount)
     {
         object = ::fwData::Object::dynamicCast(composite->getContainer()[objectId]);
@@ -296,6 +330,15 @@ void SRender::configureObject( ConfigurationType conf )
     else if (objectId == compositeName)
     {
         object = ::fwData::Object::dynamicCast(composite);
+    }
+    else if(this->isVersion2())
+    {
+        // Last chance with V2 behavior
+        object = this->getInput< ::fwData::Object >(objectId);
+        if(!object)
+        {
+            object = this->getInOut< ::fwData::Object >(objectId);
+        }
     }
 
     // If the adaptor isn't already stored in the map and the object exists
@@ -339,7 +382,7 @@ void SRender::configureObject( ConfigurationType conf )
             OSLM_TRACE ("Swapping IAdaptor " << adaptor << " on "<< objectId );
             if(adaptee.getService()->getObject() != object)
             {
-                adaptee.getService()->swap(object);
+                adaptee.getService()->swap(::fwData::Object::constCast(object));
             }
             else
             {
@@ -408,12 +451,25 @@ void SRender::startObject()
         {
             if(iter->hasAttribute("waitForKey"))
             {
-                ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
                 std::string key = iter->getAttributeValue("waitForKey");
-                ::fwData::Composite::const_iterator iterComposite = composite->find(key);
-                if(iterComposite != composite->end())
+
+                if(this->isVersion2())
                 {
-                    this->manageConnection(key, iterComposite->second, iter);
+                    auto object = this->getInput< ::fwData::Object >(key);
+                    if(object)
+                    {
+                        this->manageConnection(key, object, iter);
+                    }
+                }
+                else
+                {
+                    ::fwData::Composite::sptr composite               = this->getComposite();
+                    ::fwData::Composite::const_iterator iterComposite = composite->find(key);
+                    if(iterComposite != composite->end())
+                    {
+                        this->manageConnection(key, iterComposite->second, iter);
+
+                    }
                 }
                 m_connect.push_back(iter);
             }
@@ -426,12 +482,24 @@ void SRender::startObject()
         {
             if(iter->hasAttribute("waitForKey"))
             {
-                ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
                 std::string key = iter->getAttributeValue("waitForKey");
-                ::fwData::Composite::const_iterator iterComposite = composite->find(key);
-                if(iterComposite != composite->end())
+
+                if(this->isVersion2())
                 {
-                    this->manageProxy(key, iterComposite->second, iter);
+                    auto object = this->getInput< ::fwData::Object >(key);
+                    if(object)
+                    {
+                        this->manageProxy(key, object, iter);
+                    }
+                }
+                else
+                {
+                    ::fwData::Composite::sptr composite               = this->getComposite();
+                    ::fwData::Composite::const_iterator iterComposite = composite->find(key);
+                    if(iterComposite != composite->end())
+                    {
+                        this->manageProxy(key, iterComposite->second, iter);
+                    }
                 }
                 m_proxies.push_back(iter);
             }
@@ -528,6 +596,7 @@ void SRender::stopContext()
 void SRender::configureObjects(::fwData::Composite::ContainerType objects)
 {
     SLM_ASSERT("Scene configuration is not defined",  m_sceneConfiguration );
+    SLM_ASSERT("This should not be called in a AppXml2 application",  !this->isVersion2() );
 
     for( ::fwData::Composite::ContainerType::value_type objectId : objects)
     {
@@ -636,7 +705,7 @@ void SRender::connectAfterWait(::fwData::Composite::ContainerType objects)
 
 //-----------------------------------------------------------------------------
 
-void SRender::manageConnection(const std::string &key, const ::fwData::Object::sptr &obj,
+void SRender::manageConnection(const std::string &key, const ::fwData::Object::csptr &obj,
                                const ConfigurationType &config)
 {
     if(config->hasAttribute("waitForKey"))
@@ -663,7 +732,7 @@ void SRender::manageConnection(const std::string &key, const ::fwData::Object::s
 
 //-----------------------------------------------------------------------------
 
-void SRender::manageProxy(const std::string &key, const ::fwData::Object::sptr &obj,
+void SRender::manageProxy(const std::string &key, const ::fwData::Object::csptr &obj,
                           const ConfigurationType &config)
 {
     if(config->hasAttribute("waitForKey"))
@@ -673,24 +742,6 @@ void SRender::manageProxy(const std::string &key, const ::fwData::Object::sptr &
         {
             ::fwServices::helper::Config::createProxy(key, config, m_proxyMap, obj);
         }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SRender::disconnect(::fwData::Composite::ContainerType objects)
-{
-
-    for(::fwData::Composite::value_type element :  objects)
-    {
-        std::string key = element.first;
-        if(m_objectConnections.find(key) != m_objectConnections.end())
-        {
-            m_objectConnections[key]->disconnect();
-            m_objectConnections.erase(key);
-        }
-
-        ::fwServices::helper::Config::disconnectProxies(key, m_proxyMap);
     }
 }
 
@@ -705,6 +756,32 @@ void SRender::disconnect(::fwData::Composite::ContainerType objects)
 
 
     return connections;
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SRender::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( s_DEFAULT_OBJECT, ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT );
+    connections.push( s_DEFAULT_OBJECT, ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_CHANGE_OBJECTS_SLOT );
+    connections.push( s_DEFAULT_OBJECT, ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_REMOVE_OBJECTS_SLOT );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Composite::sptr SRender::getComposite()
+{
+    if(this->isVersion2())
+    {
+        return this->getInOut< ::fwData::Composite >(s_DEFAULT_OBJECT);
+    }
+    else
+    {
+        return this->getObject< ::fwData::Composite >();
+    }
 }
 
 // ----------------------------------------------------------------------------

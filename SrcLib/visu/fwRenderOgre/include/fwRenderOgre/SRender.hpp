@@ -52,6 +52,7 @@ public:
     typedef std::string AdaptorIdType;
     typedef std::string OgreObjectIdType;
     typedef std::string SceneIdType;
+    typedef std::map< std::string, ::fwData::Object::csptr > ConstObjectMapType;
 
     /// Actives layouts in the scene
     typedef std::map< SceneIdType, ::fwRenderOgre::Layer::sptr > LayerMapType;
@@ -116,6 +117,19 @@ public:
      * Connects Composite::s_REMOVED_OBJECTS_SIG to this::s_REMOVE_OBJECTS_SLOT
      */
     FWRENDEROGRE_API virtual KeyConnectionsType getObjSrvConnections() const;
+
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     */
+    FWRENDEROGRE_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+
+    /// TEMP: Function to grab the composite while we maintain appXml and appXml2
+    FWRENDEROGRE_API ::fwData::Composite::sptr getComposite();
 
 protected:
 
@@ -232,15 +246,16 @@ private:
     void connectAfterWait(::fwData::Composite::ContainerType objects);
 
     /// Creates the connection given by the configuration for obj associated with the key in the composite.
-    void manageConnection(const std::string &key, const ::fwData::Object::sptr &obj,
+    void manageConnection(const std::string &key, const ::fwData::Object::csptr &obj,
                           const ConfigurationType &config);
 
     /// Creates the proxy given by the configuration for obj associated with the key in the composite.
-    void manageProxy(const std::string &key, const ::fwData::Object::sptr &obj,
+    void manageProxy(const std::string &key, const ::fwData::Object::csptr &obj,
                      const ConfigurationType &config);
 
     /// Disconnects the connection based on a object key
-    void disconnect(::fwData::Composite::ContainerType objects);
+    template< class ContainerType >
+    void disconnect( const ContainerType& objects );
 
     /// Execute a ray cast with a ray built from (x,y) point, which is the mouse position
     void doRayCast(int x, int y, int width, int height);
@@ -298,6 +313,26 @@ private:
     /// True if the rendering is done only when requested
     bool m_renderOnDemand;
 };
+
+//-----------------------------------------------------------------------------
+
+template< class ContainerType >
+void SRender::disconnect(const ContainerType& objects)
+{
+    for(auto element :  objects)
+    {
+        std::string key = element.first;
+        if(m_objectConnections.find(key) != m_objectConnections.end())
+        {
+            m_objectConnections[key]->disconnect();
+            m_objectConnections.erase(key);
+        }
+
+        ::fwServices::helper::Config::disconnectProxies(key, m_proxyMap);
+    }
+}
+
+//-----------------------------------------------------------------------------
 
 }
 #endif // __FWRENDEROGRE_SRENDER_HPP__
