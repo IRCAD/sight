@@ -17,6 +17,9 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include <QDesktopWidget>
+#include <QRect>
+
 //-----------------------------------------------------------------------------
 
 fwRenderOgreRegisterMacro( ::visuOgreQt::RenderWindowInteractorManager,
@@ -51,7 +54,7 @@ void RenderWindowInteractorManager::requestRender()
 //-----------------------------------------------------------------------------
 
 void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwContainer::sptr _parent, bool showOverlay,
-                                                     bool renderOnDemand)
+                                                     bool renderOnDemand, bool fullscreen)
 {
     SLM_ASSERT("Invalid parent.", _parent );
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( _parent );
@@ -61,14 +64,29 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
     m_qOgreWidget = new ::visuOgreQt::Window();
     m_qOgreWidget->showOverlay(showOverlay);
     m_qOgreWidget->setAnimating(!renderOnDemand);
+
+//    QDesktopWidget *desktop = QApplication::desktop();
+//    int screenNumber = desktop->screenNumber(static_cast<QWindow*>(m_qOgreWidget));
+
     QWidget* renderingContainer = QWidget::createWindowContainer(m_qOgreWidget);
     renderingContainer->setSizePolicy(QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding));
+
+//    QRect screenres = desktop->screenGeometry(screenNumber);
+//    m_qOgreWidget->setGeometry(screenres);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(renderingContainer);
 
     container->setLayout(layout);
+
+    if(fullscreen)
+    {
+        container->setParent(0);
+        container->showFullScreen();
+
+        m_qOgreWidget->setFullScreen(fullscreen);
+    }
 
     QObject::connect(m_qOgreWidget, SIGNAL(renderWindowCreated()), this, SLOT(onRenderWindowCreated()));
 }

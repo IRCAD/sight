@@ -35,10 +35,11 @@ Window::Window(QWindow *parent) :
     m_animating(false),
     m_isInitialised(false),
     m_showOverlay(false),
+    m_fullscreen(false),
     m_lastPosLeftClick(nullptr),
     m_lastPosMiddleClick(nullptr)
 {
-    setAnimating(false);
+    setAnimating(true);
     installEventFilter(this);
 }
 
@@ -307,6 +308,18 @@ void Window::renderNow()
 
     this->render();
 
+    static int i = 0;
+
+    static float fps = 0.f;
+
+    fps += m_ogreRenderWindow->getLastFPS();
+    if(++i == 100)
+    {
+        std::cout << fps/100 << std::endl;
+        i   = 0;
+        fps = 0.f;
+    }
+
     if (m_animating)
     {
         this->renderLater();
@@ -381,6 +394,12 @@ void Window::keyPressEvent(QKeyEvent * e)
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS;
     info.key             = e->key();
+
+    if(m_fullscreen && e->key() == Qt::Key_Escape)
+    {
+        QApplication::quit();
+    }
+
     Q_EMIT interacted(info);
 }
 

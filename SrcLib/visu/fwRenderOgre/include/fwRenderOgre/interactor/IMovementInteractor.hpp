@@ -102,7 +102,7 @@ public:
     /// Called when a mouse button is pressed.
     FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton button, int x, int y) = 0;
 
-    /// Update camera's move scale
+    /// Update camera's move scale.
     FWRENDEROGRE_API virtual void setMouseScale(float mouseScale);
 
 protected:

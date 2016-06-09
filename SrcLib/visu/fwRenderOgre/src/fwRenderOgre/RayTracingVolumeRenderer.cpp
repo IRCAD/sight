@@ -199,7 +199,6 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
     computeSampleDistance(getCameraPlane());
 
     m_currentShaderParameters->setNamedConstant("u_sampleDistance", m_sampleDistance);
-    m_preIntegrationShaderParameters->setNamedConstant("u_sampleDistance", m_sampleDistance);
 }
 
 //-----------------------------------------------------------------------------
@@ -209,6 +208,8 @@ void RayTracingVolumeRenderer::setPreIntegratedRendering(bool preIntegratedRende
     m_preIntegratedRendering = preIntegratedRendering;
 
     m_currentShaderParameters = m_preIntegratedRendering ? m_preIntegrationShaderParameters : m_defaultShaderParameters;
+
+    m_currentShaderParameters->setNamedConstant("u_sampleDistance", m_sampleDistance);
 
     m_entryPointGeometry->setMaterialName(0, m_preIntegratedRendering ? "PreIntegratedRayTracedVolume" : "RayTracedVolume");
 }
