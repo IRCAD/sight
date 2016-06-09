@@ -72,6 +72,8 @@ public:
      */
     VISUOGREQT_API virtual void preViewportUpdate(const ::Ogre::RenderTargetViewportEvent& evt);
 
+    VISUOGREQT_API void setFullScreen(bool fullscreen);
+
 public Q_SLOTS:
 
     /**
@@ -140,6 +142,8 @@ protected:
     bool m_isInitialised;
     /// Tells if the overlay is show for this renderwindow
     bool m_showOverlay;
+    /// Tells if the window fills the screen.
+    bool m_fullscreen;
 
     /// Used to log position of left clic.
     QPoint* m_lastPosLeftClick;
@@ -172,6 +176,11 @@ protected:
     virtual bool event(QEvent *event);
 
 };
+
+inline void Window::setFullScreen(bool fullscreen)
+{
+    m_fullscreen = fullscreen;
+}
 
 }
 

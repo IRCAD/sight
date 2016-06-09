@@ -39,6 +39,66 @@ class IAdaptor;
 /**
  * @class SRender
  * @brief The generic scene service shows adaptors in a 3D Ogre scene.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service uid="generiSceneUID" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoconnect="yes">
+    <scene renderMode="auto">
+        <renderer id="rendererId" layer="1" compositors="Invert;Laplace;Posterize" />
+
+        <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
+            <config dynamic="true" transform="meshTFAdaptor" texture="texLiver"/>
+        </adaptor>
+
+        <adaptor id="transformAdaptor" class="::visuOgreAdaptor::STransform" objectId="meshTF">
+            <config transform="meshTFAdaptor"/>
+        </adaptor>
+
+        <...>
+
+        <connect>
+            <signal>adaptorUID/modified</signal>
+            <slot>serviceUid/updateTM</slot>
+        </connect>
+
+        <connect waitForKey="tm3dKey">
+            <signal>modified</signal><!-- signal for object "tm3dKey" -->
+            <slot>serviceUid/updateTM</slot>
+        </connect>
+
+        <proxy channel="myChannel">
+            <signal>adaptor2UID/modified</signal>
+            <slot>service2Uid/updateTM</slot>
+        </proxy>
+    </scene>
+   </service>
+   @endcode
+ * With :
+ *  - \b scene
+ *    - \b renderMode (optional): 'auto' (only when something has changed) or 'always' (render continuously).
+ *         Default is 'auto'.
+ *  - \b adaptor
+ *    - \b id (mandatory): the identifier of the adaptor
+ *    - \b class (mandatory): the classname of the adaptor service
+ *    - \b uid (optional): the fwID to specify for the adaptor service
+ *    - \b objectId (mandatory): the key of the adaptor's object in the scene's composite. The "self" key is used
+ *         when the adaptor works on the scene's composite.
+ *    - \b config: adaptor's configuration. It is parsed in the adaptor's configuring() method.
+ *  - \b connect/proxy : not mandatory, connects signal to slot
+ *    - \b waitForKey : not mandatory, defines the required object key for the signal/slot connection
+ *    - \b signal : mandatory, must be signal holder UID, followed by '/', followed by signal name. To use the
+ *         object (defined by waitForKey) signal, you don't have to write object uid, only the signal name.
+ *    - \b slot : mandatory, must be slot holder UID, followed by '/', followed by slot name
+ *  - \b renderer : mandatory, defines the scene's layer
+ *    - \b id (mandatory): the identifier of the layer
+ *    - \b layer (mandatory): the depth of the layer, starting from 1
+ *    - \b transparency (optional): the transparency technique to use: DepthPeeling, DualDepthPeeling,
+ *                                  WeightedBlended, HybridTransparency or CelShadingDepthPeeling.
+ *    - \b numPeels (optional): number of peels for the selected transparency technique.
+ *                              Not used for WeightedBlended OIT
+ *    - \b compositors (optional): defines the default compositor chain. The compositors are separated by semicolons
+ *    - \b fullscreen (optional, default="no"): Show the scene in full screen.
  */
 class FWRENDEROGRE_CLASS_API SRender : public ::fwRender::IRender
 
@@ -117,6 +177,16 @@ public:
      */
     FWRENDEROGRE_API virtual KeyConnectionsType getObjSrvConnections() const;
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     */
+    FWRENDEROGRE_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+
 protected:
 
     /// Renders the scene.
@@ -127,65 +197,7 @@ protected:
     /// Stops all the adaptors
     FWRENDEROGRE_API virtual void stopping() throw( ::fwTools::Failed);
 
-    /**
-     * @brief Configures the adaptor
-     * @code{.xml}
-       <service uid="generiSceneUID" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoconnect="yes">
-        <scene renderMode="auto">
-            <renderer id="rendererId" layer="1" compositors="Invert;Laplace;Posterize" />
-
-            <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
-                <config dynamic="true" transform="meshTFAdaptor" texture="texLiver"/>
-            </adaptor>
-
-            <adaptor id="transformAdaptor" class="::visuOgreAdaptor::STransform" objectId="meshTF">
-                <config transform="meshTFAdaptor"/>
-            </adaptor>
-
-            <...>
-
-            <connect>
-                <signal>adaptorUID/modified</signal>
-                <slot>serviceUid/updateTM</slot>
-            </connect>
-
-            <connect waitForKey="tm3dKey">
-                <signal>modified</signal><!-- signal for object "tm3dKey" -->
-                <slot>serviceUid/updateTM</slot>
-            </connect>
-
-            <proxy channel="myChannel">
-                <signal>adaptor2UID/modified</signal>
-                <slot>service2Uid/updateTM</slot>
-            </proxy>
-        </scene>
-       </service>
-       @endcode
-     * With :
-     *  - \b scene
-     *    - \b renderMode (optional): 'auto' (only when something has changed) or 'always' (render continuously).
-     *         Default is 'auto'.
-     *  - \b adaptor
-     *    - \b id (mandatory): the identifier of the adaptor
-     *    - \b class (mandatory): the classname of the adaptor service
-     *    - \b uid (optional): the fwID to specify for the adaptor service
-     *    - \b objectId (mandatory): the key of the adaptor's object in the scene's composite. The "self" key is used
-     *         when the adaptor works on the scene's composite.
-     *    - \b config: adaptor's configuration. It is parsed in the adaptor's configuring() method.
-     *  - \b connect/proxy : not mandatory, connects signal to slot
-     *    - \b waitForKey : not mandatory, defines the required object key for the signal/slot connection
-     *    - \b signal : mandatory, must be signal holder UID, followed by '/', followed by signal name. To use the
-     *         object (defined by waitForKey) signal, you don't have to write object uid, only the signal name.
-     *    - \b slot : mandatory, must be slot holder UID, followed by '/', followed by slot name
-     *  - \b renderer : mandatory, defines the scene's layer
-     *    - \b id (mandatory): the identifier of the layer
-     *    - \b layer (mandatory): the depth of the layer, starting from 1
-     *    - \b transparency (optional): the transparency technique to use: DepthPeeling, DualDepthPeeling,
-     *                                  WeightedBlended, HybridTransparency or CelShadingDepthPeeling.
-     *    - \b numPeels (optional): number of peels for the selected transparency technique.
-     *                              Not used for WeightedBlended OIT
-     *    - \b compositors (optional): defines the default compositor chain. The compositors are separated by semicolons
-     */
+    ///Configures the adaptor
     FWRENDEROGRE_API virtual void configuring() throw( ::fwTools::Failed);
 
     /// Does nothing.
@@ -232,11 +244,11 @@ private:
     void connectAfterWait(::fwData::Composite::ContainerType objects);
 
     /// Creates the connection given by the configuration for obj associated with the key in the composite.
-    void manageConnection(const std::string &key, const ::fwData::Object::sptr &obj,
+    void manageConnection(const std::string &key, const fwData::Object::csptr &obj,
                           const ConfigurationType &config);
 
     /// Creates the proxy given by the configuration for obj associated with the key in the composite.
-    void manageProxy(const std::string &key, const ::fwData::Object::sptr &obj,
+    void manageProxy(const std::string &key, const fwData::Object::csptr &obj,
                      const ConfigurationType &config);
 
     /// Disconnects the connection based on a object key
@@ -256,6 +268,9 @@ private:
 
     /// Configure the objects
     void configureObjects(::fwData::Composite::ContainerType objects);
+
+    /// TEMP: Function to grab the composite while we maintain V1 and V2
+    ::fwData::Composite::sptr getComposite();
 
     /// Contains all the adaptors of the scene
     SceneAdaptorsMapType m_sceneAdaptors;
@@ -297,6 +312,9 @@ private:
 
     /// True if the rendering is done only when requested
     bool m_renderOnDemand;
+
+    /// True if the render window is in fullscreen.
+    bool m_fullscreen;
 };
 
 }

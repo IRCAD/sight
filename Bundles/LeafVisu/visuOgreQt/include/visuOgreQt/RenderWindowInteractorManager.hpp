@@ -56,8 +56,8 @@ public:
     VISUOGREQT_API virtual void requestRender();
 
     /// Create the container that holds the QtWidget.
-    VISUOGREQT_API virtual void createContainer( ::fwGui::container::fwContainer::sptr _parent, bool showOverlay,
-                                                 bool renderOnDemand);
+    VISUOGREQT_API virtual void createContainer(::fwGui::container::fwContainer::sptr _parent, bool showOverlay,
+                                                 bool renderOnDemand, bool fullscreen);
 
     /// Connects widget and SRender signals and slots.
     VISUOGREQT_API virtual void connectToContainer();
