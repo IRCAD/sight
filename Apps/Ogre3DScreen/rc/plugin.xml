@@ -24,7 +24,7 @@
 
             <object uid="mesh" type="::fwData::Mesh" />
 
-            <service uid="ihm" impl="::gui::frame::SDefaultFrame" autoConnect="no">
+            <service uid="ihm" type="::gui::frame::SDefaultFrame" autoConnect="no">
                 <gui>
                     <frame>
                         <name>Ogre 3D Viewer</name>
@@ -37,13 +37,13 @@
                 </registry>
             </service>
 
-            <service impl="::ioVTK::SMeshReader" uid="meshReader" autoConnect="no">
+            <service type="::ioVTK::SMeshReader" uid="meshReader" autoConnect="no">
                 <inout key="target" uid="mesh" />
                 <file>/home/kgaudet/dev/data/Mesh/liver.vtk</file>
             </service>
 
 
-            <service uid="genericScene" impl="::fwRenderOgre::SRender" autoConnect="yes" >
+            <service uid="genericScene" type="::fwRenderOgre::SRender" autoConnect="yes" >
                 <in key="meshKey" uid="mesh" />
                 <scene overlay="true" fullscreen="yes" >
                     <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />

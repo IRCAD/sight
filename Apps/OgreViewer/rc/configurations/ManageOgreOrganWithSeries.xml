@@ -57,6 +57,7 @@
                 <object uid="${ORGAN_MANAGER_MODELSERIES}" src="ref" type="::fwMedData::ModelSeries">
 
                     <service uid="${GENERIC_UID}_listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" autoConnect="yes" >
+                        <enable_delete_selected>true</enable_delete_selected>
                         <columns>
                             <organ_name>@organ_name</organ_name>
                             <volume_cc view="positive" >@volume</volume_cc>

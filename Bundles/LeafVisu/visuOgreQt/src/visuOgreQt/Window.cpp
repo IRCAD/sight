@@ -397,6 +397,7 @@ void Window::keyPressEvent(QKeyEvent * e)
 
     if(m_fullscreen && e->key() == Qt::Key_Escape)
     {
+        // Tell Qt to end the main event loop and return from the QCoreApplication::exec() call.
         QApplication::quit();
     }
 

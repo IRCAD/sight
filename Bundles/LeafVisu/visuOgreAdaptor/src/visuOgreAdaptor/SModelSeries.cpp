@@ -16,8 +16,6 @@
 #include <fwData/Reconstruction.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwMedData/ModelSeries.hpp>
-
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
@@ -31,8 +29,8 @@ namespace visuOgreAdaptor
 {
 //-----------------------------------------------------------------------------
 
-static const ::fwCom::Slots::SlotKeyType s_ADD_RECONSTRUCTION_SLOT    = "addReconstruction";
-static const ::fwCom::Slots::SlotKeyType s_REMOVE_RECONSTRUCTION_SLOT = "removeReconstruction";
+static const ::fwCom::Slots::SlotKeyType s_ADD_RECONSTRUCTION_SLOT     = "addReconstruction";
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_RECONSTRUCTIONS_SLOT = "removeReconstructions";
 
 //------------------------------------------------------------------------------
 
@@ -43,7 +41,7 @@ SModelSeries::SModelSeries() throw() :
     m_isDynamicVertices(false)
 {
     newSlot(s_ADD_RECONSTRUCTION_SLOT, &SModelSeries::addReconstruction, this);
-    newSlot(s_REMOVE_RECONSTRUCTION_SLOT, &SModelSeries::removeReconstruction, this);
+    newSlot(s_REMOVE_RECONSTRUCTIONS_SLOT, &SModelSeries::removeReconstructions, this);
 }
 
 //------------------------------------------------------------------------------
@@ -164,9 +162,20 @@ void SModelSeries::addReconstruction()
 
 //------------------------------------------------------------------------------
 
-void SModelSeries::removeReconstruction()
+void SModelSeries::removeReconstructions(::fwMedData::ModelSeries::ReconstructionVectorType _recsToRemove)
 {
-    this->doStop();
+    ::fwMedData::ModelSeries::sptr modelSeries               = this->getObject< ::fwMedData::ModelSeries >();
+    ::fwMedData::ModelSeries::ReconstructionVectorType recDB = modelSeries->getReconstructionDB();
+
+    for(auto iter = recDB.begin(); iter != recDB.end(); ++iter)
+    {
+        if(_recsToRemove.front()->getID() == iter->get()->getID())
+        {
+            iter = recDB.erase(iter++);
+        }
+    }
+
+    this->doUpdate();
 }
 
 //-----------------------------------------------------------------------------
@@ -178,7 +187,7 @@ void SModelSeries::removeReconstruction()
     connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG,
                                            s_ADD_RECONSTRUCTION_SLOT ) );
     connections.push_back( std::make_pair( ::fwMedData::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG,
-                                           s_REMOVE_RECONSTRUCTION_SLOT ) );
+                                           s_REMOVE_RECONSTRUCTIONS_SLOT ) );
     return connections;
 }
 

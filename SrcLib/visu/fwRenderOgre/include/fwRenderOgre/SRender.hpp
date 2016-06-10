@@ -188,9 +188,6 @@ public:
      */
     FWRENDEROGRE_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
-    /// TEMP: Function to grab the composite while we maintain appXml and appXml2
-    FWRENDEROGRE_API ::fwData::Composite::sptr getComposite();
-
 protected:
 
     /// Renders the scene.
@@ -248,11 +245,11 @@ private:
     void connectAfterWait(::fwData::Composite::ContainerType objects);
 
     /// Creates the connection given by the configuration for obj associated with the key in the composite.
-    void manageConnection(const std::string &key, const ::fwData::Object::sptr &obj,
+    void manageConnection(const std::string &key, const ::fwData::Object::csptr &obj,
                           const ConfigurationType &config);
 
     /// Creates the proxy given by the configuration for obj associated with the key in the composite.
-    void manageProxy(const std::string &key, const ::fwData::Object::sptr &obj,
+    void manageProxy(const std::string &key, const ::fwData::Object::csptr &obj,
                      const ConfigurationType &config);
 
     /// Disconnects the connection based on a object key

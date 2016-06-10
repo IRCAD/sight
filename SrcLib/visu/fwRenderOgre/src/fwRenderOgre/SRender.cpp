@@ -459,7 +459,7 @@ void SRender::startObject()
         {
             if(iter->hasAttribute("waitForKey"))
             {
-                ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+//                ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
                 std::string key = iter->getAttributeValue("waitForKey");
 
                 if(this->isVersion2())
@@ -490,7 +490,7 @@ void SRender::startObject()
         {
             if(iter->hasAttribute("waitForKey"))
             {
-                ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+//                ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
                 std::string key = iter->getAttributeValue("waitForKey");
 
                 if(this->isVersion2())
@@ -587,7 +587,7 @@ void SRender::startContext()
 {
     m_interactorManager = ::fwRenderOgre::IRenderWindowInteractorManager::createManager();
     m_interactorManager->setRenderService(this->getSptr());
-    m_interactorManager->createContainer( this->getContainer(), m_showOverlay, m_renderOnDemand );
+    m_interactorManager->createContainer( this->getContainer(), m_showOverlay, m_renderOnDemand, m_fullscreen );
 }
 
 //-----------------------------------------------------------------------------
