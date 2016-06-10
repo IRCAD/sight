@@ -9,8 +9,6 @@
 
 #include "visuOgreAdaptor/config.hpp"
 
-#include <fwMedData/ModelSeries.hpp>
-
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 
@@ -70,8 +68,8 @@ protected:
 
     /// Calls doUpdate
     VISUOGREADAPTOR_API void addReconstruction();
-    /// Removes the requested reconstructions from the ModelSeries
-    VISUOGREADAPTOR_API void removeReconstructions(::fwMedData::ModelSeries::ReconstructionVectorType _recsToRemove);
+    /// calls doStop.
+    VISUOGREADAPTOR_API void removeReconstruction();
 
 private:
 

@@ -39,7 +39,7 @@ Window::Window(QWindow *parent) :
     m_lastPosLeftClick(nullptr),
     m_lastPosMiddleClick(nullptr)
 {
-    setAnimating(true);
+    setAnimating(false);
     installEventFilter(this);
 }
 
@@ -307,18 +307,6 @@ void Window::renderNow()
     }
 
     this->render();
-
-    static int i = 0;
-
-    static float fps = 0.f;
-
-    fps += m_ogreRenderWindow->getLastFPS();
-    if(++i == 100)
-    {
-        std::cout << fps/100 << std::endl;
-        i   = 0;
-        fps = 0.f;
-    }
 
     if (m_animating)
     {
