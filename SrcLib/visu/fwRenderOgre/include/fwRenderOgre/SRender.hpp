@@ -7,6 +7,8 @@
 #ifndef __FWRENDEROGRE_SRENDER_HPP__
 #define __FWRENDEROGRE_SRENDER_HPP__
 
+#include "fwRenderOgre/config.hpp"
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Signal.hpp>
@@ -29,16 +31,74 @@
 
 #include <map>
 
-#include "fwRenderOgre/config.hpp"
-
 namespace fwRenderOgre
 {
 
 class IAdaptor;
 
 /**
- * @class SRender
  * @brief The generic scene service shows adaptors in a 3D Ogre scene.
+ * @section XML XML Configuration
+ * @code{.xml}
+   <service uid="generiSceneUID" type="::fwRenderOgre::SRender" autoconnect="yes">
+
+    <in key="meshKey" uid="meshUID" />
+    <in key="meshTFKey" uid="meshTFUID" />
+
+    <scene renderMode="auto">
+        <renderer id="rendererId" layer="1" compositors="Invert;Laplace;Posterize" />
+
+        <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
+            <config dynamic="true" transform="meshTFAdaptor" texture="texLiver"/>
+        </adaptor>
+
+        <adaptor id="transformAdaptor" class="::visuOgreAdaptor::STransform" objectId="meshTFKey">
+            <config transform="meshTFAdaptor"/>
+        </adaptor>
+
+        <...>
+
+        <connect>
+            <signal>adaptorUID/modified</signal>
+            <slot>serviceUid/updateTM</slot>
+        </connect>
+
+        <connect waitForKey="tm3dKey">
+            <signal>modified</signal><!-- signal for object "tm3dKey" -->
+            <slot>serviceUid/updateTM</slot>
+        </connect>
+
+        <proxy channel="myChannel">
+            <signal>adaptor2UID/modified</signal>
+            <slot>service2Uid/updateTM</slot>
+        </proxy>
+    </scene>
+   </service>
+   @endcode
+ * With :
+ *  - \b scene
+ *    - \b renderMode (optional): 'auto' (only when something has changed) or 'always' (render continuously).
+ *         Default is 'auto'.
+ *  - \b adaptor
+ *    - \b id (mandatory): the identifier of the adaptor
+ *    - \b class (mandatory): the classname of the adaptor service
+ *    - \b uid (optional): the fwID to specify for the adaptor service
+ *    - \b objectId (mandatory): the key of the adaptor's object in the scene's composite. The "self" key is used
+ *         when the adaptor works on the scene's composite.
+ *    - \b config: adaptor's configuration. It is parsed in the adaptor's configuring() method.
+ *  - \b connect/proxy : not mandatory, connects signal to slot
+ *    - \b waitForKey : not mandatory, defines the required object key for the signal/slot connection
+ *    - \b signal : mandatory, must be signal holder UID, followed by '/', followed by signal name. To use the
+ *         object (defined by waitForKey) signal, you don't have to write object uid, only the signal name.
+ *    - \b slot : mandatory, must be slot holder UID, followed by '/', followed by slot name
+ *  - \b renderer : mandatory, defines the scene's layer
+ *    - \b id (mandatory): the identifier of the layer
+ *    - \b layer (mandatory): the depth of the layer, starting from 1
+ *    - \b transparency (optional): the transparency technique to use: DepthPeeling, DualDepthPeeling,
+ *                                  WeightedBlended, HybridTransparency or CelShadingDepthPeeling.
+ *    - \b numPeels (optional): number of peels for the selected transparency technique.
+ *                              Not used for WeightedBlended OIT
+ *    - \b compositors (optional): defines the default compositor chain. The compositors are separated by semicolons
  */
 class FWRENDEROGRE_CLASS_API SRender : public ::fwRender::IRender
 
@@ -141,65 +201,7 @@ protected:
     /// Stops all the adaptors
     FWRENDEROGRE_API virtual void stopping() throw( ::fwTools::Failed);
 
-    /**
-     * @brief Configures the adaptor
-     * @code{.xml}
-       <service uid="generiSceneUID" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoconnect="yes">
-        <scene renderMode="auto">
-            <renderer id="rendererId" layer="1" compositors="Invert;Laplace;Posterize" />
-
-            <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
-                <config dynamic="true" transform="meshTFAdaptor" texture="texLiver"/>
-            </adaptor>
-
-            <adaptor id="transformAdaptor" class="::visuOgreAdaptor::STransform" objectId="meshTF">
-                <config transform="meshTFAdaptor"/>
-            </adaptor>
-
-            <...>
-
-            <connect>
-                <signal>adaptorUID/modified</signal>
-                <slot>serviceUid/updateTM</slot>
-            </connect>
-
-            <connect waitForKey="tm3dKey">
-                <signal>modified</signal><!-- signal for object "tm3dKey" -->
-                <slot>serviceUid/updateTM</slot>
-            </connect>
-
-            <proxy channel="myChannel">
-                <signal>adaptor2UID/modified</signal>
-                <slot>service2Uid/updateTM</slot>
-            </proxy>
-        </scene>
-       </service>
-       @endcode
-     * With :
-     *  - \b scene
-     *    - \b renderMode (optional): 'auto' (only when something has changed) or 'always' (render continuously).
-     *         Default is 'auto'.
-     *  - \b adaptor
-     *    - \b id (mandatory): the identifier of the adaptor
-     *    - \b class (mandatory): the classname of the adaptor service
-     *    - \b uid (optional): the fwID to specify for the adaptor service
-     *    - \b objectId (mandatory): the key of the adaptor's object in the scene's composite. The "self" key is used
-     *         when the adaptor works on the scene's composite.
-     *    - \b config: adaptor's configuration. It is parsed in the adaptor's configuring() method.
-     *  - \b connect/proxy : not mandatory, connects signal to slot
-     *    - \b waitForKey : not mandatory, defines the required object key for the signal/slot connection
-     *    - \b signal : mandatory, must be signal holder UID, followed by '/', followed by signal name. To use the
-     *         object (defined by waitForKey) signal, you don't have to write object uid, only the signal name.
-     *    - \b slot : mandatory, must be slot holder UID, followed by '/', followed by slot name
-     *  - \b renderer : mandatory, defines the scene's layer
-     *    - \b id (mandatory): the identifier of the layer
-     *    - \b layer (mandatory): the depth of the layer, starting from 1
-     *    - \b transparency (optional): the transparency technique to use: DepthPeeling, DualDepthPeeling,
-     *                                  WeightedBlended, HybridTransparency or CelShadingDepthPeeling.
-     *    - \b numPeels (optional): number of peels for the selected transparency technique.
-     *                              Not used for WeightedBlended OIT
-     *    - \b compositors (optional): defines the default compositor chain. The compositors are separated by semicolons
-     */
+    ///Configures the adaptor
     FWRENDEROGRE_API virtual void configuring() throw( ::fwTools::Failed);
 
     /// Does nothing.
