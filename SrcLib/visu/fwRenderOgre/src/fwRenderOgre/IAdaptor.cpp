@@ -97,7 +97,7 @@ void IAdaptor::setRenderService( SRender::sptr service)
 {
     /// Preconditions
     SLM_ASSERT("service not instanced", service);
-    SLM_ASSERT("The adaptor is not stopped", this->isStopped());
+    SLM_ASSERT("The adaptor ('"+this->getID()+"') is not stopped", this->isStopped());
 
     m_renderService = service;
 }

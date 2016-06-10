@@ -34,7 +34,7 @@
                     <gui>
                         <frame>
                             <name>Ogre Viewer</name>
-                            <icon>Bundles/OgreViewer_0-1/ogre_head.svg</icon>
+                            <icon>@BUNDLE_PREFIX@/OgreViewer_0-1/ogre_head.svg</icon>
                             <minSize width="1100" height="700" />
                         </frame>
                         <menuBar />
@@ -268,7 +268,7 @@
                                     <parameters>
                                         <parameter replace="ORGAN_MANAGER_MODELSERIES" by="modelSeriesUID" />
                                         <parameter replace="WID_PARENT" by="${GENERIC_UID}_organView" />
-                                        <parameter replace="ICON_PATH" by="Bundles/arMedia_0-1/icons/app.ico" />
+                                        <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/arMedia_0-1/icons/app.ico" />
                                     </parameters>
                                 </appConfig>
                             </config>
