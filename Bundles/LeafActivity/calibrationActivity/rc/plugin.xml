@@ -24,7 +24,7 @@
         <id>Calibration</id>
         <title>Calibration</title>
         <desc>Calibration activity</desc>
-        <icon>Bundles/arMedia_0-1/icons/calibrationActivity.svg</icon>
+        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>
@@ -40,7 +40,7 @@
         <id>toolsCalibration</id>
         <title>ToolsCalibration</title>
         <desc>Tools Calibration activity</desc>
-        <icon>Bundles/arMedia_0-1/icons/calibrationActivity.svg</icon>
+        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1" />
         </requirements>

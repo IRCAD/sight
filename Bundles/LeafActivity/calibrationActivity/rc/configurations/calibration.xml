@@ -32,14 +32,14 @@
             <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
-                        <menuItem name="Export camera series" icon="Bundles/media_0-1/icons/Export.svg" />
-                        <menuItem name="Export activity" icon="Bundles/arMedia_0-1/icons/export_activity.svg" />
+                        <menuItem name="Export camera series" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
+                        <menuItem name="Export activity" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/export_activity.svg" />
                         <separator />
-                        <menuItem name="Export XML" icon="Bundles/arMedia_0-1/icons/save.svg" />
+                        <menuItem name="Export XML" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/save.svg" />
                         <separator />
                         <editor />
                         <separator />
-                        <menuItem name="Chessboard size" icon="Bundles/arMedia_0-1/icons/chessboard.svg" />
+                        <menuItem name="Chessboard size" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/chessboard.svg" />
                     </layout>
                 </gui>
                 <registry>

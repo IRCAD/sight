@@ -99,12 +99,12 @@ void SCameraConfigLauncher::starting() throw(::fwTools::Failed)
     m_cameraComboBox = new QComboBox();
     layout->addWidget(m_cameraComboBox);
 
-    QIcon addIcon(QString("Bundles/media_0-1/icons/Import.svg"));
+    QIcon addIcon(QString(BUNDLE_PREFIX) + QString("/media_0-1/icons/Import.svg"));
     m_addButton = new QPushButton(addIcon, "");
     m_addButton->setToolTip("Add a new camera.");
     layout->addWidget(m_addButton);
 
-    QIcon removeIcon(QString("Bundles/arMedia_0-1/icons/remove.svg"));
+    QIcon removeIcon(QString(BUNDLE_PREFIX) + QString("/arMedia_0-1/icons/remove.svg"));
     m_removeButton = new QPushButton(removeIcon, "");
     m_removeButton->setToolTip("Remove the camera.");
     layout->addWidget(m_removeButton);

@@ -29,12 +29,12 @@
             <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
-                        <menuItem name="Launch activity" icon="Bundles/media_0-1/icons/Launch_activity.svg" />
+                        <menuItem name="Launch activity" icon="@BUNDLE_PREFIX@/media_0-1/icons/Launch_activity.svg" />
                         <separator />
-                        <menuItem name="Calibration activity" icon="Bundles/arMedia_0-1/icons/calibrationActivity.svg" />
-                        <menuItem name="Export CameraSeries calibration" icon="Bundles/media_0-1/icons/Export.svg" />
+                        <menuItem name="Calibration activity" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg" />
+                        <menuItem name="Export CameraSeries calibration" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
                         <separator/>
-                        <menuItem name="Tools Calibration activity" icon="Bundles/arMedia_0-1/icons/calibrationActivity.svg"/>
+                        <menuItem name="Tools Calibration activity" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg"/>
                     </layout>
                 </gui>
                 <registry>
@@ -50,7 +50,7 @@
                     <service uid="${GENERIC_UID}_selector" impl="::uiMedData::editor::SSelector" autoConnect="yes">
                         <selectionId>${GENERIC_UID}_selections</selectionId>
                         <icons>
-                            <icon series="::arData::CameraSeries" icon="Bundles/arMedia_0-1/icons/calibrationActivity.svg" />
+                            <icon series="::arData::CameraSeries" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg" />
                         </icons>
                     </service>
                 </object>
