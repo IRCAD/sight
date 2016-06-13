@@ -7,6 +7,8 @@
 #ifndef __FWRENDEROGRE_SRENDER_HPP__
 #define __FWRENDEROGRE_SRENDER_HPP__
 
+#include "fwRenderOgre/config.hpp"
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Signal.hpp>
@@ -29,21 +31,20 @@
 
 #include <map>
 
-#include "fwRenderOgre/config.hpp"
-
 namespace fwRenderOgre
 {
 
 class IAdaptor;
 
 /**
- * @class SRender
  * @brief The generic scene service shows adaptors in a 3D Ogre scene.
- *
  * @section XML XML Configuration
- *
  * @code{.xml}
-   <service uid="generiSceneUID" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoconnect="yes">
+   <service uid="generiSceneUID" type="::fwRenderOgre::SRender" autoconnect="yes">
+
+    <in key="meshKey" uid="meshUID" />
+    <in key="meshTFKey" uid="meshTFUID" />
+
     <scene renderMode="auto">
         <renderer id="rendererId" layer="1" compositors="Invert;Laplace;Posterize" />
 
@@ -51,7 +52,7 @@ class IAdaptor;
             <config dynamic="true" transform="meshTFAdaptor" texture="texLiver"/>
         </adaptor>
 
-        <adaptor id="transformAdaptor" class="::visuOgreAdaptor::STransform" objectId="meshTF">
+        <adaptor id="transformAdaptor" class="::visuOgreAdaptor::STransform" objectId="meshTFKey">
             <config transform="meshTFAdaptor"/>
         </adaptor>
 
@@ -188,6 +189,9 @@ public:
      */
     FWRENDEROGRE_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
+    /// TEMP: Function to grab the composite while we maintain appXml and appXml2
+    FWRENDEROGRE_API ::fwData::Composite::sptr getComposite();
+
 protected:
 
     /// Renders the scene.
@@ -270,9 +274,6 @@ private:
 
     /// Configure the objects
     void configureObjects(::fwData::Composite::ContainerType objects);
-
-    /// TEMP: Function to grab the composite while we maintain V1 and V2
-    ::fwData::Composite::sptr getComposite();
 
     /// Contains all the adaptors of the scene
     SceneAdaptorsMapType m_sceneAdaptors;
