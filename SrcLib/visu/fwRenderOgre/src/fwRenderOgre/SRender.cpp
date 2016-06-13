@@ -209,7 +209,10 @@ void SRender::stopping() throw(fwTools::Failed)
 
     for(auto& adaptor : stopAdaptors)
     {
-        adaptor->stop();
+        if(adaptor->isStarted())
+        {
+            adaptor->stop();
+        }
         SLM_ASSERT("Adaptor is not stopped", adaptor->isStopped());
         ::fwServices::OSR::unregisterService(adaptor);
     }
