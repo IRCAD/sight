@@ -20,7 +20,10 @@
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreColourValue.h>
+#include <OGRE/OgreCompositorChain.h>
+#include <OGRE/OgreCompositorInstance.h>
 #include <OGRE/OgreEntity.h>
+#include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreLight.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreVector3.h>
@@ -33,6 +36,8 @@
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreTechnique.h>
+#include <OGRE/OgreTextureManager.h>
+#include <OGRE/OgreRenderTexture.h>
 
 #include <stack>
 
@@ -48,10 +53,93 @@ const ::fwCom::Slots::SlotKeyType Layer::s_USE_CELSHADING_SLOT = "useCelShading"
 
 //-----------------------------------------------------------------------------
 
+class CameraListener : public ::Ogre::Camera::Listener
+{
+public:
+
+    CameraListener(std::vector< ::Ogre::TexturePtr> renderTargets, std::vector< ::Ogre::Viewport*> viewports) :
+        m_renderTargets(renderTargets),
+        m_viewports(viewports)
+    {
+
+    }
+
+    virtual void cameraPreRenderScene(::Ogre::Camera *cam)
+    {
+        const float focalLength = cam->getFocalLength();
+
+        const double eyeAngle = 0.01625;
+        double angle = eyeAngle * -3.5;
+
+        for(::Ogre::Viewport *vp : m_viewports)
+        {
+            ::Ogre::Camera *viewportCamera = vp->getCamera();
+            viewportCamera->synchroniseBaseSettingsWith(cam);
+
+            ::Ogre::Matrix4 shearTransform = ::Ogre::Matrix4::IDENTITY;
+            float xshearFactor = static_cast<float>(std::tan(angle));
+
+            shearTransform[0][2] = -xshearFactor;
+            shearTransform[0][3] = -focalLength * xshearFactor;
+
+            angle += eyeAngle;
+
+            ::Ogre::Matrix4 viewportProjectionTransform = shearTransform * cam->getProjectionMatrix();
+            viewportCamera->setCustomProjectionMatrix(true, viewportProjectionTransform);
+        }
+
+        for(::Ogre::TexturePtr renderTarget : m_renderTargets)
+        {
+            renderTarget->getBuffer()->getRenderTarget()->update();
+        }
+    }
+
+private:
+
+    std::vector< ::Ogre::TexturePtr> m_renderTargets;
+
+    std::vector< ::Ogre::Viewport*> m_viewports;
+
+};
+
+//-----------------------------------------------------------------------------
+
+class CompositorListener : public ::Ogre::CompositorInstance::Listener
+{
+public:
+
+    CompositorListener(std::vector< ::Ogre::TexturePtr> renderTargets) :
+        m_renderTargets(renderTargets)
+    {
+
+    }
+
+    virtual void notifyMaterialRender(::Ogre::uint32, ::Ogre::MaterialPtr& mtl)
+    {
+        ::Ogre::Pass *pass = mtl->getTechnique(0)->getPass(0);
+
+        for(unsigned i = 0; i < m_renderTargets.size(); ++ i)
+        {
+            ::Ogre::TextureUnitState *texUnitState = pass->getTextureUnitState(std::to_string(i));
+
+            OSLM_ASSERT("No texture named " << i, texUnitState);
+            texUnitState->setTextureName(m_renderTargets[i]->getName());
+        }
+    }
+
+private:
+
+    std::vector< ::Ogre::TexturePtr> m_renderTargets;
+
+};
+
+//-----------------------------------------------------------------------------
+
 Layer::Layer() :
     m_sceneManager(nullptr),
     m_renderWindow(nullptr),
     m_viewport(nullptr),
+    m_nbViewports(1),
     m_hasCoreCompositor(false),
     m_hasCompositorChain(false),
     m_sceneCreated(false),
@@ -134,7 +222,7 @@ void Layer::createScene()
     } // Set the background material
     else
     {
-        // FIXME : background isn't show when using compositor with a clear pass
+        // FIXME : background isn't shown when using compositor with a clear pass
         // We must blend the input previous in each compositor
         ::Ogre::MaterialPtr defaultMaterial = ::Ogre::MaterialManager::getSingleton().getByName("DefaultBackground");
         ::Ogre::MaterialPtr material        = ::Ogre::MaterialManager::getSingleton().create(
@@ -214,9 +302,63 @@ void Layer::createScene()
         this->setupCore();
     }
 
-    if(m_hasCompositorChain)
+    if(m_nbViewports > 1) // use this layer for multi-view rendering.
     {
-        m_compositorChainManager.setCompositorChain(this->trimSemicolons(m_rawCompositorChain));
+        for(unsigned i = 0; i < m_nbViewports; ++ i)
+        {
+            ::Ogre::TexturePtr renderTargetTexture = ::Ogre::TextureManager::getSingleton().createManual(
+                        this->getID() + "__ViewportTexture__" + std::to_string(i),
+                        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                        ::Ogre::TEX_TYPE_2D,
+                        m_viewport->getActualWidth(),
+                        m_viewport->getActualHeight(),
+                        0,
+                        ::Ogre::PF_R8G8B8,
+                        ::Ogre::TU_RENDERTARGET);
+
+            ::Ogre::Camera *viewportCamera = m_sceneManager->createCamera(this->getID() + "_ViewportCamera_" + std::to_string(i));
+
+            m_camera->getParentSceneNode()->attachObject(viewportCamera);
+
+            m_renderTargets.push_back(renderTargetTexture);
+
+            ::Ogre::RenderTexture *renderTarget = renderTargetTexture->getBuffer()->getRenderTarget();
+
+            ::Ogre::Viewport *viewport = renderTarget->addViewport(viewportCamera);
+            viewport->setBackgroundColour(::Ogre::ColourValue( 0, 0, 0 ));
+            viewport->setClearEveryFrame(true);
+
+            m_compositorChainManager.setOgreViewport(viewport);
+
+            if(m_hasCompositorChain)
+            {
+                m_compositorChainManager.setCompositorChain(this->trimSemicolons(m_rawCompositorChain));
+            }
+
+            m_multiViewports.push_back(viewport);
+        }
+
+        ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+        compositorManager.addCompositor(m_viewport, "Alioscopy");
+        compositorManager.setCompositorEnabled(m_viewport, "Alioscopy", true);
+
+        m_camera->addListener(new CameraListener(m_renderTargets, m_multiViewports));
+
+        ::Ogre::CompositorChain *compChain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(m_viewport);
+
+        ::Ogre::CompositorInstance *compInstance = compChain->getCompositor("Alioscopy");
+
+        compInstance->addListener(new CompositorListener(m_renderTargets));
+
+    }
+    else
+    {
+        m_compositorChainManager.setOgreViewport(m_viewport);
+
+        if(m_hasCompositorChain)
+        {
+            m_compositorChainManager.setCompositorChain(this->trimSemicolons(m_rawCompositorChain));
+        }
     }
 
     this->setMoveInteractor(interactor);
@@ -573,6 +715,13 @@ void Layer::doRayCast(int x, int y, int width, int height)
 void Layer::requestRender()
 {
     m_renderService.lock()->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void Layer::setNbViewports(unsigned nbViewports)
+{
+    m_nbViewports = nbViewports;
 }
 
 //-----------------------------------------------------------------------------

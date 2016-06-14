@@ -253,6 +253,7 @@ void SRender::configureLayer( ConfigurationType conf )
     const std::string compositors           = conf->getAttributeValue("compositors");
     const std::string transparencyTechnique = conf->getAttributeValue("transparency");
     const std::string numPeels              = conf->getAttributeValue("numPeels");
+    const std::string mode3D                = conf->getAttributeValue("mode3D");
 
     SLM_ASSERT( "'id' required attribute missing or empty", !id.empty() );
     SLM_ASSERT( "'layer' required attribute missing or empty", !layer.empty() );
@@ -261,11 +262,14 @@ void SRender::configureLayer( ConfigurationType conf )
 
     SLM_ASSERT("Attribute 'layer' must be greater than 0", layerDepth > 0);
 
+    unsigned int viewports = mode3D == "Alioscopy8" ? 8 : 1;                                    ;
+
     ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
     ogreLayer->setID(this->getID() + "_" + id);
     ogreLayer->setDepth(layerDepth);
     ogreLayer->setWorker(m_associatedWorker);
     ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
+    ogreLayer->setNbViewports(viewports);
 
     ogreLayer->setCoreCompositorEnabled(id == "default", transparencyTechnique, numPeels);
     ogreLayer->setCompositorChainEnabled(compositors != "", compositors);

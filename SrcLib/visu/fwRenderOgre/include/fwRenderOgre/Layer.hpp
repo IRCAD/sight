@@ -163,6 +163,9 @@ public:
     /// Requests render
     FWRENDEROGRE_API void requestRender();
 
+    /// Sets the number of viewports.
+    FWRENDEROGRE_API void setNbViewports(unsigned nbViewports);
+
     /// Sets background color : specific to background Layer
     FWRENDEROGRE_API void setBackgroundColor(std::string topColor, std::string botColor);
 
@@ -217,6 +220,15 @@ private:
 
     /// Ogre viewport representing this layer
     ::Ogre::Viewport* m_viewport;
+
+    /// Number of viewports.
+    unsigned m_nbViewports;
+
+    /// Intermediate render targets for multi-view rendering.
+    std::vector< ::Ogre::TexturePtr > m_renderTargets;
+
+    /// Ogre viewports for multi-screen monitors.
+    std::vector< ::Ogre::Viewport * > m_multiViewports;
 
     /// This boolean enables default compositor's widgets (gui displays before scene creation)
     bool m_hasCoreCompositor;
