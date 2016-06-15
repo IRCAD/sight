@@ -57,7 +57,7 @@ class CameraListener : public ::Ogre::Camera::Listener
 {
 public:
 
-    CameraListener(std::vector< ::Ogre::TexturePtr> renderTargets, std::vector< ::Ogre::Viewport*> viewports) :
+    CameraListener(std::vector< ::Ogre::TexturePtr>& renderTargets, std::vector< ::Ogre::Viewport*>& viewports) :
         m_renderTargets(renderTargets),
         m_viewports(viewports)
     {
@@ -66,10 +66,10 @@ public:
 
     virtual void cameraPreRenderScene(::Ogre::Camera *cam)
     {
-        const float focalLength = cam->getFocalLength();
+        const float eyeAngle = 0.01625;
+        float angle = eyeAngle * -3.5;
 
-        const double eyeAngle = 0.01625;
-        double angle = eyeAngle * -3.5;
+        const float focalLength = cam->getFocalLength();
 
         for(::Ogre::Viewport *vp : m_viewports)
         {
@@ -77,14 +77,14 @@ public:
             viewportCamera->synchroniseBaseSettingsWith(cam);
 
             ::Ogre::Matrix4 shearTransform = ::Ogre::Matrix4::IDENTITY;
-            float xshearFactor = static_cast<float>(std::tan(angle));
+            float xshearFactor = std::tan(angle);
 
             shearTransform[0][2] = -xshearFactor;
             shearTransform[0][3] = -focalLength * xshearFactor;
 
             angle += eyeAngle;
 
-            ::Ogre::Matrix4 viewportProjectionTransform = shearTransform * cam->getProjectionMatrix();
+            ::Ogre::Matrix4 viewportProjectionTransform = cam->getProjectionMatrix() * shearTransform;
             viewportCamera->setCustomProjectionMatrix(true, viewportProjectionTransform);
         }
 
@@ -96,9 +96,9 @@ public:
 
 private:
 
-    std::vector< ::Ogre::TexturePtr> m_renderTargets;
+    std::vector< ::Ogre::TexturePtr>& m_renderTargets;
 
-    std::vector< ::Ogre::Viewport*> m_viewports;
+    std::vector< ::Ogre::Viewport*>& m_viewports;
 
 };
 
@@ -108,7 +108,7 @@ class CompositorListener : public ::Ogre::CompositorInstance::Listener
 {
 public:
 
-    CompositorListener(std::vector< ::Ogre::TexturePtr> renderTargets) :
+    CompositorListener(std::vector< ::Ogre::TexturePtr>& renderTargets) :
         m_renderTargets(renderTargets)
     {
 
@@ -129,7 +129,7 @@ public:
 
 private:
 
-    std::vector< ::Ogre::TexturePtr> m_renderTargets;
+    std::vector< ::Ogre::TexturePtr>& m_renderTargets;
 
 };
 
@@ -690,6 +690,12 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
 
         m_camera->setNearClipDistance( maxNear );
         m_camera->setFarClipDistance( minFar );
+
+        // Compute focal length
+        ::Ogre::Vector3 focalPoint  = worldCoordBoundingBox.getCenter();
+        ::Ogre::Real    focalLength = focalPoint.distance(m_camera->getRealPosition());
+
+        m_camera->setFocalLength(focalLength);
     }
 }
 
