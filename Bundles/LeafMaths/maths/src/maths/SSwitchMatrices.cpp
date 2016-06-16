@@ -39,15 +39,37 @@ SSwitchMatrices::SSwitchMatrices() throw () :
 
 void SSwitchMatrices::configuring() throw (::fwTools::Failed)
 {
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-    std::vector< ConfigurationType > matrixCfgs = m_configuration->find("matrix");
 
-    for(ConfigurationType cfg : matrixCfgs)
+    if(this->isVersion2())
     {
-        TransformMatrix currentMatrix;
-        currentMatrix.m_uid = cfg->getValue();
+        typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+        std::vector< ConfigurationType > inCfgs = m_configuration->find("in");
+        SLM_ASSERT("Config must contain one input group named 'matrix'.", inCfgs.size() == 1);
 
-        m_matrixVector.push_back(currentMatrix);
+        SLM_ASSERT("Missing 'in group=\"matrix\"'", inCfgs[0]->getAttributeValue("group") == "matrix");
+
+        std::vector< ConfigurationType > matrixCfgs = inCfgs[0]->find("key");
+
+        for(ConfigurationType cfg : matrixCfgs)
+        {
+            TransformMatrix currentMatrix;
+            currentMatrix.m_uid = cfg->getValue();
+
+            m_matrixVector.push_back(currentMatrix);
+        }
+    }
+    else
+    {
+        typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
+        std::vector< ConfigurationType > matrixCfgs = m_configuration->find("matrix");
+
+        for(ConfigurationType cfg : matrixCfgs)
+        {
+            TransformMatrix currentMatrix;
+            currentMatrix.m_uid = cfg->getValue();
+
+            m_matrixVector.push_back(currentMatrix);
+        }
     }
 }
 

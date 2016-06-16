@@ -28,7 +28,7 @@ namespace maths
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::maths::SConcatenateMatrices">
+        <service uid="..." type="::maths::SConcatenateMatrices">
             <in group="matrix">
                 <key uid="..." />
                 <key uid="..." inverse="true"/>
