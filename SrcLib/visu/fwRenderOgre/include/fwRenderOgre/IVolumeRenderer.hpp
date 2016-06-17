@@ -22,7 +22,7 @@ namespace fwRenderOgre
 /**
  * @brief Interface for volume renderers.
  */
-class IVolumeRenderer
+class FWRENDEROGRE_CLASS_API IVolumeRenderer
 {
 public:
 
@@ -94,6 +94,9 @@ public:
 
     /// Returns the sampling rate.
     FWRENDEROGRE_API float getSamplingRate() const;
+
+    /// Called when the size of the viewport changes.
+    FWRENDEROGRE_API virtual void resizeViewport(int w, int h);
 
 protected:
 

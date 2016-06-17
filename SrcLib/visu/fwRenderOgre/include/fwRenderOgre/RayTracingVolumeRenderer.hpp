@@ -3,6 +3,7 @@
 
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/IVolumeRenderer.hpp"
+#include "fwRenderOgre/Layer.hpp"
 #include "fwRenderOgre/R2VBRenderable.hpp"
 
 #include <OGRE/OgreManualObject.h>
@@ -13,7 +14,7 @@ namespace fwRenderOgre
 /**
  * @brief Implements a simple GPU ray-tracing renderer.
  */
-class RayTracingVolumeRenderer : public IVolumeRenderer
+class FWRENDEROGRE_CLASS_API RayTracingVolumeRenderer : public IVolumeRenderer
 {
 public:
 
@@ -31,7 +32,8 @@ public:
                                               ::Ogre::SceneNode *parentNode,
                                               ::Ogre::TexturePtr imageTexture,
                                               TransferFunction *gpuTF,
-                                              PreIntegrationTable *preintegrationTable);
+                                              PreIntegrationTable *preintegrationTable,
+                                              bool mode3D);
 
     /// Does nothing.
     FWRENDEROGRE_API virtual ~RayTracingVolumeRenderer();
@@ -48,9 +50,14 @@ public:
     /// Sets pre-integrated mode.
     FWRENDEROGRE_API virtual void setPreIntegratedRendering(bool preIntegratedRendering);
 
+    ///
+    FWRENDEROGRE_API void configure3DViewport(Layer::sptr layer);
+
     /// Computes image positions, updates the proxy geometry.
     FWRENDEROGRE_API virtual void clipImage(const ::Ogre::AxisAlignedBox& clippingBox);
 
+    /// Slot: Called when the size of the viewport changes.
+    FWRENDEROGRE_API virtual void resizeViewport(int w, int h);
 private:
 
     struct CameraListener : public ::Ogre::Camera::Listener
@@ -78,6 +85,9 @@ private:
     /// Renders the proxy geometry too fill the entry point texture.
     void computeEntryPointsTexture();
 
+    /// Computes the shear warp to apply to a frustum for multi-view rendering based on the angle with the original camera.
+    ::Ogre::Matrix4 frustumShearTransform(float angle) const;
+
     /// Object containing the proxy geometry, this is a cube for now.
     ::Ogre::ManualObject *m_entryPointGeometry;
 
@@ -91,7 +101,13 @@ private:
     ::Ogre::TexturePtr m_gridTexture;
 
     /// Texture holding ray entry and exit points for each screen pixel.
-    ::Ogre::TexturePtr m_entryPointsTexture;
+//    ::Ogre::TexturePtr m_entryPointsTexture;
+
+    /// Ray entry and exit points for each pixel of each viewpoint.
+    std::vector< ::Ogre::TexturePtr> m_entryPointsTextures;
+
+    ///
+    std::vector< ::Ogre::Matrix4> m_viewPointMatrices;
 
     /// Render operation used to compute the brick grid.
     ::Ogre::RenderOperation m_gridRenderOp;
@@ -104,6 +120,9 @@ private:
 
     /// Size of a volume brick.
     int m_bricksSize[3];
+
+    /// Sets stereoscopic volume rendering for Alioscopy monitors.
+    bool m_mode3D;
 };
 
 } // namespace fwRenderOgre

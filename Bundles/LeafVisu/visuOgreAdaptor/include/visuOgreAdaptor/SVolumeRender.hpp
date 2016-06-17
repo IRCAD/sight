@@ -45,6 +45,7 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEWSAMPLING_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLEPREINTEGRATION_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT;
     /** @} */
 
     /// Constructor.
@@ -105,6 +106,9 @@ private:
     /// Slot called when pre-integration is toggled.
     void togglePreintegration(bool preintegration);
 
+    /// Slot called when the size of the viewport changes.
+    void resizeViewport(int w, int h);
+
     /// Creates widgets and connects its slots to interactor signals.
     void initWidgets();
 
@@ -144,6 +148,9 @@ private:
 
     /// Use pre-integration.
     bool m_preIntegratedRendering;
+
+    /// Handle connections between the layer and the volume renderer
+    ::fwServices::helper::SigSlotConnection m_volumeConnection;
 };
 
 } // visuOgreAdaptor

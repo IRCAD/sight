@@ -51,12 +51,16 @@ public:
     fwCoreClassDefinitionsWithFactoryMacro( (Layer)(::fwRenderOgre::Layer), (()), new Layer);
     fwCoreAllowSharedFromThis();
 
-    /**@name Signals API
+    /**
+     * @name Signals API
      * @{
      */
 
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_INIT_LAYER_SIG;
     typedef ::fwCom::Signal<void (::fwRenderOgre::Layer::sptr)> InitLayerSignalType;
+
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_RESIZE_LAYER_SIG;
+    typedef ::fwCom::Signal<void (int, int)> ResizeLayerSignalType;
 
     /** @} */
 

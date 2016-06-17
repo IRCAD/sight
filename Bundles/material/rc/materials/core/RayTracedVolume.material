@@ -33,6 +33,48 @@ fragment_program VR/RayTracedVolume_FP glsl
 
 //-----------------------------------------------
 
+vertex_program VR/RayTracedVolume3D_VP glsl
+{
+    source RayTracedVolume_VP.glsl
+    preprocessor_defines MODE3D=1
+    default_params
+    {
+        param_named u_worldViewProj matrix4x4 1 0 0 0  0 1 0 0  0 0 1 0  0 0 0 1
+    }
+}
+
+//----------------------------------------------
+
+fragment_program VR/RayTracedVolume3D_FP glsl
+{
+    source RayTracedVolume_FP.glsl
+    preprocessor_defines MODE3D=1
+    default_params
+    {
+        //param_named_auto u_lightDir light_position_object_space 0
+        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_viewportWidth viewport_width
+        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_clippingNear near_clip_distance
+        param_named_auto u_clippingFar far_clip_distance
+        //param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named u_sampleDistance float 0.2f
+        param_named u_lobeOffset float 188.f
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+        param_named u_entryPoints0 int 2
+        param_named u_entryPoints1 int 3
+        param_named u_entryPoints2 int 4
+        param_named u_entryPoints3 int 5
+        param_named u_entryPoints4 int 6
+        param_named u_entryPoints5 int 7
+        param_named u_entryPoints6 int 8
+        param_named u_entryPoints7 int 9
+    }
+}
+
+//-----------------------------------------------
+
 vertex_program VR/PreIntegrated_RayTracedVolume_VP glsl
 {
     source RayTracedVolume_VP.glsl
@@ -116,6 +158,91 @@ material RayTracedVolume
 
 //----------------------------------------------
 
+material RayTracedVolume3D
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            depth_check off
+            depth_write off
+            scene_blend alpha_blend
+
+            vertex_program_ref VR/RayTracedVolume3D_VP
+            {
+            }
+
+            fragment_program_ref VR/RayTracedVolume3D_FP
+            {
+            }
+
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+
+            texture_unit transferFunction
+            {
+                //tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit entryPoints0
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit entryPoints1
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit entryPoints2
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit entryPoints3
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit entryPoints4
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit entryPoints5
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit entryPoints6
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit entryPoints7
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//----------------------------------------------
+
 material PreIntegratedRayTracedVolume
 {
     technique
@@ -136,21 +263,18 @@ material PreIntegratedRayTracedVolume
 
             texture_unit image
             {
-                tex_coord_set 0
                 tex_address_mode clamp
                 filtering bilinear
             }
 
             texture_unit transferFunction
             {
-                tex_coord_set 1
                 //tex_address_mode clamp
                 filtering none
             }
 
             texture_unit entryPoints
             {
-                tex_coord_set 2
                 tex_address_mode clamp
                 filtering none
             }

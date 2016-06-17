@@ -1,7 +1,11 @@
 #include "fwRenderOgre/RayTracingVolumeRenderer.hpp"
 
 #include "fwRenderOgre/helper/Shading.hpp"
+#include "fwRenderOgre/Utils.hpp"
 
+#include <OGRE/OgreCompositorChain.h>
+#include <OGRE/OgreCompositorInstance.h>
+#include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreDepthBuffer.h>
 #include <OGRE/OgreHardwareBufferManager.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
@@ -23,33 +27,97 @@ namespace fwRenderOgre
 
 //-----------------------------------------------------------------------------
 
+class AlioscopyCompositorListener : public ::Ogre::CompositorInstance::Listener
+{
+public:
+
+    AlioscopyCompositorListener(std::vector< ::Ogre::TexturePtr>& renderTargets,
+                                std::vector< ::Ogre::Matrix4>& invWorldViewProj,
+                                ::Ogre::TexturePtr image3DTexture,
+                                ::Ogre::TexturePtr tfTexture,
+                                float& sampleDistance) :
+        m_renderTargets   (renderTargets),
+        m_invWorldViewProj(invWorldViewProj),
+        m_image3DTexture  (image3DTexture),
+        m_tfTexture       (tfTexture),
+        m_sampleDistance  (sampleDistance)
+    {
+
+    }
+
+    virtual void notifyMaterialRender(::Ogre::uint32, ::Ogre::MaterialPtr& mtl)
+    {
+        ::Ogre::Pass *pass = mtl->getTechnique(0)->getPass(0);
+
+        ::Ogre::TextureUnitState *imageTexUnitState = pass->getTextureUnitState("image");
+        ::Ogre::TextureUnitState *tfTexUnitState = pass->getTextureUnitState("transferFunction");
+
+        imageTexUnitState->setTextureName(m_image3DTexture->getName());
+        tfTexUnitState->setTextureName(m_tfTexture->getName());
+
+        ::Ogre::GpuProgramParametersSharedPtr vr3DParams = pass->getFragmentProgramParameters();
+        vr3DParams->setNamedConstant("u_invWorldViewProjs", m_invWorldViewProj.data(), m_invWorldViewProj.size());
+        vr3DParams->setNamedConstant("u_sampleDistance", m_sampleDistance);
+
+        for(unsigned i = 0; i < m_renderTargets.size(); ++ i)
+        {
+            ::Ogre::TextureUnitState *texUnitState = pass->getTextureUnitState("entryPoints" + std::to_string(i));
+
+            OSLM_ASSERT("No texture named " << i, texUnitState);
+            texUnitState->setTextureName(m_renderTargets[i]->getName());
+        }
+    }
+
+private:
+
+    std::vector< ::Ogre::TexturePtr>& m_renderTargets;
+
+    std::vector< ::Ogre::Matrix4>& m_invWorldViewProj;
+
+    ::Ogre::TexturePtr m_image3DTexture;
+
+    ::Ogre::TexturePtr m_tfTexture;
+
+    float& m_sampleDistance;
+
+};
+
+//-----------------------------------------------------------------------------
+
 RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    ::Ogre::SceneManager *sceneManager,
                                                    ::Ogre::SceneNode *parentNode,
                                                    ::Ogre::TexturePtr imageTexture,
                                                    TransferFunction *gpuTF,
-                                                   PreIntegrationTable *preintegrationTable) :
+                                                   PreIntegrationTable *preintegrationTable,
+                                                   bool mode3D) :
     IVolumeRenderer(parentId, sceneManager, parentNode, imageTexture, gpuTF, preintegrationTable),
     m_entryPointGeometry(nullptr),
     m_imageSize { 1, 1, 1 },
     m_gridSize  { 2, 2, 2 },
-    m_bricksSize{ 8, 8, 8 }
+    m_bricksSize{ 8, 8, 8 },
+    m_mode3D    (mode3D)
 {
     const std::vector<std::string> vrMaterials {
         "RayTracedVolume",
         "PreIntegratedRayTracedVolume"
     };
 
-    m_entryPointsTexture = ::Ogre::TextureManager::getSingletonPtr()->createManual(
-                m_parentId + "_entryPointsTexture",
-                ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                ::Ogre::TEX_TYPE_2D,
-                m_camera->getViewport()->getActualWidth(),
-                m_camera->getViewport()->getActualHeight(),
-                1,
-                0,
-                ::Ogre::PF_FLOAT32_RGB,
-                ::Ogre::TU_RENDERTARGET );
+    unsigned nbViewpoints = m_mode3D ? 8 : 1;
+
+    for(unsigned i = 0; i < nbViewpoints; ++ i)
+    {
+        m_entryPointsTextures.push_back( ::Ogre::TextureManager::getSingletonPtr()->createManual(
+                    m_parentId + "_entryPointsTexture" + std::to_string(i),
+                    ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                    ::Ogre::TEX_TYPE_2D,
+                    m_camera->getViewport()->getActualWidth(),
+                    m_camera->getViewport()->getActualHeight(),
+                    1,
+                    0,
+                    ::Ogre::PF_FLOAT32_RGB,
+                    ::Ogre::TU_RENDERTARGET ));
+    }
 
     for(const std::string& mtlName : vrMaterials)
     {
@@ -74,7 +142,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                 SLM_ASSERT("'entryPoints' texture unit is not found", texEntryPointsState);
 
                 tex3DState->setTexture(m_3DOgreTexture);
-                texEntryPointsState->setTexture(m_entryPointsTexture);
+                texEntryPointsState->setTexture(m_entryPointsTextures[0]);
 
                 if(mtlName == "PreIntegratedRayTracedVolume")
                 {
@@ -91,8 +159,11 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         }
     }
 
-    ::Ogre::RenderTexture *renderTexture = m_entryPointsTexture->getBuffer()->getRenderTarget();
-    renderTexture->addViewport(m_camera);
+    for(::Ogre::TexturePtr entryPtsText : m_entryPointsTextures)
+    {
+        ::Ogre::RenderTexture *renderTexture = entryPtsText->getBuffer()->getRenderTarget();
+        renderTexture->addViewport(m_camera);
+    }
 
     initEntryPoints();
 
@@ -216,6 +287,25 @@ void RayTracingVolumeRenderer::setPreIntegratedRendering(bool preIntegratedRende
 
 //-----------------------------------------------------------------------------
 
+void RayTracingVolumeRenderer::configure3DViewport(Layer::sptr layer)
+{
+    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+    compositorManager.addCompositor(layer->getViewport(), "RayTracedVolume3D");
+    compositorManager.setCompositorEnabled(layer->getViewport(), "RayTracedVolume3D", true);
+
+    ::Ogre::CompositorChain *compChain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(layer->getViewport());
+
+    ::Ogre::CompositorInstance *compInstance = compChain->getCompositor("RayTracedVolume3D");
+
+    compInstance->addListener(new AlioscopyCompositorListener(m_entryPointsTextures,
+                                                              m_viewPointMatrices,
+                                                              m_3DOgreTexture,
+                                                              m_gpuTF->getTexture(),
+                                                              m_sampleDistance));
+}
+
+//-----------------------------------------------------------------------------
+
 void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingBox)
 {
     IVolumeRenderer::clipImage(clippingBox);
@@ -243,6 +333,21 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
     }
 
     m_proxyGeometryGenerator->manualUpdate();
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::resizeViewport(int w, int h)
+{
+//    m_entryPointsTexture->freeInternalResources();
+
+//    m_entryPointsTexture->setWidth(static_cast< ::Ogre::uint32>(w));
+//    m_entryPointsTexture->setHeight(static_cast< ::Ogre::uint32>(h));
+
+//    m_entryPointsTexture->createInternalResources();
+
+//    ::Ogre::RenderTexture *renderTexture = m_entryPointsTexture->getBuffer()->getRenderTarget();
+//    renderTexture->addViewport(m_camera);
 }
 
 //-----------------------------------------------------------------------------
@@ -366,8 +471,7 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 //    m_proxyGeometryGenerator->setMaterial("RayEntryPoints");
     m_proxyGeometryGenerator->setVisible(false);
 
-    ::Ogre::RenderTexture *renderTexture = m_entryPointsTexture->getBuffer()->getRenderTarget();
-    renderTexture->getViewport(0)->clear(::Ogre::FBT_COLOUR | ::Ogre::FBT_DEPTH, ::Ogre::ColourValue::White);
+    ::Ogre::Pass *pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass(0);
 
     ::Ogre::RenderOperation renderOp;
     m_proxyGeometryGenerator->getRenderOperation(renderOp);
@@ -376,8 +480,31 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
     ::Ogre::Matrix4 worldMat;
     m_proxyGeometryGenerator->getWorldTransforms(&worldMat);
 
-    ::Ogre::Pass *pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass(0);
-    m_sceneManager->manualRender(&renderOp, pass, renderTexture->getViewport(0), worldMat, m_camera->getViewMatrix(), m_camera->getProjectionMatrix());
+    const float eyeAngle = 0.01625;
+    float angle = eyeAngle * -3.5;
+
+    m_viewPointMatrices.clear();
+
+    for(::Ogre::TexturePtr entryPtsText : m_entryPointsTextures)
+    {
+        ::Ogre::Matrix4 projMat = m_camera->getProjectionMatrix();
+
+        ::Ogre::RenderTexture *renderTexture = entryPtsText->getBuffer()->getRenderTarget();
+        renderTexture->getViewport(0)->clear(::Ogre::FBT_COLOUR | ::Ogre::FBT_DEPTH, ::Ogre::ColourValue::White);
+
+        if(m_mode3D)
+        {
+            const ::Ogre::Matrix4 shearTransform = frustumShearTransform(angle);
+
+            angle += eyeAngle;
+            projMat = projMat * shearTransform;
+
+            ::Ogre::Matrix4 worldViewProj = projMat * m_camera->getViewMatrix() * worldMat;
+            m_viewPointMatrices.push_back(worldViewProj.inverse());
+        }
+
+        m_sceneManager->manualRender(&renderOp, pass, renderTexture->getViewport(0), worldMat, m_camera->getViewMatrix(), projMat);
+    }
 
     // TEST
 //    size_t nbPixels = m_entryPointsTexture->getHeight() * m_entryPointsTexture->getWidth();
@@ -428,7 +555,22 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 //    std::cout << "Total skipped distance : " << totalSkippedDistance << std::endl;
 
 //    delete[] optiText;
-//    delete[] cubeText;
+    //    delete[] cubeText;
+}
+
+//-----------------------------------------------------------------------------
+
+Ogre::Matrix4 RayTracingVolumeRenderer::frustumShearTransform(float angle) const
+{
+    ::Ogre::Matrix4 shearTransform = ::Ogre::Matrix4::IDENTITY;
+
+    const float focalLength  = m_camera->getFocalLength();
+    const float xshearFactor = std::tan(angle);
+
+    shearTransform[0][2] = -xshearFactor;
+    shearTransform[0][3] = -focalLength * xshearFactor;
+
+    return shearTransform;
 }
 
 //-----------------------------------------------------------------------------

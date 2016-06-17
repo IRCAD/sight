@@ -45,7 +45,7 @@
 
             <service uid="genericScene" type="::fwRenderOgre::SRender" autoConnect="yes" >
                 <in key="meshKey" uid="mesh" />
-                <scene overlay="true" fullscreen="yes" >
+                <scene overlay="true" fullscreen="no" >
                     <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
 
                     <!-- Default Layer -->

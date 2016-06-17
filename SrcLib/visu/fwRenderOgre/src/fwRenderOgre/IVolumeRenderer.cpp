@@ -79,6 +79,13 @@ void IVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingBox)
 
 //-----------------------------------------------------------------------------
 
+void IVolumeRenderer::resizeViewport(int w, int h)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+
 void IVolumeRenderer::scaleCube(const fwData::Image::SpacingType& spacing)
 {
     const double width  = static_cast< double > (m_3DOgreTexture->getWidth() ) * spacing[0];

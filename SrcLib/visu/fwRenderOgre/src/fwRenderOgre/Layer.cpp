@@ -44,7 +44,8 @@
 namespace fwRenderOgre
 {
 
-const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG = "layerInitialized";
+const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG   = "layerInitialized";
+const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG = "layerResized";
 
 const ::fwCom::Slots::SlotKeyType Layer::s_INTERACTION_SLOT    = "interaction";
 const ::fwCom::Slots::SlotKeyType Layer::s_DESTROY_SLOT        = "destroy";
@@ -156,6 +157,7 @@ Layer::Layer() :
     m_camera(nullptr)
 {
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
+    newSignal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
 
     newSlot(s_INTERACTION_SLOT, &Layer::interaction, this);
     newSlot(s_DESTROY_SLOT, &Layer::destroy, this);
@@ -304,51 +306,51 @@ void Layer::createScene()
 
     if(m_nbViewports > 1) // use this layer for multi-view rendering.
     {
-        for(unsigned i = 0; i < m_nbViewports; ++ i)
-        {
-            ::Ogre::TexturePtr renderTargetTexture = ::Ogre::TextureManager::getSingleton().createManual(
-                        this->getID() + "__ViewportTexture__" + std::to_string(i),
-                        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                        ::Ogre::TEX_TYPE_2D,
-                        m_viewport->getActualWidth(),
-                        m_viewport->getActualHeight(),
-                        0,
-                        ::Ogre::PF_R8G8B8,
-                        ::Ogre::TU_RENDERTARGET);
+//        for(unsigned i = 0; i < m_nbViewports; ++ i)
+//        {
+//            ::Ogre::TexturePtr renderTargetTexture = ::Ogre::TextureManager::getSingleton().createManual(
+//                        this->getID() + "__ViewportTexture__" + std::to_string(i),
+//                        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+//                        ::Ogre::TEX_TYPE_2D,
+//                        m_viewport->getActualWidth(),
+//                        m_viewport->getActualHeight(),
+//                        0,
+//                        ::Ogre::PF_R8G8B8,
+//                        ::Ogre::TU_RENDERTARGET);
 
-            ::Ogre::Camera *viewportCamera = m_sceneManager->createCamera(this->getID() + "_ViewportCamera_" + std::to_string(i));
+//            ::Ogre::Camera *viewportCamera = m_sceneManager->createCamera(this->getID() + "_ViewportCamera_" + std::to_string(i));
 
-            m_camera->getParentSceneNode()->attachObject(viewportCamera);
+//            m_camera->getParentSceneNode()->attachObject(viewportCamera);
 
-            m_renderTargets.push_back(renderTargetTexture);
+//            m_renderTargets.push_back(renderTargetTexture);
 
-            ::Ogre::RenderTexture *renderTarget = renderTargetTexture->getBuffer()->getRenderTarget();
+//            ::Ogre::RenderTexture *renderTarget = renderTargetTexture->getBuffer()->getRenderTarget();
 
-            ::Ogre::Viewport *viewport = renderTarget->addViewport(viewportCamera);
-            viewport->setBackgroundColour(::Ogre::ColourValue( 0, 0, 0 ));
-            viewport->setClearEveryFrame(true);
+//            ::Ogre::Viewport *viewport = renderTarget->addViewport(viewportCamera);
+//            viewport->setBackgroundColour(::Ogre::ColourValue( 0, 0, 0 ));
+//            viewport->setClearEveryFrame(true);
 
-            m_compositorChainManager.setOgreViewport(viewport);
+//            m_compositorChainManager.setOgreViewport(viewport);
 
-            if(m_hasCompositorChain)
-            {
-                m_compositorChainManager.setCompositorChain(this->trimSemicolons(m_rawCompositorChain));
-            }
+//            if(m_hasCompositorChain)
+//            {
+//                m_compositorChainManager.setCompositorChain(this->trimSemicolons(m_rawCompositorChain));
+//            }
 
-            m_multiViewports.push_back(viewport);
-        }
+//            m_multiViewports.push_back(viewport);
+//        }
 
-        ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-        compositorManager.addCompositor(m_viewport, "Alioscopy");
-        compositorManager.setCompositorEnabled(m_viewport, "Alioscopy", true);
+//        ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+//        compositorManager.addCompositor(m_viewport, "Alioscopy");
+//        compositorManager.setCompositorEnabled(m_viewport, "Alioscopy", true);
 
-        m_camera->addListener(new CameraListener(m_renderTargets, m_multiViewports));
+//        m_camera->addListener(new CameraListener(m_renderTargets, m_multiViewports));
 
-        ::Ogre::CompositorChain *compChain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(m_viewport);
+//        ::Ogre::CompositorChain *compChain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(m_viewport);
 
-        ::Ogre::CompositorInstance *compInstance = compChain->getCompositor("Alioscopy");
+//        ::Ogre::CompositorInstance *compInstance = compChain->getCompositor("Alioscopy");
 
-        compInstance->addListener(new CompositorListener(m_renderTargets));
+//        compInstance->addListener(new CompositorListener(m_renderTargets));
 
     }
     else
@@ -411,6 +413,8 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE:
         {
+            auto sig = this->signal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
+            sig->asyncEmit(info.x, info.y);
             m_moveInteractor->resizeEvent(info.x, info.y);
             break;
         }

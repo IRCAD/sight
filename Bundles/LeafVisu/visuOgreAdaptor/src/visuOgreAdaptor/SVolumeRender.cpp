@@ -41,14 +41,9 @@ namespace visuOgreAdaptor
 //-----------------------------------------------------------------------------
 
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWIMAGE_SLOT = "newImage";
-
-//-----------------------------------------------------------------------------
-
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWSAMPLING_SLOT = "updateSampling";
-
-//-----------------------------------------------------------------------------
-
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLEPREINTEGRATION_SLOT = "togglePreintegration";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT        = "resizeViewport";
 
 //-----------------------------------------------------------------------------
 
@@ -63,7 +58,8 @@ SVolumeRender::SVolumeRender() throw() :
     this->installTFSlots(this);
     newSlot(s_NEWIMAGE_SLOT, &SVolumeRender::newImage, this);
     newSlot(s_NEWSAMPLING_SLOT, &SVolumeRender::samplingChanged, this);
-    newSlot(s_TOGGLEPREINTEGRATION_SLOT, &SVolumeRender::togglePreintegration, this);
+    newSlot(s_TOGGLEPREINTEGRATION_SLOT, &SVolumeRender::togglePreintegration, this);    
+    newSlot(s_RESIZE_VIEWPORT_SLOT, &SVolumeRender::resizeViewport, this);
 
     m_transform     = ::Ogre::Matrix4::IDENTITY;
     m_renderingMode = VR_MODE_RAY_TRACING;
@@ -283,10 +279,17 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
                                                                         m_volumeSceneNode,
                                                                         m_3DOgreTexture,
                                                                         &m_gpuTF,
-                                                                        &m_preIntegrationTable);
+                                                                        &m_preIntegrationTable,
+                                                                        true);
+
+        dynamic_cast< ::fwRenderOgre::RayTracingVolumeRenderer*>(m_volumeRenderer)->configure3DViewport(this->getRenderService()->getLayer());
     }
 
+
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
+
+    m_volumeConnection.connect(this->getRenderService()->getLayer(), ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
+                               this->getSptr(), ::visuOgreAdaptor::SVolumeRender::s_RESIZE_VIEWPORT_SLOT);
 
     initWidgets();
     m_widgets->hide();
@@ -358,6 +361,7 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 
 void SVolumeRender::doStop() throw ( ::fwTools::Failed )
 {
+    m_volumeConnection.disconnect();
     delete m_volumeRenderer;
 
     m_sceneManager->getRootSceneNode()->removeChild(m_volumeSceneNode->getName());
@@ -431,6 +435,16 @@ void SVolumeRender::togglePreintegration(bool preintegration)
     }
 
     this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::resizeViewport(int w, int h)
+{
+    if(m_volumeRenderer)
+    {
+        m_volumeRenderer->resizeViewport(w, h);
+    }
 }
 
 //-----------------------------------------------------------------------------
