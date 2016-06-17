@@ -8,37 +8,33 @@ set( REQUIREMENTS
     extDataReg
     arDataReg
     servicesReg
-    gui
-    guiQt
-    io
-    ioAtoms
+
     patchMedicalData
     arPatchMedicalData
+
+    gui
+    guiQt
+
+    io
+    ioAtoms
+
     uiIO
     uiGenericQt
     uiMedDataQt
-    uiImageQt
-    ctrlSelection
-    memory
+
     media
     mediaExt
     arMedia
-    visuVTK
-    visuVTKQt
-    videoQt
-    visuVTKAdaptor
-    visuVTKARAdaptor
+
     activities
     calibrationActivity
-    uiCalibration
-    appXml
-    preferences
-    videoTools
-    ioCalibration
-    videoCalibration
+
+    appXml2
     fwlauncher
-    uiTools
-    trackerAruco
+    memory
+
+    preferences
+    uiPreferences
     )
 
-bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES ARCalibrationBase ARCalibrationAppBase)
+bundleParam(appXml2 PARAM_LIST config parameters PARAM_VALUES ARCalibrationBase ARCalibrationAppBase)

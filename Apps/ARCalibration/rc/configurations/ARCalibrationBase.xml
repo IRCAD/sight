@@ -1,109 +1,114 @@
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::fwServices::registry::AppConfig2">
     <id>ARCalibrationBase</id>
     <parameters>
         <param name="appName" />
         <param name="appIconPath" />
     </parameters>
     <config>
-        <object uid="seriesDB" type="::fwMedData::SeriesDB">
+        <object uid="seriesDB" type="::fwMedData::SeriesDB" />
 
-            <service uid="action_open" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger" autoConnect="no">
-                <IOSelectorSrvConfig name="ARSDBAtomsReaderIOSelectorConfig" />
-            </service>
-            <service uid="action_save" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
-                <start uid="SDBWriter" />
-            </service>
-            <service uid="SDBWriter" type="::gui::editor::IDialogEditor" impl="::uiIO::editor::SIOSelector" autoConnect="no">
-                <type mode="writer" />
-                <selection mode="include" />
-                <addSelection service="::ioAtoms::SWriter" />
-                <config id="ARMDAtomsConfig" service="::ioAtoms::SWriter" />
-            </service>
+        <!-- *************************** Objects declaration **************************** -->
 
+        <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+            <gui>
+                <frame>
+                    <name>${appName}</name>
+                    <icon>${appIconPath}</icon>
+                    <minSize width="800" height="600" />
+                </frame>
+                <menuBar />
+            </gui>
+            <registry>
+                <menuBar sid="menuBar" start="yes" />
+                <view sid="dynamicView" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
-                <gui>
-                    <frame>
-                        <name>${appName}</name>
-                        <icon>${appIconPath}</icon>
-                        <minSize width="800" height="600" />
-                    </frame>
-                    <menuBar />
-                </gui>
-                <registry>
-                    <menuBar sid="menuBar" start="yes" />
-                    <view sid="dynamicView" start="yes" />
-                </registry>
-            </service>
+        <!-- *************************** Layouts declaration **************************** -->
 
-            <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no">
-                <gui>
-                    <layout>
-                        <menu name="File" />
-                        <menu name="Preferences" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menu sid="menu_file" start="yes" />
-                    <menu sid="menu_preferences" start="yes" />
-                </registry>
-            </service>
+        <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
+            <gui>
+                <layout>
+                    <menu name="File" />
+                    <menu name="Preferences" />
+                </layout>
+            </gui>
+            <registry>
+                <menu sid="menu_file" start="yes" />
+                <menu sid="menu_preferences" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="menu_file" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
-                <gui>
-                    <layout>
-                        <menuItem name="Open" shortcut="Ctrl+O" />
-                        <menuItem name="Save" shortcut="Ctrl+S" />
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="action_open" start="yes" />
-                    <menuItem sid="action_save" start="yes" />
-                    <menuItem sid="action_quit" start="yes" />
-                </registry>
-            </service>
+        <service uid="menu_file" type="::gui::aspect::SDefaultMenu">
+            <gui>
+                <layout>
+                    <menuItem name="Open" shortcut="Ctrl+O" />
+                    <menuItem name="Save" shortcut="Ctrl+S" />
+                    <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_open" start="yes" />
+                <menuItem sid="action_save" start="yes" />
+                <menuItem sid="action_quit" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="menu_preferences" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
-                <gui>
-                    <layout>
-                        <menuItem name="Video directory" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="action_videoDir" start="yes" />
-                </registry>
-            </service>
+        <service uid="menu_preferences" type="::gui::aspect::SDefaultMenu">
+            <gui>
+                <layout>
+                    <menuItem name="Video directory" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_videoDir" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="action_videoDir" type="::fwGui::IActionSrv" impl="::uiPreferences::action::SPreferencesConfiguration" autoConnect="no">
-                <preference>
-                    <type>path</type>
-                    <name>Video directory</name>
-                    <key>VIDEO_DIR_PREF</key>
-                    <default_value>...</default_value>
-                </preference>
-            </service>
+        <!-- ******************************** Action services declaration ******************************** -->
 
-            <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
+        <service uid="action_open" type="::uiIO::action::SSeriesDBMerger">
+            <inout key="seriesDB" uid="seriesDB" />
+            <IOSelectorSrvConfig name="ARSDBAtomsReaderIOSelectorConfig" />
+        </service>
 
-            <service uid="dynamicView" type="::gui::view::IView" impl="::guiQt::editor::DynamicView" autoConnect="yes">
-                <config>
-                    <appConfig id="SDBARCalibration" title="SDB" closable="false">
-                        <parameters>
-                            <parameter replace="SERIESDB" by="seriesDB" />
-                            <parameter replace="ICON_PATH" by="${appIconPath}" />
-                            <parameter replace="DYNAMICVIEW_CHANNEL" by="dynamicView" />
-                        </parameters>
-                    </appConfig>
-                </config>
-            </service>
+        <service uid="action_save" type="::gui::action::SStarter">
+            <start uid="SDBWriter" />
+        </service>
 
-            <proxy channel="dynamicView">
-                <slot>dynamicView/createTab</slot>
-            </proxy>
+        <service uid="SDBWriter" type="::uiIO::editor::SIOSelector">
+            <inout key="seriesDB" uid="seriesDB" />
+            <type mode="writer" />
+            <selection mode="include" />
+            <addSelection service="::ioAtoms::SWriter" />
+            <config id="ARMDAtomsConfig" service="::ioAtoms::SWriter" />
+        </service>
 
-            <start uid="mainFrame" />
-        </object>
+        <service uid="action_videoDir" type="::uiPreferences::action::SPreferencesConfiguration">
+            <preference>
+                <type>path</type>
+                <name>Video directory</name>
+                <key>VIDEO_DIR_PREF</key>
+                <default_value>...</default_value>
+            </preference>
+        </service>
+
+        <service uid="action_quit" type="::gui::action::SQuit" />
+
+        <service uid="dynamicView" type="::guiQt::editor::SDynamicView" autoConnect="yes">
+            <mainActivity id="SDBARCalibration" title="SDB" closable="false" />
+            <parameters>
+                <parameter replace="SERIESDB" uid="seriesDB" />
+                <parameter replace="DYNAMICVIEW_CHANNEL" uid="dynamicView" />
+                <parameter replace="ICON_PATH" by="${appIconPath}" />
+            </parameters>
+        </service>
+
+        <connect channel="dynamicView">
+            <slot>dynamicView/createTab</slot>
+        </connect>
+
+        <start uid="mainFrame" />
 
     </config>
 </extension>

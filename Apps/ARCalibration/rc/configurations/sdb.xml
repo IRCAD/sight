@@ -1,8 +1,6 @@
-
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::fwServices::registry::AppConfig2">
     <id>SDBARCalibration</id>
     <parameters>
-        <param name="GENERIC_UID" />
         <param name="SERIESDB" />
         <param name="WID_PARENT" />
         <param name="DYNAMICVIEW_CHANNEL" default="channel" />
@@ -10,118 +8,119 @@
     </parameters>
     <config>
 
-        <object type="::fwData::Composite">
+        <!-- *************************** Objects declaration **************************** -->
 
-            <service uid="${GENERIC_UID}_mainview" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="yes">
-                <gui>
-                    <layout type="::fwGui::CardinalLayoutManager">
-                        <view caption="Information" align="center" minWidth="200" />
-                    </layout>
-                    <toolBar />
-                </gui>
-                <registry>
-                    <parent wid="${WID_PARENT}" />
-                    <toolBar sid="toolBar" start="yes" />
-                    <view sid="${GENERIC_UID}_selector" start="yes" />
-                </registry>
-            </service>
+        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref"/>
+        <object uid="selections" type="::fwData::Vector" />
 
-            <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
-                <gui>
-                    <layout>
-                        <menuItem name="Launch activity" icon="@BUNDLE_PREFIX@/media_0-1/icons/Launch_activity.svg" />
-                        <separator />
-                        <menuItem name="Calibration activity" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg" />
-                        <menuItem name="Export CameraSeries calibration" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
-                        <separator/>
-                        <menuItem name="Tools Calibration activity" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg"/>
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="${GENERIC_UID}_action_newActivity" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_action_calibrationActivity" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_action_exportCameraActivity" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_action_toolsCalibrationActivity" start="yes" />
-                </registry>
-            </service>
+        <!-- *************************** Layouts declaration **************************** -->
 
-            <item key="seriesDB">
-                <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref">
-                    <service uid="${GENERIC_UID}_selector" impl="::uiMedData::editor::SSelector" autoConnect="yes">
-                        <selectionId>${GENERIC_UID}_selections</selectionId>
-                        <icons>
-                            <icon series="::arData::CameraSeries" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg" />
-                        </icons>
-                    </service>
-                </object>
-            </item>
+        <service uid="mainview" type="::gui::view::SDefaultView" autoConnect="yes">
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view caption="Information" align="center" minWidth="200" />
+                </layout>
+                <toolBar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBar" start="yes" />
+                <view sid="selector" start="yes" />
+            </registry>
+        </service>
 
-            <item key="selections">
-                <object uid="${GENERIC_UID}_selections" type="::fwData::Vector">
-                    <service uid="${GENERIC_UID}_action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes">
-                        <config>
-                            <parameters>
-                                <parameter replace="SERIESDB" by="${SERIESDB}" />
-                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
-                            </parameters>
-                        </config>
-                    </service>
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
+            <gui>
+                <layout>
+                    <menuItem name="Launch activity" icon="@BUNDLE_PREFIX@/media_0-1/icons/Launch_activity.svg" />
+                    <separator />
+                    <menuItem name="Calibration activity" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg" />
+                    <menuItem name="Export CameraSeries calibration" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
+                    <separator/>
+                    <menuItem name="Tools Calibration activity" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg"/>
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_newActivity" start="yes" />
+                <menuItem sid="action_calibrationActivity" start="yes" />
+                <menuItem sid="action_exportCameraActivity" start="yes" />
+                <menuItem sid="action_toolsCalibrationActivity" start="yes" />
+            </registry>
+        </service>
 
-                    <service uid="${GENERIC_UID}_action_calibrationActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes">
-                        <config>
-                            <parameters>
-                                <parameter replace="SERIESDB" by="seriesDB" />
-                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
-                            </parameters>
-                            <filter>
-                                <mode>include</mode>
-                                <id>Calibration</id>
-                            </filter>
-                        </config>
-                    </service>
-                    <service uid="${GENERIC_UID}_action_exportCameraActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes">
-                        <config>
-                            <mode>immediate</mode>
-                            <parameters>
-                                <parameter replace="SERIESDB" by="seriesDB" />
-                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
-                            </parameters>
-                            <filter>
-                                <mode>include</mode>
-                                <id>CameraSeriesExport</id>
-                            </filter>
-                        </config>
-                    </service>
+        <service uid="selector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+            <inout key="seriesDB" uid="${SERIESDB}" />
+            <inout key="selection" uid="selections" />
+            <selectionId>selections</selectionId>
+            <icons>
+                <icon series="::arData::CameraSeries" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg" />
+            </icons>
+        </service>
 
-                    <service uid="${GENERIC_UID}_action_toolsCalibrationActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes">
-                        <config>
-                            <parameters>
-                                <parameter replace="SERIESDB" by="seriesDB" />
-                                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
-                            </parameters>
-                            <filter>
-                                <mode>include</mode>
-                                <id>toolsCalibration</id>
-                            </filter>
-                        </config>
-                    </service>
+        <service uid="action_newActivity" type="::activities::action::SActivityLauncher" autoConnect="yes">
+            <inout key="selection" uid="selections" />
+            <config>
+                <parameters>
+                    <parameter replace="SERIESDB" uid="${SERIESDB}" />
+                    <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                </parameters>
+            </config>
+        </service>
 
-                </object>
-            </item>
+        <service uid="action_calibrationActivity" type="::activities::action::SActivityLauncher" autoConnect="yes">
+            <inout key="selection" uid="selections" />
+            <config>
+                <parameters>
+                    <parameter replace="SERIESDB" uid="seriesDB" />
+                    <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                </parameters>
+                <filter>
+                    <mode>include</mode>
+                    <id>Calibration</id>
+                </filter>
+            </config>
+        </service>
+        <service uid="action_exportCameraActivity" type="::activities::action::SActivityLauncher" autoConnect="yes">
+            <inout key="selection" uid="selections" />
+            <config>
+                <mode>immediate</mode>
+                <parameters>
+                    <parameter replace="SERIESDB" uid="seriesDB" />
+                    <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                </parameters>
+                <filter>
+                    <mode>include</mode>
+                    <id>CameraSeriesExport</id>
+                </filter>
+            </config>
+        </service>
 
-            <connect>
-                <signal>${GENERIC_UID}_selector/seriesDoubleClicked</signal>
-                <slot>${GENERIC_UID}_action_newActivity/launchSeries</slot>
-            </connect>
+        <service uid="action_toolsCalibrationActivity" type="::activities::action::SActivityLauncher" autoConnect="yes">
+            <inout key="selection" uid="selections" />
+            <config>
+                <parameters>
+                    <parameter replace="SERIESDB" uid="seriesDB" />
+                    <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                </parameters>
+                <filter>
+                    <mode>include</mode>
+                    <id>toolsCalibration</id>
+                </filter>
+            </config>
+        </service>
 
-            <proxy channel="${DYNAMICVIEW_CHANNEL}">
-                <signal>${GENERIC_UID}_action_newActivity/activityLaunched</signal>
-                <signal>${GENERIC_UID}_action_calibrationActivity/activityLaunched</signal>
-                <signal>${GENERIC_UID}_action_toolsCalibrationActivity/activityLaunched</signal>
-            </proxy>
+        <connect>
+            <signal>selector/seriesDoubleClicked</signal>
+            <slot>action_newActivity/launchSeries</slot>
+        </connect>
 
-            <start uid="${GENERIC_UID}_mainview" />
-        </object>
+        <connect channel="${DYNAMICVIEW_CHANNEL}">
+            <signal>action_newActivity/activityLaunched</signal>
+            <signal>action_calibrationActivity/activityLaunched</signal>
+            <signal>action_toolsCalibrationActivity/activityLaunched</signal>
+        </connect>
+
+        <start uid="mainview" />
 
     </config>
 </extension>

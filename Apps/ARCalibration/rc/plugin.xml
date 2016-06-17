@@ -8,7 +8,9 @@
     <requirement id="arPatchMedicalData" />
     <requirement id="memory" />
     <requirement id="preferences" />
-    
+    <requirement id="activities" />
+    <requirement id="uiMedDataQt" />
+
     <xi:include href="configurations/ARCalibrationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
@@ -20,23 +22,34 @@
         </parameters>
     </extension>
 
-    <extension implements="::fwServices::registry::AppConfig">
+    <extension implements="::fwServices::registry::AppConfig2">
         <id>CameraExportSelection</id>
         <parameters>
             <param name="selection" />
         </parameters>
         <config>
-            <object uid="${selection}" src="ref">
-                <service uid="export_selection" impl="::uiIO::editor::SIOSelector" autoConnect="yes">
-                    <type mode="writer" />
-                    <selection mode="include" />
-                    <addSelection service="::ioAtoms::SWriter" />
-                    <config id="ARMDAtomsConfig" service="::ioAtoms::SWriter" />
-                </service>
-                <start uid="export_selection" />
-                <update uid="export_selection" />
-            </object>
+            <object uid="${selection}" src="ref" />
+            <service uid="export_selection" type="::uiIO::editor::SIOSelector" autoConnect="yes">
+                <inout key="target" uid="${selection}" />
+                <type mode="writer" />
+                <selection mode="include" />
+                <addSelection service="::ioAtoms::SWriter" />
+                <config id="ARMDAtomsConfig" service="::ioAtoms::SWriter" />
+            </service>
+            <start uid="export_selection" />
+            <update uid="export_selection" />
         </config>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>SDBARCalibration</id>
+        <title>SDB</title>
+        <desc>Series Selector for ARCalibration</desc>
+        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/selector.svg</icon>
+        <requirements />
+        <appConfig id="SDBARCalibration">
+            <parameters />
+        </appConfig>
     </extension>
 
     <extension implements="::fwActivities::registry::Activities">
