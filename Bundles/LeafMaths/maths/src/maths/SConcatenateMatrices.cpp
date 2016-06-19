@@ -136,10 +136,12 @@ void SConcatenateMatrices::updating() throw (fwTools::Failed)
         auto inverse      = ::fwData::TransformationMatrix3D::New();
         auto outputMatrix = this->getInOut< ::fwData::TransformationMatrix3D >("output");
 
+        ::fwDataTools::TransformationMatrix3D::identity(outputMatrix);
+
         size_t index = 0;
         for( TransformMatrix currentMatrix : m_matrixVector)
         {
-            auto inputMatrix = this->getInput< ::fwData::TransformationMatrix3D >("matrix", index);
+            auto inputMatrix = this->getInput< ::fwData::TransformationMatrix3D >("matrix", index++);
             if( currentMatrix.m_inverse )
             {
                 ::fwDataTools::TransformationMatrix3D::invert(inputMatrix, inverse);
