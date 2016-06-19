@@ -48,8 +48,8 @@ namespace videoQt
  *
  * @code{.xml}
         <service type="::videoQt::SFrameGrabber">
-            <in key="camera" uid="camera" />
-            <inout key="frameTL" uid="frameTL" />
+            <in key="camera" uid="..." />
+            <inout key="frameTL" uid="..." />
         </service>
    @endcode
  * @subsection Input Input

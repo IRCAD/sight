@@ -4,34 +4,44 @@ set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    gui
-    guiQt
+
     arDataReg
     dataReg
+    extDataReg
     servicesReg
+
     io
     ioVTK
-    maths
     ioIGTL
-    uiIGTL
     ioAtoms
     ioNetwork
+
+    gui
+    guiQt
+
+    uiIGTL
+
     media
     mediaExt
     arMedia
-    extDataReg
-    preferences
-    videoTools
+
     echoEdSimu
+    maths
+
     ctrlCamp
-    appXml
+
+    videoQt
+    videoTools
+
+    appXml2
+    fwlauncher
+    patchMedicalData
+    preferences
+
     visuVTKAdaptor
     visuVTKARAdaptor
-    visuVTK
     visuVTKQt
-    fwlauncher
-    videoQt
-    patchMedicalData
+
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES EchoEdConfig)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES EchoEdConfig)

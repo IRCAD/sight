@@ -21,8 +21,25 @@ namespace videoTools
 
 /**
  * @brief   Service used to update frame and trigger render once timelines have been updated.
- * @class   SFrameUpdater
  *
+ * @section Signals Signals
+ * - \b renderRequested(): Emitted when the frame has been updated.
+ *
+ * @section Slots Slots
+ * - \b updateFrame(::fwCore::HiResClock::HiResClockType): Called to extract the frame at the given timestamp.
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::videoTools::SFrameUpdater">
+            <in key="frameTL" uid="..." autoConnect="yes" />
+            <inout key="frame" uid="..." />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b key1 [::extData::FrameTL]: timeline from which we synchronize images.
+ * @subsection In-Out In-Out:
+ * - \b key2 [::fwData::Image]: frame where to extract a buffer of a timeline.
  */
 class VIDEOTOOLS_CLASS_API SFrameUpdater : public ::fwServices::IController
 {
@@ -50,20 +67,7 @@ protected:
     /// Starting method. Initialize timer.
     VIDEOTOOLS_API virtual void starting() throw(fwTools::Failed);
 
-    /**
-     * @brief Configuring method.
-     *
-     * @code{.xml}
-       <service impl="::videoTools::SFrameUpdater">
-        <config>
-            <frameTLKey>frameTL</frameTLKey>
-            <imageKey>image</imageKey>
-        </config>
-       </service>
-       @endcode
-     * - \b frameTLKey represents the key of the frame timeline contained in this service composite.
-     * - \b imageKey represents the key of the image contained in the visu composite.
-     */
+    /// Configuring method.
     VIDEOTOOLS_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Stopping method.
