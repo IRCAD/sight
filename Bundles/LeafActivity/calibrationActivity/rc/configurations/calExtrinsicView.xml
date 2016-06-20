@@ -220,6 +220,8 @@
             </slots>
         </service>
 
+        <!-- ******************************* Services ***************************************** -->
+
         <service uid="VideoSlider" type="::videoQt::editor::SSlider"  />
 
         <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer"  worker="synchronizer">

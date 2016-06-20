@@ -34,7 +34,7 @@ namespace videoCalibration
  * - \b calibrationInfo2 [::arData::CalibrationInfo]: Data of the second camera used to compute the calibration.
  * @subsection In-Out In-Out:
  * - \b camera [::arData::CameraSeries]: Output calibration.
- * Config:
+ * @subsection Configuration Configuration:
  * - \b camIndex (optional, default: 1): index of the camera in \b cameraSeries used to compute extrinsic matrix
  *      (from camera[0] to camera[index]).
  * - \b board : defines the number of square in 2 dimensions of the chessboard.
@@ -76,7 +76,7 @@ private:
      * @param width chessboard's width expresses by the number of square.
      * @param height chessboard's height expresses by the number of square.
      */
-    void updateChessboardSize(const unsigned int width, const unsigned int height, const float squareSize);
+    void updateChessboardSize(unsigned int width, unsigned int height, float squareSize);
 
     /// FwId of the first calibrationInfo
     std::string m_calibrationInfo1ID;

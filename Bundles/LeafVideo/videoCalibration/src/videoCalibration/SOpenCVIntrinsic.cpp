@@ -170,7 +170,7 @@ void SOpenCVIntrinsic::updating() throw (fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SOpenCVIntrinsic::updateChessboardSize(const unsigned int width, const unsigned int height, const float squareSize)
+void SOpenCVIntrinsic::updateChessboardSize(unsigned int width, unsigned int height, float squareSize)
 {
     m_width      = width;
     m_height     = height;

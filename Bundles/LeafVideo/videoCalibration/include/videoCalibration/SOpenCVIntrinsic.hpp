@@ -34,7 +34,7 @@ namespace videoCalibration
  * - \b calibrationInfo [::arData::CalibrationInfo]: Data used to compute the calibration.
  * @subsection In-Out In-Out:
  * - \b camera [::arData::Camera]: Output calibration.
- * Config:
+ * @subsection Configuration Configuration:
  * - \b board : defines the number of square in 2 dimensions of the chessboard.
  */
 class VIDEOCALIBRATION_CLASS_API SOpenCVIntrinsic : public ::videoCalibration::ICalibration
@@ -72,7 +72,7 @@ protected:
      * @param width chessboard's width expresses by the number of square.
      * @param height chessboard's height expresses by the number of square.
      */
-    void updateChessboardSize(const unsigned int width, const unsigned int height,  const float squareSize);
+    void updateChessboardSize(unsigned int width, unsigned int height, float squareSize);
 
 private:
 

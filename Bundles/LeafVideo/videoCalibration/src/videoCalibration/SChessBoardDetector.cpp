@@ -171,7 +171,7 @@ void SChessBoardDetector::detectPoints()
 
 // ----------------------------------------------------------------------------
 
-void SChessBoardDetector::updateChessboardSize(const unsigned int width, const unsigned int height)
+void SChessBoardDetector::updateChessboardSize(unsigned int width, unsigned int height)
 {
     m_width  = static_cast<size_t>(width);
     m_height = static_cast<size_t>(height);

@@ -114,6 +114,8 @@
             </slots>
         </service>
 
+        <!-- ******************************* Services ***************************************** -->
+
         <service uid="cameraLauncher" type="::fwServices::SConfigController" >
             <appConfig id="calCameraView" />
             <inout key="cameraUid" uid="${cameraUid}" />

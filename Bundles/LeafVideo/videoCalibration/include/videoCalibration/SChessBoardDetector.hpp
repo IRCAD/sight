@@ -25,11 +25,42 @@ namespace videoCalibration
 {
 
 /**
- * @class SChessBoardDetector
  * @brief This service updates CalibrationInfo objects with the points detected from chessboard.
  *
  * This service is used by calling 'detectPoints' slot. It checks on each timeline if points are visible in each
- * frame. Then it add the detected points and the associated image in the CalibrationInfo.
+ * frame. Then it adds the detected points and the associated image in the CalibrationInfo.
+ *
+ * @section Signals Signals
+ * - \b chessboardDetected(): Emitted when the chessboard is detected on the current image.
+ * - \b chessboardNotDetected(): Emitted when the chessboard is not detected on the current image.
+ *
+ * @section Slots Slots
+ * - \b checkPoints(::fwCore::HiResClock::HiResClockType): Try to detect the chessboard in the image(s) from the
+ * timeline(s) at the given timestamp.
+ * - \b detectPoints(): Request to store the current image in the calibration data, if the chessboard is detected.
+ * - \b updateChessboardSize(unsigned int, unsigned int): update the parameters of the chessboard.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+       <service uid="..." impl="::videoCalibration::SChessBoardDetector" >
+            <in group="timeline">
+                <key uid="..." />
+                <key uid="..." />
+            </in>
+            <inout group="calInfo">
+                <key uid="..." />
+                <key uid="..." />
+            </inout>
+           <board width="17" height="13" />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b timeline [::extData::FrameTL]: timelines containing the images to detect the chessboard.
+ * @subsection In-Out In-Out:
+ * - \b key2 [::arData::CalibrationInfo]: calibration object where to store the detected images.
+ * @subsection Configuration Configuration:
+ * - \b board : number of squares of the board in width and height.
  */
 class VIDEOCALIBRATION_CLASS_API SChessBoardDetector : public ::fwServices::IController
 {
@@ -65,20 +96,7 @@ public:
 
 protected:
 
-    /**
-     * @brief Configures the service
-     *
-     * @code{.xml}
-        <service uid="..." impl="::videoCalibration::SChessBoardDetector" autoConnect="no">
-            <calibration timeline="timeline1" calInfo="calInfo1" />
-            <calibration timeline="timeline2" calInfo="calInfo2" />
-            <board width="17" height="13" />
-        </service>
-       @endcode
-     * - \b timeline : key of frame timeline in the composite.
-     * - \b calInfo : key of the CalibrationInfo in the composite
-     * - \b board : number of square in board width and height
-     */
+    /// Configure the service.
     VIDEOCALIBRATION_API void configuring() throw (fwTools::Failed);
 
     /// Does nothing.
@@ -90,10 +108,8 @@ protected:
     /// Does nothing.
     VIDEOCALIBRATION_API void stopping() throw (fwTools::Failed);
 
-    /**
-     * @name Slots API
-     * @{
-     */
+
+private:
 
     /**
      * @brief SLOT : check if chessboard is visible and send corresponding signal
@@ -112,10 +128,7 @@ protected:
      * @param width chessboard's width expresses by the number of square.
      * @param height chessboard's height expresses by the number of square.
      */
-    VIDEOCALIBRATION_API void updateChessboardSize(const unsigned int width, const unsigned int height);
-    ///@}
-
-private:
+    VIDEOCALIBRATION_API void updateChessboardSize(unsigned int width, unsigned int height);
 
     /**
      * @brief Detect chessboard points
