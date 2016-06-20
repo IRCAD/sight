@@ -11,14 +11,15 @@
     <requirement id="activities" />
     <requirement id="uiMedDataQt" />
 
+    <xi:include href="configurations/activitySelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ARCalibrationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwServices::registry::AppConfigParameters">
         <id>ARCalibrationAppBase</id>
         <parameters>
-            <param name="appName" value="ARCalibration 0.2" />
-            <param name="appIconPath" value="@BUNDLE_PREFIX@/ARCalibration_0-2/arcalibration.ico" />
+            <param name="appName" value="ARCalibration 0.3" />
+            <param name="appIconPath" value="@BUNDLE_PREFIX@/ARCalibration_0-3/arcalibration.ico" />
         </parameters>
     </extension>
 
@@ -68,24 +69,15 @@
         </appConfig>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceConfig">
-        <id>ARMDAtomsConfig</id>
-        <desc>reader/writer config to read/write an atom representing a medical data</desc>
-        <config>
-            <patcher context="MedicalData" version="V10AR" />
-        </config>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceConfig">
-        <id>ARSDBAtomsReaderIOSelectorConfig</id>
-        <service>::uiIO::editor::SIOSelector</service>
-        <desc>Atoms seriesDB reader for arData.</desc>
-        <config>
-            <type mode="reader" />
-            <selection mode="include" />
-            <addSelection service="::ioAtoms::SReader" />
-            <config id="ARMDAtomsConfig" service="::ioAtoms::SReader" />
-        </config>
+    <extension implements="::fwActivities::registry::Activities">
+        <id>activitySelector</id>
+        <title>Choose your activity</title>
+        <desc>Activity selector for ARSurg</desc>
+        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/selector.svg</icon>
+        <requirements />
+        <appConfig id="activitySelector">
+            <parameters />
+        </appConfig>
     </extension>
 
 </plugin>
