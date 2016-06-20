@@ -31,7 +31,7 @@
         <builder>::fwActivities::builder::ActivitySeriesInitData</builder>
         <appConfig id="calibration">
             <parameters>
-                <parameter replace="cameraSeriesUid" by="@values.cameraSeries" />
+                <parameter replace="cameraSeries" by="@values.cameraSeries" />
             </parameters>
         </appConfig>
     </extension>

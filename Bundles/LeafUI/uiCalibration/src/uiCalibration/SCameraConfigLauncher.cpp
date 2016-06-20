@@ -269,8 +269,8 @@ void SCameraConfigLauncher::startIntrinsicConfig(size_t index)
     ::arData::CalibrationInfo::sptr calibInfo =
         ::arData::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfoKey]);
 
-    replaceMap["cameraUid"]          = camera->getID();
-    replaceMap["calibrationInfoUid"] = calibInfo->getID();
+    replaceMap["camera"]          = camera->getID();
+    replaceMap["calibrationInfo"] = calibInfo->getID();
 
     m_extrinsicLauncher->stopConfig();
     m_intrinsicLauncher->stopConfig();
@@ -313,11 +313,11 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
 
         ::fwServices::registry::FieldAdaptorType replaceMap;
 
-        replaceMap["camera1Uid"]          = camera1->getID();
-        replaceMap["camera2Uid"]          = camera2->getID();
-        replaceMap["calibrationInfo1Uid"] = calibInfo1->getID();
-        replaceMap["calibrationInfo2Uid"] = calibInfo2->getID();
-        replaceMap["camIndex"]            = std::to_string(index);
+        replaceMap["camera1"]          = camera1->getID();
+        replaceMap["camera2"]          = camera2->getID();
+        replaceMap["calibrationInfo1"] = calibInfo1->getID();
+        replaceMap["calibrationInfo2"] = calibInfo2->getID();
+        replaceMap["camIndex"]         = std::to_string(index);
 
         m_extrinsicLauncher->stopConfig();
         m_intrinsicLauncher->stopConfig();

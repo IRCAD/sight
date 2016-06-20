@@ -2,8 +2,8 @@
     <id>calIntrinsicView</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="cameraUid" />
-        <param name="calibrationInfoUid" />
+        <param name="camera" />
+        <param name="calibrationInfo" />
         <param name="chessboardWidth" />
         <param name="chessboardHeight" />
         <param name="squareSizeChessboard" />
@@ -14,8 +14,8 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${calibrationInfoUid}" type="::arData::CalibrationInfo" src="ref" />
-        <object uid="${cameraUid}" type="::arData::Camera" src="ref" />
+        <object uid="${calibrationInfo}" type="::arData::CalibrationInfo" src="ref" />
+        <object uid="${camera}" type="::arData::Camera" src="ref" />
 
         <object uid="FrameTL" type="::extData::FrameTL" />
 
@@ -118,8 +118,8 @@
 
         <service uid="cameraLauncher" type="::fwServices::SConfigController" >
             <appConfig id="calCameraView" />
-            <inout key="cameraUid" uid="${cameraUid}" />
-            <inout key="timeLineUid" uid="FrameTL" />
+            <inout key="camera" uid="${camera}" />
+            <inout key="timeLine" uid="FrameTL" />
             <parameter replace="WID_PARENT" uid="cameraView" />
             <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
         </service>
@@ -135,31 +135,31 @@
                 <key uid="FrameTL" />
             </in>
             <inout group="calInfo">
-                <key uid="${calibrationInfoUid}" />
+                <key uid="${calibrationInfo}" />
             </inout>
             <board width="${chessboardWidth}" height="${chessboardHeight}" />
         </service>
 
         <service uid="DisplayCalibrationInfo" type="::uiCalibration::SDisplayCalibrationInfo" >
-            <in key="calInfo1" uid="${calibrationInfoUid}" />
+            <in key="calInfo1" uid="${calibrationInfo}" />
         </service>
 
         <service uid="CalibrationInfoEditor" type="::uiCalibration::SCalibrationInfoEditor" autoConnect="yes">
-            <inout key="calInfo1" uid="${calibrationInfoUid}" />
+            <inout key="calInfo1" uid="${calibrationInfo}" />
         </service>
 
         <service uid="OpenCVIntrinsicCal" type="::videoCalibration::SOpenCVIntrinsic" worker="intr_chess_checker">
-            <in key="calibrationInfo" uid="${calibrationInfoUid}" />
-            <inout key="camera" uid="${cameraUid}" />
+            <in key="calibrationInfo" uid="${calibrationInfo}" />
+            <inout key="camera" uid="${camera}" />
             <board width="${chessboardWidth}" height="${chessboardHeight}" squareSize="${squareSizeChessboard}" />
         </service>
 
         <service uid="cameraInfo" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes" >
-            <inout key="camera" uid="${cameraUid}" />
+            <inout key="camera" uid="${camera}" />
         </service>
 
         <service uid="intrinsicEdition" type="::uiCalibration::SIntrinsicEdition"  >
-            <inout key="camera" uid="${cameraUid}" />
+            <inout key="camera" uid="${camera}" />
         </service>
 
         <!-- ******************************* Connections ************************************** -->
@@ -180,14 +180,14 @@
         </connect>
 
         <connect>
-            <signal>${calibrationInfoUid}/getRecord</signal>
+            <signal>${calibrationInfo}/getRecord</signal>
             <slot>DisplayCalibrationInfo/displayImage</slot>
         </connect>
 
         <connect>
-            <signal>${calibrationInfoUid}/addedRecord</signal>
-            <signal>${calibrationInfoUid}/removedRecord</signal>
-            <signal>${calibrationInfoUid}/resetRecord</signal>
+            <signal>${calibrationInfo}/addedRecord</signal>
+            <signal>${calibrationInfo}/removedRecord</signal>
+            <signal>${calibrationInfo}/resetRecord</signal>
             <slot>CalibrationInfoEditor/update</slot>
         </connect>
 

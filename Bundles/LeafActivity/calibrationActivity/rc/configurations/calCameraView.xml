@@ -2,16 +2,16 @@
     <id>calCameraView</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="cameraUid" />
-        <param name="timeLineUid" />
+        <param name="camera" />
+        <param name="timeLine" />
         <param name="videoGrabberImpl" />
     </parameters>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${timeLineUid}" type="::extData::FrameTL" src="ref" />
-        <object uid="${cameraUid}" type="::arData::Camera" src="ref" />
+        <object uid="${timeLine}" type="::extData::FrameTL" src="ref" />
+        <object uid="${camera}" type="::arData::Camera" src="ref" />
         <object uid="frame" type="::fwData::Image" />
 
         <!-- ******************************* UI declaration *********************************** -->
@@ -98,24 +98,24 @@
         </service>
 
         <service uid="VideoGrabber" type="${videoGrabberImpl}" >
-            <in key="camera" uid="${cameraUid}" />
-            <inout key="frameTL" uid="${timeLineUid}" />
+            <in key="camera" uid="${camera}" />
+            <inout key="frameTL" uid="${timeLine}" />
         </service>
 
         <service uid="FrameUpdater" type="::videoTools::SFrameUpdater" >
-            <in key="frameTL" uid="${timeLineUid}" autoConnect="yes" />
+            <in key="frameTL" uid="${timeLine}" autoConnect="yes" />
             <inout key="frame" uid="frame" />
         </service>
 
         <service uid="CameraSelector" type="::videoQt::editor::SCamera" >
-            <inout key="camera" uid="${cameraUid}"/>
+            <inout key="camera" uid="${camera}"/>
             <videoSupport>yes</videoSupport>
         </service>
 
         <!-- ******************************* Connections ************************************** -->
 
         <connect>
-            <signal>${cameraUid}/idModified</signal>
+            <signal>${camera}/idModified</signal>
             <slot>VideoGrabber/stopCamera</slot>
         </connect>
 

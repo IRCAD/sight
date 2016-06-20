@@ -4,7 +4,7 @@
         <param name="WID_PARENT" />
         <param name="SERIESDB" />
         <param name="AS_UID" />
-        <param name="cameraSeriesUid" />
+        <param name="cameraSeries" />
         <param name="chessboardWidth" default="11" />
         <param name="chessboardHeight" default="8" />
         <param name="squareSizeChessboard" default="20" />
@@ -17,7 +17,7 @@
         <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
         <object uid="${AS_UID}" type="::fwMedData::ActivitySeries" src="ref" />
 
-        <object uid="${cameraSeriesUid}" type="::arData::CameraSeries" src="ref" />
+        <object uid="${cameraSeries}" type="::arData::CameraSeries" src="ref" />
 
         <object uid="chessboardParameters" type="::fwData::Composite">
             <item key="chessboardWidth">
@@ -84,7 +84,7 @@
         </service>
 
         <service uid="cameraLauncher" type="::uiCalibration::SCameraConfigLauncher" >
-            <inout key="cameraSeries" uid="${cameraSeriesUid}" />
+            <inout key="cameraSeries" uid="${cameraSeries}" />
             <inout key="activitySeries" uid="${AS_UID}" />
             <config>
                 <intrinsic>
@@ -106,7 +106,7 @@
                             <parameter replace="chessboardWidth" by="${chessboardWidth}" />
                             <parameter replace="chessboardHeight" by="${chessboardHeight}" />
                             <parameter replace="squareSizeChessboard" by="${squareSizeChessboard}" />
-                            <parameter replace="cameraSeriesUid" uid="${cameraSeriesUid}" />
+                            <parameter replace="cameraSeries" uid="${cameraSeries}" />
                             <parameter replace="chessboardProxy" uid="chessboardProxy" />
                             <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
                         </parameters>
@@ -121,7 +121,7 @@
 
         <service uid="ActionExport" type="::uiMedData::action::SExportSeries" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
-            <inout key="series" uid="${cameraSeriesUid}" />
+            <inout key="series" uid="${cameraSeries}" />
         </service>
 
         <service uid="ActionExportActivity" type="::uiMedData::action::SExportSeries" autoConnect="yes">
@@ -130,7 +130,7 @@
         </service>
 
         <service uid="CalibrationXmlWriter" type="::uiIO::editor::SIOSelector" >
-            <inout key="target" uid="${cameraSeriesUid}" />
+            <inout key="target" uid="${cameraSeries}" />
             <type mode="writer" />
             <selection mode="include" />
             <addSelection service="::ioCalibration::SExportCalibrationXml" />
