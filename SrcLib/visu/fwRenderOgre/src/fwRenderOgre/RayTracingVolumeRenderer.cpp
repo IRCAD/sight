@@ -56,6 +56,7 @@ public:
         tfTexUnitState->setTextureName(m_tfTexture->getName());
 
         ::Ogre::GpuProgramParametersSharedPtr vr3DParams = pass->getFragmentProgramParameters();
+
         vr3DParams->setNamedConstant("u_invWorldViewProjs", m_invWorldViewProj.data(), m_invWorldViewProj.size());
         vr3DParams->setNamedConstant("u_sampleDistance", m_sampleDistance);
 

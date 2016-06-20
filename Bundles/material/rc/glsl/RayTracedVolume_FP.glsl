@@ -18,6 +18,7 @@ uniform mat4 u_invWorldViewProjs[VIEWPOINTS];
 
 uniform float u_lobeOffset;
 
+in vec2 uv;
 #else
 uniform sampler2D u_entryPoints;
 
@@ -80,30 +81,29 @@ vec3 gradientNormal(vec3 uvw)
 //-----------------------------------------------------------------------------
 
 #ifdef MODE3D
-void getRayEntryExitPoints(out vec2 rayEntryPoints[3], out int viewpoints[3])
+void getRayEntryExitPoints(out vec2 rayEntryPoints[3], out mat4 viewpoints[3])
 {
-    ivec2 uv = ivec2(gl_FragCoord.x, u_viewportHeight - gl_FragCoord.y);
     vec2 entryPoints[VIEWPOINTS];
 
-    entryPoints[0] = texelFetch(u_entryPoints0, uv, 0).rg;
-    entryPoints[1] = texelFetch(u_entryPoints1, uv, 0).rg;
-    entryPoints[2] = texelFetch(u_entryPoints2, uv, 0).rg;
-    entryPoints[3] = texelFetch(u_entryPoints3, uv, 0).rg;
-    entryPoints[4] = texelFetch(u_entryPoints4, uv, 0).rg;
-    entryPoints[5] = texelFetch(u_entryPoints5, uv, 0).rg;
-    entryPoints[6] = texelFetch(u_entryPoints6, uv, 0).rg;
-    entryPoints[7] = texelFetch(u_entryPoints7, uv, 0).rg;
+    entryPoints[0] = texture(u_entryPoints0, uv).rg;
+    entryPoints[1] = texture(u_entryPoints1, uv).rg;
+    entryPoints[2] = texture(u_entryPoints2, uv).rg;
+    entryPoints[3] = texture(u_entryPoints3, uv).rg;
+    entryPoints[4] = texture(u_entryPoints4, uv).rg;
+    entryPoints[5] = texture(u_entryPoints5, uv).rg;
+    entryPoints[6] = texture(u_entryPoints6, uv).rg;
+    entryPoints[7] = texture(u_entryPoints7, uv).rg;
 
     float xy = (gl_FragCoord.x * 3.0) + gl_FragCoord.y + u_lobeOffset + 0.5;
 
     int vp = (VIEWPOINTS - 1) - int(mod(xy, float(VIEWPOINTS)));
 
-    for(int i = 2; i >= 0; --i )
+    for(int i = 0; i < 3; ++i )
     {
         int index = (vp + i) % VIEWPOINTS;
 
-        viewpoints[i] = index;
-        rayEntryPoints[i] = entryPoints[index];
+        viewpoints[2 - i]     = u_invWorldViewProjs[index];
+        rayEntryPoints[2 - i] = entryPoints[index];
     }
 }
 #endif
@@ -159,9 +159,14 @@ void main(void)
 
 #else
     vec2 rayEntryPoints[3];
-    int  viewports[3];
+    mat4 viewports[3];
 
     getRayEntryExitPoints(rayEntryPoints, viewports);
+
+    if(rayEntryPoints[0].g == 1 && rayEntryPoints[1].g == 1 && rayEntryPoints[2].g == 1 )
+    {
+        discard;
+    }
 //    fragColor.a = 0;
 
     for(int i = 0; i < 3; ++ i)
@@ -172,11 +177,10 @@ void main(void)
         if(/*gl_FragCoord.z > entryDepth ||*/ exitDepth == -1)
         {
             fragColor[i] = 0;
-            continue;
-//            discard;
+            discard;
         }
 
-        mat4 invWorldViewProj = u_invWorldViewProjs[viewports[i]];
+        mat4 invWorldViewProj = viewports[i];
 
         vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, invWorldViewProj);
         vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, invWorldViewProj);
@@ -236,7 +240,6 @@ void main(void)
             rayPos += rayDir;
         }
 #ifdef MODE3D
-//        fragColor = result;
         fragColor[i] = result[i];
         fragColor.a += result.a;
     }

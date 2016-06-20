@@ -31,18 +31,6 @@ fragment_program VR/RayTracedVolume_FP glsl
     }
 }
 
-//-----------------------------------------------
-
-vertex_program VR/RayTracedVolume3D_VP glsl
-{
-    source RayTracedVolume_VP.glsl
-    preprocessor_defines MODE3D=1
-    default_params
-    {
-        param_named u_worldViewProj matrix4x4 1 0 0 0  0 1 0 0  0 0 1 0  0 0 0 1
-    }
-}
-
 //----------------------------------------------
 
 fragment_program VR/RayTracedVolume3D_FP glsl
@@ -59,7 +47,7 @@ fragment_program VR/RayTracedVolume3D_FP glsl
         param_named_auto u_clippingFar far_clip_distance
         //param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
         param_named u_sampleDistance float 0.2f
-        param_named u_lobeOffset float 188.f
+        param_named u_lobeOffset float 1.f
         param_named u_image int 0
         param_named u_tfTexture int 1
         param_named u_entryPoints0 int 2
@@ -168,9 +156,10 @@ material RayTracedVolume3D
             cull_software none
             depth_check off
             depth_write off
+
             scene_blend alpha_blend
 
-            vertex_program_ref VR/RayTracedVolume3D_VP
+            vertex_program_ref RenderQuad_VP
             {
             }
 
