@@ -257,19 +257,18 @@ void SRender::configureLayer( ConfigurationType conf )
 
     SLM_ASSERT( "'id' required attribute missing or empty", !id.empty() );
     SLM_ASSERT( "'layer' required attribute missing or empty", !layer.empty() );
+    SLM_ASSERT( "Unknown 3D mode : " << mode3D, mode3D.empty() || mode3D == "no" || mode3D == "AutoStereo");
 
     const int layerDepth = ::boost::lexical_cast<int>(layer);
 
     SLM_ASSERT("Attribute 'layer' must be greater than 0", layerDepth > 0);
-
-    unsigned int viewports = mode3D == "Alioscopy8" ? 8 : 1;                                    ;
 
     ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
     ogreLayer->setID(this->getID() + "_" + id);
     ogreLayer->setDepth(layerDepth);
     ogreLayer->setWorker(m_associatedWorker);
     ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
-    ogreLayer->setNbViewports(viewports);
+    ogreLayer->set3D(mode3D == "AutoStereo");
 
     ogreLayer->setCoreCompositorEnabled(id == "default", transparencyTechnique, numPeels);
     ogreLayer->setCompositorChainEnabled(compositors != "", compositors);

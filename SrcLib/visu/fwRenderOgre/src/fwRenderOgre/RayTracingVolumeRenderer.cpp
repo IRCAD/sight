@@ -27,11 +27,11 @@ namespace fwRenderOgre
 
 //-----------------------------------------------------------------------------
 
-class AlioscopyCompositorListener : public ::Ogre::CompositorInstance::Listener
+class AutoStereoCompositorListener : public ::Ogre::CompositorInstance::Listener
 {
 public:
 
-    AlioscopyCompositorListener(std::vector< ::Ogre::TexturePtr>& renderTargets,
+    AutoStereoCompositorListener(std::vector< ::Ogre::TexturePtr>& renderTargets,
                                 std::vector< ::Ogre::Matrix4>& invWorldViewProj,
                                 ::Ogre::TexturePtr image3DTexture,
                                 ::Ogre::TexturePtr tfTexture,
@@ -277,6 +277,8 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
 
 void RayTracingVolumeRenderer::setPreIntegratedRendering(bool preIntegratedRendering)
 {
+    OSLM_WARN_IF("Stereoscopic rendering doesn't implement pre-integration", m_mode3D && preIntegratedRendering);
+
     m_preIntegratedRendering = preIntegratedRendering;
 
     m_currentShaderParameters = m_preIntegratedRendering ? m_preIntegrationShaderParameters : m_defaultShaderParameters;
@@ -298,7 +300,7 @@ void RayTracingVolumeRenderer::configure3DViewport(Layer::sptr layer)
 
     ::Ogre::CompositorInstance *compInstance = compChain->getCompositor("RayTracedVolume3D");
 
-    compInstance->addListener(new AlioscopyCompositorListener(m_entryPointsTextures,
+    compInstance->addListener(new AutoStereoCompositorListener(m_entryPointsTextures,
                                                               m_viewPointMatrices,
                                                               m_3DOgreTexture,
                                                               m_gpuTF->getTexture(),
@@ -340,15 +342,18 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
 
 void RayTracingVolumeRenderer::resizeViewport(int w, int h)
 {
-//    m_entryPointsTexture->freeInternalResources();
+    for(::Ogre::TexturePtr entryPtsTexture : m_entryPointsTextures)
+    {
+        entryPtsTexture->freeInternalResources();
 
-//    m_entryPointsTexture->setWidth(static_cast< ::Ogre::uint32>(w));
-//    m_entryPointsTexture->setHeight(static_cast< ::Ogre::uint32>(h));
+        entryPtsTexture->setWidth(static_cast< ::Ogre::uint32>(w));
+        entryPtsTexture->setHeight(static_cast< ::Ogre::uint32>(h));
 
-//    m_entryPointsTexture->createInternalResources();
+        entryPtsTexture->createInternalResources();
 
-//    ::Ogre::RenderTexture *renderTexture = m_entryPointsTexture->getBuffer()->getRenderTarget();
-//    renderTexture->addViewport(m_camera);
+        ::Ogre::RenderTexture *renderTexture = entryPtsTexture->getBuffer()->getRenderTarget();
+        renderTexture->addViewport(m_camera);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -375,6 +380,8 @@ void RayTracingVolumeRenderer::initEntryPoints()
     }
     m_entryPointGeometry->end();
 
+    m_entryPointGeometry->setVisible(!m_mode3D);
+
     m_volumeSceneNode->attachObject(m_entryPointGeometry);
 
     // Create R2VB object used to generate proxy geometry
@@ -398,22 +405,6 @@ void RayTracingVolumeRenderer::initEntryPoints()
         ::Ogre::VertexDeclaration *decl = subMesh->vertexData->vertexDeclaration;
 
         decl->addElement(0, 0, ::Ogre::VET_INT1, ::Ogre::VES_POSITION);
-
-//        ::Ogre::HardwareVertexBufferSharedPtr vertexBuffer = ::Ogre::HardwareBufferManager::getSingleton().createVertexBuffer(
-//                    ::Ogre::VertexElement::getTypeSize(::Ogre::VET_INT1),
-//                    subMesh->vertexData->vertexCount,
-//                    ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
-
-//        for(int i = 0; i < subMesh->vertexData->vertexCount; ++ i)
-//        {
-//            vertexBuffer->writeData(
-//                        i * ::Ogre::VertexElement::getTypeSize(::Ogre::VET_INT1),
-//                        ::Ogre::VertexElement::getTypeSize(::Ogre::VET_INT1),
-//                        &i,
-//                        false);
-//        }
-
-//        subMesh->vertexData->vertexBufferBinding->setBinding(0, vertexBuffer);
 
         gridMesh->_setBounds(::Ogre::AxisAlignedBox::BOX_INFINITE);
         gridMesh->_setBoundingSphereRadius(1000);

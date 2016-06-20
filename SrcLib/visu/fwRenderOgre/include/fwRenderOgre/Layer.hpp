@@ -109,7 +109,7 @@ public:
     /// Add a disabled compositor name to the ChainManager
     FWRENDEROGRE_API void addAvailableCompositor(std::string compositorName);
 
-    // Removes all available compositors from the ChainManager
+    /// Removes all available compositors from the ChainManager
     FWRENDEROGRE_API void clearAvailableCompositors();
 
     /// Enables/Disables a compositor according to the isEnabled flag
@@ -167,8 +167,8 @@ public:
     /// Requests render
     FWRENDEROGRE_API void requestRender();
 
-    /// Sets the number of viewports.
-    FWRENDEROGRE_API void setNbViewports(unsigned nbViewports);
+    /// Sets stereoscopic rendering.
+    FWRENDEROGRE_API void set3D(bool mode3D);
 
     /// Sets background color : specific to background Layer
     FWRENDEROGRE_API void setBackgroundColor(std::string topColor, std::string botColor);
@@ -188,6 +188,9 @@ public:
 
     /// Gets if there is an XML configured compositor chain
     FWRENDEROGRE_API bool isCompositorChainEnabled();
+
+    /// Checks if stereoscopic rendering is enabled.
+    FWRENDEROGRE_API bool is3D() const;
 
     /// Checks if this layer has a default compositor
     FWRENDEROGRE_API ::fwRenderOgre::compositor::Core::sptr getCoreCompositor();
@@ -225,14 +228,17 @@ private:
     /// Ogre viewport representing this layer
     ::Ogre::Viewport* m_viewport;
 
-    /// Number of viewports.
-    unsigned m_nbViewports;
+    /// Boolean used to set stereoscopic rendering.
+    bool m_is3D;
 
-    /// Intermediate render targets for multi-view rendering.
-    std::vector< ::Ogre::TexturePtr > m_renderTargets;
+//    /// Number of viewports.
+//    unsigned m_nbViewports;
 
-    /// Ogre viewports for multi-screen monitors.
-    std::vector< ::Ogre::Viewport * > m_multiViewports;
+//    /// Intermediate render targets for multi-view rendering.
+//    std::vector< ::Ogre::TexturePtr > m_renderTargets;
+
+//    /// Ogre viewports for multi-screen monitors.
+//    std::vector< ::Ogre::Viewport * > m_multiViewports;
 
     /// This boolean enables default compositor's widgets (gui displays before scene creation)
     bool m_hasCoreCompositor;

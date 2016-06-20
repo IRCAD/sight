@@ -274,15 +274,20 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     }
     else
     {
+        ::fwRenderOgre::Layer::sptr serviceLayer = this->getRenderService()->getLayer();
+
         m_volumeRenderer = new ::fwRenderOgre::RayTracingVolumeRenderer(this->getID(),
                                                                         m_sceneManager,
                                                                         m_volumeSceneNode,
                                                                         m_3DOgreTexture,
                                                                         &m_gpuTF,
                                                                         &m_preIntegrationTable,
-                                                                        true);
+                                                                        serviceLayer->is3D());
 
-        dynamic_cast< ::fwRenderOgre::RayTracingVolumeRenderer*>(m_volumeRenderer)->configure3DViewport(this->getRenderService()->getLayer());
+        if(serviceLayer->is3D())
+        {
+            dynamic_cast< ::fwRenderOgre::RayTracingVolumeRenderer*>(m_volumeRenderer)->configure3DViewport(serviceLayer);
+        }
     }
 
 
@@ -349,8 +354,6 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 
 //    m_camera->addListener(new CameraListener(this));
     // -- PROFILING END --
-
-
 
     this->getRenderService()->resetCameraCoordinates(m_layerID);
     m_volumeRenderer->tfUpdate(this->getTransferFunction());

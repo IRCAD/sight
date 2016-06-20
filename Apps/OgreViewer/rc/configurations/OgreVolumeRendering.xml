@@ -27,13 +27,13 @@
             </service>
 
             <service uid="${GENERIC_UID}_volumeRenderingScene" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoConnect="yes" >
-                <scene overlay="true" fullscreen="yes">
+                <scene overlay="true" fullscreen="no">
 
                     <!-- Fix afterglow bug when dezooming -->
                     <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
 
                     <!-- Default Layer -->
-                    <renderer id="default" layer="1" compositors="Default" mode3D="Alioscopy8"/>
+                    <renderer id="default" layer="1" compositors="Default" mode3D="no"/>
 
                     <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
                         <config renderer="default" style="VR" />

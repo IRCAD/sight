@@ -1,14 +1,14 @@
-compositor RayTracedVolume3D
+compositor AutoStereo
 {
     technique
     {
         // Final pass
         target_output
         {
-            input previous
+            input none
             pass render_quad
             {
-                material RayTracedVolume3D
+                material AutoStereo
             }
         }
     }
