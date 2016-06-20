@@ -149,10 +149,12 @@ void SCalibrationInfoEditor::stopping() throw (fwTools::Failed)
 
 void SCalibrationInfoEditor::remove()
 {
-    int idx = m_capturesListWidget->currentRow();
+    int row = m_capturesListWidget->currentRow();
 
-    if(idx >= 0)
+    if(row >= 0)
     {
+        const size_t idx = static_cast<size_t>(row);
+
         ::arData::CalibrationInfo::sptr calInfo1 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_1);
         SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !",calInfo1);
 
@@ -225,10 +227,12 @@ void SCalibrationInfoEditor::reset()
 
 void SCalibrationInfoEditor::getSelection()
 {
-    int idx = m_capturesListWidget->currentRow();
+    int row = m_capturesListWidget->currentRow();
 
-    if(idx >= 0)
+    if(row >= 0)
     {
+        const size_t idx = static_cast<size_t>(row);
+
         ::arData::CalibrationInfo::sptr calInfo1 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_1);
         SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !",calInfo1);
 

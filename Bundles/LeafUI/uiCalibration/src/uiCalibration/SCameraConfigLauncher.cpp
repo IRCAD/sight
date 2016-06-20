@@ -200,7 +200,7 @@ void SCameraConfigLauncher::onAddClicked()
 
 void SCameraConfigLauncher::onRemoveClicked()
 {
-    const int index = m_cameraComboBox->currentIndex();
+    const size_t index = static_cast<size_t>(m_cameraComboBox->currentIndex());
     if (index > 0)
     {
         m_cameraComboBox->blockSignals(true);
@@ -244,7 +244,7 @@ void SCameraConfigLauncher::onRemoveClicked()
 
 void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
 {
-    const int index = m_cameraComboBox->currentIndex();
+    const size_t index = static_cast<size_t>(m_cameraComboBox->currentIndex());
     OSLM_ASSERT("Bad index: " << index, index >=0 && index < m_cameraSeries->getNumberOfCameras());
     if (checked)
     {
