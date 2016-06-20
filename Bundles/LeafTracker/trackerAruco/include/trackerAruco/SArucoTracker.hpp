@@ -34,12 +34,12 @@ namespace trackerAruco
  *
  * @code{.xml}
         <service uid="..." type="::trackerAruco::SArucoTracker" >
-            <in key="frameTL" id="frameTLUid" autoConnect="yes"/>
-            <in key="camera" id="cameraUid" />
+            <in key="frameTL" uid="frameTLUid" autoConnect="yes"/>
+            <in key="camera" uid="cameraUid" />
             <inout group="tagTL" >
-                <key id="WireTimeline" />
-                <key id="PatientTimeline" />
-                <key id="TableTimeline" />
+                <key uid="WireTimeline" />
+                <key uid="PatientTimeline" />
+                <key uid="TableTimeline" />
             </inout>
             <config>
                 <track>

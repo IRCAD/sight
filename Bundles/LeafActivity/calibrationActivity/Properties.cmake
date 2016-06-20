@@ -2,7 +2,6 @@
 set( NAME calibrationActivity )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
-set( START ON)
 set( DEPENDENCIES
     fwCore
     fwData
@@ -30,4 +29,5 @@ set( REQUIREMENTS
         videoCalibration
         videoTools
         trackerAruco
+        validators
         )
