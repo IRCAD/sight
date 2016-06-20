@@ -5,6 +5,7 @@
         <param name="appIconPath" />
     </parameters>
     <config>
+
         <object uid="seriesDB" type="::fwMedData::SeriesDB" />
 
         <!-- *************************** Objects declaration **************************** -->

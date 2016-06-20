@@ -17,6 +17,7 @@ set( REQUIREMENTS
 
     io
     ioAtoms
+    ioCalibration
 
     uiIO
     uiGenericQt

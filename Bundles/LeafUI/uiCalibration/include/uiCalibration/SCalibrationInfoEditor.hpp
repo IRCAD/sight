@@ -23,7 +23,11 @@ namespace uiCalibration
 {
 /**
  * @brief   SCalibrationInfoEditor service is used to handle the calibration points acquisition.
- *
+ * *
+ * @section Slots Slots
+ * - \b remove() : removes the current selected image.
+ * - \b reset() : clears all the calibration information.
+ * - \b getSelection() : emits the CalibrationInfo signal 'getRecord(index)' with the current selection index.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -34,12 +38,7 @@ namespace uiCalibration
    @endcode
  * @subsection Input Input
  * - \b calInfo1 [::arData::CalibrationInfo]: calibration information for first camera.
- * - \b calInfo2 [::arData::CalibrationInfo] (optionnal): calibration information for optionnal second camera.
- *
- * @section Slots Slots
- * - \b remove() : removes the current selected image.
- * - \b reset() : clears all the calibration information.
- * - \b getSelection() : emits the CalibrationInfo signal 'getRecord(index)' with the current selection index.
+ * - \b calInfo2 [::arData::CalibrationInfo] (optional): calibration information for optional second camera.
  */
 class UICALIBRATION_CLASS_API SCalibrationInfoEditor : public QObject,
                                                        public ::gui::editor::IEditor

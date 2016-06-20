@@ -85,9 +85,6 @@ protected:
     VIDEOCALIBRATION_API void starting() throw (fwTools::Failed);
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void swapping() throw (fwTools::Failed);
-
-    /// Does nothing.
     VIDEOCALIBRATION_API void updating() throw (fwTools::Failed);
 
     /// Does nothing.
@@ -115,7 +112,7 @@ protected:
      * @param width chessboard's width expresses by the number of square.
      * @param height chessboard's height expresses by the number of square.
      */
-    VIDEOCALIBRATION_API void updateChessboardSize(const int width, const int height);
+    VIDEOCALIBRATION_API void updateChessboardSize(const unsigned int width, const unsigned int height);
     ///@}
 
 private:
@@ -127,20 +124,14 @@ private:
      * @param yDim the number of chessboard squares vertically
      * @return The list of chessboard points or NULL if no points are detected
      */
-    static SPTR(::fwData::PointList) detectChessboard(::extData::FrameTL::sptr tl,
+    static SPTR(::fwData::PointList) detectChessboard(::extData::FrameTL::csptr tl,
                                                       ::fwCore::HiResClock::HiResClockType timestamp,
                                                       size_t xDim, size_t yDim);
 
     /**
      * @brief Creates an image from frame timeline
      */
-    ::fwData::Image::sptr createImage(::extData::FrameTL::sptr tl, ::fwCore::HiResClock::HiResClockType timestamp);
-
-    /// Keys of timeline in the composite
-    std::vector< std::string > m_timeLineKeys;
-
-    /// Keys of CalibrationInfo in the composite
-    std::vector< std::string > m_calInfoKeys;
+    ::fwData::Image::sptr createImage(extData::FrameTL::csptr tl, ::fwCore::HiResClock::HiResClockType timestamp);
 
     /// Signal emitted when chessboard is detected
     ChessboardDetectedSignalType::sptr m_sigChessboardDetected;
@@ -156,9 +147,6 @@ private:
 
     /// Used to know if we detected the chessboard the last time we check
     bool m_isDetected;
-
-    /// Frame time line objects
-    std::vector< ::extData::FrameTL::sptr> m_frameTLs;
 
     /// Last valid chessboard points for each timeline
     std::vector< ::fwData::PointList::sptr> m_pointsLists;

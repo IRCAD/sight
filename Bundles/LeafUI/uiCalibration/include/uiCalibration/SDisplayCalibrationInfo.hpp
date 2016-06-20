@@ -39,7 +39,7 @@ namespace uiCalibration
  * @section XML XML Configuration
  * @code{.xml}
      <service type="::uiCalibration::SDisplayCalibrationInfo">
-         <in key="calInfo1" uid"..." />
+         <in key="calInfo1" uid="..." />
          <in key="calInfo2" uid="..." />
      </service>
    @endcode

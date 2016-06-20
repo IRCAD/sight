@@ -16,7 +16,7 @@
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/AppConfig.hpp>
+#include <fwServices/registry/AppConfig2.hpp>
 #include <fwServices/registry/Proxy.hpp>
 
 #include <arData/CalibrationInfo.hpp>
@@ -135,7 +135,8 @@ void SDisplayCalibrationInfo::displayImage(size_t idx)
 
         replaceMap[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
 
-        config = ::fwServices::registry::AppConfig::getDefault()->getAdaptedTemplateConfig(strConfig, replaceMap);
+        config =
+            ::fwServices::registry::AppConfig2::getDefault()->getAdaptedTemplateConfig(strConfig, replaceMap, true);
 
         // Launch configuration
         m_configMgr = ::fwServices::IAppConfigManager::New();

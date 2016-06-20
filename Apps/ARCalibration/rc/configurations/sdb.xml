@@ -71,7 +71,7 @@
             <inout key="selection" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" uid="seriesDB" />
+                    <parameter replace="SERIESDB" uid="${SERIESDB}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                 </parameters>
                 <filter>
@@ -85,7 +85,7 @@
             <config>
                 <mode>immediate</mode>
                 <parameters>
-                    <parameter replace="SERIESDB" uid="seriesDB" />
+                    <parameter replace="SERIESDB" uid="${SERIESDB}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                 </parameters>
                 <filter>
@@ -99,7 +99,7 @@
             <inout key="selection" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" uid="seriesDB" />
+                    <parameter replace="SERIESDB" uid="${SERIESDB}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                 </parameters>
                 <filter>

@@ -67,12 +67,6 @@ void SCameraConfigLauncher::configuring() throw(fwTools::Failed)
 
     m_intrinsicLauncher->parseConfig(cameraConfig);
     m_extrinsicLauncher->parseConfig(extrinsicConfig);
-
-    m_cameraSeriesKey = config.get<std::string>("cameraSeriesKey");
-    SLM_ASSERT("Missing 'cameraSeriesKey'", !m_cameraSeriesKey.empty());
-
-    m_activitySeriesKey = config.get<std::string>("activitySeriesKey");
-    SLM_ASSERT("Missing 'activitySeriesKey'", !m_activitySeriesKey.empty());
 }
 
 //------------------------------------------------------------------------------
@@ -80,17 +74,14 @@ void SCameraConfigLauncher::configuring() throw(fwTools::Failed)
 void SCameraConfigLauncher::starting() throw(::fwTools::Failed)
 {
     this->create();
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
-    m_cameraSeries = composite->at< ::arData::CameraSeries >(m_cameraSeriesKey);
+    m_cameraSeries = this->getInOut< ::arData::CameraSeries >("cameraSeries");
     SLM_ASSERT("Missing CameraSeries: " + m_cameraSeriesKey, m_cameraSeries);
 
-    m_activitySeries = composite->at< ::fwMedData::ActivitySeries >(m_activitySeriesKey);
+    m_activitySeries = this->getInOut< ::fwMedData::ActivitySeries >("activitySeries");
     SLM_ASSERT("Missing ActivitySeries: " + m_activitySeriesKey, m_activitySeries);
 
-
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =
-        ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer         = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -199,8 +190,6 @@ void SCameraConfigLauncher::onCameraChanged(int index)
 
 void SCameraConfigLauncher::onAddClicked()
 {
-    const size_t nbCam = m_cameraSeries->getNumberOfCameras();
-
     m_extrinsicButton->setEnabled(true);
     m_removeButton->setEnabled(true);
 
