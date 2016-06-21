@@ -5,10 +5,7 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES
     fwCore
     fwData
-    fwRuntime
     fwActivities
-    fwGui
-    arData
 )
 set( REQUIREMENTS
         servicesReg

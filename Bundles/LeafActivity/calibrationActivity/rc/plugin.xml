@@ -4,12 +4,9 @@
     <requirement id="gui" />
     <requirement id="visuVTKAdaptor" />
     <requirement id="visuVTKARAdaptor" />
-    <requirement id="videoQt" />
     <requirement id="media" />
     <requirement id="mediaExt" />
     <requirement id="arMedia" />
-    <requirement id="videoCalibration" />
-    <requirement id="uiCalibration" />
     <requirement id="validators" />
 
     <xi:include href="configurations/calibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
@@ -54,6 +51,7 @@
                     Ex.: <b>101</b>
                 ]]>
                 </desc>
+                <validator>::calibrationActivity::validator::TagId</validator>
              </requirement>
         </requirements>
         <appConfig id="toolsCalibration">
