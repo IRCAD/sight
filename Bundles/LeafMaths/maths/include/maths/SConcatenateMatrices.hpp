@@ -32,7 +32,7 @@ namespace maths
             <in group="matrix">
                 <key uid="..." />
                 <key uid="..." inverse="true"/>
-                <key uid="..." autoConnect="true"/>
+                <key uid="..." autoConnect="yes"/>
             </in>
             <inout key="output" uid="..." />
        </service>

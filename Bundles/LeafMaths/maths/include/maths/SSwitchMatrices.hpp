@@ -24,8 +24,10 @@ namespace maths
 /**
  * @brief   This service switch between several matrices.
  *
- * Each time the slot s_SWITCH_SLOT is called the next matrix given in the configuration is copied on the matrix bound
- * to the service. Is is also possible to give the index of the matrix to use with the slot s_SWITCH_TO_SLOT.
+ * @section Slots Slots
+ * - \b switchMatrix() : Each time the slot switchMatrix() is called the next matrix given in the configuration is copied on the matrix bound
+ * to the service
+ * - \b switchToMatrix(int index) : switch to the matrix at the given index
  *
  * @section XML XML Configuration
  *
@@ -97,19 +99,7 @@ protected:
 
 private:
 
-    struct TransformMatrix
-    {
-        ::fwData::TransformationMatrix3D::sptr m_matrix;
-        std::string m_uid;
-    };
-
-    typedef std::vector< TransformMatrix > MatrixVectorType;
-
-    MatrixVectorType m_matrixVector; ///< The vector of TransformMatrix struct
-
     size_t m_indexOfDesiredMatrix;
-
-    ::fwServices::helper::SigSlotConnection::sptr m_connections; ///< connection to matrices
 };
 
 } //namespace maths

@@ -29,6 +29,9 @@ fwServicesRegisterMacro(::arServices::ISynchronizer, ::syncTimeline::SMatrixTLSy
 namespace syncTimeline
 {
 
+static const ::fwServices::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
+static const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrixTL";
+
 // ----------------------------------------------------------------------------
 
 SMatrixTLSynchronizer::SMatrixTLSynchronizer() throw ()
@@ -39,28 +42,6 @@ SMatrixTLSynchronizer::SMatrixTLSynchronizer() throw ()
 
 void SMatrixTLSynchronizer::configuring() throw (::fwTools::Failed)
 {
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-
-    ConfigurationType matricesConfig = m_configuration->findConfigurationElement("matrices");
-    SLM_WARN_IF("Missing \"matrices\" tag.", !matricesConfig);
-
-    if (matricesConfig)
-    {
-        std::vector< ConfigurationType > matrixCfgs = matricesConfig->find("matrix");
-
-        SLM_ASSERT("Missing 'matrix' tag", !matrixCfgs.empty() );
-
-        for(ConfigurationType cfg : matrixCfgs)
-        {
-            const std::string index       = cfg->getAttributeValue("index");
-            const unsigned long indexInTL = stoul(index);
-
-            const std::string matrixUID = cfg->getAttributeValue("to");
-
-            SLM_ASSERT("Missing attribute 'index' and/or 'to'", !index.empty() && !matrixUID.empty() );
-            m_matrixIndexName[indexInTL] = matrixUID;
-        }
-    }
 }
 
 // ----------------------------------------------------------------------------
@@ -86,31 +67,29 @@ void SMatrixTLSynchronizer::updating() throw (::fwTools::Failed)
 
 void SMatrixTLSynchronizer::synchronize()
 {
-
     ::fwCore::HiResClock::HiResClockType currentTimestamp =
         std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
 
-    ::extData::MatrixTL::sptr matrixTL            = this->getObject< ::extData::MatrixTL >();
+    ::extData::MatrixTL::csptr matrixTL           = this->getInput< ::extData::MatrixTL >(s_MATRIXTL_INPUT);
     CSPTR(::extData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
 
     if(buffer)
     {
         std::stringstream matrixPrint;
 
-        for(const MatrixIndexNameType::value_type& el : m_matrixIndexName)
+        for (size_t i = 0; i< this->getKeyGroupSize(s_MATRICES_INOUT); ++i)
         {
-            unsigned int index = static_cast< unsigned int >(el.first);
+            unsigned int index = static_cast< unsigned int >(i);
             if(buffer->isPresent(index))
             {
                 const float* values = buffer->getElement(index);
 
-                ::fwTools::Object::sptr obj                   = ::fwTools::fwID::getObject(el.second);
-                ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::dynamicCast(obj);
+                auto matrix = this->getInOut< ::fwData::TransformationMatrix3D >(s_MATRICES_INOUT, i);
                 {
                     ::fwData::mt::ObjectWriteLock lock(matrix);
 
-                    SLM_ASSERT("Matrix '" + el.second + "' not found.", matrix);
-                    matrixPrint << std::endl << "Matrix : " << el.second << std::endl;
+                    OSLM_ASSERT("Matrix['" << i << "] not found.", matrix);
+                    matrixPrint << std::endl << "Matrix[" << i << "]" << std::endl;
 
                     for(unsigned int i = 0; i < 4; ++i)
                     {
@@ -135,10 +114,10 @@ void SMatrixTLSynchronizer::synchronize()
 
 // ----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SMatrixTLSynchronizer::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SMatrixTLSynchronizer::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::extData::MatrixTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push( s_MATRIXTL_INPUT, ::extData::MatrixTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }
