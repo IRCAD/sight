@@ -8,23 +8,31 @@ set( DEPENDENCIES
     fwActivities
 )
 set( REQUIREMENTS
-        servicesReg
-        dataReg
-        extDataReg
-        arDataReg
-        gui
-        ioData
-        visuVTKAdaptor
-        visuVTKARAdaptor
-        media
-        mediaExt
-        arMedia
-        videoQt
-        uiTools
-        uiIO
-        uiCalibration
-        videoCalibration
-        videoTools
-        trackerAruco
-        validators
-        )
+    servicesReg
+    dataReg
+    extDataReg
+    arDataReg
+
+    gui
+
+    ioData
+
+    visuVTKAdaptor
+    visuVTKARAdaptor
+
+    arMedia
+    media
+    mediaExt
+
+    uiTools
+    uiIO
+    uiCalibration
+
+    videoCalibration
+    videoQt
+    videoTools
+
+    trackerAruco
+
+    validators
+)
