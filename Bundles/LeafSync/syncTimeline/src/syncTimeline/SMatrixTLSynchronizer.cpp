@@ -30,7 +30,7 @@ namespace syncTimeline
 {
 
 static const ::fwServices::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
-static const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrixTL";
+static const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrices";
 
 // ----------------------------------------------------------------------------
 
