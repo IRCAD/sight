@@ -41,6 +41,7 @@ namespace visuVTKARAdaptor
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT         = "updateImage";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_OPACITY_SLOT = "updateImageOpacity";
+static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT                 = "show";
 static const  ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT           = "calibrate";
 
 //------------------------------------------------------------------------------
@@ -54,6 +55,7 @@ SVideoAdapter::SVideoAdapter() throw() :
 {
     newSlot(s_UPDATE_IMAGE_SLOT, &SVideoAdapter::updateImage, this);
     newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SVideoAdapter::updateImageOpacity, this);
+    newSlot(s_SHOW_SLOT, &SVideoAdapter::show, this);
     newSlot(s_CALIBRATE_SLOT, &SVideoAdapter::offsetOpticalCenter, this);
 }
 
@@ -213,6 +215,7 @@ void SVideoAdapter::updateImageOpacity()
     }
 
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 
@@ -222,6 +225,16 @@ void SVideoAdapter::updateImage()
 {
     m_isTextureInit = false;
     this->updating();
+}
+
+//------------------------------------------------------------------------------
+
+void SVideoAdapter::show(bool visible)
+{
+    m_actor->SetVisibility(visible);
+
+    this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
