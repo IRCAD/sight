@@ -20,11 +20,7 @@
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include <fwThread/Worker.hpp>
-
 #include <fwTools/Failed.hpp>
-#include <fwTools/fwID.hpp>
-#include <fwTools/macros.hpp>
 #include <fwTools/Object.hpp>
 
 #include <boost/property_tree/ptree.hpp>
@@ -37,19 +33,30 @@ namespace registry
 {
 class ObjectService;
 }
-
-typedef std::pair< std::string, std::string > ObjectServiceKeyType;
+namespace fwThread
+{
+class Worker;
+}
 
 #define KEY_GROUP_NAME(key, index) (key + "#" + std::to_string(index) )
 
 /**
  * @brief   Base class for all services.
  *
- * This class defines the API to use and declare services. The service state aims at imposing method execution order (i.e. configure(), start(), update() or update(const fwServices::ObjectMsg::sptr), stop()).
+ * This class defines the API to use and declare services.
+ * The service state aims to impose the execution order (i.e. configure(), start(), update() or, stop()).
  *
- * @todo replace tests on status in start, stop, ... methods by assertions.
- * @todo Refactoring of SWAPPING status. Perhaps must be a special status as UPDATING or UPDATING must be another GlobalStatus. it must be homogeneous.
- * @todo Add a new method to test if m_associatedObject has expired
+ * @section Signals Signals
+ * - \b started() : Emitted when the service has started.
+ * - \b updated() : Emitted when the service has updated.
+ * - \b stopped() : Emitted when the service has stopped.
+ *
+ * @section Slots Slots
+ * - \b start() : Start the service.
+ * - \b update() : Update the service.
+ * - \b stop() : Stop the service.
+ * - \b swap() : @deprecated Swap the current object.
+ * - \b swapKey(const KeyType&, ::fwData::Object::sptr) : Swap the object at the given key with the object in parameter.
  */
 class FWSERVICES_CLASS_API IService : public ::fwTools::Object,
                                       public ::fwCom::HasSlots,
@@ -154,10 +161,10 @@ public:
     typedef ::fwCom::Slot<SharedFutureType(const KeyType&, ::fwData::Object::sptr)> SwapKeySlotType;
 
     /// Initializes m_associatedWorker and associates this worker to all service slots
-    FWSERVICES_API void setWorker( ::fwThread::Worker::sptr worker );
+    FWSERVICES_API void setWorker( SPTR(::fwThread::Worker) worker );
 
     /// Returns associate worker
-    FWSERVICES_API ::fwThread::Worker::sptr getWorker() const;
+    FWSERVICES_API SPTR(::fwThread::Worker) getWorker() const;
 
     //@}
 
@@ -661,7 +668,7 @@ protected:
     SwapKeySlotType::sptr m_slotSwapKey;
 
     /// Associated worker
-    ::fwThread::Worker::sptr m_associatedWorker;
+    SPTR(::fwThread::Worker) m_associatedWorker;
 
     //@}
 

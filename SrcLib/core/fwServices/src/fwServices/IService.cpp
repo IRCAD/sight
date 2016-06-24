@@ -16,6 +16,7 @@
 #include <fwRuntime/Convert.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
+#include <fwThread/Worker.hpp>
 #include <fwTools/fwID.hpp>
 
 #include <boost/property_tree/ptree.hpp>
