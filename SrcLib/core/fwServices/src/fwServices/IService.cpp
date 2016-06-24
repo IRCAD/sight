@@ -25,6 +25,10 @@ namespace fwServices
 
 //-----------------------------------------------------------------------------
 
+const ::fwCom::Slots::SlotKeyType IService::s_STARTED_SIG = "started";
+const ::fwCom::Slots::SlotKeyType IService::s_UPDATED_SIG = "updated";
+const ::fwCom::Slots::SlotKeyType IService::s_STOPPED_SIG = "stopped";
+
 const ::fwCom::Slots::SlotKeyType IService::s_START_SLOT   = "start";
 const ::fwCom::Slots::SlotKeyType IService::s_STOP_SLOT    = "stop";
 const ::fwCom::Slots::SlotKeyType IService::s_UPDATE_SLOT  = "update";
@@ -43,7 +47,9 @@ IService::IService() :
     m_updatingState ( NOTUPDATING ),
     m_configurationState ( UNCONFIGURED )
 {
-    // by default a weak_ptr have a use_count == 0
+    newSignal<StartedSignalType>( s_STARTED_SIG );
+    newSignal<UpdatedSignalType>( s_UPDATED_SIG );
+    newSignal<StoppedSignalType>( s_STOPPED_SIG );
 
     m_slotStart   = newSlot( s_START_SLOT, &IService::start, this );
     m_slotStop    = newSlot( s_STOP_SLOT, &IService::stop, this );
@@ -158,6 +164,8 @@ void displayPt(::boost::property_tree::ptree &pt, std::string indent = "")
     }
 }
 
+//-----------------------------------------------------------------------------
+
 void IService::setConfiguration(const ::fwRuntime::ConfigurationElement::sptr _cfgElement)
 {
     SLM_ASSERT( "Invalid ConfigurationElement", _cfgElement );
@@ -251,6 +259,10 @@ IService::SharedFutureType IService::start()
         {
             ufuture.get();
         }
+
+        auto sig = this->signal<StartedSignalType>(s_STARTED_SIG);
+        sig->asyncEmit();
+
         return ::boost::move(ufuture);
     }
     else
@@ -278,6 +290,10 @@ IService::SharedFutureType IService::stop()
         {
             ufuture.get();
         }
+
+        auto sig = this->signal<StoppedSignalType>(s_STOPPED_SIG);
+        sig->asyncEmit();
+
         return ::boost::move(ufuture);
     }
     else
@@ -310,6 +326,10 @@ IService::SharedFutureType IService::update()
         {
             ufuture.get();
         }
+
+        auto sig = this->signal<StartedSignalType>(s_UPDATED_SIG);
+        sig->asyncEmit();
+
         return ::boost::move(ufuture);
     }
     else
@@ -342,6 +362,7 @@ IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj )
         {
             ufuture.get();
         }
+
         return ::boost::move(ufuture);
     }
     else

@@ -113,6 +113,20 @@ public:
 
     //@}
 
+    /**
+     * @name Signal API
+     */
+    //@{
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_STARTED_SIG;
+    typedef ::fwCom::Signal<void ()> StartedSignalType;
+
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_UPDATED_SIG;
+    typedef ::fwCom::Signal<void ()> UpdatedSignalType;
+
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_STOPPED_SIG;
+    typedef ::fwCom::Signal<void ()> StoppedSignalType;
+
+    //@}
 
     /**
      * @name Slot API

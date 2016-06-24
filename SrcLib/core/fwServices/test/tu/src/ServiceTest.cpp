@@ -24,7 +24,11 @@
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
 
+#include <fwThread/Worker.hpp>
+
 #include "TestService.hpp"
+
+#include <thread>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::ServiceTest );
@@ -206,6 +210,53 @@ void ServiceTest::testStartStopUpdate()
 
 //------------------------------------------------------------------------------
 
+struct TestServiceSignals : public ::fwCom::HasSlots
+{
+    typedef std::shared_ptr< TestServiceSignals > sptr;
+
+    TestServiceSignals() :
+        m_started(false),
+        m_updated(false),
+        m_stopped(false)
+    {
+        newSlot("start", &TestServiceSignals::start, this);
+        newSlot("update", &TestServiceSignals::update, this);
+        newSlot("stop", &TestServiceSignals::stop, this);
+
+        m_worker = ::fwThread::Worker::New();
+        m_slots.setWorker(m_worker);
+    }
+
+    void start()
+    {
+        m_started = true;
+    }
+    void update()
+    {
+        m_updated = true;
+    }
+    void stop()
+    {
+        m_stopped = true;
+    }
+
+    ::fwThread::Worker::sptr m_worker;
+    bool m_started;
+    bool m_updated;
+    bool m_stopped;
+
+};
+
+// Wait at worst 1s for a given condition
+#define WAIT(cond) \
+    ::fwCore::TimeStamp BOOST_PP_CAT(timeStamp, __LINE__); \
+    BOOST_PP_CAT(timeStamp, __LINE__).setLifePeriod(1000); \
+    BOOST_PP_CAT(timeStamp, __LINE__).modified(); \
+    while(!(cond) && !BOOST_PP_CAT(timeStamp, __LINE__).periodExpired()) \
+    { \
+        std::this_thread::sleep_for( std::chrono::milliseconds(1)); \
+    }
+
 void ServiceTest::testCommunication()
 {
     registry::ActiveWorkers::sptr activeWorkers = registry::ActiveWorkers::getDefault();
@@ -233,14 +284,42 @@ void ServiceTest::testCommunication()
     service2 = ::fwServices::ut::TestService::dynamicCast( ::fwServices::get(service2UUID) );
     CPPUNIT_ASSERT(service2);
 
+    // Object used to check service signals
+    TestServiceSignals::sptr receiver1 = std::make_shared< TestServiceSignals>();
+    TestServiceSignals::sptr receiver2 = std::make_shared< TestServiceSignals>();
+
+    ::fwServices::helper::SigSlotConnection::sptr comHelper = ::fwServices::helper::SigSlotConnection::New();
+    comHelper->connect(service1, ::fwServices::IService::s_STARTED_SIG, receiver1, "start");
+    comHelper->connect(service1, ::fwServices::IService::s_UPDATED_SIG, receiver1, "update");
+    comHelper->connect(service1, ::fwServices::IService::s_STOPPED_SIG, receiver1, "stop");
+
+    CPPUNIT_ASSERT_EQUAL(false, receiver1->m_started);
+    CPPUNIT_ASSERT_EQUAL(false, receiver1->m_updated);
+    CPPUNIT_ASSERT_EQUAL(false, receiver1->m_stopped);
+
+    comHelper->connect(service2, ::fwServices::IService::s_STARTED_SIG, receiver2, "start");
+    comHelper->connect(service2, ::fwServices::IService::s_UPDATED_SIG, receiver2, "update");
+    comHelper->connect(service2, ::fwServices::IService::s_STOPPED_SIG, receiver2, "stop");
+
+    CPPUNIT_ASSERT_EQUAL(false, receiver2->m_started);
+    CPPUNIT_ASSERT_EQUAL(false, receiver2->m_updated);
+    CPPUNIT_ASSERT_EQUAL(false, receiver2->m_stopped);
+
     // Start services
     service1->start().wait();
     service2->start().wait();
     CPPUNIT_ASSERT(service1->isStarted());
     CPPUNIT_ASSERT(service2->isStarted());
 
+    WAIT(receiver1->m_started && receiver2->m_started)
+    CPPUNIT_ASSERT_EQUAL(true, receiver1->m_started);
+    CPPUNIT_ASSERT_EQUAL(false, receiver1->m_updated);
+    CPPUNIT_ASSERT_EQUAL(false, receiver1->m_stopped);
+    CPPUNIT_ASSERT_EQUAL(true, receiver2->m_started);
+    CPPUNIT_ASSERT_EQUAL(false, receiver2->m_updated);
+    CPPUNIT_ASSERT_EQUAL(false, receiver2->m_stopped);
+
     // Register communication channel
-    ::fwServices::helper::SigSlotConnection::sptr comHelper = ::fwServices::helper::SigSlotConnection::New();
     comHelper->connect( obj, service1, service1->getObjSrvConnections() );
     comHelper->connect( obj, service2, service2->getObjSrvConnections() );
     comHelper->connect( service1, ::fwServices::ut::TestServiceImplementation::s_MSG_SENT_SIG,
@@ -257,10 +336,28 @@ void ServiceTest::testCommunication()
         sig->asyncEmit(EVENT);
     }
 
+    service1->update().wait();
+    service2->update().wait();
+    WAIT(receiver1->m_updated && receiver2->m_updated)
+    CPPUNIT_ASSERT_EQUAL(true, receiver1->m_started);
+    CPPUNIT_ASSERT_EQUAL(true, receiver1->m_updated);
+    CPPUNIT_ASSERT_EQUAL(false, receiver1->m_stopped);
+    CPPUNIT_ASSERT_EQUAL(true, receiver2->m_started);
+    CPPUNIT_ASSERT_EQUAL(true, receiver2->m_updated);
+    CPPUNIT_ASSERT_EQUAL(false, receiver2->m_stopped);
+
     // Test if service2 has received the message
     service1->stop().wait();
     service2->stop().wait();
     CPPUNIT_ASSERT(service2->getIsUpdatedMessage());
+
+    WAIT(receiver1->m_stopped && receiver2->m_stopped)
+    CPPUNIT_ASSERT_EQUAL(true, receiver1->m_started);
+    CPPUNIT_ASSERT_EQUAL(true, receiver1->m_updated);
+    CPPUNIT_ASSERT_EQUAL(true, receiver1->m_stopped);
+    CPPUNIT_ASSERT_EQUAL(true, receiver2->m_started);
+    CPPUNIT_ASSERT_EQUAL(true, receiver2->m_updated);
+    CPPUNIT_ASSERT_EQUAL(true, receiver2->m_stopped);
 
     comHelper->disconnect();
     comHelper.reset();
