@@ -2,30 +2,30 @@
 
 fragment_program SummedAreaTable/Init_FP glsl
 {
-        source ApplyTransferFunction_FP.glsl
+    source ApplyTransferFunction_FP.glsl
 
-        default_params
-        {
-            param_named u_sliceDepth float 0
-            param_named u_image int 0
-            param_named u_tfTexture int 1
-        }
+    default_params
+    {
+        param_named u_sliceDepth float 0
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+    }
 }
 
 //---------------------------------------------------------------------------
 
 fragment_program SummedAreaTable/SAT_FP glsl
 {
-        source SummedAreaTable_FP.glsl
-        preprocessor_defines TEXREADS=32
+    source SummedAreaTable_FP.glsl
+    preprocessor_defines TEXREADS=32
 
-        default_params
-        {
-            param_named u_readOffset int 0
-            param_named u_passOrientation int 0
-            param_named u_sliceIndex int 0
-            param_named u_src int 0
-        }
+    default_params
+    {
+        param_named u_readOffset int 0
+        param_named u_passOrientation int 0
+        param_named u_sliceIndex int 0
+        param_named u_src int 0
+    }
 }
 
 //---------------------------------------------------------------------------

@@ -78,12 +78,12 @@ private:
 
 //-----------------------------------------------------------------------------
 
-SummedAreaTable::SummedAreaTable(::Ogre::SceneManager *_sceneManager, int width, int height, int depth) :
-    m_sceneManager(_sceneManager),
-    m_satSize     { width, height, depth }
+SummedAreaTable::SummedAreaTable(std::string _parentId, ::Ogre::SceneManager *_sceneManager, int width, int height, int depth) :
+    m_satSize     { width, height, depth },
+    m_sceneManager(_sceneManager)
 {
     m_sourceBuffer = ::Ogre::TextureManager::getSingletonPtr()->createManual(
-                "__GPU_SummedAreaTable_Ping",
+                _parentId + "__GPU_SummedAreaTable_Ping",
                 ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                 ::Ogre::TEX_TYPE_3D,
                 width,
@@ -94,7 +94,7 @@ SummedAreaTable::SummedAreaTable(::Ogre::SceneManager *_sceneManager, int width,
                 ::Ogre::TU_RENDERTARGET );
 
     m_targetBuffer = ::Ogre::TextureManager::getSingletonPtr()->createManual(
-                "__GPU_SummedAreaTable_Pong",
+                _parentId + "__GPU_SummedAreaTable_Pong",
                 ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                 ::Ogre::TEX_TYPE_3D,
                 width,
@@ -112,7 +112,7 @@ SummedAreaTable::SummedAreaTable(::Ogre::SceneManager *_sceneManager, int width,
     SummedAreaTableCompositorListener *satListener =
             new SummedAreaTableCompositorListener(m_readOffset, m_passOrientation, m_sliceIndex);
 
-    ::Ogre::Camera *dummyCamera = m_sceneManager->createCamera("_SummedAreaTable_DummyCamera");
+    ::Ogre::Camera *dummyCamera = m_sceneManager->createCamera(_parentId + "_SummedAreaTable_DummyCamera");
 
     for(int sliceIndex = 0; sliceIndex < depth; ++ sliceIndex)
     {
@@ -162,8 +162,6 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::Text
     ::Ogre::MaterialPtr initPassMtl = ::Ogre::MaterialManager::getSingleton().getByName("SummedAreaTableInit");
     ::Ogre::Pass *satInitPass = initPassMtl->getTechnique(0)->getPass(0);
 
-    ::Ogre::GpuProgramParametersSharedPtr initPassParams = satInitPass->getFragmentProgramParameters();
-
     ::Ogre::TextureUnitState *tex3DState = satInitPass->getTextureUnitState("image");
     ::Ogre::TextureUnitState *texTFState = satInitPass->getTextureUnitState("transferFunction");
 
@@ -176,6 +174,7 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::Text
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     const int depth = m_satSize[2];
 
+    // Copy our original image to the source buffer.
     for(int sliceIndex = 0; sliceIndex < depth; ++ sliceIndex)
     {
         ::Ogre::Viewport *vp = m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex)->getViewport(0);
@@ -189,7 +188,7 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::Text
         compositorManager.setCompositorEnabled(vp, "SummedAreaTableInit", false);
     }
 
-    // Enable SAT compositor
+    // Enable SAT compositor.
     for(int sliceIndex = 0; sliceIndex < depth; ++ sliceIndex)
     {
         ::Ogre::Viewport *vp =  m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex)->getViewport(0);
@@ -208,11 +207,11 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::Text
     for(m_passOrientation = 0; m_passOrientation < 3; ++m_passOrientation)
     {
         const int dim = m_satSize[m_passOrientation];
-        const int nbPass = static_cast<int>(std::ceil(std::log(dim) / std::log(m_nbTextReads)));
+        const int nbPasses = static_cast<int>(std::ceil(std::log(dim) / std::log(m_nbTextReads)));
 
         m_readOffset = 1;
 
-        for(int passIndex = 0; passIndex < nbPass; ++passIndex)
+        for(int passIndex = 0; passIndex < nbPasses; ++passIndex)
         {
             srcImgState->setTexture(m_sourceBuffer);
 
@@ -223,12 +222,12 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::Text
 
             m_readOffset *= m_nbTextReads;
 
-            // Swap ping pong
+            // Ping-pong swap.
             std::swap(m_sourceBuffer, m_targetBuffer);
         }
     }
 
-    // Disable SAT compositor
+    // Disable SAT compositor.
     for(int sliceIndex = 0; sliceIndex < depth; ++ sliceIndex)
     {
         ::Ogre::Viewport *vp =  m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex)->getViewport(0);
@@ -246,21 +245,7 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::Text
 
 void SummedAreaTable::computeSequential(::fwData::Image::sptr _image, fwData::TransferFunction::sptr _tf)
 {
-    m_satBuffer = new ::glm::vec4[m_satSize[0] * m_satSize[1] * m_satSize[2]];
-
-    if(m_gpuSummedAreaTable.isNull())
-    {
-        m_gpuSummedAreaTable = ::Ogre::TextureManager::getSingletonPtr()->createManual(
-                    "__CPU_SummedAreaTable",
-                    ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                    ::Ogre::TEX_TYPE_3D,
-                    m_satSize[0],
-                    m_satSize[1],
-                    m_satSize[2],
-                    0,
-                    ::Ogre::PF_FLOAT32_RGBA,
-                    ::Ogre::TU_DYNAMIC_WRITE_ONLY );
-    }
+    ::glm::vec4 *satBuffer = new ::glm::vec4[m_satSize[0] * m_satSize[1] * m_satSize[2]];
 
     ::fwComEd::helper::Image imageHelper(_image);
 
@@ -274,29 +259,32 @@ void SummedAreaTable::computeSequential(::fwData::Image::sptr _image, fwData::Tr
             {
                 int16_t *imgValue = static_cast<int16_t*>(imageHelper.getPixelBuffer(x, y, z));
 
-                satVal = applyTf(_tf, *imgValue) + getSatValue(x-1,y-1,z-1) +
-                         getSatValue( x,y,z-1 ) + getSatValue( x, y-1, z ) + getSatValue( x-1, y, z )
-                         - getSatValue( x-1, y-1, z ) - getSatValue( x, y-1, z-1 ) - getSatValue( x-1, y, z-1 );
+                satVal = applyTf(_tf, *imgValue)
+                        + getSatValue(satBuffer, x-1, y-1, z-1)
+                        + getSatValue(satBuffer, x  , y  , z-1)
+                        + getSatValue(satBuffer, x  , y-1, z  )
+                        + getSatValue(satBuffer, x-1, y  , z  )
+                        - getSatValue(satBuffer, x-1, y-1, z  )
+                        - getSatValue(satBuffer, x  , y-1, z-1)
+                        - getSatValue(satBuffer, x-1, y  , z-1);
 
-                setSatValue(satVal, x, y, z);
+                setSatValue(satBuffer, satVal, x, y, z);
             }
         }
     }
 
-    std::cout << "img type: " << _image->getPixelType().string()<< std::endl;
-
-    ::Ogre::HardwarePixelBufferSharedPtr pixBuffer = m_gpuSummedAreaTable->getBuffer();
+    ::Ogre::HardwarePixelBufferSharedPtr pixBuffer = m_sourceBuffer->getBuffer();
 
     // Discards the entire buffer while locking so that we can easily refill it from scratch
     pixBuffer->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
     ::Ogre::PixelBox pixBox = pixBuffer->getCurrentLock();
     std::uint8_t* pDest = static_cast<std::uint8_t*>(pixBox.data);
 
-    std::memcpy(pDest, m_satBuffer, m_satSize[0] * m_satSize[1] * m_satSize[2] * sizeof(::glm::vec4));
+    std::memcpy(pDest, satBuffer, m_satSize[0] * m_satSize[1] * m_satSize[2] * sizeof(::glm::vec4));
 
     pixBuffer->unlock();
 
-    delete[] m_satBuffer;
+    delete[] satBuffer;
 }
 
 //-----------------------------------------------------------------------------
@@ -318,21 +306,21 @@ void SummedAreaTable::computeSequential(::fwData::Image::sptr _image, fwData::Tr
 
 //-----------------------------------------------------------------------------
 
-::glm::vec4 SummedAreaTable::getSatValue(int x, int y, int z)
+::glm::vec4 SummedAreaTable::getSatValue(::glm::vec4 *satBuffer, int x, int y, int z)
 {
     if(x < 0 || y < 0 || z < 0)
     {
         return ::glm::vec4(0.f);
     }
 
-    return m_satBuffer[x + m_satSize[0] * y + m_satSize[0] * m_satSize[1] * z];
+    return satBuffer[x + m_satSize[0] * y + m_satSize[0] * m_satSize[1] * z];
 }
 
 //-----------------------------------------------------------------------------
 
-void SummedAreaTable::setSatValue(glm::vec4 value, int x, int y, int z)
+void SummedAreaTable::setSatValue(::glm::vec4 *satBuffer, glm::vec4 value, int x, int y, int z)
 {
-    m_satBuffer[x + m_satSize[0] * y + m_satSize[0] * m_satSize[1] * z] = value;
+    satBuffer[x + m_satSize[0] * y + m_satSize[0] * m_satSize[1] * z] = value;
 }
 
 //-----------------------------------------------------------------------------
