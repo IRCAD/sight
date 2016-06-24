@@ -14,6 +14,8 @@
 
 #include <fwServices/IController.hpp>
 
+#include <fwThread/Worker.hpp>
+
 #include <fwTools/Failed.hpp>
 
 #include <videoQt/player/QVideoPlayer.hpp>
