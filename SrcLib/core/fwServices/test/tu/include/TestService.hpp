@@ -11,13 +11,10 @@
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <fwData/Image.hpp>
 
 namespace fwServices
 {
@@ -247,6 +244,7 @@ public:
         connections.push("data1", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
         connections.push("data2", ::fwData::Object::s_MODIFIED_SIG, s_SLOT_1);
         connections.push("data3", ::fwData::Object::s_MODIFIED_SIG, s_SLOT_1);
+        connections.push("dataGroup1", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
 
         return connections;
     }

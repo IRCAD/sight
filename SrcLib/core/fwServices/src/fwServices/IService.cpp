@@ -78,7 +78,7 @@ void IService::registerOutput(const IService::KeyType &key, const fwData::Object
 
     if(m_keyGroupSize.find(key) != m_keyGroupSize.end())
     {
-        outKey += std::to_string(index);
+        outKey = KEY_GROUP_NAME(key, index);
     }
     if(::fwServices::OSR::isRegistered(outKey, ::fwServices::IService::AccessType::OUTPUT, this->getSptr()))
     {
@@ -96,7 +96,7 @@ void IService::unregisterOutput(const IService::KeyType &key, size_t index)
 
     if(m_keyGroupSize.find(key) != m_keyGroupSize.end())
     {
-        outKey += std::to_string(index);
+        outKey = KEY_GROUP_NAME(key, index);
     }
 
     if(::fwServices::OSR::isRegistered(outKey, ::fwServices::IService::AccessType::OUTPUT, this->getSptr()))

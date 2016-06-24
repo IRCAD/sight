@@ -386,7 +386,8 @@ Config::ServiceConfig Config::parseService(::fwRuntime::ConfigurationElement::cs
         if(!group.empty())
         {
             std::vector< ::fwRuntime::ConfigurationElement::sptr > keyCfgs = cfg->find("key");
-            size_t count                                                   = 0;
+
+            size_t count = 0;
             for(const auto& groupCfg : keyCfgs)
             {
                 ObjectServiceConfig grouObjConfig = objConfig;
@@ -395,7 +396,7 @@ Config::ServiceConfig Config::parseService(::fwRuntime::ConfigurationElement::cs
                 grouObjConfig.m_uid = groupCfg->getAttributeValue("uid");
                 SLM_ASSERT(errMsgHead + "\"uid\" attribute is empty" + errMsgTail, !grouObjConfig.m_uid.empty());
 
-                grouObjConfig.m_key = group + std::to_string(count++);
+                grouObjConfig.m_key = KEY_GROUP_NAME(group, count++);
 
                 // AutoConnect
                 auto autoConnectPeyKey = groupCfg->getSafeAttributeValue("autoConnect");

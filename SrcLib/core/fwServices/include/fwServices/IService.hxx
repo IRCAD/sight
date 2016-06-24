@@ -75,11 +75,13 @@ SPTR(DATATYPE) IService::getOutput(const KeyType &key) const
 template< class DATATYPE >
 CSPTR(DATATYPE) IService::getInput(const KeyType &keybase, size_t index) const
 {
+# ifdef _DEBUG
     auto it = m_keyGroupSize.find(keybase);
+#endif
     SLM_ASSERT("Key group '" + keybase + "' not found", it != m_keyGroupSize.end());
     OSLM_ASSERT("Index overflow '" << index << " >= " << it->second << "' in key group '" << keybase << ".",
                 index < it->second);
-    return this->getInput< DATATYPE >(keybase + std::to_string(index));
+    return this->getInput< DATATYPE >(KEY_GROUP_NAME(keybase, index));
 }
 
 //------------------------------------------------------------------------------
@@ -87,11 +89,13 @@ CSPTR(DATATYPE) IService::getInput(const KeyType &keybase, size_t index) const
 template< class DATATYPE >
 SPTR(DATATYPE) IService::getInOut(const KeyType &keybase, size_t index) const
 {
+# ifdef _DEBUG
     auto it = m_keyGroupSize.find(keybase);
+#endif
     SLM_ASSERT("Key group '" + keybase + "' not found", it != m_keyGroupSize.end());
     OSLM_ASSERT("Index overflow '" << index << " >= " << it->second << "' in key group '" << keybase << ".",
                 index < it->second);
-    return this->getInOut< DATATYPE >(keybase + std::to_string(index));
+    return this->getInOut< DATATYPE >(KEY_GROUP_NAME(keybase, index));
 }
 
 //------------------------------------------------------------------------------
@@ -99,11 +103,13 @@ SPTR(DATATYPE) IService::getInOut(const KeyType &keybase, size_t index) const
 template< class DATATYPE >
 SPTR(DATATYPE) IService::getOutput(const KeyType &keybase, size_t index) const
 {
+# ifdef _DEBUG
     auto it = m_keyGroupSize.find(keybase);
+#endif
     SLM_ASSERT("Key group '" + keybase + "' not found", it != m_keyGroupSize.end());
     OSLM_ASSERT("Index overflow '" << index << " >= " << it->second << "' in key group '" << keybase << ".",
                 index < it->second);
-    return this->getOutput< DATATYPE >(keybase + std::to_string(index));
+    return this->getOutput< DATATYPE >(KEY_GROUP_NAME(keybase, index));
 }
 
 //------------------------------------------------------------------------------

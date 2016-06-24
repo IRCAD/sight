@@ -10,6 +10,7 @@
 #include <fwCom/Signal.hxx>
 
 #include <fwData/Boolean.hpp>
+#include <fwData/Image.hpp>
 
 #include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/Bundle.hpp>
@@ -951,7 +952,7 @@ void AppConfig2Test::keyGroupTest()
     // Test service with one key group of two data
     // =================================================================================================================
 
-    ::fwData::Boolean::sptr data3;
+    ::fwData::Image::sptr data3;
     {
         fwTools::Object::sptr gnsrv1 = ::fwTools::fwID::getObject("TestService1Uid");
         CPPUNIT_ASSERT(gnsrv1 == nullptr);
@@ -968,8 +969,8 @@ void AppConfig2Test::keyGroupTest()
         CPPUNIT_ASSERT(!srv1->getIsUpdated());
 
         CPPUNIT_ASSERT(data1 == srv1->getInput< ::fwData::Object>("data1") );
-        CPPUNIT_ASSERT(data2 == srv1->getInput< ::fwData::Object>("dataGroup0") );
-        CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("dataGroup1") );
+        CPPUNIT_ASSERT(data2 == srv1->getInput< ::fwData::Object>("dataGroup#0") );
+        CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("dataGroup#1") );
 
         CPPUNIT_ASSERT(data2 == srv1->getInput< ::fwData::Object>("dataGroup", 0 ) );
         CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("dataGroup", 1 ) );
@@ -984,14 +985,14 @@ void AppConfig2Test::keyGroupTest()
         CPPUNIT_ASSERT(srv1->getIsUpdated());
 
         // Create data 3
-        data3 = ::fwData::Boolean::New();
+        data3 = ::fwData::Image::New();
 
         ::fwServices::OSR::registerService(data3, "out3", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
 
         WAIT(data3 == srv1->getInput< ::fwData::Object>("dataGroup2"));
 
-        CPPUNIT_ASSERT(data2 == srv1->getInput< ::fwData::Object>("dataGroup0") );
-        CPPUNIT_ASSERT(data3 == srv1->getInput< ::fwData::Object>("dataGroup1") );
+        CPPUNIT_ASSERT(data2 == srv1->getInput< ::fwData::Object>("dataGroup#0") );
+        CPPUNIT_ASSERT(data3 == srv1->getInput< ::fwData::Object>("dataGroup#1") );
 
         CPPUNIT_ASSERT(data2 == srv1->getInput< ::fwData::Object>("dataGroup", 0 ) );
         CPPUNIT_ASSERT(data3 == srv1->getInput< ::fwData::Object>("dataGroup", 1 ) );
@@ -1017,28 +1018,28 @@ void AppConfig2Test::keyGroupTest()
     {
         WAIT_SERVICE_STARTED("TestService2Uid");
         fwTools::Object::sptr gnsrv2 = ::fwTools::fwID::getObject("TestService2Uid");
-        auto srv2                    = ::fwServices::ut::TestServiceImplementation::dynamicCast(gnsrv2);
+        auto srv2                    = ::fwServices::ut::TestSrvAutoconnect::dynamicCast(gnsrv2);
         CPPUNIT_ASSERT(srv2 != nullptr);
         CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv2->getStatus());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
-        WAIT(data3 == srv2->getInput< ::fwData::Object>("dataGroup1-0"));
+        WAIT(data3 == srv2->getInput< ::fwData::Object>("dataGroup1#0"));
 
-        CPPUNIT_ASSERT(2 == srv2->getKeyGroupSize("dataGroup0-") );
-        CPPUNIT_ASSERT(data1   == srv2->getInput< ::fwData::Object>("dataGroup0-0") );
-        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("dataGroup0-1") );
+        CPPUNIT_ASSERT(2 == srv2->getKeyGroupSize("dataGroup0") );
+        CPPUNIT_ASSERT(data1   == srv2->getInput< ::fwData::Object>("dataGroup0#0") );
+        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("dataGroup0#1") );
 
-        CPPUNIT_ASSERT(data1   == srv2->getInput< ::fwData::Object>("dataGroup0-", 0 ) );
-        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("dataGroup0-", 1 ) );
+        CPPUNIT_ASSERT(data1   == srv2->getInput< ::fwData::Object>("dataGroup0", 0 ) );
+        CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("dataGroup0", 1 ) );
 
-        CPPUNIT_ASSERT(3 == srv2->getKeyGroupSize("dataGroup1-") );
-        CPPUNIT_ASSERT(data3 == srv2->getInput< ::fwData::Object>("dataGroup1-0") );
-        CPPUNIT_ASSERT(data4 == srv2->getInput< ::fwData::Object>("dataGroup1-1") );
-        CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("dataGroup1-2") );
+        CPPUNIT_ASSERT(3 == srv2->getKeyGroupSize("dataGroup1") );
+        CPPUNIT_ASSERT(data3 == srv2->getInput< ::fwData::Object>("dataGroup1#0") );
+        CPPUNIT_ASSERT(data4 == srv2->getInput< ::fwData::Object>("dataGroup1#1") );
+        CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("dataGroup1#2") );
 
-        CPPUNIT_ASSERT(data3 == srv2->getInput< ::fwData::Object>("dataGroup1-", 0) );
-        CPPUNIT_ASSERT(data4 == srv2->getInput< ::fwData::Object>("dataGroup1-", 1) );
-        CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("dataGroup1-", 2) );
+        CPPUNIT_ASSERT(data3 == srv2->getInput< ::fwData::Object>("dataGroup1", 0) );
+        CPPUNIT_ASSERT(data4 == srv2->getInput< ::fwData::Object>("dataGroup1", 1) );
+        CPPUNIT_ASSERT(data5 == srv2->getInput< ::fwData::Object>("dataGroup1", 2) );
 
         // Check connection with data 1
         srv2->resetIsUpdated();
@@ -1059,6 +1060,10 @@ void AppConfig2Test::keyGroupTest()
         auto sig4 = data4->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig4->asyncEmit();
         WAIT(srv2->getIsUpdated());
+        CPPUNIT_ASSERT(!srv2->getIsUpdated());
+        auto sigIm4 = data4->signal< ::fwData::Image::BufferModifiedSignalType>(::fwData::Image::s_BUFFER_MODIFIED_SIG);
+        sigIm4->asyncEmit();
+        WAIT(srv2->getIsUpdated());
         CPPUNIT_ASSERT(srv2->getIsUpdated());
 
         // Check no connection with data 5
@@ -1066,6 +1071,11 @@ void AppConfig2Test::keyGroupTest()
         auto sig5 = data5->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
         sig5->asyncEmit();
         WAIT(!srv2->getIsUpdated());
+        CPPUNIT_ASSERT(!srv2->getIsUpdated());
+
+        auto sigIm5 = data5->signal< ::fwData::Image::BufferModifiedSignalType>(::fwData::Image::s_BUFFER_MODIFIED_SIG);
+        sigIm5->asyncEmit();
+        WAIT(srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
     }
 
@@ -1573,16 +1583,16 @@ fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildKeyGroupConfig()
 
     objCfg = cfg->addConfigurationElement("object");
     objCfg->setAttributeValue( "uid", "data3Id");
-    objCfg->setAttributeValue( "type", "::fwData::Boolean");
+    objCfg->setAttributeValue( "type", "::fwData::Image");
     objCfg->setAttributeValue( "src", "deferred");
 
     objCfg = cfg->addConfigurationElement("object");
     objCfg->setAttributeValue( "uid", "data4Id");
-    objCfg->setAttributeValue( "type", "::fwData::Boolean");
+    objCfg->setAttributeValue( "type", "::fwData::Image");
 
     objCfg = cfg->addConfigurationElement("object");
     objCfg->setAttributeValue( "uid", "data5Id");
-    objCfg->setAttributeValue( "type", "::fwData::Boolean");
+    objCfg->setAttributeValue( "type", "::fwData::Image");
 
     // Service used to generate data
     std::shared_ptr< ::fwRuntime::EConfigurationElement > genDataSrv = cfg->addConfigurationElement("service");
@@ -1620,10 +1630,10 @@ fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildKeyGroupConfig()
     // Service #2
     std::shared_ptr< ::fwRuntime::EConfigurationElement > service2 = cfg->addConfigurationElement("service");
     service2->setAttributeValue( "uid", "TestService2Uid" );
-    service2->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
+    service2->setAttributeValue("type", "::fwServices::ut::TestSrvAutoconnect" );
 
     std::shared_ptr< ::fwRuntime::EConfigurationElement > dataGroup2 = service2->addConfigurationElement("in");
-    dataGroup2->setAttributeValue( "group", "dataGroup0-" );
+    dataGroup2->setAttributeValue( "group", "dataGroup0" );
 
     std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_1 = dataGroup2->addConfigurationElement("key");
     dataService2_1->setAttributeValue( "uid", "data1Id" );
@@ -1634,7 +1644,7 @@ fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildKeyGroupConfig()
     dataService2_2->setAttributeValue( "optional", "yes" );
 
     std::shared_ptr< ::fwRuntime::EConfigurationElement > dataGroup3 = service2->addConfigurationElement("in");
-    dataGroup3->setAttributeValue( "group", "dataGroup1-" );
+    dataGroup3->setAttributeValue( "group", "dataGroup1" );
 
     std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_3 = dataGroup3->addConfigurationElement("key");
     dataService2_3->setAttributeValue( "uid", "data3Id" );

@@ -40,6 +40,8 @@ class ObjectService;
 
 typedef std::pair< std::string, std::string > ObjectServiceKeyType;
 
+#define KEY_GROUP_NAME(key, index) (key + "#" + std::to_string(index) )
+
 /**
  * @brief   Base class for all services.
  *
