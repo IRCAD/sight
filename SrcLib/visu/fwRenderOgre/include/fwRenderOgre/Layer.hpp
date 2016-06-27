@@ -20,6 +20,8 @@
 #include <fwRenderOgre/compositor/ChainManager.hpp>
 #include <fwRenderOgre/compositor/Core.hpp>
 
+#include <fwThread/Worker.hpp>
+
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreRenderWindow.h>
