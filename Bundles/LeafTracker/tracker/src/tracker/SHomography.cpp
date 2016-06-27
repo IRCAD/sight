@@ -319,9 +319,7 @@ void SHomography::initialize()
 {
     KeyConnectionsMap connections;
 
-    connections.push( "markerTL0", ::extData::TimeLine::s_OBJECT_PUSHED_SIG, s_REGISTER_SLOT );
-    connections.push( "markerTL1", ::extData::TimeLine::s_OBJECT_PUSHED_SIG, s_REGISTER_SLOT );
-    connections.push( "markerTL2", ::extData::TimeLine::s_OBJECT_PUSHED_SIG, s_REGISTER_SLOT );
+    connections.push( "markerTL", ::extData::TimeLine::s_OBJECT_PUSHED_SIG, s_REGISTER_SLOT );
 
     return connections;
 }
