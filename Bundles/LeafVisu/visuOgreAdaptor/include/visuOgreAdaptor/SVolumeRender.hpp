@@ -24,6 +24,8 @@
 
 #include "visuOgreAdaptor/config.hpp"
 
+#include <fwRenderOgre/SATVolumeIllumination.hpp>
+
 namespace visuOgreAdaptor
 {
 
@@ -148,6 +150,8 @@ private:
 
     /// Use pre-integration.
     bool m_preIntegratedRendering;
+
+    ::fwRenderOgre::SATVolumeIllumination *m_illum;
 
     /// Handle connections between the layer and the volume renderer
     ::fwServices::helper::SigSlotConnection m_volumeConnection;

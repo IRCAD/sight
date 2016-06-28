@@ -195,6 +195,8 @@ void SVolumeRender::updatingTFPoints()
 
     m_volumeRenderer->tfUpdate(tf);
 
+    m_illum->updateVolIllum(m_3DOgreTexture, m_gpuTF.getTexture());
+
     this->requestRender();
 }
 
@@ -289,6 +291,8 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
             dynamic_cast< ::fwRenderOgre::RayTracingVolumeRenderer*>(m_volumeRenderer)->configure3DViewport(serviceLayer);
         }
     }
+
+    m_illum = new ::fwRenderOgre::SATVolumeIllumination(this->getID(), m_sceneManager, 128, 128, 128);
 
 
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);

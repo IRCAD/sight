@@ -1,0 +1,15 @@
+compositor VolIllum
+{
+    technique
+    {
+        // Final pass
+        target_output
+        {
+            input none
+            pass render_quad
+            {
+                material VolumeAO
+            }
+        }
+    }
+}

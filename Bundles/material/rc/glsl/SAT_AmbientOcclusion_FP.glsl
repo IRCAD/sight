@@ -7,6 +7,8 @@ uniform int u_sliceIndex;
 uniform int u_nbShells;
 uniform int u_shellRadius;
 
+out vec4 aoFactor;
+
 //-----------------------------------------------------------------------------
 
 vec4 satLookup(in ivec3 min, in ivec3 max)
@@ -25,14 +27,14 @@ vec4 satLookup(in ivec3 min, in ivec3 max)
 
 void main(void)
 {
-    const ivec3 voxelCoords = ivec3(gl_FragColor.xy, u_sliceIndex);
+    ivec3 voxelCoords = ivec3(gl_FragCoord.xy, u_sliceIndex);
 
     ivec3 shellMin = voxelCoords - ivec3(u_shellRadius);
     ivec3 shellMax = voxelCoords + ivec3(u_shellRadius);
 
     int radius = u_shellRadius;
 
-    vec4 aoFactor = satLookup(shellMin, shellMax) / float(radius * radius);
+    aoFactor = satLookup(shellMin, shellMax) / float(radius * radius);
 
     for(int i = 1; i < u_nbShells; ++ i)
     {
@@ -46,6 +48,4 @@ void main(void)
         shellMin = newShellMin;
         shellMax = newShellMax;
     }
-
-    return aoFactor;
 }
