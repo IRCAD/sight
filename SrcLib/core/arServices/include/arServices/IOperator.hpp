@@ -12,7 +12,7 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
-#include <fwServices/IService.hpp>
+#include <fwServices/IParametersService.hpp>
 
 namespace arServices
 {
@@ -20,24 +20,18 @@ namespace arServices
 /**
  * @brief   This interface defines operator service API.
 
- * @section Slots Slots
- * - \b setBoolParameter() : Receive the value of a boolean parameter along with its identifier.
- * - \b setDoubleParameter() : Receive the value of a double parameter along with its identifier.
- * - \b setIntParameter() : Receive the value of a integer parameter along with its identifier.
+ * @section Signals Signals
+ * - \b computed() : Emitted when something was computed.
  */
-class ARSERVICES_CLASS_API IOperator : public ::fwServices::IService
+class ARSERVICES_CLASS_API IOperator : public ::fwServices::IParametersService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IOperator)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro ( (IOperator)(::fwServices::IParametersService) );
 
     ARSERVICES_API static const ::fwCom::Signals::SignalKeyType s_COMPUTED_SIG;
     typedef ::fwCom::Signal<void ()> ComputedSignalType;
-
-    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
-    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
-    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
 
 protected:
 
@@ -46,15 +40,6 @@ protected:
 
     /// IOperator destructor. Do nothing.
     ARSERVICES_API virtual ~IOperator();
-
-    /// Slot: This method is used to set an boolean parameter.
-    virtual void setBoolParameter(std::string key, bool val);
-
-    /// Slot: This method is used to set a double parameter.
-    virtual void setDoubleParameter(std::string key, double val);
-
-    /// Slot: This method is used to set an integer parameter.
-    virtual void setIntParameter(std::string key, int val);
 
     ComputedSignalType::sptr m_sigComputed; ///< Signal emitted when operator is computed.
 };
