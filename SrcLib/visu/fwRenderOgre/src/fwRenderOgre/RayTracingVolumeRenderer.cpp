@@ -335,6 +335,22 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
         geomParams->setNamedConstant("u_boundingBoxMax", ::Ogre::Vector3(1.f, 1.f, 1.f));
     }
 
+    m_entryPointGeometry->beginUpdate(0);
+    {
+        for(const auto& face : s_cubeFaces)
+        {
+            const CubeFacePositionList& facePositionList = face.second;
+
+            m_entryPointGeometry->position(m_clippedImagePositions[facePositionList[0]]);
+            m_entryPointGeometry->position(m_clippedImagePositions[facePositionList[1]]);
+            m_entryPointGeometry->position(m_clippedImagePositions[facePositionList[2]]);
+            m_entryPointGeometry->position(m_clippedImagePositions[facePositionList[2]]);
+            m_entryPointGeometry->position(m_clippedImagePositions[facePositionList[3]]);
+            m_entryPointGeometry->position(m_clippedImagePositions[facePositionList[0]]);
+        }
+    }
+    m_entryPointGeometry->end();
+
     m_proxyGeometryGenerator->manualUpdate();
 }
 
@@ -498,13 +514,15 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
         m_sceneManager->manualRender(&renderOp, pass, renderTexture->getViewport(0), worldMat, m_camera->getViewMatrix(), projMat);
     }
 
+//    m_proxyGeometryGenerator->setMaterial("Default");
+
     // TEST
-//    size_t nbPixels = m_entryPointsTexture->getHeight() * m_entryPointsTexture->getWidth();
+//    size_t nbPixels = m_entryPointsTextures[0]->getHeight() * m_entryPointsTextures[0]->getWidth();
 //    size_t dataSize = nbPixels * 3 * sizeof(float);
 
 //    float *optiText = new float[dataSize];
 
-//    ::Ogre::HardwarePixelBufferSharedPtr textBuffer = m_entryPointsTexture->getBuffer();
+//    ::Ogre::HardwarePixelBufferSharedPtr textBuffer = m_entryPointsTextures[0]->getBuffer();
 
 //    void *pixBuff = textBuffer->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY);
 //    {
@@ -512,12 +530,14 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 //    }
 //    textBuffer->unlock();
 
+//    ::Ogre::RenderTexture *renderTexture = m_entryPointsTextures[0]->getBuffer()->getRenderTarget();
+
 //    m_entryPointGeometry->getSection(0)->getRenderOperation(renderOp);
 //    m_sceneManager->manualRender(&renderOp, pass, renderTexture->getViewport(0), worldMat, m_camera->getViewMatrix(), m_camera->getProjectionMatrix());
 
 //    float *cubeText = new float[dataSize];
 
-//    textBuffer =  m_entryPointsTexture->getBuffer();
+//    textBuffer =  m_entryPointsTextures[0]->getBuffer();
 //    pixBuff = textBuffer->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY);
 //    {
 //        std::memcpy(cubeText, pixBuff, dataSize);
@@ -527,27 +547,28 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 
 //    double totalSkippedDistance = 0;
 
+//    double cubeDist = 0, optiDist = 0;
+
 //    for(size_t i = 0; i < nbPixels * 3; i +=3)
 //    {
 ////        std::cout << "r " << cubeText[i] << " g " << cubeText[i+1] << " b " << cubeText[i + 2] << std::endl;
 
-//        double cubeDist = 0, optiDist = 0;
 //        if(optiText[i+1] != 1)
 //        {
-//            optiDist = -optiText[i+1] - optiText[i];
+//            optiDist += -optiText[i+1] - optiText[i];
 //        }
 //        if(cubeText[i+1] != 1)
 //        {
-//            cubeDist = -cubeText[i+1] - cubeText[i];
+//            cubeDist += -cubeText[i+1] - cubeText[i];
 //        }
 
-//        totalSkippedDistance += (cubeDist - optiDist);
+////        totalSkippedDistance += (cubeDist - optiDist);
 //    }
 
-//    std::cout << "Total skipped distance : " << totalSkippedDistance << std::endl;
+//    std::cout << "Total skipped distance : " << optiDist / cubeDist << std::endl;
 
 //    delete[] optiText;
-    //    delete[] cubeText;
+//        delete[] cubeText;
 }
 
 //-----------------------------------------------------------------------------

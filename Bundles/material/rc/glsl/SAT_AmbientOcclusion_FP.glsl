@@ -1,4 +1,4 @@
-#version 150
+#version 400
 
 uniform sampler3D u_sat;
 
@@ -28,9 +28,10 @@ vec4 satLookup(in ivec3 min, in ivec3 max)
 void main(void)
 {
     ivec3 voxelCoords = ivec3(gl_FragCoord.xy, u_sliceIndex);
+    ivec3 satSize = textureSize(u_sat, 0) - ivec3(1);
 
-    ivec3 shellMin = voxelCoords - ivec3(u_shellRadius);
-    ivec3 shellMax = voxelCoords + ivec3(u_shellRadius);
+    ivec3 shellMin = max(voxelCoords - ivec3(u_shellRadius), ivec3(0));
+    ivec3 shellMax = min(voxelCoords + ivec3(u_shellRadius), satSize);
 
     int radius = u_shellRadius;
 
@@ -38,8 +39,8 @@ void main(void)
 
     for(int i = 1; i < u_nbShells; ++ i)
     {
-        ivec3 newShellMin = shellMin - ivec3(u_shellRadius);
-        ivec3 newShellMax = shellMax + ivec3(u_shellRadius);
+        ivec3 newShellMin = max(shellMin - ivec3(u_shellRadius), ivec3(0));
+        ivec3 newShellMax = min(shellMax + ivec3(u_shellRadius), satSize);
 
         radius += u_shellRadius;
 

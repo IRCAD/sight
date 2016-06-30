@@ -31,6 +31,8 @@
 
 #include <sstream>
 
+#include <fwCore/Profiling.hpp>
+
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVolumeRender, ::fwData::Image);
 
 //-----------------------------------------------------------------------------
@@ -195,7 +197,10 @@ void SVolumeRender::updatingTFPoints()
 
     m_volumeRenderer->tfUpdate(tf);
 
-    m_illum->updateVolIllum(m_3DOgreTexture, m_gpuTF.getTexture());
+    FW_PROFILE("SAT")
+    {
+        m_illum->updateVolIllum(m_3DOgreTexture, m_gpuTF.getTexture());
+    }
 
     this->requestRender();
 }
