@@ -44,6 +44,12 @@ namespace visuOgreAdaptor
  * - \b mode (optional, slice/raycasting, default=raycasting): Rendering mode.
  * - \b selectedTFKey (mandatory): TF key.
  * - \b tfSelectionFwID (mandatory): TF selection.
+ *
+ * @section Slots Slots
+ * - \b newImage(): Called when a new image is loaded.
+ * - \b samplingChanged(int): Called when the sampling is changed and updates the volume renderer accordingly.
+ * - \b togglePreintegration(bool): Toggle pre-integration.
+ * - \b resizeViewport(int, int): Called when the size of the viewport changes.
  */
 class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
                                                 public ::fwRenderOgre::ITransformable,
@@ -102,17 +108,9 @@ protected:
 
 private:
 
-
-    /// Slot called when a new image is loaded.
     void newImage();
-
-    /// Slot called when the sampling is changed.
     void samplingChanged(int nbSamples);
-
-    /// Slot called when pre-integration is toggled.
     void togglePreintegration(bool preintegration);
-
-    /// Slot called when the size of the viewport changes.
     void resizeViewport(int w, int h);
 
     /// Creates widgets and connects its slots to interactor signals.

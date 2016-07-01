@@ -37,7 +37,7 @@ void main(void)
 
     aoFactor = satLookup(shellMin, shellMax) / float(radius * radius);
 
-    for(int i = 0; i < u_nbShells; ++i)
+    for(int i = 1; i < u_nbShells; ++i)
     {
         ivec3 newShellMin = max(shellMin - ivec3(u_shellRadius), ivec3(0));
         ivec3 newShellMax = min(shellMax + ivec3(u_shellRadius), satSize);
