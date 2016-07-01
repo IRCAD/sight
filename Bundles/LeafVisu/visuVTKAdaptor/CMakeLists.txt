@@ -9,6 +9,7 @@ if(NOT ANDROID)
         vtkRenderingOpenGL
         vtkIOLegacy
         REQUIRED
+        NO_MODULE
     )
 else()
     find_package(VTK
@@ -18,6 +19,7 @@ else()
         vtkRenderingOpenGL2
         vtkIOLegacy
         REQUIRED
+        NO_MODULE
     )
 endif()
 
