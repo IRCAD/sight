@@ -25,10 +25,6 @@ namespace registrar
 
 /**
  * @brief   Defines the toolBar registrar for IHM.
- * @class   ToolBarRegistrar
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API ToolBarRegistrar : public ::fwGui::GuiBaseObject
 {
@@ -64,11 +60,11 @@ public:
            <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
                <gui>
                    <layout>
-                       <menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
-                       <menuItem name="My item 3" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/>
+                       <menuItem name="My item 2" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png"/>
+                       <menuItem name="My item 3" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png"/>
                        <separator />
-                       <menuItem name="My item A" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
-                       <menuItem name="My item B" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+                       <menuItem name="My item A" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png"/>
+                       <menuItem name="My item B" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png"/>
                        <separator />
                        <menu name="My menu" />
                        <separator />

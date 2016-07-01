@@ -18,7 +18,7 @@
                     <gui>
                         <frame>
                             <name>Tuto08GenericScene</name>
-                            <icon>Bundles/Tuto08GenericScene_0-1/tuto.ico</icon>
+                            <icon>@BUNDLE_PREFIX@/Tuto08GenericScene_0-1/tuto.ico</icon>
                         </frame>
                         <menuBar />
                     </gui>
@@ -160,9 +160,9 @@
                             The image slices will be show or hide when the button is checked/unchecked.
 
                             The "waitForKey" attribut means that the signal and slot are connected only if the key
-                            "image" is present in the scene composite. It is recommanded to used because the adaptors 
+                            "image" is present in the scene composite. It is recommanded to used because the adaptors
                             exists only if the object is present.
-                            
+
                         -->
                         <connect waitForKey="image">
                             <signal>showScanEditor/toggled</signal>
@@ -219,8 +219,8 @@
                         <service uid="showScanEditor" impl="::guiQt::editor::SSignalButton">
                             <config>
                                 <checkable>true</checkable>
-                                <icon>Bundles/media_0-1/icons/sliceHide.png</icon>
-                                <icon2>Bundles/media_0-1/icons/sliceShow.png</icon2>
+                                <icon>@BUNDLE_PREFIX@/media_0-1/icons/sliceHide.png</icon>
+                                <icon2>@BUNDLE_PREFIX@/media_0-1/icons/sliceShow.png</icon2>
                                 <iconWidth>40</iconWidth>
                                 <iconHeight>16</iconHeight>
                                 <checked>true</checked>

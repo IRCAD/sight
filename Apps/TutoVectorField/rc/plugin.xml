@@ -118,12 +118,12 @@
                                     <signal>snapshotScene1Editor/snapped</signal>
                                     <slot>snapshotUID/snap</slot>
                                 </connect>
-                                
+
                                 <connect waitForKey="image">
                                     <signal>showScanEditor/toggled</signal>
                                     <slot>MPRNegatoScene3D/showSlice</slot>
                                 </connect>
-                                
+
                                 <connect waitForKey="image">
                                     <signal>sliceListEditor/selected</signal>
                                     <slot>MPRNegatoScene3D/updateSliceMode</slot>
@@ -157,8 +157,8 @@
                                 <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
                                     <config>
                                         <checkable>true</checkable>
-                                        <icon>Bundles/media_0-1/icons/sliceHide.png</icon>
-                                        <icon2>Bundles/media_0-1/icons/sliceShow.png</icon2>
+                                        <icon>@BUNDLE_PREFIX@/media_0-1/icons/sliceHide.png</icon>
+                                        <icon2>@BUNDLE_PREFIX@/media_0-1/icons/sliceShow.png</icon2>
                                         <iconWidth>40</iconWidth>
                                         <iconHeight>16</iconHeight>
                                         <checked>true</checked>
@@ -167,7 +167,7 @@
                                 <service uid="sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
                                     <sliceIndex>axial</sliceIndex>
                                 </service>
-                                                                    
+
                                 <connect>
                                     <signal>showScanEditor/toggled</signal>
                                     <slot>sliceListEditor/setEnabled</slot>

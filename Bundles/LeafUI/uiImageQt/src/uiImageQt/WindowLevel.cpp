@@ -89,8 +89,8 @@ void WindowLevel::starting() throw(::fwTools::Failed)
 
     m_toggleTFButton = new QToolButton(container);
     QIcon ico;
-    QString squareIcon("Bundles/uiImageQt_" UIIMAGEQT_VER "/square.png");
-    QString rampIcon("Bundles/uiImageQt_" UIIMAGEQT_VER "/ramp.png");
+    QString squareIcon(BUNDLE_PREFIX "/uiImageQt_" UIIMAGEQT_VER "/square.png");
+    QString rampIcon(BUNDLE_PREFIX "/uiImageQt_" UIIMAGEQT_VER "/ramp.png");
     ico.addPixmap(QPixmap(squareIcon), QIcon::Normal,QIcon::On);
     ico.addPixmap(QPixmap(rampIcon), QIcon::Normal,QIcon::Off);
     m_toggleTFButton->setIcon(ico);
@@ -98,9 +98,9 @@ void WindowLevel::starting() throw(::fwTools::Failed)
 
     m_toggleAutoButton = new QToolButton(container);
     QIcon icon;
-    QString windo("Bundles/uiImageQt_" UIIMAGEQT_VER "/windowing.svg");
+    QString windo(BUNDLE_PREFIX "/uiImageQt_" UIIMAGEQT_VER "/windowing.svg");
     icon.addFile(windo, QSize(), QIcon::Normal,QIcon::On);
-    QString nowindo("Bundles/uiImageQt_" UIIMAGEQT_VER "/nowindowing.svg");
+    QString nowindo(BUNDLE_PREFIX "/uiImageQt_" UIIMAGEQT_VER "/nowindowing.svg");
     icon.addFile(nowindo, QSize(), QIcon::Normal,QIcon::Off);
     m_toggleAutoButton->setIcon(icon);
     m_toggleAutoButton->setToolTip("Automatic Windowing");

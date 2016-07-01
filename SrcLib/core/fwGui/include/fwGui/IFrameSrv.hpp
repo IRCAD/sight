@@ -41,7 +41,7 @@ namespace fwGui
      <gui>
          <frame>
              <name>My App</name>
-             <icon>Bundles/myApp_1-0/icon.ico</icon>
+             <icon>@BUNDLE_PREFIX@/myApp_1-0/icon.ico</icon>
              <minSize width="800" height="600" />
              <style mode="MODAL" />
          </frame>

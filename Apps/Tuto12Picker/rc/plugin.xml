@@ -13,7 +13,7 @@
                     <gui>
                         <frame>
                             <name>Tuto12Picker</name>
-                            <icon>Bundles/Tuto12Picker_0-1/tuto.ico</icon>
+                            <icon>@BUNDLE_PREFIX@/Tuto12Picker_0-1/tuto.ico</icon>
                             <minSize width="800" height="600" />
                         </frame>
                         <menuBar />
@@ -109,8 +109,8 @@
                 <service uid="showScanEditor" impl="::guiQt::editor::SSignalButton">
                     <config>
                         <checkable>true</checkable>
-                        <icon>Bundles/media_0-1/icons/sliceHide.png</icon>
-                        <icon2>Bundles/media_0-1/icons/sliceShow.png</icon2>
+                        <icon>@BUNDLE_PREFIX@/media_0-1/icons/sliceHide.png</icon>
+                        <icon2>@BUNDLE_PREFIX@/media_0-1/icons/sliceShow.png</icon2>
                         <iconWidth>40</iconWidth>
                         <iconHeight>16</iconHeight>
                         <checked>true</checked>
@@ -149,7 +149,7 @@
                             <signal>showScanEditor/toggled</signal>
                             <slot>MPRNegatoScene3D/showSlice</slot>
                         </connect>
-                        
+
                         <connect>
                             <signal>sliceListEditor/selected</signal>
                             <slot>MPRNegatoScene3D/updateSliceMode</slot>

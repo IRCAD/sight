@@ -60,7 +60,8 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
     ::fwServices::IService::ConfigType frameConfig;
 
     frameConfig.put("service.gui.frame.name", "tutoDataServiceBasic");
-    frameConfig.put("service.gui.frame.icon", "Bundles/Tuto02DataServiceBasicCtrl_0-1/tuto.ico");
+    frameConfig.put("service.gui.frame.icon", std::string(
+                        BUNDLE_PREFIX) + "/Tuto02DataServiceBasicCtrl_0-1/tuto.ico");
     frameConfig.put("service.gui.frame.minSize.<xmlattr>.width", "800");
     frameConfig.put("service.gui.frame.minSize.<xmlattr>.height", "600");
 

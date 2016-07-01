@@ -14,7 +14,7 @@
                             <gui>
                                 <frame>
                                     <name>TutoPython</name>
-                                    <icon>Bundles/TutoPython_0-1/tuto.ico</icon>
+                                    <icon>@BUNDLE_PREFIX@/TutoPython_0-1/tuto.ico</icon>
                                     <minSize width="800" height="600" />
                                 </frame>
                                 <toolBar>
@@ -30,9 +30,9 @@
                         <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                             <gui>
                                 <layout>
-                                    <menuItem name="Test" icon="Bundles/TutoPython_0-1/icons/python.png" />
+                                    <menuItem name="Test" icon="@BUNDLE_PREFIX@/TutoPython_0-1/icons/python.png" />
                                     <menuItem name="Open" />
-                                    <menuItem name="Quit" icon="Bundles/TutoPython_0-1/icons/cross.png" />
+                                    <menuItem name="Quit" icon="@BUNDLE_PREFIX@/TutoPython_0-1/icons/cross.png" />
                                 </layout>
                             </gui>
                             <registry>

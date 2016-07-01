@@ -85,11 +85,11 @@
         <service uid="action_quit" type="::gui::action::SQuit" />
 
         <service uid="action_about" type="::uiGeneric::action::SShowAbout">
-            <filename id="Bundles/VRRender_${appVersion}/about/about.html" />
+            <filename id="@BUNDLE_PREFIX@/VRRender_${appVersion}/about/about.html" />
         </service>
 
         <service uid="action_acknowledgments" type="::uiGeneric::action::ShowAcknowledgments">
-            <filename id="Bundles/VRRender_${appVersion}/documentations/ack.html" />
+            <filename id="@BUNDLE_PREFIX@/VRRender_${appVersion}/documentations/ack.html" />
         </service>
 
         <service uid="action_openBrowser" type="::uiGeneric::action::LaunchBrowserActionService">

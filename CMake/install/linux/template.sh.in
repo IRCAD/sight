@@ -35,7 +35,7 @@ fi
 #Find the directories
 bindir=`dirname "$me"`
 libdir=`cd "$bindir/lib" ; pwd`
-bundledir=`cd "$bindir/Bundles"; pwd`
+bundledir=`cd "$bindir/@BUNDLE_PREFIX@"; pwd`
 fontdir=`cd "$libdir/fonts"; pwd`
 
 #export LD_LIBRARY_PATH

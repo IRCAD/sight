@@ -11,7 +11,7 @@
                 <gui>
                     <frame>
                         <name>Tuto15Multithread</name>
-                        <icon>Bundles/Tuto15Multithread_0-1/tuto.ico</icon>
+                        <icon>@BUNDLE_PREFIX@/Tuto15Multithread_0-1/tuto.ico</icon>
                         <minSize width="720" height="600" />
                     </frame>
                     <menuBar />
@@ -106,14 +106,14 @@
             <!-- Visualization service for the second window -->
             <service uid="${GENERIC_UID}_rendering2" impl="::vtkSimpleMesh::SRenderer" autoConnect="yes" />
 
-            <!-- 
-                Mesh deformation service: 
-                This service runs a deformation method in another worker. 
+            <!--
+                Mesh deformation service:
+                This service runs a deformation method in another worker.
                 This method is called every 200 milliseconds.
             -->
             <service uid="${GENERIC_UID}_meshDeformation" impl="::vtkSimpleMesh::SSimpleMeshDeformation" worker="DEFORMATION_WORKER" />
 
- 
+
             <!-- Connect the signal slot of the service to receive the updating of camera position -->
             <connect>
                 <signal>${GENERIC_UID}_rendering1/camUpdated</signal>

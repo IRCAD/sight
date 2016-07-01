@@ -102,7 +102,8 @@ void TransferFunctionEditor::configuring() throw( ::fwTools::Failed )
     }
     if (useDefaultPath)
     {
-        ::boost::filesystem::path pathRoot ("Bundles/uiTF_" + std::string(UITF_VER) + "/tf");
+        ::boost::filesystem::path pathRoot (std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
+                                                UITF_VER) + "/tf");
         m_paths.push_back(pathRoot);
     }
 }
@@ -123,27 +124,33 @@ void TransferFunctionEditor::starting() throw( ::fwTools::Failed )
     // Buttons creation
     m_pTransferFunctionPreset = new QComboBox(m_container);
 
-    ::boost::filesystem::path deletePath ("Bundles/uiTF_" + std::string(UITF_VER) + "/delete.png");
+    ::boost::filesystem::path deletePath (std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
+                                              UITF_VER) + "/delete.png");
     m_deleteButton = new QPushButton(QIcon(deletePath.string().c_str()), "", m_container);
     m_deleteButton->setToolTip(QString("Delete"));
 
-    ::boost::filesystem::path newPath ("Bundles/uiTF_" + std::string(UITF_VER) + "/new.png");
+    ::boost::filesystem::path newPath (std::string(BUNDLE_PREFIX) +"/uiTF_" + std::string(UITF_VER) +
+                                       "/new.png");
     m_newButton = new QPushButton(QIcon(newPath.string().c_str()), "", m_container);
     m_newButton->setToolTip(QString("New"));
 
-    ::boost::filesystem::path reinitializePath ("Bundles/uiTF_" + std::string(UITF_VER) + "/reinitialize.png");
+    ::boost::filesystem::path reinitializePath (std::string(BUNDLE_PREFIX) +"/uiTF_" + std::string(
+                                                    UITF_VER) + "/reinitialize.png");
     m_reinitializeButton = new QPushButton(QIcon(reinitializePath.string().c_str()), "", m_container);
     m_reinitializeButton->setToolTip(QString("Reinitialize"));
 
-    ::boost::filesystem::path renamePath ("Bundles/uiTF_" + std::string(UITF_VER) + "/rename.png");
+    ::boost::filesystem::path renamePath (std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
+                                              UITF_VER) + "/rename.png");
     m_renameButton = new QPushButton(QIcon(renamePath.string().c_str()), "", m_container);
     m_renameButton->setToolTip(QString("Rename"));
 
-    ::boost::filesystem::path importPath ("Bundles/uiTF_" + std::string(UITF_VER) + "/import.png");
+    ::boost::filesystem::path importPath (std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
+                                              UITF_VER) + "/import.png");
     m_importButton = new QPushButton(QIcon(importPath.string().c_str()), "", m_container);
     m_importButton->setToolTip(QString("Import"));
 
-    ::boost::filesystem::path exportPath ("Bundles/uiTF_" + std::string(UITF_VER) + "/export.png");
+    ::boost::filesystem::path exportPath (std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
+                                              UITF_VER) + "/export.png");
     m_exportButton = new QPushButton(QIcon(exportPath.string().c_str()), "", m_container);
     m_exportButton->setToolTip(QString("Export"));
 
@@ -637,6 +644,7 @@ void TransferFunctionEditor::updateTransferFunction()
     ::fwData::Composite::sptr tfSelection = this->getTFSelection();
     SLM_ASSERT("Transfer function composite is null", tfSelection);
     return ::fwData::TransferFunction::dynamicCast((*tfSelection)[m_selectedTFKey]);
+
 }
 
 //------------------------------------------------------------------------------

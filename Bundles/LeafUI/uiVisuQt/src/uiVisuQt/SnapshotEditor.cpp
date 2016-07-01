@@ -61,7 +61,8 @@ void SnapshotEditor::starting() throw(::fwTools::Failed)
         this->getContainer() );
     QWidget *container = qtContainer->getQtContainer();
 
-    ::boost::filesystem::path path("Bundles/uiVisuQt_" + std::string(UIVISUQT_VER) + "/camera-photo.png");
+    ::boost::filesystem::path path(std::string(BUNDLE_PREFIX) + "/uiVisuQt_" + std::string(
+                                       UIVISUQT_VER) + "/camera-photo.png");
     QIcon icon(QString::fromStdString(path.string()));
     m_snapButton = new QPushButton(icon, "", container);
     m_snapButton->setToolTip(QObject::tr("Snapshot"));

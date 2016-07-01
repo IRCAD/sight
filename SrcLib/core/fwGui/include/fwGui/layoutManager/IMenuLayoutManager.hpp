@@ -7,9 +7,6 @@
 /**
  * @file fwGui/layoutManager/IMenuLayoutManager.hpp
  * @brief This file defines the interface of the base class for managing a menu.
- *
- *
- * @date 2009-2010
  */
 
 #ifndef __FWGUI_LAYOUTMANAGER_IMENULAYOUTMANAGER_HPP__
@@ -30,10 +27,6 @@ namespace layoutManager
 
 /**
  * @brief   Defines the menu layout manager for IHM.
- * @class   IMenuLayoutManager
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API IMenuLayoutManager : public ::fwGui::GuiBaseObject
 {
@@ -106,7 +99,7 @@ public:
        <service uid="myMenu" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no" >
             <gui>
                 <layout>
-                    <menuItem name="My item 1" shortcut="1" style="check" icon="Bundles/TutoGui_0-1/icons/system.png" />
+                    <menuItem name="My item 1" shortcut="1" style="check" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png" />
                     <separator />
                     <menuItem name="My item 2" shortcut="2" style="radio" />
                     <menuItem name="My item 3" shortcut="3" style="radio" />

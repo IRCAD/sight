@@ -21,7 +21,7 @@
                 <gui>
                     <frame>
                         <name>tutoDataServiceBasic</name>
-                        <icon>Bundles/Tuto02DataServiceBasic_0-1/tuto.ico</icon>
+                        <icon>@BUNDLE_PREFIX@/Tuto02DataServiceBasic_0-1/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                 </gui>

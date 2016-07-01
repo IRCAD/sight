@@ -67,7 +67,7 @@ void Distance::starting() throw(::fwTools::Failed)
     SLM_ASSERT("container not instanced", container);
 
     namespace fs = ::boost::filesystem;
-    fs::path pathImageDist ("Bundles/uiMeasurementQt_0-1/distance.png");
+    fs::path pathImageDist (std::string(BUNDLE_PREFIX) + "/uiMeasurementQt_0-1/distance.png");
     OSLM_ASSERT("Image "<< pathImageDist << "is missing", fs::exists(pathImageDist));
 
     QIcon imageDist(QString::fromStdString(pathImageDist.string()));

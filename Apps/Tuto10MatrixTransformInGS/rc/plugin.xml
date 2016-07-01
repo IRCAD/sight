@@ -19,7 +19,7 @@
                     <gui>
                         <frame>
                             <name>Tuto10MatrixTransformInGS</name>
-                            <icon>Bundles/Tuto10MatrixTransformInGS_0-1/tuto.ico</icon>
+                            <icon>@BUNDLE_PREFIX@/Tuto10MatrixTransformInGS_0-1/tuto.ico</icon>
                             <minSize width="800" height="600" />
                         </frame>
                         <menuBar />
@@ -193,7 +193,7 @@
                                 1 0 0 4
                                 0 1 0 0
                                 0 0 1 0
-                                0 0 0 1 
+                                0 0 0 1
                             ]]>
                         </matrix>
                     </object>
@@ -206,7 +206,7 @@
                                 1 0 0 0
                                 0 1 0 0
                                 0 0 1 2
-                                0 0 0 1 
+                                0 0 0 1
                             ]]>
                         </matrix>
                     </object>
@@ -219,7 +219,7 @@
                                 0.75 0    0    0
                                 0    0.75 0    0
                                 0    0    0.75 0
-                                0    0    0    1 
+                                0    0    0    1
                             ]]>
                         </matrix>
                     </object>

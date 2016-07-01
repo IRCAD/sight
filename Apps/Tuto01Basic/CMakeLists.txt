@@ -1,1 +1,3 @@
 fwLoadProperties()
+
+generic_install()

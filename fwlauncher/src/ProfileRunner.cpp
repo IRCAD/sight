@@ -115,7 +115,8 @@ int main(int argc, char* argv[])
     po::options_description options("Launcher options");
     options.add_options()
         ("help,h", "Show help message")
-        ("bundle-path,B", po::value(&bundlePaths)->default_value(PathListType(1,"./Bundles/")), "Adds a bundle path")
+        ("bundle-path,B", po::value(&bundlePaths)->default_value(PathListType(1,std::string(BUNDLE_PREFIX) + "/")),
+        "Adds a bundle path")
         ("rwd", po::value(&rwd)->default_value("./"), "Sets runtime working directory")
     ;
 

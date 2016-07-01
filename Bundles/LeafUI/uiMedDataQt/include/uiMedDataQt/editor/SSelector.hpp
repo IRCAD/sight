@@ -88,8 +88,8 @@ protected:
            <allowedRemove>yes|no</allowedRemove>
            <insertMode>yes|no</insertMode>
            <icons>
-               <icon series="::fwMedData::ImageSeries" icon="Bundles/media_0-1/icons/ImageSeries.svg" />
-               <icon series="::fwMedData::ModelSeries" icon="Bundles/media_0-1/icons/ModelSeries.svg" />
+               <icon series="::fwMedData::ImageSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/ImageSeries.svg" />
+               <icon series="::fwMedData::ModelSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/ModelSeries.svg" />
            </icons>
        </service>
        @endcode

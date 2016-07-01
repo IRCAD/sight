@@ -26,7 +26,7 @@
                 <gui>
                     <frame>
                         <name>Tuto09MesherWithGenericScene</name>
-                        <icon>Bundles/Tuto09MesherWithGenericScene_0-1/tuto.ico</icon>
+                        <icon>@BUNDLE_PREFIX@/Tuto09MesherWithGenericScene_0-1/tuto.ico</icon>
                     </frame>
                     <menuBar />
                 </gui>
@@ -142,8 +142,8 @@
             <service uid="showScanEditor" type="::guiQt::editor::SSignalButton">
                 <config>
                     <checkable>true</checkable>
-                    <icon>Bundles/media_0-1/icons/sliceHide.png</icon>
-                    <icon2>Bundles/media_0-1/icons/sliceShow.png</icon2>
+                    <icon>@BUNDLE_PREFIX@/media_0-1/icons/sliceHide.png</icon>
+                    <icon2>@BUNDLE_PREFIX@/media_0-1/icons/sliceShow.png</icon2>
                     <iconWidth>40</iconWidth>
                     <iconHeight>16</iconHeight>
                     <checked>true</checked>
