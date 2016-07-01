@@ -14,7 +14,7 @@
                     <gui>
                         <frame>
                             <name>TutoOgreGenericScene</name>
-                            <icon>Bundles/TutoOgreGenericScene_0-1/tuto.ico</icon>
+                            <icon>@BUNDLE_PREFIX@/TutoOgreGenericScene_0-1/tuto.ico</icon>
                             <minSize width="1024" height="768" />
                         </frame>
                         <menuBar />

@@ -16,8 +16,6 @@
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreMovablePlane.h>
 
-#include <regex>
-
 namespace fwRenderOgre
 {
 unsigned int Plane::s_id = 0;
@@ -311,7 +309,7 @@ void Plane::setRelativePosition(float _relativePosition)
 
 //-----------------------------------------------------------------------------
 
-void Plane::setWindowing(float _minValue, float _maxValue)
+void Plane::setTFData(const ::Ogre::TexturePtr _tfTexture)
 {
     ::Ogre::Material::TechniqueIterator techIt = m_texMaterial->getSupportedTechniqueIterator();
 
@@ -325,8 +323,9 @@ void Plane::setWindowing(float _minValue, float _maxValue)
             ::Ogre::Pass* pass = tech->getPass(0);
             SLM_ASSERT("Can't find Ogre pass", pass);
 
-            pass->getFragmentProgramParameters()->setNamedConstant("u_minValue", _minValue);
-            pass->getFragmentProgramParameters()->setNamedConstant("u_maxValue", _maxValue);
+            ::Ogre::TextureUnitState* texUnitStateValues = pass->getTextureUnitState("tfTexture");
+            SLM_ASSERT("'tfTexture' texture unit is not found", texUnitStateValues);
+            texUnitStateValues->setTexture(_tfTexture);
         }
     }
 }

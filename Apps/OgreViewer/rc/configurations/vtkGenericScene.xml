@@ -25,7 +25,7 @@
 
             <service uid="${GENERIC_UID}_genericScene" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes" >
                 <!-- <scene autoRender="false"> -->
-                <scene >
+                <scene>
                     <picker id="defaultPicker" vtkclass="fwVtkCellPicker" />
                     <renderer id="default" background="0.0" />
                     <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">

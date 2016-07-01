@@ -1,35 +1,27 @@
-#version 150
+#version 330
 
 uniform sampler3D u_texture;
+uniform sampler2D u_tfTexture;
+
 uniform float u_slice;
-uniform float u_minValue;
-uniform float u_maxValue;
 uniform int u_threshold = 0;
 uniform int u_orientation = 0;
 uniform vec4 u_diffuse;
 
 in vec2 uv;
 
-float windowLevel(vec4 color, float min, float max)
+vec4 windowLevel(vec4 value)
 {
-    float outputColor = color.r * 65535.f - 32768.f;
+    float scaledValue = value.r * 65535.f;
 
-//    if(outputColor < min || outputColor > max)
-//    {
-//        discard;
-//    }
+    // Computes 2D indices from the hounsfield value
+    int j = int( scaledValue / 256 );
+    int i = int( mod( int(scaledValue), 256 ) );
 
-    if(u_threshold == 1)
-    {
-        outputColor = step(min, outputColor) * step(outputColor, max);
-    }
-    else
-    {
-        outputColor = clamp(outputColor, min, max);
-        outputColor = (outputColor - min) / (max - min);
-    }
+    // Converts the indices into texture uv coordinates
+    vec2 uvTF = vec2(i / 255.f, j / 255.f);
 
-    return outputColor;
+    return texture(u_tfTexture, uvTF);
 }
 
 vec4 getFragmentColor()
@@ -48,7 +40,7 @@ vec4 getFragmentColor()
         color = texture(u_texture, vec3(uv, u_slice));
     }
 
-    float lum = windowLevel(color, u_minValue, u_maxValue);
+    vec4 windowedColor = windowLevel(color);
 
-    return vec4(lum, lum, lum, u_diffuse.a);
+    return vec4( windowedColor.rgb, /*windowedColor.a **/ u_diffuse.a );
 }

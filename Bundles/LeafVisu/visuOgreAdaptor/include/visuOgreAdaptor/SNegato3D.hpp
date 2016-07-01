@@ -10,6 +10,7 @@
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 #include <fwRenderOgre/Plane.hpp>
+#include <fwRenderOgre/TransferFunction.hpp>
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
@@ -117,6 +118,9 @@ private:
 
     /// Ogre texture which will be displayed on the negato
     ::Ogre::TexturePtr m_3DOgreTexture;
+
+    /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view)
+    ::fwRenderOgre::TransferFunction m_gpuTF;
 
     /// Stores the planes on which we will apply our texture
     ::fwRenderOgre::Plane* m_planes[3];

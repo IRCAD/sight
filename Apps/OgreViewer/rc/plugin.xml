@@ -8,6 +8,7 @@
     <requirement id="visuOgreQt" />
     <requirement id="visuVTKQt" />
     <requirement id="material" />
+    <requirement id="scene2D" />
 
     <xi:include href="configurations/vtkGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
@@ -32,7 +33,7 @@
                     <gui>
                         <frame>
                             <name>Ogre Viewer</name>
-                            <icon>Bundles/OgreViewer_0-1/ogre_head.svg</icon>
+                            <icon>@BUNDLE_PREFIX@/OgreViewer_0-1/ogre_head.svg</icon>
                             <minSize width="1100" height="700" />
                         </frame>
                         <menuBar />
@@ -71,14 +72,14 @@
                     <gui>
                         <layout type="::fwGui::TabLayoutManager">
                             <view caption="Compositor" />
-                            <view caption="OrganManager" selected="yes" />
-                            <view caption="EllipseManager" />
+                            <view caption="Organ manager" selected="yes" />
+                            <view caption="Negato histogram" />
                         </layout>
                     </gui>
                     <registry>
-                        <view sid="CompositorView" start="yes"/>
-                        <view wid="${GENERIC_UID}_organView" start="yes"/>
-                        <view sid="${GENERIC_UID}_ellipseManagerView" start="yes"/>
+                        <view sid="CompositorView" start="yes" />
+                        <view wid="${GENERIC_UID}_organView" start="yes" />
+                        <view sid="histogramView" start="yes" />
                     </registry>
                 </service>
 
@@ -94,27 +95,6 @@
                         <view wid="${GENERIC_UID}_VTKSceneView" start="yes" />
                         <view wid="${GENERIC_UID}_OgreSceneView" start="yes" />
                         <view wid="${GENERIC_UID}_OgreNegato2DView" start="yes" />
-                    </registry>
-                </service>
-
-                <service uid="${GENERIC_UID}_ellipseManagerView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                    <gui>
-                        <layout type="::fwGui::LineLayoutManager">
-                            <orientation value="vertical" />
-                            <view proportion="0" caption="Position X" />
-                            <view proportion="0" caption="Position Y" />
-                            <view proportion="0" caption="Width" />
-                            <view proportion="0" caption="height" />
-                            <view proportion="0" caption="Orientation (degrees)" />
-                        </layout>
-                        <toolBar/>
-                    </gui>
-                    <registry>
-                        <view sid="${GENERIC_UID}_ellipseXEditor" start="yes" />
-                        <view sid="${GENERIC_UID}_ellipseYEditor" start="yes" />
-                        <view sid="${GENERIC_UID}_ellipseAEditor" start="yes" />
-                        <view sid="${GENERIC_UID}_ellipseBEditor" start="yes" />
-                        <view sid="${GENERIC_UID}_ellipseThetaEditor" start="yes" />
                     </registry>
                 </service>
 
@@ -150,6 +130,124 @@
 
                 <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
+                <!-- Negato histogram -->
+                <service uid="histogramView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+                    <gui>
+                        <layout type="::fwGui::LineLayoutManager">
+                            <orientation value="vertical" />
+                            <view proportion="0" minHeight="30" />
+                            <view proportion="0" minHeight="100" />
+                            <view proportion="1" />
+                        </layout>
+                    </gui>
+                    <registry>
+                        <view sid="tfm" start="yes" />
+                        <view sid="Scene2D_Shutter" start="no" />
+                        <view sid="Scene2D" start="no" />
+                    </registry>
+                </service>
+
+                <service uid="Scene2D_Shutter" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
+                    <scene>
+                        <scene x="-1100" y="-1.1" width="2400" height="1.2" />
+
+                        <viewport id="view1" x="-1100" y="-1.1" width="2400" height="1.2" />
+
+                        <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
+                        <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
+
+                        <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
+
+                        <adaptor id="shutterGrid" class="::scene2D::adaptor::Grid2D" objectId="self">
+                            <config xMin="-1200" xMax="1400" yMin="-0.7" yMax="1.7" xSpacing="200" ySpacing="0.2" viewportUID="Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
+                        </adaptor>
+
+                        <adaptor id="shutterAbscissa" class="::scene2D::adaptor::Line" objectId="self">
+                            <config x1="-1200" x2="1400" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
+                        </adaptor>
+
+                        <adaptor id="shutterOrdinate" class="::scene2D::adaptor::Line" objectId="self">
+                            <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
+                        </adaptor>
+
+                        <adaptor id="shutterHistogram" class="::scene2D::adaptor::Histogram" objectId="histogram">
+                            <config color="green" xAxis="xAxis" yAxis="axeHistogramY" zValue="4" />
+                        </adaptor>
+
+                        <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="viewport">
+                            <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1200" initialPos="-700" />
+                        </adaptor>
+
+                    </scene>
+                </service>
+
+                <!-- Negato histogram -->
+                <service uid="Scene2D" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
+                    <scene>
+                        <scene x="-1100" y="-1.1" width="2400" height="1.2" antialiasing="true" />
+
+                        <viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" />
+
+                        <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
+                        <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
+
+                        <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
+
+                        <adaptor id="grid" class="::scene2D::adaptor::Grid2D" objectId="self">
+                            <config xMin="-1200" xMax="1500" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.25" viewportUID="Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
+                        </adaptor>
+
+                        <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
+                            <config x1="-1200" x2="1500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
+                        </adaptor>
+
+                        <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self">
+                            <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
+                        </adaptor>
+
+                        <adaptor id="maxOpacity" class="::scene2D::adaptor::Line" objectId="self">
+                            <config x1="-1200" x2="1500" y1="1" y2="1" color="red" xAxis="xAxis" yAxis="yAxis" zValue="4" />
+                        </adaptor>
+
+                        <adaptor id="curvedHistogram" class="::scene2D::adaptor::CurvedHistogram" objectId="histogram">
+                            <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25" zValue="6" histogramPointUID="histogramPoint" borderWidth="2.0" />
+                        </adaptor>
+
+                        <!-- A graphic cursor that follow histogram's shape according to mouse's cursor -->
+                        <adaptor id="histogramCursor" class="::scene2D::adaptor::HistogramCursor" objectId="histogram">
+                            <config xAxis="xAxis" yAxis="axeHistogramY" color="blue" borderColor="gray" zValue="9" pointSize="16" viewportUID="Viewport" histogramPointUID="histogramPoint" />
+                        </adaptor>
+
+                        <adaptor id="histogramValue" class="::scene2D::adaptor::HistogramValue" objectId="histogram">
+                            <config xAxis="xAxis" yAxis="axeHistogramY" zValue="12" fontSize="6" viewportUID="Viewport" histogramPointUID="histogramPoint" />
+                        </adaptor>
+
+                        <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
+                            <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" viewportUID="Viewport" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                        </adaptor>
+
+                        <adaptor id="viewportRangeUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="viewport">
+                            <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
+                        </adaptor>
+
+                        <adaptor id="scaleValuesLeft" class="::scene2D::adaptor::ScaleValues" objectId="self">
+                            <config min="0.0" max="1.0" interval="0.1" fontSize="7" align="left" unit="%" viewportUID="Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                        </adaptor>
+
+                        <adaptor id="axisLeft" class="::scene2D::adaptor::Axis" objectId="self">
+                            <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="5" viewportUID="Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                        </adaptor>
+
+                        <adaptor id="scaleValuesBottom" class="::scene2D::adaptor::ScaleValues" objectId="self">
+                            <config min="-1024" max="1024" interval="200" fontSize="7" align="bottom" viewportUID="Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                        </adaptor>
+
+                        <adaptor id="axisBottom" class="::scene2D::adaptor::Axis" objectId="self">
+                            <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                        </adaptor>
+                    </scene>
+                </service>
+
                 <item key="modelSeries">
                     <object uid="modelSeriesUID" type="::fwMedData::ModelSeries">
 
@@ -167,12 +265,19 @@
                                     <parameters>
                                         <parameter replace="ORGAN_MANAGER_MODELSERIES" by="modelSeriesUID" />
                                         <parameter replace="WID_PARENT" by="${GENERIC_UID}_organView" />
-                                        <parameter replace="ICON_PATH" by="Bundles/arMedia_0-1/icons/app.ico" />
+                                        <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/arMedia_0-1/icons/app.ico" />
                                     </parameters>
                                 </appConfig>
                             </config>
                         </service>
+                    </object>
+                </item>
 
+                <item key="TFPoolKey">
+                    <object uid="TFPool" type="::fwData::Composite">
+                        <service uid="tfm" type="::gui::editor::IEditor" impl="::uiTF::TransferFunctionEditor" autoConnect="yes">
+                            <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections"/>
+                        </service>
                     </object>
                 </item>
 
@@ -192,6 +297,20 @@
                     <object uid="TFSelections" type="::fwData::Composite" />
                 </item>
 
+                <item key="cameraTF">
+                    <object uid="cameraTF_UID" type="::fwData::TransformationMatrix3D" />
+                </item>
+
+                <item key="viewport">
+                    <object uid="Viewport" type="::scene2D::data::Viewport" />
+                </item>
+
+                <item key="histogram">
+                        <object uid="histogram" type="::fwData::Histogram" />
+                </item>
+                <item key="histogramPoint">
+                    <object uid="histogramPoint" type="::fwData::Point" />
+                </item>
 
                 <!-- CompositeVisu description -->
                 <item key="compositeVisu">
@@ -244,13 +363,9 @@
                                     <parameters>
                                         <parameter replace="WID_PARENT" by="${GENERIC_UID}_OgreSceneView" />
                                         <parameter replace="modelSeriesUID" by="modelSeriesUID" />
+                                        <parameter replace="cameraTF" by="cameraTF_UID" />
                                         <parameter replace="imageUID" by="imageUID" />
                                         <parameter replace="TFSelections" by="TFSelections" />
-                                        <parameter replace="ellipseX" by="${GENERIC_UID}_ellipseX" />
-                                        <parameter replace="ellipseY" by="${GENERIC_UID}_ellipseY" />
-                                        <parameter replace="ellipseA" by="${GENERIC_UID}_ellipseA" />
-                                        <parameter replace="ellipseB" by="${GENERIC_UID}_ellipseB" />
-                                        <parameter replace="ellipseTheta" by="${GENERIC_UID}_ellipseTheta" />
                                     </parameters>
                                 </appConfig>
                             </config>
@@ -272,44 +387,11 @@
 
                 </item>
 
-            <!-- Ellipse mask parameters (x, y, a, b, theta) -->
-            <item key="ellipseXKey">
-                <object uid="${GENERIC_UID}_ellipseX" type="::fwData::Float">
-                    <service uid="${GENERIC_UID}_ellipseXEditor" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
-                    <value>0</value>
-                </object>
-            </item>
-
-            <item key="ellipseYKey">
-                <object uid="${GENERIC_UID}_ellipseY" type="::fwData::Float">
-                    <service uid="${GENERIC_UID}_ellipseYEditor" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
-                    <value>0</value>
-                </object>
-            </item>
-
-            <item key="ellipseAKey">
-                <object uid="${GENERIC_UID}_ellipseA" type="::fwData::Float">
-                    <service uid="${GENERIC_UID}_ellipseAEditor" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
-                    <value>50</value>
-                </object>
-            </item>
-
-            <item key="ellipseBKey">
-                <object uid="${GENERIC_UID}_ellipseB" type="::fwData::Float">
-                    <service uid="${GENERIC_UID}_ellipseBEditor" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
-                    <value>50</value>
-                </object>
-            </item>
-
-            <item key="ellipseThetaKey">
-                <object uid="${GENERIC_UID}_ellipseTheta" type="::fwData::Float">
-                    <service uid="${GENERIC_UID}_ellipseThetaEditor" type="::gui::editor::IEditor" impl="::uiData::SFloatEditor" />
-                    <value>0</value>
-                </object>
-            </item>
-
+                <!-- Start/Stop services -->
                 <start uid="medicalImage" />
                 <start uid="ihm" />
+                <start uid="Scene2D" />
+                <start uid="Scene2D_Shutter" />
                 <start uid="cfgVTKGenericScene" />
                 <start uid="cfgOgreGenericScene" />
                 <start uid="cfgOgreNegato2D" />

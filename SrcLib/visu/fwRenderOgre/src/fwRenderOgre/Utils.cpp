@@ -14,6 +14,8 @@
 #include <fwRenderOgre/compositor/MaterialMgrListener.hpp>
 #include "fwRenderOgre/factory/R2VBRenderable.hpp"
 
+#include <fwData/TransferFunction.hpp>
+
 #include <OgreConfigFile.h>
 #include <OgreException.h>
 #include <OgreLog.h>
@@ -168,7 +170,7 @@ void Utils::addResourcesPath(const std::string& path)
         // TODO : Check utility of TextureManager in a shader-based programming model (RenderSystemGL3+)
         if(::Ogre::Root::getSingleton().getRenderSystem()->getName() != "OpenGL 3+ Rendering Subsystem (ALPHA)")
         {
-            Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+            ::Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
         }
 
         // Register factory for R2VB renderables objects

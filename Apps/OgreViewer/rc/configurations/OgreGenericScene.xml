@@ -41,7 +41,7 @@
             <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
-                        <menuItem name="Show/Hide negato interactor" icon="Bundles/OgreViewer_0-1/icons/hide-view_horizontal.png" style="check" />
+                        <menuItem name="Show/Hide negato interactor" icon="@BUNDLE_PREFIX@/OgreViewer_0-1/icons/hide-view_horizontal.png" style="check" />
                         <separator />
                         <editor />
                         <menuItem name="Play" icon="@BUNDLE_PREFIX@Bundles/arMedia_0-1/icons/start-cam.svg"/>
