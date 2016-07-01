@@ -1,9 +1,12 @@
 fwLoadProperties()
 
-find_package(VTK REQUIRED)
+find_package(VTK
+            COMPONENTS 
+            vtkCommonCore 
+            vtkCommonDataModel 
+            vtkCommonComputationalGeometry
+            NO_MODULE 
+            REQUIRED)
 
-fwLink(
-    vtkCommonCore
-    vtkCommonDataModel
-    vtkCommonComputationalGeometry
-    )
+fwForwardInclude( ${VTK_INCLUDE_DIRS} )
+fwLink( ${VTK_LIBRARIES} )
