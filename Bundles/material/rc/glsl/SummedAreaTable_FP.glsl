@@ -17,7 +17,7 @@ void main(void)
 
     ivec3 addCoords = voxelCoords;
 
-    for(int i = 1; i <= TEXREADS; ++ i)
+    for(int i = 0; i < TEXREADS; ++i)
     {
         addCoords[u_passOrientation] -= u_readOffset;
 

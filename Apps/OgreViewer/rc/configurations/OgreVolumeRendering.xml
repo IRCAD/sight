@@ -26,21 +26,21 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_volumeRenderingScene" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoConnect="yes" >
+            <service uid="${GENERIC_UID}_volumeRenderingScene" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoConnect="yes">
                 <scene overlay="true" fullscreen="no">
 
                     <!-- Fix afterglow bug when dezooming -->
                     <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
 
                     <!-- Default Layer -->
-                    <renderer id="default" layer="1" compositors="Default" mode3D="no"/>
+                    <renderer id="default" layer="1" compositors="Default" mode3D="no" />
 
                     <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
                         <config renderer="default" style="VR" />
                     </adaptor>
 
-                    <adaptor id="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image" uid="${GENERIC_UID}_VR" >
-                        <config renderer="default" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}"/>
+                    <adaptor id="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image" uid="${GENERIC_UID}_VR">
+                        <config renderer="default" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
                     </adaptor>
 
                     <connect>
@@ -58,7 +58,7 @@
 
             <service uid="${GENERIC_UID}_volumeRenderingInteractor" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
                         <view proportion="0" />
                         <view proportion="1" />
@@ -72,7 +72,7 @@
 
             <service uid="${GENERIC_UID}_volumeRenderingSamplingInteractor" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
+                    <layout type="::fwGui::LineLayoutManager">
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" />
@@ -86,16 +86,12 @@
 
             <!-- Negato source image -->
             <item key="image">
-                <object uid="${imageUID}"  type="::fwData::Image" src="ref" >
+                <object uid="${imageUID}"  type="::fwData::Image" src="ref">
+
                     <!-- Negato windowing service -->
                     <service uid="${GENERIC_UID}_windowLevelVR" type="::gui::editor::IEditor" impl="::uiImage::WindowLevel" autoConnect="no">
                         <config selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
                     </service>
-
-
-<!--                    <service impl="::ioVTK::SImageReader" type="::io::IReader" uid="debugReader" autoConnect="no">
-                        <file>../../data/Volumes/patient1.vtk</file>
-                    </service>-->
 
                 </object>
             </item>
@@ -132,8 +128,6 @@
             </item>
 
             <start uid="${GENERIC_UID}_OgreVolumeRendering" />
-<!--            <start uid="debugReader" />
-            <update uid="debugReader" />-->
 
         </object>
 

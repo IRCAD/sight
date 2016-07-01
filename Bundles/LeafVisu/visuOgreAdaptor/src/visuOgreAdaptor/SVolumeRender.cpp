@@ -42,10 +42,10 @@ namespace visuOgreAdaptor
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWIMAGE_SLOT = "newImage";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWSAMPLING_SLOT = "updateSampling";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWIMAGE_SLOT             = "newImage";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWSAMPLING_SLOT          = "updateSampling";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLEPREINTEGRATION_SLOT = "togglePreintegration";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT        = "resizeViewport";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT      = "resizeViewport";
 
 //-----------------------------------------------------------------------------
 
@@ -60,7 +60,7 @@ SVolumeRender::SVolumeRender() throw() :
     this->installTFSlots(this);
     newSlot(s_NEWIMAGE_SLOT, &SVolumeRender::newImage, this);
     newSlot(s_NEWSAMPLING_SLOT, &SVolumeRender::samplingChanged, this);
-    newSlot(s_TOGGLEPREINTEGRATION_SLOT, &SVolumeRender::togglePreintegration, this);    
+    newSlot(s_TOGGLEPREINTEGRATION_SLOT, &SVolumeRender::togglePreintegration, this);
     newSlot(s_RESIZE_VIEWPORT_SLOT, &SVolumeRender::resizeViewport, this);
 
     m_transform     = ::Ogre::Matrix4::IDENTITY;
@@ -109,83 +109,6 @@ void SVolumeRender::updatingTFPoints()
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    // -- PROFILING --
-//    tf->clear();
-
-    // CT-Liver
-//    tf->addTFColor(-23, ::fwData::TransferFunction::TFColor(0, 0, 0, 0));
-//    tf->addTFColor( 50, ::fwData::TransferFunction::TFColor(0.5, 0, 0.08, 0));
-//    tf->addTFColor(100, ::fwData::TransferFunction::TFColor(1, 0.28, 0.28, 0.2));
-//    tf->addTFColor(150, ::fwData::TransferFunction::TFColor(1, 0.5, 0.5, 0.4));
-//    tf->addTFColor(200, ::fwData::TransferFunction::TFColor(1, 0.5, 0, 0.6));
-//    tf->addTFColor(250, ::fwData::TransferFunction::TFColor(1, 1, 0, 0.8));
-//    tf->addTFColor(300, ::fwData::TransferFunction::TFColor(1, 1, 1, 1));
-
-//    tf->setLevel(138);
-//    tf->setWindow(323);
-
-    // CT-Bones
-//    tf->addTFColor(184, ::fwData::TransferFunction::TFColor(0, 0, 0, 0));
-//    tf->addTFColor(191, ::fwData::TransferFunction::TFColor(1, 0.5, 0, 0.3));
-//    tf->addTFColor(247, ::fwData::TransferFunction::TFColor(1, 1, 0.72, 0.59));
-//    tf->addTFColor(341, ::fwData::TransferFunction::TFColor(1, 1, 1, 0.79));
-
-//    tf->setLevel(262);
-//    tf->setWindow(157);
-
-    // CT-Vessels
-//    tf->addTFColor(128, ::fwData::TransferFunction::TFColor(0, 0, 0, 0));
-//    tf->addTFColor(140, ::fwData::TransferFunction::TFColor(0.62, 0, 0, 0));
-//    tf->addTFColor(159, ::fwData::TransferFunction::TFColor(1, 0.5, 0.5, 0.3));
-//    tf->addTFColor(189, ::fwData::TransferFunction::TFColor(1, 0.5, 0, 0.6));
-//    tf->addTFColor(219, ::fwData::TransferFunction::TFColor(1, 1, 0.64, 0.9));
-//    tf->addTFColor(304, ::fwData::TransferFunction::TFColor(1, 1, 1, 1));
-
-//    tf->setLevel(216);
-//    tf->setWindow(176);
-
-    // CT-Thorax
-//    tf->addTFColor(-1011, ::fwData::TransferFunction::TFColor(1, 1, 1, 1));
-//    tf->addTFColor(-195, ::fwData::TransferFunction::TFColor(0, 0, 0, 0));
-//    tf->addTFColor(-480, ::fwData::TransferFunction::TFColor(0.50196099281311035,0,0,0.28623199462890625));
-//    tf->addTFColor(-597, ::fwData::TransferFunction::TFColor(0.9803919792175293,0.67843097448348999,0.27058801054954529,0.51906198263168335));
-//    tf->addTFColor(-690, ::fwData::TransferFunction::TFColor(0.9882349967956543,0.83921599388122559,0.63529402017593384,0.72727298736572266));
-//    tf->addTFColor(121, ::fwData::TransferFunction::TFColor(0.50196099281311035,0,0,0.39882698655128479));
-//    tf->addTFColor(135, ::fwData::TransferFunction::TFColor(1,0.50196099281311035,0.50196099281311035,0.52199399471282959));
-//    tf->addTFColor(155, ::fwData::TransferFunction::TFColor(1,1,0.69019597768783569,0.7536659836769104));
-//    tf->addTFColor(176, ::fwData::TransferFunction::TFColor(1,1,1,1));
-//    tf->addTFColor(5, ::fwData::TransferFunction::TFColor(0,0,0,0));
-//    tf->addTFColor(95, ::fwData::TransferFunction::TFColor(0.25097998976707458,0,0,0));
-
-//    tf->setLevel(-418);
-//    tf->setWindow(1187);
-
-
-//    double invWindow = 1. / tf->getWindow();
-
-//    const ::fwData::TransferFunction::TFValuePairType intensityMinMax = tf->getWLMinMax();
-
-//    const ::fwData::TransferFunction::TFValuePairType tfMinMax = tf->getMinMaxTFValues();
-
-//    ::fwData::Image::sptr img = this->getImage();
-
-//    ::fwComEd::helper::Image imgHelper(img);
-
-//    size_t nbPixels = img->getDataArray()->getNumberOfElements();
-//    int16_t *ushortImgBuffer = static_cast<int16_t *>(imgHelper.getBuffer());
-
-//    size_t nbNonEmptyPixels = 0;
-//    for(size_t i = 0; i < nbPixels; ++ i)
-//    {
-//        double value = (ushortImgBuffer[i] - intensityMinMax.first) * (tfMinMax.second - tfMinMax.first) * invWindow + tfMinMax.first;
-
-//        ::fwData::TransferFunction::TFColor interpolatedColor = tf->getInterpolatedColor(value);
-
-//        nbNonEmptyPixels += (interpolatedColor.a != 0);
-//    }
-
-//    std::cout << "Fill ratio: " << float(nbNonEmptyPixels) / float(nbPixels) << std::endl;
-
     this->updateTransferFunction(this->getImage());
 
     m_gpuTF.updateTexture(tf);
@@ -219,6 +142,8 @@ void SVolumeRender::updatingTFWindowing(double window, double level)
     }
 
     m_volumeRenderer->tfUpdate(tf);
+
+    m_illum->updateVolIllum(m_3DOgreTexture, m_gpuTF.getTexture());
 
     this->requestRender();
 }
@@ -266,7 +191,12 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     newLight->setDiffuseColour(::Ogre::ColourValue());
     newLight->setSpecularColour(::Ogre::ColourValue());
 
-    newLight->setDirection(::Ogre::Quaternion(::Ogre::Degree(-45), ::Ogre::Vector3(1,0,0)) * ::Ogre::Quaternion(::Ogre::Degree(90), ::Ogre::Vector3(0,1,0)) * mainLight->getDirection());
+    newLight->setDirection(::Ogre::Quaternion(::Ogre::Degree(-45),
+                                              ::Ogre::Vector3(1,0,
+                                                              0)) *
+                           ::Ogre::Quaternion(::Ogre::Degree(90), ::Ogre::Vector3(0,1,
+                                                                                  0)) *
+                           mainLight->getDirection());
 
     m_camera->getParentSceneNode()->attachObject(newLight);
 
@@ -318,51 +248,6 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     {
         m_volumeSceneNode->setVisible(false);
     }
-
-    // -- PROFILING --
-//    struct CameraListener : public ::Ogre::Camera::Listener
-//    {
-//        int i = 1;
-
-//        const int maxFrames = 10600;
-
-//        int speed = 5;
-
-//        ::Ogre::Vector3 rotAxis;
-//        ::fwRenderOgre::interactor::TrackballInteractor::sptr vrInteractor;
-//        SVolumeRender *m_renderer;
-
-//        CameraListener(SVolumeRender *renderer) :
-//            rotAxis(0, 1, 0),
-//            m_renderer(renderer)
-//        {
-//            ::fwRenderOgre::Layer::sptr layer = m_renderer->getRenderService()->getLayer(m_renderer->m_layerID);
-//            ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getInteractor();
-
-//            vrInteractor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::TrackballInteractor>(interactor);
-//            vrInteractor->mouseMoveEvent(::fwRenderOgre::interactor::IMovementInteractor::LEFT, 1, 1, 0, 0);
-//        }
-
-//        virtual void cameraPreRenderScene(::Ogre::Camera*)
-//        {
-//            vrInteractor->mouseMoveEvent(::fwRenderOgre::interactor::IMovementInteractor::LEFT, -1, -1, 1, 0);
-
-//            if(i % 100 == 0)
-//            {
-//                vrInteractor->mouseMoveEvent(::fwRenderOgre::interactor::IMovementInteractor::LEFT, -1, -1, 0, speed);
-//                speed += 5;
-//            }
-//            if(++i == maxFrames)
-//            {
-//                std::abort();
-//            }
-
-//            m_renderer->requestRender();
-//        }
-//    };
-
-//    m_camera->addListener(new CameraListener(this));
-    // -- PROFILING END --
 
     this->getRenderService()->resetCameraCoordinates(m_layerID);
     m_volumeRenderer->tfUpdate(this->getTransferFunction());

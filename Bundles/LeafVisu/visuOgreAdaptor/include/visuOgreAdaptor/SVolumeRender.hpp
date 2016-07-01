@@ -31,6 +31,19 @@ namespace visuOgreAdaptor
 
 /**
  * @brief Adaptor for volume rendering.
+ * @section XML XML Configuration
+ * @code{.xml}
+    <adaptor uid="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image">
+         <config renderer="default"
+                 preintegration="yes" mode="slice"
+                 selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+    </adaptor>
+   @endcode
+ * - \b renderer (optional): defines the renderer displaying the volume.
+ * - \b preintegration (optional, yes/no, default=no): use pre-integration.
+ * - \b mode (optional, slice/raycasting, default=raycasting): Rendering mode.
+ * - \b selectedTFKey (mandatory): TF key.
+ * - \b tfSelectionFwID (mandatory): TF selection.
  */
 class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
                                                 public ::fwRenderOgre::ITransformable,
@@ -70,21 +83,7 @@ protected:
     /// Does nothing.
     VISUOGREADAPTOR_API virtual void doUpdate() throw ( ::fwTools::Failed );
 
-    /**
-     * @brief Configures the service
-     * @code{.xml}
-        <adaptor uid="SNegato3D" class="::visuOgreAdaptor::SNegato3D" objectId="image">
-             <config renderer="default"
-                     preintegration="yes" mode="slice"
-                     selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-        </adaptor>
-       @endcode
-     * - \b renderer (optional): defines the renderer displaying the volume.
-     * - \b preintegration (optional, yes/no, default=no): use pre-integration.
-     * - \b mode (optional, slice/raycasting, default=raycasting): Rendering mode.
-     * - \b selectedTFKey (mandatory): TF key.
-     * - \b tfSelectionFwID (mandatory): TF selection.
-     */
+    /// Configures the service
     VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
 
     /// Slot called on TF update.
@@ -93,7 +92,12 @@ protected:
     /// Slot called on TF window update.
     VISUOGREADAPTOR_API virtual void updatingTFWindowing(double window, double level);
 
-    /// Get object/service connections.
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connects fwData::Image::s_MODIFIED_SIG to this::s_NEWIMAGE_SLOT
+     */
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
 
 private:
