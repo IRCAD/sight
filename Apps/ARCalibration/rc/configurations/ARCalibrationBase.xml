@@ -166,6 +166,7 @@
                 <parameter replace="CREATE_ACTIVITY_CHANNEL" uid="create_activity_channel" />
                 <parameter replace="LAUNCH_ACTIVITY_CHANNEL" uid="launch_activity_channel" />
                 <parameter replace="LAUNCH_ACTIVITY_SERIES_CHANNEL" uid="launch_activity_series_channel" />
+                <parameter replace="LOAD_ACTIVITY_CHANNEL" uid="load_activity_series_channel" />
             </parameters>
         </service>
 
@@ -194,6 +195,11 @@
         <!-- connect to launch the activity when it is created/updated. -->
         <connect channel="launch_activity_channel">
             <slot>dynamicView/launchActivity</slot>
+        </connect>
+
+        <!-- connect to load the activity . -->
+        <connect channel="load_activity_series_channel">
+            <slot>actionOpenActivity/update</slot>
         </connect>
 
         <connect channel="dynamicView">

@@ -16,12 +16,12 @@
     <xi:include href="configurations/displayImageConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/displayTwoImagesConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/toolsCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    
-    
+
+
     <extension implements="::fwActivities::registry::Activities">
         <id>Calibration</id>
         <title>Calibration</title>
-        <desc>Calibration activity</desc>
+        <desc>Calibrate the intrinsic and extrinsic parameters of cameras.</desc>
         <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="0" maxOccurs="0" />
@@ -46,7 +46,7 @@
              </requirement>
              <requirement name="tagsIdString" type="::fwData::String" minOccurs="1" maxOccurs="1">
                 <desc>
-                <![CDATA[ 
+                <![CDATA[
                     Identifier of the tag used to calibrate the tool (separated by a ','). <br />
                     Ex.: <b>101</b>
                 ]]>

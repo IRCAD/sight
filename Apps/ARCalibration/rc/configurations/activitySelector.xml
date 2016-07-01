@@ -7,6 +7,7 @@
         <param name="CREATE_ACTIVITY_CHANNEL" />
         <param name="LAUNCH_ACTIVITY_CHANNEL" />
         <param name="LAUNCH_ACTIVITY_SERIES_CHANNEL" />
+        <param name="LOAD_ACTIVITY_CHANNEL" />
         <param name="ICON_PATH" />
     </parameters>
     <config>
@@ -60,7 +61,6 @@
         <!-- When an activity is opened: it calls the creator's update activity slot. -->
         <connect channel="${LAUNCH_ACTIVITY_SERIES_CHANNEL}">
             <signal>seriesSignal/seriesAdded</signal>
-            <slot>activityCreator/updateActivitySeries</slot>
         </connect>
 
         <!-- Hide the creator editor when the activity creation is canceled. -->
@@ -90,6 +90,11 @@
             <signal>activityCreator/activityCreated</signal>
             <signal>activityCreator/activityUpdated</signal>
             <slot>selector/show</slot>
+        </connect>
+
+        <!-- connect to load the activity . -->
+        <connect channel="${LOAD_ACTIVITY_CHANNEL}">
+            <signal>selector/loadRequested</signal>
         </connect>
 
         <start uid="mainview" />
