@@ -14,8 +14,9 @@ endfunction()
 
 #Linux install
 macro(linux_install PRJ_NAME)
-    findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
-
+    if(NOT USE_SYSTEM_LIB)
+        findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
+    endif()
     set(CPACK_GENERATOR TGZ)
     string(TOLOWER ${PRJ_NAME} LOWER_PRJ_NAME)
     set(ICON_FILENAME ${LOWER_PRJ_NAME}.ico)
@@ -37,8 +38,10 @@ macro(linux_install PRJ_NAME)
     endif()
 
     #configure the 'fixup' script
-    configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/linux_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake @ONLY)
-    install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake)
+    if(NOT USE_SYSTEM_LIB)
+        configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/linux_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake @ONLY)
+        install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake)
+    endif()
 
     set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
 
@@ -48,11 +51,15 @@ macro(linux_install PRJ_NAME)
 
     if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
         configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${PRJ_NAME}_${DASH_VERSION}.sh @ONLY)
-        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${PRJ_NAME}_${DASH_VERSION}.sh DESTINATION ${CMAKE_INSTALL_PREFIX} )
+        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${PRJ_NAME}_${DASH_VERSION}.sh DESTINATION ${CMAKE_INSTALL_PREFIX}/bin )
     endif()
 
-    #Copy the qt font directory inside install/libs
-    install( DIRECTORY "${EXTERNAL_LIBRARIES}/lib/fonts" DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+
+
+    if(NOT USE_SYSTEM_LIB)
+        #Copy the qt font directory inside install/libs
+        install( DIRECTORY "${EXTERNAL_LIBRARIES}/lib/fonts" DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+    endif()
 
     include(CPack)
 

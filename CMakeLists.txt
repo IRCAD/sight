@@ -32,10 +32,16 @@ if(UNIX AND NOT APPLE)
     option(DEBIAN_INSTALL "Install apps in a Debian-way" OFF)
 endif()
 
-option(USE_SYSTEM_LIB "Use system libraries to compile fw4spl" OFF)
-if(NOT USE_SYSTEM_LIB)
-    set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
+if(DEBIAN_INSTALL)
+    set(USE_SYSTEM_LIB CACHE BOOL ON)
+else()
+    option(USE_SYSTEM_LIB "Use system libraries to compile fw4spl" OFF)
+    if(NOT USE_SYSTEM_LIB)
+        set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
+    endif()
 endif()
+
+
 set(CREATE_SUBPROJECTS OFF CACHE BOOL "Create a project for each subproject")
 set(BUILD_TESTS ON CACHE BOOL "Configures projects associated tests (<project>Test projects)")
 set(ADDITIONAL_PROJECTS CACHE PATH
