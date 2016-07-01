@@ -10,12 +10,6 @@
         <param name="imageUID" />
         <param name="TFSelections" />
 
-        <!-- Ellipŝe mask -->
-        <param name="ellipseX" />
-        <param name="ellipseY" />
-        <param name="ellipseA" />
-        <param name="ellipseB" />
-        <param name="ellipseTheta" />
     </parameters>
     <config>
 
@@ -86,26 +80,6 @@
                          <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
                     </adaptor>
 
-                    <!-- Ellipse mask parameters adaptors -->
-<!--                    <adaptor id="ellipseXParameter" class="::visuOgreAdaptor::SCompositorParameter" objectId="ellipseXKey">
-                        <config renderer="default" compositorName="Ellipse" parameter="u_x" shaderType="fragment"/>
-                    </adaptor>
-
-                    <adaptor id="ellipseYParameter" class="::visuOgreAdaptor::SCompositorParameter" objectId="ellipseYKey">
-                        <config renderer="default" compositorName="Ellipse" parameter="u_y" shaderType="fragment"/>
-                    </adaptor>
-
-                    <adaptor id="ellipseAParameter" class="::visuOgreAdaptor::SCompositorParameter" objectId="ellipseAKey">
-                        <config renderer="default" compositorName="Ellipse" parameter="u_a" shaderType="fragment"/>
-                    </adaptor>
-
-                    <adaptor id="ellipseBParameter" class="::visuOgreAdaptor::SCompositorParameter" objectId="ellipseBKey">
-                        <config renderer="default" compositorName="Ellipse" parameter="u_b" shaderType="fragment"/>
-                    </adaptor>
-
-                    <adaptor id="ellipseThetaParameter" class="::visuOgreAdaptor::SCompositorParameter" objectId="ellipseThetaKey">
-                        <config renderer="default" compositorName="Ellipse" parameter="u_theta" shaderType="fragment"/>
-                    </adaptor>-->
                 </scene>
             </service>
 
@@ -211,27 +185,6 @@
                         <videoSupport>yes</videoSupport>
                     </service>
                 </object>
-            </item>
-
-            <!-- Ellipse mask parameters -->
-            <item key="ellipseXKey">
-                <object uid="${ellipseX}" type="::fwData::Float" src="ref" />
-            </item>
-
-            <item key="ellipseYKey">
-                <object uid="${ellipseY}" type="::fwData::Float" src="ref" />
-            </item>
-
-            <item key="ellipseAKey">
-                <object uid="${ellipseA}" type="::fwData::Float" src="ref" />
-            </item>
-
-            <item key="ellipseBKey">
-                <object uid="${ellipseB}" type="::fwData::Float" src="ref" />
-            </item>
-
-            <item key="ellipseThetaKey">
-                <object uid="${ellipseTheta}" type="::fwData::Float" src="ref" />
             </item>
 
             <start uid="${GENERIC_UID}_OgreSceneView" />
