@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -344,7 +344,7 @@ void getInfo(const vtkSmartPointer< vtkXMLGenericDataObjectReader > &reader, con
 //------------------------------------------------------------------------------
 
 template< typename DATA_READER >
-::fwData::Image::sptr lazyRead( const ::boost::filesystem::path &file)
+::fwData::Image::sptr lazyRead( const ::boost::filesystem::path &file, const ::fwJobs::Observer::sptr& job)
 {
     vtkSmartPointer< DATA_READER > reader = vtkSmartPointer< DATA_READER >::New();
     reader->SetFileName(file.string().c_str());
@@ -357,6 +357,7 @@ template< typename DATA_READER >
         imgObj = ::fwData::Image::New();
         getInfo(reader, imgObj);
 
+        job->finish();
     }
 
     return imgObj;
@@ -368,9 +369,6 @@ template< typename DATA_READER >
 
 void SeriesDBReader::read()
 {
-    assert( !m_object.expired() );
-    assert( m_object.lock() );
-
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
 
     const ::fwData::location::ILocation::VectPathType files = this->getFiles();
@@ -388,7 +386,7 @@ void SeriesDBReader::read()
         {
             if(m_lazyMode)
             {
-                img = lazyRead<vtkGenericDataObjectReader>(file);
+                img = lazyRead<vtkGenericDataObjectReader>(file, m_job);
             }
             if (!img)
             {
@@ -399,7 +397,7 @@ void SeriesDBReader::read()
         {
             if(m_lazyMode)
             {
-                img = lazyRead<vtkXMLGenericDataObjectReader>(file);
+                img = lazyRead<vtkXMLGenericDataObjectReader>(file, m_job);
             }
             if (!img)
             {
