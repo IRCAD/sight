@@ -31,10 +31,10 @@
         <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
             <gui>
                 <layout>
-                    <menuItem name="Read DICOM files" icon="Bundles/media_0-1/icons/Import.svg" />
-                    <menuItem name="Preview filtered DICOM series" icon="Bundles/mediaExt_0-1/icons/Preview.svg" style="check" />
-                    <menuItem name="Read filtered DICOM series" icon="Bundles/mediaExt_0-1/icons/Apply.svg" />
-                    <menuItem name="Push selected series to the main SeriesDB" icon="Bundles/mediaExt_0-1/icons/Push.svg" />
+                    <menuItem name="Read DICOM files" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
+                    <menuItem name="Preview filtered DICOM series" icon="@BUNDLE_PREFIX@/mediaExt_0-1/icons/Preview.svg" style="check" />
+                    <menuItem name="Read filtered DICOM series" icon="@BUNDLE_PREFIX@/mediaExt_0-1/icons/Apply.svg" />
+                    <menuItem name="Push selected series to the main SeriesDB" icon="@BUNDLE_PREFIX@/mediaExt_0-1/icons/Push.svg" />
 
                     <spacer />
 
@@ -105,7 +105,7 @@
         </service>
 
         <service uid="${GENERIC_UID}_activityHelp" type="::fwGui::IActionSrv" impl="::uiGeneric::action::LaunchBrowserActionService" autoConnect="no">
-            <url>Bundles/dicomFilteringActivity_0-1/quickstart.pdf</url>
+            <url>@BUNDLE_PREFIX@/dicomFilteringActivity_0-1/quickstart.pdf</url>
         </service>
 
         <!-- MAIN -->
@@ -155,7 +155,7 @@
                     <config>
                         <appConfig id="DicomPreview" >
                             <parameters>
-                                <parameter replace="ICON_PATH" by="Bundles/mediaExt_0-1/icons/Preview.svg"  />
+                                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/mediaExt_0-1/icons/Preview.svg"  />
                                 <parameter replace="SERIESDB" by="${GENERIC_UID}_filteredSeriesDB"  />
                             </parameters>
                         </appConfig>

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -85,7 +85,7 @@ void SFilterSelectionEditor::starting() throw(::fwTools::Failed)
     topLayout->addWidget(m_availableFilterListWidget);
 
     // Add filter button
-    m_addFilterButton = new QPushButton(QIcon("Bundles/mediaExt_0-1/icons/Plus.svg"), "Add");
+    m_addFilterButton = new QPushButton(QIcon(QString(BUNDLE_PREFIX) + "/mediaExt_0-1/icons/Plus.svg"), "Add");
     m_addFilterButton->setSizePolicy(policy);
     topLayout->addWidget(m_addFilterButton);
 
@@ -123,24 +123,27 @@ void SFilterSelectionEditor::starting() throw(::fwTools::Failed)
     buttonLayout->setContentsMargins(QMargins(0,0,0,0));
 
     // Apply filters button
-    m_applyFiltersButton = new QPushButton(QIcon("Bundles/mediaExt_0-1/icons/Apply.svg"), "Apply");
+    m_applyFiltersButton = new QPushButton(QIcon(QString(BUNDLE_PREFIX) +"/mediaExt_0-1/icons/Apply.svg"),
+                                           "Apply");
     m_applyFiltersButton->setSizePolicy(policy);
     buttonLayout->addWidget(m_applyFiltersButton);
 
     // Configure filter button
-    m_configureFilterButton = new QPushButton(QIcon("Bundles/mediaExt_0-1/icons/Settings.svg"), "Configure");
+    m_configureFilterButton = new QPushButton(QIcon(QString(BUNDLE_PREFIX) +"/mediaExt_0-1/icons/Settings.svg"),
+                                              "Configure");
     m_configureFilterButton->setSizePolicy(policy);
     m_configureFilterButton->setEnabled(false);
     buttonLayout->addWidget(m_configureFilterButton);
 
     // Split filter button
-    m_splitFilterButton = new QPushButton(QIcon("Bundles/mediaExt_0-1/icons/Split.svg"), "Split");
+    m_splitFilterButton = new QPushButton(QIcon(QString(BUNDLE_PREFIX) +"/mediaExt_0-1/icons/Split.svg"), "Split");
     m_splitFilterButton->setSizePolicy(policy);
     m_splitFilterButton->setEnabled(false);
     buttonLayout->addWidget(m_splitFilterButton);
 
     // Remove filter button
-    m_removeFilterButton = new QPushButton(QIcon("Bundles/mediaExt_0-1/icons/Minus.svg"), "Remove");
+    m_removeFilterButton = new QPushButton(QIcon(QString(BUNDLE_PREFIX) + "/mediaExt_0-1/icons/Minus.svg"),
+                                           "Remove");
     m_removeFilterButton->setSizePolicy(policy);
     m_removeFilterButton->setEnabled(false);
     buttonLayout->addWidget(m_removeFilterButton);
@@ -567,11 +570,11 @@ bool SFilterSelectionEditor::sortFilters(const ::fwDicomIOFilter::IFilter::sptr&
 QIcon SFilterSelectionEditor::getFilterIcon(::fwDicomIOFilter::IFilter::sptr filter)
 {
     QIcon icons[] = {
-        QIcon("Bundles/mediaExt_0-1/icons/Modifier.svg"),
-        QIcon("Bundles/mediaExt_0-1/icons/Sorter.svg"),
-        QIcon("Bundles/mediaExt_0-1/icons/Splitter.svg"),
-        QIcon("Bundles/mediaExt_0-1/icons/Composite.svg"),
-        QIcon("Bundles/mediaExt_0-1/icons/Custom.svg")
+        QIcon(QString(BUNDLE_PREFIX) + "/mediaExt_0-1/icons/Modifier.svg"),
+        QIcon(QString(BUNDLE_PREFIX) + "/mediaExt_0-1/icons/Sorter.svg"),
+        QIcon(QString(BUNDLE_PREFIX) + "/mediaExt_0-1/icons/Splitter.svg"),
+        QIcon(QString(BUNDLE_PREFIX) + "/mediaExt_0-1/icons/Composite.svg"),
+        QIcon(QString(BUNDLE_PREFIX) + "/mediaExt_0-1/icons/Custom.svg")
     };
     return icons[filter->getFilterType()];
 }

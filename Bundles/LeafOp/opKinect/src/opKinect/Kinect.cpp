@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -120,7 +120,7 @@ void Kinect::run()
 
     // Create context
     xn::Context context;
-    XnStatus rc = context.InitFromXmlFile("./Bundles/opKinect_0-1/Sample-Tracking.xml");
+    XnStatus rc = context.InitFromXmlFile(std::string(BUNDLE_PREFIX) + "/opKinect_0-1/Sample-Tracking.xml");
     if (rc != XN_STATUS_OK)
     {
         QMessageBox::critical(0, "Critical error", "Couldn't initialize: " + QString(xnGetStatusString(rc)));

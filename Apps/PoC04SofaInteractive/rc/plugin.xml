@@ -9,7 +9,7 @@
                     <gui>
                         <frame>
                             <name>Altran Est - Medic@ : PoC 4 - Principe de simulation interactive temps reel avec Sofa</name>
-                            <icon>Bundles/PoC04SofaInteractive_0-1/tuto.ico</icon>
+                            <icon>@BUNDLE_PREFIX@/PoC04SofaInteractive_0-1/tuto.ico</icon>
                             <minSize width="800" height="600"/>
                         </frame>
                         <menuBar />
@@ -179,7 +179,7 @@
                         <item key="tool1Mesh">
                             <object uid="tool1Mesh" type="::fwData::Mesh">
                                 <service uid="tool1ReaderFile" impl="::ioData::MeshReaderService" type="::io::IReader" autoConnect="no" >
-                                    <file>Bundles/opSofa_0-1/cam.trian</file>
+                                    <file>@BUNDLE_PREFIX@/opSofa_0-1/cam.trian</file>
                                 </service>
                             </object>
                         </item>
@@ -187,7 +187,7 @@
                         <item key="tool2Mesh">
                             <object uid="tool2Mesh" type="::fwData::Mesh">
                                 <service uid="tool2ReaderFile" impl="::ioData::MeshReaderService" type="::io::IReader" autoConnect="no" >
-                                    <file>Bundles/opSofa_0-1/mors2.trian</file>
+                                    <file>@BUNDLE_PREFIX@/opSofa_0-1/mors2.trian</file>
                                 </service>
                             </object>
                         </item>

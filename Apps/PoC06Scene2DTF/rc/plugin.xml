@@ -16,7 +16,7 @@
                     <gui>
                         <frame>
                             <name>PoC06Scene2DTF</name>
-                            <icon>Bundles/PoC06Scene2DTF_0-1/tuto.ico</icon>
+                            <icon>@BUNDLE_PREFIX@/PoC06Scene2DTF_0-1/tuto.ico</icon>
                             <minSize width="1024" height="600" />
                         </frame>
                         <menuBar />
@@ -299,8 +299,8 @@
                                     <service uid="showScanEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
                                         <config>
                                             <checkable>true</checkable>
-                                            <icon>Bundles/media_0-1/icons/sliceHide.png</icon>
-                                            <icon2>Bundles/media_0-1/icons/sliceShow.png</icon2>
+                                            <icon>@BUNDLE_PREFIX@/media_0-1/icons/sliceHide.png</icon>
+                                            <icon2>@BUNDLE_PREFIX@/media_0-1/icons/sliceShow.png</icon2>
                                             <iconWidth>40</iconWidth>
                                             <iconHeight>16</iconHeight>
                                             <checked>true</checked>

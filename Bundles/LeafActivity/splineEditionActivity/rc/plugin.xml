@@ -15,7 +15,7 @@
         <id>splineEditionActivity</id>
         <title>Spline Edition</title>
         <desc>Spline edition activity</desc>
-        <icon>Bundles/mediaExt_0-1/icons/spline.png</icon>
+        <icon>@BUNDLE_PREFIX@/mediaExt_0-1/icons/spline.png</icon>
         <requirements>
 
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />

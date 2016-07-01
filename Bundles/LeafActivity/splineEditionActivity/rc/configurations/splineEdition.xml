@@ -162,21 +162,21 @@
             <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
-                        <menuItem name="Hide cross" icon="Bundles/media_0-1/icons/HideCross.png" style="radio" />
-                        <menuItem name="Show normal cross" icon="Bundles/media_0-1/icons/NormalCross.png" style="radio" />
-                        <menuItem name="Show full cross" icon="Bundles/media_0-1/icons/FullCross.png" style="radio" />
+                        <menuItem name="Hide cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/HideCross.png" style="radio" />
+                        <menuItem name="Show normal cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/NormalCross.png" style="radio" />
+                        <menuItem name="Show full cross" icon="@BUNDLE_PREFIX@/media_0-1/icons/FullCross.png" style="radio" />
                         <separator />
-                        <menuItem name="Show 3d slice cursor" icon="Bundles/media_0-1/icons/icon-landmark.png" style="check" />
-                        <menuItem name="Show mesh" icon="Bundles/media_0-1/icons/icon-3D.png" style="check" />
-                        <menuItem name="Show volume rendering" icon="Bundles/media_0-1/icons/icon-VR.png" style="check" />
-                        <menuItem name="Manage organs color" icon="Bundles/media_0-1/icons/ManageOrgan.png" style="check" />
+                        <menuItem name="Show 3d slice cursor" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-landmark.png" style="check" />
+                        <menuItem name="Show mesh" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-3D.png" style="check" />
+                        <menuItem name="Show volume rendering" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-VR.png" style="check" />
+                        <menuItem name="Manage organs color" icon="@BUNDLE_PREFIX@/media_0-1/icons/ManageOrgan.png" style="check" />
                         <separator />
-                        <menuItem name="Show/hide box cropping" icon="Bundles/media_0-1/icons/icon-box.png" style="check" />
-                        <menuItem name="Reset box cropping" icon="Bundles/media_0-1/icons/icon-box-reset.png" />
+                        <menuItem name="Show/hide box cropping" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-box.png" style="check" />
+                        <menuItem name="Reset box cropping" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-box-reset.png" />
                         <separator />
-                        <menuItem name="Snapshot VR" icon="Bundles/media_0-1/icons/camera-photo.png" />
+                        <menuItem name="Snapshot VR" icon="@BUNDLE_PREFIX@/media_0-1/icons/camera-photo.png" />
                         <separator />
-                        <menuItem name="Export Activity" icon="Bundles/media_0-1/icons/Export.svg"  />
+                        <menuItem name="Export Activity" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg"  />
                         <spacer />
                         <menu name="View Debug" />
                     </layout>

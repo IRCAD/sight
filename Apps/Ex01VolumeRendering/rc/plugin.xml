@@ -51,7 +51,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                 <gui>
                     <frame>
                         <name>Ex01VolumeRendering</name>
-                        <icon>Bundles/Ex01VolumeRendering_0-1/tuto.ico</icon>
+                        <icon>@BUNDLE_PREFIX@/Ex01VolumeRendering_0-1/tuto.ico</icon>
                     </frame>
                     <menuBar />
                 </gui>
@@ -229,8 +229,8 @@ Comment: Name inside the drawing are the uid of the service defined below.
             <service uid="showScanEditor" type="::guiQt::editor::SSignalButton">
                 <config>
                     <checkable>true</checkable>
-                    <icon>Bundles/media_0-1/icons/sliceHide.png</icon>
-                    <icon2>Bundles/media_0-1/icons/sliceShow.png</icon2>
+                    <icon>@BUNDLE_PREFIX@/media_0-1/icons/sliceHide.png</icon>
+                    <icon2>@BUNDLE_PREFIX@/media_0-1/icons/sliceShow.png</icon2>
                     <iconWidth>40</iconWidth>
                     <iconHeight>16</iconHeight>
                     <checked>true</checked>

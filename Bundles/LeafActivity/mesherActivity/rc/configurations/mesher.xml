@@ -29,10 +29,10 @@
             <service uid="${GENERIC_UID}_toolBar" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
-                        <menuItem name="VTK Mesher" icon="Bundles/mesherActivity_0-1/icons/vtk.png" />
-                        <menuItem name="CGoGN Mesher" icon="Bundles/mesherActivity_0-1/icons/cgogn.png" style="check" />
+                        <menuItem name="VTK Mesher" icon="@BUNDLE_PREFIX@/mesherActivity_0-1/icons/vtk.png" />
+                        <menuItem name="CGoGN Mesher" icon="@BUNDLE_PREFIX@/mesherActivity_0-1/icons/cgogn.png" style="check" />
                         <separator />
-                        <menuItem name="Export ModelSeries" icon="Bundles/media_0-1/icons/Export.svg" style="check" />
+                        <menuItem name="Export ModelSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" style="check" />
                         <spacer />
                         <menu name="Help" />
                     </layout>
@@ -97,8 +97,8 @@
             <service uid="${GENERIC_UID}_show_scan_editor" impl="::guiQt::editor::SSignalButton" type="::gui::editor::IEditor" autoConnect="no">
                 <config>
                     <checkable>true</checkable>
-                    <icon>Bundles/media_0-1/icons/sliceHide.png</icon>
-                    <icon2>Bundles/media_0-1/icons/sliceShow.png</icon2>
+                    <icon>@BUNDLE_PREFIX@/media_0-1/icons/sliceHide.png</icon>
+                    <icon2>@BUNDLE_PREFIX@/media_0-1/icons/sliceShow.png</icon2>
                     <iconWidth>40</iconWidth>
                     <iconHeight>16</iconHeight>
                     <checked>true</checked>
@@ -124,7 +124,7 @@
             </service>
 
             <service uid="${GENERIC_UID}_logo_cgogn" impl="::uiLogo::editor::SButton" autoConnect="no">
-                <image>Bundles/mesherActivity_0-1/icons/cgogn_logo.png</image>
+                <image>@BUNDLE_PREFIX@/mesherActivity_0-1/icons/cgogn_logo.png</image>
                 <tooltip>CGoGN website</tooltip>
             </service>
 
@@ -133,7 +133,7 @@
             </service>
 
             <service uid="${GENERIC_UID}_action_acknowledgments" impl="::uiGeneric::action::ShowAcknowledgments" autoConnect="no">
-                <filename id="Bundles/mesherActivity_0-1/documentations/cgogn.html" />
+                <filename id="@BUNDLE_PREFIX@/mesherActivity_0-1/documentations/cgogn.html" />
             </service>
 
             <service uid="${GENERIC_UID}_menu_help" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">

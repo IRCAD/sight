@@ -10,7 +10,7 @@
                     <gui>
                         <frame>
                             <name>Altran Est - Medic@ : PoC 5 - Kinect</name>
-                            <icon>Bundles/PoC05Kinect_0-1/tuto.ico</icon>
+                            <icon>@BUNDLE_PREFIX@/PoC05Kinect_0-1/tuto.ico</icon>
                             <minSize width="800" height="600"/>
                         </frame>
                         <menuBar />

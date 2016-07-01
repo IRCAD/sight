@@ -23,7 +23,6 @@ namespace editor
 {
 
 /**
- * @class SButton
  * @brief Configurable button
  * Creates a button with optionnal label, logo and tootip
  * Once the user clicks the button, a signal is sent
@@ -67,7 +66,7 @@ public:
      *
      * @code{.xml}
             <service uid="${GENERIC_UID}_logo_button" impl="::uiLogo::editor::SButton" autoConnect="no">
-                <image>Bundles/media_0-1/icons/*.png</image>
+                <image>@BUNDLE_PREFIX@/media_0-1/icons/*.png</image>
                 <label>Label</label>
                 <tooltip>Tooltip</tooltip>
             </service>

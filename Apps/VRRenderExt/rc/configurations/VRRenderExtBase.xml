@@ -112,11 +112,11 @@
             <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
             <service uid="action_about" type="::fwGui::IActionSrv" impl="::uiGeneric::action::SShowAbout" autoConnect="no">
-                <filename id="Bundles/VRRenderExt_0-9/about/about.html" />
+                <filename id="@BUNDLE_PREFIX@/VRRenderExt_0-9/about/about.html" />
             </service>
 
             <service uid="action_acknowledgments" type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowAcknowledgments" autoConnect="no">
-                <filename id="Bundles/VRRenderExt_0-9/documentations/ack.html" />
+                <filename id="@BUNDLE_PREFIX@/VRRenderExt_0-9/documentations/ack.html" />
             </service>
 
             <service uid="action_openBrowser" type="::fwGui::IActionSrv" impl="::uiGeneric::action::LaunchBrowserActionService" autoConnect="no">

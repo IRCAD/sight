@@ -4,7 +4,7 @@
         <gui>
             <frame>
                 <name>PoC Mesh Manual Registration</name>
-                <icon>Bundles/PoC03MeshManualRegistration_0-1/tuto.ico</icon>
+                <icon>@BUNDLE_PREFIX@/PoC03MeshManualRegistration_0-1/tuto.ico</icon>
                 <minSize width="800" height="600" />
             </frame>
             <menuBar />

@@ -94,17 +94,17 @@ Detail of the ToolBar
             <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
-                        <menuItem name="Load Image" icon="Bundles/Ex03Registration_0-1/icons/icon-load1.png" />
-                        <menuItem name="Load Mesh1" icon="Bundles/Ex03Registration_0-1/icons/icon-load1.png" />
+                        <menuItem name="Load Image" icon="@BUNDLE_PREFIX@/Ex03Registration_0-1/icons/icon-load1.png" />
+                        <menuItem name="Load Mesh1" icon="@BUNDLE_PREFIX@/Ex03Registration_0-1/icons/icon-load1.png" />
                         <separator />
-                        <menuItem name="Load Mesh2" icon="Bundles/Ex03Registration_0-1/icons/icon-load2.png" />
+                        <menuItem name="Load Mesh2" icon="@BUNDLE_PREFIX@/Ex03Registration_0-1/icons/icon-load2.png" />
                         <separator />
-                        <menuItem name="New landmark PL1" icon="Bundles/Ex03Registration_0-1/icons/Add-landmark.png" />
-                        <menuItem name="New landmark PL2" icon="Bundles/Ex03Registration_0-1/icons/Add-landmark.png" />
+                        <menuItem name="New landmark PL1" icon="@BUNDLE_PREFIX@/Ex03Registration_0-1/icons/Add-landmark.png" />
+                        <menuItem name="New landmark PL2" icon="@BUNDLE_PREFIX@/Ex03Registration_0-1/icons/Add-landmark.png" />
                         <separator />
-                        <menuItem name="Move" icon="Bundles/Ex03Registration_0-1/icons/View-landmark.png" />
-                        <menuItem name="Register" icon="Bundles/Ex03Registration_0-1/icons/Fusion-tmp.png" />
-                        <menuItem name="Quit" icon="Bundles/Ex03Registration_0-1/icons/unreadable.png"/>
+                        <menuItem name="Move" icon="@BUNDLE_PREFIX@/Ex03Registration_0-1/icons/View-landmark.png" />
+                        <menuItem name="Register" icon="@BUNDLE_PREFIX@/Ex03Registration_0-1/icons/Fusion-tmp.png" />
+                        <menuItem name="Quit" icon="@BUNDLE_PREFIX@/Ex03Registration_0-1/icons/unreadable.png"/>
                     </layout>
                 </gui>
                 <registry>

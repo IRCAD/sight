@@ -134,7 +134,7 @@
             <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
-                        <menuItem name="Export Activity" icon="Bundles/media_0-1/icons/Export.svg" />
+                        <menuItem name="Export Activity" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
                         <spacer />
                         <menu name="View Debug" />
                     </layout>

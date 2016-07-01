@@ -28,7 +28,7 @@
                 <gui>
                     <frame>
                         <name>Altran-Est - Medic@ : PoC 1 Demo integration SOFA-FW4SPL</name>
-                        <icon>Bundles/PoC01SofaMonoOrgan_0-1/tuto.ico</icon>
+                        <icon>@BUNDLE_PREFIX@/PoC01SofaMonoOrgan_0-1/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar />

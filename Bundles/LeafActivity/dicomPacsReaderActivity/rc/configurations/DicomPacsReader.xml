@@ -32,9 +32,9 @@
         <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
             <gui>
                 <layout>
-                    <menuItem name="Edit pacs configuration" icon="Bundles/mediaExt_0-1/icons/Settings.svg" style="check" />
-                    <menuItem name="Pull selected series from Pacs" icon="Bundles/mediaExt_0-1/icons/Pull.svg" />
-                    <menuItem name="Push selected series to the main SeriesDB" icon="Bundles/mediaExt_0-1/icons/Push.svg" />
+                    <menuItem name="Edit pacs configuration" icon="@BUNDLE_PREFIX@/mediaExt_0-1/icons/Settings.svg" style="check" />
+                    <menuItem name="Pull selected series from Pacs" icon="@BUNDLE_PREFIX@/mediaExt_0-1/icons/Pull.svg" />
+                    <menuItem name="Push selected series to the main SeriesDB" icon="@BUNDLE_PREFIX@/mediaExt_0-1/icons/Push.svg" />
                 </layout>
             </gui>
             <registry>
@@ -116,7 +116,7 @@
                         <appConfig id="PacsConfigurationManager" >
                             <parameters>
                                 <parameter replace="PACS_CONFIGURATION" by="${GENERIC_UID}_pacsConfiguration"  />
-                                <parameter replace="ICON_PATH" by="Bundles/mediaExt_0-1/icons/Settings.svg"  />
+                                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/mediaExt_0-1/icons/Settings.svg"  />
                             </parameters>
                         </appConfig>
                     </config>

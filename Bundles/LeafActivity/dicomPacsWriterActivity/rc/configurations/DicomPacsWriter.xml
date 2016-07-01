@@ -29,10 +29,10 @@
         <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
             <gui>
                 <layout>
-                    <menuItem name="Import" icon="Bundles/media_0-1/icons/Import.svg" />
-                    <menuItem name="Edit pacs configuration" icon="Bundles/mediaExt_0-1/icons/Settings.svg" style="check" />
-                    <menuItem name="Anonymize selected series" icon="Bundles/mediaExt_0-1/icons/icon-Anonymization.svg" />
-                    <menuItem name="Push selected series to Pacs" icon="Bundles/mediaExt_0-1/icons/Push.svg" />
+                    <menuItem name="Import" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
+                    <menuItem name="Edit pacs configuration" icon="@BUNDLE_PREFIX@/mediaExt_0-1/icons/Settings.svg" style="check" />
+                    <menuItem name="Anonymize selected series" icon="@BUNDLE_PREFIX@/mediaExt_0-1/icons/icon-Anonymization.svg" />
+                    <menuItem name="Push selected series to Pacs" icon="@BUNDLE_PREFIX@/mediaExt_0-1/icons/Push.svg" />
                 </layout>
             </gui>
             <registry>
@@ -67,7 +67,7 @@
                         <appConfig id="PacsConfigurationManager" >
                             <parameters>
                                 <parameter replace="PACS_CONFIGURATION" by="${GENERIC_UID}_pacsConfiguration"  />
-                                <parameter replace="ICON_PATH" by="Bundles/mediaExt_0-1/icons/Settings.svg"  />
+                                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/mediaExt_0-1/icons/Settings.svg"  />
                             </parameters>
                         </appConfig>
                     </config>

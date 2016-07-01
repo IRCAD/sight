@@ -36,7 +36,7 @@
                 <service uid="myEditorB" type="::gui::editor::IEditor" impl="::beginnerTraining::tuto02::SStringEditor" autoConnect="no" />
 
                 <service uid="myReader" type="::io::IReader" impl="::beginnerTraining::tuto01::SStringReader" autoConnect="no">
-                    <file>Bundles/beginnerTraining_0-1/data.txt</file>
+                    <file>@BUNDLE_PREFIX@/beginnerTraining_0-1/data.txt</file>
                 </service>
 
                 <start uid="myFrame" />

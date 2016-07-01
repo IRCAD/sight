@@ -90,12 +90,12 @@
                 <service uid="toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                     <gui>
                         <layout>
-                            <menuItem name="Load Image" icon="Bundles/Ex04ImagesRegistration_0-1/icons/icon-load1.png" />
+                            <menuItem name="Load Image" icon="@BUNDLE_PREFIX@/Ex04ImagesRegistration_0-1/icons/icon-load1.png" />
                             <separator />
-                            <menuItem name="Load Image2" icon="Bundles/Ex04ImagesRegistration_0-1/icons/icon-load2.png" />
+                            <menuItem name="Load Image2" icon="@BUNDLE_PREFIX@/Ex04ImagesRegistration_0-1/icons/icon-load2.png" />
                             <separator />
-                            <menuItem name="Save Image" icon="Bundles/Ex04ImagesRegistration_0-1/icons/save.png" />
-                            <menuItem name="Quit" icon="Bundles/Ex04ImagesRegistration_0-1/icons/unreadable.png" />
+                            <menuItem name="Save Image" icon="@BUNDLE_PREFIX@/Ex04ImagesRegistration_0-1/icons/save.png" />
+                            <menuItem name="Quit" icon="@BUNDLE_PREFIX@/Ex04ImagesRegistration_0-1/icons/unreadable.png" />
                         </layout>
                     </gui>
                     <registry>
