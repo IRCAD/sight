@@ -12,6 +12,8 @@
 #include <fwCom/Slot.hpp>
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
+#include <fwThread/Worker.hpp>
+
 #include <gui/editor/IEditor.hpp>
 #include <io/IReader.hpp>
 
@@ -52,8 +54,6 @@ namespace ioPacs
 /**
  * @brief   This editor service is used to select a slice index and pull the image from the pacs if it is not
  *           available on the local computer.
- * @class   SSliceIndexDicomPullerEditor
- * @date    2013.
  */
 class IOPACS_CLASS_API SSliceIndexDicomPullerEditor : public QObject,
                                                       public ::gui::editor::IEditor

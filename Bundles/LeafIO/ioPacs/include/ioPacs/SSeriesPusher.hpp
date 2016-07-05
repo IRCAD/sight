@@ -13,6 +13,7 @@
 #include <fwPacsIO/data/PacsConfiguration.hpp>
 #include <fwPacsIO/SeriesEnquirer.hpp>
 #include <fwServices/IController.hpp>
+#include <fwThread/Worker.hpp>
 
 #include <vector>
 
@@ -26,8 +27,6 @@ namespace ioPacs
 
 /**
  * @brief   This service is used to push series to a pacs.
- * @class   SSeriesPusher
- * @date    2014.
  */
 class IOPACS_CLASS_API SSeriesPusher : public ::fwServices::IController
 {

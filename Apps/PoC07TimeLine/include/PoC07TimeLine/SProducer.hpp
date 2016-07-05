@@ -7,15 +7,16 @@
 #ifndef __POC07TIMELINE_SPRODUCER_HPP__
 #define __POC07TIMELINE_SPRODUCER_HPP__
 
+#include "PoC07TimeLine/config.hpp"
+
 #include <fwServices/IService.hpp>
 
-#include "PoC07TimeLine/config.hpp"
+#include <fwThread/Timer.hpp>
 
 namespace PoC07TimeLine
 {
 
 /**
- * @class   SProducer
  * @brief   Service that produce messages and store them into a timeline.
  */
 class POC07TIMELINE_CLASS_API SProducer : public ::fwServices::IService

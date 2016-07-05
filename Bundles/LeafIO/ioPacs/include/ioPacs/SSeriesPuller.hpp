@@ -15,6 +15,7 @@
 #include <fwPacsIO/SeriesRetriever.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwServices/IController.hpp>
+#include <fwThread/Worker.hpp>
 #include <io/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
@@ -31,8 +32,6 @@ namespace ioPacs
 
 /**
  * @brief   This service is used to pull series from a pacs.
- * @class   SSeriesPuller
- * @date    2013.
  */
 class IOPACS_CLASS_API SSeriesPuller : public ::fwServices::IController
 {
