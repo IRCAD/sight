@@ -4,6 +4,7 @@
     <requirement id="dataReg" />
     <requirement id="patchMedicalData" />
     <requirement id="filterVRRender" />
+    <requirement id="preferences" />
 
     <xi:include href="configurations/VRRenderExtBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
