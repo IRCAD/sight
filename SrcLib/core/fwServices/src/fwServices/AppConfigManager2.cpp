@@ -225,6 +225,10 @@ void AppConfigManager2::setIsUnitTest(bool isUnitTest)
 
 fwData::Object::sptr AppConfigManager2::getConfigRoot() const
 {
+    if (m_createdObjects.empty())
+    {
+        return m_tmpRootObject;
+    }
     return m_createdObjects.begin()->second.first;
 }
 
@@ -270,6 +274,8 @@ fwData::Object::sptr AppConfigManager2::getConfigRoot() const
 {
     SLM_ASSERT(this->msgHead() + "Object with UID \"" + uid + "\" doesn't exist.", ::fwTools::fwID::exist(uid));
     ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(uid));
+
+    SLM_ASSERT(this->msgHead() + "The UID '" + uid + "' does not reference any object.", obj);
 
     if (type.second)
     {

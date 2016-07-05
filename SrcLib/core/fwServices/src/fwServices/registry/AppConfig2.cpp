@@ -283,7 +283,8 @@ std::string AppConfig2::getUniqueIdentifier(const std::string& serviceUid )
             if ( !::boost::regex_match( attribute.second, isVariable ) )
             {
                 // This is not a variable, add the prefix
-                result->setAttributeValue( attribute.first, autoPrefixId + "_" + attribute.second);
+                result->setAttributeValue( attribute.first,
+                                           autoPrefixId + "_" + this->adaptField( attribute.second, fieldAdaptors ));
                 continue;
             }
         }
@@ -302,14 +303,18 @@ std::string AppConfig2::getUniqueIdentifier(const std::string& serviceUid )
                 // This is not a variable, add the prefix
                 auto elt = ::fwRuntime::EConfigurationElement::New( subElem->getName() );
                 elt->setValue( autoPrefixId + "_" + subElem->getValue() );
+
+                for (const auto& attr : subElem->getAttributes())
+                {
+                    elt->setAttributeValue(attr.first, attr.second);
+                }
+
                 result->addConfigurationElement( elt );
                 continue;
             }
         }
-        else
-        {
-            result->addConfigurationElement( this->adaptConfig( subElem, fieldAdaptors, autoPrefixId ) );
-        }
+
+        result->addConfigurationElement( this->adaptConfig( subElem, fieldAdaptors, autoPrefixId ) );
     }
 
     return result;
