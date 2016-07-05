@@ -17,5 +17,8 @@ set( DEPENDENCIES
     fwTools
     fwVtkIO
 )
-set( REQUIREMENTS  )
-
+set( REQUIREMENTS
+    dataReg
+    servicesReg
+    visuVTK
+)

@@ -14,14 +14,10 @@ set( REQUIREMENTS
     ioVTK
     uiIO
     uiVisuQt
-    uiImageQt
     uiReconstructionQt # contains editors to manage reconstructions
     uiMedDataQt # contains editors to manage model series
-    visuVTK
     visuVTKQt
-    visuVTKAdaptor
     opVTKMesh
-    ctrlSelection
     fwlauncher
     appXml2
 )

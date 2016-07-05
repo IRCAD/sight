@@ -6,43 +6,39 @@ set( DEPENDENCIES  )
 set( REQUIREMENTS
     servicesReg
     dataReg
-    visuVTK
-    visuVTKQt
-    visuVTKAdaptor
-    visuVTKVRAdaptor
+
     gui
     guiQt
+
+    activities
+    appXml2
     memory
     ctrlMemory
     fwlauncher
+
     io
+    ioAtoms
+    ioITK
     ioVTK
     ioVtkGdcm
     ioData
+
     uiIO
     uiGenericQt
     uiMedDataQt
-    uiImageQt
-    uiVisu
-    uiVisuQt
-    appXml2
-    activities
-    ctrlSelection
-    uiReconstructionQt
+
     2DVisualizationActivity2
     3DVisualizationActivity2
     volumeRenderingActivity2
     blendActivity
     ioActivity
+
     media
-    ioAtoms
+
     patchMedicalData
-    ioITK
+
     filterVRRender
-    scene2D
-    uiMeasurement
-    uiMeasurementQt
-    uiTF
+
     preferences
 )
 

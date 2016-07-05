@@ -13,7 +13,7 @@ set( DEPENDENCIES
     fwTools
     fwCore
 )
-set( REQUIREMENTS 
+set( REQUIREMENTS
     dataReg
     servicesReg
     fwlauncher

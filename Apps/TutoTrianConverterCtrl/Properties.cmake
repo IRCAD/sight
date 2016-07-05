@@ -7,7 +7,7 @@ set( DEPENDENCIES
     fwRuntime
     fwServices
     fwData
-    fwCore 
+    fwCore
 )
 set( REQUIREMENTS
     io

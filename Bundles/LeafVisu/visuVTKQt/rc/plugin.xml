@@ -1,5 +1,5 @@
 <plugin id="visuVTKQt" class="visuVTKQt::Plugin"  version="@DASH_VERSION@" >
-    
+
     <library name="visuVTKQt" />
 
     <requirement id="dataReg"/>
@@ -7,6 +7,3 @@
     <requirement id="visuVTK" />
 
 </plugin>
-
-
-

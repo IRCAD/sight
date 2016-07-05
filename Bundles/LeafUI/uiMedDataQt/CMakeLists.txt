@@ -1,12 +1,5 @@
 fwLoadProperties()
 
-
-fwReq(
-    visuVTKAdaptor
-    uiImageQt
-    ctrlSelection
-    )
-
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 find_package(Boost COMPONENTS regex REQUIRED)
 

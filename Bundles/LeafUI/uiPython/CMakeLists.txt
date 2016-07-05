@@ -1,6 +1,1 @@
 fwLoadProperties()
-
-fwReq(
-    binding
-)
-

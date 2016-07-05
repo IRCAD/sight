@@ -4,11 +4,9 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="gui" />
-    <requirement id="visuVTK" />
     <requirement id="visuVTKQt" />
     <requirement id="visuVTKAdaptor" />
     <requirement id="uiImageQt" />
-    <requirement id="ctrlSelection" />
 
     <xi:include href="SeriesExportCfg.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 

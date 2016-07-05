@@ -5,5 +5,6 @@ set( DEPENDENCIES  )
 set( REQUIREMENTS
         io
         uiIO
+        media
         filterVRRender
     )
