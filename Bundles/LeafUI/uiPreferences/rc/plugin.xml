@@ -1,0 +1,13 @@
+<plugin id="uiPreferences" class="::uiPreferences::Plugin" version="@DASH_VERSION@" >
+    <library name="uiPreferences"/>
+
+    <requirement id="gui"/>
+    <requirement id="guiQt" />
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::uiPreferences::action::SPreferencesConfiguration</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+</plugin>
