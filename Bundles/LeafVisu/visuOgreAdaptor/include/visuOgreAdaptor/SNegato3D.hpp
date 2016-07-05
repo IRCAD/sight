@@ -26,7 +26,6 @@ namespace visuOgreAdaptor
 
 /**
  * @brief   Adaptor to display a 3D negato
- * @class   SNegato3D
  */
 class VISUOGREADAPTOR_CLASS_API SNegato3D : public ::fwRenderOgre::IAdaptor,
                                             public ::fwRenderOgre::ITransformable,
@@ -70,8 +69,7 @@ protected:
      * @code{.xml}
         <adaptor uid="SNegato3D" class="::visuOgreAdaptor::SNegato3D" objectId="image">
              <config renderer="default" picker="negatodefault" sliceIndex="axial"
-                     imageSource="imageKey" filtering="none"
-                     opacity="opacityFloatUID" />
+                     imageSource="imageKey" filtering="none" />
         </adaptor>
        @endcode
      * - \b renderer (optional): defines the renderer to show the arrow. It must be different from the 3D objects
@@ -79,7 +77,6 @@ protected:
      * - \b picker (optional): identifier of the picker
      * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
      * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato
-     * - \b opacity (optional): opacity ::fwData::Float uid
      */
     VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
     /// Performs stop, start and update.

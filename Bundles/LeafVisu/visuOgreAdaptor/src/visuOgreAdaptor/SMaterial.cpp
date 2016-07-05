@@ -460,7 +460,9 @@ void SMaterial::setTextureAdaptor(const std::string& textureAdaptorUID)
     {
         m_texAdaptorUID = textureAdaptorUID;
 
-        auto textureService = ::fwServices::get(m_texAdaptorUID);
+        ::fwRenderOgre::SRender::sptr renderService = this->getRenderService();
+
+        auto textureService = renderService->getAdaptor(m_texAdaptorUID);
         m_texAdaptor = ::visuOgreAdaptor::STexture::dynamicCast(textureService);
     }
 }
