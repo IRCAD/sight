@@ -52,8 +52,10 @@ public:
      * @{
      */
 
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_FLOAT_PARAMETER_SLOT;
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
 
     ///@}
 
@@ -63,17 +65,20 @@ public:
     /// Destructor. Does nothing
     VISUOGREADAPTOR_API virtual ~SShaderParameter() throw();
 
-    /// Sets the shaderType by passing the value of the ShaderEnumType of this adaptor.
+    /// Set the shaderType by passing the value of the ShaderEnumType of this adaptor.
     VISUOGREADAPTOR_API void setShaderType(ShaderEnumType shaderType);
 
-    /// Sets the shaderType by passing the name of the ShaderEnumType of this adaptor (vp or fp).
+    /// Set the shaderType by passing the name of the ShaderEnumType of this adaptor (vp or fp).
     VISUOGREADAPTOR_API void setShaderType(std::string shaderType);
 
-    /// Sets the value of the member m_materialName.
+    /// Set the value of the member m_materialName.
     VISUOGREADAPTOR_API void setMaterialName(std::string matName);
 
-    /// Sets the name of the parameter m_paramName.
+    /// Set the name of the parameter m_paramName.
     VISUOGREADAPTOR_API void setParamName(std::string paramName);
+
+    /// Get the name of the parameter m_paramName.
+    VISUOGREADAPTOR_API std::string getParamName() const;
 
 protected:
 
@@ -85,6 +90,7 @@ protected:
     VISUOGREADAPTOR_API virtual void doStop()  throw ( ::fwTools::Failed );
     /// Do nothing
     VISUOGREADAPTOR_API virtual void doSwap() throw ( ::fwTools::Failed );
+
     /// Updates the shaderparameter values via the private method updateValue(), and requests a render of the scene.
     VISUOGREADAPTOR_API virtual void doUpdate() throw ( ::fwTools::Failed );
 
@@ -104,10 +110,19 @@ private:
     bool setParameter(::Ogre::Technique& technique, const ::fwData::Object::sptr& paramObject);
 
     /// SLOT : Set the uniform from an integer value
+    void setBoolParameter(bool value);
+
+    /// SLOT : Set the uniform from a color value
+    void setColorParameter(std::array<std::uint8_t, 4> color, std::string key);
+
+    /// SLOT : Set the uniform from an integer value
     void setIntParameter(int value);
 
     /// SLOT : Set the uniform from an float value
     void setFloatParameter(float value);
+
+    /// SLOT : Set the uniform from an double value
+    void setDoubleParameter(double value);
 
     /// Material name
     std::string m_materialName;

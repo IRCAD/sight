@@ -28,7 +28,6 @@ namespace uiVisuOgre
 
 /**
  * @brief   Editor allowing to edit each parameters from each shader of a reconstruction
- * @class   SShaderParameterEditor
  */
 class UIVISUOGRE_CLASS_API SShaderParameterEditor : public ::gui::editor::IEditor
 {
@@ -51,25 +50,13 @@ public:
 protected:
 
     /// Internal class that will contain the Qt components for one specific shader.
-    class ShaderEditorInfo
+    struct ShaderEditorInfo
     {
-
-    public:
-
-        ShaderEditorInfo()
-        {
-            connections = ::fwServices::helper::SigSlotConnection::New();
-        }
-
+        std::string uuid;
         ::fwGuiQt::container::QtContainer::sptr editorPanel;
-
-        std::string editorUUID;
-
-        ::fwServices::IService::wptr objService;
-
-        ::fwServices::helper::SigSlotConnection::sptr connections;
+        ::fwServices::IService::wptr service;
+        ::fwServices::helper::SigSlotConnection connections;
     };
-    typedef std::vector< ShaderEditorInfo > ShaderEditorInfoContainerType;
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     /**
@@ -99,7 +86,7 @@ protected:
     /// Update the interface.
     UIVISUOGRE_API virtual void updating() throw ( ::fwTools::Failed );
 
-    ShaderEditorInfoContainerType m_shaderEditorInfos;
+    ShaderEditorInfo m_editorInfo;
     EditorMapType m_associatedEditor;
 
     /// Connection to the material

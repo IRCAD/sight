@@ -101,24 +101,22 @@ void SShaderParameterEditor::updating() throw(::fwTools::Failed)
 //------------------------------------------------------------------------------
 void SShaderParameterEditor::clear()
 {
-    for(auto info : m_shaderEditorInfos)
+    m_editorInfo.connections.disconnect();
+
+    ::fwServices::IService::sptr objService = m_editorInfo.service.lock();
+
+    if(objService)
     {
-        info.connections->disconnect();
-
-        ::fwServices::IService::sptr objService = info.objService.lock();
-
         objService->stop();
 
-        ::fwGui::GuiRegistry::unregisterSIDContainer(info.editorUUID);
+        ::fwGui::GuiRegistry::unregisterSIDContainer(m_editorInfo.uuid);
 
         ::fwServices::OSR::unregisterService(objService);
 
-        m_sizer->removeWidget(info.editorPanel->getQtContainer());
-        info.editorPanel->destroyContainer();
-        info.editorPanel.reset();
+        m_sizer->removeWidget(m_editorInfo.editorPanel->getQtContainer());
+        m_editorInfo.editorPanel->destroyContainer();
+        m_editorInfo.editorPanel.reset();
     }
-
-    m_shaderEditorInfos.clear();
 }
 
 //------------------------------------------------------------------------------
@@ -151,87 +149,138 @@ void SShaderParameterEditor::updateGuiInfo()
 
     SLM_ASSERT("Material adaptor corresponding to the current Reconstruction must exist", matService);
 
-    /// Get all ShaderParameter subservices from the corresponding Material adaptor
+    ::fwServices::IService::ConfigType config;
+    bool found = false;
+
+    // Is there at least one parameter that we can handle ?
     for (auto subSrv : matService->getRegisteredAdaptors())
     {
         if (subSrv.lock()->getClassname() == "::visuOgreAdaptor::SShaderParameter")
         {
-            ::visuOgreAdaptor::SShaderParameter::sptr shaderSrv =
-                ::visuOgreAdaptor::SShaderParameter::dynamicCast(subSrv.lock());
-
-            /// Getting this widget's container
-            ::fwGuiQt::container::QtContainer::sptr qtContainer =
-                ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-            QWidget* container = qtContainer->getQtContainer();
+            auto paramSrv = ::visuOgreAdaptor::SShaderParameter::dynamicCast(subSrv.lock());
 
             /// Getting associated object infos
-            ::fwData::Object::sptr shaderObj = shaderSrv->getObject();
-            ObjectClassnameType objType = shaderObj->getClassname();
-            ObjectId key                = shaderObj->getID();
-            ObjectId name               = shaderObj->getName();
+            const ::fwData::Object::sptr shaderObj = paramSrv->getObject();
+            const ObjectClassnameType objType      = shaderObj->getClassname();
 
-            std::string uuid = this->getID();
-            std::string editor;
-
-            if(objType == "::fwData::Integer")
+            if(objType == "::fwData::Boolean" || objType == "::fwData::Double" || objType == "::fwData::Integer")
             {
-                editor = "::guiQt::editor::SSlider";
+                found = true;
+                break;
+            }
+        }
+    }
+
+    if(!found)
+    {
+        return;
+    }
+
+    /// Getting this widget's container
+    auto qtContainer   = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    QWidget* container = qtContainer->getQtContainer();
+
+    QWidget * p2 = new QWidget( container );
+    m_editorInfo.editorPanel = ::fwGuiQt::container::QtContainer::New();
+    m_editorInfo.editorPanel->setQtContainer(p2);
+
+    const std::string uuid = this->getID();
+    m_editorInfo.uuid = uuid + "-editor";
+
+    ::fwGui::GuiRegistry::registerSIDContainer(m_editorInfo.uuid, m_editorInfo.editorPanel);
+
+    auto editorService = ::fwServices::add( this->getObject(), "::gui::editor::IEditor", "::guiQt::editor::SParameters",
+                                            m_editorInfo.uuid );
+    m_editorInfo.service = editorService;
+
+    // Get all ShaderParameter subservices from the corresponding Material adaptor
+    for (auto subSrv : matService->getRegisteredAdaptors())
+    {
+        if (subSrv.lock()->getClassname() == "::visuOgreAdaptor::SShaderParameter")
+        {
+            auto paramSrv = ::visuOgreAdaptor::SShaderParameter::dynamicCast(subSrv.lock());
+
+            /// Getting associated object infos
+            const ::fwData::Object::sptr shaderObj = paramSrv->getObject();
+            const ObjectClassnameType objType      = shaderObj->getClassname();
+
+            if(objType == "::fwData::Boolean")
+            {
+                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "boolChanged", paramSrv,
+                                                 "setBoolParameter");
+
+                ::fwServices::IService::ConfigType paramConfig;
+                paramConfig.add("<xmlattr>.type", "bool");
+                paramConfig.add("<xmlattr>.name", paramSrv->getParamName());
+                paramConfig.add("<xmlattr>.key", paramSrv->getParamName());
+                paramConfig.add("<xmlattr>.defaultValue", false);
+
+                config.add_child("service.parameters.param", paramConfig);
+            }
+            else if(objType == "::fwData::Color")
+            {
+                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "colorChanged", paramSrv,
+                                                 "setColorParameter");
+
+                ::fwServices::IService::ConfigType paramConfig;
+                paramConfig.add("<xmlattr>.type", "color");
+                paramConfig.add("<xmlattr>.name", paramSrv->getParamName());
+                paramConfig.add("<xmlattr>.key", paramSrv->getParamName());
+                paramConfig.add("<xmlattr>.defaultValue", "#ffffffff");
+
+                config.add_child("service.parameters.param", paramConfig);
+            }
+            else if(objType == "::fwData::Float")
+            {
+                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "doubleChanged", paramSrv,
+                                                 "setDoubleParameter");
+
+                ::fwServices::IService::ConfigType paramConfig;
+                paramConfig.add("<xmlattr>.type", "double");
+                paramConfig.add("<xmlattr>.name", paramSrv->getParamName());
+                paramConfig.add("<xmlattr>.key", paramSrv->getParamName());
+                paramConfig.add("<xmlattr>.defaultValue", 0.5);
+                paramConfig.add("<xmlattr>.min", 0.0);
+                paramConfig.add("<xmlattr>.max", 1.0);
+
+                config.add_child("service.parameters.param", paramConfig);
+            }
+            else if(objType == "::fwData::Integer")
+            {
+                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "intChanged", paramSrv,
+                                                 "setIntParameter");
+
+                ::fwServices::IService::ConfigType paramConfig;
+                paramConfig.add("<xmlattr>.type", "int");
+                paramConfig.add("<xmlattr>.name", paramSrv->getParamName());
+                paramConfig.add("<xmlattr>.key", paramSrv->getParamName());
+                paramConfig.add("<xmlattr>.defaultValue", 10);
+                paramConfig.add("<xmlattr>.min", 0);
+                paramConfig.add("<xmlattr>.max", 100);
+
+                config.add_child("service.parameters.param", paramConfig);
             }
             else
             {
                 OSLM_ERROR("No editor found for the object of type " << objType);
             }
-
-            /// Fill editors informations depending on data type
-            if (!editor.empty())
-            {
-                ShaderEditorInfo info;
-
-                QWidget * p2 = new QWidget( container );
-                info.editorPanel = ::fwGuiQt::container::QtContainer::New();
-                info.editorPanel->setQtContainer(p2);
-
-                info.editorUUID = uuid + "-editee-" + key;
-
-                ::fwGui::GuiRegistry::registerSIDContainer(info.editorUUID, info.editorPanel);
-
-                ::fwServices::IService::sptr objService;
-                objService = ::fwServices::add( shaderObj, "::gui::editor::IEditor", editor, info.editorUUID );
-
-                info.objService = objService;
-
-                ::fwServices::IService::ConfigType config;
-                config.add("config.range.min", 0);
-                config.add("config.range.max", 100);
-                config.add("config.defaultValue", 10);
-                config.add("config.value", 10);
-                config.add("config.text", name);
-
-                objService->setConfiguration(config);
-                objService->configure();
-
-                objService->start();
-
-                info.connections->connect(objService, "valueChanged", shaderSrv, "setIntParameter");
-
-                m_shaderEditorInfos.push_back(info);
-
-                OSLM_TRACE("Created container " << info.editorUUID << " for " << shaderObj->getID() );
-            }
         }
     }
+
+    editorService->setConfiguration(config);
+    editorService->configure();
+
+    editorService->start();
 }
 
 //------------------------------------------------------------------------------
 
 void SShaderParameterEditor::fillGui()
 {
-    int line = 0;
-
-    for(auto info : m_shaderEditorInfos)
+    auto editorService = m_editorInfo.service.lock();
+    if(editorService)
     {
-        m_sizer->addWidget( info.editorPanel->getQtContainer(), line );
-        line++;
+        m_sizer->addWidget( m_editorInfo.editorPanel->getQtContainer(), 0 );
     }
 }
 

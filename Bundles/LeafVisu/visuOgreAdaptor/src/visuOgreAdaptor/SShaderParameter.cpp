@@ -36,16 +36,20 @@ namespace visuOgreAdaptor
 
 fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SShaderParameter, ::fwData::Object);
 
-const ::fwCom::Slots::SlotKeyType SShaderParameter::s_SET_INT_PARAMETER_SLOT   = "setIntParameter";
-const ::fwCom::Slots::SlotKeyType SShaderParameter::s_SET_FLOAT_PARAMETER_SLOT = "setFloatParameter";
+const ::fwCom::Slots::SlotKeyType SShaderParameter::s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
+const ::fwCom::Slots::SlotKeyType SShaderParameter::s_SET_COLOR_PARAMETER_SLOT  = "setColorParameter";
+const ::fwCom::Slots::SlotKeyType SShaderParameter::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+const ::fwCom::Slots::SlotKeyType SShaderParameter::s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
 
 //------------------------------------------------------------------------------
 
 SShaderParameter::SShaderParameter() throw() :
     m_shaderType(VERTEX)
 {
+    newSlot(s_SET_BOOL_PARAMETER_SLOT, &SShaderParameter::setBoolParameter, this);
+    newSlot(s_SET_COLOR_PARAMETER_SLOT, &SShaderParameter::setColorParameter, this);
+    newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SShaderParameter::setDoubleParameter, this);
     newSlot(s_SET_INT_PARAMETER_SLOT, &SShaderParameter::setIntParameter, this);
-    newSlot(s_SET_FLOAT_PARAMETER_SLOT, &SShaderParameter::setFloatParameter, this);
 }
 
 //------------------------------------------------------------------------------
@@ -95,6 +99,13 @@ void SShaderParameter::setMaterialName(std::string matName)
 void SShaderParameter::setParamName(std::string paramName)
 {
     m_paramName = paramName;
+}
+
+//------------------------------------------------------------------------------
+
+std::string SShaderParameter::getParamName() const
+{
+    return m_paramName;
 }
 
 //------------------------------------------------------------------------------
@@ -372,6 +383,35 @@ bool SShaderParameter::setParameter(::Ogre::Technique& technique, const fwData::
 
 //------------------------------------------------------------------------------
 
+void SShaderParameter::setBoolParameter(bool value)
+{
+    if(m_paramObject == nullptr)
+    {
+        m_paramObject = ::fwData::Boolean::New();
+    }
+    ::fwData::Boolean::sptr paramObject = ::fwData::Boolean::dynamicCast(m_paramObject);
+    paramObject->setValue(value);
+
+    this->updateValue(paramObject);
+}
+
+//------------------------------------------------------------------------------
+
+void SShaderParameter::setColorParameter(std::array<uint8_t, 4> color, std::string key)
+{
+    if(m_paramObject == nullptr)
+    {
+        m_paramObject = ::fwData::Color::New();
+    }
+    ::fwData::Color::sptr paramObject = ::fwData::Color::dynamicCast(m_paramObject);
+    paramObject->setRGBA(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f, color[3] / 255.f);
+
+    this->updateValue(paramObject);
+
+}
+
+//------------------------------------------------------------------------------
+
 void SShaderParameter::setIntParameter(int value)
 {
     if(m_paramObject == nullptr)
@@ -394,6 +434,20 @@ void SShaderParameter::setFloatParameter(float value)
     }
     ::fwData::Float::sptr paramObject = ::fwData::Float::dynamicCast(m_paramObject);
     paramObject->setValue(value);
+
+    this->updateValue(paramObject);
+}
+
+//------------------------------------------------------------------------------
+
+void SShaderParameter::setDoubleParameter(double value)
+{
+    if(m_paramObject == nullptr)
+    {
+        m_paramObject = ::fwData::Float::New();
+    }
+    ::fwData::Float::sptr paramObject = ::fwData::Float::dynamicCast(m_paramObject);
+    paramObject->setValue(static_cast<float>(value));
 
     this->updateValue(paramObject);
 }
