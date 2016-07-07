@@ -4,7 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/Os.hpp>
+#include "preferences/Plugin.hpp"
+
 #include <fwData/String.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
@@ -15,7 +16,7 @@
 #include <fwServices/op/Add.hpp>
 #include <fwServices/op/Get.hpp>
 
-#include "preferences/Plugin.hpp"
+#include <fwTools/Os.hpp>
 
 namespace preferences
 {

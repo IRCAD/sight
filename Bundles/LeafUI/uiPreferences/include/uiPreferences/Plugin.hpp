@@ -31,6 +31,6 @@ struct Plugin : public ::fwRuntime::Plugin
     }
 };
 
-} // namespace uiServer
+} // namespace uiPreferences
 
 #endif //__UIPREFERENCES_PLUGIN_HPP__

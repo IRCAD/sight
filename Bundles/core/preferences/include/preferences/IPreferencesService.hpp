@@ -7,9 +7,9 @@
 #ifndef __PREFERENCES_IPREFERENCESSERVICE_HPP__
 #define __PREFERENCES_IPREFERENCESSERVICE_HPP__
 
-#include <fwServices/IService.hpp>
-
 #include "preferences/config.hpp"
+
+#include <fwServices/IService.hpp>
 
 namespace preferences
 {

@@ -7,8 +7,6 @@
 #ifndef __PREFERENCES_SPREFERENCES_HPP__
 #define __PREFERENCES_SPREFERENCES_HPP__
 
-#include <string>
-
 #include "preferences/IPreferencesService.hpp"
 
 namespace preferences
@@ -29,10 +27,10 @@ public:
 
     ///Destructor
 
-    PREFERENCES_API SPreferences() throw()
+    SPreferences() throw()
     {
     }
-    PREFERENCES_API virtual ~SPreferences() throw()
+    virtual ~SPreferences() throw()
     {
     }
 

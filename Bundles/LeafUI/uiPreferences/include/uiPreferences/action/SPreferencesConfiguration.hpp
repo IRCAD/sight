@@ -39,7 +39,7 @@ namespace action
  *
  * @section XML XML Configuration
  * @code{.xml}
-       <service type="::uiServer::action::SListenersPreference">
+       <service type="::uiPreferences::action::SPreferencesConfiguration">
             <preference>
                 <type>path</type>
                 <name>Video path</name>
