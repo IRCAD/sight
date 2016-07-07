@@ -26,7 +26,7 @@ vec4 getFragmentColor()
     vec2 oren_nayar = vec2(1, 0) + vec2(-0.5, 0.45) * oren_nayar_fraction;
 
     // Theta and phi
-    vec2 cos_theta = clamp(vec2(dot(normal, light), dot(normal, view)), 0, 1);
+    vec2 cos_theta = clamp(vec2(abs(dot(normal, light)), dot(normal, view)), 0, 1);
     vec2 cos_theta2 = cos_theta * cos_theta;
     float sin_theta = sqrt((1-cos_theta2.x) * (1-cos_theta2.y));
     vec3 light_plane = normalize(light - cos_theta.x * normal);
