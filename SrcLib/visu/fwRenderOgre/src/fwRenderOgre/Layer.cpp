@@ -72,9 +72,6 @@ Layer::Layer() :
     newSlot(s_INTERACTION_SLOT, &Layer::interaction, this);
     newSlot(s_DESTROY_SLOT, &Layer::destroy, this);
     newSlot(s_RESET_CAMERA_SLOT, &Layer::resetCameraCoordinates, this);
-
-    //Create the connection slot object
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //-----------------------------------------------------------------------------
@@ -340,14 +337,14 @@ void Layer::setRenderService( const ::fwRenderOgre::SRender::sptr& _service)
 
 void Layer::setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::sptr interactor)
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
 
     m_moveInteractor = interactor;
     m_moveInteractor->resizeEvent(static_cast<int>(m_renderWindow->getWidth()),
                                   static_cast<int>(m_renderWindow->getHeight()) );
 
-    m_connections->connect(interactor, ::fwRenderOgre::interactor::IMovementInteractor::s_RESET_CAMERA_SIG,
-                           this->getSptr(), s_RESET_CAMERA_SLOT);
+    m_connections.connect(interactor, ::fwRenderOgre::interactor::IMovementInteractor::s_RESET_CAMERA_SIG,
+                          this->getSptr(), s_RESET_CAMERA_SLOT);
 }
 
 // ----------------------------------------------------------------------------

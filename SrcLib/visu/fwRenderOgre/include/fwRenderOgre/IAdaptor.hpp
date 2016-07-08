@@ -22,7 +22,6 @@ namespace fwRenderOgre
 {
 
 /**
- * @class IAdaptor
  * @brief Interface providing behavior of Ogre adaptor services
  */
 class FWRENDEROGRE_CLASS_API IAdaptor : public fwServices::IService
@@ -118,7 +117,7 @@ protected:
     ::fwRenderOgre::SRender::wptr m_renderService;
 
     /// Signal/Slot connections with this service
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 
     /// Sub adaptors linked to this adaptor
     AdaptorVector m_subAdaptors;

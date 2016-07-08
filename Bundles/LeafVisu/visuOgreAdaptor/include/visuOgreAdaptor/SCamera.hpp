@@ -14,8 +14,6 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwServices/helper/SigSlotConnection.hpp>
-
 #include <fwRenderOgre/IAdaptor.hpp>
 
 #include <OgreMovableObject.h>
@@ -32,7 +30,6 @@ namespace visuOgreAdaptor
 
 /**
  * @brief   Adaptor from fw4 Camera to Ogre Camera
- * @class   SCamera
  */
 class VISUOGREADAPTOR_CLASS_API SCamera : public ::fwRenderOgre::IAdaptor
 {

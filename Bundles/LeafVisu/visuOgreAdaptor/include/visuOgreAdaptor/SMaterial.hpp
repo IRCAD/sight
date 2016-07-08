@@ -227,7 +227,7 @@ private:
     std::vector< Ogre::String > m_schemesSupported;
 
     /// Signal/Slot connections with texture adaptor
-    ::fwServices::helper::SigSlotConnection::sptr m_textureConnection;
+    ::fwServices::helper::SigSlotConnection m_textureConnection;
 
     /// The configured shading mode
     std::string m_shadingMode;

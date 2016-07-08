@@ -28,7 +28,6 @@ namespace uiVisuOgre
 
 /**
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
- * @class   SCompositorSelector
  */
 class UIVISUOGRE_CLASS_API SCompositorSelector : public QObject,
                                                  public ::gui::editor::IEditor
@@ -123,7 +122,7 @@ private:
     ::fwRenderOgre::compositor::ChainManager::CompositorChainType m_layerCompositorChain;
 
     ///Connection service, needed for slot/signal association
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 };
 
 } // uiVisuOgre

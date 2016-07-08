@@ -20,7 +20,6 @@ namespace fwRenderOgre
 IAdaptor::IAdaptor() throw() :
     m_layerID("")
 {
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //------------------------------------------------------------------------------
@@ -42,7 +41,7 @@ void IAdaptor::info(std::ostream &_sstream )
 void IAdaptor::starting() throw(fwTools::Failed)
 {
     /// Install observation
-    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
 
     SLM_ASSERT("Unable to retrieve the render service's shared pointer (lock)", m_renderService.lock());
 
@@ -54,15 +53,15 @@ void IAdaptor::starting() throw(fwTools::Failed)
 void IAdaptor::stopping() throw(fwTools::Failed)
 {
     /// Stop observation
-    m_connections->disconnect();
+    m_connections.disconnect();
     doStop();
 }
 //------------------------------------------------------------------------------
 
 void IAdaptor::swapping() throw(fwTools::Failed)
 {
-    m_connections->disconnect();
-    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    m_connections.disconnect();
+    m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
     doSwap();
 }
 

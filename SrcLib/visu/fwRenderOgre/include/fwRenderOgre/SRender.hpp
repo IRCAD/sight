@@ -284,7 +284,7 @@ private:
     LayerMapType m_layers;
 
     /// Signal/ Slot connection
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 
     /// Map to register proxy connections
     ::fwServices::helper::Config::ProxyConnectionsMapType m_proxyMap;
@@ -296,7 +296,7 @@ private:
     /// vector containing all the proxy configurations
     ConnectConfigType m_proxies;
 
-    typedef std::map< std::string, ::fwServices::helper::SigSlotConnection::sptr > ObjectConnectionsMapType;
+    typedef std::map< std::string, ::fwServices::helper::SigSlotConnection > ObjectConnectionsMapType;
     /// map containing the object key/connection relation
     ObjectConnectionsMapType m_objectConnections;
 
@@ -326,7 +326,7 @@ void SRender::disconnect(const ContainerType& objects)
         std::string key = element.first;
         if(m_objectConnections.find(key) != m_objectConnections.end())
         {
-            m_objectConnections[key]->disconnect();
+            m_objectConnections[key].disconnect();
             m_objectConnections.erase(key);
         }
 

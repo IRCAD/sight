@@ -7,8 +7,6 @@
 #ifndef __FWRENDEROGRE_LAYER_HPP__
 #define __FWRENDEROGRE_LAYER_HPP__
 
-#include <fwCore/BaseObject.hpp>
-
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/HasSlots.hpp>
 #include <fwCom/Slot.hpp>
@@ -40,8 +38,7 @@ namespace fwRenderOgre
 {
 
 /**
- * @class Layer
- * Allows to render multiple scenes in the same render window with viewports
+ * @brief   Allows to render multiple scenes in the same render window with viewports
  */
 class FWRENDEROGRE_CLASS_API Layer : public ::fwCore::BaseObject,
                                      public ::fwCom::HasSignals,
@@ -267,7 +264,7 @@ private:
     ::fwRenderOgre::interactor::IPickerInteractor::sptr m_selectInteractor;
 
     ///Connection service, needed for slot/signal association
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 
     /// Render service which this layer is attached
     WPTR(::fwRenderOgre::SRender) m_renderService;

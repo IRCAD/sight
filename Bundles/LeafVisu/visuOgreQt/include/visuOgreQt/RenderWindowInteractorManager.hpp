@@ -12,7 +12,6 @@
 #include <fwCore/base.hpp>
 #include <fwGui/container/fwContainer.hpp>
 #include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
 
 #include <visuOgreQt/Window.hpp>
 
@@ -32,10 +31,6 @@ namespace visuOgreQt
 
 /**
  * @brief   Defines a class to manage ogreRenderWindowInteractor in a window.
- * @class   RenderWindowInteractorManager
- *
- * @date    2009-2010.
- *
  */
 class VISUOGREQT_CLASS_API RenderWindowInteractorManager : public QObject,
                                                            public ::fwRenderOgre::IRenderWindowInteractorManager

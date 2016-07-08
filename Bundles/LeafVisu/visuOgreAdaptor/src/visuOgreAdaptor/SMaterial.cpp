@@ -71,8 +71,6 @@ SMaterial::SMaterial() throw() :
     m_meshBoundingBox(::Ogre::Vector3::ZERO, ::Ogre::Vector3::ZERO),
     m_normalLengthFactor(0.1f)
 {
-    m_textureConnection = ::fwServices::helper::SigSlotConnection::New();
-
     newSlot(s_UPDATE_FIELD_SLOT, &SMaterial::updateField, this);
     newSlot(s_SWAP_TEXTURE_SLOT, &SMaterial::swapTexture, this);
     newSlot(s_ADD_TEXTURE_SLOT, &SMaterial::createTextureAdaptor, this);
@@ -549,8 +547,8 @@ void SMaterial::doStart() throw(fwTools::Failed)
             m_texAdaptor->setLayerID(m_layerID);
         }
 
-        m_textureConnection->connect(m_texAdaptor, ::visuOgreAdaptor::STexture::s_TEXTURE_SWAPPED_SIG, this->getSptr(),
-                                     ::visuOgreAdaptor::SMaterial::s_SWAP_TEXTURE_SLOT);
+        m_textureConnection.connect(m_texAdaptor, ::visuOgreAdaptor::STexture::s_TEXTURE_SWAPPED_SIG, this->getSptr(),
+                                    ::visuOgreAdaptor::SMaterial::s_SWAP_TEXTURE_SLOT);
 
         if(m_texAdaptor->isStarted())
         {
@@ -662,7 +660,7 @@ void SMaterial::swapTexture()
 
 void SMaterial::doStop() throw(fwTools::Failed)
 {
-    m_textureConnection->disconnect();
+    m_textureConnection.disconnect();
     this->unregisterServices();
 }
 
@@ -985,8 +983,8 @@ void SMaterial::createTextureAdaptor()
 
         this->registerService(m_texAdaptor);
 
-        m_textureConnection->connect(m_texAdaptor, ::visuOgreAdaptor::STexture::s_TEXTURE_SWAPPED_SIG, this->getSptr(),
-                                     ::visuOgreAdaptor::SMaterial::s_SWAP_TEXTURE_SLOT);
+        m_textureConnection.connect(m_texAdaptor, ::visuOgreAdaptor::STexture::s_TEXTURE_SWAPPED_SIG, this->getSptr(),
+                                    ::visuOgreAdaptor::SMaterial::s_SWAP_TEXTURE_SLOT);
 
         m_texAdaptor->start();
     }
@@ -1018,7 +1016,7 @@ void SMaterial::removeTextureAdaptor()
         }
     }
 
-    m_textureConnection->disconnect();
+    m_textureConnection.disconnect();
     this->unregisterServices("::visuOgreAdaptor::STexture");
     m_texAdaptor.reset();
 

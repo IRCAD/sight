@@ -54,8 +54,6 @@ SRender::SRender() throw() :
     m_startAdaptor(false),
     m_renderOnDemand(true)
 {
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
-
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
 
     newSlot(s_START_OBJECT_SLOT, &SRender::startObject, this);
@@ -166,7 +164,7 @@ void SRender::starting() throw(fwTools::Failed)
 void SRender::stopping() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    m_connections->disconnect();
+    m_connections.disconnect();
 
     if(this->isVersion2())
     {
@@ -716,19 +714,7 @@ void SRender::manageConnection(const std::string &key, const ::fwData::Object::c
         std::string waitForKey = config->getAttributeValue("waitForKey");
         if(waitForKey == key)
         {
-            ::fwServices::helper::SigSlotConnection::sptr connection;
-
-            ObjectConnectionsMapType::iterator iter = m_objectConnections.find(key);
-            if (iter != m_objectConnections.end())
-            {
-                connection = iter->second;
-            }
-            else
-            {
-                connection               = ::fwServices::helper::SigSlotConnection::New();
-                m_objectConnections[key] = connection;
-            }
-            ::fwServices::helper::Config::createConnections(config, connection, obj);
+            ::fwServices::helper::Config::createConnections(config, m_objectConnections[key], obj);
         }
     }
 }
