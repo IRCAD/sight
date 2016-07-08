@@ -116,8 +116,8 @@ void SVideoAdapter::doStart() throw(fwTools::Failed)
         m_camera = this->getSafeInput< ::arData::Camera>(m_cameraUID);
         SLM_ASSERT("Missing camera", m_camera);
 
-        m_connections->connect(m_camera, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG,
-                               this->getSptr(), s_CALIBRATE_SLOT);
+        m_connections.connect(m_camera, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG,
+                              this->getSptr(), s_CALIBRATE_SLOT);
     }
 
     this->doUpdate();

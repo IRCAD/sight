@@ -22,7 +22,6 @@ fwServicesRegisterMacro( ::arServices::IOperator, ::videoTools::SFrameResizer, :
 //------------------------------------------------------------------------------
 SFrameResizer::SFrameResizer() throw()
 {
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //------------------------------------------------------------------------------
@@ -95,14 +94,14 @@ void SFrameResizer::starting() throw(::fwTools::Failed)
     m_outputTL = ::extData::FrameTL::dynamicCast((*composite)[m_outputTLKey]);
     OSLM_ASSERT("The timeline \"" << m_outputTL << "\" is not valid.", m_outputTL);
 
-    m_connections->connect(m_inputTL, ::extData::TimeLine::s_OBJECT_PUSHED_SIG, this->getSptr(), s_UPDATE_SLOT);
+    m_connections.connect(m_inputTL, ::extData::TimeLine::s_OBJECT_PUSHED_SIG, this->getSptr(), s_UPDATE_SLOT);
 }
 
 //------------------------------------------------------------------------------
 
 void SFrameResizer::stopping() throw(::fwTools::Failed)
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
 }
 
 //------------------------------------------------------------------------------

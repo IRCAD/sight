@@ -127,7 +127,7 @@ private:
     ::arlCore::PlaneSystem* m_planeSystem;
 
     /// Connections
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 
     /// Points of the 3D model of the marker
     ARLPointListType m_3dModel;

@@ -53,8 +53,6 @@ SHomography::SHomography() throw () :
     m_planeSystem(NULL)
 {
     newSlot(s_REGISTER_SLOT, &SHomography::doRegistration, this);
-
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //-----------------------------------------------------------------------------
@@ -105,7 +103,7 @@ void SHomography::stopping() throw (::fwTools::Failed)
     delete m_planeSystem;
     m_arlCameras.clear();
     m_3dModel.clear();
-    m_connections->disconnect();
+    m_connections.disconnect();
     m_lastTimestamp = 0;
     m_isInitialized = false;
 }

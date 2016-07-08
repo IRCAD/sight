@@ -99,8 +99,6 @@ void SConcatenateMatrices::starting() throw (fwTools::Failed)
 {
     if(!this->isVersion2())
     {
-        m_connections = ::fwServices::helper::SigSlotConnection::New();
-
         for( TransformMatrix &currentMatrix : m_matrixVector)
         {
             ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(currentMatrix.m_uid);
@@ -111,7 +109,7 @@ void SConcatenateMatrices::starting() throw (fwTools::Failed)
 
             if(currentMatrix.m_connect)
             {
-                m_connections->connect(currentMatrix.m_matrix, this->getSptr(), this->getObjSrvConnections());
+                m_connections.connect(currentMatrix.m_matrix, this->getSptr(), this->getObjSrvConnections());
             }
         }
     }
@@ -123,7 +121,7 @@ void SConcatenateMatrices::stopping() throw (fwTools::Failed)
 {
     if(!this->isVersion2())
     {
-        m_connections->disconnect();
+        m_connections.disconnect();
     }
 }
 

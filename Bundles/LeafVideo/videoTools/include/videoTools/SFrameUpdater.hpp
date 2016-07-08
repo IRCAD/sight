@@ -96,7 +96,7 @@ private:
     RenderRequestedSignalType::sptr m_sigRenderRequested;
 
     /// Connections
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 
     /// Frame timeline key
     std::string m_frameTLKey;

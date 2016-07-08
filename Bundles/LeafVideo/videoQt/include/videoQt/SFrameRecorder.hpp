@@ -127,7 +127,7 @@ private:
     bool m_isPaused;
 
     /// Helper to manage connections between the timeline and this service.
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 };
 
 } //namespace videoQt

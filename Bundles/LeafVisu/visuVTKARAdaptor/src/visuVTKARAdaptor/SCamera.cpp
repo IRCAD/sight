@@ -118,15 +118,13 @@ void SCamera::doStart() throw(fwTools::Failed)
 
     camera->AddObserver(::vtkCommand::ModifiedEvent, m_cameraCommand);
 
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
-
     if (!m_cameraUID.empty())
     {
         m_camera = this->getSafeInput< ::arData::Camera>(m_cameraUID);
         SLM_ASSERT("Missing camera", m_camera);
 
-        m_connections->connect(m_camera, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG,
-                               this->getSptr(), s_CALIBRATE_SLOT);
+        m_connections.connect(m_camera, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG,
+                              this->getSptr(), s_CALIBRATE_SLOT);
 
         this->calibrate();
     }
@@ -155,7 +153,7 @@ void SCamera::doStop() throw(fwTools::Failed)
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
     camera->RemoveObserver(m_cameraCommand);
     m_transOrig->Delete();
-    m_connections->disconnect();
+    m_connections.disconnect();
 }
 
 //-----------------------------------------------------------------------------

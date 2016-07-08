@@ -91,7 +91,7 @@ private:
 
     MatrixVectorType m_matrixVector; ///< The vector of TransformMatrix struct
 
-    ::fwServices::helper::SigSlotConnection::sptr m_connections; ///< connection to matrices
+    ::fwServices::helper::SigSlotConnection m_connections; ///< connection to matrices
 };
 
 } //namespace maths

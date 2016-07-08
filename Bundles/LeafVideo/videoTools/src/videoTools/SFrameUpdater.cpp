@@ -42,8 +42,6 @@ SFrameUpdater::SFrameUpdater() throw() :
     m_signals( s_RENDER_REQUESTED_SIG,  m_sigRenderRequested);
 
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
-
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //-----------------------------------------------------------------------------
@@ -79,9 +77,9 @@ void SFrameUpdater::starting() throw(fwTools::Failed)
         m_image = ::fwData::Image::dynamicCast((*composite)[m_imageKey]);
         OSLM_ASSERT("The image \"" << m_imageKey << "\" is not valid.", m_image);
 
-        m_connections->connect( ::extData::FrameTL::constCast(m_frameTL),
-                                ::extData::TimeLine::s_OBJECT_PUSHED_SIG, this->getSptr(),
-                                ::videoTools::SFrameUpdater::s_UPDATE_FRAME_SLOT);
+        m_connections.connect( ::extData::FrameTL::constCast(m_frameTL),
+                               ::extData::TimeLine::s_OBJECT_PUSHED_SIG, this->getSptr(),
+                               ::videoTools::SFrameUpdater::s_UPDATE_FRAME_SLOT);
     }
     else
     {
@@ -119,7 +117,7 @@ void SFrameUpdater::configuring() throw(::fwTools::Failed)
 
 void SFrameUpdater::stopping() throw(::fwTools::Failed)
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
 }
 
 //-----------------------------------------------------------------------------
