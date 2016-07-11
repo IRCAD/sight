@@ -140,8 +140,6 @@ void SMaterial::loadShaderParameters(::Ogre::GpuProgramParametersSharedPtr param
 {
     // We first need to check if our constant is related to Ogre or FW4SPL
 
-    // Getting Ogre auto constants
-    ::Ogre::GpuProgramParameters::AutoConstantIterator autoConstantsDefinitionIt = params->getAutoConstantIterator();
     // Getting whole constants
     ::Ogre::GpuNamedConstants constantsDefinitionMap = params->getConstantDefinitions();
 
@@ -149,57 +147,44 @@ void SMaterial::loadShaderParameters(::Ogre::GpuProgramParametersSharedPtr param
     ::Ogre::GpuNamedConstants constantsDefinitionOnly = constantsDefinitionMap;
 
     // Getting only user constants
-    for (auto autoCstDef : autoConstantsDefinitionIt)
+    for (auto cstDef : constantsDefinitionMap.map)
     {
-        ::Ogre::GpuProgramParameters::AutoConstantEntry entry = autoCstDef;
-        for (auto cstDef : constantsDefinitionMap.map)
+        if (::Ogre::StringUtil::endsWith(cstDef.first, "[0]") || params->findAutoConstantEntry(cstDef.first))
         {
-            ::Ogre::GpuConstantDefinition def = cstDef.second;
-            // If the physical index is the same, it is an Ogre auto constant
-            if (entry.physicalIndex == def.physicalIndex)
-            {
-                // Then remove it from the copied map
-                constantsDefinitionOnly.map.erase(cstDef.first);
-            }
+            // Then remove it from the copied map
+            constantsDefinitionOnly.map.erase(cstDef.first);
         }
     }
 
     // Create a new ::fwData::Object for each Ogre user constant
     for (auto keyVal : constantsDefinitionOnly.map)
     {
-        // We also need to check if the paramName doesn't ends with [0] (when using arrays).
-        // Ogre defines no-array variable twince : var and var[0]
-        // warning with GCC compiler: unknown escape sequence: '\]'
-        ::Ogre::String paramName = keyVal.first;
-        const std::regex regexNo0Tab(".*\[0\]", std::regex_constants::basic);
-        if(!std::regex_match(paramName, regexNo0Tab))
+        const ::Ogre::String& paramName = keyVal.first;
+
+        // Trying to get FW4SPL object corresponding to paramName
+        ::fwData::Object::sptr obj;
+        std::string objName = this->getObject()->getID() + "_" + shaderType + "_" + paramName;
+
+        // Check if object exist, else create it with the corresponding type
+        obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(objName));
+        if (obj == nullptr)
         {
-
-            // Trying to get FW4SPL object corresponding to paramName
-            ::fwData::Object::sptr obj;
-            std::string objName = this->getObject()->getID() + "_" + shaderType + "_" + paramName;
-
-            // Check if object exist, else create it with the corresponding type
-            obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(objName));
-            if (obj == nullptr)
-            {
-                ::Ogre::GpuConstantDefinition cstDef = keyVal.second;
-                obj                                  =
-                    this->createObjectFromShaderParameter(cstDef.constType, paramName);
-            }
-            obj->setName(paramName);
-
-            // Add the object to the shaderParameter composite of the Material
-            ::fwData::Material::sptr material   = this->getObject< ::fwData::Material >();
-            ::fwData::Composite::sptr composite = material->setDefaultField(
-                "shaderParameters", ::fwData::Composite::New());
-            (*composite)[paramName] = obj;
-
-            // Create associated ShaderParameter adaptor
-            ::fwRenderOgre::IAdaptor::sptr shaderParameterService;
-
-            this->setServiceOnShaderParameter(shaderParameterService, obj, paramName, shaderType);
+            ::Ogre::GpuConstantDefinition cstDef = keyVal.second;
+            obj                                  =
+                this->createObjectFromShaderParameter(cstDef.constType, paramName);
         }
+        obj->setName(paramName);
+
+        // Add the object to the shaderParameter composite of the Material
+        ::fwData::Material::sptr material   = this->getObject< ::fwData::Material >();
+        ::fwData::Composite::sptr composite = material->setDefaultField(
+            "shaderParameters", ::fwData::Composite::New());
+        (*composite)[paramName] = obj;
+
+        // Create associated ShaderParameter adaptor
+        ::fwRenderOgre::IAdaptor::sptr shaderParameterService;
+
+        this->setServiceOnShaderParameter(shaderParameterService, obj, paramName, shaderType);
     }
 }
 
@@ -244,6 +229,7 @@ void SMaterial::loadShaderParameters(::Ogre::GpuProgramParametersSharedPtr param
             break;
         case ::Ogre::GpuConstantType::GCT_SAMPLERCUBE:
             object = ::fwData::Integer::New();
+            break;
         case ::Ogre::GpuConstantType::GCT_SAMPLERRECT:
             object = ::fwData::Integer::New();
             break;
@@ -435,7 +421,6 @@ void SMaterial::setServiceOnShaderParameter(::fwRenderOgre::IAdaptor::sptr& srv,
         shaderParamService->setShaderType(shaderType);
 
         shaderParamService->start();
-        shaderParamService->update();
 
         // Add created subservice to current service
         this->registerService(shaderParamService);

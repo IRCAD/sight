@@ -1,0 +1,197 @@
+
+<extension implements="::fwServices::registry::AppConfig">
+    <id>OgreGenericScene</id>
+    <parameters>
+        <param name="GENERIC_UID" />
+        <param name="WID_PARENT" />
+        <param name="modelSeriesUID" />
+
+        <!-- 3D negato image -->
+        <param name="imageUID" />
+        <param name="TFSelections" />
+
+    </parameters>
+    <config>
+
+        <object type="::fwData::Composite">
+
+            <service uid="${GENERIC_UID}_OgreSceneView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" />
+                    </layout>
+                    <toolBar/>
+                </gui>
+                <registry>
+                    <parent wid="${WID_PARENT}" />
+                    <toolBar sid="${GENERIC_UID}_toolBar" start="yes" />
+                    <view sid="${GENERIC_UID}_genericScene" start="yes" />
+                    <view sid="${GENERIC_UID}_negato3DInteractor" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
+                <gui>
+                    <layout>
+                        <menuItem name="Show/Hide negato interactor" icon="@BUNDLE_PREFIX@/OgreViewer_0-1/icons/hide-view_horizontal.png" style="check" />
+                        <separator />
+                        <editor />
+                        <menuItem name="Play" icon="@BUNDLE_PREFIX@Bundles/arMedia_0-1/icons/start-cam.svg"/>
+                        <menuItem name="Pause" icon="@BUNDLE_PREFIX@Bundles/arMedia_0-1/icons/pause-cam.svg"/>
+                        <menuItem name="Stop" icon="@BUNDLE_PREFIX@Bundles/arMedia_0-1/icons/stop-cam.svg"/>
+
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="${GENERIC_UID}_action_negato3DInteractor" start="yes" />
+                    <editor sid="${GENERIC_UID}_videoSelector" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_startVideo" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_pauseVideo" start="yes" />
+                    <menuItem sid="${GENERIC_UID}_action_stopVideo" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_genericScene" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoConnect="yes" >
+                <scene overlay="true" >
+                    <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+                    <renderer id="video" layer="1" />
+                    <!-- Default Layer -->
+                    <renderer id="default" layer="2"  />
+
+                    <adaptor id="videoAdapter" class="::visuOgreAdaptor::SVideo" objectId="videoImage">
+                        <config renderer="video" cameraUID="${GENERIC_UID}_camera" />
+                    </adaptor>
+
+                    <adaptor id="interactorAdaptorVideo" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
+                        <config renderer="video" style="Fixed" />
+                    </adaptor>
+
+                    <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
+                        <config renderer="default" style="Trackball" />
+                    </adaptor>
+
+                    <adaptor id="modelSeriesAdaptor" class="::visuOgreAdaptor::SModelSeries" objectId="modelSeries">
+                        <config renderer="default" />
+                    </adaptor>
+
+                    <adaptor id="negato3DAdaptor" class="::visuOgreAdaptor::SNegato3D" objectId="image">
+                         <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
+                    </adaptor>
+
+                </scene>
+            </service>
+
+            <service uid="${GENERIC_UID}_action_negato3DInteractor" type="::fwGui::IActionSrv" impl="::gui::action::SModifyLayout" autoConnect="no">
+                <config>
+                    <show_or_hide sid="${GENERIC_UID}_negato3DInteractor" />
+                </config>
+            </service>
+
+
+            <service uid="${GENERIC_UID}_action_startVideo" impl="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>${GENERIC_UID}_frameGrabber/startCamera</slot>
+                </slots>
+            </service>
+
+
+            <service uid="${GENERIC_UID}_action_pauseVideo" impl="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>${GENERIC_UID}_frameGrabber/pauseCamera</slot>
+                </slots>
+            </service>
+
+
+            <service uid="${GENERIC_UID}_action_stopVideo" impl="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>${GENERIC_UID}_frameGrabber/stopCamera</slot>
+                </slots>
+            </service>
+
+            <service uid="${GENERIC_UID}_negato3DInteractor" type="::gui::view::IView" impl="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager" >
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="1" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="${GENERIC_UID}_sliderIndexEditor3D" start="yes" />
+                    <view sid="${GENERIC_UID}_windowLevel3D" start="yes" />
+                    <view sid="${GENERIC_UID}_transparencyEditor" start="yes" />
+                </registry>
+            </service>
+
+
+            <service uid="${GENERIC_UID}_synchronizer" impl="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
+                <frames>
+                    <frame from="frameTL" to="videoImage" />
+                </frames>
+                <framerate>60</framerate>
+            </service>
+
+            <item key="modelSeries">
+                <object uid="${modelSeriesUID}" type="::fwMedData::ModelSeries" src="ref" />
+            </item>
+
+            <!-- Negato source image -->
+            <item key="image">
+                <object uid="${imageUID}"  type="::fwData::Image" src="ref" >
+                    <service uid="${GENERIC_UID}_sliderIndexEditor3D" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+                        <sliceIndex>Sagittal</sliceIndex>
+                    </service>
+
+                    <!-- Negato windowing service -->
+                    <service uid="${GENERIC_UID}_windowLevel3D" type="::gui::editor::IEditor" impl="::uiImage::WindowLevel" autoConnect="yes">
+                        <config selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
+                    </service>
+
+                    <service uid="${GENERIC_UID}_transparencyEditor" impl="::uiImage::ImageTransparency" type="::gui::editor::IEditor" autoConnect="yes" />
+                </object>
+            </item>
+
+            <!-- Negato opacity source float -->
+            <item key="opacityFloat">
+                <object uid="${GENERIC_UID}_opacityFloatUID" type="::fwData::Float">
+
+                    <value>1</value>
+                </object>
+            </item>
+
+            <item key="TFSelectionsKey">
+                <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
+            </item>
+
+            <item key="frameTL">
+               <object uid="${GENERIC_UID}_framTL" type="::extData::FrameTL" >
+                   <service uid="${GENERIC_UID}_frameGrabber" impl="::videoVLC::SFrameGrabber" >
+                       <cameraFwId>${GENERIC_UID}_camera</cameraFwId>
+                   </service>
+                   <value>100</value>
+               </object>
+            </item>
+
+            <item key="videoImage">
+                <object uid="${GENERIC_UID}_videoImage" type="::fwData::Image" />
+            </item>
+
+            <item key="camera">
+                <object uid="${GENERIC_UID}_camera" type="::arData::Camera">
+                    <service uid="${GENERIC_UID}_videoSelector" impl="::videoQt::editor::SCamera" type="::gui::editor::IEditor" autoConnect="no">
+                        <videoSupport>yes</videoSupport>
+                    </service>
+                </object>
+            </item>
+
+            <start uid="${GENERIC_UID}_OgreSceneView" />
+            <start uid="${GENERIC_UID}_frameGrabber" />
+            <start uid="${GENERIC_UID}_synchronizer" />
+            <update uid="${GENERIC_UID}_action_negato3DInteractor" />
+        </object>
+
+    </config>
+</extension>

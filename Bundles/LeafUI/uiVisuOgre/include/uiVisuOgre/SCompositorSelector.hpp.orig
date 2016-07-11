@@ -28,7 +28,6 @@ namespace uiVisuOgre
 
 /**
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
- * @class   SCompositorSelector
  */
 class UIVISUOGRE_CLASS_API SCompositorSelector : public QObject,
                                                  public ::gui::editor::IEditor

@@ -160,7 +160,7 @@ void SCompositorSelector::refreshRenderers()
     {
         ::fwRenderOgre::SRender::sptr render = ::fwRenderOgre::SRender::dynamicCast(srv);
 
-        for(auto &layerMap : render->getLayers())
+        for(auto& layerMap : render->getLayers())
         {
             const std::string id       = layerMap.first;
             const std::string renderID = render->getID();
