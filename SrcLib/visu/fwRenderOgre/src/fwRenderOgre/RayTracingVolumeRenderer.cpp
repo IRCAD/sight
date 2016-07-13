@@ -194,7 +194,7 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
 
         for(int i = 0; i < 3; ++ i)
         {
-            m_gridSize[i] = m_imageSize[i] / m_bricksSize[i] + (m_imageSize[i] % m_bricksSize[i] != 0);
+            m_gridSize[i] = static_cast<int>(m_imageSize[i] / m_bricksSize[i] + (m_imageSize[i] % m_bricksSize[i] != 0));
         }
 
         if(!m_gridTexture.isNull())
@@ -232,7 +232,7 @@ void RayTracingVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr tf)
             m_gridRenderOp.vertexData->vertexCount = 4;
             m_gridRenderOp.operationType = ::Ogre::RenderOperation::OT_TRIANGLE_STRIP;
 
-            for(unsigned i = 0; i < m_gridSize[2]; ++ i)
+            for(unsigned i = 0; i < static_cast<unsigned>(m_gridSize[2]); ++ i)
             {
                 ::Ogre::RenderTexture *rt = m_gridTexture->getBuffer()->getRenderTarget(i);
 
@@ -304,7 +304,14 @@ void RayTracingVolumeRenderer::configure3DViewport(Layer::sptr layer)
                                                               m_viewPointMatrices,
                                                               m_3DOgreTexture,
                                                               m_gpuTF->getTexture(),
-                                                              m_sampleDistance));
+                                                               m_sampleDistance));
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::setFocalDistance(float focusPoint)
+{
+    m_focusAdjustement = focusPoint;
 }
 
 //-----------------------------------------------------------------------------
@@ -488,8 +495,8 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
     ::Ogre::Matrix4 worldMat;
     m_proxyGeometryGenerator->getWorldTransforms(&worldMat);
 
-    const float eyeAngle = 0.01625;
-    float angle = eyeAngle * -3.5;
+    const float eyeAngle = 0.01625f;
+    float angle = eyeAngle * -3.5f;
 
     m_viewPointMatrices.clear();
 
@@ -577,7 +584,16 @@ Ogre::Matrix4 RayTracingVolumeRenderer::frustumShearTransform(float angle) const
 {
     ::Ogre::Matrix4 shearTransform = ::Ogre::Matrix4::IDENTITY;
 
-    const float focalLength  = m_camera->getFocalLength();
+    const ::Ogre::Plane cameraPlane(m_camera->getRealDirection(), m_camera->getRealPosition());
+    const auto cameraDistComparator = [&cameraPlane](const ::Ogre::Vector3& v1, const ::Ogre::Vector3& v2)
+            { return cameraPlane.getDistance(v1) < cameraPlane.getDistance(v2); };
+
+    const auto closestFurthestImgPoints
+            = std::minmax_element(m_clippedImagePositions, m_clippedImagePositions + 8, cameraDistComparator);
+
+    const auto focusPoint = *closestFurthestImgPoints.first + m_focusAdjustement * (*closestFurthestImgPoints.second - *closestFurthestImgPoints.first);
+
+    const float focalLength  = m_camera->getRealPosition().distance(focusPoint);
     const float xshearFactor = std::tan(angle);
 
     shearTransform[0][2] = -xshearFactor;
@@ -604,7 +620,7 @@ void RayTracingVolumeRenderer::createGridTexture()
                     ::Ogre::TU_RENDERTARGET
         );
 
-        for(unsigned i = 0; i < m_gridSize[2]; ++ i)
+        for(unsigned i = 0; i < static_cast<unsigned>(m_gridSize[2]); ++ i)
         {
             ::Ogre::RenderTexture *rt = m_gridTexture->getBuffer()->getRenderTarget(i);
             rt->addViewport(m_camera);
@@ -624,7 +640,7 @@ void RayTracingVolumeRenderer::createGridTexture()
                     meshVtxData->vertexCount,
                     ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
 
-        for(int i = 0; i < meshVtxData->vertexCount; ++ i)
+        for(int i = 0; i < static_cast<int>(meshVtxData->vertexCount); ++ i)
         {
             vtxBuffer->writeData(
                         i * ::Ogre::VertexElement::getTypeSize(::Ogre::VET_INT1),

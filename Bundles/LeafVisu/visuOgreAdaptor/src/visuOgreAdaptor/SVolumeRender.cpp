@@ -47,6 +47,7 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWSAMPLING_SLOT          = "
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLEPREINTEGRATION_SLOT = "togglePreintegration";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT       = "toggleWidgets";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT      = "resizeViewport";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_FOCAL_DISTANCE_SLOT   = "setFocalDistance";
 
 //-----------------------------------------------------------------------------
 
@@ -56,7 +57,8 @@ SVolumeRender::SVolumeRender() throw() :
     m_volumeSceneNode        (nullptr),
     m_camera                 (nullptr),
     m_nbSlices               (512),
-    m_preIntegratedRendering (false)
+    m_preIntegratedRendering (false),
+    m_widgetVisibilty        (true)
 {
     this->installTFSlots(this);
     newSlot(s_NEWIMAGE_SLOT, &SVolumeRender::newImage, this);
@@ -64,6 +66,7 @@ SVolumeRender::SVolumeRender() throw() :
     newSlot(s_TOGGLEPREINTEGRATION_SLOT, &SVolumeRender::togglePreintegration, this);
     newSlot(s_TOGGLE_WIDGETS_SLOT, &SVolumeRender::toggleWidgets, this);
     newSlot(s_RESIZE_VIEWPORT_SLOT, &SVolumeRender::resizeViewport, this);
+    newSlot(s_SET_FOCAL_DISTANCE_SLOT, &SVolumeRender::setFocalDistance, this);
 
     m_transform     = ::Ogre::Matrix4::IDENTITY;
     m_renderingMode = VR_MODE_RAY_TRACING;
@@ -100,6 +103,11 @@ void SVolumeRender::doConfigure() throw ( ::fwTools::Failed )
         {
             OSLM_WARN("Unknown VR mode, defaults to ray tracing.");
         }
+    }
+
+    if(m_configuration->hasAttribute("widgets"))
+    {
+        m_widgetVisibilty = (m_configuration->getAttributeValue("widgets") == "yes");
     }
 
     this->parseTFConfig(m_configuration);
@@ -236,17 +244,16 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
                                this->getSptr(), ::visuOgreAdaptor::SVolumeRender::s_RESIZE_VIEWPORT_SLOT);
 
     initWidgets();
-    m_widgets->hide();
+    m_widgets->setVisibility(m_widgetVisibilty);
 
     bool isValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
     if (isValid)
     {
         this->newImage();
-        m_widgets->show();
     }
     else
     {
-        m_volumeSceneNode->setVisible(false);
+        m_volumeSceneNode->setVisible(false, false);
     }
 
     this->getRenderService()->resetCameraCoordinates(m_layerID);
@@ -292,7 +299,7 @@ void SVolumeRender::newImage()
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
     updatingTFPoints();
-//    m_widgets->show();
+
     m_volumeSceneNode->setVisible(true, m_widgets->getVisibility());
 
     m_volumeRenderer->imageUpdate(image, this->getTransferFunction());
@@ -338,7 +345,9 @@ void SVolumeRender::togglePreintegration(bool preintegration)
 
 void SVolumeRender::toggleWidgets(bool visible)
 {
-    m_widgets->setVisibility(visible);
+    m_widgetVisibilty = visible;
+
+    m_widgets->setVisibility(m_widgetVisibilty);
 
     this->requestRender();
 }
@@ -350,6 +359,23 @@ void SVolumeRender::resizeViewport(int w, int h)
     if(m_volumeRenderer)
     {
         m_volumeRenderer->resizeViewport(w, h);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::setFocalDistance(float focalDistance)
+{
+    if(this->getRenderService()->getLayer()->is3D())
+    {
+        auto rayTracingRenderer = dynamic_cast< ::fwRenderOgre::RayTracingVolumeRenderer*>(m_volumeRenderer);
+
+        if(rayTracingRenderer)
+        {
+            rayTracingRenderer->setFocalDistance(focalDistance);
+
+            this->requestRender();
+        }
     }
 }
 
@@ -376,8 +402,11 @@ void SVolumeRender::initWidgets()
         auto vrInteractor =
             std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
 
-        vrInteractor->initPicker();
-        vrInteractor->attachWidget(m_widgets);
+        if(vrInteractor)
+        {
+            vrInteractor->initPicker();
+            vrInteractor->attachWidget(m_widgets);
+        }
     }
 }
 

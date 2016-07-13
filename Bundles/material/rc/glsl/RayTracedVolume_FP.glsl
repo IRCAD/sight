@@ -200,7 +200,7 @@ void main(void)
         vec3 rayPos = rayEntry;
 
         int iterCount = 0;
-        for(float t = 0; iterCount < 2000 && t < rayLength; iterCount += 1, t += u_sampleDistance)
+        for(float t = 0; iterCount < 65000 && t < rayLength; iterCount += 1, t += u_sampleDistance)
         {
     #ifdef PREINTEGRATION
             float sf = texture(u_image, rayPos).r;

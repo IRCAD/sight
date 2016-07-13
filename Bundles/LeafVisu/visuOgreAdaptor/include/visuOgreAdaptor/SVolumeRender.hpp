@@ -68,6 +68,7 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLEPREINTEGRATION_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_FOCAL_DISTANCE_SLOT;
     /** @} */
 
     /// Constructor.
@@ -114,6 +115,7 @@ private:
     void togglePreintegration(bool preintegration);
     void toggleWidgets(bool visible);
     void resizeViewport(int w, int h);
+    void setFocalDistance(float focalDistance);
 
     /// Creates widgets and connects its slots to interactor signals.
     void initWidgets();
@@ -154,6 +156,9 @@ private:
 
     /// Use pre-integration.
     bool m_preIntegratedRendering;
+
+    /// Toggles widget visibility.
+    bool m_widgetVisibilty;
 
     ::fwRenderOgre::SATVolumeIllumination *m_illum;
 

@@ -376,7 +376,7 @@ void VRWidget::moveClippingBox(int x, int y, int dx, int dy)
 
     if(m_selectionMode == NONE)
     {
-        if(inter.first)
+        if(inter.first && getVisibility())
         {
             // Get picked point in box space.
             m_pickedBoxPoint = (mouseRayImgSpace.getPoint(inter.second) - min) / (max - min);
@@ -464,7 +464,7 @@ void VRWidget::scaleClippingBox(int x, int y, int dy)
 
     if(m_selectionMode == NONE)
     {
-        if(inter.first)
+        if(inter.first && getVisibility())
         {
             // Get picked point in box space.
             m_selectionMode = BOX;

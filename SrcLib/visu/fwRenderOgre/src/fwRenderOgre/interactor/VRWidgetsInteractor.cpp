@@ -55,7 +55,7 @@ void VRWidgetsInteractor::mouseMoveEvent(MouseButton button, int x, int y, int d
 {
     if(button == LEFT)
     {
-        if(m_pickedObject == nullptr)
+        if(!m_widget->getVisibility() || m_pickedObject == nullptr)
         {
             TrackballInteractor::mouseMoveEvent(button, x, y, dx, dy);
         }

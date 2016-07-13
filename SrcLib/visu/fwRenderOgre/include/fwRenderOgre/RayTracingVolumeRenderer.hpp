@@ -53,11 +53,15 @@ public:
     ///
     FWRENDEROGRE_API void configure3DViewport(Layer::sptr layer);
 
+    /// Sets the focal distance used for stereo rendering.
+    FWRENDEROGRE_API void setFocalDistance(float focusPoint);
+
     /// Computes image positions, updates the proxy geometry.
     FWRENDEROGRE_API virtual void clipImage(const ::Ogre::AxisAlignedBox& clippingBox);
 
     /// Slot: Called when the size of the viewport changes.
     FWRENDEROGRE_API virtual void resizeViewport(int w, int h);
+
 private:
 
     struct CameraListener : public ::Ogre::Camera::Listener
@@ -123,6 +127,8 @@ private:
 
     /// Sets stereoscopic volume rendering for Alioscopy monitors.
     bool m_mode3D;
+
+    float m_focusAdjustement = 0.5;
 };
 
 } // namespace fwRenderOgre

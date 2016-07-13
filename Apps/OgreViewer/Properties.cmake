@@ -28,6 +28,8 @@ set( REQUIREMENTS
     appXml
     arMedia
     arDataReg
+    videoQt
+    videoTools
     visuOgre
     visuOgreQt
     visuOgreAdaptor

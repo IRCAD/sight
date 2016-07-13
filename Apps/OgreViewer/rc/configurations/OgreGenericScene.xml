@@ -169,7 +169,7 @@
 
             <item key="frameTL">
                <object uid="${GENERIC_UID}_framTL" type="::extData::FrameTL" >
-                   <service uid="${GENERIC_UID}_frameGrabber" impl="::videoVLC::SFrameGrabber" >
+                   <service uid="${GENERIC_UID}_frameGrabber" impl="::videoQt::SFrameGrabber" >
                        <cameraFwId>${GENERIC_UID}_camera</cameraFwId>
                    </service>
                    <value>100</value>

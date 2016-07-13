@@ -33,18 +33,18 @@
                     <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
 
                     <!-- Default Layer -->
-                    <renderer id="default" layer="1" compositors="Default" mode3D="no" />
+                    <renderer id="default" layer="1" compositors="Default" mode3D="AutoStereo" />
 
                     <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
                         <config renderer="default" style="VR" />
                     </adaptor>
 
-<!--                    <adaptor id="autoStereoParamAdaptor" class="::visuOgreAdaptor::SCompositorParameter" objectId="lobeOffset">
-                        <config renderer="default" compositorName="RayTracedVolume3D" parameter="u_lobeOffset" shaderType="fragment" />
-                    </adaptor>-->
-
                     <adaptor id="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image" uid="${GENERIC_UID}_VR">
-                        <config renderer="default" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
+                        <config renderer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
+                    </adaptor>
+
+                    <adaptor id="xautoStereoParamAdaptor" class="::visuOgreAdaptor::SCompositorParameter" objectId="lobeOffset">
+                        <config renderer="default" compositorName="RayTracedVolume3D" parameter="u_lobeOffset" shaderType="fragment" />
                     </adaptor>
 
                     <connect>
@@ -53,7 +53,17 @@
                     </connect>
 
                     <connect>
+                        <signal>slider/valueChanged</signal>
+                        <slot>${GENERIC_UID}_VR/setFocalDistance</slot>
+                    </connect>
+
+                    <connect>
                         <signal>${GENERIC_UID}_preIntButton/toggled</signal>
+                        <slot>${GENERIC_UID}_VR/togglePreintegration</slot>
+                    </connect>
+
+                    <connect>
+                        <signal>${GENERIC_UID}_toggleVrWidgetsButton/toggled</signal>
                         <slot>${GENERIC_UID}_VR/toggleWidgets</slot>
                     </connect>
 
@@ -65,13 +75,13 @@
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
                         <view proportion="0" />
-<!--                        <view proportion="0" />-->
+                        <view proportion="0" />
                         <view proportion="1" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="${GENERIC_UID}_volumeRenderingSamplingInteractor" start="yes" />
-<!--                    <view sid="slider" start="yes" />-->
+                    <view sid="slider" start="yes" />
                     <view sid="${GENERIC_UID}_windowLevelVR" start="yes" />
                 </registry>
             </service>
@@ -82,27 +92,15 @@
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" />
+                        <view proportion="0" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="${GENERIC_UID}_samplingSlider" start="yes" />
                     <view sid="${GENERIC_UID}_preIntButton" start="yes" />
+                    <view sid="${GENERIC_UID}_toggleVrWidgetsButton" start="yes" />
                 </registry>
             </service>
-
-<!--            <item key="lobeOffset">
-                <object uid="lobeOffsetUID" type="::fwData::Integer">
-                    <service uid="slider" impl="::guiQt::editor::SSlider" autoConnect="no">
-                        <defaultValue>0</defaultValue>
-                        <value>0</value>
-                        <text>lobe offset</text>
-                        <range>
-                            <min>0</min>
-                            <max>100</max>
-                        </range>
-                    </service>
-                </object>
-            </item>-->
 
             <!-- Negato source image -->
             <item key="image">
@@ -130,6 +128,21 @@
                 </object>
             </item>
 
+            <item key="lobeOffset">
+                <object uid="lobeOffsetFloatVal" type="::fwData::Float">
+                    <service uid="slider" impl="::guiQt::editor::SSlider" autoConnect="no">
+                        <defaultValue>0</defaultValue>
+                        <value>0</value>
+                        <text>lobe offset</text>
+                        <stepSize>0.01</stepSize>
+                        <range>
+                            <min>0</min>
+                            <max>1</max>
+                        </range>
+                    </service>
+                </object>
+            </item>
+
             <item key="preIntegration" >
                 <object uid="${GENERIC_UID}_preIntValue" type="::fwData::Boolean">
                     <service uid="${GENERIC_UID}_preIntButton" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
@@ -142,6 +155,17 @@
                 </object>
             </item>
 
+            <item key="vrWidgets" >
+                <object uid="${GENERIC_UID}_vrWidgetsValue" type="::fwData::Boolean">
+                    <service uid="${GENERIC_UID}_toggleVrWidgetsButton" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
+                        <config>
+                           <checkable>true</checkable>
+                           <text>Widgets</text>
+                           <checked>false</checked>
+                        </config>
+                    </service>
+                </object>
+            </item>
 
             <item key="TFSelectionsKey">
                 <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
