@@ -79,7 +79,7 @@ private:
 //-----------------------------------------------------------------------------
 
 SummedAreaTable::SummedAreaTable(std::string _parentId, ::Ogre::SceneManager *_sceneManager, int width, int height, int depth) :
-    m_satSize     { width, height, depth },
+    m_satSize     { static_cast<size_t>(width), static_cast<size_t>(height), static_cast<size_t>(depth) },
     m_sceneManager(_sceneManager)
 {
     m_sourceBuffer = ::Ogre::TextureManager::getSingletonPtr()->createManual(
