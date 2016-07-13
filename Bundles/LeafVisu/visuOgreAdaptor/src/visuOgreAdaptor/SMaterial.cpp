@@ -103,15 +103,19 @@ void SMaterial::loadMaterialParameters()
         const std::string& constantName = std::get<0>(constant);
 
         auto obj = ::fwRenderOgre::helper::Shading::createObjectFromShaderParameter(std::get<1>(constant));
-        obj->setName(constantName);
+        if(obj != nullptr)
+        {
+            obj->setName(constantName);
 
-        // Create associated ShaderParameter adaptor
-        this->setServiceOnShaderParameter(obj, constantName, std::get<2>(constant));
+            // Create associated ShaderParameter adaptor
+            this->setServiceOnShaderParameter(obj, constantName, std::get<2>(constant));
 
-        // Add the object to the shaderParameter composite of the Material to keep the object alive
-        ::fwData::Material::sptr material   = this->getObject< ::fwData::Material >();
-        ::fwData::Composite::sptr composite = material->setDefaultField("shaderParameters", ::fwData::Composite::New());
-        (*composite)[constantName]          = obj;
+            // Add the object to the shaderParameter composite of the Material to keep the object alive
+            ::fwData::Material::sptr material   = this->getObject< ::fwData::Material >();
+            ::fwData::Composite::sptr composite = material->setDefaultField("shaderParameters",
+                                                                            ::fwData::Composite::New());
+            (*composite)[constantName] = obj;
+        }
     }
 }
 
@@ -130,7 +134,7 @@ void SMaterial::setServiceOnShaderParameter(std::shared_ptr< ::fwData::Object > 
                                       shaderType == ::Ogre::GPT_FRAGMENT_PROGRAM ? "fp" : "gp";
 
     // Naming convention for shader parameters
-    shaderParamService->setID(this->getID() + "_"+ srv->getID() + "-" + shaderTypeStr + "-" + paramName);
+    shaderParamService->setID(this->getID() + "_" + shaderTypeStr + "-" + paramName);
 
     shaderParamService->setLayerID(m_layerID);
     shaderParamService->setRenderService(this->getRenderService());

@@ -319,11 +319,11 @@
 
                         <service uid="CompositorView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                             <gui>
-                                <layout type="::fwGui::LineLayoutManager">
+                                <layout type="::fwGui::ToolboxLayoutManager">
                                     <orientation value="vertical" />
-                                    <view caption="Compositor Selector" />
-                                    <view caption="Compositor parameters"/>
-                                    <view/>
+                                    <view caption="Compositor Selector" expanded="true" />
+                                    <view caption="Compositor parameters" expanded="true" />
+                                    <view caption="Transparency settings" expanded="true" />
                                 </layout>
                             </gui>
                             <registry>
@@ -337,7 +337,7 @@
                             <gui>
                                 <layout type="::fwGui::LineLayoutManager">
                                     <orientation value="vertical" />
-                                    <view caption="Default compositor parameters" />
+                                    <view/>
                                 </layout>
                             </gui>
                             <registry>
@@ -349,7 +349,7 @@
 
                         <service uid="compositorParameters" impl="::uiVisuOgre::SCompositorParameterEditor" type="::gui::editor::IEditor" autoConnect="no" >
                             <render uid="genericSceneUID" />
-                            <layer id="2" />
+                            <layer id="default" />
                         </service>
 
                         <service uid="CoreEditor" impl="::uiVisuOgre::SCoreCompositorEditor" type="::gui::editor::IEditor" autoConnect="no" />

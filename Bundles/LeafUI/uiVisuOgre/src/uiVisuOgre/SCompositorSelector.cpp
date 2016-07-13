@@ -35,8 +35,7 @@ const ::fwCom::Slots::SlotKeyType SCompositorSelector::s_INIT_COMPOSITOR_LIST_SL
 
 //------------------------------------------------------------------------------
 
-SCompositorSelector::SCompositorSelector() throw() :
-    m_currentLayer(nullptr)
+SCompositorSelector::SCompositorSelector() throw()
 {
     newSlot(s_INIT_COMPOSITOR_LIST_SLOT, &SCompositorSelector::initCompositorList, this);
 }
@@ -115,7 +114,7 @@ void SCompositorSelector::onSelectedLayerItem(int index)
 
     // We need the ogre's viewport in order to add the compositors,
     // this is why we have to ckeck the viewport's existence
-    if(m_currentLayer->getViewport())
+    if(m_currentLayer.lock()->getViewport())
     {
         // Fill the list widget
         this->updateCompositorList();
@@ -130,7 +129,7 @@ void SCompositorSelector::onSelectedCompositorItem(QListWidgetItem* compositorIt
 {
     ::std::string compositorName = compositorItem->text().toStdString();
     bool isChecked = (compositorItem->checkState() == ::Qt::Checked);
-    m_currentLayer->updateCompositorState(compositorName, isChecked);
+    m_currentLayer.lock()->updateCompositorState(compositorName, isChecked);
 }
 
 //------------------------------------------------------------------------------
@@ -139,7 +138,7 @@ void SCompositorSelector::initCompositorList(fwRenderOgre::Layer::sptr layer)
 {
     m_currentLayer = m_layers[0];
 
-    if(layer == m_currentLayer)
+    if(layer == m_currentLayer.lock())
     {
         onSelectedLayerItem(0);
     }
@@ -178,7 +177,7 @@ void SCompositorSelector::refreshRenderers()
 
 void SCompositorSelector::synchroniseWithLayerCompositorChain()
 {
-    m_layerCompositorChain = m_currentLayer->getCompositorChain();
+    m_layerCompositorChain = m_currentLayer.lock()->getCompositorChain();
 }
 
 //------------------------------------------------------------------------------
@@ -193,7 +192,7 @@ void SCompositorSelector::updateCompositorList()
         if (compositor->getGroup() == ::material::s_COMPOSITOR_RESOURCEGROUP_NAME)
         {
             QString compositorName = compositor.getPointer()->getName().c_str();
-            m_currentLayer->addAvailableCompositor(compositorName.toStdString());
+            m_currentLayer.lock()->addAvailableCompositor(compositorName.toStdString());
 
             QListWidgetItem* newCompositor = new QListWidgetItem(compositorName, m_compositorChain);
             newCompositor->setFlags(newCompositor->flags() | ::Qt::ItemIsUserCheckable);
@@ -223,7 +222,7 @@ void SCompositorSelector::checkEnabledCompositors()
                 if(layerCompositor->second)
                 {
                     currentCompositor->setCheckState(::Qt::Checked);
-                    m_currentLayer->updateCompositorState(currentCompositor->text().toStdString(), true);
+                    m_currentLayer.lock()->updateCompositorState(currentCompositor->text().toStdString(), true);
                 }
             }
         }

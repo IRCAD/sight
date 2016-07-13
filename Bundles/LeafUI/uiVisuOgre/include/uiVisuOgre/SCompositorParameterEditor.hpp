@@ -60,7 +60,6 @@ protected:
     UIVISUOGRE_API virtual void updating() throw ( ::fwTools::Failed );
 
 private:
-
     /// Clear the current container
     void clear();
     /// Retrieves the shader parameters attached to the Reconstruction object and stores them into a collection
@@ -88,10 +87,13 @@ private:
     std::string m_layerID;
 
     /// Pointer on the render service we work on
-    ::fwRenderOgre::SRender::csptr m_render;
+    ::fwRenderOgre::SRender::cwptr m_render;
 
     /// Pointer on the layer we work on
-    ::fwRenderOgre::Layer::sptr m_currentLayer;
+    ::fwRenderOgre::Layer::wptr m_currentLayer;
+
+    /// Connection with the layer to be aware of compositors updates
+    ::fwServices::helper::SigSlotConnection m_layerConnection;
 };
 
 } // uiVisuOgre

@@ -14,6 +14,8 @@
 namespace visuOgreAdaptor
 {
 
+class CompositorListener;
+
 /**
  * @brief   Binds a FW4SPL data to a shader uniform from a specific compositor
  *
@@ -45,6 +47,9 @@ public:
     /// Updates parameter according to the attached fwData::Object
     VISUOGREADAPTOR_API void updateValue(::Ogre::MaterialPtr& _mat);
 
+    /// Return the compositor name
+    const std::string& getCompositorName() const;
+
 protected:
 
     /// Configure the adaptor
@@ -60,6 +65,12 @@ private:
 
     /// Material name
     std::string m_compositorName;
+
+    /// Ogre listener, we need to keep a pointer to unregister it
+    CompositorListener* m_listener;
+
+    /// Pointer on the compositor we work on
+    ::Ogre::CompositorInstance* m_compositor;
 };
 
 } // visuOgreAdaptor

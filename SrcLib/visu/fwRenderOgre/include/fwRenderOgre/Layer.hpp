@@ -11,12 +11,16 @@
 #include <fwCom/HasSlots.hpp>
 #include <fwCom/Slot.hpp>
 
+#include <fwData/Composite.hpp>
+
+#include <fwRenderOgre/IHasAdaptors.hpp>
+#include <fwRenderOgre/compositor/ChainManager.hpp>
+#include <fwRenderOgre/compositor/Core.hpp>
+#include <fwRenderOgre/compositor/Core.hpp>
 #include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
 #include <fwRenderOgre/interactor/IMovementInteractor.hpp>
 #include <fwRenderOgre/interactor/IPickerInteractor.hpp>
 #include <fwRenderOgre/interactor/IInteractor.hpp>
-#include <fwRenderOgre/compositor/ChainManager.hpp>
-#include <fwRenderOgre/compositor/Core.hpp>
 
 #include <fwThread/Worker.hpp>
 
@@ -42,7 +46,8 @@ namespace fwRenderOgre
  */
 class FWRENDEROGRE_CLASS_API Layer : public ::fwCore::BaseObject,
                                      public ::fwCom::HasSignals,
-                                     public ::fwCom::HasSlots
+                                     public ::fwCom::HasSlots,
+                                     public ::fwRenderOgre::IHasAdaptors
 
 {
 public:
@@ -271,6 +276,11 @@ private:
 
     /// Render service which this layer is attached
     WPTR(::fwRenderOgre::SRender) m_renderService;
+
+    ::fwData::Composite::sptr m_adaptorsObjectsOwner;
+
+    /// Layer identifier as referenced in SRender
+    std::string m_id;
 };
 
 }

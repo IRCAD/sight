@@ -20,7 +20,6 @@
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/registry/ObjectService.hxx>
 
 #include <fwTools/fwID.hpp>
 
@@ -148,10 +147,10 @@ void SRender::starting() throw(fwTools::Failed)
     {
         // Create a default black background
         ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
-        ogreLayer->setID(this->getID() + "_backgroundLayerId");
+        ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
+        ogreLayer->setID("backgroundLayer");
         ogreLayer->setDepth(0);
         ogreLayer->setWorker(m_associatedWorker);
-        ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
         ogreLayer->setBackgroundColor("#000000", "#000000");
         ogreLayer->setBackgroundScale(0, 0.5);
 
@@ -217,6 +216,7 @@ void SRender::stopping() throw(fwTools::Failed)
     }
     stopAdaptors.clear();
     m_sceneAdaptors.clear();
+    m_layers.clear();
 
     this->stopContext();
     this->destroy();
@@ -253,10 +253,10 @@ void SRender::configureLayer( ConfigurationType conf )
     SLM_ASSERT("Attribute 'layer' must be greater than 0", layerDepth > 0);
 
     ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
-    ogreLayer->setID(this->getID() + "_" + id);
+    ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
+    ogreLayer->setID(id);
     ogreLayer->setDepth(layerDepth);
     ogreLayer->setWorker(m_associatedWorker);
-    ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
 
     ogreLayer->setCoreCompositorEnabled(id == "default", transparencyTechnique, numPeels);
     ogreLayer->setCompositorChainEnabled(compositors != "", compositors);
@@ -272,10 +272,10 @@ void SRender::configureBackgroundLayer( ConfigurationType conf )
     SLM_ASSERT( "'id' required attribute missing or empty", !this->getID().empty() );
 
     ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
-    ogreLayer->setID(this->getID() + "_backgroundLayerId");
+    ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
+    ogreLayer->setID("backgroundLayer");
     ogreLayer->setDepth(0);
     ogreLayer->setWorker(m_associatedWorker);
-    ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
 
     if (conf)
     {
@@ -677,7 +677,7 @@ std::vector<CSPTR (IAdaptor)> fwRenderOgre::SRender::getAdaptors() const
 
 // ----------------------------------------------------------------------------
 
-::Ogre::SceneManager* SRender::getSceneManager(::std::string sceneID)
+::Ogre::SceneManager* SRender::getSceneManager(const ::std::string& sceneID)
 {
     ::fwRenderOgre::Layer::sptr layer = this->getLayer(sceneID);
     return layer->getSceneManager();
@@ -685,7 +685,7 @@ std::vector<CSPTR (IAdaptor)> fwRenderOgre::SRender::getAdaptors() const
 
 // ----------------------------------------------------------------------------
 
-::fwRenderOgre::Layer::sptr SRender::getLayer(::std::string sceneID)
+::fwRenderOgre::Layer::sptr SRender::getLayer(const ::std::string& sceneID)
 {
     OSLM_ASSERT("Empty sceneID", !sceneID.empty());
     OSLM_ASSERT("Layer ID "<< sceneID <<" does not exist", m_layers.find(sceneID) !=  m_layers.end());

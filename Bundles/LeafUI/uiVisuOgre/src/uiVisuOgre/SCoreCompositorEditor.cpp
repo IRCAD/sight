@@ -87,8 +87,8 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
 
     // Transparency selector
     {
-        QGroupBox *groupBox          = new QGroupBox(tr("Transparency technique"), m_container);
-        QVBoxLayout * layoutGroupBox = new QVBoxLayout();
+        QGroupBox* groupBox         = new QGroupBox(tr("Transparency technique"), m_container);
+        QVBoxLayout* layoutGroupBox = new QVBoxLayout();
         groupBox->setLayout(layoutGroupBox);
         layout->addWidget(groupBox);
 
@@ -189,7 +189,7 @@ void SCoreCompositorEditor::refreshRenderers()
     {
         ::fwRenderOgre::SRender::sptr render = ::fwRenderOgre::SRender::dynamicCast(srv);
 
-        for(auto &layerMap : render->getLayers())
+        for(auto& layerMap : render->getLayers())
         {
             // Adds default layers (3D scene)
             if(layerMap.second->isCoreCompositorEnabled())
@@ -218,7 +218,7 @@ void SCoreCompositorEditor::configuring() throw(::fwTools::Failed)
 void SCoreCompositorEditor::updating() throw(::fwTools::Failed)
 {
     m_currentCoreCompositor->update();
-    m_currentLayer->requestRender();
+    m_currentLayer.lock()->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -244,7 +244,7 @@ void SCoreCompositorEditor::onSelectedLayerItem(int index)
 
     // Reloads buttons to match layer's parameters
     m_currentLayer          = m_layers[static_cast<size_t>(index)];
-    m_currentCoreCompositor = m_currentLayer->getCoreCompositor();
+    m_currentCoreCompositor = m_currentLayer.lock()->getCoreCompositor();
 
     // If the layer is not yet started, we can't use its default compositor
     if(m_currentCoreCompositor)

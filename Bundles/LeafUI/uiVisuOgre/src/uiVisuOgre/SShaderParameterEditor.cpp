@@ -159,8 +159,8 @@ void SShaderParameterEditor::updateGuiInfo()
             auto paramSrv = ::visuOgreAdaptor::SShaderParameter::dynamicCast(subSrv.lock());
 
             /// Getting associated object infos
-            const ::fwData::Object::sptr shaderObj = paramSrv->getObject();
-            const ObjectClassnameType objType      = shaderObj->getClassname();
+            const ::fwData::Object::csptr shaderObj = paramSrv->getObject();
+            const ObjectClassnameType objType       = shaderObj->getClassname();
 
             if(objType == "::fwData::Boolean" || objType == "::fwData::Double" || objType == "::fwData::Integer")
             {

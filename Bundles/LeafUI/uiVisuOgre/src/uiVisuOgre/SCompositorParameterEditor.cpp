@@ -79,9 +79,13 @@ void SCompositorParameterEditor::starting() throw(::fwTools::Failed)
                     const auto& layerMap = render->getLayers();
                     for(auto& layer : layerMap)
                     {
-                        if(layer.second->getID() == m_layerID)
+                        if(layer.first == m_layerID)
                         {
                             m_currentLayer = layer.second;
+
+                            m_layerConnection.connect(m_currentLayer.lock(),
+                                                      ::fwRenderOgre::Layer::s_COMPOSITOR_UPDATED_SIG,
+                                                      this->getSptr(), s_UPDATE_SLOT);
                             break;
                         }
                     }
@@ -90,7 +94,8 @@ void SCompositorParameterEditor::starting() throw(::fwTools::Failed)
         }
     }
 
-    SLM_ERROR_IF("SRender service '" + m_renderID + "' is not found.", !m_render);
+    SLM_ERROR_IF("SRender service '" + m_renderID + "' is not found.", m_render.expired());
+
 
     this->updating();
 }
@@ -99,6 +104,7 @@ void SCompositorParameterEditor::starting() throw(::fwTools::Failed)
 
 void SCompositorParameterEditor::stopping() throw(::fwTools::Failed)
 {
+    m_layerConnection.disconnect();
     this->clear();
 
     this->getContainer()->clean();
@@ -138,16 +144,18 @@ void SCompositorParameterEditor::clear()
 
 void SCompositorParameterEditor::updateGuiInfo()
 {
-    if(!m_render)
+    if(m_render.expired() || !m_currentLayer.lock())
     {
         return;
     }
 
     bool found = false;
 
+    auto adaptors = m_currentLayer.lock()->getRegisteredAdaptors();
     // Is there at least one parameter that we can handle ?
-    for (const auto& adaptor : m_render->getAdaptors())
+    for (const auto& wAdaptor : adaptors)
     {
+        auto adaptor = wAdaptor.lock();
         if (adaptor->getClassname() == "::visuOgreAdaptor::SCompositorParameter")
         {
             auto paramAdaptor = ::visuOgreAdaptor::SCompositorParameter::dynamicConstCast(adaptor);
@@ -190,8 +198,9 @@ void SCompositorParameterEditor::updateGuiInfo()
     ::fwServices::IService::ConfigType editorConfig;
 
     // Get all ShaderParameter subservices from the corresponding Material adaptor
-    for (auto adaptor : m_render->getAdaptors())
+    for (const auto& wAdaptor : adaptors)
     {
+        auto adaptor = wAdaptor.lock();
         if (adaptor->getClassname() == "::visuOgreAdaptor::SCompositorParameter")
         {
             auto paramAdaptor = ::visuOgreAdaptor::SCompositorParameter::dynamicConstCast(adaptor);

@@ -13,7 +13,6 @@
             <service uid="${GENERIC_UID}_organView" impl="::gui::view::SDefaultView" autoConnect="no">
                 <gui>
                     <layout type="::fwGui::ToolboxLayoutManager" >
-                        <orientation value="horizontal" />
                         <view caption="Organs" expanded="true"  />
                         <view caption="Material" expanded="true" />
                         <view caption="Representation" expanded="true" />

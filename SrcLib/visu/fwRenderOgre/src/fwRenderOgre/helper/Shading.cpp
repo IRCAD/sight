@@ -286,30 +286,6 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         case ::Ogre::GpuConstantType::GCT_FLOAT4:
             object = fwData::Color::New();
             break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER1D:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER2D:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER3D:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLERCUBE:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLERRECT:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER1DSHADOW:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER2DSHADOW:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER2DARRAY:
-            object = ::fwData::Integer::New();
-            break;
         case ::Ogre::GpuConstantType::GCT_MATRIX_4X4:
             object = ::fwData::TransformationMatrix3D::New();
             break;
@@ -450,7 +426,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
                 "GCT_MATRIX_DOUBLE_4X4",
                 "GCT_UNKNOWN"
             };
-            OSLM_FATAL("Object type "+GpuConstantTypeNames[type-1]+" not supported yet");
+            OSLM_WARN("Object type "+GpuConstantTypeNames[type-1]+" not supported yet");
     }
     return object;
 }
