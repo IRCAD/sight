@@ -163,7 +163,7 @@ private:
     /// Manages service associated to a shader parameter
     void setServiceOnShaderParameter(std::shared_ptr<fwData::Object> object,
                                      std::string paramName,
-                                     std::string shaderType);
+                                     ::Ogre::GpuProgramType shaderType);
 
     /// Update material shading mode (flat/gouraud/phong) in fixed function pipeline
     void updateShadingMode( int shadingMode );

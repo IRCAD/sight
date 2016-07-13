@@ -187,6 +187,74 @@ std::string Shading::setTechniqueInProgramName(const std::string& _name, const s
     return prgName;
 }
 
+//------------------------------------------------------------------------------
+
+Shading::ShaderConstantsType Shading::findMaterialConstants(::Ogre::Material& _material)
+{
+    ShaderConstantsType constants;
+
+    // Only work on the first technique
+    ::Ogre::Pass* pass = _material.getTechnique(0)->getPass(0);
+
+    // If the material is programmable (ie contains shader programs) create associated ShaderParameter adaptor
+    // with the given ::fwData::Object ID
+    if (pass->isProgrammable())
+    {
+        ::Ogre::GpuProgramParametersSharedPtr params;
+
+        // Getting params for each program type
+        if (pass->hasVertexProgram())
+        {
+            params = pass->getVertexProgramParameters();
+            auto vpConstants = findShaderConstants(params, ::Ogre::GPT_VERTEX_PROGRAM);
+            std::move(vpConstants.begin(), vpConstants.end(), std::inserter(constants, constants.begin()));
+        }
+        if (pass->hasFragmentProgram())
+        {
+            params = pass->getFragmentProgramParameters();
+            auto fpConstants = findShaderConstants(params, ::Ogre::GPT_FRAGMENT_PROGRAM);
+            std::move(fpConstants.begin(), fpConstants.end(), std::inserter(constants, constants.begin()));
+        }
+        if (pass->hasGeometryProgram())
+        {
+            params = pass->getGeometryProgramParameters();
+            auto gpConstants = findShaderConstants(params, ::Ogre::GPT_GEOMETRY_PROGRAM);
+            std::move(gpConstants.begin(), gpConstants.end(), std::inserter(constants, constants.begin()));
+        }
+        if (pass->hasTessellationHullProgram())
+        {
+            OSLM_WARN("Tessellation Hull Program in Material not supported yet");
+        }
+        if (pass->hasTessellationDomainProgram())
+        {
+            OSLM_WARN("Tessellation Domain Program in Material not supported yet");
+        }
+    }
+
+    return constants;
+}
+
+//------------------------------------------------------------------------------
+
+Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramParametersSharedPtr _params,
+                                                          ::Ogre::GpuProgramType _shaderType)
+{
+    ShaderConstantsType parameters;
+
+    ::Ogre::GpuNamedConstants constantsDefinitionMap = _params->getConstantDefinitions();
+
+    // Get only user constants
+    for (const auto& cstDef : constantsDefinitionMap.map)
+    {
+        if (!::Ogre::StringUtil::endsWith(cstDef.first, "[0]") && !_params->findAutoConstantEntry(cstDef.first))
+        {
+            parameters.push_back(std::make_tuple(cstDef.first, cstDef.second.constType, _shaderType));
+        }
+    }
+
+    return parameters;
+}
+
 //-----------------------------------------------------------------------------
 
 ::fwData::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType type)

@@ -91,13 +91,12 @@ void SCompositorParameter::doStart() throw(::fwTools::Failed)
     ::Ogre::CompositorChain* compChain =
         ::Ogre::CompositorManager::getSingleton().getCompositorChain(layer->getViewport());
 
-    SLM_ASSERT("The given compositor '" + m_compositorName
-               + "' doesn't exist in the compositor chain",compChain->getCompositor(m_compositorName));
+    ::Ogre::CompositorInstance* compositor = compChain->getCompositor(m_compositorName);
+    SLM_ASSERT("The given compositor '" + m_compositorName + "' doesn't exist in the compositor chain", compositor);
 
     // Association of a listener attached to this adaptor to the configured compositor
-    compChain->getCompositor(m_compositorName)->addListener(new CompositorListener(layer->getViewport(),
-                                                                                   SCompositorParameter::dynamicCast(
-                                                                                       this->getSptr())));
+    compositor->addListener(new CompositorListener(layer->getViewport(),
+                                                   SCompositorParameter::dynamicCast(this->getSptr())));
 }
 
 //------------------------------------------------------------------------------

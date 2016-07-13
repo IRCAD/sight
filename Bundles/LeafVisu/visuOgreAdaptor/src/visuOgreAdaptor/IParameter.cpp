@@ -41,7 +41,7 @@ const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT_PARAMETER_SLOT    = "set
 //------------------------------------------------------------------------------
 
 IParameter::IParameter() throw() :
-    m_shaderType(FRAGMENT)
+    m_shaderType(::Ogre::GPT_FRAGMENT_PROGRAM)
 {
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &IParameter::setBoolParameter, this);
     newSlot(s_SET_COLOR_PARAMETER_SLOT, &IParameter::setColorParameter, this);
@@ -57,29 +57,7 @@ IParameter::~IParameter() throw()
 
 //------------------------------------------------------------------------------
 
-void IParameter::setShaderType(std::string shaderType)
-{
-    if (shaderType == "vp")
-    {
-        m_shaderType = ShaderEnum::VERTEX;
-    }
-    else if (shaderType == "fp")
-    {
-        m_shaderType = ShaderEnum::FRAGMENT;
-    }
-    else if (shaderType == "gp")
-    {
-        m_shaderType = ShaderEnum::GEOMETRY;
-    }
-    else
-    {
-        OSLM_ERROR("Shader type : " << shaderType << " not supported");
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void IParameter::setShaderType(ShaderEnumType shaderType)
+void IParameter::setShaderType(::Ogre::GpuProgramType shaderType)
 {
     m_shaderType = shaderType;
 }
@@ -114,15 +92,15 @@ void IParameter::doConfigure() throw(::fwTools::Failed)
         std::string shaderType = m_configuration->getAttributeValue("shaderType");
         if (shaderType == "vertex")
         {
-            m_shaderType = VERTEX;
+            m_shaderType = ::Ogre::GPT_VERTEX_PROGRAM;
         }
         else if (shaderType == "fragment")
         {
-            m_shaderType = FRAGMENT;
+            m_shaderType = ::Ogre::GPT_FRAGMENT_PROGRAM;
         }
         else if (shaderType == "geometry")
         {
-            m_shaderType = GEOMETRY;
+            m_shaderType = ::Ogre::GPT_GEOMETRY_PROGRAM;
         }
         else
         {
@@ -188,15 +166,15 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
 
     // Get the parameters
     auto pass = technique.getPass(0);
-    if (m_shaderType == VERTEX)
+    if (m_shaderType == ::Ogre::GPT_VERTEX_PROGRAM)
     {
         params = pass->getVertexProgramParameters();
     }
-    else if (m_shaderType == FRAGMENT && pass->hasFragmentProgram())
+    else if (m_shaderType == ::Ogre::GPT_FRAGMENT_PROGRAM && pass->hasFragmentProgram())
     {
         params = pass->getFragmentProgramParameters();
     }
-    else if (m_shaderType == GEOMETRY)
+    else if (m_shaderType == ::Ogre::GPT_GEOMETRY_PROGRAM)
     {
         params = pass->getGeometryProgramParameters();
     }

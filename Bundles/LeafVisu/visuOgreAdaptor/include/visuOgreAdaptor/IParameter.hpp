@@ -37,14 +37,6 @@ public:
 
     fwCoreNonInstanciableClassDefinitionsMacro ( (IParameter)(::fwRenderOgre::IAdaptor) );
 
-    /// Enum containing the different values for the supported shader types.
-    typedef enum ShaderEnum
-    {
-        VERTEX,
-        FRAGMENT,
-        GEOMETRY
-    } ShaderEnumType;
-
     /**
      * @name Slots API
      * @{
@@ -64,10 +56,7 @@ public:
     VISUOGREADAPTOR_API virtual ~IParameter() throw();
 
     /// Set the shaderType by passing the value of the ShaderEnumType of this adaptor.
-    VISUOGREADAPTOR_API void setShaderType(ShaderEnumType shaderType);
-
-    /// Set the shaderType by passing the name of the ShaderEnumType of this adaptor (vp or fp).
-    VISUOGREADAPTOR_API void setShaderType(std::string shaderType);
+    VISUOGREADAPTOR_API void setShaderType(::Ogre::GpuProgramType shaderType);
 
     /// Set the name of the parameter m_paramName.
     VISUOGREADAPTOR_API void setParamName(std::string paramName);
@@ -111,7 +100,7 @@ private:
     /// Technique name
     std::string m_techniqueName;
     /// Stores the value of the enum representing the shader's type.
-    ShaderEnumType m_shaderType;
+    ::Ogre::GpuProgramType m_shaderType;
     /// Pointer on the material
     ::Ogre::MaterialPtr m_material;
 };

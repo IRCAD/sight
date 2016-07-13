@@ -91,132 +91,57 @@ void SMaterial::loadMaterialParameters()
     // We retrieve the parameters of the base material in a temporary material
     ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_materialTemplateName);
 
-    OSLM_ASSERT( "Material '" << m_materialTemplateName << "'' not found", !material.isNull() );
+    SLM_ASSERT( "Material '" + m_materialTemplateName + "'' not found", !material.isNull() );
 
     // Then we copy these parameters in m_material.
     // We can now alter this new instance without changing the default material
     material.get()->copyDetailsTo(m_material);
 
-    ::Ogre::Pass* pass = material->getTechnique(0)->getPass(0);
-
-    // If the material is programmable (ie contains shader programs) create associated ShaderParameter adaptor
-    // with the given ::fwData::Object ID
-    if (pass->isProgrammable())
+    const auto constants = ::fwRenderOgre::helper::Shading::findMaterialConstants(*material);
+    for(const auto& constant : constants)
     {
-        ::Ogre::GpuProgramParametersSharedPtr params;
-        // At this time, we have whether a set of ShaderParameter or a Texture adaptor
-        this->unregisterServices("::visuOgreAdaptor::SShaderParameter");
+        const std::string& constantName = std::get<0>(constant);
 
-        // Getting params for each program type
-        if (pass->hasVertexProgram())
-        {
-            params = pass->getVertexProgramParameters();
-            this->loadShaderParameters(params, "vp");
-        }
-        if (pass->hasFragmentProgram())
-        {
-            params = pass->getFragmentProgramParameters();
-            this->loadShaderParameters(params, "fp");
-        }
-        if (pass->hasGeometryProgram())
-        {
-            params = pass->getGeometryProgramParameters();
-            this->loadShaderParameters(params, "gp");
-        }
-        if (pass->hasTessellationHullProgram())
-        {
-            OSLM_WARN("Tessellation Hull Program in Material not supported yet");
-        }
-        if (pass->hasTessellationDomainProgram())
-        {
-            OSLM_WARN("Tessellation Domain Program in Material not supported yet");
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SMaterial::loadShaderParameters(::Ogre::GpuProgramParametersSharedPtr params, std::string shaderType)
-{
-    // We first need to check if our constant is related to Ogre or FW4SPL
-
-    // Getting whole constants
-    ::Ogre::GpuNamedConstants constantsDefinitionMap = params->getConstantDefinitions();
-
-    // Copy constants map
-    ::Ogre::GpuNamedConstants constantsDefinitionOnly = constantsDefinitionMap;
-
-    // Getting only user constants
-    for (auto cstDef : constantsDefinitionMap.map)
-    {
-        if (::Ogre::StringUtil::endsWith(cstDef.first, "[0]") || params->findAutoConstantEntry(cstDef.first))
-        {
-            // Then remove it from the copied map
-            constantsDefinitionOnly.map.erase(cstDef.first);
-        }
-    }
-
-    // Create a new ::fwData::Object for each Ogre user constant
-    for (auto keyVal : constantsDefinitionOnly.map)
-    {
-        const ::Ogre::String& paramName = keyVal.first;
-
-        // Trying to get FW4SPL object corresponding to paramName
-        std::string objName = this->getObject()->getID() + "_" + shaderType + "_" + paramName;
-
-        // Check if object exist, else create it with the corresponding type
-        ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(objName));
-        if (obj == nullptr)
-        {
-            ::Ogre::GpuConstantDefinition cstDef = keyVal.second;
-
-            obj = ::fwRenderOgre::helper::Shading::createObjectFromShaderParameter(cstDef.constType);
-        }
-        obj->setName(paramName);
-
-        // Add the object to the shaderParameter composite of the Material
-        ::fwData::Material::sptr material   = this->getObject< ::fwData::Material >();
-        ::fwData::Composite::sptr composite = material->setDefaultField("shaderParameters", ::fwData::Composite::New());
-        (*composite)[paramName]             = obj;
+        auto obj = ::fwRenderOgre::helper::Shading::createObjectFromShaderParameter(std::get<1>(constant));
+        obj->setName(constantName);
 
         // Create associated ShaderParameter adaptor
-        this->setServiceOnShaderParameter(obj, paramName, shaderType);
+        this->setServiceOnShaderParameter(obj, constantName, std::get<2>(constant));
+
+        // Add the object to the shaderParameter composite of the Material to keep the object alive
+        ::fwData::Material::sptr material   = this->getObject< ::fwData::Material >();
+        ::fwData::Composite::sptr composite = material->setDefaultField("shaderParameters", ::fwData::Composite::New());
+        (*composite)[constantName]          = obj;
     }
 }
 
 //------------------------------------------------------------------------------
 
 void SMaterial::setServiceOnShaderParameter(std::shared_ptr< ::fwData::Object > object, std::string paramName,
-                                            std::string shaderType)
+                                            ::Ogre::GpuProgramType shaderType)
 {
-    ::fwRenderOgre::IAdaptor::sptr srv;
-    if(!srv)
-    {
-        // Creates an Ogre adaptor and associates it with the f4s object
-        srv = ::fwServices::add< ::visuOgreAdaptor::IParameter >(object, "::visuOgreAdaptor::SShaderParameter");
-        SLM_ASSERT("Unable to instanciate shader service", srv);
-        ::visuOgreAdaptor::SShaderParameter::sptr shaderParamService = ::visuOgreAdaptor::SShaderParameter::dynamicCast(
-            srv);
 
-        // Naming convention for shader parameters
-        shaderParamService->setID(this->getID() +"_"+ shaderParamService->getID() + "-" + shaderType + "-" + paramName);
-        // FIXME m_layerID always ""
-        shaderParamService->setLayerID(m_layerID);
-        // Same render service as its parent
-        shaderParamService->setRenderService(this->getRenderService());
-        shaderParamService->setMaterialName(m_materialName);
-        shaderParamService->setParamName(paramName);
-        shaderParamService->setShaderType(shaderType);
+    // Creates an Ogre adaptor and associates it with the f4s object
+    auto srv = ::fwServices::add< ::visuOgreAdaptor::IParameter >(object, "::visuOgreAdaptor::SShaderParameter");
+    SLM_ASSERT("Unable to instantiate ::visuOgreAdaptor::SShaderParameter.", srv);
+    auto shaderParamService = ::visuOgreAdaptor::SShaderParameter::dynamicCast(srv);
 
-        shaderParamService->start();
+    const std::string shaderTypeStr = shaderType == ::Ogre::GPT_VERTEX_PROGRAM ? "vp" :
+                                      shaderType == ::Ogre::GPT_FRAGMENT_PROGRAM ? "fp" : "gp";
 
-        // Add created subservice to current service
-        this->registerService(shaderParamService);
-    }
-    else if(srv->getObject() != object)
-    {
-        srv->swap(object);
-    }
+    // Naming convention for shader parameters
+    shaderParamService->setID(this->getID() + "_"+ srv->getID() + "-" + shaderTypeStr + "-" + paramName);
+
+    shaderParamService->setLayerID(m_layerID);
+    shaderParamService->setRenderService(this->getRenderService());
+    shaderParamService->setMaterialName(m_materialName);
+    shaderParamService->setParamName(paramName);
+    shaderParamService->setShaderType(shaderType);
+
+    shaderParamService->start();
+
+    // Add created subservice to current service
+    this->registerService(shaderParamService);
 }
 
 //------------------------------------------------------------------------------
@@ -353,11 +278,25 @@ void SMaterial::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
+void SMaterial::doStop() throw(fwTools::Failed)
+{
+    m_textureConnection.disconnect();
+    this->unregisterServices();
+
+    ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
+    if(material->getField("shaderParameters"))
+    {
+        material->removeField("shaderParameters");
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SMaterial::doSwap() throw(fwTools::Failed)
 {
     SLM_TRACE("SWAPPING Material");
-    this->unregisterServices("::visuOgreAdaptor::SShaderParameter");
-    this->doUpdate();
+    this->doStop();
+    this->doStart();
 }
 
 //------------------------------------------------------------------------------
@@ -397,6 +336,10 @@ void SMaterial::updateField( ::fwData::Object::FieldsContainerType fields )
             this->setMaterialTemplateName(string->getValue());
 
             this->unregisterServices("::visuOgreAdaptor::SShaderParameter");
+            if(material->getField("shaderParameters"))
+            {
+                material->removeField("shaderParameters");
+            }
             this->loadMaterialParameters();
             this->doUpdate();
         }
@@ -442,14 +385,6 @@ void SMaterial::swapTexture()
     this->updateShadingMode( material->getShadingMode() );
 
     this->requestRender();
-}
-
-//------------------------------------------------------------------------------
-
-void SMaterial::doStop() throw(fwTools::Failed)
-{
-    m_textureConnection.disconnect();
-    this->unregisterServices();
 }
 
 //------------------------------------------------------------------------------

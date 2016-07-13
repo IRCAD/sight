@@ -24,6 +24,8 @@ namespace helper
 class Shading
 {
 public:
+    typedef std::vector< std::tuple< ::Ogre::String, ::Ogre::GpuConstantType,
+                                     ::Ogre::GpuProgramType> > ShaderConstantsType;
 
     /**
      * @brief Returns true if the given technique computes a pixel color.
@@ -92,12 +94,37 @@ public:
     FWRENDEROGRE_API static std::string setTechniqueInProgramName(const std::string& _name, const std::string& _tech);
 
     /**
+     * @brief Find all shader constants of a material.
+     *
+     * @param[in] _material Ogre material
+     * @return vector of constants, each element is a tuple with the constant name its definition and the shader type.
+     */
+    FWRENDEROGRE_API static ShaderConstantsType findMaterialConstants(::Ogre::Material& _material);
+
+    /**
+     * @brief Create a fw4spl data that can be used to interact with a shader parameter.
+     *
+     * @param[in] _params shader parameters
+     * @return vector of constants, each element is a tuple with the constant name, its definition and the shader type.
+     */
+    FWRENDEROGRE_API static ShaderConstantsType findShaderConstants(::Ogre::GpuProgramParametersSharedPtr params,
+                                                                    ::Ogre::GpuProgramType _shaderType);
+
+    /**
      * @brief Create a fw4spl data that can be used to interact with a shader parameter.
      *
      * @param[in] _type type of the shader parameter
      * @param[in] _paramName name of the shader parameter
      */
     FWRENDEROGRE_API static SPTR(::fwData::Object) createObjectFromShaderParameter(::Ogre::GpuConstantType _type);
+
+    /**
+     * @brief Create a fw4spl data that can be used to interact with a shader parameter.
+     *
+     * @param[in] _type type of the shader parameter
+     * @param[in] _paramName name of the shader parameter
+     */
+//    FWRENDEROGRE_API static SPTR(::fwData::Object) createObjectFromShaderParameter(::Ogre::GpuConstantType _type);
 };
 
 } // namespace helper
