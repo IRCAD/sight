@@ -27,7 +27,7 @@
             </service>
 
             <service uid="${GENERIC_UID}_volumeRenderingScene" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoConnect="yes">
-                <scene overlay="true" fullscreen="no">
+                <scene overlay="true" fullscreen="yes">
 
                     <!-- Fix afterglow bug when dezooming -->
                     <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
@@ -38,6 +38,10 @@
                     <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
                         <config renderer="default" style="VR" />
                     </adaptor>
+
+<!--                    <adaptor id="autoStereoParamAdaptor" class="::visuOgreAdaptor::SCompositorParameter" objectId="lobeOffset">
+                        <config renderer="default" compositorName="RayTracedVolume3D" parameter="u_lobeOffset" shaderType="fragment" />
+                    </adaptor>-->
 
                     <adaptor id="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image" uid="${GENERIC_UID}_VR">
                         <config renderer="default" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
@@ -50,7 +54,7 @@
 
                     <connect>
                         <signal>${GENERIC_UID}_preIntButton/toggled</signal>
-                        <slot>${GENERIC_UID}_VR/togglePreintegration</slot>
+                        <slot>${GENERIC_UID}_VR/toggleWidgets</slot>
                     </connect>
 
                 </scene>
@@ -61,11 +65,13 @@
                     <layout type="::fwGui::LineLayoutManager">
                         <orientation value="vertical" />
                         <view proportion="0" />
+<!--                        <view proportion="0" />-->
                         <view proportion="1" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="${GENERIC_UID}_volumeRenderingSamplingInteractor" start="yes" />
+<!--                    <view sid="slider" start="yes" />-->
                     <view sid="${GENERIC_UID}_windowLevelVR" start="yes" />
                 </registry>
             </service>
@@ -83,6 +89,20 @@
                     <view sid="${GENERIC_UID}_preIntButton" start="yes" />
                 </registry>
             </service>
+
+<!--            <item key="lobeOffset">
+                <object uid="lobeOffsetUID" type="::fwData::Integer">
+                    <service uid="slider" impl="::guiQt::editor::SSlider" autoConnect="no">
+                        <defaultValue>0</defaultValue>
+                        <value>0</value>
+                        <text>lobe offset</text>
+                        <range>
+                            <min>0</min>
+                            <max>100</max>
+                        </range>
+                    </service>
+                </object>
+            </item>-->
 
             <!-- Negato source image -->
             <item key="image">

@@ -528,5 +528,19 @@ void VRWidget::show()
 
 //-----------------------------------------------------------------------------
 
+bool VRWidget::getVisibility() const
+{
+    return m_widgetSceneNode->getAttachedObject(0)->getVisible();
+}
+
+//-----------------------------------------------------------------------------
+
+void VRWidget::setVisibility(bool visibility)
+{
+    m_widgetSceneNode->setVisible(visibility);
+}
+
+//-----------------------------------------------------------------------------
+
 } // namespace ui
 } // namespace fwRenderOgre

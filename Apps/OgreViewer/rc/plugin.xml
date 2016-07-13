@@ -294,6 +294,10 @@
 
                         <service uid="medicalImage" impl="::ctrlSelection::MedicalImageSrv" autoConnect="no" />
 
+                        <service uid="computeHistogram" impl="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
+                            <histogramId>histogram</histogramId>
+                            <binsWidth>5.0</binsWidth>
+                        </service>
                     </object>
                 </item>
 
@@ -315,6 +319,7 @@
                 <item key="histogramPoint">
                     <object uid="histogramPoint" type="::fwData::Point" />
                 </item>
+
 
                 <!-- CompositeVisu description -->
                 <item key="compositeVisu">
@@ -398,7 +403,6 @@
                                 </appConfig>
                             </config>
                         </service>
-
                     </object>
 
                 </item>
@@ -415,6 +419,7 @@
                 <start uid="cfgOrganManagerConfig" />
                 <start uid="compositorSelector" />
                 <start uid="CoreEditor" />
+                <start uid="computeHistogram" />
 
             </object>
         </config>

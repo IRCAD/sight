@@ -66,6 +66,7 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEWSAMPLING_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLEPREINTEGRATION_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT;
     /** @} */
 
@@ -109,8 +110,9 @@ protected:
 private:
 
     void newImage();
-    void samplingChanged(int nbSamples);
+    void samplingChanged(float nbSamples);
     void togglePreintegration(bool preintegration);
+    void toggleWidgets(bool visible);
     void resizeViewport(int w, int h);
 
     /// Creates widgets and connects its slots to interactor signals.

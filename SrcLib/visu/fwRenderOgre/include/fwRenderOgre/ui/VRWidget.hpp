@@ -88,6 +88,12 @@ public:
     /// Shows the clipping box and widgets.
     FWRENDEROGRE_API void show();
 
+    /// Returns whether the widgets are visible or hidden.
+    FWRENDEROGRE_API bool getVisibility() const;
+
+    /// Hides or shows the widget.
+    FWRENDEROGRE_API void setVisibility(bool visibility);
+
 private:
 
     /// The current selection mode.

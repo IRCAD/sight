@@ -45,6 +45,7 @@ namespace visuOgreAdaptor
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWIMAGE_SLOT             = "newImage";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWSAMPLING_SLOT          = "updateSampling";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLEPREINTEGRATION_SLOT = "togglePreintegration";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT       = "toggleWidgets";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT      = "resizeViewport";
 
 //-----------------------------------------------------------------------------
@@ -61,6 +62,7 @@ SVolumeRender::SVolumeRender() throw() :
     newSlot(s_NEWIMAGE_SLOT, &SVolumeRender::newImage, this);
     newSlot(s_NEWSAMPLING_SLOT, &SVolumeRender::samplingChanged, this);
     newSlot(s_TOGGLEPREINTEGRATION_SLOT, &SVolumeRender::togglePreintegration, this);
+    newSlot(s_TOGGLE_WIDGETS_SLOT, &SVolumeRender::toggleWidgets, this);
     newSlot(s_RESIZE_VIEWPORT_SLOT, &SVolumeRender::resizeViewport, this);
 
     m_transform     = ::Ogre::Matrix4::IDENTITY;
@@ -191,12 +193,11 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     newLight->setDiffuseColour(::Ogre::ColourValue());
     newLight->setSpecularColour(::Ogre::ColourValue());
 
-    newLight->setDirection(::Ogre::Quaternion(::Ogre::Degree(-45),
-                                              ::Ogre::Vector3(1,0,
-                                                              0)) *
-                           ::Ogre::Quaternion(::Ogre::Degree(90), ::Ogre::Vector3(0,1,
-                                                                                  0)) *
-                           mainLight->getDirection());
+    ::Ogre::Quaternion newLightOrientation = ::Ogre::Quaternion(::Ogre::Degree(-45),
+                                                                ::Ogre::Vector3(1,0,0)) * ::Ogre::Quaternion(::Ogre::Degree(90),
+                                                                                                             ::Ogre::Vector3(0,1,0));
+
+    newLight->setDirection(newLightOrientation * mainLight->getDirection());
 
     m_camera->getParentSceneNode()->attachObject(newLight);
 
@@ -228,7 +229,6 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     }
 
     m_illum = new ::fwRenderOgre::SATVolumeIllumination(this->getID(), m_sceneManager, 128, 128, 128);
-
 
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
 
@@ -292,8 +292,8 @@ void SVolumeRender::newImage()
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
     updatingTFPoints();
-    m_widgets->show();
-    m_volumeSceneNode->setVisible(true);
+//    m_widgets->show();
+    m_volumeSceneNode->setVisible(true, m_widgets->getVisibility());
 
     m_volumeRenderer->imageUpdate(image, this->getTransferFunction());
 
@@ -302,7 +302,7 @@ void SVolumeRender::newImage()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::samplingChanged(int nbSamples)
+void SVolumeRender::samplingChanged(float nbSamples)
 {
     OSLM_ASSERT("Sampling rate must fit in a 16 bit uint.", nbSamples < 65536 && nbSamples >= 0);
     m_nbSlices = static_cast<uint16_t>(nbSamples);
@@ -330,6 +330,15 @@ void SVolumeRender::togglePreintegration(bool preintegration)
         m_volumeRenderer->imageUpdate(this->getImage(), this->getTransferFunction());
         m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_volumeRenderer->getSamplingRate());
     }
+
+    this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::toggleWidgets(bool visible)
+{
+    m_widgets->setVisibility(visible);
 
     this->requestRender();
 }

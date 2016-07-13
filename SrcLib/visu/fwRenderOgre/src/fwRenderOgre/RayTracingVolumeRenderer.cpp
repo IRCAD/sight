@@ -482,8 +482,8 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
     ::Ogre::Pass *pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass(0);
 
     ::Ogre::RenderOperation renderOp;
-    m_proxyGeometryGenerator->getRenderOperation(renderOp);
-//    m_entryPointGeometry->getSection(0)->getRenderOperation(renderOp);
+//    m_proxyGeometryGenerator->getRenderOperation(renderOp);
+    m_entryPointGeometry->getSection(0)->getRenderOperation(renderOp);
 
     ::Ogre::Matrix4 worldMat;
     m_proxyGeometryGenerator->getWorldTransforms(&worldMat);
