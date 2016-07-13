@@ -61,7 +61,7 @@ void loadResources()
             while (seci.hasMoreElements())
             {
                 resourceGroupName                              = seci.peekNextKey();
-                ::Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
+                ::Ogre::ConfigFile::SettingsMultiMap* settings = seci.getNext();
                 ::Ogre::ConfigFile::SettingsMultiMap::iterator i;
                 for (i = settings->begin(); i != settings->end(); ++i)
                 {
@@ -358,6 +358,42 @@ void Utils::loadOgreTexture(const ::fwData::Image::sptr& _image, ::Ogre::Texture
 
 //------------------------------------------------------------------------------
 
+template <typename SRC_TYPE, typename DST_TYPE>
+void copyNegatoImage( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _image )
+{
+    // Get the pixel buffer
+    ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = _texture->getBuffer();
+
+    // Lock the pixel buffer and copy it
+    {
+        ::fwComEd::helper::Image srcImageHelper(_image);
+        typedef typename std::make_unsigned< DST_TYPE>::type unsignedType;
+
+        auto srcBuffer = static_cast< const SRC_TYPE* >(srcImageHelper.getBuffer());
+
+        pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
+        const ::Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
+        auto pDest                       = static_cast< unsignedType*>(pixelBox.data);
+
+        const DST_TYPE lowBound = std::numeric_limits< DST_TYPE >::min();
+
+        const ::Ogre::uint32 size = _texture->getWidth() * _texture->getHeight() * _texture->getDepth();
+
+        for(::Ogre::uint32 i = 0; i < size; ++i)
+        {
+            OSLM_ASSERT("Pixel value '" << *srcBuffer << "' doesn't it in texture range.",
+                        *srcBuffer > std::numeric_limits< DST_TYPE >::min() &&
+                        *srcBuffer < std::numeric_limits< DST_TYPE >::max());
+            *pDest++ = static_cast< unsignedType >(*srcBuffer++ - lowBound);
+        }
+
+        // Unlock the pixel buffer
+        pixelBuffer->unlock();
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _image )
 {
     auto srcType = _image->getType();
@@ -373,33 +409,21 @@ void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Im
 
         }
 
-        // Get the pixel buffer
-        ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = _texture->getBuffer();
-
-        // Lock the pixel buffer and copy it
+        copyNegatoImage< std::int16_t, std::int16_t >(_texture, _image);
+    }
+    else if(srcType == ::fwTools::Type::s_INT32)
+    {
+        if( _texture->getWidth()  != _image->getSize()[0] ||
+            _texture->getHeight() != _image->getSize()[1] ||
+            _texture->getDepth()  != _image->getSize()[2]    )
         {
-            ::fwComEd::helper::Image srcImageHelper(_image);
+            ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize()[0], _image->getSize()[1],
+                                                   _image->getSize()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D,
+                                                   false);
 
-            const std::int16_t* __restrict srcBuffer = static_cast< const std::int16_t* >(srcImageHelper.getBuffer());
-            const ::Ogre::uint32 size                = _texture->getWidth() * _texture->getHeight() *
-                                                       _texture->getDepth();
-
-            pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
-
-            const ::Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
-
-            std::uint16_t* __restrict pDest = static_cast<std::uint16_t*>(pixelBox.data);
-
-            const std::int16_t lowBound = std::numeric_limits< std::int16_t >::min();
-
-            for(::Ogre::uint32 i = 0; i < size; ++i)
-            {
-                *pDest++ = static_cast<std::uint16_t>(*srcBuffer++ - lowBound);
-            }
-
-            // Unlock the pixel buffer
-            pixelBuffer->unlock();
         }
+
+        copyNegatoImage< std::int32_t, std::int16_t >(_texture, _image);
     }
     else if(srcType == ::fwTools::Type::s_UINT8)
     {
