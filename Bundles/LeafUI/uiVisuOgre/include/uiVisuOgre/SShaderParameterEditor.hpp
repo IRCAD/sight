@@ -49,14 +49,6 @@ public:
 
 protected:
 
-    /// Internal class that will contain the Qt components for one specific shader.
-    struct ShaderEditorInfo
-    {
-        std::string uuid;
-        ::fwGuiQt::container::QtContainer::sptr editorPanel;
-        ::fwServices::IService::wptr service;
-        ::fwServices::helper::SigSlotConnection connections;
-    };
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     /**
@@ -86,12 +78,6 @@ protected:
     /// Update the interface.
     UIVISUOGRE_API virtual void updating() throw ( ::fwTools::Failed );
 
-    ShaderEditorInfo m_editorInfo;
-    EditorMapType m_associatedEditor;
-
-    /// Connection to the material
-    ::fwServices::helper::SigSlotConnection m_connections;
-
 private:
 
     /// Clear the current container
@@ -101,8 +87,21 @@ private:
     /// Instanciates the needed ui editors according to the stored informations
     void fillGui();
 
-    QVBoxLayout* m_sizer;
+    /// Internal class that contain the informations concerning the editor that is created.
+    struct ShaderEditorInfo
+    {
+        std::string uuid;
+        ::fwGuiQt::container::QtContainer::sptr editorPanel;
+        ::fwServices::IService::wptr service;
+        ::fwServices::helper::SigSlotConnection connections;
+    };
 
+    ShaderEditorInfo m_editorInfo;
+
+    /// Connection to the material
+    ::fwServices::helper::SigSlotConnection m_connections;
+
+    QVBoxLayout* m_sizer;
 };
 
 } // uiVisuOgre

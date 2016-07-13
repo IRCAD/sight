@@ -330,11 +330,13 @@
                                 <layout type="::fwGui::LineLayoutManager">
                                     <orientation value="vertical" />
                                     <view caption="Compositor Selector" />
+                                    <view caption="Compositor parameters"/>
                                     <view/>
                                 </layout>
                             </gui>
                             <registry>
                                 <view sid="compositorSelector" />
+                                <view sid="compositorParameters" />
                                 <view sid="propertiesView" start="yes"/>
                             </registry>
                         </service>
@@ -352,6 +354,11 @@
                         </service>
 
                         <service uid="compositorSelector" impl="::uiVisuOgre::SCompositorSelector" type="::gui::editor::IEditor" autoConnect="no" />
+
+                        <service uid="compositorParameters" impl="::uiVisuOgre::SCompositorParameterEditor" type="::gui::editor::IEditor" autoConnect="no" >
+                            <render uid="genericSceneUID" />
+                            <layer id="2" />
+                        </service>
 
                         <service uid="CoreEditor" impl="::uiVisuOgre::SCoreCompositorEditor" type="::gui::editor::IEditor" autoConnect="no" />
 
@@ -372,6 +379,7 @@
                                     <parameters>
                                         <parameter replace="WID_PARENT" by="${GENERIC_UID}_OgreSceneView" />
                                         <parameter replace="modelSeriesUID" by="modelSeriesUID" />
+                                        <parameter replace="genericSceneUID" by="genericSceneUID" />
                                         <parameter replace="cameraTF" by="cameraTF_UID" />
                                         <parameter replace="imageUID" by="imageUID" />
                                         <parameter replace="TFSelections" by="TFSelections" />
@@ -418,6 +426,7 @@
                 <start uid="cfgOgreVolumeRendering" />
                 <start uid="cfgOrganManagerConfig" />
                 <start uid="compositorSelector" />
+                <start uid="compositorParameters" />
                 <start uid="CoreEditor" />
                 <start uid="computeHistogram" />
 

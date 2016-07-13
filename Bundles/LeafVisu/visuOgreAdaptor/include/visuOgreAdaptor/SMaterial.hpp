@@ -78,10 +78,10 @@ public:
     VISUOGREADAPTOR_API virtual int getStartPriority();
 
     /// Set material name
-    void setMaterialName(const std::string &materialName);
+    void setMaterialName(const std::string& materialName);
 
     /// Set material template name
-    void setMaterialTemplateName(const std::string &materialName);
+    void setMaterialTemplateName(const std::string& materialName);
 
     bool getHasMeshNormal() const;
     void setHasMeshNormal(bool hasMeshNormal);
@@ -97,8 +97,8 @@ public:
     /// Tells if there is a texture currently bound
     bool hasDiffuseTexture() const;
 
-    const std::string &getShadingMode() const;
-    void setShadingMode(const std::string &_shadingMode);
+    const std::string& getShadingMode() const;
+    void setShadingMode(const std::string& _shadingMode);
 
     void setMeshBoundingBox(const ::Ogre::AxisAlignedBox& _bbox);
 
@@ -161,10 +161,9 @@ private:
     void updatePolygonMode( int polygonMode );
 
     /// Manages service associated to a shader parameter
-    void setServiceOnShaderParameter(::fwRenderOgre::IAdaptor::sptr& srv,
-                                     std::shared_ptr<fwData::Object> object,
+    void setServiceOnShaderParameter(std::shared_ptr<fwData::Object> object,
                                      std::string paramName,
-                                     std::string shaderType);
+                                     ::Ogre::GpuProgramType shaderType);
 
     /// Update material shading mode (flat/gouraud/phong) in fixed function pipeline
     void updateShadingMode( int shadingMode );
@@ -337,7 +336,7 @@ inline void SMaterial::setShadingMode(const std::string& _shadingMode)
 
 //------------------------------------------------------------------------------
 
-inline void SMaterial::setMeshBoundingBox(const Ogre::AxisAlignedBox &_bbox)
+inline void SMaterial::setMeshBoundingBox(const Ogre::AxisAlignedBox& _bbox)
 {
     m_meshBoundingBox = _bbox;
 }

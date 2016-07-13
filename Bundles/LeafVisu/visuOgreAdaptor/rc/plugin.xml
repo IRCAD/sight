@@ -50,7 +50,14 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwRenderOgre::IAdaptor</type>
+        <type>::visuOgreAdaptor::IParameter</type>
+        <service>::visuOgreAdaptor::SCompositorParameter</service>
+        <object>::fwData::Object</object>
+        <desc>service description</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::visuOgreAdaptor::IParameter</type>
         <service>::visuOgreAdaptor::SShaderParameter</service>
         <object>::fwData::Object</object>
         <desc>service description</desc>
@@ -80,20 +87,6 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderOgre::IAdaptor</type>
         <service>::visuOgreAdaptor::SNegato2D</service>
-        <object>::fwData::Image</object>
-        <desc>service description</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwRenderOgre::IAdaptor</type>
-        <service>::visuOgreAdaptor::SCompositorParameter</service>
-        <object>::fwData::Object</object>
-        <desc>service description</desc>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwRenderOgre::IAdaptor</type>
-        <service>::visuOgreAdaptor::SVolumeRender</service>
         <object>::fwData::Image</object>
         <desc>service description</desc>
     </extension>

@@ -153,6 +153,9 @@ public:
     /// Returns the adaptor corresponding to the given id
     FWRENDEROGRE_API SPTR (IAdaptor) getAdaptor(AdaptorIdType adaptorId);
 
+    /// Returns all the adaptors
+    FWRENDEROGRE_API std::vector<CSPTR(IAdaptor)> getAdaptors() const;
+
     /// Returns the scene manager corresponding to the sceneID
     FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager(::std::string sceneID = "default");
 
@@ -224,11 +227,11 @@ private:
 
         ConfigurationType m_config;
         WPTR(IAdaptor) m_service;
-
     };
 
     /// Actives adaptors in scene
     typedef std::map< AdaptorIdType, SceneAdaptor > SceneAdaptorsMapType;
+
     /// Configuration element shared pointer
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
@@ -251,12 +254,12 @@ private:
     void connectAfterWait(::fwData::Composite::ContainerType objects);
 
     /// Creates the connection given by the configuration for obj associated with the key in the composite.
-    void manageConnection(const std::string &key, const ::fwData::Object::csptr &obj,
-                          const ConfigurationType &config);
+    void manageConnection(const std::string& key, const ::fwData::Object::csptr& obj,
+                          const ConfigurationType& config);
 
     /// Creates the proxy given by the configuration for obj associated with the key in the composite.
-    void manageProxy(const std::string &key, const ::fwData::Object::csptr &obj,
-                     const ConfigurationType &config);
+    void manageProxy(const std::string& key, const ::fwData::Object::csptr& obj,
+                     const ConfigurationType& config);
 
     /// Disconnects the connection based on a object key
     template< class ContainerType >

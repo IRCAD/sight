@@ -243,7 +243,7 @@ void SCompositorSelector::uncheckCompositors()
 
 //------------------------------------------------------------------------------
 
-bool SCompositorSelector::isEnabledCompositor(std::string compositorName)
+bool SCompositorSelector::isEnabledCompositor(const std::string& compositorName)
 {
     auto layerCompositor = std::find_if(m_layerCompositorChain.begin(),
                                         m_layerCompositorChain.end(),

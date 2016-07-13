@@ -21,6 +21,12 @@
         <desc>service description</desc>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiVisuOgre::SCompositorParameterEditor</service>
+        <object>::fwData::Object</object>
+        <desc>service description</desc>
+    </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
@@ -28,7 +34,6 @@
         <object>::fwData::Reconstruction</object>
         <desc>service description</desc>
     </extension>
-
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>

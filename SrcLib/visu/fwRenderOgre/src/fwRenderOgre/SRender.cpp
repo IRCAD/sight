@@ -19,7 +19,8 @@
 
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/registry/ObjectService.hxx>
 
 #include <fwTools/fwID.hpp>
 
@@ -124,7 +125,7 @@ void SRender::starting() throw(fwTools::Failed)
     this->create();
 
     // Instantiate ogre object, class...
-    for (auto iter : *m_sceneConfiguration)
+    for (auto iter : * m_sceneConfiguration)
     {
         // Configure layers
         if (iter->getName() == "renderer")
@@ -359,14 +360,24 @@ void SRender::configureObject( ConfigurationType conf )
         OSLM_TRACE( "Adding service : IAdaptor " << adaptor << " on "<< objectId );
         SceneAdaptor adaptee;
         adaptee.m_config = *(conf->begin());
+        auto osr = ::fwServices::registry::ServiceFactory::getDefault();
+
         if (!uid.empty())
         {
             OSLM_TRACE("SRender::configureObject : uid = " << uid);
-            adaptee.m_service = ::fwServices::add< ::fwRenderOgre::IAdaptor >( object, adaptor, uid);
+
+            ::fwServices::IService::sptr service = osr->create( adaptor );
+            ::fwServices::OSR::registerService( ::fwData::Object::constCast(object), service );
+            service->setID( uid );
+
+            adaptee.m_service = ::fwRenderOgre::IAdaptor::dynamicCast(service);
         }
         else
         {
-            adaptee.m_service = ::fwServices::add< ::fwRenderOgre::IAdaptor >( object, adaptor);
+            ::fwServices::IService::sptr service = osr->create( adaptor );
+            ::fwServices::OSR::registerService( ::fwData::Object::constCast(object), service );
+
+            adaptee.m_service = ::fwRenderOgre::IAdaptor::dynamicCast(service);
         }
 
         SLM_ASSERT("Not a 'config' configuration", adaptee.m_config->getName() == "config");
@@ -386,7 +397,7 @@ void SRender::configureObject( ConfigurationType conf )
     }
     else if(m_sceneAdaptors.count(id) == 1)
     {
-        SceneAdaptor &adaptee = m_sceneAdaptors[id];
+        SceneAdaptor& adaptee = m_sceneAdaptors[id];
         SLM_ASSERT("Adaptor service expired !", adaptee.getService() );
         OSLM_ASSERT( adaptee.getService()->getID() <<  " is not started ", adaptee.getService()->isStarted());
         if (object)
@@ -457,7 +468,7 @@ void SRender::startObject()
     }
 
     // Configure connections
-    for (auto iter : *m_sceneConfiguration)
+    for (auto iter : * m_sceneConfiguration)
     {
         if(iter->getName() == "connect")
         {
@@ -664,6 +675,18 @@ SPTR (IAdaptor) SRender::getAdaptor(SRender::AdaptorIdType adaptorId)
     return adaptor;
 }
 
+//-----------------------------------------------------------------------------
+
+std::vector<CSPTR (IAdaptor)> fwRenderOgre::SRender::getAdaptors() const
+{
+    std::vector<CSPTR(IAdaptor)> adaptors;
+    for(const auto& adaptor : m_sceneAdaptors)
+    {
+        adaptors.push_back(adaptor.second.getService());
+    }
+    return adaptors;
+}
+
 // ----------------------------------------------------------------------------
 
 ::Ogre::SceneManager* SRender::getSceneManager(::std::string sceneID)
@@ -718,8 +741,8 @@ void SRender::connectAfterWait(::fwData::Composite::ContainerType objects)
 
 //-----------------------------------------------------------------------------
 
-void SRender::manageConnection(const std::string &key, const ::fwData::Object::csptr &obj,
-                               const ConfigurationType &config)
+void SRender::manageConnection(const std::string& key, const ::fwData::Object::csptr& obj,
+                               const ConfigurationType& config)
 {
     if(config->hasAttribute("waitForKey"))
     {
@@ -733,8 +756,8 @@ void SRender::manageConnection(const std::string &key, const ::fwData::Object::c
 
 //-----------------------------------------------------------------------------
 
-void SRender::manageProxy(const std::string &key, const ::fwData::Object::csptr &obj,
-                          const ConfigurationType &config)
+void SRender::manageProxy(const std::string& key, const ::fwData::Object::csptr& obj,
+                          const ConfigurationType& config)
 {
     if(config->hasAttribute("waitForKey"))
     {
