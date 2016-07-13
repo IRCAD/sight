@@ -9,6 +9,8 @@
 #include "fwRenderOgre/helper/Shading.hpp"
 #include "fwRenderOgre/Utils.hpp"
 
+#include "fwTools/Type.hpp"
+
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreTechnique.h>
 
@@ -295,6 +297,110 @@ void ShadingTest::setTechniqueInProgramName()
 
     prgName = Shading::setTechniqueInProgramName("Default/Flat+VT_FP", "HybridTransparency/peel");
     CPPUNIT_ASSERT_EQUAL(std::string("HybridTransparency/peel/Flat+VT_FP"), prgName);
+}
+
+//------------------------------------------------------------------------------
+
+void ShadingTest::createObjectFromShaderParameter()
+{
+    ::fwData::Object::sptr obj;
+
+    // Scalar types
+    {
+        obj = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_DOUBLE1);
+        CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Float"), obj->className());
+
+        obj = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_FLOAT1);
+        CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Float"), obj->className());
+
+        obj = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_INT1);
+        CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Integer"), obj->className());
+    }
+
+    // Array types
+    {
+        ::fwData::Array::sptr arrayObject;
+        ::fwData::Array::SizeType size;
+
+        obj = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_DOUBLE2);
+        CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Array"), obj->className());
+
+        arrayObject = ::fwData::Array::dynamicCast(obj);
+        size        = arrayObject->getSize();
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), arrayObject->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_FLOAT, arrayObject->getType());
+
+        obj = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_DOUBLE3);
+        CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Array"), obj->className());
+
+        arrayObject = ::fwData::Array::dynamicCast(obj);
+        size        = arrayObject->getSize();
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), arrayObject->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_FLOAT, arrayObject->getType());
+
+        obj = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_DOUBLE4);
+        CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Array"), obj->className());
+
+        arrayObject = ::fwData::Array::dynamicCast(obj);
+        size        = arrayObject->getSize();
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), arrayObject->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_FLOAT, arrayObject->getType());
+
+        obj = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_INT2);
+        CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Array"), obj->className());
+
+        arrayObject = ::fwData::Array::dynamicCast(obj);
+        size        = arrayObject->getSize();
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), arrayObject->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_INT32, arrayObject->getType());
+
+        obj = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_INT3);
+        CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Array"), obj->className());
+
+        arrayObject = ::fwData::Array::dynamicCast(obj);
+        size        = arrayObject->getSize();
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), arrayObject->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_INT32, arrayObject->getType());
+
+        obj = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_INT4);
+        CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Array"), obj->className());
+
+        arrayObject = ::fwData::Array::dynamicCast(obj);
+        size        = arrayObject->getSize();
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), arrayObject->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_INT32, arrayObject->getType());
+
+        obj = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_FLOAT2);
+        CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Array"), obj->className());
+
+        arrayObject = ::fwData::Array::dynamicCast(obj);
+        size        = arrayObject->getSize();
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size.size());
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(1), size[0]);
+        CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), arrayObject->getNumberOfComponents());
+        CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_FLOAT, arrayObject->getType());
+    }
+
+    // Other
+    {
+        obj = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_FLOAT3);
+        CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Point"), obj->className());
+
+        obj = Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType::GCT_FLOAT4);
+        CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Color"), obj->className());
+    }
 }
 
 //------------------------------------------------------------------------------

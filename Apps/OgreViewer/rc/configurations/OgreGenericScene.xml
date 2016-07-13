@@ -5,6 +5,7 @@
         <param name="GENERIC_UID" />
         <param name="WID_PARENT" />
         <param name="modelSeriesUID" />
+        <param name="genericSceneUID" />
 
         <!-- 3D negato image -->
         <param name="imageUID" />
@@ -27,7 +28,7 @@
                 <registry>
                     <parent wid="${WID_PARENT}" />
                     <toolBar sid="${GENERIC_UID}_toolBar" start="yes" />
-                    <view sid="${GENERIC_UID}_genericScene" start="yes" />
+                    <view sid="${genericSceneUID}" start="yes" />
                     <view sid="${GENERIC_UID}_negato3DInteractor" start="yes" />
                 </registry>
             </service>
@@ -53,12 +54,12 @@
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_genericScene" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoConnect="yes" >
+            <service uid="${genericSceneUID}" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoConnect="yes" >
                 <scene overlay="true" >
                     <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
                     <renderer id="video" layer="1" />
                     <!-- Default Layer -->
-                    <renderer id="default" layer="2"  />
+                    <renderer id="default" layer="2" />
 
                     <adaptor id="videoAdapter" class="::visuOgreAdaptor::SVideo" objectId="videoImage">
                         <config renderer="video" cameraUID="${GENERIC_UID}_camera" />

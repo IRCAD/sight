@@ -80,7 +80,7 @@ protected:
     /// Does nothing
     UIVISUOGRE_API virtual void updating() throw ( ::fwTools::Failed );
 
-protected Q_SLOTS:
+private Q_SLOTS:
 
     /// Slot: called when a layer is selected
     /// Sets the current layer and initializes the compositor list
@@ -110,7 +110,7 @@ private:
     void uncheckCompositors();
 
     /// Indicates if a compositor is enabled on the layer
-    bool isEnabledCompositor(::fwRenderOgre::compositor::ChainManager::CompositorIdType compositorName);
+    bool isEnabledCompositor(const std::string& compositorName);
 
     QPointer<QComboBox> m_layersBox;
 

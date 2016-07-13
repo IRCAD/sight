@@ -28,7 +28,7 @@ class FWRENDEROGRE_CLASS_API IAdaptor : public fwServices::IService
 {
 friend class SRender;
 public:
-    fwCoreServiceClassDefinitionsMacro ( (IAdaptor)(::fwServices::IService) );
+    fwCoreNonInstanciableClassDefinitionsMacro ( (IAdaptor)(::fwServices::IService) );
 
     typedef std::vector < ::fwRenderOgre::IAdaptor::wptr > AdaptorVector;
     typedef fwServices::IService SuperClass;
@@ -67,7 +67,7 @@ protected:
      */
     //@{
     /// Overrides
-    FWRENDEROGRE_API virtual void info(std::ostream &_sstream );
+    FWRENDEROGRE_API virtual void info(std::ostream& _sstream );
     FWRENDEROGRE_API void starting() throw(fwTools::Failed);
     FWRENDEROGRE_API void stopping() throw(fwTools::Failed);
     FWRENDEROGRE_API void swapping() throw(fwTools::Failed);
@@ -125,7 +125,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-inline IAdaptor::AdaptorVector &IAdaptor::getRegisteredAdaptors()
+inline IAdaptor::AdaptorVector& IAdaptor::getRegisteredAdaptors()
 {
     return m_subAdaptors;
 }

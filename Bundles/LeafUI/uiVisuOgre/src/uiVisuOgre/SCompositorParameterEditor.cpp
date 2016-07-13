@@ -4,51 +4,56 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "uiVisuOgre/SShaderParameterEditor.hpp"
-
-#include <fwData/Mesh.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/Reconstruction.hpp>
+#include "uiVisuOgre/SCompositorParameterEditor.hpp"
 
 #include <fwGui/GuiRegistry.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
+#include <fwRenderOgre/SRender.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
-#include <visuOgreAdaptor/SMaterial.hpp>
-#include <visuOgreAdaptor/SShaderParameter.hpp>
+#include <visuOgreAdaptor/SCompositorParameter.hpp>
 
 #include <QWidget>
 
 namespace uiVisuOgre
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SShaderParameterEditor, ::fwData::Reconstruction);
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SCompositorParameterEditor, ::fwData::Object);
 
 //------------------------------------------------------------------------------
-SShaderParameterEditor::SShaderParameterEditor() throw()
+SCompositorParameterEditor::SCompositorParameterEditor() throw()
 {
 }
 
 //------------------------------------------------------------------------------
 
-SShaderParameterEditor::~SShaderParameterEditor() throw()
+SCompositorParameterEditor::~SCompositorParameterEditor() throw()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SShaderParameterEditor::starting() throw(::fwTools::Failed)
+void SCompositorParameterEditor::configuring() throw(::fwTools::Failed)
 {
-    ::fwData::Reconstruction::sptr rec = this->getObject< ::fwData::Reconstruction >();
-    ::fwData::Material::sptr material  = rec->getMaterial();
-    m_connections.connect(material, this->getSptr(), this->getSptr()->getObjSrvConnections() );
+    this->initialize();
 
+    auto config = this->getConfigTree();
+
+    m_renderID = config.get<std::string>("service.render.<xmlattr>.uid", "");
+    m_layerID  = config.get<std::string>("service.layer.<xmlattr>.id", "");
+}
+
+//------------------------------------------------------------------------------
+
+void SCompositorParameterEditor::starting() throw(::fwTools::Failed)
+{
     this->create();
 
-    auto qtContainer         = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer         = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instantiated", container);
     m_sizer = new QVBoxLayout(container);
@@ -56,14 +61,44 @@ void SShaderParameterEditor::starting() throw(::fwTools::Failed)
 
     container->setLayout(m_sizer);
 
+    m_render.reset();
+
+    if(!m_renderID.empty())
+    {
+        auto services = ::fwServices::OSR::getServices("::fwRenderOgre::SRender");
+
+        for(const auto& renderer : services)
+        {
+            ::fwRenderOgre::SRender::sptr render = ::fwRenderOgre::SRender::dynamicCast(renderer);
+            if(render->getID() == m_renderID)
+            {
+                m_render = render;
+
+                if(!m_layerID.empty())
+                {
+                    const auto& layerMap = render->getLayers();
+                    for(auto& layer : layerMap)
+                    {
+                        if(layer.second->getID() == m_layerID)
+                        {
+                            m_currentLayer = layer.second;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    SLM_ERROR_IF("SRender service '" + m_renderID + "' is not found.", !m_render);
+
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void SShaderParameterEditor::stopping() throw(::fwTools::Failed)
+void SCompositorParameterEditor::stopping() throw(::fwTools::Failed)
 {
-    m_connections.disconnect();
     this->clear();
 
     this->getContainer()->clean();
@@ -72,26 +107,7 @@ void SShaderParameterEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShaderParameterEditor::swapping() throw(::fwTools::Failed)
-{
-    m_connections.disconnect();
-    ::fwData::Reconstruction::sptr rec = this->getObject< ::fwData::Reconstruction >();
-    ::fwData::Material::sptr material  = rec->getMaterial();
-    m_connections.connect(material, this->getSptr(), this->getSptr()->getObjSrvConnections() );
-
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void SShaderParameterEditor::configuring() throw(::fwTools::Failed)
-{
-    this->initialize();
-}
-
-//------------------------------------------------------------------------------
-
-void SShaderParameterEditor::updating() throw(::fwTools::Failed)
+void SCompositorParameterEditor::updating() throw(::fwTools::Failed)
 {
     this->clear();
     this->updateGuiInfo();
@@ -99,10 +115,9 @@ void SShaderParameterEditor::updating() throw(::fwTools::Failed)
 }
 
 //------------------------------------------------------------------------------
-void SShaderParameterEditor::clear()
-{
-    m_editorInfo.connections.disconnect();
 
+void SCompositorParameterEditor::clear()
+{
     ::fwServices::IService::sptr objService = m_editorInfo.service.lock();
 
     if(objService)
@@ -121,48 +136,28 @@ void SShaderParameterEditor::clear()
 
 //------------------------------------------------------------------------------
 
-void SShaderParameterEditor::updateGuiInfo()
+void SCompositorParameterEditor::updateGuiInfo()
 {
-    /// Getting all Material adaptors
-    ::fwData::Reconstruction::sptr reconstruction                   = this->getObject< ::fwData::Reconstruction >();
-    ::fwServices::registry::ObjectService::ServiceVectorType srvVec = ::fwServices::OSR::getServices(
-        "::visuOgreAdaptor::SMaterial");
-
-    /// Stop if no Material adaptors have been find
-    if(srvVec.empty())
+    if(!m_render)
     {
-        SLM_WARN("No ::visuOgreAdaptor::SMaterial found in the application");
         return;
     }
-
-    /// Try to find the material adaptor working with the same ::fwData::Material
-    /// as the one contained by the current reconstruction
-    ::fwRenderOgre::IAdaptor::sptr matService;
-    for (auto srv : srvVec)
-    {
-        if (srv->getObject()->getID() == reconstruction->getMaterial()->getID())
-        {
-            matService = ::fwRenderOgre::IAdaptor::dynamicCast(srv);
-            break;
-        }
-    }
-
-    SLM_ASSERT("Material adaptor corresponding to the current Reconstruction must exist", matService);
 
     bool found = false;
 
     // Is there at least one parameter that we can handle ?
-    for (auto subSrv : matService->getRegisteredAdaptors())
+    for (const auto& adaptor : m_render->getAdaptors())
     {
-        if (subSrv.lock()->getClassname() == "::visuOgreAdaptor::SShaderParameter")
+        if (adaptor->getClassname() == "::visuOgreAdaptor::SCompositorParameter")
         {
-            auto paramSrv = ::visuOgreAdaptor::SShaderParameter::dynamicCast(subSrv.lock());
+            auto paramAdaptor = ::visuOgreAdaptor::SCompositorParameter::dynamicConstCast(adaptor);
 
             /// Getting associated object infos
-            const ::fwData::Object::sptr shaderObj = paramSrv->getObject();
-            const ObjectClassnameType objType      = shaderObj->getClassname();
+            const ::fwData::Object::csptr shaderObj = ::fwServices::IService::constCast(paramAdaptor)->getObject();
+            //paramAdaptor->getInputs().begin()->second.lock();
+            const auto& objType = shaderObj->getClassname();
 
-            if(objType == "::fwData::Boolean" || objType == "::fwData::Double" || objType == "::fwData::Integer")
+            if(objType == "::fwData::Boolean" || objType == "::fwData::Float" || objType == "::fwData::Integer")
             {
                 found = true;
                 break;
@@ -195,51 +190,52 @@ void SShaderParameterEditor::updateGuiInfo()
     ::fwServices::IService::ConfigType editorConfig;
 
     // Get all ShaderParameter subservices from the corresponding Material adaptor
-    for (auto adaptor : matService->getRegisteredAdaptors())
+    for (auto adaptor : m_render->getAdaptors())
     {
-        if (adaptor.lock()->getClassname() == "::visuOgreAdaptor::SShaderParameter")
+        if (adaptor->getClassname() == "::visuOgreAdaptor::SCompositorParameter")
         {
-            auto paramSrv = ::visuOgreAdaptor::SShaderParameter::dynamicCast(adaptor.lock());
+            auto paramAdaptor = ::visuOgreAdaptor::SCompositorParameter::dynamicConstCast(adaptor);
 
             /// Getting associated object infos
-            const ::fwData::Object::sptr shaderObj = paramSrv->getObject();
-            const ObjectClassnameType objType      = shaderObj->getClassname();
+            const ::fwData::Object::csptr shaderObj = ::fwServices::IService::constCast(paramAdaptor)->getObject();
+            //paramAdaptor->getInputs().begin()->second.lock();
+            const auto& objType = shaderObj->getClassname();
 
             if(objType == "::fwData::Boolean")
             {
-                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "boolChanged", paramSrv,
+                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "boolChanged", paramAdaptor,
                                                  "setBoolParameter");
 
                 ::fwServices::IService::ConfigType paramConfig;
                 paramConfig.add("<xmlattr>.type", "bool");
-                paramConfig.add("<xmlattr>.name", paramSrv->getParamName());
-                paramConfig.add("<xmlattr>.key", paramSrv->getParamName());
+                paramConfig.add("<xmlattr>.name", paramAdaptor->getParamName());
+                paramConfig.add("<xmlattr>.key", paramAdaptor->getParamName());
                 paramConfig.add("<xmlattr>.defaultValue", false);
 
                 editorConfig.add_child("service.parameters.param", paramConfig);
             }
             else if(objType == "::fwData::Color")
             {
-                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "colorChanged", paramSrv,
+                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "colorChanged", paramAdaptor,
                                                  "setColorParameter");
 
                 ::fwServices::IService::ConfigType paramConfig;
                 paramConfig.add("<xmlattr>.type", "color");
-                paramConfig.add("<xmlattr>.name", paramSrv->getParamName());
-                paramConfig.add("<xmlattr>.key", paramSrv->getParamName());
+                paramConfig.add("<xmlattr>.name", paramAdaptor->getParamName());
+                paramConfig.add("<xmlattr>.key", paramAdaptor->getParamName());
                 paramConfig.add("<xmlattr>.defaultValue", "#ffffffff");
 
                 editorConfig.add_child("service.parameters.param", paramConfig);
             }
             else if(objType == "::fwData::Float")
             {
-                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "doubleChanged", paramSrv,
+                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "doubleChanged", paramAdaptor,
                                                  "setDoubleParameter");
 
                 ::fwServices::IService::ConfigType paramConfig;
                 paramConfig.add("<xmlattr>.type", "double");
-                paramConfig.add("<xmlattr>.name", paramSrv->getParamName());
-                paramConfig.add("<xmlattr>.key", paramSrv->getParamName());
+                paramConfig.add("<xmlattr>.name", paramAdaptor->getParamName());
+                paramConfig.add("<xmlattr>.key", paramAdaptor->getParamName());
                 paramConfig.add("<xmlattr>.defaultValue", 0.5);
                 paramConfig.add("<xmlattr>.min", 0.0);
                 paramConfig.add("<xmlattr>.max", 1.0);
@@ -248,13 +244,13 @@ void SShaderParameterEditor::updateGuiInfo()
             }
             else if(objType == "::fwData::Integer")
             {
-                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "intChanged", paramSrv,
+                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "intChanged", paramAdaptor,
                                                  "setIntParameter");
 
                 ::fwServices::IService::ConfigType paramConfig;
                 paramConfig.add("<xmlattr>.type", "int");
-                paramConfig.add("<xmlattr>.name", paramSrv->getParamName());
-                paramConfig.add("<xmlattr>.key", paramSrv->getParamName());
+                paramConfig.add("<xmlattr>.name", paramAdaptor->getParamName());
+                paramConfig.add("<xmlattr>.key", paramAdaptor->getParamName());
                 paramConfig.add("<xmlattr>.defaultValue", 10);
                 paramConfig.add("<xmlattr>.min", 0);
                 paramConfig.add("<xmlattr>.max", 100);
@@ -276,7 +272,7 @@ void SShaderParameterEditor::updateGuiInfo()
 
 //------------------------------------------------------------------------------
 
-void SShaderParameterEditor::fillGui()
+void SCompositorParameterEditor::fillGui()
 {
     auto editorService = m_editorInfo.service.lock();
     if(editorService)

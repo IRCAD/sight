@@ -30,6 +30,7 @@ CPPUNIT_TEST( getPermutation );
 CPPUNIT_TEST( getR2VBGeometryProgramName );
 CPPUNIT_TEST( setPermutationInProgramName );
 CPPUNIT_TEST( setTechniqueInProgramName );
+CPPUNIT_TEST( createObjectFromShaderParameter );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,6 +46,7 @@ public:
     void getR2VBGeometryProgramName();
     void setPermutationInProgramName();
     void setTechniqueInProgramName();
+    void createObjectFromShaderParameter();
 
 private:
     /// Ogre root necessary to setup up everything properly

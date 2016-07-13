@@ -22,7 +22,7 @@ vec2 ellipseCoord()
     float sin_theta = sin(thetaRad);
 
     vec2 result = uv;
-    vec2 origin = vec2(-u_x, u_y);
+    vec2 origin = vec2(-u_x+0.5, u_y-0.5);
 
     // Translation
     result += origin;
@@ -32,7 +32,7 @@ vec2 ellipseCoord()
     result = result * mat2(cos_theta, -sin_theta, sin_theta, cos_theta);
 
     // Scale (in percentage)
-    result = result / vec2(u_a / 100, u_b / 100);
+    result = result / vec2(u_a, u_b);
     result += 0.5f;
 
     return result;

@@ -7,7 +7,7 @@
 #ifndef __VISUOGREADAPTOR_SCOMPOSITORPARAMETER_HPP__
 #define __VISUOGREADAPTOR_SCOMPOSITORPARAMETER_HPP__
 
-#include <fwRenderOgre/IAdaptor.hpp>
+#include "visuOgreAdaptor/IParameter.hpp"
 
 #include "visuOgreAdaptor/config.hpp"
 
@@ -29,38 +29,18 @@ namespace visuOgreAdaptor
  * - \b technique (optional) : name of the technique, default to the first in the compositor
  * - \b shaderType (optional) : the type of the shader (vertex, geometry, fragment). Default to fragment.
  */
-class VISUOGREADAPTOR_CLASS_API SCompositorParameter : public ::fwRenderOgre::IAdaptor
+class VISUOGREADAPTOR_CLASS_API SCompositorParameter : public ::visuOgreAdaptor::IParameter
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SCompositorParameter)(::fwRenderOgre::IAdaptor) );
-
-    /// Enum containing the different values for the supported shader types.
-    typedef enum ShaderEnum
-    {
-        VERTEX,
-        FRAGMENT,
-        GEOMETRY
-    } ShaderEnumType;
+    fwCoreServiceClassDefinitionsMacro ( (SCompositorParameter)(::visuOgreAdaptor::IParameter) );
 
     /// Constructor.
     VISUOGREADAPTOR_API SCompositorParameter() throw();
 
     /// Destructor. Does nothing
     VISUOGREADAPTOR_API virtual ~SCompositorParameter() throw();
-
-    /// Sets the shaderType by passing the value of the ShaderEnumType of this adaptor.
-    VISUOGREADAPTOR_API void setShaderType(ShaderEnumType shaderType);
-
-    /// Sets the shaderType by passing the name of the ShaderEnumType of this adaptor (vp or fp).
-    VISUOGREADAPTOR_API void setShaderType(std::string shaderType);
-
-    /// Sets the value of the member m_materialName.
-    VISUOGREADAPTOR_API void setMaterialName(std::string matName);
-
-    /// Sets the name of the parameter m_paramName.
-    VISUOGREADAPTOR_API void setParamName(std::string paramName);
 
     /// Updates parameter according to the attached fwData::Object
     VISUOGREADAPTOR_API void updateValue(::Ogre::MaterialPtr& _mat);
@@ -80,17 +60,8 @@ protected:
 
 private:
 
-    /// Set the parameter for a given technique
-    bool setParameter(::Ogre::Technique& technique);
-
     /// Material name
     std::string m_compositorName;
-    /// Parameter name
-    std::string m_paramName;
-    /// Technique name
-    std::string m_techniqueName;
-    /// Stores the value of the enum representing the shader's type.
-    ShaderEnumType m_shaderType;
 };
 
 } // visuOgreAdaptor

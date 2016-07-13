@@ -39,7 +39,8 @@
 namespace fwRenderOgre
 {
 
-const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG = "layerInitialized";
+const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG         = "layerInitialized";
+const ::fwCom::Signals::SignalKeyType Layer::s_COMPOSITOR_UPDATED_SIG = "compositorUpdated";
 
 const ::fwCom::Slots::SlotKeyType Layer::s_INTERACTION_SLOT    = "interaction";
 const ::fwCom::Slots::SlotKeyType Layer::s_DESTROY_SLOT        = "destroy";
@@ -68,6 +69,7 @@ Layer::Layer() :
     m_camera(nullptr)
 {
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
+    newSignal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
 
     newSlot(s_INTERACTION_SLOT, &Layer::interaction, this);
     newSlot(s_DESTROY_SLOT, &Layer::destroy, this);
@@ -245,6 +247,10 @@ void Layer::updateCompositorState(std::string compositorName, bool isEnabled)
 {
     m_renderService.lock()->makeCurrent();
     m_compositorChainManager.updateCompositorState(compositorName, isEnabled);
+
+    auto sig = this->signal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
+    sig->emit(compositorName, isEnabled, this->getSptr());
+
     m_renderService.lock()->requestRender();
 }
 
@@ -378,7 +384,7 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
     ::Ogre::AxisAlignedBox worldCoordBoundingBox;
 
     // Getting this render service scene manager
-    ::Ogre::SceneNode *rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
 
     // Needed to recompute world bounding boxes
     rootSceneNode->_update(true, false);
@@ -389,7 +395,7 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
 
     while(!childrenStack.empty())
     {
-        const ::Ogre::SceneNode *tempSceneNode = childrenStack.top();
+        const ::Ogre::SceneNode* tempSceneNode = childrenStack.top();
         childrenStack.pop();
 
         // Retrieves an iterator pointing to the attached movable objects of the current scene node
@@ -411,7 +417,7 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
         while(childNodesIt.hasMoreElements())
         {
             // First, we must cast the Node* into a SceneNode*
-            const ::Ogre::SceneNode *childNode = dynamic_cast< ::Ogre::SceneNode* >(childNodesIt.getNext());
+            const ::Ogre::SceneNode* childNode = dynamic_cast< ::Ogre::SceneNode* >(childNodesIt.getNext());
             if(childNode)
             {
                 // Push the current node into the stack in order to continue iteration

@@ -162,250 +162,38 @@ void SMaterial::loadShaderParameters(::Ogre::GpuProgramParametersSharedPtr param
         const ::Ogre::String& paramName = keyVal.first;
 
         // Trying to get FW4SPL object corresponding to paramName
-        ::fwData::Object::sptr obj;
         std::string objName = this->getObject()->getID() + "_" + shaderType + "_" + paramName;
 
         // Check if object exist, else create it with the corresponding type
-        obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(objName));
+        ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(objName));
         if (obj == nullptr)
         {
             ::Ogre::GpuConstantDefinition cstDef = keyVal.second;
-            obj                                  =
-                this->createObjectFromShaderParameter(cstDef.constType, paramName);
+
+            obj = ::fwRenderOgre::helper::Shading::createObjectFromShaderParameter(cstDef.constType);
         }
         obj->setName(paramName);
 
         // Add the object to the shaderParameter composite of the Material
         ::fwData::Material::sptr material   = this->getObject< ::fwData::Material >();
-        ::fwData::Composite::sptr composite = material->setDefaultField(
-            "shaderParameters", ::fwData::Composite::New());
-        (*composite)[paramName] = obj;
+        ::fwData::Composite::sptr composite = material->setDefaultField("shaderParameters", ::fwData::Composite::New());
+        (*composite)[paramName]             = obj;
 
         // Create associated ShaderParameter adaptor
-        ::fwRenderOgre::IAdaptor::sptr shaderParameterService;
-
-        this->setServiceOnShaderParameter(shaderParameterService, obj, paramName, shaderType);
+        this->setServiceOnShaderParameter(obj, paramName, shaderType);
     }
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::sptr SMaterial::createObjectFromShaderParameter(::Ogre::GpuConstantType type, std::string paramName)
-{
-    ::fwData::Object::sptr object;
-
-    switch(type)
-    {
-        case ::Ogre::GpuConstantType::GCT_FLOAT1:
-            object = ::fwData::Float::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_FLOAT2:
-        {
-            object = ::fwData::Array::New();
-            float vec2[2];
-            vec2[0]                           = 0.;
-            vec2[1]                           = 0.;
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(object);
-            arrayObject->setType(::fwTools::Type::create< ::fwTools::Type::FloatType>());
-            arrayObject->setNumberOfComponents(2);
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setBuffer(vec2, false, arrayObject->getType(), arrayObject->getSize(), 2);
-        }
-        break;
-        case ::Ogre::GpuConstantType::GCT_FLOAT3:
-            object = fwData::Point::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_FLOAT4:
-            object = fwData::Color::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER1D:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER2D:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER3D:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLERCUBE:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLERRECT:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER1DSHADOW:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER2DSHADOW:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER2DARRAY:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_MATRIX_4X4:
-            object = ::fwData::TransformationMatrix3D::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_INT1:
-            // TOFIX : Ogre didn't manage glsl boolean type. For now, a f4w boolean can be loaded naming variable
-            // boolean as "int Boolean" in the glsl script
-            if(paramName=="Boolean")
-            {
-                object = fwData::Boolean::New();
-            }
-            else
-            {
-                object = ::fwData::Integer::New();
-            }
-            break;
-        case ::Ogre::GpuConstantType::GCT_INT2:
-        {
-            object = ::fwData::Array::New();
-            int* vec2[2];
-            vec2[0]                           = 0;
-            vec2[1]                           = 0;
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(object);
-            arrayObject->setType(::fwTools::Type::create< ::fwTools::Type::Int32Type>());
-            arrayObject->setNumberOfComponents(2);
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setBuffer(vec2, false, arrayObject->getType(), arrayObject->getSize(), 2);
-        }
-        break;
-        case ::Ogre::GpuConstantType::GCT_INT3:
-        {
-            object = ::fwData::Array::New();
-            int* vec3[3];
-            vec3[0]                           = 0;
-            vec3[1]                           = 0;
-            vec3[2]                           = 0;
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(object);
-            arrayObject->setType(::fwTools::Type::create< ::fwTools::Type::Int32Type>());
-            arrayObject->setNumberOfComponents(3);
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setBuffer(vec3, false, arrayObject->getType(), arrayObject->getSize(), 3);
-        }
-        break;
-        case ::Ogre::GpuConstantType::GCT_INT4:
-        {
-            object = ::fwData::Array::New();
-            int* vec4[4];
-            vec4[0]                           = 0;
-            vec4[1]                           = 0;
-            vec4[2]                           = 0;
-            vec4[3]                           = 0;
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(object);
-            arrayObject->setType(::fwTools::Type::create< ::fwTools::Type::Int32Type>());
-            arrayObject->setNumberOfComponents(4);
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setBuffer(vec4, false, arrayObject->getType(), arrayObject->getSize(), 4);
-        }
-        break;
-        case ::Ogre::GpuConstantType::GCT_DOUBLE1:
-            object = ::fwData::Float::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_DOUBLE2:
-        {
-            object = ::fwData::Array::New();
-            float vec2[2];
-            vec2[0]                           = 0.;
-            vec2[1]                           = 0.;
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(object);
-            arrayObject->setType(::fwTools::Type::create< ::fwTools::Type::FloatType>());
-            arrayObject->setNumberOfComponents(2);
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setBuffer(vec2, false, arrayObject->getType(), arrayObject->getSize(), 2);
-        }
-        break;
-        case ::Ogre::GpuConstantType::GCT_DOUBLE3:
-        {
-            object = ::fwData::Array::New();
-            float vec3[3];
-            vec3[0]                           = 0.;
-            vec3[1]                           = 0.;
-            vec3[2]                           = 0.;
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(object);
-            arrayObject->setType(::fwTools::Type::create< ::fwTools::Type::FloatType>());
-            arrayObject->setNumberOfComponents(3);
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setBuffer(vec3, false, arrayObject->getType(), arrayObject->getSize(), 3);
-        }
-        break;
-        case ::Ogre::GpuConstantType::GCT_DOUBLE4:
-        {
-            object = ::fwData::Array::New();
-            float vec4[4];
-            vec4[0]                           = 0.;
-            vec4[1]                           = 0.;
-            vec4[2]                           = 0.;
-            vec4[3]                           = 0.;
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(object);
-            arrayObject->setType(::fwTools::Type::create< ::fwTools::Type::FloatType>());
-            arrayObject->setNumberOfComponents(4);
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setBuffer(vec4, false, arrayObject->getType(), arrayObject->getSize(), 4);
-        }
-        break;
-        case ::Ogre::GpuConstantType::GCT_MATRIX_DOUBLE_4X4:
-            object = ::fwData::TransformationMatrix3D::New();
-            break;
-        default:
-            std::string GpuConstantTypeNames[] =
-            {
-                "GCT_FLOAT1",
-                "GCT_FLOAT2",
-                "GCT_FLOAT3",
-                "GCT_FLOAT4",
-                "GCT_SAMPLER1D",
-                "GCT_SAMPLER2D",
-                "GCT_SAMPLER3D",
-                "GCT_SAMPLERCUBE",
-                "GCT_SAMPLERRECT",
-                "GCT_SAMPLER1DSHADOW",
-                "GCT_SAMPLER2DSHADOW",
-                "GCT_SAMPLER2DARRAY",
-                "GCT_MATRIX_2X2",
-                "GCT_MATRIX_2X3",
-                "GCT_MATRIX_2X4",
-                "GCT_MATRIX_3X2",
-                "GCT_MATRIX_3X3",
-                "GCT_MATRIX_3X4",
-                "GCT_MATRIX_4X2",
-                "GCT_MATRIX_4X3",
-                "GCT_MATRIX_4X4",
-                "GCT_INT1",
-                "GCT_INT2",
-                "GCT_INT3",
-                "GCT_INT4",
-                "GCT_SUBROUTINE",
-                "GCT_DOUBLE1",
-                "GCT_DOUBLE2",
-                "GCT_DOUBLE3",
-                "GCT_DOUBLE4",
-                "GCT_MATRIX_DOUBLE_2X2",
-                "GCT_MATRIX_DOUBLE_2X3",
-                "GCT_MATRIX_DOUBLE_2X4",
-                "GCT_MATRIX_DOUBLE_3X2",
-                "GCT_MATRIX_DOUBLE_3X3",
-                "GCT_MATRIX_DOUBLE_3X4",
-                "GCT_MATRIX_DOUBLE_4X2",
-                "GCT_MATRIX_DOUBLE_4X3",
-                "GCT_MATRIX_DOUBLE_4X4",
-                "GCT_UNKNOWN"
-            };
-            OSLM_FATAL("Object type "+GpuConstantTypeNames[type-1]+" not supported yet");
-    }
-    return object;
-}
-
-//------------------------------------------------------------------------------
-
-void SMaterial::setServiceOnShaderParameter(::fwRenderOgre::IAdaptor::sptr& srv,
-                                            std::shared_ptr< ::fwData::Object > object, std::string paramName,
+void SMaterial::setServiceOnShaderParameter(std::shared_ptr< ::fwData::Object > object, std::string paramName,
                                             std::string shaderType)
 {
+    ::fwRenderOgre::IAdaptor::sptr srv;
     if(!srv)
     {
         // Creates an Ogre adaptor and associates it with the f4s object
-        srv = ::fwServices::add< ::fwRenderOgre::IAdaptor >(object, "::visuOgreAdaptor::SShaderParameter");
+        srv = ::fwServices::add< ::visuOgreAdaptor::IParameter >(object, "::visuOgreAdaptor::SShaderParameter");
         SLM_ASSERT("Unable to instanciate shader service", srv);
         ::visuOgreAdaptor::SShaderParameter::sptr shaderParamService = ::visuOgreAdaptor::SShaderParameter::dynamicCast(
             srv);

@@ -9,6 +9,15 @@
 #include <regex>
 #include <boost/regex.hpp>
 
+#include <fwComEd/helper/Array.hpp>
+
+#include <fwData/Boolean.hpp>
+#include <fwData/Float.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/Point.hpp>
+#include <fwData/PointList.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+
 namespace fwRenderOgre
 {
 
@@ -176,6 +185,206 @@ std::string Shading::setTechniqueInProgramName(const std::string& _name, const s
     prgName = ::boost::regex_replace(_name, regex, _tech + "/");
 
     return prgName;
+}
+
+//-----------------------------------------------------------------------------
+
+::fwData::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType type)
+{
+    ::fwData::Object::sptr object;
+
+    switch(type)
+    {
+        case ::Ogre::GpuConstantType::GCT_FLOAT1:
+            object = ::fwData::Float::New();
+            break;
+        case ::Ogre::GpuConstantType::GCT_FLOAT2:
+        {
+            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            float vec[2] = { 0., 0. };
+
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::FloatType>();
+            arrayObject->resize( type, {1}, 2, true);
+
+            ::fwComEd::helper::Array arrayHelper(arrayObject);
+            arrayHelper.setItem( {0}, vec);
+
+            object = arrayObject;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_FLOAT3:
+            object = fwData::Point::New();
+            break;
+        case ::Ogre::GpuConstantType::GCT_FLOAT4:
+            object = fwData::Color::New();
+            break;
+        case ::Ogre::GpuConstantType::GCT_SAMPLER1D:
+            object = ::fwData::Integer::New();
+            break;
+        case ::Ogre::GpuConstantType::GCT_SAMPLER2D:
+            object = ::fwData::Integer::New();
+            break;
+        case ::Ogre::GpuConstantType::GCT_SAMPLER3D:
+            object = ::fwData::Integer::New();
+            break;
+        case ::Ogre::GpuConstantType::GCT_SAMPLERCUBE:
+            object = ::fwData::Integer::New();
+            break;
+        case ::Ogre::GpuConstantType::GCT_SAMPLERRECT:
+            object = ::fwData::Integer::New();
+            break;
+        case ::Ogre::GpuConstantType::GCT_SAMPLER1DSHADOW:
+            object = ::fwData::Integer::New();
+            break;
+        case ::Ogre::GpuConstantType::GCT_SAMPLER2DSHADOW:
+            object = ::fwData::Integer::New();
+            break;
+        case ::Ogre::GpuConstantType::GCT_SAMPLER2DARRAY:
+            object = ::fwData::Integer::New();
+            break;
+        case ::Ogre::GpuConstantType::GCT_MATRIX_4X4:
+            object = ::fwData::TransformationMatrix3D::New();
+            break;
+        case ::Ogre::GpuConstantType::GCT_INT1:
+            object = ::fwData::Integer::New();
+            break;
+        case ::Ogre::GpuConstantType::GCT_INT2:
+        {
+            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            int vec[2] = {0, 0};
+
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::Int32Type>();
+            arrayObject->resize( type, {1}, 2, true);
+
+            ::fwComEd::helper::Array arrayHelper(arrayObject);
+            arrayHelper.setItem( {0}, vec);
+
+            object = arrayObject;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_INT3:
+        {
+            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            int* vec[3] = {0, 0, 0};
+
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::Int32Type>();
+            arrayObject->resize( type, {1}, 3, true);
+
+            ::fwComEd::helper::Array arrayHelper(arrayObject);
+            arrayHelper.setItem( {0}, vec);
+
+            object = arrayObject;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_INT4:
+        {
+            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            int* vec[4] = {0, 0, 0, 0};
+
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::Int32Type>();
+            arrayObject->resize( type, {1}, 4, true);
+
+            ::fwComEd::helper::Array arrayHelper(arrayObject);
+            arrayHelper.setItem( {0}, vec);
+
+            object = arrayObject;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_DOUBLE1:
+            object = ::fwData::Float::New();
+            break;
+        case ::Ogre::GpuConstantType::GCT_DOUBLE2:
+        {
+            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            float vec[2] = { 0., 0. };
+
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::FloatType>();
+            arrayObject->resize( type, {1}, 2, true);
+
+            ::fwComEd::helper::Array arrayHelper(arrayObject);
+            arrayHelper.setItem( {0}, vec);
+
+            object = arrayObject;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_DOUBLE3:
+        {
+            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            float vec[3] = { 0., 0., 0. };
+
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::FloatType>();
+            arrayObject->resize( type, {1}, 3, true);
+
+            ::fwComEd::helper::Array arrayHelper(arrayObject);
+            arrayHelper.setItem( {0}, vec);
+
+            object = arrayObject;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_DOUBLE4:
+        {
+            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            float vec[4] = { 0., 0., 0., 0.};
+
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::FloatType>();
+            arrayObject->resize( type, {1}, 4, true);
+
+            ::fwComEd::helper::Array arrayHelper(arrayObject);
+            arrayHelper.setItem( {0}, vec);
+
+            object = arrayObject;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_MATRIX_DOUBLE_4X4:
+            object = ::fwData::TransformationMatrix3D::New();
+            break;
+        default:
+            std::string GpuConstantTypeNames[] =
+            {
+                "GCT_FLOAT1",
+                "GCT_FLOAT2",
+                "GCT_FLOAT3",
+                "GCT_FLOAT4",
+                "GCT_SAMPLER1D",
+                "GCT_SAMPLER2D",
+                "GCT_SAMPLER3D",
+                "GCT_SAMPLERCUBE",
+                "GCT_SAMPLERRECT",
+                "GCT_SAMPLER1DSHADOW",
+                "GCT_SAMPLER2DSHADOW",
+                "GCT_SAMPLER2DARRAY",
+                "GCT_MATRIX_2X2",
+                "GCT_MATRIX_2X3",
+                "GCT_MATRIX_2X4",
+                "GCT_MATRIX_3X2",
+                "GCT_MATRIX_3X3",
+                "GCT_MATRIX_3X4",
+                "GCT_MATRIX_4X2",
+                "GCT_MATRIX_4X3",
+                "GCT_MATRIX_4X4",
+                "GCT_INT1",
+                "GCT_INT2",
+                "GCT_INT3",
+                "GCT_INT4",
+                "GCT_SUBROUTINE",
+                "GCT_DOUBLE1",
+                "GCT_DOUBLE2",
+                "GCT_DOUBLE3",
+                "GCT_DOUBLE4",
+                "GCT_MATRIX_DOUBLE_2X2",
+                "GCT_MATRIX_DOUBLE_2X3",
+                "GCT_MATRIX_DOUBLE_2X4",
+                "GCT_MATRIX_DOUBLE_3X2",
+                "GCT_MATRIX_DOUBLE_3X3",
+                "GCT_MATRIX_DOUBLE_3X4",
+                "GCT_MATRIX_DOUBLE_4X2",
+                "GCT_MATRIX_DOUBLE_4X3",
+                "GCT_MATRIX_DOUBLE_4X4",
+                "GCT_UNKNOWN"
+            };
+            OSLM_FATAL("Object type "+GpuConstantTypeNames[type-1]+" not supported yet");
+    }
+    return object;
 }
 
 //-----------------------------------------------------------------------------
