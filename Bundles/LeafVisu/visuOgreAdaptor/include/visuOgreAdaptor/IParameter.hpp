@@ -80,25 +80,14 @@ protected:
     /// Configure the adaptor
     VISUOGREADAPTOR_API virtual void doConfigure()  throw ( ::fwTools::Failed );
 
-    /// Updates the shaderparameter values via the private method updateValue(), and requests a render of the scene.
+    /// Updates the shader parameter values and requests a render of the scene.
     VISUOGREADAPTOR_API virtual void doUpdate() throw ( ::fwTools::Failed );
 
     /// Set the parameter for a given technique
-    VISUOGREADAPTOR_API virtual bool setParameter(::Ogre::Technique& technique,
-                                                  const fwData::Object::sptr& paramObject);
+    VISUOGREADAPTOR_API virtual bool setParameter(::Ogre::Technique& technique);
 
     /// Set the material to update
     VISUOGREADAPTOR_API void setMaterial(const::Ogre::MaterialPtr& material);
-
-    /**
-     * @brief updateValue(), updates parameters function of the attached fwData::Object
-     * Updates some ::Ogre::GpuProgramParametersSharedPtr
-     * and directly sends them to the programmable pipeline of the GPU.
-     *
-     * - \b m_paramvalues is an array filled with the corresponding data
-     * - \b m_paramType is the type (from the enum Types) of the data which values are stored in m_paramValues.
-     */
-    VISUOGREADAPTOR_API void updateValue(const fwData::Object::sptr& paramObject);
 
 private:
 

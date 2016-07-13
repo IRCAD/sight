@@ -135,13 +135,6 @@ void IParameter::doConfigure() throw(::fwTools::Failed)
 
 void IParameter::doUpdate() throw(::fwTools::Failed)
 {
-    this->updateValue(nullptr);
-}
-
-//------------------------------------------------------------------------------
-
-void IParameter::updateValue(const fwData::Object::sptr& paramObject)
-{
     if(m_material.isNull())
     {
         return;
@@ -155,7 +148,7 @@ void IParameter::updateValue(const fwData::Object::sptr& paramObject)
             ::Ogre::Technique* tech = techIt.getNext();
             SLM_ASSERT("Technique is not set", tech);
 
-            bSet |= this->setParameter(*tech, paramObject);
+            bSet |= this->setParameter(*tech);
         }
 
         if( !bSet )
@@ -174,7 +167,7 @@ void IParameter::updateValue(const fwData::Object::sptr& paramObject)
         tech                    = m_material->getTechnique(m_techniqueName);
         OSLM_FATAL_IF("Can't find technique " << m_techniqueName, !tech);
 
-        if( this->setParameter(*tech, paramObject) )
+        if( this->setParameter(*tech) )
         {
             SLM_ERROR("Couldn't set parameter '" + m_paramName + "' in technique '" + m_techniqueName +
                       "' from material '" + m_material->getName() + "'");
@@ -188,7 +181,7 @@ void IParameter::updateValue(const fwData::Object::sptr& paramObject)
 
 //------------------------------------------------------------------------------
 
-bool IParameter::setParameter(::Ogre::Technique& technique, const fwData::Object::sptr& paramObject)
+bool IParameter::setParameter(::Ogre::Technique& technique)
 {
     /// Contains the different parameters for the shader
     ::Ogre::GpuProgramParametersSharedPtr params;
@@ -364,7 +357,7 @@ void IParameter::setBoolParameter(bool value, std::string name)
         ::fwData::Boolean::sptr paramObject = ::fwData::Boolean::dynamicCast(obj);
         paramObject->setValue(value);
 
-        this->updateValue(paramObject);
+        this->doUpdate();
     }
 }
 
@@ -378,7 +371,7 @@ void IParameter::setColorParameter(std::array<uint8_t, 4> color, std::string nam
         ::fwData::Color::sptr paramObject = ::fwData::Color::dynamicCast(obj);
         paramObject->setRGBA(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f, color[3] / 255.f);
 
-        this->updateValue(paramObject);
+        this->doUpdate();
     }
 }
 
@@ -392,7 +385,7 @@ void IParameter::setIntParameter(int value, std::string name)
         ::fwData::Integer::sptr paramObject = ::fwData::Integer::dynamicCast(obj);
         paramObject->setValue(value);
 
-        this->updateValue(paramObject);
+        this->doUpdate();
     }
 }
 
@@ -406,7 +399,7 @@ void IParameter::setFloatParameter(float value, std::string name)
         ::fwData::Float::sptr paramObject = ::fwData::Float::dynamicCast(obj);
         paramObject->setValue(value);
 
-        this->updateValue(paramObject);
+        this->doUpdate();
     }
 }
 
@@ -420,7 +413,7 @@ void IParameter::setDoubleParameter(double value, std::string name)
         ::fwData::Float::sptr paramObject = ::fwData::Float::dynamicCast(obj);
         paramObject->setValue(static_cast<float>(value));
 
-        this->updateValue(paramObject);
+        this->doUpdate();
     }
 }
 

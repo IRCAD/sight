@@ -73,11 +73,4 @@ void SShaderParameter::doSwap() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShaderParameter::doUpdate() throw(::fwTools::Failed)
-{
-    this->updateValue(nullptr);
-}
-
-//------------------------------------------------------------------------------
-
 } // namespace visuOgreAdaptor

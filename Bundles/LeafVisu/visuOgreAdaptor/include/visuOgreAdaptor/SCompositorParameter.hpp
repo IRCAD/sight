@@ -55,8 +55,6 @@ protected:
     VISUOGREADAPTOR_API virtual void doStop()  throw ( ::fwTools::Failed );
     /// Do nothing
     VISUOGREADAPTOR_API virtual void doSwap() throw ( ::fwTools::Failed );
-    /// Do nothing
-    VISUOGREADAPTOR_API virtual void doUpdate() throw ( ::fwTools::Failed );
 
 private:
 

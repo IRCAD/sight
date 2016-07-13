@@ -57,20 +57,7 @@ protected:
     /// Do nothing
     VISUOGREADAPTOR_API virtual void doSwap() throw ( ::fwTools::Failed );
 
-    /// Updates the shaderparameter values via the private method updateValue(), and requests a render of the scene.
-    VISUOGREADAPTOR_API virtual void doUpdate() throw ( ::fwTools::Failed );
-
 private:
-
-    /**
-     * @brief updateValue(), updates parameters function of the attached fwData::Object
-     * Updates some ::Ogre::GpuProgramParametersSharedPtr
-     * and directly sends them to the programmable pipeline of the GPU.
-     *
-     * - \b m_paramvalues is an array filled with the corresponding data
-     * - \b m_paramType is the type (from the enum Types) of the data which values are stored in m_paramValues.
-     */
-    void updateValue(const fwData::Object::sptr& paramObject);
 
     /// Material name
     std::string m_materialName;

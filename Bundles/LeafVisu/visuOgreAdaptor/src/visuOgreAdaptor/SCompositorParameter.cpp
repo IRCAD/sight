@@ -69,7 +69,7 @@ SCompositorParameter::~SCompositorParameter() throw()
 void SCompositorParameter::updateValue(Ogre::MaterialPtr& _mat)
 {
     this->setMaterial(_mat);
-    this->IParameter::updateValue(nullptr);
+    this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
@@ -110,14 +110,6 @@ void SCompositorParameter::doStop() throw(::fwTools::Failed)
 
 void SCompositorParameter::doSwap() throw(::fwTools::Failed)
 {
-}
-
-//------------------------------------------------------------------------------
-
-void SCompositorParameter::doUpdate() throw(::fwTools::Failed)
-{
-    //request a new render pass when a f4s Data is modified (call the CompositorListener::notifyMaterialRender)
-    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
