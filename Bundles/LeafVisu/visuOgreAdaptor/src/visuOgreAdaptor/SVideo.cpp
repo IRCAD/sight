@@ -171,8 +171,7 @@ void SVideo::doUpdate() throw(::fwTools::Failed)
 
         if(!m_cameraUID.empty())
         {
-            ::fwTools::Object::sptr obj   = ::fwTools::fwID::getObject(m_cameraUID);
-            ::arData::Camera::sptr camera = ::arData::Camera::dynamicCast(obj);
+            ::arData::Camera::csptr camera = this->getSafeInput< ::arData::Camera>(m_cameraUID);
             SLM_ASSERT("Missing camera", camera);
 
             if(camera->getIsCalibrated())

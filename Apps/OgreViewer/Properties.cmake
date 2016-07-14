@@ -27,7 +27,7 @@ set( REQUIREMENTS
     videoQt
     videoTools
     fwlauncher
-    appXml
+    appXml2
     arMedia
     arDataReg
     visuOgre
@@ -40,4 +40,4 @@ set( REQUIREMENTS
     preferences
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES OgreViewer_Extension)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES OgreViewer_Extension)

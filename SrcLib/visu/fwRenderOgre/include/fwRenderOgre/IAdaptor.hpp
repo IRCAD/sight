@@ -84,6 +84,8 @@ protected:
     FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager();
 
     template< class DATATYPE >
+    CSPTR(DATATYPE) getSafeInput(const std::string& key) const;
+    template< class DATATYPE >
     SPTR(DATATYPE) getSafeInOut(const std::string& key) const;
 
     /// Ask the render service (SRender) to update
@@ -98,6 +100,21 @@ protected:
     /// Signal/Slot connections with this service
     ::fwServices::helper::SigSlotConnection m_connections;
 };
+
+//------------------------------------------------------------------------------
+
+template< class DATATYPE >
+CSPTR(DATATYPE) IAdaptor::getSafeInput(const std::string& key) const
+{
+    if( ::fwServices::IService::isVersion2() )
+    {
+        return this->getRenderService()->getInput<DATATYPE>(key);
+    }
+    else
+    {
+        return std::dynamic_pointer_cast<DATATYPE>( ::fwTools::fwID::getObject(key) );
+    }
+}
 
 //------------------------------------------------------------------------------
 
