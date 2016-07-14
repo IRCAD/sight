@@ -8,15 +8,7 @@ compositor Ellipse
 
         target render_target
         {
-            input none
-            pass clear
-            {
-            }
-
-            shadows off
-            pass render_scene
-            {
-            }
+            input previous
         }
 
         // Final pass
