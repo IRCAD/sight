@@ -15,7 +15,6 @@ set( REQUIREMENTS
     io
     ioVTK
     servicesReg
-    uiData
     uiVisuQt
     uiImageQt
     uiReconstructionQt
@@ -25,7 +24,6 @@ set( REQUIREMENTS
     visuVTK
     visuVTKQt
     visuVTKAdaptor
-    videoVLC
     videoQt
     videoTools
     fwlauncher
