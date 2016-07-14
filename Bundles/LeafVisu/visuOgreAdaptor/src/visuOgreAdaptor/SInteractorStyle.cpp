@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,18 +40,14 @@ SInteractorStyle::SInteractorStyle() throw()
     m_interactorStyles["Mesh"]      = "::fwRenderOgre::interactor::MeshPickerInteractor";
     m_interactorStyles["Video"]     = "::fwRenderOgre::interactor::VideoPickerInteractor";
     m_interactorStyles["Negato2D"]  = "::fwRenderOgre::interactor::Negato2DInteractor";
-
-    //Create the connection slot object
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //------------------------------------------------------------------------------
 
 SInteractorStyle::~SInteractorStyle() throw()
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -77,10 +73,10 @@ void SInteractorStyle::doStart() throw(fwTools::Failed)
         OSLM_ASSERT("There is no interactor found for this layer",pickerInteractor);
 
         //Connect all the modification signals of the frameTL to our updating function
-        m_connections->connect(pickerInteractor,
-                               ::fwRenderOgre::interactor::IInteractor::s_POINT_CLICKED_SIG,
-                               this->getSptr(),
-                               ::visuOgreAdaptor::SInteractorStyle::s_POINT_CLICKED_SLOT);
+        m_connections.connect(pickerInteractor,
+                              ::fwRenderOgre::interactor::IInteractor::s_POINT_CLICKED_SIG,
+                              this->getSptr(),
+                              ::visuOgreAdaptor::SInteractorStyle::s_POINT_CLICKED_SLOT);
     }
 }
 

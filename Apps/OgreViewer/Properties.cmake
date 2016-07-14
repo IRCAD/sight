@@ -24,6 +24,8 @@ set( REQUIREMENTS
     visuVTK
     visuVTKQt
     visuVTKAdaptor
+    videoQt
+    videoTools
     fwlauncher
     appXml
     arMedia

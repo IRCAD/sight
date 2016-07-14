@@ -9,6 +9,7 @@
     <requirement id="visuVTKQt" />
     <requirement id="material" />
     <requirement id="scene2D" />
+    <requirement id="preferences" />
 
     <xi:include href="configurations/vtkGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
@@ -128,37 +129,7 @@
                     <start uid="writerPathMeshFile" />
                 </service>
 
-                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no">
-                    <scene>
-                        <viewport id="view1" x="-1100" y="-1.1" width="2400" height="1.2" />
-
-                        <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
-                        <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-
-                        <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
-
-                        <adaptor id="shutterGrid" class="::scene2D::adaptor::Grid2D" objectId="self">
-                            <config xMin="-1200" xMax="1400" yMin="-0.7" yMax="1.7" xSpacing="200" ySpacing="0.2" viewportUID="Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
-                        </adaptor>
-
-                        <adaptor id="shutterAbscissa" class="::scene2D::adaptor::Line" objectId="self">
-                            <config x1="-1200" x2="1400" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
-                        </adaptor>
-
-                        <adaptor id="shutterOrdinate" class="::scene2D::adaptor::Line" objectId="self">
-                            <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
-                        </adaptor>
-
-                        <adaptor id="shutterHistogram" class="::scene2D::adaptor::Histogram" objectId="histogram">
-                            <config color="green" xAxis="xAxis" yAxis="axeHistogramY" zValue="4" />
-                        </adaptor>
-
-                        <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="viewport">
-                            <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1200" initialPos="-700" />
-                        </adaptor>
-
-                    </scene>
-                </service>
+                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" autoConnect="no" />
 
                 <!-- Negato histogram -->
                 <service uid="histogramView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
@@ -348,14 +319,16 @@
 
                         <service uid="CompositorView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
                             <gui>
-                                <layout type="::fwGui::LineLayoutManager">
+                                <layout type="::fwGui::ToolboxLayoutManager">
                                     <orientation value="vertical" />
-                                    <view caption="Compositor Selector" />
-                                    <view/>
+                                    <view caption="Compositor Selector" expanded="true" />
+                                    <view caption="Compositor parameters" expanded="true" />
+                                    <view caption="Transparency settings" expanded="true" />
                                 </layout>
                             </gui>
                             <registry>
                                 <view sid="compositorSelector" />
+                                <view sid="compositorParameters" />
                                 <view sid="propertiesView" start="yes"/>
                             </registry>
                         </service>
@@ -364,7 +337,7 @@
                             <gui>
                                 <layout type="::fwGui::LineLayoutManager">
                                     <orientation value="vertical" />
-                                    <view caption="Default compositor parameters" />
+                                    <view/>
                                 </layout>
                             </gui>
                             <registry>
@@ -373,6 +346,11 @@
                         </service>
 
                         <service uid="compositorSelector" impl="::uiVisuOgre::SCompositorSelector" type="::gui::editor::IEditor" autoConnect="no" />
+
+                        <service uid="compositorParameters" impl="::uiVisuOgre::SCompositorParameterEditor" type="::gui::editor::IEditor" autoConnect="no" >
+                            <render uid="genericSceneUID" />
+                            <layer id="default" />
+                        </service>
 
                         <service uid="CoreEditor" impl="::uiVisuOgre::SCoreCompositorEditor" type="::gui::editor::IEditor" autoConnect="no" />
 
@@ -393,6 +371,7 @@
                                     <parameters>
                                         <parameter replace="WID_PARENT" by="${GENERIC_UID}_OgreSceneView" />
                                         <parameter replace="modelSeriesUID" by="modelSeriesUID" />
+                                        <parameter replace="genericSceneUID" by="genericSceneUID" />
                                         <parameter replace="cameraTF" by="cameraTF_UID" />
                                         <parameter replace="imageUID" by="imageUID" />
                                         <parameter replace="TFSelections" by="TFSelections" />
@@ -427,6 +406,7 @@
                 <start uid="cfgOgreNegato2D" />
                 <start uid="cfgOrganManagerConfig" />
                 <start uid="compositorSelector" />
+                <start uid="compositorParameters" />
                 <start uid="CoreEditor" />
 
             </object>

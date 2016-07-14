@@ -33,7 +33,6 @@ namespace uiVisuOgre
 
 /**
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
- * @class   SCoreCompositorEditor
  */
 class UIVISUOGRE_CLASS_API SCoreCompositorEditor : public QObject,
                                                    public ::gui::editor::IEditor
@@ -75,8 +74,8 @@ protected:
     /// FILL ME.
     UIVISUOGRE_API void refreshRenderers();
 
-    std::vector< ::fwRenderOgre::Layer::sptr > m_layers;
-    ::fwRenderOgre::Layer::sptr m_currentLayer;
+    std::vector< ::fwRenderOgre::Layer::wptr > m_layers;
+    ::fwRenderOgre::Layer::wptr m_currentLayer;
     ::fwRenderOgre::compositor::Core::sptr m_currentCoreCompositor;
 
 protected Q_SLOTS:

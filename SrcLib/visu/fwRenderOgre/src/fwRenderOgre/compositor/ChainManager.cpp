@@ -31,9 +31,9 @@ ChainManager::ChainManager()
 
 //-----------------------------------------------------------------------------
 
-ChainManager::ChainManager(::Ogre::Viewport* ogreViewport)
-    : m_ogreViewport(ogreViewport)
+void ChainManager::initialize(::Ogre::Viewport* viewport)
 {
+    m_ogreViewport = viewport;
 }
 
 //-----------------------------------------------------------------------------
@@ -41,26 +41,24 @@ ChainManager::ChainManager(::Ogre::Viewport* ogreViewport)
 void ChainManager::addAvailableCompositor(CompositorIdType compositorName)
 {
     ::Ogre::CompositorManager* compositorManager = this->getCompositorManager();
-    bool needFinalCompositorSwap(false);
 
-    // If the compositor chain already contains the final compositor, we have to remove it
-    if(!m_compositorChain.empty() && !(compositorManager->getByName(FINAL_CHAIN_COMPOSITOR)).isNull())
+    // Look the final chain compositor
+    auto finalChainCompositorIt = std::find_if(m_compositorChain.begin(),
+                                               m_compositorChain.end(),
+                                               FindCompositorByName(FINAL_CHAIN_COMPOSITOR));
+
+    if(finalChainCompositorIt != m_compositorChain.end())
     {
-        m_compositorChain.pop_back();
         compositorManager->setCompositorEnabled(m_ogreViewport, FINAL_CHAIN_COMPOSITOR, false);
         compositorManager->removeCompositor(m_ogreViewport, FINAL_CHAIN_COMPOSITOR);
-        needFinalCompositorSwap = true;
+        m_compositorChain.pop_back();
     }
 
-    // Now, we can add the new compositor to the compositor chain
+    // Add the new compositor
     m_compositorChain.push_back(CompositorType(compositorName, false));
     compositorManager->addCompositor(m_ogreViewport, compositorName);
 
-    // If the final compositor has been removed, we need to add it to the compositor chain
-    if(needFinalCompositorSwap)
-    {
-        this->addFinalCompositor();
-    }
+    this->addFinalCompositor();
 }
 
 //-----------------------------------------------------------------------------
@@ -119,6 +117,7 @@ void ChainManager::setCompositorChain(std::vector<CompositorIdType> compositors)
 
 void ChainManager::addFinalCompositor()
 {
+    // Add final chain compositor
     m_compositorChain.push_back(CompositorType(FINAL_CHAIN_COMPOSITOR, true));
     this->getCompositorManager()->addCompositor(m_ogreViewport, FINAL_CHAIN_COMPOSITOR);
     this->getCompositorManager()->setCompositorEnabled(m_ogreViewport, FINAL_CHAIN_COMPOSITOR, true);

@@ -50,7 +50,14 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwRenderOgre::IAdaptor</type>
+        <type>::visuOgreAdaptor::IParameter</type>
+        <service>::visuOgreAdaptor::SCompositorParameter</service>
+        <object>::fwData::Object</object>
+        <desc>service description</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::visuOgreAdaptor::IParameter</type>
         <service>::visuOgreAdaptor::SShaderParameter</service>
         <object>::fwData::Object</object>
         <desc>service description</desc>

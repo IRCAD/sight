@@ -175,16 +175,19 @@ void SVideo::doUpdate() throw(::fwTools::Failed)
             ::arData::Camera::sptr camera = ::arData::Camera::dynamicCast(obj);
             SLM_ASSERT("Missing camera", camera);
 
-            float shiftX = static_cast<float>(size[0] ) / 2.f - static_cast<float>(camera->getCx());
-            float shiftY = static_cast<float>(size[1] ) / 2.f - static_cast<float>(camera->getCy());
+            if(camera->getIsCalibrated())
+            {
+                float shiftX = static_cast<float>(size[0] ) / 2.f - static_cast<float>(camera->getCx());
+                float shiftY = static_cast<float>(size[1] ) / 2.f - static_cast<float>(camera->getCy());
 
-            if (m_reverse)
-            {
-                cam->setPosition(shiftX, -shiftY, 0);
-            }
-            else
-            {
-                cam->setPosition(-shiftX, shiftY, 0);
+                if (m_reverse)
+                {
+                    cam->setPosition(shiftX, -shiftY, 0);
+                }
+                else
+                {
+                    cam->setPosition(-shiftX, shiftY, 0);
+                }
             }
         }
     }

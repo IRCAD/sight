@@ -38,7 +38,9 @@ public:
     typedef std::vector<CompositorType> CompositorChainType;
 
     FWRENDEROGRE_API ChainManager();
-    FWRENDEROGRE_API ChainManager(::Ogre::Viewport* ogreViewport);
+
+    /// Initialize the chain, need to be called before any other stuff
+    FWRENDEROGRE_API void initialize(::Ogre::Viewport* viewport);
 
     /// Inserts the new compositor in the compositor chain vector
     FWRENDEROGRE_API void addAvailableCompositor(CompositorIdType compositorName);
@@ -50,8 +52,6 @@ public:
     FWRENDEROGRE_API void setCompositorChain(std::vector<CompositorIdType> compositors);
 
     FWRENDEROGRE_API CompositorChainType getCompositorChain();
-
-    FWRENDEROGRE_API void setOgreViewport(::Ogre::Viewport* viewport);
 
     /// Name of the last compositor put in the compositor chain.
     /// This compositor is used to have a blend in order to get a correct final render
@@ -98,13 +98,6 @@ private:
 inline ChainManager::CompositorChainType ChainManager::getCompositorChain()
 {
     return m_compositorChain;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void ChainManager::setOgreViewport(::Ogre::Viewport* viewport)
-{
-    m_ogreViewport = viewport;
 }
 
 //-----------------------------------------------------------------------------

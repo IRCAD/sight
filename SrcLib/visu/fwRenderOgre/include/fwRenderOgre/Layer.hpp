@@ -7,18 +7,20 @@
 #ifndef __FWRENDEROGRE_LAYER_HPP__
 #define __FWRENDEROGRE_LAYER_HPP__
 
-#include <fwCore/BaseObject.hpp>
-
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/HasSlots.hpp>
 #include <fwCom/Slot.hpp>
 
+#include <fwData/Composite.hpp>
+
+#include <fwRenderOgre/IHasAdaptors.hpp>
+#include <fwRenderOgre/compositor/ChainManager.hpp>
+#include <fwRenderOgre/compositor/Core.hpp>
+#include <fwRenderOgre/compositor/Core.hpp>
 #include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
 #include <fwRenderOgre/interactor/IMovementInteractor.hpp>
 #include <fwRenderOgre/interactor/IPickerInteractor.hpp>
 #include <fwRenderOgre/interactor/IInteractor.hpp>
-#include <fwRenderOgre/compositor/ChainManager.hpp>
-#include <fwRenderOgre/compositor/Core.hpp>
 
 #include <fwThread/Worker.hpp>
 
@@ -40,12 +42,12 @@ namespace fwRenderOgre
 {
 
 /**
- * @class Layer
- * Allows to render multiple scenes in the same render window with viewports
+ * @brief   Allows to render multiple scenes in the same render window with viewports
  */
 class FWRENDEROGRE_CLASS_API Layer : public ::fwCore::BaseObject,
                                      public ::fwCom::HasSignals,
-                                     public ::fwCom::HasSlots
+                                     public ::fwCom::HasSlots,
+                                     public ::fwRenderOgre::IHasAdaptors
 
 {
 public:
@@ -59,6 +61,9 @@ public:
 
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_INIT_LAYER_SIG;
     typedef ::fwCom::Signal<void (::fwRenderOgre::Layer::sptr)> InitLayerSignalType;
+
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_COMPOSITOR_UPDATED_SIG;
+    typedef ::fwCom::Signal<void (std::string, bool, ::fwRenderOgre::Layer::sptr)> CompositorUpdatedSignalType;
 
     /** @} */
 
@@ -267,10 +272,15 @@ private:
     ::fwRenderOgre::interactor::IPickerInteractor::sptr m_selectInteractor;
 
     ///Connection service, needed for slot/signal association
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 
     /// Render service which this layer is attached
     WPTR(::fwRenderOgre::SRender) m_renderService;
+
+    ::fwData::Composite::sptr m_adaptorsObjectsOwner;
+
+    /// Layer identifier as referenced in SRender
+    std::string m_id;
 };
 
 }

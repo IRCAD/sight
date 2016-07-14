@@ -150,11 +150,14 @@ public:
     /// Returns the adaptor corresponding to the given id
     FWRENDEROGRE_API SPTR (IAdaptor) getAdaptor(AdaptorIdType adaptorId);
 
+    /// Returns all the adaptors
+    FWRENDEROGRE_API std::vector<CSPTR(IAdaptor)> getAdaptors() const;
+
     /// Returns the scene manager corresponding to the sceneID
-    FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager(::std::string sceneID = "default");
+    FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager(const ::std::string& sceneID);
 
     /// Returns the layer corresponding to the sceneID
-    FWRENDEROGRE_API ::fwRenderOgre::Layer::sptr getLayer(::std::string sceneID = "default");
+    FWRENDEROGRE_API ::fwRenderOgre::Layer::sptr getLayer(const ::std::string& sceneID);
 
     /// Returns this render layers
     FWRENDEROGRE_API LayerMapType getLayers();
@@ -221,14 +224,13 @@ private:
 
         ConfigurationType m_config;
         WPTR(IAdaptor) m_service;
-
     };
 
     /// Actives adaptors in scene
     typedef std::map< AdaptorIdType, SceneAdaptor > SceneAdaptorsMapType;
+
     /// Configuration element shared pointer
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-
 
     /// Start Ogre OpenGL context
     void startContext();
@@ -248,12 +250,12 @@ private:
     void connectAfterWait(::fwData::Composite::ContainerType objects);
 
     /// Creates the connection given by the configuration for obj associated with the key in the composite.
-    void manageConnection(const std::string &key, const ::fwData::Object::csptr &obj,
-                          const ConfigurationType &config);
+    void manageConnection(const std::string& key, const ::fwData::Object::csptr& obj,
+                          const ConfigurationType& config);
 
     /// Creates the proxy given by the configuration for obj associated with the key in the composite.
-    void manageProxy(const std::string &key, const ::fwData::Object::csptr &obj,
-                     const ConfigurationType &config);
+    void manageProxy(const std::string& key, const ::fwData::Object::csptr& obj,
+                     const ConfigurationType& config);
 
     /// Disconnects the connection based on a object key
     template< class ContainerType >
@@ -284,7 +286,7 @@ private:
     LayerMapType m_layers;
 
     /// Signal/ Slot connection
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 
     /// Map to register proxy connections
     ::fwServices::helper::Config::ProxyConnectionsMapType m_proxyMap;
@@ -296,7 +298,7 @@ private:
     /// vector containing all the proxy configurations
     ConnectConfigType m_proxies;
 
-    typedef std::map< std::string, ::fwServices::helper::SigSlotConnection::sptr > ObjectConnectionsMapType;
+    typedef std::map< std::string, ::fwServices::helper::SigSlotConnection > ObjectConnectionsMapType;
     /// map containing the object key/connection relation
     ObjectConnectionsMapType m_objectConnections;
 
@@ -326,7 +328,7 @@ void SRender::disconnect(const ContainerType& objects)
         std::string key = element.first;
         if(m_objectConnections.find(key) != m_objectConnections.end())
         {
-            m_objectConnections[key]->disconnect();
+            m_objectConnections[key].disconnect();
             m_objectConnections.erase(key);
         }
 

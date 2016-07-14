@@ -43,6 +43,14 @@ public:
     /// Destructor. Does nothing
     UIVISUOGRE_API virtual ~SMaterialSelector() throw();
 
+    /**
+     * @name Signals API
+     * @{
+     */
+    UIVISUOGRE_API static const ::fwCom::Signals::SignalKeyType s_SELECTED_SIG;
+    typedef ::fwCom::Signal<void (std::string)> SelectedSignalType;
+    /** @} */
+
 protected:
 
     /**

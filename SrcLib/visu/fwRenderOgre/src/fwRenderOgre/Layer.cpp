@@ -11,15 +11,26 @@
 
 #include <fwDataTools/Color.hpp>
 
+#include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/interactor/TrackballInteractor.hpp>
+#include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/Utils.hpp>
+
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwThread/Worker.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreColourValue.h>
+#include <OGRE/OgreCompositor.h>
+#include <OGRE/OgreCompositorChain.h>
+#include <OGRE/OgreCompositionPass.h>
+#include <OGRE/OgreCompositionTargetPass.h>
+#include <OGRE/OgreCompositionTechnique.h>
+
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreLight.h>
 #include <OGRE/OgreSceneNode.h>
@@ -39,7 +50,8 @@
 namespace fwRenderOgre
 {
 
-const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG = "layerInitialized";
+const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG         = "layerInitialized";
+const ::fwCom::Signals::SignalKeyType Layer::s_COMPOSITOR_UPDATED_SIG = "compositorUpdated";
 
 const ::fwCom::Slots::SlotKeyType Layer::s_INTERACTION_SLOT    = "interaction";
 const ::fwCom::Slots::SlotKeyType Layer::s_DESTROY_SLOT        = "destroy";
@@ -59,7 +71,6 @@ Layer::Layer() :
     m_coreCompositor(nullptr),
     m_transparencyTechnique(DEFAULT),
     m_numPeels(8),
-    m_compositorChainManager(),
     m_depth(1),
     m_topColor("#333333"),
     m_bottomColor("#333333"),
@@ -68,19 +79,20 @@ Layer::Layer() :
     m_camera(nullptr)
 {
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
+    newSignal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
 
     newSlot(s_INTERACTION_SLOT, &Layer::interaction, this);
     newSlot(s_DESTROY_SLOT, &Layer::destroy, this);
     newSlot(s_RESET_CAMERA_SLOT, &Layer::resetCameraCoordinates, this);
 
-    //Create the connection slot object
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
+    m_adaptorsObjectsOwner = ::fwData::Composite::New();
 }
 
 //-----------------------------------------------------------------------------
 
 Layer::~Layer()
 {
+    this->unregisterServices();
 }
 
 //-----------------------------------------------------------------------------
@@ -94,8 +106,12 @@ void Layer::setRenderWindow(::Ogre::RenderWindow* renderWindow)
 
 void Layer::setID(const std::string& id)
 {
-    m_sceneManager = ::fwRenderOgre::Utils::getOgreRoot()->createSceneManager(::Ogre::ST_GENERIC, id);
+    auto renderService = m_renderService.lock();
+    SLM_ASSERT("Render service must be set before calling setID().", renderService);
+    auto root = ::fwRenderOgre::Utils::getOgreRoot();
+    m_sceneManager = root->createSceneManager(::Ogre::ST_GENERIC, renderService->getID() + "_" + id);
     m_sceneManager->addRenderQueueListener( ::fwRenderOgre::Utils::getOverlaySystem() );
+    m_id = id;
 }
 
 //-----------------------------------------------------------------------------
@@ -126,7 +142,7 @@ void Layer::createScene()
     m_camera->setNearClipDistance(1);
 
     m_viewport = m_renderWindow->addViewport(m_camera, m_depth);
-    m_compositorChainManager.setOgreViewport(m_viewport);
+    m_compositorChainManager.initialize(m_viewport);
 
     if (m_depth != 0)
     {
@@ -134,7 +150,7 @@ void Layer::createScene()
     } // Set the background material
     else
     {
-        // FIXME : background isn't show when using compositor with a clear pass
+        // FIXME : background isn't shown when using compositor with a clear pass
         // We must blend the input previous in each compositor
         ::Ogre::MaterialPtr defaultMaterial = ::Ogre::MaterialManager::getSingleton().getByName("DefaultBackground");
         ::Ogre::MaterialPtr material        = ::Ogre::MaterialManager::getSingleton().create(
@@ -248,6 +264,102 @@ void Layer::updateCompositorState(std::string compositorName, bool isEnabled)
 {
     m_renderService.lock()->makeCurrent();
     m_compositorChainManager.updateCompositorState(compositorName, isEnabled);
+
+    ::Ogre::CompositorChain* compChain =
+        ::Ogre::CompositorManager::getSingleton().getCompositorChain(this->getViewport());
+
+    ::Ogre::CompositorInstance* compositor = compChain->getCompositor(compositorName);
+    SLM_ASSERT("The given compositor '" + compositorName + "' doesn't exist in the compositor chain", compositor);
+
+    ::Ogre::CompositionTechnique* tech = compositor->getTechnique();
+
+    std::vector< ::Ogre::CompositionTargetPass*> targetPasses;
+
+    // Collect target passes
+    size_t numTargetPasses = tech->getNumTargetPasses();
+    for(size_t j = 0; j < numTargetPasses; ++j)
+    {
+        ::Ogre::CompositionTargetPass* targetPass = tech->getTargetPass(j);
+        targetPasses.push_back(targetPass);
+    }
+    targetPasses.push_back(tech->getOutputTargetPass());
+
+    for(const auto targetPass : targetPasses)
+    {
+        size_t numPasses = targetPass->getNumPasses();
+
+        for(size_t i = 0; i < numPasses; ++i)
+        {
+            ::Ogre::CompositionPass* pass = targetPass->getPass(i);
+            // We retrieve the parameters of the base material in a temporary material
+            ::Ogre::MaterialPtr material = pass->getMaterial();
+
+            if(!material.isNull() )
+            {
+                const auto constants = ::fwRenderOgre::helper::Shading::findMaterialConstants(*material);
+                for(const auto& constant : constants)
+                {
+                    const std::string& constantName = std::get<0>(constant);
+                    auto type                       = std::get<2>(constant);
+
+                    const std::string shaderTypeStr = type == ::Ogre::GPT_VERTEX_PROGRAM ? "vertex" :
+                                                      type == ::Ogre::GPT_FRAGMENT_PROGRAM ? "fragment" :
+                                                      "geometry";
+
+                    // Naming convention for shader parameters
+                    fwTools::fwID::IDType id = this->getID() + "_" + shaderTypeStr + "-" + constantName;
+
+                    if(isEnabled && this->getRegisteredService(id) == nullptr)
+                    {
+                        auto obj = ::fwRenderOgre::helper::Shading::createObjectFromShaderParameter(std::get<1>(
+                                                                                                        constant));
+
+                        if(obj != nullptr)
+                        {
+                            obj->setName(constantName);
+
+                            // Creates an Ogre adaptor and associates it with the f4s object
+                            auto osr = ::fwServices::registry::ServiceFactory::getDefault();
+                            ::fwServices::IService::sptr srv = osr->create( "::visuOgreAdaptor::SCompositorParameter" );
+                            srv->setID(id);
+                            ::fwServices::OSR::registerService( ::fwData::Object::constCast(obj), srv );
+
+                            auto shaderParamService = ::fwRenderOgre::IAdaptor::dynamicCast(srv);
+                            shaderParamService->setRenderService(m_renderService.lock());
+
+                            ::fwServices::IService::ConfigType config;
+                            config.add("config.<xmlattr>.renderer", m_id);
+                            config.add("config.<xmlattr>.compositorName", compositorName);
+                            config.add("config.<xmlattr>.parameter", constantName);
+                            config.add("config.<xmlattr>.shaderType", shaderTypeStr);
+
+                            srv->setConfiguration(config);
+                            srv->configure();
+                            srv->start();
+
+                            // Add created subservice to current service
+                            this->registerService(shaderParamService);
+
+                            (*m_adaptorsObjectsOwner)[constantName] = obj;
+                        }
+                    }
+                    else
+                    {
+                        this->unregisterService(id);
+                        if(m_adaptorsObjectsOwner->at< ::fwData::Object>(constantName) != nullptr)
+                        {
+                            m_adaptorsObjectsOwner->getContainer().erase(constantName);
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    auto sig = this->signal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
+    sig->asyncEmit(compositorName, isEnabled, this->getSptr());
+
     m_renderService.lock()->requestRender();
 }
 
@@ -340,14 +452,14 @@ void Layer::setRenderService( const ::fwRenderOgre::SRender::sptr& _service)
 
 void Layer::setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::sptr interactor)
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
 
     m_moveInteractor = interactor;
     m_moveInteractor->resizeEvent(static_cast<int>(m_renderWindow->getWidth()),
                                   static_cast<int>(m_renderWindow->getHeight()) );
 
-    m_connections->connect(interactor, ::fwRenderOgre::interactor::IMovementInteractor::s_RESET_CAMERA_SIG,
-                           this->getSptr(), s_RESET_CAMERA_SLOT);
+    m_connections.connect(interactor, ::fwRenderOgre::interactor::IMovementInteractor::s_RESET_CAMERA_SIG,
+                          this->getSptr(), s_RESET_CAMERA_SLOT);
 }
 
 // ----------------------------------------------------------------------------
@@ -381,7 +493,7 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
     ::Ogre::AxisAlignedBox worldCoordBoundingBox;
 
     // Getting this render service scene manager
-    ::Ogre::SceneNode *rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
 
     // Needed to recompute world bounding boxes
     rootSceneNode->_update(true, false);
@@ -392,7 +504,7 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
 
     while(!childrenStack.empty())
     {
-        const ::Ogre::SceneNode *tempSceneNode = childrenStack.top();
+        const ::Ogre::SceneNode* tempSceneNode = childrenStack.top();
         childrenStack.pop();
 
         // Retrieves an iterator pointing to the attached movable objects of the current scene node
@@ -414,7 +526,7 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
         while(childNodesIt.hasMoreElements())
         {
             // First, we must cast the Node* into a SceneNode*
-            const ::Ogre::SceneNode *childNode = dynamic_cast< ::Ogre::SceneNode* >(childNodesIt.getNext());
+            const ::Ogre::SceneNode* childNode = dynamic_cast< ::Ogre::SceneNode* >(childNodesIt.getNext());
             if(childNode)
             {
                 // Push the current node into the stack in order to continue iteration
