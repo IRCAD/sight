@@ -132,7 +132,7 @@ void SVolumeRender::updatingTFPoints()
 
     FW_PROFILE("SAT")
     {
-        m_illum->updateVolIllum(m_3DOgreTexture, m_gpuTF.getTexture());
+//        m_illum->updateVolIllum(m_3DOgreTexture, m_gpuTF.getTexture());
     }
 
     this->requestRender();
@@ -153,7 +153,7 @@ void SVolumeRender::updatingTFWindowing(double window, double level)
 
     m_volumeRenderer->tfUpdate(tf);
 
-    m_illum->updateVolIllum(m_3DOgreTexture, m_gpuTF.getTexture());
+//    m_illum->updateVolIllum(m_3DOgreTexture, m_gpuTF.getTexture());
 
     this->requestRender();
 }

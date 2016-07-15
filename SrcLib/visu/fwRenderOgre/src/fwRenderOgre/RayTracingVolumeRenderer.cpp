@@ -277,7 +277,7 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
 
 void RayTracingVolumeRenderer::setPreIntegratedRendering(bool preIntegratedRendering)
 {
-    OSLM_WARN_IF("Stereoscopic rendering doesn't implement pre-integration", m_mode3D && preIntegratedRendering);
+    OSLM_WARN_IF("Stereoscopic rendering doesn't implement pre-integration yet.", m_mode3D && preIntegratedRendering);
 
     m_preIntegratedRendering = preIntegratedRendering;
 
@@ -301,9 +301,9 @@ void RayTracingVolumeRenderer::configure3DViewport(Layer::sptr layer)
     ::Ogre::CompositorInstance *compInstance = compChain->getCompositor("RayTracedVolume3D");
 
     compInstance->addListener(new AutoStereoCompositorListener(m_entryPointsTextures,
-                                                              m_viewPointMatrices,
-                                                              m_3DOgreTexture,
-                                                              m_gpuTF->getTexture(),
+                                                               m_viewPointMatrices,
+                                                               m_3DOgreTexture,
+                                                               m_gpuTF->getTexture(),
                                                                m_sampleDistance));
 }
 
@@ -489,8 +489,9 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
     ::Ogre::Pass *pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass(0);
 
     ::Ogre::RenderOperation renderOp;
-//    m_proxyGeometryGenerator->getRenderOperation(renderOp);
-    m_entryPointGeometry->getSection(0)->getRenderOperation(renderOp);
+    m_proxyGeometryGenerator->getRenderOperation(renderOp);
+//    m_entryPointGeometry->getSection(0)->getRenderOperation(renderOp);
+    m_entryPointGeometry->setVisible(!m_mode3D);
 
     ::Ogre::Matrix4 worldMat;
     m_proxyGeometryGenerator->getWorldTransforms(&worldMat);

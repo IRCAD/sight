@@ -135,6 +135,60 @@ void composite(inout vec4 result, in vec4 colour)
 
 //-----------------------------------------------------------------------------
 
+vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float sampleDistance)
+{
+    // Opacity correction factor =
+    // Inverse of the sampling rate accounted by the TF.
+    const float opacityCorrectionFactor = 200.;
+
+    vec4 result = vec4(0);
+
+    int iterCount = 0;
+    for(float t = 0; iterCount < 65000 && t < rayLength; iterCount += 1, t += sampleDistance)
+    {
+#ifdef PREINTEGRATION
+        float sf = texture(u_image, rayPos).r;
+        float sb = texture(u_image, rayPos + rayDir).r;
+
+        sf = ((sf * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
+        sb = ((sb * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
+
+        vec4 tfColour = texture(u_tfTexture, vec2(sf, sb));
+
+#else
+        float intensity = texture(u_image, rayPos).r;
+
+        vec4  tfColour  = transferFunction(intensity);
+#endif // PREINTEGRATION
+
+        if(tfColour.a > 0)
+        {
+            vec3 N = gradientNormal(rayPos);
+
+            tfColour.rgb = tfColour.rgb * abs(dot(N, u_lightDirs[0]))/* * 0.7 + tfColour.rgb * abs(dot(N, u_lightDirs[1])) * 1.0*/;
+
+#ifndef PREINTEGRATION
+            // Adjust opacity to sample distance.
+            // This could be done when generating the TF texture to improve performance.
+            tfColour.a   = 1 - pow(1 - tfColour.a, u_sampleDistance * opacityCorrectionFactor);
+#endif // PREINTEGRATION
+
+            composite(result, tfColour);
+
+            if(result.a > 0.99)
+            {
+                break;
+            }
+        }
+
+        rayPos += rayDir;
+    }
+
+    return result;
+}
+
+//-----------------------------------------------------------------------------
+
 void main(void)
 {
 #ifndef MODE3D
@@ -158,6 +212,8 @@ void main(void)
     float rayLength = length(rayExit - rayEntry);
 
 #else
+    int nbRays = 0;
+    float fragDepth = 0;
     vec2 rayEntryPoints[3];
     mat4 viewports[3];
 
@@ -167,7 +223,8 @@ void main(void)
     {
         discard;
     }
-//    fragColor.a = 0;
+
+    fragColor.a = 0;
 
     for(int i = 0; i < 3; ++ i)
     {
@@ -177,8 +234,11 @@ void main(void)
         if(/*gl_FragCoord.z > entryDepth ||*/ exitDepth == -1)
         {
             fragColor[i] = 0;
-            discard;
+            continue;
         }
+
+        nbRays ++;
+        fragDepth += entryDepth;
 
         mat4 invWorldViewProj = viewports[i];
 
@@ -189,65 +249,20 @@ void main(void)
 
         float rayLength = length(rayExit - rayEntry);
 
-#endif
-
-        vec4 result = vec4(0);
-
-        // Opacity correction factor =
-        // Inverse of the sampling rate accounted by the TF.
-        const float opacityCorrectionFactor = 200.;
-
+#endif // MODE3D
         vec3 rayPos = rayEntry;
+        vec4 result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
 
-        int iterCount = 0;
-        for(float t = 0; iterCount < 65000 && t < rayLength; iterCount += 1, t += u_sampleDistance)
-        {
-    #ifdef PREINTEGRATION
-            float sf = texture(u_image, rayPos).r;
-            float sb = texture(u_image, rayPos + rayDir).r;
-
-            sf = ((sf * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
-            sb = ((sb * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
-
-            vec4 tfColour = texture(u_tfTexture, vec2(sf, sb));
-
-    #else
-            float intensity = texture(u_image, rayPos).r;
-
-            vec4  tfColour  = transferFunction(intensity);
-    #endif // PREINTEGRATION
-
-            if(tfColour.a > 0)
-            {
-                vec3 N = gradientNormal(rayPos);
-
-                tfColour.rgb = tfColour.rgb * abs(dot(N, u_lightDirs[0]))/* * 0.7 + tfColour.rgb * abs(dot(N, u_lightDirs[1])) * 1.0*/;
-
-    #ifndef PREINTEGRATION
-                // Adjust opacity to sample distance.
-                // This could be done when generating the TF texture to improve performance.
-                tfColour.a   = 1 - pow(1 - tfColour.a, u_sampleDistance * opacityCorrectionFactor);
-    #endif
-
-                composite(result, tfColour);
-
-                if(result.a > 0.99)
-                {
-                    break;
-                }
-            }
-
-            rayPos += rayDir;
-        }
 #ifdef MODE3D
         fragColor[i] = result[i];
         fragColor.a += result.a;
     }
 
     fragColor.a /= 3;
+    gl_FragDepth = nbRays == 0 ? 1.f : fragDepth / float(nbRays);
 
 #else
     fragColor = result;
-#endif
+#endif // MODE3D
 
 }
