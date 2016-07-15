@@ -85,6 +85,23 @@ private:
 
 //-----------------------------------------------------------------------------
 
+struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listener
+{
+    RayTracingVolumeRenderer *m_renderer;
+
+    CameraListener(RayTracingVolumeRenderer *renderer) :
+        m_renderer(renderer)
+    {
+    }
+
+    virtual void cameraPreRenderScene(::Ogre::Camera*)
+    {
+        m_renderer->computeEntryPointsTexture();
+    }
+};
+
+//-----------------------------------------------------------------------------
+
 RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    ::Ogre::SceneManager *sceneManager,
                                                    ::Ogre::SceneNode *parentNode,
@@ -94,10 +111,10 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    bool mode3D) :
     IVolumeRenderer(parentId, sceneManager, parentNode, imageTexture, gpuTF, preintegrationTable),
     m_entryPointGeometry(nullptr),
-    m_imageSize { 1, 1, 1 },
-    m_gridSize  { 2, 2, 2 },
-    m_bricksSize{ 8, 8, 8 },
-    m_mode3D    (mode3D)
+    m_imageSize         { 1, 1, 1 },
+    m_gridSize          { 2, 2, 2 },
+    m_bricksSize        { 8, 8, 8 },
+    m_mode3D            (mode3D)
 {
     const std::vector<std::string> vrMaterials {
         "RayTracedVolume",
@@ -309,9 +326,20 @@ void RayTracingVolumeRenderer::configure3DViewport(Layer::sptr layer)
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::setFocalDistance(float focusPoint)
+void RayTracingVolumeRenderer::setFocalLength(float focalLength)
 {
-    m_focusAdjustement = focusPoint;
+    const ::Ogre::Plane cameraPlane(m_camera->getRealDirection(), m_camera->getRealPosition());
+    const auto cameraDistComparator = [&cameraPlane](const ::Ogre::Vector3& v1, const ::Ogre::Vector3& v2)
+            { return cameraPlane.getDistance(v1) < cameraPlane.getDistance(v2); };
+
+    const auto closestFurthestImgPoints
+            = std::minmax_element(m_clippedImagePositions, m_clippedImagePositions + 8, cameraDistComparator);
+
+    const auto focusPoint = *closestFurthestImgPoints.first + focalLength * (*closestFurthestImgPoints.second - *closestFurthestImgPoints.first);
+
+    const float realFocalLength  = m_camera->getRealPosition().distance(focusPoint);
+
+    m_camera->setFocalLength(realFocalLength);
 }
 
 //-----------------------------------------------------------------------------
@@ -483,14 +511,12 @@ void RayTracingVolumeRenderer::initEntryPoints()
 
 void RayTracingVolumeRenderer::computeEntryPointsTexture()
 {
-//    m_proxyGeometryGenerator->setMaterial("RayEntryPoints");
     m_proxyGeometryGenerator->setVisible(false);
 
     ::Ogre::Pass *pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass(0);
 
     ::Ogre::RenderOperation renderOp;
     m_proxyGeometryGenerator->getRenderOperation(renderOp);
-//    m_entryPointGeometry->getSection(0)->getRenderOperation(renderOp);
     m_entryPointGeometry->setVisible(!m_mode3D);
 
     ::Ogre::Matrix4 worldMat;
@@ -521,62 +547,6 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 
         m_sceneManager->manualRender(&renderOp, pass, renderTexture->getViewport(0), worldMat, m_camera->getViewMatrix(), projMat);
     }
-
-//    m_proxyGeometryGenerator->setMaterial("Default");
-
-    // TEST
-//    size_t nbPixels = m_entryPointsTextures[0]->getHeight() * m_entryPointsTextures[0]->getWidth();
-//    size_t dataSize = nbPixels * 3 * sizeof(float);
-
-//    float *optiText = new float[dataSize];
-
-//    ::Ogre::HardwarePixelBufferSharedPtr textBuffer = m_entryPointsTextures[0]->getBuffer();
-
-//    void *pixBuff = textBuffer->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY);
-//    {
-//        std::memcpy(optiText, pixBuff, dataSize);
-//    }
-//    textBuffer->unlock();
-
-//    ::Ogre::RenderTexture *renderTexture = m_entryPointsTextures[0]->getBuffer()->getRenderTarget();
-
-//    m_entryPointGeometry->getSection(0)->getRenderOperation(renderOp);
-//    m_sceneManager->manualRender(&renderOp, pass, renderTexture->getViewport(0), worldMat, m_camera->getViewMatrix(), m_camera->getProjectionMatrix());
-
-//    float *cubeText = new float[dataSize];
-
-//    textBuffer =  m_entryPointsTextures[0]->getBuffer();
-//    pixBuff = textBuffer->lock(::Ogre::HardwareBuffer::HBL_READ_ONLY);
-//    {
-//        std::memcpy(cubeText, pixBuff, dataSize);
-//    }
-//    textBuffer->unlock();
-
-
-//    double totalSkippedDistance = 0;
-
-//    double cubeDist = 0, optiDist = 0;
-
-//    for(size_t i = 0; i < nbPixels * 3; i +=3)
-//    {
-////        std::cout << "r " << cubeText[i] << " g " << cubeText[i+1] << " b " << cubeText[i + 2] << std::endl;
-
-//        if(optiText[i+1] != 1)
-//        {
-//            optiDist += -optiText[i+1] - optiText[i];
-//        }
-//        if(cubeText[i+1] != 1)
-//        {
-//            cubeDist += -cubeText[i+1] - cubeText[i];
-//        }
-
-////        totalSkippedDistance += (cubeDist - optiDist);
-//    }
-
-//    std::cout << "Total skipped distance : " << optiDist / cubeDist << std::endl;
-
-//    delete[] optiText;
-//        delete[] cubeText;
 }
 
 //-----------------------------------------------------------------------------
@@ -585,16 +555,7 @@ Ogre::Matrix4 RayTracingVolumeRenderer::frustumShearTransform(float angle) const
 {
     ::Ogre::Matrix4 shearTransform = ::Ogre::Matrix4::IDENTITY;
 
-    const ::Ogre::Plane cameraPlane(m_camera->getRealDirection(), m_camera->getRealPosition());
-    const auto cameraDistComparator = [&cameraPlane](const ::Ogre::Vector3& v1, const ::Ogre::Vector3& v2)
-            { return cameraPlane.getDistance(v1) < cameraPlane.getDistance(v2); };
-
-    const auto closestFurthestImgPoints
-            = std::minmax_element(m_clippedImagePositions, m_clippedImagePositions + 8, cameraDistComparator);
-
-    const auto focusPoint = *closestFurthestImgPoints.first + m_focusAdjustement * (*closestFurthestImgPoints.second - *closestFurthestImgPoints.first);
-
-    const float focalLength  = m_camera->getRealPosition().distance(focusPoint);
+    const float focalLength  = m_camera->getFocalLength();
     const float xshearFactor = std::tan(angle);
 
     shearTransform[0][2] = -xshearFactor;

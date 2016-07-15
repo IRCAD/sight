@@ -41,6 +41,7 @@ namespace visuOgreAdaptor
    @endcode
  * - \b renderer (optional): defines the renderer displaying the volume.
  * - \b preintegration (optional, yes/no, default=no): use pre-integration.
+ * - \b widgets (optional, yes/no, default=yes): display VR widgets.
  * - \b mode (optional, slice/raycasting, default=raycasting): Rendering mode.
  * - \b selectedTFKey (mandatory): TF key.
  * - \b tfSelectionFwID (mandatory): TF selection.
@@ -49,7 +50,10 @@ namespace visuOgreAdaptor
  * - \b newImage(): Called when a new image is loaded.
  * - \b samplingChanged(int): Called when the sampling is changed and updates the volume renderer accordingly.
  * - \b togglePreintegration(bool): Toggle pre-integration.
+ * - \b toggleWidgets(bool): Toggles widget visibility.
  * - \b resizeViewport(int, int): Called when the size of the viewport changes.
+ * - \b setFocalDistance(float): Called to modify focal length (only useful for stereoscopic 3D).
+
  */
 class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
                                                 public ::fwRenderOgre::ITransformable,
@@ -63,9 +67,9 @@ public:
      * @name Slots API
      * @{
      */
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEWIMAGE_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEWSAMPLING_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLEPREINTEGRATION_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEW_IMAGE_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEW_SAMPLING_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_PREINTEGRATION_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_FOCAL_DISTANCE_SLOT;
@@ -160,6 +164,7 @@ private:
     /// Toggles widget visibility.
     bool m_widgetVisibilty;
 
+    /// Illumination volume used to render shadows and ambient occlusion.
     ::fwRenderOgre::SATVolumeIllumination *m_illum;
 
     /// Handle connections between the layer and the volume renderer

@@ -50,11 +50,12 @@ public:
     /// Sets pre-integrated mode.
     FWRENDEROGRE_API virtual void setPreIntegratedRendering(bool preIntegratedRendering);
 
-    ///
+    /// Configures to layer to handle stereoscopic rendering by adding the stereo VR compositor to the chain.
     FWRENDEROGRE_API void configure3DViewport(Layer::sptr layer);
 
     /// Sets the focal distance used for stereo rendering.
-    FWRENDEROGRE_API void setFocalDistance(float focusPoint);
+    /// A focal length of 0 focuses on the front of the image and a length of 1 focuses on the back.
+    FWRENDEROGRE_API void setFocalLength(float focalLength);
 
     /// Computes image positions, updates the proxy geometry.
     FWRENDEROGRE_API virtual void clipImage(const ::Ogre::AxisAlignedBox& clippingBox);
@@ -64,21 +65,8 @@ public:
 
 private:
 
-    struct CameraListener : public ::Ogre::Camera::Listener
-    {
-        RayTracingVolumeRenderer *m_renderer;
-
-        CameraListener(RayTracingVolumeRenderer *renderer) :
-            m_renderer(renderer)
-        {
-        }
-
-        virtual void cameraPreRenderScene(::Ogre::Camera*)
-        {
-            m_renderer->computeEntryPointsTexture();
-        }
-    };
-
+    /// Camera listener class used to compute the entry points textures before rendering.
+    struct CameraListener;
 
     /// Creates the proxy geometry defining the entry points for rays.
     void initEntryPoints();
@@ -104,13 +92,10 @@ private:
     /// Grid defining volume bricks.
     ::Ogre::TexturePtr m_gridTexture;
 
-    /// Texture holding ray entry and exit points for each screen pixel.
-//    ::Ogre::TexturePtr m_entryPointsTexture;
-
     /// Ray entry and exit points for each pixel of each viewpoint.
     std::vector< ::Ogre::TexturePtr> m_entryPointsTextures;
 
-    ///
+    /// Inverse world-view-projection matrices of each viewpoint.
     std::vector< ::Ogre::Matrix4> m_viewPointMatrices;
 
     /// Render operation used to compute the brick grid.
@@ -127,8 +112,6 @@ private:
 
     /// Sets stereoscopic volume rendering for Alioscopy monitors.
     bool m_mode3D;
-
-    float m_focusAdjustement = 0.5;
 };
 
 } // namespace fwRenderOgre

@@ -43,10 +43,10 @@
                         <config renderer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
                     </adaptor>
 
-                    <adaptor id="xautoStereoParamAdaptor" class="::visuOgreAdaptor::SCompositorParameter" objectId="lobeOffset">
+<!--                    <adaptor id="autoStereoParamAdaptor" class="::visuOgreAdaptor::SCompositorParameter" objectId="lobeOffset">
                         <config renderer="default" compositorName="RayTracedVolume3D" parameter="u_lobeOffset" shaderType="fragment" />
                     </adaptor>
-
+-->
                     <connect>
                         <signal>${GENERIC_UID}_samplingSlider/valueChanged</signal>
                         <slot>${GENERIC_UID}_VR/updateSampling</slot>
@@ -131,9 +131,9 @@
             <item key="lobeOffset">
                 <object uid="lobeOffsetFloatVal" type="::fwData::Float">
                     <service uid="slider" impl="::guiQt::editor::SSlider" autoConnect="no">
-                        <defaultValue>0</defaultValue>
+                        <defaultValue>0.5</defaultValue>
                         <value>0</value>
-                        <text>lobe offset</text>
+                        <text>Focal length</text>
                         <stepSize>0.01</stepSize>
                         <range>
                             <min>0</min>

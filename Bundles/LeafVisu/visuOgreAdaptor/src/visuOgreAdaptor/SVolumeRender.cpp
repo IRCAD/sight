@@ -42,12 +42,12 @@ namespace visuOgreAdaptor
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWIMAGE_SLOT             = "newImage";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEWSAMPLING_SLOT          = "updateSampling";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLEPREINTEGRATION_SLOT = "togglePreintegration";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT       = "toggleWidgets";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT      = "resizeViewport";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_FOCAL_DISTANCE_SLOT   = "setFocalDistance";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEW_IMAGE_SLOT             = "newImage";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEW_SAMPLING_SLOT          = "updateSampling";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_PREINTEGRATION_SLOT = "togglePreintegration";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT        = "toggleWidgets";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT       = "resizeViewport";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_FOCAL_DISTANCE_SLOT    = "setFocalDistance";
 
 //-----------------------------------------------------------------------------
 
@@ -61,9 +61,9 @@ SVolumeRender::SVolumeRender() throw() :
     m_widgetVisibilty        (true)
 {
     this->installTFSlots(this);
-    newSlot(s_NEWIMAGE_SLOT, &SVolumeRender::newImage, this);
-    newSlot(s_NEWSAMPLING_SLOT, &SVolumeRender::samplingChanged, this);
-    newSlot(s_TOGGLEPREINTEGRATION_SLOT, &SVolumeRender::togglePreintegration, this);
+    newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
+    newSlot(s_NEW_SAMPLING_SLOT, &SVolumeRender::samplingChanged, this);
+    newSlot(s_TOGGLE_PREINTEGRATION_SLOT, &SVolumeRender::togglePreintegration, this);
     newSlot(s_TOGGLE_WIDGETS_SLOT, &SVolumeRender::toggleWidgets, this);
     newSlot(s_RESIZE_VIEWPORT_SLOT, &SVolumeRender::resizeViewport, this);
     newSlot(s_SET_FOCAL_DISTANCE_SLOT, &SVolumeRender::setFocalDistance, this);
@@ -132,7 +132,7 @@ void SVolumeRender::updatingTFPoints()
 
     FW_PROFILE("SAT")
     {
-//        m_illum->updateVolIllum(m_3DOgreTexture, m_gpuTF.getTexture());
+        m_illum->updateVolIllum(m_3DOgreTexture, m_gpuTF.getTexture());
     }
 
     this->requestRender();
@@ -153,7 +153,7 @@ void SVolumeRender::updatingTFWindowing(double window, double level)
 
     m_volumeRenderer->tfUpdate(tf);
 
-//    m_illum->updateVolIllum(m_3DOgreTexture, m_gpuTF.getTexture());
+    m_illum->updateVolIllum(m_3DOgreTexture, m_gpuTF.getTexture());
 
     this->requestRender();
 }
@@ -164,7 +164,7 @@ fwServices::IService::KeyConnectionsType SVolumeRender::getObjSrvConnections() c
 {
     ::fwServices::IService::KeyConnectionsType connections;
 
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT ) );
 
     return connections;
 }
@@ -194,19 +194,6 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     m_gpuTF.createTexture(this->getID());
     m_preIntegrationTable.createTexture(this->getID());
 
-    ::Ogre::Light *mainLight = m_sceneManager->getLight("MainLight");
-    ::Ogre::Light *newLight  = m_sceneManager->createLight(getID() + "_TestLight");
-
-    newLight->setType(::Ogre::Light::LT_DIRECTIONAL);
-    newLight->setDiffuseColour(::Ogre::ColourValue());
-    newLight->setSpecularColour(::Ogre::ColourValue());
-
-    ::Ogre::Quaternion newLightOrientation = ::Ogre::Quaternion(::Ogre::Degree(-45),
-                                                                ::Ogre::Vector3(1,0,0)) * ::Ogre::Quaternion(::Ogre::Degree(90),
-                                                                                                             ::Ogre::Vector3(0,1,0));
-
-    newLight->setDirection(newLightOrientation * mainLight->getDirection());
-
     m_camera->getParentSceneNode()->attachObject(newLight);
 
     if(m_renderingMode == VR_MODE_SLICE)
@@ -232,7 +219,11 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 
         if(serviceLayer->is3D())
         {
-            dynamic_cast< ::fwRenderOgre::RayTracingVolumeRenderer*>(m_volumeRenderer)->configure3DViewport(serviceLayer);
+            auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::RayTracingVolumeRenderer*>(m_volumeRenderer);
+
+            OSLM_ERROR_IF("Stereo rendering is supported only by ray casting VR.", !rayCastVolumeRenderer);
+
+            rayCastVolumeRenderer->configure3DViewport(serviceLayer);
         }
     }
 
@@ -257,6 +248,10 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     }
 
     this->getRenderService()->resetCameraCoordinates(m_layerID);
+
+    // Initially focus on the image center.
+    setFocalDistance(0.5f);
+
     m_volumeRenderer->tfUpdate(this->getTransferFunction());
     this->requestRender();
 }
@@ -372,7 +367,7 @@ void SVolumeRender::setFocalDistance(float focalDistance)
 
         if(rayTracingRenderer)
         {
-            rayTracingRenderer->setFocalDistance(focalDistance);
+            rayTracingRenderer->setFocalLength(focalDistance);
 
             this->requestRender();
         }

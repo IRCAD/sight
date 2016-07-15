@@ -566,12 +566,6 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
 
         m_camera->setNearClipDistance( maxNear );
         m_camera->setFarClipDistance( minFar );
-
-        // Compute focal length
-        ::Ogre::Vector3 focalPoint = worldCoordBoundingBox.getCenter();
-        ::Ogre::Real focalLength   = focalPoint.distance(m_camera->getRealPosition());
-
-        m_camera->setFocalLength(focalLength);
     }
 }
 
