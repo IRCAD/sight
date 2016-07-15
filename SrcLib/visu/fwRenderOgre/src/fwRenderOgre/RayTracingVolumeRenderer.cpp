@@ -7,9 +7,11 @@
 #include <OGRE/OgreCompositorInstance.h>
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreDepthBuffer.h>
+#include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreHardwareBufferManager.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreHardwareVertexBuffer.h>
+#include <OGRE/OgreLight.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreSubMesh.h>
 #include <OGRE/OgreMesh.h>
@@ -35,12 +37,14 @@ public:
                                 std::vector< ::Ogre::Matrix4>& invWorldViewProj,
                                 ::Ogre::TexturePtr image3DTexture,
                                 ::Ogre::TexturePtr tfTexture,
-                                float& sampleDistance) :
+                                float& sampleDistance,
+                                ::Ogre::SceneNode *volumeSceneNode) :
         m_renderTargets   (renderTargets),
         m_invWorldViewProj(invWorldViewProj),
         m_image3DTexture  (image3DTexture),
         m_tfTexture       (tfTexture),
-        m_sampleDistance  (sampleDistance)
+        m_sampleDistance  (sampleDistance),
+        m_volumeSceneNode (volumeSceneNode)
     {
 
     }
@@ -67,6 +71,17 @@ public:
             OSLM_ASSERT("No texture named " << i, texUnitState);
             texUnitState->setTextureName(m_renderTargets[i]->getName());
         }
+
+        // Set light directions in shader.
+        ::Ogre::LightList closestLights = m_volumeSceneNode->getAttachedObject(0)->queryLights();
+        ::Ogre::GpuConstantDefinition lightDirArrayDefinition = vr3DParams->getConstantDefinition("u_lightDirs");
+
+        for(unsigned i = 0; i < lightDirArrayDefinition.arraySize; ++ i)
+        {
+            ::Ogre::Vector3 lightDir = m_volumeSceneNode->convertLocalToWorldDirection(closestLights[i]->getDerivedDirection(), true);
+
+            vr3DParams->setNamedConstant("u_lightDirs[" + std::to_string(i) + "]", lightDir);
+        }
     }
 
 private:
@@ -80,6 +95,8 @@ private:
     ::Ogre::TexturePtr m_tfTexture;
 
     float& m_sampleDistance;
+
+    ::Ogre::SceneNode *m_volumeSceneNode;
 
 };
 
@@ -96,6 +113,9 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
 
     virtual void cameraPreRenderScene(::Ogre::Camera*)
     {
+        // Recompute the focal length in case the camera moved.
+        m_renderer->computeRealFocalLength();
+
         m_renderer->computeEntryPointsTexture();
     }
 };
@@ -321,25 +341,17 @@ void RayTracingVolumeRenderer::configure3DViewport(Layer::sptr layer)
                                                                m_viewPointMatrices,
                                                                m_3DOgreTexture,
                                                                m_gpuTF->getTexture(),
-                                                               m_sampleDistance));
+                                                               m_sampleDistance,
+                                                               m_volumeSceneNode));
 }
 
 //-----------------------------------------------------------------------------
 
 void RayTracingVolumeRenderer::setFocalLength(float focalLength)
 {
-    const ::Ogre::Plane cameraPlane(m_camera->getRealDirection(), m_camera->getRealPosition());
-    const auto cameraDistComparator = [&cameraPlane](const ::Ogre::Vector3& v1, const ::Ogre::Vector3& v2)
-            { return cameraPlane.getDistance(v1) < cameraPlane.getDistance(v2); };
+    m_focalLength = focalLength;
 
-    const auto closestFurthestImgPoints
-            = std::minmax_element(m_clippedImagePositions, m_clippedImagePositions + 8, cameraDistComparator);
-
-    const auto focusPoint = *closestFurthestImgPoints.first + focalLength * (*closestFurthestImgPoints.second - *closestFurthestImgPoints.first);
-
-    const float realFocalLength  = m_camera->getRealPosition().distance(focusPoint);
-
-    m_camera->setFocalLength(realFocalLength);
+    computeRealFocalLength();
 }
 
 //-----------------------------------------------------------------------------
@@ -547,6 +559,24 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 
         m_sceneManager->manualRender(&renderOp, pass, renderTexture->getViewport(0), worldMat, m_camera->getViewMatrix(), projMat);
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::computeRealFocalLength()
+{
+    const ::Ogre::Plane cameraPlane(m_camera->getRealDirection(), m_camera->getRealPosition());
+    const auto cameraDistComparator = [&cameraPlane](const ::Ogre::Vector3& v1, const ::Ogre::Vector3& v2)
+            { return cameraPlane.getDistance(v1) < cameraPlane.getDistance(v2); };
+
+    const auto closestFurthestImgPoints
+            = std::minmax_element(m_clippedImagePositions, m_clippedImagePositions + 8, cameraDistComparator);
+
+    const auto focusPoint = *closestFurthestImgPoints.first + m_focalLength * (*closestFurthestImgPoints.second - *closestFurthestImgPoints.first);
+
+    const float realFocalLength = m_camera->getRealPosition().distance(focusPoint);
+
+    m_camera->setFocalLength(realFocalLength);
 }
 
 //-----------------------------------------------------------------------------

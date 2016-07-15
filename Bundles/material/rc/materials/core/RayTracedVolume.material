@@ -40,7 +40,7 @@ fragment_program VR/RayTracedVolume3D_FP glsl
     default_params
     {
         //param_named_auto u_lightDir light_position_object_space 0
-        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named u_lightDirs light_direction_view_space_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
@@ -154,9 +154,6 @@ material RayTracedVolume3D
         {
             cull_hardware none
             cull_software none
-            //depth_check off
-            //depth_write off
-
             scene_blend alpha_blend
 
             vertex_program_ref RenderQuad_VP

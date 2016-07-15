@@ -65,14 +65,8 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
     m_qOgreWidget->showOverlay(showOverlay);
     m_qOgreWidget->setAnimating(!renderOnDemand);
 
-//    QDesktopWidget *desktop = QApplication::desktop();
-//    int screenNumber = desktop->screenNumber(static_cast<QWindow*>(m_qOgreWidget));
-
     QWidget* renderingContainer = QWidget::createWindowContainer(m_qOgreWidget);
     renderingContainer->setSizePolicy(QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding));
-
-//    QRect screenres = desktop->screenGeometry(screenNumber);
-//    m_qOgreWidget->setGeometry(screenres);
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
@@ -82,8 +76,21 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
 
     if(fullscreen)
     {
+        // Open fullscreen widget on secondary monitor if there is one.
+        QDesktopWidget *desktop = QApplication::desktop();
+        int screenNumber = desktop->screenNumber(container) + 1;
+
+        if(screenNumber >= desktop->screenCount())
+        {
+            screenNumber = desktop->primaryScreen();
+        }
+
+        QRect screenres = desktop->screenGeometry(screenNumber);
+
         container->setParent(0);
         container->showFullScreen();
+
+        container->setGeometry(screenres);
 
         m_qOgreWidget->setFullScreen(fullscreen);
     }

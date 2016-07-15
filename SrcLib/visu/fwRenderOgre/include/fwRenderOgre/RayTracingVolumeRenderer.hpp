@@ -77,6 +77,8 @@ private:
     /// Renders the proxy geometry too fill the entry point texture.
     void computeEntryPointsTexture();
 
+    void computeRealFocalLength();
+
     /// Computes the shear warp to apply to a frustum for multi-view rendering based on the angle with the original camera.
     ::Ogre::Matrix4 frustumShearTransform(float angle) const;
 
@@ -112,6 +114,8 @@ private:
 
     /// Sets stereoscopic volume rendering for Alioscopy monitors.
     bool m_mode3D;
+
+    float m_focalLength;
 };
 
 } // namespace fwRenderOgre

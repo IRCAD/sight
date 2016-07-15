@@ -24,8 +24,7 @@ uniform sampler2D u_entryPoints;
 
 uniform mat4 u_invWorldViewProj;
 
-#endif
-
+#endif // MODE3D
 
 uniform vec3 u_lightDirs[1];
 //uniform vec3 u_diffuse;

@@ -194,8 +194,6 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     m_gpuTF.createTexture(this->getID());
     m_preIntegrationTable.createTexture(this->getID());
 
-    m_camera->getParentSceneNode()->attachObject(newLight);
-
     if(m_renderingMode == VR_MODE_SLICE)
     {
         m_volumeRenderer = new ::fwRenderOgre::SliceVolumeRenderer(this->getID(),
@@ -224,6 +222,9 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
             OSLM_ERROR_IF("Stereo rendering is supported only by ray casting VR.", !rayCastVolumeRenderer);
 
             rayCastVolumeRenderer->configure3DViewport(serviceLayer);
+
+            // Initially focus on the image center.
+            setFocalDistance(0.5f);
         }
     }
 
@@ -248,9 +249,6 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     }
 
     this->getRenderService()->resetCameraCoordinates(m_layerID);
-
-    // Initially focus on the image center.
-    setFocalDistance(0.5f);
 
     m_volumeRenderer->tfUpdate(this->getTransferFunction());
     this->requestRender();
