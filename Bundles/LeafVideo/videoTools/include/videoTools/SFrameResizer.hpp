@@ -18,7 +18,6 @@ namespace videoTools
 /**
  * @brief   Operator that resizes buffer coming from an input extData::FrameTL and pushes them into an output timeline.
  *          This service uses OpenCV to perform the resize processing.
- * @class   SFrameResizer
  */
 class VIDEOTOOLS_CLASS_API SFrameResizer : public ::arServices::IOperator
 {
@@ -83,7 +82,7 @@ private:
     int m_interpolationMethod;
 
     /// Connections
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 };
 
 } // videoTools

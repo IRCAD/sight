@@ -41,6 +41,7 @@ namespace visuVTKARAdaptor
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT         = "updateImage";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_OPACITY_SLOT = "updateImageOpacity";
+static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT                 = "show";
 static const  ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT           = "calibrate";
 
 //------------------------------------------------------------------------------
@@ -54,6 +55,7 @@ SVideoAdapter::SVideoAdapter() throw() :
 {
     newSlot(s_UPDATE_IMAGE_SLOT, &SVideoAdapter::updateImage, this);
     newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SVideoAdapter::updateImageOpacity, this);
+    newSlot(s_SHOW_SLOT, &SVideoAdapter::show, this);
     newSlot(s_CALIBRATE_SLOT, &SVideoAdapter::offsetOpticalCenter, this);
 }
 
@@ -96,7 +98,6 @@ void SVideoAdapter::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-
 void SVideoAdapter::doStart() throw(fwTools::Failed)
 {
     vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
@@ -112,12 +113,11 @@ void SVideoAdapter::doStart() throw(fwTools::Failed)
     // Set camera pointer, it will be used if present in doUpdate()
     if (!m_cameraUID.empty())
     {
-        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_cameraUID);
-        m_camera                    = ::arData::Camera::dynamicCast(obj);
+        m_camera = this->getSafeInput< ::arData::Camera>(m_cameraUID);
         SLM_ASSERT("Missing camera", m_camera);
 
-        m_connections->connect(m_camera, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG,
-                               this->getSptr(), s_CALIBRATE_SLOT);
+        m_connections.connect(m_camera, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG,
+                              this->getSptr(), s_CALIBRATE_SLOT);
     }
 
     this->doUpdate();
@@ -215,6 +215,7 @@ void SVideoAdapter::updateImageOpacity()
     }
 
     this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 
@@ -224,6 +225,16 @@ void SVideoAdapter::updateImage()
 {
     m_isTextureInit = false;
     this->updating();
+}
+
+//------------------------------------------------------------------------------
+
+void SVideoAdapter::show(bool visible)
+{
+    m_actor->SetVisibility(visible);
+
+    this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------

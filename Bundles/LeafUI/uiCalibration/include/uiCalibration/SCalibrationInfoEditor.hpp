@@ -7,27 +7,38 @@
 #ifndef __UICALIBRATION_SCALIBRATIONINFOEDITOR_HPP__
 #define __UICALIBRATION_SCALIBRATIONINFOEDITOR_HPP__
 
+#include "uiCalibration/config.hpp"
+
+#include <fwData/List.hpp>
+#include <fwData/PointList.hpp>
+
+#include <gui/editor/IEditor.hpp>
+
 #include <QPointer>
 #include <QLabel>
 #include <QListWidget>
 #include <QPushButton>
 
-#include <fwData/List.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/Composite.hpp>
-
-#include <gui/editor/IEditor.hpp>
-
-#include "uiCalibration/config.hpp"
-
 namespace uiCalibration
 {
 /**
  * @brief   SCalibrationInfoEditor service is used to handle the calibration points acquisition.
- * @class   SCalibrationInfoEditor
+ * *
+ * @section Slots Slots
+ * - \b remove() : removes the current selected image.
+ * - \b reset() : clears all the calibration information.
+ * - \b getSelection() : emits the CalibrationInfo signal 'getRecord(index)' with the current selection index.
  *
- * Service registered details : \n
- * fwServicesRegisterMacro(::gui::editor::IEditor, ::uiCalibration::SCalibrationInfoEditor, ::fwData::Composite)
+ * @section XML XML Configuration
+ * @code{.xml}
+   <service type="::uiCalibration::SDisplayCalibrationInfo">
+       <inout key="calInfo1" uid"..." />
+       <inout key="calInfo2" uid="..." />
+   </service>
+   @endcode
+ * @subsection Input Input
+ * - \b calInfo1 [::arData::CalibrationInfo]: calibration information for first camera.
+ * - \b calInfo2 [::arData::CalibrationInfo] (optional): calibration information for optional second camera.
  */
 class UICALIBRATION_CLASS_API SCalibrationInfoEditor : public QObject,
                                                        public ::gui::editor::IEditor
@@ -42,13 +53,8 @@ public:
      * @{
      */
     UICALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_SLOT;
-    typedef ::fwCom::Slot<void ()> RemoveSlotType;
-
     UICALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_RESET_SLOT;
-    typedef ::fwCom::Slot<void ()> ResetSlotType;
-
     UICALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_GET_SELECTION_SLOT;
-    typedef ::fwCom::Slot<void ()> GetSelectionSlotType;
     ///@}
 
     /**
@@ -65,18 +71,7 @@ public:
 
 protected:
 
-    /**
-     * @brief Configuring method : This method is used to configure the service.
-     * @code{.xml}
-        <service uid="CalInfoEditor" type="::gui::editor::IEditor" impl="::uiCalibration::SCalibrationInfoEditor" autoConnect="no">
-            <calInfo1>...</calInfo1>
-            <calInfo2>...</calInfo2>
-        </service>
-       @endcode
-     *
-     * - \b calInfo1 uid of Camera1 CalibrationInfo
-     * - \b calInfo2 uid of Camera2 calibrationInfo
-     */
+    /// Initializes the editor
     UICALIBRATION_API void configuring() throw (fwTools::Failed);
 
     /**
@@ -95,17 +90,17 @@ protected:
     UICALIBRATION_API void updating() throw (fwTools::Failed);
 
     /**
-     * @brief Slot called when the user presses the remove acquisition button.
+     * @brief Slot: removes the current selected image.
      */
     UICALIBRATION_API void remove();
 
     /**
-     * @brief Slot called when the user presses the reset button.
+     * @brief Slot:clears all the calibration information.
      */
     UICALIBRATION_API void reset();
 
     /**
-     * @brief Slot called when the user presses the display button.
+     * @brief Slot: emits the CalibrationInfo signal 'getRecord(index)' with the current selection index.
      */
     UICALIBRATION_API void getSelection();
 
@@ -131,17 +126,6 @@ private:
      * @brief Calibration point list.
      */
     QPointer< QListWidget > m_capturesListWidget;
-
-    RemoveSlotType::sptr m_slotRemove;
-
-    ResetSlotType::sptr m_slotReset;
-
-    GetSelectionSlotType::sptr m_slotGetSelection;
-
-    std::string m_calInfo1Key;
-
-    std::string m_calInfo2Key;
-
 };
 } // namespace uiCalibration
 

@@ -67,12 +67,6 @@ void SCameraConfigLauncher::configuring() throw(fwTools::Failed)
 
     m_intrinsicLauncher->parseConfig(cameraConfig);
     m_extrinsicLauncher->parseConfig(extrinsicConfig);
-
-    m_cameraSeriesKey = config.get<std::string>("cameraSeriesKey");
-    SLM_ASSERT("Missing 'cameraSeriesKey'", !m_cameraSeriesKey.empty());
-
-    m_activitySeriesKey = config.get<std::string>("activitySeriesKey");
-    SLM_ASSERT("Missing 'activitySeriesKey'", !m_activitySeriesKey.empty());
 }
 
 //------------------------------------------------------------------------------
@@ -80,17 +74,14 @@ void SCameraConfigLauncher::configuring() throw(fwTools::Failed)
 void SCameraConfigLauncher::starting() throw(::fwTools::Failed)
 {
     this->create();
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
-    m_cameraSeries = composite->at< ::arData::CameraSeries >(m_cameraSeriesKey);
+    m_cameraSeries = this->getInOut< ::arData::CameraSeries >("cameraSeries");
     SLM_ASSERT("Missing CameraSeries: " + m_cameraSeriesKey, m_cameraSeries);
 
-    m_activitySeries = composite->at< ::fwMedData::ActivitySeries >(m_activitySeriesKey);
+    m_activitySeries = this->getInOut< ::fwMedData::ActivitySeries >("activitySeries");
     SLM_ASSERT("Missing ActivitySeries: " + m_activitySeriesKey, m_activitySeries);
 
-
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =
-        ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    auto qtContainer         = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
@@ -99,12 +90,12 @@ void SCameraConfigLauncher::starting() throw(::fwTools::Failed)
     m_cameraComboBox = new QComboBox();
     layout->addWidget(m_cameraComboBox);
 
-    QIcon addIcon(QString("Bundles/media_0-1/icons/Import.svg"));
+    QIcon addIcon(QString(BUNDLE_PREFIX) + QString("/media_0-1/icons/Import.svg"));
     m_addButton = new QPushButton(addIcon, "");
     m_addButton->setToolTip("Add a new camera.");
     layout->addWidget(m_addButton);
 
-    QIcon removeIcon(QString("Bundles/arMedia_0-1/icons/remove.svg"));
+    QIcon removeIcon(QString(BUNDLE_PREFIX) + QString("/arMedia_0-1/icons/remove.svg"));
     m_removeButton = new QPushButton(removeIcon, "");
     m_removeButton->setToolTip("Remove the camera.");
     layout->addWidget(m_removeButton);
@@ -199,8 +190,6 @@ void SCameraConfigLauncher::onCameraChanged(int index)
 
 void SCameraConfigLauncher::onAddClicked()
 {
-    const size_t nbCam = m_cameraSeries->getNumberOfCameras();
-
     m_extrinsicButton->setEnabled(true);
     m_removeButton->setEnabled(true);
 
@@ -211,7 +200,7 @@ void SCameraConfigLauncher::onAddClicked()
 
 void SCameraConfigLauncher::onRemoveClicked()
 {
-    const int index = m_cameraComboBox->currentIndex();
+    const size_t index = static_cast<size_t>(m_cameraComboBox->currentIndex());
     if (index > 0)
     {
         m_cameraComboBox->blockSignals(true);
@@ -255,7 +244,7 @@ void SCameraConfigLauncher::onRemoveClicked()
 
 void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
 {
-    const int index = m_cameraComboBox->currentIndex();
+    const size_t index = static_cast<size_t>(m_cameraComboBox->currentIndex());
     OSLM_ASSERT("Bad index: " << index, index >=0 && index < m_cameraSeries->getNumberOfCameras());
     if (checked)
     {
@@ -280,8 +269,8 @@ void SCameraConfigLauncher::startIntrinsicConfig(size_t index)
     ::arData::CalibrationInfo::sptr calibInfo =
         ::arData::CalibrationInfo::dynamicCast(data->getContainer()[calibrationInfoKey]);
 
-    replaceMap["cameraUid"]          = camera->getID();
-    replaceMap["calibrationInfoUid"] = calibInfo->getID();
+    replaceMap["camera"]          = camera->getID();
+    replaceMap["calibrationInfo"] = calibInfo->getID();
 
     m_extrinsicLauncher->stopConfig();
     m_intrinsicLauncher->stopConfig();
@@ -324,11 +313,11 @@ void SCameraConfigLauncher::startExtrinsicConfig(size_t index)
 
         ::fwServices::registry::FieldAdaptorType replaceMap;
 
-        replaceMap["camera1Uid"]          = camera1->getID();
-        replaceMap["camera2Uid"]          = camera2->getID();
-        replaceMap["calibrationInfo1Uid"] = calibInfo1->getID();
-        replaceMap["calibrationInfo2Uid"] = calibInfo2->getID();
-        replaceMap["camIndex"]            = std::to_string(index);
+        replaceMap["camera1"]          = camera1->getID();
+        replaceMap["camera2"]          = camera2->getID();
+        replaceMap["calibrationInfo1"] = calibInfo1->getID();
+        replaceMap["calibrationInfo2"] = calibInfo2->getID();
+        replaceMap["camIndex"]         = std::to_string(index);
 
         m_extrinsicLauncher->stopConfig();
         m_intrinsicLauncher->stopConfig();

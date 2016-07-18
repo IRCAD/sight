@@ -47,7 +47,7 @@ VideoRegistry::~VideoRegistry()
 
 //-----------------------------------------------------------------------------
 
-QVideoPlayer* VideoRegistry::requestPlayer(const ::arData::Camera::sptr& camera)
+QVideoPlayer* VideoRegistry::requestPlayer(const ::arData::Camera::csptr& camera)
 {
     const ::arData::Camera::SourceType type = camera->getCameraSource();
 

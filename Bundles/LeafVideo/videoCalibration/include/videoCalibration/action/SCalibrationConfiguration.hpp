@@ -9,23 +9,11 @@
 
 #include "videoCalibration/config.hpp"
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
-
-#include <fwData/Composite.hpp>
-
 #include <fwGui/IActionSrv.hpp>
-
-#include <fwTools/Failed.hpp>
 
 #include <QObject>
 #include <QPointer>
 #include <QSpinBox>
-
-namespace fwData
-{
-class Composite;
-}
 
 namespace videoCalibration
 {
@@ -35,7 +23,19 @@ namespace action
 
 /**
  * @brief   This action shows a dialog to configure chessboard size.
- * @class   SCalibrationConfiguration
+ *
+ * @section Signals Signals
+ * - \b updatedChessboardSize(unsigned int, unsigned int, float) : Emitted when the parameters are updated.
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::videoCalibration::SCalibrationConfiguration">
+            <in key="parameters" uid="..." />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b parameters [::fwData::Composite]: composite containing the chessboard parameters.
  */
 class VIDEOCALIBRATION_CLASS_API SCalibrationConfiguration : public QObject,
                                                              public ::fwGui::IActionSrv
@@ -51,7 +51,7 @@ public:
      */
 
     /// Type of signal when objects are added
-    typedef ::fwCom::Signal< void (int, int, float) > updatedChessboardSizeSignalType;
+    typedef ::fwCom::Signal< void (unsigned int, unsigned int, float) > updatedChessboardSizeSignalType;
     VIDEOCALIBRATION_API static const ::fwCom::Signals::SignalKeyType s_UPDATED_CHESSBOARD_SIZE_SIG;
 
     /**
@@ -78,19 +78,7 @@ protected:
     /// Does nothing
     virtual void swapping() throw(::fwTools::Failed);
 
-    /**
-     * @brief Configures the service
-     *
-     * @code{.xml}
-         <service uid="..." impl="::videoCalibration::action::SCalibrationConfiguration" autoConnect="no" >
-             <config>
-                 <parametersKey>chessboardParameters</parametersKey>
-             </config>
-         </service>
-       @endcode
-     * - \b parametersKey : key of composite containing the chessboard parameter.
-     */
-
+    /// Configure the service
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
@@ -101,10 +89,6 @@ private:
     QPointer<QSpinBox > m_chessboardWidthEditor;
     QPointer<QSpinBox > m_chessboardHeightEditor;
     QPointer<QDoubleSpinBox > m_squareSizeChessboardEditor;
-
-    std::string m_compKey;
-
-    ::fwData::Composite::sptr m_paramComp;
 
     updatedChessboardSizeSignalType::sptr m_sigUpdatedChessboardSize; ///< Update the chessboard size
 

@@ -12,7 +12,7 @@ set( REQUIREMENTS
     guiQt
     servicesReg
     fwlauncher
-    appXml
+    appXml2
     visuVTK
     visuVTKQt
     visuVTKAdaptor
@@ -26,4 +26,4 @@ set( REQUIREMENTS
     preferences
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES VideoTracking)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES VideoTracking)

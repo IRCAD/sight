@@ -39,7 +39,7 @@ public:
      * @note Given object should be a single ModelSeries or a Vector or a Composite of ModelSeries.
      * @see ::fwActivities::IValidator::validate
      */
-    VALIDATORS_API virtual IValidator::ValidationType validate(SPTR(::fwData::Object) currentObject ) const;
+    VALIDATORS_API virtual IValidator::ValidationType validate(const CSPTR(::fwData::Object) &currentObject ) const;
 };
 
 } // namespace ModelSeries

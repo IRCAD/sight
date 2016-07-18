@@ -41,28 +41,19 @@ SOpenCVIntrinsic::SOpenCVIntrinsic() throw () :
     m_height(0),
     m_squareSize(20.0)
 {
-
-    m_slotUpdateChessboardSize = newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SOpenCVIntrinsic::updateChessboardSize, this);
-
+    newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SOpenCVIntrinsic::updateChessboardSize, this);
 }
 
 // ----------------------------------------------------------------------------
 
 SOpenCVIntrinsic::~SOpenCVIntrinsic() throw ()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 void SOpenCVIntrinsic::configuring() throw (fwTools::Failed)
 {
-    ::fwRuntime::ConfigurationElement::sptr cfg = m_configuration->findConfigurationElement("calibrationInfoID");
-    SLM_ASSERT("Tag 'calibrationInfoID' not found.", cfg);
-
-    m_calibrationInfoID = cfg->getValue();
-    SLM_ASSERT("'calibrationInfoID' is empty.", !m_calibrationInfoID.empty());
-
     ::fwRuntime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
     SLM_ASSERT("Tag 'board' not found.", cfgBoard);
 
@@ -108,13 +99,12 @@ void SOpenCVIntrinsic::swapping() throw (fwTools::Failed)
 
 void SOpenCVIntrinsic::updating() throw (fwTools::Failed)
 {
-    ::arData::Camera::sptr cam = this->getObject< ::arData::Camera >();
+    ::arData::CalibrationInfo::csptr calInfo = this->getInput< ::arData::CalibrationInfo>("calibrationInfo");
+    ::arData::Camera::sptr cam               = this->getInOut< ::arData::Camera >("camera");
 
-    ::fwTools::Object::sptr obj             = ::fwTools::fwID::getObject(m_calibrationInfoID);
-    ::arData::CalibrationInfo::sptr calInfo = ::arData::CalibrationInfo::dynamicCast(obj);
-    SLM_ASSERT("Object with id '" + m_calibrationInfoID + "' is not an 'arData::CalibrationInfo'", calInfo);
-
+    SLM_ASSERT("Object with 'calibrationInfo' is not found", calInfo);
     SLM_WARN_IF("Calibration info is empty.", calInfo->getPointListContainer().empty());
+
     if(!calInfo->getPointListContainer().empty())
     {
         std::vector<std::vector< ::cv::Point3f > > objectPoints;
@@ -164,8 +154,8 @@ void SOpenCVIntrinsic::updating() throw (fwTools::Failed)
         cam->setCy(cameraMatrix.at<double>(1,2));
         cam->setFx(cameraMatrix.at<double>(0,0));
         cam->setFy(cameraMatrix.at<double>(1,1));
-        cam->setWidth(static_cast<double>(img->getSize()[0]));
-        cam->setHeight(static_cast<double>(img->getSize()[1]));
+        cam->setWidth(img->getSize()[0]);
+        cam->setHeight(img->getSize()[1]);
         cam->setDistortionCoefficient(distCoeffs[0], distCoeffs[1], distCoeffs[2], distCoeffs[3], distCoeffs[4]);
 
         cam->setIsCalibrated(true);
@@ -180,7 +170,7 @@ void SOpenCVIntrinsic::updating() throw (fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SOpenCVIntrinsic::updateChessboardSize(const int width, const int height, const float squareSize)
+void SOpenCVIntrinsic::updateChessboardSize(unsigned int width, unsigned int height, float squareSize)
 {
     m_width      = width;
     m_height     = height;

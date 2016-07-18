@@ -53,38 +53,8 @@ SComputeMatrixFromCell::~SComputeMatrixFromCell() throw()
 
 void SComputeMatrixFromCell::starting() throw(::fwTools::Failed)
 {
-}
-
-//------------------------------------------------------------------------------
-
-void SComputeMatrixFromCell::stopping() throw(::fwTools::Failed)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void SComputeMatrixFromCell::configuring() throw(::fwTools::Failed)
-{
-    m_compositeUID = m_configuration->findConfigurationElement("compositeUID")->getValue();
-    SLM_ASSERT("Composite empty", !m_compositeUID.empty());
-
-    m_meshKey = m_configuration->findConfigurationElement("sourceKey")->getValue();
-    SLM_ASSERT("Source empty", !m_meshKey.empty());
-}
-
-//------------------------------------------------------------------------------
-
-void SComputeMatrixFromCell::updating() throw(::fwTools::Failed)
-{
-    ::fwData::Composite::sptr composite =
-        ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject(m_compositeUID) );
-    SLM_ASSERT(m_compositeUID<<" is NULL", composite);
-
-    ::fwData::Object::sptr object = composite->at< ::fwData::Object>(m_meshKey);
-    SLM_ASSERT(m_meshKey<<" is NULL", object);
-
-    m_mesh = ::fwData::Mesh::dynamicCast(object);
-    SLM_ASSERT("Key " << m_meshKey << " is not a ::fwData::Mesh", m_mesh);
+    m_mesh = this->getInput< ::fwData::Mesh>("radialMesh");
+    SLM_ASSERT("Key 'radialMesh' is not a ::fwData::Mesh", m_mesh);
 
     ::fwData::Array::sptr cellArray = m_mesh->getCellDataArray();
     ::fwComEd::helper::Array cellArrayHelper(cellArray);
@@ -132,6 +102,24 @@ void SComputeMatrixFromCell::updating() throw(::fwTools::Failed)
         }
     }
     while ( currentZ == z);
+}
+
+//------------------------------------------------------------------------------
+
+void SComputeMatrixFromCell::stopping() throw(::fwTools::Failed)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void SComputeMatrixFromCell::configuring() throw(::fwTools::Failed)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void SComputeMatrixFromCell::updating() throw(::fwTools::Failed)
+{
 }
 
 //------------------------------------------------------------------------------
@@ -199,7 +187,7 @@ void SComputeMatrixFromCell::updateBoth(int i, int j)
         points[i][2] = *pointsArrayHelper.getItem< ::fwData::Mesh::PointValueType>(indexPointsVector, 2);
     }
 
-    ::fwData::TransformationMatrix3D::sptr matrix        = this->getObject< ::fwData::TransformationMatrix3D >();
+    ::fwData::TransformationMatrix3D::sptr matrix        = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
     ::fwData::TransformationMatrix3D::TMCoefArray& coefs = matrix->getRefCoefficients();
 
     ::fwData::Mesh::PointValueType barycenter[3] = {0., 0., 1.};

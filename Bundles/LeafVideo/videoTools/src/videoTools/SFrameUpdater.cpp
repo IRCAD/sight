@@ -41,12 +41,7 @@ SFrameUpdater::SFrameUpdater() throw() :
     m_sigRenderRequested = RenderRequestedSignalType::New();
     m_signals( s_RENDER_REQUESTED_SIG,  m_sigRenderRequested);
 
-
-
-
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
-
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //-----------------------------------------------------------------------------
@@ -57,47 +52,72 @@ SFrameUpdater::~SFrameUpdater() throw()
 
 //-----------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsMap SFrameUpdater::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    connections.push( "frameTL", ::extData::TimeLine::s_OBJECT_PUSHED_SIG,
+                      ::videoTools::SFrameUpdater::s_UPDATE_FRAME_SLOT );
+
+    return connections;
+}
+
+//-----------------------------------------------------------------------------
+
 void SFrameUpdater::starting() throw(fwTools::Failed)
 {
-    m_imageInitialized                  = false;
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+    m_imageInitialized = false;
 
-    m_frameTL = ::extData::FrameTL::dynamicCast((*composite)[m_frameTLKey]);
-    OSLM_ASSERT("The timeline \"" << m_frameTL << "\" is not valid.", m_frameTL);
+    if(!this->isVersion2())
+    {
+        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+        m_frameTL                           = ::extData::FrameTL::dynamicCast((*composite)[m_frameTLKey]);
+        OSLM_ASSERT("The timeline \"" << m_frameTL << "\" is not valid.", m_frameTL);
 
-    m_image = ::fwData::Image::dynamicCast((*composite)[m_imageKey]);
-    OSLM_ASSERT("The image \"" << m_imageKey << "\" is not valid.", m_image);
+        m_image = ::fwData::Image::dynamicCast((*composite)[m_imageKey]);
+        OSLM_ASSERT("The image \"" << m_imageKey << "\" is not valid.", m_image);
 
-    m_connections->connect(m_frameTL, ::extData::TimeLine::s_OBJECT_PUSHED_SIG, this->getSptr(),
-                           ::videoTools::SFrameUpdater::s_UPDATE_FRAME_SLOT);
+        m_connections.connect( ::extData::FrameTL::constCast(m_frameTL),
+                               ::extData::TimeLine::s_OBJECT_PUSHED_SIG, this->getSptr(),
+                               ::videoTools::SFrameUpdater::s_UPDATE_FRAME_SLOT);
+    }
+    else
+    {
+        m_frameTL = this->getInput< ::extData::FrameTL>("frameTL");
+        m_image   = this->getInOut< ::fwData::Image>("frame");
+    }
+
 }
 
 //-----------------------------------------------------------------------------
 
 void SFrameUpdater::configuring() throw(::fwTools::Failed)
 {
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service ::videoTools::SFrameUpdater must have a \"config\" element.",config);
+    if(!this->isVersion2())
+    {
+        ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
+        SLM_ASSERT("The service ::videoTools::SFrameUpdater must have a \"config\" element.",config);
 
 
-    //frameTLKey
-    ::fwRuntime::ConfigurationElement::sptr configframeTLKey = config->findConfigurationElement("frameTLKey");
-    SLM_ASSERT("The frame timeline of the service ::videoTools::SFrameUpdater is not specified "
-               "(frameTLKey element is missing)", configframeTLKey);
-    m_frameTLKey = configframeTLKey->getValue();
+        //frameTLKey
+        ::fwRuntime::ConfigurationElement::sptr configframeTLKey = config->findConfigurationElement("frameTLKey");
+        SLM_ASSERT("The frame timeline of the service ::videoTools::SFrameUpdater is not specified "
+                   "(frameTLKey element is missing)", configframeTLKey);
+        m_frameTLKey = configframeTLKey->getValue();
 
-    //image
-    ::fwRuntime::ConfigurationElement::sptr configImage = config->findConfigurationElement("imageKey");
-    SLM_ASSERT("The image key of the service ::videoTools::SFrameUpdater is not specified "
-               "(imageKey element is missing)", configImage);
-    m_imageKey = configImage->getValue();
+        //image
+        ::fwRuntime::ConfigurationElement::sptr configImage = config->findConfigurationElement("imageKey");
+        SLM_ASSERT("The image key of the service ::videoTools::SFrameUpdater is not specified "
+                   "(imageKey element is missing)", configImage);
+        m_imageKey = configImage->getValue();
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SFrameUpdater::stopping() throw(::fwTools::Failed)
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
 }
 
 //-----------------------------------------------------------------------------

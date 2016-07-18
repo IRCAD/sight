@@ -33,6 +33,9 @@ const ::fwCom::Slots::SlotKeyType SChessBoardDetector::s_UPDATE_CHESSBOARD_SIZE_
 const ::fwCom::Signals::SignalKeyType SChessBoardDetector::s_CHESSBOARD_DETECTED_SIG     = "chessboardDetected";
 const ::fwCom::Signals::SignalKeyType SChessBoardDetector::s_CHESSBOARD_NOT_DETECTED_SIG = "chessboardNotDetected";
 
+const ::fwServices::IService::KeyType s_TIMELINE_INPUT    = "timeline";
+const ::fwServices::IService::KeyType s_CALIBRATION_INOUT = "calInfo";
+
 // ----------------------------------------------------------------------------
 
 SChessBoardDetector::SChessBoardDetector() throw () :
@@ -59,25 +62,8 @@ SChessBoardDetector::~SChessBoardDetector() throw ()
 
 void SChessBoardDetector::configuring() throw (fwTools::Failed)
 {
-    ::fwRuntime::ConfigurationElementContainer caliCfgs = m_configuration->findAllConfigurationElement("calibration");
-    SLM_ASSERT("Can not find calibration element", caliCfgs.size() >= 1 );
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-
-    for(ConfigurationType elem :  caliCfgs.getElements())
-    {
-        SLM_ASSERT("Attribute 'timeline' is missing.", elem->hasAttribute("timeline"));
-        std::string tl = elem->getAttributeValue("timeline");
-        SLM_ASSERT("Attribute 'timeline' is empty", !tl.empty());
-
-        m_timeLineKeys.push_back(tl);
-
-        SLM_ASSERT("Attribute 'calInfo' is missing.", elem->hasAttribute("calInfo"));
-        std::string calInfo = elem->getAttributeValue("calInfo");
-        SLM_ASSERT("Attribute 'calInfo' is empty", !calInfo.empty());
-
-        m_calInfoKeys.push_back(calInfo);
-        m_pointsLists.push_back(nullptr);
-    }
+    SLM_ASSERT("You must have the same number of 'timeline' keys and 'calInfo' keys",
+               this->getKeyGroupSize(s_TIMELINE_INPUT) == this->getKeyGroupSize(s_CALIBRATION_INOUT));
 
     ::fwRuntime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
     SLM_ASSERT("Tag 'board' not found.", cfgBoard);
@@ -97,24 +83,7 @@ void SChessBoardDetector::configuring() throw (fwTools::Failed)
 
 void SChessBoardDetector::starting() throw (fwTools::Failed)
 {
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-
-    // Grab timeline objects
-    for(const std::string &tlKey : m_timeLineKeys)
-    {
-        ::fwData::Composite::IteratorType it = composite->find(tlKey);
-        SLM_ASSERT("Missing '" + tlKey + "' key in the composite", it !=  composite->end());
-        ::extData::FrameTL::sptr frameTL = ::extData::FrameTL::dynamicCast(it->second);
-        SLM_ASSERT("'" + tlKey + "' key is not a ::extData::FrameTL", frameTL);
-
-        m_frameTLs.push_back(frameTL);
-    }
-}
-
-// ----------------------------------------------------------------------------
-
-void SChessBoardDetector::swapping() throw (fwTools::Failed)
-{
+    m_pointsLists.resize( this->getKeyGroupSize(s_TIMELINE_INPUT) );
 }
 
 // ----------------------------------------------------------------------------
@@ -138,16 +107,19 @@ void SChessBoardDetector::checkPoints( ::fwCore::HiResClock::HiResClockType time
         ::fwCore::HiResClock::HiResClockType lastTimestamp;
         lastTimestamp = std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
 
-        for(const auto& frameTL : m_frameTLs)
+        size_t numTimeline = this->getKeyGroupSize(s_TIMELINE_INPUT);
+        // Grab timeline objects
+        for(size_t i = 0; i < numTimeline; ++i)
         {
+            auto frameTL = this->getInput< ::extData::FrameTL >(s_TIMELINE_INPUT, i);
             lastTimestamp = std::min(lastTimestamp, frameTL->getNewerTimestamp());
         }
 
-        size_t idx = 0;
         m_isDetected = true;
 
-        for(const auto& tl : m_frameTLs)
+        for(size_t i = 0; i < numTimeline; ++i)
         {
+            auto tl = this->getInput< ::extData::FrameTL >(s_TIMELINE_INPUT, i);
             ::fwData::PointList::sptr chessBoardPoints = this->detectChessboard(tl, lastTimestamp, m_width, m_height);
 
             if(!chessBoardPoints)
@@ -156,9 +128,7 @@ void SChessBoardDetector::checkPoints( ::fwCore::HiResClock::HiResClockType time
                 break;
 
             }
-            m_pointsLists[idx] = chessBoardPoints;
-
-            ++idx;
+            m_pointsLists[i] = chessBoardPoints;
         }
 
         if(m_isDetected)
@@ -180,18 +150,14 @@ void SChessBoardDetector::detectPoints()
 {
     if(m_isDetected)
     {
-        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-
-        size_t idx = 0;
-        for(const auto& key : m_calInfoKeys)
+        size_t numInfo = this->getKeyGroupSize(s_CALIBRATION_INOUT);
+        for(size_t i = 0; i < numInfo; ++i)
         {
-            ::fwData::Composite::IteratorType it = composite->find(key);
-            SLM_ASSERT("Missing '" + key + "' key in the composite", it !=  composite->end());
-            ::arData::CalibrationInfo::sptr calInfo = ::arData::CalibrationInfo::dynamicCast(it->second);
+            auto calInfo = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INOUT, i);
+            auto frameTL = this->getInput< ::extData::FrameTL >(s_TIMELINE_INPUT, i);
+            ::fwData::Image::sptr image = this->createImage( frameTL, m_lastTimestamp);
 
-            ::fwData::Image::sptr image = this->createImage( m_frameTLs[idx], m_lastTimestamp);
-
-            calInfo->addRecord(image, m_pointsLists[idx]);
+            calInfo->addRecord(image, m_pointsLists[i]);
 
             // Notify
             ::arData::CalibrationInfo::AddedRecordSignalType::sptr sig;
@@ -199,15 +165,13 @@ void SChessBoardDetector::detectPoints()
                       (::arData::CalibrationInfo::s_ADDED_RECORD_SIG);
 
             sig->asyncEmit();
-
-            ++idx;
         }
     }
 }
 
 // ----------------------------------------------------------------------------
 
-void SChessBoardDetector::updateChessboardSize(const int width, const int height)
+void SChessBoardDetector::updateChessboardSize(unsigned int width, unsigned int height)
 {
     m_width  = static_cast<size_t>(width);
     m_height = static_cast<size_t>(height);
@@ -215,7 +179,7 @@ void SChessBoardDetector::updateChessboardSize(const int width, const int height
 
 // ----------------------------------------------------------------------------
 
-::fwData::Image::sptr SChessBoardDetector::createImage( ::extData::FrameTL::sptr tl,
+::fwData::Image::sptr SChessBoardDetector::createImage( ::extData::FrameTL::csptr tl,
                                                         ::fwCore::HiResClock::HiResClockType timestamp)
 {
     ::fwData::Image::sptr image;
@@ -254,7 +218,7 @@ void SChessBoardDetector::updateChessboardSize(const int width, const int height
 
 // ----------------------------------------------------------------------------
 
-SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::extData::FrameTL::sptr tl,
+SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::extData::FrameTL::csptr tl,
                                                                 ::fwCore::HiResClock::HiResClockType timestamp,
                                                                 size_t xDim, size_t yDim)
 {

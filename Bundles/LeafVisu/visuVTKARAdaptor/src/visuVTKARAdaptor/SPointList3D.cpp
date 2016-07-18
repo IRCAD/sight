@@ -84,7 +84,7 @@ void SPointList3D::doStart() throw(fwTools::Failed)
 
     if (pl)
     {
-        m_connections->connect(pl, ::fwData::PointList::s_POINT_ADDED_SIG, this->getSptr(), s_UPDATE_SLOT);
+        m_connections.connect(pl, ::fwData::PointList::s_POINT_ADDED_SIG, this->getSptr(), s_UPDATE_SLOT);
     }
 
     m_points = vtkSmartPointer<vtkPoints>::New();

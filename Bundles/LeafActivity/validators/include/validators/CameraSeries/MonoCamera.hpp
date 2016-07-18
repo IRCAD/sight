@@ -37,7 +37,7 @@ public:
      * @brief Checks if the current CameraSeries contains one and only one Camera and is calibrated.
      * @see ::fwActivities::IValidator::validate
      */
-    VALIDATORS_API virtual IValidator::ValidationType validate(SPTR(::fwData::Object) currentObject ) const;
+    VALIDATORS_API virtual IValidator::ValidationType validate(const CSPTR(::fwData::Object) &currentObject ) const;
 };
 
 } // namespace CameraSeries

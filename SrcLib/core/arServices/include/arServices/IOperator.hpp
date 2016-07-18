@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,24 +12,23 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
-#include <fwServices/IService.hpp>
+#include <fwServices/IParametersService.hpp>
 
 namespace arServices
 {
 
 /**
  * @brief   This interface defines operator service API.
- *
- * @class   IOperator
- *
- * @date    2015
+
+ * @section Signals Signals
+ * - \b computed() : Emitted when something was computed.
  */
-class ARSERVICES_CLASS_API IOperator : public ::fwServices::IService
+class ARSERVICES_CLASS_API IOperator : public ::fwServices::IParametersService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IOperator)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro ( (IOperator)(::fwServices::IParametersService) );
 
     ARSERVICES_API static const ::fwCom::Signals::SignalKeyType s_COMPUTED_SIG;
     typedef ::fwCom::Signal<void ()> ComputedSignalType;
@@ -43,7 +42,6 @@ protected:
     ARSERVICES_API virtual ~IOperator();
 
     ComputedSignalType::sptr m_sigComputed; ///< Signal emitted when operator is computed.
-
 };
 
 }

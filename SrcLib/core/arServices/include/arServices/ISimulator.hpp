@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,10 +17,6 @@ namespace arServices
 /**
  * @brief   This interface defines simulator service API.
  *          Must be implemented for services that simulate.
- *
- * @class   ISimulator
- *
- * @date    2014.
  */
 class ARSERVICES_CLASS_API ISimulator : public ::fwServices::IService
 {

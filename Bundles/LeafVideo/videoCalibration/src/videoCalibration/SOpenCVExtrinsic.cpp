@@ -44,7 +44,7 @@ SOpenCVExtrinsic::SOpenCVExtrinsic() throw () : m_width(0),
                                                 m_camIndex(1)
 {
 
-    m_slotUpdateChessboardSize = newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SOpenCVExtrinsic::updateChessboardSize, this);
+    newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SOpenCVExtrinsic::updateChessboardSize, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -58,18 +58,6 @@ SOpenCVExtrinsic::~SOpenCVExtrinsic() throw ()
 
 void SOpenCVExtrinsic::configuring() throw (fwTools::Failed)
 {
-    ::fwRuntime::ConfigurationElement::sptr cfg1 = m_configuration->findConfigurationElement("calibrationInfo1ID");
-    SLM_ASSERT("Tag 'calibrationInfo1ID' not found.", cfg1);
-
-    m_calibrationInfo1ID = cfg1->getValue();
-    SLM_ASSERT("'calibrationInfo1ID' is empty.", !m_calibrationInfo1ID.empty());
-
-    ::fwRuntime::ConfigurationElement::sptr cfg2 = m_configuration->findConfigurationElement("calibrationInfo2ID");
-    SLM_ASSERT("Tag 'calibrationInfo2ID' not found.", cfg2);
-
-    m_calibrationInfo2ID = cfg2->getValue();
-    SLM_ASSERT("'calibrationInfo2ID' is empty.", !m_calibrationInfo2ID.empty());
-
     ::fwRuntime::ConfigurationElement::sptr cfgIdx = m_configuration->findConfigurationElement("camIndex");
     if(cfgIdx)
     {
@@ -123,18 +111,16 @@ void SOpenCVExtrinsic::swapping() throw (fwTools::Failed)
 
 void SOpenCVExtrinsic::updating() throw (fwTools::Failed)
 {
-    ::arData::CameraSeries::sptr camSeries = this->getObject< ::arData::CameraSeries >();
-
-    ::fwTools::Object::sptr obj1             = ::fwTools::fwID::getObject(m_calibrationInfo1ID);
-    ::arData::CalibrationInfo::sptr calInfo1 = ::arData::CalibrationInfo::dynamicCast(obj1);
-    SLM_ASSERT("Object with id '" + m_calibrationInfo1ID + "' is not an 'arData::CalibrationInfo'", calInfo1);
-
-    ::fwTools::Object::sptr obj2             = ::fwTools::fwID::getObject(m_calibrationInfo2ID);
-    ::arData::CalibrationInfo::sptr calInfo2 = ::arData::CalibrationInfo::dynamicCast(obj2);
-    SLM_ASSERT("Object with id '" + m_calibrationInfo2ID + "' is not an 'arData::CalibrationInfo'", calInfo2);
+    ::arData::CameraSeries::sptr camSeries = this->getInOut< ::arData::CameraSeries >("cameraSeries");
 
     SLM_ASSERT("camera index must be > 0 and < camSeries->getNumberOfCameras()",
                m_camIndex > 0 && m_camIndex < camSeries->getNumberOfCameras());
+
+    ::arData::CalibrationInfo::csptr calInfo1 = this->getInput< ::arData::CalibrationInfo>("calibrationInfo1");
+    ::arData::CalibrationInfo::csptr calInfo2 = this->getInput< ::arData::CalibrationInfo>("calibrationInfo2");
+
+    SLM_ASSERT("Object with 'calibrationInfo1' is not found", calInfo1);
+    SLM_ASSERT("Object with 'calibrationInfo2' is not found", calInfo2);
 
     SLM_WARN_IF("Calibration info is empty.", calInfo1->getPointListContainer().empty());
     if(!calInfo1->getPointListContainer().empty())
@@ -226,7 +212,7 @@ void SOpenCVExtrinsic::updating() throw (fwTools::Failed)
             cameraMatrix2.at<double>(1,1) = cam2->getFy();
             cameraMatrix2.at<double>(0,2) = cam2->getCx();
             cameraMatrix2.at<double>(1,2) = cam2->getCy();
-            for (int i = 0; i < 5; ++i)
+            for (size_t i = 0; i < 5; ++i)
             {
                 distortionCoefficients1[i] = static_cast<float>(cam1->getDistortionCoefficient()[i]);
                 distortionCoefficients2[i] = static_cast<float>(cam2->getDistortionCoefficient()[i]);
@@ -244,11 +230,11 @@ void SOpenCVExtrinsic::updating() throw (fwTools::Failed)
         OSLM_DEBUG("Calibration error :" << err);
 
         ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
-        for (int i = 0; i<3; ++i)
+        for (size_t i = 0; i<3; ++i)
         {
-            for (int j = 0; j<3; ++j)
+            for (size_t j = 0; j<3; ++j)
             {
-                matrix->setCoefficient(i,j, rotationMatrix.at<double>(i,j));
+                matrix->setCoefficient(i,j, rotationMatrix.at<double>(static_cast<int>(i),static_cast<int>(j)));
             }
         }
         matrix->setCoefficient(0,3, translationVector.at<double>(0,0));
@@ -270,7 +256,7 @@ void SOpenCVExtrinsic::updating() throw (fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SOpenCVExtrinsic::updateChessboardSize(const int width, const int height, const float squareSize)
+void SOpenCVExtrinsic::updateChessboardSize(unsigned int width, unsigned int height, float squareSize)
 {
     m_width      = width;
     m_height     = height;
