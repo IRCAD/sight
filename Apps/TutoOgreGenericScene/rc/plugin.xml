@@ -116,11 +116,11 @@
 
                                 <!-- Mesh adaptor -->
                                 <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
-                                    <config renderer="default" materialAdaptor="materialAdaptorUID" />
+                                    <config renderer="default" materialAdaptor="materialAdaptor" />
                                 </adaptor>
 
                                 <adaptor id="materialAdaptor" uid="materialAdaptorUID" class="::visuOgreAdaptor::SMaterial" objectId="materialKey">
-                                    <config renderer="default" textureAdaptor="textureAdaptorUID" normalLength="1.0"/>
+                                    <config renderer="default" textureAdaptor="textureAdaptor" normalLength="1.0"/>
                                 </adaptor>
 
                                 <!-- 3D Negato -->
