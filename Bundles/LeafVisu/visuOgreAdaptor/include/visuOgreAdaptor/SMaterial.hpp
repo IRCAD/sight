@@ -317,7 +317,7 @@ inline std::string SMaterial::getMaterialName() const
 
 inline bool SMaterial::hasDiffuseTexture() const
 {
-    return (m_texAdaptor && !m_texAdaptor->getTexture().isNull());
+    return (m_texAdaptor && m_texAdaptor->isValid());
 }
 
 //------------------------------------------------------------------------------
