@@ -43,6 +43,25 @@ namespace uiImage
  * @brief   WindowLevel service allows to change the min / max value of windowing.
  *
  * This is represented by two sliders to modify the min and max values of windowing
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+    <service uid="..." type="::uiImage::WindowLevel" autoConnect="yes">
+        <inout key="image" uid="..."/>
+        <config autoWindowing="yes" selectedTFKey="mySelectedTF" tfSelectionFwID="myTFSelection" useImageGreyLevelTF="yes" />
+    </service>
+   @endcode
+ *
+ * @subsection In-Out In-Out
+ * - \b image [::fwData::Image]: image on which the windowing will be changed
+ *
+ * @subsection Configuration Configuration
+ *  - \b autoWindowing : if 'yes', image windowing will be automatically compute from image pixel min/max
+ *  intensity when this service receive BUFFER event
+ *  - \b tfSelection : configure the identifier of the field containing the specific TF selection. By default, it use default selection field.
+ *  - \b useImageGreyLevelTF : if 'yes' and if tfSelection is configured, then we use the grey level tf of image
+ *
  */
 class UIIMAGEQT_CLASS_API WindowLevel : public QObject,
                                         public ::fwComEd::helper::MedicalImageAdaptor,
@@ -115,7 +134,7 @@ protected:
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    UIIMAGEQT_API virtual void info( std::ostream &_sstream );
+    UIIMAGEQT_API virtual void info( std::ostream& _sstream );
 
     virtual void setEnabled(bool enable);
 
@@ -134,7 +153,7 @@ protected Q_SLOTS:
     void onToggleAutoWL(bool autoWL);
 
     void onWindowLevelWidgetChanged(double _min, double _max);
-    void onDynamicRangeSelectionChanged(QAction *action);
+    void onDynamicRangeSelectionChanged(QAction* action);
 
 protected:
     typedef ::fwData::TransferFunction::TFValuePairType WindowLevelMinMaxType;
@@ -151,7 +170,7 @@ protected:
     void updateTextWindowLevel(double _imageMin, double _imageMax);
 
     void setWidgetDynamicRange(double min, double max);
-    bool getWidgetDoubleValue(QLineEdit *widget, double &val);
+    bool getWidgetDoubleValue(QLineEdit* widget, double& val);
 
     /// Returns the current grey level tf of image
     ::fwData::TransferFunction::sptr getImageGreyLevelTF();

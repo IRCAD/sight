@@ -64,7 +64,7 @@ AppConfigManager2::~AppConfigManager2()
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager2::setConfig(const std::string &configId, const FieldAdaptorType &replaceFields)
+void AppConfigManager2::setConfig(const std::string& configId, const FieldAdaptorType& replaceFields)
 {
     m_configId = configId;
     m_cfgElem  = registry::AppConfig2::getDefault()->getAdaptedTemplateConfig( configId, replaceFields, !m_isUnitTest );
@@ -72,7 +72,7 @@ void AppConfigManager2::setConfig(const std::string &configId, const FieldAdapto
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager2::setConfig(const std::string& configId, const ::fwData::Composite::csptr &replaceFields)
+void AppConfigManager2::setConfig(const std::string& configId, const ::fwData::Composite::csptr& replaceFields)
 {
     m_configId = configId;
     m_cfgElem  = registry::AppConfig2::getDefault()->getAdaptedTemplateConfig( configId, replaceFields, !m_isUnitTest );
@@ -280,7 +280,7 @@ fwData::Object::sptr AppConfigManager2::getConfigRoot() const
     if (type.second)
     {
         SLM_ASSERT(this->msgHead() + "Object with UID \"" + uid +
-                   "\" has a different type (\"" + obj->getClassname() + "\").",
+                   "\" has a different type (\"" + obj->getClassname() + "\" != \"" + type.first + "\").",
                    type.first == obj->getClassname());
     }
     return obj;

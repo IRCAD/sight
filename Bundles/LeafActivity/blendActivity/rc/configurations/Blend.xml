@@ -57,13 +57,13 @@
         <service uid="myManagerLockDump" type="::ctrlMemory::manager::LockDumpManagerSrv" autoConnect="yes">
             <in key="composite" uid="myBlendSelectionComposite" />
         </service>
-        
+
         <service uid="medicalImageFrontSrv" type="::ctrlSelection::MedicalImageSrv">
-            <in key="image" uid="${frontImageUid}" />
+            <inout key="image" uid="${frontImageUid}" />
         </service>
-           
+
         <service uid="medicalImageBgSrv" type="::ctrlSelection::MedicalImageSrv">
-            <in key="image" uid="${backgroundImageUid}" />
+            <inout key="image" uid="${backgroundImageUid}" />
         </service>
 
         <service uid="action_blendView" type="::gui::action::SConfigLauncher">

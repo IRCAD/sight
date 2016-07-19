@@ -23,8 +23,26 @@ namespace ctrlSelection
 namespace wrapper
 {
 /**
- * @class  SImageSignalForwarder
  * @brief  This service forwards signals from an image ti another.
+ *
+ * @section Slots Slots
+ * - \b forwardModified() : emit the signal 'modified' on the target image
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ctrlSelection::wrapper::SImageSignalForwarder">
+       <in key="target" uid="..." />
+       <in key="source" uid="..." />
+       <forward>modified</forward>
+       <forward>bufferModified</forward>
+   </service>
+   @endcode
+ * @subsection Input Input
+ * - \b target [::fwData::Image]: image to forward signal.
+ * - \b source [::fwData::Image]: the source image signals are forwarded to the target image.
+ * @subsection Configuration Configuration
+ * - \b forward : key of the image signal to forward
  */
 class CTRLSELECTION_CLASS_API SImageSignalForwarder : public ::ctrlSelection::IWrapperSrv
 {
@@ -50,19 +68,6 @@ protected:
 
     /**
      * @brief Configures the service.
-     *
-     * @code{.xml}
-       <service uid="forwarderMsg" impl="::ctrlSelection::wrapper::SImageSignalForwarder" type="::ctrlSelection::IWrapperSrv" autoConnect="no">
-           <fromUid></fromUid>
-           <fromKey>compositeUID[imageKey]</fromKey>
-           <forward></forward>
-       </service>
-       @endcode
-     * With :
-     * - \b fromUid: uid of the source image
-     * - \b fromKey: uid of the composite containig the imageKey
-     * - \b forward: key of the image signal to forward
-     * @note only one tag \b fromUid or \b fromKey must be defined
      */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
@@ -70,7 +75,7 @@ protected:
     CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Implements info method derived from IService. Print classname.
-    CTRLSELECTION_API virtual void info( std::ostream &_sstream );
+    CTRLSELECTION_API virtual void info( std::ostream& _sstream );
 
 private:
 

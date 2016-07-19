@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,7 +50,7 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage, ::fwData::Image::spt
  * @pre an assertion check if ITKIMAGE dimension correspond to imageData dimension
  */
 template< class ITKIMAGE>
-typename ITKIMAGE::Pointer itkImageFactory( ::fwData::Image::sptr imageData, bool bufferManagerIsDataImage = true );
+typename ITKIMAGE::Pointer itkImageFactory( ::fwData::Image::csptr imageData, bool bufferManagerIsDataImage = true );
 
 }
 

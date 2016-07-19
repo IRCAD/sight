@@ -20,13 +20,24 @@ namespace uiImage
 
 /**
  * @brief   SliceIndexPositionEditor service allows to change the slice index of an image.
- * @class   SliceIndexPositionEditor
- *
- * @date    2010.
  *
  * This is represented by
  *  - a slider to select the slice index
  *  - a choice list to select the slice orientation (axial, frontal, sagittal)
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service uid="..." type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+      <inout key="image" uid="..."/>
+      <sliceIndex>${orientationValue}</sliceIndex>
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b image [::fwData::Image]: image on which the slice index will be changed
+ *
+ * @subsection Configuration Configuration
+ * - \b sliceIndex : Axis on which the index will be changed, must be "axial", "frontal" or "sagittal".
  */
 class UIIMAGEQT_CLASS_API SliceIndexPositionEditor : public ::gui::editor::IEditor,
                                                      public ::fwComEd::helper::MedicalImageAdaptor
@@ -89,7 +100,7 @@ protected:
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    UIIMAGEQT_API virtual void info( std::ostream &_sstream );
+    UIIMAGEQT_API virtual void info( std::ostream& _sstream );
 
     /// Update the editor slider from the image slice index.
     UIIMAGEQT_API void updateSliceIndexFromImg();

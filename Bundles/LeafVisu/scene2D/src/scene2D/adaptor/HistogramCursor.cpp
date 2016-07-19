@@ -154,6 +154,7 @@ void HistogramCursor::doUpdate() throw( ::fwTools::Failed)
         diameterV *= ratio.second;
 
         ::fwData::Point::sptr point = this->getSafeInOut< ::fwData::Point>( m_histogramPointUID );
+        SLM_ASSERT("[inout] Point '" + m_histogramPointUID + "' is not found", point);
 
         double x = point->getRefCoord()[0] - diameterH / 2;
         double y = point->getRefCoord()[1] - diameterV / 2;

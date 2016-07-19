@@ -9,6 +9,7 @@ set( REQUIREMENTS
     ctrlSelection
     uiVisu
     uiVisuQt
+    visuVTKQt
     visuVTKAdaptor
     uiImageQt
     uiMeasurement

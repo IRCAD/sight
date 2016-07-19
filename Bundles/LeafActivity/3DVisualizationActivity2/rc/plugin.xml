@@ -4,6 +4,7 @@
     <requirement id="2DVisualizationActivity2" />
     <requirement id="uiReconstructionQt" />
     <requirement id="media" />
+    <requirement id="visuVTKQt" />
 
     <xi:include href="configurations/3DVisualization.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ManageOrganWithSeries.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

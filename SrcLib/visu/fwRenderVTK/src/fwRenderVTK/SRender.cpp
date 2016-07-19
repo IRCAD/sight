@@ -144,7 +144,7 @@ void SRender::configurePicker( ConfigurationType conf )
         OSLM_ASSERT("'" << vtkclass.c_str() << "' instantiation failled.",m_pickers[id]);
         m_pickers[id]->InitializePickList();
         m_pickers[id]->PickFromListOn();
-        vtkPicker *picker = vtkPicker::SafeDownCast(m_pickers[id]);
+        vtkPicker* picker = vtkPicker::SafeDownCast(m_pickers[id]);
         if (picker)
         {
             picker->SetTolerance(0);
@@ -234,7 +234,7 @@ void SRender::configureObject( ConfigurationType conf )
     }
     else if(m_sceneAdaptors.count(id) == 1)
     {
-        SceneAdaptor &adaptee = m_sceneAdaptors[id];
+        SceneAdaptor& adaptee = m_sceneAdaptors[id];
         SLM_ASSERT("Adaptor service expired !", adaptee.getService() );
         OSLM_ASSERT( adaptee.getService()->getID() <<  " is not started ",adaptee.getService()->isStarted());
         if (object)
@@ -294,14 +294,14 @@ void SRender::configureVtkObject( ConfigurationType conf )
 
 //-----------------------------------------------------------------------------
 
-vtkTransform * SRender::createVtkTransform( ConfigurationType conf )
+vtkTransform* SRender::createVtkTransform( ConfigurationType conf )
 {
     SLM_ASSERT("vtkObject must be contain just only one sub xml element called vtkTransform.", conf->size() == 1 &&
                ( *conf->begin() )->getName() == "vtkTransform");
 
     ConfigurationType vtkTransformXmlElem = *conf->begin();
 
-    vtkTransform * newMat = vtkTransform::New();
+    vtkTransform* newMat = vtkTransform::New();
 
     for(    ::fwRuntime::ConfigurationElement::Iterator elem = vtkTransformXmlElem->begin();
             !(elem == vtkTransformXmlElem->end());
@@ -311,7 +311,7 @@ vtkTransform * SRender::createVtkTransform( ConfigurationType conf )
 
         std::string transformId = (*elem)->getValue();
 
-        vtkTransform * mat = vtkTransform::SafeDownCast( getVtkObject(transformId) );
+        vtkTransform* mat = vtkTransform::SafeDownCast( getVtkObject(transformId) );
 
         if ( (*elem)->hasAttribute( "inverse" ) && (*elem)->getAttributeValue( "inverse" ) == "yes" )
         {
@@ -329,7 +329,7 @@ vtkTransform * SRender::createVtkTransform( ConfigurationType conf )
 
 //-----------------------------------------------------------------------------
 
-void SRender::addVtkObject( const VtkObjectIdType& _id, vtkObject * _vtkObj )
+void SRender::addVtkObject( const VtkObjectIdType& _id, vtkObject* _vtkObj )
 {
     SLM_ASSERT( "vtkObject id is empty", !_id.empty() );
     SLM_ASSERT( "vtkObject is NULL", _vtkObj );
@@ -346,14 +346,21 @@ void SRender::configuring() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     SLM_FATAL_IF( "Depreciated tag \"win\" in configuration", m_configuration->findConfigurationElement("win") );
-    if (!m_offScreen)
-    {
-        this->initialize();
-    }
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > vectConfig = m_configuration->find("scene");
     SLM_ASSERT("Missing 'scene' configuration.",!vectConfig.empty());
     m_sceneConfiguration = vectConfig.at(0);
+
+    m_offScreenImageKey = m_sceneConfiguration->getAttributeValue("offScreen");
+    if (!m_offScreenImageKey.empty())
+    {
+        m_offScreen = true;
+    }
+
+    if (!m_offScreen)
+    {
+        this->initialize();
+    }
 
     std::string renderMode = m_sceneConfiguration->getAttributeValue("renderMode");
     if (renderMode == "auto")
@@ -371,12 +378,6 @@ void SRender::configuring() throw(fwTools::Failed)
     else
     {
         SLM_WARN_IF("renderMode '" + renderMode + " is unknown, setting renderMode to 'auto'.", !renderMode.empty());
-    }
-
-    m_offScreenImageKey = m_sceneConfiguration->getAttributeValue("offScreen");
-    if (!m_offScreenImageKey.empty())
-    {
-        m_offScreen = true;
     }
 
     std::string widthKey = m_sceneConfiguration->getAttributeValue("width");
@@ -513,7 +514,7 @@ void SRender::starting() throw(fwTools::Failed)
     m_interactorManager->getInteractor()->GetRenderWindow()->SetNumberOfLayers(static_cast<int>(m_renderers.size()));
     for( RenderersMapType::iterator iter = m_renderers.begin(); iter != m_renderers.end(); ++iter )
     {
-        vtkRenderer *renderer = (*iter).second;
+        vtkRenderer* renderer = (*iter).second;
         m_interactorManager->getInteractor()->GetRenderWindow()->AddRenderer(renderer);
     }
 
@@ -664,7 +665,7 @@ void SRender::updating() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SRender::swapping(const IService::KeyType &key) throw(::fwTools::Failed)
+void SRender::swapping(const IService::KeyType& key) throw(::fwTools::Failed)
 {
     std::vector< ConfigurationType > confVec = m_sceneConfiguration->find("adaptor","objectId", key);
     for( ConfigurationType cfg : confVec )
@@ -688,9 +689,17 @@ void SRender::render()
         windowToImageFilter->SetInput( renderWindow );
         windowToImageFilter->Update();
 
-        vtkImageData * vtkImage = windowToImageFilter->GetOutput();
-        ::fwData::Composite::sptr composite = this->getComposite();
-        ::fwData::Image::sptr image         = composite->at< ::fwData::Image >(m_offScreenImageKey);
+        vtkImageData* vtkImage = windowToImageFilter->GetOutput();
+        ::fwData::Image::sptr image;
+        if (!this->isVersion2())
+        {
+            ::fwData::Composite::sptr composite = this->getComposite();
+            image                               = composite->at< ::fwData::Image >(m_offScreenImageKey);
+        }
+        else
+        {
+            image = this->getInOut< ::fwData::Image >(m_offScreenImageKey);
+        }
         SLM_ASSERT("Image '" + m_offScreenImageKey + "' not found.", image);
 
         {
@@ -779,7 +788,7 @@ void SRender::stopContext()
 
     for( RenderersMapType::iterator iter = m_renderers.begin(); iter != m_renderers.end(); ++iter )
     {
-        vtkRenderer *renderer = iter->second;
+        vtkRenderer* renderer = iter->second;
         renderer->InteractiveOff();
         m_interactorManager->getInteractor()->GetRenderWindow()->RemoveRenderer(renderer);
         renderer->Delete();
@@ -793,7 +802,7 @@ void SRender::stopContext()
 
 //-----------------------------------------------------------------------------
 
-vtkRenderer * SRender::getRenderer(RendererIdType rendererId)
+vtkRenderer* SRender::getRenderer(RendererIdType rendererId)
 {
     OSLM_ASSERT("Renderer not found : '" << rendererId << "'", m_renderers.count(rendererId) == 1);
 
@@ -802,7 +811,7 @@ vtkRenderer * SRender::getRenderer(RendererIdType rendererId)
 
 //-----------------------------------------------------------------------------
 
-vtkAbstractPropPicker * SRender::getPicker(PickerIdType pickerId)
+vtkAbstractPropPicker* SRender::getPicker(PickerIdType pickerId)
 {
     PickersMapType::const_iterator iter = m_pickers.find(pickerId);
     if ( iter == m_pickers.end())
@@ -815,7 +824,7 @@ vtkAbstractPropPicker * SRender::getPicker(PickerIdType pickerId)
 
 //-----------------------------------------------------------------------------
 
-vtkObject * SRender::getVtkObject(const VtkObjectIdType& objectId) const
+vtkObject* SRender::getVtkObject(const VtkObjectIdType& objectId) const
 {
     VtkObjectMapType::const_iterator iter = m_vtkObjects.find(objectId);
     if ( iter == m_vtkObjects.end())
@@ -847,9 +856,9 @@ SPTR (IVtkAdaptorService) SRender::getAdaptor(const SRender::AdaptorIdType& adap
 
 //-----------------------------------------------------------------------------
 
-vtkTransform * SRender::getOrAddVtkTransform( const VtkObjectIdType& _id )
+vtkTransform* SRender::getOrAddVtkTransform( const VtkObjectIdType& _id )
 {
-    vtkTransform *t = vtkTransform::SafeDownCast(getVtkObject(_id));
+    vtkTransform* t = vtkTransform::SafeDownCast(getVtkObject(_id));
     if(t == 0)
     {
         t = vtkTransform::New();
@@ -878,8 +887,8 @@ void SRender::connectAfterWait(::fwData::Composite::ContainerType objects)
 
 //-----------------------------------------------------------------------------
 
-void SRender::manageConnection(const std::string &key, const ::fwData::Object::csptr &obj,
-                               const ConfigurationType &config)
+void SRender::manageConnection(const std::string& key, const ::fwData::Object::csptr& obj,
+                               const ConfigurationType& config)
 {
     if(config->hasAttribute("waitForKey"))
     {
@@ -905,8 +914,8 @@ void SRender::manageConnection(const std::string &key, const ::fwData::Object::c
 
 //-----------------------------------------------------------------------------
 
-void SRender::manageProxy(const std::string &key, const ::fwData::Object::csptr &obj,
-                          const ConfigurationType &config)
+void SRender::manageProxy(const std::string& key, const ::fwData::Object::csptr& obj,
+                          const ConfigurationType& config)
 {
     if(config->hasAttribute("waitForKey"))
     {

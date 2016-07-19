@@ -50,7 +50,7 @@ AddLandmark::~AddLandmark() throw()
 
 //------------------------------------------------------------------------------
 
-void AddLandmark::info(std::ostream &_sstream )
+void AddLandmark::info(std::ostream& _sstream )
 {
     _sstream << "Action for remove distance" << std::endl;
 }
@@ -58,7 +58,7 @@ void AddLandmark::info(std::ostream &_sstream )
 //------------------------------------------------------------------------------
 
 // return true if label setting is NOT Canceled , name is modified !!!
-bool defineLabel(std::string &name)
+bool defineLabel(std::string& name)
 {
     bool res         = false;
     static int count = 1;
@@ -86,7 +86,15 @@ bool defineLabel(std::string &name)
 void AddLandmark::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr image;
+    if (this->isVersion2())
+    {
+        image = this->getInOut< ::fwData::Image >("image");
+    }
+    else
+    {
+        image = this->getObject< ::fwData::Image >();
+    }
     if (!::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(

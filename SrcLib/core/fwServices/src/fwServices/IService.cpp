@@ -67,13 +67,13 @@ IService::~IService()
 
 //-----------------------------------------------------------------------------
 
-void IService::info( std::ostream &_sstream )
+void IService::info( std::ostream& _sstream )
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void IService::registerOutput(const IService::KeyType &key, const fwData::Object::sptr& object, size_t index)
+void IService::registerOutput(const IService::KeyType& key, const fwData::Object::sptr& object, size_t index)
 {
     std::string outKey = key;
 
@@ -91,7 +91,7 @@ void IService::registerOutput(const IService::KeyType &key, const fwData::Object
 
 //-----------------------------------------------------------------------------
 
-void IService::unregisterOutput(const IService::KeyType &key, size_t index)
+void IService::unregisterOutput(const IService::KeyType& key, size_t index)
 {
     std::string outKey = key;
 
@@ -146,14 +146,14 @@ IService::IdType IService::getObjectId(const IService::KeyType& _key) const
 
 //-----------------------------------------------------------------------------
 
-void IService::setObjectId(const IService::KeyType &_key, const IService::IdType &_id)
+void IService::setObjectId(const IService::KeyType& _key, const IService::IdType& _id)
 {
     m_idsMap[_key] = _id;
 }
 
 //-----------------------------------------------------------------------------
 
-void displayPt(::boost::property_tree::ptree &pt, std::string indent = "")
+void displayPt(::boost::property_tree::ptree& pt, std::string indent = "")
 {
     OSLM_ERROR(indent << " data : '" << pt.data() << "'" );
 
@@ -176,7 +176,7 @@ void IService::setConfiguration(const ::fwRuntime::ConfigurationElement::sptr _c
 
 //-----------------------------------------------------------------------------
 
-void IService::setConfiguration( const ConfigType &ptree )
+void IService::setConfiguration( const ConfigType& ptree )
 {
     ::fwRuntime::ConfigurationElement::sptr ce;
 
@@ -374,14 +374,15 @@ IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj )
 
 //-----------------------------------------------------------------------------
 
-IService::SharedFutureType IService::swapKey(const IService::KeyType &_key, fwData::Object::sptr _obj)
+IService::SharedFutureType IService::swapKey(const IService::KeyType& _key, fwData::Object::sptr _obj)
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
         OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(),
                     m_associatedObject.lock() != _obj );
         OSLM_FATAL_IF(
-            "Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(),
+            "Service "<< this->getID() << " is not STARTED, no swapping with Object " <<
+            (_obj ? _obj->getID() : "nullptr"),
             m_globalState != STARTED);
 
         PackagedTaskType task( ::boost::bind(&IService::swapping, this, _key) );
@@ -477,7 +478,7 @@ IService::KeyConnectionsType IService::getObjSrvConnections() const
  * @see IService::operator<<(std::ostream & _ostream, IService& _service)
  * @note Invoke IService::info( std::ostream )
  */
-std::ostream & operator<<(std::ostream & _ostream, IService& _service)
+std::ostream& operator<<(std::ostream& _ostream, IService& _service)
 {
     _service.info( _ostream );
     return _ostream;

@@ -19,7 +19,23 @@ namespace updater
 {
 
 /**
- * @brief  Updates the composite from object given from slots.
+ * @brief  Registers/unregisters the object given by the slots.
+ *
+ * @section Slots Slots
+ * - \b add(::fwData::Object::sptr) : Registers the given object in the OSR
+ * - \b remove(::fwData::Object::sptr) : Unregisters the object in the OSR
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+     <service type="::ctrlSelection::updater::SObjFromSlot">
+         <out key="object" uid="..." />
+     </service>
+     @endcode
+ * @subsection Output Output
+ * - \b object [::fwData::Object]: Object used to register/unregister the object given by the slots.
+ *
+ * @deprecated The slots 'addOrSwap', 'swapObj' and 'removeIfPresent' should be replaced by 'add' or 'remove'.
  */
 class CTRLSELECTION_CLASS_API SObjFromSlot : public ::ctrlSelection::IUpdaterSrv
 {
@@ -71,7 +87,7 @@ protected:
     CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Implements info method derived from IService. Print classname.
-    CTRLSELECTION_API virtual void info( std::ostream &_sstream );
+    CTRLSELECTION_API virtual void info( std::ostream& _sstream );
 
     /**
      * @name Slots

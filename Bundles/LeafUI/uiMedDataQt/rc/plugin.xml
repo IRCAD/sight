@@ -188,7 +188,7 @@
                 <in key="image" uid="${imageID}" />
             </service>
             <service uid="medicalImgConverter" type="::ctrlSelection::MedicalImageSrv">
-                <in key="image" uid="${imageID}" />
+                <inout key="image" uid="${imageID}" />
             </service>
             <service uid="sliderIndexEditor" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
                 <in key="image" uid="${imageID}" />

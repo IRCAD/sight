@@ -100,8 +100,8 @@
             <mainActivity id="SDBVRRender" closable="false" />
             <parameters>
                 <parameter replace="SERIESDB" uid="seriesDB" />
-                <parameter replace="ICON_PATH" uid="${appIconPath}" />
-                <parameter replace="DYNAMICVIEW_CHANNEL" uid="dynamicView" />
+                <parameter replace="ICON_PATH" by="${appIconPath}" />
+                <parameter replace="DYNAMICVIEW_CHANNEL" uid="dynamicViewChannel" />
                 <parameter replace="PROGRESS_CHANNEL" uid="progressStatus" />
             </parameters>
         </service>
@@ -113,7 +113,7 @@
             <slot>progress_statusbar/showJob</slot>
         </connect>
 
-        <connect channel="dynamicView">
+        <connect channel="dynamicViewChannel">
             <slot>dynamicView/createTab</slot>
         </connect>
 

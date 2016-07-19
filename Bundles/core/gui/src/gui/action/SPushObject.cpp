@@ -120,7 +120,12 @@ void SPushObject::updating() throw(::fwTools::Failed)
         ::fwData::Object::sptr obj = compositeSrc->at< ::fwData::Object>(m_srcKey);
 
         SLM_WARN_IF("'" + m_srcKey + "' not found in composite '" + compositeSrc->getID() + "'", obj == nullptr);
-        if (obj)
+        if (::fwServices::OSR::isRegistered(s_DESTINATION_KEY, ::fwServices::IService::AccessType::OUTPUT,
+                                            this->getSptr()))
+        {
+            this->unregisterOutput(s_DESTINATION_KEY);
+        }
+        else if (obj)
         {
             this->registerOutput(s_DESTINATION_KEY, obj);
         }

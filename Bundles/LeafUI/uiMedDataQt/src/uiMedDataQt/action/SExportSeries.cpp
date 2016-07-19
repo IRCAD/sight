@@ -40,6 +40,8 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMedData::action::SExportSeries
 const ::fwCom::Slots::SlotKeyType SExportSeries::s_CHECK_ADDED_SERIES_SLOT   = "checkAddedSeries";
 const ::fwCom::Slots::SlotKeyType SExportSeries::s_CHECK_REMOVED_SERIES_SLOT = "CheckRemovesSeries";
 
+const static std::string s_SERIESDB_INOUT = "seriesDB";
+
 //------------------------------------------------------------------------------
 
 SExportSeries::SExportSeries()
@@ -56,10 +58,27 @@ SExportSeries::~SExportSeries() throw()
 
 //------------------------------------------------------------------------------
 
-void SExportSeries::info(std::ostream &_sstream )
+::fwServices::IService::KeyConnectionsMap SExportSeries::getAutoConnections() const
 {
-    // Update message
-    _sstream << std::string("SExportSeries");
+    KeyConnectionsMap connections;
+    connections.push( s_SERIESDB_INOUT, ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_CHECK_ADDED_SERIES_SLOT );
+    connections.push( s_SERIESDB_INOUT, ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG, s_CHECK_REMOVED_SERIES_SLOT );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+void SExportSeries::configuring() throw(::fwTools::Failed)
+{
+    this->::fwGui::IActionSrv::initialize();
+
+    if(!this->isVersion2())
+    {
+        std::vector < ::fwRuntime::ConfigurationElement::sptr > seriesCfg = m_configuration->find("seriesId");
+        m_seriesId = seriesCfg.front()->getValue();
+        SLM_ASSERT("seriesId must not be empty", !m_seriesId.empty());
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -67,7 +86,16 @@ void SExportSeries::info(std::ostream &_sstream )
 void SExportSeries::starting() throw(::fwTools::Failed)
 {
     this->actionServiceStarting();
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    ::fwMedData::SeriesDB::sptr seriesDB;
+    if(this->isVersion2())
+    {
+        seriesDB = this->getInOut< ::fwMedData::SeriesDB>(s_SERIESDB_INOUT);
+    }
+    else
+    {
+        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    }
+
     for( ::fwMedData::Series::sptr series :  seriesDB->getContainer() )
     {
         if(series == this->getSeries())
@@ -91,7 +119,7 @@ void SExportSeries::updating() throw(::fwTools::Failed)
     ::fwMedData::SeriesDB::sptr seriesDB;
     if(this->isVersion2())
     {
-        seriesDB = this->getInOut< ::fwMedData::SeriesDB>("seriesDB");
+        seriesDB = this->getInOut< ::fwMedData::SeriesDB>(s_SERIESDB_INOUT);
     }
     else
     {
@@ -138,21 +166,14 @@ void SExportSeries::updating() throw(::fwTools::Failed)
         seriesDBHelper.notify();
         this->setIsExecutable(false);
     }
-
 }
 
 //------------------------------------------------------------------------------
 
-void SExportSeries::configuring() throw(::fwTools::Failed)
+void SExportSeries::info(std::ostream& _sstream )
 {
-    this->::fwGui::IActionSrv::initialize();
-
-    if(!this->isVersion2())
-    {
-        std::vector < ::fwRuntime::ConfigurationElement::sptr > seriesCfg = m_configuration->find("seriesId");
-        m_seriesId = seriesCfg.front()->getValue();
-        SLM_ASSERT("seriesId must not be empty", !m_seriesId.empty());
-    }
+    // Update message
+    _sstream << std::string("SExportSeries");
 }
 
 //------------------------------------------------------------------------------

@@ -73,7 +73,7 @@ SSelector::~SSelector() throw()
 
 //------------------------------------------------------------------------------
 
-void SSelector::info(std::ostream &_sstream )
+void SSelector::info(std::ostream& _sstream )
 {
     // Update message
     _sstream << std::string("SSelector");
@@ -96,7 +96,7 @@ void SSelector::starting() throw(::fwTools::Failed)
     m_selectorWidget->setAllowedRemove(m_allowedRemove);
     m_selectorWidget->setInsertMode(m_insertMode);
 
-    QVBoxLayout *layout = new QVBoxLayout();
+    QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(m_selectorWidget);
     container->setLayout(layout);
 
@@ -133,7 +133,15 @@ void SSelector::stopping() throw(::fwTools::Failed)
 
 void SSelector::updating() throw(::fwTools::Failed)
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    ::fwMedData::SeriesDB::sptr seriesDB;
+    if (this->isVersion2())
+    {
+        seriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
+    }
+    else
+    {
+        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    }
 
     m_selectorWidget->clear();
 
@@ -260,7 +268,7 @@ void SSelector::onSelectedSeries(QVector< ::fwMedData::Series::sptr > selection,
 
 //------------------------------------------------------------------------------
 
-void SSelector::onDoubleClick(const QModelIndex &index)
+void SSelector::onDoubleClick(const QModelIndex& index)
 {
     m_selectorWidget->clearSelection();
     m_selectorWidget->setCurrentIndex(index);
@@ -290,7 +298,15 @@ void SSelector::onDoubleClick(const QModelIndex &index)
 
 void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection)
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    ::fwMedData::SeriesDB::sptr seriesDB;
+    if (this->isVersion2())
+    {
+        seriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
+    }
+    else
+    {
+        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    }
     ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
 
     // Remove duplicated series
@@ -317,7 +333,7 @@ void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection)
     ::fwData::Vector::sptr selection;
     if(this->isVersion2())
     {
-        selection = this->getInOut< ::fwData::Vector>("selection");
+        selection = this->getInOut< ::fwData::Vector >("selection");
     }
     else
     {

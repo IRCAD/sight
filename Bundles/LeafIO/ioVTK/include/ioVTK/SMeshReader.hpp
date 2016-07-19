@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,6 +28,17 @@ namespace ioVTK
  * @brief   VTK Mesh Reader.
  *
  * Service reading a VTK mesh using the fwVtkIO lib.
+ * @section XML Configuration
+ * @code{.xml}
+    <service uid="..." type="::ioVTK::SMeshReader">
+        <inout key="output" uid="mesh" />
+        <file>@path/to/file</file>
+    </service>
+ * @endcode
+ *
+ * @subsection In-Out In-Out
+ * - \b seriesDB [::fwMedData::SeriesDB]: SeriesDB
+ *
  */
 class IOVTK_CLASS_API SMeshReader : public ::io::IReader
 {
@@ -85,7 +96,7 @@ protected:
      * This method is used to give
      * informations about the service.
      */
-    IOVTK_API void info(std::ostream &_sstream );
+    IOVTK_API void info(std::ostream& _sstream );
 
 
 private:

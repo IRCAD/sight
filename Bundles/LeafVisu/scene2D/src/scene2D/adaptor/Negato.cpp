@@ -17,6 +17,7 @@
 
 #include <fwComEd/Dictionary.hpp>
 #include <fwComEd/helper/Image.hpp>
+#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Composite.hpp>
@@ -117,8 +118,12 @@ void Negato::configuring() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Negato::updateBufferFromImage( QImage * qimg )
+void Negato::updateBufferFromImage( QImage* qimg )
 {
+    if(!qimg)
+    {
+        return;
+    }
     // Window min/max
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
     const double wlMin = tf->getWLMinMax().first;
@@ -127,7 +132,7 @@ void Negato::updateBufferFromImage( QImage * qimg )
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     ::fwComEd::helper::Image imgHelper(image);
     const ::fwData::Image::SizeType size = image->getSize();
-    const short * imgBuff                = static_cast<const short *>(imgHelper.getBuffer());
+    const short* imgBuff                 = static_cast<const short*>(imgHelper.getBuffer());
     const size_t imageZOffset            = size[0] * size[1];
 
     const double tfMin = tf->getMinMaxTFValues().first;
@@ -218,11 +223,14 @@ QRgb Negato::getQImageVal(const size_t index, const short* buffer, double wlMin,
 
 //---------------------------------------------------------------------------
 
-QImage * Negato::createQImage()
+QImage* Negato::createQImage()
 {
-    SLM_TRACE_FUNC();
-
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+
+    if (!::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img ))
+    {
+        return nullptr;
+    }
 
     const ::fwData::Image::SizeType size       = img->getSize();
     const ::fwData::Image::SpacingType spacing = img->getSpacing();
@@ -268,7 +276,7 @@ QImage * Negato::createQImage()
     }
 
     // Create empty QImage
-    QImage * qimage = new QImage(qImageSize[0], qImageSize[1], QImage::Format_RGB888);
+    QImage* qimage = new QImage(qImageSize[0], qImageSize[1], QImage::Format_RGB888);
 
     // Place m_pixmapItem
     m_pixmapItem->resetTransform();
@@ -289,6 +297,9 @@ QImage * Negato::createQImage()
 
 void Negato::doStart() throw ( ::fwTools::Failed )
 {
+    ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+    this->setTransferFunctionSelection(tfSelection);
+
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos( image );
     this->updateTransferFunction( image );
@@ -519,7 +530,7 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
 
 //-----------------------------------------------------------------------------
 
-void Negato::changeImageMinMaxFromCoord( scene2D::data::Coord & oldCoord, scene2D::data::Coord & newCoord )
+void Negato::changeImageMinMaxFromCoord( scene2D::data::Coord& oldCoord, scene2D::data::Coord& newCoord )
 {
     ::fwData::Image::sptr image         = this->getObject< ::fwData::Image >();
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();

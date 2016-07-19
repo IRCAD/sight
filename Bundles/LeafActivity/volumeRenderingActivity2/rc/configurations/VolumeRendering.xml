@@ -148,9 +148,9 @@
             <push srcKey="optionalModelSeriesKey" />
         </service>
 
-        <service uid="action_organManager" type="::gui::action::SConfigLauncher" autoConnect="yes">
+        <service uid="action_organManager" type="::gui::action::SConfigLauncher" >
             <appConfig id="OrganManagerWithSeries" />
-            <inout key="modelSeries" uid="optionalModelSeries" />
+            <inout key="ORGAN_MANAGER_MODELSERIES" uid="optionalModelSeries"/>
             <parameter replace="ICON_PATH" by="${ICON_PATH}" />
             <parameter replace="ModelRepresentationChannel" uid="ModelRepresentationChannel" />
             <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
@@ -330,7 +330,7 @@
         </service>
 
         <service uid="MedicalImageSrv" type="::ctrlSelection::MedicalImageSrv" >
-            <in key="image" uid="${image}" />
+            <inout key="image" uid="${image}" />
         </service>
 
         <service uid="cfgNegato" type="::fwServices::SConfigController">

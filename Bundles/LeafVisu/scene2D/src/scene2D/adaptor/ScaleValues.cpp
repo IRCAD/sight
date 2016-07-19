@@ -200,6 +200,7 @@ void ScaleValues::doStart() throw ( ::fwTools::Failed )
     m_font.setFixedPitch( true );
 
     m_viewport = this->getSafeInOut< ::scene2D::data::Viewport>( m_viewportID );
+    SLM_ASSERT("Viewport '" + m_viewportID + "' is not found", m_viewport);
 
     m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
         this->slot(::fwServices::IService::s_UPDATE_SLOT));

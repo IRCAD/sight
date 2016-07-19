@@ -6,6 +6,9 @@
 
 #include "ctrlSelection/MedicalImageSrv.hpp"
 
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
+
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwComEd/helper/Image.hpp>
 
@@ -37,7 +40,16 @@ MedicalImageSrv::~MedicalImageSrv() throw()
 
 void MedicalImageSrv::convertImage()
 {
-    ::fwData::Image::sptr pImg = this->getObject< ::fwData::Image >();
+    ::fwData::Image::sptr pImg;
+
+    if (this->isVersion2())
+    {
+        pImg = this->getInOut< ::fwData::Image >("image");
+    }
+    else
+    {
+        pImg = this->getObject< ::fwData::Image >();
+    }
     if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg))
     {
         ::fwComEd::helper::Image helper ( pImg );
@@ -46,6 +58,8 @@ void MedicalImageSrv::convertImage()
         helper.createTransferFunctionPool();
         helper.createImageSliceIndex();
 
+        auto sig = pImg->signal< ::fwData::Object::ModifiedSignalType >( ::fwData::Object::s_MODIFIED_SIG );
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         helper.notify();
     }
 }
@@ -91,7 +105,7 @@ void MedicalImageSrv::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void MedicalImageSrv::info( std::ostream &_sstream )
+void MedicalImageSrv::info( std::ostream& _sstream )
 {
 }
 

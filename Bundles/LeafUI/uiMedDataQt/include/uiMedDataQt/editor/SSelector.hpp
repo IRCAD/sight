@@ -33,6 +33,32 @@ namespace editor
 /**
  * @brief   This editor shows information about the medical data. It allows to manipulate
  *          (select, erase, ...) studies and series.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+    <service uid="..." type="::uiMedData::editor::SSelector">
+        <inout key="seriesDB" uid="..." />
+        <inout key="selection" uid="..." />
+        <selectionMode>single|extended</selectionMode>
+        <allowedRemove>yes|no</allowedRemove>
+        <insertMode>yes|no</insertMode>
+        <icons>
+            <icon series="..." icon="..." />
+            <icon series="..." icon="..." />
+        </icons>
+    </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b seriesDB [::fwMedData::SeriesDB]: seriesDB on which the editor operates.
+ * - \b selection [::fwData::Vector]: defines the id of the ::fwData::Vector where the selection will be put or get.
+ * @subsection Configuration Configuration
+ * - \b selectionMode : defines the selection mode for the series, among {"single", "extended"}, where extended means "multiple"
+ * - \b allowedRemove : allows user to remove series, among {"yes", "no"}
+ * - \b insertMode : only allows selection of uiMedData::InsertSeries, among {"yes", "no"}
+ * - \b icons : defines the icon to associate for a series
+ *    - \b series : the series classname, e.g. {::fwMedData::ImageSeries, ::fwMedData::ModelSeries, ...}
+ *    - \b icon : the icon path
  */
 class UIMEDDATAQT_CLASS_API SSelector : public QObject,
                                         public ::gui::editor::IEditor
@@ -78,40 +104,13 @@ protected:
     /// Destroys GUI.
     virtual void stopping() throw(::fwTools::Failed);
 
-    /**
-     *
-     * @code{.xml}
-       <service uid="selector" impl="::uiMedData::editor::SSelector" type="::gui::editor::IEditor" autoConnect="yes">
-           <in key="seriesDB" uid="seriesDBId" />
-           <inout key="selection" uid="selectionsVector" />
-           <selectionMode>single|extended</selectionMode>
-           <allowedRemove>yes|no</allowedRemove>
-           <insertMode>yes|no</insertMode>
-           <icons>
-               <icon series="::fwMedData::ImageSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/ImageSeries.svg" />
-               <icon series="::fwMedData::ModelSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/ModelSeries.svg" />
-           </icons>
-       </service>
-       @endcode
-     * - \b seriesDB : defines the SSeriesDB to operate on.
-     * - \b selection : defines the id of the ::fwData::Vector where the selection will be put or get.
-     *  TODO: this should be in and not inout.
-     * - \b selectionMode : defines the selection mode for the series
-     * - \b allowedRemove : allows user to remove series
-     * - \b insertMode : only allows selection of uiMedData::InsertSeries
-     * - \b icons : defines the icon to associate for a series
-     *    - \b series : the series classname
-     *    - \b icon : the icon path
-
-     */
+    /// Configures the service according to the xml tags found.
     virtual void configuring() throw (::fwTools::Failed);
 
     /// Fill selector with the series contained in SeriesDB.
     virtual void updating() throw (::fwTools::Failed);
 
-    virtual void info( std::ostream &_sstream );
-
-
+    virtual void info( std::ostream& _sstream );
 
 protected Q_SLOTS:
 
@@ -129,7 +128,7 @@ protected Q_SLOTS:
      * @param[in] index index of the clicked item in the selector.
      * @todo  Manages double click on a study.
      */
-    void onDoubleClick(const QModelIndex &index);
+    void onDoubleClick(const QModelIndex& index);
 
     /**
      * @brief Removes series from seriesDB and notify.

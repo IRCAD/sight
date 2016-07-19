@@ -96,8 +96,8 @@
             <inout key="series" uid="${AS_UID}" />
         </service>
 
-        <service uid="MedicalImageSrv" type="::ctrlSelection::MedicalImageSrv" >
-            <in key="image" uid="${image}" />
+        <service uid="MedicalImageSrv" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
+            <inout key="image" uid="${image}" />
         </service>
 
         <service uid="ActionFocusLandmark" type="::uiMeasurement::action::FocusLandmark" >
