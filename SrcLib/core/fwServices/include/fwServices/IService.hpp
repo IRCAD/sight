@@ -186,7 +186,7 @@ public:
      * @param[in] ptree property tree
      * @post m_configurationState == UNCONFIGURED
      */
-    FWSERVICES_API void setConfiguration( const ConfigType &ptree );
+    FWSERVICES_API void setConfiguration( const ConfigType& ptree );
 
     /**
      * @brief Invoke configuring() if m_globalState == STOPPED. Invoke reconfiguring() if m_globalState == STARTED. Does nothing otherwise.
@@ -323,7 +323,7 @@ public:
      * @return m_associatedObject
      * @pre the service must have an associated object set
      * @pre associated object has not expired
-     * @deprecated use getInput(), getInOut() or getOutput() instead
+     * @deprecated use getInput() or getInOut() instead
      */
     FWSERVICES_API ::fwData::Object::sptr getObject();
 
@@ -333,7 +333,7 @@ public:
      * @pre the service must have an associated object set
      * @pre associated object does not be expired
      * @post cast verification in debug mode ( assertion on dynamic cast )
-     * @deprecated use getInput(), getInOut() or getOutput() instead
+     * @deprecated use getInput() or getInOut() instead
      */
     template< class DATATYPE > SPTR(DATATYPE) getObject();
 
@@ -352,14 +352,6 @@ public:
      * @pre associated objects have not expired
      */
     FWSERVICES_API const OutputMapType& getInOuts() const;
-
-    /**
-     * @brief Return the inouts map associated to service
-     * @return m_outputsMap
-     * @pre the service must have an associated object set
-     * @pre associated objects have not expired
-     */
-    FWSERVICES_API const OutputMapType& getOutputs() const;
 
     /**
      * @brief Return the objects associated to service
@@ -388,15 +380,6 @@ public:
     template< class DATATYPE > SPTR(DATATYPE) getInOut(const KeyType &key) const;
 
     /**
-     * @brief Return the output object at the given key. Asserts if the data is not of the right type.
-     * @param key name of the data to retrieve.
-     * @return object cast in the right type, nullptr if not found.
-     * @pre the service must have an associated object set.
-     * @post cast verification in debug mode ( assertion on dynamic cast ).
-     */
-    template< class DATATYPE > SPTR(DATATYPE) getOutput(const KeyType &key) const;
-
-    /**
      * @brief Return the input object at the given key. Asserts if the data is not of the right type.
      * @param key name of the data to retrieve.
      * @return object cast in the right type, nullptr if not found.
@@ -415,20 +398,20 @@ public:
     template< class DATATYPE > SPTR(DATATYPE) getInOut(const KeyType &keybase, size_t index) const;
 
     /**
-     * @brief Return the output object at the given key. Asserts if the data is not of the right type.
-     * @param key name of the data to retrieve.
-     * @return object cast in the right type, nullptr if not found.
-     * @pre the service must have an associated object set.
-     * @post cast verification in debug mode ( assertion on dynamic cast ).
+     * @brief Register an output object at a given key in the OSR, replacing it if it already exists.
+     * @param key name of the data or the group to register.
+     * @param object pointer to the object to register.
+     * @param index optional index of the key in the case of a member of a group of keys.
      */
-    template< class DATATYPE > SPTR(DATATYPE) getOutput(const KeyType &keybase, size_t index) const;
+    FWSERVICES_API void setOutput(const ::fwServices::IService::KeyType& key, const ::fwData::Object::sptr& object,
+                                  size_t index = 0);
 
     /**
      * @brief Return the number of key in a group of keys.
      * @param keybase group name.
      * @return number of keys in this group.
      */
-    size_t getKeyGroupSize(const KeyType &keybase) const;
+    size_t getKeyGroupSize(const KeyType& keybase) const;
     //@}
 
     /**
@@ -500,7 +483,7 @@ public:
      * @see IService::operator<<(std::ostream & _ostream, IService& _service)
      * @note Invoke IService::info( std::ostream )
      */
-    FWSERVICES_API friend std::ostream & operator<<(std::ostream & _sstream, IService & _service);
+    FWSERVICES_API friend std::ostream& operator<<(std::ostream& _sstream, IService& _service);
 
     /** Set/get the version of the service. Temporary, this should be removed when appXml is gone. */
     FWSERVICES_API static void setVersion(int version);
@@ -615,25 +598,9 @@ protected:
      * This method is used by operator<<(std::ostream & _sstream, IService& _service)
      * to avoid declaration of << by all services.
      */
-    FWSERVICES_API virtual void info( std::ostream & _sstream );
+    FWSERVICES_API virtual void info( std::ostream& _sstream );
 
     //@}
-
-    /**
-     * @brief Register an output object at a given key in the OSR, replacing it if it already exists.
-     * @param key name of the data or the group to register.
-     * @param object pointer to the object to register.
-     * @param index optional index of the key in the case of a member of a group of keys.
-     */
-    FWSERVICES_API void registerOutput(const ::fwServices::IService::KeyType& key, const ::fwData::Object::sptr& object,
-                                       size_t index = 0);
-
-    /**
-     * @brief Unregister an output object at a given key in the OSR.
-     * @param key name of the data or the group to register.
-     * @param index optional index of the key in the case of a member of a group of keys.
-     */
-    FWSERVICES_API void unregisterOutput(const ::fwServices::IService::KeyType& key, size_t index = 0);
 
     /**
      * @brief Configuration element used to configure service internal state using a generic XML like structure

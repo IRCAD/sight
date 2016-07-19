@@ -965,10 +965,7 @@ void AppConfigManager2::addObjects(fwData::Object::sptr obj, const std::string& 
                     if( objCfg.m_optional && !::fwServices::OSR::isRegistered(objCfg.m_key, objCfg.m_access, srv))
                     {
                         // Register the key on the service
-                        {
-                            ::fwCom::Connection::Blocker block(m_addObjectConnection);
-                            ::fwServices::OSR::registerService(object, objCfg.m_key, objCfg.m_access, srv);
-                        }
+                        ::fwServices::OSR::registerService(object, objCfg.m_key, objCfg.m_access, srv);
 
                         // Call the swapping callback of the service and wait for it
                         srv->swapKey(objCfg.m_key, nullptr).wait();
@@ -1067,11 +1064,8 @@ void AppConfigManager2::removeObjects(fwData::Object::sptr obj, const std::strin
                         {
                             if(::fwServices::OSR::isRegistered(objCfg.m_key, objCfg.m_access, srv))
                             {
-                                {
-                                    ::fwCom::Connection::Blocker block(m_removeObjectConnection);
-                                    ::fwServices::OSR::unregisterService(objCfg.m_key, objCfg.m_access, srv);
+                                ::fwServices::OSR::unregisterService(objCfg.m_key, objCfg.m_access, srv);
 
-                                }
                                 srv->swapKey(objCfg.m_key, obj).wait();
                             }
                         }

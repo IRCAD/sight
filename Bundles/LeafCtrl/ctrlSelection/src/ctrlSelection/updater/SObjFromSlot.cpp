@@ -92,7 +92,7 @@ void SObjFromSlot::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SObjFromSlot::info( std::ostream &_sstream )
+void SObjFromSlot::info( std::ostream& _sstream )
 {
 }
 
@@ -102,7 +102,7 @@ void SObjFromSlot::add(::fwData::Object::sptr obj)
 {
     if(this->isVersion2())
     {
-        this->registerOutput(s_OBJECT, obj);
+        this->setOutput(s_OBJECT, obj);
     }
     else
     {
@@ -118,7 +118,7 @@ void SObjFromSlot::addOrSwap(::fwData::Object::sptr obj)
 {
     if(this->isVersion2())
     {
-        this->registerOutput(s_OBJECT, obj);
+        this->setOutput(s_OBJECT, obj);
     }
     else
     {
@@ -142,7 +142,7 @@ void SObjFromSlot::swap(::fwData::Object::sptr obj)
 {
     if(this->isVersion2())
     {
-        this->registerOutput(s_OBJECT, obj);
+        this->setOutput(s_OBJECT, obj);
     }
     else
     {
@@ -158,7 +158,7 @@ void SObjFromSlot::remove()
 {
     if(this->isVersion2())
     {
-        this->unregisterOutput(s_OBJECT);
+        this->setOutput(s_OBJECT, nullptr);
     }
     else
     {
@@ -174,7 +174,7 @@ void SObjFromSlot::removeIfPresent()
 {
     if(this->isVersion2())
     {
-        this->unregisterOutput(s_OBJECT);
+        this->setOutput(s_OBJECT, nullptr);
     }
     else
     {

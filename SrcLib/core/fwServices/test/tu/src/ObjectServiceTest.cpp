@@ -357,7 +357,7 @@ void ObjectServiceTest::registerConnectionTest()
     // Register callback test
     // Each time we wait the slot with a timeout to avoid blocking the test in case of failure
     service1->setObjectId("key1", "uid1");
-    osr.registerService(obj1, "key1", ::fwServices::IService::AccessType::INOUT, service1);
+    osr.registerServiceOutput(obj1, "key1", service1);
     {
         std::unique_lock<std::mutex> lock(m_mutex);
         m_condition.wait_for(lock, std::chrono::milliseconds(1000), [this] { return m_ret == "uid1"; });
@@ -367,7 +367,7 @@ void ObjectServiceTest::registerConnectionTest()
     }
 
     service1->setObjectId("key2", "uid2");
-    osr.registerService(obj2, "key2", ::fwServices::IService::AccessType::INOUT, service1);
+    osr.registerServiceOutput(obj2, "key2", service1);
     {
         std::unique_lock<std::mutex> lock(m_mutex);
         m_condition.wait_for(lock, std::chrono::milliseconds(1000), [this] { return m_ret == "uid2"; });
@@ -377,14 +377,12 @@ void ObjectServiceTest::registerConnectionTest()
     }
 
     // Unregister callback test
-    service1->setObjectId("key1", "uid1");
-    osr.unregisterService("key1", ::fwServices::IService::AccessType::INOUT, service1);
+    osr.unregisterServiceOutput("key1", service1);
     {
         std::unique_lock<std::mutex> lock(m_mutex);
         m_condition.wait_for(lock, std::chrono::milliseconds(1000), [this] { return m_ret == "uid1"; });
 
         CPPUNIT_ASSERT_EQUAL(std::string("uid1"), m_ret);
-        CPPUNIT_ASSERT(obj1 == m_obj);
     }
 }
 
@@ -394,8 +392,8 @@ void ObjectServiceTest::registerService(::fwData::Object::sptr obj, const std::s
 {
     {
         std::unique_lock<std::mutex> lock(m_mutex);
-        m_ret = id;
         m_obj = obj;
+        m_ret = id;
     }
     m_condition.notify_one();
 
@@ -407,8 +405,8 @@ void ObjectServiceTest::unregisterService(::fwData::Object::sptr obj, const std:
 {
     {
         std::unique_lock<std::mutex> lock(m_mutex);
-        m_ret = id;
         m_obj = obj;
+        m_ret = id;
     }
     m_condition.notify_one();
 

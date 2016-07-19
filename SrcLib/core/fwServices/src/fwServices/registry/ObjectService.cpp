@@ -53,7 +53,7 @@ std::string getRegistryInformation()
 
 //------------------------------------------------------------------------------
 
-::fwServices::registry::ObjectService::ServiceVectorType getServices( const std::string &serviceType )
+::fwServices::registry::ObjectService::ServiceVectorType getServices( const std::string& serviceType )
 {
     return ::fwServices::OSR::get()->getServices(serviceType);
 }
@@ -61,7 +61,7 @@ std::string getRegistryInformation()
 //------------------------------------------------------------------------------
 
 ::fwServices::registry::ObjectService::ServiceVectorType getServices( ::fwData::Object::sptr obj,
-                                                                      const std::string &serviceType )
+                                                                      const std::string& serviceType )
 {
     return ::fwServices::OSR::get()->getServices(obj, serviceType);
 }
@@ -75,7 +75,7 @@ std::string getRegistryInformation()
 
 //------------------------------------------------------------------------------
 
-bool has( ::fwData::Object::sptr obj, const std::string &srvType)
+bool has( ::fwData::Object::sptr obj, const std::string& srvType)
 {
     return ::fwServices::OSR::get()->has(obj, srvType);
 }
@@ -93,6 +93,14 @@ void registerService( ::fwData::Object::sptr obj, const ::fwServices::IService::
                       ::fwServices::IService::AccessType access,::fwServices::IService::sptr service )
 {
     ::fwServices::OSR::get()->registerService(obj, objKey, access, service);
+}
+
+//------------------------------------------------------------------------------
+
+void registerServiceOutput( ::fwData::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
+                            ::fwServices::IService::sptr service )
+{
+    ::fwServices::OSR::get()->registerServiceOutput(obj, objKey, service);
 }
 
 //------------------------------------------------------------------------------
@@ -115,6 +123,13 @@ void unregisterService(const ::fwServices::IService::KeyType& objKey, ::fwServic
                        IService::sptr service)
 {
     ::fwServices::OSR::get()->unregisterService(objKey, access, service);
+}
+
+//------------------------------------------------------------------------------
+
+void unregisterServiceOutput(const ::fwServices::IService::KeyType& objKey,  IService::sptr service)
+{
+    ::fwServices::OSR::get()->unregisterServiceOutput(objKey, service);
 }
 
 //------------------------------------------------------------------------------
@@ -154,7 +169,7 @@ std::string ObjectService::getRegistryInformation() const
     std::stringstream info;
     ::fwCore::LogicStamp::LogicStampType previousKey = ~0ul;
     ::fwCore::mt::ReadLock lock(m_containerMutex);
-    for( const ServiceContainerType::left_map::value_type &objSrvMap :  m_container.left)
+    for( const ServiceContainerType::left_map::value_type& objSrvMap :  m_container.left)
     {
         // TODO FIXME getObject() fail if there are expired object in OSR
         ::fwCore::LogicStamp::LogicStampType key = objSrvMap.first;
@@ -188,7 +203,15 @@ void ObjectService::registerService( ::fwData::Object::sptr object, const ::fwSe
     ::fwCore::mt::WriteLock writeLock(m_containerMutex);
     this->internalRegisterService(object, service, objKey, access);
 
+}
+
+//------------------------------------------------------------------------------
+
+void ObjectService::registerServiceOutput(::fwData::Object::sptr object, const ::fwServices::IService::KeyType& objKey,
+                                          ::fwServices::IService::sptr service)
+{
     const auto id = service->getObjectId(objKey);
+
     this->signal<RegisterSignalType>(s_REGISTERED_SIG)->asyncEmit(object, id);
 }
 
@@ -292,11 +315,17 @@ void ObjectService::unregisterService(const ::fwServices::IService::KeyType& obj
     {
         service->m_outputsMap.erase(objKey);
     }
+}
 
+//------------------------------------------------------------------------------
+
+void ObjectService::unregisterServiceOutput( const ::fwServices::IService::KeyType& objKey,
+                                             ::fwServices::IService::sptr service )
+{
     const auto id = service->getObjectId(objKey);
+    ::fwData::Object::wptr obj = service->m_outputsMap[objKey];
 
-    // TODO: Remove this constCast asap
-    this->signal<RegisterSignalType>(s_UNREGISTERED_SIG)->asyncEmit(::fwData::Object::constCast(obj.lock()), id);
+    this->signal<RegisterSignalType>(s_UNREGISTERED_SIG)->asyncEmit(obj.lock(), id);
 }
 
 //------------------------------------------------------------------------------
@@ -323,16 +352,17 @@ bool ObjectService::isRegistered(const ::fwServices::IService::KeyType& objKey,
 //------------------------------------------------------------------------------
 
 void ObjectService::internalRegisterService(::fwData::Object::sptr object, ::fwServices::IService::sptr service,
-                                            const ::fwServices::IService::KeyType &objKey,
+                                            const ::fwServices::IService::KeyType& objKey,
                                             ::fwServices::IService::AccessType access)
 {
     SLM_ASSERT("Can't register a null service in OSR.", service);
     SLM_ASSERT("Can't register a null object in OSR.", object);
-    OSLM_ASSERT("Service "<< service->getID()<<" has already a valid associated object",
-                service->m_associatedObject.expired() || object != service->m_associatedObject.lock());
 
     if(objKey.empty())
     {
+        OSLM_ASSERT("Service "<< service->getID()<<" has already a valid associated object",
+                    service->m_associatedObject.expired() || object != service->m_associatedObject.lock());
+
         // Old behavior with 1 object -> N Services
         OSLM_ASSERT("This service "<< service->getClassname()
                                    << " is not valid for the object " << object->getClassname(),
@@ -386,7 +416,7 @@ ObjectService::ObjectVectorType ObjectService::getObjects() const
     ObjectVectorType objects;
     ::fwCore::mt::ReadLock lock(m_containerMutex);
 
-    for( const ServiceContainerType::right_map::value_type &elt : m_container.right)
+    for( const ServiceContainerType::right_map::value_type& elt : m_container.right)
     {
         auto srvObjects = elt.first->getObjects();
         std::move(srvObjects.begin(), srvObjects.end(), std::inserter(objects, objects.begin()));
@@ -398,7 +428,7 @@ ObjectService::ObjectVectorType ObjectService::getObjects() const
 //------------------------------------------------------------------------------
 
 ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::sptr obj,
-                                                             const std::string & serviceType ) const
+                                                             const std::string& serviceType ) const
 {
     ServiceVectorType allServices = this->getServices(obj);
     ServiceVectorType services;
@@ -416,7 +446,7 @@ ObjectService::ServiceVectorType ObjectService::getServices( ::fwData::Object::s
 
 //------------------------------------------------------------------------------
 
-ObjectService::ServiceVectorType ObjectService::getServices( const std::string & serviceType ) const
+ObjectService::ServiceVectorType ObjectService::getServices( const std::string& serviceType ) const
 {
     ServiceVectorType services;
     ::fwCore::mt::ReadLock lock(m_containerMutex);

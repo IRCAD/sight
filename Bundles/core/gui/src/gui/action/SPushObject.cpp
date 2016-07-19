@@ -123,11 +123,11 @@ void SPushObject::updating() throw(::fwTools::Failed)
         if (::fwServices::OSR::isRegistered(s_DESTINATION_KEY, ::fwServices::IService::AccessType::OUTPUT,
                                             this->getSptr()))
         {
-            this->unregisterOutput(s_DESTINATION_KEY);
+            this->setOutput(s_DESTINATION_KEY, nullptr);
         }
         else if (obj)
         {
-            this->registerOutput(s_DESTINATION_KEY, obj);
+            this->setOutput(s_DESTINATION_KEY, obj);
         }
     }
     else

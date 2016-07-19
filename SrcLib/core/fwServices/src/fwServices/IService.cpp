@@ -73,7 +73,7 @@ void IService::info( std::ostream& _sstream )
 
 //-----------------------------------------------------------------------------
 
-void IService::registerOutput(const IService::KeyType& key, const fwData::Object::sptr& object, size_t index)
+void IService::setOutput(const IService::KeyType& key, const fwData::Object::sptr& object, size_t index)
 {
     std::string outKey = key;
 
@@ -83,26 +83,12 @@ void IService::registerOutput(const IService::KeyType& key, const fwData::Object
     }
     if(::fwServices::OSR::isRegistered(outKey, ::fwServices::IService::AccessType::OUTPUT, this->getSptr()))
     {
-        ::fwServices::OSR::unregisterService(outKey, ::fwServices::IService::AccessType::OUTPUT, this->getSptr());
+        ::fwServices::OSR::unregisterServiceOutput(outKey, this->getSptr());
     }
 
-    ::fwServices::OSR::registerService(object, outKey, ::fwServices::IService::AccessType::OUTPUT, this->getSptr());
-}
-
-//-----------------------------------------------------------------------------
-
-void IService::unregisterOutput(const IService::KeyType& key, size_t index)
-{
-    std::string outKey = key;
-
-    if(m_keyGroupSize.find(key) != m_keyGroupSize.end())
+    if(object != nullptr)
     {
-        outKey = KEY_GROUP_NAME(key, index);
-    }
-
-    if(::fwServices::OSR::isRegistered(outKey, ::fwServices::IService::AccessType::OUTPUT, this->getSptr()))
-    {
-        ::fwServices::OSR::unregisterService(outKey, ::fwServices::IService::AccessType::OUTPUT, this->getSptr());
+        ::fwServices::OSR::registerServiceOutput(object, outKey, this->getSptr());
     }
 }
 
@@ -378,8 +364,6 @@ IService::SharedFutureType IService::swapKey(const IService::KeyType& _key, fwDa
 {
     if( !m_associatedWorker || ::fwThread::getCurrentThreadId() == m_associatedWorker->getThreadId() )
     {
-        OSLM_ASSERT("Swapping on "<< this->getID() << " with same Object " << _obj->getID(),
-                    m_associatedObject.lock() != _obj );
         OSLM_FATAL_IF(
             "Service "<< this->getID() << " is not STARTED, no swapping with Object " <<
             (_obj ? _obj->getID() : "nullptr"),

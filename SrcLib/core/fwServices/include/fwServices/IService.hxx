@@ -7,6 +7,8 @@
 #ifndef __FWSERVICES_ISERVICE_HXX__
 #define __FWSERVICES_ISERVICE_HXX__
 
+#include "fwServices/IService.hpp"
+
 namespace fwServices
 {
 
@@ -57,22 +59,6 @@ SPTR(DATATYPE) IService::getInOut(const KeyType &key) const
 //------------------------------------------------------------------------------
 
 template< class DATATYPE >
-SPTR(DATATYPE) IService::getOutput(const KeyType &key) const
-{
-    SPTR(DATATYPE) output;
-    auto iterator = m_outputsMap.find(key);
-    if(iterator != m_outputsMap.end())
-    {
-        output = std::dynamic_pointer_cast<DATATYPE>( iterator->second.lock() );
-        OSLM_ASSERT("DynamicCast " << ::fwCore::TypeDemangler<DATATYPE>().getFullClassname() << " failed", output);
-    }
-
-    return output;
-}
-
-//------------------------------------------------------------------------------
-
-template< class DATATYPE >
 CSPTR(DATATYPE) IService::getInput(const KeyType &keybase, size_t index) const
 {
 # ifdef _DEBUG
@@ -100,25 +86,17 @@ SPTR(DATATYPE) IService::getInOut(const KeyType &keybase, size_t index) const
 
 //------------------------------------------------------------------------------
 
-template< class DATATYPE >
-SPTR(DATATYPE) IService::getOutput(const KeyType &keybase, size_t index) const
-{
-# ifdef _DEBUG
-    auto it = m_keyGroupSize.find(keybase);
-#endif
-    SLM_ASSERT("Key group '" + keybase + "' not found", it != m_keyGroupSize.end());
-    OSLM_ASSERT("Index overflow '" << index << " >= " << it->second << "' in key group '" << keybase << ".",
-                index < it->second);
-    return this->getOutput< DATATYPE >(KEY_GROUP_NAME(keybase, index));
-}
-
-//------------------------------------------------------------------------------
-
-inline size_t IService::getKeyGroupSize(const IService::KeyType &keybase) const
+inline size_t IService::getKeyGroupSize(const IService::KeyType& keybase) const
 {
     auto it = m_keyGroupSize.find(keybase);
-    SLM_ASSERT("Key group '" + keybase + "' not found", it != m_keyGroupSize.end());
-    return it->second;
+    if(it != m_keyGroupSize.end())
+    {
+        return it->second;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -133,13 +111,6 @@ inline const IService::InputMapType& IService::getInputs() const
 inline const IService::OutputMapType& IService::getInOuts() const
 {
     return m_inOutsMap;
-}
-
-//------------------------------------------------------------------------------
-
-inline const IService::OutputMapType& IService::getOutputs() const
-{
-    return m_outputsMap;
 }
 
 //------------------------------------------------------------------------------

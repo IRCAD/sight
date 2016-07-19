@@ -211,7 +211,7 @@ void AppConfig2Test::startStopTest()
     // Create the data
     ::fwData::Boolean::sptr data2 = ::fwData::Boolean::New();
     {
-        ::fwServices::OSR::registerService(data2, "out2", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::registerServiceOutput(data2, "out2", genDataSrv);
         WAIT_SERVICE_STARTED("TestService4Uid");
 
         // Now the service should have been started automatically
@@ -223,7 +223,7 @@ void AppConfig2Test::startStopTest()
         }
 
         // Remove the data
-        ::fwServices::OSR::unregisterService("out2", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::unregisterServiceOutput("out2", genDataSrv);
         WAIT(::fwTools::fwID::getObject("TestService4Uid") == nullptr);
 
         // Now the service should have been stopped and destroyed automatically
@@ -233,7 +233,7 @@ void AppConfig2Test::startStopTest()
         }
 
         // Register the data once again
-        ::fwServices::OSR::registerService(data2, "out2", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::registerServiceOutput(data2, "out2", genDataSrv);
         WAIT_SERVICE_STARTED("TestService4Uid");
 
         // Check again that the service was started automatically
@@ -259,7 +259,7 @@ void AppConfig2Test::startStopTest()
         // Create the remaining data
         ::fwData::Boolean::sptr data4 = ::fwData::Boolean::New();
 
-        ::fwServices::OSR::registerService(data4, "out4", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::registerServiceOutput(data4, "out4", genDataSrv);
         WAIT_SERVICE_STARTED("TestService5Uid");
 
         // Now the service should have been started automatically
@@ -271,7 +271,7 @@ void AppConfig2Test::startStopTest()
         }
 
         // Remove one data
-        ::fwServices::OSR::unregisterService("out2", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::unregisterServiceOutput("out2", genDataSrv);
 
         // Now the service should have been stopped and destroyed automatically
         {
@@ -285,7 +285,7 @@ void AppConfig2Test::startStopTest()
         }
 
         // Put everything back
-        ::fwServices::OSR::registerService(data2, "out2", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::registerServiceOutput(data2, "out2", genDataSrv);
         WAIT_SERVICE_STARTED("TestService5Uid");
 
         // Now the service should have been started automatically
@@ -317,9 +317,9 @@ void AppConfig2Test::startStopTest()
         // Swap the data
         ::fwData::Boolean::sptr data5 = ::fwData::Boolean::New();
 
-        ::fwServices::OSR::unregisterService("out2", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::unregisterServiceOutput("out2", genDataSrv);
         WAIT(::fwTools::fwID::getObject("TestService5Uid") == nullptr);
-        ::fwServices::OSR::registerService(data5, "out2", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::registerServiceOutput(data5, "out2", genDataSrv);
         WAIT_SERVICE_STARTED("TestService5Uid");
 
         {
@@ -413,7 +413,7 @@ void AppConfig2Test::autoConnectTest()
         // Create the data
         ::fwData::Boolean::sptr data3 = ::fwData::Boolean::New();
 
-        ::fwServices::OSR::registerService(data3, "out3", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
 
         WAIT_SERVICE_STARTED("TestService4Uid");
         WAIT_SERVICE_STARTED("TestService5Uid");
@@ -443,7 +443,7 @@ void AppConfig2Test::autoConnectTest()
         }
 
         // Remove one data
-        ::fwServices::OSR::unregisterService("out3", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::unregisterServiceOutput("out3", genDataSrv);
         WAIT(::fwTools::fwID::getObject("TestService4Uid") == nullptr &&
              ::fwTools::fwID::getObject("TestService5Uid") == nullptr);
         {
@@ -454,7 +454,7 @@ void AppConfig2Test::autoConnectTest()
         }
 
         // Emit, that should be ok
-        ::fwServices::OSR::registerService(data3, "out3", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
 
         WAIT_SERVICE_STARTED("TestService4Uid");
         WAIT_SERVICE_STARTED("TestService5Uid");
@@ -565,8 +565,8 @@ void AppConfig2Test::connectionTest()
     ::fwData::Boolean::sptr data2 = ::fwData::Boolean::New();
     ::fwData::Boolean::sptr data3 = ::fwData::Boolean::New();
 
-    ::fwServices::OSR::registerService(data2, "out2", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
-    ::fwServices::OSR::registerService(data3, "out3", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+    ::fwServices::OSR::registerServiceOutput(data2, "out2", genDataSrv);
+    ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
     WAIT_SERVICE_STARTED("TestService3Uid");
     {
         fwTools::Object::sptr gnsrv3 = ::fwTools::fwID::getObject("TestService3Uid");
@@ -623,7 +623,7 @@ void AppConfig2Test::connectionTest()
     }
 
     // Remove one data
-    ::fwServices::OSR::unregisterService("out3", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+    ::fwServices::OSR::unregisterServiceOutput("out3", genDataSrv);
     WAIT(::fwTools::fwID::getObject("TestService3Uid") == nullptr);
 
     // Service 3 should be removed
@@ -656,7 +656,7 @@ void AppConfig2Test::connectionTest()
     CPPUNIT_ASSERT(srv2->getIsUpdated());
 
     // Add back data 3 and check connection again
-    ::fwServices::OSR::registerService(data3, "out3", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+    ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
     WAIT_SERVICE_STARTED("TestService3Uid");
 
     {
@@ -753,7 +753,7 @@ void AppConfig2Test::optionalKeyTest()
     // Create data 2
     ::fwData::Boolean::sptr data2 = ::fwData::Boolean::New();
 
-    ::fwServices::OSR::registerService(data2, "out2", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+    ::fwServices::OSR::registerServiceOutput(data2, "out2", genDataSrv);
     WAIT(data2 == srv1->getInput< ::fwData::Object>("data2"));
 
     CPPUNIT_ASSERT(data2 == srv1->getInput< ::fwData::Object>("data2") );
@@ -773,8 +773,8 @@ void AppConfig2Test::optionalKeyTest()
     ::fwData::Boolean::sptr data3 = ::fwData::Boolean::New();
     ::fwData::Boolean::sptr data4 = ::fwData::Boolean::New();
 
-    ::fwServices::OSR::registerService(data3, "out3", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
-    ::fwServices::OSR::registerService(data4, "out4", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+    ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
+    ::fwServices::OSR::registerServiceOutput(data4, "out4", genDataSrv);
 
     WAIT(data3 == srv1->getInput< ::fwData::Object>("data3") &&
          data4 == srv1->getInput< ::fwData::Object>("data4"));
@@ -798,14 +798,14 @@ void AppConfig2Test::optionalKeyTest()
     CPPUNIT_ASSERT(srv1->getIsUpdated());
 
     // Remove data 2 and 3
-    ::fwServices::OSR::unregisterService("out2", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+    ::fwServices::OSR::unregisterServiceOutput("out2", genDataSrv);
     WAIT(nullptr == srv1->getInput< ::fwData::Object>("data2"));
 
     CPPUNIT_ASSERT("data2" == srv1->getSwappedObjectKey() );
     CPPUNIT_ASSERT(nullptr == srv1->getSwappedObject() );
     CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("data2") );
 
-    ::fwServices::OSR::unregisterService("out3", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+    ::fwServices::OSR::unregisterServiceOutput("out3", genDataSrv);
     WAIT(nullptr == srv1->getInput< ::fwData::Object>("data3"));
 
     CPPUNIT_ASSERT("data3" == srv1->getSwappedObjectKey() );
@@ -815,7 +815,7 @@ void AppConfig2Test::optionalKeyTest()
     CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv1->getStatus());
 
     // Create data 3
-    ::fwServices::OSR::registerService(data3, "out3", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+    ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
     WAIT(data3 == srv1->getInput< ::fwData::Object>("data3"));
 
     CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("data2") );
@@ -832,7 +832,7 @@ void AppConfig2Test::optionalKeyTest()
         fwTools::Object::sptr gnsrv5 = ::fwTools::fwID::getObject("TestService5Uid");
         CPPUNIT_ASSERT(gnsrv5 == nullptr);
 
-        ::fwServices::OSR::registerService(data5, "out5", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::registerServiceOutput(data5, "out5", genDataSrv);
         WAIT_SERVICE_STARTED("TestService5Uid");
 
         gnsrv5 = ::fwTools::fwID::getObject("TestService5Uid");
@@ -853,8 +853,8 @@ void AppConfig2Test::optionalKeyTest()
         WAIT(srv5->getIsUpdated());
 
         // Remove data 3 and 4
-        ::fwServices::OSR::unregisterService("out3", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
-        ::fwServices::OSR::unregisterService("out4", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::unregisterServiceOutput("out3", genDataSrv);
+        ::fwServices::OSR::unregisterServiceOutput("out4", genDataSrv);
 
         WAIT(nullptr == srv5->getInput< ::fwData::Object>("data3") &&
              nullptr == srv5->getInput< ::fwData::Object>("data4"));
@@ -865,7 +865,7 @@ void AppConfig2Test::optionalKeyTest()
         CPPUNIT_ASSERT(nullptr == srv5->getInput< ::fwData::Object>("data4") );
 
         // Create data 3
-        ::fwServices::OSR::registerService(data3, "out3", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
         WAIT(nullptr != srv5->getInput< ::fwData::Object>("data3"));
 
         CPPUNIT_ASSERT(data5 == srv5->getInput< ::fwData::Object>("data5") );
@@ -876,7 +876,7 @@ void AppConfig2Test::optionalKeyTest()
 
     // Remove data 5
     {
-        ::fwServices::OSR::unregisterService("out5", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::unregisterServiceOutput("out5", genDataSrv);
 
         WAIT(nullptr == ::fwTools::fwID::getObject("TestService5Uid"));
 
@@ -886,7 +886,7 @@ void AppConfig2Test::optionalKeyTest()
 
     // Create data 5
     {
-        ::fwServices::OSR::registerService(data5, "out5", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::registerServiceOutput(data5, "out5", genDataSrv);
         WAIT_SERVICE_STARTED("TestService5Uid");
 
         auto gnsrv5 = ::fwTools::fwID::getObject("TestService5Uid");
@@ -910,7 +910,7 @@ void AppConfig2Test::optionalKeyTest()
         // Create data 2
         ::fwData::Boolean::sptr data2 = ::fwData::Boolean::New();
 
-        ::fwServices::OSR::registerService(data2, "out2", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::registerServiceOutput(data2, "out2", genDataSrv);
         WAIT(data2 == srv5->getInput< ::fwData::Object>("data2"));
 
         CPPUNIT_ASSERT(data5 == srv5->getInput< ::fwData::Object>("data5") );
@@ -959,7 +959,7 @@ void AppConfig2Test::keyGroupTest()
 
         // Create data 2
         ::fwData::Boolean::sptr data2 = ::fwData::Boolean::New();
-        ::fwServices::OSR::registerService(data2, "out2", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::registerServiceOutput(data2, "out2", genDataSrv);
         WAIT_SERVICE_STARTED("TestService1Uid");
 
         gnsrv1 = ::fwTools::fwID::getObject("TestService1Uid");
@@ -987,7 +987,7 @@ void AppConfig2Test::keyGroupTest()
         // Create data 3
         data3 = ::fwData::Image::New();
 
-        ::fwServices::OSR::registerService(data3, "out3", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
 
         WAIT(data3 == srv1->getInput< ::fwData::Object>("dataGroup2"));
 
@@ -1007,7 +1007,7 @@ void AppConfig2Test::keyGroupTest()
 
     // Remove data 2
     {
-        ::fwServices::OSR::unregisterService("out2", ::fwServices::IService::AccessType::OUTPUT, genDataSrv);
+        ::fwServices::OSR::unregisterServiceOutput("out2", genDataSrv);
 
         WAIT(nullptr == ::fwTools::fwID::getObject("TestService1Uid"));
 

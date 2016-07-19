@@ -86,7 +86,7 @@ void SPushField::updating() throw(::fwTools::Failed)
     SLM_WARN_IF("'" + m_field + "' not found in object '" + objectSrc->getID() + "'", obj == nullptr);
     if (obj)
     {
-        this->registerOutput(s_DESTINATION_KEY, obj);
+        this->setOutput(s_DESTINATION_KEY, obj);
     }
 }
 
