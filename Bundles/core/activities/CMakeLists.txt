@@ -17,3 +17,5 @@ fwLink(
     ${Qt5Gui_LIBRARIES}
     ${Qt5Widgets_LIBRARIES}
 )
+
+set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)

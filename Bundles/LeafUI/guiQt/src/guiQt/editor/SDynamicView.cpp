@@ -139,7 +139,7 @@ void SDynamicView::starting() throw(::fwTools::Failed)
     QObject::connect(m_tabWidget, SIGNAL(tabCloseRequested( int )), this, SLOT( closeTabSignal( int )));
     QObject::connect(m_tabWidget, SIGNAL(currentChanged( int )), this, SLOT(changedTab( int )));
 
-    QBoxLayout *layout = new QBoxLayout(QBoxLayout::TopToBottom);
+    QBoxLayout* layout = new QBoxLayout(QBoxLayout::TopToBottom);
     if (qtContainer->layout())
     {
         QWidget().setLayout(qtContainer->layout());
@@ -189,6 +189,14 @@ void SDynamicView::launchActivity(::fwMedData::ActivitySeries::sptr activitySeri
     // Applies validator on activity series to check the data
     ::fwActivities::registry::ActivityInfo info;
     info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
+
+    // load activity bundle
+    std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(info.bundleId, info.bundleVersion);
+    if (!bundle->isStarted())
+    {
+        bundle->start();
+    }
+
     if (!info.validatorsImpl.empty())
     {
         for (std::string validatorImpl : info.validatorsImpl)
@@ -276,7 +284,7 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
     info.wid = QString("SDynamicView-%1").arg(count++).toStdString();
 
     ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
-    QWidget *widget = new QWidget();
+    QWidget* widget = new QWidget();
     subContainer->setQtContainer(widget);
     ::fwGui::GuiRegistry::registerWIDContainer(info.wid, subContainer);
 
@@ -298,7 +306,7 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
             helper->create();
         }
     }
-    catch( std::exception & e )
+    catch( std::exception& e )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch failed",
                                                           e.what(),
@@ -328,7 +336,7 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
 
 //------------------------------------------------------------------------------
 
-void SDynamicView::info( std::ostream &_sstream )
+void SDynamicView::info( std::ostream& _sstream )
 {
 }
 
@@ -343,7 +351,7 @@ void SDynamicView::closeTabSignal( int index )
 
 void SDynamicView::closeTab( int index, bool forceClose )
 {
-    QWidget *widget = m_tabWidget->widget(index);
+    QWidget* widget = m_tabWidget->widget(index);
 
     SLM_ASSERT("Widget is not in dynamicInfoMap", m_dynamicInfoMap.find(widget) != m_dynamicInfoMap.end());
     SDynamicViewInfo info = m_dynamicInfoMap[widget];
@@ -388,7 +396,7 @@ void SDynamicView::closeTab( int index, bool forceClose )
 
 void SDynamicView::changedTab( int index )
 {
-    QWidget *widget = m_tabWidget->widget(index);
+    QWidget* widget = m_tabWidget->widget(index);
 
     if (m_dynamicConfigStartStop && widget != m_currentWidget)
     {
@@ -531,7 +539,7 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(::fwMedData::Activit
 //------------------------------------------------------------------------------
 
 void SDynamicView::translateParameters( ::fwData::Object::sptr sourceObj, const ParametersType& parameters,
-                                        ReplaceMapType & replaceMap )
+                                        ReplaceMapType& replaceMap )
 {
     for(const ParametersType::value_type& param :  parameters)
     {
