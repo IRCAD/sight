@@ -118,22 +118,22 @@ protected:
      * @{
      */
     /// Slot to enable/disable the action
-    static const ::fwCom::Slots::SlotKeyType s_SET_ENABLED_SLOT;
+    FWGUI_API static const ::fwCom::Slots::SlotKeyType s_SET_ENABLED_SLOT;
 
     /// Slot to enable the container
-    static const ::fwCom::Slots::SlotKeyType s_ENABLE_SLOT;
+    FWGUI_API static const ::fwCom::Slots::SlotKeyType s_ENABLE_SLOT;
 
     /// Slot to disable the container
-    static const ::fwCom::Slots::SlotKeyType s_DISABLE_SLOT;
+    FWGUI_API static const ::fwCom::Slots::SlotKeyType s_DISABLE_SLOT;
 
     /// Slot to show/hide the container
-    static const ::fwCom::Slots::SlotKeyType s_SET_VISIBLE_SLOT;
+    FWGUI_API static const ::fwCom::Slots::SlotKeyType s_SET_VISIBLE_SLOT;
 
     /// Slot to show the container
-    static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT;
+    FWGUI_API static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT;
 
     /// Slot to hide the container
-    static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT;
+    FWGUI_API static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT;
     /**
      * @}
      */

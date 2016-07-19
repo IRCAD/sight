@@ -143,7 +143,7 @@ void SActivityWizard::starting() throw(::fwTools::Failed)
 
     QWidget* const container = qtContainer->getQtContainer();
 
-    QVBoxLayout * layout = new QVBoxLayout();
+    QVBoxLayout* layout = new QVBoxLayout();
 
     m_title = new QLabel("");
     m_title->setStyleSheet("QLabel { font: bold; color: blue; }");
@@ -161,7 +161,7 @@ void SActivityWizard::starting() throw(::fwTools::Failed)
 
     layout->addWidget(m_activityDataView, 1);
 
-    QHBoxLayout * buttonLayout = new QHBoxLayout();
+    QHBoxLayout* buttonLayout = new QHBoxLayout();
     layout->addLayout(buttonLayout);
 
     if (m_isCancelable)
@@ -231,6 +231,14 @@ void SActivityWizard::createActivity(std::string activityID)
     ::fwActivities::registry::ActivityInfo info;
     info = ::fwActivities::registry::Activities::getDefault()->getInfo(activityID);
 
+    // load activity bundle
+    std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(info.bundleId,
+                                                                            info.bundleVersion);
+    if (!bundle->isStarted())
+    {
+        bundle->start();
+    }
+
     m_actSeries = ::fwMedData::ActivitySeries::New();
 
     m_actSeries->setModality("OT");
@@ -245,22 +253,43 @@ void SActivityWizard::createActivity(std::string activityID)
     m_title->setText(QString("<h1>%1</h1>").arg(QString::fromStdString(info.title)));
     m_description->setText(QString::fromStdString(info.description));
 
+    bool needConfig = false;
 
-    if (info.requirements.size() == 0)
+    // If we have requirements but they are not needed to start (maxOccurs = 0), we can skip the config as well
+    for(const auto& req : info.requirements)
     {
-        ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-        ::fwComEd::helper::SeriesDB helper(seriesDB);
-        helper.add(m_actSeries);
-        helper.notify();
-        m_sigActivityCreated->asyncEmit(m_actSeries);
+        if(req.maxOccurs > 0)
+        {
+            needConfig = true;
+            break;
+        }
     }
-    else
+
+    if (needConfig)
     {
         m_activityDataView->fillInformation(info);
         if (m_activityDataView->count() > 1)
         {
             m_okButton->setText("Next");
         }
+
+        this->slot(s_SHOW_SLOT)->asyncRun();
+    }
+    else
+    {
+        // Create data automatically if they are not provided by the user
+        for(const auto& req : info.requirements)
+        {
+            SLM_ASSERT("minOccurs and maxOccurs should be 0", req.minOccurs == 0 && req.maxOccurs == 0);
+            ::fwData::Composite::sptr data = m_actSeries->getData();
+            (*data)[req.name]              = ::fwData::factory::New(req.type);
+        }
+
+        ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+        ::fwComEd::helper::SeriesDB helper(seriesDB);
+        helper.add(m_actSeries);
+        helper.notify();
+        m_sigActivityCreated->asyncEmit(m_actSeries);
     }
 }
 
@@ -271,25 +300,47 @@ void SActivityWizard::updateActivity(::fwMedData::ActivitySeries::sptr activityS
     ::fwActivities::registry::ActivityInfo info;
     info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
 
+    // load activity bundle
+    std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(info.bundleId,
+                                                                            info.bundleVersion);
+    if (!bundle->isStarted())
+    {
+        bundle->start();
+    }
+
     m_title->setText(QString("<h1>%1</h1>").arg(QString::fromStdString(info.title)));
     m_description->setText(QString::fromStdString(info.description));
 
     m_mode      = Mode::UPDATE;
     m_actSeries = activitySeries;
-    if (info.requirements.size() == 0)
+
+    bool needConfig = false;
+
+    // If we have requirements but they are not needed to start (maxOccurs = 0), we can skip the config as well
+    for(const auto& req : info.requirements)
     {
-        ::fwData::Object::ModifiedSignalType::sptr sig;
-        sig = m_actSeries->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-        sig->asyncEmit();
-        m_sigActivityUpdated->asyncEmit(m_actSeries);
+        if(req.maxOccurs != 0)
+        {
+            needConfig = true;
+            break;
+        }
     }
-    else
+
+    if (needConfig)
     {
         m_activityDataView->fillInformation(m_actSeries);
         if (m_activityDataView->count() > 1)
         {
             m_okButton->setText("Next");
         }
+    }
+    else
+    {
+        // Start immediately without popping any configuration UI
+        ::fwData::Object::ModifiedSignalType::sptr sig;
+        sig = m_actSeries->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        sig->asyncEmit();
+        m_sigActivityUpdated->asyncEmit(m_actSeries);
     }
 }
 
@@ -395,7 +446,7 @@ void SActivityWizard::onBuildActivity()
 
                 // Copy the patient/study information of a series
                 ::fwMedData::Series::sptr series;
-                for(const auto &elt :  *data)
+                for(const auto& elt : (*data) )
                 {
                     series = ::fwMedData::Series::dynamicCast(elt.second);
                     if(series)
