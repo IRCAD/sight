@@ -79,7 +79,7 @@ void SDicomTagSeriesDBReader::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SDicomTagSeriesDBReader::info(std::ostream &_sstream )
+void SDicomTagSeriesDBReader::info(std::ostream& _sstream )
 {
     _sstream << "SDicomTagSeriesDBReader::info";
 }
@@ -121,7 +121,7 @@ std::string SDicomTagSeriesDBReader::getSelectorDialogTitle()
         myLoader->addHandler( progressMeterGUI );
         myLoader->read();
     }
-    catch (const std::runtime_error & e)
+    catch (const std::runtime_error& e)
     {
         throw e;
     }
@@ -142,8 +142,15 @@ void SDicomTagSeriesDBReader::updating() throw(::fwTools::Failed)
             if( seriesDB->size() > 0 )
             {
                 // Retrieve dataStruct associated with this service
-                ::fwMedData::SeriesDB::sptr associatedSeriesDB = this->getObject< ::fwMedData::SeriesDB >();
-                SLM_ASSERT("associated SeriesDB not instanced", associatedSeriesDB);
+                ::fwMedData::SeriesDB::sptr associatedSeriesDB;
+                if(this->isVersion2())
+                {
+                    associatedSeriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
+                }
+                else
+                {
+                    associatedSeriesDB = this->getObject< ::fwMedData::SeriesDB >();
+                }
                 associatedSeriesDB->shallowCopy( seriesDB );
 
                 ::fwGui::Cursor cursor;
@@ -156,7 +163,7 @@ void SDicomTagSeriesDBReader::updating() throw(::fwTools::Failed)
                 throw std::runtime_error("An uncaught exception occurred while reading file.");
             }
         }
-        catch (const std::exception & e)
+        catch (const std::exception& e)
         {
             std::stringstream ss;
             ss << "Warning during loading : " << e.what();
@@ -171,7 +178,16 @@ void SDicomTagSeriesDBReader::updating() throw(::fwTools::Failed)
 void SDicomTagSeriesDBReader::notificationOfDBUpdate()
 {
     SLM_TRACE_FUNC();
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    ::fwMedData::SeriesDB::sptr seriesDB;
+    if(this->isVersion2())
+    {
+        seriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
+    }
+    else
+    {
+        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    }
+
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
 
     ::fwMedData::SeriesDB::ContainerType addedSeries;

@@ -154,7 +154,7 @@ void SExtractObj::extract()
             }
             catch(::fwDataCamp::exception::NullPointer& np)
             {
-                this->unregisterOutput("target", index);
+                this->setOutput("target", nullptr, index);
             }
             catch(::fwDataCamp::exception::ObjectNotFound& nf)
             {
@@ -168,7 +168,7 @@ void SExtractObj::extract()
             SLM_WARN_IF("Object from '"+ from +"' not found", !object);
             if(object)
             {
-                this->registerOutput("target", object, index);
+                this->setOutput("target", object, index);
             }
             ++index;
         }

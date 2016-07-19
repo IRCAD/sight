@@ -27,12 +27,15 @@ namespace ctrlCamp
  * @code{.xml}
        <service uid="..." type="::ctrlCamp::SCopy" >
            <in key="source" uid="sourceObject">
-           <inout key="target" uid="targetObject">
+             <extract from="@path.to.data.0" />
+           </in>
+           <inout key="target" uid="targetObject" />
            <mode>copyOnStart</mode>
        </service>
       @endcode
  * @subsection Input Input
  * - \b source [::fwData::Object]: define the source object to copy.
+ *    - \b extract (optional): define the camp path used to retrieve the object to copy.
  *
  * @subsection In-Out In-Out
  * - \b target [::fwData::Object]: define the target object to update.
@@ -80,6 +83,12 @@ private:
 
     /// source object uid or sesh@ path
     std::string m_source;
+
+    /// sesh@ path for appXml2
+    std::string m_path;
+
+    /// boolean to know if the object to copy is a sesh@ path or an object
+    bool m_hasExtractTag;
 
     /// target sesh@ path
     std::string m_target;

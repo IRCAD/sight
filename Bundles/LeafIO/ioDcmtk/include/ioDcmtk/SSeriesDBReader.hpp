@@ -26,6 +26,19 @@ namespace ioDcmtk
 
 /**
  * @brief  Read ImageSeries from DICOM with dcmtk
+ *
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+    <service uid="..." type="::ioDcmtk::SSeriesDBReader" autoConnect="no" worker="readerDicom">
+        <inout key="seriesDB" uid="..."/>
+    </service>
+   @endcode
+ *
+ * @subsection In-Out In-Out
+ * - \b seriesDB [::fwMedData::SeriesDB]: dicom seriesDB to read.
+ *
  **/
 class IODCMTK_CLASS_API SSeriesDBReader : public ::io::IReader
 {
@@ -83,7 +96,7 @@ protected:
     IODCMTK_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    IODCMTK_API void info(std::ostream &_sstream );
+    IODCMTK_API void info(std::ostream& _sstream );
 
     /// Override
     IODCMTK_API virtual std::string getSelectorDialogTitle();

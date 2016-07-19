@@ -65,9 +65,10 @@ void SExtractMeshByType::configuring() throw( ::fwTools::Failed )
             {
                 if(cfg->getAttributeValue("group") == "target")
                 {
-                    const std::vector< ConfigType > keyCfg = m_configuration->find("out");
-                    SLM_ASSERT("You must have as many 'extract' tags as 'out' keys.",
-                               extractCfg.size() == keyCfg.size());
+                    const std::vector< ConfigType > keyCfg = cfg->find("key");
+                    OSLM_ASSERT(
+                        "You must have as many 'extract' tags as 'out' keys." << extractCfg.size() << " " <<  keyCfg.size(),
+                        extractCfg.size() == keyCfg.size());
                     ok = true;
                 }
             }
@@ -126,7 +127,6 @@ void SExtractMeshByType::updating() throw( ::fwTools::Failed )
             std::string type  = elt.first;
             std::string regex = elt.second;
 
-
             bool found = false;
             ::fwMedData::ModelSeries::ReconstructionVectorType recs = modelSeries->getReconstructionDB();
             for(::fwData::Reconstruction::sptr element : recs)
@@ -141,8 +141,10 @@ void SExtractMeshByType::updating() throw( ::fwTools::Failed )
                     {
                         ::fwData::Mesh::sptr obj = element->getMesh();
 
-                        this->registerOutput("target", obj, index);
+                        this->setOutput("target", obj, index);
                         found = true;
+                        ++index;
+
                         break;
                     }
                 }

@@ -49,9 +49,9 @@ protected:
      * @brief configure method to configure the network client. Need hostname and port in this format addr:port
      *
      * @code{.xml}
-     * <service type="::ioNetwork::INetworkListener" impl="::ioIGTL::SOpenIGTLinkListener" uid="networkListener" autoConnect="no">
+     * <service uid="..." type="::ioIGTL::SOpenIGTLinkListener" >
      *      <server>127.0.0.1:4242</server>
-     *      <deviceName>Name1</deviceName>
+     *      <deviceName>...</deviceName>
      *      <deviceName>...</deviceName>
      *      ...
      * </service>
@@ -90,7 +90,7 @@ protected:
      * @param[in] hostname hostname or ip of the server
      * @param[in] port port of the server
      */
-    IOIGTL_API void setHost(std::string const &hostname, ::boost::uint16_t const port) throw (::fwTools::Failed);
+    IOIGTL_API void setHost(std::string const& hostname, ::boost::uint16_t const port) throw (::fwTools::Failed);
 
 private:
 

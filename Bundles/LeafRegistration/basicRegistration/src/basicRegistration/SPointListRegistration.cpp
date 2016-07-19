@@ -45,11 +45,14 @@ SPointListRegistration::~SPointListRegistration()
 
 void SPointListRegistration::configuring() throw ( ::fwTools::Failed )
 {
-    m_registeredPointsKey = m_configuration->findConfigurationElement("registeredPoints")->getAttributeValue(
-        "compositeKey");
-    m_referencePointsKey = m_configuration->findConfigurationElement("referencePoints")->getAttributeValue(
-        "compositeKey");
-    m_matrixKey = m_configuration->findConfigurationElement("matrix")->getAttributeValue("compositeKey");
+    if(!this->isVersion2())
+    {
+        m_registeredPointsKey = m_configuration->findConfigurationElement("registeredPoints")->getAttributeValue(
+            "compositeKey");
+        m_referencePointsKey = m_configuration->findConfigurationElement("referencePoints")->getAttributeValue(
+            "compositeKey");
+        m_matrixKey = m_configuration->findConfigurationElement("matrix")->getAttributeValue("compositeKey");
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -68,14 +71,26 @@ void SPointListRegistration::stopping() throw ( ::fwTools::Failed )
 
 void SPointListRegistration::updating() throw ( ::fwTools::Failed )
 {
+    ::fwData::PointList::sptr registeredPL;
+    ::fwData::PointList::sptr referencePL;
+    ::fwData::TransformationMatrix3D::sptr matrix;
+
     // Get fw4spl data
-    ::fwData::Composite::sptr composite    = this->getObject< ::fwData::Composite >();
-    ::fwData::PointList::sptr registeredPL =
-        ::fwData::PointList::dynamicCast( (*composite)[ m_registeredPointsKey ] );
-    ::fwData::PointList::sptr referencePL = ::fwData::PointList::dynamicCast(
-        (*composite)[ m_referencePointsKey ] );
-    ::fwData::TransformationMatrix3D::sptr matrix =
-        ::fwData::TransformationMatrix3D::dynamicCast( (*composite)[ m_matrixKey ] );
+    if(this->isVersion2())
+    {
+        registeredPL = this->getInOut< ::fwData::PointList >("registeredPL");
+        referencePL  = this->getInOut< ::fwData::PointList >("referencePL");
+        matrix       = this->getInOut< ::fwData::TransformationMatrix3D >("output");
+    }
+    else
+    {
+        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+        registeredPL                        = ::fwData::PointList::dynamicCast( (*composite)[ m_registeredPointsKey ] );
+        referencePL                         = ::fwData::PointList::dynamicCast( (*composite)[ m_referencePointsKey ] );
+        matrix                              =
+            ::fwData::TransformationMatrix3D::dynamicCast( (*composite)[ m_matrixKey ] );
+    }
+
 
     if( registeredPL->getPoints().size() >= 3 &&
         registeredPL->getPoints().size() == referencePL->getPoints().size() )

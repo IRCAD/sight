@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,6 +24,20 @@ class Patient;
 
 namespace ioDcmtk
 {
+/**
+ * @brief   SDicomTagSeriesDBReader reads a folder that has DICOM images.
+ *
+ * @section XML Configuration
+ * @code{.xml}
+    <service uid="..." type="::ioDcmtk::SDicomTagSeriesDBReader" >
+        <inout key="seriesDB" uid="..."/>
+    </service>
+ * @endcode
+ *
+ * @subsection In-Out In-Out
+ * - \b seriesDB [::fwMedData::SeriesDB]: SeriesDB
+ *
+ */
 
 class IODCMTK_CLASS_API SDicomTagSeriesDBReader : public ::io::IReader
 {
@@ -56,7 +70,7 @@ protected:
     IODCMTK_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    IODCMTK_API void info(std::ostream &_sstream );
+    IODCMTK_API void info(std::ostream& _sstream );
 
     /// Override
     IODCMTK_API virtual std::string getSelectorDialogTitle();

@@ -14,6 +14,7 @@
 #include <fwData/Object.hpp>
 
 #include <fwDataCamp/getObject.hpp>
+#include <fwDataCamp/exception/ObjectNotFound.hpp>
 
 
 namespace ctrlCamp
@@ -44,6 +45,7 @@ void SCopy::configuring() throw( ::fwTools::Failed )
 {
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
+    m_hasExtractTag = false;
     if(!this->isVersion2())
     {
         const ConfigurationType srcConfig = m_configuration->findConfigurationElement("source");
@@ -57,6 +59,26 @@ void SCopy::configuring() throw( ::fwTools::Failed )
             m_target = tgtConfig->getValue();
 
         }
+    }
+    else
+    {
+        const ConfigurationType inCfg = m_configuration->findConfigurationElement("in");
+        SLM_ASSERT("One 'in' tag is required.", inCfg);
+
+        const std::vector< ConfigurationType > inoutCfg = m_configuration->find("inout");
+        const std::vector< ConfigurationType > outCfg   = m_configuration->find("out");
+        SLM_ASSERT("One 'inout' or one 'out' tag is required.", inoutCfg.size() +  outCfg.size() == 1);
+
+        const std::vector< ConfigurationType > extractCfg = inCfg->find("extract");
+        SLM_ASSERT("Only one 'extract' tag is authorized.", extractCfg.size() <= 1);
+        if (extractCfg.size() == 1)
+        {
+            ConfigurationType cfg = extractCfg[0];
+            SLM_ASSERT("Missing attribute 'from'.", cfg->hasAttribute("from"));
+            m_path          = cfg->getAttributeValue("from");
+            m_hasExtractTag = true;
+        }
+
     }
 
     const ConfigurationType modeConfig = m_configuration->findConfigurationElement("mode");
@@ -112,6 +134,7 @@ void SCopy::stopping() throw( ::fwTools::Failed )
 
 void SCopy::copy()
 {
+    bool create = false;
     ::fwData::Object::sptr target;
     ::fwData::Object::csptr source;
     if (m_target.empty())
@@ -119,6 +142,10 @@ void SCopy::copy()
         if(this->isVersion2())
         {
             target = this->getInOut< ::fwData::Object >(s_TARGET_INOUT);
+            if(!target)
+            {
+                create = true;
+            }
         }
         else
         {
@@ -149,7 +176,33 @@ void SCopy::copy()
     {
         if(this->isVersion2())
         {
-            source = this->getInput< ::fwData::Object >(s_SOURCE_INPUT);
+            ::fwData::Object::csptr sourceObject = this->getInput< ::fwData::Object >(s_SOURCE_INPUT);
+            if (m_hasExtractTag)
+            {
+                ::fwData::Object::sptr object;
+                try
+                {
+                    object = ::fwDataCamp::getObject( sourceObject, m_path, true );
+                }
+                catch(::fwDataCamp::exception::ObjectNotFound& nf)
+                {
+                    SLM_WARN("Object from '"+ m_path +"' not found");
+                }
+                catch(std::exception& e)
+                {
+                    OSLM_FATAL("Unhandled exception: " << e.what());
+                }
+
+                SLM_WARN_IF("Object from '"+ m_path +"' not found", !object);
+                if(object)
+                {
+                    source = object;
+                }
+            }
+            else
+            {
+                source = sourceObject;
+            }
         }
         else
         {
@@ -164,15 +217,23 @@ void SCopy::copy()
 
     if(source)
     {
-        ::fwData::mt::ObjectWriteLock lock(target);
-
-        // copy the object
-        target->deepCopy(source);
-
-        auto sig = target->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        if(create)
         {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-            sig->asyncEmit();
+            target = ::fwData::Object::copy(source);
+            this->setOutput(s_TARGET_INOUT, target);
+        }
+        else
+        {
+            ::fwData::mt::ObjectWriteLock lock(target);
+
+            // copy the object
+            target->deepCopy(source);
+
+            auto sig = target->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                sig->asyncEmit();
+            }
         }
     }
 }
