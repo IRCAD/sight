@@ -3,7 +3,6 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuOgreQt" />
-    <requirement id="material" />
 
     <extension implements="::fwServices::registry::AppConfig2">
         <id>TutoOgreGenericScene</id>
