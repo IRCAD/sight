@@ -28,7 +28,7 @@ struct GetCampValueVisitor : public camp::ValueVisitor< ::fwData::Object::sptr >
     std::string m_subObjPath;
     PathVisitor::sptr m_pathVisitor;
 
-    GetCampValueVisitor( const std::string & subObjPath, PathVisitor::sptr pathVisitor) :
+    GetCampValueVisitor( const std::string& subObjPath, PathVisitor::sptr pathVisitor) :
         m_subObjPath(subObjPath), m_pathVisitor(pathVisitor)
     {
     }
@@ -77,15 +77,15 @@ struct GetCampValueVisitor : public camp::ValueVisitor< ::fwData::Object::sptr >
             {
                 OSLM_DEBUG( "visit class= '" << metaclass.name() << "' ( classname = '"<< value.call(
                                 "classname") <<"' )" );
-                ::fwData::Object * ptr = value.get< ::fwData::Object * >();
+                ::fwData::Object* ptr = value.get< ::fwData::Object* >();
                 ::fwDataCamp::visitor::GetObject visitor( ptr->getSptr(), m_subObjPath );
                 val = visitor.get();
                 m_pathVisitor->merge(visitor.getPathVisitor());
             }
             else
             {
-                ::fwData::Object * ptr = value.get< ::fwData::Object * >();
-                val                    = ptr->getSptr();
+                ::fwData::Object* ptr = value.get< ::fwData::Object* >();
+                val                   = ptr->getSptr();
             }
         }
         else
@@ -101,13 +101,13 @@ struct GetCampValueVisitor : public camp::ValueVisitor< ::fwData::Object::sptr >
 
 //-----------------------------------------------------------------------------
 
-GetObject::GetObject( ::fwData::Object::sptr object, const std::string & subObjPath ) :
+GetObject::GetObject( ::fwData::Object::csptr object, const std::string& subObjPath ) :
     m_object(object), m_subObjPath(subObjPath),
     m_newSubObjPath(subObjPath),
     m_pathVisitor(std::make_shared<PathVisitor>(subObjPath))
 {
     SLM_FATAL_IF("Cannot retrieve an object with an empty path.", subObjPath.empty());
-    m_campObj      = camp::UserObject( object.get() );
+    m_campObj      = camp::UserObject( *object );
     m_propertyName = this->getNextPropertyName();
 }
 

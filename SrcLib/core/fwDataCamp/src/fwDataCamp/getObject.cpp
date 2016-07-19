@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,8 +16,8 @@
 namespace fwDataCamp
 {
 
-::fwData::Object::sptr getObject( ::fwData::Object::sptr object,
-                                  const std::string &path,
+::fwData::Object::sptr getObject( ::fwData::Object::csptr object,
+                                  const std::string& path,
                                   bool raiseException )
 {
     SLM_FATAL_IF( "Path for desired object is empty.", path.empty() );
