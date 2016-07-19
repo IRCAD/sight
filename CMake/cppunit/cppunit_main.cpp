@@ -38,7 +38,7 @@ public:
     MiniLauncher( ::boost::filesystem::path profilePath )
     {
         ::boost::filesystem::path cwd        = ::boost::filesystem::current_path();
-        ::boost::filesystem::path bundlePath = cwd / "Bundles";
+        ::boost::filesystem::path bundlePath = cwd / ::boost::filesystem::path(BUNDLE_PREFIX);
 
         ::fwRuntime::addBundles(bundlePath);
 
@@ -183,23 +183,23 @@ class SynchronizationObject;
 class TestLister : public TestResult
 {
 public:
-    TestLister( SynchronizationObject *syncObject = 0 )
+    TestLister( SynchronizationObject* syncObject = 0 )
     {
     }
 
-    virtual void startTest( Test *test )
+    virtual void startTest( Test* test )
     {
         std::cout << test->getName() << std::endl;
     }
 
-    virtual void runTest( Test *test )
+    virtual void runTest( Test* test )
     {
         test->run( this );
     }
 
-    virtual bool protect( const Functor &functor,
-                          Test *test,
-                          const std::string &shortDescription = std::string("") )
+    virtual bool protect( const Functor& functor,
+                          Test* test,
+                          const std::string& shortDescription = std::string("") )
     {
         return false;
     }
@@ -226,7 +226,7 @@ int main( int argc, char* argv[] )
 #endif
 
 
-    CPPUNIT_NS::Test *testSuite = CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest();
+    CPPUNIT_NS::Test* testSuite = CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest();
 
     // Add the top suite to the test runner
     CPPUNIT_NS::TestRunner runner;
@@ -274,7 +274,7 @@ int main( int argc, char* argv[] )
         {
             runner.run( controller, *iter );
         }
-        catch ( std::exception &e )
+        catch ( std::exception& e )
         {
             std::cerr << "[" << ((iter->empty()) ? "All tests" : *iter) << "]" << "Error: " << e.what() << std::endl;
             return 1;

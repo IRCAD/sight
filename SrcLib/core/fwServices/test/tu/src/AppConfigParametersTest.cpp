@@ -29,9 +29,10 @@ void AppConfigParametersTest::setUp()
 {
     // Set up context before running a test.
     //Bundles location
-    ::boost::filesystem::path bundlesLocation = ::boost::filesystem::current_path() / "Bundles";
+    ::boost::filesystem::path bundlesLocation = ::boost::filesystem::current_path() /
+                                                ::boost::filesystem::path(BUNDLE_PREFIX);
     CPPUNIT_ASSERT(::boost::filesystem::exists(bundlesLocation));
-    ::fwRuntime::Runtime * runtime = ::fwRuntime::Runtime::getDefault();
+    ::fwRuntime::Runtime* runtime = ::fwRuntime::Runtime::getDefault();
 
     // Read bundles
     runtime->addBundles(bundlesLocation);

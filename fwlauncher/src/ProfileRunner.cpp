@@ -98,7 +98,7 @@ std::pair<std::string, std::string> parsePns(const std::string& s)
 
 /// Wrapper for boost::filesystem::absolute, needed by clang 3.0 in use with
 /// std::transform
-PathType absolute( const PathType &path )
+PathType absolute( const PathType& path )
 {
     return fs::absolute(path);
 }
@@ -174,7 +174,7 @@ int main(int argc, char* argv[])
                   vm);
         po::notify(vm);
     }
-    catch(const po::error &e)
+    catch(const po::error& e)
     {
         std::cerr << e.what() << std::endl;
         return 1;
@@ -188,7 +188,7 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    SpyLogger &logger = fwCore::log::SpyLogger::getSpyLogger();
+    SpyLogger& logger = fwCore::log::SpyLogger::getSpyLogger();
 
     if(consoleLog)
     {
@@ -197,7 +197,7 @@ int main(int argc, char* argv[])
 
     if(fileLog)
     {
-        FILE * pFile = fopen(logFile.c_str(), "w");
+        FILE* pFile = fopen(logFile.c_str(), "w");
         if (pFile==NULL)
         {
             ::boost::system::error_code err;
@@ -234,19 +234,19 @@ int main(int argc, char* argv[])
 
         while ( fs::extension(execPath) != ".app"
                 && execPath != execPath.parent_path()
-                && !fs::is_directory( execPath / "Bundles" )
+                && !fs::is_directory( execPath / fs::path(BUNDLE_PREFIX))
                 )
         {
             execPath = execPath.parent_path();
         }
 
-        if ( fs::is_directory( execPath / "Contents" / "Bundles" ) )
+        if ( fs::is_directory( execPath / "Contents" / fs::path(BUNDLE_PREFIX) ) )
         {
             execPath = execPath / "Contents";
         }
         else
         {
-            OSLM_ERROR_IF("Bundle directory not found.", !fs::is_directory( execPath / "Bundles" ));
+            OSLM_ERROR_IF("Bundle directory not found.", !fs::is_directory( execPath / fs::path(BUNDLE_PREFIX) ));
         }
 
         isChdirOkOSX = (chdir(execPath.string().c_str()) == 0);
@@ -270,7 +270,7 @@ int main(int argc, char* argv[])
 #endif // _WIN32
     OSLM_ERROR_IF( "Was not able to change directory to : " << rwd, !isChdirOk);
 
-    for(const fs::path &bundlePath :  bundlePaths )
+    for(const fs::path& bundlePath :  bundlePaths )
     {
         if ( fs::is_directory(bundlePath))
         {
@@ -299,7 +299,7 @@ int main(int argc, char* argv[])
             profile->run();
             profile->stop();
         }
-        catch(std::exception &e)
+        catch(std::exception& e)
         {
             OSLM_FATAL( e.what() );
             retValue = 1;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,7 +47,7 @@ void Convert::fromConfigurationElementToXml( std::shared_ptr< ::fwRuntime::Confi
     std::string nodeValue = _cfgElement->getValue();
     if(!nodeValue.empty())
     {
-        xmlNodeSetContent (pNode, reinterpret_cast<const xmlChar *>(nodeValue.c_str()));
+        xmlNodeSetContent (pNode, reinterpret_cast<const xmlChar*>(nodeValue.c_str()));
     }
 
     std::map<std::string, std::string> attr_cfe = _cfgElement->getAttributes();
@@ -85,9 +85,9 @@ void Convert::fromConfigurationElementToXml( std::shared_ptr< ::fwRuntime::Confi
 
 xmlNodePtr Convert::runningBundlesToXml( )
 {
-    xmlNodePtr node_root = xmlNewNode( NULL,  xmlCharStrdup( "Bundles" ) );
+    xmlNodePtr node_root = xmlNewNode( NULL,  xmlCharStrdup( BUNDLE_PREFIX ) );
     std::set< std::shared_ptr< ::fwRuntime::Bundle > > ::iterator iter_bundles;
-    ::fwRuntime::Runtime * tmp_runtime = ::fwRuntime::Runtime::getDefault();
+    ::fwRuntime::Runtime* tmp_runtime = ::fwRuntime::Runtime::getDefault();
 
     xmlNodePtr activated_Node = xmlNewNode( NULL,  xmlCharStrdup( "Activated" ) );
     xmlAddChild(node_root, activated_Node );
@@ -281,7 +281,7 @@ std::string Convert::toXmlString( ::fwRuntime::ConfigurationElement::sptr _cfgEl
 
         ptChild = toPropertyTree (*iterElement);
 
-        boost::optional< ::boost::property_tree::ptree & > child = ptChild.get_child_optional(childName);
+        boost::optional< ::boost::property_tree::ptree& > child = ptChild.get_child_optional(childName);
 
         if(child)
         {
