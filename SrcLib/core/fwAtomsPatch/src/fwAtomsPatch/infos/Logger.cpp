@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,10 @@
 #include "fwAtomsPatch/infos/Logger.hpp"
 
 #ifndef ANDROID
+#include <fwRuntime/profile/Profile.hpp>
+#include <fwTools/Os.hpp>
+
+#include <boost/filesystem.hpp>
 #include <boost/log/attributes.hpp>
 #include <boost/log/expressions.hpp>
 #include <boost/log/expressions/formatters/date_time.hpp>
@@ -57,9 +61,32 @@ Logger::Logger()
     namespace expr     = ::boost::log::expressions;
     namespace keywords = ::boost::log::keywords;
 
+
+    namespace bfile = ::boost::filesystem;
+
+    //Create PATCH.log in a user data dir nammed fw4spl/appName/
+    ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
+
+    //default name of application with no profile.xml
+    std::string appName = "default";
+
+    if(profile)
+    {
+        appName = profile->getName();
+    }
+
+    const bfile::path appPrefDir = ::fwTools::os::getUserDataDir("fw4spl", appName, true);
+
+    FW_RAISE_IF("Unable to define User's data directory", appPrefDir.empty());
+
+    if (!bfile::exists(appPrefDir))
+    {
+        bfile::create_directories(appPrefDir);
+    }
+
     ::boost::log::add_file_log (
         // file name pattern
-        keywords::file_name = "PATCH.log",
+        keywords::file_name = appPrefDir.string() + "/PATCH.log",
         // rotate files every 10 MiB...
         keywords::rotation_size = 10 * 1024 * 1024,
         // ...or at midnight

@@ -3,7 +3,7 @@ fwLoadProperties()
 
 find_package(CAMP REQUIRED)
 if(NOT ANDROID)
-    find_package (Boost COMPONENTS log log_setup REQUIRED)
+    find_package (Boost COMPONENTS log log_setup filesystem REQUIRED)
 endif()
 
 fwForwardInclude(
@@ -15,6 +15,7 @@ if(NOT ANDROID)
         ${CAMP_LIBRARIES}
         ${Boost_LOG_LIBRARY}
         ${Boost_LOG_SETUP_LIBRARY}
+        ${Boost_FILESYSTEM_LIBRARY}
     )
 else()
     fwLink(
