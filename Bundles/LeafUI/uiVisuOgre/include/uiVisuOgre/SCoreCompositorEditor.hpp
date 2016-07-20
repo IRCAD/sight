@@ -9,7 +9,6 @@
 
 #include <fwRenderOgre/Layer.hpp>
 #include <fwRenderOgre/compositor/Core.hpp>
-#include <fwRenderOgre/compositor/SaoChainManager.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
@@ -89,16 +88,6 @@ protected Q_SLOTS:
     void onSelectedLayerItem(int index);
     void onEditTransparencyDepth(int depth);
     void onEditTransparency(int index);
-    // Farid : slot for the m_SAOCheckBox
-    void onSaoCheck(int state);
-    // slot to change the radius value
-    void onSaoRadiusChange(double value);
-    // slot to change the number of samples used to do the SAO
-    void onSaoSampleChange(int value);
-    // slot to change the blend state
-    void onSaoBlendChange(int state);
-    // slot to change the AO Intensity
-    void onAoIntensityChange(double value);
 
 private:
     QWidget* m_container;
@@ -108,13 +97,6 @@ private:
     QPointer<QComboBox> m_layersBox;
     QPointer<QSlider> m_transparencyDepthSlider;
     QPointer<QComboBox> m_comboBox;
-    // Farid
-    QPointer<QCheckBox> m_SAOCheckBox;
-    QPointer<QCheckBox> m_SAOBlend;
-    QPointer<QDoubleSpinBox> m_SAORadius;
-    QPointer<QSpinBox> m_SAOSamples;
-    QPointer<QDoubleSpinBox> m_AoIntensity;
-    // end Farid
     QRadioButton* m_buttonDefault;
     QRadioButton* m_buttonDepthPeeling;
     QRadioButton* m_buttonDualDepthPeeling;

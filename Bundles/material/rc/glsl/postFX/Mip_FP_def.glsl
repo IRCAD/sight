@@ -1,7 +1,7 @@
 #version 330
 
-uniform float u_vpWidth;
-uniform float u_vpHeight;
+uniform float eu_vpWidth;
+uniform float eu_vpHeight;
 
 uniform sampler2D Mip_prev;
 in vec4 pos;
@@ -17,7 +17,7 @@ void main()
     // récupérer la valeur de Mip_prev pour p_new
     // normalisation
 
-    pnew = pnew.xy/vec2(u_vpWidth,u_vpHeight);
+    pnew = pnew.xy/vec2(eu_vpWidth,eu_vpHeight);
 
     // optimisation
     profondeur = texture(Mip_prev, pnew).r;

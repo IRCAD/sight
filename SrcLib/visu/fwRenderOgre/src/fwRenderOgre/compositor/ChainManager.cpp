@@ -5,26 +5,31 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/compositor/ChainManager.hpp"
-#include "fwRenderOgre/SRender.hpp"
 
 #include <fwCore/spyLog.hpp>
 
-#include <fwRenderOgre/helper/Shading.hpp>
-#include <fwRenderOgre/IAdaptor.hpp>
+#include "fwRenderOgre/compositor/SaoListener.hpp"
+#include "fwRenderOgre/helper/Shading.hpp"
+#include "fwRenderOgre/IAdaptor.hpp"
+#include "fwRenderOgre/SRender.hpp"
 
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
+#include <OGRE/OgreCamera.h>
 #include <OGRE/OgreCompositionPass.h>
 #include <OGRE/OgreCompositionTargetPass.h>
 #include <OGRE/OgreCompositorChain.h>
 #include <OGRE/OgreCompositorManager.h>
+
+#include <regex>
 
 namespace fwRenderOgre
 {
 
 namespace compositor
 {
+
 
 //-----------------------------------------------------------------------------
 
@@ -65,7 +70,14 @@ void ChainManager::addAvailableCompositor(CompositorIdType _compositorName)
 
     // Add the new compositor
     m_compositorChain.push_back(CompositorType(_compositorName, false));
-    compositorManager.addCompositor(m_ogreViewport, _compositorName);
+    ::Ogre::CompositorInstance* compositor = compositorManager.addCompositor(m_ogreViewport, _compositorName);
+
+    // TODO: Handle this with a proper registration of the listener so that future extensions do not need to modify
+    // anything here
+    if (_compositorName == "SAO" )
+    {
+        compositor->addListener(new SaoListener(m_ogreViewport));
+    }
 
     this->addFinalCompositor();
 }
@@ -84,6 +96,8 @@ void ChainManager::clearCompositorChain()
 void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool _isEnabled,
                                          const std::string& _layerId, ::fwRenderOgre::SRender::sptr _renderService)
 {
+    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+
     // If there isn't any compositor available, the update operation can't be done
     if(!m_compositorChain.empty())
     {
@@ -93,14 +107,12 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
 
         if(compositorToUpdate != m_compositorChain.end())
         {
-            compositorToUpdate->second                   = _isEnabled;
-            ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+            compositorToUpdate->second = _isEnabled;
             compositorManager.setCompositorEnabled(m_ogreViewport, _compositorName, _isEnabled);
         }
     }
 
-    ::Ogre::CompositorChain* compChain =
-        ::Ogre::CompositorManager::getSingleton().getCompositorChain(m_ogreViewport);
+    ::Ogre::CompositorChain* compChain     = compositorManager.getCompositorChain(m_ogreViewport);
     ::Ogre::CompositorInstance* compositor = compChain->getCompositor(_compositorName);
     SLM_ASSERT("The given compositor '" + _compositorName + "' doesn't exist in the compositor chain", compositor);
 
@@ -119,11 +131,11 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
 
     for(const auto targetPass : targetPasses)
     {
-        size_t numPasses = targetPass->getNumPasses();
+        const size_t numPasses = targetPass->getNumPasses();
 
         for(size_t i = 0; i < numPasses; ++i)
         {
-            ::Ogre::CompositionPass* pass = targetPass->getPass(i);
+            const ::Ogre::CompositionPass* pass = targetPass->getPass(i);
             // We retrieve the parameters of the base material in a temporary material
             const ::Ogre::MaterialPtr material = pass->getMaterial();
 
@@ -133,7 +145,15 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
                 for(const auto& constant : constants)
                 {
                     const std::string& constantName = std::get<0>(constant);
-                    auto type                       = std::get<2>(constant);
+
+                    // Skip constant that start with "eu_". They are not supposed to be set by the user.
+                    const std::regex eu("eu.*");
+                    if(std::regex_match(constantName, eu))
+                    {
+                        continue;
+                    }
+
+                    auto type = std::get<2>(constant);
 
                     const std::string shaderTypeStr = type == ::Ogre::GPT_VERTEX_PROGRAM ? "vertex" :
                                                       type == ::Ogre::GPT_FRAGMENT_PROGRAM ? "fragment" :

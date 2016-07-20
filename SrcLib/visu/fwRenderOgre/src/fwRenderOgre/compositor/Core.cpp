@@ -8,8 +8,6 @@
 
 #include <fwRenderOgre/Utils.hpp>
 
-#include <regex>
-
 #include <OGRE/OgreCompositorInstance.h>
 #include <OGRE/OgreHardwareOcclusionQuery.h>
 #include <OGRE/OgreCompositor.h>

@@ -3,8 +3,8 @@ fragment_program Mip_FP_def glsl
     source Mip_FP_def.glsl
     default_params
     {
-        param_named u_vpWidth float 0
-        param_named u_vpHeight float 0
+        param_named eu_vpWidth float 0
+        param_named eu_vpHeight float 0
     }
 }
 

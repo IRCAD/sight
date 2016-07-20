@@ -16,8 +16,7 @@ fragment_program Ao_compute_FP glsl
         param_named_auto w viewport_width
         param_named_auto VerticalFieldOfView fov
         param_named_auto FAR_PLANE far_clip_distance
-        param_named u_projInfo float4 0 0 0 0
-
+        param_named eu_projInfo float4 0 0 0 0
     }
 }
 
@@ -37,13 +36,13 @@ material AO_mat
                 // we will change this value if s change, the best value is 7 for s = 9
                 // param_named tau int 7
                 param_named u_radius float 0.85
-                param_named MAX_MIP int 8
-                param_named q int 5
+                param_named eu_MaxMipLevels int 8
+                param_named u_q int 5
 
-                param_named k int 1
-                param_named sigma int 1
-                param_named epsilon float 0.001
-                param_named beta float 0.0001
+                param_named u_k int 1
+                param_named u_sigma int 1
+                param_named u_epsilon float 0.001
+                param_named u_beta float 0.0001
             }
 
             texture_unit MipMap_tex

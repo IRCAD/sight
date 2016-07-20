@@ -132,9 +132,6 @@ void Layer::createScene()
 
     m_compositorChainManager = fwc::ChainManager::uptr(new fwc::ChainManager(m_viewport));
 
-    // Set the viewport for sao Chain Manager
-    m_saoManager = fwc::SaoChainManager::uptr(new fwc::SaoChainManager(m_viewport, m_camera));
-
     if (m_depth != 0)
     {
         m_viewport->setClearEveryFrame(true, ::Ogre::FBT_DEPTH);
@@ -699,14 +696,6 @@ void Layer::setupCore()
 }
 
 //-------------------------------------------------------------------------------------
-
-::fwRenderOgre::compositor::SaoChainManager& Layer::getSaoManager()
-{
-    return *m_saoManager;
-}
-
-//-------------------------------------------------------------------------------------
-
 
 ::fwRenderOgre::compositor::ChainManager::CompositorChainType Layer::getCompositorChain() const
 {

@@ -9,7 +9,7 @@ uniform float w; // width
 uniform int u_numSamples; // samples number
 uniform float u_radius; // radius (spiral)
 //uniform int tau; // number spiral turn
-uniform int MAX_MIP; // max mip level
+uniform int eu_MaxMipLevels; // max mip level
 uniform float VerticalFieldOfView; // fov computed by ogre
 uniform float FAR_PLANE; //z far
 
@@ -18,19 +18,19 @@ uniform float FAR_PLANE; //z far
           -2.0f / (height*P[1][1]),
           ( 1.0f - P[0][2]) / P[0][0],
           ( 1.0f + P[1][2]) / P[1][1]) */
-uniform vec4 u_projInfo;
+uniform vec4 eu_projInfo;
 
-uniform int q; // = log(q') in the paper
+uniform int u_q; // = log(q') in the paper
 
 // values given in the paper,
 // k = 1
 // sigma = 1
 // Epsilon = 0.0001
 // beta = 10⁻⁴
-uniform int k;
-uniform int sigma;
-uniform float epsilon;
-uniform float beta;
+uniform int u_k;
+uniform int u_sigma;
+uniform float u_epsilon;
+uniform float u_beta;
 
 // test 1 -> return only the occlusion value
 //out float a;
@@ -48,7 +48,7 @@ out vec4 fragColor;
 vec3 reconstructCSPosition(vec2 S, float z)
 {
     // compute the postion from the Projection Matrix
-    return vec3 ((S.xy * u_projInfo.xy + u_projInfo.zw) * z, z);
+    return vec3 ((S.xy * eu_projInfo.xy + eu_projInfo.zw) * z, z);
 }
 
 /** Read the camera-space position of the point at screen-space pixel ssP */
@@ -146,8 +146,8 @@ void main()
         vec2 u_i = vec2(cos(theta_i),sin(theta_i));
 
 
-//        int m_i = int (clamp(int(floor(log(h_i))) - q,0,MAX_MIP)); // à prendre avec des précautions!
-        int m_i = clamp(findMSB(int(h_i)) - q, 0, MAX_MIP);
+//        int m_i = int (clamp(int(floor(log(h_i))) - q,0,eu_MaxMipLevels)); // à prendre avec des précautions!
+        int m_i = clamp(findMSB(int(h_i)) - u_q, 0, eu_MaxMipLevels);
 
         // screen-space pixel with the correct size pow(2.0,m_i)
         vec2 pixel_i = vec2(vec2(gl_FragCoord.xy) + vec2(h_i*u_i));
@@ -170,16 +170,15 @@ void main()
 
         vec3 vi = qi - c;
 
-//        sum += (max(0.0f,(dot (vi,nc) + zc* beta)/(dot(vi,vi)+epsilon)));
+//        sum += (max(0.0f,(dot (vi,nc) + zc* u_beta)/(dot(vi,vi)+epsilon)));
 
-        const float espilon = 0.01;
+        const float epsilon = 0.01;
         const float bias = 0.15;
 
         float vv = dot (vi,vi);
 
         float f = max (r_fake * r_fake - vv,0.0);
-        sum += (f*f*f* max( ( (dot(vi,nc)-bias) / (epsilon+vv) ) ,
-                                    0.0 ));
+        sum += (f*f*f* max( ( (dot(vi,nc)-bias) / (epsilon+vv) ), 0.0 ));
 
     }
 
@@ -193,7 +192,7 @@ void main()
 //    sum /= r_3 * r_3;
 
     // here we take sigma = 1, epsilon = 0.0001, Beta = 10⁻⁴ and k = 1
-//    float a = pow (max (0.0, 1.0f-(2.0f* sigma *sum)/s),k);
+//    float a = pow (max (0.0, 1.0f-(2.0f* u_sigma *sum)/s),u_k);
     const float intensity = 2.0;
     float a = max (0.0,1.0 - sum * (intensity/ pow(r_fake,6.0)) *(5.0 / u_numSamples));
 

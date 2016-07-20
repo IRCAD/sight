@@ -131,7 +131,7 @@ void IParameter::doUpdate() throw(::fwTools::Failed)
 
         if( !bSet )
         {
-            SLM_ERROR("Couldn't set parameter '" + m_paramName + "' in any technique of material '"
+            SLM_TRACE("Couldn't set parameter '" + m_paramName + "' in any technique of material '"
                       + m_material->getName() + "'");
         }
         else
@@ -141,13 +141,12 @@ void IParameter::doUpdate() throw(::fwTools::Failed)
     }
     else
     {
-        ::Ogre::Technique* tech = nullptr;
-        tech                    = m_material->getTechnique(m_techniqueName);
+        ::Ogre::Technique* tech = m_material->getTechnique(m_techniqueName);
         OSLM_FATAL_IF("Can't find technique " << m_techniqueName, !tech);
 
         if( this->setParameter(*tech) )
         {
-            SLM_ERROR("Couldn't set parameter '" + m_paramName + "' in technique '" + m_techniqueName +
+            SLM_TRACE("Couldn't set parameter '" + m_paramName + "' in technique '" + m_techniqueName +
                       "' from material '" + m_material->getName() + "'");
         }
         else
