@@ -1,13 +1,3 @@
-vertex_program stdPos_VP glsl
-{
-    source stdPos_VP.glsl
-    default_params
-    {
-        param_named_auto MVP worldviewproj_matrix
-    }
-}
-
-
 fragment_program BlurSaoV_FP glsl
 {
     source BlurSaoV_FP.glsl

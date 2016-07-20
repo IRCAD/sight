@@ -12,10 +12,6 @@
 #include <OGRE/OgreCompositorChain.h>
 #include <OGRE/OgreCompositor.h>
 
-
-
-#include <fwCore/BaseObject.hpp>
-
 #include <vector>
 
 #include "fwRenderOgre/config.hpp"
@@ -32,22 +28,16 @@ namespace fwRenderOgre
 namespace compositor
 {
 
-class FWRENDEROGRE_CLASS_API ChainManager : public ::fwCore::BaseObject
+class FWRENDEROGRE_CLASS_API ChainManager : ::boost::noncopyable
 {
 public:
-
-    fwCoreClassDefinitionsWithFactoryMacro( (ChainManager)(::fwRenderOgre::compositor::ChainManager), (()),
-                                            new ChainManager);
-    fwCoreAllowSharedFromThis();
+    typedef std::unique_ptr < ChainManager > uptr;
 
     typedef std::string CompositorIdType;
     typedef std::pair<CompositorIdType, bool> CompositorType;
     typedef std::vector<CompositorType> CompositorChainType;
 
-    FWRENDEROGRE_API ChainManager();
-
-    /// Initialize the chain, need to be called before any other stuff
-    FWRENDEROGRE_API void initialize(::Ogre::Viewport* viewport);
+    FWRENDEROGRE_API ChainManager(::Ogre::Viewport* viewport);
 
     /// Inserts the new compositor in the compositor chain vector
     FWRENDEROGRE_API void addAvailableCompositor(CompositorIdType compositorName);

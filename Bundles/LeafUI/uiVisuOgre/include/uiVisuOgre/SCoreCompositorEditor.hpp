@@ -9,7 +9,7 @@
 
 #include <fwRenderOgre/Layer.hpp>
 #include <fwRenderOgre/compositor/Core.hpp>
-#include <fwRenderOgre/compositor/SaoCompositorChainManager.hpp>
+#include <fwRenderOgre/compositor/SaoChainManager.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
@@ -83,8 +83,6 @@ protected:
     std::vector< ::fwRenderOgre::Layer::wptr > m_layers;
     ::fwRenderOgre::Layer::wptr m_currentLayer;
     ::fwRenderOgre::compositor::Core::sptr m_currentCoreCompositor;
-    // we need a pointer to the SaoChainManager class
-    ::fwRenderOgre::SaoCompositorChainManager::sptr m_saoChainManager;
 
 protected Q_SLOTS:
 

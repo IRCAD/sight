@@ -24,16 +24,9 @@ const ChainManager::CompositorIdType ChainManager::FINAL_CHAIN_COMPOSITOR = "Fin
 
 //-----------------------------------------------------------------------------
 
-ChainManager::ChainManager()
-    : m_ogreViewport(0)
+ChainManager::ChainManager(::Ogre::Viewport* viewport) :
+    m_ogreViewport(viewport)
 {
-}
-
-//-----------------------------------------------------------------------------
-
-void ChainManager::initialize(::Ogre::Viewport* viewport)
-{
-    m_ogreViewport = viewport;
 }
 
 //-----------------------------------------------------------------------------

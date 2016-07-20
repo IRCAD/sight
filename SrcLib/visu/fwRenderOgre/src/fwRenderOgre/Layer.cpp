@@ -11,9 +11,14 @@
 
 #include <fwDataTools/Color.hpp>
 
+#include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/interactor/TrackballInteractor.hpp>
+#include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/Utils.hpp>
+
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwThread/Worker.hpp>
 
@@ -25,6 +30,8 @@
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreVector3.h>
 #include <OGRE/OgreException.h>
+#include <OGRE/OgreCompositionPass.h>
+#include <OGRE/OgreCompositionTargetPass.h>
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreRectangle2D.h>
 #include <OGRE/Overlay/OgreOverlay.h>
@@ -57,10 +64,8 @@ Layer::Layer() :
     m_hasCompositorChain(false),
     m_sceneCreated(false),
     m_rawCompositorChain(""),
-    m_coreCompositor(nullptr),
     m_transparencyTechnique(DEFAULT),
     m_numPeels(8),
-    m_saoManager(nullptr),
     m_depth(1),
     m_topColor("#333333"),
     m_bottomColor("#333333"),
@@ -122,6 +127,8 @@ const std::string& Layer::getID() const
 
 void Layer::createScene()
 {
+    namespace fwc = ::fwRenderOgre::compositor;
+
     SLM_ASSERT("Scene manager must be initialized", m_sceneManager);
     SLM_ASSERT("Render window must be initialized", m_renderWindow);
 
@@ -132,13 +139,11 @@ void Layer::createScene()
     m_camera->setNearClipDistance(1);
 
     m_viewport = m_renderWindow->addViewport(m_camera, m_depth);
-    m_compositorChainManager.initialize(m_viewport);
+
+    m_compositorChainManager = fwc::ChainManager::uptr(new fwc::ChainManager(m_viewport));
 
     // Set the viewport for sao Chain Manager
-    m_saoManager = fwRenderOgre::SaoCompositorChainManager::New();
-    m_saoManager->setOgreViewport(m_viewport);
-    m_saoManager->setSceneCamera(m_camera);
-
+    m_saoManager = fwc::SaoChainManager::uptr(new fwc::SaoChainManager(m_viewport, m_camera));
 
     if (m_depth != 0)
     {
@@ -228,7 +233,7 @@ void Layer::createScene()
 
     if(m_hasCompositorChain)
     {
-        m_compositorChainManager.setCompositorChain(this->trimSemicolons(m_rawCompositorChain));
+        m_compositorChainManager->setCompositorChain(this->trimSemicolons(m_rawCompositorChain));
     }
 
     this->setMoveInteractor(interactor);
@@ -242,7 +247,7 @@ void Layer::createScene()
 
 void Layer::addAvailableCompositor(std::string compositorName)
 {
-    m_compositorChainManager.addAvailableCompositor(compositorName);
+    m_compositorChainManager->addAvailableCompositor(compositorName);
 }
 
 // ----------------------------------------------------------------------------
@@ -250,7 +255,7 @@ void Layer::addAvailableCompositor(std::string compositorName)
 void Layer::clearAvailableCompositors()
 {
     m_renderService.lock()->makeCurrent();
-    m_compositorChainManager.clearCompositorChain();
+    m_compositorChainManager->clearCompositorChain();
     m_renderService.lock()->requestRender();
 }
 
@@ -259,7 +264,7 @@ void Layer::clearAvailableCompositors()
 void Layer::updateCompositorState(std::string compositorName, bool isEnabled)
 {
     m_renderService.lock()->makeCurrent();
-    m_compositorChainManager.updateCompositorState(compositorName, isEnabled);
+    m_compositorChainManager->updateCompositorState(compositorName, isEnabled);
 
     ::Ogre::CompositorChain* compChain =
         ::Ogre::CompositorManager::getSingleton().getCompositorChain(this->getViewport());
@@ -776,8 +781,7 @@ void Layer::setupCore()
     // Needed to setup compositors in GL3Plus, Ogre creates render targets
     m_renderService.lock()->makeCurrent();
 
-    m_coreCompositor = fwRenderOgre::compositor::Core::New();
-    m_coreCompositor->setViewport(m_viewport);
+    m_coreCompositor = std::make_shared< ::fwRenderOgre::compositor::Core>(m_viewport);
     m_coreCompositor->setTransparencyTechnique(m_transparencyTechnique);
     m_coreCompositor->setTransparencyDepth(m_numPeels);
     m_coreCompositor->update();
@@ -822,17 +826,17 @@ std::vector< std::string > Layer::trimSemicolons(std::string input)
 
 //-------------------------------------------------------------------------------------
 
-::fwRenderOgre::SaoCompositorChainManager::sptr Layer::getSaoManager()
+::fwRenderOgre::compositor::SaoChainManager& Layer::getSaoManager()
 {
-    return m_saoManager;
+    return *m_saoManager;
 }
 
 //-------------------------------------------------------------------------------------
 
 
-::fwRenderOgre::compositor::ChainManager::CompositorChainType Layer::getCompositorChain()
+::fwRenderOgre::compositor::ChainManager::CompositorChainType Layer::getCompositorChain() const
 {
-    return m_compositorChainManager.getCompositorChain();
+    return m_compositorChainManager->getCompositorChain();
 }
 
 //-------------------------------------------------------------------------------------

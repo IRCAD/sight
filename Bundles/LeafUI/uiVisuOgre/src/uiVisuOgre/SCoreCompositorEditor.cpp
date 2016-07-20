@@ -104,7 +104,7 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
         // add Double Spin Box
         m_SAORadius = new QDoubleSpinBox(m_container);
         m_SAORadius->setRange(0.01,3.00);
-//        m_SAORadius->setValue(m_saoChainManager->getSaoRadius());
+//        m_SAORadius->setValue(m_currentLayer.lock()->getSaoManager().getSaoRadius());
         m_SAORadius->setValue(0.85);
         m_SAORadius->setSingleStep(0.05);
         // by defaut this spin box in disable
@@ -119,7 +119,7 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
         m_SAOSamples = new QSpinBox(m_container);
         m_SAOSamples->setRange(1,30);
         m_SAOSamples->setSingleStep(1);
-//        m_SAOSamples->setValue(m_saoChainManager->getSaoSamples());
+//        m_SAOSamples->setValue(m_currentLayer.lock()->getSaoManager().getSaoSamples());
         m_SAOSamples->setValue(11);
         // disable by default
         m_SAOSamples->setEnabled(false);
@@ -418,10 +418,8 @@ void SCoreCompositorEditor::onEditTransparency(int index)
 
 void SCoreCompositorEditor::onSaoCheck(int state)
 {
-
     // need to change the behaviour of the 3D layer selector -> when selected a good layer, set enable the sao Button
-    m_saoChainManager = m_currentLayer->getSaoManager();
-    m_saoChainManager->setSaoState(state == Qt::Checked);
+    m_currentLayer.lock()->getSaoManager().setSaoState(state == Qt::Checked);
     // here we can enable/disable the parameters
     m_SAORadius->setEnabled(state);
     m_SAOSamples->setEnabled(state);
@@ -438,7 +436,7 @@ void SCoreCompositorEditor::onSaoCheck(int state)
 void SCoreCompositorEditor::onSaoRadiusChange(double value)
 {
     // change the value of the radius in the SAO Chain Manager class
-    m_saoChainManager->setSaoRadius(value);
+    m_currentLayer.lock()->getSaoManager().setSaoRadius(value);
     this->update();
 }
 
@@ -447,7 +445,7 @@ void SCoreCompositorEditor::onSaoRadiusChange(double value)
 void SCoreCompositorEditor::onSaoSampleChange(int value)
 {
     // change the value in the Sao Chain Manager
-    m_saoChainManager->setSaoSamples(value);
+    m_currentLayer.lock()->getSaoManager().setSaoSamples(value);
     this->update();
 }
 
@@ -456,7 +454,7 @@ void SCoreCompositorEditor::onSaoSampleChange(int value)
 void SCoreCompositorEditor::onSaoBlendChange(int state)
 {
 
-    m_saoChainManager->enableBlend(state == Qt::Checked);
+    m_currentLayer.lock()->getSaoManager().enableBlend(state == Qt::Checked);
     this->update();
 }
 
@@ -465,7 +463,7 @@ void SCoreCompositorEditor::onSaoBlendChange(int state)
 void SCoreCompositorEditor::onAoIntensityChange(double value)
 {
     // change the value of the radius in the SAO Chain Manager class
-    m_saoChainManager->setAoIntensity(value);
+    m_currentLayer.lock()->getSaoManager().setAoIntensity(value);
     this->update();
 }
 

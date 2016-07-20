@@ -30,7 +30,7 @@ const std::string Core::FINAL_CHAIN_COMPOSITOR = "FinalChainCompositor";
 
 // ----------------------------------------------------------------------------
 
-Core::Core() :
+Core::Core(::Ogre::Viewport* viewport) :
     //m_transparencyTechniqueMaxDepth(8),
     m_transparencyTechnique(DEFAULT),
     m_transparencyTechniqueName("Default"),
@@ -44,7 +44,7 @@ Core::Core() :
     //m_isPong(false),
     m_celShadingName(""),
     m_numPass(8),
-    m_viewport(nullptr)
+    m_viewport(viewport)
 {
 }
 
@@ -66,13 +66,6 @@ transparencyTechnique Core::getTransparencyTechnique()
 int Core::getTransparencyDepth()
 {
     return m_numPass;
-}
-
-//-----------------------------------------------------------------------------
-
-void Core::setViewport(::Ogre::Viewport* viewport)
-{
-    m_viewport = viewport;
 }
 
 //-----------------------------------------------------------------------------
@@ -100,6 +93,7 @@ void Core::update()
             break;
         case CELSHADING_DEPTHPEELING:
             m_celShadingName = "CelShading";
+            BOOST_FALLTHROUGH;
         case DEPTHPEELING:
             m_transparencyTechniqueName = m_celShadingName+"DepthPeeling";
             this->setupTransparency();
@@ -177,8 +171,7 @@ void Core::setupTransparency()
         m_compositorInstance = compositorManager.addCompositor( m_viewport,
                                                                 m_transparencyTechniqueName,
                                                                 0.);
-        compositorManager.setCompositorEnabled( m_viewport, m_transparencyTechniqueName,
-                                                true );
+        compositorManager.setCompositorEnabled( m_viewport, m_transparencyTechniqueName, true );
 
         // If the final compositor has been removed, we need to add it to the compositor chain
         if(needFinalCompositorSwap)
@@ -189,9 +182,8 @@ void Core::setupTransparency()
 
         if(m_compositorInstance == nullptr)
         {
-            OSLM_ERROR(
-                "Compositor " + m_transparencyTechniqueName +
-                " script is missing in resources (check your resources' paths)");
+            SLM_ERROR( "Compositor " + m_transparencyTechniqueName +
+                       " script is missing in resources (check your resources' paths)");
         }
     }
 }
@@ -270,8 +262,7 @@ void Core::setTransparencyDepthOfDepthPeeling(int depth)
         }
     }
 
-    ::Ogre::CompositorManager::getSingleton().setCompositorEnabled( m_viewport, m_celShadingName+"DepthPeeling",
-                                                                    true );
+    ::Ogre::CompositorManager::getSingleton().setCompositorEnabled( m_viewport, m_celShadingName+"DepthPeeling", true );
 }
 
 //-----------------------------------------------------------------------------

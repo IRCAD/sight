@@ -18,8 +18,6 @@
 
 #include "fwRenderOgre/config.hpp"
 
-#define NB_OF_TECH 5
-
 /// OIT (Ordrer Independent Transparency) techniques supported
 enum transparencyTechnique
 {
@@ -38,12 +36,9 @@ namespace compositor
 {
 
 /**
- * @class Core
  * Manages principal compositor for a layer's 3D scene
  */
-class FWRENDEROGRE_CLASS_API Core : public ::fwCore::BaseObject
-                                    //,
-                                    //TODO : Manage occlusion query
+class FWRENDEROGRE_CLASS_API Core   //TODO : Manage occlusion query
                                     //    The current commented ligns in this class are standing for occlusion query purposes
                                     //    An example of working occlusion query is used in the experimental branch flavien_sg rev 76
                                     //public ::Ogre::FrameListener,
@@ -52,14 +47,10 @@ class FWRENDEROGRE_CLASS_API Core : public ::fwCore::BaseObject
 
 {
 public:
-
-    fwCoreClassDefinitionsWithFactoryMacro( (Core)(::fwRenderOgre::compositor::Core), (()),
-                                            new Core);
-    fwCoreAllowSharedFromThis();
-    //fwCoreServiceClassDefinitionsMacro( (Core)(::fwCore::BaseObject) )
+    typedef std::shared_ptr < Core > sptr;
 
     /// Default Compositor, one per "default" layer
-    FWRENDEROGRE_API Core();
+    FWRENDEROGRE_API Core(::Ogre::Viewport* viewport);
 
     /// Destructor of default compositor
     FWRENDEROGRE_API ~Core();
@@ -70,14 +61,10 @@ public:
     /// Return the number of peels computed by Depth Peeling or x2 Dual Depth Peeling
     FWRENDEROGRE_API int getTransparencyDepth();
 
-    /// Set the viewport linked with default compositor
-    FWRENDEROGRE_API void setViewport(::Ogre::Viewport* viewport);
-
     /// Set the OIT desired
     /// Deactivate OIT compositor
     FWRENDEROGRE_API bool setTransparencyTechnique(transparencyTechnique technique);
 
-    // FIXME : this function must be private (needing occlusion queries)
     /// Set the number of peels computed by Depth Peeling or x2 Dual Depth Peeling
     /// Deactivate OIT compositor
     FWRENDEROGRE_API void setTransparencyDepth(int depth);
