@@ -7,6 +7,13 @@
 #ifndef __FWRENDEROGRE_COMPOSITOR_CHAINMANAGER_HPP__
 #define __FWRENDEROGRE_COMPOSITOR_CHAINMANAGER_HPP__
 
+//      Suppress when tests over
+// used to view the content of the Ogre Compositor Chain
+#include <OGRE/OgreCompositorChain.h>
+#include <OGRE/OgreCompositor.h>
+
+
+
 #include <fwCore/BaseObject.hpp>
 
 #include <vector>

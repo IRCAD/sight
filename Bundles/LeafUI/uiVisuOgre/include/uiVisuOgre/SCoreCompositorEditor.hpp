@@ -9,12 +9,14 @@
 
 #include <fwRenderOgre/Layer.hpp>
 #include <fwRenderOgre/compositor/Core.hpp>
+#include <fwRenderOgre/compositor/SaoCompositorChainManager.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>
 #include <QLabel>
+// #include <QAbstractSpinBox>
 
 #include "uiVisuOgre/config.hpp"
 
@@ -26,6 +28,10 @@ class QLineEdit;
 class QSlider;
 class QCheckBox;
 class QComboBox;
+// needed for the radius
+class QDoubleSpinBox;
+// needed for the samples number
+class QSpinBox;
 
 
 namespace uiVisuOgre
@@ -77,12 +83,24 @@ protected:
     std::vector< ::fwRenderOgre::Layer::wptr > m_layers;
     ::fwRenderOgre::Layer::wptr m_currentLayer;
     ::fwRenderOgre::compositor::Core::sptr m_currentCoreCompositor;
+    // we need a pointer to the SaoChainManager class
+    ::fwRenderOgre::SaoCompositorChainManager::sptr m_saoChainManager;
 
 protected Q_SLOTS:
 
     void onSelectedLayerItem(int index);
     void onEditTransparencyDepth(int depth);
     void onEditTransparency(int index);
+    // Farid : slot for the m_SAOCheckBox
+    void onSaoCheck(int state);
+    // slot to change the radius value
+    void onSaoRadiusChange(double value);
+    // slot to change the number of samples used to do the SAO
+    void onSaoSampleChange(int value);
+    // slot to change the blend state
+    void onSaoBlendChange(int state);
+    // slot to change the AO Intensity
+    void onAoIntensityChange(double value);
 
 private:
     QWidget* m_container;
@@ -92,6 +110,13 @@ private:
     QPointer<QComboBox> m_layersBox;
     QPointer<QSlider> m_transparencyDepthSlider;
     QPointer<QComboBox> m_comboBox;
+    // Farid
+    QPointer<QCheckBox> m_SAOCheckBox;
+    QPointer<QCheckBox> m_SAOBlend;
+    QPointer<QDoubleSpinBox> m_SAORadius;
+    QPointer<QSpinBox> m_SAOSamples;
+    QPointer<QDoubleSpinBox> m_AoIntensity;
+    // end Farid
     QRadioButton* m_buttonDefault;
     QRadioButton* m_buttonDepthPeeling;
     QRadioButton* m_buttonDualDepthPeeling;

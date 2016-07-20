@@ -34,6 +34,7 @@
 #include <QLineEdit>
 #include <QSlider>
 #include <QCheckBox>
+#include <QDoubleSpinBox>
 
 namespace uiVisuOgre
 {
@@ -72,7 +73,75 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
     m_layersBox = new QComboBox(m_container);
     layout->addWidget(m_layersBox);
 
-    // Transparency depth management
+    // --------------------------------------
+    // Farid : try to add some SAO cell here
+    // --------------------------------------
+    {
+        // add label
+        QLabel* labelSAO = new QLabel(tr("SAO"),m_container);
+        layout->addWidget(labelSAO);
+        // add Check box
+        m_SAOCheckBox = new QCheckBox(m_container);
+        m_SAOCheckBox->setCheckable(false);
+        m_SAOCheckBox->setCheckState(Qt::CheckState(false));
+        layout->addWidget(m_SAOCheckBox);
+
+        // ajout d'un bouton pour activer/desactiver le blend
+        // add Label
+        QLabel* labelBlend = new QLabel(tr("Blend"),m_container);
+        layout->addWidget(labelBlend);
+        // add CheckBox
+        m_SAOBlend = new QCheckBox(m_container);
+        m_SAOBlend->setCheckState(Qt::CheckState(false)); // the blend is enable by default
+        m_SAOBlend->setCheckable(false);
+        layout->addWidget(m_SAOBlend);
+
+        // ajout d'un doubleSpinBox pour pouvoir modifier la valeur du rayon directement depuis l'interface
+
+        // radius label
+        QLabel* labelRadius = new QLabel(tr("Radius"),m_container);
+        layout->addWidget(labelRadius);
+        // add Double Spin Box
+        m_SAORadius = new QDoubleSpinBox(m_container);
+        m_SAORadius->setRange(0.01,3.00);
+//        m_SAORadius->setValue(m_saoChainManager->getSaoRadius());
+        m_SAORadius->setValue(0.85);
+        m_SAORadius->setSingleStep(0.05);
+        // by defaut this spin box in disable
+        m_SAORadius->setEnabled(false);
+        layout->addWidget(m_SAORadius);
+
+        // add a SpinBox to change the number of Samples
+        // label
+        QLabel* labelSamples = new QLabel(tr("Samples"),m_container);
+        layout->addWidget(labelSamples);
+        // add Spin Box
+        m_SAOSamples = new QSpinBox(m_container);
+        m_SAOSamples->setRange(1,30);
+        m_SAOSamples->setSingleStep(1);
+//        m_SAOSamples->setValue(m_saoChainManager->getSaoSamples());
+        m_SAOSamples->setValue(11);
+        // disable by default
+        m_SAOSamples->setEnabled(false);
+        layout->addWidget(m_SAOSamples);
+
+        // AO Intensity
+        QLabel* labelAoIntensity = new QLabel(tr("Intensity(AO)"),m_container);
+        layout->addWidget(labelAoIntensity);
+        // Double Spin Box
+        m_AoIntensity = new QDoubleSpinBox(m_container);
+        m_AoIntensity->setValue(1.0);
+        m_AoIntensity->setRange(0.1,5.0);
+        m_AoIntensity->setSingleStep(0.1);
+        m_AoIntensity->setEnabled(false);
+        layout->addWidget(m_AoIntensity);
+
+    }
+
+
+
+
+    // Transparency depth managment
     {
         QLabel* labelTransparency = new QLabel(tr("Transparency depth"),m_container);
         layout->addWidget(labelTransparency);
@@ -162,6 +231,23 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
     QObject::connect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
     QObject::connect( m_transparencyDepthSlider, SIGNAL(valueChanged(int)), this, SLOT(onEditTransparencyDepth(int)) );
     QObject::connect(m_transparencyButtonGroup, SIGNAL(buttonClicked(int)), this, SLOT(onEditTransparency(int)));
+
+    // here we connect the sao check box with the correct method
+    QObject::connect(m_SAOCheckBox,SIGNAL(stateChanged(int)),this,SLOT(onSaoCheck(int)));
+
+    // connection between the radius spin box and the SAO Compositor Manager Class
+    QObject::connect(m_SAORadius,SIGNAL(valueChanged(double)),this,SLOT(onSaoRadiusChange(double)));
+
+    // same for the samples number
+    QObject::connect(m_SAOSamples,SIGNAL(valueChanged(int)),this,SLOT(onSaoSampleChange(int)));
+
+    // connection blend checkbox - slot
+    QObject::connect(m_SAOBlend,SIGNAL(stateChanged(int)),this,SLOT(onSaoBlendChange(int)));
+
+    // connection AoIntensity DoubleSpinBox - SaoCompositor Class
+    QObject::connect(m_AoIntensity,SIGNAL(valueChanged(double)),this,SLOT(onAoIntensityChange(double)));
+
+
 }
 
 //------------------------------------------------------------------------------
@@ -240,6 +326,8 @@ void SCoreCompositorEditor::onSelectedLayerItem(int index)
         m_labelWeightedBlendedOIT->setEnabled(true);
         m_labelHybridTransparency->setEnabled(true);
         m_labelCelShadingDepthPeeling->setEnabled(true);
+        // here we enable the Sao button
+        m_SAOCheckBox->setCheckable(true);
     }
 
     // Reloads buttons to match layer's parameters
@@ -273,6 +361,8 @@ void SCoreCompositorEditor::onSelectedLayerItem(int index)
         m_transparencyDepthSlider->setValue(m_currentCoreCompositor->getTransparencyDepth());
         this->update();
     }
+//    */
+//    this->update();
 }
 
 //------------------------------------------------------------------------------
@@ -322,6 +412,61 @@ void SCoreCompositorEditor::onEditTransparency(int index)
 
         this->update();
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SCoreCompositorEditor::onSaoCheck(int state)
+{
+
+    // need to change the behaviour of the 3D layer selector -> when selected a good layer, set enable the sao Button
+    m_saoChainManager = m_currentLayer->getSaoManager();
+    m_saoChainManager->setSaoState(state == Qt::Checked);
+    // here we can enable/disable the parameters
+    m_SAORadius->setEnabled(state);
+    m_SAOSamples->setEnabled(state);
+    m_SAOBlend->setCheckable(state);
+    m_AoIntensity->setEnabled(state);
+
+    this->update();
+}
+
+
+//------------------------------------------------------------------------------
+
+
+void SCoreCompositorEditor::onSaoRadiusChange(double value)
+{
+    // change the value of the radius in the SAO Chain Manager class
+    m_saoChainManager->setSaoRadius(value);
+    this->update();
+}
+
+//------------------------------------------------------------------------------
+
+void SCoreCompositorEditor::onSaoSampleChange(int value)
+{
+    // change the value in the Sao Chain Manager
+    m_saoChainManager->setSaoSamples(value);
+    this->update();
+}
+
+//------------------------------------------------------------------------------
+
+void SCoreCompositorEditor::onSaoBlendChange(int state)
+{
+
+    m_saoChainManager->enableBlend(state == Qt::Checked);
+    this->update();
+}
+
+//------------------------------------------------------------------------------
+
+void SCoreCompositorEditor::onAoIntensityChange(double value)
+{
+    // change the value of the radius in the SAO Chain Manager class
+    m_saoChainManager->setAoIntensity(value);
+    this->update();
 }
 
 //------------------------------------------------------------------------------

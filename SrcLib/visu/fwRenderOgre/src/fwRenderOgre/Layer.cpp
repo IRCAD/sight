@@ -11,26 +11,15 @@
 
 #include <fwDataTools/Color.hpp>
 
-#include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/interactor/TrackballInteractor.hpp>
-#include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/Utils.hpp>
-
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwThread/Worker.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreColourValue.h>
-#include <OGRE/OgreCompositor.h>
-#include <OGRE/OgreCompositorChain.h>
-#include <OGRE/OgreCompositionPass.h>
-#include <OGRE/OgreCompositionTargetPass.h>
-#include <OGRE/OgreCompositionTechnique.h>
-
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreLight.h>
 #include <OGRE/OgreSceneNode.h>
@@ -71,6 +60,7 @@ Layer::Layer() :
     m_coreCompositor(nullptr),
     m_transparencyTechnique(DEFAULT),
     m_numPeels(8),
+    m_saoManager(nullptr),
     m_depth(1),
     m_topColor("#333333"),
     m_bottomColor("#333333"),
@@ -143,6 +133,12 @@ void Layer::createScene()
 
     m_viewport = m_renderWindow->addViewport(m_camera, m_depth);
     m_compositorChainManager.initialize(m_viewport);
+
+    // Set the viewport for sao Chain Manager
+    m_saoManager = fwRenderOgre::SaoCompositorChainManager::New();
+    m_saoManager->setOgreViewport(m_viewport);
+    m_saoManager->setSceneCamera(m_camera);
+
 
     if (m_depth != 0)
     {
@@ -658,8 +654,13 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
         // Make sure near is not bigger than far
         maxNear = (maxNear >= minFar) ? (0.01f*minFar) : (maxNear);
 
-        m_camera->setNearClipDistance( maxNear );
-        m_camera->setFarClipDistance( minFar );
+        // TODO: Near and far for SAO
+        m_camera->setNearClipDistance( 1 );
+        m_camera->setFarClipDistance( 10000 );
+
+
+//        m_camera->setNearClipDistance( maxNear );
+//        m_camera->setFarClipDistance( minFar );
     }
 }
 
@@ -820,6 +821,14 @@ std::vector< std::string > Layer::trimSemicolons(std::string input)
 }
 
 //-------------------------------------------------------------------------------------
+
+::fwRenderOgre::SaoCompositorChainManager::sptr Layer::getSaoManager()
+{
+    return m_saoManager;
+}
+
+//-------------------------------------------------------------------------------------
+
 
 ::fwRenderOgre::compositor::ChainManager::CompositorChainType Layer::getCompositorChain()
 {

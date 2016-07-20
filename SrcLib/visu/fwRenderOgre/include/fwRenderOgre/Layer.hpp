@@ -16,11 +16,11 @@
 #include <fwRenderOgre/IHasAdaptors.hpp>
 #include <fwRenderOgre/compositor/ChainManager.hpp>
 #include <fwRenderOgre/compositor/Core.hpp>
-#include <fwRenderOgre/compositor/Core.hpp>
 #include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
 #include <fwRenderOgre/interactor/IMovementInteractor.hpp>
 #include <fwRenderOgre/interactor/IPickerInteractor.hpp>
 #include <fwRenderOgre/interactor/IInteractor.hpp>
+#include <fwRenderOgre/compositor/SaoCompositorChainManager.hpp>
 
 #include <fwThread/Worker.hpp>
 
@@ -192,6 +192,10 @@ public:
     /// Checks if this layer has a default compositor
     FWRENDEROGRE_API ::fwRenderOgre::compositor::Core::sptr getCoreCompositor();
 
+    // return the sao manager for this layer
+    FWRENDEROGRE_API ::fwRenderOgre::SaoCompositorChainManager::sptr getSaoManager();
+
+
     FWRENDEROGRE_API ::fwRenderOgre::compositor::ChainManager::CompositorChainType getCompositorChain();
 
     FWRENDEROGRE_API std::string getFinalChainCompositorName() const;
@@ -248,6 +252,10 @@ private:
     /// Manages the list of available compositors.
     /// The names are associated to a boolean value which indicates whether the compositor is enabled or not
     ::fwRenderOgre::compositor::ChainManager m_compositorChainManager;
+
+    /// Ogre sao compositor manager for this layer
+    ::fwRenderOgre::SaoCompositorChainManager::sptr m_saoManager;
+
 
     /// Z Depth of this viewport
     int m_depth;
