@@ -32,8 +32,10 @@ namespace videoTools
 
 const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZATION_DONE_SIG = "synchronizationDone";
 
-const ::fwServices::IService::KeyType s_FRAMETL_INPUT = "frameTL";
-const ::fwServices::IService::KeyType s_IMAGE_INOUT   = "image";
+const ::fwServices::IService::KeyType s_FRAMETL_INPUT  = "frameTL";
+const ::fwServices::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
+const ::fwServices::IService::KeyType s_IMAGE_INOUT    = "image";
+const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrices";
 
 // ----------------------------------------------------------------------------
 
@@ -121,6 +123,26 @@ void SFrameMatrixSynchronizer::starting() throw (fwTools::Failed)
             // TODO: replace by a vector when appXml is removed
             m_frameTLs["frame" + std::to_string(i)] = this->getInput< ::extData::FrameTL>(s_FRAMETL_INPUT, i);
             m_images["frame" + std::to_string(i)]   = this->getInOut< ::fwData::Image>(s_IMAGE_INOUT, i);
+        }
+
+        const size_t numMatrixTLs = this->getKeyGroupSize(s_MATRIXTL_INPUT);
+
+        for(size_t i = 0; i < numMatrixTLs; ++i)
+        {
+            // Get the group corresponding to the 'i' Matrix TimeLine. The name of this group is matrices0 for example.
+            // if ever the group is not found 'getKeyGroupSize' will assert.
+            const size_t numMatrices = this->getKeyGroupSize(s_MATRICES_INOUT+std::to_string(i));
+
+            m_matrixTLs["matrixTL" + std::to_string(i)] = this->getInput< ::extData::MatrixTL>(s_MATRIXTL_INPUT, i);
+
+            MatrixKeyVectorType matricesVector;
+            for(size_t j = 0; j < numMatrices; ++j)
+            {
+                matricesVector.push_back(
+                    std::make_pair(this->getInOut< ::fwData::TransformationMatrix3D >(
+                                       s_MATRICES_INOUT+std::to_string(i), j),j));
+            }
+            m_matrices["matrixTL" + std::to_string(i)] = matricesVector;
         }
     }
     else
