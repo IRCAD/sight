@@ -11,14 +11,9 @@
 
 #include <fwDataTools/Color.hpp>
 
-#include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/interactor/TrackballInteractor.hpp>
-#include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/Utils.hpp>
-
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwThread/Worker.hpp>
 
@@ -30,8 +25,6 @@
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreVector3.h>
 #include <OGRE/OgreException.h>
-#include <OGRE/OgreCompositionPass.h>
-#include <OGRE/OgreCompositionTargetPass.h>
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreRectangle2D.h>
 #include <OGRE/Overlay/OgreOverlay.h>
@@ -60,9 +53,6 @@ Layer::Layer() :
     m_sceneManager(nullptr),
     m_renderWindow(nullptr),
     m_viewport(nullptr),
-    m_hasCoreCompositor(false),
-    m_hasCompositorChain(false),
-    m_sceneCreated(false),
     m_rawCompositorChain(""),
     m_transparencyTechnique(DEFAULT),
     m_numPeels(8),
@@ -71,7 +61,10 @@ Layer::Layer() :
     m_bottomColor("#333333"),
     m_topScale(0.f),
     m_bottomScale(1.f),
-    m_camera(nullptr)
+    m_camera(nullptr),
+    m_hasCoreCompositor(false),
+    m_hasCompositorChain(false),
+    m_sceneCreated(false)
 {
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
     newSignal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
@@ -79,15 +72,12 @@ Layer::Layer() :
     newSlot(s_INTERACTION_SLOT, &Layer::interaction, this);
     newSlot(s_DESTROY_SLOT, &Layer::destroy, this);
     newSlot(s_RESET_CAMERA_SLOT, &Layer::resetCameraCoordinates, this);
-
-    m_adaptorsObjectsOwner = ::fwData::Composite::New();
 }
 
 //-----------------------------------------------------------------------------
 
 Layer::~Layer()
 {
-    this->unregisterServices();
 }
 
 //-----------------------------------------------------------------------------
@@ -233,7 +223,15 @@ void Layer::createScene()
 
     if(m_hasCompositorChain)
     {
-        m_compositorChainManager->setCompositorChain(this->trimSemicolons(m_rawCompositorChain));
+        ::boost::char_separator<char> sep(";");
+        ::boost::tokenizer< ::boost::char_separator<char> > tok(m_rawCompositorChain, sep);
+        std::vector< fwc::ChainManager::CompositorIdType> compositorChain;
+        for(const auto& it : tok)
+        {
+            compositorChain.push_back(it);
+        }
+
+        m_compositorChainManager->setCompositorChain(compositorChain);
     }
 
     this->setMoveInteractor(interactor);
@@ -264,99 +262,7 @@ void Layer::clearAvailableCompositors()
 void Layer::updateCompositorState(std::string compositorName, bool isEnabled)
 {
     m_renderService.lock()->makeCurrent();
-    m_compositorChainManager->updateCompositorState(compositorName, isEnabled);
-
-    ::Ogre::CompositorChain* compChain =
-        ::Ogre::CompositorManager::getSingleton().getCompositorChain(this->getViewport());
-
-    ::Ogre::CompositorInstance* compositor = compChain->getCompositor(compositorName);
-    SLM_ASSERT("The given compositor '" + compositorName + "' doesn't exist in the compositor chain", compositor);
-
-    ::Ogre::CompositionTechnique* tech = compositor->getTechnique();
-
-    std::vector< ::Ogre::CompositionTargetPass*> targetPasses;
-
-    // Collect target passes
-    size_t numTargetPasses = tech->getNumTargetPasses();
-    for(size_t j = 0; j < numTargetPasses; ++j)
-    {
-        ::Ogre::CompositionTargetPass* targetPass = tech->getTargetPass(j);
-        targetPasses.push_back(targetPass);
-    }
-    targetPasses.push_back(tech->getOutputTargetPass());
-
-    for(const auto targetPass : targetPasses)
-    {
-        size_t numPasses = targetPass->getNumPasses();
-
-        for(size_t i = 0; i < numPasses; ++i)
-        {
-            ::Ogre::CompositionPass* pass = targetPass->getPass(i);
-            // We retrieve the parameters of the base material in a temporary material
-            ::Ogre::MaterialPtr material = pass->getMaterial();
-
-            if(!material.isNull() )
-            {
-                const auto constants = ::fwRenderOgre::helper::Shading::findMaterialConstants(*material);
-                for(const auto& constant : constants)
-                {
-                    const std::string& constantName = std::get<0>(constant);
-                    auto type                       = std::get<2>(constant);
-
-                    const std::string shaderTypeStr = type == ::Ogre::GPT_VERTEX_PROGRAM ? "vertex" :
-                                                      type == ::Ogre::GPT_FRAGMENT_PROGRAM ? "fragment" :
-                                                      "geometry";
-
-                    // Naming convention for shader parameters
-                    fwTools::fwID::IDType id = this->getID() + "_" + shaderTypeStr + "-" + constantName;
-
-                    if(isEnabled && this->getRegisteredService(id) == nullptr)
-                    {
-                        auto obj = ::fwRenderOgre::helper::Shading::createObjectFromShaderParameter(std::get<1>(
-                                                                                                        constant));
-
-                        if(obj != nullptr)
-                        {
-                            obj->setName(constantName);
-
-                            // Creates an Ogre adaptor and associates it with the f4s object
-                            auto osr = ::fwServices::registry::ServiceFactory::getDefault();
-                            ::fwServices::IService::sptr srv = osr->create( "::visuOgreAdaptor::SCompositorParameter" );
-                            srv->setID(id);
-                            ::fwServices::OSR::registerService( ::fwData::Object::constCast(obj), srv );
-
-                            auto shaderParamService = ::fwRenderOgre::IAdaptor::dynamicCast(srv);
-                            shaderParamService->setRenderService(m_renderService.lock());
-
-                            ::fwServices::IService::ConfigType config;
-                            config.add("config.<xmlattr>.renderer", m_id);
-                            config.add("config.<xmlattr>.compositorName", compositorName);
-                            config.add("config.<xmlattr>.parameter", constantName);
-                            config.add("config.<xmlattr>.shaderType", shaderTypeStr);
-
-                            srv->setConfiguration(config);
-                            srv->configure();
-                            srv->start();
-
-                            // Add created subservice to current service
-                            this->registerService(shaderParamService);
-
-                            (*m_adaptorsObjectsOwner)[constantName] = obj;
-                        }
-                    }
-                    else
-                    {
-                        this->unregisterService(id);
-                        if(m_adaptorsObjectsOwner->at< ::fwData::Object>(constantName) != nullptr)
-                        {
-                            m_adaptorsObjectsOwner->getContainer().erase(constantName);
-                        }
-                    }
-                }
-            }
-        }
-
-    }
+    m_compositorChainManager->updateCompositorState(compositorName, isEnabled, m_id, m_renderService.lock());
 
     auto sig = this->signal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
     sig->asyncEmit(compositorName, isEnabled, this->getSptr());
@@ -474,9 +380,7 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
 
 ::fwRenderOgre::interactor::IMovementInteractor::sptr Layer::getMoveInteractor()
 {
-
     return m_moveInteractor;
-
 }
 
 // ----------------------------------------------------------------------------
@@ -789,36 +693,6 @@ void Layer::setupCore()
 
 //-------------------------------------------------------------------------------------
 
-std::vector< std::string > Layer::trimSemicolons(std::string input)
-{
-    std::vector< std::string > elements;
-    std::string currentElement("");
-
-    for(unsigned long i(0); i < input.size(); ++i)
-    {
-        char c = input[i];
-
-        if(c != ';')
-        {
-            currentElement += c;
-
-            if(input.size() == i + 1)
-            {
-                elements.push_back(currentElement);
-            }
-        }
-        else
-        {
-            elements.push_back(currentElement);
-            currentElement = "";
-        }
-    }
-
-    return elements;
-}
-
-//-------------------------------------------------------------------------------------
-
 ::fwRenderOgre::compositor::Core::sptr Layer::getCoreCompositor()
 {
     return m_coreCompositor;
@@ -841,9 +715,13 @@ std::vector< std::string > Layer::trimSemicolons(std::string input)
 
 //-------------------------------------------------------------------------------------
 
-std::string Layer::getFinalChainCompositorName() const
+IHasAdaptors::AdaptorVector Layer::getRegisteredAdaptors() const
 {
-    return ::fwRenderOgre::compositor::ChainManager::FINAL_CHAIN_COMPOSITOR;
+    if(m_compositorChainManager)
+    {
+        return m_compositorChainManager->getRegisteredAdaptors();
+    }
+    return IHasAdaptors::AdaptorVector();
 }
 
 //-------------------------------------------------------------------------------------

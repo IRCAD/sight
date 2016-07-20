@@ -26,13 +26,13 @@ IHasAdaptors::~IHasAdaptors() throw()
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::sptr IHasAdaptors::getRegisteredService(fwTools::fwID::IDType id)
+::fwServices::IService::csptr IHasAdaptors::getRegisteredService(fwTools::fwID::IDType _id) const
 {
     ::fwServices::IService::sptr srv;
     for(auto service : m_subAdaptors)
     {
         ::fwServices::IService::sptr currentSrv = service.lock();
-        if(currentSrv && (currentSrv->getID() == id))
+        if(currentSrv && (currentSrv->getID() == _id))
         {
             srv = currentSrv;
             break;
@@ -43,12 +43,12 @@ IHasAdaptors::~IHasAdaptors() throw()
 
 //------------------------------------------------------------------------------
 
-void IHasAdaptors::unregisterService(fwTools::fwID::IDType id)
+void IHasAdaptors::unregisterService(fwTools::fwID::IDType _id)
 {
     for(auto service = m_subAdaptors.begin(); service != m_subAdaptors.end(); )
     {
         ::fwServices::IService::sptr srv = service->lock();
-        if(srv && (srv->getID() == id))
+        if(srv && (srv->getID() == _id))
         {
             srv->stop();
             ::fwServices::OSR::unregisterService(srv);
@@ -63,19 +63,19 @@ void IHasAdaptors::unregisterService(fwTools::fwID::IDType id)
 
 //------------------------------------------------------------------------------
 
-void IHasAdaptors::registerService( ::fwRenderOgre::IAdaptor::sptr service)
+void IHasAdaptors::registerService( ::fwRenderOgre::IAdaptor::sptr _service)
 {
-    m_subAdaptors.push_back(service);
+    m_subAdaptors.push_back(_service);
 }
 
 //------------------------------------------------------------------------------
 
-void IHasAdaptors::unregisterServices(std::string classname)
+void IHasAdaptors::unregisterServices(std::string _classname)
 {
     for(auto service = m_subAdaptors.begin(); service != m_subAdaptors.end(); )
     {
         ::fwServices::IService::sptr srv = service->lock();
-        if(srv && (classname.empty() || ( !classname.empty() && srv->getClassname() == classname)))
+        if(srv && (_classname.empty() || ( !_classname.empty() && srv->getClassname() == _classname)))
         {
             srv->stop();
             ::fwServices::OSR::unregisterService(srv);

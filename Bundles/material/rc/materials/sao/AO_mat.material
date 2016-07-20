@@ -1,3 +1,12 @@
+vertex_program Ao_compute_VP glsl
+{
+    source StdQuad_Tex2a_VP.glsl
+    default_params
+    {
+        param_named_auto worldViewProj worldviewproj_matrix
+    }
+}
+
 fragment_program Ao_compute_FP glsl
 {
     source AO_compute_FP.glsl
@@ -12,15 +21,13 @@ fragment_program Ao_compute_FP glsl
     }
 }
 
-
-
 material AO_mat
 {
     technique
     {
         pass
         {
-            vertex_program_ref StdQuad_Tex2a_VP
+            vertex_program_ref Ao_compute_VP
             {
             }
 

@@ -152,6 +152,7 @@ void SCompositorParameterEditor::updateGuiInfo()
     bool found = false;
 
     auto adaptors = m_currentLayer.lock()->getRegisteredAdaptors();
+
     // Is there at least one parameter that we can handle ?
     for (const auto& wAdaptor : adaptors)
     {

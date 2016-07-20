@@ -11,9 +11,6 @@
 #include <fwCom/HasSlots.hpp>
 #include <fwCom/Slot.hpp>
 
-#include <fwData/Composite.hpp>
-
-#include <fwRenderOgre/IHasAdaptors.hpp>
 #include <fwRenderOgre/compositor/ChainManager.hpp>
 #include <fwRenderOgre/compositor/Core.hpp>
 #include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
@@ -46,8 +43,7 @@ namespace fwRenderOgre
  */
 class FWRENDEROGRE_CLASS_API Layer : public ::fwCore::BaseObject,
                                      public ::fwCom::HasSignals,
-                                     public ::fwCom::HasSlots,
-                                     public ::fwRenderOgre::IHasAdaptors
+                                     public ::fwCom::HasSlots
 
 {
 public:
@@ -197,7 +193,8 @@ public:
 
     FWRENDEROGRE_API ::fwRenderOgre::compositor::ChainManager::CompositorChainType getCompositorChain() const;
 
-    FWRENDEROGRE_API std::string getFinalChainCompositorName() const;
+    /// return the list of adaptors in the chain manager
+    IHasAdaptors::AdaptorVector getRegisteredAdaptors() const;
 
     FWRENDEROGRE_API ::Ogre::Viewport* getViewport() const;
 
@@ -216,9 +213,6 @@ private:
     /// Setups default compositor for a layer's 3D scene
     void setupCore();
 
-    /// For a list of semicolon-separated words, returns a vector of these words
-    std::vector< std::string > trimSemicolons(std::string input);
-
     /// Ogre scene manager of this viewport
     ::Ogre::SceneManager* m_sceneManager;
 
@@ -227,15 +221,6 @@ private:
 
     /// Ogre viewport representing this layer
     ::Ogre::Viewport* m_viewport;
-
-    /// This boolean enables default compositor's widgets (gui displays before scene creation)
-    bool m_hasCoreCompositor;
-
-    /// Indicates if a compositor chain is attached to the layer
-    bool m_hasCompositorChain;
-
-    /// Indicates if the scene has been created
-    bool m_sceneCreated;
 
     /// If there is a configured compositor chain, this attribute stores its raw string
     std::string m_rawCompositorChain;
@@ -283,10 +268,17 @@ private:
     /// Render service which this layer is attached
     WPTR(::fwRenderOgre::SRender) m_renderService;
 
-    ::fwData::Composite::sptr m_adaptorsObjectsOwner;
-
     /// Layer identifier as referenced in SRender
     std::string m_id;
+
+    /// This boolean enables default compositor's widgets (gui displays before scene creation)
+    bool m_hasCoreCompositor;
+
+    /// Indicates if a compositor chain is attached to the layer
+    bool m_hasCompositorChain;
+
+    /// Indicates if the scene has been created
+    bool m_sceneCreated;
 };
 
 }

@@ -35,6 +35,7 @@ namespace fwRenderOgre
 {
 
 class IAdaptor;
+class Layer;
 
 /**
  * @brief The generic scene service shows adaptors in a 3D Ogre scene.
@@ -115,7 +116,7 @@ public:
     typedef std::map< std::string, ::fwData::Object::csptr > ConstObjectMapType;
 
     /// Actives layouts in the scene
-    typedef std::map< SceneIdType, ::fwRenderOgre::Layer::sptr > LayerMapType;
+    typedef std::map< SceneIdType, SPTR(::fwRenderOgre::Layer) > LayerMapType;
 
     /**
      * @name Slots API

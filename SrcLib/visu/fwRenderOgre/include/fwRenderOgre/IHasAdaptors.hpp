@@ -25,7 +25,7 @@ namespace fwRenderOgre
 class IAdaptor;
 
 /**
- * @brief Interface providing behavior of Ogre adaptor services
+ * @brief   Interface for objects that need to manage services.
  */
 class FWRENDEROGRE_CLASS_API IHasAdaptors
 {
@@ -37,13 +37,13 @@ public:
      * @brief Get all subservices linked to this adaptor
      * @return The vector of linked services
      */
-    AdaptorVector& getRegisteredAdaptors();
+    const AdaptorVector& getRegisteredAdaptors() const;
 
     /**
      * @brief Return a specific registered service
      * @param id Identifier of the service
      */
-    FWRENDEROGRE_API SPTR( ::fwServices::IService) getRegisteredService(::fwTools::fwID::IDType id);
+    FWRENDEROGRE_API CSPTR( ::fwServices::IService) getRegisteredService(::fwTools::fwID::IDType _id) const;
 
 protected:
 
@@ -56,19 +56,19 @@ protected:
     /**
      * @brief Register a new service linked to this adaptor
      */
-    FWRENDEROGRE_API void registerService( SPTR(::fwRenderOgre::IAdaptor) service );
+    FWRENDEROGRE_API void registerService( SPTR(::fwRenderOgre::IAdaptor) _service );
 
     /**
      * @brief Unregister a specific service
      * @param id Identifier of the service
      */
-    FWRENDEROGRE_API void unregisterService(::fwTools::fwID::IDType id);
+    FWRENDEROGRE_API void unregisterService(::fwTools::fwID::IDType _id);
 
     /**
      * @brief Unregister all services linked to this adaptor
      * @param classname Classname of services to unregister
      */
-    FWRENDEROGRE_API void unregisterServices(std::string classname = "");
+    FWRENDEROGRE_API void unregisterServices(std::string _classname = "");
 
     /// Sub adaptors linked to this adaptor
     AdaptorVector m_subAdaptors;
@@ -76,7 +76,7 @@ protected:
 
 //------------------------------------------------------------------------------
 
-inline IHasAdaptors::AdaptorVector& IHasAdaptors::getRegisteredAdaptors()
+inline const IHasAdaptors::AdaptorVector& IHasAdaptors::getRegisteredAdaptors() const
 {
     return m_subAdaptors;
 }
