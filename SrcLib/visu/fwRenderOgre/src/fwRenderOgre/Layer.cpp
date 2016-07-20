@@ -560,13 +560,26 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
         // Make sure near is not bigger than far
         maxNear = (maxNear >= minFar) ? (0.01f*minFar) : (maxNear);
 
-        // TODO: Near and far for SAO
-        m_camera->setNearClipDistance( 1 );
-        m_camera->setFarClipDistance( 10000 );
 
+        const auto& chain          = this->getCompositorChain();
+        const auto saoCompositorIt = std::find_if(chain.begin(), chain.end(),
+                                                  ::fwRenderOgre::compositor::ChainManager::FindCompositorByName("SAO"));
 
-//        m_camera->setNearClipDistance( maxNear );
-//        m_camera->setFarClipDistance( minFar );
+        if(saoCompositorIt != chain.end() && saoCompositorIt->second)
+        {
+            // Near and far for SAO
+            OSLM_TRACE("Near SAO");
+            m_camera->setNearClipDistance( 1 );
+            m_camera->setFarClipDistance( 10000 );
+        }
+        else
+        {
+            OSLM_TRACE("Near normal");
+            m_camera->setNearClipDistance( maxNear );
+            m_camera->setFarClipDistance( minFar );
+
+        }
+
     }
 }
 
