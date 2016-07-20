@@ -46,11 +46,6 @@ SExtractDeviceInfo::~SExtractDeviceInfo()
 
 void SExtractDeviceInfo::configuring() throw( ::fwTools::Failed )
 {
-    ConfigurationType cameraCfg = m_configuration->findConfigurationElement("cameraUid");
-    SLM_ASSERT("Missing 'cameraUid' config.",cameraCfg);
-
-    m_cameraUid = cameraCfg->getValue();
-
     ConfigurationType configCfg = m_configuration->findConfigurationElement("configId");
     ::fwRuntime::ConfigurationElement::csptr deviceConfig;
     if(configCfg)
@@ -86,9 +81,8 @@ void SExtractDeviceInfo::starting() throw( ::fwTools::Failed )
 
 void SExtractDeviceInfo::updating() throw( ::fwTools::Failed )
 {
-    ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_cameraUid);
-    m_camera                    = ::arData::Camera::dynamicCast(obj);
-    SLM_ASSERT("Camera '" + m_cameraUid + "' not found.", m_camera);
+    ::arData::Camera::sptr camera = this->getInOut< ::arData::Camera >("camera");
+    SLM_ASSERT("Camera 'camera' not found.", camera);
 
     std::string device;
 
@@ -193,22 +187,22 @@ void SExtractDeviceInfo::updating() throw( ::fwTools::Failed )
         skew   = 0.;
     }
 
-    m_camera->setWidth(width);
-    m_camera->setHeight(height);
-    m_camera->setFx(fx);
-    m_camera->setFy(fy);
-    m_camera->setCx(cx);
-    m_camera->setCy(cy);
-    m_camera->setDistortionCoefficient(k1,k2,p1,p2,k3);
-    m_camera->setSkew(skew);
+    camera->setWidth(width);
+    camera->setHeight(height);
+    camera->setFx(fx);
+    camera->setFy(fy);
+    camera->setCx(cx);
+    camera->setCy(cy);
+    camera->setDistortionCoefficient(k1,k2,p1,p2,k3);
+    camera->setSkew(skew);
 
-    OSLM_DEBUG("cx: " << m_camera->getCx() << ", cy: "<< m_camera->getCy() <<
-               ", fx: "<< m_camera->getFx() <<  ", fy: " << m_camera->getFy());
+    OSLM_DEBUG("cx: " << camera->getCx() << ", cy: "<< camera->getCy() <<
+               ", fx: "<< camera->getFx() <<  ", fy: " << camera->getFy());
 
     OSLM_DEBUG("k1: " <<k1 << ", k2: "<< k2 << ", p1: "<< p1 <<  ", p2: " << p2 << ", k3: " << k3);
 
     ::arData::Camera::IntrinsicCalibratedSignalType::sptr sig;
-    sig = m_camera->signal< ::arData::Camera::IntrinsicCalibratedSignalType >
+    sig = camera->signal< ::arData::Camera::IntrinsicCalibratedSignalType >
               ( ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG);
     sig->asyncEmit();
 }
