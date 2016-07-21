@@ -10,6 +10,7 @@ set( DEPENDENCIES
     fwCore
     fwData
     fwDataCamp
+    fwDataTools
     fwMedData
     fwGui
     fwGuiQt
