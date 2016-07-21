@@ -266,8 +266,7 @@ void SArucoTracker::detectMarker(::fwCore::HiResClock::HiResClockType timestamp)
             cv::cvtColor(inImage, grey, CV_BGRA2GRAY);
 
             //Ok, let's detect
-            m_arUcoTracker->detect(outGrey, detectedMarkers, *m_camParameters,
-                                   static_cast<float>(m_patternWidth/1000.));
+            m_arUcoTracker->detect(grey, detectedMarkers, *m_camParameters, static_cast<float>(m_patternWidth/1000.));
 
             //For Debug purpose
             //::cv::imshow("Threshold", m_arUcoTracker->getThresholdedImage());
