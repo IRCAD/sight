@@ -35,14 +35,14 @@ MonoCamera::~MonoCamera()
 //-----------------------------------------------------------------------------
 
 
-::fwActivities::IValidator::ValidationType MonoCamera::validate(::fwData::Object::sptr currentData ) const
+::fwActivities::IValidator::ValidationType MonoCamera::validate(const ::fwData::Object::csptr &currentData ) const
 {
     IValidator::ValidationType validation;
 
     validation.first  = true;
     validation.second = "";
 
-    ::arData::CameraSeries::sptr cameraSeries = ::arData::CameraSeries::dynamicCast(currentData);
+    ::arData::CameraSeries::csptr cameraSeries = ::arData::CameraSeries::dynamicConstCast(currentData);
 
     if (!cameraSeries)
     {

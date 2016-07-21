@@ -32,24 +32,18 @@ namespace uiCalibration
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiCalibration::SImagesSelector, ::fwData::Vector);
 
 
+const ::fwCom::Slots::SlotKeyType SImagesSelector::s_ADD_SLOT    = "add";
 const ::fwCom::Slots::SlotKeyType SImagesSelector::s_REMOVE_SLOT = "remove";
 const ::fwCom::Slots::SlotKeyType SImagesSelector::s_RESET_SLOT  = "reset";
-const ::fwCom::Slots::SlotKeyType SImagesSelector::s_ADD_SLOT    = "add";
+
+const ::fwServices::IService::KeyType s_SELECTION_INOUT = "selection";
 
 //------------------------------------------------------------------------------
 SImagesSelector::SImagesSelector() throw() : m_captureIdx(0)
 {
-    m_slotRemove = ::fwCom::newSlot( &SImagesSelector::remove, this );
-    m_slotReset  = ::fwCom::newSlot( &SImagesSelector::reset, this );
-    m_slotAdd    = ::fwCom::newSlot( &SImagesSelector::add, this );
-
-    ::fwCom::HasSlots::m_slots( s_REMOVE_SLOT, m_slotRemove)
-        ( s_RESET_SLOT, m_slotReset)
-        ( s_ADD_SLOT, m_slotAdd);
-
-
-
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+    newSlot( s_ADD_SLOT, &SImagesSelector::add, this );
+    newSlot( s_REMOVE_SLOT, &SImagesSelector::remove, this );
+    newSlot( s_RESET_SLOT, &SImagesSelector::reset, this );
 }
 
 //------------------------------------------------------------------------------
@@ -63,18 +57,13 @@ SImagesSelector::~SImagesSelector() throw()
 void SImagesSelector::configuring() throw(::fwTools::Failed)
 {
     fwGui::IGuiContainerSrv::initialize();
-
-    m_frameTLUid = m_configuration->findConfigurationElement("frameTLUid")->getValue();
-    SLM_ASSERT("Parameter 'frameTLUid' are not found in xml", !m_frameTLUid.empty() );
-
 }
 
 //------------------------------------------------------------------------------
 
 void SImagesSelector::starting() throw(::fwTools::Failed)
 {
-    ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_frameTLUid);
-    m_frameTL                   = ::extData::FrameTL::dynamicCast(obj);
+    m_frameTL = this->getInput< ::extData::FrameTL>("frameTL");
     SLM_ASSERT("Frame timeline is not found.", m_frameTL);
 
     ::fwGui::IGuiContainerSrv::create();
@@ -120,7 +109,7 @@ void SImagesSelector::stopping() throw(::fwTools::Failed)
 
 void SImagesSelector::updating() throw(::fwTools::Failed)
 {
-    ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector >();
+    ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >(s_SELECTION_INOUT);
 
     m_capturesListWidget->clear();
     unsigned int captureIdx = 0;
@@ -147,9 +136,8 @@ void SImagesSelector::remove()
 
     if(idx >= 0)
     {
-        ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector >();
-
-        ::fwData::Object::sptr obj = vector->getContainer()[idx];
+        ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >(s_SELECTION_INOUT);
+        ::fwData::Object::sptr obj    = vector->getContainer()[idx];
 
         ::fwComEd::helper::Vector vectorHelper(vector);
         vectorHelper.remove(obj);
@@ -163,7 +151,7 @@ void SImagesSelector::remove()
 
 void SImagesSelector::reset()
 {
-    ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector >();
+    ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >(s_SELECTION_INOUT);
 
     ::fwComEd::helper::Vector vectorHelper(vector);
     vectorHelper.clear();
@@ -210,7 +198,7 @@ void SImagesSelector::add(::fwCore::HiResClock::HiResClockType timestamp)
     ::boost::uint8_t* index = arrayHelper.begin< ::boost::uint8_t >();
     std::copy( frameBuff, frameBuff+buffer->getSize(), index);
 
-    ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector >();
+    ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >(s_SELECTION_INOUT);
 
     ::fwComEd::helper::Vector vectorHelper(vector);
     vectorHelper.add(image);

@@ -25,7 +25,6 @@ namespace videoCalibration
 {
 
 /**
- * @class SFixedPointRegistration
  * @brief This service is used to registrate a marker and the tip of a surgical tool by using the fixed point method.
  * Basicaly the service compute the center of a 3D sphere (at least a half sphere).
  * The sphere is represented by a set of points (::fwData::PointList).
@@ -36,7 +35,18 @@ namespace videoCalibration
  * the center of the marker and the tip of the tool.
  * See ::arlCore::PointList::sphereCenterEstimation for more explanations.
  *
+ * @section XML XML Configuration
  *
+ * @code{.xml}
+     <service uid="toolRegistration" type="::videoCalibration::SFixedPointRegistration">
+         <in key="pointList" uid="markersPL" />
+         <inout key="matrix" uid="toolCalibration" />
+     </service>
+   @endcode
+ * @subsection Input Input
+ * - \b pointList [::fwData::Pointlist]: marker position.
+ * @subsection In-Out In-Out
+ * - \b matrix [::fwData::TransformationMatrix3D]: tool calibration matrix.
  */
 class VIDEOCALIBRATION_CLASS_API SFixedPointRegistration : public ::fwServices::IController
 {
@@ -51,16 +61,7 @@ public:
 
 protected:
 
-    /**
-     * @brief Configures the service
-     *
-     * @code{.xml}
-        <service uid="..." impl="::videoCalibration::SFixedPointRegistration" autoConnect="no">
-             <pointList>pointListUid</pointList>
-        </service>
-       @endcode
-     * - \b pointList : uid of the data pointList (marker positions)
-     */
+    /// Does nothing
     VIDEOCALIBRATION_API void configuring() throw (fwTools::Failed);
 
     /// Does nothing.
@@ -74,13 +75,6 @@ protected:
 
     /// Does nothing.
     VIDEOCALIBRATION_API void stopping() throw (fwTools::Failed);
-
-private:
-
-    ::fwData::TransformationMatrix3D::sptr m_calibrationMatrix;///< (Output) Matrix of Calibration (marker/tool)
-    ::fwData::PointList::sptr m_pointList;             ///< (Input) the ::fwData::PointList
-    std::string m_pointListUID;                           ///< UID of the fwData::PointList
-
 
 };
 

@@ -63,7 +63,6 @@ SFrameRecorder::~SFrameRecorder() throw()
 void SFrameRecorder::starting() throw(::fwTools::Failed)
 {
     ::boost::filesystem::create_directories(m_path);
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //-----------------------------------------------------------------------------
@@ -143,8 +142,8 @@ void SFrameRecorder::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
 
 void SFrameRecorder::startRecord()
 {
-    m_connections->disconnect();
-    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    m_connections.disconnect();
+    m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
     m_isRecording = true;
     m_isPaused    = false;
 }
@@ -153,7 +152,7 @@ void SFrameRecorder::startRecord()
 
 void SFrameRecorder::stopRecord()
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
     m_isRecording = false;
 }
 //------------------------------------------------------------------------------
@@ -162,12 +161,12 @@ void SFrameRecorder::pauseRecord()
 {
     if (m_isRecording && !m_isPaused)
     {
-        m_connections->disconnect();
+        m_connections.disconnect();
         m_isPaused = true;
     }
     else if (m_isRecording && m_isPaused)
     {
-        m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+        m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
         m_isPaused = false;
     }
 }

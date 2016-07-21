@@ -4,14 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "arUtils/preferences.hpp"
+#include "arPreferences/preferences.hpp"
 
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 
-namespace arUtils
+namespace arPreferences
 {
 
 const std::string s_VIDEORENDER_PREF = "VIDEORENDER_PREF";
@@ -49,4 +49,4 @@ std::string getVideoDir()
 
 //-----------------------------------------------------------------------------
 
-} // namespace arUtils
+} // namespace arPreferences

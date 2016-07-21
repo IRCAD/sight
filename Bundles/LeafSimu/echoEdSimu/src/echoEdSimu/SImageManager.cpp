@@ -66,10 +66,8 @@ void SImageManager::configuring() throw(fwTools::Failed)
 
 void SImageManager::starting() throw(::fwTools::Failed)
 {
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-
-    m_ctImage   = composite->at< ::fwData::Image >(s_ctImageKey);
-    m_echoImage = composite->at< ::fwData::Image >(s_echoImageKey);
+    m_ctImage   = this->getInOut< ::fwData::Image >(s_ctImageKey);
+    m_echoImage = this->getInOut< ::fwData::Image >(s_echoImageKey);
 }
 
 //------------------------------------------------------------------------------

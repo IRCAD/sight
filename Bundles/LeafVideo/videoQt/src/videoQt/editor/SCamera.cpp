@@ -7,7 +7,7 @@
 #include "videoQt/editor/SCamera.hpp"
 
 #include <arData/Camera.hpp>
-#include <arUtils/preferences.hpp>
+#include <arPreferences/preferences.hpp>
 
 #include <fwCom/Signal.hxx>
 
@@ -141,10 +141,18 @@ void SCamera::onApply(int index)
 
 void SCamera::onChooseFile()
 {
-    ::arData::Camera::sptr camera = this->getObject< ::arData::Camera >();
+    ::arData::Camera::sptr camera;
+    if (this->isVersion2())
+    {
+        camera = this->getInOut< ::arData::Camera >("camera");
+    }
+    else
+    {
+        camera = this->getObject< ::arData::Camera >();
+    }
 
     // Check preferences
-    std::string videoDir = ::arUtils::getVideoDir();
+    std::string videoDir = ::arPreferences::getVideoDir();
 
     static ::boost::filesystem::path _sDefaultPath;
 
@@ -183,7 +191,15 @@ void SCamera::onChooseFile()
 
 void SCamera::onChooseStream()
 {
-    ::arData::Camera::sptr camera = this->getObject< ::arData::Camera >();
+    ::arData::Camera::sptr camera;
+    if (this->isVersion2())
+    {
+        camera = this->getInOut< ::arData::Camera >("camera");
+    }
+    else
+    {
+        camera = this->getObject< ::arData::Camera >();
+    }
 
     ::fwGui::dialog::InputDialog inputDialog;
     std::string streamSource;
@@ -208,7 +224,15 @@ void SCamera::onChooseDevice()
     ::videoQt::editor::CameraDeviceDlg camDialog;
     camDialog.exec();
 
-    ::arData::Camera::sptr camera = this->getObject< ::arData::Camera >();
+    ::arData::Camera::sptr camera;
+    if (this->isVersion2())
+    {
+        camera = this->getInOut< ::arData::Camera >("camera");
+    }
+    else
+    {
+        camera = this->getObject< ::arData::Camera >();
+    }
     bool isSelected = camDialog.getSelectedCamera(camera);
     if(isSelected)
     {

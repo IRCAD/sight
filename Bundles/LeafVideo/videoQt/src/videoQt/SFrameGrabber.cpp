@@ -86,10 +86,13 @@ void SFrameGrabber::stopping() throw(::fwTools::Failed)
 
 void SFrameGrabber::configuring()  throw ( ::fwTools::Failed )
 {
-    ::fwRuntime::ConfigurationElement::sptr cameraCfg = m_configuration->findConfigurationElement("cameraFwId");
-    SLM_ASSERT("Missing tag 'cameraFwId'", cameraCfg);
-    m_cameraID = cameraCfg->getValue();
-    SLM_ASSERT("tag 'cameraFwId' must not be empty", !m_cameraID.empty());
+    if(!this->isVersion2())
+    {
+        ::fwRuntime::ConfigurationElement::sptr cameraCfg = m_configuration->findConfigurationElement("cameraFwId");
+        SLM_ASSERT("Missing tag 'cameraFwId'", cameraCfg);
+        m_cameraID = cameraCfg->getValue();
+        SLM_ASSERT("tag 'cameraFwId' must not be empty", !m_cameraID.empty());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -102,7 +105,7 @@ void SFrameGrabber::updating() throw ( ::fwTools::Failed )
 
 void SFrameGrabber::startCamera()
 {
-    ::arData::Camera::sptr camera            = this->getCamera();
+    ::arData::Camera::csptr camera           = this->getCamera();
     ::arData::Camera::SourceType eSourceType = camera->getCameraSource();
 
     // Make sure the user has selected a valid source
@@ -110,8 +113,6 @@ void SFrameGrabber::startCamera()
     {
         this->stopCamera();
         this->setMirror(false, false);
-
-
 
     #ifdef WIN32
         if( ::arData::Camera::DEVICE == eSourceType )
@@ -169,7 +170,15 @@ void SFrameGrabber::stopCamera()
         m_videoPlayer = nullptr;
 
         // Reset the timeline and send a black frame
-        ::extData::FrameTL::sptr timeline = this->getObject< ::extData::FrameTL >();
+        ::extData::FrameTL::sptr timeline;
+        if(this->isVersion2())
+        {
+            timeline = this->getInOut< ::extData::FrameTL >("frameTL");
+        }
+        else
+        {
+            timeline = this->getObject< ::extData::FrameTL >();
+        }
         const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec() + 1;
         SPTR(::extData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
         ::boost::uint8_t* destBuffer                = reinterpret_cast< ::boost::uint8_t* >( buffer->addElement(0) );
@@ -189,11 +198,19 @@ void SFrameGrabber::stopCamera()
 
 //-----------------------------------------------------------------------------
 
-SPTR(::arData::Camera) SFrameGrabber::getCamera()
+CSPTR(::arData::Camera) SFrameGrabber::getCamera()
 {
-    ::fwTools::Object::sptr obj   = ::fwTools::fwID::getObject(m_cameraID);
-    ::arData::Camera::sptr camera = ::arData::Camera::dynamicCast(obj);
-    FW_RAISE_IF("Camera not found", !camera);
+    ::arData::Camera::csptr camera;
+    if(this->isVersion2())
+    {
+        camera = this->getInput< ::arData::Camera>("camera");
+    }
+    else
+    {
+        ::fwTools::Object::csptr obj = ::fwTools::fwID::getObject(m_cameraID);
+        camera                       = ::arData::Camera::dynamicConstCast(obj);
+        FW_RAISE_IF("Camera not found", !camera);
+    }
     return camera;
 }
 
@@ -246,17 +263,24 @@ void SFrameGrabber::presentFrame(const QVideoFrame& frame)
         return;
     }
 
-    ::extData::FrameTL::sptr timeline = this->getObject< ::extData::FrameTL >();
+    ::extData::FrameTL::sptr timeline;
+    if(this->isVersion2())
+    {
+        timeline = this->getInOut< ::extData::FrameTL >("frameTL");
+    }
+    else
+    {
+        timeline = this->getObject< ::extData::FrameTL >();
+    }
+
     // If we have the same output format, we can take the fast path
     const int width  = frame.width();
     const int height = frame.height();
 
-    if(height != timeline->getHeight() ||
-       width  != timeline->getWidth())
+    if(static_cast<unsigned int>(height) != timeline->getHeight() ||
+       static_cast<unsigned int>(width) != timeline->getWidth())
     {
-        timeline->initPoolSize(static_cast<size_t>(width),
-                               static_cast<size_t>(height),
-                               ::fwTools::Type::s_UINT8, 4);
+        timeline->initPoolSize(static_cast<size_t>(width), static_cast<size_t>(height), ::fwTools::Type::s_UINT8, 4);
     }
 
     // This is called on a different worker than the service, so we must lock the frame

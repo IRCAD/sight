@@ -25,7 +25,24 @@ namespace visuVTKARAdaptor
 
 /**
  * @brief   Adaptor to render a video frame from a 2D-image.
- * @class   SVideoAdapter
+ *
+ * @section Slots Slots
+ * - \b updateImage() : update the image content.
+ * - \b updateImageOpacity() : update the opacity of the frame.
+ * - \b show(bool) : show or hide the frame.
+ * - \b calibrate() : call if the calibration of the camera has changed.
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+       <adaptor id="video" class="::visuVTKARAdaptor::SVideoAdapter" objectId="imageKey">
+        <config renderer="default" cameraUID="..." reverse="true" />
+       </adaptor>
+   @endcode
+ * @subsection Configuration Configuration::
+ * - \b renderer : defines the renderer to show the arrow. It must be different from the 3D objects renderer.
+ * - \b cameraUID (optional) : defines the uid of the camera used to place video plane.
+ * - \b reverse (optional)(default: true) : if true, the actor is rotated in z and y axis.
  */
 class VISUVTKARADAPTOR_CLASS_API SVideoAdapter : public ::fwRenderVTK::IVtkAdaptorService
 {
@@ -55,16 +72,7 @@ protected:
     /// Create the actor and mapper used to show the video frame.
     VISUVTKARADAPTOR_API void doStart() throw(fwTools::Failed);
 
-    /**
-     * @code{.xml}
-       <adaptor id="video" class="::visuVTKARAdaptor::SVideoAdapter" objectId="imageKey">
-        <config renderer="default" cameraUID="..." reverse="true" />
-       </adaptor>
-       @endcode
-     * - \b renderer : defines the renderer to show the arrow. It must be different from the 3D objects renderer.
-     * - \b cameraUID (optional) : defines the uid of the camera used to place video plane.
-     * - \b reverse (optional)(default: true) : if true, the actor is rotated in z and y axis.
-     */
+    /// Configure the adaptor.
     VISUVTKARADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
     /// Calls doUpdate()
@@ -84,6 +92,9 @@ private:
     /// Slot: update image
     void updateImage();
 
+    /// Slot: set the visibility  of the image
+    void show(bool visible);
+
     /// Slot: apply the optical center offset to our video plane
     void offsetOpticalCenter();
 
@@ -97,7 +108,7 @@ private:
 
     bool m_reverse; ///< if true, the actor is rotated in z and y axis.
 
-    SPTR(::arData::Camera) m_camera; ///< camera used to retrieve the optical center
+    CSPTR(::arData::Camera) m_camera; ///< camera used to retrieve the optical center
 };
 
 } //namespace visuVTKARAdaptor
