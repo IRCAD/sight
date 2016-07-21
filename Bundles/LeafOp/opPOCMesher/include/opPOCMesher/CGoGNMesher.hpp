@@ -11,17 +11,13 @@
 
 #include <fwCom/Slots.hpp>
 #include <opVTKMesh/IMesher.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/Boolean.hpp>
 #include "opPOCMesher/config.hpp"
-
 
 namespace opPOCMesher
 {
 
 /**
  * @brief Service used to generate a mesh from an image.
- * @class CGoGNMesher.
  */
 class OPPOCMESHER_CLASS_API CGoGNMesher : public ::opVTKMesh::IMesher
 {
@@ -29,26 +25,6 @@ class OPPOCMESHER_CLASS_API CGoGNMesher : public ::opVTKMesh::IMesher
 public:
 
     fwCoreServiceClassDefinitionsMacro ((CGoGNMesher)(::opVTKMesh::IMesher) );
-
-    /**
-     * @brief Integer parameter type
-     */
-    typedef std::pair< std::string, int > IntegerParameter;
-
-    /**
-     * @brief Boolean parameter type
-     */
-    typedef std::pair< std::string, bool > BooleanParameter;
-
-    /**
-     * @brief Set integer slot type
-     */
-    typedef ::fwCom::Slot< void (IntegerParameter) > SetIntegerSlotType;
-
-    /**
-     * @brief Set boolean slot type
-     */
-    typedef ::fwCom::Slot< void (BooleanParameter) > SetBooleanSlotType;
 
     /**
      * @brief Constructor. Initializes slots.
@@ -101,23 +77,17 @@ protected:
      */
     OPPOCMESHER_API void updating() throw (::fwTools::Failed);
 
-    /**
-     * @brief This method is used to give information about the service. Does nothing.
-     */
-    OPPOCMESHER_API void info(std::ostream &_sstream);
+private:
 
     /**
      * @brief This method is used to set an integer parameter.
      */
-    OPPOCMESHER_API virtual void setInteger(IntegerParameter parameter);
+    OPPOCMESHER_API virtual void setInteger(int val, std::string key);
 
     /**
      * @brief This method is used to set an boolean parameter.
      */
-    OPPOCMESHER_API virtual void setBoolean(BooleanParameter parameter);
-
-
-private:
+    OPPOCMESHER_API virtual void setBoolean(bool val, std::string key);
 
     ///The image to mesh
     std::string m_imageKey;
@@ -145,12 +115,6 @@ private:
 
     ///If true the mesh is closed at the border of the image
     bool m_closing;
-
-    ///Slot used to set integers (valueMin, valueMax, adapt, radius and faces)
-    SPTR(SetIntegerSlotType) m_slotSetInteger;
-
-    ///Slot used to set booleans (percentage and closing)
-    SPTR(SetBooleanSlotType) m_slotSetBoolean;
 
 };
 

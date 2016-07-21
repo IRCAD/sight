@@ -3,6 +3,7 @@
     <parameters>
         <param name="GENERIC_UID" />
         <param name="MESHER_UID" />
+        <param name="TRIGGER_CHANNEL" />
         <param name="CLOSE_CONFIG_CHANNEL" />
     </parameters>
 
@@ -19,34 +20,48 @@
                     </frame>
                 </gui>
                 <registry>
-                    <view sid="${GENERIC_UID}_input_parameters" start="yes" />
+                    <view sid="${GENERIC_UID}_view" start="yes" />
                 </registry>
             </service>
 
-            <service uid="${GENERIC_UID}_input_parameters" impl="::uiParameters::editor::InputParameters" autoConnect="no">
+            <service uid="${GENERIC_UID}_view" impl="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="${GENERIC_UID}_input_parameters" start="yes" />
+                    <view sid="${GENERIC_UID}_startMesher" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_input_parameters" impl="::guiQt::editor::SParameters" autoConnect="no">
                 <parameters>
-                    <param type="::fwData::Integer" name="Value min to mesh" key="valueMin" defaultValue="1" min="0" max = "255" />
-                    <param type="::fwData::Integer" name="Value max to mesh" key="valueMax" defaultValue="255" min="0" max = "255" />
-                    <param type="::fwData::Integer" name="Adapt" key="adapt" defaultValue="50" min="0" max = "100" />
-                    <param type="::fwData::Integer" name="Radius" key="radius" defaultValue="5" min="1" max = "100" />
-                    <param type="::fwData::Integer" name="Faces" key="faces" defaultValue="5" min="0" max = "1000000" />
-                    <param type="::fwData::Boolean" name="Faces in percent" key="percentage" defaultValue="true" />
-                    <param type="::fwData::Boolean" name="Close the mesh" key="closing" defaultValue="false" />
+                    <param type="int" name="Min value to mesh" key="valueMin" defaultValue="1" min="0" max="255" />
+                    <param type="int" name="Max value to mesh" key="valueMax" defaultValue="255" min="0" max="255" />
+                    <param type="int" name="Adapt" key="adapt" defaultValue="50" min="0" max="100" />
+                    <param type="int" name="Radius" key="radius" defaultValue="5" min="1" max="100" />
+                    <param type="int" name="Faces" key="faces" defaultValue="5" min="0" max="1000000" />
+                    <param type="bool" name="Faces in percent" key="percentage" defaultValue="true" />
+                    <param type="bool" name="Close the mesh" key="closing" defaultValue="false" />
                 </parameters>
             </service>
 
-            <connect>
-                <signal>${GENERIC_UID}_input_parameters/triggered</signal>
-                <slot>${MESHER_UID}/update</slot>
-            </connect>
+            <service uid="${GENERIC_UID}_startMesher" impl="::uiLogo::editor::SButton" autoConnect="no">
+                <label>Start</label>
+                <tooltip>Launch the CGoGn mesher with the settings above.</tooltip>
+            </service>
 
             <connect>
-                <signal>${GENERIC_UID}_input_parameters/integerChanged</signal>
+                <signal>${GENERIC_UID}_input_parameters/intChanged</signal>
                 <slot>${MESHER_UID}/setInteger</slot>
             </connect>
 
             <connect>
-                <signal>${GENERIC_UID}_input_parameters/booleanChanged</signal>
+                <signal>${GENERIC_UID}_input_parameters/boolChanged</signal>
                 <slot>${MESHER_UID}/setBoolean</slot>
             </connect>
 
@@ -54,8 +69,11 @@
                 <signal>${GENERIC_UID}_frame/closed</signal>
             </proxy>
 
-            <start uid="${GENERIC_UID}_frame" />
+            <proxy channel="${TRIGGER_CHANNEL}">
+                <signal>${GENERIC_UID}_startMesher/triggered</signal>
+            </proxy>
 
+            <start uid="${GENERIC_UID}_frame" />
 
         </object>
 

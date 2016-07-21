@@ -19,7 +19,6 @@
     <requirement id="ctrlSelection" />
     <requirement id="opPOCMesher" />
     <requirement id="uiLogo" />
-    <requirement id="uiParameters" />
 
     <xi:include href="configurations/mesher.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/inputParameters.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />

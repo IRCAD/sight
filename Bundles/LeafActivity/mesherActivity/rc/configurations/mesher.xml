@@ -152,6 +152,7 @@
                     <appConfig id="mesherParametersCfg" >
                         <parameters>
                             <parameter replace="MESHER_UID" by="${GENERIC_UID}_mesher2"  />
+                            <parameter replace="TRIGGER_CHANNEL" by="trigger"  />
                         </parameters>
                     </appConfig>
                 </config>
@@ -280,7 +281,10 @@
                 <slot>${GENERIC_UID}_updater_reconst_UID/addOrSwap</slot>
             </connect>
 
-
+            <proxy channel="trigger" >
+                <slot>${GENERIC_UID}_mesher2/update</slot>
+                <slot>${GENERIC_UID}_mesher_parameters/deactivate</slot>
+            </proxy>
 
             <start uid="${GENERIC_UID}_mainView" />
             <start uid="${GENERIC_UID}_action_open_vp_website" />

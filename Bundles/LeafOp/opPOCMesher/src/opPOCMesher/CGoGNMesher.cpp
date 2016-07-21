@@ -50,15 +50,10 @@ CGoGNMesher::CGoGNMesher() throw () :
     m_radius(5),
     m_faces(50),
     m_percentage(true),
-    m_closing(false),
-    m_slotSetInteger(CGoGNMesher::SetIntegerSlotType::New(&CGoGNMesher::setInteger, this)),
-    m_slotSetBoolean(CGoGNMesher::SetBooleanSlotType::New(&CGoGNMesher::setBoolean, this))
+    m_closing(false)
 {
-    ::fwCom::HasSlots::m_slots
-        ( SET_INTEGER_SLOT, m_slotSetInteger )
-        ( SET_BOOLEAN_SLOT, m_slotSetBoolean );
-
-    this->setWorker( m_associatedWorker );
+    newSlot(SET_INTEGER_SLOT, &CGoGNMesher::setInteger, this);
+    newSlot(SET_BOOLEAN_SLOT, &CGoGNMesher::setBoolean, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -133,54 +128,6 @@ void CGoGNMesher::configuring() throw (::fwTools::Failed)
     if(config.count("closing") == 1)
     {
         m_closing = config.get_child("closing").get_value<bool>();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void CGoGNMesher::info(std::ostream &_sstream)
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void CGoGNMesher::setInteger(IntegerParameter parameter)
-{
-    if(parameter.first == "valueMin")
-    {
-        m_valueMin = parameter.second;
-    }
-    if(parameter.first == "valueMax")
-    {
-        m_valueMax = parameter.second;
-    }
-    if(parameter.first == "adapt")
-    {
-        m_adapt = parameter.second;
-    }
-    if(parameter.first == "radius")
-    {
-        m_radius = parameter.second;
-    }
-    if(parameter.first == "faces")
-    {
-        m_faces = parameter.second;
-    }
-
-}
-
-//-----------------------------------------------------------------------------
-
-void CGoGNMesher::setBoolean(BooleanParameter parameter)
-{
-
-    if(parameter.first == "percentage")
-    {
-        m_percentage = parameter.second;
-    }
-    if(parameter.first == "closing")
-    {
-        m_closing = parameter.second;
     }
 }
 
@@ -278,8 +225,50 @@ void CGoGNMesher::updating() throw (::fwTools::Failed)
     auto sig = modelSeries->signal< ::fwMedData::ModelSeries::ReconstructionsAddedSignalType >
                    (::fwMedData::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG);
     sig->asyncEmit(recs);
+}
 
+//-----------------------------------------------------------------------------
+
+void CGoGNMesher::setInteger(int val, std::string key)
+{
+    if(key == "valueMin")
+    {
+        m_valueMin = val;
+    }
+    else if(key == "valueMax")
+    {
+        m_valueMax = val;
+    }
+    else if(key == "adapt")
+    {
+        m_adapt = val;
+    }
+    else if(key == "radius")
+    {
+        m_radius = val;
+    }
+    else if(key == "faces")
+    {
+        m_faces = val;
+    }
 
 }
+
+//-----------------------------------------------------------------------------
+
+void CGoGNMesher::setBoolean(bool val, std::string key)
+{
+
+    if(key == "percentage")
+    {
+        m_percentage = val;
+    }
+    else if(key == "closing")
+    {
+        m_closing = val;
+    }
+}
+
+//-----------------------------------------------------------------------------
 
 }

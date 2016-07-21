@@ -3,26 +3,25 @@ set( VERSION 0.1 )
 set( TYPE BUNDLE )
 set( DEPENDENCIES )
 set( REQUIREMENTS
-    dataReg 
+    dataReg
     servicesReg
     gui
     guiQt
     io
     ioData
     ioVTK
-    uiVisuQt 
+    uiVisuQt
     uiImageQt
     uiReconstructionQt
-    uiMedDataQt 
-    uiIO 
+    uiMedDataQt
+    uiIO
     visuVTK
     visuVTKQt
-    visuVTKAdaptor 
-    opVTKMesh 
-    ctrlSelection 
-    appXml 
-    uiLogo 
-    uiParameters 
+    visuVTKAdaptor
+    opVTKMesh
+    ctrlSelection
+    appXml
+    uiLogo
     opPOCMesher )
 
-    
+
