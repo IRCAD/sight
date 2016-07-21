@@ -22,6 +22,7 @@
 #include <OGRE/OgreCompositorChain.h>
 #include <OGRE/OgreCompositorManager.h>
 
+#include <boost/variant.hpp>
 #include <regex>
 
 namespace fwRenderOgre
@@ -91,6 +92,24 @@ void ChainManager::clearCompositorChain()
     compositorManager.removeCompositorChain(m_ogreViewport);
 }
 
+//------------------------------------------------------------------------------
+
+struct ConvertConstant : public boost::static_visitor<std::string>
+{
+    std::string operator()(float f) const
+    {
+        return std::to_string(f);
+    }
+    std::string operator()(int i) const
+    {
+        return std::to_string(i);
+    }
+    std::string operator()(std::array<float, 4> c) const
+    {
+        return std::string();
+    }
+};
+
 //-----------------------------------------------------------------------------
 
 void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool _isEnabled,
@@ -153,7 +172,7 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
                         continue;
                     }
 
-                    auto type = std::get<2>(constant);
+                    const auto type = std::get<2>(constant);
 
                     const std::string shaderTypeStr = type == ::Ogre::GPT_VERTEX_PROGRAM ? "vertex" :
                                                       type == ::Ogre::GPT_FRAGMENT_PROGRAM ? "fragment" :
@@ -180,11 +199,16 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
                             auto shaderParamService = ::fwRenderOgre::IAdaptor::dynamicCast(srv);
                             shaderParamService->setRenderService(_renderService);
 
+                            const auto& constantValue = std::get<3>(constant);
+
+                            std::string constantValueStr = boost::apply_visitor(ConvertConstant(), constantValue);
+
                             ::fwServices::IService::ConfigType config;
                             config.add("config.<xmlattr>.renderer", _layerId);
                             config.add("config.<xmlattr>.compositorName", _compositorName);
                             config.add("config.<xmlattr>.parameter", constantName);
                             config.add("config.<xmlattr>.shaderType", shaderTypeStr);
+                            config.add("config.<xmlattr>.defaultValue", constantValueStr);
 
                             srv->setConfiguration(config);
                             srv->configure();

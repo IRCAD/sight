@@ -248,7 +248,17 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
     {
         if (!::Ogre::StringUtil::endsWith(cstDef.first, "[0]") && !_params->findAutoConstantEntry(cstDef.first))
         {
-            parameters.push_back(std::make_tuple(cstDef.first, cstDef.second.constType, _shaderType));
+            ConstantValueType constantType;
+            if(cstDef.second.isFloat())
+            {
+                constantType = _params->getFloatConstantList()[cstDef.second.physicalIndex];
+            }
+            else if(cstDef.second.isInt())
+            {
+                constantType = _params->getIntConstantList()[cstDef.second.physicalIndex];
+            }
+
+            parameters.push_back(std::make_tuple(cstDef.first, cstDef.second.constType, _shaderType, constantType));
         }
     }
 

@@ -78,6 +78,13 @@ const std::string& IParameter::getParamName() const
 
 //------------------------------------------------------------------------------
 
+const std::string& IParameter::getDefaultValue() const
+{
+    return m_defaultValue;
+}
+
+//------------------------------------------------------------------------------
+
 void IParameter::doConfigure() throw(::fwTools::Failed)
 {
     SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
@@ -107,6 +114,8 @@ void IParameter::doConfigure() throw(::fwTools::Failed)
             OSLM_ERROR("This shader type " << shaderType << " isn't supported yet");
         }
     }
+
+    m_defaultValue = m_configuration->getSafeAttributeValue("defaultValue").second;
 }
 
 //------------------------------------------------------------------------------
@@ -197,6 +206,8 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         SLM_ASSERT("The given integer object is null", intValue);
 
         params->setNamedConstant(m_paramName, intValue->value());
+
+        m_defaultValue = std::to_string(intValue->value());
     }
     else if(objClass == "::fwData::Float")
     {
@@ -204,6 +215,8 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         SLM_ASSERT("The given float object is null", floatValue);
 
         params->setNamedConstant(m_paramName,  floatValue->value());
+
+        m_defaultValue = std::to_string(floatValue->value());
     }
     else if(objClass == "::fwData::Boolean")
     {

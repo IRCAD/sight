@@ -13,6 +13,8 @@
 #include <fwData/Mesh.hpp>
 
 #include <OGRE/OgreTechnique.h>
+
+#include <boost/variant.hpp>
 #include <string>
 
 namespace fwRenderOgre
@@ -24,8 +26,9 @@ namespace helper
 class Shading
 {
 public:
+    typedef ::boost::variant< float, int, std::array<float, 4> > ConstantValueType;
     typedef std::vector< std::tuple< ::Ogre::String, ::Ogre::GpuConstantType,
-                                     ::Ogre::GpuProgramType> > ShaderConstantsType;
+                                     ::Ogre::GpuProgramType, ConstantValueType> > ShaderConstantsType;
 
     /**
      * @brief Returns true if the given technique computes a pixel color.

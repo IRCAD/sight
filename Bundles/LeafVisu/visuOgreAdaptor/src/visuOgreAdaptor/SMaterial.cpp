@@ -86,6 +86,24 @@ SMaterial::~SMaterial() throw()
 
 //------------------------------------------------------------------------------
 
+struct ConvertConstant : public boost::static_visitor<std::string>
+{
+    std::string operator()(float f) const
+    {
+        return std::to_string(f);
+    }
+    std::string operator()(int i) const
+    {
+        return std::to_string(i);
+    }
+    std::string operator()(std::array<float, 4> c) const
+    {
+        return std::string();
+    }
+};
+
+//------------------------------------------------------------------------------
+
 void SMaterial::loadMaterialParameters()
 {
     // We retrieve the parameters of the base material in a temporary material
@@ -107,8 +125,38 @@ void SMaterial::loadMaterialParameters()
         {
             obj->setName(constantName);
 
-            // Create associated ShaderParameter adaptor
-            this->setServiceOnShaderParameter(obj, constantName, std::get<2>(constant));
+            // Creates an Ogre adaptor and associates it with the f4s object
+            auto srv = ::fwServices::add< ::visuOgreAdaptor::IParameter >(obj, "::visuOgreAdaptor::SShaderParameter");
+            SLM_ASSERT("Unable to instantiate ::visuOgreAdaptor::SShaderParameter.", srv);
+            auto shaderParamService = ::visuOgreAdaptor::SShaderParameter::dynamicCast(srv);
+
+            const auto shaderType           = std::get<2>(constant);
+            const std::string shaderTypeStr = shaderType == ::Ogre::GPT_VERTEX_PROGRAM ? "vertex" :
+                                              shaderType == ::Ogre::GPT_FRAGMENT_PROGRAM ? "fragment" :
+                                              "geometry";
+
+            // Naming convention for shader parameters
+            shaderParamService->setID(this->getID() + "_" + shaderTypeStr + "-" + constantName);
+            shaderParamService->setRenderService(this->getRenderService());
+
+            const auto& constantValue = std::get<3>(constant);
+
+
+            std::string constantValueStr = boost::apply_visitor(ConvertConstant(), constantValue);
+
+            ::fwServices::IService::ConfigType config;
+            config.add("config.<xmlattr>.renderer", m_layerID);
+            config.add("config.<xmlattr>.parameter", constantName);
+            config.add("config.<xmlattr>.shaderType", shaderTypeStr);
+            config.add("config.<xmlattr>.materialName", m_materialName);
+            config.add("config.<xmlattr>.defaultValue", constantValueStr);
+
+            shaderParamService->setConfiguration(config);
+            shaderParamService->configure();
+            shaderParamService->start();
+
+            // Add created subservice to current service
+            this->registerService(shaderParamService);
 
             // Add the object to the shaderParameter composite of the Material to keep the object alive
             ::fwData::Material::sptr material   = this->getObject< ::fwData::Material >();
@@ -118,36 +166,6 @@ void SMaterial::loadMaterialParameters()
         }
     }
 }
-
-//------------------------------------------------------------------------------
-
-void SMaterial::setServiceOnShaderParameter(std::shared_ptr< ::fwData::Object > object, std::string paramName,
-                                            ::Ogre::GpuProgramType shaderType)
-{
-
-    // Creates an Ogre adaptor and associates it with the f4s object
-    auto srv = ::fwServices::add< ::visuOgreAdaptor::IParameter >(object, "::visuOgreAdaptor::SShaderParameter");
-    SLM_ASSERT("Unable to instantiate ::visuOgreAdaptor::SShaderParameter.", srv);
-    auto shaderParamService = ::visuOgreAdaptor::SShaderParameter::dynamicCast(srv);
-
-    const std::string shaderTypeStr = shaderType == ::Ogre::GPT_VERTEX_PROGRAM ? "vp" :
-                                      shaderType == ::Ogre::GPT_FRAGMENT_PROGRAM ? "fp" : "gp";
-
-    // Naming convention for shader parameters
-    shaderParamService->setID(this->getID() + "_" + shaderTypeStr + "-" + paramName);
-
-    shaderParamService->setLayerID(m_layerID);
-    shaderParamService->setRenderService(this->getRenderService());
-    shaderParamService->setMaterialName(m_materialName);
-    shaderParamService->setParamName(paramName);
-    shaderParamService->setShaderType(shaderType);
-
-    shaderParamService->start();
-
-    // Add created subservice to current service
-    this->registerService(shaderParamService);
-}
-
 //------------------------------------------------------------------------------
 
 void SMaterial::setTextureAdaptor(const std::string& textureAdaptorUID)
