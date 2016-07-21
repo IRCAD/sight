@@ -106,7 +106,7 @@ void SModelSeries::doUpdate() throw(::fwTools::Failed)
     this->doStop();
 
     // doStop() disconnects everything, we have to restore connection with the data
-    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
 
     // showRec indicates if we have to show the associated reconstructions or not
     const bool showRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
@@ -151,7 +151,7 @@ void SModelSeries::doSwap() throw(::fwTools::Failed)
 
 void SModelSeries::doStop() throw(::fwTools::Failed)
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
     this->unregisterServices();
 }
 

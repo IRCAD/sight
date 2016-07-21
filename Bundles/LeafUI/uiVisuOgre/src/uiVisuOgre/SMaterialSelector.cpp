@@ -39,9 +39,12 @@ namespace uiVisuOgre
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SMaterialSelector, ::fwData::Reconstruction);
 
+const ::fwCom::Signals::SignalKeyType SMaterialSelector::s_SELECTED_SIG = "selected";
+
 //------------------------------------------------------------------------------
 SMaterialSelector::SMaterialSelector() throw()
 {
+    newSignal< SelectedSignalType >( s_SELECTED_SIG );
 }
 
 //------------------------------------------------------------------------------
@@ -159,6 +162,9 @@ void SMaterialSelector::onSelectedModeItem(const QString& text)
     ::fwComEd::helper::Field helper(material);
     helper.setField("ogreMaterial", string);
     helper.notify();
+
+    auto sig = this->signal<SelectedSignalType>(s_SELECTED_SIG);
+    sig->asyncEmit(text.toStdString());
 }
 
 //------------------------------------------------------------------------------

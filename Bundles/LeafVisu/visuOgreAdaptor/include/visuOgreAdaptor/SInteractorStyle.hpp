@@ -23,7 +23,6 @@ namespace visuOgreAdaptor
 
 /**
  * @brief   Managing interactor style for Ogre
- * @class   SInteractorStyle
  */
 class VISUOGREADAPTOR_CLASS_API SInteractorStyle : public ::fwRenderOgre::IAdaptor
 {
@@ -120,7 +119,7 @@ private:
      */
 
     ///Connection service, needed for slot/signal association
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 
     /// map containing all the classes associated to their xml designations (e.g. Default -> TrackballInteractor)
     std::map<std::string, std::string> m_interactorStyles;

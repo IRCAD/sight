@@ -1,0 +1,30 @@
+fragment_program Mip_FP glsl
+{
+    source Mip_FP.glsl
+    default_params
+    {
+        param_named_auto zn near_clip_distance
+        param_named_auto zf far_clip_distance
+    }
+}
+
+
+
+
+material Mip0_mat
+{
+    technique
+    {
+        pass
+        {
+            cull_software front
+            vertex_program_ref stdPos_VP
+            {
+            }
+
+            fragment_program_ref Mip_FP
+            {
+            }
+        }
+    }
+}

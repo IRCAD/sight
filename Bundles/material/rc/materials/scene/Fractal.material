@@ -28,7 +28,7 @@ material Fractal
 
             fragment_program_ref Fractal_FP
             {
-                param_named_auto u_time time
+                param_named u_time float 1.0
             }
         }
     }

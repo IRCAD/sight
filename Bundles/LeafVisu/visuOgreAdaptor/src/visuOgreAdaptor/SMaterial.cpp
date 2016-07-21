@@ -71,8 +71,6 @@ SMaterial::SMaterial() throw() :
     m_meshBoundingBox(::Ogre::Vector3::ZERO, ::Ogre::Vector3::ZERO),
     m_normalLengthFactor(0.1f)
 {
-    m_textureConnection = ::fwServices::helper::SigSlotConnection::New();
-
     newSlot(s_UPDATE_FIELD_SLOT, &SMaterial::updateField, this);
     newSlot(s_SWAP_TEXTURE_SLOT, &SMaterial::swapTexture, this);
     newSlot(s_ADD_TEXTURE_SLOT, &SMaterial::createTextureAdaptor, this);
@@ -88,366 +86,86 @@ SMaterial::~SMaterial() throw()
 
 //------------------------------------------------------------------------------
 
+struct ConvertConstant : public boost::static_visitor<std::string>
+{
+    std::string operator()(float f) const
+    {
+        return std::to_string(f);
+    }
+    std::string operator()(int i) const
+    {
+        return std::to_string(i);
+    }
+    std::string operator()(std::array<float, 4> c) const
+    {
+        return std::string();
+    }
+};
+
+//------------------------------------------------------------------------------
+
 void SMaterial::loadMaterialParameters()
 {
     // We retrieve the parameters of the base material in a temporary material
     ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_materialTemplateName);
 
-    OSLM_ASSERT( "Material '" << m_materialTemplateName << "'' not found", !material.isNull() );
+    SLM_ASSERT( "Material '" + m_materialTemplateName + "'' not found", !material.isNull() );
 
     // Then we copy these parameters in m_material.
     // We can now alter this new instance without changing the default material
     material.get()->copyDetailsTo(m_material);
 
-    ::Ogre::Pass* pass = material->getTechnique(0)->getPass(0);
-
-    // If the material is programmable (ie contains shader programs) create associated ShaderParameter adaptor
-    // with the given ::fwData::Object ID
-    if (pass->isProgrammable())
+    const auto constants = ::fwRenderOgre::helper::Shading::findMaterialConstants(*material);
+    for(const auto& constant : constants)
     {
-        ::Ogre::GpuProgramParametersSharedPtr params;
-        // At this time, we have whether a set of ShaderParameter or a Texture adaptor
-        this->unregisterServices("::visuOgreAdaptor::SShaderParameter");
+        const std::string& constantName = std::get<0>(constant);
 
-        // Getting params for each program type
-        if (pass->hasVertexProgram())
+        auto obj = ::fwRenderOgre::helper::Shading::createObjectFromShaderParameter(std::get<1>(constant));
+        if(obj != nullptr)
         {
-            params = pass->getVertexProgramParameters();
-            this->loadShaderParameters(params, "vp");
-        }
-        if (pass->hasFragmentProgram())
-        {
-            params = pass->getFragmentProgramParameters();
-            this->loadShaderParameters(params, "fp");
-        }
-        if (pass->hasGeometryProgram())
-        {
-            params = pass->getGeometryProgramParameters();
-            this->loadShaderParameters(params, "gp");
-        }
-        if (pass->hasTessellationHullProgram())
-        {
-            OSLM_WARN("Tessellation Hull Program in Material not supported yet");
-        }
-        if (pass->hasTessellationDomainProgram())
-        {
-            OSLM_WARN("Tessellation Domain Program in Material not supported yet");
-        }
-    }
-}
+            obj->setName(constantName);
 
-//------------------------------------------------------------------------------
+            // Creates an Ogre adaptor and associates it with the f4s object
+            auto srv = ::fwServices::add< ::visuOgreAdaptor::IParameter >(obj, "::visuOgreAdaptor::SShaderParameter");
+            SLM_ASSERT("Unable to instantiate ::visuOgreAdaptor::SShaderParameter.", srv);
+            auto shaderParamService = ::visuOgreAdaptor::SShaderParameter::dynamicCast(srv);
 
-void SMaterial::loadShaderParameters(::Ogre::GpuProgramParametersSharedPtr params, std::string shaderType)
-{
-    // We first need to check if our constant is related to Ogre or FW4SPL
+            const auto shaderType           = std::get<2>(constant);
+            const std::string shaderTypeStr = shaderType == ::Ogre::GPT_VERTEX_PROGRAM ? "vertex" :
+                                              shaderType == ::Ogre::GPT_FRAGMENT_PROGRAM ? "fragment" :
+                                              "geometry";
 
-    // Getting Ogre auto constants
-    ::Ogre::GpuProgramParameters::AutoConstantIterator autoConstantsDefinitionIt = params->getAutoConstantIterator();
-    // Getting whole constants
-    ::Ogre::GpuNamedConstants constantsDefinitionMap = params->getConstantDefinitions();
+            // Naming convention for shader parameters
+            shaderParamService->setID(this->getID() + "_" + shaderTypeStr + "-" + constantName);
+            shaderParamService->setRenderService(this->getRenderService());
 
-    // Copy constants map
-    ::Ogre::GpuNamedConstants constantsDefinitionOnly = constantsDefinitionMap;
+            const auto& constantValue = std::get<3>(constant);
 
-    // Getting only user constants
-    for (auto autoCstDef : autoConstantsDefinitionIt)
-    {
-        ::Ogre::GpuProgramParameters::AutoConstantEntry entry = autoCstDef;
-        for (auto cstDef : constantsDefinitionMap.map)
-        {
-            ::Ogre::GpuConstantDefinition def = cstDef.second;
-            // If the physical index is the same, it is an Ogre auto constant
-            if (entry.physicalIndex == def.physicalIndex)
-            {
-                // Then remove it from the copied map
-                constantsDefinitionOnly.map.erase(cstDef.first);
-            }
-        }
-    }
 
-    // Create a new ::fwData::Object for each Ogre user constant
-    for (auto keyVal : constantsDefinitionOnly.map)
-    {
-        // We also need to check if the paramName doesn't ends with [0] (when using arrays).
-        // Ogre defines no-array variable twince : var and var[0]
-        // warning with GCC compiler: unknown escape sequence: '\]'
-        ::Ogre::String paramName = keyVal.first;
-        const std::regex regexNo0Tab(".*\[0\]", std::regex_constants::basic);
-        if(!std::regex_match(paramName, regexNo0Tab))
-        {
+            std::string constantValueStr = boost::apply_visitor(ConvertConstant(), constantValue);
 
-            // Trying to get FW4SPL object corresponding to paramName
-            ::fwData::Object::sptr obj;
-            std::string objName = this->getObject()->getID() + "_" + shaderType + "_" + paramName;
+            ::fwServices::IService::ConfigType config;
+            config.add("config.<xmlattr>.renderer", m_layerID);
+            config.add("config.<xmlattr>.parameter", constantName);
+            config.add("config.<xmlattr>.shaderType", shaderTypeStr);
+            config.add("config.<xmlattr>.materialName", m_materialName);
+            config.add("config.<xmlattr>.defaultValue", constantValueStr);
 
-            // Check if object exist, else create it with the corresponding type
-            obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(objName));
-            if (obj == nullptr)
-            {
-                ::Ogre::GpuConstantDefinition cstDef = keyVal.second;
-                obj                                  =
-                    this->createObjectFromShaderParameter(cstDef.constType, paramName);
-            }
-            obj->setName(paramName);
+            shaderParamService->setConfiguration(config);
+            shaderParamService->configure();
+            shaderParamService->start();
 
-            // Add the object to the shaderParameter composite of the Material
+            // Add created subservice to current service
+            this->registerService(shaderParamService);
+
+            // Add the object to the shaderParameter composite of the Material to keep the object alive
             ::fwData::Material::sptr material   = this->getObject< ::fwData::Material >();
-            ::fwData::Composite::sptr composite = material->setDefaultField(
-                "shaderParameters", ::fwData::Composite::New());
-            (*composite)[paramName] = obj;
-
-            // Create associated ShaderParameter adaptor
-            ::fwRenderOgre::IAdaptor::sptr shaderParameterService;
-
-            this->setServiceOnShaderParameter(shaderParameterService, obj, paramName, shaderType);
+            ::fwData::Composite::sptr composite = material->setDefaultField("shaderParameters",
+                                                                            ::fwData::Composite::New());
+            (*composite)[constantName] = obj;
         }
     }
 }
-
-//------------------------------------------------------------------------------
-
-::fwData::Object::sptr SMaterial::createObjectFromShaderParameter(::Ogre::GpuConstantType type, std::string paramName)
-{
-    ::fwData::Object::sptr object;
-
-    switch(type)
-    {
-        case ::Ogre::GpuConstantType::GCT_FLOAT1:
-            object = ::fwData::Float::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_FLOAT2:
-        {
-            object = ::fwData::Array::New();
-            float vec2[2];
-            vec2[0]                           = 0.;
-            vec2[1]                           = 0.;
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(object);
-            arrayObject->setType(::fwTools::Type::create< ::fwTools::Type::FloatType>());
-            arrayObject->setNumberOfComponents(2);
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setBuffer(vec2, false, arrayObject->getType(), arrayObject->getSize(), 2);
-        }
-        break;
-        case ::Ogre::GpuConstantType::GCT_FLOAT3:
-            object = fwData::Point::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_FLOAT4:
-            object = fwData::Color::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER1D:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER2D:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER3D:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLERCUBE:
-            object = ::fwData::Integer::New();
-        case ::Ogre::GpuConstantType::GCT_SAMPLERRECT:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER1DSHADOW:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER2DSHADOW:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER2DARRAY:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_MATRIX_4X4:
-            object = ::fwData::TransformationMatrix3D::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_INT1:
-            // TOFIX : Ogre didn't manage glsl boolean type. For now, a f4w boolean can be loaded naming variable
-            // boolean as "int Boolean" in the glsl script
-            if(paramName=="Boolean")
-            {
-                object = fwData::Boolean::New();
-            }
-            else
-            {
-                object = ::fwData::Integer::New();
-            }
-            break;
-        case ::Ogre::GpuConstantType::GCT_INT2:
-        {
-            object = ::fwData::Array::New();
-            int* vec2[2];
-            vec2[0]                           = 0;
-            vec2[1]                           = 0;
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(object);
-            arrayObject->setType(::fwTools::Type::create< ::fwTools::Type::Int32Type>());
-            arrayObject->setNumberOfComponents(2);
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setBuffer(vec2, false, arrayObject->getType(), arrayObject->getSize(), 2);
-        }
-        break;
-        case ::Ogre::GpuConstantType::GCT_INT3:
-        {
-            object = ::fwData::Array::New();
-            int* vec3[3];
-            vec3[0]                           = 0;
-            vec3[1]                           = 0;
-            vec3[2]                           = 0;
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(object);
-            arrayObject->setType(::fwTools::Type::create< ::fwTools::Type::Int32Type>());
-            arrayObject->setNumberOfComponents(3);
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setBuffer(vec3, false, arrayObject->getType(), arrayObject->getSize(), 3);
-        }
-        break;
-        case ::Ogre::GpuConstantType::GCT_INT4:
-        {
-            object = ::fwData::Array::New();
-            int* vec4[4];
-            vec4[0]                           = 0;
-            vec4[1]                           = 0;
-            vec4[2]                           = 0;
-            vec4[3]                           = 0;
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(object);
-            arrayObject->setType(::fwTools::Type::create< ::fwTools::Type::Int32Type>());
-            arrayObject->setNumberOfComponents(4);
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setBuffer(vec4, false, arrayObject->getType(), arrayObject->getSize(), 4);
-        }
-        break;
-        case ::Ogre::GpuConstantType::GCT_DOUBLE1:
-            object = ::fwData::Float::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_DOUBLE2:
-        {
-            object = ::fwData::Array::New();
-            float vec2[2];
-            vec2[0]                           = 0.;
-            vec2[1]                           = 0.;
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(object);
-            arrayObject->setType(::fwTools::Type::create< ::fwTools::Type::FloatType>());
-            arrayObject->setNumberOfComponents(2);
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setBuffer(vec2, false, arrayObject->getType(), arrayObject->getSize(), 2);
-        }
-        break;
-        case ::Ogre::GpuConstantType::GCT_DOUBLE3:
-        {
-            object = ::fwData::Array::New();
-            float vec3[3];
-            vec3[0]                           = 0.;
-            vec3[1]                           = 0.;
-            vec3[2]                           = 0.;
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(object);
-            arrayObject->setType(::fwTools::Type::create< ::fwTools::Type::FloatType>());
-            arrayObject->setNumberOfComponents(3);
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setBuffer(vec3, false, arrayObject->getType(), arrayObject->getSize(), 3);
-        }
-        break;
-        case ::Ogre::GpuConstantType::GCT_DOUBLE4:
-        {
-            object = ::fwData::Array::New();
-            float vec4[4];
-            vec4[0]                           = 0.;
-            vec4[1]                           = 0.;
-            vec4[2]                           = 0.;
-            vec4[3]                           = 0.;
-            ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(object);
-            arrayObject->setType(::fwTools::Type::create< ::fwTools::Type::FloatType>());
-            arrayObject->setNumberOfComponents(4);
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
-            arrayHelper.setBuffer(vec4, false, arrayObject->getType(), arrayObject->getSize(), 4);
-        }
-        break;
-        case ::Ogre::GpuConstantType::GCT_MATRIX_DOUBLE_4X4:
-            object = ::fwData::TransformationMatrix3D::New();
-            break;
-        default:
-            std::string GpuConstantTypeNames[] =
-            {
-                "GCT_FLOAT1",
-                "GCT_FLOAT2",
-                "GCT_FLOAT3",
-                "GCT_FLOAT4",
-                "GCT_SAMPLER1D",
-                "GCT_SAMPLER2D",
-                "GCT_SAMPLER3D",
-                "GCT_SAMPLERCUBE",
-                "GCT_SAMPLERRECT",
-                "GCT_SAMPLER1DSHADOW",
-                "GCT_SAMPLER2DSHADOW",
-                "GCT_SAMPLER2DARRAY",
-                "GCT_MATRIX_2X2",
-                "GCT_MATRIX_2X3",
-                "GCT_MATRIX_2X4",
-                "GCT_MATRIX_3X2",
-                "GCT_MATRIX_3X3",
-                "GCT_MATRIX_3X4",
-                "GCT_MATRIX_4X2",
-                "GCT_MATRIX_4X3",
-                "GCT_MATRIX_4X4",
-                "GCT_INT1",
-                "GCT_INT2",
-                "GCT_INT3",
-                "GCT_INT4",
-                "GCT_SUBROUTINE",
-                "GCT_DOUBLE1",
-                "GCT_DOUBLE2",
-                "GCT_DOUBLE3",
-                "GCT_DOUBLE4",
-                "GCT_MATRIX_DOUBLE_2X2",
-                "GCT_MATRIX_DOUBLE_2X3",
-                "GCT_MATRIX_DOUBLE_2X4",
-                "GCT_MATRIX_DOUBLE_3X2",
-                "GCT_MATRIX_DOUBLE_3X3",
-                "GCT_MATRIX_DOUBLE_3X4",
-                "GCT_MATRIX_DOUBLE_4X2",
-                "GCT_MATRIX_DOUBLE_4X3",
-                "GCT_MATRIX_DOUBLE_4X4",
-                "GCT_UNKNOWN"
-            };
-            OSLM_FATAL("Object type "+GpuConstantTypeNames[type-1]+" not supported yet");
-    }
-    return object;
-}
-
-//------------------------------------------------------------------------------
-
-void SMaterial::setServiceOnShaderParameter(::fwRenderOgre::IAdaptor::sptr& srv,
-                                            std::shared_ptr< ::fwData::Object > object, std::string paramName,
-                                            std::string shaderType)
-{
-    if(!srv)
-    {
-        // Creates an Ogre adaptor and associates it with the f4s object
-        srv = ::fwServices::add< ::fwRenderOgre::IAdaptor >(object, "::visuOgreAdaptor::SShaderParameter");
-        SLM_ASSERT("Unable to instanciate shader service", srv);
-        ::visuOgreAdaptor::SShaderParameter::sptr shaderParamService = ::visuOgreAdaptor::SShaderParameter::dynamicCast(
-            srv);
-
-        // Naming convention for shader parameters
-        shaderParamService->setID(this->getID() +"_"+ shaderParamService->getID() + "-" + shaderType + "-" + paramName);
-        // FIXME m_layerID always ""
-        shaderParamService->setLayerID(m_layerID);
-        // Same render service as its parent
-        shaderParamService->setRenderService(this->getRenderService());
-        shaderParamService->setMaterialName(m_materialName);
-        shaderParamService->setParamName(paramName);
-        shaderParamService->setShaderType(shaderType);
-
-        shaderParamService->start();
-        shaderParamService->update();
-
-        // Add created subservice to current service
-        this->registerService(shaderParamService);
-    }
-    else if(srv->getObject() != object)
-    {
-        srv->swap(object);
-    }
-}
-
 //------------------------------------------------------------------------------
 
 void SMaterial::setTextureAdaptor(const std::string& textureAdaptorUID)
@@ -460,7 +178,9 @@ void SMaterial::setTextureAdaptor(const std::string& textureAdaptorUID)
     {
         m_texAdaptorUID = textureAdaptorUID;
 
-        auto textureService = ::fwServices::get(m_texAdaptorUID);
+        ::fwRenderOgre::SRender::sptr renderService = this->getRenderService();
+
+        auto textureService = renderService->getAdaptor(m_texAdaptorUID);
         m_texAdaptor = ::visuOgreAdaptor::STexture::dynamicCast(textureService);
     }
 }
@@ -564,8 +284,8 @@ void SMaterial::doStart() throw(fwTools::Failed)
             m_texAdaptor->setLayerID(m_layerID);
         }
 
-        m_textureConnection->connect(m_texAdaptor, ::visuOgreAdaptor::STexture::s_TEXTURE_SWAPPED_SIG, this->getSptr(),
-                                     ::visuOgreAdaptor::SMaterial::s_SWAP_TEXTURE_SLOT);
+        m_textureConnection.connect(m_texAdaptor, ::visuOgreAdaptor::STexture::s_TEXTURE_SWAPPED_SIG, this->getSptr(),
+                                    ::visuOgreAdaptor::SMaterial::s_SWAP_TEXTURE_SLOT);
 
         if(m_texAdaptor->isStarted())
         {
@@ -582,11 +302,25 @@ void SMaterial::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
+void SMaterial::doStop() throw(fwTools::Failed)
+{
+    m_textureConnection.disconnect();
+    this->unregisterServices();
+
+    ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
+    if(material->getField("shaderParameters"))
+    {
+        material->removeField("shaderParameters");
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SMaterial::doSwap() throw(fwTools::Failed)
 {
     SLM_TRACE("SWAPPING Material");
-    this->unregisterServices("::visuOgreAdaptor::SShaderParameter");
-    this->doUpdate();
+    this->doStop();
+    this->doStart();
 }
 
 //------------------------------------------------------------------------------
@@ -626,6 +360,10 @@ void SMaterial::updateField( ::fwData::Object::FieldsContainerType fields )
             this->setMaterialTemplateName(string->getValue());
 
             this->unregisterServices("::visuOgreAdaptor::SShaderParameter");
+            if(material->getField("shaderParameters"))
+            {
+                material->removeField("shaderParameters");
+            }
             this->loadMaterialParameters();
             this->doUpdate();
         }
@@ -671,14 +409,6 @@ void SMaterial::swapTexture()
     this->updateShadingMode( material->getShadingMode() );
 
     this->requestRender();
-}
-
-//------------------------------------------------------------------------------
-
-void SMaterial::doStop() throw(fwTools::Failed)
-{
-    m_textureConnection->disconnect();
-    this->unregisterServices();
 }
 
 //------------------------------------------------------------------------------
@@ -1000,8 +730,8 @@ void SMaterial::createTextureAdaptor()
 
         this->registerService(m_texAdaptor);
 
-        m_textureConnection->connect(m_texAdaptor, ::visuOgreAdaptor::STexture::s_TEXTURE_SWAPPED_SIG, this->getSptr(),
-                                     ::visuOgreAdaptor::SMaterial::s_SWAP_TEXTURE_SLOT);
+        m_textureConnection.connect(m_texAdaptor, ::visuOgreAdaptor::STexture::s_TEXTURE_SWAPPED_SIG, this->getSptr(),
+                                    ::visuOgreAdaptor::SMaterial::s_SWAP_TEXTURE_SLOT);
 
         m_texAdaptor->start();
     }
@@ -1033,7 +763,7 @@ void SMaterial::removeTextureAdaptor()
         }
     }
 
-    m_textureConnection->disconnect();
+    m_textureConnection.disconnect();
     this->unregisterServices("::visuOgreAdaptor::STexture");
     m_texAdaptor.reset();
 

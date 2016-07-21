@@ -15,6 +15,7 @@
 #include <QObject>
 #include <QPointer>
 #include <QLabel>
+// #include <QAbstractSpinBox>
 
 #include "uiVisuOgre/config.hpp"
 
@@ -26,6 +27,10 @@ class QLineEdit;
 class QSlider;
 class QCheckBox;
 class QComboBox;
+// needed for the radius
+class QDoubleSpinBox;
+// needed for the samples number
+class QSpinBox;
 
 
 namespace uiVisuOgre
@@ -33,7 +38,6 @@ namespace uiVisuOgre
 
 /**
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
- * @class   SCoreCompositorEditor
  */
 class UIVISUOGRE_CLASS_API SCoreCompositorEditor : public QObject,
                                                    public ::gui::editor::IEditor
@@ -75,8 +79,8 @@ protected:
     /// FILL ME.
     UIVISUOGRE_API void refreshRenderers();
 
-    std::vector< ::fwRenderOgre::Layer::sptr > m_layers;
-    ::fwRenderOgre::Layer::sptr m_currentLayer;
+    std::vector< ::fwRenderOgre::Layer::wptr > m_layers;
+    ::fwRenderOgre::Layer::wptr m_currentLayer;
     ::fwRenderOgre::compositor::Core::sptr m_currentCoreCompositor;
 
 protected Q_SLOTS:

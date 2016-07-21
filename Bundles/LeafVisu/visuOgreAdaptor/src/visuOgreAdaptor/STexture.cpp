@@ -53,6 +53,21 @@ STexture::~STexture() throw()
 
 //------------------------------------------------------------------------------
 
+bool STexture::isValid() const
+{
+    if(!m_texture.isNull())
+    {
+        if(m_texture->getFormat() != ::Ogre::PF_UNKNOWN)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//------------------------------------------------------------------------------
+
 void STexture::doConfigure() throw(fwTools::Failed)
 {
     SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");

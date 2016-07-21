@@ -78,10 +78,10 @@ public:
     VISUOGREADAPTOR_API virtual int getStartPriority();
 
     /// Set material name
-    void setMaterialName(const std::string &materialName);
+    void setMaterialName(const std::string& materialName);
 
     /// Set material template name
-    void setMaterialTemplateName(const std::string &materialName);
+    void setMaterialTemplateName(const std::string& materialName);
 
     bool getHasMeshNormal() const;
     void setHasMeshNormal(bool hasMeshNormal);
@@ -97,8 +97,8 @@ public:
     /// Tells if there is a texture currently bound
     bool hasDiffuseTexture() const;
 
-    const std::string &getShadingMode() const;
-    void setShadingMode(const std::string &_shadingMode);
+    const std::string& getShadingMode() const;
+    void setShadingMode(const std::string& _shadingMode);
 
     void setMeshBoundingBox(const ::Ogre::AxisAlignedBox& _bbox);
 
@@ -159,12 +159,6 @@ private:
 
     /// Updates material polygon mode (surface, point or wireframe)
     void updatePolygonMode( int polygonMode );
-
-    /// Manages service associated to a shader parameter
-    void setServiceOnShaderParameter(::fwRenderOgre::IAdaptor::sptr& srv,
-                                     std::shared_ptr<fwData::Object> object,
-                                     std::string paramName,
-                                     std::string shaderType);
 
     /// Update material shading mode (flat/gouraud/phong) in fixed function pipeline
     void updateShadingMode( int shadingMode );
@@ -227,7 +221,7 @@ private:
     std::vector< Ogre::String > m_schemesSupported;
 
     /// Signal/Slot connections with texture adaptor
-    ::fwServices::helper::SigSlotConnection::sptr m_textureConnection;
+    ::fwServices::helper::SigSlotConnection m_textureConnection;
 
     /// The configured shading mode
     std::string m_shadingMode;
@@ -318,7 +312,7 @@ inline std::string SMaterial::getMaterialName() const
 
 inline bool SMaterial::hasDiffuseTexture() const
 {
-    return (m_texAdaptor && !m_texAdaptor->getTexture().isNull());
+    return (m_texAdaptor && m_texAdaptor->isValid());
 }
 
 //------------------------------------------------------------------------------
@@ -337,7 +331,7 @@ inline void SMaterial::setShadingMode(const std::string& _shadingMode)
 
 //------------------------------------------------------------------------------
 
-inline void SMaterial::setMeshBoundingBox(const Ogre::AxisAlignedBox &_bbox)
+inline void SMaterial::setMeshBoundingBox(const Ogre::AxisAlignedBox& _bbox)
 {
     m_meshBoundingBox = _bbox;
 }

@@ -18,8 +18,9 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwDataTools/Mesh.hpp>
 
-#include <fwRenderOgre/R2VBRenderable.hpp>
 #include <fwRenderOgre/helper/Mesh.hpp>
+#include <fwRenderOgre/R2VBRenderable.hpp>
+#include <fwRenderOgre/SRender.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -254,7 +255,8 @@ void SMesh::doStart() throw(::fwTools::Failed)
     if(!m_useNewMaterialAdaptor)
     {
         // A material adaptor has been configured in the XML scene
-        auto materialService = ::fwServices::get(m_materialAdaptorUID);
+        ::fwRenderOgre::SRender::sptr renderService = this->getRenderService();
+        auto materialService = renderService->getAdaptor(m_materialAdaptorUID);
         m_materialAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(materialService);
 
         m_material = m_materialAdaptor->getObject< ::fwData::Material >();
@@ -281,7 +283,7 @@ void SMesh::doStop() throw(fwTools::Failed)
     sceneMgr->destroyManualObject(m_meshName);
     sceneMgr->destroyManualObject(m_r2vbMeshName);
 
-    m_connections->disconnect();
+    m_connections.disconnect();
     if(!m_useNewMaterialAdaptor)
     {
         m_materialAdaptor.reset();
@@ -1260,7 +1262,7 @@ void SMesh::modifyTexCoords()
 
 //-----------------------------------------------------------------------------
 
-void SMesh::attachNode(Ogre::MovableObject *_node)
+void SMesh::attachNode(Ogre::MovableObject* _node)
 {
     auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
 

@@ -7,51 +7,53 @@
 #ifndef __FWRENDEROGRE_COMPOSITOR_CHAINMANAGER_HPP__
 #define __FWRENDEROGRE_COMPOSITOR_CHAINMANAGER_HPP__
 
-#include <fwCore/BaseObject.hpp>
+#include <fwData/Composite.hpp>
+
+#include "fwRenderOgre/config.hpp"
+#include "fwRenderOgre/IHasAdaptors.hpp"
 
 #include <vector>
 
-#include "fwRenderOgre/config.hpp"
-
 namespace Ogre
 {
-class CompositorManager;
 class Viewport;
 }
 
 namespace fwRenderOgre
 {
+class SRender;
 
 namespace compositor
 {
 
-class FWRENDEROGRE_CLASS_API ChainManager : public ::fwCore::BaseObject
+/**
+ * @brief   Manage the compositors in a layer view.
+ */
+class FWRENDEROGRE_CLASS_API ChainManager : ::boost::noncopyable,
+                                            public ::fwRenderOgre::IHasAdaptors
 {
 public:
-
-    fwCoreClassDefinitionsWithFactoryMacro( (ChainManager)(::fwRenderOgre::compositor::ChainManager), (()),
-                                            new ChainManager);
-    fwCoreAllowSharedFromThis();
+    typedef std::unique_ptr < ChainManager > uptr;
 
     typedef std::string CompositorIdType;
     typedef std::pair<CompositorIdType, bool> CompositorType;
     typedef std::vector<CompositorType> CompositorChainType;
 
-    FWRENDEROGRE_API ChainManager();
-    FWRENDEROGRE_API ChainManager(::Ogre::Viewport* ogreViewport);
+    FWRENDEROGRE_API ChainManager(::Ogre::Viewport* viewport);
+    FWRENDEROGRE_API virtual ~ChainManager();
 
     /// Inserts the new compositor in the compositor chain vector
-    FWRENDEROGRE_API void addAvailableCompositor(CompositorIdType compositorName);
+    FWRENDEROGRE_API void addAvailableCompositor(CompositorIdType _compositorName);
     /// Clears the compositor chain
     FWRENDEROGRE_API void clearCompositorChain();
     /// Enables or disables the target compositor
-    FWRENDEROGRE_API void updateCompositorState(CompositorIdType compositorName, bool isEnabled);
+    FWRENDEROGRE_API void updateCompositorState(CompositorIdType _compositorName, bool _isEnabled,
+                                                const std::string& _layerId,
+                                                SPTR(::fwRenderOgre::SRender) _renderService);
 
-    FWRENDEROGRE_API void setCompositorChain(std::vector<CompositorIdType> compositors);
+    FWRENDEROGRE_API void setCompositorChain(const std::vector<CompositorIdType>& _compositors);
 
     FWRENDEROGRE_API CompositorChainType getCompositorChain();
-
-    FWRENDEROGRE_API void setOgreViewport(::Ogre::Viewport* viewport);
 
     /// Name of the last compositor put in the compositor chain.
     /// This compositor is used to have a blend in order to get a correct final render
@@ -61,27 +63,23 @@ public:
     class FWRENDEROGRE_CLASS_API FindCompositorByName
     {
     public:
-        FindCompositorByName(CompositorIdType name)
+        FindCompositorByName(const CompositorIdType& _name) : compositorName(_name)
         {
-            compositorName = name;
         }
 
-        bool operator()(const CompositorType& compositor) const
+        bool operator()(const CompositorType& _compositor) const
         {
-            return (compositor.first == compositorName);
+            return (_compositor.first == compositorName);
         }
 
     private:
-        CompositorIdType compositorName;
+        const CompositorIdType& compositorName;
     };
 
 private:
 
     /// Adds the final compositor to the compositor chain
     void addFinalCompositor();
-
-    /// Getter for the Ogre CompositorManager
-    ::Ogre::CompositorManager* getCompositorManager();
 
     /// List of available compositors, the names are associated to a boolean value which indicates whether
     /// the compositor is enabled or not
@@ -90,6 +88,9 @@ private:
     /// The parent layer's viewport.
     /// The ogre's compositor manager needs it in order to access the right compositor chain.
     ::Ogre::Viewport* m_ogreViewport;
+
+    /// Map allowing to keep the objects of the created adaptors alive
+    ::fwData::Composite::sptr m_adaptorsObjectsOwner;
 };
 
 //-----------------------------------------------------------------------------
@@ -98,13 +99,6 @@ private:
 inline ChainManager::CompositorChainType ChainManager::getCompositorChain()
 {
     return m_compositorChain;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void ChainManager::setOgreViewport(::Ogre::Viewport* viewport)
-{
-    m_ogreViewport = viewport;
 }
 
 //-----------------------------------------------------------------------------

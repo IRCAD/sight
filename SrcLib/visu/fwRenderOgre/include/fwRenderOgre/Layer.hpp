@@ -7,18 +7,18 @@
 #ifndef __FWRENDEROGRE_LAYER_HPP__
 #define __FWRENDEROGRE_LAYER_HPP__
 
-#include <fwCore/BaseObject.hpp>
-
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/HasSlots.hpp>
 #include <fwCom/Slot.hpp>
 
+#include <fwRenderOgre/compositor/ChainManager.hpp>
+#include <fwRenderOgre/compositor/Core.hpp>
 #include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
 #include <fwRenderOgre/interactor/IMovementInteractor.hpp>
 #include <fwRenderOgre/interactor/IPickerInteractor.hpp>
 #include <fwRenderOgre/interactor/IInteractor.hpp>
-#include <fwRenderOgre/compositor/ChainManager.hpp>
-#include <fwRenderOgre/compositor/Core.hpp>
+
+#include <fwThread/Worker.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreSceneManager.h>
@@ -38,8 +38,7 @@ namespace fwRenderOgre
 {
 
 /**
- * @class Layer
- * Allows to render multiple scenes in the same render window with viewports
+ * @brief   Allows to render multiple scenes in the same render window with viewports
  */
 class FWRENDEROGRE_CLASS_API Layer : public ::fwCore::BaseObject,
                                      public ::fwCom::HasSignals,
@@ -57,6 +56,9 @@ public:
 
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_INIT_LAYER_SIG;
     typedef ::fwCom::Signal<void (::fwRenderOgre::Layer::sptr)> InitLayerSignalType;
+
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_COMPOSITOR_UPDATED_SIG;
+    typedef ::fwCom::Signal<void (std::string, bool, ::fwRenderOgre::Layer::sptr)> CompositorUpdatedSignalType;
 
     /** @} */
 
@@ -185,9 +187,10 @@ public:
     /// Checks if this layer has a default compositor
     FWRENDEROGRE_API ::fwRenderOgre::compositor::Core::sptr getCoreCompositor();
 
-    FWRENDEROGRE_API ::fwRenderOgre::compositor::ChainManager::CompositorChainType getCompositorChain();
+    FWRENDEROGRE_API ::fwRenderOgre::compositor::ChainManager::CompositorChainType getCompositorChain() const;
 
-    FWRENDEROGRE_API std::string getFinalChainCompositorName() const;
+    /// return the list of adaptors in the chain manager
+    IHasAdaptors::AdaptorVector getRegisteredAdaptors() const;
 
     FWRENDEROGRE_API ::Ogre::Viewport* getViewport() const;
 
@@ -206,9 +209,6 @@ private:
     /// Setups default compositor for a layer's 3D scene
     void setupCore();
 
-    /// For a list of semicolon-separated words, returns a vector of these words
-    std::vector< std::string > trimSemicolons(std::string input);
-
     /// Ogre scene manager of this viewport
     ::Ogre::SceneManager* m_sceneManager;
 
@@ -217,15 +217,6 @@ private:
 
     /// Ogre viewport representing this layer
     ::Ogre::Viewport* m_viewport;
-
-    /// This boolean enables default compositor's widgets (gui displays before scene creation)
-    bool m_hasCoreCompositor;
-
-    /// Indicates if a compositor chain is attached to the layer
-    bool m_hasCompositorChain;
-
-    /// Indicates if the scene has been created
-    bool m_sceneCreated;
 
     /// If there is a configured compositor chain, this attribute stores its raw string
     std::string m_rawCompositorChain;
@@ -240,7 +231,7 @@ private:
 
     /// Manages the list of available compositors.
     /// The names are associated to a boolean value which indicates whether the compositor is enabled or not
-    ::fwRenderOgre::compositor::ChainManager m_compositorChainManager;
+    ::fwRenderOgre::compositor::ChainManager::uptr m_compositorChainManager;
 
     /// Z Depth of this viewport
     int m_depth;
@@ -265,10 +256,22 @@ private:
     ::fwRenderOgre::interactor::IPickerInteractor::sptr m_selectInteractor;
 
     ///Connection service, needed for slot/signal association
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 
     /// Render service which this layer is attached
     WPTR(::fwRenderOgre::SRender) m_renderService;
+
+    /// Layer identifier as referenced in SRender
+    std::string m_id;
+
+    /// This boolean enables default compositor's widgets (gui displays before scene creation)
+    bool m_hasCoreCompositor;
+
+    /// Indicates if a compositor chain is attached to the layer
+    bool m_hasCompositorChain;
+
+    /// Indicates if the scene has been created
+    bool m_sceneCreated;
 };
 
 }
