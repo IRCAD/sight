@@ -100,8 +100,8 @@
                 <gui>
                     <layout type="::fwGui::TabLayoutManager">
                         <view caption="Compositor" />
-                        <view caption="Organ manager" />
-                        <view caption="Negato histogram" selected="yes" />
+                        <view caption="Organ manager" selected="yes" />
+                        <view caption="Negato histogram" />
                     </layout>
                 </gui>
                 <registry>
@@ -236,9 +236,9 @@
                 <in key="histogram" uid="histogram" />
                 <inout key="viewport" uid="viewport" />
                 <scene>
-                    <scene x="-1100" y="-1.1" width="500" height="1.2" aspectRatioMode="KeepAspectRatioByExpanding" />
+                    <scene x="-1100" y="-1.1" width="2400" height="1.2" />
 
-                    <viewport id="view1" x="-1100" y="-1.1" width="500" height="1.2" />
+                    <viewport id="view1" x="-1100" y="-1.1" width="2400" height="1.2" />
 
                     <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                     <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
@@ -275,9 +275,9 @@
                 <inout key="viewport" uid="viewport" />
                 <inout key="TFSelections" uid="TFSelections" />
                 <scene>
-                    <scene x="-1100" y="-1.1" width="500" height="1.2" antialiasing="true" />
+                    <scene x="-1100" y="-1.1" width="2400" height="1.2" antialiasing="true" />
 
-                    <viewport id="view1" x="0" y="-1.1" width="500" height="1.2" />
+                    <viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" />
 
                     <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                     <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
