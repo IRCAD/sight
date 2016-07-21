@@ -41,8 +41,6 @@ INetworkSender::INetworkSender()
 
     ::fwCom::HasSignals::m_signals (INetworkSender::s_SERVER_STARTED_SIGNAL,  m_sigServerStarted);
     ::fwCom::HasSignals::m_signals (INetworkSender::s_SERVER_STOPPED_SIGNAL, m_sigServerStopped);
-
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //-----------------------------------------------------------------------------
@@ -63,7 +61,7 @@ void INetworkSender::starting() throw (::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
 }
 
 //-----------------------------------------------------------------------------
@@ -72,7 +70,7 @@ void INetworkSender::stopping() throw (::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    m_connections->disconnect();
+    m_connections.disconnect();
 }
 
 //-----------------------------------------------------------------------------

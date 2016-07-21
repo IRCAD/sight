@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,8 +23,6 @@ namespace ioNetwork
 {
 
 /**
- * @class INetworkSender
- *
  * @brief Abstract class for network senders(you need to inherit from this class if you want implement a new network
  * sender).
  *
@@ -115,7 +113,7 @@ protected:
     /**
      * @brief Sends the obj
      */
-    virtual void sendObject(const ::fwData::Object::sptr &obj) = 0;
+    virtual void sendObject(const ::fwData::Object::sptr& obj) = 0;
 
     /// Signal when server started
     ServerStartedSignalType::sptr m_sigServerStarted;
@@ -129,7 +127,7 @@ private:
     SendDataSlotType::sptr m_sendDataSlot;
 
     /// connection between obj signal and service slots
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 };
 
 } // namespace ioNetwork

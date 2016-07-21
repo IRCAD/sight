@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,14 +15,14 @@ namespace uiNetwork
 //-----------------------------------------------------------------------------
 
 ANetworkServiceWidget::ANetworkServiceWidget (::fwData::Object::sptr obj,
-                                              ConnectorModel const &connectorModel) :
+                                              ConnectorModel const& connectorModel) :
     QWidget(),
     m_obj (obj),
     m_configs (connectorModel.getServiceConfigurations())
 {
-    QPushButton     *removeButton;
-    QHBoxLayout     *mainLayout;
-    QCheckBox       *startCheckBox;
+    QPushButton* removeButton;
+    QHBoxLayout* mainLayout;
+    QCheckBox* startCheckBox;
 
     mainLayout    = new QHBoxLayout();
     m_childLayout = new QHBoxLayout();
@@ -32,7 +32,6 @@ ANetworkServiceWidget::ANetworkServiceWidget (::fwData::Object::sptr obj,
     m_treeItem    = new QTreeWidgetItem();
 
     m_servicesBox->setCurrentIndex(0);
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
 
     mainLayout->addWidget(startCheckBox);
     mainLayout->addWidget(m_servicesBox);
@@ -57,7 +56,7 @@ ANetworkServiceWidget::~ANetworkServiceWidget()
 
 //-----------------------------------------------------------------------------
 
-QTreeWidgetItem *ANetworkServiceWidget::getTreeItem()
+QTreeWidgetItem* ANetworkServiceWidget::getTreeItem()
 {
     return m_treeItem;
 }
@@ -78,7 +77,7 @@ void ANetworkServiceWidget::onActivate(int state)
 
 //-----------------------------------------------------------------------------
 
-void ANetworkServiceWidget::onChangeService(QString const &service)
+void ANetworkServiceWidget::onChangeService(QString const& service)
 {
     m_currentServiceName = service.toStdString();
 }

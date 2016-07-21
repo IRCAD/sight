@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,7 @@ namespace uiNetwork
 //-----------------------------------------------------------------------------
 
 NetworkListenerWidget::NetworkListenerWidget (::fwData::Object::sptr obj,
-                                              ConnectorModel const &connectorModel) :
+                                              ConnectorModel const& connectorModel) :
     ANetworkServiceWidget(obj, connectorModel)
 {
     m_hostnameEditor = new QLineEdit();
@@ -27,7 +27,7 @@ NetworkListenerWidget::NetworkListenerWidget (::fwData::Object::sptr obj,
     m_childLayout->addWidget(m_hostnameEditor);
     m_childLayout->addWidget(m_portEditor);
 
-    for(std::string const &service :  connectorModel.getRegisteredListeners())
+    for(std::string const& service :  connectorModel.getRegisteredListeners())
     {
         m_servicesBox->addItem(QString::fromStdString(service));
     }
@@ -72,7 +72,7 @@ void NetworkListenerWidget::onStop()
     if (m_listener != NULL)
     {
         m_listener->stop();
-        m_connections->disconnect();
+        m_connections.disconnect();
         m_listener = ::ioNetwork::INetworkListener::sptr();
     }
 }

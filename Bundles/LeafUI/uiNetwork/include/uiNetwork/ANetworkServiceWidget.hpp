@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,8 +24,6 @@
 namespace uiNetwork
 {
 /**
- * @class ANetworkServiceWidget
- *
  * @brief an abstract class for network service widgets
  */
 class UINETWORK_CLASS_API ANetworkServiceWidget : public QWidget
@@ -36,7 +34,7 @@ public:
      * @brief constructor
      */
     ANetworkServiceWidget(::fwData::Object::sptr obj,
-                          ConnectorModel const &connectorModel);
+                          ConnectorModel const& connectorModel);
     /// Destructor
     virtual ~ANetworkServiceWidget();
 
@@ -45,7 +43,7 @@ public:
      *
      * @return tree item related to the widget
      */
-    QTreeWidgetItem *getTreeItem();
+    QTreeWidgetItem* getTreeItem();
 
 Q_SIGNALS:
     /**
@@ -53,7 +51,7 @@ Q_SIGNALS:
      *
      * @param[in] item irzm to remove in the tree
      */
-    void serviceRemoved(QTreeWidgetItem *item);
+    void serviceRemoved(QTreeWidgetItem* item);
 private Q_SLOTS:
 
     /**
@@ -67,7 +65,7 @@ private Q_SLOTS:
      * @brief called when user change the value on the combo box that contain services name
      *
      */
-    void onChangeService(QString const &selectedService);
+    void onChangeService(QString const& selectedService);
 
     /**
      * @brief called when user click on remove service button and emit serviceRemoved signal
@@ -88,10 +86,10 @@ protected:
 protected:
 
     /// child layout represent the part that will be changed
-    QHBoxLayout *m_childLayout;
+    QHBoxLayout* m_childLayout;
 
     /// services box
-    QComboBox *m_servicesBox;
+    QComboBox* m_servicesBox;
     /// current service name
     std::string m_currentServiceName;
 
@@ -99,14 +97,14 @@ protected:
     ::fwData::Object::sptr m_obj;
 
     /// connectino between obj signal and service slots
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 
     /// Contains service configuration
-    ConnectorModel::ServiceConfigurationContainer const &m_configs;
+    ConnectorModel::ServiceConfigurationContainer const& m_configs;
 
 private:
     /// tree item
-    QTreeWidgetItem *m_treeItem;
+    QTreeWidgetItem* m_treeItem;
 
 };
 } //namespace uiNetwork
