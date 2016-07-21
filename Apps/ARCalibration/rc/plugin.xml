@@ -10,6 +10,7 @@
     <requirement id="preferences" />
     <requirement id="activities" />
     <requirement id="uiMedDataQt" />
+    <requirement id="filterVRRender" />
 
     <xi:include href="configurations/activitySelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ARCalibrationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
