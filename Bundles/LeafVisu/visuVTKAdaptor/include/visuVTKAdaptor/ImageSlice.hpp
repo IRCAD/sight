@@ -59,7 +59,7 @@ public:
     {
         m_imageSourceId = id;
     }
-    void setVtkImageSource(vtkObject *obj)
+    void setVtkImageSource(vtkObject* obj)
     {
         m_imageSource = obj;
     }
@@ -137,15 +137,15 @@ protected:
     double m_actorOpacity;
 
     std::string m_imageSourceId;
-    vtkObject  *m_imageSource;
+    vtkObject* m_imageSource;
 
-    vtkImageActor *m_imageActor;
+    vtkImageActor* m_imageActor;
 
-    vtkPolyData *m_planeOutlinePolyData;
-    vtkPolyDataMapper *m_planeOutlineMapper;
-    vtkActor *m_planeOutlineActor;
+    vtkPolyData* m_planeOutlinePolyData;
+    vtkPolyDataMapper* m_planeOutlineMapper;
+    vtkActor* m_planeOutlineActor;
 
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 
 private:
 

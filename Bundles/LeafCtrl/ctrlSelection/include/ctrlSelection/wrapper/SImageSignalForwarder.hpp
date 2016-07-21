@@ -106,7 +106,7 @@ private:
      */
 
     /// store connection from source image to this service.
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 
     std::string m_sourceImageUid; ///< fwID of the source image;
     std::string m_sourceCompoUid; ///< fwID of the composite containing the source image

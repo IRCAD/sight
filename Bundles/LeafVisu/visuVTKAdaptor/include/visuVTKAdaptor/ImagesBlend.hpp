@@ -75,7 +75,7 @@ protected:
         std::string m_tfSelectionFwID;
         std::string m_selectedTFKey;
 
-        ::fwServices::helper::SigSlotConnection::sptr m_connections;
+        ::fwServices::helper::SigSlotConnection m_connections;
     };
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
@@ -100,7 +100,7 @@ protected:
     RegisteredImageMap m_registeredImages;
 
 
-    vtkImageBlend *m_imageBlend;
+    vtkImageBlend* m_imageBlend;
     std::string m_imageRegisterId;
 
 };

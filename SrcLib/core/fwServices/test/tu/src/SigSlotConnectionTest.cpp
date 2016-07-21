@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -52,16 +52,16 @@ void SigSlotConnectionTest::basicTest()
     ::fwData::Object::ModifiedSignalType::sptr sig =
         buffer->signal< ::fwData::Object::ModifiedSignalType >( ::fwData::Object::s_MODIFIED_SIG );
 
-    ::fwServices::helper::SigSlotConnection::sptr helper = ::fwServices::helper::SigSlotConnection::New();
+    ::fwServices::helper::SigSlotConnection helper;
 
     showTestSrv->setWorker(activeWorkers->getWorker(registry::ActiveWorkers::s_DEFAULT_WORKER));
-    helper->connect( buffer, showTestSrv, showTestSrv->getObjSrvConnections() );
+    helper.connect( buffer, showTestSrv, showTestSrv->getObjSrvConnections() );
     showTestSrv->start().wait();
     sig->asyncEmit();
     showTestSrv->stop().wait();
     CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_receiveCount);
 
-    helper->disconnect();
+    helper.disconnect();
     showTestSrv->start().wait();
     sig->asyncEmit();
     showTestSrv->stop().wait();

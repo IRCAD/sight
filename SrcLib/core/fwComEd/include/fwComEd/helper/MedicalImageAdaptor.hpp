@@ -60,19 +60,19 @@ public:
     }
 
     /// Set TF Selection fwID
-    FWCOMED_API void setTFSelectionFwID( const std::string & fwid );
+    FWCOMED_API void setTFSelectionFwID( const std::string& fwid );
 
     /// Get TF Selection fwID
-    FWCOMED_API const std::string & getTFSelectionFwID() const;
+    FWCOMED_API const std::string& getTFSelectionFwID() const;
 
     /// Set TF Selection fwID
     FWCOMED_API void setTransferFunctionSelection( ::fwData::Composite::wptr selection );
 
     /// Set selected TF Key
-    FWCOMED_API void setSelectedTFKey( const std::string & key );
+    FWCOMED_API void setSelectedTFKey( const std::string& key );
 
     /// Get selected TF Key
-    FWCOMED_API const std::string & getSelectedTFKey() const;
+    FWCOMED_API const std::string& getSelectedTFKey() const;
 
     /// Set selected TF Key and TF Selection fwID from config
     FWCOMED_API void parseTFConfig( ::fwRuntime::ConfigurationElement::sptr configuration );
@@ -309,8 +309,8 @@ protected:
 
 private:
 
-    ::fwServices::helper::SigSlotConnection::sptr m_tfSelectionConnections;
-    ::fwServices::helper::SigSlotConnection::sptr m_tfConnections;
+    ::fwServices::helper::SigSlotConnection m_tfSelectionConnections;
+    ::fwServices::helper::SigSlotConnection m_tfConnections;
 
     /// Transfer function selection
     ::fwData::Composite::wptr m_tfSelection;

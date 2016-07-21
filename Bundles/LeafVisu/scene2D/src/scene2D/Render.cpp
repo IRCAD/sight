@@ -42,8 +42,6 @@ Render::Render() throw() :
     m_view(nullptr),
     m_aspectRatioMode(Qt::IgnoreAspectRatio)
 {
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
-
     newSlot(s_ADD_OBJECTS_SLOT, &Render::addObjects, this);
     newSlot(s_CHANGE_OBJECTS_SLOT, &Render::changeObjects, this);
     newSlot(s_REMOVE_OBJECTS_SLOT, &Render::removeObjects, this);
@@ -108,7 +106,7 @@ void Render::dispatchInteraction( SPTR(::scene2D::data::Event)_event)
 
 //-----------------------------------------------------------------------------
 
-::scene2D::data::Coord Render::mapToScene( const ::scene2D::data::Coord & coord ) const
+::scene2D::data::Coord Render::mapToScene( const ::scene2D::data::Coord& coord ) const
 {
     /// Returns the viewport coordinate point mapped to scene coordinates.
     QPoint qp ( coord.getX(), coord.getY() );
@@ -258,18 +256,7 @@ void Render::connectAfterWait(const ::fwData::Composite::ContainerType& objects)
                 std::string waitForKey = connect->getAttributeValue("waitForKey");
                 if(waitForKey == key)
                 {
-                    ::fwServices::helper::SigSlotConnection::sptr connection;
-                    ObjectConnectionsMapType::iterator iter = m_objectConnections.find(key);
-                    if (iter != m_objectConnections.end())
-                    {
-                        connection = iter->second;
-                    }
-                    else
-                    {
-                        connection               = ::fwServices::helper::SigSlotConnection::New();
-                        m_objectConnections[key] = connection;
-                    }
-                    ::fwServices::helper::Config::createConnections(connect, connection, element.second);
+                    ::fwServices::helper::Config::createConnections(connect, m_objectConnections[key], element.second);
                 }
             }
         }
@@ -298,7 +285,7 @@ void Render::disconnect(const ::fwData::Composite::ContainerType& objects)
         std::string key = element.first;
         if(m_objectConnections.find(key) != m_objectConnections.end())
         {
-            m_objectConnections[key]->disconnect();
+            m_objectConnections[key].disconnect();
             m_objectConnections.erase(key);
         }
 
@@ -326,7 +313,7 @@ void Render::stopping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
-    m_connections->disconnect();
+    m_connections.disconnect();
 
     ::fwData::Composite::sptr composite;
     if(this->isVersion2())
@@ -406,7 +393,7 @@ void Render::startContext()
     m_view->setSceneRender( ::scene2D::Render::dynamicCast( this->getSptr() ) );
     m_view->setRenderHint( QPainter::Antialiasing, m_antialiasing );
 
-    QVBoxLayout *layout = new QVBoxLayout;
+    QVBoxLayout* layout = new QVBoxLayout;
     layout->addWidget(m_view);
     qtContainer->getQtContainer()->setLayout(layout);
 
@@ -661,7 +648,7 @@ void Render::stopAdaptor(const AdaptorIDType& _adaptorID)
 {
     SLM_TRACE_FUNC();
 
-    SceneAdaptor2D & info = m_adaptorID2SceneAdaptor2D[_adaptorID];
+    SceneAdaptor2D& info = m_adaptorID2SceneAdaptor2D[_adaptorID];
 
     m_zValue2AdaptorID.erase( info.getService()->getZValue() );
 

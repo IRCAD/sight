@@ -66,22 +66,22 @@ public:
     FWRENDERVTK_API virtual ~SRender() throw();
 
     /// Returns the vtkRenderer with the given id
-    FWRENDERVTK_API vtkRenderer * getRenderer(RendererIdType rendererId);
+    FWRENDERVTK_API vtkRenderer* getRenderer(RendererIdType rendererId);
 
     /// Returns true if the scene is shown on screen
     bool isShownOnScreen();
 
     /// Returns the picker with the given id
-    FWRENDERVTK_API vtkAbstractPropPicker * getPicker(PickerIdType pickerId);
+    FWRENDERVTK_API vtkAbstractPropPicker* getPicker(PickerIdType pickerId);
 
     /// Returns the vtkObject with the given id
-    FWRENDERVTK_API vtkObject * getVtkObject(const VtkObjectIdType& objectId) const;
+    FWRENDERVTK_API vtkObject* getVtkObject(const VtkObjectIdType& objectId) const;
 
     /// Returns the adaptor with the given id
     FWRENDERVTK_API SPTR (IVtkAdaptorService) getAdaptor(const AdaptorIdType &adaptorId) const;
 
     /// Get a vtkTransform in the SRender, referenced by a key. Create it if it does not exist.
-    FWRENDERVTK_API vtkTransform * getOrAddVtkTransform( const VtkObjectIdType& _id );
+    FWRENDERVTK_API vtkTransform* getOrAddVtkTransform( const VtkObjectIdType& _id );
 
     bool getPendingRenderRequest()
     {
@@ -203,7 +203,7 @@ protected:
     FWRENDERVTK_API virtual void swapping(const KeyType& key) throw(::fwTools::Failed);
 
     /// Add a vtk object in the SRender, referenced by a key.
-    FWRENDERVTK_API void addVtkObject( const VtkObjectIdType& _id, vtkObject * _vtkObj );
+    FWRENDERVTK_API void addVtkObject( const VtkObjectIdType& _id, vtkObject* _vtkObj );
 
 private:
 
@@ -248,10 +248,10 @@ private:
     typedef std::map< RendererIdType, vtkRenderer* > RenderersMapType;
 
     /// @brief scene's pickers
-    typedef std::map< PickerIdType, vtkAbstractPropPicker * > PickersMapType;
+    typedef std::map< PickerIdType, vtkAbstractPropPicker* > PickersMapType;
 
     /// @brief scene's transforms
-    typedef std::map< VtkObjectIdType, vtkObject  * > VtkObjectMapType;
+    typedef std::map< VtkObjectIdType, vtkObject* > VtkObjectMapType;
 
     /// @brief Actives adaptors in scene
     typedef std::map< AdaptorIdType, SceneAdaptor > SceneAdaptorsMapType;
@@ -289,25 +289,25 @@ private:
     void configureRenderer ( ConfigurationType conf );
     void configureObject   ( ConfigurationType conf );
     void configureVtkObject( ConfigurationType conf );
-    vtkTransform * createVtkTransform( ConfigurationType conf );
+    vtkTransform* createVtkTransform( ConfigurationType conf );
 
     /// Creates the connection if the required key is contained in the composite
     void connectAfterWait(::fwData::Composite::ContainerType objects);
 
     /// Creates the connection given by the configuration for obj associated with the key in the composite.
-    void manageConnection(const std::string &key, const ::fwData::Object::csptr &obj,
-                          const ConfigurationType &config);
+    void manageConnection(const std::string& key, const ::fwData::Object::csptr& obj,
+                          const ConfigurationType& config);
 
     /// Creates the proxy given by the configuration for obj associated with the key in the composite.
-    void manageProxy(const std::string &key, const ::fwData::Object::csptr &obj,
-                     const ConfigurationType &config);
+    void manageProxy(const std::string& key, const ::fwData::Object::csptr& obj,
+                     const ConfigurationType& config);
 
     /// Disconnects the connection based on a object key
     template< class ContainerType >
     void disconnect( const ContainerType& objects );
 
     /// Signal/ Slot connection
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 
     /// Map to register proxy connections
     ::fwServices::helper::Config::ProxyConnectionsMapType m_proxyMap;
@@ -319,7 +319,7 @@ private:
     /// vector containing all the proxy configurations
     ConnectConfigType m_proxies;
 
-    typedef std::map< std::string, ::fwServices::helper::SigSlotConnection::sptr > ObjectConnectionsMapType;
+    typedef std::map< std::string, ::fwServices::helper::SigSlotConnection > ObjectConnectionsMapType;
     /// map containing the object key/connection relation
     ObjectConnectionsMapType m_objectConnections;
 };
@@ -334,7 +334,7 @@ void SRender::disconnect(const ContainerType& objects)
         std::string key = element.first;
         if(m_objectConnections.find(key) != m_objectConnections.end())
         {
-            m_objectConnections[key]->disconnect();
+            m_objectConnections[key].disconnect();
             m_objectConnections.erase(key);
         }
 

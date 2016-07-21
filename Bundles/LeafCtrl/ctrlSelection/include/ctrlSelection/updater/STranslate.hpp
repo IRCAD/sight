@@ -19,7 +19,6 @@ namespace updater
 {
 
 /**
- * @class   STranslate
  * @brief   Update the composite related to this service according to the receiving composite signals and translate the
  * composite keys.
  */
@@ -79,7 +78,7 @@ protected:
     CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Implements info method derived from IService. Print classname.
-    CTRLSELECTION_API virtual void info( std::ostream &_sstream );
+    CTRLSELECTION_API virtual void info( std::ostream& _sstream );
 
 private:
 
@@ -104,7 +103,7 @@ private:
     ::fwData::Composite::wptr m_source;
 
     /// Connection to source
-    ::fwServices::helper::SigSlotConnection::sptr m_connection;
+    ::fwServices::helper::SigSlotConnection m_connections;
 };
 
 } // updater

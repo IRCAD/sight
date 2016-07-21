@@ -145,7 +145,6 @@ void SImageSignalForwarder::configuring()  throw ( ::fwTools::Failed )
 
 void SImageSignalForwarder::starting()  throw ( ::fwTools::Failed )
 {
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
     ::fwData::Image::csptr src;
 
     if (!this->isVersion2())
@@ -170,7 +169,7 @@ void SImageSignalForwarder::starting()  throw ( ::fwTools::Failed )
 
     for (auto signalKey: m_managedSignals)
     {
-        m_connections->connect(src, signalKey, this->getSptr(), m_availableConnection[signalKey]);
+        m_connections.connect(src, signalKey, this->getSptr(), m_availableConnection[signalKey]);
     }
 }
 
@@ -178,7 +177,7 @@ void SImageSignalForwarder::starting()  throw ( ::fwTools::Failed )
 
 void SImageSignalForwarder::stopping()  throw ( ::fwTools::Failed )
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
 }
 
 //-----------------------------------------------------------------------------

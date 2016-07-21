@@ -51,8 +51,8 @@ public:
      * @{
      */
     FWSERVICES_API virtual void setConfig(const std::string& configId,
-                                          const FieldAdaptorType &replaceFields = FieldAdaptorType());
-    FWSERVICES_API virtual void setConfig(const std::string& configId, const ::fwData::Composite::csptr &replaceFields);
+                                          const FieldAdaptorType& replaceFields = FieldAdaptorType());
+    FWSERVICES_API virtual void setConfig(const std::string& configId, const ::fwData::Composite::csptr& replaceFields);
     FWSERVICES_API virtual ::fwData::Object::sptr getConfigRoot() const;
     FWSERVICES_API virtual void launch();
     FWSERVICES_API virtual void stopAndDestroy();
@@ -86,7 +86,7 @@ private:
 
     ::fwData::Object::sptr getRefObject(ConfigAttribute type, const std::string& uid) const;
 
-    ::fwServices::IService::sptr getNewService(const std::string& uid, const std::string &implType) const;
+    ::fwServices::IService::sptr getNewService(const std::string& uid, const std::string& implType) const;
 
     void stopStartedServices();
     void destroyCreatedServices();
@@ -101,7 +101,7 @@ private:
     virtual void createServices(::fwRuntime::ConfigurationElement::csptr cfgElem);
 
     /// Create a single service from its configuration
-    virtual ::fwServices::IService::sptr createService(const ServiceConfig &srvConfig);
+    virtual ::fwServices::IService::sptr createService(const ServiceConfig& srvConfig);
 
     /// Parse connection sections and creates them
     virtual void createConnections();
@@ -118,7 +118,7 @@ private:
     /// Connect signal and slots
     void connect(const std::string& channel, const ProxyConnections& connectCfg);
 
-    void destroyProxy(const std::string& channel, const ProxyConnections& proxyCfg, const std::string &key,
+    void destroyProxy(const std::string& channel, const ProxyConnections& proxyCfg, const std::string& key,
                       fwData::Object::csptr hintObj = nullptr);
     void destroyProxies();
 
@@ -164,7 +164,7 @@ private:
     ServiceContainer m_startedSrv;
 
     /// Connections between object and services
-    helper::SigSlotConnection::uptr m_connections;
+    helper::SigSlotConnection m_connections;
 
     /// While we need to maintain old and new services behavior, we need a dummy data for new services
     /// that don't work on any data.

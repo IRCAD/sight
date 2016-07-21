@@ -44,8 +44,6 @@ Texture::Texture() throw() :
     m_slotApplyTexture = ::fwCom::newSlot( &Texture::applyTexture, this );
     ::fwCom::HasSlots::m_slots( s_APPLY_TEXTURE_SLOT, m_slotApplyTexture);
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
-
-
 }
 
 //------------------------------------------------------------------------------

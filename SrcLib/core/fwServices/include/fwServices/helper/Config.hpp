@@ -112,7 +112,7 @@ public:
      * @param cfg configuration element containing "<connect>" tags
      * @param obj optional object used to retrieve signal if uid is not defined [deprecated]
      */
-    FWSERVICES_API static ConnectionInfo parseConnections(CSPTR(::fwRuntime::ConfigurationElement) cfg,
+    FWSERVICES_API static ConnectionInfo parseConnections(const CSPTR(::fwRuntime::ConfigurationElement)& cfg,
                                                           const CSPTR(::fwTools::Object)& obj =
                                                               CSPTR(::fwTools::Object)());
 
@@ -122,9 +122,10 @@ public:
      *
      * @param cfg configuration element containing "<connect>" tags
      */
-    FWSERVICES_API static ProxyConnections parseConnections2( CSPTR(::fwRuntime::ConfigurationElement) connectionCfg,
-                                                              const std::string& errMsgHead,
-                                                              std::function<std::string ()> generateChannelNameFn);
+    FWSERVICES_API static ProxyConnections parseConnections2(
+        const CSPTR(::fwRuntime::ConfigurationElement)& connectionCfg,
+        const std::string& errMsgHead,
+        std::function<std::string ()> generateChannelNameFn);
 
     /**
      * @brief Parses "<connect>" tags from given configuration to connect signals and slots using given helper.
@@ -134,8 +135,8 @@ public:
      * @param obj optional object used to retrieve signal if uid is not defined [deprecated]
      */
     FWSERVICES_API static void createConnections(
-        CSPTR(::fwRuntime::ConfigurationElement) cfg,
-        SPTR(::fwServices::helper::SigSlotConnection) helper,
+        const CSPTR(::fwRuntime::ConfigurationElement)& cfg,
+        ::fwServices::helper::SigSlotConnection& helper,
         const CSPTR(::fwTools::Object)& obj = CSPTR(::fwTools::Object)());
 
 
@@ -148,15 +149,15 @@ public:
      * @param obj optional object used to retrieve signal if uid is not defined
      */
     FWSERVICES_API static void createProxy(
-        const std::string &objectKey,
-        CSPTR(::fwRuntime::ConfigurationElement) cfg,
-        ProxyConnectionsMapType &proxyMap,
+        const std::string& objectKey,
+        const CSPTR(::fwRuntime::ConfigurationElement)& cfg,
+        ProxyConnectionsMapType& proxyMap,
         const CSPTR(::fwData::Object)& obj = CSPTR(::fwData::Object)());
 
 
     /// Disconnects all proxies associated to objectKey
-    FWSERVICES_API static void disconnectProxies(const std::string &objectKey,
-                                                 Config::ProxyConnectionsMapType &proxyMap);
+    FWSERVICES_API static void disconnectProxies(const std::string& objectKey,
+                                                 Config::ProxyConnectionsMapType& proxyMap);
 
     /// Used to store object configuration in a service.
     struct ObjectServiceConfig
@@ -181,7 +182,7 @@ public:
     };
 
     /// Parse a service and return a service configuration
-    static ServiceConfig parseService( CSPTR(::fwRuntime::ConfigurationElement) srvElem,
+    static ServiceConfig parseService( const CSPTR(::fwRuntime::ConfigurationElement)& srvElem,
                                        const std::string& errMsgHead);
 };
 

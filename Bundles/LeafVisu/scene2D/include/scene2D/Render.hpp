@@ -80,7 +80,7 @@ public:
     SCENE2D_API void dispatchInteraction( SPTR(::scene2D::data::Event) _event );
 
     /// Returns the viewport coordinate point mapped to scene coordinates.
-    SCENE2D_API ::scene2D::data::Coord mapToScene( const ::scene2D::data::Coord & coord ) const;
+    SCENE2D_API ::scene2D::data::Coord mapToScene( const ::scene2D::data::Coord& coord ) const;
 
     /// Returns what happens to scene's aspect ratio on view resize events
     SCENE2D_API Qt::AspectRatioMode getAspectRatioMode() const;
@@ -347,10 +347,10 @@ private:
     ::scene2D::data::Coord m_sceneWidth;
 
     /// The scene.
-    QGraphicsScene * m_scene;
+    QGraphicsScene* m_scene;
 
     /// The view.
-    Scene2DGraphicsView * m_view;
+    Scene2DGraphicsView* m_view;
 
     /// If antialiasing is requested (deactivated by default because of a potential lack of performance)
     bool m_antialiasing;
@@ -359,7 +359,7 @@ private:
     Qt::AspectRatioMode m_aspectRatioMode;
 
     /// Signal/ Slot connection
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 
     typedef std::vector< ::fwRuntime::ConfigurationElement::sptr > ConnectConfigType;
     /// vector containing all the connections configurations
@@ -367,7 +367,7 @@ private:
     /// vector containing all the proxy configurations
     ConnectConfigType m_proxies;
 
-    typedef std::map< std::string, ::fwServices::helper::SigSlotConnection::sptr > ObjectConnectionsMapType;
+    typedef std::map< std::string, ::fwServices::helper::SigSlotConnection > ObjectConnectionsMapType;
     /// map containing the object key/connection relation
     ObjectConnectionsMapType m_objectConnections;
 

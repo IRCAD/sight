@@ -53,8 +53,6 @@ NegatoMPR::NegatoMPR() throw() :
     m_sliceMode(THREE_SLICES),
     m_backupedSliceMode(THREE_SLICES)
 {
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
-
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &NegatoMPR::updateSliceType, this);
     newSlot(s_UPDATE_SLICE_MODE_SLOT, &NegatoMPR::updateSliceMode, this);
     newSlot(s_SHOW_SLICE_SLOT, &NegatoMPR::showSlice, this);

@@ -47,8 +47,6 @@ PlaneSelectionNotifier::PlaneSelectionNotifier() throw()
     newSlot(s_ADD_PLANE_SLOT, &PlaneSelectionNotifier::addPlane, this);
     newSlot(s_REMOVE_PLANE_SLOT, &PlaneSelectionNotifier::removePlane, this);
     newSlot(s_SHOW_PLANES_SLOT, &PlaneSelectionNotifier::showPlanes, this);
-
-    m_plConnection = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //------------------------------------------------------------------------------
@@ -87,10 +85,10 @@ void PlaneSelectionNotifier::doStart() throw(fwTools::Failed)
     ::fwData::PlaneList::sptr planeList = m_currentPlaneList.lock();
     if(planeList)
     {
-        m_plConnection->connect(planeList, ::fwData::PlaneList::s_PLANE_REMOVED_SIG,
-                                this->getSptr(), s_REMOVE_PLANE_SLOT);
-        m_plConnection->connect(planeList, ::fwData::PlaneList::s_VISIBILITY_MODIFIED_SIG,
-                                this->getSptr(), s_SHOW_PLANES_SLOT);
+        m_plConnection.connect(planeList, ::fwData::PlaneList::s_PLANE_REMOVED_SIG,
+                               this->getSptr(), s_REMOVE_PLANE_SLOT);
+        m_plConnection.connect(planeList, ::fwData::PlaneList::s_VISIBILITY_MODIFIED_SIG,
+                               this->getSptr(), s_SHOW_PLANES_SLOT);
 
         for( ::fwData::Plane::sptr plane :  planeList->getPlanes() )
         {
@@ -131,7 +129,7 @@ void PlaneSelectionNotifier::doStop() throw(fwTools::Failed)
             m_planeConnections[plane->getID()].disconnect();
         }
 
-        m_plConnection->disconnect();
+        m_plConnection.disconnect();
 
         m_currentPlaneList.reset();
     }

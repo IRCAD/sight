@@ -46,7 +46,7 @@ public:
 
     VISUVTKADAPTOR_API virtual ~Plane() throw();
 
-    VISUVTKADAPTOR_API void setVtkPlaneCollection( vtkObject * col );
+    VISUVTKADAPTOR_API void setVtkPlaneCollection( vtkObject* col );
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -95,14 +95,14 @@ protected:
 private:
 
     vtkPlaneSource* m_vtkPlane;
-    vtkActor *m_actorPlan;
+    vtkActor* m_actorPlan;
     ::fwData::Plane::wptr m_pPlane;
 
     vtkPlane* m_vtkImplicitPlane;
     vtkPlaneCollection* m_vtkPlaneCollection;
 
     /// register connections between plane's points and this service
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 };
 
 

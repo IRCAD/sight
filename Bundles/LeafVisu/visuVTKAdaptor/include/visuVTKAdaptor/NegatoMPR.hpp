@@ -146,7 +146,7 @@ private:
     ::boost::logic::tribool m_3dModeEnabled;
     SliceMode m_sliceMode;
     SliceMode m_backupedSliceMode;
-    ::fwServices::helper::SigSlotConnection::sptr m_connections; /// store subservices connections
+    ::fwServices::helper::SigSlotConnection m_connections; /// store subservices connections
 
     ::fwRenderVTK::IVtkAdaptorService::wptr m_sliceCursor;
 };

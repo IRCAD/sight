@@ -226,16 +226,11 @@ void ImagesBlend::addImageAdaptors()
 
             SLM_ASSERT("No image with the id '" << id << "' found", img);
 
-            if (info->m_connections)
-            {
-                info->m_connections->disconnect();
-                info->m_connections.reset();
-            }
+            info->m_connections.disconnect();
 
-            info->m_connections = ::fwServices::helper::SigSlotConnection::New();
-            info->m_connections->connect(img, ::fwData::Image::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
-            info->m_connections->connect(img, ::fwData::Image::s_BUFFER_MODIFIED_SIG, this->getSptr(),
-                                         s_UPDATE_SLOT);
+            info->m_connections.connect(img, ::fwData::Image::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
+            info->m_connections.connect(img, ::fwData::Image::s_BUFFER_MODIFIED_SIG, this->getSptr(),
+                                        s_UPDATE_SLOT);
 
             bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
             if (imageIsValid)
@@ -273,12 +268,7 @@ void ImagesBlend::removeImageAdaptors()
     BOOST_REVERSE_FOREACH(std::string id, m_imageIds)
     {
         SPTR(ImageInfo) info = m_imagesInfo[id];
-
-        if ( info->m_connections)
-        {
-            info->m_connections->disconnect();
-            info->m_connections.reset();
-        }
+        info->m_connections.disconnect();
     }
     this->unregisterServices();
 }

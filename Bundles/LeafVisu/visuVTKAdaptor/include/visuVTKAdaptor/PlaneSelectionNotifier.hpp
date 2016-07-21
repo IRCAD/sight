@@ -88,7 +88,7 @@ protected:
     ::fwData::PlaneList::wptr m_currentPlaneList;
 
     /// Register connection between planelist and this adaptor
-    ::fwServices::helper::SigSlotConnection::sptr m_plConnection;
+    ::fwServices::helper::SigSlotConnection m_plConnection;
 
     /// Register connection between plane and this service
     ConnetionMapType m_planeConnections;

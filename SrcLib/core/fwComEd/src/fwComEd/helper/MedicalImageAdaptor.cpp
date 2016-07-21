@@ -140,7 +140,7 @@ void MedicalImageAdaptor::setOrientation( int orientation )
 static const int indexZ[12]   = { 0,2,4, 1,2,4,  1,3,4,0,3,4 };
 static const int indexY[12]   = { 0,2,4, 1,2,4,  1,2,5,0,2,5 };
 static const int indexX[12]   = { 0,2,4, 0,2,5,  0,3,5,0,3,4 };
-static const int *indexSet[3] = { indexX, indexY, indexZ  };
+static const int* indexSet[3] = { indexX, indexY, indexZ  };
 void MedicalImageAdaptor::getPlane( double points[4][3], int sliceNumber)
 {
     ::fwData::Image::sptr image = this->getImage();
@@ -153,7 +153,7 @@ void MedicalImageAdaptor::getPlane( double points[4][3], int sliceNumber)
     extent[2*m_orientation]   = sliceNumber*image->getSpacing()[m_orientation];
     extent[2*m_orientation+1] = sliceNumber*image->getSpacing()[m_orientation];
 
-    const int *extentIndex = indexSet[ m_orientation ];
+    const int* extentIndex = indexSet[ m_orientation ];
     for (int p = 0; p<4; ++p)
     {
         for (int i = 0; i<3; ++i)
@@ -336,21 +336,21 @@ void MedicalImageAdaptor::updateTransferFunction( ::fwData::Image::sptr image )
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::setTFSelectionFwID( const std::string & fwid )
+void MedicalImageAdaptor::setTFSelectionFwID( const std::string& fwid )
 {
     m_tfSelectionFwID = fwid;
 }
 
 //------------------------------------------------------------------------------
 
-void MedicalImageAdaptor::setSelectedTFKey( const std::string & key )
+void MedicalImageAdaptor::setSelectedTFKey( const std::string& key )
 {
     m_selectedTFKey = key;
 }
 
 //------------------------------------------------------------------------------
 
-const std::string & MedicalImageAdaptor::getTFSelectionFwID() const
+const std::string& MedicalImageAdaptor::getTFSelectionFwID() const
 {
     return m_tfSelectionFwID;
 }
@@ -364,7 +364,7 @@ void MedicalImageAdaptor::setTransferFunctionSelection(fwData::Composite::wptr s
 
 //------------------------------------------------------------------------------
 
-const std::string & MedicalImageAdaptor::getSelectedTFKey() const
+const std::string& MedicalImageAdaptor::getSelectedTFKey() const
 {
     return m_selectedTFKey;
 }
@@ -426,42 +426,31 @@ void MedicalImageAdaptor::setLevel( double level )
 
 void MedicalImageAdaptor::installTFConnections()
 {
-    SLM_ASSERT( "TF connections already exist",!m_tfSelectionConnections && !m_tfConnections);
-
     ::fwData::Composite::sptr tfComposite = this->getTransferFunctionSelection();
     SLM_ASSERT( "Missing transfer function selection composite",tfComposite);
 
-    m_tfSelectionConnections = ::fwServices::helper::SigSlotConnection::New();
-    m_tfConnections          = ::fwServices::helper::SigSlotConnection::New();
-
     ::fwCom::Connection connection;
     connection = tfComposite->signal(::fwData::Composite::s_ADDED_OBJECTS_SIG)->connect(m_slotAddedObjects);
-    m_tfSelectionConnections->addConnection(connection);
+    m_tfSelectionConnections.addConnection(connection);
     connection = tfComposite->signal(::fwData::Composite::s_CHANGED_OBJECTS_SIG)->connect(m_slotChangedObjects);
-    m_tfSelectionConnections->addConnection(connection);
+    m_tfSelectionConnections.addConnection(connection);
     connection = tfComposite->signal(::fwData::Composite::s_REMOVED_OBJECTS_SIG)->connect(m_slotRemovedObjects);
-    m_tfSelectionConnections->addConnection(connection);
+    m_tfSelectionConnections.addConnection(connection);
 
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
     connection = tf->signal(::fwData::TransferFunction::s_POINTS_MODIFIED_SIG)->connect(m_slotUpdateTFPoints);
-    m_tfConnections->addConnection(connection);
+    m_tfConnections.addConnection(connection);
     connection = tf->signal(::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG)->connect(m_slotUpdateTFWindowing);
-    m_tfConnections->addConnection(connection);
+    m_tfConnections.addConnection(connection);
 }
 
 //------------------------------------------------------------------------------
 
 void MedicalImageAdaptor::removeTFConnections()
 {
-    m_tfSelectionConnections->disconnect();
-    m_tfSelectionConnections.reset();
-
-    if (m_tfConnections)
-    {
-        m_tfConnections->disconnect();
-        m_tfConnections.reset();
-    }
+    m_tfSelectionConnections.disconnect();
+    m_tfConnections.disconnect();
 }
 
 //------------------------------------------------------------------------------
@@ -471,19 +460,14 @@ void MedicalImageAdaptor::addObjects(::fwData::Composite::ContainerType objects)
     ::fwData::Composite::iterator iter = objects.find(this->getSelectedTFKey());
     if( iter != objects.end())
     {
-        if (!m_tfConnections)
-        {
-            m_tfConnections = ::fwServices::helper::SigSlotConnection::New();
-        }
-
         ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
         ::fwCom::Connection connection;
         connection = tf->signal(::fwData::TransferFunction::s_POINTS_MODIFIED_SIG)->connect(
             m_slotUpdateTFPoints);
-        m_tfConnections->addConnection(connection);
+        m_tfConnections.addConnection(connection);
         connection = tf->signal(::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG)->connect(
             m_slotUpdateTFWindowing);
-        m_tfConnections->addConnection(connection);
+        m_tfConnections.addConnection(connection);
 
         this->updateTFPoints();
     }
@@ -494,19 +478,18 @@ void MedicalImageAdaptor::addObjects(::fwData::Composite::ContainerType objects)
 void MedicalImageAdaptor::changeObjects(::fwData::Composite::ContainerType newObjects,
                                         ::fwData::Composite::ContainerType oldObjects)
 {
-    SLM_ASSERT( "A TF observer must exist, use installTFConnections() to create it properly.", m_tfConnections );
     ::fwData::Composite::iterator iter = newObjects.find(this->getSelectedTFKey());
     if( iter != newObjects.end())
     {
-        m_tfConnections->disconnect();
+        m_tfConnections.disconnect();
         ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
         ::fwCom::Connection connection;
         connection = tf->signal(::fwData::TransferFunction::s_POINTS_MODIFIED_SIG)->connect(
             m_slotUpdateTFPoints);
-        m_tfConnections->addConnection(connection);
+        m_tfConnections.addConnection(connection);
         connection = tf->signal(::fwData::TransferFunction::s_WINDOWING_MODIFIED_SIG)->connect(
             m_slotUpdateTFWindowing);
-        m_tfConnections->addConnection(connection);
+        m_tfConnections.addConnection(connection);
 
         this->updateTFPoints();
     }
@@ -516,12 +499,10 @@ void MedicalImageAdaptor::changeObjects(::fwData::Composite::ContainerType newOb
 
 void MedicalImageAdaptor::removeObjects(::fwData::Composite::ContainerType objects)
 {
-    SLM_ASSERT("A TF observer must exist, use installTFConnections() to create it properly.", m_tfConnections);
     ::fwData::Composite::iterator iter = objects.find(this->getSelectedTFKey());
     if( iter != objects.end())
     {
-        m_tfConnections->disconnect();
-        m_tfConnections.reset();
+        m_tfConnections.disconnect();
     }
 }
 

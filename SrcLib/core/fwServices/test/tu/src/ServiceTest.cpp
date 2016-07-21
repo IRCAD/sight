@@ -288,18 +288,18 @@ void ServiceTest::testCommunication()
     TestServiceSignals::sptr receiver1 = std::make_shared< TestServiceSignals>();
     TestServiceSignals::sptr receiver2 = std::make_shared< TestServiceSignals>();
 
-    ::fwServices::helper::SigSlotConnection::sptr comHelper = ::fwServices::helper::SigSlotConnection::New();
-    comHelper->connect(service1, ::fwServices::IService::s_STARTED_SIG, receiver1, "start");
-    comHelper->connect(service1, ::fwServices::IService::s_UPDATED_SIG, receiver1, "update");
-    comHelper->connect(service1, ::fwServices::IService::s_STOPPED_SIG, receiver1, "stop");
+    ::fwServices::helper::SigSlotConnection comHelper;
+    comHelper.connect(service1, ::fwServices::IService::s_STARTED_SIG, receiver1, "start");
+    comHelper.connect(service1, ::fwServices::IService::s_UPDATED_SIG, receiver1, "update");
+    comHelper.connect(service1, ::fwServices::IService::s_STOPPED_SIG, receiver1, "stop");
 
     CPPUNIT_ASSERT_EQUAL(false, receiver1->m_started);
     CPPUNIT_ASSERT_EQUAL(false, receiver1->m_updated);
     CPPUNIT_ASSERT_EQUAL(false, receiver1->m_stopped);
 
-    comHelper->connect(service2, ::fwServices::IService::s_STARTED_SIG, receiver2, "start");
-    comHelper->connect(service2, ::fwServices::IService::s_UPDATED_SIG, receiver2, "update");
-    comHelper->connect(service2, ::fwServices::IService::s_STOPPED_SIG, receiver2, "stop");
+    comHelper.connect(service2, ::fwServices::IService::s_STARTED_SIG, receiver2, "start");
+    comHelper.connect(service2, ::fwServices::IService::s_UPDATED_SIG, receiver2, "update");
+    comHelper.connect(service2, ::fwServices::IService::s_STOPPED_SIG, receiver2, "stop");
 
     CPPUNIT_ASSERT_EQUAL(false, receiver2->m_started);
     CPPUNIT_ASSERT_EQUAL(false, receiver2->m_updated);
@@ -320,10 +320,10 @@ void ServiceTest::testCommunication()
     CPPUNIT_ASSERT_EQUAL(false, receiver2->m_stopped);
 
     // Register communication channel
-    comHelper->connect( obj, service1, service1->getObjSrvConnections() );
-    comHelper->connect( obj, service2, service2->getObjSrvConnections() );
-    comHelper->connect( service1, ::fwServices::ut::TestServiceImplementation::s_MSG_SENT_SIG,
-                        service2, ::fwServices::ut::TestServiceImplementation::s_RECEIVE_MSG_SLOT );
+    comHelper.connect( obj, service1, service1->getObjSrvConnections() );
+    comHelper.connect( obj, service2, service2->getObjSrvConnections() );
+    comHelper.connect( service1, ::fwServices::ut::TestServiceImplementation::s_MSG_SENT_SIG,
+                       service2, ::fwServices::ut::TestServiceImplementation::s_RECEIVE_MSG_SLOT );
 
     // Service1 send notification
     ::fwServices::ut::TestServiceImplementation::MsgSentSignalType::sptr sig;
@@ -359,8 +359,7 @@ void ServiceTest::testCommunication()
     CPPUNIT_ASSERT_EQUAL(true, receiver2->m_updated);
     CPPUNIT_ASSERT_EQUAL(true, receiver2->m_stopped);
 
-    comHelper->disconnect();
-    comHelper.reset();
+    comHelper.disconnect();
 
     ::fwServices::OSR::unregisterService(service1);
     ::fwServices::OSR::unregisterService(service2);

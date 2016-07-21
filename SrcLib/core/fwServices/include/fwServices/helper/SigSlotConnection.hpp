@@ -13,8 +13,6 @@
 
 #include "fwServices/config.hpp"
 
-#include <fwCore/BaseObject.hpp>
-
 #include <fwCom/Connection.hpp>
 #include <fwCom/HasSlots.hpp>
 #include <fwCom/HasSignals.hpp>
@@ -26,16 +24,12 @@ namespace helper
 {
 
 /**
- * @brief  This class provides few tools to connect/disconnect signals/slots between obj/srv
+ * @brief  This class provides few tools to ease connect/disconnect between a signal emitter and a slot receiver.
  */
-class FWSERVICES_CLASS_API SigSlotConnection : public ::fwCore::BaseObject
+class FWSERVICES_CLASS_API SigSlotConnection
 {
 
 public:
-
-    fwCoreClassDefinitionsWithFactoryMacro( (SigSlotConnection)(::fwCore::BaseObject),
-                                            (()),
-                                            std::make_shared< SigSlotConnection > );
 
     typedef std::list< ::fwCom::Connection > ConnectionContainerType;
 
@@ -43,19 +37,19 @@ public:
 
     typedef std::vector< KeyConnectionType > KeyConnectionsType;
 
-    /// Constructor, does nothing
+    /// Constructor, do nothing
     FWSERVICES_API SigSlotConnection();
 
-    /// Destructor, calls disconnect()
+    /// Destructor, call disconnect()
     FWSERVICES_API virtual ~SigSlotConnection();
 
     /// Connect signal to slot, and register this new connection in  m_connections
-    FWSERVICES_API void connect(::fwCom::HasSignals::csptr hasSignals, ::fwCom::Signals::SignalKeyType signalKey,
-                                ::fwCom::HasSlots::csptr hasSlots, ::fwCom::Slots::SlotKeyType slotKey );
+    FWSERVICES_API void connect(const ::fwCom::HasSignals::csptr& hasSignals, ::fwCom::Signals::SignalKeyType signalKey,
+                                const ::fwCom::HasSlots::csptr& hasSlots, ::fwCom::Slots::SlotKeyType slotKey );
 
     /// Connect signals to slots, and register these new connections in  m_connections
-    FWSERVICES_API void connect(::fwCom::HasSignals::csptr hasSignals, ::fwCom::HasSlots::csptr hasSlots,
-                                const KeyConnectionsType & keyConnections );
+    FWSERVICES_API void connect(const ::fwCom::HasSignals::csptr& hasSignals, const ::fwCom::HasSlots::csptr& hasSlots,
+                                const KeyConnectionsType& keyConnections );
 
     /// Add a connection
     FWSERVICES_API void addConnection( ::fwCom::Connection connection );

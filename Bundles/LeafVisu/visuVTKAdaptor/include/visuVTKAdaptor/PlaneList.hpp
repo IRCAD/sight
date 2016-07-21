@@ -59,11 +59,11 @@ protected:
     /// Slot: Update plane selection
     void updateSelection(::fwData::Plane::sptr plane);
 
-    vtkCommand * m_rightButtonCommand;
+    vtkCommand* m_rightButtonCommand;
     ::fwRenderVTK::SRender::VtkObjectIdType m_planeCollectionId;
 
     /// Store connections to planes adaptors.
-    ::fwServices::helper::SigSlotConnection::sptr m_planeConnections;
+    ::fwServices::helper::SigSlotConnection m_planeConnections;
 
 private:
     /**

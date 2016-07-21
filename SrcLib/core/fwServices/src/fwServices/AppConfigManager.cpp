@@ -143,7 +143,7 @@ void AppConfigManager::autoSigSlotConnection(
     ::fwServices::IService::sptr srv,
     ConfigAttribute priority)
 {
-    m_connections->connect( obj, srv, srv->getObjSrvConnections() );
+    m_connections.connect( obj, srv, srv->getObjSrvConnections() );
 }
 
 // ------------------------------------------------------------------------
@@ -157,7 +157,7 @@ void AppConfigManager::startConnections()
 
 void AppConfigManager::stopConnections()
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
 }
 
 // ------------------------------------------------------------------------
@@ -491,7 +491,7 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
 // Constructors / Destructors
 // ------------------------------------------------------------------------
 
-AppConfigManager::AppConfigManager() : m_connections( helper::SigSlotConnection::New() )
+AppConfigManager::AppConfigManager()
 {
     SLM_ASSERT("Can't mix V1 and V2 appConfigs", s_VERSION == 0 || s_VERSION == 1);
     s_VERSION = 1;
@@ -687,7 +687,7 @@ void AppConfigManager::destroyProxies()
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::setConfig(const std::string &configId, const FieldAdaptorType &replaceFields)
+void AppConfigManager::setConfig(const std::string& configId, const FieldAdaptorType& replaceFields)
 {
     m_configId = configId;
     m_cfgElem  = registry::AppConfig::getDefault()->getAdaptedTemplateConfig( configId, replaceFields );
@@ -696,7 +696,7 @@ void AppConfigManager::setConfig(const std::string &configId, const FieldAdaptor
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::setConfig(const std::string& configId, const ::fwData::Composite::csptr &replaceFields)
+void AppConfigManager::setConfig(const std::string& configId, const ::fwData::Composite::csptr& replaceFields)
 {
     m_configId = configId;
     m_cfgElem  = registry::AppConfig::getDefault()->getAdaptedTemplateConfig( configId, replaceFields );

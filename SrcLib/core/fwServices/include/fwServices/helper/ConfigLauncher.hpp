@@ -89,7 +89,7 @@ public:
 protected:
 
     /// To manage connection to the config root
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 
     ::fwActivities::registry::ActivityAppConfig m_appConfig;
 

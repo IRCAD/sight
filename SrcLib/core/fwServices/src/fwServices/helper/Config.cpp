@@ -33,8 +33,8 @@ const std::array< std::string, 3 > s_DATA_KEYWORDS = {{ "in", "out", "inout" }};
 
 //-----------------------------------------------------------------------------
 
-void Config::createConnections( ::fwRuntime::ConfigurationElement::csptr connectionCfg,
-                                ::fwServices::helper::SigSlotConnection::sptr connections,
+void Config::createConnections( const ::fwRuntime::ConfigurationElement::csptr& connectionCfg,
+                                ::fwServices::helper::SigSlotConnection& connections,
                                 const CSPTR(::fwTools::Object)& obj)
 {
     ConnectionInfo info = parseConnections(connectionCfg, obj);
@@ -52,13 +52,13 @@ void Config::createConnections( ::fwRuntime::ConfigurationElement::csptr connect
         ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
         SLM_ASSERT("invalid slot owner " << slotInfo.first, hasSlots);
 
-        connections->connect(hasSignals, info.m_signal.second, hasSlots, slotInfo.second);
+        connections.connect(hasSignals, info.m_signal.second, hasSlots, slotInfo.second);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-Config::ConnectionInfo Config::parseConnections( ::fwRuntime::ConfigurationElement::csptr connectionCfg,
+Config::ConnectionInfo Config::parseConnections( const ::fwRuntime::ConfigurationElement::csptr& connectionCfg,
                                                  const CSPTR(::fwTools::Object)& obj)
 {
     ConnectionInfo info;
@@ -108,7 +108,7 @@ Config::ConnectionInfo Config::parseConnections( ::fwRuntime::ConfigurationEleme
 
 //-----------------------------------------------------------------------------
 
-Config::ProxyConnections Config::parseConnections2(::fwRuntime::ConfigurationElement::csptr connectionCfg,
+Config::ProxyConnections Config::parseConnections2(const ::fwRuntime::ConfigurationElement::csptr& connectionCfg,
                                                    const std::string& errMsgHead,
                                                    std::function<std::string ()> generateChannelNameFn)
 {
@@ -165,9 +165,9 @@ Config::ProxyConnections Config::parseConnections2(::fwRuntime::ConfigurationEle
 
 //-----------------------------------------------------------------------------
 
-void Config::createProxy( const std::string &objectKey,
-                          CSPTR(::fwRuntime::ConfigurationElement)cfg,
-                          Config::ProxyConnectionsMapType &proxyMap,
+void Config::createProxy( const std::string& objectKey,
+                          const CSPTR(::fwRuntime::ConfigurationElement)& cfg,
+                          Config::ProxyConnectionsMapType& proxyMap,
                           const CSPTR(::fwData::Object)& obj)
 {
     ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
@@ -224,7 +224,7 @@ void Config::createProxy( const std::string &objectKey,
 
 //-----------------------------------------------------------------------------
 
-void Config::disconnectProxies(const std::string &objectKey, Config::ProxyConnectionsMapType &proxyMap)
+void Config::disconnectProxies(const std::string& objectKey, Config::ProxyConnectionsMapType& proxyMap)
 {
     ProxyConnectionsMapType::iterator iter = proxyMap.find(objectKey);
     if (iter != proxyMap.end())
@@ -257,7 +257,7 @@ void Config::disconnectProxies(const std::string &objectKey, Config::ProxyConnec
 
 //-----------------------------------------------------------------------------
 
-Config::ServiceConfig Config::parseService(::fwRuntime::ConfigurationElement::csptr srvElem,
+Config::ServiceConfig Config::parseService(const ::fwRuntime::ConfigurationElement::csptr& srvElem,
                                            const std::string& errMsgHead)
 {
     SLM_ASSERT("Configuration element is not a \"service\" node.", srvElem->getName() == "service");

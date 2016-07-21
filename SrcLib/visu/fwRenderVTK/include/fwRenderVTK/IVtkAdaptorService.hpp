@@ -59,14 +59,14 @@ public:
     FWRENDERVTK_API SRender::VtkObjectIdType getTransformId() const;
     FWRENDERVTK_API vtkTransform* getTransform();
 
-    FWRENDERVTK_API vtkObject * getVtkObject(const SRender::VtkObjectIdType& objectId) const;
+    FWRENDERVTK_API vtkObject* getVtkObject(const SRender::VtkObjectIdType& objectId) const;
 
     FWRENDERVTK_API vtkRenderWindowInteractor* getInteractor();
 
 
-    FWRENDERVTK_API virtual ::fwData::Object::sptr getAssociatedObject(vtkProp *prop, int depth = 0);
+    FWRENDERVTK_API virtual ::fwData::Object::sptr getAssociatedObject(vtkProp* prop, int depth = 0);
 
-    FWRENDERVTK_API void getAllSubProps(vtkPropCollection *propc, int depth = -1);
+    FWRENDERVTK_API void getAllSubProps(vtkPropCollection* propc, int depth = -1);
 
     /// End-user have to call this method when a vtk structure has been modified, thus a render request will be sent.
     FWRENDERVTK_API void setVtkPipelineModified();
@@ -120,7 +120,7 @@ protected:
      */
     //@{
     /// Overrides
-    FWRENDERVTK_API virtual void info(std::ostream &_sstream );
+    FWRENDERVTK_API virtual void info(std::ostream& _sstream );
     FWRENDERVTK_API void configuring() throw(fwTools::Failed);
     FWRENDERVTK_API void starting() throw(fwTools::Failed);
     FWRENDERVTK_API void stopping() throw(fwTools::Failed);
@@ -139,13 +139,13 @@ protected:
     SRender::VtkObjectIdType m_transformId;
     SRender::wptr m_renderService;
 
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 
 
     typedef std::vector < ::fwRenderVTK::IVtkAdaptorService::wptr > ServiceVector;
     ServiceVector m_subServices;
 
-    vtkPropCollection * m_propCollection;
+    vtkPropCollection* m_propCollection;
 
     bool m_autoRender;
     bool m_autoConnect; ///< If true, connect the adaptor slots to its objects signals
@@ -156,23 +156,23 @@ protected:
     FWRENDERVTK_API virtual void doUpdate()    = 0;
     FWRENDERVTK_API virtual void doConfigure() = 0;
 
-    ServiceVector & getRegisteredServices()
+    ServiceVector& getRegisteredServices()
     {
         return m_subServices;
     }
     FWRENDERVTK_API void registerService( ::fwRenderVTK::IVtkAdaptorService::sptr service );
     FWRENDERVTK_API void unregisterServices();
 
-    FWRENDERVTK_API void registerProp(vtkProp *prop);
+    FWRENDERVTK_API void registerProp(vtkProp* prop);
     FWRENDERVTK_API void unregisterProps();
 
-    FWRENDERVTK_API void addToRenderer(vtkProp *prop);
-    FWRENDERVTK_API void addToPicker(vtkProp *prop, std::string pickerId = "");
-    FWRENDERVTK_API void removeFromPicker(vtkProp *prop, std::string pickerId = "");
+    FWRENDERVTK_API void addToRenderer(vtkProp* prop);
+    FWRENDERVTK_API void addToPicker(vtkProp* prop, std::string pickerId = "");
+    FWRENDERVTK_API void removeFromPicker(vtkProp* prop, std::string pickerId = "");
 
     FWRENDERVTK_API void removeAllPropFromRenderer();
 
-    FWRENDERVTK_API static void getProps(vtkPropCollection *propc, vtkProp *prop);
+    FWRENDERVTK_API static void getProps(vtkPropCollection* propc, vtkProp* prop);
 
     /// notify a render request iff vtkPipeline is modified
     FWRENDERVTK_API void requestRender();

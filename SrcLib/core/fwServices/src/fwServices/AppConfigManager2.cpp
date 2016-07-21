@@ -41,7 +41,6 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects"
 // ------------------------------------------------------------------------
 
 AppConfigManager2::AppConfigManager2() :
-    m_connections( new helper::SigSlotConnection ),
     m_proxyID(0),
     m_isUnitTest(false)
 {
@@ -174,7 +173,7 @@ void AppConfigManager2::stop()
     this->destroyProxies();
 
     // Disconnect autoconnections for created objects
-    m_connections->disconnect();
+    m_connections.disconnect();
 
     // Disconnect autoconnections for deferrred objects
     for(auto& itDeferredObj : m_deferredObjects)
@@ -695,7 +694,7 @@ void AppConfigManager2::createServices(::fwRuntime::ConfigurationElement::csptr 
             else
             {
                 // Object created in the AppConfig
-                m_connections->connect( obj.first.lock(), srv, connections );
+                m_connections.connect( obj.first.lock(), srv, connections );
             }
         }
     }
@@ -714,7 +713,7 @@ void AppConfigManager2::createServices(::fwRuntime::ConfigurationElement::csptr 
             connections = srv->getObjSrvConnections();
         }
 
-        m_connections->connect( m_tmpRootObject, srv, connections );
+        m_connections.connect( m_tmpRootObject, srv, connections );
     }
 
     return srv;

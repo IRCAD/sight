@@ -23,7 +23,6 @@ namespace adaptor
 
 IAdaptor::IAdaptor() throw() : m_zValue(0), m_opacity(1)
 {
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //-----------------------------------------------------------------------------
@@ -34,7 +33,7 @@ IAdaptor::~IAdaptor() throw()
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::info(std::ostream &_sstream )
+void IAdaptor::info(std::ostream& _sstream )
 {
     /*_sstream << "IAdaptor : " ;
        this->SuperClass::info( _sstream ) ;*/
@@ -258,7 +257,7 @@ void IAdaptor::initializeViewportSize()
 
 void IAdaptor::starting() throw ( ::fwTools::Failed )
 {
-    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
 
     doStart();
 }
@@ -274,8 +273,8 @@ void IAdaptor::updating() throw ( ::fwTools::Failed )
 
 void IAdaptor::swapping() throw(fwTools::Failed)
 {
-    m_connections->disconnect();
-    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    m_connections.disconnect();
+    m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
     doSwap();
 }
 
@@ -283,7 +282,7 @@ void IAdaptor::swapping() throw(fwTools::Failed)
 
 void IAdaptor::stopping() throw ( ::fwTools::Failed )
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
     doStop();
 
     m_xAxis.reset();

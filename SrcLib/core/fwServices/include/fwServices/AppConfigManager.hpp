@@ -52,8 +52,8 @@ public:
      * @{
      */
     FWSERVICES_API virtual void setConfig(const std::string& configId,
-                                          const FieldAdaptorType &replaceFields = FieldAdaptorType());
-    FWSERVICES_API virtual void setConfig(const std::string& configId, const ::fwData::Composite::csptr &replaceFields);
+                                          const FieldAdaptorType& replaceFields = FieldAdaptorType());
+    FWSERVICES_API virtual void setConfig(const std::string& configId, const ::fwData::Composite::csptr& replaceFields);
     FWSERVICES_API virtual ::fwData::Object::sptr getConfigRoot() const;
     FWSERVICES_API virtual void launch();
     FWSERVICES_API virtual void stopAndDestroy();
@@ -112,7 +112,7 @@ protected:
 
     ServiceContainer m_createdSrv;
     ServiceContainer m_startedSrv;
-    helper::SigSlotConnection::sptr m_connections;
+    helper::SigSlotConnection m_connections;
 
     FWSERVICES_API ::fwData::Object::sptr getNewObject(
         ConfigAttribute type,

@@ -21,7 +21,6 @@ namespace manager
 {
 
 /**
- * @class  SField
  * @brief  This services is a manager which starts, stops or swaps services on field contained in a composite when
  * it receive specific message (mainly sent by updater).
  */
@@ -100,7 +99,7 @@ protected:
     CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Implements info method derived from IService. Print classname.
-    CTRLSELECTION_API virtual void info( std::ostream &_sstream );
+    CTRLSELECTION_API virtual void info( std::ostream& _sstream );
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef ::fwData::Object::FieldNameType FieldNameType;
@@ -125,7 +124,7 @@ protected:
         ::fwData::Object::sptr m_dummy;
         ConfigurationType m_config;
         WPTR(::fwServices::IService) m_service;
-        ::fwServices::helper::SigSlotConnection::sptr m_connections;
+        ::fwServices::helper::SigSlotConnection m_connections;
         bool m_hasAutoConnection;
     };
 

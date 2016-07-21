@@ -23,7 +23,6 @@ namespace visuVTKAdaptor
  * @brief Adaptor to map a texture on a mesh. This is done via ::visuVTKAdaptor::Material. However in the configuration
  *        we don't specify the material adaptor since it is automatically created by the ::visuVTKAdaptor::Mesh adaptor.
  *        Thus we rather try to specify the mesh adaptor.
- * @class Transform
  */
 class VISUVTKADAPTOR_CLASS_API Texture : public ::fwRenderVTK::IVtkAdaptorService
 {
@@ -103,9 +102,6 @@ protected:
 
     /// Slot to call when a texture must be applied on a material.
     ApplyTextureSlotType::sptr m_slotApplyTexture;
-
-    /// register connections between signal and slot
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
 
     /// enable or not the lighting (default true)
     bool m_lighting;

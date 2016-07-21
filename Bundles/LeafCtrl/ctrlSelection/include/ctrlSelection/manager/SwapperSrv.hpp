@@ -24,7 +24,6 @@ namespace manager
 {
 
 /**
- * @class  SwapperSrv
  * @brief  This services is a manager which starts, stops or swaps services on object contained in a composite when
  * it receive specific message (mainly sent by updater).
  */
@@ -117,7 +116,7 @@ protected:
     CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Implements info method derived from IService. Print classname.
-    CTRLSELECTION_API virtual void info( std::ostream &_sstream );
+    CTRLSELECTION_API virtual void info( std::ostream& _sstream );
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string ObjectIdType;
@@ -143,7 +142,7 @@ protected:
         ::fwData::Object::sptr m_dummy;
         ConfigurationType m_config;
         WPTR(::fwServices::IService) m_service;
-        ::fwServices::helper::SigSlotConnection::sptr m_connections;
+        ::fwServices::helper::SigSlotConnection m_connections;
         bool m_hasAutoConnection;
     };
 
@@ -160,9 +159,9 @@ protected:
     void removeObjects(::fwData::Composite::ContainerType objects);
 
     void initOnDummyObject( std::string objectId );
-    void addObject( const std::string &objectId, ::fwData::Object::sptr object );
-    void changeObject(const std::string &objectId, ::fwData::Object::sptr object);
-    void removeObject( const std::string &objectId );
+    void addObject( const std::string& objectId, ::fwData::Object::sptr object );
+    void changeObject(const std::string& objectId, ::fwData::Object::sptr object);
+    void removeObject( const std::string& objectId );
 
     ::fwServices::IService::sptr add( ::fwData::Object::sptr obj, ::fwRuntime::ConfigurationElement::sptr _elt );
 

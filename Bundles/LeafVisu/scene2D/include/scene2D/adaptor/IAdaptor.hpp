@@ -68,7 +68,7 @@ protected:
     SCENE2D_API virtual ~IAdaptor() throw();
 
     /// ToDo IM
-    SCENE2D_API virtual void info(std::ostream &_sstream );
+    SCENE2D_API virtual void info(std::ostream& _sstream );
 
     /// Not implemented in IAdaptor but in its subclasses
     SCENE2D_API void configuring() throw ( ::fwTools::Failed );
@@ -145,7 +145,7 @@ protected:
     typedef std::vector< ::scene2D::adaptor::IAdaptor::wptr > ManagedAdaptorVector;
 
     /// Return all managed adaptor
-    ManagedAdaptorVector & getRegisteredServices()
+    ManagedAdaptorVector& getRegisteredServices()
     {
         return m_managedAdaptors;
     }
@@ -162,7 +162,7 @@ protected:
 private:
 
     /// Register automatic connection on object
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwServices::helper::SigSlotConnection m_connections;
 
     /// All managed adaptors
     ManagedAdaptorVector m_managedAdaptors;
