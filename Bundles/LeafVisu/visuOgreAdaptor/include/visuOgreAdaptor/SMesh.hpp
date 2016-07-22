@@ -56,7 +56,31 @@ namespace visuOgreAdaptor
  * texture containing the color for each primitive. This texture is fetched inside the geometry shader using the
  * primitive id.
  *
- * @class SMesh
+ * @section Slots Slots
+ * - \b updateVisibility(bool): Sets whether the mesh is to be seen or not.
+ * - \b modifyMesh(): Called when the mesh is modified.
+ * - \b modifyColors(): Called when the point colors are modified.
+ * - \b modifyTexCoords(): Called when the texture coordinates are modified.
+ * - \b modifyVertices(): Called when the vertices are modified.
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+    <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
+        <config renderer="rendererId" transform="transformUID" materialAdaptor="materialName" shadingMode="gouraud"
+                textureAdaptor="texAdaptorUID" />
+    </adaptor>
+   @endcode
+ * With :
+ *  - \b renderer (mandatory) : defines the mesh's layer
+ *  - \b transform (optional) : the name of the Ogre transform node where to attach the mesh, as it was specified
+ * in the STransform adaptor.
+ * Either of the following (whether a material is configured in the XML scene or not) :
+ *  - \b materialAdaptor (optional) : the name of the associated material adaptor
+ * Only if there is no material adaptor configured in the XML scene (in this case, it has to retrieve the material
+ * template, the texture adaptor and the shading mode) :
+ *  - \b materialTemplate (optional) : the name of the base Ogre material for the created SMaterial
+ *  - \b textureAdaptor (optional) : the texture adaptor that the material will be listening to
+ *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
  */
 class VISUOGREADAPTOR_CLASS_API SMesh : public ::fwRenderOgre::IAdaptor,
                                         public ::fwRenderOgre::ITransformable
@@ -113,26 +137,7 @@ private:
         NUM_BINDINGS
     };
 
-    /**
-     * @brief Configures the adaptor
-     * @code{.xml}
-       <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
-        <config renderer="rendererId" transform="transformUID" materialAdaptor="materialName" shadingMode="gouraud"
-                textureAdaptor="texAdaptorUID" />
-       </adaptor>
-       @endcode
-     * With :
-     *  - \b renderer (mandatory) : defines the mesh's layer
-     *  - \b transform (optional) : the name of the Ogre transform node where to attach the mesh, as it was specified
-     * in the STransform adaptor.
-     * Either of the following (whether a material is configured in the XML scene or not) :
-     *  - \b materialAdaptor (optional) : the name of the associated material adaptor
-     * Only if there is no material adaptor configured in the XML scene (in this case, it has to retrieve the material
-     * template, the texture adaptor and the shading mode) :
-     *  - \b materialTemplate (optional) : the name of the base Ogre material for the created SMaterial
-     *  - \b textureAdaptor (optional) : the texture adaptor that the material will be listening to
-     *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
-     */
+    /// Configures the adaptor
     void doConfigure() throw(fwTools::Failed);
     /// Manually creates a Mesh in the Default Ogre Ressource group
     void doStart    () throw(fwTools::Failed);
@@ -174,21 +179,10 @@ private:
     /// Attach a node in the scene graph
     void attachNode(::Ogre::MovableObject* _node);
 
-    /**
-     * @name Slots methods
-     * @{
-     */
-    /// Slot: called when the mesh is modified
-    /// Slot: called when the vertices are modified
-    void modifyVertices();
     void modifyMesh();
-    /// Slot: called when the point colors are modified
     void modifyPointColors();
-    /// Slot: called when the texture coordinates are modified
     void modifyTexCoords();
-    /// Slot: called when the material is modified
-    void modifyMaterial();
-    /** @} */
+    void modifyVertices();
 
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera;

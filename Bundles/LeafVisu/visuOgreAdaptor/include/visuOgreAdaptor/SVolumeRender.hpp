@@ -31,20 +31,6 @@ namespace visuOgreAdaptor
 
 /**
  * @brief Adaptor for volume rendering.
- * @section XML XML Configuration
- * @code{.xml}
-    <adaptor uid="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image">
-         <config renderer="default"
-                 preintegration="yes" mode="slice"
-                 selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-    </adaptor>
-   @endcode
- * - \b renderer (optional): defines the renderer displaying the volume.
- * - \b preintegration (optional, yes/no, default=no): use pre-integration.
- * - \b widgets (optional, yes/no, default=yes): display VR widgets.
- * - \b mode (optional, slice/raycasting, default=raycasting): Rendering mode.
- * - \b selectedTFKey (mandatory): TF key.
- * - \b tfSelectionFwID (mandatory): TF selection.
  *
  * @section Slots Slots
  * - \b newImage(): Called when a new image is loaded.
@@ -53,7 +39,33 @@ namespace visuOgreAdaptor
  * - \b toggleWidgets(bool): Toggles widget visibility.
  * - \b resizeViewport(int, int): Called when the size of the viewport changes.
  * - \b setFocalDistance(float): Called to modify focal length (only useful for stereoscopic 3D).
-
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+    <adaptor uid="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image">
+         <config renderer="default"
+                 preintegration="yes" mode="slice" volumeIllumination="no" satWidth="128" satHeight="128" satDepth="128"
+                 satShells="3" satShellRadius="7"
+                 selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+    </adaptor>
+   @endcode
+ * With :
+ * - \b renderer (optional): defines the renderer displaying the volume.
+ * - \b preintegration (optional, yes/no, default=no): use pre-integration.
+ * - \b widgets (optional, yes/no, default=yes): display VR widgets.
+ * - \b mode (optional, slice/raycasting, default=raycasting): Rendering mode.
+ * - \b selectedTFKey (mandatory): TF key.
+ * - \b tfSelectionFwID (mandatory): TF selection.
+ * Only if the raycasting render mode is activated :
+ * - \b volumeIllumination (optional, yes/no, default=no): Volume Illumination usage (ambient occlusion + color
+ *      bleeding).
+ * Only if the volume illumination is activated :
+ * - \b satWidth (optional, int, default=128): width of the computed SAT.
+ * - \b satHeight (optional, int, default=128): height of the computed SAT.
+ * - \b satDepth (optional, int, default=128): depth of the computed SAT.
+ * - \b satShells (optional, int, default=3): number of shells used to compute the volume illumination from the SAT.
+ * - \b satShellRadius (optional, int, default=7): radius of the shells used to compute the volume illumination from the
+ *      SAT.
  */
 class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
                                                 public ::fwRenderOgre::ITransformable,
