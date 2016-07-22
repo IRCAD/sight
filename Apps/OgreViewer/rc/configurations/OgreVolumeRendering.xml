@@ -33,7 +33,7 @@
                     <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
 
                     <!-- Default Layer -->
-                    <renderer id="default" layer="1" compositors="Default" mode3D="AutoStereo" />
+                    <renderer id="default" layer="1" compositors="Default" />
 
                     <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
                         <config renderer="default" style="VR" />
@@ -43,27 +43,28 @@
                         <config renderer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
                     </adaptor>
 
-<!--                    <adaptor id="autoStereoParamAdaptor" class="::visuOgreAdaptor::SCompositorParameter" objectId="lobeOffset">
-                        <config renderer="default" compositorName="RayTracedVolume3D" parameter="u_lobeOffset" shaderType="fragment" />
-                    </adaptor>
--->
                     <connect>
                         <signal>${GENERIC_UID}_samplingSlider/valueChanged</signal>
                         <slot>${GENERIC_UID}_VR/updateSampling</slot>
                     </connect>
 
                     <connect>
-                        <signal>slider/valueChanged</signal>
+                        <signal>focalLengthSlider/valueChanged</signal>
                         <slot>${GENERIC_UID}_VR/setFocalDistance</slot>
                     </connect>
 
                     <connect>
-                        <signal>${GENERIC_UID}_preIntButton/toggled</signal>
+                        <signal>${GENERIC_UID}_preIntBtn/toggled</signal>
                         <slot>${GENERIC_UID}_VR/togglePreintegration</slot>
                     </connect>
 
                     <connect>
-                        <signal>${GENERIC_UID}_toggleVrWidgetsButton/toggled</signal>
+                        <signal>${GENERIC_UID}_volumeIlluminationBtn/toggled</signal>
+                        <slot>${GENERIC_UID}_VR/toggleVolumeIllumination</slot>
+                    </connect>
+
+                    <connect>
+                        <signal>${GENERIC_UID}_toggleVrWidgetsBtn/toggled</signal>
                         <slot>${GENERIC_UID}_VR/toggleWidgets</slot>
                     </connect>
 
@@ -81,7 +82,7 @@
                 </gui>
                 <registry>
                     <view sid="${GENERIC_UID}_volumeRenderingSamplingInteractor" start="yes" />
-                    <view sid="slider" start="yes" />
+                    <view sid="focalLengthSlider" start="yes" />
                     <view sid="${GENERIC_UID}_windowLevelVR" start="yes" />
                 </registry>
             </service>
@@ -93,12 +94,14 @@
                         <view proportion="1" />
                         <view proportion="0" />
                         <view proportion="0" />
+                        <view proportion="0" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="${GENERIC_UID}_samplingSlider" start="yes" />
-                    <view sid="${GENERIC_UID}_preIntButton" start="yes" />
-                    <view sid="${GENERIC_UID}_toggleVrWidgetsButton" start="yes" />
+                    <view sid="${GENERIC_UID}_preIntBtn" start="yes" />
+                    <view sid="${GENERIC_UID}_volumeIlluminationBtn" start="yes" />
+                    <view sid="${GENERIC_UID}_toggleVrWidgetsBtn" start="yes" />
                 </registry>
             </service>
 
@@ -128,16 +131,17 @@
                 </object>
             </item>
 
-            <item key="lobeOffset">
-                <object uid="lobeOffsetFloatVal" type="::fwData::Float">
-                    <service uid="slider" impl="::guiQt::editor::SSlider" autoConnect="no">
-                        <defaultValue>0.5</defaultValue>
+            <item key="focalLength">
+                <object uid="focalLengthIntVal" type="::fwData::Integer">
+                    <!-- The value normally goes from 0. to 1. but we have to use an integer slider since float type is not supported yet -->
+                    <service uid="focalLengthSlider" impl="::guiQt::editor::SSlider" autoConnect="no">
+                        <defaultValue>50</defaultValue>
                         <value>0</value>
                         <text>Focal length</text>
-                        <stepSize>0.01</stepSize>
+                        <stepSize>1</stepSize>
                         <range>
                             <min>0</min>
-                            <max>1</max>
+                            <max>100</max>
                         </range>
                     </service>
                 </object>
@@ -145,7 +149,7 @@
 
             <item key="preIntegration" >
                 <object uid="${GENERIC_UID}_preIntValue" type="::fwData::Boolean">
-                    <service uid="${GENERIC_UID}_preIntButton" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
+                    <service uid="${GENERIC_UID}_preIntBtn" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
                         <config>
                            <checkable>true</checkable>
                            <text>Pre-integration</text>
@@ -155,9 +159,21 @@
                 </object>
             </item>
 
+            <item key="volumeIllumination" >
+                <object uid="${GENERIC_UID}_volumeIlluminationValue" type="::fwData::Boolean">
+                    <service uid="${GENERIC_UID}_volumeIlluminationBtn" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
+                        <config>
+                           <checkable>true</checkable>
+                           <text>Volume illumination</text>
+                           <checked>false</checked>
+                        </config>
+                    </service>
+                </object>
+            </item>
+
             <item key="vrWidgets" >
                 <object uid="${GENERIC_UID}_vrWidgetsValue" type="::fwData::Boolean">
-                    <service uid="${GENERIC_UID}_toggleVrWidgetsButton" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
+                    <service uid="${GENERIC_UID}_toggleVrWidgetsBtn" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
                         <config>
                            <checkable>true</checkable>
                            <text>Widgets</text>

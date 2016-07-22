@@ -474,7 +474,6 @@ void SRender::startObject()
         {
             if(iter->hasAttribute("waitForKey"))
             {
-//                ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
                 std::string key = iter->getAttributeValue("waitForKey");
 
                 if(this->isVersion2())
@@ -505,7 +504,6 @@ void SRender::startObject()
         {
             if(iter->hasAttribute("waitForKey"))
             {
-//                ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
                 std::string key = iter->getAttributeValue("waitForKey");
 
                 if(this->isVersion2())

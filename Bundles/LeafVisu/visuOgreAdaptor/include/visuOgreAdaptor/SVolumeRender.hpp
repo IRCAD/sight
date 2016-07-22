@@ -11,8 +11,6 @@
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 #include <fwRenderOgre/PreIntegrationTable.hpp>
-#include <fwRenderOgre/RayTracingVolumeRenderer.hpp>
-#include <fwRenderOgre/SliceVolumeRenderer.hpp>
 #include <fwRenderOgre/TransferFunction.hpp>
 #include <fwRenderOgre/ui/VRWidget.hpp>
 
@@ -34,11 +32,12 @@ namespace visuOgreAdaptor
  *
  * @section Slots Slots
  * - \b newImage(): Called when a new image is loaded.
- * - \b samplingChanged(int): Called when the sampling is changed and updates the volume renderer accordingly.
+ * - \b updateSampling(int): Called when the sampling is changed and updates the volume renderer accordingly.
  * - \b togglePreintegration(bool): Toggle pre-integration.
+ * - \b toggleVoumeIllumination(bool): Toggle volume illumination.
  * - \b toggleWidgets(bool): Toggles widget visibility.
  * - \b resizeViewport(int, int): Called when the size of the viewport changes.
- * - \b setFocalDistance(float): Called to modify focal length (only useful for stereoscopic 3D).
+ * - \b setFocalDistance(int): Called to modify focal length (only useful for stereoscopic 3D).
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -54,6 +53,8 @@ namespace visuOgreAdaptor
  * - \b preintegration (optional, yes/no, default=no): use pre-integration.
  * - \b widgets (optional, yes/no, default=yes): display VR widgets.
  * - \b mode (optional, slice/raycasting, default=raycasting): Rendering mode.
+ * - \b volumeIllumination (optional, yes/no, default=no): Volume Illumination usage (ambient occlusion + color
+ *      bleeding). Only available with raycasting render mode.
  * - \b selectedTFKey (mandatory): TF key.
  * - \b tfSelectionFwID (mandatory): TF selection.
  * Only if the raycasting render mode is activated :
@@ -82,6 +83,7 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEW_IMAGE_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEW_SAMPLING_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_PREINTEGRATION_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VOLUME_ILLUMINATION_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_FOCAL_DISTANCE_SLOT;
@@ -127,14 +129,18 @@ protected:
 private:
 
     void newImage();
-    void samplingChanged(float nbSamples);
+    void updateSampling(int nbSamples);
     void togglePreintegration(bool preintegration);
+    void toggleVolumeIllumination(bool volumeIllumination);
     void toggleWidgets(bool visible);
     void resizeViewport(int w, int h);
-    void setFocalDistance(float focalDistance);
+    void setFocalDistance(int focalDistance);
 
     /// Creates widgets and connects its slots to interactor signals.
     void initWidgets();
+
+    /// Computes the volume illumination and applies it to the ray tracing renderer
+    void updateVolumeIllumination();
 
     /// Rendering mode.
     enum
@@ -173,11 +179,29 @@ private:
     /// Use pre-integration.
     bool m_preIntegratedRendering;
 
+    /// Use volume illumination
+    bool m_volumeIllumination;
+
     /// Toggles widget visibility.
     bool m_widgetVisibilty;
 
     /// Illumination volume used to render shadows and ambient occlusion.
     ::fwRenderOgre::SATVolumeIllumination *m_illum;
+
+    /// Width of the computed SAT.
+    int m_satWidth;
+
+    /// Height of the computed SAT.
+    int m_satHeight;
+
+    /// Depth of the computed SAT.
+    int m_satDepth;
+
+    /// Number of shells used to compute the volume illumination from the SAT.
+    int m_satShells;
+
+    /// Radius of the shells used to compute the volume illumination from the SAT.
+    int m_satShellRadius;
 
     /// Handle connections between the layer and the volume renderer
     ::fwServices::helper::SigSlotConnection m_volumeConnection;

@@ -6,7 +6,6 @@ vertex_program VR/RayTracedVolume_VP glsl
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
-        //param_named_auto u_cameraPos camera_position_object_space
     }
 }
 
@@ -17,7 +16,6 @@ fragment_program VR/RayTracedVolume_FP glsl
     source RayTracedVolume_FP.glsl
     default_params
     {
-        //param_named_auto u_lightDir light_position_object_space 0
         param_named_auto u_lightDirs light_direction_object_space_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
@@ -39,13 +37,11 @@ fragment_program VR/RayTracedVolume3D_FP glsl
     preprocessor_defines MODE3D=1
     default_params
     {
-        //param_named_auto u_lightDir light_position_object_space 0
-        param_named u_lightDirs light_direction_view_space_array 1
+        param_named_auto u_lightDirs light_direction_view_space_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
-        //param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
         param_named u_sampleDistance float 0.2f
         param_named u_lobeOffset float 1.f
         param_named u_image int 0
@@ -71,7 +67,6 @@ vertex_program VR/PreIntegrated_RayTracedVolume_VP glsl
     default_params
     {
         param_named_auto u_worldViewProj worldviewproj_matrix
-        //param_named_auto u_cameraPos camera_position_object_space
     }
 }
 
@@ -84,7 +79,6 @@ fragment_program VR/PreIntegrated_RayTracedVolume_FP glsl
 
     default_params
     {
-        //param_named_auto u_lightDir light_position_object_space 0
         param_named_auto u_lightDirs light_direction_object_space_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
@@ -95,6 +89,90 @@ fragment_program VR/PreIntegrated_RayTracedVolume_FP glsl
         param_named u_image int 0
         param_named u_tfTexture int 1
         param_named u_entryPoints int 2
+        param_named u_min float 0
+        param_named u_max float 0
+    }
+}
+
+//----------------------------------------------
+
+fragment_program VR/VolumeIllumination_RayTracedVolume_FP glsl
+{
+    source RayTracedVolume_FP.glsl
+    preprocessor_defines VOLUME_ILLUMINATION=1
+
+    default_params
+    {
+        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_viewportWidth viewport_width
+        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_clippingNear near_clip_distance
+        param_named_auto u_clippingFar far_clip_distance
+        param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named u_sampleDistance float 0.002f
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+        param_named u_entryPoints int 2
+        param_named u_illuminationVolume int 3
+        param_named u_nbShells float 3.
+        param_named u_shellRadius float 7.
+    }
+}
+
+//----------------------------------------------
+
+fragment_program VR/VolumeIllumination_RayTracedVolume3D_FP glsl
+{
+    source RayTracedVolume_FP.glsl
+    preprocessor_defines MODE3D=1,VOLUME_ILLUMINATION=1
+
+    default_params
+    {
+        param_named_auto u_lightDirs light_direction_view_space_array 1
+        param_named_auto u_viewportWidth viewport_width
+        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_clippingNear near_clip_distance
+        param_named_auto u_clippingFar far_clip_distance
+        param_named u_sampleDistance float 0.2f
+        param_named u_lobeOffset float 1.f
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+        param_named u_entryPoints0 int 2
+        param_named u_entryPoints1 int 3
+        param_named u_entryPoints2 int 4
+        param_named u_entryPoints3 int 5
+        param_named u_entryPoints4 int 6
+        param_named u_entryPoints5 int 7
+        param_named u_entryPoints6 int 8
+        param_named u_entryPoints7 int 9
+        param_named u_illuminationVolume int 10
+        param_named u_nbShells float 3.
+        param_named u_shellRadius float 7.
+    }
+}
+
+//-----------------------------------------------
+
+fragment_program VR/PreIntegrated_VolumeIllumination_RayTracedVolume_FP glsl
+{
+    source RayTracedVolume_FP.glsl
+    preprocessor_defines PREINTEGRATION=1,VOLUME_ILLUMINATION=1
+
+    default_params
+    {
+        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_viewportWidth viewport_width
+        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_clippingNear near_clip_distance
+        param_named_auto u_clippingFar far_clip_distance
+        param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named u_sampleDistance float 0.002f
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+        param_named u_entryPoints int 2
+        param_named u_illuminationVolume int 3
+        param_named u_nbShells float 3.
+        param_named u_shellRadius float 7.
         param_named u_min float 0
         param_named u_max float 0
     }
@@ -130,13 +208,62 @@ material RayTracedVolume
             texture_unit transferFunction
             {
                 tex_coord_set 1
-                //tex_address_mode clamp
                 filtering none
             }
 
             texture_unit entryPoints
             {
                 tex_coord_set 2
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//----------------------------------------------
+
+material VolumeIlluminationRayTracedVolume
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware anticlockwise
+            cull_software none
+            scene_blend alpha_blend
+
+            vertex_program_ref VR/RayTracedVolume_VP
+            {
+            }
+
+            fragment_program_ref VR/VolumeIllumination_RayTracedVolume_FP
+            {
+            }
+
+            texture_unit image
+            {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering bilinear
+            }
+
+            texture_unit transferFunction
+            {
+                tex_coord_set 1
+                filtering none
+            }
+
+            texture_unit entryPoints
+            {
+                tex_coord_set 2
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit illuminationVolume
+            {
+                tex_coord_set 3
                 tex_address_mode clamp
                 filtering none
             }
@@ -172,7 +299,6 @@ material RayTracedVolume3D
 
             texture_unit transferFunction
             {
-                //tex_address_mode clamp
                 filtering none
             }
 
@@ -223,6 +349,13 @@ material RayTracedVolume3D
                 tex_address_mode clamp
                 filtering none
             }
+
+            texture_unit illuminationVolume
+            {
+                tex_coord_set 10
+                tex_address_mode clamp
+                filtering none
+            }
         }
     }
 }
@@ -255,12 +388,58 @@ material PreIntegratedRayTracedVolume
 
             texture_unit transferFunction
             {
-                //tex_address_mode clamp
                 filtering none
             }
 
             texture_unit entryPoints
             {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//----------------------------------------------
+
+material PreIntegratedVolumeIlluminationRayTracedVolume
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware anticlockwise
+            cull_software none
+            scene_blend alpha_blend
+
+            vertex_program_ref VR/PreIntegrated_RayTracedVolume_VP
+            {
+            }
+
+            fragment_program_ref VR/PreIntegrated_VolumeIllumination_RayTracedVolume_FP
+            {
+            }
+
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+
+            texture_unit transferFunction
+            {
+                filtering none
+            }
+
+            texture_unit entryPoints
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit illuminationVolume
+            {
+                tex_coord_set 3
                 tex_address_mode clamp
                 filtering none
             }

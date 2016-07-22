@@ -4,6 +4,13 @@
 uniform sampler3D u_image;
 uniform sampler2D u_tfTexture;
 
+#ifdef VOLUME_ILLUMINATION
+uniform sampler3D u_illuminationVolume;
+
+uniform float u_nbShells;
+uniform float u_shellRadius;
+#endif // VOLUME_ILLUMINATION
+
 #ifdef MODE3D
 uniform sampler2D u_entryPoints0;
 uniform sampler2D u_entryPoints1;
@@ -164,13 +171,24 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
         {
             vec3 N = gradientNormal(rayPos);
 
-            tfColour.rgb = tfColour.rgb * abs(dot(N, u_lightDirs[0]))/* * 0.7 + tfColour.rgb * abs(dot(N, u_lightDirs[1])) * 1.0*/;
+            tfColour.rgb = tfColour.rgb * abs(dot(N, u_lightDirs[0]));
 
 #ifndef PREINTEGRATION
             // Adjust opacity to sample distance.
             // This could be done when generating the TF texture to improve performance.
             tfColour.a   = 1 - pow(1 - tfColour.a, u_sampleDistance * opacityCorrectionFactor);
 #endif // PREINTEGRATION
+
+#ifdef VOLUME_ILLUMINATION
+            
+            vec4 volIllum = exp(-pow(u_nbShells * u_shellRadius, -2.f) * texture(u_illuminationVolume, rayPos));
+
+            // Apply ambient occlusion
+            tfColour.rgb -= 1. - volIllum.a;
+            // Apply color bleeding
+            // tfColour.rgb *= volIllum.rgb;
+
+#endif // VOLUME_ILLUMINATION
 
             composite(result, tfColour);
 

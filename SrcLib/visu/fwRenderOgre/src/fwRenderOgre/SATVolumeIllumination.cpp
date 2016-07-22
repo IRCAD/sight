@@ -24,29 +24,45 @@ class VolIllumCompositorListener : public ::Ogre::CompositorInstance::Listener
 {
 public:
 
-    VolIllumCompositorListener(int& currentSliceIndex) :
-        m_currentSliceIndex(currentSliceIndex)
+    VolIllumCompositorListener(int& currentSliceIndex, int nbShells, int shellRadius) :
+        m_currentSliceIndex(currentSliceIndex),
+        m_nbShells(nbShells),
+        m_shellRadius(shellRadius)
     {
     }
 
-    virtual void notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr& mat)
+    virtual void notifyMaterialRender(::Ogre::uint32 pass_id, ::Ogre::MaterialPtr& mat)
     {
-        ::Ogre::Pass *pass = mat->getTechnique(0)->getPass(0);
-
+        ::Ogre::Pass *pass                                   = mat->getTechnique(0)->getPass(0);
         ::Ogre::GpuProgramParametersSharedPtr volIllumParams = pass->getFragmentProgramParameters();
 
         volIllumParams->setNamedConstant("u_sliceIndex", m_currentSliceIndex);
     }
 
+    virtual void notifyMaterialSetup(::Ogre::uint32 pass_id, ::Ogre::MaterialPtr& mat)
+    {
+        ::Ogre::Pass *pass                                   = mat->getTechnique(0)->getPass(0);
+        ::Ogre::GpuProgramParametersSharedPtr volIllumParams = pass->getFragmentProgramParameters();
+
+        volIllumParams->setNamedConstant("u_nbShells", m_nbShells);
+        volIllumParams->setNamedConstant("u_shellRadius", m_shellRadius);
+    }
+
 private:
 
     int& m_currentSliceIndex;
+
+    int m_nbShells;
+    int m_shellRadius;
 };
 
 //-----------------------------------------------------------------------------
 
-SATVolumeIllumination::SATVolumeIllumination(std::string parentId, ::Ogre::SceneManager *sceneManager, int width, int height, int depth) :
-    m_sat(parentId, sceneManager, width, height, depth)
+SATVolumeIllumination::SATVolumeIllumination(std::string parentId, ::Ogre::SceneManager *sceneManager,
+                                             int width, int height, int depth, int nbShells, int shellRadius) :
+    m_sat(parentId, sceneManager, width, height, depth),
+    m_nbShells(nbShells),
+    m_shellRadius(shellRadius)
 {
 
 }
@@ -71,19 +87,19 @@ void SATVolumeIllumination::updateVolIllum(Ogre::TexturePtr _img, Ogre::TextureP
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
 
-    VolIllumCompositorListener volIllumListener(m_currentSliceIndex);
+    VolIllumCompositorListener volIllumListener(m_currentSliceIndex, m_nbShells, m_shellRadius);
 
-    ::Ogre::MaterialPtr volIllumMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeAO");
-    ::Ogre::Pass *pass = volIllumMtl->getTechnique(0)->getPass(0);
+    ::Ogre::MaterialPtr volIllumMtl       = ::Ogre::MaterialManager::getSingleton().getByName("VolumeAO");
+    ::Ogre::Pass *pass                    = volIllumMtl->getTechnique(0)->getPass(0);
     ::Ogre::TextureUnitState *satImgState = pass->getTextureUnitState("sat");
 
     satImgState->setTexture(m_sat.getTexture());
 
     // Update illumination volume.
-    for(m_currentSliceIndex = 0; m_currentSliceIndex < depth; ++ m_currentSliceIndex)
+    for(m_currentSliceIndex = 0; m_currentSliceIndex < depth; ++m_currentSliceIndex)
     {
         ::Ogre::RenderTarget *rt = m_illuminationVolume->getBuffer()->getRenderTarget(m_currentSliceIndex);
-        ::Ogre::Viewport *vp = rt->getViewport(0);
+        ::Ogre::Viewport *vp     = rt->getViewport(0);
 
         // Add compositor.
         compositorManager.addCompositor(vp, "VolIllum");

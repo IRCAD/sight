@@ -17,6 +17,8 @@
 
 #include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/interactor/VRWidgetsInteractor.hpp>
+#include <fwRenderOgre/SliceVolumeRenderer.hpp>
+#include <fwRenderOgre/RayTracingVolumeRenderer.hpp>
 
 #include <numeric>
 
@@ -30,8 +32,7 @@
 #include <OGRE/OgreTechnique.h>
 
 #include <sstream>
-
-#include <fwCore/Profiling.hpp>
+#include <string>
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVolumeRender, ::fwData::Image);
 
@@ -42,12 +43,13 @@ namespace visuOgreAdaptor
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEW_IMAGE_SLOT             = "newImage";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEW_SAMPLING_SLOT          = "updateSampling";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_PREINTEGRATION_SLOT = "togglePreintegration";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT        = "toggleWidgets";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT       = "resizeViewport";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_FOCAL_DISTANCE_SLOT    = "setFocalDistance";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEW_IMAGE_SLOT                  = "newImage";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEW_SAMPLING_SLOT               = "updateSampling";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_PREINTEGRATION_SLOT      = "togglePreintegration";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_VOLUME_ILLUMINATION_SLOT = "toggleVolumeIllumination";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT             = "toggleWidgets";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT            = "resizeViewport";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_FOCAL_DISTANCE_SLOT         = "setFocalDistance";
 
 //-----------------------------------------------------------------------------
 
@@ -58,12 +60,20 @@ SVolumeRender::SVolumeRender() throw() :
     m_camera                 (nullptr),
     m_nbSlices               (512),
     m_preIntegratedRendering (false),
-    m_widgetVisibilty        (true)
+    m_volumeIllumination     (false),
+    m_widgetVisibilty        (true),
+    m_illum                  (nullptr),
+    m_satWidth               (128),
+    m_satHeight              (128),
+    m_satDepth               (128),
+    m_satShells              (3),
+    m_satShellRadius         (7)
 {
     this->installTFSlots(this);
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
-    newSlot(s_NEW_SAMPLING_SLOT, &SVolumeRender::samplingChanged, this);
+    newSlot(s_NEW_SAMPLING_SLOT, &SVolumeRender::updateSampling, this);
     newSlot(s_TOGGLE_PREINTEGRATION_SLOT, &SVolumeRender::togglePreintegration, this);
+    newSlot(s_TOGGLE_VOLUME_ILLUMINATION_SLOT, &SVolumeRender::toggleVolumeIllumination, this);
     newSlot(s_TOGGLE_WIDGETS_SLOT, &SVolumeRender::toggleWidgets, this);
     newSlot(s_RESIZE_VIEWPORT_SLOT, &SVolumeRender::resizeViewport, this);
     newSlot(s_SET_FOCAL_DISTANCE_SLOT, &SVolumeRender::setFocalDistance, this);
@@ -98,6 +108,41 @@ void SVolumeRender::doConfigure() throw ( ::fwTools::Failed )
         if(m_configuration->getAttributeValue("mode") == "raytracing")
         {
             m_renderingMode = VR_MODE_RAY_TRACING;
+
+            if(m_configuration->hasAttribute("volumeIllumination"))
+            {
+                m_volumeIllumination = (m_configuration->getAttributeValue("volumeIllumination") == "yes");
+
+                if(m_configuration->hasAttribute("satWidth"))
+                {
+                    std::string satWidthString = m_configuration->getAttributeValue("satWidth");
+                    m_satWidth = std::stoi(satWidthString);
+                }
+
+                if(m_configuration->hasAttribute("satHeight"))
+                {
+                    std::string satHeightString = m_configuration->getAttributeValue("satHeight");
+                    m_satHeight = std::stoi(satHeightString);
+                }
+
+                if(m_configuration->hasAttribute("satDepth"))
+                {
+                    std::string satDepthString = m_configuration->getAttributeValue("satDepth");
+                    m_satDepth = std::stoi(satDepthString);
+                }
+
+                if(m_configuration->hasAttribute("satShells"))
+                {
+                    std::string shellsString = m_configuration->getAttributeValue("satShells");
+                    m_satShells = std::stoi(shellsString);
+                }
+
+                if(m_configuration->hasAttribute("satShellRadius"))
+                {
+                    std::string shellRadiusString = m_configuration->getAttributeValue("satShellRadius");
+                    m_satShellRadius = std::stoi(shellRadiusString);
+                }
+            }
         }
         else
         {
@@ -130,9 +175,9 @@ void SVolumeRender::updatingTFPoints()
 
     m_volumeRenderer->tfUpdate(tf);
 
-    FW_PROFILE("SAT")
+    if(m_volumeIllumination)
     {
-        m_illum->updateVolIllum(m_3DOgreTexture, m_gpuTF.getTexture());
+        this->updateVolumeIllumination();
     }
 
     this->requestRender();
@@ -153,7 +198,10 @@ void SVolumeRender::updatingTFWindowing(double window, double level)
 
     m_volumeRenderer->tfUpdate(tf);
 
-    m_illum->updateVolIllum(m_3DOgreTexture, m_gpuTF.getTexture());
+    if(m_volumeIllumination)
+    {
+        this->updateVolumeIllumination();
+    }
 
     this->requestRender();
 }
@@ -213,7 +261,8 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
                                                                         m_3DOgreTexture,
                                                                         &m_gpuTF,
                                                                         &m_preIntegrationTable,
-                                                                        serviceLayer->is3D());
+                                                                        serviceLayer->is3D(),
+                                                                        m_volumeIllumination);
 
         if(serviceLayer->is3D())
         {
@@ -228,7 +277,12 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
         }
     }
 
-    m_illum = new ::fwRenderOgre::SATVolumeIllumination(this->getID(), m_sceneManager, 128, 128, 128);
+    if(m_volumeIllumination)
+    {
+        m_illum = new ::fwRenderOgre::SATVolumeIllumination(this->getID(), m_sceneManager,
+                                                            m_satWidth, m_satHeight, m_satDepth,
+                                                            m_satShells, m_satShellRadius);
+    }
 
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
 
@@ -302,7 +356,7 @@ void SVolumeRender::newImage()
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::samplingChanged(float nbSamples)
+void SVolumeRender::updateSampling(int nbSamples)
 {
     OSLM_ASSERT("Sampling rate must fit in a 16 bit uint.", nbSamples < 65536 && nbSamples >= 0);
     m_nbSlices = static_cast<uint16_t>(nbSamples);
@@ -336,6 +390,36 @@ void SVolumeRender::togglePreintegration(bool preintegration)
 
 //-----------------------------------------------------------------------------
 
+void SVolumeRender::toggleVolumeIllumination(bool volumeIllumination)
+{
+    auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::RayTracingVolumeRenderer* >(m_volumeRenderer);
+
+    // Volume illumination is only implemented for raycasting rendering
+    if(rayCastVolumeRenderer)
+    {
+        m_volumeIllumination = volumeIllumination;
+
+        if(m_volumeIllumination && !m_illum)
+        {
+            m_illum = new ::fwRenderOgre::SATVolumeIllumination(this->getID(), m_sceneManager,
+                                                                m_satWidth, m_satHeight, m_satDepth,
+                                                                m_satShells, m_satShellRadius);
+            this->updateVolumeIllumination();
+        }
+
+        rayCastVolumeRenderer->setVolumeIllumination(m_volumeIllumination);
+
+        if(m_preIntegratedRendering)
+        {
+            m_volumeRenderer->imageUpdate(this->getImage(), this->getTransferFunction());
+        }
+
+        this->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void SVolumeRender::toggleWidgets(bool visible)
 {
     m_widgetVisibilty = visible;
@@ -357,7 +441,7 @@ void SVolumeRender::resizeViewport(int w, int h)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::setFocalDistance(float focalDistance)
+void SVolumeRender::setFocalDistance(int focalDistance)
 {
     if(this->getRenderService()->getLayer()->is3D())
     {
@@ -365,7 +449,7 @@ void SVolumeRender::setFocalDistance(float focalDistance)
 
         if(rayTracingRenderer)
         {
-            rayTracingRenderer->setFocalLength(focalDistance);
+            rayTracingRenderer->setFocalLength(static_cast<float>(focalDistance) / 100);
 
             this->requestRender();
         }
@@ -400,6 +484,22 @@ void SVolumeRender::initWidgets()
             vrInteractor->initPicker();
             vrInteractor->attachWidget(m_widgets);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::updateVolumeIllumination()
+{
+    m_illum->updateVolIllum(m_3DOgreTexture, m_gpuTF.getTexture());
+
+    // Volume illumination is only implemented for raycasting rendering
+    if(m_renderingMode == VR_MODE_RAY_TRACING)
+    {
+        ::fwRenderOgre::RayTracingVolumeRenderer *rayTracingVolumeRenderer =
+            static_cast< ::fwRenderOgre::RayTracingVolumeRenderer* >(m_volumeRenderer);
+
+        rayTracingVolumeRenderer->setIlluminationVolume(m_illum->getIlluminationVolume());
     }
 }
 

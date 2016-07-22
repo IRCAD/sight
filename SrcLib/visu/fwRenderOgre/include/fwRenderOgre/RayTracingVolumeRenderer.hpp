@@ -1,12 +1,16 @@
-#ifndef __RAYTRACINGVOLUMERENDERER_HPP__
-#define __RAYTRACINGVOLUMERENDERER_HPP__
+#ifndef __FWRENDEROGRE_RAYTRACINGVOLUMERENDERER_HPP__
+#define __FWRENDEROGRE_RAYTRACINGVOLUMERENDERER_HPP__
 
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/IVolumeRenderer.hpp"
 #include "fwRenderOgre/Layer.hpp"
 #include "fwRenderOgre/R2VBRenderable.hpp"
 
+#include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreManualObject.h>
+#include <OGRE/OgreMaterialManager.h>
+
+#include <vector>
 
 namespace fwRenderOgre
 {
@@ -33,7 +37,8 @@ public:
                                               ::Ogre::TexturePtr imageTexture,
                                               TransferFunction *gpuTF,
                                               PreIntegrationTable *preintegrationTable,
-                                              bool mode3D);
+                                              bool mode3D,
+                                              bool volumeIllumination);
 
     /// Does nothing.
     FWRENDEROGRE_API virtual ~RayTracingVolumeRenderer();
@@ -47,8 +52,13 @@ public:
     /// Sets the number of samples per view ray.
     FWRENDEROGRE_API virtual void setSampling(uint16_t nbSamples);
 
+    FWRENDEROGRE_API virtual void setIlluminationVolume(::Ogre::TexturePtr illuminationVolume);
+
     /// Sets pre-integrated mode.
     FWRENDEROGRE_API virtual void setPreIntegratedRendering(bool preIntegratedRendering);
+
+    /// Sets volume illumination mode
+    FWRENDEROGRE_API virtual void setVolumeIllumination(bool volumeIllumination);
 
     /// Configures to layer to handle stereoscopic rendering by adding the stereo VR compositor to the chain.
     FWRENDEROGRE_API void configure3DViewport(Layer::sptr layer);
@@ -82,6 +92,13 @@ private:
     /// Computes the shear warp to apply to a frustum for multi-view rendering based on the angle with the original camera.
     ::Ogre::Matrix4 frustumShearTransform(float angle) const;
 
+    /// Returns the right material name for the entry point geometry according to pre-integration and volume
+    /// illumination flags.
+    std::string determineMaterialName();
+
+    /// Returns the parameters of the current fragment shader
+    ::Ogre::GpuProgramParametersSharedPtr retrieveCurrentProgramParams();
+
     /// Object containing the proxy geometry, this is a cube for now.
     ::Ogre::ManualObject *m_entryPointGeometry;
 
@@ -96,6 +113,8 @@ private:
 
     /// Ray entry and exit points for each pixel of each viewpoint.
     std::vector< ::Ogre::TexturePtr> m_entryPointsTextures;
+
+    std::vector< ::Ogre::TextureUnitState* > m_rayTracedTexUnitStates;
 
     /// Inverse world-view-projection matrices of each viewpoint.
     std::vector< ::Ogre::Matrix4> m_viewPointMatrices;
@@ -115,9 +134,14 @@ private:
     /// Sets stereoscopic volume rendering for Alioscopy monitors.
     bool m_mode3D;
 
+    /// Sets usage of volume illumination
+    bool m_volumeIllumination;
+
     float m_focalLength;
 };
 
+//-----------------------------------------------------------------------------
+
 } // namespace fwRenderOgre
 
-#endif // __RAYTRACINGVOLUMERENDERER_HPP__
+#endif // __FWRENDEROGRE_RAYTRACINGVOLUMERENDERER_HPP__
