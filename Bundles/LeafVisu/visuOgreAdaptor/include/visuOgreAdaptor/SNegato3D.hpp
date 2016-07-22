@@ -104,7 +104,7 @@ private:
 
 
     /// Makes the planes process their meshes
-    void createPlanes(const ::fwData::Image::SpacingType& _spacing, const fwData::Image::OriginType &_origin);
+    void createPlanes(const ::fwData::Image::SpacingType& _spacing, const fwData::Image::OriginType& _origin);
 
     /// Sets the planes's opacity
     /// Also a slot called when image opacity is modified

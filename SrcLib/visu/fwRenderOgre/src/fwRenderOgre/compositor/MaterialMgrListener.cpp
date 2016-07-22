@@ -28,7 +28,7 @@ MaterialMgrListener::~MaterialMgrListener()
 
 }
 
-::Ogre::Technique *fwRenderOgre::compositor::MaterialMgrListener::handleSchemeNotFound(unsigned short _schemeIndex,
+::Ogre::Technique* fwRenderOgre::compositor::MaterialMgrListener::handleSchemeNotFound(unsigned short _schemeIndex,
                                                                                        const ::Ogre::String &_schemeName,
                                                                                        ::Ogre::Material *_originalMaterial,
                                                                                        unsigned short _lodIndex,

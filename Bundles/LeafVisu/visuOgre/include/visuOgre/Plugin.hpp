@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,7 +50,7 @@ public:
      *        Set Ogre log on FW4SPL log depending on it's LogLevel.
      */
     VISUOGRE_API virtual void messageLogged(const ::Ogre::String& message, ::Ogre::LogMessageLevel lml,
-                                            bool maskDebug, const ::Ogre::String &logName, bool &skipThisMessage);
+                                            bool maskDebug, const ::Ogre::String& logName, bool& skipThisMessage);
 };
 
 } // namespace visuOgre

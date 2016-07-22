@@ -64,7 +64,7 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
     QWidget* renderingContainer = QWidget::createWindowContainer(m_qOgreWidget);
     renderingContainer->setSizePolicy(QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding));
 
-    QVBoxLayout *layout = new QVBoxLayout();
+    QVBoxLayout* layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(renderingContainer);
 

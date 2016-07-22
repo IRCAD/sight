@@ -61,7 +61,7 @@ void loadResources()
             while (seci.hasMoreElements())
             {
                 resourceGroupName                              = seci.peekNextKey();
-                ::Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
+                ::Ogre::ConfigFile::SettingsMultiMap* settings = seci.getNext();
                 ::Ogre::ConfigFile::SettingsMultiMap::iterator i;
                 for (i = settings->begin(); i != settings->end(); ++i)
                 {

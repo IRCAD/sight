@@ -34,8 +34,8 @@ Plugin::~Plugin() throw()
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
     // Redirect Ogre Log to FW4SPL Log
-    ::Ogre::LogManager *logMgr = new ::Ogre::LogManager();
-    ::Ogre::Log *log           = logMgr->createLog("Ogre.log", true, false, false);
+    ::Ogre::LogManager* logMgr = new ::Ogre::LogManager();
+    ::Ogre::Log* log           = logMgr->createLog("Ogre.log", true, false, false);
     log->addListener(new F4SOgreListener());
     log->setLogDetail(::Ogre::LL_BOREME);
 }
@@ -48,8 +48,8 @@ void Plugin::stop() throw()
 
 //------------------------------------------------------------------------------
 
-void F4SOgreListener::messageLogged(const::Ogre::String &_message, ::Ogre::LogMessageLevel _lml, bool _maskDebug,
-                                    const::Ogre::String &_logName, bool &_skipThisMessage)
+void F4SOgreListener::messageLogged(const::Ogre::String& _message, ::Ogre::LogMessageLevel _lml, bool _maskDebug,
+                                    const::Ogre::String& _logName, bool& _skipThisMessage)
 {
     if (!_skipThisMessage)
     {
