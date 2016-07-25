@@ -6,9 +6,6 @@ uniform sampler2D u_tfTexture;
 
 #ifdef VOLUME_ILLUMINATION
 uniform sampler3D u_illuminationVolume;
-
-uniform float u_nbShells;
-uniform float u_shellRadius;
 #endif // VOLUME_ILLUMINATION
 
 #ifdef MODE3D
@@ -181,12 +178,12 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 
 #ifdef VOLUME_ILLUMINATION
             
-            vec4 volIllum = exp(-pow(u_nbShells * u_shellRadius, -2.f) * texture(u_illuminationVolume, rayPos));
+            vec4 volIllum = texture(u_illuminationVolume, rayPos);
 
-            // Apply ambient occlusion
-            tfColour.rgb -= 1. - volIllum.a;
+            // Apply ambient occlusion + shadows
+            tfColour.rgb *= volIllum.a;
             // Apply color bleeding
-            // tfColour.rgb *= volIllum.rgb;
+            tfColour.rgb *= volIllum.rgb;
 
 #endif // VOLUME_ILLUMINATION
 

@@ -273,7 +273,7 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
             rayCastVolumeRenderer->configure3DViewport(serviceLayer);
 
             // Initially focus on the image center.
-            setFocalDistance(0.5f);
+            setFocalDistance(50);
         }
     }
 

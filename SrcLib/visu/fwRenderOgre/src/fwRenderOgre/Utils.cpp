@@ -436,33 +436,7 @@ void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Im
 
         }
 
-        // Get the pixel buffer
-        ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = _texture->getBuffer();
-
-        // Lock the pixel buffer and copy it
-        {
-            ::fwComEd::helper::Image srcImageHelper(_image);
-
-            const std::uint8_t* __restrict srcBuffer = static_cast< const std::uint8_t* >(srcImageHelper.getBuffer());
-            const ::Ogre::uint32 size                = _texture->getWidth() * _texture->getHeight() *
-                                                       _texture->getDepth();
-
-            pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
-
-            const ::Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
-
-            std::uint16_t* __restrict pDest = static_cast<std::uint16_t*>(pixelBox.data);
-
-            const std::int16_t lowBound = std::numeric_limits< std::int16_t >::min();
-
-            for(::Ogre::uint32 i = 0; i < size; ++i)
-            {
-                *pDest++ = static_cast<std::uint16_t>(*srcBuffer++ - lowBound);
-            }
-
-            // Unlock the pixel buffer
-            pixelBuffer->unlock();
-        }
+        copyNegatoImage< std::uint8_t, std::int16_t >(_texture, _image);
     }
     else
     {

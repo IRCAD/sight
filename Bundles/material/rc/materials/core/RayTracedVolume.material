@@ -114,8 +114,6 @@ fragment_program VR/VolumeIllumination_RayTracedVolume_FP glsl
         param_named u_tfTexture int 1
         param_named u_entryPoints int 2
         param_named u_illuminationVolume int 3
-        param_named u_nbShells float 3.
-        param_named u_shellRadius float 7.
     }
 }
 
@@ -139,8 +137,6 @@ fragment_program VR/PreIntegrated_VolumeIllumination_RayTracedVolume_FP glsl
         param_named u_tfTexture int 1
         param_named u_entryPoints int 2
         param_named u_illuminationVolume int 3
-        param_named u_nbShells float 3.
-        param_named u_shellRadius float 7.
         param_named u_min float 0
         param_named u_max float 0
     }
@@ -226,7 +222,7 @@ material VolumeIlluminationRayTracedVolume
             texture_unit illuminationVolume
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
         }
     }
@@ -394,7 +390,7 @@ material PreIntegratedVolumeIlluminationRayTracedVolume
             texture_unit illuminationVolume
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
         }
     }

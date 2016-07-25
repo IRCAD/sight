@@ -6,9 +6,12 @@ fragment_program VolumeAO/SAT_AO_FP glsl
 
     default_params
     {
+        param_named_auto u_lightDir light_direction_object_space 1
         param_named u_sliceIndex int 0
-        param_named u_nbShells int 3
-        param_named u_shellRadius int 7
+        param_named u_nbShells int 2
+        param_named u_shellRadius int 3
+        param_named u_scatteringConeAngle float 0.1f
+        param_named u_nbSamplesAlongCone int 50;
         param_named u_sat int 0
     }
 }
