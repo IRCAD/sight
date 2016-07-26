@@ -160,11 +160,6 @@ private:
     /// Updates material polygon mode (surface, point or wireframe)
     void updatePolygonMode( int polygonMode );
 
-    /// Manages service associated to a shader parameter
-    void setServiceOnShaderParameter(std::shared_ptr<fwData::Object> object,
-                                     std::string paramName,
-                                     ::Ogre::GpuProgramType shaderType);
-
     /// Update material shading mode (flat/gouraud/phong) in fixed function pipeline
     void updateShadingMode( int shadingMode );
 
@@ -317,7 +312,7 @@ inline std::string SMaterial::getMaterialName() const
 
 inline bool SMaterial::hasDiffuseTexture() const
 {
-    return (m_texAdaptor && !m_texAdaptor->getTexture().isNull());
+    return (m_texAdaptor && m_texAdaptor->isValid());
 }
 
 //------------------------------------------------------------------------------

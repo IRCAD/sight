@@ -44,12 +44,14 @@ public:
 
     void notifyMaterialRender(::Ogre::uint32 pass_id, ::Ogre::MaterialPtr& mat)
     {
-        m_adaptor->updateValue(mat);
+        auto adaptor = m_adaptor.lock();
+        SLM_ASSERT("Adaptor has expired.", adaptor);
+        adaptor->updateValue(mat);
     }
 
 private:
     /// Associated f4s adaptor
-    ::visuOgreAdaptor::SCompositorParameter::sptr m_adaptor;
+    ::visuOgreAdaptor::SCompositorParameter::wptr m_adaptor;
 };
 
 //------------------------------------------------------------------------------
@@ -74,6 +76,13 @@ void SCompositorParameter::updateValue(Ogre::MaterialPtr& _mat)
 
 //------------------------------------------------------------------------------
 
+const std::string& SCompositorParameter::getCompositorName() const
+{
+    return m_compositorName;
+}
+
+//------------------------------------------------------------------------------
+
 void SCompositorParameter::doConfigure() throw(::fwTools::Failed)
 {
     this->IParameter::doConfigure();
@@ -91,18 +100,21 @@ void SCompositorParameter::doStart() throw(::fwTools::Failed)
     ::Ogre::CompositorChain* compChain =
         ::Ogre::CompositorManager::getSingleton().getCompositorChain(layer->getViewport());
 
-    ::Ogre::CompositorInstance* compositor = compChain->getCompositor(m_compositorName);
-    SLM_ASSERT("The given compositor '" + m_compositorName + "' doesn't exist in the compositor chain", compositor);
+    m_compositor = compChain->getCompositor(m_compositorName);
+    SLM_ASSERT("The given compositor '" + m_compositorName + "' doesn't exist in the compositor chain", m_compositor);
 
     // Association of a listener attached to this adaptor to the configured compositor
-    compositor->addListener(new CompositorListener(layer->getViewport(),
-                                                   SCompositorParameter::dynamicCast(this->getSptr())));
+    m_listener = new CompositorListener(layer->getViewport(), SCompositorParameter::dynamicCast(this->getSptr()));
+    m_compositor->addListener(m_listener);
 }
 
 //------------------------------------------------------------------------------
 
 void SCompositorParameter::doStop() throw(::fwTools::Failed)
 {
+    // Association of a listener attached to this adaptor to the configured compositor
+    m_compositor->removeListener(m_listener);
+    delete m_listener;
 }
 
 //------------------------------------------------------------------------------
@@ -110,7 +122,6 @@ void SCompositorParameter::doStop() throw(::fwTools::Failed)
 void SCompositorParameter::doSwap() throw(::fwTools::Failed)
 {
 }
-
 //------------------------------------------------------------------------------
 
 } // namespace visuOgreAdaptor

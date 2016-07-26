@@ -117,8 +117,8 @@ private:
 
     QPointer<QListWidget> m_compositorChain;
 
-    std::vector< ::fwRenderOgre::Layer::sptr > m_layers;
-    ::fwRenderOgre::Layer::sptr m_currentLayer;
+    std::vector< ::fwRenderOgre::Layer::wptr > m_layers;
+    ::fwRenderOgre::Layer::wptr m_currentLayer;
 
     ::fwRenderOgre::compositor::ChainManager::CompositorChainType m_layerCompositorChain;
 

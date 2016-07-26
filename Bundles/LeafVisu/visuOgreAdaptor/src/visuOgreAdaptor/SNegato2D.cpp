@@ -320,7 +320,7 @@ void SNegato2D::updateCameraWindowBounds()
 {
 
     ::Ogre::Real renderWindowWidth,renderWindowHeight, renderWindowRatio;
-    ::Ogre::RenderSystem *renderSystem = getSceneManager()->getDestinationRenderSystem();
+    ::Ogre::RenderSystem* renderSystem = getSceneManager()->getDestinationRenderSystem();
 
     renderWindowWidth  = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualWidth());
     renderWindowHeight = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualHeight());

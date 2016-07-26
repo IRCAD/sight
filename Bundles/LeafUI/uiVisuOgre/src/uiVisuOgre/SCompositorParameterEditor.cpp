@@ -79,9 +79,13 @@ void SCompositorParameterEditor::starting() throw(::fwTools::Failed)
                     const auto& layerMap = render->getLayers();
                     for(auto& layer : layerMap)
                     {
-                        if(layer.second->getID() == m_layerID)
+                        if(layer.first == m_layerID)
                         {
                             m_currentLayer = layer.second;
+
+                            m_layerConnection.connect(m_currentLayer.lock(),
+                                                      ::fwRenderOgre::Layer::s_COMPOSITOR_UPDATED_SIG,
+                                                      this->getSptr(), s_UPDATE_SLOT);
                             break;
                         }
                     }
@@ -90,7 +94,8 @@ void SCompositorParameterEditor::starting() throw(::fwTools::Failed)
         }
     }
 
-    SLM_ERROR_IF("SRender service '" + m_renderID + "' is not found.", !m_render);
+    SLM_ERROR_IF("SRender service '" + m_renderID + "' is not found.", m_render.expired());
+
 
     this->updating();
 }
@@ -99,6 +104,7 @@ void SCompositorParameterEditor::starting() throw(::fwTools::Failed)
 
 void SCompositorParameterEditor::stopping() throw(::fwTools::Failed)
 {
+    m_layerConnection.disconnect();
     this->clear();
 
     this->getContainer()->clean();
@@ -138,16 +144,19 @@ void SCompositorParameterEditor::clear()
 
 void SCompositorParameterEditor::updateGuiInfo()
 {
-    if(!m_render)
+    if(m_render.expired() || !m_currentLayer.lock())
     {
         return;
     }
 
     bool found = false;
 
+    auto adaptors = m_currentLayer.lock()->getRegisteredAdaptors();
+
     // Is there at least one parameter that we can handle ?
-    for (const auto& adaptor : m_render->getAdaptors())
+    for (const auto& wAdaptor : adaptors)
     {
+        auto adaptor = wAdaptor.lock();
         if (adaptor->getClassname() == "::visuOgreAdaptor::SCompositorParameter")
         {
             auto paramAdaptor = ::visuOgreAdaptor::SCompositorParameter::dynamicConstCast(adaptor);
@@ -190,8 +199,9 @@ void SCompositorParameterEditor::updateGuiInfo()
     ::fwServices::IService::ConfigType editorConfig;
 
     // Get all ShaderParameter subservices from the corresponding Material adaptor
-    for (auto adaptor : m_render->getAdaptors())
+    for (const auto& wAdaptor : adaptors)
     {
+        auto adaptor = wAdaptor.lock();
         if (adaptor->getClassname() == "::visuOgreAdaptor::SCompositorParameter")
         {
             auto paramAdaptor = ::visuOgreAdaptor::SCompositorParameter::dynamicConstCast(adaptor);
@@ -232,13 +242,19 @@ void SCompositorParameterEditor::updateGuiInfo()
                 m_editorInfo.connections.connect(m_editorInfo.service.lock(), "doubleChanged", paramAdaptor,
                                                  "setDoubleParameter");
 
+                const std::string& defaultValueStr = paramAdaptor->getDefaultValue();
+
+                const double defaultValue = std::stod(defaultValueStr);
+                const double max          = (defaultValue != 0.) ? defaultValue * 20. : 1.;
+                const double min          = (defaultValue != 0.) ? max - defaultValue * 20. : 1.;
+
                 ::fwServices::IService::ConfigType paramConfig;
                 paramConfig.add("<xmlattr>.type", "double");
                 paramConfig.add("<xmlattr>.name", paramAdaptor->getParamName());
                 paramConfig.add("<xmlattr>.key", paramAdaptor->getParamName());
-                paramConfig.add("<xmlattr>.defaultValue", 0.5);
-                paramConfig.add("<xmlattr>.min", 0.0);
-                paramConfig.add("<xmlattr>.max", 1.0);
+                paramConfig.add("<xmlattr>.defaultValue", defaultValueStr);
+                paramConfig.add("<xmlattr>.min", min);
+                paramConfig.add("<xmlattr>.max", max);
 
                 editorConfig.add_child("service.parameters.param", paramConfig);
             }
@@ -247,13 +263,19 @@ void SCompositorParameterEditor::updateGuiInfo()
                 m_editorInfo.connections.connect(m_editorInfo.service.lock(), "intChanged", paramAdaptor,
                                                  "setIntParameter");
 
+                const std::string& defaultValueStr = paramAdaptor->getDefaultValue();
+
+                const int defaultValue = std::stoi(defaultValueStr);
+                const int max          = (defaultValue != 0) ? defaultValue * 20 : 1;
+                const int min          = (defaultValue != 0) ? max - defaultValue * 20 : 1;
+
                 ::fwServices::IService::ConfigType paramConfig;
                 paramConfig.add("<xmlattr>.type", "int");
                 paramConfig.add("<xmlattr>.name", paramAdaptor->getParamName());
                 paramConfig.add("<xmlattr>.key", paramAdaptor->getParamName());
-                paramConfig.add("<xmlattr>.defaultValue", 10);
-                paramConfig.add("<xmlattr>.min", 0);
-                paramConfig.add("<xmlattr>.max", 100);
+                paramConfig.add("<xmlattr>.defaultValue", defaultValueStr);
+                paramConfig.add("<xmlattr>.min", min);
+                paramConfig.add("<xmlattr>.max", max);
 
                 editorConfig.add_child("service.parameters.param", paramConfig);
             }

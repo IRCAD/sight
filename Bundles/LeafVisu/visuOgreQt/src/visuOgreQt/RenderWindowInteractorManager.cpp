@@ -68,7 +68,7 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
     QWidget* renderingContainer = QWidget::createWindowContainer(m_qOgreWidget);
     renderingContainer->setSizePolicy(QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding));
 
-    QVBoxLayout *layout = new QVBoxLayout();
+    QVBoxLayout* layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(renderingContainer);
 
@@ -78,7 +78,7 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
     {
         // Open fullscreen widget on secondary monitor if there is one.
         QDesktopWidget *desktop = QApplication::desktop();
-        int screenNumber = desktop->screenNumber(container) + 1;
+        int screenNumber        = desktop->screenNumber(container) + 1;
 
         if(screenNumber >= desktop->screenCount())
         {

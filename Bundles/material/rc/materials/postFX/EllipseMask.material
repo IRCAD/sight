@@ -5,8 +5,8 @@ fragment_program EllipseMask_FP glsl
     {
         param_named u_fragData int 0
         param_named u_ellipseTex int 1
-        param_named u_x float 0.0
-        param_named u_y float 0.0
+        param_named u_x float 0.5
+        param_named u_y float 0.5
         param_named u_a float 0.5
         param_named u_b float 0.5
         param_named u_theta float 0.0

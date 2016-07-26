@@ -35,6 +35,7 @@ namespace fwRenderOgre
 {
 
 class IAdaptor;
+class Layer;
 
 /**
  * @brief The generic scene service shows adaptors in a 3D Ogre scene.
@@ -118,7 +119,7 @@ public:
     typedef std::map< std::string, ::fwData::Object::csptr > ConstObjectMapType;
 
     /// Actives layouts in the scene
-    typedef std::map< SceneIdType, ::fwRenderOgre::Layer::sptr > LayerMapType;
+    typedef std::map< SceneIdType, SPTR(::fwRenderOgre::Layer) > LayerMapType;
 
     /**
      * @name Slots API
@@ -157,10 +158,10 @@ public:
     FWRENDEROGRE_API std::vector<CSPTR(IAdaptor)> getAdaptors() const;
 
     /// Returns the scene manager corresponding to the sceneID
-    FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager(::std::string sceneID = "default");
+    FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager(const ::std::string& sceneID);
 
     /// Returns the layer corresponding to the sceneID
-    FWRENDEROGRE_API ::fwRenderOgre::Layer::sptr getLayer(::std::string sceneID = "default");
+    FWRENDEROGRE_API ::fwRenderOgre::Layer::sptr getLayer(const ::std::string& sceneID);
 
     /// Returns this render layers
     FWRENDEROGRE_API LayerMapType getLayers();
@@ -234,7 +235,6 @@ private:
 
     /// Configuration element shared pointer
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-
 
     /// Start Ogre OpenGL context
     void startContext();

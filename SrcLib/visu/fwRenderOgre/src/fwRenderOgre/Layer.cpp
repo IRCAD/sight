@@ -44,8 +44,8 @@
 namespace fwRenderOgre
 {
 
-const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG   = "layerInitialized";
-const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG = "layerResized";
+const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG         = "layerInitialized";
+const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG       = "layerResized";
 const ::fwCom::Signals::SignalKeyType Layer::s_COMPOSITOR_UPDATED_SIG = "compositorUpdated";
 
 const ::fwCom::Slots::SlotKeyType Layer::s_INTERACTION_SLOT    = "interaction";
@@ -60,9 +60,6 @@ Layer::Layer() :
     m_renderWindow(nullptr),
     m_viewport(nullptr),
     m_is3D(false),
-    m_hasCoreCompositor(false),
-    m_hasCompositorChain(false),
-    m_sceneCreated(false),
     m_rawCompositorChain(""),
     m_coreCompositor(nullptr),
     m_transparencyTechnique(DEFAULT),
@@ -73,7 +70,10 @@ Layer::Layer() :
     m_bottomColor("#333333"),
     m_topScale(0.f),
     m_bottomScale(1.f),
-    m_camera(nullptr)
+    m_camera(nullptr),
+    m_hasCoreCompositor(false),
+    m_hasCompositorChain(false),
+    m_sceneCreated(false)
 {
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
     newSignal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
@@ -101,8 +101,12 @@ void Layer::setRenderWindow(::Ogre::RenderWindow* renderWindow)
 
 void Layer::setID(const std::string& id)
 {
-    m_sceneManager = ::fwRenderOgre::Utils::getOgreRoot()->createSceneManager(::Ogre::ST_GENERIC, id);
+    auto renderService = m_renderService.lock();
+    SLM_ASSERT("Render service must be set before calling setID().", renderService);
+    auto root = ::fwRenderOgre::Utils::getOgreRoot();
+    m_sceneManager = root->createSceneManager(::Ogre::ST_GENERIC, renderService->getID() + "_" + id);
     m_sceneManager->addRenderQueueListener( ::fwRenderOgre::Utils::getOverlaySystem() );
+    m_id = id;
 }
 
 //-----------------------------------------------------------------------------
@@ -123,6 +127,8 @@ const std::string& Layer::getID() const
 
 void Layer::createScene()
 {
+    namespace fwc = ::fwRenderOgre::compositor;
+
     SLM_ASSERT("Scene manager must be initialized", m_sceneManager);
     SLM_ASSERT("Render window must be initialized", m_renderWindow);
 
@@ -133,7 +139,8 @@ void Layer::createScene()
     m_camera->setNearClipDistance(1);
 
     m_viewport = m_renderWindow->addViewport(m_camera, m_depth);
-    m_compositorChainManager.setOgreViewport(m_viewport);
+
+    m_compositorChainManager = fwc::ChainManager::uptr(new fwc::ChainManager(m_viewport));
 
     if (m_depth != 0)
     {
@@ -227,7 +234,16 @@ void Layer::createScene()
 
         if(m_hasCompositorChain)
         {
-            m_compositorChainManager.setCompositorChain(this->trimSemicolons(m_rawCompositorChain));
+            ::boost::char_separator<char> sep(";");
+            ::boost::tokenizer< ::boost::char_separator<char> > tok(m_rawCompositorChain, sep);
+            std::vector< fwc::ChainManager::CompositorIdType> compositorChain;
+
+            for(const auto& it : tok)
+            {
+                compositorChain.push_back(it);
+            }
+
+            m_compositorChainManager->setCompositorChain(compositorChain);
         }
     }
 
@@ -242,7 +258,7 @@ void Layer::createScene()
 
 void Layer::addAvailableCompositor(std::string compositorName)
 {
-    m_compositorChainManager.addAvailableCompositor(compositorName);
+    m_compositorChainManager->addAvailableCompositor(compositorName);
 }
 
 // ----------------------------------------------------------------------------
@@ -250,7 +266,7 @@ void Layer::addAvailableCompositor(std::string compositorName)
 void Layer::clearAvailableCompositors()
 {
     m_renderService.lock()->makeCurrent();
-    m_compositorChainManager.clearCompositorChain();
+    m_compositorChainManager->clearCompositorChain();
     m_renderService.lock()->requestRender();
 }
 
@@ -259,10 +275,10 @@ void Layer::clearAvailableCompositors()
 void Layer::updateCompositorState(std::string compositorName, bool isEnabled)
 {
     m_renderService.lock()->makeCurrent();
-    m_compositorChainManager.updateCompositorState(compositorName, isEnabled);
+    m_compositorChainManager->updateCompositorState(compositorName, isEnabled, m_id, m_renderService.lock());
 
     auto sig = this->signal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
-    sig->emit(compositorName, isEnabled, this->getSptr());
+    sig->asyncEmit(compositorName, isEnabled, this->getSptr());
 
     m_renderService.lock()->requestRender();
 }
@@ -379,9 +395,7 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
 
 ::fwRenderOgre::interactor::IMovementInteractor::sptr Layer::getMoveInteractor()
 {
-
     return m_moveInteractor;
-
 }
 
 // ----------------------------------------------------------------------------
@@ -399,7 +413,7 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
     ::Ogre::AxisAlignedBox worldCoordBoundingBox;
 
     // Getting this render service scene manager
-    ::Ogre::SceneNode *rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    ::Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
 
     // Needed to recompute world bounding boxes
     rootSceneNode->_update(true, false);
@@ -410,7 +424,7 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
 
     while(!childrenStack.empty())
     {
-        const ::Ogre::SceneNode *tempSceneNode = childrenStack.top();
+        const ::Ogre::SceneNode* tempSceneNode = childrenStack.top();
         childrenStack.pop();
 
         // Retrieves an iterator pointing to the attached movable objects of the current scene node
@@ -432,7 +446,7 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
         while(childNodesIt.hasMoreElements())
         {
             // First, we must cast the Node* into a SceneNode*
-            const ::Ogre::SceneNode *childNode = dynamic_cast< ::Ogre::SceneNode* >(childNodesIt.getNext());
+            const ::Ogre::SceneNode* childNode = dynamic_cast< ::Ogre::SceneNode* >(childNodesIt.getNext());
             if(childNode)
             {
                 // Push the current node into the stack in order to continue iteration
@@ -564,8 +578,26 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
         // Make sure near is not bigger than far
         maxNear = (maxNear >= minFar) ? (0.01f*minFar) : (maxNear);
 
-        m_camera->setNearClipDistance( maxNear );
-        m_camera->setFarClipDistance( minFar );
+
+        const auto& chain          = this->getCompositorChain();
+        const auto saoCompositorIt = std::find_if(chain.begin(), chain.end(),
+                                                  ::fwRenderOgre::compositor::ChainManager::FindCompositorByName("SAO"));
+
+        if(saoCompositorIt != chain.end() && saoCompositorIt->second)
+        {
+            // Near and far for SAO
+            OSLM_TRACE("Near SAO");
+            m_camera->setNearClipDistance( 1 );
+            m_camera->setFarClipDistance( 10000 );
+        }
+        else
+        {
+            OSLM_TRACE("Near normal");
+            m_camera->setNearClipDistance( maxNear );
+            m_camera->setFarClipDistance( minFar );
+
+        }
+
     }
 }
 
@@ -695,41 +727,10 @@ void Layer::setupCore()
     // Needed to setup compositors in GL3Plus, Ogre creates render targets
     m_renderService.lock()->makeCurrent();
 
-    m_coreCompositor = fwRenderOgre::compositor::Core::New();
-    m_coreCompositor->setViewport(m_viewport);
+    m_coreCompositor = std::make_shared< ::fwRenderOgre::compositor::Core>(m_viewport);
     m_coreCompositor->setTransparencyTechnique(m_transparencyTechnique);
     m_coreCompositor->setTransparencyDepth(m_numPeels);
     m_coreCompositor->update();
-}
-
-//-------------------------------------------------------------------------------------
-
-std::vector< std::string > Layer::trimSemicolons(std::string input)
-{
-    std::vector< std::string > elements;
-    std::string currentElement("");
-
-    for(unsigned long i(0); i < input.size(); ++i)
-    {
-        char c = input[i];
-
-        if(c != ';')
-        {
-            currentElement += c;
-
-            if(input.size() == i + 1)
-            {
-                elements.push_back(currentElement);
-            }
-        }
-        else
-        {
-            elements.push_back(currentElement);
-            currentElement = "";
-        }
-    }
-
-    return elements;
 }
 
 //-------------------------------------------------------------------------------------
@@ -741,16 +742,20 @@ std::vector< std::string > Layer::trimSemicolons(std::string input)
 
 //-------------------------------------------------------------------------------------
 
-::fwRenderOgre::compositor::ChainManager::CompositorChainType Layer::getCompositorChain()
+::fwRenderOgre::compositor::ChainManager::CompositorChainType Layer::getCompositorChain() const
 {
-    return m_compositorChainManager.getCompositorChain();
+    return m_compositorChainManager->getCompositorChain();
 }
 
 //-------------------------------------------------------------------------------------
 
-std::string Layer::getFinalChainCompositorName() const
+IHasAdaptors::AdaptorVector Layer::getRegisteredAdaptors() const
 {
-    return ::fwRenderOgre::compositor::ChainManager::FINAL_CHAIN_COMPOSITOR;
+    if(m_compositorChainManager)
+    {
+        return m_compositorChainManager->getRegisteredAdaptors();
+    }
+    return IHasAdaptors::AdaptorVector();
 }
 
 //-------------------------------------------------------------------------------------

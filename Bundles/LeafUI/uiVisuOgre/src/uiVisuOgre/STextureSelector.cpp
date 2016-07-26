@@ -180,7 +180,7 @@ void STextureSelector::onLoadButton()
             sig->emit(image);
         }
     }
-    catch (const std::exception & e)
+    catch (const std::exception& e)
     {
         OSLM_ERROR("Failed to load texture : "<<e.what());
     }

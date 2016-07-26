@@ -201,7 +201,7 @@ void Plane::initialize3DPlane()
     }
 
     // Entity creation
-    ::Ogre::Entity *planeEntity = m_sceneManager->createEntity(m_entityName, m_slicePlane);
+    ::Ogre::Entity* planeEntity = m_sceneManager->createEntity(m_entityName, m_slicePlane);
     planeEntity->setMaterial(m_texMaterial);
     m_planeSceneNode->attachObject(planeEntity);
 
@@ -236,7 +236,7 @@ void Plane::initialize2DPlane()
         m_width, m_height);
 
     // Entity creation
-    ::Ogre::Entity *planeEntity = m_sceneManager->createEntity(m_entityName, m_slicePlane);
+    ::Ogre::Entity* planeEntity = m_sceneManager->createEntity(m_entityName, m_slicePlane);
     planeEntity->setMaterial(m_texMaterial);
     m_planeSceneNode->attachObject(planeEntity);
 }

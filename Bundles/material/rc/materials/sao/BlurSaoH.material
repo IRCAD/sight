@@ -1,0 +1,31 @@
+fragment_program BlurSaoH_FP glsl
+{
+    source BlurSaoH_FP.glsl
+    default_params
+    {
+        param_named_auto u_vpHeight viewport_height
+        param_named_auto u_vpWidth viewport_width
+    }
+}
+
+material BlurSaoH
+{
+    technique
+    {
+        pass
+        {
+            vertex_program_ref stdPos_VP
+            {
+            }
+
+            fragment_program_ref BlurSaoH_FP
+            {
+                param_named scale int 2
+            }
+
+            texture_unit AO_map
+            {
+            }
+        }
+    }
+}

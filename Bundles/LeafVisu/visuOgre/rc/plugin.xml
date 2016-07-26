@@ -4,6 +4,7 @@
 
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
+    <requirement id="material" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRender::IRender</type>

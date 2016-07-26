@@ -15,6 +15,7 @@ set( REQUIREMENTS
     io
     ioVTK
     servicesReg
+    uiData
     uiVisuQt
     uiImageQt
     uiReconstructionQt
@@ -25,7 +26,7 @@ set( REQUIREMENTS
     visuVTKQt
     visuVTKAdaptor
     fwlauncher
-    appXml
+    appXml2
     arMedia
     arDataReg
     videoQt
@@ -40,4 +41,4 @@ set( REQUIREMENTS
     preferences
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES OgreViewer_Extension)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES OgreViewer_Extension)

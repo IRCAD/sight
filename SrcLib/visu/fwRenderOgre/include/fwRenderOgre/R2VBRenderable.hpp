@@ -103,7 +103,7 @@ inline Ogre::Real R2VBRenderable::getBoundingRadius() const
 
 //-----------------------------------------------------------------------------
 
-inline Ogre::Real R2VBRenderable::getSquaredViewDepth(const Ogre::Camera *_cam) const
+inline Ogre::Real R2VBRenderable::getSquaredViewDepth(const Ogre::Camera* _cam) const
 {
     return m_srcObject->getSquaredViewDepth(_cam);
 }

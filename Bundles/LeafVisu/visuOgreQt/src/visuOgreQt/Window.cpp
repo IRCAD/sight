@@ -25,7 +25,7 @@ int Window::m_counter = 0;
 
 // ----------------------------------------------------------------------------
 
-Window::Window(QWindow *parent) :
+Window::Window(QWindow* parent) :
     QWindow(parent),
     m_id(Window::m_counter++),
     m_ogreRoot(nullptr),
@@ -58,7 +58,7 @@ void Window::showOverlay(bool show)
 }
 // ----------------------------------------------------------------------------
 
-void Window::render(QPainter *painter)
+void Window::render(QPainter* painter)
 {
     Q_UNUSED(painter);
 }
@@ -245,7 +245,7 @@ void Window::renderLater()
 
 // ----------------------------------------------------------------------------
 
-bool Window::event(QEvent *event)
+bool Window::event(QEvent* event)
 {
     /*
        QWindow's "message pump". The base method that handles all QWindow events. As you will see there
@@ -269,7 +269,7 @@ bool Window::event(QEvent *event)
 
 // ----------------------------------------------------------------------------
 
-void Window::exposeEvent(QExposeEvent *event)
+void Window::exposeEvent(QExposeEvent* event)
 {
     Q_UNUSED(event);
 
@@ -281,7 +281,7 @@ void Window::exposeEvent(QExposeEvent *event)
 
 // ----------------------------------------------------------------------------
 
-void Window::moveEvent(QMoveEvent *event)
+void Window::moveEvent(QMoveEvent* event)
 {
     Q_UNUSED(event);
 
@@ -316,7 +316,7 @@ void Window::renderNow()
 
 // ----------------------------------------------------------------------------
 
-bool Window::eventFilter(QObject *target, QEvent *event)
+bool Window::eventFilter(QObject* target, QEvent* event)
 {
     if (target == this)
     {
@@ -377,7 +377,7 @@ bool Window::eventFilter(QObject *target, QEvent *event)
 
 // ----------------------------------------------------------------------------
 
-void Window::keyPressEvent(QKeyEvent * e)
+void Window::keyPressEvent(QKeyEvent* e)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS;
@@ -460,7 +460,7 @@ void Window::mouseMoveEvent( QMouseEvent* e )
 
 // ----------------------------------------------------------------------------
 
-void Window::wheelEvent(QWheelEvent *e)
+void Window::wheelEvent(QWheelEvent* e)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE;
@@ -482,7 +482,7 @@ void Window::mousePressEvent( QMouseEvent* e )
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONPRESS;
-    info.button = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
+    info.button          = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
     info.delta           = 0;
     info.x               = e->x();
     info.y               = e->y();
@@ -520,7 +520,7 @@ void Window::mouseReleaseEvent( QMouseEvent* e )
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONRELEASE;
-    info.button = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
+    info.button          = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
     info.delta           = 0;
     info.x               = e->x();
     info.y               = e->y();
@@ -597,7 +597,7 @@ int Window::getId()
 
 void Window::preViewportUpdate(const ::Ogre::RenderTargetViewportEvent& evt)
 {
-    ::Ogre::Overlay *overlay = ::Ogre::OverlayManager::getSingletonPtr()->getByName("LogoOverlay");
+    ::Ogre::Overlay* overlay = ::Ogre::OverlayManager::getSingletonPtr()->getByName("LogoOverlay");
 
     if(!m_showOverlay)
     {

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -110,7 +110,7 @@ void Negato2DInteractor::updateTotalSize()
     // Since we're working on a SNegato2D we assume there's only one entity in the scene node.
     while(!childrenStack.empty())
     {
-        const ::Ogre::SceneNode *tempSceneNode = childrenStack.top();
+        const ::Ogre::SceneNode* tempSceneNode = childrenStack.top();
         childrenStack.pop();
 
         // Retrieves an iterator pointing to the attached movable objects of the current scene node
@@ -137,7 +137,7 @@ void Negato2DInteractor::updateTotalSize()
         while(childNodesIt.hasMoreElements())
         {
             // First, we must cast the Node* into a SceneNode*
-            const ::Ogre::SceneNode *childNode = dynamic_cast< ::Ogre::SceneNode* >(childNodesIt.getNext());
+            const ::Ogre::SceneNode* childNode = dynamic_cast< ::Ogre::SceneNode* >(childNodesIt.getNext());
             if(childNode)
             {
                 // Push the current node into the stack in order to continue iteration
@@ -152,7 +152,7 @@ void Negato2DInteractor::updateTotalSize()
 void Negato2DInteractor::updateRenderWindowDimensions()
 {
     // Retrieve the render window bounds
-    ::Ogre::RenderSystem *renderSystem = m_sceneManager->getDestinationRenderSystem();
+    ::Ogre::RenderSystem* renderSystem = m_sceneManager->getDestinationRenderSystem();
 
     m_renderWindowWidth  = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualWidth());
     m_renderWindowHeight = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualHeight());

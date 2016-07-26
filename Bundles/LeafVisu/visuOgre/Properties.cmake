@@ -14,4 +14,6 @@ set( DEPENDENCIES
     fwData
     fwTools
 )
-set( REQUIREMENTS )
+set( REQUIREMENTS
+    material
+)

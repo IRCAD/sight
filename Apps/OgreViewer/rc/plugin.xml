@@ -25,412 +25,368 @@
         </config>
     </extension>
 
-    <extension implements="::fwServices::registry::AppConfig">
-
+    <extension implements="::fwServices::registry::AppConfig2">
         <id>OgreViewer_Extension</id>
         <config>
-            <object type="::fwData::Composite">
-
-                <service uid="ihm" impl="::gui::frame::SDefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
-                    <gui>
-                        <frame>
-                            <name>Ogre Viewer</name>
-                            <icon>@BUNDLE_PREFIX@/OgreViewer_0-1/ogre_head.svg</icon>
-                            <minSize width="1100" height="700" />
-                        </frame>
-                        <menuBar />
-                    </gui>
-                    <registry>
-                        <menuBar sid="menuBar" start="yes" />
-                        <view sid="multiView_scene1" start="yes" />
-                    </registry>
-                </service>
-
-                <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no">
-                    <gui>
-                        <layout>
-                            <menu name="File" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <menu sid="menu_File" start="yes" />
-                    </registry>
-                </service>
-
-                <service uid="multiView_scene1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                    <gui>
-                        <layout type="::fwGui::CardinalLayoutManager">
-                            <view align="center" />
-                            <view align="right" minWidth="500" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <view sid="tab_view" start="yes" />
-                        <view sid="rightView" start="yes" />
-                    </registry>
-                </service>
-
-                <service uid="rightView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                    <gui>
-                        <layout type="::fwGui::TabLayoutManager">
-                            <view caption="Compositor" />
-                            <view caption="Organ manager" selected="yes" />
-                            <view caption="Negato histogram" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <view sid="CompositorView" start="yes" />
-                        <view wid="${GENERIC_UID}_organView" start="yes" />
-                        <view sid="histogramView" start="yes" />
-                    </registry>
-                </service>
-
-                <service uid="tab_view" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                    <gui>
-                        <layout type="::fwGui::TabLayoutManager">
-                            <view caption="VTK" selected="no" />
-                            <view caption="Ogre" selected="yes" />
-                            <view caption="2D Negato Ogre" selected="no" />
-                            <view caption="Ogre VR" selected="yes" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <view wid="${GENERIC_UID}_VTKSceneView" start="yes" />
-                        <view wid="${GENERIC_UID}_OgreSceneView" start="yes" />
-                        <view wid="${GENERIC_UID}_OgreNegato2DView" start="yes" />
-                        <view wid="${GENERIC_UID}_OgreVolumeRendering" start="yes" />
-                    </registry>
-                </service>
-
-                <service uid="menu_File" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
-                    <gui>
-                        <layout>
-                            <menuItem name="Open model series..." shortcut="Ctrl+M" />
-                            <menuItem name="Open image..." shortcut="Ctrl+O" />
-                            <menuItem name="Save model series..." shortcut="Ctrl+S" />
-                            <separator />
-                            <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <menuItem sid="action_openMesh" start="yes" />
-                        <menuItem sid="action_openNegato" start="yes" />
-                        <menuItem sid="action_saveFile" start="yes" />
-                        <menuItem sid="action_quit" start="yes" />
-                    </registry>
-                </service>
-
-                <service uid="action_openMesh" impl="::gui::action::SStarter" type="::fwGui::IActionSrv" autoConnect="no">
-                    <start uid="readerPathMeshFile" />
-                </service>
-
-                <service uid="action_openNegato" impl="::gui::action::SStarter" type="::fwGui::IActionSrv" autoConnect="no">
-                    <start uid="imageReader" />
-                </service>
-
-                <service uid="action_saveFile" impl="::gui::action::SStarter" type="::fwGui::IActionSrv" autoConnect="no">
-                    <start uid="writerPathMeshFile" />
-                </service>
-
-                <service uid="action_quit" type="::fwGui::IActionSrv" impl="::gui::action::SQuit" />
-
-                <!-- Negato histogram -->
-                <service uid="histogramView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                    <gui>
-                        <layout type="::fwGui::LineLayoutManager">
-                            <orientation value="vertical" />
-                            <view proportion="0" minHeight="30" />
-                            <view proportion="0" minHeight="100" />
-                            <view proportion="1" />
-                        </layout>
-                    </gui>
-                    <registry>
-                        <view sid="tfm" start="yes" />
-                        <view sid="Scene2D_Shutter" start="no" />
-                        <view sid="Scene2D" start="no" />
-                    </registry>
-                </service>
-
-                <service uid="Scene2D_Shutter" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
-                    <scene>
-                        <scene x="-1100" y="-1.1" width="2400" height="1.2" />
-
-                        <viewport id="view1" x="-1100" y="-1.1" width="2400" height="1.2" />
-
-                        <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
-                        <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-
-                        <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
-
-                        <adaptor id="shutterGrid" class="::scene2D::adaptor::Grid2D" objectId="self">
-                            <config xMin="-1200" xMax="1400" yMin="-0.7" yMax="1.7" xSpacing="200" ySpacing="0.2" viewportUID="Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
-                        </adaptor>
-
-                        <adaptor id="shutterAbscissa" class="::scene2D::adaptor::Line" objectId="self">
-                            <config x1="-1200" x2="1400" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
-                        </adaptor>
-
-                        <adaptor id="shutterOrdinate" class="::scene2D::adaptor::Line" objectId="self">
-                            <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
-                        </adaptor>
-
-                        <adaptor id="shutterHistogram" class="::scene2D::adaptor::Histogram" objectId="histogram">
-                            <config color="green" xAxis="xAxis" yAxis="axeHistogramY" zValue="4" />
-                        </adaptor>
-
-                        <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="viewport">
-                            <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1200" initialPos="-700" />
-                        </adaptor>
-
-                    </scene>
-                </service>
-
-                <!-- Negato histogram -->
-                <service uid="Scene2D" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
-                    <scene>
-                        <scene x="-1100" y="-1.1" width="2400" height="1.2" antialiasing="true" />
-
-                        <viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" />
-
-                        <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
-                        <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-
-                        <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
-
-                        <adaptor id="grid" class="::scene2D::adaptor::Grid2D" objectId="self">
-                            <config xMin="-1200" xMax="1500" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.25" viewportUID="Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
-                        </adaptor>
-
-                        <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
-                            <config x1="-1200" x2="1500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
-                        </adaptor>
-
-                        <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self">
-                            <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
-                        </adaptor>
-
-                        <adaptor id="maxOpacity" class="::scene2D::adaptor::Line" objectId="self">
-                            <config x1="-1200" x2="1500" y1="1" y2="1" color="red" xAxis="xAxis" yAxis="yAxis" zValue="4" />
-                        </adaptor>
-
-                        <adaptor id="curvedHistogram" class="::scene2D::adaptor::CurvedHistogram" objectId="histogram">
-                            <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25" zValue="6" histogramPointUID="histogramPoint" borderWidth="2.0" />
-                        </adaptor>
-
-                        <!-- A graphic cursor that follow histogram's shape according to mouse's cursor -->
-                        <adaptor id="histogramCursor" class="::scene2D::adaptor::HistogramCursor" objectId="histogram">
-                            <config xAxis="xAxis" yAxis="axeHistogramY" color="blue" borderColor="gray" zValue="9" pointSize="16" viewportUID="Viewport" histogramPointUID="histogramPoint" />
-                        </adaptor>
-
-                        <adaptor id="histogramValue" class="::scene2D::adaptor::HistogramValue" objectId="histogram">
-                            <config xAxis="xAxis" yAxis="axeHistogramY" zValue="12" fontSize="6" viewportUID="Viewport" histogramPointUID="histogramPoint" />
-                        </adaptor>
-
-                        <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
-                            <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" viewportUID="Viewport" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-                        </adaptor>
-
-                        <adaptor id="viewportRangeUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="viewport">
-                            <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
-                        </adaptor>
-
-                        <adaptor id="scaleValuesLeft" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                            <config min="0.0" max="1.0" interval="0.1" fontSize="7" align="left" unit="%" viewportUID="Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                        </adaptor>
-
-                        <adaptor id="axisLeft" class="::scene2D::adaptor::Axis" objectId="self">
-                            <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="5" viewportUID="Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                        </adaptor>
-
-                        <adaptor id="scaleValuesBottom" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                            <config min="-1024" max="1024" interval="200" fontSize="7" align="bottom" viewportUID="Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                        </adaptor>
-
-                        <adaptor id="axisBottom" class="::scene2D::adaptor::Axis" objectId="self">
-                            <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="Viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                        </adaptor>
-                    </scene>
-                </service>
-
-                <item key="modelSeries">
-                    <object uid="modelSeriesUID" type="::fwMedData::ModelSeries">
-
-                        <service uid="readerPathMeshFile" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
-                            <type mode="reader" />
-                        </service>
-
-                        <service uid="writerPathMeshFile" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
-                            <type mode="writer" />
-                        </service>
-
-                        <service uid="cfgOrganManagerConfig"  impl="::fwServices::SConfigController" autoConnect="yes">
-                            <config>
-                                <appConfig id="OgreOrganManagerWithSeries">
-                                    <parameters>
-                                        <parameter replace="ORGAN_MANAGER_MODELSERIES" by="modelSeriesUID" />
-                                        <parameter replace="WID_PARENT" by="${GENERIC_UID}_organView" />
-                                        <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/arMedia_0-1/icons/app.ico" />
-                                    </parameters>
-                                </appConfig>
-                            </config>
-                        </service>
-                    </object>
-                </item>
-
-                <item key="TFPoolKey">
-                    <object uid="TFPool" type="::fwData::Composite">
-                        <service uid="tfm" type="::gui::editor::IEditor" impl="::uiTF::TransferFunctionEditor" autoConnect="yes">
-                            <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections"/>
-                        </service>
-                    </object>
-                </item>
-
-                <!-- Negato image -->
-                <item key="image">
-                    <object uid="imageUID" type="::fwData::Image">
-                        <service uid="imageReader" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
-                            <type mode="reader" />
-                        </service>
-
-                        <service uid="medicalImage" impl="::ctrlSelection::MedicalImageSrv" autoConnect="no" />
-
-                        <service uid="computeHistogram" impl="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
-                            <histogramId>histogram</histogramId>
-                            <binsWidth>5.0</binsWidth>
-                        </service>
-                    </object>
-                </item>
-
-                <item key="TFSelectionsKey">
-                    <object uid="TFSelections" type="::fwData::Composite" />
-                </item>
-
-                <item key="cameraTF">
-                    <object uid="cameraTF_UID" type="::fwData::TransformationMatrix3D" />
-                </item>
-
-                <item key="viewport">
-                    <object uid="Viewport" type="::scene2D::data::Viewport" />
-                </item>
-
-                <item key="histogram">
-                        <object uid="histogram" type="::fwData::Histogram" />
-                </item>
-                <item key="histogramPoint">
-                    <object uid="histogramPoint" type="::fwData::Point" />
-                </item>
-
-
-                <!-- CompositeVisu description -->
-                <item key="compositeVisu">
-                    <object uid="compositeVisu" type="::fwData::Composite">
-
-                        <service uid="CompositorView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                            <gui>
-                                <layout type="::fwGui::LineLayoutManager">
-                                    <orientation value="vertical" />
-                                    <view caption="Compositor Selector" />
-                                    <view caption="Compositor parameters"/>
-                                    <view/>
-                                </layout>
-                            </gui>
-                            <registry>
-                                <view sid="compositorSelector" />
-                                <view sid="compositorParameters" />
-                                <view sid="propertiesView" start="yes"/>
-                            </registry>
-                        </service>
-
-                        <service uid="propertiesView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                            <gui>
-                                <layout type="::fwGui::LineLayoutManager">
-                                    <orientation value="vertical" />
-                                    <view caption="Default compositor parameters" />
-                                </layout>
-                            </gui>
-                            <registry>
-                                <view sid="CoreEditor" />
-                            </registry>
-                        </service>
-
-                        <service uid="compositorSelector" impl="::uiVisuOgre::SCompositorSelector" type="::gui::editor::IEditor" autoConnect="no" />
-
-                        <service uid="compositorParameters" impl="::uiVisuOgre::SCompositorParameterEditor" type="::gui::editor::IEditor" autoConnect="no" >
-                            <render uid="genericSceneUID" />
-                            <layer id="2" />
-                        </service>
-
-                        <service uid="CoreEditor" impl="::uiVisuOgre::SCoreCompositorEditor" type="::gui::editor::IEditor" autoConnect="no" />
-
-                        <service uid="cfgVTKGenericScene" impl="::fwServices::SConfigController" autoConnect="no">
-                            <config>
-                                <appConfig id="VTKGenericScene" >
-                                    <parameters>
-                                        <parameter replace="WID_PARENT" by="${GENERIC_UID}_VTKSceneView" />
-                                        <parameter replace="modelSeriesUID" by="modelSeriesUID" />
-                                    </parameters>
-                                </appConfig>
-                            </config>
-                        </service>
-
-                        <service uid="cfgOgreGenericScene" impl="::fwServices::SConfigController" autoConnect="no">
-                            <config>
-                                <appConfig id="OgreGenericScene">
-                                    <parameters>
-                                        <parameter replace="WID_PARENT" by="${GENERIC_UID}_OgreSceneView" />
-                                        <parameter replace="modelSeriesUID" by="modelSeriesUID" />
-                                        <parameter replace="genericSceneUID" by="genericSceneUID" />
-                                        <parameter replace="cameraTF" by="cameraTF_UID" />
-                                        <parameter replace="imageUID" by="imageUID" />
-                                        <parameter replace="TFSelections" by="TFSelections" />
-                                    </parameters>
-                                </appConfig>
-                            </config>
-                        </service>
-
-                        <service uid="cfgOgreNegato2D" impl="::fwServices::SConfigController" type="::fwServices::IController" autoConnect="no">
-                            <config>
-                                <appConfig id="OgreNegato2D">
-                                    <parameters>
-                                        <parameter replace="WID_PARENT" by="${GENERIC_UID}_OgreNegato2DView" />
-                                        <parameter replace="imageUID" by="imageUID" />
-                                        <parameter replace="TFSelections" by="TFSelections" />
-                                    </parameters>
-                                </appConfig>
-                            </config>
-                        </service>
-
-                        <service uid="cfgOgreVolumeRendering" impl="::fwServices::SConfigController" type="::fwServices::IController" autoConnect="no">
-                            <config>
-                                <appConfig id="OgreVolumeRendering">
-                                    <parameters>
-                                        <parameter replace="WID_PARENT" by="${GENERIC_UID}_OgreVolumeRendering" />
-                                        <parameter replace="imageUID" by="imageUID" />
-                                        <parameter replace="TFSelections" by="TFSelections" />
-                                    </parameters>
-                                </appConfig>
-                            </config>
-                        </service>
-                    </object>
-
-                </item>
-
-                <!-- Start/Stop services -->
-                <start uid="medicalImage" />
-                <start uid="ihm" />
-                <start uid="Scene2D" />
-                <start uid="Scene2D_Shutter" />
-                <start uid="cfgVTKGenericScene" />
-                <start uid="cfgOgreGenericScene" />
-                <start uid="cfgOgreNegato2D" />
-                <start uid="cfgOgreVolumeRendering" />
-                <start uid="cfgOrganManagerConfig" />
-                <start uid="compositorSelector" />
-                <start uid="compositorParameters" />
-                <start uid="CoreEditor" />
-                <start uid="computeHistogram" />
-
-            </object>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="modelSeriesUID" type="::fwMedData::ModelSeries" />
+            <object uid="imageUID" type="::fwData::Image" />
+            <object uid="TFPool" type="::fwData::Composite" />
+            <object uid="TFSelections" type="::fwData::Composite" />
+
+            <object uid="cameraTF_UID" type="::fwData::TransformationMatrix3D" />
+
+            <object uid="viewport" type="::scene2D::data::Viewport" />
+            <object uid="histogram" type="::fwData::Histogram" />
+            <object uid="histogramPoint" type="::fwData::Point" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="ihm" type="::gui::frame::SDefaultFrame" >
+                <gui>
+                    <frame>
+                        <name>Ogre Viewer</name>
+                        <icon>@BUNDLE_PREFIX@/OgreViewer_0-1/ogre_head.svg</icon>
+                        <minSize width="1100" height="700" />
+                    </frame>
+                    <menuBar />
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <view sid="multiView_scene1" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menu_File" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="multiView_scene1" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view align="center" />
+                        <view align="right" minWidth="500" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="tabView" start="yes" />
+                    <view sid="rightView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="tabView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::TabLayoutManager">
+                        <view caption="VTK" selected="no" />
+                        <view caption="Ogre" selected="yes" />
+                        <view caption="2D Negato Ogre" selected="no" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view wid="VTKSceneView" start="yes" />
+                    <view wid="OgreSceneView" start="yes" />
+                    <view wid="OgreNegato2DView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="rightView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::TabLayoutManager">
+                        <view caption="Compositor" />
+                        <view caption="Organ manager" selected="yes" />
+                        <view caption="Negato histogram" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="CompositorView" start="yes" />
+                    <view wid="organView" start="yes" />
+                    <view sid="histogramView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="histogramView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="0" minHeight="30" />
+                        <view proportion="0" minHeight="100" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="tfm" start="yes" />
+                    <view sid="Scene2D_Shutter" start="no" />
+                    <view sid="Scene2D" start="no" />
+                </registry>
+            </service>
+
+            <service uid="CompositorView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::ToolboxLayoutManager">
+                        <orientation value="vertical" />
+                        <view caption="Compositor Selector" expanded="true" />
+                        <view caption="Compositor parameters" expanded="true" />
+                        <view caption="Transparency settings" expanded="true" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="compositorSelector" />
+                    <view sid="compositorParameters" />
+                    <view sid="propertiesView" start="yes"/>
+                </registry>
+            </service>
+
+            <service uid="propertiesView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view/>
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="CoreEditor" />
+                </registry>
+            </service>
+
+            <service uid="menu_File" type="::gui::aspect::SDefaultMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open model series..." shortcut="Ctrl+M" />
+                        <menuItem name="Open image..." shortcut="Ctrl+O" />
+                        <menuItem name="Save model series..." shortcut="Ctrl+S" />
+                        <separator />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="action_openMesh" start="yes" />
+                    <menuItem sid="action_openNegato" start="yes" />
+                    <menuItem sid="action_saveFile" start="yes" />
+                    <menuItem sid="action_quit" start="yes" />
+                </registry>
+            </service>
+
+            <!-- ******************************* Actions ****************************************** -->
+
+            <service uid="action_openMesh" type="::gui::action::SStarter" >
+                <start uid="readerPathMeshFile" />
+            </service>
+
+            <service uid="action_openNegato" type="::gui::action::SStarter" >
+                <start uid="imageReader" />
+            </service>
+
+            <service uid="action_saveFile" type="::gui::action::SStarter" >
+                <start uid="writerPathMeshFile" />
+            </service>
+
+            <service uid="action_quit" type="::gui::action::SQuit"  />
+
+            <!-- ************************ Configuration launchers ********************************* -->
+
+            <service uid="cfgVTKGenericScene" type="::fwServices::SConfigController" >
+                <appConfig id="VTKGenericScene" />
+                <inout key="modelSeriesUID" uid="modelSeriesUID" />
+                <parameter replace="WID_PARENT" uid="VTKSceneView" />
+            </service>
+
+            <service uid="cfgOgreGenericScene" type="::fwServices::SConfigController" >
+                <appConfig id="OgreGenericScene" />
+                <inout key="modelSeriesUID" uid="modelSeriesUID" />
+                <inout key="cameraTF" uid="cameraTF_UID" />
+                <inout key="imageUID" uid="imageUID" />
+                <inout key="TFSelections" uid="TFSelections" />
+                <parameter replace="WID_PARENT" uid="OgreSceneView" />
+                <parameter replace="genericSceneUID" uid="genericSceneUID" />
+            </service>
+
+            <service uid="cfgOgreNegato2D" type="::fwServices::SConfigController" >
+                <appConfig id="OgreNegato2D" />
+                <inout key="imageUID" uid="imageUID" />
+                <inout key="TFSelections" uid="TFSelections" />
+                <parameter replace="WID_PARENT" uid="OgreNegato2DView" />
+            </service>
+
+            <service uid="cfgOrganManagerConfig"  type="::fwServices::SConfigController">
+                <appConfig id="OgreOrganManagerWithSeries" />
+                <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeriesUID" />
+                <parameter replace="WID_PARENT" uid="organView" />
+                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/arMedia_0-1/icons/app.ico" />
+            </service>
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="compositorSelector" type="::uiVisuOgre::SCompositorSelector"  />
+
+            <service uid="compositorParameters" type="::uiVisuOgre::SCompositorParameterEditor"  >
+                <render uid="genericSceneUID" />
+                <layer id="default" />
+            </service>
+
+            <service uid="CoreEditor" type="::uiVisuOgre::SCoreCompositorEditor"  />
+
+            <service uid="Scene2D_Shutter" type="::scene2D::Render" autoConnect="yes">
+                <in key="histogram" uid="histogram" />
+                <inout key="viewport" uid="viewport" />
+                <scene>
+                    <scene x="-1100" y="-1.1" width="2400" height="1.2" />
+
+                    <viewport id="view1" x="-1100" y="-1.1" width="2400" height="1.2" />
+
+                    <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
+                    <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
+
+                    <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
+
+                    <adaptor id="shutterGrid" class="::scene2D::adaptor::Grid2D" objectId="self">
+                        <config xMin="-1200" xMax="1400" yMin="-0.7" yMax="1.7" xSpacing="200" ySpacing="0.2" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
+                    </adaptor>
+
+                    <adaptor id="shutterAbscissa" class="::scene2D::adaptor::Line" objectId="self">
+                        <config x1="-1200" x2="1400" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
+                    </adaptor>
+
+                    <adaptor id="shutterOrdinate" class="::scene2D::adaptor::Line" objectId="self">
+                        <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
+                    </adaptor>
+
+                    <adaptor id="shutterHistogram" class="::scene2D::adaptor::Histogram" objectId="histogram">
+                        <config color="green" xAxis="xAxis" yAxis="axeHistogramY" zValue="4" />
+                    </adaptor>
+
+                    <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="viewport">
+                        <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1200" initialPos="-700" />
+                    </adaptor>
+
+                </scene>
+            </service>
+
+            <service uid="Scene2D" type="::scene2D::Render" autoConnect="yes">
+                <in key="image" uid="imageUID" />
+                <in key="histogram" uid="histogram" />
+                <inout key="histogramPoint" uid="histogramPoint" />
+                <inout key="viewport" uid="viewport" />
+                <inout key="TFSelections" uid="TFSelections" />
+                <scene>
+                    <scene x="-1100" y="-1.1" width="2400" height="1.2" antialiasing="true" />
+
+                    <viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" />
+
+                    <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
+                    <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
+
+                    <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
+
+                    <adaptor id="grid" class="::scene2D::adaptor::Grid2D" objectId="self">
+                        <config xMin="-1200" xMax="1500" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.25" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
+                    </adaptor>
+
+                    <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
+                        <config x1="-1200" x2="1500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
+                    </adaptor>
+
+                    <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self">
+                        <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
+                    </adaptor>
+
+                    <adaptor id="maxOpacity" class="::scene2D::adaptor::Line" objectId="self">
+                        <config x1="-1200" x2="1500" y1="1" y2="1" color="red" xAxis="xAxis" yAxis="yAxis" zValue="4" />
+                    </adaptor>
+
+                    <adaptor id="curvedHistogram" class="::scene2D::adaptor::CurvedHistogram" objectId="histogram">
+                        <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25" zValue="6" histogramPointUID="histogramPoint" borderWidth="2.0" />
+                    </adaptor>
+
+                    <!-- A graphic cursor that follow histogram's shape according to mouse's cursor -->
+                    <adaptor id="histogramCursor" class="::scene2D::adaptor::HistogramCursor" objectId="histogram">
+                        <config xAxis="xAxis" yAxis="axeHistogramY" color="blue" borderColor="gray" zValue="9" pointSize="16" viewportUID="viewport" histogramPointUID="histogramPoint" />
+                    </adaptor>
+
+                    <adaptor id="histogramValue" class="::scene2D::adaptor::HistogramValue" objectId="histogram">
+                        <config xAxis="xAxis" yAxis="axeHistogramY" zValue="12" fontSize="6" viewportUID="viewport" histogramPointUID="histogramPoint" />
+                    </adaptor>
+
+                    <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
+                        <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" viewportUID="viewport" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                    </adaptor>
+
+                    <adaptor id="viewportRangeUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="viewport">
+                        <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
+                    </adaptor>
+
+                    <adaptor id="scaleValuesLeft" class="::scene2D::adaptor::ScaleValues" objectId="self">
+                        <config min="0.0" max="1.0" interval="0.1" fontSize="7" align="left" unit="%" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                    </adaptor>
+
+                    <adaptor id="axisLeft" class="::scene2D::adaptor::Axis" objectId="self">
+                        <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                    </adaptor>
+
+                    <adaptor id="scaleValuesBottom" class="::scene2D::adaptor::ScaleValues" objectId="self">
+                        <config min="-1024" max="1024" interval="200" fontSize="7" align="bottom" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                    </adaptor>
+
+                    <adaptor id="axisBottom" class="::scene2D::adaptor::Axis" objectId="self">
+                        <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                    </adaptor>
+                </scene>
+            </service>
+
+            <service uid="readerPathMeshFile" type="::uiIO::editor::SIOSelector" >
+                <in key="target" uid="modelSeriesUID" />
+                <type mode="reader" />
+            </service>
+
+            <service uid="writerPathMeshFile" type="::uiIO::editor::SIOSelector" >
+                <in key="target" uid="modelSeriesUID" />
+                <type mode="writer" />
+            </service>
+
+            <service uid="tfm" type="::uiTF::TransferFunctionEditor" >
+                <inout key="transferFunctions" uid="TFPool" />
+                <inout key="TFSelections" uid="TFSelections" />
+                <config selectedTFKey="SelectedTF" />
+            </service>
+
+            <service uid="imageReader" type="::uiIO::editor::SIOSelector" >
+                <in key="target" uid="imageUID" />
+                <type mode="reader" />
+            </service>
+
+            <service uid="medicalImage" type="::ctrlSelection::MedicalImageSrv" >
+                <inout key="image" uid="imageUID" />
+            </service>
+
+            <service uid="computeHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
+                <in key="image" uid="imageUID" />
+                <inout key="histogram" uid="histogram" />
+                <binsWidth>5.0</binsWidth>
+            </service>
+
+            <!-- Start/Stop services -->
+            <start uid="medicalImage" />
+            <start uid="ihm" />
+            <start uid="Scene2D" />
+            <start uid="Scene2D_Shutter" />
+            <start uid="cfgVTKGenericScene" />
+            <start uid="cfgOgreGenericScene" />
+            <start uid="cfgOgreNegato2D" />
+            <start uid="cfgOgreVolumeRendering" />
+            <start uid="cfgOrganManagerConfig" />
+            <start uid="compositorSelector" />
+            <start uid="compositorParameters" />
+            <start uid="CoreEditor" />
+            <start uid="computeHistogram" />
+
         </config>
 
     </extension>

@@ -78,6 +78,13 @@ const std::string& IParameter::getParamName() const
 
 //------------------------------------------------------------------------------
 
+const std::string& IParameter::getDefaultValue() const
+{
+    return m_defaultValue;
+}
+
+//------------------------------------------------------------------------------
+
 void IParameter::doConfigure() throw(::fwTools::Failed)
 {
     SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
@@ -107,6 +114,8 @@ void IParameter::doConfigure() throw(::fwTools::Failed)
             OSLM_ERROR("This shader type " << shaderType << " isn't supported yet");
         }
     }
+
+    m_defaultValue = m_configuration->getSafeAttributeValue("defaultValue").second;
 }
 
 //------------------------------------------------------------------------------
@@ -131,7 +140,7 @@ void IParameter::doUpdate() throw(::fwTools::Failed)
 
         if( !bSet )
         {
-            SLM_ERROR("Couldn't set parameter '" + m_paramName + "' in any technique of material '"
+            SLM_TRACE("Couldn't set parameter '" + m_paramName + "' in any technique of material '"
                       + m_material->getName() + "'");
         }
         else
@@ -141,13 +150,12 @@ void IParameter::doUpdate() throw(::fwTools::Failed)
     }
     else
     {
-        ::Ogre::Technique* tech = nullptr;
-        tech                    = m_material->getTechnique(m_techniqueName);
+        ::Ogre::Technique* tech = m_material->getTechnique(m_techniqueName);
         OSLM_FATAL_IF("Can't find technique " << m_techniqueName, !tech);
 
         if( this->setParameter(*tech) )
         {
-            SLM_ERROR("Couldn't set parameter '" + m_paramName + "' in technique '" + m_techniqueName +
+            SLM_TRACE("Couldn't set parameter '" + m_paramName + "' in technique '" + m_techniqueName +
                       "' from material '" + m_material->getName() + "'");
         }
         else
@@ -198,6 +206,8 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         SLM_ASSERT("The given integer object is null", intValue);
 
         params->setNamedConstant(m_paramName, intValue->value());
+
+        m_defaultValue = std::to_string(intValue->value());
     }
     else if(objClass == "::fwData::Float")
     {
@@ -205,6 +215,8 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         SLM_ASSERT("The given float object is null", floatValue);
 
         params->setNamedConstant(m_paramName,  floatValue->value());
+
+        m_defaultValue = std::to_string(floatValue->value());
     }
     else if(objClass == "::fwData::Boolean")
     {

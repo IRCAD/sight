@@ -248,7 +248,17 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
     {
         if (!::Ogre::StringUtil::endsWith(cstDef.first, "[0]") && !_params->findAutoConstantEntry(cstDef.first))
         {
-            parameters.push_back(std::make_tuple(cstDef.first, cstDef.second.constType, _shaderType));
+            ConstantValueType constantType;
+            if(cstDef.second.isFloat())
+            {
+                constantType = _params->getFloatConstantList()[cstDef.second.physicalIndex];
+            }
+            else if(cstDef.second.isInt())
+            {
+                constantType = _params->getIntConstantList()[cstDef.second.physicalIndex];
+            }
+
+            parameters.push_back(std::make_tuple(cstDef.first, cstDef.second.constType, _shaderType, constantType));
         }
     }
 
@@ -285,30 +295,6 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
             break;
         case ::Ogre::GpuConstantType::GCT_FLOAT4:
             object = fwData::Color::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER1D:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER2D:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER3D:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLERCUBE:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLERRECT:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER1DSHADOW:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER2DSHADOW:
-            object = ::fwData::Integer::New();
-            break;
-        case ::Ogre::GpuConstantType::GCT_SAMPLER2DARRAY:
-            object = ::fwData::Integer::New();
             break;
         case ::Ogre::GpuConstantType::GCT_MATRIX_4X4:
             object = ::fwData::TransformationMatrix3D::New();
@@ -450,7 +436,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
                 "GCT_MATRIX_DOUBLE_4X4",
                 "GCT_UNKNOWN"
             };
-            OSLM_FATAL("Object type "+GpuConstantTypeNames[type-1]+" not supported yet");
+            OSLM_WARN("Object type "+GpuConstantTypeNames[type-1]+" not supported yet");
     }
     return object;
 }

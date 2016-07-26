@@ -11,12 +11,12 @@
 #include <fwCom/HasSlots.hpp>
 #include <fwCom/Slot.hpp>
 
+#include <fwRenderOgre/compositor/ChainManager.hpp>
+#include <fwRenderOgre/compositor/Core.hpp>
 #include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
 #include <fwRenderOgre/interactor/IMovementInteractor.hpp>
 #include <fwRenderOgre/interactor/IPickerInteractor.hpp>
 #include <fwRenderOgre/interactor/IInteractor.hpp>
-#include <fwRenderOgre/compositor/ChainManager.hpp>
-#include <fwRenderOgre/compositor/Core.hpp>
 
 #include <fwThread/Worker.hpp>
 
@@ -196,9 +196,10 @@ public:
     /// Checks if this layer has a default compositor
     FWRENDEROGRE_API ::fwRenderOgre::compositor::Core::sptr getCoreCompositor();
 
-    FWRENDEROGRE_API ::fwRenderOgre::compositor::ChainManager::CompositorChainType getCompositorChain();
+    FWRENDEROGRE_API ::fwRenderOgre::compositor::ChainManager::CompositorChainType getCompositorChain() const;
 
-    FWRENDEROGRE_API std::string getFinalChainCompositorName() const;
+    /// return the list of adaptors in the chain manager
+    IHasAdaptors::AdaptorVector getRegisteredAdaptors() const;
 
     FWRENDEROGRE_API ::Ogre::Viewport* getViewport() const;
 
@@ -232,15 +233,6 @@ private:
     /// Boolean used to set stereoscopic rendering.
     bool m_is3D;
 
-//    /// Number of viewports.
-//    unsigned m_nbViewports;
-
-//    /// Intermediate render targets for multi-view rendering.
-//    std::vector< ::Ogre::TexturePtr > m_renderTargets;
-
-//    /// Ogre viewports for multi-screen monitors.
-//    std::vector< ::Ogre::Viewport * > m_multiViewports;
-
     /// This boolean enables default compositor's widgets (gui displays before scene creation)
     bool m_hasCoreCompositor;
 
@@ -263,7 +255,7 @@ private:
 
     /// Manages the list of available compositors.
     /// The names are associated to a boolean value which indicates whether the compositor is enabled or not
-    ::fwRenderOgre::compositor::ChainManager m_compositorChainManager;
+    ::fwRenderOgre::compositor::ChainManager::uptr m_compositorChainManager;
 
     /// Z Depth of this viewport
     int m_depth;
@@ -292,6 +284,18 @@ private:
 
     /// Render service which this layer is attached
     WPTR(::fwRenderOgre::SRender) m_renderService;
+
+    /// Layer identifier as referenced in SRender
+    std::string m_id;
+
+    /// This boolean enables default compositor's widgets (gui displays before scene creation)
+    bool m_hasCoreCompositor;
+
+    /// Indicates if a compositor chain is attached to the layer
+    bool m_hasCompositorChain;
+
+    /// Indicates if the scene has been created
+    bool m_sceneCreated;
 };
 
 }

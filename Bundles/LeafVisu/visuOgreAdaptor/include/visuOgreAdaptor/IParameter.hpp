@@ -69,6 +69,9 @@ public:
     /// Get the name of the parameter m_paramName.
     VISUOGREADAPTOR_API const std::string& getParamName() const;
 
+    /// Get the name of the parameter m_paramName.
+    VISUOGREADAPTOR_API const std::string& getDefaultValue() const;
+
 protected:
 
     /// Configure the adaptor
@@ -95,6 +98,8 @@ private:
     std::string m_paramName;
     /// Technique name
     std::string m_techniqueName;
+    /// Parameter name
+    std::string m_defaultValue;
     /// Stores the value of the enum representing the shader's type.
     ::Ogre::GpuProgramType m_shaderType;
     /// Pointer on the material

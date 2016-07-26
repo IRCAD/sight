@@ -32,7 +32,7 @@ public:
      * @brief Window Initialise attributes
      * @param parent This window parent's
      */
-    VISUOGREQT_API Window(QWindow *parent = NULL);
+    VISUOGREQT_API Window(QWindow* parent = NULL);
     /**
      * @brief ~Window Destructor. Destroy associated pointers
      */
@@ -44,7 +44,7 @@ public:
        class in any way we inform Qt that they will be unused.
      * @param painter The used painter
      */
-    VISUOGREQT_API virtual void render(QPainter *painter);
+    VISUOGREQT_API virtual void render(QPainter* painter);
 
     VISUOGREQT_API void setAnimating(bool animating);
 
@@ -88,7 +88,7 @@ public Q_SLOTS:
     VISUOGREQT_API virtual void renderNow();
 
     /// We use an event filter to be able to capture keyboard/mouse events. More on this later.
-    VISUOGREQT_API virtual bool eventFilter(QObject *target, QEvent *event);
+    VISUOGREQT_API virtual bool eventFilter(QObject* target, QEvent* event);
 
 Q_SIGNALS:
     /// When the render window is created
@@ -159,7 +159,7 @@ protected:
     /*
      * Qt events to manage keyboard and mouse input
      */
-    virtual void keyPressEvent(QKeyEvent * e);
+    virtual void keyPressEvent(QKeyEvent* e);
     /// Qt event to manage mouse move
     virtual void mouseMoveEvent(QMouseEvent* e);
     /// Qt event to manage wheel action
@@ -169,11 +169,11 @@ protected:
     /// Qt event to manage mouse clic on release
     virtual void mouseReleaseEvent(QMouseEvent* e);
     /// Qt event to manage when window visibility in the windowing system changes.
-    virtual void exposeEvent(QExposeEvent *event);
+    virtual void exposeEvent(QExposeEvent* event);
     /// Qt event to manage when window is moved.
-    virtual void moveEvent(QMoveEvent *event);
+    virtual void moveEvent(QMoveEvent* event);
     /// Qt event to manage generic events
-    virtual bool event(QEvent *event);
+    virtual bool event(QEvent* event);
 
 };
 

@@ -159,8 +159,8 @@ void SShaderParameterEditor::updateGuiInfo()
             auto paramSrv = ::visuOgreAdaptor::SShaderParameter::dynamicCast(subSrv.lock());
 
             /// Getting associated object infos
-            const ::fwData::Object::sptr shaderObj = paramSrv->getObject();
-            const ObjectClassnameType objType      = shaderObj->getClassname();
+            const ::fwData::Object::csptr shaderObj = paramSrv->getObject();
+            const ObjectClassnameType objType       = shaderObj->getClassname();
 
             if(objType == "::fwData::Boolean" || objType == "::fwData::Double" || objType == "::fwData::Integer")
             {
@@ -199,65 +199,77 @@ void SShaderParameterEditor::updateGuiInfo()
     {
         if (adaptor.lock()->getClassname() == "::visuOgreAdaptor::SShaderParameter")
         {
-            auto paramSrv = ::visuOgreAdaptor::SShaderParameter::dynamicCast(adaptor.lock());
+            auto paramAdaptor = ::visuOgreAdaptor::SShaderParameter::dynamicCast(adaptor.lock());
 
             /// Getting associated object infos
-            const ::fwData::Object::sptr shaderObj = paramSrv->getObject();
+            const ::fwData::Object::sptr shaderObj = paramAdaptor->getObject();
             const ObjectClassnameType objType      = shaderObj->getClassname();
 
             if(objType == "::fwData::Boolean")
             {
-                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "boolChanged", paramSrv,
+                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "boolChanged", paramAdaptor,
                                                  "setBoolParameter");
 
                 ::fwServices::IService::ConfigType paramConfig;
                 paramConfig.add("<xmlattr>.type", "bool");
-                paramConfig.add("<xmlattr>.name", paramSrv->getParamName());
-                paramConfig.add("<xmlattr>.key", paramSrv->getParamName());
+                paramConfig.add("<xmlattr>.name", paramAdaptor->getParamName());
+                paramConfig.add("<xmlattr>.key", paramAdaptor->getParamName());
                 paramConfig.add("<xmlattr>.defaultValue", false);
 
                 editorConfig.add_child("service.parameters.param", paramConfig);
             }
             else if(objType == "::fwData::Color")
             {
-                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "colorChanged", paramSrv,
+                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "colorChanged", paramAdaptor,
                                                  "setColorParameter");
 
                 ::fwServices::IService::ConfigType paramConfig;
                 paramConfig.add("<xmlattr>.type", "color");
-                paramConfig.add("<xmlattr>.name", paramSrv->getParamName());
-                paramConfig.add("<xmlattr>.key", paramSrv->getParamName());
+                paramConfig.add("<xmlattr>.name", paramAdaptor->getParamName());
+                paramConfig.add("<xmlattr>.key", paramAdaptor->getParamName());
                 paramConfig.add("<xmlattr>.defaultValue", "#ffffffff");
 
                 editorConfig.add_child("service.parameters.param", paramConfig);
             }
             else if(objType == "::fwData::Float")
             {
-                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "doubleChanged", paramSrv,
+                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "doubleChanged", paramAdaptor,
                                                  "setDoubleParameter");
+
+                const std::string& defaultValueStr = paramAdaptor->getDefaultValue();
+
+                const double defaultValue = std::stod(defaultValueStr);
+                const double max          = (defaultValue != 0.) ? defaultValue * 20. : 1.;
+                const double min          = (defaultValue != 0.) ? max - defaultValue * 20. : 1.;
 
                 ::fwServices::IService::ConfigType paramConfig;
                 paramConfig.add("<xmlattr>.type", "double");
-                paramConfig.add("<xmlattr>.name", paramSrv->getParamName());
-                paramConfig.add("<xmlattr>.key", paramSrv->getParamName());
-                paramConfig.add("<xmlattr>.defaultValue", 0.5);
-                paramConfig.add("<xmlattr>.min", 0.0);
-                paramConfig.add("<xmlattr>.max", 1.0);
+                paramConfig.add("<xmlattr>.name", paramAdaptor->getParamName());
+                paramConfig.add("<xmlattr>.key", paramAdaptor->getParamName());
+                paramConfig.add("<xmlattr>.defaultValue", defaultValueStr);
+                paramConfig.add("<xmlattr>.min", min);
+                paramConfig.add("<xmlattr>.max", max);
 
                 editorConfig.add_child("service.parameters.param", paramConfig);
             }
             else if(objType == "::fwData::Integer")
             {
-                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "intChanged", paramSrv,
+                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "intChanged", paramAdaptor,
                                                  "setIntParameter");
+
+                const std::string& defaultValueStr = paramAdaptor->getDefaultValue();
+
+                const int defaultValue = std::stoi(defaultValueStr);
+                const int max          = (defaultValue != 0) ? defaultValue * 20 : 1;
+                const int min          = (defaultValue != 0) ? max - defaultValue * 20 : 1;
 
                 ::fwServices::IService::ConfigType paramConfig;
                 paramConfig.add("<xmlattr>.type", "int");
-                paramConfig.add("<xmlattr>.name", paramSrv->getParamName());
-                paramConfig.add("<xmlattr>.key", paramSrv->getParamName());
-                paramConfig.add("<xmlattr>.defaultValue", 10);
-                paramConfig.add("<xmlattr>.min", 0);
-                paramConfig.add("<xmlattr>.max", 100);
+                paramConfig.add("<xmlattr>.name", paramAdaptor->getParamName());
+                paramConfig.add("<xmlattr>.key", paramAdaptor->getParamName());
+                paramConfig.add("<xmlattr>.defaultValue", defaultValueStr);
+                paramConfig.add("<xmlattr>.min", min);
+                paramConfig.add("<xmlattr>.max", max);
 
                 editorConfig.add_child("service.parameters.param", paramConfig);
             }
