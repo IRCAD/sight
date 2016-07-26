@@ -44,7 +44,8 @@ namespace visuOgreAdaptor
 //-----------------------------------------------------------------------------
 
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEW_IMAGE_SLOT                  = "newImage";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEW_SAMPLING_SLOT               = "updateSampling";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAMPLING_SLOT            = "updateSampling";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_SIZE_RATIO_SLOT      = "updateSatSizeRatio";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_PREINTEGRATION_SLOT      = "togglePreintegration";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_VOLUME_ILLUMINATION_SLOT = "toggleVolumeIllumination";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT             = "toggleWidgets";
@@ -63,15 +64,14 @@ SVolumeRender::SVolumeRender() throw() :
     m_volumeIllumination     (false),
     m_widgetVisibilty        (true),
     m_illum                  (nullptr),
-    m_satWidth               (128),
-    m_satHeight              (128),
-    m_satDepth               (128),
+    m_satSizeRatio           (0.25f),
     m_satShells              (3),
-    m_satShellRadius         (7)
+    m_satShellRadius         (3)
 {
     this->installTFSlots(this);
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
-    newSlot(s_NEW_SAMPLING_SLOT, &SVolumeRender::updateSampling, this);
+    newSlot(s_UPDATE_SAMPLING_SLOT, &SVolumeRender::updateSampling, this);
+    newSlot(s_UPDATE_SAT_SIZE_RATIO_SLOT, &SVolumeRender::updateSatSizeRatio, this);
     newSlot(s_TOGGLE_PREINTEGRATION_SLOT, &SVolumeRender::togglePreintegration, this);
     newSlot(s_TOGGLE_VOLUME_ILLUMINATION_SLOT, &SVolumeRender::toggleVolumeIllumination, this);
     newSlot(s_TOGGLE_WIDGETS_SLOT, &SVolumeRender::toggleWidgets, this);
@@ -109,39 +109,33 @@ void SVolumeRender::doConfigure() throw ( ::fwTools::Failed )
         {
             m_renderingMode = VR_MODE_RAY_TRACING;
 
+            if(m_configuration->hasAttribute("satSizeRatio"))
+            {
+                std::string sizeRatioString = m_configuration->getAttributeValue("satSizeRatio");
+                m_satSizeRatio = std::stof(sizeRatioString);
+
+                m_volumeIllumination = true;
+            }
+
+            if(m_configuration->hasAttribute("satShells"))
+            {
+                std::string shellsString = m_configuration->getAttributeValue("satShells");
+                m_satShells = std::stoi(shellsString);
+
+                m_volumeIllumination = true;
+            }
+
+            if(m_configuration->hasAttribute("satShellRadius"))
+            {
+                std::string shellRadiusString = m_configuration->getAttributeValue("satShellRadius");
+                m_satShellRadius = std::stoi(shellRadiusString);
+
+                m_volumeIllumination = true;
+            }
+
             if(m_configuration->hasAttribute("volumeIllumination"))
             {
                 m_volumeIllumination = (m_configuration->getAttributeValue("volumeIllumination") == "yes");
-
-                if(m_configuration->hasAttribute("satWidth"))
-                {
-                    std::string satWidthString = m_configuration->getAttributeValue("satWidth");
-                    m_satWidth = std::stoi(satWidthString);
-                }
-
-                if(m_configuration->hasAttribute("satHeight"))
-                {
-                    std::string satHeightString = m_configuration->getAttributeValue("satHeight");
-                    m_satHeight = std::stoi(satHeightString);
-                }
-
-                if(m_configuration->hasAttribute("satDepth"))
-                {
-                    std::string satDepthString = m_configuration->getAttributeValue("satDepth");
-                    m_satDepth = std::stoi(satDepthString);
-                }
-
-                if(m_configuration->hasAttribute("satShells"))
-                {
-                    std::string shellsString = m_configuration->getAttributeValue("satShells");
-                    m_satShells = std::stoi(shellsString);
-                }
-
-                if(m_configuration->hasAttribute("satShellRadius"))
-                {
-                    std::string shellRadiusString = m_configuration->getAttributeValue("satShellRadius");
-                    m_satShellRadius = std::stoi(shellRadiusString);
-                }
             }
         }
         else
@@ -280,8 +274,7 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     if(m_volumeIllumination)
     {
         m_illum = new ::fwRenderOgre::SATVolumeIllumination(this->getID(), m_sceneManager,
-                                                            m_satWidth, m_satHeight, m_satDepth,
-                                                            m_satShells, m_satShellRadius);
+                                                            m_satSizeRatio, m_satShells, m_satShellRadius);
     }
 
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
@@ -373,6 +366,26 @@ void SVolumeRender::updateSampling(int nbSamples)
 
 //-----------------------------------------------------------------------------
 
+void SVolumeRender::updateSatSizeRatio(int sizeRatio)
+{
+    if(m_volumeIllumination)
+    {
+        m_satSizeRatio = static_cast<float>(sizeRatio) / 100;
+        m_illum->updateSAT(m_satSizeRatio);
+
+        this->updateVolumeIllumination();
+
+        if(m_preIntegratedRendering)
+        {
+            m_volumeRenderer->imageUpdate(this->getImage(), this->getTransferFunction());
+        }
+
+        this->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void SVolumeRender::togglePreintegration(bool preintegration)
 {
     m_preIntegratedRendering = preintegration;
@@ -402,8 +415,7 @@ void SVolumeRender::toggleVolumeIllumination(bool volumeIllumination)
         if(m_volumeIllumination && !m_illum)
         {
             m_illum = new ::fwRenderOgre::SATVolumeIllumination(this->getID(), m_sceneManager,
-                                                                m_satWidth, m_satHeight, m_satDepth,
-                                                                m_satShells, m_satShellRadius);
+                                                                m_satSizeRatio, m_satShells, m_satShellRadius);
             this->updateVolumeIllumination();
         }
 

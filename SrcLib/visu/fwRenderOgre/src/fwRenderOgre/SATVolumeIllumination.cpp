@@ -59,8 +59,8 @@ private:
 //-----------------------------------------------------------------------------
 
 SATVolumeIllumination::SATVolumeIllumination(std::string parentId, ::Ogre::SceneManager *sceneManager,
-                                             int width, int height, int depth, int nbShells, int shellRadius) :
-    m_sat(parentId, sceneManager, width, height, depth),
+                                             float satSizeRatio, int nbShells, int shellRadius) :
+    m_sat(parentId, sceneManager, satSizeRatio),
     m_nbShells(nbShells),
     m_shellRadius(shellRadius)
 {
@@ -72,6 +72,13 @@ SATVolumeIllumination::SATVolumeIllumination(std::string parentId, ::Ogre::Scene
 SATVolumeIllumination::~SATVolumeIllumination()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+
+void SATVolumeIllumination::updateSAT(float _satSizeRatio)
+{
+    m_sat.updateSatFromRatio(_satSizeRatio);
 }
 
 //-----------------------------------------------------------------------------

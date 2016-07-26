@@ -33,6 +33,8 @@ namespace visuOgreAdaptor
  * @section Slots Slots
  * - \b newImage(): Called when a new image is loaded.
  * - \b updateSampling(int): Called when the sampling is changed and updates the volume renderer accordingly.
+ * - \b updateSatSizeRatio(int) : Called when the SAT ratio is changed and computes it again with the new corresponding
+ *      size.
  * - \b togglePreintegration(bool): Toggle pre-integration.
  * - \b toggleVoumeIllumination(bool): Toggle volume illumination.
  * - \b toggleWidgets(bool): Toggles widget visibility.
@@ -60,10 +62,8 @@ namespace visuOgreAdaptor
  * Only if the raycasting render mode is activated :
  * - \b volumeIllumination (optional, yes/no, default=no): Volume Illumination usage (ambient occlusion + color
  *      bleeding).
- * Only if the volume illumination is activated :
- * - \b satWidth (optional, int, default=128): width of the computed SAT.
- * - \b satHeight (optional, int, default=128): height of the computed SAT.
- * - \b satDepth (optional, int, default=128): depth of the computed SAT.
+ * - \b satSizeRatio (optional, float, default=0.1): ratio used to determine the size of the SAT regarding of the
+ *      associated image size.
  * - \b satShells (optional, int, default=3): number of shells used to compute the volume illumination from the SAT.
  * - \b satShellRadius (optional, int, default=7): radius of the shells used to compute the volume illumination from the
  *      SAT.
@@ -81,7 +81,8 @@ public:
      * @{
      */
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEW_IMAGE_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEW_SAMPLING_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAMPLING_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_SIZE_RATIO_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_PREINTEGRATION_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VOLUME_ILLUMINATION_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT;
@@ -130,6 +131,7 @@ private:
 
     void newImage();
     void updateSampling(int nbSamples);
+    void updateSatSizeRatio(int sizeRatio);
     void togglePreintegration(bool preintegration);
     void toggleVolumeIllumination(bool volumeIllumination);
     void toggleWidgets(bool visible);
@@ -188,14 +190,8 @@ private:
     /// Illumination volume used to render shadows and ambient occlusion.
     ::fwRenderOgre::SATVolumeIllumination *m_illum;
 
-    /// Width of the computed SAT.
-    int m_satWidth;
-
-    /// Height of the computed SAT.
-    int m_satHeight;
-
-    /// Depth of the computed SAT.
-    int m_satDepth;
+    /// Ratio used to determine the size of the SAT regarding of the associated image size.
+    float m_satSizeRatio;
 
     /// Number of shells used to compute the volume illumination from the SAT.
     int m_satShells;

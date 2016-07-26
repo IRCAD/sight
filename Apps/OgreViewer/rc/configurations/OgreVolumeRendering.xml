@@ -40,13 +40,17 @@
                     </adaptor>
 
                     <adaptor id="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image" uid="${GENERIC_UID}_VR">
-                        <config renderer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}"
-                         volumeIllumination= "yes" satWidth="256" satHeight="256" satDepth="64" />
+                        <config renderer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
                     </adaptor>
 
                     <connect>
                         <signal>${GENERIC_UID}_samplingSlider/valueChanged</signal>
                         <slot>${GENERIC_UID}_VR/updateSampling</slot>
+                    </connect>
+
+                    <connect>
+                        <signal>satSizeRatioSlider/valueChanged</signal>
+                        <slot>${GENERIC_UID}_VR/updateSatSizeRatio</slot>
                     </connect>
 
                     <connect>
@@ -78,11 +82,13 @@
                         <orientation value="vertical" />
                         <view proportion="0" />
                         <view proportion="0" />
+                        <view proportion="0" />
                         <view proportion="1" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="${GENERIC_UID}_volumeRenderingSamplingInteractor" start="yes" />
+                    <view sid="satSizeRatioSlider" start="yes" />
                     <view sid="focalLengthSlider" start="yes" />
                     <view sid="${GENERIC_UID}_windowLevelVR" start="yes" />
                 </registry>
@@ -127,6 +133,22 @@
                         <range>
                             <min>128</min>
                             <max>4096</max>
+                        </range>
+                    </service>
+                </object>
+            </item>
+
+            <item key="satSizeRatio">
+                <object uid="satSizeRatioIntVal" type="::fwData::Integer">
+                    <!-- The value normally goes from 0. to 1. but we have to use an integer slider since float type is not supported yet -->
+                    <service uid="satSizeRatioSlider" impl="::guiQt::editor::SSlider" autoConnect="no">
+                        <defaultValue>25</defaultValue>
+                        <value>0</value>
+                        <text>SAT size ratio</text>
+                        <stepSize>1</stepSize>
+                        <range>
+                            <min>10</min>
+                            <max>100</max>
                         </range>
                     </service>
                 </object>

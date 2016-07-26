@@ -24,7 +24,8 @@ class FWRENDEROGRE_CLASS_API SummedAreaTable
 public:
 
     /// Constructor, creates an SAT with the given resolution.
-    FWRENDEROGRE_API SummedAreaTable(std::string _parentId, ::Ogre::SceneManager *_sceneManager, int width, int height, int depth);
+    FWRENDEROGRE_API SummedAreaTable(std::string _parentId, ::Ogre::SceneManager *_sceneManager,
+                                     float _sizeRatio = 0.25f);
 
     /// Destructor, does nothing.
     FWRENDEROGRE_API ~SummedAreaTable();
@@ -41,10 +42,25 @@ public:
     /// Returns the texture used as a ping-pong buffer during SAT computation allowing it to be repurposed.
     FWRENDEROGRE_API ::Ogre::TexturePtr getSpareTexture() const;
 
+    /// Updates the current size of the image according to the passed texture and updates the SAT
+    FWRENDEROGRE_API void updateSatFromTexture(::Ogre::TexturePtr _imgTexture);
+
+    /// Updates the SAT size ratio and updates the SAT.
+    FWRENDEROGRE_API void updateSatFromRatio(float _sizeRatio);
+
 private:
 
-    /// SAT resolution.
+    /// Creates the buffers and initializes the SAT
+    void initializeSAT();
+
+    /// SAT size ratio used to computes its resolution.
+    float m_satSizeRatio;
+
+    /// SAT resolution. It's computed thanks to the configured ratio and the associated image size.
     ::fwData::Image::SizeType m_satSize;
+
+    /// Current image size used to resize the SAT in case of a ratio change.
+    ::fwData::Image::SizeType m_currentImageSize;
 
     /// Texture used as source during SAT GPU computation, holds the result at the end.
     ::Ogre::TexturePtr m_sourceBuffer;
@@ -52,8 +68,14 @@ private:
     /// Texture used as target during SAT GPU computation.
     ::Ogre::TexturePtr m_targetBuffer;
 
+    /// Prefix used to name the buffers.
+    std::string m_parentId;
+
     /// Scene manager.
-    ::Ogre::SceneManager *m_sceneManager;
+    ::Ogre::SceneManager* m_sceneManager;
+
+    /// Camera used
+    ::Ogre::Camera* m_dummyCamera;
 
     /// The pass orientation, horizontal = 0, vertical = 1, z-wise = 2.
     int m_passOrientation;
@@ -100,4 +122,4 @@ inline Ogre::TexturePtr SummedAreaTable::getSpareTexture() const
 
 }
 
-#endif
+#endif // __FWRENDEROGRE_SUMMEDAREATABLE_HPP__

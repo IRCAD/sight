@@ -16,10 +16,13 @@ public:
 
     /// Initializes the illumination volume with the give dimensions.
     FWRENDEROGRE_API SATVolumeIllumination(std::string parentId, ::Ogre::SceneManager *sceneManager,
-                                           int width, int height, int depth, int nbShells = 3, int shellRadius = 7);
+                                           float satSizeRatio = 0.25f, int nbShells = 3, int shellRadius = 3);
 
     /// Destructor, does nothing.
     FWRENDEROGRE_API ~SATVolumeIllumination();
+
+    /// Computes a new SAT with a different resolution given by the size ratio.
+    FWRENDEROGRE_API void updateSAT(float _satSizeRatio);
 
     /// Recomputes the illumination volume, can be called when the image or the TF changed.
     FWRENDEROGRE_API void updateVolIllum(::Ogre::TexturePtr _img, ::Ogre::TexturePtr _tf);
