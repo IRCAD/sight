@@ -233,15 +233,6 @@ private:
     /// Boolean used to set stereoscopic rendering.
     bool m_is3D;
 
-    /// This boolean enables default compositor's widgets (gui displays before scene creation)
-    bool m_hasCoreCompositor;
-
-    /// Indicates if a compositor chain is attached to the layer
-    bool m_hasCompositorChain;
-
-    /// Indicates if the scene has been created
-    bool m_sceneCreated;
-
     /// If there is a configured compositor chain, this attribute stores its raw string
     std::string m_rawCompositorChain;
 

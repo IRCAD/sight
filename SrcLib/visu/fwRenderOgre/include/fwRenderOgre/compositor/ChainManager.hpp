@@ -55,6 +55,8 @@ public:
 
     FWRENDEROGRE_API CompositorChainType getCompositorChain();
 
+    FWRENDEROGRE_API void setOgreViewport(::Ogre::Viewport* _viewport);
+
     /// Name of the last compositor put in the compositor chain.
     /// This compositor is used to have a blend in order to get a correct final render
     FWRENDEROGRE_API static const CompositorIdType FINAL_CHAIN_COMPOSITOR;
@@ -99,6 +101,13 @@ private:
 inline ChainManager::CompositorChainType ChainManager::getCompositorChain()
 {
     return m_compositorChain;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void ChainManager::setOgreViewport(::Ogre::Viewport* _viewport)
+{
+    m_ogreViewport = _viewport;
 }
 
 //-----------------------------------------------------------------------------

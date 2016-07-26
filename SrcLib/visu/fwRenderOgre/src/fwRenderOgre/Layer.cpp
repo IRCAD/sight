@@ -230,7 +230,7 @@ void Layer::createScene()
 
     if(!m_is3D)
     {
-        m_compositorChainManager.setOgreViewport(m_viewport);
+        m_compositorChainManager->setOgreViewport(m_viewport);
 
         if(m_hasCompositorChain)
         {

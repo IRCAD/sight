@@ -247,7 +247,7 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     }
     else
     {
-        ::fwRenderOgre::Layer::sptr serviceLayer = this->getRenderService()->getLayer();
+        ::fwRenderOgre::Layer::sptr serviceLayer = this->getRenderService()->getLayer(m_layerID);
 
         m_volumeRenderer = new ::fwRenderOgre::RayTracingVolumeRenderer(this->getID(),
                                                                         m_sceneManager,
@@ -279,7 +279,7 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
 
-    m_volumeConnection.connect(this->getRenderService()->getLayer(), ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
+    m_volumeConnection.connect(this->getRenderService()->getLayer(m_layerID), ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
                                this->getSptr(), ::visuOgreAdaptor::SVolumeRender::s_RESIZE_VIEWPORT_SLOT);
 
     initWidgets();
@@ -455,7 +455,7 @@ void SVolumeRender::resizeViewport(int w, int h)
 
 void SVolumeRender::setFocalDistance(int focalDistance)
 {
-    if(this->getRenderService()->getLayer()->is3D())
+    if(this->getRenderService()->getLayer(m_layerID)->is3D())
     {
         auto rayTracingRenderer = dynamic_cast< ::fwRenderOgre::RayTracingVolumeRenderer*>(m_volumeRenderer);
 
@@ -478,6 +478,7 @@ void SVolumeRender::initWidgets()
                                                        m_volumeSceneNode,
                                                        m_camera,
                                                        this->getRenderService(),
+                                                       m_sceneManager,
                                                        m_volumeRenderer);
 
         m_widgets = std::shared_ptr< ::fwRenderOgre::ui::VRWidget >(widget);

@@ -30,10 +30,11 @@ VRWidget::VRWidget(const std::string id,
                    ::Ogre::SceneNode *parentSceneNode,
                    ::Ogre::Camera    *camera,
                    SRender::sptr renderService,
+                   ::Ogre::SceneManager* sceneManager,
                    IVolumeRenderer* renderer) throw() :
     m_selectionMode   (NONE),
     m_id              (id),
-    m_sceneManager    (renderService->getSceneManager()),
+    m_sceneManager    (sceneManager),
     m_camera          (camera),
     m_renderService   (renderService),
     m_volumeSceneNode (parentSceneNode),
@@ -80,14 +81,14 @@ Ogre::Vector3 VRWidget::getFaceCenter(IVolumeRenderer::CubeFace _faceName) const
 std::array< ::Ogre::Vector3, 8 > VRWidget::getClippingBoxPositions() const
 {
     return {
-        ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[1].y, m_clippingCube[1].z),
-        ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[0].y, m_clippingCube[1].z),
-        ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[1].y, m_clippingCube[0].z),
-        ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[1].y, m_clippingCube[1].z),
-        ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[0].y, m_clippingCube[1].z),
-        ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[0].y, m_clippingCube[0].z),
-        ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[1].y, m_clippingCube[0].z),
-        ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[0].y, m_clippingCube[0].z)
+               ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[1].y, m_clippingCube[1].z),
+               ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[0].y, m_clippingCube[1].z),
+               ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[1].y, m_clippingCube[0].z),
+               ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[1].y, m_clippingCube[1].z),
+               ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[0].y, m_clippingCube[1].z),
+               ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[0].y, m_clippingCube[0].z),
+               ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[1].y, m_clippingCube[0].z),
+               ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[0].y, m_clippingCube[0].z)
     };
 }
 
@@ -110,7 +111,7 @@ void VRWidget::updateWidgets()
     m_boundingBox->beginUpdate(0);
     {
         // Box
-        for(unsigned i = 0; i < 12; ++ i)
+        for(unsigned i = 0; i < 12; ++i)
         {
             m_boundingBox->position(clippingBoxPositions[m_renderer->s_cubeEdges[i].first ]);
             m_boundingBox->position(clippingBoxPositions[m_renderer->s_cubeEdges[i].second]);
@@ -142,7 +143,7 @@ void VRWidget::initWidgets()
 {
     // Create widget materials
     {
-        ::Ogre::MaterialPtr sphereMtl = ::Ogre::MaterialManager::getSingletonPtr()->getByName("Default");
+        ::Ogre::MaterialPtr sphereMtl          = ::Ogre::MaterialManager::getSingletonPtr()->getByName("Default");
         ::Ogre::MaterialPtr sphereHighlightMtl = sphereMtl->clone(m_id + "_SphereHighlight");
 
         sphereHighlightMtl->setAmbient(0.3f, 0.f, 0.f);
@@ -173,7 +174,7 @@ void VRWidget::initWidgets()
 
     m_boundingBox->begin(m_id + "_Frame", Ogre::RenderOperation::OT_LINE_LIST);
     {
-        for(unsigned i = 0; i < 12; ++ i)
+        for(unsigned i = 0; i < 12; ++i)
         {
             m_boundingBox->position(clippingBoxPositions[m_renderer->s_cubeEdges[i].first ]);
             m_boundingBox->position(clippingBoxPositions[m_renderer->s_cubeEdges[i].second]);
@@ -192,7 +193,7 @@ void VRWidget::initWidgets()
 
     m_selectedFace->begin(m_id + "_FaceHighlight", Ogre::RenderOperation::OT_TRIANGLE_STRIP);
     {
-        for(unsigned i = 0; i < 4; ++ i)
+        for(unsigned i = 0; i < 4; ++i)
         {
             m_selectedFace->position(0, 0, 0);
         }
@@ -204,7 +205,7 @@ void VRWidget::initWidgets()
 
     // Create a pickable sphere for each cube face
 //    ::Ogre::LogManager::getSingletonPtr()->getDefaultLog()->logMessage("Creating widget Spheres ...");
-    for(unsigned i = 0; i < 6; ++ i)
+    for(unsigned i = 0; i < 6; ++i)
     {
         IVolumeRenderer::CubeFace currentFace = static_cast<IVolumeRenderer::CubeFace>(i);
 
@@ -279,21 +280,21 @@ void VRWidget::widgetPicked(::Ogre::MovableObject * _pickedWidget, int _screenX,
         ::Ogre::Vector3 newPos = m_volumeSceneNode->convertWorldToLocalPosition(mouseRay.getPoint(distance));
 
         ::Ogre::Vector3 tmpClippingCube[2];
-         std::copy(m_clippingCube, m_clippingCube + 2, tmpClippingCube);
+        std::copy(m_clippingCube, m_clippingCube + 2, tmpClippingCube);
 
         switch(widgetFace)
         {
-        case IVolumeRenderer::X_NEGATIVE: tmpClippingCube[0].x = newPos.x; break;
-        case IVolumeRenderer::X_POSITIVE: tmpClippingCube[1].x = newPos.x; break;
-        case IVolumeRenderer::Y_NEGATIVE: tmpClippingCube[0].y = newPos.y; break;
-        case IVolumeRenderer::Y_POSITIVE: tmpClippingCube[1].y = newPos.y; break;
-        case IVolumeRenderer::Z_NEGATIVE: tmpClippingCube[0].z = newPos.z; break;
-        case IVolumeRenderer::Z_POSITIVE: tmpClippingCube[1].z = newPos.z; break;
+            case IVolumeRenderer::X_NEGATIVE: tmpClippingCube[0].x = newPos.x; break;
+            case IVolumeRenderer::X_POSITIVE: tmpClippingCube[1].x = newPos.x; break;
+            case IVolumeRenderer::Y_NEGATIVE: tmpClippingCube[0].y = newPos.y; break;
+            case IVolumeRenderer::Y_POSITIVE: tmpClippingCube[1].y = newPos.y; break;
+            case IVolumeRenderer::Z_NEGATIVE: tmpClippingCube[0].z = newPos.z; break;
+            case IVolumeRenderer::Z_POSITIVE: tmpClippingCube[1].z = newPos.z; break;
         }
 
         // Check for overlap.
         const float eps = 0.001f;
-        for(int i = 0; i < 3; ++ i)
+        for(int i = 0; i < 3; ++i)
         {
             if(tmpClippingCube[0][i] > m_clippingCube[1][i])
             {
@@ -351,16 +352,16 @@ void VRWidget::moveClippingBox(int x, int y, int dx, int dy)
     int height = m_camera->getViewport()->getActualHeight();
 
     ::Ogre::Vector2 cursor(
-                static_cast< ::Ogre::Real>(x) / static_cast< ::Ogre::Real>(width),
-                static_cast< ::Ogre::Real>(y) / static_cast< ::Ogre::Real>(height));
+        static_cast< ::Ogre::Real>(x) / static_cast< ::Ogre::Real>(width),
+        static_cast< ::Ogre::Real>(y) / static_cast< ::Ogre::Real>(height));
 
     ::Ogre::Ray oldPosRay = m_camera->getCameraToViewportRay(cursor.x, cursor.y);
 
     // Get ray in image space.
     ::Ogre::Ray mouseRayImgSpace(
-                m_volumeSceneNode->convertWorldToLocalPosition(oldPosRay.getOrigin()),
-                m_volumeSceneNode->convertWorldToLocalDirection(oldPosRay.getDirection(), true)
-    );
+        m_volumeSceneNode->convertWorldToLocalPosition(oldPosRay.getOrigin()),
+        m_volumeSceneNode->convertWorldToLocalDirection(oldPosRay.getDirection(), true)
+        );
 
 
     const ::Ogre::Vector3 min = m_clippingCube[0];
@@ -380,7 +381,7 @@ void VRWidget::moveClippingBox(int x, int y, int dx, int dy)
         {
             // Get picked point in box space.
             m_pickedBoxPoint = (mouseRayImgSpace.getPoint(inter.second) - min) / (max - min);
-            m_selectionMode = BOX;
+            m_selectionMode  = BOX;
 
             m_boundingBox->setMaterialName(0, m_id + "_FrameHighlight");
         }
@@ -398,18 +399,18 @@ void VRWidget::moveClippingBox(int x, int y, int dx, int dy)
         const ::Ogre::Vector3 boxPos = m_pickedBoxPoint * (max - min) + min;
 
         // Image to world space.
-        oldPos = m_volumeSceneNode->convertLocalToWorldPosition(boxPos);
+        oldPos            = m_volumeSceneNode->convertLocalToWorldPosition(boxPos);
         intersectionPlane = ::Ogre::Plane(camDir, oldPos);
     }
     else
     {
         intersectionPlane = ::Ogre::Plane(camDir, m_volumeSceneNode->getPosition());
-        oldPos = oldPosRay.getPoint(oldPosRay.intersects(intersectionPlane).second);
+        oldPos            = oldPosRay.getPoint(oldPosRay.intersects(intersectionPlane).second);
     }
 
     const ::Ogre::Ray newPosRay = m_camera->getCameraToViewportRay(
-                static_cast< ::Ogre::Real>(x + dx) / static_cast< ::Ogre::Real>(width),
-                static_cast< ::Ogre::Real>(y + dy) / static_cast< ::Ogre::Real>(height));
+        static_cast< ::Ogre::Real>(x + dx) / static_cast< ::Ogre::Real>(width),
+        static_cast< ::Ogre::Real>(y + dy) / static_cast< ::Ogre::Real>(height));
 
     const std::pair<bool, float> planeInter = newPosRay.intersects(intersectionPlane);
 
@@ -419,7 +420,7 @@ void VRWidget::moveClippingBox(int x, int y, int dx, int dy)
 
     if(boxSelected)
     {
-         // Translate clipping box in image space.
+        // Translate clipping box in image space.
         d = m_volumeSceneNode->convertWorldToLocalDirection(d, true);
 
         m_clippingCube[0] += d;
@@ -445,16 +446,16 @@ void VRWidget::scaleClippingBox(int x, int y, int dy)
     int height = m_camera->getViewport()->getActualHeight();
 
     ::Ogre::Vector2 cursor(
-                static_cast< ::Ogre::Real>(x) / static_cast< ::Ogre::Real>(width),
-                static_cast< ::Ogre::Real>(y) / static_cast< ::Ogre::Real>(height));
+        static_cast< ::Ogre::Real>(x) / static_cast< ::Ogre::Real>(width),
+        static_cast< ::Ogre::Real>(y) / static_cast< ::Ogre::Real>(height));
 
     ::Ogre::Ray oldPosRay = m_camera->getCameraToViewportRay(cursor.x, cursor.y);
 
     // Get ray in image space.
     ::Ogre::Ray mouseRayImgSpace(
-                m_volumeSceneNode->convertWorldToLocalPosition(oldPosRay.getOrigin()),
-                m_volumeSceneNode->convertWorldToLocalDirection(oldPosRay.getDirection(), true)
-    );
+        m_volumeSceneNode->convertWorldToLocalPosition(oldPosRay.getOrigin()),
+        m_volumeSceneNode->convertWorldToLocalDirection(oldPosRay.getDirection(), true)
+        );
 
     const ::Ogre::Vector3 min = m_clippingCube[0];
     const ::Ogre::Vector3 max = m_clippingCube[1];

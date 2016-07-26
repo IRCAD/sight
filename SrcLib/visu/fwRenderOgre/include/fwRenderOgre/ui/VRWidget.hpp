@@ -1,5 +1,5 @@
-#ifndef __VRWIDGET_HPP__
-#define __VRWIDGET_HPP__
+#ifndef __FWRENDEROGRE_UI_VRWIDGET_HPP__
+#define __FWRENDEROGRE_UI_VRWIDGET_HPP__
 
 #include <fwCom/HasSlots.hpp>
 #include <fwCom/Slot.hpp>
@@ -37,6 +37,7 @@ public:
      * @param parentSceneNode      holds the volume object.
      * @param camera               render target.
      * @param renderService        service that renders this scene.
+     * @param sceneManager         scene manager handling thos object.
      * @param cubeFaces            maps cube faces to vertex indices.
      * @param edges                all pairs of vertex indices forming edges.
      * @param imgPositions         image bounding box positions.
@@ -46,6 +47,7 @@ public:
                               ::Ogre::SceneNode *parentSceneNode,
                               ::Ogre::Camera    *camera,
                               SRender::sptr renderService,
+                              ::Ogre::SceneManager* sceneManager,
                               IVolumeRenderer *renderer) throw();
 
     /// Destructor.
@@ -175,4 +177,4 @@ private:
 } // namespace ui
 } // namespace fwRenderOgre
 
-#endif // __VRWIDGET_HPP__
+#endif // __FWRENDEROGRE_UI_VRWIDGET_HPP__
