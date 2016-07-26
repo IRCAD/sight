@@ -5,6 +5,7 @@
 #include "fwRenderOgre/IVolumeRenderer.hpp"
 #include "fwRenderOgre/Layer.hpp"
 #include "fwRenderOgre/R2VBRenderable.hpp"
+#include "fwRenderOgre/SATVolumeIllumination.hpp"
 
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreManualObject.h>
@@ -52,7 +53,7 @@ public:
     /// Sets the number of samples per view ray.
     FWRENDEROGRE_API virtual void setSampling(uint16_t nbSamples);
 
-    FWRENDEROGRE_API virtual void setIlluminationVolume(::Ogre::TexturePtr illuminationVolume);
+    FWRENDEROGRE_API virtual void setIlluminationVolume(SATVolumeIllumination *illuminationVolume);
 
     /// Sets pre-integrated mode.
     FWRENDEROGRE_API virtual void setPreIntegratedRendering(bool preIntegratedRendering);
@@ -136,6 +137,8 @@ private:
 
     /// Sets usage of volume illumination
     bool m_volumeIllumination;
+
+    SATVolumeIllumination *m_illumVolume;
 
     float m_focalLength;
 };

@@ -40,14 +40,15 @@ mat2 rotMat2D(in float angle)
 int getVoxelSecondaryCoord(in ivec2 lineOrigin, in vec2 lineVector, int x)
 {
     float lineSlope = lineVector.y / lineVector.x;
-    return int(lineSlope * (x - lineOrigin.x) + lineOrigin.y);
+    return int(lineSlope * float(x - lineOrigin.x) + lineOrigin.y);
 }
 
 //-----------------------------------------------------------------------------
 
 float coneShadowQuery(in ivec3 voxelPos)
 {
-    vec3  coneDir = -u_lightDir;
+    // Cone faces the light.
+    const vec3 coneDir = normalize(-u_lightDir);
     float coneAngle = u_scatteringConeAngle;
 
     int nbConeSamples = u_nbSamplesAlongCone;
@@ -61,7 +62,7 @@ float coneShadowQuery(in ivec3 voxelPos)
     int secondaryAxis1 = (primaryAxis + 1) % 3;
 
     if(primaryAxis == 0){
-        secondaryAxis0 = 2; secondaryAxis1 = 1;
+        secondaryAxis0 = 1; secondaryAxis1 = 2;
     }
     else if(primaryAxis == 1){
         secondaryAxis0 = 0; secondaryAxis1 = 2;
@@ -84,7 +85,7 @@ float coneShadowQuery(in ivec3 voxelPos)
     if(cuboidHeight <= 1)
     {
         nbConeSamples = coneVoxelHeight / 2;
-        cuboidHeight = 2;
+        cuboidHeight  = 2;
     }
 
     if(nbConeSamples <= 1)
@@ -92,59 +93,60 @@ float coneShadowQuery(in ivec3 voxelPos)
         return 1;
     }
 
-    // Compute cone-plane projection. This projection consists of two half-lines starting at voxelPos.
-    // We need to find their direction, this can be done by rotating the cone vector by it's angle in each plane.
+    // Compute cone-plane projections.
+    const ivec2 projOrig0  = ivec2(voxelPos[primaryAxis], voxelPos[secondaryAxis0]);
     const vec2  projDir0   = vec2(coneDir[primaryAxis], coneDir[secondaryAxis0]);
     const float projAngle0 = atan(tan(coneAngle) / length(projDir0));
 
+    const ivec2 projOrig1  = ivec2(voxelPos[primaryAxis], voxelPos[secondaryAxis1]);
     const vec2  projDir1   = vec2(coneDir[primaryAxis], coneDir[secondaryAxis1]);
     const float projAngle1 = atan(tan(coneAngle) / length(projDir1));
 
-    const vec2 v0 = rotMat2D( projAngle0) * projDir0;
-    const vec2 v1 = rotMat2D(-projAngle0) * projDir0;
-    const vec2 v2 = rotMat2D( projAngle1) * projDir1;
-    const vec2 v3 = rotMat2D(-projAngle1) * projDir1;
-
-    const ivec2 o1 = ivec2(voxelPos[primaryAxis], voxelPos[secondaryAxis0]);
-    const ivec2 o2 = ivec2(voxelPos[primaryAxis], voxelPos[secondaryAxis1]);
-
-    ivec3 queryCubeMin, queryCubeMax;
+    // Compute line vectors.
+    const vec2 v0 = normalize(rotMat2D( projAngle0) * projDir0);
+    const vec2 v1 = normalize(rotMat2D(-projAngle0) * projDir0);
+    const vec2 v2 = normalize(rotMat2D( projAngle1) * projDir1);
+    const vec2 v3 = normalize(rotMat2D(-projAngle1) * projDir1);
 
     // The way the cone is facing.
     const int coneOrientation = int(sign(coneDir[primaryAxis]));
 
     const int incr = cuboidHeight * coneOrientation;
 
-    const int beginCoord = outCoord - coneOrientation * cuboidHeight/2;
-    const int endCoord   = beginCoord - (nbConeSamples - 1) * incr;
+    const int beginCoord = outCoord   - coneOrientation * cuboidHeight/2;
+    const int endCoord   = beginCoord - (nbConeSamples) * incr;
 
     float coneSum = 0.f;
     int nbVoxels  = 0;
 
+    ivec3 queryCubeMin, queryCubeMax;
+
+    queryCubeMin[primaryAxis] = min(outCoord, outCoord - incr);
+    queryCubeMax[primaryAxis] = max(outCoord, outCoord - incr);
+
     for(int i = beginCoord; i != endCoord; i -= incr)
     {
-        ivec3 p0, p1, p2, p3;
-        p0[primaryAxis] = p1[primaryAxis] = p2[primaryAxis] = p3[primaryAxis] = i;
+        int y00, y01, y10, y11;
 
-        p0[secondaryAxis0] = getVoxelSecondaryCoord(o1, v0, i);
-        p1[secondaryAxis0] = getVoxelSecondaryCoord(o1, v1, i);
-        p2[secondaryAxis1] = getVoxelSecondaryCoord(o2, v2, i);
-        p3[secondaryAxis1] = getVoxelSecondaryCoord(o2, v3, i);
+        y00 = getVoxelSecondaryCoord(projOrig0, v0, i);
+        y01 = getVoxelSecondaryCoord(projOrig0, v1, i);
+        y10 = getVoxelSecondaryCoord(projOrig1, v2, i);
+        y11 = getVoxelSecondaryCoord(projOrig1, v3, i);
 
-        queryCubeMin[secondaryAxis0] = min(p0[secondaryAxis0], p1[secondaryAxis0]);
-        queryCubeMax[secondaryAxis0] = max(p0[secondaryAxis0], p1[secondaryAxis0]);
+        queryCubeMin[secondaryAxis0] = min(y00, y01);
+        queryCubeMax[secondaryAxis0] = max(y00, y01);
 
-        queryCubeMin[secondaryAxis1] = min(p2[secondaryAxis1], p3[secondaryAxis1]);
-        queryCubeMax[secondaryAxis1] = max(p2[secondaryAxis1], p3[secondaryAxis1]);
+        queryCubeMin[secondaryAxis1] = min(y10, y11);
+        queryCubeMax[secondaryAxis1] = max(y10, y11);
 
-        queryCubeMin[primaryAxis] = i - cuboidHeight/2;
-        queryCubeMax[primaryAxis] = i + cuboidHeight/2;
+        queryCubeMin[primaryAxis] -= incr + 1;
+        queryCubeMax[primaryAxis] -= incr + 1;
 
         queryCubeMin = max(queryCubeMin, ivec3(0));
         queryCubeMax = min(queryCubeMax, satSize - ivec3(1));
 
         ivec3 cubeDiff = queryCubeMax - queryCubeMin;
-        nbVoxels += cubeDiff.x * cubeDiff.y * cubeDiff.z;
+        nbVoxels += abs(cubeDiff.x * cubeDiff.y * cubeDiff.z);
 
         coneSum += satLookup(queryCubeMin, queryCubeMax).a;
     }
@@ -179,7 +181,7 @@ vec4 ambientOcclusionAndColourBleedingQuery(in ivec3 voxelPos)
         aoFactor += (satLookupVal - lastLookup) / float(radius * radius);
     }
 
-    return pow(u_nbShells * u_shellRadius, -2.f) * aoFactor;
+    return pow(u_nbShells * u_shellRadius, -2.f) * (aoFactor);
 }
 
 //-----------------------------------------------------------------------------
@@ -192,7 +194,7 @@ void main(void)
 
     float shadowFactor = coneShadowQuery(voxelCoords);
 
-    illuminationVal.a = shadowFactor;
+    illuminationVal.a += shadowFactor;
 
-    illuminationVal.a = exp(-illuminationVal.a);
+    illuminationVal = exp(-illuminationVal);
 }

@@ -24,8 +24,11 @@ public:
     /// Computes a new SAT with a different resolution given by the size ratio.
     FWRENDEROGRE_API void updateSAT(float _satSizeRatio);
 
-    /// Recomputes the illumination volume, can be called when the image or the TF changed.
-    FWRENDEROGRE_API void updateVolIllum(::Ogre::TexturePtr _img, ::Ogre::TexturePtr _tf);
+    /// Recomputes the illumination volume using the current SAT.
+    FWRENDEROGRE_API void updateVolIllum();
+
+    /// Recomputes the SAT and the illumination volume when the image or the TF changed.
+    FWRENDEROGRE_API void SATUpdate(Ogre::TexturePtr _img, Ogre::TexturePtr _tf);
 
     /// Illumination volume texture getter
     FWRENDEROGRE_API ::Ogre::TexturePtr getIlluminationVolume();

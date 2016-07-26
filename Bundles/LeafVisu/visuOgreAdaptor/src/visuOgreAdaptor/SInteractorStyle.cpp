@@ -6,8 +6,6 @@
 
 #include "visuOgreAdaptor/SInteractorStyle.hpp"
 
-#include <fwServices/macros.hpp>
-
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 #include <fwCom/Slot.hxx>

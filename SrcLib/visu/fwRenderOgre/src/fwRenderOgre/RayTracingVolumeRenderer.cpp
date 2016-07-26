@@ -116,6 +116,23 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
 
     virtual void cameraPreRenderScene(::Ogre::Camera*)
     {
+        if(m_renderer->m_illumVolume)
+        {
+            // Set light directions in shader.
+            ::Ogre::LightList closestLights = m_renderer->m_volumeSceneNode->getAttachedObject(0)->queryLights();
+
+            ::Ogre::Vector3 lightDir = m_renderer->m_volumeSceneNode->convertLocalToWorldDirection(
+                closestLights[0]->getDerivedDirection(), true);
+
+//            ::Ogre::GpuConstantDefinition lightDirArrayDefinition = vr3DParams->getConstantDefinition("u_lightDirs");
+
+            ::Ogre::Pass *satIllumPass = ::Ogre::MaterialManager::getSingleton().getByName("VolumeAO")->getTechnique(0)->getPass(0);
+            ::Ogre::GpuProgramParametersSharedPtr satIllumParams = satIllumPass->getFragmentProgramParameters();
+
+            satIllumParams->setNamedConstant("u_lightDir", lightDir);
+
+            m_renderer->m_illumVolume->updateVolIllum();
+        }
         // Recompute the focal length in case the camera moved.
         m_renderer->computeRealFocalLength();
 
@@ -139,7 +156,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_gridSize          { 2, 2, 2 },
     m_bricksSize        { 8, 8, 8 },
     m_mode3D            (mode3D),
-    m_volumeIllumination(volumeIllumination)
+    m_volumeIllumination(volumeIllumination),
+    m_illumVolume       (nullptr)
 {
     const std::string vrMaterials[4]
     {
@@ -328,12 +346,14 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::setIlluminationVolume(::Ogre::TexturePtr illuminationVolume)
+void RayTracingVolumeRenderer::setIlluminationVolume(SATVolumeIllumination *illuminationVolume)
 {
+    m_illumVolume = illuminationVolume;
+
     std::for_each(m_rayTracedTexUnitStates.begin(), m_rayTracedTexUnitStates.end(),
                   [illuminationVolume](::Ogre::TextureUnitState* tus)
         {
-            tus->setTexture(illuminationVolume);
+            tus->setTexture(illuminationVolume->getIlluminationVolume());
         });
 }
 

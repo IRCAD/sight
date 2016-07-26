@@ -6,7 +6,7 @@ fragment_program VolumeAO/SAT_AO_FP glsl
 
     default_params
     {
-        param_named_auto u_lightDir light_direction_object_space 1
+        param_named u_lightDir float3 0 0 0
         param_named u_sliceIndex int 0
         param_named u_nbShells int 3
         param_named u_shellRadius int 3

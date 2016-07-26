@@ -504,7 +504,7 @@ void SVolumeRender::initWidgets()
 
 void SVolumeRender::updateVolumeIllumination()
 {
-    m_illum->updateVolIllum(m_3DOgreTexture, m_gpuTF.getTexture());
+    m_illum->SATUpdate(m_3DOgreTexture, m_gpuTF.getTexture());
 
     // Volume illumination is only implemented for raycasting rendering
     if(m_renderingMode == VR_MODE_RAY_TRACING)
@@ -512,7 +512,7 @@ void SVolumeRender::updateVolumeIllumination()
         ::fwRenderOgre::RayTracingVolumeRenderer *rayTracingVolumeRenderer =
             static_cast< ::fwRenderOgre::RayTracingVolumeRenderer* >(m_volumeRenderer);
 
-        rayTracingVolumeRenderer->setIlluminationVolume(m_illum->getIlluminationVolume());
+        rayTracingVolumeRenderer->setIlluminationVolume(m_illum);
     }
 }
 

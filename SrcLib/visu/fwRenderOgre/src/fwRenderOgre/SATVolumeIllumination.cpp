@@ -83,11 +83,17 @@ void SATVolumeIllumination::updateSAT(float _satSizeRatio)
 
 //-----------------------------------------------------------------------------
 
-void SATVolumeIllumination::updateVolIllum(Ogre::TexturePtr _img, Ogre::TexturePtr _tf)
+void SATVolumeIllumination::SATUpdate(Ogre::TexturePtr _img, Ogre::TexturePtr _tf)
 {
-    // Update SAT.
     m_sat.computeParallel(_img, _tf);
 
+    updateVolIllum();
+}
+
+//-----------------------------------------------------------------------------
+
+void SATVolumeIllumination::updateVolIllum()
+{
     m_illuminationVolume = m_sat.getSpareTexture();
 
     const int depth = m_illuminationVolume->getDepth();
@@ -102,7 +108,7 @@ void SATVolumeIllumination::updateVolIllum(Ogre::TexturePtr _img, Ogre::TextureP
 
     satImgState->setTexture(m_sat.getTexture());
 
-    // Update illumination volume.
+    // Update illumination volume slice by slice.
     for(m_currentSliceIndex = 0; m_currentSliceIndex < depth; ++m_currentSliceIndex)
     {
         ::Ogre::RenderTarget *rt = m_illuminationVolume->getBuffer()->getRenderTarget(m_currentSliceIndex);
