@@ -1,218 +1,203 @@
 
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::fwServices::registry::AppConfig2">
     <id>OgreVolumeRendering</id>
     <parameters>
-        <param name="GENERIC_UID" />
         <param name="WID_PARENT" />
         <param name="imageUID" />
         <param name="TFSelections" />
     </parameters>
     <config>
 
-        <object type="::fwData::Composite">
+        <!-- ******************************* Objects declaration ****************************** -->
 
-            <service uid="${GENERIC_UID}_OgreVolumeRendering" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="vertical" />
-                        <view proportion="1" />
-                        <view proportion="0" />
-                    </layout>
-                </gui>
-                <registry>
-                    <parent wid="${WID_PARENT}" />
-                    <view sid="${GENERIC_UID}_volumeRenderingScene" start="yes" />
-                    <view sid="${GENERIC_UID}_volumeRenderingInteractor" start="yes" />
-                </registry>
-            </service>
+        <object uid="${imageUID}"  type="::fwData::Image" src="ref" />
+        <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
 
-            <service uid="${GENERIC_UID}_volumeRenderingScene" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoConnect="yes">
-                <scene overlay="true" fullscreen="no">
+        <object uid="samplingSliderValue" type="::fwData::Integer" />
+        <object uid="satSizeRatioIntVal" type="::fwData::Integer" />
+        <object uid="focalLengthIntVal" type="::fwData::Integer" />
 
-                    <!-- Fix afterglow bug when dezooming -->
-                    <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+        <object uid="preIntValue" type="::fwData::Boolean" />
+        <object uid="volumeIlluminationValue" type="::fwData::Boolean" />
+        <object uid="vrWidgetsValue" type="::fwData::Boolean" />
 
-                    <!-- Default Layer -->
-                    <renderer id="default" layer="1" compositors="Default" />
+        <!-- ******************************* UI declaration *********************************** -->
 
-                    <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
-                        <config renderer="default" style="VR" />
-                    </adaptor>
+        <service uid="OgreVolumeRendering" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="volumeRenderingScene" start="yes" />
+                <view sid="volumeRenderingInteractor" start="yes" />
+            </registry>
+        </service>
 
-                    <adaptor id="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image" uid="${GENERIC_UID}_VR">
-                        <config renderer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
-                    </adaptor>
+        <service uid="volumeRenderingInteractor" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="volumeRenderingSamplingInteractor" start="yes" />
+                <view sid="satSizeRatioSlider" start="yes" />
+                <view sid="focalLengthSlider" start="yes" />
+                <view sid="windowLevelVR" start="yes" />
+            </registry>
+        </service>
 
-                    <connect>
-                        <signal>${GENERIC_UID}_samplingSlider/valueChanged</signal>
-                        <slot>${GENERIC_UID}_VR/updateSampling</slot>
-                    </connect>
+        <service uid="volumeRenderingSamplingInteractor" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="samplingSlider" start="yes" />
+                <view sid="preIntBtn" start="yes" />
+                <view sid="volumeIlluminationBtn" start="yes" />
+                <view sid="toggleVrWidgetsBtn" start="yes" />
+            </registry>
+        </service>
 
-                    <connect>
-                        <signal>satSizeRatioSlider/valueChanged</signal>
-                        <slot>${GENERIC_UID}_VR/updateSatSizeRatio</slot>
-                    </connect>
+        <!-- ******************************* Services ***************************************** -->
 
-                    <connect>
-                        <signal>focalLengthSlider/valueChanged</signal>
-                        <slot>${GENERIC_UID}_VR/setFocalDistance</slot>
-                    </connect>
+        <service uid="volumeRenderingScene" type="::fwRenderOgre::SRender" autoConnect="yes">
+            <in key="image" uid="${imageUID}" />
+            <inout key="TFSelections" uid="${TFSelections}" />
+            <scene overlay="true" fullscreen="no">
 
-                    <connect>
-                        <signal>${GENERIC_UID}_preIntBtn/toggled</signal>
-                        <slot>${GENERIC_UID}_VR/togglePreintegration</slot>
-                    </connect>
+                <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
 
-                    <connect>
-                        <signal>${GENERIC_UID}_volumeIlluminationBtn/toggled</signal>
-                        <slot>${GENERIC_UID}_VR/toggleVolumeIllumination</slot>
-                    </connect>
+                <renderer id="default" layer="1" compositors="Default" />
 
-                    <connect>
-                        <signal>${GENERIC_UID}_toggleVrWidgetsBtn/toggled</signal>
-                        <slot>${GENERIC_UID}_VR/toggleWidgets</slot>
-                    </connect>
+                <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
+                    <config renderer="default" style="VR" />
+                </adaptor>
 
-                </scene>
-            </service>
+                <adaptor id="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image" uid="VR">
+                    <config renderer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                </adaptor>
 
-            <service uid="${GENERIC_UID}_volumeRenderingInteractor" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="vertical" />
-                        <view proportion="0" />
-                        <view proportion="0" />
-                        <view proportion="0" />
-                        <view proportion="1" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_volumeRenderingSamplingInteractor" start="yes" />
-                    <view sid="satSizeRatioSlider" start="yes" />
-                    <view sid="focalLengthSlider" start="yes" />
-                    <view sid="${GENERIC_UID}_windowLevelVR" start="yes" />
-                </registry>
-            </service>
+                <connect>
+                    <signal>samplingSlider/valueChanged</signal>
+                    <slot>VR/updateSampling</slot>
+                </connect>
 
-            <service uid="${GENERIC_UID}_volumeRenderingSamplingInteractor" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="horizontal" />
-                        <view proportion="1" />
-                        <view proportion="0" />
-                        <view proportion="0" />
-                        <view proportion="0" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_samplingSlider" start="yes" />
-                    <view sid="${GENERIC_UID}_preIntBtn" start="yes" />
-                    <view sid="${GENERIC_UID}_volumeIlluminationBtn" start="yes" />
-                    <view sid="${GENERIC_UID}_toggleVrWidgetsBtn" start="yes" />
-                </registry>
-            </service>
+                <connect>
+                    <signal>satSizeRatioSlider/valueChanged</signal>
+                    <slot>VR/updateSatSizeRatio</slot>
+                </connect>
 
-            <!-- Negato source image -->
-            <item key="image">
-                <object uid="${imageUID}"  type="::fwData::Image" src="ref">
+                <connect>
+                    <signal>focalLengthSlider/valueChanged</signal>
+                    <slot>VR/setFocalDistance</slot>
+                </connect>
 
-                    <!-- Negato windowing service -->
-                    <service uid="${GENERIC_UID}_windowLevelVR" type="::gui::editor::IEditor" impl="::uiImage::WindowLevel" autoConnect="no">
-                        <config selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
-                    </service>
+                <connect>
+                    <signal>preIntBtn/toggled</signal>
+                    <slot>VR/togglePreintegration</slot>
+                </connect>
 
-                </object>
-            </item>
+                <connect>
+                    <signal>volumeIlluminationBtn/toggled</signal>
+                    <slot>VR/toggleVolumeIllumination</slot>
+                </connect>
 
-            <item key="sampling">
-                <object uid="${GENERIC_UID}_samplingSliderValue" type="::fwData::Integer">
-                    <service uid="${GENERIC_UID}_samplingSlider" impl="::guiQt::editor::SSlider" autoConnect="yes">
-                        <defaultValue>512</defaultValue>
-                        <value>512</value>
-                        <text>Samples</text>
-                        <range>
-                            <min>128</min>
-                            <max>4096</max>
-                        </range>
-                    </service>
-                </object>
-            </item>
+                <connect>
+                    <signal>toggleVrWidgetsBtn/toggled</signal>
+                    <slot>VR/toggleWidgets</slot>
+                </connect>
 
-            <item key="satSizeRatio">
-                <object uid="satSizeRatioIntVal" type="::fwData::Integer">
-                    <!-- The value normally goes from 0. to 1. but we have to use an integer slider since float type is not supported yet -->
-                    <service uid="satSizeRatioSlider" impl="::guiQt::editor::SSlider" autoConnect="no">
-                        <defaultValue>25</defaultValue>
-                        <value>0</value>
-                        <text>SAT size ratio</text>
-                        <stepSize>1</stepSize>
-                        <range>
-                            <min>10</min>
-                            <max>100</max>
-                        </range>
-                    </service>
-                </object>
-            </item>
+            </scene>
+        </service>
 
-            <item key="focalLength">
-                <object uid="focalLengthIntVal" type="::fwData::Integer">
-                    <!-- The value normally goes from 0. to 1. but we have to use an integer slider since float type is not supported yet -->
-                    <service uid="focalLengthSlider" impl="::guiQt::editor::SSlider" autoConnect="no">
-                        <defaultValue>50</defaultValue>
-                        <value>0</value>
-                        <text>Focal length</text>
-                        <stepSize>1</stepSize>
-                        <range>
-                            <min>0</min>
-                            <max>100</max>
-                        </range>
-                    </service>
-                </object>
-            </item>
+        <!-- Negato windowing service -->
+        <service uid="windowLevelVR" type="::uiImage::WindowLevel" autoConnect="yes">
+            <inout key="image" uid="${imageUID}" autoConnect="yes"/>
+            <inout key="TFSelections" uid="${TFSelections}" />
+            <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+        </service>
 
-            <item key="preIntegration" >
-                <object uid="${GENERIC_UID}_preIntValue" type="::fwData::Boolean">
-                    <service uid="${GENERIC_UID}_preIntBtn" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
-                        <config>
-                           <checkable>true</checkable>
-                           <text>Pre-integration</text>
-                           <checked>false</checked>
-                        </config>
-                    </service>
-                </object>
-            </item>
+        <service uid="samplingSlider" type="::guiQt::editor::SSlider" autoConnect="yes">
+            <inout key="sampling" uid="samplingSliderValue" />
+            <defaultValue>512</defaultValue>
+            <value>512</value>
+            <text>Samples</text>
+            <range>
+                <min>128</min>
+                <max>4096</max>
+            </range>
+        </service>
 
-            <item key="volumeIllumination" >
-                <object uid="${GENERIC_UID}_volumeIlluminationValue" type="::fwData::Boolean">
-                    <service uid="${GENERIC_UID}_volumeIlluminationBtn" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
-                        <config>
-                           <checkable>true</checkable>
-                           <text>Volume illumination</text>
-                           <checked>false</checked>
-                        </config>
-                    </service>
-                </object>
-            </item>
+        <!-- The value normally goes from 0. to 1. but we have to use an integer slider since float type is not supported yet -->
+        <service uid="satSizeRatioSlider" type="::guiQt::editor::SSlider" autoConnect="no">
+            <inout key="satSizeRatio" uid="satSizeRatioIntVal" />
+            <defaultValue>25</defaultValue>
+            <value>0</value>
+            <text>SAT size ratio</text>
+            <stepSize>1</stepSize>
+            <range>
+                <min>10</min>
+                <max>100</max>
+            </range>
+        </service>
 
-            <item key="vrWidgets" >
-                <object uid="${GENERIC_UID}_vrWidgetsValue" type="::fwData::Boolean">
-                    <service uid="${GENERIC_UID}_toggleVrWidgetsBtn" type="::gui::editor::IEditor" impl="::guiQt::editor::SSignalButton" autoConnect="no">
-                        <config>
-                           <checkable>true</checkable>
-                           <text>Widgets</text>
-                           <checked>false</checked>
-                        </config>
-                    </service>
-                </object>
-            </item>
+        <!-- The value normally goes from 0. to 1. but we have to use an integer slider since float type is not supported yet -->
+        <service uid="focalLengthSlider" type="::guiQt::editor::SSlider" autoConnect="no">
+            <inout key="focalLength" uid="focalLengthIntVal" />
+            <defaultValue>50</defaultValue>
+            <value>0</value>
+            <text>Focal length</text>
+            <stepSize>1</stepSize>
+            <range>
+                <min>0</min>
+                <max>100</max>
+            </range>
+        </service>
 
-            <item key="TFSelectionsKey">
-                <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
-            </item>
+        <service uid="preIntBtn" type="::guiQt::editor::SSignalButton" autoConnect="no">
+            <inout key="preIntegration" uid="preIntValue" />
+            <config>
+               <checkable>true</checkable>
+               <text>Pre-integration</text>
+               <checked>false</checked>
+            </config>
+        </service>
 
-            <start uid="${GENERIC_UID}_OgreVolumeRendering" />
+        <service uid="volumeIlluminationBtn" type="::guiQt::editor::SSignalButton" autoConnect="no">
+            <inout key="volumeIllumination" uid="volumeIlluminationValue" />
+            <config>
+               <checkable>true</checkable>
+               <text>Volume illumination</text>
+               <checked>false</checked>
+            </config>
+        </service>
 
-        </object>
+        <service uid="toggleVrWidgetsBtn" type="::guiQt::editor::SSignalButton" autoConnect="no">
+            <inout key="vrWidgets" uid="vrWidgetsValue" />
+            <config>
+               <checkable>true</checkable>
+               <text>Widgets</text>
+               <checked>false</checked>
+            </config>
+        </service>
+
+        <start uid="OgreVolumeRendering" />
 
     </config>
 </extension>

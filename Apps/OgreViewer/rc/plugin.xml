@@ -89,12 +89,14 @@
                         <view caption="VTK" selected="no" />
                         <view caption="Ogre" selected="yes" />
                         <view caption="2D Negato Ogre" selected="no" />
+                        <view caption="Ogre VR" selected="no" />
                     </layout>
                 </gui>
                 <registry>
                     <view wid="VTKSceneView" start="yes" />
                     <view wid="OgreSceneView" start="yes" />
                     <view wid="OgreNegato2DView" start="yes" />
+                    <view wid="OgreVolumeRenderingView" start="yes" />
                 </registry>
             </service>
 
@@ -214,6 +216,13 @@
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="TFSelections" uid="TFSelections" />
                 <parameter replace="WID_PARENT" uid="OgreNegato2DView" />
+            </service>
+
+            <service uid="cfgOgreVolumeRendering" type="::fwServices::SConfigController" >
+                <appConfig id="OgreVolumeRendering" />
+                <inout key="imageUID" uid="imageUID" />
+                <inout key="TFSelections" uid="TFSelections" />
+                <parameter replace="WID_PARENT" uid="OgreVolumeRenderingView" />
             </service>
 
             <service uid="cfgOrganManagerConfig"  type="::fwServices::SConfigController">
