@@ -22,7 +22,7 @@ fragment_program VR/RayTracedVolume_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
-        param_named u_sampleDistance float 0.002f
+        param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
         param_named u_entryPoints int 2
@@ -42,8 +42,8 @@ fragment_program VR/RayTracedVolume3D_FP glsl
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
-        param_named u_sampleDistance float 0.2f
-        param_named u_lobeOffset float 1.f
+        param_named u_sampleDistance float 0.2
+        param_named u_lobeOffset float 1.
         param_named u_image int 0
         param_named u_tfTexture int 1
         param_named u_entryPoints0 int 2
@@ -85,7 +85,7 @@ fragment_program VR/PreIntegrated_RayTracedVolume_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
-        param_named u_sampleDistance float 0.002f
+        param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
         param_named u_entryPoints int 2
@@ -109,7 +109,7 @@ fragment_program VR/VolumeIllumination_RayTracedVolume_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
-        param_named u_sampleDistance float 0.002f
+        param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
         param_named u_entryPoints int 2
@@ -132,7 +132,7 @@ fragment_program VR/PreIntegrated_VolumeIllumination_RayTracedVolume_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
-        param_named u_sampleDistance float 0.002f
+        param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
         param_named u_entryPoints int 2

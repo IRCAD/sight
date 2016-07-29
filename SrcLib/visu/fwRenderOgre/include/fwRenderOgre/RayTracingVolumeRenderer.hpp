@@ -88,6 +88,7 @@ private:
     /// Renders the proxy geometry too fill the entry point texture.
     void computeEntryPointsTexture();
 
+    /// Compute the focal length in camera space.
     void computeRealFocalLength();
 
     /// Computes the shear warp to apply to a frustum for multi-view rendering based on the angle with the original camera.
@@ -140,6 +141,7 @@ private:
 
     SATVolumeIllumination *m_illumVolume;
 
+    /// Focal distance in object space : 0 = object front, 1 = object back.
     float m_focalLength;
 };
 

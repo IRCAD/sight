@@ -29,14 +29,6 @@ vec4 satLookup(in ivec3 min, in ivec3 max)
 
 //-----------------------------------------------------------------------------
 
-mat2 rotMat2D(in float angle)
-{
-    return mat2(cos(angle), -sin(angle),
-                sin(angle),  cos(angle));
-}
-
-//-----------------------------------------------------------------------------
-
 int getVoxelSecondaryCoord(in ivec2 lineOrigin, in vec2 lineVector, int x)
 {
     float lineSlope = lineVector.y / lineVector.x;
@@ -53,22 +45,27 @@ float coneShadowQuery(in ivec3 voxelPos)
 
     int nbConeSamples = u_nbSamplesAlongCone;
 
-    // Find the axis (x, y or z) who has the smallest angle to the light direction.
+    // Find the axis (x, y or z) which has the smallest angle to the light direction.
     int primaryAxis = abs(coneDir.y) > abs(coneDir.x)            ? 1 : 0;
     primaryAxis     = abs(coneDir.z) > abs(coneDir[primaryAxis]) ? 2 : primaryAxis;
 
     // Two remaining axes.
-    int secondaryAxis0 = (primaryAxis - 1) % 3;
-    int secondaryAxis1 = (primaryAxis + 1) % 3;
+    int secondaryAxis0, secondaryAxis1;
 
-    if(primaryAxis == 0){
-        secondaryAxis0 = 1; secondaryAxis1 = 2;
+    if(primaryAxis == 0)
+    {
+        secondaryAxis0 = 2;
+        secondaryAxis1 = 1;
     }
-    else if(primaryAxis == 1){
-        secondaryAxis0 = 0; secondaryAxis1 = 2;
+    else if(primaryAxis == 1)
+    {
+        secondaryAxis0 = 0;
+        secondaryAxis1 = 2;
     }
-    else if(primaryAxis == 2){
-        secondaryAxis0 = 0; secondaryAxis1 = 1;
+    else if(primaryAxis == 2)
+    {
+        secondaryAxis0 = 1;
+        secondaryAxis1 = 0;
     }
 
     ivec3 satSize = textureSize(u_sat, 0);
@@ -93,25 +90,45 @@ float coneShadowQuery(in ivec3 voxelPos)
         return 1;
     }
 
-    // Compute cone-plane projections.
+    // Project cone origin and direction on the (primaryAxis, secondaryAxis0) plane.
     const ivec2 projOrig0  = ivec2(voxelPos[primaryAxis], voxelPos[secondaryAxis0]);
     const vec2  projDir0   = vec2(coneDir[primaryAxis], coneDir[secondaryAxis0]);
-    const float projAngle0 = atan(tan(coneAngle) / length(projDir0));
 
+    // Do the same for the (primaryAxis, secondaryAxis1) plane.
     const ivec2 projOrig1  = ivec2(voxelPos[primaryAxis], voxelPos[secondaryAxis1]);
     const vec2  projDir1   = vec2(coneDir[primaryAxis], coneDir[secondaryAxis1]);
-    const float projAngle1 = atan(tan(coneAngle) / length(projDir1));
 
-    // Compute line vectors.
-    const vec2 v0 = normalize(rotMat2D( projAngle0) * projDir0);
-    const vec2 v1 = normalize(rotMat2D(-projAngle0) * projDir0);
-    const vec2 v2 = normalize(rotMat2D( projAngle1) * projDir1);
-    const vec2 v3 = normalize(rotMat2D(-projAngle1) * projDir1);
+    vec2 v0, v1, v2, v3;
+
+    // x is the radius of the cone at height 1.
+    float x = tan(coneAngle);
+
+    // We compute the two lines making up the cone projection on the first plane.
+    // To do so we need to determine their vectors v0 and v1.
+    float coneSlope = projDir0.y / projDir0.x;
+    float a = 1 + coneSlope * coneSlope;
+    v0.y = sqrt(a) / a;
+    v0.x = -v0.y * coneSlope;
+
+    v1  = -v0;
+    v0 += projDir0;
+    v1 += projDir0;
+
+    // We do the same for the second plane.
+    coneSlope = projDir1.y / projDir1.x;
+    a = 1 + coneSlope * coneSlope;
+
+    v2.y = sqrt(a) / a;
+    v2.x = -v2.y * coneSlope;
+
+    v3  = -v2;
+    v2 += projDir1;
+    v3 += projDir1;
 
     // The way the cone is facing.
     const int coneOrientation = int(sign(coneDir[primaryAxis]));
 
-    const int incr = cuboidHeight * coneOrientation;
+    const int incr = (cuboidHeight + 1) * coneOrientation;
 
     const int beginCoord = outCoord   - coneOrientation * cuboidHeight/2;
     const int endCoord   = beginCoord - (nbConeSamples) * incr;
@@ -139,14 +156,14 @@ float coneShadowQuery(in ivec3 voxelPos)
         queryCubeMin[secondaryAxis1] = min(y10, y11);
         queryCubeMax[secondaryAxis1] = max(y10, y11);
 
-        queryCubeMin[primaryAxis] -= incr + 1;
-        queryCubeMax[primaryAxis] -= incr + 1;
+        queryCubeMin[primaryAxis] -= incr;
+        queryCubeMax[primaryAxis] -= incr;
 
         queryCubeMin = max(queryCubeMin, ivec3(0));
         queryCubeMax = min(queryCubeMax, satSize - ivec3(1));
 
         ivec3 cubeDiff = queryCubeMax - queryCubeMin;
-        nbVoxels += abs(cubeDiff.x * cubeDiff.y * cubeDiff.z);
+        nbVoxels += cubeDiff.x * cubeDiff.y * cubeDiff.z;
 
         coneSum += satLookup(queryCubeMin, queryCubeMax).a;
     }

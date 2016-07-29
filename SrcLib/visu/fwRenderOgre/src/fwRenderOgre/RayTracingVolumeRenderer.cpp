@@ -124,9 +124,8 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
             ::Ogre::Vector3 lightDir = m_renderer->m_volumeSceneNode->convertLocalToWorldDirection(
                 closestLights[0]->getDerivedDirection(), true);
 
-//            ::Ogre::GpuConstantDefinition lightDirArrayDefinition = vr3DParams->getConstantDefinition("u_lightDirs");
-
-            ::Ogre::Pass *satIllumPass = ::Ogre::MaterialManager::getSingleton().getByName("VolumeAO")->getTechnique(0)->getPass(0);
+            ::Ogre::Pass *satIllumPass = ::Ogre::MaterialManager::getSingleton().getByName(
+                "VolumeAO")->getTechnique(0)->getPass(0);
             ::Ogre::GpuProgramParametersSharedPtr satIllumParams = satIllumPass->getFragmentProgramParameters();
 
             satIllumParams->setNamedConstant("u_lightDir", lightDir);
