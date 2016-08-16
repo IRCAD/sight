@@ -1,0 +1,141 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#ifndef __IOPACS_SPACSCONFIGURATIONEDITOR_HPP__
+#define __IOPACS_SPACSCONFIGURATIONEDITOR_HPP__
+
+#include "ioPacs/config.hpp"
+
+#include <fwPacsIO/data/PacsConfiguration.hpp>
+#include <fwPacsIO/SeriesEnquirer.hpp>
+#include <gui/editor/IEditor.hpp>
+
+#include <QComboBox>
+#include <QLineEdit>
+#include <QObject>
+#include <QPointer>
+#include <QPushButton>
+#include <QSpinBox>
+#include <QWidget>
+
+#include <boost/filesystem/path.hpp>
+
+namespace ioPacs
+{
+
+/**
+ * @brief   This editor service is used to edit a pacs configuration
+ */
+class IOPACS_CLASS_API SPacsConfigurationEditor : public QObject,
+                                                  public ::gui::editor::IEditor
+{
+Q_OBJECT;
+
+public:
+
+    fwCoreServiceClassDefinitionsMacro ( (SPacsConfigurationEditor)( ::gui::editor::IEditor ) );
+    /**
+     * @brief Constructor
+     */
+    IOPACS_API SPacsConfigurationEditor() throw();
+
+    /**
+     * @brief Destructor
+     */
+    IOPACS_API virtual ~SPacsConfigurationEditor() throw();
+
+private:
+    IOPACS_API void modifiedNotify(::fwPacsIO::data::PacsConfiguration::sptr pacsConfiguration);
+
+private Q_SLOTS:
+    /// Slot called for pinging the pacs
+    IOPACS_API void pingPacs();
+
+    /// Slot called for changing the local application title
+    IOPACS_API void localApplicationTitleChanged();
+
+    /// Slot called for changing the pacs host name
+    IOPACS_API void pacsHostNameChanged();
+
+    /// Slot called for changing the pacs application title
+    IOPACS_API void pacsApplicationTitleChanged();
+
+    /**
+     * @brief Slot called for changing the pacs application port
+     * @param[in] value Pacs application port
+     */
+    IOPACS_API void pacsApplicationPortChanged(int value);
+
+    /// Slot called for changing the move application title
+    IOPACS_API void moveApplicationTitleChanged();
+
+    /**
+     * @brief Slot called for changing the move application port
+     * @param[in] value Move application port
+     */
+    IOPACS_API void moveApplicationPortChanged(int value);
+
+    /**
+     * @brief Slot called for changing the retrieve method
+     * @param[in] index Retrieve method index
+     */
+    IOPACS_API void retrieveMethodChanged(int index);
+
+protected:
+
+    /**
+     * @brief Configuring method. This method is used to configure the service.
+     *
+     * XML configuration sample:
+       @code{.xml}
+       <service uid="pacsConfigurationEditor" impl="::ioPacs::SPacsConfigurationEditor"
+         autoConnect="yes">
+       </service>
+       @endcode
+     */
+    IOPACS_API virtual void configuring() throw(::fwTools::Failed);
+
+    /// Override
+    IOPACS_API virtual void starting() throw(::fwTools::Failed);
+
+    /// Override
+    IOPACS_API virtual void stopping() throw(::fwTools::Failed);
+
+    /// Override
+    IOPACS_API void updating() throw(::fwTools::Failed);
+
+    /// Override
+    IOPACS_API void info(std::ostream& _sstream );
+
+    /// Local application title
+    QPointer< QLineEdit > m_localApplicationTitleWidget;
+
+    /// Pacs host name
+    QPointer< QLineEdit > m_pacsHostNameWidget;
+
+    /// Pacs application title
+    QPointer< QLineEdit > m_pacsApplicationTitleWidget;
+
+    /// Pacs application port
+    QPointer< QSpinBox > m_pacsApplicationPortWidget;
+
+    /// Move application title
+    QPointer< QLineEdit > m_moveApplicationTitleWidget;
+
+    /// Move application port
+    QPointer< QSpinBox > m_moveApplicationPortWidget;
+
+    /// Retrieve method
+    QPointer< QComboBox > m_retrieveMethodWidget;
+
+    /// Test button
+    QPointer< QPushButton > m_pingPacsButtonWidget;
+
+};
+
+} // namespace ioPacs
+
+#endif // __IOPACS_SPACSCONFIGURATIONEDITOR_HPP__

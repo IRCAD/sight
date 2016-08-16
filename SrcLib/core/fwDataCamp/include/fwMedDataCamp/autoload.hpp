@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,14 +11,16 @@
 
 
 #include <fwMedData/ActivitySeries.hpp>
+#include <fwMedData/DicomSeries.hpp>
+#include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Series.hpp>
+#include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
 
+#include <fwMedDataCamp/DicomSeries.hpp>
 
 namespace fwMedDataCamp
 {
@@ -35,6 +37,8 @@ struct runner
         localDeclarefwMedDataImageSeries();
         localDeclarefwMedDataModelSeries();
         localDeclarefwMedDataActivitySeries();
+        localDeclarefwMedDataDicomSeriesDICOM_AVAILABILITY();
+        localDeclarefwMedDataDicomSeries();
     }
 
     static runner r;

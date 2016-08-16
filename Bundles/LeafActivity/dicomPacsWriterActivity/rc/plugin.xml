@@ -1,0 +1,31 @@
+<plugin id="dicomPacsWriterActivity" version="@DASH_VERSION@" >
+
+    <requirement id="activities" />
+    <requirement id="ctrlMemory" />
+    <requirement id="ctrlSelection" />
+    <requirement id="dataReg" />
+    <requirement id="dicomAppConfig" />
+    <requirement id="gui" />
+    <requirement id="guiQt" />
+    <requirement id="ioGdcm" />
+    <requirement id="media" />
+    <requirement id="uiMedDataQt" />
+    <requirement id="visuVTK" />
+    <requirement id="visuVTKAdaptor" />
+    <requirement id="visuVTKQt" />
+    <requirement id="ioPacs" />
+
+    <xi:include href="configurations/DicomPacsWriter.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>DicomPacsWriter</id>
+        <title>Dicom PACS Writer</title>
+        <desc>Dicom Pacs Writer activity</desc>
+        <icon>@BUNDLE_PREFIX@/media_0-1/icons/Push.svg</icon>
+        <requirements>
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="DicomPacsWriter">
+        </appConfig>
+    </extension>
+</plugin>

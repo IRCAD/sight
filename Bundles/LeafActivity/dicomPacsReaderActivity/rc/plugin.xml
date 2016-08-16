@@ -1,0 +1,41 @@
+<plugin id="dicomPacsReaderActivity" version="@DASH_VERSION@" >
+
+    <requirement id="activities" />
+    <requirement id="ctrlMemory" />
+    <requirement id="ctrlSelection" />
+    <requirement id="dataReg" />
+    <requirement id="gui" />
+    <requirement id="guiQt" />
+    <requirement id="ioGdcm" />
+    <requirement id="media" />
+    <requirement id="uiMedDataQt" />
+    <requirement id="visuVTK" />
+    <requirement id="visuVTKAdaptor" />
+    <requirement id="visuVTKQt" />
+    <requirement id="ioPacs" />
+
+    <xi:include href="configurations/DicomPacsReader.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/PacsConfigurationManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/2DPacsPreviewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>DicomPacsReader</id>
+        <title>Dicom PACS Reader</title>
+        <desc>Dicom PACS Reader activity</desc>
+        <icon>@BUNDLE_PREFIX@/media_0-1/icons/Pull.svg</icon>
+        <requirements>
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="DicomPacsReader">
+        </appConfig>
+        </extension>
+
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>DicomPacsReaderConfig</id>
+        <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
+        <config>
+            <config filterType="::fwDicomIOFilter::custom::DefaultDicomFilter" />
+        </config>
+    </extension>
+
+</plugin>

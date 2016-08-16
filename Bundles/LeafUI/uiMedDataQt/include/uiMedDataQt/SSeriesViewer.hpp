@@ -58,7 +58,7 @@ protected:
             <config id="2DSimpleConfig" type="::fwMedData::ImageSeries">
                 <extract path="@image" pattern="imageID" />
             </config>
-            <config id="2DPacsPreviewConfig" type="::fwDicomData::DicomSeries" >
+            <config id="2DPacsPreviewConfig" type="::fwMedData::DicomSeries" >
                 <parameter replace="PACS_CONFIGURATION" by="None" />
             </config>
             <config id="3DSimpleConfig" type="::fwMedData::ModelSeries" />
@@ -86,7 +86,7 @@ protected:
      */
     virtual void updating() throw (::fwTools::Failed);
 
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream );
 
 private:
 
