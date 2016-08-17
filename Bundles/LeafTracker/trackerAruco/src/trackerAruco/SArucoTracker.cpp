@@ -11,7 +11,7 @@
 #include <fwCore/Profiling.hpp>
 
 #include <arData/Camera.hpp>
-#include <extData/FrameTL.hpp>
+#include <arData/FrameTL.hpp>
 #include <arData/MarkerTL.hpp>
 
 #include <fwCom/Signal.hxx>
@@ -206,7 +206,7 @@ void SArucoTracker::detectMarker(::fwCore::HiResClock::HiResClockType timestamp)
 {
     if (timestamp > m_lastTimestamp)
     {
-        ::extData::FrameTL::csptr frameTL = this->getInput< ::extData::FrameTL >(s_FRAMETL_INPUT);
+        ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(s_FRAMETL_INPUT);
         if(!m_isInitialized)
         {
             m_arUcoTracker = new ::aruco::MarkerDetector();
@@ -243,8 +243,8 @@ void SArucoTracker::detectMarker(::fwCore::HiResClock::HiResClockType timestamp)
         m_arUcoTracker->setCornerRefinementMethod(m_cornerRefinement);
         m_arUcoTracker->setDesiredSpeed(static_cast<int>(m_speed));
 
-        ::fwCore::HiResClock::HiResClockType timestamp     = frameTL->getNewerTimestamp();
-        const CSPTR(::extData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
+        ::fwCore::HiResClock::HiResClockType timestamp    = frameTL->getNewerTimestamp();
+        const CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
 
         OSLM_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
         if(buffer)
@@ -315,9 +315,9 @@ void SArucoTracker::detectMarker(::fwCore::HiResClock::HiResClockType timestamp)
                 //Notify
                 if(trackerObject != nullptr)
                 {
-                    ::extData::TimeLine::ObjectPushedSignalType::sptr sig;
-                    sig = markerTL->signal< ::extData::TimeLine::ObjectPushedSignalType >(
-                        ::extData::TimeLine::s_OBJECT_PUSHED_SIG );
+                    ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
+                    sig = markerTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
+                        ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
                     sig->asyncEmit(timestamp);
                 }
 
@@ -433,7 +433,7 @@ void SArucoTracker::displayTags(bool b)
 ::fwServices::IService::KeyConnectionsMap SArucoTracker::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_FRAMETL_INPUT, ::extData::TimeLine::s_OBJECT_PUSHED_SIG, s_DETECT_MARKER_SLOT );
+    connections.push( s_FRAMETL_INPUT, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_DETECT_MARKER_SLOT );
 
     return connections;
 }

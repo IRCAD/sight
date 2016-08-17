@@ -5,7 +5,6 @@ set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     dataReg
-    extDataReg
     arDataReg
     servicesReg
 
@@ -25,7 +24,6 @@ set( REQUIREMENTS
     uiMedDataQt
 
     media
-    mediaExt
     arMedia
 
     activities

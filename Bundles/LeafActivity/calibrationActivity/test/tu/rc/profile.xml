@@ -10,7 +10,6 @@
     <activate id="gui" version="0-1" />
 
     <activate id="media" version="0-1" />
-    <activate id="mediaExt" version="0-1" />
     <activate id="arMedia" version="0-1" />
 
     <activate id="activities" version="0-1" />

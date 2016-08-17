@@ -15,7 +15,7 @@
 #include <fwData/Composite.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <extData/timeline/Buffer.hpp>
+#include <arData/timeline/Buffer.hpp>
 
 #include <fwComEd/helper/Array.hpp>
 
@@ -56,7 +56,7 @@ SFrameUpdater::~SFrameUpdater() throw()
 {
     KeyConnectionsMap connections;
 
-    connections.push( "frameTL", ::extData::TimeLine::s_OBJECT_PUSHED_SIG,
+    connections.push( "frameTL", ::arData::TimeLine::s_OBJECT_PUSHED_SIG,
                       ::videoTools::SFrameUpdater::s_UPDATE_FRAME_SLOT );
 
     return connections;
@@ -71,19 +71,19 @@ void SFrameUpdater::starting() throw(fwTools::Failed)
     if(!this->isVersion2())
     {
         ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-        m_frameTL                           = ::extData::FrameTL::dynamicCast((*composite)[m_frameTLKey]);
+        m_frameTL                           = ::arData::FrameTL::dynamicCast((*composite)[m_frameTLKey]);
         OSLM_ASSERT("The timeline \"" << m_frameTL << "\" is not valid.", m_frameTL);
 
         m_image = ::fwData::Image::dynamicCast((*composite)[m_imageKey]);
         OSLM_ASSERT("The image \"" << m_imageKey << "\" is not valid.", m_image);
 
-        m_connections.connect( ::extData::FrameTL::constCast(m_frameTL),
-                               ::extData::TimeLine::s_OBJECT_PUSHED_SIG, this->getSptr(),
+        m_connections.connect( ::arData::FrameTL::constCast(m_frameTL),
+                               ::arData::TimeLine::s_OBJECT_PUSHED_SIG, this->getSptr(),
                                ::videoTools::SFrameUpdater::s_UPDATE_FRAME_SLOT);
     }
     else
     {
-        m_frameTL = this->getInput< ::extData::FrameTL>("frameTL");
+        m_frameTL = this->getInput< ::arData::FrameTL>("frameTL");
         m_image   = this->getInOut< ::fwData::Image>("frame");
     }
 
@@ -183,7 +183,7 @@ void SFrameUpdater::updateImage()
         ::fwComEd::helper::Array arrayHelper(array);
 
         ::fwCore::HiResClock::HiResClockType timestamp = m_frameTL->getNewerTimestamp();
-        CSPTR(::extData::FrameTL::BufferType) buffer   = m_frameTL->getClosestBuffer(timestamp);
+        CSPTR(::arData::FrameTL::BufferType) buffer    = m_frameTL->getClosestBuffer(timestamp);
 
         OSLM_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
         if(buffer)
@@ -192,7 +192,7 @@ void SFrameUpdater::updateImage()
 
             const ::boost::uint8_t* frameBuff = &buffer->getElement(0);
 
-            ::extData::timeline::Buffer::BufferDataType index = arrayHelper.begin< ::boost::uint8_t >();
+            ::arData::timeline::Buffer::BufferDataType index = arrayHelper.begin< ::boost::uint8_t >();
 
             std::copy( frameBuff, frameBuff+buffer->getSize(), index);
 

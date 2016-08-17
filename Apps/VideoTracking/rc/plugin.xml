@@ -12,7 +12,7 @@
         <config>
 
             <object uid="camera" type="::arData::Camera" />
-            <object uid="frameTL" type="::extData::FrameTL">
+            <object uid="frameTL" type="::arData::FrameTL">
                 <value>100</value>
             </object>
             <object uid="tagTL" type="::arData::MarkerTL" />

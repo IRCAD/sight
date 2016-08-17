@@ -14,9 +14,9 @@
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <extData/MatrixTL.hpp>
-#include <extData/FrameTL.hpp>
-#include <extData/timeline/Buffer.hpp>
+#include <arData/MatrixTL.hpp>
+#include <arData/FrameTL.hpp>
+#include <arData/timeline/Buffer.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwComEd/helper/Array.hpp>
@@ -119,7 +119,7 @@ void SFrameMatrixSynchronizer::starting() throw (fwTools::Failed)
         for(size_t i = 0; i < numFrameTLs; ++i)
         {
             // TODO: replace by a vector when appXml is removed
-            m_frameTLs["frame" + std::to_string(i)] = this->getInput< ::extData::FrameTL>(s_FRAMETL_INPUT, i);
+            m_frameTLs["frame" + std::to_string(i)] = this->getInput< ::arData::FrameTL>(s_FRAMETL_INPUT, i);
             m_images["frame" + std::to_string(i)]   = this->getInOut< ::fwData::Image>(s_IMAGE_INOUT, i);
         }
     }
@@ -128,8 +128,8 @@ void SFrameMatrixSynchronizer::starting() throw (fwTools::Failed)
         ::fwData::Composite::sptr comp = this->getObject< ::fwData::Composite >();
         for(FrameKeysType::value_type elt : m_frameKeys)
         {
-            ::extData::FrameTL::sptr frameTL = comp->at< ::extData::FrameTL >(elt.first);
-            SLM_ASSERT("::extData::FrameTL is not valid", frameTL);
+            ::arData::FrameTL::sptr frameTL = comp->at< ::arData::FrameTL >(elt.first);
+            SLM_ASSERT("::arData::FrameTL is not valid", frameTL);
             ::fwData::Image::sptr frame = comp->at< ::fwData::Image >(elt.second);
             SLM_ASSERT("::fwData::Image is not valid", frame);
 
@@ -139,7 +139,7 @@ void SFrameMatrixSynchronizer::starting() throw (fwTools::Failed)
 
         for(MatrixKeysType::value_type elt : m_matrixKeys)
         {
-            ::extData::MatrixTL::sptr matrixTL = comp->at< ::extData::MatrixTL >(elt.first);
+            ::arData::MatrixTL::sptr matrixTL = comp->at< ::arData::MatrixTL >(elt.first);
 
             m_matrixTLs[elt.first] = matrixTL;
             MatrixKeyVectorType& matrixVector = m_matrices[elt.first];
@@ -243,8 +243,8 @@ void SFrameMatrixSynchronizer::synchronize()
 
     for(TimelineType::value_type key : availableFramesTL)
     {
-        ::extData::FrameTL::csptr frameTL = m_frameTLs[key];
-        ::fwData::Image::sptr image       = m_images[key];
+        ::arData::FrameTL::csptr frameTL = m_frameTLs[key];
+        ::fwData::Image::sptr image      = m_images[key];
 
         ::fwData::Image::SizeType size(3);
         size[0] = frameTL->getWidth();
@@ -281,7 +281,7 @@ void SFrameMatrixSynchronizer::synchronize()
 
         ::fwComEd::helper::Array arrayHelper(array);
 
-        CSPTR(::extData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(matrixTimestamp);
+        CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(matrixTimestamp);
 
         if(!buffer)
         {
@@ -303,8 +303,8 @@ void SFrameMatrixSynchronizer::synchronize()
     bool matrixFound = false;
     for(TimelineType::value_type key : availableMatricesTL)
     {
-        ::extData::MatrixTL::csptr matrixTL           = m_matrixTLs[key];
-        CSPTR(::extData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(matrixTimestamp);
+        ::arData::MatrixTL::csptr matrixTL           = m_matrixTLs[key];
+        CSPTR(::arData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(matrixTimestamp);
 
         if(buffer)
         {

@@ -88,13 +88,13 @@ void SFrameResizer::starting() throw(::fwTools::Failed)
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
-    m_inputTL = ::extData::FrameTL::dynamicCast((*composite)[m_inputTLKey]);
+    m_inputTL = ::arData::FrameTL::dynamicCast((*composite)[m_inputTLKey]);
     OSLM_ASSERT("The timeline \"" << m_inputTL << "\" is not valid.", m_inputTL);
 
-    m_outputTL = ::extData::FrameTL::dynamicCast((*composite)[m_outputTLKey]);
+    m_outputTL = ::arData::FrameTL::dynamicCast((*composite)[m_outputTLKey]);
     OSLM_ASSERT("The timeline \"" << m_outputTL << "\" is not valid.", m_outputTL);
 
-    m_connections.connect(m_inputTL, ::extData::TimeLine::s_OBJECT_PUSHED_SIG, this->getSptr(), s_UPDATE_SLOT);
+    m_connections.connect(m_inputTL, ::arData::TimeLine::s_OBJECT_PUSHED_SIG, this->getSptr(), s_UPDATE_SLOT);
 }
 
 //------------------------------------------------------------------------------
@@ -112,7 +112,7 @@ void SFrameResizer::updating() throw(::fwTools::Failed)
     ::fwCore::HiResClock::HiResClockType timestamp = m_inputTL->getNewerTimestamp();
 
     // Get the buffer of the copied timeline
-    CSPTR(::extData::FrameTL::BufferType) bufferFrameIn = m_inputTL->getClosestBuffer(timestamp);
+    CSPTR(::arData::FrameTL::BufferType) bufferFrameIn = m_inputTL->getClosestBuffer(timestamp);
     const ::boost::uint8_t* frameBuffIn = &bufferFrameIn->getElement(0);
 
     int width  = static_cast<int>( m_inputTL->getWidth() );
@@ -131,8 +131,8 @@ void SFrameResizer::updating() throw(::fwTools::Failed)
     }
 
     // Get the buffer of the timeline to fill
-    SPTR(::extData::FrameTL::BufferType) bufferOut = m_outputTL->createBuffer(timestamp);
-    ::boost::uint8_t* frameBuffOut                 = bufferOut->addElement(0);
+    SPTR(::arData::FrameTL::BufferType) bufferOut = m_outputTL->createBuffer(timestamp);
+    ::boost::uint8_t* frameBuffOut                = bufferOut->addElement(0);
 
     // Create an openCV mat that aliases the buffer created from the output timeline
     ::cv::Size size(static_cast<int>(outWidth), static_cast<int>(outHeight));
@@ -143,7 +143,7 @@ void SFrameResizer::updating() throw(::fwTools::Failed)
     m_outputTL->pushObject(bufferOut);
 
     auto sig =
-        m_outputTL->signal< ::extData::TimeLine::ObjectPushedSignalType >(::extData::TimeLine::s_OBJECT_PUSHED_SIG);
+        m_outputTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG);
     sig->asyncEmit(timestamp);
 }
 

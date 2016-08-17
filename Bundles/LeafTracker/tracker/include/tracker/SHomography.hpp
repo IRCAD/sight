@@ -55,7 +55,7 @@ namespace tracker
  * - \b camera [::arData::Camera]: calibrated cameras.
  * - \b extrinsic [::fwData::TransformationMatrix3D]: extrinsic camera.
  * @subsection In-Out In-Out
- * - \b matrixTL [::extData::MatrixTL]: timaline of 3D transformation matrices.
+ * - \b matrixTL [::arData::MatrixTL]: timaline of 3D transformation matrices.
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */

@@ -17,7 +17,7 @@
         <object uid="${calibrationInfo}" type="::arData::CalibrationInfo" src="ref" />
         <object uid="${camera}" type="::arData::Camera" src="ref" />
 
-        <object uid="FrameTL" type="::extData::FrameTL" />
+        <object uid="FrameTL" type="::arData::FrameTL" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -60,7 +60,7 @@
                     <menuItem name="Remove" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/remove.svg" />
                     <menuItem name="Reset" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/reset.svg" />
                     <menuItem name="Calibrate with openCV" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/CheckButton.svg" />
-                    <menuItem name="Draw" icon="@BUNDLE_PREFIX@/mediaExt_0-1/icons/Preview.svg" />
+                    <menuItem name="Draw" icon="@BUNDLE_PREFIX@/media_0-1/icons/Preview.svg" />
                     <menuItem name="Edit" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/configuration.svg" />
                 </layout>
             </gui>

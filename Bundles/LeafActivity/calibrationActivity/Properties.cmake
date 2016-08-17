@@ -10,7 +10,6 @@ set( DEPENDENCIES
 set( REQUIREMENTS
     servicesReg
     dataReg
-    extDataReg
     arDataReg
 
     gui
@@ -22,7 +21,6 @@ set( REQUIREMENTS
 
     arMedia
     media
-    mediaExt
 
     uiTools
     uiIO

@@ -10,7 +10,7 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${timeLine}" type="::extData::FrameTL" src="ref" />
+        <object uid="${timeLine}" type="::arData::FrameTL" src="ref" />
         <object uid="${camera}" type="::arData::Camera" src="ref" />
         <object uid="frame" type="::fwData::Image" />
 

@@ -5,7 +5,6 @@
     <requirement id="visuVTKAdaptor" />
     <requirement id="visuVTKARAdaptor" />
     <requirement id="media" />
-    <requirement id="mediaExt" />
     <requirement id="arMedia" />
     <requirement id="validators" />
 
@@ -16,7 +15,6 @@
     <xi:include href="configurations/displayImageConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/displayTwoImagesConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/toolsCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-
 
     <extension implements="::fwActivities::registry::Activities">
         <id>Calibration</id>

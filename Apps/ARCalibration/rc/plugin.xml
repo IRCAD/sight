@@ -2,7 +2,6 @@
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
-    <requirement id="extDataReg" />
     <requirement id="arDataReg" />
     <requirement id="patchMedicalData" />
     <requirement id="arPatchMedicalData" />

@@ -57,7 +57,7 @@ namespace videoQt
  * @subsection Input Input
  * - \b camera [::arData::Camera]: camera used to display video.
  * @subsection In-Out In-Out
- * - \b frameTL [::extData::FrameTL]: timeline where to extract the video frames.
+ * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
  */
 class VIDEOQT_CLASS_API SFrameGrabber : public QObject,
                                         public ::fwServices::IController

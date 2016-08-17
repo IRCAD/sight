@@ -5,7 +5,6 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES
         fwComEd
         fwCore
-        extData
         fwData
         fwGui
         fwGuiQt

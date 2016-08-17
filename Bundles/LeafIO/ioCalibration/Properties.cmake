@@ -11,7 +11,6 @@ set( DEPENDENCIES
     fwServices
     fwTools
     arData
-    extData
     fwCom
     fwGui
     io

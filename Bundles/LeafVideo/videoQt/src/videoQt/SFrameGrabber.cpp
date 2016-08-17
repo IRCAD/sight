@@ -19,7 +19,7 @@
 #include <fwTools/Type.hpp>
 #include <fwServices/macros.hpp>
 
-#include <extData/FrameTL.hpp>
+#include <arData/FrameTL.hpp>
 #include <arData/Camera.hpp>
 
 #include <QImage>
@@ -34,7 +34,7 @@ namespace videoQt
 //-----------------------------------------------------------------------------
 
 
-fwServicesRegisterMacro( ::fwServices::IController, ::videoQt::SFrameGrabber, ::extData::FrameTL);
+fwServicesRegisterMacro( ::fwServices::IController, ::videoQt::SFrameGrabber, ::arData::FrameTL);
 
 const ::fwCom::Signals::SignalKeyType SFrameGrabber::s_POSITION_MODIFIED_SIG = "positionModified";
 const ::fwCom::Signals::SignalKeyType SFrameGrabber::s_DURATION_MODIFIED_SIG = "durationModified";
@@ -170,18 +170,18 @@ void SFrameGrabber::stopCamera()
         m_videoPlayer = nullptr;
 
         // Reset the timeline and send a black frame
-        ::extData::FrameTL::sptr timeline;
+        ::arData::FrameTL::sptr timeline;
         if(this->isVersion2())
         {
-            timeline = this->getInOut< ::extData::FrameTL >("frameTL");
+            timeline = this->getInOut< ::arData::FrameTL >("frameTL");
         }
         else
         {
-            timeline = this->getObject< ::extData::FrameTL >();
+            timeline = this->getObject< ::arData::FrameTL >();
         }
         const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec() + 1;
-        SPTR(::extData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
-        ::boost::uint8_t* destBuffer                = reinterpret_cast< ::boost::uint8_t* >( buffer->addElement(0) );
+        SPTR(::arData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
+        ::boost::uint8_t* destBuffer               = reinterpret_cast< ::boost::uint8_t* >( buffer->addElement(0) );
 
         std::fill(destBuffer,
                   destBuffer + timeline->getWidth() * timeline->getHeight() * timeline->getNumberOfComponents(), 0);
@@ -190,8 +190,8 @@ void SFrameGrabber::stopCamera()
         timeline->clearTimeline();
         timeline->pushObject(buffer);
 
-        auto sigTL = timeline->signal< ::extData::TimeLine::ObjectPushedSignalType >(
-            ::extData::TimeLine::s_OBJECT_PUSHED_SIG );
+        auto sigTL = timeline->signal< ::arData::TimeLine::ObjectPushedSignalType >(
+            ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
         sigTL->asyncEmit(timestamp);
     }
 }
@@ -263,14 +263,14 @@ void SFrameGrabber::presentFrame(const QVideoFrame& frame)
         return;
     }
 
-    ::extData::FrameTL::sptr timeline;
+    ::arData::FrameTL::sptr timeline;
     if(this->isVersion2())
     {
-        timeline = this->getInOut< ::extData::FrameTL >("frameTL");
+        timeline = this->getInOut< ::arData::FrameTL >("frameTL");
     }
     else
     {
-        timeline = this->getObject< ::extData::FrameTL >();
+        timeline = this->getObject< ::arData::FrameTL >();
     }
 
     // If we have the same output format, we can take the fast path
@@ -288,7 +288,7 @@ void SFrameGrabber::presentFrame(const QVideoFrame& frame)
 
     const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
 
-    SPTR(::extData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
+    SPTR(::arData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
     std::uint64_t* destBuffer = reinterpret_cast< std::uint64_t* >( buffer->addElement(0) );
 
     SLM_ASSERT("Pixel format must be RGB32", frame.pixelFormat() == QVideoFrame::Format_RGB32 ||
@@ -313,11 +313,11 @@ void SFrameGrabber::presentFrame(const QVideoFrame& frame)
                             QVideoFrame::imageFormatFromPixelFormat(frame.pixelFormat()))
                      .mirrored(m_horizontallyFlip, m_verticallyFlip);
 
-        frameBuffer = reinterpret_cast< const std::uint64_t *>( imgFlipped.bits() );
+        frameBuffer = reinterpret_cast< const std::uint64_t*>( imgFlipped.bits() );
     }
     else
     {
-        frameBuffer = reinterpret_cast< const std::uint64_t *>( mappedFrame.bits() );
+        frameBuffer = reinterpret_cast< const std::uint64_t*>( mappedFrame.bits() );
     }
 
     // Unmap when we don't need access to .bits() any longer
@@ -337,8 +337,8 @@ void SFrameGrabber::presentFrame(const QVideoFrame& frame)
     // push buffer and notify
     timeline->pushObject(buffer);
 
-    ::extData::TimeLine::ObjectPushedSignalType::sptr sig;
-    sig = timeline->signal< ::extData::TimeLine::ObjectPushedSignalType >(::extData::TimeLine::s_OBJECT_PUSHED_SIG );
+    ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
+    sig = timeline->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG );
     sig->asyncEmit(timestamp);
 }
 

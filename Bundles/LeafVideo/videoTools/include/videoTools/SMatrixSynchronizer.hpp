@@ -11,7 +11,7 @@
 #include "videoTools/config.hpp"
 
 #include <arServices/ISynchronizer.hpp>
-#include <extData/MatrixTL.hpp>
+#include <arData/MatrixTL.hpp>
 
 #include <fwCore/base.hpp>
 #include <fwCom/Slot.hpp>
@@ -24,7 +24,6 @@ namespace videoTools
 {
 /**
  * @brief   SMatrixSynchronizer reads the content of a MatrixTL into a TransformationMatrix3D.
- * @class   SMatrixSynchronizer
  */
 class VIDEOTOOLS_CLASS_API SMatrixSynchronizer : public ::arServices::ISynchronizer
 {
@@ -61,7 +60,7 @@ protected:
      * @endcode
      *
      * @subsection In-Out In-Out
-     * - \b TL [::extData::MatrixTL]:  Defines the uid of the MatrixTL containing the matrices.
+     * - \b TL [::arData::MatrixTL]:  Defines the uid of the MatrixTL containing the matrices.
      *
      */
 

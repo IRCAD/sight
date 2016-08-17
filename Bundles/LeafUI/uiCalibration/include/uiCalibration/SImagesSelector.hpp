@@ -9,7 +9,7 @@
 
 #include "uiCalibration/config.hpp"
 
-#include <extData/FrameTL.hpp>
+#include <arData/FrameTL.hpp>
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
@@ -27,7 +27,7 @@ namespace uiCalibration
 {
 
 /**
- * @brief   This editor allows to add images into a ::fwData::Vector from an ::extData::FrameTL.
+ * @brief   This editor allows to add images into a ::fwData::Vector from an ::arData::FrameTL.
  *
  * @section Slots Slots
  * - \b add(::fwCore::HiResClock::HiResClockType): .
@@ -43,7 +43,7 @@ namespace uiCalibration
        </service>
    @endcode
  * @subsection Input Input:
- * - \b frameTL [::extData::FrameTL]: frame timeline used to extract images.
+ * - \b frameTL [::arData::FrameTL]: frame timeline used to extract images.
  * @subsection In-Out In-Out:
  * - \b key2 [::fwData::Vector]: vector containing extracted images.
  */
@@ -104,7 +104,7 @@ protected:
 private:
 
     /// Frame timeline used to extract images
-    ::extData::FrameTL::csptr m_frameTL;
+    ::arData::FrameTL::csptr m_frameTL;
 
     /// Index of the last acquisition.
     int m_captureIdx;

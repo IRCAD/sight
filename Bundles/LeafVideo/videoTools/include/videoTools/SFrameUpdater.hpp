@@ -9,7 +9,7 @@
 
 #include "videoTools/config.hpp"
 
-#include <extData/FrameTL.hpp>
+#include <arData/FrameTL.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Image.hpp>
@@ -37,7 +37,7 @@ namespace videoTools
        </service>
    @endcode
  * @subsection Input Input:
- * - \b key1 [::extData::FrameTL]: timeline from which we synchronize images.
+ * - \b key1 [::arData::FrameTL]: timeline from which we synchronize images.
  * @subsection In-Out In-Out:
  * - \b key2 [::fwData::Image]: frame where to extract a buffer of a timeline.
  */
@@ -102,7 +102,7 @@ private:
     std::string m_frameTLKey;
 
     /// Frame timeline
-    ::extData::FrameTL::csptr m_frameTL;
+    ::arData::FrameTL::csptr m_frameTL;
 
     /// Image key
     std::string m_imageKey;

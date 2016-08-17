@@ -63,7 +63,7 @@ void SImagesSelector::configuring() throw(::fwTools::Failed)
 
 void SImagesSelector::starting() throw(::fwTools::Failed)
 {
-    m_frameTL = this->getInput< ::extData::FrameTL>("frameTL");
+    m_frameTL = this->getInput< ::arData::FrameTL>("frameTL");
     SLM_ASSERT("Frame timeline is not found.", m_frameTL);
 
     ::fwGui::IGuiContainerSrv::create();
@@ -165,7 +165,7 @@ void SImagesSelector::reset()
 
 void SImagesSelector::add(::fwCore::HiResClock::HiResClockType timestamp)
 {
-    CSPTR(::extData::FrameTL::BufferType) buffer = m_frameTL->getClosestBuffer(timestamp);
+    CSPTR(::arData::FrameTL::BufferType) buffer = m_frameTL->getClosestBuffer(timestamp);
 
     if(!buffer)
     {

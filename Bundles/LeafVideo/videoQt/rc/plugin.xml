@@ -5,13 +5,13 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
         <service>::videoQt::SFrameGrabber</service>
-        <object>::extData::FrameTL</object>
+        <object>::arData::FrameTL</object>
     </extension>
     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
         <service>::videoQt::SFrameRecorder</service>
-        <object>::extData::FrameTL</object>
+        <object>::arData::FrameTL</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">

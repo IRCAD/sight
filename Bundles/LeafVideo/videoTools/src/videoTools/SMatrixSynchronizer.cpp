@@ -21,8 +21,8 @@
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <extData/MatrixTL.hpp>
-#include <extData/timeline/Buffer.hpp>
+#include <arData/MatrixTL.hpp>
+#include <arData/timeline/Buffer.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwComEd/helper/Array.hpp>
@@ -72,13 +72,13 @@ void SMatrixSynchronizer::stopping() throw (fwTools::Failed)
 void SMatrixSynchronizer::updateMatrix(::fwCore::HiResClock::HiResClockType timestamp)
 {
     ::fwData::TransformationMatrix3D::sptr matrix3D = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
-    ::extData::MatrixTL::csptr matrixTL             = this->getInput< ::extData::MatrixTL >("TL");
+    ::arData::MatrixTL::csptr matrixTL              = this->getInput< ::arData::MatrixTL >("TL");
 
     if (timestamp > m_lastTimestamp)
     {
 
         ::fwCore::HiResClock::HiResClockType currentTimestamp = matrixTL->getNewerTimestamp();
-        CSPTR(::extData::MatrixTL::BufferType) buffer         = matrixTL->getClosestBuffer(currentTimestamp);
+        CSPTR(::arData::MatrixTL::BufferType) buffer          = matrixTL->getClosestBuffer(currentTimestamp);
         OSLM_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
         m_lastTimestamp = currentTimestamp;
 

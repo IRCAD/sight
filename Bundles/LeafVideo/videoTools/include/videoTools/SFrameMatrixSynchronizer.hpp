@@ -20,7 +20,7 @@
 #include <fwCom/Signals.hpp>
 
 
-namespace extData
+namespace arData
 {
 class FrameTL;
 class MatrixTL;
@@ -69,7 +69,7 @@ namespace videoTools
        </service>
    @endcode
  * @subsection Input Input
- * - \b frameTL [::extData::FrameTL]: defines the frameTL to synchronize. The number of \b frameTL keys must match the
+ * - \b frameTL [::arData::FrameTL]: defines the frameTL to synchronize. The number of \b frameTL keys must match the
  * number of \b image keys.
  *
  * @subsection In-Out In-Out
@@ -113,8 +113,8 @@ public:
     typedef std::pair< std::string, unsigned int > MatrixVectorTypePair;
     typedef std::vector<MatrixVectorTypePair> MatrixVectorType;
     typedef std::map<std::string, MatrixVectorType> MatrixKeysType;
-    typedef std::map<std::string, CSPTR(::extData::FrameTL)> FrameTLKeyType;
-    typedef std::map<std::string, CSPTR(::extData::MatrixTL)> MatrixTLKeyType;
+    typedef std::map<std::string, CSPTR(::arData::FrameTL)> FrameTLKeyType;
+    typedef std::map<std::string, CSPTR(::arData::MatrixTL)> MatrixTLKeyType;
     typedef std::map<std::string, SPTR(::fwData::Image)> ImageKeyType;
     typedef std::pair< SPTR(::fwData::TransformationMatrix3D), unsigned int > MatrixKeyVectorTypePair;
     typedef std::vector<MatrixKeyVectorTypePair> MatrixKeyVectorType;

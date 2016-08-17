@@ -11,7 +11,7 @@
 
 #include <fwData/Image.hpp>
 #include <fwData/PointList.hpp>
-#include <extData/FrameTL.hpp>
+#include <arData/FrameTL.hpp>
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
@@ -56,7 +56,7 @@ namespace videoCalibration
        </service>
    @endcode
  * @subsection Input Input:
- * - \b timeline [::extData::FrameTL]: timelines containing the images to detect the chessboard.
+ * - \b timeline [::arData::FrameTL]: timelines containing the images to detect the chessboard.
  * @subsection In-Out In-Out:
  * - \b key2 [::arData::CalibrationInfo]: calibration object where to store the detected images.
  * @subsection Configuration Configuration:
@@ -137,14 +137,14 @@ private:
      * @param yDim the number of chessboard squares vertically
      * @return The list of chessboard points or NULL if no points are detected
      */
-    static SPTR(::fwData::PointList) detectChessboard(::extData::FrameTL::csptr tl,
+    static SPTR(::fwData::PointList) detectChessboard(::arData::FrameTL::csptr tl,
                                                       ::fwCore::HiResClock::HiResClockType timestamp,
                                                       size_t xDim, size_t yDim);
 
     /**
      * @brief Creates an image from frame timeline
      */
-    ::fwData::Image::sptr createImage(extData::FrameTL::csptr tl, ::fwCore::HiResClock::HiResClockType timestamp);
+    ::fwData::Image::sptr createImage(arData::FrameTL::csptr tl, ::fwCore::HiResClock::HiResClockType timestamp);
 
     /// Signal emitted when chessboard is detected
     ChessboardDetectedSignalType::sptr m_sigChessboardDetected;

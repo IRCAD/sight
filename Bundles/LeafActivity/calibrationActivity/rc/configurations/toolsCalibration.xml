@@ -14,12 +14,12 @@
         <object uid="${camera1}" type="::arData::Camera" src="ref" />
         <object uid="${camera2}" type="::arData::Camera" src="ref" />
         <object uid="${cameraExtrinsic}" type="::fwData::TransformationMatrix3D" src="ref" />
-        <object uid="frame1TL" type="::extData::FrameTL" />
-        <object uid="frame2TL" type="::extData::FrameTL" />
+        <object uid="frame1TL" type="::arData::FrameTL" />
+        <object uid="frame2TL" type="::arData::FrameTL" />
         <object uid="markersPL" type="::fwData::PointList" />
         <object uid="tagTL1" type="::arData::MarkerTL" />
         <object uid="tagTL2" type="::arData::MarkerTL" />
-        <object uid="matrixTL" type="::extData::MatrixTL" />
+        <object uid="matrixTL" type="::arData::MatrixTL" />
         <object uid="image1" type="::fwData::Image" />
         <object uid="image2" type="::fwData::Image" />
         <object uid="toolCalibration" type="::fwData::TransformationMatrix3D" />

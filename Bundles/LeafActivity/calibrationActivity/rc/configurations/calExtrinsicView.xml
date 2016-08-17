@@ -21,8 +21,8 @@
         <object uid="Frame1" type="::fwData::Image" />
         <object uid="Frame2" type="::fwData::Image" />
 
-        <object uid="Frame1TL" type="::extData::FrameTL" />
-        <object uid="Frame2TL" type="::extData::FrameTL" />
+        <object uid="Frame1TL" type="::arData::FrameTL" />
+        <object uid="Frame2TL" type="::arData::FrameTL" />
 
         <object uid="${calibrationInfo1}" type="::arData::CalibrationInfo" src="ref" />
         <object uid="${calibrationInfo2}" type="::arData::CalibrationInfo" src="ref" />
@@ -130,7 +130,7 @@
                     <menuItem name="Remove" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/remove.svg" />
                     <menuItem name="Reset" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/reset.svg" />
                     <menuItem name="Calibrate with openCV" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/CheckButton.svg" />
-                    <menuItem name="Draw" icon="@BUNDLE_PREFIX@/mediaExt_0-1/icons/Preview.svg" />
+                    <menuItem name="Draw" icon="@BUNDLE_PREFIX@/media_0-1/icons/Preview.svg" />
                 </layout>
             </gui>
             <registry>

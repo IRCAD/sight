@@ -7,7 +7,6 @@ set( DEPENDENCIES  )
 set( REQUIREMENTS
     dataReg
     arDataReg
-    extDataReg
     gui
     guiQt
     servicesReg

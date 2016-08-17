@@ -13,8 +13,8 @@
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <extData/MatrixTL.hpp>
-#include <extData/timeline/Buffer.hpp>
+#include <arData/MatrixTL.hpp>
+#include <arData/timeline/Buffer.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwComEd/helper/Array.hpp>
@@ -24,7 +24,7 @@
 #include <functional>
 #include <sstream>
 
-fwServicesRegisterMacro(::arServices::ISynchronizer, ::syncTimeline::SMatrixTLSynchronizer, ::extData::MatrixTL);
+fwServicesRegisterMacro(::arServices::ISynchronizer, ::syncTimeline::SMatrixTLSynchronizer, ::arData::MatrixTL);
 
 namespace syncTimeline
 {
@@ -70,8 +70,8 @@ void SMatrixTLSynchronizer::synchronize()
     ::fwCore::HiResClock::HiResClockType currentTimestamp =
         std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
 
-    ::extData::MatrixTL::csptr matrixTL           = this->getInput< ::extData::MatrixTL >(s_MATRIXTL_INPUT);
-    CSPTR(::extData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
+    ::arData::MatrixTL::csptr matrixTL           = this->getInput< ::arData::MatrixTL >(s_MATRIXTL_INPUT);
+    CSPTR(::arData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(currentTimestamp);
 
     if(buffer)
     {
@@ -117,7 +117,7 @@ void SMatrixTLSynchronizer::synchronize()
 ::fwServices::IService::KeyConnectionsMap SMatrixTLSynchronizer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push( s_MATRIXTL_INPUT, ::extData::MatrixTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );
+    connections.push( s_MATRIXTL_INPUT, ::arData::MatrixTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT );
 
     return connections;
 }

@@ -9,8 +9,8 @@
 #include <arData/Camera.hpp>
 #include <arData/MarkerTL.hpp>
 
-#include <extData/FrameTL.hpp>
-#include <extData/MatrixTL.hpp>
+#include <arData/FrameTL.hpp>
+#include <arData/MatrixTL.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 
@@ -153,10 +153,10 @@ void SHomography::doRegistration(::fwCore::HiResClock::HiResClockType timestamp)
             const CSPTR(::arData::MarkerTL::BufferType) buffer = markerTL->getClosestBuffer(newerTimestamp);
             const unsigned int numMarkers = buffer->getMaxElementNum();
 
-            ::extData::MatrixTL::sptr matrixTL = this->getInOut< ::extData::MatrixTL >(s_MATRIXTL_INOUT);
+            ::arData::MatrixTL::sptr matrixTL = this->getInOut< ::arData::MatrixTL >(s_MATRIXTL_INOUT);
 
             // Push matrix in timeline
-            SPTR(::extData::MatrixTL::BufferType) matrixBuf;
+            SPTR(::arData::MatrixTL::BufferType) matrixBuf;
 
             // For each marker
             bool matrixBufferCreated = false;
@@ -229,9 +229,9 @@ void SHomography::doRegistration(::fwCore::HiResClock::HiResClockType timestamp)
             if(matrixBufferCreated)
             {
                 //Notify
-                ::extData::TimeLine::ObjectPushedSignalType::sptr sig;
-                sig = matrixTL->signal< ::extData::TimeLine::ObjectPushedSignalType >(
-                    ::extData::TimeLine::s_OBJECT_PUSHED_SIG );
+                ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
+                sig = matrixTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
+                    ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
                 sig->asyncEmit(timestamp);
 
             }
@@ -257,7 +257,7 @@ void SHomography::initialize()
                    maxElementNum == timeline->getMaxElementNum());
     }
 
-    ::extData::MatrixTL::sptr matrixTL = this->getInOut< ::extData::MatrixTL >(s_MATRIXTL_INOUT);
+    ::arData::MatrixTL::sptr matrixTL = this->getInOut< ::arData::MatrixTL >(s_MATRIXTL_INOUT);
     // initialized matrix timeline
     matrixTL->initPoolSize(maxElementNum);
 
@@ -317,7 +317,7 @@ void SHomography::initialize()
 {
     KeyConnectionsMap connections;
 
-    connections.push( "markerTL", ::extData::TimeLine::s_OBJECT_PUSHED_SIG, s_REGISTER_SLOT );
+    connections.push( "markerTL", ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_REGISTER_SLOT );
 
     return connections;
 }

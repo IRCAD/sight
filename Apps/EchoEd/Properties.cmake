@@ -7,7 +7,6 @@ set( REQUIREMENTS
 
     arDataReg
     dataReg
-    extDataReg
     servicesReg
 
     io
@@ -22,7 +21,6 @@ set( REQUIREMENTS
     uiIGTL
 
     media
-    mediaExt
     arMedia
 
     echoEdSimu

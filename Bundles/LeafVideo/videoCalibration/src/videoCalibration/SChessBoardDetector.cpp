@@ -111,7 +111,7 @@ void SChessBoardDetector::checkPoints( ::fwCore::HiResClock::HiResClockType time
         // Grab timeline objects
         for(size_t i = 0; i < numTimeline; ++i)
         {
-            auto frameTL = this->getInput< ::extData::FrameTL >(s_TIMELINE_INPUT, i);
+            auto frameTL = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT, i);
             lastTimestamp = std::min(lastTimestamp, frameTL->getNewerTimestamp());
         }
 
@@ -119,7 +119,7 @@ void SChessBoardDetector::checkPoints( ::fwCore::HiResClock::HiResClockType time
 
         for(size_t i = 0; i < numTimeline; ++i)
         {
-            auto tl = this->getInput< ::extData::FrameTL >(s_TIMELINE_INPUT, i);
+            auto tl = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT, i);
             ::fwData::PointList::sptr chessBoardPoints = this->detectChessboard(tl, lastTimestamp, m_width, m_height);
 
             if(!chessBoardPoints)
@@ -154,7 +154,7 @@ void SChessBoardDetector::detectPoints()
         for(size_t i = 0; i < numInfo; ++i)
         {
             auto calInfo = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INOUT, i);
-            auto frameTL = this->getInput< ::extData::FrameTL >(s_TIMELINE_INPUT, i);
+            auto frameTL = this->getInput< ::arData::FrameTL >(s_TIMELINE_INPUT, i);
             ::fwData::Image::sptr image = this->createImage( frameTL, m_lastTimestamp);
 
             calInfo->addRecord(image, m_pointsLists[i]);
@@ -179,12 +179,12 @@ void SChessBoardDetector::updateChessboardSize(unsigned int width, unsigned int 
 
 // ----------------------------------------------------------------------------
 
-::fwData::Image::sptr SChessBoardDetector::createImage( ::extData::FrameTL::csptr tl,
+::fwData::Image::sptr SChessBoardDetector::createImage( ::arData::FrameTL::csptr tl,
                                                         ::fwCore::HiResClock::HiResClockType timestamp)
 {
     ::fwData::Image::sptr image;
 
-    const CSPTR(::extData::FrameTL::BufferType) buffer = tl->getClosestBuffer(timestamp);
+    const CSPTR(::arData::FrameTL::BufferType) buffer = tl->getClosestBuffer(timestamp);
     if (buffer)
     {
         image = ::fwData::Image::New();
@@ -218,13 +218,13 @@ void SChessBoardDetector::updateChessboardSize(unsigned int width, unsigned int 
 
 // ----------------------------------------------------------------------------
 
-SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::extData::FrameTL::csptr tl,
+SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::arData::FrameTL::csptr tl,
                                                                 ::fwCore::HiResClock::HiResClockType timestamp,
                                                                 size_t xDim, size_t yDim)
 {
     ::fwData::PointList::sptr pointlist;
 
-    const CSPTR(::extData::FrameTL::BufferType) buffer = tl->getClosestBuffer(timestamp);
+    const CSPTR(::arData::FrameTL::BufferType) buffer = tl->getClosestBuffer(timestamp);
 
     if(buffer)
     {
@@ -248,7 +248,7 @@ SPTR(::fwData::PointList) SChessBoardDetector::detectChessboard(::extData::Frame
             cv::cornerSubPix(grayImg, corners, cv::Size(5, 5), cv::Size(-1, -1), term);
 
             pointlist                                       = ::fwData::PointList::New();
-            ::fwData::PointList::PointListContainer &points = pointlist->getRefPoints();
+            ::fwData::PointList::PointListContainer& points = pointlist->getRefPoints();
             points.reserve(corners.size());
 
             for(cv::Point2f& p : corners)

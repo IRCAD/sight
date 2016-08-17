@@ -6,7 +6,7 @@
 
 #include "videoCalibration/SMarkerToPoint.hpp"
 
-#include <extData/MatrixTL.hpp>
+#include <arData/MatrixTL.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -74,13 +74,13 @@ void SMarkerToPoint::stopping() throw (fwTools::Failed)
 
 void SMarkerToPoint::addPoint()
 {
-    ::extData::MatrixTL::csptr matrixTL = this->getInput< ::extData::MatrixTL >("matrixTL");
-    ::fwData::PointList::sptr pl        = this->getInOut< ::fwData::PointList >("pointList");
+    ::arData::MatrixTL::csptr matrixTL = this->getInput< ::arData::MatrixTL >("matrixTL");
+    ::fwData::PointList::sptr pl       = this->getInOut< ::fwData::PointList >("pointList");
 
     ::fwData::TransformationMatrix3D::sptr matrix3D = ::fwData::TransformationMatrix3D::New();
 
     ::fwCore::HiResClock::HiResClockType currentTimestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-    CSPTR(::extData::MatrixTL::BufferType) buffer         = matrixTL->getClosestBuffer(currentTimestamp);
+    CSPTR(::arData::MatrixTL::BufferType) buffer          = matrixTL->getClosestBuffer(currentTimestamp);
     OSLM_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
 
     const float* values = buffer->getElement(0);

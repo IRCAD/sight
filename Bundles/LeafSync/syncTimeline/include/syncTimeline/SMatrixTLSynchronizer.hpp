@@ -17,7 +17,7 @@
 #include <fwThread/Timer.hpp>
 
 
-namespace extData
+namespace arData
 {
 class FrameTL;
 class MatrixTL;
@@ -50,7 +50,7 @@ namespace syncTimeline
      </service>
    @endcode
  * @subsection Input Input
- * - \b matrixTL [::extData::MatrixTL]: matrix timeline used to extract matrices.
+ * - \b matrixTL [::arData::MatrixTL]: matrix timeline used to extract matrices.
  * @subsection In-Out In-Out
  * - \b matrices [::fwData::TransformationMatrix3D]: list of TransformationMatrix3D used to store extracted matrices.
  */

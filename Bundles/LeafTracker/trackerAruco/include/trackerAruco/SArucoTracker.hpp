@@ -58,7 +58,7 @@ namespace trackerAruco
         </service>
    @endcode
  * @subsection Input Input
- * - \b frameTL [::extData::FrameTL]: camera used to display video.
+ * - \b frameTL [::arData::FrameTL]: camera used to display video.
  * - \b camera [::arData::Camera]: camera calibration.
  *
  * @subsection In-Out In-Out

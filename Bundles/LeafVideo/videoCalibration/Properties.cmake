@@ -10,7 +10,6 @@ set( DEPENDENCIES
     fwServices
     fwTools
     arData
-    extData
     ARLcore
     fwCom
     fwGui

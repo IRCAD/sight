@@ -9,7 +9,7 @@
 
 #include "videoQt/config.hpp"
 
-#include <extData/FrameTL.hpp>
+#include <arData/FrameTL.hpp>
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>

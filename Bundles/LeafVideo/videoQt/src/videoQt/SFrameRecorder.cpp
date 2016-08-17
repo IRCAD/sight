@@ -24,7 +24,7 @@
 namespace videoQt
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::videoQt::SFrameRecorder, ::extData::FrameTL);
+fwServicesRegisterMacro( ::fwServices::IController, ::videoQt::SFrameRecorder, ::arData::FrameTL);
 
 //-----------------------------------------------------------------------------
 
@@ -93,9 +93,9 @@ void SFrameRecorder::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
 {
     if (m_isRecording && !m_isPaused)
     {
-        ::extData::FrameTL::sptr frameTL = this->getObject< ::extData::FrameTL >();
+        ::arData::FrameTL::sptr frameTL = this->getObject< ::arData::FrameTL >();
 
-        CSPTR(::extData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
+        CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
         OSLM_WARN_IF("No frame found in timeline for timestamp : " << timestamp, !buffer);
 
         if(buffer)
@@ -104,9 +104,9 @@ void SFrameRecorder::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
             int height = static_cast<int>(frameTL->getHeight());
             QImage image(width, height, QImage::Format_ARGB32);
 
-            ::boost::uint64_t* imageBuffer = reinterpret_cast< ::boost::uint64_t *>( image.bits() );
+            ::boost::uint64_t* imageBuffer = reinterpret_cast< ::boost::uint64_t*>( image.bits() );
             const ::boost::uint64_t* frameBuffer =
-                reinterpret_cast< const ::boost::uint64_t *>( &buffer->getElement(0) );
+                reinterpret_cast< const ::boost::uint64_t*>( &buffer->getElement(0) );
 
             const unsigned int size = static_cast<unsigned int>(width * height) >> 1;
 
@@ -133,7 +133,7 @@ void SFrameRecorder::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
 ::fwServices::IService::KeyConnectionsType SFrameRecorder::getObjSrvConnections() const
 {
     ::fwServices::IService::KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::extData::FrameTL::s_OBJECT_PUSHED_SIG, s_SAVE_FRAME_SLOT ) );
+    connections.push_back( std::make_pair( ::arData::FrameTL::s_OBJECT_PUSHED_SIG, s_SAVE_FRAME_SLOT ) );
 
     return connections;
 }
