@@ -7,6 +7,7 @@
 #include "DataConverterTest.hpp"
 
 #include <igtlProtocol/DataConverter.hpp>
+#include <igtlProtocol/converter/CompositeConverter.hpp>
 #include <igtlProtocol/RawMessage.hpp>
 
 #include <fwData/Composite.hpp>
@@ -347,7 +348,12 @@ void DataConverterTest::scalarConverterTest()
 
 void DataConverterTest::compositeConverterTest()
 {
-    DataConverter::sptr converter = DataConverter::getInstance();
+    //FIXME : there is 3 converter that can convert a fwData::Composite (aka CompositeConverter, TrackingStartConverter
+    ///and TrackingStopConverter). To avoid asserts CompositeConverter should be called explicitly.
+    ::igtlProtocol::converter::CompositeConverter::sptr converter =
+        ::igtlProtocol::converter::CompositeConverter::New();
+    //DataConverter::sptr converter = DataConverter::getInstance();
+
     ::igtl::TrackingDataMessage::Pointer trackingMsg;
 
     ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
@@ -361,8 +367,9 @@ void DataConverterTest::compositeConverterTest()
             matrix->setCoefficient(i, j, i+j);
         }
     }
+
     trackingMsg =
-        ::igtl::TrackingDataMessage::Pointer(dynamic_cast< ::igtl::TrackingDataMessage*>(converter->fromFwObject(
+        ::igtl::TrackingDataMessage::Pointer(dynamic_cast< ::igtl::TrackingDataMessage*>(converter->fromFwDataObject(
                                                                                              composite).
                                                                                          GetPointer()));
     CPPUNIT_ASSERT(trackingMsg);
