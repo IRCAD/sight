@@ -26,9 +26,9 @@
                 <menuItem name="2D visualization" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-2D.png" />
                 <menuItem name="3D visualization" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-3D.png" />
                 <menuItem name="Volume rendering" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-VR.png" />
-                <menuItem name="DICOM PACS Reader" icon="@BUNDLE_PREFIX@/mediaExt_0-1/icons/Pull.svg" />
-                <menuItem name="DICOM PACS Writer" icon="@BUNDLE_PREFIX@/mediaExt_0-1/icons/Push.svg" />
-                <menuItem name="DICOM Filtering" icon="@BUNDLE_PREFIX@/mediaExt_0-1/icons/icon-DICOM-Filtering.svg" />
+                <menuItem name="DICOM PACS Reader" icon="@BUNDLE_PREFIX@/media_0-1/icons/Pull.svg" />
+                <menuItem name="DICOM PACS Writer" icon="@BUNDLE_PREFIX@/media_0-1/icons/Push.svg" />
+                <menuItem name="DICOM Filtering" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-DICOM-Filtering.svg" />
                 <menuItem name="Mesher CGOGN" icon="@BUNDLE_PREFIX@/mesherActivity_0-1/icons/cgogn.png" />
             </layout>
         </gui>

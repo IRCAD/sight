@@ -1,6 +1,0 @@
-<plugin id="guiQtExt" class="::guiQtExt::Plugin" version="@DASH_VERSION@" >
-    <library name="guiQtExt" />
-
-    <requirement id="gui" />
-
-</plugin>

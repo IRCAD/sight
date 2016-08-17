@@ -12,7 +12,6 @@ set( REQUIREMENTS
     visuVTKVRAdaptor
     gui
     guiQt
-    guiQtExt
     memory
     monitor
     monitorQt
