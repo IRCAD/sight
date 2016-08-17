@@ -9,7 +9,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace fwDicomDataCamp
+namespace fwMedDataCamp
 {
 namespace ut
 {
@@ -29,7 +29,7 @@ public:
 };
 
 } //namespace ut
-} //namespace fwDicomDataCamp
+} //namespace fwMedDataCamp
 
 #endif //__FWDATACAMP_UT_FWMEDDATACAMP_DICOMSERIESCAMPTEST_HPP__
 

@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwMedData/DicomSeriesTest.hpp"
+#include "DicomSeriesTest.hpp"
 
 #include <fstream>
 #include <fwData/Array.hpp>
@@ -14,7 +14,7 @@
 #include <boost/filesystem/operations.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::DicomSeriesTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedData::ut::DicomSeriesTest );
 
 namespace fwMedData
 {

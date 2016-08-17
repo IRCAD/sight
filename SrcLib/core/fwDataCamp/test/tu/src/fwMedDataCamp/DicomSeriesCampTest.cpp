@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "DataCampHelper.hpp"
-#include "fwDicomDataCamp/DicomSeriesCampTest.hpp"
+#include "fwMedDataCamp/DicomSeriesCampTest.hpp"
 
 #include <fwData/Array.hpp>
 #include <fwMedData/DicomSeries.hpp>
@@ -21,9 +21,9 @@
 #include <fstream>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataCamp::ut::DicomSeriesCampTest );
+CPPUNIT_TEST_SUITE_REGISTRATION( ::fwMedDataCamp::ut::DicomSeriesCampTest );
 
-namespace fwDicomDataCamp
+namespace fwMedDataCamp
 {
 namespace ut
 {
@@ -142,4 +142,4 @@ void DicomSeriesCampTest::propertiesTest()
 //------------------------------------------------------------------------------
 
 } //namespace ut
-} //namespace fwDicomDataCamp
+} //namespace fwMedDataCamp
