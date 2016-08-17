@@ -44,7 +44,7 @@ void SShowArray::updating() throw( ::fwTools::Failed )
     SLM_ASSERT("No array.", array);
 
     ::fwComEd::helper::Array arrayHelper(array);
-    unsigned int *buffer = static_cast< unsigned int* >( arrayHelper.getBuffer() );
+    unsigned int* buffer = static_cast< unsigned int* >( arrayHelper.getBuffer() );
 
     std::stringstream str;
     std::ostream_iterator<unsigned int> coutIter (str,", ");

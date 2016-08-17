@@ -50,7 +50,7 @@ void SReadArray::updating() throw( ::fwTools::Failed )
 
     // Fill the array values
     ::fwComEd::helper::Array arrayHelper(array);
-    unsigned int *buffer = static_cast< unsigned int* >( arrayHelper.getBuffer() );
+    unsigned int* buffer = static_cast< unsigned int* >( arrayHelper.getBuffer() );
     for (unsigned int i = 0; i < arraySize; i++)
     {
         buffer[i] = i;

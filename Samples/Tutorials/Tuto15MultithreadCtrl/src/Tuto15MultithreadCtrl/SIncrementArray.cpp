@@ -71,7 +71,7 @@ void SIncrementArray::updating() throw( ::fwTools::Failed )
 
     ::fwComEd::helper::Array arrayHelper(array);
 
-    unsigned int *buffer = static_cast< unsigned int* >( arrayHelper.getBuffer() );
+    unsigned int* buffer = static_cast< unsigned int* >( arrayHelper.getBuffer() );
 
     // Increment the array values
     for (size_t i = 0; i < arraySize; i++)
