@@ -132,8 +132,10 @@
                 <url>http://cgogn.unistra.fr/</url>
             </service>
 
-            <service uid="${GENERIC_UID}_action_acknowledgments" impl="::uiGeneric::action::ShowAcknowledgments" autoConnect="no">
-                <filename id="@BUNDLE_PREFIX@/mesherActivity_0-1/documentations/cgogn.html" />
+            <service uid="${GENERIC_UID}_action_acknowledgments" impl="::uiGeneric::action::SShowAbout">
+                <filename id="@BUNDLE_PREFIX@/mesherActivity_0-1/documentations/cgogn.html"/>
+                <title>Acknowledgments</title>
+                <size width="500" height="400" />
             </service>
 
             <service uid="${GENERIC_UID}_menu_help" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">

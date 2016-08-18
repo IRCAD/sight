@@ -115,8 +115,10 @@
                 <filename id="@BUNDLE_PREFIX@/VRRenderExt_0-9/about/about.html" />
             </service>
 
-            <service uid="action_acknowledgments" type="::fwGui::IActionSrv" impl="::uiGeneric::action::ShowAcknowledgments" autoConnect="no">
-                <filename id="@BUNDLE_PREFIX@/VRRenderExt_0-9/documentations/ack.html" />
+            <service uid="action_acknowledgments" impl="::uiGeneric::action::SShowAbout">
+                <filename id="@BUNDLE_PREFIX@/VRRenderExt_0-9/documentations/ack.html"/>
+                <title>Acknowledgments</title>
+                <size width="500" height="400" />
             </service>
 
             <service uid="action_openBrowser" type="::fwGui::IActionSrv" impl="::uiGeneric::action::LaunchBrowserActionService" autoConnect="no">
