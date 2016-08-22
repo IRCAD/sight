@@ -5,7 +5,6 @@ set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     dataReg
-    extDataReg
     ctrlSelection
     ctrlCamp
     gui

@@ -19,7 +19,7 @@
         <object uid="${imageUID}"  type="::fwData::Image" src="ref" />
         <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
 
-        <object uid="frameTL" type="::extData::FrameTL" />
+        <object uid="frameTL" type="::arData::FrameTL" />
         <object uid="videoImage" type="::fwData::Image" />
         <object uid="camera" type="::arData::Camera" />
 
