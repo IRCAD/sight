@@ -1,5 +1,5 @@
 
-set( NAME PoC08Igtl )
+set( NAME Ex03Igtl )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( UNIQUE TRUE)
@@ -21,8 +21,7 @@ set( REQUIREMENTS
     ioIGTL
     ioData
     uiIO
-    uiNetwork
     uiIGTL
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES PoC08Igtl)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex03Igtl)

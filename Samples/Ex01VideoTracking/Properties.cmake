@@ -1,5 +1,5 @@
 
-set( NAME VideoTracking )
+set( NAME Ex01VideoTracking )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( UNIQUE TRUE)
@@ -25,4 +25,4 @@ set( REQUIREMENTS
     preferences
     )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES VideoTracking)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex01VideoTracking)

@@ -1,5 +1,5 @@
 
-set( NAME PoC07TimeLine )
+set( NAME Ex02TimeLine )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( PRIORITY 3 )
@@ -22,4 +22,4 @@ set( REQUIREMENTS
     dataReg
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES PoC07TimeLineConfig)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex02TimeLine)
