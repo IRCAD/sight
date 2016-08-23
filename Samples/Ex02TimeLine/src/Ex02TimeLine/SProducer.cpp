@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "PoC07TimeLine/SProducer.hpp"
-#include "PoC07TimeLine/MessageTL.hpp"
+#include "Ex02TimeLine/SProducer.hpp"
+#include "Ex02TimeLine/MessageTL.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwServices/macros.hpp>
@@ -14,9 +14,9 @@
 
 #include <functional>
 
-fwServicesRegisterMacro( ::fwServices::IService, ::PoC07TimeLine::SProducer, ::PoC07TimeLine::MessageTL );
+fwServicesRegisterMacro( ::fwServices::IService, ::Ex02TimeLine::SProducer, ::Ex02TimeLine::MessageTL );
 
-namespace PoC07TimeLine
+namespace Ex02TimeLine
 {
 
 //------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ void SProducer::starting() throw( ::fwTools::Failed )
     // Init timeline pool
     if(m_timelineSize)
     {
-        ::PoC07TimeLine::MessageTL::sptr timeline = this->getObject< ::PoC07TimeLine::MessageTL >();
+        ::Ex02TimeLine::MessageTL::sptr timeline = this->getObject< ::Ex02TimeLine::MessageTL >();
 
         // This wouldn't hurt to initialize the timeline several times since it will be erased each time
         // but this would be a mess to know who is the last to initialize
@@ -71,17 +71,17 @@ void SProducer::stopping() throw( ::fwTools::Failed )
 
 void SProducer::updating() throw( ::fwTools::Failed )
 {
-    ::PoC07TimeLine::MessageTL::sptr timeline = this->getObject< ::PoC07TimeLine::MessageTL >();
+    ::Ex02TimeLine::MessageTL::sptr timeline = this->getObject< ::Ex02TimeLine::MessageTL >();
 
     const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-    SPTR(::PoC07TimeLine::MessageTL::BufferType) buffer = timeline->createBuffer(timestamp);
+    SPTR(::Ex02TimeLine::MessageTL::BufferType) buffer = timeline->createBuffer(timestamp);
 
-    ::PoC07TimeLine::MsgData* data = buffer->addElement(0);
+    ::Ex02TimeLine::MsgData* data = buffer->addElement(0);
 
     const std::string message = m_message + " #" + ::boost::lexical_cast<std::string>( m_msgCount++ );
 
     data->uidSender = m_senderId;
-    strncpy(data->szMsg, message.c_str(), ::PoC07TimeLine::MsgData::MAX_MSG_SIZE);
+    strncpy(data->szMsg, message.c_str(), ::Ex02TimeLine::MsgData::MAX_MSG_SIZE);
 
     timeline->pushObject(buffer);
 
@@ -137,4 +137,4 @@ void SProducer::swapping( ) throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-} // namespace PoC07TimeLine
+} // namespace Ex02TimeLine

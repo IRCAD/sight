@@ -4,14 +4,14 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "PoC07TimeLine/MessageTL.hpp"
+#include "Ex02TimeLine/MessageTL.hpp"
 
 #include <fwData/registry/macros.hpp>
 #include <fwTools/Object.hpp>
 
-namespace PoC07TimeLine
+namespace Ex02TimeLine
 {
 
-fwDataRegisterMacro( ::PoC07TimeLine::MessageTL )
+fwDataRegisterMacro( ::Ex02TimeLine::MessageTL )
 
 } // namespace arData

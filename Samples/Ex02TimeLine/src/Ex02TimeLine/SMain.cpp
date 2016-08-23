@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "PoC07TimeLine/SMain.hpp"
+#include "Ex02TimeLine/SMain.hpp"
 
 #include "fwData/Composite.hpp"
 
@@ -12,9 +12,9 @@
 #include <fwThread/Timer.hpp>
 #include <fwTools/Object.hpp>
 
-fwServicesRegisterMacro( ::fwServices::IService, ::PoC07TimeLine::SMain, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwServices::IService, ::Ex02TimeLine::SMain, ::fwData::Composite );
 
-namespace PoC07TimeLine
+namespace Ex02TimeLine
 {
 
 //------------------------------------------------------------------------------
@@ -64,4 +64,4 @@ void SMain::swapping( ) throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-} // namespace PoC07TimeLine
+} // namespace Ex02TimeLine

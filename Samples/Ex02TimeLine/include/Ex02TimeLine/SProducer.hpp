@@ -4,29 +4,29 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __POC07TIMELINE_SPRODUCER_HPP__
-#define __POC07TIMELINE_SPRODUCER_HPP__
+#ifndef __EX02TIMELINE_SPRODUCER_HPP__
+#define __EX02TIMELINE_SPRODUCER_HPP__
 
-#include "PoC07TimeLine/config.hpp"
+#include "Ex02TimeLine/config.hpp"
 
 #include <fwServices/IService.hpp>
 
 #include <fwThread/Timer.hpp>
 
-namespace PoC07TimeLine
+namespace Ex02TimeLine
 {
 
 /**
  * @brief   Service that produce messages and store them into a timeline.
  */
-class POC07TIMELINE_CLASS_API SProducer : public ::fwServices::IService
+class EX02TIMELINE_CLASS_API SProducer : public ::fwServices::IService
 {
 public:
 
     fwCoreServiceClassDefinitionsMacro ( (SProducer)(::fwServices::IService) );
 
-    POC07TIMELINE_API SProducer() throw();
-    POC07TIMELINE_API virtual ~SProducer() throw();
+    EX02TIMELINE_API SProducer() throw();
+    EX02TIMELINE_API virtual ~SProducer() throw();
 
 protected:
 
@@ -46,7 +46,7 @@ protected:
      * @brief Configures the service.
      *
      * @code{.xml}
-       <service type="::fwServices::IService" impl="::PoC07TimeLine::SProducer" autoConnect="yes">
+       <service type="::fwServices::IService" impl="::Ex02TimeLine::SProducer" autoConnect="yes">
            <message>Hello</message>
            <id>0</id>
            <period>1000</period>
@@ -80,6 +80,6 @@ private:
     unsigned int m_timelineSize;
 };
 
-}  // namespace PoC07TimeLine
+}  // namespace Ex02TimeLine
 
-#endif  // __POC07TIMELINE_SPRODUCER_HPP__
+#endif  // __EX02TIMELINE_SPRODUCER_HPP__

@@ -22,4 +22,4 @@ set( REQUIREMENTS
     dataReg
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex02TimeLine)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex02TimeLineConfig)

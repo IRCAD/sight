@@ -15,15 +15,15 @@
 #include <fwServices/registry/ServiceFactory.hpp>
 
 
-#include "PoC07TimeLine/Plugin.hpp"
-#include "PoC07TimeLine/SConsumer.hpp"
+#include "Ex02TimeLine/Plugin.hpp"
+#include "Ex02TimeLine/SConsumer.hpp"
 
-namespace PoC07TimeLine
+namespace Ex02TimeLine
 {
 
 //-----------------------------------------------------------------------------
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::PoC07TimeLine::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::Ex02TimeLine::Plugin");
 
 //-----------------------------------------------------------------------------
 
@@ -51,4 +51,4 @@ void Plugin::stop() throw()
 
 //------------------------------------------------------------------------------
 
-} // namespace PoC07TimeLine
+} // namespace Ex02TimeLine

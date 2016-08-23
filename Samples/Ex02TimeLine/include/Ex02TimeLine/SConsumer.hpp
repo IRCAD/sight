@@ -4,19 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __POC07TIMELINE_SCONSUMER_HPP__
-#define __POC07TIMELINE_SCONSUMER_HPP__
+#ifndef __EX02TIMELINE_SCONSUMER_HPP__
+#define __EX02TIMELINE_SCONSUMER_HPP__
 
 #include <fwServices/IService.hpp>
 
-#include "PoC07TimeLine/config.hpp"
+#include "Ex02TimeLine/config.hpp"
 
 namespace fwThread
 {
 class Timer;
 }
 
-namespace PoC07TimeLine
+namespace Ex02TimeLine
 {
 
 /**
@@ -24,17 +24,17 @@ namespace PoC07TimeLine
  *          to display a message each time something is pushed, or you can specify a period in the configuration to
  *          display a message periodically.
  */
-class POC07TIMELINE_CLASS_API SConsumer : public ::fwServices::IService
+class EX02TIMELINE_CLASS_API SConsumer : public ::fwServices::IService
 {
 public:
 
-    POC07TIMELINE_API static const ::fwCom::Slots::SlotKeyType s_CONSUME_SLOT;
+    EX02TIMELINE_API static const ::fwCom::Slots::SlotKeyType s_CONSUME_SLOT;
     typedef ::fwCom::Slot<void (::fwCore::HiResClock::HiResClockType)> ConsumeSlotType;
 
     fwCoreServiceClassDefinitionsMacro ( (SConsumer)(::fwServices::IService) );
 
-    POC07TIMELINE_API SConsumer() throw();
-    POC07TIMELINE_API virtual ~SConsumer() throw();
+    EX02TIMELINE_API SConsumer() throw();
+    EX02TIMELINE_API virtual ~SConsumer() throw();
 
 protected:
 
@@ -54,7 +54,7 @@ protected:
      * @brief Configures the service.
      *
      * @code{.xml}
-       <service type="::fwServices::IService" impl="::PoC07TimeLine::SConsumer" autoConnect="yes">
+       <service type="::fwServices::IService" impl="::Ex02TimeLine::SConsumer" autoConnect="yes">
            <id>0</id>
            <period>1000</period>
        </service>
@@ -82,6 +82,6 @@ private:
     unsigned int m_period;
 };
 
-}  // namespace PoC07TimeLine
+}  // namespace Ex02TimeLine
 
-#endif  // __POC07TIMELINE_SCONSUMER_HPP__
+#endif  // __EX02TIMELINE_SCONSUMER_HPP__

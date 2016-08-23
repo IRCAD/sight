@@ -4,28 +4,28 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __POC07TIMELINE_SMAIN_HPP__
-#define __POC07TIMELINE_SMAIN_HPP__
+#ifndef __EX02TIMELINE_SMAIN_HPP__
+#define __EX02TIMELINE_SMAIN_HPP__
 
 #include <fwServices/IService.hpp>
 
-#include "PoC07TimeLine/config.hpp"
+#include "Ex02TimeLine/config.hpp"
 
-namespace PoC07TimeLine
+namespace Ex02TimeLine
 {
 
 /**
  * @brief   This service is just a hack to block the main thread. Services on the other threads can run.
  *          Without that, the application exits immediately since we have no GUI.
  */
-class POC07TIMELINE_CLASS_API SMain : public ::fwServices::IService
+class EX02TIMELINE_CLASS_API SMain : public ::fwServices::IService
 {
 public:
 
     fwCoreServiceClassDefinitionsMacro ( (SMain)(::fwServices::IService) );
 
-    POC07TIMELINE_API SMain() throw();
-    POC07TIMELINE_API virtual ~SMain() throw();
+    EX02TIMELINE_API SMain() throw();
+    EX02TIMELINE_API virtual ~SMain() throw();
 
 protected:
 
@@ -48,6 +48,6 @@ private:
 
 };
 
-}  // namespace PoC07TimeLine
+}  // namespace Ex02TimeLine
 
-#endif  // __POC07TIMELINE_SMAIN_HPP__
+#endif  // __EX02TIMELINE_SMAIN_HPP__
