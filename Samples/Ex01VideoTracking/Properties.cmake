@@ -25,4 +25,4 @@ set( REQUIREMENTS
     preferences
     )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex01VideoTracking)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex01VideoTrackingConfig)

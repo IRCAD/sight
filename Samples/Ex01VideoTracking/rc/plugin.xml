@@ -1,4 +1,4 @@
-<plugin id="VideoTracking" version="@DASH_VERSION@">
+<plugin id="Ex01VideoTracking" version="@DASH_VERSION@">
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
@@ -8,7 +8,7 @@
     <requirement id="arMedia" />
 
     <extension implements="::fwServices::registry::AppConfig2">
-        <id>VideoTracking</id>
+        <id>Ex01VideoTrackingConfig</id>
         <config>
 
             <object uid="camera" type="::arData::Camera" />
@@ -21,8 +21,8 @@
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
-                        <name>VideoTracking</name>
-                        <icon>@BUNDLE_PREFIX@/VideoTracking_0-1/videotracking.ico</icon>
+                        <name>Ex01VideoTracking</name>
+                        <icon>@BUNDLE_PREFIX@/Ex01VideoTracking_0-1/videotracking.ico</icon>
                     </frame>
                     <toolBar />
                 </gui>
