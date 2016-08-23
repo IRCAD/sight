@@ -24,4 +24,4 @@ set( REQUIREMENTS
     uiIGTL
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex03Igtl)
+bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex03IgtlConfig)

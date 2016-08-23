@@ -1,11 +1,11 @@
-<plugin id="PoC08Igtl" version="@DASH_VERSION@" >
+<plugin id="Ex03Igtl" version="@DASH_VERSION@" >
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
 
     <extension implements="::fwServices::registry::AppConfig">
-        <id>PoC08Igtl</id>
+        <id>Ex03IgtlConfig</id>
         <config>
 
         <object type="::fwData::Composite">
@@ -13,8 +13,8 @@
             <service uid="MyIHM" impl="::gui::frame::SDefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
                 <gui>
                     <frame>
-                        <name>PoC08Igtl</name>
-                        <icon>@BUNDLE_PREFIX@/PoC08Igtl_0-1/tuto.ico</icon>
+                        <name>Ex03Igtl</name>
+                        <icon>@BUNDLE_PREFIX@/Ex03Igtl_0-1/tuto.ico</icon>
                     </frame>
                     <toolBar />
                 </gui>
