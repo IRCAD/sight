@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwRenderOgre/RayTracingVolumeRenderer.hpp"
+#include "fwRenderOgre/vr/RayTracingVolumeRenderer.hpp"
 
 #include <algorithm>
 
@@ -33,6 +33,9 @@
 #include <string>
 
 namespace fwRenderOgre
+{
+
+namespace vr
 {
 
 //-----------------------------------------------------------------------------
@@ -357,9 +360,9 @@ void RayTracingVolumeRenderer::setIlluminationVolume(SATVolumeIllumination* illu
 
     std::for_each(m_rayTracedTexUnitStates.begin(), m_rayTracedTexUnitStates.end(),
                   [illuminationVolume](::Ogre::TextureUnitState* tus)
-        {
-            tus->setTexture(illuminationVolume->getIlluminationVolume());
-        });
+            {
+                tus->setTexture(illuminationVolume->getIlluminationVolume());
+            });
 }
 
 //-----------------------------------------------------------------------------
@@ -780,5 +783,7 @@ void RayTracingVolumeRenderer::createGridTexture()
 }
 
 //-----------------------------------------------------------------------------
+
+} // namespace vr
 
 } // namespace fwRenderOgre

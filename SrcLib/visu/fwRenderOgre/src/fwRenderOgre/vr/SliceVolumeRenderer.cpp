@@ -1,4 +1,10 @@
-#include "fwRenderOgre/SliceVolumeRenderer.hpp"
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2016.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#include "fwRenderOgre/vr/SliceVolumeRenderer.hpp"
 
 #include "fwRenderOgre/helper/Shading.hpp"
 
@@ -11,28 +17,28 @@
 namespace fwRenderOgre
 {
 
+namespace vr
+{
+
 //-----------------------------------------------------------------------------
 
 SliceVolumeRenderer::SliceVolumeRenderer(std::string parentId,
-                                         ::Ogre::SceneManager *sceneManager,
-                                         ::Ogre::SceneNode *parentNode,
+                                         ::Ogre::SceneManager* sceneManager,
+                                         ::Ogre::SceneNode* parentNode,
                                          ::Ogre::TexturePtr imageTexture,
-                                         TransferFunction *gpuTF,
-                                         PreIntegrationTable *preintegrationTable) :
+                                         TransferFunction* gpuTF,
+                                         PreIntegrationTable* preintegrationTable) :
     IVolumeRenderer        (parentId, sceneManager, parentNode, imageTexture, gpuTF, preintegrationTable),
     m_intersectingPolygons (nullptr)
 {
     m_sceneRenderQueue = m_sceneManager->getRenderQueue();
 
     // Set materials.
-    const std::vector<std::string> vrMaterials {
-        "PreIntegratedSliceVolume",
-        "SliceVolume"
-    };
+    const std::vector<std::string> vrMaterials {{ "PreIntegratedSliceVolume", "SliceVolume" }};
 
     for(const std::string& mtlName : vrMaterials)
     {
-        ::Ogre::MaterialPtr volumeMtl = ::Ogre::MaterialManager::getSingletonPtr()->getByName(mtlName);
+        ::Ogre::MaterialPtr volumeMtl              = ::Ogre::MaterialManager::getSingletonPtr()->getByName(mtlName);
         ::Ogre::Material::TechniqueIterator techIt = volumeMtl->getTechniqueIterator();
 
         while( techIt.hasMoreElements())
@@ -42,10 +48,10 @@ SliceVolumeRenderer::SliceVolumeRenderer(std::string parentId,
 
             if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
             {
-                ::Ogre::Pass *pass = tech->getPass(0);
+                ::Ogre::Pass* pass = tech->getPass(0);
 
-                ::Ogre::TextureUnitState *tex3DState = pass->getTextureUnitState("image");
-                ::Ogre::TextureUnitState *texTFState = pass->getTextureUnitState("transferFunction");
+                ::Ogre::TextureUnitState* tex3DState = pass->getTextureUnitState("image");
+                ::Ogre::TextureUnitState* texTFState = pass->getTextureUnitState("transferFunction");
 
                 SLM_ASSERT("'image' texture unit is not found", tex3DState);
                 SLM_ASSERT("'transferFunction' texture unit is not found", texTFState);
@@ -138,12 +144,12 @@ void SliceVolumeRenderer::initSlices()
 
     std::string material = m_preIntegratedRendering ? "PreIntegratedSliceVolume" : "SliceVolume";
 
-    for(uint16_t sliceNumber = 0; sliceNumber < m_nbSlices; ++ sliceNumber)
+    for(uint16_t sliceNumber = 0; sliceNumber < m_nbSlices; ++sliceNumber)
     {
         m_intersectingPolygons->begin(material, ::Ogre::RenderOperation::OT_TRIANGLE_STRIP);
         {
             // initialize slice with a 4 triangle strip
-            for(unsigned i = 0; i < 6 ; ++ i)
+            for(unsigned i = 0; i < 6; ++i)
             {
                 m_intersectingPolygons->position(0, 0, 0);
                 m_intersectingPolygons->textureCoord(0, 0, 0);
@@ -161,7 +167,7 @@ void SliceVolumeRenderer::updateAllSlices()
 {
     ::Ogre::Plane cameraPlane = getCameraPlane();
 
-    const unsigned closestVtxIndex = computeSampleDistance(cameraPlane);
+    const unsigned closestVtxIndex   = computeSampleDistance(cameraPlane);
     const ::Ogre::Vector3 closestVtx = m_clippedImagePositions[closestVtxIndex];
 
     const ::Ogre::Vector3 planeNormal = cameraPlane.normal;
@@ -172,7 +178,7 @@ void SliceVolumeRenderer::updateAllSlices()
     ::Ogre::Vector3 planeVertex = closestVtx + planeNormal * m_sampleDistance;
 
     // compute all slices
-    for(int sliceNumber = m_nbSlices - 1; sliceNumber > 0; -- sliceNumber)
+    for(int sliceNumber = m_nbSlices - 1; sliceNumber > 0; --sliceNumber)
     {
         Polygon intersections = cubePlaneIntersection(planeNormal, planeVertex, (unsigned)closestVtxIndex);
 
@@ -188,7 +194,7 @@ void SliceVolumeRenderer::updateAllSlices()
 
 //-----------------------------------------------------------------------------
 
-void SliceVolumeRenderer::updateSlice(const Polygon& _polygon ,const unsigned _sliceIndex)
+void SliceVolumeRenderer::updateSlice(const Polygon& _polygon,const unsigned _sliceIndex)
 {
     const size_t nbVertices = _polygon.size();
 
@@ -202,7 +208,7 @@ void SliceVolumeRenderer::updateSlice(const Polygon& _polygon ,const unsigned _s
         m_intersectingPolygons->position( _polygon[2] );
         m_intersectingPolygons->textureCoord( _polygon[2] );
 
-        for(unsigned i = 0; i < nbVertices - 3; ++ i)
+        for(unsigned i = 0; i < nbVertices - 3; ++i)
         {
             m_intersectingPolygons->position( _polygon[nbVertices - 1 - i] );
             m_intersectingPolygons->textureCoord( _polygon[nbVertices - 1 - i] );
@@ -220,11 +226,11 @@ void SliceVolumeRenderer::updateSlice(const Polygon& _polygon ,const unsigned _s
 //-----------------------------------------------------------------------------
 
 bool SliceVolumeRenderer::planeEdgeIntersection(const ::Ogre::Vector3& _planeNormal,
-                                          const ::Ogre::Vector3& _planeVertex,
-                                          const unsigned _edgeVertexIndex0,
-                                          const unsigned _edgeVertexIndex1,
-                                          Polygon& _result
-                                         ) const
+                                                const ::Ogre::Vector3& _planeVertex,
+                                                const unsigned _edgeVertexIndex0,
+                                                const unsigned _edgeVertexIndex1,
+                                                Polygon& _result
+                                                ) const
 {
     bool planeIntersectsEdge = false;
 
@@ -236,7 +242,7 @@ bool SliceVolumeRenderer::planeEdgeIntersection(const ::Ogre::Vector3& _planeNor
         // intersectPoint represents the intersection point r on the parametric line described by this equation:
         // S(r) = _egdePoint0 + r * (_edgePoint1 - _edgePoint0)
         ::Ogre::Real intersectPoint = _planeNormal.dotProduct(_planeVertex - edgePoint0)
-                / _planeNormal.dotProduct(edgePoint1 - edgePoint0);
+                                      / _planeNormal.dotProduct(edgePoint1 - edgePoint0);
 
         planeIntersectsEdge = (intersectPoint >= 0) && (intersectPoint <= 1);
 
@@ -255,8 +261,8 @@ bool SliceVolumeRenderer::planeEdgeIntersection(const ::Ogre::Vector3& _planeNor
 //-----------------------------------------------------------------------------
 
 SliceVolumeRenderer::Polygon SliceVolumeRenderer::cubePlaneIntersection(const ::Ogre::Vector3& _planeNormal,
-                                                            const ::Ogre::Vector3& _planeVertex,
-                                                            const unsigned _closestVertexIndex) const
+                                                                        const ::Ogre::Vector3& _planeVertex,
+                                                                        const unsigned _closestVertexIndex) const
 {
     Polygon intersections;
     intersections.reserve(6); // there is a maximum of 6 intersections
@@ -268,7 +274,7 @@ SliceVolumeRenderer::Polygon SliceVolumeRenderer::cubePlaneIntersection(const ::
         { 1, 4, 5, 0, 3, 7, 2, 6 },
         { 2, 6, 0, 5, 7, 3, 1, 4 },
         { 3, 0, 6, 4, 1, 2, 7, 5 },
-        { 4, 3, 7, 1 ,0, 6, 5, 2 },
+        { 4, 3, 7, 1,0, 6, 5, 2 },
         { 5, 2, 1, 7, 6, 0, 4, 3 },
         { 6, 7, 3, 2, 5, 4, 0, 1 },
         { 7, 5, 4, 6, 2, 1, 3, 0 }
@@ -279,7 +285,7 @@ SliceVolumeRenderer::Polygon SliceVolumeRenderer::cubePlaneIntersection(const ::
 //                                   { 0, 3, 6, 7, 4 } };
     const unsigned lastEdge[3] = { 5, 6, 4 };
 
-    for(int pathNum = 0; pathNum < 3; ++ pathNum)
+    for(int pathNum = 0; pathNum < 3; ++pathNum)
     {
         bool hasIntersection = false;
         unsigned v1, v2;
@@ -292,7 +298,7 @@ SliceVolumeRenderer::Polygon SliceVolumeRenderer::cubePlaneIntersection(const ::
             sequences[_closestVertexIndex][ lastEdge[ pathNum ] ]
         };
 
-        for(int i = 0; i < 3 && !hasIntersection; ++ i)
+        for(int i = 0; i < 3 && !hasIntersection; ++i)
         {
             v1 = path[i    ];
             v2 = path[i + 1];
@@ -313,5 +319,7 @@ SliceVolumeRenderer::Polygon SliceVolumeRenderer::cubePlaneIntersection(const ::
 }
 
 //-----------------------------------------------------------------------------
+
+} // namespace vr
 
 } // namespace fwRenderOgre

@@ -1,10 +1,19 @@
-#ifndef __FWRENDEROGRE_SATVOLUMEILLUMINATION_HPP__
-#define __FWRENDEROGRE_SATVOLUMEILLUMINATION_HPP__
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2016.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#ifndef __FWRENDEROGRE_VR_SATVOLUMEILLUMINATION_HPP__
+#define __FWRENDEROGRE_VR_SATVOLUMEILLUMINATION_HPP__
 
 #include "fwRenderOgre/config.hpp"
-#include "fwRenderOgre/SummedAreaTable.hpp"
+#include "fwRenderOgre/vr/SummedAreaTable.hpp"
 
 namespace fwRenderOgre
+{
+
+namespace vr
 {
 
 /**
@@ -15,7 +24,7 @@ class FWRENDEROGRE_CLASS_API SATVolumeIllumination
 public:
 
     /// Initializes the illumination volume with the give dimensions.
-    FWRENDEROGRE_API SATVolumeIllumination(std::string parentId, ::Ogre::SceneManager *sceneManager,
+    FWRENDEROGRE_API SATVolumeIllumination(std::string parentId, ::Ogre::SceneManager* sceneManager,
                                            float satSizeRatio = 0.25f, int nbShells = 3, int shellRadius = 3);
 
     /// Destructor, does nothing.
@@ -36,7 +45,7 @@ public:
 private:
 
     /// SAT used to compute the illumination volume.
-    ::fwRenderOgre::SummedAreaTable m_sat;
+    ::fwRenderOgre::vr::SummedAreaTable m_sat;
 
     /// Texture holding the illumination volume.
     ::Ogre::TexturePtr m_illuminationVolume;
@@ -61,6 +70,8 @@ inline ::Ogre::TexturePtr SATVolumeIllumination::getIlluminationVolume()
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace vr
 
-#endif // __FWRENDEROGRE_SATVOLUMEILLUMINATION_HPP__
+} // namespace fwRenderOgre
+
+#endif // __FWRENDEROGRE_VR_SATVOLUMEILLUMINATION_HPP__

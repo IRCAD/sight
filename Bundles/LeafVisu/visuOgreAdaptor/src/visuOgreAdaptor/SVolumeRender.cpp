@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2016.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include "visuOgreAdaptor/SVolumeRender.hpp"
 
 #include <algorithm>
@@ -17,8 +23,8 @@
 
 #include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/interactor/VRWidgetsInteractor.hpp>
-#include <fwRenderOgre/SliceVolumeRenderer.hpp>
-#include <fwRenderOgre/RayTracingVolumeRenderer.hpp>
+#include <fwRenderOgre/vr/SliceVolumeRenderer.hpp>
+#include <fwRenderOgre/vr/RayTracingVolumeRenderer.hpp>
 
 #include <numeric>
 
@@ -238,29 +244,29 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 
     if(m_renderingMode == VR_MODE_SLICE)
     {
-        m_volumeRenderer = new ::fwRenderOgre::SliceVolumeRenderer(this->getID(),
-                                                                   m_sceneManager,
-                                                                   m_volumeSceneNode,
-                                                                   m_3DOgreTexture,
-                                                                   &m_gpuTF,
-                                                                   &m_preIntegrationTable);
+        m_volumeRenderer = new ::fwRenderOgre::vr::SliceVolumeRenderer(this->getID(),
+                                                                       m_sceneManager,
+                                                                       m_volumeSceneNode,
+                                                                       m_3DOgreTexture,
+                                                                       &m_gpuTF,
+                                                                       &m_preIntegrationTable);
     }
     else
     {
         ::fwRenderOgre::Layer::sptr serviceLayer = this->getRenderService()->getLayer(m_layerID);
 
-        m_volumeRenderer = new ::fwRenderOgre::RayTracingVolumeRenderer(this->getID(),
-                                                                        m_sceneManager,
-                                                                        m_volumeSceneNode,
-                                                                        m_3DOgreTexture,
-                                                                        &m_gpuTF,
-                                                                        &m_preIntegrationTable,
-                                                                        serviceLayer->is3D(),
-                                                                        m_volumeIllumination);
+        m_volumeRenderer = new ::fwRenderOgre::vr::RayTracingVolumeRenderer(this->getID(),
+                                                                            m_sceneManager,
+                                                                            m_volumeSceneNode,
+                                                                            m_3DOgreTexture,
+                                                                            &m_gpuTF,
+                                                                            &m_preIntegrationTable,
+                                                                            serviceLayer->is3D(),
+                                                                            m_volumeIllumination);
 
         if(serviceLayer->is3D())
         {
-            auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::RayTracingVolumeRenderer*>(m_volumeRenderer);
+            auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer*>(m_volumeRenderer);
 
             OSLM_ERROR_IF("Stereo rendering is supported only by ray casting VR.", !rayCastVolumeRenderer);
 
@@ -273,8 +279,8 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 
     if(m_volumeIllumination)
     {
-        m_illum = new ::fwRenderOgre::SATVolumeIllumination(this->getID(), m_sceneManager,
-                                                            m_satSizeRatio, m_satShells, m_satShellRadius);
+        m_illum = new ::fwRenderOgre::vr::SATVolumeIllumination(this->getID(), m_sceneManager,
+                                                                m_satSizeRatio, m_satShells, m_satShellRadius);
     }
 
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
@@ -405,7 +411,7 @@ void SVolumeRender::togglePreintegration(bool preintegration)
 
 void SVolumeRender::toggleVolumeIllumination(bool volumeIllumination)
 {
-    auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::RayTracingVolumeRenderer* >(m_volumeRenderer);
+    auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
 
     // Volume illumination is only implemented for raycasting rendering
     if(rayCastVolumeRenderer)
@@ -414,8 +420,8 @@ void SVolumeRender::toggleVolumeIllumination(bool volumeIllumination)
 
         if(m_volumeIllumination && !m_illum)
         {
-            m_illum = new ::fwRenderOgre::SATVolumeIllumination(this->getID(), m_sceneManager,
-                                                                m_satSizeRatio, m_satShells, m_satShellRadius);
+            m_illum = new ::fwRenderOgre::vr::SATVolumeIllumination(this->getID(), m_sceneManager,
+                                                                    m_satSizeRatio, m_satShells, m_satShellRadius);
             this->updateVolumeIllumination();
         }
 
@@ -457,7 +463,7 @@ void SVolumeRender::setFocalDistance(int focalDistance)
 {
     if(this->getRenderService()->getLayer(m_layerID)->is3D())
     {
-        auto rayTracingRenderer = dynamic_cast< ::fwRenderOgre::RayTracingVolumeRenderer*>(m_volumeRenderer);
+        auto rayTracingRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer*>(m_volumeRenderer);
 
         if(rayTracingRenderer)
         {
@@ -509,8 +515,8 @@ void SVolumeRender::updateVolumeIllumination()
     // Volume illumination is only implemented for raycasting rendering
     if(m_renderingMode == VR_MODE_RAY_TRACING)
     {
-        ::fwRenderOgre::RayTracingVolumeRenderer *rayTracingVolumeRenderer =
-            static_cast< ::fwRenderOgre::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        ::fwRenderOgre::vr::RayTracingVolumeRenderer* rayTracingVolumeRenderer =
+            static_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
 
         rayTracingVolumeRenderer->setIlluminationVolume(m_illum);
     }

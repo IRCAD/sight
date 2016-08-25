@@ -1,5 +1,11 @@
-#ifndef __PREINTEGRATIONTABLE_HPP__
-#define __PREINTEGRATIONTABLE_HPP__
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2016.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#ifndef __FWRENDEROGRE_VR_PREINTEGRATIONTABLE_HPP__
+#define __FWRENDEROGRE_VR_PREINTEGRATIONTABLE_HPP__
 
 #include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
@@ -11,6 +17,9 @@
 #include "fwRenderOgre/config.hpp"
 
 namespace fwRenderOgre
+{
+
+namespace vr
 {
 
 /**
@@ -31,7 +40,8 @@ public:
     FWRENDEROGRE_API void createTexture(const std::string& _parentId);
 
     /// Sets the table resolution based on the new image and recomputes it.
-    FWRENDEROGRE_API void imageUpdate(const ::fwData::Image::sptr& _img, const ::fwData::TransferFunction::sptr& _tf, float _samplingRate);
+    FWRENDEROGRE_API void imageUpdate(const ::fwData::Image::sptr& _img, const ::fwData::TransferFunction::sptr& _tf,
+                                      float _samplingRate);
 
     /// Computes the table based on the given TF and slice distance.
     FWRENDEROGRE_API void tfUpdate(const ::fwData::TransferFunction::sptr& _tf, float _sampleDistance);
@@ -57,10 +67,10 @@ private:
     typedef ::glm::vec4 IntegralPixel;
 
     /// Array storing table values.
-    TablePixel *m_table;
+    TablePixel* m_table;
 
     /// Transfer function integral.
-    IntegralPixel *m_integralTable;
+    IntegralPixel* m_integralTable;
 
     /// Table's GPU texture.
     ::Ogre::TexturePtr m_tableTexture;
@@ -85,13 +95,15 @@ private:
 
 //-----------------------------------------------------------------------------
 
- std::pair<int, int> PreIntegrationTable::getMinMax() const
- {
+std::pair<int, int> PreIntegrationTable::getMinMax() const
+{
     return m_valueInterval;
- }
+}
 
 //-----------------------------------------------------------------------------
 
+} // namespace vr
+
 } // namespace fwRenderOgre
 
-#endif // __PREINTEGRATIONTABLE_HPP__
+#endif // __FWRENDEROGRE_VR_PREINTEGRATIONTABLE_HPP__

@@ -1,11 +1,17 @@
-#ifndef __FWRENDEROGRE_RAYTRACINGVOLUMERENDERER_HPP__
-#define __FWRENDEROGRE_RAYTRACINGVOLUMERENDERER_HPP__
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2016.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#ifndef __FWRENDEROGRE_VR_RAYTRACINGVOLUMERENDERER_HPP__
+#define __FWRENDEROGRE_VR_RAYTRACINGVOLUMERENDERER_HPP__
 
 #include "fwRenderOgre/config.hpp"
-#include "fwRenderOgre/IVolumeRenderer.hpp"
+#include "fwRenderOgre/vr/IVolumeRenderer.hpp"
 #include "fwRenderOgre/Layer.hpp"
 #include "fwRenderOgre/R2VBRenderable.hpp"
-#include "fwRenderOgre/SATVolumeIllumination.hpp"
+#include "fwRenderOgre/vr/SATVolumeIllumination.hpp"
 
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreManualObject.h>
@@ -14,6 +20,9 @@
 #include <vector>
 
 namespace fwRenderOgre
+{
+
+namespace vr
 {
 
 /**
@@ -33,11 +42,11 @@ public:
      * @param preintegrationTable  Texture holding the pre-integration table.
      */
     FWRENDEROGRE_API RayTracingVolumeRenderer(std::string parentId,
-                                              ::Ogre::SceneManager *sceneManager,
-                                              ::Ogre::SceneNode *parentNode,
+                                              ::Ogre::SceneManager* sceneManager,
+                                              ::Ogre::SceneNode* parentNode,
                                               ::Ogre::TexturePtr imageTexture,
-                                              TransferFunction *gpuTF,
-                                              PreIntegrationTable *preintegrationTable,
+                                              TransferFunction* gpuTF,
+                                              PreIntegrationTable* preintegrationTable,
                                               bool mode3D,
                                               bool volumeIllumination);
 
@@ -53,7 +62,7 @@ public:
     /// Sets the number of samples per view ray.
     FWRENDEROGRE_API virtual void setSampling(uint16_t nbSamples);
 
-    FWRENDEROGRE_API virtual void setIlluminationVolume(SATVolumeIllumination *illuminationVolume);
+    FWRENDEROGRE_API virtual void setIlluminationVolume(SATVolumeIllumination* illuminationVolume);
 
     /// Sets pre-integrated mode.
     FWRENDEROGRE_API virtual void setPreIntegratedRendering(bool preIntegratedRendering);
@@ -102,13 +111,13 @@ private:
     ::Ogre::GpuProgramParametersSharedPtr retrieveCurrentProgramParams();
 
     /// Object containing the proxy geometry, this is a cube for now.
-    ::Ogre::ManualObject *m_entryPointGeometry;
+    ::Ogre::ManualObject* m_entryPointGeometry;
 
     /// Creates and updates the proxy geometry;
-    R2VBRenderable *m_proxyGeometryGenerator;
+    R2VBRenderable* m_proxyGeometryGenerator;
 
     /// Entity holding the source geometry used for proxy geometry rendering.
-    ::Ogre::Entity *m_r2vbSource;
+    ::Ogre::Entity* m_r2vbSource;
 
     /// Grid defining volume bricks.
     ::Ogre::TexturePtr m_gridTexture;
@@ -139,7 +148,7 @@ private:
     /// Sets usage of volume illumination
     bool m_volumeIllumination;
 
-    SATVolumeIllumination *m_illumVolume;
+    SATVolumeIllumination* m_illumVolume;
 
     /// Focal distance in object space : 0 = object front, 1 = object back.
     float m_focalLength;
@@ -147,6 +156,8 @@ private:
 
 //-----------------------------------------------------------------------------
 
+} // namespace vr
+
 } // namespace fwRenderOgre
 
-#endif // __FWRENDEROGRE_RAYTRACINGVOLUMERENDERER_HPP__
+#endif // __FWRENDEROGRE_VR_RAYTRACINGVOLUMERENDERER_HPP__

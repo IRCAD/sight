@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2016.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #ifndef __VISUOGREADAPTOR_SVOLUMERENDER_HPP__
 #define __VISUOGREADAPTOR_SVOLUMERENDER_HPP__
 
@@ -10,7 +16,7 @@
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
-#include <fwRenderOgre/PreIntegrationTable.hpp>
+#include <fwRenderOgre/vr/PreIntegrationTable.hpp>
 #include <fwRenderOgre/TransferFunction.hpp>
 #include <fwRenderOgre/ui/VRWidget.hpp>
 
@@ -22,7 +28,7 @@
 
 #include "visuOgreAdaptor/config.hpp"
 
-#include <fwRenderOgre/SATVolumeIllumination.hpp>
+#include <fwRenderOgre/vr/SATVolumeIllumination.hpp>
 
 namespace visuOgreAdaptor
 {
@@ -152,7 +158,7 @@ private:
     } m_renderingMode;
 
     /// Renders the volume.
-    ::fwRenderOgre::IVolumeRenderer *m_volumeRenderer;
+    ::fwRenderOgre::vr::IVolumeRenderer* m_volumeRenderer;
 
     /// 3D Image texture.
     ::Ogre::TexturePtr m_3DOgreTexture;
@@ -161,16 +167,16 @@ private:
     ::fwRenderOgre::TransferFunction m_gpuTF;
 
     /// Pre-integration table.
-    ::fwRenderOgre::PreIntegrationTable m_preIntegrationTable;
+    ::fwRenderOgre::vr::PreIntegrationTable m_preIntegrationTable;
 
     /// This object's scene manager.
-    ::Ogre::SceneManager *m_sceneManager;
+    ::Ogre::SceneManager* m_sceneManager;
 
     /// This object's scene node.
-    ::Ogre::SceneNode *m_volumeSceneNode;
+    ::Ogre::SceneNode* m_volumeSceneNode;
 
     /// Camera used for rendering.
-    ::Ogre::Camera *m_camera;
+    ::Ogre::Camera* m_camera;
 
     /// Widgets used for clipping.
     ::fwRenderOgre::ui::VRWidget::sptr m_widgets;
@@ -188,7 +194,7 @@ private:
     bool m_widgetVisibilty;
 
     /// Illumination volume used to render shadows and ambient occlusion.
-    ::fwRenderOgre::SATVolumeIllumination *m_illum;
+    ::fwRenderOgre::vr::SATVolumeIllumination* m_illum;
 
     /// Ratio used to determine the size of the SAT regarding of the associated image size.
     float m_satSizeRatio;

@@ -1,11 +1,20 @@
-#ifndef __SLICEVOLUMERENDERER_HPP__
-#define __SLICEVOLUMERENDERER_HPP__
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2016.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
 
-#include "fwRenderOgre/IVolumeRenderer.hpp"
+#ifndef __FWRENDEROGRE_VR_SLICEVOLUMERENDERER_HPP__
+#define __FWRENDEROGRE_VR_SLICEVOLUMERENDERER_HPP__
+
+#include "fwRenderOgre/vr/IVolumeRenderer.hpp"
 
 #include <OGRE/OgreNode.h>
 
 namespace fwRenderOgre
+{
+
+namespace vr
 {
 
 /**
@@ -25,11 +34,11 @@ public:
      * @param preintegrationTable  Texture holding the pre-integration table.
      */
     FWRENDEROGRE_API SliceVolumeRenderer(std::string parentId,
-                                         ::Ogre::SceneManager *sceneManager,
-                                         ::Ogre::SceneNode *parentNode,
+                                         ::Ogre::SceneManager* sceneManager,
+                                         ::Ogre::SceneNode* parentNode,
                                          ::Ogre::TexturePtr imageTexture,
-                                         TransferFunction *gpuTF = nullptr,
-                                         PreIntegrationTable *preintegrationTable = nullptr);
+                                         TransferFunction* gpuTF = nullptr,
+                                         PreIntegrationTable* preintegrationTable = nullptr);
 
     /// Destructor, does nothing.
     FWRENDEROGRE_API virtual ~SliceVolumeRenderer();
@@ -63,25 +72,26 @@ private:
                                Polygon& _result) const;
 
     /// Returns the intersection between the bounding cube and a plane.
-    Polygon cubePlaneIntersection(const ::Ogre::Vector3& _planeNormal, const ::Ogre::Vector3& _planeVertex, const unsigned _closestVertexIndex) const;
+    Polygon cubePlaneIntersection(const ::Ogre::Vector3& _planeNormal, const ::Ogre::Vector3& _planeVertex,
+                                  const unsigned _closestVertexIndex) const;
 
     /// The scene manager's render queue.
-    ::Ogre::RenderQueue *m_sceneRenderQueue;
+    ::Ogre::RenderQueue* m_sceneRenderQueue;
 
     /// Object containing the proxy geometry used for slice based VR.
-    ::Ogre::ManualObject *m_intersectingPolygons;
+    ::Ogre::ManualObject* m_intersectingPolygons;
 
     /// Listener used to update slices when the object is being rendered.
     struct RenderListener : public ::Ogre::MovableObject::Listener
     {
-        SliceVolumeRenderer *m_renderer;
+        SliceVolumeRenderer* m_renderer;
 
-        RenderListener(SliceVolumeRenderer *renderer) :
+        RenderListener(SliceVolumeRenderer* renderer) :
             m_renderer(renderer)
         {
         }
 
-        virtual bool objectRendering(const ::Ogre::MovableObject *, const ::Ogre::Camera *)
+        virtual bool objectRendering(const ::Ogre::MovableObject*, const ::Ogre::Camera*)
         {
             m_renderer->updateAllSlices();
 
@@ -92,6 +102,8 @@ private:
 
 };
 
+} // namespace vr
+
 } // namespace fwRenderOgre
 
-#endif // __SLICEVOLUMERENDERER_HPP__
+#endif // __FWRENDEROGRE_VR_SLICEVOLUMERENDERER_HPP__

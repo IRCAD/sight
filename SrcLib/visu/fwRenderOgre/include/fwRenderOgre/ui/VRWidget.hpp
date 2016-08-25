@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2016.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #ifndef __FWRENDEROGRE_UI_VRWIDGET_HPP__
 #define __FWRENDEROGRE_UI_VRWIDGET_HPP__
 
@@ -7,7 +13,7 @@
 
 #include <fwRenderOgre/registry/macros.hpp>
 
-#include <fwRenderOgre/IVolumeRenderer.hpp>
+#include <fwRenderOgre/vr/IVolumeRenderer.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
 #include <OGRE/OgreCamera.h>
@@ -44,11 +50,11 @@ public:
      * @param imgClippedPositions  image positions after clipping.
      */
     FWRENDEROGRE_API VRWidget(const std::string id,
-                              ::Ogre::SceneNode *parentSceneNode,
-                              ::Ogre::Camera    *camera,
+                              ::Ogre::SceneNode* parentSceneNode,
+                              ::Ogre::Camera* camera,
                               SRender::sptr renderService,
                               ::Ogre::SceneManager* sceneManager,
-                              IVolumeRenderer *renderer) throw();
+                              ::fwRenderOgre::vr::IVolumeRenderer* renderer) throw();
 
     /// Destructor.
     FWRENDEROGRE_API virtual ~VRWidget() throw();
@@ -60,7 +66,7 @@ public:
      * @param _screenX cursor's horizontal position.
      * @param _screenY cursor's vertical position.
      */
-    FWRENDEROGRE_API void widgetPicked(::Ogre::MovableObject *_pickedWidget, int _screenX, int _screenY);
+    FWRENDEROGRE_API void widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screenX, int _screenY);
 
     /// Drops the currently selected widget.
     FWRENDEROGRE_API void widgetReleased();
@@ -107,10 +113,10 @@ private:
     } m_selectionMode;
 
     /// Get the face's image positions.
-    std::array< ::Ogre::Vector3, 4 > getFacePositions(IVolumeRenderer::CubeFace _faceName) const;
+    std::array< ::Ogre::Vector3, 4 > getFacePositions(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName) const;
 
     /// Get the center of a clipping box face.
-    ::Ogre::Vector3 getFaceCenter(IVolumeRenderer::CubeFace _faceName) const;
+    ::Ogre::Vector3 getFaceCenter(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName) const;
 
     /// Returns the clipping box's image space positions.
     std::array< ::Ogre::Vector3, 8 > getClippingBoxPositions() const;
@@ -125,7 +131,7 @@ private:
     void updateWidgets();
 
     /// Highlight a clipping box face.
-    void selectFace(IVolumeRenderer::CubeFace _faceName);
+    void selectFace(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName);
 
     /// Unhighlight face.
     void deselectFace();
@@ -134,25 +140,26 @@ private:
     const std::string m_id;
 
     /// This object's scene manager.
-    ::Ogre::SceneManager *m_sceneManager;
+    ::Ogre::SceneManager* m_sceneManager;
 
     /// Camera too which the volume is rendered.
-    ::Ogre::Camera *m_camera;
+    ::Ogre::Camera* m_camera;
 
     /// Render service in charge of rendering these widgets.
     SRender::sptr m_renderService;
 
     /// Parent node containing the volume.
-    ::Ogre::SceneNode *m_volumeSceneNode;
+    ::Ogre::SceneNode* m_volumeSceneNode;
 
     /// Node holding widget objects.
-    ::Ogre::SceneNode *m_widgetSceneNode;
+    ::Ogre::SceneNode* m_widgetSceneNode;
 
     /// Maps widget objects to their scene node and to a cube face.
-    std::map< ::Ogre::MovableObject *, std::pair< IVolumeRenderer::CubeFace, ::Ogre::SceneNode * > >  m_widgets;
+    std::map< ::Ogre::MovableObject*,
+              std::pair< ::fwRenderOgre::vr::IVolumeRenderer::CubeFace, ::Ogre::SceneNode* > >  m_widgets;
 
     /// Renders the volume.
-    IVolumeRenderer *m_renderer;
+    ::fwRenderOgre::vr::IVolumeRenderer* m_renderer;
 
     /// Axis aligned clipping cube.
     ::Ogre::Vector3 m_clippingCube[2] = {
@@ -161,13 +168,13 @@ private:
     };
 
     /// Object used to display the clipping box.
-    ::Ogre::ManualObject *m_boundingBox;
+    ::Ogre::ManualObject* m_boundingBox;
 
     /// Oject holding the highlighted face geometry.
-    ::Ogre::ManualObject *m_selectedFace;
+    ::Ogre::ManualObject* m_selectedFace;
 
     /// Widget currently being dragged.
-    ::Ogre::Entity *m_selectedWidget;
+    ::Ogre::Entity* m_selectedWidget;
 
     /// Picked box point.
     ::Ogre::Vector3 m_pickedBoxPoint;

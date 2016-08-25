@@ -1,12 +1,18 @@
-#ifndef __IVOLUMERENDERER_HPP__
-#define __IVOLUMERENDERER_HPP__
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2016.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#ifndef __FWRENDEROGRE_VR_IVOLUMERENDERER_HPP__
+#define __FWRENDEROGRE_VR_IVOLUMERENDERER_HPP__
 
 #include "fwData/Image.hpp"
 #include "fwData/TransferFunction.hpp"
 
 #include "fwRenderOgre/config.hpp"
 
-#include "fwRenderOgre/PreIntegrationTable.hpp"
+#include "fwRenderOgre/vr/PreIntegrationTable.hpp"
 #include "fwRenderOgre/TransferFunction.hpp"
 
 #include <OGRE/OgreAxisAlignedBox.h>
@@ -17,6 +23,9 @@
 #include <OGRE/OgreVector3.h>
 
 namespace fwRenderOgre
+{
+
+namespace vr
 {
 
 /**
@@ -62,11 +71,11 @@ public:
      * @param preintegrationTable  Texture holding the pre-integration table.
      */
     FWRENDEROGRE_API IVolumeRenderer(std::string parentId,
-                                     ::Ogre::SceneManager *sceneManager,
-                                     ::Ogre::SceneNode *volumeNode,
+                                     ::Ogre::SceneManager* sceneManager,
+                                     ::Ogre::SceneNode* volumeNode,
                                      ::Ogre::TexturePtr imageTexture,
-                                     TransferFunction *gpuTF = nullptr,
-                                     PreIntegrationTable *preintegrationTable = nullptr);
+                                     TransferFunction* gpuTF = nullptr,
+                                     PreIntegrationTable* preintegrationTable = nullptr);
 
     /// Destructor, does nothing.
     FWRENDEROGRE_API virtual ~IVolumeRenderer();
@@ -87,10 +96,10 @@ public:
     FWRENDEROGRE_API virtual void clipImage(const ::Ogre::AxisAlignedBox& clippingBox);
 
     /// Sets the TF used for rendering.
-    FWRENDEROGRE_API void setTransferFunction(TransferFunction *gpuTF);
+    FWRENDEROGRE_API void setTransferFunction(TransferFunction* gpuTF);
 
     /// Sets the pre-integration table used for rendering.
-    FWRENDEROGRE_API void setPreIntegrationTable(PreIntegrationTable *preIntegrationTable);
+    FWRENDEROGRE_API void setPreIntegrationTable(PreIntegrationTable* preIntegrationTable);
 
     /// Returns the sampling rate.
     FWRENDEROGRE_API float getSamplingRate() const;
@@ -113,16 +122,16 @@ protected:
     std::string m_parentId;
 
     /// This object's scene manager.
-    ::Ogre::SceneManager *m_sceneManager;
+    ::Ogre::SceneManager* m_sceneManager;
 
     /// 3D Image texture.
     ::Ogre::TexturePtr m_3DOgreTexture;
 
     /// TF texture used for rendering.
-    TransferFunction *m_gpuTF;
+    TransferFunction* m_gpuTF;
 
     /// Pre-integration table.
-    PreIntegrationTable *m_preIntegrationTable;
+    PreIntegrationTable* m_preIntegrationTable;
 
     /// Default shader parameters.
     ::Ogre::GpuProgramParametersSharedPtr m_defaultShaderParameters;
@@ -134,10 +143,10 @@ protected:
     ::Ogre::GpuProgramParametersSharedPtr m_currentShaderParameters;
 
     /// This object's scene node.
-    ::Ogre::SceneNode *m_volumeSceneNode;
+    ::Ogre::SceneNode* m_volumeSceneNode;
 
     /// Camera used for rendering.
-    ::Ogre::Camera *m_camera;
+    ::Ogre::Camera* m_camera;
 
     /// Sampling rate.
     uint16_t m_nbSlices;
@@ -167,7 +176,7 @@ protected:
 
 //-----------------------------------------------------------------------------
 
-inline void IVolumeRenderer::setTransferFunction(TransferFunction *gpuTF)
+inline void IVolumeRenderer::setTransferFunction(TransferFunction* gpuTF)
 {
     m_gpuTF = gpuTF;
 }
@@ -175,7 +184,7 @@ inline void IVolumeRenderer::setTransferFunction(TransferFunction *gpuTF)
 //-----------------------------------------------------------------------------
 
 
-inline void IVolumeRenderer::setPreIntegrationTable(PreIntegrationTable *preIntegrationTable)
+inline void IVolumeRenderer::setPreIntegrationTable(PreIntegrationTable* preIntegrationTable)
 {
     m_preIntegrationTable = preIntegrationTable;
 }
@@ -189,7 +198,8 @@ inline float IVolumeRenderer::getSamplingRate() const
 
 //-----------------------------------------------------------------------------
 
+} // namespace vr
 
-}  // namespace fwRenderOgre
+} // namespace fwRenderOgre
 
-#endif // __IVOLUMERENDERER_HPP__
+#endif // __FWRENDEROGRE_VR_IVOLUMERENDERER_HPP__

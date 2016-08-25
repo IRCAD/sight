@@ -1,4 +1,10 @@
-#include "fwRenderOgre/SATVolumeIllumination.hpp"
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2016.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#include "fwRenderOgre/vr/SATVolumeIllumination.hpp"
 
 #include <OGRE/OgreCompositor.h>
 #include <OGRE/OgreCompositorChain.h>
@@ -18,6 +24,9 @@
 namespace fwRenderOgre
 {
 
+namespace vr
+{
+
 //-----------------------------------------------------------------------------
 
 class VolIllumCompositorListener : public ::Ogre::CompositorInstance::Listener
@@ -33,7 +42,7 @@ public:
 
     virtual void notifyMaterialRender(::Ogre::uint32 pass_id, ::Ogre::MaterialPtr& mat)
     {
-        ::Ogre::Pass *pass                                   = mat->getTechnique(0)->getPass(0);
+        ::Ogre::Pass* pass                                   = mat->getTechnique(0)->getPass(0);
         ::Ogre::GpuProgramParametersSharedPtr volIllumParams = pass->getFragmentProgramParameters();
 
         volIllumParams->setNamedConstant("u_sliceIndex", m_currentSliceIndex);
@@ -41,7 +50,7 @@ public:
 
     virtual void notifyMaterialSetup(::Ogre::uint32 pass_id, ::Ogre::MaterialPtr& mat)
     {
-        ::Ogre::Pass *pass                                   = mat->getTechnique(0)->getPass(0);
+        ::Ogre::Pass* pass                                   = mat->getTechnique(0)->getPass(0);
         ::Ogre::GpuProgramParametersSharedPtr volIllumParams = pass->getFragmentProgramParameters();
 
         volIllumParams->setNamedConstant("u_nbShells", m_nbShells);
@@ -58,7 +67,7 @@ private:
 
 //-----------------------------------------------------------------------------
 
-SATVolumeIllumination::SATVolumeIllumination(std::string parentId, ::Ogre::SceneManager *sceneManager,
+SATVolumeIllumination::SATVolumeIllumination(std::string parentId, ::Ogre::SceneManager* sceneManager,
                                              float satSizeRatio, int nbShells, int shellRadius) :
     m_sat(parentId, sceneManager, satSizeRatio),
     m_nbShells(nbShells),
@@ -103,22 +112,22 @@ void SATVolumeIllumination::updateVolIllum()
     VolIllumCompositorListener volIllumListener(m_currentSliceIndex, m_nbShells, m_shellRadius);
 
     ::Ogre::MaterialPtr volIllumMtl       = ::Ogre::MaterialManager::getSingleton().getByName("VolumeAO");
-    ::Ogre::Pass *pass                    = volIllumMtl->getTechnique(0)->getPass(0);
-    ::Ogre::TextureUnitState *satImgState = pass->getTextureUnitState("sat");
+    ::Ogre::Pass* pass                    = volIllumMtl->getTechnique(0)->getPass(0);
+    ::Ogre::TextureUnitState* satImgState = pass->getTextureUnitState("sat");
 
     satImgState->setTexture(m_sat.getTexture());
 
     // Update illumination volume slice by slice.
     for(m_currentSliceIndex = 0; m_currentSliceIndex < depth; ++m_currentSliceIndex)
     {
-        ::Ogre::RenderTarget *rt = m_illuminationVolume->getBuffer()->getRenderTarget(m_currentSliceIndex);
-        ::Ogre::Viewport *vp     = rt->getViewport(0);
+        ::Ogre::RenderTarget* rt = m_illuminationVolume->getBuffer()->getRenderTarget(m_currentSliceIndex);
+        ::Ogre::Viewport* vp     = rt->getViewport(0);
 
         // Add compositor.
         compositorManager.addCompositor(vp, "VolIllum");
         compositorManager.setCompositorEnabled(vp, "VolIllum", true);
 
-        ::Ogre::CompositorInstance *compInstance = compositorManager.getCompositorChain(vp)->getCompositor("VolIllum");
+        ::Ogre::CompositorInstance* compInstance = compositorManager.getCompositorChain(vp)->getCompositor("VolIllum");
         compInstance->addListener(&volIllumListener);
 
         // Compute volillum.
@@ -133,4 +142,6 @@ void SATVolumeIllumination::updateVolIllum()
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace vr
+
+} // namespace fwRenderOgre
