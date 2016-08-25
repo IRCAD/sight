@@ -24,7 +24,7 @@ class FWRENDEROGRE_CLASS_API SummedAreaTable
 public:
 
     /// Constructor, creates an SAT with the given resolution.
-    FWRENDEROGRE_API SummedAreaTable(std::string _parentId, ::Ogre::SceneManager *_sceneManager,
+    FWRENDEROGRE_API SummedAreaTable(std::string _parentId, ::Ogre::SceneManager* _sceneManager,
                                      float _sizeRatio = 0.25f);
 
     /// Destructor, does nothing.
@@ -97,10 +97,16 @@ private:
     ::glm::vec4 applyTf(fwData::TransferFunction::sptr _tf, int16_t imgValue);
 
     /// Returns the SAT value at position (x, y, z).
-    ::glm::vec4 getSatValue(glm::vec4 *satBuffer, int x, int y, int z);
+    ::glm::vec4 getSatValue(glm::vec4* satBuffer, int x, int y, int z);
 
     /// Sets the SAT value at position (x, y, z).
-    void setSatValue(glm::vec4 *satBuffer, ::glm::vec4 value, int x, int y, int z);
+    void setSatValue(glm::vec4* satBuffer, ::glm::vec4 value, int x, int y, int z);
+
+    /// Resource name of the source buffer.
+    const std::string SOURCE_BUFFER_NAME = "__GPU_SummedAreaTable_Ping";
+
+    // Resource name of the target buffer.
+    const std::string TARGET_BUFFER_NAME = "__GPU_SummedAreaTable_Pong";
 
 };
 

@@ -257,7 +257,7 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 
 void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData::TransferFunction::sptr tf)
 {
-    scaleCube(image->getSpacing());
+    this->scaleCube(image->getSpacing());
 
     const ::fwData::Image::SizeType& newSize = image->getSize();
 
@@ -277,7 +277,7 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
             ::Ogre::TextureManager::getSingletonPtr()->remove(m_gridTexture->getHandle());
         }
 
-        createGridTexture();
+        this->createGridTexture();
 
         tfUpdate(tf);
 
