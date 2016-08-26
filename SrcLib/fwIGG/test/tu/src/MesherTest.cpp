@@ -47,10 +47,13 @@ void MesherTest::tearDown()
 
 //-----------------------------------------------------------------------------
 
-::fwData::Image::sptr loadInrImage( const ::boost::filesystem::path & imagePath )
+::fwData::Image::sptr loadInrImage( const ::boost::filesystem::path& imagePath )
 {
     // Complete path
     const ::boost::filesystem::path PATH = ::fwTest::Data::dir() / imagePath;
+
+    CPPUNIT_ASSERT_MESSAGE("The file '" + PATH.string() + "' does not exist",
+                           ::boost::filesystem::exists(PATH));
 
     // Load Image
     ::fwData::Image::sptr image           = ::fwData::Image::New();
@@ -64,7 +67,7 @@ void MesherTest::tearDown()
 
 //-----------------------------------------------------------------------------
 
-void executeMCMesher( const ::boost::filesystem::path & imagePath)
+void executeMCMesher( const ::boost::filesystem::path& imagePath)
 {
     ::fwData::Image::sptr mask = loadInrImage( imagePath );
     SLM_ASSERT("Mask did not load properly", mask);
@@ -75,7 +78,7 @@ void executeMCMesher( const ::boost::filesystem::path & imagePath)
 
 //-----------------------------------------------------------------------------
 
-void executeMCSMesher( const ::boost::filesystem::path & imagePath, int nbf, int adapt, int radius )
+void executeMCSMesher( const ::boost::filesystem::path& imagePath, int nbf, int adapt, int radius )
 {
     ::fwData::Image::sptr mask = loadInrImage( imagePath );
     ::fwData::Mesh::sptr mesh  = ::fwData::Mesh::New();
@@ -137,8 +140,8 @@ void MesherTest::sameMeshTest()
     ::fwComEd::helper::Array::sptr helperPointsMesh1 = ::fwComEd::helper::Array::New(pointsMesh1);
     ::fwComEd::helper::Array::sptr helperPointsMesh2 = ::fwComEd::helper::Array::New(pointsMesh2);
 
-    ::fwData::Mesh::PointValueType * points1 = helperPointsMesh1->begin< ::fwData::Mesh::PointValueType >();
-    ::fwData::Mesh::PointValueType * points2 = helperPointsMesh2->begin< ::fwData::Mesh::PointValueType >();
+    ::fwData::Mesh::PointValueType* points1 = helperPointsMesh1->begin< ::fwData::Mesh::PointValueType >();
+    ::fwData::Mesh::PointValueType* points2 = helperPointsMesh2->begin< ::fwData::Mesh::PointValueType >();
 
     int size = pointsMesh1->getSize()[0];
 
