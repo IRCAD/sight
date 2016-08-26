@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,6 +32,8 @@
 #include <fwTools/System.hpp>
 
 #include <boost/assign/list_of.hpp>
+#include <boost/filesystem/operations.hpp>
+
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arPatchMedicalData::ut::PatchTest );
@@ -81,7 +83,7 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::
 
 //------------------------------------------------------------------------------
 
-::fwMedData::Series::sptr getACHSeries( const ::fwMedData::SeriesDB::sptr & sdb )
+::fwMedData::Series::sptr getACHSeries( const ::fwMedData::SeriesDB::sptr& sdb )
 {
     for( ::fwMedData::Series::sptr series :  sdb->getContainer() )
     {
@@ -96,7 +98,7 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::
 
 //------------------------------------------------------------------------------
 
-std::vector< ::fwMedData::Series::sptr > getOtherSeries( const ::fwMedData::SeriesDB::sptr & sdb )
+std::vector< ::fwMedData::Series::sptr > getOtherSeries( const ::fwMedData::SeriesDB::sptr& sdb )
 {
     std::vector< ::fwMedData::Series::sptr > otherSeries;
     for( ::fwMedData::Series::sptr series :  sdb->getContainer() )
@@ -115,6 +117,9 @@ std::vector< ::fwMedData::Series::sptr > getOtherSeries( const ::fwMedData::Seri
 void PatchTest::arPatchMedicalDataTest()
 {
     const ::boost::filesystem::path file = ::fwTest::Data::dir() /"fw4spl/patch/md_1.jsonz";
+
+    CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
+                           ::boost::filesystem::exists(file));
 
     ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
 
