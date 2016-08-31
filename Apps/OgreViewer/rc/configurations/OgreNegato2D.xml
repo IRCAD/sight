@@ -8,8 +8,12 @@
     </parameters>
     <config>
 
+        <!-- ******************************* Objects declaration ****************************** -->
+
         <object uid="${imageUID}"  type="::fwData::Image" src="ref" />
         <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
+
+        <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="OgreNegato2D" type="::gui::view::SDefaultView" >
             <gui>
@@ -25,6 +29,22 @@
                 <view sid="negato2DInteractor" start="yes" />
             </registry>
         </service>
+
+        <service uid="negato2DInteractor" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="sliderIndexEditor2D" start="yes" />
+                <view sid="windowLevel2D" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
 
         <service uid="negato2DScene" type="::fwRenderOgre::SRender" autoConnect="yes" >
             <in key="image" uid="${imageUID}" />
@@ -46,20 +66,6 @@
                 </adaptor>
 
             </scene>
-        </service>
-
-        <service uid="negato2DInteractor" type="::gui::view::SDefaultView" >
-            <gui>
-                <layout type="::fwGui::LineLayoutManager" >
-                    <orientation value="vertical" />
-                    <view proportion="1" />
-                    <view proportion="1" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="sliderIndexEditor2D" start="yes" />
-                <view sid="windowLevel2D" start="yes" />
-            </registry>
         </service>
 
         <!-- Slice editor service -->

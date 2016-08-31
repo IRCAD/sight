@@ -33,10 +33,13 @@ class VolIllumCompositorListener : public ::Ogre::CompositorInstance::Listener
 {
 public:
 
-    VolIllumCompositorListener(int& currentSliceIndex, int nbShells, int shellRadius) :
+    VolIllumCompositorListener(int& currentSliceIndex, int nbShells, int shellRadius,
+                               float coneAngle, int samplesAlongCone) :
         m_currentSliceIndex(currentSliceIndex),
         m_nbShells(nbShells),
-        m_shellRadius(shellRadius)
+        m_shellRadius(shellRadius),
+        m_coneAngle(coneAngle),
+        m_samplesAlongCone(samplesAlongCone)
     {
     }
 
@@ -55,6 +58,9 @@ public:
 
         volIllumParams->setNamedConstant("u_nbShells", m_nbShells);
         volIllumParams->setNamedConstant("u_shellRadius", m_shellRadius);
+
+        volIllumParams->setNamedConstant("u_scatteringConeAngle", m_coneAngle);
+        volIllumParams->setNamedConstant("u_nbSamplesAlongCone", m_samplesAlongCone);
     }
 
 private:
@@ -63,15 +69,21 @@ private:
 
     int m_nbShells;
     int m_shellRadius;
+
+    float m_coneAngle;
+    int m_samplesAlongCone;
 };
 
 //-----------------------------------------------------------------------------
 
 SATVolumeIllumination::SATVolumeIllumination(std::string parentId, ::Ogre::SceneManager* sceneManager,
-                                             float satSizeRatio, int nbShells, int shellRadius) :
+                                             float satSizeRatio, int nbShells, int shellRadius,
+                                             float coneAngle, int samplesAlongCone) :
     m_sat(parentId, sceneManager, satSizeRatio),
     m_nbShells(nbShells),
-    m_shellRadius(shellRadius)
+    m_shellRadius(shellRadius),
+    m_coneAngle(coneAngle),
+    m_samplesAlongCone(samplesAlongCone)
 {
 
 }
@@ -109,7 +121,8 @@ void SATVolumeIllumination::updateVolIllum()
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
 
-    VolIllumCompositorListener volIllumListener(m_currentSliceIndex, m_nbShells, m_shellRadius);
+    VolIllumCompositorListener volIllumListener(m_currentSliceIndex, m_nbShells, m_shellRadius,
+                                                m_coneAngle, m_samplesAlongCone);
 
     ::Ogre::MaterialPtr volIllumMtl       = ::Ogre::MaterialManager::getSingleton().getByName("VolumeAO");
     ::Ogre::Pass* pass                    = volIllumMtl->getTechnique(0)->getPass(0);

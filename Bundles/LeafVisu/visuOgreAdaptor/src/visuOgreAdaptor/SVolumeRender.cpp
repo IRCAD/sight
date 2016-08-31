@@ -49,14 +49,18 @@ namespace visuOgreAdaptor
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEW_IMAGE_SLOT                  = "newImage";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAMPLING_SLOT            = "updateSampling";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_SIZE_RATIO_SLOT      = "updateSatSizeRatio";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_PREINTEGRATION_SLOT      = "togglePreintegration";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_VOLUME_ILLUMINATION_SLOT = "toggleVolumeIllumination";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT             = "toggleWidgets";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT            = "resizeViewport";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_FOCAL_DISTANCE_SLOT         = "setFocalDistance";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEW_IMAGE_SLOT                      = "newImage";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAMPLING_SLOT                = "updateSampling";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_SIZE_RATIO_SLOT          = "updateSatSizeRatio";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_SHELLS_NUMBER_SLOT       = "updateSatShellsNumber";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_SHELL_RADIUS_SLOT        = "updateSatShellRadius";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_CONE_ANGLE_SLOT          = "updateSatConeAngle";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_CONE_SAMPLES_NUMBER_SLOT = "updateSatConeSamplesNumber";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_PREINTEGRATION_SLOT          = "togglePreintegration";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_VOLUME_ILLUMINATION_SLOT     = "toggleVolumeIllumination";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT                 = "toggleWidgets";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT                = "resizeViewport";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_FOCAL_DISTANCE_SLOT             = "setFocalDistance";
 
 //-----------------------------------------------------------------------------
 
@@ -72,12 +76,18 @@ SVolumeRender::SVolumeRender() throw() :
     m_illum                  (nullptr),
     m_satSizeRatio           (0.25f),
     m_satShells              (3),
-    m_satShellRadius         (3)
+    m_satShellRadius         (3),
+    m_satConeAngle           (0.1f),
+    m_satConeSamples       (50)
 {
     this->installTFSlots(this);
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
     newSlot(s_UPDATE_SAMPLING_SLOT, &SVolumeRender::updateSampling, this);
     newSlot(s_UPDATE_SAT_SIZE_RATIO_SLOT, &SVolumeRender::updateSatSizeRatio, this);
+    newSlot(s_UPDATE_SAT_SHELLS_NUMBER_SLOT, &SVolumeRender::updateSatShellsNumber, this);
+    newSlot(s_UPDATE_SAT_SHELL_RADIUS_SLOT, &SVolumeRender::updateSatShellRadius, this);
+    newSlot(s_UPDATE_SAT_CONE_ANGLE_SLOT, &SVolumeRender::updateSatConeAngle, this);
+    newSlot(s_UPDATE_SAT_CONE_SAMPLES_NUMBER_SLOT, &SVolumeRender::updateSatConeSamplesNumber, this);
     newSlot(s_TOGGLE_PREINTEGRATION_SLOT, &SVolumeRender::togglePreintegration, this);
     newSlot(s_TOGGLE_VOLUME_ILLUMINATION_SLOT, &SVolumeRender::toggleVolumeIllumination, this);
     newSlot(s_TOGGLE_WIDGETS_SLOT, &SVolumeRender::toggleWidgets, this);
@@ -135,6 +145,22 @@ void SVolumeRender::doConfigure() throw ( ::fwTools::Failed )
             {
                 std::string shellRadiusString = m_configuration->getAttributeValue("satShellRadius");
                 m_satShellRadius = std::stoi(shellRadiusString);
+
+                m_volumeIllumination = true;
+            }
+
+            if(m_configuration->hasAttribute("satConeAngle"))
+            {
+                std::string coneAngleString = m_configuration->getAttributeValue("satConeAngle");
+                m_satConeAngle = std::stof(coneAngleString);
+
+                m_volumeIllumination = true;
+            }
+
+            if(m_configuration->hasAttribute("satConeSamples"))
+            {
+                std::string coneSamplesString = m_configuration->getAttributeValue("satConeSamples");
+                m_satConeSamples = std::stoi(coneSamplesString);
 
                 m_volumeIllumination = true;
             }
@@ -280,7 +306,8 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     if(m_volumeIllumination)
     {
         m_illum = new ::fwRenderOgre::vr::SATVolumeIllumination(this->getID(), m_sceneManager,
-                                                                m_satSizeRatio, m_satShells, m_satShellRadius);
+                                                                m_satSizeRatio, m_satShells, m_satShellRadius,
+                                                                m_satConeAngle, m_satConeSamples);
     }
 
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
@@ -385,6 +412,86 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
         {
             m_volumeRenderer->imageUpdate(this->getImage(), this->getTransferFunction());
         }
+
+        this->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::updateSatShellsNumber(int shellsNumber)
+{
+    if(m_volumeIllumination)
+    {
+        m_satShells = shellsNumber;
+
+        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+
+        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+
+        auto illumVolume = rayCastVolumeRenderer->getIllumVolume();
+        illumVolume->setNbShells(m_satShells);
+        illumVolume->updateVolIllum();
+
+        this->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::updateSatShellRadius(int shellRadius)
+{
+    if(m_volumeIllumination)
+    {
+        m_satShellRadius = shellRadius;
+
+        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+
+        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+
+        auto illumVolume = rayCastVolumeRenderer->getIllumVolume();
+        illumVolume->setShellRadius(m_satShellRadius);
+        illumVolume->updateVolIllum();
+
+        this->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::updateSatConeAngle(int coneAngle)
+{
+    if(m_volumeIllumination)
+    {
+        m_satConeAngle = static_cast<float>(coneAngle) / 100;
+
+        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+
+        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+
+        auto illumVolume = rayCastVolumeRenderer->getIllumVolume();
+        illumVolume->setConeAngle(m_satConeAngle);
+        illumVolume->updateVolIllum();
+
+        this->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::updateSatConeSamplesNumber(int nbConeSamples)
+{
+    if(m_volumeIllumination)
+    {
+        m_satConeSamples = nbConeSamples;
+
+        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+
+        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+
+        auto illumVolume = rayCastVolumeRenderer->getIllumVolume();
+        illumVolume->setSamplesAlongCone(m_satConeSamples);
+        illumVolume->updateVolIllum();
 
         this->requestRender();
     }

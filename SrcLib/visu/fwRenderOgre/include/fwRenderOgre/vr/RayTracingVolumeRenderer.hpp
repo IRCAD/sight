@@ -83,6 +83,9 @@ public:
     /// Slot: Called when the size of the viewport changes.
     FWRENDEROGRE_API virtual void resizeViewport(int w, int h);
 
+    /// IllumVolume getter
+    FWRENDEROGRE_API SATVolumeIllumination* getIllumVolume();
+
 private:
 
     /// Camera listener class used to compute the entry points textures before rendering.
@@ -153,6 +156,14 @@ private:
     /// Focal distance in object space : 0 = object front, 1 = object back.
     float m_focalLength;
 };
+
+//-----------------------------------------------------------------------------
+// Inline method(s)
+
+inline ::fwRenderOgre::vr::SATVolumeIllumination* RayTracingVolumeRenderer::getIllumVolume()
+{
+    return m_illumVolume;
+}
 
 //-----------------------------------------------------------------------------
 

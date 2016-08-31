@@ -62,7 +62,7 @@ float coneShadowQuery(in ivec3 voxelPos)
         secondaryAxis0 = 0;
         secondaryAxis1 = 2;
     }
-    else if(primaryAxis == 2)
+    else // primaryAxis == 2
     {
         secondaryAxis0 = 1;
         secondaryAxis1 = 0;
@@ -177,12 +177,16 @@ vec4 ambientOcclusionAndColourBleedingQuery(in ivec3 voxelPos)
 {
     ivec3 satSize = textureSize(u_sat, 0) - ivec3(1);
 
+    // Current shell's bounds
     ivec3 shellMin = max(voxelPos - ivec3(u_shellRadius), ivec3(0));
     ivec3 shellMax = min(voxelPos + ivec3(u_shellRadius), satSize);
 
+    // Current shell's radius
     int radius = u_shellRadius;
 
+    // Retrieves the value of the current shell
     vec4 satLookupVal = satLookup(shellMin, shellMax);
+
     vec4 aoFactor = satLookupVal / float(radius * radius);
 
     for(int i = 1; i < u_nbShells; ++i)
@@ -198,7 +202,7 @@ vec4 ambientOcclusionAndColourBleedingQuery(in ivec3 voxelPos)
         aoFactor += (satLookupVal - lastLookup) / float(radius * radius);
     }
 
-    return pow(u_nbShells * u_shellRadius, -2.f) * (aoFactor);
+    return pow(u_nbShells * u_shellRadius, -2.f) * aoFactor;
 }
 
 //-----------------------------------------------------------------------------

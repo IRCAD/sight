@@ -25,7 +25,8 @@ public:
 
     /// Initializes the illumination volume with the give dimensions.
     FWRENDEROGRE_API SATVolumeIllumination(std::string parentId, ::Ogre::SceneManager* sceneManager,
-                                           float satSizeRatio = 0.25f, int nbShells = 3, int shellRadius = 3);
+                                           float satSizeRatio = 0.25f, int nbShells = 3, int shellRadius = 3,
+                                           float coneAngle = 0.1f, int samplesAlongCone = 50);
 
     /// Destructor, does nothing.
     FWRENDEROGRE_API ~SATVolumeIllumination();
@@ -39,8 +40,20 @@ public:
     /// Recomputes the SAT and the illumination volume when the image or the TF changed.
     FWRENDEROGRE_API void SATUpdate(Ogre::TexturePtr _img, Ogre::TexturePtr _tf);
 
-    /// Illumination volume texture getter
+    /// Illumination volume texture getter.
     FWRENDEROGRE_API ::Ogre::TexturePtr getIlluminationVolume();
+
+    /// Shells number setter.
+    FWRENDEROGRE_API void setNbShells(int _nbShells);
+
+    /// Shell radius setter.
+    FWRENDEROGRE_API void setShellRadius(int _shellRadius);
+
+    /// Cone angle setter.
+    FWRENDEROGRE_API void setConeAngle(float _coneAngle);
+
+    /// Cone samples number setter.
+    FWRENDEROGRE_API void setSamplesAlongCone(int _samplesAlongCone);
 
 private:
 
@@ -58,6 +71,12 @@ private:
 
     /// Radius of the shells used to compute the volume illumination from the SAT.
     int m_shellRadius;
+
+    /// Angle used to define the soft shadows cones.
+    float m_coneAngle;
+
+    /// Number of samples along the soft shadows cones.
+    int m_samplesAlongCone;
 };
 
 //-----------------------------------------------------------------------------
@@ -66,6 +85,34 @@ private:
 inline ::Ogre::TexturePtr SATVolumeIllumination::getIlluminationVolume()
 {
     return m_illuminationVolume;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void SATVolumeIllumination::setNbShells(int _nbShells)
+{
+    m_nbShells = _nbShells;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void SATVolumeIllumination::setShellRadius(int _shellRadius)
+{
+    m_shellRadius = _shellRadius;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void SATVolumeIllumination::setConeAngle(float _coneAngle)
+{
+    m_coneAngle = _coneAngle;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void SATVolumeIllumination::setSamplesAlongCone(int _samplesAlongCone)
+{
+    m_samplesAlongCone = _samplesAlongCone;
 }
 
 //-----------------------------------------------------------------------------

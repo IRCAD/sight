@@ -41,6 +41,10 @@ namespace visuOgreAdaptor
  * - \b updateSampling(int): Called when the sampling is changed and updates the volume renderer accordingly.
  * - \b updateSatSizeRatio(int) : Called when the SAT ratio is changed and computes it again with the new corresponding
  *      size.
+ * - \b updateSatShellsNumber(int) : Called when the number of SAT shells is changed and compute the SAT again.
+ * - \b updateSatShellRadius(int) : Called when the SAT shell radius is changed and computes the SAT again.
+ * - \b updateSatConeAngle(int) : Called when the SAT cone angle is changed and computes the SAT again.
+ * - \b updateSatConeSamples(int) : Called when the SAT cone samples number is changed and computes the SAT again.
  * - \b togglePreintegration(bool): Toggle pre-integration.
  * - \b toggleVoumeIllumination(bool): Toggle volume illumination.
  * - \b toggleWidgets(bool): Toggles widget visibility.
@@ -51,8 +55,8 @@ namespace visuOgreAdaptor
  * @code{.xml}
     <adaptor uid="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image">
          <config renderer="default"
-                 preintegration="yes" mode="slice" volumeIllumination="no" satWidth="128" satHeight="128" satDepth="128"
-                 satShells="3" satShellRadius="7"
+                 preintegration="yes" mode="slice" volumeIllumination="no"
+                 satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
                  selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
     </adaptor>
    @endcode
@@ -68,11 +72,13 @@ namespace visuOgreAdaptor
  * Only if the raycasting render mode is activated :
  * - \b volumeIllumination (optional, yes/no, default=no): Volume Illumination usage (ambient occlusion + color
  *      bleeding).
- * - \b satSizeRatio (optional, float, default=0.1): ratio used to determine the size of the SAT regarding of the
+ * - \b satSizeRatio (optional, float, default=0.25): ratio used to determine the size of the SAT regarding of the
  *      associated image size.
  * - \b satShells (optional, int, default=3): number of shells used to compute the volume illumination from the SAT.
  * - \b satShellRadius (optional, int, default=7): radius of the shells used to compute the volume illumination from the
  *      SAT.
+ * - \b satConeAngle (optional, float, default=0.1): angle used to define the soft shadows cones.
+ * - \b satConeSamples (optional, float, default=50): number of samples along the soft shadows cones.
  */
 class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
                                                 public ::fwRenderOgre::ITransformable,
@@ -89,6 +95,10 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEW_IMAGE_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAMPLING_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_SIZE_RATIO_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_SHELLS_NUMBER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_SHELL_RADIUS_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_CONE_ANGLE_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_CONE_SAMPLES_NUMBER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_PREINTEGRATION_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VOLUME_ILLUMINATION_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT;
@@ -138,6 +148,10 @@ private:
     void newImage();
     void updateSampling(int nbSamples);
     void updateSatSizeRatio(int sizeRatio);
+    void updateSatShellsNumber(int shellsNumber);
+    void updateSatShellRadius(int shellRadius);
+    void updateSatConeAngle(int coneAngle);
+    void updateSatConeSamplesNumber(int nbConeSamples);
     void togglePreintegration(bool preintegration);
     void toggleVolumeIllumination(bool volumeIllumination);
     void toggleWidgets(bool visible);
@@ -205,7 +219,13 @@ private:
     /// Radius of the shells used to compute the volume illumination from the SAT.
     int m_satShellRadius;
 
-    /// Handle connections between the layer and the volume renderer
+    /// Angle used to define the soft shadows cones.
+    float m_satConeAngle;
+
+    /// Number of samples along the soft shadows cones.
+    int m_satConeSamples;
+
+    /// Handle connections between the layer and the volume renderer.
     ::fwServices::helper::SigSlotConnection m_volumeConnection;
 };
 

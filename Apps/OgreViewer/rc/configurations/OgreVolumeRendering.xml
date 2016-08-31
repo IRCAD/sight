@@ -13,8 +13,13 @@
         <object uid="${imageUID}"  type="::fwData::Image" src="ref" />
         <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
 
-        <object uid="samplingSliderValue" type="::fwData::Integer" />
         <object uid="satSizeRatioIntVal" type="::fwData::Integer" />
+        <object uid="satShellsNumberIntVal" type="::fwData::Integer" />
+        <object uid="satShellRadiusIntVal" type="::fwData::Integer" />
+        <object uid="satConeAngleIntVal" type="::fwData::Integer" />
+        <object uid="satConeSamplesNumberIntVal" type="::fwData::Integer" />
+
+        <object uid="samplingSliderValue" type="::fwData::Integer" />
         <object uid="focalLengthIntVal" type="::fwData::Integer" />
 
         <object uid="preIntValue" type="::fwData::Boolean" />
@@ -45,14 +50,58 @@
                     <view proportion="0" />
                     <view proportion="0" />
                     <view proportion="0" />
+                    <view proportion="0" />
                     <view proportion="1" />
                 </layout>
             </gui>
             <registry>
                 <view sid="volumeRenderingSamplingInteractor" start="yes" />
                 <view sid="satSizeRatioSlider" start="yes" />
+                <view sid="volumeIlluminationInteractor" start="yes" />
                 <view sid="focalLengthSlider" start="yes" />
                 <view sid="windowLevelVR" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="volumeIlluminationInteractor" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="aoInteractor" start="yes" />
+                <view sid="softShadowsInteractor" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="aoInteractor" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="satShellsNumberSlider" start="yes" />
+                <view sid="satShellRadiusSlider" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="softShadowsInteractor" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="satConeAngleSlider" start="yes" />
+                <view sid="satConeSamplesNumberSlider" start="yes" />
             </registry>
         </service>
 
@@ -104,6 +153,26 @@
                 </connect>
 
                 <connect>
+                    <signal>satShellsNumberSlider/valueChanged</signal>
+                    <slot>VR/updateSatShellsNumber</slot>
+                </connect>
+
+                <connect>
+                    <signal>satShellRadiusSlider/valueChanged</signal>
+                    <slot>VR/updateSatShellRadius</slot>
+                </connect>
+
+                <connect>
+                    <signal>satConeAngleSlider/valueChanged</signal>
+                    <slot>VR/updateSatConeAngle</slot>
+                </connect>
+
+                <connect>
+                    <signal>satConeSamplesNumberSlider/valueChanged</signal>
+                    <slot>VR/updateSatConeSamplesNumber</slot>
+                </connect>
+
+                <connect>
                     <signal>focalLengthSlider/valueChanged</signal>
                     <slot>VR/setFocalDistance</slot>
                 </connect>
@@ -150,6 +219,55 @@
             <defaultValue>25</defaultValue>
             <value>0</value>
             <text>SAT size ratio</text>
+            <stepSize>1</stepSize>
+            <range>
+                <min>10</min>
+                <max>100</max>
+            </range>
+        </service>
+
+        <service uid="satShellsNumberSlider" type="::guiQt::editor::SSlider" autoConnect="no">
+            <inout key="satShellsNumber" uid="satShellsNumberIntVal" />
+            <defaultValue>3</defaultValue>
+            <value>0</value>
+            <text>AO shells number</text>
+            <stepSize>1</stepSize>
+            <range>
+                <min>1</min>
+                <max>10</max>
+            </range>
+        </service>
+
+        <service uid="satShellRadiusSlider" type="::guiQt::editor::SSlider" autoConnect="no">
+            <inout key="satShellRadius" uid="satShellRadiusIntVal" />
+            <defaultValue>3</defaultValue>
+            <value>0</value>
+            <text>AO shell radius</text>
+            <stepSize>1</stepSize>
+            <range>
+                <min>1</min>
+                <max>10</max>
+            </range>
+        </service>
+
+        <!-- The value normally goes from 0. to 1. but we have to use an integer slider since float type is not supported yet -->
+        <service uid="satConeAngleSlider" type="::guiQt::editor::SSlider" autoConnect="no">
+            <inout key="satConeAngle" uid="satConeSamplesNumberIntVal" />
+            <defaultValue>10</defaultValue>
+            <value>0</value>
+            <text>Shadow cone angle</text>
+            <stepSize>1</stepSize>
+            <range>
+                <min>10</min>
+                <max>100</max>
+            </range>
+        </service>
+
+        <service uid="satConeSamplesNumberSlider" type="::guiQt::editor::SSlider" autoConnect="no">
+            <inout key="satConeSamplesNumber" uid="satConeSamplesNumberIntVal" />
+            <defaultValue>50</defaultValue>
+            <value>0</value>
+            <text>Shadow cone samples</text>
             <stepSize>1</stepSize>
             <range>
                 <min>10</min>
