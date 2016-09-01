@@ -53,7 +53,7 @@ namespace tracker
  * @subsection Input Input
  * - \b markerTL [::arData::MarkerTL]: timeline for markers.
  * - \b camera [::arData::Camera]: calibrated cameras.
- * - \b extrinsic [::fwData::TransformationMatrix3D]: extrinsic camera.
+ * - \b extrinsic [::fwData::TransformationMatrix3D]: extrinsic matrix, only used if you have two cameras configured.
  * @subsection In-Out In-Out
  * - \b matrixTL [::arData::MatrixTL]: timaline of 3D transformation matrices.
  * @subsection Configuration Configuration
