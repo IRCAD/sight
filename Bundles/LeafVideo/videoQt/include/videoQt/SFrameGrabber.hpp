@@ -18,6 +18,8 @@
 
 #include <fwTools/Failed.hpp>
 
+#include <fwThread/Worker.hpp>
+
 #include <videoQt/player/QVideoPlayer.hpp>
 
 #include <QObject>

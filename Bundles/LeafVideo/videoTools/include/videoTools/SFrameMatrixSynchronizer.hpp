@@ -54,27 +54,33 @@ namespace videoTools
                 <key uid="videoImage2" />
                 <key uid="videoImage3" />
             </inout>
-            <matrices>
-                <timeline from="matrixTL1">
-                    <matrix index="0" to="matrix0" />
-                    <matrix index="1" to="matrix1" />
-                    <matrix index="2" to="matrix2" />
-                </timeline>
-                <timeline from="matrixTL2">
-                    <matrix index="0" to="matrix3" />
-                    <matrix index="8" to="matrix4" />
-                </timeline>
-            </matrices>
+            <in group="matrixTL">
+                <key uid="matrixTL1" />
+                <key uid="matrixTL2" />
+            </in>
+            <inout group="matrices0">
+                <key uid="matrix0" />
+                <key uid="matrix1" />
+                <key uid="matrix2" />
+            </inout>
+            <inout group="matrices1">
+                <key uid="matrix3" />
+                <key uid="matrix4" />
+            </inout>
             <framerate>30</framerate>
        </service>
    @endcode
  * @subsection Input Input
  * - \b frameTL [::arData::FrameTL]: defines the frameTL to synchronize. The number of \b frameTL keys must match the
  * number of \b image keys.
+ * - \b matrixTL [::extData::MatrixTL]: defines the matrixTL to synchronize. The number of \b matrixTL keys must match
+ * the number of \b matricesX group.
  *
  * @subsection In-Out In-Out
  * - \b image [::fwData::Image]: defines the images where to extract the image. The number of \b image keys must match
  * the number of \b frameTL keys.
+ * - \b matricesX [::fwData::TransformationMatrix3D]: defines the matrices where to extract the matrices from the
+ * timeline. X must be replaced by the index of the associated \b MatrixTL key (index begin at 0).
  *
  * @subsection Configuration Configuration
  * - \b matrices defines the matrixTL to synchronize.
