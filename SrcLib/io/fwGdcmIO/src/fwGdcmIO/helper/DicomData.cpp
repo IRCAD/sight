@@ -134,7 +134,7 @@ const gdcm::PhotometricInterpretation DicomData::getPhotometricInterpretation(co
             break;
         default:
             SLM_ERROR("Photometric interpretation not found");
-            pi = ::gdcm::PhotometricInterpretation::UNKNOW;
+            pi = ::gdcm::PhotometricInterpretation::UNKNOWN;
             break;
     }
 
