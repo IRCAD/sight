@@ -24,6 +24,7 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::ioDicom::SSeriesDBMerger, ::fwDa
 SSeriesDBMerger::SSeriesDBMerger() throw()
 {
 }
+
 //------------------------------------------------------------------------------
 
 SSeriesDBMerger::~SSeriesDBMerger() throw()
@@ -41,48 +42,30 @@ void SSeriesDBMerger::info(std::ostream& _sstream )
 
 void SSeriesDBMerger::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    // Get Destination SeriesDB
-    m_destinationSeriesDB = ::fwMedData::SeriesDB::dynamicCast(::fwTools::fwID::getObject(m_destinationSeriesDBID));
-    SLM_ASSERT("The SeriesDB \"" + m_destinationSeriesDBID + "\" doesn't exist.", m_destinationSeriesDB);
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesDBMerger::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesDBMerger::configuring() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service ::ioDicom::SSeriesDBMerger must have a \"config\" element.",config);
-
-    bool success;
-
-    // Destination Series DB ID
-    ::boost::tie(success, m_destinationSeriesDBID) = config->getSafeAttributeValue("destinationSeriesDBID");
-    SLM_ASSERT("It should be an \"destinationSeriesDBID\" in the "
-               "::ioDicom::SSeriesDBMerger config element.", success);
-
-
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesDBMerger::updating() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
+    auto destinationSeriesDB = this->getInOut< ::fwMedData::SeriesDB>("seriesDB");
+    SLM_ASSERT("'seriesDB' key is not found.", destinationSeriesDB);
 
-    ::fwComEd::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
-    ::fwMedData::SeriesDB::ContainerType container = m_destinationSeriesDB->getContainer();
-    ::fwData::Vector::sptr selectedSeries          = this->getObject< ::fwData::Vector >();
+    ::fwComEd::helper::SeriesDB sDBhelper(destinationSeriesDB);
+    ::fwMedData::SeriesDB::ContainerType container = destinationSeriesDB->getContainer();
+    ::fwData::Vector::csptr selectedSeries         = this->getInput< ::fwData::Vector >("selectedSeries");
 
     // Save added series in this container in order to display information on the push
     std::vector< ::fwMedData::Series::sptr > addedSeries;
@@ -136,7 +119,8 @@ void SSeriesDBMerger::updating() throw(::fwTools::Failed)
     }
 
     messageBox.show();
-
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace ioDicom

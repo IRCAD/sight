@@ -43,26 +43,19 @@ const ::fwCom::Signals::SignalKeyType SSeriesPuller::s_STARTED_PROGRESS_SIG = "s
 const ::fwCom::Signals::SignalKeyType SSeriesPuller::s_STOPPED_PROGRESS_SIG = "stoppedProgress";
 
 SSeriesPuller::SSeriesPuller() throw() :
-    m_dicomReaderSrvConfig(""),
     m_isPulling(false),
     m_progressbarId("pullDicomProgressBar"),
     m_seriesCount(0),
     m_seriesIndex(0)
 {
+    // Internal slots
+    m_slotReadLocalSeries = newSlot(s_READ_SLOT, &SSeriesPuller::readLocalSeries, this);
+    m_slotDisplayMessage  = newSlot(s_DISPLAY_SLOT, &SSeriesPuller::displayErrorMessage, this);
 
-    m_slotReadLocalSeries = ::fwCom::newSlot(&SSeriesPuller::readLocalSeries, this);
-    ::fwCom::HasSlots::m_slots(s_READ_SLOT, m_slotReadLocalSeries);
-
-    m_slotDisplayMessage = ::fwCom::newSlot(&SSeriesPuller::displayErrorMessage, this);
-    ::fwCom::HasSlots::m_slots(s_DISPLAY_SLOT, m_slotDisplayMessage);
-
-    m_slotStoreInstanceCallbackUsingMoveRequests = ::fwCom::newSlot(&SSeriesPuller::storeInstanceCallback, this);
-    ::fwCom::HasSlots::m_slots(::fwPacsIO::SeriesRetriever::s_PROGRESS_CALLBACK_SLOT,
-                               m_slotStoreInstanceCallbackUsingMoveRequests);
-
-    m_slotStoreInstanceCallbackUsingGetRequests = ::fwCom::newSlot(&SSeriesPuller::storeInstanceCallback, this);
-    ::fwCom::HasSlots::m_slots(::fwPacsIO::SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT,
-                               m_slotStoreInstanceCallbackUsingGetRequests);
+    m_slotStoreInstanceCallbackUsingMoveRequests = newSlot(::fwPacsIO::SeriesRetriever::s_PROGRESS_CALLBACK_SLOT,
+                                                           &SSeriesPuller::storeInstanceCallback, this);
+    m_slotStoreInstanceCallbackUsingGetRequests = newSlot(::fwPacsIO::SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT,
+                                                          &SSeriesPuller::storeInstanceCallback, this);
 
     m_sigProgressed      = newSignal<ProgressedSignalType>(s_PROGRESSED_SIG);
     m_sigStartedProgress = newSignal<StartedProgressSignalType>(s_STARTED_PROGRESS_SIG);
@@ -84,16 +77,31 @@ void SSeriesPuller::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
+void SSeriesPuller::configuring() throw(::fwTools::Failed)
+{
+    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
+    SLM_ASSERT("The service ::ioPacs::SSeriesPuller must have a \"config\" element.",config);
+
+    bool success;
+
+    // Dicom Reader
+    ::boost::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
+    SLM_ASSERT("It should be a \"dicomReader\" in the ::ioPacs::SSeriesPuller config element.", success);
+
+    // Dicom Reader Config
+    ::boost::tie(success, m_dicomReaderSrvConfig) = config->getSafeAttributeValue("dicomReaderConfig");
+}
+
+//------------------------------------------------------------------------------
+
 void SSeriesPuller::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     // Create enquirer
     m_seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
 
     // Get Destination SeriesDB
-    m_destinationSeriesDB = ::fwMedData::SeriesDB::dynamicCast(::fwTools::fwID::getObject(m_destinationSeriesDBUID));
-    SLM_ASSERT("The SeriesDB \"" + m_destinationSeriesDBUID + "\" doesn't exist.", m_destinationSeriesDB);
+    m_destinationSeriesDB = this->getInOut< ::fwMedData::SeriesDB>("seriesDB");
+    SLM_ASSERT("The 'seriesDB' key doesn't exist.", m_destinationSeriesDB);
 
     // Create temporary SeriesDB
     m_tempSeriesDB = ::fwMedData::SeriesDB::New();
@@ -129,61 +137,27 @@ void SSeriesPuller::starting() throw(::fwTools::Failed)
     m_pullSeriesWorker = ::fwThread::Worker::New();
 
     // Get pacs configuration
-    m_pacsConfiguration =
-        ::fwPacsIO::data::PacsConfiguration::dynamicCast(::fwTools::fwID::getObject(m_pacsConfigurationUID));
+    m_pacsConfiguration = this->getInput< ::fwPacsIO::data::PacsConfiguration>("pacsConfig");
     SLM_ASSERT("The pacs configuration object should not be null.", m_pacsConfiguration);
-
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesPuller::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     // Stop reader service
     m_dicomReader->stop();
     ::fwServices::OSR::unregisterService(m_dicomReader);
 
     // Worker
     m_pullSeriesWorker.reset();
-
-}
-
-//------------------------------------------------------------------------------
-
-void SSeriesPuller::configuring() throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service ::ioPacs::SSeriesPuller must have a \"config\" element.",config);
-
-    bool success;
-
-    // Pacs Configuration UID
-    ::boost::tie(success, m_pacsConfigurationUID) = config->getSafeAttributeValue("pacsConfigurationUID");
-    SLM_ASSERT("It should be a \"pacsConfigurationUID\" tag in the ::ioPacs::SSeriesPuller config element.", success);
-
-    // Dicom Reader
-    ::boost::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
-    SLM_ASSERT("It should be a \"dicomReader\" in the ::ioPacs::SSeriesPuller config element.", success);
-
-    // Dicom Reader Config
-    ::boost::tie(success, m_dicomReaderSrvConfig) = config->getSafeAttributeValue("dicomReaderSrvConfig");
-
-    // Destination Series DB ID
-    ::boost::tie(success, m_destinationSeriesDBUID) = config->getSafeAttributeValue("destinationSeriesDBUID");
-    SLM_ASSERT("It should be a \"destinationSeriesDBUID\" in the ::ioPacs::SSeriesPuller config element.", success);
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesPuller::updating() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    ::fwData::Vector::sptr selectedSeries = this->getObject< ::fwData::Vector >();
+    ::fwData::Vector::csptr selectedSeries = this->getInput< ::fwData::Vector >("selectedSeries");
 
     if(m_isPulling)
     {
@@ -230,14 +204,14 @@ void SSeriesPuller::pullSeries()
         m_seriesIndex   = 0;
         m_instanceCount = 0;
 
-        ::fwData::Vector::sptr seriesVector = this->getObject< ::fwData::Vector >();
+        ::fwData::Vector::csptr selectedSeries = this->getInput< ::fwData::Vector >("selectedSeries");
 
         // Find which selected series must be pulled
         DicomSeriesContainerType pullSeriesVector;
         DicomSeriesContainerType selectedSeriesVector;
 
-        ::fwData::Vector::IteratorType it = seriesVector->begin();
-        for(; it != seriesVector->end(); ++it)
+        ::fwData::Vector::ConstIteratorType it = selectedSeries->begin();
+        for(; it != selectedSeries->end(); ++it)
         {
             ::fwMedData::DicomSeries::sptr series = ::fwMedData::DicomSeries::dynamicCast(*it);
 
@@ -400,7 +374,6 @@ void SSeriesPuller::storeInstanceCallback(const ::std::string& seriesInstanceUID
     ss << "Downloading file " << instanceNumber << "/" << m_instanceCount;
     float percentage = static_cast<float>(instanceNumber)/static_cast<float>(m_instanceCount);
     m_sigProgressed->asyncEmit(m_progressbarId, percentage, ss.str());
-
 }
 
 //------------------------------------------------------------------------------
@@ -415,5 +388,7 @@ void SSeriesPuller::displayErrorMessage(const ::std::string& message) const
     messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
     messageBox.show();
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace ioPacs

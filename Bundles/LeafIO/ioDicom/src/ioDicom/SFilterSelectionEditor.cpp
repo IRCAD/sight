@@ -50,15 +50,22 @@ void SFilterSelectionEditor::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
+void SFilterSelectionEditor::configuring() throw(::fwTools::Failed)
+{
+    ::fwGui::IGuiContainerSrv::initialize();
+}
+
+//------------------------------------------------------------------------------
+
 void SFilterSelectionEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
     // Get Destination SeriesDB
-    m_destinationSeriesDB = ::fwMedData::SeriesDB::dynamicCast(::fwTools::fwID::getObject(m_destinationSeriesDBID));
+    m_destinationSeriesDB = this->getInOut< ::fwMedData::SeriesDB>("target");
     SLM_ASSERT("The SeriesDB \"" + m_destinationSeriesDBID + "\" doesn't exist.", m_destinationSeriesDB);
 
-    ::fwData::Vector::sptr dataVector = this->getObject< ::fwData::Vector >();
+    ::fwData::Vector::csptr dataVector = this->getInput< ::fwData::Vector >("selection");
     SLM_ASSERT("Vector object should not be null.", dataVector);
 
     ::fwGui::IGuiContainerSrv::create();
@@ -241,28 +248,8 @@ void SFilterSelectionEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SFilterSelectionEditor::configuring() throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-    ::fwGui::IGuiContainerSrv::initialize();
-
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service ::ioDicom::SFilterSelectionEditor must have a \"config\" element.",
-               config);
-
-    bool success;
-
-    // Destination Series DB ID
-    ::boost::tie(success, m_destinationSeriesDBID) = config->getSafeAttributeValue("destinationSeriesDBID");
-    SLM_ASSERT("It should be a \"destinationSeriesDBID\" attribute in the "
-               "::ioDicom::SFilterSelectionEditor config element.", success);
-}
-
-//------------------------------------------------------------------------------
-
 void SFilterSelectionEditor::updating() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------

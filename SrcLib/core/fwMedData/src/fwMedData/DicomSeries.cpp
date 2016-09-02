@@ -92,7 +92,7 @@ void DicomSeries::addBinary(const std::string& filename, SPTR(::fwData::Array)bi
 
 //------------------------------------------------------------------------------
 
-bool DicomSeries::isInstanceAvailable(std::size_t instanceIndex)
+bool DicomSeries::isInstanceAvailable(std::size_t instanceIndex) const
 {
     DicomPathContainerType::const_iterator localPathIter;
 

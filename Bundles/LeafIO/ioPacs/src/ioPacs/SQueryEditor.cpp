@@ -48,6 +48,13 @@ void SQueryEditor::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
+void SQueryEditor::configuring() throw(::fwTools::Failed)
+{
+    ::fwGui::IGuiContainerSrv::initialize();
+}
+
+//------------------------------------------------------------------------------
+
 void SQueryEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
@@ -93,8 +100,7 @@ void SQueryEditor::starting() throw(::fwTools::Failed)
     m_seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
 
     // Get pacs configuration
-    m_pacsConfiguration =
-        ::fwPacsIO::data::PacsConfiguration::dynamicCast(::fwTools::fwID::getObject(m_pacsConfigurationUID));
+    m_pacsConfiguration = this->getInput< ::fwPacsIO::data::PacsConfiguration>("pacsConfig");
     SLM_ASSERT("The pacs configuration object sould not be null.", m_pacsConfiguration);
 }
 
@@ -113,24 +119,6 @@ void SQueryEditor::stopping() throw(::fwTools::Failed)
 
     this->getContainer()->clean();
     this->::fwGui::IGuiContainerSrv::destroy();
-}
-
-//------------------------------------------------------------------------------
-
-void SQueryEditor::configuring() throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-    ::fwGui::IGuiContainerSrv::initialize();
-
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service ::ioPacs::SQueryEditor must have a \"config\" element.",config);
-
-    bool success;
-
-    // Pacs Configuration UID
-    ::boost::tie(success, m_pacsConfigurationUID) = config->getSafeAttributeValue("pacsConfigurationUID");
-    SLM_ASSERT("It should be a \"pacsConfigurationUID\" tag in the ::ioPacs::SQueryEditor config element.", success);
-
 }
 
 //------------------------------------------------------------------------------
@@ -230,7 +218,7 @@ void SQueryEditor::queryStudyDate()
 
 void SQueryEditor::updateSeriesDB(::fwMedData::SeriesDB::ContainerType series)
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
     ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
 
     // Delete old series from the SeriesDB
@@ -266,5 +254,7 @@ void SQueryEditor::displayErrorMessage(const std::string& message) const
     messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
     messageBox.show();
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace ioPacs

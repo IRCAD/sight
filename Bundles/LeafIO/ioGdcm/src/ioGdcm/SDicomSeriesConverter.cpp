@@ -29,10 +29,9 @@ static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesConverter::SDicomSeriesConverter() throw() : m_sigJobCreated(JobCreatedSignal::New())
+SDicomSeriesConverter::SDicomSeriesConverter() throw()
 {
-    ::fwCom::HasSignals::m_signals
-        ( JOB_CREATED_SIGNAL, m_sigJobCreated );
+    m_sigJobCreated = newSignal<JobCreatedSignal>( JOB_CREATED_SIGNAL );
 }
 //------------------------------------------------------------------------------
 
@@ -51,47 +50,29 @@ void SDicomSeriesConverter::info(std::ostream& _sstream )
 
 void SDicomSeriesConverter::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     // Get Destination SeriesDB
-    m_destinationSeriesDB = ::fwMedData::SeriesDB::dynamicCast(::fwTools::fwID::getObject(m_destinationSeriesDBID));
-    SLM_ASSERT("The SeriesDB \"" + m_destinationSeriesDBID + "\" doesn't exist.", m_destinationSeriesDB);
+    m_destinationSeriesDB = this->getInOut< ::fwMedData::SeriesDB>("target");
+    SLM_ASSERT("The 'target' key doesn't exist.", m_destinationSeriesDB);
 }
 
 //------------------------------------------------------------------------------
 
 void SDicomSeriesConverter::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
 void SDicomSeriesConverter::configuring() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service ::ioGdcm::SDicomSeriesConverter must have a \"config\" element.",config);
-
-    bool success;
-
-    // Destination Series DB ID
-    ::boost::tie(success, m_destinationSeriesDBID) = config->getSafeAttributeValue("destinationSeriesDBID");
-    SLM_ASSERT("It should be a \"destinationSeriesDBID\" attribute in the "
-               "::ioGdcm::SDicomSeriesConverter config element.", success);
-
-
 }
 
 //------------------------------------------------------------------------------
 
 void SDicomSeriesConverter::updating() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    ::fwMedData::SeriesDB::sptr dicomSeriesDB = this->getObject< ::fwMedData::SeriesDB >();
-    ::fwMedData::SeriesDB::sptr dummy         = ::fwMedData::SeriesDB::New();
+    ::fwMedData::SeriesDB::csptr dicomSeriesDB = this->getInput< ::fwMedData::SeriesDB >("source");
+    ::fwMedData::SeriesDB::sptr dummy          = ::fwMedData::SeriesDB::New();
 
     if(dicomSeriesDB->empty())
     {
@@ -155,6 +136,7 @@ void SDicomSeriesConverter::updating() throw(::fwTools::Failed)
     }
 }
 
+//------------------------------------------------------------------------------
 
 } // namespace ioGdcm
 

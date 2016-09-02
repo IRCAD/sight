@@ -31,8 +31,33 @@ namespace ioPacs
 {
 
 /**
- * @brief   This service is used to pull series from a pacs.
+ * @brief   This service is used to pull series from a PACS.
+ *
+ * @section Signals Signals
+ * - \b progressed(std::string) : Signal to start the progress (bar id).
+ * - \b startedProgress(std::string, float, std::string) :  Signal to update the progress (bar id, percentage, message).
+ * - \b stoppedProgress(std::string) : Signal to stop the progress (bar id).
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::namespace::classname">
+            <in key="pacsConfig" uid="..." />
+            <in key="selectedSeries" uid="..." />
+            <inout key="seriesDB" uid="..." />
+            <config dicomReader="::ioGdcm::SSeriesDBReader" dicomReaderConfig="config" />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b pacsConfig [::fwPacsIO::data::PacsConfiguration]: PACS configuration data.
+ * - \b selectedSeries [::fwData::Vector]: List of DICOM series to pull from the PACS..
+ * @subsection In-Out In-Out:
+ * - \b seriesDB [::fwMedData::SeriesDB]: SeriesDB where to put the retrieved dicom series.
+ * @subsection Configuration Configuration:
+ * - \b dicomReader Reader type to use.
+ * - \b dicomReaderConfig Optional configuration for the DICOM Reader.
  */
+
 class IOPACS_CLASS_API SSeriesPuller : public ::fwServices::IController
 {
 public:
@@ -74,19 +99,7 @@ public:
 
 protected:
 
-    /**
-     * @brief Configuring method. This method is used to configure the service.
-     *
-     * XML configuration sample:
-       @code{.xml}
-       <service uid="pullSeriesController" impl="::ioPacs::SSeriesPuller">
-         <config pacsConfigurationUID="pacsConfiguration"
-         dicomReader="::ioGdcm::SSeriesDBReader"
-         dicomReaderSrvConfig="config"
-         destinationSeriesDBUID="localSeriesDB" />
-       </service>
-       @endcode
-     */
+    /// Configuring method. This method is used to configure the service.
     IOPACS_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Override
@@ -153,11 +166,8 @@ protected:
     /// Series enquirer
     ::fwPacsIO::SeriesEnquirer::sptr m_seriesEnquirer;
 
-    /// Pacs Configuration UID
-    std::string m_pacsConfigurationUID;
-
     /// Pacs Configuration object
-    ::fwPacsIO::data::PacsConfiguration::sptr m_pacsConfiguration;
+    ::fwPacsIO::data::PacsConfiguration::csptr m_pacsConfiguration;
 
     /// Reader
     ::io::IReader::sptr m_dicomReader;
@@ -170,9 +180,6 @@ protected:
 
     /// Temporary SeriesDB
     ::fwMedData::SeriesDB::sptr m_tempSeriesDB;
-
-    /// Destination SeriesDB UID
-    std::string m_destinationSeriesDBUID;
 
     /// Destination SeriesDB
     ::fwMedData::SeriesDB::sptr m_destinationSeriesDB;

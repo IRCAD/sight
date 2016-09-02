@@ -1,16 +1,19 @@
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::fwServices::registry::AppConfig2">
     <id>DicomPacsWriter</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="GENERIC_UID" />
         <param name="AS_UID" />
         <param name="APP_NAME" />
+        <param name="PROGRESS_CHANNEL" />
     </parameters>
     <config>
+        <object uid="seriesDB" type="::fwMedData::SeriesDB" />
+        <object uid="selections" type="::fwData::Vector" />
+        <object uid="pacsConfiguration" type="::fwPacsIO::data::PacsConfiguration" />
 
-    <object type="::fwData::Composite">
+        <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+        <service uid="mainView" type="::gui::view::SDefaultView" >
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view caption="Information" align="center" minWidth="200" />
@@ -20,13 +23,13 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="${GENERIC_UID}_toolBar" start="yes" />
-                <view sid="${GENERIC_UID}_selector" start="yes" />
-                <view wid="${GENERIC_UID}_preview" />
+                <toolBar sid="toolBar" start="yes" />
+                <view sid="selector" start="yes" />
+                <view wid="preview" />
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Import" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
@@ -36,124 +39,110 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="${GENERIC_UID}_action_import" start="yes" />
-                <menuItem sid="${GENERIC_UID}_action_editPacsConfiguration" start="yes" />
-                <menuItem sid="${GENERIC_UID}_action_anonymize" start="yes" />
-                <menuItem sid="${GENERIC_UID}_action_pushSeriesToPacs" start="yes" />
+                <menuItem sid="action_import" start="yes" />
+                <menuItem sid="action_editPacsConfiguration" start="yes" />
+                <menuItem sid="action_anonymize" start="yes" />
+                <menuItem sid="action_pushSeriesToPacs" start="yes" />
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_progressBarController" impl="::ioPacs::SProgressBarController" autoConnect="no" />
+        <!-- ******************************* Actions ****************************************** -->
 
-        <!-- PACS CONFIGURATION -->
-        <item key="pacsConfiguration">
-            <object type="::fwPacsIO::data::PacsConfiguration" uid="${GENERIC_UID}_pacsConfiguration">
+        <service uid="action_import" type="::uiIO::action::SSeriesDBMerger" >
+            <in key="seriesDB" uid="seriesDB" />
+            <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
+        </service>
 
-                <service uid="${GENERIC_UID}_pacsConfigurationInitializer" impl="::ioPacs::SPacsConfigurationInitializer" autoConnect="yes">
-                    <config
-                        localApplicationTitle="${APP_NAME}"
-                        pacsHostName="mypacs.mycompany.com"
-                        pacsApplicationTitle="PACSNAME"
-                        pacsApplicationPort="11112"
-                        moveApplicationTitle="MoveApplicationTitle"
-                        moveApplicationPort="11110"
-                        retrieveMethod="GET"
-                        preferenceKey="PACS_CONFIGURATION"
-                        />
-                </service>
+        <service uid="action_editPacsConfiguration" type="::gui::action::SConfigLauncher">
+            <appConfig id="PacsConfigurationManager" />
+            <inout key="PACS_CONFIGURATION" uid="pacsConfiguration"  />
+            <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/media_0-1/icons/Settings.svg"  />
+        </service>
 
-                <service uid="${GENERIC_UID}_action_editPacsConfiguration" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="yes">
-                    <config>
-                        <appConfig id="PacsConfigurationManager" >
-                            <parameters>
-                                <parameter replace="PACS_CONFIGURATION" by="${GENERIC_UID}_pacsConfiguration"  />
-                                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/media_0-1/icons/Settings.svg"  />
-                            </parameters>
-                        </appConfig>
-                    </config>
-                </service>
+        <!-- Dicom Anonymization -->
+        <service uid="action_anonymize" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>anonymizeController/update</slot>
+            </slots>
+        </service>
 
-            </object>
-        </item>
+        <!-- Push series -->
+        <service uid="action_pushSeriesToPacs" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>pushSeriesController/update</slot>
+            </slots>
+        </service>
 
-        <!-- SERIES DB -->
-        <item key="seriesDB">
-            <object type="::fwMedData::SeriesDB" uid="${GENERIC_UID}_seriesDB">
+        <!-- ******************************* Services ***************************************** -->
 
-                <service uid="${GENERIC_UID}_action_import" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger" autoConnect="no">
-                    <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
-                </service>
+        <service uid="progressBarController" type="::ioPacs::SProgressBarController"  />
 
-                <service uid="${GENERIC_UID}_selector" impl="::uiMedData::editor::SSelector" autoConnect="yes">
-                    <selectionId>${GENERIC_UID}_selections</selectionId>
-                </service>
+        <service uid="selector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+            <inout key="seriesDB" uid="seriesDB" />
+            <inout key="selection" uid="selections" />
+        </service>
 
-            </object>
-        </item>
+        <service uid="pacsConfigurationInitializer" type="::ioPacs::SPacsConfigurationInitializer" autoConnect="yes">
+            <inout key="config" uid="pacsConfiguration" />
+            <config
+                localApplicationTitle="${APP_NAME}"
+                pacsHostName="mypacs.mycompany.com"
+                pacsApplicationTitle="PACSNAME"
+                pacsApplicationPort="11112"
+                moveApplicationTitle="MoveApplicationTitle"
+                moveApplicationPort="11110"
+                retrieveMethod="GET"
+                preferenceKey="PACS_CONFIGURATION"
+                />
+        </service>
 
-        <item key="selections">
-            <object type="::fwData::Vector" uid="${GENERIC_UID}_selections">
+        <!-- Preview -->
+        <service uid="viewer" type="::uiMedData::SSeriesViewer" autoConnect="yes">
+            <in key="series" uid="selections" />
+            <parentView wid="preview" />
+            <configs>
+                <config id="2DLocalPreviewConfig" type="::fwMedData::DicomSeries" />
+            </configs>
+        </service>
 
-                <!-- Preview -->
-                <service uid="${GENERIC_UID}_viewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
-                    <parentView>${GENERIC_UID}_preview</parentView>
-                    <configs>
-                        <config id="2DLocalPreviewConfig" type="::fwMedData::DicomSeries" />
-                    </configs>
-                </service>
+        <service uid="anonymizeController" type="::ioGdcm::SDicomSeriesAnonymizer">
+            <inout key="seriesDB" uid="seriesDB" />
+            <inout key="selectedSeries" uid="selections" />
+        </service>
 
-                <!-- Dicom Anonymization -->
-                <service uid="${GENERIC_UID}_action_anonymize" impl="::gui::action::SSlotCaller" >
-                    <slots>
-                        <slot>${GENERIC_UID}_anonymizeController/update</slot>
-                    </slots>
-                </service>
-                <service uid="${GENERIC_UID}_anonymizeController" impl="::ioGdcm::SDicomSeriesAnonymizer">
-                    <config seriesDBUID="${GENERIC_UID}_seriesDB" />
-                </service>
+        <service uid="pushSeriesController" type="::ioPacs::SSeriesPusher">
+            <in key="pacsConfig" uid="pacsConfiguration" />
+            <in key="selectedSeries" uid="selections" />
+        </service>
 
-                <!-- Push series -->
-                <service uid="${GENERIC_UID}_action_pushSeriesToPacs" impl="::gui::action::SSlotCaller" >
-                    <slots>
-                        <slot>${GENERIC_UID}_pushSeriesController/update</slot>
-                    </slots>
-                </service>
-                <service uid="${GENERIC_UID}_pushSeriesController" impl="::ioPacs::SSeriesPusher">
-                    <config pacsConfigurationUID="${GENERIC_UID}_pacsConfiguration" />
-                </service>
-
-            </object>
-        </item>
+        <!-- ******************************* Connections ************************************** -->
 
         <connect>
-            <signal>${GENERIC_UID}_pushSeriesController/progressed</signal>
-            <slot>${GENERIC_UID}_progressBarController/updateProgress</slot>
+            <signal>pushSeriesController/progressed</signal>
+            <slot>progressBarController/updateProgress</slot>
         </connect>
         <connect>
-            <signal>${GENERIC_UID}_pushSeriesController/startedProgress</signal>
-            <slot>${GENERIC_UID}_progressBarController/startProgress</slot>
+            <signal>pushSeriesController/startedProgress</signal>
+            <slot>progressBarController/startProgress</slot>
         </connect>
         <connect>
-            <signal>${GENERIC_UID}_pushSeriesController/stoppedProgress</signal>
-            <slot>${GENERIC_UID}_progressBarController/stopProgress</slot>
+            <signal>pushSeriesController/stoppedProgress</signal>
+            <slot>progressBarController/stopProgress</slot>
          </connect>
 
-        <connect>
-            <signal>${GENERIC_UID}_anonymizeController/jobCreated</signal>
-            <slot>progress_statusbar/showJob</slot>
+        <connect channel="${PROGRESS_CHANNEL}">
+            <signal>anonymizeController/jobCreated</signal>
         </connect>
 
         <!-- START AND STOP SERVICES -->
-        <start uid="${GENERIC_UID}_mainView" />
-        <start uid="${GENERIC_UID}_viewer" />
-        <start uid="${GENERIC_UID}_anonymizeController" />
-        <start uid="${GENERIC_UID}_pushSeriesController" />
-        <start uid="${GENERIC_UID}_progressBarController" />
-        <start uid="${GENERIC_UID}_pacsConfigurationInitializer" />
+        <start uid="mainView" />
+        <start uid="viewer" />
+        <start uid="anonymizeController" />
+        <start uid="pushSeriesController" />
+        <start uid="progressBarController" />
+        <start uid="pacsConfigurationInitializer" />
 
-        <update uid="${GENERIC_UID}_pacsConfigurationInitializer" />
-
-    </object>
+        <update uid="pacsConfigurationInitializer" />
 
     </config>
 </extension>

@@ -4,11 +4,11 @@
     <requirement id="dataReg"/>
     <requirement id="io" />
     <requirement id="ioDicom" />
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
         <service>::ioGdcm::SDicomSeriesAnonymizer</service>
-        <object>::fwData::Vector</object>
+        <object>::fwData::Object</object>
         <desc>Dicom Series Anonymizer</desc>
     </extension>
 

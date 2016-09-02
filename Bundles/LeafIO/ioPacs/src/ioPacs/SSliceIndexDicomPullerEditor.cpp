@@ -90,17 +90,43 @@ void SSliceIndexDicomPullerEditor::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
+void SSliceIndexDicomPullerEditor::configuring() throw(::fwTools::Failed)
+{
+    ::fwGui::IGuiContainerSrv::initialize();
+
+    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
+    SLM_ASSERT("The service ::ioPacs::SPacsConfigurationInitializer must have "
+               "a \"config\" element.",config);
+
+    bool success;
+
+    // Reader
+    ::boost::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
+    SLM_ASSERT("It should be a \"dicomReader\" tag in the ::ioPacs::SSliceIndexDicomPullerEditor "
+               "config element.", success);
+
+    // Reader configuration
+    ::fwRuntime::ConfigurationElement::sptr readerConfig = config->findConfigurationElement("dicomReaderConfig");
+    m_readerConfig                                       =
+        (readerConfig && readerConfig->size() == 1) ? readerConfig->getElements()[0] : nullptr;
+
+    // Delay
+    std::string delayStr;
+    ::boost::tie(success, delayStr) = config->getSafeAttributeValue("delay");
+    if(success)
+    {
+        m_delay = ::boost::lexical_cast< unsigned int >(delayStr);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SSliceIndexDicomPullerEditor::starting() throw(::fwTools::Failed)
 {
     m_delayTimer2 = m_associatedWorker->createTimer();
 
     // Get pacs configuration
-    m_pacsConfiguration = ::fwPacsIO::data::PacsConfiguration::dynamicCast(
-        ::fwTools::fwID::getObject(m_pacsConfigurationUID));
-
-    // Composite
-    m_composite = ::fwData::Composite::dynamicCast(::fwTools::fwID::getObject(m_compositeUID));
-    SLM_ASSERT("Composite should not be null !", m_composite);
+    m_pacsConfiguration = this->getInput< ::fwPacsIO::data::PacsConfiguration>("pacsConfig");
 
     ::fwGui::IGuiContainerSrv::create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
@@ -109,7 +135,7 @@ void SSliceIndexDicomPullerEditor::starting() throw(::fwTools::Failed)
     QHBoxLayout* layout      = new QHBoxLayout();
     container->setLayout(layout);
 
-    ::fwMedData::DicomSeries::sptr dicomSeries = this->getObject< ::fwMedData::DicomSeries >();
+    ::fwMedData::DicomSeries::csptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >("series");
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
     m_numberOfSlices = dicomSeries->getNumberOfInstances();
 
@@ -184,8 +210,6 @@ void SSliceIndexDicomPullerEditor::starting() throw(::fwTools::Failed)
 
 void SSliceIndexDicomPullerEditor::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     // Worker
     m_pullSeriesWorker->stop();
     m_pullSeriesWorker.reset();
@@ -206,55 +230,8 @@ void SSliceIndexDicomPullerEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomPullerEditor::configuring() throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-    ::fwGui::IGuiContainerSrv::initialize();
-
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service ::ioPacs::SPacsConfigurationInitializer must have "
-               "a \"config\" element.",config);
-
-    bool success;
-
-    // Pacs Configuration UID
-    ::boost::tie(success, m_pacsConfigurationUID) = config->getSafeAttributeValue("pacsConfigurationUID");
-
-    // Composite UID
-    ::boost::tie(success, m_compositeUID) = config->getSafeAttributeValue("compositeUID");
-    SLM_ASSERT("It should be a \"compositeUID\" tag in the ::ioPacs::SSliceIndexDicomPullerEditor config element.",
-               success);
-
-    // Image Key
-    ::boost::tie(success, m_imageKey) = config->getSafeAttributeValue("imageKey");
-    SLM_ASSERT("It should be an \"imageKey\" tag in the "
-               "::ioPacs::SSliceIndexDicomPullerEditor config element.", success);
-
-    // Reader
-    ::boost::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
-    SLM_ASSERT("It should be a \"dicomReader\" tag in the ::ioPacs::SSliceIndexDicomPullerEditor "
-               "config element.", success);
-
-    // Reader configuration
-    ::fwRuntime::ConfigurationElement::sptr readerConfig = config->findConfigurationElement("dicomReaderConfig");
-    m_readerConfig                                       =
-        (readerConfig && readerConfig->size() == 1) ? readerConfig->getElements()[0] : nullptr;
-
-    // Delay
-    std::string delayStr;
-    ::boost::tie(success, delayStr) = config->getSafeAttributeValue("delay");
-    if(success)
-    {
-        m_delay = ::boost::lexical_cast< unsigned int >(delayStr);
-    }
-
-}
-
-//------------------------------------------------------------------------------
-
 void SSliceIndexDicomPullerEditor::updating() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
@@ -276,7 +253,7 @@ void SSliceIndexDicomPullerEditor::changeSliceIndex(int value)
 void SSliceIndexDicomPullerEditor::triggerNewSlice()
 {
     // DicomSeries
-    ::fwMedData::DicomSeries::sptr dicomSeries = this->getObject< ::fwMedData::DicomSeries >();
+    ::fwMedData::DicomSeries::csptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >("series");
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
 
     // Compute slice index
@@ -304,9 +281,9 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
 void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
 {
     // DicomSeries
-    ::fwMedData::DicomSeries::sptr dicomSeries = this->getObject< ::fwMedData::DicomSeries >();
+    ::fwMedData::DicomSeries::csptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >("series");
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
-    if( dicomSeries->getModality() != "CT" && dicomSeries->getModality() != "MR")
+    if( dicomSeries->getModality() != "CT" && dicomSeries->getModality() != "MR" && dicomSeries->getModality() != "XA")
     {
         return;
     }
@@ -392,32 +369,8 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
 
     if(imageSeries)
     {
-        ::fwComEd::helper::Composite helper(m_composite);
         ::fwData::Image::sptr newImage    = imageSeries->getImage();
         ::fwData::Image::SizeType newSize = newImage->getSize();
-
-        if(m_composite->find(m_imageKey) == m_composite->end())
-        {
-            helper.add(m_imageKey, newImage);
-        }
-        else
-        {
-            ::fwData::Image::sptr oldImage    = ::fwData::Image::dynamicCast(m_composite->getContainer()[m_imageKey]);
-            ::fwData::Image::SizeType oldSize = oldImage->getSize();
-            if(newSize[0] == oldSize[0] && newSize[1] == oldSize[1] && newSize[2] == oldSize[2])
-            {
-                // Copy buffer
-                oldImage->setDataArray(newImage->getDataArray(), false);
-                auto sig = oldImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-                sig->asyncEmit();
-            }
-            else
-            {
-                // Swap image
-                helper.swap(m_imageKey, newImage);
-            }
-
-        }
 
         newImage->setField(::fwComEd::Dictionary::m_axialSliceIndexId, m_axialIndex);
         m_frontalIndex->setValue(static_cast<int>(newSize[0]/2));
@@ -425,7 +378,7 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
         m_sagittalIndex->setValue(static_cast<int>(newSize[1]/2));
         newImage->setField(::fwComEd::Dictionary::m_sagittalSliceIndexId, m_sagittalIndex);
 
-        helper.notify();
+        this->setOutput("image", newImage);
     }
 
     ::boost::system::error_code ec;
@@ -437,7 +390,7 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
 
 void SSliceIndexDicomPullerEditor::pullInstance()
 {
-    SLM_ASSERT("Pacs not configured.",m_pacsConfiguration);
+    SLM_ASSERT("Pacs not configured.", m_pacsConfiguration);
 
     if( m_pacsConfiguration )
     {
@@ -445,7 +398,7 @@ void SSliceIndexDicomPullerEditor::pullInstance()
         try
         {
             // DicomSeries
-            ::fwMedData::DicomSeries::sptr dicomSeries = this->getObject< ::fwMedData::DicomSeries >();
+            ::fwMedData::DicomSeries::sptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >("series");
             SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
 
             // Get selected slice

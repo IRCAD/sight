@@ -20,6 +20,19 @@ namespace ioDicom
 /**
  * @brief   This service is used to merge selected series with a SeriesDB.
  *          All the series in the vector are pushed in the destination SeriesDB.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::ioDicom::SSeriesDBMerger">
+            <in key="selectedSeries" uid="..." />
+            <inout key="seriesDB" uid="..." />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b selectedSeries [::fwData::Vector]: Vector containing the selected series to merge.
+ * @subsection In-Out In-Out:
+ * - \b seriesDB [::fwMedData::SeriesDB]: SeriesDB where to put the series.
  */
 class IODICOM_CLASS_API SSeriesDBMerger : public ::fwGui::IActionSrv
 {
@@ -27,28 +40,15 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SSeriesDBMerger)( ::fwGui::IActionSrv ) );
 
-    /**
-     * @brief Constructor
-     */
+    /// Constructor
     IODICOM_API SSeriesDBMerger() throw();
 
-    /**
-     * @brief Destructor
-     */
+    /// Destructor
     IODICOM_API virtual ~SSeriesDBMerger() throw();
 
 protected:
 
-    /**
-     * @brief Configuring method. This method is used to configure the service.
-     *
-     * XML configuration sample:
-       @code{.xml}
-       <service uid="actionPushSeries" impl="::ioDicom::common::action::SSeriesDBMerger">
-         <config destinationSeriesDBID="mySeriesDB" />
-       </service>
-       @endcode
-     */
+    /// Do nothing.
     IODICOM_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Override
@@ -62,15 +62,6 @@ protected:
 
     /// Override
     IODICOM_API void info(std::ostream& _sstream );
-
-protected:
-
-    /// Destination SeriesDB ID
-    std::string m_destinationSeriesDBID;
-
-    /// Destination SeriesDB
-    ::fwMedData::SeriesDB::sptr m_destinationSeriesDB;
-
 };
 
 } // namespace ioDicom

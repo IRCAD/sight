@@ -70,9 +70,6 @@ protected:
 
 protected:
 
-    /// Destination SeriesDB ID
-    std::string m_destinationSeriesDBID;
-
     /// Destination SeriesDB
     ::fwMedData::SeriesDB::sptr m_destinationSeriesDB;
 

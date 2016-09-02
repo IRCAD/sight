@@ -26,7 +26,24 @@ namespace ioPacs
 {
 
 /**
- * @brief   This service is used to push series to a pacs.
+ * @brief   This service is used to push a DICOM series to a PACS.
+ *
+ * @section Signals Signals
+ * - \b progressed(std::string) : Signal to start the progress (bar id).
+ * - \b startedProgress(std::string, float, std::string) :  Signal to update the progress (bar id, percentage, message).
+ * - \b stoppedProgress(std::string) : Signal to stop the progress (bar id).
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::ioPacs::SSeriesPusher">
+            <in key="pacsConfig" uid="..." />
+            <in key="selectedSeries" uid="..." />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b pacsConfig [::fwPacsIO::data::PacsConfiguration]: PACS configuration data.
+ * - \b selectedSeries [::fwData::Vector]: List of DICOM series to push to the PACS.
  */
 class IOPACS_CLASS_API SSeriesPusher : public ::fwServices::IController
 {
@@ -34,7 +51,7 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SSeriesPusher)( ::fwServices::IController ) );
 
-    typedef std::vector< SPTR(::fwMedData::Series) > DicomSeriesContainerType;
+    typedef std::vector< CSPTR(::fwMedData::Series) > DicomSeriesContainerType;
     typedef std::vector< ::boost::filesystem::path > DicomFileContainer;
 
     IOPACS_API static const ::fwCom::Slots::SlotKeyType s_DISPLAY_SLOT;
@@ -64,16 +81,7 @@ public:
 
 protected:
 
-    /**
-     * @brief Configuring method. This method is used to configure the service.
-     *
-     * XML configuration sample:
-       @code{.xml}
-       <service uid="pushSeriesController" impl="::ioPacs::SSeriesPusher">
-         <config pacsConfigurationUID="pacsConfiguration" />
-       </service>
-       @endcode
-     */
+    /// Does nothing.
     IOPACS_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Override
@@ -131,18 +139,14 @@ protected:
     /// Signal emitted when the bar is stopping
     StoppedProgressSignalType::sptr m_sigStoppedProgress;
 
-
     /// Progress Bar ID
     std::string m_progressbarId;
 
     /// Series enquirer
     ::fwPacsIO::SeriesEnquirer::sptr m_seriesEnquirer;
 
-    /// Pacs Configuration UID
-    std::string m_pacsConfigurationUID;
-
     /// Pacs Configuration object
-    ::fwPacsIO::data::PacsConfiguration::sptr m_pacsConfiguration;
+    ::fwPacsIO::data::PacsConfiguration::csptr m_pacsConfiguration;
 
     /// Push Worker
     ::fwThread::Worker::sptr m_pushSeriesWorker;

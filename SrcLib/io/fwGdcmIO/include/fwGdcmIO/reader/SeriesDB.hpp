@@ -65,7 +65,7 @@ public:
      * @param[in] dicomSeriesDB SeriesDB containing DicomSeries that must be read
      * @param[in] notifier Service used to notify changes in SeriesDB
      */
-    FWGDCMIO_API void readFromDicomSeriesDB(::fwMedData::SeriesDB::sptr dicomSeriesDB,
+    FWGDCMIO_API void readFromDicomSeriesDB(::fwMedData::SeriesDB::csptr dicomSeriesDB,
                                             ::fwServices::IService::sptr notifier = ::fwServices::IService::sptr());
 
     /**

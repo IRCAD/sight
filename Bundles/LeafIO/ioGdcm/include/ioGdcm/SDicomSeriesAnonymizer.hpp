@@ -25,7 +25,22 @@ namespace ioGdcm
 {
 
 /**
- * @brief   Services to anonymize a DicomSeries
+ * @brief   Service to anonymize a DicomSeries.
+ *
+ * @section Signals Signals
+ * - \b jobCreated( SPTR(::fwJobs::IJob) ) : Emitted when a job is created.
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::ioGdcm::SDicomSeriesAnonymizer">
+            <in key="seriesDB" uid="..." />
+            <inout key="selectedSeries" uid="..." />
+       </service>
+   @endcode
+ * @subsection In-Out In-Out:
+ * - \b seriesDB [::fwMedData::SeriesDB]: SeriesDB where the dicom series comes from.
+ * - \b selectedSeries [::fwData::Vector]: List of DICOM series to be anonymized.
  */
 class IOGDCM_CLASS_API SDicomSeriesAnonymizer : public ::fwServices::IController
 {
@@ -35,28 +50,15 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SDicomSeriesAnonymizer)( ::fwServices::IController) );
 
-    /**
-     * @brief   constructor
-     */
+    /// Constructor
     IOGDCM_API SDicomSeriesAnonymizer() throw();
 
-    /**
-     * @brief   destructor
-     */
+    /// Destructor
     IOGDCM_API virtual ~SDicomSeriesAnonymizer() throw();
 
 protected:
 
-    /**
-     * @brief Configuring method. This method is used to configure the service.
-     *
-     * XML configuration sample:
-       @code{.xml}
-       <service uid="anonymizeSelection" impl="::ioGdcm::SDicomSeriesAnonymizer" autoConnect="yes">
-         <config seriesDBUID="mySeriesDB" />
-       </service>
-       @endcode
-     */
+    /// Do nothing.
     IOGDCM_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Override
@@ -73,9 +75,6 @@ protected:
 
     /// Override
     IOGDCM_API void anonymize();
-
-    /// SeriesDB UID
-    std::string m_seriesDBUID;
 
     /// SeriesDB of the Series
     SPTR(::fwMedData::SeriesDB) m_seriesDB;

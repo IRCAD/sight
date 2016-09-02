@@ -48,8 +48,32 @@ namespace ioDicom
 {
 
 /**
- * @brief   This editor service is used to select a slice index and read the
- *          corresponding image on the local computer.
+ * @brief   This editor service is used to select a slice index and read the corresponding image on the local computer.
+ * *
+ * @section Slots Slots
+ * - \b readImage(size_t) : Read the given slice.
+ * - \b displayErrorMessage(size_t) : display an error message.
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::ioDicom::SSliceIndexDicomEditor">
+           <in key="series" uid="..." />
+           <out key="image" uid="..." />
+           <config dicomReader="::ioGdcm::SSeriesDBReader" delay="500">
+               <dicomReaderConfig> <!-- optional -->
+                   <!-- here goes the configuration for the dicom reader implementation -->
+               </dicomReaderConfig>
+           </config>
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b series [::fwMedData::DicomSeries]: Dicom Series where to extract the images.
+ * @subsection Output Output:
+ * - \b image [::fwData::Image]: Downloaded image.
+ * @subsection Configuration Configuration:
+ * - \b dicomReader Reader type to use.
+ * - \b dicomReaderConfig Optional configuration for the DICOM Reader.
  */
 class IODICOM_CLASS_API SSliceIndexDicomEditor : public QObject,
                                                  public ::gui::editor::IEditor
@@ -76,31 +100,9 @@ public:
      */
     IODICOM_API virtual ~SSliceIndexDicomEditor() throw();
 
-private Q_SLOTS:
-    /**
-     * @brief Slot called when the slider is moved
-     * @param[in] value Slider value
-     */
-    IODICOM_API void changeSliceIndex(int value);
-
 protected:
 
-    /**
-     * @brief Configuring method. This method is used to configure the service.
-     *
-     * XML configuration sample:
-       @code{.xml}
-       <service uid="sliderIndexDicomEditor" type="::gui::editor::IEditor"
-         impl="::ioDicom::dcmtk::editor::SSliceIndexDicomEditor" autoConnect="yes">
-         <config compositeUID="previewComposite" imageKey="image" dicomReader="::ioGdcm::SSeriesDBReader"
-            delay="500">
-            <dicomReaderConfig> <!-- optional -->
-                <!-- here goes configuration for dicom reader implementation -->
-            </dicomReaderConfig>
-         </config>
-       </service>
-       @endcode
-     */
+    /// Configuring method. This method is used to configure the service.
     IODICOM_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Override
@@ -130,11 +132,17 @@ protected:
      */
     IODICOM_API void displayErrorMessage(const std::string& message) const;
 
+private Q_SLOTS:
+    /**
+     * @brief Slot called when the slider is moved
+     * @param[in] value Slider value
+     */
+    IODICOM_API void changeSliceIndex(int value);
+
+private:
+
     /// Slot to call readLocalSeries method
     ReadImageSlotType::sptr m_slotReadImage;
-
-    /// Slot to call displayErrorMessage method;
-    DisplayMessageSlotType::sptr m_slotDisplayMessage;
 
     /// Slice index slider
     QPointer< QSlider > m_sliceIndexSlider;
@@ -150,15 +158,6 @@ protected:
 
     /// Reader
     ::io::IReader::wptr m_dicomReader;
-
-    /// Image Key
-    std::string m_imageKey;
-
-    /// Composite UID
-    std::string m_compositeUID;
-
-    /// Composite
-    SPTR(::fwData::Composite) m_composite;
 
     /// Temporary SeriesDB
     SPTR(::fwMedData::SeriesDB) m_tempSeriesDB;

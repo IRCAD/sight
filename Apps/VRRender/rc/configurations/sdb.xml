@@ -42,6 +42,10 @@
                     <menuItem name="2D visualization" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-2D.png" />
                     <menuItem name="3D visualization" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-3D.png" />
                     <menuItem name="Volume rendering" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-VR.png" />
+                    <separator />
+                    <menuItem name="DICOM PACS Reader" icon="@BUNDLE_PREFIX@/media_0-1/icons/Pull.svg" />
+                    <menuItem name="DICOM PACS Writer" icon="@BUNDLE_PREFIX@/media_0-1/icons/Push.svg" />
+                    <menuItem name="DICOM Filtering" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-DICOM-Filtering.svg" />
                 </layout>
             </gui>
             <registry>
@@ -52,6 +56,9 @@
                 <menuItem sid="action_2DVisualization" start="yes" />
                 <menuItem sid="action_3DVisualization" start="yes" />
                 <menuItem sid="action_volumeRendering" start="yes" />
+                <menuItem sid="action_dicomPacsReader" start="yes" />
+                <menuItem sid="action_dicomPacsWriter" start="yes" />
+                <menuItem sid="action_dicomFiltering" start="yes" />
             </registry>
         </service>
 
@@ -145,6 +152,51 @@
             </config>
         </service>
 
+        <service uid="action_dicomPacsReader" type="::activities::action::SActivityLauncher">
+            <in key="series" uid="selections" />
+            <config>
+                <parameters>
+                    <parameter replace="SERIESDB" by="${SERIESDB}"  />
+                    <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                    <parameter replace="APP_NAME" by="VRRender" />
+                </parameters>
+                <filter>
+                    <mode>include</mode>
+                    <id>DicomPacsReader</id>
+                </filter>
+            </config>
+        </service>
+
+        <service uid="action_dicomPacsWriter" type="::activities::action::SActivityLauncher">
+            <in key="series" uid="selections" />
+            <config>
+                <parameters>
+                    <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                    <parameter replace="APP_NAME" by="VRRender" />
+                    <parameter replace="PROGRESS_CHANNEL" uid="progressStatus" />
+                </parameters>
+                <filter>
+                    <mode>include</mode>
+                    <id>DicomPacsWriter</id>
+                </filter>
+            </config>
+        </service>
+
+        <service uid="action_dicomFiltering" type="::activities::action::SActivityLauncher">
+            <in key="series" uid="selections" />
+            <config>
+                <parameters>
+                    <parameter replace="SERIESDB" by="${SERIESDB}"  />
+                    <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                    <parameter replace="PROGRESS_CHANNEL" uid="progressStatus" />
+                </parameters>
+                <filter>
+                    <mode>include</mode>
+                    <id>DicomFiltering</id>
+                </filter>
+            </config>
+        </service>
+
         <service uid="action_createActivity" type="::activities::action::SCreateActivity">
             <in key="series" uid="selections" />
             <filter>
@@ -201,6 +253,9 @@
             <signal>action_2DVisualization/activityLaunched</signal>
             <signal>action_3DVisualization/activityLaunched</signal>
             <signal>action_volumeRendering/activityLaunched</signal>
+            <signal>action_dicomPacsReader/activityLaunched</signal>
+            <signal>action_dicomPacsWriter/activityLaunched</signal>
+            <signal>action_dicomFiltering/activityLaunched</signal>
         </connect>
 
         <connect>

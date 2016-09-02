@@ -4,7 +4,7 @@
     <requirement id="dataReg"/>
     <requirement id="gui" />
     <requirement id="io" />
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::ioPacs::SPacsConfigurationEditor</service>
@@ -43,7 +43,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
         <service>::ioPacs::SSeriesPusher</service>
-        <object>::fwData::Vector</object>
+        <object>::fwData::Object</object>
         <desc>Push Series Controller</desc>
     </extension>
 

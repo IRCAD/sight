@@ -29,18 +29,16 @@
 namespace ioGdcm
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ioGdcm::SDicomSeriesAnonymizer, ::fwData::Vector );
+fwServicesRegisterMacro( ::fwServices::IController, ::ioGdcm::SDicomSeriesAnonymizer, ::fwData::Object );
 
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 //------------------------------------------------------------------------------
 
 SDicomSeriesAnonymizer::SDicomSeriesAnonymizer() throw() :
-    m_sigJobCreated(JobCreatedSignal::New()),
     m_cancelled(false)
 {
-    ::fwCom::HasSignals::m_signals
-        ( JOB_CREATED_SIGNAL, m_sigJobCreated );
+    m_sigJobCreated = newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -51,18 +49,16 @@ SDicomSeriesAnonymizer::~SDicomSeriesAnonymizer() throw()
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesAnonymizer::info(std::ostream& _sstream )
+void SDicomSeriesAnonymizer::configuring() throw(::fwTools::Failed)
 {
-    _sstream << "SDicomSeriesAnonymizer::info";
 }
 
 //------------------------------------------------------------------------------
 
 void SDicomSeriesAnonymizer::starting() throw(::fwTools::Failed)
 {
-    // Get Destination SeriesDB
-    m_seriesDB = ::fwMedData::SeriesDB::dynamicCast(::fwTools::fwID::getObject(m_seriesDBUID));
-    SLM_ASSERT("The SeriesDB \"" + m_seriesDBUID + "\" doesn't exist.", m_seriesDB);
+    m_seriesDB = this->getInOut< ::fwMedData::SeriesDB>("seriesDB");
+    SLM_ASSERT("The SeriesDB key doesn't exist.", m_seriesDB);
 }
 
 //------------------------------------------------------------------------------
@@ -73,24 +69,9 @@ void SDicomSeriesAnonymizer::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SDicomSeriesAnonymizer::configuring() throw(::fwTools::Failed)
-{
-    bool success;
-
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service ::ioGdcm::SDicomSeriesAnonymizer must have a \"config\" element.",config);
-
-    /// SeriesDB UID
-    ::boost::tie(success, m_seriesDBUID) = config->getSafeAttributeValue("seriesDBUID");
-    SLM_ASSERT("It should be a \"seriesDBUID\" tag in the "
-               "::ioGdcm::SDicomSeriesAnonymizer config element.", success);
-}
-
-//------------------------------------------------------------------------------
-
 void SDicomSeriesAnonymizer::updating() throw(::fwTools::Failed)
 {
-    ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector >();
+    ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >("selectedSeries");
 
     ::fwGui::dialog::MessageDialog dialog;
     dialog.setTitle("Series anonymization");
@@ -120,14 +101,20 @@ void SDicomSeriesAnonymizer::updating() throw(::fwTools::Failed)
         dialog.addButton(::fwGui::dialog::IMessageDialog::OK);
         dialog.show();
     }
+}
 
+//------------------------------------------------------------------------------
+
+void SDicomSeriesAnonymizer::info(std::ostream& _sstream )
+{
+    _sstream << "SDicomSeriesAnonymizer::info";
 }
 
 //------------------------------------------------------------------------------
 
 void SDicomSeriesAnonymizer::anonymize()
 {
-    ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector >();
+    ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >("selectedSeries");
     ::fwComEd::helper::SeriesDB sDBhelper(m_seriesDB);
 
     ::fwGdcmIO::helper::DicomSeriesAnonymizer::sptr anonymizer =
@@ -167,5 +154,7 @@ void SDicomSeriesAnonymizer::anonymize()
     // Notify SeriesDB
     sDBhelper.notify();
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace ioGdcm

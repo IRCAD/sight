@@ -268,7 +268,7 @@ void SeriesDB::readDicom(const bool checkIsDicom)
 
 //------------------------------------------------------------------------------
 
-void SeriesDB::readFromDicomSeriesDB(::fwMedData::SeriesDB::sptr dicomSeriesDB, ::fwServices::IService::sptr notifier)
+void SeriesDB::readFromDicomSeriesDB(::fwMedData::SeriesDB::csptr dicomSeriesDB, ::fwServices::IService::sptr notifier)
 {
     // Clear DicomSeries container
     m_dicomSeriesContainer.clear();

@@ -46,8 +46,7 @@
 namespace ioDicom
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::ioDicom::SSliceIndexDicomEditor,
-                         ::fwMedData::DicomSeries );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::ioDicom::SSliceIndexDicomEditor, ::fwMedData::DicomSeries );
 
 const ::fwCom::Slots::SlotKeyType SSliceIndexDicomEditor::s_READ_IMAGE_SLOT      = "readImage";
 const ::fwCom::Slots::SlotKeyType SSliceIndexDicomEditor::s_DISPLAY_MESSAGE_SLOT = "displayErrorMessage";
@@ -57,22 +56,14 @@ const ::fwCom::Slots::SlotKeyType SSliceIndexDicomEditor::s_DISPLAY_MESSAGE_SLOT
 SSliceIndexDicomEditor::SSliceIndexDicomEditor() throw() :
     m_delay(500)
 {
-
-    m_slotReadImage = ::fwCom::newSlot(&SSliceIndexDicomEditor::readImage, this);
-    ::fwCom::HasSlots::m_slots(s_READ_IMAGE_SLOT, m_slotReadImage);
-
-    m_slotDisplayMessage = ::fwCom::newSlot(&SSliceIndexDicomEditor::displayErrorMessage, this);
-    ::fwCom::HasSlots::m_slots(s_DISPLAY_MESSAGE_SLOT, m_slotDisplayMessage);
+    m_slotReadImage = newSlot(s_READ_IMAGE_SLOT, &SSliceIndexDicomEditor::readImage, this);
+    newSlot(s_DISPLAY_MESSAGE_SLOT, &SSliceIndexDicomEditor::displayErrorMessage, this);
 
 #ifdef COM_LOG
     m_slotReadImage->setID( s_READ_IMAGE_SLOT );
     m_slotDisplayMessage->setID( s_DISPLAY_MESSAGE_SLOT );
     ::fwCom::HasSignals::m_signals.setID();
 #endif
-
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
-
-
 }
 //------------------------------------------------------------------------------
 
@@ -82,9 +73,34 @@ SSliceIndexDicomEditor::~SSliceIndexDicomEditor() throw()
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomEditor::info(std::ostream& _sstream )
+void SSliceIndexDicomEditor::configuring() throw(::fwTools::Failed)
 {
-    _sstream << "SSliceIndexDicomEditor::info";
+    SLM_TRACE_FUNC();
+    ::fwGui::IGuiContainerSrv::initialize();
+
+    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
+    SLM_ASSERT("The service ::ioDicom::SSliceIndexDicomEditor must have "
+               "a \"config\" element.",config);
+
+    bool success;
+
+    // Reader
+    ::boost::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
+    SLM_ASSERT("It should be a \"dicomReader\" tag in the ::ioDicom::SSliceIndexDicomEditor "
+               "config element.", success);
+
+    // Reader configuration
+    ::fwRuntime::ConfigurationElement::sptr readerConfig = config->findConfigurationElement("dicomReaderConfig");
+    m_readerConfig                                       =
+        (readerConfig && readerConfig->size() == 1) ? readerConfig->getElements()[0] : nullptr;
+
+    // Delay
+    std::string delayStr;
+    ::boost::tie(success, delayStr) = config->getSafeAttributeValue("delay");
+    if(success)
+    {
+        m_delay = ::boost::lexical_cast< std::size_t >(delayStr);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -93,10 +109,6 @@ void SSliceIndexDicomEditor::starting() throw(::fwTools::Failed)
 {
     m_delayTimer2 = m_associatedWorker->createTimer();
 
-    // Composite
-    m_composite = ::fwData::Composite::dynamicCast(::fwTools::fwID::getObject(m_compositeUID));
-    SLM_ASSERT("Composite should not be null !", m_composite);
-
     ::fwGui::IGuiContainerSrv::create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
@@ -104,7 +116,7 @@ void SSliceIndexDicomEditor::starting() throw(::fwTools::Failed)
     QHBoxLayout* layout      = new QHBoxLayout();
     container->setLayout(layout);
 
-    ::fwMedData::DicomSeries::sptr dicomSeries = this->getObject< ::fwMedData::DicomSeries >();
+    ::fwMedData::DicomSeries::csptr dicomSeries = this->getInput< ::fwMedData::DicomSeries >("series");
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
     m_numberOfSlices = dicomSeries->getNumberOfInstances();
 
@@ -191,51 +203,15 @@ void SSliceIndexDicomEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomEditor::configuring() throw(::fwTools::Failed)
+void SSliceIndexDicomEditor::updating() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-    ::fwGui::IGuiContainerSrv::initialize();
-
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service ::ioDicom::SSliceIndexDicomEditor must have "
-               "a \"config\" element.",config);
-
-    bool success;
-
-    // Composite UID
-    ::boost::tie(success, m_compositeUID) = config->getSafeAttributeValue("compositeUID");
-    SLM_ASSERT("It should be a \"compositeUID\" tag in the ::ioDicom::SSliceIndexDicomEditor config element.",
-               success);
-
-    // Image Key
-    ::boost::tie(success, m_imageKey) = config->getSafeAttributeValue("imageKey");
-    SLM_ASSERT("It should be an \"imageKey\" tag in the "
-               "::ioDicom::SSliceIndexDicomEditor config element.", success);
-
-    // Reader
-    ::boost::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
-    SLM_ASSERT("It should be a \"dicomReader\" tag in the ::ioDicom::SSliceIndexDicomEditor "
-               "config element.", success);
-
-    // Reader configuration
-    ::fwRuntime::ConfigurationElement::sptr readerConfig = config->findConfigurationElement("dicomReaderConfig");
-    m_readerConfig                                       =
-        (readerConfig && readerConfig->size() == 1) ? readerConfig->getElements()[0] : nullptr;
-
-    // Delay
-    std::string delayStr;
-    ::boost::tie(success, delayStr) = config->getSafeAttributeValue("delay");
-    if(success)
-    {
-        m_delay = ::boost::lexical_cast< std::size_t >(delayStr);
-    }
-
 }
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomEditor::updating() throw(::fwTools::Failed)
+void SSliceIndexDicomEditor::info(std::ostream& _sstream )
 {
+    _sstream << "SSliceIndexDicomEditor::info";
 }
 
 //------------------------------------------------------------------------------
@@ -257,7 +233,7 @@ void SSliceIndexDicomEditor::changeSliceIndex(int value)
 void SSliceIndexDicomEditor::triggerNewSlice()
 {
     // DicomSeries
-    ::fwMedData::DicomSeries::sptr dicomSeries = this->getObject< ::fwMedData::DicomSeries >();
+    ::fwMedData::DicomSeries::csptr dicomSeries = this->getInput< ::fwMedData::DicomSeries >("series");
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
 
     // Compute slice index
@@ -279,10 +255,10 @@ void SSliceIndexDicomEditor::triggerNewSlice()
 void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 {
     // DicomSeries
-    ::fwMedData::DicomSeries::sptr dicomSeries = this->getObject< ::fwMedData::DicomSeries >();
+    ::fwMedData::DicomSeries::csptr dicomSeries = this->getInput< ::fwMedData::DicomSeries >("series");
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
 
-    auto isModalitySupported = [](const ::fwMedData::Series::sptr& series )
+    auto isModalitySupported = [](const ::fwMedData::Series::csptr& series )
                                {
                                    return series->getModality() == "CT" ||
                                           series->getModality() == "MR" ||
@@ -357,7 +333,7 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
         ::boost::filesystem::ofstream fs(dest, std::ios::binary|std::ios::trunc);
         FW_RAISE_IF("Can't open '" << tmpPath << "' for write.", !fs.good());
 
-        fs.write(buffer, size);
+        fs.write(buffer, static_cast<long>(size));
         fs.close();
     }
 
@@ -391,36 +367,8 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 
     if(imageSeries)
     {
-        ::fwComEd::helper::Composite helper(m_composite);
         ::fwData::Image::sptr newImage    = imageSeries->getImage();
         ::fwData::Image::SizeType newSize = newImage->getSize();
-
-        if(m_composite->find(m_imageKey) == m_composite->end())
-        {
-            helper.add(m_imageKey, newImage);
-        }
-        else
-        {
-            ::fwData::Image::sptr oldImage    = ::fwData::Image::dynamicCast(m_composite->getContainer()[m_imageKey]);
-            ::fwData::Image::SizeType oldSize = oldImage->getSize();
-            if(dicomSeries->getDicomAvailability() != ::fwMedData::DicomSeries::BLOB
-               && newSize[0] == oldSize[0] && newSize[1] == oldSize[1] && newSize[2] == oldSize[2])
-            {
-                // Copy buffer
-                oldImage->setDataArray(newImage->getDataArray(), false);
-                auto sig = oldImage->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
-                {
-                    ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-                    sig->asyncEmit();
-                }
-            }
-            else
-            {
-                // Swap image
-                helper.swap(m_imageKey, newImage);
-            }
-
-        }
 
         newImage->setField(::fwComEd::Dictionary::m_axialSliceIndexId, m_axialIndex);
         m_frontalIndex->setValue(static_cast< int >(newSize[0]/2));
@@ -428,7 +376,7 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
         m_sagittalIndex->setValue(static_cast< int >(newSize[1]/2));
         newImage->setField(::fwComEd::Dictionary::m_sagittalSliceIndexId, m_sagittalIndex);
 
-        helper.notify();
+        this->setOutput("image", newImage);
     }
 
     ::boost::system::error_code ec;
@@ -448,5 +396,7 @@ void SSliceIndexDicomEditor::displayErrorMessage(const std::string& message) con
     messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
     messageBox.show();
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace ioDicom

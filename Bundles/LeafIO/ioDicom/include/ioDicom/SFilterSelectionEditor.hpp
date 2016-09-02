@@ -27,7 +27,21 @@ namespace ioDicom
 
 /**
  * @brief   This editor service is used to select and apply filters to Dicom series.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::ioDicom::SFilterSelectionEditor">
+            <in key="selection" uid="..." />
+            <inout key="target" uid="..." />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b selection [::fwData::Vector]: selection.
+ * @subsection In-Out In-Out:
+ * - \b target [::fwMedData::SeriesDB]: seriesDB where to put the selection.
  */
+
 class IODICOM_CLASS_API SFilterSelectionEditor : public QObject,
                                                  public ::gui::editor::IEditor
 {
@@ -78,16 +92,7 @@ private Q_SLOTS:
     IODICOM_API void onForceChecked(int state);
 protected:
 
-    /**
-     * @brief Configuring method. This method is used to configure the service.
-     *
-     * XML configuration sample:
-       @code{.xml}
-       <service uid="filterSelectionEditor" impl="::ioDicom::dcmtk::editor::SFilterSelectionEditor"
-         autoConnect="yes">
-       </service>
-       @endcode
-     */
+    /// Do nothing.
     IODICOM_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Override

@@ -1,16 +1,23 @@
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::fwServices::registry::AppConfig2">
     <id>DicomFiltering</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="GENERIC_UID" />
         <param name="SERIESDB" />
         <param name="AS_UID" />
+        <param name="PROGRESS_CHANNEL" />
     </parameters>
     <config>
 
-    <object type="::fwData::Composite">
+        <object type="::fwMedData::SeriesDB" uid="${SERIESDB}" src="ref" />
+        <object type="::fwMedData::SeriesDB" uid="readingSeriesDB" />
+        <object type="::fwMedData::SeriesDB" uid="loadedSeriesDB" />
+        <object type="::fwMedData::SeriesDB" uid="filteredSeriesDB" />
+        <object type="::fwData::Vector" uid="readingSelection" />
+        <object type="::fwData::Vector" uid="loadedSelection" />
 
-        <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="::gui::view::SDefaultView" >
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view align="center" minWidth="200" />
@@ -21,14 +28,14 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="${GENERIC_UID}_toolBar" start="yes" />
-                <view sid="${GENERIC_UID}_centerView" start="yes" />
-                <view sid="${GENERIC_UID}_bottomView" start="yes" />
-                <view sid="${GENERIC_UID}_rightView" start="yes" />
+                <toolBar sid="toolBar" start="yes" />
+                <view sid="centerView" start="yes" />
+                <view sid="bottomView" start="yes" />
+                <view sid="rightView" start="yes" />
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Read DICOM files" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
@@ -42,17 +49,17 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="${GENERIC_UID}_action_readDicomSeries" start="yes" />
-                <menuItem sid="${GENERIC_UID}_action_previewFilteredDicomSeries" start="yes" />
-                <menuItem sid="${GENERIC_UID}_action_convertSeries" start="yes" />
-                <menuItem sid="${GENERIC_UID}_action_pushSeries" start="yes" />
+                <menuItem sid="action_readDicomSeries" start="yes" />
+                <menuItem sid="action_previewFilteredDicomSeries" start="yes" />
+                <menuItem sid="action_convertSeries" start="yes" />
+                <menuItem sid="action_pushSeries" start="yes" />
 
-                <menu sid="${GENERIC_UID}_menuHelp" start="yes" />
+                <menu sid="menuHelp" start="yes" />
             </registry>
         </service>
 
 
-        <service uid="${GENERIC_UID}_centerView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+        <service uid="centerView" type="::gui::view::SDefaultView" >
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -61,12 +68,12 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="${GENERIC_UID}_readingSelector" start="yes" />
-                <view wid="${GENERIC_UID}_readingPreview" start="yes" />
+                <view sid="readingSelector" start="yes" />
+                <view wid="readingPreview" start="yes" />
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_bottomView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+        <service uid="bottomView" type="::gui::view::SDefaultView" >
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -75,12 +82,12 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="${GENERIC_UID}_loadedSelector" start="yes" />
-                <view wid="${GENERIC_UID}_loadedPreview" start="yes" />
+                <view sid="loadedSelector" start="yes" />
+                <view wid="loadedPreview" start="yes" />
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_rightView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+        <service uid="rightView" type="::gui::view::SDefaultView" >
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -88,130 +95,97 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="${GENERIC_UID}_filterSelectionEditor" start="yes" />
+                <view sid="filterSelectionEditor" start="yes" />
             </registry>
         </service>
 
         <!--HELP -->
-        <service uid="${GENERIC_UID}_menuHelp" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
+        <service uid="menuHelp" type="::gui::aspect::SDefaultMenu" >
             <gui>
                 <layout>
                     <menuItem name="Activity help" />
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="${GENERIC_UID}_activityHelp" start="yes" />
+                <menuItem sid="activityHelp" start="yes" />
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_activityHelp" type="::fwGui::IActionSrv" impl="::uiGeneric::action::LaunchBrowserActionService" autoConnect="no">
+        <!-- ******************************* Actions ****************************************** -->
+
+        <service uid="activityHelp" type="::uiGeneric::action::LaunchBrowserActionService" >
             <url>@BUNDLE_PREFIX@/dicomFilteringActivity_0-1/quickstart.pdf</url>
         </service>
 
-        <!-- MAIN -->
-        <item key="mainSeriesDB">
-            <object type="::fwMedData::SeriesDB" src="ref" uid="${SERIESDB}">
-            </object>
-        </item>
-
-
         <!-- READING SELECTION -->
-        <item key="readingSeriesDB">
-            <object type="::fwMedData::SeriesDB" uid="${GENERIC_UID}_readingSeriesDB">
+        <service uid="action_readDicomSeries" type="::uiIO::action::SSeriesDBMerger" >
+            <inout key="seriesDB" uid="readingSeriesDB" />
+            <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
+        </service>
 
-                <service uid="${GENERIC_UID}_action_readDicomSeries" type="::fwGui::IActionSrv" impl="::uiIO::action::SSeriesDBMerger" autoConnect="no">
-                    <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
-                </service>
+        <service uid="readingSelector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+            <inout key="selection" uid="readingSelection" />
+            <inout key="seriesDB" uid="readingSeriesDB" />
+        </service>
 
-                <service uid="${GENERIC_UID}_readingSelector" impl="::uiMedData::editor::SSelector" autoConnect="yes">
-                    <selectionId>${GENERIC_UID}_readingSelection</selectionId>
-                </service>
+        <service uid="readingViewer" type="::uiMedData::SSeriesViewer" autoConnect="yes">
+            <in key="series" uid="readingSelection" />
+            <parentView wid="readingPreview" />
+            <configs>
+                <config id="2DLocalPreviewConfig" type="::fwMedData::DicomSeries" />
+            </configs>
+        </service>
 
-            </object>
-        </item>
-
-        <item key="readingSelection">
-            <object type="::fwData::Vector" uid="${GENERIC_UID}_readingSelection">
-
-                <service uid="${GENERIC_UID}_readingViewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
-                    <parentView>${GENERIC_UID}_readingPreview</parentView>
-                    <configs>
-                        <config id="2DLocalPreviewConfig" type="::fwMedData::DicomSeries" />
-                    </configs>
-                </service>
-
-                <service uid="${GENERIC_UID}_filterSelectionEditor" impl="::ioDicom::SFilterSelectionEditor" autoConnect="yes">
-                    <config destinationSeriesDBID="${GENERIC_UID}_filteredSeriesDB" />
-                </service>
-
-            </object>
-        </item>
+        <service uid="filterSelectionEditor" type="::ioDicom::SFilterSelectionEditor" autoConnect="yes">
+            <in key="selection" uid="readingSelection" />
+            <inout key="target" uid="filteredSeriesDB" />
+        </service>
 
         <!-- FILTERED SELECTION -->
-        <item key="filteredSeriesDB">
-            <object type="::fwMedData::SeriesDB" uid="${GENERIC_UID}_filteredSeriesDB">
+        <service uid="action_previewFilteredDicomSeries" type="::gui::action::SConfigLauncher">
+            <appConfig id="DicomPreview" />
+            <inout key="SERIESDB" uid="filteredSeriesDB" />
+            <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/media_0-1/icons/Preview.svg" />
+        </service>
 
-                <service uid="${GENERIC_UID}_action_previewFilteredDicomSeries" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="yes">
-                    <config>
-                        <appConfig id="DicomPreview" >
-                            <parameters>
-                                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/media_0-1/icons/Preview.svg"  />
-                                <parameter replace="SERIESDB" by="${GENERIC_UID}_filteredSeriesDB"  />
-                            </parameters>
-                        </appConfig>
-                    </config>
-                </service>
-
-                <service uid="${GENERIC_UID}_action_convertSeries" impl="::ioGdcm::SDicomSeriesConverter">
-                    <config destinationSeriesDBID="${GENERIC_UID}_loadedSeriesDB" />
-                </service>
-
-            </object>
-        </item>
+        <service uid="action_convertSeries" type="::ioGdcm::SDicomSeriesConverter">
+            <in key="source" uid="filteredSeriesDB" />
+            <inout key="target" uid="loadedSeriesDB" />
+        </service>
 
         <!-- LOADED SELECTION -->
-        <item key="loadedSeriesDB">
-            <object type="::fwMedData::SeriesDB" uid="${GENERIC_UID}_loadedSeriesDB">
-                <service uid="${GENERIC_UID}_loadedSelector" impl="::uiMedData::editor::SSelector" autoConnect="yes">
-                    <selectionId>${GENERIC_UID}_loadedSelection</selectionId>
-                </service>
-            </object>
-        </item>
+        <service uid="loadedSelector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+            <inout key="selection" uid="loadedSelection" />
+            <inout key="seriesDB" uid="loadedSeriesDB" />
+        </service>
 
-        <item key="loadedSelection">
-            <object type="::fwData::Vector" uid="${GENERIC_UID}_loadedSelection">
-                <service uid="${GENERIC_UID}_loadedViewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
-                    <parentView>${GENERIC_UID}_loadedPreview</parentView>
-                    <configs>
-                        <config id="2DSimpleConfig" type="::fwMedData::ImageSeries">
-                            <extract path="@image" pattern="imageID" />
-                        </config>
-                    </configs>
-                </service>
+        <service uid="loadedViewer" type="::uiMedData::SSeriesViewer" autoConnect="yes">
+            <in key="series" uid="loadedSelection" />
+            <parentView wid="loadedPreview" />
+            <configs>
+                <config id="2DSimpleConfig2" type="::fwMedData::ImageSeries">
+                    <extract path="@image" pattern="imageID" />
+                </config>
+            </configs>
+        </service>
 
-                <service uid="${GENERIC_UID}_action_pushSeries" impl="::ioDicom::SSeriesDBMerger">
-                    <config destinationSeriesDBID="${SERIESDB}" />
-                </service>
-            </object>
-        </item>
+        <service uid="action_pushSeries" type="::ioDicom::SSeriesDBMerger">
+            <in key="selectedSeries" uid="loadedSelection" />
+            <inout key="seriesDB" uid="${SERIESDB}" />
+        </service>
 
-        <connect>
-            <signal>${GENERIC_UID}_action_readDicomSeries/jobCreated</signal>
-            <slot>progress_statusbar/showJob</slot>
+        <connect channel="${PROGRESS_CHANNEL}">
+            <signal>action_readDicomSeries/jobCreated</signal>
         </connect>
 
-        <connect>
-            <signal>${GENERIC_UID}_action_convertSeries/jobCreated</signal>
-            <slot>progress_statusbar/showJob</slot>
+        <connect channel="${PROGRESS_CHANNEL}">
+            <signal>action_convertSeries/jobCreated</signal>
         </connect>
-
 
         <!-- START AND STOP SERVICES -->
-        <start uid="${GENERIC_UID}_mainView" />
-        <start uid="${GENERIC_UID}_readingViewer" />
-        <start uid="${GENERIC_UID}_loadedViewer" />
-
-    </object>
+        <start uid="mainView" />
+        <start uid="readingViewer" />
+        <start uid="loadedViewer" />
 
     </config>
 </extension>

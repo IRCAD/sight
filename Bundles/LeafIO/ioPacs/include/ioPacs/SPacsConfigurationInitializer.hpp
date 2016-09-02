@@ -19,7 +19,28 @@ namespace ioPacs
 
 /**
  * @brief   This service is used to initialize a Pacs Configuration data.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::ioPacs::SPacsConfigurationInitializer">
+            <inout key="config" uid="..." />
+             <config
+                 localApplicationTitle="VRRender"
+                 pacsHostName="mypacs.mycompany.com"
+                 pacsApplicationTitle="PACSNAME"
+                 pacsApplicationPort="11112"
+                 moveApplicationTitle="MoveApplicationTitle"
+                 moveApplicationPort="11110"
+                 retrieveMethod="GET"
+                 preferenceKey="PACS_CONFIGURATION"
+             />
+       </service>
+   @endcode
+ * @subsection In-Out In-Out:
+ * - \b config [::fwPacsIO::data::PacsConfiguration]: PACS configuration data.
  */
+
 class IOPACS_CLASS_API SPacsConfigurationInitializer : public ::fwServices::IController
 {
 public:
@@ -38,26 +59,7 @@ public:
 
 protected:
 
-    /**
-     * @brief Configuring method. This method is used to configure the service.
-     *
-     * XML configuration sample:
-       @code{.xml}
-       <service uid="pacsConfigurationInitializer" impl="::ioPacs::SPacsConfigurationInitializer"
-         autoConnect="yes">
-         <config
-             localApplicationTitle="VRRender"
-             pacsHostName="mypacs.mycompany.com"
-             pacsApplicationTitle="PACSNAME"
-             pacsApplicationPort="11112"
-             moveApplicationTitle="MoveApplicationTitle"
-             moveApplicationPort="11110"
-             retrieveMethod="GET"
-             preferenceKey="PACS_CONFIGURATION"
-             />
-       </service>
-       @endcode
-     */
+    /// Configuring method. This method is used to configure the service.
     IOPACS_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Override

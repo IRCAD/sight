@@ -1,17 +1,24 @@
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::fwServices::registry::AppConfig2">
     <id>DicomPacsReader</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="GENERIC_UID" />
         <param name="SERIESDB" />
         <param name="AS_UID" />
         <param name="APP_NAME" />
     </parameters>
     <config>
 
-    <object type="::fwData::Composite">
+        <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
+        <object uid="previewSeriesDB" type="::fwMedData::SeriesDB" />
+        <object uid="pacsConfiguration" type="::fwPacsIO::data::PacsConfiguration" />
+        <object uid="previewSelections" type="::fwData::Vector" />
+
+        <object uid="localSeriesDB" type="::fwMedData::SeriesDB" />
+        <object uid="localSelections" type="::fwData::Vector" />
+
+        <service uid="mainView" type="::gui::view::SDefaultView" >
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <view align="top"/>
@@ -22,14 +29,14 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="${GENERIC_UID}_toolBar" start="yes" />
-                <view sid="${GENERIC_UID}_topView" start="yes" />
-                <view sid="${GENERIC_UID}_centerView" start="yes" />
-                <view sid="${GENERIC_UID}_bottomView" start="yes" />
+                <toolBar sid="toolBar" start="yes" />
+                <view sid="topView" start="yes" />
+                <view sid="centerView" start="yes" />
+                <view sid="bottomView" start="yes" />
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
                     <menuItem name="Edit pacs configuration" icon="@BUNDLE_PREFIX@/media_0-1/icons/Settings.svg" style="check" />
@@ -38,13 +45,13 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="${GENERIC_UID}_action_editPacsConfiguration" start="yes" />
-                <menuItem sid="${GENERIC_UID}_action_pullSeries" start="yes" />
-                <menuItem sid="${GENERIC_UID}_action_pushSeries" start="yes" />
+                <menuItem sid="action_editPacsConfiguration" start="yes" />
+                <menuItem sid="action_pullSeries" start="yes" />
+                <menuItem sid="action_pushSeries" start="yes" />
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_topView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+        <service uid="topView" type="::gui::view::SDefaultView" >
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -52,11 +59,11 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="${GENERIC_UID}_queryEditor" start="yes" />
+                <view sid="queryEditor" start="yes" />
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_centerView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+        <service uid="centerView" type="::gui::view::SDefaultView" >
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -65,12 +72,12 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="${GENERIC_UID}_previewSelector" start="yes" />
-                <view wid="${GENERIC_UID}_pacsPreview" start="yes" />
+                <view sid="previewSelector" start="yes" />
+                <view wid="pacsPreview" start="yes" />
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_bottomView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+        <service uid="bottomView" type="::gui::view::SDefaultView" >
             <gui>
                 <layout type="::fwGui::CardinalLayoutManager">
                     <orientation value="horizontal" />
@@ -79,142 +86,117 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="${GENERIC_UID}_localSelector" start="yes" />
-                <view wid="${GENERIC_UID}_localPreview" start="yes" />
+                <view sid="localSelector" start="yes" />
+                <view wid="localPreview" start="yes" />
             </registry>
         </service>
 
-        <service uid="${GENERIC_UID}_progressBarController" impl="::ioPacs::SProgressBarController" autoConnect="no" worker="progress">
+        <!-- ******************************* Actions ****************************************** -->
+
+        <service uid="action_editPacsConfiguration" type="::gui::action::SConfigLauncher">
+            <appConfig id="PacsConfigurationManager" />
+            <inout key="PACS_CONFIGURATION" uid="pacsConfiguration"  />
+            <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/media_0-1/icons/Settings.svg"  />
         </service>
 
+        <service uid="action_pullSeries" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>pullSeriesController/update</slot>
+            </slots>
+        </service>
 
-        <!-- MAIN -->
-        <item key="mainSeriesDB">
-            <object type="::fwMedData::SeriesDB" src="ref" uid="${SERIESDB}">
-            </object>
-        </item>
+        <service uid="action_pushSeries" type="::ioDicom::SSeriesDBMerger">
+            <in key="selectedSeries" uid="localSelections" />
+            <inout key="seriesDB" uid="${SERIESDB}" />
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
+
+        <service uid="progressBarController" type="::ioPacs::SProgressBarController"  worker="progress" />
 
         <!-- PACS CONFIGURATION -->
-        <item key="pacsConfiguration">
-            <object type="::fwPacsIO::data::PacsConfiguration" uid="${GENERIC_UID}_pacsConfiguration">
-
-                <service uid="${GENERIC_UID}_pacsConfigurationInitializer" impl="::ioPacs::SPacsConfigurationInitializer" autoConnect="yes">
-                    <config
-                        localApplicationTitle="${APP_NAME}"
-                        pacsHostName="mypacs.mycompany.com"
-                        pacsApplicationTitle="PACSNAME"
-                        pacsApplicationPort="11112"
-                        moveApplicationTitle="MoveApplicationTitle"
-                        moveApplicationPort="11110"
-                        retrieveMethod="GET"
-                        preferenceKey="PACS_CONFIGURATION"
-                        />
-                </service>
-
-                <service uid="${GENERIC_UID}_action_editPacsConfiguration" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="yes">
-                    <config>
-                        <appConfig id="PacsConfigurationManager" >
-                            <parameters>
-                                <parameter replace="PACS_CONFIGURATION" by="${GENERIC_UID}_pacsConfiguration"  />
-                                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/media_0-1/icons/Settings.svg"  />
-                            </parameters>
-                        </appConfig>
-                    </config>
-                </service>
-
-            </object>
-        </item>
+        <service uid="pacsConfigurationInitializer" type="::ioPacs::SPacsConfigurationInitializer" autoConnect="yes">
+            <inout key="config" uid="pacsConfiguration" />
+            <config
+                localApplicationTitle="${APP_NAME}"
+                pacsHostName="mypacs.mycompany.com"
+                pacsApplicationTitle="PACSNAME"
+                pacsApplicationPort="11112"
+                moveApplicationTitle="MoveApplicationTitle"
+                moveApplicationPort="11110"
+                retrieveMethod="GET"
+                preferenceKey="PACS_CONFIGURATION"
+                />
+        </service>
 
         <!-- PREVIEW -->
-        <item key="previewSeriesDB">
-            <object type="::fwMedData::SeriesDB" uid="${GENERIC_UID}_previewSeriesDB">
+        <service uid="previewSelector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+            <inout key="selection" uid="previewSelections" />
+            <inout key="seriesDB" uid="previewSeriesDB" />
+        </service>
 
-                <service uid="${GENERIC_UID}_previewSelector" impl="::uiMedData::editor::SSelector" autoConnect="yes">
-                    <selectionId>${GENERIC_UID}_previewSelections</selectionId>
-                </service>
+        <service uid="queryEditor" type="::ioPacs::SQueryEditor" autoConnect="yes">
+            <in key="pacsConfig" uid="pacsConfiguration" />
+            <inout key="seriesDB" uid="previewSeriesDB" />
+        </service>
 
-                <service uid="${GENERIC_UID}_queryEditor" impl="::ioPacs::SQueryEditor" autoConnect="yes">
-                    <config pacsConfigurationUID="${GENERIC_UID}_pacsConfiguration" />
-                </service>
+        <service uid="pullSeriesController" type="::ioPacs::SSeriesPuller">
+            <in key="pacsConfig" uid="pacsConfiguration" />
+            <in key="selectedSeries" uid="previewSelections" />
+            <inout key="seriesDB" uid="localSeriesDB" />
+            <config dicomReader="::ioGdcm::SSeriesDBReader" dicomReaderConfig="DicomPacsReaderConfig" />
+        </service>
 
-            </object>
-        </item>
-
-        <item key="previewSelections">
-            <object type="::fwData::Vector" uid="${GENERIC_UID}_previewSelections">
-                <service uid="${GENERIC_UID}_action_pullSeries" impl="::gui::action::SSlotCaller" >
-                    <slots>
-                        <slot>${GENERIC_UID}_pullSeriesController/update</slot>
-                    </slots>
-                </service>
-
-                <service uid="${GENERIC_UID}_pullSeriesController" impl="::ioPacs::SSeriesPuller">
-                    <config pacsConfigurationUID="${GENERIC_UID}_pacsConfiguration" dicomReader="::ioGdcm::SSeriesDBReader"
-                        dicomReaderSrvConfig="DicomPacsReaderConfig" destinationSeriesDBUID="${GENERIC_UID}_localSeriesDB" />
-                </service>
-
-                <service uid="${GENERIC_UID}_pacsViewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
-                    <parentView>${GENERIC_UID}_pacsPreview</parentView>
-                    <configs>
-                        <config id="2DPacsPreviewConfig" type="::fwMedData::DicomSeries" >
-                            <parameter replace="PACS_CONFIGURATION" by="${GENERIC_UID}_pacsConfiguration" />
-                        </config>
-                    </configs>
-                </service>
-
-            </object>
-        </item>
+        <service uid="pacsViewer" type="::uiMedData::SSeriesViewer" autoConnect="yes">
+            <in key="series" uid="previewSelections" />
+            <parentView wid="pacsPreview" />
+            <configs>
+                <config id="2DPacsPreviewConfig" type="::fwMedData::DicomSeries" >
+                    <parameter replace="PACS_CONFIGURATION" uid="pacsConfiguration" />
+                </config>
+            </configs>
+        </service>
 
         <!-- LOCAL -->
-        <item key="localSeriesDB">
-            <object type="::fwMedData::SeriesDB" uid="${GENERIC_UID}_localSeriesDB">
-                <service uid="${GENERIC_UID}_localSelector" impl="::uiMedData::editor::SSelector" autoConnect="yes">
-                    <selectionId>${GENERIC_UID}_localSelections</selectionId>
-                </service>
-            </object>
-        </item>
+        <service uid="localSelector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+            <inout key="seriesDB" uid="localSeriesDB" />
+            <inout key="selection" uid="localSelections" />
+        </service>
 
-        <item key="localSelections">
-            <object type="::fwData::Vector" uid="${GENERIC_UID}_localSelections">
-                <service uid="${GENERIC_UID}_localViewer" type="::fwServices::IController" impl="::uiMedData::SSeriesViewer" autoConnect="yes">
-                    <parentView>${GENERIC_UID}_localPreview</parentView>
-                    <configs>
-                        <config id="2DSimpleConfig" type="::fwMedData::ImageSeries">
-                            <extract path="@image" pattern="imageID" />
-                        </config>
-                    </configs>
-                </service>
+        <service uid="localViewer" type="::uiMedData::SSeriesViewer" autoConnect="yes">
+            <in key="series" uid="localSelections" />
+            <parentView wid="localPreview" />
+            <configs>
+                <config id="2DSimpleConfig2" type="::fwMedData::ImageSeries">
+                    <extract path="@image" pattern="imageID" />
+                </config>
+            </configs>
+        </service>
 
-                <service uid="${GENERIC_UID}_action_pushSeries" impl="::ioDicom::SSeriesDBMerger">
-                    <config destinationSeriesDBID="${SERIESDB}" />
-                </service>
-            </object>
-        </item>
+        <!-- ******************************* Connections ************************************** -->
 
         <connect>
-            <signal>${GENERIC_UID}_pullSeriesController/progressed</signal>
-            <slot>${GENERIC_UID}_progressBarController/updateProgress</slot>
+            <signal>pullSeriesController/progressed</signal>
+            <slot>progressBarController/updateProgress</slot>
         </connect>
         <connect>
-            <signal>${GENERIC_UID}_pullSeriesController/startedProgress</signal>
-            <slot>${GENERIC_UID}_progressBarController/startProgress</slot>
+            <signal>pullSeriesController/startedProgress</signal>
+            <slot>progressBarController/startProgress</slot>
         </connect>
         <connect>
-            <signal>${GENERIC_UID}_pullSeriesController/stoppedProgress</signal>
-            <slot>${GENERIC_UID}_progressBarController/stopProgress</slot>
+            <signal>pullSeriesController/stoppedProgress</signal>
+            <slot>progressBarController/stopProgress</slot>
          </connect>
 
         <!-- START AND STOP SERVICES -->
-        <start uid="${GENERIC_UID}_mainView" />
-        <start uid="${GENERIC_UID}_pullSeriesController" />
-        <start uid="${GENERIC_UID}_localViewer" />
-        <start uid="${GENERIC_UID}_pacsViewer" />
-        <start uid="${GENERIC_UID}_progressBarController" />
-        <start uid="${GENERIC_UID}_pacsConfigurationInitializer" />
+        <start uid="mainView" />
+        <start uid="pullSeriesController" />
+        <start uid="localViewer" />
+        <start uid="pacsViewer" />
+        <start uid="progressBarController" />
+        <start uid="pacsConfigurationInitializer" />
 
-        <update uid="${GENERIC_UID}_pacsConfigurationInitializer" />
-
-    </object>
+        <update uid="pacsConfigurationInitializer" />
 
     </config>
 </extension>

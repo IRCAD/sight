@@ -25,7 +25,7 @@
 namespace ioPacs
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::ioPacs::SSeriesPusher, ::fwData::Vector );
+fwServicesRegisterMacro( ::fwServices::IController, ::ioPacs::SSeriesPusher, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
@@ -41,12 +41,12 @@ SSeriesPusher::SSeriesPusher() throw() :
     m_progressbarId("pushDicomProgressBar"),
     m_isPushing(false)
 {
-    m_slotDisplayMessage = ::fwCom::newSlot(&SSeriesPusher::displayMessage, this);
-    ::fwCom::HasSlots::m_slots(s_DISPLAY_SLOT, m_slotDisplayMessage);
+    // Internal slots
+    m_slotDisplayMessage   = newSlot(s_DISPLAY_SLOT, &SSeriesPusher::displayMessage, this);
+    m_slotProgressCallback = newSlot(::fwPacsIO::SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT,
+                                     &SSeriesPusher::progressCallback, this);
 
-    m_slotProgressCallback = ::fwCom::newSlot(&SSeriesPusher::progressCallback, this);
-    ::fwCom::HasSlots::m_slots(::fwPacsIO::SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT, m_slotProgressCallback);
-
+    // Public signals
     m_sigProgressed      = newSignal<ProgressedSignalType>(s_PROGRESSED_SIG);
     m_sigStartedProgress = newSignal<StartedProgressSignalType>(s_STARTED_PROGRESS_SIG);
     m_sigStoppedProgress = newSignal<StoppedProgressSignalType>(s_STOPPED_PROGRESS_SIG);
@@ -66,6 +66,12 @@ void SSeriesPusher::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
+void SSeriesPusher::configuring() throw(::fwTools::Failed)
+{
+}
+
+//------------------------------------------------------------------------------
+
 void SSeriesPusher::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
@@ -77,43 +83,21 @@ void SSeriesPusher::starting() throw(::fwTools::Failed)
     m_pushSeriesWorker = ::fwThread::Worker::New();
 
     // Get pacs configuration
-    m_pacsConfiguration =
-        ::fwPacsIO::data::PacsConfiguration::dynamicCast(::fwTools::fwID::getObject(m_pacsConfigurationUID));
+    m_pacsConfiguration = this->getInput< ::fwPacsIO::data::PacsConfiguration>("pacsConfig");
     SLM_ASSERT("The pacs configuration object should not be null.", m_pacsConfiguration);
-
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesPusher::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
-void SSeriesPusher::configuring() throw(::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service ::ioPacs::SSeriesPusher must have a \"config\" element.",config);
-
-    bool success;
-
-    // Pacs Configuration UID
-    ::boost::tie(success, m_pacsConfigurationUID) = config->getSafeAttributeValue("pacsConfigurationUID");
-    SLM_ASSERT("It should be a \"pacsConfigurationUID\" tag in the ::ioPacs::SSeriesPusher config element.", success);
-
 }
 
 //------------------------------------------------------------------------------
 
 void SSeriesPusher::updating() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    ::fwData::Vector::sptr selectedSeries = this->getObject< ::fwData::Vector >();
+    ::fwData::Vector::csptr selectedSeries = this->getInput< ::fwData::Vector >("selectedSeries");
 
     if(m_isPushing)
     {
@@ -169,7 +153,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
     // Return true if the push operation must be performed
     bool result = true;
 
-    ::fwData::Vector::sptr seriesVector = this->getObject< ::fwData::Vector >();
+    ::fwData::Vector::csptr seriesVector = this->getInput< ::fwData::Vector >("selectedSeries");
 
     // Catch any errors
     try
@@ -180,10 +164,10 @@ bool SSeriesPusher::checkSeriesOnPACS()
         // Connect to PACS
         m_seriesEnquirer->connect();
 
-        ::fwData::Vector::IteratorType it = seriesVector->begin();
+        ::fwData::Vector::ConstIteratorType it = seriesVector->begin();
         for(; it != seriesVector->end(); ++it)
         {
-            ::fwMedData::DicomSeries::sptr series = ::fwMedData::DicomSeries::dynamicCast(*it);
+            ::fwMedData::DicomSeries::csptr series = ::fwMedData::DicomSeries::dynamicCast(*it);
             SLM_ASSERT("The SeriesDB should contain only DicomSeries.", series);
 
             // Try to find series on PACS
@@ -209,7 +193,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
             ss << "Those series are already on the PACS: \n";
 
             // Display duplicated Series
-            for(const ::fwMedData::Series::sptr& series: duplicateSeriesVector)
+            for(const ::fwMedData::Series::csptr& series: duplicateSeriesVector)
             {
                 std::string description = series->getDescription();
                 description = (description.empty()) ? "[No description]" : description;
@@ -254,7 +238,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
 
 void SSeriesPusher::pushSeries()
 {
-    ::fwData::Vector::sptr seriesVector = this->getObject< ::fwData::Vector >();
+    ::fwData::Vector::csptr seriesVector = this->getInput< ::fwData::Vector >("selectedSeries");
 
     // Catch any errors
     try
@@ -263,10 +247,10 @@ void SSeriesPusher::pushSeries()
         DicomFileContainer dicomFilesContainer;
 
         // Connect to PACS
-        ::fwData::Vector::IteratorType it = seriesVector->begin();
+        ::fwData::Vector::ConstIteratorType it = seriesVector->begin();
         for(; it != seriesVector->end(); ++it)
         {
-            ::fwMedData::DicomSeries::sptr series = ::fwMedData::DicomSeries::dynamicCast(*it);
+            ::fwMedData::DicomSeries::csptr series = ::fwMedData::DicomSeries::dynamicCast(*it);
             SLM_ASSERT("The SeriesDB should contain only DicomSeries.", series);
 
             BOOST_FOREACH(::fwMedData::DicomSeries::DicomPathContainerType::value_type value,

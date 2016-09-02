@@ -33,6 +33,10 @@ set( REQUIREMENTS
     blendActivity
     ioActivity
 
+    dicomFilteringActivity
+    dicomPacsReaderActivity
+    dicomPacsWriterActivity
+
     media
 
     patchMedicalData

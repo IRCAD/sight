@@ -70,9 +70,8 @@ public:
 
     /**
      * @brief Return true if the instance is available on the local computer
-     * @todo This method could be constifiable but function std::map::at doesn't work on windows
      */
-    FWMEDDATA_API bool isInstanceAvailable(std::size_t instanceIndex);
+    FWMEDDATA_API bool isInstanceAvailable(std::size_t instanceIndex) const;
 
     /**
      * @brief Add a SOPClassUID that is used by this series.

@@ -53,7 +53,35 @@ namespace ioPacs
 
 /**
  * @brief   This editor service is used to select a slice index and pull the image from the pacs if it is not
- *           available on the local computer.
+ *          available on the local computer.
+ * *
+ * @section Slots Slots
+ * - \b readImage(size_t) : Read the given slice.
+ * - \b displayErrorMessage(size_t) : display an error message.
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::ioDicom::SSliceIndexDicomPullerEditor">
+           <in key="pacsConfig" uid="..." />
+           <inout key="series" uid="..." />
+           <out key="image" uid="..." />
+           <config dicomReader="::ioGdcm::SSeriesDBReader" delay="500">
+               <dicomReaderConfig> <!-- optional -->
+                   <!-- here goes the configuration for the dicom reader implementation -->
+               </dicomReaderConfig>
+           </config>
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b pacsConfig [::fwPacsIO::data::PacsConfiguration]: PACS configuration data.
+ * @subsection In-Out In-Out:
+ * - \b series [::fwMedData::DicomSeries]: Dicom Series where to extract the images.
+ * @subsection Output Output:
+ * - \b image [::fwData::Image]: Downloaded image.
+ * @subsection Configuration Configuration:
+ * - \b dicomReader Reader type to use.
+ * - \b dicomReaderConfig Optional configuration for the DICOM Reader.
  */
 class IOPACS_CLASS_API SSliceIndexDicomPullerEditor : public QObject,
                                                       public ::gui::editor::IEditor
@@ -89,22 +117,7 @@ private Q_SLOTS:
 
 protected:
 
-    /**
-     * @brief Configuring method. This method is used to configure the service.
-     *
-     * XML configuration sample:
-       @code{.xml}
-       <service uid="sliderIndexDicomPullerEditor" type="::gui::editor::IEditor"
-         impl="::ioPacs::SSliceIndexDicomPullerEditor" autoConnect="yes">
-         <config compositeUID="previewComposite" imageKey="image" dicomReader="::ioGdcm::SSeriesDBReader"
-            pacsConfigurationUID="pacsConfiguration" delay="500">
-            <dicomReaderConfig> <!-- optional -->
-                <!-- here goes configuration for dicom reader implementation -->
-            </dicomReaderConfig>
-         </config>
-       </service>
-       @endcode
-     */
+    /// Configuring method. This method is used to configure the service.
     IOPACS_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Override
@@ -164,7 +177,7 @@ protected:
     std::string m_pacsConfigurationUID;
 
     /// Pacs Configuration object
-    ::fwPacsIO::data::PacsConfiguration::sptr m_pacsConfiguration;
+    ::fwPacsIO::data::PacsConfiguration::csptr m_pacsConfiguration;
 
     /// IOPACS Reader
     std::string m_dicomReaderType;

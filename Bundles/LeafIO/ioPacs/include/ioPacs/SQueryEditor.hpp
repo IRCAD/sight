@@ -28,6 +28,19 @@ namespace ioPacs
 
 /**
  * @brief   This editor service is used to perform a IOPACS query on a pacs.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::ioPacs::SQueryEditor">
+            <in key="pacsConfig" uid="..." />
+            <inout key="seriesDB" uid="..." />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b pacsConfig [::fwPacsIO::data::PacsConfiguration]: PACS configuration data.
+ * @subsection In-Out In-Out:
+ * - \b seriesDB [::fwData::Object]: seriesDB where to push the queried data.
  */
 class IOPACS_CLASS_API SQueryEditor : public QObject,
                                       public ::gui::editor::IEditor
@@ -37,28 +50,16 @@ Q_OBJECT;
 public:
 
     fwCoreServiceClassDefinitionsMacro ( (SQueryEditor)( ::gui::editor::IEditor ) );
-    /**
-     * @brief Constructor
-     */
+
+    /// Constructor
     IOPACS_API SQueryEditor() throw();
 
-    /**
-     * @brief Destructor
-     */
+    /// Destructor
     IOPACS_API virtual ~SQueryEditor() throw();
 
 protected:
 
-    /**
-     * @brief Configuring method. This method is used to configure the service.
-     *
-     * XML configuration sample:
-       @code{.xml}
-       <service uid="queryEditor" impl="::ioPacs::SQueryEditor" autoConnect="yes">
-         <config pacsConfigurationUID="pacsConfiguration" />
-       </service>
-       @endcode
-     */
+    /// Configuring method. This method is used to configure the service.
     IOPACS_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Override
@@ -111,13 +112,8 @@ protected:
     /// Series enquirer
     ::fwPacsIO::SeriesEnquirer::sptr m_seriesEnquirer;
 
-    /// Pacs Configuration UID
-    std::string m_pacsConfigurationUID;
-
     /// Pacs Configuration object
-    ::fwPacsIO::data::PacsConfiguration::sptr m_pacsConfiguration;
-
-
+    ::fwPacsIO::data::PacsConfiguration::csptr m_pacsConfiguration;
 };
 
 } // namespace ioPacs
