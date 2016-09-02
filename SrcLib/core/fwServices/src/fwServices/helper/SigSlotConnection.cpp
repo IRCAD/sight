@@ -7,6 +7,7 @@
 #include "fwServices/helper/SigSlotConnection.hpp"
 
 #include <fwCom/SignalBase.hpp>
+#include <fwCom/exception/BadSlot.hpp>
 #include <fwCore/spyLog.hpp>
 
 #include <boost/foreach.hpp>
@@ -34,8 +35,15 @@ SigSlotConnection::~SigSlotConnection()
 void SigSlotConnection::connect(const ::fwCom::HasSignals::csptr& hasSignals, ::fwCom::Signals::SignalKeyType signalKey,
                                 const ::fwCom::HasSlots::csptr& hasSlots, ::fwCom::Slots::SlotKeyType slotKey )
 {
-    ::fwCom::Connection connection = hasSignals->signal( signalKey )->connect( hasSlots->slot( slotKey ) );
-    m_connections.push_back(connection);
+    try
+    {
+        ::fwCom::Connection connection = hasSignals->signal( signalKey )->connect( hasSlots->slot( slotKey ) );
+        m_connections.push_back(connection);
+    }
+    catch (::fwCom::exception::BadSlot e)
+    {
+        OSLM_ERROR("Can't connect signal '" + signalKey + "' with slot '" + slotKey + "' : " << e.what() << ".");
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -50,8 +58,17 @@ void SigSlotConnection::connect(const ::fwCom::HasSignals::csptr& hasSignals,
         SLM_ASSERT("Signal '" + keys.first + "' not found.", signal);
         auto slot = hasSlots->slot( keys.second );
         SLM_ASSERT("Slot '" + keys.second + "' not found.", slot);
-        ::fwCom::Connection connection = signal->connect( slot );
-        m_connections.push_back(connection);
+
+        try
+        {
+            ::fwCom::Connection connection = signal->connect( slot );
+            m_connections.push_back(connection);
+        }
+        catch (::fwCom::exception::BadSlot e)
+        {
+            OSLM_ERROR("Can't connect signal '" + keys.first + "' with slot '" + keys.second + "' : "
+                       << e.what() << ".");
+        }
     }
 }
 
