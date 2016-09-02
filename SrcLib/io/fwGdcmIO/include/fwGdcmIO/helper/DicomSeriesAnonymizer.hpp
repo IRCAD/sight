@@ -52,14 +52,8 @@ public:
 
 protected:
 
-    /// Dicom writer
-    ::fwGdcmIO::helper::DicomSeriesWriter::sptr m_writer;
-
     /// Dicom anonymizer
     ::fwGdcmIO::helper::DicomAnonymizer m_anonymizer;
-
-    /// Dicom Reader
-    ::fwGdcmIO::reader::SeriesDB::sptr m_reader;
 
     /// Job observer
     SPTR(::fwJobs::Aggregator) m_job;

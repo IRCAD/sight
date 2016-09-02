@@ -261,7 +261,8 @@ void SSliceIndexDicomEditor::triggerNewSlice()
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
 
     // Compute slice index
-    std::size_t selectedSliceIndex = m_sliceIndexSlider->value() + dicomSeries->getFirstInstanceNumber();
+    size_t selectedSliceIndex = static_cast<size_t>(m_sliceIndexSlider->value()) +
+                                dicomSeries->getFirstInstanceNumber();
     OSLM_TRACE("triggered new slice : " << selectedSliceIndex);
 
     SLM_ERROR_IF("There is no instance available for selected slice index.",
@@ -280,7 +281,15 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
     // DicomSeries
     ::fwMedData::DicomSeries::sptr dicomSeries = this->getObject< ::fwMedData::DicomSeries >();
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
-    if( dicomSeries->getModality() != "CT" && dicomSeries->getModality() != "MR")
+
+    auto isModalitySupported = [](const ::fwMedData::Series::sptr& series )
+                               {
+                                   return series->getModality() == "CT" ||
+                                          series->getModality() == "MR" ||
+                                          series->getModality() == "XA";
+                               };
+
+    if( !isModalitySupported(dicomSeries) )
     {
         return;
     }
@@ -310,6 +319,8 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 
         ::boost::system::error_code err;
         ::boost::filesystem::create_hard_link(src, dest, err);
+
+        // If the hard-link fails (different mount volumes for instance) then copy the file
         if (err.value() != 0)
         {
             SLM_INFO("Copying " + src.string() + " to " + dest.string());
@@ -325,8 +336,9 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
             inStream.close();
             outStream.close();
 
-            ::boost::filesystem::permissions(dest, ::boost::filesystem::owner_all, err);
-            SLM_ERROR_IF("set permission error : " + err.message(), err.value());
+            ::boost::system::error_code errPerm;
+            ::boost::filesystem::permissions(dest, ::boost::filesystem::owner_all, errPerm);
+            SLM_ERROR_IF("set permission error : " + errPerm.message(), errPerm.value());
         }
     }
     else if(dicomSeries->getDicomAvailability() == ::fwMedData::DicomSeries::BINARIES)
@@ -371,7 +383,7 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
     if(m_tempSeriesDB->getContainer().size() > 0)
     {
         auto series = *(m_tempSeriesDB->getContainer().begin());
-        if( series->getModality() == "CT" || series->getModality() == "MR")
+        if( isModalitySupported(series) )
         {
             imageSeries = ::fwMedData::ImageSeries::dynamicCast(series);
         }
