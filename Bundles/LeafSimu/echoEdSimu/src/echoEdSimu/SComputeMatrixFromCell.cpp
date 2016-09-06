@@ -28,9 +28,8 @@ namespace echoEdSimu
 fwServicesRegisterMacro( ::arServices::ISimulator, ::echoEdSimu::SComputeMatrixFromCell,
                          ::fwData::TransformationMatrix3D);
 
-const ::fwCom::Slots::SlotKeyType SComputeMatrixFromCell::s_UPDATE_CRANIOCAUDAL_SLOT = "updateCranioCaudal";
-const ::fwCom::Slots::SlotKeyType SComputeMatrixFromCell::s_UPDATE_RADIAL_SLOT       = "updateRadial";
-const ::fwCom::Slots::SlotKeyType SComputeMatrixFromCell::s_UPDATE_BOTH_SLOT         = "updateBoth";
+const ::fwCom::Slots::SlotKeyType SComputeMatrixFromCell::s_UPDATE_SINGLE_SLOT = "updateSingle";
+const ::fwCom::Slots::SlotKeyType SComputeMatrixFromCell::s_UPDATE_BOTH_SLOT   = "updateBoth";
 
 //------------------------------------------------------------------------------
 SComputeMatrixFromCell::SComputeMatrixFromCell() throw() :
@@ -38,8 +37,7 @@ SComputeMatrixFromCell::SComputeMatrixFromCell() throw() :
     m_cranioCaudalIndex(0),
     m_radialIndex(0)
 {
-    newSlot( s_UPDATE_CRANIOCAUDAL_SLOT, &SComputeMatrixFromCell::updateCranioCaudalImage, this );
-    newSlot( s_UPDATE_RADIAL_SLOT, &SComputeMatrixFromCell::updateRadialImage, this );
+    newSlot( s_UPDATE_SINGLE_SLOT, &SComputeMatrixFromCell::updateSingle, this );
     newSlot( s_UPDATE_BOTH_SLOT, &SComputeMatrixFromCell::updateBoth, this );
 }
 
@@ -124,16 +122,16 @@ void SComputeMatrixFromCell::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SComputeMatrixFromCell::updateCranioCaudalImage(int i)
+void SComputeMatrixFromCell::updateSingle(int i, std::string key)
 {
-    updateBoth(i, m_radialIndex);
-}
-
-//------------------------------------------------------------------------------
-
-void SComputeMatrixFromCell::updateRadialImage(int j)
-{
-    updateBoth(m_cranioCaudalIndex, j);
+    if(key == "craniocaudal")
+    {
+        updateBoth(i, m_radialIndex);
+    }
+    else if(key == "radial")
+    {
+        updateBoth(m_cranioCaudalIndex, i);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -151,10 +149,6 @@ void SComputeMatrixFromCell::updateBoth(int i, int j)
     if (indexCell >= nbrCells)
     {
         indexCell = nbrCells -1;
-    }
-    else if (indexCell < 0)
-    {
-        indexCell = 0;
     }
 
     ::fwData::Array::sptr normalArray = m_mesh->getCellNormalsArray();
