@@ -131,7 +131,7 @@
             <start uid="SDBWriter" />
         </service>
 
-        <service uid="SDBWriter" type="::uiIO::editor::SIOSelector" config="ARMDAtomsConfig" >
+        <service uid="SDBWriter" type="::uiIO::editor::SIOSelector" config="ARSDBAtomsWriterIOSelectorConfig" >
             <inout key="series" uid="seriesDB" />
         </service>
 
