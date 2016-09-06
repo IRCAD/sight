@@ -71,8 +71,8 @@ public:
     /// Get material name
     VISUOGREADAPTOR_API std::string getMaterialName() const;
 
-    /// Retrieves the associated texture adaptor
-    VISUOGREADAPTOR_API void setTextureAdaptor(const std::string& textureAdaptorId);
+    /// Retrieves the associated texture name
+    VISUOGREADAPTOR_API void setTextureName(const std::string& textureName);
 
     /// Returns the priority of the adaptor
     VISUOGREADAPTOR_API virtual int getStartPriority();
@@ -130,7 +130,7 @@ protected:
     /// Stopping method
     VISUOGREADAPTOR_API void doStop() throw(fwTools::Failed);
 
-    /// Swapping method, doUpdate
+    /// Swapping method, updating
     VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
 
     /// Updating method, updates fixed function pipeline parameters
@@ -167,7 +167,7 @@ private:
     void updateRGBAMode( ::fwData::Material::sptr fw_material );
 
     /// Slot called to create a texture adaptor when a texture is added to the material.
-    /// This method is also called from the doStart in order to create the texture adaptor if the material has a
+    /// This method is also called from the starting in order to create the texture adaptor if the material has a
     /// default texture.
     void createTextureAdaptor();
 
@@ -196,7 +196,7 @@ private:
 
     /// The texture adaptor the material adaptor is listening to
     ::visuOgreAdaptor::STexture::sptr m_texAdaptor;
-    std::string m_texAdaptorUID;
+    std::string m_textureName;
 
     /// Defines if the associated mesh has a normal layer
     bool m_hasMeshNormal;

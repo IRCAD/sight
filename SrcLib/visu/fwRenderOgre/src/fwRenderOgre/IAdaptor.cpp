@@ -6,20 +6,26 @@
 
 #include "fwRenderOgre/IAdaptor.hpp"
 
+#include <fwCom/Slots.hxx>
+
+#include <fwRenderOgre/registry/Adaptor.hpp>
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/helper/Config.hpp>
 
 namespace fwRenderOgre
 {
 
+const ::fwCom::Slots::SlotKeyType s_START_OBJECT_SLOT = "startObject";
+
 //------------------------------------------------------------------------------
 
-IAdaptor::IAdaptor() throw() :
-    m_layerID("")
+IAdaptor::IAdaptor() throw()
 {
+    newSlot(s_START_OBJECT_SLOT, &IAdaptor::doStart, this);
 }
 
 //------------------------------------------------------------------------------
@@ -38,13 +44,40 @@ void IAdaptor::info(std::ostream& _sstream )
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::starting() throw(fwTools::Failed)
+void IAdaptor::configuring() throw ( ::fwTools::Failed )
 {
-    /// Install observation
-    m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    auto config = m_configuration->findConfigurationElement("config");
 
-    SLM_ASSERT("Unable to retrieve the render service's shared pointer (lock)", m_renderService.lock());
+    SLM_ASSERT("Can't find 'config' tag.", config);
 
+    m_configuration = config;
+
+    m_layerID = m_configuration->getAttributeValue("layer");
+
+    this->doConfigure();
+}
+
+//------------------------------------------------------------------------------
+
+void IAdaptor::starting() throw ( ::fwTools::Failed )
+{
+    if(m_renderService.expired())
+    {
+        auto servicesVector = ::fwServices::OSR::getServices("::fwRenderOgre::SRender");
+
+        auto& registry       = ::fwRenderOgre::registry::getAdaptorRegistry();
+        auto renderServiceId = registry[this->getID()];
+
+        auto result =
+            std::find_if(servicesVector.begin(), servicesVector.end(),
+                         [renderServiceId](const ::fwServices::IService::sptr& srv)
+            {
+                return srv->getID() == renderServiceId;
+            });
+        SLM_ASSERT("Can't find '" + renderServiceId + "' SRender service.", result != servicesVector.end());
+
+        m_renderService = ::fwRenderOgre::SRender::dynamicCast(*result);
+    }
     doStart();
 }
 
@@ -52,16 +85,12 @@ void IAdaptor::starting() throw(fwTools::Failed)
 
 void IAdaptor::stopping() throw(fwTools::Failed)
 {
-    /// Stop observation
-    m_connections.disconnect();
     doStop();
 }
 //------------------------------------------------------------------------------
 
 void IAdaptor::swapping() throw(fwTools::Failed)
 {
-    m_connections.disconnect();
-    m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
     doSwap();
 }
 
@@ -74,13 +103,17 @@ void IAdaptor::updating() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::configuring() throw ( ::fwTools::Failed )
+void IAdaptor::connect()
 {
-    SLM_ASSERT("Can't find 'config' tag.", m_configuration->getName() == "config");
+    ::fwServices::IService::KeyConnectionsType connections = this->getObjSrvConnections();
+    m_objConnection.connect( this->getObject(), this->getSptr(), connections );
+}
 
-    m_layerID = m_configuration->getAttributeValue("renderer");
+//------------------------------------------------------------------------------
 
-    this->doConfigure();
+void IAdaptor::disconnect()
+{
+    m_objConnection.disconnect();
 }
 
 //------------------------------------------------------------------------------
@@ -94,7 +127,6 @@ void IAdaptor::setLayerID(const std::string& id)
 
 void IAdaptor::setRenderService( SRender::sptr service)
 {
-    /// Preconditions
     SLM_ASSERT("service not instanced", service);
     SLM_ASSERT("The adaptor ('"+this->getID()+"') is not stopped", this->isStopped());
 

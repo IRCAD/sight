@@ -24,17 +24,12 @@ fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::STransform,
 namespace visuOgreAdaptor
 {
 
-//-----------------------------------------------------------------------------
-
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF = "updateTransformation";
-
 //------------------------------------------------------------------------------
 
 STransform::STransform() throw() :
     m_transformNode(nullptr),
     m_parentTransformNode(nullptr)
 {
-    newSlot(s_UPDATE_TF, &STransform::update, this);
 }
 
 //------------------------------------------------------------------------------
@@ -47,10 +42,6 @@ STransform::~STransform() throw()
 
 void STransform::doConfigure() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    // Base class configuration
-    SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
     this->setTransformId( m_configuration->getAttributeValue("transform") );
 
     if ( m_configuration->hasAttribute( "parent" ) )
@@ -79,7 +70,7 @@ void STransform::doStart() throw(fwTools::Failed)
 
     if(m_transformNode)
     {
-        this->doUpdate();
+        this->updating();
         return;
     }
 
@@ -103,7 +94,7 @@ void STransform::doStart() throw(fwTools::Failed)
     }
 
     m_transformNode = m_parentTransformNode->createChildSceneNode(this->getTransformId());
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -184,23 +175,15 @@ const ::Ogre::Matrix4& STransform::getTransform() const
 
 void STransform::doSwap() throw(fwTools::Failed)
 {
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
 void STransform::doStop() throw(fwTools::Failed)
 {
-    this->unregisterServices();
 }
 
 //-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsType visuOgreAdaptor::STransform::getObjSrvConnections() const
-{
-    ::fwServices::IService::KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_TF ) );
-    return connections;
-}
 
 } //namespace visuOgreAdaptor

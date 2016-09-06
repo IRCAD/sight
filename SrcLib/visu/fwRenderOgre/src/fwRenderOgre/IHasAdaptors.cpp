@@ -50,6 +50,9 @@ void IHasAdaptors::unregisterService(fwTools::fwID::IDType _id)
         ::fwServices::IService::sptr srv = service->lock();
         if(srv && (srv->getID() == _id))
         {
+            ::fwServices::IService::sptr srv       = service->lock();
+            ::fwRenderOgre::IAdaptor::sptr adaptor = ::fwRenderOgre::IAdaptor::dynamicCast(srv);
+            adaptor->disconnect();
             srv->stop();
             ::fwServices::OSR::unregisterService(srv);
             service = m_subAdaptors.erase(service);
@@ -77,6 +80,8 @@ void IHasAdaptors::unregisterServices(std::string _classname)
         ::fwServices::IService::sptr srv = service->lock();
         if(srv && (_classname.empty() || ( !_classname.empty() && srv->getClassname() == _classname)))
         {
+            ::fwRenderOgre::IAdaptor::sptr adaptor = ::fwRenderOgre::IAdaptor::dynamicCast(srv);
+            adaptor->disconnect();
             srv->stop();
             ::fwServices::OSR::unregisterService(srv);
             service = m_subAdaptors.erase(service);

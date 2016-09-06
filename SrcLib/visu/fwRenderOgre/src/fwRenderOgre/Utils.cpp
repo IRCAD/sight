@@ -8,7 +8,7 @@
 
 #include <fwCore/spyLog.hpp>
 
-#include <fwComEd/helper/Image.hpp>
+#include <fwComEd/helper/ImageGetter.hpp>
 #include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwRenderOgre/compositor/MaterialMgrListener.hpp>
@@ -202,7 +202,7 @@ void Utils::destroyOgreRoot()
 
 //------------------------------------------------------------------------------
 
-::Ogre::Image Utils::convertFwDataImageToOgreImage( const ::fwData::Image::sptr imageFw)
+::Ogre::Image Utils::convertFwDataImageToOgreImage( const ::fwData::Image::csptr imageFw)
 {
     SLM_ASSERT("Image is null", imageFw);
 
@@ -226,7 +226,7 @@ void Utils::destroyOgreRoot()
 
     ::Ogre::PixelFormat pixelFormat = getPixelFormatOgre( imageFw );
 
-    ::fwComEd::helper::Image imageHelper(imageFw);
+    ::fwComEd::helper::ImageGetter imageHelper(imageFw);
 
     imageOgre.loadDynamicImage(static_cast<uint8_t*>(imageHelper.getBuffer()), width, height, depth, pixelFormat);
 
@@ -236,7 +236,7 @@ void Utils::destroyOgreRoot()
 //------------------------------------------------------------------------------
 
 // Only handles RGB for now, since fwData::Image only does so.
-::Ogre::PixelFormat Utils::getPixelFormatOgre(::fwData::Image::sptr imageFw)
+::Ogre::PixelFormat Utils::getPixelFormatOgre(::fwData::Image::csptr imageFw)
 {
     std::string pixelType    = ::fwTools::getString( imageFw->getPixelType() );
     size_t numberOfComponent = imageFw->getNumberOfComponents();

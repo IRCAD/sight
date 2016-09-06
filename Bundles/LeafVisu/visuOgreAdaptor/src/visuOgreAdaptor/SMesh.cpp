@@ -102,10 +102,7 @@ void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras
 SMesh::SMesh() throw() :
     m_autoResetCamera(true),
     m_entity(nullptr),
-    m_materialAdaptorUID(""),
     m_materialTemplateName(SMaterial::DEFAULT_MATERIAL_TEMPLATE_NAME),
-    m_meshName(""),
-    m_texAdaptorUID(""),
     m_hasNormal(false),
     m_hasVertexColor(false),
     m_hasPrimitiveColor(false),
@@ -140,11 +137,6 @@ SMesh::SMesh() throw() :
 
 SMesh::~SMesh() throw()
 {
-    if(m_entity)
-    {
-        ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-        sceneMgr->destroyEntity(m_entity);
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -173,8 +165,6 @@ void visuOgreAdaptor::SMesh::updateVisibility(bool isVisible)
 
 void SMesh::doConfigure() throw(fwTools::Failed)
 {
-    SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
-
     std::string color = m_configuration->getAttributeValue("color");
 
     if(m_material)
@@ -188,12 +178,12 @@ void SMesh::doConfigure() throw(fwTools::Failed)
         m_autoResetCamera = (autoResetCamera == "yes");
     }
 
-    // If a material adaptor is configured in the XML scene, we keep its UID
+    // If a material is configured in the XML scene, we keep its name to retrieve the adaptor later
     // Else we keep the name of the configured Ogre material (if it exists),
     //      it will be passed to the created SMaterial
-    if ( m_configuration->hasAttribute("materialAdaptor"))
+    if ( m_configuration->hasAttribute("materialName"))
     {
-        m_materialAdaptorUID = m_configuration->getAttributeValue("materialAdaptor");
+        m_materialName = m_configuration->getAttributeValue("materialName");
     }
     else
     {
@@ -203,10 +193,10 @@ void SMesh::doConfigure() throw(fwTools::Failed)
             m_materialTemplateName = m_configuration->getAttributeValue("materialTemplate");
         }
 
-        // The mesh adaptor will pass the texture adaptor to the created material adaptor
-        if ( m_configuration->hasAttribute("textureAdaptor"))
+        // The mesh adaptor will pass the texture name to the created material adaptor
+        if ( m_configuration->hasAttribute("textureName"))
         {
-            m_texAdaptorUID = m_configuration->getAttributeValue("textureAdaptor");
+            m_textureName = m_configuration->getAttributeValue("textureName");
         }
 
         if( m_configuration->hasAttribute("shadingMode"))
@@ -250,15 +240,23 @@ void SMesh::doStart() throw(::fwTools::Failed)
 
     // We have to create a new material adaptor only if this adaptor is instanciated by a reconstruction adaptor
     // or if no material adaptor uid has been configured
-    m_useNewMaterialAdaptor = m_isReconstructionManaged || m_materialAdaptorUID.empty();
+    m_useNewMaterialAdaptor = m_isReconstructionManaged || m_materialName.empty();
 
     if(!m_useNewMaterialAdaptor)
     {
         // A material adaptor has been configured in the XML scene
-        ::fwRenderOgre::SRender::sptr renderService = this->getRenderService();
-        auto materialService = renderService->getAdaptor(m_materialAdaptorUID);
-        m_materialAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(materialService);
+        auto mtlAdaptors = this->getRenderService()->getAdaptors< ::visuOgreAdaptor::SMaterial>();
 
+        auto result =
+            std::find_if(mtlAdaptors.begin(), mtlAdaptors.end(),[this](const ::visuOgreAdaptor::SMaterial::sptr& srv)
+            {
+                return srv->getMaterialName() == m_materialName;
+            });
+
+        m_materialAdaptor = *result;
+
+        SLM_ASSERT("SMaterial adaptor managing material'" + m_materialName + "' is not found",
+                   result != mtlAdaptors.end());
         m_material = m_materialAdaptor->getObject< ::fwData::Material >();
     }
 
@@ -283,19 +281,26 @@ void SMesh::doStop() throw(fwTools::Failed)
     sceneMgr->destroyManualObject(m_meshName);
     sceneMgr->destroyManualObject(m_r2vbMeshName);
 
-    m_connections.disconnect();
     if(!m_useNewMaterialAdaptor)
     {
         m_materialAdaptor.reset();
     }
+
+    if(m_entity)
+    {
+        ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+        sceneMgr->destroyEntity(m_entity);
+    }
+    m_ogreMesh.setNull();
+    m_r2vbMesh.setNull();
 }
 
 //-----------------------------------------------------------------------------
 
 void SMesh::doSwap() throw(fwTools::Failed)
 {
-    doStop();
-    doStart();
+    stopping();
+    starting();
 }
 
 //-----------------------------------------------------------------------------
@@ -668,6 +673,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
                 r2vbMtlAdaptor->setHasPrimitiveColor(m_hasPrimitiveColor, m_perPrimitiveColorTextureName);
 
                 r2vbMtlAdaptor->start();
+                r2vbMtlAdaptor->connect();
 
                 m_r2vbMaterialAdaptor[cellType] = r2vbMtlAdaptor;
             }
@@ -679,7 +685,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
                 r2vbMtlAdaptor->setHasMeshNormal(m_hasNormal);
                 r2vbMtlAdaptor->setHasVertexColor(m_hasVertexColor);
                 r2vbMtlAdaptor->setHasPrimitiveColor(m_hasPrimitiveColor, m_perPrimitiveColorTextureName);
-                r2vbMtlAdaptor->setTextureAdaptor(m_texAdaptorUID);
+                r2vbMtlAdaptor->setTextureName(m_textureName);
                 r2vbMtlAdaptor->setShadingMode(m_shadingMode);
 
                 // Update the material *synchronously* otherwise the r2vb will be rendered before the shader switch
@@ -1079,7 +1085,7 @@ void SMesh::clearMesh()
 
     materialAdaptor->setHasMeshNormal(m_hasNormal);
     materialAdaptor->setHasVertexColor(m_hasVertexColor);
-    materialAdaptor->setTextureAdaptor(m_texAdaptorUID);
+    materialAdaptor->setTextureName(m_textureName);
     materialAdaptor->setShadingMode(m_shadingMode);
     materialAdaptor->setMeshBoundingBox(m_ogreMesh->getBounds());
 
@@ -1098,6 +1104,7 @@ void SMesh::updateNewMaterialAdaptor()
         {
             m_materialAdaptor = this->createMaterialService();
             m_materialAdaptor->start();
+            m_materialAdaptor->connect();
 
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
         }
@@ -1161,6 +1168,7 @@ void SMesh::createTransformService()
         transformService->setParentTransformId(this->getParentTransformId());
 
         transformService->start();
+        transformService->connect();
         this->registerService(transformService);
 
         this->attachNode(m_entity);

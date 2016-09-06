@@ -92,9 +92,9 @@ class Layer;
  *    - \b signal : mandatory, must be signal holder UID, followed by '/', followed by signal name. To use the
  *         object (defined by waitForKey) signal, you don't have to write object uid, only the signal name.
  *    - \b slot : mandatory, must be slot holder UID, followed by '/', followed by slot name
- *  - \b renderer : mandatory, defines the scene's layer
+ *  - \b layer : mandatory, defines the scene's layer
  *    - \b id (mandatory): the identifier of the layer
- *    - \b layer (mandatory): the depth of the layer, starting from 1
+ *    - \b depth (mandatory): the depth of the layer, starting from 1
  *    - \b transparency (optional): the transparency technique to use: DepthPeeling, DualDepthPeeling,
  *                                  WeightedBlended, HybridTransparency or CelShadingDepthPeeling.
  *    - \b numPeels (optional): number of peels for the selected transparency technique.
@@ -113,10 +113,17 @@ public:
     typedef std::string AdaptorIdType;
     typedef std::string OgreObjectIdType;
     typedef std::string SceneIdType;
-    typedef std::map< std::string, ::fwData::Object::csptr > ConstObjectMapType;
 
     /// Actives layouts in the scene
     typedef std::map< SceneIdType, SPTR(::fwRenderOgre::Layer) > LayerMapType;
+
+    /**
+     * @name Signal API
+     * @{
+     */
+    typedef ::fwCom::Signal< void () > SceneStartedSignalType;
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_SCENE_STARTED_SIG;
+    /** @} */
 
     /**
      * @name Slots API
@@ -148,12 +155,6 @@ public:
     /// Returns true if the scene is shown on screen
     FWRENDEROGRE_API bool isShownOnScreen();
 
-    /// Returns the adaptor corresponding to the given id
-    FWRENDEROGRE_API SPTR (IAdaptor) getAdaptor(AdaptorIdType adaptorId);
-
-    /// Returns all the adaptors
-    FWRENDEROGRE_API std::vector<CSPTR(IAdaptor)> getAdaptors() const;
-
     /// Returns the scene manager corresponding to the sceneID
     FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager(const ::std::string& sceneID);
 
@@ -172,28 +173,11 @@ public:
     /// Compute camera parameters with the actual global bounding box
     FWRENDEROGRE_API void computeCameraClipping();
 
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connects Composite::s_ADDED_OBJECTS_SIG to this::s_ADD_OBJECTS_SLOT
-     * Connects Composite::s_CHANGED_OBJECTS_SIG to this::s_CHANGE_OBJECTS_SLOT
-     * Connects Composite::s_REMOVED_OBJECTS_SIG to this::s_REMOVE_OBJECTS_SLOT
-     */
-    FWRENDEROGRE_API virtual KeyConnectionsType getObjSrvConnections() const;
+    /// Return true if the ogre context is ready to be used
+    FWRENDEROGRE_API bool isReady() const;
 
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
-     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
-     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
-     */
-    FWRENDEROGRE_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
-
-    /// TEMP: Function to grab the composite while we maintain appXml and appXml2
-    FWRENDEROGRE_API ::fwData::Composite::sptr getComposite();
+    template<class T>
+    std::vector<SPTR(T)> getAdaptors() const;
 
 protected:
 
@@ -214,21 +198,19 @@ protected:
 private:
 
     /// Wrapper class containing an adaptor
-    class SceneAdaptor
+    struct SceneAdaptor
     {
-    public:
-
         SPTR (IAdaptor) getService() const
         {
             return m_service.lock();
         }
 
-        ConfigurationType m_config;
         WPTR(IAdaptor) m_service;
+        bool m_start;
     };
 
     /// Actives adaptors in scene
-    typedef std::map< AdaptorIdType, SceneAdaptor > SceneAdaptorsMapType;
+    typedef std::map< AdaptorIdType, SceneAdaptor> SceneAdaptorsMapType;
 
     /// Configuration element shared pointer
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
@@ -242,43 +224,11 @@ private:
     void configureBackgroundLayer( ConfigurationType conf );
     /// Configure each layer of the scene
     void configureLayer( ConfigurationType conf );
-    /// Configure each adaptors of the scene
-    void configureObject( ConfigurationType conf );
     /// Start each adaptors of the scene
     void startObject();
 
-    /// Creates the connection if the required key is contained in the composite
-    void connectAfterWait(::fwData::Composite::ContainerType objects);
-
-    /// Creates the connection given by the configuration for obj associated with the key in the composite.
-    void manageConnection(const std::string& key, const ::fwData::Object::csptr& obj,
-                          const ConfigurationType& config);
-
-    /// Creates the proxy given by the configuration for obj associated with the key in the composite.
-    void manageProxy(const std::string& key, const ::fwData::Object::csptr& obj,
-                     const ConfigurationType& config);
-
-    /// Disconnects the connection based on a object key
-    template< class ContainerType >
-    void disconnect( const ContainerType& objects );
-
     /// Execute a ray cast with a ray built from (x,y) point, which is the mouse position
     void doRayCast(int x, int y, int width, int height);
-
-    /// Slot: add objects
-    void addObjects(::fwData::Composite::ContainerType objects);
-
-    /// Slot: change objects
-    void changeObjects(::fwData::Composite::ContainerType newObjects, ::fwData::Composite::ContainerType oldObjects);
-
-    /// Slot: remove objects
-    void removeObjects(::fwData::Composite::ContainerType objects);
-
-    /// Configure the objects
-    void configureObjects(::fwData::Composite::ContainerType objects);
-
-    /// Contains all the adaptors of the scene
-    SceneAdaptorsMapType m_sceneAdaptors;
 
     /// Contains the scene configuration which is the scene xml node
     ConfigurationType m_sceneConfiguration;
@@ -288,20 +238,6 @@ private:
 
     /// Signal/ Slot connection
     ::fwServices::helper::SigSlotConnection m_connections;
-
-    /// Map to register proxy connections
-    ::fwServices::helper::Config::ProxyConnectionsMapType m_proxyMap;
-
-    typedef std::vector< ConfigurationType > ConnectConfigType;
-    /// vector containing all the connections configurations
-    ConnectConfigType m_connect;
-
-    /// vector containing all the proxy configurations
-    ConnectConfigType m_proxies;
-
-    typedef std::map< std::string, ::fwServices::helper::SigSlotConnection > ObjectConnectionsMapType;
-    /// map containing the object key/connection relation
-    ObjectConnectionsMapType m_objectConnections;
 
     /// Ogre window interactor manager
     ::fwRenderOgre::IRenderWindowInteractorManager::sptr m_interactorManager;
@@ -317,24 +253,38 @@ private:
 
     /// True if the rendering is done only when requested
     bool m_renderOnDemand;
+
+    /// True if the render window is created.
+    bool m_isReady;
+
+    /// Map containing all adaptors
+    SceneAdaptorsMapType m_adaptors;
 };
 
 //-----------------------------------------------------------------------------
 
-template< class ContainerType >
-void SRender::disconnect(const ContainerType& objects)
+template<class T>
+std::vector<SPTR(T)> SRender::getAdaptors() const
 {
-    for(auto element :  objects)
-    {
-        std::string key = element.first;
-        if(m_objectConnections.find(key) != m_objectConnections.end())
-        {
-            m_objectConnections[key].disconnect();
-            m_objectConnections.erase(key);
-        }
+    std::vector<SPTR(T)> resultVector;
 
-        ::fwServices::helper::Config::disconnectProxies(key, m_proxyMap);
+    for(auto& sceneAdaptor : m_adaptors)
+    {
+        SPTR(T) adaptor = T::dynamicCast(sceneAdaptor.second.getService());
+        if( adaptor )
+        {
+            resultVector.push_back(adaptor);
+        }
     }
+
+    return resultVector;
+}
+
+//-----------------------------------------------------------------------------
+
+inline bool SRender::isReady() const
+{
+    return m_isReady;
 }
 
 //-----------------------------------------------------------------------------

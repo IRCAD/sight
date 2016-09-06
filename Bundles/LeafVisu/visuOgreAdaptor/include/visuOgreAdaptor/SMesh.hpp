@@ -55,8 +55,6 @@ namespace visuOgreAdaptor
  * To handle the per-primitive color of ::fwData::Mesh we also rely on geometry shaders, and thus on r2vb. We build a
  * texture containing the color for each primitive. This texture is fetched inside the geometry shader using the
  * primitive id.
- *
- * @class SMesh
  */
 class VISUOGREADAPTOR_CLASS_API SMesh : public ::fwRenderOgre::IAdaptor,
                                         public ::fwRenderOgre::ITransformable
@@ -135,13 +133,13 @@ private:
      */
     void doConfigure() throw(fwTools::Failed);
     /// Manually creates a Mesh in the Default Ogre Ressource group
-    void doStart    () throw(fwTools::Failed);
+    void doStart() throw(fwTools::Failed);
     /// Deletes the mesh after unregistering the service, and shutting connections.
-    void doStop     () throw(fwTools::Failed);
+    void doStop() throw(fwTools::Failed);
     /// Performs a Stop -> Start
-    void doSwap     () throw(fwTools::Failed);
+    void doSwap() throw(fwTools::Failed);
     /// Checks if the fwData::Mesh has changed, and updates it if it has.
-    void doUpdate   () throw(fwTools::Failed);
+    void doUpdate() throw(fwTools::Failed);
 
     ::Ogre::Entity* newEntity();
 
@@ -200,8 +198,8 @@ private:
 
     /// SMaterial attached to the mesh
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
-    /// Attached material adaptor UID
-    std::string m_materialAdaptorUID;
+    /// Attached material name (when configured by XML)
+    std::string m_materialName;
     /// Ogre Material related to the mesh
     ::fwData::Material::sptr m_material;
     /// Attached Material's name
@@ -224,7 +222,7 @@ private:
     /// Name of the mesh in Ogre
     std::string m_meshName;
     /// Attached texture adaptor UID
-    std::string m_texAdaptorUID;
+    std::string m_textureName;
 
     /// Binding for each layer
     unsigned short m_binding[NUM_BINDINGS];

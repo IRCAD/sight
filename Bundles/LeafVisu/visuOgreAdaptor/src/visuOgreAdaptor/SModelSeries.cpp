@@ -56,10 +56,6 @@ SModelSeries::~SModelSeries() throw()
 
 void SModelSeries::doConfigure() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
-
     if (m_configuration->hasAttribute("transform"))
     {
         this->setTransformId(m_configuration->getAttributeValue("transform"));
@@ -93,7 +89,7 @@ void SModelSeries::doConfigure() throw(::fwTools::Failed)
 
 void SModelSeries::doStart() throw(::fwTools::Failed)
 {
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -103,10 +99,7 @@ void SModelSeries::doUpdate() throw(::fwTools::Failed)
     // Retrieves the associated f4s ModelSeries object
     ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
 
-    this->doStop();
-
-    // doStop() disconnects everything, we have to restore connection with the data
-    m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    this->stopping();
 
     // showRec indicates if we have to show the associated reconstructions or not
     const bool showRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
@@ -130,6 +123,7 @@ void SModelSeries::doUpdate() throw(::fwTools::Failed)
         reconstructionAdaptor->setAutoResetCamera(m_autoResetCamera);
 
         service->start();
+        service->connect();
         reconstructionAdaptor->setForceHide(!showRec);
 
         this->registerService(service);
@@ -144,14 +138,13 @@ void SModelSeries::doUpdate() throw(::fwTools::Failed)
 
 void SModelSeries::doSwap() throw(::fwTools::Failed)
 {
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
 void SModelSeries::doStop() throw(::fwTools::Failed)
 {
-    m_connections.disconnect();
     this->unregisterServices();
 }
 
@@ -159,14 +152,14 @@ void SModelSeries::doStop() throw(::fwTools::Failed)
 
 void SModelSeries::addReconstruction()
 {
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
 void SModelSeries::removeReconstruction()
 {
-    this->doStop();
+    this->stopping();
 }
 
 //-----------------------------------------------------------------------------

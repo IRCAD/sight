@@ -33,7 +33,6 @@ class R2VBRenderable;
 namespace fwRenderOgre
 {
 /**
- * @class Utils
  * @brief Provide some Ogre general functions for FW4SPL
  */
 class FWRENDEROGRE_CLASS_API Utils
@@ -65,14 +64,14 @@ public:
      * @param imageFw The FW4SPL Image to convert
      * @return Ogre image
      */
-    FWRENDEROGRE_API static ::Ogre::Image convertFwDataImageToOgreImage( const ::fwData::Image::sptr imageFw);
+    FWRENDEROGRE_API static ::Ogre::Image convertFwDataImageToOgreImage( const ::fwData::Image::csptr imageFw);
 
     /**
      * @brief getPixelFormatOgre
      * @param imageFw The FW4SPL Image
      * @return Pixel format of a fwData::Image
      */
-    FWRENDEROGRE_API static ::Ogre::PixelFormat getPixelFormatOgre( ::fwData::Image::sptr imageFw );
+    FWRENDEROGRE_API static ::Ogre::PixelFormat getPixelFormatOgre( ::fwData::Image::csptr imageFw );
 
     /**
      * @brief loadOgreTexture

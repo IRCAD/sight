@@ -87,8 +87,6 @@ const std::string& IParameter::getDefaultValue() const
 
 void IParameter::doConfigure() throw(::fwTools::Failed)
 {
-    SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
-
     m_paramName = m_configuration->getAttributeValue("parameter");
     OSLM_ERROR_IF("parameter attribute not set", m_paramName.empty());
 
@@ -347,7 +345,7 @@ void IParameter::setBoolParameter(bool value, std::string name)
         ::fwData::Boolean::sptr paramObject = ::fwData::Boolean::dynamicCast(obj);
         paramObject->setValue(value);
 
-        this->doUpdate();
+        this->updating();
     }
 }
 
@@ -361,7 +359,7 @@ void IParameter::setColorParameter(std::array<uint8_t, 4> color, std::string nam
         ::fwData::Color::sptr paramObject = ::fwData::Color::dynamicCast(obj);
         paramObject->setRGBA(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f, color[3] / 255.f);
 
-        this->doUpdate();
+        this->updating();
     }
 }
 
@@ -375,7 +373,7 @@ void IParameter::setIntParameter(int value, std::string name)
         ::fwData::Integer::sptr paramObject = ::fwData::Integer::dynamicCast(obj);
         paramObject->setValue(value);
 
-        this->doUpdate();
+        this->updating();
     }
 }
 
@@ -389,7 +387,7 @@ void IParameter::setFloatParameter(float value, std::string name)
         ::fwData::Float::sptr paramObject = ::fwData::Float::dynamicCast(obj);
         paramObject->setValue(value);
 
-        this->doUpdate();
+        this->updating();
     }
 }
 
@@ -403,7 +401,7 @@ void IParameter::setDoubleParameter(double value, std::string name)
         ::fwData::Float::sptr paramObject = ::fwData::Float::dynamicCast(obj);
         paramObject->setValue(static_cast<float>(value));
 
-        this->doUpdate();
+        this->updating();
     }
 }
 

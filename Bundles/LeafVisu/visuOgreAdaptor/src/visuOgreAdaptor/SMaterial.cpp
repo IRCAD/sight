@@ -62,7 +62,6 @@ static const std::string s_NORMALS_PASS = "NormalsPass";
 //------------------------------------------------------------------------------
 
 SMaterial::SMaterial() throw() :
-    m_materialName(""),
     m_materialTemplateName(DEFAULT_MATERIAL_TEMPLATE_NAME),
     m_hasMeshNormal(true),
     m_hasVertexColor(false),
@@ -141,19 +140,19 @@ void SMaterial::loadMaterialParameters()
 
             const auto& constantValue = std::get<3>(constant);
 
-
             std::string constantValueStr = boost::apply_visitor(ConvertConstant(), constantValue);
 
             ::fwServices::IService::ConfigType config;
-            config.add("config.<xmlattr>.renderer", m_layerID);
-            config.add("config.<xmlattr>.parameter", constantName);
-            config.add("config.<xmlattr>.shaderType", shaderTypeStr);
-            config.add("config.<xmlattr>.materialName", m_materialName);
-            config.add("config.<xmlattr>.defaultValue", constantValueStr);
+            config.add("service.config.<xmlattr>.layer", m_layerID);
+            config.add("service.config.<xmlattr>.parameter", constantName);
+            config.add("service.config.<xmlattr>.shaderType", shaderTypeStr);
+            config.add("service.config.<xmlattr>.materialName", m_materialName);
+            config.add("service.config.<xmlattr>.defaultValue", constantValueStr);
 
             shaderParamService->setConfiguration(config);
             shaderParamService->configure();
             shaderParamService->start();
+            shaderParamService->connect();
 
             // Add created subservice to current service
             this->registerService(shaderParamService);
@@ -168,21 +167,28 @@ void SMaterial::loadMaterialParameters()
 }
 //------------------------------------------------------------------------------
 
-void SMaterial::setTextureAdaptor(const std::string& textureAdaptorUID)
+void SMaterial::setTextureName(const std::string& textureName)
 {
-    if(textureAdaptorUID.empty())
+    if(textureName.empty())
     {
         m_texAdaptor = nullptr;
     }
     else
     {
-        m_texAdaptorUID = textureAdaptorUID;
+        auto textureAdaptors = this->getRenderService()->getAdaptors< ::visuOgreAdaptor::STexture>();
+        auto result          =
+            std::find_if(textureAdaptors.begin(), textureAdaptors.end(),
+                         [textureName](const ::visuOgreAdaptor::STexture::sptr& srv)
+            {
+                return srv->getTextureName() == textureName;
+            });
 
-        ::fwRenderOgre::SRender::sptr renderService = this->getRenderService();
-
-        auto textureService = renderService->getAdaptor(m_texAdaptorUID);
-        m_texAdaptor = ::visuOgreAdaptor::STexture::dynamicCast(textureService);
+        SLM_ASSERT("STexture adaptor managing texture '" + textureName + "' is not found",
+                   result != textureAdaptors.end());
+        m_texAdaptor = *result;
     }
+
+    m_textureName = textureName;
 }
 
 //------------------------------------------------------------------------------
@@ -196,9 +202,6 @@ int SMaterial::getStartPriority()
 
 void SMaterial::doConfigure() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-    SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
-
     if(m_configuration->hasAttribute("materialTemplate"))
     {
         m_materialTemplateName = m_configuration->getAttributeValue("materialTemplate");
@@ -214,9 +217,9 @@ void SMaterial::doConfigure() throw(fwTools::Failed)
         m_materialName = this->getID();
     }
 
-    if(m_configuration->hasAttribute("textureAdaptor"))
+    if(m_configuration->hasAttribute("textureName"))
     {
-        m_texAdaptorUID = m_configuration->getAttributeValue("textureAdaptor");
+        m_textureName = m_configuration->getAttributeValue("textureName");
     }
 
     if(m_configuration->hasAttribute("shadingMode"))
@@ -235,7 +238,6 @@ void SMaterial::doConfigure() throw(fwTools::Failed)
 
 void SMaterial::doStart() throw(fwTools::Failed)
 {
-
     if(!m_shadingMode.empty())
     {
         ::fwData::Material::ShadingType shadingMode = ::fwData::Material::PHONG;
@@ -271,11 +273,11 @@ void SMaterial::doStart() throw(fwTools::Failed)
     this->loadMaterialParameters();
 
     // A texture adaptor is configured in the XML scene, we can retrieve it
-    if(!m_texAdaptorUID.empty())
+    if(!m_textureName.empty())
     {
         if(!m_texAdaptor)
         {
-            this->setTextureAdaptor(m_texAdaptorUID);
+            this->setTextureName(m_textureName);
         }
 
         if(m_texAdaptor->getTextureName().empty())
@@ -297,13 +299,14 @@ void SMaterial::doStart() throw(fwTools::Failed)
         this->createTextureAdaptor();
     }
 
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
 
 void SMaterial::doStop() throw(fwTools::Failed)
 {
+    m_material.setNull();
     m_textureConnection.disconnect();
     this->unregisterServices();
 
@@ -319,8 +322,8 @@ void SMaterial::doStop() throw(fwTools::Failed)
 void SMaterial::doSwap() throw(fwTools::Failed)
 {
     SLM_TRACE("SWAPPING Material");
-    this->doStop();
-    this->doStart();
+    this->stopping();
+    this->starting();
 }
 
 //------------------------------------------------------------------------------
@@ -365,7 +368,7 @@ void SMaterial::updateField( ::fwData::Object::FieldsContainerType fields )
                 material->removeField("shaderParameters");
             }
             this->loadMaterialParameters();
-            this->doUpdate();
+            this->updating();
         }
     }
 }
@@ -483,7 +486,7 @@ void SMaterial::updateOptionsMode(int optionsMode)
 void SMaterial::updatePolygonMode(int polygonMode)
 {
     // This is necessary to load and compile the material, otherwise the following technique iterator
-    // is null when we call this method on the first time (from doStart() for instance)
+    // is null when we call this method on the first time (from starting() for instance)
     m_material->touch();
 
     this->cleanTransparencyTechniques();
@@ -706,7 +709,7 @@ void SMaterial::updateRGBAMode(fwData::Material::sptr fw_material)
 
 void SMaterial::createTextureAdaptor()
 {
-    SLM_ASSERT("Texture adaptor already configured in XML", m_texAdaptorUID.empty());
+    SLM_ASSERT("Texture adaptor already configured in XML", m_textureName.empty());
 
     ::fwData::Material::sptr f4sMaterial = this->getObject< ::fwData::Material >();
 
@@ -734,6 +737,7 @@ void SMaterial::createTextureAdaptor()
                                     ::visuOgreAdaptor::SMaterial::s_SWAP_TEXTURE_SLOT);
 
         m_texAdaptor->start();
+        m_texAdaptor->connect();
     }
 }
 
@@ -742,7 +746,7 @@ void SMaterial::createTextureAdaptor()
 void SMaterial::removeTextureAdaptor()
 {
     SLM_ASSERT("Missing texture adaptor", m_texAdaptor);
-    SLM_ASSERT("Texture adaptor already configured in XML", m_texAdaptorUID.empty());
+    SLM_ASSERT("Texture adaptor already configured in XML", m_textureName.empty());
 
     this->getRenderService()->makeCurrent();
 

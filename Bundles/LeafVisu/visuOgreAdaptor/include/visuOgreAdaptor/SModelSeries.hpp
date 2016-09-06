@@ -22,7 +22,6 @@ namespace visuOgreAdaptor
 
 /**
  * @brief This adaptor shows ModelSeries. Creates adaptors for each reconstruction in model.
- * @class SModelSeries
  */
 class VISUOGREADAPTOR_CLASS_API SModelSeries : public ::fwRenderOgre::IAdaptor,
                                                public ::fwRenderOgre::ITransformable
@@ -59,16 +58,16 @@ protected:
      *  - \b autoresetcamera (optional)
      */
     VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
-    /// Calls doUpdate
+    /// Calls updating
     VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
     /// Redraws all (stops then restarts sub services)
     VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
     /// Closes connections and unregisters service.
     VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
 
-    /// Calls doUpdate
+    /// Calls updating
     VISUOGREADAPTOR_API void addReconstruction();
-    /// calls doStop.
+    /// calls stopping.
     VISUOGREADAPTOR_API void removeReconstruction();
 
 private:
@@ -83,7 +82,8 @@ private:
     bool m_isDynamic;
     /// Defines if the model series' vertices are dynamic
     bool m_isDynamicVertices;
-
+    /// Signal/Slot connections with this service
+    ::fwServices::helper::SigSlotConnection m_connections;
 };
 
 //------------------------------------------------------------------------------

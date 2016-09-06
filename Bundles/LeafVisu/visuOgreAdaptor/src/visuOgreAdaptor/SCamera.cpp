@@ -35,8 +35,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF        = "updateTransformat
 
 //------------------------------------------------------------------------------
 
-SCamera::SCamera() throw() :
-    m_cameraUID("")
+SCamera::SCamera() throw()
 {
     newSlot(s_UPDATE_TF, &SCamera::updateTF3D, this);
     newSlot(s_CALIBRATE_SLOT, &SCamera::calibrate, this);
@@ -52,30 +51,17 @@ SCamera::~SCamera() throw()
 
 void SCamera::doConfigure() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    // Base class configuration
-    SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
-
-    m_cameraUID = m_configuration->getAttributeValue("cameraUID");
 }
 
 //------------------------------------------------------------------------------
 
 void SCamera::doStart() throw(fwTools::Failed)
 {
-    m_transMat = this->getObject< ::fwData::TransformationMatrix3D >();
+    m_transMat = this->getInOut< ::fwData::TransformationMatrix3D >("transform");
+    m_camera   = this->getInput< ::arData::Camera >("camera");
 
-    if (!m_cameraUID.empty())
+    if (m_camera)
     {
-        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_cameraUID);
-
-        m_camera = ::arData::Camera::dynamicCast(obj);
-        SLM_ASSERT("Missing camera", m_camera);
-
-        m_connections.connect(m_camera, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG,
-                              this->getSptr(), s_CALIBRATE_SLOT);
-
         this->calibrate();
     }
 
@@ -138,7 +124,6 @@ void SCamera::doSwap() throw(fwTools::Failed)
 
 void SCamera::doStop() throw(fwTools::Failed)
 {
-    m_connections.disconnect();
 }
 
 //------------------------------------------------------------------------------
@@ -198,10 +183,11 @@ Ogre::Camera* SCamera::getCurrentCamera()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType visuOgreAdaptor::SCamera::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap visuOgreAdaptor::SCamera::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( "transform", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( "camera", ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT );
     return connections;
 }
 
@@ -216,8 +202,7 @@ void SCamera::calibrate()
         double fy = m_camera->getFy();
         camera->setFOVy(
             ::Ogre::Radian(static_cast< ::Ogre::Real >(2.0 *
-                                                       atan(static_cast< double >(m_camera->getHeight() / 2.0)) /
-                                                       fy)));
+                                                       atan(static_cast< double >(m_camera->getHeight() / 2.0) / fy))));
 
         this->doUpdate();
     }

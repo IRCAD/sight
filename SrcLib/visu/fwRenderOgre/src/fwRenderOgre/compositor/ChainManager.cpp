@@ -204,15 +204,16 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
                             std::string constantValueStr = boost::apply_visitor(ConvertConstant(), constantValue);
 
                             ::fwServices::IService::ConfigType config;
-                            config.add("config.<xmlattr>.renderer", _layerId);
-                            config.add("config.<xmlattr>.compositorName", _compositorName);
-                            config.add("config.<xmlattr>.parameter", constantName);
-                            config.add("config.<xmlattr>.shaderType", shaderTypeStr);
-                            config.add("config.<xmlattr>.defaultValue", constantValueStr);
+                            config.add("service.config.<xmlattr>.layer", _layerId);
+                            config.add("service.config.<xmlattr>.compositorName", _compositorName);
+                            config.add("service.config.<xmlattr>.parameter", constantName);
+                            config.add("service.config.<xmlattr>.shaderType", shaderTypeStr);
+                            config.add("service.config.<xmlattr>.defaultValue", constantValueStr);
 
-                            srv->setConfiguration(config);
-                            srv->configure();
-                            srv->start();
+                            shaderParamService->setConfiguration(config);
+                            shaderParamService->configure();
+                            shaderParamService->start();
+                            shaderParamService->connect();
 
                             // Add created subservice to current service
                             this->registerService(shaderParamService);
