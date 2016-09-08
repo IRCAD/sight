@@ -133,7 +133,7 @@ void SFrameMatrixSynchronizer::starting() throw (fwTools::Failed)
             // if ever the group is not found 'getKeyGroupSize' will assert.
             const size_t numMatrices = this->getKeyGroupSize(s_MATRICES_INOUT+std::to_string(i));
 
-            m_matrixTLs["matrixTL" + std::to_string(i)] = this->getInOut< ::arData::MatrixTL>(s_MATRIXTL_INPUT, i);
+            m_matrixTLs["matrixTL" + std::to_string(i)] = this->getInput< ::arData::MatrixTL>(s_MATRIXTL_INPUT, i);
 
             MatrixKeyVectorType matricesVector;
             for(size_t j = 0; j < numMatrices; ++j)
