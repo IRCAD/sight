@@ -23,8 +23,10 @@
         <object uid="focalLengthIntVal" type="::fwData::Integer" />
 
         <object uid="preIntValue" type="::fwData::Boolean" />
-        <object uid="volumeIlluminationValue" type="::fwData::Boolean" />
         <object uid="vrWidgetsValue" type="::fwData::Boolean" />
+
+        <object uid="ambientOcclusionValue" type="::fwData::Boolean" />
+        <object uid="colorBleedingValue" type="::fwData::Boolean" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -113,12 +115,14 @@
                     <view proportion="0" />
                     <view proportion="0" />
                     <view proportion="0" />
+                    <view proportion="0" />
                 </layout>
             </gui>
             <registry>
                 <view sid="samplingSlider" start="yes" />
                 <view sid="preIntBtn" start="yes" />
-                <view sid="volumeIlluminationBtn" start="yes" />
+                <view sid="ambientOcclusionBtn" start="yes" />
+                <view sid="colorBleedingBtn" start="yes" />
                 <view sid="toggleVrWidgetsBtn" start="yes" />
             </registry>
         </service>
@@ -183,8 +187,13 @@
                 </connect>
 
                 <connect>
-                    <signal>volumeIlluminationBtn/toggled</signal>
-                    <slot>VR/toggleVolumeIllumination</slot>
+                    <signal>ambientOcclusionBtn/toggled</signal>
+                    <slot>VR/toggleAmbientOcclusion</slot>
+                </connect>
+
+                <connect>
+                    <signal>colorBleedingBtn/toggled</signal>
+                    <slot>VR/toggleColorBleeding</slot>
                 </connect>
 
                 <connect>
@@ -297,11 +306,20 @@
             </config>
         </service>
 
-        <service uid="volumeIlluminationBtn" type="::guiQt::editor::SSignalButton" autoConnect="no">
-            <inout key="volumeIllumination" uid="volumeIlluminationValue" />
+        <service uid="ambientOcclusionBtn" type="::guiQt::editor::SSignalButton" autoConnect="no">
+            <inout key="ambientOcclusion" uid="ambientOcclusionValue" />
             <config>
                <checkable>true</checkable>
-               <text>Volume illumination</text>
+               <text>Ambient occlusion</text>
+               <checked>false</checked>
+            </config>
+        </service>
+
+        <service uid="colorBleedingBtn" type="::guiQt::editor::SSignalButton" autoConnect="no">
+            <inout key="colorBleeding" uid="colorBleedingValue" />
+            <config>
+               <checkable>true</checkable>
+               <text>Color bleeding</text>
                <checked>false</checked>
             </config>
         </service>

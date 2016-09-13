@@ -46,7 +46,8 @@ namespace visuOgreAdaptor
  * - \b updateSatConeAngle(int) : Called when the SAT cone angle is changed and computes the SAT again.
  * - \b updateSatConeSamples(int) : Called when the SAT cone samples number is changed and computes the SAT again.
  * - \b togglePreintegration(bool): Toggle pre-integration.
- * - \b toggleVoumeIllumination(bool): Toggle volume illumination.
+ * - \b toggleAmbientOcclusion(bool): Toggle ambient occlusion.
+ * - \b toggleColorBleeding(bool): Toggle color bleeding.
  * - \b toggleWidgets(bool): Toggles widget visibility.
  * - \b resizeViewport(int, int): Called when the size of the viewport changes.
  * - \b setFocalDistance(int): Called to modify focal length (only useful for stereoscopic 3D).
@@ -55,7 +56,7 @@ namespace visuOgreAdaptor
  * @code{.xml}
     <adaptor uid="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image">
          <config renderer="default"
-                 preintegration="yes" mode="slice" volumeIllumination="no"
+                 preintegration="yes" mode="slice" ao="no" colorBleeding="no"
                  satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
                  selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
     </adaptor>
@@ -65,13 +66,11 @@ namespace visuOgreAdaptor
  * - \b preintegration (optional, yes/no, default=no): use pre-integration.
  * - \b widgets (optional, yes/no, default=yes): display VR widgets.
  * - \b mode (optional, slice/raycasting, default=raycasting): Rendering mode.
- * - \b volumeIllumination (optional, yes/no, default=no): Volume Illumination usage (ambient occlusion + color
- *      bleeding). Only available with raycasting render mode.
  * - \b selectedTFKey (mandatory): TF key.
  * - \b tfSelectionFwID (mandatory): TF selection.
  * Only if the raycasting render mode is activated :
- * - \b volumeIllumination (optional, yes/no, default=no): Volume Illumination usage (ambient occlusion + color
- *      bleeding).
+ * - \b ao (optional, yes/no, default=no): Ambient occlusion usage.
+ * - \b colorBleeding (optional, yes/no, default=no): Color bleeding usage.
  * - \b satSizeRatio (optional, float, default=0.25): ratio used to determine the size of the SAT regarding of the
  *      associated image size.
  * - \b satShells (optional, int, default=3): number of shells used to compute the volume illumination from the SAT.
@@ -100,7 +99,8 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_CONE_ANGLE_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_CONE_SAMPLES_NUMBER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_PREINTEGRATION_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_VOLUME_ILLUMINATION_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_AMBIENT_OCCLUSION_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_COLOR_BLEEDING_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_FOCAL_DISTANCE_SLOT;
@@ -153,7 +153,8 @@ private:
     void updateSatConeAngle(int coneAngle);
     void updateSatConeSamplesNumber(int nbConeSamples);
     void togglePreintegration(bool preintegration);
-    void toggleVolumeIllumination(bool volumeIllumination);
+    void toggleAmbientOcclusion(bool ambientOcclusion);
+    void toggleColorBleeding(bool colorBleeding);
     void toggleWidgets(bool visible);
     void resizeViewport(int w, int h);
     void setFocalDistance(int focalDistance);
@@ -201,8 +202,11 @@ private:
     /// Use pre-integration.
     bool m_preIntegratedRendering;
 
-    /// Use volume illumination
-    bool m_volumeIllumination;
+    /// Sets usage of ambient occlusion
+    bool m_ambientOcclusion;
+
+    /// Sets usage of colour bleeding
+    bool m_colorBleeding;
 
     /// Toggles widget visibility.
     bool m_widgetVisibilty;

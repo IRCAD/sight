@@ -40,6 +40,9 @@ public:
      * @param imageTexture         Texture holding the 3D image to be rendered.
      * @param gpuTF                Texture holding the transfer function.
      * @param preintegrationTable  Texture holding the pre-integration table.
+     * @param mode3D               Stereoscopic volume rendering flag.
+     * @param ambientOcclusion     Ambient occlusion flag.
+     * @param colorBleeding        Color bleeding flag.
      */
     FWRENDEROGRE_API RayTracingVolumeRenderer(std::string parentId,
                                               ::Ogre::SceneManager* sceneManager,
@@ -48,7 +51,8 @@ public:
                                               TransferFunction* gpuTF,
                                               PreIntegrationTable* preintegrationTable,
                                               bool mode3D,
-                                              bool volumeIllumination);
+                                              bool ambientOcclusion,
+                                              bool colorBleeding);
 
     /// Does nothing.
     FWRENDEROGRE_API virtual ~RayTracingVolumeRenderer();
@@ -67,8 +71,11 @@ public:
     /// Sets pre-integrated mode.
     FWRENDEROGRE_API virtual void setPreIntegratedRendering(bool preIntegratedRendering);
 
-    /// Sets volume illumination mode
-    FWRENDEROGRE_API virtual void setVolumeIllumination(bool volumeIllumination);
+    /// Sets ambient occlusion usage
+    FWRENDEROGRE_API virtual void setAmbientOcclusion(bool ambientOcclusion);
+
+    /// Sets colour bleeding usage
+    FWRENDEROGRE_API virtual void setColorBleeding(bool colorBleeding);
 
     /// Configures to layer to handle stereoscopic rendering by adding the stereo VR compositor to the chain.
     FWRENDEROGRE_API void configure3DViewport(Layer::sptr layer);
@@ -148,8 +155,11 @@ private:
     /// Sets stereoscopic volume rendering for Alioscopy monitors.
     bool m_mode3D;
 
-    /// Sets usage of volume illumination
-    bool m_volumeIllumination;
+    /// Sets usage of ambient occlusion
+    bool m_ambientOcclusion;
+
+    /// Sets usage of colour bleeding
+    bool m_colorBleeding;
 
     SATVolumeIllumination* m_illumVolume;
 

@@ -157,22 +157,28 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    TransferFunction* gpuTF,
                                                    PreIntegrationTable* preintegrationTable,
                                                    bool mode3D,
-                                                   bool volumeIllumination) :
+                                                   bool ambientOcclusion,
+                                                   bool colorBleeding) :
     IVolumeRenderer(parentId, sceneManager, parentNode, imageTexture, gpuTF, preintegrationTable),
     m_entryPointGeometry(nullptr),
     m_imageSize         { 1, 1, 1 },
     m_gridSize          { 2, 2, 2 },
     m_bricksSize        { 8, 8, 8 },
     m_mode3D            (mode3D),
-    m_volumeIllumination(volumeIllumination),
+    m_ambientOcclusion  (ambientOcclusion),
+    m_colorBleeding     (colorBleeding),
     m_illumVolume       (nullptr)
 {
-    const std::string vrMaterials[4]
+    const std::string vrMaterials[8]
     {
         "RayTracedVolume",
-        "VolumeIlluminationRayTracedVolume",
-        "PreIntegratedRayTracedVolume",
-        "PreIntegratedVolumeIlluminationRayTracedVolume"
+        "RayTracedVolume_AmbientOcclusion",
+        "RayTracedVolume_ColorBleeding",
+        "RayTracedVolume_VolumeIllumination",
+        "RayTracedVolume_PreIntegrated",
+        "RayTracedVolume_PreIntegrated_AmbientOcclusion",
+        "RayTracedVolume_PreIntegrated_ColorBleeding",
+        "RayTracedVolume_PreIntegrated_VolumeIllumination"
     };
 
     unsigned nbViewpoints = m_mode3D ? 8 : 1;
@@ -373,20 +379,28 @@ void RayTracingVolumeRenderer::setPreIntegratedRendering(bool preIntegratedRende
 
     m_preIntegratedRendering = preIntegratedRendering;
 
-    this->retrieveCurrentProgramParams()->setNamedConstant("u_sampleDistance", m_sampleDistance);
-
-    m_entryPointGeometry->setMaterialName(0, this->determineMaterialName());
+    std::string currentMaterialName = this->determineMaterialName();
+    m_entryPointGeometry->setMaterialName(0, currentMaterialName);
 }
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::setVolumeIllumination(bool volumeIllumination)
+void RayTracingVolumeRenderer::setAmbientOcclusion(bool ambientOcclusion)
 {
-    m_volumeIllumination = volumeIllumination;
+    m_ambientOcclusion = ambientOcclusion;
 
-    this->retrieveCurrentProgramParams()->setNamedConstant("u_sampleDistance", m_sampleDistance);
+    std::string currentMaterialName = this->determineMaterialName();
+    m_entryPointGeometry->setMaterialName(0, currentMaterialName);
+}
 
-    m_entryPointGeometry->setMaterialName(0, this->determineMaterialName());
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::setColorBleeding(bool colorBleeding)
+{
+    m_colorBleeding = colorBleeding;
+
+    std::string currentMaterialName = this->determineMaterialName();
+    m_entryPointGeometry->setMaterialName(0, currentMaterialName);
 }
 
 //-----------------------------------------------------------------------------
@@ -667,10 +681,33 @@ Ogre::Matrix4 RayTracingVolumeRenderer::frustumShearTransform(float angle) const
 
 std::string RayTracingVolumeRenderer::determineMaterialName()
 {
-    return m_preIntegratedRendering ? m_volumeIllumination ? "PreIntegratedVolumeIlluminationRayTracedVolume"
-           : "PreIntegratedRayTracedVolume"
-           : m_volumeIllumination ? "VolumeIlluminationRayTracedVolume"
-           : "RayTracedVolume";
+    std::string currentMaterialName("RayTracedVolume");
+
+    if(m_preIntegratedRendering)
+    {
+        currentMaterialName += "_PreIntegrated";
+    }
+
+    if(m_ambientOcclusion)
+    {
+        if(m_colorBleeding)
+        {
+            currentMaterialName += "_VolumeIllumination";
+        }
+        else
+        {
+            currentMaterialName += "_AmbientOcclusion";
+        }
+    }
+    else
+    {
+        if(m_colorBleeding)
+        {
+            currentMaterialName += "_ColorBleeding";
+        }
+    }
+
+    return currentMaterialName;
 }
 
 //-----------------------------------------------------------------------------

@@ -4,9 +4,9 @@
 uniform sampler3D u_image;
 uniform sampler2D u_tfTexture;
 
-#ifdef VOLUME_ILLUMINATION
+#if AMBIENT_OCCLUSION || COLOR_BLEEDING
 uniform sampler3D u_illuminationVolume;
-#endif // VOLUME_ILLUMINATION
+#endif // AMBIENT_OCCLUSION || COLOR_BLEEDING
 
 #ifdef MODE3D
 uniform sampler2D u_entryPoints0;
@@ -130,10 +130,10 @@ vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
 
 //-----------------------------------------------------------------------------
 
-void composite(inout vec4 result, in vec4 colour)
+void composite(inout vec4 result, in vec4 COLOR)
 {
-    result.rgb = result.rgb + (1 - result.a) * colour.a * colour.rgb;
-    result.a   = result.a   + (1 - result.a) * colour.a;
+    result.rgb = result.rgb + (1 - result.a) * COLOR.a * COLOR.rgb;
+    result.a   = result.a   + (1 - result.a) * COLOR.a;
 }
 
 //-----------------------------------------------------------------------------
@@ -156,38 +156,41 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
         sf = ((sf * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
         sb = ((sb * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
 
-        vec4 tfColour = texture(u_tfTexture, vec2(sf, sb));
+        vec4 tfCOLOR = texture(u_tfTexture, vec2(sf, sb));
 
 #else
         float intensity = texture(u_image, rayPos).r;
 
-        vec4  tfColour  = transferFunction(intensity);
+        vec4  tfCOLOR  = transferFunction(intensity);
 #endif // PREINTEGRATION
 
-        if(tfColour.a > 0)
+        if(tfCOLOR.a > 0)
         {
             vec3 N = gradientNormal(rayPos);
 
-            tfColour.rgb = tfColour.rgb * abs(dot(N, u_lightDirs[0]));
+            tfCOLOR.rgb = tfCOLOR.rgb * abs(dot(N, u_lightDirs[0]));
 
 #ifndef PREINTEGRATION
             // Adjust opacity to sample distance.
             // This could be done when generating the TF texture to improve performance.
-            tfColour.a   = 1 - pow(1 - tfColour.a, u_sampleDistance * opacityCorrectionFactor);
+            tfCOLOR.a   = 1 - pow(1 - tfCOLOR.a, u_sampleDistance * opacityCorrectionFactor);
 #endif // PREINTEGRATION
 
-#ifdef VOLUME_ILLUMINATION
-            
+#if AMBIENT_OCCLUSION || COLOR_BLEEDING
             vec4 volIllum = texture(u_illuminationVolume, rayPos);
+#endif // AMBIENT_OCCLUSION || COLOR_BLEEDING
 
+#ifdef AMBIENT_OCCLUSION
             // Apply ambient occlusion + shadows
-            tfColour.rgb *= volIllum.a;
+            tfCOLOR.rgb *= volIllum.a;
+#endif // AMBIENT_OCCLUSION
+
+#ifdef COLOR_BLEEDING
             // Apply color bleeding
-            tfColour.rgb *= volIllum.rgb;
+            tfCOLOR.rgb *= volIllum.rgb;
+#endif // COLOR_BLEEDING
 
-#endif // VOLUME_ILLUMINATION
-
-            composite(result, tfColour);
+            composite(result, tfCOLOR);
 
             if(result.a > 0.99)
             {

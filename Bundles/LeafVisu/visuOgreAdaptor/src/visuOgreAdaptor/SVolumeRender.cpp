@@ -57,7 +57,8 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_SHELL_RADIUS_SLOT 
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_CONE_ANGLE_SLOT          = "updateSatConeAngle";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_CONE_SAMPLES_NUMBER_SLOT = "updateSatConeSamplesNumber";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_PREINTEGRATION_SLOT          = "togglePreintegration";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_VOLUME_ILLUMINATION_SLOT     = "toggleVolumeIllumination";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_AMBIENT_OCCLUSION_SLOT       = "toggleAmbientOcclusion";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_COLOR_BLEEDING_SLOT          = "toggleColorBleeding";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT                 = "toggleWidgets";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT                = "resizeViewport";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_FOCAL_DISTANCE_SLOT             = "setFocalDistance";
@@ -71,7 +72,8 @@ SVolumeRender::SVolumeRender() throw() :
     m_camera                 (nullptr),
     m_nbSlices               (512),
     m_preIntegratedRendering (false),
-    m_volumeIllumination     (false),
+    m_ambientOcclusion       (false),
+    m_colorBleeding         (false),
     m_widgetVisibilty        (true),
     m_illum                  (nullptr),
     m_satSizeRatio           (0.25f),
@@ -89,7 +91,8 @@ SVolumeRender::SVolumeRender() throw() :
     newSlot(s_UPDATE_SAT_CONE_ANGLE_SLOT, &SVolumeRender::updateSatConeAngle, this);
     newSlot(s_UPDATE_SAT_CONE_SAMPLES_NUMBER_SLOT, &SVolumeRender::updateSatConeSamplesNumber, this);
     newSlot(s_TOGGLE_PREINTEGRATION_SLOT, &SVolumeRender::togglePreintegration, this);
-    newSlot(s_TOGGLE_VOLUME_ILLUMINATION_SLOT, &SVolumeRender::toggleVolumeIllumination, this);
+    newSlot(s_TOGGLE_AMBIENT_OCCLUSION_SLOT, &SVolumeRender::toggleAmbientOcclusion, this);
+    newSlot(s_TOGGLE_COLOR_BLEEDING_SLOT, &SVolumeRender::toggleColorBleeding, this);
     newSlot(s_TOGGLE_WIDGETS_SLOT, &SVolumeRender::toggleWidgets, this);
     newSlot(s_RESIZE_VIEWPORT_SLOT, &SVolumeRender::resizeViewport, this);
     newSlot(s_SET_FOCAL_DISTANCE_SLOT, &SVolumeRender::setFocalDistance, this);
@@ -129,45 +132,40 @@ void SVolumeRender::doConfigure() throw ( ::fwTools::Failed )
             {
                 std::string sizeRatioString = m_configuration->getAttributeValue("satSizeRatio");
                 m_satSizeRatio = std::stof(sizeRatioString);
-
-                m_volumeIllumination = true;
             }
 
             if(m_configuration->hasAttribute("satShells"))
             {
                 std::string shellsString = m_configuration->getAttributeValue("satShells");
                 m_satShells = std::stoi(shellsString);
-
-                m_volumeIllumination = true;
             }
 
             if(m_configuration->hasAttribute("satShellRadius"))
             {
                 std::string shellRadiusString = m_configuration->getAttributeValue("satShellRadius");
                 m_satShellRadius = std::stoi(shellRadiusString);
-
-                m_volumeIllumination = true;
             }
 
             if(m_configuration->hasAttribute("satConeAngle"))
             {
                 std::string coneAngleString = m_configuration->getAttributeValue("satConeAngle");
                 m_satConeAngle = std::stof(coneAngleString);
-
-                m_volumeIllumination = true;
             }
 
             if(m_configuration->hasAttribute("satConeSamples"))
             {
                 std::string coneSamplesString = m_configuration->getAttributeValue("satConeSamples");
                 m_satConeSamples = std::stoi(coneSamplesString);
-
-                m_volumeIllumination = true;
             }
 
-            if(m_configuration->hasAttribute("volumeIllumination"))
+            if(m_configuration->hasAttribute("ao"))
             {
-                m_volumeIllumination = (m_configuration->getAttributeValue("volumeIllumination") == "yes");
+                m_ambientOcclusion = (m_configuration->getAttributeValue("ao") == "yes");
+            }
+
+            if(m_configuration->hasAttribute("colorBleeding"))
+            {
+                m_colorBleeding = (m_configuration->getAttributeValue("colorBleeding") == "yes");
             }
         }
         else
@@ -201,7 +199,7 @@ void SVolumeRender::updatingTFPoints()
 
     m_volumeRenderer->tfUpdate(tf);
 
-    if(m_volumeIllumination)
+    if(m_ambientOcclusion || m_colorBleeding)
     {
         this->updateVolumeIllumination();
     }
@@ -224,7 +222,7 @@ void SVolumeRender::updatingTFWindowing(double window, double level)
 
     m_volumeRenderer->tfUpdate(tf);
 
-    if(m_volumeIllumination)
+    if(m_ambientOcclusion || m_colorBleeding)
     {
         this->updateVolumeIllumination();
     }
@@ -288,7 +286,8 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
                                                                             &m_gpuTF,
                                                                             &m_preIntegrationTable,
                                                                             serviceLayer->is3D(),
-                                                                            m_volumeIllumination);
+                                                                            m_ambientOcclusion,
+                                                                            m_colorBleeding);
 
         if(serviceLayer->is3D())
         {
@@ -303,7 +302,7 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
         }
     }
 
-    if(m_volumeIllumination)
+    if(m_ambientOcclusion || m_colorBleeding)
     {
         m_illum = new ::fwRenderOgre::vr::SATVolumeIllumination(this->getID(), m_sceneManager,
                                                                 m_satSizeRatio, m_satShells, m_satShellRadius,
@@ -401,7 +400,7 @@ void SVolumeRender::updateSampling(int nbSamples)
 
 void SVolumeRender::updateSatSizeRatio(int sizeRatio)
 {
-    if(m_volumeIllumination)
+    if(m_ambientOcclusion || m_colorBleeding)
     {
         m_satSizeRatio = static_cast<float>(sizeRatio) / 100;
         m_illum->updateSAT(m_satSizeRatio);
@@ -421,7 +420,7 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
 
 void SVolumeRender::updateSatShellsNumber(int shellsNumber)
 {
-    if(m_volumeIllumination)
+    if(m_ambientOcclusion || m_colorBleeding)
     {
         m_satShells = shellsNumber;
 
@@ -441,7 +440,7 @@ void SVolumeRender::updateSatShellsNumber(int shellsNumber)
 
 void SVolumeRender::updateSatShellRadius(int shellRadius)
 {
-    if(m_volumeIllumination)
+    if(m_ambientOcclusion || m_colorBleeding)
     {
         m_satShellRadius = shellRadius;
 
@@ -461,7 +460,7 @@ void SVolumeRender::updateSatShellRadius(int shellRadius)
 
 void SVolumeRender::updateSatConeAngle(int coneAngle)
 {
-    if(m_volumeIllumination)
+    if(m_ambientOcclusion || m_colorBleeding)
     {
         m_satConeAngle = static_cast<float>(coneAngle) / 100;
 
@@ -481,7 +480,7 @@ void SVolumeRender::updateSatConeAngle(int coneAngle)
 
 void SVolumeRender::updateSatConeSamplesNumber(int nbConeSamples)
 {
-    if(m_volumeIllumination)
+    if(m_ambientOcclusion || m_colorBleeding)
     {
         m_satConeSamples = nbConeSamples;
 
@@ -516,23 +515,52 @@ void SVolumeRender::togglePreintegration(bool preintegration)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::toggleVolumeIllumination(bool volumeIllumination)
+void SVolumeRender::toggleAmbientOcclusion(bool ambientOcclusion)
 {
     auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
 
     // Volume illumination is only implemented for raycasting rendering
     if(rayCastVolumeRenderer)
     {
-        m_volumeIllumination = volumeIllumination;
+        m_ambientOcclusion = ambientOcclusion;
 
-        if(m_volumeIllumination && !m_illum)
+        if((m_ambientOcclusion || m_colorBleeding) && !m_illum)
         {
             m_illum = new ::fwRenderOgre::vr::SATVolumeIllumination(this->getID(), m_sceneManager,
                                                                     m_satSizeRatio, m_satShells, m_satShellRadius);
             this->updateVolumeIllumination();
         }
 
-        rayCastVolumeRenderer->setVolumeIllumination(m_volumeIllumination);
+        rayCastVolumeRenderer->setAmbientOcclusion(m_ambientOcclusion);
+
+        if(m_preIntegratedRendering)
+        {
+            m_volumeRenderer->imageUpdate(this->getImage(), this->getTransferFunction());
+        }
+
+        this->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::toggleColorBleeding(bool colorBleeding)
+{
+    auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+
+    // Volume illumination is only implemented for raycasting rendering
+    if(rayCastVolumeRenderer)
+    {
+        m_colorBleeding = colorBleeding;
+
+        if((m_ambientOcclusion || m_colorBleeding) && !m_illum)
+        {
+            m_illum = new ::fwRenderOgre::vr::SATVolumeIllumination(this->getID(), m_sceneManager,
+                                                                    m_satSizeRatio, m_satShells, m_satShellRadius);
+            this->updateVolumeIllumination();
+        }
+
+        rayCastVolumeRenderer->setColorBleeding(m_colorBleeding);
 
         if(m_preIntegratedRendering)
         {
