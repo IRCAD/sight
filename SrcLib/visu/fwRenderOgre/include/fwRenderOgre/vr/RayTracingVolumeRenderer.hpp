@@ -50,9 +50,9 @@ public:
                                               ::Ogre::TexturePtr imageTexture,
                                               TransferFunction* gpuTF,
                                               PreIntegrationTable* preintegrationTable,
-                                              bool mode3D,
-                                              bool ambientOcclusion,
-                                              bool colorBleeding);
+                                              bool mode3D = false,
+                                              bool ambientOcclusion = false,
+                                              bool colorBleeding = false);
 
     /// Does nothing.
     FWRENDEROGRE_API virtual ~RayTracingVolumeRenderer();
@@ -71,10 +71,10 @@ public:
     /// Sets pre-integrated mode.
     FWRENDEROGRE_API virtual void setPreIntegratedRendering(bool preIntegratedRendering);
 
-    /// Sets ambient occlusion usage
+    /// Sets ambient occlusion usage.
     FWRENDEROGRE_API virtual void setAmbientOcclusion(bool ambientOcclusion);
 
-    /// Sets colour bleeding usage
+    /// Sets color bleeding usage.
     FWRENDEROGRE_API virtual void setColorBleeding(bool colorBleeding);
 
     /// Configures to layer to handle stereoscopic rendering by adding the stereo VR compositor to the chain.
@@ -90,7 +90,7 @@ public:
     /// Slot: Called when the size of the viewport changes.
     FWRENDEROGRE_API virtual void resizeViewport(int w, int h);
 
-    /// IllumVolume getter
+    /// IllumVolume getter.
     FWRENDEROGRE_API SATVolumeIllumination* getIllumVolume();
 
 private:
@@ -110,20 +110,21 @@ private:
     /// Compute the focal length in camera space.
     void computeRealFocalLength();
 
-    /// Computes the shear warp to apply to a frustum for multi-view rendering based on the angle with the original camera.
+    /// Computes the shear warp to apply to a frustum for multi-view rendering based on the angle with the original
+    /// camera.
     ::Ogre::Matrix4 frustumShearTransform(float angle) const;
 
     /// Returns the right material name for the entry point geometry according to pre-integration and volume
     /// illumination flags.
     std::string determineMaterialName();
 
-    /// Returns the parameters of the current fragment shader
+    /// Returns the parameters of the current fragment shader.
     ::Ogre::GpuProgramParametersSharedPtr retrieveCurrentProgramParams();
 
     /// Object containing the proxy geometry, this is a cube for now.
     ::Ogre::ManualObject* m_entryPointGeometry;
 
-    /// Creates and updates the proxy geometry;
+    /// Creates and updates the proxy geometry.
     R2VBRenderable* m_proxyGeometryGenerator;
 
     /// Entity holding the source geometry used for proxy geometry rendering.
@@ -155,10 +156,10 @@ private:
     /// Sets stereoscopic volume rendering for Alioscopy monitors.
     bool m_mode3D;
 
-    /// Sets usage of ambient occlusion
+    /// Sets usage of ambient occlusion.
     bool m_ambientOcclusion;
 
-    /// Sets usage of colour bleeding
+    /// Sets usage of color bleeding.
     bool m_colorBleeding;
 
     SATVolumeIllumination* m_illumVolume;

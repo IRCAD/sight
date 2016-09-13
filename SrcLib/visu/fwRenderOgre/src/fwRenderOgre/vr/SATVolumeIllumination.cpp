@@ -36,10 +36,10 @@ public:
     VolIllumCompositorListener(int& currentSliceIndex, int nbShells, int shellRadius,
                                float coneAngle, int samplesAlongCone) :
         m_currentSliceIndex(currentSliceIndex),
-        m_nbShells(nbShells),
-        m_shellRadius(shellRadius),
-        m_coneAngle(coneAngle),
-        m_samplesAlongCone(samplesAlongCone)
+        m_nbShells         (nbShells),
+        m_shellRadius      (shellRadius),
+        m_coneAngle        (coneAngle),
+        m_samplesAlongCone (samplesAlongCone)
     {
     }
 

@@ -202,10 +202,10 @@ private:
     /// Use pre-integration.
     bool m_preIntegratedRendering;
 
-    /// Sets usage of ambient occlusion
+    /// Sets usage of ambient occlusion.
     bool m_ambientOcclusion;
 
-    /// Sets usage of colour bleeding
+    /// Sets usage of color bleeding.
     bool m_colorBleeding;
 
     /// Toggles widget visibility.

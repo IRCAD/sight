@@ -130,10 +130,10 @@ vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
 
 //-----------------------------------------------------------------------------
 
-void composite(inout vec4 result, in vec4 COLOR)
+void composite(inout vec4 result, in vec4 colour)
 {
-    result.rgb = result.rgb + (1 - result.a) * COLOR.a * COLOR.rgb;
-    result.a   = result.a   + (1 - result.a) * COLOR.a;
+    result.rgb = result.rgb + (1 - result.a) * colour.a * colour.rgb;
+    result.a   = result.a   + (1 - result.a) * colour.a;
 }
 
 //-----------------------------------------------------------------------------
@@ -156,24 +156,24 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
         sf = ((sf * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
         sb = ((sb * 65535.f) - float(u_min) - 32767.f) / float(u_max - u_min);
 
-        vec4 tfCOLOR = texture(u_tfTexture, vec2(sf, sb));
+        vec4 tfColour = texture(u_tfTexture, vec2(sf, sb));
 
 #else
         float intensity = texture(u_image, rayPos).r;
 
-        vec4  tfCOLOR  = transferFunction(intensity);
+        vec4  tfColour  = transferFunction(intensity);
 #endif // PREINTEGRATION
 
-        if(tfCOLOR.a > 0)
+        if(tfColour.a > 0)
         {
             vec3 N = gradientNormal(rayPos);
 
-            tfCOLOR.rgb = tfCOLOR.rgb * abs(dot(N, u_lightDirs[0]));
+            tfColour.rgb = tfColour.rgb * abs(dot(N, u_lightDirs[0]));
 
 #ifndef PREINTEGRATION
             // Adjust opacity to sample distance.
             // This could be done when generating the TF texture to improve performance.
-            tfCOLOR.a   = 1 - pow(1 - tfCOLOR.a, u_sampleDistance * opacityCorrectionFactor);
+            tfColour.a   = 1 - pow(1 - tfColour.a, u_sampleDistance * opacityCorrectionFactor);
 #endif // PREINTEGRATION
 
 #if AMBIENT_OCCLUSION || COLOR_BLEEDING
@@ -182,15 +182,15 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 
 #ifdef AMBIENT_OCCLUSION
             // Apply ambient occlusion + shadows
-            tfCOLOR.rgb *= volIllum.a;
+            tfColour.rgb *= volIllum.a;
 #endif // AMBIENT_OCCLUSION
 
 #ifdef COLOR_BLEEDING
             // Apply color bleeding
-            tfCOLOR.rgb *= volIllum.rgb;
+            tfColour.rgb *= volIllum.rgb;
 #endif // COLOR_BLEEDING
 
-            composite(result, tfCOLOR);
+            composite(result, tfColour);
 
             if(result.a > 0.99)
             {
