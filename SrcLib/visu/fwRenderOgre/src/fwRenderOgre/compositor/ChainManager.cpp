@@ -151,8 +151,6 @@ void ChainManager::setCompositorChain(const std::vector<CompositorIdType>& _comp
     this->addFinalCompositor();
 }
 
-}
-
 //-----------------------------------------------------------------------------
 
 void ChainManager::addFinalCompositor()
