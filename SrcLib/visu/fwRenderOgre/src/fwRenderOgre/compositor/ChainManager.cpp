@@ -22,7 +22,6 @@
 #include <OGRE/OgreCompositorChain.h>
 #include <OGRE/OgreCompositorManager.h>
 
-#include <boost/variant.hpp>
 #include <regex>
 
 namespace fwRenderOgre
@@ -87,28 +86,15 @@ void ChainManager::addAvailableCompositor(CompositorIdType _compositorName)
 
 void ChainManager::clearCompositorChain()
 {
-    m_compositorChain.clear();
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    compositorManager.removeCompositorChain(m_ogreViewport);
+    for(auto& chain : m_compositorChain)
+    {
+        compositorManager.setCompositorEnabled(m_ogreViewport, chain.first, false);
+        compositorManager.removeCompositor(m_ogreViewport, chain.first);
+    }
+
+    m_compositorChain.clear();
 }
-
-//------------------------------------------------------------------------------
-
-struct ConvertConstant : public boost::static_visitor<std::string>
-{
-    std::string operator()(float f) const
-    {
-        return std::to_string(f);
-    }
-    std::string operator()(int i) const
-    {
-        return std::to_string(i);
-    }
-    std::string operator()(std::array<float, 4> c) const
-    {
-        return std::string();
-    }
-};
 
 //-----------------------------------------------------------------------------
 
@@ -131,8 +117,59 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
         }
     }
 
-    ::Ogre::CompositorChain* compChain     = compositorManager.getCompositorChain(m_ogreViewport);
-    ::Ogre::CompositorInstance* compositor = compChain->getCompositor(_compositorName);
+    this->updateCompositorAdaptors(_compositorName, _isEnabled, _layerId, _renderService);
+
+}
+
+//-----------------------------------------------------------------------------
+
+void ChainManager::setCompositorChain(const std::vector<CompositorIdType>& _compositors,
+                                      const std::string& _layerId, ::fwRenderOgre::SRender::sptr _renderService)
+{
+    this->clearCompositorChain();
+
+    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+
+    for(const CompositorIdType& compositorName : _compositors)
+    {
+        if(compositorManager.resourceExists(compositorName))
+        {
+            m_compositorChain.push_back(CompositorType(compositorName, true));
+            compositorManager.addCompositor(m_ogreViewport, compositorName);
+            compositorManager.setCompositorEnabled(m_ogreViewport, compositorName, true);
+
+            this->updateCompositorAdaptors(compositorName, true, _layerId, _renderService);
+        }
+        else
+        {
+            SLM_ERROR("'" + compositorName + "' does not refer to an existing compositor");
+        }
+    }
+
+    this->addFinalCompositor();
+
+}
+
+//-----------------------------------------------------------------------------
+
+void ChainManager::addFinalCompositor()
+{
+    // Add final chain compositor
+    m_compositorChain.push_back(CompositorType(FINAL_CHAIN_COMPOSITOR, true));
+
+    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+    compositorManager.addCompositor(m_ogreViewport, FINAL_CHAIN_COMPOSITOR);
+    compositorManager.setCompositorEnabled(m_ogreViewport, FINAL_CHAIN_COMPOSITOR, true);
+}
+
+//-----------------------------------------------------------------------------
+
+void ChainManager::updateCompositorAdaptors(CompositorIdType _compositorName, bool _isEnabled,
+                                            const std::string& _layerId, ::fwRenderOgre::SRender::sptr _renderService)
+{
+    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+    ::Ogre::CompositorChain* compChain           = compositorManager.getCompositorChain(m_ogreViewport);
+    ::Ogre::CompositorInstance* compositor       = compChain->getCompositor(_compositorName);
     SLM_ASSERT("The given compositor '" + _compositorName + "' doesn't exist in the compositor chain", compositor);
 
     ::Ogre::CompositionTechnique* tech = compositor->getTechnique();
@@ -172,10 +209,10 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
                         continue;
                     }
 
-                    const auto type = std::get<2>(constant);
+                    const auto shaderType = std::get<2>(constant);
 
-                    const std::string shaderTypeStr = type == ::Ogre::GPT_VERTEX_PROGRAM ? "vertex" :
-                                                      type == ::Ogre::GPT_FRAGMENT_PROGRAM ? "fragment" :
+                    const std::string shaderTypeStr = shaderType == ::Ogre::GPT_VERTEX_PROGRAM ? "vertex" :
+                                                      shaderType == ::Ogre::GPT_FRAGMENT_PROGRAM ? "fragment" :
                                                       "geometry";
 
                     // Naming convention for shader parameters
@@ -183,8 +220,11 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
 
                     if(_isEnabled && this->getRegisteredService(id) == nullptr)
                     {
-                        auto obj = ::fwRenderOgre::helper::Shading::createObjectFromShaderParameter(std::get<1>(
-                                                                                                        constant));
+                        const auto& constantType  = std::get<1>(constant);
+                        const auto& constantValue = std::get<3>(constant);
+
+                        auto obj = ::fwRenderOgre::helper::Shading::createObjectFromShaderParameter(constantType,
+                                                                                                    constantValue);
 
                         if(obj != nullptr)
                         {
@@ -199,16 +239,11 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
                             auto shaderParamService = ::fwRenderOgre::IAdaptor::dynamicCast(srv);
                             shaderParamService->setRenderService(_renderService);
 
-                            const auto& constantValue = std::get<3>(constant);
-
-                            std::string constantValueStr = boost::apply_visitor(ConvertConstant(), constantValue);
-
                             ::fwServices::IService::ConfigType config;
                             config.add("service.config.<xmlattr>.layer", _layerId);
                             config.add("service.config.<xmlattr>.compositorName", _compositorName);
                             config.add("service.config.<xmlattr>.parameter", constantName);
                             config.add("service.config.<xmlattr>.shaderType", shaderTypeStr);
-                            config.add("service.config.<xmlattr>.defaultValue", constantValueStr);
 
                             shaderParamService->setConfiguration(config);
                             shaderParamService->configure();
@@ -232,45 +267,7 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
                 }
             }
         }
-
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void ChainManager::setCompositorChain(const std::vector<CompositorIdType>& _compositors)
-{
-    this->clearCompositorChain();
-
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-
-    for(const CompositorIdType& compositorName : _compositors)
-    {
-        if(compositorManager.resourceExists(compositorName))
-        {
-            m_compositorChain.push_back(CompositorType(compositorName, true));
-            compositorManager.addCompositor(m_ogreViewport, compositorName);
-            compositorManager.setCompositorEnabled(m_ogreViewport, compositorName, true);
-        }
-        else
-        {
-            SLM_ERROR("'" + compositorName + "' does not refer to an existing compositor");
-        }
-    }
-
-    this->addFinalCompositor();
-}
-
-//-----------------------------------------------------------------------------
-
-void ChainManager::addFinalCompositor()
-{
-    // Add final chain compositor
-    m_compositorChain.push_back(CompositorType(FINAL_CHAIN_COMPOSITOR, true));
-
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    compositorManager.addCompositor(m_ogreViewport, FINAL_CHAIN_COMPOSITOR);
-    compositorManager.setCompositorEnabled(m_ogreViewport, FINAL_CHAIN_COMPOSITOR, true);
 }
 
 //-----------------------------------------------------------------------------

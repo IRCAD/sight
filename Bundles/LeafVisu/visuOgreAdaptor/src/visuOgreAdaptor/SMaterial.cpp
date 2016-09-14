@@ -85,24 +85,6 @@ SMaterial::~SMaterial() throw()
 
 //------------------------------------------------------------------------------
 
-struct ConvertConstant : public boost::static_visitor<std::string>
-{
-    std::string operator()(float f) const
-    {
-        return std::to_string(f);
-    }
-    std::string operator()(int i) const
-    {
-        return std::to_string(i);
-    }
-    std::string operator()(std::array<float, 4> c) const
-    {
-        return std::string();
-    }
-};
-
-//------------------------------------------------------------------------------
-
 void SMaterial::loadMaterialParameters()
 {
     // We retrieve the parameters of the base material in a temporary material
@@ -118,8 +100,10 @@ void SMaterial::loadMaterialParameters()
     for(const auto& constant : constants)
     {
         const std::string& constantName = std::get<0>(constant);
+        const auto& constantType        = std::get<1>(constant);
+        const auto& constantValue       = std::get<3>(constant);
 
-        auto obj = ::fwRenderOgre::helper::Shading::createObjectFromShaderParameter(std::get<1>(constant));
+        auto obj = ::fwRenderOgre::helper::Shading::createObjectFromShaderParameter(constantType, constantValue);
         if(obj != nullptr)
         {
             obj->setName(constantName);
@@ -138,16 +122,11 @@ void SMaterial::loadMaterialParameters()
             shaderParamService->setID(this->getID() + "_" + shaderTypeStr + "-" + constantName);
             shaderParamService->setRenderService(this->getRenderService());
 
-            const auto& constantValue = std::get<3>(constant);
-
-            std::string constantValueStr = boost::apply_visitor(ConvertConstant(), constantValue);
-
             ::fwServices::IService::ConfigType config;
             config.add("service.config.<xmlattr>.layer", m_layerID);
             config.add("service.config.<xmlattr>.parameter", constantName);
             config.add("service.config.<xmlattr>.shaderType", shaderTypeStr);
             config.add("service.config.<xmlattr>.materialName", m_materialName);
-            config.add("service.config.<xmlattr>.defaultValue", constantValueStr);
 
             shaderParamService->setConfiguration(config);
             shaderParamService->configure();

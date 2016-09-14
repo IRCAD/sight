@@ -228,7 +228,7 @@ void Layer::createScene()
             compositorChain.push_back(it);
         }
 
-        m_compositorChainManager->setCompositorChain(compositorChain);
+        m_compositorChainManager->setCompositorChain(compositorChain, m_id, m_renderService.lock());
     }
 
     this->setMoveInteractor(interactor);

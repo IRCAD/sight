@@ -45,7 +45,11 @@ public:
     FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
     FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
     FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE2_PARAMETER_SLOT;
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE3_PARAMETER_SLOT;
     FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT;
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT;
 
     ///@}
 
@@ -63,9 +67,6 @@ public:
 
     /// Get the name of the parameter m_paramName.
     VISUOGREADAPTOR_API const std::string& getParamName() const;
-
-    /// Get the name of the parameter m_paramName.
-    VISUOGREADAPTOR_API const std::string& getDefaultValue() const;
 
 protected:
 
@@ -92,18 +93,25 @@ private:
     /// SLOT : Set the uniform from an integer value
     void setIntParameter(int value, std::string name);
 
-    /// SLOT : Set the uniform from an float value
-    void setFloatParameter(float value, std::string name);
+    /// SLOT : Set the uniform from an integer value
+    void setInt2Parameter(int value1, int value2, std::string name);
+
+    /// SLOT : Set the uniform from an integer value
+    void setInt3Parameter(int value1, int value2, int value3, std::string name);
 
     /// SLOT : Set the uniform from an double value
     void setDoubleParameter(double value, std::string name);
+
+    /// SLOT : Set the uniform from an double value
+    void setDouble2Parameter(double value1, double value2, std::string name);
+
+    /// SLOT : Set the uniform from an double value
+    void setDouble3Parameter(double value1, double value2, double value3, std::string name);
 
     /// Parameter name
     std::string m_paramName;
     /// Technique name
     std::string m_techniqueName;
-    /// Parameter name
-    std::string m_defaultValue;
     /// Stores the value of the enum representing the shader's type.
     ::Ogre::GpuProgramType m_shaderType;
     /// Pointer on the material
