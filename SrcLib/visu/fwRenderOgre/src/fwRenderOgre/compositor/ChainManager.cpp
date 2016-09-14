@@ -56,16 +56,11 @@ void ChainManager::addAvailableCompositor(CompositorIdType _compositorName)
 {
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
 
-    // Look the final chain compositor
-    auto finalChainCompositorIt = std::find_if(m_compositorChain.begin(),
-                                               m_compositorChain.end(),
-                                               FindCompositorByName(FINAL_CHAIN_COMPOSITOR));
-
-    if(finalChainCompositorIt != m_compositorChain.end())
+    // Remove the final chain compositor if present
+    if(!(compositorManager.getByName(FINAL_CHAIN_COMPOSITOR)).isNull())
     {
         compositorManager.setCompositorEnabled(m_ogreViewport, FINAL_CHAIN_COMPOSITOR, false);
         compositorManager.removeCompositor(m_ogreViewport, FINAL_CHAIN_COMPOSITOR);
-        m_compositorChain.pop_back();
     }
 
     // Add the new compositor
@@ -130,6 +125,13 @@ void ChainManager::setCompositorChain(const std::vector<CompositorIdType>& _comp
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
 
+    // Remove the final chain compositor if present
+    if(!(compositorManager.getByName(FINAL_CHAIN_COMPOSITOR)).isNull())
+    {
+        compositorManager.setCompositorEnabled(m_ogreViewport, FINAL_CHAIN_COMPOSITOR, false);
+        compositorManager.removeCompositor(m_ogreViewport, FINAL_CHAIN_COMPOSITOR);
+    }
+
     for(const CompositorIdType& compositorName : _compositors)
     {
         if(compositorManager.resourceExists(compositorName))
@@ -147,6 +149,7 @@ void ChainManager::setCompositorChain(const std::vector<CompositorIdType>& _comp
     }
 
     this->addFinalCompositor();
+}
 
 }
 
@@ -154,9 +157,6 @@ void ChainManager::setCompositorChain(const std::vector<CompositorIdType>& _comp
 
 void ChainManager::addFinalCompositor()
 {
-    // Add final chain compositor
-    m_compositorChain.push_back(CompositorType(FINAL_CHAIN_COMPOSITOR, true));
-
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     compositorManager.addCompositor(m_ogreViewport, FINAL_CHAIN_COMPOSITOR);
     compositorManager.setCompositorEnabled(m_ogreViewport, FINAL_CHAIN_COMPOSITOR, true);

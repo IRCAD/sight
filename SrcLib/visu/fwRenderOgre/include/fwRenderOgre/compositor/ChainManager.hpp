@@ -87,6 +87,8 @@ private:
 
     /// List of available compositors, the names are associated to a boolean value which indicates whether
     /// the compositor is enabled or not
+    /// WARNING: It may not match the real list of compositors in the Ogre manager, as other classes may add
+    /// compositors as well. So this list is only there to know which compositors are handled by this class.
     CompositorChainType m_compositorChain;
 
     /// The parent layer's viewport.
