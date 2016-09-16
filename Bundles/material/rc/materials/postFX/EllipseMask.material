@@ -8,6 +8,7 @@ fragment_program EllipseMask_FP glsl
         param_named u_center float2 0.5 0.5
         param_named u_size float2 0.5 0.5
         param_named u_theta float 0.0
+        param_named u_minAlpha float 0.5
         param_named u_bkgColor float4 1.0 0.0 0.0 0.0
     }
 }

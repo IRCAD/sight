@@ -8,6 +8,7 @@ uniform sampler2D u_ellipseTex;
 uniform vec2 u_center;
 uniform vec2 u_size;
 uniform float u_theta;
+uniform float u_minAlpha;
 uniform vec4 u_bkgColor;
 
 out vec4 FragColor;
@@ -42,6 +43,6 @@ void main()
     vec4 frontColorBuffer = texture(u_fragData, uv);
     vec4 ellipse_sample = texture(u_ellipseTex, ellipseCoord());
 
-    float alpha = 1.0 - ellipse_sample.r;
+    float alpha = min(u_minAlpha, 1.0 - ellipse_sample.r);
     FragColor = vec4(frontColorBuffer.rgb,alpha) + vec4(u_bkgColor.rgb * (1 - frontColorBuffer.a), 0);
 }
