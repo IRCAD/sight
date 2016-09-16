@@ -73,6 +73,8 @@ void SPointList::doStart() throw(fwTools::Failed)
 
 void SPointList::doUpdate() throw(fwTools::Failed)
 {
+    this->removeAllPropFromRenderer();
+
     vtkSmartPointer<vtkPoints> imgPoints  = vtkSmartPointer<vtkPoints>::New();
     vtkSmartPointer<vtkPolyData> polydata = vtkSmartPointer<vtkPolyData>::New();
     polydata->SetPoints(imgPoints);
@@ -94,8 +96,7 @@ void SPointList::doUpdate() throw(fwTools::Failed)
 
     this->addToRenderer(actor);
 
-    ::fwTools::Object::sptr pImage = ::fwTools::fwID::getObject(m_imageId);
-    ::fwData::Image::sptr image    = ::fwData::Image::dynamicCast(pImage);
+    ::fwData::Image::csptr image = this->getSafeInput< ::fwData::Image >(m_imageId);
     SLM_ASSERT("This object is not an image", image);
 
     ::fwData::Image::SizeType size = image->getSize();
