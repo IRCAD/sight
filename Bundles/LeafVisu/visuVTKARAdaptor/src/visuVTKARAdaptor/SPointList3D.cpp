@@ -12,6 +12,7 @@
 
 #include "visuVTKARAdaptor/SPointList3D.hpp"
 
+#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/PointList.hpp>
 
 #include <fwServices/macros.hpp>
@@ -121,11 +122,17 @@ void SPointList3D::doStart() throw(fwTools::Failed)
 void SPointList3D::doUpdate() throw(fwTools::Failed)
 {
     m_points->Reset();
+
     ::fwData::PointList::sptr pl = this->getObject< ::fwData::PointList >();
-    for( ::fwData::Point::sptr pt : pl->getPoints() )
+
     {
-        ::fwData::Point::PointCoordArrayType coord = pt->getCoord();
-        m_points->InsertNextPoint(coord[0], coord[1], coord[2]);
+        ::fwData::mt::ObjectReadLock lock (pl);
+
+        for( ::fwData::Point::sptr pt : pl->getPoints() )
+        {
+            ::fwData::Point::PointCoordArrayType coord = pt->getCoord();
+            m_points->InsertNextPoint(coord[0], coord[1], coord[2]);
+        }
     }
     m_points->Modified();
 
