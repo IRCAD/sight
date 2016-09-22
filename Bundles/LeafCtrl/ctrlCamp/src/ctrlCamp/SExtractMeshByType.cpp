@@ -149,7 +149,7 @@ void SExtractMeshByType::updating() throw( ::fwTools::Failed )
                     }
                 }
             }
-            OSLM_INFO_IF(
+            OSLM_ERROR_IF(
                 "Mesh with organ name matching '" << regex << "' and structure type'" << type << "' didn't find",
                 !found);
         }
