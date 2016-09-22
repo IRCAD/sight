@@ -13,6 +13,7 @@
 #include "fwGui/layoutManager/IViewLayoutManager.hpp"
 #include "fwGui/builder/IToolBarBuilder.hpp"
 #include "fwGui/builder/IContainerBuilder.hpp"
+#include "fwGui/builder/ISlideViewBuilder.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
@@ -47,6 +48,10 @@ namespace fwGui
                <view caption="view5" />
            </layout>
            <toolBar />
+           <slideView />
+           <slideView align="top" size="200" opacity="1.0">
+               <styleSheet>color: blue; background-color: yellow</styleSheet>
+           </slideView>
        </gui>
        <registry>
            <parent wid="myView" />
@@ -54,12 +59,16 @@ namespace fwGui
            <view sid="subView3" start="yes" />
            <view wid="subView4" />
            <view sid="subView5" />
-       </registry>
+           <slideView sid="slideView1" start="yes />
+           <slideView wid="slideView2" />
+        </registry>
    </service>
    @endcode
  *  - \<layout type="::fwGui::LineLayoutManager" \> : give the type of layout.
- *    - \b type {::fwGui::LineLayoutManager |::fwGui::CardinalLayoutManager |::fwGui::TabLayoutManager |::fwGui::ToolboxLayoutManager} :
- *     - \b ::fwGui::LineLayoutManager : all views will be on the same line or column (it depends of the orientation value attribute)
+ *    - \b type {::fwGui::LineLayoutManager | ::fwGui::CardinalLayoutManager | ::fwGui::TabLayoutManager |
+ *              ::fwGui::ToolboxLayoutManager} :
+ *     - \b ::fwGui::LineLayoutManager : all views will be on the same line or column (it depends of the orientation
+ *           value attribute)
  *           @see ::fwGui::layoutManager::LineLayoutManagerBase
  *     - \b ::fwGui::CardinalLayoutManager : all views will be added around a central view define by the align attribute.
  *           @see ::fwGui::layoutManager::CardinalLayoutManagerBase
@@ -67,13 +76,17 @@ namespace fwGui
  *           @see ::fwGui::layoutManager::TabLayoutManagerBase
  *     - \b ::fwGui::ToolboxLayoutManager : all views will be draw in toolbox.
  *           @see ::fwGui::layoutManager::ToolboxLayoutManagerBase
- *  - The toolBar section isn't mandatory.
+ *  - \b toolBar: defines the toolBar configuration.
+ *           @see ::fwGui::builder::IToolBarBuilder
+ *  - \b slideView: defines a slide view.
+ *           @see ::fwGui::builder::ISlideViewBuilder
  *
  * @note The layout and registry sections can be empty. In this case no subview will be created.
  *
  * @warning
  * - The order of the view in each section (gui and registry) must be the same.\n
- *   For example: the view caption "view3" will be connected with the service which have the sid = "subView3" and so one (it also could be a wid).
+ *   For example: the view caption "view3" will be connected with the service which have the sid = "subView3" and so one
+ *   (it also could be a wid).
  *
  *
  */
@@ -140,6 +153,8 @@ protected:
 
 private:
 
+    typedef std::vector< ::fwGui::builder::ISlideViewBuilder::sptr > SlideViewContainerType;
+
     /// SLOT: enable/disable the container
     void setEnabled(bool isEnabled);
     /// SLOT: enable the container
@@ -155,6 +170,7 @@ private:
 
     void initializeLayoutManager( ::fwRuntime::ConfigurationElement::sptr layoutConfig );
     void initializeToolBarBuilder( ::fwRuntime::ConfigurationElement::sptr toolBarConfig );
+    void initializeSlideViewBuilder( ::fwRuntime::ConfigurationElement::sptr slideViewConfig );
 
     bool m_viewLayoutManagerIsCreated;
     ::fwGui::layoutManager::IViewLayoutManager::sptr m_viewLayoutManager;
@@ -162,10 +178,12 @@ private:
     ::fwGui::registrar::ViewRegistrar::sptr m_viewRegistrar;
     ::fwGui::builder::IToolBarBuilder::sptr m_toolBarBuilder;
     ::fwGui::builder::IContainerBuilder::sptr m_containerBuilder;
+    SlideViewContainerType m_slideViewBuilders;
 
     ConfigurationType m_viewRegistrarConfig;
     ConfigurationType m_viewLayoutConfig;
     ConfigurationType m_toolBarConfig;
+    ConfigurationType m_slideViewConfig;
 
     bool m_hasToolBar;
 };

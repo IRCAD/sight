@@ -21,7 +21,7 @@ namespace registrar
 
 //-----------------------------------------------------------------------------
 
-ViewRegistrar::ViewRegistrar(const std::string &sid)
+ViewRegistrar::ViewRegistrar(const std::string& sid)
     : m_parentWid(""),
       m_sid(sid)
 {
@@ -79,7 +79,10 @@ void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
     // index represents associated container with position in subViews vector
     unsigned int index = 0;
     // initialize m_sids and m_wids map with configuration
-    std::vector < ConfigurationType > vectViews = configuration->find("view");
+    std::vector < ConfigurationType > vectViews      = configuration->find("view");
+    std::vector < ConfigurationType > vectSlideViews = configuration->find("slideView");
+    std::copy (vectSlideViews.begin(), vectSlideViews.end(), std::back_inserter(vectViews));
+
     for( ConfigurationType view :  vectViews)
     {
         SLM_ASSERT("<view> tag must have sid or wid attribute",
