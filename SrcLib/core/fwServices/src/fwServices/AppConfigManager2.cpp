@@ -46,6 +46,7 @@ AppConfigManager2::AppConfigManager2() :
 {
     SLM_ASSERT("Can't mix V1 and V2 appConfigs", s_VERSION == 0 || s_VERSION == 2);
     s_VERSION = 2;
+    ::fwServices::IService::setVersion(2);
 
     newSlot(s_ADD_OBJECTS_SLOT, &AppConfigManager2::addObjects, this);
     newSlot(s_REMOVE_OBJECTS_SLOT, &AppConfigManager2::removeObjects, this);
@@ -301,7 +302,6 @@ fwData::Object::sptr AppConfigManager2::getConfigRoot() const
     {
         srv->setID(uid);
     }
-    srv->setVersion(2);
 
     return srv;
 }
