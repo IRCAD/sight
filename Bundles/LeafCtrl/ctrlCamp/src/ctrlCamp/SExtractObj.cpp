@@ -55,8 +55,10 @@ void SExtractObj::configuring() throw( ::fwTools::Failed )
         const std::vector< ConfigurationType > extractCfg = inoutCfg->find("extract");
         SLM_ASSERT("At least one 'extract' tag is required.", !extractCfg.empty());
 
-        const std::vector< ConfigurationType > outCfg = m_configuration->find("out");
-        SLM_ASSERT("You must have as many 'from' tags as 'out' keys.", extractCfg.size() == outCfg.size());
+        const ConfigurationType outCfg = m_configuration->findConfigurationElement("out");
+
+        const std::vector< ConfigurationType > outKeyCfg = outCfg->find("key");
+        SLM_ASSERT("You must have as many 'from' tags as 'out' keys.", extractCfg.size() == outKeyCfg.size());
 
         for(ConfigurationType cfg : extractCfg)
         {
