@@ -94,9 +94,12 @@ void SRender::configureRenderer( ConfigurationType conf )
     {
         m_renderers[id] = vtkRenderer::New();
 
+//vtk depth peeling not available on android (Offscreen rendering issues)
+#ifndef ANDROID
         m_renderers[id]->SetUseDepthPeeling     ( 1  );
         m_renderers[id]->SetMaximumNumberOfPeels( 8  );
         m_renderers[id]->SetOcclusionRatio      ( 0. );
+#endif
 
         if(conf->hasAttribute("layer") )
         {
@@ -719,6 +722,7 @@ void SRender::render()
         m_interactorManager->getInteractor()->Render();
     }
     this->setPendingRenderRequest(false);
+
 }
 
 //-----------------------------------------------------------------------------

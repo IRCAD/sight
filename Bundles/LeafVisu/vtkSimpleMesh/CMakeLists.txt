@@ -1,19 +1,25 @@
 fwLoadProperties()
 
-if(ANDROID)
-find_package(VTK COMPONENTS     
+# Just look one core module to get the version number
+find_package(VTK COMPONENTS
+        vtkCommonCore
+        REQUIRED
+        NO_MODULE)
+        
+if(${VTK_MAJOR_VERSION} STREQUAL "7")
+    find_package(VTK COMPONENTS
         vtkRenderingOpenGL2
         vtkInteractionStyle
-        REQUIRED
-        NO_MODULE)
+        vtkRenderingFreeType
+    REQUIRED
+    NO_MODULE)
 else()
-find_package(VTK COMPONENTS       
+    find_package(VTK COMPONENTS
         vtkRenderingOpenGL
-        vtkRenderingFreeTypeOpenGL
-        vtkInteractionWidgets
-        REQUIRED
-        NO_MODULE)
-
+        vtkInteractionStyle
+        vtkRenderingFreeType
+    REQUIRED
+    NO_MODULE)
 endif()
 
 include(${VTK_USE_FILE})
