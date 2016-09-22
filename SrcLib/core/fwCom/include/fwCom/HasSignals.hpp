@@ -29,6 +29,9 @@ public:
     HasSignals()
     {
     }
+    virtual ~HasSignals()
+    {
+    }
 
     SPTR( SignalBase ) signal( const Signals::SignalKeyType & key ) const
     {

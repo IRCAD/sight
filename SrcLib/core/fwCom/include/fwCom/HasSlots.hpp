@@ -30,6 +30,9 @@ public:
     HasSlots()
     {
     }
+    virtual ~HasSlots()
+    {
+    }
 
     SPTR( SlotBase ) slot( const Slots::SlotKeyType & key ) const
     {

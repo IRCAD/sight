@@ -8,7 +8,10 @@
 
 #include <fwCom/SignalBase.hpp>
 #include <fwCom/exception/BadSlot.hpp>
+#include <fwCom/exception/AlreadyConnected.hpp>
 #include <fwCore/spyLog.hpp>
+
+#include <fwTools/Object.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -40,7 +43,7 @@ void SigSlotConnection::connect(const ::fwCom::HasSignals::csptr& hasSignals, ::
         ::fwCom::Connection connection = hasSignals->signal( signalKey )->connect( hasSlots->slot( slotKey ) );
         m_connections.push_back(connection);
     }
-    catch (::fwCom::exception::BadSlot e)
+    catch (::fwCom::exception::BadSlot& e)
     {
         OSLM_ERROR("Can't connect signal '" + signalKey + "' with slot '" + slotKey + "' : " << e.what() << ".");
     }
@@ -52,6 +55,9 @@ void SigSlotConnection::connect(const ::fwCom::HasSignals::csptr& hasSignals,
                                 const ::fwCom::HasSlots::csptr& hasSlots,
                                 const KeyConnectionsType& keyConnections )
 {
+    SLM_ASSERT("Signal source is NULL", hasSignals);
+    SLM_ASSERT("Slot destination is NULL", hasSlots);
+
     for( const KeyConnectionType& keys : keyConnections )
     {
         auto signal = hasSignals->signal( keys.first );
@@ -64,10 +70,21 @@ void SigSlotConnection::connect(const ::fwCom::HasSignals::csptr& hasSignals,
             ::fwCom::Connection connection = signal->connect( slot );
             m_connections.push_back(connection);
         }
-        catch (::fwCom::exception::BadSlot e)
+        catch (::fwCom::exception::BadSlot& e)
         {
             OSLM_ERROR("Can't connect signal '" + keys.first + "' with slot '" + keys.second + "' : "
                        << e.what() << ".");
+        }
+        catch (::fwCom::exception::AlreadyConnected& e)
+        {
+            const ::fwTools::Object::csptr source = ::fwTools::Object::dynamicConstCast(hasSignals);
+            auto sourceID                         = source ? source->getID() : "";
+
+            const ::fwTools::Object::csptr target = ::fwTools::Object::dynamicConstCast(hasSlots);
+            auto targetID                         = target ? target->getID() : "";
+
+            OSLM_ERROR("Can't connect signal '" + sourceID + "/" + keys.first + "' with slot '"
+                       + targetID + "/" + keys.second + "' : " << e.what() << ".");
         }
     }
 }
