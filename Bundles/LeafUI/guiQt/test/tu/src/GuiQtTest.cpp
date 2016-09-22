@@ -13,8 +13,8 @@
 #include <fwRuntime/profile/Profile.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/AppConfigManager.hpp>
-#include <fwServices/registry/AppConfig.hpp>
+#include <fwServices/AppConfigManager2.hpp>
+#include <fwServices/registry/AppConfig2.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include "GuiQtTest.hpp"
@@ -64,7 +64,7 @@ void GuiQtTest::testDefaultFrame()
     srv->configure();
     srv->start();
 
-    QMainWindow *window = qobject_cast<QMainWindow *>(qApp->activeWindow());
+    QMainWindow* window = qobject_cast<QMainWindow*>(qApp->activeWindow());
 
     CPPUNIT_ASSERT(qApp);
     CPPUNIT_ASSERT(qApp->activeWindow());
@@ -79,10 +79,10 @@ void GuiQtTest::testDefaultFrame()
 
 void GuiQtTest::testTuto01()
 {
-    std::vector<std::string> cfgs = ::fwServices::registry::AppConfig::getDefault()->getAllConfigs();
+    std::vector<std::string> cfgs = ::fwServices::registry::AppConfig2::getDefault()->getAllConfigs();
     CPPUNIT_ASSERT_MESSAGE("Missing available configuration", !cfgs.empty());
 
-    ::fwServices::AppConfigManager::sptr appConfigMng = ::fwServices::AppConfigManager::New();
+    ::fwServices::AppConfigManager2::sptr appConfigMng = ::fwServices::AppConfigManager2::New();
     appConfigMng->setConfig( "tutoBasicConfig" );
 
     appConfigMng->launch();
@@ -93,10 +93,10 @@ void GuiQtTest::testTuto01()
 
 void GuiQtTest::testTuto02()
 {
-    std::vector<std::string> cfgs = ::fwServices::registry::AppConfig::getDefault()->getAllConfigs();
+    std::vector<std::string> cfgs = ::fwServices::registry::AppConfig2::getDefault()->getAllConfigs();
     CPPUNIT_ASSERT_MESSAGE("Missing available configuration", !cfgs.empty());
 
-    ::fwServices::AppConfigManager::sptr appConfigMng = ::fwServices::AppConfigManager::New();
+    ::fwServices::AppConfigManager2::sptr appConfigMng = ::fwServices::AppConfigManager2::New();
     appConfigMng->setConfig( "tutoDataServiceBasicConfig" );
 
     appConfigMng->launch();

@@ -1,5 +1,7 @@
 <plugin id="Tuto02DataServiceBasic" version="@DASH_VERSION@">
 
+    <!-- The bundles in requirements are automatically started when this 
+         Application is launched. -->
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
