@@ -45,7 +45,7 @@ public:
 
     VISUVTKVRADAPTOR_API void setClippingPlanesId( ::fwRenderVTK::SRender::VtkObjectIdType id );
 
-    VISUVTKVRADAPTOR_API void setVtkClippingPlanes( vtkPlaneCollection *planes );
+    VISUVTKVRADAPTOR_API void setVtkClippingPlanes( vtkPlaneCollection* planes );
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -114,25 +114,31 @@ protected:
 
     void updateVolumeTransferFunction( ::fwData::Image::sptr image );
 
-    vtkPlaneCollection *m_clippingPlanes;
+    vtkPlaneCollection* m_clippingPlanes;
 
     ::fwRenderVTK::SRender::VtkObjectIdType m_clippingPlanesId;
 
-    vtkAbstractVolumeMapper  * m_volumeMapper;
-    vtkVolumeProperty        * m_volumeProperty;
-    vtkVolume                * m_volume;
+    vtkAbstractVolumeMapper* m_volumeMapper;
+    vtkVolumeProperty* m_volumeProperty;
+    vtkVolume* m_volume;
 
-    vtkPiecewiseFunction     * m_opacityTransferFunction;
-    vtkColorTransferFunction * m_colorTransferFunction;
+    vtkPiecewiseFunction* m_opacityTransferFunction;
+    vtkColorTransferFunction* m_colorTransferFunction;
 
-    vtkCommand               * m_abortCommand;
+    vtkCommand* m_abortCommand;
 
-    vtkBoxWidget2 * m_boxWidget;
-    vtkCommand    * m_croppingCommand;
-    vtkCommand    * m_transformCommand;
+    vtkBoxWidget2* m_boxWidget;
+    vtkCommand* m_croppingCommand;
+    vtkCommand* m_transformCommand;
 
-    /// Croping box default state
+    /// Cropping box default state
     bool m_croppingBoxDefaultState;
+
+    /// XML ID for the transformation matrix affected only to the cropBox.
+    std::string m_cropBoxTransformID;
+
+    /// Transformation matrix affected only to the cropBox.
+    vtkTransform* m_cropBoxTransform;
 
 private:
 
