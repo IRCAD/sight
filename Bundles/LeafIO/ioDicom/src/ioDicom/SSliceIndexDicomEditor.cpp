@@ -58,12 +58,6 @@ SSliceIndexDicomEditor::SSliceIndexDicomEditor() throw() :
 {
     m_slotReadImage = newSlot(s_READ_IMAGE_SLOT, &SSliceIndexDicomEditor::readImage, this);
     newSlot(s_DISPLAY_MESSAGE_SLOT, &SSliceIndexDicomEditor::displayErrorMessage, this);
-
-#ifdef COM_LOG
-    m_slotReadImage->setID( s_READ_IMAGE_SLOT );
-    m_slotDisplayMessage->setID( s_DISPLAY_MESSAGE_SLOT );
-    ::fwCom::HasSignals::m_signals.setID();
-#endif
 }
 //------------------------------------------------------------------------------
 

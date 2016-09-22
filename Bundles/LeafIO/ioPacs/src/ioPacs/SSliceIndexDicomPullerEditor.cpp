@@ -58,22 +58,13 @@ const ::fwCom::Slots::SlotKeyType SSliceIndexDicomPullerEditor::s_DISPLAY_MESSAG
 SSliceIndexDicomPullerEditor::SSliceIndexDicomPullerEditor() throw() :
     m_delay(500)
 {
-
     m_slotReadImage = ::fwCom::newSlot(&SSliceIndexDicomPullerEditor::readImage, this);
     ::fwCom::HasSlots::m_slots(s_READ_IMAGE_SLOT, m_slotReadImage);
 
     m_slotDisplayMessage = ::fwCom::newSlot(&SSliceIndexDicomPullerEditor::displayErrorMessage, this);
     ::fwCom::HasSlots::m_slots(s_DISPLAY_MESSAGE_SLOT, m_slotDisplayMessage);
 
-#ifdef COM_LOG
-    m_slotReadImage->setID( s_READ_IMAGE_SLOT );
-    m_slotDisplayMessage->setID( s_DISPLAY_MESSAGE_SLOT );
-    ::fwCom::HasSignals::m_signals.setID();
-#endif
-
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
-
-
 }
 //------------------------------------------------------------------------------
 

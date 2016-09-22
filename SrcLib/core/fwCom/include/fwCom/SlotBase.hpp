@@ -79,7 +79,7 @@ struct FWCOM_CLASS_API SlotBase : virtual fwCore::BaseObject
     }
 
     /// Sets Slot's Worker.
-    void setWorker(const SPTR(::fwThread::Worker) &worker)
+    void setWorker(const SPTR(::fwThread::Worker)& worker)
     {
         ::fwCore::mt::WriteLock lock(m_workerMutex);
 

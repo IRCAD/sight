@@ -28,7 +28,6 @@ template< typename F >
 class Slot;
 
 /**
- * @class   Slots
  * @brief   This class proposes a mapping between a SlotKeyType and a SlotBase.
  */
 class FWCOM_CLASS_API Slots
@@ -46,11 +45,11 @@ public:
     FWCOM_API virtual ~Slots();
 
     /// Registers SlotBase in m_slots
-    FWCOM_API Slots& operator()( const SlotKeyType &key, const SPTR( SlotBase ) &slot );
+    FWCOM_API Slots& operator()( const SlotKeyType& key, const SPTR( SlotBase )& slot );
 
     /// Registers Slot  in m_slots (defined here to avoid compiler error C2244)
     template<typename R, typename ... A>
-    Slots& operator()( const SlotKeyType &key, SPTR(Slot< R (A ...) >)slot )
+    Slots& operator()( const SlotKeyType& key, SPTR(Slot< R (A ...) >)slot )
     {
         SPTR( SlotBase ) slotBase = std::dynamic_pointer_cast< SlotBase >( slot );
         return this->operator()(key, slotBase);
@@ -58,18 +57,16 @@ public:
 
     /// Creates in intern a new slot from function and registers it in m_slots
     template<typename F, typename ... A>
-    Slots& operator()( const SlotKeyType &key, F f, A ... a );
+    Slots& operator()( const SlotKeyType& key, F f, A ... a );
 
     /// Returns the SlotBase associated to the key, if key does not exist, the ptr is null
     FWCOM_API SPTR( SlotBase ) operator[]( const SlotKeyType &key ) const;
 
     /// Assigns the worker to all slots stored in m_slots
-    FWCOM_API void setWorker( const SPTR(::fwThread::Worker) &worker );
+    FWCOM_API void setWorker( const SPTR(::fwThread::Worker)& worker );
 
     /// Returns all SlotKeyType registered in m_slots
     FWCOM_API SlotKeyContainerType getSlotKeys() const;
-
-
 
 protected:
 

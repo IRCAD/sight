@@ -51,10 +51,7 @@ namespace fwServices
 
     if (::boost::get<1>(uid))
     {
-#ifndef COM_LOG
-        OSLM_ASSERT("Object already has an UID.", !obj->hasID());
-#endif
-
+        SLM_ASSERT("Object already has an UID.", !obj->hasID());
         OSLM_FATAL_IF("UID " << ::boost::get<0>(uid) << " already exists.",
                       ::fwTools::fwID::exist(::boost::get<0>(uid)));
         obj->setID(::boost::get<0>(uid));

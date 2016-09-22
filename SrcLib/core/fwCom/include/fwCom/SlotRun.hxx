@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,20 +10,16 @@
 #error fwCom/SlotRun.hpp not included
 #endif
 
-#include <boost/thread/future.hpp>
+#include "fwCom/exception/NoWorker.hpp"
+#include "fwCom/util/WeakCall.hpp"
+#include "fwCom/SlotBase.hxx"
 
 #include <fwThread/TaskHandler.hpp>
 #include <fwThread/Worker.hpp>
 
 #include <fwCore/mt/types.hpp>
 
-#include "fwCom/exception/NoWorker.hpp"
-
-#include "fwCom/util/WeakCall.hpp"
-
-#include "fwCom/SlotBase.hxx"
-
-#include "fwCom/util/log.hpp"
+#include <boost/thread/future.hpp>
 
 namespace fwCom
 {
@@ -38,14 +34,12 @@ inline ::boost::function< void() > SlotRun< void (A ...) >::bindRun( A ... args 
 
 template< typename ... A >
 inline SlotBase::VoidSharedFutureType SlotRun< void (A ...) >::asyncRun(
-    const ::fwThread::Worker::sptr &worker, A ... args ) const
+    const ::fwThread::Worker::sptr& worker, A ... args ) const
 {
     if(!worker)
     {
         FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
-
-    OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
 
     return postWeakCall< void >(
         worker,
@@ -68,8 +62,6 @@ inline SlotBase::VoidSharedFutureType SlotRun< void (A ...) >::asyncRun(A ... ar
         FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("Slot has no worker set.") );
     }
 
-    OSLM_COM("asyncRun '"<< this->getID() <<"' slot");
-
     return postWeakCall< void >(
         m_worker,
         ::fwCom::util::weakcall(
@@ -78,7 +70,6 @@ inline SlotBase::VoidSharedFutureType SlotRun< void (A ...) >::asyncRun(A ... ar
             this->m_worker
             )
         );
-
 }
 
 //-----------------------------------------------------------------------------
@@ -87,7 +78,7 @@ inline SlotBase::VoidSharedFutureType SlotRun< void (A ...) >::asyncRun(A ... ar
 // keyword
 template< typename ... A >
 template< typename R, typename WEAKCALL >
-::boost::shared_future< R > SlotRun< void (A ...) >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
+::boost::shared_future< R > SlotRun< void (A ...) >::postWeakCall( const ::fwThread::Worker::sptr& worker, WEAKCALL f )
 {
     ::boost::packaged_task< R > task( f );
     ::boost::future< R > ufuture = task.get_future();
