@@ -211,6 +211,11 @@ void SExtractMeshByType::updating() throw( ::fwTools::Failed )
 
 void SExtractMeshByType::stopping() throw( ::fwTools::Failed )
 {
+    // Unregister outputs
+    for (size_t i = 0; i<this->getKeyGroupSize("target"); ++i)
+    {
+        this->setOutput("target", nullptr, i);
+    }
 }
 
 //-----------------------------------------------------------------------------

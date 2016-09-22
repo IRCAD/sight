@@ -128,6 +128,8 @@ void SCopy::updating() throw( ::fwTools::Failed )
 
 void SCopy::stopping() throw( ::fwTools::Failed )
 {
+    // Unregister output
+    this->setOutput(s_TARGET_INOUT, nullptr);
 }
 
 //-----------------------------------------------------------------------------
