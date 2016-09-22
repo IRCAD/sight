@@ -288,8 +288,6 @@ void SRender::configureVtkObject( ConfigurationType conf )
         {
             m_vtkObjects[id] = vtkInstantiator::CreateInstance(vtkClass.c_str());
         }
-
-
     }
 }
 
@@ -668,11 +666,26 @@ void SRender::updating() throw(fwTools::Failed)
 
 void SRender::swapping(const IService::KeyType& key) throw(::fwTools::Failed)
 {
+    if (this->isVersion2())
+    {
+        // remove connections
+        auto iter = m_objectConnections.find(key);
+        if(iter != m_objectConnections.end())
+        {
+            iter->second.disconnect();
+            m_objectConnections.erase(key);
+        }
+        ::fwServices::helper::Config::disconnectProxies(key, m_proxyMap);
+    }
+
     std::vector< ConfigurationType > confVec = m_sceneConfiguration->find("adaptor","objectId", key);
     for( ConfigurationType cfg : confVec )
     {
         this->configureObject(cfg);
     }
+
+    // create connections
+    this->connectAfterWait(key);
 }
 
 //-----------------------------------------------------------------------------
@@ -873,16 +886,41 @@ vtkTransform* SRender::getOrAddVtkTransform( const VtkObjectIdType& _id )
 
 void SRender::connectAfterWait(::fwData::Composite::ContainerType objects)
 {
-
     for(::fwData::Composite::value_type element :  objects)
     {
-        for(::fwRuntime::ConfigurationElement::sptr connect :  m_connect)
+        for(const ::fwRuntime::ConfigurationElement::sptr& connect :  m_connect)
         {
             this->manageConnection(element.first, element.second, connect);
         }
-        for(::fwRuntime::ConfigurationElement::sptr proxy :  m_proxies)
+        for(const ::fwRuntime::ConfigurationElement::sptr& proxy :  m_proxies)
         {
             this->manageProxy(element.first, element.second, proxy);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SRender::connectAfterWait(const std::string& key)
+{
+    if (this->isVersion2())
+    {
+        ::fwData::Object::csptr obj;
+        obj = this->getInput< ::fwData::Object >(key);
+        if(!obj)
+        {
+            obj = this->getInOut< ::fwData::Object >(key);
+        }
+        if (obj)
+        {
+            for(const ::fwRuntime::ConfigurationElement::sptr& connect :  m_connect)
+            {
+                this->manageConnection(key, obj, connect);
+            }
+            for(const ::fwRuntime::ConfigurationElement::sptr& proxy :  m_proxies)
+            {
+                this->manageProxy(key, obj, proxy);
+            }
         }
     }
 }
@@ -925,7 +963,6 @@ void SRender::manageProxy(const std::string& key, const ::fwData::Object::csptr&
     connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_CHANGE_OBJECTS_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_REMOVE_OBJECTS_SLOT ) );
-
 
     return connections;
 }

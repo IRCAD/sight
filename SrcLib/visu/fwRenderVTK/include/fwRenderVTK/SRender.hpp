@@ -294,6 +294,9 @@ private:
     /// Creates the connection if the required key is contained in the composite
     void connectAfterWait(::fwData::Composite::ContainerType objects);
 
+    /// Version2: Creates the connection if the required key is present
+    void connectAfterWait(const std::string& key);
+
     /// Creates the connection given by the configuration for obj associated with the key in the composite.
     void manageConnection(const std::string& key, const ::fwData::Object::csptr& obj,
                           const ConfigurationType& config);

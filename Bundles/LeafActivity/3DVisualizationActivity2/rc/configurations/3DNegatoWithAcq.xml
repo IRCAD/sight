@@ -57,6 +57,20 @@
             <push srcKey="OptionalInputImageKey" />
         </service>
 
+        <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv">
+            <inout key="imageKey" uid="optionalInputImage" />
+        </service>
+
+        <service uid="slider_negato" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <inout key="imageKey" uid="optionalInputImage" />
+            <sliceIndex>${orientation}</sliceIndex>
+        </service>
+
+        <service uid="distanceNegatoEditor" type="::uiMeasurement::editor::Distance">
+            <in key="imageKey" uid="optionalInputImage" />
+            <placeInScene uid="negato" />
+        </service>
+
         <!-- Generic Scene Negato -->
         <service uid="negato" type="::fwRenderVTK::SRender" autoConnect="yes">
             <in key="modelSeriesKey" uid="${modelSeries}" />
@@ -133,21 +147,6 @@
                 </proxy>
 
             </scene>
-        </service>
-
-
-        <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv">
-            <inout key="imageKey" uid="optionalInputImage" />
-        </service>
-
-        <service uid="slider_negato" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
-            <inout key="imageKey" uid="optionalInputImage" />
-            <sliceIndex>${orientation}</sliceIndex>
-        </service>
-
-        <service uid="distanceNegatoEditor" type="::uiMeasurement::editor::Distance">
-            <in key="imageKey" uid="optionalInputImage" />
-            <placeInScene uid="negato" />
         </service>
 
         <service uid="sliceListNegatoEditor" type="::guiQt::editor::SSelectionMenuButton">
