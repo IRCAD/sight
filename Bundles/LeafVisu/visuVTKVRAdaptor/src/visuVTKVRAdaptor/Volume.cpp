@@ -111,6 +111,7 @@ private:
 
 static const ::fwCom::Slots::SlotKeyType s_RESET_BOX_WIDGET_SLOT      = "resetBoxWidget";
 static const ::fwCom::Slots::SlotKeyType s_ACTIVATE_BOX_CLIPPING_SLOT = "activateBoxClipping";
+static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT                  = "show";
 
 //------------------------------------------------------------------------------
 
@@ -140,6 +141,7 @@ Volume::Volume() throw() :
 
     newSlot(s_RESET_BOX_WIDGET_SLOT, &Volume::resetBoxWidget, this);
     newSlot(s_ACTIVATE_BOX_CLIPPING_SLOT, &Volume::activateBoxClipping, this);
+    newSlot(s_SHOW_SLOT, &Volume::show, this);
 
     this->installTFSlots(this);
 }
@@ -419,8 +421,6 @@ void Volume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
         }
     }
 
-    ::fwData::TransferFunction::TFValuePairType minMax = pTF->getMinMaxTFValues();
-
     m_colorTransferFunction->SetClamping(!pTF->getIsClamped());
     m_opacityTransferFunction->SetClamping(!pTF->getIsClamped());
 
@@ -548,6 +548,15 @@ void Volume::updateCropBoxTransform()
             m_boxWidget->AddObserver(vtkCommand::InteractionEvent, m_croppingCommand);
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void Volume::show(bool isVisible)
+{
+    m_volume->SetVisibility(isVisible);
+    this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
