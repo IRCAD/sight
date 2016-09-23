@@ -8,6 +8,8 @@ set( DEPENDENCIES
     fwActivities
 )
 set( REQUIREMENTS
+    ctrlCamp
+
     servicesReg
     dataReg
     arDataReg

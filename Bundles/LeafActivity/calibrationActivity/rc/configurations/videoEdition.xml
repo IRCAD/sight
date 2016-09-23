@@ -1,0 +1,121 @@
+<extension implements="::fwServices::registry::AppConfig2">
+    <id>videoEdition</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="camera" />
+        <param name="videoGrabber" />
+        <param name="videoGrabberImpl" />
+        <param name="cameraModifiedChannel" default="cameraModified" />
+        <param name="videoPositionChangedChannel" default="videoPositionChanged" />
+        <param name="videoPositionModifiedChannel" default="videoPositionModified" />
+        <param name="videoDurationModifiedChannel" default="videoDurationModified" />
+
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${camera}" type="::arData::Camera" src="ref" />
+        <object uid="timeLine" type="::arData::FrameTL" />
+        <object uid="frame" type="::fwData::Image" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="cameraView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                </layout>
+                <toolBar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBar" start="yes" />
+                <view sid="camera" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
+            <gui>
+                <layout>
+                    <editor />
+                    <menuItem name="Edit" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/configuration.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <editor sid="CameraSelector" start="yes" />
+                <menuItem sid="ActionEdition" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Actions ****************************************** -->
+
+        <service uid="ActionEdition" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>intrinsicEdition/update</slot>
+            </slots>
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
+
+        <service uid="camera" type="::fwRenderVTK::SRender" autoConnect="yes">
+
+            <in key="frame" uid="frame" />
+
+            <scene renderMode="timer">
+                <renderer id="default" background="0.0" />
+                <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="frame">
+                    <config renderer="default" />
+                </adaptor>
+                <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="InteractorStyle2DForNegato" />
+                </adaptor>
+            </scene>
+        </service>
+
+        <service uid="${videoGrabber}" type="${videoGrabberImpl}" >
+            <in key="camera" uid="${camera}" />
+            <inout key="frameTL" uid="timeLine" />
+        </service>
+
+        <service uid="FrameUpdater" type="::videoTools::SFrameUpdater" >
+            <in key="frameTL" uid="timeLine" autoConnect="yes" />
+            <inout key="frame" uid="frame" />
+        </service>
+
+        <service uid="CameraSelector" type="::videoQt::editor::SCamera" >
+            <inout key="camera" uid="${camera}"/>
+            <videoSupport>yes</videoSupport>
+        </service>
+        
+        <service uid="intrinsicEdition" type="::uiCalibration::SIntrinsicEdition"  >
+            <inout key="camera" uid="${camera}" />
+        </service>
+
+        <!-- ******************************* Connections ************************************** -->
+
+        <connect channel="${cameraModifiedChannel}">
+            <slot>${videoGrabber}/stopCamera</slot>
+        </connect>
+
+        <connect channel="${videoPositionChangedChannel}">
+            <slot>${videoGrabber}/setPositionVideo</slot>
+        </connect>
+
+        <connect channel="${videoPositionModifiedChannel}">
+            <signal>${videoGrabber}/positionModified</signal>
+        </connect>
+
+        <connect channel="${videoDurationModifiedChannel}">
+            <signal>${videoGrabber}/durationModified</signal>
+        </connect>
+
+
+        <start uid="cameraView" />
+        <start uid="${videoGrabber}" />
+        <start uid="FrameUpdater" />
+        <start uid="intrinsicEdition" />
+
+    </config>
+</extension>

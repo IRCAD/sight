@@ -47,6 +47,7 @@
                 <mode>include</mode>
                 <id>Calibration</id>
                 <id>toolsCalibration</id>
+                <id>calibrationEdition</id>
             </filter>
         </service>
 

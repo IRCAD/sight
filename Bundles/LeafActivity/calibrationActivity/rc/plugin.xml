@@ -16,6 +16,8 @@
     <xi:include href="configurations/displayImageConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/displayTwoImagesConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/toolsCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/calibrationEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/videoEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwActivities::registry::Activities">
         <id>Calibration</id>
@@ -59,6 +61,29 @@
                 <parameter replace="camera2" by="@values.cameraSeries.cameras.1" />
                 <parameter replace="cameraExtrinsic" by="@values.cameraSeries.extrinsic_matrices.1" />
                 <parameter replace="tagsId" by="!values.tagsIdString" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>calibrationEdition</id>
+        <title>Calibration Edition</title>
+        <desc>
+            <![CDATA[
+                This activity allows to edit a calibration: <br />
+                - edit the video file/stream<br />
+                - edit the resolution
+            ]]>
+        </desc>
+        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/configuration.svg</icon>
+        <requirements>
+             <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
+                <desc>Calibrated camera series.</desc>
+             </requirement>
+        </requirements>
+        <appConfig id="calibrationEdition">
+            <parameters>
+                <parameter replace="cameraSeries" by="@values.cameraSeries" />
             </parameters>
         </appConfig>
     </extension>
