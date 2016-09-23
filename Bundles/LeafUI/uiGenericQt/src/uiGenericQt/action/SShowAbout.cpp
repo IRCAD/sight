@@ -49,7 +49,7 @@ SShowAbout::~SShowAbout() throw()
 
 //------------------------------------------------------------------------------
 
-void SShowAbout::info(std::ostream &_sstream )
+void SShowAbout::info(std::ostream& _sstream )
 {
     _sstream << "SShowAbout" << std::endl;
 }
@@ -110,13 +110,16 @@ void SShowAbout::updating( ) throw(::fwTools::Failed)
     htmlView->load( url );
     QObject::connect( htmlView, SIGNAL(linkClicked(const QUrl &)),this, SLOT(onUrlClicked(const QUrl &)));
 #else
-    QTextBrowser * htmlView = new QTextBrowser(dialog);
+    QTextBrowser* htmlView = new QTextBrowser(dialog);
     htmlView->setSource(url);
     htmlView->setOpenExternalLinks(true);
     htmlView->setMinimumSize(m_size);
+    QStringList searchPaths;
+    searchPaths.append(QString::fromStdString(m_fsAboutPath.parent_path().string()));
+    htmlView->setSearchPaths(searchPaths);
 #endif
     QPushButton* okButton = new QPushButton(QObject::tr("Ok"));
-    QHBoxLayout *hLayout  = new QHBoxLayout();
+    QHBoxLayout* hLayout  = new QHBoxLayout();
     hLayout->addStretch();
     hLayout->addWidget(okButton);
     hLayout->setContentsMargins(5, 5, 5, 5);
@@ -155,7 +158,7 @@ void SShowAbout::stopping() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShowAbout::onUrlClicked(const QUrl & url )
+void SShowAbout::onUrlClicked(const QUrl& url )
 {
     QDesktopServices::openUrl(url);
 }

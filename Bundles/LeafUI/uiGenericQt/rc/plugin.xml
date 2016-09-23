@@ -20,12 +20,6 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
-        <service>::uiGeneric::action::ShowAcknowledgments</service>
-        <object>::fwData::Object</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwGui::IActionSrv</type>
         <service>::uiGeneric::action::ShowHelpContents</service>
         <object>::fwData::Object</object>
     </extension>

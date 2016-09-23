@@ -88,8 +88,10 @@
             <filename id="@BUNDLE_PREFIX@/VRRender_${appVersion}/about/about.html" />
         </service>
 
-        <service uid="action_acknowledgments" type="::uiGeneric::action::ShowAcknowledgments">
-            <filename id="@BUNDLE_PREFIX@/VRRender_${appVersion}/documentations/ack.html" />
+        <service uid="action_acknowledgments" type="::uiGeneric::action::SShowAbout">
+            <filename id="@BUNDLE_PREFIX@/VRRender_${appVersion}/documentations/ack.html"/>
+            <title>Acknowledgments</title>
+            <size width="500" height="600" />
         </service>
 
         <service uid="action_openBrowser" type="::uiGeneric::action::LaunchBrowserActionService">
