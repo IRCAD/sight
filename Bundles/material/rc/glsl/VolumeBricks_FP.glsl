@@ -1,4 +1,4 @@
-#version 430
+#version 330
 
 uniform ivec3 u_gridResolution;
 uniform ivec3 u_brickSize;
@@ -15,8 +15,8 @@ vec4 transferFunction(float intensity)
     float scaledValue = intensity * 65535.f;
 
     // Computes 2D indices from the hounsfield value
-    int j = int( scaledValue / 256 );
-    int i = int( mod( int(scaledValue), 256 ) );
+    int j = int( scaledValue / 256 ); // const
+    int i = int( mod( int(scaledValue), 256 ) ); // const
 
     // Converts the indices into texture uv coordinates
     vec2 uvTF = vec2(i / 255.f, j / 255.f);
@@ -26,13 +26,13 @@ vec4 transferFunction(float intensity)
 
 void main()
 {
-    const ivec3 gridPos = ivec3(floor(gl_FragCoord.xy), u_slice);
+    ivec3 gridPos = ivec3(floor(gl_FragCoord.xy), u_slice); // const
 
-    const ivec3 imageResolution = textureSize(u_image, 0);
-    const ivec3 imagePos        = gridPos * u_brickSize;
+    ivec3 imageResolution = textureSize(u_image, 0); // const
+    ivec3 imagePos        = gridPos * u_brickSize; // const
 
-    const ivec3 brickBeginPosition = max(imagePos, ivec3(0));
-    const ivec3 brickEndPosition   = min(imagePos + u_brickSize, imageResolution);
+    ivec3 brickBeginPosition = max(imagePos, ivec3(0)); // const
+    ivec3 brickEndPosition   = min(imagePos + u_brickSize, imageResolution); // const
 
     bool brickMax = false;
     for(int u = brickBeginPosition.x; u < brickEndPosition.x; ++ u)
@@ -41,8 +41,8 @@ void main()
         {
             for(int w = brickBeginPosition.z; w < brickEndPosition.z; ++ w)
             {
-                const float intensity    = texelFetch(u_image, ivec3(u, v, w), 0).r;
-                const float voxelOpacity = transferFunction(intensity).a;
+                float intensity    = texelFetch(u_image, ivec3(u, v, w), 0).r; // const
+                float voxelOpacity = transferFunction(intensity).a; // const
 
                 brickMax = brickMax || voxelOpacity != 0;
             }

@@ -1,4 +1,4 @@
-#version 410
+#version 330
 #define VIEWPOINTS 8
 
 uniform sampler3D u_image;

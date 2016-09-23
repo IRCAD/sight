@@ -18,7 +18,6 @@
 
 vertex_program VolumeBricksGrid_VP glsl
 {
-    syntax glsl430
     preprocessor_defines FP_OUTPUT=1
     source VolumeBricks_VP.glsl
 
@@ -31,7 +30,6 @@ vertex_program VolumeBricksGrid_VP glsl
 
 fragment_program VolumeBricksGrid_FP glsl
 {
-    syntax glsl430
     source VolumeBricks_FP.glsl
 
     default_params
