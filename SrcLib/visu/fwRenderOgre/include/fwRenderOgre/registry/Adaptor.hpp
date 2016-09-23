@@ -8,6 +8,7 @@
 #define __FWRENDEROGRE_REGISTRY_ADAPTOR_HPP__
 
 #include <map>
+#include <string>
 
 namespace fwRenderOgre
 {
