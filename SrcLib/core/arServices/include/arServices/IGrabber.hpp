@@ -9,9 +9,6 @@
 
 #include "arServices/config.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-
 #include <fwServices/IService.hpp>
 
 namespace arServices
@@ -23,6 +20,9 @@ namespace arServices
  * @section Signals Signals
  * - \b positionModified(std::int64_t) : Emitted when the position in the video is modified during playing.
  * - \b durationModified(std::int64_t) : Emitted when the duration of the video is modified.
+ * - \b cameraStarted() : Emitted when camera is started.
+ * - \b cameraStopped() : Emitted when camera is stopped.
+ * - \b framePresented() : Emitted when a frame is presented.
  *
  * @section Slots Slots
  * - \b startCamera() : Start playing the camera or the video.
@@ -55,12 +55,22 @@ public:
      * @name Signals API
      * @{
      */
+
     ARSERVICES_CLASS_API static const ::fwCom::Signals::SignalKeyType s_POSITION_MODIFIED_SIG;
     typedef ::fwCom::Signal<void (int64_t)> PositionModifiedSignalType;
+
     ARSERVICES_CLASS_API static const ::fwCom::Signals::SignalKeyType s_DURATION_MODIFIED_SIG;
     typedef ::fwCom::Signal<void (int64_t)> DurationModifiedSignalType;
+
     ARSERVICES_CLASS_API static const ::fwCom::Signals::SignalKeyType s_FRAME_PRESENTED_SIG;
     typedef ::fwCom::Signal<void ()> FramePresentedSignalType;
+
+    ARSERVICES_CLASS_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_STARTED_SIG;
+    typedef ::fwCom::Signal<void ()> CameraStartedSignalType;
+
+    ARSERVICES_CLASS_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_STOPPED_SIG;
+    typedef ::fwCom::Signal<void ()> CameraStoppedSignalType;
+
     /** @} */
 
     /**
@@ -73,16 +83,31 @@ public:
      */
     ARSERVICES_API virtual ~IGrabber() throw ();
 
+protected:
     /**
-     * @brief startCamera do nothing but needs to be reimplemented in child classes
+     * @brief API for starting a camera. Needs to be reimplemented in child classes.
      */
     ARSERVICES_API virtual void startCamera() = 0;
 
     /**
-     * @brief stopCamera do nothing but needs to be reimplemented in child classes
+     * @brief API for stopping a camera. Needs to be reimplemented in child classes.
      */
     ARSERVICES_API virtual void stopCamera() = 0;
 
+    /**
+     * @brief API for pausing a camera. Needs to be reimplemented in child classes.
+     */
+    ARSERVICES_API virtual void pauseCamera() = 0;
+
+    /**
+     * @brief API for enable/disable the loop mode in video. Needs to be reimplemented in child classes.
+     */
+    ARSERVICES_API virtual void toggleLoopMode() = 0;
+
+    /**
+     * @brief API for setting a new position in the video. Needs to be reimplemented in child classes
+     */
+    ARSERVICES_API virtual void setPosition(int64_t position) = 0;
 
 };
 
