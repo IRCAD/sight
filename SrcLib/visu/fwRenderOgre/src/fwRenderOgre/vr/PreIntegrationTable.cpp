@@ -194,7 +194,7 @@ void PreIntegrationTable::tfUpdate(const fwData::TransferFunction::sptr& _tf, fl
 
                 res = ::glm::clamp(res, 0.f, 1.f);
 
-                m_table[sb * m_textureSize + sf] = (TablePixel) {
+                m_table[sb * m_textureSize + sf] = {
                     static_cast<uint8_t>(res.b * 255.f),
                     static_cast<uint8_t>(res.g * 255.f),
                     static_cast<uint8_t>(res.r * 255.f),

@@ -157,18 +157,6 @@ protected:
     /// Use pre-integration.
     bool m_preIntegratedRendering;
 
-    /// Image local and texture coordinates /!\ This order matters to our intersection algorithm.
-    const ::Ogre::Vector3 m_imagePositions[8] = {
-        ::Ogre::Vector3(1, 1, 1),
-        ::Ogre::Vector3(1, 0, 1),
-        ::Ogre::Vector3(1, 1, 0),
-        ::Ogre::Vector3(0, 1, 1),
-        ::Ogre::Vector3(0, 0, 1),
-        ::Ogre::Vector3(1, 0, 0),
-        ::Ogre::Vector3(0, 1, 0),
-        ::Ogre::Vector3(0, 0, 0)
-    };
-
     /// Intersection between the image and the clipping box.
     ::Ogre::Vector3 m_clippedImagePositions[8];
 

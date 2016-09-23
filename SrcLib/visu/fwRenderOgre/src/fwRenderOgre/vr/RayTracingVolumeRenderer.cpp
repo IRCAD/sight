@@ -161,14 +161,15 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    bool colorBleeding) :
     IVolumeRenderer(parentId, sceneManager, parentNode, imageTexture, gpuTF, preintegrationTable),
     m_entryPointGeometry(nullptr),
-    m_imageSize         { 1, 1, 1 },
-    m_gridSize          { 2, 2, 2 },
-    m_bricksSize        { 8, 8, 8 },
+    m_imageSize         (::fwData::Image::SizeType({ 1, 1, 1 })),
     m_mode3D            (mode3D),
     m_ambientOcclusion  (ambientOcclusion),
     m_colorBleeding     (colorBleeding),
     m_illumVolume       (nullptr)
 {
+    m_gridSize   = { 2, 2, 2 };
+    m_bricksSize = { 8, 8, 8 };
+
     const std::string vrMaterials[8]
     {
         "RayTracedVolume",
@@ -789,8 +790,8 @@ void RayTracingVolumeRenderer::createGridTexture()
 
         ::Ogre::GpuProgramParametersSharedPtr gridGeneratorParams = gridPass->getFragmentProgramParameters();
 
-        gridGeneratorParams->setNamedConstant("u_gridResolution", m_gridSize, 3, 1);
-        gridGeneratorParams->setNamedConstant("u_brickSize", m_bricksSize, 3, 1);
+        gridGeneratorParams->setNamedConstant("u_gridResolution", m_gridSize.data(), 3, 1);
+        gridGeneratorParams->setNamedConstant("u_brickSize", m_bricksSize.data(), 3, 1);
 
         ::Ogre::MaterialPtr geomGeneratorMtl = ::Ogre::MaterialManager::getSingletonPtr()->getByName("VolumeBricks");
 
@@ -798,7 +799,7 @@ void RayTracingVolumeRenderer::createGridTexture()
 
         ::Ogre::GpuProgramParametersSharedPtr geomGeneratorVtxParams = geomGenerationPass->getVertexProgramParameters();
 
-        geomGeneratorVtxParams->setNamedConstant("u_gridResolution", m_gridSize, 3, 1);
+        geomGeneratorVtxParams->setNamedConstant("u_gridResolution", m_gridSize.data(), 3, 1);
 
         ::Ogre::GpuProgramParametersSharedPtr geomGeneratorGeomParams =
             geomGenerationPass->getGeometryProgramParameters();
@@ -807,8 +808,8 @@ void RayTracingVolumeRenderer::createGridTexture()
         const std::vector<int> imageSize(m_imageSize.begin(), m_imageSize.end());
 
         geomGeneratorGeomParams->setNamedConstant("u_imageResolution", imageSize.data(), 3, 1);
-        geomGeneratorGeomParams->setNamedConstant("u_gridResolution", m_gridSize, 3, 1);
-        geomGeneratorGeomParams->setNamedConstant("u_brickSize", m_bricksSize, 3, 1);
+        geomGeneratorGeomParams->setNamedConstant("u_gridResolution", m_gridSize.data(), 3, 1);
+        geomGeneratorGeomParams->setNamedConstant("u_brickSize", m_bricksSize.data(), 3, 1);
 
         ::Ogre::TextureUnitState* gridTexState = geomGenerationPass->getTextureUnitState("gridVolume");
 

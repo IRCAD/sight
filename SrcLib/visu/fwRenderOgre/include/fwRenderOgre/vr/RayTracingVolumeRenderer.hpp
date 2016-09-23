@@ -148,10 +148,10 @@ private:
     ::fwData::Image::SizeType m_imageSize;
 
     /// Brick Grid dimensions.
-    int m_gridSize[3];
+    std::array< int, 3 > m_gridSize;
 
     /// Size of a volume brick.
-    int m_bricksSize[3];
+    std::array< int, 3 > m_bricksSize;
 
     /// Sets stereoscopic volume rendering for Alioscopy monitors.
     bool m_mode3D;

@@ -24,6 +24,8 @@
 #include <OGRE/OgreRay.h>
 #include <OGRE/OgreViewport.h>
 
+#include <numeric>
+
 namespace fwRenderOgre
 {
 namespace ui
@@ -49,6 +51,7 @@ VRWidget::VRWidget(const std::string id,
     m_selectedFace    (nullptr),
     m_selectedWidget  (nullptr)
 {
+    m_clippingCube = { ::Ogre::Vector3(0, 0, 0), ::Ogre::Vector3(1, 1, 1) };
     initWidgets();
 }
 
@@ -286,8 +289,8 @@ void VRWidget::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screenX, 
 
         ::Ogre::Vector3 newPos = m_volumeSceneNode->convertWorldToLocalPosition(mouseRay.getPoint(distance));
 
-        ::Ogre::Vector3 tmpClippingCube[2];
-        std::copy(m_clippingCube, m_clippingCube + 2, tmpClippingCube);
+        std::array< ::Ogre::Vector3, 2> tmpClippingCube;
+        std::copy(m_clippingCube.begin(), m_clippingCube.end(), tmpClippingCube.begin());
 
         switch(widgetFace)
         {
@@ -313,7 +316,7 @@ void VRWidget::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screenX, 
             }
         }
 
-        std::copy(tmpClippingCube, tmpClippingCube + 2, m_clippingCube);
+        std::copy(tmpClippingCube.begin(), tmpClippingCube.end(), m_clippingCube.begin());
 
         updateClippingCube();
         updateWidgets();

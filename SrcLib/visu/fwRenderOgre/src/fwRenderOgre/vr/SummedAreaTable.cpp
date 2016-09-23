@@ -88,12 +88,15 @@ private:
 //-----------------------------------------------------------------------------
 
 SummedAreaTable::SummedAreaTable(std::string _parentId, ::Ogre::SceneManager* _sceneManager, float _sizeRatio) :
-    m_satSizeRatio     (_sizeRatio),
-    m_satSize          { 0, 0, 0},
-    m_currentImageSize { 0, 0, 0},
-    m_parentId         (_parentId),
-    m_sceneManager     (_sceneManager),
-    m_dummyCamera      (nullptr)
+    m_satSizeRatio      (_sizeRatio),
+    m_satSize           (
+        {
+            0, 0, 0
+        }),
+    m_currentImageSize  ({ 0, 0, 0}),
+    m_parentId          (_parentId),
+    m_sceneManager      (_sceneManager),
+    m_dummyCamera       (nullptr)
 {
 }
 

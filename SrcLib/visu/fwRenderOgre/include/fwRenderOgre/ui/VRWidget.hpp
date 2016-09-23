@@ -162,10 +162,7 @@ private:
     ::fwRenderOgre::vr::IVolumeRenderer* m_renderer;
 
     /// Axis aligned clipping cube.
-    ::Ogre::Vector3 m_clippingCube[2] = {
-        ::Ogre::Vector3(0, 0, 0),
-        ::Ogre::Vector3(1, 1, 1)
-    };
+    std::array< ::Ogre::Vector3, 2> m_clippingCube;
 
     /// Object used to display the clipping box.
     ::Ogre::ManualObject* m_boundingBox;

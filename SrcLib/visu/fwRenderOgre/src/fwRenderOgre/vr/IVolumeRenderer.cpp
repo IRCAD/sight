@@ -25,6 +25,19 @@ const IVolumeRenderer::CubeFacePositionsMap IVolumeRenderer::s_cubeFaces = {
     { IVolumeRenderer::X_NEGATIVE, { 6, 7, 4, 3 } }
 };
 
+
+/// Image local and texture coordinates /!\ This order matters to our intersection algorithm.
+static const ::Ogre::Vector3 s_imagePositions[8] = {
+    ::Ogre::Vector3(1, 1, 1),
+    ::Ogre::Vector3(1, 0, 1),
+    ::Ogre::Vector3(1, 1, 0),
+    ::Ogre::Vector3(0, 1, 1),
+    ::Ogre::Vector3(0, 0, 1),
+    ::Ogre::Vector3(1, 0, 0),
+    ::Ogre::Vector3(0, 1, 0),
+    ::Ogre::Vector3(0, 0, 0)
+};
+
 //-----------------------------------------------------------------------------
 
 const IVolumeRenderer::CubeEdgeList IVolumeRenderer::s_cubeEdges = { {
@@ -52,7 +65,7 @@ IVolumeRenderer::IVolumeRenderer(std::string parentId,
 {
     m_camera = m_sceneManager->getCamera("PlayerCam");
 
-    std::copy(m_imagePositions, m_imagePositions + 8, m_clippedImagePositions);
+    std::copy(s_imagePositions, s_imagePositions + 8, m_clippedImagePositions);
 }
 
 //-----------------------------------------------------------------------------
@@ -80,9 +93,9 @@ void IVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingBox)
     for(unsigned i = 0; i < 8; ++i)
     {
         m_clippedImagePositions[i] = ::Ogre::Vector3(
-            ::boost::algorithm::clamp(m_imagePositions[i].x, min.x, max.x),
-            ::boost::algorithm::clamp(m_imagePositions[i].y, min.y, max.y),
-            ::boost::algorithm::clamp(m_imagePositions[i].z, min.z, max.z));
+            ::boost::algorithm::clamp(s_imagePositions[i].x, min.x, max.x),
+            ::boost::algorithm::clamp(s_imagePositions[i].y, min.y, max.y),
+            ::boost::algorithm::clamp(s_imagePositions[i].z, min.z, max.z));
     }
 }
 
