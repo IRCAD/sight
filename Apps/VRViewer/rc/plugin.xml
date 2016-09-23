@@ -39,9 +39,9 @@
             <service uid="ihm" type="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
-                        <name>Ogre Viewer</name>
+                        <name>VRViewer</name>
                         <icon>@BUNDLE_PREFIX@/VRViewer_0-1/ogre_head.svg</icon>
-                        <minSize width="1100" height="700" />
+                        <minSize width="1280" height="720" />
                     </frame>
                     <menuBar />
                 </gui>
@@ -66,11 +66,13 @@
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view align="center" />
-                        <view align="right" minWidth="500" />
+                        <view align="right" caption="Volume rendering settings"/>
+                        <view align="right" minWidth="500" caption="Tranfer function settings"/>
                     </layout>
                 </gui>
                 <registry>
                     <view wid="OgreVolumeRenderingView" start="no" />
+                    <view wid="OgreVolumeRenderingSettingsView" start="yes" />
                     <view sid="histogramView" start="yes" />
                 </registry>
             </service>
@@ -82,12 +84,14 @@
                         <view proportion="0" minHeight="30" />
                         <view proportion="0" minHeight="100" />
                         <view proportion="1" />
+                        <view proportion="0" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="tfm" start="yes" />
                     <view sid="Scene2D_Shutter" start="no" />
                     <view sid="Scene2D" start="no" />
+                    <view sid="windowLevelVR" start="yes" />
                 </registry>
             </service>
 
@@ -121,6 +125,8 @@
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="TFSelections" uid="TFSelections" />
                 <parameter replace="WID_PARENT" uid="OgreVolumeRenderingView" />
+                <parameter replace="SETTINGS_WID_PARENT" uid="OgreVolumeRenderingSettingsView" />
+                <parameter replace="actionImportUID" uid="action_openNegato" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
@@ -251,6 +257,14 @@
                 <in key="image" uid="imageUID" />
                 <inout key="histogram" uid="histogram" />
                 <binsWidth>5.0</binsWidth>
+            </service>
+
+
+            <!-- Negato windowing service -->
+            <service uid="windowLevelVR" type="::uiImage::WindowLevel" autoConnect="yes">
+                <inout key="image" uid="imageUID" autoConnect="yes"/>
+                <inout key="TFSelections" uid="TFSelections" />
+                <config selectedTFKey="SelectedTF" />
             </service>
 
             <!-- Start/Stop services -->
