@@ -4,15 +4,15 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="SETTINGS_WID_PARENT" />
-        <param name="imageUID" />
+        <param name="image" />
         <param name="TFSelections" />
-        <param name="actionImportUID" />
+        <param name="VRAdaptor" />
     </parameters>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${imageUID}"  type="::fwData::Image" src="ref" />
+        <object uid="${image}"  type="::fwData::Image" src="ref" />
         <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
 
         <object uid="samplingSliderValue" type="::fwData::Integer" />
@@ -27,14 +27,11 @@
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
-                    <view proportion="0" />
                 </layout>
-                <toolBar/>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <view sid="volumeRenderingScene" start="yes" />
-                <toolBar sid="toolBar" start="yes" />
             </registry>
         </service>
 
@@ -53,31 +50,12 @@
             </registry>
         </service>
 
-        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
-            <gui>
-                <layout>
-                    <menuItem name="Load a DICOM image" icon="@BUNDLE_PREFIX@/media_0-1/icons/import.svg" />
-                    <menuItem name="Show/hide box cropping" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-box.png" style="check" />
-                </layout>
-            </gui>
-            <registry>
-                <menuItem sid="${actionImportUID}" />
-                <menuItem sid="ActionResetBoxWidget" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="ActionResetBoxWidget" type="::gui::action::SBooleanSlotCaller">
-            <slots>
-                <slot>VR/toggleWidgets</slot>
-            </slots>
-        </service>
-
         <!-- ******************************* Services ***************************************** -->
 
         <service uid="volumeRenderingScene" type="::fwRenderOgre::SRender" autoConnect="yes">
-            <in key="image" uid="${imageUID}" />
+            <in key="image" uid="${image}" />
             <inout key="TFSelections" uid="${TFSelections}" />
-            <scene overlay="true" fullscreen="no">
+            <scene overlay="true" fullscreen="yes">
 
                 <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
 
@@ -87,18 +65,18 @@
                     <config renderer="default" style="VR" />
                 </adaptor>
 
-                <adaptor id="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image" uid="VR">
+                <adaptor id="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image" uid="${VRAdaptor}">
                     <config renderer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
                 </adaptor>
 
                 <connect>
                     <signal>samplingSlider/valueChanged</signal>
-                    <slot>VR/updateSampling</slot>
+                    <slot>${VRAdaptor}/updateSampling</slot>
                 </connect>
 
                 <connect>
                     <signal>focalLengthSlider/valueChanged</signal>
-                    <slot>VR/setFocalDistance</slot>
+                    <slot>${VRAdaptor}/setFocalDistance</slot>
                 </connect>
 
             </scene>

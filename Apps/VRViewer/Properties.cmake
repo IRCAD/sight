@@ -9,30 +9,22 @@ set( REQUIREMENTS
     ctrlCamp
     gui
     guiQt
+    io
     ioData
     ioAtoms
-    io
-    ioVTK
+    ioDcmtk
+    ioDicom
     servicesReg
-    uiVisuQt
-    uiImageQt
-    uiReconstructionQt
     uiMedDataQt
-    uiIO
-    uiTF
-    visuVTK
-    visuVTKQt
-    visuVTKAdaptor
     fwlauncher
     appXml2
-    arMedia
-    arDataReg
-    videoQt
-    videoTools
     visuOgre
     visuOgreQt
     visuOgreAdaptor
+    uiIO
+    uiTF
     uiVisuOgre
+    uiVisuQt
     scene2D
     material
     media

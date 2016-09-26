@@ -9,6 +9,7 @@
     <requirement id="material" />
     <requirement id="scene2D" />
     <requirement id="preferences" />
+    <requirement id="ioDicom" />
 
     <xi:include href="configurations/OgreVolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
@@ -20,13 +21,39 @@
         </config>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceConfig">
+         <id>SSeriesDBMergerConfig</id>
+         <service>::uiIO::editor::SIOSelector</service>
+         <desc>IOSelectorService config for MarkerIdentification SeriesDB importer</desc>
+         <config>
+             <type mode="reader" />
+             <selection mode="include" />
+             <addSelection service="::ioDcmtk::SSeriesDBReader" />
+             <addSelection service="::ioVTK::SSeriesDBReader" />
+             <addSelection service="::ioVtkGdcm::SSeriesDBReader" />
+             <config id="DCMTKConfig" service="::ioDcmtk::SSeriesDBReader" />
+         </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceConfig">
+         <id>DCMTKConfig</id>
+         <desc>DCMTKConfig config that correct the interlacing of some imported images</desc>
+         <config>
+            <config filterType="::fwDicomIOFilter::sorter::ImagePositionPatientSorter" />
+         </config>
+    </extension>
+
     <extension implements="::fwServices::registry::AppConfig2">
         <id>VRViewer_Extension</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="imageUID" type="::fwData::Image" />
+            <object uid="dicomSeriesDB" type="::fwMedData::SeriesDB" />
+            <object uid="selections" type="::fwData::Vector" />
+
+            <object uid="image" type="::fwData::Image" src="deferred" />
+            <object uid="imageSeries" type="::fwMedData::ImageSeries" />
             <object uid="TFPool" type="::fwData::Composite" />
             <object uid="TFSelections" type="::fwData::Composite" />
 
@@ -66,14 +93,18 @@
                 <gui>
                     <layout type="::fwGui::CardinalLayoutManager">
                         <view align="center" />
+                        <view align="bottom" />
                         <view align="right" caption="Volume rendering settings"/>
                         <view align="right" minWidth="500" caption="Tranfer function settings"/>
                     </layout>
+                    <toolBar/>
                 </gui>
                 <registry>
+                    <view sid="selector" start="yes" />
                     <view wid="OgreVolumeRenderingView" start="no" />
                     <view wid="OgreVolumeRenderingSettingsView" start="yes" />
                     <view sid="histogramView" start="yes" />
+                    <toolBar sid="toolBar" start="yes" />
                 </registry>
             </service>
 
@@ -91,7 +122,7 @@
                     <view sid="tfm" start="yes" />
                     <view sid="Scene2D_Shutter" start="no" />
                     <view sid="Scene2D" start="no" />
-                    <view sid="windowLevelVR" start="yes" />
+                    <view sid="windowLevelVR" start="no" />
                 </registry>
             </service>
 
@@ -104,11 +135,23 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="action_openNegato" start="yes" />
-                    <menuItem sid="action_quit" start="yes" />
+                    <menuItem sid="actionImport" start="yes" />
+                    <menuItem sid="actionQuit" start="yes" />
                 </registry>
             </service>
 
+            <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
+                <gui>
+                    <layout>
+                        <menuItem name="Load a DICOM image" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
+                        <menuItem name="Show/hide box cropping" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-box.png" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionImport" />
+                    <menuItem sid="ActionResetBoxWidget" start="yes" />
+                </registry>
+            </service>
             <!-- ******************************* Actions ****************************************** -->
 
 
@@ -116,17 +159,22 @@
                 <start uid="imageReader" />
             </service>
 
-            <service uid="action_quit" type="::gui::action::SQuit"  />
+            <service uid="actionQuit" type="::gui::action::SQuit"  />
 
+            <service uid="ActionResetBoxWidget" type="::gui::action::SBooleanSlotCaller">
+                <slots>
+                    <slot>VR/toggleWidgets</slot>
+                </slots>
+            </service>
             <!-- ************************ Configuration launchers ********************************* -->
 
             <service uid="cfgOgreVolumeRendering" type="::fwServices::SConfigController" >
                 <appConfig id="OgreVolumeRendering" />
-                <inout key="imageUID" uid="imageUID" />
+                <inout key="image" uid="image" />
                 <inout key="TFSelections" uid="TFSelections" />
                 <parameter replace="WID_PARENT" uid="OgreVolumeRenderingView" />
                 <parameter replace="SETTINGS_WID_PARENT" uid="OgreVolumeRenderingSettingsView" />
-                <parameter replace="actionImportUID" uid="action_openNegato" />
+                <parameter replace="VRAdaptor" uid="VR" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
@@ -168,7 +216,7 @@
             </service>
 
             <service uid="Scene2D" type="::scene2D::Render" autoConnect="yes">
-                <in key="image" uid="imageUID" />
+                <in key="image" uid="image" optional="yes"/>
                 <in key="histogram" uid="histogram" />
                 <inout key="histogramPoint" uid="histogramPoint" />
                 <inout key="viewport" uid="viewport" />
@@ -244,17 +292,32 @@
                 <config selectedTFKey="SelectedTF" />
             </service>
 
-            <service uid="imageReader" type="::uiIO::editor::SIOSelector" >
-                <in key="target" uid="imageUID" />
-                <type mode="reader" />
+            <service uid="selector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+                <inout key="seriesDB" uid="dicomSeriesDB"/>
+                <inout key="selection" uid="selections" />
+                <selectionMode>single</selectionMode>
+            </service>
+
+            <service uid="actionImport" type="::uiIO::action::SSeriesDBMerger" autoConnect="yes">
+                <inout key="seriesDB" uid="dicomSeriesDB"/>
+                <IOSelectorSrvConfig name="SSeriesDBMergerConfig" />
+            </service>
+
+            <service uid="extractImage" type="::ctrlCamp::SExtractObj" >
+               <inout key="source" uid="selections" >
+                   <extract from="@values.0.image" />
+               </inout>
+               <out group="target">
+                   <key uid="image"/>
+               </out>
             </service>
 
             <service uid="medicalImage" type="::ctrlSelection::MedicalImageSrv" >
-                <inout key="image" uid="imageUID" />
+                <inout key="image" uid="image" />
             </service>
 
             <service uid="computeHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
-                <in key="image" uid="imageUID" />
+                <in key="image" uid="image" />
                 <inout key="histogram" uid="histogram" />
                 <binsWidth>5.0</binsWidth>
             </service>
@@ -262,18 +325,26 @@
 
             <!-- Negato windowing service -->
             <service uid="windowLevelVR" type="::uiImage::WindowLevel" autoConnect="yes">
-                <inout key="image" uid="imageUID" autoConnect="yes"/>
+                <inout key="image" uid="image" autoConnect="yes"/>
                 <inout key="TFSelections" uid="TFSelections" />
                 <config selectedTFKey="SelectedTF" />
             </service>
 
+            <connect>
+                <signal>selections/addedObjects</signal>
+                <slot>extractImage/update</slot>
+            </connect>
+
+            <connect>
+                <signal>selections/removedObjects</signal>
+                <slot>extractImage/update</slot>
+            </connect>
+
             <!-- Start/Stop services -->
-            <start uid="medicalImage" />
             <start uid="ihm" />
             <start uid="Scene2D" />
             <start uid="Scene2D_Shutter" />
-            <start uid="cfgOgreVolumeRendering" />
-            <start uid="computeHistogram" />
+            <start uid="extractImage" />
 
         </config>
 
