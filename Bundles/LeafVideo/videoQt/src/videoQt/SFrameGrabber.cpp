@@ -34,16 +34,7 @@ namespace videoQt
 //-----------------------------------------------------------------------------
 
 
-fwServicesRegisterMacro( ::fwServices::IController, ::videoQt::SFrameGrabber, ::arData::FrameTL);
-
-const ::fwCom::Signals::SignalKeyType SFrameGrabber::s_POSITION_MODIFIED_SIG = "positionModified";
-const ::fwCom::Signals::SignalKeyType SFrameGrabber::s_DURATION_MODIFIED_SIG = "durationModified";
-
-const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_START_CAMERA_SLOT       = "startCamera";
-const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_STOP_CAMERA_SLOT        = "stopCamera";
-const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_PAUSE_CAMERA_SLOT       = "pauseCamera";
-const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_LOOP_VIDEO_SLOT         = "loopVideo";
-const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_SET_POSITION_VIDEO_SLOT = "setPositionVideo";
+fwServicesRegisterMacro( ::arServices::IGrabber, ::videoQt::SFrameGrabber, ::arData::FrameTL);
 
 //-----------------------------------------------------------------------------
 
@@ -52,14 +43,7 @@ SFrameGrabber::SFrameGrabber() throw() : m_loopVideo(false),
                                          m_horizontallyFlip(false),
                                          m_verticallyFlip(false)
 {
-    newSignal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
-    newSignal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
 
-    newSlot( s_START_CAMERA_SLOT, &SFrameGrabber::startCamera, this );
-    newSlot( s_STOP_CAMERA_SLOT, &SFrameGrabber::stopCamera, this );
-    newSlot( s_PAUSE_CAMERA_SLOT, &SFrameGrabber::pauseCamera, this );
-    newSlot( s_LOOP_VIDEO_SLOT, &SFrameGrabber::toggleLoopMode, this );
-    newSlot( s_SET_POSITION_VIDEO_SLOT, &SFrameGrabber::setPosition, this );
 }
 
 //-----------------------------------------------------------------------------
@@ -130,6 +114,10 @@ void SFrameGrabber::startCamera()
             QObject::connect(m_videoPlayer, SIGNAL(frameAvailable(QVideoFrame)), this, SLOT(presentFrame(QVideoFrame)));
 
             m_videoPlayer->play();
+
+            auto sig = this->signal< ::arServices::IGrabber::CameraStartedSignalType >(
+                ::arServices::IGrabber::s_CAMERA_STARTED_SIG);
+            sig->asyncEmit();
         }
     }
 }
@@ -193,6 +181,10 @@ void SFrameGrabber::stopCamera()
         auto sigTL = timeline->signal< ::arData::TimeLine::ObjectPushedSignalType >(
             ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
         sigTL->asyncEmit(timestamp);
+
+        auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
+            ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
+        sig->asyncEmit();
     }
 }
 

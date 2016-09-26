@@ -1,13 +1,13 @@
 <plugin id="videoQt" class="videoQt::Plugin" version="@DASH_VERSION@" >
-    
-    <library name="videoQt" /> 
-    
+
+    <library name="videoQt" />
+
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IController</type>
+        <type>::arServices::IGrabber</type>
         <service>::videoQt::SFrameGrabber</service>
         <object>::arData::FrameTL</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
         <service>::videoQt::SFrameRecorder</service>
@@ -24,7 +24,7 @@
         <type>::gui::editor::IEditor</type>
         <service>::videoQt::editor::SSlider</service>
         <object>::fwData::Object</object>
-    </extension>    
+    </extension>
 </plugin>
 
 

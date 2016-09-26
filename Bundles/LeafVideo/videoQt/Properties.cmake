@@ -11,6 +11,7 @@ set( DEPENDENCIES
         fwCom
         fwMath
         fwRuntime
+        arServices
         fwServices
         fwTools
         arData

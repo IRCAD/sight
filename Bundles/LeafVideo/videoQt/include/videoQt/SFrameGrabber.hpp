@@ -12,7 +12,7 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwServices/IController.hpp>
+#include <arServices/IGrabber.hpp>
 
 #include <fwThread/Worker.hpp>
 
@@ -62,49 +62,18 @@ namespace videoQt
  * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
  */
 class VIDEOQT_CLASS_API SFrameGrabber : public QObject,
-                                        public ::fwServices::IController
+                                        public ::arServices::IGrabber
 {
 Q_OBJECT;
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SFrameGrabber)(::fwServices::IController) );
+    fwCoreServiceClassDefinitionsMacro ( (SFrameGrabber)(::arServices::IGrabber) );
 
     /// Constructor. Do nothing.
     VIDEOQT_API SFrameGrabber() throw();
 
     /// Destructor. Do nothing.
     VIDEOQT_API virtual ~SFrameGrabber() throw();
-
-    /**
-     * @name Signals API
-     * @{
-     */
-    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_POSITION_MODIFIED_SIG;
-    typedef ::fwCom::Signal<void (std::int64_t)> PositionModifiedSignalType;
-
-    VIDEOQT_API static const ::fwCom::Signals::SignalKeyType s_DURATION_MODIFIED_SIG;
-    typedef ::fwCom::Signal<void (std::int64_t)> DurationModifiedSignalType;
-    /** @} */
-
-    /**
-     * @name Slots API
-     * @{
-     */
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_START_CAMERA_SLOT;
-    typedef ::fwCom::Slot<void ()> StartCameraSlotType;
-
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_STOP_CAMERA_SLOT;
-    typedef ::fwCom::Slot<void ()> StopCameraSlotType;
-
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_PAUSE_CAMERA_SLOT;
-    typedef ::fwCom::Slot<void ()> PauseCameraSlotType;
-
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_LOOP_VIDEO_SLOT;
-    typedef ::fwCom::Slot<void ()> LoopVideoSlotType;
-
-    VIDEOQT_API static const ::fwCom::Slots::SlotKeyType s_SET_POSITION_VIDEO_SLOT;
-    typedef ::fwCom::Slot<void (int)> SetPositionVideoSlotType;
-    ///@}
 
 protected:
 
@@ -121,19 +90,19 @@ protected:
     VIDEOQT_API virtual void configuring() throw( ::fwTools::Failed );
 
     /// SLOT : Initialize and start camera (restart camera if is already started)
-    void startCamera();
+    virtual void startCamera();
 
     /// SLOT : Stop camera
-    void stopCamera();
+    virtual void stopCamera();
 
     /// SLOT : Pause camera
-    void pauseCamera();
+    virtual void pauseCamera();
 
     /// SLOT : enable/disable loop in video
-    void toggleLoopMode();
+    virtual void toggleLoopMode();
 
     /// SLOT : set the new position in the video.
-    void setPosition(int64_t position);
+    virtual void setPosition(int64_t position);
 
     /// Gets camera from m_cameraID
     CSPTR(::arData::Camera) getCamera();
