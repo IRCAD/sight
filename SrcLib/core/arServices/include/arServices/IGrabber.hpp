@@ -42,13 +42,13 @@ public:
      * @name Slots API
      * @{
      */
-    ARSERVICES_CLASS_API static const ::fwCom::Slots::SlotKeyType s_START_CAMERA_SLOT;
-    ARSERVICES_CLASS_API static const ::fwCom::Slots::SlotKeyType s_STOP_CAMERA_SLOT;
-    ARSERVICES_CLASS_API static const ::fwCom::Slots::SlotKeyType s_PAUSE_CAMERA_SLOT;
-    ARSERVICES_CLASS_API static const ::fwCom::Slots::SlotKeyType s_SELECT_CAMERA_SLOT;
-    ARSERVICES_CLASS_API static const ::fwCom::Slots::SlotKeyType s_LOOP_VIDEO_SLOT;
-    ARSERVICES_CLASS_API static const ::fwCom::Slots::SlotKeyType s_SET_POSITION_VIDEO_SLOT;
-    ARSERVICES_CLASS_API static const ::fwCom::Slots::SlotKeyType s_PRESENT_SLOT;
+    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_START_CAMERA_SLOT;
+    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_STOP_CAMERA_SLOT;
+    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_PAUSE_CAMERA_SLOT;
+    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SELECT_CAMERA_SLOT;
+    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_LOOP_VIDEO_SLOT;
+    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_POSITION_VIDEO_SLOT;
+    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_PRESENT_SLOT;
     ///@}
 
     /**
@@ -56,19 +56,19 @@ public:
      * @{
      */
 
-    ARSERVICES_CLASS_API static const ::fwCom::Signals::SignalKeyType s_POSITION_MODIFIED_SIG;
+    ARSERVICES_API static const ::fwCom::Signals::SignalKeyType s_POSITION_MODIFIED_SIG;
     typedef ::fwCom::Signal<void (int64_t)> PositionModifiedSignalType;
 
-    ARSERVICES_CLASS_API static const ::fwCom::Signals::SignalKeyType s_DURATION_MODIFIED_SIG;
+    ARSERVICES_API static const ::fwCom::Signals::SignalKeyType s_DURATION_MODIFIED_SIG;
     typedef ::fwCom::Signal<void (int64_t)> DurationModifiedSignalType;
 
-    ARSERVICES_CLASS_API static const ::fwCom::Signals::SignalKeyType s_FRAME_PRESENTED_SIG;
+    ARSERVICES_API static const ::fwCom::Signals::SignalKeyType s_FRAME_PRESENTED_SIG;
     typedef ::fwCom::Signal<void ()> FramePresentedSignalType;
 
-    ARSERVICES_CLASS_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_STARTED_SIG;
+    ARSERVICES_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_STARTED_SIG;
     typedef ::fwCom::Signal<void ()> CameraStartedSignalType;
 
-    ARSERVICES_CLASS_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_STOPPED_SIG;
+    ARSERVICES_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_STOPPED_SIG;
     typedef ::fwCom::Signal<void ()> CameraStoppedSignalType;
 
     /** @} */
