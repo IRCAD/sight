@@ -37,7 +37,7 @@
 
     <extension implements="::fwServices::registry::ServiceConfig">
          <id>DCMTKConfig</id>
-         <desc>DCMTKConfig config that correct the interlacing of some imported images</desc>
+         <desc>Config that corrects the interlacing of some imported images</desc>
          <config>
             <config filterType="::fwDicomIOFilter::sorter::ImagePositionPatientSorter" />
          </config>
