@@ -15,7 +15,6 @@ set( REQUIREMENTS
     ioDcmtk
     ioDicom
     servicesReg
-    uiMedDataQt
     fwlauncher
     appXml2
     visuOgre
@@ -23,7 +22,6 @@ set( REQUIREMENTS
     visuOgreAdaptor
     uiIO
     uiTF
-    uiVisuOgre
     uiVisuQt
     scene2D
     material
