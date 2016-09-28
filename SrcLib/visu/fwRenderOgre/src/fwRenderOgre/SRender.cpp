@@ -256,7 +256,8 @@ void SRender::configureLayer( ConfigurationType conf )
 
     SLM_ASSERT( "'id' required attribute missing or empty", !id.empty() );
     SLM_ASSERT( "'layer' required attribute missing or empty", !layer.empty() );
-    SLM_ASSERT( "Unknown 3D mode : " << mode3D, mode3D.empty() || mode3D == "no" || mode3D == "AutoStereo");
+    SLM_ASSERT( "Unknown 3D mode : " << mode3D,
+                mode3D.empty() || mode3D == "no" || mode3D == "AutoStereo5" || mode3D == "AutoStereo8");
 
     const int layerDepth = ::boost::lexical_cast<int>(layer);
 
@@ -267,7 +268,9 @@ void SRender::configureLayer( ConfigurationType conf )
     ogreLayer->setID(id);
     ogreLayer->setDepth(layerDepth);
     ogreLayer->setWorker(m_associatedWorker);
-    ogreLayer->set3D(mode3D == "AutoStereo");
+    ogreLayer->set3D(mode3D == "AutoStereo5" ? ::fwRenderOgre::Layer::Mode3DType::AUTOSTEREO_5 :
+                     mode3D == "AutoStereo8" ? ::fwRenderOgre::Layer::Mode3DType::AUTOSTEREO_8 :
+                     ::fwRenderOgre::Layer::Mode3DType::NONE);
 
     ogreLayer->setCoreCompositorEnabled(id == "default", transparencyTechnique, numPeels);
     ogreLayer->setCompositorChainEnabled(compositors != "", compositors);

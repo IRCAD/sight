@@ -50,7 +50,7 @@ public:
                                               ::Ogre::TexturePtr imageTexture,
                                               TransferFunction* gpuTF,
                                               PreIntegrationTable* preintegrationTable,
-                                              bool mode3D = false,
+                                              ::fwRenderOgre::Layer::Mode3DType mode3D,
                                               bool ambientOcclusion = false,
                                               bool colorBleeding = false);
 
@@ -153,8 +153,8 @@ private:
     /// Size of a volume brick.
     std::array< int, 3 > m_bricksSize;
 
-    /// Sets stereoscopic volume rendering for Alioscopy monitors.
-    bool m_mode3D;
+    /// Sets stereoscopic volume rendering for autostereoscopic monitors.
+    ::fwRenderOgre::Layer::Mode3DType m_mode3D;
 
     /// Sets usage of ambient occlusion.
     bool m_ambientOcclusion;

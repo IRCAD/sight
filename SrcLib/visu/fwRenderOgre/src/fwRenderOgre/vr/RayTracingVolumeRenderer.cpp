@@ -156,7 +156,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    ::Ogre::TexturePtr imageTexture,
                                                    TransferFunction* gpuTF,
                                                    PreIntegrationTable* preintegrationTable,
-                                                   bool mode3D,
+                                                   ::fwRenderOgre::Layer::Mode3DType mode3D,
                                                    bool ambientOcclusion,
                                                    bool colorBleeding) :
     IVolumeRenderer(parentId, sceneManager, parentNode, imageTexture, gpuTF, preintegrationTable),
@@ -182,7 +182,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         "RayTracedVolume_PreIntegrated_VolumeIllumination"
     };
 
-    unsigned nbViewpoints = m_mode3D ? 8 : 1;
+    const unsigned nbViewpoints = m_mode3D == ::fwRenderOgre::Layer::Mode3DType::AUTOSTEREO_8 ? 8 :
+                                  m_mode3D == ::fwRenderOgre::Layer::Mode3DType::AUTOSTEREO_5 ? 5 : 1;
 
     for(unsigned i = 0; i < nbViewpoints; ++i)
     {
@@ -376,7 +377,8 @@ void RayTracingVolumeRenderer::setIlluminationVolume(SATVolumeIllumination* illu
 
 void RayTracingVolumeRenderer::setPreIntegratedRendering(bool preIntegratedRendering)
 {
-    OSLM_WARN_IF("Stereoscopic rendering doesn't implement pre-integration yet.", m_mode3D && preIntegratedRendering);
+    OSLM_WARN_IF("Stereoscopic rendering doesn't implement pre-integration yet.",
+                 m_mode3D != ::fwRenderOgre::Layer::Mode3DType::NONE && preIntegratedRendering);
 
     m_preIntegratedRendering = preIntegratedRendering;
 
@@ -409,13 +411,18 @@ void RayTracingVolumeRenderer::setColorBleeding(bool colorBleeding)
 void RayTracingVolumeRenderer::configure3DViewport(Layer::sptr layer)
 {
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    compositorManager.addCompositor(layer->getViewport(), "RayTracedVolume3D");
-    compositorManager.setCompositorEnabled(layer->getViewport(), "RayTracedVolume3D", true);
+
+    std::string compositorName = m_mode3D == ::fwRenderOgre::Layer::Mode3DType::AUTOSTEREO_8 ?
+                                 "RayTracedVolume3D8" :
+                                 "RayTracedVolume3D5";
+
+    compositorManager.addCompositor(layer->getViewport(), compositorName);
+    compositorManager.setCompositorEnabled(layer->getViewport(), compositorName, true);
 
     ::Ogre::CompositorChain* compChain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
         layer->getViewport());
 
-    ::Ogre::CompositorInstance* compInstance = compChain->getCompositor("RayTracedVolume3D");
+    ::Ogre::CompositorInstance* compInstance = compChain->getCompositor(compositorName);
 
     compInstance->addListener(new AutoStereoCompositorListener(m_entryPointsTextures,
                                                                m_viewPointMatrices,
@@ -525,7 +532,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
     }
     m_entryPointGeometry->end();
 
-    m_entryPointGeometry->setVisible(!m_mode3D);
+    m_entryPointGeometry->setVisible(m_mode3D == ::fwRenderOgre::Layer::Mode3DType::NONE);
 
     m_volumeSceneNode->attachObject(m_entryPointGeometry);
 
@@ -611,13 +618,23 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 
     ::Ogre::RenderOperation renderOp;
     m_proxyGeometryGenerator->getRenderOperation(renderOp);
-    m_entryPointGeometry->setVisible(!m_mode3D);
+    m_entryPointGeometry->setVisible(m_mode3D == ::fwRenderOgre::Layer::Mode3DType::NONE);
 
     ::Ogre::Matrix4 worldMat;
     m_proxyGeometryGenerator->getWorldTransforms(&worldMat);
 
-    const float eyeAngle = 0.01625f;
-    float angle          = eyeAngle * -3.5f;
+    float eyeAngle = 0.f;
+    float angle    = 0.f;
+    if(m_mode3D == ::fwRenderOgre::Layer::Mode3DType::AUTOSTEREO_5)
+    {
+        eyeAngle = 0.02321f;
+        angle    = eyeAngle * -2.f;
+    }
+    else if(m_mode3D == ::fwRenderOgre::Layer::Mode3DType::AUTOSTEREO_8)
+    {
+        eyeAngle = 0.01625f;
+        angle    = eyeAngle * -3.5f;
+    }
 
     m_viewPointMatrices.clear();
 
@@ -628,7 +645,7 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
         ::Ogre::RenderTexture* renderTexture = entryPtsText->getBuffer()->getRenderTarget();
         renderTexture->getViewport(0)->clear(::Ogre::FBT_COLOUR | ::Ogre::FBT_DEPTH, ::Ogre::ColourValue::White);
 
-        if(m_mode3D)
+        if(m_mode3D != ::fwRenderOgre::Layer::Mode3DType::NONE)
         {
             const ::Ogre::Matrix4 shearTransform = frustumShearTransform(angle);
 

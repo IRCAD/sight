@@ -285,11 +285,11 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
                                                                             m_3DOgreTexture,
                                                                             &m_gpuTF,
                                                                             &m_preIntegrationTable,
-                                                                            serviceLayer->is3D(),
+                                                                            serviceLayer->get3DMode(),
                                                                             m_ambientOcclusion,
                                                                             m_colorBleeding);
 
-        if(serviceLayer->is3D())
+        if(serviceLayer->get3DMode() != ::fwRenderOgre::Layer::Mode3DType::NONE)
         {
             auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer*>(m_volumeRenderer);
 
@@ -596,7 +596,7 @@ void SVolumeRender::resizeViewport(int w, int h)
 
 void SVolumeRender::setFocalDistance(int focalDistance)
 {
-    if(this->getRenderService()->getLayer(m_layerID)->is3D())
+    if(this->getRenderService()->getLayer(m_layerID)->get3DMode() != ::fwRenderOgre::Layer::Mode3DType::NONE)
     {
         auto rayTracingRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer*>(m_volumeRenderer);
 

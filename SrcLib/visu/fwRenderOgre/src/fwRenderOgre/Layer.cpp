@@ -59,7 +59,7 @@ Layer::Layer() :
     m_sceneManager(nullptr),
     m_renderWindow(nullptr),
     m_viewport(nullptr),
-    m_is3D(false),
+    m_3DMode(Mode3DType::NONE),
     m_rawCompositorChain(""),
     m_coreCompositor(nullptr),
     m_transparencyTechnique(DEFAULT),
@@ -228,7 +228,7 @@ void Layer::createScene()
         this->setupCore();
     }
 
-    if(!m_is3D)
+    if(m_3DMode == Mode3DType::NONE)
     {
         m_compositorChainManager->setOgreViewport(m_viewport);
 
@@ -627,9 +627,9 @@ void Layer::requestRender()
 
 //-----------------------------------------------------------------------------
 
-void Layer::set3D(bool mode3D)
+void Layer::set3D(Mode3DType mode)
 {
-    m_is3D = mode3D;
+    m_3DMode = mode;
 }
 
 //-----------------------------------------------------------------------------
@@ -715,9 +715,9 @@ bool Layer::isCompositorChainEnabled()
 
 //-------------------------------------------------------------------------------------
 
-bool Layer::is3D() const
+Layer::Mode3DType Layer::get3DMode() const
 {
-    return m_is3D;
+    return m_3DMode;
 }
 
 //-------------------------------------------------------------------------------------

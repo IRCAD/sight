@@ -97,10 +97,35 @@ fragment_program VR/RayTracedVolume_VolumeIllumination_FP glsl
 
 //----------------------------------------------
 
-fragment_program VR/RayTracedVolume3D_FP glsl
+fragment_program VR/RayTracedVolume3D5_FP glsl
 {
     source RayTracedVolume_FP.glsl
-    preprocessor_defines MODE3D=1
+    preprocessor_defines MODE3D=1,VIEWPOINTS=5
+    default_params
+    {
+        param_named_auto u_lightDirs light_direction_view_space_array 1
+        param_named_auto u_viewportWidth viewport_width
+        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_clippingNear near_clip_distance
+        param_named_auto u_clippingFar far_clip_distance
+        param_named u_sampleDistance float 0.2
+        param_named u_lobeOffset float 1.
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+        param_named u_entryPoints0 int 2
+        param_named u_entryPoints1 int 3
+        param_named u_entryPoints2 int 4
+        param_named u_entryPoints3 int 5
+        param_named u_entryPoints4 int 6
+    }
+}
+
+//----------------------------------------------
+
+fragment_program VR/RayTracedVolume3D8_FP glsl
+{
+    source RayTracedVolume_FP.glsl
+    preprocessor_defines MODE3D=1,VIEWPOINTS=8
     default_params
     {
         param_named_auto u_lightDirs light_direction_view_space_array 1
@@ -415,7 +440,7 @@ material RayTracedVolume_VolumeIllumination
 
 //----------------------------------------------
 
-material RayTracedVolume3D
+material RayTracedVolume3D5
 {
     technique
     {
@@ -429,7 +454,71 @@ material RayTracedVolume3D
             {
             }
 
-            fragment_program_ref VR/RayTracedVolume3D_FP
+            fragment_program_ref VR/RayTracedVolume3D5_FP
+            {
+            }
+
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+
+            texture_unit transferFunction
+            {
+                filtering none
+            }
+
+            texture_unit entryPoints0
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit entryPoints1
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit entryPoints2
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit entryPoints3
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit entryPoints4
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//----------------------------------------------
+
+material RayTracedVolume3D8
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            scene_blend alpha_blend
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref VR/RayTracedVolume3D8_FP
             {
             }
 

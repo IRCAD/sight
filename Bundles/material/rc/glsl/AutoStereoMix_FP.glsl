@@ -7,7 +7,6 @@
  *
  ******************************************************************************/
 #version 150
-#define VIEWPOINTS 8
 
 uniform sampler2D u_srcTextures0;
 uniform sampler2D u_srcTextures1;

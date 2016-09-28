@@ -26,6 +26,7 @@
 #include <OGRE/OgreViewport.h>
 
 #include <vector>
+#include <cstdint>
 
 #include "fwRenderOgre/config.hpp"
 
@@ -46,6 +47,13 @@ class FWRENDEROGRE_CLASS_API Layer : public ::fwCore::BaseObject,
 
 {
 public:
+
+    enum class Mode3DType : std::uint8_t
+    {
+        NONE,
+        AUTOSTEREO_5,
+        AUTOSTEREO_8,
+    };
 
     fwCoreClassDefinitionsWithFactoryMacro( (Layer)(::fwRenderOgre::Layer), (()), new Layer);
     fwCoreAllowSharedFromThis();
@@ -169,7 +177,7 @@ public:
     FWRENDEROGRE_API void requestRender();
 
     /// Sets stereoscopic rendering.
-    FWRENDEROGRE_API void set3D(bool mode3D);
+    FWRENDEROGRE_API void set3D(Mode3DType mode);
 
     /// Sets background color : specific to background Layer
     FWRENDEROGRE_API void setBackgroundColor(std::string topColor, std::string botColor);
@@ -192,6 +200,9 @@ public:
 
     /// Checks if stereoscopic rendering is enabled.
     FWRENDEROGRE_API bool is3D() const;
+
+    /// Get stereoscopic mode
+    FWRENDEROGRE_API Mode3DType get3DMode() const;
 
     /// Checks if this layer has a default compositor
     FWRENDEROGRE_API ::fwRenderOgre::compositor::Core::sptr getCoreCompositor();
@@ -231,7 +242,7 @@ private:
     ::Ogre::Viewport* m_viewport;
 
     /// Boolean used to set stereoscopic rendering.
-    bool m_is3D;
+    Mode3DType m_3DMode;
 
     /// If there is a configured compositor chain, this attribute stores its raw string
     std::string m_rawCompositorChain;

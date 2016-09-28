@@ -1,4 +1,4 @@
-compositor AutoStereo
+compositor AutoStereo5
 {
     technique
     {
@@ -8,7 +8,23 @@ compositor AutoStereo
             input none
             pass render_quad
             {
-                material AutoStereo
+                material AutoStereo5
+            }
+        }
+    }
+}
+
+compositor AutoStereo8
+{
+    technique
+    {
+        // Final pass
+        target_output
+        {
+            input none
+            pass render_quad
+            {
+                material AutoStereo8
             }
         }
     }

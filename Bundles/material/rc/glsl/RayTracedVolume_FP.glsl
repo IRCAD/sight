@@ -1,5 +1,4 @@
 #version 330
-#define VIEWPOINTS 8
 
 uniform sampler3D u_image;
 uniform sampler2D u_tfTexture;
@@ -90,12 +89,24 @@ void getRayEntryExitPoints(out vec2 rayEntryPoints[3], out mat4 viewpoints[3])
 
     entryPoints[0] = texture(u_entryPoints0, uv).rg;
     entryPoints[1] = texture(u_entryPoints1, uv).rg;
+#if (VIEWPOINTS > 2)
     entryPoints[2] = texture(u_entryPoints2, uv).rg;
+#endif    /*(VIEWPOINTS > 2)    */
+#if (VIEWPOINTS > 3)
     entryPoints[3] = texture(u_entryPoints3, uv).rg;
+#endif    /*(VIEWPOINTS > 3)    */
+#if (VIEWPOINTS > 4)
     entryPoints[4] = texture(u_entryPoints4, uv).rg;
+#endif    /*(VIEWPOINTS > 4)    */
+#if (VIEWPOINTS > 5)
     entryPoints[5] = texture(u_entryPoints5, uv).rg;
+#endif    /*(VIEWPOINTS > 5)    */
+#if (VIEWPOINTS > 6)
     entryPoints[6] = texture(u_entryPoints6, uv).rg;
+#endif    /*(VIEWPOINTS > 6)    */
+#if (VIEWPOINTS > 7)
     entryPoints[7] = texture(u_entryPoints7, uv).rg;
+#endif    /*(VIEWPOINTS > 7)    */
 
     float xy = (gl_FragCoord.x * 3.0) + gl_FragCoord.y + u_lobeOffset + 0.5;
 

@@ -59,7 +59,7 @@
 
                 <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
 
-                <renderer id="default" layer="1" compositors="Default" />
+                <renderer id="default" layer="1" compositors="Default" mode3D="AutoStereo8"/>
 
                 <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
                     <config renderer="default" style="VR" />

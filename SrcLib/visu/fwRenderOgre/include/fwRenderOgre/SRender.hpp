@@ -102,7 +102,7 @@ class Layer;
  *    - \b compositors (optional): defines the default compositor chain. The compositors are separated by semicolons
  *    - \b fullscreen (optional, default="no"): Show the scene in full screen.
  *    - \b mode3D (optional, default="no"): sets the mode used for stereoscopic 3D rendering,
- *                                          available modes are "AutoStereo" and "no".
+ *                                          available modes are "AutoStereo5", "AutoStereo8" and "no".
  */
 class FWRENDEROGRE_CLASS_API SRender : public ::fwRender::IRender
 
