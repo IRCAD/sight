@@ -4,6 +4,7 @@
     <requirement id="gui" />
     <requirement id="visuVTKAdaptor" />
     <requirement id="visuVTKARAdaptor" />
+    <requirement id="visuVTKQt" />
     <requirement id="media" />
     <requirement id="arMedia" />
     <requirement id="validators" />

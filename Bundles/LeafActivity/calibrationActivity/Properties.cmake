@@ -16,6 +16,7 @@ set( REQUIREMENTS
 
     ioData
 
+    visuVTKQt
     visuVTKAdaptor
     visuVTKARAdaptor
 
