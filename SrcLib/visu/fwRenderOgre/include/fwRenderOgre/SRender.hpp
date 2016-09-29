@@ -121,6 +121,8 @@ public:
     /// Actives layouts in the scene
     typedef std::map< SceneIdType, SPTR(::fwRenderOgre::Layer) > LayerMapType;
 
+    FWRENDEROGRE_API static const std::string s_OGREBACKGROUNDID;
+
     /**
      * @name Slots API
      * @{

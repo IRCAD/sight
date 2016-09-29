@@ -35,6 +35,8 @@ fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderOgre::SRender, ::fwData:
 namespace fwRenderOgre
 {
 
+const std::string SRender::s_OGREBACKGROUNDID = "ogreBackground";
+
 const ::fwCom::Slots::SlotKeyType SRender::s_START_OBJECT_SLOT            = "startObject";
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_ORIG_SLOT     = "computeCameraParameters";
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT = "computeCameraClipping";
@@ -43,8 +45,6 @@ const ::fwCom::Slots::SlotKeyType SRender::s_DO_RAY_CAST_SLOT             = "doR
 static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
 static const ::fwCom::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObject";
 static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
-
-static const char* s_ogreBackgroundId = "ogreBackground";
 
 //-----------------------------------------------------------------------------
 
@@ -162,7 +162,7 @@ void SRender::starting() throw(fwTools::Failed)
         ogreLayer->setBackgroundColor("#000000", "#000000");
         ogreLayer->setBackgroundScale(0, 0.5);
 
-        m_layers[s_ogreBackgroundId] = ogreLayer;
+        m_layers[s_OGREBACKGROUNDID] = ogreLayer;
     }
     this->startContext();
 }
@@ -313,7 +313,7 @@ void SRender::configureBackgroundLayer( ConfigurationType conf )
         }
     }
 
-    m_layers[s_ogreBackgroundId] = ogreLayer;
+    m_layers[s_OGREBACKGROUNDID] = ogreLayer;
 }
 
 //-----------------------------------------------------------------------------

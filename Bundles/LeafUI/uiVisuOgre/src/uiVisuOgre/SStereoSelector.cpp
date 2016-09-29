@@ -136,9 +136,12 @@ void SStereoSelector::refreshRenderers()
 
         for(auto& layerMap : render->getLayers())
         {
-            const std::string id = layerMap.first;
-            m_layersBox->addItem(QString::fromStdString(id));
-            m_layers.push_back(layerMap.second);
+            const std::string& id = layerMap.first;
+            if(id != ::fwRenderOgre::SRender::s_OGREBACKGROUNDID)
+            {
+                m_layersBox->addItem(QString::fromStdString(id));
+                m_layers.push_back(layerMap.second);
+            }
         }
     }
 
