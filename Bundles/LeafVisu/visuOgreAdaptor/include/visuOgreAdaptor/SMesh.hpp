@@ -179,10 +179,21 @@ private:
     /// Attach a node in the scene graph
     void attachNode(::Ogre::MovableObject* _node);
 
-    void modifyMesh();
-    void modifyPointColors();
-    void modifyTexCoords();
+    /**
+     * @name Slots methods
+     * @{
+     */
+    /// Slot: called when the mesh is modified
+    /// Slot: called when the vertices are modified
     void modifyVertices();
+    void modifyMesh();
+    /// Slot: called when the point colors are modified
+    void modifyPointColors();
+    /// Slot: called when the texture coordinates are modified
+    void modifyTexCoords();
+    /// Slot: called when the material is modified
+    void modifyMaterial();
+    /** @} */
 
     /// Sets whether the camera must be auto reset when a mesh is updated or not.
     bool m_autoResetCamera;
@@ -194,8 +205,8 @@ private:
 
     /// SMaterial attached to the mesh
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
-    /// Attached material adaptor UID
-    std::string m_materialAdaptorUID;
+    /// Attached material name (when configured by XML)
+    std::string m_materialName;
     /// Ogre Material related to the mesh
     ::fwData::Material::sptr m_material;
     /// Attached Material's name
@@ -218,7 +229,7 @@ private:
     /// Name of the mesh in Ogre
     std::string m_meshName;
     /// Attached texture adaptor UID
-    std::string m_texAdaptorUID;
+    std::string m_textureName;
 
     /// Binding for each layer
     unsigned short m_binding[NUM_BINDINGS];

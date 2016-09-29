@@ -46,10 +46,6 @@ SReconstruction::~SReconstruction() throw()
 
 void SReconstruction::doConfigure() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
-
     // The transform attribute is mandatory in the XML configuration
     this->setTransformId(m_configuration->getAttributeValue("transform"));
 
@@ -104,6 +100,7 @@ void SReconstruction::createMeshService()
         meshAdaptor->setDynamicVertices(m_isDynamicVertices);
 
         meshService->start();
+        meshService->connect();
 
         m_meshAdaptor = meshService;
         this->registerService(meshService);
@@ -116,7 +113,7 @@ void SReconstruction::createMeshService()
 
 void SReconstruction::doSwap() throw(::fwTools::Failed)
 {
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -176,11 +173,11 @@ void SReconstruction::changeMesh( SPTR( ::fwData::Mesh) )
     {
         ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction >();
         SLM_ASSERT("reconstruction not instantiated", reconstruction);
-        this->doUpdate();
+        this->updating();
     }
     else
     {
-        this->doUpdate();
+        this->updating();
     }
 }
 

@@ -68,6 +68,20 @@
             </scene>
         </service>
 
+        <service uid="negato2DInteractor" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="sliderIndexEditor2D" start="yes" />
+                <view sid="windowLevel2D" start="yes" />
+            </registry>
+        </service>
+
         <!-- Slice editor service -->
         <service uid="sliderIndexEditor2D" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="imageKey" uid="${imageUID}" />

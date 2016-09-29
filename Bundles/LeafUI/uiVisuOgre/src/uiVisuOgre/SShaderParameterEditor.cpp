@@ -20,6 +20,8 @@
 #include <visuOgreAdaptor/SMaterial.hpp>
 #include <visuOgreAdaptor/SShaderParameter.hpp>
 
+#include <uiVisuOgre/helper/ParameterEditor.hpp>
+
 #include <QWidget>
 
 namespace uiVisuOgre
@@ -200,82 +202,13 @@ void SShaderParameterEditor::updateGuiInfo()
         if (adaptor.lock()->getClassname() == "::visuOgreAdaptor::SShaderParameter")
         {
             auto paramAdaptor = ::visuOgreAdaptor::SShaderParameter::dynamicCast(adaptor.lock());
+            auto paramConfig  = ::uiVisuOgre::helper::ParameterEditor::createConfig(paramAdaptor,
+                                                                                    m_editorInfo.service.lock(),
+                                                                                    m_editorInfo.connections);
 
-            /// Getting associated object infos
-            const ::fwData::Object::sptr shaderObj = paramAdaptor->getObject();
-            const ObjectClassnameType objType      = shaderObj->getClassname();
-
-            if(objType == "::fwData::Boolean")
+            if(!paramConfig.empty())
             {
-                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "boolChanged", paramAdaptor,
-                                                 "setBoolParameter");
-
-                ::fwServices::IService::ConfigType paramConfig;
-                paramConfig.add("<xmlattr>.type", "bool");
-                paramConfig.add("<xmlattr>.name", paramAdaptor->getParamName());
-                paramConfig.add("<xmlattr>.key", paramAdaptor->getParamName());
-                paramConfig.add("<xmlattr>.defaultValue", false);
-
                 editorConfig.add_child("service.parameters.param", paramConfig);
-            }
-            else if(objType == "::fwData::Color")
-            {
-                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "colorChanged", paramAdaptor,
-                                                 "setColorParameter");
-
-                ::fwServices::IService::ConfigType paramConfig;
-                paramConfig.add("<xmlattr>.type", "color");
-                paramConfig.add("<xmlattr>.name", paramAdaptor->getParamName());
-                paramConfig.add("<xmlattr>.key", paramAdaptor->getParamName());
-                paramConfig.add("<xmlattr>.defaultValue", "#ffffffff");
-
-                editorConfig.add_child("service.parameters.param", paramConfig);
-            }
-            else if(objType == "::fwData::Float")
-            {
-                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "doubleChanged", paramAdaptor,
-                                                 "setDoubleParameter");
-
-                const std::string& defaultValueStr = paramAdaptor->getDefaultValue();
-
-                const double defaultValue = std::stod(defaultValueStr);
-                const double max          = (defaultValue != 0.) ? defaultValue * 20. : 1.;
-                const double min          = (defaultValue != 0.) ? max - defaultValue * 20. : 1.;
-
-                ::fwServices::IService::ConfigType paramConfig;
-                paramConfig.add("<xmlattr>.type", "double");
-                paramConfig.add("<xmlattr>.name", paramAdaptor->getParamName());
-                paramConfig.add("<xmlattr>.key", paramAdaptor->getParamName());
-                paramConfig.add("<xmlattr>.defaultValue", defaultValueStr);
-                paramConfig.add("<xmlattr>.min", min);
-                paramConfig.add("<xmlattr>.max", max);
-
-                editorConfig.add_child("service.parameters.param", paramConfig);
-            }
-            else if(objType == "::fwData::Integer")
-            {
-                m_editorInfo.connections.connect(m_editorInfo.service.lock(), "intChanged", paramAdaptor,
-                                                 "setIntParameter");
-
-                const std::string& defaultValueStr = paramAdaptor->getDefaultValue();
-
-                const int defaultValue = std::stoi(defaultValueStr);
-                const int max          = (defaultValue != 0) ? defaultValue * 20 : 1;
-                const int min          = (defaultValue != 0) ? max - defaultValue * 20 : 1;
-
-                ::fwServices::IService::ConfigType paramConfig;
-                paramConfig.add("<xmlattr>.type", "int");
-                paramConfig.add("<xmlattr>.name", paramAdaptor->getParamName());
-                paramConfig.add("<xmlattr>.key", paramAdaptor->getParamName());
-                paramConfig.add("<xmlattr>.defaultValue", defaultValueStr);
-                paramConfig.add("<xmlattr>.min", min);
-                paramConfig.add("<xmlattr>.max", max);
-
-                editorConfig.add_child("service.parameters.param", paramConfig);
-            }
-            else
-            {
-                OSLM_ERROR("No editor found for the object of type " << objType);
             }
         }
     }

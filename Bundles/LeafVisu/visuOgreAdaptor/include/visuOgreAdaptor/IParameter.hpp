@@ -28,9 +28,9 @@ namespace visuOgreAdaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="paramAdaptor" class="::visuOgreAdaptor::IParameter">
-        <config materialAdaptor="mtlAdaptorUID" parameter="u_value" shaderType="fragment" />
-    </service>
+       <service uid="paramAdaptor" class="::visuOgreAdaptor::IParameter">
+           <config materialAdaptor="mtlAdaptorUID" parameter="u_value" shaderType="fragment" />
+       </service>
    @endcode
  *  - \b materialName (mandatory) : the name of the associated Ogre material
  *  - \b parameter (mandatory) : name of the shader parameter to set
@@ -48,10 +48,16 @@ public:
      * @name Slots API
      * @{
      */
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
+
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE2_PARAMETER_SLOT;
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE3_PARAMETER_SLOT;
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT;
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT;
+
     ///@}
 
     /// Constructor.
@@ -88,11 +94,29 @@ protected:
 
 private:
 
+    /// SLOT : Set the uniform from an integer value
     void setBoolParameter(bool value, std::string name);
+
+    /// SLOT : Set the uniform from a color value
     void setColorParameter(std::array<std::uint8_t, 4> color, std::string name);
+
+    /// SLOT : Set the uniform from an integer value
     void setIntParameter(int value, std::string name);
-    void setFloatParameter(float value, std::string name);
+
+    /// SLOT : Set the uniform from an integer value
+    void setInt2Parameter(int value1, int value2, std::string name);
+
+    /// SLOT : Set the uniform from an integer value
+    void setInt3Parameter(int value1, int value2, int value3, std::string name);
+
+    /// SLOT : Set the uniform from an double value
     void setDoubleParameter(double value, std::string name);
+
+    /// SLOT : Set the uniform from an double value
+    void setDouble2Parameter(double value1, double value2, std::string name);
+
+    /// SLOT : Set the uniform from an double value
+    void setDouble3Parameter(double value1, double value2, double value3, std::string name);
 
     /// Parameter name
     std::string m_paramName;

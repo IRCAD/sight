@@ -63,8 +63,9 @@ SNegato2D::~SNegato2D() throw()
 
 void SNegato2D::doStart() throw(::fwTools::Failed)
 {
-    ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
     this->setTransferFunctionSelection(tfSelection);
+    this->setTFSelectionFwID(tfSelection->getID());
 
     this->updateImageInfos(this->getObject< ::fwData::Image >());
     this->updateTransferFunction(this->getImage());
@@ -76,7 +77,8 @@ void SNegato2D::doStart() throw(::fwTools::Failed)
         true);
 
     // TF texture initialization
-    m_gpuTF.createTexture(this->getID());
+    m_gpuTF = std::unique_ptr< ::fwRenderOgre::TransferFunction>(new ::fwRenderOgre::TransferFunction());
+    m_gpuTF->createTexture(this->getID());
 
     // Scene node's instanciation
     m_negatoSceneNode = this->getSceneManager()->getRootSceneNode()->createChildSceneNode();
@@ -110,6 +112,9 @@ void SNegato2D::doStop() throw(::fwTools::Failed)
     m_plane->removeAndDestroyPlane();
     delete m_plane;
 
+    m_3DOgreTexture.setNull();
+    m_gpuTF.reset();
+
     this->requestRender();
 }
 
@@ -117,8 +122,6 @@ void SNegato2D::doStop() throw(::fwTools::Failed)
 
 void SNegato2D::doConfigure() throw(::fwTools::Failed)
 {
-    SLM_ASSERT("No config tag", m_configuration->getName() == "config");
-
     if(m_configuration->hasAttribute("sliceIndex"))
     {
         std::string orientation = m_configuration->getAttributeValue("sliceIndex");
@@ -173,6 +176,11 @@ void SNegato2D::doUpdate() throw(::fwTools::Failed)
 
 void SNegato2D::newImage()
 {
+    if(m_3DOgreTexture.isNull())
+    {
+        // The adaptor hasn't start yet (the window is maybe not visible)
+        return;
+    }
     this->getRenderService()->makeCurrent();
 
     ::fwData::Image::sptr image = this->getImage();
@@ -260,12 +268,12 @@ void SNegato2D::updatingTFPoints()
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    m_gpuTF.updateTexture(tf);
+    m_gpuTF->updateTexture(tf);
 
     m_plane->switchThresholding(tf->getIsClamped());
 
     // Sends the TF texture to the negato-related passes
-    m_plane->setTFData(m_gpuTF.getTexture());
+    m_plane->setTFData(m_gpuTF->getTexture());
 
     this->requestRender();
 }
@@ -276,20 +284,20 @@ void SNegato2D::updatingTFWindowing(double window, double level)
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    m_gpuTF.updateTexture(tf);
+    m_gpuTF->updateTexture(tf);
 
     this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SNegato2D::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SNegato2D::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT ) );
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( "image", ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( "image", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( "image", ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
+    connections.push( "image", ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
 
     return connections;
 
@@ -309,9 +317,9 @@ void SNegato2D::createPlane(const fwData::Image::SpacingType& _spacing)
 
 void SNegato2D::doSwap() throw(fwTools::Failed)
 {
-    this->doStop();
-    this->doStart();
-    this->doUpdate();
+    this->stopping();
+    this->starting();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------

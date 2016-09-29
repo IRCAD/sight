@@ -20,10 +20,7 @@
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreColourValue.h>
-#include <OGRE/OgreCompositorChain.h>
-#include <OGRE/OgreCompositorInstance.h>
 #include <OGRE/OgreEntity.h>
-#include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreLight.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreVector3.h>
@@ -36,8 +33,6 @@
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreTechnique.h>
-#include <OGRE/OgreTextureManager.h>
-#include <OGRE/OgreRenderTexture.h>
 
 #include <stack>
 
@@ -65,7 +60,6 @@ Layer::Layer() :
     m_coreCompositor(nullptr),
     m_transparencyTechnique(DEFAULT),
     m_numPeels(8),
-    m_compositorChainManager(),
     m_depth(1),
     m_topColor("#333333"),
     m_bottomColor("#333333"),
@@ -252,7 +246,7 @@ void Layer::createScene()
                 compositorChain.push_back(it);
             }
 
-            m_compositorChainManager->setCompositorChain(compositorChain);
+            m_compositorChainManager->setCompositorChain(compositorChain, m_id, m_renderService.lock());
         }
     }
 

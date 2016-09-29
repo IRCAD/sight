@@ -34,14 +34,18 @@ TransferFunction::~TransferFunction()
 
 void TransferFunction::createTexture(const ::Ogre::String& _parentId)
 {
-    m_texture = ::Ogre::TextureManager::getSingleton().createManual(
-        _parentId + "_tfTexture",                                   // name
-        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,  // resource groupe
-        ::Ogre::TEX_TYPE_2D,                                        // type
-        TEXTURE_SIZE, TEXTURE_SIZE,                                 // width, height
-        0,                                                          // number of mipmaps (depth)
-        ::Ogre::PF_A8R8G8B8,                                        // pixel format
-        ::Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);                         // usage
+    m_texture = ::Ogre::TextureManager::getSingleton().getByName(_parentId + "_tfTexture");
+    if(m_texture.isNull())
+    {
+        m_texture = ::Ogre::TextureManager::getSingleton().createManual(
+            _parentId + "_tfTexture",                                   // name
+            ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,  // resource groupe
+            ::Ogre::TEX_TYPE_2D,                                        // type
+            TEXTURE_SIZE, TEXTURE_SIZE,                                 // width, height
+            0,                                                          // number of mipmaps (depth)
+            ::Ogre::PF_A8R8G8B8,                                        // pixel format
+            ::Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);                 // usage
+    }
 }
 
 //-----------------------------------------------------------------------------

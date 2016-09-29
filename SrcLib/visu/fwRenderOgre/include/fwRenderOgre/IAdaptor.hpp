@@ -44,6 +44,8 @@ public:
     /// Returns the priority of the adaptor - some adaptors may have to be started before other ones
     FWRENDEROGRE_API virtual int getStartPriority();
 
+    FWRENDEROGRE_API void connect();
+    FWRENDEROGRE_API void disconnect();
 protected:
 
     /// Constructor
@@ -58,11 +60,11 @@ protected:
     //@{
     /// Overrides
     FWRENDEROGRE_API virtual void info(std::ostream& _sstream );
+    FWRENDEROGRE_API void configuring() throw(fwTools::Failed);
     FWRENDEROGRE_API void starting() throw(fwTools::Failed);
     FWRENDEROGRE_API void stopping() throw(fwTools::Failed);
     FWRENDEROGRE_API void swapping() throw(fwTools::Failed);
     FWRENDEROGRE_API void updating() throw(fwTools::Failed);
-    FWRENDEROGRE_API void configuring() throw(fwTools::Failed);
     //@}
 
     /**
@@ -70,11 +72,11 @@ protected:
      */
     //@{
     /// Pure virtual methods
+    FWRENDEROGRE_API virtual void doConfigure() throw ( ::fwTools::Failed ) = 0;
     FWRENDEROGRE_API virtual void doStart()                                 = 0;
     FWRENDEROGRE_API virtual void doStop()                                  = 0;
     FWRENDEROGRE_API virtual void doSwap()                                  = 0;
     FWRENDEROGRE_API virtual void doUpdate()                                = 0;
-    FWRENDEROGRE_API virtual void doConfigure() throw ( ::fwTools::Failed ) = 0;
     //@}
 
     /**
@@ -83,13 +85,10 @@ protected:
      */
     FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager();
 
-    template< class DATATYPE >
-    CSPTR(DATATYPE) getSafeInput(const std::string& key) const;
-    template< class DATATYPE >
-    SPTR(DATATYPE) getSafeInOut(const std::string& key) const;
-
     /// Ask the render service (SRender) to update
     FWRENDEROGRE_API virtual void requestRender();
+
+    std::string msgHead() const;
 
     /// Layer ID
     ::std::string m_layerID;
@@ -97,40 +96,16 @@ protected:
     /// Render service which this adaptor is attached
     ::fwRenderOgre::SRender::wptr m_renderService;
 
-    /// Signal/Slot connections with this service
-    ::fwServices::helper::SigSlotConnection m_connections;
+    /// Signal/Slot connections with the objects
+    ::fwServices::helper::SigSlotConnection m_objConnection;
 };
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------
 
-template< class DATATYPE >
-CSPTR(DATATYPE) IAdaptor::getSafeInput(const std::string& key) const
+inline std::string IAdaptor::msgHead() const
 {
-    if( ::fwServices::IService::isVersion2() )
-    {
-        return this->getRenderService()->getInput<DATATYPE>(key);
-    }
-    else
-    {
-        return std::dynamic_pointer_cast<DATATYPE>( ::fwTools::fwID::getObject(key) );
-    }
+    return "[ Adaptor '" + this->getID() + "'] ";
 }
-
-//------------------------------------------------------------------------------
-
-template< class DATATYPE >
-SPTR(DATATYPE) IAdaptor::getSafeInOut(const std::string& key) const
-{
-    if( ::fwServices::IService::isVersion2() )
-    {
-        return this->getRenderService()->getInOut<DATATYPE>(key);
-    }
-    else
-    {
-        return std::dynamic_pointer_cast<DATATYPE>( ::fwTools::fwID::getObject(key) );
-    }
-}
-
 //------------------------------------------------------------------------------
 
 } //namespace fwRenderOgre

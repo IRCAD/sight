@@ -55,7 +55,7 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="action_negato3DInteractor" start="yes" />
+                <menuItem sid="actionNegato3DInteractor" start="yes" />
                 <editor sid="videoSelector" start="yes" />
                 <menuItem sid="action_startVideo" start="yes" />
                 <menuItem sid="action_pauseVideo" start="yes" />
@@ -81,7 +81,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="action_negato3DInteractor" type="::gui::action::SModifyLayout" >
+        <service uid="actionNegato3DInteractor" type="::gui::action::SModifyLayout" >
             <config>
                 <show_or_hide sid="negato3DInteractor" />
             </config>
@@ -105,43 +105,50 @@
             </slots>
         </service>
 
-        <!-- ******************************* Services ***************************************** -->
+        <!-- Begin Generic Scene ***************************************** -->
 
-        <service uid="${genericSceneUID}" type="::fwRenderOgre::SRender" autoConnect="yes" >
-            <in key="modelSeries" uid="${modelSeriesUID}" />
-            <in key="videoImage" uid="videoImage" />
-            <in key="image" uid="${imageUID}" />
-            <in key="camera" uid="camera" />
-            <inout key="TFSelections" uid="${TFSelections}" />
+        <service uid="${genericSceneUID}" type="::fwRenderOgre::SRender" >
+            <adaptor uid="videoAdapter" start="yes" />
+            <adaptor uid="interactorAdaptorVideo" start="yes" />
+            <adaptor uid="interactorAdaptor" start="yes" />
+            <adaptor uid="modelSeriesAdaptor" start="yes" />
+            <adaptor uid="negato3DAdaptor" start="yes" />
 
-            <scene overlay="true" >
-                <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
-                <renderer id="video" layer="1" />
-                <!-- Default Layer -->
-                <renderer id="default" layer="2" />
-
-                <adaptor id="videoAdapter" class="::visuOgreAdaptor::SVideo" objectId="videoImage">
-                    <config renderer="video" cameraUID="camera" />
-                </adaptor>
-
-                <adaptor id="interactorAdaptorVideo" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
-                    <config renderer="video" style="Fixed" />
-                </adaptor>
-
-                <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
-                    <config renderer="default" style="Trackball" />
-                </adaptor>
-
-                <adaptor id="modelSeriesAdaptor" class="::visuOgreAdaptor::SModelSeries" objectId="modelSeries">
-                    <config renderer="default" />
-                </adaptor>
-
-                <adaptor id="negato3DAdaptor" class="::visuOgreAdaptor::SNegato3D" objectId="image">
-                     <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-                </adaptor>
-
-            </scene>
+            <scene overlay="true" />
+            <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+            <layer id="video" depth="1" />
+            <layer id="default" depth="2" />
         </service>
+
+        <service uid="videoAdapter" type="::visuOgreAdaptor::SVideo" >
+            <in key="image" uid="videoImage" autoConnect="yes" />
+            <in key="camera" uid="camera" autoConnect="yes" />
+            <config layer="video" />
+        </service>
+
+        <service uid="interactorAdaptorVideo" type="::visuOgreAdaptor::SInteractorStyle" >
+            <in key="object" uid="camera" />
+            <config layer="video" style="Fixed" />
+        </service>
+
+        <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle" >
+            <config layer="default" style="Trackball" />
+        </service>
+
+        <service uid="modelSeriesAdaptor" type="::visuOgreAdaptor::SModelSeries" autoConnect="yes">
+            <in key="object" uid="${modelSeriesUID}" />
+            <config layer="default" />
+        </service>
+
+        <service uid="negato3DAdaptor" type="::visuOgreAdaptor::SNegato3D" >
+            <in key="image" uid="${imageUID}" autoConnect="yes" />
+            <inout key="TF" uid="${TFSelections}" />
+            <config layer="default" selectedTFKey="SelectedTF" />
+        </service>
+
+        <!-- End Generic Scene ***************************************** -->
+
+        <!-- ******************************* Services ***************************************** -->
 
         <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
             <in group="frameTL">
@@ -154,11 +161,10 @@
         </service>
 
         <service uid="sliderIndexEditor3D" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
-            <inout key="imageKey" uid="${imageUID}" />
+            <inout key="image" uid="${imageUID}" />
             <sliceIndex>Sagittal</sliceIndex>
         </service>
 
-        <!-- Negato windowing service -->
         <service uid="windowLevel3D" type="::uiImage::WindowLevel" autoConnect="yes">
             <inout key="image" uid="${imageUID}" autoConnect="yes" />
             <inout key="TFSelections" uid="${TFSelections}" />
@@ -182,7 +188,7 @@
         <start uid="OgreSceneView" />
         <start uid="frameGrabber" />
         <start uid="synchronizer" />
-        <update uid="action_negato3DInteractor" />
+        <update uid="actionNegato3DInteractor" />
 
     </config>
 </extension>

@@ -49,11 +49,11 @@ public:
 protected:
 
     /// Configure the adaptor
-    VISUOGREADAPTOR_API virtual void doConfigure()  throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
     /// Do nothing
-    VISUOGREADAPTOR_API virtual void doStart()  throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doStart() throw ( ::fwTools::Failed );
     /// Do nothing
-    VISUOGREADAPTOR_API virtual void doStop()  throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API virtual void doStop() throw ( ::fwTools::Failed );
     /// Do nothing
     VISUOGREADAPTOR_API virtual void doSwap() throw ( ::fwTools::Failed );
 

@@ -248,17 +248,30 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
     {
         if (!::Ogre::StringUtil::endsWith(cstDef.first, "[0]") && !_params->findAutoConstantEntry(cstDef.first))
         {
-            ConstantValueType constantType;
-            if(cstDef.second.isFloat())
+            ConstantValueType constantValue;
+            if(cstDef.second.isDouble())
             {
-                constantType = _params->getFloatConstantList()[cstDef.second.physicalIndex];
+                for(size_t i = 0; i < 4; ++i)
+                {
+                    constantValue.d[i] = _params->getDoubleConstantList()[cstDef.second.physicalIndex + i];
+                }
+            }
+            else if(cstDef.second.isFloat())
+            {
+                for(size_t i = 0; i < 4; ++i)
+                {
+                    constantValue.f[i] = _params->getFloatConstantList()[cstDef.second.physicalIndex + i];
+                }
             }
             else if(cstDef.second.isInt())
             {
-                constantType = _params->getIntConstantList()[cstDef.second.physicalIndex];
+                for(size_t i = 0; i < 4; ++i)
+                {
+                    constantValue.i[i] = _params->getIntConstantList()[cstDef.second.physicalIndex + i];
+                }
             }
 
-            parameters.push_back(std::make_tuple(cstDef.first, cstDef.second.constType, _shaderType, constantType));
+            parameters.push_back(std::make_tuple(cstDef.first, cstDef.second.constType, _shaderType, constantValue));
         }
     }
 
@@ -267,19 +280,23 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
 
 //-----------------------------------------------------------------------------
 
-::fwData::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType type)
+::fwData::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType _type, ConstantValueType _value)
 {
     ::fwData::Object::sptr object;
 
-    switch(type)
+    switch(_type)
     {
         case ::Ogre::GpuConstantType::GCT_FLOAT1:
-            object = ::fwData::Float::New();
-            break;
+        {
+            auto newObj = ::fwData::Float::New();
+            newObj->setValue(_value.f[0]);
+            object = newObj;
+        }
+        break;
         case ::Ogre::GpuConstantType::GCT_FLOAT2:
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
-            float vec[2] = { 0., 0. };
+            float vec[2] = { _value.f[0], _value.f[1] };
 
             ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::FloatType>();
             arrayObject->resize( type, {1}, 2, true);
@@ -291,21 +308,40 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         }
         break;
         case ::Ogre::GpuConstantType::GCT_FLOAT3:
-            object = fwData::Point::New();
-            break;
+        {
+            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            float vec[3] = { _value.f[0], _value.f[1], _value.f[2] };
+
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::FloatType>();
+            arrayObject->resize( type, {1}, 3, true);
+
+            ::fwComEd::helper::Array arrayHelper(arrayObject);
+            arrayHelper.setItem( {0}, vec);
+
+            object = arrayObject;
+        }
+        break;
         case ::Ogre::GpuConstantType::GCT_FLOAT4:
-            object = fwData::Color::New();
-            break;
+        {
+            auto newObj = ::fwData::Color::New();
+            newObj->setRGBA(_value.f[0], _value.f[1], _value.f[2], _value.f[3]);
+            object = newObj;
+        }
+        break;
         case ::Ogre::GpuConstantType::GCT_MATRIX_4X4:
             object = ::fwData::TransformationMatrix3D::New();
             break;
         case ::Ogre::GpuConstantType::GCT_INT1:
-            object = ::fwData::Integer::New();
-            break;
+        {
+            auto newObj = ::fwData::Integer::New();
+            newObj->setValue(_value.i[0]);
+            object = newObj;
+        }
+        break;
         case ::Ogre::GpuConstantType::GCT_INT2:
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
-            int vec[2] = {0, 0};
+            int vec[2] = {_value.i[0], _value.i[1]};
 
             ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::Int32Type>();
             arrayObject->resize( type, {1}, 2, true);
@@ -319,7 +355,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         case ::Ogre::GpuConstantType::GCT_INT3:
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
-            int* vec[3] = {0, 0, 0};
+            int vec[3] = {_value.i[0], _value.i[1], _value.i[2]};
 
             ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::Int32Type>();
             arrayObject->resize( type, {1}, 3, true);
@@ -333,7 +369,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         case ::Ogre::GpuConstantType::GCT_INT4:
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
-            int* vec[4] = {0, 0, 0, 0};
+            int vec[4] = {_value.i[0], _value.i[1], _value.i[2], _value.i[3]};
 
             ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::Int32Type>();
             arrayObject->resize( type, {1}, 4, true);
@@ -345,14 +381,18 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         }
         break;
         case ::Ogre::GpuConstantType::GCT_DOUBLE1:
-            object = ::fwData::Float::New();
-            break;
+        {
+            auto newObj = ::fwData::Float::New();
+            newObj->setValue( static_cast<float>(_value.d[0]) );
+            object = newObj;
+        }
+        break;
         case ::Ogre::GpuConstantType::GCT_DOUBLE2:
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
-            float vec[2] = { 0., 0. };
+            double vec[2] = { _value.d[0], _value.d[1] };
 
-            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::FloatType>();
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::DoubleType>();
             arrayObject->resize( type, {1}, 2, true);
 
             ::fwComEd::helper::Array arrayHelper(arrayObject);
@@ -364,9 +404,9 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         case ::Ogre::GpuConstantType::GCT_DOUBLE3:
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
-            float vec[3] = { 0., 0., 0. };
+            double vec[3] = { _value.d[0], _value.d[1], _value.d[2] };
 
-            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::FloatType>();
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::DoubleType>();
             arrayObject->resize( type, {1}, 3, true);
 
             ::fwComEd::helper::Array arrayHelper(arrayObject);
@@ -378,9 +418,9 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         case ::Ogre::GpuConstantType::GCT_DOUBLE4:
         {
             ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
-            float vec[4] = { 0., 0., 0., 0.};
+            double vec[4] = { _value.d[0], _value.d[1], _value.d[2], _value.d[3] };
 
-            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::FloatType>();
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::DoubleType>();
             arrayObject->resize( type, {1}, 4, true);
 
             ::fwComEd::helper::Array arrayHelper(arrayObject);
@@ -436,7 +476,7 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
                 "GCT_MATRIX_DOUBLE_4X4",
                 "GCT_UNKNOWN"
             };
-            OSLM_WARN("Object type "+GpuConstantTypeNames[type-1]+" not supported yet");
+            OSLM_WARN("Object type "+GpuConstantTypeNames[_type-1]+" not supported yet");
     }
     return object;
 }

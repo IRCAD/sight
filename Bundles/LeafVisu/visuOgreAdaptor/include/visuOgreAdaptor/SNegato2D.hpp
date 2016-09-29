@@ -20,7 +20,6 @@ namespace visuOgreAdaptor
 
 /**
  * @brief   Adaptor to display a 2D negato
- * @class   SNegato2D
  */
 class VISUOGREADAPTOR_CLASS_API SNegato2D : public ::fwRenderOgre::IAdaptor,
                                             public ::fwComEd::helper::MedicalImageAdaptor
@@ -66,7 +65,7 @@ protected:
     VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
 
     /// Returns proposals to connect service slots to associated object signals
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
     /// Called when transfer function points are modified.
     VISUOGREADAPTOR_API virtual void updatingTFPoints();
@@ -98,7 +97,7 @@ private:
     ::Ogre::TexturePtr m_3DOgreTexture;
 
     /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view)
-    ::fwRenderOgre::TransferFunction m_gpuTF;
+    std::unique_ptr< ::fwRenderOgre::TransferFunction> m_gpuTF;
 
     /// The plane on which we will apply our texture
     ::fwRenderOgre::Plane* m_plane;

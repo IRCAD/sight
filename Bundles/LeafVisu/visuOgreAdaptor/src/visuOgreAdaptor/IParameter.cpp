@@ -7,6 +7,8 @@
 #include "visuOgreAdaptor/IParameter.hpp"
 
 #include <fwComEd/helper/Array.hpp>
+#include <fwComEd/helper/ArrayGetter.hpp>
+
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Array.hpp>
@@ -33,10 +35,16 @@
 namespace visuOgreAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType IParameter::s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
-const ::fwCom::Slots::SlotKeyType IParameter::s_SET_COLOR_PARAMETER_SLOT  = "setColorParameter";
-const ::fwCom::Slots::SlotKeyType IParameter::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
-const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
+//------------------------------------------------------------------------------
+
+const ::fwCom::Slots::SlotKeyType IParameter::s_SET_BOOL_PARAMETER_SLOT    = "setBoolParameter";
+const ::fwCom::Slots::SlotKeyType IParameter::s_SET_COLOR_PARAMETER_SLOT   = "setColorParameter";
+const ::fwCom::Slots::SlotKeyType IParameter::s_SET_DOUBLE_PARAMETER_SLOT  = "setDoubleParameter";
+const ::fwCom::Slots::SlotKeyType IParameter::s_SET_DOUBLE2_PARAMETER_SLOT = "setDouble2Parameter";
+const ::fwCom::Slots::SlotKeyType IParameter::s_SET_DOUBLE3_PARAMETER_SLOT = "setDouble3Parameter";
+const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT_PARAMETER_SLOT     = "setIntParameter";
+const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT2_PARAMETER_SLOT    = "setInt2Parameter";
+const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT3_PARAMETER_SLOT    = "setInt3Parameter";
 
 //------------------------------------------------------------------------------
 
@@ -46,7 +54,11 @@ IParameter::IParameter() throw() :
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &IParameter::setBoolParameter, this);
     newSlot(s_SET_COLOR_PARAMETER_SLOT, &IParameter::setColorParameter, this);
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &IParameter::setDoubleParameter, this);
+    newSlot(s_SET_DOUBLE2_PARAMETER_SLOT, &IParameter::setDouble2Parameter, this);
+    newSlot(s_SET_DOUBLE3_PARAMETER_SLOT, &IParameter::setDouble3Parameter, this);
     newSlot(s_SET_INT_PARAMETER_SLOT, &IParameter::setIntParameter, this);
+    newSlot(s_SET_INT2_PARAMETER_SLOT, &IParameter::setInt2Parameter, this);
+    newSlot(s_SET_INT3_PARAMETER_SLOT, &IParameter::setInt3Parameter, this);
 }
 
 //------------------------------------------------------------------------------
@@ -78,17 +90,8 @@ const std::string& IParameter::getParamName() const
 
 //------------------------------------------------------------------------------
 
-const std::string& IParameter::getDefaultValue() const
-{
-    return m_defaultValue;
-}
-
-//------------------------------------------------------------------------------
-
 void IParameter::doConfigure() throw(::fwTools::Failed)
 {
-    SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
-
     m_paramName = m_configuration->getAttributeValue("parameter");
     OSLM_ERROR_IF("parameter attribute not set", m_paramName.empty());
 
@@ -114,8 +117,6 @@ void IParameter::doConfigure() throw(::fwTools::Failed)
             OSLM_ERROR("This shader type " << shaderType << " isn't supported yet");
         }
     }
-
-    m_defaultValue = m_configuration->getSafeAttributeValue("defaultValue").second;
 }
 
 //------------------------------------------------------------------------------
@@ -206,8 +207,6 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         SLM_ASSERT("The given integer object is null", intValue);
 
         params->setNamedConstant(m_paramName, intValue->value());
-
-        m_defaultValue = std::to_string(intValue->value());
     }
     else if(objClass == "::fwData::Float")
     {
@@ -215,8 +214,6 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         SLM_ASSERT("The given float object is null", floatValue);
 
         params->setNamedConstant(m_paramName,  floatValue->value());
-
-        m_defaultValue = std::to_string(floatValue->value());
     }
     else if(objClass == "::fwData::Boolean")
     {
@@ -241,22 +238,6 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
 
         params->setNamedConstant(m_paramName, color);
     }
-    else if(objClass == "::fwData::Point")
-    {
-//        ::fwData::Point::sptr pointValue = ::fwData::Point::dynamicCast(obj);
-//        SLM_ASSERT("Sorry, the object is null", pointValue);
-
-//        m_paramValues = new float[3];
-
-//        m_paramValues[0] = static_cast<float>(pointValue->getCoord()[0]);
-//        m_paramValues[1] = static_cast<float>(pointValue->getCoord()[1]);
-//        m_paramValues[2] = static_cast<float>(pointValue->getCoord()[2]);
-
-//        m_paramNbElem = 3;
-//        ::Ogre::Vector3 point(m_paramValues);
-//        m_params->setNamedConstant(m_paramName, point);
-        OSLM_ERROR("This Type  " << objClass << " isn't supported yet.");
-    }
     else if(objClass == "::fwData::PointList")
     {
         ::fwData::PointList::sptr pointListValue = ::fwData::PointList::dynamicCast(obj);
@@ -279,7 +260,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
             i++;
         }
 
-        params->setNamedConstant(m_paramName, paramValues, static_cast<size_t>(nbPoints), static_cast<size_t>(3));
+        params->setNamedConstant(m_paramName, paramValues, points.size(), static_cast<size_t>(3));
 
         delete [] paramValues;
     }
@@ -299,32 +280,44 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
     }
     else if(objClass == "::fwData::Array")
     {
-//        ::fwData::Array::sptr arrayValue = ::fwData::Array::dynamicCast(obj);
-//        SLM_ASSERT("Sorry, the object is null", arrayValue);
+        ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(obj);
+        SLM_ASSERT("The object is NULL", arrayObject);
 
-//        ::fwComEd::helper::Array arrayHelper(arrayValue);
-//        float* floatValue = static_cast<float *>(arrayHelper.getBuffer());
-//        int dimension = arrayValue->getNumberOfComponents();
-//        m_paramValues = new float[dimension];
-//        for(int i = 0; i < dimension; i++)
-//        {
-//            m_paramValues[i] = floatValue[i];
-//        }
+        size_t numComponents = arrayObject->getNumberOfComponents();
+        if(numComponents <= 3)
+        {
+            ::fwComEd::helper::ArrayGetter arrayHelper(arrayObject);
 
-//        m_paramNbElem = dimension;
-//        m_params->setNamedConstant(m_paramName, m_paramValues, static_cast<size_t>(m_paramNbElem, 1));
-        OSLM_ERROR("This Type  " << objClass << " isn't supported yet.");
-    }
-    else if(objClass == "::fwData::Vector")
-    {
-        ::fwData::Vector::sptr vectorValue = ::fwData::Vector::dynamicCast(obj);
-        SLM_ASSERT("The given vector object is null", vectorValue);
-        OSLM_ERROR("This Type  " << objClass << " isn't supported yet.");
+            if( arrayObject->getType() == ::fwTools::Type::s_FLOAT)
+            {
+                const float* floatValue = static_cast<const float*>(arrayHelper.getBuffer());
+                params->setNamedConstant(m_paramName, floatValue, 1, numComponents);
+            }
+            else if( arrayObject->getType() == ::fwTools::Type::s_DOUBLE)
+            {
+                const double* doubleValue = static_cast<const double*>(arrayHelper.getBuffer());
+                params->setNamedConstant(m_paramName, doubleValue, 1, numComponents);
+            }
+            else if( arrayObject->getType() == ::fwTools::Type::s_INT32)
+            {
+                const int* intValue = static_cast<const int*>(arrayHelper.getBuffer());
+                params->setNamedConstant(m_paramName, intValue, 1, numComponents);
+            }
+            else
+            {
+                OSLM_ERROR("Array type not handled: " << arrayObject->getType());
+            }
+        }
+        else
+        {
+            OSLM_ERROR("Array size not handled: " << arrayObject->getNumberOfComponents());
+        }
     }
     // We allow to work on the SRender composite and interact with slots instead
     else if(objClass != "::fwData::Composite")
     {
-        OSLM_ERROR("This Type  " << objClass << " isn't supported.");
+
+        OSLM_ERROR("This Type " << objClass << " isn't supported.");
     }
 
     return true;
@@ -347,7 +340,7 @@ void IParameter::setBoolParameter(bool value, std::string name)
         ::fwData::Boolean::sptr paramObject = ::fwData::Boolean::dynamicCast(obj);
         paramObject->setValue(value);
 
-        this->doUpdate();
+        this->updating();
     }
 }
 
@@ -361,7 +354,7 @@ void IParameter::setColorParameter(std::array<uint8_t, 4> color, std::string nam
         ::fwData::Color::sptr paramObject = ::fwData::Color::dynamicCast(obj);
         paramObject->setRGBA(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f, color[3] / 255.f);
 
-        this->doUpdate();
+        this->updating();
     }
 }
 
@@ -375,21 +368,53 @@ void IParameter::setIntParameter(int value, std::string name)
         ::fwData::Integer::sptr paramObject = ::fwData::Integer::dynamicCast(obj);
         paramObject->setValue(value);
 
-        this->doUpdate();
+        this->updating();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void IParameter::setFloatParameter(float value, std::string name)
+void IParameter::setInt2Parameter(int value1, int value2, std::string name)
 {
     if(name == m_paramName)
     {
         ::fwData::Object::sptr obj        = this->getObject();
-        ::fwData::Float::sptr paramObject = ::fwData::Float::dynamicCast(obj);
-        paramObject->setValue(value);
+        ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(obj);
 
-        this->doUpdate();
+        if(arrayObject->empty())
+        {
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::Int32Type>();
+            arrayObject->resize( type, {1}, 2, true);
+        }
+
+        ::fwComEd::helper::Array arrayHelper(arrayObject);
+        int vec[2] = { value1, value2 };
+        arrayHelper.setItem( {0}, vec);
+
+        this->updating();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void IParameter::setInt3Parameter(int value1, int value2, int value3, std::string name)
+{
+    if(name == m_paramName)
+    {
+        ::fwData::Object::sptr obj        = this->getObject();
+        ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(obj);
+
+        if(arrayObject->empty())
+        {
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::Int32Type>();
+            arrayObject->resize( type, {1}, 3, true);
+        }
+
+        ::fwComEd::helper::Array arrayHelper(arrayObject);
+        int vec[3] = { value1, value2, value3 };
+        arrayHelper.setItem( {0}, vec);
+
+        this->updating();
     }
 }
 
@@ -403,7 +428,70 @@ void IParameter::setDoubleParameter(double value, std::string name)
         ::fwData::Float::sptr paramObject = ::fwData::Float::dynamicCast(obj);
         paramObject->setValue(static_cast<float>(value));
 
-        this->doUpdate();
+        this->updating();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void IParameter::setDouble2Parameter(double value1, double value2, std::string name)
+{
+    if(name == m_paramName)
+    {
+        ::fwData::Object::sptr obj        = this->getObject();
+        ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(obj);
+
+        if(arrayObject->empty())
+        {
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::DoubleType>();
+            arrayObject->resize( type, {1}, 2, true);
+        }
+
+        ::fwComEd::helper::Array arrayHelper(arrayObject);
+
+        if( arrayObject->getType() == ::fwTools::Type::s_FLOAT)
+        {
+            float vec[2] = {  static_cast<float>(value1),  static_cast<float>(value2) };
+            arrayHelper.setItem( {0}, vec);
+        }
+        else if( arrayObject->getType() == ::fwTools::Type::s_DOUBLE)
+        {
+            double vec[2] = { value1, value2 };
+            arrayHelper.setItem( {0}, vec);
+        }
+
+        this->updating();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void IParameter::setDouble3Parameter(double value1, double value2, double value3, std::string name)
+{
+    if(name == m_paramName)
+    {
+        ::fwData::Object::sptr obj        = this->getObject();
+        ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(obj);
+
+        if(arrayObject->empty())
+        {
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::DoubleType>();
+            arrayObject->resize( type, {1}, 3, true);
+        }
+
+        ::fwComEd::helper::Array arrayHelper(arrayObject);
+
+        if( arrayObject->getType() == ::fwTools::Type::s_FLOAT)
+        {
+            float vec[3] = { static_cast<float>(value1), static_cast<float>(value2), static_cast<float>(value3) };
+            arrayHelper.setItem( {0}, vec);
+        }
+        else if( arrayObject->getType() == ::fwTools::Type::s_DOUBLE)
+        {
+            double vec[3] = { value1, value2, value3 };
+            arrayHelper.setItem( {0}, vec);
+        }
+        this->updating();
     }
 }
 

@@ -51,7 +51,8 @@ public:
                                                 const std::string& _layerId,
                                                 SPTR(::fwRenderOgre::SRender) _renderService);
 
-    FWRENDEROGRE_API void setCompositorChain(const std::vector<CompositorIdType>& _compositors);
+    FWRENDEROGRE_API void setCompositorChain(const std::vector<CompositorIdType>&_compositors,
+                                             const std::string& _layerId, SPTR(::fwRenderOgre::SRender) _renderService);
 
     FWRENDEROGRE_API CompositorChainType getCompositorChain();
 
@@ -83,8 +84,13 @@ private:
     /// Adds the final compositor to the compositor chain
     void addFinalCompositor();
 
+    void updateCompositorAdaptors(CompositorIdType _compositorName, bool _isEnabled,
+                                  const std::string& _layerId, SPTR(::fwRenderOgre::SRender) _renderService);
+
     /// List of available compositors, the names are associated to a boolean value which indicates whether
     /// the compositor is enabled or not
+    /// WARNING: It may not match the real list of compositors in the Ogre manager, as other classes may add
+    /// compositors as well. So this list is only there to know which compositors are handled by this class.
     CompositorChainType m_compositorChain;
 
     /// The parent layer's viewport.

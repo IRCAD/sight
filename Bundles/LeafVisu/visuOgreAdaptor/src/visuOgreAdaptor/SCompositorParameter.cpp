@@ -71,7 +71,7 @@ SCompositorParameter::~SCompositorParameter() throw()
 void SCompositorParameter::updateValue(Ogre::MaterialPtr& _mat)
 {
     this->setMaterial(_mat);
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------

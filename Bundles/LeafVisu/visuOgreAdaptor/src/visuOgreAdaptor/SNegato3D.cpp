@@ -65,20 +65,24 @@ SNegato3D::~SNegato3D() throw()
 
 void SNegato3D::doStart() throw(::fwTools::Failed)
 {
-    ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
+    SLM_ASSERT("TF 'key' not found", tfSelection);
+
     this->setTransferFunctionSelection(tfSelection);
+    this->setTFSelectionFwID(tfSelection->getID());
 
     this->updateImageInfos(this->getObject< ::fwData::Image >());
     this->updateTransferFunction(this->getImage());
 
     // 3D source texture instantiation
-    m_3DOgreTexture = ::Ogre::TextureManager::getSingletonPtr()->create(
+    m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
         this->getID() + "_Texture",
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-        true);
+        true).first.dynamicCast< ::Ogre::Texture>();
 
     // TF texture initialization
-    m_gpuTF.createTexture(this->getID());
+    m_gpuTF = std::unique_ptr< ::fwRenderOgre::TransferFunction>(new ::fwRenderOgre::TransferFunction());
+    m_gpuTF->createTexture(this->getID());
 
     // Scene node's instantiation
     m_negatoSceneNode = this->getSceneManager()->getRootSceneNode()->createChildSceneNode();
@@ -127,6 +131,9 @@ void SNegato3D::doStop() throw(::fwTools::Failed)
     delete m_planes[1];
     delete m_planes[2];
 
+    m_3DOgreTexture.setNull();
+    m_gpuTF.reset();
+
     this->requestRender();
 }
 
@@ -134,8 +141,6 @@ void SNegato3D::doStop() throw(::fwTools::Failed)
 
 void SNegato3D::doConfigure() throw(::fwTools::Failed)
 {
-    SLM_ASSERT("No config tag", m_configuration->getName() == "config");
-
     // Axis orientation mode by default
     m_orientation = OrientationMode::Z_AXIS;
 
@@ -196,9 +201,9 @@ void SNegato3D::doUpdate() throw(::fwTools::Failed)
 
 void SNegato3D::doSwap() throw(::fwTools::Failed)
 {
-    this->doStop();
-    this->doStart();
-    this->doUpdate();
+    this->stopping();
+    this->starting();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -286,15 +291,14 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SNegato3D::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SNegato3D::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_OPACITY_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT ) );
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( "image", ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( "image", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( "image", ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
+    connections.push( "image", ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
+    connections.push( "image", ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
     return connections;
 }
 
@@ -304,14 +308,14 @@ void SNegato3D::updatingTFPoints()
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    m_gpuTF.updateTexture(tf);
+    m_gpuTF->updateTexture(tf);
 
     for(int i(0); i < 3; ++i)
     {
         m_planes[i]->switchThresholding(tf->getIsClamped());
 
         // Sends the TF texture to the negato-related passes
-        m_planes[i]->setTFData(m_gpuTF.getTexture());
+        m_planes[i]->setTFData(m_gpuTF->getTexture());
     }
 
     this->requestRender();
@@ -323,7 +327,7 @@ void SNegato3D::updatingTFWindowing(double window, double level)
 {
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    m_gpuTF.updateTexture(tf);
+    m_gpuTF->updateTexture(tf);
 
     this->requestRender();
 }

@@ -65,13 +65,17 @@ bool STexture::isValid() const
 
     return false;
 }
+//------------------------------------------------------------------------------
+
+int STexture::getStartPriority()
+{
+    return -20;
+}
 
 //------------------------------------------------------------------------------
 
 void STexture::doConfigure() throw(fwTools::Failed)
 {
-    SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
-
     if(m_configuration->hasAttribute("textureName"))
     {
         m_textureName = m_configuration->getAttributeValue("textureName");
@@ -109,12 +113,12 @@ void STexture::doConfigure() throw(fwTools::Failed)
 
 void STexture::doStart() throw(fwTools::Failed)
 {
-    m_texture = ::Ogre::TextureManager::getSingletonPtr()->createOrRetrieve(
+    m_texture = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
         m_textureName,
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
         true).first.dynamicCast< ::Ogre::Texture>();
 
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -143,7 +147,7 @@ void STexture::doUpdate() throw(fwTools::Failed)
 
 void STexture::doSwap() throw(fwTools::Failed)
 {
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -152,6 +156,7 @@ void STexture::doStop() throw(fwTools::Failed)
 {
     // This is necessary, otherwise we have "ghost" textures later we reload a new texture
     m_texture->freeInternalResources();
+    m_texture.setNull();
 }
 
 //-----------------------------------------------------------------------------

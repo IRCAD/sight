@@ -14,7 +14,6 @@
 
 #include <OGRE/OgreTechnique.h>
 
-#include <boost/variant.hpp>
 #include <string>
 
 namespace fwRenderOgre
@@ -26,7 +25,13 @@ namespace helper
 class Shading
 {
 public:
-    typedef ::boost::variant< float, int, std::array<float, 4> > ConstantValueType;
+    union ConstantValueType
+    {
+        std::array<bool, 4> b;
+        std::array<int, 4> i;
+        std::array<float, 4> f;
+        std::array<double, 4> d;
+    };
     typedef std::vector< std::tuple< ::Ogre::String, ::Ogre::GpuConstantType,
                                      ::Ogre::GpuProgramType, ConstantValueType> > ShaderConstantsType;
 
@@ -117,17 +122,10 @@ public:
      * @brief Create a fw4spl data that can be used to interact with a shader parameter.
      *
      * @param[in] _type type of the shader parameter
-     * @param[in] _paramName name of the shader parameter
+     * @param[in] _value value of the shader parameter
      */
-    FWRENDEROGRE_API static SPTR(::fwData::Object) createObjectFromShaderParameter(::Ogre::GpuConstantType _type);
-
-    /**
-     * @brief Create a fw4spl data that can be used to interact with a shader parameter.
-     *
-     * @param[in] _type type of the shader parameter
-     * @param[in] _paramName name of the shader parameter
-     */
-//    FWRENDEROGRE_API static SPTR(::fwData::Object) createObjectFromShaderParameter(::Ogre::GpuConstantType _type);
+    FWRENDEROGRE_API static SPTR(::fwData::Object) createObjectFromShaderParameter(::Ogre::GpuConstantType _type,
+                                                                                   ConstantValueType _value);
 };
 
 } // namespace helper
