@@ -12,10 +12,10 @@ set( DEPENDENCIES
         fwTools
         fwGui
         fwGuiQt
-        fwVtkIO
         gui
         fwRenderOgre
         visuOgreAdaptor
+        uiIO
         material
 )
 set( REQUIREMENTS  )
