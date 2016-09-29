@@ -4,6 +4,7 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="SETTINGS_WID_PARENT" />
+        <param name="TOOLBAR_WID_PARENT" />
         <param name="image" />
         <param name="TFSelections" />
         <param name="VRAdaptor" />
@@ -115,8 +116,15 @@
             </config>
         </service>
 
+        <service uid="mode3DSelector" type="::uiVisuOgre::SStereoSelector" >
+            <registry>
+                <parent wid="${TOOLBAR_WID_PARENT}" />
+            </registry>
+        </service>
+
         <start uid="OgreVolumeRendering" />
         <start uid="volumeRenderingInteractor" />
+        <start uid="mode3DSelector" />
 
     </config>
 </extension>

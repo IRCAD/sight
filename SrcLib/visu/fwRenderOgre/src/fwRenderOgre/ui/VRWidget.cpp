@@ -59,6 +59,13 @@ VRWidget::VRWidget(const std::string id,
 
 VRWidget::~VRWidget()
 {
+    ::Ogre::MaterialManager::getSingleton().remove(m_sphereHighlightMtl->getHandle());
+    ::Ogre::MaterialManager::getSingleton().remove(m_frameMtl->getHandle());
+    ::Ogre::MaterialManager::getSingleton().remove(m_frameHighlightMtl->getHandle());
+    ::Ogre::MaterialManager::getSingleton().remove(m_faceMtl->getHandle());
+
+    m_sceneManager->destroyManualObject(m_selectedFace);
+    m_sceneManager->destroyManualObject(m_boundingBox);
 }
 
 //-----------------------------------------------------------------------------
@@ -153,26 +160,26 @@ void VRWidget::initWidgets()
 {
     // Create widget materials
     {
-        ::Ogre::MaterialPtr sphereMtl          = ::Ogre::MaterialManager::getSingletonPtr()->getByName("Default");
-        ::Ogre::MaterialPtr sphereHighlightMtl = sphereMtl->clone(m_id + "_SphereHighlight");
+        ::Ogre::MaterialPtr sphereMtl = ::Ogre::MaterialManager::getSingleton().getByName("Default");
+        m_sphereHighlightMtl          = sphereMtl->clone(m_id + "_SphereHighlight");
 
-        sphereHighlightMtl->setAmbient(0.3f, 0.f, 0.f);
-        sphereHighlightMtl->setDiffuse(0.5f, 0.1f, 0.1f, 1.f);
+        m_sphereHighlightMtl->setAmbient(0.3f, 0.f, 0.f);
+        m_sphereHighlightMtl->setDiffuse(0.5f, 0.1f, 0.1f, 1.f);
 
-        ::Ogre::MaterialPtr frameMtl = sphereMtl->clone(m_id + "_Frame");
-        frameMtl->setAmbient(1.f, 1.f, 1.f);
-        frameMtl->setDiffuse(0.f, 0.f, 0.f, 1.f);
-        frameMtl->setSpecular(0.f, 0.f, 0.f, 1.f);
+        m_frameMtl = sphereMtl->clone(m_id + "_Frame");
+        m_frameMtl->setAmbient(1.f, 1.f, 1.f);
+        m_frameMtl->setDiffuse(0.f, 0.f, 0.f, 1.f);
+        m_frameMtl->setSpecular(0.f, 0.f, 0.f, 1.f);
 
-        ::Ogre::MaterialPtr frameHighlightMtl = frameMtl->clone(m_id + "_FrameHighlight");
-        frameHighlightMtl->setAmbient(0.f, 1.f, 0.f);
+        m_frameHighlightMtl = m_frameMtl->clone(m_id + "_FrameHighlight");
+        m_frameHighlightMtl->setAmbient(0.f, 1.f, 0.f);
 
-        ::Ogre::MaterialPtr faceMtl = sphereMtl->clone(m_id + "_FaceHighlight");
-        faceMtl->setAmbient(1.f, 1.f, 0.f);
-        faceMtl->setDiffuse(0.f, 0.f, 0.f, 0.6f);
-        faceMtl->setSpecular(0.f, 0.f, 0.f, 0.6f);
-        faceMtl->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
-        faceMtl->setDepthWriteEnabled(false);
+        m_faceMtl = sphereMtl->clone(m_id + "_FaceHighlight");
+        m_faceMtl->setAmbient(1.f, 1.f, 0.f);
+        m_faceMtl->setDiffuse(0.f, 0.f, 0.f, 0.6f);
+        m_faceMtl->setSpecular(0.f, 0.f, 0.f, 0.6f);
+        m_faceMtl->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
+        m_faceMtl->setDepthWriteEnabled(false);
     }
 
     m_boundingBox  = m_sceneManager->createManualObject(m_id + "_VolumeBB");
@@ -214,7 +221,7 @@ void VRWidget::initWidgets()
     m_selectedFace->setRenderQueueGroup(::Ogre::RENDER_QUEUE_BACKGROUND);
 
     // Create a pickable sphere for each cube face
-//    ::Ogre::LogManager::getSingletonPtr()->getDefaultLog()->logMessage("Creating widget Spheres ...");
+//    ::Ogre::LogManager::getSingleton().getDefaultLog()->logMessage("Creating widget Spheres ...");
     for(unsigned i = 0; i < 6; ++i)
     {
         auto currentFace = static_cast< ::fwRenderOgre::vr::IVolumeRenderer::CubeFace>(i);

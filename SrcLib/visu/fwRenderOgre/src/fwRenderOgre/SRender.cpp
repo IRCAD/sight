@@ -268,9 +268,9 @@ void SRender::configureLayer( ConfigurationType conf )
     ogreLayer->setID(id);
     ogreLayer->setDepth(layerDepth);
     ogreLayer->setWorker(m_associatedWorker);
-    ogreLayer->set3D(mode3D == "AutoStereo5" ? ::fwRenderOgre::Layer::Mode3DType::AUTOSTEREO_5 :
-                     mode3D == "AutoStereo8" ? ::fwRenderOgre::Layer::Mode3DType::AUTOSTEREO_8 :
-                     ::fwRenderOgre::Layer::Mode3DType::NONE);
+    ogreLayer->setStereoMode(mode3D == "AutoStereo5" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 :
+                             mode3D == "AutoStereo8" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 :
+                             ::fwRenderOgre::Layer::StereoModeType::NONE);
 
     ogreLayer->setCoreCompositorEnabled(id == "default", transparencyTechnique, numPeels);
     ogreLayer->setCompositorChainEnabled(compositors != "", compositors);

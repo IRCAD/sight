@@ -196,7 +196,7 @@ void SCoreCompositorEditor::refreshRenderers()
             if(layerMap.second->isCoreCompositorEnabled())
             {
                 const std::string id       = layerMap.first;
-                const std::string renderID = render->getID();
+                const std::string renderID = render->getName();
                 m_layersBox->addItem(QString::fromStdString(renderID + " : " + id));
                 m_layers.push_back(layerMap.second);
                 is3DLayer = true;

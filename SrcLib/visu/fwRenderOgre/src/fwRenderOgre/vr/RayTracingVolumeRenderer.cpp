@@ -40,7 +40,7 @@ namespace vr
 
 //-----------------------------------------------------------------------------
 
-class AutoStereoCompositorListener : public ::Ogre::CompositorInstance::Listener
+class RayTracingVolumeRenderer::AutoStereoCompositorListener : public ::Ogre::CompositorInstance::Listener
 {
 public:
 
@@ -156,7 +156,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    ::Ogre::TexturePtr imageTexture,
                                                    TransferFunction* gpuTF,
                                                    PreIntegrationTable* preintegrationTable,
-                                                   ::fwRenderOgre::Layer::Mode3DType mode3D,
+                                                   ::fwRenderOgre::Layer::StereoModeType mode3D,
                                                    bool ambientOcclusion,
                                                    bool colorBleeding) :
     IVolumeRenderer(parentId, sceneManager, parentNode, imageTexture, gpuTF, preintegrationTable),
@@ -165,7 +165,9 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_mode3D            (mode3D),
     m_ambientOcclusion  (ambientOcclusion),
     m_colorBleeding     (colorBleeding),
-    m_illumVolume       (nullptr)
+    m_illumVolume       (nullptr),
+    m_cameraListener    (nullptr),
+    m_compositorListener(nullptr)
 {
     m_gridSize   = { 2, 2, 2 };
     m_bricksSize = { 8, 8, 8 };
@@ -182,12 +184,12 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         "RayTracedVolume_PreIntegrated_VolumeIllumination"
     };
 
-    const unsigned nbViewpoints = m_mode3D == ::fwRenderOgre::Layer::Mode3DType::AUTOSTEREO_8 ? 8 :
-                                  m_mode3D == ::fwRenderOgre::Layer::Mode3DType::AUTOSTEREO_5 ? 5 : 1;
+    const unsigned nbViewpoints = m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ? 8 :
+                                  m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 ? 5 : 1;
 
     for(unsigned i = 0; i < nbViewpoints; ++i)
     {
-        m_entryPointsTextures.push_back(::Ogre::TextureManager::getSingletonPtr()->createManual(
+        m_entryPointsTextures.push_back(::Ogre::TextureManager::getSingleton().createManual(
                                             m_parentId + "_entryPointsTexture" + std::to_string(i),
                                             ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                                             ::Ogre::TEX_TYPE_2D,
@@ -201,7 +203,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
     for(const std::string& mtlName : vrMaterials)
     {
-        ::Ogre::MaterialPtr volumeMtl              = ::Ogre::MaterialManager::getSingletonPtr()->getByName(mtlName);
+        ::Ogre::MaterialPtr volumeMtl              = ::Ogre::MaterialManager::getSingleton().getByName(mtlName);
         ::Ogre::Material::TechniqueIterator techIt = volumeMtl->getTechniqueIterator();
 
         while( techIt.hasMoreElements())
@@ -260,8 +262,43 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
 RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 {
+    m_camera->removeListener(m_cameraListener);
+    if(m_compositorListener)
+    {
+        auto layer = m_layer.lock();
+
+        ::Ogre::CompositorChain* compChain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
+            layer->getViewport());
+
+        auto compositorInstance = compChain->getCompositor(m_compositorName);
+        compositorInstance->removeListener(m_compositorListener);
+
+        ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+        compositorManager.setCompositorEnabled(layer->getViewport(), m_compositorName, false);
+        compositorManager.removeCompositor(layer->getViewport(), m_compositorName);
+    }
+
+    if(m_r2vbSource)
+    {
+        auto mesh = m_r2vbSource->getMesh();
+        m_sceneManager->destroyEntity(m_r2vbSource);
+        m_r2vbSource = nullptr;
+        ::Ogre::MeshManager::getSingleton().remove(mesh->getHandle());
+    }
     m_volumeSceneNode->detachObject(m_entryPointGeometry);
-    m_sceneManager->destroyManualObject(m_entryPointGeometry->getName());
+    m_volumeSceneNode->detachObject(m_proxyGeometryGenerator);
+    m_sceneManager->destroyManualObject(m_entryPointGeometry);
+    m_sceneManager->destroyMovableObject(m_proxyGeometryGenerator);
+
+    for(auto& texture : m_entryPointsTextures)
+    {
+        ::Ogre::TextureManager::getSingleton().remove(texture->getHandle());
+    }
+
+    if(!m_gridTexture.isNull())
+    {
+        ::Ogre::TextureManager::getSingleton().remove(m_gridTexture->getHandle());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -285,7 +322,7 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
 
         if(!m_gridTexture.isNull())
         {
-            ::Ogre::TextureManager::getSingletonPtr()->remove(m_gridTexture->getHandle());
+            ::Ogre::TextureManager::getSingleton().remove(m_gridTexture->getHandle());
         }
 
         this->createGridTexture();
@@ -325,7 +362,7 @@ void RayTracingVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr tf)
 
                 rt->getViewport(0)->clear();
 
-                ::Ogre::MaterialPtr gridMtl = ::Ogre::MaterialManager::getSingletonPtr()->getByName("VolumeBricksGrid");
+                ::Ogre::MaterialPtr gridMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricksGrid");
 
                 ::Ogre::Pass* gridPass                       = gridMtl->getTechnique(0)->getPass(0);
                 ::Ogre::GpuProgramParametersSharedPtr params = gridPass->getFragmentProgramParameters();
@@ -378,7 +415,7 @@ void RayTracingVolumeRenderer::setIlluminationVolume(SATVolumeIllumination* illu
 void RayTracingVolumeRenderer::setPreIntegratedRendering(bool preIntegratedRendering)
 {
     OSLM_WARN_IF("Stereoscopic rendering doesn't implement pre-integration yet.",
-                 m_mode3D != ::fwRenderOgre::Layer::Mode3DType::NONE && preIntegratedRendering);
+                 m_mode3D != ::fwRenderOgre::Layer::StereoModeType::NONE && preIntegratedRendering);
 
     m_preIntegratedRendering = preIntegratedRendering;
 
@@ -412,24 +449,27 @@ void RayTracingVolumeRenderer::configure3DViewport(Layer::sptr layer)
 {
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
 
-    std::string compositorName = m_mode3D == ::fwRenderOgre::Layer::Mode3DType::AUTOSTEREO_8 ?
-                                 "RayTracedVolume3D8" :
-                                 "RayTracedVolume3D5";
+    m_compositorName = m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ?
+                       "RayTracedVolume3D8" :
+                       "RayTracedVolume3D5";
 
-    compositorManager.addCompositor(layer->getViewport(), compositorName);
-    compositorManager.setCompositorEnabled(layer->getViewport(), compositorName, true);
+    compositorManager.addCompositor(layer->getViewport(), m_compositorName);
+    compositorManager.setCompositorEnabled(layer->getViewport(), m_compositorName, true);
 
     ::Ogre::CompositorChain* compChain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
         layer->getViewport());
 
-    ::Ogre::CompositorInstance* compInstance = compChain->getCompositor(compositorName);
+    auto compositorInstance = compChain->getCompositor(m_compositorName);
 
-    compInstance->addListener(new AutoStereoCompositorListener(m_entryPointsTextures,
-                                                               m_viewPointMatrices,
-                                                               m_3DOgreTexture,
-                                                               m_gpuTF->getTexture(),
-                                                               m_sampleDistance,
-                                                               m_volumeSceneNode));
+    m_compositorListener = new RayTracingVolumeRenderer::AutoStereoCompositorListener(m_entryPointsTextures,
+                                                                                      m_viewPointMatrices,
+                                                                                      m_3DOgreTexture,
+                                                                                      m_gpuTF->getTexture(),
+                                                                                      m_sampleDistance,
+                                                                                      m_volumeSceneNode);
+    compositorInstance->addListener(m_compositorListener);
+
+    m_layer = layer;
 }
 
 //-----------------------------------------------------------------------------
@@ -450,8 +490,8 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
     const ::Ogre::AxisAlignedBox maxBoxSize(::Ogre::Vector3::ZERO, ::Ogre::Vector3(1.f, 1.f, 1.f));
     const ::Ogre::AxisAlignedBox realClippingBox = maxBoxSize.intersection(clippingBox);
 
-    ::Ogre::MaterialPtr geomMtl = ::Ogre::MaterialManager::getSingletonPtr()->getByName(
-        "VolumeBricks");
+    ::Ogre::MaterialPtr geomMtl =
+        ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricks");
     ::Ogre::GpuProgramParametersSharedPtr geomParams =
         geomMtl->getTechnique(0)->getPass(0)->getGeometryProgramParameters();
 
@@ -532,13 +572,13 @@ void RayTracingVolumeRenderer::initEntryPoints()
     }
     m_entryPointGeometry->end();
 
-    m_entryPointGeometry->setVisible(m_mode3D == ::fwRenderOgre::Layer::Mode3DType::NONE);
+    m_entryPointGeometry->setVisible(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE);
 
     m_volumeSceneNode->attachObject(m_entryPointGeometry);
 
     // Create R2VB object used to generate proxy geometry
     {
-        ::Ogre::MeshPtr gridMesh = ::Ogre::MeshManager::getSingletonPtr()->createManual(
+        ::Ogre::MeshPtr gridMesh = ::Ogre::MeshManager::getSingleton().createManual(
             m_parentId + "_gridMesh",
             ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME
             );
@@ -579,7 +619,8 @@ void RayTracingVolumeRenderer::initEntryPoints()
             ::fwData::Mesh::POINT,
             "RayEntryPoints");
 
-        m_camera->addListener(new CameraListener(this));
+        m_cameraListener = new CameraListener(this);
+        m_camera->addListener(m_cameraListener);
 
         m_r2vbSource->getSubEntity(0)->getRenderOperation(m_gridRenderOp);
 
@@ -588,7 +629,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
 
     // Create grid texture and set parameters in it's associated shader.
     {
-        ::Ogre::MaterialPtr gridMtl = ::Ogre::MaterialManager::getSingletonPtr()->getByName("VolumeBricksGrid");
+        ::Ogre::MaterialPtr gridMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricksGrid");
 
         ::Ogre::Pass* gridPass = gridMtl->getTechnique(0)->getPass(0);
 
@@ -618,19 +659,19 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 
     ::Ogre::RenderOperation renderOp;
     m_proxyGeometryGenerator->getRenderOperation(renderOp);
-    m_entryPointGeometry->setVisible(m_mode3D == ::fwRenderOgre::Layer::Mode3DType::NONE);
+    m_entryPointGeometry->setVisible(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE);
 
     ::Ogre::Matrix4 worldMat;
     m_proxyGeometryGenerator->getWorldTransforms(&worldMat);
 
     float eyeAngle = 0.f;
     float angle    = 0.f;
-    if(m_mode3D == ::fwRenderOgre::Layer::Mode3DType::AUTOSTEREO_5)
+    if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
     {
         eyeAngle = 0.02321f;
         angle    = eyeAngle * -2.f;
     }
-    else if(m_mode3D == ::fwRenderOgre::Layer::Mode3DType::AUTOSTEREO_8)
+    else if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
     {
         eyeAngle = 0.01625f;
         angle    = eyeAngle * -3.5f;
@@ -645,7 +686,7 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
         ::Ogre::RenderTexture* renderTexture = entryPtsText->getBuffer()->getRenderTarget();
         renderTexture->getViewport(0)->clear(::Ogre::FBT_COLOUR | ::Ogre::FBT_DEPTH, ::Ogre::ColourValue::White);
 
-        if(m_mode3D != ::fwRenderOgre::Layer::Mode3DType::NONE)
+        if(m_mode3D != ::fwRenderOgre::Layer::StereoModeType::NONE)
         {
             const ::Ogre::Matrix4 shearTransform = frustumShearTransform(angle);
 
@@ -748,7 +789,7 @@ void RayTracingVolumeRenderer::createGridTexture()
 {
     // Create grid texture and set initialize render targets.
     {
-        m_gridTexture = ::Ogre::TextureManager::getSingletonPtr()->createManual(
+        m_gridTexture = ::Ogre::TextureManager::getSingleton().createManual(
             m_parentId + "_gridTexture",
             ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
             ::Ogre::TEX_TYPE_3D,
@@ -769,14 +810,14 @@ void RayTracingVolumeRenderer::createGridTexture()
 
     // Update R2VB source geometry.
     {
-        ::Ogre::MeshPtr r2vbSrcMesh = ::Ogre::MeshManager::getSingletonPtr()->getByName(m_parentId + "_gridMesh");
+        ::Ogre::MeshPtr r2vbSrcMesh = ::Ogre::MeshManager::getSingleton().getByName(m_parentId + "_gridMesh");
 
         ::Ogre::VertexData* meshVtxData = r2vbSrcMesh->getSubMesh(0)->vertexData;
 
         meshVtxData->vertexCount = m_gridSize[0] * m_gridSize[1] * m_gridSize[2];
 
         ::Ogre::HardwareVertexBufferSharedPtr vtxBuffer =
-            ::Ogre::HardwareBufferManager::getSingletonPtr()->createVertexBuffer(
+            ::Ogre::HardwareBufferManager::getSingleton().createVertexBuffer(
                 ::Ogre::VertexElement::getTypeSize(::Ogre::VET_INT1),
                 meshVtxData->vertexCount,
                 ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
@@ -801,7 +842,7 @@ void RayTracingVolumeRenderer::createGridTexture()
 
     // Set shader parameters.
     {
-        ::Ogre::MaterialPtr gridMtl = ::Ogre::MaterialManager::getSingletonPtr()->getByName("VolumeBricksGrid");
+        ::Ogre::MaterialPtr gridMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricksGrid");
 
         ::Ogre::Pass* gridPass = gridMtl->getTechnique(0)->getPass(0);
 
@@ -810,7 +851,7 @@ void RayTracingVolumeRenderer::createGridTexture()
         gridGeneratorParams->setNamedConstant("u_gridResolution", m_gridSize.data(), 3, 1);
         gridGeneratorParams->setNamedConstant("u_brickSize", m_bricksSize.data(), 3, 1);
 
-        ::Ogre::MaterialPtr geomGeneratorMtl = ::Ogre::MaterialManager::getSingletonPtr()->getByName("VolumeBricks");
+        ::Ogre::MaterialPtr geomGeneratorMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricks");
 
         ::Ogre::Pass* geomGenerationPass = geomGeneratorMtl->getTechnique(0)->getPass(0);
 

@@ -48,7 +48,7 @@ class FWRENDEROGRE_CLASS_API Layer : public ::fwCore::BaseObject,
 {
 public:
 
-    enum class Mode3DType : std::uint8_t
+    enum class StereoModeType : std::uint8_t
     {
         NONE,
         AUTOSTEREO_5,
@@ -71,6 +71,8 @@ public:
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_COMPOSITOR_UPDATED_SIG;
     typedef ::fwCom::Signal<void (std::string, bool, ::fwRenderOgre::Layer::sptr)> CompositorUpdatedSignalType;
 
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_MODE3D_CHANGED_SIG;
+    typedef ::fwCom::Signal<void (StereoModeType)> StereoModeChangedSignalType;
     /** @} */
 
     /**
@@ -107,7 +109,8 @@ public:
      * Set the associated scene manager ID of this viewport
      */
     FWRENDEROGRE_API void setID(const std::string& id);
-    FWRENDEROGRE_API const std::string& getID() const;
+    FWRENDEROGRE_API const std::string getName() const;
+    FWRENDEROGRE_API const std::string& getLayerID() const;
 
     /// Get the scene manager associated to this viewport
     FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager() const;
@@ -177,7 +180,7 @@ public:
     FWRENDEROGRE_API void requestRender();
 
     /// Sets stereoscopic rendering.
-    FWRENDEROGRE_API void set3D(Mode3DType mode);
+    FWRENDEROGRE_API void setStereoMode(StereoModeType mode);
 
     /// Sets background color : specific to background Layer
     FWRENDEROGRE_API void setBackgroundColor(std::string topColor, std::string botColor);
@@ -202,7 +205,7 @@ public:
     FWRENDEROGRE_API bool is3D() const;
 
     /// Get stereoscopic mode
-    FWRENDEROGRE_API Mode3DType get3DMode() const;
+    FWRENDEROGRE_API StereoModeType getStereoMode() const;
 
     /// Checks if this layer has a default compositor
     FWRENDEROGRE_API ::fwRenderOgre::compositor::Core::sptr getCoreCompositor();
@@ -242,7 +245,7 @@ private:
     ::Ogre::Viewport* m_viewport;
 
     /// Boolean used to set stereoscopic rendering.
-    Mode3DType m_3DMode;
+    StereoModeType m_stereoMode;
 
     /// If there is a configured compositor chain, this attribute stores its raw string
     std::string m_rawCompositorChain;

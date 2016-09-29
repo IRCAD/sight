@@ -176,6 +176,9 @@ private:
     /// Picked box point.
     ::Ogre::Vector3 m_pickedBoxPoint;
 
+    /// Materials
+    ::Ogre::MaterialPtr m_sphereHighlightMtl, m_frameMtl, m_frameHighlightMtl, m_faceMtl;
+
 };
 
 } // namespace ui

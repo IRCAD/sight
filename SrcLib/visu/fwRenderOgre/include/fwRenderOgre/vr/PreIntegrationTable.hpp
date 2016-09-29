@@ -39,6 +39,9 @@ public:
     /// Initializes the texture resource.
     FWRENDEROGRE_API void createTexture(const std::string& _parentId);
 
+    /// Destroy the texture
+    FWRENDEROGRE_API void removeTexture();
+
     /// Sets the table resolution based on the new image and recomputes it.
     FWRENDEROGRE_API void imageUpdate(const ::fwData::Image::sptr& _img, const ::fwData::TransferFunction::sptr& _tf,
                                       float _samplingRate);

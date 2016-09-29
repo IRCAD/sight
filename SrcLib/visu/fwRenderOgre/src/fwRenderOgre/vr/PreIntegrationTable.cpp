@@ -48,10 +48,18 @@ PreIntegrationTable::~PreIntegrationTable()
 
 void PreIntegrationTable::createTexture(const std::string& _parentId)
 {
-    m_tableTexture = ::Ogre::TextureManager::getSingletonPtr()->create(
+    m_tableTexture = ::Ogre::TextureManager::getSingleton().create(
         _parentId + "_PreIntTableTexture",
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
         true);
+}
+
+//-----------------------------------------------------------------------------
+
+void PreIntegrationTable::removeTexture()
+{
+    ::Ogre::TextureManager::getSingleton().remove(m_tableTexture->getHandle());
+    m_tableTexture.setNull();
 }
 
 //-----------------------------------------------------------------------------

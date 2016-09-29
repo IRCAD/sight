@@ -18,6 +18,7 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwDataTools/Mesh.hpp>
 
+#include <fwRenderOgre/factory/R2VBRenderable.hpp>
 #include <fwRenderOgre/helper/Mesh.hpp>
 #include <fwRenderOgre/R2VBRenderable.hpp>
 #include <fwRenderOgre/SRender.hpp>
@@ -140,9 +141,10 @@ SMesh::SMesh() throw() :
 
 SMesh::~SMesh() throw()
 {
+    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+
     if(m_entity)
     {
-        ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
         sceneMgr->destroyEntity(m_entity);
     }
 }
@@ -278,10 +280,12 @@ void SMesh::doStop() throw(fwTools::Failed)
 
     this->unregisterServices();
 
+    this->clearMesh();
+
     // Destroy Ogre Mesh
-    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    sceneMgr->destroyManualObject(m_meshName);
-    sceneMgr->destroyManualObject(m_r2vbMeshName);
+    auto& meshMgr = ::Ogre::MeshManager::getSingleton();
+    meshMgr.remove(m_ogreMesh->getHandle());
+    meshMgr.remove(m_r2vbMesh->getHandle());
 
     m_connections.disconnect();
     if(!m_useNewMaterialAdaptor)
@@ -1041,7 +1045,7 @@ void SMesh::clearMesh()
     }
 
     ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    for(auto r2vbObject : m_r2vbObject)
+    for(auto& r2vbObject : m_r2vbObject)
     {
         sceneMgr->destroyMovableObject(r2vbObject.second);
     }

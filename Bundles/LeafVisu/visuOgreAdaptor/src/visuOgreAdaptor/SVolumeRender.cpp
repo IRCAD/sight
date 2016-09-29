@@ -62,6 +62,7 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_COLOR_BLEEDING_SLOT   
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT                 = "toggleWidgets";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT                = "resizeViewport";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_FOCAL_DISTANCE_SLOT             = "setFocalDistance";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_MODE3D_SLOT                     = "setStereoMode";
 
 //-----------------------------------------------------------------------------
 
@@ -80,7 +81,7 @@ SVolumeRender::SVolumeRender() throw() :
     m_satShells              (3),
     m_satShellRadius         (3),
     m_satConeAngle           (0.1f),
-    m_satConeSamples       (50)
+    m_satConeSamples         (50)
 {
     this->installTFSlots(this);
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
@@ -96,6 +97,7 @@ SVolumeRender::SVolumeRender() throw() :
     newSlot(s_TOGGLE_WIDGETS_SLOT, &SVolumeRender::toggleWidgets, this);
     newSlot(s_RESIZE_VIEWPORT_SLOT, &SVolumeRender::resizeViewport, this);
     newSlot(s_SET_FOCAL_DISTANCE_SLOT, &SVolumeRender::setFocalDistance, this);
+    newSlot(s_SET_MODE3D_SLOT, &SVolumeRender::setStereoMode, this);
 
     m_transform     = ::Ogre::Matrix4::IDENTITY;
     m_renderingMode = VR_MODE_RAY_TRACING;
@@ -258,13 +260,15 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     m_camera          = m_sceneManager->getCamera("PlayerCam");
 
     // Create textures
-    m_3DOgreTexture = ::Ogre::TextureManager::getSingletonPtr()->create(
+    m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
         this->getID() + "_Texture",
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
         true);
 
     m_gpuTF.createTexture(this->getID());
     m_preIntegrationTable.createTexture(this->getID());
+
+    ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
 
     if(m_renderingMode == VR_MODE_SLICE)
     {
@@ -277,25 +281,23 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     }
     else
     {
-        ::fwRenderOgre::Layer::sptr serviceLayer = this->getRenderService()->getLayer(m_layerID);
-
         m_volumeRenderer = new ::fwRenderOgre::vr::RayTracingVolumeRenderer(this->getID(),
                                                                             m_sceneManager,
                                                                             m_volumeSceneNode,
                                                                             m_3DOgreTexture,
                                                                             &m_gpuTF,
                                                                             &m_preIntegrationTable,
-                                                                            serviceLayer->get3DMode(),
+                                                                            layer->getStereoMode(),
                                                                             m_ambientOcclusion,
                                                                             m_colorBleeding);
 
-        if(serviceLayer->get3DMode() != ::fwRenderOgre::Layer::Mode3DType::NONE)
+        if(layer->getStereoMode() != ::fwRenderOgre::Layer::StereoModeType::NONE)
         {
             auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer*>(m_volumeRenderer);
 
             OSLM_ERROR_IF("Stereo rendering is supported only by ray casting VR.", !rayCastVolumeRenderer);
 
-            rayCastVolumeRenderer->configure3DViewport(serviceLayer);
+            rayCastVolumeRenderer->configure3DViewport(layer);
 
             // Initially focus on the image center.
             setFocalDistance(50);
@@ -311,8 +313,10 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
 
-    m_volumeConnection.connect(this->getRenderService()->getLayer(m_layerID), ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
+    m_volumeConnection.connect(layer, ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
                                this->getSptr(), ::visuOgreAdaptor::SVolumeRender::s_RESIZE_VIEWPORT_SLOT);
+    m_volumeConnection.connect(layer, ::fwRenderOgre::Layer::s_MODE3D_CHANGED_SIG,
+                               this->getSptr(), ::visuOgreAdaptor::SVolumeRender::s_SET_MODE3D_SLOT);
 
     initWidgets();
     m_widgets->setVisibility(m_widgetVisibilty);
@@ -330,6 +334,7 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     this->getRenderService()->resetCameraCoordinates(m_layerID);
 
     m_volumeRenderer->tfUpdate(this->getTransferFunction());
+
     this->requestRender();
 }
 
@@ -337,10 +342,33 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 
 void SVolumeRender::doStop() throw ( ::fwTools::Failed )
 {
+    this->removeTFConnections();
+
     m_volumeConnection.disconnect();
     delete m_volumeRenderer;
 
     m_sceneManager->getRootSceneNode()->removeChild(m_volumeSceneNode->getName());
+
+    ::Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture->getHandle());
+    m_3DOgreTexture.setNull();
+
+    m_gpuTF.removeTexture();
+    m_preIntegrationTable.removeTexture();
+
+    // Disconnect widget to interactor.
+    {
+        ::fwRenderOgre::Layer::sptr layer                        = this->getRenderService()->getLayer(m_layerID);
+        ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getInteractor();
+
+        auto vrInteractor =
+            std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
+
+        if(vrInteractor)
+        {
+            vrInteractor->detachWidget(m_widgets);
+        }
+        m_widgets = nullptr;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -596,7 +624,7 @@ void SVolumeRender::resizeViewport(int w, int h)
 
 void SVolumeRender::setFocalDistance(int focalDistance)
 {
-    if(this->getRenderService()->getLayer(m_layerID)->get3DMode() != ::fwRenderOgre::Layer::Mode3DType::NONE)
+    if(this->getRenderService()->getLayer(m_layerID)->getStereoMode() != ::fwRenderOgre::Layer::StereoModeType::NONE)
     {
         auto rayTracingRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer*>(m_volumeRenderer);
 
@@ -607,6 +635,14 @@ void SVolumeRender::setFocalDistance(int focalDistance)
             this->requestRender();
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::setStereoMode(::fwRenderOgre::Layer::StereoModeType mode)
+{
+    this->doStop();
+    this->doStart();
 }
 
 //-----------------------------------------------------------------------------

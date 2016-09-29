@@ -42,6 +42,13 @@
         <desc>service description</desc>
     </extension>
 
+<extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiVisuOgre::SStereoSelector</service>
+        <object>::fwData::Composite</object>
+        <desc>service description</desc>
+    </extension>
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiVisuOgre::SCoreCompositorEditor</service>

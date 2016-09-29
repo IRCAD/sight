@@ -51,6 +51,7 @@ namespace visuOgreAdaptor
  * - \b toggleWidgets(bool): Toggles widget visibility.
  * - \b resizeViewport(int, int): Called when the size of the viewport changes.
  * - \b setFocalDistance(int): Called to modify focal length (only useful for stereoscopic 3D).
+ * - \b setStereoMode(int): Called to modify 3D stereoscopic 3D mode.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -104,6 +105,7 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_FOCAL_DISTANCE_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_MODE3D_SLOT;
     /** @} */
 
     /// Constructor.
@@ -158,6 +160,7 @@ private:
     void toggleWidgets(bool visible);
     void resizeViewport(int w, int h);
     void setFocalDistance(int focalDistance);
+    void setStereoMode(::fwRenderOgre::Layer::StereoModeType mode);
 
     /// Creates widgets and connects its slots to interactor signals.
     void initWidgets();

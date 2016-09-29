@@ -20,8 +20,11 @@ set( REQUIREMENTS
     visuOgre
     visuOgreQt
     visuOgreAdaptor
+    uiData
     uiIO
+    uiMedDataQt
     uiTF
+    uiVisuOgre
     uiVisuQt
     scene2D
     material

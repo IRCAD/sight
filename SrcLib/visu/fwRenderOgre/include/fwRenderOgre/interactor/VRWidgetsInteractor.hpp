@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VRWIDGETSINTERACTOR_HPP__
-#define __VRWIDGETSINTERACTOR_HPP__
+#ifndef __FWRENDEROGRE_INTERACTOR_VRWIDGETSINTERACTOR_HPP__
+#define __FWRENDEROGRE_INTERACTOR_VRWIDGETSINTERACTOR_HPP__
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
@@ -24,7 +24,7 @@ namespace interactor
 
 /**
  * @brief Picks VR widgets and updates clipping cube.
-*/
+ */
 class FWRENDEROGRE_CLASS_API VRWidgetsInteractor : public ::fwRenderOgre::interactor::TrackballInteractor
 {
 public:
@@ -47,6 +47,9 @@ public:
     /// Attaches a widget.
     FWRENDEROGRE_API inline void attachWidget(ui::VRWidget::sptr widget);
 
+    /// Detaches a widget.
+    FWRENDEROGRE_API inline void detachWidget(ui::VRWidget::sptr widget);
+
     /// Initializes the picker.
     FWRENDEROGRE_API inline void initPicker();
 
@@ -62,7 +65,7 @@ private:
     fwRenderOgre::picker::IPicker m_picker;
 
     /// Picks the object at screen coordinates (x, y)
-    Ogre::MovableObject * pickObject(int x, int y);
+    Ogre::MovableObject* pickObject(int x, int y);
 
 };
 
@@ -72,6 +75,16 @@ void VRWidgetsInteractor::attachWidget(ui::VRWidget::sptr widget)
 {
     OSLM_ASSERT("Only one widget can be attached to a VR interactor", !m_widget);
     m_widget = widget;
+}
+
+//------------------------------------------------------------------------------
+
+void VRWidgetsInteractor::detachWidget(ui::VRWidget::sptr widget)
+{
+    if(m_widget == widget)
+    {
+        m_widget = nullptr;
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -86,4 +99,4 @@ void VRWidgetsInteractor::initPicker()
 } // namespace interactor
 } // namespace fwRenderOgre
 
-#endif // __VRWIDGETSINTERACTOR_HPP__
+#endif // __FWRENDEROGRE_INTERACTOR_VRWIDGETSINTERACTOR_HPP__

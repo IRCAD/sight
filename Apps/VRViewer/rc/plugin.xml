@@ -145,18 +145,20 @@
                     <layout>
                         <menuItem name="Load a DICOM image" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
                         <menuItem name="Show/hide box cropping" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-box.png" style="check" />
+                        <editor name="Show/hide box cropping"  />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="actionImport" />
                     <menuItem sid="ActionResetBoxWidget" start="yes" />
+                    <editor wid="ToolBarParent" />
                 </registry>
             </service>
             <!-- ******************************* Actions ****************************************** -->
 
-
-            <service uid="action_openNegato" type="::gui::action::SStarter" >
-                <start uid="imageReader" />
+            <service uid="actionImport" type="::uiIO::action::SSeriesDBMerger" autoConnect="yes">
+                <inout key="seriesDB" uid="dicomSeriesDB"/>
+                <IOSelectorSrvConfig name="SSeriesDBMergerConfig" />
             </service>
 
             <service uid="actionQuit" type="::gui::action::SQuit"  />
@@ -174,6 +176,7 @@
                 <inout key="TFSelections" uid="TFSelections" />
                 <parameter replace="WID_PARENT" uid="OgreVolumeRenderingView" />
                 <parameter replace="SETTINGS_WID_PARENT" uid="OgreVolumeRenderingSettingsView" />
+                <parameter replace="TOOLBAR_WID_PARENT" uid="ToolBarParent" />
                 <parameter replace="VRAdaptor" uid="VR" />
             </service>
 
@@ -298,11 +301,6 @@
                 <selectionMode>single</selectionMode>
             </service>
 
-            <service uid="actionImport" type="::uiIO::action::SSeriesDBMerger" autoConnect="yes">
-                <inout key="seriesDB" uid="dicomSeriesDB"/>
-                <IOSelectorSrvConfig name="SSeriesDBMergerConfig" />
-            </service>
-
             <service uid="extractImage" type="::ctrlCamp::SExtractObj" >
                <inout key="source" uid="selections" >
                    <extract from="@values.0.image" />
@@ -321,7 +319,6 @@
                 <inout key="histogram" uid="histogram" />
                 <binsWidth>5.0</binsWidth>
             </service>
-
 
             <!-- Negato windowing service -->
             <service uid="windowLevelVR" type="::uiImage::WindowLevel" autoConnect="yes">

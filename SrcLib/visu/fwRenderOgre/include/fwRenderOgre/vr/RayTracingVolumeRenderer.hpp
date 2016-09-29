@@ -50,7 +50,7 @@ public:
                                               ::Ogre::TexturePtr imageTexture,
                                               TransferFunction* gpuTF,
                                               PreIntegrationTable* preintegrationTable,
-                                              ::fwRenderOgre::Layer::Mode3DType mode3D,
+                                              ::fwRenderOgre::Layer::StereoModeType mode3D,
                                               bool ambientOcclusion = false,
                                               bool colorBleeding = false);
 
@@ -94,9 +94,6 @@ public:
     FWRENDEROGRE_API SATVolumeIllumination* getIllumVolume();
 
 private:
-
-    /// Camera listener class used to compute the entry points textures before rendering.
-    struct CameraListener;
 
     /// Creates the proxy geometry defining the entry points for rays.
     void initEntryPoints();
@@ -154,7 +151,7 @@ private:
     std::array< int, 3 > m_bricksSize;
 
     /// Sets stereoscopic volume rendering for autostereoscopic monitors.
-    ::fwRenderOgre::Layer::Mode3DType m_mode3D;
+    ::fwRenderOgre::Layer::StereoModeType m_mode3D;
 
     /// Sets usage of ambient occlusion.
     bool m_ambientOcclusion;
@@ -166,6 +163,18 @@ private:
 
     /// Focal distance in object space : 0 = object front, 1 = object back.
     float m_focalLength;
+
+    /// Camera listener class used to compute the entry points textures before rendering.
+    struct CameraListener;
+    CameraListener* m_cameraListener;
+
+    /// Compositor listener class used to upload uniforms for autostereo.
+    class AutoStereoCompositorListener;
+    AutoStereoCompositorListener* m_compositorListener;
+
+    std::string m_compositorName;
+
+    ::fwRenderOgre::Layer::wptr m_layer;
 };
 
 //-----------------------------------------------------------------------------

@@ -47,6 +47,7 @@ namespace fwRenderOgre
 const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG         = "layerInitialized";
 const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG       = "layerResized";
 const ::fwCom::Signals::SignalKeyType Layer::s_COMPOSITOR_UPDATED_SIG = "compositorUpdated";
+const ::fwCom::Signals::SignalKeyType Layer::s_MODE3D_CHANGED_SIG     = "StereoModeChanged";
 
 const ::fwCom::Slots::SlotKeyType Layer::s_INTERACTION_SLOT    = "interaction";
 const ::fwCom::Slots::SlotKeyType Layer::s_DESTROY_SLOT        = "destroy";
@@ -59,7 +60,7 @@ Layer::Layer() :
     m_sceneManager(nullptr),
     m_renderWindow(nullptr),
     m_viewport(nullptr),
-    m_3DMode(Mode3DType::NONE),
+    m_stereoMode(StereoModeType::NONE),
     m_rawCompositorChain(""),
     m_coreCompositor(nullptr),
     m_transparencyTechnique(DEFAULT),
@@ -78,6 +79,7 @@ Layer::Layer() :
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
     newSignal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
     newSignal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
+    newSignal<StereoModeChangedSignalType>(s_MODE3D_CHANGED_SIG);
 
     newSlot(s_INTERACTION_SLOT, &Layer::interaction, this);
     newSlot(s_DESTROY_SLOT, &Layer::destroy, this);
@@ -111,9 +113,16 @@ void Layer::setID(const std::string& id)
 
 //-----------------------------------------------------------------------------
 
-const std::string& Layer::getID() const
+const std::string Layer::getName() const
 {
     return m_sceneManager->getName();
+}
+
+//-----------------------------------------------------------------------------
+
+const std::string& Layer::getLayerID() const
+{
+    return m_id;
 }
 
 //-----------------------------------------------------------------------------
@@ -152,7 +161,7 @@ void Layer::createScene()
         // We must blend the input previous in each compositor
         ::Ogre::MaterialPtr defaultMaterial = ::Ogre::MaterialManager::getSingleton().getByName("DefaultBackground");
         ::Ogre::MaterialPtr material        = ::Ogre::MaterialManager::getSingleton().create(
-            this->getID() + "backgroundMat", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+            this->getName() + "backgroundMat", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
         defaultMaterial.get()->copyDetailsTo(material);
 
         std::uint8_t color[4];
@@ -179,7 +188,7 @@ void Layer::createScene()
         // Create background rectangle covering the whole screen
         ::Ogre::Rectangle2D* rect = new ::Ogre::Rectangle2D();
         rect->setCorners(-1.0, 1.0, 1.0, -1.0);
-        rect->setMaterial(this->getID() + "backgroundMat");
+        rect->setMaterial(this->getName() + "backgroundMat");
 
         // Render the background before everything else
         rect->setRenderQueueGroup(::Ogre::RENDER_QUEUE_BACKGROUND);
@@ -228,7 +237,7 @@ void Layer::createScene()
         this->setupCore();
     }
 
-    if(m_3DMode == Mode3DType::NONE)
+    if(m_stereoMode == StereoModeType::NONE)
     {
         m_compositorChainManager->setOgreViewport(m_viewport);
 
@@ -627,9 +636,12 @@ void Layer::requestRender()
 
 //-----------------------------------------------------------------------------
 
-void Layer::set3D(Mode3DType mode)
+void Layer::setStereoMode(StereoModeType mode)
 {
-    m_3DMode = mode;
+    m_stereoMode = mode;
+
+    auto sig = this->signal<StereoModeChangedSignalType>(s_MODE3D_CHANGED_SIG);
+    sig->asyncEmit(m_stereoMode);
 }
 
 //-----------------------------------------------------------------------------
@@ -715,9 +727,9 @@ bool Layer::isCompositorChainEnabled()
 
 //-------------------------------------------------------------------------------------
 
-Layer::Mode3DType Layer::get3DMode() const
+Layer::StereoModeType Layer::getStereoMode() const
 {
-    return m_3DMode;
+    return m_stereoMode;
 }
 
 //-------------------------------------------------------------------------------------

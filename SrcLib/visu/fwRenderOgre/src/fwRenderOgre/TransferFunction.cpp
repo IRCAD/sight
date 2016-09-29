@@ -41,7 +41,15 @@ void TransferFunction::createTexture(const ::Ogre::String& _parentId)
         TEXTURE_SIZE, TEXTURE_SIZE,                                 // width, height
         0,                                                          // number of mipmaps (depth)
         ::Ogre::PF_A8R8G8B8,                                        // pixel format
-        ::Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);                 // usage
+        ::Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);                         // usage
+}
+
+//-----------------------------------------------------------------------------
+
+void TransferFunction::removeTexture()
+{
+    ::Ogre::TextureManager::getSingleton().remove(m_texture->getHandle());
+    m_texture.setNull();
 }
 
 //-----------------------------------------------------------------------------
