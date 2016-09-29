@@ -20,7 +20,6 @@ set( REQUIREMENTS
     visuOgre
     visuOgreQt
     visuOgreAdaptor
-    uiData
     uiIO
     uiMedDataQt
     uiTF
