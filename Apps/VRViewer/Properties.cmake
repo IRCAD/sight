@@ -14,6 +14,7 @@ set( REQUIREMENTS
     ioAtoms
     ioDcmtk
     ioDicom
+    ioVtkGdcm
     servicesReg
     fwlauncher
     appXml2
