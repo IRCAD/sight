@@ -8,12 +8,8 @@
     </parameters>
     <config>
 
-        <!-- ******************************* Objects declaration ****************************** -->
-
         <object uid="${imageUID}"  type="::fwData::Image" src="ref" />
         <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
-
-        <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="OgreNegato2D" type="::gui::view::SDefaultView" >
             <gui>
@@ -30,43 +26,30 @@
             </registry>
         </service>
 
-        <service uid="negato2DInteractor" type="::gui::view::SDefaultView" >
-            <gui>
-                <layout type="::fwGui::LineLayoutManager" >
-                    <orientation value="vertical" />
-                    <view proportion="1" />
-                    <view proportion="1" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="sliderIndexEditor2D" start="yes" />
-                <view sid="windowLevel2D" start="yes" />
-            </registry>
+        <!-- Begin Generic Scene ***************************************** -->
+
+        <service uid="negato2DScene" type="::fwRenderOgre::SRender" >
+            <adaptor uid="interactorAdaptor" start="yes" />
+            <adaptor uid="negato2DAdaptor" start="yes" />
+
+            <!-- Fix afterglow bug when dezooming -->
+            <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+
+            <!-- Default Layer -->
+            <layer id="default" depth="1"/>
         </service>
 
-        <!-- ******************************* Services ***************************************** -->
-
-        <service uid="negato2DScene" type="::fwRenderOgre::SRender" autoConnect="yes" >
-            <in key="image" uid="${imageUID}" />
-            <inout key="TFSelections" uid="${TFSelections}" />
-            <scene >
-
-                <!-- Fix afterglow bug when dezooming -->
-                <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
-
-                <!-- Default Layer -->
-                <renderer id="default" layer="1"/>
-
-                <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
-                    <config renderer="default" style="Negato2D" />
-                </adaptor>
-
-                <adaptor id="negato2DAdaptor" class="::visuOgreAdaptor::SNegato2D" objectId="image">
-                    <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-                </adaptor>
-
-            </scene>
+        <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle" >
+            <config layer="default" style="Negato2D" />
         </service>
+
+        <service uid="negato2DAdaptor" type="::visuOgreAdaptor::SNegato2D" >
+            <in key="image" uid="${imageUID}" autoConnect="yes"/>
+            <inout key="TF" uid="${TFSelections}" />
+            <config layer="default" selectedTFKey="SelectedTF" />
+        </service>
+
+        <!-- End Generic Scene ***************************************** -->
 
         <service uid="negato2DInteractor" type="::gui::view::SDefaultView" >
             <gui>
@@ -84,12 +67,12 @@
 
         <!-- Slice editor service -->
         <service uid="sliderIndexEditor2D" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
-            <inout key="imageKey" uid="${imageUID}" />
+            <inout key="image" uid="${imageUID}" />
             <sliceIndex>Sagittal</sliceIndex>
         </service>
 
         <!-- Negato windowing service -->
-        <service uid="windowLevel2D" type="::uiImage::WindowLevel" autoConnect="yes">
+        <service uid="windowLevel2D" type="::uiImage::WindowLevel">
             <inout key="image" uid="${imageUID}" autoConnect="yes" />
             <inout key="TFSelections" uid="${TFSelections}" />
             <config selectedTFKey="SelectedTF" />

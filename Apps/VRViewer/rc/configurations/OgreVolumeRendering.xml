@@ -54,33 +54,24 @@
         <!-- ******************************* Services ***************************************** -->
 
         <service uid="volumeRenderingScene" type="::fwRenderOgre::SRender" autoConnect="yes">
-            <in key="image" uid="${image}" />
-            <inout key="TFSelections" uid="${TFSelections}" />
-            <scene overlay="true" fullscreen="yes">
+            <scene overlay="true" fullscreen="no" />
 
-                <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+            <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
 
-                <renderer id="default" layer="1" compositors="Default" mode3D="AutoStereo8"/>
+            <layer id="default" depth="1" compositors="Default" mode3D="AutoStereo8"/>
 
-                <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
-                    <config renderer="default" style="VR" />
-                </adaptor>
+            <adaptor uid="interactorAdaptor" start="yes" />
+            <adaptor uid="${VRAdaptor}" start="yes" />
+        </service>
 
-                <adaptor id="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image" uid="${VRAdaptor}">
-                    <config renderer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-                </adaptor>
+        <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle" >
+            <config layer="default" style="VR" />
+        </service>
 
-                <connect>
-                    <signal>samplingSlider/valueChanged</signal>
-                    <slot>${VRAdaptor}/updateSampling</slot>
-                </connect>
-
-                <connect>
-                    <signal>focalLengthSlider/valueChanged</signal>
-                    <slot>${VRAdaptor}/setFocalDistance</slot>
-                </connect>
-
-            </scene>
+        <service uid="${VRAdaptor}" type="::visuOgreAdaptor::SVolumeRender" >
+            <in key="image" uid="${image}" autoConnect="yes" />
+            <inout key="TF" uid="${TFSelections}" />
+            <config layer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" />
         </service>
 
         <service uid="samplingSlider" type="::guiQt::editor::SSlider" autoConnect="yes">
@@ -121,6 +112,16 @@
                 <parent wid="${TOOLBAR_WID_PARENT}" />
             </registry>
         </service>
+
+        <connect>
+            <signal>samplingSlider/valueChanged</signal>
+            <slot>${VRAdaptor}/updateSampling</slot>
+        </connect>
+
+        <connect>
+            <signal>focalLengthSlider/valueChanged</signal>
+            <slot>${VRAdaptor}/setFocalDistance</slot>
+        </connect>
 
         <start uid="OgreVolumeRendering" />
         <start uid="volumeRenderingInteractor" />

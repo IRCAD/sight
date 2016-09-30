@@ -143,7 +143,7 @@ protected:
      *
      * Connects fwData::Image::s_MODIFIED_SIG to this::s_NEWIMAGE_SLOT
      */
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
 private:
 

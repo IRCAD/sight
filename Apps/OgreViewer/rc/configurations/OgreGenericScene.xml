@@ -108,16 +108,16 @@
         <!-- Begin Generic Scene ***************************************** -->
 
         <service uid="${genericSceneUID}" type="::fwRenderOgre::SRender" >
+            <scene overlay="true" />
+            <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+            <layer id="video" depth="1" />
+            <layer id="default" depth="2" />
+
             <adaptor uid="videoAdapter" start="yes" />
             <adaptor uid="interactorAdaptorVideo" start="yes" />
             <adaptor uid="interactorAdaptor" start="yes" />
             <adaptor uid="modelSeriesAdaptor" start="yes" />
             <adaptor uid="negato3DAdaptor" start="yes" />
-
-            <scene overlay="true" />
-            <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
-            <layer id="video" depth="1" />
-            <layer id="default" depth="2" />
         </service>
 
         <service uid="videoAdapter" type="::visuOgreAdaptor::SVideo" >

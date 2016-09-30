@@ -72,7 +72,7 @@ void SCompositorParameterEditor::starting() throw(::fwTools::Failed)
         for(const auto& renderer : services)
         {
             ::fwRenderOgre::SRender::sptr render = ::fwRenderOgre::SRender::dynamicCast(renderer);
-            if(render->getName() == m_renderID)
+            if(render->getID() == m_renderID)
             {
                 m_render = render;
 

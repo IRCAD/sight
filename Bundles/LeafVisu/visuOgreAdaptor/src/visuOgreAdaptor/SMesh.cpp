@@ -283,8 +283,6 @@ void SMesh::doStop() throw(fwTools::Failed)
 
     this->clearMesh();
 
-
-    m_connections.disconnect();
     if(!m_useNewMaterialAdaptor)
     {
         m_materialAdaptor.reset();

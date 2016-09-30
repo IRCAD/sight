@@ -234,11 +234,12 @@ void SVolumeRender::updatingTFWindowing(double window, double level)
 
 //-----------------------------------------------------------------------------
 
-fwServices::IService::KeyConnectionsType SVolumeRender::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SVolumeRender::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsType connections;
+    ::fwServices::IService::KeyConnectionsMap connections;
 
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT ) );
+    connections.push( "image", ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
+    connections.push( "image", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
 
     return connections;
 }
@@ -247,8 +248,9 @@ fwServices::IService::KeyConnectionsType SVolumeRender::getObjSrvConnections() c
 
 void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 {
-    ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
     this->setTransferFunctionSelection(tfSelection);
+    this->setTFSelectionFwID(tfSelection->getID());
 
     this->updateImageInfos(this->getObject< ::fwData::Image >());
     this->updateTransferFunction(this->getImage());

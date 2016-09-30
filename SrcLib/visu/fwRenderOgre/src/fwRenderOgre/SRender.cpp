@@ -13,6 +13,7 @@
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/Utils.hpp>
+#include <fwRenderOgre/registry/Adaptor.hpp>
 
 #include <fwRuntime/ConfigurationElementContainer.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
@@ -48,8 +49,6 @@ static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
 static const ::fwCom::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObject";
 static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
-static const char* s_ogreBackgroundId = "ogreBackground";
-
 //-----------------------------------------------------------------------------
 
 SRender::SRender() throw() :
@@ -57,10 +56,12 @@ SRender::SRender() throw() :
     m_showOverlay(false),
     m_startAdaptor(false),
     m_renderOnDemand(true),
+    m_isReady(false),
     m_fullscreen(false)
-    m_isReady(false)
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
+
+    newSignal<SceneStartedSignalType>(s_SCENE_STARTED_SIG);
 
     newSlot(s_START_OBJECT_SLOT, &SRender::startObject, this);
     newSlot(s_COMPUTE_CAMERA_ORIG_SLOT, &SRender::resetCameraCoordinates, this);
