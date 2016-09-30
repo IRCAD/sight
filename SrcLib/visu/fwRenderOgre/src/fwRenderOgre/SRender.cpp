@@ -96,11 +96,18 @@ void SRender::configuring() throw(fwTools::Failed)
 
         if (sceneConfiguration->hasAttribute("overlay"))
         {
-            const std::string overlay = m_configuration->getAttributeValue("overlay");
+            const std::string overlay = sceneConfiguration->getAttributeValue("overlay");
             if (overlay == "true")
             {
                 m_showOverlay = true;
             }
+        }
+
+        if(sceneConfiguration->hasAttribute("fullscreen"))
+        {
+            std::string fullscreen = sceneConfiguration->getAttributeValue("fullscreen");
+
+            m_fullscreen = (fullscreen == "yes");
         }
     }
 
@@ -112,13 +119,6 @@ void SRender::configuring() throw(fwTools::Failed)
     else if (renderMode == "always")
     {
         m_renderOnDemand = false;
-    }
-
-    if(m_configuration->hasAttribute("fullscreen"))
-    {
-        std::string fullscreen = m_sceneConfiguration->getAttributeValue("fullscreen");
-
-        m_fullscreen = (fullscreen == "yes");
     }
 
     auto adaptorConfigs = m_configuration->findAllConfigurationElement ("adaptor");
