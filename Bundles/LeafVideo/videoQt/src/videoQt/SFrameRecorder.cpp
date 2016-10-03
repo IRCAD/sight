@@ -33,6 +33,10 @@ const ::fwCom::Slots::SlotKeyType SFrameRecorder::s_START_RECORD_SLOT = "startRe
 const ::fwCom::Slots::SlotKeyType SFrameRecorder::s_STOP_RECORD_SLOT  = "stopRecord";
 const ::fwCom::Slots::SlotKeyType SFrameRecorder::s_PAUSE_RECORD_SLOT = "pauseRecord";
 
+static const ::fwServices::IService::KeyType s_FRAMETL_INPUT = "frameTL";
+
+//-----------------------------------------------------------------------------
+
 SFrameRecorder::SFrameRecorder() throw() : m_count(0),
                                            m_isRecording(false),
                                            m_isPaused(false)
@@ -93,7 +97,7 @@ void SFrameRecorder::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
 {
     if (m_isRecording && !m_isPaused)
     {
-        ::arData::FrameTL::sptr frameTL = this->getObject< ::arData::FrameTL >();
+        ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(s_FRAMETL_INPUT);
 
         CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
         OSLM_WARN_IF("No frame found in timeline for timestamp : " << timestamp, !buffer);
@@ -130,20 +134,19 @@ void SFrameRecorder::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SFrameRecorder::getObjSrvConnections() const
-{
-    ::fwServices::IService::KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::arData::FrameTL::s_OBJECT_PUSHED_SIG, s_SAVE_FRAME_SLOT ) );
-
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
 void SFrameRecorder::startRecord()
 {
+    ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(s_FRAMETL_INPUT);
+
+    if (frameTL->getType() != ::fwTools::Type::s_UINT8 || frameTL->getNumberOfComponents() != 4)
+    {
+        SLM_ERROR("Frame type not managed. Only image with type 'uint8' with 4 components are managed.");
+        return;
+    }
+
     m_connections.disconnect();
-    m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    m_connections.connect(frameTL, ::arData::FrameTL::s_OBJECT_PUSHED_SIG,
+                          this->getSptr(), s_SAVE_FRAME_SLOT);
     m_isRecording = true;
     m_isPaused    = false;
 }
@@ -166,7 +169,10 @@ void SFrameRecorder::pauseRecord()
     }
     else if (m_isRecording && m_isPaused)
     {
-        m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+        m_connections.connect(this->getInput< ::arData::FrameTL >(s_FRAMETL_INPUT),
+                              ::arData::FrameTL::s_OBJECT_PUSHED_SIG,
+                              this->getSptr(), s_SAVE_FRAME_SLOT);
+
         m_isPaused = false;
     }
 }
