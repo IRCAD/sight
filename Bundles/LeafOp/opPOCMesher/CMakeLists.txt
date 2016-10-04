@@ -18,7 +18,6 @@ fwInclude(
 )
 
 fwLink(
-    ${Boost_LIBRARIES}
     ${Boost_CHRONO_LIBRARY}
     ${Qt5Core_LIBRARIES}
     ${Qt5Gui_LIBRARIES}

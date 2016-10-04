@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,12 +28,7 @@ const ::fwCom::Slots::SlotKeyType SUpdateNegato::s_SELECT_NEW_POINT_SLOT = "sele
 
 SUpdateNegato::SUpdateNegato() throw()
 {
-    m_slotSelectNewPoint = ::fwCom::newSlot(&SUpdateNegato::updateSlices, this);
-    ::fwCom::HasSlots::m_slots(s_SELECT_NEW_POINT_SLOT, m_slotSelectNewPoint);
-
-    // Set default worker to new slot
-    this->setWorker(::fwServices::registry::ActiveWorkers::getDefault()->
-                    getWorker(::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER));
+    newSlot(s_SELECT_NEW_POINT_SLOT, &SUpdateNegato::updateSlices, this);
 }
 
 //-------------------------------------------------------------------------------------------------------------

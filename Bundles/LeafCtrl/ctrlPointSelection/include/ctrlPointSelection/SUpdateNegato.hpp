@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,20 +7,18 @@
 #ifndef __CTRLPOINTSELECTION_SUPDATENEGATO_HPP__
 #define __CTRLPOINTSELECTION_SUPDATENEGATO_HPP__
 
+#include "ctrlPointSelection/config.hpp"
+
 #include <fwServices/IController.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Point.hpp>
-
-#include "ctrlPointSelection/config.hpp"
-
 
 namespace ctrlPointSelection
 {
 
 /**
  * @brief Updates negato slices so that they cross at a given point.
- * @class SUpdateNegato
  */
 class CTRLPOINTSELECTION_CLASS_API SUpdateNegato : public ::fwServices::IController
 {
@@ -60,11 +58,6 @@ protected:
      * @param selectedPoint point at which negato slices must cross
      */
     void updateSlices(::fwData::Point::sptr selectedPoint);
-
-private:
-
-    /// Slot triggered to retrieve a spline point on a negato.
-    SelectNewPointSlotType::sptr m_slotSelectNewPoint;
 };
 
 } // namespace ctrlPointSelection

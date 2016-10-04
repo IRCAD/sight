@@ -5,7 +5,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiCPR::SCPREditor</service>
-        <object>::fwData::Object</object>
+        <object>::fwData::Image</object>
     </extension>
 
 </plugin>

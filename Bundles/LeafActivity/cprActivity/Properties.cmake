@@ -19,17 +19,14 @@ set( REQUIREMENTS
     uiTF
     uiIO
     uiImageQt
-    uiNavigation
     uiSpline
     uiCPR
     uiReconstructionQt
     uiMeasurement
     uiMeasurementQt
     ctrlComputeCPR
-    ctrlPointSelection
     ctrlSplineNavigation
     visuNavigation
-    2DVisualizationActivity
-    3DVisualizationActivity
+    mediaExt
     media
     )

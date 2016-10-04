@@ -1,9 +1,9 @@
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::fwServices::registry::AppConfig2">
     <id>cprViewDebug</id>
     <parameters>
+        <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
         <param name="ICON_PATH" />
-        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!--  defined by SConfigLauncher -->
         <param name="imageUid" />
         <param name="CurrentViewPointUid"/>
         <param name="splinePointsListUid"/>
@@ -12,157 +12,122 @@
     </parameters>
     <config>
 
-        <object uid="${GENERIC_UID}_viewDebugComposite" type="::fwData::Composite">
+        <object uid="${imageUid}" src="ref" type="::fwData::Image" />
+        <object uid="Cpr3dMeshUid" type="::fwData::Mesh" />
+        <object uid="${CurrentViewPointUid}" src="ref" type="::fwData::TransformationMatrix3D"/>
+        <object uid="${splinePointsListUid}" src="ref" type="::fwData::PointList"/>
+        <object uid="${selectedPointsUid}" src="ref" type="::fwData::PointList"/>
 
+        <service uid="mainView" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" minHeight="30" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="vr2" start="yes" />
+                <view sid="sliceListNegatoEditor" start="yes" />
+            </registry>
+        </service>
 
-            <!-- MAIN FRAME -->
-            <service uid="${GENERIC_UID}_viewDebugFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
-                <window onclose="notify" />
-                <gui>
-                    <frame>
-                        <name>view Debug</name>
-                        <icon>${ICON_PATH}</icon>
-                        <minSize width="400" height="500" /> 
-                        <style mode="STAY_ON_TOP" />
-                    </frame>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_view" start="yes" />
-                </registry>
-            </service>
+        <service uid="vr2" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <in key="CurrentViewPointKey" uid="${CurrentViewPointUid}" />
+            <in key="splinePointListKey" uid="${splinePointsListUid}" />
+            <in key="imageKey" uid="${imageUid}" />
+            <in key="Cpr3dMesh" uid="Cpr3dMeshUid" />
+            <in key="selectedPointsKey" uid="${selectedPointsUid}" />
+            <scene>
+                <vtkObject id="camPosMatrixTransform" class="vtkTransform" />
 
-            <service uid="${GENERIC_UID}_view" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="vertical" />
-                        <view proportion="1" />
-                        <view proportion="0" minHeight="30" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_vr2" start="yes" />
-                    <view sid="${GENERIC_UID}_sliceListNegatoEditor" start="yes" />
-                </registry>
-            </service>
+                <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
 
-            <service uid="${GENERIC_UID}_vr2" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
-                <scene>
-                    <vtkObject id="camPosMatrixTransform" class="vtkTransform" />
+                <renderer id="default" background="0.0" />
 
-                    <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
+                <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="InteractorStyle3DForNegato" />
+                </adaptor>
 
-                    <renderer id="default" background="0.0" />
+                <adaptor id="CamPos2MatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="CurrentViewPointKey">
+                    <config transform="camPosMatrixTransform" />
+                </adaptor>
 
-                    <adaptor id="Interactor1" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                        <config renderer="default" style="InteractorStyle3DForNegato" />
-                    </adaptor>
+                <adaptor id="Cam2Axes" class="::visuVTKAdaptor::Axes" objectId="self">
+                    <config renderer="default" transform="camPosMatrixTransform" length="40" label="no" />
+                </adaptor>
 
-                    <adaptor id="CamPos2MatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="CurrentViewPointKey">
-                        <config transform="camPosMatrixTransform" />
-                    </adaptor>
+                <adaptor id="splineAdaptor" class="::visuNavigation::SSplineAdaptor" objectId="splinePointListKey">
+                    <config image="${imageUid}" renderer="default" picker=""/>
+                </adaptor>
 
-                    <adaptor id="Cam2Axes" class="::visuVTKAdaptor::Axes" objectId="self">
-                        <config renderer="default" transform="camPosMatrixTransform" length="40" label="no" />
-                    </adaptor>
+                <adaptor uid="MPRNegato" id="MPRNegato" class="::visuVTKAdaptor::NegatoMPR" objectId="imageKey">
+                    <config renderer="default" picker="negatodefault" slices="3"/>
+                </adaptor>
 
-                    <adaptor id="splineAdaptor" class="::visuNavigation::SSplineAdaptor" objectId="splinePointListKey">
-                        <config image="${imageUid}" renderer="default" picker=""/>
-                    </adaptor>
+                <adaptor id="renderMesh" class="::visuVTKAdaptor::Mesh" objectId="Cpr3dMesh">
+                    <config renderer="default" picker="" />
+                </adaptor>
 
-                    <adaptor uid="${GENERIC_UID}_MPRNegato" id="MPRNegato" class="::visuVTKAdaptor::NegatoMPR" objectId="imageKey">
-                        <config renderer="default" picker="negatodefault" slices="3"/>
-                    </adaptor>
+                <adaptor id="PointList" class="::visuVTKAdaptor::LabeledPointList" objectId="selectedPointsKey">
+                    <config renderer="default" picker="negatodefault" />
+                </adaptor>
+                <connect>
+                    <signal>sliceListNegatoEditor/selected</signal>
+                    <slot>MPRNegato/updateSliceMode</slot>
+                </connect>
 
-                    <adaptor id="renderMesh" class="::visuVTKAdaptor::Mesh" objectId="Cpr3dMesh">
-                        <config renderer="default" picker="" />
-                    </adaptor>
+            </scene>
+        </service>
 
-                    <adaptor id="PointList" class="::visuVTKAdaptor::LabeledPointList" objectId="selectedPointsKey">
-                        <config renderer="default" picker="negatodefault" />
-                    </adaptor>
-                    <connect>
-                        <signal>${GENERIC_UID}_sliceListNegatoEditor/selected</signal>
-                        <slot>${GENERIC_UID}_MPRNegato/updateSliceMode</slot>
-                    </connect>
+        <service uid="sliceListNegatoEditor" type="::guiQt::editor::SSelectionMenuButton" autoConnect="no">
+            <toolTip>Manage slice visibility</toolTip>
+            <selected>3</selected>
+            <items>
+                <item text="No slice" value="0" />
+                <item text="One slice" value="1" />
+                <item text="three slices" value="3" />
+            </items>
+        </service>
 
-                </scene>
-            </service>
+        <service uid="ComputeCPR3D" type="::ctrlComputeCPR::SComputeCPR3D" autoConnect="yes">
+            <inout key="mesh" uid="Cpr3dMeshUid" />
+            <in key="spline" uid="${splinePointsListUid}" />
+            <in key="image" uid="${imageUid}" />
+        </service>
 
-            <item key="imageKey">
-                <object uid="${imageUid}" src="ref" type="::fwData::Image">
+        <connect>
+            <signal>${splinePointsListUid}/modified</signal>
+            <slot>ComputeCPR3D/updateSpline</slot>
+        </connect> 
+        <connect>
+            <signal>${splinePointsListUid}/pointAdded</signal>
+            <slot>ComputeCPR3D/updateSpline</slot>
+        </connect> 
+        <connect>
+            <signal>${splinePointsListUid}/pointRemoved</signal>
+            <slot>ComputeCPR3D/updateSpline</slot>
+        </connect> 
 
-                    <service uid="${GENERIC_UID}_sliceListNegatoEditor" type="::gui::editor::IEditor" impl="::guiQt::editor::SSelectionMenuButton" autoConnect="no">
-                        <toolTip>Manage slice visibility</toolTip>
-                        <selected>3</selected>
-                        <items>
-                            <item text="No slice" value="0" />
-                            <item text="One slice" value="1" />
-                            <item text="three slices" value="3" />
-                        </items>
-                    </service>
-                    
-                </object>
-            </item>
+        <connect>
+            <signal>${cprEditorUid}/heightChanged</signal>
+            <slot>ComputeCPR3D/changeHeight</slot>
+        </connect> 
 
+        <connect>
+            <signal>${cprEditorUid}/spacingChanged</signal>
+            <slot>ComputeCPR3D/changeSpacing</slot>
+        </connect> 
 
-            <item key="Cpr3dMesh">
-                <object uid="${GENERIC_UID}_Cpr3dMeshUid" type="::fwData::Mesh">
-                    <service uid="${GENERIC_UID}_ComputeCPR3D" type="::fwServices::IController" impl="::ctrlComputeCPR::SComputeCPR3D" autoConnect="yes">
-                        <splinePoints uid="${splinePointsListUid}"/>
-                        <sourceImage uid="${imageUid}"/>
-                    </service>
-                </object>
-            </item>
+        <connect>
+            <signal>${cprEditorUid}/sliderProgressed</signal>
+            <slot>ComputeCPR3D/changeAngle</slot>
+        </connect> 
 
-            <item key="CurrentViewPointKey">
-                <object uid="${CurrentViewPointUid}" src="ref" type="::fwData::TransformationMatrix3D"/>
-            </item>
-
-            <item key="splinePointListKey">
-                <object uid="${splinePointsListUid}" src="ref" type="::fwData::PointList"/>
-            </item>
-
-            <item key="selectedPointsKey">
-                <object uid="${selectedPointsUid}" src="ref" type="::fwData::PointList"/>
-            </item>
-
-            <connect>
-                <signal>${splinePointsListUid}/modified</signal>
-                <slot>${GENERIC_UID}_ComputeCPR3D/updateSpline</slot>
-            </connect> 
-            <connect>
-                <signal>${splinePointsListUid}/pointAdded</signal>
-                <slot>${GENERIC_UID}_ComputeCPR3D/updateSpline</slot>
-            </connect> 
-            <connect>
-                <signal>${splinePointsListUid}/pointRemoved</signal>
-                <slot>${GENERIC_UID}_ComputeCPR3D/updateSpline</slot>
-            </connect> 
-
-            <connect>
-                <signal>${cprEditorUid}/heightChanged</signal>
-                <slot>${GENERIC_UID}_ComputeCPR3D/changeHeight</slot>
-            </connect> 
-
-            <connect>
-                <signal>${cprEditorUid}/spacingChanged</signal>
-                <slot>${GENERIC_UID}_ComputeCPR3D/changeSpacing</slot>
-            </connect> 
-
-            <connect>
-                <signal>${cprEditorUid}/sliderProgressed</signal>
-                <slot>${GENERIC_UID}_ComputeCPR3D/changeAngle</slot>
-            </connect> 
-
-            <proxy channel="${CLOSE_CONFIG_CHANNEL}">
-                <signal>${GENERIC_UID}_viewDebugFrame/closed</signal>
-            </proxy>
-
-            <start uid="${GENERIC_UID}_viewDebugFrame" />
-            <start uid="${GENERIC_UID}_ComputeCPR3D" />
-            <update uid="${cprEditorUid}"/>
-
-        </object>
+        <start uid="mainView" />
+        <start uid="ComputeCPR3D" />
+        <update uid="${cprEditorUid}"/>
 
     </config>
 </extension>

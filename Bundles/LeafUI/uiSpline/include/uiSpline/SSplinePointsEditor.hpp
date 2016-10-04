@@ -45,7 +45,15 @@ namespace uiSpline
 
 /**
  * @brief Lists spline points.
- * @class SSplinePointsEditor
+ *  @code{.xml}
+        <service type="::ctrlComputeCPR::SComputeCPR2D">
+            <inout key="points" uid="..."/>
+            <inout key="selectedPoints" uid="..."/>
+        </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b points [::fwData::PointList]: PointList used to generate spline.
+ * - \b selectedPoints [::fwData::PointList]: PointList used to store selected/displayed points.
  */
 class UISPLINE_CLASS_API SSplinePointsEditor : public QObject,
                                                public ::gui::editor::IEditor
@@ -66,7 +74,7 @@ public:
      * @name Signal types.
      * @{ */
     typedef ::fwCom::Signal< void (::fwData::Point::sptr) > PointSelectedSignalType;
-    typedef ::fwCom::Signal< void (int) > IndexPointSelectedSignalType;
+    typedef ::fwCom::Signal< void (size_t) > IndexPointSelectedSignalType;
     /**  @} */
 
     /**
@@ -91,13 +99,6 @@ protected:
 
     /**
      * @brief Overrides IService::configuring().
-     * Configuration example :
-       @code{.xml}
-       <config>
-        <points uid="..." /> <!-- ::fwData::PointList containing spline points to display -->
-       </config>
-       @endcode
-     *
      * @throw fwTools::Failed
      */
     virtual void configuring() throw(fwTools::Failed);
@@ -136,7 +137,7 @@ protected:
      * @name Slot type and key.
      * @{ */
     UISPLINE_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_POINTLIST_SLOT;
-    typedef ::fwCom::Slot<void ()> UpdatePointListSlotType;
+    UISPLINE_API static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT;
     /**  @} */
 
 protected Q_SLOTS:
@@ -151,10 +152,10 @@ protected Q_SLOTS:
     void onClickRemoveAllPoints();
 
     /// Called when an item in the QListWidget is clicked.
-    void onClickItem(QListWidgetItem * item);
+    void onClickItem(QListWidgetItem* item);
 
     /// Called when an item in the QListWidget is double clicked.
-    void onDoubleClickItem(QListWidgetItem * item);
+    void onDoubleClickItem(QListWidgetItem* item);
 
 private:
 
@@ -163,9 +164,6 @@ private:
 
     /// Number of next point to be added.
     int m_countPoint;
-
-    /// UID of the point list containing points to be displayed into a scene.
-    std::string m_selectedPointsUID;
 
     /// List of registered points
     QPointer< QListWidget> m_list;

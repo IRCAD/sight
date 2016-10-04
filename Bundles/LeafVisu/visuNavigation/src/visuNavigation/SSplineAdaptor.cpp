@@ -116,7 +116,7 @@ void SSplineAdaptor::updateSpline()
 
 void SSplineAdaptor::doUpdate() throw (fwTools::Failed)
 {
-    OSLM_ASSERT("No valid spline", m_parametricSpline);
+    SLM_ASSERT("No valid spline", m_parametricSpline);
 
     vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
     vtkSmartPointer<vtkActor> actor           = vtkSmartPointer<vtkActor>::New();

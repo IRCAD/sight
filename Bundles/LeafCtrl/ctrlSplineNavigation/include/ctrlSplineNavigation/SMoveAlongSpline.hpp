@@ -1,11 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __CTRLSPLINENAVIGATION_SMOVEALONGSPLINE_HPP__
 #define __CTRLSPLINENAVIGATION_SMOVEALONGSPLINE_HPP__
+
+#include "ctrlSplineNavigation/config.hpp"
 
 #include <fwServices/IController.hpp>
 
@@ -17,14 +19,18 @@
 #include <vtkSmartPointer.h>
 
 
-#include "ctrlSplineNavigation/config.hpp"
-
 namespace ctrlSplineNavigation
 {
 
 /**
- * @class  SMoveAlongSpline
  * @brief  This service SMoveAlongSpline enables to move the camera along a spline.
+ *  @code{.xml}
+        <service type="::ctrlSplineNavigation::SJumpToPointController">
+            <in key="points" uid="..."/>
+        </service>
+   @endcode
+ * @subsection Input Input
+ * - \b matrix [::fwData::PointList]: spline used to move the camera.
  */
 class CTRLSPLINENAVIGATION_CLASS_API SMoveAlongSpline : public ::fwServices::IController
 {
@@ -60,6 +66,9 @@ public:
     CTRLSPLINENAVIGATION_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_SLIDER_VALUE_SLOT;
     CTRLSPLINENAVIGATION_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_SELECTED_POINT_SLOT;
     CTRLSPLINENAVIGATION_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_ANGLE_SLOT;
+    CTRLSPLINENAVIGATION_API static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT;
+    CTRLSPLINENAVIGATION_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT;
+    CTRLSPLINENAVIGATION_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLINE_SLOT;
     /**  @} */
 
     /**
@@ -132,15 +141,6 @@ protected:
     SplineLengthChangedSignalType::sptr m_sigSplineLengthChanged;
 
 private:
-
-    /// Changes camera rotation angle.
-    ChangeAngleSlotType::sptr m_slotChangeAngle;
-
-    /// Retrieves the current slider value.
-    ChangeSliderValueSlotType::sptr m_slotChangeSliderValue;
-
-    /// Retrieves the selected spline point.
-    ChangeSelectedPointSlotType::sptr m_slotChangeSelectedPoint;
 
     /// Spline as VTK object
     vtkSmartPointer<vtkParametricSpline> m_parametricSpline;

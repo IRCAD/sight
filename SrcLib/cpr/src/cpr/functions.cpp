@@ -1,10 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <math.h>
+#include "cpr/functions.hpp"
 
 #include <boost/assign/list_of.hpp>
 
@@ -18,24 +18,28 @@
 
 #include <navigation/functions.hpp>
 
-#include "cpr/functions.hpp"
+#include <math.h>
 
 namespace cpr
 {
 
-double getImageMinSpacing(const SPTR(::fwData::Image)& imageSource)
+double getImageMinSpacing(const CSPTR(::fwData::Image)& imageSource)
 {
     const ::fwData::Image::SpacingType& spacing = imageSource->getSpacing();
     return *std::min_element(spacing.begin(), spacing.end());
 }
 
-double getImageMaxSpacing(const SPTR(::fwData::Image)& imageSource)
+//------------------------------------------------------------------------------
+
+double getImageMaxSpacing(const CSPTR(::fwData::Image)& imageSource)
 {
     const ::fwData::Image::SpacingType& spacing = imageSource->getSpacing();
     return *std::max_element(spacing.begin(), spacing.end());
 }
 
-double getImageMaxSize(const SPTR(::fwData::Image)& imageSource)
+//------------------------------------------------------------------------------
+
+double getImageMaxSize(const CSPTR(::fwData::Image)& imageSource)
 {
     const std::vector< double > mmSizes = ::boost::assign::list_of
                                               (imageSource->getSize()[0] * imageSource->getSpacing()[0])
@@ -45,10 +49,12 @@ double getImageMaxSize(const SPTR(::fwData::Image)& imageSource)
     return *std::max_element(mmSizes.begin(), mmSizes.end());
 }
 
+//------------------------------------------------------------------------------
+
 void fillPointGrid(
-    double &spacing,
-    double & height,
-    const SPTR(::fwData::PointList)& pointList,
+    double& spacing,
+    double& height,
+    const CSPTR(::fwData::PointList)& pointList,
     std::vector<double>& pointGrid,
     unsigned int& nbCol,
     unsigned int& nbRow,
@@ -74,7 +80,7 @@ void fillPointGrid(
     nbCol = polyLine->GetNumberOfPoints();
 
     // Fill the point grid
-    double p[3], splineNormal[3], d0, d1, d2;
+    double p[3], splineNormal[3];
     const int rangeMax = (nbRow - 1) / 2;
     const int rangeMin = -rangeMax;
 
@@ -94,14 +100,16 @@ void fillPointGrid(
     }
 }
 
+//------------------------------------------------------------------------------
+
 void computePositionOfPointOnSpline(
-    const SPTR(::fwData::PointList)& pointList,
-    const int indexPoint,
+    const CSPTR(::fwData::PointList)& pointList,
+    const size_t indexPoint,
     double& position)
 {
     position = 0;
     double splineLength = 0, error = 0;
-    double u[3], du[3], pt[3], ptFirst[3], ptNext[3], splineTangent[3], findPoint[3], diff[3];
+    double u[3], du[3], pt[3], findPoint[3], diff[3];
 
     vtkSmartPointer<vtkMath> math                           = vtkSmartPointer<vtkMath>::New();
     vtkSmartPointer< vtkParametricSpline > parametricSpline = vtkSmartPointer < vtkParametricSpline > ::New();
@@ -111,7 +119,7 @@ void computePositionOfPointOnSpline(
     ::navigation::updateSpline(pointList, points, parametricSpline, splineLength);
 
     // Get the parametric value v of the spline corresponding to the considered point
-    ::fwData::Point::sptr point = pointList->getRefPoints()[indexPoint];
+    ::fwData::Point::sptr point = pointList->getCRefPoints()[indexPoint];
     for (int i = 0; i < 3; ++i)
     {
         findPoint[i] = point->getRefCoord()[i];
@@ -149,8 +157,10 @@ void computePositionOfPointOnSpline(
     position *= splineLength;
 }
 
+//------------------------------------------------------------------------------
+
 bool computeImageIndexFromSpacePosition(
-    const SPTR(::fwData::Image)& imageSource,
+    const CSPTR(::fwData::Image)& imageSource,
     const double* spacePosition,
     unsigned int* indexPosition)
 {

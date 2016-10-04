@@ -7,8 +7,7 @@
 #ifndef __UICPR_SCPREDITOR_HPP__
 #define __UICPR_SCPREDITOR_HPP__
 
-#include <QObject>
-#include <QPointer>
+#include "uiCPR/config.hpp"
 
 #include <vector>
 #include <string>
@@ -19,7 +18,8 @@
 
 #include <gui/editor/IEditor.hpp>
 
-#include "uiCPR/config.hpp"
+#include <QObject>
+#include <QPointer>
 
 class QSlider;
 class QLineEdit;
@@ -31,7 +31,13 @@ namespace uiCPR
 
 /**
  * @brief Creates a GUI to set parameters for a curved planar reformation (CPR).
- * @class SCPREditor
+ *  @code{.xml}
+        <service type="::uiCPR::SCPREditor">
+            <in key="image" uid="..." />
+        </service>
+   @endcode
+ * @subsection Input Input
+ * - \b image [::fwData::Image]: source image used to generate CPR.
  */
 class UICPR_CLASS_API SCPREditor : public QObject,
                                    public ::gui::editor::IEditor
@@ -78,13 +84,6 @@ protected:
 
     /**
      * @brief Overrides IService::configuring().
-     * Configuration example :
-       @code{.xml}
-       <config>
-        <sourceImage uid="..." />   <!-- UID of source image (::fwData::Image)  -->
-       </config>
-       @endcode
-     *
      * @throw fwTools::Failed
      */
     virtual void configuring() throw(fwTools::Failed);
@@ -113,9 +112,6 @@ protected Q_SLOTS:
     void onClickComputeSlotType();
 
 private:
-
-    /// UID of source image to compute CPR.
-    std::string m_sourceImageUID;
 
     /// CPR current rotation angle.
     double m_angle;
@@ -152,8 +148,6 @@ private:
 
     /// Widget to trigger CPR computation.
     QPointer< QPushButton> m_computeButton;
-
-
 };
 
 } // uiCPR

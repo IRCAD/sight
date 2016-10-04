@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,7 +33,7 @@ namespace navigation
  * @param[out] length length of computed spline
  */
 NAVIGATION_API void computeSpline(
-    const ::fwData::PointList::sptr& pointList,
+    const ::fwData::PointList::csptr& pointList,
     const int pointIndex,
     const vtkSmartPointer<vtkPoints>& points,
     const vtkSmartPointer<vtkParametricSpline>& computedSpline,
@@ -48,7 +48,7 @@ NAVIGATION_API void computeSpline(
  * @param[out] length length of computed spline
  */
 NAVIGATION_API void updateSpline(
-    const ::fwData::PointList::sptr& pointList,
+    const ::fwData::PointList::csptr& pointList,
     const vtkSmartPointer<vtkPoints>& points,
     const vtkSmartPointer<vtkParametricSpline>& computedSpline,
     double& length);
@@ -78,7 +78,7 @@ NAVIGATION_API void computeSplineLength(const vtkSmartPointer<vtkParametricSplin
  * @param[in] angle angle to initialize the vectors
  */
 NAVIGATION_API void initializeVectors(
-    const ::fwData::PointList::sptr& pointList,
+    const ::fwData::PointList::csptr& pointList,
     const vtkSmartPointer<vtkParametricSpline>& computedSpline,
     double* yfirst,
     double angle = 0);
@@ -91,7 +91,7 @@ NAVIGATION_API void initializeVectors(
  *
  * @return if given points are coplanar
  */
-NAVIGATION_API bool arePointsCoplanar(const ::fwData::PointList::sptr& pointList, double* normal);
+NAVIGATION_API bool arePointsCoplanar(const ::fwData::PointList::csptr& pointList, double* normal);
 
 /**
  * @brief Compute a polyline and the normal from the spline.

@@ -1,11 +1,6 @@
 <plugin id="cprActivity" version="@DASH_VERSION@" >
 
-    <requirement id="2DVisualizationActivity" />
-    <requirement id="3DVisualizationActivity" />
-    <requirement id="visuVTKVRAdaptor" />
-    <requirement id="scene2D" />
     <requirement id="mediaExt" />
-    <requirement id="uiTF" />
     <requirement id="uiIO" />
 
     <xi:include href="configurations/curvedPlanarReformation.xml" xmlns:xi="http://www.w3.org/2003/XInclude" /> 

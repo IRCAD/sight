@@ -7,7 +7,11 @@
 #ifndef __CPR_FUNCTIONS_HPP__
 #define __CPR_FUNCTIONS_HPP__
 
-#include <cpr/config.hpp>
+#include "cpr/config.hpp"
+
+#include <fwCore/macros.hpp>
+
+#include <vector>
 
 namespace fwData
 {
@@ -25,7 +29,7 @@ namespace cpr
  *
  * @return lowest spacing value
  */
-CPR_API double getImageMinSpacing(const SPTR(::fwData::Image)& imageSource);
+CPR_API double getImageMinSpacing(const CSPTR(::fwData::Image)& imageSource);
 
 /**
  * @brief Get the maximum image spacing
@@ -34,7 +38,7 @@ CPR_API double getImageMinSpacing(const SPTR(::fwData::Image)& imageSource);
  *
  * @return highest spacing value
  */
-CPR_API double getImageMaxSpacing(const SPTR(::fwData::Image)& imageSource);
+CPR_API double getImageMaxSpacing(const CSPTR(::fwData::Image)& imageSource);
 
 /**
  * @brief Get the maximum image size (size in millimeters : spacing value by pixel size).
@@ -43,7 +47,7 @@ CPR_API double getImageMaxSpacing(const SPTR(::fwData::Image)& imageSource);
  *
  * @return highest size in millimeters
  */
-CPR_API double getImageMaxSize(const SPTR(::fwData::Image)& imageSource);
+CPR_API double getImageMaxSize(const CSPTR(::fwData::Image)& imageSource);
 
 /**
  * @brief Fills the point grid for the CPR.
@@ -59,7 +63,7 @@ CPR_API double getImageMaxSize(const SPTR(::fwData::Image)& imageSource);
 CPR_API void fillPointGrid (
     double& spacing,
     double& height,
-    const SPTR(::fwData::PointList)& pointList,
+    const CSPTR(::fwData::PointList)& pointList,
     std::vector<double>& pointGrid,
     unsigned int& nbCol,
     unsigned int& nbRow,
@@ -73,8 +77,8 @@ CPR_API void fillPointGrid (
  * @param[out] position computed position
  */
 CPR_API void computePositionOfPointOnSpline(
-    const SPTR(::fwData::PointList)& pointList,
-    const int indexPoint,
+    const CSPTR(::fwData::PointList)& pointList,
+    const size_t indexPoint,
     double& position);
 
 /**
@@ -88,7 +92,7 @@ CPR_API void computePositionOfPointOnSpline(
  * @return if given space position is in the image
  */
 CPR_API bool computeImageIndexFromSpacePosition(
-    const SPTR(::fwData::Image)& imageSource,
+    const CSPTR(::fwData::Image)& imageSource,
     const double* spacePosition,
     unsigned int* indexPosition);
 

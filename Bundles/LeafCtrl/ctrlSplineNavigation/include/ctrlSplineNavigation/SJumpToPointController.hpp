@@ -24,7 +24,13 @@ namespace ctrlSplineNavigation
 
 /**
  * @brief Moves from associated point to another.
- * @class SJumpToPointController
+ *  @code{.xml}
+        <service type="::ctrlSplineNavigation::SJumpToPointController">
+            <inout key="matrix" uid="..."/>
+        </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b matrix [::fwData::TransformationMatrix3D]: matrix to modify.
  */
 class CTRLSPLINENAVIGATION_CLASS_API SJumpToPointController : public ::fwServices::IController
 {
@@ -62,15 +68,6 @@ protected:
      * @param matrix ::fwData::TransformationMatrix3D new point associated to this service
      */
     void jumpToViewPoint(::fwData::TransformationMatrix3D::sptr matrix);
-
-private:
-
-    /// Slot triggered when the target destination changes.
-    ChangeDirectTargetSlotType::sptr m_slotChangeDirectTarget;
-
-    /// Destination matrix for fly mode
-    ::fwData::TransformationMatrix3D::sptr m_destMatrix;
-
 };
 
 } // ctrlSplineNavigation
