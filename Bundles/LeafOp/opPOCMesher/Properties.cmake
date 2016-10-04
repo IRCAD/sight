@@ -8,7 +8,6 @@ set( DEPENDENCIES
             fwRuntime
             fwData
             fwServices
-            fwComEd
             fwGui
             fwGuiQt
             fwIGG

@@ -6,7 +6,6 @@ set( DEPENDENCIES
     fwData
     fwRender
     fwVtkIO
-    fwComEd
     fwCom
     fwRenderVTK
     fwGui

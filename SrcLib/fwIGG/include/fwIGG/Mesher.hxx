@@ -7,8 +7,8 @@
 #ifndef __FWIGG_MESHER_HXX__
 #define __FWIGG_MESHER_HXX__
 
-#include <fwComEd/helper/Image.hpp>
-#include <fwComEd/helper/Mesh.hpp>
+#include <fwDataTools/helper/Image.hpp>
+#include <fwDataTools/helper/Mesh.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
@@ -34,7 +34,7 @@ namespace fwIGG
 template < typename DATATYPE >
 void getMinMax(::fwData::Image::sptr image, DATATYPE &min, DATATYPE &max)
 {
-    ::fwComEd::helper::Image imageLock ( image );
+    ::fwDataTools::helper::Image imageLock ( image );
     DATATYPE * buffer                     = static_cast < DATATYPE* > (imageLock.getBuffer());
     const ::fwData::Image::SizeType &size = image->getSize();
     ::fwData::Image::SizeType::value_type len = size[0]*size[1]*size[2];
@@ -87,7 +87,7 @@ template < typename DATATYPE >
     int m_radius   = radius;
     double m_adapt = adapt/100;
 
-    ::fwComEd::helper::Image imageHelper(img);
+    ::fwDataTools::helper::Image imageHelper(img);
     DATATYPE* buff  = static_cast<DATATYPE*> (imageHelper.getBuffer());
     unsigned int wx = img->getSize()[0];
     unsigned int wy = img->getSize()[1];
@@ -201,7 +201,7 @@ template < typename DATATYPE >
     ::boost::shared_ptr<PFP::MAP> map(new PFP::MAP);
     CGoGN::VertexAttribute<PFP::VEC3> position;
 
-    ::fwComEd::helper::Image imageHelper(img);
+    ::fwDataTools::helper::Image imageHelper(img);
     DATATYPE* buff  = static_cast<DATATYPE*> (imageHelper.getBuffer());
     unsigned int wx = img->getSize()[0];
     unsigned int wy = img->getSize()[1];

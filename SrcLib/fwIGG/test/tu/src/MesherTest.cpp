@@ -4,20 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "MesherTest.hpp"
-
-#include <fwTest/Data.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Mesh.hpp>
 
 #include <fwIGG/Mesher.hpp>
 #include <fwIGG/Mesher.hxx>
 
-#include <fwData/Mesh.hpp>
-#include <fwData/Image.hpp>
+#include <fwItkIO/ImageReader.hpp>
 
 #include <fwMemory/tools/MemoryMonitorTools.hpp>
 
+#include <fwTest/Data.hpp>
 
-#include <fwItkIO/ImageReader.hpp>
+#include "MesherTest.hpp"
 
 #include <vector>
 
@@ -137,8 +136,8 @@ void MesherTest::sameMeshTest()
 
     CPPUNIT_ASSERT_EQUAL(pointsMesh1->getSize()[0], pointsMesh2->getSize()[0]);
 
-    ::fwComEd::helper::Array::sptr helperPointsMesh1 = ::fwComEd::helper::Array::New(pointsMesh1);
-    ::fwComEd::helper::Array::sptr helperPointsMesh2 = ::fwComEd::helper::Array::New(pointsMesh2);
+    ::fwDataTools::helper::Array::sptr helperPointsMesh1 = ::fwDataTools::helper::Array::New(pointsMesh1);
+    ::fwDataTools::helper::Array::sptr helperPointsMesh2 = ::fwDataTools::helper::Array::New(pointsMesh2);
 
     ::fwData::Mesh::PointValueType* points1 = helperPointsMesh1->begin< ::fwData::Mesh::PointValueType >();
     ::fwData::Mesh::PointValueType* points2 = helperPointsMesh2->begin< ::fwData::Mesh::PointValueType >();

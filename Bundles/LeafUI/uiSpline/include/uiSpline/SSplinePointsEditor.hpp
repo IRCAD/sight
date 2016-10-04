@@ -13,25 +13,25 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwComEd/PickingInfo.hpp>
-
 #include <fwData/Point.hpp>
+
+#include <fwDataTools/PickingInfo.hpp>
 
 #include <fwThread/Timer.hpp>
 
 #include <fwTools/Failed.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <navigation/ConnectPoints.hpp>
 
+#include <gui/editor/IEditor.hpp>
+
+#include <QListWidget>
 #include <QObject>
 #include <QPointer>
-#include <QListWidget>
 #include <QPushButton>
 
-#include <vector>
 #include <string>
+#include <vector>
 
 class QListWidgetItem;
 
@@ -45,7 +45,6 @@ namespace uiSpline
 
 /**
  * @brief Lists spline points.
- * @class SSplinePointsEditor
  */
 class UISPLINE_CLASS_API SSplinePointsEditor : public QObject,
                                                public ::gui::editor::IEditor
@@ -130,7 +129,7 @@ protected:
     void updatePointList();
 
     /// Slot: get the interaction information
-    void getInteraction(::fwComEd::PickingInfo info);
+    void getInteraction(::fwDataTools::PickingInfo info);
 
     /**
      * @name Slot type and key.
@@ -151,10 +150,10 @@ protected Q_SLOTS:
     void onClickRemoveAllPoints();
 
     /// Called when an item in the QListWidget is clicked.
-    void onClickItem(QListWidgetItem * item);
+    void onClickItem(QListWidgetItem* item);
 
     /// Called when an item in the QListWidget is double clicked.
-    void onDoubleClickItem(QListWidgetItem * item);
+    void onDoubleClickItem(QListWidgetItem* item);
 
 private:
 

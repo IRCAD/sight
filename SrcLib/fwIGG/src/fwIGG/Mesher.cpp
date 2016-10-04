@@ -7,13 +7,14 @@
 #include "fwIGG/Mesher.hpp"
 #include "fwIGG/Mesher.hxx"
 
-#include <Topology/generic/parameters.h>
-#include <Topology/map/embeddedMap2.h>
 #include <Algo/MC/marchingcube.h>
 
-#include <Mesher/simplifvoxmesh.h>
-#include <Mesher/prep_mesh.h>
 #include <Mesher/parataubin.h>
+#include <Mesher/prep_mesh.h>
+#include <Mesher/simplifvoxmesh.h>
+
+#include <Topology/generic/parameters.h>
+#include <Topology/map/embeddedMap2.h>
 
 #include <boost/assign/list_of.hpp>
 
@@ -34,11 +35,14 @@ void Mesher::convertCgognMesh( ::boost::shared_ptr<CGoGN::EmbeddedMap2> pfpMap,
     mesh->setNumberOfCells( nbf );
     mesh->setNumberOfPoints( position.nbElements() );
 
-    ::fwComEd::helper::Array::sptr helperPoints          = ::fwComEd::helper::Array::New(mesh->getPointsArray());
-    ::fwComEd::helper::Array::sptr helperCellTypes       = ::fwComEd::helper::Array::New(mesh->getCellTypesArray());
-    ::fwComEd::helper::Array::sptr helperCellData        = ::fwComEd::helper::Array::New(mesh->getCellDataArray());
-    ::fwComEd::helper::Array::sptr helperCellDataOffsets =
-        ::fwComEd::helper::Array::New(mesh->getCellDataOffsetsArray());
+    ::fwDataTools::helper::Array::sptr helperPoints =
+        ::fwDataTools::helper::Array::New(mesh->getPointsArray());
+    ::fwDataTools::helper::Array::sptr helperCellTypes = ::fwDataTools::helper::Array::New(
+        mesh->getCellTypesArray());
+    ::fwDataTools::helper::Array::sptr helperCellData = ::fwDataTools::helper::Array::New(
+        mesh->getCellDataArray());
+    ::fwDataTools::helper::Array::sptr helperCellDataOffsets =
+        ::fwDataTools::helper::Array::New(mesh->getCellDataOffsetsArray());
 
     // Set points
     unsigned int j = 0;
@@ -51,8 +55,8 @@ void Mesher::convertCgognMesh( ::boost::shared_ptr<CGoGN::EmbeddedMap2> pfpMap,
     }
 
 
-    j                                       = 0;
-    ::fwData::Mesh::PointValueType * points = helperPoints->begin< ::fwData::Mesh::PointValueType >();
+    j                                      = 0;
+    ::fwData::Mesh::PointValueType* points = helperPoints->begin< ::fwData::Mesh::PointValueType >();
     for (unsigned int i = position.begin(); i< position.end(); position.next(i))
     {
         const PFP::VEC3& P = position[i];
@@ -65,7 +69,7 @@ void Mesher::convertCgognMesh( ::boost::shared_ptr<CGoGN::EmbeddedMap2> pfpMap,
     }
 
     // Set cells
-    ::fwData::Mesh::CellValueType * cells = helperCellData->begin< ::fwData::Mesh::CellValueType >();
+    ::fwData::Mesh::CellValueType* cells = helperCellData->begin< ::fwData::Mesh::CellValueType >();
     CGoGN::TraversorCell<PFP::MAP,CGoGN::FACE> tra(*pfpMap);
     for (CGoGN::Dart d = tra.begin(); d!=tra.end(); d = tra.next())
     {
@@ -81,15 +85,15 @@ void Mesher::convertCgognMesh( ::boost::shared_ptr<CGoGN::EmbeddedMap2> pfpMap,
         cells   += 3;
     }
 
-    ::fwData::Mesh::CellTypes * cellTypes = helperCellTypes->begin< ::fwData::Mesh::CellTypes >();
+    ::fwData::Mesh::CellTypes* cellTypes = helperCellTypes->begin< ::fwData::Mesh::CellTypes >();
     while( cellTypes < helperCellTypes->end< ::fwData::Mesh::CellTypes >() )
     {
         *cellTypes = ::fwData::Mesh::TRIANGLE;
         cellTypes++;
     }
 
-    ::fwData::Mesh::CellDataOffsetType off               = 0;
-    ::fwData::Mesh::CellDataOffsetType * cellDataOffsets =
+    ::fwData::Mesh::CellDataOffsetType off              = 0;
+    ::fwData::Mesh::CellDataOffsetType* cellDataOffsets =
         helperCellDataOffsets->begin< ::fwData::Mesh::CellDataOffsetType >();
 
     while( cellDataOffsets < helperCellDataOffsets->end< ::fwData::Mesh::CellDataOffsetType >() )

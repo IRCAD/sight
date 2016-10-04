@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwCom
     fwData
     fwServices
-    fwComEd
     fwRuntime
     fwTools
     cpr
