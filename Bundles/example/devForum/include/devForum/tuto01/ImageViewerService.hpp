@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,11 @@
 #ifndef __DEVFORUM_TUTO01_IMAGEVIEWERSERVICE_HPP__
 #define __DEVFORUM_TUTO01_IMAGEVIEWERSERVICE_HPP__
 
-// Include vtk tools used to render an image with a negato
-#include  <vtkRenderer.h>
-#include  <vtkImagePlaneWidget.h>
+// Include export definitions
+#include "devForum/config.hpp"
+
+// Include data
+#include <fwData/Image.hpp>
 
 // Include IVtkRenderWindowInteractorManager
 #include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
@@ -17,8 +19,9 @@
 // Include abstract class
 #include <fwRender/IRender.hpp>
 
-// Include export definitions
-#include "devForum/config.hpp"
+// Include vtk tools used to render an image with a negato
+#include  <vtkRenderer.h>
+#include  <vtkImagePlaneWidget.h>
 
 namespace devForum
 {
@@ -28,7 +31,6 @@ namespace tuto01
 
 /**
  * @brief   Service rendering a ::fwData::Image using VTK.
- * @class   ImageViewerService
  */
 class DEVFORUM_CLASS_API ImageViewerService : public ::fwRender::IRender
 {
@@ -81,7 +83,7 @@ protected:
     ::fwRenderVTK::IVtkRenderWindowInteractorManager::sptr m_interactorManager;
 
     /// @brief vtk renderer
-    vtkRenderer * m_render;
+    vtkRenderer* m_render;
 
     /// vtk plane widget used in the negatoscope axial plane.
     vtkImagePlaneWidget* m_negatoAxial;
