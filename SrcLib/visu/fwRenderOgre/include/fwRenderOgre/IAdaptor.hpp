@@ -7,12 +7,13 @@
 #ifndef __FWRENDEROGRE_IADAPTOR_HPP__
 #define __FWRENDEROGRE_IADAPTOR_HPP__
 
-#include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/IHasAdaptors.hpp"
 #include "fwRenderOgre/SRender.hpp"
+#include "fwRenderOgre/config.hpp"
+
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwServices/IService.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
 
 #include <OGRE/OgreSceneManager.h>
 
@@ -97,7 +98,7 @@ protected:
     ::fwRenderOgre::SRender::wptr m_renderService;
 
     /// Signal/Slot connections with the objects
-    ::fwServices::helper::SigSlotConnection m_objConnection;
+    ::fwCom::helper::SigSlotConnection m_objConnection;
 };
 
 // ------------------------------------------------------------------------

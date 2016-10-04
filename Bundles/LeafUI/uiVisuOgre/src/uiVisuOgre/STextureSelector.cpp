@@ -7,12 +7,13 @@
 #include "uiVisuOgre/STextureSelector.hpp"
 
 #include <fwCom/Signal.hxx>
-#include <fwComEd/helper/Array.hpp>
 
 #include <fwData/Array.hpp>
+#include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/Image.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -21,11 +22,11 @@
 
 #include <uiIO/editor/SIOSelector.hpp>
 
-#include <QPushButton>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QString>
 #include <QFileDialog>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QString>
+#include <QVBoxLayout>
 
 namespace uiVisuOgre
 {

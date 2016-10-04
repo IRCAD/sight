@@ -7,28 +7,27 @@
 #ifndef __FWRENDEROGRE_LAYER_HPP__
 #define __FWRENDEROGRE_LAYER_HPP__
 
+#include "fwRenderOgre/config.hpp"
+#include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
+#include <fwRenderOgre/compositor/ChainManager.hpp>
+#include <fwRenderOgre/compositor/Core.hpp>
+#include <fwRenderOgre/interactor/IInteractor.hpp>
+#include <fwRenderOgre/interactor/IMovementInteractor.hpp>
+#include <fwRenderOgre/interactor/IPickerInteractor.hpp>
+
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/HasSlots.hpp>
 #include <fwCom/Slot.hpp>
 
-#include <fwRenderOgre/compositor/ChainManager.hpp>
-#include <fwRenderOgre/compositor/Core.hpp>
-#include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
-#include <fwRenderOgre/interactor/IMovementInteractor.hpp>
-#include <fwRenderOgre/interactor/IPickerInteractor.hpp>
-#include <fwRenderOgre/interactor/IInteractor.hpp>
-
 #include <fwThread/Worker.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
-#include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreRenderWindow.h>
+#include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreViewport.h>
 
-#include <vector>
 #include <cstdint>
-
-#include "fwRenderOgre/config.hpp"
+#include <vector>
 
 namespace fwRenderOgre
 {
@@ -285,7 +284,7 @@ private:
     ::fwRenderOgre::interactor::IPickerInteractor::sptr m_selectInteractor;
 
     ///Connection service, needed for slot/signal association
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     /// Render service which this layer is attached
     WPTR(::fwRenderOgre::SRender) m_renderService;

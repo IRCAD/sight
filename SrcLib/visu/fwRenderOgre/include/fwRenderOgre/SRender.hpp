@@ -8,24 +8,23 @@
 #define __FWRENDEROGRE_SRENDER_HPP__
 
 #include "fwRenderOgre/config.hpp"
+#include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
+#include <fwRenderOgre/Layer.hpp>
+#include <fwRenderOgre/Utils.hpp>
+#include <fwRenderOgre/picker/IPicker.hpp>
 
+#include <fwCom/Signal.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-#include <fwCom/Signal.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include <fwRender/IRender.hpp>
 
-#include <fwRenderOgre/picker/IPicker.hpp>
-#include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
-#include <fwRenderOgre/Layer.hpp>
-#include <fwRenderOgre/Utils.hpp>
-
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/helper/Config.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 
@@ -242,7 +241,7 @@ private:
     LayerMapType m_layers;
 
     /// Signal/ Slot connection
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     /// Ogre window interactor manager
     ::fwRenderOgre::IRenderWindowInteractorManager::sptr m_interactorManager;

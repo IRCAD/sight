@@ -7,13 +7,13 @@
 #ifndef __VISUOGREADAPTOR_SNEGATO2D_HPP__
 #define __VISUOGREADAPTOR_SNEGATO2D_HPP__
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include "visuOgreAdaptor/config.hpp"
+
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/Plane.hpp>
 #include <fwRenderOgre/TransferFunction.hpp>
-
-#include "visuOgreAdaptor/config.hpp"
 
 namespace visuOgreAdaptor
 {
@@ -22,11 +22,11 @@ namespace visuOgreAdaptor
  * @brief   Adaptor to display a 2D negato
  */
 class VISUOGREADAPTOR_CLASS_API SNegato2D : public ::fwRenderOgre::IAdaptor,
-                                            public ::fwComEd::helper::MedicalImageAdaptor
+                                            public ::fwDataTools::helper::MedicalImageAdaptor
 {
 public:
 
-    typedef ::fwComEd::helper::MedicalImageAdaptor::Orientation OrientationMode;
+    typedef ::fwDataTools::helper::MedicalImageAdaptor::Orientation OrientationMode;
 
     fwCoreServiceClassDefinitionsMacro( (SNegato2D)(::fwRenderOgre::IAdaptor) );
 

@@ -5,22 +5,21 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/Utils.hpp"
+#include "fwRenderOgre/factory/R2VBRenderable.hpp"
+#include <fwRenderOgre/compositor/MaterialMgrListener.hpp>
 
 #include <fwCore/spyLog.hpp>
 
-#include <fwComEd/helper/ImageGetter.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <fwRenderOgre/compositor/MaterialMgrListener.hpp>
-#include "fwRenderOgre/factory/R2VBRenderable.hpp"
-
 #include <fwData/TransferFunction.hpp>
+
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/helper/ImageGetter.hpp>
 
 #include <OgreConfigFile.h>
 #include <OgreException.h>
+#include <OgreHardwarePixelBuffer.h>
 #include <OgreLog.h>
 #include <OgreResourceGroupManager.h>
-#include <OgreHardwarePixelBuffer.h>
 #include <OgreTextureManager.h>
 
 #include <cstdint>
@@ -226,7 +225,7 @@ void Utils::destroyOgreRoot()
 
     ::Ogre::PixelFormat pixelFormat = getPixelFormatOgre( imageFw );
 
-    ::fwComEd::helper::ImageGetter imageHelper(imageFw);
+    ::fwDataTools::helper::ImageGetter imageHelper(imageFw);
 
     imageOgre.loadDynamicImage(static_cast<uint8_t*>(imageHelper.getBuffer()), width, height, depth, pixelFormat);
 
@@ -331,7 +330,7 @@ void Utils::destroyOgreRoot()
 void Utils::loadOgreTexture(const ::fwData::Image::sptr& _image, ::Ogre::TexturePtr _texture,
                             ::Ogre::TextureType _texType, bool _dynamic)
 {
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(_image);
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(_image);
 
     if(imageIsValid)
     {
@@ -366,7 +365,7 @@ void copyNegatoImage( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _i
 
     // Lock the pixel buffer and copy it
     {
-        ::fwComEd::helper::Image srcImageHelper(_image);
+        ::fwDataTools::helper::Image srcImageHelper(_image);
         typedef typename std::make_unsigned< DST_TYPE>::type unsignedType;
 
         auto srcBuffer = static_cast< const SRC_TYPE* >(srcImageHelper.getBuffer());

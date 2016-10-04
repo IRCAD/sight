@@ -73,7 +73,7 @@ private:
         std::string uuid;
         ::fwGuiQt::container::QtContainer::sptr editorPanel;
         ::fwServices::IService::wptr service;
-        ::fwServices::helper::SigSlotConnection connections;
+        ::fwCom::helper::SigSlotConnection connections;
     };
 
     ShaderEditorInfo m_editorInfo;
@@ -93,7 +93,7 @@ private:
     ::fwRenderOgre::Layer::wptr m_currentLayer;
 
     /// Connection with the layer to be aware of compositors updates
-    ::fwServices::helper::SigSlotConnection m_layerConnection;
+    ::fwCom::helper::SigSlotConnection m_layerConnection;
 };
 
 } // uiVisuOgre

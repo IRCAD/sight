@@ -5,13 +5,13 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuOgreAdaptor/SMaterial.hpp"
+#include "visuOgreAdaptor/SShaderParameter.hpp"
+#include "visuOgreAdaptor/STexture.hpp"
+#include "visuOgreAdaptor/defines.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
-
-#include <fwComEd/helper/Array.hpp>
-#include <fwComEd/helper/Field.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Float.hpp>
@@ -21,9 +21,12 @@
 #include <fwData/String.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwRenderOgre/helper/Shading.hpp>
+#include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/helper/Field.hpp>
+
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/Utils.hpp>
+#include <fwRenderOgre/helper/Shading.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -31,16 +34,12 @@
 
 #include <fwTools/fwID.hpp>
 
-#include "visuOgreAdaptor/defines.hpp"
-#include "visuOgreAdaptor/SShaderParameter.hpp"
-#include "visuOgreAdaptor/STexture.hpp"
+#include <OGRE/OgreMaterialManager.h>
+#include <OGRE/OgreTechnique.h>
+#include <OGRE/OgreTextureManager.h>
+#include <OGRE/OgreVector3.h>
 
 #include <string>
-
-#include <OGRE/OgreVector3.h>
-#include <OGRE/OgreTechnique.h>
-#include <OGRE/OgreMaterialManager.h>
-#include <OGRE/OgreTextureManager.h>
 
 fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SMaterial, ::fwData::Material );
 
@@ -245,7 +244,7 @@ void SMaterial::doStart() throw(fwTools::Failed)
     string->setValue(m_materialTemplateName);
 
     ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
-    ::fwComEd::helper::Field helper(material);
+    ::fwDataTools::helper::Field helper(material);
     helper.setField("ogreMaterial", string);
     helper.notify();
 

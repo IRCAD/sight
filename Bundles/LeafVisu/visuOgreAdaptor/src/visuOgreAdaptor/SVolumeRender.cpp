@@ -6,27 +6,20 @@
 
 #include "visuOgreAdaptor/SVolumeRender.hpp"
 
-#include <algorithm>
-
-#include <boost/algorithm/clamp.hpp>
-#include <boost/lexical_cast.hpp>
-
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwData/Image.hpp>
 
-#include <fwServices/macros.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/interactor/VRWidgetsInteractor.hpp>
-#include <fwRenderOgre/vr/SliceVolumeRenderer.hpp>
 #include <fwRenderOgre/vr/RayTracingVolumeRenderer.hpp>
+#include <fwRenderOgre/vr/SliceVolumeRenderer.hpp>
 
-#include <numeric>
+#include <fwServices/macros.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreGpuProgramParams.h>
@@ -34,9 +27,14 @@
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreSceneNode.h>
-#include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreTechnique.h>
+#include <OGRE/OgreTextureManager.h>
 
+#include <boost/algorithm/clamp.hpp>
+#include <boost/lexical_cast.hpp>
+
+#include <algorithm>
+#include <numeric>
 #include <sstream>
 #include <string>
 
@@ -323,7 +321,7 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     initWidgets();
     m_widgets->setVisibility(m_widgetVisibilty);
 
-    bool isValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
+    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
     if (isValid)
     {
         this->newImage();

@@ -5,21 +5,22 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/vr/PreIntegrationTable.hpp"
+#include <fwRenderOgre/Utils.hpp>
 
-#include <algorithm>
+#include <fwCore/Profiling.hpp>
 
-#include <boost/algorithm/clamp.hpp>
+#include <fwDataTools/helper/Image.hpp>
 
-#include <fwComEd/helper/Image.hpp>
 #include <fwMemory/BufferManager.hpp>
 #include <fwMemory/BufferObject.hpp>
-#include <fwRenderOgre/Utils.hpp>
 
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreVector4.h>
 
-#include <fwCore/Profiling.hpp>
+#include <boost/algorithm/clamp.hpp>
+
+#include <algorithm>
 
 namespace fwRenderOgre
 {
@@ -71,7 +72,7 @@ void PreIntegrationTable::imageUpdate(const fwData::Image::sptr& _img, const ::f
     {
         ::Ogre::PixelFormat pixelFormat = ::fwRenderOgre::Utils::getPixelFormatOgre(_img);
 
-        ::fwComEd::helper::Image imgHelper(_img);
+        ::fwDataTools::helper::Image imgHelper(_img);
 
         size_t nbPixels = _img->getDataArray()->getNumberOfElements();
 

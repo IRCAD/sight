@@ -6,23 +6,23 @@
 
 #include "visuOgreAdaptor/SNegato2D.hpp"
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
 
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
 #include <fwRenderOgre/Utils.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <algorithm>
-
 #include <OgreCamera.h>
 #include <OgreSceneNode.h>
 #include <OgreTextureManager.h>
+
+#include <algorithm>
 
 namespace visuOgreAdaptor
 {
@@ -36,7 +36,7 @@ const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 //------------------------------------------------------------------------------
 
 SNegato2D::SNegato2D() throw() :
-    ::fwComEd::helper::MedicalImageAdaptor(),
+    ::fwDataTools::helper::MedicalImageAdaptor(),
     m_plane(nullptr),
     m_negatoSceneNode(nullptr),
     m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::NONE )
@@ -91,7 +91,7 @@ void SNegato2D::doStart() throw(::fwTools::Failed)
 
     this->installTFConnections();
 
-    bool isValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
+    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
     if(isValid)
     {
         this->newImage();

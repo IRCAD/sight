@@ -33,7 +33,7 @@ public:
     UIVISUOGRE_API static ::fwServices::IService::ConfigType
     createConfig(const ::visuOgreAdaptor::IParameter::csptr& _adaptor,
                  const ::fwServices::IService::csptr& _paramSrv,
-                 ::fwServices::helper::SigSlotConnection& _connections);
+                 ::fwCom::helper::SigSlotConnection& _connections);
 };
 
 } // namespace helper

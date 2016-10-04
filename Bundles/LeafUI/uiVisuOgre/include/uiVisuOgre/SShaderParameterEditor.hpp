@@ -7,21 +7,21 @@
 #ifndef __UIVISUOGRE_SSHADERPARAMETEREDITOR_HPP__
 #define __UIVISUOGRE_SSHADERPARAMETEREDITOR_HPP__
 
+#include "uiVisuOgre/config.hpp"
+
+#include <fwCom/helper/SigSlotConnection.hpp>
+
 #include <fwData/String.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include <fwServices/helper/SigSlotConnection.hpp>
 #include <fwServices/IService.hpp>
-
 
 #include <gui/editor/IEditor.hpp>
 
 #include <QVBoxLayout>
-
-#include "uiVisuOgre/config.hpp"
 
 namespace uiVisuOgre
 {
@@ -93,13 +93,13 @@ private:
         std::string uuid;
         ::fwGuiQt::container::QtContainer::sptr editorPanel;
         ::fwServices::IService::wptr service;
-        ::fwServices::helper::SigSlotConnection connections;
+        ::fwCom::helper::SigSlotConnection connections;
     };
 
     ShaderEditorInfo m_editorInfo;
 
     /// Connection to the material
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     QVBoxLayout* m_sizer;
 };

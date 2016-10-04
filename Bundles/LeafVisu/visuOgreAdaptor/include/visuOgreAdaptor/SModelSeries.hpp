@@ -83,7 +83,7 @@ private:
     /// Defines if the model series' vertices are dynamic
     bool m_isDynamicVertices;
     /// Signal/Slot connections with this service
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 };
 
 //------------------------------------------------------------------------------

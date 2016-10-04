@@ -7,28 +7,28 @@
 #ifndef __UIVISUOGRE_SCOMPOSITORSELECTOR_HPP__
 #define __UIVISUOGRE_SCOMPOSITORSELECTOR_HPP__
 
-#include <gui/editor/IEditor.hpp>
+#include "uiVisuOgre/config.hpp"
+
 #include <fwRenderOgre/Layer.hpp>
 #include <fwRenderOgre/compositor/ChainManager.hpp>
 
-#include <QObject>
-#include <QPointer>
+#include <gui/editor/IEditor.hpp>
+
+#include <QCheckBox>
 #include <QComboBox>
 #include <QGroupBox>
-#include <QCheckBox>
-#include <QVBoxLayout>
 #include <QListWidget>
+#include <QObject>
+#include <QPointer>
+#include <QVBoxLayout>
 
 #include <vector>
-
-#include "uiVisuOgre/config.hpp"
 
 namespace uiVisuOgre
 {
 
 /**
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
- * @class   SCompositorSelector
  */
 class UIVISUOGRE_CLASS_API SCompositorSelector : public QObject,
                                                  public ::gui::editor::IEditor
@@ -123,7 +123,7 @@ private:
     ::fwRenderOgre::compositor::ChainManager::CompositorChainType m_layerCompositorChain;
 
     ///Connection service, needed for slot/signal association
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 };
 
 } // uiVisuOgre

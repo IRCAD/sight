@@ -6,26 +6,20 @@
 
 #include "uiVisuOgre/SMaterialSelector.hpp"
 
+#include <fwCom/Signal.hxx>
+
 #include <fwData/Material.hpp>
 #include <fwData/String.hpp>
 
-#include <fwCom/Signal.hxx>
-
-#include <fwComEd/helper/Field.hpp>
+#include <fwDataTools/helper/Field.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
-
-
 #include <fwRenderOgre/Utils.hpp>
 
-#include <material/Plugin.hpp>
+#include <fwServices/macros.hpp>
 
-#include <OGRE/OgreMaterialManager.h>
-#include <OGRE/OgrePass.h>
-#include <OGRE/OgreResourceManager.h>
-#include <OGRE/OgreTechnique.h>
+#include <material/Plugin.hpp>
 
 #include <QFileDialog>
 #include <QFileInfo>
@@ -33,6 +27,11 @@
 #include <QString>
 #include <QVBoxLayout>
 #include <QWidget>
+
+#include <OGRE/OgreMaterialManager.h>
+#include <OGRE/OgrePass.h>
+#include <OGRE/OgreResourceManager.h>
+#include <OGRE/OgreTechnique.h>
 
 namespace uiVisuOgre
 {
@@ -159,7 +158,7 @@ void SMaterialSelector::onSelectedModeItem(const QString& text)
     ::fwData::String::sptr string          = ::fwData::String::New();
     string->setValue(text.toStdString());
 
-    ::fwComEd::helper::Field helper(material);
+    ::fwDataTools::helper::Field helper(material);
     helper.setField("ogreMaterial", string);
     helper.notify();
 

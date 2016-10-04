@@ -4,11 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwRenderOgre/vr/SummedAreaTable.hpp"
-
 #include "fwRenderOgre/Utils.hpp"
-
-#include <math.h>
+#include "fwRenderOgre/vr/SummedAreaTable.hpp"
 
 #include <OGRE/OgreCompositor.h>
 #include <OGRE/OgreCompositorChain.h>
@@ -17,11 +14,13 @@
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMaterialManager.h>
-#include <OGRE/OgreTechnique.h>
-#include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreRenderTarget.h>
 #include <OGRE/OgreRenderTexture.h>
+#include <OGRE/OgreTechnique.h>
+#include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreViewport.h>
+
+#include <math.h>
 
 namespace fwRenderOgre
 {
@@ -322,7 +321,7 @@ void SummedAreaTable::computeSequential(::fwData::Image::sptr _image, fwData::Tr
 {
     ::glm::vec4* satBuffer = new ::glm::vec4[m_satSize[0] * m_satSize[1] * m_satSize[2]];
 
-    ::fwComEd::helper::Image imageHelper(_image);
+    ::fwDataTools::helper::Image imageHelper(_image);
 
     ::glm::vec4 satVal;
 

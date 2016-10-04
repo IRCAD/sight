@@ -7,17 +7,17 @@
 #ifndef __FWRENDEROGRE_VR_SUMMEDAREATABLE_HPP__
 #define __FWRENDEROGRE_VR_SUMMEDAREATABLE_HPP__
 
+#include "fwRenderOgre/config.hpp"
+
 #include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include <fwComEd/helper/Image.hpp>
-
-#include "fwRenderOgre/config.hpp"
-
-#include <glm/glm.hpp>
+#include <fwDataTools/helper/Image.hpp>
 
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreTexture.h>
+
+#include <glm/glm.hpp>
 
 namespace fwRenderOgre
 {

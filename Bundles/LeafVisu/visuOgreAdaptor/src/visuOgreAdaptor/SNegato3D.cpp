@@ -6,26 +6,25 @@
 
 #include "visuOgreAdaptor/SNegato3D.hpp"
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
-
-#include <fwComEd/Dictionary.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
 #include <fwRenderOgre/Utils.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <algorithm>
-
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTextureManager.h>
+
+#include <algorithm>
 
 namespace visuOgreAdaptor
 {
@@ -110,7 +109,7 @@ void SNegato3D::doStart() throw(::fwTools::Failed)
 
     this->installTFConnections();
 
-    bool isValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
+    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
     if (isValid)
     {
         this->newImage();
