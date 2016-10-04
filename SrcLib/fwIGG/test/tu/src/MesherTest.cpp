@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "MesherTest.hpp"
+
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
 
@@ -15,8 +17,6 @@
 #include <fwMemory/tools/MemoryMonitorTools.hpp>
 
 #include <fwTest/Data.hpp>
-
-#include "MesherTest.hpp"
 
 #include <vector>
 
