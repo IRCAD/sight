@@ -32,11 +32,9 @@ static const ::fwCom::Signals::SignalKeyType TRIGGERED_SIG = "triggered";
 
 //-----------------------------------------------------------------------------
 
-SButton::SButton() throw () : m_image(""), m_label(""), m_tooltip(""), m_sigTriggered(TrigerredSignalType::New())
+SButton::SButton() throw ()
 {
-    ::fwCom::HasSignals::m_signals(TRIGGERED_SIG, m_sigTriggered);
-
-
+    m_sigTriggered = newSignal<TrigerredSignalType>(TRIGGERED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -128,7 +126,7 @@ void SButton::configuring() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SButton::info(std::ostream &_sstream)
+void SButton::info(std::ostream& _sstream)
 {
 }
 

@@ -24,7 +24,7 @@
     <xi:include href="configurations/inputParameters.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwActivities::registry::Activities">
-        <id>mesherActivity::activity::mesher</id>
+        <id>mesherActivity</id>
         <title>CGoGN Mesher</title>
         <desc>Mesher activity proposed by IGG team (ICube)</desc>
         <icon>@BUNDLE_PREFIX@/mesherActivity_0-1/icons/cgogn.png</icon>
@@ -32,7 +32,7 @@
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>
-        <appConfig id="mesherActivity::app_config::mesher">
+        <appConfig id="mesher">
             <parameters>
                 <parameter replace="imageUid" by="@values.imageSeries.image" />
             </parameters>

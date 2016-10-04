@@ -7,7 +7,7 @@
 #ifndef __FWIGG_MESHER_HXX__
 #define __FWIGG_MESHER_HXX__
 
-#include <fwComEd/helper/Image.hpp>
+#include <fwComEd/helper/ImageGetter.hpp>
 #include <fwComEd/helper/Mesh.hpp>
 
 #include <fwData/Image.hpp>
@@ -32,21 +32,21 @@ namespace fwIGG
 //-----------------------------------------------------------------------------
 
 template < typename DATATYPE >
-void getMinMax(::fwData::Image::sptr image, DATATYPE &min, DATATYPE &max)
+void getMinMax(::fwData::Image::csptr image, DATATYPE& min, DATATYPE& max)
 {
-    ::fwComEd::helper::Image imageLock ( image );
-    DATATYPE * buffer                     = static_cast < DATATYPE* > (imageLock.getBuffer());
-    const ::fwData::Image::SizeType &size = image->getSize();
+    ::fwComEd::helper::ImageGetter imageLock ( image );
+    DATATYPE* buffer                      = static_cast < DATATYPE* > (imageLock.getBuffer());
+    const ::fwData::Image::SizeType& size = image->getSize();
     ::fwData::Image::SizeType::value_type len = size[0]*size[1]*size[2];
 
     typedef std::numeric_limits<DATATYPE> ImgLimits;
     min = ImgLimits::max();
     max = (ImgLimits::is_integer || !ImgLimits::is_signed) ? ImgLimits::min() : -ImgLimits::max();
 
-    DATATYPE * bufEnd = buffer + len;
+    DATATYPE* bufEnd = buffer + len;
     DATATYPE currentVoxel;
 
-    for (DATATYPE * voxel = buffer; voxel < bufEnd; ++voxel )
+    for (DATATYPE* voxel = buffer; voxel < bufEnd; ++voxel )
     {
         currentVoxel = *voxel;
 
@@ -64,7 +64,7 @@ void getMinMax(::fwData::Image::sptr image, DATATYPE &min, DATATYPE &max)
 //-----------------------------------------------------------------------------
 
 template < typename DATATYPE >
-void Mesher::computeMeshMCS(::fwData::Image::sptr img, ::fwData::Mesh::sptr mesh, DATATYPE valueMin,
+void Mesher::computeMeshMCS(::fwData::Image::csptr img, ::fwData::Mesh::sptr mesh, DATATYPE valueMin,
                             DATATYPE valueMax, unsigned int faces,
                             unsigned int adapt, unsigned int radius, bool percent, bool closing)
 {
@@ -78,7 +78,7 @@ void Mesher::computeMeshMCS(::fwData::Image::sptr img, ::fwData::Mesh::sptr mesh
 //-----------------------------------------------------------------------------
 
 template < typename DATATYPE >
-::boost::shared_ptr<CGoGN::EmbeddedMap2> Mesher::computeMeshMCSCGoGN(::fwData::Image::sptr img, DATATYPE valueMin,
+::boost::shared_ptr<CGoGN::EmbeddedMap2> Mesher::computeMeshMCSCGoGN(::fwData::Image::csptr img, DATATYPE valueMin,
                                                                      DATATYPE valueMax, unsigned int faces,
                                                                      unsigned int adapt, unsigned int radius,
                                                                      bool percent, bool closing)
@@ -87,7 +87,7 @@ template < typename DATATYPE >
     int m_radius   = radius;
     double m_adapt = adapt/100;
 
-    ::fwComEd::helper::Image imageHelper(img);
+    ::fwComEd::helper::ImageGetter imageHelper(img);
     DATATYPE* buff  = static_cast<DATATYPE*> (imageHelper.getBuffer());
     unsigned int wx = img->getSize()[0];
     unsigned int wy = img->getSize()[1];
@@ -184,7 +184,7 @@ template < typename DATATYPE >
 //-----------------------------------------------------------------------------
 
 template < typename DATATYPE >
-void Mesher::computeMeshMC(::fwData::Image::sptr img, ::fwData::Mesh::sptr mesh, DATATYPE valueMin, DATATYPE valueMax)
+void Mesher::computeMeshMC(::fwData::Image::csptr img, ::fwData::Mesh::sptr mesh, DATATYPE valueMin, DATATYPE valueMax)
 {
     ::boost::shared_ptr<PFP::MAP> map(Mesher::computeMeshMCCGoGN(img, valueMin, valueMax));
 
@@ -195,13 +195,13 @@ void Mesher::computeMeshMC(::fwData::Image::sptr img, ::fwData::Mesh::sptr mesh,
 //-----------------------------------------------------------------------------
 
 template < typename DATATYPE >
-::boost::shared_ptr<CGoGN::EmbeddedMap2> Mesher::computeMeshMCCGoGN(::fwData::Image::sptr img, DATATYPE valueMin,
+::boost::shared_ptr<CGoGN::EmbeddedMap2> Mesher::computeMeshMCCGoGN(::fwData::Image::csptr img, DATATYPE valueMin,
                                                                     DATATYPE valueMax)
 {
     ::boost::shared_ptr<PFP::MAP> map(new PFP::MAP);
     CGoGN::VertexAttribute<PFP::VEC3> position;
 
-    ::fwComEd::helper::Image imageHelper(img);
+    ::fwComEd::helper::ImageGetter imageHelper(img);
     DATATYPE* buff  = static_cast<DATATYPE*> (imageHelper.getBuffer());
     unsigned int wx = img->getSize()[0];
     unsigned int wy = img->getSize()[1];

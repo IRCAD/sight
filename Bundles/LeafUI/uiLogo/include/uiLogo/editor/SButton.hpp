@@ -24,7 +24,7 @@ namespace editor
 
 /**
  * @brief Configurable button
- * Creates a button with optionnal label, logo and tootip
+ * Creates a button with optional label, logo and tootip
  * Once the user clicks the button, a signal is sent
  */
 class UILOGO_CLASS_API SButton : public QObject,
@@ -75,7 +75,7 @@ public:
     UILOGO_API void configuring() throw (::fwTools::Failed);
 
     /// This method is used to give information about the service. Do nothing
-    UILOGO_API void info(std::ostream &_sstream);
+    UILOGO_API void info(std::ostream& _sstream);
 
 protected Q_SLOTS:
     /// This method is called when the user clicks OK button

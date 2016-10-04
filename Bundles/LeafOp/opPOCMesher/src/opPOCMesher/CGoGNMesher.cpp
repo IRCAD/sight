@@ -81,19 +81,8 @@ void CGoGNMesher::stopping() throw (::fwTools::Failed)
 void CGoGNMesher::configuring() throw (::fwTools::Failed)
 {
     const ::fwServices::IService::ConfigType& srvConfig = this->getConfigTree();
-
     SLM_ASSERT("You must have one <config/> element.", srvConfig.get_child("service").count("config") == 1 );
-
     const ::fwServices::IService::ConfigType& config = srvConfig.get_child("service.config");
-
-    SLM_ASSERT("You must have one <image/> element.", config.count("image") == 1);
-    SLM_ASSERT("You must have one <modelSeries/> element.", config.count("modelSeries") == 1);
-
-    const ::fwServices::IService::ConfigType& imageCfg       = config.get_child("image");
-    const ::fwServices::IService::ConfigType& modelSeriesCfg = config.get_child("modelSeries");
-
-    m_imageKey       = imageCfg.get_value<std::string>();
-    m_modelSeriesKey = modelSeriesCfg.get_value<std::string>();
 
     if(config.count("valueMin") == 1)
     {
@@ -137,18 +126,11 @@ void CGoGNMesher::updating() throw (::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    ::fwData::Composite::sptr composite           = this->getObject< ::fwData::Composite >();
-    ::fwData::Composite::iterator iterImg         = composite->find(m_imageKey);
-    ::fwData::Composite::iterator iterModelSeries = composite->find(m_modelSeriesKey);
+    ::fwData::Image::csptr image               = this->getInput< ::fwData::Image >("image");
+    ::fwMedData::ModelSeries::sptr modelSeries = this->getInOut< ::fwMedData::ModelSeries >("modelSeries");
 
-    SLM_ASSERT("Key '"+m_imageKey+"' not found in composite.", iterImg != composite->end());
-    SLM_ASSERT("Key '"+m_modelSeriesKey+"' not found in composite.", iterModelSeries != composite->end());
-
-    ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(iterImg->second);
-    SLM_ASSERT("Image '"+m_imageKey+"' is not valid.", image);
-
-    ::fwMedData::ModelSeries::sptr modelSeries = ::fwMedData::ModelSeries::dynamicCast(iterModelSeries->second);
-    SLM_ASSERT("ModelSeries '"+m_modelSeriesKey+"' is not valid.", modelSeries);
+    SLM_ASSERT( "'image' doesn't exist or is not an image", image);
+    SLM_ASSERT( "'modelSeries' doesn't exist or is not a ModelSeries", modelSeries);
 
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
 
@@ -258,7 +240,6 @@ void CGoGNMesher::setInteger(int val, std::string key)
 
 void CGoGNMesher::setBoolean(bool val, std::string key)
 {
-
     if(key == "percentage")
     {
         m_percentage = val;

@@ -30,8 +30,6 @@ struct PFP : public CGoGN::PFP_STANDARD
 
 /**
  * @brief   IGG Mesher: Class used to generate a mesh from an image.
- * @class   Mesher.
- *
  */
 class FWIGG_CLASS_API Mesher : public ::fwCore::BaseObject
 {
@@ -53,7 +51,7 @@ public:
      * @param[in] closing whether the mesh is closed at the bounds of the image
      */
     template < typename DATATYPE >
-    static void computeMeshMCS(::fwData::Image::sptr img, ::fwData::Mesh::sptr mesh, DATATYPE valueMin,
+    static void computeMeshMCS(::fwData::Image::csptr img, ::fwData::Mesh::sptr mesh, DATATYPE valueMin,
                                DATATYPE valueMax, unsigned int faces, unsigned int adapt,
                                unsigned int radius, bool percent, bool closing);
 
@@ -71,7 +69,7 @@ public:
      * @return the computed CGoGN mesh
      */
     template < typename DATATYPE >
-    static ::boost::shared_ptr<PFP::MAP> computeMeshMCSCGoGN(::fwData::Image::sptr img, DATATYPE valueMin,
+    static ::boost::shared_ptr<PFP::MAP> computeMeshMCSCGoGN(::fwData::Image::csptr img, DATATYPE valueMin,
                                                              DATATYPE valueMax, unsigned int faces,
                                                              unsigned int adapt, unsigned int radius, bool percent,
                                                              bool closing);
@@ -85,7 +83,7 @@ public:
      * @param[in] valueMax the maximum value in the image to mesh
      */
     template < typename DATATYPE >
-    static void computeMeshMC(::fwData::Image::sptr img, ::fwData::Mesh::sptr mesh,
+    static void computeMeshMC(::fwData::Image::csptr img, ::fwData::Mesh::sptr mesh,
                               DATATYPE valueMin, DATATYPE valueMax);
 
     /**
@@ -97,7 +95,7 @@ public:
      * @return the computed CGoGN mesh
      */
     template < typename DATATYPE >
-    static ::boost::shared_ptr<PFP::MAP> computeMeshMCCGoGN(::fwData::Image::sptr img, DATATYPE valueMin,
+    static ::boost::shared_ptr<PFP::MAP> computeMeshMCCGoGN(::fwData::Image::csptr img, DATATYPE valueMin,
                                                             DATATYPE valueMax);
 
 private:

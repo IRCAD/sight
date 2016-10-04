@@ -20,8 +20,8 @@ set( REQUIREMENTS
     visuVTKAdaptor
     opVTKMesh
     ctrlSelection
-    appXml
+    appXml2
     uiLogo
-    opPOCMesher )
-
-
+    opPOCMesher
+    media
+)

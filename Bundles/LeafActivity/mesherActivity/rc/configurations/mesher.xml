@@ -1,5 +1,5 @@
-<extension implements="::fwServices::registry::AppConfig">
-    <id>mesherActivity::app_config::mesher</id>
+<extension implements="::fwServices::registry::AppConfig2">
+    <id>mesher</id>
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
@@ -9,294 +9,291 @@
         <param name="imageUid" />
     </parameters>
     <config>
+    
+        <object uid="${SERIESDB}" src="ref" type="::fwMedData::SeriesDB" />
+        <object uid="${AS_UID}" src="ref" type="::fwMedData::ActivitySeries" />
+        <object uid="${imageUid}" src="ref" type="::fwData::Image" />
+        <object uid="modelSeriesUID" type="::fwMedData::ModelSeries" />
+        <object uid="reconstructionUID" type="::fwData::Reconstruction" src="deferred" />
+        
+        <service uid="mainView" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view align="center" />
+                    <view align="right" minWidth="300" />
+                </layout>
+                <toolBar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBar" start="yes" />
+                <view sid="multiView_scene1_center" start="yes" />
+                <view sid="multiView_scene1_right" start="yes" />
+            </registry>
+        </service>
 
-        <object type="::fwData::Composite">
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" autoConnect="no">
+            <gui>
+                <layout>
+                    <menuItem name="VTK Mesher" icon="@BUNDLE_PREFIX@/mesherActivity_0-1/icons/vtk.png" />
+                    <menuItem name="CGoGN Mesher" icon="@BUNDLE_PREFIX@/mesherActivity_0-1/icons/cgogn.png" style="check" />
+                    <spacer />
+                    <menu name="Help" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="mesher1" start="yes" />
+                <menuItem sid="mesher_parameters" start="yes" />
+                <menu sid="menu_help" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="${GENERIC_UID}_mainView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::CardinalLayoutManager">
-                        <view caption="Negato" align="center" />
-                    </layout>
-                    <toolBar />
-                </gui>
-                <registry>
-                    <parent wid="${WID_PARENT}" />
-                    <toolBar sid="${GENERIC_UID}_toolBar" start="yes" />
-                    <view sid="${GENERIC_UID}_multiView_scene1" start="yes" />
-                </registry>
-            </service>
+        <service uid="multiView_scene1_right" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" minWidth="50" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="multiViewOrgans" start="yes" />
+                <view sid="logo_view" start="yes" />
+            </registry>
+        </service>
+        
+        <service uid="multiView_scene1_center" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" minHeight="30" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="generic_scene" start="yes" />
+                <view sid="multiView_scene1_bottom" start="yes" />
+            </registry>
+        </service>
+        
+        <service uid="multiView_scene1_bottom" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" minWidth="30" />
+                    <view proportion="0" minWidth="50" />
+                    <view proportion="1" />
+                    <view proportion="0" minWidth="30" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="slice_list_editor" start="yes" />
+                <view sid="show_scan_editor" start="yes" />
+                <view sid="slider_index_editor" start="yes" />
+                <view sid="snapshot_scene_editor" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="${GENERIC_UID}_toolBar" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
-                <gui>
-                    <layout>
-                        <menuItem name="VTK Mesher" icon="@BUNDLE_PREFIX@/mesherActivity_0-1/icons/vtk.png" />
-                        <menuItem name="CGoGN Mesher" icon="@BUNDLE_PREFIX@/mesherActivity_0-1/icons/cgogn.png" style="check" />
-                        <separator />
-                        <menuItem name="Export ModelSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" style="check" />
-                        <spacer />
-                        <menu name="Help" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="${GENERIC_UID}_mesher1" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_mesher_parameters" start="yes" />
+        <service uid="multiViewOrgans" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::ToolboxLayoutManager">
+                    <orientation value="vertical" />
+                    <view caption="Organs" expanded="true" />
+                    <view caption="Material" expanded="true" />
+                    <view caption="Representation" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="list_organ_editor" start="yes" />
+                <view sid="organ_material_editor" start="no" />
+                <view sid="representation_editor" start="no" />
+            </registry>
+        </service>
+        
+        <service uid="slice_list_editor" type="::guiQt::editor::SSelectionMenuButton" autoConnect="no">
+             <toolTip>Manage slice visibility</toolTip>
+             <selected>3</selected>
+             <items>
+                 <item text="One slice" value="1" />
+                 <item text="three slices" value="3" />
+             </items>
+        </service>
 
-                    <menuItem sid="${GENERIC_UID}_ActionExportActivity" start="yes" />
-                    <menu sid="${GENERIC_UID}_menu_help" start="yes" />
-                </registry>
-            </service>
+        <service uid="show_scan_editor" type="::guiQt::editor::SSignalButton" autoConnect="no">
+            <config>
+                <checkable>true</checkable>
+                <icon>@BUNDLE_PREFIX@/media_0-1/icons/sliceHide.png</icon>
+                <icon2>@BUNDLE_PREFIX@/media_0-1/icons/sliceShow.png</icon2>
+                <iconWidth>40</iconWidth>
+                <iconHeight>16</iconHeight>
+                <checked>true</checked>
+            </config>
+        </service>
 
-            <service uid="${GENERIC_UID}_multiView_scene1" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::CardinalLayoutManager">
-                        <view align="center" minWidth="200" />
-                        <view align="right" minWidth="200" minHeight="200" position="0" />
-                        <view align="right" minWidth="200" minHeight="80" position="1" />
-                        <view align="right" minWidth="200" minHeight="200" position="2" />
-                        <view align="right" minWidth="200" minHeight="80" position="2" />
-                        <view align="bottom" minHeight="30" resizable="no" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_generic_scene" start="yes" />
-                    <view sid="${GENERIC_UID}_list_organ_editor" start="yes" />
-                    <view sid="${GENERIC_UID}_organ_material_editor" />
-                    <view sid="${GENERIC_UID}_representation_editor" />
-                    <view sid="${GENERIC_UID}_logo_view" start="yes" />
-                    <view sid="${GENERIC_UID}_multiView_scene1_bottom" start="yes" />
-                </registry>
-            </service>
+        <service uid="snapshot_scene_editor"  type="::uiVisu::SnapshotEditor" autoConnect="no">
+            <snap>
+                 <scene uid="generic_scene" />
+            </snap>
+        </service>
 
-            <service uid="${GENERIC_UID}_multiView_scene1_bottom" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="horizontal" />
-                        <view proportion="0" minWidth="30" />
-                        <view proportion="0" minWidth="50" />
-                        <view proportion="1" />
-                        <view proportion="0" minWidth="30" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_slice_list_editor" start="yes" />
-                    <view sid="${GENERIC_UID}_show_scan_editor" start="yes" />
-                    <view sid="${GENERIC_UID}_slider_index_editor" start="yes" />
-                    <view sid="${GENERIC_UID}_snapshot_scene_editor" start="yes" />
-                </registry>
-            </service>
+        <service uid="logo_view"  type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="logo_cgogn" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="${GENERIC_UID}_slice_list_editor" impl="::guiQt::editor::SSelectionMenuButton" type="::gui::editor::IEditor" autoConnect="no">
-                 <toolTip>Manage slice visibility</toolTip>
-                 <selected>3</selected>
-                 <items>
-                     <item text="One slice" value="1" />
-                     <item text="three slices" value="3" />
-                 </items>
-            </service>
+        <service uid="logo_cgogn" type="::uiLogo::editor::SButton" autoConnect="no">
+            <image>@BUNDLE_PREFIX@/mesherActivity_0-1/icons/cgogn_logo.png</image>
+            <tooltip>CGoGN website</tooltip>
+        </service>
 
-            <service uid="${GENERIC_UID}_show_scan_editor" impl="::guiQt::editor::SSignalButton" type="::gui::editor::IEditor" autoConnect="no">
-                <config>
-                    <checkable>true</checkable>
-                    <icon>@BUNDLE_PREFIX@/media_0-1/icons/sliceHide.png</icon>
-                    <icon2>@BUNDLE_PREFIX@/media_0-1/icons/sliceShow.png</icon2>
-                    <iconWidth>40</iconWidth>
-                    <iconHeight>16</iconHeight>
-                    <checked>true</checked>
-                </config>
-            </service>
+        <service uid="action_open_vp_website" type="::uiGeneric::action::LaunchBrowserActionService" autoConnect="no">
+            <url>http://cgogn.unistra.fr/</url>
+        </service>
 
-            <service uid="${GENERIC_UID}_snapshot_scene_editor" type="::gui::editor::IEditor" impl="::uiVisu::SnapshotEditor" autoConnect="no">
-                <snap>
-                     <scene uid="${GENERIC_UID}_generic_scene" />
-                </snap>
-            </service>
+        <service uid="action_acknowledgments" type="::uiGeneric::action::SShowAbout">
+            <filename id="@BUNDLE_PREFIX@/mesherActivity_0-1/documentations/cgogn.html"/>
+            <title>Acknowledgments</title>
+            <size width="500" height="400" />
+        </service>
 
-            <service uid="${GENERIC_UID}_logo_view" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="horizontal" />
-                        <view proportion="0" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_logo_cgogn" start="yes" />
-                </registry>
-            </service>
+        <service uid="menu_help" type="::gui::aspect::SDefaultMenu" autoConnect="no">
+            <gui>
+                <layout>
+                    <menuItem name="CGoGN and IGG team" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_acknowledgments" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="${GENERIC_UID}_logo_cgogn" impl="::uiLogo::editor::SButton" autoConnect="no">
-                <image>@BUNDLE_PREFIX@/mesherActivity_0-1/icons/cgogn_logo.png</image>
-                <tooltip>CGoGN website</tooltip>
-            </service>
+        <service uid="mesher_parameters" type="::gui::action::SConfigLauncher" autoConnect="no">
+            <appConfig id="mesherParametersCfg" />
+            <inout key="MESHER_UID" uid="modelSeriesUID" />
+            <parameter replace="TRIGGER_CHANNEL" uid="trigger"  />
+        </service>
 
-            <service uid="${GENERIC_UID}_action_open_vp_website" impl="::uiGeneric::action::LaunchBrowserActionService" autoConnect="no">
-                <url>http://cgogn.unistra.fr/</url>
-            </service>
 
-            <service uid="${GENERIC_UID}_action_acknowledgments" impl="::uiGeneric::action::SShowAbout">
-                <filename id="@BUNDLE_PREFIX@/mesherActivity_0-1/documentations/cgogn.html"/>
-                <title>Acknowledgments</title>
-                <size width="500" height="400" />
-            </service>
+        <service uid="mesher1" type="::opVTKMesh::SVTKMesher" autoConnect="no">
+            <in key="image" uid="${imageUid}" />
+            <inout key="modelSeries" uid="modelSeriesUID" />
+            <config>
+                <percentReduction>50</percentReduction>
+            </config>
+        </service>
 
-            <service uid="${GENERIC_UID}_menu_help" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
-                <gui>
-                    <layout>
-                        <menuItem name="CGoGN and IGG team" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="${GENERIC_UID}_action_acknowledgments" start="yes" />
-                </registry>
-            </service>
+        <service uid="mesher2" type="::opPOCMesher::CGoGNMesher" autoConnect="no">
+            <in key="image" uid="${imageUid}" />
+            <inout key="modelSeries" uid="modelSeriesUID" />
+            <config>
+                <valueMin>2</valueMin>
+                <valueMax>254</valueMax>
+                <radius>6</radius>
+                <adapt>0</adapt>
+                <faces>1000</faces>
+                <percentage>false</percentage>
+                <closing>true</closing>
+            </config>
+        </service>
 
-            <service uid="${GENERIC_UID}_mesher_parameters" impl="::gui::action::SConfigLauncher" autoConnect="no">
-                <config>
-                    <appConfig id="mesherParametersCfg" >
-                        <parameters>
-                            <parameter replace="MESHER_UID" by="${GENERIC_UID}_mesher2"  />
-                            <parameter replace="TRIGGER_CHANNEL" by="trigger"  />
-                        </parameters>
-                    </appConfig>
-                </config>
-            </service>
+        <service uid="updater_reconst_UID" type="::ctrlSelection::updater::SObjFromSlot" autoConnect="no">
+             <out key="object" uid="reconstructionUID" />
+        </service>
 
-            <!-- CompositeVisu description -->
-            <item key="myCompositeVisu">
-                <object uid="${GENERIC_UID}_composite_visu" type="::fwData::Composite">
+        <service uid="organ_material_editor" type="::uiReconstruction::OrganMaterialEditor" autoConnect="yes">
+            <inout key="reconstruction" uid="reconstructionUID" />
+        </service>
+        <service uid="representation_editor" type="::uiReconstruction::RepresentationEditor" autoConnect="yes">
+            <inout key="reconstruction" uid="reconstructionUID" />
+        </service>
 
-                    <service uid="${GENERIC_UID}_mesher1" impl="::opVTKMesh::SVTKMesher" type="::opVTKMesh::IMesher" autoConnect="no">
-                        <config>
-                            <percentReduction>50</percentReduction>
-                            <image>image</image>
-                            <modelSeries>modelSeries</modelSeries>
-                        </config>
-                    </service>
 
-                    <service uid="${GENERIC_UID}_mesher2" impl="::opPOCMesher::CGoGNMesher" autoConnect="no">
-                        <config>
-                            <image>image</image>
-                            <modelSeries>modelSeries</modelSeries>
-                            <valueMin>2</valueMin>
-                            <valueMax>254</valueMax>
-                            <radius>6</radius>
-                            <adapt>0</adapt>
-                            <faces>1000</faces>
-                            <percentage>false</percentage>
-                            <closing>true</closing>
-                        </config>
-                    </service>
+        <service uid="generic_scene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <in key="image" uid="${imageUid}" />
+            <in key="modelSeries" uid="modelSeriesUID" />
+            <scene>
+                <picker id="picker" vtkclass="fwVtkCellPicker" />
+                <renderer id="default" background="0.0" />
+                <adaptor id="model_series_adaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                    <config renderer="default" picker="" />
+                </adaptor>
+                <adaptor uid="negato_scene_3D" id="MPRNegato3D"  class="::visuVTKAdaptor::NegatoMPR" objectId="image">
+                    <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" />
+                </adaptor>
+                <adaptor id="snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                    <config renderer="default" />
+                </adaptor>
 
-                    <service uid="${GENERIC_UID}_updater_reconst_UID" impl="::ctrlSelection::updater::SObjFromSlot" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                         <compositeKey>reconstruction</compositeKey>
-                    </service>
+                <connect waitForKey="image">
+                    <signal>show_scan_editor/toggled</signal>
+                    <slot>negato_scene_3D/showSlice</slot>
+                </connect>
 
-                    <service uid="${GENERIC_UID}_manager_UID" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
-                        <mode type="stop" />
-                        <config>
-                            <object id="reconstruction" type="::fwData::Reconstruction">
-                                <service uid="${GENERIC_UID}_organ_material_editor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="no" />
-                                <service uid="${GENERIC_UID}_representation_editor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="no" />
-                            </object>
-                        </config>
-                    </service>
+                <connect waitForKey="image">
+                     <signal>slice_list_editor/selected</signal>
+                     <slot>negato_scene_3D/updateSliceMode</slot>
+                 </connect>
+            </scene>
+        </service>
 
-                    <service uid="${GENERIC_UID}_generic_scene" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
-                        <scene>
-                            <picker id="${GENERIC_UID}_picker" vtkclass="fwVtkCellPicker" />
-                            <renderer id="default" background="0.0" />
-                            <adaptor id="${GENERIC_UID}_model_series_adaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
-                                <config renderer="default" picker="" />
-                            </adaptor>
-                            <adaptor uid="${GENERIC_UID}_negato_scene_3D" id="MPRNegato3D"  class="::visuVTKAdaptor::NegatoMPR" objectId="image">
-                                <config renderer="default" picker="${GENERIC_UID}_picker" mode="3D" slices="3" sliceIndex="axial" />
-                            </adaptor>
-                            <adaptor id="${GENERIC_UID}_snapshot1" class="::visuVTKAdaptor::Snapshot" objectId="self">
-                                <config renderer="default" />
-                            </adaptor>
+                
+        <service uid="MedicalImageSrv" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes" >
+            <inout key="image" uid="${imageUid}" />
+        </service>
 
-                            <connect waitForKey="image">
-                                <signal>${GENERIC_UID}_show_scan_editor/toggled</signal>
-                                <slot>${GENERIC_UID}_negato_scene_3D/showSlice</slot>
-                            </connect>
+        <service uid="action_create_mesher1" type="::gui::action::SStarter" autoConnect="no">
+            <start_if_exists uid="mesher1" />
+        </service>
 
-                            <connect waitForKey="image">
-                                 <signal>${GENERIC_UID}_slice_list_editor/selected</signal>
-                                 <slot>${GENERIC_UID}_negato_scene_3D/updateSliceMode</slot>
-                             </connect>
-                        </scene>
-                    </service>
+        <service uid="action_create_mesher2" type="::gui::action::SStarter" autoConnect="no">
+            <start_if_exists uid="mesher2" />
+        </service>
 
-                    <item key="image">
-                        <object uid="${imageUid}" src="ref" type="::fwData::Image" >
-                            <service uid="${GENERIC_UID}_MedicalImageSrv" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController"  autoConnect="yes" />
-                            <service uid="${GENERIC_UID}_action_create_mesher1" impl="::gui::action::SStarter" type="::fwGui::IActionSrv" autoConnect="no">
-                                <start_if_exists uid="${GENERIC_UID}_mesher1" />
-                            </service>
-                            <service uid="${GENERIC_UID}_action_create_mesher2" impl="::gui::action::SStarter" type="::fwGui::IActionSrv" autoConnect="no">
-                                <start_if_exists uid="${GENERIC_UID}_mesher2" />
-                            </service>
+        <service uid="slider_index_editor"  type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <inout key="image" uid="${imageUid}" />
+            <sliceIndex>axial</sliceIndex>
+        </service>
+        
+        <service uid="list_organ_editor" type="::uiMedData::editor::SModelSeriesList" autoConnect="yes" >
+            <inout key="modelSeries" uid="modelSeriesUID" />
+            <columns>
+                <organ_name>@organ_name</organ_name>
+            </columns>
+        </service>
+        
+        <service uid="model_series_writer" type="::uiIO::editor::SIOSelector" autoConnect="no">
+            <inout key="modelSeries" uid="modelSeriesUID" />
+            <type mode="writer" />
+        </service>
 
-                            <service uid="${GENERIC_UID}_slider_index_editor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
-                                <sliceIndex>axial</sliceIndex>
-                            </service>
-                        </object>
-                    </item>
+        <connect>
+            <signal>logo_cgogn/triggered</signal>
+            <slot>action_open_vp_website/update</slot>
+        </connect>
 
-                    <item key="modelSeries">
-                        <object uid="${GENERIC_UID}_model_series_UID" type="::fwMedData::ModelSeries">
-                            <service uid="${GENERIC_UID}_list_organ_editor" impl="::uiMedData::editor::SModelSeriesList" type="::gui::editor::IEditor" autoConnect="yes" />
-                            <service uid="${GENERIC_UID}_model_series_writer" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no">
-                                <type mode="writer" />
-                            </service>
-                        </object>
-                    </item>
-                </object>
+        <connect>
+            <signal>list_organ_editor/reconstructionSelected</signal>
+            <slot>updater_reconst_UID/addOrSwap</slot>
+        </connect>
 
-            </item>
+        <connect channel="trigger" >
+            <slot>mesher2/update</slot>
+            <slot>mesher_parameters/deactivate</slot>
+        </connect>
 
-            <item key="seriesDB">
-                <object uid="${SERIESDB}" src="ref" type="::fwMedData::SeriesDB">
-                    <service uid="${GENERIC_UID}_ActionExportActivity" impl="::gui::action::SConfigLauncher" type="::fwGui::IActionSrv" autoConnect="yes">
-                        <config>
-                            <appConfig id="SeriesExportCfg" >
-                               <parameters>
-                                    <parameter replace="SERIES_UID" by="${GENERIC_UID}_model_series_UID"  />
-                                    <parameter replace="SERIESDB_UID" by="${SERIESDB}"  />
-                               </parameters>
-                            </appConfig>
-                        </config>
-                    </service>
-                </object>
-            </item>
+        <start uid="mainView" />
+        <start uid="action_open_vp_website" />
+        <start uid="updater_reconst_UID" />
+        <start uid="MedicalImageSrv" />
 
-            <item key="activitySeries">
-                <object uid="${AS_UID}" src="ref" type="::fwMedData::ActivitySeries" />
-            </item>
-
-            <connect>
-                <signal>${GENERIC_UID}_logo_cgogn/triggered</signal>
-                <slot>${GENERIC_UID}_action_open_vp_website/update</slot>
-            </connect>
-
-            <connect>
-                <signal>${GENERIC_UID}_list_organ_editor/reconstructionSelected</signal>
-                <slot>${GENERIC_UID}_updater_reconst_UID/addOrSwap</slot>
-            </connect>
-
-            <proxy channel="trigger" >
-                <slot>${GENERIC_UID}_mesher2/update</slot>
-                <slot>${GENERIC_UID}_mesher_parameters/deactivate</slot>
-            </proxy>
-
-            <start uid="${GENERIC_UID}_mainView" />
-            <start uid="${GENERIC_UID}_action_open_vp_website" />
-            <start uid="${GENERIC_UID}_updater_reconst_UID" />
-            <start uid="${GENERIC_UID}_MedicalImageSrv" />
-
-            <start uid="${GENERIC_UID}_manager_UID" />
-            <start uid="${GENERIC_UID}_mesher2" />
-
-        </object>
+        <start uid="mesher2" />
 
     </config>
 </extension>
