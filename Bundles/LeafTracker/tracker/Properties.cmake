@@ -10,7 +10,6 @@ set( DEPENDENCIES
     fwServices
     fwTools
     fwMath
-    fwComEd
     ARLcore
     fwCom
     arData

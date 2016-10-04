@@ -13,11 +13,11 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -100,7 +100,7 @@ void SVideoAdapter::doConfigure() throw(fwTools::Failed)
 
 void SVideoAdapter::doStart() throw(fwTools::Failed)
 {
-    vtkPolyDataMapper *mapper = vtkPolyDataMapper::New();
+    vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
     vtkPlaneSource* plan      = vtkPlaneSource ::New();
     mapper->SetInputConnection(plan->GetOutputPort());
     m_actor->SetMapper(mapper);
@@ -133,7 +133,7 @@ void SVideoAdapter::doStart() throw(fwTools::Failed)
 void SVideoAdapter::doUpdate() throw(fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    const bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if (!imageIsValid)
     {
@@ -163,7 +163,7 @@ void SVideoAdapter::doUpdate() throw(fwTools::Failed)
 
         m_isTextureInit = true;
 
-        vtkProperty *property = m_actor->GetProperty();
+        vtkProperty* property = m_actor->GetProperty();
         property->RemoveTexture("texture");
         property->SetTexture("texture", m_texture);
 
@@ -245,7 +245,7 @@ void SVideoAdapter::offsetOpticalCenter()
     {
         ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-        const bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+        const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
         if (!imageIsValid)
         {
             return;

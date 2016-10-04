@@ -4,30 +4,29 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
-
 #include "videoTools/SMatrixSynchronizer.hpp"
-
-#include <fwRuntime/ConfigurationElement.hpp>
-
-#include <fwTools/fwID.hpp>
-#include <fwTools/fwID.hpp>
-#include <fwTools/Object.hpp>
-
-#include <fwData/Image.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <arData/MatrixTL.hpp>
 #include <arData/timeline/Buffer.hpp>
 
 #include <fwCom/Signal.hxx>
-#include <fwComEd/helper/Array.hpp>
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwData/Image.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
+
+#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
+
+#include <fwTools/Object.hpp>
+#include <fwTools/fwID.hpp>
 
 fwServicesRegisterMacro(::arServices::ISynchronizer, ::videoTools::SMatrixSynchronizer,
                         ::fwData::TransformationMatrix3D);

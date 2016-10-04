@@ -4,23 +4,25 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "videoQt/SFrameGrabber.hpp"
 #include "videoQt/player/VideoRegistry.hpp"
 
-#include "videoQt/SFrameGrabber.hpp"
-
-#include <fwCore/base.hpp>
+#include <arData/Camera.hpp>
+#include <arData/FrameTL.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
-#include <fwComEd/helper/Image.hpp>
+
+#include <fwCore/base.hpp>
+
+#include <fwDataTools/helper/Image.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
-#include <fwTools/Type.hpp>
+
 #include <fwServices/macros.hpp>
 
-#include <arData/FrameTL.hpp>
-#include <arData/Camera.hpp>
+#include <fwTools/Type.hpp>
 
 #include <QImage>
 #include <QSize>

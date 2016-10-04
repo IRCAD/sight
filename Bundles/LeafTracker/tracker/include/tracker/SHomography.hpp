@@ -17,8 +17,8 @@
 
 #include <fwData/Composite.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/IController.hpp>
+#include <fwServices/macros.hpp>
 
 #include <arlcore/Point.h>
 #include <arlcore/Reconst3D.h>
@@ -127,7 +127,7 @@ private:
     ::arlCore::PlaneSystem* m_planeSystem;
 
     /// Connections
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     /// Points of the 3D model of the marker
     ARLPointListType m_3dModel;

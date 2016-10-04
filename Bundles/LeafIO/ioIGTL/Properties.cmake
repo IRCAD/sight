@@ -9,7 +9,6 @@ set( DEPENDENCIES
     arData
     fwServices
     fwCom
-    fwComEd
     fwRuntime
     fwGui
     fwThread

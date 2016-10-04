@@ -7,19 +7,20 @@
 #ifndef __UINETWORK_ANETWORKSERVICEWIDGET_HPP__
 #define __UINETWORK_ANETWORKSERVICEWIDGET_HPP__
 
-#include "uiNetwork/config.hpp"
-#include "uiNetwork/ObjectConnectorWidget.hpp"
 #include "uiNetwork/ConnectorModel.hpp"
+#include "uiNetwork/ObjectConnectorWidget.hpp"
+#include "uiNetwork/config.hpp"
+
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Object.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
 
-#include <QString>
 #include <QCheckBox>
 #include <QComboBox>
-#include <QWidget>
 #include <QHBoxLayout>
+#include <QString>
 #include <QTreeWidgetItem>
+#include <QWidget>
 
 namespace uiNetwork
 {
@@ -97,7 +98,7 @@ protected:
     ::fwData::Object::sptr m_obj;
 
     /// connectino between obj signal and service slots
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     /// Contains service configuration
     ConnectorModel::ServiceConfigurationContainer const& m_configs;

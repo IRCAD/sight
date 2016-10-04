@@ -4,17 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "igtlProtocol/DataConverter.hpp"
 #include "igtlProtocol/ImageTypeConverter.hpp"
 #include "igtlProtocol/converter/ImageConverter.hpp"
-#include "igtlProtocol/DataConverter.hpp"
-#include "igtlProtocol/DataConverter.hpp"
 
 #include <fwData/Image.hpp>
-#include <fwComEd/helper/Image.hpp>
-#include <fwComEd/helper/Array.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/helper/Image.hpp>
+
+#include <boost/numeric/conversion/cast.hpp>
 
 #include <igtl/igtlImageMessage.h>
-#include <boost/numeric/conversion/cast.hpp>
 
 #include <algorithm>
 
@@ -46,7 +47,7 @@ ImageConverter::~ImageConverter()
     ::igtl::Matrix4x4 matrix;
     int offset[] = {0, 0, 0};
     char* igtlImgBuffer;
-    ::fwComEd::helper::Array arrayHelper(srcImg->getDataArray());
+    ::fwDataTools::helper::Array arrayHelper(srcImg->getDataArray());
 
     dest = ::igtl::ImageMessage::New();
     ::igtl::IdentityMatrix(matrix);
@@ -77,7 +78,7 @@ void ImageConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
     char* imgBuffer;
     char* igtlImageBuffer;
     ::fwData::Image::sptr destImg = ::fwData::Image::dynamicCast(dest);
-    ::fwComEd::helper::Image imgHelper(destImg);
+    ::fwDataTools::helper::Image imgHelper(destImg);
     float igtlSpacing[3];
     float igtlOrigins[3];
     int igtlDimensions[3];

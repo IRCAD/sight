@@ -3,9 +3,9 @@ set( NAME videoTools )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
 set( DEPENDENCIES
-        fwComEd
         fwCore
         fwData
+        fwDataTools
         fwMath
         fwRuntime
         fwServices

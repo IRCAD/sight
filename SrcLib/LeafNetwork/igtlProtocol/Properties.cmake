@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwRuntime
     fwData
     fwServices
-    fwComEd
     fwTools
     fwZip
     fwAtoms

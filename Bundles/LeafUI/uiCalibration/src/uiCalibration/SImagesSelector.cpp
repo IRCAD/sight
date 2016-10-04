@@ -11,19 +11,20 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/helper/Vector.hpp>
-#include <fwComEd/helper/Array.hpp>
-
 #include <fwData/Image.hpp>
 #include <fwData/Vector.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/helper/Vector.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <fwTools/fwID.hpp>
 
-#include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QWidget>
 
 namespace uiCalibration
@@ -139,7 +140,7 @@ void SImagesSelector::remove()
         ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >(s_SELECTION_INOUT);
         ::fwData::Object::sptr obj    = vector->getContainer()[idx];
 
-        ::fwComEd::helper::Vector vectorHelper(vector);
+        ::fwDataTools::helper::Vector vectorHelper(vector);
         vectorHelper.remove(obj);
         vectorHelper.notify();
 
@@ -153,7 +154,7 @@ void SImagesSelector::reset()
 {
     ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >(s_SELECTION_INOUT);
 
-    ::fwComEd::helper::Vector vectorHelper(vector);
+    ::fwDataTools::helper::Vector vectorHelper(vector);
     vectorHelper.clear();
     vectorHelper.notify();
 
@@ -192,7 +193,7 @@ void SImagesSelector::add(::fwCore::HiResClock::HiResClockType timestamp)
 
     ::fwData::Array::sptr array = image->getDataArray();
 
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
 
     const ::boost::uint8_t* frameBuff = &buffer->getElement(0);
     ::boost::uint8_t* index = arrayHelper.begin< ::boost::uint8_t >();
@@ -200,7 +201,7 @@ void SImagesSelector::add(::fwCore::HiResClock::HiResClockType timestamp)
 
     ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >(s_SELECTION_INOUT);
 
-    ::fwComEd::helper::Vector vectorHelper(vector);
+    ::fwDataTools::helper::Vector vectorHelper(vector);
     vectorHelper.add(image);
     vectorHelper.notify();
 

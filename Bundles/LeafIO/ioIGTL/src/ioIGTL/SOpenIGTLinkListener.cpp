@@ -6,30 +6,32 @@
 
 #include "ioIGTL/SOpenIGTLinkListener.hpp"
 
+#include <arData/FrameTL.hpp>
+#include <arData/MatrixTL.hpp>
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
 
-#include <fwComEd/helper/Image.hpp>
-
-#include <fwData/Object.hpp>
 #include <fwData/Image.hpp>
+#include <fwData/Object.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <arData/FrameTL.hpp>
-#include <arData/MatrixTL.hpp>
+#include <fwDataTools/helper/Image.hpp>
+
+#include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwTools/Failed.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
-#include <fwServices/macros.hpp>
 
-#include <string>
 #include <functional>
+#include <string>
 
 fwServicesRegisterMacro (::ioNetwork::INetworkListener, ::ioIGTL::SOpenIGTLinkListener, ::fwData::Object);
 
@@ -263,7 +265,7 @@ void SOpenIGTLinkListener::manageTimeline(::fwData::Object::sptr obj)
     {
 
         ::fwData::Image::sptr im = ::fwData::Image::dynamicCast(obj);
-        ::fwComEd::helper::Image helper(im);
+        ::fwDataTools::helper::Image helper(im);
         ::arData::FrameTL::sptr frameTL = this->getObject< ::arData::FrameTL >();
         if(!m_frameTLInitialized)
         {

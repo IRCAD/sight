@@ -7,10 +7,11 @@
 #include "echoEdSimu/SProbeMesh.hpp"
 
 #include <fwCom/Signal.hxx>
-#include <fwComEd/helper/Array.hpp>
 
 #include <fwData/Mesh.hpp>
+
 #include <fwDataTools/Mesh.hpp>
+#include <fwDataTools/helper/Array.hpp>
 
 #include <fwMath/VectorFunctions.hpp>
 
@@ -75,19 +76,19 @@ void SProbeMesh::updating() throw(::fwTools::Failed)
     mesh->allocatePointTexCoords();
 
     // points position
-    ::fwComEd::helper::Array points(mesh->getPointsArray());
+    ::fwDataTools::helper::Array points(mesh->getPointsArray());
     ::fwData::Mesh::PointValueType* ptsBuffer = static_cast< ::fwData::Mesh::PointValueType* >( points.getBuffer() );
 
     // cells index (4 in a row)
-    ::fwComEd::helper::Array cells( mesh->getCellDataArray());
+    ::fwDataTools::helper::Array cells( mesh->getCellDataArray());
     ::fwData::Mesh::CellValueType* cellsBuffer = static_cast< ::fwData::Mesh::CellValueType* >( cells.getBuffer() );
 
     // type of the cell
-    ::fwComEd::helper::Array cellTypes(mesh->getCellTypesArray());
+    ::fwDataTools::helper::Array cellTypes(mesh->getCellTypesArray());
     ::fwData::Mesh::CellTypes* cellsTypeBuffer = static_cast< ::fwData::Mesh::CellTypes* >( cellTypes.getBuffer() );
 
     // offset +4 for quad
-    ::fwComEd::helper::Array cellDataOffsets(mesh->getCellDataOffsetsArray());
+    ::fwDataTools::helper::Array cellDataOffsets(mesh->getCellDataOffsetsArray());
     ::fwData::Mesh::CellDataOffsetType* cellsOffBuffer =
         static_cast< ::fwData::Mesh::CellDataOffsetType* >( cellDataOffsets.getBuffer() );
 
@@ -136,7 +137,7 @@ void SProbeMesh::updating() throw(::fwTools::Failed)
     }
 
     // cell tex coord
-    ::fwComEd::helper::Array cellTexCoords(mesh->getCellTexCoordsArray());
+    ::fwDataTools::helper::Array cellTexCoords(mesh->getCellTexCoordsArray());
     ::fwData::Mesh::TexCoordValueType* bufferCellTexCoord =
         static_cast< ::fwData::Mesh::TexCoordValueType* >( cellTexCoords.getBuffer() );
 
@@ -150,7 +151,7 @@ void SProbeMesh::updating() throw(::fwTools::Failed)
     }
 
     // point tex coord
-    ::fwComEd::helper::Array pointTexCoords(mesh->getPointTexCoordsArray());
+    ::fwDataTools::helper::Array pointTexCoords(mesh->getPointTexCoordsArray());
     ::fwData::Mesh::TexCoordValueType* bufferPointTexCoord =
         static_cast< ::fwData::Mesh::TexCoordValueType* >( pointTexCoords.getBuffer() );
 

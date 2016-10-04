@@ -4,17 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "igtlProtocol/converter/MeshConverter.hpp"
 #include "igtlProtocol/DataConverter.hpp"
+#include "igtlProtocol/converter/MeshConverter.hpp"
 
-#include <fwData/Mesh.hpp>
 #include <fwData/Array.hpp>
-#include <fwComEd/helper/Mesh.hpp>
-#include <fwComEd/helper/Array.hpp>
+#include <fwData/Mesh.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/helper/Mesh.hpp>
+
+#include <vtkPolyData.h>
 
 #include <boost/numeric/conversion/cast.hpp>
+
 #include <igtl/igtlPolyDataMessage.h>
-#include <vtkPolyData.h>
 
 #include <algorithm>
 
@@ -60,7 +63,7 @@ void MeshConverter::copyCellsFromFwMesh(::fwData::Mesh::csptr meshSrc, ::igtl::P
 {
     SLM_TRACE_FUNC();
 
-    ::fwComEd::helper::Mesh meshHelper(::fwData::Mesh::constCast(meshSrc));
+    ::fwDataTools::helper::Mesh meshHelper(::fwData::Mesh::constCast(meshSrc));
     long unsigned int nbCells = meshSrc->getNumberOfCells();
     ::fwData::Mesh::CellTypesMultiArrayType cellTypes             = meshHelper.getCellTypes();
     ::fwData::Mesh::CellDataMultiArrayType cellData               = meshHelper.getCellData();
@@ -117,7 +120,7 @@ void MeshConverter::copyPointsFromFwMesh(::fwData::Mesh::csptr meshSrc, ::igtl::
 {
     SLM_TRACE_FUNC();
 
-    ::fwComEd::helper::Mesh meshHelper(::fwData::Mesh::constCast(meshSrc));
+    ::fwDataTools::helper::Mesh meshHelper(::fwData::Mesh::constCast(meshSrc));
     ::fwData::Mesh::Id nbPoints                 = meshSrc->getNumberOfPoints();
     ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
     ::fwData::Mesh::PointsMultiArrayType::index i;
@@ -152,7 +155,7 @@ void MeshConverter::copyAttributesFromFwMesh(::fwData::Mesh::csptr meshSrc,
     if (pointColorArray)
     {
 
-        ::fwComEd::helper::Array arrayHelper(pointColorArray);
+        ::fwDataTools::helper::Array arrayHelper(pointColorArray);
         std::size_t pointColorSize = pointColorArray->getNumberOfComponents() * meshSrc->getNumberOfPoints();
 
         ::igtl::PolyDataAttribute::Pointer attr = ::igtl::PolyDataAttribute::New();
@@ -176,7 +179,7 @@ void MeshConverter::copyAttributesFromFwMesh(::fwData::Mesh::csptr meshSrc,
 
     if (cellColorArray)
     {
-        ::fwComEd::helper::Array arrayHelper(cellColorArray);
+        ::fwDataTools::helper::Array arrayHelper(cellColorArray);
         std::size_t cellColorSize = cellColorArray->getNumberOfComponents() * meshSrc->getNumberOfCells();
 
         ::igtl::PolyDataAttribute::Pointer attr = ::igtl::PolyDataAttribute::New();
@@ -197,7 +200,7 @@ void MeshConverter::copyAttributesFromFwMesh(::fwData::Mesh::csptr meshSrc,
 
     if (pointNormalsArray)
     {
-        ::fwComEd::helper::Array arrayHelper(pointNormalsArray);
+        ::fwDataTools::helper::Array arrayHelper(pointNormalsArray);
 
         ::igtl::PolyDataAttribute::Pointer attr = ::igtl::PolyDataAttribute::New();
         attr->SetType(::igtl::PolyDataAttribute::POINT_NORMAL);
@@ -211,7 +214,7 @@ void MeshConverter::copyAttributesFromFwMesh(::fwData::Mesh::csptr meshSrc,
 
     if (cellNormalsArray)
     {
-        ::fwComEd::helper::Array arrayHelper(cellNormalsArray);
+        ::fwDataTools::helper::Array arrayHelper(cellNormalsArray);
 
         ::igtl::PolyDataAttribute::Pointer attr = ::igtl::PolyDataAttribute::New();
         attr->SetName("CellNormals");
@@ -224,7 +227,7 @@ void MeshConverter::copyAttributesFromFwMesh(::fwData::Mesh::csptr meshSrc,
 
     if(pointTexCoordArray)
     {
-        ::fwComEd::helper::Array arrayHelper(pointTexCoordArray);
+        ::fwDataTools::helper::Array arrayHelper(pointTexCoordArray);
 
         ::igtl::PolyDataAttribute::Pointer attr = ::igtl::PolyDataAttribute::New();
         attr->SetName("PointTexCoord");
@@ -236,7 +239,7 @@ void MeshConverter::copyAttributesFromFwMesh(::fwData::Mesh::csptr meshSrc,
 
     if(cellTexCoordArray)
     {
-        ::fwComEd::helper::Array arrayHelper(cellTexCoordArray);
+        ::fwDataTools::helper::Array arrayHelper(cellTexCoordArray);
 
         ::igtl::PolyDataAttribute::Pointer attr = ::igtl::PolyDataAttribute::New();
         attr->SetName("CellTexCoord");
@@ -295,7 +298,7 @@ throw (::igtlProtocol::exception::Conversion)
         numberOfCells = numberOfPoints;
     }
 
-    ::fwComEd::helper::Mesh meshHelper(mesh);
+    ::fwDataTools::helper::Mesh meshHelper(mesh);
     mesh->allocate(numberOfPoints, numberOfCells, numberOfCellData);
 
     points = meshMsg->GetPoints();
@@ -358,7 +361,7 @@ void MeshConverter::copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer s
 
     ::igtl::PolyDataAttribute::Pointer attr;
 
-    ::fwComEd::helper::Mesh meshHelper(dest);
+    ::fwDataTools::helper::Mesh meshHelper(dest);
     unsigned char rgbaColor[4];
 
     for (int i = 0; i < src->GetNumberOfAttributes(); ++i)

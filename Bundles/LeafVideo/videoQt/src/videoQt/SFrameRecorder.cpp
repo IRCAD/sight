@@ -7,19 +7,20 @@
 #include "videoQt/SFrameRecorder.hpp"
 
 #include <fwCom/Slots.hxx>
-#include <fwComEd/helper/Vector.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Point.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/IController.hpp>
+#include <fwDataTools/helper/Vector.hpp>
 
-#include <boost/filesystem.hpp>
+#include <fwServices/IController.hpp>
+#include <fwServices/macros.hpp>
 
 #include <QImage>
 #include <QString>
+
+#include <boost/filesystem.hpp>
 
 namespace videoQt
 {

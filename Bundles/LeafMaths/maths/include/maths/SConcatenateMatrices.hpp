@@ -9,11 +9,12 @@
 
 #include "maths/config.hpp"
 
+#include <fwCom/helper/SigSlotConnection.hpp>
+
 #include <fwCore/base.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwServices/helper/SigSlotConnection.hpp>
 #include <fwServices/IController.hpp>
 
 
@@ -91,7 +92,7 @@ private:
 
     MatrixVectorType m_matrixVector; ///< The vector of TransformMatrix struct
 
-    ::fwServices::helper::SigSlotConnection m_connections; ///< connection to matrices
+    ::fwCom::helper::SigSlotConnection m_connections; ///< connection to matrices
 };
 
 } //namespace maths

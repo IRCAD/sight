@@ -6,22 +6,23 @@
 
 #include "videoTools/SMatrixTLSelector.hpp"
 
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <arData/FrameTL.hpp>
+#include <arData/MatrixTL.hpp>
+#include <arData/timeline/Buffer.hpp>
 
-#include <fwTools/fwID.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <arData/MatrixTL.hpp>
-#include <arData/FrameTL.hpp>
-#include <arData/timeline/Buffer.hpp>
+#include <fwDataTools/helper/Array.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwComEd/helper/Array.hpp>
+#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
+
+#include <fwTools/fwID.hpp>
 
 #include <functional>
 
@@ -277,7 +278,7 @@ void SMatrixTLSelector::updateFrames(::fwCore::HiResClock::HiResClockType timest
         ::fwData::mt::ObjectWriteLock destLock(image);
         ::fwData::Array::sptr array = image->getDataArray();
 
-        ::fwComEd::helper::Array arrayHelper(array);
+        ::fwDataTools::helper::Array arrayHelper(array);
 
         CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
 

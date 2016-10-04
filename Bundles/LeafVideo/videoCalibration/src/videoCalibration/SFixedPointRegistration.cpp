@@ -6,15 +6,15 @@
 
 #include "videoCalibration/SFixedPointRegistration.hpp"
 
-#include <fwData/Composite.hpp>
-#include <fwData/Array.hpp>
-
 #include <arData/CalibrationInfo.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/helper/Array.hpp>
+#include <fwData/Array.hpp>
+#include <fwData/Composite.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 

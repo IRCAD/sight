@@ -13,14 +13,14 @@
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 
-#include <fwCore/base.hpp>
 #include <fwCore/HiResClock.hpp>
-
-#include <fwTools/fwID.hpp>
+#include <fwCore/base.hpp>
 
 #include <fwServices/IController.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
+
+#include <fwTools/fwID.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -142,7 +142,7 @@ private:
     bool m_isPaused;
 
     /// Helper to manage connections between the timeline and this service.
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 };
 
 } //namespace videoQt

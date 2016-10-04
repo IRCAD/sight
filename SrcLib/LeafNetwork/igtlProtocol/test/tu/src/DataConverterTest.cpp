@@ -4,12 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "DataConverterTest.hpp"
-
-#include <igtlProtocol/DataConverter.hpp>
-#include <igtlProtocol/converter/CompositeConverter.hpp>
-#include <igtlProtocol/RawMessage.hpp>
-
 #include <fwData/Composite.hpp>
 #include <fwData/Float.hpp>
 #include <fwData/Image.hpp>
@@ -23,19 +17,26 @@
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
-#include <fwComEd/helper/Mesh.hpp>
+#include <fwDataTools/helper/Mesh.hpp>
 
-#include <fwTools/Type.hpp>
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/generator/Mesh.hpp>
 #include <fwTest/helper/compare.hpp>
+
+#include <fwTools/Type.hpp>
+
+#include <igtlProtocol/DataConverter.hpp>
+#include <igtlProtocol/RawMessage.hpp>
+#include <igtlProtocol/converter/CompositeConverter.hpp>
+
+#include "DataConverterTest.hpp"
 
 #include <igtl/igtlImageMessage.h>
 #include <igtl/igtlPointMessage.h>
 #include <igtl/igtlPositionMessage.h>
 #include <igtl/igtlStringMessage.h>
-#include <igtl/igtlTransformMessage.h>
 #include <igtl/igtlTrackingDataMessage.h>
+#include <igtl/igtlTransformMessage.h>
 
 #include <algorithm>
 #include <iostream>
@@ -81,8 +82,8 @@ void DataConverterTest::meshConverterTest()
     ::fwData::Mesh::sptr mesh2 = ::fwData::Mesh::dynamicCast(obj);
     CPPUNIT_ASSERT_MESSAGE("Mesh is null", mesh2);
 
-    ::fwComEd::helper::Mesh meshHelper(mesh);
-    ::fwComEd::helper::Mesh mesh2Helper(mesh2);
+    ::fwDataTools::helper::Mesh meshHelper(mesh);
+    ::fwDataTools::helper::Mesh mesh2Helper(mesh2);
 
     CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), mesh2->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), mesh2->getNumberOfCells());

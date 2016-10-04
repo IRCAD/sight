@@ -11,8 +11,9 @@
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
 
 
 namespace fwData
@@ -105,7 +106,7 @@ private:
     vtkPerspectiveTransform* m_transOrig; ///<  VTK original perspective transform.
     vtkCommand* m_cameraCommand; ///< VTK camera command.
 
-    ::fwServices::helper::SigSlotConnection m_connections; ///< Connection to image
+    ::fwCom::helper::SigSlotConnection m_connections; ///< Connection to image
 
     CalibrateSlotType::sptr m_slotCalibrate; ///< Slot to calibrate camera
 };

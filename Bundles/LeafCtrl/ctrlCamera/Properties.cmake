@@ -6,7 +6,6 @@ set( DEPENDENCIES
     fwCom
     fwTools
     fwRuntime
-    fwComEd
     fwData
     arData
     fwDataCamp

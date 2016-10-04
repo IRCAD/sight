@@ -6,15 +6,15 @@
 
 #include "videoCalibration/SChessBoardDetector.hpp"
 
-#include <fwData/Composite.hpp>
-#include <fwData/Array.hpp>
-
 #include <arData/CalibrationInfo.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/helper/Array.hpp>
+#include <fwData/Array.hpp>
+#include <fwData/Composite.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
@@ -205,7 +205,7 @@ void SChessBoardDetector::updateChessboardSize(unsigned int width, unsigned int 
 
         ::fwData::Array::sptr array = image->getDataArray();
 
-        ::fwComEd::helper::Array arrayHelper(array);
+        ::fwDataTools::helper::Array arrayHelper(array);
 
         const ::boost::uint8_t*  frameBuff = &buffer->getElement(0);
         ::boost::uint8_t* index = arrayHelper.begin< ::boost::uint8_t >();

@@ -10,11 +10,12 @@
 #include "maths/config.hpp"
 
 #include <fwCom/Slot.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
+
 #include <fwCore/base.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwServices/helper/SigSlotConnection.hpp>
 #include <fwServices/IController.hpp>
 
 

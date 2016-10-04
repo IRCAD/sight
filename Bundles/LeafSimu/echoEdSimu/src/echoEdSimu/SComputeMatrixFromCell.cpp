@@ -8,15 +8,16 @@
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-
 #include <fwCom/Slots.hxx>
-
-#include <fwComEd/helper/Array.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Reconstruction.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
+
 #include <fwMedData/ModelSeries.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -55,10 +56,10 @@ void SComputeMatrixFromCell::starting() throw(::fwTools::Failed)
     SLM_ASSERT("Key 'radialMesh' is not a ::fwData::Mesh", m_mesh);
 
     ::fwData::Array::sptr cellArray = m_mesh->getCellDataArray();
-    ::fwComEd::helper::Array cellArrayHelper(cellArray);
+    ::fwDataTools::helper::Array cellArrayHelper(cellArray);
 
     ::fwData::Array::sptr pointsArray = m_mesh->getPointsArray();
-    ::fwComEd::helper::Array pointsArrayHelper(pointsArray);
+    ::fwDataTools::helper::Array pointsArrayHelper(pointsArray);
 
     /// Get the first cell coordinates
     const unsigned int indexCell = 0;
@@ -152,7 +153,7 @@ void SComputeMatrixFromCell::updateBoth(int i, int j)
     }
 
     ::fwData::Array::sptr normalArray = m_mesh->getCellNormalsArray();
-    ::fwComEd::helper::Array normalArrayHelper(normalArray);
+    ::fwDataTools::helper::Array normalArrayHelper(normalArray);
 
     ::fwData::Array::IndexType indexVector;
     indexVector.push_back(indexCell);
@@ -162,10 +163,10 @@ void SComputeMatrixFromCell::updateBoth(int i, int j)
     ::fwData::Mesh::NormalValueType nz = *normalArrayHelper.getItem< ::fwData::Mesh::NormalValueType>(indexVector, 2);
 
     ::fwData::Array::sptr cellArray = m_mesh->getCellDataArray();
-    ::fwComEd::helper::Array cellArrayHelper(cellArray);
+    ::fwDataTools::helper::Array cellArrayHelper(cellArray);
 
     ::fwData::Array::sptr pointsArray = m_mesh->getPointsArray();
-    ::fwComEd::helper::Array pointsArrayHelper(pointsArray);
+    ::fwDataTools::helper::Array pointsArrayHelper(pointsArray);
 
     ::fwData::Mesh::PointValueType points[4][3];
     for(int i = 0; i < 4; ++i)

@@ -11,9 +11,11 @@
 
 #include <arData/FrameTL.hpp>
 
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/Image.hpp>
 #include <fwCore/HiResClock.hpp>
+
+#include <fwData/Image.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+
 #include <fwServices/IController.hpp>
 
 namespace videoTools
@@ -96,7 +98,7 @@ private:
     RenderRequestedSignalType::sptr m_sigRenderRequested;
 
     /// Connections
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     /// Frame timeline key
     std::string m_frameTLKey;

@@ -9,15 +9,18 @@
 
 #include "ioNetwork/config.hpp"
 
-#include <fwData/Object.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
-#include <fwServices/IController.hpp>
+#include <fwCom/Signal.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-#include <fwCom/Signal.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
+
+#include <fwData/Object.hpp>
+
+#include <fwServices/IController.hpp>
+
+#include <boost/type.hpp>
 
 #include <map>
-#include <boost/type.hpp>
 
 namespace ioNetwork
 {
@@ -127,7 +130,7 @@ private:
     SendDataSlotType::sptr m_sendDataSlot;
 
     /// connection between obj signal and service slots
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 };
 
 } // namespace ioNetwork

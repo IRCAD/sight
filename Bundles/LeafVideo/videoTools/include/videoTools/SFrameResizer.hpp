@@ -10,6 +10,7 @@
 #include "videoTools/config.hpp"
 
 #include <arData/FrameTL.hpp>
+
 #include <arServices/IOperator.hpp>
 
 namespace videoTools
@@ -82,7 +83,7 @@ private:
     int m_interpolationMethod;
 
     /// Connections
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 };
 
 } // videoTools

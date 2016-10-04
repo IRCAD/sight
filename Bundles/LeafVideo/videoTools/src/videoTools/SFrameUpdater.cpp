@@ -6,20 +6,20 @@
 
 #include "videoTools/SFrameUpdater.hpp"
 
+#include <arData/timeline/Buffer.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwThread/Worker.hpp>
-
-#include <fwData/Object.hpp>
 #include <fwData/Composite.hpp>
+#include <fwData/Object.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <arData/timeline/Buffer.hpp>
-
-#include <fwComEd/helper/Array.hpp>
+#include <fwDataTools/helper/Array.hpp>
 
 #include <fwServices/macros.hpp>
+
+#include <fwThread/Worker.hpp>
 
 fwServicesRegisterMacro( ::fwServices::IController, ::videoTools::SFrameUpdater, ::fwData::Composite );
 
@@ -180,7 +180,7 @@ void SFrameUpdater::updateImage()
         ::fwData::mt::ObjectWriteLock destLock(m_image);
         ::fwData::Array::sptr array = m_image->getDataArray();
 
-        ::fwComEd::helper::Array arrayHelper(array);
+        ::fwDataTools::helper::Array arrayHelper(array);
 
         ::fwCore::HiResClock::HiResClockType timestamp = m_frameTL->getNewerTimestamp();
         CSPTR(::arData::FrameTL::BufferType) buffer    = m_frameTL->getClosestBuffer(timestamp);

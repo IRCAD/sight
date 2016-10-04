@@ -8,26 +8,26 @@
 
 #include <arData/Camera.hpp>
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
+
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <vtkCamera.h>
 #include <vtkCommand.h>
-#include <vtkRenderer.h>
-#include <vtkPerspectiveTransform.h>
-#include <vtkTransform.h>
 #include <vtkMath.h>
+#include <vtkPerspectiveTransform.h>
+#include <vtkRenderer.h>
+#include <vtkTransform.h>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKARAdaptor::SCamera,
                          ::fwData::TransformationMatrix3D );
@@ -42,7 +42,7 @@ public:
 
     static CameraCallback* New(::visuVTKARAdaptor::SCamera* adaptor)
     {
-        CameraCallback *cb = new CameraCallback;
+        CameraCallback* cb = new CameraCallback;
         cb->m_adaptor = adaptor;
         return cb;
     }
@@ -60,7 +60,7 @@ public:
         m_adaptor->updateFromVtk();
     }
 
-    ::visuVTKARAdaptor::SCamera *m_adaptor;
+    ::visuVTKARAdaptor::SCamera* m_adaptor;
 };
 
 static const double s_nearPlane = 0.1;

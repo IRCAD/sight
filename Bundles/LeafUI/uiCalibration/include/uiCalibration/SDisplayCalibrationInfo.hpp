@@ -11,10 +11,10 @@
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 
-#include <fwServices/IController.hpp>
 #include <fwServices/AppConfigManager.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
+#include <fwServices/IController.hpp>
 
 
 
@@ -80,7 +80,7 @@ protected:
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream );
 
 
 private:
