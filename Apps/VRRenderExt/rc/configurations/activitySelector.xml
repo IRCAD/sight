@@ -1,0 +1,110 @@
+<extension implements="::fwServices::registry::AppConfig2">
+    <id>activitySelector</id>
+    <parameters>
+        <param name="SERIESDB" />
+        <param name="LOADING_SERIESDB" />
+        <param name="WID_PARENT" />
+        <param name="CREATE_ACTIVITY_CHANNEL" />
+        <param name="LAUNCH_ACTIVITY_CHANNEL" />
+        <param name="LAUNCH_ACTIVITY_SERIES_CHANNEL" />
+        <param name="LOAD_ACTIVITY_CHANNEL" />
+        <param name="ICON_PATH" />
+    </parameters>
+    <config>
+
+        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref"/>
+        <object uid="${LOADING_SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
+
+        <service uid="mainview" type="::gui::view::SDefaultView" autoConnect="yes">
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view align="center" minWidth="200" visible="false" />
+                    <view align="bottom" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="activityCreator" start="yes" />
+                <view sid="selector" start="yes" />
+            </registry>
+        </service>
+
+        <!-- Editor to create/update an activity. -->
+        <service uid="activityCreator" type="::uiMedData::editor::SActivityWizard" >
+            <inout key="series" uid="${SERIESDB}" />
+            <ioSelectorConfig>FullSDBReaderIOSelectorConfig</ioSelectorConfig>
+            <confirm>false</confirm>
+            <icons>
+                <icon type="::fwMedData::ImageSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/ImageSeries.svg" />
+                <icon type="::fwMedData::ModelSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/ModelSeries.svg" />
+                <icon type="::arData::CameraSeries" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/CameraSeries.svg" />
+            </icons>
+        </service>
+
+        <!-- Editor to select an activity. -->
+        <service uid="selector" type="::activities::editor::SCreateActivity" autoConnect="yes">
+            <filter>
+                <mode>include</mode>
+                <id>2DVisualization</id>
+                <id>3DVisualization</id>
+                <id>VolumeRendering</id>
+                <id>DicomPacsReader</id>
+                <id>DicomPacsWriter</id>
+                <id>DicomFiltering</id>
+                <id>curvedPlanarReformationActivity</id>
+                <id>mesherActivity</id>
+            </filter>
+        </service>
+
+        <service uid="seriesSignal" type="::activities::SSeriesSignal" autoConnect="yes">
+            <in key="${SERIESDB}" uid="${LOADING_SERIESDB}" />
+            <filter>
+                <mode>include</mode>
+                <type>::fwMedData::ActivitySeries</type>
+            </filter>
+        </service>
+
+        <!-- When an activity is opened: it calls the creator's update activity slot. -->
+        <connect channel="${LAUNCH_ACTIVITY_SERIES_CHANNEL}">
+            <signal>seriesSignal/seriesAdded</signal>
+        </connect>
+
+        <!-- Hide the creator editor when the activity creation is canceled. -->
+        <connect>
+            <signal>activityCreator/canceled</signal>
+            <slot>activityCreator/hide</slot>
+            <slot>selector/show</slot>
+        </connect>
+
+        <!-- connect to hide the creator editor when the activity is created/updated. -->
+        <connect channel="hide_activity_creator_channel">
+            <signal>selector/activityIDSelected</signal>
+            <signal>activityCreator/activityCreated</signal>
+            <signal>activityCreator/activityUpdated</signal>
+            <slot>activityCreator/hide</slot>
+        </connect>
+
+        <!-- connect to show the creator editor when the activity should be created. -->
+        <connect channel="${CREATE_ACTIVITY_CHANNEL}">
+            <signal>selector/activityIDSelected</signal>
+            <slot>activityCreator/createActivity</slot>
+            <slot>selector/hide</slot>
+        </connect>
+
+        <!-- connect to launch the activity when it is created/updated. -->
+        <connect channel="${LAUNCH_ACTIVITY_CHANNEL}">
+            <signal>activityCreator/activityCreated</signal>
+            <signal>activityCreator/activityUpdated</signal>
+            <slot>selector/show</slot>
+        </connect>
+
+        <!-- connect to load the activity . -->
+        <connect channel="${LOAD_ACTIVITY_CHANNEL}">
+            <signal>selector/loadRequested</signal>
+        </connect>
+
+        <start uid="mainview" />
+        <start uid="seriesSignal" />
+
+    </config>
+</extension>
