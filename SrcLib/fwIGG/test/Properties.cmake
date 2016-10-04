@@ -6,6 +6,7 @@ set( DEPENDENCIES
     fwVtkIO
     fwTools
     fwCore
+    fwComEd
     fwDataIO
     fwDataTools
     fwTest

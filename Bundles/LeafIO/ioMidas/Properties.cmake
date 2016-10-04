@@ -9,6 +9,7 @@ set( DEPENDENCIES
     fwDataIO
     fwServices
     fwCore
+    fwComEd
     midasIO
     io
     fwMedData

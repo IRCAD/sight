@@ -10,8 +10,8 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/Image.hpp>
 
-#include <fwDataTools/helper/Mesh.hpp>
-#include <fwDataTools/helper/Image.hpp>
+#include <fwComEd/helper/Mesh.hpp>
+#include <fwComEd/helper/Image.hpp>
 
 #include "cpr/functions.hpp"
 
@@ -28,7 +28,7 @@ void fillColorGrid(
     ::fwData::Image::sptr imageSource,
     std::vector<IMAGE_TYPE> & colorGrid)
 {
-    ::fwDataTools::helper::Image helperImage (imageSource);
+    ::fwComEd::helper::Image helperImage (imageSource);
     // Allocate
     double* point               = new double [3];
     unsigned int* IndexPosition = new unsigned int[3];
@@ -107,7 +107,7 @@ void fillMesh(
     mesh->setCellDataSize(nbCells * 4);
     mesh->allocate(nbPoints, nbCells, nbCells * 4);
     mesh->allocatePointColors(::fwData::Mesh::RGB);
-    ::fwDataTools::helper::Mesh helperMesh(mesh);
+    ::fwComEd::helper::Mesh helperMesh(mesh);
     ::fwData::Mesh::PointsMultiArrayType points                   = helperMesh.getPoints();
     ::fwData::Mesh::CellTypesMultiArrayType cellTypes             = helperMesh.getCellTypes();
     ::fwData::Mesh::CellDataMultiArrayType cellData               = helperMesh.getCellData();
@@ -178,7 +178,7 @@ void fillImage(const std::vector< IMAGE_TYPE > & colorGrid,
     // Get image array
     ::fwData::Array::sptr array = image->getDataArray();
     OSLM_DEBUG(" arraySize " << array->getNumberOfElements());
-    ::fwDataTools::helper::Array arrayHelper(array);
+    ::fwComEd::helper::Array arrayHelper(array);
     IMAGE_TYPE* iter   = arrayHelper.begin<IMAGE_TYPE>();
     IMAGE_TYPE* itrEnd = arrayHelper.end<IMAGE_TYPE>();
     // Fill image aray with the color grid values
