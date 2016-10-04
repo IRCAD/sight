@@ -9,6 +9,5 @@ set( DEPENDENCIES
     fwRuntime
     fwRenderVTK
     fwTools
-    fwComEd
     navigation
     )

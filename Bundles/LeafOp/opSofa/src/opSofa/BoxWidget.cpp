@@ -4,34 +4,32 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/lexical_cast.hpp>
+#include "opSofa/BoxWidget.hpp"
 
-#include <vtkRenderWindowInteractor.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderer.h>
-#include <vtkCamera.h>
-#include <vtkCommand.h>
-#include <vtkMatrix4x4.h>
-#include <vtkTransform.h>
-#include <vtkBoxRepresentation.h>
-#include <vtkBoxWidget2.h>
-
-#include <fwComEd/TransformationMatrix3DMsg.hpp>
+#include "fwData/Float.hpp"
+#include "fwData/Integer.hpp"
+#include "fwData/String.hpp"
+#include "fwData/Vector.hpp"
 #include <fwData/TransformationMatrix3D.hpp>
-#include <fwServices/macros.hpp>
-
-//#include <fwServices/ObjectServiceRegistry.hpp>
-#include <fwServices/IEditionService.hpp> // new
 
 #include <fwRenderVTK/vtk/fwVtkBoxRepresentation.hpp>
 
-#include "visuVTKAdaptor/Transform.hpp"
-#include "opSofa/BoxWidget.hpp"
+#include <fwServices/IEditionService.hpp>
+#include <fwServices/macros.hpp>
 
-#include "fwData/Integer.hpp"
-#include "fwData/Vector.hpp"
-#include "fwData/Float.hpp"
-#include "fwData/String.hpp"
+#include "visuVTKAdaptor/Transform.hpp"
+
+#include <vtkBoxRepresentation.h>
+#include <vtkBoxWidget2.h>
+#include <vtkCamera.h>
+#include <vtkCommand.h>
+#include <vtkMatrix4x4.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkRenderer.h>
+#include <vtkTransform.h>
+
+#include <boost/lexical_cast.hpp>
 
 namespace opSofa
 {
@@ -42,7 +40,7 @@ public:
 
     static BoxClallback* New(::opSofa::BoxWidget* adaptor)
     {
-        BoxClallback *cb = new BoxClallback;
+        BoxClallback* cb = new BoxClallback;
         cb->m_adaptor = adaptor;
         return cb;
     }
@@ -59,7 +57,7 @@ public:
         m_adaptor->updateFromVtk();
     }
 
-    ::opSofa::BoxWidget *m_adaptor;
+    ::opSofa::BoxWidget* m_adaptor;
 };
 
 // BoxWidget
@@ -71,8 +69,6 @@ BoxWidget::BoxWidget() throw()
       m_vtkBoxWidget( 0 ), m_scaleFactor(1.0), m_enableScaling(true)
 {
     m_boxWidgetCommand = BoxClallback::New(this);
-
-    //addNewHandledEvent( ::fwComEd::TransformationMatrix3DMsg::MATRIX_IS_MODIFIED );
 }
 
 BoxWidget::~BoxWidget() throw()
@@ -104,7 +100,7 @@ void BoxWidget::doStart() throw( ::fwTools::Failed )
 {
     m_transform = getTransform();
     SLM_ASSERT("BoxWidget need a vtkTransform", m_transform);
-    fwVtkBoxRepresentation *boxRep = fwVtkBoxRepresentation::New();
+    fwVtkBoxRepresentation* boxRep = fwVtkBoxRepresentation::New();
     boxRep->SetPlaceFactor(m_scaleFactor);
 
     double bounds[] = {-1,1,-1,1,-1,1};
@@ -146,7 +142,7 @@ void BoxWidget::updateFromVtk()
 {
     m_vtkBoxWidget->RemoveObserver( m_boxWidgetCommand );
 
-    vtkBoxRepresentation *repr = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );
+    vtkBoxRepresentation* repr = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );
     if( repr )
     {
         repr->GetTransform(m_transform);

@@ -4,24 +4,24 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/python.hpp>
-#include <boost/python/stl_iterator.hpp>
-#include <boost/preprocessor/cat.hpp>
+#include "fwPython/bindings/Image.hpp"
+#include "fwPython/bindings/STLContainers.hpp"
 
-#include <boost/assign/list_of.hpp>
+#include <fwCore/base.hpp>
 
-#include <map>
+#include <fwData/Image.hpp>
+
+#include <fwDataTools/helper/Image.hpp>
+
 #include <fwTools/DynamicType.hpp>
 #include <fwTools/StringKeyTypeMapping.hpp> // for makedynamicType
 
-#include <fwData/Image.hpp>
-#include <fwCore/base.hpp>
+#include <boost/assign/list_of.hpp>
+#include <boost/preprocessor/cat.hpp>
+#include <boost/python.hpp>
+#include <boost/python/stl_iterator.hpp>
 
-#include <fwComEd/helper/Image.hpp>
-
-#include "fwPython/bindings/Image.hpp"
-
-#include "fwPython/bindings/STLContainers.hpp"
+#include <map>
 
 
 // transform CPP type description in python buffer-info.format
@@ -50,7 +50,7 @@ namespace bindings
 {
     using namespace ::boost::python;
 
-    ::fwComEd::helper::Image imageHelper(image);
+    ::fwDataTools::helper::Image imageHelper(image);
     if ( imageHelper.getBuffer() )
     {
         Py_buffer* pybuf = new Py_buffer;

@@ -7,13 +7,13 @@
 #ifndef __CPR_COMPUTECPRFUNCTOR_HXX__
 #define __CPR_COMPUTECPRFUNCTOR_HXX__
 
-#include <fwData/Mesh.hpp>
-#include <fwData/Image.hpp>
-
-#include <fwComEd/helper/Mesh.hpp>
-#include <fwComEd/helper/ImageGetter.hpp>
-
 #include "cpr/functions.hpp"
+
+#include <fwData/Image.hpp>
+#include <fwData/Mesh.hpp>
+
+#include <fwDataTools/helper/ImageGetter.hpp>
+#include <fwDataTools/helper/Mesh.hpp>
 
 namespace cpr
 {
@@ -28,7 +28,7 @@ void fillColorGrid(
     ::fwData::Image::csptr imageSource,
     std::vector<IMAGE_TYPE>& colorGrid)
 {
-    ::fwComEd::helper::ImageGetter helperImage (imageSource);
+    ::fwDataTools::helper::ImageGetter helperImage (imageSource);
     // Allocate
     double* point               = new double [3];
     unsigned int* IndexPosition = new unsigned int[3];
@@ -107,7 +107,7 @@ void fillMesh(
     mesh->setCellDataSize(nbCells * 4);
     mesh->allocate(nbPoints, nbCells, nbCells * 4);
     mesh->allocatePointColors(::fwData::Mesh::RGB);
-    ::fwComEd::helper::Mesh helperMesh(mesh);
+    ::fwDataTools::helper::Mesh helperMesh(mesh);
     ::fwData::Mesh::PointsMultiArrayType points                   = helperMesh.getPoints();
     ::fwData::Mesh::CellTypesMultiArrayType cellTypes             = helperMesh.getCellTypes();
     ::fwData::Mesh::CellDataMultiArrayType cellData               = helperMesh.getCellData();
@@ -178,7 +178,7 @@ void fillImage(const std::vector< IMAGE_TYPE >& colorGrid,
     // Get image array
     ::fwData::Array::sptr array = image->getDataArray();
     OSLM_DEBUG(" arraySize " << array->getNumberOfElements());
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
     IMAGE_TYPE* iter   = arrayHelper.begin<IMAGE_TYPE>();
     IMAGE_TYPE* itrEnd = arrayHelper.end<IMAGE_TYPE>();
     // Fill image aray with the color grid values

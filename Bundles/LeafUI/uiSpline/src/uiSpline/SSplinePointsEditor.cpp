@@ -12,19 +12,20 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwGui/dialog/InputDialog.hpp>
 
-#include <fwServices/op/Get.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Get.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <QGridLayout>
 #include <QLineEdit>
@@ -162,10 +163,10 @@ void SSplinePointsEditor::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSplinePointsEditor::getInteraction(::fwComEd::PickingInfo info)
+void SSplinePointsEditor::getInteraction(::fwDataTools::PickingInfo info)
 {
-    if (info.m_eventId == ::fwComEd::PickingInfo::Event::MOUSE_LEFT_UP &&
-        info.m_modifierMask == ::fwComEd::PickingInfo::CTRL)
+    if (info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP &&
+        info.m_modifierMask == ::fwDataTools::PickingInfo::CTRL)
     {
         ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList>(S_POINTS_KEY);
 
@@ -187,7 +188,7 @@ void SSplinePointsEditor::getInteraction(::fwComEd::PickingInfo info)
         m_removeAllPointsButton->setEnabled(true);
 
         point->setField(s_FIELD_NAME, ::fwData::String::New(name.toStdString()));
-        point->setField(::fwComEd::Dictionary::m_labelId, ::fwData::String::New(name.toStdString()));
+        point->setField(::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New(name.toStdString()));
 
         this->fillVisualizePointList(m_numberOfPoints - 1);
 
@@ -244,7 +245,8 @@ void SSplinePointsEditor::onClickRenamePoint()
 
         ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList>(S_POINTS_KEY);
         pointList->getRefPoints()[index]->setField(s_FIELD_NAME, ::fwData::String::New(text));
-        pointList->getRefPoints()[index]->setField(::fwComEd::Dictionary::m_labelId, ::fwData::String::New(text));
+        pointList->getRefPoints()[index]->setField(::fwDataTools::fieldHelper::Image::m_labelId,
+                                                   ::fwData::String::New(text));
 
         this->fillVisualizePointList(index);
     }

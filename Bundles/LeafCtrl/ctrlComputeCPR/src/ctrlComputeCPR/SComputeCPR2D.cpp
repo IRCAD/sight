@@ -6,26 +6,23 @@
 
 #include "ctrlComputeCPR/SComputeCPR2D.hpp"
 
+#include <cpr/functions.hpp>
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwCom/Slots.hxx>
-#include <fwComEd/Dictionary.hpp>
-
-#include <fwData/String.hpp>
 #include <fwData/PointList.hpp>
+#include <fwData/String.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
-#include <cpr/functions.hpp>
 
 #include <math.h>
 #include <vector>
@@ -303,8 +300,9 @@ void SComputeCPR2D::addPointToVisualizePointList(
     ::fwData::Point::sptr destPoint = ::fwData::Point::New();
 
     // Point label
-    ::fwData::String::sptr text = ::fwData::String::dynamicCast(srcPoint->getField(::fwComEd::Dictionary::m_labelId));
-    destPoint->setField(::fwComEd::Dictionary::m_labelId, text);
+    ::fwData::String::sptr text =
+        ::fwData::String::dynamicCast(srcPoint->getField(::fwDataTools::fieldHelper::Image::m_labelId));
+    destPoint->setField(::fwDataTools::fieldHelper::Image::m_labelId, text);
 
     // Compute destPoint coordinates
     double yCoord   = floor(m_height/m_spacing) + 1.;

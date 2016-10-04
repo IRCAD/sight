@@ -13,25 +13,25 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwComEd/PickingInfo.hpp>
-
 #include <fwData/Point.hpp>
+
+#include <fwDataTools/PickingInfo.hpp>
 
 #include <fwThread/Timer.hpp>
 
 #include <fwTools/Failed.hpp>
 
-#include <gui/editor/IEditor.hpp>
-
 #include <navigation/ConnectPoints.hpp>
 
+#include <gui/editor/IEditor.hpp>
+
+#include <QListWidget>
 #include <QObject>
 #include <QPointer>
-#include <QListWidget>
 #include <QPushButton>
 
-#include <vector>
 #include <string>
+#include <vector>
 
 class QListWidgetItem;
 
@@ -131,7 +131,7 @@ protected:
     void updatePointList();
 
     /// Slot: get the interaction information
-    void getInteraction(::fwComEd::PickingInfo info);
+    void getInteraction(::fwDataTools::PickingInfo info);
 
     /**
      * @name Slot type and key.
