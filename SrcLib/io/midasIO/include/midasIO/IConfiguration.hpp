@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,7 +34,6 @@ namespace midasIO
 
 /**
  * @brief Base class for Midas client configuration.
- * @class IConfiguration
  */
 class MIDASIO_CLASS_API IConfiguration : public ::fwCore::BaseObject
 {
@@ -47,7 +46,7 @@ public:
     typedef std::map<std::string, std::string> CommunityListType;
 
     /// Defines identifiers for Midas supported licenses.
-    MIDASIO_API enum LicenseIDType
+    enum LicenseIDType
     {
         PUBLIC_PDDL          = 0,
         PUBLIC_ODC_BY        = 1,
@@ -89,13 +88,13 @@ public:
      * @{ */
     MIDASIO_API IConfiguration();
 
-    MIDASIO_API virtual ~IConfiguration()
+    virtual ~IConfiguration()
     {
     }
     /**  @} */
 
     /// Privacy type.
-    MIDASIO_API enum PrivacyType
+    enum PrivacyType
     {
         PUBLIC,
         PRIVATE,
@@ -221,7 +220,7 @@ public:
      * @see getUploadTokenUrl()
      */
     MIDASIO_API virtual std::string getPerformUploadUrl(
-        const std::string& token, const std::string& filename, const std::string &itemId, const int& length) const = 0;
+        const std::string& token, const std::string& filename, const std::string& itemId, const int& length) const = 0;
 
     /// Maps privacies to display name.
     MIDASIO_API static const Privacy2NameType s_PRIVACY_NAMES;
