@@ -32,8 +32,8 @@ bool isInsideBox(in ivec3 gridVoxel)
     vec3 v0  = vec3(gridVoxel) * (vec3(u_brickSize) / vec3(u_imageResolution));
     vec3 v1  = v0 + (vec3(u_brickSize) / vec3(u_imageResolution));
 
-    return all(greaterThan(v0, u_boundingBoxMin) && lessThan(v0, u_boundingBoxMax)) ||
-           all(greaterThan(v1, u_boundingBoxMin) && lessThan(v1, u_boundingBoxMax));
+    return (all(greaterThan(v0, u_boundingBoxMin)) && all(lessThan(v0, u_boundingBoxMax))) ||
+           (all(greaterThan(v1, u_boundingBoxMin)) && all(lessThan(v1, u_boundingBoxMax)));
 }
 
 void main()
@@ -131,8 +131,8 @@ void main()
                 oPos = faceVertices[i][j];
                 EmitVertex();
             }
+            EndPrimitive();
         }
 
-        EndPrimitive();
     }
 }
