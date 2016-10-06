@@ -12,7 +12,6 @@ set( REQUIREMENTS
     io
     ioData
     ioAtoms
-    ioDcmtk
     ioDicom
     ioVtkGdcm
     servicesReg
