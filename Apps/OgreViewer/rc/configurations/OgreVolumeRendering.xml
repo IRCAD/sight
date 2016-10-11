@@ -169,16 +169,15 @@
             </range>
         </service>
 
-        <!-- The value normally goes from 0. to 1. but we have to use an integer slider since float type is not supported yet -->
         <service uid="satSizeRatioSlider" type="::guiQt::editor::SSlider" autoConnect="no">
             <inout key="satSizeRatio" uid="satSizeRatioIntVal" />
-            <defaultValue>25</defaultValue>
+            <defaultValue>1</defaultValue>
             <value>0</value>
             <text>SAT size ratio</text>
             <stepSize>1</stepSize>
             <range>
-                <min>10</min>
-                <max>100</max>
+                <min>1</min>
+                <max>4</max>
             </range>
         </service>
 

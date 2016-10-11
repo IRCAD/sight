@@ -439,6 +439,8 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
 {
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
+        sizeRatio *= 25;
+
         m_satSizeRatio = static_cast<float>(sizeRatio) / 100;
         m_illum->updateSatFromRatio(m_satSizeRatio);
 
