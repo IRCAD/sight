@@ -4,12 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwRenderOgre/Utils.hpp"
+#include "fwRenderOgre/helper/Shading.hpp"
 #include "fwRenderOgre/vr/RayTracingVolumeRenderer.hpp"
 
-#include <algorithm>
-
-#include "fwRenderOgre/helper/Shading.hpp"
-#include "fwRenderOgre/Utils.hpp"
+#include <fwCore/Profiling.hpp>
 
 #include <OGRE/OgreCompositorChain.h>
 #include <OGRE/OgreCompositorInstance.h>
@@ -19,17 +18,16 @@
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreHardwareVertexBuffer.h>
 #include <OGRE/OgreLight.h>
-#include <OGRE/OgreSubMesh.h>
 #include <OGRE/OgreMesh.h>
 #include <OGRE/OgreMeshManager.h>
 #include <OGRE/OgreRenderTarget.h>
 #include <OGRE/OgreRenderTexture.h>
 #include <OGRE/OgreRoot.h>
+#include <OGRE/OgreSubMesh.h>
 #include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreViewport.h>
 
-#include <fwCore/Profiling.hpp>
-
+#include <algorithm>
 #include <string>
 
 namespace fwRenderOgre
@@ -117,9 +115,11 @@ private:
 struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listener
 {
     RayTracingVolumeRenderer* m_renderer;
+    std::string m_currentMtlName;
 
     CameraListener(RayTracingVolumeRenderer* renderer) :
-        m_renderer(renderer)
+        m_renderer(renderer),
+        m_currentMtlName("VolIllum")
     {
     }
 
@@ -134,7 +134,7 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
                 closestLights[0]->getDerivedDirection(), true);
 
             ::Ogre::Pass* satIllumPass = ::Ogre::MaterialManager::getSingleton().getByName(
-                "VolumeAO")->getTechnique(0)->getPass(0);
+                m_currentMtlName)->getTechnique(0)->getPass(0);
             ::Ogre::GpuProgramParametersSharedPtr satIllumParams = satIllumPass->getFragmentProgramParameters();
 
             satIllumParams->setNamedConstant("u_lightDir", lightDir);
@@ -145,6 +145,11 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
         m_renderer->computeRealFocalLength();
 
         m_renderer->computeEntryPointsTexture();
+    }
+
+    void setCurrentMtlName(const std::string& currentMtlName)
+    {
+        m_currentMtlName = currentMtlName;
     }
 };
 
@@ -158,13 +163,16 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    PreIntegrationTable* preintegrationTable,
                                                    ::fwRenderOgre::Layer::StereoModeType mode3D,
                                                    bool ambientOcclusion,
-                                                   bool colorBleeding) :
+                                                   bool colorBleeding,
+                                                   bool shadows) :
     IVolumeRenderer(parentId, sceneManager, parentNode, imageTexture, gpuTF, preintegrationTable),
     m_entryPointGeometry(nullptr),
     m_imageSize         (::fwData::Image::SizeType({ 1, 1, 1 })),
     m_mode3D            (mode3D),
     m_ambientOcclusion  (ambientOcclusion),
     m_colorBleeding     (colorBleeding),
+    m_shadows           (shadows),
+    m_currentMtlName    ("RayTracedVolume"),
     m_illumVolume       (nullptr),
     m_cameraListener    (nullptr),
     m_compositorListener(nullptr)
@@ -172,15 +180,23 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_gridSize   = { 2, 2, 2 };
     m_bricksSize = { 8, 8, 8 };
 
-    const std::string vrMaterials[8]
+    const std::string vrMaterials[16]
     {
         "RayTracedVolume",
         "RayTracedVolume_AmbientOcclusion",
         "RayTracedVolume_ColorBleeding",
+        "RayTracedVolume_Shadows",
+        "RayTracedVolume_AmbientOcclusion_ColorBleeding",
+        "RayTracedVolume_AmbientOcclusion_Shadows",
+        "RayTracedVolume_ColorBleeding_Shadows",
         "RayTracedVolume_VolumeIllumination",
         "RayTracedVolume_PreIntegrated",
         "RayTracedVolume_PreIntegrated_AmbientOcclusion",
         "RayTracedVolume_PreIntegrated_ColorBleeding",
+        "RayTracedVolume_PreIntegrated_Shadows",
+        "RayTracedVolume_PreIntegrated_AmbientOcclusion_ColorBleeding",
+        "RayTracedVolume_PreIntegrated_AmbientOcclusion_Shadows",
+        "RayTracedVolume_PreIntegrated_ColorBleeding_Shadows",
         "RayTracedVolume_PreIntegrated_VolumeIllumination"
     };
 
@@ -419,8 +435,8 @@ void RayTracingVolumeRenderer::setPreIntegratedRendering(bool preIntegratedRende
 
     m_preIntegratedRendering = preIntegratedRendering;
 
-    std::string currentMaterialName = this->determineMaterialName();
-    m_entryPointGeometry->setMaterialName(0, currentMaterialName);
+    this->updateMatNames();
+    m_entryPointGeometry->setMaterialName(0, m_currentMtlName);
 }
 
 //-----------------------------------------------------------------------------
@@ -429,8 +445,8 @@ void RayTracingVolumeRenderer::setAmbientOcclusion(bool ambientOcclusion)
 {
     m_ambientOcclusion = ambientOcclusion;
 
-    std::string currentMaterialName = this->determineMaterialName();
-    m_entryPointGeometry->setMaterialName(0, currentMaterialName);
+    this->updateMatNames();
+    m_entryPointGeometry->setMaterialName(0, m_currentMtlName);
 }
 
 //-----------------------------------------------------------------------------
@@ -439,8 +455,18 @@ void RayTracingVolumeRenderer::setColorBleeding(bool colorBleeding)
 {
     m_colorBleeding = colorBleeding;
 
-    std::string currentMaterialName = this->determineMaterialName();
-    m_entryPointGeometry->setMaterialName(0, currentMaterialName);
+    this->updateMatNames();
+    m_entryPointGeometry->setMaterialName(0, m_currentMtlName);
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::setShadows(bool shadows)
+{
+    m_shadows = shadows;
+
+    this->updateMatNames();
+    m_entryPointGeometry->setMaterialName(0, m_currentMtlName);
 }
 
 //-----------------------------------------------------------------------------
@@ -477,7 +503,6 @@ void RayTracingVolumeRenderer::configure3DViewport(Layer::sptr layer)
 void RayTracingVolumeRenderer::setFocalLength(float focalLength)
 {
     m_focalLength = focalLength;
-
     computeRealFocalLength();
 }
 
@@ -611,7 +636,6 @@ void RayTracingVolumeRenderer::initEntryPoints()
 
         m_r2vbSource->setVisible(true);
 
-
         m_proxyGeometryGenerator = R2VBRenderable::New(
             m_parentId + "_proxyBricks",
             m_r2vbSource->getSubEntity(0),
@@ -620,6 +644,8 @@ void RayTracingVolumeRenderer::initEntryPoints()
             "RayEntryPoints");
 
         m_cameraListener = new CameraListener(this);
+        m_cameraListener->setCurrentMtlName(m_currentMtlName);
+
         m_camera->addListener(m_cameraListener);
 
         m_r2vbSource->getSubEntity(0)->getRenderOperation(m_gridRenderOp);
@@ -649,7 +675,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
     m_proxyGeometryGenerator->manualUpdate();
 }
 
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------.
 
 void RayTracingVolumeRenderer::computeEntryPointsTexture()
 {
@@ -738,47 +764,81 @@ Ogre::Matrix4 RayTracingVolumeRenderer::frustumShearTransform(float angle) const
 
 //-----------------------------------------------------------------------------
 
-std::string RayTracingVolumeRenderer::determineMaterialName()
+void RayTracingVolumeRenderer::updateMatNames()
 {
-    std::string currentMaterialName("RayTracedVolume");
+    m_currentMtlName = "RayTracedVolume";
 
     if(m_preIntegratedRendering)
     {
-        currentMaterialName += "_PreIntegrated";
+        m_currentMtlName += "_PreIntegrated";
     }
 
     if(m_ambientOcclusion)
     {
         if(m_colorBleeding)
         {
-            currentMaterialName += "_VolumeIllumination";
+            if (m_shadows)
+            {
+                m_currentMtlName += "_VolumeIllumination";
+            }
+            else
+            {
+                m_currentMtlName += "_AmbientOcclusion_ColorBleeding";
+            }
         }
         else
         {
-            currentMaterialName += "_AmbientOcclusion";
+            if(m_shadows)
+            {
+                m_currentMtlName += "_AmbientOcclusion_Shadows";
+            }
+            else
+            {
+                m_currentMtlName += "_AmbientOcclusion";
+            }
         }
     }
     else
     {
         if(m_colorBleeding)
         {
-            currentMaterialName += "_ColorBleeding";
+            if(m_shadows)
+            {
+                m_currentMtlName += "_ColorBleeding_Shadows";
+            }
+            else
+            {
+                m_currentMtlName += "_ColorBleeding";
+            }
+        }
+        else
+        {
+            if(m_shadows)
+            {
+                m_currentMtlName += "_Shadows";
+            }
         }
     }
 
-    return currentMaterialName;
+    std::string volIllumMtl = "VolIllum";
+
+    volIllumMtl += m_ambientOcclusion || m_colorBleeding ? "_AO" : "";
+    volIllumMtl += m_shadows ? "_Shadows" : "";
+
+    if(m_cameraListener)
+    {
+        m_cameraListener->setCurrentMtlName(volIllumMtl);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 ::Ogre::GpuProgramParametersSharedPtr RayTracingVolumeRenderer::retrieveCurrentProgramParams()
 {
-    ::Ogre::String currentMtlName = this->determineMaterialName();
-
-    ::Ogre::MaterialPtr currentMtl = ::Ogre::MaterialManager::getSingleton().getByName(currentMtlName,
+    ::Ogre::MaterialPtr currentMtl = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName,
                                                                                        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-    OSLM_ASSERT("Material '" + currentMtlName + "' not found", !currentMtl.isNull());
+    OSLM_ASSERT("Material '" + m_currentMtlName + "' not found", !currentMtl.isNull());
 
     return currentMtl->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
 }

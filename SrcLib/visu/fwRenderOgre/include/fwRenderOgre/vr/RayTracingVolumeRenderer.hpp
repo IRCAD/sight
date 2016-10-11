@@ -7,10 +7,10 @@
 #ifndef __FWRENDEROGRE_VR_RAYTRACINGVOLUMERENDERER_HPP__
 #define __FWRENDEROGRE_VR_RAYTRACINGVOLUMERENDERER_HPP__
 
-#include "fwRenderOgre/config.hpp"
-#include "fwRenderOgre/vr/IVolumeRenderer.hpp"
 #include "fwRenderOgre/Layer.hpp"
 #include "fwRenderOgre/R2VBRenderable.hpp"
+#include "fwRenderOgre/config.hpp"
+#include "fwRenderOgre/vr/IVolumeRenderer.hpp"
 #include "fwRenderOgre/vr/SATVolumeIllumination.hpp"
 
 #include <OGRE/OgreGpuProgramParams.h>
@@ -43,6 +43,7 @@ public:
      * @param mode3D               Stereoscopic volume rendering flag.
      * @param ambientOcclusion     Ambient occlusion flag.
      * @param colorBleeding        Color bleeding flag.
+     * @param shadows              Soft shadows flag.
      */
     FWRENDEROGRE_API RayTracingVolumeRenderer(std::string parentId,
                                               ::Ogre::SceneManager* sceneManager,
@@ -52,7 +53,8 @@ public:
                                               PreIntegrationTable* preintegrationTable,
                                               ::fwRenderOgre::Layer::StereoModeType mode3D,
                                               bool ambientOcclusion = false,
-                                              bool colorBleeding = false);
+                                              bool colorBleeding = false,
+                                              bool shadows = false);
 
     /// Does nothing.
     FWRENDEROGRE_API virtual ~RayTracingVolumeRenderer();
@@ -76,6 +78,9 @@ public:
 
     /// Sets color bleeding usage.
     FWRENDEROGRE_API virtual void setColorBleeding(bool colorBleeding);
+
+    /// Sets soft shadows usage.
+    FWRENDEROGRE_API virtual void setShadows(bool shadows);
 
     /// Configures to layer to handle stereoscopic rendering by adding the stereo VR compositor to the chain.
     FWRENDEROGRE_API void configure3DViewport(Layer::sptr layer);
@@ -111,9 +116,9 @@ private:
     /// camera.
     ::Ogre::Matrix4 frustumShearTransform(float angle) const;
 
-    /// Returns the right material name for the entry point geometry according to pre-integration and volume
-    /// illumination flags.
-    std::string determineMaterialName();
+    /// Updates the ray traced and volume illumination materials according to pre-integration and volume illumination
+    /// flags.
+    void updateMatNames();
 
     /// Returns the parameters of the current fragment shader.
     ::Ogre::GpuProgramParametersSharedPtr retrieveCurrentProgramParams();
@@ -158,6 +163,12 @@ private:
 
     /// Sets usage of color bleeding.
     bool m_colorBleeding;
+
+    /// Sets usage of soft shadows.
+    bool m_shadows;
+
+    /// Name of the current volume illumination material.
+    std::string m_currentMtlName;
 
     SATVolumeIllumination* m_illumVolume;
 

@@ -1,4 +1,4 @@
-compositor VolIllum
+compositor VolumeIllumination
 {
     technique
     {
@@ -8,7 +8,7 @@ compositor VolIllum
             input none
             pass render_quad
             {
-                material VolumeAO
+                material VolIllum
             }
         }
     }

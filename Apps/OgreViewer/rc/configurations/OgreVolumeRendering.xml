@@ -27,6 +27,7 @@
 
         <object uid="ambientOcclusionValue" type="::fwData::Boolean" />
         <object uid="colorBleedingValue" type="::fwData::Boolean" />
+        <object uid="shadowsValue" type="::fwData::Boolean" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -116,6 +117,7 @@
                     <view proportion="0" />
                     <view proportion="0" />
                     <view proportion="0" />
+                    <view proportion="0" />
                 </layout>
             </gui>
             <registry>
@@ -123,6 +125,7 @@
                 <view sid="preIntBtn" start="yes" />
                 <view sid="ambientOcclusionBtn" start="yes" />
                 <view sid="colorBleedingBtn" start="yes" />
+                <view sid="shadowsBtn" start="yes" />
                 <view sid="toggleVrWidgetsBtn" start="yes" />
             </registry>
         </service>
@@ -268,6 +271,15 @@
             </config>
         </service>
 
+        <service uid="shadowsBtn" type="::guiQt::editor::SSignalButton" autoConnect="no">
+            <inout key="shadows" uid="shadowsValue" />
+            <config>
+               <checkable>true</checkable>
+               <text>Soft shadows</text>
+               <checked>false</checked>
+            </config>
+        </service>
+
         <service uid="toggleVrWidgetsBtn" type="::guiQt::editor::SSignalButton" autoConnect="no">
             <inout key="vrWidgets" uid="vrWidgetsValue" />
             <config>
@@ -325,6 +337,11 @@
         <connect>
             <signal>colorBleedingBtn/toggled</signal>
             <slot>volumeRender/toggleColorBleeding</slot>
+        </connect>
+
+        <connect>
+            <signal>shadowsBtn/toggled</signal>
+            <slot>volumeRender/toggleShadows</slot>
         </connect>
 
         <connect>

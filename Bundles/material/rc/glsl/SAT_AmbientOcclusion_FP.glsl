@@ -211,11 +211,16 @@ void main(void)
 {
     ivec3 voxelCoords = ivec3(gl_FragCoord.xy, u_sliceIndex);
 
+    illuminationVal = vec4(0.);
+
+#ifdef AO
     illuminationVal = ambientOcclusionAndColourBleedingQuery(voxelCoords);
+#endif // AO
 
+#ifdef SHADOWS
     float shadowFactor = coneShadowQuery(voxelCoords);
-
     illuminationVal.a += shadowFactor;
+#endif // SHADOWS
 
     illuminationVal = exp(-illuminationVal);
 }

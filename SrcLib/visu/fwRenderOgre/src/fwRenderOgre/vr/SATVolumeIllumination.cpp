@@ -6,6 +6,8 @@
 
 #include "fwRenderOgre/vr/SATVolumeIllumination.hpp"
 
+#include <OGRE/OgreCompositionPass.h>
+#include <OGRE/OgreCompositionTargetPass.h>
 #include <OGRE/OgreCompositor.h>
 #include <OGRE/OgreCompositorChain.h>
 #include <OGRE/OgreCompositorInstance.h>
@@ -13,10 +15,10 @@
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMaterialManager.h>
-#include <OGRE/OgreTechnique.h>
-#include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreRenderTarget.h>
 #include <OGRE/OgreRenderTexture.h>
+#include <OGRE/OgreTechnique.h>
+#include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreViewport.h>
 
 //-----------------------------------------------------------------------------
@@ -77,12 +79,14 @@ private:
 //-----------------------------------------------------------------------------
 
 SATVolumeIllumination::SATVolumeIllumination(std::string parentId, ::Ogre::SceneManager* sceneManager,
-                                             float satSizeRatio, int nbShells, int shellRadius,
+                                             float satSizeRatio, bool ao, bool shadows, int nbShells, int shellRadius,
                                              float coneAngle, int samplesAlongCone) :
-    m_sat(parentId, sceneManager, satSizeRatio),
-    m_nbShells(nbShells),
-    m_shellRadius(shellRadius),
-    m_coneAngle(coneAngle),
+    m_sat             (parentId, sceneManager, satSizeRatio),
+    m_ao              (ao),
+    m_shadows         (shadows),
+    m_nbShells        (nbShells),
+    m_shellRadius     (shellRadius),
+    m_coneAngle       (coneAngle),
     m_samplesAlongCone(samplesAlongCone)
 {
 
@@ -97,7 +101,7 @@ SATVolumeIllumination::~SATVolumeIllumination()
 
 //-----------------------------------------------------------------------------
 
-void SATVolumeIllumination::updateSAT(float _satSizeRatio)
+void SATVolumeIllumination::updateSatFromRatio(float _satSizeRatio)
 {
     m_sat.updateSatFromRatio(_satSizeRatio);
 }
@@ -107,8 +111,7 @@ void SATVolumeIllumination::updateSAT(float _satSizeRatio)
 void SATVolumeIllumination::SATUpdate(Ogre::TexturePtr _img, Ogre::TexturePtr _tf)
 {
     m_sat.computeParallel(_img, _tf);
-
-    updateVolIllum();
+    this->updateVolIllum();
 }
 
 //-----------------------------------------------------------------------------
@@ -124,7 +127,12 @@ void SATVolumeIllumination::updateVolIllum()
     VolIllumCompositorListener volIllumListener(m_currentSliceIndex, m_nbShells, m_shellRadius,
                                                 m_coneAngle, m_samplesAlongCone);
 
-    ::Ogre::MaterialPtr volIllumMtl       = ::Ogre::MaterialManager::getSingleton().getByName("VolumeAO");
+    std::string currentMaterialName("VolIllum");
+
+    currentMaterialName += m_ao ? "_AO" : "";
+    currentMaterialName += m_shadows ? "_Shadows" : "";
+
+    ::Ogre::MaterialPtr volIllumMtl       = ::Ogre::MaterialManager::getSingleton().getByName(currentMaterialName);
     ::Ogre::Pass* pass                    = volIllumMtl->getTechnique(0)->getPass(0);
     ::Ogre::TextureUnitState* satImgState = pass->getTextureUnitState("sat");
 
@@ -137,10 +145,19 @@ void SATVolumeIllumination::updateVolIllum()
         ::Ogre::Viewport* vp     = rt->getViewport(0);
 
         // Add compositor.
-        compositorManager.addCompositor(vp, "VolIllum");
-        compositorManager.setCompositorEnabled(vp, "VolIllum", true);
+        compositorManager.addCompositor(vp, "VolumeIllumination");
+        compositorManager.setCompositorEnabled(vp, "VolumeIllumination", true);
 
-        ::Ogre::CompositorInstance* compInstance = compositorManager.getCompositorChain(vp)->getCompositor("VolIllum");
+        ::Ogre::CompositorInstance* compInstance = compositorManager.getCompositorChain(vp)->getCompositor(
+            "VolumeIllumination");
+
+        ::Ogre::CompositionPass* pass = compInstance->getTechnique()->getOutputTargetPass()->getPass(0);
+
+        if(pass->getMaterial()->getName() != currentMaterialName)
+        {
+            pass->setMaterialName(currentMaterialName);
+        }
+
         compInstance->addListener(&volIllumListener);
 
         // Compute volillum.
@@ -148,8 +165,8 @@ void SATVolumeIllumination::updateVolIllum()
 
         // Remove compositor.
         compInstance->removeListener(&volIllumListener);
-        compositorManager.setCompositorEnabled(vp, "VolIllum", false);
-        compositorManager.removeCompositor(vp, "VolIllum");
+        compositorManager.setCompositorEnabled(vp, "VolumeIllumination", false);
+        compositorManager.removeCompositor(vp, "VolumeIllumination");
     }
 }
 

@@ -1,6 +1,6 @@
 //-----------------------------------------------
 
-vertex_program VR/RayTracedVolume_VP glsl
+vertex_program RayTracedVolume_VP glsl
 {
     source RayTracedVolume_VP.glsl
     default_params
@@ -11,7 +11,7 @@ vertex_program VR/RayTracedVolume_VP glsl
 
 //----------------------------------------------
 
-fragment_program VR/RayTracedVolume_FP glsl
+fragment_program RayTracedVolume_FP glsl
 {
     source RayTracedVolume_FP.glsl
     default_params
@@ -31,7 +31,7 @@ fragment_program VR/RayTracedVolume_FP glsl
 
 //----------------------------------------------
 
-fragment_program VR/RayTracedVolume_AmbientOcclusion_FP glsl
+fragment_program RayTracedVolume_AmbientOcclusion_FP glsl
 {
     source RayTracedVolume_FP.glsl
     preprocessor_defines AMBIENT_OCCLUSION=1
@@ -53,7 +53,7 @@ fragment_program VR/RayTracedVolume_AmbientOcclusion_FP glsl
 
 //----------------------------------------------
 
-fragment_program VR/RayTracedVolume_ColorBleeding_FP glsl
+fragment_program RayTracedVolume_ColorBleeding_FP glsl
 {
     source RayTracedVolume_FP.glsl
     preprocessor_defines COLOR_BLEEDING=1
@@ -75,10 +75,98 @@ fragment_program VR/RayTracedVolume_ColorBleeding_FP glsl
 
 //----------------------------------------------
 
-fragment_program VR/RayTracedVolume_VolumeIllumination_FP glsl
+fragment_program RayTracedVolume_Shadows_FP glsl
+{
+    source RayTracedVolume_FP.glsl
+    preprocessor_defines SHADOWS=1
+    default_params
+    {
+        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_viewportWidth viewport_width
+        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_clippingNear near_clip_distance
+        param_named_auto u_clippingFar far_clip_distance
+        param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named u_sampleDistance float 0.002
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+        param_named u_entryPoints int 2
+        param_named u_illuminationVolume int 3
+    }
+}
+
+//----------------------------------------------
+
+fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_FP glsl
 {
     source RayTracedVolume_FP.glsl
     preprocessor_defines AMBIENT_OCCLUSION=1,COLOR_BLEEDING=1
+    default_params
+    {
+        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_viewportWidth viewport_width
+        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_clippingNear near_clip_distance
+        param_named_auto u_clippingFar far_clip_distance
+        param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named u_sampleDistance float 0.002
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+        param_named u_entryPoints int 2
+        param_named u_illuminationVolume int 3
+    }
+}
+
+//----------------------------------------------
+
+fragment_program RayTracedVolume_AmbientOcclusion_Shadows_FP glsl
+{
+    source RayTracedVolume_FP.glsl
+    preprocessor_defines AMBIENT_OCCLUSION=1,SHADOWS=1
+    default_params
+    {
+        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_viewportWidth viewport_width
+        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_clippingNear near_clip_distance
+        param_named_auto u_clippingFar far_clip_distance
+        param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named u_sampleDistance float 0.002
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+        param_named u_entryPoints int 2
+        param_named u_illuminationVolume int 3
+    }
+}
+
+//----------------------------------------------
+
+fragment_program RayTracedVolume_ColorBleeding_Shadows_FP glsl
+{
+    source RayTracedVolume_FP.glsl
+    preprocessor_defines COLOR_BLEEDING=1,SHADOWS=1
+    default_params
+    {
+        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_viewportWidth viewport_width
+        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_clippingNear near_clip_distance
+        param_named_auto u_clippingFar far_clip_distance
+        param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named u_sampleDistance float 0.002
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+        param_named u_entryPoints int 2
+        param_named u_illuminationVolume int 3
+    }
+}
+
+//----------------------------------------------
+
+fragment_program RayTracedVolume_VolumeIllumination_FP glsl
+{
+    source RayTracedVolume_FP.glsl
+    preprocessor_defines AMBIENT_OCCLUSION=1,COLOR_BLEEDING=1,SHADOWS=1
     default_params
     {
         param_named_auto u_lightDirs light_direction_object_space_array 1
@@ -150,7 +238,7 @@ fragment_program VR/RayTracedVolume3D8_FP glsl
 
 //-----------------------------------------------
 
-vertex_program VR/RayTracedVolume_PreIntegrated_VP glsl
+vertex_program RayTracedVolume_PreIntegrated_VP glsl
 {
     source RayTracedVolume_VP.glsl
     preprocessor_defines PREINTEGRATION=1
@@ -163,7 +251,7 @@ vertex_program VR/RayTracedVolume_PreIntegrated_VP glsl
 
 //----------------------------------------------
 
-fragment_program VR/RayTracedVolume_PreIntegrated_FP glsl
+fragment_program RayTracedVolume_PreIntegrated_FP glsl
 {
     source RayTracedVolume_FP.glsl
     preprocessor_defines PREINTEGRATION=1
@@ -187,7 +275,7 @@ fragment_program VR/RayTracedVolume_PreIntegrated_FP glsl
 
 //-----------------------------------------------
 
-fragment_program VR/RayTracedVolume_PreIntegrated_AmbientOcclusion_FP glsl
+fragment_program RayTracedVolume_PreIntegrated_AmbientOcclusion_FP glsl
 {
     source RayTracedVolume_FP.glsl
     preprocessor_defines PREINTEGRATION=1,AMBIENT_OCCLUSION=1
@@ -212,7 +300,7 @@ fragment_program VR/RayTracedVolume_PreIntegrated_AmbientOcclusion_FP glsl
 
 //-----------------------------------------------
 
-fragment_program VR/RayTracedVolume_PreIntegrated_ColorBleeding_FP glsl
+fragment_program RayTracedVolume_PreIntegrated_ColorBleeding_FP glsl
 {
     source RayTracedVolume_FP.glsl
     preprocessor_defines PREINTEGRATION=1,COLOR_BLEEDING=1
@@ -237,10 +325,110 @@ fragment_program VR/RayTracedVolume_PreIntegrated_ColorBleeding_FP glsl
 
 //-----------------------------------------------
 
-fragment_program VR/RayTracedVolume_PreIntegrated_VolumeIllumination_FP glsl
+fragment_program RayTracedVolume_PreIntegrated_Shadows_FP glsl
+{
+    source RayTracedVolume_FP.glsl
+    preprocessor_defines PREINTEGRATION=1,SHADOWS=1
+
+    default_params
+    {
+        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_viewportWidth viewport_width
+        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_clippingNear near_clip_distance
+        param_named_auto u_clippingFar far_clip_distance
+        param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named u_sampleDistance float 0.002
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+        param_named u_entryPoints int 2
+        param_named u_illuminationVolume int 3
+        param_named u_min float 0
+        param_named u_max float 0
+    }
+}
+
+//-----------------------------------------------
+
+fragment_program RayTracedVolume_PreIntegrated_AmbientOcclusion_ColorBleeding_FP glsl
 {
     source RayTracedVolume_FP.glsl
     preprocessor_defines PREINTEGRATION=1,AMBIENT_OCCLUSION=1,COLOR_BLEEDING=1
+
+    default_params
+    {
+        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_viewportWidth viewport_width
+        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_clippingNear near_clip_distance
+        param_named_auto u_clippingFar far_clip_distance
+        param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named u_sampleDistance float 0.002
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+        param_named u_entryPoints int 2
+        param_named u_illuminationVolume int 3
+        param_named u_min float 0
+        param_named u_max float 0
+    }
+}
+
+//-----------------------------------------------
+
+fragment_program RayTracedVolume_PreIntegrated_AmbientOcclusion_Shadows_FP glsl
+{
+    source RayTracedVolume_FP.glsl
+    preprocessor_defines PREINTEGRATION=1,AMBIENT_OCCLUSION=1,SHADOWS=1
+
+    default_params
+    {
+        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_viewportWidth viewport_width
+        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_clippingNear near_clip_distance
+        param_named_auto u_clippingFar far_clip_distance
+        param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named u_sampleDistance float 0.002
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+        param_named u_entryPoints int 2
+        param_named u_illuminationVolume int 3
+        param_named u_min float 0
+        param_named u_max float 0
+    }
+}
+
+//-----------------------------------------------
+
+fragment_program RayTracedVolume_PreIntegrated_ColorBleeding_Shadows_FP glsl
+{
+    source RayTracedVolume_FP.glsl
+    preprocessor_defines PREINTEGRATION=1,COLOR_BLEEDING=1,SHADOWS=1
+
+    default_params
+    {
+        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_viewportWidth viewport_width
+        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_clippingNear near_clip_distance
+        param_named_auto u_clippingFar far_clip_distance
+        param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named u_sampleDistance float 0.002
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+        param_named u_entryPoints int 2
+        param_named u_illuminationVolume int 3
+        param_named u_min float 0
+        param_named u_max float 0
+    }
+}
+
+//-----------------------------------------------
+
+fragment_program RayTracedVolume_PreIntegrated_VolumeIllumination_FP glsl
+{
+    source RayTracedVolume_FP.glsl
+    preprocessor_defines PREINTEGRATION=1,AMBIENT_OCCLUSION=1,COLOR_BLEEDING=1,SHADOWS=1
 
     default_params
     {
@@ -272,11 +460,11 @@ material RayTracedVolume
             cull_software none
             scene_blend alpha_blend
 
-            vertex_program_ref VR/RayTracedVolume_VP
+            vertex_program_ref RayTracedVolume_VP
             {
             }
 
-            fragment_program_ref VR/RayTracedVolume_FP
+            fragment_program_ref RayTracedVolume_FP
             {
             }
 
@@ -312,11 +500,11 @@ material RayTracedVolume_AmbientOcclusion
             cull_software none
             scene_blend alpha_blend
 
-            vertex_program_ref VR/RayTracedVolume_VP
+            vertex_program_ref RayTracedVolume_VP
             {
             }
 
-            fragment_program_ref VR/RayTracedVolume_AmbientOcclusion_FP
+            fragment_program_ref RayTracedVolume_AmbientOcclusion_FP
             {
             }
 
@@ -358,11 +546,195 @@ material RayTracedVolume_ColorBleeding
             cull_software none
             scene_blend alpha_blend
 
-            vertex_program_ref VR/RayTracedVolume_VP
+            vertex_program_ref RayTracedVolume_VP
             {
             }
 
-            fragment_program_ref VR/RayTracedVolume_ColorBleeding_FP
+            fragment_program_ref RayTracedVolume_ColorBleeding_FP
+            {
+            }
+
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+
+            texture_unit transferFunction
+            {
+                filtering none
+            }
+
+            texture_unit entryPoints
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit illuminationVolume
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+        }
+    }
+}
+
+//----------------------------------------------
+
+material RayTracedVolume_Shadows
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware anticlockwise
+            cull_software none
+            scene_blend alpha_blend
+
+            vertex_program_ref RayTracedVolume_VP
+            {
+            }
+
+            fragment_program_ref RayTracedVolume_Shadows_FP
+            {
+            }
+
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+
+            texture_unit transferFunction
+            {
+                filtering none
+            }
+
+            texture_unit entryPoints
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit illuminationVolume
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+        }
+    }
+}
+
+//----------------------------------------------
+
+material RayTracedVolume_AmbientOcclusion_ColorBleeding
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware anticlockwise
+            cull_software none
+            scene_blend alpha_blend
+
+            vertex_program_ref RayTracedVolume_VP
+            {
+            }
+
+            fragment_program_ref RayTracedVolume_AmbientOcclusion_ColorBleeding_FP
+            {
+            }
+
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+
+            texture_unit transferFunction
+            {
+                filtering none
+            }
+
+            texture_unit entryPoints
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit illuminationVolume
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+        }
+    }
+}
+
+//----------------------------------------------
+
+material RayTracedVolume_AmbientOcclusion_Shadows
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware anticlockwise
+            cull_software none
+            scene_blend alpha_blend
+
+            vertex_program_ref RayTracedVolume_VP
+            {
+            }
+
+            fragment_program_ref RayTracedVolume_AmbientOcclusion_Shadows_FP
+            {
+            }
+
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+
+            texture_unit transferFunction
+            {
+                filtering none
+            }
+
+            texture_unit entryPoints
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit illuminationVolume
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+        }
+    }
+}
+
+//----------------------------------------------
+
+material RayTracedVolume_ColorBleeding_Shadows
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware anticlockwise
+            cull_software none
+            scene_blend alpha_blend
+
+            vertex_program_ref RayTracedVolume_VP
+            {
+            }
+
+            fragment_program_ref RayTracedVolume_ColorBleeding_Shadows_FP
             {
             }
 
@@ -404,11 +776,11 @@ material RayTracedVolume_VolumeIllumination
             cull_software none
             scene_blend alpha_blend
 
-            vertex_program_ref VR/RayTracedVolume_VP
+            vertex_program_ref RayTracedVolume_VP
             {
             }
 
-            fragment_program_ref VR/RayTracedVolume_VolumeIllumination_FP
+            fragment_program_ref RayTracedVolume_VolumeIllumination_FP
             {
             }
 
@@ -596,11 +968,11 @@ material RayTracedVolume_PreIntegrated
             cull_software none
             scene_blend alpha_blend
 
-            vertex_program_ref VR/RayTracedVolume_PreIntegrated_VP
+            vertex_program_ref RayTracedVolume_PreIntegrated_VP
             {
             }
 
-            fragment_program_ref VR/RayTracedVolume_PreIntegrated_FP
+            fragment_program_ref RayTracedVolume_PreIntegrated_FP
             {
             }
 
@@ -636,11 +1008,11 @@ material RayTracedVolume_PreIntegrated_AmbientOcclusion
             cull_software none
             scene_blend alpha_blend
 
-            vertex_program_ref VR/RayTracedVolume_PreIntegrated_VP
+            vertex_program_ref RayTracedVolume_PreIntegrated_VP
             {
             }
 
-            fragment_program_ref VR/RayTracedVolume_PreIntegrated_AmbientOcclusion_FP
+            fragment_program_ref RayTracedVolume_PreIntegrated_AmbientOcclusion_FP
             {
             }
 
@@ -682,11 +1054,195 @@ material RayTracedVolume_PreIntegrated_ColorBleeding
             cull_software none
             scene_blend alpha_blend
 
-            vertex_program_ref VR/RayTracedVolume_PreIntegrated_VP
+            vertex_program_ref RayTracedVolume_PreIntegrated_VP
             {
             }
 
-            fragment_program_ref VR/RayTracedVolume_PreIntegrated_ColorBleeding_FP
+            fragment_program_ref RayTracedVolume_PreIntegrated_ColorBleeding_FP
+            {
+            }
+
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+
+            texture_unit transferFunction
+            {
+                filtering none
+            }
+
+            texture_unit entryPoints
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit illuminationVolume
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+        }
+    }
+}
+
+//----------------------------------------------
+
+material RayTracedVolume_PreIntegrated_Shadows
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware anticlockwise
+            cull_software none
+            scene_blend alpha_blend
+
+            vertex_program_ref RayTracedVolume_PreIntegrated_VP
+            {
+            }
+
+            fragment_program_ref RayTracedVolume_PreIntegrated_Shadows_FP
+            {
+            }
+
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+
+            texture_unit transferFunction
+            {
+                filtering none
+            }
+
+            texture_unit entryPoints
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit illuminationVolume
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+        }
+    }
+}
+
+//----------------------------------------------
+
+material RayTracedVolume_PreIntegrated_AmbientOcclusion_ColorBleeding
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware anticlockwise
+            cull_software none
+            scene_blend alpha_blend
+
+            vertex_program_ref RayTracedVolume_PreIntegrated_VP
+            {
+            }
+
+            fragment_program_ref RayTracedVolume_PreIntegrated_AmbientOcclusion_ColorBleeding_FP
+            {
+            }
+
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+
+            texture_unit transferFunction
+            {
+                filtering none
+            }
+
+            texture_unit entryPoints
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit illuminationVolume
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+        }
+    }
+}
+
+//----------------------------------------------
+
+material RayTracedVolume_PreIntegrated_AmbientOcclusion_Shadows
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware anticlockwise
+            cull_software none
+            scene_blend alpha_blend
+
+            vertex_program_ref RayTracedVolume_PreIntegrated_VP
+            {
+            }
+
+            fragment_program_ref RayTracedVolume_PreIntegrated_AmbientOcclusion_Shadows_FP
+            {
+            }
+
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+
+            texture_unit transferFunction
+            {
+                filtering none
+            }
+
+            texture_unit entryPoints
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit illuminationVolume
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+        }
+    }
+}
+
+//----------------------------------------------
+
+material RayTracedVolume_PreIntegrated_ColorBleeding_Shadows
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware anticlockwise
+            cull_software none
+            scene_blend alpha_blend
+
+            vertex_program_ref RayTracedVolume_PreIntegrated_VP
+            {
+            }
+
+            fragment_program_ref RayTracedVolume_PreIntegrated_ColorBleeding_Shadows_FP
             {
             }
 
@@ -728,11 +1284,11 @@ material RayTracedVolume_PreIntegrated_VolumeIllumination
             cull_software none
             scene_blend alpha_blend
 
-            vertex_program_ref VR/RayTracedVolume_PreIntegrated_VP
+            vertex_program_ref RayTracedVolume_PreIntegrated_VP
             {
             }
 
-            fragment_program_ref VR/RayTracedVolume_PreIntegrated_VolumeIllumination_FP
+            fragment_program_ref RayTracedVolume_PreIntegrated_VolumeIllumination_FP
             {
             }
 

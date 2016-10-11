@@ -57,6 +57,7 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_CONE_SAMPLES_NUMBE
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_PREINTEGRATION_SLOT          = "togglePreintegration";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_AMBIENT_OCCLUSION_SLOT       = "toggleAmbientOcclusion";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_COLOR_BLEEDING_SLOT          = "toggleColorBleeding";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_SHADOWS_SLOT                 = "toggleShadows";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT                 = "toggleWidgets";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT                = "resizeViewport";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_FOCAL_DISTANCE_SLOT             = "setFocalDistance";
@@ -72,7 +73,8 @@ SVolumeRender::SVolumeRender() throw() :
     m_nbSlices               (512),
     m_preIntegratedRendering (false),
     m_ambientOcclusion       (false),
-    m_colorBleeding         (false),
+    m_colorBleeding          (false),
+    m_shadows                (false),
     m_widgetVisibilty        (true),
     m_illum                  (nullptr),
     m_satSizeRatio           (0.25f),
@@ -92,6 +94,7 @@ SVolumeRender::SVolumeRender() throw() :
     newSlot(s_TOGGLE_PREINTEGRATION_SLOT, &SVolumeRender::togglePreintegration, this);
     newSlot(s_TOGGLE_AMBIENT_OCCLUSION_SLOT, &SVolumeRender::toggleAmbientOcclusion, this);
     newSlot(s_TOGGLE_COLOR_BLEEDING_SLOT, &SVolumeRender::toggleColorBleeding, this);
+    newSlot(s_TOGGLE_SHADOWS_SLOT, &SVolumeRender::toggleShadows, this);
     newSlot(s_TOGGLE_WIDGETS_SLOT, &SVolumeRender::toggleWidgets, this);
     newSlot(s_RESIZE_VIEWPORT_SLOT, &SVolumeRender::resizeViewport, this);
     newSlot(s_SET_FOCAL_DISTANCE_SLOT, &SVolumeRender::setFocalDistance, this);
@@ -167,6 +170,11 @@ void SVolumeRender::doConfigure() throw ( ::fwTools::Failed )
             {
                 m_colorBleeding = (m_configuration->getAttributeValue("colorBleeding") == "yes");
             }
+
+            if(m_configuration->hasAttribute("shadows"))
+            {
+                m_shadows = (m_configuration->getAttributeValue("shadows") == "yes");
+            }
         }
         else
         {
@@ -199,7 +207,7 @@ void SVolumeRender::updatingTFPoints()
 
     m_volumeRenderer->tfUpdate(tf);
 
-    if(m_ambientOcclusion || m_colorBleeding)
+    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
         this->updateVolumeIllumination();
     }
@@ -222,7 +230,7 @@ void SVolumeRender::updatingTFWindowing(double window, double level)
 
     m_volumeRenderer->tfUpdate(tf);
 
-    if(m_ambientOcclusion || m_colorBleeding)
+    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
         this->updateVolumeIllumination();
     }
@@ -304,11 +312,12 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
         }
     }
 
-    if(m_ambientOcclusion || m_colorBleeding)
+    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
-        m_illum = new ::fwRenderOgre::vr::SATVolumeIllumination(this->getID(), m_sceneManager,
-                                                                m_satSizeRatio, m_satShells, m_satShellRadius,
-                                                                m_satConeAngle, m_satConeSamples);
+        m_illum = new ::fwRenderOgre::vr::SATVolumeIllumination(this->getID(), m_sceneManager, m_satSizeRatio,
+                                                                (m_ambientOcclusion || m_colorBleeding), m_shadows,
+                                                                m_satShells, m_satShellRadius, m_satConeAngle,
+                                                                m_satConeSamples);
     }
 
     m_volumeRenderer->setPreIntegratedRendering(m_preIntegratedRendering);
@@ -428,10 +437,10 @@ void SVolumeRender::updateSampling(int nbSamples)
 
 void SVolumeRender::updateSatSizeRatio(int sizeRatio)
 {
-    if(m_ambientOcclusion || m_colorBleeding)
+    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
         m_satSizeRatio = static_cast<float>(sizeRatio) / 100;
-        m_illum->updateSAT(m_satSizeRatio);
+        m_illum->updateSatFromRatio(m_satSizeRatio);
 
         this->updateVolumeIllumination();
 
@@ -448,7 +457,7 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
 
 void SVolumeRender::updateSatShellsNumber(int shellsNumber)
 {
-    if(m_ambientOcclusion || m_colorBleeding)
+    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
         m_satShells = shellsNumber;
 
@@ -468,7 +477,7 @@ void SVolumeRender::updateSatShellsNumber(int shellsNumber)
 
 void SVolumeRender::updateSatShellRadius(int shellRadius)
 {
-    if(m_ambientOcclusion || m_colorBleeding)
+    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
         m_satShellRadius = shellRadius;
 
@@ -488,7 +497,7 @@ void SVolumeRender::updateSatShellRadius(int shellRadius)
 
 void SVolumeRender::updateSatConeAngle(int coneAngle)
 {
-    if(m_ambientOcclusion || m_colorBleeding)
+    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
         m_satConeAngle = static_cast<float>(coneAngle) / 100;
 
@@ -508,7 +517,7 @@ void SVolumeRender::updateSatConeAngle(int coneAngle)
 
 void SVolumeRender::updateSatConeSamplesNumber(int nbConeSamples)
 {
-    if(m_ambientOcclusion || m_colorBleeding)
+    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
         m_satConeSamples = nbConeSamples;
 
@@ -552,11 +561,16 @@ void SVolumeRender::toggleAmbientOcclusion(bool ambientOcclusion)
     {
         m_ambientOcclusion = ambientOcclusion;
 
-        if((m_ambientOcclusion || m_colorBleeding) && !m_illum)
+        if((m_ambientOcclusion || m_colorBleeding || m_shadows) && !m_illum)
         {
-            m_illum = new ::fwRenderOgre::vr::SATVolumeIllumination(this->getID(), m_sceneManager,
-                                                                    m_satSizeRatio, m_satShells, m_satShellRadius);
+            m_illum = new ::fwRenderOgre::vr::SATVolumeIllumination(this->getID(), m_sceneManager, m_satSizeRatio,
+                                                                    (m_ambientOcclusion || m_colorBleeding), m_shadows,
+                                                                    m_satShells, m_satShellRadius);
             this->updateVolumeIllumination();
+        }
+        else
+        {
+            m_illum->setAO(m_ambientOcclusion || m_colorBleeding);
         }
 
         rayCastVolumeRenderer->setAmbientOcclusion(m_ambientOcclusion);
@@ -581,14 +595,53 @@ void SVolumeRender::toggleColorBleeding(bool colorBleeding)
     {
         m_colorBleeding = colorBleeding;
 
-        if((m_ambientOcclusion || m_colorBleeding) && !m_illum)
+        if((m_ambientOcclusion || m_colorBleeding || m_shadows) && !m_illum)
         {
-            m_illum = new ::fwRenderOgre::vr::SATVolumeIllumination(this->getID(), m_sceneManager,
-                                                                    m_satSizeRatio, m_satShells, m_satShellRadius);
+            m_illum = new ::fwRenderOgre::vr::SATVolumeIllumination(this->getID(), m_sceneManager, m_satSizeRatio,
+                                                                    (m_ambientOcclusion || m_colorBleeding), m_shadows,
+                                                                    m_satShells, m_satShellRadius);
             this->updateVolumeIllumination();
+        }
+        else
+        {
+            m_illum->setAO(m_ambientOcclusion || m_colorBleeding);
         }
 
         rayCastVolumeRenderer->setColorBleeding(m_colorBleeding);
+
+        if(m_preIntegratedRendering)
+        {
+            m_volumeRenderer->imageUpdate(this->getImage(), this->getTransferFunction());
+        }
+
+        this->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::toggleShadows(bool shadows)
+{
+    auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+
+    // Volume illumination is only implemented for raycasting rendering
+    if(rayCastVolumeRenderer)
+    {
+        m_shadows = shadows;
+
+        if((m_ambientOcclusion || m_colorBleeding || m_shadows) && !m_illum)
+        {
+            m_illum = new ::fwRenderOgre::vr::SATVolumeIllumination(this->getID(), m_sceneManager, m_satSizeRatio,
+                                                                    (m_ambientOcclusion || m_colorBleeding), m_shadows,
+                                                                    m_satShells, m_satShellRadius);
+            this->updateVolumeIllumination();
+        }
+        else
+        {
+            m_illum->setShadows(m_shadows);
+        }
+
+        rayCastVolumeRenderer->setShadows(m_shadows);
 
         if(m_preIntegratedRendering)
         {

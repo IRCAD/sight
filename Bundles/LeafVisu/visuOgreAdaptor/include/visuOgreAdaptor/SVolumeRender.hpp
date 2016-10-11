@@ -46,6 +46,7 @@ namespace visuOgreAdaptor
  * - \b togglePreintegration(bool): Toggle pre-integration.
  * - \b toggleAmbientOcclusion(bool): Toggle ambient occlusion.
  * - \b toggleColorBleeding(bool): Toggle color bleeding.
+ * - \b toggleShadows(bool): Toggle soft shadows.
  * - \b toggleWidgets(bool): Toggles widget visibility.
  * - \b resizeViewport(int, int): Called when the size of the viewport changes.
  * - \b setFocalDistance(int): Called to modify focal length (only useful for stereoscopic 3D).
@@ -55,7 +56,7 @@ namespace visuOgreAdaptor
  * @code{.xml}
     <adaptor uid="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image">
          <config renderer="default"
-                 preintegration="yes" mode="slice" ao="no" colorBleeding="no"
+                 preintegration="yes" mode="slice" ao="no" colorBleeding="no" shadows="no"
                  satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
                  selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
     </adaptor>
@@ -70,6 +71,7 @@ namespace visuOgreAdaptor
  * Only if the raycasting render mode is activated :
  * - \b ao (optional, yes/no, default=no): Ambient occlusion usage.
  * - \b colorBleeding (optional, yes/no, default=no): Color bleeding usage.
+ * - \b shadows (optional, yes/no, default=no): Soft shadows usage.
  * - \b satSizeRatio (optional, float, default=0.25): ratio used to determine the size of the SAT regarding of the
  *      associated image size.
  * - \b satShells (optional, int, default=3): number of shells used to compute the volume illumination from the SAT.
@@ -100,6 +102,7 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_PREINTEGRATION_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_AMBIENT_OCCLUSION_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_COLOR_BLEEDING_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_SHADOWS_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_FOCAL_DISTANCE_SLOT;
@@ -155,6 +158,7 @@ private:
     void togglePreintegration(bool preintegration);
     void toggleAmbientOcclusion(bool ambientOcclusion);
     void toggleColorBleeding(bool colorBleeding);
+    void toggleShadows(bool shadows);
     void toggleWidgets(bool visible);
     void resizeViewport(int w, int h);
     void setFocalDistance(int focalDistance);
@@ -208,6 +212,9 @@ private:
 
     /// Sets usage of color bleeding.
     bool m_colorBleeding;
+
+    /// Sets usage of soft shadows.
+    bool m_shadows;
 
     /// Toggles widget visibility.
     bool m_widgetVisibilty;

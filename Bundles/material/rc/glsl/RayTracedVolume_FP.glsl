@@ -3,9 +3,9 @@
 uniform sampler3D u_image;
 uniform sampler2D u_tfTexture;
 
-#if AMBIENT_OCCLUSION || COLOR_BLEEDING
+#if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 uniform sampler3D u_illuminationVolume;
-#endif // AMBIENT_OCCLUSION || COLOR_BLEEDING
+#endif // AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 
 #ifdef MODE3D
 uniform sampler2D u_entryPoints0;
@@ -187,14 +187,14 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
             tfColour.a   = 1 - pow(1 - tfColour.a, u_sampleDistance * opacityCorrectionFactor);
 #endif // PREINTEGRATION
 
-#if AMBIENT_OCCLUSION || COLOR_BLEEDING
+#if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
             vec4 volIllum = texture(u_illuminationVolume, rayPos);
-#endif // AMBIENT_OCCLUSION || COLOR_BLEEDING
+#endif // AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 
-#ifdef AMBIENT_OCCLUSION
+#if AMBIENT_OCCLUSION || SHADOWS
             // Apply ambient occlusion + shadows
             tfColour.rgb *= volIllum.a;
-#endif // AMBIENT_OCCLUSION
+#endif // AMBIENT_OCCLUSION || SHADOWS
 
 #ifdef COLOR_BLEEDING
             // Apply color bleeding
