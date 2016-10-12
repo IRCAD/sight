@@ -87,7 +87,10 @@ SATVolumeIllumination::SATVolumeIllumination(std::string parentId, ::Ogre::Scene
     m_nbShells        (nbShells),
     m_shellRadius     (shellRadius),
     m_coneAngle       (coneAngle),
-    m_samplesAlongCone(samplesAlongCone)
+    m_samplesAlongCone(samplesAlongCone),
+    m_parentId        (parentId),
+    m_dummyCamera     (nullptr),
+    m_sceneManager    (sceneManager)
 {
 
 }
@@ -96,6 +99,7 @@ SATVolumeIllumination::SATVolumeIllumination(std::string parentId, ::Ogre::Scene
 
 SATVolumeIllumination::~SATVolumeIllumination()
 {
+    m_illuminationVolume = m_sat.getSpareTexture();
 
 }
 
@@ -104,6 +108,7 @@ SATVolumeIllumination::~SATVolumeIllumination()
 void SATVolumeIllumination::updateSatFromRatio(float _satSizeRatio)
 {
     m_sat.updateSatFromRatio(_satSizeRatio);
+    updateTexture();
 }
 
 //-----------------------------------------------------------------------------
@@ -118,7 +123,10 @@ void SATVolumeIllumination::SATUpdate(Ogre::TexturePtr _img, Ogre::TexturePtr _t
 
 void SATVolumeIllumination::updateVolIllum()
 {
-    m_illuminationVolume = m_sat.getSpareTexture();
+    if(m_illuminationVolume.isNull())
+    {
+        this->updateTexture();
+    }
 
     const int depth = m_illuminationVolume->getDepth();
 
@@ -167,6 +175,44 @@ void SATVolumeIllumination::updateVolIllum()
         compInstance->removeListener(&volIllumListener);
         compositorManager.setCompositorEnabled(vp, "VolumeIllumination", false);
         compositorManager.removeCompositor(vp, "VolumeIllumination");
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SATVolumeIllumination::updateTexture()
+{
+    ::Ogre::TexturePtr satTexture = m_sat.getSpareTexture();
+
+    ::Ogre::TextureManager& textureManager = ::Ogre::TextureManager::getSingleton();
+
+    // Removes the ping pong buffers if they have to be resized
+    textureManager.remove(m_parentId + BUFFER_NAME);
+
+    m_illuminationVolume = textureManager.createManual(
+        m_parentId + BUFFER_NAME,
+        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+        ::Ogre::TEX_TYPE_3D,
+        satTexture->getWidth(),
+        satTexture->getHeight(),
+        satTexture->getDepth(),
+        0,
+        ::Ogre::PF_A8R8G8B8,
+        ::Ogre::TU_RENDERTARGET );
+
+    if(!m_dummyCamera)
+    {
+        m_dummyCamera = m_sceneManager->createCamera(m_parentId + "_VolumeIllumination_DummyCamera");
+    }
+
+    const int depth = satTexture->getDepth();
+    for(int sliceIndex = 0; sliceIndex < depth; ++sliceIndex)
+    {
+        // Init source buffer
+        ::Ogre::RenderTarget* renderTarget = m_illuminationVolume->getBuffer()->getRenderTarget(sliceIndex);
+        ::Ogre::Viewport* vp               = renderTarget->addViewport(m_dummyCamera);
+
+        vp->setOverlaysEnabled(false);
     }
 }
 

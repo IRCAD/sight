@@ -64,6 +64,9 @@ public:
 
 private:
 
+    /// Allocates or resize the texture used to store the illumination volume.
+    void updateTexture();
+
     /// SAT used to compute the illumination volume.
     ::fwRenderOgre::vr::SummedAreaTable m_sat;
 
@@ -90,6 +93,18 @@ private:
 
     /// Number of samples along the soft shadows cones.
     int m_samplesAlongCone;
+
+    /// Prefix used to name the buffers.
+    std::string m_parentId;
+
+    /// Resource name of the source buffer.
+    const std::string BUFFER_NAME = "__IlluminationVolume";
+
+    /// Camera used
+    ::Ogre::Camera* m_dummyCamera;
+
+    /// Scene manager.
+    ::Ogre::SceneManager* m_sceneManager;
 };
 
 //-----------------------------------------------------------------------------
