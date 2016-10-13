@@ -62,6 +62,8 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT          
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT                = "resizeViewport";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_FOCAL_DISTANCE_SLOT             = "setFocalDistance";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_MODE3D_SLOT                     = "setStereoMode";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_BOOL_PARAMETER_SLOT             = "setBoolParameter";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_INT_PARAMETER_SLOT              = "setIntParameter";
 
 //-----------------------------------------------------------------------------
 
@@ -90,7 +92,7 @@ SVolumeRender::SVolumeRender() throw() :
     newSlot(s_UPDATE_SAT_SHELLS_NUMBER_SLOT, &SVolumeRender::updateSatShellsNumber, this);
     newSlot(s_UPDATE_SAT_SHELL_RADIUS_SLOT, &SVolumeRender::updateSatShellRadius, this);
     newSlot(s_UPDATE_SAT_CONE_ANGLE_SLOT, &SVolumeRender::updateSatConeAngle, this);
-    newSlot(s_UPDATE_SAT_CONE_SAMPLES_NUMBER_SLOT, &SVolumeRender::updateSatConeSamplesNumber, this);
+    newSlot(s_UPDATE_SAT_CONE_SAMPLES_NUMBER_SLOT, &SVolumeRender::updateSatConeSamples, this);
     newSlot(s_TOGGLE_PREINTEGRATION_SLOT, &SVolumeRender::togglePreintegration, this);
     newSlot(s_TOGGLE_AMBIENT_OCCLUSION_SLOT, &SVolumeRender::toggleAmbientOcclusion, this);
     newSlot(s_TOGGLE_COLOR_BLEEDING_SLOT, &SVolumeRender::toggleColorBleeding, this);
@@ -99,6 +101,8 @@ SVolumeRender::SVolumeRender() throw() :
     newSlot(s_RESIZE_VIEWPORT_SLOT, &SVolumeRender::resizeViewport, this);
     newSlot(s_SET_FOCAL_DISTANCE_SLOT, &SVolumeRender::setFocalDistance, this);
     newSlot(s_SET_MODE3D_SLOT, &SVolumeRender::setStereoMode, this);
+    newSlot(s_SET_BOOL_PARAMETER_SLOT, &SVolumeRender::setBoolParameter, this);
+    newSlot(s_SET_INT_PARAMETER_SLOT, &SVolumeRender::setIntParameter, this);
 
     m_transform     = ::Ogre::Matrix4::IDENTITY;
     m_renderingMode = VR_MODE_RAY_TRACING;
@@ -517,7 +521,7 @@ void SVolumeRender::updateSatConeAngle(int coneAngle)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::updateSatConeSamplesNumber(int nbConeSamples)
+void SVolumeRender::updateSatConeSamples(int nbConeSamples)
 {
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
@@ -698,6 +702,66 @@ void SVolumeRender::setStereoMode(::fwRenderOgre::Layer::StereoModeType mode)
 {
     this->doStop();
     this->doStart();
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::setBoolParameter(bool val, std::string key)
+{
+    if(key == "preIntegration")
+    {
+        this->togglePreintegration(val);
+    }
+    else if(key == "ambientOcclusion")
+    {
+        this->toggleAmbientOcclusion(val);
+    }
+    else if(key == "colorBleeding")
+    {
+        this->toggleColorBleeding(val);
+    }
+    else if(key == "shadows")
+    {
+        this->toggleShadows(val);
+    }
+    else if(key == "widgets")
+    {
+        this->toggleWidgets(val);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::setIntParameter(int val, std::string key)
+{
+    if(key == "sampling")
+    {
+        this->updateSampling(val);
+    }
+    else if(key == "satSizeRatio")
+    {
+        this->updateSatSizeRatio(val);
+    }
+    else if(key == "satShellsNumber")
+    {
+        this->updateSatShellsNumber(val);
+    }
+    else if(key == "satShellRadius")
+    {
+        this->updateSatShellRadius(val);
+    }
+    else if(key == "satConeAngle")
+    {
+        this->updateSatConeAngle(val);
+    }
+    else if(key == "satConeSamples")
+    {
+        this->updateSatConeSamples(val);
+    }
+    else if(key == "focalLength")
+    {
+        this->setFocalDistance(val);
+    }
 }
 
 //-----------------------------------------------------------------------------

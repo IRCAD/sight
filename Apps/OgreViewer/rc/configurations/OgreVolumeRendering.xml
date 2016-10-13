@@ -13,22 +13,6 @@
         <object uid="${imageUID}"  type="::fwData::Image" src="ref" />
         <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
 
-        <object uid="satSizeRatioIntVal" type="::fwData::Integer" />
-        <object uid="satShellsNumberIntVal" type="::fwData::Integer" />
-        <object uid="satShellRadiusIntVal" type="::fwData::Integer" />
-        <object uid="satConeAngleIntVal" type="::fwData::Integer" />
-        <object uid="satConeSamplesNumberIntVal" type="::fwData::Integer" />
-
-        <object uid="samplingSliderValue" type="::fwData::Integer" />
-        <object uid="focalLengthIntVal" type="::fwData::Integer" />
-
-        <object uid="preIntValue" type="::fwData::Boolean" />
-        <object uid="vrWidgetsValue" type="::fwData::Boolean" />
-
-        <object uid="ambientOcclusionValue" type="::fwData::Boolean" />
-        <object uid="colorBleedingValue" type="::fwData::Boolean" />
-        <object uid="shadowsValue" type="::fwData::Boolean" />
-
         <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="OgreVolumeRendering" type="::gui::view::SDefaultView" autoConnect="no">
@@ -37,96 +21,14 @@
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
+                    <view proportion="0" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <view sid="volumeRenderingScene" start="yes" />
-                <view sid="volumeRenderingInteractor" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="volumeRenderingInteractor" type="::gui::view::SDefaultView" autoConnect="no">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="0" />
-                    <view proportion="0" />
-                    <view proportion="0" />
-                    <view proportion="0" />
-                    <view proportion="1" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="volumeRenderingSamplingInteractor" start="yes" />
-                <view sid="satSizeRatioSlider" start="yes" />
-                <view sid="volumeIlluminationInteractor" start="yes" />
-                <view sid="focalLengthSlider" start="yes" />
+                <view sid="volumeRenderingEditor" start="yes" />
                 <view sid="windowLevelVR" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="volumeIlluminationInteractor" type="::gui::view::SDefaultView" autoConnect="no">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="horizontal" />
-                    <view proportion="0" />
-                    <view proportion="0" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="aoInteractor" start="yes" />
-                <view sid="softShadowsInteractor" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="aoInteractor" type="::gui::view::SDefaultView" autoConnect="no">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="0" />
-                    <view proportion="0" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="satShellsNumberSlider" start="yes" />
-                <view sid="satShellRadiusSlider" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="softShadowsInteractor" type="::gui::view::SDefaultView" autoConnect="no">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="0" />
-                    <view proportion="0" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="satConeAngleSlider" start="yes" />
-                <view sid="satConeSamplesNumberSlider" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="volumeRenderingSamplingInteractor" type="::gui::view::SDefaultView" autoConnect="no">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="horizontal" />
-                    <view proportion="1" />
-                    <view proportion="0" />
-                    <view proportion="0" />
-                    <view proportion="0" />
-                    <view proportion="0" />
-                    <view proportion="0" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="samplingSlider" start="yes" />
-                <view sid="preIntBtn" start="yes" />
-                <view sid="ambientOcclusionBtn" start="yes" />
-                <view sid="colorBleedingBtn" start="yes" />
-                <view sid="shadowsBtn" start="yes" />
-                <view sid="toggleVrWidgetsBtn" start="yes" />
             </registry>
         </service>
 
@@ -158,194 +60,33 @@
             <config selectedTFKey="SelectedTF" />
         </service>
 
-        <service uid="samplingSlider" type="::guiQt::editor::SSlider" autoConnect="yes">
-            <inout key="sampling" uid="samplingSliderValue" />
-            <defaultValue>512</defaultValue>
-            <value>512</value>
-            <text>Samples</text>
-            <range>
-                <min>128</min>
-                <max>4096</max>
-            </range>
+        <service uid="volumeRenderingEditor" type="::guiQt::editor::SParameters" autoConnect="no">
+            <parameters>
+                <param type="int" name="SAT size ratio" key="satSizeRatio" defaultValue="1" min="1" max="4" />
+                <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="4096" />
+                <param type="bool" name="Pre-integration" key="preIntegration" defaultValue="false" />
+                <param type="bool" name="Ambient occlusion" key="ambientOcclusion" defaultValue="false" />
+                <param type="bool" name="Color bleeding" key="colorBleeding" defaultValue="false" />
+                <param type="int" name="AO shells number" key="satShellsNumber" defaultValue="3" min="1" max="10" />
+                <param type="int" name="AO shell radius" key="satShellRadius" defaultValue="3" min="1" max="10" />
+                <param type="bool" name="Soft shadows" key="shadows" defaultValue="false" />
+                <param type="int" name="Shadow cone angle" key="satConeAngle" defaultValue="10" min="10" max="100" />
+                <param type="int" name="Shadow cone samples" key="satConeSamples" defaultValue="50" min="10" max="100" />
+                <param type="bool" name="Widgets" key="widgets" defaultValue="false" />
+                <param type="int" name="Focal length" key="focalLength" defaultValue="50" min="0" max="100" />
+            </parameters>
         </service>
 
-        <service uid="satSizeRatioSlider" type="::guiQt::editor::SSlider" autoConnect="no">
-            <inout key="satSizeRatio" uid="satSizeRatioIntVal" />
-            <defaultValue>1</defaultValue>
-            <value>0</value>
-            <text>SAT size ratio</text>
-            <stepSize>1</stepSize>
-            <range>
-                <min>1</min>
-                <max>4</max>
-            </range>
-        </service>
-
-        <service uid="satShellsNumberSlider" type="::guiQt::editor::SSlider" autoConnect="no">
-            <inout key="satShellsNumber" uid="satShellsNumberIntVal" />
-            <defaultValue>3</defaultValue>
-            <value>0</value>
-            <text>AO shells number</text>
-            <stepSize>1</stepSize>
-            <range>
-                <min>1</min>
-                <max>10</max>
-            </range>
-        </service>
-
-        <service uid="satShellRadiusSlider" type="::guiQt::editor::SSlider" autoConnect="no">
-            <inout key="satShellRadius" uid="satShellRadiusIntVal" />
-            <defaultValue>3</defaultValue>
-            <value>0</value>
-            <text>AO shell radius</text>
-            <stepSize>1</stepSize>
-            <range>
-                <min>1</min>
-                <max>10</max>
-            </range>
-        </service>
-
-        <!-- The value normally goes from 0. to 1. but we have to use an integer slider since float type is not supported yet -->
-        <service uid="satConeAngleSlider" type="::guiQt::editor::SSlider" autoConnect="no">
-            <inout key="satConeAngle" uid="satConeSamplesNumberIntVal" />
-            <defaultValue>10</defaultValue>
-            <value>0</value>
-            <text>Shadow cone angle</text>
-            <stepSize>1</stepSize>
-            <range>
-                <min>10</min>
-                <max>100</max>
-            </range>
-        </service>
-
-        <service uid="satConeSamplesNumberSlider" type="::guiQt::editor::SSlider" autoConnect="no">
-            <inout key="satConeSamplesNumber" uid="satConeSamplesNumberIntVal" />
-            <defaultValue>50</defaultValue>
-            <value>0</value>
-            <text>Shadow cone samples</text>
-            <stepSize>1</stepSize>
-            <range>
-                <min>10</min>
-                <max>100</max>
-            </range>
-        </service>
-
-        <!-- The value normally goes from 0. to 1. but we have to use an integer slider since float type is not supported yet -->
-        <service uid="focalLengthSlider" type="::guiQt::editor::SSlider" autoConnect="no">
-            <inout key="focalLength" uid="focalLengthIntVal" />
-            <defaultValue>50</defaultValue>
-            <value>0</value>
-            <text>Focal length</text>
-            <stepSize>1</stepSize>
-            <range>
-                <min>0</min>
-                <max>100</max>
-            </range>
-        </service>
-
-        <service uid="preIntBtn" type="::guiQt::editor::SSignalButton" autoConnect="no">
-            <inout key="preIntegration" uid="preIntValue" />
-            <config>
-               <checkable>true</checkable>
-               <text>Pre-integration</text>
-               <checked>false</checked>
-            </config>
-        </service>
-
-        <service uid="ambientOcclusionBtn" type="::guiQt::editor::SSignalButton" autoConnect="no">
-            <inout key="ambientOcclusion" uid="ambientOcclusionValue" />
-            <config>
-               <checkable>true</checkable>
-               <text>Ambient occlusion</text>
-               <checked>false</checked>
-            </config>
-        </service>
-
-        <service uid="colorBleedingBtn" type="::guiQt::editor::SSignalButton" autoConnect="no">
-            <inout key="colorBleeding" uid="colorBleedingValue" />
-            <config>
-               <checkable>true</checkable>
-               <text>Color bleeding</text>
-               <checked>false</checked>
-            </config>
-        </service>
-
-        <service uid="shadowsBtn" type="::guiQt::editor::SSignalButton" autoConnect="no">
-            <inout key="shadows" uid="shadowsValue" />
-            <config>
-               <checkable>true</checkable>
-               <text>Soft shadows</text>
-               <checked>false</checked>
-            </config>
-        </service>
-
-        <service uid="toggleVrWidgetsBtn" type="::guiQt::editor::SSignalButton" autoConnect="no">
-            <inout key="vrWidgets" uid="vrWidgetsValue" />
-            <config>
-               <checkable>true</checkable>
-               <text>Widgets</text>
-               <checked>false</checked>
-            </config>
-        </service>
+        <!-- ******************************* Actions ****************************************** -->
 
         <connect>
-            <signal>samplingSlider/valueChanged</signal>
-            <slot>volumeRender/updateSampling</slot>
+            <signal>volumeRenderingEditor/boolChanged</signal>
+            <slot>volumeRender/setBoolParameter</slot>
         </connect>
 
         <connect>
-            <signal>satSizeRatioSlider/valueChanged</signal>
-            <slot>volumeRender/updateSatSizeRatio</slot>
-        </connect>
-
-        <connect>
-            <signal>satShellsNumberSlider/valueChanged</signal>
-            <slot>volumeRender/updateSatShellsNumber</slot>
-        </connect>
-
-        <connect>
-            <signal>satShellRadiusSlider/valueChanged</signal>
-            <slot>volumeRender/updateSatShellRadius</slot>
-        </connect>
-
-        <connect>
-            <signal>satConeAngleSlider/valueChanged</signal>
-            <slot>volumeRender/updateSatConeAngle</slot>
-        </connect>
-
-        <connect>
-            <signal>satConeSamplesNumberSlider/valueChanged</signal>
-            <slot>volumeRender/updateSatConeSamplesNumber</slot>
-        </connect>
-
-        <connect>
-            <signal>focalLengthSlider/valueChanged</signal>
-            <slot>volumeRender/setFocalDistance</slot>
-        </connect>
-
-        <connect>
-            <signal>preIntBtn/toggled</signal>
-            <slot>volumeRender/togglePreintegration</slot>
-        </connect>
-
-        <connect>
-            <signal>ambientOcclusionBtn/toggled</signal>
-            <slot>volumeRender/toggleAmbientOcclusion</slot>
-        </connect>
-
-        <connect>
-            <signal>colorBleedingBtn/toggled</signal>
-            <slot>volumeRender/toggleColorBleeding</slot>
-        </connect>
-
-        <connect>
-            <signal>shadowsBtn/toggled</signal>
-            <slot>volumeRender/toggleShadows</slot>
-        </connect>
-
-        <connect>
-            <signal>toggleVrWidgetsBtn/toggled</signal>
-            <slot>volumeRender/toggleWidgets</slot>
+            <signal>volumeRenderingEditor/intChanged</signal>
+            <slot>volumeRender/setIntParameter</slot>
         </connect>
 
         <start uid="OgreVolumeRendering" />

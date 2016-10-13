@@ -51,6 +51,8 @@ namespace visuOgreAdaptor
  * - \b resizeViewport(int, int): Called when the size of the viewport changes.
  * - \b setFocalDistance(int): Called to modify focal length (only useful for stereoscopic 3D).
  * - \b setStereoMode(int): Called to modify 3D stereoscopic 3D mode.
+ * - \b setBoolParameter(bool, string): Calls a bool parameter slot according to the given key.
+ * - \b setIntParameter(int, string): Calls an int parameter slot according to the given key.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -107,6 +109,8 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_FOCAL_DISTANCE_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_MODE3D_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
     /** @} */
 
     /// Constructor.
@@ -154,7 +158,7 @@ private:
     void updateSatShellsNumber(int shellsNumber);
     void updateSatShellRadius(int shellRadius);
     void updateSatConeAngle(int coneAngle);
-    void updateSatConeSamplesNumber(int nbConeSamples);
+    void updateSatConeSamples(int nbConeSamples);
     void togglePreintegration(bool preintegration);
     void toggleAmbientOcclusion(bool ambientOcclusion);
     void toggleColorBleeding(bool colorBleeding);
@@ -163,6 +167,8 @@ private:
     void resizeViewport(int w, int h);
     void setFocalDistance(int focalDistance);
     void setStereoMode(::fwRenderOgre::Layer::StereoModeType mode);
+    void setBoolParameter(bool val, std::string key);
+    void setIntParameter(int val, std::string key);
 
     /// Creates widgets and connects its slots to interactor signals.
     void initWidgets();
