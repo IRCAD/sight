@@ -9,7 +9,6 @@ in VertexDataIn
 } vertexIn[];
 
 uniform sampler3D u_bricksGrid;
-//uniform sampler2D u_tfTexture;
 
 uniform ivec3 u_imageResolution;
 uniform ivec3 u_gridResolution;

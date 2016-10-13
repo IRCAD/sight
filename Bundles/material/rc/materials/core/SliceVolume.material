@@ -15,6 +15,7 @@ vertex_program VR/Volume_VP glsl
 fragment_program VR/Volume_FP glsl
 {
     source SliceVolume_FP.glsl
+    attach TransferFunction_FP
 
     default_params
     {
@@ -43,6 +44,7 @@ vertex_program VR/Volume_PreIntegration_VP glsl
 fragment_program VR/Volume_PreIntegration_FP glsl
 {
     source SliceVolume_FP.glsl
+    attach TransferFunction_FP
     preprocessor_defines PREINTEGRATION=1
 
     default_params

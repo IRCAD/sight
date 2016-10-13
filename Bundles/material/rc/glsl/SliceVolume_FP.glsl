@@ -23,20 +23,7 @@ in vec3 vs_cameraDir;
 out vec4 fragColor;
 
 //-----------------------------------------------------------------------------
-
-vec4 transferFunction(float intensity)
-{
-    float scaledValue = intensity * 65535.f;
-
-    // Computes 2D indices from the hounsfield value
-    int j = int( scaledValue / 256 );
-    int i = int( mod( int(scaledValue), 256 ) );
-
-    // Converts the indices into texture uv coordinates
-    vec2 uvTF = vec2(i / 255.f, j / 255.f);
-
-    return texture(u_tfTexture, uvTF);
-}
+vec4 sampleTransferFunction(float intensity);
 
 //-----------------------------------------------------------------------------
 
@@ -77,7 +64,7 @@ void main(void)
 #else
     float intensity = texture(u_image, vs_uvw).r;
 
-    vec4 colourTf = transferFunction(intensity);
+    vec4 colourTf = sampleTransferFunction(intensity);
 
     // Adjust opacity to sample distance.
     // This could be done when generating the TF texture to improve performance.

@@ -48,20 +48,7 @@ uniform int u_max;
 out vec4 fragColor;
 
 //-----------------------------------------------------------------------------
-
-vec4 transferFunction(float intensity)
-{
-    float scaledValue = intensity * 65535.f;
-
-    // Computes 2D indices from the hounsfield value
-    int j = int( scaledValue / 256 );
-    int i = int( mod( int(scaledValue), 256 ) );
-
-    // Converts the indices into texture uv coordinates
-    vec2 uvTF = vec2(i / 255.f, j / 255.f);
-
-    return texture(u_tfTexture, uvTF);
-}
+vec4 sampleTransferFunction(float intensity);
 
 //-----------------------------------------------------------------------------
 
@@ -172,7 +159,7 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 #else
         float intensity = texture(u_image, rayPos).r;
 
-        vec4  tfColour  = transferFunction(intensity);
+        vec4  tfColour  = sampleTransferFunction(intensity);
 #endif // PREINTEGRATION
 
         if(tfColour.a > 0)

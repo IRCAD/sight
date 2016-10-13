@@ -3,6 +3,7 @@
 fragment_program SummedAreaTable/Init_FP glsl
 {
     source ApplyTransferFunction_FP.glsl
+    attach TransferFunction_FP
 
     default_params
     {

@@ -3,6 +3,7 @@
 //compute_program VolumeBricks_CP glsl
 //{
 //        source VolumeBricks_CP.glsl
+//        attach TransferFunction_FP
 //        syntax glsl430
 //
 //        compute_group_dimensions 8 8 8
@@ -31,6 +32,7 @@ vertex_program VolumeBricksGrid_VP glsl
 fragment_program VolumeBricksGrid_FP glsl
 {
     source VolumeBricks_FP.glsl
+    attach TransferFunction_FP
 
     default_params
     {

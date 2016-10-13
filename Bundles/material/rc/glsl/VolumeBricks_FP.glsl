@@ -6,23 +6,10 @@ uniform ivec3 u_brickSize;
 uniform int u_slice;
 
 uniform sampler3D u_image;
-uniform sampler2D u_tfTexture;
 
 out float o_brickMax;
 
-vec4 transferFunction(float intensity)
-{
-    float scaledValue = intensity * 65535.f;
-
-    // Computes 2D indices from the hounsfield value
-    int j = int( scaledValue / 256 ); // const
-    int i = int( mod( int(scaledValue), 256 ) ); // const
-
-    // Converts the indices into texture uv coordinates
-    vec2 uvTF = vec2(i / 255.f, j / 255.f);
-
-    return texture(u_tfTexture, uvTF);
-}
+vec4 sampleTransferFunction(float intensity);
 
 void main()
 {
@@ -42,7 +29,7 @@ void main()
             for(int w = brickBeginPosition.z; w < brickEndPosition.z; ++ w)
             {
                 float intensity    = texelFetch(u_image, ivec3(u, v, w), 0).r; // const
-                float voxelOpacity = transferFunction(intensity).a; // const
+                float voxelOpacity = sampleTransferFunction(intensity).a; // const
 
                 brickMax = brickMax || voxelOpacity != 0;
             }
