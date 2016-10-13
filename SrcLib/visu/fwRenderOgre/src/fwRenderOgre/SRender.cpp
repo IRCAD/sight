@@ -5,15 +5,14 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/SRender.hpp"
+#include <fwRenderOgre/IAdaptor.hpp>
+#include <fwRenderOgre/Utils.hpp>
+#include <fwRenderOgre/registry/Adaptor.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Color.hpp>
-
-#include <fwRenderOgre/IAdaptor.hpp>
-#include <fwRenderOgre/Utils.hpp>
-#include <fwRenderOgre/registry/Adaptor.hpp>
 
 #include <fwRuntime/ConfigurationElementContainer.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
@@ -25,8 +24,8 @@
 #include <fwTools/fwID.hpp>
 
 #include <OGRE/OgreEntity.h>
-#include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreNode.h>
+#include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 
 #include <stack>
@@ -482,7 +481,7 @@ void SRender::stopContext()
 
 // ----------------------------------------------------------------------------
 
-::fwRenderOgre::IRenderWindowInteractorManager::sptr SRender::getInteractorManager()
+::fwRenderOgre::IRenderWindowInteractorManager::sptr SRender::getInteractorManager() const
 {
     return m_interactorManager;
 }

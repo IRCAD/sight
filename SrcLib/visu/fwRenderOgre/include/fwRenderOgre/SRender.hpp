@@ -169,7 +169,7 @@ public:
     FWRENDEROGRE_API LayerMapType getLayers();
 
     /// Returns m_interactorManager
-    FWRENDEROGRE_API ::fwRenderOgre::IRenderWindowInteractorManager::sptr getInteractorManager();
+    FWRENDEROGRE_API ::fwRenderOgre::IRenderWindowInteractorManager::sptr getInteractorManager() const;
 
     /// Reset camera parameters with the actual global bounding box
     FWRENDEROGRE_API void resetCameraCoordinates(const std::string& _layerId);

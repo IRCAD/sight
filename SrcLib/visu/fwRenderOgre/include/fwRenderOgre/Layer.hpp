@@ -168,6 +168,9 @@ public:
     /// Sets the worker for slots
     FWRENDEROGRE_API void setWorker( const ::fwThread::Worker::sptr& _worker);
 
+    /// Gets the render service
+    FWRENDEROGRE_API CSPTR(::fwRenderOgre::SRender) getRenderService() const;
+
     /// Sets the render service
     FWRENDEROGRE_API void setRenderService( const SPTR(::fwRenderOgre::SRender)& _service );
 

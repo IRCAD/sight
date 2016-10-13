@@ -10,15 +10,14 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwRenderOgre/registry/macros.hpp>
 #include <fwRenderOgre/SRender.hpp>
-
-#include <QEvent>
-#include <QVBoxLayout>
-#include <QWidget>
+#include <fwRenderOgre/registry/macros.hpp>
 
 #include <QDesktopWidget>
+#include <QEvent>
 #include <QRect>
+#include <QVBoxLayout>
+#include <QWidget>
 
 //-----------------------------------------------------------------------------
 
@@ -77,7 +76,7 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
     if(fullscreen)
     {
         // Open fullscreen widget on secondary monitor if there is one.
-        QDesktopWidget *desktop = QApplication::desktop();
+        QDesktopWidget* desktop = QApplication::desktop();
         int screenNumber        = desktop->screenNumber(container) + 1;
 
         if(screenNumber >= desktop->screenCount())
@@ -153,9 +152,16 @@ void RenderWindowInteractorManager::makeCurrent()
 
 //-----------------------------------------------------------------------------
 
-int RenderWindowInteractorManager::getWidgetId()
+int RenderWindowInteractorManager::getWidgetId() const
 {
     return m_qOgreWidget->getId();
+}
+
+//-----------------------------------------------------------------------------
+
+int RenderWindowInteractorManager::getFrameId() const
+{
+    return m_qOgreWidget->getFrameId();
 }
 
 //-----------------------------------------------------------------------------

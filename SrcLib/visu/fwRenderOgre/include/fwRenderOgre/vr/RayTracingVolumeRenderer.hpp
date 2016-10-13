@@ -46,7 +46,7 @@ public:
      * @param shadows              Soft shadows flag.
      */
     FWRENDEROGRE_API RayTracingVolumeRenderer(std::string parentId,
-                                              ::Ogre::SceneManager* sceneManager,
+                                              Layer::sptr layer,
                                               ::Ogre::SceneNode* parentNode,
                                               ::Ogre::TexturePtr imageTexture,
                                               TransferFunction* gpuTF,
@@ -83,7 +83,7 @@ public:
     FWRENDEROGRE_API virtual void setShadows(bool shadows);
 
     /// Configures to layer to handle stereoscopic rendering by adding the stereo VR compositor to the chain.
-    FWRENDEROGRE_API void configure3DViewport(Layer::sptr layer);
+    FWRENDEROGRE_API void configure3DViewport();
 
     /// Sets the focal distance used for stereo rendering.
     /// A focal length of 0 focuses on the front of the image and a length of 1 focuses on the back.
@@ -97,6 +97,9 @@ public:
 
     /// IllumVolume getter.
     FWRENDEROGRE_API SATVolumeIllumination* getIllumVolume();
+
+    /// Layer getter
+    ::fwRenderOgre::Layer::sptr getLayer() const;
 
 private:
 
@@ -194,6 +197,13 @@ private:
 inline ::fwRenderOgre::vr::SATVolumeIllumination* RayTracingVolumeRenderer::getIllumVolume()
 {
     return m_illumVolume;
+}
+
+//-----------------------------------------------------------------------------
+
+inline ::fwRenderOgre::Layer::sptr RayTracingVolumeRenderer::getLayer() const
+{
+    return m_layer.lock();
 }
 
 //-----------------------------------------------------------------------------

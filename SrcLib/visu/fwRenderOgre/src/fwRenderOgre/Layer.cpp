@@ -5,34 +5,33 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwRenderOgre/Layer.hpp>
+#include <fwRenderOgre/SRender.hpp>
+#include <fwRenderOgre/Utils.hpp>
+#include <fwRenderOgre/interactor/TrackballInteractor.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwDataTools/Color.hpp>
 
-#include <fwRenderOgre/interactor/TrackballInteractor.hpp>
-#include <fwRenderOgre/SRender.hpp>
-#include <fwRenderOgre/Utils.hpp>
-
 #include <fwThread/Worker.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreColourValue.h>
-#include <OGRE/OgreEntity.h>
-#include <OGRE/OgreLight.h>
-#include <OGRE/OgreSceneNode.h>
-#include <OGRE/OgreVector3.h>
-#include <OGRE/OgreException.h>
 #include <OGRE/OgreCompositorManager.h>
+#include <OGRE/OgreEntity.h>
+#include <OGRE/OgreException.h>
+#include <OGRE/OgreLight.h>
+#include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreRectangle2D.h>
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreSceneNode.h>
+#include <OGRE/OgreTechnique.h>
+#include <OGRE/OgreVector3.h>
 #include <OGRE/Overlay/OgreOverlay.h>
 #include <OGRE/Overlay/OgreOverlayContainer.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
-#include <OGRE/OgreSceneManager.h>
-#include <OGRE/OgreMaterialManager.h>
-#include <OGRE/OgreTechnique.h>
 
 #include <stack>
 
@@ -355,6 +354,13 @@ void Layer::setDepth(int depth)
 void Layer::setWorker( const ::fwThread::Worker::sptr& _worker)
 {
     ::fwCom::HasSlots::m_slots.setWorker(_worker);
+}
+
+// ----------------------------------------------------------------------------
+
+::fwRenderOgre::SRender::csptr Layer::getRenderService() const
+{
+    return m_renderService.lock();
 }
 
 //------------------------------------------------------------------------------

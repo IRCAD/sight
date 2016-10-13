@@ -8,12 +8,13 @@
 #define __VISUOGREQT_RENDERWINDOWINTERACTORMANAGER_HPP__
 
 #include "visuOgreQt/config.hpp"
+#include <visuOgreQt/Window.hpp>
 
 #include <fwCore/base.hpp>
-#include <fwGui/container/fwContainer.hpp>
-#include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
 
-#include <visuOgreQt/Window.hpp>
+#include <fwGui/container/fwContainer.hpp>
+
+#include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
 
 #include <QObject>
 #include <QPointer>
@@ -62,7 +63,10 @@ public:
     VISUOGREQT_API virtual void disconnectInteractor();
 
     /// Returns Ogre widget
-    VISUOGREQT_API virtual int getWidgetId();
+    VISUOGREQT_API virtual int getWidgetId() const;
+
+    /// Returns frame ID
+    VISUOGREQT_API virtual int getFrameId() const;
 
     /// Set this render service as the current OpenGL context
     VISUOGREQT_API virtual void makeCurrent();

@@ -290,7 +290,7 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     else
     {
         m_volumeRenderer = new ::fwRenderOgre::vr::RayTracingVolumeRenderer(this->getID(),
-                                                                            m_sceneManager,
+                                                                            layer,
                                                                             m_volumeSceneNode,
                                                                             m_3DOgreTexture,
                                                                             &m_gpuTF,
@@ -305,7 +305,7 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 
             OSLM_ERROR_IF("Stereo rendering is supported only by ray casting VR.", !rayCastVolumeRenderer);
 
-            rayCastVolumeRenderer->configure3DViewport(layer);
+            rayCastVolumeRenderer->configure3DViewport();
 
             // Initially focus on the image center.
             setFocalDistance(50);

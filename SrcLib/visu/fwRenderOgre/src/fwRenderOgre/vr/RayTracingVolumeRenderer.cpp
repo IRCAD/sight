@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwRenderOgre/SRender.hpp"
 #include "fwRenderOgre/Utils.hpp"
 #include "fwRenderOgre/helper/Shading.hpp"
 #include "fwRenderOgre/vr/RayTracingVolumeRenderer.hpp"
@@ -116,35 +117,48 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
 {
     RayTracingVolumeRenderer* m_renderer;
     std::string m_currentMtlName;
+    int m_frameId;
 
     CameraListener(RayTracingVolumeRenderer* renderer) :
         m_renderer(renderer),
-        m_currentMtlName("VolIllum")
+        m_currentMtlName("VolIllum"),
+        m_frameId(0)
     {
     }
 
     virtual void cameraPreRenderScene(::Ogre::Camera*)
     {
-        if(m_renderer->m_illumVolume)
+        auto layer = m_renderer->getLayer();
+        if(layer)
         {
-            // Set light directions in shader.
-            ::Ogre::LightList closestLights = m_renderer->m_volumeSceneNode->getAttachedObject(0)->queryLights();
+            const int frameId = layer->getRenderService()->getInteractorManager()->getFrameId();
+            if(frameId != m_frameId)
+            {
+                if(m_renderer->m_illumVolume)
+                {
+                    // Set light directions in shader.
+                    ::Ogre::LightList closestLights =
+                        m_renderer->m_volumeSceneNode->getAttachedObject(0)->queryLights();
 
-            ::Ogre::Vector3 lightDir = m_renderer->m_volumeSceneNode->convertLocalToWorldDirection(
-                closestLights[0]->getDerivedDirection(), true);
+                    ::Ogre::Vector3 lightDir = m_renderer->m_volumeSceneNode->convertLocalToWorldDirection(
+                        closestLights[0]->getDerivedDirection(), true);
 
-            ::Ogre::Pass* satIllumPass = ::Ogre::MaterialManager::getSingleton().getByName(
-                m_currentMtlName)->getTechnique(0)->getPass(0);
-            ::Ogre::GpuProgramParametersSharedPtr satIllumParams = satIllumPass->getFragmentProgramParameters();
+                    ::Ogre::Pass* satIllumPass = ::Ogre::MaterialManager::getSingleton().getByName(
+                        m_currentMtlName)->getTechnique(0)->getPass(0);
+                    ::Ogre::GpuProgramParametersSharedPtr satIllumParams = satIllumPass->getFragmentProgramParameters();
 
-            satIllumParams->setNamedConstant("u_lightDir", lightDir);
+                    satIllumParams->setNamedConstant("u_lightDir", lightDir);
 
-            m_renderer->m_illumVolume->updateVolIllum();
+                    m_renderer->m_illumVolume->updateVolIllum();
+                }
+                // Recompute the focal length in case the camera moved.
+                m_renderer->computeRealFocalLength();
+
+                m_renderer->computeEntryPointsTexture();
+
+                m_frameId = frameId;
+            }
         }
-        // Recompute the focal length in case the camera moved.
-        m_renderer->computeRealFocalLength();
-
-        m_renderer->computeEntryPointsTexture();
     }
 
     void setCurrentMtlName(const std::string& currentMtlName)
@@ -156,7 +170,7 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
 //-----------------------------------------------------------------------------
 
 RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
-                                                   ::Ogre::SceneManager* sceneManager,
+                                                   Layer::sptr layer,
                                                    ::Ogre::SceneNode* parentNode,
                                                    ::Ogre::TexturePtr imageTexture,
                                                    TransferFunction* gpuTF,
@@ -165,7 +179,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    bool ambientOcclusion,
                                                    bool colorBleeding,
                                                    bool shadows) :
-    IVolumeRenderer(parentId, sceneManager, parentNode, imageTexture, gpuTF, preintegrationTable),
+    IVolumeRenderer(parentId, layer->getSceneManager(), parentNode, imageTexture, gpuTF, preintegrationTable),
     m_entryPointGeometry(nullptr),
     m_imageSize         (::fwData::Image::SizeType({ 1, 1, 1 })),
     m_mode3D            (mode3D),
@@ -175,7 +189,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_currentMtlName    ("RayTracedVolume"),
     m_illumVolume       (nullptr),
     m_cameraListener    (nullptr),
-    m_compositorListener(nullptr)
+    m_compositorListener(nullptr),
+    m_layer             (layer)
 {
     m_gridSize   = { 2, 2, 2 };
     m_bricksSize = { 8, 8, 8 };
@@ -471,7 +486,7 @@ void RayTracingVolumeRenderer::setShadows(bool shadows)
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::configure3DViewport(Layer::sptr layer)
+void RayTracingVolumeRenderer::configure3DViewport()
 {
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
 
@@ -479,11 +494,11 @@ void RayTracingVolumeRenderer::configure3DViewport(Layer::sptr layer)
                        "RayTracedVolume3D8" :
                        "RayTracedVolume3D5";
 
-    compositorManager.addCompositor(layer->getViewport(), m_compositorName);
-    compositorManager.setCompositorEnabled(layer->getViewport(), m_compositorName, true);
+    auto viewport = m_layer.lock()->getViewport();
+    compositorManager.addCompositor(viewport, m_compositorName);
+    compositorManager.setCompositorEnabled(viewport, m_compositorName, true);
 
-    ::Ogre::CompositorChain* compChain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
-        layer->getViewport());
+    ::Ogre::CompositorChain* compChain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(viewport);
 
     auto compositorInstance = compChain->getCompositor(m_compositorName);
 
@@ -494,8 +509,6 @@ void RayTracingVolumeRenderer::configure3DViewport(Layer::sptr layer)
                                                                                       m_sampleDistance,
                                                                                       m_volumeSceneNode);
     compositorInstance->addListener(m_compositorListener);
-
-    m_layer = layer;
 }
 
 //-----------------------------------------------------------------------------

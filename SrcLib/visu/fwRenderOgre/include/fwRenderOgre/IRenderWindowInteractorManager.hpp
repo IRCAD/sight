@@ -7,19 +7,20 @@
 #ifndef __FWRENDEROGRE_IRENDERWINDOWINTERACTORMANAGER_HPP__
 #define __FWRENDEROGRE_IRENDERWINDOWINTERACTORMANAGER_HPP__
 
-#include <string>
+#include "fwRenderOgre/config.hpp"
+#include "fwRenderOgre/factory/new.hpp"
+#include "fwRenderOgre/interactor/IInteractor.hpp"
+#include "fwRenderOgre/registry/detail.hpp"
 
 #include <fwCore/base.hpp>
-#include <fwGui/container/fwContainer.hpp>
-#include <fwServices/IService.hpp>
 
-#include "fwRenderOgre/factory/new.hpp"
-#include "fwRenderOgre/registry/detail.hpp"
-#include "fwRenderOgre/interactor/IInteractor.hpp"
+#include <fwGui/container/fwContainer.hpp>
+
+#include <fwServices/IService.hpp>
 
 #include <OGRE/OgreRenderWindow.h>
 
-#include "fwRenderOgre/config.hpp"
+#include <string>
 
 
 namespace fwRenderOgre
@@ -27,9 +28,6 @@ namespace fwRenderOgre
 
 /**
  * @brief   Defines a class to manage ogreRenderWindowInteractor in a window.
- * @class   IRenderWindowInteractorManager
- *
- * @date    2009-2015.
  *
  */
 class FWRENDEROGRE_CLASS_API IRenderWindowInteractorManager : public ::fwCore::BaseObject
@@ -114,7 +112,10 @@ public:
     FWRENDEROGRE_API virtual void disconnectInteractor() = 0;
 
     /// Returns Ogre widget
-    FWRENDEROGRE_API virtual int getWidgetId() = 0;
+    FWRENDEROGRE_API virtual int getWidgetId() const = 0;
+
+    /// Returns frame ID
+    FWRENDEROGRE_API virtual int getFrameId() const = 0;
 
     /// Set this render service as the current OpenGL context
     FWRENDEROGRE_API virtual void makeCurrent() = 0;

@@ -40,7 +40,8 @@ Window::Window(QWindow* parent) :
     m_showOverlay(false),
     m_fullscreen(false),
     m_lastPosLeftClick(nullptr),
-    m_lastPosMiddleClick(nullptr)
+    m_lastPosMiddleClick(nullptr),
+    m_frameId(0)
 {
     setAnimating(false);
     installEventFilter(this);
@@ -199,6 +200,7 @@ void Window::destroyWindow()
 
 void Window::render()
 {
+    ++m_frameId;
     /*
        How we tied in the render function for OGre3D with QWindow's render function. This is what gets call
        repeatedly. Note that we don't call this function directly; rather we use the renderNow() function
@@ -269,7 +271,6 @@ bool Window::event(QEvent* event)
             return QWindow::event(event);
     }
 }
-
 // ----------------------------------------------------------------------------
 
 void Window::exposeEvent(QExposeEvent* event)
