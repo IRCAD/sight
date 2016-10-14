@@ -54,7 +54,9 @@ public:
                                               ::fwRenderOgre::Layer::StereoModeType mode3D,
                                               bool ambientOcclusion = false,
                                               bool colorBleeding = false,
-                                              bool shadows = false);
+                                              bool shadows = false,
+                                              double aoFactor = 1.f,
+                                              double colorBleedingFactor = 1.f);
 
     /// Does nothing.
     FWRENDEROGRE_API virtual ~RayTracingVolumeRenderer();
@@ -67,6 +69,12 @@ public:
 
     /// Sets the number of samples per view ray.
     FWRENDEROGRE_API virtual void setSampling(uint16_t nbSamples);
+
+    /// Ambient occlusion factor setter.
+    FWRENDEROGRE_API virtual void setAOFactor(double aoFactor);
+
+    /// Color bleeding factor setter.
+    FWRENDEROGRE_API virtual void setColorBleedingFactor(double colorBleedingFactor);
 
     FWRENDEROGRE_API virtual void setIlluminationVolume(SATVolumeIllumination* illuminationVolume);
 
@@ -169,6 +177,13 @@ private:
 
     /// Sets usage of soft shadows.
     bool m_shadows;
+
+    /// Factor parameter used to weight the ambient occlusion. It is replicated three times to fill the RGB channels of
+    /// a GLSL vec4.
+    double m_aoFactor;
+
+    /// Factor parameter used to weight the color bleeding. It is used to fill the alpha channel of a GLSL vec4.
+    double m_colorBleedingFactor;
 
     /// Name of the current volume illumination material.
     std::string m_currentMtlName;

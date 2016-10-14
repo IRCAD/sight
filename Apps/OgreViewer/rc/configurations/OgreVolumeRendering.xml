@@ -69,6 +69,8 @@
                 <param type="bool" name="Color bleeding" key="colorBleeding" defaultValue="false" />
                 <param type="int" name="AO shells number" key="satShellsNumber" defaultValue="3" min="1" max="10" />
                 <param type="int" name="AO shell radius" key="satShellRadius" defaultValue="3" min="1" max="10" />
+                <param type="double" name="AO factor" key="aoFactor" defaultValue="1.0" min="0.1" max="10.0" />
+                <param type="double" name="Color bleeding factor" key="colorBleedingFactor" defaultValue="1.0" min="0.1" max="10.0" />
                 <param type="bool" name="Soft shadows" key="shadows" defaultValue="false" />
                 <param type="int" name="Shadow cone angle" key="satConeAngle" defaultValue="10" min="10" max="100" />
                 <param type="int" name="Shadow cone samples" key="satConeSamples" defaultValue="50" min="10" max="100" />
@@ -87,6 +89,11 @@
         <connect>
             <signal>volumeRenderingEditor/intChanged</signal>
             <slot>volumeRender/setIntParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>volumeRenderingEditor/doubleChanged</signal>
+            <slot>volumeRender/setDoubleParameter</slot>
         </connect>
 
         <start uid="OgreVolumeRendering" />

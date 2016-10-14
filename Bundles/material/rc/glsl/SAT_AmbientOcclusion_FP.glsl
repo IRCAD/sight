@@ -202,7 +202,7 @@ vec4 ambientOcclusionAndColourBleedingQuery(in ivec3 voxelPos)
         aoFactor += (satLookupVal - lastLookup) / float(radius * radius);
     }
 
-    return pow(u_nbShells * u_shellRadius, -2.f) * aoFactor;
+    return aoFactor / float(radius * radius);
 }
 
 //-----------------------------------------------------------------------------

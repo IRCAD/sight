@@ -47,23 +47,26 @@ namespace visuOgreAdaptor
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEW_IMAGE_SLOT                      = "newImage";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAMPLING_SLOT                = "updateSampling";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_SIZE_RATIO_SLOT          = "updateSatSizeRatio";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_SHELLS_NUMBER_SLOT       = "updateSatShellsNumber";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_SHELL_RADIUS_SLOT        = "updateSatShellRadius";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_CONE_ANGLE_SLOT          = "updateSatConeAngle";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_CONE_SAMPLES_NUMBER_SLOT = "updateSatConeSamplesNumber";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_PREINTEGRATION_SLOT          = "togglePreintegration";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_AMBIENT_OCCLUSION_SLOT       = "toggleAmbientOcclusion";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_COLOR_BLEEDING_SLOT          = "toggleColorBleeding";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_SHADOWS_SLOT                 = "toggleShadows";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT                 = "toggleWidgets";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT                = "resizeViewport";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_FOCAL_DISTANCE_SLOT             = "setFocalDistance";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_MODE3D_SLOT                     = "setStereoMode";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_BOOL_PARAMETER_SLOT             = "setBoolParameter";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_INT_PARAMETER_SLOT              = "setIntParameter";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEW_IMAGE_SLOT                    = "newImage";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAMPLING_SLOT              = "updateSampling";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_AO_FACTOR_SLOT             = "updateAOFactor";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_COLOR_BLEEDING_FACTOR_SLOT = "updateColorBleedingFactor";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_SIZE_RATIO_SLOT        = "updateSatSizeRatio";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_SHELLS_SLOT            = "updateSatShellsNumber";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_SHELL_RADIUS_SLOT      = "updateSatShellRadius";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_CONE_ANGLE_SLOT        = "updateSatConeAngle";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAT_CONE_SAMPLES_SLOT      = "updateSatConeSamplesNumber";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_PREINTEGRATION_SLOT        = "togglePreintegration";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_AMBIENT_OCCLUSION_SLOT     = "toggleAmbientOcclusion";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_COLOR_BLEEDING_SLOT        = "toggleColorBleeding";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_SHADOWS_SLOT               = "toggleShadows";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT               = "toggleWidgets";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT              = "resizeViewport";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_FOCAL_DISTANCE_SLOT           = "setFocalDistance";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_MODE3D_SLOT                   = "setStereoMode";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_BOOL_PARAMETER_SLOT           = "setBoolParameter";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_INT_PARAMETER_SLOT            = "setIntParameter";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_DOUBLE_PARAMETER_SLOT         = "setDoubleParameter";
 
 //-----------------------------------------------------------------------------
 
@@ -83,16 +86,20 @@ SVolumeRender::SVolumeRender() throw() :
     m_satShells              (3),
     m_satShellRadius         (3),
     m_satConeAngle           (0.1f),
-    m_satConeSamples         (50)
+    m_satConeSamples         (50),
+    m_aoFactor               (1.f),
+    m_colorBleedingFactor    (1.f)
 {
     this->installTFSlots(this);
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
     newSlot(s_UPDATE_SAMPLING_SLOT, &SVolumeRender::updateSampling, this);
+    newSlot(s_UPDATE_AO_FACTOR_SLOT, &SVolumeRender::updateAOFactor, this);
+    newSlot(s_UPDATE_COLOR_BLEEDING_FACTOR_SLOT, &SVolumeRender::updateColorBleedingFactor, this);
     newSlot(s_UPDATE_SAT_SIZE_RATIO_SLOT, &SVolumeRender::updateSatSizeRatio, this);
-    newSlot(s_UPDATE_SAT_SHELLS_NUMBER_SLOT, &SVolumeRender::updateSatShellsNumber, this);
+    newSlot(s_UPDATE_SAT_SHELLS_SLOT, &SVolumeRender::updateSatShellsNumber, this);
     newSlot(s_UPDATE_SAT_SHELL_RADIUS_SLOT, &SVolumeRender::updateSatShellRadius, this);
     newSlot(s_UPDATE_SAT_CONE_ANGLE_SLOT, &SVolumeRender::updateSatConeAngle, this);
-    newSlot(s_UPDATE_SAT_CONE_SAMPLES_NUMBER_SLOT, &SVolumeRender::updateSatConeSamples, this);
+    newSlot(s_UPDATE_SAT_CONE_SAMPLES_SLOT, &SVolumeRender::updateSatConeSamples, this);
     newSlot(s_TOGGLE_PREINTEGRATION_SLOT, &SVolumeRender::togglePreintegration, this);
     newSlot(s_TOGGLE_AMBIENT_OCCLUSION_SLOT, &SVolumeRender::toggleAmbientOcclusion, this);
     newSlot(s_TOGGLE_COLOR_BLEEDING_SLOT, &SVolumeRender::toggleColorBleeding, this);
@@ -103,6 +110,7 @@ SVolumeRender::SVolumeRender() throw() :
     newSlot(s_SET_MODE3D_SLOT, &SVolumeRender::setStereoMode, this);
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SVolumeRender::setBoolParameter, this);
     newSlot(s_SET_INT_PARAMETER_SLOT, &SVolumeRender::setIntParameter, this);
+    newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SVolumeRender::setDoubleParameter, this);
 
     m_transform     = ::Ogre::Matrix4::IDENTITY;
     m_renderingMode = VR_MODE_RAY_TRACING;
@@ -163,6 +171,18 @@ void SVolumeRender::doConfigure() throw ( ::fwTools::Failed )
             {
                 std::string coneSamplesString = m_configuration->getAttributeValue("satConeSamples");
                 m_satConeSamples = std::stoi(coneSamplesString);
+            }
+
+            if(m_configuration->hasAttribute("aoFactor"))
+            {
+                std::string aoFactorString = m_configuration->getAttributeValue("aoFactor");
+                m_aoFactor = std::stod(aoFactorString);
+            }
+
+            if(m_configuration->hasAttribute("colorBleedingFactor"))
+            {
+                std::string colorBleedingFactorString = m_configuration->getAttributeValue("colorBleedingFactor");
+                m_colorBleedingFactor = std::stod(colorBleedingFactorString);
             }
 
             if(m_configuration->hasAttribute("ao"))
@@ -435,6 +455,42 @@ void SVolumeRender::updateSampling(int nbSamples)
     }
 
     this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::updateAOFactor(double aoFactor)
+{
+    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
+    {
+        m_aoFactor = aoFactor;
+
+        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+
+        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+
+        rayCastVolumeRenderer->setAOFactor(m_aoFactor);
+
+        this->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::updateColorBleedingFactor(double colorBleedingFactor)
+{
+    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
+    {
+        m_colorBleedingFactor = colorBleedingFactor;
+
+        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+
+        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+
+        rayCastVolumeRenderer->setColorBleedingFactor(m_colorBleedingFactor);
+
+        this->requestRender();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -761,6 +817,20 @@ void SVolumeRender::setIntParameter(int val, std::string key)
     else if(key == "focalLength")
     {
         this->setFocalDistance(val);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::setDoubleParameter(double val, std::string key)
+{
+    if(key == "aoFactor")
+    {
+        this->updateAOFactor(val);
+    }
+    else if(key == "colorBleedingFactor")
+    {
+        this->updateColorBleedingFactor(val);
     }
 }
 

@@ -178,19 +178,23 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    ::fwRenderOgre::Layer::StereoModeType mode3D,
                                                    bool ambientOcclusion,
                                                    bool colorBleeding,
-                                                   bool shadows) :
+                                                   bool shadows,
+                                                   double aoFactor,
+                                                   double colorBleedingFactor) :
     IVolumeRenderer(parentId, layer->getSceneManager(), parentNode, imageTexture, gpuTF, preintegrationTable),
-    m_entryPointGeometry(nullptr),
-    m_imageSize         (::fwData::Image::SizeType({ 1, 1, 1 })),
-    m_mode3D            (mode3D),
-    m_ambientOcclusion  (ambientOcclusion),
-    m_colorBleeding     (colorBleeding),
-    m_shadows           (shadows),
-    m_currentMtlName    ("RayTracedVolume"),
-    m_illumVolume       (nullptr),
-    m_cameraListener    (nullptr),
-    m_compositorListener(nullptr),
-    m_layer             (layer)
+    m_entryPointGeometry (nullptr),
+    m_imageSize          (::fwData::Image::SizeType({ 1, 1, 1 })),
+    m_mode3D             (mode3D),
+    m_ambientOcclusion   (ambientOcclusion),
+    m_colorBleeding      (colorBleeding),
+    m_shadows            (shadows),
+    m_aoFactor           (aoFactor),
+    m_colorBleedingFactor(colorBleedingFactor),
+    m_currentMtlName     ("RayTracedVolume"),
+    m_illumVolume        (nullptr),
+    m_cameraListener     (nullptr),
+    m_compositorListener (nullptr),
+    m_layer              (layer)
 {
     m_gridSize   = { 2, 2, 2 };
     m_bricksSize = { 8, 8, 8 };
@@ -426,6 +430,30 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
     computeSampleDistance(getCameraPlane());
 
     this->retrieveCurrentProgramParams()->setNamedConstant("u_sampleDistance", m_sampleDistance);
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::setAOFactor(double aoFactor)
+{
+    m_aoFactor = aoFactor;
+
+    ::Ogre::Real cbFactor = static_cast< ::Ogre::Real>(m_colorBleedingFactor);
+    ::Ogre::Vector4 volIllumFactor(cbFactor, cbFactor, cbFactor, static_cast< ::Ogre::Real>(m_aoFactor));
+
+    this->retrieveCurrentProgramParams()->setNamedConstant("u_volIllumFactor", volIllumFactor);
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::setColorBleedingFactor(double colorBleedingFactor)
+{
+    m_colorBleedingFactor = colorBleedingFactor;
+
+    ::Ogre::Real cbFactor = static_cast< ::Ogre::Real>(m_colorBleedingFactor);
+    ::Ogre::Vector4 volIllumFactor(cbFactor, cbFactor, cbFactor, static_cast< ::Ogre::Real>(m_aoFactor));
+
+    this->retrieveCurrentProgramParams()->setNamedConstant("u_volIllumFactor", volIllumFactor);
 }
 
 //-----------------------------------------------------------------------------

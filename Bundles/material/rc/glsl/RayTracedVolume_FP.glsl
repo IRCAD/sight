@@ -5,6 +5,7 @@ uniform sampler2D u_tfTexture;
 
 #if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 uniform sampler3D u_illuminationVolume;
+uniform vec4 u_volIllumFactor;
 #endif // AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 
 #ifdef MODE3D
@@ -180,12 +181,12 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 
 #if AMBIENT_OCCLUSION || SHADOWS
             // Apply ambient occlusion + shadows
-            tfColour.rgb *= volIllum.a;
+            tfColour.rgb *= volIllum.a * u_volIllumFactor.a;
 #endif // AMBIENT_OCCLUSION || SHADOWS
 
 #ifdef COLOR_BLEEDING
             // Apply color bleeding
-            tfColour.rgb *= volIllum.rgb;
+            tfColour.rgb *= volIllum.rgb * u_volIllumFactor.rgb;
 #endif // COLOR_BLEEDING
 
             composite(result, tfColour);

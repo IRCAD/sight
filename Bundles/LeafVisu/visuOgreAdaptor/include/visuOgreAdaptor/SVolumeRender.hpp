@@ -37,12 +37,14 @@ namespace visuOgreAdaptor
  * @section Slots Slots
  * - \b newImage(): Called when a new image is loaded.
  * - \b updateSampling(int): Called when the sampling is changed and updates the volume renderer accordingly.
+ * - \b updateAOFactor(double) : Called when the ambient occlusion factor is changed and computes the SAT.
+ * - \b updateColorBleedingFactor(double) : Called when the color bleeding factor is changed and computes the SAT.
  * - \b updateSatSizeRatio(int) : Called when the SAT ratio is changed and computes it again with the new corresponding
  *      size.
- * - \b updateSatShellsNumber(int) : Called when the number of SAT shells is changed and compute the SAT again.
- * - \b updateSatShellRadius(int) : Called when the SAT shell radius is changed and computes the SAT again.
- * - \b updateSatConeAngle(int) : Called when the SAT cone angle is changed and computes the SAT again.
- * - \b updateSatConeSamples(int) : Called when the SAT cone samples number is changed and computes the SAT again.
+ * - \b updateSatShellsNumber(int) : Called when the number of SAT shells is changed and compute the SAT.
+ * - \b updateSatShellRadius(int) : Called when the SAT shell radius is changed and computes the SAT.
+ * - \b updateSatConeAngle(int) : Called when the SAT cone angle is changed and computes the SAT.
+ * - \b updateSatConeSamples(int) : Called when the SAT cone samples number is changed and computes the SAT.
  * - \b togglePreintegration(bool): Toggle pre-integration.
  * - \b toggleAmbientOcclusion(bool): Toggle ambient occlusion.
  * - \b toggleColorBleeding(bool): Toggle color bleeding.
@@ -53,6 +55,7 @@ namespace visuOgreAdaptor
  * - \b setStereoMode(int): Called to modify 3D stereoscopic 3D mode.
  * - \b setBoolParameter(bool, string): Calls a bool parameter slot according to the given key.
  * - \b setIntParameter(int, string): Calls an int parameter slot according to the given key.
+ * - \b setDoubleParameter(double, string): Calls a double parameter slot according to the given key.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -60,6 +63,7 @@ namespace visuOgreAdaptor
          <config renderer="default"
                  preintegration="yes" mode="slice" ao="no" colorBleeding="no" shadows="no"
                  satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
+                 aoFactor="0.5" colorBleedingFactor="0.5"
                  selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
     </adaptor>
    @endcode
@@ -81,6 +85,8 @@ namespace visuOgreAdaptor
  *      SAT.
  * - \b satConeAngle (optional, float, default=0.1): angle used to define the soft shadows cones.
  * - \b satConeSamples (optional, float, default=50): number of samples along the soft shadows cones.
+ * - \b aoFactor (optional, double, default=1.0): factor used to weight the ambient occlusion.
+ * - \b colorBleedingFactor (optional, double, default=1.0): factor used to weight the color bleeding.
  */
 class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
                                                 public ::fwRenderOgre::ITransformable,
@@ -96,11 +102,13 @@ public:
      */
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEW_IMAGE_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAMPLING_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_AO_FACTOR_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_COLOR_BLEEDING_FACTOR_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_SIZE_RATIO_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_SHELLS_NUMBER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_SHELLS_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_SHELL_RADIUS_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_CONE_ANGLE_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_CONE_SAMPLES_NUMBER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAT_CONE_SAMPLES_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_PREINTEGRATION_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_AMBIENT_OCCLUSION_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_COLOR_BLEEDING_SLOT;
@@ -111,6 +119,7 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_MODE3D_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
     /** @} */
 
     /// Constructor.
@@ -154,6 +163,8 @@ private:
 
     void newImage();
     void updateSampling(int nbSamples);
+    void updateAOFactor(double aoFactor);
+    void updateColorBleedingFactor(double colorBleedingFactor);
     void updateSatSizeRatio(int sizeRatio);
     void updateSatShellsNumber(int shellsNumber);
     void updateSatShellRadius(int shellRadius);
@@ -169,6 +180,7 @@ private:
     void setStereoMode(::fwRenderOgre::Layer::StereoModeType mode);
     void setBoolParameter(bool val, std::string key);
     void setIntParameter(int val, std::string key);
+    void setDoubleParameter(double val, std::string key);
 
     /// Creates widgets and connects its slots to interactor signals.
     void initWidgets();
@@ -242,6 +254,12 @@ private:
 
     /// Number of samples along the soft shadows cones.
     int m_satConeSamples;
+
+    /// Factor parameter used to weight the ambient occlusion.
+    double m_aoFactor;
+
+    /// Factor parameter used to weight the color bleeding.
+    double m_colorBleedingFactor;
 
     /// Handle connections between the layer and the volume renderer.
     ::fwCom::helper::SigSlotConnection m_volumeConnection;
