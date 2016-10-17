@@ -41,13 +41,11 @@
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
-                    <view proportion="0" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${SETTINGS_WID_PARENT}" />
-                <view sid="samplingSlider" start="yes" />
-                <view sid="focalLengthSlider" start="yes" />
+                <view sid="volumeRenderingEditor" start="yes" />
             </registry>
         </service>
 
@@ -74,28 +72,11 @@
             <config layer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" />
         </service>
 
-        <service uid="samplingSlider" type="::guiQt::editor::SSlider" autoConnect="yes">
-            <inout key="sampling" uid="samplingSliderValue" />
-            <defaultValue>512</defaultValue>
-            <value>512</value>
-            <text>Samples</text>
-            <range>
-                <min>256</min>
-                <max>512</max>
-            </range>
-        </service>
-
-        <!-- The value normally goes from 0. to 1. but we have to use an integer slider since float type is not supported yet -->
-        <service uid="focalLengthSlider" type="::guiQt::editor::SSlider" autoConnect="no">
-            <inout key="focalLength" uid="focalLengthIntVal" />
-            <defaultValue>50</defaultValue>
-            <value>0</value>
-            <text>Focal length</text>
-            <stepSize>1</stepSize>
-            <range>
-                <min>0</min>
-                <max>100</max>
-            </range>
+        <service uid="volumeRenderingEditor" type="::guiQt::editor::SParameters" autoConnect="no">
+            <parameters>
+                <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="512" />
+                <param type="int" name="Focal length" key="focalLength" defaultValue="50" min="0" max="100" />
+            </parameters>
         </service>
 
         <service uid="toggleVrWidgetsBtn" type="::guiQt::editor::SSignalButton" autoConnect="no">
@@ -114,13 +95,8 @@
         </service>
 
         <connect>
-            <signal>samplingSlider/valueChanged</signal>
-            <slot>${VRAdaptor}/updateSampling</slot>
-        </connect>
-
-        <connect>
-            <signal>focalLengthSlider/valueChanged</signal>
-            <slot>${VRAdaptor}/setFocalDistance</slot>
+            <signal>volumeRenderingEditor/intChanged</signal>
+            <slot>${VRAdaptor}/setIntParameter</slot>
         </connect>
 
         <start uid="OgreVolumeRendering" />
