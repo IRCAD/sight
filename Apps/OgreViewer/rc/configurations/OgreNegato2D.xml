@@ -22,7 +22,7 @@
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <view sid="negato2DScene" start="yes" />
-                <view sid="negato2DInteractor" start="yes" />
+                <view sid="sliderIndexEditor2D" start="yes" />
             </registry>
         </service>
 
@@ -51,31 +51,10 @@
 
         <!-- End Generic Scene ***************************************** -->
 
-        <service uid="negato2DInteractor" type="::gui::view::SDefaultView" >
-            <gui>
-                <layout type="::fwGui::LineLayoutManager" >
-                    <orientation value="vertical" />
-                    <view proportion="1" />
-                    <view proportion="1" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="sliderIndexEditor2D" start="yes" />
-                <view sid="windowLevel2D" start="yes" />
-            </registry>
-        </service>
-
         <!-- Slice editor service -->
         <service uid="sliderIndexEditor2D" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${imageUID}" />
             <sliceIndex>Sagittal</sliceIndex>
-        </service>
-
-        <!-- Negato windowing service -->
-        <service uid="windowLevel2D" type="::uiImage::WindowLevel">
-            <inout key="image" uid="${imageUID}" autoConnect="yes" />
-            <inout key="TFSelections" uid="${TFSelections}" />
-            <config selectedTFKey="SelectedTF" />
         </service>
 
         <start uid="OgreNegato2D" />

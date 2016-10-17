@@ -21,14 +21,12 @@
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
-                    <view proportion="0" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <view sid="volumeRenderingScene" start="yes" />
                 <view sid="volumeRenderingEditorView" start="yes" />
-                <view sid="windowLevelVR" start="yes" />
             </registry>
         </service>
 
@@ -65,13 +63,6 @@
             <in key="image" uid="${imageUID}" autoConnect="yes" />
             <inout key="TF" uid="${TFSelections}" />
             <config layer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" />
-        </service>
-
-        <!-- Negato windowing service -->
-        <service uid="windowLevelVR" type="::uiImage::WindowLevel" autoConnect="yes">
-            <inout key="image" uid="${imageUID}" autoConnect="yes"/>
-            <inout key="TFSelections" uid="${TFSelections}" />
-            <config selectedTFKey="SelectedTF" />
         </service>
 
         <service uid="vrBasicEditor" type="::guiQt::editor::SParameters" autoConnect="no">

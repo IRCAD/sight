@@ -122,12 +122,16 @@
                         <view proportion="0" minHeight="30" />
                         <view proportion="0" minHeight="100" />
                         <view proportion="1" />
+                        <view proportion="0" />
+                        <view proportion="0" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="tfm" start="yes" />
                     <view sid="Scene2D_Shutter" start="no" />
                     <view sid="Scene2D" start="no" />
+                    <view sid="windowLevel" start="yes" />
+                    <view sid="transparencyEditor" start="yes" />
                 </registry>
             </service>
 
@@ -348,6 +352,16 @@
                         <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
                     </adaptor>
                 </scene>
+            </service>
+
+            <service uid="windowLevel" type="::uiImage::WindowLevel" autoConnect="yes">
+                <inout key="image" uid="imageUID" autoConnect="yes" />
+                <inout key="TFSelections" uid="TFSelections" />
+                <config selectedTFKey="SelectedTF" />
+            </service>
+
+            <service uid="transparencyEditor" type="::uiImage::ImageTransparency" autoConnect="yes" >
+                <inout key="image" uid="imageUID" />
             </service>
 
             <service uid="readerPathMeshFile" type="::uiIO::editor::SIOSelector" >

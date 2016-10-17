@@ -74,8 +74,6 @@
             </gui>
             <registry>
                 <view sid="sliderIndexEditor3D" start="yes" />
-                <view sid="windowLevel3D" start="yes" />
-                <view sid="transparencyEditor" start="yes" />
             </registry>
         </service>
 
@@ -163,16 +161,6 @@
         <service uid="sliderIndexEditor3D" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${imageUID}" />
             <sliceIndex>Sagittal</sliceIndex>
-        </service>
-
-        <service uid="windowLevel3D" type="::uiImage::WindowLevel" autoConnect="yes">
-            <inout key="image" uid="${imageUID}" autoConnect="yes" />
-            <inout key="TFSelections" uid="${TFSelections}" />
-            <config selectedTFKey="SelectedTF" />
-        </service>
-
-        <service uid="transparencyEditor" type="::uiImage::ImageTransparency" autoConnect="yes" >
-            <inout key="image" uid="${imageUID}" />
         </service>
 
        <service uid="frameGrabber" type="::videoQt::SFrameGrabber" >
