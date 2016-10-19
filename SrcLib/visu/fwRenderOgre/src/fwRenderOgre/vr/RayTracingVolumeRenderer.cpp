@@ -4,10 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwRenderOgre/vr/RayTracingVolumeRenderer.hpp"
+
 #include "fwRenderOgre/SRender.hpp"
 #include "fwRenderOgre/Utils.hpp"
 #include "fwRenderOgre/helper/Shading.hpp"
-#include "fwRenderOgre/vr/RayTracingVolumeRenderer.hpp"
 
 #include <fwCore/Profiling.hpp>
 
@@ -192,6 +193,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_colorBleedingFactor(colorBleedingFactor),
     m_currentMtlName     ("RayTracedVolume"),
     m_illumVolume        (nullptr),
+    m_focalLength        (0.f),
     m_cameraListener     (nullptr),
     m_compositorListener (nullptr),
     m_layer              (layer)
