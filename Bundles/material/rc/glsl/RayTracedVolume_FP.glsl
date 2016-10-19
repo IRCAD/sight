@@ -31,7 +31,10 @@ uniform mat4 u_invWorldViewProj;
 #endif // MODE3D
 
 uniform vec3 u_lightDirs[1];
-//uniform vec3 u_diffuse;
+uniform vec3 u_cameraPos;
+uniform float u_shininess;
+uniform vec3 u_specular;
+uniform vec3 u_diffuse;
 
 uniform float u_sampleDistance;
 
@@ -50,6 +53,28 @@ out vec4 fragColor;
 
 //-----------------------------------------------------------------------------
 vec4 sampleTransferFunction(float intensity);
+
+//-----------------------------------------------------------------------------
+
+#define NUM_LIGHTS 1
+
+vec3 lighting(vec3 _normal, vec3 _position, vec3 _diffuse)
+{
+    vec3 vecToCam = normalize(_position - u_cameraPos);
+
+    float fLitDiffuse = 0;
+    float fLitSpecular = 0;
+
+    for(int i = 0; i < NUM_LIGHTS; ++i)
+    {
+        fLitDiffuse += abs(dot( _normal, normalize(u_lightDirs[i]) ));
+
+        vec3 r = reflect(normalize(u_lightDirs[i]), _normal);
+        fLitSpecular += pow( clamp(dot( vecToCam, r ), 0, 1), u_shininess);
+    }
+
+    return vec3(u_diffuse * _diffuse * fLitDiffuse + u_specular.rgb * fLitSpecular);
+}
 
 //-----------------------------------------------------------------------------
 
@@ -167,7 +192,7 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
         {
             vec3 N = gradientNormal(rayPos);
 
-            tfColour.rgb = tfColour.rgb * abs(dot(N, u_lightDirs[0]));
+            tfColour.rgb = lighting(N, rayPos, tfColour.rgb);
 
 #ifndef PREINTEGRATION
             // Adjust opacity to sample distance.

@@ -7,7 +7,6 @@
 #include "visuOgreAdaptor/SVolumeRender.hpp"
 
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
@@ -22,21 +21,8 @@
 #include <fwServices/macros.hpp>
 
 #include <OGRE/OgreCamera.h>
-#include <OGRE/OgreGpuProgramParams.h>
-#include <OGRE/OgreManualObject.h>
-#include <OGRE/OgreMaterial.h>
-#include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreSceneNode.h>
-#include <OGRE/OgreTechnique.h>
 #include <OGRE/OgreTextureManager.h>
-
-#include <boost/algorithm/clamp.hpp>
-#include <boost/lexical_cast.hpp>
-
-#include <algorithm>
-#include <numeric>
-#include <sstream>
-#include <string>
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVolumeRender, ::fwData::Image);
 

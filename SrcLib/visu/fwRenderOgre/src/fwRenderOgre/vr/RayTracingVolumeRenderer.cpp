@@ -20,6 +20,7 @@
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreHardwareVertexBuffer.h>
 #include <OGRE/OgreLight.h>
+#include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMesh.h>
 #include <OGRE/OgreMeshManager.h>
 #include <OGRE/OgreRenderTarget.h>
@@ -191,7 +192,6 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_shadows            (shadows),
     m_aoFactor           (aoFactor),
     m_colorBleedingFactor(colorBleedingFactor),
-    m_currentMtlName     ("RayTracedVolume"),
     m_illumVolume        (nullptr),
     m_focalLength        (0.f),
     m_cameraListener     (nullptr),
@@ -291,6 +291,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     }
 
     initEntryPoints();
+
+    updateMatNames();
 
     setSampling(m_nbSlices);
 }
@@ -687,8 +689,6 @@ void RayTracingVolumeRenderer::initEntryPoints()
             "RayEntryPoints");
 
         m_cameraListener = new CameraListener(this);
-        m_cameraListener->setCurrentMtlName(m_currentMtlName);
-
         m_camera->addListener(m_cameraListener);
 
         m_r2vbSource->getSubEntity(0)->getRenderOperation(m_gridRenderOp);
@@ -872,10 +872,17 @@ void RayTracingVolumeRenderer::updateMatNames()
     volIllumMtl += m_ambientOcclusion || m_colorBleeding ? "_AO" : "";
     volIllumMtl += m_shadows ? "_Shadows" : "";
 
-    if(m_cameraListener)
-    {
-        m_cameraListener->setCurrentMtlName(volIllumMtl);
-    }
+    SLM_ASSERT("Camera listener not instantiated", m_cameraListener);
+    m_cameraListener->setCurrentMtlName(volIllumMtl);
+
+    // Set colors
+    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
+    ::Ogre::ColourValue diffuse(1.2f, 1.2f, 1.2f, 1.f);
+    material->setDiffuse(diffuse);
+
+    ::Ogre::ColourValue specular(2.5f, 2.5f, 2.5f, 1.f);
+    material->setSpecular( specular );
+    material->setShininess( 10 );
 
     // Set all parameters
     if(ao)

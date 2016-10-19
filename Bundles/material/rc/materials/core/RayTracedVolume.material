@@ -23,6 +23,10 @@ fragment_program RayTracedVolume_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -45,6 +49,10 @@ fragment_program RayTracedVolume_AmbientOcclusion_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -69,6 +77,10 @@ fragment_program RayTracedVolume_ColorBleeding_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -93,6 +105,10 @@ fragment_program RayTracedVolume_Shadows_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -117,6 +133,10 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -141,6 +161,10 @@ fragment_program RayTracedVolume_AmbientOcclusion_Shadows_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -165,6 +189,10 @@ fragment_program RayTracedVolume_ColorBleeding_Shadows_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -189,6 +217,10 @@ fragment_program RayTracedVolume_VolumeIllumination_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -212,6 +244,10 @@ fragment_program VR/RayTracedVolume3D5_FP glsl
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
         param_named u_sampleDistance float 0.2
         param_named u_lobeOffset float 1.
         param_named u_image int 0
@@ -238,6 +274,10 @@ fragment_program VR/RayTracedVolume3D8_FP glsl
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
         param_named u_sampleDistance float 0.2
         param_named u_lobeOffset float 1.
         param_named u_image int 0
@@ -282,6 +322,10 @@ fragment_program RayTracedVolume_PreIntegrated_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -307,6 +351,10 @@ fragment_program RayTracedVolume_PreIntegrated_AmbientOcclusion_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -334,6 +382,10 @@ fragment_program RayTracedVolume_PreIntegrated_ColorBleeding_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -361,6 +413,10 @@ fragment_program RayTracedVolume_PreIntegrated_Shadows_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -388,6 +444,10 @@ fragment_program RayTracedVolume_PreIntegrated_AmbientOcclusion_ColorBleeding_FP
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -415,6 +475,10 @@ fragment_program RayTracedVolume_PreIntegrated_AmbientOcclusion_Shadows_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -442,6 +506,10 @@ fragment_program RayTracedVolume_PreIntegrated_ColorBleeding_Shadows_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -469,6 +537,10 @@ fragment_program RayTracedVolume_PreIntegrated_VolumeIllumination_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_specular surface_specular_colour
+        param_named_auto u_shininess surface_shininess
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
