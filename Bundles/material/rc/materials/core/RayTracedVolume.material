@@ -17,7 +17,7 @@ fragment_program RayTracedVolume_FP glsl
     attach TransferFunction_FP
     default_params
     {
-        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_lightDirs light_position_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
@@ -39,7 +39,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_FP glsl
     preprocessor_defines AMBIENT_OCCLUSION=1
     default_params
     {
-        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_lightDirs light_position_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
@@ -63,7 +63,7 @@ fragment_program RayTracedVolume_ColorBleeding_FP glsl
     preprocessor_defines COLOR_BLEEDING=1
     default_params
     {
-        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_lightDirs light_position_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
@@ -87,7 +87,7 @@ fragment_program RayTracedVolume_Shadows_FP glsl
     preprocessor_defines SHADOWS=1
     default_params
     {
-        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_lightDirs light_position_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
@@ -111,7 +111,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_FP glsl
     preprocessor_defines AMBIENT_OCCLUSION=1,COLOR_BLEEDING=1
     default_params
     {
-        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_lightDirs light_position_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
@@ -135,7 +135,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_Shadows_FP glsl
     preprocessor_defines AMBIENT_OCCLUSION=1,SHADOWS=1
     default_params
     {
-        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_lightDirs light_position_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
@@ -159,7 +159,7 @@ fragment_program RayTracedVolume_ColorBleeding_Shadows_FP glsl
     preprocessor_defines COLOR_BLEEDING=1,SHADOWS=1
     default_params
     {
-        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_lightDirs light_position_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
@@ -183,7 +183,7 @@ fragment_program RayTracedVolume_VolumeIllumination_FP glsl
     preprocessor_defines AMBIENT_OCCLUSION=1,COLOR_BLEEDING=1,SHADOWS=1
     default_params
     {
-        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_lightDirs light_position_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
@@ -276,7 +276,7 @@ fragment_program RayTracedVolume_PreIntegrated_FP glsl
 
     default_params
     {
-        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_lightDirs light_position_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
@@ -301,7 +301,7 @@ fragment_program RayTracedVolume_PreIntegrated_AmbientOcclusion_FP glsl
 
     default_params
     {
-        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_lightDirs light_position_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
@@ -328,7 +328,7 @@ fragment_program RayTracedVolume_PreIntegrated_ColorBleeding_FP glsl
 
     default_params
     {
-        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_lightDirs light_position_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
@@ -355,7 +355,7 @@ fragment_program RayTracedVolume_PreIntegrated_Shadows_FP glsl
 
     default_params
     {
-        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_lightDirs light_position_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
@@ -382,7 +382,7 @@ fragment_program RayTracedVolume_PreIntegrated_AmbientOcclusion_ColorBleeding_FP
 
     default_params
     {
-        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_lightDirs light_position_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
@@ -409,7 +409,7 @@ fragment_program RayTracedVolume_PreIntegrated_AmbientOcclusion_Shadows_FP glsl
 
     default_params
     {
-        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_lightDirs light_position_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
@@ -436,7 +436,7 @@ fragment_program RayTracedVolume_PreIntegrated_ColorBleeding_Shadows_FP glsl
 
     default_params
     {
-        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_lightDirs light_position_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
@@ -463,7 +463,7 @@ fragment_program RayTracedVolume_PreIntegrated_VolumeIllumination_FP glsl
 
     default_params
     {
-        param_named_auto u_lightDirs light_direction_object_space_array 1
+        param_named_auto u_lightDirs light_position_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
