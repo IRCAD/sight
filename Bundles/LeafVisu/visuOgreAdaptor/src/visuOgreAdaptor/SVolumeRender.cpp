@@ -499,9 +499,7 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
 {
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
-        sizeRatio *= 25;
-
-        m_satSizeRatio = static_cast<float>(sizeRatio) / 100;
+        m_satSizeRatio = static_cast<float>(sizeRatio) * .25;
         m_illum->updateSatFromRatio(m_satSizeRatio);
 
         this->updateVolumeIllumination();
@@ -637,6 +635,13 @@ void SVolumeRender::toggleAmbientOcclusion(bool ambientOcclusion)
 
         rayCastVolumeRenderer->setAmbientOcclusion(m_ambientOcclusion);
 
+        this->updateSampling(m_nbSlices);
+        this->updateSatSizeRatio(m_satSizeRatio * 4);
+        this->updateSatShellsNumber(m_satShells);
+        this->updateSatShellRadius(m_satShellRadius);
+        this->updateSatConeAngle(m_satConeAngle * 100);
+        this->updateSatConeSamples(m_satConeSamples);
+
         if(m_preIntegratedRendering)
         {
             m_volumeRenderer->imageUpdate(this->getImage(), this->getTransferFunction());
@@ -671,6 +676,13 @@ void SVolumeRender::toggleColorBleeding(bool colorBleeding)
 
         rayCastVolumeRenderer->setColorBleeding(m_colorBleeding);
 
+        this->updateSampling(m_nbSlices);
+        this->updateSatSizeRatio(m_satSizeRatio * 4);
+        this->updateSatShellsNumber(m_satShells);
+        this->updateSatShellRadius(m_satShellRadius);
+        this->updateSatConeAngle(m_satConeAngle * 100);
+        this->updateSatConeSamples(m_satConeSamples);
+
         if(m_preIntegratedRendering)
         {
             m_volumeRenderer->imageUpdate(this->getImage(), this->getTransferFunction());
@@ -704,6 +716,13 @@ void SVolumeRender::toggleShadows(bool shadows)
         }
 
         rayCastVolumeRenderer->setShadows(m_shadows);
+
+        this->updateSampling(m_nbSlices);
+        this->updateSatSizeRatio(m_satSizeRatio * 4);
+        this->updateSatShellsNumber(m_satShells);
+        this->updateSatShellRadius(m_satShellRadius);
+        this->updateSatConeAngle(m_satConeAngle * 100);
+        this->updateSatConeSamples(m_satConeSamples);
 
         if(m_preIntegratedRendering)
         {

@@ -809,6 +809,7 @@ Ogre::Matrix4 RayTracingVolumeRenderer::frustumShearTransform(float angle) const
 
 void RayTracingVolumeRenderer::updateMatNames()
 {
+    bool ao = false;
     m_currentMtlName = "RayTracedVolume";
 
     if(m_preIntegratedRendering)
@@ -818,6 +819,7 @@ void RayTracingVolumeRenderer::updateMatNames()
 
     if(m_ambientOcclusion)
     {
+        ao = true;
         if(m_colorBleeding)
         {
             if (m_shadows)
@@ -845,6 +847,7 @@ void RayTracingVolumeRenderer::updateMatNames()
     {
         if(m_colorBleeding)
         {
+            ao = true;
             if(m_shadows)
             {
                 m_currentMtlName += "_ColorBleeding_Shadows";
@@ -858,6 +861,7 @@ void RayTracingVolumeRenderer::updateMatNames()
         {
             if(m_shadows)
             {
+                ao                = true;
                 m_currentMtlName += "_Shadows";
             }
         }
@@ -871,6 +875,13 @@ void RayTracingVolumeRenderer::updateMatNames()
     if(m_cameraListener)
     {
         m_cameraListener->setCurrentMtlName(volIllumMtl);
+    }
+
+    // Set all parameters
+    if(ao)
+    {
+        this->setAOFactor(m_aoFactor);
+        this->setColorBleedingFactor(m_colorBleedingFactor);
     }
 }
 
