@@ -136,7 +136,7 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
             const int frameId = layer->getRenderService()->getInteractorManager()->getFrameId();
             if(frameId != m_frameId)
             {
-                if(m_renderer->m_illumVolume)
+                if(m_renderer->m_illumVolume && m_renderer->m_shadows)
                 {
                     // Set light directions in shader.
                     ::Ogre::LightList closestLights =
@@ -362,6 +362,7 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
         if(!m_gridTexture.isNull())
         {
             ::Ogre::TextureManager::getSingleton().remove(m_gridTexture->getHandle());
+            m_gridTexture.setNull();
         }
 
         this->createGridTexture();
