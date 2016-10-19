@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/SRender.hpp"
+
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/Utils.hpp>
 #include <fwRenderOgre/registry/Adaptor.hpp>
@@ -108,16 +109,16 @@ void SRender::configuring() throw(fwTools::Failed)
 
             m_fullscreen = (fullscreen == "yes");
         }
-    }
 
-    std::string renderMode = m_configuration->getAttributeValue("renderMode");
-    if (renderMode == "auto")
-    {
-        m_renderOnDemand = true;
-    }
-    else if (renderMode == "always")
-    {
-        m_renderOnDemand = false;
+        std::string renderMode = sceneConfiguration->getAttributeValue("renderMode");
+        if (renderMode == "auto")
+        {
+            m_renderOnDemand = true;
+        }
+        else if (renderMode == "always")
+        {
+            m_renderOnDemand = false;
+        }
     }
 
     auto adaptorConfigs = m_configuration->findAllConfigurationElement ("adaptor");
