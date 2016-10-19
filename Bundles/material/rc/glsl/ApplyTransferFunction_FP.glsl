@@ -15,5 +15,7 @@ vec4 sampleTransferFunction(float intensity);
 
 void main(void)
 {
-    fragColor = sampleTransferFunction(texture(u_image, vec3(uv, u_sliceDepth)).r);
+    vec4 sampledColor = sampleTransferFunction(texture(u_image, vec3(uv, u_sliceDepth)).r);
+    sampledColor.a = -log(1-min(sampledColor.a, 0.999));
+    fragColor = sampledColor;
 }

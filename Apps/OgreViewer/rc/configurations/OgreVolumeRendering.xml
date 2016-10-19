@@ -68,7 +68,7 @@
         <service uid="vrBasicEditor" type="::guiQt::editor::SParameters" autoConnect="no">
             <parameters>
                 <param type="bool" name="Widgets" key="widgets" defaultValue="false" />
-                <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="4096" />
+                <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="1024" />
                 <param type="int" name="Focal length" key="focalLength" defaultValue="50" min="0" max="100" />
                 <param type="bool" name="Pre-integration" key="preIntegration" defaultValue="false" />
                 <param type="bool" name="Ambient occlusion" key="ambientOcclusion" defaultValue="false" />
@@ -81,8 +81,8 @@
                 <param type="double" name="AO factor" key="aoFactor" defaultValue="1.0" min="0.1" max="10.0" />
                 <param type="double" name="Color bleeding factor" key="colorBleedingFactor" defaultValue="1.0" min="0.1" max="10.0" />
                 <param type="int" name="SAT size ratio" key="satSizeRatio" defaultValue="1" min="1" max="4" />
-                <param type="int" name="AO shells number" key="satShellsNumber" defaultValue="3" min="1" max="10" />
-                <param type="int" name="AO shell radius" key="satShellRadius" defaultValue="3" min="1" max="10" />
+                <param type="int" name="AO shells number" key="satShellsNumber" defaultValue="4" min="1" max="10" />
+                <param type="int" name="AO shell radius" key="satShellRadius" defaultValue="4" min="1" max="10" />
                 <param type="bool" name="Soft shadows" key="shadows" defaultValue="false" />
                 <param type="int" name="Shadow cone angle" key="satConeAngle" defaultValue="10" min="10" max="100" />
                 <param type="int" name="Shadow cone samples" key="satConeSamples" defaultValue="50" min="10" max="100" />

@@ -221,6 +221,4 @@ void main(void)
     float shadowFactor = coneShadowQuery(voxelCoords);
     illuminationVal.a += shadowFactor;
 #endif // SHADOWS
-
-    illuminationVal = exp(-illuminationVal);
 }

@@ -139,6 +139,7 @@ void getRayEntryExitPoints(out vec2 rayEntryPoints[3], out mat4 viewpoints[3])
 
 vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
 {
+    // TODO: Simplify this -> uniforms
     vec3 screenPos = vec3(gl_FragCoord.xy / vec2(u_viewportWidth, u_viewportHeight), depth);
     screenPos -= 0.5;
     screenPos *= 2.0;
@@ -154,10 +155,11 @@ vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
 
 //-----------------------------------------------------------------------------
 
-void composite(inout vec4 result, in vec4 colour)
+void composite(inout vec4 dest, in vec4 src)
 {
-    result.rgb = result.rgb + (1 - result.a) * colour.a * colour.rgb;
-    result.a   = result.a   + (1 - result.a) * colour.a;
+    // Front-to-back blending
+    dest.rgb = dest.rgb + (1 - dest.a) * src.a * src.rgb;
+    dest.a   = dest.a   + (1 - dest.a) * src.a;
 }
 
 //-----------------------------------------------------------------------------
@@ -206,12 +208,12 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 
 #if AMBIENT_OCCLUSION || SHADOWS
             // Apply ambient occlusion + shadows
-            tfColour.rgb *= volIllum.a * u_volIllumFactor.a;
+            tfColour.rgb *= pow(exp(-volIllum.a), u_volIllumFactor.a);
 #endif // AMBIENT_OCCLUSION || SHADOWS
 
 #ifdef COLOR_BLEEDING
             // Apply color bleeding
-            tfColour.rgb *= volIllum.rgb * u_volIllumFactor.rgb;
+            tfColour.rgb *= pow(1+volIllum.rgb, u_volIllumFactor.rgb);
 #endif // COLOR_BLEEDING
 
             composite(result, tfColour);

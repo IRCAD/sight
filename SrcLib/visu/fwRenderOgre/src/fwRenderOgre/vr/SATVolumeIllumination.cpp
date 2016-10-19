@@ -123,10 +123,13 @@ void SATVolumeIllumination::SATUpdate(Ogre::TexturePtr _img, Ogre::TexturePtr _t
 
 void SATVolumeIllumination::updateVolIllum()
 {
-    if(m_illuminationVolume.isNull())
-    {
-        this->updateTexture();
-    }
+    // Do this for now but at the end we should use our own texture
+    m_illuminationVolume = m_sat.getSpareTexture();
+
+//    if(m_illuminationVolume.isNull())
+//    {
+//        this->updateTexture();
+//    }
 
     const int depth = m_illuminationVolume->getDepth();
 
