@@ -9,8 +9,9 @@ vec4 sampleTransferFunction(float intensity)
     float scaledValue = intensity * 65535.f;
 
     // Computes 2D indices from the hounsfield value
-    int j = int( scaledValue / 256 );
-    int i = int( mod( int(scaledValue), 256 ) );
+    vec2 uv;
+    uv.y = floor( scaledValue / 256.f );
+    uv.x = floor( scaledValue - uv.y * 256.f );
 
-    return texelFetch(u_tfTexture, ivec2(i, j), 0);
+    return texelFetch(u_tfTexture, ivec2(uv), 0);
 }
