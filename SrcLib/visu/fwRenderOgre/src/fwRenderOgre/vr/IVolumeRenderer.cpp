@@ -52,8 +52,8 @@ IVolumeRenderer::IVolumeRenderer(std::string parentId,
                                  ::Ogre::SceneManager* sceneManager,
                                  ::Ogre::SceneNode* volumeNode,
                                  ::Ogre::TexturePtr imageTexture,
-                                 TransferFunction* gpuTF,
-                                 PreIntegrationTable* preintegrationTable) :
+                                 TransferFunction& gpuTF,
+                                 PreIntegrationTable& preintegrationTable) :
     m_parentId               (parentId),
     m_sceneManager           (sceneManager),
     m_3DOgreTexture          (imageTexture),

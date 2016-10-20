@@ -37,8 +37,8 @@ public:
                                          ::Ogre::SceneManager* sceneManager,
                                          ::Ogre::SceneNode* parentNode,
                                          ::Ogre::TexturePtr imageTexture,
-                                         TransferFunction* gpuTF = nullptr,
-                                         PreIntegrationTable* preintegrationTable = nullptr);
+                                         TransferFunction& gpuTF,
+                                         PreIntegrationTable& preintegrationTable);
 
     /// Destructor, does nothing.
     FWRENDEROGRE_API virtual ~SliceVolumeRenderer();

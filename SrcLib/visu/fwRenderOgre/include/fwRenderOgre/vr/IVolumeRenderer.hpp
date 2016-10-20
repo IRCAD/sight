@@ -74,8 +74,8 @@ public:
                                      ::Ogre::SceneManager* sceneManager,
                                      ::Ogre::SceneNode* volumeNode,
                                      ::Ogre::TexturePtr imageTexture,
-                                     TransferFunction* gpuTF = nullptr,
-                                     PreIntegrationTable* preintegrationTable = nullptr);
+                                     TransferFunction& gpuTF,
+                                     PreIntegrationTable& preintegrationTable);
 
     /// Destructor, does nothing.
     FWRENDEROGRE_API virtual ~IVolumeRenderer();
@@ -94,12 +94,6 @@ public:
 
     /// Computes image positions.
     FWRENDEROGRE_API virtual void clipImage(const ::Ogre::AxisAlignedBox& clippingBox);
-
-    /// Sets the TF used for rendering.
-    FWRENDEROGRE_API void setTransferFunction(TransferFunction* gpuTF);
-
-    /// Sets the pre-integration table used for rendering.
-    FWRENDEROGRE_API void setPreIntegrationTable(PreIntegrationTable* preIntegrationTable);
 
     /// Returns the sampling rate.
     FWRENDEROGRE_API float getSamplingRate() const;
@@ -128,10 +122,10 @@ protected:
     ::Ogre::TexturePtr m_3DOgreTexture;
 
     /// TF texture used for rendering.
-    TransferFunction* m_gpuTF;
+    TransferFunction& m_gpuTF;
 
     /// Pre-integration table.
-    PreIntegrationTable* m_preIntegrationTable;
+    PreIntegrationTable& m_preIntegrationTable;
 
     /// Default shader parameters.
     ::Ogre::GpuProgramParametersSharedPtr m_defaultShaderParameters;
@@ -161,21 +155,6 @@ protected:
     ::Ogre::Vector3 m_clippedImagePositions[8];
 
 };
-
-//-----------------------------------------------------------------------------
-
-inline void IVolumeRenderer::setTransferFunction(TransferFunction* gpuTF)
-{
-    m_gpuTF = gpuTF;
-}
-
-//-----------------------------------------------------------------------------
-
-
-inline void IVolumeRenderer::setPreIntegrationTable(PreIntegrationTable* preIntegrationTable)
-{
-    m_preIntegrationTable = preIntegrationTable;
-}
 
 //-----------------------------------------------------------------------------
 

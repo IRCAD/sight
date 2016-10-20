@@ -26,8 +26,8 @@ SliceVolumeRenderer::SliceVolumeRenderer(std::string parentId,
                                          ::Ogre::SceneManager* sceneManager,
                                          ::Ogre::SceneNode* parentNode,
                                          ::Ogre::TexturePtr imageTexture,
-                                         TransferFunction* gpuTF,
-                                         PreIntegrationTable* preintegrationTable) :
+                                         TransferFunction& gpuTF,
+                                         PreIntegrationTable& preintegrationTable) :
     IVolumeRenderer        (parentId, sceneManager, parentNode, imageTexture, gpuTF, preintegrationTable),
     m_intersectingPolygons (nullptr)
 {
@@ -60,12 +60,12 @@ SliceVolumeRenderer::SliceVolumeRenderer(std::string parentId,
 
                 if(mtlName == "PreIntegratedSliceVolume")
                 {
-                    texTFState->setTexture(m_preIntegrationTable->getTexture());
+                    texTFState->setTexture(m_preIntegrationTable.getTexture());
                     m_preIntegrationShaderParameters = pass->getFragmentProgramParameters();
                 }
                 else
                 {
-                    texTFState->setTexture(m_gpuTF->getTexture());
+                    texTFState->setTexture(m_gpuTF.getTexture());
                     m_defaultShaderParameters = pass->getFragmentProgramParameters();
                     m_currentShaderParameters = m_defaultShaderParameters;
                 }
@@ -95,9 +95,9 @@ void SliceVolumeRenderer::imageUpdate(fwData::Image::sptr image, fwData::Transfe
 
     if(m_preIntegratedRendering)
     {
-        m_preIntegrationTable->imageUpdate(image, tf, m_sampleDistance);
+        m_preIntegrationTable.imageUpdate(image, tf, m_sampleDistance);
 
-        auto minMax = m_preIntegrationTable->getMinMax();
+        auto minMax = m_preIntegrationTable.getMinMax();
 
         m_preIntegrationShaderParameters->setNamedConstant("u_min", minMax.first);
         m_preIntegrationShaderParameters->setNamedConstant("u_max", minMax.second);

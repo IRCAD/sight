@@ -175,8 +175,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    Layer::sptr layer,
                                                    ::Ogre::SceneNode* parentNode,
                                                    ::Ogre::TexturePtr imageTexture,
-                                                   TransferFunction* gpuTF,
-                                                   PreIntegrationTable* preintegrationTable,
+                                                   TransferFunction& gpuTF,
+                                                   PreIntegrationTable& preintegrationTable,
                                                    ::fwRenderOgre::Layer::StereoModeType mode3D,
                                                    bool ambientOcclusion,
                                                    bool colorBleeding,
@@ -274,11 +274,11 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
                 if(mtlName.find("PreIntegrated") != std::string::npos)
                 {
-                    texTFState->setTexture(m_preIntegrationTable->getTexture());
+                    texTFState->setTexture(m_preIntegrationTable.getTexture());
                 }
                 else
                 {
-                    texTFState->setTexture(m_gpuTF->getTexture());
+                    texTFState->setTexture(m_gpuTF.getTexture());
                 }
             }
         }
@@ -374,9 +374,9 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
 
     if(m_preIntegratedRendering)
     {
-        m_preIntegrationTable->imageUpdate(image, tf, m_sampleDistance);
+        m_preIntegrationTable.imageUpdate(image, tf, m_sampleDistance);
 
-        auto minMax = m_preIntegrationTable->getMinMax();
+        auto minMax = m_preIntegrationTable.getMinMax();
 
         ::Ogre::GpuProgramParametersSharedPtr currentParams = this->retrieveCurrentProgramParams();
         currentParams->setNamedConstant("u_min", minMax.first);
@@ -538,7 +538,7 @@ void RayTracingVolumeRenderer::configure3DViewport()
     m_compositorListener = new RayTracingVolumeRenderer::AutoStereoCompositorListener(m_entryPointsTextures,
                                                                                       m_viewPointMatrices,
                                                                                       m_3DOgreTexture,
-                                                                                      m_gpuTF->getTexture(),
+                                                                                      m_gpuTF.getTexture(),
                                                                                       m_sampleDistance,
                                                                                       m_volumeSceneNode);
     compositorInstance->addListener(m_compositorListener);
@@ -710,7 +710,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
         SLM_ASSERT("'transferFunction' texture unit is not found", texTFState);
 
         tex3DState->setTexture(m_3DOgreTexture);
-        texTFState->setTexture(m_gpuTF->getTexture());
+        texTFState->setTexture(m_gpuTF.getTexture());
 
         createGridTexture();
     }

@@ -294,8 +294,8 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
                                                                        m_sceneManager,
                                                                        m_volumeSceneNode,
                                                                        m_3DOgreTexture,
-                                                                       &m_gpuTF,
-                                                                       &m_preIntegrationTable);
+                                                                       m_gpuTF,
+                                                                       m_preIntegrationTable);
     }
     else
     {
@@ -303,8 +303,8 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
                                                                             layer,
                                                                             m_volumeSceneNode,
                                                                             m_3DOgreTexture,
-                                                                            &m_gpuTF,
-                                                                            &m_preIntegrationTable,
+                                                                            m_gpuTF,
+                                                                            m_preIntegrationTable,
                                                                             layer->getStereoMode(),
                                                                             m_ambientOcclusion,
                                                                             m_colorBleeding);
