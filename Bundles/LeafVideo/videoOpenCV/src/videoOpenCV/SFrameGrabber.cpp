@@ -6,8 +6,8 @@
 
 #include "videoOpenCV/SFrameGrabber.hpp"
 
-#include <arData/FrameTL.hpp>
 #include <arData/Camera.hpp>
+#include <arData/FrameTL.hpp>
 
 #include <arPreferences/preferences.hpp>
 
@@ -17,18 +17,18 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwTools/Type.hpp>
+#include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-
-#include <opencv2/imgproc.hpp>
-#include <opencv2/imgcodecs.hpp>
+#include <fwTools/Type.hpp>
 
 #include <boost/filesystem/operations.hpp>
+
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
 
 namespace videoOpenCV
 {
@@ -323,9 +323,8 @@ void SFrameGrabber::grabVideo()
 
                 if (width != w || height != h)
                 {
-                    ::fwGui::dialog::MessageDialog::showMessageDialog(
-                        "Grabber",
-                        "This video cannot be read, the frame size is not expected.");
+                    OSLM_ERROR("This video cannot be read, the frame size is not expected. expected: "
+                               << width << " x " << height << ", actual: " << w << " x " << h);
                     return;
                 }
 
@@ -392,7 +391,6 @@ void SFrameGrabber::grabVideo()
                 m_videoCapture.set(::cv::CAP_PROP_POS_MSEC, 0);
             }
         }
-
     }
 }
 

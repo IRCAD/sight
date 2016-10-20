@@ -34,7 +34,7 @@ namespace videoOpenCV
  *
  * @code{.xml}
    <service type="::videoOpenCV::SFrameWriter">
-       <in key="data" uid="..." />
+       <in key="data" uid="..." autoConnect="yes" />
    </service>
    @endcode
  * @subsection Input Input
