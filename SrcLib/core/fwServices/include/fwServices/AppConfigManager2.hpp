@@ -10,6 +10,7 @@
 #include "fwServices/config.hpp"
 #include "fwServices/helper/Config.hpp"
 #include "fwServices/helper/SigSlotConnection.hpp"
+#include "fwServices/helper/ProxyConnections.hpp"
 #include "fwServices/IService.hpp"
 #include "fwServices/IAppConfigManager.hpp"
 #include "fwServices/IXMLParser.hpp"
@@ -19,6 +20,8 @@
 
 #include <vector>
 #include <string>
+#include <unordered_map>
+#include <unordered_set>
 
 namespace fwData
 {
@@ -76,8 +79,10 @@ public:
 private:
 
     typedef ::std::pair< std::string, bool > ConfigAttribute;
-    typedef ::fwServices::helper::Config::ProxyConnections ProxyConnections;
-    typedef ::fwServices::helper::Config::ServiceConfig ServiceConfig;
+    typedef ::fwServices::helper::ProxyConnections ProxyConnections;
+    typedef ::fwServices::IService::Config ServiceConfig;
+
+    ::fwData::Object::sptr findObject(const std::string& uid, const std::string& errMsgTail) const;
 
     ::fwData::Object::sptr getNewObject(ConfigAttribute type, const std::string& uid) const;
 
@@ -95,16 +100,16 @@ private:
     void processUpdateItems();
 
     /// Parse objects section and create objects
-    virtual void createObjects(::fwRuntime::ConfigurationElement::csptr cfgElem);
+    void createObjects(::fwRuntime::ConfigurationElement::csptr cfgElem);
 
     /// Parse services and create all the services that can be instantiated
-    virtual void createServices(::fwRuntime::ConfigurationElement::csptr cfgElem);
+    void createServices(::fwRuntime::ConfigurationElement::csptr cfgElem);
 
     /// Create a single service from its configuration
-    virtual ::fwServices::IService::sptr createService(const ServiceConfig& srvConfig);
+    ::fwServices::IService::sptr createService(const ServiceConfig& srvConfig);
 
     /// Parse connection sections and creates them
-    virtual void createConnections();
+    void createConnections();
 
     /// Stops and destroys services specified in config, then resets the configRoot sptr.
     std::string msgHead() const;
@@ -116,9 +121,9 @@ private:
     void removeObjects(::fwData::Object::sptr obj, const std::string& id);
 
     /// Connect signal and slots
-    void connect(const std::string& channel, const ProxyConnections& connectCfg);
+    void connectProxy(const std::string& channel, const ProxyConnections& connectCfg);
 
-    void destroyProxy(const std::string& channel, const ProxyConnections& proxyCfg, const std::string& key,
+    void destroyProxy(const std::string& channel, const ProxyConnections& proxyCfg, const std::string& key = "",
                       fwData::Object::csptr hintObj = nullptr);
     void destroyProxies();
 
@@ -127,30 +132,30 @@ private:
 
     typedef std::pair< ::fwData::Object::sptr, ::fwServices::IXMLParser::sptr> CreatedObjectType;
     /// Map containing the object and its XML parser
-    std::map<std::string, CreatedObjectType> m_createdObjects;
+    std::unordered_map<std::string, CreatedObjectType> m_createdObjects;
 
     struct DeferredObjectType
     {
         std::vector< ServiceConfig > m_servicesCfg;
-        std::map< std::string, ProxyConnections > m_proxyCnt;
-        helper::SigSlotConnection m_connections;
+        std::unordered_map< std::string, ProxyConnections > m_proxyCnt;
         /// Copy of the object pointer necessary to access signals/slots when destroying proxy
         ::fwData::Object::sptr m_object;
     };
 
     /// Map indexed by the object uid, containing all the service configurations that depend on this object
-    std::map<std::string, DeferredObjectType > m_deferredObjects;
+    std::unordered_map<std::string, DeferredObjectType > m_deferredObjects;
 
-    struct DeferredServiceType
+    /// All the identifiers of the deferred services
+    std::unordered_set<std::string> m_deferredServices;
+
+    /// All proxies of created objects, ordered by channel name
+    std::unordered_map<std::string, ProxyConnections> m_createdObjectsProxies;
+
+    struct ServiceProxyType
     {
-        std::map< std::string, ProxyConnections > m_proxyCnt;
+        std::unordered_map< std::string, ProxyConnections > m_proxyCnt;
     };
-
-    /// Map indexed by a deferred service uid, containing its connections configurations
-    std::map<std::string, DeferredServiceType > m_deferredServices;
-
-    /// Proxy connections
-    std::map< std::string, ProxyConnections> m_proxyCtns;
+    std::unordered_map< std::string, ServiceProxyType > m_servicesProxies;
 
     /// Identifier of this configuration
     std::string m_configId;
@@ -162,9 +167,6 @@ private:
 
     /// List of services started in this configuration
     ServiceContainer m_startedSrv;
-
-    /// Connections between object and services
-    helper::SigSlotConnection m_connections;
 
     /// While we need to maintain old and new services behavior, we need a dummy data for new services
     /// that don't work on any data.
@@ -191,3 +193,4 @@ inline std::string AppConfigManager2::msgHead() const
 } // namespace fwServices
 
 #endif // __FWSERVICES_APPCONFIGMANAGER2_HPP__
+

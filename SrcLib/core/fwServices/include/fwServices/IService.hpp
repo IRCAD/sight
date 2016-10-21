@@ -10,6 +10,7 @@
 #include "fwServices/config.hpp"
 #include "fwServices/factory/new.hpp"
 #include "fwServices/helper/SigSlotConnection.hpp"
+#include "fwServices/helper/ProxyConnections.hpp"
 
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/HasSlots.hpp>
@@ -83,6 +84,28 @@ public:
         INPUT,
         OUTPUT,
         INOUT,
+    };
+
+    /// Used to store object configuration in a service.
+    struct ObjectServiceConfig
+    {
+        std::string m_uid;
+        std::string m_key;
+        AccessType m_access;
+        bool m_autoConnect;
+        bool m_optional;
+    };
+
+    /// Used to store a service configuration.
+    struct Config
+    {
+        std::string m_uid;
+        std::string m_type;
+        bool m_globalAutoConnect;
+        std::string m_worker;
+        std::vector<ObjectServiceConfig> m_objects;
+        std::map<std::string, size_t> m_groupSize;
+        CSPTR(::fwRuntime::ConfigurationElement) m_config;
     };
 
     /// Name of the key to identify the default Composite object that is used for services that don't work on any data.
@@ -180,6 +203,13 @@ public:
      * @post m_configurationState == UNCONFIGURED
      */
     FWSERVICES_API void setConfiguration( const ::fwRuntime::ConfigurationElement::sptr _cfgElement );
+
+    /**
+     * @brief Set the configuration.
+     * @param[in] _configuration whole configuration of the service.
+     * @post m_configurationState == UNCONFIGURED
+     */
+    FWSERVICES_API void setConfiguration( const Config& _configuration);
 
     /**
      * @brief Affect the configuration, using a boost property tree
@@ -458,12 +488,6 @@ public:
     };
 
     /**
-     * @brief Returns proposals to connect service slots to associated objects signals,
-     * this method is used for obj/srv auto connection
-     */
-    FWSERVICES_API virtual KeyConnectionsMap getAutoConnections() const;
-
-    /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      * @deprecated Use getAutoConnections() instead
@@ -600,10 +624,16 @@ protected:
      */
     FWSERVICES_API virtual void info( std::ostream& _sstream );
 
+    /**
+     * @brief Returns proposals to connect service slots to associated objects signals,
+     * this method is used for obj/srv auto connection
+     */
+    FWSERVICES_API virtual KeyConnectionsMap getAutoConnections() const;
     //@}
 
     /**
      * @brief Configuration element used to configure service internal state using a generic XML like structure
+     * TODO Make this const, we are not supposed to edit that !
      */
     ::fwRuntime::ConfigurationElement::sptr m_configuration;
 
@@ -640,6 +670,21 @@ protected:
     //@}
 
 private:
+
+    /// Connect the service with configuration services and objects
+    FWSERVICES_API virtual void connectToConfig();
+
+    /// Disconnect the service from configuration services and objects
+    FWSERVICES_API virtual void disconnectFromConfig();
+
+    /// Connect the service with its data
+    FWSERVICES_API virtual void autoConnect();
+
+    /// Disconnect the service from its data
+    FWSERVICES_API virtual void autoDisconnect();
+
+    /// Add a known connection from the appConfig
+    FWSERVICES_API void addProxyConnection(const helper::ProxyConnections& info);
 
     /**
      * @brief associated inputs of the service ordered by key
@@ -686,6 +731,19 @@ private:
      */
     static int s_version;
 
+    /**
+     * @brief Defines the configuration of the objects. Used for autoConnect.
+     */
+    ::fwServices::IService::Config m_serviceConfig;
+
+    /// Regular connections between this service and other services, or this service and objects
+    helper::SigSlotConnection m_srvConnections;
+
+    /// Auto connections between this service and its objects
+    helper::SigSlotConnection m_autoConnections;
+
+    /// Proxies configurations, connected at start, and disconnected at stop
+    std::map<std::string, helper::ProxyConnections> m_proxies;
 };
 
 } // namespace fwServices

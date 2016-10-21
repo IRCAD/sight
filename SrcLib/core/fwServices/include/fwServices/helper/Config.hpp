@@ -9,6 +9,7 @@
 
 #include "fwServices/config.hpp"
 #include "fwServices/IService.hpp"
+#include "fwServices/helper/ProxyConnections.hpp"
 
 #include <fwCom/Signals.hpp>
 #include <fwCom/Slots.hpp>
@@ -51,48 +52,6 @@ public:
     typedef std::pair< std::string, ::fwCom::Signals::SignalKeyType > SignalInfoType;
     typedef std::pair< std::string, ::fwCom::Slots::SlotKeyType > SlotInfoType;
     typedef std::vector< SlotInfoType > SlotInfoContainerType;
-
-    /// Used to register proxy connection in order to properly disconnect it.
-    struct ProxyConnections
-    {
-        typedef std::string UIDType;
-        typedef std::string KeyType;
-        typedef std::pair<UIDType, KeyType> ProxyEltType;
-        typedef std::vector<ProxyEltType> ProxyEltVectType;
-
-        std::string m_channel;
-        ProxyEltVectType m_slots;
-        ProxyEltVectType m_signals;
-
-        ProxyConnections() : m_channel("undefined")
-        {
-        }
-
-        ProxyConnections(const std::string& channel) : m_channel(channel)
-        {
-        }
-
-        ~ProxyConnections()
-        {
-        }
-
-        void addSignalConnection(UIDType uid, KeyType key)
-        {
-            m_signals.push_back(std::make_pair(uid, key));
-        }
-        void addSignalConnection(const SignalInfoType& pair)
-        {
-            m_signals.push_back(pair);
-        }
-        void addSlotConnection(UIDType uid, KeyType key)
-        {
-            m_slots.push_back(std::make_pair(uid, key));
-        }
-        void addSlotConnection(const SlotInfoType& pair)
-        {
-            m_slots.push_back(pair);
-        }
-    };
 
     typedef std::string ObjectIdType;
     typedef std::vector<ProxyConnections> ProxyConnectionsVectType;
@@ -159,31 +118,10 @@ public:
     FWSERVICES_API static void disconnectProxies(const std::string& objectKey,
                                                  Config::ProxyConnectionsMapType& proxyMap);
 
-    /// Used to store object configuration in a service.
-    struct ObjectServiceConfig
-    {
-        std::string m_uid;
-        std::string m_key;
-        ::fwServices::IService::AccessType m_access;
-        bool m_autoConnect;
-        bool m_optional;
-    };
-
-    /// Used to store a service configuration.
-    struct ServiceConfig
-    {
-        std::string m_uid;
-        std::string m_type;
-        bool m_globalAutoConnect;
-        std::string m_worker;
-        std::vector<ObjectServiceConfig> m_objects;
-        std::map<std::string, size_t> m_groupSize;
-        CSPTR(::fwRuntime::ConfigurationElement) m_config;
-    };
-
     /// Parse a service and return a service configuration
-    static ServiceConfig parseService( const CSPTR(::fwRuntime::ConfigurationElement)& srvElem,
-                                       const std::string& errMsgHead);
+    FWSERVICES_API static ::fwServices::IService::Config parseService(
+        const CSPTR(::fwRuntime::ConfigurationElement)& srvElem,
+        const std::string& errMsgHead);
 };
 
 } // namespace helper

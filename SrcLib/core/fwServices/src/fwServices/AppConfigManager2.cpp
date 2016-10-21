@@ -26,8 +26,6 @@
 #include <fwRuntime/operations.hpp>
 
 #include <boost/foreach.hpp>
-#include <boost/regex.hpp>
-
 
 namespace fwServices
 {
@@ -129,8 +127,8 @@ void AppConfigManager2::create()
     m_removeObjectConnection = ::fwServices::OSR::getUnregisterSignal()->connect( this->slot(s_REMOVE_OBJECTS_SLOT) );
 
     this->createObjects(m_cfgElem);
-    this->createServices(m_cfgElem);
     this->createConnections();
+    this->createServices(m_cfgElem);
 
     m_state = STATE_CREATED;
 }
@@ -173,15 +171,6 @@ void AppConfigManager2::stop()
     // Disconnect configuration connections
     this->destroyProxies();
 
-    // Disconnect autoconnections for created objects
-    m_connections.disconnect();
-
-    // Disconnect autoconnections for deferrred objects
-    for(auto& itDeferredObj : m_deferredObjects)
-    {
-        itDeferredObj.second.m_connections.disconnect();
-    }
-
     for(auto& createdObject : m_createdObjects)
     {
         createdObject.second.second->stopConfig();
@@ -221,6 +210,7 @@ void AppConfigManager2::setIsUnitTest(bool isUnitTest)
     m_isUnitTest = isUnitTest;
 }
 
+
 // ------------------------------------------------------------------------
 
 fwData::Object::sptr AppConfigManager2::getConfigRoot() const
@@ -230,6 +220,33 @@ fwData::Object::sptr AppConfigManager2::getConfigRoot() const
         return m_tmpRootObject;
     }
     return m_createdObjects.begin()->second.first;
+}
+
+// ------------------------------------------------------------------------
+
+fwData::Object::sptr AppConfigManager2::findObject(const std::string& uid, const std::string& errMsgTail) const
+{
+    ::fwData::Object::sptr obj;
+
+    bool deferred = false;
+
+    // Look first in objects created in this appConfig
+    auto it = m_createdObjects.find(uid);
+    if(it != m_createdObjects.end())
+    {
+        obj = it->second.first;
+    }
+    else
+    {
+        // Not found, now look in the objects that were marked as "deferred"
+        auto itDeferredObj = m_deferredObjects.find(uid);
+
+        SLM_ASSERT(this->msgHead() + "Object '" + uid + "' has not been found" + errMsgTail,
+                   itDeferredObj != m_deferredObjects.end());
+        obj      = itDeferredObj->second.m_object;
+        deferred = true;
+    }
+    return obj;
 }
 
 // ------------------------------------------------------------------------
@@ -373,6 +390,7 @@ void AppConfigManager2::processStartItems()
                           "exists, this is not a service.", !srv);
 
             futures.push_back(srv->start());
+
             m_startedSrv.push_back(srv);
         }
     }
@@ -522,6 +540,8 @@ void AppConfigManager2::createServices(::fwRuntime::ConfigurationElement::csptr 
                 {
                     it->second.m_servicesCfg.emplace_back(srvConfig);
                     uids.push_back(objectCfg.m_uid);
+                    m_deferredServices.insert(srvConfig.m_uid);
+
                     if(!objectCfg.m_optional)
                     {
                         createService = false;
@@ -531,20 +551,13 @@ void AppConfigManager2::createServices(::fwRuntime::ConfigurationElement::csptr 
 
             if(createService)
             {
-                // Check if a service hasn't been already registered in the "weak" map with this uid
-                SLM_ASSERT(this->msgHead() + "Service '" + srvConfig.m_uid + "' already exists in this config.",
-                           m_deferredServices.find(srvConfig.m_uid) == m_deferredServices.end());
                 this->createService(srvConfig);
             }
             else
             {
-                auto ret = m_deferredServices.insert(std::make_pair(srvConfig.m_uid, DeferredServiceType()));
                 // Check if a service hasn't been already created with this uid
                 SLM_ASSERT(this->msgHead() + "UID " + srvConfig.m_uid + " already exists.",
                            !::fwTools::fwID::exist(srvConfig.m_uid));
-                // Check if a service hasn't been already registered in the map with this uid
-                SLM_ASSERT(this->msgHead() + "Service '" + srvConfig.m_uid + "' already exists in this config.",
-                           ret.second);
 
                 const std::string msg = AppConfigManager2::getUIDListAsString(uids);
                 SLM_INFO(this->msgHead() + "Service '" + srvConfig.m_uid +
@@ -560,8 +573,7 @@ void AppConfigManager2::createServices(::fwRuntime::ConfigurationElement::csptr 
 
 // ------------------------------------------------------------------------
 
-::fwServices::IService::sptr AppConfigManager2::createService(
-    const ::fwServices::helper::Config::ServiceConfig& srvConfig)
+::fwServices::IService::sptr AppConfigManager2::createService(const ::fwServices::IService::Config& srvConfig)
 {
     // Create and bind service
     const ::fwServices::IService::sptr srv = this->getNewService(srvConfig.m_uid, srvConfig.m_type);
@@ -582,41 +594,18 @@ void AppConfigManager2::createServices(::fwRuntime::ConfigurationElement::csptr 
 
     std::string errMsgTail = " when creating service '" + srvConfig.m_uid + "'.";
 
-    // Temporary map used to avoid a second lookup when we handle the autoconnect
-    std::map<std::string, std::pair< ::fwData::Object::wptr, bool> > objectById;
-
     for(const auto& objectCfg : srvConfig.m_objects)
     {
         srv->setObjectId(objectCfg.m_key, objectCfg.m_uid);
 
-        // Look first in objects created in this appConfig
-        ::fwData::Object::sptr obj;
-        bool deferred = false;
-        auto it       = m_createdObjects.find(objectCfg.m_uid);
-        if(it != m_createdObjects.end())
-        {
-            obj = it->second.first;
-        }
-        else
-        {
-            // Not found, now look in the objects that were marked as "deferred"
-            auto itDeferredObj = m_deferredObjects.find(objectCfg.m_uid);
+        ::fwData::Object::sptr obj = this->findObject(objectCfg.m_uid, errMsgTail);
 
-            SLM_ASSERT(this->msgHead() + "Object '" + objectCfg.m_uid + "' has not been found" + errMsgTail,
-                       itDeferredObj != m_deferredObjects.end());
-            obj      = itDeferredObj->second.m_object;
-            deferred = true;
-        }
         SLM_ASSERT(this->msgHead() + "Object '" + objectCfg.m_uid + "' has not been found" + errMsgTail,
                    (!objectCfg.m_optional && obj) || objectCfg.m_optional);
         if((obj || !objectCfg.m_optional) && objectCfg.m_access != ::fwServices::IService::AccessType::OUTPUT)
         {
-            ::fwCom::Connection::Blocker block(m_addObjectConnection);
             ::fwServices::OSR::registerService(obj, objectCfg.m_key, objectCfg.m_access, srv);
         }
-
-        // Register the object for the next loop and record if it is a deferred object or not
-        objectById[objectCfg.m_uid] = std::make_pair(obj, deferred);
     }
 
     // Ok for now we assume we always need the root composite
@@ -625,7 +614,6 @@ void AppConfigManager2::createServices(::fwRuntime::ConfigurationElement::csptr 
     {
         srv->setObjectId(::fwServices::IService::s_DEFAULT_OBJECT, "defaultObjectId");
 
-        ::fwCom::Connection::Blocker block(m_addObjectConnection);
         ::fwServices::OSR::registerService(m_tmpRootObject, ::fwServices::IService::s_DEFAULT_OBJECT,
                                            ::fwServices::IService::AccessType::INOUT, srv);
     }
@@ -633,88 +621,19 @@ void AppConfigManager2::createServices(::fwRuntime::ConfigurationElement::csptr 
     // Set the size of the key groups
     srv->m_keyGroupSize = srvConfig.m_groupSize;
 
+    // Set the proxies
+    const auto& itSrvProxy = m_servicesProxies.find(srvConfig.m_uid);
+    if(itSrvProxy != m_servicesProxies.end())
+    {
+        for(const auto& itProxy : itSrvProxy->second.m_proxyCnt)
+        {
+            srv->addProxyConnection(itProxy.second);
+        }
+    }
+
     // Configure
-    srv->setConfiguration(::fwRuntime::ConfigurationElement::constCast(srvConfig.m_config));
+    srv->setConfiguration(srvConfig);
     srv->configure();
-
-    // Autoconnect
-    ::fwServices::IService::KeyConnectionsMap connectionMap = srv->getAutoConnections();
-
-    // For compatibility with V1, we allow services to connect explicitly with the default object
-    // For these services we will ignore all auto connections with any other data
-    // This is intended notably for managers-like services
-    const bool hasDefaultObjectConnectionV1 =
-        (connectionMap.find(::fwServices::IService::s_DEFAULT_OBJECT) != connectionMap.end());
-
-    for(const auto& objectCfg : srvConfig.m_objects)
-    {
-        if ((srvConfig.m_globalAutoConnect || objectCfg.m_autoConnect) && !hasDefaultObjectConnectionV1)
-        {
-            ::fwServices::IService::KeyConnectionsType connections;
-            if(!connectionMap.empty())
-            {
-                auto it = connectionMap.find(objectCfg.m_key);
-                if( it != connectionMap.end())
-                {
-                    connections = it->second;
-                }
-                else
-                {
-                    // Special case if we have a key from a group we check with the name of the group
-                    boost::smatch match;
-                    static const ::boost::regex reg("(.*)#[0-9]+");
-                    if( ::boost::regex_match(objectCfg.m_key, match, reg ) && match.size() == 2)
-                    {
-                        const std::string group = match[1].str();
-                        auto it                 = connectionMap.find(group);
-                        if( it != connectionMap.end())
-                        {
-                            connections = it->second;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                // V1 compatibility, we didn't implemented the new function, so we stick to the old behavior
-                // This also allows to get the default connection with the s_UPDATE_SLOT. When we remove this
-                // function, we will have to implement this behavior with getAutoConnections()
-                connections = srv->getObjSrvConnections();
-            }
-
-            auto& obj = objectById[objectCfg.m_uid];
-            if(obj.second)
-            {
-                // Deferred object
-                if(!obj.first.expired())
-                {
-                    m_deferredObjects[objectCfg.m_uid].m_connections.connect( obj.first.lock(), srv, connections );
-                }
-            }
-            else
-            {
-                // Object created in the AppConfig
-                m_connections.connect( obj.first.lock(), srv, connections );
-            }
-        }
-    }
-
-    if(srvConfig.m_globalAutoConnect)
-    {
-        ::fwServices::IService::KeyConnectionsType connections;
-        auto it = connectionMap.find(::fwServices::IService::s_DEFAULT_OBJECT);
-        if( it != connectionMap.end())
-        {
-            connections = it->second;
-        }
-        else if(srvConfig.m_objects.size() == 0)
-        {
-            // Only use the old callback automatically in case we put a composite as the only one data
-            connections = srv->getObjSrvConnections();
-        }
-
-        m_connections.connect( m_tmpRootObject, srv, connections );
-    }
 
     return srv;
 }
@@ -735,63 +654,69 @@ void AppConfigManager2::createConnections()
 
             ProxyConnections connectionInfos = ::fwServices::helper::Config::parseConnections2(elem, this->msgHead(),
                                                                                                genIdFn);
-
             // Proxy that is used for non-deferred connections
-            ProxyConnections configProxy(connectionInfos.m_channel);
+            ProxyConnections createdObjectsProxy(connectionInfos.m_channel);
 
+            // Register signals
             for(const auto& signalInfo : connectionInfos.m_signals)
             {
                 auto itDeferredObj = m_deferredObjects.find(signalInfo.first);
                 if( itDeferredObj != m_deferredObjects.end() )
                 {
-                    // A deferred data is the source, register all signals
+                    // Deferred Object
                     ProxyConnections& proxy = itDeferredObj->second.m_proxyCnt[connectionInfos.m_channel];
                     proxy.addSignalConnection(signalInfo);
                 }
                 else
                 {
-                    auto itDeferredSrv = m_deferredServices.find(signalInfo.first);
-                    if( itDeferredSrv != m_deferredServices.end() )
+                    auto itObj = m_createdObjects.find(signalInfo.first);
+                    if( itObj != m_createdObjects.end() )
                     {
-                        // A deferred service is the source, register all signals
-                        ProxyConnections& proxy = itDeferredSrv->second.m_proxyCnt[connectionInfos.m_channel];
-                        proxy.addSignalConnection(signalInfo);
+                        // Regular object
+                        createdObjectsProxy.addSignalConnection(signalInfo);
                     }
                     else
                     {
-                        configProxy.addSignalConnection(signalInfo);
+                        // Service
+                        auto& itSrv             = m_servicesProxies[signalInfo.first];
+                        ProxyConnections& proxy = itSrv.m_proxyCnt[connectionInfos.m_channel];
+                        proxy.addSignalConnection(signalInfo);
+                        proxy.m_channel = connectionInfos.m_channel;
                     }
                 }
             }
 
+            // Register slots
             for(const auto& slotInfo : connectionInfos.m_slots)
             {
                 auto itDeferredObj = m_deferredObjects.find(slotInfo.first);
                 if( itDeferredObj != m_deferredObjects.end() )
                 {
-                    // A deferred data is the source, register all slots
+                    // Deferred Object
                     ProxyConnections& proxy = itDeferredObj->second.m_proxyCnt[connectionInfos.m_channel];
                     proxy.addSlotConnection(slotInfo);
                 }
                 else
                 {
-
-                    auto itDeferredSrv = m_deferredServices.find(slotInfo.first);
-                    if( itDeferredSrv != m_deferredServices.end() )
+                    auto itObj = m_createdObjects.find(slotInfo.first);
+                    if( itObj != m_createdObjects.end() )
                     {
-                        // A deferred service is the source, register all slots
-                        ProxyConnections& proxy = itDeferredSrv->second.m_proxyCnt[connectionInfos.m_channel];
-                        proxy.addSlotConnection(slotInfo);
+                        // Regular object
+                        createdObjectsProxy.addSlotConnection(slotInfo);
                     }
                     else
                     {
-                        configProxy.addSlotConnection(slotInfo);
+                        // Service
+                        auto& itSrv             = m_servicesProxies[slotInfo.first];
+                        ProxyConnections& proxy = itSrv.m_proxyCnt[connectionInfos.m_channel];
+                        proxy.addSlotConnection(slotInfo);
+                        proxy.m_channel = connectionInfos.m_channel;
                     }
                 }
             }
 
-            this->connect(connectionInfos.m_channel, configProxy);
-            m_proxyCtns[connectionInfos.m_channel] = configProxy;
+            m_createdObjectsProxies[connectionInfos.m_channel] = createdObjectsProxy;
+            this->connectProxy(connectionInfos.m_channel, createdObjectsProxy);
         }
     }
 }
@@ -803,9 +728,9 @@ void AppConfigManager2::destroyProxy(const std::string& channel, const ProxyConn
 {
     ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
 
-    for(const ProxyConnections::ProxyEltType& signalElt :  proxyCfg.m_signals)
+    for(const ProxyConnections::ProxyEltType& signalElt : proxyCfg.m_signals)
     {
-        if(signalElt.first == key)
+        if(key.empty() || signalElt.first == key)
         {
             ::fwTools::Object::csptr obj = hintObj;
             if(obj == nullptr)
@@ -819,9 +744,9 @@ void AppConfigManager2::destroyProxy(const std::string& channel, const ProxyConn
             proxy->disconnect(channel, sig);
         }
     }
-    for(const ProxyConnections::ProxyEltType& slotElt :  proxyCfg.m_slots)
+    for(const ProxyConnections::ProxyEltType& slotElt : proxyCfg.m_slots)
     {
-        if(slotElt.first == key)
+        if(key.empty() || slotElt.first == key)
         {
             ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(slotElt.first);
             ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
@@ -850,43 +775,11 @@ void AppConfigManager2::destroyProxies()
         }
     }
 
-    // Remove local proxies from deferred services
-    for(const auto& itDeferredSrv : m_deferredServices)
+    // Remove local proxies from all created objects
+    for(const auto& itProxy : m_createdObjectsProxies)
     {
-        if(::fwTools::fwID::exist(itDeferredSrv.first))
-        {
-            for(const auto& itProxy : itDeferredSrv.second.m_proxyCnt)
-            {
-                this->destroyProxy(itProxy.first, itProxy.second, itDeferredSrv.first);
-            }
-        }
+        this->destroyProxy(itProxy.first, itProxy.second);
     }
-
-    // Remove global proxies
-    ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
-    for(const auto& proxyConnections : m_proxyCtns)
-    {
-        for(const ProxyConnections::ProxyEltType& signalElt : proxyConnections.second.m_signals)
-        {
-            ::fwTools::Object::sptr obj          = ::fwTools::fwID::getObject(signalElt.first);
-            ::fwCom::HasSignals::sptr hasSignals = std::dynamic_pointer_cast< ::fwCom::HasSignals >(obj);
-            SLM_ASSERT(this->msgHead() + "Signal source not found '" + signalElt.first + "'", obj);
-
-            ::fwCom::SignalBase::sptr sig = hasSignals->signal(signalElt.second);
-            proxy->disconnect(proxyConnections.first, sig);
-        }
-        for(const ProxyConnections::ProxyEltType& slotElt : proxyConnections.second.m_slots)
-        {
-            ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(slotElt.first);
-            ::fwCom::HasSlots::sptr hasSlots = std::dynamic_pointer_cast< ::fwCom::HasSlots >(obj);
-            SLM_ASSERT(this->msgHead() + "Slot destination not found '" + slotElt.first + "'", hasSlots);
-
-            ::fwCom::SlotBase::sptr slot = hasSlots->slot(slotElt.second);
-            proxy->disconnect(proxyConnections.first, slot);
-        }
-
-    }
-    m_proxyCtns.clear();
 }
 
 //------------------------------------------------------------------------------
@@ -916,10 +809,12 @@ void AppConfigManager2::addObjects(fwData::Object::sptr obj, const std::string& 
             }
         }
 
+        // Connect signals of this deferred object
         itDeferredObj->second.m_object = obj;
+
         for(const auto& connectCfg : itDeferredObj->second.m_proxyCnt)
         {
-            this->connect(connectCfg.first, connectCfg.second);
+            this->connectProxy(connectCfg.first, connectCfg.second);
         }
     }
 
@@ -930,9 +825,10 @@ void AppConfigManager2::addObjects(fwData::Object::sptr obj, const std::string& 
         SLM_ASSERT("Config is null", srvCfg);
         auto& uid = srvCfg->m_uid;
 
-        // Look for all objects (there could be more than the current object) and check if they are all created
         bool createService = true;
+        bool reconnect     = false;
 
+        // Look for all objects (there could be more than the current object) and check if they are all created
         for(const auto& objCfg : srvCfg->m_objects)
         {
             // Look first in objects created in this appConfig
@@ -968,30 +864,10 @@ void AppConfigManager2::addObjects(fwData::Object::sptr obj, const std::string& 
 
                         // Call the swapping callback of the service and wait for it
                         srv->swapKey(objCfg.m_key, nullptr).wait();
-
-                        // Connect the data
-                        ::fwServices::IService::KeyConnectionsMap connectionMap = srv->getAutoConnections();
-                        const bool hasRootCompositeConnection =
-                            (connectionMap.find(::fwServices::IService::s_DEFAULT_OBJECT) != connectionMap.end());
-
-                        if (objCfg.m_autoConnect && !hasRootCompositeConnection)
-                        {
-                            ::fwServices::IService::KeyConnectionsType connections;
-                            auto it = connectionMap.find(objCfg.m_key);
-                            if( it != connectionMap.end())
-                            {
-                                connections = it->second;
-                            }
-                            else
-                            {
-                                connections = srv->getObjSrvConnections();
-                            }
-
-                            m_deferredObjects[objCfg.m_uid].m_connections.connect(object, srv, connections );
-                        }
                     }
 
                     createService = false;
+                    reconnect     = true;
                 }
             }
         }
@@ -1002,16 +878,6 @@ void AppConfigManager2::addObjects(fwData::Object::sptr obj, const std::string& 
             // 1. Create the service
             auto srv = this->createService(*srvCfg);
 
-            // 2. Handle connections for this service, we can safely connect everything
-            const auto it = m_deferredServices.find(uid);
-            if(it != m_deferredServices.end())
-            {
-                for(const auto& connectCfg : it->second.m_proxyCnt)
-                {
-                    this->connect(connectCfg.first, connectCfg.second);
-                }
-            }
-
             // 3. Start the service
             futures.push_back(srv->start());
             m_startedSrv.push_back(srv);
@@ -1019,6 +885,15 @@ void AppConfigManager2::addObjects(fwData::Object::sptr obj, const std::string& 
             // Debug message
             SLM_INFO( this->msgHead() + "Service '" + uid + "' has been automatically started because its "
                       "objects are all available.");
+        }
+        else if(reconnect)
+        {
+            // Update auto connections
+            ::fwServices::IService::sptr srv = ::fwServices::get(uid);
+            OSLM_ASSERT(this->msgHead() + "No service registered with UID \"" << uid << "\".", srv);
+
+            srv->autoDisconnect();
+            srv->autoConnect();
         }
     }
 
@@ -1035,8 +910,6 @@ void AppConfigManager2::removeObjects(fwData::Object::sptr obj, const std::strin
     const auto itDeferredObj = m_deferredObjects.find(id);
     if(itDeferredObj != m_deferredObjects.end())
     {
-        itDeferredObj->second.m_connections.disconnect();
-
         for(const auto& itProxy : itDeferredObj->second.m_proxyCnt)
         {
             this->destroyProxy(itProxy.first, itProxy.second, id, itDeferredObj->second.m_object);
@@ -1077,19 +950,9 @@ void AppConfigManager2::removeObjects(fwData::Object::sptr obj, const std::strin
 
                 if(!optional)
                 {
-                    // 1. Disconnect everything
-                    const auto it = m_deferredServices.find(srvCfg.m_uid);
-                    if(it != m_deferredServices.end())
-                    {
-                        for(const auto& itProxy : it->second.m_proxyCnt)
-                        {
-                            this->destroyProxy(itProxy.first, itProxy.second, srvCfg.m_uid);
-                        }
-                    }
-
-                    // 2. Stop the service
+                    // 1. Stop the service
                     ::fwServices::IService::sptr srv = ::fwServices::get(srvCfg.m_uid);
-                    OSLM_ASSERT("No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
+                    OSLM_ASSERT(this->msgHead() + "No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
 
                     OSLM_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
                     srv->stop().wait();
@@ -1103,7 +966,7 @@ void AppConfigManager2::removeObjects(fwData::Object::sptr obj, const std::strin
                         }
                     }
 
-                    // 3. Destroy the service
+                    // 2. Destroy the service
                     OSLM_ASSERT("Service " << srv->getID() << " must be stopped before destruction.",
                                 srv->isStopped());
                     ::fwServices::OSR::unregisterService(srv);
@@ -1129,6 +992,15 @@ void AppConfigManager2::removeObjects(fwData::Object::sptr obj, const std::strin
                               "' has been stopped because the object " +
                               id + " is no longer available.");
                 }
+                else
+                {
+                    // Update auto connections
+                    ::fwServices::IService::sptr srv = ::fwServices::get(srvCfg.m_uid);
+                    OSLM_ASSERT(this->msgHead() + "No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
+
+                    srv->autoDisconnect();
+                    srv->autoConnect();
+                }
             }
         }
     }
@@ -1136,7 +1008,7 @@ void AppConfigManager2::removeObjects(fwData::Object::sptr obj, const std::strin
 
 //------------------------------------------------------------------------------
 
-void AppConfigManager2::connect(const std::string& channel, const ProxyConnections& connectCfg)
+void AppConfigManager2::connectProxy(const std::string& channel, const ProxyConnections& connectCfg)
 {
     ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
 

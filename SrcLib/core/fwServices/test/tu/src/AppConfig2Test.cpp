@@ -524,6 +524,12 @@ void AppConfig2Test::connectionTest()
     CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv2->getStatus());
     CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
+    fwTools::Object::sptr gnsrv4 = ::fwTools::fwID::getObject("TestService4Uid");
+    auto srv4                    = ::fwServices::ut::TestService::dynamicCast(gnsrv4);
+    CPPUNIT_ASSERT(srv4 != nullptr);
+    WAIT(::fwServices::IService::STARTED == srv4->getStatus());
+    CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv4->getStatus());
+
     // Check connection
     auto sig = data1->signal< ::fwData::Object::ModifiedSignalType>(::fwData::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
@@ -561,6 +567,10 @@ void AppConfig2Test::connectionTest()
 
     CPPUNIT_ASSERT(srv2->getIsUpdated());
 
+    WAIT(!srv4->getIsUpdated());
+    CPPUNIT_ASSERT(!srv4->getIsUpdated());
+    CPPUNIT_ASSERT(!srv4->getIsUpdated2());
+
     // Create the missing data
     ::fwData::Boolean::sptr data2 = ::fwData::Boolean::New();
     ::fwData::Boolean::sptr data3 = ::fwData::Boolean::New();
@@ -577,6 +587,10 @@ void AppConfig2Test::connectionTest()
         srv2->resetIsUpdated();
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv3->getIsUpdated());
+
+        // Check "started" signal
+        CPPUNIT_ASSERT(srv4->getIsUpdated());
+        CPPUNIT_ASSERT(!srv4->getIsUpdated2());
 
         sig->asyncEmit();
         WAIT(srv2->getIsUpdated() && srv3->getIsUpdated());
@@ -655,6 +669,13 @@ void AppConfig2Test::connectionTest()
 
     CPPUNIT_ASSERT(srv2->getIsUpdated());
 
+    // Check "stopped" signal
+    CPPUNIT_ASSERT(srv4->getIsUpdated());
+    CPPUNIT_ASSERT(srv4->getIsUpdated2());
+    srv4->resetIsUpdated();
+    srv4->resetIsUpdated2();
+    CPPUNIT_ASSERT(!srv4->getIsUpdated2());
+
     // Add back data 3 and check connection again
     ::fwServices::OSR::registerServiceOutput(data3, "out3", genDataSrv);
     WAIT_SERVICE_STARTED("TestService3Uid");
@@ -667,6 +688,8 @@ void AppConfig2Test::connectionTest()
         srv2->resetIsUpdated();
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
         CPPUNIT_ASSERT(!srv3->getIsUpdated());
+        CPPUNIT_ASSERT(srv4->getIsUpdated());
+        CPPUNIT_ASSERT(!srv4->getIsUpdated2());
 
         sig->asyncEmit();
         WAIT(srv2->getIsUpdated() && srv3->getIsUpdated());
@@ -1299,7 +1322,7 @@ fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildAutoConnectTestConfig
     dataService2_1->setAttributeValue( "key", "data1" );
     dataService2_1->setAttributeValue( "uid", "data1Id" );
 
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_2 = service2->addConfigurationElement("out");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService2_2 = service2->addConfigurationElement("inout");
     dataService2_2->setAttributeValue( "key", "data2" );
     dataService2_2->setAttributeValue( "uid", "data2Id" );
 
@@ -1313,7 +1336,7 @@ fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildAutoConnectTestConfig
     dataService3_1->setAttributeValue( "uid", "data1Id" );
     dataService3_1->setAttributeValue( "autoConnect", "yes" );
 
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService3_2 = service3->addConfigurationElement("out");
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > dataService3_2 = service3->addConfigurationElement("inout");
     dataService3_2->setAttributeValue( "key", "data2" );
     dataService3_2->setAttributeValue( "uid", "data2Id" );
     dataService3_2->setAttributeValue( "autoConnect", "yes" );
@@ -1421,6 +1444,11 @@ fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildConnectionConfig()
     dataService3_3->setAttributeValue( "key", "data3" );
     dataService3_3->setAttributeValue( "uid", "data3Id" );
 
+    // Service #4 - used to test "started" and "stopped" signals
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > service4 = cfg->addConfigurationElement("service");
+    service4->setAttributeValue( "uid", "TestService4Uid" );
+    service4->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
+
     // Connections
     std::shared_ptr< ::fwRuntime::EConfigurationElement > connect1 = cfg->addConfigurationElement("connect");
     connect1->addConfigurationElement("signal")->setValue( "data1Id/modified" );
@@ -1444,10 +1472,19 @@ fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildConnectionConfig()
     connect4->addConfigurationElement("slot")->setValue( "TestService2Uid/update" );
     connect4->addConfigurationElement("slot")->setValue( "TestService3Uid/update" );
 
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > connect5 = cfg->addConfigurationElement("connect");
+    connect5->addConfigurationElement("signal")->setValue( "TestService3Uid/started" );
+    connect5->addConfigurationElement("slot")->setValue( "TestService4Uid/update" );
+
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > connect6 = cfg->addConfigurationElement("connect");
+    connect6->addConfigurationElement("signal")->setValue( "TestService3Uid/stopped" );
+    connect6->addConfigurationElement("slot")->setValue( "TestService4Uid/update2" );
+
     // Start method from object's services
     cfg->addConfigurationElement("start")->setAttributeValue( "uid", "SGenerateData" );
     cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService1Uid" );
     cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService2Uid" );
+    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService4Uid" );
 
     return cfg;
 }

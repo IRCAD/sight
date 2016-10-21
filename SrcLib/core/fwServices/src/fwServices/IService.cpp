@@ -7,6 +7,7 @@
 #include "fwServices/IService.hpp"
 #include "fwServices/registry/ActiveWorkers.hpp"
 #include "fwServices/registry/ObjectService.hpp"
+#include "fwServices/registry/Proxy.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
@@ -20,6 +21,7 @@
 #include <fwTools/fwID.hpp>
 
 #include <boost/property_tree/ptree.hpp>
+#include <boost/regex.hpp>
 
 namespace fwServices
 {
@@ -162,6 +164,19 @@ void IService::setConfiguration(const ::fwRuntime::ConfigurationElement::sptr _c
 
 //-----------------------------------------------------------------------------
 
+void IService::setConfiguration(const Config& _configuration)
+{
+    SLM_ASSERT( "Invalid ConfigurationElement", _configuration.m_config );
+
+    // TODO: Remove this ugly const_cast
+    m_configuration      = ::fwRuntime::ConfigurationElement::constCast(_configuration.m_config);
+    m_configurationState = UNCONFIGURED;
+
+    m_serviceConfig = _configuration;
+}
+
+//-----------------------------------------------------------------------------
+
 void IService::setConfiguration( const ConfigType& ptree )
 {
     ::fwRuntime::ConfigurationElement::sptr ce;
@@ -235,6 +250,8 @@ IService::SharedFutureType IService::start()
     {
         OSLM_FATAL_IF("Service "<<this->getID()<<" already started", m_globalState != STOPPED);
 
+        this->connectToConfig();
+
         PackagedTaskType task( ::boost::bind(&IService::starting, this) );
         UniqueFutureType ufuture = task.get_future();
 
@@ -246,6 +263,8 @@ IService::SharedFutureType IService::start()
         {
             ufuture.get();
         }
+
+        this->autoConnect();
 
         auto sig = this->signal<StartedSignalType>(s_STARTED_SIG);
         sig->asyncEmit();
@@ -266,6 +285,8 @@ IService::SharedFutureType IService::stop()
     {
         OSLM_FATAL_IF("Service "<<this->getID()<<" already stopped", m_globalState != STARTED);
 
+        this->autoDisconnect();
+
         PackagedTaskType task( ::boost::bind(&IService::stopping, this) );
         UniqueFutureType ufuture = task.get_future();
 
@@ -280,6 +301,8 @@ IService::SharedFutureType IService::stop()
 
         auto sig = this->signal<StoppedSignalType>(s_STOPPED_SIG);
         sig->asyncEmit();
+
+        this->disconnectFromConfig();
 
         return ::boost::move(ufuture);
     }
@@ -444,6 +467,187 @@ IService::KeyConnectionsMap IService::getAutoConnections() const
 {
     KeyConnectionsMap connections;
     return connections;
+}
+
+//-----------------------------------------------------------------------------
+
+void IService::addProxyConnection(const helper::ProxyConnections& proxy)
+{
+    m_proxies[proxy.m_channel] = proxy;
+}
+
+//-----------------------------------------------------------------------------
+
+void IService::connectToConfig()
+{
+    ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
+
+    for(const auto& proxyCfg : m_proxies)
+    {
+        for(const auto& signalCfg : proxyCfg.second.m_signals)
+        {
+            SLM_ASSERT("Invalid signal source", signalCfg.first == this->getID());
+
+            ::fwCom::SignalBase::sptr sig = this->signal(signalCfg.second);
+            SLM_ASSERT("Signal '" + signalCfg.second + "' not found in source '" + signalCfg.first + "'.", sig);
+            proxy->connect(proxyCfg.second.m_channel, sig);
+        }
+
+        for(const auto& slotCfg : proxyCfg.second.m_slots)
+        {
+            SLM_ASSERT("Invalid slot destination", slotCfg.first == this->getID());
+
+            ::fwCom::SlotBase::sptr slot = this->slot(slotCfg.second);
+            SLM_ASSERT("Slot '" + slotCfg.second + "' not found in source '" + slotCfg.first + "'.", slot);
+            proxy->connect(proxyCfg.second.m_channel, slot);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void IService::autoConnect()
+{
+    ::fwServices::IService::KeyConnectionsMap connectionMap = this->getAutoConnections();
+
+    // For compatibility with V1, we allow services to connect explicitly with the default object
+    // For these services we will ignore all auto connections with any other data
+    // This is intended notably for managers-like services
+    const bool hasDefaultObjectConnectionV1 =
+        (connectionMap.find(::fwServices::IService::s_DEFAULT_OBJECT) != connectionMap.end());
+
+    for(const auto& objectCfg : m_serviceConfig.m_objects)
+    {
+        if ((m_serviceConfig.m_globalAutoConnect || objectCfg.m_autoConnect) && !hasDefaultObjectConnectionV1)
+        {
+            ::fwServices::IService::KeyConnectionsType connections;
+            if(!connectionMap.empty())
+            {
+                auto it = connectionMap.find(objectCfg.m_key);
+                if( it != connectionMap.end())
+                {
+                    connections = it->second;
+                }
+                else
+                {
+                    // Special case if we have a key from a group we check with the name of the group
+                    boost::smatch match;
+                    static const ::boost::regex reg("(.*)#[0-9]+");
+                    if( ::boost::regex_match(objectCfg.m_key, match, reg ) && match.size() == 2)
+                    {
+                        const std::string group = match[1].str();
+                        auto it                 = connectionMap.find(group);
+                        if( it != connectionMap.end())
+                        {
+                            connections = it->second;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // V1 compatibility, we didn't implemented the new function, so we stick to the old behavior
+                // This also allows to get the default connection with the s_UPDATE_SLOT. When we remove this
+                // function, we will have to implement this behavior with getAutoConnections()
+                connections = this->getObjSrvConnections();
+            }
+
+            ::fwData::Object::csptr obj;
+
+            switch(objectCfg.m_access)
+            {
+                case AccessType::INPUT:
+                {
+                    auto itObj = m_inputsMap.find(objectCfg.m_key);
+                    if(itObj != m_inputsMap.end())
+                    {
+                        obj = itObj->second.lock();
+                    }
+                    break;
+                }
+                case AccessType::INOUT:
+                {
+                    auto itObj = m_inOutsMap.find(objectCfg.m_key);
+                    if(itObj != m_inOutsMap.end())
+                    {
+                        obj = itObj->second.lock();
+                    }
+                    break;
+                }
+                case AccessType::OUTPUT:
+                {
+                    SLM_WARN("Can't autoConnect to an output for now");
+                    auto itObj = m_outputsMap.find(objectCfg.m_key);
+                    if(itObj != m_outputsMap.end())
+                    {
+                        obj = itObj->second.lock();
+                    }
+                    break;
+                }
+            }
+
+            SLM_ASSERT("Object '" + objectCfg.m_uid +
+                       "' has not been found when autoConnecting service '" + m_serviceConfig.m_uid + "'.",
+                       (!objectCfg.m_optional && obj) || objectCfg.m_optional);
+
+            if(obj)
+            {
+                m_autoConnections.connect( obj, this->getSptr(), connections );
+            }
+        }
+    }
+
+    // Autoconnect with the default object - to be cleaned when V1 compatibility is over
+    auto defaultObj = this->getInOut< ::fwData::Object >(s_DEFAULT_OBJECT);
+
+    if(m_serviceConfig.m_globalAutoConnect && defaultObj)
+    {
+        ::fwServices::IService::KeyConnectionsType connections;
+        auto it = connectionMap.find(::fwServices::IService::s_DEFAULT_OBJECT);
+        if( it != connectionMap.end())
+        {
+            connections = it->second;
+        }
+        else if(m_serviceConfig.m_objects.size() == 0)
+        {
+            // Only use the old callback automatically in case we put a composite as the only one data
+            connections = this->getObjSrvConnections();
+        }
+
+        m_autoConnections.connect( defaultObj, this->getSptr(), connections );
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void IService::disconnectFromConfig()
+{
+    ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
+
+    for(const auto& proxyCfg : m_proxies)
+    {
+        for(const auto& signalCfg : proxyCfg.second.m_signals)
+        {
+            SLM_ASSERT("Invalid signal source", signalCfg.first == this->getID());
+
+            ::fwCom::SignalBase::sptr sig = this->signal(signalCfg.second);
+            proxy->disconnect(proxyCfg.second.m_channel, sig);
+        }
+        for(const auto& slotCfg : proxyCfg.second.m_slots)
+        {
+            SLM_ASSERT("Invalid slot destination", slotCfg.first == this->getID());
+
+            ::fwCom::SlotBase::sptr slot = this->slot(slotCfg.second);
+            proxy->disconnect(proxyCfg.second.m_channel, slot);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void IService::autoDisconnect()
+{
+    m_autoConnections.disconnect();
 }
 
 //-----------------------------------------------------------------------------

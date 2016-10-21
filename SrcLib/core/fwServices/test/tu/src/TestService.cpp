@@ -22,6 +22,7 @@ namespace ut
 
 const ::fwCom::Signals::SignalKeyType TestServiceImplementation::s_MSG_SENT_SIG = "msgSent";
 const ::fwCom::Slots::SlotKeyType TestServiceImplementation::s_RECEIVE_MSG_SLOT = "receiveMsg";
+const ::fwCom::Slots::SlotKeyType TestServiceImplementation::s_UPDATE2_SLOT     = "update2";
 
 const ::fwCom::Signals::SignalKeyType TestSrvAutoconnect::s_SIG_1 = "signal1";
 const ::fwCom::Slots::SlotKeyType TestSrvAutoconnect::s_SLOT_1    = "slot1";

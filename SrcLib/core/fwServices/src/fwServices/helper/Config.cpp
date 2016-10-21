@@ -108,9 +108,9 @@ Config::ConnectionInfo Config::parseConnections( const ::fwRuntime::Configuratio
 
 //-----------------------------------------------------------------------------
 
-Config::ProxyConnections Config::parseConnections2(const ::fwRuntime::ConfigurationElement::csptr& connectionCfg,
-                                                   const std::string& errMsgHead,
-                                                   std::function<std::string ()> generateChannelNameFn)
+ProxyConnections Config::parseConnections2(const ::fwRuntime::ConfigurationElement::csptr& connectionCfg,
+                                           const std::string& errMsgHead,
+                                           std::function<std::string ()> generateChannelNameFn)
 {
 
     ::boost::regex re("(.*)/(.*)");
@@ -257,13 +257,13 @@ void Config::disconnectProxies(const std::string& objectKey, Config::ProxyConnec
 
 //-----------------------------------------------------------------------------
 
-Config::ServiceConfig Config::parseService(const ::fwRuntime::ConfigurationElement::csptr& srvElem,
-                                           const std::string& errMsgHead)
+::fwServices::IService::Config Config::parseService(const ::fwRuntime::ConfigurationElement::csptr& srvElem,
+                                                    const std::string& errMsgHead)
 {
     SLM_ASSERT("Configuration element is not a \"service\" node.", srvElem->getName() == "service");
 
     // Get attributes
-    ServiceConfig srvConfig;
+    ::fwServices::IService::Config srvConfig;
 
     // Uid
     if (srvElem->hasAttribute("uid"))
@@ -335,7 +335,7 @@ Config::ServiceConfig Config::parseService(const ::fwRuntime::ConfigurationEleme
     for(const auto& cfg : objectCfgs)
     {
         // Access type
-        ObjectServiceConfig objConfig;
+        ::fwServices::IService::ObjectServiceConfig objConfig;
         if(cfg->getName() == "in")
         {
             objConfig.m_access = ::fwServices::IService::AccessType::INPUT;
@@ -390,7 +390,7 @@ Config::ServiceConfig Config::parseService(const ::fwRuntime::ConfigurationEleme
             size_t count = 0;
             for(const auto& groupCfg : keyCfgs)
             {
-                ObjectServiceConfig grouObjConfig = objConfig;
+                ::fwServices::IService::ObjectServiceConfig grouObjConfig = objConfig;
 
                 // Identifier
                 grouObjConfig.m_uid = groupCfg->getAttributeValue("uid");

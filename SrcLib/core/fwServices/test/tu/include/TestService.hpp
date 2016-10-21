@@ -32,6 +32,7 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (TestService)(::fwServices::IService) );
     TestService() throw() :
         m_isUpdated(false),
+        m_isUpdated2(false),
         m_isUpdatedMessage(false)
     {
     }
@@ -52,7 +53,7 @@ public:
     virtual void updating() throw(::fwTools::Failed)override
     {
     }
-    virtual void info(std::ostream &_sstream )
+    virtual void info(std::ostream& _sstream )
     {
         _sstream << "TestService";
     }
@@ -62,6 +63,13 @@ public:
     {
         return m_isUpdated;
     }
+
+    /// return true if the service is updated with update() method
+    bool getIsUpdated2() const
+    {
+        return m_isUpdated2;
+    }
+
 
     /// return true if the service is updated with update(msg) method
     bool getIsUpdatedMessage() const
@@ -75,9 +83,16 @@ public:
         m_isUpdated = false;
     }
 
+    /// return true if the service is updated with update() method
+    void resetIsUpdated2()
+    {
+        m_isUpdated2 = false;
+    }
+
 protected:
     bool m_isUpdated;
     bool m_isUpdatedMessage;
+    bool m_isUpdated2;
 };
 
 /**
@@ -93,6 +108,7 @@ public:
     static const ::fwCom::Signals::SignalKeyType s_MSG_SENT_SIG;
     /// Keys to register Slot
     static const ::fwCom::Slots::SlotKeyType s_RECEIVE_MSG_SLOT;
+    static const ::fwCom::Slots::SlotKeyType s_UPDATE2_SLOT;
 
     /// Type os signal
     typedef ::fwCom::Signal< void (std::string)> MsgSentSignalType;
@@ -102,6 +118,7 @@ public:
     {
         newSignal<MsgSentSignalType>(s_MSG_SENT_SIG);
         newSlot(s_RECEIVE_MSG_SLOT, &TestServiceImplementation::receiveMsg, this);
+        newSlot(s_UPDATE2_SLOT, &TestServiceImplementation::update2, this);
     }
     //-------------------------------------------------------------------------
     virtual ~TestServiceImplementation() throw()
@@ -120,6 +137,12 @@ public:
     }
 
     //-------------------------------------------------------------------------
+    void update2() throw(::fwTools::Failed)
+    {
+        m_isUpdated2 = true;
+    }
+
+    //-------------------------------------------------------------------------
     virtual void swapping(const KeyType& key) throw(::fwTools::Failed)override
     {
         m_swappedObjectKey = key;
@@ -133,7 +156,7 @@ public:
     }
 
     //-------------------------------------------------------------------------
-    virtual void info(std::ostream &_sstream ) override
+    virtual void info(std::ostream& _sstream ) override
     {
         _sstream << "TestServiceImplementation";
     }
@@ -215,7 +238,7 @@ public:
     }
     //-------------------------------------------------------------------------
 
-    virtual void info(std::ostream &_sstream ) override
+    virtual void info(std::ostream& _sstream ) override
     {
         _sstream << "TestSrvAutoconnect";
     }
