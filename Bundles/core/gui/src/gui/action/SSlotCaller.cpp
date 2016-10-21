@@ -62,7 +62,7 @@ void SSlotCaller::stopping() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SSlotCaller::info(std::ostream &_sstream )
+void SSlotCaller::info(std::ostream& _sstream )
 {
     _sstream << "Starter Action" << std::endl;
 }
@@ -98,6 +98,8 @@ void SSlotCaller::configuring() throw( ::fwTools::Failed )
     SLM_TRACE_FUNC();
     this->initialize();
 
+    OSLM_ASSERT("Missing slots configuration element in " << this->getID(),
+                m_configuration->hasConfigurationElement("slots"));
     ConfigurationType cfg = m_configuration->findConfigurationElement("slots");
 
     ::fwRuntime::ConfigurationElementContainer slotCfgs = cfg->findAllConfigurationElement("slot");
