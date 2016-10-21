@@ -6,8 +6,6 @@
 
 #include "visuOgreAdaptor/SInteractorStyle.hpp"
 
-#include <fwServices/macros.hpp>
-
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 #include <fwCom/Slot.hxx>
@@ -15,6 +13,7 @@
 #include <fwRenderOgre/interactor/IInteractor.hpp>
 #include <fwRenderOgre/interactor/IMovementInteractor.hpp>
 #include <fwRenderOgre/interactor/IPickerInteractor.hpp>
+#include <fwRenderOgre/interactor/VRWidgetsInteractor.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -40,6 +39,7 @@ SInteractorStyle::SInteractorStyle() throw()
     m_interactorStyles["Mesh"]      = "::fwRenderOgre::interactor::MeshPickerInteractor";
     m_interactorStyles["Video"]     = "::fwRenderOgre::interactor::VideoPickerInteractor";
     m_interactorStyles["Negato2D"]  = "::fwRenderOgre::interactor::Negato2DInteractor";
+    m_interactorStyles["VR"]        = "::fwRenderOgre::interactor::VRWidgetsInteractor";
 }
 
 //------------------------------------------------------------------------------
@@ -112,7 +112,8 @@ void SInteractorStyle::setInteractorStyle()
 
     if(!std::strcmp("Trackball", m_configuredStyle.c_str())
        || !std::strcmp("Fixed", m_configuredStyle.c_str())
-       || !std::strcmp("Negato2D", m_configuredStyle.c_str()))
+       || !std::strcmp("Negato2D", m_configuredStyle.c_str())
+       || !std::strcmp("VR", m_configuredStyle.c_str()))
     {
         this->getRenderService()->getLayer(m_layerID)->setMoveInteractor(
             ::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(interactor));
@@ -125,6 +126,7 @@ void SInteractorStyle::setInteractorStyle()
 }
 
 //------------------------------------------------------------------------------
+
 void SInteractorStyle::clickedPoint( ::fwData::Object::sptr obj )
 {
     m_sigPointClicked->asyncEmit( obj );

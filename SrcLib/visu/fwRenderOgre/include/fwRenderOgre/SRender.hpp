@@ -8,24 +8,23 @@
 #define __FWRENDEROGRE_SRENDER_HPP__
 
 #include "fwRenderOgre/config.hpp"
+#include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
+#include <fwRenderOgre/Layer.hpp>
+#include <fwRenderOgre/Utils.hpp>
+#include <fwRenderOgre/picker/IPicker.hpp>
 
+#include <fwCom/Signal.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-#include <fwCom/Signal.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include <fwRender/IRender.hpp>
 
-#include <fwRenderOgre/picker/IPicker.hpp>
-#include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
-#include <fwRenderOgre/Layer.hpp>
-#include <fwRenderOgre/Utils.hpp>
-
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/helper/Config.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 
@@ -100,6 +99,9 @@ class Layer;
  *    - \b numPeels (optional): number of peels for the selected transparency technique.
  *                              Not used for WeightedBlended OIT
  *    - \b compositors (optional): defines the default compositor chain. The compositors are separated by semicolons
+ *    - \b fullscreen (optional, default="no"): Show the scene in full screen.
+ *    - \b stereoMode (optional, default="no"): sets the mode used for stereoscopic 3D rendering,
+ *                                          available modes are "AutoStereo5", "AutoStereo8" and "no".
  */
 class FWRENDEROGRE_CLASS_API SRender : public ::fwRender::IRender
 
@@ -116,6 +118,8 @@ public:
 
     /// Actives layouts in the scene
     typedef std::map< SceneIdType, SPTR(::fwRenderOgre::Layer) > LayerMapType;
+
+    FWRENDEROGRE_API static const std::string s_OGREBACKGROUNDID;
 
     /**
      * @name Signal API
@@ -165,7 +169,7 @@ public:
     FWRENDEROGRE_API LayerMapType getLayers();
 
     /// Returns m_interactorManager
-    FWRENDEROGRE_API ::fwRenderOgre::IRenderWindowInteractorManager::sptr getInteractorManager();
+    FWRENDEROGRE_API ::fwRenderOgre::IRenderWindowInteractorManager::sptr getInteractorManager() const;
 
     /// Reset camera parameters with the actual global bounding box
     FWRENDEROGRE_API void resetCameraCoordinates(const std::string& _layerId);
@@ -237,7 +241,7 @@ private:
     LayerMapType m_layers;
 
     /// Signal/ Slot connection
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     /// Ogre window interactor manager
     ::fwRenderOgre::IRenderWindowInteractorManager::sptr m_interactorManager;
@@ -259,6 +263,9 @@ private:
 
     /// Map containing all adaptors
     SceneAdaptorsMapType m_adaptors;
+
+    /// True if the render window is in fullscreen.
+    bool m_fullscreen;
 };
 
 //-----------------------------------------------------------------------------

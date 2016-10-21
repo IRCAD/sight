@@ -11,13 +11,15 @@
 
 #include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
 
-#include <QtWidgets/QApplication>
+#include <Ogre.h>
 #include <QPoint>
+
+#include <Overlay/OgreOverlaySystem.h>
+
 #include <QtGui/QKeyEvent>
 #include <QtGui/QWindow>
 
-#include <Ogre.h>
-#include <Overlay/OgreOverlaySystem.h>
+#include <QtWidgets/QApplication>
 //#include <OGRE/SdkTrays.h>
 
 namespace visuOgreQt
@@ -72,6 +74,10 @@ public:
      */
     VISUOGREQT_API virtual void preViewportUpdate(const ::Ogre::RenderTargetViewportEvent& evt);
 
+    VISUOGREQT_API void setFullScreen(bool fullscreen);
+
+    int getFrameId() const;
+
 public Q_SLOTS:
 
     /**
@@ -115,6 +121,25 @@ protected:
      */
     VISUOGREQT_API void initialise();
 
+    /*
+     * Qt events to manage keyboard and mouse input
+     */
+    virtual void keyPressEvent(QKeyEvent* e);
+    /// Qt event to manage mouse move
+    virtual void mouseMoveEvent(QMouseEvent* e);
+    /// Qt event to manage wheel action
+    virtual void wheelEvent(QWheelEvent* e);
+    /// Qt event to manage mouse clic
+    virtual void mousePressEvent(QMouseEvent* e);
+    /// Qt event to manage mouse clic on release
+    virtual void mouseReleaseEvent(QMouseEvent* e);
+    /// Qt event to manage when window visibility in the windowing system changes.
+    virtual void exposeEvent(QExposeEvent* event);
+    /// Qt event to manage when window is moved.
+    virtual void moveEvent(QMoveEvent* event);
+    /// Qt event to manage generic events
+    virtual bool event(QEvent* event);
+
     /// Needed for multiple instances of ogreQt WIDGET
     static int m_counter;
 
@@ -140,35 +165,37 @@ protected:
     bool m_isInitialised;
     /// Tells if the overlay is show for this renderwindow
     bool m_showOverlay;
+    /// Tells if the window fills the screen.
+    bool m_fullscreen;
 
     /// Used to log position of left clic.
     QPoint* m_lastPosLeftClick;
     /// Used to log position of middle clic.
     QPoint* m_lastPosMiddleClick;
+    /// Used to log position of right clic.
+    QPoint* m_lastPosRightClick;
 
     /// Has the mouse moved since clicked
     bool m_mousedMoved;
 
-    /*
-     * Qt events to manage keyboard and mouse input
-     */
-    virtual void keyPressEvent(QKeyEvent* e);
-    /// Qt event to manage mouse move
-    virtual void mouseMoveEvent(QMouseEvent* e);
-    /// Qt event to manage wheel action
-    virtual void wheelEvent(QWheelEvent* e);
-    /// Qt event to manage mouse clic
-    virtual void mousePressEvent(QMouseEvent* e);
-    /// Qt event to manage mouse clic on release
-    virtual void mouseReleaseEvent(QMouseEvent* e);
-    /// Qt event to manage when window visibility in the windowing system changes.
-    virtual void exposeEvent(QExposeEvent* event);
-    /// Qt event to manage when window is moved.
-    virtual void moveEvent(QMoveEvent* event);
-    /// Qt event to manage generic events
-    virtual bool event(QEvent* event);
-
+    int m_frameId;
 };
+
+//-----------------------------------------------------------------------------
+
+inline void Window::setFullScreen(bool fullscreen)
+{
+    m_fullscreen = fullscreen;
+}
+
+//-----------------------------------------------------------------------------
+
+inline int Window::getFrameId() const
+{
+    return m_frameId;
+}
+
+//-----------------------------------------------------------------------------
 
 }
 

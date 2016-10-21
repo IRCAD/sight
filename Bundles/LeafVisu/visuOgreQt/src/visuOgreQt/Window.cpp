@@ -9,6 +9,9 @@
 #define FW_PROFILING_DISABLED
 #include <fwCore/Profiling.hpp>
 
+#include <fwGui/Application.hpp>
+#include <fwGui/Cursor.hpp>
+
 #include <fwRenderOgre/Utils.hpp>
 #include <fwRenderOgre/WindowManager.hpp>
 
@@ -35,8 +38,10 @@ Window::Window(QWindow* parent) :
     m_animating(false),
     m_isInitialised(false),
     m_showOverlay(false),
+    m_fullscreen(false),
     m_lastPosLeftClick(nullptr),
-    m_lastPosMiddleClick(nullptr)
+    m_lastPosMiddleClick(nullptr),
+    m_frameId(0)
 {
     setAnimating(false);
     installEventFilter(this);
@@ -195,6 +200,7 @@ void Window::destroyWindow()
 
 void Window::render()
 {
+    ++m_frameId;
     /*
        How we tied in the render function for OGre3D with QWindow's render function. This is what gets call
        repeatedly. Note that we don't call this function directly; rather we use the renderNow() function
@@ -265,7 +271,6 @@ bool Window::event(QEvent* event)
             return QWindow::event(event);
     }
 }
-
 // ----------------------------------------------------------------------------
 
 void Window::exposeEvent(QExposeEvent* event)
@@ -381,6 +386,15 @@ void Window::keyPressEvent(QKeyEvent* e)
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS;
     info.key             = e->key();
+
+    if(m_fullscreen && e->key() == Qt::Key_Escape)
+    {
+        ::fwGui::Cursor cursor;
+        cursor.setCursor(::fwGui::ICursor::BUSY);
+        ::fwGui::Application::New()->exit(0);
+        cursor.setDefaultCursor();
+    }
+
     Q_EMIT interacted(info);
 }
 
@@ -400,6 +414,7 @@ void Window::mouseMoveEvent( QMouseEvent* e )
         info.y               = y;
         info.dx              = dx;
         info.dy              = dy;
+        info.button          = ::fwRenderOgre::interactor::IInteractor::LEFT;
         Q_EMIT interacted(info);
         m_lastPosLeftClick->setX(e->x());
         m_lastPosLeftClick->setY(e->y());
@@ -415,19 +430,36 @@ void Window::mouseMoveEvent( QMouseEvent* e )
         int dy = y - e->y();
 
         ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-        info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::HORIZONTALMOVE;
+        info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
         info.x               = x;
+        info.y               = y;
         info.dx              = dx;
+        info.dy              = dy;
+        info.button          = ::fwRenderOgre::interactor::IInteractor::MIDDLE;
         Q_EMIT interacted(info);
-
-        ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info2;
-        info2.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::VERTICALMOVE;
-        info2.y               = y;
-        info2.dy              = dy;
-        Q_EMIT interacted(info2);
 
         m_lastPosMiddleClick->setX(e->x());
         m_lastPosMiddleClick->setY(e->y());
+        this->requestRender();
+    }
+    else if (e->buttons() & ::Qt::RightButton && m_lastPosRightClick )
+    {
+        int x  = m_lastPosRightClick->x();
+        int y  = m_lastPosRightClick->y();
+        int dx = x - e->x();
+        int dy = y - e->y();
+
+        ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
+        info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
+        info.x               = x;
+        info.y               = y;
+        info.dx              = dx;
+        info.dy              = dy;
+        info.button          = ::fwRenderOgre::interactor::IInteractor::RIGHT;
+        Q_EMIT interacted(info);
+
+        m_lastPosRightClick->setX(e->x());
+        m_lastPosRightClick->setY(e->y());
         this->requestRender();
     }
 }
@@ -454,17 +486,37 @@ void Window::wheelEvent(QWheelEvent* e)
 
 void Window::mousePressEvent( QMouseEvent* e )
 {
+    ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
+    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONPRESS;
+    info.button          = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
+    info.delta           = 0;
+    info.x               = e->x();
+    info.y               = e->y();
+    info.dx              = 0;
+    info.dy              = 0;
+
     if(e->button() == Qt::LeftButton)
     {
         m_lastPosLeftClick = new QPoint(e->x(), e->y());
 
         m_mousedMoved = false;
+
+        info.button = ::fwRenderOgre::interactor::IInteractor::LEFT;
     }
     else if(e->button() == Qt::MiddleButton)
     {
         m_lastPosMiddleClick = new QPoint(e->x(), e->y());
+
+        info.button = ::fwRenderOgre::interactor::IInteractor::MIDDLE;
+    }
+    else if(e->button() == Qt::RightButton)
+    {
+        m_lastPosRightClick = new QPoint(e->x(), e->y());
+
+        info.button = ::fwRenderOgre::interactor::IInteractor::RIGHT;
     }
 
+    Q_EMIT interacted(info);
     this->requestRender();
 }
 
@@ -472,6 +524,15 @@ void Window::mousePressEvent( QMouseEvent* e )
 
 void Window::mouseReleaseEvent( QMouseEvent* e )
 {
+    ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
+    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONRELEASE;
+    info.button          = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
+    info.delta           = 0;
+    info.x               = e->x();
+    info.y               = e->y();
+    info.dx              = 0;
+    info.dy              = 0;
+
     if(e->button() == Qt::LeftButton && m_lastPosLeftClick)
     {
         if( !m_mousedMoved )
@@ -485,12 +546,24 @@ void Window::mouseReleaseEvent( QMouseEvent* e )
         delete m_lastPosLeftClick;
         m_lastPosLeftClick = nullptr;
 
+        info.button = ::fwRenderOgre::interactor::IInteractor::LEFT;
     }
     else if(e->button() == Qt::MiddleButton && m_lastPosMiddleClick)
     {
         delete m_lastPosMiddleClick;
         m_lastPosMiddleClick = nullptr;
+
+        info.button = ::fwRenderOgre::interactor::IInteractor::MIDDLE;
     }
+    else if(e->button() == Qt::RightButton)
+    {
+        delete m_lastPosRightClick;
+        m_lastPosRightClick = nullptr;
+
+        info.button = ::fwRenderOgre::interactor::IInteractor::RIGHT;
+    }
+
+    Q_EMIT interacted(info);
 }
 
 // ----------------------------------------------------------------------------

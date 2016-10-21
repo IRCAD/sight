@@ -1,0 +1,191 @@
+//---------------------------------------------------------------------------
+
+fragment_program VolIllum_FP glsl
+{
+    source SAT_AmbientOcclusion_FP.glsl
+
+    default_params
+    {
+        param_named u_sat int 0
+        param_named u_lightDir float3 0 0 0
+        param_named u_sliceIndex int 0
+        param_named u_nbShells int 3
+        param_named u_shellRadius int 3
+        param_named u_scatteringConeAngle float 0.1
+        param_named u_nbSamplesAlongCone int 50;
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program VolIllum_AO_FP glsl
+{
+    source SAT_AmbientOcclusion_FP.glsl
+    preprocessor_defines AO=1
+    default_params
+    {
+        param_named u_sat int 0
+        param_named u_lightDir float3 0 0 0
+        param_named u_sliceIndex int 0
+        param_named u_nbShells int 3
+        param_named u_shellRadius int 3
+        param_named u_scatteringConeAngle float 0.1
+        param_named u_nbSamplesAlongCone int 50;
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program VolIllum_Shadows_FP glsl
+{
+    source SAT_AmbientOcclusion_FP.glsl
+    preprocessor_defines SHADOWS=1
+    default_params
+    {
+        param_named u_sat int 0
+        param_named u_lightDir float3 0 0 0
+        param_named u_sliceIndex int 0
+        param_named u_nbShells int 3
+        param_named u_shellRadius int 3
+        param_named u_scatteringConeAngle float 0.1
+        param_named u_nbSamplesAlongCone int 50;
+    }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program VolIllum_AO_Shadows_FP glsl
+{
+    source SAT_AmbientOcclusion_FP.glsl
+    preprocessor_defines AO=1,SHADOWS=1
+    default_params
+    {
+        param_named u_sat int 0
+        param_named u_lightDir float3 0 0 0
+        param_named u_sliceIndex int 0
+        param_named u_nbShells int 3
+        param_named u_shellRadius int 3
+        param_named u_scatteringConeAngle float 0.1
+        param_named u_nbSamplesAlongCone int 50;
+    }
+}
+
+//---------------------------------------------------------------------------
+
+material VolIllum
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            depth_check off
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref VolIllum_FP
+            {
+            }
+
+            texture_unit sat
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------
+
+material VolIllum_AO
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            depth_check off
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref VolIllum_AO_FP
+            {
+            }
+
+            texture_unit sat
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------
+
+material VolIllum_Shadows
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            depth_check off
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref VolIllum_Shadows_FP
+            {
+            }
+
+            texture_unit sat
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------
+
+material VolIllum_AO_Shadows
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            depth_check off
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref VolIllum_AO_Shadows_FP
+            {
+            }
+
+            texture_unit sat
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}

@@ -23,12 +23,12 @@ set( REQUIREMENTS
     visuVTK
     visuVTKQt
     visuVTKAdaptor
-    videoQt
-    videoTools
     fwlauncher
     appXml2
     arMedia
     arDataReg
+    videoQt
+    videoTools
     visuOgre
     visuOgreQt
     visuOgreAdaptor

@@ -1,0 +1,154 @@
+
+//---------------------------------------------------------------------------
+
+fragment_program AutoStereo8/Mix glsl
+{
+        source AutoStereoMix_FP.glsl
+        preprocessor_defines VIEWPOINTS=8
+
+        default_params
+        {
+                param_named u_lobeOffset float 1.f
+                param_named u_srcTextures0 int 0
+                param_named u_srcTextures1 int 1
+                param_named u_srcTextures2 int 2
+                param_named u_srcTextures3 int 3
+                param_named u_srcTextures4 int 4
+                param_named u_srcTextures5 int 5
+                param_named u_srcTextures6 int 6
+                param_named u_srcTextures7 int 7
+        }
+}
+
+//---------------------------------------------------------------------------
+
+fragment_program AutoStereo5/Mix glsl
+{
+        source AutoStereoMix_FP.glsl
+        preprocessor_defines VIEWPOINTS=5
+
+        default_params
+        {
+                param_named u_lobeOffset float 1.f
+                param_named u_srcTextures0 int 0
+                param_named u_srcTextures1 int 1
+                param_named u_srcTextures2 int 2
+                param_named u_srcTextures3 int 3
+                param_named u_srcTextures4 int 4
+        }
+}
+
+//---------------------------------------------------------------------------
+
+material AutoStereo5
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            depth_check off
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref AutoStereo5/Mix
+            {
+            }
+
+            texture_unit 0
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit 1
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit 2
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit 3
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit 4
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//---------------------------------------------------------------------------
+
+material AutoStereo8
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+
+            depth_check off
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref AutoStereo8/Mix
+            {
+            }
+
+            texture_unit 0
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit 1
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit 2
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit 3
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit 4
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit 5
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit 6
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit 7
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}

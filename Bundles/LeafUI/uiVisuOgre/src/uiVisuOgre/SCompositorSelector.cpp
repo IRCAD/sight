@@ -79,7 +79,7 @@ void SCompositorSelector::stopping() throw(::fwTools::Failed)
 {
     m_connections.disconnect();
 
-    QObject::disconnect(m_layersBox, SIGNAL(activated(const QString &)), this, SLOT(onSelectedLayerItem(int)));
+    QObject::disconnect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
     QObject::disconnect(m_compositorChain, SIGNAL(itemChanged(QListWidgetItem*)), this,
                         SLOT(onSelectedCompositorItem(QListWidgetItem*)));
 
@@ -154,7 +154,6 @@ void SCompositorSelector::refreshRenderers()
     ::fwServices::registry::ObjectService::ServiceVectorType renderers =
         ::fwServices::OSR::getServices("::fwRenderOgre::SRender");
 
-    int nbRenderer = 1;
     for(auto srv : renderers)
     {
         ::fwRenderOgre::SRender::sptr render = ::fwRenderOgre::SRender::dynamicCast(srv);
@@ -162,14 +161,13 @@ void SCompositorSelector::refreshRenderers()
         for(auto& layerMap : render->getLayers())
         {
             const std::string id       = layerMap.first;
-            const std::string renderID = render->getID();
+            const std::string renderID = render->getName();
             m_layersBox->addItem(QString::fromStdString(renderID + " : " + id));
             m_layers.push_back(layerMap.second);
 
             m_connections.connect(layerMap.second, ::fwRenderOgre::Layer::s_INIT_LAYER_SIG,
                                   this->getSptr(), s_INIT_COMPOSITOR_LIST_SLOT);
         }
-        nbRenderer++;
     }
 }
 

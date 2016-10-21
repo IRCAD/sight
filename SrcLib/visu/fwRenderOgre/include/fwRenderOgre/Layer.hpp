@@ -7,27 +7,27 @@
 #ifndef __FWRENDEROGRE_LAYER_HPP__
 #define __FWRENDEROGRE_LAYER_HPP__
 
+#include "fwRenderOgre/config.hpp"
+#include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
+#include <fwRenderOgre/compositor/ChainManager.hpp>
+#include <fwRenderOgre/compositor/Core.hpp>
+#include <fwRenderOgre/interactor/IInteractor.hpp>
+#include <fwRenderOgre/interactor/IMovementInteractor.hpp>
+#include <fwRenderOgre/interactor/IPickerInteractor.hpp>
+
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/HasSlots.hpp>
 #include <fwCom/Slot.hpp>
 
-#include <fwRenderOgre/compositor/ChainManager.hpp>
-#include <fwRenderOgre/compositor/Core.hpp>
-#include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
-#include <fwRenderOgre/interactor/IMovementInteractor.hpp>
-#include <fwRenderOgre/interactor/IPickerInteractor.hpp>
-#include <fwRenderOgre/interactor/IInteractor.hpp>
-
 #include <fwThread/Worker.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
-#include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreRenderWindow.h>
+#include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreViewport.h>
 
+#include <cstdint>
 #include <vector>
-
-#include "fwRenderOgre/config.hpp"
 
 namespace fwRenderOgre
 {
@@ -47,6 +47,13 @@ class FWRENDEROGRE_CLASS_API Layer : public ::fwCore::BaseObject,
 {
 public:
 
+    enum class StereoModeType : std::uint8_t
+    {
+        NONE,
+        AUTOSTEREO_5,
+        AUTOSTEREO_8,
+    };
+
     fwCoreClassDefinitionsWithFactoryMacro( (Layer)(::fwRenderOgre::Layer), (()), new Layer);
     fwCoreAllowSharedFromThis();
 
@@ -57,9 +64,14 @@ public:
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_INIT_LAYER_SIG;
     typedef ::fwCom::Signal<void (::fwRenderOgre::Layer::sptr)> InitLayerSignalType;
 
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_RESIZE_LAYER_SIG;
+    typedef ::fwCom::Signal<void (int, int)> ResizeLayerSignalType;
+
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_COMPOSITOR_UPDATED_SIG;
     typedef ::fwCom::Signal<void (std::string, bool, ::fwRenderOgre::Layer::sptr)> CompositorUpdatedSignalType;
 
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_MODE3D_CHANGED_SIG;
+    typedef ::fwCom::Signal<void (StereoModeType)> StereoModeChangedSignalType;
     /** @} */
 
     /**
@@ -96,7 +108,8 @@ public:
      * Set the associated scene manager ID of this viewport
      */
     FWRENDEROGRE_API void setID(const std::string& id);
-    FWRENDEROGRE_API const std::string& getID() const;
+    FWRENDEROGRE_API const std::string getName() const;
+    FWRENDEROGRE_API const std::string& getLayerID() const;
 
     /// Get the scene manager associated to this viewport
     FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager() const;
@@ -107,7 +120,7 @@ public:
     /// Add a disabled compositor name to the ChainManager
     FWRENDEROGRE_API void addAvailableCompositor(std::string compositorName);
 
-    // Removes all available compositors from the ChainManager
+    /// Removes all available compositors from the ChainManager
     FWRENDEROGRE_API void clearAvailableCompositors();
 
     /// Enables/Disables a compositor according to the isEnabled flag
@@ -155,6 +168,9 @@ public:
     /// Sets the worker for slots
     FWRENDEROGRE_API void setWorker( const ::fwThread::Worker::sptr& _worker);
 
+    /// Gets the render service
+    FWRENDEROGRE_API CSPTR(::fwRenderOgre::SRender) getRenderService() const;
+
     /// Sets the render service
     FWRENDEROGRE_API void setRenderService( const SPTR(::fwRenderOgre::SRender)& _service );
 
@@ -164,6 +180,9 @@ public:
 
     /// Requests render
     FWRENDEROGRE_API void requestRender();
+
+    /// Sets stereoscopic rendering.
+    FWRENDEROGRE_API void setStereoMode(StereoModeType mode);
 
     /// Sets background color : specific to background Layer
     FWRENDEROGRE_API void setBackgroundColor(std::string topColor, std::string botColor);
@@ -183,6 +202,12 @@ public:
 
     /// Gets if there is an XML configured compositor chain
     FWRENDEROGRE_API bool isCompositorChainEnabled();
+
+    /// Checks if stereoscopic rendering is enabled.
+    FWRENDEROGRE_API bool is3D() const;
+
+    /// Get stereoscopic mode
+    FWRENDEROGRE_API StereoModeType getStereoMode() const;
 
     /// Checks if this layer has a default compositor
     FWRENDEROGRE_API ::fwRenderOgre::compositor::Core::sptr getCoreCompositor();
@@ -209,6 +234,9 @@ private:
     /// Setups default compositor for a layer's 3D scene
     void setupCore();
 
+    /// For a list of semicolon-separated words, returns a vector of these words
+    std::vector< std::string > trimSemicolons(std::string input);
+
     /// Ogre scene manager of this viewport
     ::Ogre::SceneManager* m_sceneManager;
 
@@ -217,6 +245,9 @@ private:
 
     /// Ogre viewport representing this layer
     ::Ogre::Viewport* m_viewport;
+
+    /// Boolean used to set stereoscopic rendering.
+    StereoModeType m_stereoMode;
 
     /// If there is a configured compositor chain, this attribute stores its raw string
     std::string m_rawCompositorChain;
@@ -256,7 +287,7 @@ private:
     ::fwRenderOgre::interactor::IPickerInteractor::sptr m_selectInteractor;
 
     ///Connection service, needed for slot/signal association
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     /// Render service which this layer is attached
     WPTR(::fwRenderOgre::SRender) m_renderService;

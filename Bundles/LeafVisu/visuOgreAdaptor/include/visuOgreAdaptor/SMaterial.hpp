@@ -7,6 +7,7 @@
 #ifndef __VISUOGREADAPTOR_SMATERIAL_HPP__
 #define __VISUOGREADAPTOR_SMATERIAL_HPP__
 
+#include "visuOgreAdaptor/STexture.hpp"
 #include "visuOgreAdaptor/config.hpp"
 
 #include <fwCom/Slot.hpp>
@@ -18,15 +19,13 @@
 
 #include <fwRenderOgre/IAdaptor.hpp>
 
-#include <boost/shared_ptr.hpp>
-
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreMaterial.h>
 
-#include <regex>
+#include <boost/shared_ptr.hpp>
 
-#include "visuOgreAdaptor/STexture.hpp"
+#include <regex>
 
 namespace fwData
 {
@@ -221,7 +220,7 @@ private:
     std::vector< Ogre::String > m_schemesSupported;
 
     /// Signal/Slot connections with texture adaptor
-    ::fwServices::helper::SigSlotConnection m_textureConnection;
+    ::fwCom::helper::SigSlotConnection m_textureConnection;
 
     /// The configured shading mode
     std::string m_shadingMode;

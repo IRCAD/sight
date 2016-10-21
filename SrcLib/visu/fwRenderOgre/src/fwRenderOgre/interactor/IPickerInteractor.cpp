@@ -20,6 +20,7 @@
 
 namespace fwRenderOgre
 {
+
 namespace interactor
 {
 

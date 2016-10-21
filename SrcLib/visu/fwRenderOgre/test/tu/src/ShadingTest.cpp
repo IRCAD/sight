@@ -4,19 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ShadingTest.hpp"
-
-#include <fwComEd/helper/Array.hpp>
-
 #include "fwData/Array.hpp"
 #include "fwData/Color.hpp"
 #include "fwData/Float.hpp"
 #include "fwData/Integer.hpp"
 
-#include "fwRenderOgre/helper/Shading.hpp"
+#include <fwDataTools/helper/Array.hpp>
+
 #include "fwRenderOgre/Utils.hpp"
+#include "fwRenderOgre/helper/Shading.hpp"
 
 #include "fwTools/Type.hpp"
+
+#include "ShadingTest.hpp"
 
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreTechnique.h>
@@ -349,7 +349,7 @@ void ShadingTest::createObjectFromShaderParameter()
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), arrayObject->getNumberOfComponents());
         CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_DOUBLE, arrayObject->getType());
         {
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
+            ::fwDataTools::helper::Array arrayHelper(arrayObject);
             CPPUNIT_ASSERT_EQUAL(2.0, (arrayHelper.getItem< double >({0}))[0]);
             CPPUNIT_ASSERT_EQUAL(4.5, (arrayHelper.getItem< double >({0}))[1]);
         }
@@ -365,7 +365,7 @@ void ShadingTest::createObjectFromShaderParameter()
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), arrayObject->getNumberOfComponents());
         CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_DOUBLE, arrayObject->getType());
         {
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
+            ::fwDataTools::helper::Array arrayHelper(arrayObject);
             CPPUNIT_ASSERT_EQUAL(-4.1, (arrayHelper.getItem< double >({0}))[0]);
             CPPUNIT_ASSERT_EQUAL( 1.5, (arrayHelper.getItem< double >({0}))[1]);
             CPPUNIT_ASSERT_EQUAL( 3.7, (arrayHelper.getItem< double >({0}))[2]);
@@ -382,7 +382,7 @@ void ShadingTest::createObjectFromShaderParameter()
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), arrayObject->getNumberOfComponents());
         CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_DOUBLE, arrayObject->getType());
         {
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
+            ::fwDataTools::helper::Array arrayHelper(arrayObject);
             CPPUNIT_ASSERT_EQUAL(-1.1, (arrayHelper.getItem< double >({0}))[0]);
             CPPUNIT_ASSERT_EQUAL(-5.5, (arrayHelper.getItem< double >({0}))[1]);
             CPPUNIT_ASSERT_EQUAL(-1.7, (arrayHelper.getItem< double >({0}))[2]);
@@ -400,7 +400,7 @@ void ShadingTest::createObjectFromShaderParameter()
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), arrayObject->getNumberOfComponents());
         CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_INT32, arrayObject->getType());
         {
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
+            ::fwDataTools::helper::Array arrayHelper(arrayObject);
             CPPUNIT_ASSERT_EQUAL(-1, (arrayHelper.getItem< int >({0}))[0]);
             CPPUNIT_ASSERT_EQUAL( 5, (arrayHelper.getItem< int >({0}))[1]);
         }
@@ -416,7 +416,7 @@ void ShadingTest::createObjectFromShaderParameter()
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), arrayObject->getNumberOfComponents());
         CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_INT32, arrayObject->getType());
         {
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
+            ::fwDataTools::helper::Array arrayHelper(arrayObject);
             CPPUNIT_ASSERT_EQUAL( 2, (arrayHelper.getItem< int >({0}))[0]);
             CPPUNIT_ASSERT_EQUAL(-4, (arrayHelper.getItem< int >({0}))[1]);
             CPPUNIT_ASSERT_EQUAL( 3, (arrayHelper.getItem< int >({0}))[2]);
@@ -433,7 +433,7 @@ void ShadingTest::createObjectFromShaderParameter()
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(4), arrayObject->getNumberOfComponents());
         CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_INT32, arrayObject->getType());
         {
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
+            ::fwDataTools::helper::Array arrayHelper(arrayObject);
             CPPUNIT_ASSERT_EQUAL(-1, (arrayHelper.getItem< int >({0}))[0]);
             CPPUNIT_ASSERT_EQUAL( 5, (arrayHelper.getItem< int >({0}))[1]);
             CPPUNIT_ASSERT_EQUAL( 9, (arrayHelper.getItem< int >({0}))[2]);
@@ -451,7 +451,7 @@ void ShadingTest::createObjectFromShaderParameter()
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(2), arrayObject->getNumberOfComponents());
         CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_FLOAT, arrayObject->getType());
         {
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
+            ::fwDataTools::helper::Array arrayHelper(arrayObject);
             CPPUNIT_ASSERT_EQUAL(21.1f, (arrayHelper.getItem< float >({0}))[0]);
             CPPUNIT_ASSERT_EQUAL(-2.5f, (arrayHelper.getItem< float >({0}))[1]);
         }
@@ -467,7 +467,7 @@ void ShadingTest::createObjectFromShaderParameter()
         CPPUNIT_ASSERT_EQUAL(static_cast<size_t>(3), arrayObject->getNumberOfComponents());
         CPPUNIT_ASSERT_EQUAL(::fwTools::Type::s_FLOAT, arrayObject->getType());
         {
-            ::fwComEd::helper::Array arrayHelper(arrayObject);
+            ::fwDataTools::helper::Array arrayHelper(arrayObject);
             CPPUNIT_ASSERT_EQUAL(21.1f, (arrayHelper.getItem< float >({0}))[0]);
             CPPUNIT_ASSERT_EQUAL( 2.5f, (arrayHelper.getItem< float >({0}))[1]);
             CPPUNIT_ASSERT_EQUAL( -9.f, (arrayHelper.getItem< float >({0}))[2]);

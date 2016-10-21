@@ -17,7 +17,6 @@ namespace fwRenderOgre
 {
 
 /**
- * @class TransferFunction
  * @brief Represents and manages a tranfer function from a GPU point of view
  */
 class FWRENDEROGRE_CLASS_API TransferFunction
@@ -27,13 +26,16 @@ public:
     FWRENDEROGRE_API TransferFunction();
     FWRENDEROGRE_API virtual ~TransferFunction();
 
-    /// Initalizes the textures attributes
+    /// Initialize the textures attributes
     FWRENDEROGRE_API void createTexture(const ::Ogre::String& _parentId);
 
-    /// Updates the TF texture according to the transfer function datas
+    /// Destroy the texture
+    FWRENDEROGRE_API void removeTexture();
+
+    /// Update the TF texture according to the transfer function datas
     FWRENDEROGRE_API void updateTexture(const ::fwData::TransferFunction::sptr& _tf);
 
-    /// Returns the TF texture
+    /// Return the TF texture
     FWRENDEROGRE_API ::Ogre::TexturePtr getTexture() const;
 
 private:

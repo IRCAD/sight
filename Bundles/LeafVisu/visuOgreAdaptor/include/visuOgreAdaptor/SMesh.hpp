@@ -55,6 +55,32 @@ namespace visuOgreAdaptor
  * To handle the per-primitive color of ::fwData::Mesh we also rely on geometry shaders, and thus on r2vb. We build a
  * texture containing the color for each primitive. This texture is fetched inside the geometry shader using the
  * primitive id.
+ *
+ * @section Slots Slots
+ * - \b updateVisibility(bool): Sets whether the mesh is to be seen or not.
+ * - \b modifyMesh(): Called when the mesh is modified.
+ * - \b modifyColors(): Called when the point colors are modified.
+ * - \b modifyTexCoords(): Called when the texture coordinates are modified.
+ * - \b modifyVertices(): Called when the vertices are modified.
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+    <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
+        <config renderer="rendererId" transform="transformUID" materialAdaptor="materialName" shadingMode="gouraud"
+                textureAdaptor="texAdaptorUID" />
+    </adaptor>
+   @endcode
+ * With :
+ *  - \b renderer (mandatory) : defines the mesh's layer
+ *  - \b transform (optional) : the name of the Ogre transform node where to attach the mesh, as it was specified
+ * in the STransform adaptor.
+ * Either of the following (whether a material is configured in the XML scene or not) :
+ *  - \b materialAdaptor (optional) : the name of the associated material adaptor
+ * Only if there is no material adaptor configured in the XML scene (in this case, it has to retrieve the material
+ * template, the texture adaptor and the shading mode) :
+ *  - \b materialTemplate (optional) : the name of the base Ogre material for the created SMaterial
+ *  - \b textureAdaptor (optional) : the texture adaptor that the material will be listening to
+ *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
  */
 class VISUOGREADAPTOR_CLASS_API SMesh : public ::fwRenderOgre::IAdaptor,
                                         public ::fwRenderOgre::ITransformable
@@ -111,35 +137,16 @@ private:
         NUM_BINDINGS
     };
 
-    /**
-     * @brief Configures the adaptor
-     * @code{.xml}
-       <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
-        <config renderer="rendererId" transform="transformUID" materialAdaptor="materialName" shadingMode="gouraud"
-                textureAdaptor="texAdaptorUID" />
-       </adaptor>
-       @endcode
-     * With :
-     *  - \b renderer (mandatory) : defines the mesh's layer
-     *  - \b transform (optional) : the name of the Ogre transform node where to attach the mesh, as it was specified
-     * in the STransform adaptor.
-     * Either of the following (whether a material is configured in the XML scene or not) :
-     *  - \b materialAdaptor (optional) : the name of the associated material adaptor
-     * Only if there is no material adaptor configured in the XML scene (in this case, it has to retrieve the material
-     * template, the texture adaptor and the shading mode) :
-     *  - \b materialTemplate (optional) : the name of the base Ogre material for the created SMaterial
-     *  - \b textureAdaptor (optional) : the texture adaptor that the material will be listening to
-     *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
-     */
+    /// Configures the adaptor
     void doConfigure() throw(fwTools::Failed);
     /// Manually creates a Mesh in the Default Ogre Ressource group
-    void doStart() throw(fwTools::Failed);
+    void doStart    () throw(fwTools::Failed);
     /// Deletes the mesh after unregistering the service, and shutting connections.
-    void doStop() throw(fwTools::Failed);
+    void doStop     () throw(fwTools::Failed);
     /// Performs a Stop -> Start
-    void doSwap() throw(fwTools::Failed);
+    void doSwap     () throw(fwTools::Failed);
     /// Checks if the fwData::Mesh has changed, and updates it if it has.
-    void doUpdate() throw(fwTools::Failed);
+    void doUpdate   () throw(fwTools::Failed);
 
     ::Ogre::Entity* newEntity();
 

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin id="Ogre3DScreen" version="@DASH_VERSION@">
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuOgreAdaptor" />
+    <requirement id="visuOgreQt" />
+    <requirement id="visuVTKQt" />
+    <requirement id="material" />
+
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>MDAtomsConfig</id>
+        <desc>reader/writer config to read/write an atom representing a medical data</desc>
+        <config>
+            <patcher context="MedicalData" version="V09ALA" />
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfig2">
+
+        <id>Ogre3DScreen_Extension</id>
+        <config>
+<!--            <object type="::fwData::Composite"></object>-->
+
+            <object uid="mesh" type="::fwData::Mesh" />
+
+            <service uid="ihm" type="::gui::frame::SDefaultFrame" autoConnect="no">
+                <gui>
+                    <frame>
+                        <name>Ogre 3D Viewer</name>
+<!--                        <icon>Bundles/OgreViewer_0-1/ogre_head.svg</icon>-->
+                        <minSize width="1100" height="700" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="genericScene" start="yes" />
+                </registry>
+            </service>
+
+            <service type="::ioVTK::SMeshReader" uid="meshReader" autoConnect="no">
+                <inout key="target" uid="mesh" />
+                <file>/home/kgaudet/dev/data/Mesh/abdominalSurface1000.vtk</file>
+            </service>
+
+
+            <service uid="genericScene" type="::fwRenderOgre::SRender" autoConnect="yes" >
+                <in key="meshKey" uid="mesh" />
+                <scene overlay="true" fullscreen="no" >
+                    <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+
+                    <!-- Default Layer -->
+                    <renderer id="default" layer="1" compositors="Default" mode3D="AutoStereo5"/>
+
+                    <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
+                        <config renderer="default" style="Trackball" />
+                    </adaptor>
+
+                    <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
+                        <config renderer="default" />
+                    </adaptor>
+
+            <!--            <adaptor id="negato3DAdaptor" class="::visuOgreAdaptor::SNegato3D" objectId="image">
+                         <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
+                    </adaptor>-->
+                </scene>
+            </service>
+
+            <start uid="ihm" />
+            <start uid="meshReader" />
+
+            <update uid="meshReader" />
+
+        </config>
+
+    </extension>
+
+
+
+
+</plugin>

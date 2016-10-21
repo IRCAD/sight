@@ -7,12 +7,14 @@
     <requirement id="visuOgreAdaptor" />
     <requirement id="visuOgreQt" />
     <requirement id="visuVTKQt" />
+    <requirement id="material" />
     <requirement id="scene2D" />
     <requirement id="preferences" />
 
     <xi:include href="configurations/vtkGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/OgreNegato2D.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/OgreVolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ManageOgreOrganWithSeries.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwServices::registry::ServiceConfig">
@@ -87,12 +89,14 @@
                         <view caption="VTK" selected="no" />
                         <view caption="Ogre" selected="yes" />
                         <view caption="2D Negato Ogre" selected="no" />
+                        <view caption="Ogre VR" selected="no" />
                     </layout>
                 </gui>
                 <registry>
                     <view wid="VTKSceneView" start="yes" />
                     <view wid="OgreSceneView" start="yes" />
                     <view wid="OgreNegato2DView" start="yes" />
+                    <view wid="OgreVolumeRenderingView" start="yes" />
                 </registry>
             </service>
 
@@ -118,12 +122,16 @@
                         <view proportion="0" minHeight="30" />
                         <view proportion="0" minHeight="100" />
                         <view proportion="1" />
+                        <view proportion="0" />
+                        <view proportion="0" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="tfm" start="yes" />
                     <view sid="Scene2D_Shutter" start="no" />
                     <view sid="Scene2D" start="no" />
+                    <view sid="windowLevel" start="yes" />
+                    <view sid="transparencyEditor" start="yes" />
                 </registry>
             </service>
 
@@ -212,6 +220,13 @@
                 <inout key="imageUID" uid="imageUID" />
                 <inout key="TFSelections" uid="TFSelections" />
                 <parameter replace="WID_PARENT" uid="OgreNegato2DView" />
+            </service>
+
+            <service uid="cfgOgreVolumeRendering" type="::fwServices::SConfigController" >
+                <appConfig id="OgreVolumeRendering" />
+                <inout key="imageUID" uid="imageUID" />
+                <inout key="TFSelections" uid="TFSelections" />
+                <parameter replace="WID_PARENT" uid="OgreVolumeRenderingView" />
             </service>
 
             <service uid="cfgOrganManagerConfig"  type="::fwServices::SConfigController">
@@ -339,6 +354,16 @@
                 </scene>
             </service>
 
+            <service uid="windowLevel" type="::uiImage::WindowLevel" autoConnect="yes">
+                <inout key="image" uid="imageUID" autoConnect="yes" />
+                <inout key="TFSelections" uid="TFSelections" />
+                <config selectedTFKey="SelectedTF" />
+            </service>
+
+            <service uid="transparencyEditor" type="::uiImage::ImageTransparency" autoConnect="yes" >
+                <inout key="image" uid="imageUID" />
+            </service>
+
             <service uid="readerPathMeshFile" type="::uiIO::editor::SIOSelector" >
                 <in key="target" uid="modelSeriesUID" />
                 <type mode="reader" />
@@ -378,6 +403,7 @@
             <start uid="cfgVTKGenericScene" />
             <start uid="cfgOgreGenericScene" />
             <start uid="cfgOgreNegato2D" />
+            <start uid="cfgOgreVolumeRendering" />
             <start uid="cfgOrganManagerConfig" />
             <start uid="compositorSelector" />
             <start uid="compositorParameters" />

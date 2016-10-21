@@ -4,7 +4,7 @@
 
     <requirement id="dataReg"/>
     <requirement id="servicesReg"/>
-
+    <requirement id="uiIO"/>
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
@@ -38,6 +38,13 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiVisuOgre::SCompositorSelector</service>
+        <object>::fwData::Composite</object>
+        <desc>service description</desc>
+    </extension>
+
+<extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiVisuOgre::SStereoSelector</service>
         <object>::fwData::Composite</object>
         <desc>service description</desc>
     </extension>

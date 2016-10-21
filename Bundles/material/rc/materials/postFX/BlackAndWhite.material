@@ -22,6 +22,7 @@ material BlackAndWhite
 
             texture_unit
             {
+                texture RT
                 tex_coord_set 0
                 tex_address_mode clamp
                 filtering linear linear linear

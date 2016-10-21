@@ -1,0 +1,122 @@
+
+<extension implements="::fwServices::registry::AppConfig2">
+    <id>OgreVolumeRendering</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="imageUID" />
+        <param name="TFSelections" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${imageUID}"  type="::fwData::Image" src="ref" />
+        <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="OgreVolumeRendering" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="volumeRenderingScene" start="yes" />
+                <view sid="volumeRenderingEditorView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="volumeRenderingEditorView" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="vrBasicEditor" start="yes" />
+                <view sid="vrAdvancedEditor2" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
+
+        <service uid="volumeRenderingScene" type="::fwRenderOgre::SRender" autoConnect="yes">
+            <scene overlay="true" fullscreen="no" />
+            <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+            <layer id="default" depth="1" compositors="Default" />
+
+            <adaptor uid="interactorAdaptor" start="yes" />
+            <adaptor uid="volumeRender" start="yes" />
+        </service>
+
+        <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle" >
+            <config layer="default" style="VR" />
+        </service>
+
+        <service uid="volumeRender" type="::visuOgreAdaptor::SVolumeRender" >
+            <in key="image" uid="${imageUID}" autoConnect="yes" />
+            <inout key="TF" uid="${TFSelections}" />
+            <config layer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" />
+        </service>
+
+        <service uid="vrBasicEditor" type="::guiQt::editor::SParameters" autoConnect="no">
+            <parameters>
+                <param type="bool" name="Widgets" key="widgets" defaultValue="false" />
+                <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="1024" />
+                <param type="int" name="Focal length" key="focalLength" defaultValue="50" min="0" max="100" />
+                <param type="bool" name="Pre-integration" key="preIntegration" defaultValue="false" />
+                <param type="bool" name="Ambient occlusion" key="ambientOcclusion" defaultValue="false" />
+                <param type="bool" name="Color bleeding" key="colorBleeding" defaultValue="false" />
+            </parameters>
+        </service>
+
+        <service uid="vrAdvancedEditor2" type="::guiQt::editor::SParameters" autoConnect="no">
+            <parameters>
+                <param type="double" name="AO factor" key="aoFactor" defaultValue="1.0" min="0.1" max="10.0" />
+                <param type="double" name="Color bleeding factor" key="colorBleedingFactor" defaultValue="1.0" min="0.1" max="10.0" />
+                <param type="int" name="SAT size ratio" key="satSizeRatio" defaultValue="1" min="1" max="4" />
+                <param type="int" name="AO shells number" key="satShellsNumber" defaultValue="4" min="1" max="10" />
+                <param type="int" name="AO shell radius" key="satShellRadius" defaultValue="4" min="1" max="10" />
+                <param type="bool" name="Soft shadows" key="shadows" defaultValue="false" />
+                <param type="int" name="Shadow cone angle" key="satConeAngle" defaultValue="10" min="10" max="100" />
+                <param type="int" name="Shadow cone samples" key="satConeSamples" defaultValue="50" min="10" max="100" />
+            </parameters>
+        </service>
+
+        <!-- ******************************* Actions ****************************************** -->
+
+        <connect>
+            <signal>vrBasicEditor/boolChanged</signal>
+            <slot>volumeRender/setBoolParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>vrBasicEditor/intChanged</signal>
+            <slot>volumeRender/setIntParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>vrAdvancedEditor2/boolChanged</signal>
+            <slot>volumeRender/setBoolParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>vrAdvancedEditor2/intChanged</signal>
+            <slot>volumeRender/setIntParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>vrAdvancedEditor2/doubleChanged</signal>
+            <slot>volumeRender/setDoubleParameter</slot>
+        </connect>
+
+        <start uid="OgreVolumeRendering" />
+
+    </config>
+</extension>

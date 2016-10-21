@@ -17,14 +17,21 @@ namespace visuOgreAdaptor
 /**
  * @brief   Send a FW4SPL data as a shader parameter
  *
+ * Send parameters to vertex, fragment and geometry shaders
  *
- * Send parameters to vertex and fragment shaders
+ * @section Slots Slots
+ *  - \b setBoolParameter(bool, std::string): Set the uniform from an integer value.
+ *  - \b setColorParameter(std::array<std::uint8_t, 4>, std::string): Set the uniform from a color value.
+ *  - \b setIntParameter(int, std::string): Set the uniform from an integer value.
+ *  - \b setFloatParameter(float, std::string): Set the uniform from an float value.
+ *  - \b setDoubleParameter(double, std::string): Set the uniform from an double value.
  *
+ * @section XML XML Configuration
  * @code{.xml}
-        <service uid="paramAdaptor" class="::visuOgreAdaptor::IParameter">
-            <config materialAdaptor="mtlAdaptorUID" parameter="u_value" shaderType="fragment" />
-        </service>
-       @endcode
+       <service uid="paramAdaptor" class="::visuOgreAdaptor::IParameter">
+           <config materialAdaptor="mtlAdaptorUID" parameter="u_value" shaderType="fragment" />
+       </service>
+   @endcode
  *  - \b materialName (mandatory) : the name of the associated Ogre material
  *  - \b parameter (mandatory) : name of the shader parameter to set
  *  - \b technique (optional) : name of the technique, default to the first in the material
@@ -42,14 +49,14 @@ public:
      * @{
      */
 
-    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
-    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
-    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
-    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE2_PARAMETER_SLOT;
-    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE3_PARAMETER_SLOT;
-    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
-    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT;
-    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE2_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE3_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT;
 
     ///@}
 
@@ -67,6 +74,9 @@ public:
 
     /// Get the name of the parameter m_paramName.
     VISUOGREADAPTOR_API const std::string& getParamName() const;
+
+    /// Get the name of the parameter m_paramName.
+    VISUOGREADAPTOR_API const std::string& getDefaultValue() const;
 
 protected:
 
@@ -112,6 +122,8 @@ private:
     std::string m_paramName;
     /// Technique name
     std::string m_techniqueName;
+    /// Parameter name
+    std::string m_defaultValue;
     /// Stores the value of the enum representing the shader's type.
     ::Ogre::GpuProgramType m_shaderType;
     /// Pointer on the material

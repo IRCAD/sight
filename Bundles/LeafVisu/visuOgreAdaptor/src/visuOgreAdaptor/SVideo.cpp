@@ -86,7 +86,7 @@ void SVideo::doStop() throw(::fwTools::Failed)
 
 void SVideo::doSwap() throw(::fwTools::Failed)
 {
-    this->updating();
+    this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
@@ -205,6 +205,7 @@ void SVideo::doUpdate() throw(::fwTools::Failed)
     connections.push( "image", ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
+
 
 //------------------------------------------------------------------------------
 

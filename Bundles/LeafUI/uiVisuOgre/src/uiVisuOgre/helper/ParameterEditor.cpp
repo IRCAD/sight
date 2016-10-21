@@ -6,12 +6,12 @@
 
 #include "uiVisuOgre/helper/ParameterEditor.hpp"
 
-#include <fwComEd/helper/ArrayGetter.hpp>
-
 #include "fwData/Array.hpp"
 #include "fwData/Color.hpp"
 #include "fwData/Float.hpp"
 #include "fwData/Integer.hpp"
+
+#include <fwDataTools/helper/ArrayGetter.hpp>
 
 namespace uiVisuOgre
 {
@@ -23,7 +23,7 @@ namespace helper
 
 fwServices::IService::ConfigType ParameterEditor::createConfig(const visuOgreAdaptor::IParameter::csptr& _adaptor,
                                                                const ::fwServices::IService::csptr& _paramSrv,
-                                                               ::fwServices::helper::SigSlotConnection& _connections)
+                                                               ::fwCom::helper::SigSlotConnection& _connections)
 {
     ::fwServices::IService::ConfigType paramConfig;
 
@@ -111,7 +111,7 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const visuOgreAda
 
                 // We can't give a default value for each component to SParameters :/
                 // For now fill it with the first one
-                ::fwComEd::helper::ArrayGetter arrayHelper(arrayObject);
+                ::fwDataTools::helper::ArrayGetter arrayHelper(arrayObject);
 
                 double defaultValue;
                 if(arrayObject->getType() == ::fwTools::Type::s_FLOAT)
@@ -137,7 +137,7 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const visuOgreAda
                 _connections.connect(_paramSrv, "int" + strSize + "Changed",
                                      _adaptor, "setInt" + strSize + "Parameter");
 
-                ::fwComEd::helper::ArrayGetter arrayHelper(arrayObject);
+                ::fwDataTools::helper::ArrayGetter arrayHelper(arrayObject);
                 const int defaultValue = arrayHelper.getItem< int >({0})[0];
                 const int max          = (defaultValue != 0) ? defaultValue * 20 : 1;
                 const int min          = (defaultValue != 0) ? max - defaultValue * 20 : 1;

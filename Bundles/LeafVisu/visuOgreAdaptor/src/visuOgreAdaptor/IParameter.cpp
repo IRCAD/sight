@@ -5,9 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuOgreAdaptor/IParameter.hpp"
-
-#include <fwComEd/helper/Array.hpp>
-#include <fwComEd/helper/ArrayGetter.hpp>
+#include "visuOgreAdaptor/SMaterial.hpp"
+#include "visuOgreAdaptor/defines.hpp"
 
 #include <fwCom/Slots.hxx>
 
@@ -18,9 +17,12 @@
 #include <fwData/Integer.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/String.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/helper/ArrayGetter.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -28,9 +30,6 @@
 #include <OgreMaterial.h>
 #include <OgreMaterialManager.h>
 #include <OgreTechnique.h>
-
-#include "visuOgreAdaptor/defines.hpp"
-#include "visuOgreAdaptor/SMaterial.hpp"
 
 namespace visuOgreAdaptor
 {
@@ -286,7 +285,7 @@ bool IParameter::setParameter(::Ogre::Technique& technique)
         size_t numComponents = arrayObject->getNumberOfComponents();
         if(numComponents <= 3)
         {
-            ::fwComEd::helper::ArrayGetter arrayHelper(arrayObject);
+            ::fwDataTools::helper::ArrayGetter arrayHelper(arrayObject);
 
             if( arrayObject->getType() == ::fwTools::Type::s_FLOAT)
             {
@@ -387,7 +386,7 @@ void IParameter::setInt2Parameter(int value1, int value2, std::string name)
             arrayObject->resize( type, {1}, 2, true);
         }
 
-        ::fwComEd::helper::Array arrayHelper(arrayObject);
+        ::fwDataTools::helper::Array arrayHelper(arrayObject);
         int vec[2] = { value1, value2 };
         arrayHelper.setItem( {0}, vec);
 
@@ -410,7 +409,7 @@ void IParameter::setInt3Parameter(int value1, int value2, int value3, std::strin
             arrayObject->resize( type, {1}, 3, true);
         }
 
-        ::fwComEd::helper::Array arrayHelper(arrayObject);
+        ::fwDataTools::helper::Array arrayHelper(arrayObject);
         int vec[3] = { value1, value2, value3 };
         arrayHelper.setItem( {0}, vec);
 
@@ -447,7 +446,7 @@ void IParameter::setDouble2Parameter(double value1, double value2, std::string n
             arrayObject->resize( type, {1}, 2, true);
         }
 
-        ::fwComEd::helper::Array arrayHelper(arrayObject);
+        ::fwDataTools::helper::Array arrayHelper(arrayObject);
 
         if( arrayObject->getType() == ::fwTools::Type::s_FLOAT)
         {
@@ -479,7 +478,7 @@ void IParameter::setDouble3Parameter(double value1, double value2, double value3
             arrayObject->resize( type, {1}, 3, true);
         }
 
-        ::fwComEd::helper::Array arrayHelper(arrayObject);
+        ::fwDataTools::helper::Array arrayHelper(arrayObject);
 
         if( arrayObject->getType() == ::fwTools::Type::s_FLOAT)
         {

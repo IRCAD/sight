@@ -6,26 +6,25 @@
 
 #include "visuOgreAdaptor/SNegato3D.hpp"
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
-
-#include <fwComEd/Dictionary.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
 #include <fwRenderOgre/Utils.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <algorithm>
-
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTextureManager.h>
+
+#include <algorithm>
 
 namespace visuOgreAdaptor
 {
@@ -110,7 +109,7 @@ void SNegato3D::doStart() throw(::fwTools::Failed)
 
     this->installTFConnections();
 
-    bool isValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
+    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
     if (isValid)
     {
         this->newImage();
@@ -194,7 +193,6 @@ void SNegato3D::doConfigure() throw(::fwTools::Failed)
 
 void SNegato3D::doUpdate() throw(::fwTools::Failed)
 {
-
     this->requestRender();
 }
 
@@ -300,6 +298,7 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
     connections.push( "image", ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
     connections.push( "image", ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
     connections.push( "image", ::fwData::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
+    connections.push( "image", ::fwData::Image::s_TRANSPARENCY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT );
     return connections;
 }
 

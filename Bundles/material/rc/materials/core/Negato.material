@@ -38,6 +38,7 @@ fragment_program Default/Negato_FP glsl
 {
     source Main_FP.glsl
     attach Negato_FP
+    attach TransferFunction_FP
     default_params
     {
         // Negato

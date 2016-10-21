@@ -7,18 +7,19 @@
 #ifndef __VISUOGREADAPTOR_SCAMERA_HPP__
 #define __VISUOGREADAPTOR_SCAMERA_HPP__
 
-#include <vector>
-
-#include <fwData/TransformationMatrix3D.hpp>
+#include "visuOgreAdaptor/config.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
+
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 
 #include <OgreMovableObject.h>
 
-#include "visuOgreAdaptor/config.hpp"
+#include <vector>
 
 namespace arData
 {

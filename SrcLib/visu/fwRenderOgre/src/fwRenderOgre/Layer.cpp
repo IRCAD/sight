@@ -5,34 +5,33 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwRenderOgre/Layer.hpp>
+#include <fwRenderOgre/SRender.hpp>
+#include <fwRenderOgre/Utils.hpp>
+#include <fwRenderOgre/interactor/TrackballInteractor.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwDataTools/Color.hpp>
 
-#include <fwRenderOgre/interactor/TrackballInteractor.hpp>
-#include <fwRenderOgre/SRender.hpp>
-#include <fwRenderOgre/Utils.hpp>
-
 #include <fwThread/Worker.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreColourValue.h>
-#include <OGRE/OgreEntity.h>
-#include <OGRE/OgreLight.h>
-#include <OGRE/OgreSceneNode.h>
-#include <OGRE/OgreVector3.h>
-#include <OGRE/OgreException.h>
 #include <OGRE/OgreCompositorManager.h>
+#include <OGRE/OgreEntity.h>
+#include <OGRE/OgreException.h>
+#include <OGRE/OgreLight.h>
+#include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreRectangle2D.h>
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreSceneNode.h>
+#include <OGRE/OgreTechnique.h>
+#include <OGRE/OgreVector3.h>
 #include <OGRE/Overlay/OgreOverlay.h>
 #include <OGRE/Overlay/OgreOverlayContainer.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
-#include <OGRE/OgreSceneManager.h>
-#include <OGRE/OgreMaterialManager.h>
-#include <OGRE/OgreTechnique.h>
 
 #include <stack>
 
@@ -40,7 +39,9 @@ namespace fwRenderOgre
 {
 
 const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG         = "layerInitialized";
+const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG       = "layerResized";
 const ::fwCom::Signals::SignalKeyType Layer::s_COMPOSITOR_UPDATED_SIG = "compositorUpdated";
+const ::fwCom::Signals::SignalKeyType Layer::s_MODE3D_CHANGED_SIG     = "StereoModeChanged";
 
 const ::fwCom::Slots::SlotKeyType Layer::s_INTERACTION_SLOT    = "interaction";
 const ::fwCom::Slots::SlotKeyType Layer::s_DESTROY_SLOT        = "destroy";
@@ -53,7 +54,9 @@ Layer::Layer() :
     m_sceneManager(nullptr),
     m_renderWindow(nullptr),
     m_viewport(nullptr),
+    m_stereoMode(StereoModeType::NONE),
     m_rawCompositorChain(""),
+    m_coreCompositor(nullptr),
     m_transparencyTechnique(DEFAULT),
     m_numPeels(8),
     m_depth(1),
@@ -67,7 +70,9 @@ Layer::Layer() :
     m_sceneCreated(false)
 {
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
+    newSignal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
     newSignal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
+    newSignal<StereoModeChangedSignalType>(s_MODE3D_CHANGED_SIG);
 
     newSlot(s_INTERACTION_SLOT, &Layer::interaction, this);
     newSlot(s_DESTROY_SLOT, &Layer::destroy, this);
@@ -101,9 +106,16 @@ void Layer::setID(const std::string& id)
 
 //-----------------------------------------------------------------------------
 
-const std::string& Layer::getID() const
+const std::string Layer::getName() const
 {
     return m_sceneManager->getName();
+}
+
+//-----------------------------------------------------------------------------
+
+const std::string& Layer::getLayerID() const
+{
+    return m_id;
 }
 
 //-----------------------------------------------------------------------------
@@ -142,7 +154,7 @@ void Layer::createScene()
         // We must blend the input previous in each compositor
         ::Ogre::MaterialPtr defaultMaterial = ::Ogre::MaterialManager::getSingleton().getByName("DefaultBackground");
         ::Ogre::MaterialPtr material        = ::Ogre::MaterialManager::getSingleton().create(
-            this->getID() + "backgroundMat", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+            this->getName() + "backgroundMat", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
         defaultMaterial.get()->copyDetailsTo(material);
 
         std::uint8_t color[4];
@@ -169,7 +181,7 @@ void Layer::createScene()
         // Create background rectangle covering the whole screen
         ::Ogre::Rectangle2D* rect = new ::Ogre::Rectangle2D();
         rect->setCorners(-1.0, 1.0, 1.0, -1.0);
-        rect->setMaterial(this->getID() + "backgroundMat");
+        rect->setMaterial(this->getName() + "backgroundMat");
 
         // Render the background before everything else
         rect->setRenderQueueGroup(::Ogre::RENDER_QUEUE_BACKGROUND);
@@ -218,17 +230,23 @@ void Layer::createScene()
         this->setupCore();
     }
 
-    if(m_hasCompositorChain)
+    if(m_stereoMode == StereoModeType::NONE)
     {
-        ::boost::char_separator<char> sep(";");
-        ::boost::tokenizer< ::boost::char_separator<char> > tok(m_rawCompositorChain, sep);
-        std::vector< fwc::ChainManager::CompositorIdType> compositorChain;
-        for(const auto& it : tok)
-        {
-            compositorChain.push_back(it);
-        }
+        m_compositorChainManager->setOgreViewport(m_viewport);
 
-        m_compositorChainManager->setCompositorChain(compositorChain, m_id, m_renderService.lock());
+        if(m_hasCompositorChain)
+        {
+            ::boost::char_separator<char> sep(";");
+            ::boost::tokenizer< ::boost::char_separator<char> > tok(m_rawCompositorChain, sep);
+            std::vector< fwc::ChainManager::CompositorIdType> compositorChain;
+
+            for(const auto& it : tok)
+            {
+                compositorChain.push_back(it);
+            }
+
+            m_compositorChainManager->setCompositorChain(compositorChain, m_id, m_renderService.lock());
+        }
     }
 
     this->setMoveInteractor(interactor);
@@ -275,17 +293,7 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
     {
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE:
         {
-            m_moveInteractor->mouseMoveEvent(info.dx, info.dy);
-            break;
-        }
-        case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::HORIZONTALMOVE:
-        {
-            m_moveInteractor->horizontalMoveEvent(info.x, info.dx);
-            break;
-        }
-        case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::VERTICALMOVE:
-        {
-            m_moveInteractor->verticalMoveEvent(info.y, info.dy);
+            m_moveInteractor->mouseMoveEvent(info.button, info.x, info.y, info.dx, info.dy);
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE:
@@ -295,12 +303,24 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE:
         {
+            auto sig = this->signal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
+            sig->asyncEmit(info.x, info.y);
             m_moveInteractor->resizeEvent(info.x, info.y);
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS:
         {
             m_moveInteractor->keyPressEvent(info.key);
+            break;
+        }
+        case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONRELEASE:
+        {
+            m_moveInteractor->buttonReleaseEvent(info.button, info.x, info.y);
+            break;
+        }
+        case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONPRESS:
+        {
+            m_moveInteractor->buttonPressEvent(info.button, info.x, info.y);
             break;
         }
     }
@@ -334,6 +354,13 @@ void Layer::setDepth(int depth)
 void Layer::setWorker( const ::fwThread::Worker::sptr& _worker)
 {
     ::fwCom::HasSlots::m_slots.setWorker(_worker);
+}
+
+// ----------------------------------------------------------------------------
+
+::fwRenderOgre::SRender::csptr Layer::getRenderService() const
+{
+    return m_renderService.lock();
 }
 
 //------------------------------------------------------------------------------
@@ -609,6 +636,16 @@ void Layer::requestRender()
 
 //-----------------------------------------------------------------------------
 
+void Layer::setStereoMode(StereoModeType mode)
+{
+    m_stereoMode = mode;
+
+    auto sig = this->signal<StereoModeChangedSignalType>(s_MODE3D_CHANGED_SIG);
+    sig->asyncEmit(m_stereoMode);
+}
+
+//-----------------------------------------------------------------------------
+
 void Layer::setBackgroundColor(std::string topColor, std::string botColor)
 {
     m_topColor    = topColor;
@@ -686,6 +723,13 @@ bool Layer::isCoreCompositorEnabled()
 bool Layer::isCompositorChainEnabled()
 {
     return m_hasCompositorChain;
+}
+
+//-------------------------------------------------------------------------------------
+
+Layer::StereoModeType Layer::getStereoMode() const
+{
+    return m_stereoMode;
 }
 
 //-------------------------------------------------------------------------------------

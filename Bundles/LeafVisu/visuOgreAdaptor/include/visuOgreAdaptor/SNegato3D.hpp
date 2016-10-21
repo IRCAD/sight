@@ -7,19 +7,19 @@
 #ifndef __VISUOGREADAPTOR_SNEGATO3D_HPP__
 #define __VISUOGREADAPTOR_SNEGATO3D_HPP__
 
-#include <fwRenderOgre/IAdaptor.hpp>
-#include <fwRenderOgre/ITransformable.hpp>
-#include <fwRenderOgre/Plane.hpp>
-#include <fwRenderOgre/TransferFunction.hpp>
+#include "visuOgreAdaptor/config.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
-
 #include <fwData/Float.hpp>
 
-#include "visuOgreAdaptor/config.hpp"
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+
+#include <fwRenderOgre/IAdaptor.hpp>
+#include <fwRenderOgre/ITransformable.hpp>
+#include <fwRenderOgre/Plane.hpp>
+#include <fwRenderOgre/TransferFunction.hpp>
 
 namespace visuOgreAdaptor
 {
@@ -29,11 +29,11 @@ namespace visuOgreAdaptor
  */
 class VISUOGREADAPTOR_CLASS_API SNegato3D : public ::fwRenderOgre::IAdaptor,
                                             public ::fwRenderOgre::ITransformable,
-                                            public ::fwComEd::helper::MedicalImageAdaptor
+                                            public ::fwDataTools::helper::MedicalImageAdaptor
 {
 public:
 
-    typedef ::fwComEd::helper::MedicalImageAdaptor::Orientation OrientationMode;
+    typedef ::fwDataTools::helper::MedicalImageAdaptor::Orientation OrientationMode;
 
     fwCoreServiceClassDefinitionsMacro ( (SNegato3D)(::fwRenderOgre::IAdaptor) );
 

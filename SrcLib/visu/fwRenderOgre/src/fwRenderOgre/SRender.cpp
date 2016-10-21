@@ -6,14 +6,14 @@
 
 #include "fwRenderOgre/SRender.hpp"
 
+#include <fwRenderOgre/IAdaptor.hpp>
+#include <fwRenderOgre/Utils.hpp>
+#include <fwRenderOgre/registry/Adaptor.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Color.hpp>
-
-#include <fwRenderOgre/IAdaptor.hpp>
-#include <fwRenderOgre/Utils.hpp>
-#include <fwRenderOgre/registry/Adaptor.hpp>
 
 #include <fwRuntime/ConfigurationElementContainer.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
@@ -25,8 +25,8 @@
 #include <fwTools/fwID.hpp>
 
 #include <OGRE/OgreEntity.h>
-#include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreNode.h>
+#include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 
 #include <stack>
@@ -36,6 +36,8 @@ fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderOgre::SRender, ::fwData:
 namespace fwRenderOgre
 {
 
+const std::string SRender::s_OGREBACKGROUNDID = "ogreBackground";
+
 const ::fwCom::Slots::SlotKeyType SRender::s_SCENE_STARTED_SIG = "sceneStarted";
 
 const ::fwCom::Slots::SlotKeyType SRender::s_START_OBJECT_SLOT            = "startObject";
@@ -43,7 +45,9 @@ const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_ORIG_SLOT     = "com
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT = "computeCameraClipping";
 const ::fwCom::Slots::SlotKeyType SRender::s_DO_RAY_CAST_SLOT             = "doRayCast";
 
-static const char* s_ogreBackgroundId = "ogreBackground";
+static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
+static const ::fwCom::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObject";
+static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
 
 //-----------------------------------------------------------------------------
 
@@ -52,7 +56,8 @@ SRender::SRender() throw() :
     m_showOverlay(false),
     m_startAdaptor(false),
     m_renderOnDemand(true),
-    m_isReady(false)
+    m_isReady(false),
+    m_fullscreen(false)
 {
     m_ogreRoot = ::fwRenderOgre::Utils::getOgreRoot();
 
@@ -82,6 +87,7 @@ SRender::~SRender() throw()
 void SRender::configuring() throw(fwTools::Failed)
 {
     this->initialize();
+
     std::vector < ConfigurationType > vectConfig = m_configuration->find("scene");
 
     if(!vectConfig.empty())
@@ -90,22 +96,29 @@ void SRender::configuring() throw(fwTools::Failed)
 
         if (sceneConfiguration->hasAttribute("overlay"))
         {
-            const std::string overlay = m_configuration->getAttributeValue("overlay");
+            const std::string overlay = sceneConfiguration->getAttributeValue("overlay");
             if (overlay == "true")
             {
                 m_showOverlay = true;
             }
         }
-    }
 
-    std::string renderMode = m_configuration->getAttributeValue("renderMode");
-    if (renderMode == "auto")
-    {
-        m_renderOnDemand = true;
-    }
-    else if (renderMode == "always")
-    {
-        m_renderOnDemand = false;
+        if(sceneConfiguration->hasAttribute("fullscreen"))
+        {
+            std::string fullscreen = sceneConfiguration->getAttributeValue("fullscreen");
+
+            m_fullscreen = (fullscreen == "yes");
+        }
+
+        std::string renderMode = sceneConfiguration->getAttributeValue("renderMode");
+        if (renderMode == "auto")
+        {
+            m_renderOnDemand = true;
+        }
+        else if (renderMode == "always")
+        {
+            m_renderOnDemand = false;
+        }
     }
 
     auto adaptorConfigs = m_configuration->findAllConfigurationElement ("adaptor");
@@ -174,7 +187,7 @@ void SRender::starting() throw(fwTools::Failed)
         ogreLayer->setBackgroundColor("#000000", "#000000");
         ogreLayer->setBackgroundScale(0, 0.5);
 
-        m_layers[s_ogreBackgroundId] = ogreLayer;
+        m_layers[s_OGREBACKGROUNDID] = ogreLayer;
     }
     this->startContext();
 }
@@ -238,9 +251,12 @@ void SRender::configureLayer( ConfigurationType conf )
     const std::string compositors           = conf->getAttributeValue("compositors");
     const std::string transparencyTechnique = conf->getAttributeValue("transparency");
     const std::string numPeels              = conf->getAttributeValue("numPeels");
+    const std::string mode3D                = conf->getAttributeValue("mode3D");
 
     SLM_ASSERT( "'id' required attribute missing or empty", !id.empty() );
     SLM_ASSERT( "'layer' required attribute missing or empty", !layer.empty() );
+    SLM_ASSERT( "Unknown 3D mode : " << mode3D,
+                mode3D.empty() || mode3D == "no" || mode3D == "AutoStereo5" || mode3D == "AutoStereo8");
 
     const int layerDepth = ::boost::lexical_cast<int>(layer);
 
@@ -251,6 +267,9 @@ void SRender::configureLayer( ConfigurationType conf )
     ogreLayer->setID(id);
     ogreLayer->setDepth(layerDepth);
     ogreLayer->setWorker(m_associatedWorker);
+    ogreLayer->setStereoMode(mode3D == "AutoStereo5" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 :
+                             mode3D == "AutoStereo8" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 :
+                             ::fwRenderOgre::Layer::StereoModeType::NONE);
 
     ogreLayer->setCoreCompositorEnabled(id == "default", transparencyTechnique, numPeels);
     ogreLayer->setCompositorChainEnabled(compositors != "", compositors);
@@ -293,7 +312,7 @@ void SRender::configureBackgroundLayer( ConfigurationType conf )
         }
     }
 
-    m_layers[s_ogreBackgroundId] = ogreLayer;
+    m_layers[s_OGREBACKGROUNDID] = ogreLayer;
 }
 
 //-----------------------------------------------------------------------------
@@ -421,7 +440,7 @@ void SRender::startContext()
 {
     m_interactorManager = ::fwRenderOgre::IRenderWindowInteractorManager::createManager();
     m_interactorManager->setRenderService(this->getSptr());
-    m_interactorManager->createContainer( this->getContainer(), m_showOverlay, m_renderOnDemand );
+    m_interactorManager->createContainer( this->getContainer(), m_showOverlay, m_renderOnDemand, m_fullscreen );
 }
 
 //-----------------------------------------------------------------------------
@@ -463,7 +482,7 @@ void SRender::stopContext()
 
 // ----------------------------------------------------------------------------
 
-::fwRenderOgre::IRenderWindowInteractorManager::sptr SRender::getInteractorManager()
+::fwRenderOgre::IRenderWindowInteractorManager::sptr SRender::getInteractorManager() const
 {
     return m_interactorManager;
 }

@@ -7,18 +7,20 @@
 #ifndef __FWRENDEROGRE_PLANE_HPP__
 #define __FWRENDEROGRE_PLANE_HPP__
 
-#include <string>
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include "fwRenderOgre/config.hpp"
 
-#include <OGRE/OgreNumerics.h>
-#include <OGRE/OgreMesh.h>
-#include <OGRE/OgreMaterial.h>
-#include <OGRE/OgreSceneManager.h>
-#include <OGRE/OgreTexture.h>
-#include <OGRE/OgreTechnique.h>
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include "fwTools/fwID.hpp"
-#include "fwRenderOgre/config.hpp"
+
+#include <OGRE/OgreMaterial.h>
+#include <OGRE/OgreMesh.h>
+#include <OGRE/OgreNumerics.h>
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreTechnique.h>
+#include <OGRE/OgreTexture.h>
+
+#include <string>
 
 namespace Ogre
 {
@@ -29,14 +31,13 @@ namespace fwRenderOgre
 {
 
 /**
- * @class Plane
  * @brief Manages a plane mesh on which a slice texture will be applied
  */
 class FWRENDEROGRE_CLASS_API Plane
 {
 public:
 
-    typedef ::fwComEd::helper::MedicalImageAdaptor::Orientation OrientationMode;
+    typedef ::fwDataTools::helper::MedicalImageAdaptor::Orientation OrientationMode;
 
     typedef enum FilteringEnum
     {

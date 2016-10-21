@@ -225,3 +225,10 @@ fragment_program DualDepthPeeling_Edge_Normal_FP glsl
 }
 
 //---------------------------------------------------------------------------
+
+fragment_program TransferFunction_FP glsl
+{
+    source TransferFunction.glsl
+}
+
+//---------------------------------------------------------------------------

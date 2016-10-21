@@ -13,7 +13,7 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/helper/Mesh.hpp>
+#include <fwDataTools/helper/Mesh.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwDataTools/Mesh.hpp>
@@ -53,7 +53,7 @@ static const ::fwCom::Slots::SlotKeyType s_MODIFY_VERTICES_SLOT         = "modif
 
 template <typename T>
 void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras,
-                 ::fwComEd::helper::Mesh& _meshHelper, size_t uiNumCells)
+                 ::fwDataTools::helper::Mesh& _meshHelper, size_t uiNumCells)
 {
     FW_PROFILE_AVG("copyIndices", 5);
 
@@ -137,6 +137,11 @@ SMesh::SMesh() throw() :
 
 SMesh::~SMesh() throw()
 {
+    if(m_entity)
+    {
+        ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+        sceneMgr->destroyEntity(m_entity);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -276,10 +281,7 @@ void SMesh::doStop() throw(fwTools::Failed)
 
     this->unregisterServices();
 
-    // Destroy Ogre Mesh
-    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    sceneMgr->destroyManualObject(m_meshName);
-    sceneMgr->destroyManualObject(m_r2vbMeshName);
+    this->clearMesh();
 
     if(!m_useNewMaterialAdaptor)
     {
@@ -291,16 +293,18 @@ void SMesh::doStop() throw(fwTools::Failed)
         ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
         sceneMgr->destroyEntity(m_entity);
     }
-    m_ogreMesh.setNull();
-    m_r2vbMesh.setNull();
+    // Destroy Ogre Mesh
+    auto& meshMgr = ::Ogre::MeshManager::getSingleton();
+    meshMgr.remove(m_ogreMesh->getHandle());
+    meshMgr.remove(m_r2vbMesh->getHandle());
 }
 
 //-----------------------------------------------------------------------------
 
 void SMesh::doSwap() throw(fwTools::Failed)
 {
-    stopping();
-    starting();
+    doStop();
+    doStart();
 }
 
 //-----------------------------------------------------------------------------
@@ -313,7 +317,7 @@ void SMesh::doUpdate() throw(::fwTools::Failed)
 
 void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 {
-    ::fwComEd::helper::Mesh meshHelper(mesh);
+    ::fwDataTools::helper::Mesh meshHelper(mesh);
 
     /// The values in this table refer to vertices in the above table
     size_t uiNumVertices = mesh->getNumberOfPoints();
@@ -728,7 +732,7 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
 
     // Update Ogre Mesh with ::fwData::Mesh
     ::fwData::mt::ObjectReadLock lock(mesh);
-    ::fwComEd::helper::Mesh meshHelper(mesh);
+    ::fwDataTools::helper::Mesh meshHelper(mesh);
     ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
 
     size_t uiStrideFloat = 3;
@@ -935,7 +939,7 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
     if (hasVertexColor)
     {
         ::fwData::mt::ObjectReadLock lock(mesh);
-        ::fwComEd::helper::Mesh meshHelper(mesh);
+        ::fwDataTools::helper::Mesh meshHelper(mesh);
 
         // Source points
         ::Ogre::HardwareVertexBufferSharedPtr cbuf = bind->getBuffer(m_binding[COLOUR]);
@@ -955,7 +959,7 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
     if(hasPrimitiveColor)
     {
         ::fwData::mt::ObjectReadLock lock(mesh);
-        ::fwComEd::helper::Mesh meshHelper(mesh);
+        ::fwDataTools::helper::Mesh meshHelper(mesh);
 
         // Source cells
         ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = m_perPrimitiveColorTexture->getBuffer();
@@ -1002,7 +1006,7 @@ void SMesh::updateTexCoords(const ::fwData::Mesh::sptr& mesh)
         FW_PROFILE_AVG("UPDATE TexCoords", 5);
 
         ::fwData::mt::ObjectReadLock lock(mesh);
-        ::fwComEd::helper::Mesh meshHelper(mesh);
+        ::fwDataTools::helper::Mesh meshHelper(mesh);
 
         ::Ogre::VertexBufferBinding* bind           = m_ogreMesh->sharedVertexData->vertexBufferBinding;
         ::Ogre::HardwareVertexBufferSharedPtr uvbuf = bind->getBuffer(m_binding[TEXCOORD]);
