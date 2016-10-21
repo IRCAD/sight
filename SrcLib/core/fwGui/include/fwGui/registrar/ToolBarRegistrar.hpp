@@ -36,7 +36,7 @@ public:
     typedef std::vector< ::fwGui::IMenuItemCallback::sptr > CallbacksType;
 
     /// Constructor.
-    FWGUI_API ToolBarRegistrar( const std::string &sid);
+    FWGUI_API ToolBarRegistrar( const std::string& sid);
 
     /// Destructor. Do nothing
     FWGUI_API virtual ~ToolBarRegistrar();
@@ -69,6 +69,7 @@ public:
                        <menu name="My menu" />
                        <separator />
                        <editor />
+                       <editor />
                    </layout>
                </gui>
                <registry>
@@ -77,15 +78,23 @@ public:
                    <menuItem sid="item4" />
                    <menuItem sid="item5" />
                    <menu sid="menu" />
-                   <editor sid="editor" />
+                   <editor sid="editor" start="yes"/>
+                   <editor wid="editorWindow" />
                </registry>
            </service>
        @endcode
      * This method analyzes the registry section of the configuration.
      *
-     *  - \<menuItem sid="item2" start="no" /\> : define the service of the menuItem to add in the toolbar.
-     *   - \b sid  (mandatory): the service identifier.
+     * - \<menuItem sid="item2" start="no" /\> : define the service of the menuItem to add in the toolbar.
+     *   - \b sid (mandatory): the service identifier.
      *   - \b start = {yes| no} (default value no): indicate if the service must be started by the toolbar service.
+     * - \<editor sid="editor" start="yes" /\> : define the service of the editor to add in the toolbar.
+     *   - \b sid  (mandatory): the service identifier.
+     *   - \b start = {yes| no} (default value no): indicate if the editor service must be started by the service.
+     * - \<editor wid="editorWindow" /\> : reserve a sub container for the editor in the toolbar with the name
+     *   "editorWindow". The service which want to use this sub container will have to define a parent
+     *   with \<parent wid="editorWindow" /\>.
+     *   - \b wid  (mandatory): the window identifier.
      */
     FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);
 
@@ -150,6 +159,7 @@ protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef std::map< std::string, std::pair<unsigned int, bool> > SIDToolBarMapType;
+    typedef std::map< std::string, unsigned int > WIDToolBarMapType;
 
     /**
      * @brief All toolBar services ID managed and associated with pair containing:
@@ -168,6 +178,9 @@ protected:
      * editors index vector and boolean describing if is started by the manager.
      */
     SIDToolBarMapType m_editorSids;
+
+    /// All toolBar servicesID managed (and associated with subViews index vector).
+    WIDToolBarMapType m_editorWids;
 
     /// Main service ID associate with this ToolBarRegistrar
     std::string m_sid;
