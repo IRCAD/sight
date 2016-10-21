@@ -32,14 +32,13 @@ namespace ioDcmtk
  *
  * @code{.xml}
     <service uid="..." type="::ioDcmtk::SSeriesDBReader" autoConnect="no" worker="readerDicom">
-        <inout key="seriesDB" uid="..."/>
+        <inout key="data" uid="..."/>
     </service>
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b seriesDB [::fwMedData::SeriesDB]: dicom seriesDB to read.
- *
- **/
+ * - \b data [::fwMedData::SeriesDB]: dicom seriesDB to read.
+ */
 class IODCMTK_CLASS_API SSeriesDBReader : public ::io::IReader
 {
 

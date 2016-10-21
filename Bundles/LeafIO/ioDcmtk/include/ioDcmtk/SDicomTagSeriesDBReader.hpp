@@ -9,7 +9,6 @@
 
 #include "ioDcmtk/config.hpp"
 
-
 #include <io/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
@@ -30,15 +29,13 @@ namespace ioDcmtk
  * @section XML Configuration
  * @code{.xml}
     <service uid="..." type="::ioDcmtk::SDicomTagSeriesDBReader" >
-        <inout key="seriesDB" uid="..."/>
+        <inout key="data" uid="..."/>
     </service>
  * @endcode
  *
  * @subsection In-Out In-Out
- * - \b seriesDB [::fwMedData::SeriesDB]: SeriesDB
- *
+ * - \b data [::fwMedData::SeriesDB]: SeriesDB
  */
-
 class IODCMTK_CLASS_API SDicomTagSeriesDBReader : public ::io::IReader
 {
 

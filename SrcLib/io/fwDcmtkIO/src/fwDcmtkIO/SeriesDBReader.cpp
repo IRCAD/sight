@@ -4,32 +4,35 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <dcmtk/config/osconfig.h>
-#include <dcmtk/dcmnet/diutil.h>
-#include <dcmtk/dcmdata/dcfilefo.h>
-#include <dcmtk/dcmdata/dcdeftag.h>
-
-#include <fwComEd/helper/SeriesDB.hpp>
-#include <fwDataIO/reader/registry/macros.hpp>
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
-#include <fwMedData/Equipment.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-
-#include <fwDicomIOFilter/exceptions/FilterFailure.hpp>
-#include <fwDicomIOFilter/helper/Filter.hpp>
-#include <fwDicomIOFilter/splitter/SOPClassUIDSplitter.hpp>
-#include <fwDicomIOFilter/composite/CTImageStorageDefaultComposite.hpp>
-#include <fwDcmtkTools/Dictionary.hpp>
+#include "fwDcmtkIO/SeriesDBReader.hpp"
 
 #include "fwDcmtkIO/helper/Codec.hpp"
 #include "fwDcmtkIO/helper/DicomDir.hpp"
 #include "fwDcmtkIO/helper/DicomSearch.hpp"
 #include "fwDcmtkIO/reader/ImageStorageReader.hpp"
 
-#include "fwDcmtkIO/SeriesDBReader.hpp"
+#include <fwComEd/helper/SeriesDB.hpp>
+
+#include <fwDataIO/reader/registry/macros.hpp>
+
+#include <fwDcmtkTools/Dictionary.hpp>
+
+#include <fwDicomIOFilter/composite/CTImageStorageDefaultComposite.hpp>
+#include <fwDicomIOFilter/exceptions/FilterFailure.hpp>
+#include <fwDicomIOFilter/helper/Filter.hpp>
+#include <fwDicomIOFilter/splitter/SOPClassUIDSplitter.hpp>
+
+#include <fwMedData/Equipment.hpp>
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/ModelSeries.hpp>
+#include <fwMedData/Patient.hpp>
+#include <fwMedData/SeriesDB.hpp>
+#include <fwMedData/Study.hpp>
+
+#include <dcmtk/config/osconfig.h>
+#include <dcmtk/dcmdata/dcdeftag.h>
+#include <dcmtk/dcmdata/dcfilefo.h>
+#include <dcmtk/dcmnet/diutil.h>
 
 fwDataIOReaderRegisterMacro( ::fwDcmtkIO::SeriesDBReader );
 
@@ -102,6 +105,7 @@ void SeriesDBReader::read()
     if(!m_dicomFilterType.empty())
     {
         ::fwDicomIOFilter::IFilter::sptr filter = ::fwDicomIOFilter::factory::New(m_dicomFilterType);
+        SLM_ASSERT("Failed to instantiate filter of type '" + m_dicomFilterType + "'.", filter);
         ::fwDicomIOFilter::helper::Filter::applyFilter(m_dicomSeriesContainer,filter, true);
     }
 

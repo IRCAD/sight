@@ -9,18 +9,26 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
+
 #include <fwCore/base.hpp>
+
 #include <fwData/String.hpp>
+
 #include <fwDcmtkIO/SeriesDBReader.hpp>
+
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
+
 #include <fwMedData/SeriesDB.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
+
 #include <fwTools/ProgressToLogger.hpp>
+
 #include <io/IReader.hpp>
 
 #include <boost/bind.hpp>
@@ -227,7 +235,7 @@ void SSeriesDBReader::updating() throw(::fwTools::Failed)
             ::fwMedData::SeriesDB::sptr associatedSeriesDB;
             if (this->isVersion2())
             {
-                associatedSeriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
+                associatedSeriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
             }
             else
             {
@@ -258,7 +266,7 @@ void SSeriesDBReader::notificationOfDBUpdate()
     ::fwMedData::SeriesDB::sptr seriesDB;
     if (this->isVersion2())
     {
-        seriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
+        seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
     }
     else
     {

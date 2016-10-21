@@ -145,7 +145,7 @@ void SDicomTagSeriesDBReader::updating() throw(::fwTools::Failed)
                 ::fwMedData::SeriesDB::sptr associatedSeriesDB;
                 if(this->isVersion2())
                 {
-                    associatedSeriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
+                    associatedSeriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
                 }
                 else
                 {
@@ -178,10 +178,10 @@ void SDicomTagSeriesDBReader::updating() throw(::fwTools::Failed)
 void SDicomTagSeriesDBReader::notificationOfDBUpdate()
 {
     SLM_TRACE_FUNC();
-    ::fwMedData::SeriesDB::sptr seriesDB;
+    ::fwMedData::SeriesDB::csptr seriesDB;
     if(this->isVersion2())
     {
-        seriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
+        seriesDB = this->getInOut< ::fwMedData::SeriesDB >(::io::s_DATA_KEY);
     }
     else
     {
