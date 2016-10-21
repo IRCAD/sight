@@ -3,19 +3,20 @@ set( NAME fwDcmtkIO )
 set( VERSION 0.1 )
 set( TYPE LIBRARY )
 set( DEPENDENCIES
-    fwCore
-    fwDataIO
-    fwTools
-    fwData
-    fwThread
-    fwMedData
     fwCom
-    fwComEd
-    fwZip
+    fwCore
+    fwDcmtkTools
+    fwData
+    fwDataIO
     fwDicomIOFilter
     fwDicomTools
-    fwDcmtkTools
-    fwMemory
+    fwTools
+    fwThread
     fwLog
+    fwMedData
+    fwMedDataTools
+    fwMemory
+    fwServices
+    fwZip
     )
 set( REQUIREMENTS )

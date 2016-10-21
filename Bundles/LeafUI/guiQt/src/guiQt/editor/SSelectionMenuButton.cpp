@@ -6,7 +6,6 @@
 
 #include "guiQt/editor/SSelectionMenuButton.hpp"
 
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
@@ -15,9 +14,9 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-
 #include <fwCore/base.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -28,12 +27,12 @@
 
 #include <fwTools/fwID.hpp>
 
-#include <QWidget>
-#include <QString>
-#include <QMenu>
 #include <QAction>
+#include <QMenu>
 #include <QPushButton>
+#include <QString>
 #include <QVBoxLayout>
+#include <QWidget>
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/convenience.hpp>
@@ -127,7 +126,7 @@ void SSelectionMenuButton::starting() throw(::fwTools::Failed)
 
     for (auto item : m_items)
     {
-        QAction * action = new QAction(QString::fromStdString(item.second), m_pDropDownMenu);
+        QAction* action = new QAction(QString::fromStdString(item.second), m_pDropDownMenu);
         action->setCheckable(true);
         action->setData(QVariant(item.first));
         m_actionGroup->addAction(action);
@@ -141,7 +140,7 @@ void SSelectionMenuButton::starting() throw(::fwTools::Failed)
     QObject::connect(m_actionGroup, SIGNAL(triggered(QAction*)), this, SLOT(onSelection(QAction*)));
     m_dropDownButton->setMenu(m_pDropDownMenu);
 
-    QVBoxLayout * vLayout = new QVBoxLayout(container);
+    QVBoxLayout* vLayout = new QVBoxLayout(container);
     vLayout->addWidget( m_dropDownButton);
     vLayout->setContentsMargins(0,0,0,0);
 
@@ -177,7 +176,7 @@ void SSelectionMenuButton::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSelectionMenuButton::info( std::ostream &_sstream )
+void SSelectionMenuButton::info( std::ostream& _sstream )
 {
 }
 

@@ -11,14 +11,14 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwCore/base.hpp>
 
 #include <fwData/Float.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/String.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -156,7 +156,7 @@ void SlicesCursor::buildPolyData()
         points->SetPoint(i, 0.0, 0.0, 0.0);
     }
 
-    vtkCellArray *cells = vtkCellArray::New();
+    vtkCellArray* cells = vtkCellArray::New();
     cells->Allocate(cells->EstimateSize(nbPoints,2));
 
     vtkIdType pts[2];
@@ -164,7 +164,7 @@ void SlicesCursor::buildPolyData()
     {
         pts[0] = line; pts[1] = line+4;
         //cells->InsertNextCell(2,pts);
-        vtkLine *lineCell = vtkLine::New();
+        vtkLine* lineCell = vtkLine::New();
         lineCell->GetPointIds()->SetId(0, line );
         lineCell->GetPointIds()->SetId(1, line+ 4 );
         cells->InsertNextCell(lineCell);
@@ -294,7 +294,7 @@ void SlicesCursor::doSwap() throw(fwTools::Failed)
 void SlicesCursor::doUpdate() throw(fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if ( imageIsValid)
     {

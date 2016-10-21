@@ -5,12 +5,14 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/adaptor/IAdaptor.hpp"
+
 #include "scene2D/Scene2DGraphicsView.hpp"
+
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <QGraphicsItemGroup>

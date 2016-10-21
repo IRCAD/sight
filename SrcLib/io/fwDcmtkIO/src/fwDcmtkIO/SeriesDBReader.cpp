@@ -11,8 +11,6 @@
 #include "fwDcmtkIO/helper/DicomSearch.hpp"
 #include "fwDcmtkIO/reader/ImageStorageReader.hpp"
 
-#include <fwComEd/helper/SeriesDB.hpp>
-
 #include <fwDataIO/reader/registry/macros.hpp>
 
 #include <fwDcmtkTools/Dictionary.hpp>
@@ -28,6 +26,8 @@
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
+
+#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
@@ -136,7 +136,7 @@ void SeriesDBReader::readDicomSeries()
 {
     SLM_TRACE_FUNC();
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
-    ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
+    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
     // Get filenames
     FilenameContainerType filenames = this->getFilenames();
@@ -400,7 +400,7 @@ void SeriesDBReader::convertDicomSeries(SPTR(::fwMedData::DicomSeries)dicomSerie
                                         ::fwServices::IService::sptr notifier)
 {
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
-    ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
+    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
     ::fwMedData::Series::sptr result = ::fwMedData::Series::sptr();
 
     ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();

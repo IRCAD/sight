@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/Render.hpp"
+
 #include "scene2D/Scene2DGraphicsView.hpp"
 #include "scene2D/adaptor/IAdaptor.hpp"
 
@@ -12,16 +13,16 @@
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-
-#include <fwServices/macros.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
-#include <fwServices/helper/Config.hpp>
-#include <fwServices/op/Add.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <QVBoxLayout>
+#include <fwServices/helper/Config.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
+
 #include <QGraphicsRectItem>
+#include <QVBoxLayout>
 
 fwServicesRegisterMacro( ::fwRender::IRender, ::scene2D::Render, ::fwData::Composite );
 

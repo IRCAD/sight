@@ -6,15 +6,18 @@
 
 #include "ioPacs/SQueryEditor.hpp"
 
-#include <fwComEd/helper/SeriesDB.hpp>
-#include <fwMedData/DicomSeries.hpp>
-#include <fwPacsIO/helper/Series.hpp>
-#include <fwPacsIO/exceptions/Base.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGuiQt/container/QtContainer.hpp>
-#include <fwServices/macros.hpp>
 
-#include <dcmtk/dcmnet/scu.h>
+#include <fwGuiQt/container/QtContainer.hpp>
+
+#include <fwMedData/DicomSeries.hpp>
+
+#include <fwMedDataTools/helper/SeriesDB.hpp>
+
+#include <fwPacsIO/exceptions/Base.hpp>
+#include <fwPacsIO/helper/Series.hpp>
+
+#include <fwServices/macros.hpp>
 
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -22,6 +25,8 @@
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>
+
+#include <dcmtk/dcmnet/scu.h>
 
 namespace ioPacs
 {
@@ -219,7 +224,7 @@ void SQueryEditor::queryStudyDate()
 void SQueryEditor::updateSeriesDB(::fwMedData::SeriesDB::ContainerType series)
 {
     ::fwMedData::SeriesDB::sptr seriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
-    ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
+    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
     // Delete old series from the SeriesDB
     seriesDBHelper.clear();

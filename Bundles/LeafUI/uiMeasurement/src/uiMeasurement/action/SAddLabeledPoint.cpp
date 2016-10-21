@@ -10,14 +10,14 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
-#include <fwComEd/Dictionary.hpp>
-
 #include <fwCore/base.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
 
 #include <fwGui/dialog/InputDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -50,7 +50,7 @@ SAddLabeledPoint::~SAddLabeledPoint() throw()
 
 //------------------------------------------------------------------------------
 
-void SAddLabeledPoint::info(std::ostream &_sstream )
+void SAddLabeledPoint::info(std::ostream& _sstream )
 {
     _sstream << "Action for remove distance" << std::endl;
 }
@@ -58,7 +58,7 @@ void SAddLabeledPoint::info(std::ostream &_sstream )
 //------------------------------------------------------------------------------
 
 // return true if label setting is NOT Canceled , name is modified !!!
-bool SAddLabeledPoint::defineLabel(std::string &name)
+bool SAddLabeledPoint::defineLabel(std::string& name)
 {
     bool res = false;
     name = "Label" + ::boost::lexical_cast< std::string >(m_count);
@@ -100,7 +100,7 @@ void SAddLabeledPoint::updating() throw(::fwTools::Failed)
         // append to point the label
         ::fwData::String::sptr label = ::fwData::String::New();
         label->value()               = value;
-        newPoint->setField( ::fwComEd::Dictionary::m_labelId, label );
+        newPoint->setField( ::fwDataTools::fieldHelper::Image::m_labelId, label );
 
         // notify
         auto sig =

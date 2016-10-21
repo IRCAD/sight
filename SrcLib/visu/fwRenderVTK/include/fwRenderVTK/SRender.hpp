@@ -7,16 +7,18 @@
 #ifndef __FWRENDERVTK_SRENDER_HPP__
 #define __FWRENDERVTK_SRENDER_HPP__
 
-#include "fwRenderVTK/config.hpp"
 #include "fwRenderVTK/IVtkRenderWindowInteractorManager.hpp"
+#include "fwRenderVTK/config.hpp"
+
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include <fwRender/IRender.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
+
 #include <fwServices/helper/Config.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
 
 #include <fwThread/Timer.hpp>
 
@@ -310,7 +312,7 @@ private:
     void disconnect( const ContainerType& objects );
 
     /// Signal/ Slot connection
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     /// Map to register proxy connections
     ::fwServices::helper::Config::ProxyConnectionsMapType m_proxyMap;
@@ -322,7 +324,7 @@ private:
     /// vector containing all the proxy configurations
     ConnectConfigType m_proxies;
 
-    typedef std::map< std::string, ::fwServices::helper::SigSlotConnection > ObjectConnectionsMapType;
+    typedef std::map< std::string, ::fwCom::helper::SigSlotConnection > ObjectConnectionsMapType;
     /// map containing the object key/connection relation
     ObjectConnectionsMapType m_objectConnections;
 };

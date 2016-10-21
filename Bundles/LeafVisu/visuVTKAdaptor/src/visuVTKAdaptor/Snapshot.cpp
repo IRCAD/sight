@@ -12,22 +12,21 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwServices/macros.hpp>
-#include <fwServices/IService.hpp>
 
 #include <vtkActor.h>
 #include <vtkBMPWriter.h>
+#include <vtkImageData.h>
 #include <vtkImageWriter.h>
 #include <vtkJPEGWriter.h>
 #include <vtkPNGWriter.h>
-#include <vtkRenderer.h>
-#include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
 #include <vtkTIFFWriter.h>
 #include <vtkWindowToImageFilter.h>
 

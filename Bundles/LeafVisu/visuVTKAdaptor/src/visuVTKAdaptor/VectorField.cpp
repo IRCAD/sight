@@ -6,21 +6,21 @@
 
 #include "visuVTKAdaptor/VectorField.hpp"
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <fwServices/macros.hpp>
-
 #include <fwData/Boolean.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include <fwVtkIO/vtk.hpp>
-#include <fwVtkIO/helper/TransferFunction.hpp>
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwRenderVTK/vtk/fwVtkWindowLevelLookupTable.hpp>
+
+#include <fwServices/macros.hpp>
+
+#include <fwVtkIO/helper/TransferFunction.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include <vtkActor.h>
 #include <vtkArrowSource.h>
@@ -81,7 +81,7 @@ void VectorField::doSwap() throw(fwTools::Failed)
 void VectorField::doUpdate() throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if (imageIsValid && image->getNumberOfComponents() == 3)
     {

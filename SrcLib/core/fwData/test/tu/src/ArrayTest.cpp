@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ArrayTest.hpp"
+
 #include <fwData/Array.hpp>
 
-#include <fwComEd/helper/Array.hpp>
-
-#include "ArrayTest.hpp"
+#include <fwDataTools/helper/Array.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::ArrayTest );
@@ -38,7 +38,7 @@ void ArrayTest::tearDown()
 void ArrayTest::allocation()
 {
     ::fwData::Array::sptr array = ::fwData::Array::New();
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
 
     CPPUNIT_ASSERT(array->empty());
     CPPUNIT_ASSERT(arrayHelper.getBuffer() == NULL);
@@ -70,7 +70,7 @@ void ArrayTest::allocation()
     CPPUNIT_ASSERT(  array->empty() );
     CPPUNIT_ASSERT(  arrayHelper.getBuffer() == NULL );
 
-    char *buffer = new char[1000];
+    char* buffer = new char[1000];
 
     for (int i = 0; i<1000; i++)
     {
@@ -107,7 +107,7 @@ void ArrayTest::allocation()
 void ArrayTest::resize()
 {
     ::fwData::Array::sptr array = ::fwData::Array::New();
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
 
     const size_t NB_COMPONENT = 1;
     ::fwData::Array::SizeType size {10, 100};
@@ -118,7 +118,7 @@ void ArrayTest::resize()
     // CPPUNIT_ASSERT(array->begin<unsigned int>() != NULL);
 
     unsigned int count = 0;
-    unsigned int *iter = arrayHelper.begin<unsigned int>();
+    unsigned int* iter = arrayHelper.begin<unsigned int>();
 
     // CPPUNIT_ASSERT(iter != NULL);
     for (; iter != arrayHelper.end<unsigned int>(); ++iter)
@@ -216,7 +216,7 @@ void ArrayTest::resize()
 void ArrayTest::reallocate()
 {
     ::fwData::Array::sptr array = ::fwData::Array::New();
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
 
     const size_t NB_COMPONENT = 1;
     ::fwData::Array::SizeType size = {10,100};
@@ -226,7 +226,7 @@ void ArrayTest::reallocate()
     // CPPUNIT_ASSERT(array->begin<unsigned int>() != NULL);
 
     unsigned int count = 0;
-    unsigned int *iter = arrayHelper.begin<unsigned int>();
+    unsigned int* iter = arrayHelper.begin<unsigned int>();
     for (; iter != arrayHelper.end<unsigned int>(); ++iter)
     {
         *iter = count++;
@@ -330,7 +330,7 @@ void ArrayTest::reallocate()
     arrayHelper.getItem({2, 65}, &val);
     CPPUNIT_ASSERT_EQUAL(  (::boost::uint16_t)326, val);
 
-    char * charValue = arrayHelper.getBufferPtr({6, 47}, 0, array->getType().sizeOf());
+    char* charValue = arrayHelper.getBufferPtr({6, 47}, 0, array->getType().sizeOf());
     CPPUNIT_ASSERT_EQUAL( (unsigned int)238, *(reinterpret_cast<unsigned int*>(charValue)));
 
     array->clear();
@@ -342,7 +342,7 @@ void ArrayTest::reallocate()
 void ArrayTest::copy()
 {
     ::fwData::Array::sptr array = ::fwData::Array::New();
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
 
     const size_t NB_COMPONENT = 1;
     ::fwData::Array::SizeType size = {10,100};
@@ -352,7 +352,7 @@ void ArrayTest::copy()
     CPPUNIT_ASSERT(arrayHelper.begin<unsigned int>() != NULL);
 
     unsigned int count = 0;
-    unsigned int *iter = arrayHelper.begin<unsigned int>();
+    unsigned int* iter = arrayHelper.begin<unsigned int>();
     for (; iter != arrayHelper.end<unsigned int>(); ++iter)
     {
         *iter = count++;
@@ -362,7 +362,7 @@ void ArrayTest::copy()
     ::fwData::Array::sptr deepCopyArray;
     deepCopyArray = ::fwData::Object::copy(array);
 
-    ::fwComEd::helper::Array deepCopyArrayHelper(deepCopyArray);
+    ::fwDataTools::helper::Array deepCopyArrayHelper(deepCopyArray);
 
     // check deepCopy
     CPPUNIT_ASSERT_EQUAL(  array->getBufferOffset({1, 0}, 0, 4),

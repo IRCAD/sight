@@ -9,12 +9,12 @@
 
 #ifndef ANDROID
 
-#include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/MeshFactory.hpp"
+#include "visuVTKAdaptor/config.hpp"
+
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-
-#include <fwServices/helper/SigSlotConnection.hpp>
 
 
 class vtkCommand;
@@ -63,7 +63,7 @@ protected:
     ::fwRenderVTK::SRender::VtkObjectIdType m_planeCollectionId;
 
     /// Store connections to planes adaptors.
-    ::fwServices::helper::SigSlotConnection m_planeConnections;
+    ::fwCom::helper::SigSlotConnection m_planeConnections;
 
 private:
     /**

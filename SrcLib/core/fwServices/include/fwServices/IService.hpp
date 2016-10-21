@@ -9,9 +9,9 @@
 
 #include "fwServices/config.hpp"
 #include "fwServices/factory/new.hpp"
-#include "fwServices/helper/SigSlotConnection.hpp"
 #include "fwServices/helper/ProxyConnections.hpp"
 
+#include <fwCom/helper/SigSlotConnection.hpp>
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/HasSlots.hpp>
 #include <fwCom/Slot.hpp>
@@ -449,7 +449,7 @@ public:
      */
     //@{
 
-    typedef ::fwServices::helper::SigSlotConnection::KeyConnectionsType KeyConnectionsType;
+    typedef ::fwCom::helper::SigSlotConnection::KeyConnectionsType KeyConnectionsType;
 
     /**
      * @brief This class is a helper to define the connections of a service and its data.
@@ -737,10 +737,10 @@ private:
     ::fwServices::IService::Config m_serviceConfig;
 
     /// Regular connections between this service and other services, or this service and objects
-    helper::SigSlotConnection m_srvConnections;
+    ::fwCom::helper::SigSlotConnection m_srvConnections;
 
     /// Auto connections between this service and its objects
-    helper::SigSlotConnection m_autoConnections;
+    ::fwCom::helper::SigSlotConnection m_autoConnections;
 
     /// Proxies configurations, connected at start, and disconnected at stop
     std::map<std::string, helper::ProxyConnections> m_proxies;

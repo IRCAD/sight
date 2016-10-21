@@ -6,14 +6,19 @@
 
 #include "ioDicom/SFilterSelectionEditor.hpp"
 
-#include <fwComEd/helper/SeriesDB.hpp>
 #include <fwData/Vector.hpp>
+
 #include <fwDicomIOFilter/composite/IComposite.hpp>
 #include <fwDicomIOFilter/exceptions/FilterFailure.hpp>
 #include <fwDicomIOFilter/helper/Filter.hpp>
 #include <fwDicomIOFilter/registry/detail.hpp>
+
 #include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
+
+#include <fwMedDataTools/helper/SeriesDB.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <QGridLayout>
@@ -389,7 +394,7 @@ void SFilterSelectionEditor::applyFilters()
     messageBox.setTitle("Filters information");
 
     // Clear destination SeriesDB
-    ::fwComEd::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
+    ::fwMedDataTools::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
     sDBhelper.clear();
 
     // Be sure series are selected

@@ -5,10 +5,10 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES
     fwActivities
     fwCom
-    fwComEd
     fwCore
     fwData
     fwDataCamp
+    fwDataTools
     fwGui
     fwGuiQt
     fwMedData

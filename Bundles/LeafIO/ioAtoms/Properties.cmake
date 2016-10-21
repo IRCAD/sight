@@ -8,11 +8,11 @@ set( DEPENDENCIES
     fwAtomsBoostIO
     fwAtomsPatch
     fwAtomsFilter
-    fwComEd
     fwTools
     fwCore
     fwData
     fwDataCamp
+    fwDataTools
     fwGui
     fwJobs
     fwMemory

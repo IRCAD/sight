@@ -7,17 +7,18 @@
 #ifndef __FWSERVICES_APPCONFIGMANAGER_HPP__
 #define __FWSERVICES_APPCONFIGMANAGER_HPP__
 
-#include "fwServices/config.hpp"
-#include "fwServices/helper/SigSlotConnection.hpp"
+#include "fwServices/IAppConfigManager.hpp"
 #include "fwServices/IService.hpp"
 #include "fwServices/IXMLParser.hpp"
-#include "fwServices/IAppConfigManager.hpp"
+#include "fwServices/config.hpp"
 #include "fwServices/registry/AppConfig.hpp"
+
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <boost/tuple/tuple.hpp>
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace fwData
 {
@@ -112,7 +113,7 @@ protected:
 
     ServiceContainer m_createdSrv;
     ServiceContainer m_startedSrv;
-    helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     FWSERVICES_API ::fwData::Object::sptr getNewObject(
         ConfigAttribute type,

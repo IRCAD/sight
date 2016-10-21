@@ -8,8 +8,10 @@
 
 #include <fwData/Vector.hpp>
 
-#include <fwComEd/helper/SeriesDB.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwMedDataTools/helper/SeriesDB.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <boost/foreach.hpp>
@@ -63,7 +65,7 @@ void SSeriesDBMerger::updating() throw(::fwTools::Failed)
     auto destinationSeriesDB = this->getInOut< ::fwMedData::SeriesDB>("seriesDB");
     SLM_ASSERT("'seriesDB' key is not found.", destinationSeriesDB);
 
-    ::fwComEd::helper::SeriesDB sDBhelper(destinationSeriesDB);
+    ::fwMedDataTools::helper::SeriesDB sDBhelper(destinationSeriesDB);
     ::fwMedData::SeriesDB::ContainerType container = destinationSeriesDB->getContainer();
     ::fwData::Vector::csptr selectedSeries         = this->getInput< ::fwData::Vector >("selectedSeries");
 

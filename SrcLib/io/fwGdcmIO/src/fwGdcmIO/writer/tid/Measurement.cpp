@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGdcmIO/writer/tid/Measurement.hpp"
+
 #include "fwGdcmIO/container/DicomCodedAttribute.hpp"
 #include "fwGdcmIO/container/sr/DicomSRCodeNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRImageNode.hpp"
@@ -13,14 +15,16 @@
 #include "fwGdcmIO/container/sr/DicomSRTextNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRUIDRefNode.hpp"
 #include "fwGdcmIO/helper/DicomData.hpp"
-#include "fwGdcmIO/writer/tid/Measurement.hpp"
 
-#include <fwComEd/Dictionary.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
+
 #include <fwTools/Stringizer.hpp>
 
 #include <gdcmUIDGenerator.h>
@@ -56,7 +60,7 @@ Measurement::~Measurement()
 void Measurement::createNodes(SPTR(::fwGdcmIO::container::sr::DicomSRNode)parent, bool useSCoord3D)
 {
     ::fwData::Vector::sptr distanceVector =
-        m_object->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
+        m_object->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
     if (distanceVector)
     {
         unsigned int id = 1;

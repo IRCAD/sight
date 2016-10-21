@@ -6,7 +6,7 @@
 
 #include "fwDcmtkIO/reader/ImageTagReader.hpp"
 
-#include <fwComEd/helper/Array.hpp>
+#include <fwDataTools/helper/Array.hpp>
 
 #include <fwDicomTools/Series.hpp>
 

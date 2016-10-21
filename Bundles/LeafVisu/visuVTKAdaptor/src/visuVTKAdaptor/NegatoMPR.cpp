@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuVTKAdaptor/NegatoMPR.hpp"
+
 #include "visuVTKAdaptor/NegatoOneSlice.hpp"
 #include "visuVTKAdaptor/NegatoSlicingInteractor.hpp"
 #include "visuVTKAdaptor/NegatoWindowingInteractor.hpp"
@@ -15,16 +16,16 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
-
 #include <fwServices/registry/Proxy.hpp>
 
 #include <fwTools/fwID.hpp>
@@ -112,7 +113,7 @@ void NegatoMPR::doStop() throw(fwTools::Failed)
 void NegatoMPR::doSwap() throw(fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if ( imageIsValid)
     {
@@ -143,7 +144,7 @@ void NegatoMPR::doUpdate() throw(::fwTools::Failed)
     this->doStop();
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if ( imageIsValid)
     {
@@ -379,8 +380,8 @@ void NegatoMPR::set3dMode( bool enabled )
     {
         service = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( image, adaptor );
         SLM_ASSERT("service not instanced", service);
-        ::fwComEd::helper::MedicalImageAdaptor::sptr adaptorSrv =
-            ::fwComEd::helper::MedicalImageAdaptor::dynamicCast(service);
+        ::fwDataTools::helper::MedicalImageAdaptor::sptr adaptorSrv =
+            ::fwDataTools::helper::MedicalImageAdaptor::dynamicCast(service);
         SLM_ASSERT("adaptorSrv not instanced", adaptorSrv);
         adaptorSrv->setOrientation((Orientation) axis);
     }

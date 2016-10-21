@@ -4,11 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Image.hpp"
 #include "visuVTKAdaptor/ImagesBlend.hpp"
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include "visuVTKAdaptor/Image.hpp"
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Color.hpp>
@@ -16,6 +14,9 @@
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
@@ -26,11 +27,12 @@
 
 #include <fwVtkIO/vtk.hpp>
 
-#include <boost/foreach.hpp>
 #include <vtkImageBlend.h>
 #include <vtkImageData.h>
 #include <vtkImageMapToColors.h>
 #include <vtkLookupTable.h>
+
+#include <boost/foreach.hpp>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagesBlend, ::fwData::Composite );
 
@@ -152,7 +154,7 @@ bool ImagesBlend::checkImageInformations()
         {
             img = this->getSafeInput< ::fwData::Image >(id);
         }
-        if (img && ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img ))
+        if (img && ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img ))
         {
             if (size.empty() && spacing.empty() && origin.empty())
             {
@@ -232,7 +234,7 @@ void ImagesBlend::addImageAdaptors()
             info->m_connections.connect(img, ::fwData::Image::s_BUFFER_MODIFIED_SIG, this->getSptr(),
                                         s_UPDATE_SLOT);
 
-            bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
+            bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
             if (imageIsValid)
             {
                 ::fwRenderVTK::IVtkAdaptorService::sptr imageAdaptor;

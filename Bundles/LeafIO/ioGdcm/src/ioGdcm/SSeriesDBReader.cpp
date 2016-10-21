@@ -9,26 +9,37 @@
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwComEd/helper/SeriesDB.hpp>
+
 #include <fwCore/base.hpp>
+
 #include <fwData/String.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+
+#include <fwGdcmIO/reader/SeriesDB.hpp>
+
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/LoggerDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/PulseProgressDialog.hpp>
-#include <fwGui/dialog/LoggerDialog.hpp>
+
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
+
 #include <fwLog/Logger.hpp>
+
 #include <fwMedData/SeriesDB.hpp>
+
+#include <fwMedDataTools/helper/SeriesDB.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
+
 #include <fwTools/ProgressToLogger.hpp>
-#include <fwGdcmIO/reader/SeriesDB.hpp>
+
 #include <io/IReader.hpp>
 
 #include <boost/bind.hpp>
@@ -306,7 +317,7 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
             // If the user cancel the reading process we delete the loaded series
             if(!result || job->cancelRequested())
             {
-                ::fwComEd::helper::SeriesDB sDBhelper(dummy);
+                ::fwMedDataTools::helper::SeriesDB sDBhelper(dummy);
                 sDBhelper.clear();
             }
         }
@@ -342,7 +353,7 @@ void SSeriesDBReader::updating() throw(::fwTools::Failed)
             ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
             // seriesDB->shallowCopy( localSeriesDB ) ;
 
-            ::fwComEd::helper::SeriesDB sDBhelper(seriesDB);
+            ::fwMedDataTools::helper::SeriesDB sDBhelper(seriesDB);
 
             ::fwData::mt::ObjectWriteLock lock(seriesDB);
             sDBhelper.merge(localSeriesDB);

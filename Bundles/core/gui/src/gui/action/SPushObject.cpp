@@ -9,9 +9,9 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/helper/Composite.hpp>
-
 #include <fwData/Composite.hpp>
+
+#include <fwDataTools/helper/Composite.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
@@ -133,7 +133,8 @@ void SPushObject::updating() throw(::fwTools::Failed)
     else
     {
         ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-        std::shared_ptr< ::fwComEd::helper::Composite > compositeHelper ( new ::fwComEd::helper::Composite( composite ) );
+        std::shared_ptr< ::fwDataTools::helper::Composite > compositeHelper ( new ::fwDataTools::helper::Composite(
+                                                                                  composite ) );
 
         for(DestKeyMapType::value_type elt :  m_key2src )
         {

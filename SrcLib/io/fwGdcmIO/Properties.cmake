@@ -7,9 +7,9 @@ set( DEPENDENCIES
     fwData
     fwMath
     fwMedData
+    fwMedDataTools
     fwDataIO
     fwTools
-    fwComEd
     fwRuntime
     fwDicomIOFilter
     fwLog

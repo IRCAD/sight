@@ -20,17 +20,17 @@
 
 #include <fwMath/IntrasecTypes.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QWidget>
-#include <QStringList>
 #include <QDoubleValidator>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QPalette>
 #include <QSpacerItem>
+#include <QStringList>
+#include <QVBoxLayout>
+#include <QWidget>
 
 namespace uiVisu
 {
@@ -123,9 +123,9 @@ void PointEditor::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void PointEditor::getInteraction(::fwComEd::PickingInfo info)
+void PointEditor::getInteraction(::fwDataTools::PickingInfo info)
 {
-    if ( info.m_eventId == ::fwComEd::PickingInfo::Event::MOUSE_MOVE )
+    if ( info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_MOVE )
     {
         m_textCtrl_x->setText(QString("%1").arg(info.m_worldPos[0], 0, 'f', 0));
         m_textCtrl_y->setText(QString("%1").arg(info.m_worldPos[1], 0, 'f', 0));
@@ -135,7 +135,7 @@ void PointEditor::getInteraction(::fwComEd::PickingInfo info)
 
 //------------------------------------------------------------------------------
 
-void PointEditor::info( std::ostream &_sstream )
+void PointEditor::info( std::ostream& _sstream )
 {
     _sstream << "Point Editor";
 }

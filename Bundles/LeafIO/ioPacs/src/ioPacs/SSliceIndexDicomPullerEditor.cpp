@@ -12,24 +12,34 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/helper/Array.hpp>
-#include <fwComEd/helper/Composite.hpp>
-#include <fwComEd/helper/SeriesDB.hpp>
+
 #include <fwData/Array.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
-#include <fwMedData/DicomSeries.hpp>
-#include <fwPacsIO/exceptions/Base.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/helper/Composite.hpp>
+
 #include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
+
+#include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
+
+#include <fwMedDataTools/helper/SeriesDB.hpp>
+
+#include <fwPacsIO/exceptions/Base.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
+
 #include <fwThread/Timer.hpp>
+
 #include <fwTools/System.hpp>
 
 #include <QApplication>
@@ -280,7 +290,7 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
     }
 
     // Clear temporary seriesDB
-    ::fwComEd::helper::SeriesDB sDBTempohelper(m_tempSeriesDB);
+    ::fwMedDataTools::helper::SeriesDB sDBTempohelper(m_tempSeriesDB);
     sDBTempohelper.clear();
 
     // Creates unique temporary folder, no need to check if exists before (see ::fwTools::System::getTemporaryFolder)
@@ -321,7 +331,7 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
         std::advance(binary, selectedSliceIndex);
 
         ::fwData::Array::sptr array = binary->second;
-        ::fwComEd::helper::Array arrayHelper(array);
+        ::fwDataTools::helper::Array arrayHelper(array);
         char* buffer = static_cast<char*>(arrayHelper.getBuffer());
         size_t size  = array->getSizeInBytes();
 
@@ -363,11 +373,11 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
         ::fwData::Image::sptr newImage    = imageSeries->getImage();
         ::fwData::Image::SizeType newSize = newImage->getSize();
 
-        newImage->setField(::fwComEd::Dictionary::m_axialSliceIndexId, m_axialIndex);
+        newImage->setField(::fwDataTools::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
         m_frontalIndex->setValue(static_cast<int>(newSize[0]/2));
-        newImage->setField(::fwComEd::Dictionary::m_frontalSliceIndexId, m_frontalIndex);
+        newImage->setField(::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
         m_sagittalIndex->setValue(static_cast<int>(newSize[1]/2));
-        newImage->setField(::fwComEd::Dictionary::m_sagittalSliceIndexId, m_sagittalIndex);
+        newImage->setField(::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
 
         this->setOutput("image", newImage);
     }

@@ -12,8 +12,8 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
-#include <fwComEd/PickingInfo.hpp>
+#include <fwDataTools/PickingInfo.hpp>
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
@@ -27,7 +27,7 @@ namespace visuVTKAdaptor
 /**
  * @brief Adaptor to manage image picking
  */
-class VISUVTKADAPTOR_CLASS_API ImagePickerInteractor : public ::fwComEd::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API ImagePickerInteractor : public ::fwDataTools::helper::MedicalImageAdaptor,
                                                        public ::fwRenderVTK::IVtkAdaptorService
 {
 
@@ -54,7 +54,7 @@ public:
      * @{
      */
     VISUVTKADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_PICKED_SIGNAL;
-    typedef ::fwCom::Signal<void (::fwComEd::PickingInfo)> PickedSignalType;
+    typedef ::fwCom::Signal<void (::fwDataTools::PickingInfo)> PickedSignalType;
     ///@}
 
     typedef enum
@@ -118,7 +118,7 @@ private:
     typedef std::map< std::string, EventID > MapEventIdType; ///< typedef for the map (seen below).
     static MapEventIdType m_eventIdConversion; ///< map containing the association between 'event text' and 'event ID'.
 
-    vtkCommand *m_interactionCommand; ///< the vtk mouse events observer
+    vtkCommand* m_interactionCommand; ///< the vtk mouse events observer
     SetEventIdType m_eventId; ///< event ID treated for picking
 };
 

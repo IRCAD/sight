@@ -14,16 +14,16 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include <fwRenderVTK/vtk/fwVtkCellPicker.hpp>
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
 #include <fwRenderVTK/vtk/Helpers.hpp>
+#include <fwRenderVTK/vtk/fwVtkCellPicker.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -51,7 +51,7 @@ namespace visuVTKAdaptor
 class NegatoSlicingCallback : public vtkCommand
 {
 public:
-    static NegatoSlicingCallback *New()
+    static NegatoSlicingCallback* New()
     {
         return new NegatoSlicingCallback();
     }
@@ -149,7 +149,7 @@ public:
         m_pickedProp  = nullptr;
     }
 
-    virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
+    virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
         if(m_mouseMoveObserved && eventId == START_SLICING_EVENT)
         {
@@ -188,8 +188,8 @@ public:
             }
             else if (eventId == vtkCommand::KeyPressEvent && !m_adaptor->getInteractor()->GetControlKey())
             {
-                vtkRenderWindowInteractor *rwi = vtkRenderWindowInteractor::SafeDownCast(caller);
-                char *keySym                   = rwi->GetKeySym();
+                vtkRenderWindowInteractor* rwi = vtkRenderWindowInteractor::SafeDownCast(caller);
+                char* keySym                   = rwi->GetKeySym();
 
                 if ( std::string(keySym) == "A" || std::string(keySym) == "a" )
                 {
@@ -201,27 +201,27 @@ public:
                 }
                 if ( std::string(keySym) == "T" || std::string(keySym) == "t" )
                 {
-                    m_adaptor->pushSlice(-1, ::fwComEd::helper::MedicalImageAdaptor::Z_AXIS);
+                    m_adaptor->pushSlice(-1, ::fwDataTools::helper::MedicalImageAdaptor::Z_AXIS);
                 }
                 else if (std::string(keySym) == "Y" || std::string(keySym) == "y" )
                 {
-                    m_adaptor->pushSlice(1, ::fwComEd::helper::MedicalImageAdaptor::Z_AXIS);
+                    m_adaptor->pushSlice(1, ::fwDataTools::helper::MedicalImageAdaptor::Z_AXIS);
                 }
                 else if (std::string(keySym) == "G" || std::string(keySym) == "g" )
                 {
-                    m_adaptor->pushSlice(-1, ::fwComEd::helper::MedicalImageAdaptor::Y_AXIS);
+                    m_adaptor->pushSlice(-1, ::fwDataTools::helper::MedicalImageAdaptor::Y_AXIS);
                 }
                 else if (std::string(keySym) == "H" || std::string(keySym) == "h" )
                 {
-                    m_adaptor->pushSlice(1, ::fwComEd::helper::MedicalImageAdaptor::Y_AXIS);
+                    m_adaptor->pushSlice(1, ::fwDataTools::helper::MedicalImageAdaptor::Y_AXIS);
                 }
                 else if (std::string(keySym) == "B" || std::string(keySym) == "b" )
                 {
-                    m_adaptor->pushSlice(-1, ::fwComEd::helper::MedicalImageAdaptor::X_AXIS);
+                    m_adaptor->pushSlice(-1, ::fwDataTools::helper::MedicalImageAdaptor::X_AXIS);
                 }
                 else if (std::string(keySym) == "N" || std::string(keySym) == "n" )
                 {
-                    m_adaptor->pushSlice(1, ::fwComEd::helper::MedicalImageAdaptor::X_AXIS);
+                    m_adaptor->pushSlice(1, ::fwDataTools::helper::MedicalImageAdaptor::X_AXIS);
                 }
                 else if (std::string(keySym) == "space" && !m_mouseMoveObserved)
                 {
@@ -230,8 +230,8 @@ public:
             }
             else if(eventId == vtkCommand::KeyReleaseEvent)
             {
-                vtkRenderWindowInteractor *rwi = vtkRenderWindowInteractor::SafeDownCast(caller);
-                char *keySym                   = rwi->GetKeySym();
+                vtkRenderWindowInteractor* rwi = vtkRenderWindowInteractor::SafeDownCast(caller);
+                char* keySym                   = rwi->GetKeySym();
 
                 if (std::string(keySym) == "space" && m_mouseMoveObserved)
                 {
@@ -257,16 +257,16 @@ public:
         m_adaptor = adaptor;
     }
 
-    void setPicker( vtkAbstractPropPicker *picker)
+    void setPicker( vtkAbstractPropPicker* picker)
     {
         m_picker = picker;
     }
 
 protected:
     NegatoSlicingInteractor::sptr m_adaptor;
-    vtkAbstractPropPicker *m_picker;
-    vtkAbstractPropPicker *m_localPicker;
-    vtkProp *m_pickedProp;
+    vtkAbstractPropPicker* m_picker;
+    vtkAbstractPropPicker* m_localPicker;
+    vtkProp* m_pickedProp;
     bool m_mouseMoveObserved;
 };
 
@@ -303,7 +303,7 @@ void NegatoSlicingInteractor::doConfigure() throw(fwTools::Failed)
 
 void NegatoSlicingInteractor::doStart() throw(fwTools::Failed)
 {
-    NegatoSlicingCallback *observer = NegatoSlicingCallback::New();
+    NegatoSlicingCallback* observer = NegatoSlicingCallback::New();
     observer->setAdaptor( NegatoSlicingInteractor::dynamicCast(this->getSptr()) );
     observer->setPicker(this->getPicker());
 

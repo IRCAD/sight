@@ -4,15 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/reader/ie/Image.hpp"
 
-#include <fwComEd/helper/Array.hpp>
-#include <fwComEd/helper/Image.hpp>
+#include "fwGdcmIO/helper/DicomData.hpp"
+
 #include <fwData/Image.hpp>
-#include <fwMedData/DicomSeries.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/helper/Image.hpp>
+
 #include <fwDicomTools/Image.hpp>
+
 #include <fwMath/VectorFunctions.hpp>
+
+#include <fwMedData/DicomSeries.hpp>
 
 #include <gdcmIPPSorter.h>
 #include <gdcmImageApplyLookupTable.h>
@@ -289,7 +294,7 @@ void Image::readImagePixelModule()
 
     // Set image buffer
     ::fwData::Array::sptr array = m_object->getDataArray();
-    ::fwComEd::helper::Array helper(array);
+    ::fwDataTools::helper::Array helper(array);
     helper.setBuffer(imageBuffer, true, m_object->getType(), m_object->getSize(), m_object->getNumberOfComponents());
 
 }

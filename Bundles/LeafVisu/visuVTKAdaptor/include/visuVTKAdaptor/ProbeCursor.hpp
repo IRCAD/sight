@@ -11,7 +11,7 @@
 
 #include <fwData/TransferFunction.hpp>
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
@@ -29,7 +29,7 @@ namespace visuVTKAdaptor
 /**
  * @brief Cursor management
  */
-class VISUVTKADAPTOR_CLASS_API ProbeCursor : public  ::fwComEd::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API ProbeCursor : public  ::fwDataTools::helper::MedicalImageAdaptor,
                                              public ::fwRenderVTK::IVtkAdaptorService
 {
 
@@ -74,14 +74,14 @@ protected:
 
     double m_priority;
 
-    vtkCommand *m_vtkObserver;
+    vtkCommand* m_vtkObserver;
 
-    vtkActor2D * m_textActor; // rendering defect using a vtkTextActor
-    vtkTextMapper * m_textMapper;
+    vtkActor2D* m_textActor;  // rendering defect using a vtkTextActor
+    vtkTextMapper* m_textMapper;
 
-    vtkPolyData         *m_cursorPolyData;
-    vtkPolyDataMapper   *m_cursorMapper;
-    vtkActor            *m_cursorActor;
+    vtkPolyData* m_cursorPolyData;
+    vtkPolyDataMapper* m_cursorMapper;
+    vtkActor* m_cursorActor;
 
 private:
     /**

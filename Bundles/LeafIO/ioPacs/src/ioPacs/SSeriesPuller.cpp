@@ -10,17 +10,24 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwComEd/helper/SeriesDB.hpp>
-#include <fwMedData/DicomSeries.hpp>
-#include <fwPacsIO/helper/Series.hpp>
-#include <fwPacsIO/exceptions/Base.hpp>
+
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
+
+#include <fwMedData/DicomSeries.hpp>
+
+#include <fwMedDataTools/helper/SeriesDB.hpp>
+
+#include <fwPacsIO/exceptions/Base.hpp>
+#include <fwPacsIO/helper/Series.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
+
 #include <fwTools/System.hpp>
 
 #include <boost/filesystem/operations.hpp>
@@ -317,7 +324,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
         ::fwPacsIO::helper::Series::toSeriesInstanceUIDContainer(m_destinationSeriesDB->getContainer());
 
     // Create temporary series helper
-    ::fwComEd::helper::SeriesDB tempSDBhelper(m_tempSeriesDB);
+    ::fwMedDataTools::helper::SeriesDB tempSDBhelper(m_tempSeriesDB);
 
     for(const ::fwMedData::Series::sptr& series: selectedSeries)
     {
@@ -344,7 +351,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType selectedSeries)
             m_dicomReader->update();
 
             // Merge series
-            ::fwComEd::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
+            ::fwMedDataTools::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
             sDBhelper.merge(m_tempSeriesDB);
             sDBhelper.notify();
         }

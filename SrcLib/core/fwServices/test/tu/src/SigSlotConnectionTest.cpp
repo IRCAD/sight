@@ -5,14 +5,16 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "SigSlotConnectionTest.hpp"
-#include "SlotsSignalsStuff.hpp"
 
+#include <fwCom/helper/SigSlotConnection.hpp>
+
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
-#include <fwServices/macros.hpp>
 
 #include <fwTest/Exception.hpp>
+
+#include "SlotsSignalsStuff.hpp"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::SigSlotConnectionTest );
@@ -52,7 +54,7 @@ void SigSlotConnectionTest::basicTest()
     ::fwData::Object::ModifiedSignalType::sptr sig =
         buffer->signal< ::fwData::Object::ModifiedSignalType >( ::fwData::Object::s_MODIFIED_SIG );
 
-    ::fwServices::helper::SigSlotConnection helper;
+    ::fwCom::helper::SigSlotConnection helper;
 
     showTestSrv->setWorker(activeWorkers->getWorker(registry::ActiveWorkers::s_DEFAULT_WORKER));
     helper.connect( buffer, showTestSrv, showTestSrv->getObjSrvConnections() );

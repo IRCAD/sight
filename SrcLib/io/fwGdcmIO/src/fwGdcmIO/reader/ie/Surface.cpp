@@ -4,31 +4,35 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <sstream>
 
 //To include first because of Windows compilation
-#include <gdcmUIDGenerator.h>
 #include <gdcmSurfaceHelper.h>
+#include <gdcmUIDGenerator.h>
 
 #include "fwGdcmIO/container/DicomSurface.hpp"
 #include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/reader/ie/Surface.hpp"
 
-#include <fwComEd/helper/Mesh.hpp>
+
 #include <fwData/Color.hpp>
 #include <fwData/Reconstruction.hpp>
+
 #include <fwDataIO/reader/DictionaryReader.hpp>
+
+#include <fwDataTools/helper/Mesh.hpp>
+
 #include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
+
 #include <fwRuntime/profile/Profile.hpp>
+
 #include <fwTools/dateAndTime.hpp>
 
 #include <boost/algorithm/clamp.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-
-#include <sstream>
-
 
 namespace fwGdcmIO
 {

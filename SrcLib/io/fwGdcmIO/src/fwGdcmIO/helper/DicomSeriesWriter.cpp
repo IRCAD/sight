@@ -5,15 +5,23 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/helper/DicomSeriesWriter.hpp"
+
 #include "fwGdcmIO/helper/DicomAnonymizer.hpp"
 
-#include <fwComEd/helper/Array.hpp>
 #include <fwCore/base.hpp>
+
 #include <fwDataIO/writer/registry/macros.hpp>
-#include <fwMedData/DicomSeries.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
+
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
+
+#include <fwMedData/DicomSeries.hpp>
+
 #include <fwZip/WriteZipArchive.hpp>
+
+#include <stdio.h>
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
@@ -22,9 +30,8 @@
 
 #include <algorithm>
 #include <cstdint>
-#include <stdio.h>
-#include <utility>
 #include <fstream>
+#include <utility>
 
 fwDataIOWriterRegisterMacro( ::fwGdcmIO::helper::DicomSeriesWriter );
 
@@ -193,7 +200,7 @@ void DicomSeriesWriter::processWrite()
             const std::string filename = this->getFilename(value.first);
 
             ::fwData::Array::sptr array = value.second;
-            ::fwComEd::helper::Array arrayHelper(array);
+            ::fwDataTools::helper::Array arrayHelper(array);
             char* buffer = static_cast<char*>(arrayHelper.getBuffer());
             size_t size  = array->getSizeInBytes();
 
@@ -290,7 +297,7 @@ void DicomSeriesWriter::processWriteArchive()
             const std::string filename = this->getFilename(value.first);
 
             ::fwData::Array::sptr array = value.second;
-            ::fwComEd::helper::Array arrayHelper(array);
+            ::fwDataTools::helper::Array arrayHelper(array);
             char* buffer = static_cast<char*>(arrayHelper.getBuffer());
             size_t size  = array->getSizeInBytes();
 

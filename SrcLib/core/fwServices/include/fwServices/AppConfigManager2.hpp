@@ -7,21 +7,21 @@
 #ifndef __FWSERVICES_APPCONFIGMANAGER2_HPP__
 #define __FWSERVICES_APPCONFIGMANAGER2_HPP__
 
+#include "fwServices/IAppConfigManager.hpp"
+#include "fwServices/IService.hpp"
+#include "fwServices/IXMLParser.hpp"
 #include "fwServices/config.hpp"
 #include "fwServices/helper/Config.hpp"
-#include "fwServices/helper/SigSlotConnection.hpp"
 #include "fwServices/helper/ProxyConnections.hpp"
-#include "fwServices/IService.hpp"
-#include "fwServices/IAppConfigManager.hpp"
-#include "fwServices/IXMLParser.hpp"
 #include "fwServices/registry/AppConfig2.hpp"
 
 #include <fwCom/HasSlots.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 
-#include <vector>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
 
 namespace fwData
 {

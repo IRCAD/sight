@@ -5,26 +5,28 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiMedDataQt/editor/SSelector.hpp"
+
 #include "uiMedDataQt/widget/Selector.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
-#include <fwComEd/helper/SeriesDB.hpp>
-#include <fwComEd/helper/Vector.hpp>
-
 #include <fwCore/base.hpp>
 
+#include <fwDataTools/helper/Vector.hpp>
+
 #include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
+
+#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -251,7 +253,7 @@ void SSelector::onSelectedSeries(QVector< ::fwMedData::Series::sptr > selection,
                                  QVector< ::fwMedData::Series::sptr > deselection)
 {
     ::fwData::Vector::sptr selectionVector = this->getSelection();
-    ::fwComEd::helper::Vector vectorHelper(selectionVector);
+    ::fwDataTools::helper::Vector vectorHelper(selectionVector);
 
     for( ::fwMedData::Series::sptr series :  deselection)
     {
@@ -307,7 +309,7 @@ void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection)
     {
         seriesDB = this->getObject< ::fwMedData::SeriesDB >();
     }
-    ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
+    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
     // Remove duplicated series
     std::set< ::fwMedData::Series::sptr > seriesSet;

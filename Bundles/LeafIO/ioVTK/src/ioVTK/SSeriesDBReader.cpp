@@ -10,8 +10,6 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwComEd/helper/SeriesDB.hpp>
-
 #include <fwData/location/Folder.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
@@ -25,7 +23,10 @@
 
 #include <fwMedData/SeriesDB.hpp>
 
+#include <fwMedDataTools/helper/SeriesDB.hpp>
+
 #include <fwServices/macros.hpp>
+
 #include <fwVtkIO/SeriesDBReader.hpp>
 
 #include <boost/filesystem/operations.hpp>
@@ -103,7 +104,7 @@ void SSeriesDBReader::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReader::info(std::ostream &_sstream )
+void SSeriesDBReader::info(std::ostream& _sstream )
 {
     _sstream << "SSeriesDBReader::info";
 }
@@ -123,7 +124,7 @@ void SSeriesDBReader::loadSeriesDB( const ::fwData::location::ILocation::VectPat
     {
         reader->read();
     }
-    catch (const std::exception & e)
+    catch (const std::exception& e)
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
@@ -161,7 +162,7 @@ void SSeriesDBReader::updating() throw(::fwTools::Failed)
 
         this->loadSeriesDB(this->getFiles(), localSeriesDB);
 
-        ::fwComEd::helper::SeriesDB sDBhelper(seriesDB);
+        ::fwMedDataTools::helper::SeriesDB sDBhelper(seriesDB);
 
         ::fwData::mt::ObjectWriteLock lock(seriesDB);
         sDBhelper.merge(localSeriesDB);

@@ -6,6 +6,7 @@
 
 
 #include "scene2D/processing/SComputeHistogram.hpp"
+
 #include "scene2D/processing/ComputeHistogramFunctor.hxx"
 
 #include <fwCom/Signal.hpp>
@@ -74,7 +75,7 @@ void SComputeHistogram::updating() throw ( ::fwTools::Failed )
 
     ::fwData::mt::ObjectReadLock imgLock(image);
 
-    if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         ::fwData::Histogram::sptr histogram = this->getHistogram();
 

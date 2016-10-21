@@ -4,19 +4,21 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGdcmIO/reader/tid/Measurement.hpp"
+
 #include "fwGdcmIO/container/sr/DicomSRImageNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRSCoord3DNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRSCoordNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRTextNode.hpp"
 #include "fwGdcmIO/helper/DicomData.hpp"
-#include "fwGdcmIO/reader/tid/Measurement.hpp"
 
-#include <fwComEd/Dictionary.hpp>
 #include <fwData/Boolean.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
 
 namespace fwGdcmIO
 {
@@ -104,12 +106,12 @@ void Measurement::readNode(SPTR(::fwGdcmIO::container::sr::DicomSRNode)node)
 void Measurement::addDistance(SPTR(::fwData::Point)point1, SPTR(::fwData::Point)point2)
 {
     ::fwData::Vector::sptr distanceVector =
-        m_object->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
+        m_object->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
 
     if(!distanceVector)
     {
         distanceVector = ::fwData::Vector::New();
-        m_object->setField(::fwComEd::Dictionary::m_imageDistancesId, distanceVector);
+        m_object->setField(::fwDataTools::fieldHelper::Image::m_imageDistancesId, distanceVector);
     }
 
     ::fwData::PointList::sptr pointList = ::fwData::PointList::New();

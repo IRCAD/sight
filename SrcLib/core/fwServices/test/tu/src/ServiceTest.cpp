@@ -6,23 +6,21 @@
 
 #include "ServiceTest.hpp"
 
-#include <fwData/Object.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
-
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
-
-#include <fwServices/op/Add.hpp>
-#include <fwServices/op/Get.hpp>
-
-#include <fwServices/helper/SigSlotConnection.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <fwData/Object.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
+
+#include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
+#include <fwServices/op/Get.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwThread/Worker.hpp>
 
@@ -288,7 +286,7 @@ void ServiceTest::testCommunication()
     TestServiceSignals::sptr receiver1 = std::make_shared< TestServiceSignals>();
     TestServiceSignals::sptr receiver2 = std::make_shared< TestServiceSignals>();
 
-    ::fwServices::helper::SigSlotConnection comHelper;
+    ::fwCom::helper::SigSlotConnection comHelper;
     comHelper.connect(service1, ::fwServices::IService::s_STARTED_SIG, receiver1, "start");
     comHelper.connect(service1, ::fwServices::IService::s_UPDATED_SIG, receiver1, "update");
     comHelper.connect(service1, ::fwServices::IService::s_STOPPED_SIG, receiver1, "stop");

@@ -7,15 +7,14 @@
 #ifndef __FWDATATOOLS_MESH_HPP__
 #define __FWDATATOOLS_MESH_HPP__
 
-#include <fwCore/base.hpp>
-
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/Mesh.hpp>
-
-#include <fwComEd/helper/Mesh.hpp>
-
 #include "fwDataTools/Vector.hxx"
 #include "fwDataTools/config.hpp"
+#include <fwDataTools/helper/Mesh.hpp>
+
+#include <fwCore/base.hpp>
+
+#include <fwData/Mesh.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 namespace fwDataTools
 {

@@ -9,15 +9,15 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/Object.hpp>
 #include <fwData/Mesh.hpp>
-#include <fwData/mt/ObjectReadToWriteLock.hpp>
+#include <fwData/Object.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectReadToWriteLock.hpp>
+
+#include <fwDataTools/Mesh.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
-
-#include <fwDataTools/Mesh.hpp>
 
 #include <functional>
 
@@ -133,7 +133,7 @@ void SSimpleMeshDeformation::stopDeformation()
 
 //-----------------------------------------------------------------------------
 
-void SSimpleMeshDeformation::copyMesh( const ::fwData::Mesh::sptr & src, const ::fwData::Mesh::sptr & dest ) const
+void SSimpleMeshDeformation::copyMesh( const ::fwData::Mesh::sptr& src, const ::fwData::Mesh::sptr& dest ) const
 {
     dest->setPointsArray(::fwData::Object::copy( src->getPointsArray() ));
     dest->setPointNormalsArray(::fwData::Object::copy( src->getPointNormalsArray() ));
@@ -143,8 +143,8 @@ void SSimpleMeshDeformation::copyMesh( const ::fwData::Mesh::sptr & src, const :
 //-----------------------------------------------------------------------------
 
 void SSimpleMeshDeformation::computeDeformation (
-    const ::fwData::Mesh::sptr & refMesh,
-    const ::fwData::Mesh::sptr & transformMesh,
+    const ::fwData::Mesh::sptr& refMesh,
+    const ::fwData::Mesh::sptr& transformMesh,
     float deformationPercent )
 {
     SLM_ASSERT("Deformation range must be equal to [0,1]", 0 <= deformationPercent && deformationPercent <= 1 );
@@ -152,8 +152,8 @@ void SSimpleMeshDeformation::computeDeformation (
     const float maxDeformation = 15/100.0f;
     const float center         = 2/3.0f;
 
-    ::fwComEd::helper::Mesh meshHelper(refMesh);
-    ::fwComEd::helper::Mesh transformMeshHelper(transformMesh);
+    ::fwDataTools::helper::Mesh meshHelper(refMesh);
+    ::fwDataTools::helper::Mesh transformMeshHelper(transformMesh);
 
     ::fwData::Mesh::PointsMultiArrayType points              = meshHelper.getPoints();
     ::fwData::Mesh::PointsMultiArrayType pointsTransform     = transformMeshHelper.getPoints();
@@ -209,8 +209,8 @@ void SSimpleMeshDeformation::computeDeformation (
 //-----------------------------------------------------------------------------
 
 void SSimpleMeshDeformation::computeDeformation(
-    const ::fwData::Mesh::sptr & refMesh,
-    const ::fwData::Mesh::sptr & transformMesh )
+    const ::fwData::Mesh::sptr& refMesh,
+    const ::fwData::Mesh::sptr& transformMesh )
 {
     const int step = 5;
 

@@ -10,7 +10,6 @@ set( DEPENDENCIES
     fwThread
     fwData
     fwMedData
-    fwComEd
     fwMemory
     )
 set( REQUIREMENTS )

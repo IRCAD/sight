@@ -11,7 +11,6 @@ set( DEPENDENCIES
     fwTest
     fwDataTools
     fwMemory
-    fwComEd
     fwThread
     fwZip
     fwLog

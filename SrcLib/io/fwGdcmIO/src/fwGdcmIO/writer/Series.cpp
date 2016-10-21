@@ -5,16 +5,20 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/writer/Series.hpp"
+
 #include "fwGdcmIO/writer/iod/CTMRImageIOD.hpp"
 #include "fwGdcmIO/writer/iod/ComprehensiveSRIOD.hpp"
 #include "fwGdcmIO/writer/iod/SpatialFiducialsIOD.hpp"
 #include "fwGdcmIO/writer/iod/SurfaceSegmentationIOD.hpp"
 
-#include <fwComEd/Dictionary.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/Vector.hpp>
+
 #include <fwDataIO/writer/registry/macros.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/Series.hpp>
@@ -72,9 +76,9 @@ void Series::write() throw (::fwGdcmIO::exception::Failed)
         imageIOD.write(series);
 
         ::fwData::PointList::sptr landmarks =
-            image->getField< ::fwData::PointList >(::fwComEd::Dictionary::m_imageLandmarksId);
+            image->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
         ::fwData::Vector::sptr distances =
-            image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
+            image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
         if((landmarks && !landmarks->getPoints().empty()) || (distances && !distances->empty()))
         {
             // Write Landmarks and Distances
@@ -115,9 +119,10 @@ bool Series::hasDocumentSR(::fwMedData::ImageSeries::csptr imageSeries) const
     SLM_ASSERT("Image not instanced", image);
 
     ::fwData::PointList::sptr pl;
-    pl = image->getField< ::fwData::PointList >(::fwComEd::Dictionary::m_imageLandmarksId);
+    pl = image->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
     // Check if image has landmark and distance
-    return ((pl && pl->getPoints().size() > 0) || image->getField(::fwComEd::Dictionary::m_imageDistancesId));
+    return ((pl && pl->getPoints().size() > 0) ||
+            image->getField(::fwDataTools::fieldHelper::Image::m_imageDistancesId));
 }
 
 //------------------------------------------------------------------------------

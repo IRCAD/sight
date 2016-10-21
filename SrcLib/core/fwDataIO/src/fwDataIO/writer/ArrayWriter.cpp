@@ -1,19 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwDataIO/writer/ArrayWriter.hpp"
+
+#include "fwDataIO/writer/registry/macros.hpp"
+
+#include <fwDataTools/helper/Array.hpp>
+
+#include <boost/cstdint.hpp>
+#include <boost/filesystem/path.hpp>
+
 #include <fstream>
 #include <iostream>
-
-#include <boost/filesystem/path.hpp>
-#include <boost/cstdint.hpp>
-
-#include <fwComEd/helper/Array.hpp>
-
-#include "fwDataIO/writer/ArrayWriter.hpp"
-#include "fwDataIO/writer/registry/macros.hpp"
 
 
 fwDataIOWriterRegisterMacro( ::fwDataIO::writer::ArrayWriter);
@@ -45,7 +46,7 @@ void ArrayWriter::write()
 
     ::fwData::Array::sptr array = this->getConcreteObject();
     size_t arraySizeInBytes = array->getSizeInBytes();
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
     char* buff = arrayHelper.begin();
 
     std::ofstream fs(file.string().c_str(), std::ios::binary|std::ios::trunc);

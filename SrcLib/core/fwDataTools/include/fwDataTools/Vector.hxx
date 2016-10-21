@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,6 +9,7 @@
 
 #include <fwCore/base.hpp>
 
+#include <cmath>
 
 namespace fwDataTools
 {
@@ -119,12 +120,12 @@ public:
         return v;
     }
 
-    T dot(Vector &v)
+    T dot(Vector& v)
     {
         return x*v.x + y*v.y + z*v.z;
     }
 
-    void crossWith(const Vector &v)
+    void crossWith(const Vector& v)
     {
         T _x = y * v.z - z * v.y;
         T _y = z * v.x - x * v.z;
@@ -134,7 +135,7 @@ public:
         z = _z;
     }
 
-    Vector cross(const Vector &v)
+    Vector cross(const Vector& v)
     {
         Vector res(*this);
         res.crossWith(v);

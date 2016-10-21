@@ -7,15 +7,14 @@
 #ifndef __FWITKIO_ITK_HXX__
 #define __FWITKIO_ITK_HXX__
 
-#include <assert.h>
-
-#include <itkImage.h>
-#include <itkImageRegion.h>
+#include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/helper/ImageGetter.hpp>
 
 #include <fwTools/DynamicType.hpp>
 
-#include <fwComEd/helper/ImageGetter.hpp>
-#include <fwComEd/helper/Array.hpp>
+#include <assert.h>
+#include <itkImage.h>
+#include <itkImageRegion.h>
 
 namespace fwItkIO
 {
@@ -48,7 +47,7 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage, ::fwData::Image::spt
     typedef typename ITKIMAGE::PixelType PixelType;
     _dataImage->setType( ::fwTools::Type::create<PixelType>() );
     ::fwData::Array::sptr array = _dataImage->getDataArray();
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
     if( bufferManagerIsDataImage )
     {
         SLM_ASSERT("Sorry, this method requires that itkImage manages its buffer.",
@@ -96,7 +95,7 @@ typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::csptr imageDa
     SLM_ASSERT("Sorry, itk image dimension not correspond to fwData image",
                imageData->getNumberOfDimensions() == ITKIMAGE::ImageDimension );
 
-    ::fwComEd::helper::ImageGetter imageHelper(imageData);
+    ::fwDataTools::helper::ImageGetter imageHelper(imageData);
 
     typename ITKIMAGE::Pointer itkImage = ITKIMAGE::New();
 

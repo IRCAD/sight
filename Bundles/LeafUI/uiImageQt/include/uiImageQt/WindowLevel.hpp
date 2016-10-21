@@ -7,16 +7,18 @@
 #ifndef __UIIMAGEQT_WINDOWLEVEL_HPP__
 #define __UIIMAGEQT_WINDOWLEVEL_HPP__
 
-#include <QObject>
-#include <QPointer>
+#include "uiImageQt/config.hpp"
+
+#include <fwData/Integer.hpp>
+
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include <fwTools/Failed.hpp>
-#include <fwData/Integer.hpp>
+
 #include <gui/editor/IEditor.hpp>
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
-
-#include "uiImageQt/config.hpp"
+#include <QObject>
+#include <QPointer>
 
 class QAction;
 class QComboBox;
@@ -64,7 +66,7 @@ namespace uiImage
  *
  */
 class UIIMAGEQT_CLASS_API WindowLevel : public QObject,
-                                        public ::fwComEd::helper::MedicalImageAdaptor,
+                                        public ::fwDataTools::helper::MedicalImageAdaptor,
                                         public ::gui::editor::IEditor
 {
 Q_OBJECT

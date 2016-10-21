@@ -4,15 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/writer/ie/SpatialFiducials.hpp"
 
-#include <fwComEd/Dictionary.hpp>
+#include "fwGdcmIO/helper/DicomData.hpp"
+
 #include <fwData/Image.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwTools/dateAndTime.hpp>
 
 #include <gdcmUIDGenerator.h>
@@ -128,7 +131,7 @@ void SpatialFiducials::writeLandmarks(::gdcm::SmartPointer< ::gdcm::SequenceOfIt
 throw(::fwGdcmIO::exception::Failed)
 {
     ::fwData::PointList::sptr pointList =
-        m_object->getField< ::fwData::PointList >(::fwComEd::Dictionary::m_imageLandmarksId);
+        m_object->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
     if (pointList)
     {
         unsigned int index = 0;
@@ -144,7 +147,8 @@ throw(::fwGdcmIO::exception::Failed)
             ::fwGdcmIO::helper::DicomData::setTagValue< 0x0070, 0x0310 >(ssIdentifier.str(), fiducialItemDataset);
 
             // Fiducial Description - Type 3
-            std::string label = point->getField< ::fwData::String >(::fwComEd::Dictionary::m_labelId)->value();
+            std::string label =
+                point->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
             ::fwGdcmIO::helper::DicomData::setTagValue< 0x0070, 0x030F >(label, fiducialItemDataset);
 
             // Shape Type - Type 1

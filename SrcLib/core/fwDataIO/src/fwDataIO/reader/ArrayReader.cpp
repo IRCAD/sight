@@ -1,20 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fstream>
-#include <iostream>
+#include "fwDataIO/reader/ArrayReader.hpp"
 
-#include <boost/cstdint.hpp>
+#include "fwDataIO/reader/registry/macros.hpp"
 
 #include <fwCore/Exception.hpp>
 
-#include <fwComEd/helper/Array.hpp>
+#include <fwDataTools/helper/Array.hpp>
 
-#include "fwDataIO/reader/ArrayReader.hpp"
-#include "fwDataIO/reader/registry/macros.hpp"
+#include <boost/cstdint.hpp>
+
+#include <fstream>
+#include <iostream>
 
 
 fwDataIOReaderRegisterMacro( ::fwDataIO::reader::ArrayReader );
@@ -47,7 +48,7 @@ void ArrayReader::read()
     ::boost::filesystem::path file = ::fwData::location::SingleFile::dynamicCast(m_location)->getPath();
 
     ::fwData::Array::sptr array = this->getConcreteObject();
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
 
     size_t arraySizeInBytes = array->resize(array->getSize());
     char* buff              = arrayHelper.begin();

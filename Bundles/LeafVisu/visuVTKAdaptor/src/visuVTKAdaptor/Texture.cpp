@@ -5,20 +5,21 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuVTKAdaptor/Texture.hpp"
+
 #include "visuVTKAdaptor/Mesh.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
+#include <fwData/Reconstruction.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/Reconstruction.hpp>
+
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
 
@@ -120,7 +121,7 @@ void Texture::applyTexture( SPTR(::fwData::Material)_material )
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    if(!::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    if(!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         return;
     }

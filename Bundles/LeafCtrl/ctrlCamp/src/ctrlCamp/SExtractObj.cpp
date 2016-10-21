@@ -6,15 +6,14 @@
 
 #include "ctrlCamp/SExtractObj.hpp"
 
-#include <fwComEd/helper/Composite.hpp>
-
 #include <fwData/Composite.hpp>
-
 #include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataCamp/exception/NullPointer.hpp>
 #include <fwDataCamp/exception/ObjectNotFound.hpp>
 #include <fwDataCamp/getObject.hpp>
+
+#include <fwDataTools/helper/Composite.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -185,7 +184,7 @@ void SExtractObj::extract()
         ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
         ::fwData::mt::ObjectWriteLock lock(composite);
-        ::fwComEd::helper::Composite compHelper(composite);
+        ::fwDataTools::helper::Composite compHelper(composite);
 
         for(ExtractMapType::value_type elt : m_extract)
         {

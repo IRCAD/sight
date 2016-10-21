@@ -5,16 +5,22 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGdcmIO/container/DicomSurface.hpp"
-#include "fwGdcmIO/helper/DicomData.hpp"
-#include "fwGdcmIO/helper/DictionarySegment.hpp"
 #include "fwGdcmIO/writer/ie/Surface.hpp"
 
-#include <fwComEd/helper/Mesh.hpp>
+#include "fwGdcmIO/helper/DicomData.hpp"
+#include "fwGdcmIO/helper/DictionarySegment.hpp"
+
 #include <fwData/Reconstruction.hpp>
+
 #include <fwDataIO/reader/DictionaryReader.hpp>
+
+#include <fwDataTools/helper/Mesh.hpp>
+
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
+
 #include <fwRuntime/profile/Profile.hpp>
+
 #include <fwTools/dateAndTime.hpp>
 
 #include <gdcmSurfaceHelper.h>
@@ -336,7 +342,7 @@ void Surface::writeSurfaceMeshModule(unsigned short segmentationNumber)
                     ::fwGdcmIO::helper::DicomData::convertToPresentationTypeString(material->getRepresentationMode()));
 
         // Finite Volume (0x0066,0x000E) - Type 1
-        ::fwComEd::helper::Mesh helperMesh(reconstruction->getMesh());
+        ::fwDataTools::helper::Mesh helperMesh(reconstruction->getMesh());
         surface->SetFiniteVolume(helperMesh.isClosed() ? (::gdcm::Surface::YES): (::gdcm::Surface::NO));
 
         // Manifold (0x0066,0x0010) - Type 1

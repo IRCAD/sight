@@ -7,8 +7,8 @@
 #ifndef __CTRLSELECTION_UPDATER_STRANSLATE_HPP__
 #define __CTRLSELECTION_UPDATER_STRANSLATE_HPP__
 
-#include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IUpdaterSrv.hpp"
+#include "ctrlSelection/config.hpp"
 
 #include <fwData/Composite.hpp>
 
@@ -103,7 +103,7 @@ private:
     ::fwData::Composite::wptr m_source;
 
     /// Connection to source
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 };
 
 } // updater

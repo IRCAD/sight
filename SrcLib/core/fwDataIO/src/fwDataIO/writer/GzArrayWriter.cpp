@@ -1,19 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <boost/filesystem/path.hpp>
-#include <boost/cstdint.hpp>
+#include "fwDataIO/writer/GzArrayWriter.hpp"
+
+#include "fwDataIO/writer/registry/macros.hpp"
+
+#include <fwDataTools/helper/Array.hpp>
 
 #include <zlib.h>
 
-#include <fwComEd/helper/Array.hpp>
+#include <boost/cstdint.hpp>
+#include <boost/filesystem/path.hpp>
 
-#include "fwDataIO/writer/GzArrayWriter.hpp"
-#include "fwDataIO/writer/registry/macros.hpp"
+#include <iostream>
 
 
 fwDataIOWriterRegisterMacro( ::fwDataIO::writer::GzArrayWriter);
@@ -54,7 +56,7 @@ void GzArrayWriter::write()
         throw std::ios_base::failure(str);
     }
 
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
     // file is OK : process now
     size_t arraySizeInBytes = array->getSizeInBytes();
 

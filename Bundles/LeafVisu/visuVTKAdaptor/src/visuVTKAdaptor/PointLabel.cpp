@@ -1,23 +1,25 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef ANDROID
 
-#include <boost/format.hpp>
+#include "visuVTKAdaptor/PointLabel.hpp"
 
-#include <fwServices/macros.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/String.hpp>
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
+#include <fwServices/macros.hpp>
 
 #include <vtkRenderer.h>
 #include <vtkTextActor.h>
 
-#include "visuVTKAdaptor/PointLabel.hpp"
+#include <boost/format.hpp>
 
 #include <sstream>
 
@@ -56,7 +58,7 @@ void PointLabel::doUpdate() throw(::fwTools::Failed)
 {
     ::fwData::Point::sptr point = this->getObject< ::fwData::Point >();
 
-    std::string label = point->getField(::fwComEd::Dictionary::m_labelId, ::fwData::String::New())->value();
+    std::string label = point->getField(::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New())->value();
 
     setText( label );
 

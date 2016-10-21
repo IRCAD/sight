@@ -10,22 +10,20 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/helper/Composite.hpp>
-
 #include <fwCore/base.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
 
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/helper/Composite.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGuiQt/widget/QRangeSlider.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <boost/math/special_functions/fpclassify.hpp>
 
 #include <QApplication>
 #include <QComboBox>
@@ -37,6 +35,8 @@
 #include <QSignalMapper>
 #include <QToolButton>
 #include <QWidget>
+
+#include <boost/math/special_functions/fpclassify.hpp>
 
 #include <functional>
 
@@ -72,13 +72,13 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget * const container = qtContainer->getQtContainer();
+    QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
     QGridLayout* layout = new QGridLayout();
 
     m_valueTextMin = new QLineEdit( container );
-    QDoubleValidator *minValidator = new QDoubleValidator(m_valueTextMin);
+    QDoubleValidator* minValidator = new QDoubleValidator(m_valueTextMin);
     m_valueTextMin->setValidator(minValidator);
 
     m_valueTextMax = new QLineEdit( container );
@@ -111,10 +111,10 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     m_dynamicRangeSelection->setPopupMode(QToolButton::InstantPopup);
 
     m_dynamicRangeMenu = new QMenu(m_dynamicRangeSelection);
-    QAction *action1 = m_dynamicRangeMenu->addAction( "-1024; 1023" );
-    QAction *action2 = m_dynamicRangeMenu->addAction( "-100; 300" );
-    QAction *action3 = m_dynamicRangeMenu->addAction( "Fit W/L" );
-    QAction *action4 = m_dynamicRangeMenu->addAction( "Fit Data" ); // TODO
+    QAction* action1 = m_dynamicRangeMenu->addAction( "-1024; 1023" );
+    QAction* action2 = m_dynamicRangeMenu->addAction( "-100; 300" );
+    QAction* action3 = m_dynamicRangeMenu->addAction( "Fit W/L" );
+    QAction* action4 = m_dynamicRangeMenu->addAction( "Fit Data" ); // TODO
     //QAction *action5 = m_dynamicRangeMenu->addAction( "Custom ..." ); // TODO
     m_dynamicRangeSelection->setMenu(m_dynamicRangeMenu);
 
@@ -144,8 +144,8 @@ void WindowLevel::starting() throw(::fwTools::Failed)
                      SLOT(onWindowLevelWidgetChanged( double, double )));
     QObject::connect(m_toggleTFButton, SIGNAL(toggled( bool )), this, SLOT(onToggleTF( bool )));
     QObject::connect(m_toggleAutoButton, SIGNAL(toggled( bool )), this, SLOT(onToggleAutoWL( bool )));
-    QObject::connect(m_dynamicRangeSelection, SIGNAL(triggered( QAction * )), this,
-                     SLOT(onDynamicRangeSelectionChanged( QAction * )));
+    QObject::connect(m_dynamicRangeSelection, SIGNAL(triggered( QAction* )), this,
+                     SLOT(onDynamicRangeSelectionChanged( QAction* )));
 
     this->installTFConnections();
 }
@@ -155,8 +155,8 @@ void WindowLevel::starting() throw(::fwTools::Failed)
 void WindowLevel::stopping() throw(::fwTools::Failed)
 {
     this->removeTFConnections();
-    QObject::disconnect(m_dynamicRangeSelection, SIGNAL(triggered( QAction * )), this,
-                        SLOT(onDynamicRangeSelectionChanged( QAction * )));
+    QObject::disconnect(m_dynamicRangeSelection, SIGNAL(triggered( QAction* )), this,
+                        SLOT(onDynamicRangeSelectionChanged( QAction* )));
     QObject::disconnect(m_toggleTFButton, SIGNAL(toggled( bool )), this, SLOT(onToggleTF( bool )));
     QObject::disconnect(m_rangeSlider, SIGNAL(sliderRangeEdited( double, double )), this,
                         SLOT(onWindowLevelWidgetChanged( double, double )));
@@ -211,7 +211,7 @@ void WindowLevel::updating() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     this->setEnabled(imageIsValid);
 
     ::fwData::Composite::sptr tfSelection;
@@ -242,7 +242,7 @@ void WindowLevel::updating() throw(::fwTools::Failed)
         if(m_autoWindowing)
         {
             double min, max;
-            ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+            ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
             this->updateImageWindowLevel(min, max);
         }
 
@@ -275,7 +275,7 @@ void WindowLevel::updatingTFWindowing(double window, double level)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     SLM_ASSERT("Image is not valid",imageIsValid);
     this->updateTransferFunction(image);
 
@@ -287,7 +287,7 @@ void WindowLevel::updatingTFWindowing(double window, double level)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::info( std::ostream & _sstream )
+void WindowLevel::info( std::ostream& _sstream )
 {
     _sstream << "Window level editor";
 }
@@ -361,7 +361,7 @@ void WindowLevel::onWindowLevelWidgetChanged(double _min, double _max)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::onDynamicRangeSelectionChanged(QAction *action)
+void WindowLevel::onDynamicRangeSelectionChanged(QAction* action)
 {
     WindowLevelMinMaxType wl = this->getImageWindowMinMax();
     double min               = m_widgetDynamicRangeMin;
@@ -386,7 +386,7 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction *action)
             max = std::max(wl.first, wl.second);
             break;
         case 4: // Fit Image Range
-            ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+            ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
             break;
         case 5: // Custom : TODO
             break;
@@ -473,7 +473,7 @@ void WindowLevel::onToggleAutoWL(bool autoWL)
     {
         ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
         double min, max;
-        ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+        ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
         this->updateImageWindowLevel(min, max);
         this->onImageWindowLevelChanged(min, max);
     }
@@ -493,7 +493,7 @@ void WindowLevel::onTextEditingFinished()
 
 //------------------------------------------------------------------------------
 
-bool WindowLevel::getWidgetDoubleValue(QLineEdit *widget, double &val)
+bool WindowLevel::getWidgetDoubleValue(QLineEdit* widget, double& val)
 {
     bool ok = false;
     val = widget->text().toDouble(&ok);
@@ -517,7 +517,7 @@ void WindowLevel::setEnabled(bool enable)
 {
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget * const container = qtContainer->getQtContainer();
+    QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
     container->setEnabled(enable);
 }
@@ -545,11 +545,11 @@ void WindowLevel::setWidgetDynamicRange(double min, double max)
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     // Create pool
-    ::fwComEd::helper::Image helper(image);
+    ::fwDataTools::helper::Image helper(image);
     helper.createTransferFunctionPool(); // do nothing if image tf pool already exist
 
     // Get pool
-    const std::string poolFieldName = ::fwComEd::Dictionary::m_transferFunctionCompositeId;
+    const std::string poolFieldName = ::fwDataTools::fieldHelper::Image::m_transferFunctionCompositeId;
     ::fwData::Composite::sptr pool = image->getField< ::fwData::Composite >(poolFieldName);
 
     // Get image default image tf
@@ -567,7 +567,7 @@ void WindowLevel::swapCurrentTFAndNotify( ::fwData::TransferFunction::sptr newTF
     std::string tfSelectionFwID = this->getTFSelectionFwID();
     ::fwData::Composite::sptr pool = ::fwData::Composite::dynamicCast( ::fwTools::fwID::getObject( tfSelectionFwID ) );
     OSLM_ASSERT( "The object with the fwID " << tfSelectionFwID << " doesn't exist.", pool );
-    ::fwComEd::helper::Composite compositeHelper( pool );
+    ::fwDataTools::helper::Composite compositeHelper( pool );
     compositeHelper.swap( this->getSelectedTFKey(), newTF );
 
     // Notify change

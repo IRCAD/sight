@@ -10,7 +10,6 @@
 #include "ctrlSelection/config.hpp"
 
 #include <fwServices/IService.hpp>
-
 #include <fwServices/helper/Config.hpp>
 
 namespace ctrlSelection
@@ -43,7 +42,7 @@ protected:
      */
     CTRLSELECTION_API virtual void swapping() throw ( ::fwTools::Failed );
 
-    typedef std::map< ObjectIdType, ::fwServices::helper::SigSlotConnection > ObjectConnectionsMapType;
+    typedef std::map< ObjectIdType, ::fwCom::helper::SigSlotConnection > ObjectConnectionsMapType;
 
     /**
      * @brief Manages all connections define in config associated to object.

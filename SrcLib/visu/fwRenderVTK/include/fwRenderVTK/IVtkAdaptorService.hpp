@@ -7,14 +7,14 @@
 #ifndef __FWRENDERVTK_IVTKADAPTORSERVICE_HPP__
 #define __FWRENDERVTK_IVTKADAPTORSERVICE_HPP__
 
-#include <string>
-
-
-#include <fwServices/IService.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
-
 #include "fwRenderVTK/SRender.hpp"
 #include "fwRenderVTK/config.hpp"
+
+#include <fwCom/helper/SigSlotConnection.hpp>
+
+#include <fwServices/IService.hpp>
+
+#include <string>
 
 class vtkProp;
 class vtkPropCollection;
@@ -139,7 +139,7 @@ protected:
     SRender::VtkObjectIdType m_transformId;
     SRender::wptr m_renderService;
 
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
 
     typedef std::vector < ::fwRenderVTK::IVtkAdaptorService::wptr > ServiceVector;

@@ -4,11 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/writer/ie/Image.hpp"
 
-#include <fwComEd/helper/Image.hpp>
+#include "fwGdcmIO/helper/DicomData.hpp"
+
 #include <fwData/Image.hpp>
+
+#include <fwDataTools/helper/Image.hpp>
 
 #include <gdcmImageWriter.h>
 #include <gdcmUIDGenerator.h>
@@ -151,7 +153,7 @@ void Image::writeImagePixelModuleSpecificTags(unsigned int instanceNumber)
     bufferLength = (!m_instance->getIsMultiFiles()) ? (bufferLength*size[2]) : bufferLength;
 
     // Retrieve image buffer
-    ::fwComEd::helper::Image imageHelper(m_object);
+    ::fwDataTools::helper::Image imageHelper(m_object);
     const char* imageBuffer = static_cast< char* >(imageHelper.getBuffer());
 
     // Pixel Data - Type 1C

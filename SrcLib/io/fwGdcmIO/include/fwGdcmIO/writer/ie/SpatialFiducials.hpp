@@ -7,6 +7,7 @@
 #ifndef __FWGDCMIO_WRITER_IE_SPATIALFIDUCIALS_HPP__
 #define __FWGDCMIO_WRITER_IE_SPATIALFIDUCIALS_HPP__
 
+#include "fwGdcmIO/exception/Failed.hpp"
 #include "fwGdcmIO/writer/ie/InformationEntity.hpp"
 
 #include <fwData/Image.hpp>

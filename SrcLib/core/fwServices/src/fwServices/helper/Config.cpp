@@ -5,12 +5,13 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwServices/helper/Config.hpp"
-#include "fwServices/helper/SigSlotConnection.hpp"
-#include "fwServices/registry/Proxy.hpp"
 #include "fwServices/registry/ServiceConfig.hpp"
+
+#include "fwServices/registry/Proxy.hpp"
 
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/HasSlots.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Object.hpp>
 
@@ -19,6 +20,7 @@
 #include <fwTools/Object.hpp>
 
 #include <boost/regex.hpp>
+
 #include <string>
 #include <vector>
 
@@ -34,7 +36,7 @@ const std::array< std::string, 3 > s_DATA_KEYWORDS = {{ "in", "out", "inout" }};
 //-----------------------------------------------------------------------------
 
 void Config::createConnections( const ::fwRuntime::ConfigurationElement::csptr& connectionCfg,
-                                ::fwServices::helper::SigSlotConnection& connections,
+                                ::fwCom::helper::SigSlotConnection& connections,
                                 const CSPTR(::fwTools::Object)& obj)
 {
     ConnectionInfo info = parseConnections(connectionCfg, obj);

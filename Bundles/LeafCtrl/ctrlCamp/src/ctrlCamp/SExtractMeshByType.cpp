@@ -6,14 +6,14 @@
 
 #include "ctrlCamp/SExtractMeshByType.hpp"
 
-#include <fwComEd/helper/Composite.hpp>
-
 #include <fwData/Composite.hpp>
 #include <fwData/Mesh.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/Reconstruction.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwDataCamp/getObject.hpp>
+
+#include <fwDataTools/helper/Composite.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
 
@@ -21,8 +21,8 @@
 
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <boost/regex.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/regex.hpp>
 
 namespace ctrlCamp
 {
@@ -158,7 +158,7 @@ void SExtractMeshByType::updating() throw( ::fwTools::Failed )
     {
         ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
         ::fwData::mt::ObjectWriteLock lock(composite);
-        ::fwComEd::helper::Composite compHelper(composite);
+        ::fwDataTools::helper::Composite compHelper(composite);
 
         for(ExtractMapType::value_type elt : m_extractOld)
         {

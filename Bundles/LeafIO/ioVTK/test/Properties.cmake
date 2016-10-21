@@ -9,7 +9,6 @@ set( DEPENDENCIES
     fwData
     fwMedData
     fwDataCamp
-    fwComEd
     fwServices
     fwRuntime
     fwThread

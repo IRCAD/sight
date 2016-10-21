@@ -17,31 +17,31 @@
 
 #include <fwData/Composite.hpp>
 
-#include <fwComEd/helper/SeriesDB.hpp>
-
 #include <fwGui/dialog/InputDialog.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwMedData/Series.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
 #include <fwMedData/Equipment.hpp>
+#include <fwMedData/Patient.hpp>
+#include <fwMedData/Series.hpp>
+#include <fwMedData/Study.hpp>
 
-#include <fwTools/dateAndTime.hpp>
-#include <fwTools/UUID.hpp>
+#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 
+#include <fwTools/UUID.hpp>
+#include <fwTools/dateAndTime.hpp>
+
+#include <QApplication>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QMessageBox>
 #include <QObject>
 #include <QVBoxLayout>
-#include <QLabel>
-#include <QHBoxLayout>
-#include <QMessageBox>
-#include <QApplication>
 
 namespace uiMedData
 {
@@ -286,7 +286,7 @@ void SActivityWizard::createActivity(std::string activityID)
         }
 
         ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-        ::fwComEd::helper::SeriesDB helper(seriesDB);
+        ::fwMedDataTools::helper::SeriesDB helper(seriesDB);
         helper.add(m_actSeries);
         helper.notify();
         m_sigActivityCreated->asyncEmit(m_actSeries);
@@ -475,7 +475,7 @@ void SActivityWizard::onBuildActivity()
                     }
                     m_actSeries->setDescription(description);
                     ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-                    ::fwComEd::helper::SeriesDB helper(seriesDB);
+                    ::fwMedDataTools::helper::SeriesDB helper(seriesDB);
                     helper.add(m_actSeries);
                     helper.notify();
                     m_sigActivityCreated->asyncEmit(m_actSeries);

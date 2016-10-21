@@ -4,12 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <fstream>
-
-#include <boost/filesystem/operations.hpp>
-
-#include <fwServices/macros.hpp>
+#include "ioTuto/ExternalDataReaderService.hpp"
 
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
@@ -17,12 +12,17 @@
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
-#include <fwComEd/helper/Composite.hpp>
+#include <fwDataTools/helper/Composite.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
-#include "ioTuto/ExternalDataReaderService.hpp"
+#include <fwServices/macros.hpp>
+
+#include <boost/filesystem/operations.hpp>
+
+#include <fstream>
+#include <iostream>
 
 fwServicesRegisterMacro( ::io::IReader, ::ioTuto::ExternalDataReaderService, ::fwData::Composite );
 
@@ -37,7 +37,7 @@ ExternalDataReaderService::ExternalDataReaderService()
 
 //-----------------------------------------------------------------------------
 
-void ExternalDataReaderService::info(std::ostream &_sstream )
+void ExternalDataReaderService::info(std::ostream& _sstream )
 {
     this->::io::IReader::info( _sstream );
     _sstream << std::endl << " External data file reader";
@@ -104,7 +104,7 @@ void ExternalDataReaderService::updating() throw(::fwTools::Failed)
 
     std::string imageName;
     ::fwData::Composite::sptr dataComposite = this->getObject< ::fwData::Composite >();
-    ::fwComEd::helper::Composite compositeHelper(dataComposite);
+    ::fwDataTools::helper::Composite compositeHelper(dataComposite);
     SLM_ASSERT("dataComposite not instanced", dataComposite);
     try
     {
@@ -173,7 +173,7 @@ void ExternalDataReaderService::updating() throw(::fwTools::Failed)
             SLM_ASSERT("Unable to open '"+this->getFile().string()+"'.", readedValue == 32 );
         }
     }
-    catch(std::ios_base::failure &exception)
+    catch(std::ios_base::failure& exception)
     {
         OSLM_ERROR( "External data file loading error for " << exception.what());
     }

@@ -7,16 +7,15 @@
 #ifndef __VISUVTKADAPTOR_IMAGE_HPP__
 #define __VISUVTKADAPTOR_IMAGE_HPP__
 
-#include <vtkSmartPointer.h>
+#include "visuVTKAdaptor/config.hpp"
 
 #include <fwData/Image.hpp>
 
-
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
-#include "visuVTKAdaptor/config.hpp"
+#include <vtkSmartPointer.h>
 
 class fwVtkWindowLevelLookupTable;
 class vtkImageMapToColors;
@@ -28,7 +27,7 @@ namespace visuVTKAdaptor
 /**
  * @brief Render an image on the generic scene
  */
-class VISUVTKADAPTOR_CLASS_API Image : public ::fwComEd::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API Image : public ::fwDataTools::helper::MedicalImageAdaptor,
                                        public ::fwRenderVTK::IVtkAdaptorService
 {
 
@@ -44,7 +43,7 @@ public:
     {
         m_imageRegisterId = id;
     }
-    void setVtkImageRegister(vtkObject *obj)
+    void setVtkImageRegister(vtkObject* obj)
     {
         m_imageRegister = obj;
     }
@@ -97,15 +96,15 @@ protected:
 private:
 
     std::string m_imageRegisterId;
-    vtkObject  *m_imageRegister;
+    vtkObject* m_imageRegister;
 
     int m_imagePortId;
     double m_imageOpacity;
     bool m_allowAlphaInTF;
 
     vtkSmartPointer< fwVtkWindowLevelLookupTable > m_lut;
-    vtkImageMapToColors *m_map2colors;
-    vtkImageData *m_imageData;
+    vtkImageMapToColors* m_map2colors;
+    vtkImageData* m_imageData;
 
 };
 

@@ -13,7 +13,7 @@
 
 #include <fwData/Composite.hpp>
 
-#include <fwComEd/helper/Composite.hpp>
+#include <fwDataTools/helper/Composite.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -106,7 +106,7 @@ void SObjFromSlot::add(::fwData::Object::sptr obj)
     }
     else
     {
-        ::fwComEd::helper::Composite helper( this->getObject< ::fwData::Composite >() );
+        ::fwDataTools::helper::Composite helper( this->getObject< ::fwData::Composite >() );
         helper.add(m_compositeKey, obj);
         helper.notify();
     }
@@ -123,7 +123,7 @@ void SObjFromSlot::addOrSwap(::fwData::Object::sptr obj)
     else
     {
         ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-        ::fwComEd::helper::Composite helper(composite);
+        ::fwDataTools::helper::Composite helper(composite);
         if (composite->find(m_compositeKey) == composite->end())
         {
             helper.add(m_compositeKey, obj);
@@ -146,7 +146,7 @@ void SObjFromSlot::swap(::fwData::Object::sptr obj)
     }
     else
     {
-        ::fwComEd::helper::Composite helper( this->getObject< ::fwData::Composite >() );
+        ::fwDataTools::helper::Composite helper( this->getObject< ::fwData::Composite >() );
         helper.swap(m_compositeKey, obj);
         helper.notify();
     }
@@ -162,7 +162,7 @@ void SObjFromSlot::remove()
     }
     else
     {
-        ::fwComEd::helper::Composite helper( this->getObject< ::fwData::Composite >() );
+        ::fwDataTools::helper::Composite helper( this->getObject< ::fwData::Composite >() );
         helper.remove(m_compositeKey);
         helper.notify();
     }
@@ -179,7 +179,7 @@ void SObjFromSlot::removeIfPresent()
     else
     {
         ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-        ::fwComEd::helper::Composite helper(composite);
+        ::fwDataTools::helper::Composite helper(composite);
         if (composite->find(m_compositeKey) != composite->end())
         {
             helper.remove(m_compositeKey);

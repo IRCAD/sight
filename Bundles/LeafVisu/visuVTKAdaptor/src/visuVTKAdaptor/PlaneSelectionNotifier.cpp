@@ -8,20 +8,19 @@
 
 #include "visuVTKAdaptor/PlaneSelectionNotifier.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-
-
-#include <fwComEd/helper/Composite.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Plane.hpp>
 #include <fwData/PlaneList.hpp>
+
+#include <fwDataTools/helper/Composite.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -179,7 +178,7 @@ void PlaneSelectionNotifier::selectPlane( ::fwData::Object::sptr plane )
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
-    ::fwComEd::helper::Composite helper(composite);
+    ::fwDataTools::helper::Composite helper(composite);
     helper.swap(m_planeSelectionId, plane);
 
     auto sig = composite->signal< ::fwData::Composite::ChangedObjectsSignalType >(
@@ -197,7 +196,7 @@ void PlaneSelectionNotifier::deselectPlane()
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     if ( composite->find(m_planeSelectionId) != composite->end() )
     {
-        ::fwComEd::helper::Composite helper(composite);
+        ::fwDataTools::helper::Composite helper(composite);
         helper.remove(m_planeSelectionId);
         auto sig = composite->signal< ::fwData::Composite::RemovedObjectsSignalType >(
             ::fwData::Composite::s_REMOVED_OBJECTS_SIG);

@@ -6,12 +6,12 @@
 
 #include "uiTF/TransferFunctionEditor.hpp"
 
-#include <fwComEd/helper/Composite.hpp>
-
 #include <fwCore/base.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/TransferFunction.hpp>
+
+#include <fwDataTools/helper/Composite.hpp>
 
 #include <fwGui/dialog/InputDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -27,15 +27,15 @@
 #include <io/IReader.hpp>
 #include <io/IWriter.hpp>
 
-#include <boost/filesystem/convenience.hpp>
-#include <boost/filesystem/operations.hpp>
-
 #include <QBoxLayout>
 #include <QComboBox>
 #include <QIcon>
 #include <QPushButton>
 #include <QString>
 #include <QWidget>
+
+#include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem/operations.hpp>
 
 namespace uiTF
 {
@@ -246,7 +246,7 @@ void TransferFunctionEditor::deleteTF()
             int indexSelectedTF       = m_pTransferFunctionPreset->currentIndex();
             std::string selectedTFKey = m_pTransferFunctionPreset->currentText().toStdString();
 
-            ::fwComEd::helper::Composite compositeHelper(poolTF);
+            ::fwDataTools::helper::Composite compositeHelper(poolTF);
             OSLM_ASSERT("TF "<< m_selectedTFKey <<" missing in pool", this->hasTransferFunctionName(selectedTFKey));
             compositeHelper.remove(selectedTFKey);
             compositeHelper.notify();
@@ -294,7 +294,7 @@ void TransferFunctionEditor::newTF()
             pNewTransferFunction = ::fwData::Object::copy(selectedTF);
             pNewTransferFunction->setName(newName);
             ::fwData::Composite::sptr poolTF = this->getTFPool();
-            ::fwComEd::helper::Composite compositeHelper(poolTF);
+            ::fwDataTools::helper::Composite compositeHelper(poolTF);
             compositeHelper.add(newName, pNewTransferFunction);
 
             m_pTransferFunctionPreset->addItem(QString(newName.c_str()));
@@ -328,7 +328,7 @@ void TransferFunctionEditor::reinitializeTFPool()
     if (answerCopy != ::fwGui::dialog::IMessageDialog::CANCEL)
     {
         ::fwData::Composite::sptr poolTF = this->getTFPool();
-        ::fwComEd::helper::Composite compositeHelper(poolTF);
+        ::fwDataTools::helper::Composite compositeHelper(poolTF);
         compositeHelper.clear();
         compositeHelper.notify();
 
@@ -372,7 +372,7 @@ void TransferFunctionEditor::renameTF()
             pTF = ::fwData::TransferFunction::dynamicCast((*poolTF)[str]);
             pTF->setName(newName);
 
-            ::fwComEd::helper::Composite compositeHelper(poolTF);
+            ::fwDataTools::helper::Composite compositeHelper(poolTF);
             compositeHelper.remove(str);
             compositeHelper.add(newName, pTF);
             compositeHelper.notify();
@@ -408,7 +408,7 @@ void TransferFunctionEditor::renameTF()
 void TransferFunctionEditor::importTF()
 {
     ::fwData::Composite::sptr poolTF = this->getTFPool();
-    ::fwComEd::helper::Composite compositeHelper(poolTF);
+    ::fwDataTools::helper::Composite compositeHelper(poolTF);
 
     ::fwData::TransferFunction::sptr tf = ::fwData::TransferFunction::New();
     ::fwServices::IService::sptr srv    =
@@ -475,7 +475,7 @@ void TransferFunctionEditor::initTransferFunctions()
     // Get transfer function composite (pool TF)
     ::fwData::Composite::sptr poolTF = this->getTFPool();
 
-    ::fwComEd::helper::Composite compositeHelper(poolTF);
+    ::fwDataTools::helper::Composite compositeHelper(poolTF);
 
     const std::string defaultTFName = ::fwData::TransferFunction::s_DEFAULT_TF_NAME;
     if(!this->hasTransferFunctionName(defaultTFName))
@@ -575,7 +575,7 @@ void TransferFunctionEditor::updateTransferFunctionPreset()
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-bool TransferFunctionEditor::hasTransferFunctionName(const std::string & _sName)
+bool TransferFunctionEditor::hasTransferFunctionName(const std::string& _sName)
 {
     ::fwData::Composite::sptr poolTF = this->getTFPool();
     return poolTF->find(_sName) != poolTF->end();
@@ -583,7 +583,7 @@ bool TransferFunctionEditor::hasTransferFunctionName(const std::string & _sName)
 
 //-----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-std::string TransferFunctionEditor::createTransferFunctionName(const std::string & _sBasename)
+std::string TransferFunctionEditor::createTransferFunctionName(const std::string& _sBasename)
 {
     bool bHasTransferFunctionName = true;
     std::string newName           = _sBasename;
@@ -614,7 +614,7 @@ void TransferFunctionEditor::updateTransferFunction()
     ::fwData::Object::sptr newSelectedTF = (*poolTF)[newSelectedTFKey];
     if(this->getSelectedTransferFunction() != newSelectedTF)
     {
-        ::fwComEd::helper::Composite compositeHelper(tfSelection);
+        ::fwDataTools::helper::Composite compositeHelper(tfSelection);
         if(tfSelection->getContainer().find(m_selectedTFKey) != tfSelection->getContainer().end())
         {
             compositeHelper.swap(m_selectedTFKey, newSelectedTF);

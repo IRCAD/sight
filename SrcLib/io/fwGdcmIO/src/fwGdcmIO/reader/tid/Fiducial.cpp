@@ -4,18 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGdcmIO/reader/tid/Fiducial.hpp"
+
 #include "fwGdcmIO/container/sr/DicomSRImageNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRSCoord3DNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRSCoordNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRTextNode.hpp"
 #include "fwGdcmIO/helper/DicomData.hpp"
-#include "fwGdcmIO/reader/tid/Fiducial.hpp"
 
-#include <fwComEd/Dictionary.hpp>
 #include <fwData/Boolean.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
 
 namespace fwGdcmIO
 {
@@ -125,15 +127,15 @@ void Fiducial::readNode(SPTR(::fwGdcmIO::container::sr::DicomSRNode)node)
 void Fiducial::addLandmark(double x, double y, double z, const std::string& label)
 {
     ::fwData::Point::sptr point = ::fwData::Point::New(x,y,z);
-    point->setField(::fwComEd::Dictionary::m_labelId, ::fwData::String::New(label));
+    point->setField(::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New(label));
 
     ::fwData::PointList::sptr pointList =
-        m_object->getField< ::fwData::PointList >(::fwComEd::Dictionary::m_imageLandmarksId);
+        m_object->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
 
     if(!pointList)
     {
         pointList = ::fwData::PointList::New();
-        m_object->setField(::fwComEd::Dictionary::m_imageLandmarksId, pointList);
+        m_object->setField(::fwDataTools::fieldHelper::Image::m_imageLandmarksId, pointList);
     }
 
     pointList->getRefPoints().push_back(point);

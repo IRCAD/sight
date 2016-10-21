@@ -9,8 +9,10 @@
 
 #include "ioData/config.hpp"
 
-#include <io/IReader.hpp>
+#include <fwData/Spline.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
+
+#include <io/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -19,9 +21,6 @@ namespace ioData
 {
 /**
  * @brief   Spline reader service.
- * @class   SplineReaderService
- *
- * @date    2009.
  *
  * Service reading a spline object.
  * @li This service has no specified start and stop method.
@@ -126,7 +125,7 @@ protected:
      *
      * @param[out] _sstream output stream
      */
-    IODATA_API virtual void info(std::ostream &_sstream );
+    IODATA_API virtual void info(std::ostream& _sstream );
     /// @}
 
 private:

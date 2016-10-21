@@ -9,6 +9,8 @@
 
 #include "fwGdcmIO/config.hpp"
 
+#include <fwCore/macros.hpp>
+
 #include <gdcmDataSet.h>
 
 namespace fwMedData

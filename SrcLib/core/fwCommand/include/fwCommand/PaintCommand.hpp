@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,15 +7,15 @@
 #ifndef __FWCOMMAND_PAINTCOMMAND_HPP__
 #define __FWCOMMAND_PAINTCOMMAND_HPP__
 
-#include <boost/cstdint.hpp>
-
-#include <fwTools/macros.hpp>
+#include "fwCommand/ICommand.hpp"
 
 #include <fwData/Image.hpp>
 
-#include <fwComEd/helper/Image.hpp>
+#include <fwDataTools/helper/Image.hpp>
 
-#include "fwCommand/ICommand.hpp"
+#include <fwTools/macros.hpp>
+
+#include <boost/cstdint.hpp>
 
 namespace fwCommand
 {
@@ -82,7 +82,7 @@ private:
     /// Working image
     ::fwData::Image::wptr m_image;
     /// Helper on Working image
-    ::fwComEd::helper::Image::sptr m_imageHelper;
+    ::fwDataTools::helper::Image::sptr m_imageHelper;
 
     ::fwData::Image::IndexType m_currentPrepaintIndex;
     std::vector< ::fwData::Image::BufferType > m_currentPrepaintBuff;

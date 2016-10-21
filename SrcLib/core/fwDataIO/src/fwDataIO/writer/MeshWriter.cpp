@@ -1,21 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <fstream>
+#include "fwDataIO/writer/MeshWriter.hpp"
+
+#include "fwDataIO/writer/registry/macros.hpp"
+
+#include <fwDataTools/Mesh.hpp>
+#include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/helper/Mesh.hpp>
 
 #include <boost/cstdint.hpp>
 
-#include <fwComEd/helper/Mesh.hpp>
-#include <fwComEd/helper/Array.hpp>
-
-#include <fwDataTools/Mesh.hpp>
-
-#include "fwDataIO/writer/MeshWriter.hpp"
-#include "fwDataIO/writer/registry/macros.hpp"
+#include <fstream>
+#include <iostream>
 
 fwDataIOWriterRegisterMacro( ::fwDataIO::writer::MeshWriter );
 
@@ -62,7 +62,7 @@ void MeshWriter::write()
         throw std::ios_base::failure(str);
     }
 
-    ::fwComEd::helper::Mesh meshHelper(mesh);
+    ::fwDataTools::helper::Mesh meshHelper(mesh);
 
     size_t i, nbPts, nbCells;
     nbPts                                       = mesh->getNumberOfPoints();
@@ -76,13 +76,13 @@ void MeshWriter::write()
     nbCells                     = mesh->getNumberOfCells();
     ::fwData::Array::sptr cells = mesh->getCellDataArray();
 
-    ::fwComEd::helper::Array cellsArrayHelper(cells);
+    ::fwDataTools::helper::Array cellsArrayHelper(cells);
 
     FW_RAISE_IF("Not able to write " << cells->getType().string() << " cell type in trian file.",
                 cells->getType() != ::fwTools::Type::create< ::boost::uint64_t >());
 
-    ::boost::uint64_t *cellBuf    = cellsArrayHelper.begin< ::boost::uint64_t >();
-    ::boost::uint64_t *cellBufEnd = cellBuf + 3*nbCells;
+    ::boost::uint64_t* cellBuf    = cellsArrayHelper.begin< ::boost::uint64_t >();
+    ::boost::uint64_t* cellBufEnd = cellBuf + 3*nbCells;
 
     SLM_ASSERT("Wrong CellDataMultiArray size", cells->getNumberOfElements() >= nbCells*3);
     file << nbCells << std::endl;
@@ -97,8 +97,8 @@ void MeshWriter::write()
        && nbCells == normals->getSize().at(0)
        )
     {
-        ::fwComEd::helper::Array normalsArrayHelper(normals);
-        float *normalBuf = normalsArrayHelper.begin< float >();
+        ::fwDataTools::helper::Array normalsArrayHelper(normals);
+        float* normalBuf = normalsArrayHelper.begin< float >();
 
         while (cellBuf != cellBufEnd)
         {

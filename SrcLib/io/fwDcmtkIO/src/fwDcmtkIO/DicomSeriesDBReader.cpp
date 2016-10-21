@@ -5,14 +5,12 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwDcmtkIO/DicomSeriesDBReader.hpp"
+
 #include "fwDcmtkIO//helper/Codec.hpp"
 #include "fwDcmtkIO/helper/DicomDir.hpp"
 #include "fwDcmtkIO/helper/DicomSearch.hpp"
 #include "fwDcmtkIO/reader/ImageTagReader.hpp"
 #include "fwDcmtkIO/reader/MPPSReader.hpp"
-
-
-#include <fwComEd/helper/SeriesDB.hpp>
 
 #include <fwDataIO/reader/registry/macros.hpp>
 
@@ -27,6 +25,8 @@
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
+
+#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
@@ -388,7 +388,7 @@ void DicomSeriesDBReader::convertDicomSeries(SPTR(::fwMedData::DicomSeries)dicom
                                              bool notify)
 {
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
-    ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
+    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
     ::fwMedData::Series::sptr result = ::fwMedData::Series::sptr();
 
     ::fwMedData::DicomSeries::SOPClassUIDContainerType sopClassUIDContainer = dicomSeries->getSOPClassUIDs();

@@ -6,16 +6,21 @@
 
 #include "SeriesDBReaderTest.hpp"
 
-#include <fwComEd/helper/Image.hpp>
 #include <fwCore/Exception.hpp>
+
 #include <fwData/Image.hpp>
-#include <fwMedData/DicomSeries.hpp>
+
+#include <fwDataTools/helper/Image.hpp>
+
 #include <fwDcmtkIO/SeriesDBReader.hpp>
+
+#include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
+
 #include <fwTest/Data.hpp>
 #include <fwTest/DicomReaderTest.hpp>
 
@@ -348,7 +353,7 @@ void SeriesDBReaderTest::readACHSeries()
     CPPUNIT_ASSERT( ::fwTest::DicomReaderTest::checkSeriesACHGenouTrimmed( series ) );
 
     // Read image in lazy mode
-    ::fwComEd::helper::Image locker ( series->getImage() );
+    ::fwDataTools::helper::Image locker ( series->getImage() );
 
 }
 
@@ -377,7 +382,7 @@ void SeriesDBReaderTest::readCTSeries()
     // Read image buffer
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
     ::fwData::Image::sptr image           = series->getImage();
-    ::fwComEd::helper::Image locker ( image );
+    ::fwDataTools::helper::Image locker ( image );
 
     // Check number of dimensions
     CPPUNIT_ASSERT_EQUAL( size_t( 3 ), image->getNumberOfDimensions());
@@ -438,7 +443,7 @@ void SeriesDBReaderTest::readMRSeries()
     // Read image buffer
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
     ::fwData::Image::sptr image           = series->getImage();
-    ::fwComEd::helper::Image locker ( image );
+    ::fwDataTools::helper::Image locker ( image );
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization crashes...
     CPPUNIT_ASSERT_EQUAL( size_t( 3 ), image->getNumberOfDimensions());
@@ -500,7 +505,7 @@ void SeriesDBReaderTest::readOTSeries()
     // Read image buffer
     ::fwMedData::ImageSeries::sptr series = ::fwMedData::ImageSeries::dynamicCast(seriesDB->front());
     ::fwData::Image::sptr image           = series->getImage();
-    ::fwComEd::helper::Image locker ( image );
+    ::fwDataTools::helper::Image locker ( image );
 
     // Check number of dimensions - FIXME Should be 2 but when creating an image with 2D size, the visualization crashes...
     CPPUNIT_ASSERT_EQUAL( size_t( 3 ), image->getNumberOfDimensions());

@@ -10,16 +10,24 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
-#include <fwComEd/helper/SeriesDB.hpp>
+
 #include <fwCore/base.hpp>
+
 #include <fwData/Vector.hpp>
-#include <fwMedData/DicomSeries.hpp>
+
 #include <fwGdcmIO/helper/DicomSeriesAnonymizer.hpp>
+
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/IJob.hpp>
+
+#include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
+
+#include <fwMedDataTools/helper/SeriesDB.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <boost/foreach.hpp>
@@ -115,7 +123,7 @@ void SDicomSeriesAnonymizer::info(std::ostream& _sstream )
 void SDicomSeriesAnonymizer::anonymize()
 {
     ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >("selectedSeries");
-    ::fwComEd::helper::SeriesDB sDBhelper(m_seriesDB);
+    ::fwMedDataTools::helper::SeriesDB sDBhelper(m_seriesDB);
 
     ::fwGdcmIO::helper::DicomSeriesAnonymizer::sptr anonymizer =
         ::fwGdcmIO::helper::DicomSeriesAnonymizer::New();

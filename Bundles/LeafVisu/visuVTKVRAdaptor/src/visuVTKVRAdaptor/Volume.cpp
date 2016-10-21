@@ -11,9 +11,9 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwData/TransferFunction.hpp>
+
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -29,8 +29,8 @@
 #include <vtkObjectFactory.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkPlaneCollection.h>
-#include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
 #include <vtkSmartVolumeMapper.h>
 #include <vtkTransform.h>
 #include <vtkVolume.h>
@@ -116,7 +116,7 @@ static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT                  = "show";
 //------------------------------------------------------------------------------
 
 Volume::Volume() throw() :
-    ::fwComEd::helper::MedicalImageAdaptor(),
+    ::fwDataTools::helper::MedicalImageAdaptor(),
     ::fwRenderVTK::IVtkAdaptorService(),
     m_clippingPlanes(nullptr),
     m_volumeMapper( vtkSmartVolumeMapper::New()),
@@ -250,7 +250,7 @@ void Volume::doSwap() throw(fwTools::Failed)
 void Volume::doUpdate() throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if (imageIsValid)
     {

@@ -9,14 +9,19 @@
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwComEd/helper/SeriesDB.hpp>
+
+#include <fwGdcmIO/reader/SeriesDB.hpp>
+
+#include <fwGui/dialog/LoggerDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
-#include <fwGui/dialog/LoggerDialog.hpp>
+
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
+
+#include <fwMedDataTools/helper/SeriesDB.hpp>
+
 #include <fwServices/macros.hpp>
-#include <fwGdcmIO/reader/SeriesDB.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -111,12 +116,12 @@ void SDicomSeriesConverter::updating() throw(::fwTools::Failed)
             // If the user cancel the reading process we delete the loaded series
             if(!result || job->cancelRequested())
             {
-                ::fwComEd::helper::SeriesDB sDBhelper(dummy);
+                ::fwMedDataTools::helper::SeriesDB sDBhelper(dummy);
                 sDBhelper.clear();
             }
             else
             {
-                ::fwComEd::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
+                ::fwMedDataTools::helper::SeriesDB sDBhelper(m_destinationSeriesDB);
                 sDBhelper.merge(dummy);
                 sDBhelper.notify();
             }

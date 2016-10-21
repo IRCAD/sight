@@ -11,8 +11,9 @@
 
 #include <fwData/Image.hpp>
 
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
 
 class vtkObject;
@@ -21,7 +22,7 @@ class vtkObject;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API NegatoOneSlice : public ::fwComEd::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API NegatoOneSlice : public ::fwDataTools::helper::MedicalImageAdaptor,
                                                 public ::fwRenderVTK::IVtkAdaptorService
 {
 
@@ -45,7 +46,7 @@ public:
     {
         m_imageSourceId = id;
     }
-    void setVtkImageSource(vtkObject *obj)
+    void setVtkImageSource(vtkObject* obj)
     {
         m_imageSource = obj;
     }
@@ -96,7 +97,7 @@ protected:
 
     bool m_manageImageSource;
     std::string m_imageSourceId;
-    vtkObject  *m_imageSource;
+    vtkObject* m_imageSource;
 
     bool m_allowAlphaInTF;
     bool m_interpolation;

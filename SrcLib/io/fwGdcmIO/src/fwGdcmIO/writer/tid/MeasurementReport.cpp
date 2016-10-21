@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGdcmIO/writer/tid/MeasurementReport.hpp"
+
 #include "fwGdcmIO/container/DicomCodedAttribute.hpp"
 #include "fwGdcmIO/container/sr/DicomSRCodeNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRContainerNode.hpp"
@@ -16,12 +18,13 @@
 #include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/writer/tid/Fiducial.hpp"
 #include "fwGdcmIO/writer/tid/Measurement.hpp"
-#include "fwGdcmIO/writer/tid/MeasurementReport.hpp"
 
-#include <fwComEd/Dictionary.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
 
@@ -87,7 +90,7 @@ SPTR(::fwGdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(b
     rootNode->addSubNode(imageLibraryNode);
 
     // Add landmarks
-    if(m_object->getField< ::fwData::PointList >(::fwComEd::Dictionary::m_imageLandmarksId))
+    if(m_object->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId))
     {
         // Create Fiducial Container
         SPTR(::fwGdcmIO::container::sr::DicomSRContainerNode) fiducialNode =
@@ -100,7 +103,7 @@ SPTR(::fwGdcmIO::container::sr::DicomSRNode) MeasurementReport::createRootNode(b
     }
 
     // Add distances
-    if(m_object->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId))
+    if(m_object->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId))
     {
         // Create Imaging Measurements Container
         SPTR(::fwGdcmIO::container::sr::DicomSRContainerNode) imagingMeasurementsNode =

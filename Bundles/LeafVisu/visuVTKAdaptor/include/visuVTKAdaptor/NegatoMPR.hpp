@@ -9,18 +9,18 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
+
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-
-#include <fwServices/helper/SigSlotConnection.hpp>
 
 namespace visuVTKAdaptor
 {
 
 class SliceCursor;
 
-class VISUVTKADAPTOR_CLASS_API NegatoMPR : public ::fwComEd::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API NegatoMPR : public ::fwDataTools::helper::MedicalImageAdaptor,
                                            public ::fwRenderVTK::IVtkAdaptorService
 {
 
@@ -146,7 +146,7 @@ private:
     ::boost::logic::tribool m_3dModeEnabled;
     SliceMode m_sliceMode;
     SliceMode m_backupedSliceMode;
-    ::fwServices::helper::SigSlotConnection m_connections; /// store subservices connections
+    ::fwCom::helper::SigSlotConnection m_connections; /// store subservices connections
 
     ::fwRenderVTK::IVtkAdaptorService::wptr m_sliceCursor;
 };

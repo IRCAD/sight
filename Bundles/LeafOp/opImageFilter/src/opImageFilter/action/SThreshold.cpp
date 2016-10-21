@@ -1,24 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "opImageFilter/action/SThreshold.hpp"
 
-#include <fwTools/fwID.hpp>
-#include <fwTools/IntrinsicTypes.hpp>
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwData/Image.hpp>
 
-#include <fwComEd/helper/Image.hpp>
+#include <fwDataTools/helper/Image.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <fwTools/Dispatcher.hpp>
+#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
+#include <fwTools/IntrinsicTypes.hpp>
+#include <fwTools/fwID.hpp>
 
 namespace opImageFilter
 {
@@ -96,7 +96,7 @@ struct ThresholdFilter
      * @tparam PIXELTYPE image pixel type (uint8, uint16, int8, int16, float, double, ....)
      */
     template<class PIXELTYPE>
-    void operator()(Parameter &param)
+    void operator()(Parameter& param)
     {
         const PIXELTYPE thresholdValue = static_cast<PIXELTYPE>(param.thresholdValue);
         ::fwData::Image::sptr imageIn  = param.imageIn;
@@ -105,12 +105,12 @@ struct ThresholdFilter
         imageOut->copyInformation(imageIn); // Copy image size, type... without copying the buffer
         imageOut->allocate(); // Allocate the image buffer
 
-        ::fwComEd::helper::Image imageInHelper(imageIn); // helper used to access the image source buffer
-        ::fwComEd::helper::Image imageOutHelper(imageOut); // helper used to access the image target buffer
+        ::fwDataTools::helper::Image imageInHelper(imageIn); // helper used to access the image source buffer
+        ::fwDataTools::helper::Image imageOutHelper(imageOut); // helper used to access the image target buffer
 
         // Get image buffers
-        PIXELTYPE *buffer1 = (PIXELTYPE *)imageInHelper.getBuffer();
-        PIXELTYPE *buffer2 = (PIXELTYPE *)imageOutHelper.getBuffer();
+        PIXELTYPE* buffer1 = (PIXELTYPE*)imageInHelper.getBuffer();
+        PIXELTYPE* buffer2 = (PIXELTYPE*)imageOutHelper.getBuffer();
 
         // Get number of pixels
         const size_t NbPixels = imageIn->getSize()[0] * imageIn->getSize()[1] * imageIn->getSize()[2];
@@ -118,7 +118,7 @@ struct ThresholdFilter
         // Fill the target buffer considering the thresholding
         for( size_t i = 0; i<NbPixels; ++i, ++buffer1, ++buffer2 )
         {
-            *buffer2 = ( *buffer1 < thresholdValue ) ? 0 : std::numeric_limits<PIXELTYPE>::max();
+            * buffer2 = ( *buffer1 < thresholdValue ) ? 0 : std::numeric_limits<PIXELTYPE>::max();
         }
     }
 };

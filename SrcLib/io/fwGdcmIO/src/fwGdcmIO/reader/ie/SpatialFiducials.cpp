@@ -4,16 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/reader/ie/SpatialFiducials.hpp"
 
-#include <fwComEd/Dictionary.hpp>
+#include "fwGdcmIO/helper/DicomData.hpp"
+
 #include <fwData/Image.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwMedData/DicomSeries.hpp>
+
 #include <fwTools/dateAndTime.hpp>
 
 #include <gdcmUIDGenerator.h>
@@ -52,11 +56,11 @@ SpatialFiducials::~SpatialFiducials()
 void SpatialFiducials::readLandmark(const ::gdcm::DataSet& fiducialDataset)
 {
     ::fwData::PointList::sptr pointList =
-        m_object->getField< ::fwData::PointList >(::fwComEd::Dictionary::m_imageLandmarksId);
+        m_object->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
     if(!pointList)
     {
         pointList = ::fwData::PointList::New();
-        m_object->setField(::fwComEd::Dictionary::m_imageLandmarksId, pointList);
+        m_object->setField(::fwDataTools::fieldHelper::Image::m_imageLandmarksId, pointList);
     }
 
     const ::gdcm::DataElement& graphicCoordinatesDataElement =
@@ -89,7 +93,7 @@ void SpatialFiducials::readLandmark(const ::gdcm::DataSet& fiducialDataset)
 
         ::fwData::Point::sptr point = ::fwData::Point::New(static_cast<double>(pointValues[0]),
                                                            static_cast<double>(pointValues[1]), zCoordinate);
-        point->setField(::fwComEd::Dictionary::m_labelId, ::fwData::String::New(label));
+        point->setField(::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New(label));
         pointList->getRefPoints().push_back(point);
 
     }

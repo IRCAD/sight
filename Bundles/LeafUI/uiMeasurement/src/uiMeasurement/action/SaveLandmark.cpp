@@ -6,16 +6,16 @@
 
 #include "uiMeasurement/action/SaveLandmark.hpp"
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwCore/base.hpp>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -26,8 +26,8 @@
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
-#include <vector>
 #include <exception>
+#include <vector>
 
 namespace uiMeasurement
 {
@@ -52,7 +52,7 @@ SaveLandmark::~SaveLandmark() throw()
 
 //------------------------------------------------------------------------------
 
-void SaveLandmark::info(std::ostream &_sstream )
+void SaveLandmark::info(std::ostream& _sstream )
 {
     _sstream << "Action for save landmarks" << std::endl;
 }
@@ -63,7 +63,7 @@ void SaveLandmark::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    if (!::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    if (!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Save landmarks",
@@ -119,9 +119,9 @@ void SaveLandmark::save(const ::boost::filesystem::path& path)
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     //get landmarks
-    ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks(  image );
+    ::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks(  image );
     ::fwData::PointList::sptr landmarks = image->getField< ::fwData::PointList >(
-        ::fwComEd::Dictionary::m_imageLandmarksId);
+        ::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
     SLM_ASSERT("landmarks not instanced", landmarks);
 
     ::fwData::Composite::sptr replaceMap = ::fwData::Composite::New();

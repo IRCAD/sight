@@ -6,19 +6,20 @@
 
 #include "fwDcmtkIO/reader/MPPSReader.hpp"
 
+#include <fwDataTools/helper/Array.hpp>
+
 #include <fwDicomTools/Series.hpp>
 
-#include <dcmtk/config/osconfig.h>
-#include <dcmtk/dcmnet/diutil.h>
-#include <dcmtk/dcmdata/dcfilefo.h>
-#include <dcmtk/dcmdata/dcdeftag.h>
-#include <dcmtk/dcmimgle/dcmimage.h>
+#include <fwMedData/ImageSeries.hpp>
 
 #include <boost/assign/list_of.hpp>
 #include <boost/assign/std/vector.hpp>
 
-#include <fwComEd/helper/Array.hpp>
-#include <fwMedData/ImageSeries.hpp>
+#include <dcmtk/config/osconfig.h>
+#include <dcmtk/dcmdata/dcdeftag.h>
+#include <dcmtk/dcmdata/dcfilefo.h>
+#include <dcmtk/dcmimgle/dcmimage.h>
+#include <dcmtk/dcmnet/diutil.h>
 
 #include <algorithm>
 

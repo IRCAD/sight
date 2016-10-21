@@ -7,14 +7,15 @@
 #ifndef __CTRLSELECTION_MANAGER_SWAPPERSRV_HPP__
 #define __CTRLSELECTION_MANAGER_SWAPPERSRV_HPP__
 
-#include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IManagerSrv.hpp"
+#include "ctrlSelection/config.hpp"
+
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include <fwServices/helper/SigSlotConnection.hpp>
 #include <fwServices/IService.hpp>
 
 
@@ -142,7 +143,7 @@ protected:
         ::fwData::Object::sptr m_dummy;
         ConfigurationType m_config;
         WPTR(::fwServices::IService) m_service;
-        ::fwServices::helper::SigSlotConnection m_connections;
+        ::fwCom::helper::SigSlotConnection m_connections;
         bool m_hasAutoConnection;
     };
 

@@ -11,9 +11,9 @@
 
 #include "visuVTKVRAdaptor/config.hpp"
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
-
 #include <fwData/Image.hpp>
+
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 #include <fwRenderVTK/SRender.hpp>
@@ -61,7 +61,7 @@ namespace visuVTKVRAdaptor
  * - \b transform (optional) : vtkTransform applied to the volume.
  * - \b selectedTFKey (optional) : key of the transfer funtion in the tf composite.
  */
-class VISUVTKVRADAPTOR_CLASS_API Volume : public ::fwComEd::helper::MedicalImageAdaptor,
+class VISUVTKVRADAPTOR_CLASS_API Volume : public ::fwDataTools::helper::MedicalImageAdaptor,
                                           public ::fwRenderVTK::IVtkAdaptorService
 {
 

@@ -1,15 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwTest/generator/Image.hpp"
 
-#include <fwTools/Type.hpp>
-#include <fwTools/NumericRoundCast.hxx>
+#include <fwDataTools/helper/Array.hpp>
 
-#include <fwComEd/helper/Array.hpp>
+#include <fwTools/NumericRoundCast.hxx>
+#include <fwTools/Type.hpp>
 
 #include <ctime>
 
@@ -42,7 +42,7 @@ void Image::generateImage(::fwData::Image::sptr image,
     image->allocate();
 
     ::fwData::Array::sptr array = image->getDataArray();
-    ::fwComEd::helper::Array helper(array);
+    ::fwDataTools::helper::Array helper(array);
     std::fill(helper.begin(), helper.end(), 0);
 }
 
@@ -83,8 +83,8 @@ void Image::generateRandomImage(::fwData::Image::sptr image, ::fwTools::Type typ
 
 void Image::randomizeArray(::fwData::Array::sptr array)
 {
-    ::fwComEd::helper::Array helper(array);
-    char *iter = helper.begin< char >();
+    ::fwDataTools::helper::Array helper(array);
+    char* iter = helper.begin< char >();
 
     for (; iter != helper.end< char >(); ++iter)
     {
@@ -94,7 +94,7 @@ void Image::randomizeArray(::fwData::Array::sptr array)
 
 //------------------------------------------------------------------------------
 
-::fwData::Array::sptr Image::createRandomizedArray(const std::string &type, ::fwData::Array::SizeType sizes)
+::fwData::Array::sptr Image::createRandomizedArray(const std::string& type, ::fwData::Array::SizeType sizes)
 {
     ::fwData::Array::sptr array = ::fwData::Array::New();
 

@@ -7,7 +7,6 @@
 #include "basicRegistration/SPointListRegistration.hpp"
 
 #include <fwCom/Signal.hxx>
-#include <fwComEd/Dictionary.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Mesh.hpp>
@@ -15,14 +14,16 @@
 #include <fwData/String.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <vtkPoints.h>
-#include <vtkMatrix4x4.h>
-#include <vtkSmartPointer.h>
 #include <vtkLandmarkTransform.h>
+#include <vtkMatrix4x4.h>
+#include <vtkPoints.h>
+#include <vtkSmartPointer.h>
 
 
 fwServicesRegisterMacro( ::fwServices::IController, ::basicRegistration::SPointListRegistration, ::fwData::Composite );
@@ -104,12 +105,12 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
         for( ::fwData::Point::sptr pointRef : referencePL->getPoints() )
         {
             const std::string& labelRef =
-                pointRef->getField< ::fwData::String >(::fwComEd::Dictionary::m_labelId )->value();
+                pointRef->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId )->value();
 
             for( ::fwData::Point::sptr pointReg : registeredPL->getPoints() )
             {
                 const std::string& labelReg =
-                    pointReg->getField< ::fwData::String >(::fwComEd::Dictionary::m_labelId )->value();
+                    pointReg->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId )->value();
 
                 if(labelRef == labelReg)
                 {
@@ -117,7 +118,7 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
                     sourcePts->InsertNextPoint(coord[0], coord[1], coord[2]);
 
                     OSLM_ERROR("referencePL : " << pointRef->getField< ::fwData::String >(
-                                   ::fwComEd::Dictionary::m_labelId )->value() );
+                                   ::fwDataTools::fieldHelper::Image::m_labelId )->value() );
                     OSLM_ERROR(
                         "referencePL : " << pointRef->getCoord()[0] << " " << pointRef->getCoord()[1] << " " <<
                         pointRef->getCoord()[2] );
@@ -125,7 +126,7 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
                     coord = pointReg->getRefCoord();
                     targetPts->InsertNextPoint(coord[0], coord[1], coord[2]);
                     OSLM_ERROR("registeredPL : " << pointReg->getField< ::fwData::String >(
-                                   ::fwComEd::Dictionary::m_labelId )->value() );
+                                   ::fwDataTools::fieldHelper::Image::m_labelId )->value() );
                     OSLM_ERROR(
                         "registeredPL : " << pointReg->getCoord()[0] << " " << pointReg->getCoord()[1] << " " <<
                         pointReg->getCoord()[2] );

@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGdcmIO/writer/tid/Fiducial.hpp"
+
 #include "fwGdcmIO/container/DicomCodedAttribute.hpp"
 #include "fwGdcmIO/container/sr/DicomSRCodeNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRImageNode.hpp"
@@ -12,14 +14,16 @@
 #include "fwGdcmIO/container/sr/DicomSRTextNode.hpp"
 #include "fwGdcmIO/container/sr/DicomSRUIDRefNode.hpp"
 #include "fwGdcmIO/helper/DicomData.hpp"
-#include "fwGdcmIO/writer/tid/Fiducial.hpp"
 
-#include <fwComEd/Dictionary.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
+
 #include <fwTools/Stringizer.hpp>
 
 #include <gdcmUIDGenerator.h>
@@ -55,7 +59,7 @@ Fiducial::~Fiducial()
 void Fiducial::createNodes(SPTR(::fwGdcmIO::container::sr::DicomSRNode)parent, bool useSCoord3D)
 {
     ::fwData::PointList::sptr pointList =
-        m_object->getField< ::fwData::PointList >(::fwComEd::Dictionary::m_imageLandmarksId);
+        m_object->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
     if (pointList)
     {
         unsigned int id = 1;
@@ -94,7 +98,8 @@ void Fiducial::createFiducial(SPTR(::fwGdcmIO::container::sr::DicomSRNode)parent
     rootNode->addSubNode(uidNode);
 
     // Create Fiducial intent node
-    const std::string label = point->getField< ::fwData::String >(::fwComEd::Dictionary::m_labelId)->value();
+    const std::string label =
+        point->getField< ::fwData::String >(::fwDataTools::fieldHelper::Image::m_labelId)->value();
     SPTR(::fwGdcmIO::container::sr::DicomSRTextNode) intentNode =
         std::make_shared< ::fwGdcmIO::container::sr::DicomSRTextNode >(
             ::fwGdcmIO::container::DicomCodedAttribute("122369", "DCM", "Fiducial intent"), "HAS PROPERTIES", label);

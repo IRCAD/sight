@@ -5,7 +5,6 @@ set( TYPE BUNDLE )
 set( START ON )
 set( DEPENDENCIES
     fwActivities
-    fwComEd
     fwCom
     fwCore
     fwData

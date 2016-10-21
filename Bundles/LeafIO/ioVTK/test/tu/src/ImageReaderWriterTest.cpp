@@ -6,13 +6,12 @@
 
 #include "ImageReaderWriterTest.hpp"
 
-#include <fwComEd/helper/Image.hpp>
-
 #include <fwData/Image.hpp>
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
 #include <fwDataTools/Image.hpp>
+#include <fwDataTools/helper/Image.hpp>
 
 #include <fwGui/registry/worker.hpp>
 
@@ -24,7 +23,6 @@
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwTest/Data.hpp>
-
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/helper/compare.hpp>
 
@@ -50,8 +48,8 @@ namespace ut
 //------------------------------------------------------------------------------
 
 void runImageSrv(
-    const std::string &srvtype,
-    const std::string &srvname,
+    const std::string& srvtype,
+    const std::string& srvname,
     const SPTR(::fwRuntime::EConfigurationElement)& cfg,
     const SPTR(::fwData::Object)& image)
 {
@@ -90,7 +88,7 @@ void ImageReaderWriterTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-::fwRuntime::EConfigurationElement::sptr getIOConfiguration(const ::boost::filesystem::path &file)
+::fwRuntime::EConfigurationElement::sptr getIOConfiguration(const ::boost::filesystem::path& file)
 {
     ::fwRuntime::EConfigurationElement::sptr readerSrvCfg = ::fwRuntime::EConfigurationElement::New("service");
     ::fwRuntime::EConfigurationElement::sptr readerCfg    = ::fwRuntime::EConfigurationElement::New("file");
@@ -349,11 +347,11 @@ void ImageReaderWriterTest::testVtkImageWriter()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2]);
 
-    ::fwComEd::helper::Image imageHelper(image);
-    ::fwComEd::helper::Image imageFromDiskHelper(imageFromDisk);
+    ::fwDataTools::helper::Image imageHelper(image);
+    ::fwDataTools::helper::Image imageFromDiskHelper(imageFromDisk);
 
-    char *ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
-    char *ptrOnReadImage      = static_cast<char*>(imageFromDiskHelper.getBuffer());
+    char* ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
+    char* ptrOnReadImage      = static_cast<char*>(imageFromDiskHelper.getBuffer());
 
     CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType() );
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
@@ -442,10 +440,10 @@ void ImageReaderWriterTest::testVtiImageWriter()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2]);
 
-    ::fwComEd::helper::Image imageHelper(image);
-    ::fwComEd::helper::Image imageFromDiskHelper(imageFromDisk);
-    char *ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
-    char *ptrOnReadImage      = static_cast<char*>(imageFromDiskHelper.getBuffer());
+    ::fwDataTools::helper::Image imageHelper(image);
+    ::fwDataTools::helper::Image imageFromDiskHelper(imageFromDisk);
+    char* ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
+    char* ptrOnReadImage      = static_cast<char*>(imageFromDiskHelper.getBuffer());
 
     CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType());
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
@@ -508,10 +506,10 @@ void ImageReaderWriterTest::testMhdImageWriter()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2]);
 
 
-    ::fwComEd::helper::Image imageHelper(image);
-    ::fwComEd::helper::Image imageFromDiskHelper(imageFromDisk);
-    char *ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
-    char *ptrOnReadImage      = static_cast<char*>(imageFromDiskHelper.getBuffer());
+    ::fwDataTools::helper::Image imageHelper(image);
+    ::fwDataTools::helper::Image imageFromDiskHelper(imageFromDisk);
+    char* ptrOnGeneratedImage = static_cast<char*>(imageHelper.getBuffer());
+    char* ptrOnReadImage      = static_cast<char*>(imageFromDiskHelper.getBuffer());
 
     CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType());
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );

@@ -719,7 +719,7 @@
   * Method to convert a ::fwData::TransferFunction to vtk lookup table are added in vtkIO::helper::TransfertFunction
   * It's possible now for negato or volume rendering or window level interactor to work only on a specific transfert function
   * All image messages concerning window/level or transfer function has been removed, no messages are send directly on the tf
-  * Evolution of ::fwComEd::helper::MedicalImageAdaptor to provide some helpers to manipulate transfer function in your service
+  * Evolution of ::fwDataTools::helper::MedicalImageAdaptor to provide some helpers to manipulate transfer function in your service
 
  * Other :
   * Add new macros API to generate getter/setter for fwData

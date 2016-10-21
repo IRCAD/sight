@@ -6,10 +6,10 @@
 
 #include "Tuto15MultithreadCtrl/SShowArray.hpp"
 
-#include <fwComEd/helper/Array.hpp>
-
 #include <fwData/Array.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -43,7 +43,7 @@ void SShowArray::updating() throw( ::fwTools::Failed )
     ::fwData::mt::ObjectReadLock readLock(array);
     SLM_ASSERT("No array.", array);
 
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
     unsigned int* buffer = static_cast< unsigned int* >( arrayHelper.getBuffer() );
 
     std::stringstream str;

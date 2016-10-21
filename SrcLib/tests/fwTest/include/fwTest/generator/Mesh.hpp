@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,9 +13,8 @@
 
 #include <fwData/Mesh.hpp>
 
-#include <fwComEd/helper/Mesh.hpp>
-
 #include <fwDataTools/Vector.hxx>
+#include <fwDataTools/helper/Mesh.hpp>
 
 
 namespace fwTest
@@ -26,7 +25,6 @@ namespace generator
 
 /**
  * @brief   This helper generates a mesh using specified structure (quad or triangle).
- * @class   Mesh
  */
 class Mesh
 {
@@ -100,7 +98,7 @@ public:
 protected:
 
     FWTEST_API static ::fwData::Mesh::Id addPoint(::fwData::Mesh::PointValueType* pt,
-                                                  ::fwComEd::helper::Mesh::sptr meshHelper,
+                                                  ::fwDataTools::helper::Mesh::sptr meshHelper,
                                                   PointsMapType& points);
 
 

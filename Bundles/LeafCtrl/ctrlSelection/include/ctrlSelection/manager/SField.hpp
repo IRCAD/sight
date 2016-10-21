@@ -7,13 +7,14 @@
 #ifndef __CTRLSELECTION_MANAGER_SFIELD_HPP__
 #define __CTRLSELECTION_MANAGER_SFIELD_HPP__
 
+#include "ctrlSelection/IManagerSrv.hpp"
+#include "ctrlSelection/config.hpp"
+
 #include <fwData/Object.hpp>
+
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/IService.hpp>
-
-#include "ctrlSelection/config.hpp"
-#include "ctrlSelection/IManagerSrv.hpp"
 
 namespace ctrlSelection
 {
@@ -124,7 +125,7 @@ protected:
         ::fwData::Object::sptr m_dummy;
         ConfigurationType m_config;
         WPTR(::fwServices::IService) m_service;
-        ::fwServices::helper::SigSlotConnection m_connections;
+        ::fwCom::helper::SigSlotConnection m_connections;
         bool m_hasAutoConnection;
     };
 

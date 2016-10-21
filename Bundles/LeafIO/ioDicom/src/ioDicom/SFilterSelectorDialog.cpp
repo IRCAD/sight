@@ -9,16 +9,23 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
-#include <fwComEd/helper/Composite.hpp>
+
 #include <fwCore/base.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
+
+#include <fwDataTools/helper/Composite.hpp>
+
 #include <fwDicomIOFilter/IFilter.hpp>
+
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
+
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <boost/foreach.hpp>

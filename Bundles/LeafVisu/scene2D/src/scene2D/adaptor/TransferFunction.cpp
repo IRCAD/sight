@@ -4,29 +4,30 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/data/Viewport.hpp"
 #include "scene2D/adaptor/TransferFunction.hpp"
-#include "scene2D/data/InitQtPen.hpp"
+
 #include "scene2D/Scene2DGraphicsView.hpp"
+#include "scene2D/data/InitQtPen.hpp"
+#include "scene2D/data/Viewport.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/helper/Image.hpp>
-
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/String.hpp>
 
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/helper/Image.hpp>
+
 #include <fwServices/macros.hpp>
 
+#include <QColorDialog>
 #include <QGraphicsItemGroup>
 #include <QPoint>
-#include <QColorDialog>
 
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::TransferFunction, ::fwData::Image );
@@ -975,7 +976,7 @@ double TransferFunction::pointValue(QGraphicsEllipseItem* circle)
 
 //-----------------------------------------------------------------------------
 
-::scene2D::data::Coord TransferFunction::coordViewToCoordItem( const ::scene2D::data::Coord & _coord )
+::scene2D::data::Coord TransferFunction::coordViewToCoordItem( const ::scene2D::data::Coord& _coord )
 {
     ::scene2D::data::Coord scenePoint = this->getScene2DRender()->mapToScene( _coord );
     return scenePoint;

@@ -4,26 +4,28 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <dcmtk/config/osconfig.h>
-
 #include "fwDcmtkIO/reader/ImageStorageReader.hpp"
+
 #include "fwDcmtkIO/reader/main/ImageLazyStream.hpp"
 #include "fwDcmtkIO/reader/main/ImageReader.hpp"
 #include "fwDcmtkIO/reader/rgblookup/ImageRGBLookupLazyStream.hpp"
 #include "fwDcmtkIO/reader/rgblookup/ImageRGBLookupReader.hpp"
 
-#include <fwComEd/helper/Array.hpp>
+#include <fwDataTools/helper/Array.hpp>
+
 #include <fwDicomTools/Image.hpp>
 #include <fwDicomTools/Series.hpp>
+
 #include <fwMedData/ImageSeries.hpp>
 
+#include <boost/assign/list_of.hpp>
+#include <boost/assign/std/vector.hpp>
+
+#include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
-
-#include <boost/assign/list_of.hpp>
-#include <boost/assign/std/vector.hpp>
 
 #include <algorithm>
 
@@ -261,7 +263,7 @@ void ImageStorageReader::directRead(::fwData::Image::sptr image, DicomPathContai
     //Allocate image
     image->allocate();
     ::fwData::Array::sptr array = image->getDataArray();
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
 
     //Fill image
     ::fwDcmtkIO::reader::main::ImageReader::fillImageBuffer(rows, columns, depth, instances,
@@ -279,7 +281,7 @@ void ImageStorageReader::directRGBLookupRead(::fwData::Image::sptr image, DcmDat
     //Allocate image
     image->allocate();
     ::fwData::Array::sptr array = image->getDataArray();
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
 
     unsigned short pixelValueBitsAllocated = 8;
     dataset.findAndGetUint16(DCM_BitsAllocated,pixelValueBitsAllocated);

@@ -6,16 +6,16 @@
 
 #include "uiMeasurement/action/LoadLandmark.hpp"
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwCore/base.hpp>
 
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -51,7 +51,7 @@ LoadLandmark::~LoadLandmark() throw()
 
 //------------------------------------------------------------------------------
 
-void LoadLandmark::info(std::ostream &_sstream )
+void LoadLandmark::info(std::ostream& _sstream )
 {
     _sstream << "Action for load landmarks" << std::endl;
 }
@@ -62,7 +62,7 @@ void LoadLandmark::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    if (!::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    if (!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Load landmarks",
@@ -122,9 +122,9 @@ void LoadLandmark::load(const ::boost::filesystem::path& path)
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     //get landmarks
-    ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks(  image );
+    ::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks(  image );
     ::fwData::PointList::sptr landmarks = image->getField< ::fwData::PointList >(
-        ::fwComEd::Dictionary::m_imageLandmarksId);
+        ::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
     SLM_ASSERT("landmarks not instanced", landmarks);
 
     ::fwData::PointList::sptr newLandmarks = ::fwData::PointList::New();

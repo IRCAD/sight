@@ -4,14 +4,14 @@ set( VERSION 0.1 )
 set( TYPE APP )
 set( START ON )
 set( DEPENDENCIES
-    fwData
-    fwServices
     fwCom
-    fwThread
-    fwComEd
-    fwRuntime
-    fwTools
     fwCore
+    fwData
+    fwDataTools
+    fwRuntime
+    fwServices
+    fwThread
+    fwTools
 )
 set( REQUIREMENTS
     dataReg

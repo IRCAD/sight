@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,9 +11,9 @@
 
 #include "uiVisuQt/config.hpp"
 
-#include <fwComEd/PickingInfo.hpp>
-
 #include <fwData/Point.hpp>
+
+#include <fwDataTools/PickingInfo.hpp>
 
 #include <fwTools/Failed.hpp>
 
@@ -29,7 +29,6 @@ namespace uiVisu
 
 /**
  * @brief   PointEditor service allows to display point information.
- * @class   PointEditor
  */
 class UIVISUQT_CLASS_API PointEditor : public QObject,
                                        public ::gui::editor::IEditor
@@ -64,13 +63,13 @@ protected:
     void configuring() throw( ::fwTools::Failed);
 
     /// Overrides
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream );
 
 
 private:
 
     /// Slot: get the interaction information
-    void getInteraction(::fwComEd::PickingInfo info);
+    void getInteraction(::fwDataTools::PickingInfo info);
 
     QPointer< QLineEdit >   m_textCtrl_x;
     QPointer< QLineEdit >   m_textCtrl_y;

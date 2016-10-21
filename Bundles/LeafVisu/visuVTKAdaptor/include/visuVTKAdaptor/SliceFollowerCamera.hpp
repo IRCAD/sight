@@ -9,7 +9,8 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include <vector>
@@ -22,7 +23,7 @@ namespace visuVTKAdaptor
 /**
  * @brief Update the camera according to slice move.
  */
-class VISUVTKADAPTOR_CLASS_API SliceFollowerCamera : public ::fwComEd::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API SliceFollowerCamera : public ::fwDataTools::helper::MedicalImageAdaptor,
                                                      public ::fwRenderVTK::IVtkAdaptorService
 {
 public:

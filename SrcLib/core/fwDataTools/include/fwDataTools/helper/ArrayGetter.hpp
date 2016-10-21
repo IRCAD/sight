@@ -1,0 +1,132 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#ifndef __FWDATATOOLS_HELPER_ARRAYGETTER_HPP__
+#define __FWDATATOOLS_HELPER_ARRAYGETTER_HPP__
+
+#include "fwDataTools/config.hpp"
+
+#include <fwData/Array.hpp>
+
+#include <fwMemory/BufferObject.hpp>
+
+#include <fwTools/Type.hpp>
+
+namespace fwDataTools
+{
+
+namespace helper
+{
+
+/**
+ * @brief   Helper to manage array buffer. Lock the buffer before to modify it.
+ *
+ */
+class FWDATATOOLS_CLASS_API ArrayGetter
+{
+
+public:
+    fwCoreClassDefinitionsWithFactoryMacro((ArrayGetter), (((::fwData::Array::sptr))), new ArrayGetter );
+
+
+    FWDATATOOLS_API ArrayGetter( ::fwData::Array::csptr array );
+
+    FWDATATOOLS_API virtual ~ArrayGetter();
+
+    ///
+    /**
+     * @brief Getter for a buffer item. pointer to the requested item in the buffer
+     *
+     * @param id Item id
+     * @param component Component id
+     *
+     * @return Pointer to the requested item in the buffer
+     */
+    FWDATATOOLS_API virtual const void* getItem(const ::fwData::Array::IndexType& id, const size_t component = 0) const;
+
+    /**
+     * @brief Typed version of getItem
+     *
+     * @tparam T Type in which the pointer will be returned
+     * @param id Item id
+     * @param component Component id
+     *
+     * @return Array buffer pointer casted to T
+     */
+    template< typename T > const T* getItem(const ::fwData::Array::IndexType& id, const size_t component = 0) const;
+
+    /**
+     * @brief Copies the data into the buffer pointed by <value>
+     *
+     * @param id Item id
+     * @param[out] value Buffer to write into
+     */
+    FWDATATOOLS_API virtual void getItem(const ::fwData::Array::IndexType& id, void* value) const;
+    FWDATATOOLS_API virtual void getItem(const ::fwData::Array::IndexType& id, const size_t component,
+                                         void* value) const;
+
+    /**
+     * @brief Getter for the array buffer
+     *
+     * @return Array's buffer, if exists, else NULL
+     */
+    FWDATATOOLS_API virtual const void* getBuffer() const;
+
+    /// Returns the begining/end of the buffer interpreted as a char buffer
+    FWDATATOOLS_API virtual const char* begin() const;
+    FWDATATOOLS_API virtual const char* end() const;
+
+
+    /// Returns the begining/end of the buffer, casted to T
+    template< typename T > const T* begin() const;
+    template< typename T > const T* end() const;
+
+    /**
+     * @brief Get a pointer to the value described by given parameters
+     *
+     * @param id Item id
+     * @param component Item component id
+     * @param sizeOfType size of a component
+     *
+     * @return buffer item pointer
+     */
+    FWDATATOOLS_API const char* getBufferPtr( const ::fwData::Array::IndexType& id, size_t component,
+                                              size_t sizeOfType ) const;
+
+    /// Returns a copy of current lock on array
+    FWDATATOOLS_API ::fwMemory::BufferObject::Lock getLock() const;
+
+protected:
+
+    ::fwData::Array::csptr m_array;
+    ::fwMemory::BufferObject::Lock m_lock;
+
+};
+
+template< typename T >
+const T* ArrayGetter::begin() const
+{
+    return static_cast<const T*>(this->getBuffer());
+}
+
+template< typename T >
+const T* ArrayGetter::end() const
+{
+    return reinterpret_cast<const T*> (static_cast<const char*>(this->getBuffer()) + m_array->getSizeInBytes());
+}
+
+template< typename T >
+const T* ArrayGetter::getItem(const  ::fwData::Array::IndexType& id, const size_t component) const
+{
+    return static_cast<const T*> (this->getItem(id, component));
+}
+
+
+} // namespace helper
+
+} // namespace fwData
+
+#endif // __FWDATATOOLS_HELPER_ARRAYGETTER_HPP__

@@ -6,21 +6,29 @@
 
 #include "ioGdcm/SSeriesDBWriter.hpp"
 
-#include <fwComEd/helper/SeriesDB.hpp>
 #include <fwCore/base.hpp>
-#include <fwData/location/Folder.hpp>
+
 #include <fwData/Vector.hpp>
+#include <fwData/location/Folder.hpp>
+
+#include <fwGdcmIO/helper/Fiducial.hpp>
+#include <fwGdcmIO/writer/SeriesDB.hpp>
+
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
+
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
+
+#include <fwMedDataTools/helper/SeriesDB.hpp>
+
 #include <fwServices/macros.hpp>
+
 #include <fwTools/ProgressToLogger.hpp>
-#include <fwGdcmIO/helper/Fiducial.hpp>
-#include <fwGdcmIO/writer/SeriesDB.hpp>
+
 #include <io/IWriter.hpp>
 
 
@@ -108,7 +116,7 @@ void SSeriesDBWriter::updating() throw(::fwTools::Failed)
 
         // Create SeriesDB
         ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
-        ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
+        ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
         for(::fwData::Object::sptr object: vector->getContainer())
         {
@@ -172,7 +180,7 @@ bool SSeriesDBWriter::selectFiducialsExportMode()
 
     // Create SeriesDB
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
-    ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
+    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
     for(::fwData::Object::sptr object: vector->getContainer())
     {

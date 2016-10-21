@@ -6,8 +6,10 @@
 
 #include "fwGdcmIO/helper/DicomData.hpp"
 
-#include <fwComEd/helper/Array.hpp>
 #include <fwCore/base.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
+
 #include <fwTools/Dispatcher.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 #include <fwTools/IntrinsicTypes.hpp>

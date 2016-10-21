@@ -6,13 +6,13 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES
     fwCom
     fwCore
-    fwTools
-    fwRuntime
-    fwComEd
     fwData
-    fwMedData
     fwDataCamp
+    fwDataTools
+    fwMedData
+    fwRuntime
     fwServices
+    fwTools
 )
 
 set( REQUIREMENTS  )

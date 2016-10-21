@@ -10,15 +10,15 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwCore/base.hpp>
 
 #include <fwData/Integer.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
@@ -67,7 +67,7 @@ void FocusLandmark::configuring() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void FocusLandmark::info(std::ostream &_sstream )
+void FocusLandmark::info(std::ostream& _sstream )
 {
     _sstream << "Action for focus a landmark distance" << std::endl;
 }
@@ -79,7 +79,7 @@ void FocusLandmark::updating() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
-    if (!::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(pImage))
+    if (!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(pImage))
     {
         ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Add landmarks");
@@ -94,10 +94,10 @@ void FocusLandmark::updating() throw(::fwTools::Failed)
     else // Image is defined
     {
         // get landmarks
-        namespace ns = ::fwComEd::fieldHelper;
+        namespace ns = ::fwDataTools::fieldHelper;
         ns::MedicalImageHelpers::checkLandmarks(  pImage );
         ::fwData::PointList::sptr landmarks = pImage->getField< ::fwData::PointList >(
-            ::fwComEd::Dictionary::m_imageLandmarksId);
+            ::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
         SLM_ASSERT("landmarks not instanced", landmarks);
 
         if( landmarks->getCRefPoints().empty() )
@@ -119,7 +119,8 @@ void FocusLandmark::updating() throw(::fwTools::Failed)
             ::fwData::PointList::PointListContainer points = landmarks->getCRefPoints();
             for(::fwData::Point::sptr point :  points)
             {
-                std::string name = point->getField< ::fwData::String >( ::fwComEd::Dictionary::m_labelId )->value();
+                std::string name =
+                    point->getField< ::fwData::String >( ::fwDataTools::fieldHelper::Image::m_labelId )->value();
                 OSLM_DEBUG( "Point name " << name );
                 names.push_back( name );
                 name2Point[name] = point;
@@ -153,9 +154,9 @@ void FocusLandmark::updating() throw(::fwTools::Failed)
                     pImage->getSize()[1] > paramF->value() &&
                     pImage->getSize()[2] > paramA->value() )
                 {
-                    pImage->setField( ::fwComEd::Dictionary::m_axialSliceIndexId, paramA );
-                    pImage->setField( ::fwComEd::Dictionary::m_frontalSliceIndexId, paramF );
-                    pImage->setField( ::fwComEd::Dictionary::m_sagittalSliceIndexId, paramS );
+                    pImage->setField( ::fwDataTools::fieldHelper::Image::m_axialSliceIndexId, paramA );
+                    pImage->setField( ::fwDataTools::fieldHelper::Image::m_frontalSliceIndexId, paramF );
+                    pImage->setField( ::fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId, paramS );
 
                     // notify
                     auto sig = pImage->signal< ::fwData::Image::SliceIndexModifiedSignalType >(

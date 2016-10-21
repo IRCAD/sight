@@ -8,22 +8,23 @@
 #define __SCENE2D_RENDER_HPP__
 
 #include "scene2D/config.hpp"
-#include "scene2D/data/Event.hpp"
-#include "scene2D/data/Coord.hpp"
 #include "scene2D/data/Axis.hpp"
+#include "scene2D/data/Coord.hpp"
+#include "scene2D/data/Event.hpp"
 #include "scene2D/data/Viewport.hpp"
+
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include <fwRender/IRender.hpp>
 
 #include <fwServices/helper/Config.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
 
-#include <Qt>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QResizeEvent>
+#include <Qt>
 
 //namespace fwData
 
@@ -362,7 +363,7 @@ private:
     Qt::AspectRatioMode m_aspectRatioMode;
 
     /// Signal/ Slot connection
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     typedef std::vector< ::fwRuntime::ConfigurationElement::sptr > ConnectConfigType;
     /// vector containing all the connections configurations
@@ -370,7 +371,7 @@ private:
     /// vector containing all the proxy configurations
     ConnectConfigType m_proxies;
 
-    typedef std::map< std::string, ::fwServices::helper::SigSlotConnection > ObjectConnectionsMapType;
+    typedef std::map< std::string, ::fwCom::helper::SigSlotConnection > ObjectConnectionsMapType;
     /// map containing the object key/connection relation
     ObjectConnectionsMapType m_objectConnections;
 

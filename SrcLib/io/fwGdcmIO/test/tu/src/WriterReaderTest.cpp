@@ -6,8 +6,6 @@
 
 #include "WriterReaderTest.hpp"
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
@@ -17,19 +15,27 @@
 #include <fwData/Reconstruction.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
+
 #include <fwDataCamp/visitor/CompareObjects.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
+#include <fwGdcmIO/reader/SeriesDB.hpp>
+#include <fwGdcmIO/writer/Series.hpp>
+#include <fwGdcmIO/writer/SeriesDB.hpp>
+
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
+
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/generator/Object.hpp>
 #include <fwTest/generator/SeriesDB.hpp>
 #include <fwTest/helper/compare.hpp>
+
 #include <fwTools/System.hpp>
-#include <fwGdcmIO/reader/SeriesDB.hpp>
-#include <fwGdcmIO/writer/Series.hpp>
-#include <fwGdcmIO/writer/SeriesDB.hpp>
 
 #include <boost/filesystem/convenience.hpp>
 #include <boost/filesystem/path.hpp>
@@ -154,26 +160,26 @@ void WriterReaderTest::writeReadSeriesDBTest()
     ::fwData::Image::sptr image = imgSeries->getImage();
 
     // Add landmarks
-    ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks(image);
+    ::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks(image);
     ::fwData::PointList::sptr landmarks =
-        image->getField< ::fwData::PointList >( ::fwComEd::Dictionary::m_imageLandmarksId);
+        image->getField< ::fwData::PointList >( ::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
     ::fwData::Image::SpacingType spacing = image->getSpacing();
     ::fwData::Image::OriginType origin   = image->getOrigin();
     ::fwData::Point::sptr point          = ::fwData::Point::New(2.6 + origin[0],
                                                                 1.2 + origin[1],
                                                                 4.5 + origin[2]);
-    point->setField( ::fwComEd::Dictionary::m_labelId, ::fwData::String::New("Label1") );
+    point->setField( ::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New("Label1") );
     landmarks->getRefPoints().push_back(point);
     ::fwData::Point::sptr point2 = ::fwData::Point::New(1.2 + origin[0],
                                                         2.4 + origin[1],
                                                         0.3 + origin[2]);
-    point2->setField( ::fwComEd::Dictionary::m_labelId, ::fwData::String::New("Label2") );
+    point2->setField( ::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New("Label2") );
     landmarks->getRefPoints().push_back(point2);
     ::fwData::Image::SizeType size = image->getSize();
     ::fwData::Point::sptr point3   = ::fwData::Point::New(1.2 + origin[0],
                                                           2.4 + origin[1],
                                                           (size[2]-1) * spacing[2] + origin[2]);
-    point3->setField( ::fwComEd::Dictionary::m_labelId, ::fwData::String::New("toto") );
+    point3->setField( ::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New("toto") );
     landmarks->getRefPoints().push_back(point3);
 
     // Add distance
@@ -187,7 +193,7 @@ void WriterReaderTest::writeReadSeriesDBTest()
 
     ::fwData::Vector::sptr vectDist;
     vectDist = image->setDefaultField< ::fwData::Vector >(
-        ::fwComEd::Dictionary::m_imageDistancesId, ::fwData::Vector::New());
+        ::fwDataTools::fieldHelper::Image::m_imageDistancesId, ::fwData::Vector::New());
     vectDist->getContainer().push_back(pl);
 
     image->setField("ShowLandmarks", ::fwData::Boolean::New(true));

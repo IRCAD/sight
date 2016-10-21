@@ -4,21 +4,18 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "servicesReg/Plugin.hpp"
+
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
-
-#include <fwComEd/Dictionary.hpp>
-
-#include <fwServices/registry/ServiceConfig.hpp>
-#include <fwServices/registry/ServiceFactory.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 #include <fwServices/registry/AppConfig2.hpp>
 #include <fwServices/registry/AppConfigParameters.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <fwServices/registry/ServiceConfig.hpp>
+#include <fwServices/registry/ServiceFactory.hpp>
 
 #include <fwThread/Pool.hpp>
-
-#include "servicesReg/Plugin.hpp"
 
 namespace servicesReg
 {
@@ -29,8 +26,6 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 
 Plugin::~Plugin() throw()
 {
-    //Force link with fwComEd
-    static const std::string forceLink = ::fwComEd::Dictionary::position;
 }
 
 //-----------------------------------------------------------------------------

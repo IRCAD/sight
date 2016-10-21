@@ -17,8 +17,8 @@
 #include <fwData/Image.hpp>
 
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/helper/Composite.hpp>
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/helper/Composite.hpp>
 
 
 #include <fwGuiQt/container/QtContainer.hpp>
@@ -133,7 +133,7 @@ void SImagesSubstract::updating() throw ( ::fwTools::Failed )
             assert(output->GetSource());
             ::fwItkIO::dataImageFactory< ImageType >( output, imageResult, true );
 
-            ::fwComEd::helper::Composite compositeHelper(compositeVisu);
+            ::fwDataTools::helper::Composite compositeHelper(compositeVisu);
             if ( compositeVisu->find(imageResultName) != compositeVisu->end() )
             {
                 compositeHelper.swap(imageResultName, imageResult);

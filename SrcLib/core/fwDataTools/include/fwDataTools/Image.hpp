@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,17 +7,16 @@
 #ifndef __FWDATATOOLS_IMAGE_HPP__
 #define __FWDATATOOLS_IMAGE_HPP__
 
-#include <fwCore/base.hpp>
+#include "fwDataTools/config.hpp"
+#include <fwDataTools/helper/Array.hpp>
 
-#include <fwTools/Type.hpp>
+#include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
 
 #include <fwMath/Compare.hpp>
 
-#include <fwComEd/helper/Array.hpp>
-
-#include "fwDataTools/config.hpp"
+#include <fwTools/Type.hpp>
 
 namespace fwDataTools
 {
@@ -25,7 +24,6 @@ namespace fwDataTools
 
 /**
  * @brief   This class contains helper to generate and compare images.
- * @class   Image
  */
 class Image
 {
@@ -78,13 +76,13 @@ void Image::mergeMask(::fwData::Image::sptr imgDest, ::fwData::Image::sptr mask,
     imgData  = imgDest->getDataArray();
     maskData = mask->getDataArray();
 
-    ::fwComEd::helper::Array imgHelper(imgData);
-    ::fwComEd::helper::Array maskHelper(maskData);
+    ::fwDataTools::helper::Array imgHelper(imgData);
+    ::fwDataTools::helper::Array maskHelper(maskData);
 
-    ImgDestType *imgIt = imgHelper.begin<ImgDestType>();
-    MaskType *maskIt   = maskHelper.begin<MaskType>();
+    ImgDestType* imgIt = imgHelper.begin<ImgDestType>();
+    MaskType* maskIt   = maskHelper.begin<MaskType>();
 
-    const ImgDestType *imgEnd = imgIt + maskData->getNumberOfElements();
+    const ImgDestType* imgEnd = imgIt + maskData->getNumberOfElements();
 
     for (; imgIt != imgEnd; ++imgIt, ++maskIt)
     {

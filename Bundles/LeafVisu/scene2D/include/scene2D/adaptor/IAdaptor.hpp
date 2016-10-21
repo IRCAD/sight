@@ -7,8 +7,8 @@
 #ifndef __SCENE2D_ADAPTOR_IADAPTOR_HPP__
 #define __SCENE2D_ADAPTOR_IADAPTOR_HPP__
 
-#include "scene2D/config.hpp"
 #include "scene2D/Render.hpp"
+#include "scene2D/config.hpp"
 #include "scene2D/data/Axis.hpp"
 #include "scene2D/data/Event.hpp"
 
@@ -162,7 +162,7 @@ protected:
 private:
 
     /// Register automatic connection on object
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     /// All managed adaptors
     ManagedAdaptorVector m_managedAdaptors;

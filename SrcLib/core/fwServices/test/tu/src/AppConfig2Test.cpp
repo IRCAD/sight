@@ -12,8 +12,8 @@
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 
-#include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/Bundle.hpp>
+#include <fwRuntime/Runtime.hpp>
 
 #include "fwServices/registry/ActiveWorkers.hpp"
 #include <fwServices/registry/AppConfig2.hpp>
@@ -23,8 +23,8 @@
 
 #include <TestService.hpp>
 
-#include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::AppConfig2Test );
@@ -1145,13 +1145,13 @@ void AppConfig2Test::concurentAccessToAppConfig2Test()
     // Service A
     std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
     serviceA->setAttributeValue( "uid", "myTestService1" );
-    serviceA->setAttributeValue("type", "::fwComEd::ut::TestServiceImplementationImage" );
+    serviceA->setAttributeValue("type", "::fwServices::ut::TestServiceImplementationImage" );
     serviceA->setAttributeValue( "autoConnect", "no" );
 
     // Service B
     std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
     serviceB->setAttributeValue( "uid", "${UID_SERVICE2}" );
-    serviceB->setAttributeValue("type", "::fwComEd::ut::TestServiceImplementationImage" );
+    serviceB->setAttributeValue("type", "::fwServices::ut::TestServiceImplementationImage" );
     serviceB->setAttributeValue( "autoConnect", "no" );
 
     // Connections

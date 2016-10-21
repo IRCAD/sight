@@ -11,7 +11,7 @@
 
 #include <fwData/TransferFunction.hpp>
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 
 namespace scene2D
@@ -20,7 +20,7 @@ namespace adaptor
 {
 
 
-class SCENE2D_CLASS_API TransferFunction : public ::fwComEd::helper::MedicalImageAdaptor,
+class SCENE2D_CLASS_API TransferFunction : public ::fwDataTools::helper::MedicalImageAdaptor,
                                            public ::scene2D::adaptor::IAdaptor
 {
 
@@ -102,7 +102,7 @@ protected:
 private:
 
     /// Convert the view coordinates to item coordinates.
-    SCENE2D_API ::scene2D::data::Coord coordViewToCoordItem( const ::scene2D::data::Coord & _coord );
+    SCENE2D_API ::scene2D::data::Coord coordViewToCoordItem( const ::scene2D::data::Coord& _coord );
 
     /// Get the selected tf of the image, calculate the window and the level, clear the m_TFPoints map and fill
     ///  it with the tf points of the selected tf.

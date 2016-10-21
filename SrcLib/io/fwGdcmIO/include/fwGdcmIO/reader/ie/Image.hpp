@@ -7,6 +7,7 @@
 #ifndef __FWGDCMIO_READER_IE_IMAGE_HPP__
 #define __FWGDCMIO_READER_IE_IMAGE_HPP__
 
+#include "fwGdcmIO/exception/Failed.hpp"
 #include "fwGdcmIO/reader/ie/InformationEntity.hpp"
 
 #include <fwData/Image.hpp>

@@ -4,24 +4,26 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomData.hpp"
-#include "fwGdcmIO/reader/Series.hpp"
 #include "fwGdcmIO/reader/SeriesDB.hpp"
+
+#include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/helper/DicomDir.hpp"
 #include "fwGdcmIO/helper/DicomSearch.hpp"
 #include "fwGdcmIO/helper/DicomSeries.hpp"
-
-#include <fwComEd/helper/SeriesDB.hpp>
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Aggregator.hpp>
-#include <fwJobs/Job.hpp>
-#include <fwJobs/Observer.hpp>
+#include "fwGdcmIO/reader/Series.hpp"
 
 #include <fwDataIO/reader/registry/macros.hpp>
+
 #include <fwDicomIOFilter/IFilter.hpp>
 #include <fwDicomIOFilter/factory/new.hpp>
 #include <fwDicomIOFilter/helper/Filter.hpp>
+
+#include <fwJobs/Aggregator.hpp>
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Job.hpp>
+#include <fwJobs/Observer.hpp>
+
+#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
@@ -171,7 +173,7 @@ void SeriesDB::readDicomSeries(bool checkIsDicom)
     }
 
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
-    ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
+    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
     // Push Dicom Series
     if(!m_job->cancelRequested())
@@ -369,7 +371,7 @@ void SeriesDB::convertDicomSeries(::fwServices::IService::sptr notifier)
                 if(series)
                 {
                     // Add the series to the DB
-                    ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
+                    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
                     seriesDBHelper.add(series);
 
                     if(notifier)

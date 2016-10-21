@@ -11,9 +11,9 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
-
 #include <fwData/TransferFunction.hpp>
+
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
@@ -23,7 +23,7 @@ class vtkCommand;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API PlaneInteractor : public ::fwComEd::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API PlaneInteractor : public ::fwDataTools::helper::MedicalImageAdaptor,
                                                  public ::fwRenderVTK::IVtkAdaptorService
 {
 
@@ -51,7 +51,7 @@ protected:
     // redraw all (stop then restart sub services)
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
 
-    vtkCommand *m_vtkObserver;
+    vtkCommand* m_vtkObserver;
     double m_priority;
 };
 

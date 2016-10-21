@@ -11,23 +11,23 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/helper/Image.hpp>
-
 #include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
+
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/helper/Image.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
 
 #include <QHBoxLayout>
-#include <QWidget>
 #include <QLabel>
+#include <QWidget>
 
 namespace uiImage
 {
@@ -101,26 +101,26 @@ void ImageInfo::updating() throw(::fwTools::Failed)
 void ImageInfo::swapping() throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     m_valueText->setEnabled(imageIsValid);
 }
 
 //------------------------------------------------------------------------------
 
-void ImageInfo::getInteraction(::fwComEd::PickingInfo info)
+void ImageInfo::getInteraction(::fwDataTools::PickingInfo info)
 {
     SLM_TRACE_FUNC();
 
-    if (info.m_eventId == ::fwComEd::PickingInfo::Event::MOUSE_MOVE)
+    if (info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_MOVE)
     {
         ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-        bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+        bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
         m_valueText->setEnabled(imageIsValid);
         if (imageIsValid)
         {
-            double *point = info.m_worldPos;
+            double* point = info.m_worldPos;
 
-            ::fwComEd::helper::Image imageHelper(image);
+            ::fwDataTools::helper::Image imageHelper(image);
 
             std::string intensity = imageHelper.getPixelAsString(point[0], point[1], point[2] );
             m_valueText->setText(QString::fromStdString(intensity));
@@ -130,7 +130,7 @@ void ImageInfo::getInteraction(::fwComEd::PickingInfo info)
 
 //------------------------------------------------------------------------------
 
-void ImageInfo::info( std::ostream &_sstream )
+void ImageInfo::info( std::ostream& _sstream )
 {
     _sstream << "Image Info Editor";
 }

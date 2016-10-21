@@ -6,40 +6,41 @@
 
 #include "ioGdcm/SDicomSeriesDBReader.hpp"
 
-#include <fwCore/base.hpp>
-
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwComEd/helper/SeriesDB.hpp>
+#include <fwCore/base.hpp>
 
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwServices/macros.hpp>
+#include <fwGdcmIO/reader/SeriesDB.hpp>
 
-#include <fwTools/System.hpp>
-
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/LoggerDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwGuiQt/dialog/MessageDialog.hpp>
 
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
 
-#include <io/IReader.hpp>
-
 #include <fwMedData/SeriesDB.hpp>
 
-#include <fwGdcmIO/reader/SeriesDB.hpp>
+#include <fwMedDataTools/helper/SeriesDB.hpp>
+
+#include <fwServices/macros.hpp>
+
+#include <fwTools/System.hpp>
+
+#include <io/IReader.hpp>
 
 #include <QPointer>
 #include <QPushButton>
 
-#include <boost/foreach.hpp>
 #include <boost/bind.hpp>
+#include <boost/foreach.hpp>
 
 #include <string>
 #include <vector>
@@ -255,7 +256,7 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
             // If the user cancel the reading process we delete the loaded series
             if(!result || reader->getJob()->cancelRequested())
             {
-                ::fwComEd::helper::SeriesDB sDBhelper(dummy);
+                ::fwMedDataTools::helper::SeriesDB sDBhelper(dummy);
                 sDBhelper.clear();
             }
         }
@@ -368,7 +369,7 @@ void SDicomSeriesDBReader::updating() throw(::fwTools::Failed)
             if(!mustCopy || hasEnoughSpaceToCopy(files, 2))
             {
                 // Add series to SeriesDB
-                ::fwComEd::helper::SeriesDB sDBhelper(associatedSeriesDB);
+                ::fwMedDataTools::helper::SeriesDB sDBhelper(associatedSeriesDB);
                 ::fwData::mt::ObjectWriteLock lock(associatedSeriesDB);
                 sDBhelper.merge(seriesDB);
 

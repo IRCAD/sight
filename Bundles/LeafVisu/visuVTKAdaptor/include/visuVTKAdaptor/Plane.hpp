@@ -102,7 +102,7 @@ private:
     vtkPlaneCollection* m_vtkPlaneCollection;
 
     /// register connections between plane's points and this service
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 };
 
 

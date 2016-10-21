@@ -6,8 +6,6 @@
 
 #include "ioITK/SInrSeriesDBReader.hpp"
 
-#include <fwComEd/helper/SeriesDB.hpp>
-
 #include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
@@ -28,9 +26,12 @@
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
 
+#include <fwMedDataTools/helper/SeriesDB.hpp>
+
 #include <fwServices/macros.hpp>
-#include <fwTools/dateAndTime.hpp>
+
 #include <fwTools/UUID.hpp>
+#include <fwTools/dateAndTime.hpp>
 
 #include <io/IReader.hpp>
 
@@ -111,7 +112,7 @@ bool SInrSeriesDBReader::createImage( const ::boost::filesystem::path inrFile, :
         myLoader->addHandler( progressMeterGUI );
         myLoader->read();
     }
-    catch (const std::exception & e)
+    catch (const std::exception& e)
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
@@ -149,7 +150,7 @@ void SInrSeriesDBReader::updating() throw(::fwTools::Failed)
 
         const std::string instanceUID = ::fwTools::UUID::generateUUID();
 
-        for(const ::boost::filesystem::path &path :  this->getFiles())
+        for(const ::boost::filesystem::path& path :  this->getFiles())
         {
             ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::New();
             this->initSeries(imgSeries, instanceUID);
@@ -161,7 +162,7 @@ void SInrSeriesDBReader::updating() throw(::fwTools::Failed)
             localSeriesDB->getContainer().push_back(imgSeries);
         }
 
-        ::fwComEd::helper::SeriesDB sDBhelper(seriesDB);
+        ::fwMedDataTools::helper::SeriesDB sDBhelper(seriesDB);
 
         ::fwData::mt::ObjectWriteLock lock(seriesDB);
         sDBhelper.merge(localSeriesDB);

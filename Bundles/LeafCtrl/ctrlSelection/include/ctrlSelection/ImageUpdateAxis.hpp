@@ -7,19 +7,18 @@
 #ifndef __CTRLSELECTION_IMAGEUPDATEAXIS_HPP__
 #define __CTRLSELECTION_IMAGEUPDATEAXIS_HPP__
 
-#include <fwServices/IService.hpp>
-#include <fwServices/IController.hpp>
-
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
-
 #include "ctrlSelection/config.hpp"
+
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+
+#include <fwServices/IController.hpp>
+#include <fwServices/IService.hpp>
 
 namespace ctrlSelection
 {
 
 
 /**
- * @class  ImageUpdateAxis
  * @brief  This service updates a fwData::Float given in configuration with the image axis.
  */
 class CTRLSELECTION_CLASS_API ImageUpdateAxis : public ::fwServices::IController
@@ -72,7 +71,7 @@ protected:
     CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Implements info method derived from IService. Print classname.
-    CTRLSELECTION_API virtual void info( std::ostream &_sstream );
+    CTRLSELECTION_API virtual void info( std::ostream& _sstream );
 
 private:
 
@@ -90,7 +89,7 @@ private:
     std::string m_floatID;
 
     /// Orientation of the image axis.
-    ::fwComEd::helper::MedicalImageAdaptor::Orientation m_orientation;
+    ::fwDataTools::helper::MedicalImageAdaptor::Orientation m_orientation;
 };
 
 } // ctrlSelection

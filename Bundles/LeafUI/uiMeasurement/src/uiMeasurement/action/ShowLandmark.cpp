@@ -6,7 +6,6 @@
 
 #include "uiMeasurement/action/ShowLandmark.hpp"
 
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hpp>
@@ -14,11 +13,12 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwCore/base.hpp>
 
 #include <fwData/Boolean.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -49,7 +49,7 @@ ShowLandmark::~ShowLandmark() throw()
 
 //------------------------------------------------------------------------------
 
-void ShowLandmark::info(std::ostream &_sstream )
+void ShowLandmark::info(std::ostream& _sstream )
 {
     _sstream << "Action for show distance" << std::endl;
 }
@@ -61,8 +61,8 @@ void ShowLandmark::updating() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    if (   !::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image) ||
-           !image->getField( ::fwComEd::Dictionary::m_imageLandmarksId ))
+    if (   !::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image) ||
+           !image->getField( ::fwDataTools::fieldHelper::Image::m_imageLandmarksId ))
     {
         this->::fwGui::IActionSrv::setIsActive(false);
         return;

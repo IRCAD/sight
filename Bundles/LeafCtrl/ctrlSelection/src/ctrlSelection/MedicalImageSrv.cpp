@@ -9,10 +9,10 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/helper/Image.hpp>
-
 #include <fwData/Image.hpp>
+
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/helper/Image.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -50,9 +50,9 @@ void MedicalImageSrv::convertImage()
     {
         pImg = this->getObject< ::fwData::Image >();
     }
-    if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg))
+    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg))
     {
-        ::fwComEd::helper::Image helper ( pImg );
+        ::fwDataTools::helper::Image helper ( pImg );
 
         helper.createLandmarks();
         helper.createTransferFunctionPool();

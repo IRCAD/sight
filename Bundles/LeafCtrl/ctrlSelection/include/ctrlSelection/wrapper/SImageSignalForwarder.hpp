@@ -7,12 +7,12 @@
 #ifndef __CTRLSELECTION_WRAPPER_SIMAGESIGNALFORWARDER_HPP__
 #define __CTRLSELECTION_WRAPPER_SIMAGESIGNALFORWARDER_HPP__
 
-#include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IWrapperSrv.hpp"
+#include "ctrlSelection/config.hpp"
 
+#include <fwData/Object.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
-#include <fwData/Object.hpp>
 
 #include <fwServices/IService.hpp>
 
@@ -106,7 +106,7 @@ private:
      */
 
     /// store connection from source image to this service.
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     std::string m_sourceImageUid; ///< fwID of the source image;
     std::string m_sourceCompoUid; ///< fwID of the composite containing the source image

@@ -11,7 +11,8 @@
 
 #include <fwData/Image.hpp>
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 
@@ -24,7 +25,7 @@ namespace visuVTKAdaptor
 {
 
 
-class VISUVTKADAPTOR_CLASS_API SlicesCursor : public ::fwComEd::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API SlicesCursor : public ::fwDataTools::helper::MedicalImageAdaptor,
                                               public ::fwRenderVTK::IVtkAdaptorService
 {
 
@@ -74,9 +75,9 @@ protected:
     void updateColors();
     void buildColorAttribute();
 
-    vtkPolyData         *m_cursorPolyData;
-    vtkPolyDataMapper   *m_cursorMapper;
-    vtkActor            *m_cursorActor;
+    vtkPolyData* m_cursorPolyData;
+    vtkPolyDataMapper* m_cursorMapper;
+    vtkActor* m_cursorActor;
     float m_scale;
     bool m_isSelected;
 

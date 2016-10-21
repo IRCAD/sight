@@ -10,14 +10,14 @@
 #include "visuVTKAdaptor/config.hpp"
 
 #include <fwCom/Connection.hpp>
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
-#include <fwServices/helper/SigSlotConnection.hpp>
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 
 class vtkImageActor;
@@ -35,7 +35,7 @@ namespace visuVTKAdaptor
 /**
  * @brief Adaptor to display only one slice of an image
  */
-class VISUVTKADAPTOR_CLASS_API ImageSlice : public ::fwComEd::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API ImageSlice : public ::fwDataTools::helper::MedicalImageAdaptor,
                                             public ::fwRenderVTK::IVtkAdaptorService
 {
 
@@ -145,7 +145,7 @@ protected:
     vtkPolyDataMapper* m_planeOutlineMapper;
     vtkActor* m_planeOutlineActor;
 
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
 private:
 

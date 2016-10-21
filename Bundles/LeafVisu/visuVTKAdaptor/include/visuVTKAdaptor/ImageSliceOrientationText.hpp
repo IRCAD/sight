@@ -9,11 +9,12 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
-#include <string>
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
+
 #include <memory> //unique_ptr
+#include <string>
 
 
 namespace visuVTKAdaptor
@@ -25,7 +26,7 @@ class ImageSliceOrientationTextPImpl;
  * @brief Shows image orientation information (right, left, ...)
  * This adaptor show locations labels in the four borders of the scene
  */
-class VISUVTKADAPTOR_CLASS_API ImageSliceOrientationText : public ::fwComEd::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API ImageSliceOrientationText : public ::fwDataTools::helper::MedicalImageAdaptor,
                                                            public ::fwRenderVTK::IVtkAdaptorService
 {
 

@@ -12,10 +12,10 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/helper/Array.hpp>
-
 #include <fwData/Array.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -69,7 +69,7 @@ void SIncrementArray::updating() throw( ::fwTools::Failed )
 
     const size_t arraySize = array->getSize()[0];
 
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
 
     unsigned int* buffer = static_cast< unsigned int* >( arrayHelper.getBuffer() );
 

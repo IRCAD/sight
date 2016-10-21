@@ -6,21 +6,20 @@
 
 #include "SeriesDBReaderTest.hpp"
 
-#include <fwComEd/helper/Image.hpp>
-
-#include <fwData/location/ILocation.hpp>
-
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/SeriesDB.hpp>
+#include <fwData/location/ILocation.hpp>
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
 #include <fwDataTools/Image.hpp>
+#include <fwDataTools/helper/Image.hpp>
+
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/ModelSeries.hpp>
+#include <fwMedData/Series.hpp>
+#include <fwMedData/SeriesDB.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 

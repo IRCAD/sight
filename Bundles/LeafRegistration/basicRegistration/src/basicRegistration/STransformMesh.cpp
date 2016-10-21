@@ -10,8 +10,6 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
-#include <fwComEd/Dictionary.hpp>
-
 #include <fwCore/spyLog.hpp>
 
 #include <fwData/Composite.hpp>
@@ -21,6 +19,7 @@
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/Mesh.hpp>
+#include <fwDataTools/fieldHelper/Image.hpp>
 
 #include <fwServices/macros.hpp>
 

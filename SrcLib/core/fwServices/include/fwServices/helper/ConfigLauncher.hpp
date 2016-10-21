@@ -8,11 +8,12 @@
 #define __FWSERVICES_HELPER_CONFIGLAUNCHER_HPP__
 
 #include "fwServices/IAppConfigManager.hpp"
-#include "fwServices/helper/SigSlotConnection.hpp"
-#include "fwServices/registry/AppConfig.hpp"
 #include "fwServices/config.hpp"
+#include "fwServices/registry/AppConfig.hpp"
 
 #include <fwActivities/registry/Activities.hpp>
+
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
@@ -89,7 +90,7 @@ public:
 protected:
 
     /// To manage connection to the config root
-    ::fwServices::helper::SigSlotConnection m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     ::fwActivities::registry::ActivityAppConfig m_appConfig;
 

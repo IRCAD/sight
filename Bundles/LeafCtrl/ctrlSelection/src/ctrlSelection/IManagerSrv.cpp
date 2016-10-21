@@ -59,7 +59,7 @@ void IManagerSrv::removeConnections(const std::string& objectId)
     ObjectConnectionsMapType::iterator iter = m_objectConnections.find(objectId);
     if (iter != m_objectConnections.end())
     {
-        ::fwServices::helper::SigSlotConnection& connection = iter->second;
+        ::fwCom::helper::SigSlotConnection& connection = iter->second;
         connection.disconnect();
     }
     m_objectConnections.erase(objectId);

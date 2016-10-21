@@ -4,7 +4,6 @@ set( VERSION 0.1 )
 set( TYPE BUNDLE )
 set( DEPENDENCIES
     fwCom
-    fwComEd
     fwCore
     fwDicomIOFilter
     fwDicomIOFilterQt
@@ -19,6 +18,7 @@ set( DEPENDENCIES
     io
     fwData
     fwMedData
+    fwMedDataTools
     fwThread
     )
 set( REQUIREMENTS

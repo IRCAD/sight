@@ -10,11 +10,11 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/helper/Composite.hpp>
-
 #include <fwCore/base.hpp>
 
 #include <fwData/Composite.hpp>
+
+#include <fwDataTools/helper/Composite.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -293,7 +293,7 @@ void SIOSelector::updating() throw( ::fwTools::Failed )
                     {
                         object                              = ::fwData::factory::New(objType);
                         ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite>();
-                        ::fwComEd::helper::Composite helper(composite);
+                        ::fwDataTools::helper::Composite helper(composite);
                         helper.add(m_inject, object);
 
                         helper.notify();

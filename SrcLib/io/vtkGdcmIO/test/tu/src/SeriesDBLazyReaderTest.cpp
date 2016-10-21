@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,7 @@
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
-#include <fwComEd/helper/Image.hpp>
+#include <fwDataTools/helper/Image.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/DicomReaderTest.hpp>
@@ -66,7 +66,7 @@ void SeriesDBLazyReaderTest::readSeriesDBTest()
     timer.start();
 #endif
 
-    ::fwComEd::helper::Image locker ( series->getImage() );
+    ::fwDataTools::helper::Image locker ( series->getImage() );
 
     #if (SPYLOG_LEVEL >= 4 )
     timer.stop();

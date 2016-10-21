@@ -7,8 +7,8 @@
 #ifndef __FWSERVICES_HELPER_CONFIG_HPP__
 #define __FWSERVICES_HELPER_CONFIG_HPP__
 
-#include "fwServices/config.hpp"
 #include "fwServices/IService.hpp"
+#include "fwServices/config.hpp"
 #include "fwServices/helper/ProxyConnections.hpp"
 
 #include <fwCom/Signals.hpp>
@@ -95,7 +95,7 @@ public:
      */
     FWSERVICES_API static void createConnections(
         const CSPTR(::fwRuntime::ConfigurationElement)& cfg,
-        ::fwServices::helper::SigSlotConnection& helper,
+        ::fwCom::helper::SigSlotConnection& helper,
         const CSPTR(::fwTools::Object)& obj = CSPTR(::fwTools::Object)());
 
 

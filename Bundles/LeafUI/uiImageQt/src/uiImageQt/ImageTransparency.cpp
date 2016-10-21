@@ -10,19 +10,19 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwCore/base.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -122,7 +122,7 @@ void ImageTransparency::updating() throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
 
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
     m_valueSlider->setEnabled(imageIsValid);
     m_valueCheckBox->setEnabled(imageIsValid);
     if (imageIsValid)
@@ -168,7 +168,7 @@ void ImageTransparency::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void ImageTransparency::info( std::ostream &_sstream )
+void ImageTransparency::info( std::ostream& _sstream )
 {
     _sstream << "Image Features Editor";
 }

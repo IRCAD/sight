@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGdcmIO/writer/iod/SpatialFiducialsIOD.hpp"
+
 #include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/helper/FileWriter.hpp"
 #include "fwGdcmIO/writer/ie/Equipment.hpp"
@@ -12,12 +14,14 @@
 #include "fwGdcmIO/writer/ie/Series.hpp"
 #include "fwGdcmIO/writer/ie/SpatialFiducials.hpp"
 #include "fwGdcmIO/writer/ie/Study.hpp"
-#include "fwGdcmIO/writer/iod/SpatialFiducialsIOD.hpp"
 
-#include <fwComEd/Dictionary.hpp>
 #include <fwCore/spyLog.hpp>
+
 #include <fwData/Image.hpp>
 #include <fwData/Vector.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/Patient.hpp>
@@ -59,7 +63,8 @@ void SpatialFiducialsIOD::write(::fwMedData::Series::sptr series)
     // Retrieve image
     ::fwData::Image::sptr image = imageSeries->getImage();
 
-    ::fwData::Vector::sptr distances = image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
+    ::fwData::Vector::sptr distances = image->getField< ::fwData::Vector >(
+        ::fwDataTools::fieldHelper::Image::m_imageDistancesId);
     SLM_WARN_IF("Writing Spatial Fiducials IOD : distances will be ignored.", distances && !distances->empty());
 
     // Create writer

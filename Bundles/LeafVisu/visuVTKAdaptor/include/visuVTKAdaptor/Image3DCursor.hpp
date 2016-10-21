@@ -9,10 +9,10 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
-
 #include <fwData/Color.hpp>
 #include <fwData/TransferFunction.hpp>
+
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
@@ -29,7 +29,7 @@ namespace visuVTKAdaptor
 /**
  * @brief Add a 3D spatial marker represented by a sphere
  */
-class VISUVTKADAPTOR_CLASS_API Image3DCursor : public  ::fwComEd::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API Image3DCursor : public  ::fwDataTools::helper::MedicalImageAdaptor,
                                                public ::fwRenderVTK::IVtkAdaptorService
 {
 

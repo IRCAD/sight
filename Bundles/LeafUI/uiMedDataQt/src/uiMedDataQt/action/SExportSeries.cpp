@@ -13,14 +13,14 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/helper/SeriesDB.hpp>
-
 #include <fwCore/base.hpp>
 
 #include <fwGui/dialog/InputDialog.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
+
+#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -161,7 +161,7 @@ void SExportSeries::updating() throw(::fwTools::Failed)
         series->setPerformingPhysiciansName(physicians);
         series->setDescription(description);
 
-        ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
+        ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
         seriesDBHelper.add(series);
         seriesDBHelper.notify();
         this->setIsExecutable(false);

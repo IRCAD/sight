@@ -30,9 +30,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/convenience.hpp>
 
-#include <fwComEd/Dictionary.hpp>
-
-
 namespace uiMeasurement
 {
 namespace editor

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,25 +8,24 @@
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
-#include <fwComEd/helper/Array.hpp>
-
 #include <fwDataTools/Mesh.hpp>
+#include <fwDataTools/helper/Array.hpp>
 
-#include <fwVtkIO/helper/Mesh.hpp>
-#include <fwVtkIO/MeshReader.hpp>
-#include <fwVtkIO/MeshWriter.hpp>
+#include <fwTest/generator/Mesh.hpp>
 
 #include <fwTools/NumericRoundCast.hxx>
 #include <fwTools/System.hpp>
 
-#include <fwTest/generator/Mesh.hpp>
+#include <fwVtkIO/MeshReader.hpp>
+#include <fwVtkIO/MeshWriter.hpp>
+#include <fwVtkIO/helper/Mesh.hpp>
+
+#include <vtkPolyData.h>
+#include <vtkSmartPointer.h>
+#include <vtkSphereSource.h>
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
-
-#include <vtkPolyData.h>
-#include <vtkSphereSource.h>
-#include <vtkSmartPointer.h>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwVtkIO::ut::MeshTest );
@@ -169,7 +168,7 @@ void MeshTest::testPointCloud()
 
     mesh1->allocate(NB_POINTS, NB_POINTS, NB_POINTS);
 
-    ::fwComEd::helper::Mesh helper(mesh1);
+    ::fwDataTools::helper::Mesh helper(mesh1);
 
     for (std::uint64_t i = 0; i < NB_POINTS; ++i)
     {

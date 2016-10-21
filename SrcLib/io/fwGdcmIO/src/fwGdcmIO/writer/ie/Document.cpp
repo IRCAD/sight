@@ -4,17 +4,21 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGdcmIO/writer/ie/Document.hpp"
+
 #include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/helper/StructuredReport.hpp"   // For graphviz dump
-#include "fwGdcmIO/writer/ie/Document.hpp"
 #include "fwGdcmIO/writer/tid/MeasurementReport.hpp"
 
-#include <fwComEd/Dictionary.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwMedData/Series.hpp>
 #include <fwMedData/types.hpp>
+
 #include <fwTools/dateAndTime.hpp>
 
 #include <gdcmUIDGenerator.h>

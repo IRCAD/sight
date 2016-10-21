@@ -7,7 +7,6 @@ set( DEPENDENCIES
     fwCore
     fwThread
     fwCom
-    fwComEd
     fwGui
     fwGuiQt
     fwPacsIO
@@ -15,6 +14,7 @@ set( DEPENDENCIES
     fwTools
     fwData
     fwMedData
+    fwMedDataTools
     fwServices
     gui
     io

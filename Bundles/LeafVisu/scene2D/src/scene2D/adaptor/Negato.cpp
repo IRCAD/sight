@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/adaptor/Negato.hpp"
+
 #include "scene2D/Scene2DGraphicsView.hpp"
 
 #include <fwCom/Signal.hpp>
@@ -15,22 +16,22 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/helper/Image.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwData/Boolean.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/TransferFunction.hpp>
 
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/helper/Image.hpp>
+
 #include <fwServices/macros.hpp>
 
-#include <QGraphicsItemGroup>
-#include <QPoint>
 #include <QBitmap>
+#include <QGraphicsItemGroup>
 #include <QPixmap>
+#include <QPoint>
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Negato, ::fwData::Image );
 
@@ -45,7 +46,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSlic
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT      = "updateBuffer";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT  = "updateVisibility";
 
-typedef ::fwComEd::helper::MedicalImageAdaptor MedicalImageAdaptor;
+typedef ::fwDataTools::helper::MedicalImageAdaptor MedicalImageAdaptor;
 
 //-----------------------------------------------------------------------------
 
@@ -130,7 +131,7 @@ void Negato::updateBufferFromImage( QImage* qimg )
 
     // Window max
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    ::fwComEd::helper::Image imgHelper(image);
+    ::fwDataTools::helper::Image imgHelper(image);
     const ::fwData::Image::SizeType size = image->getSize();
     const short* imgBuff                 = static_cast<const short*>(imgHelper.getBuffer());
     const size_t imageZOffset            = size[0] * size[1];
@@ -227,7 +228,7 @@ QImage* Negato::createQImage()
 {
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
 
-    if (!::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img ))
+    if (!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img ))
     {
         return nullptr;
     }

@@ -8,10 +8,10 @@
 
 #include <fwCom/Signal.hxx>
 
-#include <fwComEd/helper/Array.hpp>
-
 #include <fwData/Array.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -49,7 +49,7 @@ void SReadArray::updating() throw( ::fwTools::Failed )
     array->resize("uint32", size, 1, true);
 
     // Fill the array values
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
     unsigned int* buffer = static_cast< unsigned int* >( arrayHelper.getBuffer() );
     for (unsigned int i = 0; i < arraySize; i++)
     {

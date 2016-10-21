@@ -6,36 +6,36 @@
 
 #include "uiMedDataQt/editor/SSeries.hpp"
 
+#include "uiMedDataQt/widget/EquipmentEditor.hpp"
+#include "uiMedDataQt/widget/PatientEditor.hpp"
+#include "uiMedDataQt/widget/SeriesEditor.hpp"
+#include "uiMedDataQt/widget/StudyEditor.hpp"
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
-
-#include <fwComEd/helper/SeriesDB.hpp>
 
 #include <fwData/Vector.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
 
 #include <fwMedDataTools/functions.hpp>
+#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <fwTools/Object.hpp>
 
-#include "uiMedDataQt/widget/PatientEditor.hpp"
-#include "uiMedDataQt/widget/StudyEditor.hpp"
-#include "uiMedDataQt/widget/EquipmentEditor.hpp"
-#include "uiMedDataQt/widget/SeriesEditor.hpp"
-
-#include <QWidget>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QPushButton>
+#include <QVBoxLayout>
+#include <QWidget>
 
 namespace uiMedData
 {
@@ -207,7 +207,7 @@ void SSeries::onExportClicked()
         series->setDescription(seriesInfo->getDescription());
         series->setPerformingPhysiciansName(seriesInfo->getPerformingPhysiciansName());
 
-        ::fwComEd::helper::SeriesDB helper(seriesDB);
+        ::fwMedDataTools::helper::SeriesDB helper(seriesDB);
         ::fwMedData::SeriesDB::iterator it = std::find(seriesDB->begin(), seriesDB->end(), series);
         if(it != seriesDB->end())
         {

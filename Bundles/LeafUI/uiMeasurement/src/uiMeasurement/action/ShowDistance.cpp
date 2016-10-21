@@ -11,13 +11,14 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwCore/base.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -48,7 +49,7 @@ ShowDistance::~ShowDistance() throw()
 
 //------------------------------------------------------------------------------
 
-void ShowDistance::info(std::ostream &_sstream )
+void ShowDistance::info(std::ostream& _sstream )
 {
     _sstream << "Action for show distance" << std::endl;
 }
@@ -60,7 +61,7 @@ void ShowDistance::updating() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    if ( !::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image) )
+    if ( !::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image) )
     {
         this->::fwGui::IActionSrv::setIsActive(false);
     }

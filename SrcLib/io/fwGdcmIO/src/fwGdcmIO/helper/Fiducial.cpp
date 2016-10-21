@@ -4,13 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGdcmIO/helper/DicomData.hpp"
 #include "fwGdcmIO/helper/Fiducial.hpp"
 
-#include <fwComEd/Dictionary.hpp>
+#include "fwGdcmIO/helper/DicomData.hpp"
+
 #include <fwData/Image.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/Vector.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
@@ -34,7 +37,7 @@ bool Fiducial::containsLandmarks(SPTR(::fwMedData::SeriesDB)seriesDB)
             if(image)
             {
                 ::fwData::PointList::sptr pointList =
-                    image->getField< ::fwData::PointList >(::fwComEd::Dictionary::m_imageLandmarksId);
+                    image->getField< ::fwData::PointList >(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
                 if(pointList && !pointList->getCRefPoints().empty())
                 {
                     return true;
@@ -60,7 +63,7 @@ bool Fiducial::containsDistances(SPTR(::fwMedData::SeriesDB)seriesDB)
             if(image)
             {
                 ::fwData::Vector::sptr distanceVector =
-                    image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
+                    image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
                 if(distanceVector && !distanceVector->empty())
                 {
                     return true;
@@ -86,7 +89,7 @@ bool Fiducial::contains3DDistances(SPTR(::fwMedData::SeriesDB)seriesDB)
             if(image)
             {
                 ::fwData::Vector::sptr distanceVector =
-                    image->getField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId);
+                    image->getField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId);
                 if(distanceVector && !distanceVector->empty())
                 {
                     for(const ::fwData::Object::sptr& object: distanceVector->getContainer())

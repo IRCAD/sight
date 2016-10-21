@@ -10,18 +10,17 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/TransferFunction.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 #include <fwRenderVTK/vtk/fwVtkCellPicker.hpp>
 
 #include <fwServices/macros.hpp>
-
 
 #include <vtkCommand.h>
 #include <vtkInteractorStyleImage.h>
@@ -40,7 +39,7 @@ namespace visuVTKAdaptor
 class NegatoWindowingCallback : public vtkCommand
 {
 public:
-    static NegatoWindowingCallback *New()
+    static NegatoWindowingCallback* New()
     {
         return new NegatoWindowingCallback();
     }
@@ -61,7 +60,7 @@ public:
 
     }
 
-    virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
+    virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
         if ( m_mouseMoveObserved || !m_adaptor->getInteractor()->GetShiftKey() )
         {
@@ -117,8 +116,8 @@ public:
         }
         else if (m_adaptor->getInteractor()->GetShiftKey())
         {
-            vtkRenderWindowInteractor *rwi = vtkRenderWindowInteractor::SafeDownCast(caller);
-            char *keySym                   = rwi->GetKeySym();
+            vtkRenderWindowInteractor* rwi = vtkRenderWindowInteractor::SafeDownCast(caller);
+            char* keySym                   = rwi->GetKeySym();
             if(keySym != nullptr)
             {
                 if (std::string(keySym) == "R")
@@ -134,14 +133,14 @@ public:
         m_adaptor = adaptor;
     }
 
-    void setPicker( vtkAbstractPropPicker *picker)
+    void setPicker( vtkAbstractPropPicker* picker)
     {
         m_picker = picker;
     }
 
 protected:
     NegatoWindowingInteractor::sptr m_adaptor;
-    vtkAbstractPropPicker *m_picker;
+    vtkAbstractPropPicker* m_picker;
 
     int m_x;
     int m_y;
@@ -187,7 +186,7 @@ void NegatoWindowingInteractor::doStart() throw(fwTools::Failed)
     ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
     this->setTransferFunctionSelection(tfSelection);
 
-    NegatoWindowingCallback *observer = NegatoWindowingCallback::New();
+    NegatoWindowingCallback* observer = NegatoWindowingCallback::New();
     observer->setAdaptor( NegatoWindowingInteractor::dynamicCast(this->getSptr()) );
     observer->setPicker(this->getPicker());
 
