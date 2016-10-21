@@ -417,11 +417,25 @@ void SVolumeRender::newImage()
 
     ::fwRenderOgre::Utils::convertImageForNegato(m_3DOgreTexture.get(), image);
 
-    updatingTFPoints();
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    m_volumeSceneNode->setVisible(true, m_widgets->getVisibility());
+    this->updateTransferFunction(this->getImage());
+
+    m_gpuTF.updateTexture(tf);
+
+    if(m_preIntegratedRendering)
+    {
+        m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_volumeRenderer->getSamplingRate());
+    }
+
+    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
+    {
+        this->updateVolumeIllumination();
+    }
 
     m_volumeRenderer->imageUpdate(image, this->getTransferFunction());
+
+    m_volumeSceneNode->setVisible(true, m_widgets->getVisibility());
 
     this->requestRender();
 }
