@@ -309,6 +309,40 @@ void Render::swapping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
+void Render::swapping(const IService::KeyType& key) throw(::fwTools::Failed)
+{
+    if (this->isVersion2())
+    {
+        // remove connections
+        auto iter = m_objectConnections.find(key);
+        if(iter != m_objectConnections.end())
+        {
+            iter->second.disconnect();
+            m_objectConnections.erase(key);
+        }
+        ::fwServices::helper::Config::disconnectProxies(key, m_proxyMap);
+
+        ConstObjectMapType map;
+        auto obj = this->getInput< ::fwData::Object>(key);
+        obj = (obj == nullptr) ? this->getInOut< ::fwData::Object>(key) : obj;
+
+        map[key] = obj;
+        this->stopAdaptorsFromComposite(map);
+
+        // create connections
+        if(obj)
+        {
+            this->startAdaptorsFromComposite(map);
+
+            ::fwData::Composite::ContainerType mapConnect;
+            mapConnect[key] = ::fwData::Object::constCast(obj);
+            this->connectAfterWait(mapConnect);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void Render::stopping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
@@ -650,13 +684,15 @@ void Render::stopAdaptor(const AdaptorIDType& _adaptorID)
 
     SceneAdaptor2D& info = m_adaptorID2SceneAdaptor2D[_adaptorID];
 
-    m_zValue2AdaptorID.erase( info.getService()->getZValue() );
+    if(info.getService())
+    {
+        m_zValue2AdaptorID.erase( info.getService()->getZValue() );
 
-    info.getService()->stop();
-    SLM_ASSERT("Service is not stopped", info.getService()->isStopped());
-    ::fwServices::OSR::unregisterService(info.getService());
-    info.m_service.reset();
-
+        info.getService()->stop();
+        SLM_ASSERT("Service is not stopped", info.getService()->isStopped());
+        ::fwServices::OSR::unregisterService(info.getService());
+        info.m_service.reset();
+    }
 }
 
 //-----------------------------------------------------------------------------

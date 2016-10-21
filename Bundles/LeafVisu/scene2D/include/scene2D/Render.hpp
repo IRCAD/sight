@@ -214,6 +214,9 @@ protected:
 
     SCENE2D_API void swapping()    throw ( ::fwTools::Failed );
 
+    /// Start/stop adaptors
+    SCENE2D_API void swapping(const KeyType& key) throw(::fwTools::Failed);
+
     /// Stop all the adaptors attached to the render related composite, stop all those rattached to the objects contained
     //  by the render related composite, clear the maps and call stopContext().
     SCENE2D_API void stopping()    throw ( ::fwTools::Failed );
