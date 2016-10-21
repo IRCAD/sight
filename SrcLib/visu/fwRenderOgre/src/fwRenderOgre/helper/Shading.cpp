@@ -250,29 +250,37 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
         if (!::Ogre::StringUtil::endsWith(cstDef.first, "[0]") && !_params->findAutoConstantEntry(cstDef.first))
         {
             ConstantValueType constantValue;
+            bool found = false;
             if(cstDef.second.isDouble())
             {
-                for(size_t i = 0; i < 4; ++i)
+                for(size_t i = 0; i < cstDef.second.elementSize; ++i)
                 {
                     constantValue.d[i] = _params->getDoubleConstantList()[cstDef.second.physicalIndex + i];
                 }
+                found = true;
             }
             else if(cstDef.second.isFloat())
             {
-                for(size_t i = 0; i < 4; ++i)
+                for(size_t i = 0; i < cstDef.second.elementSize; ++i)
                 {
                     constantValue.f[i] = _params->getFloatConstantList()[cstDef.second.physicalIndex + i];
                 }
+                found = true;
             }
             else if(cstDef.second.isInt())
             {
-                for(size_t i = 0; i < 4; ++i)
+                for(size_t i = 0; i < cstDef.second.elementSize; ++i)
                 {
                     constantValue.i[i] = _params->getIntConstantList()[cstDef.second.physicalIndex + i];
                 }
+                found = true;
             }
 
-            parameters.push_back(std::make_tuple(cstDef.first, cstDef.second.constType, _shaderType, constantValue));
+            if(found)
+            {
+                parameters.push_back(std::make_tuple(cstDef.first, cstDef.second.constType, _shaderType,
+                                                     constantValue));
+            }
         }
     }
 
