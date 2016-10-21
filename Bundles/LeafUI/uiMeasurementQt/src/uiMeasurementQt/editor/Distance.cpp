@@ -6,32 +6,31 @@
 
 #include "uiMeasurementQt/editor/Distance.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwCore/base.hpp>
 
-
-#include <fwData/String.hpp>
+#include <fwData/Boolean.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
-#include <fwData/Boolean.hpp>
+#include <fwData/String.hpp>
 
-#include <fwComEd/Dictionary.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <QIcon>
+#include <QVBoxLayout>
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/convenience.hpp>
 
-#include <QVBoxLayout>
-#include <QIcon>
+#include <fwComEd/Dictionary.hpp>
 
 
 namespace uiMeasurement
@@ -125,7 +124,7 @@ void Distance::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Distance::info( std::ostream &_sstream )
+void Distance::info( std::ostream& _sstream )
 {
 }
 
@@ -135,7 +134,17 @@ void Distance::onDistanceButton()
 {
     SLM_ASSERT("No scene UID!", !m_scenesUID.empty());
     SLM_TRACE_FUNC();
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+
+    ::fwData::Image::sptr image;
+    if (this->isVersion2())
+    {
+        image = this->getInOut< ::fwData::Image >("image");
+    }
+    else
+    {
+        image = this->getObject< ::fwData::Image >();
+    }
+    SLM_ASSERT("'image' key is not found.", image);
 
     // force distance to be shown
     image->setField("ShowDistances",  ::fwData::Boolean::New(true));
