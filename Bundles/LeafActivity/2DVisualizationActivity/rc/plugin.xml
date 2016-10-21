@@ -14,6 +14,7 @@
     <xi:include href="configurations/2DVisualization.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/2DNegato.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/2DNegatoWithTF.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/2DSimpleConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwActivities::registry::Activities">
         <id>2DVisualization</id>

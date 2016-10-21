@@ -20,8 +20,6 @@ set( DEPENDENCIES
     gui
     )
 set( REQUIREMENTS
-    visuVTKQt
-    visuVTKAdaptor
     uiImageQt
     ctrlSelection
     )

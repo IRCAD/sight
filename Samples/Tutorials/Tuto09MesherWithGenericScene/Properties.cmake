@@ -16,6 +16,7 @@ set( REQUIREMENTS
     uiVisuQt
     uiReconstructionQt # contains editors to manage reconstructions
     uiMedDataQt # contains editors to manage model series
+    visuVTKAdaptor
     visuVTKQt
     opVTKMesh
     fwlauncher

@@ -1,0 +1,36 @@
+<extension implements="::fwServices::registry::AppConfig2">
+    <id>3DSimpleConfig2</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="objectID" />
+    </parameters>
+    <config>
+
+        <object uid="${objectID}" type="::fwMedData::ModelSeries" src="ref" />
+
+        <service uid="gs" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <in key="modelSeries" uid="${objectID}" />
+            <registry>
+                <parent wid="${WID_PARENT}" />
+            </registry>
+            <scene>
+                <picker id="picker" vtkclass="fwVtkCellPicker" />
+                <renderer id="default" background="0.0" />
+
+                <adaptor id="modelAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                    <config renderer="default" picker="picker" autoresetcamera="yes" />
+                </adaptor>
+
+                <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="modelSeries">
+                    <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
+                </adaptor>
+                <adaptor id="orientationMarker" class="::visuVTKAdaptor::OrientationMarker" objectId="self">
+                    <config renderer="default" />
+                </adaptor>
+            </scene>
+        </service>
+
+        <start uid="gs" />
+    </config>
+</extension>
+

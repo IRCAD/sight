@@ -13,4 +13,5 @@ set( REQUIREMENTS
     uiVisu
     uiVisuQt
     visuVTKAdaptor
+    visuVTKQt
     media )
