@@ -339,6 +339,9 @@ void SeriesDBReaderTest::readACHSeries()
 
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/ACHGenou";
 
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
+
     ::fwDcmtkIO::SeriesDBReader::sptr reader = ::fwDcmtkIO::SeriesDBReader::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
@@ -365,6 +368,9 @@ void SeriesDBReaderTest::readCTSeries()
 
     const std::string filename           = "01-CT-DICOM_LIVER";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
 
     ::fwDcmtkIO::SeriesDBReader::sptr reader = ::fwDcmtkIO::SeriesDBReader::New();
     reader->setObject(seriesDB);
@@ -426,6 +432,9 @@ void SeriesDBReaderTest::readMRSeries()
 
     const std::string filename           = "46-MR-BARRE-MONO2-12-shoulder";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
 
     ::fwDcmtkIO::SeriesDBReader::sptr reader = ::fwDcmtkIO::SeriesDBReader::New();
     reader->setObject(seriesDB);
@@ -489,6 +498,9 @@ void SeriesDBReaderTest::readOTSeries()
     const std::string filename           = "42-OT-BARRE-MONO2-8-colon";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
 
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
+
     ::fwDcmtkIO::SeriesDBReader::sptr reader = ::fwDcmtkIO::SeriesDBReader::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
@@ -551,6 +563,9 @@ void SeriesDBReaderTest::readUnsupportedSeries()
     const std::string filename           = "71-CT-DICOM_SEG";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
 
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
+
     ::fwDcmtkIO::SeriesDBReader::sptr reader = ::fwDcmtkIO::SeriesDBReader::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
@@ -568,6 +583,9 @@ void SeriesDBReaderTest::readDisabledSeries()
 
     const std::string filename           = "46-MR-BARRE-MONO2-12-shoulder";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
 
     std::vector< std::string > supportedSOPClassContainer;
     supportedSOPClassContainer.push_back("1.2.840.10008.5.1.4.1.1.2");   // CT Image Storage

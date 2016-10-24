@@ -6,9 +6,11 @@
 
 #include "DicomSeriesDBReaderTest.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
 #include <fwDcmtkIO/SeriesDBReader.hpp>
+
+#include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
+
 #include <fwTest/Data.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDcmtkIO::ut::DicomSeriesDBReaderTest );
@@ -39,6 +41,9 @@ void DicomSeriesDBReaderTest::readDicomSeriesDBTest()
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/ACHGenou";
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
 
     ::fwDcmtkIO::SeriesDBReader::sptr reader = ::fwDcmtkIO::SeriesDBReader::New();
     reader->setObject(seriesDB);

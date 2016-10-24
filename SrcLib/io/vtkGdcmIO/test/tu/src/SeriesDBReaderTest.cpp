@@ -1,8 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "SeriesDBReaderTest.hpp"
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
@@ -11,8 +13,6 @@
 #include <fwTest/DicomReaderTest.hpp>
 
 #include <vtkGdcmIO/SeriesDBReader.hpp>
-
-#include "SeriesDBReaderTest.hpp"
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::vtkGdcmIO::ut::SeriesDBReaderTest );
 
@@ -42,6 +42,9 @@ void SeriesDBReaderTest::readSeriesDBTest()
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
 
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/ACHGenou";
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
 
     ::vtkGdcmIO::SeriesDBReader::sptr reader = ::vtkGdcmIO::SeriesDBReader::New();
     reader->setObject(seriesDB);

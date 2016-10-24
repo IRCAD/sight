@@ -1,25 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
+#include "ImageReaderWriterJPGTest.hpp"
 
-#include <itkImageFileWriter.h>
-#include <itkImageFileReader.h>
+#include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
 
-
-#include <fwTest/generator/Image.hpp>
-#include <fwTest/Data.hpp>
-
-#include <fwItkIO/itk.hpp>
-#include <fwItkIO/JpgImageWriter.hpp>
 #include <fwItkIO/ImageReader.hpp>
+#include <fwItkIO/JpgImageWriter.hpp>
+#include <fwItkIO/itk.hpp>
 
-#include "ImageReaderWriterJPGTest.hpp"
+#include <fwTest/Data.hpp>
+#include <fwTest/generator/Image.hpp>
+
+#include <itkImageFileReader.h>
+#include <itkImageFileWriter.h>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwItkIO::ut::ImageReaderWriterJPGTest );
@@ -68,7 +67,11 @@ void ImageReaderWriterJPGTest::testImageWriter()
 void ImageReaderWriterJPGTest::testImageWriter2()
 {
     // create Image
-    ::boost::filesystem::path pathInr     = ::fwTest::Data::dir() / "fw4spl/image/inr/image.inr.gz";
+    ::boost::filesystem::path pathInr = ::fwTest::Data::dir() / "fw4spl/image/inr/image.inr.gz";
+
+    CPPUNIT_ASSERT_MESSAGE("The file '" + pathInr.string() + "' does not exist",
+                           ::boost::filesystem::exists(pathInr));
+
     ::fwData::Image::sptr image           = ::fwData::Image::New();
     ::fwItkIO::ImageReader::sptr myReader = ::fwItkIO::ImageReader::New();
     myReader->setObject(image);

@@ -10,7 +10,6 @@
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/Patient.hpp>
-
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
 
@@ -26,13 +25,13 @@
 
 #include <fwThread/Worker.hpp>
 
-#include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>
+#include <fwTools/dateAndTime.hpp>
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioVtkGdcm::ut::IoVtkGdcmTest );
@@ -65,6 +64,9 @@ void IoVtkGdcmTest::tearDown()
 void IoVtkGdcmTest::readerDicomTest( std::string srvImpl )
 {
     ::boost::filesystem::path dicomDataPath(::fwTest::Data::dir() / "fw4spl/Patient/Dicom/image_281433");
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + dicomDataPath.string() + "' does not exist",
+                           ::boost::filesystem::exists(dicomDataPath));
 
     ::fwMedData::SeriesDB::sptr seriesDB               = ::fwMedData::SeriesDB::New();
     ::fwRuntime::EConfigurationElement::sptr readerCfg = ::fwRuntime::EConfigurationElement::New("service");

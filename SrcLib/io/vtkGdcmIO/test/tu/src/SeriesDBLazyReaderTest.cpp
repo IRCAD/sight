@@ -49,6 +49,9 @@ void SeriesDBLazyReaderTest::readSeriesDBTest()
 
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/ACHGenou";
 
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
+
     ::vtkGdcmIO::SeriesDBLazyReader::sptr reader = ::vtkGdcmIO::SeriesDBLazyReader::New();
     reader->setObject(seriesDB);
 

@@ -8,29 +8,34 @@
 
 #include <fwData/Image.hpp>
 #include <fwData/Object.hpp>
+
 #include <fwDataCamp/visitor/CompareObjects.hpp>
-#include <fwGdcmIO/reader/SeriesDB.hpp>
-#include <fwGdcmIO/writer/Series.hpp>
+
+#include <fwGdcmIO/helper/DicomAnonymizer.hpp>
+#include <fwGdcmIO/helper/DicomData.hpp>
 #include <fwGdcmIO/helper/DicomSearch.hpp>
 #include <fwGdcmIO/helper/DicomSeriesWriter.hpp>
-#include <fwGdcmIO/helper/DicomAnonymizer.hpp>
+#include <fwGdcmIO/reader/SeriesDB.hpp>
+#include <fwGdcmIO/writer/Series.hpp>
+
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
+
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/generator/SeriesDB.hpp>
-#include <fwTools/System.hpp>
-#include <fwGdcmIO/helper/DicomData.hpp>
 
-#include <boost/filesystem/convenience.hpp>
-#include <boost/filesystem/path.hpp>
+#include <fwTools/System.hpp>
 
 #include <gdcmDicts.h>
 #include <gdcmGlobal.h>
 #include <gdcmReader.h>
+
+#include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem/path.hpp>
 
 
 // Registers the fixture into the 'registry'
@@ -124,6 +129,9 @@ void DicomAnonymizerTest::anonymizeDICOMTest()
 
 void DicomAnonymizerTest::testDICOMFolder(const ::boost::filesystem::path& srcPath)
 {
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + srcPath.string() + "' does not exist",
+                           ::boost::filesystem::exists(srcPath));
+
     // Save old UID
     m_uidContainer.clear();
     std::vector< std::string > oldFilenames;

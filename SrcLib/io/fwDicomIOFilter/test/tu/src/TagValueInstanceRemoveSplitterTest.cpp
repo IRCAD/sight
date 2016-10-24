@@ -10,12 +10,14 @@
 #include <fwDicomIOFilter/factory/new.hpp>
 #include <fwDicomIOFilter/helper/Filter.hpp>
 #include <fwDicomIOFilter/splitter/TagValueInstanceRemoveSplitter.hpp>
-#include <fwTest/Data.hpp>
+
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
-#include <dcmtk/dcmdata/dcdeftag.h>
+#include <fwTest/Data.hpp>
 
 #include <boost/filesystem/path.hpp>
+
+#include <dcmtk/dcmdata/dcdeftag.h>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDicomIOFilter::ut::TagValueInstanceRemoveSplitterTest );
@@ -47,6 +49,9 @@ void TagValueInstanceRemoveSplitterTest::simpleApplication()
 
     const std::string filename           = "08-CT-PACS";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
 
     // Read DicomSeries
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();

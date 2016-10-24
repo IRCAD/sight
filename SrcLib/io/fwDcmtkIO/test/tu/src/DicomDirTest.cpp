@@ -7,6 +7,7 @@
 #include "DicomDirTest.hpp"
 
 #include <fwDcmtkIO/helper/DicomDir.hpp>
+
 #include <fwTest/Data.hpp>
 
 #include <boost/algorithm/string/replace.hpp>
@@ -40,6 +41,10 @@ void DicomDirTest::readDicomDir()
     const ::boost::filesystem::path path = ::fwTest::Data::dir() /
                                            "fw4spl/Patient/Dicom/DicomDB/82-MR-SAGITTAL-KNEE-DICOMDIR";
     const std::string pathStr = ::boost::algorithm::replace_all_copy(path.string(), "\\", "/");
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
+
     std::vector<std::string> filenames;
 
     // Read DICOMDIR file

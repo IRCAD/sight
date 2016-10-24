@@ -9,8 +9,10 @@
 #include <fwDicomIOFilter/IFilter.hpp>
 #include <fwDicomIOFilter/factory/new.hpp>
 #include <fwDicomIOFilter/helper/Filter.hpp>
-#include <fwTest/Data.hpp>
+
 #include <fwGdcmIO/reader/SeriesDB.hpp>
+
+#include <fwTest/Data.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -44,6 +46,9 @@ void NoFilterCustomTest::simpleApplication()
 
     const std::string filename           = "71-CT-DICOM_SEG";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
 
     // Read DicomSeries
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();

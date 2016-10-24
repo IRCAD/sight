@@ -6,28 +6,28 @@
 
 #include "DicomSeriesWriterTest.hpp"
 
-#include <fwTools/System.hpp>
-
-#include <fwTest/helper/compare.hpp>
-#include <fwTest/Data.hpp>
+#include <fwData/Object.hpp>
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
-#include <fwData/Object.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/DicomSeries.hpp>
-
+#include <fwGdcmIO/helper/DicomAnonymizer.hpp>
 #include <fwGdcmIO/helper/DicomSeriesWriter.hpp>
 #include <fwGdcmIO/reader/SeriesDB.hpp>
-#include <fwGdcmIO/helper/DicomAnonymizer.hpp>
+
+#include <fwMedData/DicomSeries.hpp>
+#include <fwMedData/SeriesDB.hpp>
+
+#include <fwTest/Data.hpp>
+#include <fwTest/helper/compare.hpp>
+
+#include <fwTools/System.hpp>
 
 #include <fwZip/ReadZipArchive.hpp>
 #include <fwZip/WriteDirArchive.hpp>
 #include <fwZip/WriteZipArchive.hpp>
 
-#include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem/path.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwGdcmIO::ut::DicomSeriesWriterTest );
@@ -42,6 +42,10 @@ void DicomSeriesWriterTest::setUp()
     // Set up context before running a test.
     ::fwMedData::SeriesDB::sptr srcSeriesDB = ::fwMedData::SeriesDB::New();
     const ::boost::filesystem::path srcPath = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER";
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + srcPath.string() + "' does not exist",
+                           ::boost::filesystem::exists(srcPath));
+
 
     // Read source Dicom
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();

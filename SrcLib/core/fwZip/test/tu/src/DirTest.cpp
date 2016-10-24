@@ -6,14 +6,15 @@
 
 #include "DirTest.hpp"
 
+#include <fwTest/Data.hpp>
+
+#include <fwTools/System.hpp>
+
 #include <fwZip/ReadDirArchive.hpp>
 #include <fwZip/WriteDirArchive.hpp>
 
-#include <fwTools/System.hpp>
-#include <fwTest/Data.hpp>
-
-#include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem/path.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwZip::ut::DirTest );
@@ -76,6 +77,9 @@ void DirTest::putFileTest()
     const ::boost::filesystem::path testDir  = "test";
     const ::boost::filesystem::path testFile = ::fwTest::Data::dir() / "fw4spl/image/jpg/makao01.jpg";
 
+
+    CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",
+                           ::boost::filesystem::exists(testFile));
 
     CPPUNIT_ASSERT_NO_THROW(writer->putFile(testFile, "image.jpg"));
 

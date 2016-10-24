@@ -340,6 +340,9 @@ void SeriesDBReaderTest::readACHSeries()
 
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/ACHGenou";
 
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
+
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
@@ -366,6 +369,9 @@ void SeriesDBReaderTest::readCTSeries()
 
     const std::string filename           = "01-CT-DICOM_LIVER";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
 
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     reader->setObject(seriesDB);
@@ -427,6 +433,9 @@ void SeriesDBReaderTest::readMRSeries()
 
     const std::string filename           = "46-MR-BARRE-MONO2-12-shoulder";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
 
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     reader->setObject(seriesDB);
@@ -491,6 +500,9 @@ void SeriesDBReaderTest::readOTSeries()
     const std::string filename           = "42-OT-BARRE-MONO2-8-colon";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
 
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
+
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
@@ -553,6 +565,9 @@ void SeriesDBReaderTest::readSEGSeries()
     const std::string filename           = "71-CT-DICOM_SEG";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
 
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
+
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
@@ -599,6 +614,9 @@ void SeriesDBReaderTest::readSFSeries()
 
     const std::string filename           = "71-CT-DICOM_SF";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
 
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     reader->setObject(seriesDB);
@@ -649,6 +667,9 @@ void SeriesDBReaderTest::readSRSeries()
 
     const std::string filename           = "71-CT-DICOM_SR";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
 
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     reader->setObject(seriesDB);
@@ -714,6 +735,9 @@ void SeriesDBReaderTest::read3DSRSeries()
     const std::string filename           = "71-CT-DICOM_3DSR";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
 
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
+
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
@@ -778,6 +802,9 @@ void SeriesDBReaderTest::readDisabledSeries()
     const std::string filename           = "46-MR-BARRE-MONO2-12-shoulder";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
 
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
+
     std::vector< std::string > supportedSOPClassContainer;
     supportedSOPClassContainer.push_back("1.2.840.10008.5.1.4.1.1.2");   // CT Image Storage
 
@@ -804,6 +831,9 @@ void SeriesDBReaderTest::readMRSeriesWithDicomDir()
     const std::string filename           = "82-MR-SAGITTAL-KNEE-DICOMDIR";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
 
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
+
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
@@ -826,6 +856,9 @@ void SeriesDBReaderTest::readMultipleRescaleSeries()
 
     const std::string filename           = "83-CT-MultipleRescale";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
 
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     reader->setObject(seriesDB);
@@ -877,6 +910,9 @@ void SeriesDBReaderTest::readCTWithSurviewSeries()
     const std::string filename           = "84-CT-Surview";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
 
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
+
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
@@ -899,6 +935,9 @@ void SeriesDBReaderTest::readMRWithTemporalPositionSeries()
     const std::string filename           = "85-MR-TemporalPosition";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
 
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
+
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     reader->setObject(seriesDB);
     reader->setFolder(path);
@@ -920,6 +959,9 @@ void SeriesDBReaderTest::readCTSeriesDBIssue01()
 
     const std::string filename           = "86-CT-Skull";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
 
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
     reader->setObject(seriesDB);

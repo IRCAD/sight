@@ -7,17 +7,21 @@
 #include "SeriesEnquirerTest.hpp"
 
 #include <fwDcmtkIO/helper/DicomSearch.hpp>
+
 #include <fwPacsIO/helper/Series.hpp>
+
 #include <fwTest/Data.hpp>
 #include <fwTest/Exception.hpp>
-#include <fwThread/Worker.hpp>
-#include <fwTools/System.hpp>
 
-#include <dcmtk/config/osconfig.h>
+#include <fwThread/Worker.hpp>
+
+#include <fwTools/System.hpp>
 
 #include <boost/chrono/chrono.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/thread/thread.hpp>
+
+#include <dcmtk/config/osconfig.h>
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwPacsIO::ut::SeriesEnquirerTest );
 
@@ -109,6 +113,11 @@ void SeriesEnquirerTest::pushSeries()
     const ::boost::filesystem::path path =
         ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER_FOR_PACS";
     const std::string pathStr = ::boost::algorithm::replace_all_copy(path.string(), "\\", "/");
+
+    CPPUNIT_ASSERT_MESSAGE("The file '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
+
+
     std::vector<std::string> filenames;
     ::fwDcmtkIO::helper::DicomSearch::searchRecursively(path, filenames);
     CPPUNIT_ASSERT_EQUAL( size_t( 129 ), filenames.size());

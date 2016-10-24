@@ -6,16 +6,16 @@
 
 #include "SliceThicknessModifierTest.hpp"
 
-#include <boost/filesystem/path.hpp>
-#include <boost/lexical_cast.hpp>
-
 #include <fwDicomIOFilter/IFilter.hpp>
 #include <fwDicomIOFilter/factory/new.hpp>
 #include <fwDicomIOFilter/helper/Filter.hpp>
 
+#include <fwGdcmIO/reader/SeriesDB.hpp>
+
 #include <fwTest/Data.hpp>
 
-#include <fwGdcmIO/reader/SeriesDB.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/lexical_cast.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDicomIOFilter::ut::SliceThicknessModifierTest );
@@ -47,6 +47,9 @@ void SliceThicknessModifierTest::simpleApplication()
 
     const std::string filename           = "09-CT-PACS";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
 
     // Read DicomSeries
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
@@ -90,6 +93,9 @@ void SliceThicknessModifierTest::applyFilterOn2DImage()
 
     const std::string filename           = "46-MR-BARRE-MONO2-12-shoulder";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
 
     // Read DicomSeries
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();

@@ -105,6 +105,9 @@ void ImageReaderWriterTest::testVtkImageReader()
 
     const ::boost::filesystem::path file = ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk";
 
+    CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
+                           ::boost::filesystem::exists(file));
+
     ::fwData::Image::sptr image = ::fwData::Image::New();
 
     // Data expected
@@ -154,6 +157,9 @@ void ImageReaderWriterTest::testVtkImageReader()
 void ImageReaderWriterTest::testVtiImageReader()
 {
     const ::boost::filesystem::path file = ::fwTest::Data::dir() /"fw4spl/image/vti/BostonTeapot.vti";
+
+    CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
+                           ::boost::filesystem::exists(file));
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
     runImageSrv("::io::IReader","::ioVTK::SImageReader",getIOConfiguration(file), image);
@@ -207,6 +213,9 @@ void ImageReaderWriterTest::testMhdImageReader()
 {
 
     const ::boost::filesystem::path file = ::fwTest::Data::dir() / "fw4spl/image/mhd/BostonTeapot.mhd";
+
+    CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
+                           ::boost::filesystem::exists(file));
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
     runImageSrv("::io::IReader","::ioVTK::SImageReader",getIOConfiguration(file), image);

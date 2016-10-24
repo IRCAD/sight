@@ -9,9 +9,12 @@
 #include <fwDicomIOFilter/IFilter.hpp>
 #include <fwDicomIOFilter/factory/new.hpp>
 #include <fwDicomIOFilter/helper/Filter.hpp>
-#include <fwMath/VectorFunctions.hpp>
-#include <fwTest/Data.hpp>
+
 #include <fwGdcmIO/reader/SeriesDB.hpp>
+
+#include <fwMath/VectorFunctions.hpp>
+
+#include <fwTest/Data.hpp>
 
 #include <gdcmScanner.h>
 
@@ -50,6 +53,9 @@ void ImagePositionPatientSorterTest::simpleApplication()
 
     const std::string filename           = "01-CT-DICOM_LIVER";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
 
     // Read DicomSeries
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();
@@ -149,6 +155,9 @@ void ImagePositionPatientSorterTest::applyFilterOnMultipleVolumeImage()
 
     const std::string filename           = "08-CT-PACS";
     const ::boost::filesystem::path path = ::fwTest::Data::dir() / "fw4spl/Patient/Dicom/DicomDB" / filename;
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + path.string() + "' does not exist",
+                           ::boost::filesystem::exists(path));
 
     // Read DicomSeries
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();

@@ -8,17 +8,18 @@
 #include "PatchTest.hpp"
 
 #include <fwData/Object.hpp>
+
 #include <fwDataTools/Image.hpp>
 
 #include <fwGui/registry/worker.hpp>
+
+#include <fwMDSemanticPatch/PatchLoader.hpp>
 
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
-
-#include <fwMDSemanticPatch/PatchLoader.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
@@ -30,8 +31,11 @@
 
 #include <fwThread/Worker.hpp>
 
-#include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>
+#include <fwTools/dateAndTime.hpp>
+
+#include <boost/filesystem/operations.hpp>
+
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::patchMedicalData::ut::PatchTest );
@@ -81,7 +85,7 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::
 
 //------------------------------------------------------------------------------
 
-::fwMedData::Series::sptr getACHSeries( const ::fwMedData::SeriesDB::sptr & sdb )
+::fwMedData::Series::sptr getACHSeries( const ::fwMedData::SeriesDB::sptr& sdb )
 {
     for( ::fwMedData::Series::sptr series :  sdb->getContainer() )
     {
@@ -96,7 +100,7 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::
 
 //------------------------------------------------------------------------------
 
-std::vector< ::fwMedData::Series::sptr > getOtherSeries( const ::fwMedData::SeriesDB::sptr & sdb )
+std::vector< ::fwMedData::Series::sptr > getOtherSeries( const ::fwMedData::SeriesDB::sptr& sdb )
 {
     std::vector< ::fwMedData::Series::sptr > otherSeries;
     for( ::fwMedData::Series::sptr series :  sdb->getContainer() )
@@ -115,6 +119,9 @@ std::vector< ::fwMedData::Series::sptr > getOtherSeries( const ::fwMedData::Seri
 void PatchTest::patchMedicalDataTest()
 {
     const ::boost::filesystem::path file = ::fwTest::Data::dir() /"fw4spl/patch/md_1.jsonz";
+
+    CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
+                           ::boost::filesystem::exists(file));
 
     ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
 
