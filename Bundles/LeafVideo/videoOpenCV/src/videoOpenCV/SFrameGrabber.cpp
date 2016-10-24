@@ -242,6 +242,9 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         }
     }
 
+    //Sort in alphabetical order (ex: img_001, img_002...)
+    std::sort(m_imageToRead.begin(), m_imageToRead.end());
+
     if (!m_imageToRead.empty())
     {
         std::string file = m_imageToRead.front().string();
@@ -276,7 +279,7 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         m_isInitialized = true;
 
         /// FIXME allow to configure the timestamp (or read it in the image name ?)
-        size_t fps = 30;
+        size_t fps = 33;
 
         auto sigDuration = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
         sigDuration->asyncEmit(static_cast<std::int64_t>(m_imageToRead.size() * fps));
