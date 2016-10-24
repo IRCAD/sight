@@ -4,43 +4,46 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwRenderVTK/SRender.hpp"
+
 #include "fwRenderVTK/IVtkAdaptorService.hpp"
 #include "fwRenderVTK/OffScreenInteractorManager.hpp"
-#include "fwRenderVTK/SRender.hpp"
 #include "fwRenderVTK/vtk/InteractorStyle3DForNegato.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
 
 #include <fwData/Color.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+
+#include <fwRuntime/ConfigurationElementContainer.hpp>
+#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
-#include <fwRuntime/ConfigurationElementContainer.hpp>
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
-
 #include <fwTools/fwID.hpp>
 
 #include <fwVtkIO/vtk.hpp>
 
+#include <vtkCellPicker.h>
+#include <vtkInstantiator.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
+#include <vtkRendererCollection.h>
+#include <vtkSmartPointer.h>
+#include <vtkTransform.h>
+#include <vtkWindowToImageFilter.h>
+
 #include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
+
 #include <functional>
-#include <vtkCellPicker.h>
-#include <vtkRenderer.h>
-#include <vtkInstantiator.h>
-#include <vtkTransform.h>
-#include <vtkRendererCollection.h>
-#include <vtkRenderWindow.h>
-#include <vtkSmartPointer.h>
-#include <vtkWindowToImageFilter.h>
 
 fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderVTK::SRender, ::fwData::Composite );
 
@@ -692,6 +695,7 @@ void SRender::swapping(const IService::KeyType& key) throw(::fwTools::Failed)
 
 void SRender::render()
 {
+    OSLM_ASSERT("Scene must be started", this->isStarted());
     if (m_offScreen)
     {
         vtkSmartPointer<vtkRenderWindow> renderWindow = m_interactorManager->getInteractor()->GetRenderWindow();
@@ -735,7 +739,6 @@ void SRender::render()
         m_interactorManager->getInteractor()->Render();
     }
     this->setPendingRenderRequest(false);
-
 }
 
 //-----------------------------------------------------------------------------

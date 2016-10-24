@@ -4,19 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <vtkRenderer.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkAbstractPropPicker.h>
-#include <vtkTransform.h>
+#include "fwRenderVTK/IVtkAdaptorService.hpp"
 
 #include <fwData/String.hpp>
-#include <fwTools/fwID.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include "fwRenderVTK/IVtkAdaptorService.hpp"
+#include <fwTools/fwID.hpp>
+
+#include <vtkAbstractPropPicker.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkRenderer.h>
+#include <vtkTransform.h>
 
 
 
@@ -139,7 +140,8 @@ int IVtkAdaptorService::getStartPriority()
 
 void IVtkAdaptorService::requestRender()
 {
-    if ( this->getRenderService()->isShownOnScreen() && m_vtkPipelineModified && m_autoRender )
+    if ( this->getRenderService()->isStarted() && this->getRenderService()->isShownOnScreen()
+         && m_vtkPipelineModified && m_autoRender )
     {
         if ( !this->getRenderService()->getPendingRenderRequest())
         {
