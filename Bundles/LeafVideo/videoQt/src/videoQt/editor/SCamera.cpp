@@ -6,26 +6,29 @@
 
 #include "videoQt/editor/SCamera.hpp"
 
+#include "videoQt/editor/CameraDeviceDlg.hpp"
+
 #include <arData/Camera.hpp>
+
 #include <arPreferences/preferences.hpp>
 
 #include <fwCom/Signal.hxx>
 
 #include <fwData/Object.hpp>
-#include <fwData/location/SingleFile.hpp>
 #include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwGui/dialog/InputDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGuiQt/container/QtContainer.hpp>
-#include <fwGui/dialog/InputDialog.hpp>
-
 #include <fwServices/macros.hpp>
-#include <fwTools/pathDifference.hpp>
 
-#include "videoQt/editor/CameraDeviceDlg.hpp"
+#include <fwTools/pathDifference.hpp>
 
 #include <QByteArray>
 #include <QCamera>
@@ -152,7 +155,7 @@ void SCamera::onChooseFile()
     }
 
     // Check preferences
-    std::string videoDir = ::arPreferences::getVideoDir();
+    const ::boost::filesystem::path videoDirPreferencePath(::arPreferences::getVideoDir());
 
     static ::boost::filesystem::path _sDefaultPath;
 
@@ -175,9 +178,23 @@ void SCamera::onChooseFile()
         _sDefaultPath = result->getPath().parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
         videoPath = result->getPath();
-        ::boost::filesystem::path videoDirPath(videoDir);
-        videoPath = ::fwTools::getPathDifference(videoDirPath, videoPath);
-
+        if(::boost::filesystem::is_directory(videoDirPreferencePath))
+        {
+            ::boost::filesystem::path videoRelativePath;
+            videoRelativePath = ::fwTools::getPathDifference(videoDirPreferencePath, videoPath);
+            if(::boost::filesystem::exists(videoRelativePath))
+            {
+                videoPath = videoRelativePath;
+            }
+            else
+            {
+                SLM_WARN("Relative path '"+videoRelativePath.string()+"' genrerated with preference is not valid.");
+            }
+        }
+        else
+        {
+            SLM_WARN("Video directory '"+videoDirPreferencePath.string()+"' stored in preference is not valid.");
+        }
         camera->setCameraSource(::arData::Camera::FILE);
         camera->setVideoFile(videoPath.string());
 
