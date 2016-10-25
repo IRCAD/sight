@@ -220,8 +220,8 @@ void TransferFunction::buildBounds()
 {
     ::scene2D::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
 
-    QGraphicsEllipseItem* beginCircle = m_circles.front();
-    QGraphicsEllipseItem* endCircle   = m_circles.back();
+    const QGraphicsEllipseItem* beginCircle = m_circles.front();
+    const QGraphicsEllipseItem* endCircle   = m_circles.back();
 
     double x1 = viewport->getX() - 10;
     double x2 = beginCircle->rect().x() + beginCircle->pos().x() + m_circleWidth /2;
@@ -296,9 +296,8 @@ void TransferFunction::buildLinearLinesAndPolygons()
     QVector<QPointF> vect;
     QLinearGradient grad;
 
-    QGraphicsEllipseItem* firtsCircle = m_circles.front();
-    QGraphicsEllipseItem* lastCircle  = m_circles.back();
-
+    const QGraphicsEllipseItem* firtsCircle = m_circles.front();
+    const QGraphicsEllipseItem* lastCircle  = m_circles.back();
 
     double xBegin;
     double xEnd;
@@ -334,8 +333,7 @@ void TransferFunction::buildLinearLinesAndPolygons()
     double distanceMax = xEnd - xBegin;
 
     // Iterate on the circles vector to add line and polygon items to the lines and polygons vector
-    for ( std::vector< QGraphicsEllipseItem* >::iterator circleIt = m_circles.begin(); circleIt != m_circles.end()-1;
-          ++circleIt)
+    for ( auto circleIt = m_circles.cbegin(); circleIt != m_circles.cend()-1; ++circleIt)
     {
         QPointF p1((*circleIt)->rect().x() + (*circleIt)->pos().x() + m_circleWidth / 2,
                    (*circleIt)->rect().y() + (*circleIt)->pos().y() + m_circleHeight / 2);
@@ -380,12 +378,11 @@ void TransferFunction::buildLinearLinesAndPolygons()
 void TransferFunction::buildNearestLinesAndPolygons()
 {
     // Iterate on the circles vector to add line and polygon items to the lines and polygons vector
-    for ( std::vector< QGraphicsEllipseItem* >::iterator circleIt = m_circles.begin(); circleIt != m_circles.end();
-          ++circleIt)
+    for ( auto circleIt = m_circles.cbegin(); circleIt != m_circles.cend(); ++circleIt)
     {
         QGraphicsEllipseItem* circle = *circleIt;
         QGraphicsEllipseItem* previousCircle;
-        if (circleIt == m_circles.begin())
+        if (circleIt == m_circles.cbegin())
         {
             previousCircle = circle;
         }
@@ -394,7 +391,7 @@ void TransferFunction::buildNearestLinesAndPolygons()
             previousCircle = *(circleIt-1);
         }
         QGraphicsEllipseItem* nextCircle;
-        if (circleIt == m_circles.end()-1)
+        if (circleIt == m_circles.cend()-1)
         {
             nextCircle = circle;
         }
@@ -574,20 +571,21 @@ void TransferFunction::doStop() throw ( ::fwTools::Failed )
     m_connection.disconnect();
 
     // Clear the items vectors and remove the layer (and all its children) from the scene
-    for (std::vector< QGraphicsEllipseItem* >::iterator circleIt = m_circles.begin(); circleIt != m_circles.end();
-         ++circleIt )
+    for (auto circleIt = m_circles.begin(); circleIt != m_circles.end(); ++circleIt )
     {
         delete *circleIt;
     }
+    m_circles.clear();
 
-    for( std::vector< QGraphicsItem* >::iterator linesPolyIt = m_linesAndPolygons.begin();
-         linesPolyIt != m_linesAndPolygons.end(); ++linesPolyIt)
+    for( auto linesPolyIt = m_linesAndPolygons.begin(); linesPolyIt != m_linesAndPolygons.end(); ++linesPolyIt)
     {
         delete *linesPolyIt;
     }
+    m_linesAndPolygons.clear();
 
     this->getScene2DRender()->getScene()->removeItem(m_layer);
     delete m_layer;
+    m_layer = nullptr;
 }
 
 //-----------------------------------------------------------------------------

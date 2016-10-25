@@ -38,9 +38,9 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects"
 Render::Render() throw() :
     m_sceneStart(-100., -100.),
     m_sceneWidth(200., 200.),
-    m_antialiasing(false),
     m_scene(nullptr),
     m_view(nullptr),
+    m_antialiasing(false),
     m_aspectRatioMode(Qt::IgnoreAspectRatio)
 {
     newSlot(s_ADD_OBJECTS_SLOT, &Render::addObjects, this);
@@ -98,9 +98,13 @@ void Render::dispatchInteraction( SPTR(::scene2D::data::Event)_event)
      */
     for(ZValue2AdaptorID::reverse_iterator rit = m_zValue2AdaptorID.rbegin(); rit != m_zValue2AdaptorID.rend(); ++rit )
     {
-        if ( !_event->isAccepted() && !m_adaptorID2SceneAdaptor2D[ rit->second ].m_service.expired() )
+        if ( !_event->isAccepted() )
         {
-            m_adaptorID2SceneAdaptor2D[ rit->second ].m_service.lock()->processInteraction( _event );
+            auto adaptor = m_adaptorID2SceneAdaptor2D[ rit->second ].m_service.lock();
+            if(adaptor != nullptr && adaptor->isStarted())
+            {
+                m_adaptorID2SceneAdaptor2D[ rit->second ].m_service.lock()->processInteraction( _event );
+            }
         }
     }
 }
@@ -110,7 +114,7 @@ void Render::dispatchInteraction( SPTR(::scene2D::data::Event)_event)
 ::scene2D::data::Coord Render::mapToScene( const ::scene2D::data::Coord& coord ) const
 {
     /// Returns the viewport coordinate point mapped to scene coordinates.
-    QPoint qp ( coord.getX(), coord.getY() );
+    QPoint qp ( static_cast<int>(coord.getX()), static_cast<int>(coord.getY()) );
     QPointF qps = m_view->mapToScene(qp);
     return ::scene2D::data::Coord(qps.x(),qps.y());
 }
@@ -323,17 +327,47 @@ void Render::swapping(const IService::KeyType& key) throw(::fwTools::Failed)
         }
         ::fwServices::helper::Config::disconnectProxies(key, m_proxyMap);
 
-        ConstObjectMapType map;
         auto obj = this->getInput< ::fwData::Object>(key);
         obj = (obj == nullptr) ? this->getInOut< ::fwData::Object>(key) : obj;
 
-        map[key] = obj;
-        this->stopAdaptorsFromComposite(map);
+        ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find(key);
+        if (objectIter != m_objectsID2AdaptorIDVector.end())
+        {
+            for (const AdaptorIDType& adaptorId : objectIter->second)
+            {
+                SceneAdaptor2D& info = m_adaptorID2SceneAdaptor2D[adaptorId];
+
+                if (info.getService() && info.getService()->isStarted())
+                {
+                    info.getService()->stop();
+                }
+            }
+        }
 
         // create connections
         if(obj)
         {
-            this->startAdaptorsFromComposite(map);
+            ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find(key);
+            if (objectIter != m_objectsID2AdaptorIDVector.end())
+            {
+                for (const AdaptorIDType& adaptorId : objectIter->second)
+                {
+                    SceneAdaptor2D& info = m_adaptorID2SceneAdaptor2D[adaptorId];
+
+                    if (info.getService())
+                    {
+                        if(obj != info.getService()->getObject())
+                        {
+                            ::fwServices::OSR::swapService(::fwData::Object::constCast(obj), info.getService());
+                        }
+                        info.getService()->start();
+                    }
+                    else
+                    {
+                        this->startAdaptor(adaptorId, obj);
+                    }
+                }
+            }
 
             ::fwData::Composite::ContainerType mapConnect;
             mapConnect[key] = ::fwData::Object::constCast(obj);

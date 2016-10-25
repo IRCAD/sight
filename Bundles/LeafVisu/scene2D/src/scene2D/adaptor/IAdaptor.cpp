@@ -31,6 +31,8 @@ IAdaptor::IAdaptor() throw() : m_zValue(0), m_opacity(1)
 
 IAdaptor::~IAdaptor() throw()
 {
+    m_xAxis.reset();
+    m_yAxis.reset();
 }
 
 //-----------------------------------------------------------------------------
@@ -286,9 +288,6 @@ void IAdaptor::stopping() throw ( ::fwTools::Failed )
 {
     m_connections.disconnect();
     doStop();
-
-    m_xAxis.reset();
-    m_yAxis.reset();
 }
 
 //-----------------------------------------------------------------------------
