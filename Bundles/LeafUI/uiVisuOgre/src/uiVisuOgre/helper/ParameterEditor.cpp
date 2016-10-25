@@ -21,6 +21,42 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
+template <typename T>
+std::pair<T, T> getRange(T _value)
+{
+    static const T range = 10;
+    T max;
+    T min;
+
+    // For _value > 1, we use [-_value * range;+_value *range]
+    if(_value > 1)
+    {
+        max = +_value * range;
+        min = -_value * range;
+    }
+    else if(_value < -1)
+    // For _value < 0, we use [_value * range;-_value *range]
+    {
+        max = -_value * range;
+        min = +_value * range;
+    }
+    else if(_value > 0 || _value < 0)
+    // For -1 < value < 0 < _value < 1, we use [_value / range;+_value * range]
+    {
+        max = _value * range;
+        min = _value / range;
+    }
+    else
+    // For _value == 0, we use [0; 1]
+    {
+        max = 0;
+        min = 1;
+    }
+    return std::make_pair(min, max);
+}
+
+//-----------------------------------------------------------------------------
+
 fwServices::IService::ConfigType ParameterEditor::createConfig(const visuOgreAdaptor::IParameter::csptr& _adaptor,
                                                                const ::fwServices::IService::csptr& _paramSrv,
                                                                ::fwCom::helper::SigSlotConnection& _connections)
@@ -69,8 +105,9 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const visuOgreAda
 
         auto floatValue           = ::fwData::Float::dynamicConstCast(shaderObj);
         const double defaultValue = floatValue->value();
-        const double max          = (defaultValue != 0.) ? defaultValue * 20. : 1.;
-        const double min          = (defaultValue != 0.) ? max - defaultValue * 20. : 1.;
+        const auto minmax         = getRange(defaultValue);
+        const double min          = minmax.first;
+        const double max          = minmax.second;
 
         paramConfig.add("<xmlattr>.type", "double");
         paramConfig.add("<xmlattr>.name", _adaptor->getParamName());
@@ -85,8 +122,9 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const visuOgreAda
 
         auto intValue          = ::fwData::Integer::dynamicConstCast(shaderObj);
         const int defaultValue = intValue->value();
-        const int max          = (defaultValue != 0) ? defaultValue * 20 : 1;
-        const int min          = (defaultValue != 0) ? max - defaultValue * 20 : 1;
+        const auto minmax      = getRange(defaultValue);
+        const int min          = minmax.first;
+        const int max          = minmax.second;
 
         paramConfig.add("<xmlattr>.type", "int");
         paramConfig.add("<xmlattr>.name", _adaptor->getParamName());
@@ -122,8 +160,9 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const visuOgreAda
                 {
                     defaultValue = arrayHelper.getItem< double >({0})[0];
                 }
-                const double max = (defaultValue != 0.) ? defaultValue * 20. : 1.;
-                const double min = (defaultValue != 0.) ? max - defaultValue * 20. : 1.;
+                const auto minmax = getRange(defaultValue);
+                const double min  = minmax.first;
+                const double max  = minmax.second;
 
                 paramConfig.add("<xmlattr>.type", "double" + strSize);
                 paramConfig.add("<xmlattr>.name", _adaptor->getParamName());
@@ -139,8 +178,9 @@ fwServices::IService::ConfigType ParameterEditor::createConfig(const visuOgreAda
 
                 ::fwDataTools::helper::ArrayGetter arrayHelper(arrayObject);
                 const int defaultValue = arrayHelper.getItem< int >({0})[0];
-                const int max          = (defaultValue != 0) ? defaultValue * 20 : 1;
-                const int min          = (defaultValue != 0) ? max - defaultValue * 20 : 1;
+                const auto minmax      = getRange(defaultValue);
+                const int min          = minmax.first;
+                const int max          = minmax.second;
 
                 paramConfig.add("<xmlattr>.type", "int" + strSize);
                 paramConfig.add("<xmlattr>.name", _adaptor->getParamName());
