@@ -19,7 +19,7 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="${SELECTOR}" start="yes" />
+                <view sid="selector" start="yes" />
             </registry>
         </service>
 
@@ -28,7 +28,7 @@
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>
 
-        <service uid="${SELECTOR}" type="::uiMedData::editor::SSelector" autoConnect="yes">
+        <service uid="selector" type="::uiMedData::editor::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="selection" uid="selections" />
             <icons>

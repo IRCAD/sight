@@ -43,17 +43,6 @@
     </extension>
 
     <extension implements="::fwActivities::registry::Activities">
-        <id>SDBARCalibration</id>
-        <title>SDB</title>
-        <desc>Series Selector for ARCalibration</desc>
-        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/selector.svg</icon>
-        <requirements />
-        <appConfig id="SDBARCalibration">
-            <parameters />
-        </appConfig>
-    </extension>
-
-    <extension implements="::fwActivities::registry::Activities">
         <id>CameraSeriesExport</id>
         <title>CameraSeries Export</title>
         <desc>CameraSeries Export</desc>
