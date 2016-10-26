@@ -4,6 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "DataConverterTest.hpp"
+
+#include <igtlProtocol/DataConverter.hpp>
+#include <igtlProtocol/RawMessage.hpp>
+#include <igtlProtocol/converter/CompositeConverter.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/Float.hpp>
 #include <fwData/Image.hpp>
@@ -15,8 +21,6 @@
 #include <fwData/String.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwDataCamp/visitor/CompareObjects.hpp>
-
 #include <fwDataTools/helper/Mesh.hpp>
 
 #include <fwTest/generator/Image.hpp>
@@ -24,12 +28,6 @@
 #include <fwTest/helper/compare.hpp>
 
 #include <fwTools/Type.hpp>
-
-#include <igtlProtocol/DataConverter.hpp>
-#include <igtlProtocol/RawMessage.hpp>
-#include <igtlProtocol/converter/CompositeConverter.hpp>
-
-#include "DataConverterTest.hpp"
 
 #include <igtl/igtlImageMessage.h>
 #include <igtl/igtlPointMessage.h>

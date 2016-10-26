@@ -8,8 +8,6 @@ set( DEPENDENCIES
     fwRuntime
     fwData
     arData
-    fwDataCamp
-    arDataCamp
     fwServices
 )
 
