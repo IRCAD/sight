@@ -90,11 +90,18 @@ public:
 
         for(unsigned i = 0; i < lightDirArrayDefinition.arraySize; ++i)
         {
-            ::Ogre::Vector3 lightDir = m_volumeSceneNode->convertLocalToWorldDirection(
-                closestLights[i]->getDerivedDirection(), true);
+            ::Ogre::Vector3 lightDir = -closestLights[i]->getDerivedDirection();
 
             vr3DParams->setNamedConstant("u_lightDirs[" + std::to_string(i) + "]", lightDir);
         }
+
+        ::Ogre::Vector4 diffuse(1.2f, 1.2f, 1.2f, 1.f);
+        vr3DParams->setNamedConstant("u_diffuse", diffuse);
+
+        ::Ogre::Vector4 specular(2.5f, 2.5f, 2.5f, 1.f);
+        ::Ogre::Vector4 shininess(10.f, 0.f, 0.f, 0.f);
+        vr3DParams->setNamedConstant("u_specular", specular);
+        vr3DParams->setNamedConstant("u_shininess", shininess);
     }
 
 private:

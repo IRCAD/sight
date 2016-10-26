@@ -239,16 +239,16 @@ fragment_program VR/RayTracedVolume3D5_FP glsl
     preprocessor_defines MODE3D=1,VIEWPOINTS=5
     default_params
     {
-        param_named_auto u_lightDirs light_direction_view_space_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_diffuse surface_diffuse_colour
-        param_named_auto u_specular surface_specular_colour
-        param_named_auto u_shininess surface_shininess
-        param_named u_sampleDistance float 0.2
+        param_named u_diffuse float4 0 0 0 0
+        param_named u_specular float4 0 0 0 0
+        param_named u_shininess float 0
+        param_named u_lightDirs float4 0 0 0 0
+        param_named u_sampleDistance float 0.002
         param_named u_lobeOffset float 1.
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -269,16 +269,16 @@ fragment_program VR/RayTracedVolume3D8_FP glsl
     preprocessor_defines MODE3D=1,VIEWPOINTS=8
     default_params
     {
-        param_named_auto u_lightDirs light_direction_view_space_array 1
         param_named_auto u_viewportWidth viewport_width
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_diffuse surface_diffuse_colour
-        param_named_auto u_specular surface_specular_colour
-        param_named_auto u_shininess surface_shininess
-        param_named u_sampleDistance float 0.2
+        param_named u_diffuse float4 0 0 0 0
+        param_named u_specular float4 0 0 0 0
+        param_named u_shininess float 0
+        param_named u_lightDirs float4 0 0 0 0
+        param_named u_sampleDistance float 0.002
         param_named u_lobeOffset float 1.
         param_named u_image int 0
         param_named u_tfTexture int 1
