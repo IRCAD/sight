@@ -199,12 +199,6 @@ void Layer::createScene()
     // Alter the camera aspect ratio to match the viewport
     m_camera->setAspectRatio(Ogre::Real(m_viewport->getActualWidth()) / ::Ogre::Real(m_viewport->getActualHeight()));
 
-    ::Ogre::Light* light = m_sceneManager->createLight("MainLight");
-    light->setType(::Ogre::Light::LT_DIRECTIONAL);
-    light->setDirection(::Ogre::Vector3(0,0,-1));
-    light->setDiffuseColour(::Ogre::ColourValue());
-    light->setSpecularColour(::Ogre::ColourValue());
-
     // Creating Camera Scene Node
     ::Ogre::SceneNode* cameraNode = m_sceneManager->getRootSceneNode()->createChildSceneNode("CameraNode");
     cameraNode->setPosition(Ogre::Vector3(0,0,5));
@@ -212,7 +206,6 @@ void Layer::createScene()
 
     // Attach Camera and Headlight to fit vtk light
     cameraNode->attachObject(m_camera);
-    cameraNode->attachObject(light);
 
     // If there is any interactor adaptor in xml, m_moveInteractor will be overwritten by InteractorStyle adaptor
     ::fwRenderOgre::interactor::IMovementInteractor::sptr interactor =

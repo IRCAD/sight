@@ -23,6 +23,9 @@
         <object uid="videoImage" type="::fwData::Image" />
         <object uid="camera" type="::arData::Camera" />
 
+        <object uid="lightMat" type="::fwData::TransformationMatrix3D" />
+        <object uid="lightColor" type="::fwData::Color" />
+
         <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="OgreSceneView" type="::gui::view::SDefaultView" >
@@ -116,6 +119,7 @@
             <adaptor uid="interactorAdaptor" start="yes" />
             <adaptor uid="modelSeriesAdaptor" start="yes" />
             <adaptor uid="negato3DAdaptor" start="yes" />
+            <adaptor uid="lightAdaptor" start="yes" />
         </service>
 
         <service uid="videoAdapter" type="::visuOgreAdaptor::SVideo" >
@@ -142,6 +146,12 @@
             <in key="image" uid="${imageUID}" autoConnect="yes" />
             <inout key="TF" uid="${TFSelections}" />
             <config layer="default" selectedTFKey="SelectedTF" />
+        </service>
+
+        <service uid="lightAdaptor" type="::visuOgreAdaptor::SLight">
+            <in key="lightMat" uid="lightMat" autoConnect="yes" />
+            <in key="lightColor" uid="lightColor" autoConnect="yes" />
+            <config layer="default" name="light" />
         </service>
 
         <!-- End Generic Scene ***************************************** -->

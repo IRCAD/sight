@@ -30,11 +30,14 @@ uniform mat4 u_invWorldViewProj;
 
 #endif // MODE3D
 
-uniform vec3 u_lightDirs[1];
 uniform vec3 u_cameraPos;
 uniform float u_shininess;
-uniform vec3 u_specular;
-uniform vec3 u_diffuse;
+
+#define NUM_LIGHTS 1
+
+uniform vec3 u_lightDir[NUM_LIGHTS];
+uniform vec3 u_lightDiffuse[NUM_LIGHTS];
+uniform vec3 u_lightSpecular[NUM_LIGHTS];
 
 uniform float u_sampleDistance;
 
@@ -56,24 +59,27 @@ vec4 sampleTransferFunction(float intensity);
 
 //-----------------------------------------------------------------------------
 
-#define NUM_LIGHTS 1
-
 vec3 lighting(vec3 _normal, vec3 _position, vec3 _diffuse)
 {
     vec3 vecToCam = normalize(_position - u_cameraPos);
 
     float fLitDiffuse = 0;
+    vec3 diffuse = vec3(0.0);
+
     float fLitSpecular = 0;
+    vec3 specular = vec3(0.0);
 
     for(int i = 0; i < NUM_LIGHTS; ++i)
     {
-        fLitDiffuse += abs(dot( _normal, normalize(u_lightDirs[i]) ));
+        fLitDiffuse += abs(dot( _normal, normalize(u_lightDir[i]) ));
+        diffuse += fLitDiffuse * u_lightDiffuse[i];
 
-        vec3 r = reflect(normalize(u_lightDirs[i]), _normal);
+        vec3 r = reflect(normalize(u_lightDir[i]), _normal);
         fLitSpecular += pow( clamp(dot( vecToCam, r ), 0, 1), u_shininess);
+        specular += fLitSpecular * u_lightSpecular[i];
     }
 
-    return vec3(u_diffuse * _diffuse * fLitDiffuse + u_specular.rgb * fLitSpecular);
+    return vec3(_diffuse * diffuse + specular);
 }
 
 //-----------------------------------------------------------------------------
