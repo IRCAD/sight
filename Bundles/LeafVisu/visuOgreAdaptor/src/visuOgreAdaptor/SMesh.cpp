@@ -292,6 +292,7 @@ void SMesh::doStop() throw(fwTools::Failed)
     {
         ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
         sceneMgr->destroyEntity(m_entity);
+        m_entity = nullptr;
     }
     // Destroy Ogre Mesh
     auto& meshMgr = ::Ogre::MeshManager::getSingleton();
