@@ -182,7 +182,9 @@ void SCamera::onChooseFile()
         {
             ::boost::filesystem::path videoRelativePath;
             videoRelativePath = ::fwTools::getPathDifference(videoDirPreferencePath, videoPath);
-            if(::boost::filesystem::exists(videoRelativePath))
+
+            ::boost::filesystem::path concatenatedPath = videoDirPreferencePath / videoRelativePath;
+            if(::boost::filesystem::exists(concatenatedPath))
             {
                 videoPath = videoRelativePath;
             }
