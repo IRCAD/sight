@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuOgreAdaptor/SMaterial.hpp"
+
 #include "visuOgreAdaptor/SShaderParameter.hpp"
 #include "visuOgreAdaptor/STexture.hpp"
 #include "visuOgreAdaptor/defines.hpp"
@@ -603,7 +604,7 @@ void SMaterial::updateShadingMode( int shadingMode  )
                         m_perPrimitiveColorTextureName,
                         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 
-                    SLM_ASSERT("Texture should have been created before in SMesh !", !result.second);
+                    SLM_ASSERT("Texture should have been created before in SMesh", !result.second);
 
                     ::Ogre::TexturePtr tex = result.first.dynamicCast< ::Ogre::Texture>();
 
@@ -620,7 +621,7 @@ void SMaterial::updateShadingMode( int shadingMode  )
                         const auto unitStateCount = ogrePass->getNumTextureUnitStates();
 
                         // Unit state is set to 10 in the material file, but the real index is set here
-                        // Ogre packs texture unit indices so we can't use spare indices :'(
+                        // Ogre packs texture unit indices so we can't use spare indices
                         ogrePass->getGeometryProgramParameters()->setNamedConstant("u_colorPrimitiveTexture",
                                                                                    unitStateCount - 1);
                     }
