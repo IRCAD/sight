@@ -5,7 +5,6 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES
         fwCore
         fwData
-        fwDataCamp
         fwMedData
         fwGui
         fwGuiQt
