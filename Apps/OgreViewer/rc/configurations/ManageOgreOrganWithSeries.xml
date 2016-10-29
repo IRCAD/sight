@@ -80,5 +80,12 @@
         <start uid="organView" />
         <start uid="updaterReconst" />
 
+        <!-- Deferred start -->
+        <start uid="materialSelector" />
+        <start uid="representationEditor" />
+        <start uid="shaderParameters" />
+        <start uid="organMaterialEditor" />
+        <start uid="textureSelector" />
+
     </config>
 </extension>

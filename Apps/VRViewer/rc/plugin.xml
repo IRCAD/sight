@@ -343,6 +343,12 @@
             <start uid="Scene2D_Shutter" />
             <start uid="extractImage" />
 
+            <!-- Deferred start -->
+            <start uid="medicalImage" />
+            <start uid="cfgOgreVolumeRendering" />
+            <start uid="windowLevelVR" />
+            <start uid="computeHistogram" />
+
         </config>
 
     </extension>
