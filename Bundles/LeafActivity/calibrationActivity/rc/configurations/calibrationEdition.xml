@@ -204,12 +204,6 @@
 
         <!-- ******************************* Connections ************************************** -->
 
-        <!--  Update extractCameras when it is started (ie. when the input cameraSeries is copied).  -->
-        <connect>
-            <signal>extractCameras/started</signal>
-            <slot>extractCameras/update</slot>
-        </connect>
-
         <connect channel="cameraModified">
             <signal>camera0/idModified</signal>
             <signal>camera1/idModified</signal>
@@ -231,7 +225,20 @@
         <start uid="mainView" />
         <start uid="copyCameraSeries" />
 
+        <!-- Deferred start -->
+        <start uid="extractCameras" />
+        <start uid="cameraSeriesInfo" />
+        <start uid="CalibrationXmlWriter" />
+        <start uid="ActionExport" />
+        <start uid="cameraInfo1" />
+        <start uid="cameraInfo2" />
+        <start uid="camera0Launcher" />
+        <start uid="camera1Launcher" />
+
         <update uid="copyCameraSeries" />
+
+        <!-- Deferred update -->
+        <update uid="extractCameras" />
 
     </config>
 </extension>

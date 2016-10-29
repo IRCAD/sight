@@ -1,6 +1,9 @@
 <plugin id="EchoEd" version="@DASH_VERSION@" >
 
+    <requirement id="dataReg" />
     <requirement id="servicesReg" />
+    <requirement id="patchMedicalData" />
+    <requirement id="preferences" />
     <requirement id="visuVTKQt" />
 
     <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/cameraView.xml"/>
@@ -49,6 +52,10 @@
 
             <start uid="loader" />
             <start uid="extractObject" />
+
+            <!-- Deferred start -->
+            <start uid="startView" />
+
             <update uid="loader" />
             <update uid="extractObject" />
         </config>
@@ -494,13 +501,13 @@
             <connect>
                 <signal>sliderCranioCaudal/valueChanged</signal>
                 <slot>imageManager/updateCranioCaudal</slot>
-                <slot>computeMatrixFromCell/updateCranioCaudal</slot>
+                <slot>computeMatrixFromCell/updateSingle</slot>
             </connect>
 
             <connect>
                 <signal>sliderRadial/valueChanged</signal>
                 <slot>imageManager/updateRadial</slot>
-                <slot>computeMatrixFromCell/updateRadial</slot>
+                <slot>computeMatrixFromCell/updateSingle</slot>
             </connect>
 
             <connect>
@@ -523,6 +530,11 @@
             <start uid="concatenateEchoMatrices" />
             <start uid="igtlClientEditor" />
             <start uid="probePosition" />
+
+            <!-- Deferred start -->
+            <start uid="computeMatrixFromCell" />
+            <start uid="organView" />
+            <start uid="outsideView" />
 
             <update uid="probeMeshReader" />
             <update uid="extractOrgans" />

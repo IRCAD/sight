@@ -210,5 +210,8 @@
         <start uid="mainFrame" />
         <start uid="activitySeriesUpdater" />
 
+        <!-- Deferred start -->
+        <start uid="actionSaveActivity" />
+
     </config>
 </extension>
