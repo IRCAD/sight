@@ -16,11 +16,14 @@
 
 #include <fwDataTools/helper/Array.hpp>
 
+#include <fwPreferences/helper.hpp>
+
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
+
 
 namespace videoCalibration
 {
@@ -39,8 +42,8 @@ const ::fwServices::IService::KeyType s_CALIBRATION_INOUT = "calInfo";
 // ----------------------------------------------------------------------------
 
 SChessBoardDetector::SChessBoardDetector() throw () :
-    m_width(0),
-    m_height(0),
+    m_width(11),
+    m_height(8),
     m_isDetected(false),
     m_lastTimestamp(0)
 {
@@ -69,14 +72,12 @@ void SChessBoardDetector::configuring() throw (fwTools::Failed)
     SLM_ASSERT("Tag 'board' not found.", cfgBoard);
 
     SLM_ASSERT("Attribute 'width' is missing.", cfgBoard->hasAttribute("width"));
-    std::string width = cfgBoard->getAttributeValue("width");
-    SLM_ASSERT("Attribute 'width' is empty", !width.empty());
-    m_width = ::boost::lexical_cast< size_t > (width);
+    m_widthKey = cfgBoard->getAttributeValue("width");
+    SLM_ASSERT("Attribute 'width' is empty", !m_widthKey.empty());
 
     SLM_ASSERT("Attribute 'height' is missing.", cfgBoard->hasAttribute("height"));
-    std::string height = cfgBoard->getAttributeValue("height");
-    SLM_ASSERT("Attribute 'height' is empty", !height.empty());
-    m_height = ::boost::lexical_cast< size_t > (height);
+    m_heightKey = cfgBoard->getAttributeValue("height");
+    SLM_ASSERT("Attribute 'height' is empty", !m_heightKey.empty());
 }
 
 // ----------------------------------------------------------------------------
@@ -84,6 +85,7 @@ void SChessBoardDetector::configuring() throw (fwTools::Failed)
 void SChessBoardDetector::starting() throw (fwTools::Failed)
 {
     m_pointsLists.resize( this->getKeyGroupSize(s_TIMELINE_INPUT) );
+    this->updateChessboardSize();
 }
 
 // ----------------------------------------------------------------------------
@@ -171,10 +173,18 @@ void SChessBoardDetector::detectPoints()
 
 // ----------------------------------------------------------------------------
 
-void SChessBoardDetector::updateChessboardSize(unsigned int width, unsigned int height)
+void SChessBoardDetector::updateChessboardSize()
 {
-    m_width  = static_cast<size_t>(width);
-    m_height = static_cast<size_t>(height);
+    const std::string widthStr = ::fwPreferences::getPreference(m_widthKey);
+    if(!widthStr.empty())
+    {
+        m_width = std::stoi(widthStr);
+    }
+    const std::string heightStr = ::fwPreferences::getPreference(m_heightKey);
+    if(!heightStr.empty())
+    {
+        m_height = std::stoi(heightStr);
+    }
 }
 
 // ----------------------------------------------------------------------------

@@ -13,5 +13,6 @@ set( DEPENDENCIES
     fwRuntime
     fwServices
     fwTools
+    fwPreferences
 )
 set( REQUIREMENTS dataReg servicesReg)

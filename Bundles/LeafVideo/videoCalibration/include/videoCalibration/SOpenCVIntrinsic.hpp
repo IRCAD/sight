@@ -28,6 +28,7 @@ namespace videoCalibration
         <service type="::videoCalibration::SOpenCVIntrinsic">
             <in key="calibrationInfo" uid="..." />
             <inout key="camera" uid="..." />
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
        </service>
    @endcode
  * @subsection Input Input:
@@ -35,14 +36,12 @@ namespace videoCalibration
  * @subsection In-Out In-Out:
  * - \b camera [::arData::Camera]: Output calibration.
  * @subsection Configuration Configuration:
- * - \b board : defines the number of square in 2 dimensions of the chessboard.
+ * - \b board : preference key to defines the number of square in 2 dimensions of the chessboard.
  */
 class VIDEOCALIBRATION_CLASS_API SOpenCVIntrinsic : public ::videoCalibration::ICalibration
 {
 public:
     fwCoreServiceClassDefinitionsMacro((SOpenCVIntrinsic)(::videoCalibration::ICalibration));
-
-    typedef ::fwCom::Slot <void (unsigned int, unsigned int, float)> UpdateChessboardSizeSlotType;
 
     /// Constructor.
     VIDEOCALIBRATION_API SOpenCVIntrinsic() throw ();
@@ -69,12 +68,19 @@ protected:
 
     /**
      * @brief SLOT: update the chessboard size.
-     * @param width chessboard's width expresses by the number of square.
-     * @param height chessboard's height expresses by the number of square.
      */
-    void updateChessboardSize(unsigned int width, unsigned int height, float squareSize);
+    void updateChessboardSize();
 
 private:
+
+    /// Preference key to retrieve width of the chessboard used for calibration
+    std::string m_widthKey;
+
+    /// Preference key to retrieve height of the chessboard used for calibration
+    std::string m_heightKey;
+
+    /// Preference key to retrieve size of the chessboard'square used for calibration
+    std::string m_squareSizeKey;
 
     /// Width of the chessboard used for calibration
     unsigned int m_width;
@@ -85,6 +91,7 @@ private:
     /// Size of the chessboard'square used for calibration
     float m_squareSize;
 };
+
 } // namespace videoCalibration
 
 #endif // __VIDEOCALIBRATION_SOPENCVINTRINSIC_HPP__

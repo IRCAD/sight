@@ -5,9 +5,6 @@
         <param name="SERIESDB" />
         <param name="AS_UID" />
         <param name="cameraSeries" />
-        <param name="chessboardWidth" default="11" />
-        <param name="chessboardHeight" default="8" />
-        <param name="squareSizeChessboard" default="20" />
         <param name="videoGrabberImpl" default="::videoQt::SFrameGrabber" />
     </parameters>
     <config>
@@ -18,24 +15,6 @@
         <object uid="${AS_UID}" type="::fwMedData::ActivitySeries" src="ref" />
 
         <object uid="${cameraSeries}" type="::arData::CameraSeries" src="ref" />
-
-        <object uid="chessboardParameters" type="::fwData::Composite">
-            <item key="chessboardWidth">
-                <object type="::fwData::String">
-                    <value>${chessboardWidth}</value>
-                </object>
-            </item>
-            <item key="chessboardHeight">
-                <object type="::fwData::String">
-                    <value>${chessboardHeight}</value>
-                </object>
-            </item>
-            <item key="squareSizeChessboard">
-                <object type="::fwData::String">
-                    <value>${squareSizeChessboard}</value>
-                </object>
-            </item>
-        </object>
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -91,10 +70,7 @@
                     <appConfig id="calIntrinsicView">
                         <parameters>
                             <parameter replace="WID_PARENT" uid="calibrationView" />
-                            <parameter replace="chessboardWidth" by="${chessboardWidth}" />
-                            <parameter replace="chessboardHeight" by="${chessboardHeight}" />
-                            <parameter replace="squareSizeChessboard" by="${squareSizeChessboard}" />
-                            <parameter replace="chessboardProxy" uid="chessboardProxy" />
+                            <parameter replace="preferencesModifiedProxy" uid="preferencesModifiedProxy" />
                             <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
                         </parameters>
                     </appConfig>
@@ -103,11 +79,8 @@
                     <appConfig id="calExtrinsicView">
                         <parameters>
                             <parameter replace="WID_PARENT" uid="calibrationView" />
-                            <parameter replace="chessboardWidth" by="${chessboardWidth}" />
-                            <parameter replace="chessboardHeight" by="${chessboardHeight}" />
-                            <parameter replace="squareSizeChessboard" by="${squareSizeChessboard}" />
+                            <parameter replace="preferencesModifiedProxy" uid="preferencesModifiedProxy" />
                             <parameter replace="cameraSeries" uid="${cameraSeries}" />
-                            <parameter replace="chessboardProxy" uid="chessboardProxy" />
                             <parameter replace="videoGrabberImpl" by="${videoGrabberImpl}" />
                         </parameters>
                     </appConfig>
@@ -115,10 +88,27 @@
             </config>
         </service>
 
-        <service uid="action_chessBoardSize" type="::videoCalibration::action::SCalibrationConfiguration" >
-            <in key="parameters" uid="chessboardParameters" />
+        <service uid="action_chessBoardSize" type="::uiPreferences::action::SPreferencesConfiguration" >
+            <preference>
+                <type>number</type>
+                <name>Chessboard width</name>
+                <key>CHESSBOARD_WIDTH</key>
+                <default_value>11</default_value>
+            </preference>
+            <preference>
+                <type>number</type>
+                <name>Chessboard height</name>
+                <key>CHESSBOARD_HEIGHT</key>
+                <default_value>8</default_value>
+            </preference>
+            <preference>
+                <type>number</type>
+                <name>Chessboard square size (mm)</name>
+                <key>CHESSBOARD_SQUARE_SIZE</key>
+                <default_value>20</default_value>
+            </preference>
         </service>
-
+        
         <service uid="ActionExport" type="::uiMedData::action::SExportSeries" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="series" uid="${cameraSeries}" />
@@ -138,8 +128,8 @@
 
         <!-- ******************************* Connections ************************************** -->
 
-        <connect channel="chessboardProxy">
-            <signal>action_chessBoardSize/updatedChessboardSize</signal>
+        <connect channel="preferencesModifiedProxy">
+            <signal>action_chessBoardSize/parametersModified</signal>
         </connect>
 
         <!-- START AND STOP SERVICES -->

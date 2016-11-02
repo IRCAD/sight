@@ -21,7 +21,7 @@ const std::string s_VIDEO_DIR_PREF = "VIDEO_DIR_PREF";
 std::string getVideoDir()
 {
     std::string videoDirectory;
-    auto preferencesServicesList = ::fwServices::OSR::getServices("::preferences::IPreferencesService");
+    auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
     if(!preferencesServicesList.empty())
     {
         ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();

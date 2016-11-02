@@ -1,12 +1,6 @@
 <plugin id="videoCalibration" class="::videoCalibration::Plugin" version="@DASH_VERSION@" >
 
     <library name="videoCalibration" />
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwGui::IActionSrv</type>
-        <service>::videoCalibration::action::SCalibrationConfiguration</service>
-        <object>::fwData::Composite</object>
-    </extension>  
     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::videoCalibration::ICalibration</type>

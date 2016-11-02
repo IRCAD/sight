@@ -4,10 +4,7 @@
         <param name="WID_PARENT" />
         <param name="camera" />
         <param name="calibrationInfo" />
-        <param name="chessboardWidth" />
-        <param name="chessboardHeight" />
-        <param name="squareSizeChessboard" />
-        <param name="chessboardProxy" />
+        <param name="preferencesModifiedProxy" />
         <param name="videoGrabberImpl" />
     </parameters>
     <config>
@@ -137,7 +134,7 @@
             <inout group="calInfo">
                 <key uid="${calibrationInfo}" />
             </inout>
-            <board width="${chessboardWidth}" height="${chessboardHeight}" />
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" />
         </service>
 
         <service uid="DisplayCalibrationInfo" type="::uiCalibration::SDisplayCalibrationInfo" >
@@ -151,7 +148,7 @@
         <service uid="OpenCVIntrinsicCal" type="::videoCalibration::SOpenCVIntrinsic" worker="intr_chess_checker">
             <in key="calibrationInfo" uid="${calibrationInfo}" />
             <inout key="camera" uid="${camera}" />
-            <board width="${chessboardWidth}" height="${chessboardHeight}" squareSize="${squareSizeChessboard}" />
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
         </service>
 
         <service uid="cameraInfo" type="::uiCalibration::SCameraInformationEditor" autoConnect="yes" >
@@ -191,7 +188,7 @@
             <slot>CalibrationInfoEditor/update</slot>
         </connect>
 
-        <connect channel="${chessboardProxy}">
+        <connect channel="${preferencesModifiedProxy}">
             <slot>OpenCVIntrinsicCal/updateChessboardSize</slot>
             <slot>ChessboardDetector/updateChessboardSize</slot>
         </connect>

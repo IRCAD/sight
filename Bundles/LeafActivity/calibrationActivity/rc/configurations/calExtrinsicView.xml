@@ -7,11 +7,8 @@
         <param name="camera2" />
         <param name="calibrationInfo1" />
         <param name="calibrationInfo2" />
-        <param name="chessboardWidth" />
-        <param name="chessboardHeight" />
-        <param name="squareSizeChessboard" />
         <param name="camIndex" />
-        <param name="chessboardProxy" />
+        <param name="preferencesModifiedProxy" />
         <param name="videoGrabberImpl" />
     </parameters>
     <config>
@@ -311,7 +308,7 @@
             <in key="calibrationInfo2" uid="${calibrationInfo2}" />
             <inout key="cameraSeries" uid="${cameraSeries}" />
             <camIndex>${camIndex}</camIndex>
-            <board width="${chessboardWidth}" height="${chessboardHeight}" squareSize="${squareSizeChessboard}" />
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
         </service>
 
         <service uid="cameraSeriesInfo" type="::uiCalibration::SCameraSeriesEditor" autoConnect="yes">
@@ -377,7 +374,7 @@
             <slot>ExtrinsicCalibrationInfoEditor/update</slot>
         </connect>
 
-        <connect channel="${chessboardProxy}">
+        <connect channel="${preferencesModifiedProxy}">
             <slot>openCVExtrinsicCal/updateChessboardSize</slot>
             <slot>ChessboardDetector/updateChessboardSize</slot>
         </connect>

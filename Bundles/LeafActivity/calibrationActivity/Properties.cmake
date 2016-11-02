@@ -28,6 +28,7 @@ set( REQUIREMENTS
     uiTools
     uiIO
     uiCalibration
+    uiPreferences
 
     videoCalibration
     videoQt
@@ -36,4 +37,6 @@ set( REQUIREMENTS
     trackerAruco
 
     validators
+    
+    preferences
 )

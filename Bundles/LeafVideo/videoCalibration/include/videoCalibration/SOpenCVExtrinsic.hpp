@@ -16,7 +16,7 @@ namespace videoCalibration
  * @brief   SOpenCVExtrinsic service that computes extrinsic calibration with openCV.
  *
  * @section Slots Slots
- * - \b updateChessboardSize(unsigned int, unsigned int, float) : Received when the chessboard parameters change.
+ * - \b updateChessboardSize() : Received when the chessboard preferences parameters change.
 
  * @section XML XML Configuration
  *
@@ -26,7 +26,7 @@ namespace videoCalibration
             <in key="calibrationInfo2" uid="..." />
             <inout key="cameraSeries" uid="..." />
             <camIndex>...</camIndex>
-            <board width="17" height="13" />
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
        </service>
    @endcode
  * @subsection Input Input:
@@ -37,14 +37,12 @@ namespace videoCalibration
  * @subsection Configuration Configuration:
  * - \b camIndex (optional, default: 1): index of the camera in \b cameraSeries used to compute extrinsic matrix
  *      (from camera[0] to camera[index]).
- * - \b board : defines the number of square in 2 dimensions of the chessboard.
+ * - \b board : preference key to retrieve the number of square in 2 dimensions of the chessboard.
  */
 class VIDEOCALIBRATION_CLASS_API SOpenCVExtrinsic : public ::videoCalibration::ICalibration
 {
 public:
     fwCoreServiceClassDefinitionsMacro((SOpenCVExtrinsic)(::videoCalibration::ICalibration));
-
-    typedef ::fwCom::Slot <void (unsigned int, unsigned int, float)> UpdateChessboardSizeSlotType;
 
     /// Constructor.
     VIDEOCALIBRATION_API SOpenCVExtrinsic() throw ();
@@ -73,16 +71,23 @@ private:
 
     /**
      * @brief SLOT: update the chessboard size.
-     * @param width chessboard's width expresses by the number of square.
-     * @param height chessboard's height expresses by the number of square.
      */
-    void updateChessboardSize(unsigned int width, unsigned int height, float squareSize);
+    void updateChessboardSize();
 
     /// FwId of the first calibrationInfo
     std::string m_calibrationInfo1ID;
 
     /// FwId of the second calibrationInfo
     std::string m_calibrationInfo2ID;
+
+    /// Preference key to retrieve width of the chessboard used for calibration
+    std::string m_widthKey;
+
+    /// Preference key to retrieve height of the chessboard used for calibration
+    std::string m_heightKey;
+
+    /// Preference key to retrieve size of the chessboard'square used for calibration
+    std::string m_squareSizeKey;
 
     /// Width of the chessboard used for calibration
     unsigned int m_width;

@@ -9,17 +9,18 @@
 
 #include "videoCalibration/config.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/PointList.hpp>
 #include <arData/FrameTL.hpp>
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
+#include <fwData/Image.hpp>
+#include <fwData/PointList.hpp>
+
 #include <fwServices/IController.hpp>
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace videoCalibration
 {
@@ -38,7 +39,7 @@ namespace videoCalibration
  * - \b checkPoints(::fwCore::HiResClock::HiResClockType): Try to detect the chessboard in the image(s) from the
  * timeline(s) at the given timestamp.
  * - \b detectPoints(): Request to store the current image in the calibration data, if the chessboard is detected.
- * - \b updateChessboardSize(unsigned int, unsigned int): update the parameters of the chessboard.
+ * - \b updateChessboardSize(): update the parameters of the chessboard from preferences.
  *
  * @section XML XML Configuration
  *
@@ -52,7 +53,7 @@ namespace videoCalibration
                 <key uid="..." />
                 <key uid="..." />
             </inout>
-           <board width="17" height="13" />
+           <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" />
        </service>
    @endcode
  * @subsection Input Input:
@@ -60,7 +61,7 @@ namespace videoCalibration
  * @subsection In-Out In-Out:
  * - \b key2 [::arData::CalibrationInfo]: calibration object where to store the detected images.
  * @subsection Configuration Configuration:
- * - \b board : number of squares of the board in width and height.
+ * - \b board : preference key to retrieve the number of squares of the board in width and height.
  */
 class VIDEOCALIBRATION_CLASS_API SChessBoardDetector : public ::fwServices::IController
 {
@@ -125,10 +126,8 @@ private:
 
     /**
      * @brief SLOT: update the chessboard size.
-     * @param width chessboard's width expresses by the number of square.
-     * @param height chessboard's height expresses by the number of square.
      */
-    VIDEOCALIBRATION_API void updateChessboardSize(unsigned int width, unsigned int height);
+    VIDEOCALIBRATION_API void updateChessboardSize();
 
     /**
      * @brief Detect chessboard points
@@ -151,6 +150,12 @@ private:
 
     /// Signal emitted when chessboard is not detected
     ChessboardNotDetectedSignalType::sptr m_sigChessboardNotDetected;
+
+    /// Preference key to retrieve width of the chessboard used for calibration
+    std::string m_widthKey;
+
+    /// Preference key to retrieve height of the chessboard used for calibration
+    std::string m_heightKey;
 
     /// Width of the chessboard used for calibration
     size_t m_width;
