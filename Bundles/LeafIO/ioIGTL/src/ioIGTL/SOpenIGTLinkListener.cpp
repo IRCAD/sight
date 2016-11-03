@@ -11,11 +11,6 @@
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/Object.hpp>
@@ -25,32 +20,31 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
+#include <fwPreferences/helper.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwTools/Failed.hpp>
+
+#include <boost/lexical_cast.hpp>
 
 #include <functional>
 #include <string>
 
 fwServicesRegisterMacro (::ioNetwork::INetworkListener, ::ioIGTL::SOpenIGTLinkListener, ::fwData::Object);
 
-
 namespace ioIGTL
 {
-const ::fwCom::Slots::SlotKeyType SOpenIGTLinkListener::s_UPDATE_CONFIGURATION_SLOT = "updateConfiguration";
 
 //-----------------------------------------------------------------------------
 
 SOpenIGTLinkListener::SOpenIGTLinkListener() :
-    ioNetwork::INetworkListener(),
+    m_hostname("127.0.0.1"),
+    m_port(4242),
     m_timelineType(NONE),
     m_frameTLInitialized(false)
 {
-    m_updateConfigurationSlot = ::fwCom::newSlot (&SOpenIGTLinkListener::updateConfiguration, this);
-    ::fwCom::HasSlots::m_slots (SOpenIGTLinkListener::s_UPDATE_CONFIGURATION_SLOT, m_updateConfigurationSlot);
-
-    ::fwCom::HasSlots::m_slots.setWorker(m_associatedWorker);
 }
 
 //-----------------------------------------------------------------------------
@@ -65,6 +59,7 @@ void SOpenIGTLinkListener::configuring() throw (::fwTools::Failed)
 {
     std::string serverInfo;
     std::string portStr;
+    std::string hostnameStr;
     std::string::size_type splitPosition;
 
     SLM_ASSERT("Configuration not found", m_configuration != NULL);
@@ -74,9 +69,21 @@ void SOpenIGTLinkListener::configuring() throw (::fwTools::Failed)
         SLM_INFO ("OpenIGTLinkListener::configure server: " + serverInfo);
         splitPosition = serverInfo.find (':');
         SLM_ASSERT ("Server info not formatted correctly", splitPosition != std::string::npos);
-        m_hostname = serverInfo.substr (0, splitPosition);
-        portStr    = serverInfo.substr (splitPosition + 1, serverInfo.size());
-        m_port     = ::boost::lexical_cast< ::boost::uint16_t > (portStr);
+
+        hostnameStr = serverInfo.substr (0, splitPosition);
+        portStr     = serverInfo.substr (splitPosition + 1, serverInfo.size());
+
+        m_hostnameKey = this->getPreferenceKey(hostnameStr);
+        m_portKey     = this->getPreferenceKey(portStr);
+
+        if(m_hostnameKey.empty())
+        {
+            m_hostname = hostnameStr;
+        }
+        if(m_portKey.empty())
+        {
+            m_port = ::boost::lexical_cast< std::uint16_t > (portStr);
+        }
     }
     else
     {
@@ -128,7 +135,7 @@ void SOpenIGTLinkListener::runClient() throw (::fwTools::Failed)
         else
         {
             // Only report the error on console (this normally happens only if we have requested the disconnection)
-            OSLM_ERROR(ex.what());
+            SLM_ERROR(ex.what());
         }
         return;
     }
@@ -184,6 +191,23 @@ void SOpenIGTLinkListener::setHost(std::string const& hostname, boost::uint16_t 
 
 void SOpenIGTLinkListener::starting() throw (::fwTools::Failed)
 {
+    if(!m_hostnameKey.empty())
+    {
+        std::string hostname = ::fwPreferences::getPreference(m_hostnameKey);
+        if(!hostname.empty())
+        {
+            m_hostname = hostname;
+        }
+    }
+    if(!m_portKey.empty())
+    {
+        std::string port = ::fwPreferences::getPreference(m_portKey);
+        if(!port.empty())
+        {
+            m_port = ::boost::lexical_cast< std::uint16_t > (port);
+        }
+    }
+
     ::fwData::Object::sptr obj  = this->getObject();
     ::arData::TimeLine::sptr tl = ::arData::TimeLine::dynamicCast(obj);
 
@@ -203,7 +227,7 @@ void SOpenIGTLinkListener::starting() throw (::fwTools::Failed)
         }
         else
         {
-            OSLM_WARN("This type of timeline is not managed !");
+            SLM_WARN("This type of timeline is not managed !");
         }
     }
 
@@ -211,14 +235,6 @@ void SOpenIGTLinkListener::starting() throw (::fwTools::Failed)
     m_clientWorker = ::fwThread::Worker::New();
 
     m_clientWorker->post(task);
-}
-
-//-----------------------------------------------------------------------------
-
-void SOpenIGTLinkListener::updateConfiguration(std::string const hostname, ::boost::uint16_t port)
-{
-    m_hostname = hostname;
-    m_port     = port;
 }
 
 //-----------------------------------------------------------------------------
@@ -295,6 +311,20 @@ void SOpenIGTLinkListener::manageTimeline(::fwData::Object::sptr obj)
     {
         //TODO: otherTL
     }
+}
+
+//-----------------------------------------------------------------------------
+
+std::string SOpenIGTLinkListener::getPreferenceKey(const std::string key) const
+{
+    std::string keyResult;
+    size_t first = key.find('%');
+    size_t last  = key.rfind('%');
+    if (first == 0 && last == key.size() - 1)
+    {
+        keyResult = key.substr(1, key.size() - 2);
+    }
+    return keyResult;
 }
 
 //-----------------------------------------------------------------------------

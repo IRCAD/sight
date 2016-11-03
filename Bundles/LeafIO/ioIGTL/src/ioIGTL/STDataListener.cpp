@@ -6,43 +6,39 @@
 
 #include "ioIGTL/STDataListener.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
+#include <arData/MatrixTL.hpp>
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <arData/MatrixTL.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwPreferences/helper.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwTools/Failed.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
-#include <fwServices/macros.hpp>
 
-#include <string>
+#include <boost/lexical_cast.hpp>
+
 #include <functional>
+#include <string>
 
 fwServicesRegisterMacro (::ioNetwork::INetworkListener, ::ioIGTL::STDataListener, ::arData::MatrixTL);
 
-
 namespace ioIGTL
 {
-const ::fwCom::Slots::SlotKeyType STDataListener::s_UPDATE_CONFIGURATION_SLOT = "updateConfiguration";
 
 //-----------------------------------------------------------------------------
 
 STDataListener::STDataListener() :
-    ioNetwork::INetworkListener()
+    m_hostname("127.0.0.1"),
+    m_port(4242)
 {
-    m_updateConfigurationSlot = ::fwCom::newSlot (&STDataListener::updateConfiguration, this);
-    ::fwCom::HasSlots::m_slots (STDataListener::s_UPDATE_CONFIGURATION_SLOT, m_updateConfigurationSlot);
-
-    ::fwCom::HasSlots::m_slots.setWorker(m_associatedWorker);
 }
 
 //-----------------------------------------------------------------------------
@@ -57,6 +53,7 @@ void STDataListener::configuring() throw (::fwTools::Failed)
 {
     std::string serverInfo;
     std::string portStr;
+    std::string hostnameStr;
     std::string::size_type splitPosition;
 
     SLM_ASSERT("Configuration not found", m_configuration != NULL);
@@ -66,9 +63,21 @@ void STDataListener::configuring() throw (::fwTools::Failed)
         SLM_INFO ("OpenIGTLinkListener::configure server: " + serverInfo);
         splitPosition = serverInfo.find (':');
         SLM_ASSERT ("Server info not formatted correctly", splitPosition != std::string::npos);
-        m_hostname = serverInfo.substr (0, splitPosition);
-        portStr    = serverInfo.substr (splitPosition + 1, serverInfo.size());
-        m_port     = ::boost::lexical_cast< std::uint16_t > (portStr);
+
+        hostnameStr = serverInfo.substr (0, splitPosition);
+        portStr     = serverInfo.substr (splitPosition + 1, serverInfo.size());
+
+        m_hostnameKey = this->getPreferenceKey(hostnameStr);
+        m_portKey     = this->getPreferenceKey(portStr);
+
+        if(m_hostnameKey.empty())
+        {
+            m_hostname = hostnameStr;
+        }
+        if(m_portKey.empty())
+        {
+            m_port = ::boost::lexical_cast< std::uint16_t > (portStr);
+        }
     }
     else
     {
@@ -129,7 +138,7 @@ void STDataListener::runClient() throw (::fwTools::Failed)
         else
         {
             // Only report the error on console (this normally happens only if we have requested the disconnection)
-            OSLM_ERROR(ex.what());
+            SLM_ERROR(ex.what());
         }
         return;
     }
@@ -160,7 +169,7 @@ void STDataListener::runClient() throw (::fwTools::Failed)
         else
         {
             // Only report the error on console (this normally happens only if we have requested the disconnection)
-            OSLM_ERROR(ex.what());
+            SLM_ERROR(ex.what());
         }
     }
     m_sigClientDisconnected->asyncEmit();
@@ -178,6 +187,23 @@ void STDataListener::setHost(std::string const& hostname, std::uint16_t const po
 
 void STDataListener::starting() throw (::fwTools::Failed)
 {
+    if(!m_hostnameKey.empty())
+    {
+        std::string hostname = ::fwPreferences::getPreference(m_hostnameKey);
+        if(!hostname.empty())
+        {
+            m_hostname = hostname;
+        }
+    }
+    if(!m_portKey.empty())
+    {
+        std::string port = ::fwPreferences::getPreference(m_portKey);
+        if(!port.empty())
+        {
+            m_port = ::boost::lexical_cast< std::uint16_t > (port);
+        }
+    }
+
     ::arData::MatrixTL::sptr matTL = this->getObject< ::arData::MatrixTL >();
     matTL->setMaximumSize(10);
     matTL->initPoolSize(static_cast< unsigned int >(m_matrixNameIndex.size()));
@@ -186,14 +212,6 @@ void STDataListener::starting() throw (::fwTools::Failed)
     m_clientWorker = ::fwThread::Worker::New();
 
     m_clientWorker->post(task);
-}
-
-//-----------------------------------------------------------------------------
-
-void STDataListener::updateConfiguration(const std::string hostname, std::uint16_t port)
-{
-    m_hostname = hostname;
-    m_port     = port;
 }
 
 //-----------------------------------------------------------------------------
@@ -247,6 +265,20 @@ void STDataListener::manageTimeline(const ::fwData::Composite::sptr& obj)
     sig = matTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
         ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
     sig->asyncEmit(timestamp);
+}
+
+//-----------------------------------------------------------------------------
+
+std::string STDataListener::getPreferenceKey(const std::string key) const
+{
+    std::string keyResult;
+    size_t first = key.find('%');
+    size_t last  = key.rfind('%');
+    if (first == 0 && last == key.size() - 1)
+    {
+        keyResult = key.substr(1, key.size() - 2);
+    }
+    return keyResult;
 }
 
 //-----------------------------------------------------------------------------
