@@ -9,8 +9,12 @@
 
 #include "visuVTKARAdaptor/config.hpp"
 
+#include <arData/Camera.hpp>
+
 #include <fwCore/base.hpp>
+
 #include <fwData/Color.hpp>
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 namespace fwData
@@ -22,7 +26,6 @@ namespace visuVTKARAdaptor
 {
 
 /**
- * @class   SPointList
  * @brief   Display a 2D point list.
  *
  *  This adaptor works on a ::fwData::PointList.
@@ -78,6 +81,12 @@ private:
 
     /// uid of the image where the points come from - used to get the resolution
     std::string m_imageId;
+
+    /// uid of the camera
+    std::string m_cameraUID;
+
+    /// camera used to retrieve the optical center
+    ::arData::Camera::csptr m_camera;
 };
 
 
