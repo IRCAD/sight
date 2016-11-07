@@ -4,9 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __BEGINNERTRAINING_TUTO03_SSTRINGEDITOR_HPP__
-#define __BEGINNERTRAINING_TUTO03_SSTRINGEDITOR_HPP__
+#ifndef __BEGINNERTRAINING_TUTO04_SDEFORMMESH_HPP__
+#define __BEGINNERTRAINING_TUTO04_SDEFORMMESH_HPP__
 
+// Qt objects
 #include "beginnerTraining/config.hpp"
 
 #include <gui/editor/IEditor.hpp>
@@ -16,7 +17,7 @@
 
 namespace beginnerTraining
 {
-namespace tuto03
+namespace tuto04
 {
 
 /**
@@ -25,25 +26,25 @@ namespace tuto03
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::beginnerTraining::tuto03::SStringEditor">
+        <service type="::beginnerTraining::tuto04::SDeformMesh">
             <inout key="editString" uid="..." />
        </service>
    @endcode
  * @subsection In-Out In-Out:
  * - \b string [::fwData::String]: string to display and to modify.
  */
-class BEGINNERTRAINING_CLASS_API SStringEditor : public QObject,
-                                                 public ::gui::editor::IEditor
+class BEGINNERTRAINING_CLASS_API SDeformMesh : public QObject,
+                                               public ::gui::editor::IEditor
 {
 Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SStringEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro ( (SDeformMesh)(::gui::editor::IEditor) );
 
-    BEGINNERTRAINING_API SStringEditor();
+    BEGINNERTRAINING_API SDeformMesh();
 
-    BEGINNERTRAINING_API virtual ~SStringEditor() throw();
+    BEGINNERTRAINING_API virtual ~SDeformMesh() throw();
 
 protected Q_SLOTS:
 
@@ -71,8 +72,10 @@ private:
     QPointer<QTextEdit> m_textEditor;
 };
 
-} // namespace tuto03
+
+
+} // namespace tuto04
 } // namespace beginnerTraining
 
-#endif /*__BEGINNERTRAINING_TUTO03_SSTRINGEDITOR_HPP__*/
+#endif /*__BEGINNERTRAINING_TUTO04_SDEFORMMESH_HPP__*/
 

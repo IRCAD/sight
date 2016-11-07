@@ -27,4 +27,9 @@
         <service>::beginnerTraining::tuto03::SStringEditor</service>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::beginnerTraining::tuto04::SStringColorEditor</service>
+    </extension>
+
 </plugin>
