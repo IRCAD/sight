@@ -107,28 +107,34 @@ void SPointList::doUpdate() throw(fwTools::Failed)
     SLM_ASSERT("This object is not an image", image);
 
     ::fwData::Image::SizeType size = image->getSize();
-
-    ::fwData::PointList::sptr pl = this->getObject< ::fwData::PointList >();
-    for( ::fwData::Point::sptr pt : pl->getPoints() )
+    if (!size.empty())
     {
-        //conversion from qt 2D coordinates to vtk 3D coordinates
-        ::fwData::Point::PointCoordArrayType vecSrc = pt->getCoord();
-        ::fwData::Point::PointCoordArrayType vecDst;
-        vecDst[0] = vecSrc[0] -  size[0]/2;
-        vecDst[1] = -vecSrc[1] +  size[1]/2;
-        vecDst[2] = 0;
-
-        if (m_camera)
+        ::fwData::PointList::sptr pl = this->getObject< ::fwData::PointList >();
+        for( ::fwData::Point::sptr pt : pl->getPoints() )
         {
-            const double shiftX = size[0] / 2. - m_camera->getCx();
-            const double shiftY = size[1] / 2. - m_camera->getCy();
+            //conversion from qt 2D coordinates to vtk 3D coordinates
+            ::fwData::Point::PointCoordArrayType vecSrc = pt->getCoord();
+            ::fwData::Point::PointCoordArrayType vecDst;
+            vecDst[0] = vecSrc[0] -  size[0]/2;
+            vecDst[1] = -vecSrc[1] +  size[1]/2;
+            vecDst[2] = 0;
 
-            vecDst[0] += shiftX;
-            vecDst[1] += shiftY;
+            if (m_camera)
+            {
+                const double shiftX = size[0] / 2. - m_camera->getCx();
+                const double shiftY = size[1] / 2. - m_camera->getCy();
+
+                vecDst[0] += shiftX;
+                vecDst[1] += shiftY;
+            }
+            imgPoints->InsertNextPoint(vecDst[0], vecDst[1], vecDst[2]);
         }
-        imgPoints->InsertNextPoint(vecDst[0], vecDst[1], vecDst[2]);
+        imgPoints->Modified();
     }
-    imgPoints->Modified();
+    else
+    {
+        SLM_WARN("Image size is null");
+    }
 }
 
 //------------------------------------------------------------------------------
