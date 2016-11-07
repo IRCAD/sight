@@ -56,12 +56,13 @@ protected:
     /**
      * @code{.xml}
        <adaptor id="points" class="::visuVTKARAdaptor::SPointList" objectId="pointListKey">
-        <config renderer="default" imageId="${imageId1}" color="#cb1f72"/>
+        <config renderer="default" imageId="${imageId1}" color="#cb1f72" cameraUID="cameraUid"/>
        </adaptor>
        @endcode
      * - \b renderer : defines the renderer to show the arrow. It must be different from the 3D objects renderer.
      * - \b imageId : Id of the image used to extract the resolution of the source image.
      * - \b color(optional) : color used to display the points.
+     * - \b camera(optional) : camera for taking account the optical center.
      */
     VISUVTKARADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
