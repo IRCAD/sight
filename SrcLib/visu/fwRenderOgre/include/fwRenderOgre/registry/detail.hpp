@@ -7,17 +7,18 @@
 #ifndef __FWRENDEROGRE_REGISTRY_DETAIL_HPP__
 #define __FWRENDEROGRE_REGISTRY_DETAIL_HPP__
 
-#include <string>
+#include "fwRenderOgre/config.hpp"
 
 #include <fwCore/macros.hpp>
 #include <fwCore/util/FactoryRegistry.hpp>
 
-#include "fwRenderOgre/config.hpp"
+#include <string>
 
 namespace fwRenderOgre
 {
 
 class IRenderWindowInteractorManager;
+class ILight;
 
 namespace interactor
 {
@@ -32,9 +33,11 @@ typedef std::string KeyType;
 typedef ::fwCore::util::FactoryRegistry< SPTR(::fwRenderOgre::IRenderWindowInteractorManager) (), KeyType > Type;
 typedef ::fwCore::util::FactoryRegistry< SPTR(::fwRenderOgre::interactor::IInteractor) (),
                                          KeyType > InteractorFactoryType;
+typedef ::fwCore::util::FactoryRegistry< SPTR(::fwRenderOgre::ILight) (), KeyType > LightFactoryType;
 
 FWRENDEROGRE_API SPTR(Type) get();
 FWRENDEROGRE_API SPTR(InteractorFactoryType) getInteractorRegistry();
+FWRENDEROGRE_API SPTR(LightFactoryType) getLightRegistry();
 
 } // namespace registry
 

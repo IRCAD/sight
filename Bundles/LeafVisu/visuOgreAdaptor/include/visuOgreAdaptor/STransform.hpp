@@ -7,20 +7,20 @@
 #ifndef __VISUOGREADAPTOR_STRANSFORM_HPP__
 #define __VISUOGREADAPTOR_STRANSFORM_HPP__
 
+#include "visuOgreAdaptor/config.hpp"
+
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
-#include <OGRE/OgreMovableObject.h>
 #include <OGRE/OgreMatrix4.h>
+#include <OGRE/OgreMovableObject.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 
 #include <boost/shared_ptr.hpp>
 
 #include <vector>
-
-#include "visuOgreAdaptor/config.hpp"
 
 namespace visuOgreAdaptor
 {
@@ -42,8 +42,9 @@ public:
     /// Sets the Transformation Matrix to the ::Ogre::Matrix t, then updates it in F4S by copy from Ogre
     VISUOGREADAPTOR_API void setTransform(const ::Ogre::Matrix4& t);
 
-    /// Ogre transform sceneNode.
-    VISUOGREADAPTOR_API ::Ogre::SceneNode* getSceneNode();
+    /// Ogre transform sceneNode getter.
+    VISUOGREADAPTOR_API ::Ogre::SceneNode* getSceneNode() const;
+
     /// Copies the transformation matrix from Ogre to F4S
     VISUOGREADAPTOR_API void updateFromOgre();
 

@@ -4,15 +4,19 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwRenderOgre/Layer.hpp>
-#include <fwRenderOgre/SRender.hpp>
-#include <fwRenderOgre/Utils.hpp>
-#include <fwRenderOgre/interactor/TrackballInteractor.hpp>
+#include "fwRenderOgre/Layer.hpp"
+
+#include "fwRenderOgre/ILight.hpp"
+#include "fwRenderOgre/SRender.hpp"
+#include "fwRenderOgre/Utils.hpp"
+#include "fwRenderOgre/interactor/TrackballInteractor.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwDataTools/Color.hpp>
+
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwThread/Worker.hpp>
 
@@ -51,23 +55,24 @@ const ::fwCom::Slots::SlotKeyType Layer::s_USE_CELSHADING_SLOT = "useCelShading"
 //-----------------------------------------------------------------------------
 
 Layer::Layer() :
-    m_sceneManager(nullptr),
-    m_renderWindow(nullptr),
-    m_viewport(nullptr),
-    m_stereoMode(StereoModeType::NONE),
-    m_rawCompositorChain(""),
-    m_coreCompositor(nullptr),
+    m_sceneManager         (nullptr),
+    m_renderWindow         (nullptr),
+    m_viewport             (nullptr),
+    m_stereoMode           (StereoModeType::NONE),
+    m_rawCompositorChain   (""),
+    m_coreCompositor       (nullptr),
     m_transparencyTechnique(DEFAULT),
-    m_numPeels(8),
-    m_depth(1),
-    m_topColor("#333333"),
-    m_bottomColor("#333333"),
-    m_topScale(0.f),
-    m_bottomScale(1.f),
-    m_camera(nullptr),
-    m_hasCoreCompositor(false),
-    m_hasCompositorChain(false),
-    m_sceneCreated(false)
+    m_numPeels             (8),
+    m_depth                (1),
+    m_topColor             ("#333333"),
+    m_bottomColor          ("#333333"),
+    m_topScale             (0.f),
+    m_bottomScale          (1.f),
+    m_camera               (nullptr),
+    m_hasCoreCompositor    (false),
+    m_hasCompositorChain   (false),
+    m_sceneCreated         (false),
+    m_hasDefaultLight      (true)
 {
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
     newSignal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
@@ -207,6 +212,20 @@ void Layer::createScene()
     // Attach Camera and Headlight to fit vtk light
     cameraNode->attachObject(m_camera);
 
+    if(m_hasDefaultLight)
+    {
+        m_lightManager = ::fwRenderOgre::ILight::createLightManager();
+        m_lightManager->setName("MainLight");
+        m_lightManager->setType(::Ogre::Light::LT_DIRECTIONAL);
+        m_lightManager->setDirection(::Ogre::Vector3(0, 0, -1));
+        m_lightManager->setDiffuseColor(::Ogre::ColourValue());
+        m_lightManager->setSpecularColor(::Ogre::ColourValue());
+        m_lightManager->setParentTransformName(cameraNode->getName());
+        m_lightManager->setLayerID(m_id);
+
+        m_renderService.lock()->addAdaptor(m_lightManager);
+    }
+
     // If there is any interactor adaptor in xml, m_moveInteractor will be overwritten by InteractorStyle adaptor
     ::fwRenderOgre::interactor::IMovementInteractor::sptr interactor =
         ::fwRenderOgre::interactor::IMovementInteractor::dynamicCast (
@@ -323,6 +342,12 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
 
 void Layer::destroy()
 {
+    if(m_lightManager)
+    {
+        m_lightManager->stop();
+        ::fwServices::OSR::unregisterService(m_lightManager);
+    }
+
     ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
     m_sceneManager = nullptr;
     m_camera       = nullptr;
@@ -775,6 +800,13 @@ IHasAdaptors::AdaptorVector Layer::getRegisteredAdaptors() const
 bool Layer::isSceneCreated() const
 {
     return m_sceneCreated;
+}
+
+//-------------------------------------------------------------------------------------
+
+void Layer::setHasDefaultLight(bool hasDefaultLight)
+{
+    m_hasDefaultLight = hasDefaultLight;
 }
 
 //-------------------------------------------------------------------------------------

@@ -6,9 +6,9 @@
 
 #include "fwRenderOgre/SRender.hpp"
 
-#include <fwRenderOgre/IAdaptor.hpp>
-#include <fwRenderOgre/Utils.hpp>
-#include <fwRenderOgre/registry/Adaptor.hpp>
+#include "fwRenderOgre/IAdaptor.hpp"
+#include "fwRenderOgre/Utils.hpp"
+#include "fwRenderOgre/registry/Adaptor.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
@@ -252,6 +252,7 @@ void SRender::configureLayer( ConfigurationType conf )
     const std::string transparencyTechnique = conf->getAttributeValue("transparency");
     const std::string numPeels              = conf->getAttributeValue("numPeels");
     const std::string mode3D                = conf->getAttributeValue("mode3D");
+    const std::string defaultLight          = conf->getAttributeValue("defaultLight");
 
     SLM_ASSERT( "'id' required attribute missing or empty", !id.empty() );
     SLM_ASSERT( "'layer' required attribute missing or empty", !layer.empty() );
@@ -274,6 +275,11 @@ void SRender::configureLayer( ConfigurationType conf )
     ogreLayer->setCoreCompositorEnabled(id == "default", transparencyTechnique, numPeels);
     ogreLayer->setCompositorChainEnabled(compositors != "", compositors);
 
+    if(!defaultLight.empty() && defaultLight == "no")
+    {
+        ogreLayer->setHasDefaultLight(false);
+    }
+
     // Finally, the layer is pushed in the map
     m_layers[id] = ogreLayer;
 }
@@ -289,6 +295,7 @@ void SRender::configureBackgroundLayer( ConfigurationType conf )
     ogreLayer->setID("backgroundLayer");
     ogreLayer->setDepth(0);
     ogreLayer->setWorker(m_associatedWorker);
+    ogreLayer->setHasDefaultLight(false);
 
     if (conf)
     {
@@ -418,6 +425,22 @@ void SRender::computeCameraClipping()
         ::fwRenderOgre::Layer::sptr layer = it.second;
         layer->resetCameraClippingRange();
     }
+}
+
+//-----------------------------------------------------------------------------
+
+void SRender::addAdaptor(::fwRenderOgre::IAdaptor::sptr _adaptor)
+{
+    SceneAdaptor newAdaptor;
+    newAdaptor.m_service = _adaptor;
+    newAdaptor.m_start   = true;
+
+    auto adaptorId = _adaptor->getID();
+
+    m_adaptors[adaptorId] = newAdaptor;
+
+    auto& registry = ::fwRenderOgre::registry::getAdaptorRegistry();
+    registry[adaptorId] = this->getID();
 }
 
 //-----------------------------------------------------------------------------

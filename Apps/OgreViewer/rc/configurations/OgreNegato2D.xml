@@ -36,7 +36,7 @@
             <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
 
             <!-- Default Layer -->
-            <layer id="default" depth="1"/>
+            <layer id="default" depth="1" />
         </service>
 
         <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle" >

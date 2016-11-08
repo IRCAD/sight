@@ -4,9 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/util/LazyInstantiator.hpp>
-
 #include "fwRenderOgre/registry/detail.hpp"
+
+#include <fwCore/util/LazyInstantiator.hpp>
 
 
 namespace fwRenderOgre
@@ -28,6 +28,15 @@ struct InteractorRegistryInstantiatorTag {};
 SPTR(InteractorFactoryType) getInteractorRegistry()
 {
     typedef ::fwCore::util::LazyInstantiator< InteractorFactoryType, InteractorRegistryInstantiatorTag >
+        InstantiatorType;
+    return InstantiatorType::getInstance();
+}
+
+struct LightRegistryInstantiatorTag {};
+
+SPTR(LightFactoryType) getLightRegistry()
+{
+    typedef ::fwCore::util::LazyInstantiator< LightFactoryType, LightRegistryInstantiatorTag >
         InstantiatorType;
     return InstantiatorType::getInstance();
 }

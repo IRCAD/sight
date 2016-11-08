@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/Utils.hpp"
+
 #include "fwRenderOgre/factory/R2VBRenderable.hpp"
 #include <fwRenderOgre/compositor/MaterialMgrListener.hpp>
 
@@ -463,6 +464,16 @@ void Utils::allocateTexture(::Ogre::Texture* _texture, size_t _width, size_t _he
     _texture->setUsage(usage);
 
     _texture->createInternalResources();
+}
+
+//------------------------------------------------------------------------------
+
+::fwData::Color::sptr Utils::convertOgreColorToFwColor(const ::Ogre::ColourValue& _ogreColor)
+{
+    ::fwData::Color::sptr fwColor = ::fwData::Color::New();
+    fwColor->setRGBA(_ogreColor.r, _ogreColor.g, _ogreColor.b, _ogreColor.a);
+
+    return fwColor;
 }
 
 //------------------------------------------------------------------------------

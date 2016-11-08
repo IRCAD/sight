@@ -6,25 +6,34 @@
 
 #include "visuOgreAdaptor/SLight.hpp"
 
+#include "visuOgreAdaptor/STransform.hpp"
+
 #include <fwCom/Slots.hxx>
 
+#include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/Utils.hpp>
+#include <fwRenderOgre/registry/macros.hpp>
 
 #include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <OGRE/OgreCamera.h>
-#include <OGRE/OgreLight.h>
 #include <OGRE/OgreMath.h>
-#include <OGRE/OgreMatrix4.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
-#include <OGRE/OgreVector3.h>
+
+//------------------------------------------------------------------------------
 
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLight, ::fwData::TransformationMatrix3D);
+
+fwRenderOgreRegisterLightMacro( ::visuOgreAdaptor::SLight,
+                                ::fwRenderOgre::ILight::REGISTRY_KEY );
+
+//------------------------------------------------------------------------------
 
 namespace visuOgreAdaptor
 {
@@ -38,11 +47,25 @@ const ::fwCom::Slots::SlotKeyType SLight::s_SET_DOUBLE_PARAMETER_SLOT = "setDoub
 //------------------------------------------------------------------------------
 
 SLight::SLight() throw() :
-    m_light           (nullptr),
-    m_lightName       (""),
-    m_attachedToCamera(false),
-    m_xOffset         (0.f),
-    m_yOffset         (0.f)
+    m_light         (nullptr),
+    m_lightName     (""),
+    m_lightType     (::Ogre::Light::LT_DIRECTIONAL),
+    m_useOrphanNode (true),
+    m_xOffset       (0.f),
+    m_yOffset       (0.f)
+{
+    newSlot(s_UPDATE_X_OFFSET_SLOT, &SLight::updateXOffset, this);
+    newSlot(s_UPDATE_Y_OFFSET_SLOT, &SLight::updateYOffset, this);
+}
+
+//------------------------------------------------------------------------------
+
+SLight::SLight(::fwRenderOgre::ILight::Key key) :
+    m_light        (nullptr),
+    m_lightName    (""),
+    m_useOrphanNode(true),
+    m_xOffset      (0.f),
+    m_yOffset      (0.f)
 {
     newSlot(s_UPDATE_X_OFFSET_SLOT, &SLight::updateXOffset, this);
     newSlot(s_UPDATE_Y_OFFSET_SLOT, &SLight::updateYOffset, this);
@@ -65,9 +88,9 @@ void SLight::doConfigure() throw(fwTools::Failed)
         m_lightName = m_configuration->getAttributeValue("name");
     }
 
-    if(m_configuration->hasAttribute("attachToCamera"))
+    if(m_configuration->hasAttribute("parentTransformId"))
     {
-        m_attachedToCamera = (m_configuration->getAttributeValue("attachToCamera") == "yes");
+        this->setParentTransformId(m_configuration->getAttributeValue("parentTransformId"));
 
         if(m_configuration->hasAttribute("xOffset"))
         {
@@ -87,34 +110,47 @@ void SLight::doConfigure() throw(fwTools::Failed)
 
 void SLight::doStart() throw(fwTools::Failed)
 {
-    m_lightColor = this->getInput< ::fwData::Color >("lightColor");
+    if(!m_lightDiffuseColor)
+    {
+        m_lightDiffuseColor = this->getInput< ::fwData::Color >("diffuseColor");
+    }
 
-    ::Ogre::String lightName = this->getID() + m_lightName;
-    m_light                  = this->getSceneManager()->createLight(lightName);
+    if(!m_lightSpecularColor)
+    {
+        m_lightSpecularColor = this->getInput< ::fwData::Color >("specularColor");
+    }
+
+    m_lightName = this->getID() + "_" + m_lightName;
+    m_light     = this->getSceneManager()->createLight(m_lightName);
     m_light->setType(::Ogre::Light::LT_DIRECTIONAL);
 
-    ::Ogre::SceneNode* lightSceneNode;
+    this->setTransformId(m_lightName + "_node");
 
-    if(m_attachedToCamera)
+    if(!this->getParentTransformId().empty())
     {
-        lightSceneNode = this->getSceneManager()->getCamera("PlayerCam")->getParentSceneNode()->createChildSceneNode(
-            lightName + "_node");
-        lightSceneNode->attachObject(m_light);
+        auto tfAdaptors = this->getRenderService()->getAdaptors< ::visuOgreAdaptor::STransform>();
 
-        if(m_xOffset != 0.f || m_yOffset != 0.f)
+        auto result =
+            std::find_if(tfAdaptors.begin(), tfAdaptors.end(),[this](const ::visuOgreAdaptor::STransform::sptr& srv)
+            {
+                return srv->getTransformId() == this->getParentTransformId();
+            });
+
+        // If the parent transform adaptor is retrieved
+        if(result != tfAdaptors.end())
         {
-            this->updateXOffset(m_xOffset);
-            this->updateYOffset(m_yOffset);
+            m_useOrphanNode = false;
+
+            // First update of the offset only if there is a parent transform.
+            if(m_xOffset != 0.f || m_yOffset != 0.f)
+            {
+                this->updateXOffset(m_xOffset);
+                this->updateYOffset(m_yOffset);
+            }
         }
     }
-    else
-    {
-        lightSceneNode = this->getSceneManager()->getRootSceneNode()->createChildSceneNode(lightName + "_node");
-        lightSceneNode->attachObject(m_light);
 
-        // We use our own transform matrix if the light isn't attached to a camera
-        m_lightMat = this->getInput< ::fwData::TransformationMatrix3D >("lightMat");
-    }
+    this->createTransformService();
 
     doUpdate();
 }
@@ -123,61 +159,47 @@ void SLight::doStart() throw(fwTools::Failed)
 
 void SLight::doUpdate() throw(fwTools::Failed)
 {
-    ::Ogre::SceneNode* lightSceneNode = m_light->getParentSceneNode();
+    ::Ogre::ColourValue diffuseColor(m_lightDiffuseColor->red(),
+                                     m_lightDiffuseColor->green(),
+                                     m_lightDiffuseColor->blue(),
+                                     m_lightDiffuseColor->alpha());
 
-    // Updates light's position from associated f4s matrix only if the light is independent from the camera
-    if(!m_attachedToCamera)
-    {
-        // Multithreaded lock
-        ::fwData::mt::ObjectReadLock lock(m_lightMat);
+    ::Ogre::ColourValue specularColor(m_lightSpecularColor->red(),
+                                      m_lightSpecularColor->green(),
+                                      m_lightSpecularColor->blue(),
+                                      m_lightSpecularColor->alpha());
 
-        // Received input lign and column data from f4s transformation matrix
-        ::Ogre::Matrix4 ogreMatrix;
-        for (size_t lt = 0; lt < 4; lt++)
-        {
-            for (size_t ct = 0; ct < 4; ct++)
-            {
-                ogreMatrix[ct][lt] = static_cast< ::Ogre::Real>(m_lightMat->getCoefficient(ct, lt));
-            }
-        }
-
-        lock.unlock();
-
-        // Decompose the camera matrix
-        ::Ogre::Vector3 position;
-        ::Ogre::Vector3 scale;
-        ::Ogre::Quaternion orientation;
-        ogreMatrix.decomposition(position, scale, orientation);
-
-        ::Ogre::Quaternion rotateY(::Ogre::Degree(180), ::Ogre::Vector3(0,1,0));
-        ::Ogre::Quaternion rotateZ(::Ogre::Degree(180), ::Ogre::Vector3(0,0,1));
-        orientation = orientation * rotateZ * rotateY;
-
-        // Reset the light position
-        lightSceneNode->setPosition(0, 0, 0);
-        lightSceneNode->setOrientation(Ogre::Quaternion::IDENTITY);
-
-        // Update the light position
-        lightSceneNode->rotate(orientation);
-        lightSceneNode->translate(position);
-    }
-
-    ::Ogre::ColourValue currentColor(m_lightColor->red(),
-                                     m_lightColor->green(),
-                                     m_lightColor->blue(),
-                                     m_lightColor->alpha());
-
-    m_light->setDiffuseColour(currentColor);
-    m_light->setSpecularColour(currentColor);
+    m_light->setDiffuseColour(diffuseColor);
+    m_light->setSpecularColour(specularColor);
 
     this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
+void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
+{
+    if(!m_lightDiffuseColor)
+    {
+        m_lightDiffuseColor = ::fwRenderOgre::Utils::convertOgreColorToFwColor(_diffuseColor);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SLight::setSpecularColor(::Ogre::ColourValue _specularColor)
+{
+    if(!m_lightSpecularColor)
+    {
+        m_lightSpecularColor = ::fwRenderOgre::Utils::convertOgreColorToFwColor(_specularColor);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SLight::updateXOffset(float _xOffset)
 {
-    SLM_ASSERT("The light has to be attached to the camera before updating an offset", m_attachedToCamera);
+    SLM_ASSERT("Unable to update an offset if the light's node isn't attached to a parent node", m_useOrphanNode);
 
     m_xOffset = _xOffset;
 
@@ -185,13 +207,14 @@ void SLight::updateXOffset(float _xOffset)
     ::Ogre::Vector3 xAxis = this->getSceneManager()->getCamera("PlayerCam")->getRight();
 
     m_light->getParentSceneNode()->rotate(xAxis, xOffsetRad, ::Ogre::Node::TS_WORLD);
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
 void SLight::updateYOffset(float _yOffset)
 {
-    SLM_ASSERT("The light has to be attached to the camera before updating an offset", m_attachedToCamera);
+    SLM_ASSERT("Unable to update an offset if the light's node isn't attached to a parent node", m_useOrphanNode);
 
     m_yOffset = _yOffset;
 
@@ -199,19 +222,69 @@ void SLight::updateYOffset(float _yOffset)
     ::Ogre::Vector3 yAxis = this->getSceneManager()->getCamera("PlayerCam")->getUp();
 
     m_light->getParentSceneNode()->rotate(yAxis, yOffsetRad, ::Ogre::Node::TS_WORLD);
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void SLight::setDoubleParameter(double val, std::string key)
+void SLight::setDoubleParameter(double _val, std::string _key)
 {
-    if(key == "xOffset")
+    if(_key == "xOffset")
     {
-        this->updateXOffset(static_cast<float>(val));
+        this->updateXOffset(static_cast<float>(_val));
     }
-    else if(key == "yOffset")
+    else if(_key == "yOffset")
     {
-        this->updateYOffset(static_cast<float>(val));
+        this->updateYOffset(static_cast<float>(_val));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SLight::createTransformService()
+{
+    // We need to create a transform service only once
+    if(m_transformService.expired())
+    {
+        ::fwData::TransformationMatrix3D::csptr transform =
+            this->getInput< ::fwData::TransformationMatrix3D >("lightTF");
+
+        if(!transform)
+        {
+            transform = ::fwData::TransformationMatrix3D::New();
+        }
+
+        m_transformService = ::fwServices::add< ::fwRenderOgre::IAdaptor >(transform,
+                                                                           "::visuOgreAdaptor::STransform");
+        SLM_ASSERT("Transform service is null", m_transformService.lock());
+        auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
+
+        transformService->setID(this->getID() + "_" + transformService->getID());
+        transformService->setRenderService ( this->getRenderService() );
+        transformService->setLayerID(m_layerID);
+        transformService->setTransformId(this->getTransformId());
+        transformService->setParentTransformId(this->getParentTransformId());
+
+        transformService->start();
+        transformService->connect();
+        this->registerService(transformService);
+
+        this->attachNode(m_light);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SLight::attachNode(Ogre::MovableObject* _node)
+{
+    auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
+
+    ::Ogre::SceneNode* transNode = transformService->getSceneNode();
+    ::Ogre::SceneNode* node      = _node->getParentSceneNode();
+    if ((node != transNode) && transNode)
+    {
+        _node->detachFromParent();
+        transNode->attachObject(_node);
     }
 }
 
@@ -226,6 +299,13 @@ void SLight::doSwap() throw(fwTools::Failed)
 
 void SLight::doStop() throw(fwTools::Failed)
 {
+    if(!m_transformService.expired())
+    {
+        m_transformService.lock()->stop();
+        ::fwServices::OSR::unregisterService(m_transformService.lock());
+    }
+
+    this->unregisterServices();
 }
 
 //------------------------------------------------------------------------------

@@ -4,9 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwRenderOgre/IRenderWindowInteractorManager.hpp"
 #include "fwRenderOgre/factory/new.hpp"
 
+#include "fwRenderOgre/ILight.hpp"
+#include "fwRenderOgre/IRenderWindowInteractorManager.hpp"
 
 namespace fwRenderOgre
 {
@@ -20,6 +21,16 @@ namespace factory
 }
 
 } // namespace factory
+
+namespace lightFactory
+{
+
+::fwRenderOgre::ILight::sptr New( const ::fwRenderOgre::registry::KeyType& classname )
+{
+    return ::fwRenderOgre::registry::getLightRegistry()->create(classname);
+}
+
+} // namespace lightFactory
 
 namespace interactorFactory
 {

@@ -7,11 +7,11 @@
 #ifndef __FWRENDEROGRE_SRENDER_HPP__
 #define __FWRENDEROGRE_SRENDER_HPP__
 
+#include "fwRenderOgre/IRenderWindowInteractorManager.hpp"
+#include "fwRenderOgre/Layer.hpp"
+#include "fwRenderOgre/Utils.hpp"
 #include "fwRenderOgre/config.hpp"
-#include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
-#include <fwRenderOgre/Layer.hpp>
-#include <fwRenderOgre/Utils.hpp>
-#include <fwRenderOgre/picker/IPicker.hpp>
+#include "fwRenderOgre/picker/IPicker.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Slot.hpp>
@@ -46,7 +46,7 @@ class Layer;
     <in key="meshTFKey" uid="meshTFUID" />
 
     <scene renderMode="auto">
-        <renderer id="rendererId" layer="1" compositors="Invert;Laplace;Posterize" />
+        <layer id="rendererId" depth="1" compositors="Invert;Laplace;Posterize" defaultLight="no" />
 
         <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
             <config dynamic="true" transform="meshTFAdaptor" texture="texLiver"/>
@@ -99,9 +99,10 @@ class Layer;
  *    - \b numPeels (optional): number of peels for the selected transparency technique.
  *                              Not used for WeightedBlended OIT
  *    - \b compositors (optional): defines the default compositor chain. The compositors are separated by semicolons
- *    - \b fullscreen (optional, default="no"): Show the scene in full screen.
- *    - \b stereoMode (optional, default="no"): sets the mode used for stereoscopic 3D rendering,
+ *    - \b fullscreen (optional, yes/no, default="no"): Show the scene in full screen.
+ *    - \b stereoMode (optional, yes/no, default="no"): Sets the mode used for stereoscopic 3D rendering,
  *                                          available modes are "AutoStereo5", "AutoStereo8" and "no".
+ *    - \b defaultLight (optional, yes/no, default="yes"): Sets if a default light is created in the layer.
  */
 class FWRENDEROGRE_CLASS_API SRender : public ::fwRender::IRender
 
@@ -179,6 +180,9 @@ public:
 
     /// Return true if the ogre context is ready to be used
     FWRENDEROGRE_API bool isReady() const;
+
+    /// Adds a new adaptor to the map.
+    FWRENDEROGRE_API void addAdaptor(SPTR(::fwRenderOgre::IAdaptor) _adaptor);
 
     template<class T>
     std::vector<SPTR(T)> getAdaptors() const;

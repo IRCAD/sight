@@ -13,8 +13,8 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/IAdaptor.hpp>
+#include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/helper/Scene.hpp>
 
 #include <fwServices/macros.hpp>
@@ -166,7 +166,7 @@ const ::Ogre::Matrix4& STransform::getTransform() const
 
 //------------------------------------------------------------------------------
 
-::Ogre::SceneNode* STransform::getSceneNode()
+::Ogre::SceneNode* STransform::getSceneNode() const
 {
     return m_transformNode;
 }

@@ -499,7 +499,8 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
 {
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
-        m_satSizeRatio = static_cast<float>(sizeRatio) * .25;
+        float scaleCoef(.25f);
+        m_satSizeRatio = static_cast<float>(sizeRatio) * scaleCoef;
         m_illum->updateSatFromRatio(m_satSizeRatio);
 
         this->updateVolumeIllumination();
@@ -636,10 +637,10 @@ void SVolumeRender::toggleAmbientOcclusion(bool ambientOcclusion)
         rayCastVolumeRenderer->setAmbientOcclusion(m_ambientOcclusion);
 
         this->updateSampling(m_nbSlices);
-        this->updateSatSizeRatio(m_satSizeRatio * 4);
+        this->updateSatSizeRatio(static_cast<int>(m_satSizeRatio * 4));
         this->updateSatShellsNumber(m_satShells);
         this->updateSatShellRadius(m_satShellRadius);
-        this->updateSatConeAngle(m_satConeAngle * 100);
+        this->updateSatConeAngle(static_cast<int>(m_satConeAngle * 100));
         this->updateSatConeSamples(m_satConeSamples);
 
         if(m_preIntegratedRendering)
@@ -677,10 +678,10 @@ void SVolumeRender::toggleColorBleeding(bool colorBleeding)
         rayCastVolumeRenderer->setColorBleeding(m_colorBleeding);
 
         this->updateSampling(m_nbSlices);
-        this->updateSatSizeRatio(m_satSizeRatio * 4);
+        this->updateSatSizeRatio(static_cast<int>(m_satSizeRatio * 4));
         this->updateSatShellsNumber(m_satShells);
         this->updateSatShellRadius(m_satShellRadius);
-        this->updateSatConeAngle(m_satConeAngle * 100);
+        this->updateSatConeAngle(static_cast<int>(m_satConeAngle * 100));
         this->updateSatConeSamples(m_satConeSamples);
 
         if(m_preIntegratedRendering)
@@ -718,10 +719,10 @@ void SVolumeRender::toggleShadows(bool shadows)
         rayCastVolumeRenderer->setShadows(m_shadows);
 
         this->updateSampling(m_nbSlices);
-        this->updateSatSizeRatio(m_satSizeRatio * 4);
+        this->updateSatSizeRatio(static_cast<int>(m_satSizeRatio * 4));
         this->updateSatShellsNumber(m_satShells);
         this->updateSatShellRadius(m_satShellRadius);
-        this->updateSatConeAngle(m_satConeAngle * 100);
+        this->updateSatConeAngle(static_cast<int>(m_satConeAngle * 100));
         this->updateSatConeSamples(m_satConeSamples);
 
         if(m_preIntegratedRendering)
