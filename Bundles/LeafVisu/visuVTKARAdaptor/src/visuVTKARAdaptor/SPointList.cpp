@@ -124,7 +124,7 @@ void SPointList::doUpdate() throw(fwTools::Failed)
                 const double shiftX = size[0] / 2. - m_camera->getCx();
                 const double shiftY = size[1] / 2. - m_camera->getCy();
 
-                vecDst[0] += shiftX;
+                vecDst[0] -= shiftX;
                 vecDst[1] += shiftY;
             }
             imgPoints->InsertNextPoint(vecDst[0], vecDst[1], vecDst[2]);
