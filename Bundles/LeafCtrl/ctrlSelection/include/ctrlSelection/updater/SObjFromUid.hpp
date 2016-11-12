@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,8 @@
 #ifndef __CTRLSELECTION_UPDATER_SOBJFROMUID_HPP__
 #define __CTRLSELECTION_UPDATER_SOBJFROMUID_HPP__
 
-#include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IUpdaterSrv.hpp"
-
-#include <fwData/Object.hpp>
+#include "ctrlSelection/config.hpp"
 
 namespace ctrlSelection
 {
@@ -19,7 +17,6 @@ namespace updater
 {
 
 /**
- * @class  SObjFromUid
  * @brief  Updates the composite from object given by uid. The objects is added/swapped/removed from composite when the
  * respective slot is called.
  *
@@ -29,7 +26,7 @@ class CTRLSELECTION_CLASS_API SObjFromUid : public ::ctrlSelection::IUpdaterSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SObjFromUid)(::ctrlSelection::IUpdaterSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SObjFromUid)(::ctrlSelection::IUpdaterSrv) );
 
     /// Constructor.  Do nothing.
     CTRLSELECTION_API SObjFromUid() throw();
@@ -75,7 +72,7 @@ protected:
     CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Implements info method derived from IService. Print classname.
-    CTRLSELECTION_API virtual void info( std::ostream &_sstream );
+    CTRLSELECTION_API virtual void info( std::ostream& _sstream );
 
     /**
      * @name Slots

@@ -11,8 +11,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwData/Object.hpp>
-
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/macros.hpp>

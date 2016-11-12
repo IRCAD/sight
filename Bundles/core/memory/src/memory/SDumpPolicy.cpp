@@ -1,24 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <vector>
+#include "memory/SDumpPolicy.hpp"
 
 #include <fwCore/base.hpp>
-
-// Service associated data
-#include <fwData/Object.hpp>
-
-// Services tools
-#include <fwServices/macros.hpp>
 
 #include <fwMemory/BufferManager.hpp>
 #include <fwMemory/IPolicy.hpp>
 
-#include "memory/SDumpPolicy.hpp"
+#include <fwServices/macros.hpp>
 
+#include <vector>
 
 namespace memory
 {
@@ -55,7 +50,7 @@ void SDumpPolicy::configuring() throw ( ::fwTools::Failed )
 
         if(!paramsElement.empty())
         {
-            const ConfigurationType &params = paramsElement.at(0);
+            const ConfigurationType& params = paramsElement.at(0);
 
             ::fwRuntime::ConfigurationElement::Container::const_iterator iter;
 
@@ -79,7 +74,7 @@ void SDumpPolicy::starting() throw ( ::fwTools::Failed )
         if (policy)
         {
             bool success;
-            for(const ParametersType::value_type &param :  m_policyParams)
+            for(const ParametersType::value_type& param :  m_policyParams)
             {
                 success = policy->setParam(param.first, param.second);
                 OSLM_ERROR_IF( "[" << m_policy << "] Unable to set '"
@@ -101,6 +96,8 @@ void SDumpPolicy::stopping() throw ( ::fwTools::Failed )
 {
 }
 
+//------------------------------------------------------------------------------
+
 void SDumpPolicy::updating() throw ( ::fwTools::Failed )
 {
 }
@@ -114,5 +111,4 @@ void SDumpPolicy::swapping() throw ( ::fwTools::Failed )
 }
 
 } // namespace memory
-
 

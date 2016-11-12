@@ -1,29 +1,28 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/convenience.hpp>
-
-#include <fwTools/System.hpp>
-
-#include <fwDataCamp/visitor/CompareObjects.hpp>
-
-#include <fwData/Object.hpp>
-#include <fwData/Image.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/ImageSeries.hpp>
-
-#include <fwTest/generator/SeriesDB.hpp>
-#include <fwTest/generator/Image.hpp>
+#include "ImageSeriesWriterTest.hpp"
 
 #include <vtkGdcmIO/ImageSeriesWriter.hpp>
 #include <vtkGdcmIO/SeriesDBReader.hpp>
 
-#include "ImageSeriesWriterTest.hpp"
+#include <fwData/Image.hpp>
+
+#include <fwDataCamp/visitor/CompareObjects.hpp>
+
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/SeriesDB.hpp>
+
+#include <fwTest/generator/Image.hpp>
+#include <fwTest/generator/SeriesDB.hpp>
+
+#include <fwTools/System.hpp>
+
+#include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem/path.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::vtkGdcmIO::ut::ImageSeriesWriterTest );

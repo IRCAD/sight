@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,12 +10,10 @@
 #include "ctrlSelection/IWrapperSrv.hpp"
 #include "ctrlSelection/config.hpp"
 
-#include <fwData/Object.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 
 #include <fwServices/IService.hpp>
-
 
 namespace ctrlSelection
 {
@@ -49,7 +47,7 @@ class CTRLSELECTION_CLASS_API SImageSignalForwarder : public ::ctrlSelection::IW
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SImageSignalForwarder)(::ctrlSelection::IWrapperSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SImageSignalForwarder)(::ctrlSelection::IWrapperSrv) );
 
     CTRLSELECTION_API SImageSignalForwarder() throw();
 
@@ -111,7 +109,6 @@ private:
     std::string m_sourceImageUid; ///< fwID of the source image;
     std::string m_sourceCompoUid; ///< fwID of the composite containing the source image
     std::string m_sourceImageKey; ///< Key of the source image
-
 
     typedef std::vector<std::string> SignalKeysType;
     SignalKeysType m_managedSignals; ///< contains  the key of the signals to manage

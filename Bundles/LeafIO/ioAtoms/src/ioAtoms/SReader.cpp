@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,6 @@
 #include <fwCom/Signal.hxx>
 
 #include <fwData/Composite.hpp>
-#include <fwData/Object.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
@@ -64,9 +63,9 @@ const SReader::FileExtension2NameType SReader::s_EXTENSIONS
 
 SReader::SReader() :
     m_useAtomsPatcher(false),
-    m_context ("Undefined"),
-    m_version ("Undefined"),
-    m_filter  ("")
+    m_context("Undefined"),
+    m_version("Undefined"),
+    m_filter("")
 {
     m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
 
@@ -205,7 +204,6 @@ void SReader::configuring() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-
 struct SetDumpPolicy
 {
     SetDumpPolicy()
@@ -275,7 +273,6 @@ void SReader::updating() throw(::fwTools::Failed)
 
             FW_RAISE_IF( "Unable to guess file format (missing extension)", extension.empty() );
 
-
             if(m_customExts.find(extension) != m_customExts.end())
             {
                 extension = "." + m_customExts[extension];
@@ -335,7 +332,6 @@ void SReader::updating() throw(::fwTools::Failed)
                     runningJob.done();
 
                 }, m_associatedWorker);
-
 
             // patching atom : job 2
             ::fwJobs::Job::sptr patchingJob = ::fwJobs::Job::New("Reading " + extension + " file",

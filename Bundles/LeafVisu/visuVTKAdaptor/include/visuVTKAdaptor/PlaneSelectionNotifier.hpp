@@ -1,9 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
 
 #ifndef __VISUVTKADAPTOR_PLANESELECTIONNOTIFIER_HPP__
 #define __VISUVTKADAPTOR_PLANESELECTIONNOTIFIER_HPP__
@@ -18,7 +17,6 @@
 #include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
-#include <fwData/Object.hpp>
 #include <fwData/PlaneList.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
@@ -34,16 +32,20 @@ class VISUVTKADAPTOR_CLASS_API PlaneSelectionNotifier : public ::fwRenderVTK::IV
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (PlaneSelectionNotifier)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (PlaneSelectionNotifier)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API PlaneSelectionNotifier() throw();
 
     VISUVTKADAPTOR_API virtual ~PlaneSelectionNotifier() throw();
 
+    //------------------------------------------------------------------------------
+
     void setPlaneListId(const std::string& id)
     {
         m_planeListId = id;
     }
+
+    //------------------------------------------------------------------------------
 
     void setPlaneSelectionId(const std::string& id)
     {
@@ -120,7 +122,6 @@ private:
      */
 
 };
-
 
 } //namespace visuVTKAdaptor
 

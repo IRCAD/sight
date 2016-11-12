@@ -7,7 +7,6 @@
 #include "fwActivities/registry/ActivityMsg.hpp"
 
 #include <fwData/Composite.hpp>
-#include <fwData/Object.hpp>
 #include <fwData/String.hpp>
 
 #include <fwDataCamp/getObject.hpp>

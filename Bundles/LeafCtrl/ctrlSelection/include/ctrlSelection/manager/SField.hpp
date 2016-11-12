@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,8 +9,6 @@
 
 #include "ctrlSelection/IManagerSrv.hpp"
 #include "ctrlSelection/config.hpp"
-
-#include <fwData/Object.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
@@ -30,7 +28,7 @@ class CTRLSELECTION_CLASS_API SField : public ::ctrlSelection::IManagerSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SField)(::ctrlSelection::IManagerSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SField)(::ctrlSelection::IManagerSrv) );
 
     /// Constructor.  Do nothing.
     CTRLSELECTION_API SField() throw();
@@ -50,8 +48,10 @@ public:
 
 protected:
 
-    /// Implements starting method derived from IService. Starts the managed services if their fields are in the composite.
-    /// If the mode is "dummy", starts the the managed services on dummy fields if their fields are not in the composite.
+    /// Implements starting method derived from IService. Starts the managed services if their fields are in the
+    // composite.
+    /// If the mode is "dummy", starts the the managed services on dummy fields if their fields are not in the
+    // composite.
     CTRLSELECTION_API virtual void starting()  throw ( ::fwTools::Failed );
 
     /// Implements stopping method derived from IService. Stops and erases all the managed services.
@@ -63,7 +63,8 @@ protected:
      * Sample of declaration configuration for a simple swapper service
      *
      * @code{.xml}
-        <service uid="FieldManager" impl="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
+        <service uid="FieldManager" impl="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv"
+     * autoConnect="yes" >
             <mode type="dummy" />
             <config>
                 <field id="TFSelection" type="::fwData::TransferFunction" >
@@ -86,7 +87,8 @@ protected:
         </service>
        @endcode
      * With:
-     * @li mode : must be "stop" or "dummy". The dummy mode doesn't stop the services when its attached field is deleted but swap it on a dummy field.
+     * @li mode : must be "stop" or "dummy". The dummy mode doesn't stop the services when its attached field is deleted
+     * but swap it on a dummy field.
      * @li the fields, services, connect and proxy tags are defined as same as the configuration of fields and services.
      * @li autoConnect: optional (default value = false), if true allows to listen signals from the associated object.
      * @li worker: optional, allows to manage the service in another thread.
@@ -109,7 +111,8 @@ protected:
     {
     public:
 
-        SubService() : m_hasAutoConnection(false)
+        SubService() :
+            m_hasAutoConnection(false)
         {
         }
 
@@ -117,7 +120,7 @@ protected:
         {
         }
 
-        SPTR (::fwServices::IService) getService()
+        SPTR(::fwServices::IService) getService()
         {
             return m_service.lock();
         }
@@ -131,7 +134,6 @@ protected:
 
     typedef std::vector< SPTR(SubService) > SubServicesVecType;
     typedef std::map< FieldNameType, SubServicesVecType > SubServicesMapType;
-
 
     void initOnDummyObject( const FieldNameType& fieldName );
     void addField( const FieldNameType& fieldName, ::fwData::Object::sptr field );
@@ -149,8 +151,6 @@ protected:
     ::fwServices::IService::sptr add( ::fwData::Object::sptr obj, ::fwRuntime::ConfigurationElement::sptr _elt );
 
 private:
-
-
 
     std::string m_mode;
     bool m_dummyStopMode;

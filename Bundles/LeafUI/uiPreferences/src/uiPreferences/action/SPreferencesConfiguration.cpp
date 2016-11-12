@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,6 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/Integer.hpp>
-#include <fwData/Object.hpp>
 #include <fwData/String.hpp>
 #include <fwData/location/Folder.hpp>
 
@@ -185,7 +184,7 @@ void SPreferencesConfiguration::updating() throw(::fwTools::Failed)
             layout->addWidget(pref.m_lineEdit, index, 1);
             QPointer<QPushButton> directorySelector = new QPushButton("...");
             layout->addWidget(directorySelector, index, 2);
-            QObject::connect(directorySelector.data(), &QPushButton::clicked, [this,pref]()
+            QObject::connect(directorySelector.data(), &QPushButton::clicked, [this, pref]()
                     {
                         this->onSelectDir(pref.m_lineEdit);
                     });
@@ -208,7 +207,6 @@ void SPreferencesConfiguration::updating() throw(::fwTools::Failed)
     QObject::connect(okButton.data(), &QPushButton::clicked, dialog.data(), &QDialog::accept);
 
     dialog->setLayout(layout);
-
 
     if (dialog->exec() == QDialog::Accepted)
     {

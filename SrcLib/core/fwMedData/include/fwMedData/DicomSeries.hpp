@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,11 +7,10 @@
 #ifndef __FWMEDDATA_DICOMSERIES_HPP__
 #define __FWMEDDATA_DICOMSERIES_HPP__
 
-#include "fwMedData/types.hpp"
 #include "fwMedData/Series.hpp"
 #include "fwMedData/config.hpp"
+#include "fwMedData/types.hpp"
 
-#include <fwData/Object.hpp>
 #include <fwData/factory/new.hpp>
 
 #include <boost/filesystem/path.hpp>
@@ -25,7 +24,6 @@ class Array;
 
 namespace fwMedData
 {
-
 
 /**
  * @brief Holds DICOM data
@@ -116,6 +114,8 @@ public:
         return m_dicomAvailability;
     }
 
+    //------------------------------------------------------------------------------
+
     void setDicomAvailability(DICOM_AVAILABILITY val)
     {
         m_dicomAvailability = val;
@@ -129,6 +129,8 @@ public:
     {
         return m_localDicomPaths;
     }
+    //------------------------------------------------------------------------------
+
     void setLocalDicomPaths(const DicomPathContainerType& val)
     {
         m_localDicomPaths = val;
@@ -142,6 +144,8 @@ public:
     {
         return m_numberOfInstances;
     }
+    //------------------------------------------------------------------------------
+
     void setNumberOfInstances (std::size_t val)
     {
         m_numberOfInstances = val;
@@ -155,6 +159,8 @@ public:
     {
         return m_dicomBinaries;
     }
+    //------------------------------------------------------------------------------
+
     void setDicomBinaries (const DicomBinaryContainerType& val)
     {
         m_dicomBinaries = val;
@@ -168,6 +174,8 @@ public:
     {
         return m_SOPClassUIDs;
     }
+    //------------------------------------------------------------------------------
+
     void setSOPClassUIDs (const SOPClassUIDContainerType& val)
     {
         m_SOPClassUIDs = val;
@@ -181,6 +189,8 @@ public:
     {
         return m_computedTagValues;
     }
+    //------------------------------------------------------------------------------
+
     void setComputedTagValues (const ComputedTagValueContainerType& val)
     {
         m_computedTagValues = val;
@@ -195,15 +205,15 @@ public:
         return m_firstInstanceNumber;
     }
 
+    //------------------------------------------------------------------------------
+
     void setFirstInstanceNumber(std::size_t firstInstanceNumber)
     {
         m_firstInstanceNumber = firstInstanceNumber;
     }
     /**  @} */
 
-
     /**  @} */
-
 
 protected:
 
@@ -232,5 +242,4 @@ protected:
 }   //end namespace fwMedData
 
 #endif // __FWMEDDATA_DICOMSERIES_HPP__
-
 

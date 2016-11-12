@@ -1,16 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuVTKAdaptor/InteractorStyle.hpp"
 
-#include <fwData/Object.hpp>
-
 #include <fwRenderVTK/IInteractorStyle.hpp>
-#include <fwServices/macros.hpp>
 
+#include <fwServices/macros.hpp>
 
 #include <vtkInstantiator.h>
 #include <vtkInteractorStyleImage.h>
@@ -23,7 +21,8 @@ namespace visuVTKAdaptor
 
 //------------------------------------------------------------------------------
 
-InteractorStyle::InteractorStyle() throw() : m_interactorStyle(nullptr)
+InteractorStyle::InteractorStyle() throw() :
+    m_interactorStyle(nullptr)
 {
 }
 
@@ -50,7 +49,7 @@ void InteractorStyle::doConfigure() throw(fwTools::Failed)
 void InteractorStyle::doStart() throw(fwTools::Failed)
 {
     vtkObject* objectStyle         = vtkInstantiator::CreateInstance(m_configuredStyle.c_str());
-    vtkInteractorStyle *interactor = vtkInteractorStyle::SafeDownCast(objectStyle);
+    vtkInteractorStyle* interactor = vtkInteractorStyle::SafeDownCast(objectStyle);
     OSLM_ASSERT(
         "InsteractorStyle adaptor is waiting "
         "for a vtkInteractorStyle object, but '"
@@ -82,7 +81,7 @@ void InteractorStyle::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void InteractorStyle::setInteractorStyle(vtkInteractorStyle *interactor)
+void InteractorStyle::setInteractorStyle(vtkInteractorStyle* interactor)
 {
     if ( m_interactorStyle != nullptr )
     {
@@ -98,13 +97,11 @@ void InteractorStyle::setInteractorStyle(vtkInteractorStyle *interactor)
 
     m_interactorStyle = interactor;
 
-
     this->getInteractor()->SetInteractorStyle(nullptr);
     this->getInteractor()->SetInteractorStyle(m_interactorStyle);
     this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------
-
 
 } //namespace visuVTKAdaptor

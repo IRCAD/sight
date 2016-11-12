@@ -1,9 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
 
 #ifndef __VISUVTKADAPTOR_PLANESELECTOR_HPP__
 #define __VISUVTKADAPTOR_PLANESELECTOR_HPP__
@@ -12,11 +11,9 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwData/Object.hpp>
 #include <fwData/PlaneList.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-
 
 namespace visuVTKAdaptor
 {
@@ -29,7 +26,7 @@ class VISUVTKADAPTOR_CLASS_API PlaneSelector : public ::fwRenderVTK::IVtkAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (PlaneSelector)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (PlaneSelector)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API PlaneSelector() throw();
 
@@ -49,9 +46,6 @@ protected:
 
     ::fwData::Object::wptr m_currentObject;
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

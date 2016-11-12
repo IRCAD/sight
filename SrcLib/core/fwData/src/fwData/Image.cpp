@@ -9,21 +9,12 @@
 #include "fwData/Exception.hpp"
 #include "fwData/registry/macros.hpp"
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-
-#include <fwCore/base.hpp>
 
 #include <fwTools/DynamicType.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 
 #include <boost/assign.hpp>
-
-#include <algorithm>
-#include <climits>
-#include <functional>
-#include <numeric>
-#include <sstream>
 
 //------------------------------------------------------------------------------
 

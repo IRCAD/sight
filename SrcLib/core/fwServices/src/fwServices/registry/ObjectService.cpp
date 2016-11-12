@@ -1,16 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwServices/registry/ObjectService.hpp"
+
 #include "fwServices/IService.hpp"
 #include "fwServices/registry/AppConfig.hpp"
-#include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/registry/ServiceConfig.hpp"
 #include "fwServices/registry/ServiceFactory.hpp"
-
-#include <fwData/Object.hpp>
 
 #include <fwCore/LogicStamp.hpp>
 #include <fwCore/util/LazyInstantiator.hpp>
@@ -31,6 +30,8 @@ namespace fwServices
 
 namespace OSR
 {
+
+//------------------------------------------------------------------------------
 
 ::fwServices::registry::ObjectService::sptr get()
 {
@@ -90,7 +91,7 @@ void registerService( ::fwData::Object::sptr obj, ::fwServices::IService::sptr s
 //------------------------------------------------------------------------------
 
 void registerService( ::fwData::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
-                      ::fwServices::IService::AccessType access,::fwServices::IService::sptr service )
+                      ::fwServices::IService::AccessType access, ::fwServices::IService::sptr service )
 {
     ::fwServices::OSR::get()->registerService(obj, objKey, access, service);
 }
@@ -143,7 +144,6 @@ bool isRegistered(const ::fwServices::IService::KeyType& objKey,
 //------------------------------------------------------------------------------
 
 } //namespace OSR
-
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------

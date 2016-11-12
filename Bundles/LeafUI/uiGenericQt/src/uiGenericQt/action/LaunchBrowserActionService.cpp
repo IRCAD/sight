@@ -1,22 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
+#include "uiGenericQt/action/LaunchBrowserActionService.hpp"
+
+#include <fwCore/base.hpp>
+
+#include <fwServices/macros.hpp>
 
 #include <QCoreApplication>
 #include <QDesktopServices>
 #include <QUrl>
 
-#include <fwCore/base.hpp>
-#include <fwData/Object.hpp>
-
-#include <fwServices/macros.hpp>
-
-#include "uiGenericQt/action/LaunchBrowserActionService.hpp"
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 
 namespace uiGeneric
 {
@@ -43,7 +42,7 @@ LaunchBrowserActionService::~LaunchBrowserActionService() throw()
 
 //------------------------------------------------------------------------------
 
-void LaunchBrowserActionService::info(std::ostream &_sstream )
+void LaunchBrowserActionService::info(std::ostream& _sstream )
 {
     _sstream << "Action for manage url" << std::endl;
 }

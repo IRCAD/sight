@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,6 @@
 #include "IoAtomsTest.hpp"
 
 #include <fwData/Composite.hpp>
-
-#include <fwData/Object.hpp>
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
@@ -58,7 +56,7 @@ void IoAtomsTest::tearDown()
 //------------------------------------------------------------------------------
 
 template <typename T>
-void compareLog(T &comparator)
+void compareLog(T& comparator)
 {
     SPTR(::fwDataCamp::visitor::CompareObjects::PropsMapType) props = comparator.getDifferences();
     for(::fwDataCamp::visitor::CompareObjects::PropsMapType::value_type prop :  (*props) )
@@ -67,12 +65,10 @@ void compareLog(T &comparator)
     }
 }
 
-
-
 //------------------------------------------------------------------------------
 
 template <typename T>
-void write(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const SPTR(T) &obj, const std::string &writer)
+void write(const ::fwRuntime::EConfigurationElement::sptr& srvCfg, const SPTR(T)& obj, const std::string& writer)
 {
     ::fwServices::IService::sptr writerSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( writer );
     CPPUNIT_ASSERT(writerSrv);
@@ -85,7 +81,6 @@ void write(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const SPTR(T)
     writerSrv->stop();
     ::fwServices::OSR::unregisterService( writerSrv );
 }
-
 
 template <typename T>
 SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::string &reader)
@@ -106,10 +101,11 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::
     return readObj;
 }
 
+//------------------------------------------------------------------------------
 
 template <typename T>
-void writeReadFile(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const SPTR(T) &obj,
-                   const std::string &writer, const std::string &reader)
+void writeReadFile(const ::fwRuntime::EConfigurationElement::sptr& srvCfg, const SPTR(T)& obj,
+                   const std::string& writer, const std::string& reader)
 {
     write(srvCfg, obj, writer);
 
@@ -127,14 +123,14 @@ void writeReadFile(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const
 
 //------------------------------------------------------------------------------
 
-void atomTest(const ::boost::filesystem::path & filePath)
+void atomTest(const ::boost::filesystem::path& filePath)
 {
     ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
     ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
     fileCfg->setValue(filePath.string());
     srvCfg->addConfigurationElement(fileCfg);
 
-    ::fwMedData::SeriesDB::sptr seriesDB      = ::fwTest::generator::SeriesDB::createSeriesDB(2,2,2);
+    ::fwMedData::SeriesDB::sptr seriesDB      = ::fwTest::generator::SeriesDB::createSeriesDB(2, 2, 2);
     ::fwData::Composite::sptr workspace       = ::fwData::Composite::New();
     workspace->getContainer()["processingDB"] = ::fwData::Composite::New();
     workspace->getContainer()["planningDB"]   = ::fwData::Composite::New();
@@ -155,7 +151,6 @@ void atomTest(const ::boost::filesystem::path & filePath)
         CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
     }
 
-
     // 'Change' UUID policy
     ::fwRuntime::EConfigurationElement::sptr uuidPolicyCfg = ::fwRuntime::EConfigurationElement::New("uuidPolicy");
     uuidPolicyCfg->setValue("Change");
@@ -171,7 +166,6 @@ void atomTest(const ::boost::filesystem::path & filePath)
         CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
     }
 
-
     // 'Strict' UUID policy
     uuidPolicyCfg->setValue("Strict");
     readSeriesDB = read< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader");
@@ -182,7 +176,6 @@ void atomTest(const ::boost::filesystem::path & filePath)
         CPPUNIT_ASSERT_MESSAGE("Written data should not be empty", !seriesDB->empty());
         CPPUNIT_ASSERT_MESSAGE("Loaded data should be empty", readSeriesDB->empty());
     }
-
 
     // 'Reuse' UUID policy
     uuidPolicyCfg->setValue("Reuse");
