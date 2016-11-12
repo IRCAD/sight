@@ -1,21 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "guiQt/editor/SSlider.hpp"
 
-#include <fwCore/base.hpp>
-
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
+#include <fwCore/base.hpp>
+
 #include <fwData/Object.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <fwGuiQt/container/QtContainer.hpp>
+
+#include <fwServices/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QIntValidator>
@@ -31,7 +31,6 @@ namespace editor
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::guiQt::editor::SSlider, ::fwData::Object );
 
-
 const ::fwCom::Signals::SignalKeyType SSlider::s_VALUE_CHANGED_SIG = "valueChanged";
 
 const ::fwCom::Slots::SlotKeyType SSlider::s_SET_VALUE_SLIDER_SLOT     = "setValue";
@@ -40,16 +39,16 @@ const ::fwCom::Slots::SlotKeyType SSlider::s_SET_MAX_VALUE_SLIDER_SLOT = "setMax
 
 //------------------------------------------------------------------------------
 
-SSlider::SSlider() throw()
-    : m_value(0),
-      m_minValue(0),
-      m_maxValue(100),
-      m_defaultValue(0),
-      m_text(""),
-      m_isUpdatedOnRelease(false),
-      m_hasResetButton(false),
-      m_hasEditBox(false),
-      m_sliderPressed(false)
+SSlider::SSlider() throw() :
+    m_value(0),
+    m_minValue(0),
+    m_maxValue(100),
+    m_defaultValue(0),
+    m_text(""),
+    m_isUpdatedOnRelease(false),
+    m_hasResetButton(false),
+    m_hasEditBox(false),
+    m_sliderPressed(false)
 {
     newSlot(s_SET_VALUE_SLIDER_SLOT, &SSlider::setValue, this);
     newSlot(s_SET_MIN_VALUE_SLIDER_SLOT, &SSlider::setMinValue, this);
@@ -74,7 +73,7 @@ void SSlider::configuring() throw(fwTools::Failed)
         ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("value");
         if(config)
         {
-            m_value = ::boost::lexical_cast<int>(config->getValue());
+            m_value = std::stoi(config->getValue());
         }
     }
 
@@ -83,7 +82,7 @@ void SSlider::configuring() throw(fwTools::Failed)
         ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("defaultValue");
         if(config)
         {
-            m_defaultValue = ::boost::lexical_cast<int>(config->getValue());
+            m_defaultValue = std::stoi(config->getValue());
         }
     }
 
@@ -95,7 +94,6 @@ void SSlider::configuring() throw(fwTools::Failed)
             m_hasResetButton = (config->getValue() == "true");
         }
     }
-
 
     // UPDATE ON RELEASE
     {
@@ -133,8 +131,8 @@ void SSlider::configuring() throw(fwTools::Failed)
             ::fwRuntime::ConfigurationElement::sptr maxCfg = config->findConfigurationElement("max");
             SLM_ASSERT("Missing min and max configuration", minCfg && maxCfg);
 
-            m_minValue = ::boost::lexical_cast<int>(minCfg->getValue());
-            m_maxValue = ::boost::lexical_cast<int>(maxCfg->getValue());
+            m_minValue = std::stoi(minCfg->getValue());
+            m_maxValue = std::stoi(maxCfg->getValue());
         }
     }
 }
@@ -215,7 +213,6 @@ void SSlider::starting() throw(::fwTools::Failed)
 
     this->resetValue();
 }
-
 
 //------------------------------------------------------------------------------
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,6 +15,8 @@
 #include <gui/editor/IEditor.hpp>
 
 #include <QObject>
+
+#include <boost/filesystem/path.hpp>
 
 class QComboBox;
 class QPushButton;
@@ -33,7 +35,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (TransferFunctionEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (TransferFunctionEditor)(::gui::editor::IEditor) );
 
     /// Basic constructor, do nothing.
     UITF_API TransferFunctionEditor();
@@ -58,7 +60,8 @@ protected:
      *
      * Example of configuration
      * @code{.xml}
-       <service uid="GENERIC_UID_tfm" type="::gui::editor::IEditor" impl="::uiTF::TransferFunctionEditor" autoConnect="yes" >
+       <service uid="GENERIC_UID_tfm" type="::gui::editor::IEditor" impl="::uiTF::TransferFunctionEditor"
+     * autoConnect="yes" >
         <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" useDefaultPath="yes">
             <path>....</path>
             <path>....</path>
@@ -91,11 +94,11 @@ protected:
     UITF_API void initTransferFunctions();
 
     /// Check if the image contain the specified TF.
-    UITF_API bool hasTransferFunctionName(const std::string & _sName);
+    UITF_API bool hasTransferFunctionName(const std::string& _sName);
 
     /// Create a string that represents a TF name not already present in the composite. For example, if blabla is
     /// already used, it will return blabla_1.
-    UITF_API std::string createTransferFunctionName( const std::string & _sBasename );
+    UITF_API std::string createTransferFunctionName( const std::string& _sBasename );
 
     /// Update the image with the selected TF in the ComboBox.
     UITF_API void updateTransferFunction();
@@ -126,13 +129,13 @@ private:
 
     typedef std::vector< ::boost::filesystem::path > PathContainerType;
 
-    QComboBox *m_pTransferFunctionPreset;
-    QPushButton *m_deleteButton;
-    QPushButton *m_newButton;
-    QPushButton *m_reinitializeButton;
-    QPushButton *m_renameButton;
-    QPushButton *m_importButton;
-    QPushButton *m_exportButton;
+    QComboBox* m_pTransferFunctionPreset;
+    QPushButton* m_deleteButton;
+    QPushButton* m_newButton;
+    QPushButton* m_reinitializeButton;
+    QPushButton* m_renameButton;
+    QPushButton* m_importButton;
+    QPushButton* m_exportButton;
     QWidget* m_container;
 
     /// fwID of tf selection ( used during configuration )

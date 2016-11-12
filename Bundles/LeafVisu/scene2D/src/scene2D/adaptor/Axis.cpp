@@ -1,18 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/data/InitQtPen.hpp"
 #include "scene2D/adaptor/Axis.hpp"
 
-#include <fwServices/macros.hpp>
+#include "scene2D/data/InitQtPen.hpp"
 
 #include <fwData/Composite.hpp>
 
-#include <QGraphicsItemGroup>
+#include <fwServices/macros.hpp>
 
+#include <QGraphicsItemGroup>
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Axis, ::fwData::Composite );
 
@@ -22,7 +22,10 @@ namespace scene2D
 namespace adaptor
 {
 
-Axis::Axis() throw() : m_showLine(true), m_tickSize(0.02f), m_color(Qt::white)
+Axis::Axis() throw() :
+    m_showLine(true),
+    m_tickSize(0.02f),
+    m_color(Qt::white)
 {
 }
 
@@ -72,13 +75,11 @@ void Axis::configuring() throw( ::fwTools::Failed)
 
     this->IAdaptor::configuring();  // Looks for 'xAxis', 'yAxis' and 'zValue'
 
-
     // 'color'
     if (!m_configuration->getAttributeValue("color").empty())
     {
         ::scene2D::data::InitQtPen::setPenColor(m_color, m_configuration->getAttributeValue("color"));
     }
-
 
     // 'align' attribute configuration
     m_align = m_configuration->getAttributeValue("align");
@@ -88,7 +89,6 @@ void Axis::configuring() throw( ::fwTools::Failed)
     SLM_ASSERT("Unsupported value for 'align' attribute.",
                m_align == "left" || m_align == "right" || m_align == "top" || m_align == "bottom");
 
-
     // Axis bounds
     const std::string min = m_configuration->getAttributeValue("min");
     const std::string max = m_configuration->getAttributeValue("max");
@@ -96,14 +96,12 @@ void Axis::configuring() throw( ::fwTools::Failed)
     SLM_ASSERT("'min' attribute is missing.", !min.empty());
     SLM_ASSERT("'max' attribute is missing.", !max.empty());
 
-    m_min = ::boost::lexical_cast< float >( min );
-    m_max = ::boost::lexical_cast< float >( max );
-
+    m_min = std::stof( min );
+    m_max = std::stof( max );
 
     // Ticks size
     const std::string tickSize = m_configuration->getAttributeValue("tickSize");
-    m_tickSize = ( tickSize.empty() ) ? 1.0 : ::boost::lexical_cast< float >( tickSize );
-
+    m_tickSize = ( tickSize.empty() ) ? 1.0 : std::stof( tickSize );
 
     // Viewport
     SLM_ASSERT("A viewport attribute must be specified with 'viewportUID'.",
@@ -114,10 +112,9 @@ void Axis::configuring() throw( ::fwTools::Failed)
         m_viewportID = m_configuration->getAttributeValue("viewportUID");
     }
 
-
     // Step
     const std::string interval = m_configuration->getAttributeValue("interval");
-    m_interval = ( interval.empty() ) ? 1.0f : ::boost::lexical_cast< float >( interval );
+    m_interval = ( interval.empty() ) ? 1.0f : std::stof( interval );
 }
 
 //---------------------------------------------------------------------------------------------------------------

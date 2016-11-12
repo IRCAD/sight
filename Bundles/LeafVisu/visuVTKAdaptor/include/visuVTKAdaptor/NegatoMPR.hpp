@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,6 +15,8 @@
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
+#include <boost/logic/tribool.hpp>
+
 namespace visuVTKAdaptor
 {
 
@@ -26,7 +28,7 @@ class VISUVTKADAPTOR_CLASS_API NegatoMPR : public ::fwDataTools::helper::Medical
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (NegatoMPR)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (NegatoMPR)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API NegatoMPR() throw();
 
@@ -39,14 +41,20 @@ public:
         THREE_SLICES
     } SliceMode;
 
+    //------------------------------------------------------------------------------
+
     void setAllowAlphaInTF(bool allow)
     {
         m_allowAlphaInTF = allow;
     }
+    //------------------------------------------------------------------------------
+
     void setInterpolation(bool interpolation)
     {
         m_interpolation = interpolation;
     }
+    //------------------------------------------------------------------------------
+
     void setVtkImageSourceId(std::string id)
     {
         m_imageSourceId = id;
@@ -91,7 +99,8 @@ protected:
                    selectedTFKey="tkKey" tfSelectionFwID="selectionID" />
        </adaptor>
        @endcode
-     * - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects renderer.
+     * - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects
+     * renderer.
      * - \b picker (mandatory): identifier of the picker
      * - \b mode (optional, 2d or 3d): defines the scene mode. In 2d mode, the camera follow the negato in
      * axial/frontal/sagital orientation. In 3d mode, the camera is automatically reset when the image is modified. If
@@ -110,7 +119,6 @@ protected:
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 
     ::fwRenderVTK::IVtkAdaptorService::sptr addAdaptor(std::string adaptor, int axis = -1);
-
 
 private:
 
@@ -141,7 +149,6 @@ private:
 
     std::string m_slicingStartingProxy; ///< channel of the proxy used to start slicing
     std::string m_slicingStoppingProxy; ///< channel of the proxy used to stop slicing
-
 
     ::boost::logic::tribool m_3dModeEnabled;
     SliceMode m_sliceMode;

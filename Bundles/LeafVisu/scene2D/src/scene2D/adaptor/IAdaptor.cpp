@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,8 +22,9 @@ namespace scene2D
 namespace adaptor
 {
 
-
-IAdaptor::IAdaptor() throw() : m_zValue(0), m_opacity(1)
+IAdaptor::IAdaptor() throw() :
+    m_zValue(0),
+    m_opacity(1)
 {
 }
 
@@ -214,12 +215,12 @@ void IAdaptor::configuring() throw ( ::fwTools::Failed )
 
     if ( m_configuration->hasAttribute("zValue") )
     {
-        m_zValue = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("zValue"));
+        m_zValue = std::stof( m_configuration->getAttributeValue("zValue"));
     }
 
     if ( m_configuration->hasAttribute("opacity") )
     {
-        m_opacity = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("opacity"));
+        m_opacity = std::stof( m_configuration->getAttributeValue("opacity"));
     }
 }
 
@@ -334,6 +335,4 @@ void IAdaptor::unregisterServices()
 
 }
 } // namespace scene2D
-
-
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,6 +14,7 @@
 
 #include <fwTools/UUID.hpp>
 
+#include <boost/algorithm/string/replace.hpp>
 #include <boost/regex.hpp>
 
 namespace fwActivities
@@ -23,8 +24,8 @@ namespace registry
 
 //-----------------------------------------------------------------------------
 
-ActivityMsg::ActivityMsg(const ::fwMedData::ActivitySeries::sptr &series,
-                         const ::fwActivities::registry::ActivityInfo & info,
+ActivityMsg::ActivityMsg(const ::fwMedData::ActivitySeries::sptr& series,
+                         const ::fwActivities::registry::ActivityInfo& info,
                          const ParametersType& parameters)
 {
     SLM_ASSERT("ActivitySeries instantiation failed", series);
@@ -94,7 +95,7 @@ ActivityMsg::ActivityMsg(const ::fwMedData::ActivitySeries::sptr &series,
         else
         {
             std::string parameterToReplace = param.by;
-            if (parameterToReplace.substr(0,1) == "!")
+            if (parameterToReplace.substr(0, 1) == "!")
             {
                 parameterToReplace.replace(0, 1, "@");
             }
@@ -106,7 +107,7 @@ ActivityMsg::ActivityMsg(const ::fwMedData::ActivitySeries::sptr &series,
 
             std::string parameterValue = obj->getID();
 
-            if(stringParameter && param.by.substr(0,1) == "!")
+            if(stringParameter && param.by.substr(0, 1) == "!")
             {
                 parameterValue = stringParameter->getValue();
             }

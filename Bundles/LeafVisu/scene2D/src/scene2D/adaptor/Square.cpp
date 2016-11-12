@@ -1,19 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/adaptor/Square.hpp"
 
-#include <fwServices/macros.hpp>
 #include <fwData/Composite.hpp>
+
+#include <fwServices/macros.hpp>
 
 #include <QGraphicsItemGroup>
 
-
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Square, ::fwData::Composite );
-
 
 namespace scene2D
 {
@@ -26,7 +25,7 @@ Square::Square() throw() :
     m_size(0),
     m_layer(nullptr),
     m_rec(nullptr),
-    m_pointIsCaptured (false)
+    m_pointIsCaptured(false)
 {
 }
 
@@ -48,9 +47,9 @@ void Square::configuring() throw ( ::fwTools::Failed )
 
     SLM_TRACE("IAdaptor configuring ok");
 
-    m_coord.setX( ::boost::lexical_cast< double >( m_configuration->getAttributeValue("x") ) );
-    m_coord.setY( ::boost::lexical_cast< double >( m_configuration->getAttributeValue("y") ) );
-    m_size = ::boost::lexical_cast< ::boost::uint32_t >( m_configuration->getAttributeValue("size") );
+    m_coord.setX( std::stod( m_configuration->getAttributeValue("x") ) );
+    m_coord.setY( std::stod( m_configuration->getAttributeValue("y") ) );
+    m_size = std::stoi( m_configuration->getAttributeValue("size") );
     if ( m_configuration->hasAttribute("color") )
     {
         this->setColor(m_configuration->getAttributeValue("color"));
@@ -153,17 +152,17 @@ void Square::processInteraction( ::scene2D::data::Event::sptr _event )
 
 //-----------------------------------------------------------------------------
 
-bool Square::coordViewIsInItem( const ::scene2D::data::Coord & coord, QGraphicsItem * item )
+bool Square::coordViewIsInItem( const ::scene2D::data::Coord& coord, QGraphicsItem* item )
 {
     ::scene2D::data::Coord scenePoint = this->getScene2DRender()->mapToScene( coord );
-    QPointF sp ( scenePoint.getX(), scenePoint.getY() );
+    QPointF sp( scenePoint.getX(), scenePoint.getY() );
     QPointF ip = item->mapFromScene( sp );
     return item->contains( ip );
 }
 
 //-----------------------------------------------------------------------------
 
-::scene2D::data::Coord Square::coordViewToCoordItem( const ::scene2D::data::Coord & coord, QGraphicsItem * item )
+::scene2D::data::Coord Square::coordViewToCoordItem( const ::scene2D::data::Coord& coord, QGraphicsItem* item )
 {
     ::scene2D::data::Coord scenePoint = this->getScene2DRender()->mapToScene( coord );
     //QPointF sp ( scenePoint.getX(), scenePoint.getY() );
@@ -175,6 +174,4 @@ bool Square::coordViewIsInItem( const ::scene2D::data::Coord & coord, QGraphicsI
 
 } // namespace adaptor
 } // namespace scene2D
-
-
 

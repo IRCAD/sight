@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,6 +27,8 @@
 #include <vtkCubeSource.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderWindowInteractor.h>
+
+#include <boost/tokenizer.hpp>
 
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_INTERACTION_EVENT  vtkCommand::LeftButtonReleaseEvent
@@ -67,6 +69,8 @@ ImagePickerInteractor::MapEventIdType ImagePickerInteractor::m_eventIdConversion
 class ImagePickerInteractorCallback : public vtkCommand
 {
 public:
+    //------------------------------------------------------------------------------
+
     static ImagePickerInteractorCallback* New()
     {
         return new ImagePickerInteractorCallback();
@@ -74,7 +78,9 @@ public:
 
     //------------------------------------------------------------------------------
 
-    ImagePickerInteractorCallback() : m_picker(nullptr), m_eventId(nullptr)
+    ImagePickerInteractorCallback() :
+        m_picker(nullptr),
+        m_eventId(nullptr)
     {
         m_picker = NULL;
         this->PassiveObserverOn();
@@ -100,7 +106,7 @@ public:
 
     bool pickSomething()
     {
-        int x,y;
+        int x, y;
         double display[3];
 
         m_adaptor->getInteractor()->GetEventPosition(x, y);
@@ -133,7 +139,7 @@ public:
 
             if ( this->pickSomething() )
             {
-                double world[3] = {-1,0,0};
+                double world[3] = {-1, 0, 0};
                 ::fwRenderVTK::vtk::getNearestPickedPosition(m_picker, m_adaptor->getRenderer(), world);
                 OSLM_TRACE("PICK" << world[0] << " ," << world[1] << " ," << world[2] );
 
@@ -197,7 +203,8 @@ const ::fwCom::Signals::SignalKeyType ImagePickerInteractor::s_PICKED_SIGNAL = "
 
 //------------------------------------------------------------------------------
 
-ImagePickerInteractor::ImagePickerInteractor() throw() : m_interactionCommand(nullptr)
+ImagePickerInteractor::ImagePickerInteractor() throw() :
+    m_interactionCommand(nullptr)
 {
     newSignal<PickedSignalType>(s_PICKED_SIGNAL);
     newSlot(s_UPDATE_SLICE_INDEX_SLOT, &ImagePickerInteractor::updateSliceIndex, this);
@@ -305,7 +312,6 @@ void ImagePickerInteractor::doStop() throw(fwTools::Failed)
     interactor->RemoveObservers(vtkCommand::MouseWheelForwardEvent, m_interactionCommand);
     interactor->RemoveObservers(vtkCommand::MouseWheelBackwardEvent, m_interactionCommand);
     interactor->RemoveObservers(vtkCommand::KeyPressEvent, m_interactionCommand);
-
 
     m_interactionCommand->Delete();
     m_interactionCommand = NULL;
