@@ -501,6 +501,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
         message("[INFO] Use precompiled header in ${FWPROJECT_NAME}")
         add_precompiled_header(${FWPROJECT_NAME} include/${FWPROJECT_NAME}/pch.hpp)
     endif()
+
     fwLibExtra()
 
 endmacro()
@@ -551,8 +552,11 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
 
         target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/")
 
-        message(">>>>>>>>>>>>>>>>>>>>>>>>>>>>< ${CMAKE_HOME_DIRECTORY}")
-        #add_precompiled_header(${FWPROJECT_NAME} pch.hpp)
+        if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/${FWPROJECT_NAME}/pch.hpp")
+            message("[INFO] Use precompiled header in ${FWPROJECT_NAME}")
+            add_precompiled_header(${FWPROJECT_NAME} include/${FWPROJECT_NAME}/pch.hpp)
+        endif()
+
     else()
         add_custom_target(${FWPROJECT_NAME} SOURCES
             ${${FWPROJECT_NAME}_RC_FILES}
