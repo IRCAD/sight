@@ -7,33 +7,6 @@
 #ifndef __FWDATA_OBJECT_HPP__
 #define __FWDATA_OBJECT_HPP__
 
-#include "fwData/factory/new.hpp"
-#include "fwData/registry/detail.hpp"
-#include "fwData/config.hpp"
-
-#include <fwCore/base.hpp>
-#include <fwCore/mt/types.hpp>
-
-#include <fwCamp/macros.hpp>
-#ifdef CAMP_COMPILATION
-#include <fwCamp/camp/customtype.hpp>
-#include <fwCamp/camp/MapProperty.hpp>
-#include <fwCamp/camp/MapMapper.hpp>
-#include <fwCamp/camp/MapValueMapper.hpp>
-#include <fwCamp/Mapper/ArrayMapper.hpp>
-#include <fwCamp/camp/detail/MapPropertyImpl.hpp>
-#include <fwCamp/camp/ExtendedClassVisitor.hpp>
-#endif
-
-#include <fwTools/Object.hpp>
-#include <fwTools/DynamicAttributes.hxx>
-
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/Signal.hpp>
-
-#include <unordered_map>
-#include <string>
-
 fwCampAutoDeclareDataMacro((fwData)(Object), FWDATA_API);
 
 namespace fwData

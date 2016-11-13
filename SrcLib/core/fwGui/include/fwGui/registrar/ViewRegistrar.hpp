@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,13 @@
 #ifndef __FWGUI_REGISTRAR_VIEWREGISTRAR_HPP__
 #define __FWGUI_REGISTRAR_VIEWREGISTRAR_HPP__
 
-#include <fwRuntime/ConfigurationElement.hpp>
-
 #include "fwGui/GuiBaseObject.hpp"
-#include "fwGui/container/fwToolBar.hpp"
-#include "fwGui/container/fwMenuBar.hpp"
-#include "fwGui/container/fwContainer.hpp"
 #include "fwGui/config.hpp"
+#include "fwGui/container/fwContainer.hpp"
+#include "fwGui/container/fwMenuBar.hpp"
+#include "fwGui/container/fwToolBar.hpp"
 
+#include <fwRuntime/ConfigurationElement.hpp>
 
 namespace fwGui
 {
@@ -30,9 +29,6 @@ namespace registrar
 
 /**
  * @brief   Defines the generic view manager for IHM.
- * @class   ViewRegistrar
- *
- * @date    2009-2010.
  *
  */
 class FWGUI_CLASS_API ViewRegistrar : public ::fwGui::GuiBaseObject
@@ -44,7 +40,7 @@ public:
                                             new ViewRegistrar );
 
     /// Constructor.
-    FWGUI_API ViewRegistrar( const std::string &sid);
+    FWGUI_API ViewRegistrar( const std::string& sid);
 
     /// Destructor. Do nothing
     FWGUI_API virtual ~ViewRegistrar();
@@ -79,7 +75,8 @@ public:
             </registry>
         </service>
        @endcode
-     * - \<parent wid="myView" /\> : This section isn't mandatory. When the parent section is present, the wid attribute is used to find its parent container.
+     * - \<parent wid="myView" /\> : This section isn't mandatory. When the parent section is present, the wid attribute
+     * is used to find its parent container.
      * Otherwise, the service uid is used to find its parent container.
      * - \<toolBar sid="toolbar1" start="yes" /\> : This section isn't mandatory.
      *   - \b sid  (mandatory): the tool bar identifier.
@@ -90,14 +87,16 @@ public:
      * - \<view sid="subView3" start="yes" /\> : define the service of the view to add in the container.
      *   - \b sid  (mandatory): the service identifier.
      *   - \b start = {yes| no} (default value no): indicate if the view service must be started by the service.
-     * - \<view wid="subView4" /\> : reserve a sub container for the view in the parent container with the name "subView4". The service which want to use this sub container
+     * - \<view wid="subView4" /\> : reserve a sub container for the view in the parent container with the name
+     *"subView4". The service which want to use this sub container
      *   will have define a parent with \<parent wid="subView4" /\>.
      *   - \b wid  (mandatory): the window identifier.
      *
      * @warning
      * - The number of view item in the gui section must be equal or greater than in the registry section.
      * - The order of the view in each section (gui and registry) must be the same.\n
-     *   For example: the view caption "view3" will be connected with the service which have the sid = "subView3" (It could also be a wid).
+     *   For example: the view caption "view3" will be connected with the service which have the sid = "subView3" (It
+     * could also be a wid).
      *
      */
     FWGUI_API virtual void initialize( ::fwRuntime::ConfigurationElement::sptr configuration);
@@ -141,8 +140,6 @@ public:
      */
     FWGUI_API virtual void unmanageMenuBar();
 
-
-
 protected:
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
@@ -177,5 +174,4 @@ protected:
 } // namespace fwGui
 
 #endif /*__FWGUI_REGISTRAR_VIEWREGISTRAR_HPP__*/
-
 
