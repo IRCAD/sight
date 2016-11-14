@@ -7,6 +7,11 @@
 #ifndef __GUIQT_PCH_HPP__
 #define __GUIQT_PCH_HPP__
 
-#include <fwServices/IService.hpp>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
+#include <fwServices/macros.hpp>
+
+#include <gui/editor/IEditor.hpp>
 
 #endif // __GUIQT_PCH_HPP__

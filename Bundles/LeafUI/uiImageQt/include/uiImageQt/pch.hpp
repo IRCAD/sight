@@ -7,6 +7,6 @@
 #ifndef __UIIMAGEQT_PCH_HPP__
 #define __UIIMAGEQT_PCH_HPP__
 
-#include <fwServices/IService.hpp>
+#include <gui/editor/IEditor.hpp>
 
 #endif // __UIIMAGEQT_PCH_HPP__

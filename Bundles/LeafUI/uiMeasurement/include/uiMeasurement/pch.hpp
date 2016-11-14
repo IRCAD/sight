@@ -7,6 +7,8 @@
 #ifndef __UIMEASUREMENT_PCH_HPP__
 #define __UIMEASUREMENT_PCH_HPP__
 
-#include <fwServices/IService.hpp>
+#include <fwGui/IActionSrv.hpp>
+
+#include <fwServices/macros.hpp>
 
 #endif // __UIMEASUREMENT_PCH_HPP__

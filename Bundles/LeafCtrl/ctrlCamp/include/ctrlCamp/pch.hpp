@@ -7,6 +7,6 @@
 #ifndef __CTRLCAMP_PCH_HPP__
 #define __CTRLCAMP_PCH_HPP__
 
-#include <fwServices/IService.hpp>
+#include "ctrlCamp/ICamp.hpp"
 
 #endif // __CTRLCAMP_PCH_HPP__

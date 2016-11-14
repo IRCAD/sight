@@ -7,6 +7,6 @@
 #ifndef __FWCORE_PCH_HPP__
 #define __FWCORE_PCH_HPP__
 
-#include <fwCore/base.hpp>
+#include "fwCore/base.hpp"
 
 #endif // __FWCORE_PCH_HPP__

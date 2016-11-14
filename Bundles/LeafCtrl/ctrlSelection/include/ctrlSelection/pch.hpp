@@ -7,6 +7,10 @@
 #ifndef __CTRLSELECTION_PCH_HPP__
 #define __CTRLSELECTION_PCH_HPP__
 
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
 
 #endif // __CTRLSELECTION_PCH_HPP__

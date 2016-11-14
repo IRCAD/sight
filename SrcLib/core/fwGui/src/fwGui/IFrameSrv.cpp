@@ -1,33 +1,29 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGui/IFrameSrv.hpp"
+
 #include "fwGui/Application.hpp"
 #include "fwGui/registry/worker.hpp"
 
-#include <fwCom/Slot.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
+
+#include <fwServices/macros.hpp>
 
 #include <fwThread/Worker.hpp>
 #include <fwThread/Worker.hxx>
 
-#include <boost/foreach.hpp>
-#include <boost/bind.hpp>
-#include <boost/lambda/lambda.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
-#include <fwCore/base.hpp>
-
-#include <fwServices/macros.hpp>
-
 #include <fwTools/fwID.hpp>
+
+#include <boost/bind.hpp>
+#include <boost/foreach.hpp>
+#include <boost/lambda/lambda.hpp>
 
 namespace fwGui
 {
@@ -54,7 +50,7 @@ IFrameSrv::IFrameSrv() :
 
     newSlot(s_SET_VISIBLE_SLOT, &IFrameSrv::setVisible, this);
     newSlot(s_SHOW_SLOT, &IFrameSrv::show, this);
-    newSlot(s_HIDE_SLOT,&IFrameSrv::hide, this);
+    newSlot(s_HIDE_SLOT, &IFrameSrv::hide, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -127,7 +123,7 @@ void IFrameSrv::initialize()
 
 void IFrameSrv::create()
 {
-    SLM_ASSERT("FrameLayoutManager must be initialized.",m_frameLayoutManager);
+    SLM_ASSERT("FrameLayoutManager must be initialized.", m_frameLayoutManager);
 
     ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
         {
@@ -189,12 +185,12 @@ void IFrameSrv::create()
 
 void IFrameSrv::destroy()
 {
-    SLM_ASSERT("ViewRegistrar must be initialized.",m_viewRegistrar);
+    SLM_ASSERT("ViewRegistrar must be initialized.", m_viewRegistrar);
 
     if (m_hasToolBar)
     {
         m_viewRegistrar->unmanageToolBar();
-        SLM_ASSERT("ToolBarBuilder must be initialized.",m_toolBarBuilder);
+        SLM_ASSERT("ToolBarBuilder must be initialized.", m_toolBarBuilder);
 
         ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
             {
@@ -205,7 +201,7 @@ void IFrameSrv::destroy()
     if (m_hasMenuBar)
     {
         m_viewRegistrar->unmanageMenuBar();
-        SLM_ASSERT("MenuBarBuilder must be initialized.",m_menuBarBuilder);
+        SLM_ASSERT("MenuBarBuilder must be initialized.", m_menuBarBuilder);
 
         ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
             {
@@ -214,7 +210,7 @@ void IFrameSrv::destroy()
     }
 
     m_viewRegistrar->unmanage();
-    SLM_ASSERT("FrameLayoutManager must be initialized.",m_frameLayoutManager);
+    SLM_ASSERT("FrameLayoutManager must be initialized.", m_frameLayoutManager);
 
     ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
         {

@@ -1,30 +1,27 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifdef _WIN32
 
-#include <assert.h>
-#include <iomanip>
-#include <iostream>
-
-#include <boost/regex.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/convenience.hpp>
+#include "fwMemory/tools/Win32MemoryMonitorTools.hpp"
 
 #include <fwCore/base.hpp>
 
-#include "fwMemory/tools/Win32MemoryMonitorTools.hpp"
-
-
-#include <windows.h>
-#include <stdio.h>
 #include <psapi.h>
+#include <stdio.h>
 #include <tchar.h>
+#include <windows.h>
 
+#include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/regex.hpp>
+
+#include <iomanip>
+#include <iostream>
 
 namespace fwMemory
 {
@@ -66,7 +63,6 @@ void Win32MemoryMonitorTools::printProcessMemoryInformation()
     DWORD processID = GetCurrentProcessId();
     HANDLE hProcess;
 
-
     hProcess = OpenProcess( PROCESS_QUERY_INFORMATION |PROCESS_VM_READ,
                             FALSE,
                             processID );
@@ -75,7 +71,7 @@ void Win32MemoryMonitorTools::printProcessMemoryInformation()
     {
         // Get the process name.
         int nameSize = 100;
-        char * name  = new char[nameSize];
+        char* name   = new char[nameSize];
 
         HMODULE hMod;
         DWORD cbNeeded;
@@ -124,7 +120,7 @@ void Win32MemoryMonitorTools::printSystemMemoryInformation()
     MEMORYSTATUSEX statex;
 
     statex.dwLength = sizeof (statex);
-    GlobalMemoryStatusEx (&statex);
+    GlobalMemoryStatusEx(&statex);
 
     SLM_INFO( "-- System memory information --" );
     OSLM_INFO( "    There is " << statex.dwMemoryLoad               <<  " percent of memory in use." );
@@ -151,7 +147,7 @@ void Win32MemoryMonitorTools::printMemoryInformation()
     MEMORYSTATUSEX statex;
 
     statex.dwLength = sizeof (statex);
-    GlobalMemoryStatusEx (&statex);
+    GlobalMemoryStatusEx(&statex);
 
     return statex.ullTotalPhys;
 }
@@ -163,7 +159,7 @@ void Win32MemoryMonitorTools::printMemoryInformation()
     MEMORYSTATUSEX statex;
 
     statex.dwLength = sizeof (statex);
-    GlobalMemoryStatusEx (&statex);
+    GlobalMemoryStatusEx(&statex);
 
     return statex.ullTotalPhys - statex.ullAvailPhys;
 }
@@ -175,7 +171,7 @@ void Win32MemoryMonitorTools::printMemoryInformation()
     MEMORYSTATUSEX statex;
 
     statex.dwLength = sizeof (statex);
-    GlobalMemoryStatusEx (&statex);
+    GlobalMemoryStatusEx(&statex);
 
     return statex.ullAvailPhys;
 }

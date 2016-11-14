@@ -1,17 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <assert.h>
-#include <boost/lexical_cast.hpp>
+#include "fwTools/fwID.hpp"
+
+#include "fwTools/Failed.hpp"
+#include "fwTools/Object.hpp"
 
 #include <fwCore/Demangler.hpp>
 
-#include "fwTools/fwID.hpp"
-#include "fwTools/Object.hpp"
-#include "fwTools/Failed.hpp"
+#include <boost/lexical_cast.hpp>
 
 namespace fwTools
 {
@@ -80,11 +80,11 @@ fwID::IDType fwID::getID( Policy policy) const
     ::fwCore::mt::ReadToWriteLock lock(m_idMutex);
     if ( m_id.empty() ) // no id set
     {
-        if ( policy==GENERATE )
+        if ( policy == GENERATE )
         {
             IDType newID = generate();
             ::fwCore::mt::UpgradeToWriteLock writeLock(lock);
-            const_cast<fwID *>(this)->addIDInDictionary(newID);
+            const_cast<fwID*>(this)->addIDInDictionary(newID);
         }
         else if  ( policy == EMPTY )
         { /* nothing to do*/
@@ -118,7 +118,7 @@ fwID::IDType fwID::generate() const
 {
     ::fwCore::mt::ReadLock lock(s_dictionaryMutex);
     Dictionary::iterator it = m_dictionary.find(requestID);
-    if ( it!=m_dictionary.end() )
+    if ( it != m_dictionary.end() )
     {
         SLM_ASSERT(  "expired object in fwID::Dictionary for id=" + requestID,  !it->second.expired() );
         return it->second.lock();

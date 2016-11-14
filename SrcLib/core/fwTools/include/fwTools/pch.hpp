@@ -9,4 +9,18 @@
 
 #include <fwCore/base.hpp>
 
+#include <boost/filesystem/path.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/mpl/accumulate.hpp>
+#include <boost/mpl/apply.hpp>
+#include <boost/mpl/back_inserter.hpp>
+#include <boost/mpl/copy.hpp>
+#include <boost/mpl/empty.hpp>
+#include <boost/mpl/eval_if.hpp>
+#include <boost/mpl/placeholders.hpp>
+#include <boost/mpl/push_front.hpp>
+#include <boost/mpl/transform.hpp>
+#include <boost/mpl/vector.hpp>
+#include <boost/type_traits.hpp>
+
 #endif // __FWTOOLS_PCH_HPP__

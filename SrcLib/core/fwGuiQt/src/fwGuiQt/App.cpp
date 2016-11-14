@@ -1,36 +1,37 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGuiQt/App.hpp"
 
-#include <fwTools/Os.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwRuntime/profile/Profile.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwTools/Os.hpp>
+
+#include <locale.h>
 
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/tokenizer.hpp>
 
-#include <assert.h>
 #include <iostream>
 #include <sstream>
-#include <locale.h>
 
 namespace fwGuiQt
 {
 
 //-----------------------------------------------------------------------------
 
-App::App(int & argc, char ** argv, bool guiEnabled) : QApplication(argc, argv, guiEnabled)
+App::App(int& argc, char** argv, bool guiEnabled) :
+    QApplication(argc, argv, guiEnabled)
 {
     SLM_TRACE_FUNC();
 
-    setlocale(LC_ALL,"C"); // needed for mfo save process
+    setlocale(LC_ALL, "C"); // needed for mfo save process
     QLocale::setDefault(QLocale::C); // on Linux we need that as well...
 
     std::string appName = "No name";

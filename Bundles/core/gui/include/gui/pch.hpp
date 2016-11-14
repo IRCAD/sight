@@ -8,5 +8,6 @@
 #define __GUI_PCH_HPP__
 
 #include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
 
 #endif // __GUI_PCH_HPP__

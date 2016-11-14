@@ -7,6 +7,10 @@
 #ifndef __DATAREG_PCH_HPP__
 #define __DATAREG_PCH_HPP__
 
-#include <fwServices/IService.hpp>
+#include <fwRuntime/ConfigurationElement.hpp>
+
+#include <fwServices/IAppConfigManager.hpp>
+#include <fwServices/IXMLParser.hpp>
+#include <fwServices/macros.hpp>
 
 #endif // __DATAREG_PCH_HPP__

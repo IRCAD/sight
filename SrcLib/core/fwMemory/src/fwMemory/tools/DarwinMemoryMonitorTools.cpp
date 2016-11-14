@@ -1,33 +1,31 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifdef __MACOSX__
 
-#include <assert.h>
-#include <iomanip>
-#include <iostream>
-
-#include <boost/regex.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/convenience.hpp>
+#include "fwMemory/tools/DarwinMemoryMonitorTools.hpp"
 
 #include <fwCore/base.hpp>
 
-#include "fwMemory/tools/DarwinMemoryMonitorTools.hpp"
-
-
-#include <sys/types.h>
-#include <sys/sysctl.h>
+#include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/regex.hpp>
 
 #include <mach/mach.h>
 #include <mach/mach_host.h>
 #include <mach/mach_init.h>
 #include <mach/mach_types.h>
 #include <mach/vm_statistics.h>
+
+#include <sys/sysctl.h>
+#include <sys/types.h>
+
+#include <iomanip>
+#include <iostream>
 
 namespace fwMemory
 {

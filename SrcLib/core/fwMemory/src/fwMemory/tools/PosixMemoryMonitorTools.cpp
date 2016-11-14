@@ -1,41 +1,37 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #if defined(linux) || defined(__linux)
 
-#include <assert.h>
-#include <iomanip>
-#include <iostream>
-
-#include <boost/regex.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/convenience.hpp>
-#include <boost/lexical_cast.hpp>
+#include "fwMemory/tools/PosixMemoryMonitorTools.hpp"
 
 #include <fwCore/base.hpp>
 
-#include "fwMemory/tools/PosixMemoryMonitorTools.hpp"
-
-
-#include <cstdlib>
-#include <cstdio>
-#include <cerrno>
-#include <cctype>
-
-#include <unistd.h>
 #include <fcntl.h>
-#include <sys/types.h>
-#include <sys/time.h>
+#include <unistd.h>
+
+#include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/regex.hpp>
+
 #include <sys/resource.h>
+#include <sys/time.h>
+#include <sys/types.h>
 
-#include <string>
+#include <cctype>
+#include <cerrno>
+#include <cstdio>
+#include <cstdlib>
 #include <fstream>
+#include <iomanip>
+#include <iostream>
 #include <sstream>
-
+#include <string>
 
 namespace fwMemory
 {
@@ -70,7 +66,6 @@ PosixMemoryMonitorTools::~PosixMemoryMonitorTools()
 //                 0:
 //                 getTotalSystemMemory() - systemMemoryAverageInNormalCase - memoryUsedByProcess
 //               );
-
 
     freeMemory = getFreeSystemMemory();
 
@@ -163,12 +158,12 @@ void PosixMemoryMonitorTools::printMemoryInformation()
 
 //------------------------------------------------------------------------------
 
-::boost::uint64_t PosixMemoryMonitorTools::extract_number(char *str, int start, int end)
+::boost::uint64_t PosixMemoryMonitorTools::extract_number(char* str, int start, int end)
 {
     int i, j;
     char buf[end-start];
 
-    for (i = start, j = 0; i<end; i++)
+    for (i = start, j = 0; i < end; i++)
     {
         isdigit(str[i]) && (buf[j++] = str[i]);
     }
@@ -179,7 +174,7 @@ void PosixMemoryMonitorTools::printMemoryInformation()
 
 //------------------------------------------------------------------------------
 
-void PosixMemoryMonitorTools::get_memory_stats( MemInfo & meminfo )
+void PosixMemoryMonitorTools::get_memory_stats( MemInfo& meminfo )
 {
 /*
     // We are bothered about only the first 338 bytes of the /proc/meminfo file
@@ -201,7 +196,7 @@ void PosixMemoryMonitorTools::get_memory_stats( MemInfo & meminfo )
     meminfo.swapfree = extract_number(buf, 322, 335);
  */
 
-    std::ifstream input ( "/proc/meminfo" );
+    std::ifstream input( "/proc/meminfo" );
 
     std::string line;
     if ( input.is_open() )
@@ -218,9 +213,9 @@ void PosixMemoryMonitorTools::get_memory_stats( MemInfo & meminfo )
 
 //------------------------------------------------------------------------------
 
-void PosixMemoryMonitorTools::analyseMemInfo( std::string & line, MemInfo & meminfo )
+void PosixMemoryMonitorTools::analyseMemInfo( std::string& line, MemInfo& meminfo )
 {
-    ::boost::regex e ("([A-Za-z:]+)([ \t]+)([0-9]+)([ \t]+)kB(.*)");
+    ::boost::regex e("([A-Za-z:]+)([ \t]+)([0-9]+)([ \t]+)kB(.*)");
     std::string machine_format = "\\3";
     if ( line.find("MemTotal") != std::string::npos )
     {
@@ -262,7 +257,7 @@ void PosixMemoryMonitorTools::analyseMemInfo( std::string & line, MemInfo & memi
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-void PosixMemoryMonitorTools::printStatus( Status & stat )
+void PosixMemoryMonitorTools::printStatus( Status& stat )
 {
     int oToMo = 1024 * 1024;
     OSLM_DEBUG("VmPeak = " << stat.VmPeak / oToMo << " Mo" );
@@ -280,9 +275,9 @@ void PosixMemoryMonitorTools::printStatus( Status & stat )
 
 //------------------------------------------------------------------------------
 
-void PosixMemoryMonitorTools::analyseStatusLine( std::string & line, Status & stat )
+void PosixMemoryMonitorTools::analyseStatusLine( std::string& line, Status& stat )
 {
-    ::boost::regex e ("([A-Za-z:]+)([ \t]+)([0-9]+)([ \t]+)kB(.*)");
+    ::boost::regex e("([A-Za-z:]+)([ \t]+)([0-9]+)([ \t]+)kB(.*)");
     std::string machine_format = "\\3";
     if ( line.find("VmPeak") != std::string::npos )
     {
@@ -338,11 +333,11 @@ void PosixMemoryMonitorTools::analyseStatusLine( std::string & line, Status & st
 
 //------------------------------------------------------------------------------
 
-void PosixMemoryMonitorTools::getStatusOfPid( int pid, Status & stat)
+void PosixMemoryMonitorTools::getStatusOfPid( int pid, Status& stat)
 {
     std::stringstream file;
     file << "/proc/" << pid << "/status";
-    std::ifstream input ( file.str().c_str() );
+    std::ifstream input( file.str().c_str() );
 
     std::string line;
     if ( input.is_open() )
@@ -350,7 +345,7 @@ void PosixMemoryMonitorTools::getStatusOfPid( int pid, Status & stat)
         while ( !input.eof() )
         {
             getline( input, line );
-            analyseStatusLine(line,stat);
+            analyseStatusLine(line, stat);
         }
         input.close();
     }
@@ -358,10 +353,10 @@ void PosixMemoryMonitorTools::getStatusOfPid( int pid, Status & stat)
 
 //------------------------------------------------------------------------------
 
-void PosixMemoryMonitorTools::getAllStatus( Status & allStat )
+void PosixMemoryMonitorTools::getAllStatus( Status& allStat )
 {
-    ::boost::filesystem::path path ("/proc");
-    ::boost::regex e ("[0-9]+");
+    ::boost::filesystem::path path("/proc");
+    ::boost::regex e("[0-9]+");
 
     allStat.VmPeak = 0;
     allStat.VmSize = 0;
@@ -374,7 +369,7 @@ void PosixMemoryMonitorTools::getAllStatus( Status & allStat )
     allStat.VmLib  = 0;
     allStat.VmPTE  = 0;
 
-    for(    ::boost::filesystem::directory_iterator it (path);
+    for(    ::boost::filesystem::directory_iterator it(path);
             it != ::boost::filesystem::directory_iterator();
             ++it )
     {
@@ -407,8 +402,8 @@ void PosixMemoryMonitorTools::getAllStatus( Status & allStat )
 
 void PosixMemoryMonitorTools::printAllStatus()
 {
-    ::boost::filesystem::path path ("/proc");
-    ::boost::regex e ("[0-9]+");
+    ::boost::filesystem::path path("/proc");
+    ::boost::regex e("[0-9]+");
     int oToMo = 1024 * 1024;
 
     ::boost::uint64_t totalVmPeak = 0;
@@ -422,7 +417,7 @@ void PosixMemoryMonitorTools::printAllStatus()
     ::boost::uint64_t totalVmLib  = 0;
     ::boost::uint64_t totalVmPTE  = 0;
 
-    for(    ::boost::filesystem::directory_iterator it (path);
+    for(    ::boost::filesystem::directory_iterator it(path);
             it != ::boost::filesystem::directory_iterator();
             ++it )
     {

@@ -7,6 +7,8 @@
 #ifndef __IODCMTK_PCH_HPP__
 #define __IODCMTK_PCH_HPP__
 
-#include <fwServices/IService.hpp>
+#include <io/IReader.hpp>
+
+#include <boost/filesystem/path.hpp>
 
 #endif // __IODCMTK_PCH_HPP__

@@ -7,6 +7,8 @@
 #ifndef __SCENE2D_PCH_HPP__
 #define __SCENE2D_PCH_HPP__
 
-#include <fwServices/IService.hpp>
+#include "scene2D/adaptor/IAdaptor.hpp"
+
+#include <QGraphicsView>
 
 #endif // __SCENE2D_PCH_HPP__

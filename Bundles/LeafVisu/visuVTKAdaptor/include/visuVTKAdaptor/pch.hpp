@@ -7,10 +7,22 @@
 #ifndef __VISUVTKADAPTOR_PCH_HPP__
 #define __VISUVTKADAPTOR_PCH_HPP__
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
+#include <fwServices/macros.hpp>
+
 #include <vtkActor.h>
+#include <vtkCellPicker.h>
 #include <vtkCommand.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkRenderer.h>
 #include <vtkSmartPointer.h>
+#include <vtkTransform.h>
 
 #endif // __VISUVTKADAPTOR_PCH_HPP__

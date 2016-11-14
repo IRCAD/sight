@@ -7,6 +7,11 @@
 #ifndef __IODATA_PCH_HPP__
 #define __IODATA_PCH_HPP__
 
-#include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
+
+#include <io/IReader.hpp>
+#include <io/IWriter.hpp>
+
+#include <boost/filesystem/path.hpp>
 
 #endif // __IODATA_PCH_HPP__
