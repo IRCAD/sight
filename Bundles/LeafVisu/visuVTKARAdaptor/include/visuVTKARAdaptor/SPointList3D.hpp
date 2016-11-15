@@ -16,9 +16,10 @@
 #include "visuVTKARAdaptor/config.hpp"
 
 #include <fwCore/base.hpp>
+
 #include <fwData/Color.hpp>
-#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/PointList.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
@@ -37,7 +38,6 @@ namespace visuVTKARAdaptor
 {
 
 /**
- * @class   SPointList3D
  * @brief   Display a 3D point list.
  *
  *  This adaptor works on a ::fwData::PointList.
@@ -65,7 +65,7 @@ protected:
     /**
      * @code{.xml}
        <adaptor id="points" class="::visuVTKRDAdaptor::SPointList3D" objectId="pointListKey">
-        <config renderer="default"color="#cb1f72" radius="3.0" />
+        <config renderer="default" color="#cb1f72" radius="3.0" />
        </adaptor>
        @endcode
      * - \b renderer : defines the renderer to show the arrow. It must be different from the 3D objects renderer.
