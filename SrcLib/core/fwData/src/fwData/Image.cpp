@@ -16,6 +16,8 @@
 
 #include <boost/assign.hpp>
 
+#include <numeric>
+
 //------------------------------------------------------------------------------
 
 fwDataRegisterMacro( ::fwData::Image );

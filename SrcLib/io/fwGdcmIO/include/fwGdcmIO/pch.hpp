@@ -7,33 +7,16 @@
 #ifndef __FWGDCMIO_PCH_HPP__
 #define __FWGDCMIO_PCH_HPP__
 
-#include "fwData/config.hpp"
-#include "fwData/factory/new.hpp"
-#include "fwData/registry/detail.hpp"
+//To include first because of Windows compilation
+#include <fwData/Image.hpp>
 
-#include <fwCamp/Mapper/ArrayMapper.hpp>
-#include <fwCamp/camp/ExtendedClassVisitor.hpp>
-#include <fwCamp/camp/MapMapper.hpp>
-#include <fwCamp/camp/MapProperty.hpp>
-#include <fwCamp/camp/MapValueMapper.hpp>
-#include <fwCamp/camp/customtype.hpp>
-#include <fwCamp/camp/detail/MapPropertyImpl.hpp>
-#include <fwCamp/macros.hpp>
+#include <fwMedData/DicomSeries.hpp>
+#include <fwMedData/Equipment.hpp>
+#include <fwMedData/ImageSeries.hpp>
+#include <fwMedData/Patient.hpp>
+#include <fwMedData/Study.hpp>
 
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/HasSlots.hpp>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-#include <fwCom/helper/SigSlotConnection.hpp>
-
-#include <fwCore/base.hpp>
-#include <fwCore/mt/types.hpp>
-
-#include <fwTools/DynamicAttributes.hxx>
-#include <fwTools/Object.hpp>
-
-#include <string>
-#include <unordered_map>
+#include <gdcmSurfaceHelper.h>
+#include <gdcmUIDGenerator.h>
 
 #endif // __FWGDCMIO_PCH_HPP__

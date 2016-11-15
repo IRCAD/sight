@@ -7,9 +7,12 @@
 #ifndef __CTRLSELECTION_PCH_HPP__
 #define __CTRLSELECTION_PCH_HPP__
 
+// Cause an internal compiler error on windows...
+#ifndef _WIN32
 #include <fwCom/HasSlots.hpp>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
+#endif // _WIN32
 
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>

@@ -7,11 +7,14 @@
 #ifndef __VISUVTKADAPTOR_PCH_HPP__
 #define __VISUVTKADAPTOR_PCH_HPP__
 
+// Cause an internal compiler error on windows...
+#ifndef _WIN32
 #include <fwCom/HasSlots.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
+#endif // _WIN32
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 

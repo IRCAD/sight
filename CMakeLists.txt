@@ -457,6 +457,10 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
 
     setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
 
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/${FWPROJECT_NAME}/pch.hpp")
+        add_precompiled_header_cpp(${FWPROJECT_NAME})
+    endif()
+
     add_library(${FWPROJECT_NAME} ${ARGN} ${${FWPROJECT_NAME}_HEADERS}
                ${${FWPROJECT_NAME}_SOURCES}
                ${${FWPROJECT_NAME}_RC_FILES}
@@ -511,6 +515,10 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
 
     set(${FWPROJECT_NAME}_TYPE ${${FWPROJECT_NAME}_TYPE} PARENT_SCOPE)
     setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
+
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/${FWPROJECT_NAME}/pch.hpp")
+        add_precompiled_header_cpp(${FWPROJECT_NAME})
+    endif()
 
     set(BUNDLE_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}")
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,18 +7,16 @@
 #ifndef __FWPACSIO_SERIESRETRIEVER_HPP__
 #define __FWPACSIO_SERIESRETRIEVER_HPP__
 
-#include <dcmtk/config/osconfig.h>
-
 #include "fwPacsIO/config.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-#include <fwCore/macros.hpp>
+
 #include <fwTools/ProgressAdviser.hpp>
-#include <fwTools/macros.hpp>
 
 #include <boost/filesystem/path.hpp>
 
+#include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/scp.h>
 
 namespace fwPacsIO

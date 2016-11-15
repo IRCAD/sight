@@ -4,9 +4,4 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDICOMIOFILTERQT_PCH_HPP__
-#define __FWDICOMIOFILTERQT_PCH_HPP__
-
-#include <fwMedData/DicomSeries.hpp>
-
-#endif // __FWDICOMIOFILTERQT_PCH_HPP__
+#include "pch.hpp"
