@@ -7,7 +7,13 @@
 #ifndef __FWGDCMIO_PCH_HPP__
 #define __FWGDCMIO_PCH_HPP__
 
-//To include first because of Windows compilation
+// To include first because of Windows compilation
+// The #ifdef prevents our hook to reformat the includes
+#ifdef WIN32
+#include <gdcmSurfaceHelper.h>
+#include <gdcmUIDGenerator.h>
+#endif // WIN32
+
 #include <fwData/Image.hpp>
 
 #include <fwMedData/DicomSeries.hpp>
@@ -16,7 +22,9 @@
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
 
+#ifndef WIN32
 #include <gdcmSurfaceHelper.h>
 #include <gdcmUIDGenerator.h>
+#endif // WIN32
 
 #endif // __FWGDCMIO_PCH_HPP__
