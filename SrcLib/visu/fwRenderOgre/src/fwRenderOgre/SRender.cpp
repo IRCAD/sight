@@ -344,13 +344,13 @@ void SRender::startObject()
     if (this->isStarted())
     {
         std::vector< WPTR(IAdaptor) > startAdaptors;
+        auto servicesVector = ::fwServices::OSR::getServices("::fwRenderOgre::IAdaptor");
 
         for(auto& sceneAdaptor : m_adaptors)
         {
             if(sceneAdaptor.second.m_start)
             {
-                auto servicesVector = ::fwServices::OSR::getServices("::fwRenderOgre::IAdaptor");
-                auto result         =
+                auto result =
                     std::find_if(servicesVector.begin(), servicesVector.end(),
                                  [sceneAdaptor](const ::fwServices::IService::sptr& srv)
                     {

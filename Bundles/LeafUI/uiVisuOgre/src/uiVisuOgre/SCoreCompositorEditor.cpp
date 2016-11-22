@@ -10,31 +10,29 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/compositor/Core.hpp>
 
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
 #include <material/Plugin.hpp>
 
-#include <QWidget>
+#include <QAbstractButton>
+#include <QButtonGroup>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QDoubleSpinBox>
+#include <QGroupBox>
+#include <QLineEdit>
+#include <QRadioButton>
+#include <QSlider>
 #include <QVBoxLayout>
+#include <QWidget>
 
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
 #include <OGRE/OgreResourceManager.h>
-
-#include <QAbstractButton>
-#include <QRadioButton>
-#include <QVBoxLayout>
-#include <QGroupBox>
-#include <QButtonGroup>
-#include <QComboBox>
-#include <QLineEdit>
-#include <QSlider>
-#include <QCheckBox>
-#include <QDoubleSpinBox>
 
 namespace uiVisuOgre
 {
@@ -252,22 +250,22 @@ void SCoreCompositorEditor::onSelectedLayerItem(int index)
     {
         switch (m_currentCoreCompositor->getTransparencyTechnique())
         {
-            case DEFAULT:
+            case ::fwRenderOgre::compositor::DEFAULT:
                 m_transparencyButtonGroup->button(0)->setChecked(true);
                 break;
-            case DEPTHPEELING:
+            case ::fwRenderOgre::compositor::DEPTHPEELING:
                 m_transparencyButtonGroup->button(1)->setChecked(true);
                 break;
-            case DUALDEPTHPEELING:
+            case ::fwRenderOgre::compositor::DUALDEPTHPEELING:
                 m_transparencyButtonGroup->button(2)->setChecked(true);
                 break;
-            case WEIGHTEDBLENDEDOIT:
+            case ::fwRenderOgre::compositor::WEIGHTEDBLENDEDOIT:
                 m_transparencyButtonGroup->button(3)->setChecked(true);
                 break;
-            case HYBRIDTRANSPARENCY:
+            case ::fwRenderOgre::compositor::HYBRIDTRANSPARENCY:
                 m_transparencyButtonGroup->button(4)->setChecked(true);
                 break;
-            case CELSHADING_DEPTHPEELING:
+            case ::fwRenderOgre::compositor::CELSHADING_DEPTHPEELING:
                 m_transparencyButtonGroup->button(5)->setChecked(true);
                 break;
         }
@@ -299,22 +297,28 @@ void SCoreCompositorEditor::onEditTransparency(int index)
         switch (index)
         {
             case 0:
-                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(DEFAULT);
+                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(
+                    ::fwRenderOgre::compositor::DEFAULT);
                 break;
             case 1:
-                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(DEPTHPEELING);
+                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(
+                    ::fwRenderOgre::compositor::DEPTHPEELING);
                 break;
             case 2:
-                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(DUALDEPTHPEELING);
+                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(
+                    ::fwRenderOgre::compositor::DUALDEPTHPEELING);
                 break;
             case 3:
-                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(WEIGHTEDBLENDEDOIT);
+                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(
+                    ::fwRenderOgre::compositor::WEIGHTEDBLENDEDOIT);
                 break;
             case 4:
-                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(HYBRIDTRANSPARENCY);
+                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(
+                    ::fwRenderOgre::compositor::HYBRIDTRANSPARENCY);
                 break;
             case 5:
-                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(CELSHADING_DEPTHPEELING);
+                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(
+                    ::fwRenderOgre::compositor::CELSHADING_DEPTHPEELING);
                 break;
         }
 

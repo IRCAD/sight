@@ -61,7 +61,7 @@ Layer::Layer() :
     m_stereoMode           (StereoModeType::NONE),
     m_rawCompositorChain   (""),
     m_coreCompositor       (nullptr),
-    m_transparencyTechnique(DEFAULT),
+    m_transparencyTechnique(::fwRenderOgre::compositor::DEFAULT),
     m_numPeels             (8),
     m_depth                (1),
     m_topColor             ("#333333"),
@@ -687,23 +687,23 @@ void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechn
     {
         if(transparencyTechnique == "DepthPeeling")
         {
-            m_transparencyTechnique = DEPTHPEELING;
+            m_transparencyTechnique = ::fwRenderOgre::compositor::DEPTHPEELING;
         }
         else if(transparencyTechnique == "CelShadingDepthPeeling")
         {
-            m_transparencyTechnique = CELSHADING_DEPTHPEELING;
+            m_transparencyTechnique = ::fwRenderOgre::compositor::CELSHADING_DEPTHPEELING;
         }
         else if(transparencyTechnique == "DualDepthPeeling")
         {
-            m_transparencyTechnique = DUALDEPTHPEELING;
+            m_transparencyTechnique = ::fwRenderOgre::compositor::DUALDEPTHPEELING;
         }
         else if(transparencyTechnique == "WeightedBlended")
         {
-            m_transparencyTechnique = WEIGHTEDBLENDEDOIT;
+            m_transparencyTechnique = ::fwRenderOgre::compositor::WEIGHTEDBLENDEDOIT;
         }
         else if(transparencyTechnique == "HybridTransparency")
         {
-            m_transparencyTechnique = HYBRIDTRANSPARENCY;
+            m_transparencyTechnique = ::fwRenderOgre::compositor::HYBRIDTRANSPARENCY;
         }
         else
         {

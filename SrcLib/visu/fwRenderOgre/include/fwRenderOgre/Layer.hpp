@@ -259,7 +259,7 @@ private:
     ::fwRenderOgre::compositor::Core::sptr m_coreCompositor;
 
     /// Ogre default compositor default transparency technique
-    transparencyTechnique m_transparencyTechnique;
+    ::fwRenderOgre::compositor::transparencyTechnique m_transparencyTechnique;
 
     int m_numPeels;
 

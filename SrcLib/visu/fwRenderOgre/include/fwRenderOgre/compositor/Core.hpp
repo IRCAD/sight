@@ -18,6 +18,12 @@
 
 #include "fwRenderOgre/config.hpp"
 
+namespace fwRenderOgre
+{
+
+namespace compositor
+{
+
 /// OIT (Ordrer Independent Transparency) techniques supported
 enum transparencyTechnique
 {
@@ -28,12 +34,6 @@ enum transparencyTechnique
     HYBRIDTRANSPARENCY,
     CELSHADING_DEPTHPEELING,
 };
-
-namespace fwRenderOgre
-{
-
-namespace compositor
-{
 
 /**
  * Manages principal compositor for a layer's 3D scene
