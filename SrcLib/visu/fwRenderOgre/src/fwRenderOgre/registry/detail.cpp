@@ -32,6 +32,15 @@ SPTR(InteractorFactoryType) getInteractorRegistry()
     return InstantiatorType::getInstance();
 }
 
+struct CameraRegistryInstantiatorTag {};
+
+SPTR(CameraFactoryType) getCameraRegistry()
+{
+    typedef ::fwCore::util::LazyInstantiator< CameraFactoryType, CameraRegistryInstantiatorTag >
+        InstantiatorType;
+    return InstantiatorType::getInstance();
+}
+
 struct LightRegistryInstantiatorTag {};
 
 SPTR(LightFactoryType) getLightRegistry()

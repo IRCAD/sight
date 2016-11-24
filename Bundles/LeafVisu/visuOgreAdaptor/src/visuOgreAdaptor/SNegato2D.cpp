@@ -87,7 +87,7 @@ void SNegato2D::doStart() throw(::fwTools::Failed)
     m_plane = new ::fwRenderOgre::Plane(this->getID(), m_negatoSceneNode, getSceneManager(),
                                         OrientationMode::X_AXIS, false, m_3DOgreTexture, m_filtering);
 
-    this->getSceneManager()->getCamera("PlayerCam")->setProjectionType( ::Ogre::ProjectionType::PT_ORTHOGRAPHIC );
+    this->getLayer()->getDefaultCamera()->setProjectionType( ::Ogre::ProjectionType::PT_ORTHOGRAPHIC );
 
     this->installTFConnections();
 
@@ -334,7 +334,7 @@ void SNegato2D::updateCameraWindowBounds()
     renderWindowHeight = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualHeight());
     renderWindowRatio  = renderWindowWidth / renderWindowHeight;
 
-    ::Ogre::Camera* cam = this->getSceneManager()->getCamera("PlayerCam");
+    ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
 
     if( renderWindowWidth < renderWindowHeight)
     {

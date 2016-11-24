@@ -36,11 +36,15 @@ public:
     /// Set the layer ID
     FWRENDEROGRE_API void setLayerID(const std::string& id);
 
+    FWRENDEROGRE_API const std::string& getLayerID() const;
+
     /// Set the render service using this adaptor
     FWRENDEROGRE_API void setRenderService( SRender::sptr service );
 
     /// Get the render service using this adaptor
     FWRENDEROGRE_API SRender::sptr getRenderService() const;
+
+    FWRENDEROGRE_API Layer::sptr getLayer() const;
 
     /// Returns the priority of the adaptor - some adaptors may have to be started before other ones
     FWRENDEROGRE_API virtual int getStartPriority();

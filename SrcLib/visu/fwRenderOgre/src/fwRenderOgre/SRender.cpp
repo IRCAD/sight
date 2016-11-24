@@ -292,7 +292,7 @@ void SRender::configureBackgroundLayer( ConfigurationType conf )
 
     ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
     ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
-    ogreLayer->setID("backgroundLayer");
+    ogreLayer->setID(s_OGREBACKGROUNDID);
     ogreLayer->setDepth(0);
     ogreLayer->setWorker(m_associatedWorker);
     ogreLayer->setHasDefaultLight(false);

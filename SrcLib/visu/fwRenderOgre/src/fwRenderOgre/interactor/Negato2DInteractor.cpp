@@ -6,15 +6,16 @@
 
 #include "fwRenderOgre/interactor/Negato2DInteractor.hpp"
 
+#include <fwRenderOgre/Layer.hpp>
 #include <fwRenderOgre/registry/macros.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreEntity.h>
-#include <OGRE/OgreRenderSystem.h>
-#include <OGRE/OgreVector3.h>
-#include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreMesh.h>
+#include <OGRE/OgreRenderSystem.h>
+#include <OGRE/OgreSceneNode.h>
+#include <OGRE/OgreVector3.h>
 #include <OGRE/OgreViewport.h>
 
 #include <stack>
@@ -206,7 +207,7 @@ void Negato2DInteractor::resetCameraPosition()
 {
     if(!m_camera)
     {
-        m_camera    = m_sceneManager->getCamera("PlayerCam");
+        m_camera    = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
         m_cameraPos = m_camera->getPosition();
         m_camera->setOrthoWindow(1.f,1.f);
     }

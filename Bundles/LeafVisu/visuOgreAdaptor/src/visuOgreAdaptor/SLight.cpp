@@ -6,8 +6,6 @@
 
 #include "visuOgreAdaptor/SLight.hpp"
 
-#include "visuOgreAdaptor/STransform.hpp"
-
 #include <fwCom/Slots.hxx>
 
 #include <fwData/TransformationMatrix3D.hpp>
@@ -51,11 +49,11 @@ SLight::SLight() throw() :
     m_lightName     (""),
     m_lightType     (::Ogre::Light::LT_DIRECTIONAL),
     m_useOrphanNode (true),
-    m_xOffset       (0.f),
-    m_yOffset       (0.f)
+    m_thetaOffset   (0.f),
+    m_phiOffset     (0.f)
 {
-    newSlot(s_UPDATE_X_OFFSET_SLOT, &SLight::updateXOffset, this);
-    newSlot(s_UPDATE_Y_OFFSET_SLOT, &SLight::updateYOffset, this);
+    newSlot(s_UPDATE_X_OFFSET_SLOT, &SLight::updateThetaOffset, this);
+    newSlot(s_UPDATE_Y_OFFSET_SLOT, &SLight::updatePhiOffset, this);
 }
 
 //------------------------------------------------------------------------------
@@ -64,11 +62,11 @@ SLight::SLight(::fwRenderOgre::ILight::Key key) :
     m_light        (nullptr),
     m_lightName    (""),
     m_useOrphanNode(true),
-    m_xOffset      (0.f),
-    m_yOffset      (0.f)
+    m_thetaOffset      (0.f),
+    m_phiOffset      (0.f)
 {
-    newSlot(s_UPDATE_X_OFFSET_SLOT, &SLight::updateXOffset, this);
-    newSlot(s_UPDATE_Y_OFFSET_SLOT, &SLight::updateYOffset, this);
+    newSlot(s_UPDATE_X_OFFSET_SLOT, &SLight::updateThetaOffset, this);
+    newSlot(s_UPDATE_Y_OFFSET_SLOT, &SLight::updatePhiOffset, this);
 }
 
 //------------------------------------------------------------------------------
@@ -92,16 +90,16 @@ void SLight::doConfigure() throw(fwTools::Failed)
     {
         this->setParentTransformId(m_configuration->getAttributeValue("parentTransformId"));
 
-        if(m_configuration->hasAttribute("xOffset"))
+        if(m_configuration->hasAttribute("thetaOffset"))
         {
-            std::string xOffsetString = m_configuration->getAttributeValue("xOffset");
-            m_xOffset = std::stof(xOffsetString);
+            std::string thetaOffsetString = m_configuration->getAttributeValue("thetaOffset");
+            m_thetaOffset = std::stof(thetaOffsetString);
         }
 
-        if(m_configuration->hasAttribute("yOffset"))
+        if(m_configuration->hasAttribute("phiOffset"))
         {
-            std::string yOffsetString = m_configuration->getAttributeValue("yOffset");
-            m_yOffset = std::stof(yOffsetString);
+            std::string phiOffsetString = m_configuration->getAttributeValue("phiOffset");
+            m_phiOffset = std::stof(phiOffsetString);
         }
     }
 }
@@ -124,32 +122,26 @@ void SLight::doStart() throw(fwTools::Failed)
     m_light     = this->getSceneManager()->createLight(m_lightName);
     m_light->setType(::Ogre::Light::LT_DIRECTIONAL);
 
-    this->setTransformId(m_lightName + "_node");
 
     if(!this->getParentTransformId().empty())
     {
-        auto tfAdaptors = this->getRenderService()->getAdaptors< ::visuOgreAdaptor::STransform>();
+        ::Ogre::SceneNode* parentSceneNode =
+            this->getSceneManager()->getSceneNode(this->getParentTransformId());
 
-        auto result =
-            std::find_if(tfAdaptors.begin(), tfAdaptors.end(),[this](const ::visuOgreAdaptor::STransform::sptr& srv)
-            {
-                return srv->getTransformId() == this->getParentTransformId();
-            });
-
-        // If the parent transform adaptor is retrieved
-        if(result != tfAdaptors.end())
+        if(parentSceneNode)
         {
             m_useOrphanNode = false;
 
             // First update of the offset only if there is a parent transform.
-            if(m_xOffset != 0.f || m_yOffset != 0.f)
+            if(m_thetaOffset != 0.f || m_phiOffset != 0.f)
             {
-                this->updateXOffset(m_xOffset);
-                this->updateYOffset(m_yOffset);
+                this->updateThetaOffset(m_thetaOffset);
+                this->updatePhiOffset(m_phiOffset);
             }
         }
     }
 
+    this->setTransformId(m_lightName + "_node");
     this->createTransformService();
 
     doUpdate();
@@ -197,31 +189,31 @@ void SLight::setSpecularColor(::Ogre::ColourValue _specularColor)
 
 //------------------------------------------------------------------------------
 
-void SLight::updateXOffset(float _xOffset)
+void SLight::updateThetaOffset(float _thetaOffset)
 {
     SLM_ASSERT("Unable to update an offset if the light's node isn't attached to a parent node", m_useOrphanNode);
 
-    m_xOffset = _xOffset;
+    m_thetaOffset = _thetaOffset;
 
-    ::Ogre::Radian xOffsetRad(::Ogre::Degree(static_cast< ::Ogre::Real>(m_xOffset)));
-    ::Ogre::Vector3 xAxis = this->getSceneManager()->getCamera("PlayerCam")->getRight();
+    ::Ogre::Radian thetaOffsetRad(::Ogre::Degree(static_cast< ::Ogre::Real>(m_thetaOffset)));
+    ::Ogre::Vector3 xAxis = this->getLayer()->getDefaultCamera()->getRight();
 
-    m_light->getParentSceneNode()->rotate(xAxis, xOffsetRad, ::Ogre::Node::TS_WORLD);
+    m_light->getParentSceneNode()->rotate(xAxis, thetaOffsetRad, ::Ogre::Node::TS_WORLD);
     this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
-void SLight::updateYOffset(float _yOffset)
+void SLight::updatePhiOffset(float _phiOffset)
 {
     SLM_ASSERT("Unable to update an offset if the light's node isn't attached to a parent node", m_useOrphanNode);
 
-    m_yOffset = _yOffset;
+    m_phiOffset = _phiOffset;
 
-    ::Ogre::Radian yOffsetRad(::Ogre::Degree(static_cast< ::Ogre::Real>(m_yOffset)));
-    ::Ogre::Vector3 yAxis = this->getSceneManager()->getCamera("PlayerCam")->getUp();
+    ::Ogre::Radian phiOffsetRad(::Ogre::Degree(static_cast< ::Ogre::Real>(m_phiOffset)));
+    ::Ogre::Vector3 yAxis = this->getLayer()->getDefaultCamera()->getUp();
 
-    m_light->getParentSceneNode()->rotate(yAxis, yOffsetRad, ::Ogre::Node::TS_WORLD);
+    m_light->getParentSceneNode()->rotate(yAxis, phiOffsetRad, ::Ogre::Node::TS_WORLD);
     this->requestRender();
 }
 
@@ -229,13 +221,13 @@ void SLight::updateYOffset(float _yOffset)
 
 void SLight::setDoubleParameter(double _val, std::string _key)
 {
-    if(_key == "xOffset")
+    if(_key == "thetaOffset")
     {
-        this->updateXOffset(static_cast<float>(_val));
+        this->updateThetaOffset(static_cast<float>(_val));
     }
-    else if(_key == "yOffset")
+    else if(_key == "phiOffset")
     {
-        this->updateYOffset(static_cast<float>(_val));
+        this->updatePhiOffset(static_cast<float>(_val));
     }
 }
 
@@ -247,7 +239,7 @@ void SLight::createTransformService()
     if(m_transformService.expired())
     {
         ::fwData::TransformationMatrix3D::csptr transform =
-            this->getInput< ::fwData::TransformationMatrix3D >("lightTF");
+            this->getInput< ::fwData::TransformationMatrix3D >("transform");
 
         if(!transform)
         {
@@ -257,7 +249,7 @@ void SLight::createTransformService()
         m_transformService = ::fwServices::add< ::fwRenderOgre::IAdaptor >(transform,
                                                                            "::visuOgreAdaptor::STransform");
         SLM_ASSERT("Transform service is null", m_transformService.lock());
-        auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
+        auto transformService = this->getTransformService();
 
         transformService->setID(this->getID() + "_" + transformService->getID());
         transformService->setRenderService ( this->getRenderService() );
@@ -277,7 +269,7 @@ void SLight::createTransformService()
 
 void SLight::attachNode(Ogre::MovableObject* _node)
 {
-    auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
+    auto transformService = this->getTransformService();
 
     ::Ogre::SceneNode* transNode = transformService->getSceneNode();
     ::Ogre::SceneNode* node      = _node->getParentSceneNode();

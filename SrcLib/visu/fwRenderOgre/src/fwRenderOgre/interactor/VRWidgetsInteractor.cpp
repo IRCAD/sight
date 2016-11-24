@@ -6,9 +6,10 @@
 
 #include "fwRenderOgre/interactor/VRWidgetsInteractor.hpp"
 
-#include <fwCom/Signal.hxx>
-
+#include <fwRenderOgre/Layer.hpp>
 #include <fwRenderOgre/registry/macros.hpp>
+
+#include <fwCom/Signal.hxx>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreViewport.h>
@@ -37,9 +38,9 @@ VRWidgetsInteractor::~VRWidgetsInteractor() throw()
 
 //------------------------------------------------------------------------------
 
-Ogre::MovableObject *VRWidgetsInteractor::pickObject(int x, int y)
+Ogre::MovableObject* VRWidgetsInteractor::pickObject(int x, int y)
 {
-    ::Ogre::Camera *camera = m_sceneManager->getCamera("PlayerCam");
+    ::Ogre::Camera* camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
 
     int height = camera->getViewport()->getActualHeight();
     int width  = camera->getViewport()->getActualWidth();

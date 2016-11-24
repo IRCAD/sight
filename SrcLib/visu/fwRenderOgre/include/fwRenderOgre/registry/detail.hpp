@@ -18,6 +18,7 @@ namespace fwRenderOgre
 {
 
 class IRenderWindowInteractorManager;
+class ICamera;
 class ILight;
 
 namespace interactor
@@ -33,10 +34,12 @@ typedef std::string KeyType;
 typedef ::fwCore::util::FactoryRegistry< SPTR(::fwRenderOgre::IRenderWindowInteractorManager) (), KeyType > Type;
 typedef ::fwCore::util::FactoryRegistry< SPTR(::fwRenderOgre::interactor::IInteractor) (),
                                          KeyType > InteractorFactoryType;
+typedef ::fwCore::util::FactoryRegistry< SPTR(::fwRenderOgre::ICamera) (), KeyType > CameraFactoryType;
 typedef ::fwCore::util::FactoryRegistry< SPTR(::fwRenderOgre::ILight) (), KeyType > LightFactoryType;
 
 FWRENDEROGRE_API SPTR(Type) get();
 FWRENDEROGRE_API SPTR(InteractorFactoryType) getInteractorRegistry();
+FWRENDEROGRE_API SPTR(CameraFactoryType) getCameraRegistry();
 FWRENDEROGRE_API SPTR(LightFactoryType) getLightRegistry();
 
 } // namespace registry

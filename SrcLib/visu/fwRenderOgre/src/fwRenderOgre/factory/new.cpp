@@ -6,6 +6,7 @@
 
 #include "fwRenderOgre/factory/new.hpp"
 
+#include "fwRenderOgre/ICamera.hpp"
 #include "fwRenderOgre/ILight.hpp"
 #include "fwRenderOgre/IRenderWindowInteractorManager.hpp"
 
@@ -21,6 +22,16 @@ namespace factory
 }
 
 } // namespace factory
+
+namespace cameraFactory
+{
+
+::fwRenderOgre::ICamera::sptr New( const ::fwRenderOgre::registry::KeyType& classname )
+{
+    return ::fwRenderOgre::registry::getCameraRegistry()->create(classname);
+}
+
+} // namespace cameraFactory
 
 namespace lightFactory
 {

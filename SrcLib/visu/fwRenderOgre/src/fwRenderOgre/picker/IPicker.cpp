@@ -6,19 +6,19 @@
 
 #include "fwRenderOgre/picker/IPicker.hpp"
 
+#include <fwRenderOgre/Layer.hpp>
 #include <fwRenderOgre/Utils.hpp>
 #include <fwRenderOgre/collisionTools/CollisionTools.hpp>
 
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
 
-#include <cmath>
-
+#include <OGRE/OgreManualObject.h>
+#include <OGRE/OgreMovableObject.h>
 #include <OGRE/OgreRay.h>
 #include <OGRE/OgreSceneNode.h>
-#include <OGRE/OgreMovableObject.h>
 
-#include <OGRE/OgreManualObject.h>
+#include <cmath>
 
 namespace fwRenderOgre
 {
@@ -43,7 +43,7 @@ IPicker::~IPicker()
 
 bool IPicker::executeRaySceneQuery(int x, int y, int width, int height)
 {
-    ::Ogre::Ray r = m_sceneManager->getCamera("PlayerCam")->getCameraToViewportRay(
+    ::Ogre::Ray r = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME)->getCameraToViewportRay(
         static_cast< ::Ogre::Real>(x) / static_cast< ::Ogre::Real>(width),
         static_cast< ::Ogre::Real>(y) / static_cast< ::Ogre::Real>(height));
 
@@ -88,7 +88,7 @@ bool IPicker::executeRaySceneQuery(int x, int y, int width, int height)
 ::Ogre::SceneNode* IPicker::getCameraSceneNode() const
 {
     SLM_ASSERT("The associated SceneManager is not instanciated", m_sceneManager);
-    return m_sceneManager->getCamera("PlayerCam")->getParentSceneNode();
+    return m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME)->getParentSceneNode();
 }
 
 //-----------------------------------------------------------------------------
@@ -102,7 +102,7 @@ bool IPicker::executeRaySceneQuery(int x, int y, int width, int height)
 
 ::Ogre::Vector2 IPicker::getIntersectionInViewSpace() const
 {
-    ::Ogre::Camera* cam        = m_sceneManager->getCamera("PlayerCam");
+    ::Ogre::Camera* cam        = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
     ::Ogre::Matrix4 viewMatrix = cam->getViewMatrix();
     ::Ogre::Matrix4 projMatrix = cam->getProjectionMatrixWithRSDepth();
 
@@ -121,7 +121,7 @@ bool IPicker::executeRaySceneQuery(int x, int y, int width, int height)
 {
     ::Ogre::Vector2 screenSpacePoint = getIntersectionInViewSpace();
 
-    ::Ogre::Camera* cam        = m_sceneManager->getCamera("PlayerCam");
+    ::Ogre::Camera* cam        = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
     ::Ogre::Viewport* viewport = cam->getViewport();
 
     /// We need to round the result to get the right pixel

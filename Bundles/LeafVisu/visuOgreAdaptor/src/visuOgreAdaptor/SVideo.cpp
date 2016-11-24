@@ -10,12 +10,12 @@
 
 #include <fwCom/Signal.hxx>
 
-#include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/Point.hpp>
-
-#include <fwServices/macros.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
 
 #include <fwRenderOgre/Utils.hpp>
+
+#include <fwServices/macros.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreEntity.h>
@@ -159,7 +159,7 @@ void SVideo::doUpdate() throw(::fwTools::Failed)
         sn->attachObject(ent);
         sn->setPosition(0,0,0);
 
-        ::Ogre::Camera* cam = sceneManager->getCamera("PlayerCam");
+        ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
         cam->setProjectionType(::Ogre::PT_ORTHOGRAPHIC);
         cam->setOrthoWindowHeight(static_cast< ::Ogre::Real >(size[1]) * static_cast< ::Ogre::Real >(spacing[1]));
 

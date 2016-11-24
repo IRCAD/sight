@@ -6,6 +6,8 @@
 
 #include "fwRenderOgre/vr/IVolumeRenderer.hpp"
 
+#include "fwRenderOgre/Layer.hpp"
+
 #include <boost/algorithm/clamp.hpp>
 
 namespace fwRenderOgre
@@ -63,7 +65,7 @@ IVolumeRenderer::IVolumeRenderer(std::string parentId,
     m_nbSlices               (512),
     m_preIntegratedRendering (false)
 {
-    m_camera = m_sceneManager->getCamera("PlayerCam");
+    m_camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
 
     std::copy(s_imagePositions, s_imagePositions + 8, m_clippedImagePositions);
 }

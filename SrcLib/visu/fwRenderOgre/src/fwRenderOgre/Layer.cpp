@@ -6,6 +6,7 @@
 
 #include "fwRenderOgre/Layer.hpp"
 
+#include "fwRenderOgre/ICamera.hpp"
 #include "fwRenderOgre/ILight.hpp"
 #include "fwRenderOgre/SRender.hpp"
 #include "fwRenderOgre/Utils.hpp"
@@ -21,7 +22,6 @@
 #include <fwThread/Worker.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
-#include <OGRE/OgreCamera.h>
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreEntity.h>
@@ -42,6 +42,8 @@
 namespace fwRenderOgre
 {
 
+//-----------------------------------------------------------------------------
+
 const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG         = "layerInitialized";
 const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG       = "layerResized";
 const ::fwCom::Signals::SignalKeyType Layer::s_COMPOSITOR_UPDATED_SIG = "compositorUpdated";
@@ -51,6 +53,11 @@ const ::fwCom::Slots::SlotKeyType Layer::s_INTERACTION_SLOT    = "interaction";
 const ::fwCom::Slots::SlotKeyType Layer::s_DESTROY_SLOT        = "destroy";
 const ::fwCom::Slots::SlotKeyType Layer::s_RESET_CAMERA_SLOT   = "resetCamera";
 const ::fwCom::Slots::SlotKeyType Layer::s_USE_CELSHADING_SLOT = "useCelShading";
+
+//-----------------------------------------------------------------------------
+
+const std::string Layer::DEFAULT_CAMERA_NAME = "DefaultCam";
+const std::string Layer::DEFAULT_LIGHT_NAME  = "DefaultLight";
 
 //-----------------------------------------------------------------------------
 
@@ -68,7 +75,6 @@ Layer::Layer() :
     m_bottomColor          ("#333333"),
     m_topScale             (0.f),
     m_bottomScale          (1.f),
-    m_camera               (nullptr),
     m_hasCoreCompositor    (false),
     m_hasCompositorChain   (false),
     m_sceneCreated         (false),
@@ -141,11 +147,12 @@ void Layer::createScene()
 
     m_sceneManager->setAmbientLight(::Ogre::ColourValue(0.8f,0.8f,0.8f));
 
-    // Create the camera
-    m_camera = m_sceneManager->createCamera("PlayerCam");
-    m_camera->setNearClipDistance(1);
+    m_cameraManager = ::fwRenderOgre::ICamera::createCameraManager();
+    m_cameraManager->setLayerID(m_id);
+    m_cameraManager->createCamera(Layer::DEFAULT_CAMERA_NAME, m_sceneManager);
+    m_cameraManager->setNearClipDistance(1);
 
-    m_viewport = m_renderWindow->addViewport(m_camera, m_depth);
+    m_viewport = m_renderWindow->addViewport(m_cameraManager->getCamera(), m_depth);
 
     m_compositorChainManager = fwc::ChainManager::uptr(new fwc::ChainManager(m_viewport));
 
@@ -202,7 +209,8 @@ void Layer::createScene()
     }
 
     // Alter the camera aspect ratio to match the viewport
-    m_camera->setAspectRatio(Ogre::Real(m_viewport->getActualWidth()) / ::Ogre::Real(m_viewport->getActualHeight()));
+    m_cameraManager->setAspectRatio(Ogre::Real(m_viewport->getActualWidth()) /
+                                    ::Ogre::Real(m_viewport->getActualHeight()));
 
     // Creating Camera Scene Node
     ::Ogre::SceneNode* cameraNode = m_sceneManager->getRootSceneNode()->createChildSceneNode("CameraNode");
@@ -210,12 +218,14 @@ void Layer::createScene()
     cameraNode->lookAt(Ogre::Vector3(0,0,1), ::Ogre::Node::TS_WORLD);
 
     // Attach Camera and Headlight to fit vtk light
-    cameraNode->attachObject(m_camera);
+    m_cameraManager->setTransformName(cameraNode->getName());
+    cameraNode->attachObject(m_cameraManager->getCamera());
+    m_renderService.lock()->addAdaptor(m_cameraManager);
 
     if(m_hasDefaultLight)
     {
         m_lightManager = ::fwRenderOgre::ILight::createLightManager();
-        m_lightManager->setName("MainLight");
+        m_lightManager->setName(Layer::DEFAULT_LIGHT_NAME);
         m_lightManager->setType(::Ogre::Light::LT_DIRECTIONAL);
         m_lightManager->setDirection(::Ogre::Vector3(0, 0, -1));
         m_lightManager->setDiffuseColor(::Ogre::ColourValue());
@@ -348,9 +358,11 @@ void Layer::destroy()
         ::fwServices::OSR::unregisterService(m_lightManager);
     }
 
+    m_cameraManager->stop();
+    ::fwServices::OSR::unregisterService(m_cameraManager);
+
     ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
     m_sceneManager = nullptr;
-    m_camera       = nullptr;
 }
 
 // ----------------------------------------------------------------------------
@@ -490,19 +502,19 @@ void Layer::resetCameraCoordinates() const
 {
     ::Ogre::AxisAlignedBox worldCoordBoundingBox = computeCameraParameters();
 
-    if(m_camera && m_camera->getProjectionType() == ::Ogre::PT_PERSPECTIVE)
+    if(m_cameraManager->getCamera() && m_cameraManager->getCamera()->getProjectionType() == ::Ogre::PT_PERSPECTIVE)
     {
         // Check if bounding box is valid, otherwise, do nothing.
         if( worldCoordBoundingBox == ::Ogre::AxisAlignedBox::EXTENT_NULL ||
             worldCoordBoundingBox == ::Ogre::AxisAlignedBox::EXTENT_INFINITE)
         {
-            ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
+            ::Ogre::SceneNode* camNode = m_cameraManager->getCamera()->getParentSceneNode();
 
             camNode->setPosition(0.f, 0.f, 0.f);
         }
         else
         {
-            ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
+            ::Ogre::SceneNode* camNode = m_cameraManager->getCamera()->getParentSceneNode();
             // Arbitrary coefficient
             ::Ogre::Real boundingBoxLength = worldCoordBoundingBox.getSize().length() > 0 ?
                                              worldCoordBoundingBox.getSize().length() : 0;
@@ -539,7 +551,7 @@ void Layer::resetCameraClippingRange() const
 
 void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBoundingBox) const
 {
-    if(m_camera && m_camera->getProjectionType() == ::Ogre::PT_PERSPECTIVE)
+    if(m_cameraManager->getCamera() && m_cameraManager->getCamera()->getProjectionType() == ::Ogre::PT_PERSPECTIVE)
     {
         // Check if bounding box is valid, otherwise, do nothing.
         if( worldCoordBoundingBox == ::Ogre::AxisAlignedBox::EXTENT_NULL ||
@@ -548,7 +560,7 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
             return;
         }
 
-        ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
+        ::Ogre::SceneNode* camNode = m_cameraManager->getCamera()->getParentSceneNode();
 
         // Set the direction of the camera
         ::Ogre::Quaternion quat   = camNode->getOrientation();
@@ -614,14 +626,14 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
         {
             // Near and far for SAO
             OSLM_TRACE("Near SAO");
-            m_camera->setNearClipDistance( 1 );
-            m_camera->setFarClipDistance( 10000 );
+            m_cameraManager->setNearClipDistance( 1 );
+            m_cameraManager->setFarClipDistance( 10000 );
         }
         else
         {
             OSLM_TRACE("Near normal");
-            m_camera->setNearClipDistance( maxNear );
-            m_camera->setFarClipDistance( minFar );
+            m_cameraManager->setNearClipDistance( maxNear );
+            m_cameraManager->setFarClipDistance( minFar );
 
         }
 
@@ -800,6 +812,13 @@ IHasAdaptors::AdaptorVector Layer::getRegisteredAdaptors() const
 bool Layer::isSceneCreated() const
 {
     return m_sceneCreated;
+}
+
+//-------------------------------------------------------------------------------------
+
+::Ogre::Camera* Layer::getDefaultCamera()
+{
+    return m_cameraManager->getCamera();
 }
 
 //-------------------------------------------------------------------------------------

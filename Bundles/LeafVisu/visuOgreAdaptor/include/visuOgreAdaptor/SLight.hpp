@@ -7,6 +7,7 @@
 #ifndef __VISUOGREADAPTOR_SLIGHT_HPP__
 #define __VISUOGREADAPTOR_SLIGHT_HPP__
 
+#include "visuOgreAdaptor/STransform.hpp"
 #include "visuOgreAdaptor/config.hpp"
 
 #include <fwCom/Slot.hpp>
@@ -31,24 +32,25 @@ namespace visuOgreAdaptor
  * @brief Adaptor for a light.
  *
  * @section Slots Slots
- * - \b updateXOffset(float): Called when the x offset is changed and moves the light accordingly.
- * - \b updateYOffset(float): Called when the y offset is changed and moves the light accordingly.
+ * - \b updateThetaOffset(float): Called when the theta offset is changed and moves the light accordingly.
+ * - \b updatePhiOffset(float): Called when the phi offset is changed and moves the light accordingly.
  * - \b setDoubleParameter(double, string): Calls a double parameter slot according to the given key.
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="lightAdaptor" class="::visuOgreAdaptor::SLight" objectId="lightTF">
-        <in key="lighTF" uid="lightTFUid" />
-        <in key="lightColor" uid="lightColorUid" />
-        <config name="sceneLight" parentTransformId="cameraTF" xOffset="30.5" yOffset="45" />
+    <service uid="lightAdaptor" type="::visuOgreAdaptor::SLight">
+        <in key="transform" uid="lightTFUid" />
+        <in key="diffuseColor" uid="diffuseColorUid" />
+        <in key="specularColor" uid="specularColorUid" />
+        <config name="sceneLight" parentTransformId="cameraTF" thetaOffset="30.5" phiOffset="45" />
     </service>
  * @endcode
  * With :
  * - \b name (optional): defines a name for the associated Ogre light.
  * - \b parentTransformId (optional): name of the parent transform node.
  * Only if a parent transform node is configured :
- * - \b xOffset (optional, float, default=0.0): Angle in degrees defining the rotation of the light around x axis.
- * - \b yOffset (optional, float, default=0.0): Angle in degrees defining the rotation of the light around y axis.
+ * - \b thetaOffset (optional, float, default=0.0): Angle in degrees defining the rotation of the light around x axis.
+ * - \b phiOffset (optional, float, default=0.0): Angle in degrees defining the rotation of the light around y axis.
  */
 class VISUOGREADAPTOR_CLASS_API SLight : public ::fwRenderOgre::ILight,
                                          public ::fwRenderOgre::ITransformable
@@ -93,37 +95,41 @@ protected:
     VISUOGREADAPTOR_API void doUpdate() throw(fwTools::Failed);
 
     /// Light name setter.
-    VISUOGREADAPTOR_API void setName(std::string _name);
+    VISUOGREADAPTOR_API virtual void setName(std::string _name);
 
     /// Light type setter.
-    VISUOGREADAPTOR_API void setType(::Ogre::Light::LightTypes _type);
+    VISUOGREADAPTOR_API virtual void setType(::Ogre::Light::LightTypes _type);
 
     /// Light direction setter.
-    VISUOGREADAPTOR_API void setDirection(::Ogre::Vector3 _direction);
+    VISUOGREADAPTOR_API virtual void setDirection(::Ogre::Vector3 _direction);
 
     /// Diffuse color setter using fwData::Color.
     VISUOGREADAPTOR_API void setDiffuseColor(::fwData::Color::sptr _diffuseColor);
 
     /// Diffuse color setter using Ogre::ColourValue.
-    VISUOGREADAPTOR_API void setDiffuseColor(::Ogre::ColourValue _diffuseColor);
+    VISUOGREADAPTOR_API virtual void setDiffuseColor(::Ogre::ColourValue _diffuseColor);
 
     /// Specular color setter using fwData::Color.
     VISUOGREADAPTOR_API void setSpecularColor(::fwData::Color::sptr _specularColor);
 
     /// Specular color setter using Ogre::ColourValue.
-    VISUOGREADAPTOR_API void setSpecularColor(::Ogre::ColourValue _specularColor);
+    VISUOGREADAPTOR_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor);
 
     /// Parent tranform id setter.
-    VISUOGREADAPTOR_API void setParentTransformName(const fwRenderOgre::SRender::OgreObjectIdType& _parentTransformName);
+    VISUOGREADAPTOR_API virtual void setParentTransformName(
+        const fwRenderOgre::SRender::OgreObjectIdType& _parentTransformName);
 
 private:
 
-    void updateXOffset(float _xOffset);
-    void updateYOffset(float _yOffset);
+    void updateThetaOffset(float _thetaOffset);
+    void updatePhiOffset(float _phiOffset);
     void setDoubleParameter(double _val, std::string _key);
 
     /// Creates a transform Service, and attaches it to a corresponding scene node in the scene.
     void createTransformService();
+
+    /// Returns a shared pointer of the attached transform service.
+    ::visuOgreAdaptor::STransform::sptr getTransformService();
 
     /// Attaches a movable object to the associated scene node
     void attachNode(Ogre::MovableObject* _node);
@@ -150,10 +156,10 @@ private:
     bool m_useOrphanNode;
 
     /// Angle in degrees defining the rotation of the light around x axis.
-    float m_xOffset;
+    float m_thetaOffset;
 
     /// Angle in degrees defining the rotation of the light around y axis.
-    float m_yOffset;
+    float m_phiOffset;
 };
 
 //------------------------------------------------------------------------------
@@ -194,9 +200,16 @@ inline void SLight::setSpecularColor(::fwData::Color::sptr _specularColor)
 
 //------------------------------------------------------------------------------
 
-void SLight::setParentTransformName(const ::fwRenderOgre::SRender::OgreObjectIdType& _parentTransformName)
+inline void SLight::setParentTransformName(const ::fwRenderOgre::SRender::OgreObjectIdType& _parentTransformName)
 {
     this->setParentTransformId(_parentTransformName);
+}
+
+//------------------------------------------------------------------------------
+
+inline ::visuOgreAdaptor::STransform::sptr SLight::getTransformService()
+{
+    return ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
 }
 
 //------------------------------------------------------------------------------

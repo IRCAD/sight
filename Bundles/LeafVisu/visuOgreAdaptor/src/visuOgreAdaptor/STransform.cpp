@@ -128,7 +128,9 @@ void STransform::doUpdate() throw(fwTools::Failed)
 {
     ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
 
+    // Multithreaded lock
     ::fwData::mt::ObjectReadLock lock(trf);
+
     for(size_t lt = 0; lt<4; lt++)
     {
         for(size_t ct = 0; ct<4; ct++)
@@ -137,6 +139,9 @@ void STransform::doUpdate() throw(fwTools::Failed)
         }
     }
 
+    lock.unlock();
+
+    // Decompose the matrix
     ::Ogre::Vector3 position;
     ::Ogre::Vector3 scale;
     ::Ogre::Quaternion orientation;

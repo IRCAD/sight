@@ -32,7 +32,13 @@
 namespace fwRenderOgre
 {
 class SRender;
+class ICamera;
 class ILight;
+}
+
+namespace Ogre
+{
+class Camera;
 }
 
 namespace fwRenderOgre
@@ -61,7 +67,6 @@ public:
     /**@name Signals API
      * @{
      */
-
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_INIT_LAYER_SIG;
     typedef ::fwCom::Signal<void (::fwRenderOgre::Layer::sptr)> InitLayerSignalType;
 
@@ -92,8 +97,6 @@ public:
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_RESET_CAMERA_SLOT;
 
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_USE_CELSHADING_SLOT;
-
-
     /** @} */
 
     FWRENDEROGRE_API Layer();
@@ -222,7 +225,13 @@ public:
 
     FWRENDEROGRE_API bool isSceneCreated() const;
 
+    FWRENDEROGRE_API ::Ogre::Camera* getDefaultCamera();
+
     FWRENDEROGRE_API void setHasDefaultLight(bool hasDefaultLight);
+
+    FWRENDEROGRE_API static const std::string DEFAULT_CAMERA_NAME;
+
+    FWRENDEROGRE_API static const std::string DEFAULT_LIGHT_NAME;
 
 private:
     /// Slot: Interact with the scene
@@ -280,9 +289,6 @@ private:
     /// Bottom background scale : specific to background Layer
     float m_bottomScale;
 
-    /// Camera
-    ::Ogre::Camera* m_camera;
-
     /// Ogre movement interactor
     ::fwRenderOgre::interactor::IMovementInteractor::sptr m_moveInteractor;
 
@@ -307,8 +313,14 @@ private:
     /// Indicates if the scene has been created
     bool m_sceneCreated;
 
+    /// Indicates if the scene has a default camera.
+    bool m_hasDefaultCamera;
+
     /// Indicates if the scene has a default light.
     bool m_hasDefaultLight;
+
+    /// Abstract camera used to set the default camera.
+    SPTR(::fwRenderOgre::ICamera) m_cameraManager;
 
     /// Abstract light used to set the default light.
     SPTR(::fwRenderOgre::ILight) m_lightManager;

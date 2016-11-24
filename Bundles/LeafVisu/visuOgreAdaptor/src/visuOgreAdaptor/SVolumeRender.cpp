@@ -275,7 +275,7 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 
     m_sceneManager    = this->getSceneManager();
     m_volumeSceneNode = m_sceneManager->getRootSceneNode()->createChildSceneNode();
-    m_camera          = m_sceneManager->getCamera("PlayerCam");
+    m_camera          = this->getLayer()->getDefaultCamera();
 
     // Create textures
     m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(

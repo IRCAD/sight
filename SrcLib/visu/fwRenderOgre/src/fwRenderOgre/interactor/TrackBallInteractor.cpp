@@ -5,9 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/interactor/TrackballInteractor.hpp"
+#include <fwRenderOgre/Layer.hpp>
+#include <fwRenderOgre/registry/macros.hpp>
 
 #include <fwCom/Signal.hxx>
-#include <fwRenderOgre/registry/macros.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreNode.h>
@@ -60,7 +61,7 @@ void TrackballInteractor::wheelEvent(int delta, int x, int y)
     m_fZoom = fNewZoom;
 
     // Last, translate the camera
-    ::Ogre::Camera* camera     = m_sceneManager->getCamera("PlayerCam");
+    ::Ogre::Camera* camera     = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
     ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
     ::Ogre::Vector3 direction  = camera->getDirection();
     direction                  = direction * z;
@@ -107,7 +108,7 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
     ::Ogre::Real dx_float = static_cast< ::Ogre::Real>(dx);
     ::Ogre::Real dy_float = static_cast< ::Ogre::Real>(dy);
 
-    ::Ogre::Camera* camera     = m_sceneManager->getCamera("PlayerCam");
+    ::Ogre::Camera* camera     = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
     ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
 
     // Current orientation of the camera
@@ -181,7 +182,7 @@ void TrackballInteractor::cameraTranslate(int xmove, int ymove)
 {
     float dx = static_cast<float>(xmove) / (m_mouseScale * 10.f);
     float dy = static_cast<float>(-ymove) / (m_mouseScale * 10.f);
-    ::Ogre::Camera* camera     = m_sceneManager->getCamera("PlayerCam");
+    ::Ogre::Camera* camera     = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
     ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
 
     ::Ogre::Vector3 vec(dx, dy, 0.f);

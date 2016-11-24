@@ -10,11 +10,11 @@
 
 #include "fwRenderOgre/config.hpp"
 
-#include <OGRE/OgreVector3.h>
+#include <fwCore/BaseObject.hpp>
+
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgrePrerequisites.h>
-
-#include <fwCore/BaseObject.hpp>
+#include <OGRE/OgreVector3.h>
 
 
 namespace fwRenderOgre
@@ -58,7 +58,7 @@ protected:
     /// Intersection between the ray and the selected object
     ::Ogre::Vector3 m_rayIntersect;
 
-    /// Returns the scene node containing the "PlayerCam" camera
+    /// Returns the scene node containing the default camera
     ::Ogre::SceneNode* getCameraSceneNode() const;
 
 };

@@ -6,15 +6,14 @@
 
 #include "fwRenderOgre/IAdaptor.hpp"
 
+#include <fwRenderOgre/Utils.hpp>
+#include <fwRenderOgre/registry/Adaptor.hpp>
+
 #include <fwCom/Slots.hxx>
 
-#include <fwRenderOgre/registry/Adaptor.hpp>
-#include <fwRenderOgre/SRender.hpp>
-#include <fwRenderOgre/Utils.hpp>
-
+#include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/helper/Config.hpp>
 
 namespace fwRenderOgre
 {
@@ -125,6 +124,13 @@ void IAdaptor::setLayerID(const std::string& id)
 
 //------------------------------------------------------------------------------
 
+const std::string& IAdaptor::getLayerID() const
+{
+    return m_layerID;
+}
+
+//------------------------------------------------------------------------------
+
 void IAdaptor::setRenderService( SRender::sptr service)
 {
     SLM_ASSERT("service not instanced", service);
@@ -138,6 +144,13 @@ void IAdaptor::setRenderService( SRender::sptr service)
 SRender::sptr IAdaptor::getRenderService() const
 {
     return m_renderService.lock();
+}
+
+//------------------------------------------------------------------------------
+
+Layer::sptr IAdaptor::getLayer() const
+{
+    return this->getRenderService()->getLayer(m_layerID);
 }
 
 //------------------------------------------------------------------------------
