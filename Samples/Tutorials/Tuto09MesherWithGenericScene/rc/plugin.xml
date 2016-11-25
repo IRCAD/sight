@@ -288,6 +288,10 @@
             <start uid="updaterReconstUID" />
             <start uid="medicaImageConverter" />
 
+            <!-- Deferred start -->
+            <start uid="representationEditor" />
+            <start uid="organMaterialEditor" />
+
         </config>
     </extension>
 

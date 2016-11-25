@@ -257,6 +257,9 @@
         <start uid="slider" />
         <start uid="genericScene" />
 
+        <!-- Deferred start -->
+        <start uid="tfSelector" />
+
         <update uid="fieldMgr" />
 
     </config>

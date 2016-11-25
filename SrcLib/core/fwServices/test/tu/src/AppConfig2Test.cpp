@@ -6,6 +6,10 @@
 
 #include "AppConfig2Test.hpp"
 
+#include "fwServices/registry/ActiveWorkers.hpp"
+#include "fwServices/registry/AppConfig2.hpp"
+#include "fwServices/registry/ObjectService.hpp"
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
@@ -14,10 +18,6 @@
 
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Runtime.hpp>
-
-#include "fwServices/registry/ActiveWorkers.hpp"
-#include <fwServices/registry/AppConfig2.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwTest/helper/Thread.hpp>
 
@@ -41,7 +41,7 @@ namespace ut
     BOOST_PP_CAT(timeStamp, __LINE__).modified(); \
     while(!(cond) && !BOOST_PP_CAT(timeStamp, __LINE__).periodExpired()) \
     { \
-        std::this_thread::sleep_for( std::chrono::milliseconds(1)); \
+        std::this_thread::sleep_for( std::chrono::milliseconds(10)); \
     }
 
 #define WAIT_SERVICE_STARTED(srv)  \
@@ -285,19 +285,26 @@ void AppConfig2Test::startStopTest()
         }
 
         // Put everything back
+        ::fwServices::ut::TestService::s_START_COUNTER  = 0;
+        ::fwServices::ut::TestService::s_UPDATE_COUNTER = 0;
         ::fwServices::OSR::registerServiceOutput(data2, "out2", genDataSrv);
         WAIT_SERVICE_STARTED("TestService5Uid");
 
-        // Now the service should have been started automatically
+        // Now the service should have been started automatically, check start order as well
         {
             auto gnsrv5 = ::fwTools::fwID::getObject("TestService5Uid");
-            auto srv5   = ::fwServices::IService::dynamicCast(gnsrv5);
+            auto srv5   = ::fwServices::ut::TestServiceImplementation::dynamicCast(gnsrv5);
             CPPUNIT_ASSERT(srv5 != nullptr);
             CPPUNIT_ASSERT_EQUAL(::fwServices::IService::STARTED, srv5->getStatus());
+            CPPUNIT_ASSERT_EQUAL(0u, srv5->getStartOrder());
+            CPPUNIT_ASSERT_EQUAL(1u, srv5->getUpdateOrder());
 
             // Test as well service 4, just to be sure
             auto gnsrv4 = ::fwTools::fwID::getObject("TestService4Uid");
+            auto srv4   = ::fwServices::ut::TestServiceImplementation::dynamicCast(gnsrv4);
             CPPUNIT_ASSERT(gnsrv4 != nullptr);
+            CPPUNIT_ASSERT_EQUAL(1u, srv4->getStartOrder());
+            CPPUNIT_ASSERT_EQUAL(0u, srv4->getUpdateOrder());
         }
     }
 
@@ -1233,7 +1240,7 @@ void AppConfig2Test::concurentAccessToAppConfig2Test()
     dataService3->setAttributeValue( "key", "data" );
     dataService3->setAttributeValue( "uid", "data1Id" );
 
-    // Service #4
+    // Service #4 with one deferred data
     std::shared_ptr< ::fwRuntime::EConfigurationElement > service4 = cfg->addConfigurationElement("service");
     service4->setAttributeValue( "uid", "TestService4Uid" );
     service4->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
@@ -1243,7 +1250,7 @@ void AppConfig2Test::concurentAccessToAppConfig2Test()
     dataService4->setAttributeValue( "key", "data" );
     dataService4->setAttributeValue( "uid", "data2Id" );
 
-    // Service #5
+    // Service #5 with two deferred data
     std::shared_ptr< ::fwRuntime::EConfigurationElement > service5 = cfg->addConfigurationElement("service");
     service5->setAttributeValue( "uid", "TestService5Uid" );
     service5->setAttributeValue("type", "::fwServices::ut::TestServiceImplementation" );
@@ -1265,9 +1272,13 @@ void AppConfig2Test::concurentAccessToAppConfig2Test()
     // Start method from object's services
     cfg->addConfigurationElement("start")->setAttributeValue( "uid", "SGenerateData" );
     cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService1Uid" );
+    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService5Uid" );
+    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService4Uid" );
 
     // Update method from object's services
     cfg->addConfigurationElement("update")->setAttributeValue( "uid", "TestService1Uid" );
+    cfg->addConfigurationElement("update")->setAttributeValue( "uid", "TestService4Uid" );
+    cfg->addConfigurationElement("update")->setAttributeValue( "uid", "TestService5Uid" );
 
     return cfg;
 }
@@ -1370,6 +1381,8 @@ fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildAutoConnectTestConfig
     cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService1Uid" );
     cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService2Uid" );
     cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService3Uid" );
+    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService4Uid" );
+    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService5Uid" );
 
     return cfg;
 }
@@ -1484,6 +1497,7 @@ fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildConnectionConfig()
     cfg->addConfigurationElement("start")->setAttributeValue( "uid", "SGenerateData" );
     cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService1Uid" );
     cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService2Uid" );
+    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService3Uid" );
     cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService4Uid" );
 
     return cfg;
@@ -1599,6 +1613,7 @@ fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildOptionalKeyConfig()
     // Start method from object's services
     cfg->addConfigurationElement("start")->setAttributeValue( "uid", "SGenerateData" );
     cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService1Uid" );
+    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService5Uid" );
 
     return cfg;
 }
@@ -1700,6 +1715,8 @@ fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildKeyGroupConfig()
 
     // Start method from object's services
     cfg->addConfigurationElement("start")->setAttributeValue( "uid", "SGenerateData" );
+    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService1Uid" );
+    cfg->addConfigurationElement("start")->setAttributeValue( "uid", "TestService2Uid" );
 
     return cfg;
 }

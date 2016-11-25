@@ -26,5 +26,24 @@ const ::fwCom::Slots::SlotKeyType TestServiceImplementation::s_UPDATE2_SLOT     
 const ::fwCom::Signals::SignalKeyType TestSrvAutoconnect::s_SIG_1 = "signal1";
 const ::fwCom::Slots::SlotKeyType TestSrvAutoconnect::s_SLOT_1    = "slot1";
 
+unsigned int TestService::s_START_COUNTER  = 0;
+unsigned int TestService::s_UPDATE_COUNTER = 0;
+
+//------------------------------------------------------------------------------
+
+void TestService::starting() throw(::fwTools::Failed)
+{
+    m_startOrder = s_START_COUNTER++;
+}
+
+//------------------------------------------------------------------------------
+
+void TestService::updating() throw(::fwTools::Failed)
+{
+    m_updateOrder = s_UPDATE_COUNTER++;
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace ut
 } // namespace fwServices

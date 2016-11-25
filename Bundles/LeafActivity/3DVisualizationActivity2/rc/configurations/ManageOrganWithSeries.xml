@@ -85,5 +85,9 @@
         <start uid="organManagerFrame" />
         <start uid="myUpdaterReconst" />
 
+        <!-- Deferred start -->
+        <start uid="organMaterialEditor" />
+        <start uid="representationEditor" />
+
     </config>
 </extension>

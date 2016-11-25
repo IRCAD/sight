@@ -72,5 +72,9 @@
 
         <start uid="mainview" />
 
+        <!-- Deferred start -->
+        <start uid="medicalImgConverter" />
+        <start uid="imageDumpLocker" />
+
     </config>
 </extension>

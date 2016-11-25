@@ -176,7 +176,7 @@
             <inout key="image" uid="optionalInputImage" />
         </service>
 
-        <service uid="cfgNegato2" type="::fwServices::SConfigController">
+        <service uid="cfgNegato2" type="::fwServices::SConfigController" >
             <appConfig id="2DNegato" />
             <inout key="image" uid="optionalInputImage" />
             <parameter replace="WID_PARENT" uid="view_negato2" />
@@ -253,6 +253,25 @@
         <start uid="mainView" />
         <start uid="extractImage" />
         <start uid="cfgNegato1" />
+
+        <!-- Deferred start -->
+        <start uid="LockImageSrv" />
+        <start uid="view_negato2_and_3" />
+        <start uid="cfgNegato2" />
+        <start uid="cfgNegato3" />
+        <start uid="ActionFocusLandmark" />
+        <start uid="ActionNewLandmark" />
+        <start uid="ActionRemoveLandmark" />
+        <start uid="ActionLoadLandmark" />
+        <start uid="ActionSaveLandmark" />
+        <start uid="ActionHideLandmark" />
+        <start uid="ActionAddDistance" />
+        <start uid="ActionRemoveDistance" />
+        <start uid="ActionHideDistance" />
+        <start uid="ActionHideCross" />
+        <start uid="ActionShowNormalCross" />
+        <start uid="ActionShowFullCross" />
+        <start uid="MedicalImageSrv" />
 
         <update uid="extractImage" />
 

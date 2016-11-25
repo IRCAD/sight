@@ -29,11 +29,16 @@ class TestService : public ::fwServices::IService
 
 public:
 
+    static unsigned int s_START_COUNTER;
+    static unsigned int s_UPDATE_COUNTER;
+
     fwCoreServiceClassDefinitionsMacro ( (TestService)(::fwServices::IService) );
     TestService() throw() :
         m_isUpdated(false),
         m_isUpdated2(false),
-        m_isUpdatedMessage(false)
+        m_isUpdatedMessage(false),
+        m_startOrder(0),
+        m_updateOrder(0)
     {
     }
 
@@ -44,15 +49,11 @@ public:
     virtual void configuring() throw( ::fwTools::Failed ) final
     {
     }
-    virtual void starting() throw(::fwTools::Failed)override
-    {
-    }
+    virtual void starting() throw(::fwTools::Failed);
     virtual void stopping() throw(::fwTools::Failed) final
     {
     }
-    virtual void updating() throw(::fwTools::Failed)override
-    {
-    }
+    virtual void updating() throw(::fwTools::Failed);
     virtual void info(std::ostream& _sstream )
     {
         _sstream << "TestService";
@@ -69,7 +70,6 @@ public:
     {
         return m_isUpdated2;
     }
-
 
     /// return true if the service is updated with update(msg) method
     bool getIsUpdatedMessage() const
@@ -89,10 +89,22 @@ public:
         m_isUpdated2 = false;
     }
 
+    unsigned int getStartOrder() const
+    {
+        return m_startOrder;
+    }
+
+    unsigned int getUpdateOrder() const
+    {
+        return m_updateOrder;
+    }
+
 protected:
     bool m_isUpdated;
-    bool m_isUpdatedMessage;
     bool m_isUpdated2;
+    bool m_isUpdatedMessage;
+    unsigned int m_startOrder;
+    unsigned int m_updateOrder;
 };
 
 /**
@@ -110,7 +122,7 @@ public:
     static const ::fwCom::Slots::SlotKeyType s_UPDATE2_SLOT;
 
     /// Type os signal
-    typedef ::fwCom::Signal< void (std::string)> MsgSentSignalType;
+    typedef ::fwCom::Signal< void (const std::string&)> MsgSentSignalType;
 
     //-------------------------------------------------------------------------
     TestServiceImplementation() throw()
@@ -126,11 +138,13 @@ public:
     //-------------------------------------------------------------------------
     virtual void starting() throw(::fwTools::Failed) final
     {
+        TestService::starting();
     }
 
     //-------------------------------------------------------------------------
     virtual void updating() throw(::fwTools::Failed)override
     {
+        TestService::updating();
         m_isUpdated = true;
     }
 

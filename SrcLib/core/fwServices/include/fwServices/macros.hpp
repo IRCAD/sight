@@ -47,6 +47,7 @@ namespace fwServices
 
 //@}
 
+
 }
 
 #endif /*__FWSERVICES_MACROS_HPP__*/

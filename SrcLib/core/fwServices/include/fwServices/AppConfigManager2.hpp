@@ -168,6 +168,12 @@ private:
     /// List of services started in this configuration
     ServiceContainer m_startedSrv;
 
+    /// Start ordered list of deferred services
+    std::vector<std::string> m_deferredStartSrv;
+
+    /// Update ordered list of deferred services
+    std::vector<std::string> m_deferredUpdateSrv;
+
     /// While we need to maintain old and new services behavior, we need a dummy data for new services
     /// that don't work on any data.
     /// TODO: Remove with V1

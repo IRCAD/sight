@@ -474,6 +474,9 @@ Comment: Name inside the drawing are the uid of the service defined below.
             <start uid="fieldMgr" />
             <start uid="IHM" />
 
+            <!-- Deferred start -->
+            <start uid="TFEditor" />
+
         </config>
     </extension>
 

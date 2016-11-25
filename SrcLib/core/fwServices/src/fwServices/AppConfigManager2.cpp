@@ -228,8 +228,6 @@ fwData::Object::sptr AppConfigManager2::findObject(const std::string& uid, const
 {
     ::fwData::Object::sptr obj;
 
-    bool deferred = false;
-
     // Look first in objects created in this appConfig
     auto it = m_createdObjects.find(uid);
     if(it != m_createdObjects.end())
@@ -243,8 +241,7 @@ fwData::Object::sptr AppConfigManager2::findObject(const std::string& uid, const
 
         SLM_ASSERT(this->msgHead() + "Object '" + uid + "' has not been found" + errMsgTail,
                    itDeferredObj != m_deferredObjects.end());
-        obj      = itDeferredObj->second.m_object;
-        deferred = true;
+        obj = itDeferredObj->second.m_object;
     }
     return obj;
 }
@@ -374,9 +371,10 @@ void AppConfigManager2::processStartItems()
             {
                 if(m_deferredServices.find(uid) != m_deferredServices.end())
                 {
-                    SLM_FATAL( this->msgHead() + "Start is requested for service '" + uid + "' but this "
-                               "service hasn't been created yet because at least one of its data is missing. With "
-                               "DEBUG log level, you can know which are the missing objects.");
+                    m_deferredStartSrv.push_back(uid);
+                    SLM_INFO( this->msgHead() + "Start for service '" + uid + "' will be deferred since at least one "
+                              "of its data is missing. With DEBUG log level, you can know which are the "
+                              "missing objects.");
                 }
                 else
                 {
@@ -384,14 +382,17 @@ void AppConfigManager2::processStartItems()
                                "', but it does not exist.");
                 }
             }
+            else
+            {
+                const ::fwServices::IService::sptr srv = ::fwServices::get(uid);
+                SLM_FATAL_IF( this->msgHead() + "Start is requested for service '" + uid + "', though this identifier "
+                              "exists, this is not a service.", !srv);
 
-            const ::fwServices::IService::sptr srv = ::fwServices::get(uid);
-            SLM_FATAL_IF( this->msgHead() + "Start is requested for service '" + uid + "', though this identifier "
-                          "exists, this is not a service.", !srv);
+                futures.push_back(srv->start());
 
-            futures.push_back(srv->start());
+                m_startedSrv.push_back(srv);
+            }
 
-            m_startedSrv.push_back(srv);
         }
     }
     ::boost::wait_for_all(futures.begin(), futures.end());
@@ -414,9 +415,10 @@ void AppConfigManager2::processUpdateItems()
             {
                 if(m_deferredServices.find(uid) != m_deferredServices.end())
                 {
-                    SLM_FATAL( this->msgHead() + "Update is requested for service '" + uid + "' but this "
-                               "service hasn't been created yet because at least one of its data is missing. With "
-                               "DEBUG log level, you can know which are the missing objects.");
+                    m_deferredUpdateSrv.push_back(uid);
+                    SLM_INFO( this->msgHead() + "Update for service '" + uid + "'will be deferred since at least one "
+                              "of its data is missing. With DEBUG log level, you can know which are the "
+                              "missing objects.");
                 }
                 else
                 {
@@ -424,12 +426,14 @@ void AppConfigManager2::processUpdateItems()
                                "', but it does not exist.");
                 }
             }
+            else
+            {
+                const ::fwServices::IService::sptr srv = ::fwServices::get(uid);
+                SLM_FATAL_IF( this->msgHead() + "Update is requested for service '" + uid +
+                              "', though this identifier exists, this is not a service.", !srv);
 
-            const ::fwServices::IService::sptr srv = ::fwServices::get(uid);
-            SLM_FATAL_IF( this->msgHead() + "Update is requested for service '" + uid +
-                          "', though this identifier exists, this is not a service.", !srv);
-
-            futures.push_back(srv->update());
+                futures.push_back(srv->update());
+            }
         }
     }
 
@@ -818,7 +822,8 @@ void AppConfigManager2::addObjects(fwData::Object::sptr obj, const std::string& 
         }
     }
 
-    std::vector< ::fwServices::IService::SharedFutureType > futures;
+    std::unordered_map<std::string, ::fwServices::IService::sptr> newServices;
+
     for(const auto& itService : servicesCfg)
     {
         auto srvCfg = itService;
@@ -875,15 +880,11 @@ void AppConfigManager2::addObjects(fwData::Object::sptr obj, const std::string& 
         // All the data for this service is ready, create and run it
         if(createService)
         {
-            // 1. Create the service
-            auto srv = this->createService(*srvCfg);
-
-            // 3. Start the service
-            futures.push_back(srv->start());
-            m_startedSrv.push_back(srv);
+            // Create the service
+            newServices.emplace(std::make_pair(uid, this->createService(*srvCfg)));
 
             // Debug message
-            SLM_INFO( this->msgHead() + "Service '" + uid + "' has been automatically started because its "
+            SLM_INFO( this->msgHead() + "Service '" + uid + "' has been automatically created because its "
                       "objects are all available.");
         }
         else if(reconnect)
@@ -894,6 +895,40 @@ void AppConfigManager2::addObjects(fwData::Object::sptr obj, const std::string& 
 
             srv->autoDisconnect();
             srv->autoConnect();
+        }
+    }
+
+    std::vector< ::fwServices::IService::SharedFutureType > futures;
+
+    // Start services according to the order given in the configuration
+    for(const auto& uid : m_deferredStartSrv)
+    {
+        auto itSrv = newServices.find(uid);
+        if( itSrv != newServices.end())
+        {
+            futures.push_back(itSrv->second->start());
+            m_startedSrv.push_back(itSrv->second);
+
+            // Debug message
+            SLM_INFO( this->msgHead() + "Service '" + uid + "' has been automatically started because its "
+                      "objects are all available.");
+        }
+    }
+
+    ::boost::wait_for_all(futures.begin(), futures.end());
+    futures.clear();
+
+    // Update services according to the order given in the configuration
+    for(const auto& uid : m_deferredUpdateSrv)
+    {
+        auto itSrv = newServices.find(uid);
+        if( itSrv != newServices.end())
+        {
+            futures.push_back(itSrv->second->update());
+
+            // Debug message
+            SLM_INFO( this->msgHead() + "Service '" + uid + "' has been automatically update because its "
+                      "objects are all available.");
         }
     }
 

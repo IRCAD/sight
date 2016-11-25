@@ -424,6 +424,10 @@
         <start uid="cfgNegato" />
         <start uid="fieldMgr" />
 
+        <!-- Deferred start -->
+        <start uid="action_organManager" />
+        <start uid="tfm" />
+
         <update uid="fieldMgr" />
 
     </config>
