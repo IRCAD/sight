@@ -6,9 +6,9 @@
 
 #include "AppConfigTest.hpp"
 
-#include <fwData/String.hpp>
-
 #include <fwServices/registry/AppConfig.hpp>
+
+#include <fwData/String.hpp>
 
 #include <fwTest/helper/Thread.hpp>
 
@@ -122,14 +122,14 @@ void AppConfigTest::concurentAccessToAppConfigTest()
     // Object's service A
     std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
     serviceA->setAttributeValue( "uid", "${GENERIC_UID}_myTestService1" );
-    serviceA->setAttributeValue( "type", "::fwServices::ut::TestService" );
+    serviceA->setAttributeValue( "type", "::fwServices::ut::TestConfigService" );
     serviceA->setAttributeValue( "impl", "::fwServices::ut::TestServiceImplementationImage" );
     serviceA->setAttributeValue( "autoConnect", "no" );
 
     // Object's service B
     std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
     serviceB->setAttributeValue( "uid", "${UID_SERVICE2}" );
-    serviceB->setAttributeValue( "type", "::fwServices::ut::TestService" );
+    serviceB->setAttributeValue( "type", "::fwServices::ut::TestConfigService" );
     serviceB->setAttributeValue( "impl", "::fwServices::ut::TestServiceImplementationImage" );
     serviceB->setAttributeValue( "autoConnect", "no" );
 

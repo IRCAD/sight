@@ -6,9 +6,9 @@
 
 #include "TestService.hpp"
 
-#include <fwData/Object.hpp>
-
 #include <fwServices/macros.hpp>
+
+#include <fwData/Object.hpp>
 
 fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestServiceImplementation, ::fwData::Object );
 fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestServiceImplementation2,
@@ -21,7 +21,6 @@ namespace ut
 {
 
 const ::fwCom::Signals::SignalKeyType TestServiceImplementation::s_MSG_SENT_SIG = "msgSent";
-const ::fwCom::Slots::SlotKeyType TestServiceImplementation::s_RECEIVE_MSG_SLOT = "receiveMsg";
 const ::fwCom::Slots::SlotKeyType TestServiceImplementation::s_UPDATE2_SLOT     = "update2";
 
 const ::fwCom::Signals::SignalKeyType TestSrvAutoconnect::s_SIG_1 = "signal1";

@@ -12,8 +12,6 @@
 
 #include <fwMedData/SeriesDB.hpp>
 
-fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestServiceImplementationComposite,
-                         ::fwData::Composite );
-fwServicesRegisterMacro( ::fwServices::ut::TestService, ::fwServices::ut::TestServiceImplementationImage,
+fwServicesRegisterMacro( ::fwServices::ut::TestConfigService, ::fwServices::ut::TestServiceImplementationImage,
                          ::fwData::Image );
 

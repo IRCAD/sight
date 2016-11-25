@@ -7,11 +7,11 @@
 #ifndef __FWSERVICES_UT_CONFIGPARSERTEST_HPP__
 #define __FWSERVICES_UT_CONFIGPARSERTEST_HPP__
 
+#include <fwServices/macros.hpp>
+
 #include <fwCore/base.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
-
-#include <fwServices/macros.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -30,7 +30,6 @@ class ConfigParserTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( ConfigParserTest );
 CPPUNIT_TEST( testObjectCreationWithConfig );
-CPPUNIT_TEST( testBuildComposite );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,15 +40,9 @@ public:
     /// test object with services creation from a configuration
     void testObjectCreationWithConfig();
 
-    /// Test the composite building
-    void testBuildComposite();
-
 private:
     /// Create a configurationElement to build an object
     ::fwRuntime::ConfigurationElement::sptr buildObjectConfig();
-
-    /// Create a configurationElement to build the composite
-    ::fwRuntime::ConfigurationElement::sptr buildCompositeConfig();
 };
 
 } //namespace ut

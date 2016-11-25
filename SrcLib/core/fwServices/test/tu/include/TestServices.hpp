@@ -7,9 +7,9 @@
 #ifndef __FWSERVICES_UT_TESTSERVICES_HPP__
 #define __FWSERVICES_UT_TESTSERVICES_HPP__
 
-#include <fwCore/base.hpp>
-
 #include <fwServices/macros.hpp>
+
+#include <fwCore/base.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -22,16 +22,16 @@ namespace ut
 /**
  * @brief   Service type for test.
  */
-class TestService : public ::fwServices::IService
+class TestConfigService : public ::fwServices::IService
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (TestService)(::fwServices::IService) );
-    TestService() throw()
+    fwCoreServiceClassDefinitionsMacro ( (TestConfigService)(::fwServices::IService) );
+    TestConfigService() throw()
         :   m_isUpdated(false)
     {
     }
 
-    virtual ~TestService() throw()
+    virtual ~TestConfigService() throw()
     {
     }
 
@@ -56,51 +56,20 @@ protected:
     }
     virtual void info( std::ostream& _sstream )
     {
-        _sstream << "TestService";
+        _sstream << "TestConfigService";
     }
 
     bool m_isUpdated;
 };
 
 /**
- * @brief   Test service implementation for composite
- */
-class TestServiceImplementationComposite : public TestService
-{
-
-public:
-    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementationComposite)(::fwServices::ut::TestService) );
-    TestServiceImplementationComposite() throw()
-    {
-    }
-    virtual ~TestServiceImplementationComposite() throw()
-    {
-    }
-
-    virtual void configuring() throw( ::fwTools::Failed )
-    {
-    }
-    virtual void starting() throw(::fwTools::Failed)
-    {
-    }
-    virtual void stopping() throw(::fwTools::Failed)
-    {
-        SLM_TRACE_FUNC();
-    }
-    virtual void updating() throw(::fwTools::Failed)
-    {
-        m_isUpdated = true;
-    }
-};
-
-/**
  * @brief   Test service implementation for image
  */
-class TestServiceImplementationImage : public TestService
+class TestServiceImplementationImage : public TestConfigService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementationImage)(::fwServices::ut::TestService) );
+    fwCoreServiceClassDefinitionsMacro ( (TestServiceImplementationImage)(::fwServices::ut::TestConfigService) );
     TestServiceImplementationImage() throw()
     {
     }

@@ -6,6 +6,14 @@
 
 #include "ServiceTest.hpp"
 
+#include "TestService.hpp"
+
+#include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
+#include <fwServices/op/Get.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
+
 #include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
@@ -16,15 +24,7 @@
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
 
-#include <fwServices/IService.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/op/Add.hpp>
-#include <fwServices/op/Get.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
-
 #include <fwThread/Worker.hpp>
-
-#include "TestService.hpp"
 
 #include <thread>
 
@@ -252,7 +252,7 @@ struct TestServiceSignals : public ::fwCom::HasSlots
     BOOST_PP_CAT(timeStamp, __LINE__).modified(); \
     while(!(cond) && !BOOST_PP_CAT(timeStamp, __LINE__).periodExpired()) \
     { \
-        std::this_thread::sleep_for( std::chrono::milliseconds(1)); \
+        std::this_thread::sleep_for( std::chrono::milliseconds(10)); \
     }
 
 void ServiceTest::testCommunication()
@@ -321,7 +321,9 @@ void ServiceTest::testCommunication()
     comHelper.connect( obj, service1, service1->getObjSrvConnections() );
     comHelper.connect( obj, service2, service2->getObjSrvConnections() );
     comHelper.connect( service1, ::fwServices::ut::TestServiceImplementation::s_MSG_SENT_SIG,
-                       service2, ::fwServices::ut::TestServiceImplementation::s_RECEIVE_MSG_SLOT );
+                       service2, ::fwServices::ut::TestServiceImplementation::s_UPDATE2_SLOT );
+
+    CPPUNIT_ASSERT(!service2->getIsUpdated2());
 
     // Service1 send notification
     ::fwServices::ut::TestServiceImplementation::MsgSentSignalType::sptr sig;
@@ -336,6 +338,8 @@ void ServiceTest::testCommunication()
 
     service1->update().wait();
     service2->update().wait();
+    CPPUNIT_ASSERT(service2->getIsUpdated2());
+
     WAIT(receiver1->m_updated && receiver2->m_updated)
     CPPUNIT_ASSERT_EQUAL(true, receiver1->m_started);
     CPPUNIT_ASSERT_EQUAL(true, receiver1->m_updated);
@@ -347,7 +351,6 @@ void ServiceTest::testCommunication()
     // Test if service2 has received the message
     service1->stop().wait();
     service2->stop().wait();
-    CPPUNIT_ASSERT(service2->getIsUpdatedMessage());
 
     WAIT(receiver1->m_stopped && receiver2->m_stopped)
     CPPUNIT_ASSERT_EQUAL(true, receiver1->m_started);

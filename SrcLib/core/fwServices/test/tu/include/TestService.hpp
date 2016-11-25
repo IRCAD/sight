@@ -107,7 +107,6 @@ public:
     /// Keys to register Signal
     static const ::fwCom::Signals::SignalKeyType s_MSG_SENT_SIG;
     /// Keys to register Slot
-    static const ::fwCom::Slots::SlotKeyType s_RECEIVE_MSG_SLOT;
     static const ::fwCom::Slots::SlotKeyType s_UPDATE2_SLOT;
 
     /// Type os signal
@@ -117,7 +116,6 @@ public:
     TestServiceImplementation() throw()
     {
         newSignal<MsgSentSignalType>(s_MSG_SENT_SIG);
-        newSlot(s_RECEIVE_MSG_SLOT, &TestServiceImplementation::receiveMsg, this);
         newSlot(s_UPDATE2_SLOT, &TestServiceImplementation::update2, this);
     }
     //-------------------------------------------------------------------------
@@ -147,12 +145,6 @@ public:
     {
         m_swappedObjectKey = key;
         m_swappedObject    = this->getInput< ::fwData::Object>(key);
-    }
-
-    //-------------------------------------------------------------------------
-    void receiveMsg(std::string msg)
-    {
-        m_isUpdatedMessage = true;
     }
 
     //-------------------------------------------------------------------------
