@@ -11,17 +11,19 @@
 
 #include <fwDataTools/Color.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwTools/Object.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
+
+#include <fwServices/macros.hpp>
+
+#include <fwTools/Object.hpp>
 
 #include <QCheckBox>
 #include <QColorDialog>
 #include <QFormLayout>
 #include <QLabel>
-#include <QString>
 #include <QSlider>
 #include <QSpinBox>
+#include <QString>
 #include <QStyle>
 
 #include <boost/foreach.hpp>
@@ -31,6 +33,8 @@ namespace guiQt
 
 namespace editor
 {
+
+//-----------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::guiQt::editor::SParameters, ::fwData::Object );
 
@@ -544,13 +548,26 @@ void SParameters::createDoubleWidget(QGridLayout& layout, int row, const std::st
         QDoubleSpinBox* spinbox = new QDoubleSpinBox();
         spinboxes[i] = spinbox;
 
-        spinbox->setValue(defaultValue);
         this->signal<DoubleChangedSignalType>(DOUBLE_CHANGED_SIG)->asyncEmit(defaultValue, key);
 
-        spinbox->setMinimum(min);
-        spinbox->setMaximum(max);
+        auto countDecimals = [](double _num) -> int
+                             {
+                                 std::stringstream out;
+                                 out << _num;
+                                 const std::string s = out.str();
+                                 const std::string t = s.substr(s.find(".") + 1);
+                                 return static_cast<int>(t.length());
+                             };
 
-        spinbox->setSingleStep((spinbox->maximum() - spinbox->minimum()) / 100.);
+        spinbox->setDecimals(std::max( std::max(countDecimals(min), countDecimals(max)), 2));
+
+        spinbox->setRange(min, max);
+
+        // Beware, set setSingleStep after setRange() and setDecimals() otherwise it may fail
+        spinbox->setSingleStep(std::abs(spinbox->maximum() - spinbox->minimum()) / 100.);
+
+        // Set value last only after setting range and decimals, otherwise the value may be truncated
+        spinbox->setValue(defaultValue);
 
         spinbox->setProperty("key", QString(key.c_str()));
         spinbox->setProperty("count", count);
