@@ -4,9 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwDataCamp/autoload.hpp"
+#include "fwMedDataCamp/autoload.hpp"
 
-namespace fwDataCamp
+#include <fwDataCamp/Version.hpp>
+
+namespace fwMedDataCamp
 {
+
+//Force link with fwDataCamp
+static const int fwDataVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
+
 runner runner::r;
 }

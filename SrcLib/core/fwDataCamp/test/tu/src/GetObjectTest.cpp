@@ -4,6 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "GetObjectTest.hpp"
+
+#include <fwDataCamp/exception/NullPointer.hpp>
+#include <fwDataCamp/exception/ObjectNotFound.hpp>
+#include <fwDataCamp/getObject.hpp>
+
 #include <fwData/Composite.hpp>
 #include <fwData/Float.hpp>
 #include <fwData/Image.hpp>
@@ -12,16 +18,7 @@
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 
-#include <fwDataCamp/getObject.hpp>
-#include <fwDataCamp/exception/NullPointer.hpp>
-#include <fwDataCamp/exception/ObjectNotFound.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/Patient.hpp>
-
 #include <fwTest/generator/Image.hpp>
-
-#include "GetObjectTest.hpp"
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataCamp::ut::GetObjectTest );
@@ -67,12 +64,6 @@ void GetObjectTest::getTest()
                            zspacing->value() < img2->getSpacing()[2] + 0.001 );
 
     // Visit 3
-    ::fwMedData::Patient::sptr patient1 = ::fwMedData::Patient::New();
-    patient1->setName( "toto" );
-    ::fwData::String::sptr str = ::fwDataCamp::getObject< ::fwData::String >( patient1, "@name" );
-    CPPUNIT_ASSERT_MESSAGE("Name must be equal", patient1->getName() == str->value() );
-
-    // Visit 4
     composite->setField("toto", img1);
     img1->setField("titi", img2);
     ::fwData::Object::sptr subObj2 = ::fwDataCamp::getObject( composite, "@fields.toto.fields.titi" );
@@ -117,16 +108,6 @@ void GetObjectTest::invalidPathTest()
         );
     CPPUNIT_ASSERT_EQUAL(size_t(2), composite->size() );
 
-    ::fwMedData::ImageSeries::sptr imgSeries = ::fwMedData::ImageSeries::New();
-    // no exception version
-    invalidObj = ::fwDataCamp::getObject( imgSeries, "@image.type", false );
-    CPPUNIT_ASSERT_MESSAGE("Object must not exist", !invalidObj );
-
-    // exception version : path exist, but image object is null
-    CPPUNIT_ASSERT_THROW(
-        ::fwDataCamp::getObject( imgSeries, "@image.type", true ),
-        ::fwDataCamp::exception::NullPointer
-        );
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /// Vector tests

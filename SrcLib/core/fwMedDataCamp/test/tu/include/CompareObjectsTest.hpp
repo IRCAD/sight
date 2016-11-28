@@ -4,12 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWDATACAMP_UT_COMPAREOBJECTSTEST_HPP__
-#define __FWDATACAMP_UT_COMPAREOBJECTSTEST_HPP__
+#ifndef __FWMEDDATACAMP_UT_COMPAREOBJECTSTEST_HPP__
+#define __FWMEDDATACAMP_UT_COMPAREOBJECTSTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace fwDataCamp
+namespace fwMedDataCamp
 {
 namespace ut
 {
@@ -17,11 +17,7 @@ namespace ut
 class CompareObjectsTest :  public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( CompareObjectsTest );
-CPPUNIT_TEST( compareImageTest );
-CPPUNIT_TEST( compareReconstructionTest );
-CPPUNIT_TEST( compareBufferTest );
-CPPUNIT_TEST( compareEmpty );
-CPPUNIT_TEST( exceptionTest );
+CPPUNIT_TEST( compareSeriesDBTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -30,15 +26,11 @@ public:
     void setUp();
     void tearDown();
 
-    void compareImageTest();
-    void compareReconstructionTest();
-    void compareBufferTest();
-    void compareEmpty();
-    void exceptionTest();
+    void compareSeriesDBTest();
 };
 
 }  // namespace ut
-}  // namespace fwDataCamp
+}  // namespace fwMedDataCamp
 
-#endif // __FWDATACAMP_UT_COMPAREOBJECTSTEST_HPP__
+#endif // __FWMEDDATACAMP_UT_COMPAREOBJECTSTEST_HPP__
 
