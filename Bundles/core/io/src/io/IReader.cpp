@@ -13,8 +13,8 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwRuntime/ConfigurationElementContainer.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRuntime/ConfigurationElementContainer.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -23,9 +23,10 @@ using fwRuntime::ConfigurationElementContainer;
 namespace io
 {
 
-const ::fwCom::Slots::SlotKeyType s_READ_FOLDER_SLOT = "readFolder";
-const ::fwCom::Slots::SlotKeyType s_READ_FILE_SLOT   = "readFile";
-const ::fwCom::Slots::SlotKeyType s_READ_FILES_SLOT  = "readFiles";
+static const ::fwCom::Slots::SlotKeyType s_READ_FOLDER_SLOT   = "readFolder";
+static const ::fwCom::Slots::SlotKeyType s_READ_FILE_SLOT     = "readFile";
+static const ::fwCom::Slots::SlotKeyType s_READ_FILES_SLOT    = "readFiles";
+static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM = "configureWithIHM";
 
 //-----------------------------------------------------------------------------
 
@@ -34,6 +35,7 @@ IReader::IReader() throw()
     newSlot(s_READ_FOLDER_SLOT, &IReader::readFolder, this);
     newSlot(s_READ_FILE_SLOT, &IReader::readFile, this);
     newSlot(s_READ_FILES_SLOT, &IReader::readFiles, this);
+    newSlot(s_CONFIGURE_WITH_IHM, &IReader::configureWithIHM, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -58,7 +60,7 @@ std::vector< std::string > IReader::getSupportedExtensions()
 
 //-----------------------------------------------------------------------------
 
-const ::boost::filesystem::path &IReader::getFile() const
+const ::boost::filesystem::path& IReader::getFile() const
 {
     FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & ::io::FILE));
     FW_RAISE_IF("Exactly one file must be defined in location", m_locations.size() != 1);
@@ -67,7 +69,7 @@ const ::boost::filesystem::path &IReader::getFile() const
 
 //-----------------------------------------------------------------------------
 
-void IReader::setFile( const ::boost::filesystem::path &file)
+void IReader::setFile( const ::boost::filesystem::path& file)
 {
     FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & ::io::FILE));
     m_locations.clear();
@@ -76,7 +78,7 @@ void IReader::setFile( const ::boost::filesystem::path &file)
 
 //-----------------------------------------------------------------------------
 
-const ::io::LocationsType &IReader::getFiles() const
+const ::io::LocationsType& IReader::getFiles() const
 {
     FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & ::io::FILES));
     FW_RAISE_IF("At least one file must be define in location", m_locations.empty() );
@@ -85,7 +87,7 @@ const ::io::LocationsType &IReader::getFiles() const
 
 //-----------------------------------------------------------------------------
 
-void IReader::setFiles(const ::io::LocationsType &files)
+void IReader::setFiles(const ::io::LocationsType& files)
 {
     FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & ::io::FILES));
     m_locations = files;
@@ -93,7 +95,7 @@ void IReader::setFiles(const ::io::LocationsType &files)
 
 //-----------------------------------------------------------------------------
 
-const ::boost::filesystem::path &IReader::getFolder() const
+const ::boost::filesystem::path& IReader::getFolder() const
 {
     FW_RAISE_IF("This reader doesn't manage folders", !(this->getIOPathType() & ::io::FOLDER));
     FW_RAISE_IF("Exactly one folder must be define in location", m_locations.size() !=1 );
@@ -102,7 +104,7 @@ const ::boost::filesystem::path &IReader::getFolder() const
 
 //-----------------------------------------------------------------------------
 
-void IReader::setFolder(const ::boost::filesystem::path &folder)
+void IReader::setFolder(const ::boost::filesystem::path& folder)
 {
     FW_RAISE_IF("This reader doesn't manage folders", !(this->getIOPathType() & ::io::FOLDER));
     m_locations.clear();
@@ -111,7 +113,7 @@ void IReader::setFolder(const ::boost::filesystem::path &folder)
 
 //-----------------------------------------------------------------------------
 
-const ::io::LocationsType &IReader::getLocations() const
+const ::io::LocationsType& IReader::getLocations() const
 {
     FW_RAISE_IF("At least one path must be define in location", m_locations.empty() );
     return m_locations;
@@ -132,13 +134,11 @@ void IReader::configuring() throw (fwTools::Failed)
                !( this->getIOPathType() & ::io::TYPE_NOT_DEFINED ) );
 
     SLM_ASSERT("This reader does not manage folders and a folder path is given in the configuration",
-               ( this->getIOPathType() & ::io::FOLDER ) ||
-               ((!(this->getIOPathType() & ::io::FOLDER)) && (m_configuration->find("folder").size() == 0)) );
+               ( this->getIOPathType() & ::io::FOLDER ) || (m_configuration->find("folder").size() == 0) );
 
     SLM_ASSERT("This reader does not manage files and a file path is given in the configuration",
                ( this->getIOPathType() & ::io::FILE || this->getIOPathType() & ::io::FILES ) ||
-               ((!( this->getIOPathType() & ::io::FILE || this->getIOPathType() & ::io::FILES )) &&
-                (m_configuration->find("file").size() == 0)) );
+               (m_configuration->find("file").size() == 0));
 
     if ( this->getIOPathType() & ::io::FILE )
     {
