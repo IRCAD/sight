@@ -8,6 +8,7 @@
 #define __FWMEDDATACAMP_AUTOLOAD_HPP__
 
 #include "fwMedDataCamp/ActivitySeries.hpp"
+#include "fwMedDataCamp/AttachmentSeries.hpp"
 #include "fwMedDataCamp/DicomSeries.hpp"
 #include "fwMedDataCamp/ImageSeries.hpp"
 #include "fwMedDataCamp/Series.hpp"
@@ -41,6 +42,8 @@ struct runner
         localDeclarefwMedDataActivitySeries();
         localDeclarefwMedDataDicomSeriesDICOM_AVAILABILITY();
         localDeclarefwMedDataDicomSeries();
+        localDeclarefwMedDataAttachmentSeriesAttachmentAvailability();
+        localDeclarefwMedDataAttachmentSeries();
     }
 
     static runner r;

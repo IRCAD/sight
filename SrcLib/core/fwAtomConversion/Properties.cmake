@@ -7,6 +7,7 @@ set( DEPENDENCIES
     fwCamp
     fwCore
     fwData
+    fwMedData
     fwDataCamp
     fwMedDataCamp
     fwMemory
