@@ -69,7 +69,15 @@ if(ADDITIONAL_PROJECTS)
     endforeach()
 endif()
 
-set(BUNDLE_PREFIX "Bundles")
+
+if(ANDROID)
+    set(BUNDLE_PREFIX "/data/data/com.fw4spl.${PROJECTS_TO_INSTALL}/Bundles")
+elseif(DEBIAN_INSTALL)
+    #To make a debian package we should install our bundle in /usr/share/...
+    set(BUNDLE_PREFIX "share/Bundles")
+else()
+    set(BUNDLE_PREFIX "Bundles")
+endif()
 
 # Set warning level and function export visibility on Unix
 if(UNIX)
@@ -81,12 +89,6 @@ if(UNIX)
     else()
         set(CMAKE_C_FLAG "${CMAKE_C_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers -fvisibility=hidden")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wconversion -Wno-unused-parameter -Wno-ignored-qualifiers -fvisibility=hidden")
-
-        #To make a debian package we should install our bundle in /usr/share/...
-        if(DEBIAN_INSTALL)
-            set(BUNDLE_PREFIX "share/Bundles")
-        endif()
-
     endif()
     # Color for ninja and Clang on Linux and OSX
     if (CMAKE_GENERATOR STREQUAL "Ninja")
@@ -265,16 +267,16 @@ macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
     set(CREATED_RESOURCES_LIST)
     foreach(RESOURCE_FILE ${RESOURCES_FILES})
         file(RELATIVE_PATH REL_PATH "${RES_DIR}" "${RESOURCE_FILE}")
-        if ("${TARGET_DIR}/${REL_PATH}" MATCHES "^.*\\.(txt|xml)$")
+        if ("${TARGET_DIR}/${REL_PATH}" MATCHES "^.*\\.(txt|xml|cfg)$")
             set(COPY_COMMAND ${CMAKE_COMMAND}
-            -DIN_FILE="${RES_DIR}/${REL_PATH}"
-            -DOUT_FILE="${TARGET_DIR}/${REL_PATH}"
-            -DFWPROJECT_NAME="${FWPROJECT_NAME}"
-            -DDASH_VERSION="${${FWPROJECT_NAME}_DASH_VERSION}"
-            -DPROJECT_VERSION="${${FWPROJECT_NAME}_VERSION}"
-            -DBUNDLE_PREFIX="${BUNDLE_PREFIX}"
-            -DTARGET_TYPE="${TARGET_TYPE}"
-            -P ${FWCMAKE_RESOURCE_PATH}/build/configure_file.cmake
+                             -DIN_FILE="${RES_DIR}/${REL_PATH}"
+                             -DOUT_FILE="${TARGET_DIR}/${REL_PATH}"
+                             -DFWPROJECT_NAME="${FWPROJECT_NAME}"
+                             -DDASH_VERSION="${${FWPROJECT_NAME}_DASH_VERSION}"
+                             -DPROJECT_VERSION="${${FWPROJECT_NAME}_VERSION}"
+                             -DBUNDLE_PREFIX="${BUNDLE_PREFIX}"
+                             -DTARGET_TYPE="${TARGET_TYPE}"
+                             -P ${FWCMAKE_RESOURCE_PATH}/build/configure_file.cmake
             )
             set(COPY_DEPENDS "${FWCMAKE_RESOURCE_PATH}/build/configure_file.cmake" )
         else()
