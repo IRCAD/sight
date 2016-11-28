@@ -1,12 +1,6 @@
 fwLoadProperties()
 
 if(NOT ANDROID)
-    find_package(VTK
-        COMPONENTS
-        REQUIRED
-        NO_MODULE
-    )
-    
     # Just look one core module to get the version number
     find_package(VTK COMPONENTS
             vtkCommonCore
