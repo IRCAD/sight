@@ -7,6 +7,7 @@ set( DEPENDENCIES
     fwCore
     fwTools
     fwData
+    fwMedData
     fwDataIO
     fwDataTools
     fwMedDataTools
