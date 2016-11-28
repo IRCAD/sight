@@ -20,6 +20,7 @@
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
+#include <fwMedData/NavigationSeries.hpp>
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
@@ -44,6 +45,7 @@ struct runner
         localDeclarefwMedDataDicomSeries();
         localDeclarefwMedDataAttachmentSeriesAttachmentAvailability();
         localDeclarefwMedDataAttachmentSeries();
+        localDeclarefwMedDataNavigationSeries();
     }
 
     static runner r;

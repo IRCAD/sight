@@ -43,6 +43,7 @@
         "::fwMedData::Equipment": "1",
         "::fwMedData::ImageSeries": "1",
         "::fwMedData::ModelSeries": "1",
+        "::fwMedData::NavigationSeries": "1",
         "::fwMedData::Patient": "1",
         "::fwMedData::Series": "1",
         "::fwMedData::SeriesDB": "1",
