@@ -50,10 +50,10 @@ namespace ioIGTL
  * @subsection In-Out In-Out:
  * - \b timeline [::arData::MatrixTL]: Timeline used to store received matrix.
  * @subsection Configuration Configuration:
- * - \b deviceName(optional) : filter by device Name in Message, by default all message will be processed
+ * - \b deviceName(optional) : filter by device Name in Message, by default all messages will be processed
  * - \b TData : specified IGTL matrix name to push in specified timeline index
- * - \b server : server URL. Need hostname and port in this format addr:port.
- * @note : hostname and port of this service can be value or nameKey from a preference settings
+ * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
+ * @note : hostname and port of this service can be a value or a nameKey from preference settings
    (for example <server>%HOSTNAME%:%PORT%</server>)
  */
 class IOIGTL_CLASS_API STDataListener : public ::ioNetwork::INetworkListener
@@ -102,7 +102,7 @@ private:
     void manageTimeline(const SPTR(fwData::Composite)& obj);
 
     ///Helper to parse preference key
-    std::string getPreferenceKey(const std::string key) const;
+    std::string getPreferenceKey(const std::string& key) const;
 
     /**
      * @brief method contain a loop with receive and when we receive we emit m_sigReceiveObject

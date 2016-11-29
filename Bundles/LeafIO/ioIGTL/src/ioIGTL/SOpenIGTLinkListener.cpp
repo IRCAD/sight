@@ -315,7 +315,7 @@ void SOpenIGTLinkListener::manageTimeline(::fwData::Object::sptr obj)
 
 //-----------------------------------------------------------------------------
 
-std::string SOpenIGTLinkListener::getPreferenceKey(const std::string key) const
+std::string SOpenIGTLinkListener::getPreferenceKey(const std::string& key) const
 {
     std::string keyResult;
     size_t first = key.find('%');

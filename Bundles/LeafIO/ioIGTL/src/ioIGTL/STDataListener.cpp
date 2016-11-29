@@ -269,7 +269,7 @@ void STDataListener::manageTimeline(const ::fwData::Composite::sptr& obj)
 
 //-----------------------------------------------------------------------------
 
-std::string STDataListener::getPreferenceKey(const std::string key) const
+std::string STDataListener::getPreferenceKey(const std::string& key) const
 {
     std::string keyResult;
     size_t first = key.find('%');

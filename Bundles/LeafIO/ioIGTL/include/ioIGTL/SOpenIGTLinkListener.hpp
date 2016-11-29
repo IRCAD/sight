@@ -28,6 +28,7 @@ namespace ioIGTL
  * @section XML XML Configuration
  * @code{.xml}
  * <service uid="..." type="::ioIGTL::SOpenIGTLinkListener" >
+ *      <inout key="object" uid="..." />
  *      <server>127.0.0.1:4242</server>
  *      <deviceName>...</deviceName>
  *      <deviceName>...</deviceName>
@@ -39,10 +40,10 @@ namespace ioIGTL
  *   - if associated object is a timeline (arData::MatrixT or arData::FrameTL): received IGTL data are pushed in timeline
  *   - else : object is updated with received IGTL data
  * @subsection Configuration Configuration:
- * - \b deviceName(optional) : filter by device Name in Message, by default all message will be processed
- * - \b server : server URL. Need hostname and port in this format addr:port.
- * @note : hostname and port of this service can be value or nameKey from a preference settings
-   (for example <server>%HOSTNAME%:%PORT%</server>)
+ * - \b deviceName(optional) : filter by device Name in Message, by default all messages will be processed
+ * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
+ * @note : hostname and port of this service can be a value or a nameKey from preference settings
+ *  (for example <server>%HOSTNAME%:%PORT%</server>)
  */
 class IOIGTL_CLASS_API SOpenIGTLinkListener : public ::ioNetwork::INetworkListener
 {
@@ -109,7 +110,7 @@ private:
     void manageTimeline(::fwData::Object::sptr obj);
 
     ///Helper to parse preference key
-    std::string getPreferenceKey(const std::string key) const;
+    std::string getPreferenceKey(const std::string& key) const;
 
 
     /// listener thread for receiving data from client socket
