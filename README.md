@@ -7,25 +7,25 @@ Description
 It includes various features such as 2D and 3D digital image processing, visualization, augmented reality and medical interaction simulation. It runs on many different environments (Windows, linux, OSX), is written in C++, and features rapid interface design using XML files. 
 It is freely available under open source license (LGPL).
 
-See [documentation](http://fw4spl-doc.readthedocs.org/) for more details.
+See [documentation](http://fw4spl.readthedocs.org/) for more details.
 
 Applications
 ============
 
 *FW4SPL* comes with **VRRender**, a medical image and segmentation viewer. It supports many format including DICOM, vtk, inr, etc...
 
-Lots of **tutorials** and **examples** can also be found in the *Samples/* directory. The tutorials can help you to learn smoothly how to use *FW4SPL*, detailed steps are described [there](http://fw4spl-doc.readthedocs.io/en/fw4spl_0.11.0/Tutorials/index.html).
+Lots of **tutorials** and **examples** can also be found in the *Samples/* directory. The tutorials can help you to learn smoothly how to use *FW4SPL*, detailed steps are described [there](http://fw4spl.readthedocs.io/en/fw4spl_0.11.0/Tutorials/index.html).
 
 Install
 =======
 
-See how to install fw4spl [here](http://fw4spl-doc.readthedocs.org/en/fw4spl_0.11.0/Installation/index.html)
+See how to install fw4spl [here](http://fw4spl.readthedocs.org/en/fw4spl_0.11.0/Installation/index.html)
 
 Documentation
 =============
 
-* **documentation**: http://fw4spl-doc.readthedocs.org/
-* **tutorials**: http://fw4spl-doc.readthedocs.io/en/fw4spl_0.11.0/Tutorials/index.html
+* **documentation**: http://fw4spl.readthedocs.org/
+* **tutorials**: http://fw4spl.readthedocs.io/en/fw4spl_0.11.0/Tutorials/index.html
 * **doxygen**: http://fw4spl-org.github.io/fw4spl-dox/
 * **blog**: http://fw4spl-org.github.io/fw4spl-blog/
 
