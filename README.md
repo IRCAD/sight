@@ -11,7 +11,7 @@ This repository brings features for **Augmented Reality**:
 * [openIGTLink](http://openigtlink.org/) support through clients and servers services,
 * TimeLine data, allowing to store buffers of various data (video, matrices, markers, etc...). These can be used to synchronize these data accross time.
 
-For general information, see [documentation](http://fw4spl-doc.readthedocs.org/) or go the [main repository](https://github.com/fw4spl-org/fw4spl).
+For general information, see [documentation](http://fw4spl.readthedocs.org/) or go the [main repository](https://github.com/fw4spl-org/fw4spl).
 
 Applications
 ============
@@ -23,13 +23,13 @@ Some examples can also be found in the *Samples/* directory. **Ex01VideoTracking
 Install
 =======
 
-See how to install fw4spl [here](http://fw4spl-doc.readthedocs.org/en/fw4spl_0.11.0/Installation/index.html).
+See how to install fw4spl [here](http://fw4spl.readthedocs.org/en/fw4spl_0.11.0/Installation/index.html).
 
 To add this repository to your project build, you must add the path of the repository to the *ADDITIONAL_PROJECTS* CMake variable (multiple paths can be given by separating them with semicolons).
 
 Documentation
 =============
 
-* **documentation**: http://fw4spl-doc.readthedocs.org/
+* **documentation**: http://fw4spl.readthedocs.org/
 * **blog**: http://fw4spl-org.github.io/fw4spl-blog/
 
