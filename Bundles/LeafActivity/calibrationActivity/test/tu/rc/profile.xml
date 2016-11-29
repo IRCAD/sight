@@ -4,6 +4,7 @@
     <activate id="servicesReg" version="0-1" />
 
     <activate id="visuVTK" version="0-1" />
+    <activate id="visuVTKQt" version="0-1" />
     <activate id="visuVTKAdaptor" version="0-1" />
     <activate id="visuVTKARAdaptor" version="0-1" />
 
