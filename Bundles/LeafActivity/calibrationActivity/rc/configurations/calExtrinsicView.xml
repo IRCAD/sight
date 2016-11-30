@@ -283,7 +283,7 @@
                 <key uid="${calibrationInfo1}" />
                 <key uid="${calibrationInfo2}" />
             </inout>
-            <board width="${chessboardWidth}" height="${chessboardHeight}" />
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" />
         </service>
 
         <service uid="DisplayCalibrationInfo" type="::uiCalibration::SDisplayCalibrationInfo" >

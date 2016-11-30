@@ -9,16 +9,13 @@
 
 #include "ioIGTL/config.hpp"
 
-#include <fwCom/Signal.hpp>
 #include <fwData/Object.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-#include <fwThread/Worker.hpp>
-#include <igtlNetwork/Client.hpp>
-#include <ioNetwork/INetworkListener.hpp>
 
-#include <boost/lexical_cast.hpp>
-#include <boost/thread.hpp>
+#include <fwThread/Worker.hpp>
+
+#include <igtlNetwork/Client.hpp>
+
+#include <ioNetwork/INetworkListener.hpp>
 
 #include <string>
 
@@ -27,6 +24,26 @@ namespace ioIGTL
 
 /**
  * @brief class for network client service use OpenIGTLink
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+ * <service uid="..." type="::ioIGTL::SOpenIGTLinkListener" >
+ *      <inout key="object" uid="..." />
+ *      <server>127.0.0.1:4242</server>
+ *      <deviceName>...</deviceName>
+ *      <deviceName>...</deviceName>
+ *      ...
+ * </service>
+ * @endcode
+ * @subsection In-Out In-Out:
+ * - \b object [::fwData::Object]:
+ *   - if associated object is a timeline (arData::MatrixT or arData::FrameTL): received IGTL data are pushed in timeline
+ *   - else : object is updated with received IGTL data
+ * @subsection Configuration Configuration:
+ * - \b deviceName(optional) : filter by device Name in Message, by default all messages will be processed
+ * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
+ * @note : hostname and port of this service can be a value or a nameKey from preference settings
+ *  (for example <server>%HOSTNAME%:%PORT%</server>)
  */
 class IOIGTL_CLASS_API SOpenIGTLinkListener : public ::ioNetwork::INetworkListener
 {
@@ -34,9 +51,6 @@ class IOIGTL_CLASS_API SOpenIGTLinkListener : public ::ioNetwork::INetworkListen
 public:
 
     fwCoreServiceClassDefinitionsMacro ( (SOpenIGTLinkListener)(::ioNetwork::INetworkListener) );
-
-    IOIGTL_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CONFIGURATION_SLOT;
-    typedef ::fwCom::Slot< void (std::string const, ::boost::uint16_t const) > UpdateConfigurationSlotType;
 
     /// Constructor
     IOIGTL_API SOpenIGTLinkListener();
@@ -73,16 +87,6 @@ protected:
     IOIGTL_API virtual void stopping() throw ( ::fwTools::Failed );
 
     /**
-     * @brief slot to call when configuration is updated
-     *
-     * @see ioNetwork::INetworkListener
-     *
-     * @param[in] hostname hostname or ip of the server
-     * @param[in] port port of the server
-     */
-    IOIGTL_API void updateConfiguration(std::string const hostname, boost::uint16_t const port);
-
-    /**
      * @brief method to set host and port of listener
      *
      * @see ioNetwork::INetworkListener
@@ -105,20 +109,27 @@ private:
      */
     void manageTimeline(::fwData::Object::sptr obj);
 
+    ///Helper to parse preference key
+    std::string getPreferenceKey(const std::string& key) const;
+
+
     /// listener thread for receiving data from client socket
     ::fwThread::Worker::sptr m_clientWorker;
 
     /// client socket
     ::igtlNetwork::Client m_client;
 
+    /// hostname preference key
+    std::string m_hostnameKey;
+
+    /// port preference key
+    std::string m_portKey;
+
     /// hostname
     std::string m_hostname;
 
     /// port
     ::boost::uint16_t m_port;
-
-    /// update configuration slot
-    UpdateConfigurationSlotType::sptr m_updateConfigurationSlot;
 
     ///Type of timeline
     typedef enum TimelineType
@@ -132,8 +143,6 @@ private:
 
     bool m_frameTLInitialized;
 };
-
-
 
 } // namespace OpenIGTLinkIO
 

@@ -12,6 +12,7 @@ set( DEPENDENCIES
     fwRuntime
     fwGui
     fwThread
+    fwPreferences
     igtlNetwork
     ioNetwork
     io
