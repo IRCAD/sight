@@ -53,17 +53,27 @@ function(plugin_setup ${PROJECT})
         endif()
 
         file(STRINGS ${CPP_FILE} CPP_FILE_CONTENT NEWLINE_CONSUME)
-        set(SRV_REGISTER_REGEX "fwServicesRegisterMacro\\(([ :a-zA-Z1-9_]+)[,\n\t\r ]*([ :a-zA-Z1-9_]+)[,\n\t\r ]*([ :a-zA-Z1-9_]+)\\);")
+        set(SRV_REGISTER_REGEX "fwServicesRegisterMacro\\(([ :a-zA-Z1-9_]+)[,\n\t\r ]*([ :a-zA-Z1-9_]+)[,\n\t\r ]*([ :a-zA-Z1-9_]*)\\);")
+
         if("${CPP_FILE_CONTENT}" MATCHES ${SRV_REGISTER_REGEX})
             string(STRIP ${CMAKE_MATCH_1} SRV_TYPE)
             string(STRIP ${CMAKE_MATCH_2} SRV_IMPL)
-            string(STRIP ${CMAKE_MATCH_3} SRV_OBJECT)
-            list(APPEND EXTENSION_LIST "\n    <extension implements=\"::fwServices::registry::ServiceFactory\">"
-                                       "         <type>${SRV_TYPE}</type>"
-                                       "         <service>${SRV_IMPL}</service>"
-                                       "         <object>${SRV_OBJECT}</object>"
-                                       "         <desc>${SRV_DESC}</desc>"
-                                       "    </extension>")
+
+            if(CMAKE_MATCH_3)
+                string(STRIP ${CMAKE_MATCH_3} SRV_OBJECT)
+                list(APPEND EXTENSION_LIST "\n    <extension implements=\"::fwServices::registry::ServiceFactory\">"
+                                           "         <type>${SRV_TYPE}</type>"
+                                           "         <service>${SRV_IMPL}</service>"
+                                           "         <object>${SRV_OBJECT}</object>"
+                                           "         <desc>${SRV_DESC}</desc>"
+                                           "    </extension>")
+            else()
+                list(APPEND EXTENSION_LIST "\n    <extension implements=\"::fwServices::registry::ServiceFactory\">"
+                                           "         <type>${SRV_TYPE}</type>"
+                                           "         <service>${SRV_IMPL}</service>"
+                                           "         <desc>${SRV_DESC}</desc>"
+                                           "    </extension>")
+            endif()
         endif()
     endforeach()
     if(EXTENSION_LIST)

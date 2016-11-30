@@ -12,6 +12,10 @@
 
 #include <fwCore/concept_checks.hpp>
 
+#include <boost/preprocessor/cat.hpp>
+#include <boost/preprocessor/facilities/empty.hpp>
+#include <boost/preprocessor/facilities/overload.hpp>
+
 namespace fwServices
 {
 
@@ -19,14 +23,7 @@ namespace fwServices
  * @name Macros for declaring service to object association
  */
 
-//@{
-/**
- * @brief Service object type association including all string-based registration
- * Associations concern Service-ObjectType are ObjectType-Service. Keys are typeid.
- *
- */
-
-#define fwServicesRegisterMacro( ServiceType, ServiceImpl, ServiceObject )                         \
+#define __FWSERVICES_REGISTER_MACRO( ServiceType, ServiceImpl )                                    \
     class BOOST_PP_CAT (  ServiceTypeConceptCheck, __LINE__ )                                      \
     {                                                                                              \
     public:                                                                                        \
@@ -37,16 +34,42 @@ namespace fwServices
     public:                                                                                        \
         BOOST_CONCEPT_ASSERT((::fwCore::concepts::SharedPtrTypedef< ServiceImpl >));               \
     };                                                                                             \
+    static ::fwServices::ServiceFactoryRegistrar< ServiceImpl >                                    \
+    BOOST_PP_CAT( serviceRegistrar, __LINE__) ( #ServiceImpl, #ServiceType );
+
+#define __FWSERVICES_REGISTER_OBJECT_MACRO( ServiceImpl, ServiceObject )                           \
     class BOOST_PP_CAT (  ServiceObjectConceptCheck, __LINE__ )                                    \
     {                                                                                              \
     public:                                                                                        \
         BOOST_CONCEPT_ASSERT((::fwCore::concepts::SharedPtrTypedef< ServiceObject >));             \
     };                                                                                             \
-    static ::fwServices::ServiceFactoryRegistrar< ServiceImpl >                                    \
-    BOOST_PP_CAT( serviceRegistrar, __LINE__) ( #ServiceImpl, #ServiceType, #ServiceObject );
+    static ::fwServices::ServiceObjectFactoryRegistrar                                             \
+    BOOST_PP_CAT( serviceObjectRegistrar, __LINE__) ( #ServiceImpl, #ServiceObject );
 
+//@{
+
+#define __FWSERVICES_REGISTER_MACRO_2(ServiceImpl, ServiceObject)                                  \
+    __FWSERVICES_REGISTER_MACRO(ServiceImpl, ServiceObject)
+
+#define __FWSERVICES_REGISTER_MACRO_3(ServiceType, ServiceImpl, ServiceObject)                     \
+    __FWSERVICES_REGISTER_MACRO(ServiceType, ServiceImpl)                                          \
+    __FWSERVICES_REGISTER_OBJECT_MACRO(ServiceImpl, ServiceObject)
+
+/**
+ * @brief Service object type association including all string-based registration
+ * Associations concern Service-ObjectType are ObjectType-Service. Keys are typeid.
+ */
+#if !BOOST_PP_VARIADICS_MSVC
+
+#define fwServicesRegisterMacro(...) BOOST_PP_OVERLOAD(__FWSERVICES_REGISTER_MACRO_,__VA_ARGS__)(__VA_ARGS__)
+
+#else
+
+#define fwServicesRegisterMacro(...) \
+    BOOST_PP_CAT(BOOST_PP_OVERLOAD(__FWSERVICES_REGISTER_MACRO_,__VA_ARGS__)(__VA_ARGS__),BOOST_PP_EMPTY())
+
+#endif
 //@}
-
 
 }
 
