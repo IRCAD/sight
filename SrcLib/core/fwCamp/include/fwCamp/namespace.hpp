@@ -9,12 +9,23 @@
 
 /**
  * @brief       All necessary for camp binding with simple types.
- * @namespace   fwCamp
- *
- * @date        2009-2012
  */
 namespace fwCamp
 {
+/**
+ * @brief       Contains fwCamp::registry details
+ */
+namespace registry
+{
+} // namespace registry
+
+/**
+ * @brief       Contains fwCamp::factory utilities
+ */
+namespace factory
+{
+} // namespace factory
+
 }  // namespace fwCamp
 
 #endif //__FWCAMP_NAMESPACE_HPP__

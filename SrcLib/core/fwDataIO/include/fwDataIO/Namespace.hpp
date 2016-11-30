@@ -7,14 +7,39 @@
 #ifndef __FWDATAIO_NAMESPACE_HPP__
 #define __FWDATAIO_NAMESPACE_HPP__
 
-/**
- * @brief       This namespace fwDataIO contains reader and writer for severals data of the framework.
- * @namespace   fwDataIO
- *
- * @date        2009-2010.
- *
- */
+/// This namespace fwDataIO contains reader and writer for severals data of the framework.
 namespace fwDataIO
 {
-}
+
+/// This namespace fwDataIO::reader contains reader for several data of the framework.
+namespace reader
+{
+/// Contains fwDataIO::reader::factory utilities
+namespace factory
+{
+} // namespace factory
+
+/// Contains fwDataIO::reader::registry details
+namespace registry
+{
+} // namespace registry
+
+} // namespace reader
+
+/// This namespace fwDataIO::writer contains writer for severals data of the framework.
+namespace writer
+{
+
+/// Contains fwDataIO::writer::factory utilities
+namespace factory
+{
+} // namespace factory
+
+/// Contains fwDataIO::writer::registry details
+namespace registry
+{
+} // namespace registry
+} // namespace writer
+} // namespace fwDataIO
+
 #endif /* __FWDATAIO_NAMESPACE_HPP__ */
