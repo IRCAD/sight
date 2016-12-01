@@ -8,6 +8,7 @@
 
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
@@ -80,7 +81,7 @@ std::pair< ::fwServices::IService::sptr, ::fwData::Composite::sptr> getPreferenc
 {
     ::fwData::Composite::sptr prefs;
 
-    auto preferencesServicesList = ::fwServices::OSR::getServices("::preferences::IPreferencesService");
+    auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
 
     ::fwServices::IService::sptr prefService;
     if(!preferencesServicesList.empty())

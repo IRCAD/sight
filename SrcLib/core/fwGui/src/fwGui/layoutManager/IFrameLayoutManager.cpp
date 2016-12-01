@@ -4,19 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/bind.hpp>
-#include <boost/lambda/lambda.hpp>
+#include "fwGui/layoutManager/IFrameLayoutManager.hpp"
 
 #include <fwCore/base.hpp>
+
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include "fwGui/layoutManager/IFrameLayoutManager.hpp"
+#include <boost/bind.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/lambda/lambda.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace fwGui
 {
@@ -205,7 +206,7 @@ void IFrameLayoutManager::writeConfig()
     ::fwData::Composite::sptr prefUI;
 
     // Get preferences
-    auto preferencesServicesList = ::fwServices::OSR::getServices("::preferences::IPreferencesService");
+    auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
     if(!preferencesServicesList.empty())
     {
         ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();

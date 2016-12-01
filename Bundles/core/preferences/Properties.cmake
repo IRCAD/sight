@@ -13,6 +13,7 @@ set( DEPENDENCIES
     fwAtomConversion
     fwZip
     fwAtoms
+    fwPreferences
 )
 set( REQUIREMENTS  )
 

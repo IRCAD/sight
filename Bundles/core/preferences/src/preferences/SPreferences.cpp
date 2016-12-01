@@ -6,11 +6,11 @@
 
 #include "preferences/SPreferences.hpp"
 
-#include <fwAtomsBoostIO/types.hpp>
+#include <fwAtomConversion/convert.hpp>
+
 #include <fwAtomsBoostIO/Reader.hpp>
 #include <fwAtomsBoostIO/Writer.hpp>
-
-#include <fwAtomConversion/convert.hpp>
+#include <fwAtomsBoostIO/types.hpp>
 
 #include <fwData/Composite.hpp>
 
@@ -28,7 +28,7 @@
 namespace preferences
 {
 
-fwServicesRegisterMacro( ::preferences::IPreferencesService, ::preferences::SPreferences, ::fwData::Composite );
+fwServicesRegisterMacro( ::fwPreferences::IPreferences, ::preferences::SPreferences, ::fwData::Composite );
 
 //-----------------------------------------------------------------------------
 
@@ -121,5 +121,5 @@ void SPreferences::save()
 
 //-----------------------------------------------------------------------------
 
-}
+} //namespace preferences
 

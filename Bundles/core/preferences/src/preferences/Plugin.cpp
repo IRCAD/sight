@@ -8,6 +8,8 @@
 
 #include <fwData/String.hpp>
 
+#include <fwPreferences/helper.hpp>
+
 #include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
@@ -33,13 +35,13 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 
     ::fwServices::IService::sptr prefSrv;
     prefSrv = ::fwServices::add (m_preferences,
-                                 "::preferences::IPreferencesService", "::preferences::SPreferences",
+                                 "::fwPreferences::IPreferences", "::preferences::SPreferences",
                                  s_PREF_SERVICE_UID);
 
     try
     {
         ::fwRuntime::EConfigurationElement::sptr prefConfig = ::fwRuntime::EConfigurationElement::New( "filename" );
-        ::boost::filesystem::path prefFile                  = this->getPreferencesFile();
+        ::boost::filesystem::path prefFile                  = ::fwPreferences::getPreferencesFile();
         prefConfig->setValue(prefFile.string());
 
         prefSrv->setConfiguration(prefConfig);
@@ -69,32 +71,6 @@ void Plugin::stop() throw()
         ::fwServices::OSR::unregisterService(prefSrv);
     }
     m_preferences.reset();
-}
-
-//-----------------------------------------------------------------------------
-
-::boost::filesystem::path Plugin::getPreferencesFile() const
-{
-    namespace bfile = ::boost::filesystem;
-
-    ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
-    FW_RAISE_IF("No current profile set.", !profile);
-
-    const std::string appName     = profile->getName();
-    const bfile::path appPrefDir  = ::fwTools::os::getUserDataDir("fw4spl", appName, true);
-    const bfile::path appPrefFile = appPrefDir / "preferences.json";
-
-    FW_RAISE_IF("Unable to define user data directory", appPrefDir.empty());
-
-    if (!bfile::exists(appPrefDir))
-    {
-        bfile::create_directories(appPrefDir);
-    }
-
-    FW_RAISE_IF("Preferences file '"+appPrefFile.string()+"' already exists and is not a regular file.",
-                bfile::exists(appPrefFile) && !bfile::is_regular_file(appPrefFile));
-
-    return appPrefFile;
 }
 
 //-----------------------------------------------------------------------------

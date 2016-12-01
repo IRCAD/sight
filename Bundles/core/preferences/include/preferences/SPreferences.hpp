@@ -7,7 +7,9 @@
 #ifndef __PREFERENCES_SPREFERENCES_HPP__
 #define __PREFERENCES_SPREFERENCES_HPP__
 
-#include "preferences/IPreferencesService.hpp"
+#include "preferences/config.hpp"
+
+#include <fwPreferences/IPreferences.hpp>
 
 namespace preferences
 {
@@ -19,11 +21,11 @@ namespace preferences
  * @endcode
  * @throw ::fwTools::Failed
  */
-class PREFERENCES_CLASS_API SPreferences : public ::preferences::IPreferencesService
+class PREFERENCES_CLASS_API SPreferences : public ::fwPreferences::IPreferences
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SPreferences)(::preferences::IPreferencesService) );
+    fwCoreServiceClassDefinitionsMacro ( (SPreferences)(::fwPreferences::IPreferences) );
 
     ///Destructor
 

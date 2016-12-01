@@ -4,39 +4,39 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __PREFERENCES_IPREFERENCESSERVICE_HPP__
-#define __PREFERENCES_IPREFERENCESSERVICE_HPP__
+#ifndef __FWPREFERENCES_IPREFERENCES_HPP__
+#define __FWPREFERENCES_IPREFERENCES_HPP__
 
-#include "preferences/config.hpp"
+#include "fwPreferences/config.hpp"
 
 #include <fwServices/IService.hpp>
 
-namespace preferences
+namespace fwPreferences
 {
 
 /**
  * @brief Preferences service API.
  * This class represents the base interface for preferences services.
  */
-class PREFERENCES_CLASS_API IPreferencesService : public fwServices::IService
+class PREFERENCES_CLASS_API IPreferences : public fwServices::IService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (IPreferencesService)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro ( (IPreferences)(::fwServices::IService) );
 
     /// Constructor
-    IPreferencesService() throw()
+    IPreferences() throw()
     {
     }
 
     /// Destructor
-    virtual ~IPreferencesService() throw()
+    virtual ~IPreferences() throw()
     {
     }
 };
 
-} // namespace preferences
+} // namespace fwPreferences
 
-#endif /*__PREFERENCES_IPREFERENCESSERVICE_HPP__*/
+#endif /*__FWPREFERENCES_IPREFERENCES_HPP__*/
 
 

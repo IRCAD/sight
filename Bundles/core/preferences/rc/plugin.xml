@@ -3,7 +3,7 @@
     <library name="preferences"/>
     
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::preferences::IPreferencesService</type>
+        <type>::fwPreferences::IPreferences</type>
         <service>::preferences::SPreferences</service>
         <object>::fwData::Composite</object>
     </extension>

@@ -4,13 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwData/location/SingleFile.hpp>
+#include "fwGui/dialog/ILocationDialog.hpp"
+
 #include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
 
 #include <fwServices/IService.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-
-#include "fwGui/dialog/ILocationDialog.hpp"
 
 namespace fwGui
 {
@@ -111,7 +111,7 @@ void ILocationDialog::saveDefaultLocation(::fwData::location::ILocation::sptr lo
     ::fwData::Composite::sptr prefUI;
 
     // Get preferences
-    auto preferencesServicesList = ::fwServices::OSR::getServices("::preferences::IPreferencesService");
+    auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
     if(!preferencesServicesList.empty())
     {
         ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();

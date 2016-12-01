@@ -8,25 +8,25 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
+#include <fwData/Composite.hpp>
+#include <fwData/Integer.hpp>
 #include <fwData/Object.hpp>
 #include <fwData/String.hpp>
-#include <fwData/Integer.hpp>
-#include <fwData/Composite.hpp>
 #include <fwData/location/Folder.hpp>
+
+#include <fwGui/dialog/LocationDialog.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwGui/dialog/LocationDialog.hpp>
-
-#include <boost/lexical_cast.hpp>
-
 #include <QDialog>
 #include <QGridLayout>
 #include <QHBoxLayout>
+#include <QIntValidator>
 #include <QLabel>
 #include <QPushButton>
-#include <QIntValidator>
+
+#include <boost/lexical_cast.hpp>
 
 namespace uiPreferences
 {
@@ -58,7 +58,7 @@ void SPreferencesConfiguration::starting() throw(::fwTools::Failed)
     this->actionServiceStarting();
 
     // Check preferences
-    auto preferencesServicesList = ::fwServices::OSR::getServices("::preferences::IPreferencesService");
+    auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
     if(!preferencesServicesList.empty())
     {
         const ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();
@@ -262,7 +262,7 @@ void SPreferencesConfiguration::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPreferencesConfiguration::info( std::ostream &_sstream )
+void SPreferencesConfiguration::info( std::ostream& _sstream )
 {
 }
 
