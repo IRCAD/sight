@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,12 +31,13 @@ namespace factory
 {
 } // namespace factory
 
-/// The namespace fwGui::layoutManager contains the base interface of managers use to handle the GUI layout available in FW4SPL.
+/// The namespace fwGui::layoutManager contains the base interface of managers used to handle the GUI layouts available
+/// in FW4SPL.
 namespace layoutManager
 {
 } // namespace layoutManager
 
-/// The namespace fwGui::registrar contains the classes of service management for GUI elements (Menu, View, ToolBar).
+/// The namespace fwGui::registrar contains the classes of service management of GUI elements (Menu, View, ToolBar).
 namespace registrar
 {
 } // namespace registrar

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,7 @@ namespace registry
 {
 }
 
-/// The namespace fwRenderVTK::vtk provides several picker and interactor for the generic scene .
+/// The namespace fwRenderVTK::vtk provides pickers and interactors for the generic scene .
 namespace vtk
 {
 }
