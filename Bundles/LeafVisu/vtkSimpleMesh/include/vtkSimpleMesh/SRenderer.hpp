@@ -52,7 +52,7 @@ namespace vtkSimpleMesh
        </service>
    @endcode
  * @subsection Input Input:
- * - \b image [::fwData::Mesh]: mesh to be displayed.
+ * - \b mesh [::fwData::Mesh]: mesh to be displayed.
  */
 class VTKSIMPLEMESH_CLASS_API SRenderer : public fwRender::IRender
 {
