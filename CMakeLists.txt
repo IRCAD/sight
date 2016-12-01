@@ -510,7 +510,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "lib")
 
     if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/${FWPROJECT_NAME}/pch.hpp")
-        message("[INFO] Use precompiled header in ${FWPROJECT_NAME}")
+        message(STATUS "Use precompiled header in target: ${FWPROJECT_NAME}")
         add_precompiled_header(${FWPROJECT_NAME} include/${FWPROJECT_NAME}/pch.hpp)
     endif()
 
@@ -569,7 +569,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/")
 
         if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/${FWPROJECT_NAME}/pch.hpp")
-            message("[INFO] Use precompiled header in ${FWPROJECT_NAME}")
+            message(STATUS "Use precompiled header in target: ${FWPROJECT_NAME}")
             add_precompiled_header(${FWPROJECT_NAME} include/${FWPROJECT_NAME}/pch.hpp)
         endif()
 
