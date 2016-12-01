@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,18 +8,21 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include <fwGui/registry/worker.hpp>
+
+#include <fwGuiQt/App.hpp>
+#include <fwGuiQt/WorkerQt.hpp>
+
 #include <fwRuntime/profile/Profile.hpp>
+#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <fwGui/registry/worker.hpp>
-#include <fwGuiQt/App.hpp>
-#include <fwGuiQt/WorkerQt.hpp>
-
 #include <QFile>
+#include <QResource>
 #include <QString>
+#include <QStyleFactory>
 #include <QTextStream>
 
 #include <functional>
@@ -42,7 +45,7 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
     ::fwRuntime::profile::Profile::sptr profile = ::fwRuntime::profile::getCurrentProfile();
     SLM_ASSERT("Profile is not initialized", profile);
-    int &argc   = profile->getRawArgCount();
+    int& argc   = profile->getRawArgCount();
     char** argv = profile->getRawParams();
 
     m_workerQt = ::fwGuiQt::getQtWorker(argc, argv);
@@ -87,11 +90,24 @@ int Plugin::run() throw()
 
 void Plugin::loadStyleSheet()
 {
+    if( this->getBundle()->hasParameter("resource") )
+    {
+        std::string resourceFile = this->getBundle()->getParameterValue("resource");
+        bool resourceLoaded      = QResource::registerResource(resourceFile.c_str());
+        SLM_ASSERT("Cannot load resources '"+resourceFile+"'.", resourceLoaded);
+    }
+
     if( this->getBundle()->hasParameter("style") )
     {
-        std::string styleFile = this->getBundle()->getParameterValue("style");
+        std::string style = this->getBundle()->getParameterValue("style");
+        qApp->setStyle(QStyleFactory::create(QString::fromStdString(style)));
+    }
 
-        QFile data(QString::fromStdString(styleFile));
+    if( this->getBundle()->hasParameter("stylesheet") )
+    {
+        std::string stylesheetFile = this->getBundle()->getParameterValue("stylesheet");
+
+        QFile data(QString::fromStdString(stylesheetFile));
         QString style;
         if(data.open(QFile::ReadOnly))
         {

@@ -38,6 +38,7 @@ set( REQUIREMENTS
     dicomPacsWriterActivity
 
     media
+    style
 
     patchMedicalData
 
@@ -46,4 +47,12 @@ set( REQUIREMENTS
     preferences
 )
 
+bundleParam(guiQt 
+    PARAM_LIST 
+        resource
+        stylesheet 
+    PARAM_VALUES 
+        ${BUNDLE_PREFIX}/style_0-1/darkstyle.rcc 
+        ${BUNDLE_PREFIX}/style_0-1/darkstyle.qss
+)
 bundleParam(appXml2 PARAM_LIST config parameters PARAM_VALUES VRRenderBase VRRenderAppBase)
