@@ -4,13 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+#include "Tuto02DataServiceBasicCtrl/Plugin.hpp"
+
+#include "fwServices/IService.hpp"
+#include "fwServices/registry/ServiceFactory.hpp"
+
 #include <fwRuntime/EConfigurationElement.hpp>
+#include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/AppConfig.hpp>
-
-#include "Tuto02DataServiceBasicCtrl/Plugin.hpp"
 
 
 namespace Tuto02DataServiceBasicCtrl
@@ -45,13 +48,16 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
     // Reader service
     m_readerSrv = ::fwServices::add(m_image, "::io::IReader", "::ioVTK::SImageReader");
     ::fwServices::IService::ConfigType readerCfg;
-    readerCfg.put("service.file", "./TutoData/patient1.vtk");
+    readerCfg.put("service.file", "../../data/patient1.vtk");
     m_readerSrv->setConfiguration( readerCfg );
     m_readerSrv->configure();
 
     // Render service
-    m_renderSrv = ::fwServices::add(m_image, "::fwRender::IRender", "::vtkSimpleNegato::SRenderer",
-                                    "myRenderingTuto");
+
+    m_renderSrv = ::fwServices::registry::ServiceFactory::getDefault()->create( "::fwRender::IRender",
+                                                                                "::vtkSimpleNegato::SRenderer" );
+    ::fwServices::OSR::registerService( m_image, "image", ::fwServices::IService::AccessType::INPUT, m_renderSrv );
+    m_renderSrv->setID( "myRenderingTuto" );
     m_renderSrv->configure();
 
     // Frame service
@@ -59,7 +65,7 @@ void Plugin::initialize() throw( ::fwRuntime::RuntimeException )
 
     ::fwServices::IService::ConfigType frameConfig;
 
-    frameConfig.put("service.gui.frame.name", "tutoDataServiceBasic");
+    frameConfig.put("service.gui.frame.name", "tutoDataServiceBasicCtrl");
     frameConfig.put("service.gui.frame.icon", std::string(
                         BUNDLE_PREFIX) + "/Tuto02DataServiceBasicCtrl_0-1/tuto.ico");
     frameConfig.put("service.gui.frame.minSize.<xmlattr>.width", "800");

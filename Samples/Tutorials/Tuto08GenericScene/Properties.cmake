@@ -15,11 +15,10 @@ set( REQUIREMENTS
     uiIO
     uiVisuQt # contains several editors for visualization
     uiImageQt # contains several editors on image
-    visuVTK
     visuVTKQt
     visuVTKAdaptor # contains adaptors for the generic scene
     fwlauncher
-    appXml
+    appXml2
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Tuto08GenericScene)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Tuto08GenericScene)

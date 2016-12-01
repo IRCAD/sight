@@ -10,14 +10,13 @@ set( REQUIREMENTS
     guiQt
     io
     ioVTK
-    visuVTK
     visuVTKQt
     uiIO
     vtkSimpleNegato
     vtkSimpleMesh
     opVTKMesh # provides services to generate a mesh from an image.
     fwlauncher
-    appXml
+    appXml2
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES MesherConfig)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES MesherConfig)

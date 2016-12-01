@@ -26,8 +26,14 @@ fwServicesRegisterMacro( ::fwServices::IController, ::vtkSimpleMesh::SSimpleMesh
 namespace vtkSimpleMesh
 {
 
+//-----------------------------------------------------------------------------
+
 const ::fwCom::Slots::SlotKeyType SSimpleMeshDeformation::s_START_DEFORMATION_SLOT = "startDeformation";
 const ::fwCom::Slots::SlotKeyType SSimpleMeshDeformation::s_STOP_DEFORMATION_SLOT  = "stopDeformation";
+
+static const std::string s_MESH_KEY = "mesh";
+
+//-----------------------------------------------------------------------------
 
 SSimpleMeshDeformation::SSimpleMeshDeformation() throw()
 {
@@ -72,7 +78,8 @@ void SSimpleMeshDeformation::stopping() throw(fwTools::Failed)
 void SSimpleMeshDeformation::updating() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+
+    auto mesh = this->getInOut< ::fwData::Mesh >(s_MESH_KEY);
 
     ::fwData::mt::ObjectReadToWriteLock lock(mesh);
     if ( mesh->getNumberOfPoints() > 0 )
@@ -103,7 +110,7 @@ void SSimpleMeshDeformation::startDeformation()
 {
     bool meshIsLoaded;
     {
-        ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+        auto mesh = this->getInOut< ::fwData::Mesh >(s_MESH_KEY);
         ::fwData::mt::ObjectReadLock lock(mesh);
         meshIsLoaded = mesh->getNumberOfPoints() > 0;
     }
@@ -164,10 +171,9 @@ void SSimpleMeshDeformation::computeDeformation (
     // Compute limits
     float ymin = points[0][1];
     float ymax = points[0][1];
-    float val;
     for(size_t i = 0; i!=nbPts; ++i)
     {
-        val = points[i][1];
+        const float val = points[i][1];
         if ( val < ymin )
         {
             ymin = val;
@@ -236,7 +242,7 @@ void SSimpleMeshDeformation::initMeshBackup()
         m_currentIncrement   = 0;
         m_currentDeformation = 0;
 
-        ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+        auto mesh = this->getInOut< ::fwData::Mesh >(s_MESH_KEY);
         ::fwData::mt::ObjectReadToWriteLock lock(mesh);
 
 

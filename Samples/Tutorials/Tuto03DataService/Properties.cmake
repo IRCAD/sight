@@ -11,11 +11,10 @@ set( REQUIREMENTS
     io
     ioVTK
     uiIO # contains services to show dialogs for reader/writer selection
-    visuVTK
     visuVTKQt
     vtkSimpleNegato
     fwlauncher
-    appXml
+    appXml2
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES tutoDataServiceConfig)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES tutoDataServiceConfig)

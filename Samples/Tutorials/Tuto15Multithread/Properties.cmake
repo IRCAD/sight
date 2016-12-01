@@ -12,11 +12,10 @@ set( REQUIREMENTS
     ioData
     ioVTK
     uiIO
-    visuVTK
     visuVTKQt
     vtkSimpleMesh
     fwlauncher
-    appXml
+    appXml2
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES tuto15MultithreadConfig)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES tuto15MultithreadConfig)
