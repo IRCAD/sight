@@ -19,12 +19,13 @@
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
 
+#include <fwDataCamp/Version.hpp>
+
 #include <fwMedData/ActivitySeries.hpp>
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
 
-#include <fwMedData/ImageSeries.hpp>
-#include <fwMedData/ModelSeries.hpp>
+#include <fwMedDataCamp/Version.hpp>
 
 #include <fwRuntime/Bundle.hpp>
 #include <fwRuntime/Extension.hpp>
@@ -46,7 +47,14 @@ namespace ut
 
 void DefaultActivityTest::setUp()
 {
-    // Set up context before running a test.
+    //Force link with fwDataCamp, it is used by the validator to parse the objects
+    static const int fwDataCampVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
+    FwCoreNotUsedMacro(fwDataCampVersion);
+
+    //Force link with fwMedDataCamp, it is used by the validator to parse the objects
+    static const int fwMedDataCampVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
+    FwCoreNotUsedMacro(fwMedDataCampVersion);
+
     // Set up context before running a test.
     ::boost::filesystem::path plugin = "share/tu_exec_fwActivities_0-0/tu_validator";
     m_bundle                         = ::fwRuntime::io::BundleDescriptorReader::createBundle(plugin);
