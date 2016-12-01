@@ -14,6 +14,7 @@ endfunction()
 
 #Linux install
 macro(linux_install PRJ_NAME)
+
     if(NOT USE_SYSTEM_LIB)
         findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
     endif()
@@ -43,18 +44,20 @@ macro(linux_install PRJ_NAME)
         install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake)
     endif()
 
+    set(CPACK_OUTPUT_FILE_PREFIX packages)
     set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
 
-    set(CPACK_PACKAGE_VENDOR "IRCAD")
+    execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
+
+    set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${VERSION}-linux_${ARCHITECTURE}")
+    set(CPACK_PACKAGE_VENDOR "IRCAD-IHU")
     set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
     set(CPACK_PACKAGE_VERSION "${VERSION}")
 
     if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
         configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${PRJ_NAME}_${DASH_VERSION}.sh @ONLY)
-        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${PRJ_NAME}_${DASH_VERSION}.sh DESTINATION ${CMAKE_INSTALL_PREFIX}/bin )
+        install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${PRJ_NAME}_${DASH_VERSION}.sh DESTINATION ${CMAKE_INSTALL_PREFIX} )
     endif()
-
-
 
     if(NOT USE_SYSTEM_LIB)
         #Copy the qt font directory inside install/libs
