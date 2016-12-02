@@ -88,13 +88,17 @@ function(pch_msvc_hook variable access value current_list_file stack)
 endfunction()
 
 function(export_all_flags _filename)
+  set(_compile_definitions "$<TARGET_PROPERTY:${_target},COMPILE_DEFINITIONS>")
   set(_include_directories "$<TARGET_PROPERTY:${_target},INCLUDE_DIRECTORIES>")
   set(_compile_flags "$<TARGET_PROPERTY:${_target},COMPILE_FLAGS>")
   set(_compile_options "$<TARGET_PROPERTY:${_target},COMPILE_OPTIONS>")
+  set(_define_symbol "$<TARGET_PROPERTY:${_target},DEFINE_SYMBOL>")
   set(_include_directories "$<$<BOOL:${_include_directories}>:-isystem$<JOIN:${_include_directories},\n-isystem>\n>")
+  set(_compile_definitions "$<$<BOOL:${_compile_definitions}>:-D$<JOIN:${_compile_definitions},\n-D>\n>")
   set(_compile_flags "$<$<BOOL:${_compile_flags}>:$<JOIN:${_compile_flags},\n>\n>")
   set(_compile_options "$<$<BOOL:${_compile_options}>:$<JOIN:${_compile_options},\n>\n>")
-  file(GENERATE OUTPUT "${_filename}" CONTENT "${_include_directories}${_compile_flags}${_compile_options}\n")
+  set(_define_symbol "$<$<BOOL:${_define_symbol}>:-D$<JOIN:${_define_symbol},\n-D>\n>")
+  file(GENERATE OUTPUT "${_filename}" CONTENT "${_compile_definitions}${_include_directories}${_compile_flags}${_compile_options}${_define_symbol}\n")
 endfunction()
 
 macro(add_precompiled_header_cpp _target)
@@ -172,8 +176,10 @@ function(add_precompiled_header _target _input)
     endif()
     set(_output_cxx "${_outdir}")
 
-    set(_pch_flags_file "${_pch_binary_dir}/compile_flags.rsp")
-    export_all_flags("${_pch_flags_file}")
+    # we use a response file to pass most compiler flags
+    set(_pch_response_file "compile_flags.rsp")
+    set(_pch_flags_file "${_pch_binary_dir}/${_pch_response_file}")
+    export_all_flags("${_pch_flags_file}.in")
     set(_compiler_FLAGS "@${_pch_flags_file}")
 
     if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
@@ -184,18 +190,16 @@ function(add_precompiled_header _target _input)
         string(APPEND CXXFLAGS " ${CMAKE_CXX_FLAGS_RELEASE}")
     endif()
     separate_arguments(CXXFLAGS)
+
+    # hopelessly these guys don't manage to get passed by the global CMake switch, add them manually
     list(APPEND CXXFLAGS "-std=gnu++11" "-fPIC")
 
-    get_property(_dir_compile_definitions DIRECTORY PROPERTY COMPILE_DEFINITIONS)
-    foreach(compile_definition ${_dir_compile_definitions})
-        set(def "-D" ${compile_definition})
-        STRING(REPLACE "\"" "\\\"" def2 ${def})
-        list(APPEND CXXFLAGS ${def2})
-    endforeach()
-
-    get_property(_define_symbol TARGET ${FWPROJECT_NAME} PROPERTY DEFINE_SYMBOL)
-    list(APPEND CXXFLAGS "-D" ${_define_symbol})
-
+    # Hacky custom command to replace the " in the -D by \"
+    add_custom_command(
+      OUTPUT "${_pch_flags_file}"
+      COMMAND sed 's/"/\\\\"/g' ${_pch_response_file}.in > ${_pch_flags_file}
+      DEPENDS "${_pch_flags_file}.in"
+      COMMENT "Fixing ${_pch_flags_file}")
     add_custom_command(
       OUTPUT "${_pchfile}"
       COMMAND "${CMAKE_COMMAND}" -E copy "${_pch_header}" "${_pchfile}"

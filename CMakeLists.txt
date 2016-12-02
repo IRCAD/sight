@@ -265,7 +265,7 @@ macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
 
     set_target_properties(${FWPROJECT_NAME} PROPERTIES DEFINE_SYMBOL ${PROJECT_NAME_UPCASE}_EXPORTS)
 
-    add_definitions(-D${PROJECT_NAME_UPCASE}_VER="${DASH_VERSION}")
+    target_compile_definitions(${FWPROJECT_NAME} PRIVATE ${PROJECT_NAME_UPCASE}_VER="${DASH_VERSION}")
 
     get_target_property(TARGET_TYPE ${FWPROJECT_NAME} TYPE)
 
@@ -281,7 +281,7 @@ macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
     mark_as_advanced(SPYLOG_LEVEL_${FWPROJECT_NAME})
 
     if( SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}} )
-        add_definitions(-DSPYLOG_LEVEL=${SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}}})
+        target_compile_definitions(${FWPROJECT_NAME} PRIVATE SPYLOG_LEVEL=${SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}}})
     else()
         message(SEND_ERROR "${SPYLOG_LEVEL_${FWPROJECT_NAME}} is not a valid value for SPYLOG_LEVEL_${FWPROJECT_NAME}" )
     endif()
