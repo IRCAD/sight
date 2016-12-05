@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,20 +11,16 @@
 #include "fwGui/GuiBaseObject.hpp"
 #include "fwGui/config.hpp"
 #include "fwGui/container/fwContainer.hpp"
-#include "fwGui/container/fwMenuBar.hpp"
-#include "fwGui/container/fwToolBar.hpp"
 #include "fwGui/container/fwMenu.hpp"
+#include "fwGui/container/fwMenuBar.hpp"
 #include "fwGui/container/fwMenuItem.hpp"
+#include "fwGui/container/fwToolBar.hpp"
 
 namespace fwGui
 {
 
 /**
  * @brief   This class contains helpers to manage all fwContainer in the application.
- * @class   GuiRegistry
- *
- * @date    2009-2010.
- *
  */
 class FWGUI_CLASS_API GuiRegistry : public ::fwGui::GuiBaseObject
 {
@@ -68,9 +64,14 @@ public:
     FWGUI_API static void unregisterSIDContainer(std::string sid);
 
     /**
-     * @brief Returns fwContainer associate with service ID.
+     * @brief Returns fwContainer associate with service ID, null if  not found.
      */
     FWGUI_API static ::fwGui::container::fwContainer::sptr getSIDContainer(std::string sid);
+
+    /**
+     * @brief Verifies if a SID exists in the global SID container.
+     */
+    FWGUI_API static bool hasSIDContainer(std::string sid);
 
     ///@}
 
@@ -92,9 +93,14 @@ public:
     FWGUI_API static void unregisterWIDContainer(std::string wid);
 
     /**
-     * @brief Returns fwContainer associate with window ID.
+     * @brief Returns fwContainer associate with window ID, null if  not found.
      */
     FWGUI_API static ::fwGui::container::fwContainer::sptr getWIDContainer(std::string wid);
+
+    /**
+     * @brief Verifies if a WID exists in the global WID container.
+     */
+    FWGUI_API static bool hasWIDContainer(std::string wid);
 
     ///@}
 
