@@ -9,6 +9,8 @@
 
 #include "visuOgreAdaptor/config.hpp"
 
+#include <fwData/TransformationMatrix3D.hpp>
+
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 #include <fwRenderOgre/SRender.hpp>
@@ -64,6 +66,8 @@ protected:
     ::Ogre::SceneNode* m_transformNode;
     /// Ogre parent Transform sceneNode
     ::Ogre::SceneNode* m_parentTransformNode;
+
+    ::fwData::TransformationMatrix3D::sptr m_fwTransform;
 
 };
 

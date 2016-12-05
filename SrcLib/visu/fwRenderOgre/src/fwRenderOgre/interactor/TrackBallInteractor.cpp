@@ -173,7 +173,6 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
         // 6 - Go backward in the inverse direction
         camNode->translate(Ogre::Vector3(0.f, 0.f, m_lookAtZ), ::Ogre::Node::TS_LOCAL);
     }
-
 }
 
 // ----------------------------------------------------------------------------

@@ -9,7 +9,6 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
@@ -101,21 +100,19 @@ void STransform::doStart() throw(fwTools::Failed)
 
 void STransform::updateFromOgre()
 {
-    ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
-
-    ::fwData::mt::ObjectWriteLock lock(trf);
+    ::fwData::mt::ObjectWriteLock lock(m_fwTransform);
     for(size_t lt = 0; lt<4; lt++)
     {
         for (size_t lt = 0; lt < 4; lt++)
         {
             for (size_t ct = 0; ct < 4; ct++)
             {
-                trf->setCoefficient(lt, ct, m_transform[ct][lt]);
+                m_fwTransform->setCoefficient(lt, ct, m_ogreTransform[ct][lt]);
             }
         }
     }
 
-    auto sig = trf->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = m_fwTransform->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
         ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
         sig->asyncEmit();
@@ -126,16 +123,16 @@ void STransform::updateFromOgre()
 
 void STransform::doUpdate() throw(fwTools::Failed)
 {
-    ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
+    m_fwTransform = this->getObject< ::fwData::TransformationMatrix3D >();
 
     // Multithreaded lock
-    ::fwData::mt::ObjectReadLock lock(trf);
+    ::fwData::mt::ObjectReadLock lock(m_fwTransform);
 
     for(size_t lt = 0; lt<4; lt++)
     {
         for(size_t ct = 0; ct<4; ct++)
         {
-            m_transform[ct][lt] = static_cast< ::Ogre::Real >(trf->getCoefficient(ct, lt));
+            m_ogreTransform[ct][lt] = static_cast< ::Ogre::Real >(m_fwTransform->getCoefficient(ct, lt));
         }
     }
 
@@ -145,7 +142,7 @@ void STransform::doUpdate() throw(fwTools::Failed)
     ::Ogre::Vector3 position;
     ::Ogre::Vector3 scale;
     ::Ogre::Quaternion orientation;
-    m_transform.decomposition(position, scale, orientation);
+    m_ogreTransform.decomposition(position, scale, orientation);
 
     m_transformNode->setOrientation(orientation);
     m_transformNode->setPosition(position);
@@ -158,7 +155,7 @@ void STransform::doUpdate() throw(fwTools::Failed)
 
 void STransform::setTransform(const ::Ogre::Matrix4& t)
 {
-    m_transform = t;
+    m_ogreTransform = t;
     this->updateFromOgre();
 }
 
@@ -166,7 +163,7 @@ void STransform::setTransform(const ::Ogre::Matrix4& t)
 
 const ::Ogre::Matrix4& STransform::getTransform() const
 {
-    return m_transform;
+    return m_ogreTransform;
 }
 
 //------------------------------------------------------------------------------

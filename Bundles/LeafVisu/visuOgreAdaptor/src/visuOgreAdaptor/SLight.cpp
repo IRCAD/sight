@@ -235,34 +235,30 @@ void SLight::setDoubleParameter(double _val, std::string _key)
 
 void SLight::createTransformService()
 {
-    // We need to create a transform service only once
-    if(m_transformService.expired())
+    ::fwData::TransformationMatrix3D::csptr transform =
+        this->getInput< ::fwData::TransformationMatrix3D >("transform");
+
+    if(!transform)
     {
-        ::fwData::TransformationMatrix3D::csptr transform =
-            this->getInput< ::fwData::TransformationMatrix3D >("transform");
-
-        if(!transform)
-        {
-            transform = ::fwData::TransformationMatrix3D::New();
-        }
-
-        m_transformService = ::fwServices::add< ::fwRenderOgre::IAdaptor >(transform,
-                                                                           "::visuOgreAdaptor::STransform");
-        SLM_ASSERT("Transform service is null", m_transformService.lock());
-        auto transformService = this->getTransformService();
-
-        transformService->setID(this->getID() + "_" + transformService->getID());
-        transformService->setRenderService ( this->getRenderService() );
-        transformService->setLayerID(m_layerID);
-        transformService->setTransformId(this->getTransformId());
-        transformService->setParentTransformId(this->getParentTransformId());
-
-        transformService->start();
-        transformService->connect();
-        this->registerService(transformService);
-
-        this->attachNode(m_light);
+        transform = ::fwData::TransformationMatrix3D::New();
     }
+
+    m_transformService = ::fwServices::add< ::fwRenderOgre::IAdaptor >(transform,
+                                                                       "::visuOgreAdaptor::STransform");
+    SLM_ASSERT("Transform service is null", m_transformService.lock());
+    auto transformService = this->getTransformService();
+
+    transformService->setID(this->getID() + "_" + transformService->getID());
+    transformService->setRenderService ( this->getRenderService() );
+    transformService->setLayerID(m_layerID);
+    transformService->setTransformId(this->getTransformId());
+    transformService->setParentTransformId(this->getParentTransformId());
+
+    transformService->start();
+    transformService->connect();
+    this->registerService(transformService);
+
+    this->attachNode(m_light);
 }
 
 //-----------------------------------------------------------------------------

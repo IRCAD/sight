@@ -98,7 +98,7 @@ SVolumeRender::SVolumeRender() throw() :
     newSlot(s_SET_INT_PARAMETER_SLOT, &SVolumeRender::setIntParameter, this);
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SVolumeRender::setDoubleParameter, this);
 
-    m_transform     = ::Ogre::Matrix4::IDENTITY;
+    m_ogreTransform = ::Ogre::Matrix4::IDENTITY;
     m_renderingMode = VR_MODE_RAY_TRACING;
 }
 

@@ -316,11 +316,13 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE:
         {
             m_moveInteractor->mouseMoveEvent(info.button, info.x, info.y, info.dx, info.dy);
+            m_cameraManager->updateTF3D();
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE:
         {
             m_moveInteractor->wheelEvent(info.delta, info.x, info.y);
+            m_cameraManager->updateTF3D();
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE:
@@ -511,6 +513,7 @@ void Layer::resetCameraCoordinates() const
             ::Ogre::SceneNode* camNode = m_cameraManager->getCamera()->getParentSceneNode();
 
             camNode->setPosition(0.f, 0.f, 0.f);
+            m_cameraManager->updateTF3D();
         }
         else
         {
@@ -533,8 +536,8 @@ void Layer::resetCameraCoordinates() const
             m_moveInteractor->setMouseScale( coeffZoom );
 
             resetCameraClippingRange(worldCoordBoundingBox);
+            m_cameraManager->updateTF3D();
         }
-
 
         m_renderService.lock()->requestRender();
     }

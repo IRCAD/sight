@@ -75,6 +75,7 @@ public:
     FWRENDEROGRE_API virtual void setFarClipDistance(::Ogre::Real _farClipDistance)                           = 0;
     FWRENDEROGRE_API virtual void setAspectRatio(::Ogre::Real _ratio)                                         = 0;
     FWRENDEROGRE_API virtual void setTransformName(::fwRenderOgre::SRender::OgreObjectIdType newId)           = 0;
+    FWRENDEROGRE_API virtual void updateTF3D()                                                                = 0;
 };
 
 } // namespace fwRenderOgre

@@ -14,8 +14,6 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/helper/SigSlotConnection.hpp>
 
-#include <fwData/TransformationMatrix3D.hpp>
-
 #include <fwRenderOgre/ICamera.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 
@@ -71,7 +69,7 @@ public:
     /** @} */
 
     /// Updates Transformation Matrix
-    VISUOGREADAPTOR_API void updateTF3D();
+    VISUOGREADAPTOR_API virtual void updateTF3D();
 
     /// Returns proposals to connect service slots to associated object signals
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
