@@ -7,22 +7,20 @@
 #ifndef __FWSERVICES_SCONFIGCONTROLLER_HPP__
 #define __FWSERVICES_SCONFIGCONTROLLER_HPP__
 
-#include <fwTools/Failed.hpp>
+#include "fwServices/IController.hpp"
+#include "fwServices/config.hpp"
+#include "fwServices/helper/ConfigLauncher.hpp"
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include "fwServices/helper/ConfigLauncher.hpp"
-#include "fwServices/config.hpp"
-#include "fwServices/IController.hpp"
+#include <fwTools/Failed.hpp>
 
 namespace fwServices
 {
 
 /**
- * @class   SConfigController
  * @brief   To manage configuration file defines in xml extension.
- * @date    2010-2013.
  *
  * This action works on a ::fwData::Composite. It action starts/stops a template configuration given by its identifier in this action configuration.
  *  - You can specified pattern to replace in the template configuration by the tag 'replace'.
@@ -96,12 +94,12 @@ protected:
     virtual void swapping();
 
     /// Overrides
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream );
 
 private:
 
     /// AppConfig manager
-    ::fwServices::helper::ConfigLauncher::sptr m_configLauncher;
+    ::fwServices::helper::ConfigLauncher::uptr m_configLauncher;
 
 };
 

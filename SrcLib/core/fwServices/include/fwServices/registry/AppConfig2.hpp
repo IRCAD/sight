@@ -21,6 +21,7 @@
 #include <fwTools/Object.hpp>
 
 #include <map>
+#include <unordered_set>
 
 namespace fwServices
 {
@@ -74,9 +75,9 @@ public:
                                     const std::string& group,
                                     const std::string& desc,
                                     const AppInfo::ParametersType& parameters,
-                                    ::fwRuntime::ConfigurationElement::csptr config,
-                                    const std::string bundleId,
-                                    const std::string bundleVersion);
+                                    const ::fwRuntime::ConfigurationElement::csptr& config,
+                                    const std::string& bundleId,
+                                    const std::string& bundleVersion);
 
     /**
      * @brief  Return the adapted config with the identifier configId.
@@ -103,7 +104,7 @@ public:
      * @brief Retrieves the bunble from the config id
      * @param configId the config identifier
      */
-    FWSERVICES_API std::shared_ptr< ::fwRuntime::Bundle > getBundle(const std::string& configId);
+    FWSERVICES_API std::shared_ptr< ::fwRuntime::Bundle > getBundle(const std::string& _configId);
 
     /**
      * @brief Return all configurations ( standard and template ) register in the registry.
@@ -144,16 +145,22 @@ protected:
 
 private:
 
+    typedef std::unordered_set< std::string > UidParameterReplaceType;
+
     /// Convert the composite into map <pattern, value>.
     FieldAdaptorType compositeToFieldAdaptor( ::fwData::Composite::csptr fieldAdaptors ) const;
 
+    static void collectUIDForParameterReplace(::fwRuntime::ConfigurationElement::csptr _cfgElem,
+                                   UidParameterReplaceType& replaceMap);
+
     /// Adapts the configuration : replace field thanks to field adaptors
-    ::fwRuntime::EConfigurationElement::sptr adaptConfig(::fwRuntime::ConfigurationElement::csptr _cfgElem,
-                                                         const FieldAdaptorType& fieldAdaptors,
-                                                         const std::string& autoPrefixId ) const;
+    static ::fwRuntime::EConfigurationElement::sptr adaptConfig(::fwRuntime::ConfigurationElement::csptr _cfgElem,
+                                                                const FieldAdaptorType& _fieldAdaptors,
+                                                                const UidParameterReplaceType& _uidParameterReplace,
+                                                                const std::string& _autoPrefixId );
 
     /// Adapts field thanks to field adaptors
-    std::string adaptField( const std::string& _str, const FieldAdaptorType& fieldAdaptors ) const;
+    static std::string adaptField(const std::string& _str, const FieldAdaptorType& _variablesMap );
 
     /// Used to protect the registry access.
     mutable ::fwCore::mt::ReadWriteMutex m_registryMutex;
@@ -166,6 +173,10 @@ private:
 
     /// The static identifier for mandatory parameters.
     static std::string s_mandatoryParameterIdentifier;
+
+    /// Associations of <tag id, generic-uid attribute>.
+    typedef std::multimap< std::string, std::string > UidDefinitionType;
+    static UidDefinitionType s_uidDefinitionDictionary;
 };
 
 } // namespace registry

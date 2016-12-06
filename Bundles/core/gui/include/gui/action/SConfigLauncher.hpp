@@ -29,9 +29,7 @@ namespace action
 
 
 /**
- * @class   SConfigLauncher
  * @brief   To manage configuration file defines in xml extension.
- * @date    2013.
  *
  * This action works on a ::fwData::Composite. It action starts/stops an AppConfig given by its identifier in this action configuration.
  *  - You can specified pattern to replace in the template configuration by the tag 'replace'.
@@ -124,7 +122,7 @@ protected:
     virtual void configuring();
 
     /// Overrides
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream );
 
     /**
      * @name Slots
@@ -139,7 +137,7 @@ protected:
      * @}
      */
 
-    ::fwServices::helper::ConfigLauncher::sptr m_configLauncher;
+    ::fwServices::helper::ConfigLauncher::uptr m_configLauncher;
     std::string m_proxychannel; ///< Name of the channel used to connect stopConfig slot to the config frame closing.
 };
 

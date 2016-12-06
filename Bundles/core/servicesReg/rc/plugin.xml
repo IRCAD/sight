@@ -3,14 +3,14 @@
     <library name="servicesReg" />
 
     <requirement id="dataReg" />
-    
+
     <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
     <extension-point id="::fwServices::registry::AppConfig" schema="appConfig.xsd"/>
     <extension-point id="::fwServices::registry::AppConfig2" schema="appConfig2.xsd"/>
-    
+
     <!-- EXTENSION POINT FOR APP CONFIGURATION PARAMETERS-->
     <extension-point id="::fwServices::registry::AppConfigParameters" schema="appConfigParameters.xsd"/>
-    
+
     <!-- EXTENSION POINT FOR A SERVICE FACTORY -->
     <extension-point id="::fwServices::registry::ServiceFactory" schema="serviceFactory.xsd"/>
 
@@ -23,7 +23,7 @@
         <service>::dataReg::parser::Composite</service>
         <object>::fwData::Composite</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::dataReg::parser::TransformationMatrix3D</service>
@@ -35,47 +35,46 @@
         <service>::dataReg::parser::Object</service>
         <object>::fwData::Object</object>
     </extension>
-    
+
      <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::dataReg::parser::List</service>
         <object>::fwData::List</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::dataReg::parser::BooleanParser</service>
         <object>::fwData::Boolean</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::dataReg::parser::FloatParser</service>
         <object>::fwData::Float</object>
     </extension>
-    
+
      <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::dataReg::parser::IntegerParser</service>
         <object>::fwData::Integer</object>
     </extension>
-    
+
      <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::dataReg::parser::StringParser</service>
         <object>::fwData::String</object>
     </extension>
-     
+
      <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IXMLParser</type>
         <service>::dataReg::parser::TransferFunction</service>
         <object>::fwData::TransferFunction</object>
     </extension>
-     
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
         <service>::fwServices::SConfigController</service>
-        <object>::fwData::Object</object>
     </extension>
-    
+
 </plugin>
