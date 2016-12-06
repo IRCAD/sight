@@ -41,6 +41,21 @@ else()
     endif()
 endif()
 
+# Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH
+if(EXTERNAL_LIBRARIES)
+
+    list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIBRARIES})
+    list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_LIBRARIES})
+    list(APPEND CMAKE_FIND_ROOT_PATH ${EXTERNAL_LIBRARIES})
+
+elseif(USE_SYSTEM_LIB)
+
+    list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+    list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+    list(APPEND CMAKE_FIND_ROOT_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+
+endif()
+
 
 set(CREATE_SUBPROJECTS OFF CACHE BOOL "Create a project for each subproject")
 set(BUILD_TESTS ON CACHE BOOL "Configures projects associated tests (<project>Test projects)")
@@ -776,25 +791,23 @@ macro(addProject PROJECT)
     unset(PROJECT_CACHE)
 endmacro()
 
+# Parsing of 'fw-*.cmake' scripts
 if(EXTERNAL_LIBRARIES)
-    list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIBRARIES})
-    list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_LIBRARIES})
-    list(APPEND CMAKE_FIND_ROOT_PATH ${EXTERNAL_LIBRARIES})
 
     file(GLOB LIB_CONFIGS ${EXTERNAL_LIBRARIES}/fw-*.cmake )
     foreach(LIB_CONFIG ${LIB_CONFIGS})
         message(STATUS "include : ${LIB_CONFIG}")
         include("${LIB_CONFIG}")
     endforeach()
+
 elseif(USE_SYSTEM_LIB)
-    list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
-    list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
-    list(APPEND CMAKE_FIND_ROOT_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+
     file(GLOB LIB_CONFIGS ${FWCMAKE_RESOURCE_PATH}/modules/fw-*.cmake )
     foreach(LIB_CONFIG ${LIB_CONFIGS})
         message(STATUS "include : ${LIB_CONFIG}")
         include("${LIB_CONFIG}")
     endforeach()
+
 endif()
 
 
