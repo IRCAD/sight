@@ -122,7 +122,6 @@ void SLight::doStart() throw(fwTools::Failed)
     m_light     = this->getSceneManager()->createLight(m_lightName);
     m_light->setType(::Ogre::Light::LT_DIRECTIONAL);
 
-
     if(!this->getParentTransformId().empty())
     {
         ::Ogre::SceneNode* parentSceneNode =

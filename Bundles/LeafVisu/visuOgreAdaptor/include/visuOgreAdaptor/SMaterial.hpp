@@ -150,9 +150,6 @@ private:
     /// Loads material parameters from ressources
     void loadMaterialParameters();
 
-    /// Updates material parameters from a specific template
-    void loadShaderParameters(::Ogre::GpuProgramParametersSharedPtr params, std::string shaderType);
-
     /// Updates material options mode (standard, point normals or cells normals)
     void updateOptionsMode( int optionMode );
 
@@ -224,6 +221,9 @@ private:
 
     /// The configured shading mode
     std::string m_shadingMode;
+
+    /// Current number of lights in the scene.
+    int m_lightsNumber;
 };
 
 //------------------------------------------------------------------------------

@@ -237,8 +237,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                             m_parentId + "_entryPointsTexture" + std::to_string(i),
                                             ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                                             ::Ogre::TEX_TYPE_2D,
-                                            m_camera->getViewport()->getActualWidth(),
-                                            m_camera->getViewport()->getActualHeight(),
+                                            static_cast<unsigned int>(m_camera->getViewport()->getActualWidth()),
+                                            static_cast<unsigned int>(m_camera->getViewport()->getActualHeight()),
                                             1,
                                             0,
                                             ::Ogre::PF_FLOAT32_RGB,
@@ -360,7 +360,7 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
     {
         m_imageSize = newSize;
 
-        for(int i = 0; i < 3; ++i)
+        for(size_t i = 0; i < 3; ++i)
         {
             m_gridSize[i] =
                 static_cast<int>(m_imageSize[i] / m_bricksSize[i] + (m_imageSize[i] % m_bricksSize[i] != 0));
@@ -670,7 +670,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
 
         subMesh->vertexData              = new ::Ogre::VertexData();
         subMesh->vertexData->vertexStart = 0;
-        subMesh->vertexData->vertexCount = nbVtx;
+        subMesh->vertexData->vertexCount = static_cast<size_t>(nbVtx);
 
         ::Ogre::VertexDeclaration* decl = subMesh->vertexData->vertexDeclaration;
 
@@ -922,9 +922,9 @@ void RayTracingVolumeRenderer::createGridTexture()
             m_parentId + "_gridTexture",
             ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
             ::Ogre::TEX_TYPE_3D,
-            m_gridSize[0],
-            m_gridSize[1],
-            m_gridSize[2],
+            static_cast<unsigned int>(m_gridSize[0]),
+            static_cast<unsigned int>(m_gridSize[1]),
+            static_cast<unsigned int>(m_gridSize[2]),
             1,
             ::Ogre::PF_R8,
             ::Ogre::TU_RENDERTARGET
@@ -943,7 +943,7 @@ void RayTracingVolumeRenderer::createGridTexture()
 
         ::Ogre::VertexData* meshVtxData = r2vbSrcMesh->getSubMesh(0)->vertexData;
 
-        meshVtxData->vertexCount = m_gridSize[0] * m_gridSize[1] * m_gridSize[2];
+        meshVtxData->vertexCount = static_cast<size_t>(m_gridSize[0] * m_gridSize[1] * m_gridSize[2]);
 
         ::Ogre::HardwareVertexBufferSharedPtr vtxBuffer =
             ::Ogre::HardwareBufferManager::getSingleton().createVertexBuffer(
@@ -951,7 +951,7 @@ void RayTracingVolumeRenderer::createGridTexture()
                 meshVtxData->vertexCount,
                 ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
 
-        for(int i = 0; i < static_cast<int>(meshVtxData->vertexCount); ++i)
+        for(size_t i = 0; i < meshVtxData->vertexCount; ++i)
         {
             vtxBuffer->writeData(
                 i * ::Ogre::VertexElement::getTypeSize(::Ogre::VET_INT1),

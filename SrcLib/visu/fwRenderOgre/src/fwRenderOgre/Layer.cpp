@@ -148,7 +148,7 @@ void Layer::createScene()
     m_sceneManager->setAmbientLight(::Ogre::ColourValue(0.8f,0.8f,0.8f));
 
     m_cameraManager = ::fwRenderOgre::ICamera::createCameraManager();
-    m_cameraManager->setLayerID(m_id);
+    m_cameraManager->setLayerID(this->getLayerID());
     m_cameraManager->createCamera(Layer::DEFAULT_CAMERA_NAME, m_sceneManager);
     m_cameraManager->setNearClipDistance(1);
 
@@ -231,7 +231,7 @@ void Layer::createScene()
         m_lightManager->setDiffuseColor(::Ogre::ColourValue());
         m_lightManager->setSpecularColor(::Ogre::ColourValue());
         m_lightManager->setParentTransformName(cameraNode->getName());
-        m_lightManager->setLayerID(m_id);
+        m_lightManager->setLayerID(this->getLayerID());
 
         m_renderService.lock()->addAdaptor(m_lightManager);
     }
@@ -829,6 +829,24 @@ bool Layer::isSceneCreated() const
 void Layer::setHasDefaultLight(bool hasDefaultLight)
 {
     m_hasDefaultLight = hasDefaultLight;
+}
+
+//-------------------------------------------------------------------------------------
+
+int Layer::getLightsNumber() const
+{
+    auto lightAdaptors = this->getRenderService()->getAdaptors< ::fwRenderOgre::ILight >();
+    int lightsNumber(0);
+
+    std::for_each(lightAdaptors.begin(), lightAdaptors.end(), [&](::fwRenderOgre::ILight::sptr adaptor)
+        {
+            if(adaptor->getLayerID() == this->getLayerID())
+            {
+                ++lightsNumber;
+            }
+        });
+
+    return lightsNumber;
 }
 
 //-------------------------------------------------------------------------------------

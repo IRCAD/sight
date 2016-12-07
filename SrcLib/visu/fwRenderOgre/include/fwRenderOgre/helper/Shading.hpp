@@ -32,8 +32,9 @@ public:
         std::array<float, 4> f;
         std::array<double, 4> d;
     };
-    typedef std::vector< std::tuple< ::Ogre::String, ::Ogre::GpuConstantType,
-                                     ::Ogre::GpuProgramType, ConstantValueType> > ShaderConstantsType;
+    typedef std::tuple< ::Ogre::String, ::Ogre::GpuConstantType,
+                        ::Ogre::GpuProgramType, ConstantValueType > ShaderConstantType;
+    typedef std::vector<ShaderConstantType> ShaderConstantsType;
 
     /**
      * @brief Returns true if the given technique computes a pixel color.
@@ -126,7 +127,41 @@ public:
      */
     FWRENDEROGRE_API static SPTR(::fwData::Object) createObjectFromShaderParameter(::Ogre::GpuConstantType _type,
                                                                                    ConstantValueType _value);
+
+    /**
+     * @brief Loops through the constants of a shader and updates the specified constant when it has been found.
+     *
+     * @param[in] _parameters shader parameters
+     * @param[in] _shaderType type of the shader (vertex, fragment or geometry)
+     * @param[in] _uniformName name of the constant to update
+     * @param[in] _uniform updated value for the constant
+     */
+    template<class T>
+    FWRENDEROGRE_API static void updateUniform(::Ogre::GpuProgramParametersSharedPtr _parameters,
+                                               ::Ogre::GpuProgramType _shaderType,
+                                               std::string _uniformName, T _uniform);
 };
+
+//-----------------------------------------------------------------------------
+
+template<class T>
+void Shading::updateUniform(::Ogre::GpuProgramParametersSharedPtr _parameters,
+                            ::Ogre::GpuProgramType _shaderType, std::string _uniformName, T _uniform)
+{
+    ::fwRenderOgre::helper::Shading::ShaderConstantsType constants =
+        ::fwRenderOgre::helper::Shading::findShaderConstants(_parameters, _shaderType);
+
+    std::for_each(constants.begin(), constants.end(),
+                  [&](::fwRenderOgre::helper::Shading::ShaderConstantType constantTuple)
+            {
+                if(std::get<0>(constantTuple) == _uniformName)
+                {
+                    _parameters->setNamedConstant(_uniformName, _uniform);
+                }
+            });
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace helper
 

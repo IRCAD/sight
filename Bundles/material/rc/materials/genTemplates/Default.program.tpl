@@ -9,7 +9,7 @@
 vertex_program Lighting_VP glsl
 {
     source Lighting.glsl
-    preprocessor_defines NUM_LIGHTS=1
+    preprocessor_defines MAX_LIGHTS=10
 }
 
 //---------------------------------------------------------------------------
@@ -17,7 +17,7 @@ vertex_program Lighting_VP glsl
 fragment_program Lighting_FP glsl
 {
     source Lighting.glsl
-    preprocessor_defines NUM_LIGHTS=1
+    preprocessor_defines MAX_LIGHTS=10
 }
 
 //-----------------------------------------------------------------------------

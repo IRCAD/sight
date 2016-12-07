@@ -6,9 +6,11 @@ uniform vec4 u_diffuse;
 uniform vec4 u_specular;
 uniform float u_shininess;
 
-uniform vec3 u_lightDir[NUM_LIGHTS];
-uniform vec3 u_lightDiffuse[NUM_LIGHTS];
-uniform vec3 u_lightSpecular[NUM_LIGHTS];
+uniform int u_numLights;
+
+uniform vec3 u_lightDir[MAX_LIGHTS];
+uniform vec3 u_lightDiffuse[MAX_LIGHTS];
+uniform vec3 u_lightSpecular[MAX_LIGHTS];
 
 vec4 lighting(vec3 _normal, vec3 _position)
 {
@@ -20,7 +22,7 @@ vec4 lighting(vec3 _normal, vec3 _position)
     float fLitSpecular = 0;
     vec3 specular = vec3(0.0);
 
-    for(int i = 0; i < NUM_LIGHTS; ++i)
+    for(int i = 0; i < u_numLights; ++i)
     {
         fLitDiffuse += abs(dot( _normal, normalize(u_lightDir[i]) ));
         diffuse += fLitDiffuse * u_lightDiffuse[i];

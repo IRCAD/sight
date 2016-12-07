@@ -63,12 +63,13 @@ static const std::string s_NORMALS_PASS = "NormalsPass";
 
 SMaterial::SMaterial() throw() :
     m_materialTemplateName(DEFAULT_MATERIAL_TEMPLATE_NAME),
-    m_hasMeshNormal(true),
-    m_hasVertexColor(false),
-    m_hasPrimitiveColor(false),
-    m_primitiveType(::fwData::Mesh::TRIANGLE),
-    m_meshBoundingBox(::Ogre::Vector3::ZERO, ::Ogre::Vector3::ZERO),
-    m_normalLengthFactor(0.1f)
+    m_hasMeshNormal       (true),
+    m_hasVertexColor      (false),
+    m_hasPrimitiveColor   (false),
+    m_primitiveType       (::fwData::Mesh::TRIANGLE),
+    m_meshBoundingBox     (::Ogre::Vector3::ZERO, ::Ogre::Vector3::ZERO),
+    m_normalLengthFactor  (0.1f),
+    m_lightsNumber        (1)
 {
     newSlot(s_UPDATE_FIELD_SLOT, &SMaterial::updateField, this);
     newSlot(s_SWAP_TEXTURE_SLOT, &SMaterial::swapTexture, this);
@@ -556,6 +557,20 @@ void SMaterial::updateShadingMode( int shadingMode  )
 {
     ::fwData::Material::ShadingType mode = static_cast< ::fwData::Material::ShadingType >(shadingMode);
 
+    bool updateLightsNumber(false);
+
+    if(mode != ::fwData::Material::AMBIENT)
+    {
+        int currentLightsNumber = this->getLayer()->getLightsNumber();
+
+        // We need to update the number of lights supported in the material if it has changed
+        if(m_lightsNumber != currentLightsNumber && currentLightsNumber > 0)
+        {
+            m_lightsNumber     = currentLightsNumber;
+            updateLightsNumber = true;
+        }
+    }
+
     ::Ogre::String permutation;
     permutation = ::fwRenderOgre::helper::Shading::getPermutation(mode, this->hasDiffuseTexture(),
                                                                   m_hasVertexColor);
@@ -646,10 +661,10 @@ void SMaterial::updateShadingMode( int shadingMode  )
                     fpName = ::fwRenderOgre::helper::Shading::setPermutationInProgramName(fpName, permutation);
                     ogrePass->setFragmentProgram(fpName);
 
+                    const bool colorPass = ::fwRenderOgre::helper::Shading::isColorTechnique(*tech);
+
                     if(m_texAdaptor)
                     {
-                        const bool colorPass = ::fwRenderOgre::helper::Shading::isColorTechnique(*tech);
-
                         // Updates the u_hasTextureAlpha flag uniform according to the configuration
                         // of the texture adaptor
                         if(this->hasDiffuseTexture() && colorPass)
@@ -657,6 +672,25 @@ void SMaterial::updateShadingMode( int shadingMode  )
                             int useTextureAlpha = static_cast<int>(m_texAdaptor->getUseAlpha());
                             ogrePass->getFragmentProgramParameters()->setNamedConstant("u_useTextureAlpha",
                                                                                        useTextureAlpha);
+                        }
+                    }
+
+                    if(updateLightsNumber)
+                    {
+                        if(ogrePass->getVertexProgramName() != "")
+                        {
+                            ::fwRenderOgre::helper::Shading::updateUniform<int>(
+                                ogrePass->getVertexProgramParameters(),
+                                ::Ogre::GPT_VERTEX_PROGRAM, "u_numLights",
+                                m_lightsNumber);
+                        }
+
+                        if(ogrePass->getFragmentProgramName() != "")
+                        {
+                            ::fwRenderOgre::helper::Shading::updateUniform<int>(
+                                ogrePass->getFragmentProgramParameters(),
+                                ::Ogre::GPT_FRAGMENT_PROGRAM, "u_numLights",
+                                m_lightsNumber);
                         }
                     }
                 }

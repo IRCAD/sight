@@ -117,7 +117,7 @@ public:
     typedef std::string OgreObjectIdType;
     typedef std::string SceneIdType;
 
-    /// Actives layouts in the scene
+    /// Actives layouts in the scene.
     typedef std::map< SceneIdType, SPTR(::fwRenderOgre::Layer) > LayerMapType;
 
     FWRENDEROGRE_API static const std::string s_OGREBACKGROUNDID;
@@ -135,50 +135,50 @@ public:
      * @{
      */
     typedef ::fwCom::Slot< void () > StartObjectSlotType;
-    /// Slot: Start each adaptor contained in this render service
+    /// Slot: Start each adaptor contained in this render service.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_START_OBJECT_SLOT;
 
     typedef ::fwCom::Slot< void () > ComputeCameraOrigSlotType;
-    /// Slot: Computes the parameters to reset the camera
+    /// Slot: Computes the parameters to reset the camera.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_COMPUTE_CAMERA_ORIG_SLOT;
 
     typedef ::fwCom::Slot< void () > ComputeCameraClippingSlotType;
-    /// Slot: Computes the parameters to reset the camera
+    /// Slot: Computes the parameters to reset the camera.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_COMPUTE_CAMERA_CLIPPING_SLOT;
 
     typedef ::fwCom::Slot< void (int, int, int, int) > DoRayCastSlotType;
-    /// Slot: Request the picker to do a ray cast according to the passed position
+    /// Slot: Request the picker to do a ray cast according to the passed position.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_DO_RAY_CAST_SLOT;
     /** @} */
 
-    /// Set this render service as the current OpenGL context
+    /// Sets this render service as the current OpenGL context.
     FWRENDEROGRE_API void makeCurrent();
 
-    /// Request a render from the Ogre render engine
+    /// Requests a render from the Ogre render engine.
     FWRENDEROGRE_API void requestRender();
 
-    /// Returns true if the scene is shown on screen
+    /// Returns true if the scene is shown on screen.
     FWRENDEROGRE_API bool isShownOnScreen();
 
-    /// Returns the scene manager corresponding to the sceneID
+    /// Returns the scene manager corresponding to the sceneID.
     FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager(const ::std::string& sceneID);
 
-    /// Returns the layer corresponding to the sceneID
+    /// Returns the layer corresponding to the sceneID.
     FWRENDEROGRE_API ::fwRenderOgre::Layer::sptr getLayer(const ::std::string& sceneID);
 
-    /// Returns this render layers
+    /// Returns this render layers.
     FWRENDEROGRE_API LayerMapType getLayers();
 
-    /// Returns m_interactorManager
+    /// Returns m_interactorManager.
     FWRENDEROGRE_API ::fwRenderOgre::IRenderWindowInteractorManager::sptr getInteractorManager() const;
 
-    /// Reset camera parameters with the actual global bounding box
+    /// Resets camera parameters with the actual global bounding box.
     FWRENDEROGRE_API void resetCameraCoordinates(const std::string& _layerId);
 
-    /// Compute camera parameters with the actual global bounding box
+    /// Computes camera parameters with the actual global bounding box.
     FWRENDEROGRE_API void computeCameraClipping();
 
-    /// Return true if the ogre context is ready to be used
+    /// Returns true if the ogre context is ready to be used.
     FWRENDEROGRE_API bool isReady() const;
 
     /// Adds a new adaptor to the map.

@@ -31,9 +31,10 @@ fragment_program RayTracedVolume_FP glsl
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_lightDiffuse light_diffuse_colour_array 1
-        param_named_auto u_lightSpecular light_specular_colour_array 1
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
     }
 }
 
@@ -61,9 +62,10 @@ fragment_program RayTracedVolume_AmbientOcclusion_FP glsl
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_lightDiffuse light_diffuse_colour_array 1
-        param_named_auto u_lightSpecular light_specular_colour_array 1
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
     }
 }
 
@@ -91,9 +93,10 @@ fragment_program RayTracedVolume_ColorBleeding_FP glsl
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_lightDiffuse light_diffuse_colour_array 1
-        param_named_auto u_lightSpecular light_specular_colour_array 1
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
     }
 }
 
@@ -121,9 +124,10 @@ fragment_program RayTracedVolume_Shadows_FP glsl
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_lightDiffuse light_diffuse_colour_array 1
-        param_named_auto u_lightSpecular light_specular_colour_array 1
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
     }
 }
 
@@ -151,9 +155,10 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_FP glsl
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_lightDiffuse light_diffuse_colour_array 1
-        param_named_auto u_lightSpecular light_specular_colour_array 1
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
     }
 }
 
@@ -181,9 +186,10 @@ fragment_program RayTracedVolume_AmbientOcclusion_Shadows_FP glsl
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_lightDiffuse light_diffuse_colour_array 1
-        param_named_auto u_lightSpecular light_specular_colour_array 1
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
     }
 }
 
@@ -211,9 +217,10 @@ fragment_program RayTracedVolume_ColorBleeding_Shadows_FP glsl
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_lightDiffuse light_diffuse_colour_array 1
-        param_named_auto u_lightSpecular light_specular_colour_array 1
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
     }
 }
 
@@ -241,9 +248,10 @@ fragment_program RayTracedVolume_VolumeIllumination_FP glsl
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_lightDiffuse light_diffuse_colour_array 1
-        param_named_auto u_lightSpecular light_specular_colour_array 1
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
     }
 }
 
@@ -274,9 +282,10 @@ fragment_program VR/RayTracedVolume3D5_FP glsl
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_lightDiffuse light_diffuse_colour_array 1
-        param_named_auto u_lightSpecular light_specular_colour_array 1
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
     }
 }
 
@@ -310,9 +319,10 @@ fragment_program VR/RayTracedVolume3D8_FP glsl
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_lightDiffuse light_diffuse_colour_array 1
-        param_named_auto u_lightSpecular light_specular_colour_array 1
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
     }
 }
 
@@ -353,9 +363,10 @@ fragment_program RayTracedVolume_PreIntegrated_FP glsl
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_lightDiffuse light_diffuse_colour_array 1
-        param_named_auto u_lightSpecular light_specular_colour_array 1
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
     }
 }
 
@@ -385,9 +396,10 @@ fragment_program RayTracedVolume_PreIntegrated_AmbientOcclusion_FP glsl
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_lightDiffuse light_diffuse_colour_array 1
-        param_named_auto u_lightSpecular light_specular_colour_array 1
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
     }
 }
 
@@ -417,9 +429,10 @@ fragment_program RayTracedVolume_PreIntegrated_ColorBleeding_FP glsl
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_lightDiffuse light_diffuse_colour_array 1
-        param_named_auto u_lightSpecular light_specular_colour_array 1s
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10s
     }
 }
 
@@ -449,9 +462,10 @@ fragment_program RayTracedVolume_PreIntegrated_Shadows_FP glsl
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_lightDiffuse light_diffuse_colour_array 1
-        param_named_auto u_lightSpecular light_specular_colour_array 1
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
     }
 }
 
@@ -481,9 +495,10 @@ fragment_program RayTracedVolume_PreIntegrated_AmbientOcclusion_ColorBleeding_FP
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_lightDiffuse light_diffuse_colour_array 1
-        param_named_auto u_lightSpecular light_specular_colour_array 1
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
     }
 }
 
@@ -513,9 +528,10 @@ fragment_program RayTracedVolume_PreIntegrated_AmbientOcclusion_Shadows_FP glsl
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_lightDiffuse light_diffuse_colour_array 1
-        param_named_auto u_lightSpecular light_specular_colour_array 1
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
     }
 }
 
@@ -545,9 +561,10 @@ fragment_program RayTracedVolume_PreIntegrated_ColorBleeding_Shadows_FP glsl
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_lightDiffuse light_diffuse_colour_array 1
-        param_named_auto u_lightSpecular light_specular_colour_array 1
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
     }
 }
 
@@ -577,9 +594,10 @@ fragment_program RayTracedVolume_PreIntegrated_VolumeIllumination_FP glsl
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
-        param_named_auto u_lightDir light_position_array 1
-        param_named_auto u_lightDiffuse light_diffuse_colour_array 1
-        param_named_auto u_lightSpecular light_specular_colour_array 1
+        param_named u_numLights int 1
+        param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightDiffuse light_diffuse_colour_array 10
+        param_named_auto u_lightSpecular light_specular_colour_array 10
     }
 }
 

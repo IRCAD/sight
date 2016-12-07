@@ -180,7 +180,7 @@ void SRender::starting() throw(fwTools::Failed)
     {
         // Create a default black background
         ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
-        ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
+        ogreLayer->setRenderService(::fwRenderOgre::SRender::dynamicCast(this->shared_from_this()));
         ogreLayer->setID("backgroundLayer");
         ogreLayer->setDepth(0);
         ogreLayer->setWorker(m_associatedWorker);
@@ -264,7 +264,7 @@ void SRender::configureLayer( ConfigurationType conf )
     SLM_ASSERT("Attribute 'layer' must be greater than 0", layerDepth > 0);
 
     ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
-    ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
+    ogreLayer->setRenderService(::fwRenderOgre::SRender::dynamicCast(this->shared_from_this()));
     ogreLayer->setID(id);
     ogreLayer->setDepth(layerDepth);
     ogreLayer->setWorker(m_associatedWorker);
@@ -291,7 +291,7 @@ void SRender::configureBackgroundLayer( ConfigurationType conf )
     SLM_ASSERT( "'id' required attribute missing or empty", !this->getID().empty() );
 
     ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
-    ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
+    ogreLayer->setRenderService(::fwRenderOgre::SRender::dynamicCast(this->shared_from_this()));
     ogreLayer->setID(s_OGREBACKGROUNDID);
     ogreLayer->setDepth(0);
     ogreLayer->setWorker(m_associatedWorker);
