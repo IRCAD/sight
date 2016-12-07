@@ -1150,8 +1150,16 @@ void AppConfig2Test::parameterReplaceTest()
     ::fwRuntime::ConfigurationElement::csptr config = this->buildParameterReplaceConfig();
     m_appConfigMgr                                  = this->launchAppConfigMgr("", config, true);
 
-    fwTools::Object::sptr gnsrv1 = ::fwTools::fwID::getObject("AppConfig2Manager_1_TestService2Uid");
-    auto srv1                    = ::fwServices::ut::TestService::dynamicCast(gnsrv1);
+    unsigned int i = 0;
+    fwTools::Object::sptr gnsrv1;
+
+    // Not really elegant, but we have to "guess" how it is replaced
+    while (gnsrv1 == nullptr && i++ < 200)
+    {
+        gnsrv1 = ::fwTools::fwID::getObject("AppConfig2Manager_" + std::to_string(i) + "_TestService2Uid");
+    }
+
+    auto srv1 = ::fwServices::ut::TestService::dynamicCast(gnsrv1);
     CPPUNIT_ASSERT(srv1 != nullptr);
 
     auto adaptedConfig = srv1->getConfiguration();
@@ -1162,16 +1170,16 @@ void AppConfig2Test::parameterReplaceTest()
     std::string replaceBy;
 
     replaceBy = paramsCfg[0]->getAttributeValue("by");
-    CPPUNIT_ASSERT_EQUAL(std::string("AppConfig2Manager_1_data2Id"), replaceBy);
+    CPPUNIT_ASSERT_EQUAL(std::string("AppConfig2Manager_" + std::to_string(i) + "_data2Id"), replaceBy);
 
     replaceBy = paramsCfg[1]->getAttributeValue("by");
     CPPUNIT_ASSERT_EQUAL(std::string("name"), replaceBy);
 
     replaceBy = paramsCfg[2]->getAttributeValue("by");
-    CPPUNIT_ASSERT_EQUAL(std::string("AppConfig2Manager_1_Channel No5"), replaceBy);
+    CPPUNIT_ASSERT_EQUAL(std::string("AppConfig2Manager_" + std::to_string(i) + "_Channel No5"), replaceBy);
 
     replaceBy = paramsCfg[3]->getAttributeValue("by");
-    CPPUNIT_ASSERT_EQUAL(std::string("AppConfig2Manager_1_view1"), replaceBy);
+    CPPUNIT_ASSERT_EQUAL(std::string("AppConfig2Manager_" + std::to_string(i) + "_view1"), replaceBy);
 }
 
 //------------------------------------------------------------------------------
