@@ -150,20 +150,30 @@ void SLight::doStart() throw(fwTools::Failed)
 
 void SLight::doUpdate() throw(fwTools::Failed)
 {
-    ::Ogre::ColourValue diffuseColor(m_lightDiffuseColor->red(),
-                                     m_lightDiffuseColor->green(),
-                                     m_lightDiffuseColor->blue(),
-                                     m_lightDiffuseColor->alpha());
+    if(m_lightDiffuseColor)
+    {
+        ::Ogre::ColourValue diffuseColor(m_lightDiffuseColor->red(),
+                                         m_lightDiffuseColor->green(),
+                                         m_lightDiffuseColor->blue(),
+                                         m_lightDiffuseColor->alpha());
 
-    ::Ogre::ColourValue specularColor(m_lightSpecularColor->red(),
-                                      m_lightSpecularColor->green(),
-                                      m_lightSpecularColor->blue(),
-                                      m_lightSpecularColor->alpha());
+        m_light->setDiffuseColour(diffuseColor);
+    }
 
-    m_light->setDiffuseColour(diffuseColor);
-    m_light->setSpecularColour(specularColor);
+    if(m_lightSpecularColor)
+    {
+        ::Ogre::ColourValue specularColor(m_lightSpecularColor->red(),
+                                          m_lightSpecularColor->green(),
+                                          m_lightSpecularColor->blue(),
+                                          m_lightSpecularColor->alpha());
 
-    this->requestRender();
+        m_light->setSpecularColour(specularColor);
+    }
+
+    if(m_lightDiffuseColor || m_lightSpecularColor)
+    {
+        this->requestRender();
+    }
 }
 
 //------------------------------------------------------------------------------

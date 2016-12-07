@@ -227,7 +227,6 @@ void Layer::createScene()
         m_lightManager = ::fwRenderOgre::ILight::createLightManager();
         m_lightManager->setName(Layer::DEFAULT_LIGHT_NAME);
         m_lightManager->setType(::Ogre::Light::LT_DIRECTIONAL);
-        m_lightManager->setDirection(::Ogre::Vector3(0, 0, -1));
         m_lightManager->setDiffuseColor(::Ogre::ColourValue());
         m_lightManager->setSpecularColor(::Ogre::ColourValue());
         m_lightManager->setParentTransformName(cameraNode->getName());

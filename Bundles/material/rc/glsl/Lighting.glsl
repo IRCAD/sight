@@ -14,21 +14,18 @@ uniform vec3 u_lightSpecular[MAX_LIGHTS];
 
 vec4 lighting(vec3 _normal, vec3 _position)
 {
-    vec3 vecToCam = normalize(_position - u_cameraPos);
+    vec3 vecToCam = normalize(u_cameraPos - _position);
 
-    float fLitDiffuse = 0;
     vec3 diffuse = vec3(0.0);
-
-    float fLitSpecular = 0;
     vec3 specular = vec3(0.0);
 
     for(int i = 0; i < u_numLights; ++i)
     {
-        fLitDiffuse += abs(dot( _normal, normalize(u_lightDir[i]) ));
+        float fLitDiffuse = abs(dot( normalize(u_lightDir[i]), _normal ));
         diffuse += fLitDiffuse * u_lightDiffuse[i];
 
         vec3 r = reflect(normalize(u_lightDir[i]), _normal);
-        fLitSpecular += pow( clamp(dot( vecToCam, r ), 0, 1), u_shininess);
+        float fLitSpecular = pow( clamp(dot( vecToCam, r ), 0, 1), u_shininess);
         specular += fLitSpecular * u_lightSpecular[i];
     }
 
