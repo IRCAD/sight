@@ -19,13 +19,18 @@ const ::fwRenderOgre::ILight::FactoryRegistryKeyType ILight::REGISTRY_KEY = "::f
 
 //-----------------------------------------------------------------------------
 
-::fwRenderOgre::ILight::sptr ILight::createLightManager()
+::fwRenderOgre::ILight::sptr ILight::createLightManager(::fwData::Color::sptr _diffuse, ::fwData::Color::sptr _specular)
 {
     ::fwRenderOgre::ILight::sptr light = ::fwRenderOgre::lightFactory::New(::fwRenderOgre::ILight::REGISTRY_KEY );
     SLM_ASSERT("The factory process to create an ILight failed.", light);
+    SLM_ASSERT("The light adaptor must be registered with existing color data objects.", _diffuse && _specular);
 
     ::fwData::TransformationMatrix3D::sptr tfMat = ::fwData::TransformationMatrix3D::New();
     ::fwServices::OSR::registerService(tfMat, light);
+    ::fwServices::OSR::registerService(_diffuse, "diffuseColor",
+                                       ::fwServices::IService::AccessType::INOUT, light);
+    ::fwServices::OSR::registerService(_specular, "specularColor",
+                                       ::fwServices::IService::AccessType::INOUT, light);
 
     return light;
 }

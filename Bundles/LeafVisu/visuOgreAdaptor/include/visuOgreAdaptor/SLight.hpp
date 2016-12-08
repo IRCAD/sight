@@ -13,8 +13,6 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwData/Color.hpp>
-
 #include <fwRenderOgre/ILight.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 
@@ -40,8 +38,8 @@ namespace visuOgreAdaptor
  * @code{.xml}
     <service uid="lightAdaptor" type="::visuOgreAdaptor::SLight">
         <in key="transform" uid="lightTFUid" />
-        <in key="diffuseColor" uid="diffuseColorUid" />
-        <in key="specularColor" uid="specularColorUid" />
+        <inout key="diffuseColor" uid="diffuseColorUid" />
+        <inout key="specularColor" uid="specularColorUid" />
         <config name="sceneLight" parentTransformId="cameraTF" thetaOffset="30.5" phiOffset="45" />
     </service>
  * @endcode
@@ -147,10 +145,10 @@ private:
     ::Ogre::Vector3 m_lightDirection;
 
     /// Diffuse color of the associated Ogre light.
-    ::fwData::Color::csptr m_lightDiffuseColor;
+    ::fwData::Color::sptr m_lightDiffuseColor;
 
     /// Specular color of the associated Ogre light.
-    ::fwData::Color::csptr m_lightSpecularColor;
+    ::fwData::Color::sptr m_lightSpecularColor;
 
     /// If we can't retrieve the parent transform adaptor, we will use a scene node without any parent.
     bool m_useOrphanNode;

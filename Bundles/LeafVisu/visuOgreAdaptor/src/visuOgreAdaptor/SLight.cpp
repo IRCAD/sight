@@ -45,12 +45,12 @@ const ::fwCom::Slots::SlotKeyType SLight::s_SET_DOUBLE_PARAMETER_SLOT = "setDoub
 //------------------------------------------------------------------------------
 
 SLight::SLight() throw() :
-    m_light         (nullptr),
-    m_lightName     (""),
-    m_lightType     (::Ogre::Light::LT_DIRECTIONAL),
-    m_useOrphanNode (true),
-    m_thetaOffset   (0.f),
-    m_phiOffset     (0.f)
+    m_light        (nullptr),
+    m_lightName    (""),
+    m_lightType    (::Ogre::Light::LT_DIRECTIONAL),
+    m_useOrphanNode(true),
+    m_thetaOffset  (0.f),
+    m_phiOffset    (0.f)
 {
     newSlot(s_UPDATE_X_OFFSET_SLOT, &SLight::updateThetaOffset, this);
     newSlot(s_UPDATE_Y_OFFSET_SLOT, &SLight::updatePhiOffset, this);
@@ -62,8 +62,8 @@ SLight::SLight(::fwRenderOgre::ILight::Key key) :
     m_light        (nullptr),
     m_lightName    (""),
     m_useOrphanNode(true),
-    m_thetaOffset      (0.f),
-    m_phiOffset      (0.f)
+    m_thetaOffset  (0.f),
+    m_phiOffset    (0.f)
 {
     newSlot(s_UPDATE_X_OFFSET_SLOT, &SLight::updateThetaOffset, this);
     newSlot(s_UPDATE_Y_OFFSET_SLOT, &SLight::updatePhiOffset, this);
@@ -110,12 +110,12 @@ void SLight::doStart() throw(fwTools::Failed)
 {
     if(!m_lightDiffuseColor)
     {
-        m_lightDiffuseColor = this->getInput< ::fwData::Color >("diffuseColor");
+        m_lightDiffuseColor = this->getInOut< ::fwData::Color >("diffuseColor");
     }
 
     if(!m_lightSpecularColor)
     {
-        m_lightSpecularColor = this->getInput< ::fwData::Color >("specularColor");
+        m_lightSpecularColor = this->getInOut< ::fwData::Color >("specularColor");
     }
 
     m_lightName = this->getID() + "_" + m_lightName;
@@ -182,8 +182,10 @@ void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
 {
     if(!m_lightDiffuseColor)
     {
-        m_lightDiffuseColor = ::fwRenderOgre::Utils::convertOgreColorToFwColor(_diffuseColor);
+        m_lightDiffuseColor = this->getInOut< ::fwData::Color >("diffuseColor");
     }
+
+    m_lightDiffuseColor->setRGBA(_diffuseColor.r, _diffuseColor.g, _diffuseColor.b, _diffuseColor.a);
 }
 
 //------------------------------------------------------------------------------
@@ -192,8 +194,10 @@ void SLight::setSpecularColor(::Ogre::ColourValue _specularColor)
 {
     if(!m_lightSpecularColor)
     {
-        m_lightSpecularColor = ::fwRenderOgre::Utils::convertOgreColorToFwColor(_specularColor);
+        m_lightSpecularColor = this->getInOut< ::fwData::Color >("specularColor");
     }
+
+    m_lightSpecularColor->setRGBA(_specularColor.r, _specularColor.g, _specularColor.b, _specularColor.a);
 }
 
 //------------------------------------------------------------------------------

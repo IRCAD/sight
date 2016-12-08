@@ -15,6 +15,8 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
+#include <fwData/Color.hpp>
+
 #include <fwDataTools/Color.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
@@ -224,11 +226,13 @@ void Layer::createScene()
 
     if(m_hasDefaultLight)
     {
-        m_lightManager = ::fwRenderOgre::ILight::createLightManager();
+        m_defaultLightDiffuseColor  = ::fwData::Color::New();
+        m_defaultLightSpecularColor = ::fwData::Color::New();
+
+        m_lightManager = ::fwRenderOgre::ILight::createLightManager(m_defaultLightDiffuseColor,
+                                                                    m_defaultLightSpecularColor);
         m_lightManager->setName(Layer::DEFAULT_LIGHT_NAME);
         m_lightManager->setType(::Ogre::Light::LT_DIRECTIONAL);
-        m_lightManager->setDiffuseColor(::Ogre::ColourValue());
-        m_lightManager->setSpecularColor(::Ogre::ColourValue());
         m_lightManager->setParentTransformName(cameraNode->getName());
         m_lightManager->setLayerID(this->getLayerID());
 

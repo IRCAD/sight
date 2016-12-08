@@ -13,6 +13,8 @@
 #include "fwRenderOgre/factory/new.hpp"
 #include "fwRenderOgre/registry/detail.hpp"
 
+#include <fwData/Color.hpp>
+
 #include <fwGui/container/fwContainer.hpp>
 
 #include <OGRE/OgreColourValue.h>
@@ -57,7 +59,8 @@ public:
 
     FWRENDEROGRE_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
-    FWRENDEROGRE_API static ILight::sptr createLightManager();
+    FWRENDEROGRE_API static ILight::sptr createLightManager(::fwData::Color::sptr _diffuse,
+                                                            ::fwData::Color::sptr _specular);
 
     /// Constructor. Do nothing.
     FWRENDEROGRE_API ILight();

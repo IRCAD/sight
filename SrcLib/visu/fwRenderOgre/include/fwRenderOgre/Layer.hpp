@@ -29,6 +29,11 @@
 #include <cstdint>
 #include <vector>
 
+namespace fwData
+{
+class Color;
+}
+
 namespace fwRenderOgre
 {
 class SRender;
@@ -328,6 +333,12 @@ private:
 
     /// Abstract light used to set the default light.
     SPTR(::fwRenderOgre::ILight) m_lightManager;
+
+    /// Diffuse color of the default light.
+    SPTR(::fwData::Color) m_defaultLightDiffuseColor;
+
+    /// Specular color of the specular light.
+    SPTR(::fwData::Color) m_defaultLightSpecularColor;
 };
 
 }
