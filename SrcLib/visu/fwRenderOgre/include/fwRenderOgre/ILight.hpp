@@ -14,6 +14,7 @@
 #include "fwRenderOgre/registry/detail.hpp"
 
 #include <fwData/Color.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwGui/container/fwContainer.hpp>
 
@@ -59,7 +60,8 @@ public:
 
     FWRENDEROGRE_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
-    FWRENDEROGRE_API static ILight::sptr createLightManager(::fwData::Color::sptr _diffuse,
+    FWRENDEROGRE_API static ILight::sptr createLightManager(::fwData::TransformationMatrix3D::sptr _transform,
+                                                            ::fwData::Color::sptr _diffuse,
                                                             ::fwData::Color::sptr _specular);
 
     /// Constructor. Do nothing.

@@ -16,6 +16,7 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Color.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/Color.hpp>
 
@@ -226,10 +227,12 @@ void Layer::createScene()
 
     if(m_hasDefaultLight)
     {
+        m_defaultLightTransform     = ::fwData::TransformationMatrix3D::New();
         m_defaultLightDiffuseColor  = ::fwData::Color::New();
         m_defaultLightSpecularColor = ::fwData::Color::New();
 
-        m_lightManager = ::fwRenderOgre::ILight::createLightManager(m_defaultLightDiffuseColor,
+        m_lightManager = ::fwRenderOgre::ILight::createLightManager(m_defaultLightTransform,
+                                                                    m_defaultLightDiffuseColor,
                                                                     m_defaultLightSpecularColor);
         m_lightManager->setName(Layer::DEFAULT_LIGHT_NAME);
         m_lightManager->setType(::Ogre::Light::LT_DIRECTIONAL);

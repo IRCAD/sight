@@ -32,6 +32,7 @@
 namespace fwData
 {
 class Color;
+class TransformationMatrix3D;
 }
 
 namespace fwRenderOgre
@@ -333,6 +334,8 @@ private:
 
     /// Abstract light used to set the default light.
     SPTR(::fwRenderOgre::ILight) m_lightManager;
+
+    SPTR(::fwData::TransformationMatrix3D) m_defaultLightTransform;
 
     /// Diffuse color of the default light.
     SPTR(::fwData::Color) m_defaultLightDiffuseColor;

@@ -8,7 +8,6 @@
 
 #include <fwCom/Slots.hxx>
 
-#include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
