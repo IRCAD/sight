@@ -25,7 +25,8 @@ const ::fwRenderOgre::ILight::FactoryRegistryKeyType ILight::REGISTRY_KEY = "::f
     SLM_ASSERT("The factory process to create an ILight failed.", light);
     SLM_ASSERT("The light adaptor must be registered with existing data objects.", _transform && _diffuse && _specular);
 
-    ::fwServices::OSR::registerService(_transform, light);
+    ::fwServices::OSR::registerService(_transform, "transform",
+                                       ::fwServices::IService::AccessType::INOUT, light);
     ::fwServices::OSR::registerService(_diffuse, "diffuseColor",
                                        ::fwServices::IService::AccessType::INOUT, light);
     ::fwServices::OSR::registerService(_specular, "specularColor",

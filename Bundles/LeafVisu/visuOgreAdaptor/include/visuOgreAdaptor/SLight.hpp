@@ -37,7 +37,7 @@ namespace visuOgreAdaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="lightAdaptor" type="::visuOgreAdaptor::SLight">
-        <in key="transform" uid="lightTFUid" />
+        <inout key="transform" uid="lightTFUid" />
         <inout key="diffuseColor" uid="diffuseColorUid" />
         <inout key="specularColor" uid="specularColorUid" />
         <config name="sceneLight" parentTransformId="cameraTF" thetaOffset="30.5" phiOffset="45" />

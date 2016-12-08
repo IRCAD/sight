@@ -25,7 +25,7 @@
 
 //------------------------------------------------------------------------------
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLight, ::fwData::TransformationMatrix3D);
+fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SLight);
 
 fwRenderOgreRegisterLightMacro( ::visuOgreAdaptor::SLight,
                                 ::fwRenderOgre::ILight::REGISTRY_KEY );
@@ -107,15 +107,8 @@ void SLight::doConfigure() throw(fwTools::Failed)
 
 void SLight::doStart() throw(fwTools::Failed)
 {
-    if(!m_lightDiffuseColor)
-    {
-        m_lightDiffuseColor = this->getInOut< ::fwData::Color >("diffuseColor");
-    }
-
-    if(!m_lightSpecularColor)
-    {
-        m_lightSpecularColor = this->getInOut< ::fwData::Color >("specularColor");
-    }
+    m_lightDiffuseColor  = this->getInOut< ::fwData::Color >("diffuseColor");
+    m_lightSpecularColor = this->getInOut< ::fwData::Color >("specularColor");
 
     m_lightName = this->getID() + "_" + m_lightName;
     m_light     = this->getSceneManager()->createLight(m_lightName);
@@ -149,41 +142,28 @@ void SLight::doStart() throw(fwTools::Failed)
 
 void SLight::doUpdate() throw(fwTools::Failed)
 {
-    if(m_lightDiffuseColor)
-    {
-        ::Ogre::ColourValue diffuseColor(m_lightDiffuseColor->red(),
-                                         m_lightDiffuseColor->green(),
-                                         m_lightDiffuseColor->blue(),
-                                         m_lightDiffuseColor->alpha());
+    SLM_ASSERT("Missing color data objects.", m_lightDiffuseColor && m_lightSpecularColor);
 
-        m_light->setDiffuseColour(diffuseColor);
-    }
+    ::Ogre::ColourValue diffuseColor(m_lightDiffuseColor->red(),
+                                     m_lightDiffuseColor->green(),
+                                     m_lightDiffuseColor->blue(),
+                                     m_lightDiffuseColor->alpha());
+    ::Ogre::ColourValue specularColor(m_lightSpecularColor->red(),
+                                      m_lightSpecularColor->green(),
+                                      m_lightSpecularColor->blue(),
+                                      m_lightSpecularColor->alpha());
 
-    if(m_lightSpecularColor)
-    {
-        ::Ogre::ColourValue specularColor(m_lightSpecularColor->red(),
-                                          m_lightSpecularColor->green(),
-                                          m_lightSpecularColor->blue(),
-                                          m_lightSpecularColor->alpha());
+    m_light->setDiffuseColour(diffuseColor);
+    m_light->setSpecularColour(specularColor);
 
-        m_light->setSpecularColour(specularColor);
-    }
-
-    if(m_lightDiffuseColor || m_lightSpecularColor)
-    {
-        this->requestRender();
-    }
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
 
 void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
 {
-    if(!m_lightDiffuseColor)
-    {
-        m_lightDiffuseColor = this->getInOut< ::fwData::Color >("diffuseColor");
-    }
-
+    SLM_ASSERT("Missing diffuse color data object.", m_lightDiffuseColor);
     m_lightDiffuseColor->setRGBA(_diffuseColor.r, _diffuseColor.g, _diffuseColor.b, _diffuseColor.a);
 }
 
@@ -191,11 +171,7 @@ void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
 
 void SLight::setSpecularColor(::Ogre::ColourValue _specularColor)
 {
-    if(!m_lightSpecularColor)
-    {
-        m_lightSpecularColor = this->getInOut< ::fwData::Color >("specularColor");
-    }
-
+    SLM_ASSERT("Missing specular color data object.", m_lightSpecularColor);
     m_lightSpecularColor->setRGBA(_specularColor.r, _specularColor.g, _specularColor.b, _specularColor.a);
 }
 
@@ -247,13 +223,10 @@ void SLight::setDoubleParameter(double _val, std::string _key)
 
 void SLight::createTransformService()
 {
-    ::fwData::TransformationMatrix3D::csptr transform =
-        this->getInput< ::fwData::TransformationMatrix3D >("transform");
+    ::fwData::TransformationMatrix3D::sptr transform =
+        this->getInOut< ::fwData::TransformationMatrix3D >("transform");
 
-    if(!transform)
-    {
-        transform = ::fwData::TransformationMatrix3D::New();
-    }
+    SLM_ASSERT("Missing tranform data object.", transform);
 
     m_transformService = ::fwServices::add< ::fwRenderOgre::IAdaptor >(transform,
                                                                        "::visuOgreAdaptor::STransform");
