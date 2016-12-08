@@ -74,8 +74,6 @@ public:
         = 0;
     FWRENDEROGRE_API virtual void setType(::Ogre::Light::LightTypes _type)
         = 0;
-    FWRENDEROGRE_API virtual void setDirection(::Ogre::Vector3 _direction)
-        = 0;
     FWRENDEROGRE_API virtual void setDiffuseColor(::Ogre::ColourValue _diffuseColor)
         = 0;
     FWRENDEROGRE_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor)

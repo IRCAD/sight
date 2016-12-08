@@ -98,9 +98,6 @@ protected:
     /// Light type setter.
     VISUOGREADAPTOR_API virtual void setType(::Ogre::Light::LightTypes _type);
 
-    /// Light direction setter.
-    VISUOGREADAPTOR_API virtual void setDirection(::Ogre::Vector3 _direction);
-
     /// Diffuse color setter using fwData::Color.
     VISUOGREADAPTOR_API void setDiffuseColor(::fwData::Color::sptr _diffuseColor);
 
@@ -141,9 +138,6 @@ private:
     /// Type of the associated Ogre light.
     ::Ogre::Light::LightTypes m_lightType;
 
-    /// Direction of the associated Ogre light.
-    ::Ogre::Vector3 m_lightDirection;
-
     /// Diffuse color of the associated Ogre light.
     ::fwData::Color::sptr m_lightDiffuseColor;
 
@@ -173,13 +167,6 @@ inline void SLight::setName(std::string _name)
 inline void SLight::setType(::Ogre::Light::LightTypes _type)
 {
     m_lightType = _type;
-}
-
-//------------------------------------------------------------------------------
-
-inline void SLight::setDirection(::Ogre::Vector3 _direction)
-{
-    m_lightDirection = _direction;
 }
 
 //------------------------------------------------------------------------------
