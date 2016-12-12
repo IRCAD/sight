@@ -45,8 +45,8 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Im
 namespace visuVTKAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_LANDMARKS_SLOT = "updateLandmaks";
-
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_LANDMARKS_SLOT       = "updateLandmaks";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_LANDMARKS_FIELD_SLOT = "updateLandmarksField";
 
 //------------------------------------------------------------------------------
 
@@ -201,6 +201,7 @@ ImageLandmarks::ImageLandmarks() throw() :
     m_needSubservicesDeletion(false)
 {
     newSlot(s_UPDATE_LANDMARKS_SLOT, &ImageLandmarks::updateLandmaks, this);
+    newSlot(s_UPDATE_LANDMARKS_FIELD_SLOT, &ImageLandmarks::updateLandmaksField, this);
 }
 
 //------------------------------------------------------------------------------
@@ -298,6 +299,19 @@ void ImageLandmarks::updateLandmaks()
 
 //------------------------------------------------------------------------------
 
+void ImageLandmarks::updateLandmaksField(::fwData::Object::FieldsContainerType fieldsContainer)
+{
+    auto landmarkFound = fieldsContainer.find(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+
+    if( landmarkFound != fieldsContainer.end())
+    {
+        m_needSubservicesDeletion = true; // to manage point deletion
+        this->updating();
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void ImageLandmarks::doStop() throw(fwTools::Failed)
 {
     if ( m_rightButtonCommand ) // can be not instanciated (use of ImageLandmarks::show() )
@@ -332,6 +346,7 @@ void ImageLandmarks::show(bool b)
     connections.push_back( std::make_pair( ::fwData::Image::s_LANDMARK_ADDED_SIG, s_UPDATE_LANDMARKS_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Image::s_LANDMARK_REMOVED_SIG, s_UPDATE_LANDMARKS_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Image::s_LANDMARK_DISPLAYED_SIG, s_UPDATE_LANDMARKS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_ADDED_FIELDS_SIG, s_UPDATE_LANDMARKS_FIELD_SLOT ) );
 
     return connections;
 }

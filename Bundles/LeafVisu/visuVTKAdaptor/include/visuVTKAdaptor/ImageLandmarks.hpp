@@ -19,7 +19,21 @@ namespace visuVTKAdaptor
 
 
 /**
- * @brief Adaptor to display image landmarks
+ * @brief Adaptor for landmarks in the field of an image.
+ *
+ * Registers a ::fwData::PointList in to the generic scene for the landmarks in the given Image
+ *
+ * @section Slots Slots
+ * - \b updateLandmaks() : Updates the rendering on the scene
+ * - \b updateLandmaksField() : Tests if the added field is a landmark image type and updates the rendering accordingly.
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <adaptor id="..." class="::visuVTKAdaptor::ImageLandmarks" objectId="imageKey">
+            <config renderer="default" picker="default" />
+        </adaptor>
+   @endcode
+ *
  */
 class VISUVTKADAPTOR_CLASS_API ImageLandmarks : public ::fwRenderVTK::IVtkAdaptorService
 {
@@ -55,7 +69,7 @@ protected:
 
     std::list< ::fwRenderVTK::IVtkAdaptorService::sptr > m_subServices;
 
-    vtkCommand * m_rightButtonCommand;
+    vtkCommand* m_rightButtonCommand;
 
     bool m_needSubservicesDeletion;
 
@@ -64,10 +78,10 @@ private:
     /// Slot: update landmarks sub-adaptors
     void updateLandmaks();
 
+    /// Slot: tests if the added field is a landmark, if it is, updates the vrkPoints.
+    void updateLandmaksField(::fwData::Object::FieldsContainerType fieldsContainer);
+
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 
