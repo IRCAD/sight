@@ -309,8 +309,8 @@ void Window::renderNow()
     this->render();
 
 #if DISPLAY_OGRE_FPS == 1
-    static int i = 0;
-    static float fps = 0.f;
+    static int i               = 0;
+    static float fps           = 0.f;
     static const int numFrames = 500;
 
     fps += m_ogreRenderWindow->getLastFPS();
