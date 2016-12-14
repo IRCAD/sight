@@ -18,6 +18,11 @@
 #include <OgreOverlay.h>
 #include <OgreOverlayManager.h>
 
+// Set this to 1 to display the FPS in the console output
+#ifndef DISPLAY_OGRE_FPS
+#define DISPLAY_OGRE_FPS 1
+#endif
+
 #define ZOOM_SPEED 0.2
 
 namespace visuOgreQt
@@ -221,15 +226,6 @@ void Window::render()
     //    Ogre::FrameEvent evt;
     //    m_trayMgr->frameRenderingQueued(evt);
     m_ogreRoot->_fireFrameEnded();
-
-#ifdef FW_PROFILING_DISABLED
-    static unsigned int i = 0;
-    if( !(++i % 100 ) )
-    {
-        Ogre::RenderTarget::FrameStats stats = m_ogreRenderWindow->getStatistics();
-        OSLM_DEBUG("Render target last FPS: " << stats.lastFPS);
-    }
-#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -311,6 +307,20 @@ void Window::renderNow()
     }
 
     this->render();
+
+#if DISPLAY_OGRE_FPS == 1
+    static int i               = 0;
+    static float fps           = 0.f;
+    static const int numFrames = 500;
+
+    fps += m_ogreRenderWindow->getLastFPS();
+    if(++i == numFrames)
+    {
+        OSLM_LOG("FPS average : " << fps/numFrames );
+        i   = 0;
+        fps = 0.f;
+    }
+#endif // DISPLAY_OGRE_FPS
 
     if (m_animating)
     {
@@ -570,7 +580,11 @@ void Window::mouseReleaseEvent( QMouseEvent* e )
 
 void Window::setAnimating(bool animating)
 {
+#if DISPLAY_OGRE_FPS == 1
+    m_animating = true;
+#else
     m_animating = animating;
+#endif // DISPLAY_OGRE_FPS
 
     if (animating)
     {
