@@ -1,20 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "maths/SConcatenateMatrices.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
 
 fwServicesRegisterMacro(::fwServices::IController, ::maths::SConcatenateMatrices, ::fwData::TransformationMatrix3D);
 
@@ -99,7 +101,7 @@ void SConcatenateMatrices::starting() throw (fwTools::Failed)
 {
     if(!this->isVersion2())
     {
-        for( TransformMatrix &currentMatrix : m_matrixVector)
+        for( TransformMatrix& currentMatrix : m_matrixVector)
         {
             ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(currentMatrix.m_uid);
             SLM_ASSERT("Object '" + currentMatrix.m_uid + "' is not found.", obj);
@@ -131,23 +133,29 @@ void SConcatenateMatrices::updating() throw (fwTools::Failed)
 {
     if(this->isVersion2())
     {
-        auto inverse      = ::fwData::TransformationMatrix3D::New();
         auto outputMatrix = this->getInOut< ::fwData::TransformationMatrix3D >("output");
-
-        ::fwDataTools::TransformationMatrix3D::identity(outputMatrix);
-
-        size_t index = 0;
-        for( TransformMatrix currentMatrix : m_matrixVector)
         {
-            auto inputMatrix = this->getInput< ::fwData::TransformationMatrix3D >("matrix", index++);
-            if( currentMatrix.m_inverse )
+            ::fwData::mt::ObjectWriteLock outputMatrixLock(outputMatrix);
+
+            ::fwDataTools::TransformationMatrix3D::identity(outputMatrix);
+
+            auto inverse = ::fwData::TransformationMatrix3D::New();
+
+            size_t index = 0;
+            for( TransformMatrix currentMatrix : m_matrixVector)
             {
-                ::fwDataTools::TransformationMatrix3D::invert(inputMatrix, inverse);
-                ::fwDataTools::TransformationMatrix3D::multiply(outputMatrix, inverse, outputMatrix);
-            }
-            else
-            {
-                ::fwDataTools::TransformationMatrix3D::multiply(outputMatrix, inputMatrix, outputMatrix);
+                auto inputMatrix = this->getInput< ::fwData::TransformationMatrix3D >("matrix", index++);
+                ::fwData::mt::ObjectReadLock inputMatrixLock(inputMatrix);
+
+                if( currentMatrix.m_inverse )
+                {
+                    ::fwDataTools::TransformationMatrix3D::invert(inputMatrix, inverse);
+                    ::fwDataTools::TransformationMatrix3D::multiply(outputMatrix, inverse, outputMatrix);
+                }
+                else
+                {
+                    ::fwDataTools::TransformationMatrix3D::multiply(outputMatrix, inputMatrix, outputMatrix);
+                }
             }
         }
 
@@ -162,18 +170,23 @@ void SConcatenateMatrices::updating() throw (fwTools::Failed)
         ::fwData::TransformationMatrix3D::sptr inverse = ::fwData::TransformationMatrix3D::New();
         ::fwData::TransformationMatrix3D::sptr matrix  = this->getObject< ::fwData::TransformationMatrix3D >();
 
-        ::fwDataTools::TransformationMatrix3D::identity(matrix);
-
-        for( TransformMatrix currentMatrix : m_matrixVector)
+        ::fwData::mt::ObjectWriteLock outputMatrixLock(matrix);
         {
-            if( currentMatrix.m_inverse )
+            ::fwDataTools::TransformationMatrix3D::identity(matrix);
+
+            for( TransformMatrix currentMatrix : m_matrixVector)
             {
-                ::fwDataTools::TransformationMatrix3D::invert(currentMatrix.m_matrix, inverse);
-                ::fwDataTools::TransformationMatrix3D::multiply(matrix, inverse, matrix);
-            }
-            else
-            {
-                ::fwDataTools::TransformationMatrix3D::multiply(matrix, currentMatrix.m_matrix, matrix);
+                ::fwData::mt::ObjectReadLock inputMatrixLock(currentMatrix.m_matrix);
+
+                if( currentMatrix.m_inverse )
+                {
+                    ::fwDataTools::TransformationMatrix3D::invert(currentMatrix.m_matrix, inverse);
+                    ::fwDataTools::TransformationMatrix3D::multiply(matrix, inverse, matrix);
+                }
+                else
+                {
+                    ::fwDataTools::TransformationMatrix3D::multiply(matrix, currentMatrix.m_matrix, matrix);
+                }
             }
         }
 
@@ -186,6 +199,5 @@ void SConcatenateMatrices::updating() throw (fwTools::Failed)
 }
 
 // ----------------------------------------------------------------------------
-
 
 }  // namespace maths
