@@ -25,9 +25,9 @@ set( REQUIREMENTS
     ctrlSelection
     uiMeasurement
     uiMeasurementQt
-    appXml
+    appXml2
     basicRegistration
     ioAtoms
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex03RegistrationConfig)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex03RegistrationConfig)
