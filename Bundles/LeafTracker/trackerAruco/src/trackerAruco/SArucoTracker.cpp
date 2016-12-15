@@ -21,6 +21,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/tokenizer.hpp>
 
 #include <opencv2/core.hpp>
 #include <opencv2/opencv.hpp>

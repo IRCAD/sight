@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,18 +7,20 @@
 #ifndef __IGTLNETWORK_CLIENT_HPP__
 #define __IGTLNETWORK_CLIENT_HPP__
 
-#include "igtlNetwork/config.hpp"
 #include "igtlNetwork/INetwork.hpp"
-
-#include <fwCore/Exception.hpp>
-#include <fwData/Object.hpp>
-#include <fwTools/macros.hpp>
+#include "igtlNetwork/config.hpp"
 
 #include <igtlProtocol/DataConverter.hpp>
 
 #include <boost/type.hpp>
+
+#include <fwCore/Exception.hpp>
+
+#include <fwData/Object.hpp>
+
 #include <igtl/igtlClientSocket.h>
 #include <igtl/igtlMessageHeader.h>
+
 #include <string>
 
 namespace igtlNetwork
@@ -71,7 +73,6 @@ public:
     IGTLNETWORK_API bool isConnected() const;
 
 private:
-
 
     /**
      * @brief utility method to avoid code duplication

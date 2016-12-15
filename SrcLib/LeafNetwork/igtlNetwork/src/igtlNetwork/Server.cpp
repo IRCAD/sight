@@ -1,16 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "igtlNetwork/Server.hpp"
+
 #include "igtlNetwork/Exception.hpp"
 
-#include <fwCore/spyLog.hpp>
 #include <igtlProtocol/MessageFactory.hpp>
-#include <boost/function.hpp>
+
 #include <boost/lexical_cast.hpp>
+
+#include <fwCore/spyLog.hpp>
 
 namespace igtlNetwork
 {
@@ -18,8 +20,8 @@ namespace igtlNetwork
 //------------------------------------------------------------------------------
 
 Server::Server() :
-    m_serverSocket (::igtl::ServerSocket::New()),
-    m_isStarted (false),
+    m_serverSocket(::igtl::ServerSocket::New()),
+    m_isStarted(false),
     m_port(0)
 {
     m_socket = m_serverSocket;
@@ -58,7 +60,6 @@ void Server::runServer()
 
     Client::sptr newClient;
 
-
     while (this->isStarted())
     {
         newClient = this->waitForConnection();
@@ -82,7 +83,7 @@ void Server::broadcast(::fwData::Object::sptr obj)
         {
             (*it)->disconnect();
             it = m_clients.erase(it);
-            if (it ==  m_clients.end())
+            if (it == m_clients.end())
             {
                 break;
             }
@@ -102,7 +103,7 @@ void Server::broadcast(::igtl::MessageBase::Pointer msg)
         {
             (*it)->disconnect();
             it = m_clients.erase(it);
-            if (it ==  m_clients.end())
+            if (it == m_clients.end())
             {
                 break;
             }
@@ -139,10 +140,10 @@ Client::sptr Server::waitForConnection (int msec)
     ::igtl::ClientSocket::Pointer clientSocket;
     Client::sptr client;
 
-    clientSocket = this->m_serverSocket->WaitForConnection (msec);
+    clientSocket = this->m_serverSocket->WaitForConnection(msec);
     if (clientSocket.IsNotNull())
     {
-        client = Client::sptr (new Client (clientSocket));
+        client = Client::sptr(new Client(clientSocket));
     }
     return client;
 }
@@ -205,7 +206,7 @@ std::vector< ::igtl::MessageHeader::Pointer > Server::receiveHeader()
 
         if(socket->GetConnected())
         {
-            sizeReceive = socket->Receive (headerMsg->GetPackPointer(), headerMsg->GetPackSize());
+            sizeReceive = socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
 
             if (sizeReceive == -1 || sizeReceive == 0)
             {
@@ -244,7 +245,6 @@ std::vector< ::igtl::MessageHeader::Pointer > Server::receiveHeader()
 
     return headerMsgs;
 
-
 }
 
 //------------------------------------------------------------------------------
@@ -257,19 +257,19 @@ throw (::fwCore::Exception)
     ::igtl::MessageBase::Pointer msg;
 
     msg = ::igtlProtocol::MessageFactory::create(headerMsg->GetDeviceType());
-    msg->SetMessageHeader (headerMsg);
+    msg->SetMessageHeader(headerMsg);
     msg->AllocatePack();
 
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
-    result = (m_clients[client]->getSocket())->Receive (msg->GetPackBodyPointer(), msg->GetPackBodySize());
+    result = (m_clients[client]->getSocket())->Receive(msg->GetPackBodyPointer(), msg->GetPackBodySize());
 
     if (result == -1)
     {
         return ::igtl::MessageBase::Pointer();
     }
 
-    unpackResult = msg->Unpack (1);
+    unpackResult = msg->Unpack(1);
     if (unpackResult & igtl::MessageHeader::UNPACK_BODY)
     {
         return msg;

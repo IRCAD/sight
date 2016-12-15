@@ -1,30 +1,30 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiCalibration/SCameraSeriesEditor.hpp"
 
+#include <arData/CameraSeries.hpp>
+
+#include <QBoxLayout>
+#include <QGridLayout>
+
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-
-#include <fwThread/Worker.hpp>
 
 #include <fwCore/base.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <arData/CameraSeries.hpp>
-
-#include <fwTools/Object.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <fwThread/Worker.hpp>
 
-#include <QBoxLayout>
-#include <QGridLayout>
+#include <fwTools/Object.hpp>
 
 #include <algorithm>
 #include <sstream>
@@ -36,12 +36,11 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiCalibration::SCameraSeriesE
 const ::fwCom::Slots::SlotKeyType SCameraSeriesEditor::s_UPDATE_INFOS_SLOT = "updateInfos";
 // -------------------------------------------------------------------------
 
-SCameraSeriesEditor::SCameraSeriesEditor() throw () : m_camIndex(1)
+SCameraSeriesEditor::SCameraSeriesEditor() throw () :
+    m_camIndex(1)
 {
     m_slotUpdateInfos = ::fwCom::newSlot(&SCameraSeriesEditor::updateInformations, this);
     ::fwCom::HasSlots::m_slots(s_UPDATE_INFOS_SLOT, m_slotUpdateInfos);
-
-
 
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }
@@ -57,7 +56,7 @@ void SCameraSeriesEditor::configuring() throw (fwTools::Failed)
     {
         std::string idxStr = cfgIdx->getValue();
         SLM_ASSERT("'camIndex' is empty.", !idxStr.empty());
-        m_camIndex = ::boost::lexical_cast<size_t>(idxStr);
+        m_camIndex = std::stoul(idxStr);
     }
 }
 
@@ -78,13 +77,13 @@ void SCameraSeriesEditor::starting() throw (fwTools::Failed)
 
     mainLayout->addWidget(m_description);
 
-    QGridLayout * gridLayout = new QGridLayout();
+    QGridLayout* gridLayout = new QGridLayout();
 
-    for (unsigned int i = 0; i<4; ++i)
+    for (unsigned int i = 0; i < 4; ++i)
     {
-        for (unsigned int j = 0; j<4; ++j)
+        for (unsigned int j = 0; j < 4; ++j)
         {
-            QLabel *label = new QLabel("");
+            QLabel* label = new QLabel("");
             m_matrixLabels.push_back(label);
             gridLayout->addWidget(label, i, j);
         }
@@ -129,9 +128,9 @@ void SCameraSeriesEditor::updateInformations()
         return;
     }
 
-    for (unsigned int i = 0; i<4; ++i)
+    for (unsigned int i = 0; i < 4; ++i)
     {
-        for (unsigned int j = 0; j<4; ++j)
+        for (unsigned int j = 0; j < 4; ++j)
         {
             m_matrixLabels[i*4 + j]->setText(QString("%1").arg(matrix->getCoefficient(i, j)));
         }
@@ -142,9 +141,9 @@ void SCameraSeriesEditor::updateInformations()
 
 void SCameraSeriesEditor::clearLabels()
 {
-    for (unsigned int i = 0; i<4; ++i)
+    for (unsigned int i = 0; i < 4; ++i)
     {
-        for (unsigned int j = 0; j<4; ++j)
+        for (unsigned int j = 0; j < 4; ++j)
         {
             m_matrixLabels[i*4 + j]->setText(QString(""));
         }
