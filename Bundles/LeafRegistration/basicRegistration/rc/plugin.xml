@@ -1,16 +1,10 @@
 <plugin id="basicRegistration" class="::basicRegistration::Plugin" version="@DASH_VERSION@" >
-    
+
     <library name="basicRegistration" />
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
         <service>::basicRegistration::SPointListRegistration</service>
-        <object>::fwData::Composite</object>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IController</type>
-        <service>::basicRegistration::STransformMesh</service>
         <object>::fwData::Composite</object>
     </extension>
 
