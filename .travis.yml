@@ -16,6 +16,11 @@ branches:
 compiler:
     - gcc
 before_script:
+    - git clone https://github.com/fw4spl-org/fw4spl-git.git fw4spl-git
+    - cd fw4spl-git
+    - git checkout travis
+    - git config --global codingstyle-hook.uncrustify-path `pwd`/hooks/uncrustify
+    - cd ..
     - wget -q --no-check-certificate https://cmake.org/files/v3.4/cmake-3.4.1-Linux-x86_64.tar.gz
     - tar xzf cmake-3.4.1-Linux-x86_64.tar.gz > /dev/null
     - wget -q --no-check-certificate http://ftp.stack.nl/pub/users/dimitri/doxygen-1.8.11.linux.bin.tar.gz
@@ -30,7 +35,11 @@ before_script:
     - git clean -f -d
     - cd $TRAVIS_BUILD_DIR/build
     - $CMAKE_BIN -DCMAKE_INSTALL_PREFIX:PATH=/tmp $TRAVIS_BUILD_DIR/ -DBUILD_DOCUMENTATION:BOOL=ON -DBUILD_TESTS:BOOL=OFF -DDOXYGEN_EXECUTABLE:FILEPATH=$DOXYGEN_BIN
-script: make doc
+    - cd $TRAVIS_BUILD_DIR
+script:
+    - fw4spl-git/hooks/sheldon $TRAVIS_COMMIT_RANGE
+    - cd $TRAVIS_BUILD_DIR/build
+    - make doc
 after_success:
     - git config --global user.name 'travis'
     - git config --global user.email 'travis'
