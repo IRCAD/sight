@@ -7,6 +7,10 @@
 #ifndef __FWSERVICES_PCH_HPP__
 #define __FWSERVICES_PCH_HPP__
 
+#include <fwCom/HasSlots.hpp>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwData/Object.hpp>
 
 #endif // __FWSERVICES_PCH_HPP__

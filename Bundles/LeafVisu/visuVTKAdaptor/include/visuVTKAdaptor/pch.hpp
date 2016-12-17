@@ -7,6 +7,7 @@
 #ifndef __VISUVTKADAPTOR_PCH_HPP__
 #define __VISUVTKADAPTOR_PCH_HPP__
 
+#include <fwCom/HasSlots.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hpp>

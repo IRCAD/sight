@@ -7,6 +7,7 @@
 #ifndef __UIMEDDATAQT_PCH_HPP__
 #define __UIMEDDATAQT_PCH_HPP__
 
+#include <fwCom/HasSlots.hpp>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
