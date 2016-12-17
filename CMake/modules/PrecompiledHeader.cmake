@@ -159,12 +159,13 @@ function(add_precompiled_header _target _input)
   if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     get_filename_component(_name ${_input} NAME)
     set(_pch_header "${CMAKE_CURRENT_SOURCE_DIR}/${_input}")
-    set(_pch_binary_dir "${CMAKE_CURRENT_BINARY_DIR}/${_target}_pch")
+    set(_pch_binary_dir "${CMAKE_CURRENT_BINARY_DIR}")
     set(_pchfile "${_pch_binary_dir}/${_input}")
+
     if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-        set(_outdir "${CMAKE_CURRENT_BINARY_DIR}/${_target}_pch/${_name}.pch")
+        set(_outdir "${_pchfile}.pch")
     else()
-        set(_outdir "${CMAKE_CURRENT_BINARY_DIR}/${_target}_pch/${_name}.gch")
+        set(_outdir "${_pchfile}.gch")
     endif()
     set(_output_cxx "${_outdir}")
 
@@ -177,7 +178,7 @@ function(add_precompiled_header _target _input)
         string(APPEND CXXFLAGS " ${CMAKE_CXX_FLAGS_DEBUG}")
     else()
         set(CXXFLAGS "${CMAKE_CXX_FLAGS}")
-        string(APPEND CXXFLAGS " ${CMAKE_CXX_FLAGS_DEBUG}")
+        string(APPEND CXXFLAGS " ${CMAKE_CXX_FLAGS_RELEASE}")
     endif()
     separate_arguments(CXXFLAGS)
     list(APPEND CXXFLAGS "-std=gnu++11" "-fPIC")
@@ -189,6 +190,9 @@ function(add_precompiled_header _target _input)
         list(APPEND CXXFLAGS ${def2})
     endforeach()
 
+    get_property(_define_symbol TARGET ${FWPROJECT_NAME} PROPERTY DEFINE_SYMBOL)
+    list(APPEND CXXFLAGS "-D" ${_define_symbol})
+
     add_custom_command(
       OUTPUT "${_pchfile}"
       COMMAND "${CMAKE_COMMAND}" -E copy "${_pch_header}" "${_pchfile}"
@@ -196,7 +200,6 @@ function(add_precompiled_header _target _input)
       COMMENT "Updating ${_name}")
     add_custom_command(
       OUTPUT "${_output_cxx}"
-      #COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} -x c++-header -o "${_output_cxx}" "${_pchfile}"
       COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} -x c++-header -o "${_output_cxx}" "${_pchfile}" ${CXXFLAGS}
       DEPENDS "${_pchfile}" "${_pch_flags_file}"
       COMMENT "Precompiling ${_name} for ${_target} (C++)")
@@ -212,7 +215,11 @@ function(add_precompiled_header _target _input)
         endif()
         separate_arguments(_pch_compile_flags)
         list(APPEND _pch_compile_flags -Winvalid-pch)
-        list(APPEND _pch_compile_flags -include-pch "${_output_cxx}")
+        if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+            list(APPEND _pch_compile_flags -include-pch "${_output_cxx}")
+        else()
+            list(INSERT _pch_compile_flags 0 -include "${_pchfile}")
+        endif()
 
         get_source_file_property(_object_depends "${_source}" OBJECT_DEPENDS)
         if(NOT _object_depends)
