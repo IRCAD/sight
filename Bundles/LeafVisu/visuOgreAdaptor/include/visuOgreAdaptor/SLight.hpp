@@ -92,6 +92,9 @@ protected:
     /// Updates the light position and orientation
     VISUOGREADAPTOR_API void doUpdate() throw(fwTools::Failed);
 
+    /// Light name getter.
+    VISUOGREADAPTOR_API virtual std::string getName() const;
+
     /// Light name setter.
     VISUOGREADAPTOR_API virtual void setName(std::string _name);
 
@@ -156,6 +159,13 @@ private:
 
 //------------------------------------------------------------------------------
 // Inline method(s)
+
+inline std::string SLight::getName() const
+{
+    return m_lightName;
+}
+
+//------------------------------------------------------------------------------
 
 inline void SLight::setName(std::string _name)
 {

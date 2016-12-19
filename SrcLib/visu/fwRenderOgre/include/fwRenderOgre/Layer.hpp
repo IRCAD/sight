@@ -239,6 +239,9 @@ public:
     /// Returns the number of lights adaptors used in this layer.
     FWRENDEROGRE_API int getLightsNumber() const;
 
+    /// Returns the light adaptors used in this layer.
+    FWRENDEROGRE_API std::vector<SPTR(::fwRenderOgre::ILight)> getLightAdaptors() const;
+
     FWRENDEROGRE_API static const std::string DEFAULT_CAMERA_NAME;
 
     FWRENDEROGRE_API static const std::string DEFAULT_LIGHT_NAME;

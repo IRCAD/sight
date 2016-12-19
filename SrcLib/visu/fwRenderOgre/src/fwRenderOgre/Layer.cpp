@@ -857,4 +857,22 @@ int Layer::getLightsNumber() const
 
 //-------------------------------------------------------------------------------------
 
+std::vector< ::fwRenderOgre::ILight::sptr > Layer::getLightAdaptors() const
+{
+    auto lightAdaptors = this->getRenderService()->getAdaptors< ::fwRenderOgre::ILight >();
+    std::vector< ::fwRenderOgre::ILight::sptr > layerLightAdaptors;
+
+    std::for_each(lightAdaptors.begin(), lightAdaptors.end(), [&](::fwRenderOgre::ILight::sptr lightAdaptor)
+        {
+            if(lightAdaptor->getLayerID() == this->getLayerID())
+            {
+                layerLightAdaptors.push_back(lightAdaptor);
+            }
+        });
+
+    return layerLightAdaptors;
+}
+
+//-------------------------------------------------------------------------------------
+
 } // namespace fwRenderOgre

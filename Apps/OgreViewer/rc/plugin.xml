@@ -16,6 +16,7 @@
     <xi:include href="configurations/OgreNegato2D.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/OgreVolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ManageOgreOrganWithSeries.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/OgreLightManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>MDAtomsConfig</id>
@@ -105,12 +106,14 @@
                     <layout type="::fwGui::TabLayoutManager">
                         <view caption="Compositor" />
                         <view caption="Organ manager" selected="yes" />
+                        <view caption="Light manager" />
                         <view caption="Negato histogram" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="CompositorView" start="yes" />
+                    <view sid="compositorView" start="yes" />
                     <view wid="organView" start="yes" />
+                    <view wid="lightView" start="yes" />
                     <view sid="histogramView" start="yes" />
                 </registry>
             </service>
@@ -135,11 +138,11 @@
                 </registry>
             </service>
 
-            <service uid="CompositorView" type="::gui::view::SDefaultView" >
+            <service uid="compositorView" type="::gui::view::SDefaultView" >
                 <gui>
                     <layout type="::fwGui::ToolboxLayoutManager">
                         <orientation value="vertical" />
-                        <view caption="Compositor Selector" expanded="true" />
+                        <view caption="Compositor selector" expanded="true" />
                         <view caption="Compositor parameters" expanded="true" />
                         <view caption="Transparency settings" expanded="true" />
                     </layout>
@@ -233,6 +236,12 @@
                 <appConfig id="OgreOrganManagerWithSeries" />
                 <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeriesUID" />
                 <parameter replace="WID_PARENT" uid="organView" />
+                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/arMedia_0-1/icons/app.ico" />
+            </service>
+
+            <service uid="cfgLightManager"  type="::fwServices::SConfigController">
+                <appConfig id="OgreLightManager" />
+                <parameter replace="WID_PARENT" uid="lightView" />
                 <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/arMedia_0-1/icons/app.ico" />
             </service>
 
@@ -405,6 +414,7 @@
             <start uid="cfgOgreNegato2D" />
             <start uid="cfgOgreVolumeRendering" />
             <start uid="cfgOrganManagerConfig" />
+            <start uid="cfgLightManager" />
             <start uid="compositorSelector" />
             <start uid="compositorParameters" />
             <start uid="CoreEditor" />

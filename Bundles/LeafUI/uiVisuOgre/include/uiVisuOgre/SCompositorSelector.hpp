@@ -107,7 +107,7 @@ private:
     /// Iterates through the compositor chain and checks the enabled compositors
     void checkEnabledCompositors();
 
-    /// Iterates through the compositor chain and unckecks them
+    /// Iterates through the compositor chain and unchecks them
     void uncheckCompositors();
 
     /// Indicates if a compositor is enabled on the layer

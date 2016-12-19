@@ -12,15 +12,15 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
+#include <fwRenderOgre/SRender.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwRenderOgre/SRender.hpp>
-
 #include <material/Plugin.hpp>
 
-#include <QWidget>
 #include <QListWidgetItem>
+#include <QWidget>
 
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
@@ -113,7 +113,7 @@ void SCompositorSelector::onSelectedLayerItem(int index)
     this->synchroniseWithLayerCompositorChain();
 
     // We need the ogre's viewport in order to add the compositors,
-    // this is why we have to ckeck the viewport's existence
+    // this is why we have to check the viewport's existence
     if(m_currentLayer.lock()->getViewport())
     {
         // Fill the list widget
@@ -161,7 +161,7 @@ void SCompositorSelector::refreshRenderers()
         for(auto& layerMap : render->getLayers())
         {
             const std::string id       = layerMap.first;
-            const std::string renderID = render->getName();
+            const std::string renderID = render->getID();
             m_layersBox->addItem(QString::fromStdString(renderID + " : " + id));
             m_layers.push_back(layerMap.second);
 
