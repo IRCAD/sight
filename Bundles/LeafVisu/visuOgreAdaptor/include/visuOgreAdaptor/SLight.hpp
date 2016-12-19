@@ -40,15 +40,16 @@ namespace visuOgreAdaptor
         <inout key="transform" uid="lightTFUid" />
         <inout key="diffuseColor" uid="diffuseColorUid" />
         <inout key="specularColor" uid="specularColorUid" />
-        <config name="sceneLight" parentTransformId="cameraTF" thetaOffset="30.5" phiOffset="45" />
+        <config name="sceneLight" parentTransformId="cameraTF" switchedOn="yes" thetaOffset="30.5" phiOffset="45" />
     </service>
  * @endcode
  * With :
  * - \b name (optional): defines a name for the associated Ogre light.
  * - \b parentTransformId (optional): name of the parent transform node.
+ * - \b switchedOn (optional, bool, default="yes"): defines if the light is activated or not.
  * Only if a parent transform node is configured :
- * - \b thetaOffset (optional, float, default=0.0): Angle in degrees defining the rotation of the light around x axis.
- * - \b phiOffset (optional, float, default=0.0): Angle in degrees defining the rotation of the light around y axis.
+ * - \b thetaOffset (optional, float, default=0.0): angle in degrees defining the rotation of the light around x axis.
+ * - \b phiOffset (optional, float, default=0.0): angle in degrees defining the rotation of the light around y axis.
  */
 class VISUOGREADAPTOR_CLASS_API SLight : public ::fwRenderOgre::ILight,
                                          public ::fwRenderOgre::ITransformable
@@ -117,6 +118,12 @@ protected:
     VISUOGREADAPTOR_API virtual void setParentTransformName(
         const fwRenderOgre::SRender::OgreObjectIdType& _parentTransformName);
 
+    /// Light activation flag getter.
+    VISUOGREADAPTOR_API virtual bool isSwitchedOn() const;
+
+    /// Light activation flag setter.
+    VISUOGREADAPTOR_API virtual void switchOn(bool _on);
+
 private:
 
     void updateThetaOffset(float _thetaOffset);
@@ -149,6 +156,9 @@ private:
 
     /// If we can't retrieve the parent transform adaptor, we will use a scene node without any parent.
     bool m_useOrphanNode;
+
+    /// Light activation flag.
+    bool m_switchedOn;
 
     /// Angle in degrees defining the rotation of the light around x axis.
     float m_thetaOffset;
@@ -198,6 +208,13 @@ inline void SLight::setSpecularColor(::fwData::Color::sptr _specularColor)
 inline void SLight::setParentTransformName(const ::fwRenderOgre::SRender::OgreObjectIdType& _parentTransformName)
 {
     this->setParentTransformId(_parentTransformName);
+}
+
+//------------------------------------------------------------------------------
+
+inline bool SLight::isSwitchedOn() const
+{
+    return m_switchedOn;
 }
 
 //------------------------------------------------------------------------------

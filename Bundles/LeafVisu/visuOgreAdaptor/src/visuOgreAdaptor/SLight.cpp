@@ -48,6 +48,7 @@ SLight::SLight() throw() :
     m_lightName    (""),
     m_lightType    (::Ogre::Light::LT_DIRECTIONAL),
     m_useOrphanNode(true),
+    m_switchedOn   (true),
     m_thetaOffset  (0.f),
     m_phiOffset    (0.f)
 {
@@ -61,6 +62,7 @@ SLight::SLight(::fwRenderOgre::ILight::Key key) :
     m_light        (nullptr),
     m_lightName    (""),
     m_useOrphanNode(true),
+    m_switchedOn   (true),
     m_thetaOffset  (0.f),
     m_phiOffset    (0.f)
 {
@@ -85,20 +87,26 @@ void SLight::doConfigure() throw(fwTools::Failed)
         m_lightName = m_configuration->getAttributeValue("name");
     }
 
+    if(m_configuration->hasAttribute("switchedOn"))
+    {
+        std::string switchedOnStr = m_configuration->getAttributeValue("switchedOn");
+        m_switchedOn = (switchedOnStr == "yes");
+    }
+
     if(m_configuration->hasAttribute("parentTransformId"))
     {
         this->setParentTransformId(m_configuration->getAttributeValue("parentTransformId"));
 
         if(m_configuration->hasAttribute("thetaOffset"))
         {
-            std::string thetaOffsetString = m_configuration->getAttributeValue("thetaOffset");
-            m_thetaOffset = std::stof(thetaOffsetString);
+            std::string thetaOffsetStr = m_configuration->getAttributeValue("thetaOffset");
+            m_thetaOffset = std::stof(thetaOffsetStr);
         }
 
         if(m_configuration->hasAttribute("phiOffset"))
         {
-            std::string phiOffsetString = m_configuration->getAttributeValue("phiOffset");
-            m_phiOffset = std::stof(phiOffsetString);
+            std::string phiOffsetStr = m_configuration->getAttributeValue("phiOffset");
+            m_phiOffset = std::stof(phiOffsetStr);
         }
     }
 }
@@ -113,6 +121,7 @@ void SLight::doStart() throw(fwTools::Failed)
     m_lightName = this->getID() + "_" + m_lightName;
     m_light     = this->getSceneManager()->createLight(m_lightName);
     m_light->setType(::Ogre::Light::LT_DIRECTIONAL);
+    m_light->setVisible(m_switchedOn);
 
     if(!this->getParentTransformId().empty())
     {
@@ -173,6 +182,19 @@ void SLight::setSpecularColor(::Ogre::ColourValue _specularColor)
 {
     SLM_ASSERT("Missing specular color data object.", m_lightSpecularColor);
     m_lightSpecularColor->setRGBA(_specularColor.r, _specularColor.g, _specularColor.b, _specularColor.a);
+}
+
+//------------------------------------------------------------------------------
+
+void SLight::switchOn(bool _on)
+{
+    m_switchedOn = _on;
+
+    if(m_light)
+    {
+        m_light->setVisible(m_switchedOn);
+        this->requestRender();
+    }
 }
 
 //------------------------------------------------------------------------------

@@ -6,10 +6,12 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
+#include <fwRenderOgre/ILight.hpp>
 #include <fwRenderOgre/Layer.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
+#include <QCheckBox>
 #include <QComboBox>
 #include <QListWidget>
 #include <QPointer>
@@ -65,28 +67,40 @@ protected:
 
 protected Q_SLOTS:
 
-    /// Slot: called when a layer is selected
-    /// Sets the current layer and initializes the light adaptors list
-    void onSelectedLayerItem(int index);
+    /// Slot: called when a layer is selected.
+    /// Sets the current layer and initializes the light adaptors list.
+    void onSelectedLayerItem(int _index);
+
+    /// Slot: called when a light is selected.
+    /// Loads the selected light parameters in the light editor.
+    void onSelectedLightItem(QListWidgetItem* _item);
+
+    /// Slot: called when a light is checked.
+    /// Switched on or off the light according to its current state.
+    void onCheckedLightItem(QListWidgetItem* _item);
 
 private:
 
-    void initLightList(::fwRenderOgre::Layer::sptr layer);
+    void initLightList(::fwRenderOgre::Layer::sptr _layer);
 
     /// Retrieves all the layers from the application thanks to the render services.
     void refreshLayers();
 
     /// Retrieves light adaptors used in the current layer and stores them in the list widget.
-    void updateLightList();
+    void updateLightsList();
 
-    QPointer<QComboBox> m_layersBox;
+    /// Finds the light adaptor with the specified name.
+    ::fwRenderOgre::ILight::sptr retrieveLightAdaptor(const std::string& _name) const;
 
+    QPointer<QComboBox>   m_layersBox;
+    QPointer<QCheckBox>   m_lightsState;
     QPointer<QListWidget> m_lightsList;
-
     QPointer<QPushButton> m_addLightBtn;
 
     std::vector< ::fwRenderOgre::Layer::wptr > m_layers;
     ::fwRenderOgre::Layer::wptr m_currentLayer;
+
+    std::vector< ::fwRenderOgre::ILight::sptr > m_lightAdaptors;
 
     ///Connection service, needed for slot/signal association
     ::fwCom::helper::SigSlotConnection m_connections;

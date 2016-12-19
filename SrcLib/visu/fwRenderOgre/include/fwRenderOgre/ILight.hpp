@@ -81,6 +81,8 @@ public:
         = 0;
     FWRENDEROGRE_API virtual void setParentTransformName(
         const ::fwRenderOgre::SRender::OgreObjectIdType& _parentTransformName) = 0;
+    FWRENDEROGRE_API virtual bool isSwitchedOn() const                         = 0;
+    FWRENDEROGRE_API virtual void switchOn(bool _on)                           = 0;
 };
 
 } // namespace fwRenderOgre

@@ -6,7 +6,6 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwRenderOgre/ILight.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
 #include <fwServices/macros.hpp>
@@ -49,18 +48,28 @@ void SLightSelector::starting() throw(::fwTools::Failed)
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instantiated", container);
 
-    m_layersBox  = new QComboBox(container);
-    m_lightsList = new QListWidget(container);
+    m_layersBox   = new QComboBox(container);
+    m_lightsState = new QCheckBox("Switch on/off all lights", container);
+    m_lightsList  = new QListWidget(container);
+    m_addLightBtn = new QPushButton("Add light", container);
 
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(m_layersBox);
+    layout->addWidget(m_lightsState);
     layout->addWidget(m_lightsList);
+    layout->addWidget(m_addLightBtn);
 
     container->setLayout(layout);
 
     this->refreshLayers();
 
     QObject::connect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
+
+    QObject::connect(m_lightsList, SIGNAL(itemActivated(QListWidgetItem*)),
+                     this, SLOT(onSelectedLightItem(QListWidgetItem*)));
+
+    QObject::connect(m_lightsList, SIGNAL(itemChanged(QListWidgetItem*)),
+                     this, SLOT(onCheckedLightItem(QListWidgetItem*)));
 }
 
 //------------------------------------------------------------------------------
@@ -70,6 +79,12 @@ void SLightSelector::stopping() throw(::fwTools::Failed)
     m_connections.disconnect();
 
     QObject::disconnect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
+
+    QObject::disconnect(m_lightsList, SIGNAL(itemActivated(QListWidgetItem*)),
+                        this, SLOT(onSelectedLightItem(QListWidgetItem*)));
+
+    QObject::disconnect(m_layersBox, SIGNAL(activated(QListWidgetItem*)),
+                        this, SLOT(onCheckedLightItem(QListWidgetItem*)));
 
     this->getContainer()->clean();
     this->destroy();
@@ -90,19 +105,37 @@ void SLightSelector::updating() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onSelectedLayerItem(int index)
+void SLightSelector::onSelectedLayerItem(int _index)
 {
-    m_currentLayer = m_layers[static_cast<size_t>(index)];
-    this->updateLightList();
+    m_currentLayer  = m_layers[static_cast<size_t>(_index)];
+    m_lightAdaptors = m_currentLayer.lock()->getLightAdaptors();
+
+    this->updateLightsList();
 }
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::initLightList(::fwRenderOgre::Layer::sptr layer)
+void SLightSelector::onSelectedLightItem(QListWidgetItem* _item)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void SLightSelector::onCheckedLightItem(QListWidgetItem* _item)
+{
+    ::fwRenderOgre::ILight::sptr checkedLightAdaptor =
+        this->retrieveLightAdaptor(_item->text().toStdString());
+
+    checkedLightAdaptor->switchOn(_item->checkState() == ::Qt::Checked);
+}
+
+//------------------------------------------------------------------------------
+
+void SLightSelector::initLightList(::fwRenderOgre::Layer::sptr _layer)
 {
     m_currentLayer = m_layers[0];
 
-    if(layer == m_currentLayer.lock())
+    if(_layer == m_currentLayer.lock())
     {
         this->onSelectedLayerItem(0);
     }
@@ -137,19 +170,31 @@ void SLightSelector::refreshLayers()
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::updateLightList()
+void SLightSelector::updateLightsList()
 {
-    std::vector< ::fwRenderOgre::ILight::sptr > lightAdaptors =
-        m_currentLayer.lock()->getLightAdaptors();
-
-    for(auto lightAdaptor : lightAdaptors)
+    for(auto lightAdaptor : m_lightAdaptors)
     {
         QString lightName = lightAdaptor->getName().c_str();
+        ::Qt::CheckState lightState = lightAdaptor->isSwitchedOn() ? ::Qt::Checked :
+                                      ::Qt::Unchecked;
 
         QListWidgetItem* nextLight = new QListWidgetItem(lightName, m_lightsList);
         nextLight->setFlags(nextLight->flags() | ::Qt::ItemIsUserCheckable);
-        nextLight->setCheckState(::Qt::Unchecked);
+        nextLight->setCheckState(lightState);
     }
+}
+
+//------------------------------------------------------------------------------
+
+::fwRenderOgre::ILight::sptr SLightSelector::retrieveLightAdaptor(const std::string& _name) const
+{
+    auto it = std::find_if(m_lightAdaptors.begin(), m_lightAdaptors.end(),
+                           [_name](::fwRenderOgre::ILight::sptr lightAdaptor)
+        {
+            return lightAdaptor->getName() == _name;
+        });
+
+    return it != m_lightAdaptors.end() ? *it : nullptr;
 }
 
 //------------------------------------------------------------------------------
