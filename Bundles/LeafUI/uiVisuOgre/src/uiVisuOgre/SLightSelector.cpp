@@ -172,6 +172,8 @@ void SLightSelector::refreshLayers()
 
 void SLightSelector::updateLightsList()
 {
+    m_lightsList->clear();
+
     for(auto lightAdaptor : m_lightAdaptors)
     {
         QString lightName = lightAdaptor->getName().c_str();
