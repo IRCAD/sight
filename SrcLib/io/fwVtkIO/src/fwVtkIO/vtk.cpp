@@ -3,38 +3,7 @@
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-#include <cstring>
-#include <functional>
-#include <numeric>
-#include <stdexcept>
-
-#include <boost/assign/list_of.hpp>
-#include <boost/cast.hpp>
-
-#include <vtkImageImport.h>
-#include <vtkSetGet.h>
-#include <vtkType.h>
-
-// for mesh
-#include <vtkCell.h>
-#include <vtkCellType.h>
-#include <vtkPoints.h>
-#include <vtkPolyData.h>
-#include <vtkUnstructuredGrid.h>
-#include <vtkPolyDataWriter.h>
-#include <vtkImageData.h>
-#include <vtkImageImport.h>
-#include <vtkImageExport.h>
-#include <vtkMatrix4x4.h>
-#include <vtkPolyDataNormals.h>
-#include <vtkLookupTable.h>
-
-#include <vtkDataSetAttributes.h>
-#include <vtkDataArray.h>
-#include <vtkPointData.h>
-#include <vtkSmartPointer.h>
-
-#include <fwMath/MeshFunctions.hpp>
+#include "fwVtkIO/vtk.hpp"
 
 #include <fwData/Image.hpp>
 #include <fwData/ObjectLock.hpp>
@@ -42,7 +11,34 @@
 #include <fwDataTools/helper/Image.hpp>
 #include <fwDataTools/helper/ImageGetter.hpp>
 
-#include "fwVtkIO/vtk.hpp"
+#include <fwMath/MeshFunctions.hpp>
+
+#include <vtkCell.h>
+#include <vtkCellType.h>
+#include <vtkDataArray.h>
+#include <vtkDataSetAttributes.h>
+#include <vtkImageData.h>
+#include <vtkImageExport.h>
+#include <vtkImageImport.h>
+#include <vtkLookupTable.h>
+#include <vtkMatrix4x4.h>
+#include <vtkPointData.h>
+#include <vtkPoints.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkPolyDataWriter.h>
+#include <vtkSetGet.h>
+#include <vtkSmartPointer.h>
+#include <vtkType.h>
+#include <vtkUnstructuredGrid.h>
+
+#include <boost/assign/list_of.hpp>
+#include <boost/cast.hpp>
+
+#include <cstring>
+#include <functional>
+#include <numeric>
+#include <stdexcept>
 
 
 namespace fwVtkIO
@@ -255,7 +251,9 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
 
     int nbComponents = source->GetNumberOfScalarComponents();
-    size_t size = std::accumulate(source->GetDimensions(), source->GetDimensions()+dim, std::max(3, nbComponents), std::multiplies<size_t>() );
+    size_t size      = std::accumulate(source->GetDimensions(), source->GetDimensions()+dim, std::max(3,
+                                                                                                      nbComponents),
+                                       std::multiplies<size_t>() );
     void* input = source->GetScalarPointer();
 
     if (size != 0)
@@ -263,6 +261,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
         void* destBuffer;
         int nbBytePerPixel = source->GetScalarSize();
         OSLM_TRACE("image size : " << size << " - nbBytePerPixel : " << nbBytePerPixel );
+
 
         destination->setNumberOfComponents(3);
         if (nbComponents == 3 && nbBytePerPixel == 2)
