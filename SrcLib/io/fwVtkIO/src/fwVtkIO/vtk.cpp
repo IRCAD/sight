@@ -254,14 +254,14 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
     }
 
 
-    size_t size = std::accumulate(source->GetDimensions(), source->GetDimensions()+dim, 3, std::multiplies<size_t>() );
+    int nbComponents = source->GetNumberOfScalarComponents();
+    size_t size = std::accumulate(source->GetDimensions(), source->GetDimensions()+dim, std::max(3, nbComponents), std::multiplies<size_t>() );
     void* input = source->GetScalarPointer();
 
     if (size != 0)
     {
         void* destBuffer;
         int nbBytePerPixel = source->GetScalarSize();
-        int nbComponents   = source->GetNumberOfScalarComponents();
         OSLM_TRACE("image size : " << size << " - nbBytePerPixel : " << nbBytePerPixel );
 
         destination->setNumberOfComponents(3);
@@ -280,6 +280,18 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
         {
             SLM_TRACE ("RGB 8bits");
 
+            destination->setType( "uint8" );
+            destination->allocate();
+            ::fwData::ObjectLock lock(destination);
+            destBuffer = imageHelper.getBuffer();
+            SLM_ASSERT("Image allocation error", destBuffer != NULL);
+            fromRGBBufferColor< unsigned char >(input, size, destBuffer);
+        }
+        else if (nbComponents == 4 && nbBytePerPixel == 1)
+        {
+            SLM_TRACE ("RGBA 8bits");
+
+            destination->setNumberOfComponents(nbComponents);
             destination->setType( "uint8" );
             destination->allocate();
             ::fwData::ObjectLock lock(destination);
