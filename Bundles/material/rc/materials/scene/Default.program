@@ -118,6 +118,7 @@ vertex_program Default/Flat_VP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -144,6 +145,7 @@ vertex_program Default/Flat+VT_VP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -170,6 +172,7 @@ vertex_program Default/Flat+DfsTex_VP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -196,6 +199,7 @@ vertex_program Default/Flat+VT+DfsTex_VP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -222,6 +226,7 @@ vertex_program Default/Gouraud_VP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -248,6 +253,7 @@ vertex_program Default/Gouraud+VT_VP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -274,6 +280,7 @@ vertex_program Default/Gouraud+DfsTex_VP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -300,6 +307,7 @@ vertex_program Default/Gouraud+VT+DfsTex_VP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -700,6 +708,7 @@ fragment_program Default/PixelLit_FP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -722,6 +731,7 @@ fragment_program Default/PixelLit+VT_FP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -744,6 +754,7 @@ fragment_program Default/PixelLit+DfsTex_FP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -770,6 +781,7 @@ fragment_program Default/PixelLit+VT+DfsTex_FP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -893,6 +905,7 @@ vertex_program CelShadingDepthPeeling/Flat_VP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -919,6 +932,7 @@ vertex_program CelShadingDepthPeeling/Flat+VT_VP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -945,6 +959,7 @@ vertex_program CelShadingDepthPeeling/Flat+DfsTex_VP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -971,6 +986,7 @@ vertex_program CelShadingDepthPeeling/Flat+VT+DfsTex_VP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -997,6 +1013,7 @@ vertex_program CelShadingDepthPeeling/Gouraud_VP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -1023,6 +1040,7 @@ vertex_program CelShadingDepthPeeling/Gouraud+VT_VP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -1049,6 +1067,7 @@ vertex_program CelShadingDepthPeeling/Gouraud+DfsTex_VP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour
@@ -1075,6 +1094,7 @@ vertex_program CelShadingDepthPeeling/Gouraud+VT+DfsTex_VP glsl
         param_named_auto u_cameraPos camera_position
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
+        param_named_auto u_lightAmbient ambient_light_colour
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
         param_named_auto u_lightSpecular light_specular_colour_array 10
         param_named_auto u_ambient surface_ambient_colour

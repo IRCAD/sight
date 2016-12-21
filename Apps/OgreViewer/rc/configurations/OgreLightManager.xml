@@ -16,22 +16,27 @@
                 <layout type="::fwGui::ToolboxLayoutManager" >
                     <orientation value="vertical" />
                     <view caption="Light selector" expanded="true" />
-                    <!-- <view caption="Light editor" expanded="true" /> -->
+                    <view caption="Light editor" expanded="true" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <view sid="lightSelector" start="yes" />
-                <!-- <view sid="lightEditor" start="yes" /> -->
+                <view sid="lightEditor" start="yes" />
             </registry>
         </service>
 
         <!-- ************************************* Services ************************************ -->
 
         <service uid="lightSelector" type="::uiVisuOgre::SLightSelector"  />
-        <!-- <service uid="lightEditor" type="::uiVisuOgre::SLightEditor"  /> -->
+        <service uid="lightEditor" type="::uiVisuOgre::SLightEditor" />
 
         <!-- ************************************* Actions ************************************* -->
+
+        <connect>
+            <signal>lightSelector/lightSelected</signal>
+            <slot>lightEditor/editLight</slot>
+        </connect>
 
         <start uid="lightView" />
 

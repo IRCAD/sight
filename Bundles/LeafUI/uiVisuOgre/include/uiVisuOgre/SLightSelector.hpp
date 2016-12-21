@@ -3,9 +3,6 @@
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-
 #include <fwRenderOgre/ILight.hpp>
 #include <fwRenderOgre/Layer.hpp>
 
@@ -42,12 +39,21 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SLightSelector)(::gui::editor::IEditor) );
 
     /**
+     * @name Signals API
+     * @{
+     */
+    UIVISUOGRE_API static const ::fwCom::Signals::SignalKeyType s_LIGHT_SELECTED_SIG;
+    typedef ::fwCom::Signal<void (::fwRenderOgre::ILight::sptr)> LightSelectedSignalType;
+    /** @} */
+
+    /**
      * @name Slots API
      * @{
      */
     UIVISUOGRE_API static const ::fwCom::Slots::SlotKeyType s_INIT_LIGHT_LIST_SLOT;
     /** @} */
 
+    /// Initializes signals and slots.
     UIVISUOGRE_API SLightSelector() throw();
     UIVISUOGRE_API virtual ~SLightSelector() throw();
 
@@ -71,6 +77,10 @@ protected Q_SLOTS:
     /// Sets the current layer and initializes the light adaptors list.
     void onSelectedLayerItem(int _index);
 
+    /// Slot: called when the checkbox for all lights is checked or unchecked.
+    /// Checks or unchecks all the light adaptors according to the new state.
+    void onChangedLightsState(int _state);
+
     /// Slot: called when a light is selected.
     /// Loads the selected light parameters in the light editor.
     void onSelectedLightItem(QListWidgetItem* _item);
@@ -78,6 +88,10 @@ protected Q_SLOTS:
     /// Slot: called when a light is checked.
     /// Switched on or off the light according to its current state.
     void onCheckedLightItem(QListWidgetItem* _item);
+
+    /// Slot: called when the scene ambient color butten is clicked.
+    /// Opens a color picker and lets the user choose an ambient color.
+    void onEditAmbientColor(bool _checked);
 
 private:
 
@@ -95,7 +109,9 @@ private:
     QPointer<QComboBox>   m_layersBox;
     QPointer<QCheckBox>   m_lightsState;
     QPointer<QListWidget> m_lightsList;
+
     QPointer<QPushButton> m_addLightBtn;
+    QPointer<QPushButton> m_ambientColorBtn;
 
     std::vector< ::fwRenderOgre::Layer::wptr > m_layers;
     ::fwRenderOgre::Layer::wptr m_currentLayer;

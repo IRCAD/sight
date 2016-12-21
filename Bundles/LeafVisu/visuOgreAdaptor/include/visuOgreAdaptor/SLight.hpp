@@ -94,10 +94,13 @@ protected:
     VISUOGREADAPTOR_API void doUpdate() throw(fwTools::Failed);
 
     /// Light name getter.
-    VISUOGREADAPTOR_API virtual std::string getName() const;
+    VISUOGREADAPTOR_API virtual const std::string& getName() const;
 
     /// Light name setter.
     VISUOGREADAPTOR_API virtual void setName(std::string _name);
+
+    /// Light type getter.
+    VISUOGREADAPTOR_API virtual ::Ogre::Light::LightTypes getType() const;
 
     /// Light type setter.
     VISUOGREADAPTOR_API virtual void setType(::Ogre::Light::LightTypes _type);
@@ -170,7 +173,7 @@ private:
 //------------------------------------------------------------------------------
 // Inline method(s)
 
-inline std::string SLight::getName() const
+inline const std::string& SLight::getName() const
 {
     return m_lightName;
 }
@@ -180,6 +183,13 @@ inline std::string SLight::getName() const
 inline void SLight::setName(std::string _name)
 {
     m_lightName = _name;
+}
+
+//------------------------------------------------------------------------------
+
+inline ::Ogre::Light::LightTypes SLight::getType() const
+{
+    return m_lightType;
 }
 
 //------------------------------------------------------------------------------

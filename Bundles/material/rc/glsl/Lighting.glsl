@@ -6,6 +6,8 @@ uniform vec4 u_diffuse;
 uniform vec4 u_specular;
 uniform float u_shininess;
 
+uniform vec4 u_lightAmbient;
+
 uniform int u_numLights;
 
 uniform vec3 u_lightDir[MAX_LIGHTS];
@@ -29,5 +31,5 @@ vec4 lighting(vec3 _normal, vec3 _position)
         specular += fLitSpecular * u_lightSpecular[i];
     }
 
-    return vec4(u_ambient.rgb + diffuse + specular, u_diffuse.a);
+    return vec4((u_lightAmbient.rgb * u_ambient.rgb) + diffuse + specular, u_diffuse.a);
 }

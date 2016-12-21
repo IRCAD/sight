@@ -1,5 +1,8 @@
 #include "uiVisuOgre/SLightSelector.hpp"
 
+#include "uiVisuOgre/helper/Utils.hpp"
+
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Composite.hpp>
@@ -11,9 +14,13 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
+#include <QColor>
+#include <QColorDialog>
 #include <QString>
 #include <QVBoxLayout>
 #include <QWidget>
+
+#include <OGRE/OgreColourValue.h>
 
 namespace uiVisuOgre
 {
@@ -22,12 +29,14 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SLightSelector, :
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SLightSelector::s_INIT_LIGHT_LIST_SLOT = "initLightList";
+const ::fwCom::Signals::SignalKeyType SLightSelector::s_LIGHT_SELECTED_SIG = "lightSelected";
+const ::fwCom::Slots::SlotKeyType SLightSelector::s_INIT_LIGHT_LIST_SLOT   = "initLightList";
 
 //------------------------------------------------------------------------------
 
 SLightSelector::SLightSelector() throw()
 {
+    newSignal<LightSelectedSignalType>(s_LIGHT_SELECTED_SIG);
     newSlot(s_INIT_LIGHT_LIST_SLOT, &SLightSelector::initLightList, this);
 }
 
@@ -48,16 +57,18 @@ void SLightSelector::starting() throw(::fwTools::Failed)
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instantiated", container);
 
-    m_layersBox   = new QComboBox(container);
-    m_lightsState = new QCheckBox("Switch on/off all lights", container);
-    m_lightsList  = new QListWidget(container);
-    m_addLightBtn = new QPushButton("Add light", container);
+    m_layersBox       = new QComboBox(container);
+    m_lightsState     = new QCheckBox("Switch lights on/off", container);
+    m_lightsList      = new QListWidget(container);
+    m_addLightBtn     = new QPushButton("Add light", container);
+    m_ambientColorBtn = new QPushButton("Scene ambient color", container);
 
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(m_layersBox);
     layout->addWidget(m_lightsState);
     layout->addWidget(m_lightsList);
     layout->addWidget(m_addLightBtn);
+    layout->addWidget(m_ambientColorBtn);
 
     container->setLayout(layout);
 
@@ -65,11 +76,15 @@ void SLightSelector::starting() throw(::fwTools::Failed)
 
     QObject::connect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
 
+    QObject::connect(m_lightsState, SIGNAL(stateChanged(int)), this, SLOT(onChangedLightsState(int)));
+
     QObject::connect(m_lightsList, SIGNAL(itemActivated(QListWidgetItem*)),
                      this, SLOT(onSelectedLightItem(QListWidgetItem*)));
 
     QObject::connect(m_lightsList, SIGNAL(itemChanged(QListWidgetItem*)),
                      this, SLOT(onCheckedLightItem(QListWidgetItem*)));
+
+    QObject::connect(m_ambientColorBtn, SIGNAL(clicked(bool)), this, SLOT(onEditAmbientColor(bool)));
 }
 
 //------------------------------------------------------------------------------
@@ -80,11 +95,15 @@ void SLightSelector::stopping() throw(::fwTools::Failed)
 
     QObject::disconnect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
 
+    QObject::disconnect(m_lightsState, SIGNAL(stateChanged(int)), this, SLOT(onChangedLightsState(int)));
+
     QObject::disconnect(m_lightsList, SIGNAL(itemActivated(QListWidgetItem*)),
                         this, SLOT(onSelectedLightItem(QListWidgetItem*)));
 
     QObject::disconnect(m_layersBox, SIGNAL(activated(QListWidgetItem*)),
                         this, SLOT(onCheckedLightItem(QListWidgetItem*)));
+
+    QObject::disconnect(m_ambientColorBtn, SIGNAL(clicked(bool)), this, SLOT(onEditAmbientColor(bool)));
 
     this->getContainer()->clean();
     this->destroy();
@@ -115,8 +134,27 @@ void SLightSelector::onSelectedLayerItem(int _index)
 
 //------------------------------------------------------------------------------
 
+void SLightSelector::onChangedLightsState(int _state)
+{
+    for(int i(0); i < m_lightsList->count(); ++i)
+    {
+        QListWidgetItem* item = m_lightsList->item(i);
+        item->setCheckState(static_cast< ::Qt::CheckState >(_state));
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SLightSelector::onSelectedLightItem(QListWidgetItem* _item)
 {
+    if(_item->checkState() == ::Qt::Checked)
+    {
+        ::fwRenderOgre::ILight::sptr selectedLightAdaptor =
+            this->retrieveLightAdaptor(_item->text().toStdString());
+
+        auto sig = this->signal<LightSelectedSignalType>(s_LIGHT_SELECTED_SIG);
+        sig->asyncEmit(selectedLightAdaptor);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -127,6 +165,27 @@ void SLightSelector::onCheckedLightItem(QListWidgetItem* _item)
         this->retrieveLightAdaptor(_item->text().toStdString());
 
     checkedLightAdaptor->switchOn(_item->checkState() == ::Qt::Checked);
+}
+
+//------------------------------------------------------------------------------
+
+void SLightSelector::onEditAmbientColor(bool _checked)
+{
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer());
+    QWidget* const container = qtContainer->getQtContainer();
+
+    ::fwRenderOgre::Layer::sptr layer = m_currentLayer.lock();
+    ::Ogre::ColourValue ogreColor     = layer->getSceneManager()->getAmbientLight();
+
+    QColor qColor = QColorDialog::getColor(::uiVisuOgre::helper::Utils::converOgreColorToQColor(ogreColor),
+                                           container,
+                                           "Scene ambient color");
+
+    ogreColor = ::uiVisuOgre::helper::Utils::convertQColorToOgreColor(qColor);
+
+    layer->getSceneManager()->setAmbientLight(ogreColor);
+    layer->requestRender();
 }
 
 //------------------------------------------------------------------------------

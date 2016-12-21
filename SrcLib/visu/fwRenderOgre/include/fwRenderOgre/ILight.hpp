@@ -70,9 +70,10 @@ public:
     /// Destructor. Do nothing.
     FWRENDEROGRE_API virtual ~ILight();
 
-    FWRENDEROGRE_API virtual std::string getName() const = 0;
+    FWRENDEROGRE_API virtual const std::string& getName() const = 0;
     FWRENDEROGRE_API virtual void setName(std::string _name)
-        = 0;
+                                                                       = 0;
+    FWRENDEROGRE_API virtual ::Ogre::Light::LightTypes getType() const = 0;
     FWRENDEROGRE_API virtual void setType(::Ogre::Light::LightTypes _type)
         = 0;
     FWRENDEROGRE_API virtual void setDiffuseColor(::Ogre::ColourValue _diffuseColor)
