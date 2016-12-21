@@ -89,8 +89,12 @@ protected Q_SLOTS:
     /// Switched on or off the light according to its current state.
     void onCheckedLightItem(QListWidgetItem* _item);
 
-    /// Slot: called when the scene ambient color butten is clicked.
-    /// Opens a color picker and lets the user choose an ambient color.
+    /// Slot: called when the add light button is clicked.
+    /// Adds a new light to the current scene.
+    void onAddLight(bool _checked);
+
+    /// Slot: called when the scene ambient color button is clicked.
+    /// Opens a color picker and lets the user choose a new ambient color.
     void onEditAmbientColor(bool _checked);
 
 private:
@@ -118,10 +122,11 @@ private:
 
     std::vector< ::fwRenderOgre::ILight::sptr > m_lightAdaptors;
 
+    ::fwRenderOgre::ILight::sptr m_currentLight;
+
     ///Connection service, needed for slot/signal association
     ::fwCom::helper::SigSlotConnection m_connections;
 };
-
 
 } // namespace uiVisuOgre
 

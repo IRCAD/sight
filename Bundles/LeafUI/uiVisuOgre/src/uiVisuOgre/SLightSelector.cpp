@@ -16,6 +16,7 @@
 
 #include <QColor>
 #include <QColorDialog>
+#include <QHBoxLayout>
 #include <QString>
 #include <QVBoxLayout>
 #include <QWidget>
@@ -67,7 +68,11 @@ void SLightSelector::starting() throw(::fwTools::Failed)
     layout->addWidget(m_layersBox);
     layout->addWidget(m_lightsState);
     layout->addWidget(m_lightsList);
-    layout->addWidget(m_addLightBtn);
+
+    QHBoxLayout* addRemoveLayout = new QHBoxLayout();
+    addRemoveLayout->addWidget(m_addLightBtn);
+
+    layout->addLayout(addRemoveLayout);
     layout->addWidget(m_ambientColorBtn);
 
     container->setLayout(layout);
@@ -80,9 +85,10 @@ void SLightSelector::starting() throw(::fwTools::Failed)
 
     QObject::connect(m_lightsList, SIGNAL(itemActivated(QListWidgetItem*)),
                      this, SLOT(onSelectedLightItem(QListWidgetItem*)));
-
     QObject::connect(m_lightsList, SIGNAL(itemChanged(QListWidgetItem*)),
                      this, SLOT(onCheckedLightItem(QListWidgetItem*)));
+
+    QObject::connect(m_addLightBtn, SIGNAL(clicked(bool)), this, SLOT(onAddLight(bool)));
 
     QObject::connect(m_ambientColorBtn, SIGNAL(clicked(bool)), this, SLOT(onEditAmbientColor(bool)));
 }
@@ -99,9 +105,10 @@ void SLightSelector::stopping() throw(::fwTools::Failed)
 
     QObject::disconnect(m_lightsList, SIGNAL(itemActivated(QListWidgetItem*)),
                         this, SLOT(onSelectedLightItem(QListWidgetItem*)));
-
-    QObject::disconnect(m_layersBox, SIGNAL(activated(QListWidgetItem*)),
+    QObject::disconnect(m_lightsList, SIGNAL(itemChanged(QListWidgetItem*)),
                         this, SLOT(onCheckedLightItem(QListWidgetItem*)));
+
+    QObject::disconnect(m_addLightBtn, SIGNAL(clicked(bool)), this, SLOT(onAddLight(bool)));
 
     QObject::disconnect(m_ambientColorBtn, SIGNAL(clicked(bool)), this, SLOT(onEditAmbientColor(bool)));
 
@@ -149,11 +156,10 @@ void SLightSelector::onSelectedLightItem(QListWidgetItem* _item)
 {
     if(_item->checkState() == ::Qt::Checked)
     {
-        ::fwRenderOgre::ILight::sptr selectedLightAdaptor =
-            this->retrieveLightAdaptor(_item->text().toStdString());
+        m_currentLight = this->retrieveLightAdaptor(_item->text().toStdString());
 
         auto sig = this->signal<LightSelectedSignalType>(s_LIGHT_SELECTED_SIG);
-        sig->asyncEmit(selectedLightAdaptor);
+        sig->asyncEmit(m_currentLight);
     }
 }
 
@@ -165,6 +171,13 @@ void SLightSelector::onCheckedLightItem(QListWidgetItem* _item)
         this->retrieveLightAdaptor(_item->text().toStdString());
 
     checkedLightAdaptor->switchOn(_item->checkState() == ::Qt::Checked);
+}
+
+//------------------------------------------------------------------------------
+
+void SLightSelector::onAddLight(bool _checked)
+{
+    //TODO: Implement light adding method.
 }
 
 //------------------------------------------------------------------------------

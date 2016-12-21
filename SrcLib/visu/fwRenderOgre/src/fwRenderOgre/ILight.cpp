@@ -8,12 +8,20 @@
 
 #include <fwServices/registry/ObjectService.hpp>
 
+#include <string>
+
 namespace fwRenderOgre
 {
 
 //-----------------------------------------------------------------------------
 
 const ::fwRenderOgre::ILight::FactoryRegistryKeyType ILight::REGISTRY_KEY = "::fwRenderOgre::ILight::REGISTRY_KEY";
+
+const std::string ILight::s_POINT_LIGHT       = "Point";
+const std::string ILight::s_DIRECTIONAL_LIGHT = "Directional";
+const std::string ILight::s_SPOT_LIGHT        = "Spot";
+
+const int ::fwRenderOgre::ILight::s_OFFSET_RANGE = 180;
 
 //-----------------------------------------------------------------------------
 

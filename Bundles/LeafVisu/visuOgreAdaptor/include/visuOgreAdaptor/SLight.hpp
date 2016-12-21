@@ -30,8 +30,8 @@ namespace visuOgreAdaptor
  * @brief Adaptor for a light.
  *
  * @section Slots Slots
- * - \b updateThetaOffset(float): Called when the theta offset is changed and moves the light accordingly.
- * - \b updatePhiOffset(float): Called when the phi offset is changed and moves the light accordingly.
+ * - \b setThetaOffset(float): Called when the theta offset is changed and moves the light accordingly.
+ * - \b setPhiOffset(float): Called when the phi offset is changed and moves the light accordingly.
  * - \b setDoubleParameter(double, string): Calls a double parameter slot according to the given key.
  *
  * @section XML XML Configuration
@@ -63,8 +63,8 @@ public:
      * @name Slots API
      * @{
      */
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_X_OFFSET_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_Y_OFFSET_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_X_OFFSET_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_Y_OFFSET_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
     /** @} */
 
@@ -108,11 +108,17 @@ protected:
     /// Diffuse color setter using fwData::Color.
     VISUOGREADAPTOR_API void setDiffuseColor(::fwData::Color::sptr _diffuseColor);
 
+    /// Diffuse color getter.
+    VISUOGREADAPTOR_API virtual ::Ogre::ColourValue getDiffuseColor() const;
+
     /// Diffuse color setter using Ogre::ColourValue.
     VISUOGREADAPTOR_API virtual void setDiffuseColor(::Ogre::ColourValue _diffuseColor);
 
     /// Specular color setter using fwData::Color.
     VISUOGREADAPTOR_API void setSpecularColor(::fwData::Color::sptr _specularColor);
+
+    /// Specular color getter.
+    VISUOGREADAPTOR_API virtual ::Ogre::ColourValue getSpecularColor() const;
 
     /// Specular color setter using Ogre::ColourValue.
     VISUOGREADAPTOR_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor);
@@ -127,10 +133,23 @@ protected:
     /// Light activation flag setter.
     VISUOGREADAPTOR_API virtual void switchOn(bool _on);
 
+    /// Theta offset getter.
+    VISUOGREADAPTOR_API virtual float getThetaOffset() const;
+
+    /// Theta offset setter.
+    VISUOGREADAPTOR_API virtual void setThetaOffset(float _thetaOffset);
+
+    /// Phi offset getter.
+    VISUOGREADAPTOR_API virtual float getPhiOffset() const;
+
+    /// Phi offset setter.
+    VISUOGREADAPTOR_API virtual void setPhiOffset(float _phiOffset);
+
+    /// Indicates if the light is attached to a parent node or not.
+    VISUOGREADAPTOR_API virtual bool isOrphanNode() const;
+
 private:
 
-    void updateThetaOffset(float _thetaOffset);
-    void updatePhiOffset(float _phiOffset);
     void setDoubleParameter(double _val, std::string _key);
 
     /// Creates a transform Service, and attaches it to a corresponding scene node in the scene.
@@ -201,9 +220,23 @@ inline void SLight::setType(::Ogre::Light::LightTypes _type)
 
 //------------------------------------------------------------------------------
 
+inline ::Ogre::ColourValue SLight::getDiffuseColor() const
+{
+    return m_light->getDiffuseColour();
+}
+
+//------------------------------------------------------------------------------
+
 inline void SLight::setDiffuseColor(::fwData::Color::sptr _diffuseColor)
 {
     m_lightDiffuseColor = _diffuseColor;
+}
+
+//------------------------------------------------------------------------------
+
+inline ::Ogre::ColourValue SLight::getSpecularColor() const
+{
+    return m_light->getSpecularColour();
 }
 
 //------------------------------------------------------------------------------
@@ -225,6 +258,27 @@ inline void SLight::setParentTransformName(const ::fwRenderOgre::SRender::OgreOb
 inline bool SLight::isSwitchedOn() const
 {
     return m_switchedOn;
+}
+
+//------------------------------------------------------------------------------
+
+inline float SLight::getThetaOffset() const
+{
+    return m_thetaOffset;
+}
+
+//------------------------------------------------------------------------------
+
+inline float SLight::getPhiOffset() const
+{
+    return m_phiOffset;
+}
+
+//------------------------------------------------------------------------------
+
+inline bool SLight::isOrphanNode() const
+{
+    return m_useOrphanNode;
 }
 
 //------------------------------------------------------------------------------

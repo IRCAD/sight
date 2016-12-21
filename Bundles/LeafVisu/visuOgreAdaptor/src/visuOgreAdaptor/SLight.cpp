@@ -37,8 +37,8 @@ namespace visuOgreAdaptor
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SLight::s_UPDATE_X_OFFSET_SLOT      = "updateXOffset";
-const ::fwCom::Slots::SlotKeyType SLight::s_UPDATE_Y_OFFSET_SLOT      = "updateYOffset";
+const ::fwCom::Slots::SlotKeyType SLight::s_SET_X_OFFSET_SLOT         = "setXOffset";
+const ::fwCom::Slots::SlotKeyType SLight::s_SET_Y_OFFSET_SLOT         = "setYOffset";
 const ::fwCom::Slots::SlotKeyType SLight::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
 
 //------------------------------------------------------------------------------
@@ -52,8 +52,8 @@ SLight::SLight() throw() :
     m_thetaOffset  (0.f),
     m_phiOffset    (0.f)
 {
-    newSlot(s_UPDATE_X_OFFSET_SLOT, &SLight::updateThetaOffset, this);
-    newSlot(s_UPDATE_Y_OFFSET_SLOT, &SLight::updatePhiOffset, this);
+    newSlot(s_SET_X_OFFSET_SLOT, &SLight::setThetaOffset, this);
+    newSlot(s_SET_Y_OFFSET_SLOT, &SLight::setPhiOffset, this);
 }
 
 //------------------------------------------------------------------------------
@@ -66,8 +66,8 @@ SLight::SLight(::fwRenderOgre::ILight::Key key) :
     m_thetaOffset  (0.f),
     m_phiOffset    (0.f)
 {
-    newSlot(s_UPDATE_X_OFFSET_SLOT, &SLight::updateThetaOffset, this);
-    newSlot(s_UPDATE_Y_OFFSET_SLOT, &SLight::updatePhiOffset, this);
+    newSlot(s_SET_X_OFFSET_SLOT, &SLight::setThetaOffset, this);
+    newSlot(s_SET_Y_OFFSET_SLOT, &SLight::setPhiOffset, this);
 }
 
 //------------------------------------------------------------------------------
@@ -135,8 +135,8 @@ void SLight::doStart() throw(fwTools::Failed)
             // First update of the offset only if there is a parent transform.
             if(m_thetaOffset != 0.f || m_phiOffset != 0.f)
             {
-                this->updateThetaOffset(m_thetaOffset);
-                this->updatePhiOffset(m_phiOffset);
+                this->setThetaOffset(m_thetaOffset);
+                this->setPhiOffset(m_phiOffset);
             }
         }
     }
@@ -174,6 +174,9 @@ void SLight::setDiffuseColor(::Ogre::ColourValue _diffuseColor)
 {
     SLM_ASSERT("Missing diffuse color data object.", m_lightDiffuseColor);
     m_lightDiffuseColor->setRGBA(_diffuseColor.r, _diffuseColor.g, _diffuseColor.b, _diffuseColor.a);
+
+    m_light->setDiffuseColour(_diffuseColor);
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -182,6 +185,9 @@ void SLight::setSpecularColor(::Ogre::ColourValue _specularColor)
 {
     SLM_ASSERT("Missing specular color data object.", m_lightSpecularColor);
     m_lightSpecularColor->setRGBA(_specularColor.r, _specularColor.g, _specularColor.b, _specularColor.a);
+
+    m_light->setSpecularColour(_specularColor);
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -199,9 +205,9 @@ void SLight::switchOn(bool _on)
 
 //------------------------------------------------------------------------------
 
-void SLight::updateThetaOffset(float _thetaOffset)
+void SLight::setThetaOffset(float _thetaOffset)
 {
-    SLM_ASSERT("Unable to update an offset if the light's node isn't attached to a parent node", m_useOrphanNode);
+    SLM_ASSERT("Unable to update an offset if the light's node isn't attached to a parent node", !m_useOrphanNode);
 
     m_thetaOffset = _thetaOffset;
 
@@ -214,9 +220,9 @@ void SLight::updateThetaOffset(float _thetaOffset)
 
 //------------------------------------------------------------------------------
 
-void SLight::updatePhiOffset(float _phiOffset)
+void SLight::setPhiOffset(float _phiOffset)
 {
-    SLM_ASSERT("Unable to update an offset if the light's node isn't attached to a parent node", m_useOrphanNode);
+    SLM_ASSERT("Unable to update an offset if the light's node isn't attached to a parent node", !m_useOrphanNode);
 
     m_phiOffset = _phiOffset;
 
@@ -233,11 +239,11 @@ void SLight::setDoubleParameter(double _val, std::string _key)
 {
     if(_key == "thetaOffset")
     {
-        this->updateThetaOffset(static_cast<float>(_val));
+        this->setThetaOffset(static_cast<float>(_val));
     }
     else if(_key == "phiOffset")
     {
-        this->updatePhiOffset(static_cast<float>(_val));
+        this->setPhiOffset(static_cast<float>(_val));
     }
 }
 

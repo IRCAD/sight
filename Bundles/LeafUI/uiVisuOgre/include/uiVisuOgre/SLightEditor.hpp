@@ -8,9 +8,12 @@
 #include <gui/editor/IEditor.hpp>
 
 #include <QComboBox>
+#include <QLabel>
 #include <QPointer>
 #include <QPushButton>
 #include <QSlider>
+
+#include <OGRE/OgreColourValue.h>
 
 namespace uiVisuOgre
 {
@@ -28,6 +31,8 @@ namespace uiVisuOgre
 class UIVISUOGRE_CLASS_API SLightEditor : public QObject,
                                           public ::gui::editor::IEditor
 {
+Q_OBJECT
+
 public:
 
     fwCoreServiceClassDefinitionsMacro ( (SLightEditor)(::gui::editor::IEditor) );
@@ -56,21 +61,47 @@ protected:
     /// Does nothing.
     UIVISUOGRE_API virtual void updating() throw ( ::fwTools::Failed );
 
+protected Q_SLOTS:
+
+    /// Slot: called when the light diffuse color button is clicked.
+    /// Opens a color picker and lets the user choose a new diffuse color.
+    void onEditDiffuseColor(bool _checked);
+
+    /// Slot: called when the light specular color button is clicked.
+    /// Opens a color picker and lets the user choose a new specular color.
+    void onEditSpecularColor(bool _checked);
+
+    /// Slot: called when the theta offset slider value is modified.
+    /// Sets the new theta offset value on the light adaptor accurately.
+    void onEditThetaOffset(int _value);
+
+    /// Slot: called when the theta offset slider value is modified.
+    /// Sets the new phi offset value on the light adaptor accurately.
+    void onEditPhiOffset(int _value);
+
+    /// Slot: called when the remove light button is clicked.
+    /// Removes the selected light.
+    void onRemoveLight(bool _checked);
+
 private:
 
     void editLight(::fwRenderOgre::ILight::sptr _lightAdaptor);
+
+    /// Opens a QColorDialog to pick a new color that is returned.
+    ::Ogre::ColourValue editColor(const ::Ogre::ColourValue& _currentColor, const std::string& _title);
+
+    QPointer<QLabel> m_lightNameLbl;
 
     QPointer<QComboBox> m_lightTypeBox;
 
     QPointer<QPushButton> m_diffuseColorBtn;
     QPointer<QPushButton> m_specularColorBtn;
+    QPointer<QPushButton> m_removeLightBtn;
 
     QPointer<QSlider> m_thetaSlider;
     QPointer<QSlider> m_phiSlider;
 
-    static const std::string s_POINT_LIGHT;
-    static const std::string s_DIRECTIONAL_LIGHT;
-    static const std::string s_SPOT_LIGHT;
+    ::fwRenderOgre::ILight::sptr m_currentLight;
 };
 
 } // namespace uiVisuOgre

@@ -60,6 +60,12 @@ public:
 
     FWRENDEROGRE_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
+    FWRENDEROGRE_API static const std::string s_POINT_LIGHT;
+    FWRENDEROGRE_API static const std::string s_DIRECTIONAL_LIGHT;
+    FWRENDEROGRE_API static const std::string s_SPOT_LIGHT;
+
+    FWRENDEROGRE_API static const int s_OFFSET_RANGE;
+
     FWRENDEROGRE_API static ILight::sptr createLightManager(::fwData::TransformationMatrix3D::sptr _transform,
                                                             ::fwData::Color::sptr _diffuse,
                                                             ::fwData::Color::sptr _specular);
@@ -75,15 +81,22 @@ public:
                                                                        = 0;
     FWRENDEROGRE_API virtual ::Ogre::Light::LightTypes getType() const = 0;
     FWRENDEROGRE_API virtual void setType(::Ogre::Light::LightTypes _type)
-        = 0;
+                                                                         = 0;
+    FWRENDEROGRE_API virtual ::Ogre::ColourValue getDiffuseColor() const = 0;
     FWRENDEROGRE_API virtual void setDiffuseColor(::Ogre::ColourValue _diffuseColor)
-        = 0;
+                                                                          = 0;
+    FWRENDEROGRE_API virtual ::Ogre::ColourValue getSpecularColor() const = 0;
     FWRENDEROGRE_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor)
         = 0;
     FWRENDEROGRE_API virtual void setParentTransformName(
         const ::fwRenderOgre::SRender::OgreObjectIdType& _parentTransformName) = 0;
     FWRENDEROGRE_API virtual bool isSwitchedOn() const                         = 0;
     FWRENDEROGRE_API virtual void switchOn(bool _on)                           = 0;
+    FWRENDEROGRE_API virtual float getThetaOffset() const                      = 0;
+    FWRENDEROGRE_API virtual void setThetaOffset(float _theta)                 = 0;
+    FWRENDEROGRE_API virtual float getPhiOffset() const                        = 0;
+    FWRENDEROGRE_API virtual void setPhiOffset(float _phi)                     = 0;
+    FWRENDEROGRE_API virtual bool isOrphanNode() const                         = 0;
 };
 
 } // namespace fwRenderOgre
