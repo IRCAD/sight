@@ -16,14 +16,42 @@
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 
-class VISUVTKADAPTOR_CLASS_API vtkPolyData;
-class VISUVTKADAPTOR_CLASS_API vtkPolyDataMapper;
-class VISUVTKADAPTOR_CLASS_API vtkActor;
+class vtkPolyData;
+class vtkPolyDataMapper;
+class vtkActor;
 
 
 namespace visuVTKAdaptor
 {
 
+/**
+ * @brief Cursor management
+ *
+ *
+ * @section Slots Slots
+ * - \b setCrossScale(double scale) : set the scale for the cross : 1. means full cross, 0.5 half cross, 0. no cross
+ * - \b updateSliceIndex(int axial, int frontal, int sagittal) : update image slice index
+ * - \b updateSliceType(int from, int to) : update image slice type
+ * - \b updateImage() : update image
+ * - \b showFullCross() : show full cross
+ * - \b showNormalCross() : show normal cross (use m_scale to "normal" size)
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <adaptor id="slicesCursor" class="::visuVTKAdaptor::SlicesCursor" objectId="self">
+       <config renderer="default" picker="negatodefault" transform="trf" scale="0.5"/>
+   </adaptor>
+   @endcode
+ *
+ * @subsection Configuration Configuration
+ *
+ * - \b renderer (mandatory): defines the renderer to show the ProbeCursor.
+ * - \b picker (mandatory): identifier of the picker
+ * - \b scale (mandatory): scale for the cross: 1. means full cross, 0.5 half cross, 0. no cross
+ * - \b transform (optional): the vtkTransform to associate to the adaptor
+ *
+ */
 
 class VISUVTKADAPTOR_CLASS_API SlicesCursor : public ::fwDataTools::helper::MedicalImageAdaptor,
                                               public ::fwRenderVTK::IVtkAdaptorService
@@ -51,6 +79,9 @@ public:
      * @name Slots
      * @{
      */
+    static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT;
+    static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT;
+    static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT;
     static const ::fwCom::Slots::SlotKeyType s_SHOW_FULL_CROSS_SLOT;
     static const ::fwCom::Slots::SlotKeyType s_SHOW_NORMAL_CROSS_SLOT;
     static const ::fwCom::Slots::SlotKeyType s_SET_CROSS_SCALE_SLOT;

@@ -34,7 +34,36 @@ namespace visuVTKAdaptor
 
 /**
  * @brief Adaptor to display only one slice of an image
+ *
+ *
+ * @section Slots Slots
+ * - \b checkCtrlImage() : Check if ctrl image changed and update scene
+ * - \b updateSliceIndex() : update image slice index
+ * - \b updateSliceType() : update image slice type
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <adaptor id="imageSlice" class="::visuVTKAdaptor::ImageSlice" objectId="self">
+       <config renderer="default" picker="negatodefault" sliceIndex="axial"
+               transform="trf" ctrlimage="imageKey" interpolation="off" vtkimagesource="imgSource"
+               actorOpacity="1.0" />
+   </adaptor>
+   @endcode
+ *
+ * @subsection Configuration Configuration
+ *
+ * - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects renderer.
+ * - \b picker (mandatory): identifier of the picker
+ * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
+ * - \b transform (optional): the vtkTransform to associate to the adaptor
+ * - \b ctrlimage (mandatory): image to show
+ * - \b interpolation (optional, yes/no, default=yes): if true, the image pixels are interpolated
+ * - \b vtkimagesource (optional): source image, used for blend
+ * - \b actorOpacity (optional, default=1.0): actor opacity (float)
+ *
  */
+
 class VISUVTKADAPTOR_CLASS_API ImageSlice : public ::fwDataTools::helper::MedicalImageAdaptor,
                                             public ::fwRenderVTK::IVtkAdaptorService
 {
@@ -95,25 +124,6 @@ protected:
 
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
 
-    /**
-     * @brief Configures the service
-     *
-     * @code{.xml}
-       <adaptor id="imageSlice" class="::visuVTKAdaptor::ImageSlice" objectId="self">
-           <config renderer="default" picker="negatodefault" sliceIndex="axial"
-                   transform="trf" ctrlimage="imageKey" interpolation="off" vtkimagesource="imgSource"
-                   actorOpacity="1.0" />
-       </adaptor>
-       @endcode
-     * - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects renderer.
-     * - \b picker (mandatory): identifier of the picker
-     * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
-     * - \b transform (optional): the vtkTransform to associate to the adaptor
-     * - \b ctrlimage (mandatory): image to show
-     * - \b interpolation (optional, yes/no, default=yes): if true, the image pixels are interpolated
-     * - \b vtkimagesource (optional): source image, used for blend
-     * - \b actorOpacity (optional, default=1.0): actor opacity (float)
-     */
     VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 

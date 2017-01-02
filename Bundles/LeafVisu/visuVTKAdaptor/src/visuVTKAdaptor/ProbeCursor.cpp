@@ -53,8 +53,6 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Pr
 namespace visuVTKAdaptor
 {
 
-
-
 class ProbingCallback : public vtkCommand
 {
 public:
@@ -238,6 +236,7 @@ void ProbeCursor::doStart() throw(fwTools::Failed)
     m_cursorMapper->SetInputData( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
     m_cursorActor->GetProperty()->SetColor(1,0,0);
+    m_cursorActor->GetProperty()->SetOpacity(0.9);
     if(!this->getTransformId().empty())
     {
         m_cursorActor->SetUserTransform(this->getTransform());

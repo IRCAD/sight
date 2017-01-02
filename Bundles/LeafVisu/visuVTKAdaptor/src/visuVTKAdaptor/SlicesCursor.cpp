@@ -28,6 +28,7 @@
 #include <vtkLine.h> // CELL
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
 
@@ -39,9 +40,9 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Sl
 namespace visuVTKAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_IMAGE_SLOT       = "updateImage";
+const ::fwCom::Slots::SlotKeyType SlicesCursor::s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
+const ::fwCom::Slots::SlotKeyType SlicesCursor::s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
+const ::fwCom::Slots::SlotKeyType SlicesCursor::s_UPDATE_IMAGE_SLOT       = "updateImage";
 
 const ::fwCom::Slots::SlotKeyType SlicesCursor::s_SHOW_FULL_CROSS_SLOT   = "showFullCross";
 const ::fwCom::Slots::SlotKeyType SlicesCursor::s_SHOW_NORMAL_CROSS_SLOT = "showNormalCross";
@@ -108,6 +109,8 @@ void SlicesCursor::doStart() throw(fwTools::Failed)
     this->updateColors();
     m_cursorMapper->SetInputData( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
+    m_cursorActor->GetProperty()->SetOpacity(0.9);
+
     if(!this->getTransformId().empty())
     {
         m_cursorActor->SetUserTransform(this->getTransform());
@@ -152,18 +155,14 @@ void SlicesCursor::buildPolyData()
     int i;
     for (i = 0; i < nbPoints; i++)
     {
-        //points->SetPoint(i, 300*i +0.0, 50*i*i + 0.0 , 0.0);
         points->SetPoint(i, 0.0, 0.0, 0.0);
     }
 
     vtkCellArray* cells = vtkCellArray::New();
     cells->Allocate(cells->EstimateSize(nbPoints,2));
 
-    vtkIdType pts[2];
     for ( int line = 0; line<4; ++line)
     {
-        pts[0] = line; pts[1] = line+4;
-        //cells->InsertNextCell(2,pts);
         vtkLine* lineCell = vtkLine::New();
         lineCell->GetPointIds()->SetId(0, line );
         lineCell->GetPointIds()->SetId(1, line+ 4 );
@@ -322,27 +321,29 @@ void SlicesCursor::updateImageSliceIndex( ::fwData::Image::sptr image )
         pos[1] = m_frontalIndex->value();
         pos[0] = m_sagittalIndex->value();
 
+        const ::fwData::Image::SpacingType spacing = image->getSpacing();
+        const ::fwData::Image::OriginType origin   = image->getOrigin();
+        const ::fwData::Image::SizeType size       = image->getSize();
         double sliceWorld[3];
         for (int dim = 0; dim<3; ++dim )
         {
-            sliceWorld[dim] = pos[dim]*image->getSpacing()[dim] + image->getOrigin().at(dim);
+            sliceWorld[dim] = pos[dim] * spacing[dim] + origin.at(dim);
         }
 
         double cursorPoints[8][3]; // point AB,BC,CD,AD,ABM,BCM,CDM,ADM
-
         for ( int p = 0; p<2; ++p )
         {
             for (int dim = 0; dim<3; ++dim )
             {
-                //cursorPoints[p][dim] =   ((m_orientation==dim   ||   ( (dim != m_orientation) && p )  )?sliceWorld[dim] : 0 );
-                //cursorPoints[p+2][dim] = ((m_orientation==dim   ||   ( (dim != m_orientation) && p )  )?sliceWorld[dim] : (image->getSize()[dim]-1)*image->getSpacing()[dim] );
-                cursorPoints[p][dim]   = sliceWorld[dim];
-                cursorPoints[p+2][dim] = sliceWorld[dim];
                 if ( (dim + p + 1)%3 == m_orientation )
                 {
-                    cursorPoints[p][dim]   = image->getOrigin().at(dim);
-                    cursorPoints[p+2][dim] = (image->getSize()[dim]-1)*image->getSpacing()[dim] + image->getOrigin().at(
-                        dim);
+                    cursorPoints[p][dim]   = origin.at(dim);
+                    cursorPoints[p+2][dim] = (size[dim]-1) * spacing[dim] + origin.at(dim);
+                }
+                else
+                {
+                    cursorPoints[p][dim]   = sliceWorld[dim];
+                    cursorPoints[p+2][dim] = sliceWorld[dim];
                 }
             }
         }
@@ -356,9 +357,8 @@ void SlicesCursor::updateImageSliceIndex( ::fwData::Image::sptr image )
 
         for ( int i = 0; i < 8; ++i)
         {
-            points->SetPoint(i,cursorPoints[i]);
+            points->SetPoint(i, cursorPoints[i]);
         }
-
     }
     m_cursorPolyData->Modified();
     this->setVtkPipelineModified();

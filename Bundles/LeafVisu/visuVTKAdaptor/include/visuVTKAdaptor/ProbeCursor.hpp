@@ -28,7 +28,28 @@ namespace visuVTKAdaptor
 
 /**
  * @brief Cursor management
+ *
+ *
+ * @section Slots Slots
+ * - \b updateSliceIndex(int axial, int frontal, int sagittal) : update image slice index
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <adaptor id="probeCursor" class="::visuVTKAdaptor::ProbeCursor" objectId="self">
+       <config renderer="default" picker="negatodefault" transform="trf" />
+   </adaptor>
+   @endcode
+ *
+ * @subsection Configuration Configuration
+ *
+ * - \b renderer (mandatory): defines the renderer to show the ProbeCursor.
+ * - \b picker (mandatory): identifier of the picker
+ * - \b transform (optional): the vtkTransform to associate to the adaptor
+ *
  */
+
+
 class VISUVTKADAPTOR_CLASS_API ProbeCursor : public  ::fwDataTools::helper::MedicalImageAdaptor,
                                              public ::fwRenderVTK::IVtkAdaptorService
 {

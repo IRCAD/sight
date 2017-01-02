@@ -353,6 +353,7 @@ void ImageSlice::buildOutline()
     m_planeOutlineMapper->SetResolveCoincidentTopologyToPolygonOffset();
     m_planeOutlineActor->SetMapper(m_planeOutlineMapper);
     m_planeOutlineActor->PickableOff();
+    m_planeOutlineActor->GetProperty()->SetOpacity(0.9);
     if(!this->getTransformId().empty())
     {
         m_planeOutlineActor->SetUserTransform(this->getTransform());
