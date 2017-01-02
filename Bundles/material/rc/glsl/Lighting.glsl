@@ -24,11 +24,11 @@ vec4 lighting(vec3 _normal, vec3 _position)
     for(int i = 0; i < u_numLights; ++i)
     {
         float fLitDiffuse = clamp(dot( normalize(-u_lightDir[i]), _normal ), 0, 1);
-        diffuse += fLitDiffuse * u_lightDiffuse[i];
+        diffuse += fLitDiffuse * u_lightDiffuse[i] * u_diffuse.rgb;
 
         vec3 r = reflect(u_lightDir[i], _normal);
         float fLitSpecular = pow( clamp(dot( r, vecToCam ), 0, 1), u_shininess);
-        specular += fLitSpecular * u_lightSpecular[i];
+        specular += fLitSpecular * u_lightSpecular[i] * u_specular.rgb;
     }
 
     return vec4((u_lightAmbient.rgb * u_ambient.rgb) + diffuse + specular, u_diffuse.a);
