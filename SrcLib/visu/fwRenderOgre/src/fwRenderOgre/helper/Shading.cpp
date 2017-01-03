@@ -32,6 +32,7 @@ static const std::regex s_PEEL_REGEX(".*/peel.*");
 static const std::regex s_WEIGHT_BLEND_REGEX(".*/weightBlend.*");
 static const std::regex s_TRANSMITTANCE_BLEND_REGEX(".*/transmittanceBlend.*");
 static const std::regex s_DEPTH_MAP_REGEX("(.*depth.*)|(.*backDepth.*)");
+static const std::regex s_LIGHT_PARAM_REGEX("u_(numLights|light(Ambient|Dir|Diffuse|Specular).*)");
 
 static const std::string s_AMBIENT       = "Ambient";
 static const std::string s_FLAT          = "Flat";
@@ -247,7 +248,8 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
     // Get only user constants
     for (const auto& cstDef : constantsDefinitionMap.map)
     {
-        if (!::Ogre::StringUtil::endsWith(cstDef.first, "[0]") && !_params->findAutoConstantEntry(cstDef.first))
+        if (!::Ogre::StringUtil::endsWith(cstDef.first, "[0]") && !_params->findAutoConstantEntry(cstDef.first)
+            && !std::regex_match(static_cast<std::string>(cstDef.first), s_LIGHT_PARAM_REGEX))
         {
             ConstantValueType constantValue;
             bool found = false;

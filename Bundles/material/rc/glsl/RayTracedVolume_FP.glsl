@@ -71,14 +71,14 @@ vec3 lighting(vec3 _normal, vec3 _position, vec3 _diffuse)
     for(int i = 0; i < u_numLights; ++i)
     {
         float fLitDiffuse = clamp(dot( normalize(-u_lightDir[i]), _normal ), 0, 1);
-        diffuse += fLitDiffuse * u_lightDiffuse[i];
+        diffuse += fLitDiffuse * u_lightDiffuse[i] * _diffuse;
 
         vec3 r = reflect(u_lightDir[i], _normal);
         float fLitSpecular = pow( clamp(dot( r, vecToCam ), 0, 1), u_shininess);
         specular += fLitSpecular * u_lightSpecular[i];
     }
 
-    return vec3(_diffuse * diffuse + specular);
+    return vec3(diffuse + specular);
 }
 
 //-----------------------------------------------------------------------------
