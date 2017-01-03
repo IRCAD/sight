@@ -16,8 +16,8 @@ namespace fwCsvIO
 {
 
 CsvReader::CsvReader(const std::string& location, SeparatorType separatorType ) :
-        m_location(location),
-        m_separatorType(separatorType)
+    m_location(location),
+    m_separatorType(separatorType)
 {
     SLM_ASSERT("The file path is empty.", !location.empty());
 }
