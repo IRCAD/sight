@@ -15,13 +15,11 @@
 namespace fwCsvIO
 {
 
-CsvReader::CsvReader(const std::string& location, SeparatorType separatorType )
+CsvReader::CsvReader(const std::string& location, SeparatorType separatorType ) :
+        m_location(location),
+        m_separatorType(separatorType)
 {
-    m_location = location;
-
-    m_separatorType = separatorType;
-
-    SLM_ASSERT("The file path is empty.",!location.empty());
+    SLM_ASSERT("The file path is empty.", !location.empty());
 }
 
 //------------------------------------------------------------------------------
@@ -46,7 +44,6 @@ CsvReader::CSVFileValuesType CsvReader::read() const
     if(!file.is_open())
     {
         file.close();
-
         return resultVector;
     }
 
@@ -151,7 +148,7 @@ void CsvReader::setLocation(const std::string& location)
 {
     this->m_location = location;
 
-    SLM_ASSERT("The file path is empty.",!location.empty());
+    SLM_ASSERT("The file path is empty.", !location.empty());
 }
 
 //------------------------------------------------------------------------------
