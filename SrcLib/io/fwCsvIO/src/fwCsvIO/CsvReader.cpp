@@ -6,7 +6,7 @@
 
 #include "fwCsvIO/CsvReader.hpp"
 
-#include <fwServices/macros.hpp>
+#include <fwCore/spyLog.hpp>
 
 #include <boost/filesystem.hpp>
 

@@ -19,7 +19,7 @@ namespace ut
 /**
  * @brief Test csvReader method to read CSV formated files and create vectors of strings.
  * Note : Our tests are done considering that a csvFile cannot contain errors. (E.g. in case of two consecutive commas
- * string is considered empty for exemple).
+ * string is considered empty for example).
  */
 class CsvReaderTest : public CPPUNIT_NS::TestFixture
 {
