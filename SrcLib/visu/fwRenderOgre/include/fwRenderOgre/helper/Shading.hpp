@@ -114,10 +114,12 @@ public:
      * @brief Create a fw4spl data that can be used to interact with a shader parameter.
      *
      * @param[in] _params shader parameters
+     * @param[in] _shaderType shader type (vertex, fragment or geometry)
+     * @param[in] _enableLightConstants indicates whether or not the method should look into the light related constants
      * @return vector of constants, each element is a tuple with the constant name, its definition and the shader type.
      */
     FWRENDEROGRE_API static ShaderConstantsType findShaderConstants(::Ogre::GpuProgramParametersSharedPtr params,
-                                                                    ::Ogre::GpuProgramType _shaderType);
+                                                                    ::Ogre::GpuProgramType _shaderType, bool _enableLightConstants = false);
 
     /**
      * @brief Create a fw4spl data that can be used to interact with a shader parameter.
@@ -135,21 +137,24 @@ public:
      * @param[in] _shaderType type of the shader (vertex, fragment or geometry)
      * @param[in] _uniformName name of the constant to update
      * @param[in] _uniform updated value for the constant
+     * @param[in] _enableLightParams indicates whether or not the method should look into the light related uniforms
      */
     template<class T>
     FWRENDEROGRE_API static void updateUniform(::Ogre::GpuProgramParametersSharedPtr _parameters,
                                                ::Ogre::GpuProgramType _shaderType,
-                                               std::string _uniformName, T _uniform);
+                                               std::string _uniformName, T _uniform,
+                                               bool _enableLightParams = true);
 };
 
 //-----------------------------------------------------------------------------
 
 template<class T>
 void Shading::updateUniform(::Ogre::GpuProgramParametersSharedPtr _parameters,
-                            ::Ogre::GpuProgramType _shaderType, std::string _uniformName, T _uniform)
+                            ::Ogre::GpuProgramType _shaderType, std::string _uniformName, T _uniform,
+                            bool _enableLightParams)
 {
     ::fwRenderOgre::helper::Shading::ShaderConstantsType constants =
-        ::fwRenderOgre::helper::Shading::findShaderConstants(_parameters, _shaderType);
+        ::fwRenderOgre::helper::Shading::findShaderConstants(_parameters, _shaderType, _enableLightParams);
 
     std::for_each(constants.begin(), constants.end(),
                   [&](::fwRenderOgre::helper::Shading::ShaderConstantType constantTuple)

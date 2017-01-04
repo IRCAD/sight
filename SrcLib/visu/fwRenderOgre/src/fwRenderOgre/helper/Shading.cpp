@@ -239,7 +239,8 @@ Shading::ShaderConstantsType Shading::findMaterialConstants(::Ogre::Material& _m
 //------------------------------------------------------------------------------
 
 Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramParametersSharedPtr _params,
-                                                          ::Ogre::GpuProgramType _shaderType)
+                                                          ::Ogre::GpuProgramType _shaderType,
+                                                          bool _enableLightConstants)
 {
     ShaderConstantsType parameters;
 
@@ -248,8 +249,17 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
     // Get only user constants
     for (const auto& cstDef : constantsDefinitionMap.map)
     {
-        if (!::Ogre::StringUtil::endsWith(cstDef.first, "[0]") && !_params->findAutoConstantEntry(cstDef.first)
-            && !std::regex_match(static_cast<std::string>(cstDef.first), s_LIGHT_PARAM_REGEX))
+        if(!_enableLightConstants)
+        {
+            bool isLightConstant = std::regex_match(static_cast<std::string>(cstDef.first), s_LIGHT_PARAM_REGEX);
+
+            if(isLightConstant)
+            {
+                continue;
+            }
+        }
+
+        if (!::Ogre::StringUtil::endsWith(cstDef.first, "[0]") && !_params->findAutoConstantEntry(cstDef.first))
         {
             ConstantValueType constantValue;
             bool found = false;
