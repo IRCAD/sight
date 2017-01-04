@@ -74,9 +74,6 @@ void SLightEditor::starting() throw( ::fwTools::Failed )
     m_specularColorBtn = new QPushButton("Specular color", container);
     m_specularColorBtn->setEnabled(false);
 
-    m_removeLightBtn = new QPushButton("Remove light", container);
-    m_removeLightBtn->setEnabled(false);
-
     m_thetaSlider = new QSlider(::Qt::Horizontal, container);
     m_thetaSlider->setMinimum(0);
     m_thetaSlider->setMaximum(::fwRenderOgre::ILight::s_OFFSET_RANGE);
@@ -100,17 +97,15 @@ void SLightEditor::starting() throw( ::fwTools::Failed )
 
     // Theta offset
     QHBoxLayout* thetaLayout = new QHBoxLayout();
-    thetaLayout->addWidget(new QLabel("Theta offset"));
+    thetaLayout->addWidget(new QLabel("Theta offset :"));
     thetaLayout->addWidget(m_thetaSlider);
     layout->addLayout(thetaLayout);
 
     // Phi offset
     QHBoxLayout* phiLayout = new QHBoxLayout();
-    phiLayout->addWidget(new QLabel("Phi offset"));
+    phiLayout->addWidget(new QLabel("Phi offset :"));
     phiLayout->addWidget(m_phiSlider);
     layout->addLayout(phiLayout);
-
-    layout->addWidget(m_removeLightBtn);
 
     container->setLayout(layout);
 
@@ -119,8 +114,6 @@ void SLightEditor::starting() throw( ::fwTools::Failed )
 
     QObject::connect(m_thetaSlider, SIGNAL(valueChanged(int)), this, SLOT(onEditThetaOffset(int)));
     QObject::connect(m_phiSlider, SIGNAL(valueChanged(int)), this, SLOT(onEditPhiOffset(int)));
-
-    QObject::connect(m_removeLightBtn, SIGNAL(clicked(bool)), this, SLOT(onRemoveLight(bool)));
 }
 
 //------------------------------------------------------------------------------
@@ -132,8 +125,6 @@ void SLightEditor::stopping() throw( ::fwTools::Failed )
 
     QObject::disconnect(m_thetaSlider, SIGNAL(valueChanged(int)), this, SLOT(onEditThetaOffset(int)));
     QObject::disconnect(m_phiSlider, SIGNAL(valueChanged(int)), this, SLOT(onEditPhiOffset(int)));
-
-    QObject::disconnect(m_removeLightBtn, SIGNAL(clicked(bool)), this, SLOT(onRemoveLight(bool)));
 
     this->getContainer()->clean();
     this->destroy();
@@ -181,13 +172,6 @@ void SLightEditor::onEditPhiOffset(int _value)
 
 //------------------------------------------------------------------------------
 
-void SLightEditor::onRemoveLight(bool _checked)
-{
-    //TODO: Implement light removing method.
-}
-
-//------------------------------------------------------------------------------
-
 void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
 {
     SLM_ASSERT("The selected light adaptor doesn't exist.", _lightAdaptor);
@@ -212,8 +196,6 @@ void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
         m_thetaSlider->setEnabled(false);
         m_phiSlider->setEnabled(false);
     }
-
-    m_removeLightBtn->setEnabled(true);
 }
 
 //------------------------------------------------------------------------------

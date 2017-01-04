@@ -79,10 +79,6 @@ protected Q_SLOTS:
     /// Sets the new phi offset value on the light adaptor accurately.
     void onEditPhiOffset(int _value);
 
-    /// Slot: called when the remove light button is clicked.
-    /// Removes the selected light.
-    void onRemoveLight(bool _checked);
-
 private:
 
     void editLight(::fwRenderOgre::ILight::sptr _lightAdaptor);
@@ -96,7 +92,6 @@ private:
 
     QPointer<QPushButton> m_diffuseColorBtn;
     QPointer<QPushButton> m_specularColorBtn;
-    QPointer<QPushButton> m_removeLightBtn;
 
     QPointer<QSlider> m_thetaSlider;
     QPointer<QSlider> m_phiSlider;

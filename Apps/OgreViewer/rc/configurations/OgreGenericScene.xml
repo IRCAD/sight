@@ -23,11 +23,6 @@
         <object uid="videoImage" type="::fwData::Image" />
         <object uid="camera" type="::arData::Camera" />
 
-        <object uid="lightTF1" type="::fwData::TransformationMatrix3D" />
-        <!-- <object uid="lightTF2" type="::fwData::TransformationMatrix3D" /> -->
-        <object uid="diffuseColor" type="::fwData::Color" />
-        <object uid="specularColor" type="::fwData::Color" />
-
         <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="OgreSceneView" type="::gui::view::SDefaultView" >
@@ -121,8 +116,6 @@
             <adaptor uid="interactorAdaptor" start="yes" />
             <adaptor uid="modelSeriesAdaptor" start="yes" />
             <adaptor uid="negato3DAdaptor" start="yes" />
-            <adaptor uid="lightAdaptor1" start="yes" />
-            <!-- <adaptor uid="lightAdaptor2" start="yes" /> -->
         </service>
 
         <service uid="videoAdapter" type="::visuOgreAdaptor::SVideo" >
@@ -150,20 +143,6 @@
             <inout key="TF" uid="${TFSelections}" />
             <config layer="default" selectedTFKey="SelectedTF" />
         </service>
-
-        <service uid="lightAdaptor1" type="::visuOgreAdaptor::SLight">
-            <inout key="transform" uid="lightTF1" autoConnect="yes" />
-            <inout key="diffuseColor" uid="diffuseColor" autoConnect="yes" />
-            <inout key="specularColor" uid="specularColor" autoConnect="yes" />
-            <config layer="default" name="light1" />
-        </service>
-
-        <!-- <service uid="lightAdaptor2" type="::visuOgreAdaptor::SLight">
-            <inout key="transform" uid="lightTF2" autoConnect="yes" />
-            <inout key="diffuseColor" uid="diffuseColor" autoConnect="yes" />
-            <inout key="specularColor" uid="specularColor" autoConnect="yes" />
-            <config layer="default" name="light2" />
-        </service> -->
 
         <!-- ********************************* End Generic Scene ******************************* -->
 
