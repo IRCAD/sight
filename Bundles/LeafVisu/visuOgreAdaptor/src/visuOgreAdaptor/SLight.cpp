@@ -120,7 +120,7 @@ void SLight::doStart() throw(fwTools::Failed)
 
     m_lightName = this->getID() + "_" + m_lightName;
     m_light     = this->getSceneManager()->createLight(m_lightName);
-    m_light->setType(::Ogre::Light::LT_DIRECTIONAL);
+    m_light->setType(m_lightType ? m_lightType : ::Ogre::Light::LT_DIRECTIONAL);
     m_light->setVisible(m_switchedOn);
 
     if(!this->getParentTransformId().empty())
@@ -305,6 +305,8 @@ void SLight::doStop() throw(fwTools::Failed)
         m_transformService.lock()->stop();
         ::fwServices::OSR::unregisterService(m_transformService.lock());
     }
+
+    this->getSceneManager()->destroyLight(m_light);
 
     this->unregisterServices();
 }

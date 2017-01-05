@@ -10,10 +10,14 @@
 
 #include <QCheckBox>
 #include <QComboBox>
+#include <QDialog>
+#include <QLabel>
+#include <QLineEdit>
 #include <QListWidget>
 #include <QPointer>
 #include <QPushButton>
 
+#include <string>
 #include <vector>
 
 namespace uiVisuOgre
@@ -93,6 +97,10 @@ protected Q_SLOTS:
     /// Adds a new light to the current scene.
     void onAddLight(bool _checked);
 
+    /// Slot: called when the remove light button is clicked.
+    /// Removes the selected light.
+    void onRemoveLight(bool _checked);
+
     /// Slot: called when the scene ambient color button is clicked.
     /// Opens a color picker and lets the user choose a new ambient color.
     void onEditAmbientColor(bool _checked);
@@ -107,6 +115,9 @@ private:
     /// Retrieves light adaptors used in the current layer and stores them in the list widget.
     void updateLightsList();
 
+    /// Creates a new light adaptor.
+    void createLightAdaptor(const std::string& _name);
+
     /// Finds the light adaptor with the specified name.
     ::fwRenderOgre::ILight::sptr retrieveLightAdaptor(const std::string& _name) const;
 
@@ -115,6 +126,7 @@ private:
     QPointer<QListWidget> m_lightsList;
 
     QPointer<QPushButton> m_addLightBtn;
+    QPointer<QPushButton> m_removeLightBtn;
     QPointer<QPushButton> m_ambientColorBtn;
 
     std::vector< ::fwRenderOgre::Layer::wptr > m_layers;
@@ -124,8 +136,29 @@ private:
 
     ::fwRenderOgre::ILight::sptr m_currentLight;
 
-    ///Connection service, needed for slot/signal association
+    /// Connection service, needed for slot/signal association
     ::fwCom::helper::SigSlotConnection m_connections;
+};
+
+//------------------------------------------------------------------------------
+
+class NewLightDialog : public QDialog
+{
+Q_OBJECT
+
+public:
+
+    NewLightDialog(QWidget* parent = 0);
+    ~NewLightDialog();
+
+protected Q_SLOTS:
+    void onOkBtn(bool _checked);
+
+private:
+
+    QPointer<QLabel> m_lightNameLbl;
+    QPointer<QLineEdit> m_lightNameEdit;
+    QPointer<QPushButton> m_okBtn;
 };
 
 } // namespace uiVisuOgre

@@ -16,6 +16,7 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Color.hpp>
+#include <fwData/Material.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/Color.hpp>
@@ -408,6 +409,22 @@ void Layer::setRenderService( const ::fwRenderOgre::SRender::sptr& _service)
     SLM_ASSERT("service not instanced", _service);
 
     m_renderService = _service;
+}
+
+// ----------------------------------------------------------------------------
+
+void Layer::addAdaptor(::fwRenderOgre::IAdaptor::sptr _adaptor)
+{
+    SLM_ASSERT("Adaptor not instanced", _adaptor);
+    m_renderService.lock()->addAdaptor(_adaptor);
+}
+
+// ----------------------------------------------------------------------------
+
+void Layer::removeAdaptor(::fwRenderOgre::IAdaptor::sptr _adaptor)
+{
+    SLM_ASSERT("Adaptor not instanced", _adaptor);
+    m_renderService.lock()->removeAdaptor(_adaptor);
 }
 
 // ----------------------------------------------------------------------------

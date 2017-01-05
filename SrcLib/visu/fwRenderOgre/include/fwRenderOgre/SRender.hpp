@@ -184,6 +184,9 @@ public:
     /// Adds a new adaptor to the map.
     FWRENDEROGRE_API void addAdaptor(SPTR(::fwRenderOgre::IAdaptor) _adaptor);
 
+    /// Removes an adaptor from the map.
+    FWRENDEROGRE_API void removeAdaptor(SPTR(::fwRenderOgre::IAdaptor) _adaptor);
+
     template<class T>
     std::vector<SPTR(T)> getAdaptors() const;
 

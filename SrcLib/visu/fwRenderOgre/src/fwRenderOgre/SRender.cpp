@@ -445,6 +445,13 @@ void SRender::addAdaptor(::fwRenderOgre::IAdaptor::sptr _adaptor)
 
 //-----------------------------------------------------------------------------
 
+void SRender::removeAdaptor(::fwRenderOgre::IAdaptor::sptr _adaptor)
+{
+    m_adaptors.erase(_adaptor->getID());
+}
+
+//-----------------------------------------------------------------------------
+
 void SRender::render()
 {
     this->requestRender();

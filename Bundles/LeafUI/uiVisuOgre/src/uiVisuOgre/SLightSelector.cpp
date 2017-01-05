@@ -5,7 +5,9 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
+#include <fwData/Color.hpp>
 #include <fwData/Composite.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -13,6 +15,8 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
+
+#include <visuOgreAdaptor/SMaterial.hpp>
 
 #include <QColor>
 #include <QColorDialog>
@@ -62,6 +66,7 @@ void SLightSelector::starting() throw(::fwTools::Failed)
     m_lightsState     = new QCheckBox("Switch lights on/off", container);
     m_lightsList      = new QListWidget(container);
     m_addLightBtn     = new QPushButton("Add light", container);
+    m_removeLightBtn  = new QPushButton("Remove light", container);
     m_ambientColorBtn = new QPushButton("Scene ambient color", container);
 
     QVBoxLayout* layout = new QVBoxLayout();
@@ -71,6 +76,8 @@ void SLightSelector::starting() throw(::fwTools::Failed)
 
     QHBoxLayout* addRemoveLayout = new QHBoxLayout();
     addRemoveLayout->addWidget(m_addLightBtn);
+    addRemoveLayout->addWidget(m_removeLightBtn);
+    m_removeLightBtn->setEnabled(false);
 
     layout->addLayout(addRemoveLayout);
     layout->addWidget(m_ambientColorBtn);
@@ -89,6 +96,7 @@ void SLightSelector::starting() throw(::fwTools::Failed)
                      this, SLOT(onCheckedLightItem(QListWidgetItem*)));
 
     QObject::connect(m_addLightBtn, SIGNAL(clicked(bool)), this, SLOT(onAddLight(bool)));
+    QObject::connect(m_removeLightBtn, SIGNAL(clicked(bool)), this, SLOT(onRemoveLight(bool)));
 
     QObject::connect(m_ambientColorBtn, SIGNAL(clicked(bool)), this, SLOT(onEditAmbientColor(bool)));
 }
@@ -109,6 +117,7 @@ void SLightSelector::stopping() throw(::fwTools::Failed)
                         this, SLOT(onCheckedLightItem(QListWidgetItem*)));
 
     QObject::disconnect(m_addLightBtn, SIGNAL(clicked(bool)), this, SLOT(onAddLight(bool)));
+    QObject::disconnect(m_removeLightBtn, SIGNAL(clicked(bool)), this, SLOT(onRemoveLight(bool)));
 
     QObject::disconnect(m_ambientColorBtn, SIGNAL(clicked(bool)), this, SLOT(onEditAmbientColor(bool)));
 
@@ -154,13 +163,12 @@ void SLightSelector::onChangedLightsState(int _state)
 
 void SLightSelector::onSelectedLightItem(QListWidgetItem* _item)
 {
-    if(_item->checkState() == ::Qt::Checked)
-    {
-        m_currentLight = this->retrieveLightAdaptor(_item->text().toStdString());
+    m_currentLight = this->retrieveLightAdaptor(_item->text().toStdString());
 
-        auto sig = this->signal<LightSelectedSignalType>(s_LIGHT_SELECTED_SIG);
-        sig->asyncEmit(m_currentLight);
-    }
+    auto sig = this->signal<LightSelectedSignalType>(s_LIGHT_SELECTED_SIG);
+    sig->asyncEmit(m_currentLight);
+
+    m_removeLightBtn->setEnabled(true);
 }
 
 //------------------------------------------------------------------------------
@@ -177,7 +185,50 @@ void SLightSelector::onCheckedLightItem(QListWidgetItem* _item)
 
 void SLightSelector::onAddLight(bool _checked)
 {
-    //TODO: Implement light adding method.
+    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
+        this->getContainer());
+    QWidget* const container = qtContainer->getQtContainer();
+
+    ::uiVisuOgre::NewLightDialog* lightDialog = new ::uiVisuOgre::NewLightDialog(container);
+
+    if(lightDialog->exec() == QDialog::Accepted)
+    {
+        std::string lightName = lightDialog->property("lightName").toString().toStdString();
+
+        auto existingLight =
+            std::find_if(m_lightAdaptors.begin(), m_lightAdaptors.end(),
+                         [lightName](::fwRenderOgre::ILight::sptr lightAdaptor)
+            {
+                return lightAdaptor->getName() == lightName;
+            });
+
+        if(existingLight == m_lightAdaptors.end())
+        {
+            this->createLightAdaptor(lightName);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SLightSelector::onRemoveLight(bool _checked)
+{
+    if(m_currentLight)
+    {
+        m_currentLight->stop();
+        ::fwServices::OSR::unregisterService(m_currentLight);
+
+        ::fwRenderOgre::Layer::sptr currentLayer = m_currentLayer.lock();
+
+        currentLayer->removeAdaptor(m_currentLight);
+        m_currentLight.reset();
+
+        m_lightAdaptors = currentLayer->getLightAdaptors();
+        this->updateLightsList();
+
+        m_removeLightBtn->setEnabled(false);
+        currentLayer->requestRender();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -260,6 +311,47 @@ void SLightSelector::updateLightsList()
 
 //------------------------------------------------------------------------------
 
+void SLightSelector::createLightAdaptor(const std::string& _name)
+{
+    ::fwRenderOgre::Layer::sptr currentLayer = m_currentLayer.lock();
+
+    if(currentLayer)
+    {
+        ::fwData::TransformationMatrix3D::sptr lightTransform = ::fwData::TransformationMatrix3D::New();
+        ::fwData::Color::sptr lightDiffuseColor               = ::fwData::Color::New();
+        ::fwData::Color::sptr lightSpecularColor              = ::fwData::Color::New();
+
+        ::fwRenderOgre::ILight::sptr lightManager = ::fwRenderOgre::ILight::createLightManager(lightTransform,
+                                                                                               lightDiffuseColor,
+                                                                                               lightSpecularColor);
+        lightManager->setName(_name);
+        lightManager->setType(::Ogre::Light::LT_DIRECTIONAL);
+        lightManager->setLayerID(currentLayer->getLayerID());
+
+        currentLayer->addAdaptor(lightManager);
+        lightManager->start();
+
+        m_lightAdaptors = currentLayer->getLightAdaptors();
+        this->updateLightsList();
+
+        ::fwServices::registry::ObjectService::ServiceVectorType materialServices =
+            ::fwServices::OSR::getServices("::visuOgreAdaptor::SMaterial");
+
+        for(auto srv : materialServices)
+        {
+            ::visuOgreAdaptor::SMaterial::sptr materialAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(srv);
+
+            if(materialAdaptor->getLayerID() == currentLayer->getLayerID())
+            {
+                // Update materials of the scene to take the new light into account
+                materialAdaptor->update();
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 ::fwRenderOgre::ILight::sptr SLightSelector::retrieveLightAdaptor(const std::string& _name) const
 {
     auto it = std::find_if(m_lightAdaptors.begin(), m_lightAdaptors.end(),
@@ -269,6 +361,49 @@ void SLightSelector::updateLightsList()
         });
 
     return it != m_lightAdaptors.end() ? *it : nullptr;
+}
+
+//------------------------------------------------------------------------------
+
+NewLightDialog::NewLightDialog(QWidget* parent) :
+    QDialog(parent)
+{
+    m_lightNameLbl  = new QLabel("Name :", this);
+    m_lightNameEdit = new QLineEdit(this);
+
+    m_okBtn = new QPushButton("Ok", this);
+
+    QHBoxLayout* lightNameLayout = new QHBoxLayout();
+    lightNameLayout->addWidget(m_lightNameLbl);
+    lightNameLayout->addWidget(m_lightNameEdit);
+
+    QVBoxLayout* newLightLayout = new QVBoxLayout();
+    newLightLayout->addLayout(lightNameLayout);
+    newLightLayout->addWidget(m_okBtn);
+
+    this->setWindowTitle("New light");
+    this->setModal(true);
+    this->setLayout(newLightLayout);
+
+    QObject::connect(m_okBtn, SIGNAL(clicked(bool)), this, SLOT(onOkBtn(bool)));
+}
+
+//------------------------------------------------------------------------------
+
+NewLightDialog::~NewLightDialog()
+{
+    QObject::disconnect(m_okBtn, SIGNAL(clicked(bool)), this, SLOT(onOkBtn(bool)));
+}
+
+//------------------------------------------------------------------------------
+
+void NewLightDialog::onOkBtn(bool _checked)
+{
+    if(!m_lightNameEdit->text().isEmpty())
+    {
+        this->setProperty("lightName", QVariant(m_lightNameEdit->text()));
+        this->accept();
+    }
 }
 
 //------------------------------------------------------------------------------

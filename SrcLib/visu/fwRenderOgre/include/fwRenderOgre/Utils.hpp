@@ -110,6 +110,11 @@ public:
 
     FWRENDEROGRE_API static ::Ogre::OverlaySystem* getOverlaySystem();
 
+    /**
+     * @brief convertOgreColorToFwColor
+     * @param[in] _ogreColor Color to convert into a f4s color
+     * @return The converted f4s color
+     */
     FWRENDEROGRE_API static ::fwData::Color::sptr convertOgreColorToFwColor(const Ogre::ColourValue& _ogreColor);
 
 private:

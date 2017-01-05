@@ -38,6 +38,7 @@ class TransformationMatrix3D;
 namespace fwRenderOgre
 {
 class SRender;
+class IAdaptor;
 class ICamera;
 class ILight;
 }
@@ -183,6 +184,12 @@ public:
 
     /// Sets the render service.
     FWRENDEROGRE_API void setRenderService( const SPTR(::fwRenderOgre::SRender)& _service );
+
+    /// Adds an adaptor to the render service.
+    FWRENDEROGRE_API void addAdaptor(SPTR(::fwRenderOgre::IAdaptor) _adaptor);
+
+    /// Removes an adaptor from the render service.
+    FWRENDEROGRE_API void removeAdaptor(SPTR(::fwRenderOgre::IAdaptor) _adaptor);
 
     FWRENDEROGRE_API void doRayCast(int x, int y, int width, int height);
 
