@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -262,53 +262,15 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
         int nbBytePerPixel = source->GetScalarSize();
         OSLM_TRACE("image size : " << size << " - nbBytePerPixel : " << nbBytePerPixel );
 
+        OSLM_TRACE (nbComponents << " components, " << TypeTranslator::translate( source->GetScalarType() ));
+        destination->setType( TypeTranslator::translate( source->GetScalarType() ) );
+        destination->setNumberOfComponents(nbComponents);
+        destination->allocate();
+        ::fwData::ObjectLock lock(destination);
+        destBuffer = imageHelper.getBuffer();
+        size_t sizeInBytes = destination->getSizeInBytes();
+        std::memcpy(destBuffer, input, sizeInBytes);
 
-        destination->setNumberOfComponents(3);
-        if (nbComponents == 3 && nbBytePerPixel == 2)
-        {
-            SLM_TRACE ("RGB 16bits");
-
-            destination->setType( "uint16" );
-            destination->allocate();
-            ::fwData::ObjectLock lock(destination);
-            destBuffer = imageHelper.getBuffer();
-            SLM_ASSERT("Image allocation error", destBuffer != NULL);
-            fromRGBBufferColor< unsigned short >(input, size, destBuffer);
-        }
-        else if (nbComponents == 3 && nbBytePerPixel == 1)
-        {
-            SLM_TRACE ("RGB 8bits");
-
-            destination->setType( "uint8" );
-            destination->allocate();
-            ::fwData::ObjectLock lock(destination);
-            destBuffer = imageHelper.getBuffer();
-            SLM_ASSERT("Image allocation error", destBuffer != NULL);
-            fromRGBBufferColor< unsigned char >(input, size, destBuffer);
-        }
-        else if (nbComponents == 4 && nbBytePerPixel == 1)
-        {
-            SLM_TRACE ("RGBA 8bits");
-
-            destination->setNumberOfComponents(nbComponents);
-            destination->setType( "uint8" );
-            destination->allocate();
-            ::fwData::ObjectLock lock(destination);
-            destBuffer = imageHelper.getBuffer();
-            SLM_ASSERT("Image allocation error", destBuffer != NULL);
-            fromRGBBufferColor< unsigned char >(input, size, destBuffer);
-        }
-        else
-        {
-            SLM_TRACE ("Luminance image");
-            destination->setType( TypeTranslator::translate( source->GetScalarType() ) );
-            destination->setNumberOfComponents(nbComponents);
-            destination->allocate();
-            ::fwData::ObjectLock lock(destination);
-            destBuffer = imageHelper.getBuffer();
-            size_t sizeInBytes = destination->getSizeInBytes();
-            std::memcpy(destBuffer, input, sizeInBytes);
-        }
     }
 
 }
