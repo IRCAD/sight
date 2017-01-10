@@ -110,7 +110,7 @@
             <in key="image" uid="${image}" />
         </service>
         <service uid="ActionLoadLandmark" type="::uiMeasurement::action::LoadLandmark" >
-            <in key="image" uid="${image}" />
+            <inout key="image" uid="${image}" />
         </service>
         <service uid="ActionSaveLandmark" type="::uiMeasurement::action::SaveLandmark" >
             <in key="image" uid="${image}" />

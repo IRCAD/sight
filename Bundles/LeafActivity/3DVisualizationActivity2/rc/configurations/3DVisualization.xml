@@ -207,7 +207,7 @@
             <inout key="image" uid="optionalInputImage" />
         </service>
         <service uid="ActionSaveLandmark" type="::uiMeasurement::action::SaveLandmark" >
-            <inout key="image" uid="optionalInputImage" />
+            <in key="image" uid="optionalInputImage" />
         </service>
         <service uid="ActionHideLandmark" type="::uiMeasurement::action::ShowLandmark" autoConnect="yes" >
             <inout key="image" uid="optionalInputImage" />
