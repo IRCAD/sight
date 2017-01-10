@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,16 +7,14 @@
 #ifndef __MIDASIO_ICONFIGURATION_HPP__
 #define __MIDASIO_ICONFIGURATION_HPP__
 
-#include <string>
-#include <map>
+#include "midasIO/config.hpp"
+#include "midasIO/factory/new.hpp"
+#include "midasIO/registry/detail.hpp"
 
 #include <fwCore/base.hpp>
 
-#include <fwTools/macros.hpp>
-
-#include "midasIO/registry/detail.hpp"
-#include "midasIO/factory/new.hpp"
-#include "midasIO/config.hpp"
+#include <map>
+#include <string>
 
 #define __MIDASIO_GET_SET_MACRO(Name, Type) \
     const Type &get ## Name() \

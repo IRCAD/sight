@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,35 +8,36 @@
  #include <iomanip>
  #include <sstream>
 
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-
-#include <boost/filesystem.hpp>
-#include <boost/bind.hpp>
-#include <boost/lambda/lambda.hpp>
-#include <boost/assign/list_of.hpp>
-
-#include <vtkPolyData.h>
-#include <vtkDataSetMapper.h>
-#include <vtkPolyDataNormals.h>
-#include <vtkProperty.h>
-#include <vtkOBJExporter.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderer.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkSmartPointer.h>
+#include "midasIO/ModelSeriesWriter.hpp"
 
 #include <fwCore/base.hpp>
 
-#include <fwData/StructureTraitsDictionary.hpp>
 #include <fwData/Material.hpp>
+#include <fwData/StructureTraitsDictionary.hpp>
 
-#include <fwDataIO/writer/registry/macros.hpp>
 #include <fwDataIO/reader/DictionaryReader.hpp>
+#include <fwDataIO/writer/registry/macros.hpp>
 
 #include <fwVtkIO/helper/Mesh.hpp>
 
-#include "midasIO/ModelSeriesWriter.hpp"
+#include <vtkDataSetMapper.h>
+#include <vtkOBJExporter.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkProperty.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
+#include <vtkSmartPointer.h>
+
+#include <boost/algorithm/string/replace.hpp>
+#include <boost/assign/list_of.hpp>
+#include <boost/bind.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/lambda/lambda.hpp>
+
+#include <libxml/parser.h>
+#include <libxml/tree.h>
 
 fwDataIOWriterRegisterMacro( ::midasIO::ModelSeriesWriter );
 
@@ -106,14 +107,14 @@ void ModelSeriesWriter::write()
     {
         nbSerie++;
 
-        vtkRenderer *renderer = vtkRenderer::New();
-        vtkActor * actor      = this->createActor(rec);
+        vtkRenderer* renderer = vtkRenderer::New();
+        vtkActor* actor       = this->createActor(rec);
         renderer->AddActor(actor);
 
-        vtkRenderWindow *renderWindow = vtkRenderWindow::New();
+        vtkRenderWindow* renderWindow = vtkRenderWindow::New();
         renderWindow->AddRenderer(renderer);
 
-        vtkOBJExporter *exporter = vtkOBJExporter::New();
+        vtkOBJExporter* exporter = vtkOBJExporter::New();
         exporter->SetRenderWindow(renderWindow);
 
         std::string fileName = "TriangularMesh_" + ::fwTools::getString< int >(nbSerie);
@@ -166,7 +167,7 @@ void ModelSeriesWriter::write()
 
 //------------------------------------------------------------------------------
 
-vtkActor * ModelSeriesWriter::createActor( ::fwData::Reconstruction::sptr pReconstruction )
+vtkActor* ModelSeriesWriter::createActor( ::fwData::Reconstruction::sptr pReconstruction )
 {
     vtkActor* actor = vtkActor::New();
 
@@ -179,7 +180,7 @@ vtkActor * ModelSeriesWriter::createActor( ::fwData::Reconstruction::sptr pRecon
     mapper->SetInputData(polyData);
     actor->SetMapper(mapper);
 
-    vtkProperty *property = actor->GetProperty();
+    vtkProperty* property = actor->GetProperty();
 
     ::fwData::Color::sptr diffuse = material->diffuse();
     property->SetDiffuseColor(diffuse->red(), diffuse->green(), diffuse->blue());
