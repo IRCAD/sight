@@ -19,6 +19,11 @@ if(MSVC)
         # this will be executed in just before makefile generation
         variable_watch(CMAKE_BACKWARDS_COMPATIBILITY pch_msvc_hook)
     endif()
+else()
+    if(NOT DEFINED CMAKE_PCH_COMPILER_TARGETS)
+        # this will be executed in just before makefile generation
+        variable_watch(CMAKE_BACKWARDS_COMPATIBILITY pch_cxx_hook)
+    endif()
 endif(MSVC)
 
 set(BUILD_SHARED_LIBS ON)
