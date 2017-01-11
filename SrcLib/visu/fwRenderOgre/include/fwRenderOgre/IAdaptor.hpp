@@ -7,32 +7,31 @@
 #ifndef __FWRENDEROGRE_IADAPTOR_HPP__
 #define __FWRENDEROGRE_IADAPTOR_HPP__
 
-#include <fwRenderOgre/SRender.hpp>
+#include "fwRenderOgre/IHasAdaptors.hpp"
+#include "fwRenderOgre/SRender.hpp"
+#include "fwRenderOgre/config.hpp"
+
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwServices/IService.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
 
 #include <OGRE/OgreSceneManager.h>
 
 #include <string>
 
-#include "fwRenderOgre/config.hpp"
 
 namespace fwRenderOgre
 {
 
 /**
- * @class IAdaptor
  * @brief Interface providing behavior of Ogre adaptor services
  */
-class FWRENDEROGRE_CLASS_API IAdaptor : public fwServices::IService
+class FWRENDEROGRE_CLASS_API IAdaptor : public ::fwServices::IService,
+                                        public ::fwRenderOgre::IHasAdaptors
 {
 friend class SRender;
 public:
-    fwCoreServiceClassDefinitionsMacro ( (IAdaptor)(::fwServices::IService) );
-
-    typedef std::vector < ::fwRenderOgre::IAdaptor::wptr > AdaptorVector;
-    typedef fwServices::IService SuperClass;
+    fwCoreNonInstanciableClassDefinitionsMacro ( (IAdaptor)(::fwServices::IService) );
 
     /// Set the layer ID
     FWRENDEROGRE_API void setLayerID(const std::string& id);
@@ -41,23 +40,13 @@ public:
     FWRENDEROGRE_API void setRenderService( SRender::sptr service );
 
     /// Get the render service using this adaptor
-    FWRENDEROGRE_API SRender::sptr getRenderService();
-
-    /// Returns True or False wether a given adaptor is registered or not
-    FWRENDEROGRE_API bool isAdaptorRegistered(::fwTools::fwID::IDType _adaptorID) const;
-
-    /**
-     * @brief Get all subservices linked to this adaptor
-     * @return The vector of linked services
-     */
-    AdaptorVector& getRegisteredAdaptors()
-    {
-        return m_subAdaptors;
-    }
+    FWRENDEROGRE_API SRender::sptr getRenderService() const;
 
     /// Returns the priority of the adaptor - some adaptors may have to be started before other ones
     FWRENDEROGRE_API virtual int getStartPriority();
 
+    FWRENDEROGRE_API void connect();
+    FWRENDEROGRE_API void disconnect();
 protected:
 
     /// Constructor
@@ -71,12 +60,12 @@ protected:
      */
     //@{
     /// Overrides
-    FWRENDEROGRE_API virtual void info(std::ostream &_sstream );
+    FWRENDEROGRE_API virtual void info(std::ostream& _sstream );
+    FWRENDEROGRE_API void configuring() throw(fwTools::Failed);
     FWRENDEROGRE_API void starting() throw(fwTools::Failed);
     FWRENDEROGRE_API void stopping() throw(fwTools::Failed);
     FWRENDEROGRE_API void swapping() throw(fwTools::Failed);
     FWRENDEROGRE_API void updating() throw(fwTools::Failed);
-    FWRENDEROGRE_API void configuring() throw(fwTools::Failed);
     //@}
 
     /**
@@ -84,11 +73,11 @@ protected:
      */
     //@{
     /// Pure virtual methods
+    FWRENDEROGRE_API virtual void doConfigure() throw ( ::fwTools::Failed ) = 0;
     FWRENDEROGRE_API virtual void doStart()                                 = 0;
     FWRENDEROGRE_API virtual void doStop()                                  = 0;
     FWRENDEROGRE_API virtual void doSwap()                                  = 0;
     FWRENDEROGRE_API virtual void doUpdate()                                = 0;
-    FWRENDEROGRE_API virtual void doConfigure() throw ( ::fwTools::Failed ) = 0;
     //@}
 
     /**
@@ -97,19 +86,10 @@ protected:
      */
     FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager();
 
-    /**
-     * @brief Register a new service linked to this adaptor
-     */
-    FWRENDEROGRE_API void registerService( ::fwRenderOgre::IAdaptor::sptr service );
-
-    /**
-     * @brief Unregister all services linked to this adaptor
-     * @param classname Classname of services to unregister
-     */
-    FWRENDEROGRE_API void unregisterServices(std::string classname = "");
-
     /// Ask the render service (SRender) to update
     FWRENDEROGRE_API virtual void requestRender();
+
+    std::string msgHead() const;
 
     /// Layer ID
     ::std::string m_layerID;
@@ -117,13 +97,17 @@ protected:
     /// Render service which this adaptor is attached
     ::fwRenderOgre::SRender::wptr m_renderService;
 
-    /// Signal/Slot connections with this service
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
-
-    /// Sub adaptors linked to this adaptor
-    AdaptorVector m_subAdaptors;
+    /// Signal/Slot connections with the objects
+    ::fwCom::helper::SigSlotConnection m_objConnection;
 };
 
+// ------------------------------------------------------------------------
+
+inline std::string IAdaptor::msgHead() const
+{
+    return "[ Adaptor '" + this->getID() + "'] ";
+}
+//------------------------------------------------------------------------------
 
 } //namespace fwRenderOgre
 

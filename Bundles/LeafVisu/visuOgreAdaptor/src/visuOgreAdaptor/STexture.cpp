@@ -53,13 +53,38 @@ STexture::~STexture() throw()
 
 //------------------------------------------------------------------------------
 
+bool STexture::isValid() const
+{
+    if(!m_texture.isNull())
+    {
+        if(m_texture->getFormat() != ::Ogre::PF_UNKNOWN)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+//------------------------------------------------------------------------------
+
+int STexture::getStartPriority()
+{
+    return -20;
+}
+
+//------------------------------------------------------------------------------
+
 void STexture::doConfigure() throw(fwTools::Failed)
 {
-    SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
-
     if(m_configuration->hasAttribute("textureName"))
     {
         m_textureName = m_configuration->getAttributeValue("textureName");
+    }
+    else
+    {
+        // Choose a default name if not provided, this is very important otherwise
+        // the texture may be lost if it is unloaded (which is very likely to happen when playing with techniques)
+        m_textureName = this->getID();
     }
 
     if ( m_configuration->hasAttribute( "filtering" ) )
@@ -88,12 +113,12 @@ void STexture::doConfigure() throw(fwTools::Failed)
 
 void STexture::doStart() throw(fwTools::Failed)
 {
-    m_texture = ::Ogre::TextureManager::getSingletonPtr()->create(
+    m_texture = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
         m_textureName,
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-        true);
+        true).first.dynamicCast< ::Ogre::Texture>();
 
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -122,7 +147,7 @@ void STexture::doUpdate() throw(fwTools::Failed)
 
 void STexture::doSwap() throw(fwTools::Failed)
 {
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -131,6 +156,7 @@ void STexture::doStop() throw(fwTools::Failed)
 {
     // This is necessary, otherwise we have "ghost" textures later we reload a new texture
     m_texture->freeInternalResources();
+    m_texture.setNull();
 }
 
 //-----------------------------------------------------------------------------

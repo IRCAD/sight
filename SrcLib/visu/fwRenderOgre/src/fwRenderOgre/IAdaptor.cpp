@@ -6,20 +6,26 @@
 
 #include "fwRenderOgre/IAdaptor.hpp"
 
+#include <fwCom/Slots.hxx>
+
+#include <fwRenderOgre/registry/Adaptor.hpp>
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/helper/Config.hpp>
 
 namespace fwRenderOgre
 {
 
+const ::fwCom::Slots::SlotKeyType s_START_OBJECT_SLOT = "startObject";
+
 //------------------------------------------------------------------------------
 
-IAdaptor::IAdaptor() throw() :
-    m_layerID("")
+IAdaptor::IAdaptor() throw()
 {
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
+    newSlot(s_START_OBJECT_SLOT, &IAdaptor::doStart, this);
 }
 
 //------------------------------------------------------------------------------
@@ -30,21 +36,48 @@ IAdaptor::~IAdaptor() throw()
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::info(std::ostream &_sstream )
+void IAdaptor::info(std::ostream& _sstream )
 {
     _sstream << "IAdaptor : ";
-    this->SuperClass::info( _sstream );
+    this->fwServices::IService::info( _sstream );
 }
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::starting() throw(fwTools::Failed)
+void IAdaptor::configuring() throw ( ::fwTools::Failed )
 {
-    /// Install observation
-    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    auto config = m_configuration->findConfigurationElement("config");
 
-    SLM_ASSERT("Unable to retrieve the render service's shared pointer (lock)", m_renderService.lock());
+    SLM_ASSERT("Can't find 'config' tag.", config);
 
+    m_configuration = config;
+
+    m_layerID = m_configuration->getAttributeValue("layer");
+
+    this->doConfigure();
+}
+
+//------------------------------------------------------------------------------
+
+void IAdaptor::starting() throw ( ::fwTools::Failed )
+{
+    if(m_renderService.expired())
+    {
+        auto servicesVector = ::fwServices::OSR::getServices("::fwRenderOgre::SRender");
+
+        auto& registry       = ::fwRenderOgre::registry::getAdaptorRegistry();
+        auto renderServiceId = registry[this->getID()];
+
+        auto result =
+            std::find_if(servicesVector.begin(), servicesVector.end(),
+                         [renderServiceId](const ::fwServices::IService::sptr& srv)
+            {
+                return srv->getID() == renderServiceId;
+            });
+        SLM_ASSERT("Can't find '" + renderServiceId + "' SRender service.", result != servicesVector.end());
+
+        m_renderService = ::fwRenderOgre::SRender::dynamicCast(*result);
+    }
     doStart();
 }
 
@@ -52,16 +85,12 @@ void IAdaptor::starting() throw(fwTools::Failed)
 
 void IAdaptor::stopping() throw(fwTools::Failed)
 {
-    /// Stop observation
-    m_connections->disconnect();
     doStop();
 }
 //------------------------------------------------------------------------------
 
 void IAdaptor::swapping() throw(fwTools::Failed)
 {
-    m_connections->disconnect();
-    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
     doSwap();
 }
 
@@ -74,13 +103,17 @@ void IAdaptor::updating() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::configuring() throw ( ::fwTools::Failed )
+void IAdaptor::connect()
 {
-    assert(m_configuration->getName() == "config");
+    ::fwServices::IService::KeyConnectionsType connections = this->getObjSrvConnections();
+    m_objConnection.connect( this->getObject(), this->getSptr(), connections );
+}
 
-    m_layerID = m_configuration->getAttributeValue("renderer");
+//------------------------------------------------------------------------------
 
-    this->doConfigure();
+void IAdaptor::disconnect()
+{
+    m_objConnection.disconnect();
 }
 
 //------------------------------------------------------------------------------
@@ -94,33 +127,17 @@ void IAdaptor::setLayerID(const std::string& id)
 
 void IAdaptor::setRenderService( SRender::sptr service)
 {
-    /// Preconditions
     SLM_ASSERT("service not instanced", service);
-    SLM_ASSERT("The adaptor is not stopped", this->isStopped());
+    SLM_ASSERT("The adaptor ('"+this->getID()+"') is not stopped", this->isStopped());
 
     m_renderService = service;
 }
 
 //------------------------------------------------------------------------------
 
-SRender::sptr IAdaptor::getRenderService()
+SRender::sptr IAdaptor::getRenderService() const
 {
     return m_renderService.lock();
-}
-
-//------------------------------------------------------------------------------
-
-bool IAdaptor::isAdaptorRegistered(::fwTools::fwID::IDType _adaptorID) const
-{
-    for(auto subAdaptor : m_subAdaptors)
-    {
-        if(subAdaptor.lock()->getID() == _adaptorID)
-        {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 //------------------------------------------------------------------------------
@@ -135,33 +152,6 @@ int IAdaptor::getStartPriority()
 ::Ogre::SceneManager* IAdaptor::getSceneManager()
 {
     return m_renderService.lock()->getSceneManager(m_layerID);
-}
-
-//------------------------------------------------------------------------------
-
-void IAdaptor::registerService( ::fwRenderOgre::IAdaptor::sptr service)
-{
-    m_subAdaptors.push_back(service);
-}
-
-//------------------------------------------------------------------------------
-
-void IAdaptor::unregisterServices(std::string classname)
-{
-    for(auto service = m_subAdaptors.begin(); service != m_subAdaptors.end(); )
-    {
-        ::fwServices::IService::sptr srv = service->lock();
-        if(!service->expired() && (classname.empty() || ( !classname.empty() && srv->getClassname() == classname)))
-        {
-            srv->stop();
-            ::fwServices::OSR::unregisterService(srv);
-            service = m_subAdaptors.erase(service);
-        }
-        else
-        {
-            service++;
-        }
-    }
 }
 
 //------------------------------------------------------------------------------

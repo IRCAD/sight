@@ -13,16 +13,18 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/helper/Mesh.hpp>
+#include <fwDataTools/helper/Mesh.hpp>
 
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwDataTools/Mesh.hpp>
 
-#include <fwRenderOgre/R2VBRenderable.hpp>
 #include <fwRenderOgre/helper/Mesh.hpp>
+#include <fwRenderOgre/R2VBRenderable.hpp>
+#include <fwRenderOgre/SRender.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/op/Add.hpp>
+#include <fwServices/op/Get.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 
@@ -51,7 +53,7 @@ static const ::fwCom::Slots::SlotKeyType s_MODIFY_VERTICES_SLOT         = "modif
 
 template <typename T>
 void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras,
-                 ::fwComEd::helper::Mesh& _meshHelper, size_t uiNumCells)
+                 ::fwDataTools::helper::Mesh& _meshHelper, size_t uiNumCells)
 {
     FW_PROFILE_AVG("copyIndices", 5);
 
@@ -100,10 +102,7 @@ void copyIndices(void* _pTriangles, void* _pQuads, void* _pEdges, void* _pTetras
 SMesh::SMesh() throw() :
     m_autoResetCamera(true),
     m_entity(nullptr),
-    m_materialAdaptorUID(""),
     m_materialTemplateName(SMaterial::DEFAULT_MATERIAL_TEMPLATE_NAME),
-    m_meshName(""),
-    m_texAdaptorUID(""),
     m_hasNormal(false),
     m_hasVertexColor(false),
     m_hasPrimitiveColor(false),
@@ -112,6 +111,7 @@ SMesh::SMesh() throw() :
     m_hasUV(false),
     m_isReconstructionManaged(false),
     m_useNewMaterialAdaptor(false),
+    m_isVisible(true),
     m_r2vbEntity(nullptr)
 {
     m_material = ::fwData::Material::New();
@@ -146,10 +146,30 @@ SMesh::~SMesh() throw()
 
 //-----------------------------------------------------------------------------
 
+void visuOgreAdaptor::SMesh::updateVisibility(bool isVisible)
+{
+    m_isVisible = isVisible;
+    if(m_entity)
+    {
+        m_entity->setVisible(isVisible);
+
+        if(m_r2vbEntity)
+        {
+            m_r2vbEntity->setVisible(isVisible);
+        }
+        for(auto& it : m_r2vbObject)
+        {
+            it.second->setVisible(m_isVisible);
+        }
+
+        this->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void SMesh::doConfigure() throw(fwTools::Failed)
 {
-    SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
-
     std::string color = m_configuration->getAttributeValue("color");
 
     if(m_material)
@@ -163,12 +183,12 @@ void SMesh::doConfigure() throw(fwTools::Failed)
         m_autoResetCamera = (autoResetCamera == "yes");
     }
 
-    // If a material adaptor is configured in the XML scene, we keep its UID
+    // If a material is configured in the XML scene, we keep its name to retrieve the adaptor later
     // Else we keep the name of the configured Ogre material (if it exists),
     //      it will be passed to the created SMaterial
-    if ( m_configuration->hasAttribute("materialAdaptor"))
+    if ( m_configuration->hasAttribute("materialName"))
     {
-        m_materialAdaptorUID = m_configuration->getAttributeValue("materialAdaptor");
+        m_materialName = m_configuration->getAttributeValue("materialName");
     }
     else
     {
@@ -178,10 +198,10 @@ void SMesh::doConfigure() throw(fwTools::Failed)
             m_materialTemplateName = m_configuration->getAttributeValue("materialTemplate");
         }
 
-        // The mesh adaptor will pass the texture adaptor to the created material adaptor
-        if ( m_configuration->hasAttribute("textureAdaptor"))
+        // The mesh adaptor will pass the texture name to the created material adaptor
+        if ( m_configuration->hasAttribute("textureName"))
         {
-            m_texAdaptorUID = m_configuration->getAttributeValue("textureAdaptor");
+            m_textureName = m_configuration->getAttributeValue("textureName");
         }
 
         if( m_configuration->hasAttribute("shadingMode"))
@@ -204,7 +224,7 @@ void SMesh::doConfigure() throw(fwTools::Failed)
 
     if(m_configuration->hasAttribute("transform"))
     {
-        this->setTransformUID(m_configuration->getAttributeValue("transform"));
+        this->setTransformId(m_configuration->getAttributeValue("transform"));
     }
 }
 
@@ -225,14 +245,23 @@ void SMesh::doStart() throw(::fwTools::Failed)
 
     // We have to create a new material adaptor only if this adaptor is instanciated by a reconstruction adaptor
     // or if no material adaptor uid has been configured
-    m_useNewMaterialAdaptor = m_isReconstructionManaged || m_materialAdaptorUID.empty();
+    m_useNewMaterialAdaptor = m_isReconstructionManaged || m_materialName.empty();
 
     if(!m_useNewMaterialAdaptor)
     {
         // A material adaptor has been configured in the XML scene
-        auto materialService = ::fwServices::get(m_materialAdaptorUID);
-        m_materialAdaptor = ::visuOgreAdaptor::SMaterial::dynamicCast(materialService);
+        auto mtlAdaptors = this->getRenderService()->getAdaptors< ::visuOgreAdaptor::SMaterial>();
 
+        auto result =
+            std::find_if(mtlAdaptors.begin(), mtlAdaptors.end(),[this](const ::visuOgreAdaptor::SMaterial::sptr& srv)
+            {
+                return srv->getMaterialName() == m_materialName;
+            });
+
+        m_materialAdaptor = *result;
+
+        SLM_ASSERT("SMaterial adaptor managing material'" + m_materialName + "' is not found",
+                   result != mtlAdaptors.end());
         m_material = m_materialAdaptor->getObject< ::fwData::Material >();
     }
 
@@ -252,16 +281,23 @@ void SMesh::doStop() throw(fwTools::Failed)
 
     this->unregisterServices();
 
-    // Destroy Ogre Mesh
-    ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
-    sceneMgr->destroyManualObject(m_meshName);
-    sceneMgr->destroyManualObject(m_r2vbMeshName);
+    this->clearMesh();
 
-    m_connections->disconnect();
     if(!m_useNewMaterialAdaptor)
     {
         m_materialAdaptor.reset();
     }
+
+    if(m_entity)
+    {
+        ::Ogre::SceneManager* sceneMgr = this->getSceneManager();
+        sceneMgr->destroyEntity(m_entity);
+        m_entity = nullptr;
+    }
+    // Destroy Ogre Mesh
+    auto& meshMgr = ::Ogre::MeshManager::getSingleton();
+    meshMgr.remove(m_ogreMesh->getHandle());
+    meshMgr.remove(m_r2vbMesh->getHandle());
 }
 
 //-----------------------------------------------------------------------------
@@ -282,7 +318,7 @@ void SMesh::doUpdate() throw(::fwTools::Failed)
 
 void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 {
-    ::fwComEd::helper::Mesh meshHelper(mesh);
+    ::fwDataTools::helper::Mesh meshHelper(mesh);
 
     /// The values in this table refer to vertices in the above table
     size_t uiNumVertices = mesh->getNumberOfPoints();
@@ -563,6 +599,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
     if(!m_entity)
     {
         m_entity = sceneMgr->createEntity(m_ogreMesh);
+        m_entity->setVisible(m_isVisible);
         sceneMgr->getRootSceneNode()->detachObject(m_entity);
     }
 
@@ -614,6 +651,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
         if(!m_r2vbEntity)
         {
             m_r2vbEntity = sceneMgr->createEntity(m_r2vbMesh);
+            m_r2vbEntity->setVisible(m_isVisible);
             sceneMgr->getRootSceneNode()->detachObject(m_r2vbEntity);
         }
 
@@ -640,6 +678,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
                 r2vbMtlAdaptor->setHasPrimitiveColor(m_hasPrimitiveColor, m_perPrimitiveColorTextureName);
 
                 r2vbMtlAdaptor->start();
+                r2vbMtlAdaptor->connect();
 
                 m_r2vbMaterialAdaptor[cellType] = r2vbMtlAdaptor;
             }
@@ -651,7 +690,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
                 r2vbMtlAdaptor->setHasMeshNormal(m_hasNormal);
                 r2vbMtlAdaptor->setHasVertexColor(m_hasVertexColor);
                 r2vbMtlAdaptor->setHasPrimitiveColor(m_hasPrimitiveColor, m_perPrimitiveColorTextureName);
-                r2vbMtlAdaptor->setTextureAdaptor(m_texAdaptorUID);
+                r2vbMtlAdaptor->setTextureName(m_textureName);
                 r2vbMtlAdaptor->setShadingMode(m_shadingMode);
 
                 // Update the material *synchronously* otherwise the r2vb will be rendered before the shader switch
@@ -668,6 +707,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
                 // Attach r2vb object in the scene graph
                 this->attachNode(m_r2vbObject[cellType]);
+                m_r2vbObject[cellType]->setVisible(m_isVisible);
             }
 
             m_r2vbObject[cellType]->setOutputSettings(static_cast<unsigned int>(subMesh->indexData->indexCount),
@@ -693,7 +733,7 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
 
     // Update Ogre Mesh with ::fwData::Mesh
     ::fwData::mt::ObjectReadLock lock(mesh);
-    ::fwComEd::helper::Mesh meshHelper(mesh);
+    ::fwDataTools::helper::Mesh meshHelper(mesh);
     ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
 
     size_t uiStrideFloat = 3;
@@ -900,7 +940,7 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
     if (hasVertexColor)
     {
         ::fwData::mt::ObjectReadLock lock(mesh);
-        ::fwComEd::helper::Mesh meshHelper(mesh);
+        ::fwDataTools::helper::Mesh meshHelper(mesh);
 
         // Source points
         ::Ogre::HardwareVertexBufferSharedPtr cbuf = bind->getBuffer(m_binding[COLOUR]);
@@ -920,7 +960,7 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
     if(hasPrimitiveColor)
     {
         ::fwData::mt::ObjectReadLock lock(mesh);
-        ::fwComEd::helper::Mesh meshHelper(mesh);
+        ::fwDataTools::helper::Mesh meshHelper(mesh);
 
         // Source cells
         ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = m_perPrimitiveColorTexture->getBuffer();
@@ -967,7 +1007,7 @@ void SMesh::updateTexCoords(const ::fwData::Mesh::sptr& mesh)
         FW_PROFILE_AVG("UPDATE TexCoords", 5);
 
         ::fwData::mt::ObjectReadLock lock(mesh);
-        ::fwComEd::helper::Mesh meshHelper(mesh);
+        ::fwDataTools::helper::Mesh meshHelper(mesh);
 
         ::Ogre::VertexBufferBinding* bind           = m_ogreMesh->sharedVertexData->vertexBufferBinding;
         ::Ogre::HardwareVertexBufferSharedPtr uvbuf = bind->getBuffer(m_binding[TEXCOORD]);
@@ -1050,7 +1090,7 @@ void SMesh::clearMesh()
 
     materialAdaptor->setHasMeshNormal(m_hasNormal);
     materialAdaptor->setHasVertexColor(m_hasVertexColor);
-    materialAdaptor->setTextureAdaptor(m_texAdaptorUID);
+    materialAdaptor->setTextureName(m_textureName);
     materialAdaptor->setShadingMode(m_shadingMode);
     materialAdaptor->setMeshBoundingBox(m_ogreMesh->getBounds());
 
@@ -1069,6 +1109,7 @@ void SMesh::updateNewMaterialAdaptor()
         {
             m_materialAdaptor = this->createMaterialService();
             m_materialAdaptor->start();
+            m_materialAdaptor->connect();
 
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
         }
@@ -1111,48 +1152,28 @@ void SMesh::updateXMLMaterialAdaptor()
 
 void SMesh::createTransformService()
 {
-    // We need to create a transform service only one time
+    // We need to create a transform service only once
     if(m_transformService.expired())
     {
         ::fwData::Mesh::sptr mesh = this->getObject < ::fwData::Mesh >();
 
-        ::fwData::TransformationMatrix3D::sptr fieldTransform;
-
-        // Get existing TransformationMatrix3D, else create an empty one
-        if(!this->getTransformUID().empty())
-        {
-            auto object = ::fwTools::fwID::getObject(this->getTransformUID());
-            if(!object)
-            {
-                fieldTransform = ::fwData::TransformationMatrix3D::New();
-            }
-            else
-            {
-                fieldTransform = ::fwData::TransformationMatrix3D::dynamicCast(object);
-                OSLM_ASSERT("Object is not a transform", fieldTransform);
-            }
-        }
-        else
-        {
-            fieldTransform = ::fwData::TransformationMatrix3D::New();
-        }
-
-        // Try to set fieldTransform as default transform of the mesh
+        // Create a transform and set it as a field of the mesh
+        auto fieldTransform = ::fwData::TransformationMatrix3D::New();
         mesh->setField("TransformMatrix", fieldTransform);
 
         m_transformService = ::fwServices::add< ::fwRenderOgre::IAdaptor >(fieldTransform,
                                                                            "::visuOgreAdaptor::STransform");
         SLM_ASSERT("Transform service is null", m_transformService.lock());
-        ::visuOgreAdaptor::STransform::sptr transformService = ::visuOgreAdaptor::STransform::dynamicCast(
-            m_transformService.lock());
+        auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
 
         transformService->setID(this->getID() + "_" + transformService->getID());
         transformService->setRenderService ( this->getRenderService() );
         transformService->setLayerID(m_layerID);
-        transformService->setTransformUID(this->getTransformUID());
-        transformService->setParentTransformUID(this->getParentTransformUID());
+        transformService->setTransformId(this->getTransformId());
+        transformService->setParentTransformId(this->getParentTransformId());
 
         transformService->start();
+        transformService->connect();
         this->registerService(transformService);
 
         this->attachNode(m_entity);
@@ -1254,10 +1275,9 @@ void SMesh::modifyTexCoords()
 
 //-----------------------------------------------------------------------------
 
-void SMesh::attachNode(Ogre::MovableObject *_node)
+void SMesh::attachNode(Ogre::MovableObject* _node)
 {
-    ::visuOgreAdaptor::STransform::sptr transformService = ::visuOgreAdaptor::STransform::dynamicCast(
-        m_transformService.lock());
+    auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
 
     ::Ogre::SceneNode* transNode = transformService->getSceneNode();
     ::Ogre::SceneNode* node      = _node->getParentSceneNode();

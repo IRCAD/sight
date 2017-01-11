@@ -9,9 +9,10 @@ set( DEPENDENCIES
     fwRuntime
     fwServices
     fwRenderOgre
-    fwComEd
     fwCom
     fwData
     fwTools
 )
-set( REQUIREMENTS )
+set( REQUIREMENTS
+    material
+)

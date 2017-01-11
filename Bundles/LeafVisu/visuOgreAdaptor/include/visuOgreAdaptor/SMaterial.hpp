@@ -7,6 +7,7 @@
 #ifndef __VISUOGREADAPTOR_SMATERIAL_HPP__
 #define __VISUOGREADAPTOR_SMATERIAL_HPP__
 
+#include "visuOgreAdaptor/STexture.hpp"
 #include "visuOgreAdaptor/config.hpp"
 
 #include <fwCom/Slot.hpp>
@@ -18,15 +19,13 @@
 
 #include <fwRenderOgre/IAdaptor.hpp>
 
-#include <boost/shared_ptr.hpp>
-
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreMaterial.h>
 
-#include <regex>
+#include <boost/shared_ptr.hpp>
 
-#include "visuOgreAdaptor/STexture.hpp"
+#include <regex>
 
 namespace fwData
 {
@@ -71,17 +70,17 @@ public:
     /// Get material name
     VISUOGREADAPTOR_API std::string getMaterialName() const;
 
-    /// Retrieves the associated texture adaptor
-    VISUOGREADAPTOR_API void setTextureAdaptor(const std::string& textureAdaptorId);
+    /// Retrieves the associated texture name
+    VISUOGREADAPTOR_API void setTextureName(const std::string& textureName);
 
     /// Returns the priority of the adaptor
     VISUOGREADAPTOR_API virtual int getStartPriority();
 
     /// Set material name
-    void setMaterialName(const std::string &materialName);
+    void setMaterialName(const std::string& materialName);
 
     /// Set material template name
-    void setMaterialTemplateName(const std::string &materialName);
+    void setMaterialTemplateName(const std::string& materialName);
 
     bool getHasMeshNormal() const;
     void setHasMeshNormal(bool hasMeshNormal);
@@ -97,8 +96,8 @@ public:
     /// Tells if there is a texture currently bound
     bool hasDiffuseTexture() const;
 
-    const std::string &getShadingMode() const;
-    void setShadingMode(const std::string &_shadingMode);
+    const std::string& getShadingMode() const;
+    void setShadingMode(const std::string& _shadingMode);
 
     void setMeshBoundingBox(const ::Ogre::AxisAlignedBox& _bbox);
 
@@ -130,7 +129,7 @@ protected:
     /// Stopping method
     VISUOGREADAPTOR_API void doStop() throw(fwTools::Failed);
 
-    /// Swapping method, doUpdate
+    /// Swapping method, updating
     VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
 
     /// Updating method, updates fixed function pipeline parameters
@@ -138,10 +137,10 @@ protected:
 
 private:
 
-    /// Slot called when the material's field changed
+    /// SLOT: called when the material's field changed
     void updateField( ::fwData::Object::FieldsContainerType fields);
 
-    /// Slot called when the texture is swapped in the texture adaptor
+    /// SLOT: called when the texture is swapped in the texture adaptor
     void swapTexture();
 
     /// Creates a new object from loaded shader
@@ -160,12 +159,6 @@ private:
     /// Updates material polygon mode (surface, point or wireframe)
     void updatePolygonMode( int polygonMode );
 
-    /// Manages service associated to a shader parameter
-    void setServiceOnShaderParameter(::fwRenderOgre::IAdaptor::sptr& srv,
-                                     std::shared_ptr<fwData::Object> object,
-                                     std::string paramName,
-                                     std::string shaderType);
-
     /// Update material shading mode (flat/gouraud/phong) in fixed function pipeline
     void updateShadingMode( int shadingMode );
 
@@ -173,21 +166,23 @@ private:
     void updateRGBAMode( ::fwData::Material::sptr fw_material );
 
     /// Slot called to create a texture adaptor when a texture is added to the material.
-    /// This method is also called from the doStart in order to create the texture adaptor if the material has a
+    /// This method is also called from the starting in order to create the texture adaptor if the material has a
     /// default texture.
     void createTextureAdaptor();
 
     /// Slot called to remove the texture adaptor when the texture is removed from the material
     void removeTextureAdaptor();
 
-    /// Checks support of technique's schemes
-    void updateSchemeSupport();
-
     /// Generates a normal length according to the mesh's bounding box
     ::Ogre::Real computeNormalLength();
 
     /// Remove a rendering pass in all techniques on the current material
     void removePass(const std::string& _name);
+
+    /// Remove all techniques related to order independent transparency support
+    /// Each time we have to modify the shader programs, we clean everything
+    /// and we let the MaterialMgrListener generate the techniques from the basic techniques defined in the .material
+    void cleanTransparencyTechniques();
 
     /// Associated Ogre material
     ::Ogre::MaterialPtr m_material;
@@ -200,7 +195,7 @@ private:
 
     /// The texture adaptor the material adaptor is listening to
     ::visuOgreAdaptor::STexture::sptr m_texAdaptor;
-    std::string m_texAdaptorUID;
+    std::string m_textureName;
 
     /// Defines if the associated mesh has a normal layer
     bool m_hasMeshNormal;
@@ -225,7 +220,7 @@ private:
     std::vector< Ogre::String > m_schemesSupported;
 
     /// Signal/Slot connections with texture adaptor
-    ::fwServices::helper::SigSlotConnection::sptr m_textureConnection;
+    ::fwCom::helper::SigSlotConnection m_textureConnection;
 
     /// The configured shading mode
     std::string m_shadingMode;
@@ -316,7 +311,7 @@ inline std::string SMaterial::getMaterialName() const
 
 inline bool SMaterial::hasDiffuseTexture() const
 {
-    return (m_texAdaptor && !m_texAdaptor->getTexture().isNull());
+    return (m_texAdaptor && m_texAdaptor->isValid());
 }
 
 //------------------------------------------------------------------------------
@@ -335,7 +330,7 @@ inline void SMaterial::setShadingMode(const std::string& _shadingMode)
 
 //------------------------------------------------------------------------------
 
-inline void SMaterial::setMeshBoundingBox(const Ogre::AxisAlignedBox &_bbox)
+inline void SMaterial::setMeshBoundingBox(const Ogre::AxisAlignedBox& _bbox)
 {
     m_meshBoundingBox = _bbox;
 }

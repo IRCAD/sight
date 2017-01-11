@@ -1,18 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "MeshTest.hpp"
 
-#include <cstdint>
-
-#include <fwTest/helper/compare.hpp>
-#include <fwTest/Data.hpp>
-
 #include "fwRenderOgre/helper/Mesh.hpp"
 #include "fwRenderOgre/Utils.hpp"
+
+#include <cstdint>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwRenderOgre::helper::ut::MeshTest );

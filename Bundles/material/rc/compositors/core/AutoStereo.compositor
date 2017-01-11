@@ -1,0 +1,31 @@
+compositor AutoStereo5
+{
+    technique
+    {
+        // Final pass
+        target_output
+        {
+            input none
+            pass render_quad
+            {
+                material AutoStereo5
+            }
+        }
+    }
+}
+
+compositor AutoStereo8
+{
+    technique
+    {
+        // Final pass
+        target_output
+        {
+            input none
+            pass render_quad
+            {
+                material AutoStereo8
+            }
+        }
+    }
+}

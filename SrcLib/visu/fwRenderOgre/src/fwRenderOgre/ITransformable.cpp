@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,30 +9,32 @@
 namespace fwRenderOgre
 {
 
-::fwRenderOgre::SRender::OgreObjectIdType ITransformable::getTransformUID() const
+//-----------------------------------------------------------------------------
+
+::fwRenderOgre::SRender::OgreObjectIdType ITransformable::getTransformId() const
 {
-    return m_transformUID;
+    return m_transformId;
 }
 
 //------------------------------------------------------------------------------
 
-void ITransformable::setTransformUID(::fwRenderOgre::SRender::OgreObjectIdType newUID)
+void ITransformable::setTransformId(::fwRenderOgre::SRender::OgreObjectIdType newId)
 {
-    m_transformUID = newUID;
+    m_transformId = newId;
 }
 
 //------------------------------------------------------------------------------
 
-::fwRenderOgre::SRender::OgreObjectIdType ITransformable::getParentTransformUID() const
+::fwRenderOgre::SRender::OgreObjectIdType ITransformable::getParentTransformId() const
 {
-    return m_parentTransformUID;
+    return m_parentTransformId;
 }
 
 //------------------------------------------------------------------------------
 
-void ITransformable::setParentTransformUID(::fwRenderOgre::SRender::OgreObjectIdType newUID)
+void ITransformable::setParentTransformId(::fwRenderOgre::SRender::OgreObjectIdType newId)
 {
-    m_parentTransformUID = newUID;
+    m_parentTransformId = newId;
 }
 
 //-----------------------------------------------------------------------------

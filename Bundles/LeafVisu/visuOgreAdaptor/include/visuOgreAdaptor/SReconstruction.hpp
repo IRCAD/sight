@@ -87,7 +87,7 @@ protected:
     VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
     /// Updates the mesh adaptor according to the reconstruction or creates it if it hasn't been yet.
     VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
-    /// Calls doUpdate
+    /// Calls updating
     VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
 
 private:

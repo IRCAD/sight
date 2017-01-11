@@ -7,38 +7,101 @@
 #ifndef __FWRENDEROGRE_SRENDER_HPP__
 #define __FWRENDEROGRE_SRENDER_HPP__
 
+#include "fwRenderOgre/config.hpp"
+#include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
+#include <fwRenderOgre/Layer.hpp>
+#include <fwRenderOgre/Utils.hpp>
+#include <fwRenderOgre/picker/IPicker.hpp>
+
+#include <fwCom/Signal.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-#include <fwCom/Signal.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include <fwRender/IRender.hpp>
 
-#include <fwRenderOgre/picker/IPicker.hpp>
-#include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
-#include <fwRenderOgre/Layer.hpp>
-#include <fwRenderOgre/Utils.hpp>
-
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/helper/Config.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
 
 #include <map>
 
-#include "fwRenderOgre/config.hpp"
-
 namespace fwRenderOgre
 {
 
 class IAdaptor;
+class Layer;
 
 /**
- * @class SRender
  * @brief The generic scene service shows adaptors in a 3D Ogre scene.
+ * @section XML XML Configuration
+ * @code{.xml}
+   <service uid="generiSceneUID" type="::fwRenderOgre::SRender" autoconnect="yes">
+
+    <in key="meshKey" uid="meshUID" />
+    <in key="meshTFKey" uid="meshTFUID" />
+
+    <scene renderMode="auto">
+        <renderer id="rendererId" layer="1" compositors="Invert;Laplace;Posterize" />
+
+        <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
+            <config dynamic="true" transform="meshTFAdaptor" texture="texLiver"/>
+        </adaptor>
+
+        <adaptor id="transformAdaptor" class="::visuOgreAdaptor::STransform" objectId="meshTFKey">
+            <config transform="meshTFAdaptor"/>
+        </adaptor>
+
+        <...>
+
+        <connect>
+            <signal>adaptorUID/modified</signal>
+            <slot>serviceUid/updateTM</slot>
+        </connect>
+
+        <connect waitForKey="tm3dKey">
+            <signal>modified</signal><!-- signal for object "tm3dKey" -->
+            <slot>serviceUid/updateTM</slot>
+        </connect>
+
+        <proxy channel="myChannel">
+            <signal>adaptor2UID/modified</signal>
+            <slot>service2Uid/updateTM</slot>
+        </proxy>
+    </scene>
+   </service>
+   @endcode
+ * With :
+ *  - \b scene
+ *    - \b renderMode (optional): 'auto' (only when something has changed) or 'always' (render continuously).
+ *         Default is 'auto'.
+ *  - \b adaptor
+ *    - \b id (mandatory): the identifier of the adaptor
+ *    - \b class (mandatory): the classname of the adaptor service
+ *    - \b uid (optional): the fwID to specify for the adaptor service
+ *    - \b objectId (mandatory): the key of the adaptor's object in the scene's composite. The "self" key is used
+ *         when the adaptor works on the scene's composite.
+ *    - \b config: adaptor's configuration. It is parsed in the adaptor's configuring() method.
+ *  - \b connect/proxy : not mandatory, connects signal to slot
+ *    - \b waitForKey : not mandatory, defines the required object key for the signal/slot connection
+ *    - \b signal : mandatory, must be signal holder UID, followed by '/', followed by signal name. To use the
+ *         object (defined by waitForKey) signal, you don't have to write object uid, only the signal name.
+ *    - \b slot : mandatory, must be slot holder UID, followed by '/', followed by slot name
+ *  - \b layer : mandatory, defines the scene's layer
+ *    - \b id (mandatory): the identifier of the layer
+ *    - \b depth (mandatory): the depth of the layer, starting from 1
+ *    - \b transparency (optional): the transparency technique to use: DepthPeeling, DualDepthPeeling,
+ *                                  WeightedBlended, HybridTransparency or CelShadingDepthPeeling.
+ *    - \b numPeels (optional): number of peels for the selected transparency technique.
+ *                              Not used for WeightedBlended OIT
+ *    - \b compositors (optional): defines the default compositor chain. The compositors are separated by semicolons
+ *    - \b fullscreen (optional, default="no"): Show the scene in full screen.
+ *    - \b stereoMode (optional, default="no"): sets the mode used for stereoscopic 3D rendering,
+ *                                          available modes are "AutoStereo5", "AutoStereo8" and "no".
  */
 class FWRENDEROGRE_CLASS_API SRender : public ::fwRender::IRender
 
@@ -54,7 +117,17 @@ public:
     typedef std::string SceneIdType;
 
     /// Actives layouts in the scene
-    typedef std::map< SceneIdType, ::fwRenderOgre::Layer::sptr > LayerMapType;
+    typedef std::map< SceneIdType, SPTR(::fwRenderOgre::Layer) > LayerMapType;
+
+    FWRENDEROGRE_API static const std::string s_OGREBACKGROUNDID;
+
+    /**
+     * @name Signal API
+     * @{
+     */
+    typedef ::fwCom::Signal< void () > SceneStartedSignalType;
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_SCENE_STARTED_SIG;
+    /** @} */
 
     /**
      * @name Slots API
@@ -86,20 +159,17 @@ public:
     /// Returns true if the scene is shown on screen
     FWRENDEROGRE_API bool isShownOnScreen();
 
-    /// Returns the adaptor corresponding to the given id
-    FWRENDEROGRE_API SPTR (IAdaptor) getAdaptor(AdaptorIdType adaptorId);
-
     /// Returns the scene manager corresponding to the sceneID
-    FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager(::std::string sceneID = "default");
+    FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager(const ::std::string& sceneID);
 
     /// Returns the layer corresponding to the sceneID
-    FWRENDEROGRE_API ::fwRenderOgre::Layer::sptr getLayer(::std::string sceneID = "default");
+    FWRENDEROGRE_API ::fwRenderOgre::Layer::sptr getLayer(const ::std::string& sceneID);
 
     /// Returns this render layers
     FWRENDEROGRE_API LayerMapType getLayers();
 
     /// Returns m_interactorManager
-    FWRENDEROGRE_API ::fwRenderOgre::IRenderWindowInteractorManager::sptr getInteractorManager();
+    FWRENDEROGRE_API ::fwRenderOgre::IRenderWindowInteractorManager::sptr getInteractorManager() const;
 
     /// Reset camera parameters with the actual global bounding box
     FWRENDEROGRE_API void resetCameraCoordinates(const std::string& _layerId);
@@ -107,15 +177,11 @@ public:
     /// Compute camera parameters with the actual global bounding box
     FWRENDEROGRE_API void computeCameraClipping();
 
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connects Composite::s_ADDED_OBJECTS_SIG to this::s_ADD_OBJECTS_SLOT
-     * Connects Composite::s_CHANGED_OBJECTS_SIG to this::s_CHANGE_OBJECTS_SLOT
-     * Connects Composite::s_REMOVED_OBJECTS_SIG to this::s_REMOVE_OBJECTS_SLOT
-     */
-    FWRENDEROGRE_API virtual KeyConnectionsType getObjSrvConnections() const;
+    /// Return true if the ogre context is ready to be used
+    FWRENDEROGRE_API bool isReady() const;
+
+    template<class T>
+    std::vector<SPTR(T)> getAdaptors() const;
 
 protected:
 
@@ -127,61 +193,7 @@ protected:
     /// Stops all the adaptors
     FWRENDEROGRE_API virtual void stopping() throw( ::fwTools::Failed);
 
-    /**
-     * @brief Configures the adaptor
-     * @code{.xml}
-       <service uid="generiSceneUID" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoconnect="yes">
-        <scene renderMode="auto">
-            <renderer id="rendererId" layer="1" compositors="Invert;Laplace;Posterize" />
-
-            <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
-                <config dynamic="true" transform="meshTFAdaptor" texture="texLiver"/>
-            </adaptor>
-
-            <adaptor id="transformAdaptor" class="::visuOgreAdaptor::STransform" objectId="meshTF">
-                <config transform="meshTFAdaptor"/>
-            </adaptor>
-
-            <...>
-
-            <connect>
-                <signal>adaptorUID/modified</signal>
-                <slot>serviceUid/updateTM</slot>
-            </connect>
-
-            <connect waitForKey="tm3dKey">
-                <signal>modified</signal><!-- signal for object "tm3dKey" -->
-                <slot>serviceUid/updateTM</slot>
-            </connect>
-
-            <proxy channel="myChannel">
-                <signal>adaptor2UID/modified</signal>
-                <slot>service2Uid/updateTM</slot>
-            </proxy>
-        </scene>
-       </service>
-       @endcode
-     * With :
-     *  - \b scene
-     *    - \b renderMode (optional): 'auto' (only when something has changed) or 'always' (render continuously).
-     *         Default is 'auto'.
-     *  - \b adaptor
-     *    - \b id (mandatory): the identifier of the adaptor
-     *    - \b class (mandatory): the classname of the adaptor service
-     *    - \b uid (optional): the fwID to specify for the adaptor service
-     *    - \b objectId (mandatory): the key of the adaptor's object in the scene's composite. The "self" key is used
-     *         when the adaptor works on the scene's composite.
-     *    - \b config: adaptor's configuration. It is parsed in the adaptor's configuring() method.
-     *  - \b connect/proxy : not mandatory, connects signal to slot
-     *    - \b waitForKey : not mandatory, defines the required object key for the signal/slot connection
-     *    - \b signal : mandatory, must be signal holder UID, followed by '/', followed by signal name. To use the
-     *         object (defined by waitForKey) signal, you don't have to write object uid, only the signal name.
-     *    - \b slot : mandatory, must be slot holder UID, followed by '/', followed by slot name
-     *  - \b renderer : mandatory, defines the scene's layer
-     *    - \b id (mandatory): the identifier of the layer
-     *    - \b layer (mandatory): the depth of the layer, starting from 1
-     *    - \b compositors (optional): defines the default compositor chain. The compositors are separated by semicolons
-     */
+    ///Configures the adaptor
     FWRENDEROGRE_API virtual void configuring() throw( ::fwTools::Failed);
 
     /// Does nothing.
@@ -190,25 +202,22 @@ protected:
 private:
 
     /// Wrapper class containing an adaptor
-    class SceneAdaptor
+    struct SceneAdaptor
     {
-    public:
-
         SPTR (IAdaptor) getService() const
         {
             return m_service.lock();
         }
 
-        ConfigurationType m_config;
         WPTR(IAdaptor) m_service;
-
+        bool m_start;
     };
 
     /// Actives adaptors in scene
-    typedef std::map< AdaptorIdType, SceneAdaptor > SceneAdaptorsMapType;
+    typedef std::map< AdaptorIdType, SceneAdaptor> SceneAdaptorsMapType;
+
     /// Configuration element shared pointer
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-
 
     /// Start Ogre OpenGL context
     void startContext();
@@ -219,42 +228,11 @@ private:
     void configureBackgroundLayer( ConfigurationType conf );
     /// Configure each layer of the scene
     void configureLayer( ConfigurationType conf );
-    /// Configure each adaptors of the scene
-    void configureObject( ConfigurationType conf );
     /// Start each adaptors of the scene
     void startObject();
 
-    /// Creates the connection if the required key is contained in the composite
-    void connectAfterWait(::fwData::Composite::ContainerType objects);
-
-    /// Creates the connection given by the configuration for obj associated with the key in the composite.
-    void manageConnection(const std::string &key, const ::fwData::Object::sptr &obj,
-                          const ConfigurationType &config);
-
-    /// Creates the proxy given by the configuration for obj associated with the key in the composite.
-    void manageProxy(const std::string &key, const ::fwData::Object::sptr &obj,
-                     const ConfigurationType &config);
-
-    /// Disconnects the connection based on a object key
-    void disconnect(::fwData::Composite::ContainerType objects);
-
     /// Execute a ray cast with a ray built from (x,y) point, which is the mouse position
     void doRayCast(int x, int y, int width, int height);
-
-    /// Slot: add objects
-    void addObjects(::fwData::Composite::ContainerType objects);
-
-    /// Slot: change objects
-    void changeObjects(::fwData::Composite::ContainerType newObjects, ::fwData::Composite::ContainerType oldObjects);
-
-    /// Slot: remove objects
-    void removeObjects(::fwData::Composite::ContainerType objects);
-
-    /// Configure the objects
-    void configureObjects(::fwData::Composite::ContainerType objects);
-
-    /// Contains all the adaptors of the scene
-    SceneAdaptorsMapType m_sceneAdaptors;
 
     /// Contains the scene configuration which is the scene xml node
     ConfigurationType m_sceneConfiguration;
@@ -263,21 +241,7 @@ private:
     LayerMapType m_layers;
 
     /// Signal/ Slot connection
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
-
-    /// Map to register proxy connections
-    ::fwServices::helper::Config::ProxyConnectionsMapType m_proxyMap;
-
-    typedef std::vector< ConfigurationType > ConnectConfigType;
-    /// vector containing all the connections configurations
-    ConnectConfigType m_connect;
-
-    /// vector containing all the proxy configurations
-    ConnectConfigType m_proxies;
-
-    typedef std::map< std::string, ::fwServices::helper::SigSlotConnection::sptr > ObjectConnectionsMapType;
-    /// map containing the object key/connection relation
-    ObjectConnectionsMapType m_objectConnections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     /// Ogre window interactor manager
     ::fwRenderOgre::IRenderWindowInteractorManager::sptr m_interactorManager;
@@ -293,7 +257,44 @@ private:
 
     /// True if the rendering is done only when requested
     bool m_renderOnDemand;
+
+    /// True if the render window is created.
+    bool m_isReady;
+
+    /// Map containing all adaptors
+    SceneAdaptorsMapType m_adaptors;
+
+    /// True if the render window is in fullscreen.
+    bool m_fullscreen;
 };
+
+//-----------------------------------------------------------------------------
+
+template<class T>
+std::vector<SPTR(T)> SRender::getAdaptors() const
+{
+    std::vector<SPTR(T)> resultVector;
+
+    for(auto& sceneAdaptor : m_adaptors)
+    {
+        SPTR(T) adaptor = T::dynamicCast(sceneAdaptor.second.getService());
+        if( adaptor )
+        {
+            resultVector.push_back(adaptor);
+        }
+    }
+
+    return resultVector;
+}
+
+//-----------------------------------------------------------------------------
+
+inline bool SRender::isReady() const
+{
+    return m_isReady;
+}
+
+//-----------------------------------------------------------------------------
 
 }
 #endif // __FWRENDEROGRE_SRENDER_HPP__

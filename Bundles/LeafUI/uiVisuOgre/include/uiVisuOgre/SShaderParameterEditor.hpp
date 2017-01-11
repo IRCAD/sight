@@ -7,28 +7,27 @@
 #ifndef __UIVISUOGRE_SSHADERPARAMETEREDITOR_HPP__
 #define __UIVISUOGRE_SSHADERPARAMETEREDITOR_HPP__
 
+#include "uiVisuOgre/config.hpp"
+
+#include <fwCom/helper/SigSlotConnection.hpp>
+
 #include <fwData/String.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include <fwServices/helper/SigSlotConnection.hpp>
 #include <fwServices/IService.hpp>
-
 
 #include <gui/editor/IEditor.hpp>
 
-#include <QGridLayout>
-
-#include "uiVisuOgre/config.hpp"
+#include <QVBoxLayout>
 
 namespace uiVisuOgre
 {
 
 /**
  * @brief   Editor allowing to edit each parameters from each shader of a reconstruction
- * @class   SShaderParameterEditor
  */
 class UIVISUOGRE_CLASS_API SShaderParameterEditor : public ::gui::editor::IEditor
 {
@@ -50,42 +49,13 @@ public:
 
 protected:
 
-    /// Internal class that will contain the Qt components foa one specific shader.
-    class ShaderEditorInfo
-    {
-
-    public:
-
-        ShaderEditorInfo()
-        {
-            connections = ::fwServices::helper::SigSlotConnection::New();
-        }
-
-        ::fwGuiQt::container::QtContainer::sptr labelPanel;
-        ::fwGuiQt::container::QtContainer::sptr editorPanel;
-
-        std::string labelUUID;
-        std::string editorUUID;
-
-        ::fwData::String::sptr label;
-
-        ::fwServices::IService::wptr labelService;
-        ::fwServices::IService::wptr objService;
-
-        ::fwServices::helper::SigSlotConnection::sptr connections;
-    };
-    typedef std::vector< ShaderEditorInfo > ShaderEditorInfoContainerType;
     typedef ::fwRuntime::ConfigurationElement::sptr Configuration;
 
     /**
      * @brief Configure the editor to associate with each object type
      *
      * @code{.xml}
-       <service uid="paramView" implementation="::uiVisuOgre::SShaderParameterEditor" type="::gui::editor::IEditor" autoComChannel="yes">
-         <association type="::fwData::Float" editor="::uiData::SFloatEditor" />
-         <association type="::fwData::Boolean" editor="::uiData::SBooleanEditor" />
-         <association type="::fwData::Integer" editor="::uiData::SIntegerEditor" />
-         <association type="::fwData::Image" editor="::uiData::SImageSceneEditorSrv" />
+       <service uid="paramView" impl="::uiVisuOgre::SShaderParameterEditor" type="::gui::editor::IEditor" autoConnect="yes">
        </service>
        @endcode
      * for which:\n
@@ -108,11 +78,6 @@ protected:
     /// Update the interface.
     UIVISUOGRE_API virtual void updating() throw ( ::fwTools::Failed );
 
-    ShaderEditorInfoContainerType m_shaderEditorInfos;
-    EditorMapType m_associatedEditor;
-
-    ::fwServices::helper::SigSlotConnection::sptr m_connections; ///< Connection to image
-
 private:
 
     /// Clear the current container
@@ -122,8 +87,21 @@ private:
     /// Instanciates the needed ui editors according to the stored informations
     void fillGui();
 
-    QGridLayout* m_gridSizer;
+    /// Internal class that contain the informations concerning the editor that is created.
+    struct ShaderEditorInfo
+    {
+        std::string uuid;
+        ::fwGuiQt::container::QtContainer::sptr editorPanel;
+        ::fwServices::IService::wptr service;
+        ::fwCom::helper::SigSlotConnection connections;
+    };
 
+    ShaderEditorInfo m_editorInfo;
+
+    /// Connection to the material
+    ::fwCom::helper::SigSlotConnection m_connections;
+
+    QVBoxLayout* m_sizer;
 };
 
 } // uiVisuOgre

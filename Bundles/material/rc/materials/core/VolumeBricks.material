@@ -1,0 +1,141 @@
+//-----------------------------------------------
+
+//compute_program VolumeBricks_CP glsl
+//{
+//        source VolumeBricks_CP.glsl
+//        attach TransferFunction_FP
+//        syntax glsl430
+//
+//        compute_group_dimensions 8 8 8
+//
+//        default_params
+//        {
+//            param_named u_voxelsPerCell int3 8 8 8
+//            //param_named  int3 0 0 0
+//        }
+//}
+
+//-----------------------------------------------
+
+vertex_program VolumeBricksGrid_VP glsl
+{
+    preprocessor_defines FP_OUTPUT=1
+    source VolumeBricks_VP.glsl
+
+    default_params
+    {
+    }
+}
+
+////-----------------------------------------------
+
+fragment_program VolumeBricksGrid_FP glsl
+{
+    source VolumeBricks_FP.glsl
+    attach TransferFunction_FP
+
+    default_params
+    {
+        param_named u_gridResolution int3 64 64 17
+        param_named u_brickSize int3 8 8 8
+        param_named u_slice int 0
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+    }
+}
+
+//-----------------------------------------------
+
+vertex_program VolumeBricks_VP glsl
+{
+    source VolumeBricks_VP.glsl
+
+    default_params
+    {
+        param_named u_gridResolution int3 64 64 17
+    }
+
+}
+
+//----------------------------------------------
+
+geometry_program VolumeBricks_GP glsl
+{
+    source VolumeBricks_GP.glsl
+
+    default_params
+    {
+        param_named u_bricksGrid int 0
+
+        param_named u_imageResolution int3 512 512 129
+        param_named u_gridResolution int3 64 64 17
+        param_named u_brickSize int3 8 8 8
+        param_named u_boundingBoxMin float3 0 0 0
+        param_named u_boundingBoxMax float3 1 1 1
+    }
+}
+
+//----------------------------------------------
+
+material VolumeBricksGrid
+{
+    technique
+    {
+        pass
+        {
+            depth_check off
+            depth_write off
+            cull_hardware none
+            cull_software none
+            transparent_sorting off
+
+            vertex_program_ref VolumeBricksGrid_VP
+            {
+            }
+
+            fragment_program_ref VolumeBricksGrid_FP
+            {
+            }
+
+            texture_unit image
+            {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit transferFunction
+            {
+                tex_coord_set 1
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//----------------------------------------------
+
+material VolumeBricks
+{
+    technique
+    {
+        pass
+        {
+            vertex_program_ref VolumeBricks_VP
+            {
+            }
+
+            geometry_program_ref VolumeBricks_GP
+            {
+            }
+
+            texture_unit gridVolume
+            {
+                tex_coord_set 0
+                tex_address_mode border
+                filtering none
+            }
+        }
+    }
+}

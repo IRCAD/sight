@@ -19,7 +19,6 @@ namespace visuOgreAdaptor
 
 /**
  * @brief   Adaptor to render a video frame from a 2D-image.
- * @class   SVideo
  */
 class VISUOGREADAPTOR_CLASS_API SVideo : public ::fwRenderOgre::IAdaptor
 {
@@ -48,22 +47,22 @@ protected:
        @endcode
      * - \b Parameter : parameter description.
      */
-    VISUOGREADAPTOR_API void doConfigure()  throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API void doConfigure() throw ( ::fwTools::Failed );
 
     /// Create the ogre texture and mapper used to show the video frame.
-    VISUOGREADAPTOR_API void doStart()  throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API void doStart() throw ( ::fwTools::Failed );
 
     /// Removes the actor from the renderer
-    VISUOGREADAPTOR_API void doStop()  throw ( ::fwTools::Failed );
+    VISUOGREADAPTOR_API void doStop() throw ( ::fwTools::Failed );
 
-    /// Calls doUpdate()
+    /// Calls updating()
     VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
 
     /// Updated the frame from the current Image.
     VISUOGREADAPTOR_API void doUpdate() throw ( ::fwTools::Failed );
 
     /// Returns proposals to connect service slots to associated object signals
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
 private:
 

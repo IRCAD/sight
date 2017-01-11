@@ -7,28 +7,28 @@
 #ifndef __UIVISUOGRE_SCOMPOSITORSELECTOR_HPP__
 #define __UIVISUOGRE_SCOMPOSITORSELECTOR_HPP__
 
-#include <gui/editor/IEditor.hpp>
-#include <fwRenderOgre/Layer.hpp>
-#include <fwRenderOgre/compositor/CompositorChainManager.hpp>
+#include "uiVisuOgre/config.hpp"
 
-#include <QObject>
-#include <QPointer>
+#include <fwRenderOgre/Layer.hpp>
+#include <fwRenderOgre/compositor/ChainManager.hpp>
+
+#include <gui/editor/IEditor.hpp>
+
+#include <QCheckBox>
 #include <QComboBox>
 #include <QGroupBox>
-#include <QCheckBox>
-#include <QVBoxLayout>
 #include <QListWidget>
+#include <QObject>
+#include <QPointer>
+#include <QVBoxLayout>
 
 #include <vector>
-
-#include "uiVisuOgre/config.hpp"
 
 namespace uiVisuOgre
 {
 
 /**
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
- * @class   SCompositorSelector
  */
 class UIVISUOGRE_CLASS_API SCompositorSelector : public QObject,
                                                  public ::gui::editor::IEditor
@@ -81,7 +81,7 @@ protected:
     /// Does nothing
     UIVISUOGRE_API virtual void updating() throw ( ::fwTools::Failed );
 
-protected Q_SLOTS:
+private Q_SLOTS:
 
     /// Slot: called when a layer is selected
     /// Sets the current layer and initializes the compositor list
@@ -111,19 +111,19 @@ private:
     void uncheckCompositors();
 
     /// Indicates if a compositor is enabled on the layer
-    bool isEnabledCompositor(::fwRenderOgre::CompositorChainManager::CompositorIdType compositorName);
+    bool isEnabledCompositor(const std::string& compositorName);
 
     QPointer<QComboBox> m_layersBox;
 
     QPointer<QListWidget> m_compositorChain;
 
-    std::vector< ::fwRenderOgre::Layer::sptr > m_layers;
-    ::fwRenderOgre::Layer::sptr m_currentLayer;
+    std::vector< ::fwRenderOgre::Layer::wptr > m_layers;
+    ::fwRenderOgre::Layer::wptr m_currentLayer;
 
-    ::fwRenderOgre::CompositorChainManager::CompositorChainType m_layerCompositorChain;
+    ::fwRenderOgre::compositor::ChainManager::CompositorChainType m_layerCompositorChain;
 
     ///Connection service, needed for slot/signal association
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 };
 
 } // uiVisuOgre

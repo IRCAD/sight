@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,18 +33,8 @@ public:
     /// It will prompt the camera's scene node to zoom in or zoom out in the scene.
     FWRENDEROGRE_API virtual void wheelEvent(int delta, int mouseX, int mouseY);
 
-    /// Horizontal mouse move event callback.
-    /// Moves the camera horizontally according to the mouse movement
-    FWRENDEROGRE_API virtual void horizontalMoveEvent(int x, int move);
-
-    /// Vertical mouse move event callback.
-    /// Moves the camera vertically according to the mouse movement
-    FWRENDEROGRE_API virtual void verticalMoveEvent(int y, int move);
-
     /// No mouse movement handling needed here
-    FWRENDEROGRE_API virtual void mouseMoveEvent(int dx, int dy)
-    {
-    }
+    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy);
 
     /// No resize event handling needed here
     FWRENDEROGRE_API virtual void resizeEvent(int x, int y)
@@ -53,6 +43,16 @@ public:
 
     /// No key press event handling needed here
     FWRENDEROGRE_API virtual void keyPressEvent(int key)
+    {
+    }
+
+    /// No need to handle button release events.
+    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton button, int x, int y)
+    {
+    }
+
+    /// No need to handle button press events.
+    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton button, int x, int y)
     {
     }
 

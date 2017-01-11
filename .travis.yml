@@ -1,0 +1,21 @@
+language: cpp
+sudo: false
+addons:
+  apt:
+    packages:
+    - python2.7
+    - git
+branches:
+    only:
+        - fw4spl_0.11.0
+compiler:
+    - gcc
+before_script:
+    - git clone https://github.com/fw4spl-org/fw4spl-git.git fw4spl-git
+    - cd fw4spl-git
+    - git checkout travis
+    - git config --global codingstyle-hook.uncrustify-path `pwd`/hooks/uncrustify
+    - cd ..
+script: fw4spl-git/hooks/sheldon $TRAVIS_COMMIT_RANGE
+install: true
+

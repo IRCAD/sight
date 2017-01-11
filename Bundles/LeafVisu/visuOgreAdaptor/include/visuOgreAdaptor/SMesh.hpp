@@ -56,7 +56,31 @@ namespace visuOgreAdaptor
  * texture containing the color for each primitive. This texture is fetched inside the geometry shader using the
  * primitive id.
  *
- * @class SMesh
+ * @section Slots Slots
+ * - \b updateVisibility(bool): Sets whether the mesh is to be seen or not.
+ * - \b modifyMesh(): Called when the mesh is modified.
+ * - \b modifyColors(): Called when the point colors are modified.
+ * - \b modifyTexCoords(): Called when the texture coordinates are modified.
+ * - \b modifyVertices(): Called when the vertices are modified.
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+    <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
+        <config renderer="rendererId" transform="transformUID" materialAdaptor="materialName" shadingMode="gouraud"
+                textureAdaptor="texAdaptorUID" />
+    </adaptor>
+   @endcode
+ * With :
+ *  - \b renderer (mandatory) : defines the mesh's layer
+ *  - \b transform (optional) : the name of the Ogre transform node where to attach the mesh, as it was specified
+ * in the STransform adaptor.
+ * Either of the following (whether a material is configured in the XML scene or not) :
+ *  - \b materialAdaptor (optional) : the name of the associated material adaptor
+ * Only if there is no material adaptor configured in the XML scene (in this case, it has to retrieve the material
+ * template, the texture adaptor and the shading mode) :
+ *  - \b materialTemplate (optional) : the name of the base Ogre material for the created SMaterial
+ *  - \b textureAdaptor (optional) : the texture adaptor that the material will be listening to
+ *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
  */
 class VISUOGREADAPTOR_CLASS_API SMesh : public ::fwRenderOgre::IAdaptor,
                                         public ::fwRenderOgre::ITransformable
@@ -113,25 +137,7 @@ private:
         NUM_BINDINGS
     };
 
-    /**
-     * @brief Configures the adaptor
-     * @code{.xml}
-       <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
-        <config renderer="rendererId" transform="transformUID" materialAdaptor="materialName" shadingMode="gouraud"
-                textureAdaptor="texAdaptorUID" />
-       </adaptor>
-       @endcode
-     * With :
-     *  - \b renderer (mandatory) : defines the mesh's layer
-     *  - \b transform (optional) : the transformation matrix to associate to the adaptor
-     * Either of the following (whether a material is configured in the XML scene or not) :
-     *  - \b materialAdaptor (optional) : the name of the associated material adaptor
-     * Only if there is no material adaptor configured in the XML scene (in this case, it has to retrieve the material
-     * template, the texture adaptor and the shading mode) :
-     *  - \b materialTemplate (optional) : the name of the base Ogre material for the created SMaterial
-     *  - \b textureAdaptor (optional) : the texture adaptor that the material will be listening to
-     *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
-     */
+    /// Configures the adaptor
     void doConfigure() throw(fwTools::Failed);
     /// Manually creates a Mesh in the Default Ogre Ressource group
     void doStart    () throw(fwTools::Failed);
@@ -199,8 +205,8 @@ private:
 
     /// SMaterial attached to the mesh
     ::visuOgreAdaptor::SMaterial::sptr m_materialAdaptor;
-    /// Attached material adaptor UID
-    std::string m_materialAdaptorUID;
+    /// Attached material name (when configured by XML)
+    std::string m_materialName;
     /// Ogre Material related to the mesh
     ::fwData::Material::sptr m_material;
     /// Attached Material's name
@@ -223,7 +229,7 @@ private:
     /// Name of the mesh in Ogre
     std::string m_meshName;
     /// Attached texture adaptor UID
-    std::string m_texAdaptorUID;
+    std::string m_textureName;
 
     /// Binding for each layer
     unsigned short m_binding[NUM_BINDINGS];
@@ -244,13 +250,16 @@ private:
     bool m_isReconstructionManaged;
     /// Indicates if the mesh adaptor has to create a new material adaptor or simply use the one that is XML configured
     bool m_useNewMaterialAdaptor;
+    /// Is the entity visible or not ? We need to store it in the adaptor because the information may be received
+    /// before the entity is created.
+    bool m_isVisible;
 
     /// The configured shading mode
     std::string m_shadingMode;
 
     /// Node containing inputs for the r2vb objects - it will never be inserted in the scene
     ::Ogre::Entity* m_r2vbEntity;
-    /// Mesh data for r2vb input - contains only line lists with adjency information primitives
+    /// Mesh data for r2vb input - contains only line lists with adjacency information primitives
     ::Ogre::MeshPtr m_r2vbMesh;
     /// Name of the r2vb mesh
     std::string m_r2vbMeshName;
@@ -294,22 +303,6 @@ inline void SMesh::setAutoResetCamera(bool autoResetCamera)
 inline ::Ogre::Entity* SMesh::getEntity() const
 {
     return m_entity;
-}
-
-//------------------------------------------------------------------------------
-
-inline void SMesh::updateVisibility(bool isVisible)
-{
-    if(m_entity)
-    {
-        m_entity->setVisible(isVisible);
-
-        if(m_r2vbEntity)
-        {
-            m_r2vbEntity->setVisible(isVisible);
-        }
-        this->requestRender();
-    }
 }
 
 //------------------------------------------------------------------------------

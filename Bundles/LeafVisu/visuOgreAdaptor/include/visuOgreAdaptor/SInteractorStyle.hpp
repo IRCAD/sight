@@ -7,7 +7,7 @@
 #ifndef __VISUOGREADAPTOR_SINTERACTORSTYLE_HPP__
 #define __VISUOGREADAPTOR_SINTERACTORSTYLE_HPP__
 
-#include <fwRenderOgre/IAdaptor.hpp>
+#include <visuOgreAdaptor/config.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
@@ -16,14 +16,13 @@
 
 #include <fwData/Object.hpp>
 
-#include <visuOgreAdaptor/config.hpp>
+#include <fwRenderOgre/IAdaptor.hpp>
 
 namespace visuOgreAdaptor
 {
 
 /**
  * @brief   Managing interactor style for Ogre
- * @class   SInteractorStyle
  */
 class VISUOGREADAPTOR_CLASS_API SInteractorStyle : public ::fwRenderOgre::IAdaptor
 {
@@ -120,7 +119,7 @@ private:
      */
 
     ///Connection service, needed for slot/signal association
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     /// map containing all the classes associated to their xml designations (e.g. Default -> TrackballInteractor)
     std::map<std::string, std::string> m_interactorStyles;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,7 +36,7 @@ namespace fwRenderOgre
 {
 
 #ifdef ETM_TERRAIN
-CollisionTools::CollisionTools(Ogre::SceneManager *sceneMgr, const ET::TerrainInfo* terrainInfo)
+CollisionTools::CollisionTools(Ogre::SceneManager* sceneMgr, const ET::TerrainInfo* terrainInfo)
 {
     mRaySceneQuery = sceneMgr->createRayQuery(Ogre::Ray());
     if (NULL == mRaySceneQuery)
@@ -54,7 +54,7 @@ CollisionTools::CollisionTools(Ogre::SceneManager *sceneMgr, const ET::TerrainIn
 }
 #endif
 
-CollisionTools::CollisionTools(Ogre::SceneManager *sceneMgr)
+CollisionTools::CollisionTools(Ogre::SceneManager* sceneMgr)
 {
     mSceneMgr = sceneMgr;
 
@@ -84,16 +84,16 @@ CollisionTools::~CollisionTools()
     }
 }
 
-bool CollisionTools::raycastFromCamera(Ogre::RenderWindow* rw, Ogre::Camera* camera, const Ogre::Vector2 &mousecoords,
-                                       Ogre::Vector3 &result, Ogre::Entity* &target,float &closest_distance,
+bool CollisionTools::raycastFromCamera(Ogre::RenderWindow* rw, Ogre::Camera* camera, const Ogre::Vector2& mousecoords,
+                                       Ogre::Vector3& result, Ogre::Entity*& target,float& closest_distance,
                                        const Ogre::uint32 queryMask)
 {
     return raycastFromCamera(rw, camera, mousecoords, result, (Ogre::MovableObject*&)target, closest_distance,
                              queryMask);
 }
 
-bool CollisionTools::raycastFromCamera(Ogre::RenderWindow* rw, Ogre::Camera* camera, const Ogre::Vector2 &mousecoords,
-                                       Ogre::Vector3 &result, Ogre::MovableObject* &target,float &closest_distance,
+bool CollisionTools::raycastFromCamera(Ogre::RenderWindow* rw, Ogre::Camera* camera, const Ogre::Vector2& mousecoords,
+                                       Ogre::Vector3& result, Ogre::MovableObject*& target,float& closest_distance,
                                        const Ogre::uint32 queryMask)
 {
     // Create the ray to test
@@ -148,7 +148,7 @@ float CollisionTools::getTSMHeightAt(const float x, const float z)
     return y;
 }
 
-void CollisionTools::calculateY(Ogre::SceneNode *n, const bool doTerrainCheck, const bool doGridCheck,
+void CollisionTools::calculateY(Ogre::SceneNode* n, const bool doTerrainCheck, const bool doGridCheck,
                                 const float gridWidth,
                                 const Ogre::uint32 queryMask)
 {
@@ -159,7 +159,7 @@ void CollisionTools::calculateY(Ogre::SceneNode *n, const bool doTerrainCheck, c
     float y = pos.y;
 
     Ogre::Vector3 myResult(0,0,0);
-    Ogre::MovableObject *myObject = NULL;
+    Ogre::MovableObject* myObject = NULL;
     float distToColl              = 0.0f;
 
     float terrY = 0, colY = 0, colY2 = 0;
@@ -235,19 +235,19 @@ void CollisionTools::calculateY(Ogre::SceneNode *n, const bool doTerrainCheck, c
 // raycast from a point in to the scene.
 // returns success or failure.
 // on success the point is returned in the result.
-bool CollisionTools::raycastFromPoint(const Ogre::Vector3 &point,
-                                      const Ogre::Vector3 &normal,
-                                      Ogre::Vector3 &result,Ogre::Entity* &target,
-                                      float &closest_distance,
+bool CollisionTools::raycastFromPoint(const Ogre::Vector3& point,
+                                      const Ogre::Vector3& normal,
+                                      Ogre::Vector3& result,Ogre::Entity*& target,
+                                      float& closest_distance,
                                       const Ogre::uint32 queryMask)
 {
     return raycastFromPoint(point, normal, result,(Ogre::MovableObject*&)target, closest_distance, queryMask);
 }
 
-bool CollisionTools::raycastFromPoint(const Ogre::Vector3 &point,
-                                      const Ogre::Vector3 &normal,
-                                      Ogre::Vector3 &result,Ogre::MovableObject* &target,
-                                      float &closest_distance,
+bool CollisionTools::raycastFromPoint(const Ogre::Vector3& point,
+                                      const Ogre::Vector3& normal,
+                                      Ogre::Vector3& result,Ogre::MovableObject*& target,
+                                      float& closest_distance,
                                       const Ogre::uint32 queryMask)
 {
     // create the ray to test
@@ -258,14 +258,14 @@ bool CollisionTools::raycastFromPoint(const Ogre::Vector3 &point,
     return raycast(ray, result, target, closest_distance, queryMask);
 }
 
-bool CollisionTools::raycast(const Ogre::Ray &ray, Ogre::Vector3 &result,Ogre::Entity* &target,float &closest_distance,
+bool CollisionTools::raycast(const Ogre::Ray& ray, Ogre::Vector3& result,Ogre::Entity*& target,float& closest_distance,
                              const Ogre::uint32 queryMask)
 {
     return raycast(ray, result, (Ogre::MovableObject*&)target, closest_distance, queryMask);
 }
 
-bool CollisionTools::raycast(const Ogre::Ray &ray, Ogre::Vector3 &result,Ogre::MovableObject* &target,
-                             float &closest_distance,
+bool CollisionTools::raycast(const Ogre::Ray& ray, Ogre::Vector3& result,Ogre::MovableObject*& target,
+                             float& closest_distance,
                              const Ogre::uint32 queryMask)
 {
     target = NULL;
@@ -298,7 +298,7 @@ bool CollisionTools::raycast(const Ogre::Ray &ray, Ogre::Vector3 &result,Ogre::M
     //Ogre::Ogre::Real closest_distance = -1.0f;
     closest_distance = -1.0f;
     Ogre::Vector3 closest_result;
-    Ogre::RaySceneQueryResult &query_result = mRaySceneQuery->getLastResults();
+    Ogre::RaySceneQueryResult& query_result = mRaySceneQuery->getLastResults();
     for (size_t qr_idx = 0; qr_idx < query_result.size(); qr_idx++)
     {
         // stop checking if we have found a raycast hit that is closer
@@ -314,13 +314,13 @@ bool CollisionTools::raycast(const Ogre::Ray &ray, Ogre::Vector3 &result,Ogre::M
             (query_result[qr_idx].movable->getMovableType().compare("Entity") == 0))
         {
             // get the entity to check
-            Ogre::MovableObject *pentity = static_cast<Ogre::MovableObject*>(query_result[qr_idx].movable);
+            Ogre::MovableObject* pentity = static_cast<Ogre::MovableObject*>(query_result[qr_idx].movable);
 
             // mesh data to retrieve
             size_t vertex_count;
             size_t index_count;
-            Ogre::Vector3 *vertices;
-            Ogre::uint32 *indices;
+            Ogre::Vector3* vertices;
+            Ogre::uint32* indices;
 
             // get the mesh information
             GetMeshInformation(
@@ -384,13 +384,13 @@ bool CollisionTools::raycast(const Ogre::Ray &ray, Ogre::Vector3 &result,Ogre::M
 // Get the mesh information for the given mesh.
 // Code found on this forum link: http://www.ogre3d.org/wiki/index.php/RetrieveVertexData
 void CollisionTools::GetMeshInformation(const Ogre::MeshPtr mesh,
-                                        size_t &vertex_count,
-                                        Ogre::Vector3* &vertices,
-                                        size_t &index_count,
-                                        Ogre::uint32* &indices,
-                                        const Ogre::Vector3 &position,
-                                        const Ogre::Quaternion &orient,
-                                        const Ogre::Vector3 &scale)
+                                        size_t& vertex_count,
+                                        Ogre::Vector3*& vertices,
+                                        size_t& index_count,
+                                        Ogre::uint32*& indices,
+                                        const Ogre::Vector3& position,
+                                        const Ogre::Quaternion& orient,
+                                        const Ogre::Vector3& scale)
 {
     bool added_shared     = false;
     size_t current_offset = 0;

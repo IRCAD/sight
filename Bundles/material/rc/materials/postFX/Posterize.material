@@ -1,0 +1,34 @@
+fragment_program Posterize_FP glsl
+{
+    source PosterizeFP.glsl
+}
+
+material Posterize
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            depth_func always_pass
+            polygon_mode_overrideable false
+
+            vertex_program_ref StdQuad_Tex2a_VP
+            {
+            }
+
+            fragment_program_ref Posterize_FP
+            {
+            }
+
+            texture_unit RT
+            {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering trilinear
+            }
+
+        }
+    }
+}

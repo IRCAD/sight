@@ -1,12 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuOgreAdaptor/SNegato2D.hpp"
-
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
@@ -14,17 +12,17 @@
 
 #include <fwData/Image.hpp>
 
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
 #include <fwRenderOgre/Utils.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 
-#include <algorithm>
-
-#include <OgreHardwarePixelBuffer.h>
 #include <OgreCamera.h>
 #include <OgreSceneNode.h>
 #include <OgreTextureManager.h>
+
+#include <algorithm>
 
 namespace visuOgreAdaptor
 {
@@ -38,10 +36,10 @@ const ::fwCom::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
 //------------------------------------------------------------------------------
 
 SNegato2D::SNegato2D() throw() :
-    ::fwComEd::helper::MedicalImageAdaptor(),
+    ::fwDataTools::helper::MedicalImageAdaptor(),
     m_plane(nullptr),
     m_negatoSceneNode(nullptr),
-    m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::LINEAR )
+    m_filtering( ::fwRenderOgre::Plane::FilteringEnumType::NONE )
 {
     SLM_TRACE_FUNC();
 
@@ -65,14 +63,22 @@ SNegato2D::~SNegato2D() throw()
 
 void SNegato2D::doStart() throw(::fwTools::Failed)
 {
+    ::fwData::Composite::sptr tfSelection = this->getInOut< ::fwData::Composite>("TF");
+    this->setTransferFunctionSelection(tfSelection);
+    this->setTFSelectionFwID(tfSelection->getID());
+
     this->updateImageInfos(this->getObject< ::fwData::Image >());
     this->updateTransferFunction(this->getImage());
 
-    // Texture instantiation
+    // 3D source texture instantiation
     m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
         this->getID() + "_Texture",
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
         true);
+
+    // TF texture initialization
+    m_gpuTF = std::unique_ptr< ::fwRenderOgre::TransferFunction>(new ::fwRenderOgre::TransferFunction());
+    m_gpuTF->createTexture(this->getID());
 
     // Scene node's instanciation
     m_negatoSceneNode = this->getSceneManager()->getRootSceneNode()->createChildSceneNode();
@@ -85,7 +91,7 @@ void SNegato2D::doStart() throw(::fwTools::Failed)
 
     this->installTFConnections();
 
-    bool isValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
+    bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
     if(isValid)
     {
         this->newImage();
@@ -106,6 +112,9 @@ void SNegato2D::doStop() throw(::fwTools::Failed)
     m_plane->removeAndDestroyPlane();
     delete m_plane;
 
+    m_3DOgreTexture.setNull();
+    m_gpuTF.reset();
+
     this->requestRender();
 }
 
@@ -113,8 +122,6 @@ void SNegato2D::doStop() throw(::fwTools::Failed)
 
 void SNegato2D::doConfigure() throw(::fwTools::Failed)
 {
-    SLM_ASSERT("No config tag", m_configuration->getName() == "config");
-
     if(m_configuration->hasAttribute("sliceIndex"))
     {
         std::string orientation = m_configuration->getAttributeValue("sliceIndex");
@@ -169,6 +176,11 @@ void SNegato2D::doUpdate() throw(::fwTools::Failed)
 
 void SNegato2D::newImage()
 {
+    if(m_3DOgreTexture.isNull())
+    {
+        // The adaptor hasn't start yet (the window is maybe not visible)
+        return;
+    }
     this->getRenderService()->makeCurrent();
 
     ::fwData::Image::sptr image = this->getImage();
@@ -184,10 +196,7 @@ void SNegato2D::newImage()
     // Update Slice
     this->changeSliceIndex(m_axialIndex->value(), m_frontalIndex->value(), m_sagittalIndex->value());
 
-    // Update TF
-    this->updatingTFWindowing(this->getTransferFunction()->getWindow(), this->getTransferFunction()->getLevel());
-
-    // Update threshold if necessary
+    // Update tranfer function in Gpu programs
     this->updatingTFPoints();
 
     this->requestRender();
@@ -257,31 +266,38 @@ void SNegato2D::updateShaderSliceIndexParameter()
 
 void SNegato2D::updatingTFPoints()
 {
-    m_plane->switchThresholding(this->getTransferFunction()->getIsClamped());
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
 
-    this->requestRender();
-}
+    m_gpuTF->updateTexture(tf);
 
-//------------------------------------------------------------------------------
+    m_plane->switchThresholding(tf->getIsClamped());
 
-void SNegato2D::updatingTFWindowing(double _window, double _level)
-{
-    float minVal = static_cast<float>(_level) - static_cast<float>(_window) / 2.f;
-    float maxVal = static_cast<float>(_level) + static_cast<float>(_window) / 2.f;
-    m_plane->setWindowing(minVal, maxVal);
+    // Sends the TF texture to the negato-related passes
+    m_plane->setTFData(m_gpuTF->getTexture());
 
     this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SNegato2D::getObjSrvConnections() const
+void SNegato2D::updatingTFWindowing(double window, double level)
 {
-    ::fwServices::IService::KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT ) );
+    ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
+
+    m_gpuTF->updateTexture(tf);
+
+    this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SNegato2D::getAutoConnections() const
+{
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( "image", ::fwData::Image::s_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( "image", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEWIMAGE_SLOT );
+    connections.push( "image", ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT );
+    connections.push( "image", ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT );
 
     return connections;
 
@@ -301,9 +317,9 @@ void SNegato2D::createPlane(const fwData::Image::SpacingType& _spacing)
 
 void SNegato2D::doSwap() throw(fwTools::Failed)
 {
-    this->doStop();
-    this->doStart();
-    this->doUpdate();
+    this->stopping();
+    this->starting();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -312,7 +328,7 @@ void SNegato2D::updateCameraWindowBounds()
 {
 
     ::Ogre::Real renderWindowWidth,renderWindowHeight, renderWindowRatio;
-    ::Ogre::RenderSystem *renderSystem = getSceneManager()->getDestinationRenderSystem();
+    ::Ogre::RenderSystem* renderSystem = getSceneManager()->getDestinationRenderSystem();
 
     renderWindowWidth  = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualWidth());
     renderWindowHeight = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualHeight());

@@ -14,7 +14,7 @@ namespace fwRenderOgre
 
 //-----------------------------------------------------------------------------
 
-fwRenderOgre::R2VBRenderable *fwRenderOgre::R2VBRenderable::New(const std::string &_name,
+fwRenderOgre::R2VBRenderable* fwRenderOgre::R2VBRenderable::New(const std::string& _name,
                                                                 ::Ogre::SubEntity* _sourceObject,
                                                                 ::Ogre::SceneManager* _sceneManager,
                                                                 ::fwData::Mesh::CellTypesEnum _primitiveType,

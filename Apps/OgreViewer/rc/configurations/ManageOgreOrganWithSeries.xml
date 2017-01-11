@@ -1,83 +1,91 @@
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::fwServices::registry::AppConfig2">
     <id>OgreOrganManagerWithSeries</id>
     <parameters>
-        <param name="GENERIC_UID" />
         <param name="WID_PARENT" />
         <param name="ORGAN_MANAGER_MODELSERIES" />
-        <param name="RECONSTRUCTION_SELECTED" />
         <param name="ICON_PATH" />
     </parameters>
 
     <config>
-        <object type="::fwData::Composite">
 
-            <service uid="${GENERIC_UID}_organView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::ToolboxLayoutManager" >
-                        <orientation value="horizontal" />
-                        <view caption="Organs" expanded="true"  />
-                        <view caption="Material" expanded="true" />
-                        <view caption="Representation" expanded="true" />
-                        <view caption="Texture" expanded="true" />
-                    </layout>
-                </gui>
-                <registry>
-                    <parent wid="${WID_PARENT}" />
-                    <view sid="${GENERIC_UID}_listOrganEditor" start="yes" />
-                    <view sid="${GENERIC_UID}_organMaterialEditor" start="no" />
-                    <view sid="${GENERIC_UID}_representationEditor" start="no" />
-                    <view sid="${GENERIC_UID}_textureSelector" start="no" />
-                </registry>
-            </service>
+        <object uid="${ORGAN_MANAGER_MODELSERIES}" type="::fwMedData::ModelSeries" src="ref" />
+        <object uid="reconstruction" type="::fwData::Reconstruction" src="deferred" />
 
-            <item key="selection">
-                <object type="::fwData::Composite">
+        <service uid="organView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::ToolboxLayoutManager" >
+                    <view caption="Organs" expanded="true"  />
+                    <view caption="Material" expanded="true" />
+                    <view caption="Representation" expanded="true" />
+                    <view caption="Texture" expanded="true" />
+                    <view caption="Material selector" expanded="true" />
+                    <view caption="Shader parameters" expanded="true" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="listOrganEditor" start="yes" />
+                <view sid="organMaterialEditor" start="no" />
+                <view sid="representationEditor" start="no" />
+                <view sid="textureSelector" start="no" />
+                <view sid="materialSelector" start="no" />
+                <view sid="shaderParameters" start="no" />
+            </registry>
+        </service>
 
-                    <service uid="${GENERIC_UID}_myUpdaterReconst" impl="::ctrlSelection::updater::SObjFromSlot" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
-                        <compositeKey>reconstruction</compositeKey>
-                    </service>
+        <service uid="updaterReconst" type="::ctrlSelection::updater::SObjFromSlot" >
+            <out key="object" uid="reconstruction" />
+        </service>
 
-                    <service uid="${GENERIC_UID}_myManagerForOrgansFrame" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes">
-                        <mode type="stop" />
-                        <config>
-                            <object id="${RECONSTRUCTION_SELECTED}" src="ref" type="::fwData::Reconstruction">
-                                <service uid="${GENERIC_UID}_organMaterialEditor" impl="::uiReconstruction::OrganMaterialEditor" type="::gui::editor::IEditor" autoConnect="no" />
-                                <service uid="${GENERIC_UID}_representationEditor" impl="::uiReconstruction::RepresentationEditor" type="::gui::editor::IEditor" autoConnect="no" />
-                                <service uid="${GENERIC_UID}_textureSelector" impl="::uiVisuOgre::STextureSelector" type="::gui::editor::IEditor" autoConnect="no" />
-                            </object>
-                        </config>
-                    </service>
+        <service uid="organMaterialEditor" type="::uiReconstruction::OrganMaterialEditor" >
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+        <service uid="representationEditor" type="::uiReconstruction::RepresentationEditor" >
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+        <service uid="textureSelector" type="::uiVisuOgre::STextureSelector" >
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+        <service uid="materialSelector" type="::uiVisuOgre::SMaterialSelector" >
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+        <service uid="shaderParameters" type="::uiVisuOgre::SShaderParameterEditor" >
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
 
-                </object>
-            </item>
+        <service uid="listOrganEditor" type="::uiMedData::editor::SModelSeriesList" autoConnect="yes" >
+            <inout key="modelSeries" uid="${ORGAN_MANAGER_MODELSERIES}" />
+            <columns>
+                <organ_name>@organ_name</organ_name>
+                <volume_cc view="positive" >@volume</volume_cc>
+            </columns>
+        </service>
 
-            <item key="modelSeries">
-                <object uid="${ORGAN_MANAGER_MODELSERIES}" src="ref" type="::fwMedData::ModelSeries">
+        <connect>
+            <signal>listOrganEditor/reconstructionSelected</signal>
+            <slot>updaterReconst/addOrSwap</slot>
+        </connect>
 
-                    <service uid="${GENERIC_UID}_listOrganEditor" impl="::uiMedData::editor::SModelSeriesList" type="::gui::editor::IEditor" autoConnect="yes" >
-                        <columns>
-                            <organ_name>@organ_name</organ_name>
-                            <volume_cc view="positive" >@volume</volume_cc>
-                        </columns>
-                    </service>
-                </object>
-            </item>
+        <connect>
+            <signal>listOrganEditor/emptiedSelection</signal>
+            <slot>updaterReconst/remove</slot>
+        </connect>
 
-            <connect>
-                <signal>${GENERIC_UID}_listOrganEditor/reconstructionSelected</signal>
-                <slot>${GENERIC_UID}_myUpdaterReconst/addOrSwap</slot>
-            </connect>
+        <connect>
+            <signal>materialSelector/selected</signal>
+            <slot>shaderParameters/update</slot>
+        </connect>
 
-            <connect>
-                <signal>${GENERIC_UID}_listOrganEditor/emptiedSelection</signal>
-                <slot>${GENERIC_UID}_myUpdaterReconst/remove</slot>
-            </connect>
+        <!-- START AND STOP SERVICES -->
+        <start uid="organView" />
+        <start uid="updaterReconst" />
 
-            <!-- START AND STOP SERVICES -->
-            <start uid="${GENERIC_UID}_organView" />
-            <start uid="${GENERIC_UID}_myUpdaterReconst" />
-            <start uid="${GENERIC_UID}_myManagerForOrgansFrame" />
+        <!-- Deferred start -->
+        <start uid="materialSelector" />
+        <start uid="representationEditor" />
+        <start uid="shaderParameters" />
+        <start uid="organMaterialEditor" />
+        <start uid="textureSelector" />
 
-        </object>
     </config>
 </extension>

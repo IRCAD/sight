@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,18 +7,20 @@
 #ifndef __FWRENDEROGRE_PLANE_HPP__
 #define __FWRENDEROGRE_PLANE_HPP__
 
-#include <string>
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include "fwRenderOgre/config.hpp"
 
-#include <OGRE/OgreNumerics.h>
-#include <OGRE/OgreMesh.h>
-#include <OGRE/OgreMaterial.h>
-#include <OGRE/OgreSceneManager.h>
-#include <OGRE/OgreTexture.h>
-#include <OGRE/OgreTechnique.h>
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include "fwTools/fwID.hpp"
-#include "fwRenderOgre/config.hpp"
+
+#include <OGRE/OgreMaterial.h>
+#include <OGRE/OgreMesh.h>
+#include <OGRE/OgreNumerics.h>
+#include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreTechnique.h>
+#include <OGRE/OgreTexture.h>
+
+#include <string>
 
 namespace Ogre
 {
@@ -29,14 +31,13 @@ namespace fwRenderOgre
 {
 
 /**
- * @class Plane
- * Manages a plane mesh on which a slice texture will be applied
+ * @brief Manages a plane mesh on which a slice texture will be applied
  */
 class FWRENDEROGRE_CLASS_API Plane
 {
 public:
 
-    typedef ::fwComEd::helper::MedicalImageAdaptor::Orientation OrientationMode;
+    typedef ::fwDataTools::helper::MedicalImageAdaptor::Orientation OrientationMode;
 
     typedef enum FilteringEnum
     {
@@ -67,7 +68,10 @@ public:
     FWRENDEROGRE_API void setDepthSpacing(std::vector<double> _spacing);
 
     FWRENDEROGRE_API void setEntityOpacity( float _f );
-    FWRENDEROGRE_API void setWindowing( float _minVal, float _maxVal );
+
+    /// Adds or updates the texture containing the transfer function datas in the negato passes
+    FWRENDEROGRE_API void setTFData(const ::Ogre::TexturePtr _tfTexture);
+
     FWRENDEROGRE_API void switchThresholding(bool _threshold);
 
     FWRENDEROGRE_API ::Ogre::Real getWidth() const;
@@ -81,9 +85,26 @@ public:
 
     FWRENDEROGRE_API OrientationMode getOrientationMode() const;
 
+    FWRENDEROGRE_API ::Ogre::MaterialPtr getMaterial() const;
+
     FWRENDEROGRE_API void removeAndDestroyPlane();
 
 private:
+
+    /// Sets the plane's original position.
+    void initializePosition();
+
+    /// Creates a material for the mesh plane with the negato texture
+    void initializeMaterial();
+
+    /// Sets the relativePosition, then
+    void setRelativePosition(float _relativePosition);
+
+    /// Moves plane along its Normal.
+    void moveAlongAxis();
+
+    /// Sets the dimensions for the related members, and also creates a movable plane to instanciate the entity.
+    Ogre::MovablePlane* setDimensions();
 
     /// Indicates whether the plane is used by a 3D negato or not
     bool m_is3D;
@@ -133,23 +154,10 @@ private:
     /// Where are we insite the depth range?
     float m_relativePosition;
 
-    /// As said in the name, opacity applied to the entity.
+    /// Opacity applied to the entity.
     float m_entityOpacity;
 
-    /// Sets the plane's original position.
-    void initializePosition();
-
-    /// Creates a material for the mesh plane with the negato texture
-    void initializeMaterial();
-
-    /// Sets the relativePosition, then
-    void setRelativePosition(float _relativePosition);
-
-    /// Moves plane along its Normal.
-    void moveAlongAxis();
-
-    /// Sets the dimensions for the related members, and also creates a movable plane to instanciate the entity.
-    Ogre::MovablePlane* setDimensions();
+    static unsigned int s_id;
 };
 
 //------------------------------------------------------------------------------
@@ -172,6 +180,13 @@ inline std::vector< ::Ogre::Real > Plane::getDepthSpacing()
 inline Plane::OrientationMode Plane::getOrientationMode() const
 {
     return m_orientation;
+}
+
+//------------------------------------------------------------------------------
+
+inline ::Ogre::MaterialPtr Plane::getMaterial() const
+{
+    return m_texMaterial;
 }
 
 //------------------------------------------------------------------------------

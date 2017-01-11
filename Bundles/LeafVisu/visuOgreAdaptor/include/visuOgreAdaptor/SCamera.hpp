@@ -7,20 +7,19 @@
 #ifndef __VISUOGREADAPTOR_SCAMERA_HPP__
 #define __VISUOGREADAPTOR_SCAMERA_HPP__
 
-#include <vector>
-
-#include <fwData/TransformationMatrix3D.hpp>
+#include "visuOgreAdaptor/config.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 
-#include <fwServices/helper/SigSlotConnection.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 
 #include <OgreMovableObject.h>
 
-#include "visuOgreAdaptor/config.hpp"
+#include <vector>
 
 namespace arData
 {
@@ -32,7 +31,6 @@ namespace visuOgreAdaptor
 
 /**
  * @brief   Adaptor from fw4 Camera to Ogre Camera
- * @class   SCamera
  */
 class VISUOGREADAPTOR_CLASS_API SCamera : public ::fwRenderOgre::IAdaptor
 {
@@ -55,7 +53,7 @@ public:
     VISUOGREADAPTOR_API void updateTF3D();
 
     /// Returns proposals to connect service slots to associated object signals
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
 protected:
     /// Starting method. Do nothing
@@ -73,7 +71,7 @@ protected:
      */
     VISUOGREADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
-    /// Swaping method, only asks for a doUpdate
+    /// Swaping method, only asks for a updating
     VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
 
     /// Update the Camera position and orientation
@@ -84,14 +82,11 @@ private:
     /// Calibrate the camera parameters according to an arData::Camera
     void calibrate();
 
-    /// uid of the camera
-    std::string m_cameraUID;
-
     /// Transformation Matrix
     ::fwData::TransformationMatrix3D::sptr m_transMat;
 
     /// camera used to calibrate ogre camera
-    SPTR(::arData::Camera) m_camera;
+    CSPTR(::arData::Camera) m_camera;
 };
 
 } //namespace visuOgreAdaptor

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,7 @@ FixedStyleInteractor::FixedStyleInteractor() :
 
 // ----------------------------------------------------------------------------
 
-void FixedStyleInteractor::mouseMoveEvent(int dx, int dy)
+void FixedStyleInteractor::mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy)
 {
 }
 
@@ -36,14 +36,16 @@ void FixedStyleInteractor::wheelEvent(int delta, int x, int y)
 
 // ----------------------------------------------------------------------------
 
-void FixedStyleInteractor::horizontalMoveEvent(int x, int move)
+void FixedStyleInteractor::buttonReleaseEvent(IInteractor::MouseButton, int, int)
 {
+
 }
 
 // ----------------------------------------------------------------------------
 
-void FixedStyleInteractor::verticalMoveEvent(int y, int move)
+void FixedStyleInteractor::buttonPressEvent(IInteractor::MouseButton button, int x, int y)
 {
+
 }
 
 // ----------------------------------------------------------------------------

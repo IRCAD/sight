@@ -1,45 +1,40 @@
 
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::fwServices::registry::AppConfig2">
     <id>VTKGenericScene</id>
     <parameters>
-        <param name="GENERIC_UID" />
         <param name="WID_PARENT" />
         <param name="modelSeriesUID" />
     </parameters>
     <config>
 
-        <object type="::fwData::Composite">
+        <object uid="${modelSeriesUID}" type="::fwMedData::ModelSeries" src="ref" />
 
-            <service uid="${GENERIC_UID}_VTKSceneView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
-                        <orientation value="vertical" />
-                        <view proportion="1" />
-                    </layout>
-                </gui>
-                <registry>
-                    <parent wid="${WID_PARENT}" />
-                    <view sid="${GENERIC_UID}_genericScene" start="yes" />
-                </registry>
-            </service>
+        <service uid="VTKSceneView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager" >
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="genericScene" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="${GENERIC_UID}_genericScene" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes" >
-                <!-- <scene autoRender="false"> -->
-                <scene >
-                    <picker id="defaultPicker" vtkclass="fwVtkCellPicker" />
-                    <renderer id="default" background="0.0" />
-                    <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
-                        <config renderer="default" picker="defaultPicker" />
-                    </adaptor>
-                </scene>
-            </service>
+        <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes" >
+            <in key="modelSeries" uid="${modelSeriesUID}" />
+            <!-- <scene autoRender="false"> -->
+            <scene>
+                <picker id="defaultPicker" vtkclass="fwVtkCellPicker" />
+                <renderer id="default" background="0.0" />
+                <adaptor id="modelSeriesAdaptor" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                    <config renderer="default" picker="defaultPicker" />
+                </adaptor>
+            </scene>
+        </service>
 
-            <item key="modelSeries">
-                <object uid="${modelSeriesUID}" type="::fwMedData::ModelSeries" src="ref" />
-            </item>
-
-            <start uid="${GENERIC_UID}_VTKSceneView" />
-        </object>
+        <start uid="VTKSceneView" />
 
     </config>
 </extension>

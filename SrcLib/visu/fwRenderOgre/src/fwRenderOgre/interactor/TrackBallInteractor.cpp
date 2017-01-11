@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,77 @@ TrackballInteractor::TrackballInteractor() :
 
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::mouseMoveEvent(int dx, int dy)
+void TrackballInteractor::mouseMoveEvent(MouseButton button, int, int, int dx, int dy)
+{
+    if(button == LEFT)
+    {
+        cameraRotate(dx, dy);
+    }
+    else if(button == MIDDLE)
+    {
+        cameraTranslate(dx, dy);
+    }
+}
+
+// ----------------------------------------------------------------------------
+
+void TrackballInteractor::wheelEvent(int delta, int x, int y)
+{
+    // The zoom factor is reduced when coming closer and increased when going away
+    const float fNewZoom = (delta > 0) ? m_fZoom * 0.85f : m_fZoom / 0.85f;
+
+    // Moreover we cannot pass through the center of the trackball
+    const float z = (m_fZoom - fNewZoom) * 200.f / (m_mouseScale );
+
+    // Update the center of interest for future rotations
+    m_lookAtZ -= z;
+
+    m_fZoom = fNewZoom;
+
+    // Last, translate the camera
+    ::Ogre::Camera* camera     = m_sceneManager->getCamera("PlayerCam");
+    ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
+    ::Ogre::Vector3 direction  = camera->getDirection();
+    direction                  = direction * z;
+    camNode->translate( direction, ::Ogre::Node::TS_LOCAL );
+}
+
+// ----------------------------------------------------------------------------
+
+void TrackballInteractor::buttonReleaseEvent(IInteractor::MouseButton, int, int)
+{
+
+}
+
+// ----------------------------------------------------------------------------
+
+void TrackballInteractor::buttonPressEvent(IInteractor::MouseButton, int, int)
+{
+
+}
+
+// ----------------------------------------------------------------------------
+
+void TrackballInteractor::resizeEvent(int x, int y)
+{
+    m_width  = x;
+    m_height = y;
+}
+
+// ----------------------------------------------------------------------------
+
+void TrackballInteractor::keyPressEvent(int key)
+{
+    if(key == 'R' || key == 'r')
+    {
+        auto sig = this->signal<ResetCameraSignalType>( s_RESET_CAMERA_SIG );
+        sig->asyncEmit();
+    }
+}
+
+// ----------------------------------------------------------------------------
+
+void TrackballInteractor::cameraRotate(int dx, int dy)
 {
     ::Ogre::Real dx_float = static_cast< ::Ogre::Real>(dx);
     ::Ogre::Real dy_float = static_cast< ::Ogre::Real>(dy);
@@ -102,72 +172,22 @@ void TrackballInteractor::mouseMoveEvent(int dx, int dy)
         // 6 - Go backward in the inverse direction
         camNode->translate(Ogre::Vector3(0.f, 0.f, m_lookAtZ), ::Ogre::Node::TS_LOCAL);
     }
+
 }
 
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::wheelEvent(int delta, int x, int y)
+void TrackballInteractor::cameraTranslate(int xmove, int ymove)
 {
-    // The zoom factor is reduced when coming closer and increased when going away
-    const float fNewZoom = (delta > 0) ? m_fZoom * 0.85f : m_fZoom / 0.85f;
-
-    // Moreover we cannot pass through the center of the trackball
-    const float z = (m_fZoom - fNewZoom) * 200.f / (m_mouseScale );
-
-    // Update the center of interest for future rotations
-    m_lookAtZ -= z;
-
-    m_fZoom = fNewZoom;
-
-    // Last, translate the camera
+    float dx = static_cast<float>(xmove) / (m_mouseScale * 10.f);
+    float dy = static_cast<float>(-ymove) / (m_mouseScale * 10.f);
     ::Ogre::Camera* camera     = m_sceneManager->getCamera("PlayerCam");
     ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
-    ::Ogre::Vector3 direction  = camera->getDirection();
-    direction                  = direction * z;
-    camNode->translate( direction, ::Ogre::Node::TS_LOCAL );
-}
 
-// ----------------------------------------------------------------------------
-
-void TrackballInteractor::horizontalMoveEvent(int x, int move)
-{
-    float dx = static_cast<float>(move) / (m_mouseScale * 10.f);
-    ::Ogre::Camera* camera     = m_sceneManager->getCamera("PlayerCam");
-    ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
-    ::Ogre::Vector3 vec(dx, 0.f, 0.f);
+    ::Ogre::Vector3 vec(dx, dy, 0.f);
 
     camNode->translate(vec, ::Ogre::Node::TS_LOCAL);
-}
 
-// ----------------------------------------------------------------------------
-
-void TrackballInteractor::verticalMoveEvent(int y, int move)
-{
-    float dy = static_cast<float>(-move) / (m_mouseScale * 10.f);
-    ::Ogre::Camera* camera     = m_sceneManager->getCamera("PlayerCam");
-    ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
-    ::Ogre::Vector3 vec(0.f, dy, 0.f);
-
-    camNode->translate(vec, ::Ogre::Node::TS_LOCAL);
-}
-
-// ----------------------------------------------------------------------------
-
-void TrackballInteractor::resizeEvent(int x, int y)
-{
-    m_width  = x;
-    m_height = y;
-}
-
-// ----------------------------------------------------------------------------
-
-void TrackballInteractor::keyPressEvent(int key)
-{
-    if(key == 'R' || key == 'r')
-    {
-        auto sig = this->signal<ResetCameraSignalType>( s_RESET_CAMERA_SIG );
-        sig->asyncEmit();
-    }
 }
 
 // ----------------------------------------------------------------------------

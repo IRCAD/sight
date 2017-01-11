@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,9 +26,11 @@ CPPUNIT_TEST( isColorTechnique );
 CPPUNIT_TEST( isPeelTechnique );
 CPPUNIT_TEST( isGeometricTechnique );
 CPPUNIT_TEST( isDepthOnlyTechnique );
-CPPUNIT_TEST( getProgramSuffix );
+CPPUNIT_TEST( getPermutation );
 CPPUNIT_TEST( getR2VBGeometryProgramName );
-CPPUNIT_TEST( replaceProgramSuffix );
+CPPUNIT_TEST( setPermutationInProgramName );
+CPPUNIT_TEST( setTechniqueInProgramName );
+CPPUNIT_TEST( createObjectFromShaderParameter );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -40,9 +42,11 @@ public:
     void isPeelTechnique();
     void isGeometricTechnique();
     void isDepthOnlyTechnique();
-    void getProgramSuffix();
+    void getPermutation();
     void getR2VBGeometryProgramName();
-    void replaceProgramSuffix();
+    void setPermutationInProgramName();
+    void setTechniqueInProgramName();
+    void createObjectFromShaderParameter();
 
 private:
     /// Ogre root necessary to setup up everything properly

@@ -10,10 +10,12 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwRenderOgre/registry/macros.hpp>
 #include <fwRenderOgre/SRender.hpp>
+#include <fwRenderOgre/registry/macros.hpp>
 
+#include <QDesktopWidget>
 #include <QEvent>
+#include <QRect>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -51,7 +53,7 @@ void RenderWindowInteractorManager::requestRender()
 //-----------------------------------------------------------------------------
 
 void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwContainer::sptr _parent, bool showOverlay,
-                                                     bool renderOnDemand)
+                                                     bool renderOnDemand, bool fullscreen)
 {
     SLM_ASSERT("Invalid parent.", _parent );
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( _parent );
@@ -61,14 +63,36 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
     m_qOgreWidget = new ::visuOgreQt::Window();
     m_qOgreWidget->showOverlay(showOverlay);
     m_qOgreWidget->setAnimating(!renderOnDemand);
+
     QWidget* renderingContainer = QWidget::createWindowContainer(m_qOgreWidget);
     renderingContainer->setSizePolicy(QSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding));
 
-    QVBoxLayout *layout = new QVBoxLayout();
+    QVBoxLayout* layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(renderingContainer);
 
     container->setLayout(layout);
+
+    if(fullscreen)
+    {
+        // Open fullscreen widget on secondary monitor if there is one.
+        QDesktopWidget* desktop = QApplication::desktop();
+        int screenNumber        = desktop->screenNumber(container) + 1;
+
+        if(screenNumber >= desktop->screenCount())
+        {
+            screenNumber = desktop->primaryScreen();
+        }
+
+        QRect screenres = desktop->screenGeometry(screenNumber);
+
+        container->setParent(0);
+        container->showFullScreen();
+
+        container->setGeometry(screenres);
+
+        m_qOgreWidget->setFullScreen(fullscreen);
+    }
 
     QObject::connect(m_qOgreWidget, SIGNAL(renderWindowCreated()), this, SLOT(onRenderWindowCreated()));
 }
@@ -128,9 +152,16 @@ void RenderWindowInteractorManager::makeCurrent()
 
 //-----------------------------------------------------------------------------
 
-int RenderWindowInteractorManager::getWidgetId()
+int RenderWindowInteractorManager::getWidgetId() const
 {
     return m_qOgreWidget->getId();
+}
+
+//-----------------------------------------------------------------------------
+
+int RenderWindowInteractorManager::getFrameId() const
+{
+    return m_qOgreWidget->getFrameId();
 }
 
 //-----------------------------------------------------------------------------

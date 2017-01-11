@@ -1,45 +1,49 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiVisuOgre/SMaterialSelector.hpp"
 
+#include <fwCom/Signal.hxx>
+
 #include <fwData/Material.hpp>
 #include <fwData/String.hpp>
 
-#include <fwCom/Signal.hxx>
-
-#include <fwComEd/helper/Field.hpp>
+#include <fwDataTools/helper/Field.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/Base.hpp>
-
-
 #include <fwRenderOgre/Utils.hpp>
+
+#include <fwServices/macros.hpp>
 
 #include <material/Plugin.hpp>
 
-#include <OGRE/OgreMaterialManager.h>
-#include <OGRE/OgreResourceManager.h>
-
 #include <QFileDialog>
 #include <QFileInfo>
-#include <QString>
 #include <QHBoxLayout>
+#include <QString>
 #include <QVBoxLayout>
 #include <QWidget>
+
+#include <OGRE/OgreMaterialManager.h>
+#include <OGRE/OgrePass.h>
+#include <OGRE/OgreResourceManager.h>
+#include <OGRE/OgreTechnique.h>
 
 namespace uiVisuOgre
 {
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisuOgre::SMaterialSelector, ::fwData::Reconstruction);
 
+const ::fwCom::Signals::SignalKeyType SMaterialSelector::s_SELECTED_SIG = "selected";
+
 //------------------------------------------------------------------------------
 SMaterialSelector::SMaterialSelector() throw()
 {
+    newSignal< SelectedSignalType >( s_SELECTED_SIG );
 }
 
 //------------------------------------------------------------------------------
@@ -52,17 +56,19 @@ SMaterialSelector::~SMaterialSelector() throw()
 
 void SMaterialSelector::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     this->create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr qtContainer =
+        ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
+
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instantiated", container);
 
-    m_materialBox = new QComboBox(container);
+    // Selection
     QLabel* currentMaterial = new QLabel(container);
-    m_materialText = new QLabel(container);
+    currentMaterial->setText("Current material : ");
+
+    m_materialBox = new QComboBox(container);
 
     std::pair <std::string, std::string> elt;
     ::Ogre::ResourceManager::ResourceMapIterator iter = ::Ogre::MaterialManager::getSingleton().getResourceIterator();
@@ -74,35 +80,35 @@ void SMaterialSelector::starting() throw(::fwTools::Failed)
             m_materialBox->addItem(QString::fromStdString(mat->getName()));
         }
     }
-
     m_materialBox->setCurrentIndex(0);
-
-    currentMaterial->setText("Current material : ");
-    m_materialText->setText("/");
 
     QHBoxLayout* labelLayout = new QHBoxLayout();
     labelLayout->addWidget( currentMaterial);
-    labelLayout->addWidget( m_materialText);
+    labelLayout->addWidget( m_materialBox);
+
+    // Reload
+    m_reloadButton = new QPushButton("Reload");
+
     QVBoxLayout* layout = new QVBoxLayout();
-    layout->addLayout(labelLayout);
-    layout->addWidget( m_materialBox);
+    layout->addLayout( labelLayout );
+    layout->addWidget( m_reloadButton );
 
     container->setLayout( layout );
 
+    this->updating();
+
     QObject::connect(m_materialBox, SIGNAL(activated(const QString &)), this,
                      SLOT(onSelectedModeItem(const QString &)));
-
-    this->updating();
+    QObject::connect(m_reloadButton, SIGNAL(clicked()), this, SLOT(onReloadMaterial()));
 }
 
 //------------------------------------------------------------------------------
 
 void SMaterialSelector::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     QObject::disconnect(m_materialBox, SIGNAL(activated(const QString &)), this,
                         SLOT(onSelectedModeItem(const QString &)));
+    QObject::disconnect(m_reloadButton, SIGNAL(clicked()), this, SLOT(onReloadMaterial()));
 
     this->getContainer()->clean();
     this->destroy();
@@ -140,11 +146,6 @@ void SMaterialSelector::updateMaterial()
     {
         ::fwData::String::sptr field = ::fwData::String::dynamicCast(fieldObj);
         m_materialBox->setCurrentText(field->value().c_str());
-        m_materialText->setText(field->value().c_str());
-    }
-    else
-    {
-        m_materialText->setText("/");
     }
 }
 
@@ -157,11 +158,57 @@ void SMaterialSelector::onSelectedModeItem(const QString& text)
     ::fwData::String::sptr string          = ::fwData::String::New();
     string->setValue(text.toStdString());
 
-    m_materialText->setText(text);
-
-    ::fwComEd::helper::Field helper(material);
+    ::fwDataTools::helper::Field helper(material);
     helper.setField("ogreMaterial", string);
     helper.notify();
+
+    auto sig = this->signal<SelectedSignalType>(s_SELECTED_SIG);
+    sig->asyncEmit(text.toStdString());
+}
+
+//------------------------------------------------------------------------------
+
+void SMaterialSelector::onReloadMaterial()
+{
+    auto materialName = m_materialBox->currentText().toStdString();
+    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(materialName);
+
+    if(material.isNull())
+    {
+        OSLM_ERROR("Could not find material" << materialName);
+    }
+
+    material->reload();
+
+    ::Ogre::Material::TechniqueIterator techIt = material->getTechniqueIterator();
+    while( techIt.hasMoreElements())
+    {
+        ::Ogre::Technique* tech = techIt.getNext();
+        SLM_ASSERT("Technique is not set", tech);
+
+        ::Ogre::Technique::PassIterator passIt = tech->getPassIterator();
+
+        while ( passIt.hasMoreElements() )
+        {
+            ::Ogre::Pass* pass = passIt.getNext();
+            SLM_ASSERT("No pass found", pass);
+
+            if(!pass->getVertexProgramName().empty())
+            {
+                pass->getVertexProgram()->reload();
+            }
+            if(!pass->getGeometryProgramName().empty())
+            {
+                pass->getGeometryProgram()->reload();
+            }
+            if(!pass->getFragmentProgramName().empty())
+            {
+                pass->getFragmentProgram()->reload();
+            }
+        }
+
+    }
+
 }
 
 //------------------------------------------------------------------------------

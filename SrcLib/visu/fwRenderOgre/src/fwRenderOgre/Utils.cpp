@@ -5,19 +5,21 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/Utils.hpp"
+#include "fwRenderOgre/factory/R2VBRenderable.hpp"
+#include <fwRenderOgre/compositor/MaterialMgrListener.hpp>
 
 #include <fwCore/spyLog.hpp>
 
-#include <fwComEd/helper/Image.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwData/TransferFunction.hpp>
 
-#include "fwRenderOgre/factory/R2VBRenderable.hpp"
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/helper/ImageGetter.hpp>
 
 #include <OgreConfigFile.h>
 #include <OgreException.h>
+#include <OgreHardwarePixelBuffer.h>
 #include <OgreLog.h>
 #include <OgreResourceGroupManager.h>
-#include <OgreHardwarePixelBuffer.h>
 #include <OgreTextureManager.h>
 
 #include <cstdint>
@@ -58,7 +60,7 @@ void loadResources()
             while (seci.hasMoreElements())
             {
                 resourceGroupName                              = seci.peekNextKey();
-                ::Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
+                ::Ogre::ConfigFile::SettingsMultiMap* settings = seci.getNext();
                 ::Ogre::ConfigFile::SettingsMultiMap::iterator i;
                 for (i = settings->begin(); i != settings->end(); ++i)
                 {
@@ -167,11 +169,15 @@ void Utils::addResourcesPath(const std::string& path)
         // TODO : Check utility of TextureManager in a shader-based programming model (RenderSystemGL3+)
         if(::Ogre::Root::getSingleton().getRenderSystem()->getName() != "OpenGL 3+ Rendering Subsystem (ALPHA)")
         {
-            Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
+            ::Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
         }
 
+        // Register factory for R2VB renderables objects
         s_R2VBRenderableFactory = OGRE_NEW ::fwRenderOgre::factory::R2VBRenderable();
         ::Ogre::Root::getSingleton().addMovableObjectFactory(s_R2VBRenderableFactory);
+
+        // Add the material manager listener that allows us to generate OIT techniques
+        ::Ogre::MaterialManager::getSingleton().addListener(new ::fwRenderOgre::compositor::MaterialMgrListener());
     }
 
     return root;
@@ -195,7 +201,7 @@ void Utils::destroyOgreRoot()
 
 //------------------------------------------------------------------------------
 
-::Ogre::Image Utils::convertFwDataImageToOgreImage( const ::fwData::Image::sptr imageFw)
+::Ogre::Image Utils::convertFwDataImageToOgreImage( const ::fwData::Image::csptr imageFw)
 {
     SLM_ASSERT("Image is null", imageFw);
 
@@ -219,7 +225,7 @@ void Utils::destroyOgreRoot()
 
     ::Ogre::PixelFormat pixelFormat = getPixelFormatOgre( imageFw );
 
-    ::fwComEd::helper::Image imageHelper(imageFw);
+    ::fwDataTools::helper::ImageGetter imageHelper(imageFw);
 
     imageOgre.loadDynamicImage(static_cast<uint8_t*>(imageHelper.getBuffer()), width, height, depth, pixelFormat);
 
@@ -229,7 +235,7 @@ void Utils::destroyOgreRoot()
 //------------------------------------------------------------------------------
 
 // Only handles RGB for now, since fwData::Image only does so.
-::Ogre::PixelFormat Utils::getPixelFormatOgre(::fwData::Image::sptr imageFw)
+::Ogre::PixelFormat Utils::getPixelFormatOgre(::fwData::Image::csptr imageFw)
 {
     std::string pixelType    = ::fwTools::getString( imageFw->getPixelType() );
     size_t numberOfComponent = imageFw->getNumberOfComponents();
@@ -245,6 +251,10 @@ void Utils::destroyOgreRoot()
         {
             // int16
             return ::Ogre::PF_L16;
+        }
+        else if (pixelType == "float")
+        {
+            return ::Ogre::PF_FLOAT32_R;
         }
     }
 
@@ -305,7 +315,7 @@ void Utils::destroyOgreRoot()
     }
     else if (pixelType == "float")
     {
-        return numberOfComponent == 3 ? ::Ogre::PF_FLOAT16_RGB : ::Ogre::PF_FLOAT16_RGBA;
+        return numberOfComponent == 3 ? ::Ogre::PF_FLOAT32_RGB : ::Ogre::PF_FLOAT32_RGBA;
     }
     else if (pixelType == "double")
     {
@@ -320,7 +330,7 @@ void Utils::destroyOgreRoot()
 void Utils::loadOgreTexture(const ::fwData::Image::sptr& _image, ::Ogre::TexturePtr _texture,
                             ::Ogre::TextureType _texType, bool _dynamic)
 {
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(_image);
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(_image);
 
     if(imageIsValid)
     {
@@ -347,6 +357,42 @@ void Utils::loadOgreTexture(const ::fwData::Image::sptr& _image, ::Ogre::Texture
 
 //------------------------------------------------------------------------------
 
+template <typename SRC_TYPE, typename DST_TYPE>
+void copyNegatoImage( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _image )
+{
+    // Get the pixel buffer
+    ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = _texture->getBuffer();
+
+    // Lock the pixel buffer and copy it
+    {
+        ::fwDataTools::helper::Image srcImageHelper(_image);
+        typedef typename std::make_unsigned< DST_TYPE>::type unsignedType;
+
+        auto srcBuffer = static_cast< const SRC_TYPE* >(srcImageHelper.getBuffer());
+
+        pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
+        const ::Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
+        auto pDest                       = static_cast< unsignedType*>(pixelBox.data);
+
+        const DST_TYPE lowBound = std::numeric_limits< DST_TYPE >::min();
+
+        const ::Ogre::uint32 size = _texture->getWidth() * _texture->getHeight() * _texture->getDepth();
+
+        for(::Ogre::uint32 i = 0; i < size; ++i)
+        {
+            OSLM_ASSERT("Pixel value '" << *srcBuffer << "' doesn't it in texture range.",
+                        *srcBuffer > std::numeric_limits< DST_TYPE >::min() &&
+                        *srcBuffer < std::numeric_limits< DST_TYPE >::max());
+            *pDest++ = static_cast< unsignedType >(*srcBuffer++ - lowBound);
+        }
+
+        // Unlock the pixel buffer
+        pixelBuffer->unlock();
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Image::sptr& _image )
 {
     auto srcType = _image->getType();
@@ -362,33 +408,34 @@ void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Im
 
         }
 
-        // Get the pixel buffer
-        ::Ogre::HardwarePixelBufferSharedPtr pixelBuffer = _texture->getBuffer();
-
-        // Lock the pixel buffer and copy it
+        copyNegatoImage< std::int16_t, std::int16_t >(_texture, _image);
+    }
+    else if(srcType == ::fwTools::Type::s_INT32)
+    {
+        if( _texture->getWidth()  != _image->getSize()[0] ||
+            _texture->getHeight() != _image->getSize()[1] ||
+            _texture->getDepth()  != _image->getSize()[2]    )
         {
-            ::fwComEd::helper::Image srcImageHelper(_image);
+            ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize()[0], _image->getSize()[1],
+                                                   _image->getSize()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D,
+                                                   false);
 
-            const std::int16_t* __restrict srcBuffer = static_cast< const std::int16_t* >(srcImageHelper.getBuffer());
-            const ::Ogre::uint32 size                = _texture->getWidth() * _texture->getHeight() *
-                                                       _texture->getDepth();
-
-            pixelBuffer->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
-
-            const ::Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
-
-            std::uint16_t* __restrict pDest = static_cast<std::uint16_t*>(pixelBox.data);
-
-            const std::int16_t lowBound = std::numeric_limits< std::int16_t >::min();
-
-            for(::Ogre::uint32 i = 0; i < size; ++i)
-            {
-                *pDest++ = static_cast<std::uint16_t>(*srcBuffer++ - lowBound);
-            }
-
-            // Unlock the pixel buffer
-            pixelBuffer->unlock();
         }
+
+        copyNegatoImage< std::int32_t, std::int16_t >(_texture, _image);
+    }
+    else if(srcType == ::fwTools::Type::s_UINT8)
+    {
+        if( _texture->getWidth()  != _image->getSize()[0] ||
+            _texture->getHeight() != _image->getSize()[1] ||
+            _texture->getDepth()  != _image->getSize()[2]    )
+        {
+            ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize()[0], _image->getSize()[1],
+                                                   _image->getSize()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D, false);
+
+        }
+
+        copyNegatoImage< std::uint8_t, std::int16_t >(_texture, _image);
     }
     else
     {

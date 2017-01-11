@@ -7,27 +7,27 @@
 #ifndef __FWRENDEROGRE_LAYER_HPP__
 #define __FWRENDEROGRE_LAYER_HPP__
 
-#include <fwCore/BaseObject.hpp>
+#include "fwRenderOgre/config.hpp"
+#include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
+#include <fwRenderOgre/compositor/ChainManager.hpp>
+#include <fwRenderOgre/compositor/Core.hpp>
+#include <fwRenderOgre/interactor/IInteractor.hpp>
+#include <fwRenderOgre/interactor/IMovementInteractor.hpp>
+#include <fwRenderOgre/interactor/IPickerInteractor.hpp>
 
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/HasSlots.hpp>
 #include <fwCom/Slot.hpp>
 
-#include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
-#include <fwRenderOgre/interactor/IMovementInteractor.hpp>
-#include <fwRenderOgre/interactor/IPickerInteractor.hpp>
-#include <fwRenderOgre/interactor/IInteractor.hpp>
-#include <fwRenderOgre/compositor/CompositorChainManager.hpp>
-#include <fwRenderOgre/compositor/DefaultCompositor.hpp>
+#include <fwThread/Worker.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
-#include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreRenderWindow.h>
+#include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreViewport.h>
 
+#include <cstdint>
 #include <vector>
-
-#include "fwRenderOgre/config.hpp"
 
 namespace fwRenderOgre
 {
@@ -38,8 +38,7 @@ namespace fwRenderOgre
 {
 
 /**
- * @class Layer
- * Allows to render multiple scenes in the same render window with viewports
+ * @brief   Allows to render multiple scenes in the same render window with viewports
  */
 class FWRENDEROGRE_CLASS_API Layer : public ::fwCore::BaseObject,
                                      public ::fwCom::HasSignals,
@@ -47,6 +46,13 @@ class FWRENDEROGRE_CLASS_API Layer : public ::fwCore::BaseObject,
 
 {
 public:
+
+    enum class StereoModeType : std::uint8_t
+    {
+        NONE,
+        AUTOSTEREO_5,
+        AUTOSTEREO_8,
+    };
 
     fwCoreClassDefinitionsWithFactoryMacro( (Layer)(::fwRenderOgre::Layer), (()), new Layer);
     fwCoreAllowSharedFromThis();
@@ -58,6 +64,14 @@ public:
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_INIT_LAYER_SIG;
     typedef ::fwCom::Signal<void (::fwRenderOgre::Layer::sptr)> InitLayerSignalType;
 
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_RESIZE_LAYER_SIG;
+    typedef ::fwCom::Signal<void (int, int)> ResizeLayerSignalType;
+
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_COMPOSITOR_UPDATED_SIG;
+    typedef ::fwCom::Signal<void (std::string, bool, ::fwRenderOgre::Layer::sptr)> CompositorUpdatedSignalType;
+
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_MODE3D_CHANGED_SIG;
+    typedef ::fwCom::Signal<void (StereoModeType)> StereoModeChangedSignalType;
     /** @} */
 
     /**
@@ -94,7 +108,8 @@ public:
      * Set the associated scene manager ID of this viewport
      */
     FWRENDEROGRE_API void setID(const std::string& id);
-    FWRENDEROGRE_API const std::string& getID() const;
+    FWRENDEROGRE_API const std::string getName() const;
+    FWRENDEROGRE_API const std::string& getLayerID() const;
 
     /// Get the scene manager associated to this viewport
     FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager() const;
@@ -102,10 +117,10 @@ public:
     /// Create the scene
     FWRENDEROGRE_API void createScene();
 
-    /// Add a disabled compositor name to the CompositorChainManager
+    /// Add a disabled compositor name to the ChainManager
     FWRENDEROGRE_API void addAvailableCompositor(std::string compositorName);
 
-    // Removes all available compositors from the CompositorChainManager
+    /// Removes all available compositors from the ChainManager
     FWRENDEROGRE_API void clearAvailableCompositors();
 
     /// Enables/Disables a compositor according to the isEnabled flag
@@ -153,6 +168,9 @@ public:
     /// Sets the worker for slots
     FWRENDEROGRE_API void setWorker( const ::fwThread::Worker::sptr& _worker);
 
+    /// Gets the render service
+    FWRENDEROGRE_API CSPTR(::fwRenderOgre::SRender) getRenderService() const;
+
     /// Sets the render service
     FWRENDEROGRE_API void setRenderService( const SPTR(::fwRenderOgre::SRender)& _service );
 
@@ -163,6 +181,9 @@ public:
     /// Requests render
     FWRENDEROGRE_API void requestRender();
 
+    /// Sets stereoscopic rendering.
+    FWRENDEROGRE_API void setStereoMode(StereoModeType mode);
+
     /// Sets background color : specific to background Layer
     FWRENDEROGRE_API void setBackgroundColor(std::string topColor, std::string botColor);
 
@@ -170,24 +191,31 @@ public:
     FWRENDEROGRE_API void setBackgroundScale(float topScale, float botScale);
 
     /// Sets if this layer need a layer's 3D scene
-    FWRENDEROGRE_API void setDefaultCompositorEnabled(bool hasDefaultCompositor, std::string transparencyTechnique = "",
-                                                      std::string useCelShading = "", std::string nbPeel = "");
+    FWRENDEROGRE_API void setCoreCompositorEnabled(bool enabled, std::string transparencyTechnique = "",
+                                                   std::string numPeels = "");
 
     /// Sets if this layer has a configured compositor chain
-    FWRENDEROGRE_API void setCompositorChainEnabled(bool hasDefaultCompositorChain, std::string compositorChain);
+    FWRENDEROGRE_API void setCompositorChainEnabled(bool hasCoreChain, std::string compositorChain);
 
     /// Gets if this layer needs a layer's 3D scene
-    FWRENDEROGRE_API bool isDefaultCompositorEnabled();
+    FWRENDEROGRE_API bool isCoreCompositorEnabled();
 
     /// Gets if there is an XML configured compositor chain
     FWRENDEROGRE_API bool isCompositorChainEnabled();
 
+    /// Checks if stereoscopic rendering is enabled.
+    FWRENDEROGRE_API bool is3D() const;
+
+    /// Get stereoscopic mode
+    FWRENDEROGRE_API StereoModeType getStereoMode() const;
+
     /// Checks if this layer has a default compositor
-    FWRENDEROGRE_API ::fwRenderOgre::DefaultCompositor::sptr getDefaultCompositor();
+    FWRENDEROGRE_API ::fwRenderOgre::compositor::Core::sptr getCoreCompositor();
 
-    FWRENDEROGRE_API CompositorChainManager::CompositorChainType getCompositorChain();
+    FWRENDEROGRE_API ::fwRenderOgre::compositor::ChainManager::CompositorChainType getCompositorChain() const;
 
-    FWRENDEROGRE_API std::string getFinalChainCompositorName() const;
+    /// return the list of adaptors in the chain manager
+    FWRENDEROGRE_API IHasAdaptors::AdaptorVector getRegisteredAdaptors() const;
 
     FWRENDEROGRE_API ::Ogre::Viewport* getViewport() const;
 
@@ -204,7 +232,7 @@ private:
     ::Ogre::AxisAlignedBox computeCameraParameters() const;
 
     /// Setups default compositor for a layer's 3D scene
-    void setupDefaultCompositor();
+    void setupCore();
 
     /// For a list of semicolon-separated words, returns a vector of these words
     std::vector< std::string > trimSemicolons(std::string input);
@@ -218,32 +246,23 @@ private:
     /// Ogre viewport representing this layer
     ::Ogre::Viewport* m_viewport;
 
-    /// This boolean enables default compositor's widgets (gui displays before scene creation)
-    bool m_hasDefaultCompositor;
-
-    /// Indicates if a compositor chain is attached to the layer
-    bool m_hasCompositorChain;
-
-    /// Indicates if the scene has been created
-    bool m_sceneCreated;
+    /// Boolean used to set stereoscopic rendering.
+    StereoModeType m_stereoMode;
 
     /// If there is a configured compositor chain, this attribute stores its raw string
     std::string m_rawCompositorChain;
 
     /// Ogre default compositor for this layer
-    ::fwRenderOgre::DefaultCompositor::sptr m_defaultCompositor;
+    ::fwRenderOgre::compositor::Core::sptr m_coreCompositor;
 
     /// Ogre default compositor default transparency technique
-    transparencyTechnique m_defaultCompositorTransaprencyTechnique;
+    transparencyTechnique m_transparencyTechnique;
 
-    /// Ogre default compositor default cel shading behavior
-    bool m_defaultCompositorUseCelShading;
-
-    int m_nbPeel;
+    int m_numPeels;
 
     /// Manages the list of available compositors.
     /// The names are associated to a boolean value which indicates whether the compositor is enabled or not
-    CompositorChainManager m_compositorChainManager;
+    ::fwRenderOgre::compositor::ChainManager::uptr m_compositorChainManager;
 
     /// Z Depth of this viewport
     int m_depth;
@@ -268,10 +287,22 @@ private:
     ::fwRenderOgre::interactor::IPickerInteractor::sptr m_selectInteractor;
 
     ///Connection service, needed for slot/signal association
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     /// Render service which this layer is attached
     WPTR(::fwRenderOgre::SRender) m_renderService;
+
+    /// Layer identifier as referenced in SRender
+    std::string m_id;
+
+    /// This boolean enables default compositor's widgets (gui displays before scene creation)
+    bool m_hasCoreCompositor;
+
+    /// Indicates if a compositor chain is attached to the layer
+    bool m_hasCompositorChain;
+
+    /// Indicates if the scene has been created
+    bool m_sceneCreated;
 };
 
 }

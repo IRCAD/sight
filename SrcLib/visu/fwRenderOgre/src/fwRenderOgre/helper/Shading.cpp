@@ -1,13 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/helper/Shading.hpp"
 
-#include <regex>
+#include <fwData/Boolean.hpp>
+#include <fwData/Float.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/Point.hpp>
+#include <fwData/PointList.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
+
 #include <boost/regex.hpp>
+
+#include <regex>
 
 namespace fwRenderOgre
 {
@@ -18,10 +28,10 @@ namespace helper
 static const std::string s_EDGE_PASS    = "EdgePass";
 static const std::string s_NORMALS_PASS = "NormalsPass";
 
-static const std::regex s_PEEL_REGEX(".*_peel.*");
-static const std::regex s_WEIGHT_BLEND_REGEX(".*_weight_blend.*");
-static const std::regex s_TRANSMITTANCE_BLEND_REGEX(".*_transmittance_blend.*");
-static const std::regex s_DEPTH_MAP_REGEX("(.*depth_map.*)|(.*back_depth.*)");
+static const std::regex s_PEEL_REGEX(".*/peel.*");
+static const std::regex s_WEIGHT_BLEND_REGEX(".*/weightBlend.*");
+static const std::regex s_TRANSMITTANCE_BLEND_REGEX(".*/transmittanceBlend.*");
+static const std::regex s_DEPTH_MAP_REGEX("(.*depth.*)|(.*backDepth.*)");
 
 static const std::string s_AMBIENT       = "Ambient";
 static const std::string s_FLAT          = "Flat";
@@ -33,7 +43,7 @@ static const std::string s_PIXELLIGHTING = "PixelLit";
 bool Shading::isColorTechnique(const ::Ogre::Technique& _tech)
 {
     const std::string& name = _tech.getName();
-    const std::regex regexDualPeelInit("Dual.*_peel_init.*");
+    const std::regex regexDualPeelInit("Dual.*/peelInit.*");
 
     const bool peelTech     = std::regex_match(name, s_PEEL_REGEX);
     const bool weightPass   = std::regex_match(name, s_WEIGHT_BLEND_REGEX);
@@ -76,7 +86,7 @@ bool Shading::isDepthOnlyTechnique(const ::Ogre::Technique& _tech)
 }
 
 //-----------------------------------------------------------------------------
-std::string Shading::getProgramSuffix(::fwData::Material::ShadingType _mode, bool _diffuseTexture, bool _vertexColor)
+std::string Shading::getPermutation(::fwData::Material::ShadingType _mode, bool _diffuseTexture, bool _vertexColor)
 {
     std::string suffix;
 
@@ -143,26 +153,341 @@ std::string Shading::getR2VBGeometryProgramName(::fwData::Mesh::CellTypesEnum _p
         suffix += "+PPColor";
     }
 
-    const std::string name = "RenderScene_" + suffix + "_GP_glsl";
+    const std::string name = "R2VB/" + suffix + "_GP";
 
     return name;
 }
 
 //-----------------------------------------------------------------------------
 
-std::string Shading::replaceProgramSuffix(const std::string& _prgName, const std::string& _suffix)
+std::string Shading::setPermutationInProgramName(const std::string& _name, const std::string& _permutation)
 {
     std::string prgName;
 
     // Clear the suffix in shader names (+VT+...)
-    static const ::boost::regex regexConcat("\\N{plus-sign}.*(_[FV]P_glsl)", ::boost::regex::extended);
-    prgName = ::boost::regex_replace(_prgName, regexConcat, "$1");
+    static const ::boost::regex regexConcat("\\N{plus-sign}.*(_[FV]P)", ::boost::regex::extended);
+    prgName = ::boost::regex_replace(_name, regexConcat, "$1");
 
     // Replace the shading technique
     static const ::boost::regex regexShading("("+s_AMBIENT+")|("+s_FLAT+")|("+s_GOURAUD+")|("+s_PIXELLIGHTING+")");
-    prgName = ::boost::regex_replace(prgName, regexShading, _suffix);
+    prgName = ::boost::regex_replace(prgName, regexShading, _permutation);
 
     return prgName;
+}
+
+//-----------------------------------------------------------------------------
+
+std::string Shading::setTechniqueInProgramName(const std::string& _name, const std::string& _tech)
+{
+    std::string prgName;
+
+    // Replace the technique and the pass names
+    static const ::boost::regex regex(".*/");
+    prgName = ::boost::regex_replace(_name, regex, _tech + "/");
+
+    return prgName;
+}
+
+//------------------------------------------------------------------------------
+
+Shading::ShaderConstantsType Shading::findMaterialConstants(::Ogre::Material& _material)
+{
+    ShaderConstantsType constants;
+
+    // Only work on the first technique
+    ::Ogre::Pass* pass = _material.getTechnique(0)->getPass(0);
+
+    // If the material is programmable (ie contains shader programs) create associated ShaderParameter adaptor
+    // with the given ::fwData::Object ID
+    if (pass->isProgrammable())
+    {
+        ::Ogre::GpuProgramParametersSharedPtr params;
+
+        // Getting params for each program type
+        if (pass->hasVertexProgram())
+        {
+            params = pass->getVertexProgramParameters();
+            auto vpConstants = findShaderConstants(params, ::Ogre::GPT_VERTEX_PROGRAM);
+            std::move(vpConstants.begin(), vpConstants.end(), std::inserter(constants, constants.begin()));
+        }
+        if (pass->hasFragmentProgram())
+        {
+            params = pass->getFragmentProgramParameters();
+            auto fpConstants = findShaderConstants(params, ::Ogre::GPT_FRAGMENT_PROGRAM);
+            std::move(fpConstants.begin(), fpConstants.end(), std::inserter(constants, constants.begin()));
+        }
+        if (pass->hasGeometryProgram())
+        {
+            params = pass->getGeometryProgramParameters();
+            auto gpConstants = findShaderConstants(params, ::Ogre::GPT_GEOMETRY_PROGRAM);
+            std::move(gpConstants.begin(), gpConstants.end(), std::inserter(constants, constants.begin()));
+        }
+        if (pass->hasTessellationHullProgram())
+        {
+            OSLM_WARN("Tessellation Hull Program in Material not supported yet");
+        }
+        if (pass->hasTessellationDomainProgram())
+        {
+            OSLM_WARN("Tessellation Domain Program in Material not supported yet");
+        }
+    }
+
+    return constants;
+}
+
+//------------------------------------------------------------------------------
+
+Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramParametersSharedPtr _params,
+                                                          ::Ogre::GpuProgramType _shaderType)
+{
+    ShaderConstantsType parameters;
+
+    ::Ogre::GpuNamedConstants constantsDefinitionMap = _params->getConstantDefinitions();
+
+    // Get only user constants
+    for (const auto& cstDef : constantsDefinitionMap.map)
+    {
+        if (!::Ogre::StringUtil::endsWith(cstDef.first, "[0]") && !_params->findAutoConstantEntry(cstDef.first))
+        {
+            ConstantValueType constantValue;
+            bool found = false;
+            if(cstDef.second.isDouble())
+            {
+                for(size_t i = 0; i < cstDef.second.elementSize; ++i)
+                {
+                    constantValue.d[i] = _params->getDoubleConstantList()[cstDef.second.physicalIndex + i];
+                }
+                found = true;
+            }
+            else if(cstDef.second.isFloat())
+            {
+                for(size_t i = 0; i < cstDef.second.elementSize; ++i)
+                {
+                    constantValue.f[i] = _params->getFloatConstantList()[cstDef.second.physicalIndex + i];
+                }
+                found = true;
+            }
+            else if(cstDef.second.isInt())
+            {
+                for(size_t i = 0; i < cstDef.second.elementSize; ++i)
+                {
+                    constantValue.i[i] = _params->getIntConstantList()[cstDef.second.physicalIndex + i];
+                }
+                found = true;
+            }
+
+            if(found)
+            {
+                parameters.push_back(std::make_tuple(cstDef.first, cstDef.second.constType, _shaderType,
+                                                     constantValue));
+            }
+        }
+    }
+
+    return parameters;
+}
+
+//-----------------------------------------------------------------------------
+
+::fwData::Object::sptr Shading::createObjectFromShaderParameter(::Ogre::GpuConstantType _type, ConstantValueType _value)
+{
+    ::fwData::Object::sptr object;
+
+    switch(_type)
+    {
+        case ::Ogre::GpuConstantType::GCT_FLOAT1:
+        {
+            auto newObj = ::fwData::Float::New();
+            newObj->setValue(_value.f[0]);
+            object = newObj;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_FLOAT2:
+        {
+            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            float vec[2] = { _value.f[0], _value.f[1] };
+
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::FloatType>();
+            arrayObject->resize( type, {1}, 2, true);
+
+            ::fwDataTools::helper::Array arrayHelper(arrayObject);
+            arrayHelper.setItem( {0}, vec);
+
+            object = arrayObject;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_FLOAT3:
+        {
+            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            float vec[3] = { _value.f[0], _value.f[1], _value.f[2] };
+
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::FloatType>();
+            arrayObject->resize( type, {1}, 3, true);
+
+            ::fwDataTools::helper::Array arrayHelper(arrayObject);
+            arrayHelper.setItem( {0}, vec);
+
+            object = arrayObject;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_FLOAT4:
+        {
+            auto newObj = ::fwData::Color::New();
+            newObj->setRGBA(_value.f[0], _value.f[1], _value.f[2], _value.f[3]);
+            object = newObj;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_MATRIX_4X4:
+            object = ::fwData::TransformationMatrix3D::New();
+            break;
+        case ::Ogre::GpuConstantType::GCT_INT1:
+        {
+            auto newObj = ::fwData::Integer::New();
+            newObj->setValue(_value.i[0]);
+            object = newObj;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_INT2:
+        {
+            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            int vec[2] = {_value.i[0], _value.i[1]};
+
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::Int32Type>();
+            arrayObject->resize( type, {1}, 2, true);
+
+            ::fwDataTools::helper::Array arrayHelper(arrayObject);
+            arrayHelper.setItem( {0}, vec);
+
+            object = arrayObject;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_INT3:
+        {
+            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            int vec[3] = {_value.i[0], _value.i[1], _value.i[2]};
+
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::Int32Type>();
+            arrayObject->resize( type, {1}, 3, true);
+
+            ::fwDataTools::helper::Array arrayHelper(arrayObject);
+            arrayHelper.setItem( {0}, vec);
+
+            object = arrayObject;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_INT4:
+        {
+            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            int vec[4] = {_value.i[0], _value.i[1], _value.i[2], _value.i[3]};
+
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::Int32Type>();
+            arrayObject->resize( type, {1}, 4, true);
+
+            ::fwDataTools::helper::Array arrayHelper(arrayObject);
+            arrayHelper.setItem( {0}, vec);
+
+            object = arrayObject;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_DOUBLE1:
+        {
+            auto newObj = ::fwData::Float::New();
+            newObj->setValue( static_cast<float>(_value.d[0]) );
+            object = newObj;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_DOUBLE2:
+        {
+            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            double vec[2] = { _value.d[0], _value.d[1] };
+
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::DoubleType>();
+            arrayObject->resize( type, {1}, 2, true);
+
+            ::fwDataTools::helper::Array arrayHelper(arrayObject);
+            arrayHelper.setItem( {0}, vec);
+
+            object = arrayObject;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_DOUBLE3:
+        {
+            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            double vec[3] = { _value.d[0], _value.d[1], _value.d[2] };
+
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::DoubleType>();
+            arrayObject->resize( type, {1}, 3, true);
+
+            ::fwDataTools::helper::Array arrayHelper(arrayObject);
+            arrayHelper.setItem( {0}, vec);
+
+            object = arrayObject;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_DOUBLE4:
+        {
+            ::fwData::Array::sptr arrayObject = ::fwData::Array::New();
+            double vec[4] = { _value.d[0], _value.d[1], _value.d[2], _value.d[3] };
+
+            ::fwTools::Type type = ::fwTools::Type::create< ::fwTools::Type::DoubleType>();
+            arrayObject->resize( type, {1}, 4, true);
+
+            ::fwDataTools::helper::Array arrayHelper(arrayObject);
+            arrayHelper.setItem( {0}, vec);
+
+            object = arrayObject;
+        }
+        break;
+        case ::Ogre::GpuConstantType::GCT_MATRIX_DOUBLE_4X4:
+            object = ::fwData::TransformationMatrix3D::New();
+            break;
+        default:
+            std::string GpuConstantTypeNames[] =
+            {
+                "GCT_FLOAT1",
+                "GCT_FLOAT2",
+                "GCT_FLOAT3",
+                "GCT_FLOAT4",
+                "GCT_SAMPLER1D",
+                "GCT_SAMPLER2D",
+                "GCT_SAMPLER3D",
+                "GCT_SAMPLERCUBE",
+                "GCT_SAMPLERRECT",
+                "GCT_SAMPLER1DSHADOW",
+                "GCT_SAMPLER2DSHADOW",
+                "GCT_SAMPLER2DARRAY",
+                "GCT_MATRIX_2X2",
+                "GCT_MATRIX_2X3",
+                "GCT_MATRIX_2X4",
+                "GCT_MATRIX_3X2",
+                "GCT_MATRIX_3X3",
+                "GCT_MATRIX_3X4",
+                "GCT_MATRIX_4X2",
+                "GCT_MATRIX_4X3",
+                "GCT_MATRIX_4X4",
+                "GCT_INT1",
+                "GCT_INT2",
+                "GCT_INT3",
+                "GCT_INT4",
+                "GCT_SUBROUTINE",
+                "GCT_DOUBLE1",
+                "GCT_DOUBLE2",
+                "GCT_DOUBLE3",
+                "GCT_DOUBLE4",
+                "GCT_MATRIX_DOUBLE_2X2",
+                "GCT_MATRIX_DOUBLE_2X3",
+                "GCT_MATRIX_DOUBLE_2X4",
+                "GCT_MATRIX_DOUBLE_3X2",
+                "GCT_MATRIX_DOUBLE_3X3",
+                "GCT_MATRIX_DOUBLE_3X4",
+                "GCT_MATRIX_DOUBLE_4X2",
+                "GCT_MATRIX_DOUBLE_4X3",
+                "GCT_MATRIX_DOUBLE_4X4",
+                "GCT_UNKNOWN"
+            };
+            OSLM_WARN("Object type "+GpuConstantTypeNames[_type-1]+" not supported yet");
+    }
+    return object;
 }
 
 //-----------------------------------------------------------------------------

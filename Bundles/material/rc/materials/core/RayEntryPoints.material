@@ -1,0 +1,48 @@
+//-----------------------------------------------
+
+vertex_program RayEntryPoints_VP glsl
+{
+    source RayEntryPoints_VP.glsl
+
+    default_params
+    {
+        param_named_auto u_worldViewProj worldviewproj_matrix
+    }
+}
+
+//----------------------------------------------
+
+fragment_program RayEntryPoints_FP glsl
+{
+    source RayEntryPoints_FP.glsl
+
+    default_params
+    {
+    }
+}
+
+//----------------------------------------------
+
+material RayEntryPoints
+{
+    technique
+    {
+        pass
+        {            
+            scene_blend src_colour dest_colour
+            scene_blend_op min
+            depth_check off
+            depth_write off
+            cull_hardware none
+            cull_software none
+
+            vertex_program_ref RayEntryPoints_VP
+            {
+            }
+
+            fragment_program_ref RayEntryPoints_FP
+            {
+            }
+        }
+    }
+}

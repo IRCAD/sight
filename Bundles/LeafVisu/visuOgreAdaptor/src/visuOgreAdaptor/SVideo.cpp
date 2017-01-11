@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,7 +13,7 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/Point.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <fwRenderOgre/Utils.hpp>
 
@@ -79,7 +79,7 @@ void SVideo::doStart() throw(::fwTools::Failed)
 
 void SVideo::doStop() throw(::fwTools::Failed)
 {
-    this->unregisterServices();
+    m_texture.setNull();
 }
 
 //------------------------------------------------------------------------------
@@ -93,11 +93,7 @@ void SVideo::doSwap() throw(::fwTools::Failed)
 
 void SVideo::doConfigure() throw(::fwTools::Failed)
 {
-    SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
-
-    m_cameraUID = m_configuration->getAttributeValue("cameraUID");
-
-    std::string reverse = m_configuration->getAttributeValue("reverse");
+    const std::string reverse = m_configuration->getAttributeValue("reverse");
     if (!reverse.empty() )
     {
         if( reverse=="true" )
@@ -114,7 +110,7 @@ void SVideo::doUpdate() throw(::fwTools::Failed)
     this->getRenderService()->makeCurrent();
 
     // Getting FW4SPL Image
-    ::fwData::Image::sptr imageF4s = ::fwData::Image::dynamicCast(this->getObject());
+    ::fwData::Image::csptr imageF4s = this->getInput< ::fwData::Image>("image");
     SLM_ASSERT("Problem getting the image",imageF4s);
 
     ::fwData::Image::SizeType size       = imageF4s->getSize();
@@ -169,22 +165,22 @@ void SVideo::doUpdate() throw(::fwTools::Failed)
 
         m_isTextureInit = true;
 
-        if(!m_cameraUID.empty())
+        ::arData::Camera::csptr camera = this->getInput< ::arData::Camera>("camera");
+        if(camera)
         {
-            ::fwTools::Object::sptr obj   = ::fwTools::fwID::getObject(m_cameraUID);
-            ::arData::Camera::sptr camera = ::arData::Camera::dynamicCast(obj);
-            SLM_ASSERT("Missing camera", camera);
-
-            float shiftX = static_cast<float>(size[0] ) / 2.f - static_cast<float>(camera->getCx());
-            float shiftY = static_cast<float>(size[1] ) / 2.f - static_cast<float>(camera->getCy());
-
-            if (m_reverse)
+            if(camera->getIsCalibrated())
             {
-                cam->setPosition(shiftX, -shiftY, 0);
-            }
-            else
-            {
-                cam->setPosition(-shiftX, shiftY, 0);
+                float shiftX = static_cast<float>(size[0] ) / 2.f - static_cast<float>(camera->getCx());
+                float shiftY = static_cast<float>(size[1] ) / 2.f - static_cast<float>(camera->getCy());
+
+                if (m_reverse)
+                {
+                    cam->setPosition(shiftX, -shiftY, 0);
+                }
+                else
+                {
+                    cam->setPosition(-shiftX, shiftY, 0);
+                }
             }
         }
     }
@@ -202,11 +198,11 @@ void SVideo::doUpdate() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SVideo::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SVideo::getAutoConnections() const
 {
-    ::fwServices::IService::KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT ) );
+    ::fwServices::IService::KeyConnectionsMap connections;
+    connections.push( "image", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT );
+    connections.push( "image", ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
 

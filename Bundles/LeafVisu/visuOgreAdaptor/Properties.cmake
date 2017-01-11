@@ -5,7 +5,6 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES
     arData
     fwCom
-    fwComEd
     fwCore
     fwData
     fwDataCamp

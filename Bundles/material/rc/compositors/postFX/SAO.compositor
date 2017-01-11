@@ -1,0 +1,208 @@
+compositor SAO
+{
+    technique
+    {
+        // original scene
+        texture scene target_width target_height PF_A8R8G8B8
+
+        // Mip levels
+        texture mip0 target_width target_height PF_FLOAT32_R
+        texture mip1 target_width_scaled 0.5 target_height_scaled 0.5 PF_FLOAT32_R
+        texture mip2 target_width_scaled 0.25 target_height_scaled 0.25 PF_FLOAT32_R
+        texture mip3 target_width_scaled 0.125 target_height_scaled 0.125 PF_FLOAT32_R
+        texture mip4 target_width_scaled 0.0675 target_height_scaled 0.0675 PF_FLOAT32_R
+        texture mip5 target_width_scaled 0.03125 target_height_scaled 0.03125 PF_FLOAT32_R
+        texture mip6 target_width_scaled 0.015625 target_height_scaled 0.015625 PF_FLOAT32_R
+        texture mip7 target_width_scaled 0.0078125 target_height_scaled 0.0078125 PF_FLOAT32_R
+        texture mip8 target_width_scaled 0.00390625 target_height_scaled 0.00390625 PF_FLOAT32_R
+
+        // MipMap texture
+        texture rt0 target_width target_height PF_FLOAT32_R
+
+        // samples target
+        texture AO_map target_width target_height PF_A8R8G8B8
+
+        // blur texture targets
+        texture AO_map_blur target_width target_height PF_A8R8G8B8
+
+        // final Occlusion Map
+        texture Occlusion_map target_width target_height PF_A8R8G8B8
+
+        //----  Mip Map generation
+
+        target scene
+        {
+            input previous
+        }
+
+        target mip0
+        {
+            input none
+            pass clear
+            {
+            }
+
+            shadows off
+            material_scheme Mip_0
+
+            pass render_scene
+            {
+            }
+        }
+
+        target mip1
+        {
+            input none
+
+            pass render_quad
+            {
+                identifier 41
+
+                material Mip1_mat
+                input 0 mip0
+            }
+        }
+
+        target mip2
+        {
+            input none
+
+            pass render_quad
+            {
+                identifier 42
+
+                material Mip1_mat
+                input 0 mip1
+            }
+        }
+
+        target mip3
+        {
+            input none
+
+            pass render_quad
+            {
+                identifier 43
+
+                material Mip1_mat
+                input 0 mip2
+            }
+        }
+
+        target mip4
+        {
+            input none
+
+            pass render_quad
+            {
+                identifier 44
+
+                material Mip1_mat
+                input 0 mip3
+            }
+        }
+
+        target mip5
+        {
+            input none
+
+            pass render_quad
+            {
+                identifier 45
+
+                material Mip1_mat
+                input 0 mip4
+            }
+        }
+
+        target mip6
+        {
+            input none
+
+            pass render_quad
+            {
+                identifier 46
+
+                material Mip1_mat
+                input 0 mip5
+            }
+        }
+
+        target mip7
+        {
+            input none
+
+            pass render_quad
+            {
+                identifier 47
+
+                material Mip1_mat
+                input 0 mip6
+            }
+        }
+
+        target mip8
+        {
+            input none
+
+            pass render_quad
+            {
+                identifier 48
+
+                material Mip1_mat
+                input 0 mip7
+            }
+        }
+
+        // ----- Sampling
+        target AO_map
+        {
+            input none
+            pass render_quad
+            {
+                identifier 1
+
+                material AO_mat
+                input 0 rt0
+            }
+        }
+
+        // ------- Blur
+        target AO_map_blur
+        {
+            input none
+            pass render_quad
+            {
+                identifier 2
+
+                material BlurSaoH
+                input 0 AO_map
+            }
+
+        }
+
+        target Occlusion_map
+        {
+            input none
+            pass render_quad
+            {
+                identifier 3
+
+                material BlurSaoV
+                input 0 AO_map_blur
+            }
+        }
+
+        target_output
+        {
+            input none
+            pass render_quad
+            {
+                identifier 4
+                material BlendSaoScene
+                input 0 Occlusion_map 0
+                input 1 scene 0
+            }
+        }
+    }
+}

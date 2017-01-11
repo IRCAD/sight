@@ -1,18 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuOgreAdaptor/SReconstruction.hpp"
 
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <visuOgreAdaptor/defines.hpp>
 
@@ -46,12 +46,8 @@ SReconstruction::~SReconstruction() throw()
 
 void SReconstruction::doConfigure() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    SLM_ASSERT("Not a \"config\" configuration", m_configuration->getName() == "config");
-
     // The transform attribute is mandatory in the XML configuration
-    this->setTransformUID(m_configuration->getAttributeValue("transform"));
+    this->setTransformId(m_configuration->getAttributeValue("transform"));
 
     if (m_configuration->hasAttribute("autoresetcamera"))
     {
@@ -97,13 +93,14 @@ void SReconstruction::createMeshService()
         meshAdaptor->setMaterial(reconstruction->getMaterial());
         meshAdaptor->setMaterialTemplateName(m_materialTemplateName);
         meshAdaptor->setAutoResetCamera(m_autoResetCamera);
-        meshAdaptor->setTransformUID(this->getTransformUID());
-        meshAdaptor->setParentTransformUID(this->getParentTransformUID());
+        meshAdaptor->setTransformId(this->getTransformId());
+        meshAdaptor->setParentTransformId(this->getParentTransformId());
         meshAdaptor->updateVisibility(reconstruction->getIsVisible());
         meshAdaptor->setDynamic(m_isDynamic);
         meshAdaptor->setDynamicVertices(m_isDynamicVertices);
 
         meshService->start();
+        meshService->connect();
 
         m_meshAdaptor = meshService;
         this->registerService(meshService);
@@ -116,7 +113,7 @@ void SReconstruction::createMeshService()
 
 void SReconstruction::doSwap() throw(::fwTools::Failed)
 {
-    this->doUpdate();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -176,11 +173,11 @@ void SReconstruction::changeMesh( SPTR( ::fwData::Mesh) )
     {
         ::fwData::Reconstruction::sptr reconstruction = this->getObject< ::fwData::Reconstruction >();
         SLM_ASSERT("reconstruction not instantiated", reconstruction);
-        this->doUpdate();
+        this->updating();
     }
     else
     {
-        this->doUpdate();
+        this->updating();
     }
 }
 

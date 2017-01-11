@@ -1,0 +1,15 @@
+compositor SummedAreaTableInit
+{
+    technique
+    {
+        // Final pass
+        target_output
+        {
+            input none
+            pass render_quad
+            {
+                material SummedAreaTableInit
+            }
+        }
+    }
+}

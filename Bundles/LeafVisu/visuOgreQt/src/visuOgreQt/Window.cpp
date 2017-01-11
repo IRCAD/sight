@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,11 +9,19 @@
 #define FW_PROFILING_DISABLED
 #include <fwCore/Profiling.hpp>
 
+#include <fwGui/Application.hpp>
+#include <fwGui/Cursor.hpp>
+
 #include <fwRenderOgre/Utils.hpp>
 #include <fwRenderOgre/WindowManager.hpp>
 
 #include <OgreOverlay.h>
 #include <OgreOverlayManager.h>
+
+// Set this to 1 to display the FPS in the console output
+#ifndef DISPLAY_OGRE_FPS
+#define DISPLAY_OGRE_FPS 1
+#endif
 
 #define ZOOM_SPEED 0.2
 
@@ -25,7 +33,7 @@ int Window::m_counter = 0;
 
 // ----------------------------------------------------------------------------
 
-Window::Window(QWindow *parent) :
+Window::Window(QWindow* parent) :
     QWindow(parent),
     m_id(Window::m_counter++),
     m_ogreRoot(nullptr),
@@ -35,8 +43,10 @@ Window::Window(QWindow *parent) :
     m_animating(false),
     m_isInitialised(false),
     m_showOverlay(false),
+    m_fullscreen(false),
     m_lastPosLeftClick(nullptr),
-    m_lastPosMiddleClick(nullptr)
+    m_lastPosMiddleClick(nullptr),
+    m_frameId(0)
 {
     setAnimating(false);
     installEventFilter(this);
@@ -57,7 +67,7 @@ void Window::showOverlay(bool show)
 }
 // ----------------------------------------------------------------------------
 
-void Window::render(QPainter *painter)
+void Window::render(QPainter* painter)
 {
     Q_UNUSED(painter);
 }
@@ -97,7 +107,6 @@ void Window::initialise()
     parameters["parentWindowHandle"]   = Ogre::StringConverter::toString((size_t)(this->winId()));
 #else
     parameters["externalWindowHandle"] = Ogre::StringConverter::toString((unsigned long)(this->winId()));
-//    parameters["parentWindowHandle"]   = Ogre::StringConverter::toString((unsigned long)(this->winId()));
 #endif
 
 #if defined(Q_OS_MAC)
@@ -196,6 +205,7 @@ void Window::destroyWindow()
 
 void Window::render()
 {
+    ++m_frameId;
     /*
        How we tied in the render function for OGre3D with QWindow's render function. This is what gets call
        repeatedly. Note that we don't call this function directly; rather we use the renderNow() function
@@ -205,7 +215,6 @@ void Window::render()
        Theoretically you can have one function that does this check but from my experience it seems better
        to keep things separate and keep the render function as simple as possible.
      */
-    Ogre::WindowEventUtilities::messagePump();
 
     FW_PROFILE_FRAME_AVG("Ogre", 3);
     FW_PROFILE_AVG("Ogre", 3);
@@ -214,18 +223,9 @@ void Window::render()
     m_ogreRoot->_fireFrameStarted();
     m_ogreRenderWindow->update();
     m_ogreRoot->_fireFrameRenderingQueued();
-//    Ogre::FrameEvent evt;
-//    m_trayMgr->frameRenderingQueued(evt);
+    //    Ogre::FrameEvent evt;
+    //    m_trayMgr->frameRenderingQueued(evt);
     m_ogreRoot->_fireFrameEnded();
-
-#ifdef FW_PROFILING_DISABLED
-    static unsigned int i = 0;
-    if( !(++i % 100 ) )
-    {
-        Ogre::RenderTarget::FrameStats stats = m_ogreRenderWindow->getStatistics();
-        OSLM_DEBUG("Render target last FPS: " << stats.lastFPS);
-    }
-#endif
 }
 
 // ----------------------------------------------------------------------------
@@ -246,7 +246,7 @@ void Window::renderLater()
 
 // ----------------------------------------------------------------------------
 
-bool Window::event(QEvent *event)
+bool Window::event(QEvent* event)
 {
     /*
        QWindow's "message pump". The base method that handles all QWindow events. As you will see there
@@ -267,16 +267,27 @@ bool Window::event(QEvent *event)
             return QWindow::event(event);
     }
 }
-
 // ----------------------------------------------------------------------------
 
-void Window::exposeEvent(QExposeEvent *event)
+void Window::exposeEvent(QExposeEvent* event)
 {
     Q_UNUSED(event);
 
     if (isExposed())
     {
         this->renderNow();
+    }
+}
+
+// ----------------------------------------------------------------------------
+
+void Window::moveEvent(QMoveEvent* event)
+{
+    Q_UNUSED(event);
+
+    if (m_ogreRenderWindow != nullptr)
+    {
+        m_ogreRenderWindow->reposition(x(), y());
     }
 }
 
@@ -297,6 +308,20 @@ void Window::renderNow()
 
     this->render();
 
+#if DISPLAY_OGRE_FPS == 1
+    static int i               = 0;
+    static float fps           = 0.f;
+    static const int numFrames = 500;
+
+    fps += m_ogreRenderWindow->getLastFPS();
+    if(++i == numFrames)
+    {
+        OSLM_LOG("FPS average : " << fps/numFrames );
+        i   = 0;
+        fps = 0.f;
+    }
+#endif // DISPLAY_OGRE_FPS
+
     if (m_animating)
     {
         this->renderLater();
@@ -305,18 +330,18 @@ void Window::renderNow()
 
 // ----------------------------------------------------------------------------
 
-bool Window::eventFilter(QObject *target, QEvent *event)
+bool Window::eventFilter(QObject* target, QEvent* event)
 {
     if (target == this)
     {
-        if (event->type() == QEvent::Resize)
+        if (m_ogreRenderWindow != nullptr)
         {
-            if (m_ogreRenderWindow != nullptr)
+            if (event->type() == QEvent::Resize )
             {
+
                 this->makeCurrent();
 
-                m_ogreRenderWindow->reposition(x(), y());
-#if defined(linux) || defined(__linux)
+#if defined(linux) || defined(__linux) ||(__APPLE__)
                 m_ogreRenderWindow->resize(static_cast< unsigned int >(this->width()),
                                            static_cast< unsigned int >(this->height()));
 #endif
@@ -361,17 +386,25 @@ bool Window::eventFilter(QObject *target, QEvent *event)
             }
         }
     }
-
     return false;
 }
 
 // ----------------------------------------------------------------------------
 
-void Window::keyPressEvent(QKeyEvent * e)
+void Window::keyPressEvent(QKeyEvent* e)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::KEYPRESS;
     info.key             = e->key();
+
+    if(m_fullscreen && e->key() == Qt::Key_Escape)
+    {
+        ::fwGui::Cursor cursor;
+        cursor.setCursor(::fwGui::ICursor::BUSY);
+        ::fwGui::Application::New()->exit(0);
+        cursor.setDefaultCursor();
+    }
+
     Q_EMIT interacted(info);
 }
 
@@ -391,6 +424,7 @@ void Window::mouseMoveEvent( QMouseEvent* e )
         info.y               = y;
         info.dx              = dx;
         info.dy              = dy;
+        info.button          = ::fwRenderOgre::interactor::IInteractor::LEFT;
         Q_EMIT interacted(info);
         m_lastPosLeftClick->setX(e->x());
         m_lastPosLeftClick->setY(e->y());
@@ -406,26 +440,43 @@ void Window::mouseMoveEvent( QMouseEvent* e )
         int dy = y - e->y();
 
         ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
-        info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::HORIZONTALMOVE;
+        info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
         info.x               = x;
+        info.y               = y;
         info.dx              = dx;
+        info.dy              = dy;
+        info.button          = ::fwRenderOgre::interactor::IInteractor::MIDDLE;
         Q_EMIT interacted(info);
-
-        ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info2;
-        info2.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::VERTICALMOVE;
-        info2.y               = y;
-        info2.dy              = dy;
-        Q_EMIT interacted(info2);
 
         m_lastPosMiddleClick->setX(e->x());
         m_lastPosMiddleClick->setY(e->y());
+        this->requestRender();
+    }
+    else if (e->buttons() & ::Qt::RightButton && m_lastPosRightClick )
+    {
+        int x  = m_lastPosRightClick->x();
+        int y  = m_lastPosRightClick->y();
+        int dx = x - e->x();
+        int dy = y - e->y();
+
+        ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
+        info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE;
+        info.x               = x;
+        info.y               = y;
+        info.dx              = dx;
+        info.dy              = dy;
+        info.button          = ::fwRenderOgre::interactor::IInteractor::RIGHT;
+        Q_EMIT interacted(info);
+
+        m_lastPosRightClick->setX(e->x());
+        m_lastPosRightClick->setY(e->y());
         this->requestRender();
     }
 }
 
 // ----------------------------------------------------------------------------
 
-void Window::wheelEvent(QWheelEvent *e)
+void Window::wheelEvent(QWheelEvent* e)
 {
     ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
     info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE;
@@ -445,17 +496,37 @@ void Window::wheelEvent(QWheelEvent *e)
 
 void Window::mousePressEvent( QMouseEvent* e )
 {
+    ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
+    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONPRESS;
+    info.button          = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
+    info.delta           = 0;
+    info.x               = e->x();
+    info.y               = e->y();
+    info.dx              = 0;
+    info.dy              = 0;
+
     if(e->button() == Qt::LeftButton)
     {
         m_lastPosLeftClick = new QPoint(e->x(), e->y());
 
         m_mousedMoved = false;
+
+        info.button = ::fwRenderOgre::interactor::IInteractor::LEFT;
     }
     else if(e->button() == Qt::MiddleButton)
     {
         m_lastPosMiddleClick = new QPoint(e->x(), e->y());
+
+        info.button = ::fwRenderOgre::interactor::IInteractor::MIDDLE;
+    }
+    else if(e->button() == Qt::RightButton)
+    {
+        m_lastPosRightClick = new QPoint(e->x(), e->y());
+
+        info.button = ::fwRenderOgre::interactor::IInteractor::RIGHT;
     }
 
+    Q_EMIT interacted(info);
     this->requestRender();
 }
 
@@ -463,6 +534,15 @@ void Window::mousePressEvent( QMouseEvent* e )
 
 void Window::mouseReleaseEvent( QMouseEvent* e )
 {
+    ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo info;
+    info.interactionType = ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::BUTTONRELEASE;
+    info.button          = ::fwRenderOgre::interactor::IInteractor::UNKNOWN;
+    info.delta           = 0;
+    info.x               = e->x();
+    info.y               = e->y();
+    info.dx              = 0;
+    info.dy              = 0;
+
     if(e->button() == Qt::LeftButton && m_lastPosLeftClick)
     {
         if( !m_mousedMoved )
@@ -476,19 +556,35 @@ void Window::mouseReleaseEvent( QMouseEvent* e )
         delete m_lastPosLeftClick;
         m_lastPosLeftClick = nullptr;
 
+        info.button = ::fwRenderOgre::interactor::IInteractor::LEFT;
     }
     else if(e->button() == Qt::MiddleButton && m_lastPosMiddleClick)
     {
         delete m_lastPosMiddleClick;
         m_lastPosMiddleClick = nullptr;
+
+        info.button = ::fwRenderOgre::interactor::IInteractor::MIDDLE;
     }
+    else if(e->button() == Qt::RightButton)
+    {
+        delete m_lastPosRightClick;
+        m_lastPosRightClick = nullptr;
+
+        info.button = ::fwRenderOgre::interactor::IInteractor::RIGHT;
+    }
+
+    Q_EMIT interacted(info);
 }
 
 // ----------------------------------------------------------------------------
 
 void Window::setAnimating(bool animating)
 {
+#if DISPLAY_OGRE_FPS == 1
+    m_animating = true;
+#else
     m_animating = animating;
+#endif // DISPLAY_OGRE_FPS
 
     if (animating)
     {
@@ -521,7 +617,7 @@ int Window::getId()
 
 void Window::preViewportUpdate(const ::Ogre::RenderTargetViewportEvent& evt)
 {
-    ::Ogre::Overlay *overlay = ::Ogre::OverlayManager::getSingletonPtr()->getByName("LogoOverlay");
+    ::Ogre::Overlay* overlay = ::Ogre::OverlayManager::getSingletonPtr()->getByName("LogoOverlay");
 
     if(!m_showOverlay)
     {

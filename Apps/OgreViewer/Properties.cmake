@@ -5,7 +5,6 @@ set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     dataReg
-    extDataReg
     ctrlSelection
     ctrlCamp
     gui
@@ -20,20 +19,24 @@ set( REQUIREMENTS
     uiReconstructionQt
     uiMedDataQt
     uiIO
+    uiTF
     visuVTK
     visuVTKQt
     visuVTKAdaptor
-    launcher
-    appXml
+    fwlauncher
+    appXml2
     arMedia
     arDataReg
+    videoQt
+    videoTools
     visuOgre
     visuOgreQt
     visuOgreAdaptor
     uiVisuOgre
+    scene2D
     material
     media
     preferences
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES OgreViewer_Extension)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES OgreViewer_Extension)

@@ -7,26 +7,26 @@
 #ifndef __VISUOGREADAPTOR_SNEGATO2D_HPP__
 #define __VISUOGREADAPTOR_SNEGATO2D_HPP__
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include "visuOgreAdaptor/config.hpp"
+
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/Plane.hpp>
-
-#include "visuOgreAdaptor/config.hpp"
+#include <fwRenderOgre/TransferFunction.hpp>
 
 namespace visuOgreAdaptor
 {
 
 /**
  * @brief   Adaptor to display a 2D negato
- * @class   SNegato2D
  */
 class VISUOGREADAPTOR_CLASS_API SNegato2D : public ::fwRenderOgre::IAdaptor,
-                                            public ::fwComEd::helper::MedicalImageAdaptor
+                                            public ::fwDataTools::helper::MedicalImageAdaptor
 {
 public:
 
-    typedef ::fwComEd::helper::MedicalImageAdaptor::Orientation OrientationMode;
+    typedef ::fwDataTools::helper::MedicalImageAdaptor::Orientation OrientationMode;
 
     fwCoreServiceClassDefinitionsMacro( (SNegato2D)(::fwRenderOgre::IAdaptor) );
 
@@ -58,20 +58,20 @@ protected:
      *      renderer.
      * - \b picker (optional): identifier of the picker
      * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
-     * - \b filtering (optional, none/linear/anisotropic, default=linear): texture filter type of the negato
+     * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato
      */
     VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
     /// Performs stop, start and update.
     VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
 
     /// Returns proposals to connect service slots to associated object signals
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
     /// Called when transfer function points are modified.
     VISUOGREADAPTOR_API virtual void updatingTFPoints();
 
     /// Called when transfer function windowing is modified.
-    VISUOGREADAPTOR_API virtual void updatingTFWindowing(double _window, double _level);
+    VISUOGREADAPTOR_API virtual void updatingTFWindowing(double window, double level);
 
 private:
 
@@ -95,6 +95,9 @@ private:
 
     /// Ogre texture which will be displayed on the negato
     ::Ogre::TexturePtr m_3DOgreTexture;
+
+    /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view)
+    std::unique_ptr< ::fwRenderOgre::TransferFunction> m_gpuTF;
 
     /// The plane on which we will apply our texture
     ::fwRenderOgre::Plane* m_plane;

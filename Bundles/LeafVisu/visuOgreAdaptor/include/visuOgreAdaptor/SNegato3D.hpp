@@ -7,33 +7,33 @@
 #ifndef __VISUOGREADAPTOR_SNEGATO3D_HPP__
 #define __VISUOGREADAPTOR_SNEGATO3D_HPP__
 
-#include <fwRenderOgre/IAdaptor.hpp>
-#include <fwRenderOgre/ITransformable.hpp>
-#include <fwRenderOgre/Plane.hpp>
+#include "visuOgreAdaptor/config.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
-
 #include <fwData/Float.hpp>
 
-#include "visuOgreAdaptor/config.hpp"
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+
+#include <fwRenderOgre/IAdaptor.hpp>
+#include <fwRenderOgre/ITransformable.hpp>
+#include <fwRenderOgre/Plane.hpp>
+#include <fwRenderOgre/TransferFunction.hpp>
 
 namespace visuOgreAdaptor
 {
 
 /**
  * @brief   Adaptor to display a 3D negato
- * @class   SNegato3D
  */
 class VISUOGREADAPTOR_CLASS_API SNegato3D : public ::fwRenderOgre::IAdaptor,
                                             public ::fwRenderOgre::ITransformable,
-                                            public ::fwComEd::helper::MedicalImageAdaptor
+                                            public ::fwDataTools::helper::MedicalImageAdaptor
 {
 public:
 
-    typedef ::fwComEd::helper::MedicalImageAdaptor::Orientation OrientationMode;
+    typedef ::fwDataTools::helper::MedicalImageAdaptor::Orientation OrientationMode;
 
     fwCoreServiceClassDefinitionsMacro ( (SNegato3D)(::fwRenderOgre::IAdaptor) );
 
@@ -69,23 +69,21 @@ protected:
      * @code{.xml}
         <adaptor uid="SNegato3D" class="::visuOgreAdaptor::SNegato3D" objectId="image">
              <config renderer="default" picker="negatodefault" sliceIndex="axial"
-                     imageSource="imageKey" filtering="none"
-                     opacity="opacityFloatUID" />
+                     imageSource="imageKey" filtering="none" />
         </adaptor>
        @endcode
      * - \b renderer (optional): defines the renderer to show the arrow. It must be different from the 3D objects
      *      renderer.
      * - \b picker (optional): identifier of the picker
      * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
-     * - \b filtering (optional, none/linear/anisotropic, default=linear): texture filter type of the negato
-     * - \b opacity (optional): opacity ::fwData::Float uid
+     * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato
      */
     VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
     /// Performs stop, start and update.
     VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
 
     /// Returns proposals to connect service slots to associated object signals
-    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
+    VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
     /// Called when transfer function points are modified.
     VISUOGREADAPTOR_API virtual void updatingTFPoints();
@@ -106,7 +104,7 @@ private:
 
 
     /// Makes the planes process their meshes
-    void createPlanes(const ::fwData::Image::SpacingType& _spacing, const fwData::Image::OriginType &_origin);
+    void createPlanes(const ::fwData::Image::SpacingType& _spacing, const fwData::Image::OriginType& _origin);
 
     /// Sets the planes's opacity
     /// Also a slot called when image opacity is modified
@@ -117,6 +115,9 @@ private:
 
     /// Ogre texture which will be displayed on the negato
     ::Ogre::TexturePtr m_3DOgreTexture;
+
+    /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view)
+    std::unique_ptr< ::fwRenderOgre::TransferFunction> m_gpuTF;
 
     /// Stores the planes on which we will apply our texture
     ::fwRenderOgre::Plane* m_planes[3];

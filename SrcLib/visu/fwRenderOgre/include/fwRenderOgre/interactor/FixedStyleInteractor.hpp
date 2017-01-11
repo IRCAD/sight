@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,13 +30,14 @@ public:
     FWRENDEROGRE_API FixedStyleInteractor();
 
     /// Behaviour on mouseMoveEvent
-    FWRENDEROGRE_API void mouseMoveEvent(int x, int y);
+    FWRENDEROGRE_API void mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy);
     /// Behaviour on a wheelEvent
     FWRENDEROGRE_API void wheelEvent(int delta, int x, int y);
-    /// Behaviour on an HorizontalMoveEvent
-    FWRENDEROGRE_API void horizontalMoveEvent(int x, int move);
-    /// Behaviour on a VerticalMoveEvent
-    FWRENDEROGRE_API void verticalMoveEvent(int y, int move);
+    /// Behaviour on button release.
+    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton button, int x, int y);
+    /// Behaviour on button press.
+    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton button, int x, int y);
+
     /**
      * @brief Behaviour on a ResizeEvent
      * @param x The width of the window

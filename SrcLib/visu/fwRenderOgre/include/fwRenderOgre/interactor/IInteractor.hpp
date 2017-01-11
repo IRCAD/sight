@@ -40,6 +40,16 @@ class FWRENDEROGRE_CLASS_API IInteractor : public ::fwCore::BaseObject,
 
 public:
 
+    /// List of recognized mouse buttons.
+    enum MouseButton
+    {
+        NONE,
+        LEFT,
+        MIDDLE,
+        RIGHT,
+        UNKNOWN
+    };
+
     /**
      * @brief Class used to register a class factory in factory registry.
      * This class defines also the object factory ( 'create' )

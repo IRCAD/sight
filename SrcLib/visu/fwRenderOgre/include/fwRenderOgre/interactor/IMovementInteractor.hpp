@@ -67,10 +67,13 @@ public:
 
     /**
      * @brief Behaviour on a MouseMoveEvent
+     * @param x  The mouse X position
+     * @param y  The mouse Y position
      * @param dx The mouse X screen displacement
      * @param dy The mouse Y screen displacement
+     * @param click Whether or not the left button has been clicked
      */
-    FWRENDEROGRE_API virtual void mouseMoveEvent(int dx, int dy) = 0;
+    FWRENDEROGRE_API virtual void mouseMoveEvent(MouseButton button, int x, int y, int dx, int dy) = 0;
 
     /**
      * @brief Behaviour on a WheelEvent
@@ -79,20 +82,6 @@ public:
      * @param y The mouse Y screen coordinate
      */
     FWRENDEROGRE_API virtual void wheelEvent(int delta, int x, int y) = 0;
-
-    /**
-     * @brief Behaviour on a HorizontalMoveEvent
-     * @param x The mouse X screen position before movement
-     * @param move The mouse X screen displacement
-     */
-    FWRENDEROGRE_API virtual void horizontalMoveEvent(int x, int move) = 0;
-
-    /**
-     * @brief Behaviour on a VerticalMoveEvent
-     * @param y The mouse Y screen position before movement
-     * @param move The mouse Y screen displacement
-     */
-    FWRENDEROGRE_API virtual void verticalMoveEvent(int y, int move) = 0;
 
     /**
      * @brief Called when the window is resized
@@ -107,7 +96,13 @@ public:
      * */
     FWRENDEROGRE_API virtual void keyPressEvent(int key) = 0;
 
-    /// Update camera's move scale
+    /// Called when a mouse button is released.
+    FWRENDEROGRE_API virtual void buttonReleaseEvent(MouseButton button, int x, int y) = 0;
+
+    /// Called when a mouse button is pressed.
+    FWRENDEROGRE_API virtual void buttonPressEvent(MouseButton button, int x, int y) = 0;
+
+    /// Update camera's move scale.
     FWRENDEROGRE_API virtual void setMouseScale(float mouseScale);
 
 protected:

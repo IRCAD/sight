@@ -13,6 +13,7 @@
 #include <fwData/Mesh.hpp>
 
 #include <OGRE/OgreTechnique.h>
+
 #include <string>
 
 namespace fwRenderOgre
@@ -24,6 +25,15 @@ namespace helper
 class Shading
 {
 public:
+    union ConstantValueType
+    {
+        std::array<bool, 4> b;
+        std::array<int, 4> i;
+        std::array<float, 4> f;
+        std::array<double, 4> d;
+    };
+    typedef std::vector< std::tuple< ::Ogre::String, ::Ogre::GpuConstantType,
+                                     ::Ogre::GpuProgramType, ConstantValueType> > ShaderConstantsType;
 
     /**
      * @brief Returns true if the given technique computes a pixel color.
@@ -54,8 +64,8 @@ public:
      * @param[in] _vertexColor is vertex color enabled ?
      * @param[in] _diffuseTexture is diffuse texture bound ?
      */
-    FWRENDEROGRE_API static std::string getProgramSuffix(::fwData::Material::ShadingType _mode, bool _diffuseTexture,
-                                                         bool _vertexColor);
+    FWRENDEROGRE_API static std::string getPermutation(::fwData::Material::ShadingType _mode, bool _diffuseTexture,
+                                                       bool _vertexColor);
 
     /**
      * @brief Constructs the name of the geometry program to use in render to vertex buffer pipeline.
@@ -69,14 +79,53 @@ public:
                                                                    bool _hasPrimitiveColor);
 
     /**
-     * @brief Replace the suffix in the program name with the suffix in parameters.
-     *        For instance, given
+     * @brief Modify the program name according to the permutation given in parameter.
+     *        For instance, given "HybridTransparency/peel_Ambient+VT_FP" and "Flat" permutation,
+     *        the returned program name will be "HybridTransparency/peel_Flat_FP"
      *
-     * @param[in] _prgName name of the program
+     * @param[in] _name name of the program
+     * @param[in] _permutation new permutation to use
+     */
+    FWRENDEROGRE_API static std::string setPermutationInProgramName(const std::string& _name,
+                                                                    const std::string& _permutation);
+
+    /**
+     * @brief Replace the prefix in the program name with the prefix in parameters.
+     *        Actually this corresponds to replace the technique and the pass name.
+     *
+     *        For instance, given "HybridTransparency/peel_Ambient+VT_FP" and "Default" technique,
+     *        the returned program name will be "Default/Ambient+VT_FP"
+     *
+     * @param[in] _name name of the program
      * @param[in] _suffix new suffix to use
      */
-    FWRENDEROGRE_API static std::string replaceProgramSuffix(const std::string& _prgName, const std::string& _suffix);
+    FWRENDEROGRE_API static std::string setTechniqueInProgramName(const std::string& _name, const std::string& _tech);
 
+    /**
+     * @brief Find all shader constants of a material.
+     *
+     * @param[in] _material Ogre material
+     * @return vector of constants, each element is a tuple with the constant name its definition and the shader type.
+     */
+    FWRENDEROGRE_API static ShaderConstantsType findMaterialConstants(::Ogre::Material& _material);
+
+    /**
+     * @brief Create a fw4spl data that can be used to interact with a shader parameter.
+     *
+     * @param[in] _params shader parameters
+     * @return vector of constants, each element is a tuple with the constant name, its definition and the shader type.
+     */
+    FWRENDEROGRE_API static ShaderConstantsType findShaderConstants(::Ogre::GpuProgramParametersSharedPtr params,
+                                                                    ::Ogre::GpuProgramType _shaderType);
+
+    /**
+     * @brief Create a fw4spl data that can be used to interact with a shader parameter.
+     *
+     * @param[in] _type type of the shader parameter
+     * @param[in] _value value of the shader parameter
+     */
+    FWRENDEROGRE_API static SPTR(::fwData::Object) createObjectFromShaderParameter(::Ogre::GpuConstantType _type,
+                                                                                   ConstantValueType _value);
 };
 
 } // namespace helper

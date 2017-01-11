@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,8 +12,8 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/IService.hxx>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwRenderOgre/SRender.hpp>
 
@@ -35,12 +35,9 @@ const ::fwCom::Slots::SlotKeyType SCompositorSelector::s_INIT_COMPOSITOR_LIST_SL
 
 //------------------------------------------------------------------------------
 
-SCompositorSelector::SCompositorSelector() throw() :
-    m_currentLayer(nullptr)
+SCompositorSelector::SCompositorSelector() throw()
 {
     newSlot(s_INIT_COMPOSITOR_LIST_SLOT, &SCompositorSelector::initCompositorList, this);
-
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //------------------------------------------------------------------------------
@@ -80,9 +77,9 @@ void SCompositorSelector::starting() throw(::fwTools::Failed)
 
 void SCompositorSelector::stopping() throw(::fwTools::Failed)
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
 
-    QObject::disconnect(m_layersBox, SIGNAL(activated(const QString &)), this, SLOT(onSelectedLayerItem(int)));
+    QObject::disconnect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
     QObject::disconnect(m_compositorChain, SIGNAL(itemChanged(QListWidgetItem*)), this,
                         SLOT(onSelectedCompositorItem(QListWidgetItem*)));
 
@@ -117,7 +114,7 @@ void SCompositorSelector::onSelectedLayerItem(int index)
 
     // We need the ogre's viewport in order to add the compositors,
     // this is why we have to ckeck the viewport's existence
-    if(m_currentLayer->getViewport())
+    if(m_currentLayer.lock()->getViewport())
     {
         // Fill the list widget
         this->updateCompositorList();
@@ -132,7 +129,7 @@ void SCompositorSelector::onSelectedCompositorItem(QListWidgetItem* compositorIt
 {
     ::std::string compositorName = compositorItem->text().toStdString();
     bool isChecked = (compositorItem->checkState() == ::Qt::Checked);
-    m_currentLayer->updateCompositorState(compositorName, isChecked);
+    m_currentLayer.lock()->updateCompositorState(compositorName, isChecked);
 }
 
 //------------------------------------------------------------------------------
@@ -141,7 +138,7 @@ void SCompositorSelector::initCompositorList(fwRenderOgre::Layer::sptr layer)
 {
     m_currentLayer = m_layers[0];
 
-    if(layer == m_currentLayer)
+    if(layer == m_currentLayer.lock())
     {
         onSelectedLayerItem(0);
     }
@@ -157,22 +154,20 @@ void SCompositorSelector::refreshRenderers()
     ::fwServices::registry::ObjectService::ServiceVectorType renderers =
         ::fwServices::OSR::getServices("::fwRenderOgre::SRender");
 
-    int nbRenderer = 1;
     for(auto srv : renderers)
     {
         ::fwRenderOgre::SRender::sptr render = ::fwRenderOgre::SRender::dynamicCast(srv);
 
-        for(auto &layerMap : render->getLayers())
+        for(auto& layerMap : render->getLayers())
         {
             const std::string id       = layerMap.first;
-            const std::string renderID = render->getID();
+            const std::string renderID = render->getName();
             m_layersBox->addItem(QString::fromStdString(renderID + " : " + id));
             m_layers.push_back(layerMap.second);
 
-            m_connections->connect(layerMap.second, ::fwRenderOgre::Layer::s_INIT_LAYER_SIG,
-                                   this->getSptr(), s_INIT_COMPOSITOR_LIST_SLOT);
+            m_connections.connect(layerMap.second, ::fwRenderOgre::Layer::s_INIT_LAYER_SIG,
+                                  this->getSptr(), s_INIT_COMPOSITOR_LIST_SLOT);
         }
-        nbRenderer++;
     }
 }
 
@@ -180,7 +175,7 @@ void SCompositorSelector::refreshRenderers()
 
 void SCompositorSelector::synchroniseWithLayerCompositorChain()
 {
-    m_layerCompositorChain = m_currentLayer->getCompositorChain();
+    m_layerCompositorChain = m_currentLayer.lock()->getCompositorChain();
 }
 
 //------------------------------------------------------------------------------
@@ -195,7 +190,7 @@ void SCompositorSelector::updateCompositorList()
         if (compositor->getGroup() == ::material::s_COMPOSITOR_RESOURCEGROUP_NAME)
         {
             QString compositorName = compositor.getPointer()->getName().c_str();
-            m_currentLayer->addAvailableCompositor(compositorName.toStdString());
+            m_currentLayer.lock()->addAvailableCompositor(compositorName.toStdString());
 
             QListWidgetItem* newCompositor = new QListWidgetItem(compositorName, m_compositorChain);
             newCompositor->setFlags(newCompositor->flags() | ::Qt::ItemIsUserCheckable);
@@ -217,7 +212,7 @@ void SCompositorSelector::checkEnabledCompositors()
 
             auto layerCompositor = std::find_if(m_layerCompositorChain.begin(),
                                                 m_layerCompositorChain.end(),
-                                                ::fwRenderOgre::CompositorChainManager::FindCompositorByName(
+                                                ::fwRenderOgre::compositor::ChainManager::FindCompositorByName(
                                                     currentCompositorName));
 
             if(layerCompositor != m_layerCompositorChain.end())
@@ -225,7 +220,7 @@ void SCompositorSelector::checkEnabledCompositors()
                 if(layerCompositor->second)
                 {
                     currentCompositor->setCheckState(::Qt::Checked);
-                    m_currentLayer->updateCompositorState(currentCompositor->text().toStdString(), true);
+                    m_currentLayer.lock()->updateCompositorState(currentCompositor->text().toStdString(), true);
                 }
             }
         }
@@ -245,11 +240,11 @@ void SCompositorSelector::uncheckCompositors()
 
 //------------------------------------------------------------------------------
 
-bool SCompositorSelector::isEnabledCompositor(std::string compositorName)
+bool SCompositorSelector::isEnabledCompositor(const std::string& compositorName)
 {
     auto layerCompositor = std::find_if(m_layerCompositorChain.begin(),
                                         m_layerCompositorChain.end(),
-                                        ::fwRenderOgre::CompositorChainManager::FindCompositorByName(
+                                        ::fwRenderOgre::compositor::ChainManager::FindCompositorByName(
                                             compositorName));
 
     if(layerCompositor != m_layerCompositorChain.end())

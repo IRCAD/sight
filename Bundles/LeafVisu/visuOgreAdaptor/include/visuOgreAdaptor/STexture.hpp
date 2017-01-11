@@ -24,7 +24,6 @@ namespace visuOgreAdaptor
  * @brief Adaptor to map a texture on a mesh. This is done via ::visuOgreAdaptor::SMaterial. In the configuration we
  *        don't specify the material adaptor since it is automatically created by the ::visuOgreAdaptor::SMesh adaptor.
  *        The mesh adaptor isn't specified too because the texture can be applied on several meshes.
- * @class STexture
  */
 class VISUOGREADAPTOR_CLASS_API STexture : public ::fwRenderOgre::IAdaptor
 {
@@ -54,6 +53,12 @@ public:
     VISUOGREADAPTOR_API bool getUseAlpha() const;
     VISUOGREADAPTOR_API void setUseAlpha(bool _useAlpha);
 
+    /// Return true if a valid image is stored in this texture
+    VISUOGREADAPTOR_API bool isValid() const;
+
+    /// Returns the priority of the adaptor
+    VISUOGREADAPTOR_API virtual int getStartPriority();
+
 protected:
 
     /// Creates the managed Ogre texture
@@ -75,7 +80,7 @@ protected:
      */
     VISUOGREADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
-    /// Calls doUpdate()
+    /// Calls updating()
     VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
 
     /// Updates the attached

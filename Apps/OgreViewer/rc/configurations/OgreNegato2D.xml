@@ -1,95 +1,63 @@
 
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::fwServices::registry::AppConfig2">
     <id>OgreNegato2D</id>
     <parameters>
-        <param name="GENERIC_UID" />
         <param name="WID_PARENT" />
         <param name="imageUID" />
         <param name="TFSelections" />
     </parameters>
     <config>
 
-        <object type="::fwData::Composite">
+        <object uid="${imageUID}"  type="::fwData::Image" src="ref" />
+        <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
 
-            <service uid="${GENERIC_UID}_OgreNegato2D" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="vertical" />
-                        <view proportion="1" />
-                        <view proportion="0" />
-                    </layout>
-                </gui>
-                <registry>
-                    <parent wid="${WID_PARENT}" />
-                    <view sid="${GENERIC_UID}_negato2DScene" start="yes" />
-                    <view sid="${GENERIC_UID}_negato2DInteractor" start="yes" />
-                </registry>
-            </service>
+        <service uid="OgreNegato2D" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="negato2DScene" start="yes" />
+                <view sid="sliderIndexEditor2D" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="${GENERIC_UID}_negato2DScene" impl="::fwRenderOgre::SRender" type="::fwRender::IRender" autoConnect="yes" >
-                <scene >
+        <!-- Begin Generic Scene ***************************************** -->
 
-                    <!-- Fix afterglow bug when dezooming -->
-                    <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+        <service uid="negato2DScene" type="::fwRenderOgre::SRender" >
+            <adaptor uid="interactorAdaptor" start="yes" />
+            <adaptor uid="negato2DAdaptor" start="yes" />
 
-                    <!-- Default Layer -->
-                    <renderer id="default" layer="1"/>
+            <!-- Fix afterglow bug when dezooming -->
+            <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
 
-                    <adaptor id="interactorAdaptor" class="::visuOgreAdaptor::SInteractorStyle" objectId="self">
-                        <config renderer="default" style="Negato2D" />
-                    </adaptor>
+            <!-- Default Layer -->
+            <layer id="default" depth="1"/>
+        </service>
 
-                    <adaptor id="negato2DAdaptor" class="::visuOgreAdaptor::SNegato2D" objectId="image">
-                        <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
-                    </adaptor>
+        <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle" >
+            <config layer="default" style="Negato2D" />
+        </service>
 
-                </scene>
-            </service>
+        <service uid="negato2DAdaptor" type="::visuOgreAdaptor::SNegato2D" >
+            <in key="image" uid="${imageUID}" autoConnect="yes"/>
+            <inout key="TF" uid="${TFSelections}" />
+            <config layer="default" selectedTFKey="SelectedTF" />
+        </service>
 
-            <service uid="${GENERIC_UID}_negato2DInteractor" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
-                        <orientation value="vertical" />
-                        <view proportion="1" />
-                        <view proportion="1" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_sliderIndexEditor2D" start="no" />
-                    <view sid="${GENERIC_UID}_windowLevel2D" start="no" />
-                </registry>
-            </service>
+        <!-- End Generic Scene ***************************************** -->
 
-            <!-- Swapper service responsible for synchronising sliderIndexEditor and windowLevel with negato source image -->
-            <service uid="${GENERIC_UID}_negato2DManager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="no" >
-                <mode type="stop" />
-                <config>
-                    <object id="image" type="::fwData::Image">
-                        <!-- Slice editor service -->
-                        <service uid="${GENERIC_UID}_sliderIndexEditor2D" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
-                            <sliceIndex>Sagittal</sliceIndex>
-                        </service>
+        <!-- Slice editor service -->
+        <service uid="sliderIndexEditor2D" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <inout key="image" uid="${imageUID}" />
+            <sliceIndex>Sagittal</sliceIndex>
+        </service>
 
-                        <!-- Negato windowing service -->
-                        <service uid="${GENERIC_UID}_windowLevel2D" type="::gui::editor::IEditor" impl="::uiImage::WindowLevel" autoConnect="yes">
-                            <config selectedTFKey="SelectedTF" tfSelectionFwID="${TFSelections}" />
-                        </service>
-                    </object>
-                </config>
-            </service>
-
-            <!-- Negato source image -->
-            <item key="image">
-                <object uid="${imageUID}"  type="::fwData::Image" src="ref" />
-            </item>
-
-            <item key="TFSelectionsKey">
-                <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
-            </item>
-
-            <start uid="${GENERIC_UID}_OgreNegato2D" />
-            <start uid="${GENERIC_UID}_negato2DManager" />
-        </object>
+        <start uid="OgreNegato2D" />
 
     </config>
 </extension>
