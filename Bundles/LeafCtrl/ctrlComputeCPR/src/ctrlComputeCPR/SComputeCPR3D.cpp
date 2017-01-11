@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,28 +25,31 @@
 #include <cpr/functions.hpp>
 #include <math.h>
 
-fwServicesRegisterMacro(::fwServices::IController,::ctrlComputeCPR::SComputeCPR3D, ::fwData::Mesh);
+fwServicesRegisterMacro(::fwServices::IController, ::ctrlComputeCPR::SComputeCPR3D, ::fwData::Mesh);
 
 
 namespace ctrlComputeCPR
 {
+static const std::string s_SPLINE_KEY = "spline";
+static const std::string s_IMAGE_KEY  = "image";
+static const std::string s_MESH_KEY   = "mesh";
 
 const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_CHANGE_HEIGHT_SLOT  = "changeHeight";
 const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_CHANGE_SPACING_SLOT = "changeSpacing";
 const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_CHANGE_ANGLE_SLOT   = "changeAngle";
-
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLIPNE_SLOT = "updateSpline";
+const ::fwCom::Slots::SlotKeyType SComputeCPR3D::s_UPDATE_SPLINE_SLOT  = "updateSpline";
 
 //----------------------------------------------------------------------------------------------------------
 
-SComputeCPR3D::SComputeCPR3D() throw ()
-    : m_nbSplinePoints(0), m_angle (0), m_height(50.0)
+SComputeCPR3D::SComputeCPR3D() throw () : m_nbSplinePoints(0),
+                                          m_angle(0.),
+                                          m_spacing(0.),
+                                          m_height(50.0)
 {
-    m_slotChangeHeight  = newSlot(s_CHANGE_HEIGHT_SLOT, &SComputeCPR3D::setHeight, this);
-    m_slotChangeSpacing = newSlot(s_CHANGE_SPACING_SLOT, &SComputeCPR3D::setSpacing, this);
-    m_slotChangeAngle   = newSlot(s_CHANGE_ANGLE_SLOT, &SComputeCPR3D::setNormalRotation, this);
-    newSlot(s_UPDATE_SPLIPNE_SLOT, &SComputeCPR3D::updateSpline, this);
-
+    newSlot(s_CHANGE_HEIGHT_SLOT, &SComputeCPR3D::setHeight, this);
+    newSlot(s_CHANGE_SPACING_SLOT, &SComputeCPR3D::setSpacing, this);
+    newSlot(s_CHANGE_ANGLE_SLOT, &SComputeCPR3D::setNormalRotation, this);
+    newSlot(s_UPDATE_SPLINE_SLOT, &SComputeCPR3D::updateSpline, this);
 }
 
 //----------------------------------------------------------------------------------------------------------
@@ -59,22 +62,15 @@ SComputeCPR3D::~SComputeCPR3D() throw ()
 
 void SComputeCPR3D::starting() throw (::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
     // Get the source image to set the spacing of the CPR.
-    ::fwTools::Object::sptr imgObj = ::fwTools::fwID::getObject(m_sourceImageUID);
-    OSLM_ASSERT("Failed to retrieve object with UID '" << m_sourceImageUID << "'", imgObj);
-    ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(imgObj);
-    OSLM_ASSERT("Failed to retrieve image", image);
+    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_KEY);
+    SLM_ASSERT( s_IMAGE_KEY + " doesn't exist or is not an image", image);
     m_spacing = ::cpr::getImageMinSpacing(image);
 
     // Get the points of the spline point list
-    ::fwTools::Object::sptr splineObj = ::fwTools::fwID::getObject(m_splinePointsUID);
-    OSLM_ASSERT("Failed to retrieve object with UID '" << m_splinePointsUID << "'", splineObj);
-    ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(splineObj);
-    OSLM_ASSERT("Failed to retrieve point list", pointList);
-
-    m_nbSplinePoints = pointList->getRefPoints().size();
+    ::fwData::PointList::csptr pointList = this->getInput< ::fwData::PointList >(s_SPLINE_KEY);
+    SLM_ASSERT( s_SPLINE_KEY + " doesn't exist or is not a pointlist", pointList);
+    m_nbSplinePoints = pointList->getCRefPoints().size();
 
     if(m_nbSplinePoints > 2)
     {
@@ -94,22 +90,6 @@ void SComputeCPR3D::stopping() throw (::fwTools::Failed)
 void SComputeCPR3D::configuring() throw (fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-
-    // Get the spline points
-    const std::vector<ConfigurationType>& splinePointsConfig = m_configuration->find("splinePoints");
-    if (!splinePointsConfig.empty())
-    {
-        SLM_ASSERT("UID attribute is missing", splinePointsConfig.at(0)->hasAttribute("uid"));
-        m_splinePointsUID = (splinePointsConfig.at(0)->getAttributeValue("uid"));
-    }
-
-    // Get the source image
-    const std::vector<ConfigurationType>& sourceImageConfig = m_configuration->find("sourceImage");
-    if (!sourceImageConfig.empty())
-    {
-        SLM_ASSERT("UID attribute is missing", sourceImageConfig.at(0)->hasAttribute("uid"));
-        m_sourceImageUID = (sourceImageConfig.at(0)->getAttributeValue("uid"));
-    }
 }
 
 //----------------------------------------------------------------------------------------------------------
@@ -122,12 +102,9 @@ void SComputeCPR3D::updating() throw (::fwTools::Failed)
 
 void SComputeCPR3D::updateSpline()
 {
-    ::fwTools::Object::sptr splineObj = ::fwTools::fwID::getObject(m_splinePointsUID);
-    OSLM_ASSERT("Failed to retrieve object with UID '" << m_splinePointsUID << "'", splineObj);
-    ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(splineObj);
-    OSLM_ASSERT("Failed to retrieve point list", pointList);
-
-    m_nbSplinePoints = pointList->getRefPoints().size();
+    ::fwData::PointList::csptr pointList = this->getInput< ::fwData::PointList >(s_SPLINE_KEY);
+    SLM_ASSERT( s_SPLINE_KEY + " doesn't exist or is not a pointlist", pointList);
+    m_nbSplinePoints = pointList->getCRefPoints().size();
 
     if(m_nbSplinePoints > 2)
     {
@@ -135,8 +112,8 @@ void SComputeCPR3D::updateSpline()
     }
     else if(m_nbSplinePoints <= 2)
     {
-        ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh>();
-        SLM_ASSERT("Mesh not valid", mesh);
+        ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_KEY);
+        SLM_ASSERT( s_MESH_KEY + " doesn't exist or is not a mesh", mesh);
 
         mesh->clear();
 
@@ -150,22 +127,18 @@ void SComputeCPR3D::updateSpline()
 
 void SComputeCPR3D::computeMesh()
 {
-    ::fwTools::Object::sptr splineObj = ::fwTools::fwID::getObject(m_splinePointsUID);
-    OSLM_ASSERT("Failed to retrieve object with UID '" << m_splinePointsUID << "'", splineObj);
-    ::fwTools::Object::sptr imageObj = ::fwTools::fwID::getObject(m_sourceImageUID);
-    OSLM_ASSERT("Failed to retrieve object with UID '" << m_sourceImageUID << "'", imageObj);
+    ::fwData::Image::csptr imageSource = this->getInput< ::fwData::Image >(s_IMAGE_KEY);
+    SLM_ASSERT( s_IMAGE_KEY + " doesn't exist or is not an image", imageSource);
 
-    ::fwData::PointList::sptr pointList = ::fwData::PointList::dynamicCast(splineObj);
-    OSLM_ASSERT("Failed to retrieve point list", pointList);
-    ::fwData::Image::sptr imageSource = ::fwData::Image::dynamicCast(imageObj);
-    OSLM_ASSERT("Failed to retrieve image", imageSource);
+    ::fwData::PointList::csptr pointList = this->getInput< ::fwData::PointList >(s_SPLINE_KEY);
+    SLM_ASSERT( s_SPLINE_KEY + " doesn't exist or is not a pointlist", pointList);
 
-    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh>();
-    OSLM_ASSERT("Failed to retrieve associated mesh", mesh);
+    ::fwData::Mesh::sptr mesh = this->getInOut< ::fwData::Mesh >(s_MESH_KEY);
+    SLM_ASSERT( s_MESH_KEY + " doesn't exist or is not a mesh", mesh);
 
     // Step I : init grids
-    unsigned int nbRow;
-    unsigned int nbCol;
+    unsigned int nbRow = 0;
+    unsigned int nbCol = 0;
     std::vector<double> pointGrid;
     std::vector<ImagePixelType> colorGrid;
 
@@ -176,7 +149,7 @@ void SComputeCPR3D::computeMesh()
     ::cpr::fillColorGrid(pointGrid, nbCol, nbRow, imageSource, colorGrid);
 
     // Step IV : fill mesh
-    ::cpr::fillMesh(pointGrid, colorGrid, nbCol, nbRow,imageSource, mesh);
+    ::cpr::fillMesh(pointGrid, colorGrid, nbCol, nbRow, imageSource, mesh);
 
     // Step V : notify
     OSLM_DEBUG("Mesh nb points => " << mesh->getNumberOfPoints());

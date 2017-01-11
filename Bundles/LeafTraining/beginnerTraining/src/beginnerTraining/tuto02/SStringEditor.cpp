@@ -1,26 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-// Qt objects
-#include <qwidget.h>
-#include <qpalette.h>
-#include <qboxlayout.h>
-
-// Service associated data
-#include <fwData/String.hpp>
-
-// Services tools
-#include <fwServices/Base.hpp>
-
-// To manipulate QtContainer
-#include <fwGuiQt/container/QtContainer.hpp>
-
 #include "beginnerTraining/tuto02/SStringEditor.hpp"
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::beginnerTraining::tuto02::SStringEditor, ::fwData::String );
+#include <fwData/String.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
+
+#include <fwServices/macros.hpp>
+
+#include <qboxlayout.h>
+#include <qpalette.h>
+#include <qwidget.h>
+
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::beginnerTraining::tuto02::SStringEditor );
 
 
 namespace beginnerTraining
@@ -28,19 +24,27 @@ namespace beginnerTraining
 namespace tuto02
 {
 
+//-----------------------------------------------------------------------------
+
 SStringEditor::SStringEditor()
 {
 }
 
+//-----------------------------------------------------------------------------
+
 SStringEditor::~SStringEditor() throw()
 {
 }
+
+//-----------------------------------------------------------------------------
 
 void SStringEditor::configuring() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->initialize(); // start with this inherited function
 }
+
+//-----------------------------------------------------------------------------
 
 void SStringEditor::starting() throw ( ::fwTools::Failed )
 {
@@ -67,6 +71,8 @@ void SStringEditor::starting() throw ( ::fwTools::Failed )
     container->setLayout( layout );
 }
 
+//-----------------------------------------------------------------------------
+
 void SStringEditor::stopping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
@@ -74,19 +80,16 @@ void SStringEditor::stopping() throw ( ::fwTools::Failed )
     this->destroy(); // finish with this inherited function
 }
 
+//-----------------------------------------------------------------------------
+
 void SStringEditor::updating() throw ( ::fwTools::Failed )
 {
     // Update your textEditor from your associated object
-    ::fwData::String::sptr myAssociatedData = this->getObject< ::fwData::String >();
+    ::fwData::String::sptr myAssociatedData = this->getInOut< ::fwData::String >("editString");
     m_textEditor->setPlainText( myAssociatedData->getValue().c_str() );
 }
 
-void SStringEditor::swapping() throw ( ::fwTools::Failed )
-{
-    // Classic default approach to update service when oject change
-    this->stopping();
-    this->starting();
-}
+//-----------------------------------------------------------------------------
 
 } // namespace tuto02
 } // namespace beginnerTraining

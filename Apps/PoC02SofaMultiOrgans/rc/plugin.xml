@@ -10,7 +10,7 @@
                     <gui>
                         <frame>
                             <name>Altran-Est - Medic@ : PoC 2 Demo integration SOFA-FW4SPL</name>
-                            <icon>Bundles/PoC02SofaMultiOrgans_0-1/tuto.ico</icon>
+                            <icon>@BUNDLE_PREFIX@/PoC02SofaMultiOrgans_0-1/tuto.ico</icon>
                         </frame>
                         <menuBar />
                     </gui>

@@ -6,64 +6,47 @@ set( DEPENDENCIES )
 set( REQUIREMENTS
     servicesReg
     dataReg
-    visuVTK
-    visuVTKQt
-    visuVTKAdaptor
-    visuVTKVRAdaptor
+
     gui
     guiQt
-    guiQtExt
     memory
     monitor
     monitorQt
     ctrlMemory
-    launcher
-    ioDicom
+    fwlauncher
+
     io
-    ioGdcm
-    ioDcmtk
-    ioPacs
+    ioData
+    ioAtoms
     ioITK
     ioVTK
     ioVtkGdcm
+
     uiIO
     uiGenericQt
     uiMedDataQt
-    uiImageQt
-    appXml
+    appXml2
     activities
     ctrlSelection
     uiReconstructionQt
-    2DVisualizationActivity
-    3DVisualizationActivity
+    
+    2DVisualizationActivity2
+    3DVisualizationActivity2
+    volumeRenderingActivity2
     blendActivity
-    volumeRenderingActivity
+    ioActivity
+    dicomFilteringActivity
     dicomPacsReaderActivity
     dicomPacsWriterActivity
-    dicomFilteringActivity
-    dicomAppConfig
-    media
-    ioAtoms
-    patchMedicalData
-    mediaExt
-    uiViewPoints
-    uiNavigation
-    uiSpline
-    uiCPR
-    ctrlSplineNavigation
-    ctrlPointSelection
-    ctrlComputeCPR
-    visuNavigation
     cprActivity
-    viewPointsActivity
-    splineEditionActivity
-    scene2D
-    uiVisu
-    uiVisuQt
-    uiMeasurement
-    uiMeasurementQt
-    uiTF
+    mesherActivity
+    
+    media
+    arMedia
+    
+    patchMedicalData
     filterVRRender
+    preferences
 )
 
-bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES VRRenderExtBase VRRenderExtAppBase)
+bundleParam(appXml2 PARAM_LIST config parameters PARAM_VALUES VRRenderExtBase VRRenderExtAppBase)

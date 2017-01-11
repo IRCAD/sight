@@ -1,11 +1,6 @@
 <plugin id="cprActivity" version="@DASH_VERSION@" >
 
-    <requirement id="2DVisualizationActivity" />
-    <requirement id="3DVisualizationActivity" />
-    <requirement id="visuVTKVRAdaptor" />
-    <requirement id="scene2D" />
     <requirement id="mediaExt" />
-    <requirement id="uiTF" />
     <requirement id="uiIO" />
 
     <xi:include href="configurations/curvedPlanarReformation.xml" xmlns:xi="http://www.w3.org/2003/XInclude" /> 
@@ -15,7 +10,7 @@
         <id>curvedPlanarReformationActivity</id>
         <title>Curved Planar Reformation</title>
         <desc>Curved planar reformation activity</desc>
-        <icon>Bundles/mediaExt_0-1/icons/cpr.png</icon>
+        <icon>@BUNDLE_PREFIX@/mediaExt_0-1/icons/cpr.png</icon>
         <requirements>
 
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />

@@ -14,7 +14,7 @@
         <!--<param id="startingMode" value="windows" />
         <param id="rootObject" value="::fwData::TriangularMesh" />
         <param id="config" value="DemoComSofaConfiguration" />
-        <param id="configFile" value="./Bundles/PoC01SofaMonoOrgan_0-1/plugin.xml" />  now plugin.xml -->
+        <param id="configFile" value="./@BUNDLE_PREFIX@/PoC01SofaMonoOrgan_0-1/plugin.xml" />  now plugin.xml -->
     </activate>
 
     <activate id="DemoComSofaConfiguration" />

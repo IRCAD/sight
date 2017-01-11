@@ -11,7 +11,7 @@ set( REQUIREMENTS
     guiQt
     io
     ioITK
-    launcher
+    fwlauncher
     uiIO
     visuVTK
     visuVTKQt

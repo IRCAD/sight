@@ -23,12 +23,9 @@ fwLink(
     ${Qt5Network_LIBRARIES}
 )
 
-find_package(VTK REQUIRED)
+find_package(VTK COMPONENTS vtkRenderingCore vtkIOExport NO_MODULE REQUIRED)
 fwForwardInclude(${VTK_INCLUDE_DIRS})
-fwForwardLink(
-    vtkRenderingCore
-    vtkIOExport
-    )
+fwForwardLink( ${VTK_LIBRARIES} )
 
 fwForwardInclude(${EXTERNAL_LIBRARIES}/include)
 

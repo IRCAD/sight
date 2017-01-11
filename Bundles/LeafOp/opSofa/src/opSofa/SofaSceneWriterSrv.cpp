@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,6 @@
 #include <fwData/Reconstruction.hpp>
 #include <fwData/String.hpp>
 
-#include <fwServices/Base.hpp> // new
 #include <fwServices/IEditionService.hpp> // new
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -134,19 +133,19 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
     QString nodeTemplateFile;
     if (m_sceneTemplate != "")
     {
-        QFile file("./Bundles/opSofa_0-1/" + QString(m_sceneTemplate.c_str()));
+        QFile file(QString(BUNDLE_PREFIX) + "/opSofa_0-1/" + QString(m_sceneTemplate.c_str()));
         file.open(QIODevice::ReadOnly | QIODevice::Text);
         templateFile = file.readAll();
-        QFile file2("./Bundles/opSofa_0-1/node" + QString(m_sceneTemplate.c_str()));
+        QFile file2(QString(BUNDLE_PREFIX) + "/opSofa_0-1/node" + QString(m_sceneTemplate.c_str()));
         file2.open(QIODevice::ReadOnly | QIODevice::Text);
         nodeTemplateFile = file2.readAll();
     }
     else
     {
-        QFile file("./Bundles/opSofa_0-1/template.xml");
+        QFile file(QString(BUNDLE_PREFIX) + "/opSofa_0-1/template.xml");
         file.open(QIODevice::ReadOnly | QIODevice::Text);
         templateFile = file.readAll();
-        QFile file2("./Bundles/opSofa_0-1/nodeTemplate.xml");
+        QFile file2(QString(BUNDLE_PREFIX) + "/opSofa_0-1/nodeTemplate.xml");
         file2.open(QIODevice::ReadOnly | QIODevice::Text);
         nodeTemplateFile = file2.readAll();
     }
@@ -154,9 +153,9 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
     // copy tools
     if (writeTrian && m_sceneTemplate != "")
     {
-        QFile file("./Bundles/opSofa_0-1/cam.trian");
+        QFile file(QString(BUNDLE_PREFIX) + "/opSofa_0-1/cam.trian");
         file.copy(folder + "/cam.trian");
-        QFile file2("./Bundles/opSofa_0-1/mors2.trian");
+        QFile file2(QString(BUNDLE_PREFIX) + "/opSofa_0-1/mors2.trian");
         file2.copy(folder + "/mors2.trian");
     }
 

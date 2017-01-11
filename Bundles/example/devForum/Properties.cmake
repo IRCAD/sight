@@ -6,7 +6,6 @@ set( DEPENDENCIES
     fwData
     fwRender
     fwVtkIO
-    fwComEd
     fwCom
     fwRenderVTK
     fwGui
@@ -14,7 +13,7 @@ set( DEPENDENCIES
     fwRuntime
     fwTools
     fwCore
-    
+
     io
     gui
 )

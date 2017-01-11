@@ -1,17 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCom/HasSignals.hpp>
-#include <fwCom/HasSlots.hpp>
+#include "navigation/ConnectPoints.hpp"
 
 #include <fwData/Object.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
-
-#include "navigation/ConnectPoints.hpp"
 
 namespace navigation
 {
@@ -20,10 +17,14 @@ ConnectPoints::ConnectPoints()
 {
 }
 
+//------------------------------------------------------------------------------
+
 ConnectPoints::~ConnectPoints()
 {
     this->disconnectSplinePoints();
 }
+
+//------------------------------------------------------------------------------
 
 void ConnectPoints::connectPointToService(
     const ::fwCom::HasSignals::sptr& hasSignals,
@@ -34,8 +35,10 @@ void ConnectPoints::connectPointToService(
     ::fwCom::Connection connection;
 
     connection = hasSignals->signal( signalKey )->connect(hasSlots->slot(slotKey));
-    m_connections.insert(std::make_pair(hasSignals,connection));
+    m_connections.insert(std::make_pair(hasSignals, connection));
 }
+
+//------------------------------------------------------------------------------
 
 void ConnectPoints::disconnectPointToService(const ::fwCom::HasSignals::sptr& hasSignals)
 {
@@ -45,6 +48,8 @@ void ConnectPoints::disconnectPointToService(const ::fwCom::HasSignals::sptr& ha
     it->second.disconnect();
     m_connections.erase(m_connections.find (hasSignals));
 }
+
+//------------------------------------------------------------------------------
 
 void ConnectPoints::connectAllSplinePoints(
     const ::fwData::PointList::sptr& pointList,
@@ -57,11 +62,13 @@ void ConnectPoints::connectAllSplinePoints(
     }
 }
 
+//------------------------------------------------------------------------------
+
 void ConnectPoints::disconnectSplinePoints()
 {
-    for(ConnectionContainerType::iterator it = m_connections.begin(); it!=  m_connections.end(); it++)
+    for(auto elt : m_connections)
     {
-        it->second.disconnect();
+        elt.second.disconnect();
     }
 
     m_connections.clear();

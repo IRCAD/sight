@@ -2,9 +2,19 @@
 
     <requirement id="servicesReg" />
     <requirement id="dataReg" />
+    <requirement id="arDataReg" />
+    
     <requirement id="patchMedicalData" />
+    
     <requirement id="filterVRRender" />
+    <requirement id="activities" />
+    <requirement id="preferences" />
+    
+    <requirement id="gui" />
+    <requirement id="guiQt" />
+    <requirement id="media" />
 
+    <xi:include href="configurations/activitySelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/VRRenderExtBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
@@ -12,141 +22,30 @@
         <id>VRRenderExtAppBase</id>
         <parameters>
             <param name="appName" value="VRRenderExt 0.9.6" />
-            <param name="appIconPath" value="Bundles/VRRenderExt_0-9/vrrenderext.ico" />
+            <param name="appIconPath" value="@BUNDLE_PREFIX@/VRRenderExt_0-9/vrrenderext.ico" />
+            <param name="appVersion" value="0-9" />
         </parameters>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceConfig">
-        <id>IOSelectorServiceConfigVRRenderExtSeriesDBReader</id>
-        <service>::uiIO::editor::SIOSelector</service>
-        <desc>IOSelectorService config for VRRenderExt SeriesDB reader</desc>
-        <config>
-            <type mode="reader" />
-            <selection mode="exclude" />
-            <addSelection service="::ioAtoms::SReader" />
-            <addSelection service="::ioDcmtk::SDicomSeriesDBReader" />
-            <addSelection service="::ioGdcm::SDicomSeriesDBReader" />
-            <config id="DCMTKReaderConfig" service="::ioDcmtk::SSeriesDBReader" />
-            <config id="GDCMReaderConfig" service="::ioGdcm::SSeriesDBReader" />
-        </config>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceConfig">
-        <id>DCMTKReaderConfig</id>
-        <desc>DCMTK Reader config</desc>
-        <config>
-            <FilterSelectorSrvConfig name="FilterSelectorConfig" />
-            <SOPClassSelection>
-                <SOPClass name="CT Image Storage" uid="1.2.840.10008.5.1.4.1.1.2" />
-                <SOPClass name="MR Image Storage" uid="1.2.840.10008.5.1.4.1.1.4" />
-                <SOPClass name="Secondary Capture Image Storage" uid="1.2.840.10008.5.1.4.1.1.7" />
-            </SOPClassSelection>
-        </config>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceConfig">
-        <id>GDCMReaderConfig</id>
-        <desc>GDCM Reader config</desc>
-        <config>
-            <FilterSelectorSrvConfig name="FilterSelectorConfig" />
-            <SOPClassSelection>
-                <SOPClass name="CT Image Storage" uid="1.2.840.10008.5.1.4.1.1.2" />
-                <!--<SOPClass name="Enhanced CT Image Storage" uid="1.2.840.10008.5.1.4.1.1.2.1" />-->
-                <SOPClass name="MR Image Storage" uid="1.2.840.10008.5.1.4.1.1.4" />
-                <!--<SOPClass name="Enhanced MR Image Storage" uid="1.2.840.10008.5.1.4.1.1.4.1" />-->
-                <!--<SOPClass name="Secondary Capture Image Storage" uid="1.2.840.10008.5.1.4.1.1.7" />-->
-                <SOPClass name="Surface Segmentation Storage" uid="1.2.840.10008.5.1.4.1.1.66.5" />
-                <SOPClass name="Spatial Fiducials Storage" uid="1.2.840.10008.5.1.4.1.1.66.2" />
-                <SOPClass name="Enhanced SR" uid="1.2.840.10008.5.1.4.1.1.88.22" />
-                <SOPClass name="Comprehensive SR" uid="1.2.840.10008.5.1.4.1.1.88.33" />
-                <SOPClass name="Comprehensive 3D SR" uid="1.2.840.10008.5.1.4.1.1.88.34" />
-            </SOPClassSelection>
-        </config>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceConfig">
-        <id>FilterSelectorConfig</id>
-        <service>::ioDicom::SFilterSelectorDialog</service>
-        <desc>"Open" action's filter selector config</desc>
-        <config>
-            <selection mode="include" />
-            <addSelection filter="::fwDicomIOFilter::custom::DefaultDicomFilter" />
-            <!--<addSelection filter="::fwDicomIOFilter::custom::NoFilter" />-->
-        </config>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceConfig">
-        <id>SDBOpenIOSelectorConfig</id>
-        <service>::uiIO::editor::SIOSelector</service>
-        <desc>"Open" action's IOSelector config</desc>
-        <config>
-            <type mode="reader" />
-            <selection mode="include" />
-            <addSelection service="::ioAtoms::SReader" />
-            <config id="MDAtomsConfig" service="::ioAtoms::SReader" />
-        </config>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceConfig">
-        <id>MDAtomsConfig</id>
-        <desc>reader/writer config to read/write an atom representing a medical data</desc>
-        <config>
-            <patcher context="MedicalData" version="V09ALA" />
-        </config>
-    </extension>
-
-    <extension implements="::fwServices::registry::AppConfig">
-        <id>ExportSelection</id>
-        <parameters>
-            <param name="GENERIC_UID" />
-            <param name="selection" />
-            <param name="modelSeries" />
-            <param name="imageSeries" />
-        </parameters>
-        <config>
-            <object type="::fwData::Composite" >
-                <item key="modelSeries">
-                    <object uid="${modelSeries}" src="ref" />
-                </item>
-                <item key="imageSeries">
-                    <object uid="${imageSeries}" src="ref" />
-                </item>
-                <item key="selection">
-                    <!-- <object uid="${selection}" type="::fwData::Vector" src="ref"> -->
-                    <object uid="${selection}" src="ref">
-                        <service uid="${GENERIC_UID}_export_selection" impl="::uiIO::editor::SIOSelector" autoConnect="yes">
-                            <type mode="writer" />
-                            <!-- <selection mode="include" /> -->
-                            <!-- <addSelection service="::ioAtoms::SReader" /> -->
-                        </service>
-                        <start uid="${GENERIC_UID}_export_selection" />
-                        <update uid="${GENERIC_UID}_export_selection" />
-                    </object>
-                </item>
-            </object>
-        </config>
     </extension>
 
     <extension implements="::fwActivities::registry::Activities">
-        <id>SeriesExport</id>
-        <title>Series Export</title>
-        <desc>Series Export</desc>
+        <id>SDBVRRenderExt</id>
+        <title>SDB</title>
+        <desc>Series Selector</desc>
         <icon>NONE</icon>
-        <requirements>
-            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1">
-                <key>ImageSeries</key>
-            </requirement>
-            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="1">
-                <key>ModelSeries</key>
-            </requirement>
-        </requirements>
-        <builder>::fwActivities::builder::ActivitySeries</builder>
-        <appConfig id="ExportSelection">
-            <parameters>
-                <parameter replace="imageSeries" by="@values.imageSeries" />
-                <parameter replace="modelSeries" by="@values.modelSeries" />
-            </parameters>
+        <requirements />
+        <appConfig id="SDBVRRenderExt">
+            <parameters />
         </appConfig>
     </extension>
-    
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>activitySelector</id>
+        <title>Choose your activity</title>
+        <desc>Activity selector for VRRenderExt</desc>
+        <requirements />
+        <appConfig id="activitySelector">
+            <parameters />
+        </appConfig>
+    </extension>
+
 </plugin>

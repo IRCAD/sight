@@ -1,12 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwComEd/helper/Mesh.hpp>
-
 #include "opSofa/sofa/MeshF4S.hpp"
+
+#include <fwDataTools/helper/Mesh.hpp>
 
 
 using namespace sofa::defaulttype;
@@ -20,7 +20,7 @@ void MeshF4S::loadMesh(::fwData::Mesh::sptr pMesh)
 {
     // Copy points to Sofa
     const size_t nbPoints = pMesh->getNumberOfPoints();
-    ::fwComEd::helper::Mesh meshHelper(pMesh);
+    ::fwDataTools::helper::Mesh meshHelper(pMesh);
     ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
     vertices.resize(nbPoints);
     for (int p = 0; p<nbPoints; p++)

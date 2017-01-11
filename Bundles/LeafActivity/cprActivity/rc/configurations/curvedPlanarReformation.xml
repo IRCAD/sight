@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::fwServices::registry::AppConfig2">
     <id>curvedPlanarReformation</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -13,454 +13,404 @@
     </parameters>
     <config>
 
-        <object type="::fwData::Composite">
-
-            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::CardinalLayoutManager">
-                        <view caption="Negato" align="left" minWidth="350"/>
-                        <view caption="Negato" align="right" minWidth="350"/>
-                        <view caption="Negato" align="left" minWidth="350"/>
-                        <view caption="CurvedPlanarReformation" align="right" minWidth="350" />
-                    </layout>
-                    <toolBar />
-                </gui>
-                <registry>
-                    <parent wid="${WID_PARENT}" />
-                    <toolBar sid="${GENERIC_UID}_toolBar" start="yes" />
-                    <view sid="${GENERIC_UID}_view_negato1" start="yes"/>
-                    <view sid="${GENERIC_UID}_view2" start="yes"/>
-                    <view sid="${GENERIC_UID}_view_negato3" start="yes"/>
-                    <view sid="${GENERIC_UID}_view4" start="yes"/>
-                </registry>
-            </service>
-
-            <service uid="${GENERIC_UID}_view2" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="vertical" />
-                        <view proportion="1" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_view2Tab" start="yes" />
-                </registry>
-            </service>
-
-            <service uid="${GENERIC_UID}_view2Tab" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::TabLayoutManager">
-                        <view caption="SplineEditor" />
-                        <view caption="Negato" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_SplineEditor" start="yes" />
-                    <view sid="${GENERIC_UID}_view_negato2" start="yes" />
-                </registry>
-            </service>
-
-
-            <service uid="${GENERIC_UID}_view_negato1" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="vertical" />
-                        <view proportion="1" />
-                        <view proportion="0" minHeight="30" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_negato1" start="yes" />
-                    <view sid="${GENERIC_UID}_slider_negato1" start="yes" />
-                </registry>
-            </service>
-
-            <service uid="${GENERIC_UID}_view_negato2" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="vertical" />
-                        <view proportion="1" />
-                        <view proportion="0" minHeight="30" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_negato2" start="yes" />
-                    <view sid="${GENERIC_UID}_slider_negato2" start="yes" />
-                </registry>
-            </service>
-
-            <service uid="${GENERIC_UID}_view_negato3" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="vertical" />
-                        <view proportion="1" />
-                        <view proportion="0" minHeight="30" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_negato3" start="yes" />
-                    <view sid="${GENERIC_UID}_slider_negato3" start="yes" />
-                </registry>
-            </service>
-
-
-
-            <service uid="${GENERIC_UID}_SplineEditor" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="vertical" />
-                        <view proportion="1" minHeight="50"/>
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_splinePointsEditor" start="no" />
-                </registry>
-            </service>
-
-            <service uid="${GENERIC_UID}_view4" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="vertical" />
-                        <view proportion="1" minHeight="100"/>
-                        <view proportion="0" minHeight="30"/>
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_CurvedPlanarReformation2D" start="no" />
-                    <view sid="${GENERIC_UID}_cprEditor" start="no" />
-                </registry>
-            </service>
-
-            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
-                <gui>
-                    <layout>
-                        <menuItem name="Export Activity" icon="Bundles/media_0-1/icons/Export.svg" />
-                        <spacer />
-                        <menu name="View Debug" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="${GENERIC_UID}_ActionExportActivity" start="yes" />
-                    <menu sid="${GENERIC_UID}_menu" start="yes" />
-                </registry>
-            </service>
-
-            <service uid="${GENERIC_UID}_menu" type="::fwGui::IMenuSrv" impl="::gui::aspect::SDefaultMenu" autoConnect="no">
-                <gui>
-                    <layout>
-                        <menuItem name="View Debug" style="check"/>
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="${GENERIC_UID}_action_cprViewDebug" start="yes" />
-                </registry>
-            </service>
-
-            <service uid="${GENERIC_UID}_action_cprViewDebug" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="no">
-
-                <config>
-                    <appConfig id="cprViewDebug">
-                        <parameters>
-                            <parameter replace="ICON_PATH" by="${ICON_PATH}" />
-                            <parameter replace="imageUid" by="${imageUid}" />
-                            <parameter replace="CurrentViewPointUid" by="${GENERIC_UID}_CurrentViewPoint" />
-                            <parameter replace="splinePointsListUid" by="${SplinePointListUid}" />
-                            <parameter replace="cprEditorUid" by="${GENERIC_UID}_cprEditor" />
-                            <parameter replace="selectedPointsUid" by="${GENERIC_UID}_selectedPoints" />
-                        </parameters>
-                    </appConfig>
-                </config>
-            </service>
-
-            <item key="seriesDB">
-                <object uid="${SERIESDB}" src="ref" type="::fwMedData::SeriesDB">
-                    <service uid="${GENERIC_UID}_ActionExportActivity" type="::fwGui::IActionSrv" impl="::uiMedData::action::SExportSeries" autoConnect="yes">
-                        <seriesId>${AS_UID}</seriesId>
-                    </service>
-                </object>
-            </item>
-
-            <item key="activitySeries">
-                <object uid="${AS_UID}" src="ref" type="::fwMedData::ActivitySeries" />
-            </item>
-
-            <!-- GENERIC SCENE DEFINITION -->
-            <item key="visuConfig">
-                <object uid="${GENERIC_UID}_VisuComposite" type="::fwData::Composite">
-
-                    <!-- Negato1-->
-                    <service uid="${GENERIC_UID}_negato1" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
-                        <scene>
-
-                            <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
-
-                            <renderer id="default" background="0.0" />
-
-                            <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                                <config renderer="default" style="InteractorStyle2DForNegato" />
-                            </adaptor> 
-
-                            <adaptor id="MPRNegato" class="::visuVTKAdaptor::NegatoMPR" objectId="imageKey">
-                                <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="axial" />
-                            </adaptor>
-
-                            <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="imageKey">
-                                <config renderer="default" picker="negatodefault" text="" />
-                            </adaptor>
-
-                            <adaptor id="PickerInteractor" uid="${GENERIC_UID}_Picker1" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
-                                <config renderer="default" picker="negatodefault" />
-                            </adaptor>
-
-                            <adaptor id="PointList" class="::visuVTKAdaptor::LabeledPointList" objectId="selectedPoints">
-                                <config renderer="default" picker="negatodefault" />
-                            </adaptor>
-                            
-                            <proxy channel="interaction_channel">
-                                <signal>${GENERIC_UID}_Picker1/picked</signal>
-                            </proxy>
-
-                        </scene>
-                    </service>
-
-                    <!-- Negato2 -->
-                    <service uid="${GENERIC_UID}_negato2" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
-                        <scene>
-
-                            <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
-
-                            <renderer id="default" background="0.0" />
-
-                            <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                                <config renderer="default" style="InteractorStyle2DForNegato" />
-                            </adaptor>
-
-                            <adaptor id="MPRNegato" class="::visuVTKAdaptor::NegatoMPR" objectId="imageKey">
-                                <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="frontal" />
-                            </adaptor>
-
-                            <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="imageKey">
-                                <config renderer="default" picker="negatodefault" text="" />
-                            </adaptor>
-
-                            <adaptor id="multiDistances" class="::visuVTKAdaptor::ImageMultiDistances" objectId="imageKey">
-                                <config filter="true" renderer="default" picker="negatodefault" />
-                            </adaptor>
-
-                            <adaptor id="landmarksNegato" class="::visuVTKAdaptor::ImageLandmarks" objectId="imageKey">
-                                <config renderer="default" picker="negatodefault" />
-                            </adaptor>
-
-                            <adaptor id="Picker" uid="${GENERIC_UID}_Picker2" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
-                                <config renderer="default" picker="negatodefault" />
-                            </adaptor>
-
-                            <adaptor id="PointList" class="::visuVTKAdaptor::LabeledPointList" objectId="selectedPoints">
-                                <config renderer="default" picker="negatodefault" />
-                            </adaptor>
-                            
-                            <proxy channel="interaction_channel">
-                                <signal>${GENERIC_UID}_Picker2/picked</signal>
-                            </proxy>
-
-                        </scene>
-                    </service>
-
-                    <!-- Negato3 -->
-
-                    <service uid="${GENERIC_UID}_negato3" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
-                        <scene>
-
-                            <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
-
-                            <renderer id="default" background="0.0" />
-
-                            <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                                <config renderer="default" style="InteractorStyle2DForNegato" />
-                            </adaptor>
-
-                            <adaptor id="MPRNegato" class="::visuVTKAdaptor::NegatoMPR" objectId="imageKey">
-                                <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="sagittal" /> 
-                            </adaptor>
-
-                            <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="imageKey">
-                                <config renderer="default" picker="negatodefault" text="" />
-                            </adaptor>
-
-                            <adaptor id="multiDistances" class="::visuVTKAdaptor::ImageMultiDistances" objectId="imageKey">
-                                <config filter="true" renderer="default" picker="negatodefault" />
-                            </adaptor>
-
-                            <adaptor id="landmarksNegato" class="::visuVTKAdaptor::ImageLandmarks" objectId="imageKey">
-                                <config renderer="default" picker="negatodefault" />
-                            </adaptor>
-
-                            <adaptor id="Picker" uid="${GENERIC_UID}_Picker3" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
-                                <config renderer="default" picker="negatodefault" />
-                            </adaptor>
-
-                            <adaptor id="PointList" class="::visuVTKAdaptor::LabeledPointList" objectId="selectedPoints">
-                                <config renderer="default" picker="negatodefault" />
-                            </adaptor>
-
-                            <proxy channel="interaction_channel">
-                                <signal>${GENERIC_UID}_Picker3/picked</signal>
-                            </proxy>
-                        </scene>
-                    </service>
-
-                    <service uid="${GENERIC_UID}_CurvedPlanarReformation2D" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
-                        <scene>
-
-                            <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
-
-                            <renderer id="default" background="0.0" />
-
-                            <adaptor id="MPRNegato" class="::visuVTKAdaptor::NegatoMPR" objectId="imageCPR">
-                                <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="axial"/>
-                            </adaptor>
-
-                            <adaptor id="PointList" class="::visuVTKAdaptor::LabeledPointList" objectId="cprImagePoints">
-                                <config renderer="default" picker="negatodefault" />
-                            </adaptor>
-
-                        </scene>
-                    </service> 
-
-                    <service uid="${GENERIC_UID}_cprEditor" type="::gui::editor::IEditor" impl="::uiCPR::SCPREditor" autoConnect="yes">
-                        <sourceImage uid="${imageUid}"/>
-                    </service>
-
-
-                    <item key="imageKey">
-                        <object uid="${imageUid}" src="ref" type="::fwData::Image">
-
-                            <service uid="${GENERIC_UID}_MedicalImageSrv2" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
-                            <service uid="${GENERIC_UID}_LockImageSrv" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
-
-                            <service uid="${GENERIC_UID}_slider_negato1" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
-                                <sliceIndex>axial</sliceIndex>
-                            </service> 
-
-                            <service uid="${GENERIC_UID}_slider_negato2" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
-                                <sliceIndex>frontal</sliceIndex>
-                            </service>
-
-                            <service uid="${GENERIC_UID}_slider_negato3" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
-                                <sliceIndex>sagittal</sliceIndex>
-                            </service>
-
-                            <service uid="${GENERIC_UID}_updateNegato" type="::fwServices::IController" impl="::ctrlPointSelection::SUpdateNegato" autoConnect="yes"/>
-
-                        </object>
-                    </item> 
-
-                    <item key="CurrentViewPoint">
-                        <object uid="${GENERIC_UID}_CurrentViewPoint" type="::fwData::TransformationMatrix3D">
-                            <service uid="${GENERIC_UID}_SJumpToPoint" type="::fwServices::IController" impl="::ctrlSplineNavigation::SJumpToPointController" autoConnect="yes" worker="SJumpToPoint_worker"/>
-                        </object>
-                    </item>
-
-                    <item key="splinePointList">
-                        <object uid="${SplinePointListUid}" src="ref" type="::fwData::PointList">
-                            <service uid="${GENERIC_UID}_splinePointsEditor" type="::gui::editor::IEditor" impl="::uiSpline::SSplinePointsEditor" autoConnect="yes">
-                                <points uid="${GENERIC_UID}_selectedPoints"/>
-                            </service>
-                            <service uid="${GENERIC_UID}_MoveAlongSpline" type="::fwServices::IController" impl="::ctrlSplineNavigation::SMoveAlongSpline" autoConnect="yes"/>
-                        </object>
-                    </item>
-
-                    <item key="imageCPR">
-                        <object uid="${GENERIC_UID}_ImageCPRUid" type="::fwData::Image">
-                            <service uid="${GENERIC_UID}_ComputeCPR2D" type="::fwServices::IController" impl="::ctrlComputeCPR::SComputeCPR2D" autoConnect="yes">
-                                <splinePoints uid="${SplinePointListUid}"/>
-                                <sourceImage uid="${imageUid}"/>
-                                <visuPoints uid="${GENERIC_UID}_cprImagePoints"/>
-                            </service>
-                        </object> 
-                    </item>
-
-                    <item key="selectedPoints">
-                        <object uid="${GENERIC_UID}_selectedPoints" type="::fwData::PointList"/>
-                    </item>
-
-                    <item key="cprImagePoints">
-                        <object uid="${GENERIC_UID}_cprImagePoints" type="::fwData::PointList"/>
-                    </item>
-
-                </object>
-            </item>
-
-            <connect>
-                <signal>${GENERIC_UID}_splinePointsEditor/pointSelected</signal>
-                <slot>${GENERIC_UID}_MoveAlongSpline/changeSelectedPoint</slot>
-            </connect>
-
-            <connect>
-                <signal>${GENERIC_UID}_MoveAlongSpline/PointChanged</signal>
-                <slot>${GENERIC_UID}_SJumpToPoint/changeDirectTarget</slot>
-            </connect>
-
-            <connect>
-                <signal>${SplinePointListUid}/pointAdded</signal>
-                <slot>${GENERIC_UID}_ComputeCPR2D/addPoint</slot>
-            </connect>
-
-            <connect>
-                <signal>${SplinePointListUid}/pointRemoved</signal>
-                <slot>${GENERIC_UID}_ComputeCPR2D/removePoint</slot>
-            </connect>
-
-            <connect>
-                <signal>${SplinePointListUid}/modified</signal>
-                <slot>${GENERIC_UID}_ComputeCPR2D/updateSpline</slot>
-            </connect>
-
-            <connect>
-                <signal>${GENERIC_UID}_cprEditor/heightChanged</signal>
-                <slot>${GENERIC_UID}_ComputeCPR2D/changeHeight</slot>
-            </connect>
-
-            <connect>
-                <signal>${GENERIC_UID}_cprEditor/spacingChanged</signal>
-                <slot>${GENERIC_UID}_ComputeCPR2D/changeSpacing</slot>
-            </connect>
-
-            <connect>
-                <signal>${GENERIC_UID}_cprEditor/sliderProgressed</signal>
-                <slot>${GENERIC_UID}_ComputeCPR2D/changeAngle</slot>
-            </connect>
-
-            <connect>
-                <signal>${GENERIC_UID}_cprEditor/sliderProgressed</signal>
-                <slot>${GENERIC_UID}_MoveAlongSpline/changeAngle</slot>
-            </connect>
-
-            <connect>
-                <signal>${GENERIC_UID}_splinePointsEditor/pointSelected</signal>
-                <slot>${GENERIC_UID}_updateNegato/selectNewPoint</slot>
-            </connect>
-
-            <connect>
-                <signal>${GENERIC_UID}_splinePointsEditor/indexPointSelected</signal>
-                <slot>${GENERIC_UID}_ComputeCPR2D/selectPoint</slot>
-            </connect>
+        <object uid="${AS_UID}" type="::fwMedData::ActivitySeries" src="ref" />
+        <object uid="${SplinePointListUid}" type="::fwData::PointList" src="ref" />
+        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
+        <object uid="${imageUid}" type="::fwData::Image" src="ref" />
+
+        <object uid="selectedPoints" type="::fwData::PointList"/>
+        <object uid="cprImagePoints" type="::fwData::PointList"/>
+        <object uid="ImageCPRUid" type="::fwData::Image" />
+        <object uid="CurrentViewPoint" type="::fwData::TransformationMatrix3D" />
+        
+        <service uid="mainView" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view caption="Negato" align="left" minWidth="350"/>
+                    <view caption="Negato" align="right" minWidth="350"/>
+                    <view caption="Negato" align="left" minWidth="350"/>
+                    <view caption="CurvedPlanarReformation" align="right" minWidth="350" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="view_negato1" start="yes"/>
+                <view sid="view2" start="yes"/>
+                <view sid="view_negato3" start="yes"/>
+                <view sid="view4" start="yes"/>
+            </registry>
+        </service>
+
+        <service uid="view2" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="view2Tab" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="view2Tab" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::TabLayoutManager">
+                    <view caption="SplineEditor" />
+                    <view caption="Negato" />
+                    <view caption="3D Negato" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="SplineEditor" start="yes" />
+                <view sid="view_negato2" start="yes" />
+                <view wid="view_negato3D" />
+            </registry>
+        </service>
+
+
+        <service uid="view_negato1" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" minHeight="30" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="negato1" start="yes" />
+                <view sid="slider_negato1" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="view_negato2" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" minHeight="30" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="negato2" start="yes" />
+                <view sid="slider_negato2" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="view_negato3" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" minHeight="30" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="negato3" start="yes" />
+                <view sid="slider_negato3" start="yes" />
+            </registry>
+        </service>
+
+
+
+        <service uid="SplineEditor" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" minHeight="50"/>
+                </layout>
+            </gui>
+            <registry>
+                <view sid="splinePointsEditor" start="no" />
+            </registry>
+        </service>
+
+        <service uid="view4" type="::gui::view::SDefaultView" autoConnect="no">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" minHeight="100"/>
+                    <view proportion="0" minHeight="30"/>
+                </layout>
+            </gui>
+            <registry>
+                <view sid="CurvedPlanarReformation2D" start="no" />
+                <view sid="cprEditor" start="no" />
+            </registry>
+        </service>
+
+        <service uid="cfgNegato3D" type="::fwServices::SConfigController">
+        
+            <appConfig id="cprViewDebug" />
+            <inout key="imageUid" uid="${imageUid}" />
+            <inout key="CurrentViewPointUid" uid="CurrentViewPoint" />
+            <inout key="splinePointsListUid" uid="${SplinePointListUid}" />
+            <inout key="selectedPointsUid" uid="selectedPoints" />
             
-            <proxy channel="interaction_channel">
-                <slot>${GENERIC_UID}_splinePointsEditor/getInteraction</slot>
-            </proxy>
+            <parameter replace="WID_PARENT" uid="view_negato3D" />
+            <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+            <parameter replace="cprEditorUid" uid="cprEditor" />
+        </service>
 
-            <!-- START AND STOP SERVICES -->
-            <start uid="${GENERIC_UID}_mainView" />
-            <start uid="${GENERIC_UID}_LockImageSrv" />
-            <start uid="${GENERIC_UID}_splinePointsEditor" />
-            <start uid="${GENERIC_UID}_SJumpToPoint" />
-            <start uid="${GENERIC_UID}_MoveAlongSpline"/>
-            <start uid="${GENERIC_UID}_ComputeCPR2D"/>
-            <start uid="${GENERIC_UID}_CurvedPlanarReformation2D"/>
-            <start uid="${GENERIC_UID}_cprEditor"/>
-            <start uid="${GENERIC_UID}_updateNegato"/>
-        </object>
+        <!-- GENERIC SCENE DEFINITION -->
+        <!-- Negato1-->
+        <service uid="negato1" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <in key="selectedPoints" uid="selectedPoints" />
+            <in key="imageKey" uid="${imageUid}" />
+            <scene>
+
+                <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
+
+                <renderer id="default" background="0.0" />
+
+                <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="InteractorStyle2DForNegato" />
+                </adaptor> 
+
+                <adaptor id="MPRNegato" class="::visuVTKAdaptor::NegatoMPR" objectId="imageKey">
+                    <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="axial" />
+                </adaptor>
+
+                <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="imageKey">
+                    <config renderer="default" picker="negatodefault" text="" />
+                </adaptor>
+
+                <adaptor id="PickerInteractor" uid="Picker1" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
+                    <config renderer="default" picker="negatodefault" />
+                </adaptor>
+
+                <adaptor id="PointList" class="::visuVTKAdaptor::LabeledPointList" objectId="selectedPoints">
+                    <config renderer="default" picker="negatodefault" />
+                </adaptor>
+                
+                <proxy channel="interaction_channel">
+                    <signal>Picker1/picked</signal>
+                </proxy>
+
+            </scene>
+        </service>
+
+        <!-- Negato2 -->
+        <service uid="negato2" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <in key="selectedPoints" uid="selectedPoints" />
+            <in key="imageKey" uid="${imageUid}" />
+            <scene>
+
+                <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
+
+                <renderer id="default" background="0.0" />
+
+                <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="InteractorStyle2DForNegato" />
+                </adaptor>
+
+                <adaptor id="MPRNegato" class="::visuVTKAdaptor::NegatoMPR" objectId="imageKey">
+                    <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="frontal" />
+                </adaptor>
+
+                <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="imageKey">
+                    <config renderer="default" picker="negatodefault" text="" />
+                </adaptor>
+
+                <adaptor id="multiDistances" class="::visuVTKAdaptor::ImageMultiDistances" objectId="imageKey">
+                    <config filter="true" renderer="default" picker="negatodefault" />
+                </adaptor>
+
+                <adaptor id="landmarksNegato" class="::visuVTKAdaptor::ImageLandmarks" objectId="imageKey">
+                    <config renderer="default" picker="negatodefault" />
+                </adaptor>
+
+                <adaptor id="Picker" uid="Picker2" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
+                    <config renderer="default" picker="negatodefault" />
+                </adaptor>
+
+                <adaptor id="PointList" class="::visuVTKAdaptor::LabeledPointList" objectId="selectedPoints">
+                    <config renderer="default" picker="negatodefault" />
+                </adaptor>
+                
+                <proxy channel="interaction_channel">
+                    <signal>Picker2/picked</signal>
+                </proxy>
+
+            </scene>
+        </service>
+
+        <!-- Negato3 -->
+
+        <service uid="negato3" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <in key="selectedPoints" uid="selectedPoints" />
+            <in key="imageKey" uid="${imageUid}" />
+            <scene>
+
+                <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
+
+                <renderer id="default" background="0.0" />
+
+                <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="InteractorStyle2DForNegato" />
+                </adaptor>
+
+                <adaptor id="MPRNegato" class="::visuVTKAdaptor::NegatoMPR" objectId="imageKey">
+                    <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="sagittal" /> 
+                </adaptor>
+
+                <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="imageKey">
+                    <config renderer="default" picker="negatodefault" text="" />
+                </adaptor>
+
+                <adaptor id="multiDistances" class="::visuVTKAdaptor::ImageMultiDistances" objectId="imageKey">
+                    <config filter="true" renderer="default" picker="negatodefault" />
+                </adaptor>
+
+                <adaptor id="landmarksNegato" class="::visuVTKAdaptor::ImageLandmarks" objectId="imageKey">
+                    <config renderer="default" picker="negatodefault" />
+                </adaptor>
+
+                <adaptor id="Picker" uid="Picker3" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
+                    <config renderer="default" picker="negatodefault" />
+                </adaptor>
+
+                <adaptor id="PointList" class="::visuVTKAdaptor::LabeledPointList" objectId="selectedPoints">
+                    <config renderer="default" picker="negatodefault" />
+                </adaptor>
+
+                <proxy channel="interaction_channel">
+                    <signal>Picker3/picked</signal>
+                </proxy>
+            </scene>
+        </service>
+
+        <service uid="CurvedPlanarReformation2D" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <in key="cprImagePoints" uid="cprImagePoints" />
+            <in key="imageCPR" uid="ImageCPRUid" />
+            <scene>
+
+                <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
+
+                <renderer id="default" background="0.0" />
+
+                <adaptor id="MPRNegato" class="::visuVTKAdaptor::NegatoMPR" objectId="imageCPR">
+                    <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="axial"/>
+                </adaptor>
+
+                <adaptor id="PointList" class="::visuVTKAdaptor::LabeledPointList" objectId="cprImagePoints">
+                    <config renderer="default" picker="negatodefault" />
+                </adaptor>
+
+            </scene>
+        </service> 
+
+        <service uid="cprEditor" type="::uiCPR::SCPREditor" autoConnect="yes">
+            <in key="image" uid="${imageUid}"/>
+        </service>
+
+
+        <service uid="MedicalImageSrv2" type="::ctrlSelection::MedicalImageSrv" autoConnect="no" >
+            <inout key="image" uid="${imageUid}"/>
+        </service>
+        <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv" autoConnect="no" >
+            <inout key="image" uid="${imageUid}"/>
+        </service>
+
+        <service uid="slider_negato1" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <inout key="image" uid="${imageUid}"/>
+            <sliceIndex>axial</sliceIndex>
+        </service> 
+
+        <service uid="slider_negato2" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <inout key="image" uid="${imageUid}"/>
+            <sliceIndex>frontal</sliceIndex>
+        </service>
+
+        <service uid="slider_negato3" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <inout key="image" uid="${imageUid}"/>
+            <sliceIndex>sagittal</sliceIndex>
+        </service>      
+
+        <service uid="SJumpToPoint" type="::ctrlSplineNavigation::SJumpToPointController" autoConnect="yes" worker="SJumpToPoint_worker" >
+            <inout key="matrix" uid="CurrentViewPoint"/>
+        </service>
+
+        <service uid="splinePointsEditor" type="::uiSpline::SSplinePointsEditor" autoConnect="yes">
+            <inout key="points" uid="${SplinePointListUid}"/>
+            <inout key="selectedPoints" uid="selectedPoints"/>
+        </service>
+        <service uid="MoveAlongSpline" type="::ctrlSplineNavigation::SMoveAlongSpline" autoConnect="yes" >
+            <in key="points" uid="${SplinePointListUid}"/>
+        </service>
+
+
+        <service uid="ComputeCPR2D" type="::ctrlComputeCPR::SComputeCPR2D" autoConnect="yes">
+            <inout key="image" uid="ImageCPRUid" />
+            <inout key="points" uid="cprImagePoints" />
+            <in key="spline" uid="${SplinePointListUid}" />
+            <in key="sourceImage" uid="${imageUid}" />
+        </service>
+
+        <connect>
+            <signal>splinePointsEditor/pointSelected</signal>
+            <slot>MoveAlongSpline/changeSelectedPoint</slot>
+        </connect>
+
+        <connect>
+            <signal>MoveAlongSpline/PointChanged</signal>
+            <slot>SJumpToPoint/changeDirectTarget</slot>
+        </connect>
+
+        <connect>
+            <signal>${SplinePointListUid}/pointAdded</signal>
+            <slot>ComputeCPR2D/addPoint</slot>
+        </connect>
+
+        <connect>
+            <signal>${SplinePointListUid}/pointRemoved</signal>
+            <slot>ComputeCPR2D/removePoint</slot>
+        </connect>
+
+        <connect>
+            <signal>${SplinePointListUid}/modified</signal>
+            <slot>ComputeCPR2D/updateSpline</slot>
+        </connect>
+
+        <connect>
+            <signal>cprEditor/heightChanged</signal>
+            <slot>ComputeCPR2D/changeHeight</slot>
+        </connect>
+
+        <connect>
+            <signal>cprEditor/spacingChanged</signal>
+            <slot>ComputeCPR2D/changeSpacing</slot>
+        </connect>
+
+        <connect>
+            <signal>cprEditor/sliderProgressed</signal>
+            <slot>ComputeCPR2D/changeAngle</slot>
+        </connect>
+
+        <connect>
+            <signal>cprEditor/sliderProgressed</signal>
+            <slot>MoveAlongSpline/changeAngle</slot>
+        </connect>
+
+        <connect>
+            <signal>splinePointsEditor/indexPointSelected</signal>
+            <slot>ComputeCPR2D/selectPoint</slot>
+        </connect>
+        
+        <connect channel="interaction_channel">
+            <slot>splinePointsEditor/getInteraction</slot>
+        </connect>
+
+        <!-- START AND STOP SERVICES -->
+        <start uid="mainView" />
+        <start uid="LockImageSrv" />
+        <start uid="splinePointsEditor" />
+        <start uid="SJumpToPoint" />
+        <start uid="MoveAlongSpline"/>
+        <start uid="ComputeCPR2D"/>
+        <start uid="CurvedPlanarReformation2D"/>
+        <start uid="cprEditor"/>
+        <start uid="cfgNegato3D"/>
 
     </config>
 </extension>

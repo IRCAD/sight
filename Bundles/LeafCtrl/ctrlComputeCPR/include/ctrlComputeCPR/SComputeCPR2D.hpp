@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,7 +36,20 @@ namespace ctrlComputeCPR
 
 /**
  * @brief Computes a 2D curved planar reformation (CPR).
- * @class SComputeCPR2D
+ *  @code{.xml}
+        <service type="::ctrlComputeCPR::SComputeCPR2D">
+            <inout key="image" uid="..." />
+            <inout key="points" uid="..." />
+            <in key="spline" uid="..." />
+            <in key="sourceImage" uid="..." />
+        </service>
+   @endcode
+ * @subsection Input Input
+ * - \b sourceImage [::fwData::Image]: Image used to generate cpr image.
+ * - \b spline [::fwData::PointList]: PointList used to generate spline.
+ * @subsection In-Out In-Out
+ * - \b points [::fwData::PointList]: PointList used to visualize points on the cpr image.
+ * - \b image [::fwData::Image]: data where cpr image is generated.
  */
 class CTRLCOMPUTECPR_CLASS_API SComputeCPR2D : public ::fwServices::IController
 {
@@ -58,15 +71,9 @@ public:
     CTRLCOMPUTECPR_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_SPACING_SLOT;
     CTRLCOMPUTECPR_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_ANGLE_SLOT;
     CTRLCOMPUTECPR_API static const ::fwCom::Slots::SlotKeyType s_SELECT_POINT_SLOT;
-    /**  @} */
-
-    /**
-     * @name Typedefs : slots.
-     * @{ */
-    typedef ::fwCom::Slot <void (double)> ChangeHeightSlotType;
-    typedef ::fwCom::Slot <void (double)> ChangeSpacingSlotType;
-    typedef ::fwCom::Slot <void (double)> ChangeAngleSlotType;
-    typedef ::fwCom::Slot <void (int)>     SelectPointSlotType;
+    CTRLCOMPUTECPR_API static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT;
+    CTRLCOMPUTECPR_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_POINT_SLOT;
+    CTRLCOMPUTECPR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLINE_SLOT;
     /**  @} */
 
 protected:
@@ -88,15 +95,6 @@ protected:
 
     /**
      * @brief Overrides IService::configuring().
-     * Configuration example :
-       @verbatim
-       <config>
-        <splinePoints uid="..." />  <!-- ::fwData::PointList containing spline points            -->
-        <sourceImage uid="..." />   <!-- source image (::fwData::Image)                          -->
-        <visuPoints uid="..." />    <!-- ::fwData::PointList containing spline points to display -->
-       </config>
-       @endverbatim
-     *
      * @throw fwTools::Failed
      */
     virtual void configuring() throw(fwTools::Failed);
@@ -130,18 +128,18 @@ protected:
      *
      * @param indexSelectedPoint index of point to add in the associated point list
      */
-    void fillVisualizePointList(int indexSelectedPoint);
+    void fillVisualizePointList(size_t indexSelectedPoint);
 
     /**
      * @brief Adds point to the visualize point list
      *
-     * @param ::fwData::PointList source points
+     * @param pointList ::fwData::PointList source points
      * @param indexSelectedPoint index of point
-     * @param ::fwData::PointList target point list
+     * @param visualizePointList  ::fwData::PointList target point list
      */
     void addPointToVisualizePointList(
-        const SPTR(::fwData::PointList)& pointList,
-        const int indexSelectedPoint,
+        const CSPTR(::fwData::PointList)& pointList,
+        size_t indexSelectedPoint,
         const SPTR(::fwData::PointList)& visualizePointList);
 
     /// Clears the visualization point list.
@@ -158,34 +156,14 @@ protected:
 
 private:
 
-    /// Slot onHeightChange
-    ChangeHeightSlotType::sptr m_slotChangeHeight;
-
-    /// Slot onSpacingChange
-    ChangeSpacingSlotType::sptr m_slotChangeSpacing;
-
-    /// Slot onAngleChange
-    ChangeAngleSlotType::sptr m_slotChangeAngle;
-
-    // Slot onNewPointSelect
-    SelectPointSlotType::sptr m_slotSelectPoint;
-
-    /**
-     * @name UIDs
-     * @{ */
-    std::string m_splinePointsUID;
-    std::string m_sourceImageUID;
-    std::string m_visuPointsUID;
-    /**  @} */
-
     /**
      * @brief Index of selected point in associated point list
      * @see m_splinePointsUID
      */
-    int m_selectedPointIndex;
+    size_t m_selectedPointIndex;
 
     /// Number of spline points.
-    int m_nbSplinePoints;
+    size_t m_nbSplinePoints;
 
     /**
      * @name CPR properties.

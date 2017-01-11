@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,7 +27,20 @@ namespace ctrlComputeCPR
 
 /**
  * @brief Computes a 3D curved planar reformation (CPR).
- * @class SComputeCPR3D
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::ctrlComputeCPR::SComputeCPR3D">
+            <inout key="mesh" uid="..." />
+            <in key="spline" uid="..." />
+            <in key="image" uid="..." />
+        </service>
+   @endcode
+ * @subsection Input Input
+ * - \b spline [::fwData::PointList]: PointList used to generate spline.
+ * - \b image [::fwData::Image]: Image used to color points in mesh.
+ * @subsection In-Out In-Out
+ * - \b mesh [::fwData::Mesh]: mesh where curved planar reformation is generated.
  */
 class CTRLCOMPUTECPR_CLASS_API SComputeCPR3D : public ::fwServices::IController
 {
@@ -48,6 +61,7 @@ public:
     CTRLCOMPUTECPR_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_HEIGHT_SLOT;
     CTRLCOMPUTECPR_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_SPACING_SLOT;
     CTRLCOMPUTECPR_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_ANGLE_SLOT;
+    CTRLCOMPUTECPR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLINE_SLOT;
     /**  @} */
 
     /**
@@ -77,14 +91,6 @@ protected:
 
     /**
      * @brief Overrides IService::configuring().
-     * Configuration example :
-       @verbatim
-       <config>
-        <splinePoints uid="..." />  <!-- ::fwData::PointList containing spline points -->
-        <sourceImage uid="..." />   <!-- source image (::fwData::Image)               -->
-       </config>
-       @endverbatim
-     *
      * @throw fwTools::Failed
      */
     virtual void configuring() throw(fwTools::Failed);
@@ -105,22 +111,6 @@ protected:
     void updateSpline();
 
 private:
-
-    /// Slot onHeightChange
-    ChangeHeightSlotType::sptr m_slotChangeHeight;
-
-    /// Slot onSpacingChange
-    ChangeSpacingSlotType::sptr m_slotChangeSpacing;
-
-    /// Slot onAngleChange
-    ChangeAngleSlotType::sptr m_slotChangeAngle;
-
-    /**
-     * @name UIDs.
-     * @{ */
-    std::string m_splinePointsUID;
-    std::string m_sourceImageUID;
-    /**  @} */
 
     /// Number of spline points.
     size_t m_nbSplinePoints;

@@ -1,5 +1,5 @@
 <plugin id="beginnerTraining" class="::beginnerTraining::Plugin" version="@DASH_VERSION@" >
-    
+
     <library name="beginnerTraining" />
 
     <requirement id="io"/>
@@ -10,11 +10,10 @@
         <service>::beginnerTraining::tuto01::SStringReader</service>
         <object>::fwData::String</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::beginnerTraining::tuto02::SStringEditor</service>
-        <object>::fwData::String</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
@@ -22,11 +21,15 @@
         <service>::beginnerTraining::tuto03::SStringReader</service>
         <object>::fwData::String</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::beginnerTraining::tuto03::SStringEditor</service>
-        <object>::fwData::String</object>
     </extension>
-    
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::beginnerTraining::tuto04::SStringColorEditor</service>
+    </extension>
+
 </plugin>

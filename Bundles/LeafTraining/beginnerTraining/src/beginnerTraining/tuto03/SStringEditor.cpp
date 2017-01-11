@@ -1,53 +1,55 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "beginnerTraining/tuto03/SStringEditor.hpp"
 
-// Communication
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
-// Service associated data
 #include <fwData/String.hpp>
 
-// To manipulate QtContainer
 #include <fwGuiQt/container/QtContainer.hpp>
 
-// Services tools
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
-// Qt objects
-#include <qwidget.h>
-#include <qpalette.h>
 #include <qboxlayout.h>
+#include <qpalette.h>
+#include <qwidget.h>
 
-
-
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::beginnerTraining::tuto03::SStringEditor, ::fwData::String );
-
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::beginnerTraining::tuto03::SStringEditor );
 
 namespace beginnerTraining
 {
 namespace tuto03
 {
 
+static const std::string s_EDIT_STRING_KEY = "editString";
+
+//-----------------------------------------------------------------------------
+
 SStringEditor::SStringEditor()
 {
 }
 
+//-----------------------------------------------------------------------------
+
 SStringEditor::~SStringEditor() throw()
 {
 }
+
+//-----------------------------------------------------------------------------
 
 void SStringEditor::configuring() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->initialize(); // start with this inherited function
 }
+
+//-----------------------------------------------------------------------------
 
 void SStringEditor::starting() throw ( ::fwTools::Failed )
 {
@@ -77,6 +79,8 @@ void SStringEditor::starting() throw ( ::fwTools::Failed )
     QObject::connect(m_textEditor, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
 }
 
+//-----------------------------------------------------------------------------
+
 void SStringEditor::stopping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
@@ -88,42 +92,43 @@ void SStringEditor::stopping() throw ( ::fwTools::Failed )
     this->destroy(); // finish with this inherited function
 }
 
+//-----------------------------------------------------------------------------
+
 void SStringEditor::updating() throw ( ::fwTools::Failed )
 {
     // Update your textEditor from your associated object
-    ::fwData::String::sptr myAssociatedData = this->getObject< ::fwData::String >();
+    ::fwData::String::sptr myAssociatedData = this->getInOut< ::fwData::String >(s_EDIT_STRING_KEY);
     m_textEditor->setPlainText( myAssociatedData->getValue().c_str() );
 }
 
-void SStringEditor::swapping() throw ( ::fwTools::Failed )
-{
-    // Classic default approach to update service when object change
-    this->stopping();
-    this->starting();
-}
+//-----------------------------------------------------------------------------
 
 void SStringEditor::onTextChanged()
 {
     // Set new string value in your associated object
-    ::fwData::String::sptr myAssociatedData = this->getObject< ::fwData::String >();
+    ::fwData::String::sptr myAssociatedData = this->getInOut< ::fwData::String >(s_EDIT_STRING_KEY);
     myAssociatedData->setValue( m_textEditor->toPlainText().toStdString() );
 
     // Then, notifies listeners that the image has been modified
     this->notifyMessage();
 }
 
+//-----------------------------------------------------------------------------
+
 void SStringEditor::notifyMessage()
 {
     SLM_TRACE_FUNC();
-    ::fwData::String::sptr associatedObj = this->getObject< ::fwData::String >();
+    auto associatedObj = this->getInOut< ::fwData::String >(s_EDIT_STRING_KEY);
 
-    ::fwData::Object::ModifiedSignalType::sptr sig;
-    sig = associatedObj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+    auto sig = associatedObj->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        ::fwCom::Connection::Blocker block(sig->getConnection( this->slot(s_UPDATE_SLOT) ));
         sig->asyncEmit();
     }
 }
+
+//-----------------------------------------------------------------------------
+
 } // namespace tuto03
 } // namespace beginnerTraining
 

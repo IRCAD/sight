@@ -1,10 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 // vtk
+#include "devForum/tuto01/ImageViewerService.hpp"
+
+#include <fwData/Image.hpp>
+
+#include <fwDataTools/helper/Image.hpp>
+
+#include <fwServices/macros.hpp>
+
+#include <fwVtkIO/vtk.hpp>
+
 #include <vtkCellPicker.h>
 #include <vtkCommand.h>
 #include <vtkImageData.h>
@@ -13,20 +23,6 @@
 #include <vtkProperty.h>
 #include <vtkRenderWindow.h>
 #include <vtkSmartPointer.h>
-
-// Image object
-#include <fwData/Image.hpp>
-
-// Services tools
-#include <fwServices/Base.hpp>
-
-// Helper to manipulate buffer image
-#include <fwComEd/helper/Image.hpp>
-
-// fwVtkIO lib : intern lib used to convert image between vtk and fw4spl
-#include <fwVtkIO/vtk.hpp>
-
-#include "devForum/tuto01/ImageViewerService.hpp"
 
 namespace devForum
 {
@@ -192,9 +188,9 @@ void ImageViewerService::createSyntheticImage( ::fwData::Image::sptr _pImage )
     _pImage->setWindowWidth(100);
     _pImage->allocate();
 
-    ::fwComEd::helper::Image imageHelper(_pImage);
+    ::fwDataTools::helper::Image imageHelper(_pImage);
     // Build the buffer of a synthetic image grey level which represents a sphere
-    unsigned char * buffer = static_cast< unsigned char* >(imageHelper.getBuffer());
+    unsigned char* buffer = static_cast< unsigned char* >(imageHelper.getBuffer());
     for ( int z = 0; z < 100; z++ )
     {
         for ( int y = 0; y < 100; y++ )

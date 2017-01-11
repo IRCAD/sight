@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,22 +7,18 @@
 #ifndef __NAVIGATION_CONNECTPOINTS_HPP__
 #define __NAVIGATION_CONNECTPOINTS_HPP__
 
-#include <map>
-#include <utility>
-#include <vector>
-
+#include "navigation/config.hpp"
 
 #include <fwCore/BaseObject.hpp>
 
 #include <fwCom/Connection.hpp>
 
-#include <navigation/config.hpp>
+#include <map>
+#include <utility>
+#include <vector>
 
-namespace fwCom
-{
-class HasSignals;
-class HasSlots;
-}
+#include <fwCom/HasSignals.hpp>
+#include <fwCom/HasSlots.hpp>
 
 namespace fwData
 {

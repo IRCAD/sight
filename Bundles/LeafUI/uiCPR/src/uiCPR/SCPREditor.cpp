@@ -1,8 +1,27 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "uiCPR/SCPREditor.hpp"
+
+#include <fwData/Image.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
+
+#include <fwTools/Object.hpp>
+
+#include <fwServices/op/Get.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
+
+#include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRuntime/operations.hpp>
+
+#include <cpr/functions.hpp>
+
+#include <fwCom/Signal.hxx>
 
 #include <QString>
 #include <QWidget>
@@ -13,51 +32,31 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-#include <fwData/Image.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwTools/Object.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/op/Get.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/operations.hpp>
-
-#include <cpr/functions.hpp>
-
-#include "uiCPR/SCPREditor.hpp"
-
-#include <fwCom/Signal.hxx>
-
-
-fwServicesRegisterMacro(::gui::editor::IEditor, ::uiCPR::SCPREditor, ::fwData::Object);
+fwServicesRegisterMacro(::gui::editor::IEditor, ::uiCPR::SCPREditor, ::fwData::Image);
 
 namespace uiCPR
 {
 
-const double SCPREditor::s_MIN_HEIGHT = 20;
+static const std::string s_IMAGE_KEY = "image";
+
+const double SCPREditor::s_MIN_HEIGHT = 20.;
 const int MAX_ANGLE                   = 180;
 
 const ::fwCom::Signals::SignalKeyType SCPREditor:: s_HEIGHT_CHANGED_SIG    = "heightChanged";
 const ::fwCom::Signals::SignalKeyType SCPREditor:: s_SPACING_CHANGED_SIG   = "spacingChanged";
 const ::fwCom::Signals::SignalKeyType SCPREditor:: s_SLIDER_PROGRESSED_SIG = "sliderProgressed";
 
-SCPREditor::SCPREditor() throw() : m_spacing(0.5), m_height(50), m_angle(0)
+SCPREditor::SCPREditor() throw() :
+    m_angle(0.),
+    m_spacing(0.5),
+    m_minSpacing(0.5),
+    m_maxSpacing(0.5),
+    m_height(50.),
+    m_maxHeight(50.)
 {
-    // Init
-    m_sigHeightChanged    = HeightChangedSignalType::New();
-    m_sigSpacingChanged   = SpacingChangedSignalType::New();
-    m_sigSliderProgressed = SliderProgressedSignalType::New();
-
-    // Register
-    ::fwCom::HasSignals::m_signals(s_HEIGHT_CHANGED_SIG, m_sigHeightChanged);
-    ::fwCom::HasSignals::m_signals(s_SPACING_CHANGED_SIG,m_sigSpacingChanged);
-    ::fwCom::HasSignals::m_signals(s_SLIDER_PROGRESSED_SIG,m_sigSliderProgressed);
+    m_sigHeightChanged    = newSignal<HeightChangedSignalType>(s_HEIGHT_CHANGED_SIG);
+    m_sigSpacingChanged   = newSignal<SpacingChangedSignalType>(s_SPACING_CHANGED_SIG);
+    m_sigSliderProgressed = newSignal<SliderProgressedSignalType>(s_SLIDER_PROGRESSED_SIG);
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -70,20 +69,17 @@ SCPREditor::~SCPREditor() throw()
 
 void SCPREditor::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     this->create();
 
     // Get the Qt container
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
     QWidget* container = qtContainer->getQtContainer();
-    SLM_ASSERT("Failed to instanciate container", container);
+    SLM_ASSERT("Failed to instantiate container", container);
 
     // Get the source image to set the minimum and maximum of spacing and height.
-    ::fwTools::Object::sptr imgObj = ::fwTools::fwID::getObject(m_sourceImageUID);
-    OSLM_ASSERT("Failed to retrieve object with UID '" << m_sourceImageUID << "'", imgObj);
-    ::fwData::Image::sptr image = ::fwData::Image::dynamicCast(imgObj);
-    OSLM_ASSERT("Failed to retrieve iamge", image);
+    ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_KEY);
+    SLM_ASSERT( s_IMAGE_KEY + " doesn't exist or is not an image", image);
 
     m_spacing    = ::cpr::getImageMinSpacing(image);
     m_minSpacing = m_spacing;
@@ -115,7 +111,7 @@ void SCPREditor::starting() throw(::fwTools::Failed)
 
     QObject::connect(m_heightSpinBox, SIGNAL(valueChanged(double)), this, SLOT(onChangeHeightValue(double)));
     QObject::connect(m_spacingSpinBox, SIGNAL(valueChanged(double)), this, SLOT(onChangeSpacingValue(double)));
-    QObject::connect(m_computeButton, SIGNAL(clicked()), this,SLOT(onClickComputeSlotType()));
+    QObject::connect(m_computeButton, SIGNAL(clicked()), this, SLOT(onClickComputeSlotType()));
     QObject::connect(m_rotationSlider, SIGNAL(valueChanged(int)), this, SLOT(onChangeSliderValue(int)));
 
     QGridLayout* hLayout = new QGridLayout(container);
@@ -134,12 +130,10 @@ void SCPREditor::starting() throw(::fwTools::Failed)
 
 void SCPREditor::stopping() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
-
-    QObject::disconnect(m_heightSpinBox, SIGNAL(valueChanged (double)), this,SLOT(onChangeHeightValue(double)));
-    QObject::disconnect(m_spacingSpinBox, SIGNAL(valueChanged (double)), this,SLOT(onChangeSpacingValue(double)));
-    QObject::disconnect(m_rotationSlider, SIGNAL(valueChanged (int)), this,SLOT(onChangeSliderValue(int)));
-    QObject::disconnect(m_computeButton, SIGNAL(clicked()), this,SLOT(onClickComputeSlotType()));
+    QObject::disconnect(m_heightSpinBox, SIGNAL(valueChanged (double)), this, SLOT(onChangeHeightValue(double)));
+    QObject::disconnect(m_spacingSpinBox, SIGNAL(valueChanged (double)), this, SLOT(onChangeSpacingValue(double)));
+    QObject::disconnect(m_rotationSlider, SIGNAL(valueChanged (int)), this, SLOT(onChangeSliderValue(int)));
+    QObject::disconnect(m_computeButton, SIGNAL(clicked()), this, SLOT(onClickComputeSlotType()));
 
     this->getContainer()->clean();
     this->destroy();
@@ -149,15 +143,7 @@ void SCPREditor::stopping() throw(::fwTools::Failed)
 
 void SCPREditor::configuring() throw(fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     this->initialize();
-
-    std::vector<ConfigurationType> sourceImageConfig = m_configuration->find("sourceImage");
-    if (!sourceImageConfig.empty())
-    {
-        SLM_ASSERT("UID attribute is missing", sourceImageConfig.at(0)->hasAttribute("uid"));
-        m_sourceImageUID = (sourceImageConfig.at(0)->getAttributeValue("uid"));
-    }
 }
 
 //------------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,8 +41,8 @@ void SofaCoreSrv::configuring() throw ( ::fwTools::Failed )
     {
         if (m_configuration->findConfigurationElement("addTools")->getValue() == "yes")
         {
-            this->addMesh("./Bundles/opSofa_0-1/mors2.trian", "mors2");
-            this->addMesh("./Bundles/opSofa_0-1/cam.trian", "cam");
+            this->addMesh(std::string(BUNDLE_PREFIX) + "/opSofa_0-1/mors2.trian", "mors2");
+            this->addMesh(std::string(BUNDLE_PREFIX) + "/opSofa_0-1/cam.trian", "cam");
         }
     }
 }

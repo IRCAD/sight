@@ -1,57 +1,63 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
-
-#include <boost/filesystem/path.hpp>
-
-// helper on log messages
-#include <fwCore/spyLog.hpp>
-
-// Service associated data
-#include <fwData/String.hpp>
-
-// Services tools
-#include <fwServices/Base.hpp>
+#include "beginnerTraining/tuto03/SStringReader.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include "beginnerTraining/tuto03/SStringReader.hpp"
+#include <fwCore/spyLog.hpp>
+
+#include <fwData/String.hpp>
+
+#include <fwServices/macros.hpp>
+
+#include <boost/filesystem/path.hpp>
+
+#include <fstream>
+#include <iostream>
+#include <sstream>
+#include <string>
 
 fwServicesRegisterMacro( ::io::IReader, ::beginnerTraining::tuto03::SStringReader, ::fwData::String );
-
 
 namespace beginnerTraining
 {
 namespace tuto03
 {
 
+//-----------------------------------------------------------------------------
+
 SStringReader::SStringReader()
 {
     SLM_TRACE_FUNC();
 }
+
+//-----------------------------------------------------------------------------
 
 SStringReader::~SStringReader() throw()
 {
     SLM_TRACE_FUNC();
 }
 
+//-----------------------------------------------------------------------------
+
 void SStringReader::starting() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }
 
+//-----------------------------------------------------------------------------
+
 void SStringReader::stopping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 }
+
+//-----------------------------------------------------------------------------
 
 void SStringReader::updating() throw ( ::fwTools::Failed )
 {
@@ -80,7 +86,9 @@ void SStringReader::updating() throw ( ::fwTools::Failed )
         OSLM_DEBUG("Loaded data : " << data );
 
         // Set new string value in your associated object
-        ::fwData::String::sptr myAssociatedData = this->getObject< ::fwData::String >();
+        auto myAssociatedData = this->getInOut< ::fwData::String >("targetString");
+        SLM_ASSERT("Data not found", myAssociatedData);
+
         myAssociatedData->setValue( data );
     }
     else
@@ -92,24 +100,21 @@ void SStringReader::updating() throw ( ::fwTools::Failed )
     this->notifyMessage();
 }
 
-void SStringReader::swapping() throw ( ::fwTools::Failed )
-{
-    SLM_TRACE_FUNC();
-
-    // Classic default approach to update service when object change
-    this->stopping();
-    this->starting();
-}
+//-----------------------------------------------------------------------------
 
 void SStringReader::configureWithIHM()
 {
     SLM_TRACE_FUNC();
 }
 
+//-----------------------------------------------------------------------------
+
 ::io::IOPathType SStringReader::getIOPathType() const
 {
     return ::io::FILE;
 }
+
+//-----------------------------------------------------------------------------
 
 void SStringReader::notifyMessage()
 {
@@ -124,6 +129,8 @@ void SStringReader::notifyMessage()
         sig->asyncEmit();
     }
 }
+
+//-----------------------------------------------------------------------------
 
 } // namespace tuto03
 } // namespace beginnerTraining

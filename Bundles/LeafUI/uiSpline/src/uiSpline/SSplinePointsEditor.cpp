@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,21 +12,20 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwGui/dialog/InputDialog.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/op/Get.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Get.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <QGridLayout>
 #include <QLineEdit>
@@ -40,12 +39,19 @@ fwServicesRegisterMacro(::gui::editor::IEditor, ::uiSpline::SSplinePointsEditor,
 namespace uiSpline
 {
 
+static const std::string S_POINTS_KEY          = "points";
+static const std::string S_SELECTED_POINTS_KEY = "selectedPoints";
+
 const ::fwCom::Signals::SignalKeyType SSplinePointsEditor::s_POINT_SELECTED_SIG       = "pointSelected";
 const ::fwCom::Signals::SignalKeyType SSplinePointsEditor::s_INDEX_POINT_SELECTED_SIG = "indexPointSelected";
-const ::fwCom::Slots::SlotKeyType SSplinePointsEditor::s_UPDATE_POINTLIST_SLOT        = "updatePointList";
-const std::string SSplinePointsEditor::s_FIELD_NAME                                   = "PointName";
 
-static const ::fwCom::Slots::SlotKeyType s_GET_INTERACTION_SLOT = "getInteraction";
+const ::fwCom::Slots::SlotKeyType SSplinePointsEditor::s_UPDATE_POINTLIST_SLOT = "updatePointList";
+const ::fwCom::Slots::SlotKeyType SSplinePointsEditor::s_GET_INTERACTION_SLOT  = "getInteraction";
+
+const std::string SSplinePointsEditor::s_FIELD_NAME = "PointName";
+
+
+//------------------------------------------------------------------------------
 
 SSplinePointsEditor::SSplinePointsEditor() throw() : m_numberOfPoints(0), m_countPoint(0)
 {
@@ -54,7 +60,7 @@ SSplinePointsEditor::SSplinePointsEditor() throw() : m_numberOfPoints(0), m_coun
     m_sigPointSelected      = newSignal<PointSelectedSignalType>(s_POINT_SELECTED_SIG);
     m_sigIndexPointSelected = newSignal<IndexPointSelectedSignalType>(s_INDEX_POINT_SELECTED_SIG);
 
-    newSlot(s_UPDATE_POINTLIST_SLOT, &SSplinePointsEditor::updatePointList,this);
+    newSlot(s_UPDATE_POINTLIST_SLOT, &SSplinePointsEditor::updatePointList, this);
     newSlot(s_GET_INTERACTION_SLOT, &SSplinePointsEditor::getInteraction, this);
 }
 
@@ -68,7 +74,6 @@ SSplinePointsEditor::~SSplinePointsEditor() throw()
 
 void SSplinePointsEditor::starting() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     this->create();
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
@@ -107,7 +112,7 @@ void SSplinePointsEditor::starting() throw(::fwTools::Failed)
     ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
     SLM_ASSERT("Invalid pointList object", pointList);
 
-    for(::fwData::Point::sptr point :  pointList->getRefPoints())
+    for(::fwData::Point::sptr point : pointList->getRefPoints())
     {
         SLM_ASSERT("Invalid point object", point);
         ::fwData::String::sptr text = ::fwData::String::dynamicCast(point->getField(s_FIELD_NAME));
@@ -118,7 +123,7 @@ void SSplinePointsEditor::starting() throw(::fwTools::Failed)
 
     if(m_numberOfPoints > 0)
     {
-        OSLM_DEBUG("Connect all spline points");
+        SLM_DEBUG("Connect all spline points");
         m_connectObj->connectAllSplinePoints(pointList, this->getSptr(), "updatePointList");
         m_removeAllPointsButton->setEnabled(true);
     }
@@ -130,12 +135,12 @@ void SSplinePointsEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    QObject::disconnect(m_renamePointButton, SIGNAL(clicked()), this,SLOT(onClickRenamePoint()));
-    QObject::disconnect(m_removePointButton, SIGNAL(clicked()), this,SLOT(onClickRemovePoint()));
-    QObject::disconnect(m_removeAllPointsButton, SIGNAL(clicked()), this,SLOT(onClickRemoveAllPoint()));
-    QObject::disconnect(m_list, SIGNAL(itemClicked(QListWidgetItem *)),this, SLOT(onClickItem(QListWidgetItem*)));
+    QObject::disconnect(m_renamePointButton, SIGNAL(clicked()), this, SLOT(onClickRenamePoint()));
+    QObject::disconnect(m_removePointButton, SIGNAL(clicked()), this, SLOT(onClickRemovePoint()));
+    QObject::disconnect(m_removeAllPointsButton, SIGNAL(clicked()), this, SLOT(onClickRemoveAllPoint()));
+    QObject::disconnect(m_list, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onClickItem(QListWidgetItem*)));
     QObject::disconnect(
-        m_list,SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(onDoubleClickItem(QListWidgetItem*)));
+        m_list, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(onDoubleClickItem(QListWidgetItem*)));
 
     m_connectObj->disconnectSplinePoints();
 
@@ -147,42 +152,30 @@ void SSplinePointsEditor::stopping() throw(::fwTools::Failed)
 
 void SSplinePointsEditor::configuring() throw(::fwTools::Failed)
 {
-    SLM_TRACE_FUNC();
     this->initialize();
-
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-
-    // Get the point list to store selected points
-    const std::vector<ConfigurationType> pointsConfig = m_configuration->find("points");
-    if(!pointsConfig.empty())
-    {
-        SLM_ASSERT("UID attribute is missing", pointsConfig.at(0)->hasAttribute("uid"));
-        m_selectedPointsUID = pointsConfig.at(0)->getAttributeValue("uid");
-    }
 }
 
 //------------------------------------------------------------------------------
 
 void SSplinePointsEditor::updating() throw(::fwTools::Failed)
 {
-
 }
 
 //------------------------------------------------------------------------------
 
-void SSplinePointsEditor::getInteraction(::fwComEd::PickingInfo info)
+void SSplinePointsEditor::getInteraction(::fwDataTools::PickingInfo info)
 {
-    if (info.m_eventId == ::fwComEd::PickingInfo::Event::MOUSE_LEFT_UP &&
-        info.m_modifierMask == ::fwComEd::PickingInfo::CTRL)
+    if (info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP &&
+        info.m_modifierMask == ::fwDataTools::PickingInfo::CTRL)
     {
-        ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
+        ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList>(S_POINTS_KEY);
 
         ::fwData::Point::sptr point = ::fwData::Point::New(info.m_worldPos[0], info.m_worldPos[1], info.m_worldPos[2]);
         // Add the point clicked on a negato in the PointList
         pointList->getRefPoints().push_back(point);
 
         // Connect point
-        m_connectObj->connectPointToService(point,"modified",this->getSptr(),"updatePointList");
+        m_connectObj->connectPointToService(point, "modified", this->getSptr(), "updatePointList");
 
         m_sigPointSelected->asyncEmit(point);
 
@@ -195,7 +188,7 @@ void SSplinePointsEditor::getInteraction(::fwComEd::PickingInfo info)
         m_removeAllPointsButton->setEnabled(true);
 
         point->setField(s_FIELD_NAME, ::fwData::String::New(name.toStdString()));
-        point->setField(::fwComEd::Dictionary::m_labelId, ::fwData::String::New(name.toStdString()));
+        point->setField(::fwDataTools::fieldHelper::Image::m_labelId, ::fwData::String::New(name.toStdString()));
 
         this->fillVisualizePointList(m_numberOfPoints - 1);
 
@@ -214,7 +207,7 @@ void SSplinePointsEditor::onClickItem(QListWidgetItem* item)
     m_renamePointButton->setEnabled(true);
     m_removePointButton->setEnabled(true);
 
-    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
+    ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList>(S_POINTS_KEY);
     const int index = m_list->row(item);
     ::fwData::Point::sptr point = pointList->getRefPoints()[index];
     this->fillVisualizePointList(index);
@@ -225,9 +218,9 @@ void SSplinePointsEditor::onClickItem(QListWidgetItem* item)
 
 //------------------------------------------------------------------------------
 
-void SSplinePointsEditor::onDoubleClickItem(QListWidgetItem * item)
+void SSplinePointsEditor::onDoubleClickItem(QListWidgetItem* item)
 {
-    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
+    ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList>(S_POINTS_KEY);
     const int index = m_list->row(item);
     ::fwData::Point::sptr point = pointList->getRefPoints()[index];
 
@@ -250,9 +243,10 @@ void SSplinePointsEditor::onClickRenamePoint()
     {
         item->setText(QString::fromUtf8(text.c_str()));
 
-        ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
-        pointList->getRefPoints()[index]->setField(s_FIELD_NAME,::fwData::String::New(text));
-        pointList->getRefPoints()[index]->setField(::fwComEd::Dictionary::m_labelId, ::fwData::String::New(text));
+        ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList>(S_POINTS_KEY);
+        pointList->getRefPoints()[index]->setField(s_FIELD_NAME, ::fwData::String::New(text));
+        pointList->getRefPoints()[index]->setField(::fwDataTools::fieldHelper::Image::m_labelId,
+                                                   ::fwData::String::New(text));
 
         this->fillVisualizePointList(index);
     }
@@ -273,7 +267,7 @@ void SSplinePointsEditor::onClickRemovePoint()
 
     m_numberOfPoints--;
 
-    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
+    ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList>(S_POINTS_KEY);
     ::fwData::Point::sptr point         = pointList->getRefPoints()[indexPoint];
 
     m_connectObj->disconnectPointToService(point);
@@ -300,7 +294,7 @@ void SSplinePointsEditor::onClickRemoveAllPoints()
     m_numberOfPoints = 0;
     m_countPoint     = 0;
 
-    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
+    ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList>(S_POINTS_KEY);
 
     this->clearVisualizePointList();
 
@@ -316,7 +310,7 @@ void SSplinePointsEditor::onClickRemoveAllPoints()
 
 void SSplinePointsEditor::fillVisualizePointList(int selectedPointIndex)
 {
-    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
+    ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList>(S_POINTS_KEY);
 
     this->clearVisualizePointList();
     this->addPointToVisualizePointList(pointList, selectedPointIndex);
@@ -351,13 +345,11 @@ void SSplinePointsEditor::fillVisualizePointList(int selectedPointIndex)
 
 //------------------------------------------------------------------------------
 
-void SSplinePointsEditor::addPointToVisualizePointList(
-    const ::fwData::PointList::sptr& pointList, int selectedPointIndex)
+void SSplinePointsEditor::addPointToVisualizePointList(const ::fwData::PointList::sptr& pointList,
+                                                       int selectedPointIndex)
 {
-    ::fwTools::Object::sptr pointListObject = ::fwTools::fwID::getObject(m_selectedPointsUID);
-    OSLM_ASSERT("Failed to retrieve object with UID '" << m_selectedPointsUID << "'", pointListObject);
-    ::fwData::PointList::sptr visualizePointList = ::fwData::PointList::dynamicCast(pointListObject);
-    OSLM_ASSERT("Failed to retrieve point list", visualizePointList);
+    ::fwData::PointList::sptr visualizePointList = this->getInOut< ::fwData::PointList>(S_SELECTED_POINTS_KEY);
+    SLM_ASSERT( S_SELECTED_POINTS_KEY + " doesn't exist or is not a pointList", pointList);
 
     ::fwData::Point::sptr pointToAdd = pointList->getRefPoints()[selectedPointIndex];
     visualizePointList->getRefPoints().push_back(pointToAdd);
@@ -371,10 +363,8 @@ void SSplinePointsEditor::addPointToVisualizePointList(
 
 void SSplinePointsEditor::clearVisualizePointList()
 {
-    ::fwTools::Object::sptr pointListObject = ::fwTools::fwID::getObject(m_selectedPointsUID);
-    OSLM_ASSERT("Failed to retrieve object with UID '" << m_selectedPointsUID << "'", pointListObject);
-    ::fwData::PointList::sptr visualizePointList = ::fwData::PointList::dynamicCast(pointListObject);
-    OSLM_ASSERT("Failed to retrieve point list", visualizePointList);
+    ::fwData::PointList::sptr visualizePointList = this->getInOut< ::fwData::PointList>(S_SELECTED_POINTS_KEY);
+    SLM_ASSERT( S_SELECTED_POINTS_KEY + " doesn't exist or is not a pointList", visualizePointList);
 
     if(visualizePointList && visualizePointList->getRefPoints().size() > 0)
     {
@@ -397,7 +387,7 @@ void SSplinePointsEditor::clearVisualizePointList()
 
 void SSplinePointsEditor::updatePointList()
 {
-    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
+    ::fwData::PointList::sptr pointList = this->getInOut< ::fwData::PointList>(S_POINTS_KEY);
 
     auto sig = pointList->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
     {

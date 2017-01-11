@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,7 +24,13 @@ namespace ctrlSplineNavigation
 
 /**
  * @brief Moves from associated point to another.
- * @class SJumpToPointController
+ *  @code{.xml}
+        <service type="::ctrlSplineNavigation::SJumpToPointController">
+            <inout key="matrix" uid="..."/>
+        </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b matrix [::fwData::TransformationMatrix3D]: matrix to modify.
  */
 class CTRLSPLINENAVIGATION_CLASS_API SJumpToPointController : public ::fwServices::IController
 {
@@ -59,18 +65,9 @@ protected:
     /**
      * @brief Jumps to given point.
      *
-     * @param ::fwData::TransformationMatrix3D new point associated to this service
+     * @param matrix ::fwData::TransformationMatrix3D new point associated to this service
      */
     void jumpToViewPoint(::fwData::TransformationMatrix3D::sptr matrix);
-
-private:
-
-    /// Slot triggered when the target destination changes.
-    ChangeDirectTargetSlotType::sptr m_slotChangeDirectTarget;
-
-    /// Destination matrix for fly mode
-    ::fwData::TransformationMatrix3D::sptr m_destMatrix;
-
 };
 
 } // ctrlSplineNavigation

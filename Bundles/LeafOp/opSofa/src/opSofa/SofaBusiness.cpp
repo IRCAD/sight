@@ -1,35 +1,35 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
-#include <fwComEd/helper/Array.hpp>
-
-#include <fwData/Mesh.hpp>
-#include <fwData/Reconstruction.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
-
-#include <fwServices/IService.hpp>
 
 #include "opSofa/SofaBusiness.hpp"
 #include "opSofa/SofaThread.hpp"
 #include "opSofa/sofa/OglModelF4S.hpp"
 
+#include <fwData/Mesh.hpp>
+#include <fwData/Reconstruction.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
+
+#include <fwMedData/ModelSeries.hpp>
+
+#include <fwServices/IService.hpp>
+
+#include <sofa/component/contextobject/CoordinateSystem.h>
+#include <sofa/component/contextobject/Gravity.h>
 #include <sofa/component/init.h>
+#include <sofa/component/odesolver/EulerSolver.h>
+#include <sofa/component/typedef/Sofa_typedef.h>
 #include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/objectmodel/Context.h>
+#include <sofa/gui/SofaGUI.h>
+#include <sofa/helper/ArgumentParser.h>
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/glut.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
-#include <sofa/helper/ArgumentParser.h>
-#include <sofa/component/contextobject/Gravity.h>
-#include <sofa/component/contextobject/CoordinateSystem.h>
-#include <sofa/core/objectmodel/Context.h>
-#include <sofa/component/odesolver/EulerSolver.h>
-#include <sofa/helper/system/FileRepository.h>
-#include <sofa/gui/SofaGUI.h>
-#include <sofa/component/typedef/Sofa_typedef.h>
-#include <sofa/helper/system/glut.h>
 
 
 SofaBusiness::SofaBusiness()
@@ -90,7 +90,7 @@ void SofaBusiness::loadScn(std::string fileScn, ::fwMedData::ModelSeries::sptr m
                 meshs->push_back(meshsF4s[j]);
 
                 // Fill OglModel with Mesh
-                OglModelF4S *visual = (OglModelF4S*) visuals[i];
+                OglModelF4S* visual = (OglModelF4S*) visuals[i];
                 visual->loadMesh(meshsF4s[j]);
 
                 // Translate pointer between sofa and fw4spl
@@ -168,7 +168,7 @@ void SofaBusiness::loadMesh(::fwData::Mesh::sptr pMesh,  ::fwServices::IService:
     GNode::SPtr skin = sofa::core::objectmodel::New<GNode>("skin",groot.get());
 
     // Creation de la partie visuel du fichier .trian
-    OglModelF4S *visual = new OglModelF4S();
+    OglModelF4S* visual = new OglModelF4S();
     visual->setName( "visual" );
     visual->loadMesh(pMesh);
     visual->setColor("red");
@@ -249,7 +249,7 @@ void SofaBusiness::shakeMesh(std::string idMesh, int value)
 {
     if (springs->count(idMesh))
     {
-        StiffSpringForceField3 *spring = (*springs)[idMesh];
+        StiffSpringForceField3* spring = (*springs)[idMesh];
 
         spring->clear();
         spring->addSpring(1, 153, value, 5, 0);
@@ -259,7 +259,7 @@ void SofaBusiness::shakeMesh(std::string idMesh, int value)
 void SofaBusiness::moveMesh(std::string idMesh, int x, int y, int z, float rx, float ry, float rz)
 {
     GNode::SPtr souris                  = groot;
-    MechanicalObjectRigid3f *mechanical =
+    MechanicalObjectRigid3f* mechanical =
         (MechanicalObjectRigid3f*) (souris->getObject(sofa::core::objectmodel::TClassInfo<MechanicalObjectRigid3f>::get(),
                                                       idMesh));
     sofa::core::objectmodel::Data< MechanicalObjectRigid3f::VecCoord >* data;
@@ -273,14 +273,14 @@ void SofaBusiness::moveMesh(std::string idMesh, int x, int y, int z, float rx, f
 
 
 
-void SofaBusiness::fillOglModelVector(GNode *node, std::vector<OglModel*> *model)
+void SofaBusiness::fillOglModelVector(GNode* node, std::vector<OglModel*>* model)
 {
     sofa::helper::vector<sofa::core::objectmodel::BaseNode*> gchild = node->getChildren();
     for (unsigned int i = 0; i<gchild.size(); i++)
     {
-        GNode *children;
+        GNode* children;
         GNode::dynamicCast(children, node->getChild(gchild[i]->getName()));
-        OglModel *visu = (OglModel*) (children->getObject(sofa::core::objectmodel::TClassInfo<OglModel>::get(), ""));
+        OglModel* visu = (OglModel*) (children->getObject(sofa::core::objectmodel::TClassInfo<OglModel>::get(), ""));
         if (visu != NULL)
         {
             model->push_back(visu);
@@ -291,14 +291,14 @@ void SofaBusiness::fillOglModelVector(GNode *node, std::vector<OglModel*> *model
 
 
 
-void SofaBusiness::fillSpringForceField(GNode *node, std::map<std::string, StiffSpringForceField3*> *springs)
+void SofaBusiness::fillSpringForceField(GNode* node, std::map<std::string, StiffSpringForceField3*>* springs)
 {
     sofa::helper::vector<sofa::core::objectmodel::BaseNode*> gchild = node->getChildren();
     for (unsigned int i = 0; i<gchild.size(); i++)
     {
-        GNode *children;
+        GNode* children;
         GNode::dynamicCast(children, node->getChild(gchild[i]->getName()));
-        StiffSpringForceField3 *spring =
+        StiffSpringForceField3* spring =
             (StiffSpringForceField3*) (children->getObject(sofa::core::objectmodel::TClassInfo<StiffSpringForceField3>::
                                                            get(),
                                                            ""));
@@ -313,7 +313,7 @@ void SofaBusiness::fillSpringForceField(GNode *node, std::map<std::string, Stiff
 
 
 
-void SofaBusiness::fillMeshVector(::fwMedData::ModelSeries::sptr ms, std::vector<fwData::Mesh::sptr> *meshs)
+void SofaBusiness::fillMeshVector(::fwMedData::ModelSeries::sptr ms, std::vector<fwData::Mesh::sptr>* meshs)
 {
     for(::fwData::Reconstruction::sptr rec :  ms->getReconstructionDB())
     {
@@ -329,12 +329,12 @@ void SofaBusiness::fillMeshVector(::fwMedData::ModelSeries::sptr ms, std::vector
 
 
 
-void SofaBusiness::translationPointer(OglModel *visual, ::fwData::Mesh::sptr pMesh)
+void SofaBusiness::translationPointer(OglModel* visual, ::fwData::Mesh::sptr pMesh)
 {
     // Change pointer vertices
-    float *verticesSofa = (float*) visual->getVertices().getData()->data();
+    float* verticesSofa = (float*) visual->getVertices().getData()->data();
     ::fwData::Array::sptr pointArray = pMesh->getPointsArray();
-    ::fwComEd::helper::Array arrayHelper(pointArray);
+    ::fwDataTools::helper::Array arrayHelper(pointArray);
     arrayHelper.setBuffer(
         verticesSofa,
         false,

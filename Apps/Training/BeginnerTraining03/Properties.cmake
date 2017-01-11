@@ -3,15 +3,15 @@ set( NAME BeginnerTraining03 )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
-set( REQUIREMENTS 
+set( REQUIREMENTS
     servicesReg
     dataReg
     gui
     guiQt
     io
-    launcher
-    appXml
+    fwlauncher
+    appXml2
     beginnerTraining
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES BeginnerTraining03Config)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES BeginnerTraining03Config)

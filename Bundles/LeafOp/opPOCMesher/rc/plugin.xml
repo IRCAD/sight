@@ -1,0 +1,15 @@
+<plugin id="opPOCMesher" class="::opPOCMesher::Plugin" version="@DASH_VERSION@">
+
+    <library name="opPOCMesher" />
+
+    <requirement id="dataReg" />
+    <requirement id="gui" />
+    <requirement id="opVTKMesh" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+       <type>::opVTKMesh::IMesher</type>
+        <service>::opPOCMesher::CGoGNMesher</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+</plugin>

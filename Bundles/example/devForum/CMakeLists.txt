@@ -1,26 +1,20 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwData
-    fwRender
-    fwVtkIO
-    fwDataIO
-    fwComEd
-    fwRenderVTK
-    io
-    gui
-)
 
 
 find_package(Boost COMPONENTS filesystem system REQUIRED)
-find_package(VTK REQUIRED)
+find_package(VTK
+            COMPONENTS
+            vtkCommonCore
+            vtkRenderingCore
+            vtkInteractionWidgets
+            NO_MODULE
+            REQUIRED)
 
 fwForwardInclude(
     ${VTK_INCLUDE_DIRS}
 )
 fwLink(
-    vtkCommonCore
-    vtkRenderingCore
-    vtkInteractionWidgets
+    ${VTK_LIBRARIES}
 )
 
 

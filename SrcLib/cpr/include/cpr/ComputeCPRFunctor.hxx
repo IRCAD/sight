@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,13 @@
 #ifndef __CPR_COMPUTECPRFUNCTOR_HXX__
 #define __CPR_COMPUTECPRFUNCTOR_HXX__
 
-#include <fwData/Mesh.hpp>
-#include <fwData/Image.hpp>
-
-#include <fwComEd/helper/Mesh.hpp>
-#include <fwComEd/helper/Image.hpp>
-
 #include "cpr/functions.hpp"
+
+#include <fwData/Image.hpp>
+#include <fwData/Mesh.hpp>
+
+#include <fwDataTools/helper/ImageGetter.hpp>
+#include <fwDataTools/helper/Mesh.hpp>
 
 namespace cpr
 {
@@ -22,13 +22,13 @@ namespace cpr
 /// This method fills the color grid for the mesh.
 template<typename IMAGE_TYPE>
 void fillColorGrid(
-    const std::vector<double> & pointGrid,
+    const std::vector<double>& pointGrid,
     unsigned int nbCol,
     unsigned int nbRow,
-    ::fwData::Image::sptr imageSource,
-    std::vector<IMAGE_TYPE> & colorGrid)
+    ::fwData::Image::csptr imageSource,
+    std::vector<IMAGE_TYPE>& colorGrid)
 {
-    ::fwComEd::helper::Image helperImage (imageSource);
+    ::fwDataTools::helper::ImageGetter helperImage (imageSource);
     // Allocate
     double* point               = new double [3];
     unsigned int* IndexPosition = new unsigned int[3];
@@ -50,8 +50,8 @@ void fillColorGrid(
             // Compute color
             if(isPointInImage)
             {
-                void * buff   = helperImage.getPixelBuffer( IndexPosition[0], IndexPosition[1], IndexPosition[2]);
-                IMAGE_TYPE hu = *( static_cast<IMAGE_TYPE *>( buff ) );
+                void* buff    = helperImage.getPixelBuffer( IndexPosition[0], IndexPosition[1], IndexPosition[2]);
+                IMAGE_TYPE hu = *( static_cast<IMAGE_TYPE*>( buff ) );
                 colorGrid[indexPoint] = hu;
             }
             else
@@ -66,10 +66,10 @@ void fillColorGrid(
 }
 /// Transfert Function
 template<typename IMAGE_TYPE>
-void computeGreyLevelFromHounsfield( IMAGE_TYPE hounsfield, ::fwData::Mesh::ColorValueType * color)
+void computeGreyLevelFromHounsfield( IMAGE_TYPE hounsfield, ::fwData::Mesh::ColorValueType* color)
 {
-    double min[3] = {0,0,0};
-    double max[3] = {255,255,255};
+    double min[3] = {0, 0, 0};
+    double max[3] = {255, 255, 255};
     double minFt  = 0;
     double maxFt  = 300;
     if (hounsfield < minFt)
@@ -91,11 +91,11 @@ void computeGreyLevelFromHounsfield( IMAGE_TYPE hounsfield, ::fwData::Mesh::Colo
 // Fill Mesh
 template<typename IMAGE_TYPE>
 void fillMesh(
-    const std::vector<double> & pointGrid,
-    std::vector< IMAGE_TYPE > & colorGrid,
+    const std::vector<double>& pointGrid,
+    std::vector< IMAGE_TYPE >& colorGrid,
     unsigned int nbCol,
     unsigned int nbRow,
-    ::fwData::Image::sptr image,
+    ::fwData::Image::csptr image,
     ::fwData::Mesh::sptr mesh )
 {
     fillColorGrid(pointGrid, nbCol, nbRow, image, colorGrid);
@@ -107,7 +107,7 @@ void fillMesh(
     mesh->setCellDataSize(nbCells * 4);
     mesh->allocate(nbPoints, nbCells, nbCells * 4);
     mesh->allocatePointColors(::fwData::Mesh::RGB);
-    ::fwComEd::helper::Mesh helperMesh(mesh);
+    ::fwDataTools::helper::Mesh helperMesh(mesh);
     ::fwData::Mesh::PointsMultiArrayType points                   = helperMesh.getPoints();
     ::fwData::Mesh::CellTypesMultiArrayType cellTypes             = helperMesh.getCellTypes();
     ::fwData::Mesh::CellDataMultiArrayType cellData               = helperMesh.getCellData();
@@ -150,7 +150,7 @@ void fillMesh(
 }
 /// Fill Image
 template<typename IMAGE_TYPE>
-void fillImage(const std::vector< IMAGE_TYPE > & colorGrid,
+void fillImage(const std::vector< IMAGE_TYPE >& colorGrid,
                unsigned int nbCol, unsigned int nbRow, double spacing, ::fwData::Image::sptr image )
 {
     // Initialize the image
@@ -178,7 +178,7 @@ void fillImage(const std::vector< IMAGE_TYPE > & colorGrid,
     // Get image array
     ::fwData::Array::sptr array = image->getDataArray();
     OSLM_DEBUG(" arraySize " << array->getNumberOfElements());
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
     IMAGE_TYPE* iter   = arrayHelper.begin<IMAGE_TYPE>();
     IMAGE_TYPE* itrEnd = arrayHelper.end<IMAGE_TYPE>();
     // Fill image aray with the color grid values

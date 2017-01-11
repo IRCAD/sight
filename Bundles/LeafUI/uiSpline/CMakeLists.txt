@@ -1,17 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwCore
-    fwCom
-    fwData
-    fwServices
-    fwComEd
-    fwRuntime
-    fwTools
-    fwGui
-    fwGuiQt
-    navigation
-    gui
-)
 
 find_package(Boost REQUIRED)
 fwForwardInclude(${Boost_INCLUDE_DIRS})

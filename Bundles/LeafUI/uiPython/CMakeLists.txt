@@ -1,0 +1,6 @@
+find_package(Boost COMPONENTS python REQUIRED)
+if(${Boost_VERSION} GREATER 105700)
+    message(AUTHOR_WARNING "Boost ${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION} is not compatible with this library.")
+else()
+    fwLoadProperties()
+endif()

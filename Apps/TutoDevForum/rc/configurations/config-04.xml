@@ -8,7 +8,7 @@
                 <gui>
                     <frame>
                         <name>Tuto 04</name>
-                        <icon>Bundles/TutoDevForum_0-1/tuto.ico</icon>
+                        <icon>@BUNDLE_PREFIX@/TutoDevForum_0-1/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
                     <menuBar />

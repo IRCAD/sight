@@ -10,7 +10,7 @@ set( REQUIREMENTS servicesReg
                   io
                   visuVTK
                   visuVTKQt
-                  launcher
+                  fwlauncher
                   appXml
                   devForum
                   )

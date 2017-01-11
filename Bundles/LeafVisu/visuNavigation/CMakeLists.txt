@@ -1,16 +1,5 @@
 fwLoadProperties()
 
-fwUseForwardInclude(
-    fwCom
-    fwCore
-    fwData
-    fwServices
-    fwRuntime
-    fwRenderVTK
-    fwTools
-    fwComEd
-    navigation
-)
 
 find_package(Boost REQUIRED)
 fwForwardInclude(${Boost_INCLUDE_DIRS})
@@ -19,13 +8,17 @@ find_package(Qt5 COMPONENTS Core Gui REQUIRED)
 fwForwardInclude(${QT_INCLUDE_DIR})
 fwLink(${QT_LIBRARIES})
 
-find_package(VTK REQUIRED)
+find_package(VTK
+            COMPONENTS
+            vtkCommonCore
+            vtkCommonDataModel
+            vtkRenderingCore
+            vtkCommonComputationalGeometry
+            vtkFiltersSources
+            NO_MODULE
+            REQUIRED)
 fwLink(
-    vtkCommonCore
-    vtkCommonDataModel
-    vtkRenderingCore
-    vtkCommonComputationalGeometry
-    vtkFiltersSources
+    ${VTK_LIBRARIES}
     )
 
 set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)
