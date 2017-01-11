@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,10 @@
 #define __GUI_NAMESPACE_HPP__
 
 /**
+ * @ingroup bundlerequirement
  * @brief The namespace gui contains the basic services to build the application IHM.
+ *
+ * It shoud be added in \p \<requirement\> section in bunldes containing \e gui services like actions or editors.
  */
 namespace gui
 {
