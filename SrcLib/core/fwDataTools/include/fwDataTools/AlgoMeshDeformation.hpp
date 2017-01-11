@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,13 @@
 #ifndef __FWDATATOOLS_ALGOMESHDEFORMATION_HPP__
 #define __FWDATATOOLS_ALGOMESHDEFORMATION_HPP__
 
-#include <fwTools/Failed.hpp>
+#include "fwDataTools/config.hpp"
+#include <fwDataTools/helper/Mesh.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/Mesh.hpp>
 
-#include <fwComEd/helper/Mesh.hpp>
-
-#include "fwDataTools/config.hpp"
+#include <fwTools/Failed.hpp>
 
 
 namespace fwDataTools
@@ -60,7 +59,7 @@ public:
 private:
 
     ::fwData::Mesh::wptr m_mesh;
-    ::fwComEd::helper::Mesh::sptr m_meshHelper;
+    ::fwDataTools::helper::Mesh::sptr m_meshHelper;
     ::fwData::Array::sptr m_originPoints;
 
     unsigned int m_amplitude;

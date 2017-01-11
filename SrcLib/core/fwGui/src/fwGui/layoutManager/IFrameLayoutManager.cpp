@@ -4,26 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-/**
- * @file fwGui/layoutManager/IFrameLayoutManager.cpp
- * @brief This file defines the implementation of the base class for managing a frame.
- *
- *
- * @date 2009-2010
- */
-
-#include <boost/filesystem/operations.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/bind.hpp>
-#include <boost/lambda/lambda.hpp>
+#include "fwGui/layoutManager/IFrameLayoutManager.hpp"
 
 #include <fwCore/base.hpp>
+
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
-#include "fwGui/layoutManager/IFrameLayoutManager.hpp"
+#include <boost/bind.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/lambda/lambda.hpp>
+#include <boost/lexical_cast.hpp>
 
 namespace fwGui
 {
@@ -212,11 +206,10 @@ void IFrameLayoutManager::writeConfig()
     ::fwData::Composite::sptr prefUI;
 
     // Get preferences
-    std::vector< ::fwServices::IService::sptr > preferencesServicesList = ::fwServices::OSR::getServices(
-        "::preferences::IPreferencesService");
+    auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
     if(!preferencesServicesList.empty())
     {
-        ::fwServices::IService::sptr prefService = preferencesServicesList[0];
+        ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();
         ::fwData::Composite::sptr prefs          = prefService->getObject< ::fwData::Composite >();
 
         ::fwData::Composite::sptr framesUI;

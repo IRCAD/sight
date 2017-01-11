@@ -1,4 +1,0 @@
-fwLoadProperties()
-fwUseForwardInclude(
-    fwRuntime
-)

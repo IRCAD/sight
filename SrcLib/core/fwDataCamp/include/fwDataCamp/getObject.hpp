@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,7 @@ namespace fwDataCamp
  * @throw ::fwDataCamp::exception::NullPointer
  * @throw ::fwDataCamp::exception::ObjectNotFound
  */
-FWDATACAMP_API SPTR(::fwData::Object) getObject( SPTR(::fwData::Object) object,
+FWDATACAMP_API SPTR(::fwData::Object) getObject( CSPTR(::fwData::Object) object,
                                                  const std::string & path,
                                                  bool raiseException = false);
 
@@ -40,7 +40,7 @@ FWDATACAMP_API SPTR(::fwData::Object) getObject( SPTR(::fwData::Object) object,
  * @see fwDataCamp.getObject
  */
 template< class DATATYPE >
-SPTR(DATATYPE) getObject( SPTR(::fwData::Object) object,
+SPTR(DATATYPE) getObject( CSPTR(::fwData::Object) object,
                           const std::string & path,
                           bool raiseException = false )
 {

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -51,7 +51,7 @@ public:
      * @param objOriginVersion origin version of the object.
      *
      * @return patch applicable for data patching, or empty pointer if no such patch found.
-     **/
+     */
     FWATOMSPATCH_API SPTR(::fwAtomsPatch::ISemanticPatch) getPatch(
         const std::string& context,
         const std::string& originVersion,

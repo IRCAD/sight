@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,12 +21,30 @@ namespace uiMedData
 {
 namespace action
 {
+
 /**
  * @brief   This action allows to export the series specified in config to the SeriesDB.
- * @class   SExportSeries
+ * The export is performed when updating the service.
  *
- * @date    2013.
  * @note This action is not executable if the series already exists in the SeriesDB.
+ *
+ * @section Slots Slots
+ * - \b checkAddedSeries(::fwMedData::SeriesDB::ContainerType): make the action executable if the added series matches
+ * the series we want to export.
+ * - \b checkAddedSeries(::fwMedData::SeriesDB::ContainerType): make the action inexecutable if the added series matches
+ * the series we want to export.
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::uiMedData::action::SExportSeries" autoConnect="yes">
+            <inout key="series" uid="..." />
+            <inout key="seriesDB" uid="..." />
+       </service>
+   @endcode
+ * @subsection In-Out In-Out:
+ * - \b series [::fwMedData::Series]: Source series to export.
+ * - \b seriesDB [::fwMedData::SeriesDB]: Target series database where the series should be exported.
  */
 class UIMEDDATAQT_CLASS_API SExportSeries : public ::fwGui::IActionSrv
 {
@@ -39,7 +57,19 @@ public:
     /// Destructor
     UIMEDDATAQT_API virtual ~SExportSeries() throw();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection.
+     *
+     * Connect ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG to this::s_CHECK_ADDED_SERIES_SLOT.
+     * Connect ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG to this::s_CHECK_REMOVED_SERIES_SLOT.
+     */
+    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const;
+
 protected:
+
+    /// This method is used to configure the service parameters
+    virtual void configuring() throw (::fwTools::Failed);
 
     /// Starts service. If series associated with m_seriesId exists in SeriesDB, this action is not executable.
     virtual void starting() throw(::fwTools::Failed);
@@ -47,21 +77,10 @@ protected:
     /// Stops service. Does nothing.
     virtual void stopping() throw(::fwTools::Failed);
 
-    /**
-     *
-     * @verbatim
-       <service uid="selector" impl="::uiMedData::action::SExportSeries" type="::fwGui::IActionSrv" autoConnect="yes">
-        <seriesId>activitySeries</seriesId>
-       </service>
-       @endverbatim
-     * - \b seriesId : defines the fwId of the series to export in the current SeriesDB.
-     */
-    virtual void configuring() throw (::fwTools::Failed);
-
     /// Adds the series specified by m_seriesId in the SeriesDB.
     virtual void updating() throw (::fwTools::Failed);
 
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream );
 
 private:
 
@@ -86,6 +105,7 @@ private:
     ::fwMedData::Series::sptr getSeries();
 
     /// fwID of the series to add in SeriesDB
+    /// @deprecated appXml2
     std::string m_seriesId;
 };
 } // namespace action

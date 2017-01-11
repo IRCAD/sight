@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,9 @@
 #ifndef __FWCOM_SLOT_HPP__
 #define __FWCOM_SLOT_HPP__
 
-#include <boost/function.hpp>
-
 #include "fwCom/SlotCall.hpp"
-#include "fwCom/util/log.hpp"
+
+#include <boost/function.hpp>
 
 namespace fwCom
 {
@@ -61,13 +60,11 @@ public:
 
     virtual void run(A ... a) const
     {
-        OSLM_COM("run '"<< this->getID() <<"' slot");
         m_func(a ...);
     }
 
     virtual R   call(A ... a) const
     {
-        OSLM_COM("call '"<< this->getID() <<"'  slot");
         return m_func(a ...);
     }
 

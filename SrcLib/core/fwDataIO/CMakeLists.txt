@@ -1,11 +1,5 @@
 fwLoadProperties()
 
-fwUseForwardInclude(
-    fwCore
-    fwData
-    fwTools
-    fwJobs
-)
 
 #racy compatibility
 add_definitions(-DPRJ_NAME=\"${NAME}\")

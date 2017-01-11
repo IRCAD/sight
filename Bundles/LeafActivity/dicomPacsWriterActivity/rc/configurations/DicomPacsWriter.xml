@@ -1,0 +1,148 @@
+<extension implements="::fwServices::registry::AppConfig2">
+    <id>DicomPacsWriter</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="AS_UID" />
+        <param name="APP_NAME" />
+        <param name="PROGRESS_CHANNEL" />
+    </parameters>
+    <config>
+        <object uid="seriesDB" type="::fwMedData::SeriesDB" />
+        <object uid="selections" type="::fwData::Vector" />
+        <object uid="pacsConfiguration" type="::fwPacsIO::data::PacsConfiguration" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view caption="Information" align="center" minWidth="200" />
+                    <view caption="Preview" align="bottom" minHeight="200" />
+                </layout>
+                <toolBar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBar" start="yes" />
+                <view sid="selector" start="yes" />
+                <view wid="preview" />
+            </registry>
+        </service>
+
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
+            <gui>
+                <layout>
+                    <menuItem name="Import" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
+                    <menuItem name="Edit pacs configuration" icon="@BUNDLE_PREFIX@/media_0-1/icons/Settings.svg" style="check" />
+                    <menuItem name="Anonymize selected series" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-Anonymization.svg" />
+                    <menuItem name="Push selected series to Pacs" icon="@BUNDLE_PREFIX@/media_0-1/icons/Push.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_import" start="yes" />
+                <menuItem sid="action_editPacsConfiguration" start="yes" />
+                <menuItem sid="action_anonymize" start="yes" />
+                <menuItem sid="action_pushSeriesToPacs" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Actions ****************************************** -->
+
+        <service uid="action_import" type="::uiIO::action::SSeriesDBMerger" >
+            <in key="seriesDB" uid="seriesDB" />
+            <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
+        </service>
+
+        <service uid="action_editPacsConfiguration" type="::gui::action::SConfigLauncher">
+            <appConfig id="PacsConfigurationManager" />
+            <inout key="PACS_CONFIGURATION" uid="pacsConfiguration"  />
+            <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/media_0-1/icons/Settings.svg"  />
+        </service>
+
+        <!-- Dicom Anonymization -->
+        <service uid="action_anonymize" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>anonymizeController/update</slot>
+            </slots>
+        </service>
+
+        <!-- Push series -->
+        <service uid="action_pushSeriesToPacs" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>pushSeriesController/update</slot>
+            </slots>
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
+
+        <service uid="progressBarController" type="::ioPacs::SProgressBarController"  />
+
+        <service uid="selector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+            <inout key="seriesDB" uid="seriesDB" />
+            <inout key="selection" uid="selections" />
+        </service>
+
+        <service uid="pacsConfigurationInitializer" type="::ioPacs::SPacsConfigurationInitializer" autoConnect="yes">
+            <inout key="config" uid="pacsConfiguration" />
+            <config
+                localApplicationTitle="${APP_NAME}"
+                pacsHostName="mypacs.mycompany.com"
+                pacsApplicationTitle="PACSNAME"
+                pacsApplicationPort="11112"
+                moveApplicationTitle="MoveApplicationTitle"
+                moveApplicationPort="11110"
+                retrieveMethod="GET"
+                preferenceKey="PACS_CONFIGURATION"
+                />
+        </service>
+
+        <!-- Preview -->
+        <service uid="viewer" type="::uiMedData::SSeriesViewer" autoConnect="yes">
+            <in key="series" uid="selections" />
+            <parentView wid="preview" />
+            <configs>
+                <config id="2DLocalPreviewConfig" type="::fwMedData::DicomSeries" />
+            </configs>
+        </service>
+
+        <service uid="anonymizeController" type="::ioGdcm::SDicomSeriesAnonymizer">
+            <inout key="seriesDB" uid="seriesDB" />
+            <inout key="selectedSeries" uid="selections" />
+        </service>
+
+        <service uid="pushSeriesController" type="::ioPacs::SSeriesPusher">
+            <in key="pacsConfig" uid="pacsConfiguration" />
+            <in key="selectedSeries" uid="selections" />
+        </service>
+
+        <!-- ******************************* Connections ************************************** -->
+
+        <connect>
+            <signal>pushSeriesController/progressed</signal>
+            <slot>progressBarController/updateProgress</slot>
+        </connect>
+        <connect>
+            <signal>pushSeriesController/startedProgress</signal>
+            <slot>progressBarController/startProgress</slot>
+        </connect>
+        <connect>
+            <signal>pushSeriesController/stoppedProgress</signal>
+            <slot>progressBarController/stopProgress</slot>
+         </connect>
+
+        <connect channel="${PROGRESS_CHANNEL}">
+            <signal>anonymizeController/jobCreated</signal>
+        </connect>
+
+        <!-- START AND STOP SERVICES -->
+        <start uid="mainView" />
+        <start uid="viewer" />
+        <start uid="anonymizeController" />
+        <start uid="pushSeriesController" />
+        <start uid="progressBarController" />
+        <start uid="pacsConfigurationInitializer" />
+
+        <update uid="pacsConfigurationInitializer" />
+
+    </config>
+</extension>

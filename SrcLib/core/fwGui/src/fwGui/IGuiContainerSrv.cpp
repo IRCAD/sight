@@ -7,17 +7,37 @@
 #include "fwGui/IGuiContainerSrv.hpp"
 #include "fwGui/registry/worker.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwCore/base.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwTools/fwID.hpp>
 
 namespace fwGui
 {
 
+const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_SET_ENABLED_SLOT = "setEnabled";
+const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_ENABLE_SLOT      = "enable";
+const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_DISABLE_SLOT     = "disable";
+const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_SET_VISIBLE_SLOT = "setVisible";
+const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_SHOW_SLOT        = "show";
+const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_HIDE_SLOT        = "hide";
+
+//-----------------------------------------------------------------------------
+
 IGuiContainerSrv::IGuiContainerSrv()
     : m_viewLayoutManagerIsCreated (false),
       m_hasToolBar(false)
 {
+    newSlot(s_SET_ENABLED_SLOT, &IGuiContainerSrv::setEnabled, this);
+    newSlot(s_ENABLE_SLOT, &IGuiContainerSrv::enable, this);
+    newSlot(s_DISABLE_SLOT, &IGuiContainerSrv::disable, this);
+    newSlot(s_SET_VISIBLE_SLOT, &IGuiContainerSrv::setVisible, this);
+    newSlot(s_SHOW_SLOT, &IGuiContainerSrv::show, this);
+    newSlot(s_HIDE_SLOT,&IGuiContainerSrv::hide, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -67,6 +87,13 @@ void IGuiContainerSrv::initialize()
 
             m_hasToolBar = true;
         }
+
+        // find slideView configuration
+        std::vector < ConfigurationType > vectSlideCfg = vectGui.at(0)->find("slideView");
+        for (const auto& slideCfg : vectSlideCfg)
+        {
+            this->initializeSlideViewBuilder(slideCfg);
+        }
     }
 }
 
@@ -74,10 +101,11 @@ void IGuiContainerSrv::initialize()
 
 void IGuiContainerSrv::create()
 {
+    SLM_ASSERT("ViewRegistrar must be initialized.", m_viewRegistrar);
     ::fwGui::container::fwContainer::sptr parent = m_viewRegistrar->getParent();
     SLM_ASSERT("Parent container is unknown.", parent);
 
-    ::fwGui::registry::worker::get()->postTask< void >(::boost::function< void() >([this, &parent]
+    ::fwGui::registry::worker::get()->postTask< void >([this, &parent]
         {
             SLM_ASSERT("ViewRegistrar must be initialized.", m_viewRegistrar);
 
@@ -85,8 +113,8 @@ void IGuiContainerSrv::create()
                 ::fwGui::factory::New(::fwGui::builder::IContainerBuilder::REGISTRY_KEY);
             m_containerBuilder = ::fwGui::builder::IContainerBuilder::dynamicCast(guiObj);
 
-            OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IContainerBuilder::REGISTRY_KEY,
-                        m_containerBuilder);
+            SLM_ASSERT("ClassFactoryRegistry failed for class "+ ::fwGui::builder::IContainerBuilder::REGISTRY_KEY,
+                       m_containerBuilder);
             m_containerBuilder->createContainer(parent);
 
             ::fwGui::container::fwContainer::sptr container = m_containerBuilder->getContainer();
@@ -95,22 +123,34 @@ void IGuiContainerSrv::create()
             {
                 if (m_hasToolBar)
                 {
-                    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+                    ::fwGui::registry::worker::get()->postTask<void>([&]
                     {
                         m_toolBarBuilder->createToolBar(parent);
-                    })).wait();
+                    }).wait();
 
                     m_viewRegistrar->manageToolBar(m_toolBarBuilder->getToolBar());
                 }
 
-                ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+                ::fwGui::registry::worker::get()->postTask<void>([&]
                 {
                     m_viewLayoutManager->createLayout(container);
-                })).wait();
+                }).wait();
 
-                m_viewRegistrar->manage(m_viewLayoutManager->getSubViews());
+                std::vector< ::fwGui::container::fwContainer::sptr > views = m_viewLayoutManager->getSubViews();
+
+                for (const auto& slideBuilder : m_slideViewBuilders)
+                {
+                    SLM_ASSERT("Slide builder is not instantiated", slideBuilder);
+                    ::fwGui::registry::worker::get()->postTask<void>([&]
+                    {
+                        slideBuilder->createContainer(container);
+                    }).wait();
+                    views.push_back(slideBuilder->getContainer());
+                }
+
+                m_viewRegistrar->manage(views);
             }
-        })).wait();
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -126,19 +166,28 @@ void IGuiContainerSrv::destroy()
             m_viewRegistrar->unmanageToolBar();
             SLM_ASSERT("ToolBarBuilder must be initialized.", m_toolBarBuilder);
 
-            ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+            ::fwGui::registry::worker::get()->postTask<void>([&]
                 {
                     m_toolBarBuilder->destroyToolBar();
-                })).wait();
+                }).wait();
         }
 
         m_viewRegistrar->unmanage();
         SLM_ASSERT("ViewLayoutManager must be initialized.", m_viewLayoutManager);
 
-        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        ::fwGui::registry::worker::get()->postTask<void>([&]
             {
                 m_viewLayoutManager->destroyLayout();
-            })).wait();
+            }).wait();
+    }
+
+    for (const auto& slideBuilder : m_slideViewBuilders)
+    {
+        SLM_ASSERT("Slide builder is not instantiated", slideBuilder);
+        ::fwGui::registry::worker::get()->postTask<void>([&]
+            {
+                slideBuilder->destroyContainer();
+            }).wait();
     }
 
     m_containerBuilder->destroyContainer();
@@ -148,14 +197,14 @@ void IGuiContainerSrv::destroy()
 
 void IGuiContainerSrv::initializeLayoutManager(ConfigurationType layoutConfig)
 {
-    OSLM_ASSERT("Bad configuration name "<<layoutConfig->getName()<< ", must be layout",
-                layoutConfig->getName() == "layout");
+    SLM_ASSERT("Bad configuration name "+layoutConfig->getName()+ ", must be layout",
+               layoutConfig->getName() == "layout");
     SLM_ASSERT("<layout> tag must have type attribute", layoutConfig->hasAttribute("type"));
     const std::string layoutManagerClassName = layoutConfig->getAttributeValue("type");
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(layoutManagerClassName);
     m_viewLayoutManager                 = ::fwGui::layoutManager::IViewLayoutManager::dynamicCast(guiObj);
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< layoutManagerClassName, m_viewLayoutManager);
+    SLM_ASSERT("ClassFactoryRegistry failed for class "+ layoutManagerClassName, m_viewLayoutManager);
 
     m_viewLayoutManager->initialize(layoutConfig);
 }
@@ -164,15 +213,34 @@ void IGuiContainerSrv::initializeLayoutManager(ConfigurationType layoutConfig)
 
 void IGuiContainerSrv::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 {
-    OSLM_ASSERT("Bad configuration name "<<toolBarConfig->getName()<< ", must be toolBar",
-                toolBarConfig->getName() == "toolBar");
+    SLM_ASSERT("Bad configuration name "+toolBarConfig->getName()+ ", must be toolBar",
+               toolBarConfig->getName() == "toolBar");
 
     ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(::fwGui::builder::IToolBarBuilder::REGISTRY_KEY);
     m_toolBarBuilder                    = ::fwGui::builder::IToolBarBuilder::dynamicCast(guiObj);
-    OSLM_ASSERT("ClassFactoryRegistry failed for class "<< ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY,
-                m_toolBarBuilder);
+    SLM_ASSERT("ClassFactoryRegistry failed for class "+ ::fwGui::builder::IToolBarBuilder::REGISTRY_KEY,
+               m_toolBarBuilder);
 
     m_toolBarBuilder->initialize(toolBarConfig);
+}
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainerSrv::initializeSlideViewBuilder(ConfigurationType slideViewConfig)
+{
+    SLM_ASSERT("Bad configuration name " + slideViewConfig->getName() + ", must be layout",
+               slideViewConfig->getName() == "slideView");
+
+    ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(
+        ::fwGui::builder::ISlideViewBuilder::REGISTRY_KEY);
+    ::fwGui::builder::ISlideViewBuilder::sptr slideViewBuildfer = ::fwGui::builder::ISlideViewBuilder::dynamicCast(
+        guiObj);
+    SLM_ASSERT("ClassFactoryRegistry failed for class "+ ::fwGui::builder::ISlideViewBuilder::REGISTRY_KEY,
+               slideViewBuildfer);
+
+    slideViewBuildfer->initialize(slideViewConfig);
+
+    m_slideViewBuilders.push_back(slideViewBuildfer);
 }
 
 //-----------------------------------------------------------------------------
@@ -193,6 +261,50 @@ void IGuiContainerSrv::setParent(std::string wid)
             SLM_ASSERT("Parent container is unknown.", parent);
             m_containerBuilder->setParent(parent);
         } ));
+}
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainerSrv::setEnabled(bool isEnabled)
+{
+    ::fwGui::container::fwContainer::sptr container = m_viewRegistrar->getParent();
+    container->setEnabled(isEnabled);
+}
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainerSrv::enable()
+{
+    this->setEnabled(true);
+}
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainerSrv::disable()
+{
+    this->setEnabled(false);
+}
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainerSrv::setVisible(bool isVisible)
+{
+    ::fwGui::container::fwContainer::sptr container = m_viewRegistrar->getParent();
+    container->setVisible(isVisible);
+}
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainerSrv::show()
+{
+    this->setVisible(true);
+}
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainerSrv::hide()
+{
+    this->setVisible(false);
 }
 
 //-----------------------------------------------------------------------------

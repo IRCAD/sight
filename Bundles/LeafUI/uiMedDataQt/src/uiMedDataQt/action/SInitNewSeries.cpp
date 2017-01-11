@@ -1,35 +1,36 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <utility>
-#include <vector>
+#include "uiMedDataQt/action/SInitNewSeries.hpp"
 
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/classification.hpp>
+#include "uiMedDataQt/InsertSeries.hpp"
+#include "uiMedDataQt/constants.hpp"
 
 #include <fwCore/base.hpp>
 
 #include <fwData/String.hpp>
 
-#include <fwServices/Base.hpp>
-
-#include <fwComEd/helper/SeriesDB.hpp>
-
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/Series.hpp>
-#include <fwMedData/Patient.hpp>
-#include <fwMedData/Study.hpp>
 #include <fwMedData/Equipment.hpp>
+#include <fwMedData/Patient.hpp>
+#include <fwMedData/Series.hpp>
+#include <fwMedData/SeriesDB.hpp>
+#include <fwMedData/Study.hpp>
+
+#include <fwMedDataTools/helper/SeriesDB.hpp>
+
+#include <fwServices/macros.hpp>
 
 #include <fwTools/dateAndTime.hpp>
 
-#include "uiMedDataQt/constants.hpp"
-#include "uiMedDataQt/InsertSeries.hpp"
-#include "uiMedDataQt/action/SInitNewSeries.hpp"
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+
+#include <utility>
+#include <vector>
 
 
 namespace uiMedData
@@ -56,7 +57,7 @@ SInitNewSeries::~SInitNewSeries() throw()
 
 //------------------------------------------------------------------------------
 
-void SInitNewSeries::info(std::ostream &_sstream )
+void SInitNewSeries::info(std::ostream& _sstream )
 {
     // Update message
     _sstream << std::string("SInitNewSeries");
@@ -89,7 +90,7 @@ void SInitNewSeries::updating() throw(::fwTools::Failed)
     SLM_ASSERT("Didn't find object with UID '" + m_seriesDBId + "'", obj);
     ::fwMedData::SeriesDB::sptr srcSeriesDB = ::fwMedData::SeriesDB::dynamicCast(obj);
 
-    ::fwComEd::helper::SeriesDB helper(seriesDB);
+    ::fwMedDataTools::helper::SeriesDB helper(seriesDB);
 
     for(const ::fwMedData::Series::sptr& series :  srcSeriesDB->getContainer())
     {

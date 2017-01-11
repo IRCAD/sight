@@ -1,34 +1,34 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiMedDataQt/editor/SSelector.hpp"
+
 #include "uiMedDataQt/widget/Selector.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
-#include <fwComEd/helper/SeriesDB.hpp>
-#include <fwComEd/helper/Vector.hpp>
-
 #include <fwCore/base.hpp>
 
+#include <fwDataTools/helper/Vector.hpp>
+
 #include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwMedDataTools/helper/SeriesDB.hpp>
+
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <QVBoxLayout>
 
@@ -75,7 +75,7 @@ SSelector::~SSelector() throw()
 
 //------------------------------------------------------------------------------
 
-void SSelector::info(std::ostream &_sstream )
+void SSelector::info(std::ostream& _sstream )
 {
     // Update message
     _sstream << std::string("SSelector");
@@ -98,7 +98,7 @@ void SSelector::starting() throw(::fwTools::Failed)
     m_selectorWidget->setAllowedRemove(m_allowedRemove);
     m_selectorWidget->setInsertMode(m_insertMode);
 
-    QVBoxLayout *layout = new QVBoxLayout();
+    QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(m_selectorWidget);
     container->setLayout(layout);
 
@@ -135,7 +135,15 @@ void SSelector::stopping() throw(::fwTools::Failed)
 
 void SSelector::updating() throw(::fwTools::Failed)
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    ::fwMedData::SeriesDB::sptr seriesDB;
+    if (this->isVersion2())
+    {
+        seriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
+    }
+    else
+    {
+        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    }
 
     m_selectorWidget->clear();
 
@@ -151,11 +159,13 @@ void SSelector::configuring() throw(::fwTools::Failed)
 {
     this->::fwGui::IGuiContainerSrv::initialize();
 
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > selectionCfg = m_configuration->find("selectionId");
-    SLM_ASSERT("Missing tag 'selectionId'", !selectionCfg.empty());
-
-    m_selectionId = selectionCfg.front()->getValue();
-    SLM_ASSERT("selectionId must not be empty", !m_selectionId.empty());
+    if(!this->isVersion2())
+    {
+        std::vector < ::fwRuntime::ConfigurationElement::sptr > selectionCfg = m_configuration->find("selectionId");
+        SLM_ASSERT("Missing tag 'selectionId'", !selectionCfg.empty());
+        m_selectionId = selectionCfg.front()->getValue();
+        SLM_ASSERT("selectionId must not be empty", !m_selectionId.empty());
+    }
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > selectionModeCfg = m_configuration->find("selectionMode");
     if(!selectionModeCfg.empty())
@@ -243,7 +253,7 @@ void SSelector::onSelectedSeries(QVector< ::fwMedData::Series::sptr > selection,
                                  QVector< ::fwMedData::Series::sptr > deselection)
 {
     ::fwData::Vector::sptr selectionVector = this->getSelection();
-    ::fwComEd::helper::Vector vectorHelper(selectionVector);
+    ::fwDataTools::helper::Vector vectorHelper(selectionVector);
 
     for( ::fwMedData::Series::sptr series :  deselection)
     {
@@ -260,7 +270,7 @@ void SSelector::onSelectedSeries(QVector< ::fwMedData::Series::sptr > selection,
 
 //------------------------------------------------------------------------------
 
-void SSelector::onDoubleClick(const QModelIndex &index)
+void SSelector::onDoubleClick(const QModelIndex& index)
 {
     m_selectorWidget->clearSelection();
     m_selectorWidget->setCurrentIndex(index);
@@ -290,8 +300,16 @@ void SSelector::onDoubleClick(const QModelIndex &index)
 
 void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection)
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-    ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
+    ::fwMedData::SeriesDB::sptr seriesDB;
+    if (this->isVersion2())
+    {
+        seriesDB = this->getInOut< ::fwMedData::SeriesDB >("seriesDB");
+    }
+    else
+    {
+        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    }
+    ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
 
     // Remove duplicated series
     std::set< ::fwMedData::Series::sptr > seriesSet;
@@ -314,10 +332,18 @@ void SSelector::onRemoveSeries(QVector< ::fwMedData::Series::sptr > selection)
 
 ::fwData::Vector::sptr SSelector::getSelection()
 {
-    SLM_ASSERT("Object " << m_selectionId << " doesn't exist", ::fwTools::fwID::exist(m_selectionId));
+    ::fwData::Vector::sptr selection;
+    if(this->isVersion2())
+    {
+        selection = this->getInOut< ::fwData::Vector >("selection");
+    }
+    else
+    {
+        SLM_ASSERT("Object " << m_selectionId << " doesn't exist", ::fwTools::fwID::exist(m_selectionId));
 
-    ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(m_selectionId);
-    ::fwData::Vector::sptr selection = ::fwData::Vector::dynamicCast(obj);
+        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_selectionId);
+        selection                   = ::fwData::Vector::dynamicCast(obj);
+    }
     SLM_ASSERT("Object " << m_selectionId << " is not a '::fwData::Vector'", selection);
 
     return selection;
@@ -350,6 +376,17 @@ void SSelector::removeSeries(::fwMedData::SeriesDB::ContainerType removedSeries)
     KeyConnectionsType connections;
     connections.push_back( std::make_pair( ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_ADD_SERIES_SLOT ) );
     connections.push_back( std::make_pair( ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG, s_REMOVE_SERIES_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SSelector::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( "seriesDB", ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_ADD_SERIES_SLOT );
+    connections.push( "seriesDB", ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG, s_REMOVE_SERIES_SLOT );
 
     return connections;
 }

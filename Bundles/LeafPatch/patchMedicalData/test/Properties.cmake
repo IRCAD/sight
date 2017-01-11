@@ -11,6 +11,7 @@ set( DEPENDENCIES
     fwMedData
     fwThread
     fwGui
+    fwMDSemanticPatch
 )
 set( REQUIREMENTS dataReg servicesReg ioAtoms gui patchMedicalData )
 

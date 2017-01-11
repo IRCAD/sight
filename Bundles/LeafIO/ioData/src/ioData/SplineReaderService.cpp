@@ -1,23 +1,25 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <io/IReader.hpp>
-#include <fwServices/Base.hpp>
+#include "ioData/SplineReaderService.hpp"
+
+#include <fwCore/base.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include <fwComEd/Dictionary.hpp>
-
-#include <fwData/Spline.hpp>
-#include <fstream>
-#include <fwCore/base.hpp>
-#include <iostream>
-#include <boost/lexical_cast.hpp>
 #include <fwServices/macros.hpp>
 
-#include "ioData/SplineReaderService.hpp"
+#include <io/IReader.hpp>
+
+#include <boost/lexical_cast.hpp>
+
+#include <fstream>
+#include <iostream>
 
 fwServicesRegisterMacro( ::io::IReader, ::ioData::SplineReaderService, ::fwData::Spline );
 
@@ -31,7 +33,7 @@ SplineReaderService::SplineReaderService()
 
 //-----------------------------------------------------------------------------
 
-void SplineReaderService::info(std::ostream &_sstream )
+void SplineReaderService::info(std::ostream& _sstream )
 {
     this->SuperClass::info( _sstream );
     _sstream << " spline reader" << std::endl;
@@ -125,7 +127,7 @@ void SplineReaderService::updating() throw(::fwTools::Failed)
 
     if(isTransfo)
     {
-        spline->setField( ::fwComEd::Dictionary::position, objectMatrix );
+        spline->setField( ::fwDataTools::fieldHelper::Image::position, objectMatrix );
     }
 
     auto sig = spline->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);

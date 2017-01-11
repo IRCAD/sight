@@ -64,7 +64,7 @@ macro(profile_setup ${PROJECT})
         set(START_BUNDLE_LIST "${START_BUNDLE_LIST}\n    <start id=\"${CURRENT_BUNDLES}\" />")
     endforeach()
 
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile.xml.in"    "${CMAKE_BINARY_DIR}/Bundles/${PROJECT}_${${PROJECT}_DASH_VERSION}/profile.xml")
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile.xml.in"    "${CMAKE_BINARY_DIR}/${BUNDLE_PREFIX}/${PROJECT}_${${PROJECT}_DASH_VERSION}/profile.xml")
 endmacro()
 
 function(findRequirements FWPROJECT_NAME)

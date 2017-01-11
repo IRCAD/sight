@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -70,7 +70,7 @@ public:
      * @brief Initialize tab layout manager before the creation of layout.
      *
      * Example of configuration with Tab layout.
-     * @verbatim
+     * @code{.xml}
        <service uid="subView3" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
            <gui>
                <layout type="::fwGui::TabLayoutManager" >
@@ -85,7 +85,7 @@ public:
                <view sid="view3" start="yes" />
            </registry>
        </service>
-       @endverbatim
+       @endcode
      *  - \<layout type="::fwGui::TabLayoutManager" \> : define a tab layout.
      *  - \<view caption="TabView1" selected="center" /\> : define a new view which can have the following attributes
      *   - \b caption : name of the view (display on the screen).

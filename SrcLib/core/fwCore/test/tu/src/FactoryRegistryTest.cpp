@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -48,7 +48,7 @@ public:
         ++s_counter;
     }
 
-    ObjectTest(std::string name) : m_name(name)
+    ObjectTest(const std::string& name) : m_name(name)
     {
         ::fwCore::mt::ScopedLock lock(s_mutex);
         ++s_counter;
@@ -88,7 +88,7 @@ public:
         m_name = "DerivedObjectTest";
     }
 
-    DerivedObjectTest(std::string name)  : ObjectTest(name)
+    DerivedObjectTest(const std::string& name)  : ObjectTest(name)
     {
     }
 
@@ -105,8 +105,14 @@ void FactoryRegistryTest::pointerTest()
 
     typedef ::fwCore::util::FactoryRegistry< ObjectTest::sptr() > FactoryType;
     FactoryType objectTestFactory;
-    objectTestFactory.addFactory("ObjectTest", ::boost::factory<ObjectTest::sptr>());
-    objectTestFactory.addFactory("DerivedObjectTest", ::boost::factory<DerivedObjectTest::sptr>());
+    objectTestFactory.addFactory("ObjectTest", []() -> ObjectTest::sptr
+            {
+                return std::make_shared<ObjectTest>();
+            });
+    objectTestFactory.addFactory("DerivedObjectTest", []() -> DerivedObjectTest::sptr
+            {
+                return std::make_shared<DerivedObjectTest>();
+            });
 
     FactoryType::KeyVectorType keys = {"ObjectTest", "DerivedObjectTest"};
     std::sort(keys.begin(), keys.end());
@@ -144,8 +150,14 @@ void FactoryRegistryTest::valueTest()
     ObjectTest::s_counter = 0;
 
     ::fwCore::util::FactoryRegistry< ObjectTest() > objectTestFactory;
-    objectTestFactory.addFactory("ObjectTest", ::boost::value_factory<ObjectTest>());
-    objectTestFactory.addFactory("DerivedObjectTest", ::boost::value_factory<DerivedObjectTest>());
+    objectTestFactory.addFactory("ObjectTest", []() -> ObjectTest
+            {
+                return ObjectTest();
+            });
+    objectTestFactory.addFactory("DerivedObjectTest", []() -> DerivedObjectTest
+            {
+                return DerivedObjectTest();
+            });
 
     ObjectTest objectTest1 = objectTestFactory.create("ObjectTest");
     CPPUNIT_ASSERT_EQUAL(1, ObjectTest::s_counter);
@@ -175,8 +187,14 @@ void FactoryRegistryTest::argTest()
     ObjectTest::s_counter = 0;
 
     ::fwCore::util::FactoryRegistry< ObjectTest::sptr(std::string) > objectTestFactory;
-    objectTestFactory.addFactory("ObjectTest", ::boost::factory<ObjectTest::sptr>());
-    objectTestFactory.addFactory("DerivedObjectTest", ::boost::factory<DerivedObjectTest::sptr>());
+    objectTestFactory.addFactory("ObjectTest", [](const std::string& name) -> ObjectTest::sptr
+            {
+                return std::make_shared<ObjectTest>(name);
+            });
+    objectTestFactory.addFactory("DerivedObjectTest", [](const std::string& name) -> DerivedObjectTest::sptr
+            {
+                return std::make_shared<DerivedObjectTest>(name);
+            });
 
     std::string objTest1("ObjectTest1");
     std::string objTest2("ObjectTest2");
@@ -253,7 +271,10 @@ struct PopulateRegistryThread
             ss << "PopulateFactoryThreadObject-" << std::this_thread::get_id() <<"-" << i;
             std::string name = ss.str();
             SLM_WARN( "adding " + name + "... " );
-            m_factory.addFactory(name, ::boost::factory<ObjectTest::sptr>());
+            m_factory.addFactory(name, [](int msec) -> ObjectTest::sptr
+                    {
+                        return std::make_shared<ObjectTest>(msec);
+                    });
             SLM_WARN( "added " + name + "... " );
             std::this_thread::sleep_for( std::chrono::milliseconds(1));
         }
@@ -272,8 +293,14 @@ void FactoryRegistryTest::threadSafetyTest()
     ObjectTest::s_counter = 0;
 
     ThreadSafetyTestFactoryType objectTestFactory;
-    objectTestFactory.addFactory("ObjectTest", ::boost::factory<ObjectTest::sptr>());
-    objectTestFactory.addFactory("DerivedObjectTest", ::boost::factory<DerivedObjectTest::sptr>());
+    objectTestFactory.addFactory("ObjectTest", [](int msec) -> ObjectTest::sptr
+            {
+                return std::make_shared<ObjectTest>(msec);
+            });
+    objectTestFactory.addFactory("DerivedObjectTest", [](int msec) -> DerivedObjectTest::sptr
+            {
+                return std::make_shared<DerivedObjectTest>(msec);
+            });
 
     const int NB_THREAD(10);
 

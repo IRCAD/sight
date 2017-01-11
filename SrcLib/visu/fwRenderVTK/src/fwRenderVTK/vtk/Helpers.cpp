@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,11 +13,7 @@
 #include <vtkCamera.h>
 #include <vtkAssemblyPath.h>
 #include <vtkProp3DCollection.h>
-#ifndef ANDROID
-#include <vtkShaderProgram2.h>
-#include <vtkShader2.h>
-#include <vtkShader2Collection.h>
-#endif
+
 #include <vtkOpenGLRenderWindow.h>
 
 #include <fwCore/base.hpp>
@@ -41,7 +37,7 @@ vtkIdType getNearestPointId(vtkPoints* pts, vtkRenderer* renderer)
 
     for(vtkIdType i = 0; i<pts->GetNumberOfPoints (); i++)
     {
-        double *point        = pts->GetPoint(i);
+        double* point        = pts->GetPoint(i);
         double distancePtCam = vtkMath::Distance2BetweenPoints(point, camPosition);
 
         if(distancePtCam < distance)
@@ -56,10 +52,10 @@ vtkIdType getNearestPointId(vtkPoints* pts, vtkRenderer* renderer)
 
 //------------------------------------------------------------------------------
 
-vtkProp * getNearestPickedProp(vtkAbstractPropPicker *picker, vtkRenderer *renderer)
+vtkProp* getNearestPickedProp(vtkAbstractPropPicker* picker, vtkRenderer* renderer)
 {
-    vtkProp   *res       = NULL;
-    vtkPicker *vtkpicker = vtkPicker::SafeDownCast(picker);
+    vtkProp* res         = NULL;
+    vtkPicker* vtkpicker = vtkPicker::SafeDownCast(picker);
 
     SLM_ASSERT("getNearestPickedProp *need* a picker.", picker);
     SLM_ASSERT("getNearestPickedProp *need* a renderer.", renderer);
@@ -82,18 +78,18 @@ vtkProp * getNearestPickedProp(vtkAbstractPropPicker *picker, vtkRenderer *rende
 
 //------------------------------------------------------------------------------
 
-bool getNearestPickedPosition(vtkAbstractPropPicker *picker, vtkRenderer *renderer, double position[3])
+bool getNearestPickedPosition(vtkAbstractPropPicker* picker, vtkRenderer* renderer, double position[3])
 {
     bool res             = false;
-    vtkPicker *vtkpicker = vtkPicker::SafeDownCast(picker);
+    vtkPicker* vtkpicker = vtkPicker::SafeDownCast(picker);
 
     SLM_ASSERT("getNearestPickedProp *need* a picker.", picker);
     SLM_ASSERT("getNearestPickedProp *need* a renderer.", renderer);
 
-    double *point = NULL;
+    double* point = NULL;
     if (vtkpicker)
     {
-        vtkPoints *pts = vtkpicker->GetPickedPositions();
+        vtkPoints* pts = vtkpicker->GetPickedPositions();
         vtkIdType id   = getNearestPointId(pts, renderer);
 
         if (id>-1)
@@ -121,32 +117,48 @@ bool getNearestPickedPosition(vtkAbstractPropPicker *picker, vtkRenderer *render
 //------------------------------------------------------------------------------
 
 #ifndef ANDROID
-vtkSmartPointer<vtkShaderProgram2> buildShader( vtkOpenGLRenderWindow* pWindow,
-                                                const char* pcVertexShader,
-                                                const char* pcFragmentShader )
+
+#if VTK_MAJOR_VERSION >= 7
+vtkSmartPointer<vtkShaderProgram>
+#else
+vtkSmartPointer<vtkShaderProgram2>
+#endif
+buildShader( vtkOpenGLRenderWindow* pWindow,
+             const char* pcVertexShader,
+             const char* pcFragmentShader )
 {
     SLM_ASSERT( "NULL parameter", pWindow && pcVertexShader && pcFragmentShader );
 
-    vtkOpenGLRenderWindow *pOpenGLWindow = vtkOpenGLRenderWindow::SafeDownCast(pWindow);
+    vtkOpenGLRenderWindow* pOpenGLWindow = vtkOpenGLRenderWindow::SafeDownCast(pWindow);
     if(!pOpenGLWindow)
     {
         SLM_ERROR("Shader only supported using OpenGL.");
         return NULL;
     }
 
-    // Check if GLSL is supported
-    if (!vtkShaderProgram2::IsSupported(pOpenGLWindow))
-    {
-        SLM_ERROR("GLSL is not supported on this system.");
-        return NULL;
-    }
 
-    vtkSmartPointer<vtkShaderProgram2> pProgram = vtkSmartPointer<vtkShaderProgram2>::New();
-    pProgram->SetContext(pOpenGLWindow);
-
+#if VTK_MAJOR_VERSION >= 7
+    vtkSmartPointer<vtkShaderProgram> pProgram = vtkSmartPointer<vtkShaderProgram>::New();
     {
         // The vertex shader
-        vtkShader2 *shader = vtkShader2::New();
+        vtkShader* shader = vtkShader::New();
+        shader->SetType(vtkShader::Vertex);
+        shader->SetSource(pcVertexShader);
+        pProgram->SetVertexShader(shader);
+        shader->Delete();
+    }
+    {
+        // The fragment shader
+        vtkShader* shader = vtkShader::New();
+        shader->SetType(vtkShader::Fragment);
+        shader->SetSource(pcFragmentShader);
+        pProgram->SetFragmentShader(shader);
+        shader->Delete();
+    }
+#else
+    vtkSmartPointer<vtkShaderProgram2> pProgram = vtkSmartPointer<vtkShaderProgram2>::New();
+    {
+        vtkShader2* shader = vtkShader2::New();
         shader->SetType(VTK_SHADER_TYPE_VERTEX);
         shader->SetSourceCode(pcVertexShader);
         shader->SetContext(pProgram->GetContext());
@@ -155,13 +167,14 @@ vtkSmartPointer<vtkShaderProgram2> buildShader( vtkOpenGLRenderWindow* pWindow,
     }
     {
         // The fragment shader
-        vtkShader2 *shader = vtkShader2::New();
+        vtkShader2* shader = vtkShader2::New();
         shader->SetType(VTK_SHADER_TYPE_FRAGMENT);
         shader->SetSourceCode(pcFragmentShader);
         shader->SetContext(pProgram->GetContext());
         pProgram->GetShaders()->AddItem(shader);
         shader->Delete();
     }
+#endif // VTK_MAJOR_VERSION >= 7
 
     return pProgram;
 }
@@ -190,35 +203,56 @@ void openShader(const char* _pcName, std::string& _strShader)
 
 //------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkShaderProgram2> buildShaderFromFile( vtkRenderWindow* pWindow,
-                                                        const char* pcVertexName,
-                                                        const char* pcFragmentName )
+#if VTK_MAJOR_VERSION >= 7
+vtkSmartPointer<vtkShaderProgram>
+#else
+vtkSmartPointer<vtkShaderProgram2>
+#endif
+buildShaderFromFile( vtkRenderWindow* pWindow,
+                     const char* pcVertexName,
+                     const char* pcFragmentName )
 {
     SLM_ASSERT( "NULL parameter", pWindow && pcVertexName && pcFragmentName );
 
-    vtkOpenGLRenderWindow *pOpenGLWindow = vtkOpenGLRenderWindow::SafeDownCast(pWindow);
+    vtkOpenGLRenderWindow* pOpenGLWindow = vtkOpenGLRenderWindow::SafeDownCast(pWindow);
     if(!pOpenGLWindow)
     {
         SLM_ERROR("Shader only supported using OpenGL.");
         return NULL;
     }
 
-    // Check if GLSL is supported
-    if (!vtkShaderProgram2::IsSupported(pOpenGLWindow))
-    {
-        SLM_ERROR("GLSL is not supported on this system.");
-        return NULL;
-    }
-
-    vtkSmartPointer<vtkShaderProgram2> pProgram = vtkSmartPointer<vtkShaderProgram2>::New();
-    pProgram->SetContext(pOpenGLWindow);
-
+#if VTK_MAJOR_VERSION >= 7
+    vtkSmartPointer<vtkShaderProgram> pProgram = vtkSmartPointer<vtkShaderProgram>::New();
     {
         // The vertex shader
         std::string strShader("");
         openShader(pcVertexName, strShader);
 
-        vtkShader2 *shader = vtkShader2::New();
+        vtkShader* shader = vtkShader::New();
+        shader->SetType(vtkShader::Vertex);
+        shader->SetSource(strShader.c_str());
+        pProgram->SetVertexShader(shader);
+        shader->Delete();
+    }
+    {
+        // The fragment shader
+        std::string strShader("");
+        openShader(pcFragmentName, strShader);
+
+        vtkShader* shader = vtkShader::New();
+        shader->SetType(vtkShader::Fragment);
+        shader->SetSource(strShader.c_str());
+        pProgram->SetFragmentShader(shader);
+        shader->Delete();
+    }
+#else
+    vtkSmartPointer<vtkShaderProgram2> pProgram = vtkSmartPointer<vtkShaderProgram2>::New();
+    {
+        // The vertex shader
+        std::string strShader("");
+        openShader(pcVertexName, strShader);
+
+        vtkShader2* shader = vtkShader2::New();
         shader->SetType(VTK_SHADER_TYPE_VERTEX);
         shader->SetSourceCode(strShader.c_str());
         shader->SetContext(pProgram->GetContext());
@@ -230,13 +264,14 @@ vtkSmartPointer<vtkShaderProgram2> buildShaderFromFile( vtkRenderWindow* pWindow
         std::string strShader("");
         openShader(pcFragmentName, strShader);
 
-        vtkShader2 *shader = vtkShader2::New();
+        vtkShader2* shader = vtkShader2::New();
         shader->SetType(VTK_SHADER_TYPE_FRAGMENT);
         shader->SetSourceCode(strShader.c_str());
         shader->SetContext(pProgram->GetContext());
         pProgram->GetShaders()->AddItem(shader);
         shader->Delete();
     }
+#endif
 
     return pProgram;
 }

@@ -12,7 +12,7 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
@@ -26,7 +26,7 @@ namespace visuVTKAdaptor
  *
  * The scene can be updated using adaptor slots setAxial, setFrontal, setSagittal.
  */
-class VISUVTKADAPTOR_CLASS_API Medical3DCamera : public ::fwComEd::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API Medical3DCamera : public ::fwDataTools::helper::MedicalImageAdaptor,
                                                  public ::fwRenderVTK::IVtkAdaptorService
 {
 public:
@@ -46,7 +46,7 @@ protected:
      * @brief Configure the adaptor
      *
      * Example :
-       @verbatim
+       @code{.xml}
        <adaptor id="medicalCamera" class="::visuVTKAdaptor::Medical3DCamera" objectId="object">
         <config renderer="default" sliceIndex="axial" resetAtStart="yes" />
        </adaptor>
@@ -58,7 +58,7 @@ protected:
         <slot>medicalCamera/setAxial</slot> <!-- Connect to adaptor's axial view slot -->
        </connect>
 
-       @endverbatim
+       @endcode
      *
      * - renderer : mandatory, renderer used by the adaptor
      * - sliceIndex : not mandatory, defines view orientation. Available values are axial, frontal, sagittal;
@@ -88,7 +88,7 @@ private:
     void setAxialView();
 
     vtkCamera* m_camera;
-    static std::map< std::string, ::fwComEd::helper::MedicalImageAdaptor::Orientation > m_orientationConversion;
+    static std::map< std::string, ::fwDataTools::helper::MedicalImageAdaptor::Orientation > m_orientationConversion;
 
     /// Set axial view slot.
     SetCameraSlotType::sptr m_slotSetAxial;

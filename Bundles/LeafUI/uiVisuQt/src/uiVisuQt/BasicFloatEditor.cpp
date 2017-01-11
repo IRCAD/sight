@@ -15,9 +15,7 @@
 #include <fwData/Float.hpp>
 #include <fwData/String.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
 
 #include <fwCom/Signal.hpp>

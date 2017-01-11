@@ -1,0 +1,93 @@
+<extension implements="::fwServices::registry::AppConfig2">
+    <id>OrganManagerWithSeries</id>
+    <parameters>
+        <param name="ORGAN_MANAGER_MODELSERIES" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!--  defined by SConfigLauncher -->
+        <param name="ICON_PATH" />
+        <param name="ModelRepresentationChannel" />
+        <param name="ModelDisplayChannel" />
+    </parameters>
+    <config>
+
+        <object uid="${ORGAN_MANAGER_MODELSERIES}" type="::fwMedData::ModelSeries" src="ref" />
+        <object uid="reconstruction" type="::fwData::Reconstruction" src="deferred" />
+
+        <!-- MAIN FRAME -->
+        <service uid="organManagerFrame" type="::gui::frame::SDefaultFrame">
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>Organs Manager</name>
+                    <icon>${ICON_PATH}</icon>
+                    <style mode="STAY_ON_TOP" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="multiViewOrgans" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="multiViewOrgans" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::ToolboxLayoutManager">
+                    <orientation value="vertical" />
+                    <view caption="Organs" expanded="true" />
+                    <view caption="Material" expanded="true" />
+                    <view caption="Representation" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="listOrganEditor" start="yes" />
+                <view sid="organMaterialEditor" start="no" />
+                <view sid="representationEditor" start="no" />
+            </registry>
+        </service>
+
+        <service uid="myUpdaterReconst" type="::ctrlSelection::updater::SObjFromSlot">
+            <out key="object" uid="reconstruction" />
+        </service>
+
+        <service uid="organMaterialEditor" type="::uiReconstruction::OrganMaterialEditor" autoConnect="yes">
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+
+        <service uid="representationEditor" type="::uiReconstruction::RepresentationEditor" autoConnect="yes">
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+
+        <service uid="listOrganEditor" type="::uiMedData::editor::SModelSeriesList" autoConnect="yes">
+            <inout key="modelSeries" uid="${ORGAN_MANAGER_MODELSERIES}" />
+            <columns>
+                <organ_name>@organ_name</organ_name>
+                <volume_cc view="positive">@volume</volume_cc>
+            </columns>
+        </service>
+
+        <connect>
+            <signal>listOrganEditor/reconstructionSelected</signal>
+            <slot>myUpdaterReconst/addOrSwap</slot>
+        </connect>
+
+        <connect channel="${CLOSE_CONFIG_CHANNEL}">
+            <signal>organManagerFrame/closed</signal>
+        </connect>
+
+        <connect channel="${ModelDisplayChannel}">
+            <signal>listOrganEditor/recDisplayModified</signal>
+            <slot>listOrganEditor/showReconstructions</slot>
+        </connect>
+
+        <connect channel="${ModelRepresentationChannel}">
+            <signal>representationEditor/normalsModeModified</signal>
+        </connect>
+
+        <!-- START AND STOP SERVICES -->
+        <start uid="organManagerFrame" />
+        <start uid="myUpdaterReconst" />
+
+        <!-- Deferred start -->
+        <start uid="organMaterialEditor" />
+        <start uid="representationEditor" />
+
+    </config>
+</extension>

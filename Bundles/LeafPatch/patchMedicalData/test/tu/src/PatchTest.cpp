@@ -8,9 +8,12 @@
 #include "PatchTest.hpp"
 
 #include <fwData/Object.hpp>
+
 #include <fwDataTools/Image.hpp>
 
 #include <fwGui/registry/worker.hpp>
+
+#include <fwMDSemanticPatch/PatchLoader.hpp>
 
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
@@ -28,10 +31,11 @@
 
 #include <fwThread/Worker.hpp>
 
-#include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>
+#include <fwTools/dateAndTime.hpp>
 
-#include <boost/assign/list_of.hpp>
+#include <boost/filesystem/operations.hpp>
+
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::patchMedicalData::ut::PatchTest );
@@ -81,7 +85,7 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::
 
 //------------------------------------------------------------------------------
 
-::fwMedData::Series::sptr getACHSeries( const ::fwMedData::SeriesDB::sptr & sdb )
+::fwMedData::Series::sptr getACHSeries( const ::fwMedData::SeriesDB::sptr& sdb )
 {
     for( ::fwMedData::Series::sptr series :  sdb->getContainer() )
     {
@@ -96,7 +100,7 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::
 
 //------------------------------------------------------------------------------
 
-std::vector< ::fwMedData::Series::sptr > getOtherSeries( const ::fwMedData::SeriesDB::sptr & sdb )
+std::vector< ::fwMedData::Series::sptr > getOtherSeries( const ::fwMedData::SeriesDB::sptr& sdb )
 {
     std::vector< ::fwMedData::Series::sptr > otherSeries;
     for( ::fwMedData::Series::sptr series :  sdb->getContainer() )
@@ -116,6 +120,9 @@ void PatchTest::patchMedicalDataTest()
 {
     const ::boost::filesystem::path file = ::fwTest::Data::dir() /"fw4spl/patch/md_1.jsonz";
 
+    CPPUNIT_ASSERT_MESSAGE("The file '" + file.string() + "' does not exist",
+                           ::boost::filesystem::exists(file));
+
     ::fwRuntime::EConfigurationElement::sptr srvCfg = ::fwRuntime::EConfigurationElement::New("service");
 
     ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
@@ -125,7 +132,7 @@ void PatchTest::patchMedicalDataTest()
     //<patcher context="..." version="..." />
     ::fwRuntime::EConfigurationElement::sptr patcherCfg = ::fwRuntime::EConfigurationElement::New("patcher");
     patcherCfg->setAttributeValue("context","MedicalData");
-    patcherCfg->setAttributeValue("version","V09ALA");
+    patcherCfg->setAttributeValue("version", ::fwMDSemanticPatch::PatchLoader::getCurrentVersion());
     srvCfg->addConfigurationElement(patcherCfg);
 
     ::fwMedData::SeriesDB::sptr sdb = read< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader" );

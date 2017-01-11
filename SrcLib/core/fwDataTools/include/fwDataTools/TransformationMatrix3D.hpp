@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,6 @@ namespace fwDataTools
 {
 /**
  * @brief   TransformationMatrix3D performs matrices computations.
- * @class   TransformationMatrix3D
  */
 class TransformationMatrix3D
 {
@@ -30,7 +29,7 @@ public:
      * @param[in] _input Input matrix
      * @param[out] _output Inverted matrix.
      */
-    FWDATATOOLS_API static bool invert(const ::fwData::TransformationMatrix3D::sptr& _input,
+    FWDATATOOLS_API static bool invert(const ::fwData::TransformationMatrix3D::csptr& _input,
                                        ::fwData::TransformationMatrix3D::sptr& _output);
 
     /**
@@ -39,8 +38,8 @@ public:
      * @param[in] trfB Second matrix.
      * @param[out] _output Output matrix.
      */
-    FWDATATOOLS_API static void multiply(const ::fwData::TransformationMatrix3D::sptr& _trfA,
-                                         const::fwData::TransformationMatrix3D::sptr& _trfB,
+    FWDATATOOLS_API static void multiply(const ::fwData::TransformationMatrix3D::csptr& _trfA,
+                                         const::fwData::TransformationMatrix3D::csptr& _trfB,
                                          ::fwData::TransformationMatrix3D::sptr& _output);
 
     /**
@@ -55,15 +54,15 @@ public:
      * @param[in] _input Input point.
      * @param[out] _output Output point.
      */
-    FWDATATOOLS_API static void multiply(const ::fwData::TransformationMatrix3D::sptr& _trf,
-                                         const ::fwData::Point::sptr& _input, ::fwData::Point::sptr& _output);
+    FWDATATOOLS_API static void multiply(const ::fwData::TransformationMatrix3D::csptr& _trf,
+                                         const ::fwData::Point::csptr& _input, ::fwData::Point::sptr& _output);
 
     /**
      * @brief Multiply a point and a matrix.
      * @param[in] _trf input ::fwData::TransformationMatrix3D.
      * @return GLM matrix.
      */
-    FWDATATOOLS_API static ::glm::dmat4x4 getMatrixFromTF3D(const ::fwData::TransformationMatrix3D::sptr& _trf);
+    FWDATATOOLS_API static ::glm::dmat4x4 getMatrixFromTF3D(const ::fwData::TransformationMatrix3D::csptr& _trf);
 
     /**
      * @brief Multiply a point and a matrix.
@@ -76,7 +75,7 @@ public:
 
 // ----------------------------------------------------------------------------
 
-inline ::glm::dmat4x4 TransformationMatrix3D::getMatrixFromTF3D(const ::fwData::TransformationMatrix3D::sptr& _trf)
+inline ::glm::dmat4x4 TransformationMatrix3D::getMatrixFromTF3D(const ::fwData::TransformationMatrix3D::csptr& _trf)
 {
     // TransformationMatrix3D is stored row-major
     // glm matrices are stored column-major

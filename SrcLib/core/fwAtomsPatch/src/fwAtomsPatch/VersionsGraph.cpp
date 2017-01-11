@@ -1,9 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#ifndef WIN32
+// To fix problem in class boost::detail::stored_edge_property
+// Default constructor is a move constructor and no copy constructor is implemented
+// The instance of the class can not be copied.
+#define BOOST_NO_CXX11_RVALUE_REFERENCES
+#define BOOST_NO_CXX11_REF_QUALIFIERS
+#endif
 #include <algorithm>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/adjacency_list.hpp>
@@ -218,7 +225,7 @@ VersionsGraph::EdgeIDType VersionsGraph::createEdge(const EdgeType& edge)
     EdgeIDType newEdge;
     bool success = false;
     ::fwCore::mt::ReadLock lock(m_graphMutex);
-    ::boost::tie(newEdge, success) = ::boost::add_edge(origin,target,edge,m_graph);
+    ::boost::tie(newEdge, success) = ::boost::add_edge(origin, target, edge, m_graph);
 
     OSLM_ASSERT("Unable to create the edge between '" << edge.getOriginVersion() << "' "
                 "and '" << edge.getTargetVersion() << "'", success);

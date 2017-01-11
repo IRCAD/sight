@@ -7,14 +7,15 @@
 #ifndef __UIMEASUREMENTQT_EDITOR_DISTANCE_HPP__
 #define __UIMEASUREMENTQT_EDITOR_DISTANCE_HPP__
 
+#include "uiMeasurementQt/config.hpp"
+
+#include <fwTools/Failed.hpp>
+
+#include <gui/editor/IEditor.hpp>
+
 #include <QObject>
 #include <QPointer>
 #include <QPushButton>
-
-#include <fwTools/Failed.hpp>
-#include <gui/editor/IEditor.hpp>
-
-#include "uiMeasurementQt/config.hpp"
 
 namespace uiMeasurement
 {
@@ -22,10 +23,27 @@ namespace editor
 {
 /**
  * @brief   Distance service is represented by a button. It allows to show distances in a generic scene.
- * @class   Distance
  *
  * @note Sends a signal to request a distance. It should be conected to an ImageMultiDistance adaptor to create the
  * distance.
+ *
+ * @section Signals Signals
+ *  \b distanceRequested() : signal to request a distance. It should be conected to an ImageMultiDistance
+ * adaptor to create the distance.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service uid="..." type="::uiMeasurement::editor::Distance" >
+       <inout key="image" uid="..." />
+       <placeInScene uid="genericScene" />
+   </service>
+   @endcode
+
+ * @subsection In-Out In-Out
+ * -\b image [::fwData::Image]: Image in which we calculate the distance.
+ * @subsection Configuration Configuration
+   \b genericScene is the uid of the ::fwRenderVTK::SRender representing the generic scene which will be printed.
  */
 class UIMEASUREMENTQT_CLASS_API Distance : public QObject,
                                            public ::gui::editor::IEditor
@@ -74,21 +92,10 @@ protected:
     /// Do nothing
     virtual void swapping() throw(::fwTools::Failed);
 
-    /**
-     * @brief Configure the editor.
-     *
-     * Example of configuration
-     * @verbatim
-       <service uid="distanceEditor" type="::gui::editor::IEditor" impl="::uiMeasurement::editor::Distance" autoConnect="no">
-        <placeInScene uid="genericScene" />
-       </service>
-       @endverbatim
-       \b genericScene is the uid of the ::fwRenderVTK::SRender representing the generic scene which will be printed.
-     */
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    virtual void info( std::ostream &_sstream );
+    virtual void info( std::ostream& _sstream );
 
 protected Q_SLOTS:
     /**

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,9 +9,9 @@
 
 #include "scene2D/processing/SComputeHistogram.hpp"
 
-#include <fwComEd/helper/Image.hpp>
-#include <fwComEd/helper/Array.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/helper/Image.hpp>
 
 namespace scene2D
 {
@@ -32,24 +32,24 @@ struct ComputeHistogramFunctor
     };
 
     template<class IMAGETYPE>
-    void operator()(Parameter &param)
+    void operator()(Parameter& param)
     {
         ::fwData::Image::sptr image         = param.image;
         ::fwData::Histogram::sptr histogram = param.histogram;
 
-        ::fwComEd::helper::Image imgHelper(image);
+        ::fwDataTools::helper::Image imgHelper(image);
 
         IMAGETYPE min = std::numeric_limits<IMAGETYPE>::max();
         IMAGETYPE max = std::numeric_limits<IMAGETYPE>::min();
 
-        ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+        ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
         SLM_ASSERT("Wrong image", max > min);
         if( max > min )
         {
             histogram->initialize( min, max, param.binsWidth );
 
             ::fwData::Array::sptr array = image->getDataArray();
-            ::fwComEd::helper::Array arrayHelper(array);
+            ::fwDataTools::helper::Array arrayHelper(array);
 
             IMAGETYPE* itr    = arrayHelper.begin<IMAGETYPE>();
             IMAGETYPE* itrEnd = arrayHelper.end<IMAGETYPE>();

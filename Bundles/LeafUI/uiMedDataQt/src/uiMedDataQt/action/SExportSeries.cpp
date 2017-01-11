@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,8 +13,6 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/helper/SeriesDB.hpp>
-
 #include <fwCore/base.hpp>
 
 #include <fwGui/dialog/InputDialog.hpp>
@@ -22,7 +20,9 @@
 #include <fwMedData/ActivitySeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwMedDataTools/helper/SeriesDB.hpp>
+
+#include <fwServices/macros.hpp>
 
 #include <fwTools/Os.hpp>
 
@@ -40,6 +40,8 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiMedData::action::SExportSeries
 const ::fwCom::Slots::SlotKeyType SExportSeries::s_CHECK_ADDED_SERIES_SLOT   = "checkAddedSeries";
 const ::fwCom::Slots::SlotKeyType SExportSeries::s_CHECK_REMOVED_SERIES_SLOT = "CheckRemovesSeries";
 
+const static std::string s_SERIESDB_INOUT = "seriesDB";
+
 //------------------------------------------------------------------------------
 
 SExportSeries::SExportSeries()
@@ -56,10 +58,27 @@ SExportSeries::~SExportSeries() throw()
 
 //------------------------------------------------------------------------------
 
-void SExportSeries::info(std::ostream &_sstream )
+::fwServices::IService::KeyConnectionsMap SExportSeries::getAutoConnections() const
 {
-    // Update message
-    _sstream << std::string("SExportSeries");
+    KeyConnectionsMap connections;
+    connections.push( s_SERIESDB_INOUT, ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_CHECK_ADDED_SERIES_SLOT );
+    connections.push( s_SERIESDB_INOUT, ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG, s_CHECK_REMOVED_SERIES_SLOT );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+void SExportSeries::configuring() throw(::fwTools::Failed)
+{
+    this->::fwGui::IActionSrv::initialize();
+
+    if(!this->isVersion2())
+    {
+        std::vector < ::fwRuntime::ConfigurationElement::sptr > seriesCfg = m_configuration->find("seriesId");
+        m_seriesId = seriesCfg.front()->getValue();
+        SLM_ASSERT("seriesId must not be empty", !m_seriesId.empty());
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -67,7 +86,16 @@ void SExportSeries::info(std::ostream &_sstream )
 void SExportSeries::starting() throw(::fwTools::Failed)
 {
     this->actionServiceStarting();
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    ::fwMedData::SeriesDB::sptr seriesDB;
+    if(this->isVersion2())
+    {
+        seriesDB = this->getInOut< ::fwMedData::SeriesDB>(s_SERIESDB_INOUT);
+    }
+    else
+    {
+        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    }
+
     for( ::fwMedData::Series::sptr series :  seriesDB->getContainer() )
     {
         if(series == this->getSeries())
@@ -88,8 +116,16 @@ void SExportSeries::stopping() throw(::fwTools::Failed)
 
 void SExportSeries::updating() throw(::fwTools::Failed)
 {
-    ::fwMedData::SeriesDB::sptr seriesDB = this->getObject< ::fwMedData::SeriesDB >();
-    ::fwMedData::Series::sptr series     = this->getSeries();
+    ::fwMedData::SeriesDB::sptr seriesDB;
+    if(this->isVersion2())
+    {
+        seriesDB = this->getInOut< ::fwMedData::SeriesDB>(s_SERIESDB_INOUT);
+    }
+    else
+    {
+        seriesDB = this->getObject< ::fwMedData::SeriesDB >();
+    }
+    ::fwMedData::Series::sptr series = this->getSeries();
 
     std::string description = series->getDescription();
 
@@ -125,37 +161,38 @@ void SExportSeries::updating() throw(::fwTools::Failed)
         series->setPerformingPhysiciansName(physicians);
         series->setDescription(description);
 
-        ::fwComEd::helper::SeriesDB seriesDBHelper(seriesDB);
+        ::fwMedDataTools::helper::SeriesDB seriesDBHelper(seriesDB);
         seriesDBHelper.add(series);
         seriesDBHelper.notify();
         this->setIsExecutable(false);
     }
-
 }
 
 //------------------------------------------------------------------------------
 
-void SExportSeries::configuring() throw(::fwTools::Failed)
+void SExportSeries::info(std::ostream& _sstream )
 {
-    this->::fwGui::IActionSrv::initialize();
-
-    std::vector < ::fwRuntime::ConfigurationElement::sptr > seriesCfg = m_configuration->find("seriesId");
-    SLM_ASSERT("Missing tag 'seriesId'", !seriesCfg.empty());
-
-    m_seriesId = seriesCfg.front()->getValue();
-    SLM_ASSERT("seriesId must not be empty", !m_seriesId.empty());
+    // Update message
+    _sstream << std::string("SExportSeries");
 }
 
 //------------------------------------------------------------------------------
 
 ::fwMedData::Series::sptr SExportSeries::getSeries()
 {
-    SLM_ASSERT("Object " << m_seriesId << " doesn't exist", ::fwTools::fwID::exist(m_seriesId));
+    ::fwMedData::Series::sptr series;
 
-    ::fwTools::Object::sptr obj      = ::fwTools::fwID::getObject(m_seriesId);
-    ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
-    SLM_ASSERT("Object " << m_seriesId << " is not a '::fwMedData::Series'", series);
-
+    if(this->isVersion2())
+    {
+        series = this->getInOut< ::fwMedData::Series>("series");
+    }
+    else
+    {
+        SLM_ASSERT("Object " << m_seriesId << " doesn't exist", ::fwTools::fwID::exist(m_seriesId));
+        ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_seriesId);
+        series                      = ::fwMedData::Series::dynamicCast(obj);
+        SLM_ASSERT("Object " << m_seriesId << " is not a '::fwMedData::Series'", series);
+    }
     return series;
 }
 

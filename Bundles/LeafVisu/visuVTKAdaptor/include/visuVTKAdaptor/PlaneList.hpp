@@ -9,12 +9,12 @@
 
 #ifndef ANDROID
 
-#include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/MeshFactory.hpp"
+#include "visuVTKAdaptor/config.hpp"
+
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-
-#include <fwServices/helper/SigSlotConnection.hpp>
 
 
 class vtkCommand;
@@ -59,11 +59,11 @@ protected:
     /// Slot: Update plane selection
     void updateSelection(::fwData::Plane::sptr plane);
 
-    vtkCommand * m_rightButtonCommand;
+    vtkCommand* m_rightButtonCommand;
     ::fwRenderVTK::SRender::VtkObjectIdType m_planeCollectionId;
 
     /// Store connections to planes adaptors.
-    ::fwServices::helper::SigSlotConnection::sptr m_planeConnections;
+    ::fwCom::helper::SigSlotConnection m_planeConnections;
 
 private:
     /**

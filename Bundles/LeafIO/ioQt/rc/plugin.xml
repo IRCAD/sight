@@ -1,0 +1,14 @@
+<plugin id="ioQt" class="::ioQt::Plugin" version="@DASH_VERSION@" >
+    <library name="ioQt" />
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="io" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IWriter</type>
+        <service>::ioQt::SPdfWriter</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+</plugin>

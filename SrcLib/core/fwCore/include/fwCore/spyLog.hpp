@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -224,6 +224,7 @@
                     #cond << "' failed.\n" << message;                                                  \
                     log.fatal(oslStr1.str(), __FILE__, __LINE__);                                       \
                     _CrtDbgReport(_CRT_ASSERT, __FILE__, __LINE__, NULL, "%s", oslStr1.str().c_str());  \
+                    __debugbreak();                                                                     \
                     ))
 #  else
 #  define SL_ASSERT(log, message, cond) __FWCORE_EXPR_BLOCK(            \

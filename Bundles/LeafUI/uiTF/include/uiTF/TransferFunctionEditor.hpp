@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,9 +25,6 @@ namespace uiTF
 
 /**
  * @brief   TransferFunctionEditor service.
- * @class   TransferFunctionEditor
- *
- * @date    2011.
  */
 class UITF_CLASS_API TransferFunctionEditor : public QObject,
                                               public ::gui::editor::IEditor
@@ -60,7 +57,7 @@ protected:
      * @brief Configuring the transfer function editor.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
        <service uid="GENERIC_UID_tfm" type="::gui::editor::IEditor" impl="::uiTF::TransferFunctionEditor" autoConnect="yes" >
         <config selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" useDefaultPath="yes">
             <path>....</path>
@@ -68,7 +65,7 @@ protected:
             <path>....</path>
         </config>
        </service>
-       @endverbatim
+       @endcode
      * - \b selectedTFKey: key of the ::fwData::String containing the key of the selected tf.
      * - \b tfSelectionFwID: fwID of the composite containing the selected tf.
      * - \b useDefaultPath (optional)(default = yes): if true, load tf files from uiTF bundle.
@@ -111,6 +108,9 @@ protected:
 
     /// Get the current transfer function
     UITF_API ::fwData::TransferFunction::sptr getSelectedTransferFunction() const;
+
+    /// TEMP_V2: Return the transfer functions set composite
+    UITF_API ::fwData::Composite::sptr getTFPool();
 
 private Q_SLOTS:
 

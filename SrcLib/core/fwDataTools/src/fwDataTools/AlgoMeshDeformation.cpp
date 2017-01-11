@@ -1,15 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwDataTools/AlgoMeshDeformation.hpp"
+
 #include "fwDataTools/Mesh.hpp"
+#include <fwDataTools/helper/Array.hpp>
 
 #include <fwTools/NumericRoundCast.hxx>
-
-#include <fwComEd/helper/Array.hpp>
 
 
 namespace fwDataTools
@@ -84,7 +84,7 @@ void AlgoMeshDeformation::initSimu()
         ::fwDataTools::Mesh::colorizeMeshPoints( m_mesh.lock() );
     }
 
-    m_meshHelper = ::fwComEd::helper::Mesh::New(m_mesh.lock());
+    m_meshHelper = ::fwDataTools::helper::Mesh::New(m_mesh.lock());
 
     float max = std::numeric_limits<float>::min();
     float min = std::numeric_limits<float>::max();
@@ -124,7 +124,7 @@ void AlgoMeshDeformation::computeSimu()
 
     const float scale = m_step / (float) m_nbStep;
 
-    ::fwComEd::helper::Array originPointsHelper(m_originPoints);
+    ::fwDataTools::helper::Array originPointsHelper(m_originPoints);
 
     ::fwData::Mesh::PointsMultiArrayType points      = m_meshHelper->getPoints();
     ::fwData::Mesh::PointColorsMultiArrayType colors = m_meshHelper->getPointColors();

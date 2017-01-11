@@ -32,6 +32,82 @@ namespace action
  *
  * This action should be followed by the service '::guiQt::editor::DynamicView' : this service listens the action
  * signals and launchs the activity in a new tab.
+ *
+ * @section Slots Slots
+ * - \b launchSeries(::fwMedData::Series::sptr) : This slot allows to launch the series. If series is an
+ *      ActivitySeries, it is launched, otherwise it launches the first available activity for this series or used
+ *      m_quickLaunch information if a default association is defined for this series type. It sends the
+ *      signal 'activityLaunched' with all the activity information.
+ * - \b launchActivitySeries(::fwMedData::ActivitySeries::sptr) : This slot allows to launch the given activity series.
+ *   It sends the signal 'activityLaunched' with all the activity information.
+ *
+ * - \b updateState() : Updates action state (enable if activities are available for current selection).
+ *
+ * @section Signal Signal
+ * - \b activityLaunched(::fwActivities::registry::ActivityMsg) : This signal is emitted when the activity is created, it
+ *      contains the activity information. It should be connected to the slot 'createTab' of the service
+ *      '::guiQt::editor::DynamicView'.
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+    <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
+        <config>
+            <!-- SActivityLauncher mode : immediate or message(default)
+                 Immediate mode starts and stop immediatly the activity's config -->
+            <mode>immediate</mode>
+            <parameters>
+                <parameter replace="SERIESDB" by="medicalData" />
+                <parameter replace="IMAGE" by="@values.ImageSeries.image" />
+            </parameters>
+
+            <!-- Filter mode 'include' allows all given activity id-s.
+                 Filter mode 'exclude' allows all activity id-s excepted given ones. -->
+            <filter>
+                <mode>include</mode>
+                <id>2DVisualizationActivity</id>
+                <id>3DVisualizationActivity</id>
+                <id>VolumeRenderingActivity</id>
+            </filter>
+
+            <!-- Definition of quick association between series type and an activity id.
+                 This mapping is used by launchSeries slot (see the function to have few details ) -->
+            <quickLaunch>
+                <association type="::fwMedData::ImageSeries" id="2DVisualizationActivity" />
+                <association type="::fwMedData::ModelSeries" id="3DVisualizationActivity" />
+            </quickLaunch>
+        </config>
+    </service>
+        @endcode
+ *
+ * - \b mode (optional): there are two mode: "message" and "immediate"
+ *    - \b message (used by défaut): the action send a signal containing the information needed to launch the
+ *      choosen activity. The service '::guiQt::editor::DynamicView' allows to launch the activity in a new tab. For
+ *      that, it must listen the action signal.
+ *    - \b immediate: the activity is automatically started et stopped by this action. It is used to run a process
+ *      without creating a new tab, for example, to save the selected data.
+ * - \b parameters (optional): list of the parameters used to launch the activity, it is the parameters for the
+ *   AppConfig associated to the activity.
+ *    - \b parameter: defines a parameter
+ *        - \b replace: name of the parameter as defined in the AppConfig
+ *        - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
+ *          frontal) or define a sesh@ path (ex. \@values.myImage). The root object of the sesh@ path if the
+ *          composite contained in the ActivitySeries.
+ * - \b filter (optional): it allows to filter the activity that can be proposed.
+ *    - \b mode: 'include' or 'exclude'. Defines if the activity in the following list are proposed (include) or not
+ *      (exclude).
+ *    - \b id: id of the activity
+ * - \b quickLaunch (optional): defines the activity that will be launched on a double-click on a series. The
+ *   launched activity depends of the series type (ImageSeries, ModelSeries, ...).
+ *    - \b association: allows to associate an activity to launch with a type of series
+ *       - \b type: type of series (::fwMedData::ImageSeries, ::fwMedData::ModelSeries, ....)
+ *       - \b id: identifier of the activity.
+ *
+ *
+ * @note A sesh@ path is a path used to browse an object (and sub-object) using the introspection (see fwDataCamp).
+ *       The path begins with a '@' or a '!'.
+ *          - '@' : the returned string is the fwID of the sub-object defined by the path.
+ *          - '!' : the returned string is the value of the sub-object, it works only on String, Integer, Float and
+ *            Boolean object.
  */
 class ACTIVITIES_CLASS_API SActivityLauncher : public ::fwGui::IActionSrv
 {
@@ -46,13 +122,25 @@ public:
     /// Destructor. Do nothing.
     ACTIVITIES_API virtual ~SActivityLauncher() throw();
 
+    /**
+     * @name Slot API
+     * @{
+     */
     ACTIVITIES_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_SERIES_SLOT;
-    typedef ::fwCom::Slot< void (SPTR( ::fwMedData::Series )) > LaunchSeriesSlotType;
+    ACTIVITIES_API static const ::fwCom::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT;
+    ACTIVITIES_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_STATE_SLOT;
+    /// @}
 
+
+    /**
+     * @name Signal API
+     * @{
+     */
     typedef ::fwCom::Signal< void ( ::fwActivities::registry::ActivityMsg ) > ActivityLaunchedSignalType;
 
     /// Key in m_signals map of signal m_sigActivityLaunched
     ACTIVITIES_API static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG;
+    /// @}
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -79,67 +167,6 @@ protected:
     /**
      * @brief Initialize the action.
      * @see fwGui::IActionSrv::initialize()
-     *
-     * @verbatim
-       <service uid="action_newActivity" type="::fwGui::IActionSrv" impl="::activities::action::SActivityLauncher" autoConnect="yes" >
-         <config>
-             <!-- SActivityLauncher mode : immediate or message(default)
-             Immediate mode starts and stop immediatly the activity's config -->
-             <mode>immediate</mode>
-             <parameters>
-                 <parameter replace="SERIESDB" by="medicalData" />
-                 <parameter replace="IMAGE" by="@values.ImageSeries.image" />
-             </parameters>
-
-             <!-- Filter mode 'include' allows all given activity id-s.
-                  Filter mode 'exclude' allows all activity id-s excepted given ones. -->
-             <filter>
-                <mode>include</mode>
-                <id>2DVisualizationActivity</id>
-                <id>3DVisualizationActivity</id>
-                <id>VolumeRenderingActivity</id>
-            </filter>
-
-            <!-- Definition of quick association between series type and an activity id.
-                 This mapping is used by launchSeries slot (see the function to have few details ) -->
-            <quickLaunch>
-                <association type="::fwMedData::ImageSeries" id="2DVisualizationActivity" />
-                <association type="::fwMedData::ModelSeries" id="3DVisualizationActivity" />
-            </quickLaunch>
-
-         </config>
-       </service>
-       @endverbatim
-     *
-     * - \b mode (optional): there are two mode: "message" and "immediate"
-     *    - \b message (used by défaut): the action send a signal containing the information needed to launch the
-     *      choosen activity. The service '::guiQt::editor::DynamicView' allows to launch the activity in a new tab. For
-     *      that, it must listen the action signal.
-     *    - \b immediate: the activity is automatically started et stopped by this action. It is used to run a process
-     *      without creating a new tab, for example, to save the selected data.
-     * - \b parameters (optional): list of the parameters used to launch the activity, it is the parameters for the
-     *   AppConfig associated to the activity.
-     *    - \b parameter: defines a parameter
-     *        - \b replace: name of the parameter as defined in the AppConfig
-     *        - \b by: defines the string that will replace the parameter name. It should be a simple string (ex.
-     *          frontal) or define a sesh@ path (ex. @values.myImage). The root object of the sesh@ path if the
-     *          composite contained in the ActivitySeries.
-     * - \b filter (optional): it allows to filter the activity that can be proposed.
-     *    - \b mode: 'include' or 'exclude'. Defines if the activity in the following list are proposed (include) or not
-     *      (exclude).
-     *    - \b id: id of the activity
-     * - \b quickLaunch (optional): defines the activity that will be launched on a double-click on a series. The
-     *   launched activity depends of the series type (ImageSeries, ModelSeries, ...).
-     *    - \b association: allows to associate an activity to launch with a type of series
-     *       - \b type: type of series (::fwMedData::ImageSeries, ::fwMedData::ModelSeries, ....)
-     *       - \b id: identifier of the activity.
-     *
-     *
-     * @note A sesh@ path is a path used to browse an object (and sub-object) using the introspection (see fwDataCamp).
-     *       The path begins with a '@' or a '!'.
-     *          - '@' : the returned string is the fwID of the sub-object defined by the path.
-     *          - '!' : the returned string is the value of the sub-object, it works only on String, Integer, Float and
-     *            Boolean object.
      */
     virtual void configuring() throw(fwTools::Failed);
 
@@ -154,8 +181,6 @@ protected:
 
     //// SLOT: Updates action state (enable if activities are available for current selection).
     virtual void updateState();
-
-    static const ::fwCom::Slots::SlotKeyType s_UPDATE_STATE_SLOT;
 
     /**
      * @brief Interpret configuration parameters.
@@ -178,6 +203,12 @@ private:
      * this series or used m_quickLaunch information if a default association is defined for this series type.
      */
     void launchSeries(::fwMedData::Series::sptr series);
+
+    /**
+     * @brief Slots to launch the given activity series.
+     * @param series the activity series to launch.
+     */
+    void launchActivitySeries(::fwMedData::ActivitySeries::sptr series);
 
     /**
      * @brief Send message to launch new tab view
@@ -230,5 +261,3 @@ private:
 
 
 #endif // __ACTIVITIES_ACTION_SACTIVITYLAUNCHER_HPP__
-
-

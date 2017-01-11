@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,9 +13,9 @@
 
 #include <fwData/Composite.hpp>
 
-#include <fwComEd/helper/Composite.hpp>
+#include <fwDataTools/helper/Composite.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 
 namespace ctrlSelection
@@ -97,7 +97,7 @@ void SObjFromUid::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SObjFromUid::info( std::ostream &_sstream )
+void SObjFromUid::info( std::ostream& _sstream )
 {
 }
 
@@ -106,7 +106,7 @@ void SObjFromUid::info( std::ostream &_sstream )
 void SObjFromUid::add()
 {
     ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(m_objectUid));
-    ::fwComEd::helper::Composite helper( this->getObject< ::fwData::Composite >() );
+    ::fwDataTools::helper::Composite helper( this->getObject< ::fwData::Composite >() );
     helper.add(m_compositeKey, obj);
     helper.notify();
 }
@@ -117,7 +117,7 @@ void SObjFromUid::addOrSwap()
 {
     ::fwData::Object::sptr obj          = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(m_objectUid));
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-    ::fwComEd::helper::Composite helper(composite);
+    ::fwDataTools::helper::Composite helper(composite);
     if (composite->find(m_compositeKey) == composite->end())
     {
         helper.add(m_compositeKey, obj);
@@ -134,7 +134,7 @@ void SObjFromUid::addOrSwap()
 void SObjFromUid::swap()
 {
     ::fwData::Object::sptr obj = ::fwData::Object::dynamicCast(::fwTools::fwID::getObject(m_objectUid));
-    ::fwComEd::helper::Composite helper( this->getObject< ::fwData::Composite >() );
+    ::fwDataTools::helper::Composite helper( this->getObject< ::fwData::Composite >() );
     helper.swap(m_compositeKey, obj);
     helper.notify();
 }
@@ -143,7 +143,7 @@ void SObjFromUid::swap()
 
 void SObjFromUid::remove()
 {
-    ::fwComEd::helper::Composite helper( this->getObject< ::fwData::Composite >() );
+    ::fwDataTools::helper::Composite helper( this->getObject< ::fwData::Composite >() );
     helper.remove(m_compositeKey);
     helper.notify();
 }
@@ -153,7 +153,7 @@ void SObjFromUid::remove()
 void SObjFromUid::removeIfPresent()
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-    ::fwComEd::helper::Composite helper(composite);
+    ::fwDataTools::helper::Composite helper(composite);
     if (composite->find(m_compositeKey) != composite->end())
     {
         helper.remove(m_compositeKey);

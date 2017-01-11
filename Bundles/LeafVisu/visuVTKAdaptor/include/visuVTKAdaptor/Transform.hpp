@@ -45,6 +45,9 @@ public:
     /// Updates the TransformationMatrix3D from the vtkTransform
     VISUVTKADAPTOR_API void updateFromVtk();
 
+    /// Returns the priority of the adaptor - some adaptors may have to be started before other ones
+    VISUVTKADAPTOR_API virtual int getStartPriority();
+
 protected:
 
     /// Calls doUpdate()
@@ -52,11 +55,11 @@ protected:
 
     /**
      * @brief Configure the adaptor.
-     * @verbatim
+     * @code{.xml}
        <adaptor id="tmAdaptor" class="::visuVTKAdaptor::Transform" objectId="tm3dKey" >
         <config transform="transform" autoRender="true" parent="parentTransform" />
        </adaptor>
-       @endverbatim
+       @endcode
      * With :
      *  - \b transform (mandatory) : the vtkTransform to associate to the adaptor
      *  - \b autoRender (optional, "true" by default): if autoRender=true,  the scene is automatically rendered after

@@ -84,6 +84,12 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwGui::IActionSrv</type>
+        <service>::gui::action::SPushField</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IDialogEditor</type>
         <service>::gui::editor::SJobBar</service>
         <object>::fwData::Object</object>

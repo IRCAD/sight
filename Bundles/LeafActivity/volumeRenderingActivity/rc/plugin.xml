@@ -15,10 +15,13 @@
         <id>VolumeRendering</id>
         <title>Volume rendering</title>
         <desc>Volume rendering activity</desc>
-        <icon>Bundles/media_0-1/icons/icon-VR.png</icon>
+        <icon>@BUNDLE_PREFIX@/media_0-1/icons/icon-VR.png</icon>
         <requirements>
-            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1">
+                <desc>Image to displayed in volumic rendering.</desc>
+            </requirement>
             <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="1" >
+                <desc>Optional model to superimpose with the volumic image.</desc>
                 <key>optionalModelSeriesKey</key>
             </requirement>
         </requirements>

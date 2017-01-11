@@ -15,14 +15,13 @@
 #include <fwCom/Connection.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Object.hpp>
 #include <fwData/PlaneList.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-
-#include <fwServices/helper/SigSlotConnection.hpp>
 
 namespace visuVTKAdaptor
 {
@@ -88,7 +87,7 @@ protected:
     ::fwData::PlaneList::wptr m_currentPlaneList;
 
     /// Register connection between planelist and this adaptor
-    ::fwServices::helper::SigSlotConnection::sptr m_plConnection;
+    ::fwCom::helper::SigSlotConnection m_plConnection;
 
     /// Register connection between plane and this service
     ConnetionMapType m_planeConnections;

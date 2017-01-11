@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuVTKAdaptor/ImageLandmarks.hpp"
+
 #include "visuVTKAdaptor/PointLabel.hpp"
 #include "visuVTKAdaptor/PointList.hpp"
 
@@ -16,18 +17,16 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
+#include <fwDataTools/fieldHelper/Image.hpp>
 
-#include <algorithm>
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <vtkActor.h>
 #include <vtkAssemblyNode.h>
@@ -36,16 +35,18 @@
 #include <vtkCommand.h>
 #include <vtkCubeSource.h>
 #include <vtkPolyDataMapper.h>
-#include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkRenderer.h>
+
+#include <algorithm>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImageLandmarks, ::fwData::Image );
 
 namespace visuVTKAdaptor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_LANDMARKS_SLOT = "updateLandmaks";
-
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_LANDMARKS_SLOT       = "updateLandmaks";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_LANDMARKS_FIELD_SLOT = "updateLandmarksField";
 
 //------------------------------------------------------------------------------
 
@@ -54,7 +55,7 @@ void notifyRemoveLandMark( ::fwData::Image::sptr image, ::fwServices::IService* 
     SLM_ASSERT("NULL Service", _service);
 
     ::fwData::PointList::sptr pointList = image->getField< ::fwData::PointList >(
-        ::fwComEd::Dictionary::m_imageLandmarksId );
+        ::fwDataTools::fieldHelper::Image::m_imageLandmarksId );
 
     auto sig =
         pointList->signal< ::fwData::PointList::PointRemovedSignalType >(::fwData::PointList::s_POINT_REMOVED_SIG);
@@ -71,12 +72,12 @@ class vtkPointDeleteCallBack : public vtkCommand
 {
 
 public:
-    static vtkPointDeleteCallBack *New( ::fwRenderVTK::IVtkAdaptorService *service)
+    static vtkPointDeleteCallBack* New( ::fwRenderVTK::IVtkAdaptorService* service)
     {
         return new vtkPointDeleteCallBack(service);
     }
 
-    vtkPointDeleteCallBack( ::fwRenderVTK::IVtkAdaptorService *service )
+    vtkPointDeleteCallBack( ::fwRenderVTK::IVtkAdaptorService* service )
         : m_service(service),
           m_picker( vtkCellPicker::New() ),
           m_propCollection( vtkPropCollection::New() )
@@ -106,7 +107,7 @@ public:
         m_service->getAllSubProps(m_propCollection);
         m_propCollection->InitTraversal();
 
-        vtkProp *prop;
+        vtkProp* prop;
 
         while ( (prop = m_propCollection->GetNextProp()) )
         {
@@ -114,7 +115,7 @@ public:
         }
     }
 
-    virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
+    virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
         int pos[2];
         m_service->getInteractor()->GetLastEventPosition(pos);
@@ -158,8 +159,8 @@ public:
     bool getSelectedPoint()
     {
         bool isFind              = false;
-        vtkPropCollection *propc = m_picker->GetActors();
-        vtkProp *prop;
+        vtkPropCollection* propc = m_picker->GetActors();
+        vtkProp* prop;
 
         propc->InitTraversal();
         while ( (prop = propc->GetNextProp()) )
@@ -184,8 +185,8 @@ public:
 
 protected:
     ::fwRenderVTK::IVtkAdaptorService *m_service;
-    vtkPicker * m_picker;
-    vtkPropCollection * m_propCollection;
+    vtkPicker* m_picker;
+    vtkPropCollection* m_propCollection;
     double m_display[3];
     int m_lastPos[2];
     ::fwData::Point::wptr m_pickedPoint;
@@ -200,6 +201,7 @@ ImageLandmarks::ImageLandmarks() throw() :
     m_needSubservicesDeletion(false)
 {
     newSlot(s_UPDATE_LANDMARKS_SLOT, &ImageLandmarks::updateLandmaks, this);
+    newSlot(s_UPDATE_LANDMARKS_FIELD_SLOT, &ImageLandmarks::updateLandmaksField, this);
 }
 
 //------------------------------------------------------------------------------
@@ -245,7 +247,7 @@ void ImageLandmarks::doUpdate() throw(fwTools::Failed)
 
     ::fwData::PointList::sptr landmarks;
     bool isShown;
-    landmarks = image->getField< ::fwData::PointList >(  ::fwComEd::Dictionary::m_imageLandmarksId );
+    landmarks = image->getField< ::fwData::PointList >(  ::fwDataTools::fieldHelper::Image::m_imageLandmarksId );
     isShown   = image->getField("ShowLandmarks", ::fwData::Boolean::New(true))->value();
 
     if (!isShown || !landmarks || m_needSubservicesDeletion)
@@ -297,6 +299,19 @@ void ImageLandmarks::updateLandmaks()
 
 //------------------------------------------------------------------------------
 
+void ImageLandmarks::updateLandmaksField(::fwData::Object::FieldsContainerType fieldsContainer)
+{
+    auto landmarkFound = fieldsContainer.find(::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
+
+    if( landmarkFound != fieldsContainer.end())
+    {
+        m_needSubservicesDeletion = true; // to manage point deletion
+        this->updating();
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void ImageLandmarks::doStop() throw(fwTools::Failed)
 {
     if ( m_rightButtonCommand ) // can be not instanciated (use of ImageLandmarks::show() )
@@ -331,6 +346,7 @@ void ImageLandmarks::show(bool b)
     connections.push_back( std::make_pair( ::fwData::Image::s_LANDMARK_ADDED_SIG, s_UPDATE_LANDMARKS_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Image::s_LANDMARK_REMOVED_SIG, s_UPDATE_LANDMARKS_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Image::s_LANDMARK_DISPLAYED_SIG, s_UPDATE_LANDMARKS_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Image::s_ADDED_FIELDS_SIG, s_UPDATE_LANDMARKS_FIELD_SLOT ) );
 
     return connections;
 }

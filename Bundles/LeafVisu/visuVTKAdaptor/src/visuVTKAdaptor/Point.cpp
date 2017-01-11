@@ -17,7 +17,7 @@
 #include <fwData/Point.hpp>
 #include <fwData/Material.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <vtkActor.h>
 #include <vtkCommand.h>

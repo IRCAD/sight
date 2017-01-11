@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -100,7 +100,7 @@
  * finished.
  *
  * Here is an example of Job use:
- * \verbatim
+ * \code{.cpp}
 
     ::fwJobs::Job::sptr job = ::fwJobs::Job::New( "Example of Job",
         [=](::fwJobs::Job& runningJob)
@@ -122,7 +122,7 @@
 
     job.run().wait();
 
- * \endverbatim
+   \endcode
  *
  * A Job is initialized with a function taking a job as parameter. This
  * Job is actually the Job itself.
@@ -134,7 +134,7 @@
  * At the end, the job is run to perform the task.
  *
  * Job's progress and cancellation are feasible by other means:
- * \verbatim
+ * \code{.cpp}
 
     ::fwJobs::Job::sptr job = ::fwJobs::Job::New( "VTK Mesh reader",
         [=](::fwJobs::Job& runningJob)
@@ -154,7 +154,7 @@
 
     job.run().wait();
 
- * \endverbatim
+   \endcode
  *
  * Here, Job's progress is updated through a done work callback: this function
  * set the number of done work units of the Job. This callback needs only the
@@ -175,7 +175,7 @@
  * Observer are generally used where progress is already given by an external
  * source.
  * This is shown in the following example:
- * \verbatim
+ * \code{.cpp}
 
     ::fwJobs::Observer observer =  ::fwJobs::Observer::New("VTK Image reader");
 
@@ -197,7 +197,7 @@
 
     observer->finish();
 
- * \endverbatim
+   \endcode
  *
  * Here, the progress is given by the reader (here filter). The method
  * doneWork() is embedded in the reader through a callback. Moreover, the
@@ -235,7 +235,7 @@
  * is changed.
  *
  * Below, an example of Aggregator use:
- * \verbatim
+ * \code{.cpp}
 
     ::fwJobs::Aggregator::sptr = ::fwJobs::Aggregator::New("Example of Aggregator");
 
@@ -245,7 +245,7 @@
 
     m_job->run().wait();
 
- * \endverbatim
+   \endcode
  *
  * @section ThreadSafe Thread safe
  *

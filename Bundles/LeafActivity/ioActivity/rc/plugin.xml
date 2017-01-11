@@ -39,6 +39,40 @@
         </appConfig>
     </extension>
 
+    <!-- Activity used to export an image series. -->
+    <extension implements="::fwActivities::registry::Activities">
+        <id>ImageSeriesExport2</id>
+        <title>ImageSeries Export</title>
+        <desc>Activity to export the selected ImageSeries.</desc>
+        <icon>NONE</icon>
+        <requirements>
+            <requirement name="series" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="ExportSelection2">
+            <parameters>
+                <parameter replace="selection" by="@values.series" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <!-- Activity used to export a model series. -->
+    <extension implements="::fwActivities::registry::Activities">
+        <id>ModelSeriesExport2</id>
+        <title>ModelSeries Export</title>
+        <desc>Activity to export the selected ModelSeries.</desc>
+        <icon>NONE</icon>
+        <requirements>
+            <requirement name="series" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="ExportSelection2">
+            <parameters>
+                <parameter replace="selection" by="@values.series" />
+            </parameters>
+        </appConfig>
+    </extension>
+
     <!-- App config used to export the selected series. -->
     <extension implements="::fwServices::registry::AppConfig">
         <id>ExportSelection</id>
@@ -59,7 +93,26 @@
         </config>
     </extension>
 
-    <!-- Service config used to read SeriesDB without using ioAtoms.. -->
+    <!-- App config used to export the selected series. -->
+    <extension implements="::fwServices::registry::AppConfig2">
+        <id>ExportSelection2</id>
+        <parameters>
+            <param name="selection" />
+        </parameters>
+        <config>
+            <object uid="${selection}" src="ref" />
+            <service uid="export_selection" type="::uiIO::editor::SIOSelector" autoConnect="yes">
+                <in key="selection" uid="${selection}" />
+                <type mode="writer" />
+                <selection mode="exclude" />
+                <addSelection service="::ioAtoms::SWriter" />
+            </service>
+            <start uid="export_selection" />
+            <update uid="export_selection" />
+        </config>
+    </extension>
+
+    <!-- Service config used to read SeriesDB without using ioAtoms. -->
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>SDBReaderIOSelectorConfig</id>
         <service>::uiIO::editor::SIOSelector</service>
@@ -83,15 +136,78 @@
             <config id="MDAtomsConfig" service="::ioAtoms::SReader" />
         </config>
     </extension>
+    
+    <!-- Service config used to write a seriesDB using ioAtoms. -->
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>SDBAtomsWriterIOSelectorConfig</id>
+        <service>::uiIO::editor::SIOSelector</service>
+        <desc>Atoms seriesDB writer.</desc>
+        <config>
+            <type mode="writer" />
+            <selection mode="include" />
+            <addSelection service="::ioAtoms::SWriter" />
+            <config id="MDAtomsConfig" service="::ioAtoms::SWriter" />
+        </config>
+    </extension>
+    
+    <!-- Service config used to read SeriesDB with all the available reader for SeriesDB. -->
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>FullSDBReaderIOSelectorConfig</id>
+        <service>::uiIO::editor::SIOSelector</service>
+        <desc>IOSelectorService config for SeriesDB reader</desc>
+        <config>
+            <type mode="reader" />
+            <selection mode="exclude" />
+            <config id="MDAtomsConfig" service="::ioAtoms::SReader" />
+        </config>
+    </extension>
 
     <!-- Service config used for ioAtoms reader and writer. Defines the Data version and filter to use. -->
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>MDAtomsConfig</id>
-        <desc>reader/writer config to read/write an atom representing a medical data</desc>
+        <desc>Reader/Writer for atoms representing a medical data</desc>
         <config>
             <patcher context="MedicalData" version="V09ALA" />
             <filter>VRRenderMedicalDataV2</filter>
         </config>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>ActivityMDAtomsConfig</id>
+        <desc>Reader/Writer for atoms representing an activity project</desc>
+        <config>
+            <archive backend="jsonz">
+                <extension>.apz</extension>
+            </archive>
+            <extensions>
+                <extension label="Zipped Activity Project">.apz</extension>
+            </extensions>
+            <patcher context="MedicalData" version="V09ALA" />
+        </config>
+    </extension>
+    
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>ActivityReaderConfig</id>
+        <service>::uiIO::editor::SIOSelector</service>
+        <desc>Activity reader</desc>
+        <config>
+            <type mode="reader" />
+            <selection mode="include" />
+            <addSelection service="::ioAtoms::SReader" />
+            <config id="ActivityMDAtomsConfig" service="::ioAtoms::SReader" />
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>ActivityWriterConfig</id>
+        <service>::uiIO::editor::SIOSelector</service>
+        <desc>Activity writer</desc>
+        <config>
+            <type mode="writer" />
+            <selection mode="include" />
+            <addSelection service="::ioAtoms::SWriter" />
+            <config id="ActivityMDAtomsConfig" service="::ioAtoms::SWriter" />
+        </config>
+    </extension>
+    
 </plugin>

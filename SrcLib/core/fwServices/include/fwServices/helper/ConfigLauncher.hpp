@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,13 @@
 #ifndef __FWSERVICES_HELPER_CONFIGLAUNCHER_HPP__
 #define __FWSERVICES_HELPER_CONFIGLAUNCHER_HPP__
 
-#include "fwServices/AppConfigManager.hpp"
-#include "fwServices/helper/SigSlotConnection.hpp"
-#include "fwServices/registry/AppConfig.hpp"
+#include "fwServices/IAppConfigManager.hpp"
 #include "fwServices/config.hpp"
+#include "fwServices/registry/AppConfig.hpp"
 
 #include <fwActivities/registry/Activities.hpp>
+
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
@@ -28,9 +29,7 @@ class IService;
 namespace helper
 {
 
-
 /**
- * @class   ConfigLauncher
  * @brief   This class provides few methods to manage AppConfig (parsing, starting, stopping...).
  */
 class FWSERVICES_CLASS_API ConfigLauncher : public ::fwCore::BaseObject
@@ -42,7 +41,7 @@ public:
                                             (()),
                                             std::make_shared< ConfigLauncher > );
 
-    typedef ::fwServices::registry::AppConfig::FieldAdaptorType FieldAdaptorType;
+    typedef ::fwServices::registry::FieldAdaptorType FieldAdaptorType;
 
     /// Constructor. Do nothing.
     FWSERVICES_API ConfigLauncher();
@@ -54,7 +53,7 @@ public:
      * @brief Parse a ConfigLauncher configuration
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
        <service>
            <config>
                 <appConfig id="Visu2DID" >
@@ -65,7 +64,7 @@ public:
                 </appConfig>
             </config>
        </service>
-        @endverbatim
+        @endcode
      */
     FWSERVICES_API virtual void parseConfig(const ::fwServices::IService::ConfigType& config);
 
@@ -91,7 +90,7 @@ public:
 protected:
 
     /// To manage connection to the config root
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     ::fwActivities::registry::ActivityAppConfig m_appConfig;
 
@@ -99,7 +98,7 @@ protected:
     bool m_configIsRunning;
 
     // config manager
-    ::fwServices::AppConfigManager::sptr m_appConfigManager;
+    ::fwServices::IAppConfigManager::sptr m_appConfigManager;
 
 private:
 

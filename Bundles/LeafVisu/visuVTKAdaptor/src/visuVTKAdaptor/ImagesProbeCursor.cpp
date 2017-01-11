@@ -4,22 +4,23 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/ImageText.hpp"
 #include "visuVTKAdaptor/ImagesProbeCursor.hpp"
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/helper/Image.hpp>
+#include "visuVTKAdaptor/ImageText.hpp"
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/helper/Image.hpp>
+
+#include <fwRenderVTK/vtk/Helpers.hpp>
+
+#include <fwServices/macros.hpp>
 
 #include <vtkAbstractPropPicker.h>
-
 #include <vtkActor.h>
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
@@ -29,13 +30,10 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderWindowInteractor.h>
-
 #include <vtkTextActor.h>
 #include <vtkTextMapper.h>
 #include <vtkTextProperty.h>
 #include <vtkTransform.h>
-
-#include <fwRenderVTK/vtk/Helpers.hpp>
 
 #include <boost/format.hpp>
 
@@ -54,7 +52,7 @@ namespace visuVTKAdaptor
 class ImagesProbingCallback : public vtkCommand
 {
 public:
-    static ImagesProbingCallback *New()
+    static ImagesProbingCallback* New()
     {
         return new ImagesProbingCallback();
     }
@@ -71,7 +69,7 @@ public:
     {
     }
 
-    virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
+    virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
         assert(m_priority>=0);
         SLM_ASSERT("m_adaptor not instanced", m_adaptor);
@@ -137,7 +135,7 @@ public:
         m_adaptor = adaptor;
     }
 
-    void setPicker( vtkAbstractPropPicker *adaptor)
+    void setPicker( vtkAbstractPropPicker* adaptor)
     {
         m_picker = adaptor;
     }
@@ -149,7 +147,7 @@ public:
 
 protected:
     ImagesProbeCursor::sptr m_adaptor;
-    vtkAbstractPropPicker *m_picker;
+    vtkAbstractPropPicker* m_picker;
     float m_priority;
 
     bool m_mouseMoveObserved;
@@ -256,7 +254,7 @@ void ImagesProbeCursor::doStart() throw(fwTools::Failed)
     }
     this->addToRenderer(m_cursorActor);
 
-    ImagesProbingCallback *observer = ImagesProbingCallback::New();
+    ImagesProbingCallback* observer = ImagesProbingCallback::New();
     observer->setAdaptor( ImagesProbeCursor::dynamicCast(this->getSptr()) );
     observer->setPicker(this->getPicker());
     observer->setPriority(  m_priority );
@@ -310,7 +308,7 @@ void ImagesProbeCursor::updateView( double world[3] )
         ::fwData::Image::sptr image = ::fwData::Image::dynamicCast((*composite)[m_imagesId.begin()->first]);
         OSLM_ASSERT("Object '" << m_imagesId.begin()->first << "' must be an image", image);
 
-        if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+        if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
         {
             this->updateImageInfos(image);
 
@@ -331,7 +329,7 @@ void ImagesProbeCursor::updateView( double world[3] )
             }
             else
             {
-                ::fwComEd::helper::Image imageHelper(image);
+                ::fwDataTools::helper::Image imageHelper(image);
                 txt << (::boost::format("(% 4li,% 4li,% 4li)") % index[0] % index[1] % index[2] ).str() << std::endl;
 
                 // update polyData
@@ -356,9 +354,9 @@ void ImagesProbeCursor::updateView( double world[3] )
             ::fwData::Image::sptr image = ::fwData::Image::dynamicCast((*composite)[element.first]);
             OSLM_ASSERT("Object '" << element.first << "' must be an image", image);
 
-            if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+            if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
             {
-                ::fwComEd::helper::Image imageHelper(image);
+                ::fwDataTools::helper::Image imageHelper(image);
                 this->updateImageInfos(image);
 
                 int index[3];
@@ -445,7 +443,7 @@ void ImagesProbeCursor::buildPolyData()
         points->SetPoint(i, 0.0, 0.0, 0.0);
     }
 
-    vtkCellArray *cells = vtkCellArray::New();
+    vtkCellArray* cells = vtkCellArray::New();
     cells->Allocate(cells->EstimateSize(nbPoints,2));
 
     vtkIdType pts[2];

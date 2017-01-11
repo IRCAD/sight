@@ -10,8 +10,9 @@
 #include "visuVTKAdaptor/Text.hpp"
 #include "visuVTKAdaptor/config.hpp"
 
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
 #include <string>
 
@@ -25,7 +26,7 @@ namespace visuVTKAdaptor
  * position)
  */
 class VISUVTKADAPTOR_CLASS_API ImageText : public Text,
-                                           public ::fwComEd::helper::MedicalImageAdaptor
+                                           public ::fwDataTools::helper::MedicalImageAdaptor
 {
 
 public:

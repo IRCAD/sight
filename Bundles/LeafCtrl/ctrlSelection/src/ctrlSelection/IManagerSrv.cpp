@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,7 +36,7 @@ void IManagerSrv::swapping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void IManagerSrv::manageConnections(const std::string &objectId, ::fwData::Object::sptr object,
+void IManagerSrv::manageConnections(const std::string& objectId, ::fwData::Object::sptr object,
                                     ConfigurationType config)
 {
     for(ConfigurationType connectCfg :  config->find("connect"))
@@ -47,39 +47,27 @@ void IManagerSrv::manageConnections(const std::string &objectId, ::fwData::Objec
 
 //-----------------------------------------------------------------------------
 
-void IManagerSrv::manageConnection(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config)
+void IManagerSrv::manageConnection(const std::string& objectId, ::fwData::Object::sptr object, ConfigurationType config)
 {
-    ::fwServices::helper::SigSlotConnection::sptr connection;
-    ObjectConnectionsMapType::iterator iter = m_objectConnections.find(objectId);
-    if (iter != m_objectConnections.end())
-    {
-        connection = iter->second;
-    }
-    else
-    {
-        connection                    = ::fwServices::helper::SigSlotConnection::New();
-        m_objectConnections[objectId] = connection;
-    }
-
-    ::fwServices::helper::Config::createConnections(config, connection, object);
+    ::fwServices::helper::Config::createConnections(config, m_objectConnections[objectId], object);
 }
 
 //-----------------------------------------------------------------------------
 
-void IManagerSrv::removeConnections(const std::string &objectId)
+void IManagerSrv::removeConnections(const std::string& objectId)
 {
     ObjectConnectionsMapType::iterator iter = m_objectConnections.find(objectId);
     if (iter != m_objectConnections.end())
     {
-        ::fwServices::helper::SigSlotConnection::sptr connection = iter->second;
-        connection->disconnect();
+        ::fwCom::helper::SigSlotConnection& connection = iter->second;
+        connection.disconnect();
     }
     m_objectConnections.erase(objectId);
 }
 
 //-----------------------------------------------------------------------------
 
-void IManagerSrv::manageProxies(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config)
+void IManagerSrv::manageProxies(const std::string& objectId, ::fwData::Object::sptr object, ConfigurationType config)
 {
     for(ConfigurationType proxyCfg :  config->find("proxy"))
     {
@@ -89,7 +77,7 @@ void IManagerSrv::manageProxies(const std::string &objectId, ::fwData::Object::s
 
 //-----------------------------------------------------------------------------
 
-void IManagerSrv::disconnectProxies(const std::string &objectId)
+void IManagerSrv::disconnectProxies(const std::string& objectId)
 {
     ::fwServices::helper::Config::disconnectProxies(objectId, m_proxyCtns);
 }

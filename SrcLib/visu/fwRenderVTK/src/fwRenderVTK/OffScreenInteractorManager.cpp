@@ -1,17 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderVTK/OffScreenInteractorManager.hpp"
 
-#include <vtkRenderer.h>
+#include <fwRenderVTK/registry/macros.hpp>
+
+#include <vtkObjectFactory.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
-#include <vtkObjectFactory.h>
-
-#include <fwRenderVTK/registry/macros.hpp>
+#include <vtkRenderer.h>
 
 //-----------------------------------------------------------------------------
 
@@ -29,13 +29,12 @@ namespace fwRenderVTK
  *          On Linux, the default vtkXRenderWindowInteractor creates a X window when we trigger the rendering.
  *          We don't want this behavior. So we instantiate our own empty implementation that does not create a X window.
  *
- * @class   vtkOffscreenRenderWindowInteractor
  *
  */
 class vtkOffscreenRenderWindowInteractor : public vtkRenderWindowInteractor
 {
 public:
-    static vtkOffscreenRenderWindowInteractor *New();
+    static vtkOffscreenRenderWindowInteractor* New();
     vtkTypeMacro(vtkOffscreenRenderWindowInteractor,vtkRenderWindowInteractor)
 
 protected:
@@ -69,7 +68,7 @@ OffScreenInteractorManager::~OffScreenInteractorManager()
 
 void OffScreenInteractorManager::installInteractor( ::fwGui::container::fwContainer::sptr _parent )
 {
-    OSLM_FATAL("This interactor doens't need container, use installInteractor(width, height).");
+    SLM_FATAL("This interactor doesn't need container, use installInteractor(width, height).");
 }
 
 //-----------------------------------------------------------------------------
@@ -94,7 +93,7 @@ void OffScreenInteractorManager::uninstallInteractor()
 
 //-----------------------------------------------------------------------------
 
-::vtkRenderWindowInteractor * OffScreenInteractorManager::getInteractor()
+::vtkRenderWindowInteractor* OffScreenInteractorManager::getInteractor()
 {
     return m_interactor;
 }

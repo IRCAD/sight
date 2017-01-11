@@ -34,8 +34,11 @@ OrientationMarker::OrientationMarker() : m_hAlign("left")
 
 void OrientationMarker::doStart() throw(fwTools::Failed)
 {
+
+    std::string file = std::string(BUNDLE_PREFIX) +
+                       "/visuVTKAdaptor_0-1/human.vtk";
     vtkSmartPointer< vtkGenericDataObjectReader > reader = vtkSmartPointer< vtkGenericDataObjectReader >::New();
-    reader->SetFileName("Bundles/visuVTKAdaptor_0-1/human.vtk");
+    reader->SetFileName( file.c_str() );
     reader->Update();
     vtkDataObject *obj = reader->GetOutput();
     vtkPolyData* mesh  = vtkPolyData::SafeDownCast(obj);

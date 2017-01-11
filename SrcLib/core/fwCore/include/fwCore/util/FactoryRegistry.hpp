@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,11 +8,6 @@
 #define __FWCORE_UTIL_FACTORYREGISTRY_HPP__
 
 #include "fwCore/mt/types.hpp"
-
-#include <boost/bind.hpp>
-#include <boost/function.hpp>
-#include <boost/functional/factory.hpp>
-#include <boost/functional/value_factory.hpp>
 
 #include <functional>
 #include <map>
@@ -29,7 +24,7 @@ namespace util
  * @note This class is thread safe.
  */
 template < typename FACTORY_SIGNATURE, typename KEY_TYPE = std::string,
-           typename FACTORY_HOLDER                       = ::boost::function< FACTORY_SIGNATURE > >
+           typename FACTORY_HOLDER                       = std::function< FACTORY_SIGNATURE > >
 class FactoryRegistryBase
 {
 public:
@@ -41,6 +36,10 @@ public:
     typedef std::vector<KeyType> KeyVectorType;
 
     FactoryRegistryBase()
+    {
+    }
+
+    virtual ~FactoryRegistryBase()
     {
     }
 
@@ -92,7 +91,7 @@ protected:
 /**
  * @brief FactoryRegistry is a class used to store factories and create instance object with these factories.
  */
-template <typename F, typename KEY_TYPE = std::string, typename FACTORY_HOLDER = ::boost::function< F > >
+template <typename F, typename KEY_TYPE = std::string, typename FACTORY_HOLDER = std::function< F > >
 class FactoryRegistry;
 
 template< typename RETURN_TYPE, typename KEY_TYPE, typename FACTORY_HOLDER >

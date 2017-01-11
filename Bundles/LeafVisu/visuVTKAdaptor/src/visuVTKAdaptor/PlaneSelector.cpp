@@ -13,8 +13,6 @@
 
 #include <fwData/Object.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/macros.hpp>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneSelector, ::fwData::Object );

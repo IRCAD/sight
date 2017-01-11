@@ -11,8 +11,9 @@
 
 #include <fwData/Image.hpp>
 
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
 #include <vtkSmartPointer.h>
 

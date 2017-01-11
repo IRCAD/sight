@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -47,13 +47,13 @@ protected:
      * @brief Configuring method.
      *
      * XML configuration sample:
-       @verbatim
+       @code{.xml}
        <service impl="::uiGeneric::action::SShowAbout" type="::fwGui::IActionSrv">
          <filename id=".../aboutFile.html"/>
          <title>title</title>
          <size width="200" height="200" />
        </service>
-       @endverbatim
+       @endcode
      * This method is used to configure the service.
      */
     void configuring() throw( ::fwTools::Failed );

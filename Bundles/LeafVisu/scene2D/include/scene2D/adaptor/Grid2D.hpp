@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,12 +39,12 @@ protected:
      * @brief Configuring the Grid2D adaptor.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
        <adaptor id="grid1" class="::scene2D::adaptor::Grid2D" objectId="self">
         <config xMin="-1100" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1"
             color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
        </adaptor>
-       @endverbatim
+       @endcode
      * - \<config xMin="-1100" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1"
      *   color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/\> : Set the config.
      *
@@ -70,8 +70,6 @@ protected:
      *
      * \b zValue : no mandatory (default value : 0) : Set the zValue of the grid layer
      * (the higher the zValue, the higher the layer is).
-     *
-     * \b viewportUID : mandatory : a viewport that help us to manage the scaling of the graphic object
      *
      */
     SCENE2D_API void configuring() throw ( ::fwTools::Failed );

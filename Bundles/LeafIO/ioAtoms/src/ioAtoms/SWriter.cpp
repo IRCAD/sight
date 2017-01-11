@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,6 @@
 #include <fwData/location/Folder.hpp>
 
 #include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
@@ -219,32 +218,58 @@ void SWriter::updating() throw(::fwTools::Failed)
     ::fwGui::Cursor cursor;
     cursor.setCursor(::fwGui::ICursor::BUSY);
 
+    // Get the selected extension
     const ::boost::filesystem::path& requestedFilePath = this->getFile();
-    ::boost::filesystem::path filePath = requestedFilePath;
+    std::string requestedExtension                     = requestedFilePath.extension().string();
 
+    if ( !m_selectedExtension.empty()
+         && !requestedExtension.empty()
+         && m_selectedExtension.compare(requestedExtension))
+    {
+        std::string errorMessage("File extension '" + requestedExtension +
+                                 "' is different from the selected extension '" + m_selectedExtension + "'");
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",
+                                                          errorMessage,
+                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
+        return;
+    }
+
+    ::boost::filesystem::path filePath = requestedFilePath;
     if( ::boost::filesystem::exists( requestedFilePath ) )
     {
         FW_RAISE_IF( "can't write to : " << requestedFilePath << ", it is a directory.",
                      ::boost::filesystem::is_directory(requestedFilePath)
                      );
-
-        filePath.replace_extension("%%%%%%" + filePath.extension().string() );
         filePath = ::boost::filesystem::unique_path(filePath);
     }
 
-
     const ::boost::filesystem::path folderPath = filePath.parent_path();
-    const ::boost::filesystem::path filename   = filePath.filename();
-    std::string extension                      = ::boost::filesystem::extension(filePath);
+    ::boost::filesystem::path filename = filePath.filename();
+    std::string extension = filePath.extension().string();
 
+    // Check if the extension of the filename is set. If not, assign it to the selected extension.
+    if (extension.empty())
+    {
+        extension = m_selectedExtension;
+    }
+
+    // Check if the extension set is allowed. If not, assigns to the first allowed extension.
+    if (m_allowedExts.find(extension) == m_allowedExts.end())
+    {
+        std::set< std::string >::const_iterator begin = m_allowedExts.begin();
+        std::string firstAllowedExt                   = *begin;
+
+        extension = firstAllowedExt;
+    }
+    FW_RAISE_IF( "Extension is empty", extension.empty() );
     FW_RAISE_IF("The file extension '" << extension << "' is not managed",
                 m_allowedExts.find(extension) == m_allowedExts.end());
 
-    if(m_customExts.find(extension) != m_customExts.end())
+    // Find in custom extensions if our extension exists.
+    if (m_customExts.find(extension) != m_customExts.end())
     {
         extension = "." + m_customExts[extension];
     }
-    FW_RAISE_IF( "Extension is empty", extension.empty() );
 
     // Mutex data lock
     ::fwDataCamp::visitor::RecursiveLock recursiveLock (obj);
@@ -292,9 +317,7 @@ void SWriter::updating() throw(::fwTools::Failed)
     ::fwJobs::Job::sptr writeJob = ::fwJobs::Job::New("Writing " + extension + " file",
                                                       [ =, &atom](::fwJobs::Job& runningJob)
         {
-
             runningJob.doneWork(progressBarOffset);
-
             // Write atom
             ::fwZip::IWriteArchive::sptr writeArchive;
             ::fwAtomsBoostIO::FormatType format;
@@ -339,13 +362,10 @@ void SWriter::updating() throw(::fwTools::Failed)
             ::fwAtomsBoostIO::Writer(atom).write( writeArchive, archiveRootName, format );
             writeArchive.reset();
 
-            if (filePath != requestedFilePath)
-            {
-                ::boost::filesystem::rename(filePath, requestedFilePath);
-            }
-
             runningJob.done();
         }, m_associatedWorker );
+
+
 
     ::fwJobs::Aggregator::sptr jobs = ::fwJobs::Aggregator::New(extension + " writer");
     jobs->add(convertJob);
@@ -412,6 +432,7 @@ void SWriter::configureWithIHM()
             _sDefaultPath = result->getPath();
             this->setFile( _sDefaultPath );
             dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath.parent_path()) );
+            m_selectedExtension = dialogFile.getCurrentSelection();
         }
         else
         {

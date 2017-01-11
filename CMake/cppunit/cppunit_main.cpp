@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2004-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2004-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,7 +38,7 @@ public:
     MiniLauncher( ::boost::filesystem::path profilePath )
     {
         ::boost::filesystem::path cwd        = ::boost::filesystem::current_path();
-        ::boost::filesystem::path bundlePath = cwd / "Bundles";
+        ::boost::filesystem::path bundlePath = cwd / ::boost::filesystem::path(BUNDLE_PREFIX);
 
         ::fwRuntime::addBundles(bundlePath);
 
@@ -98,8 +98,6 @@ struct Options
 
     bool parse(int argc, char* argv[])
     {
-        bool error = false;
-
         if (argc < 1)
         {
             return true;
@@ -107,7 +105,6 @@ struct Options
 
         std::string programName( *argv != 0 ? *argv : "test_runner" );
 
-        int argn       = 0;
         char** args    = argv + 1;
         char** argsEnd = argv + argc;
         while (args < argsEnd)
@@ -186,23 +183,23 @@ class SynchronizationObject;
 class TestLister : public TestResult
 {
 public:
-    TestLister( SynchronizationObject *syncObject = 0 )
+    TestLister( SynchronizationObject* syncObject = 0 )
     {
     }
 
-    virtual void startTest( Test *test )
+    virtual void startTest( Test* test )
     {
         std::cout << test->getName() << std::endl;
     }
 
-    virtual void runTest( Test *test )
+    virtual void runTest( Test* test )
     {
         test->run( this );
     }
 
-    virtual bool protect( const Functor &functor,
-                          Test *test,
-                          const std::string &shortDescription = std::string("") )
+    virtual bool protect( const Functor& functor,
+                          Test* test,
+                          const std::string& shortDescription = std::string("") )
     {
         return false;
     }
@@ -229,7 +226,7 @@ int main( int argc, char* argv[] )
 #endif
 
 
-    CPPUNIT_NS::Test *testSuite = CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest();
+    CPPUNIT_NS::Test* testSuite = CPPUNIT_NS::TestFactoryRegistry::getRegistry().makeTest();
 
     // Add the top suite to the test runner
     CPPUNIT_NS::TestRunner runner;
@@ -277,7 +274,7 @@ int main( int argc, char* argv[] )
         {
             runner.run( controller, *iter );
         }
-        catch ( std::exception &e )
+        catch ( std::exception& e )
         {
             std::cerr << "[" << ((iter->empty()) ? "All tests" : *iter) << "]" << "Error: " << e.what() << std::endl;
             return 1;

@@ -7,9 +7,11 @@
 #ifndef __VISUVTKADAPTOR_IMAGESPROBECURSOR_HPP__
 #define __VISUVTKADAPTOR_IMAGESPROBECURSOR_HPP__
 
+#include "visuVTKAdaptor/config.hpp"
+
 #include <fwData/TransferFunction.hpp>
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
@@ -25,11 +27,8 @@ namespace visuVTKAdaptor
 
 /**
  * @brief   Draw pixel information from images given by id in composite.
- * @class   ImagesProbeCursor
- *
- * @date    2010.
  */
-class VISUVTKADAPTOR_CLASS_API ImagesProbeCursor : public  ::fwComEd::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API ImagesProbeCursor : public  ::fwDataTools::helper::MedicalImageAdaptor,
                                                    public ::fwRenderVTK::IVtkAdaptorService
 {
 
@@ -52,14 +51,14 @@ protected:
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
     /**
-     * @verbatim
+     * @code{.xml}
        <adaptor id="GENERIC_UID_ImagesProbeCursor" class="::visuVTKAdaptor::ImagesProbeCursor" objectId="self">
          <config renderer="default" picker="myPicker">
              <image objectId="myRefImage" name="background" />
              <image objectId="myObject" name="working" />
          </config>
        </adaptor>
-       @endverbatim
+       @endcode
      */
     VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
@@ -74,14 +73,14 @@ protected:
     std::vector< ImagesIdPair > m_imagesId;
     double m_priority;
 
-    vtkCommand *m_vtkObserver;
+    vtkCommand* m_vtkObserver;
 
-    vtkActor2D    * m_textActor; // rendering defect using a vtkTextActor
-    vtkTextMapper * m_textMapper;
+    vtkActor2D* m_textActor;     // rendering defect using a vtkTextActor
+    vtkTextMapper* m_textMapper;
 
-    vtkPolyData         *m_cursorPolyData;
-    vtkPolyDataMapper   *m_cursorMapper;
-    vtkActor            *m_cursorActor;
+    vtkPolyData* m_cursorPolyData;
+    vtkPolyDataMapper* m_cursorMapper;
+    vtkActor* m_cursorActor;
 
 
 

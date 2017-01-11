@@ -46,7 +46,7 @@ void AppConfigParameters::parseBundleInformation()
         // Get id
         std::string extensionId = ext->findConfigurationElement("id")->getValue();
 
-        AppConfig::FieldAdaptorType parameters;
+        FieldAdaptorType parameters;
 
         // Get parmeters
         ::fwRuntime::ConfigurationElement::csptr parametersConfig = ext->findConfigurationElement("parameters");
@@ -82,7 +82,7 @@ void AppConfigParameters::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-const AppConfig::FieldAdaptorType & AppConfigParameters::getParameters( const std::string & extensionId ) const
+const FieldAdaptorType & AppConfigParameters::getParameters( const std::string & extensionId ) const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( extensionId );

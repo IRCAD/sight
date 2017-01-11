@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,12 +33,12 @@ protected:
      * @brief Configuring the ScaleValues adaptor.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
        <adaptor id="scaleValues" class="::scene2D::adaptor::ScaleValues" objectId="self">
         <config xMin="-1100" xMax="750" yMin="0" yMax="1" xSpacing="100" ySpacing="0.1"
             color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
        </adaptor>
-       @endverbatim
+       @endcode
      * - \<config xMin="-1100" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1"
      *   color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/\> : Set the config.
      *

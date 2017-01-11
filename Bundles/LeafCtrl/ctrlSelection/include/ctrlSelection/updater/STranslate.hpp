@@ -7,8 +7,8 @@
 #ifndef __CTRLSELECTION_UPDATER_STRANSLATE_HPP__
 #define __CTRLSELECTION_UPDATER_STRANSLATE_HPP__
 
-#include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IUpdaterSrv.hpp"
+#include "ctrlSelection/config.hpp"
 
 #include <fwData/Composite.hpp>
 
@@ -19,7 +19,6 @@ namespace updater
 {
 
 /**
- * @class   STranslate
  * @brief   Update the composite related to this service according to the receiving composite signals and translate the
  * composite keys.
  */
@@ -56,13 +55,13 @@ protected:
 
     /**
      * @brief Configure the services : declare the events to react.
-     * @verbatim
+     * @code{.xml}
          <service uid="myUpdater" impl="::ctrlSelection::updater::STranslate" type="::ctrlSelection::IUpdaterSrv" autoConnect="no"  >
             <source>compositeSrcUid</source>
             <translate fromKey="myObject1Key1" toKey="myObject1Key2" />
             <translate fromKey="myObject2Key1" toKey="myObject2Key2" />
         </service>
-       @endverbatim
+       @endcode
      * - \b source (optional): composite used to translate objects. If it is defined, the service's slot saddObjects,
      *      changeObjects, removeObjects are connected to composite signal,  and the objects are translated on start if
      *      they are present.
@@ -79,7 +78,7 @@ protected:
     CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Implements info method derived from IService. Print classname.
-    CTRLSELECTION_API virtual void info( std::ostream &_sstream );
+    CTRLSELECTION_API virtual void info( std::ostream& _sstream );
 
 private:
 
@@ -104,7 +103,7 @@ private:
     ::fwData::Composite::wptr m_source;
 
     /// Connection to source
-    ::fwServices::helper::SigSlotConnection::sptr m_connection;
+    ::fwCom::helper::SigSlotConnection m_connections;
 };
 
 } // updater

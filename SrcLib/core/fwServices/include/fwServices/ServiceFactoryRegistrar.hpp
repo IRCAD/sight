@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,27 +13,42 @@
 namespace fwServices
 {
 
-
 /**
  * @brief Helper for registering a service
  * Creates internally the service factory and adds it to the FactoryRegistry
- *
- * @date    2007-2012.
  */
 template<class SRV_IMPL>
 class ServiceFactoryRegistrar
 {
 public:
 
-    // parameters are intentionally not references
-    ServiceFactoryRegistrar(std::string simpl, std::string stype, std::string oimpl)
+    ServiceFactoryRegistrar(const std::string& simpl, const std::string& stype)
     {
-        ::fwServices::registry::ServiceFactory::getDefault()
-        ->addFactory( &::fwServices::factory::New< SRV_IMPL >, simpl, stype, oimpl);
+        auto factory = ::fwServices::registry::ServiceFactory::getDefault();
+        factory->addServiceFactory( &::fwServices::factory::New< SRV_IMPL >, simpl, stype);
     }
 
+    ServiceFactoryRegistrar(const std::string& simpl, const std::string& stype, const std::string& oimpl)
+    {
+        auto factory = ::fwServices::registry::ServiceFactory::getDefault();
+        factory->addServiceFactory( &::fwServices::factory::New< SRV_IMPL >, simpl, stype);
+        factory->addObjectFactory( simpl, oimpl);
+    }
 };
 
+/**
+ * @brief Helper for associating an object to a service implementation
+ */
+class ServiceObjectFactoryRegistrar
+{
+public:
+
+    ServiceObjectFactoryRegistrar(const std::string& simpl, const std::string& oimpl)
+    {
+        auto factory = ::fwServices::registry::ServiceFactory::getDefault();
+        factory->addObjectFactory( simpl, oimpl);
+    }
+};
 
 } //end namespace fwServices
 

@@ -9,15 +9,15 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/Object.hpp>
 #include <fwData/Mesh.hpp>
-#include <fwData/mt/ObjectReadToWriteLock.hpp>
+#include <fwData/Object.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <fwData/mt/ObjectReadToWriteLock.hpp>
 
 #include <fwDataTools/Mesh.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <functional>
 
@@ -26,8 +26,14 @@ fwServicesRegisterMacro( ::fwServices::IController, ::vtkSimpleMesh::SSimpleMesh
 namespace vtkSimpleMesh
 {
 
+//-----------------------------------------------------------------------------
+
 const ::fwCom::Slots::SlotKeyType SSimpleMeshDeformation::s_START_DEFORMATION_SLOT = "startDeformation";
 const ::fwCom::Slots::SlotKeyType SSimpleMeshDeformation::s_STOP_DEFORMATION_SLOT  = "stopDeformation";
+
+static const std::string s_MESH_KEY = "mesh";
+
+//-----------------------------------------------------------------------------
 
 SSimpleMeshDeformation::SSimpleMeshDeformation() throw()
 {
@@ -72,7 +78,8 @@ void SSimpleMeshDeformation::stopping() throw(fwTools::Failed)
 void SSimpleMeshDeformation::updating() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+
+    auto mesh = this->getInOut< ::fwData::Mesh >(s_MESH_KEY);
 
     ::fwData::mt::ObjectReadToWriteLock lock(mesh);
     if ( mesh->getNumberOfPoints() > 0 )
@@ -103,7 +110,7 @@ void SSimpleMeshDeformation::startDeformation()
 {
     bool meshIsLoaded;
     {
-        ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+        auto mesh = this->getInOut< ::fwData::Mesh >(s_MESH_KEY);
         ::fwData::mt::ObjectReadLock lock(mesh);
         meshIsLoaded = mesh->getNumberOfPoints() > 0;
     }
@@ -133,7 +140,7 @@ void SSimpleMeshDeformation::stopDeformation()
 
 //-----------------------------------------------------------------------------
 
-void SSimpleMeshDeformation::copyMesh( const ::fwData::Mesh::sptr & src, const ::fwData::Mesh::sptr & dest ) const
+void SSimpleMeshDeformation::copyMesh( const ::fwData::Mesh::sptr& src, const ::fwData::Mesh::sptr& dest ) const
 {
     dest->setPointsArray(::fwData::Object::copy( src->getPointsArray() ));
     dest->setPointNormalsArray(::fwData::Object::copy( src->getPointNormalsArray() ));
@@ -143,8 +150,8 @@ void SSimpleMeshDeformation::copyMesh( const ::fwData::Mesh::sptr & src, const :
 //-----------------------------------------------------------------------------
 
 void SSimpleMeshDeformation::computeDeformation (
-    const ::fwData::Mesh::sptr & refMesh,
-    const ::fwData::Mesh::sptr & transformMesh,
+    const ::fwData::Mesh::sptr& refMesh,
+    const ::fwData::Mesh::sptr& transformMesh,
     float deformationPercent )
 {
     SLM_ASSERT("Deformation range must be equal to [0,1]", 0 <= deformationPercent && deformationPercent <= 1 );
@@ -152,8 +159,8 @@ void SSimpleMeshDeformation::computeDeformation (
     const float maxDeformation = 15/100.0f;
     const float center         = 2/3.0f;
 
-    ::fwComEd::helper::Mesh meshHelper(refMesh);
-    ::fwComEd::helper::Mesh transformMeshHelper(transformMesh);
+    ::fwDataTools::helper::Mesh meshHelper(refMesh);
+    ::fwDataTools::helper::Mesh transformMeshHelper(transformMesh);
 
     ::fwData::Mesh::PointsMultiArrayType points              = meshHelper.getPoints();
     ::fwData::Mesh::PointsMultiArrayType pointsTransform     = transformMeshHelper.getPoints();
@@ -164,10 +171,9 @@ void SSimpleMeshDeformation::computeDeformation (
     // Compute limits
     float ymin = points[0][1];
     float ymax = points[0][1];
-    float val;
     for(size_t i = 0; i!=nbPts; ++i)
     {
-        val = points[i][1];
+        const float val = points[i][1];
         if ( val < ymin )
         {
             ymin = val;
@@ -209,8 +215,8 @@ void SSimpleMeshDeformation::computeDeformation (
 //-----------------------------------------------------------------------------
 
 void SSimpleMeshDeformation::computeDeformation(
-    const ::fwData::Mesh::sptr & refMesh,
-    const ::fwData::Mesh::sptr & transformMesh )
+    const ::fwData::Mesh::sptr& refMesh,
+    const ::fwData::Mesh::sptr& transformMesh )
 {
     const int step = 5;
 
@@ -236,7 +242,7 @@ void SSimpleMeshDeformation::initMeshBackup()
         m_currentIncrement   = 0;
         m_currentDeformation = 0;
 
-        ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+        auto mesh = this->getInOut< ::fwData::Mesh >(s_MESH_KEY);
         ::fwData::mt::ObjectReadToWriteLock lock(mesh);
 
 

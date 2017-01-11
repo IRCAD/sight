@@ -1,19 +1,10 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwComEd
-    fwData
-    fwRender
-    fwRenderVTK
-    fwRuntime
-    fwServices
-    fwVtkIO
-)
 
-find_package(VTK REQUIRED)
+find_package(VTK COMPONENTS vtkInteractionWidgets REQUIRED NO_MODULE)
 
 fwForwardInclude(
     ${VTK_INCLUDE_DIRS}
 )
 fwLink(
-    vtkInteractionWidgets
+    ${VTK_LIBRARIES}    
 )

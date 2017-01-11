@@ -25,6 +25,6 @@ list(APPEND LIBS ${BUNDLES} ${PLUGINS} ${SHARE})
 #Look for all directories containing '.dll' files
 findFwlibsAndBundles(FWLIBS_BUNDLES_DIRECTORIES)
 list(APPEND FWLIBS_BUNDLES_DIRECTORIES @EXTERNAL_LIBRARIES_DIRECTORIES@)
-#Call fixup bundle on the launcher and on all 'plugins' libraries (like bundle, plugins and share)
+#Call fixup bundle on the fwlauncher and on all 'plugins' libraries (like bundle, plugins and share)
 fixup_bundle("@CMAKE_INSTALL_PREFIX@/@LAUNCHER_PATH@" "${LIBS}" "${FWLIBS_BUNDLES_DIRECTORIES}")
 

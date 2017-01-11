@@ -25,10 +25,8 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <QtGui>
 #include <QTabWidget>
@@ -45,7 +43,7 @@ static const ::fwCom::Slots::SlotKeyType s_CREATE_TAB_SLOT = "createTab";
 
 fwServicesRegisterMacro( ::gui::view::IView, ::guiQt::editor::DynamicView, ::fwData::Object );
 
-AppConfig::AppConfig(const DynamicView::ConfigType& config) :
+AppConfig::AppConfig(const ConfigType& config) :
     id(config.get<std::string>("<xmlattr>.id")),
     title(config.get<std::string>("<xmlattr>.title"))
 {
@@ -277,16 +275,26 @@ void DynamicView::launchTab(DynamicViewInfo& info)
     std::string genericUidAdaptor = ::fwServices::registry::AppConfig::getUniqueIdentifier(info.viewConfigID);
     info.replaceMap["GENERIC_UID"] = genericUidAdaptor;
 
-    ::fwServices::AppConfigManager::sptr helper = ::fwServices::AppConfigManager::New();
+    ::fwServices::IAppConfigManager::sptr helper = ::fwServices::IAppConfigManager::New();
     helper->setConfig( info.viewConfigID, info.replaceMap );
 
-    if (!m_dynamicConfigStartStop)
+    try
     {
-        helper->launch();
+        if (!m_dynamicConfigStartStop)
+        {
+            helper->launch();
+        }
+        else
+        {
+            helper->create();
+        }
     }
-    else
+    catch( std::exception & e )
     {
-        helper->create();
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch failed",
+                                                          e.what(),
+                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
+        OSLM_ERROR(e.what());
     }
 
     info.container = subContainer;

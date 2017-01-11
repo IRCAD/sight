@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -55,12 +55,12 @@ protected:
     /**
      * @brief Configures the service.
      *
-     * @verbatim
+     * @code{.xml}
        <service impl="::ctrlSelection::updater::SObjFromUid">
            <uid>objecUid</uid>
            <compositeKey>key</compositeKey>
        </service>
-       @endverbatim
+       @endcode
      * - \b compositeKey key of the object to manage into the composite (add/swap/remove)
      */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );

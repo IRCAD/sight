@@ -11,12 +11,11 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwData/Image.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <fwVtkIO/vtk.hpp>
@@ -85,16 +84,14 @@ void ImageSlice::doStart() throw(fwTools::Failed)
     this->addToRenderer(m_planeOutlineActor);
     this->addToPicker(m_imageActor);
 
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
-
-    m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_MODIFIED_SIG,
-                           this->getSptr(), s_UPDATE_SLOT);
-    m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG,
-                           this->getSptr(), s_UPDATE_SLICE_INDEX_SLOT);
-    m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG,
-                           this->getSptr(), s_UPDATE_SLICE_TYPE_SLOT);
-    m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_BUFFER_MODIFIED_SIG,
-                           this->getSptr(), s_UPDATE_SLOT);
+    m_connections.connect(this->getCtrlImage(), ::fwData::Image::s_MODIFIED_SIG,
+                          this->getSptr(), s_UPDATE_SLOT);
+    m_connections.connect(this->getCtrlImage(), ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG,
+                          this->getSptr(), s_UPDATE_SLICE_INDEX_SLOT);
+    m_connections.connect(this->getCtrlImage(), ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG,
+                          this->getSptr(), s_UPDATE_SLICE_TYPE_SLOT);
+    m_connections.connect(this->getCtrlImage(), ::fwData::Image::s_BUFFER_MODIFIED_SIG,
+                          this->getSptr(), s_UPDATE_SLOT);
     this->doUpdate();
 }
 
@@ -104,7 +101,7 @@ void ImageSlice::doStop() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    m_connections->disconnect();
+    m_connections.disconnect();
     this->removeFromPicker(m_imageActor);
     this->removeAllPropFromRenderer();
 }
@@ -113,15 +110,15 @@ void ImageSlice::doStop() throw(fwTools::Failed)
 
 void ImageSlice::doSwap() throw(fwTools::Failed)
 {
-    m_connections->disconnect();
-    m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_MODIFIED_SIG,
-                           this->getSptr(), s_UPDATE_SLOT);
-    m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG,
-                           this->getSptr(), s_UPDATE_SLICE_INDEX_SLOT);
-    m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG,
-                           this->getSptr(), s_UPDATE_SLICE_TYPE_SLOT);
-    m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_BUFFER_MODIFIED_SIG,
-                           this->getSptr(), s_UPDATE_SLOT);
+    m_connections.disconnect();
+    m_connections.connect(this->getCtrlImage(), ::fwData::Image::s_MODIFIED_SIG,
+                          this->getSptr(), s_UPDATE_SLOT);
+    m_connections.connect(this->getCtrlImage(), ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG,
+                          this->getSptr(), s_UPDATE_SLICE_INDEX_SLOT);
+    m_connections.connect(this->getCtrlImage(), ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG,
+                          this->getSptr(), s_UPDATE_SLICE_TYPE_SLOT);
+    m_connections.connect(this->getCtrlImage(), ::fwData::Image::s_BUFFER_MODIFIED_SIG,
+                          this->getSptr(), s_UPDATE_SLOT);
     this->doUpdate();
 }
 
@@ -152,7 +149,7 @@ void ImageSlice::doUpdate() throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getCtrlImage();
 
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     if (imageIsValid)
     {
         this->buildPipeline();
@@ -287,8 +284,8 @@ void ImageSlice::buildPipeline( )
         m_imageSource = this->getVtkObject(m_imageSourceId);
     }
 
-    vtkImageAlgorithm *algorithm = vtkImageAlgorithm::SafeDownCast(m_imageSource);
-    vtkImageData      *imageData = vtkImageData::SafeDownCast(m_imageSource);
+    vtkImageAlgorithm* algorithm = vtkImageAlgorithm::SafeDownCast(m_imageSource);
+    vtkImageData* imageData      = vtkImageData::SafeDownCast(m_imageSource);
     //vtkImageBlend     *imageBlend = vtkImageBlend::SafeDownCast(m_imageSource);
 
     SLM_ASSERT("Invalid vtk image source", algorithm||imageData );
@@ -332,7 +329,7 @@ void ImageSlice::buildOutline()
         points->SetPoint(i,0.0,0.0,0.0);
     }
 
-    vtkCellArray *cells = vtkCellArray::New();
+    vtkCellArray* cells = vtkCellArray::New();
     cells->Allocate(cells->EstimateSize(4,2));
     vtkIdType pts[2];
     pts[0] = 3; pts[1] = 2;       // top edge
@@ -356,6 +353,7 @@ void ImageSlice::buildOutline()
     m_planeOutlineMapper->SetResolveCoincidentTopologyToPolygonOffset();
     m_planeOutlineActor->SetMapper(m_planeOutlineMapper);
     m_planeOutlineActor->PickableOff();
+    m_planeOutlineActor->GetProperty()->SetOpacity(0.9);
     if(!this->getTransformId().empty())
     {
         m_planeOutlineActor->SetUserTransform(this->getTransform());
@@ -371,14 +369,14 @@ void ImageSlice::updateOutline()
     static const int indexZ[12]   = { 0,2,4, 1,2,4,  1,3,4,0,3,4 };
     static const int indexY[12]   = { 0,2,4, 1,2,4,  1,2,5,0,2,5 };
     static const int indexX[12]   = { 0,2,4, 0,2,5,  0,3,5,0,3,4 };
-    static const int *indexSet[3] = { indexX, indexY, indexZ  };
+    static const int* indexSet[3] = { indexX, indexY, indexZ  };
     static double colors[3][3]    = { {0.,0.,1.}, {0.,1.,0.}, {1.,0.,0.} };
 
-    double *extent    = m_imageActor->GetBounds();
+    double* extent    = m_imageActor->GetBounds();
     vtkPoints* points = m_planeOutlinePolyData->GetPoints();
 
 
-    const int *index = indexSet[ m_orientation ];
+    const int* index = indexSet[ m_orientation ];
     for ( int i = 0; i < 4; ++i)
     {
         double pt[3];
@@ -401,15 +399,15 @@ void ImageSlice::checkCtrlImage()
 {
     if (m_ctrlImage.expired() || m_ctrlImage.lock() != this->getCtrlImage())
     {
-        m_connections->disconnect();
-        m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_MODIFIED_SIG,
-                               this->getSptr(), s_UPDATE_SLOT);
-        m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG,
-                               this->getSptr(), s_UPDATE_SLICE_INDEX_SLOT);
-        m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG,
-                               this->getSptr(), s_UPDATE_SLICE_TYPE_SLOT);
-        m_connections->connect(this->getCtrlImage(), ::fwData::Image::s_BUFFER_MODIFIED_SIG,
-                               this->getSptr(), s_UPDATE_SLOT);
+        m_connections.disconnect();
+        m_connections.connect(this->getCtrlImage(), ::fwData::Image::s_MODIFIED_SIG,
+                              this->getSptr(), s_UPDATE_SLOT);
+        m_connections.connect(this->getCtrlImage(), ::fwData::Image::s_SLICE_INDEX_MODIFIED_SIG,
+                              this->getSptr(), s_UPDATE_SLICE_INDEX_SLOT);
+        m_connections.connect(this->getCtrlImage(), ::fwData::Image::s_SLICE_TYPE_MODIFIED_SIG,
+                              this->getSptr(), s_UPDATE_SLICE_TYPE_SLOT);
+        m_connections.connect(this->getCtrlImage(), ::fwData::Image::s_BUFFER_MODIFIED_SIG,
+                              this->getSptr(), s_UPDATE_SLOT);
 
         this->doUpdate();
     }

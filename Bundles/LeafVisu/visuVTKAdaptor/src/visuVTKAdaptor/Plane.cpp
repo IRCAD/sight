@@ -25,7 +25,8 @@
 #include <fwRenderVTK/vtk/Helpers.hpp>
 #include <fwRenderVTK/vtk/MarkedSphereHandleRepresentation.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <vtkActor.h>
 #include <vtkPlaneCollection.h>
@@ -54,8 +55,6 @@ Plane::Plane() throw() :
     m_vtkImplicitPlane(nullptr),
     m_vtkPlaneCollection(nullptr)
 {
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
-
     newSlot(s_UPDATE_POINTS_SLOT, &Plane::updatePoints, this);
     newSlot(s_START_INTERACTION_SLOT, &Plane::startInteraction, this);
     newSlot(s_SELECT_PLANE_SLOT, &Plane::selectPlane, this);
@@ -99,10 +98,10 @@ void Plane::doStart() throw(fwTools::Failed)
 
         this->registerService(servicePoint);
 
-        m_connections->connect(point, ::fwData::Object::s_MODIFIED_SIG,
-                               this->getSptr(), s_UPDATE_POINTS_SLOT);
-        m_connections->connect(servicePoint, ::visuVTKAdaptor::Point::s_INTERACTION_STARTED_SIG,
-                               this->getSptr(), s_START_INTERACTION_SLOT);
+        m_connections.connect(point, ::fwData::Object::s_MODIFIED_SIG,
+                              this->getSptr(), s_UPDATE_POINTS_SLOT);
+        m_connections.connect(servicePoint, ::visuVTKAdaptor::Point::s_INTERACTION_STARTED_SIG,
+                              this->getSptr(), s_START_INTERACTION_SLOT);
     }
 
     if (m_vtkPlaneCollection)
@@ -182,7 +181,7 @@ void Plane::doStop() throw(fwTools::Failed)
         m_vtkImplicitPlane = 0;
     }
 
-    m_connections->disconnect();
+    m_connections.disconnect();
 
     this->unregisterServices();
     this->removeAllPropFromRenderer();
@@ -190,7 +189,7 @@ void Plane::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Plane::setVtkPlaneCollection( vtkObject * col )
+void Plane::setVtkPlaneCollection( vtkObject* col )
 {
     if (m_vtkPlaneCollection != col)
     {

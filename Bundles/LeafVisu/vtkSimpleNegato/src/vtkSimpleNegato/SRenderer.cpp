@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,11 +11,11 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwData/Image.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
+#include <fwServices/macros.hpp>
 
 #include <fwVtkIO/vtk.hpp>
 
@@ -39,10 +39,13 @@ namespace vtkSimpleNegato
 
 static const ::fwCom::Slots::SlotKeyType s_REFRESH_SLOT = "refresh";
 
+static const std::string s_IMAGE_KEY = "image";
+
 //-----------------------------------------------------------------------------
 
-SRenderer::SRenderer() throw()
-    : m_render( 0 ), m_bPipelineIsInit(false)
+SRenderer::SRenderer() throw() :
+    m_render( 0 ),
+    m_bPipelineIsInit(false)
 {
     SLM_TRACE_FUNC();
     newSlot(s_REFRESH_SLOT, &SRenderer::refresh, this);
@@ -121,8 +124,9 @@ void SRenderer::updating() throw(fwTools::Failed)
 
 void SRenderer::refresh()
 {
-    ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
+    auto img = this->getInput< ::fwData::Image >(s_IMAGE_KEY);
+    SLM_ASSERT("'" + s_IMAGE_KEY + "' key not found", img);
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
     if(imageIsValid )
     {
         if(!m_bPipelineIsInit)
@@ -152,11 +156,14 @@ void SRenderer::refresh()
 
 void SRenderer::initVTKPipeline()
 {
-    vtkSmartPointer< vtkImageData > vtk_img = vtkSmartPointer< vtkImageData >::New();
-    ::fwVtkIO::toVTKImage( this->getObject< ::fwData::Image >(), vtk_img);
+    vtkSmartPointer< vtkImageData > vtkImg = vtkSmartPointer< vtkImageData >::New();
+
+    auto image = this->getInput< ::fwData::Image >(s_IMAGE_KEY);
+    SLM_ASSERT("'" + s_IMAGE_KEY + "' key not found", image);
+    ::fwVtkIO::toVTKImage( image, vtkImg);
 
     m_outline = vtkOutlineFilter::New();
-    m_outline->SetInputData(vtk_img);
+    m_outline->SetInputData(vtkImg);
 
     vtkPolyDataMapper* outlineMapper = vtkPolyDataMapper::New();
     outlineMapper->SetInputConnection(m_outline->GetOutputPort());
@@ -175,7 +182,7 @@ void SRenderer::initVTKPipeline()
     m_negatoSagittal->SetPicker(picker);
     m_negatoSagittal->GetPlaneProperty()->SetColor(1,0,0);
     m_negatoSagittal->TextureInterpolateOn();
-    m_negatoSagittal->SetInputData(vtk_img);
+    m_negatoSagittal->SetInputData(vtkImg);
     m_negatoSagittal->SetPlaneOrientationToXAxes();
     m_negatoSagittal->DisplayTextOn();
     m_negatoSagittal->On();
@@ -187,7 +194,7 @@ void SRenderer::initVTKPipeline()
     m_negatoFrontal->SetPicker(picker);
     m_negatoFrontal->GetPlaneProperty()->SetColor(0,1,0);
     m_negatoFrontal->TextureInterpolateOn();
-    m_negatoFrontal->SetInputData(vtk_img);
+    m_negatoFrontal->SetInputData(vtkImg);
     m_negatoFrontal->SetPlaneOrientationToYAxes();
     m_negatoFrontal->SetLookupTable( m_negatoSagittal->GetLookupTable());
     m_negatoFrontal->DisplayTextOn();
@@ -200,7 +207,7 @@ void SRenderer::initVTKPipeline()
     m_negatoAxial->SetPicker(picker);
     m_negatoAxial->GetPlaneProperty()->SetColor(0,0,1);
     m_negatoAxial->TextureInterpolateOn();
-    m_negatoAxial->SetInputData(vtk_img);
+    m_negatoAxial->SetInputData(vtkImg);
     m_negatoAxial->SetPlaneOrientationToZAxes();
     m_negatoAxial->SetLookupTable( m_negatoSagittal->GetLookupTable());
     m_negatoAxial->DisplayTextOn();
@@ -221,23 +228,25 @@ void SRenderer::initVTKPipeline()
 
 void SRenderer::updateVTKPipeline()
 {
-    assert(this->getObject< ::fwData::Image >());
-    vtkSmartPointer< vtkImageData > vtk_img = vtkSmartPointer< vtkImageData >::New();
-    ::fwVtkIO::toVTKImage( this->getObject< ::fwData::Image >(), vtk_img);
+    auto image = this->getInput< ::fwData::Image >(s_IMAGE_KEY);
+    SLM_ASSERT("'" + s_IMAGE_KEY + "' key not found", image);
 
-    m_outline->SetInputData(vtk_img);
-    m_negatoSagittal->SetInputData(vtk_img);
-    m_negatoFrontal->SetInputData(vtk_img);
-    m_negatoAxial->SetInputData(vtk_img);
+    vtkSmartPointer< vtkImageData > vtkImg = vtkSmartPointer< vtkImageData >::New();
+    ::fwVtkIO::toVTKImage( image, vtkImg);
+
+    m_outline->SetInputData(vtkImg);
+    m_negatoSagittal->SetInputData(vtkImg);
+    m_negatoFrontal->SetInputData(vtkImg);
+    m_negatoAxial->SetInputData(vtkImg);
 }
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SRenderer::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SRenderer::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Image::s_MODIFIED_SIG, s_REFRESH_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_REFRESH_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push( s_IMAGE_KEY, ::fwData::Image::s_MODIFIED_SIG, s_REFRESH_SLOT );
+    connections.push( s_IMAGE_KEY, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_REFRESH_SLOT );
 
     return connections;
 }

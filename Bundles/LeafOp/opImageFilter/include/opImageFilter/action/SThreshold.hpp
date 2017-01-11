@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef __OPIMAGEFILTER_ACTION_STHRESHOLD_HPP__
 #define __OPIMAGEFILTER_ACTION_STHRESHOLD_HPP__
 
-#include <fwGui/IActionSrv.hpp>
-
 #include "opImageFilter/config.hpp"
+
+#include <fwGui/IActionSrv.hpp>
 
 namespace opImageFilter
 {
@@ -18,9 +18,22 @@ namespace action
 {
 
 /**
- * @brief Applies a threshold on an image.
+ * @brief   Apply a threshold on an image.
  *
  * This Service needs two image: the source and the target image.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::opImageFilter::action::SThreshold">
+            <in key="source" uid="..." />
+            <inout key="target" uid="..." />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b source [::fwData::Image]: source image.
+ * @subsection In-Out In-Out:
+ * - \b target [::fwData::Image]: target image (ie the filtered image).
  */
 class OPIMAGEFILTER_CLASS_API SThreshold : public ::fwGui::IActionSrv
 {
@@ -39,28 +52,11 @@ protected:
 
     OPIMAGEFILTER_API void stopping() throw ( ::fwTools::Failed );
 
-    /**
-     * @brief Configure the service:
-     *
-     * @verbatim
-        <service uid="actionImageFilter" impl="::opImageFilter::action::ImageFilter">
-            <imageIn uid="myImage1" />
-            <imageOut uid="myImage2" />
-        </service>
-       @endverbatim
-     * - \b imageIn: uid of the source image
-     * - \b imageOut: uid of the target image (ie the filtered image)
-     */
+    /// Configure the service.
     OPIMAGEFILTER_API void configuring() throw ( ::fwTools::Failed );
 
-    /// Applies the threshold
+    /// Apply the threshold.
     OPIMAGEFILTER_API void updating() throw ( ::fwTools::Failed );
-
-private:
-
-    std::string m_imageSrcUID;
-    std::string m_imageTgtUID;
-
 };
 
 

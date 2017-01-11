@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,10 @@
 #include "fwGui/GuiRegistry.hpp"
 #include "fwGui/registrar/ViewRegistrar.hpp"
 
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Get.hpp>
+
 #include <fwTools/fwID.hpp>
-#include <fwServices/Base.hpp>
 
 #include <utility>
 
@@ -19,7 +21,7 @@ namespace registrar
 
 //-----------------------------------------------------------------------------
 
-ViewRegistrar::ViewRegistrar(const std::string &sid)
+ViewRegistrar::ViewRegistrar(const std::string& sid)
     : m_parentWid(""),
       m_sid(sid)
 {
@@ -39,10 +41,13 @@ ViewRegistrar::~ViewRegistrar()
     if(!m_parentWid.empty())
     {
         parentContainer = ::fwGui::GuiRegistry::getWIDContainer(m_parentWid);
+        OSLM_ASSERT("No fwContainer with the wid '"<< m_parentWid <<"' exists in the WID container map.",
+                    parentContainer);
     }
     else
     {
         parentContainer = ::fwGui::GuiRegistry::getSIDContainer(m_sid);
+        OSLM_ASSERT("No fwContainer with the sid '"<< m_sid <<"' exists in the SID container map.", parentContainer );
     }
     return parentContainer;
 }
@@ -74,7 +79,10 @@ void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
     // index represents associated container with position in subViews vector
     unsigned int index = 0;
     // initialize m_sids and m_wids map with configuration
-    std::vector < ConfigurationType > vectViews = configuration->find("view");
+    std::vector < ConfigurationType > vectViews      = configuration->find("view");
+    std::vector < ConfigurationType > vectSlideViews = configuration->find("slideView");
+    std::copy (vectSlideViews.begin(), vectSlideViews.end(), std::back_inserter(vectViews));
+
     for( ConfigurationType view :  vectViews)
     {
         SLM_ASSERT("<view> tag must have sid or wid attribute",
@@ -154,7 +162,7 @@ void ViewRegistrar::manage(std::vector< ::fwGui::container::fwContainer::sptr > 
         ::fwGui::GuiRegistry::registerSIDContainer(sid.first, container);
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
+            OSLM_ASSERT("Service "<<sid.first <<" does not exist.", ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             OSLM_ASSERT("Service "<<sid.first <<" must be stopped.", service->isStopped() );
             SLM_TRACE("Starting " + sid.first);
@@ -177,7 +185,7 @@ void ViewRegistrar::manageMenuBar(::fwGui::container::fwMenuBar::sptr menuBar )
     ::fwGui::GuiRegistry::registerSIDMenuBar(m_menuBarSid.first, menuBar);
     if(m_menuBarSid.second) //service is auto started?
     {
-        OSLM_ASSERT("Service "<<m_menuBarSid.first <<" not exists.", ::fwTools::fwID::exist(m_menuBarSid.first ) );
+        OSLM_ASSERT("Service "<<m_menuBarSid.first <<" does not exist.", ::fwTools::fwID::exist(m_menuBarSid.first ) );
         ::fwServices::IService::sptr service = ::fwServices::get( m_menuBarSid.first );
         service->start();
     }
@@ -190,7 +198,7 @@ void ViewRegistrar::manageToolBar(::fwGui::container::fwToolBar::sptr toolBar )
     ::fwGui::GuiRegistry::registerSIDToolBar(m_toolBarSid.first, toolBar);
     if(m_toolBarSid.second) //service is auto started?
     {
-        OSLM_ASSERT("Service "<<m_toolBarSid.first <<" not exists.", ::fwTools::fwID::exist(m_toolBarSid.first ) );
+        OSLM_ASSERT("Service "<<m_toolBarSid.first <<" does not exist.", ::fwTools::fwID::exist(m_toolBarSid.first ) );
         ::fwServices::IService::sptr service = ::fwServices::get( m_toolBarSid.first );
         service->start();
     }
@@ -204,7 +212,7 @@ void ViewRegistrar::unmanage()
     {
         if(sid.second.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<sid.first <<" not exists.", ::fwTools::fwID::exist(sid.first ) );
+            OSLM_ASSERT("Service "<<sid.first <<" does not exist.", ::fwTools::fwID::exist(sid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( sid.first );
             SLM_TRACE("Stopping " + sid.first);
             service->stop();
@@ -226,7 +234,8 @@ void ViewRegistrar::unmanageToolBar()
     {
         if(m_toolBarSid.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<m_toolBarSid.first <<" not exists.", ::fwTools::fwID::exist(m_toolBarSid.first ) );
+            OSLM_ASSERT("Service "<<m_toolBarSid.first <<" does not exist.",
+                        ::fwTools::fwID::exist(m_toolBarSid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( m_toolBarSid.first );
             service->stop();
         }
@@ -242,7 +251,8 @@ void ViewRegistrar::unmanageMenuBar()
     {
         if(m_menuBarSid.second) //service is auto started?
         {
-            OSLM_ASSERT("Service "<<m_menuBarSid.first <<" not exists.", ::fwTools::fwID::exist(m_menuBarSid.first ) );
+            OSLM_ASSERT("Service "<<m_menuBarSid.first <<" does not exist.",
+                        ::fwTools::fwID::exist(m_menuBarSid.first ) );
             ::fwServices::IService::sptr service = ::fwServices::get( m_menuBarSid.first );
             service->stop();
         }

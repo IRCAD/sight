@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/Render.hpp"
+
 #include "scene2D/Scene2DGraphicsView.hpp"
 #include "scene2D/adaptor/IAdaptor.hpp"
 
@@ -12,15 +13,16 @@
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
-#include <fwServices/helper/Config.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <QVBoxLayout>
+#include <fwServices/helper/Config.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
+
 #include <QGraphicsRectItem>
+#include <QVBoxLayout>
 
 fwServicesRegisterMacro( ::fwRender::IRender, ::scene2D::Render, ::fwData::Composite );
 
@@ -36,13 +38,11 @@ static const ::fwCom::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects"
 Render::Render() throw() :
     m_sceneStart(-100., -100.),
     m_sceneWidth(200., 200.),
-    m_antialiasing(false),
     m_scene(nullptr),
     m_view(nullptr),
+    m_antialiasing(false),
     m_aspectRatioMode(Qt::IgnoreAspectRatio)
 {
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
-
     newSlot(s_ADD_OBJECTS_SLOT, &Render::addObjects, this);
     newSlot(s_CHANGE_OBJECTS_SLOT, &Render::changeObjects, this);
     newSlot(s_REMOVE_OBJECTS_SLOT, &Render::removeObjects, this);
@@ -98,19 +98,23 @@ void Render::dispatchInteraction( SPTR(::scene2D::data::Event)_event)
      */
     for(ZValue2AdaptorID::reverse_iterator rit = m_zValue2AdaptorID.rbegin(); rit != m_zValue2AdaptorID.rend(); ++rit )
     {
-        if ( !_event->isAccepted() && !m_adaptorID2SceneAdaptor2D[ rit->second ].m_service.expired() )
+        if ( !_event->isAccepted() )
         {
-            m_adaptorID2SceneAdaptor2D[ rit->second ].m_service.lock()->processInteraction( _event );
+            auto adaptor = m_adaptorID2SceneAdaptor2D[ rit->second ].m_service.lock();
+            if(adaptor != nullptr && adaptor->isStarted())
+            {
+                m_adaptorID2SceneAdaptor2D[ rit->second ].m_service.lock()->processInteraction( _event );
+            }
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-::scene2D::data::Coord Render::mapToScene( const ::scene2D::data::Coord & coord ) const
+::scene2D::data::Coord Render::mapToScene( const ::scene2D::data::Coord& coord ) const
 {
     /// Returns the viewport coordinate point mapped to scene coordinates.
-    QPoint qp ( coord.getX(), coord.getY() );
+    QPoint qp ( static_cast<int>(coord.getX()), static_cast<int>(coord.getY()) );
     QPointF qps = m_view->mapToScene(qp);
     return ::scene2D::data::Coord(qps.x(),qps.y());
 }
@@ -173,7 +177,15 @@ void Render::starting() throw ( ::fwTools::Failed )
 
     this->startContext();
 
-    SPTR(::fwData::Composite) composite = this->getObject< ::fwData::Composite >();
+    ::fwData::Composite::sptr composite;
+    if(this->isVersion2())
+    {
+        composite = this->getInOut< ::fwData::Composite >(s_DEFAULT_OBJECT);
+    }
+    else
+    {
+        composite = this->getObject< ::fwData::Composite >();
+    }
 
     ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find( "self" );
     if ( objectIter != m_objectsID2AdaptorIDVector.end() )
@@ -185,7 +197,35 @@ void Render::starting() throw ( ::fwTools::Failed )
         }
     }
 
-    this->startAdaptorsFromComposite(composite->getContainer());
+    ConstObjectMapType container;
+    if(this->isVersion2())
+    {
+        for(auto obj : this->getInputs())
+        {
+            if(obj.first != s_DEFAULT_OBJECT)
+            {
+                container[obj.first] = obj.second.lock();
+            }
+        }
+        for(auto obj : this->getInOuts())
+        {
+            if(obj.first != s_DEFAULT_OBJECT)
+            {
+                container[obj.first] = obj.second.lock();
+            }
+        }
+        this->startAdaptorsFromComposite(container);
+    }
+    else
+    {
+        auto objects = composite->getContainer();
+        std::for_each(objects.begin(), objects.end(), [&container](
+                          const ::fwData::Composite::ContainerType::value_type& it)
+            {
+                container[it.first] = it.second;
+            });
+        this->startAdaptorsFromComposite(container);
+    }
 
     //Create connections when adaptors are started
 
@@ -221,18 +261,7 @@ void Render::connectAfterWait(const ::fwData::Composite::ContainerType& objects)
                 std::string waitForKey = connect->getAttributeValue("waitForKey");
                 if(waitForKey == key)
                 {
-                    ::fwServices::helper::SigSlotConnection::sptr connection;
-                    ObjectConnectionsMapType::iterator iter = m_objectConnections.find(key);
-                    if (iter != m_objectConnections.end())
-                    {
-                        connection = iter->second;
-                    }
-                    else
-                    {
-                        connection               = ::fwServices::helper::SigSlotConnection::New();
-                        m_objectConnections[key] = connection;
-                    }
-                    ::fwServices::helper::Config::createConnections(connect, connection, element.second);
+                    ::fwServices::helper::Config::createConnections(connect, m_objectConnections[key], element.second);
                 }
             }
         }
@@ -261,7 +290,7 @@ void Render::disconnect(const ::fwData::Composite::ContainerType& objects)
         std::string key = element.first;
         if(m_objectConnections.find(key) != m_objectConnections.end())
         {
-            m_objectConnections[key]->disconnect();
+            m_objectConnections[key].disconnect();
             m_objectConnections.erase(key);
         }
 
@@ -285,13 +314,85 @@ void Render::swapping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
+void Render::swapping(const IService::KeyType& key) throw(::fwTools::Failed)
+{
+    if (this->isVersion2())
+    {
+        // remove connections
+        auto iter = m_objectConnections.find(key);
+        if(iter != m_objectConnections.end())
+        {
+            iter->second.disconnect();
+            m_objectConnections.erase(key);
+        }
+        ::fwServices::helper::Config::disconnectProxies(key, m_proxyMap);
+
+        auto obj = this->getInput< ::fwData::Object>(key);
+        obj = (obj == nullptr) ? this->getInOut< ::fwData::Object>(key) : obj;
+
+        ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find(key);
+        if (objectIter != m_objectsID2AdaptorIDVector.end())
+        {
+            for (const AdaptorIDType& adaptorId : objectIter->second)
+            {
+                SceneAdaptor2D& info = m_adaptorID2SceneAdaptor2D[adaptorId];
+
+                if (info.getService() && info.getService()->isStarted())
+                {
+                    info.getService()->stop();
+                }
+            }
+        }
+
+        // create connections
+        if(obj)
+        {
+            ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find(key);
+            if (objectIter != m_objectsID2AdaptorIDVector.end())
+            {
+                for (const AdaptorIDType& adaptorId : objectIter->second)
+                {
+                    SceneAdaptor2D& info = m_adaptorID2SceneAdaptor2D[adaptorId];
+
+                    if (info.getService())
+                    {
+                        if(obj != info.getService()->getObject())
+                        {
+                            ::fwServices::OSR::swapService(::fwData::Object::constCast(obj), info.getService());
+                        }
+                        info.getService()->start();
+                    }
+                    else
+                    {
+                        this->startAdaptor(adaptorId, obj);
+                    }
+                }
+            }
+
+            ::fwData::Composite::ContainerType mapConnect;
+            mapConnect[key] = ::fwData::Object::constCast(obj);
+            this->connectAfterWait(mapConnect);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void Render::stopping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
-    m_connections->disconnect();
+    m_connections.disconnect();
 
-    SPTR(::fwData::Composite) composite = this->getObject< ::fwData::Composite >();
+    ::fwData::Composite::sptr composite;
+    if(this->isVersion2())
+    {
+        composite = this->getInOut< ::fwData::Composite >(s_DEFAULT_OBJECT);
+    }
+    else
+    {
+        composite = this->getObject< ::fwData::Composite >();
+    }
 
     this->disconnect(composite->getContainer());
 
@@ -304,7 +405,32 @@ void Render::stopping() throw ( ::fwTools::Failed )
         }
     }
 
-    this->stopAdaptorsFromComposite(composite->getContainer());
+    ConstObjectMapType container;
+    if(this->isVersion2())
+    {
+        for(auto obj : this->getInOuts())
+        {
+            if(obj.first != s_DEFAULT_OBJECT)
+            {
+                container[obj.first] = obj.second.lock();
+            }
+        }
+        for(auto obj : this->getInputs())
+        {
+            if(obj.first != s_DEFAULT_OBJECT)
+            {
+                container[obj.first] = obj.second.lock();
+            }
+        }
+        this->stopAdaptorsFromComposite(container);
+    }
+    else
+    {
+        auto objects = composite->getContainer();
+        std::for_each(objects.begin(), objects.end(), [&container](
+                          ::fwData::Composite::ContainerType::value_type it){ container[it.first] = it.second; });
+        this->stopAdaptorsFromComposite(container);
+    }
 
     m_adaptorID2SceneAdaptor2D.clear();
     m_objectID2Object.clear();
@@ -336,7 +462,7 @@ void Render::startContext()
     m_view->setSceneRender( ::scene2D::Render::dynamicCast( this->getSptr() ) );
     m_view->setRenderHint( QPainter::Antialiasing, m_antialiasing );
 
-    QVBoxLayout *layout = new QVBoxLayout;
+    QVBoxLayout* layout = new QVBoxLayout;
     layout->addWidget(m_view);
     qtContainer->getQtContainer()->setLayout(layout);
 
@@ -483,11 +609,11 @@ void Render::configureAdaptor( ConfigurationType _conf )
 
 //-----------------------------------------------------------------------------
 
-void Render::startAdaptorsFromComposite(const ::fwData::Composite::ContainerType& objects)
+void Render::startAdaptorsFromComposite(const ConstObjectMapType& objects)
 {
     SLM_TRACE_FUNC();
 
-    for(const ::fwData::Composite::value_type& elem : objects )
+    for(const auto& elem : objects )
     {
         std::string compositeKey                       = elem.first;
         ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find( compositeKey );
@@ -530,9 +656,9 @@ void Render::swapAdaptorsFromComposite(const ::fwData::Composite::ContainerType&
 
 //-----------------------------------------------------------------------------
 
-void Render::stopAdaptorsFromComposite(const ::fwData::Composite::ContainerType& objects)
+void Render::stopAdaptorsFromComposite(const ConstObjectMapType& objects)
 {
-    for(const ::fwData::Composite::value_type& elem : objects)
+    for(const auto& elem : objects)
     {
         std::string compositeKey                       = elem.first;
         ObjectsID2AdaptorIDVector::iterator objectIter = m_objectsID2AdaptorIDVector.find( compositeKey );
@@ -548,7 +674,7 @@ void Render::stopAdaptorsFromComposite(const ::fwData::Composite::ContainerType&
 
 //-----------------------------------------------------------------------------
 
-void Render::startAdaptor(const AdaptorIDType& _adaptorID, const SPTR(::fwData::Object)& _object)
+void Render::startAdaptor(const AdaptorIDType& _adaptorID, const CSPTR(::fwData::Object)& _object)
 {
     if (!m_adaptorID2SceneAdaptor2D[_adaptorID].m_uid.empty())
     {
@@ -591,15 +717,17 @@ void Render::stopAdaptor(const AdaptorIDType& _adaptorID)
 {
     SLM_TRACE_FUNC();
 
-    SceneAdaptor2D & info = m_adaptorID2SceneAdaptor2D[_adaptorID];
+    SceneAdaptor2D& info = m_adaptorID2SceneAdaptor2D[_adaptorID];
 
-    m_zValue2AdaptorID.erase( info.getService()->getZValue() );
+    if(info.getService())
+    {
+        m_zValue2AdaptorID.erase( info.getService()->getZValue() );
 
-    info.getService()->stop();
-    SLM_ASSERT("Service is not stopped", info.getService()->isStopped());
-    ::fwServices::OSR::unregisterService(info.getService());
-    info.m_service.reset();
-
+        info.getService()->stop();
+        SLM_ASSERT("Service is not stopped", info.getService()->isStopped());
+        ::fwServices::OSR::unregisterService(info.getService());
+        info.m_service.reset();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -632,7 +760,10 @@ void Render::updateSceneSize( float ratioPercent )
 
 void Render::addObjects(::fwData::Composite::ContainerType objects)
 {
-    this->startAdaptorsFromComposite(objects);
+    ConstObjectMapType map;
+    std::for_each(objects.begin(), objects.end(), [&map](
+                      const ::fwData::Composite::ContainerType::value_type& it){ map[it.first] = it.second; });
+    this->startAdaptorsFromComposite(map);
     this->connectAfterWait(objects);
 }
 
@@ -651,7 +782,10 @@ void Render::changeObjects(::fwData::Composite::ContainerType newObjects,
 void Render::removeObjects(::fwData::Composite::ContainerType objects)
 {
     this->disconnect(objects);
-    this->stopAdaptorsFromComposite(objects);
+    ConstObjectMapType map;
+    std::for_each(objects.begin(), objects.end(), [&map](
+                      const ::fwData::Composite::ContainerType::value_type& it){ map[it.first] = it.second; });
+    this->stopAdaptorsFromComposite(map);
 }
 
 //------------------------------------------------------------------------------
@@ -662,6 +796,18 @@ void Render::removeObjects(::fwData::Composite::ContainerType objects)
     connections.push_back( std::make_pair( ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_CHANGE_OBJECTS_SLOT ) );
     connections.push_back( std::make_pair( ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_REMOVE_OBJECTS_SLOT ) );
+
+    return connections;
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap Render::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( s_DEFAULT_OBJECT, ::fwData::Composite::s_ADDED_OBJECTS_SIG, s_ADD_OBJECTS_SLOT );
+    connections.push( s_DEFAULT_OBJECT, ::fwData::Composite::s_CHANGED_OBJECTS_SIG, s_CHANGE_OBJECTS_SLOT );
+    connections.push( s_DEFAULT_OBJECT, ::fwData::Composite::s_REMOVED_OBJECTS_SIG, s_REMOVE_OBJECTS_SLOT );
 
     return connections;
 }

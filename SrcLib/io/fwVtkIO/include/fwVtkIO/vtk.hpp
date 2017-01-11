@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,14 +21,6 @@ class vtkImageImport;
 class vtkMatrix4x4;
 class vtkLookupTable;
 
-/**
- * @brief   Namespace fwVtkIO.
- * @namespace   fwVtkIO
- *
- * @date    2009.
- *
- *  The namespace fwVtkIO contains reader, writer and helper using the VTK lib for output and input actions between data and the frameWork
- */
 namespace fwVtkIO
 {
 
@@ -65,7 +57,7 @@ FWVTKIO_API int getVtkScalarType(::fwData::Image::sptr image);
  * allocate a new vtkImage from a ::fwData::Image, vtkImage doesn't manage its buffer (the buffer is not copied)
  *
  */
-FWVTKIO_API void toVTKImage( ::fwData::Image::sptr _data,  vtkImageData *dst);
+FWVTKIO_API void toVTKImage( ::fwData::Image::csptr _data,  vtkImageData *dst);
 
 /*!
  * @brief Convert a vtkImageData* to a ::fwData::Image::sptr.
@@ -83,7 +75,7 @@ FWVTKIO_API void fromVTKImage( vtkImageData* _source, ::fwData::Image::sptr _des
  * @param[in] _pDataImage ::fwData::Image::sptr.
  * @param[out] _pImageImport vtkImageImport*.
  */
-FWVTKIO_API void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image::sptr _pDataImage );
+FWVTKIO_API void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image::csptr _pDataImage );
 
 /*!
  * @brief Convert a ::fwData::TransformationMatrix3D::sptr to a vtkMatrix4x4*.

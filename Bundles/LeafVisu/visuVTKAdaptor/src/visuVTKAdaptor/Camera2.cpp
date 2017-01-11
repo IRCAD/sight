@@ -14,20 +14,18 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwDataTools/fieldHelper/Image.hpp>
 
-#include <fwComEd/Dictionary.hpp>
+#include <fwServices/macros.hpp>
 
 #include <vtkActor.h>
-#include <vtkRenderer.h>
-#include <vtkMatrix4x4.h>
-#include <vtkTransform.h>
-#include <vtkIdentityTransform.h>
 #include <vtkCamera.h>
 #include <vtkCommand.h>
+#include <vtkIdentityTransform.h>
+#include <vtkMatrix4x4.h>
 #include <vtkPerspectiveTransform.h>
+#include <vtkRenderer.h>
+#include <vtkTransform.h>
 
 class Camera2Clallback : public ::vtkCommand
 {
@@ -35,7 +33,7 @@ public:
 
     static Camera2Clallback* New(::visuVTKAdaptor::Camera2* adaptor)
     {
-        Camera2Clallback *cb = new Camera2Clallback;
+        Camera2Clallback* cb = new Camera2Clallback;
         cb->m_adaptor = adaptor;
         return cb;
     }
@@ -52,7 +50,7 @@ public:
         m_adaptor->updateFromVtk();
     }
 
-    ::visuVTKAdaptor::Camera2 *m_adaptor;
+    ::visuVTKAdaptor::Camera2* m_adaptor;
 };
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Camera2,

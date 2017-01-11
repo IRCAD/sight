@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,11 +14,11 @@
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 
-#include <fwComEd/helper/Composite.hpp>
-
-#include <fwTools/UUID.hpp>
+#include <fwDataTools/helper/Composite.hpp>
 
 #include <fwServices/macros.hpp>
+
+#include <fwTools/UUID.hpp>
 
 
 namespace ctrlSelection
@@ -55,7 +55,7 @@ void SDrop::addObject( std::string uid )
     ::fwData::Object::sptr object = ::fwData::Object::dynamicCast(::fwTools::UUID::get(uid));
     if(object)
     {
-        ::fwComEd::helper::Composite helper( this->getObject< ::fwData::Composite >() );
+        ::fwDataTools::helper::Composite helper( this->getObject< ::fwData::Composite >() );
         helper.clear();
         if(object->isA("::fwData::Image"))
         {
@@ -123,7 +123,7 @@ void SDrop::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SDrop::info( std::ostream &_sstream )
+void SDrop::info( std::ostream& _sstream )
 {
 }
 

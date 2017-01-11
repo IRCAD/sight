@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,19 +7,20 @@
 #ifndef __FWMEMORY_BUFFEROBJECT_HPP__
 #define __FWMEMORY_BUFFEROBJECT_HPP__
 
-#include <istream>
-
-#include <boost/type_traits/conditional.hpp>
-#include <boost/type_traits/is_const.hpp>
-#include <boost/filesystem/path.hpp>
-
-#include <fwCore/mt/types.hpp>
-#include <fwCore/base.hpp>
-#include <fwCamp/macros.hpp>
-
 #include "fwMemory/BufferAllocationPolicy.hpp"
 #include "fwMemory/BufferManager.hpp"
 #include "fwMemory/config.hpp"
+
+#include <fwCamp/macros.hpp>
+
+#include <fwCore/base.hpp>
+#include <fwCore/mt/types.hpp>
+
+#include <boost/filesystem/path.hpp>
+#include <boost/type_traits/conditional.hpp>
+#include <boost/type_traits/is_const.hpp>
+
+#include <istream>
 
 fwCampAutoDeclareMacro((fwMemory)(BufferObject), FWMEMORY_API);
 
@@ -36,9 +37,6 @@ class IFactory;
 
 /**
  * @brief   Define Base class for FW4SPL buffers
- * @class   BufferObject
- *
- * @date    2007-2009.
  *
  * Keep a pointer to a buffer and it's allocation policy (new malloc) without
  * any cleverness about allocating/destroying the buffer. Users of this class
@@ -110,7 +108,7 @@ public:
          *
          * @param bo BufferObject to lock
          */
-        LockBase( const SPTR(T) &bo ) :
+        LockBase( const SPTR(T)& bo ) :
             m_bufferObject(bo)
         {
             SLM_ASSERT("Can't lock NULL object", bo);
@@ -187,7 +185,7 @@ public:
      *
      */
     FWMEMORY_API virtual void allocate(SizeType size,
-                                       const ::fwMemory::BufferAllocationPolicy::sptr &policy =
+                                       const ::fwMemory::BufferAllocationPolicy::sptr& policy =
                                            ::fwMemory::BufferMallocPolicy::New());
 
     /**
@@ -223,9 +221,8 @@ public:
      *
      */
     FWMEMORY_API virtual void setBuffer(::fwMemory::BufferManager::BufferType buffer, SizeType size,
-                                        const ::fwMemory::BufferAllocationPolicy::sptr &policy =
+                                        const ::fwMemory::BufferAllocationPolicy::sptr& policy =
                                             ::fwMemory::BufferMallocPolicy::New());
-
 
     /**
      * @brief Return a lock on the BufferObject
@@ -281,12 +278,13 @@ public:
         return &m_buffer;
     }
 
-    ::fwCore::mt::ReadWriteMutex &getMutex() {
+    ::fwCore::mt::ReadWriteMutex &getMutex()
+    {
         return m_mutex;
     }
 
     /// Exchanges the content of the BufferObject with the content of _source.
-    FWMEMORY_API void swap( const BufferObject::sptr &_source );
+    FWMEMORY_API void swap( const BufferObject::sptr& _source );
 
     FWMEMORY_API BufferManager::StreamInfo getStreamInfo() const;
 
@@ -300,11 +298,11 @@ public:
      * @param format file format (RAW,RAWZ,OTHER), if sourceFile is provided
      * @param policy Buffer allocation policy
      */
-    FWMEMORY_API void setIStreamFactory(const SPTR(::fwMemory::stream::in::IFactory) &factory,
+    FWMEMORY_API void setIStreamFactory(const SPTR(::fwMemory::stream::in::IFactory)& factory,
                                         SizeType size,
-                                        const ::boost::filesystem::path &sourceFile = "",
+                                        const ::boost::filesystem::path& sourceFile = "",
                                         ::fwMemory::FileFormatType format = ::fwMemory::OTHER,
-                                        const ::fwMemory::BufferAllocationPolicy::sptr &policy = ::fwMemory::BufferMallocPolicy::New()
+                                        const ::fwMemory::BufferAllocationPolicy::sptr& policy = ::fwMemory::BufferMallocPolicy::New()
                                         );
 
 

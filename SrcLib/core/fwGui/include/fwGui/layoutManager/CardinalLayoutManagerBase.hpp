@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -93,7 +93,7 @@ public:
      * @brief Initialize cardinal layout manager before the creation of layout.
      *
      * Example of configuration with cardinal layout.
-     * @verbatim
+     * @code{.xml}
        <service uid="subView2" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
            <gui>
                <layout type="::fwGui::CardinalLayoutManager" >
@@ -108,7 +108,7 @@ public:
                <view sid="view3" start="yes" />
            </registry>
        </service>
-       @endverbatim
+       @endcode
      *  - \<layout type="::fwGui::CardinalLayoutManager" \> : define a cardinal layout.
      *  - \<view caption="CardinalView1" align="center" /\> : define a new view with following attribute
      *   - \b caption : name of the view (display on the screen).

@@ -1,9 +1,11 @@
-<plugin id="VRRender" version="@DASH_VERSION@" >
+<plugin id="VRRender" version="@DASH_VERSION@">
 
     <requirement id="servicesReg" />
     <requirement id="dataReg" />
     <requirement id="patchMedicalData" />
     <requirement id="filterVRRender" />
+    <requirement id="activities" />
+    <requirement id="preferences" />
 
     <xi:include href="configurations/VRRenderBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
@@ -11,9 +13,21 @@
     <extension implements="::fwServices::registry::AppConfigParameters">
         <id>VRRenderAppBase</id>
         <parameters>
-            <param name="appName" value="VRRender 0.9.6" />
-            <param name="appIconPath" value="Bundles/VRRender_0-9/vrrender.ico" />
+            <param name="appName" value="VRRender 0.9.7" />
+            <param name="appIconPath" value="@BUNDLE_PREFIX@/VRRender_0-9/vrrender.ico" />
+            <param name="appVersion" value="0-9" />
         </parameters>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>SDBVRRender</id>
+        <title>SDB</title>
+        <desc>Series Selector</desc>
+        <icon>NONE</icon>
+        <requirements />
+        <appConfig id="SDBVRRender">
+            <parameters />
+        </appConfig>
     </extension>
 
 </plugin>

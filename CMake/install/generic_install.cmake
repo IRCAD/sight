@@ -3,6 +3,8 @@ if(APPLE)
 elseif(WIN32)
     include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/win_install.cmake)
 elseif(UNIX)
+    #Don't use rpath at install step
+    set(CMAKE_SKIP_INSTALL_RPATH ON)
     include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/linux_install.cmake)
 endif()
 

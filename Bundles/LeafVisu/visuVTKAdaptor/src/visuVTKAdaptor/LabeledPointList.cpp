@@ -5,17 +5,19 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuVTKAdaptor/LabeledPointList.hpp"
+
 #include "visuVTKAdaptor/PointLabel.hpp"
 #include "visuVTKAdaptor/PointList.hpp"
 
 #include <fwCom/Signal.hxx>
 
-#include <fwComEd/Dictionary.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <vtkActor.h>
 #include <vtkAssemblyNode.h>
@@ -24,8 +26,8 @@
 #include <vtkCommand.h>
 #include <vtkCubeSource.h>
 #include <vtkPolyDataMapper.h>
-#include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkRenderer.h>
 
 #include <algorithm>
 
@@ -40,12 +42,12 @@ class vtkLabeledPointDeleteCallBack : public vtkCommand
 {
 
 public:
-    static vtkLabeledPointDeleteCallBack *New( ::fwRenderVTK::IVtkAdaptorService *service)
+    static vtkLabeledPointDeleteCallBack* New( ::fwRenderVTK::IVtkAdaptorService* service)
     {
         return new vtkLabeledPointDeleteCallBack(service);
     }
 
-    vtkLabeledPointDeleteCallBack( ::fwRenderVTK::IVtkAdaptorService *service )
+    vtkLabeledPointDeleteCallBack( ::fwRenderVTK::IVtkAdaptorService* service )
         : m_service(service),
           m_picker( vtkCellPicker::New() ),
           m_propCollection( vtkPropCollection::New() )
@@ -75,7 +77,7 @@ public:
         m_service->getAllSubProps(m_propCollection);
         m_propCollection->InitTraversal();
 
-        vtkProp *prop;
+        vtkProp* prop;
 
         while ( (prop = m_propCollection->GetNextProp()) )
         {
@@ -83,7 +85,7 @@ public:
         }
     }
 
-    virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
+    virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
         int pos[2];
         m_service->getInteractor()->GetLastEventPosition(pos);
@@ -128,8 +130,8 @@ public:
     bool getSelectedPoint()
     {
         bool isFind              = false;
-        vtkPropCollection *propc = m_picker->GetActors();
-        vtkProp *prop;
+        vtkPropCollection* propc = m_picker->GetActors();
+        vtkProp* prop;
 
         propc->InitTraversal();
         while ( (prop = propc->GetNextProp()) )
@@ -154,8 +156,8 @@ public:
 
 protected:
     ::fwRenderVTK::IVtkAdaptorService *m_service;
-    vtkPicker * m_picker;
-    vtkPropCollection * m_propCollection;
+    vtkPicker* m_picker;
+    vtkPropCollection* m_propCollection;
     double m_display[3];
     int m_lastPos[2];
     ::fwData::Point::wptr m_pickedPoint;

@@ -1,0 +1,22 @@
+CLASSTEST=[
+    'SeriesEnquirerTest',
+    'DicomSeriesDBReaderTest',
+    'DicomSeriesWriterTest',
+    'DicomAnonymizerTest',
+    'SeriesDBReaderTest',
+    'DicomDirTest'
+    ]
+
+USE = ['boost']
+LIB = [
+       'fwDcmtkIO_0-1',
+       'fwTools_0-1',
+       'fwCore_0-1',
+       'fwTest_0-1',
+       'fwThread_0-1',
+       'fwData_0-1',
+       'fwMedData_0-1',
+       'fwDicomData_0-1',
+       'vtkGdcmIO_0-1'
+       ]
+CONSOLE='yes'

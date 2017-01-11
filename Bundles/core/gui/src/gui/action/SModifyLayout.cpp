@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,7 @@
 #include <fwRuntime/Extension.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/op/Get.hpp>
 
 #include <fwTools/fwID.hpp>
 
@@ -91,12 +91,11 @@ void SModifyLayout::updating() throw( ::fwTools::Failed )
         SLM_ASSERT("service not found", service);
         if(service->isStarted())
         {
-//            //todo : add methods to enable/disable IGuiContainerSrv, IMenuSrv, IMenuBarSrv and IToolBarSrv
-//            ::fwGui::IGuiContainerSrv::sptr containerSrv = ::fwGui::IGuiContainerSrv::dynamicCast(service);
-//            if(containerSrv)
-//            {
-//                container->getContainer()->setEnable(isEnable);
-//            }
+            ::fwGui::IGuiContainerSrv::sptr containerSrv = ::fwGui::IGuiContainerSrv::dynamicCast(service);
+            if(containerSrv)
+            {
+                containerSrv->getContainer()->setEnabled(isEnable);
+            }
             ::fwGui::IActionSrv::sptr actionSrv = ::fwGui::IActionSrv::dynamicCast(service);
             if(actionSrv)
             {

@@ -4,18 +4,20 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <vtkRenderer.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderWindowInteractor.h>
-#include <vtkAbstractPropPicker.h>
-#include <vtkTransform.h>
+#include "fwRenderVTK/IVtkAdaptorService.hpp"
 
 #include <fwData/String.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
 #include <fwTools/fwID.hpp>
 
-#include <fwServices/Base.hpp>
-
-#include "fwRenderVTK/IVtkAdaptorService.hpp"
+#include <vtkAbstractPropPicker.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkRenderer.h>
+#include <vtkTransform.h>
 
 
 
@@ -32,7 +34,6 @@ IVtkAdaptorService::IVtkAdaptorService() throw()
       m_autoRender(true),
       m_autoConnect(true)
 {
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 IVtkAdaptorService::~IVtkAdaptorService() throw()
@@ -40,7 +41,7 @@ IVtkAdaptorService::~IVtkAdaptorService() throw()
     m_propCollection->Delete();
 }
 
-void IVtkAdaptorService::info(std::ostream &_sstream )
+void IVtkAdaptorService::info(std::ostream& _sstream )
 {
     _sstream << "IVtkAdaptorService : ";
     this->SuperClass::info( _sstream );
@@ -64,7 +65,7 @@ void IVtkAdaptorService::starting() throw(fwTools::Failed)
     /// Install observation
     if (m_autoConnect)
     {
-        m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+        m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
     }
     assert( m_renderService.lock() );
 
@@ -77,18 +78,19 @@ void IVtkAdaptorService::starting() throw(fwTools::Failed)
 void IVtkAdaptorService::stopping() throw(fwTools::Failed)
 {
     /// Stop observation
-    m_connections->disconnect();
+    m_connections.disconnect();
     doStop();
     requestRender();
 }
+
 //------------------------------------------------------------------------------
 
 void IVtkAdaptorService::swapping() throw(fwTools::Failed)
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
     if (m_autoConnect)
     {
-        m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+        m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
     }
     doSwap();
     requestRender();
@@ -129,9 +131,17 @@ void IVtkAdaptorService::setVtkPipelineModified()
 
 //------------------------------------------------------------------------------
 
+int IVtkAdaptorService::getStartPriority()
+{
+    return 0;
+}
+
+//------------------------------------------------------------------------------
+
 void IVtkAdaptorService::requestRender()
 {
-    if ( this->getRenderService()->isShownOnScreen() && m_vtkPipelineModified && m_autoRender )
+    if ( this->getRenderService()->isStarted() && this->getRenderService()->isShownOnScreen()
+         && m_vtkPipelineModified && m_autoRender )
     {
         if ( !this->getRenderService()->getPendingRenderRequest())
         {
@@ -144,14 +154,14 @@ void IVtkAdaptorService::requestRender()
 
 //------------------------------------------------------------------------------
 
-SRender::RendererIdType IVtkAdaptorService::getRenderId()
+SRender::RendererIdType IVtkAdaptorService::getRenderId() const
 {
     return m_rendererId;
 }
 
 //------------------------------------------------------------------------------
 
-SRender::sptr IVtkAdaptorService:: getRenderService()
+SRender::sptr IVtkAdaptorService:: getRenderService() const
 {
     return m_renderService.lock();
 }
@@ -172,14 +182,14 @@ void IVtkAdaptorService::setPickerId(SRender::PickerIdType newID)
 
 //------------------------------------------------------------------------------
 
-SRender::PickerIdType IVtkAdaptorService::getPickerId()
+SRender::PickerIdType IVtkAdaptorService::getPickerId() const
 {
     return m_pickerId;
 }
 
 //------------------------------------------------------------------------------
 
-vtkAbstractPropPicker * IVtkAdaptorService::getPicker(std::string pickerId)
+vtkAbstractPropPicker* IVtkAdaptorService::getPicker(std::string pickerId)
 {
     if (pickerId.empty())
     {
@@ -197,21 +207,21 @@ void IVtkAdaptorService::setTransformId(SRender::VtkObjectIdType newID)
 
 //------------------------------------------------------------------------------
 
-SRender::VtkObjectIdType IVtkAdaptorService::getTransformId()
+SRender::VtkObjectIdType IVtkAdaptorService::getTransformId() const
 {
     return m_transformId;
 }
 
 //------------------------------------------------------------------------------
 
-vtkTransform * IVtkAdaptorService::getTransform()
+vtkTransform* IVtkAdaptorService::getTransform()
 {
     return vtkTransform::SafeDownCast(m_renderService.lock()->getVtkObject(m_transformId));
 }
 
 //------------------------------------------------------------------------------
 
-vtkObject * IVtkAdaptorService::getVtkObject(const SRender::VtkObjectIdType& objectId) const
+vtkObject* IVtkAdaptorService::getVtkObject(const SRender::VtkObjectIdType& objectId) const
 {
     if (!objectId.empty())
     {
@@ -229,7 +239,7 @@ vtkRenderWindowInteractor* IVtkAdaptorService::getInteractor()
 
 //------------------------------------------------------------------------------
 
-::fwData::Object::sptr IVtkAdaptorService::getAssociatedObject(vtkProp *prop, int depth)
+::fwData::Object::sptr IVtkAdaptorService::getAssociatedObject(vtkProp* prop, int depth)
 {
     ::fwData::Object::sptr obj;
 
@@ -283,14 +293,14 @@ void IVtkAdaptorService::unregisterServices()
 
 //------------------------------------------------------------------------------
 
-void IVtkAdaptorService::registerProp(vtkProp *prop)
+void IVtkAdaptorService::registerProp(vtkProp* prop)
 {
     getProps(m_propCollection, prop);
 }
 
 //------------------------------------------------------------------------------
 
-void IVtkAdaptorService::getProps(vtkPropCollection *propc, vtkProp *prop)
+void IVtkAdaptorService::getProps(vtkPropCollection* propc, vtkProp* prop)
 {
     int initSize = propc->GetNumberOfItems();
 
@@ -306,9 +316,9 @@ void IVtkAdaptorService::getProps(vtkPropCollection *propc, vtkProp *prop)
 
 //------------------------------------------------------------------------------
 
-void IVtkAdaptorService::getAllSubProps(vtkPropCollection *propc, int depth)
+void IVtkAdaptorService::getAllSubProps(vtkPropCollection* propc, int depth)
 {
-    vtkProp *prop;
+    vtkProp* prop;
 
     m_propCollection->InitTraversal();
     while ( (prop = m_propCollection->GetNextProp()) )
@@ -337,7 +347,7 @@ void IVtkAdaptorService::unregisterProps()
 
 //------------------------------------------------------------------------------
 
-void IVtkAdaptorService::addToRenderer(vtkProp *prop)
+void IVtkAdaptorService::addToRenderer(vtkProp* prop)
 {
     this->registerProp(prop);
     this->getRenderer()->AddViewProp(prop);
@@ -346,7 +356,7 @@ void IVtkAdaptorService::addToRenderer(vtkProp *prop)
 
 //------------------------------------------------------------------------------
 
-void IVtkAdaptorService::addToPicker(vtkProp *prop, std::string pickerId)
+void IVtkAdaptorService::addToPicker(vtkProp* prop, std::string pickerId)
 {
     OSLM_ASSERT("Picker '"<< pickerId << "' undefined.", this->getPicker(pickerId));
     this->getPicker(pickerId)->AddPickList(prop);
@@ -355,7 +365,7 @@ void IVtkAdaptorService::addToPicker(vtkProp *prop, std::string pickerId)
 
 //------------------------------------------------------------------------------
 
-void IVtkAdaptorService::removeFromPicker(vtkProp *prop, std::string pickerId)
+void IVtkAdaptorService::removeFromPicker(vtkProp* prop, std::string pickerId)
 {
     OSLM_ASSERT("Picker '"<< pickerId << "' undefined.", this->getPicker(pickerId));
     this->getPicker(pickerId)->DeletePickList(prop);
@@ -366,8 +376,8 @@ void IVtkAdaptorService::removeFromPicker(vtkProp *prop, std::string pickerId)
 
 void IVtkAdaptorService::removeAllPropFromRenderer()
 {
-    vtkPropCollection *propc = m_propCollection;
-    vtkProp *prop;
+    vtkPropCollection* propc = m_propCollection;
+    vtkProp* prop;
 
     propc->InitTraversal();
     while ( (prop = propc->GetNextProp()) )

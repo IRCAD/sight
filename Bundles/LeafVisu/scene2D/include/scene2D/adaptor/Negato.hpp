@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,10 +10,10 @@
 #include "scene2D/adaptor/IAdaptor.hpp"
 #include "scene2D/data/Coord.hpp"
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
-#include <QImage>
 #include <QGraphicsItemGroup>
+#include <QImage>
 #include <QPointF>
 
 namespace scene2D
@@ -21,7 +21,7 @@ namespace scene2D
 namespace adaptor
 {
 
-class SCENE2D_CLASS_API Negato : public ::fwComEd::helper::MedicalImageAdaptor,
+class SCENE2D_CLASS_API Negato : public ::fwDataTools::helper::MedicalImageAdaptor,
                                  public ::scene2D::adaptor::IAdaptor
 {
 
@@ -81,19 +81,19 @@ private:
      * @}
      */
 
-    QImage * createQImage();
-    void updateBufferFromImage( QImage * qimg );
-    void changeImageMinMaxFromCoord( scene2D::data::Coord & oldCoord, scene2D::data::Coord & newCoord );
+    QImage* createQImage();
+    void updateBufferFromImage( QImage* qimg );
+    void changeImageMinMaxFromCoord( scene2D::data::Coord& oldCoord, scene2D::data::Coord& newCoord );
 
     static QRgb getQImageVal(const size_t index, const short* buffer, double wlMin,
                              double tfWin, const ::fwData::TransferFunction::sptr& tf);
 
-    QImage * m_qimg;
-    QGraphicsPixmapItem * m_pixmapItem;
+    QImage* m_qimg;
+    QGraphicsPixmapItem* m_pixmapItem;
     QGraphicsItemGroup* m_layer;
 
     /// The current orientation of the negato
-    ::fwComEd::helper::MedicalImageAdaptor::Orientation m_orientation;
+    ::fwDataTools::helper::MedicalImageAdaptor::Orientation m_orientation;
 
     /// Used during negato interaction to manage window/level
     bool m_pointIsCaptured;

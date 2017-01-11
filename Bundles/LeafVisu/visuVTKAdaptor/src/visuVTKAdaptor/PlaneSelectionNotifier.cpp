@@ -8,24 +8,21 @@
 
 #include "visuVTKAdaptor/PlaneSelectionNotifier.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-
-
-#include <fwComEd/helper/Composite.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Plane.hpp>
 #include <fwData/PlaneList.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwDataTools/helper/Composite.hpp>
+
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::PlaneSelectionNotifier,
@@ -49,8 +46,6 @@ PlaneSelectionNotifier::PlaneSelectionNotifier() throw()
     newSlot(s_ADD_PLANE_SLOT, &PlaneSelectionNotifier::addPlane, this);
     newSlot(s_REMOVE_PLANE_SLOT, &PlaneSelectionNotifier::removePlane, this);
     newSlot(s_SHOW_PLANES_SLOT, &PlaneSelectionNotifier::showPlanes, this);
-
-    m_plConnection = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //------------------------------------------------------------------------------
@@ -89,10 +84,10 @@ void PlaneSelectionNotifier::doStart() throw(fwTools::Failed)
     ::fwData::PlaneList::sptr planeList = m_currentPlaneList.lock();
     if(planeList)
     {
-        m_plConnection->connect(planeList, ::fwData::PlaneList::s_PLANE_REMOVED_SIG,
-                                this->getSptr(), s_REMOVE_PLANE_SLOT);
-        m_plConnection->connect(planeList, ::fwData::PlaneList::s_VISIBILITY_MODIFIED_SIG,
-                                this->getSptr(), s_SHOW_PLANES_SLOT);
+        m_plConnection.connect(planeList, ::fwData::PlaneList::s_PLANE_REMOVED_SIG,
+                               this->getSptr(), s_REMOVE_PLANE_SLOT);
+        m_plConnection.connect(planeList, ::fwData::PlaneList::s_VISIBILITY_MODIFIED_SIG,
+                               this->getSptr(), s_SHOW_PLANES_SLOT);
 
         for( ::fwData::Plane::sptr plane :  planeList->getPlanes() )
         {
@@ -133,7 +128,7 @@ void PlaneSelectionNotifier::doStop() throw(fwTools::Failed)
             m_planeConnections[plane->getID()].disconnect();
         }
 
-        m_plConnection->disconnect();
+        m_plConnection.disconnect();
 
         m_currentPlaneList.reset();
     }
@@ -183,7 +178,7 @@ void PlaneSelectionNotifier::selectPlane( ::fwData::Object::sptr plane )
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
-    ::fwComEd::helper::Composite helper(composite);
+    ::fwDataTools::helper::Composite helper(composite);
     helper.swap(m_planeSelectionId, plane);
 
     auto sig = composite->signal< ::fwData::Composite::ChangedObjectsSignalType >(
@@ -201,7 +196,7 @@ void PlaneSelectionNotifier::deselectPlane()
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     if ( composite->find(m_planeSelectionId) != composite->end() )
     {
-        ::fwComEd::helper::Composite helper(composite);
+        ::fwDataTools::helper::Composite helper(composite);
         helper.remove(m_planeSelectionId);
         auto sig = composite->signal< ::fwData::Composite::RemovedObjectsSignalType >(
             ::fwData::Composite::s_REMOVED_OBJECTS_SIG);

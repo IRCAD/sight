@@ -1,11 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwCore
-    fwTest
-    fwTools
-    fwData
-    fwComEd
-)
 
 find_package(CppUnit)
 

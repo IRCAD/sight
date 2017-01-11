@@ -1,12 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwServices/AppConfigManager.hpp"
-#include "fwServices/Base.hpp"
+#include "fwServices/macros.hpp"
 #include "fwServices/helper/Config.hpp"
+#include <fwServices/op/Get.hpp>
 #include "fwServices/registry/ActiveWorkers.hpp"
 #include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/registry/Proxy.hpp"
@@ -46,14 +47,11 @@ namespace fwServices
 
     ::fwData::Object::sptr obj;
     obj = ::fwData::factory::New(::boost::get<0>(type));
-    OSLM_ASSERT("Factory failed to build object : " <<  ::boost::get<0>(type), obj);
+    OSLM_ASSERT("Factory failed to build object : " << ::boost::get<0>(type), obj);
 
     if (::boost::get<1>(uid))
     {
-#ifndef COM_LOG
-        OSLM_ASSERT("Object already has an UID.", !obj->hasID());
-#endif
-
+        SLM_ASSERT("Object already has an UID.", !obj->hasID());
         OSLM_FATAL_IF("UID " << ::boost::get<0>(uid) << " already exists.",
                       ::fwTools::fwID::exist(::boost::get<0>(uid)));
         obj->setID(::boost::get<0>(uid));
@@ -123,10 +121,8 @@ namespace fwServices
     {
         srv = srvFactory->create(typestr, ::boost::get<0>(implType));
     }
-
-#ifndef COM_LOG
-    OSLM_ASSERT("Service already has an UID.", !srv->hasID());
-#endif
+    SLM_ASSERT("Factory could not create service of type <" + ::boost::get<0>(implType) + ">.", srv);
+    SLM_ASSERT("Service already has an UID.", !srv->hasID());
 
     OSLM_FATAL_IF("UID " << ::boost::get<0>(uid) << " already exists.", ::fwTools::fwID::exist(::boost::get<0>(uid)));
     if (::boost::get<1>(uid))
@@ -144,7 +140,7 @@ void AppConfigManager::autoSigSlotConnection(
     ::fwServices::IService::sptr srv,
     ConfigAttribute priority)
 {
-    m_connections->connect( obj, srv, srv->getObjSrvConnections() );
+    m_connections.connect( obj, srv, srv->getObjSrvConnections() );
 }
 
 // ------------------------------------------------------------------------
@@ -158,7 +154,7 @@ void AppConfigManager::startConnections()
 
 void AppConfigManager::stopConnections()
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
 }
 
 // ------------------------------------------------------------------------
@@ -239,7 +235,7 @@ void AppConfigManager::processUpdateItems()
             {
                 std::string type = elem->getExistingAttributeValue("type");
 
-                std::vector<fwServices::IService::sptr> servicesToUpdate = ::fwServices::OSR::getServices(type);
+                auto servicesToUpdate = ::fwServices::OSR::getServices(type);
 
                 OSLM_ASSERT("No services of type \"" << type << "\" found.", !servicesToUpdate.empty());
 
@@ -492,8 +488,10 @@ void AppConfigManager::bindService(::fwRuntime::ConfigurationElement::csptr srvE
 // Constructors / Destructors
 // ------------------------------------------------------------------------
 
-AppConfigManager::AppConfigManager() : m_state(STATE_DESTROYED), m_connections( helper::SigSlotConnection::New() )
+AppConfigManager::AppConfigManager()
 {
+    SLM_ASSERT("Can't mix V1 and V2 appConfigs", s_VERSION == 0 || s_VERSION == 1);
+    s_VERSION = 1;
 }
 
 // ------------------------------------------------------------------------
@@ -590,6 +588,11 @@ void AppConfigManager::stopAndDestroy()
     this->destroy();
 }
 
+fwData::Object::sptr AppConfigManager::getConfigRoot() const
+{
+    return m_configuredObject;
+}
+
 // ------------------------------------------------------------------------
 
 void AppConfigManager::createConnections()
@@ -681,7 +684,7 @@ void AppConfigManager::destroyProxies()
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::setConfig(const std::string &configId, const FieldAdaptorType &replaceFields)
+void AppConfigManager::setConfig(const std::string& configId, const FieldAdaptorType& replaceFields)
 {
     m_configId = configId;
     m_cfgElem  = registry::AppConfig::getDefault()->getAdaptedTemplateConfig( configId, replaceFields );
@@ -690,7 +693,7 @@ void AppConfigManager::setConfig(const std::string &configId, const FieldAdaptor
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::setConfig(const std::string& configId, const ::fwData::Composite::csptr &replaceFields)
+void AppConfigManager::setConfig(const std::string& configId, const ::fwData::Composite::csptr& replaceFields)
 {
     m_configId = configId;
     m_cfgElem  = registry::AppConfig::getDefault()->getAdaptedTemplateConfig( configId, replaceFields );

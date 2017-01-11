@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,7 @@
 namespace fwDataTools
 {
 
-bool TransformationMatrix3D::invert(const ::fwData::TransformationMatrix3D::sptr& _input,
+bool TransformationMatrix3D::invert(const ::fwData::TransformationMatrix3D::csptr& _input,
                                     ::fwData::TransformationMatrix3D::sptr& _output)
 {
     // Normally we should transpose matrices since GLM uses a column-major layout and FW4SPL uses row-major layout
@@ -36,8 +36,8 @@ bool TransformationMatrix3D::invert(const ::fwData::TransformationMatrix3D::sptr
 
 // ----------------------------------------------------------------------------
 
-void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::sptr& _trfA,
-                                      const ::fwData::TransformationMatrix3D::sptr& _trfB,
+void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::csptr& _trfA,
+                                      const ::fwData::TransformationMatrix3D::csptr& _trfB,
                                       ::fwData::TransformationMatrix3D::sptr& _output)
 {
     // Normally we should transpose matrices since GLM uses a column-major layout and FW4SPL uses row-major layout
@@ -76,8 +76,8 @@ void TransformationMatrix3D::identity(::fwData::TransformationMatrix3D::sptr& _t
 
 // ----------------------------------------------------------------------------
 
-void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::sptr& _trf,
-                                      const ::fwData::Point::sptr& _input, ::fwData::Point::sptr& _output)
+void TransformationMatrix3D::multiply(const ::fwData::TransformationMatrix3D::csptr& _trf,
+                                      const ::fwData::Point::csptr& _input, ::fwData::Point::sptr& _output)
 {
     // Normally we should transpose matrices since GLM uses a column-major layout and FW4SPL uses row-major layout
     // However the transposition has a cost, so it is faster to not transpose them

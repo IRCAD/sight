@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -88,49 +88,59 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
 
     typedef std::vector< ActivityRequirementKey > KeyType;
 
-    std::string name;
-    std::string type;
-    std::string container;
-    unsigned int minOccurs;
-    unsigned int maxOccurs;
-    KeyType keys;
+    std::string name; /// parameter name
+    std::string type; /// parameter type (ie. ::fwMedData::ImageSeries)
+    std::string container; /// data container if maxOccurs > 1 ("vector" or "composite", default: "composite")
+    std::string description; /// parameter description
+    std::string validator;  /// Implementation of data validator
+    unsigned int minOccurs; /// minimum number of data required
+    unsigned int maxOccurs; /// maximum number of data required
+    bool create; /// True if the data must be created if it is not present (only if minOccurs = 0 and maxOccurs = 1)
+    KeyType keys; /// Parameter key if the container == "composite"
 };
 
 /**
  * @brief Holds Activities configuration.
  *
  * Activity parameters are (in this order) :
- * - <id>...</id> : activity id
- * - <title>...</title> : activity title (displayed in tab if tabinfo isn't specified)
- * - <tabinfo>...</tabinfo> : activity title (displayed in tab)
- * - <desc>...</desc> : activity description
- * - <icon>...</icon> : path to the icon activity
- * - <requirements> : required elements to launch specified activity (must be present in vector selection)
- *   - <requirement> : a required element
- *     - name : element key in ActivitySeries composite
- *     - type : object type
- *     - minOccurs (optional, default value = 1) : minimal number of object (with specified type) in vector
- *     - maxOccurs (optional, default value = 1) : maximal number of object (with specified type) in vector
- *       - key : if maxOccurs > 1, then you must defined keys for each objects
- *     - container (optional, default value = composite) : container type (vector or composite) to store required parameters
- * - <builder>...</builder> : implementation of builder associate to the activity, the builder creates ActivitySeries.
+ * - \b id : activity id
+ * - \b title : activity title (displayed in tab if tabinfo isn't specified)
+ * - \b tabinfo : activity title (displayed in tab)
+ * - \b desc : activity description
+ * - \b icon : path to the icon activity
+ * - \b requirements : required elements to launch specified activity (must be present in vector selection)
+ *   - \b requirement : a required element
+ *     - \b name : element key in ActivitySeries composite
+ *     - \b type : object type
+ *     - \b minOccurs (optional, default value = 1) : minimal number of object (with specified type) in vector
+ *     - \b maxOccurs (optional, default value = 1) : maximal number of object (with specified type) in vector
+ *       - \b key : if maxOccurs > 1, then you must defined keys for each objects
+ *     - \b container (optional, default value = composite) : container type (vector or composite) to store required
+ *       parameters
+ *     - \b create (optional) : true if the data must be created if it is not present (only available if minOccurs = 0
+ *       and maxOccurs = 1)
+ *     - \b desc (optional) : description of the requirement
+ *     - \b validator (optional) : validate the current data
+ * - \b builder (optional): implementation of builder associate to the activity, the builder creates ActivitySeries.
  *   - default builder is ::fwActivities::builder::ActivitySeries
- * - <validator> : check if specified activity can be launched with selected objects
- * - <appConfig> : defined AppConfig launched by this activity
+ * - \b validator (optional): check if specified activity can be launched with selected objects
+ * - \b validators (optional) : defines validators implementations instantiated to validate activity launch
+ *   -  \b validator : implementation name for a validator
+ * - \b appConfig : defined AppConfig launched by this activity
  *   - id : AppConfig id
- *   - <parameters> : parameters required by the AppConfig
- *     - <parameter> : defined an AppConfig parameter
+ *   - \b parameters : parameters required by the AppConfig
+ *     - \b parameter : defined an AppConfig parameter
  *       - replace : parameter name to replace in AppConfig
  *       - by : value to use for replacement (can be a string or sesh@ path)
  *
  * Example of activity configuration:
- * @verbatim
+ * @code{.xml}
     <extension implements="::fwActivities::registry::Activities">
         <id>3DVisualization</id>
         <title>3D Visu</title>
         <tabinfo>3D MPR - !values.modelSeries.patient.name</tabinfo>
         <desc>Activity description ...</desc>
-        <icon>Bundles/media_0-1/icons/icon-3D.png</icon>
+        <icon>@BUNDLE_PREFIX@/media_0-1/icons/icon-3D.png</icon>
         <requirements>
             <requirement name="param1" type="::fwData::Image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
             <requirement name="param2" type="::fwData::Mesh" maxOccurs="3" >
@@ -140,10 +150,14 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
             </requirement>
             <requirement name="param3" type="::fwData::Mesh" maxOccurs="*" container="vector" />
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="0" maxOccurs="2" />
-            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="1" maxOccurs="1">
+                 <desc>Description of the required data....</desc>
+                 <validator>::fwActivities::validator::ImageProperties</validator>
+            </requirement>
+            <requirement name="transformationMatrix" type="::fwData::TransformationMatrix3D" minOccurs="0" maxOccurs="1" create="true" />
             <!--# ...-->
         </requirements>
-        <builder impl="::fwMedData::ActivitySeriesBuilder" />
+        <builder>::fwActivities::builder::ActivitySeries</builder>
         <validators>
             <validator>::fwActivities::validator::RelatedStudy</validator>
         </validators>
@@ -155,10 +169,7 @@ struct FWACTIVITIES_CLASS_API ActivityRequirement
             </parameters>
         </appConfig>
     </extension>
- * @endverbatim
- *
- * - validators (optional) : defines validators implementations instantiated to validate activity launch
- *   - validator : implementation name for a validator
+ * @endcode
  */
 struct FWACTIVITIES_CLASS_API ActivityInfo
 {
@@ -197,11 +208,10 @@ struct FWACTIVITIES_CLASS_API ActivityInfo
 
 
 /**
- * @class Activities
  * @brief This class allows to register all the configuration parameters which has the point extension
  *        "::activityReg::registry::Activities".
  *
- * @date 2012
+ * @see ::fwActivities::registry::ActivityInfo
  */
 class FWACTIVITIES_CLASS_API Activities : public ::fwCore::BaseObject
 {

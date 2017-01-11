@@ -1,25 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <iomanip>
-#include <fstream>
-
-#include <fwTools/System.hpp>
-#include <fwData/Mesh.hpp>
-
-#include <fwTest/generator/Mesh.hpp>
-#include <fwDataTools/Mesh.hpp>
+#include "MeshTrianTest.hpp"
 
 #include <fwDataIO/reader/MeshReader.hpp>
 #include <fwDataIO/writer/MeshWriter.hpp>
 
-#include <fwComEd/helper/Array.hpp>
+#include <fwDataTools/Mesh.hpp>
+#include <fwDataTools/helper/Array.hpp>
 
-#include "MeshTrianTest.hpp"
+#include <fwTest/generator/Mesh.hpp>
+
+#include <fwTools/System.hpp>
+
+#include <fstream>
+#include <iomanip>
+#include <iostream>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataIO::ut::MeshTrianTest );
@@ -112,11 +111,11 @@ void MeshTrianTest::testMeshWithCellNormals()
         if(buff1)                                                         \
         {                                                                 \
             CPPUNIT_ASSERT(buff1->getSize() == buff2->getSize());         \
-            ::fwComEd::helper::Array helper1(buff1);                      \
-            ::fwComEd::helper::Array helper2(buff2);                      \
+            ::fwDataTools::helper::Array helper1(buff1);                      \
+            ::fwDataTools::helper::Array helper2(buff2);                      \
                                                                       \
-            type *iter1 = helper1.begin<type>();                          \
-            type *iter2 = helper2.begin<type>();                          \
+            type* iter1 = helper1.begin<type>();                          \
+            type* iter2 = helper2.begin<type>();                          \
                                                                       \
             for (; iter1 != helper1.end<type>(); ++iter1, ++iter2)       \
             {                                                             \

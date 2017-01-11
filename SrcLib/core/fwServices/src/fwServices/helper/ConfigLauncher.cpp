@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <fwTools/fwID.hpp>
 #include <fwData/Composite.hpp>
@@ -44,11 +44,11 @@ void ConfigLauncher::parseConfig(const ::fwServices::IService::ConfigType& confi
         SLM_ASSERT("There must be one (and only one) <config/> element.",
                    config.get_child("service").count("config") == 1 );
         const ::fwServices::IService::ConfigType srvconfig = config.get_child("service");
-        const ::fwServices::IService::ConfigType &config   = srvconfig.get_child("config");
+        const ::fwServices::IService::ConfigType& config   = srvconfig.get_child("config");
 
         if(config.count("appConfig") == 1 )
         {
-            const ::fwServices::IService::ConfigType &appConfig = config.get_child("appConfig");
+            const ::fwServices::IService::ConfigType& appConfig = config.get_child("appConfig");
             m_appConfig = ::fwActivities::registry::ActivityAppConfig(appConfig);
         }
         OSLM_ASSERT("At most 1 <appConfig> tag is allowed", config.count("appConfig") < 2);
@@ -102,7 +102,7 @@ void ConfigLauncher::startConfig(::fwServices::IService::sptr srv,
     }
 
     // Init manager
-    m_appConfigManager = ::fwServices::AppConfigManager::New();
+    m_appConfigManager = ::fwServices::IAppConfigManager::New();
     m_appConfigManager->setConfig( m_appConfig.id, replaceMap );
 
     // Launch config
@@ -135,16 +135,14 @@ void ConfigLauncher::stopConfig()
 void ConfigLauncher::connectToConfigRoot(::fwServices::IService::sptr srv)
 {
     ::fwData::Object::sptr root = m_appConfigManager->getConfigRoot();
-    m_connections               = ::fwServices::helper::SigSlotConnection::New();
-    m_connections->connect( root, srv->getSptr(), srv->getObjSrvConnections() );
+    m_connections.connect( root, srv, srv->getObjSrvConnections() );
 }
 
 //------------------------------------------------------------------------------
 
 void ConfigLauncher::disconnectToConfigRoot()
 {
-    m_connections->disconnect();
-    m_connections.reset();
+    m_connections.disconnect();
 }
 
 //------------------------------------------------------------------------------

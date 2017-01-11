@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,9 +25,41 @@ namespace editor
 
 /**
  * @brief   This editor shows a button and send a signal when it is clicked.
- * @class   SSignalButton
  *
- * @note If the mode is "checkable", it sends a signal with a boolean in parameter representing the "check" mode.
+ * If the mode is "checkable", it sends a signal with a boolean in parameter representing the "check" state.
+ *
+ * @note This service doesn’t modify its associated object, so it can work on any type of object.
+ *
+ * @section XML XML configuration
+ * @code{.xml}
+   <service uid="..." impl="::guiQt::editor::SSignalButton" >
+       <config>
+          <checkable>true|false</checkable>
+          <text>...</text>
+          <icon>...</icon>
+          <text2>...</text2>
+          <icon2>...</icon2>
+          <checked>true|false</checked>
+          <iconWidth>...</iconWidth>
+          <iconHeight>...</iconHeight>
+       </config>
+   </service>
+   @endcode
+ * - \b text (optional): text displayed on the button
+ * - \b icon (optional): icon displayed on the button
+ * - \b checkable (optional, default: false): if true, the button is checkable
+ * - \b text2 (optional): text displayed if the button is checked
+ * - \b icon2 (optional): icon displayed if the button is checked
+ * - \b checked (optional, default: false): if true, the button is checked at start
+ * - \b iconWidth (optional): icon width
+ * - \b iconHeight (optional): icon height
+ *
+ * @section Signals Signals
+ * - \b clicked(): This signal is emitted when the button is clicked
+ * - \b toggled(bool):  This signal is emitted when the button is checked
+ *
+ * @section Slot Slot
+ * - \b setChecked(bool): This slot allows to check/uncheck the button
  */
 class GUIQT_CLASS_API SSignalButton : public QObject,
                                       public ::gui::editor::IEditor
@@ -64,31 +96,7 @@ protected:
      */
     GUIQT_API virtual void updating() throw(::fwTools::Failed);
 
-    /**
-     * @brief This method is used to configure the class parameters.
-     * @verbatim
-       <service uid="..." impl="::guiQt::editor::SSignalButton" >
-        <config>
-            <checkable>true|false</checkable>
-            <text>...</text>
-            <icon>...</icon>
-            <text2>...</text2>
-            <icon2>...</icon2>
-            <checked>true|false</checked>
-            <iconWidth>...</iconWidth>
-            <iconHeight>...</iconHeight>
-        </config>
-       </service>
-       @endverbatim
-     * - \b text (optional): text displayed on the button
-     * - \b icon (optional): icon displayed on the button
-     * - \b checkable (optional, default: false): if true, the button is checkable
-     *   - \b text2 (optional): text displayed if the button is checked
-     *   - \b icon2 (optional): icon displayed if the button is checked
-     *   - \b checked (optional, default: false): if true, the button is checked at start
-     * - iconWidth (optional): icon width
-     * - iconHeight (optional): icon height
-     */
+    /// This method is used to configure the class parameters.
     GUIQT_API virtual void configuring() throw( ::fwTools::Failed );
 
     /**
@@ -145,5 +153,3 @@ private:
 }
 
 #endif /*__GUIQT_EDITOR_SSIGNALBUTTON_HPP__*/
-
-

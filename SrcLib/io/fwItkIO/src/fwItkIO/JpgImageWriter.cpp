@@ -1,37 +1,36 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem.hpp>
+#include "fwItkIO/JpgImageWriter.hpp"
+
+#include "fwItkIO/helper/ProgressItkToFw.hpp"
+#include "fwItkIO/itk.hpp"
 
 #include <fwCore/base.hpp>
 
-#include <itkImageSeriesWriter.h>
-#include <itkNumericSeriesFileNames.h>
-#include <itkIntensityWindowingImageFilter.h>
-#include <itkJPEGImageIOFactory.h>
-
-#include <fwTools/IntrinsicTypes.hpp>
-#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/IntrinsicTypes.hpp>
-#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
-
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <fwData/Integer.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
+#include <fwData/Integer.hpp>
 #include <fwData/TransferFunction.hpp>
 
 #include <fwDataIO/writer/registry/macros.hpp>
 
-#include "fwItkIO/itk.hpp"
-#include "fwItkIO/helper/ProgressItkToFw.hpp"
-#include "fwItkIO/JpgImageWriter.hpp"
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
+#include <fwTools/Dispatcher.hpp>
+#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
+#include <fwTools/IntrinsicTypes.hpp>
+
+#include <itkImageSeriesWriter.h>
+#include <itkIntensityWindowingImageFilter.h>
+#include <itkJPEGImageIOFactory.h>
+#include <itkNumericSeriesFileNames.h>
+
+#include <boost/filesystem.hpp>
 
 
 fwDataIOWriterRegisterMacro( ::fwItkIO::JpgImageWriter );
@@ -72,7 +71,7 @@ struct JpgITKSaverFunctor
     };
 
     template<class PIXELTYPE>
-    void operator()( const Parameter &param )
+    void operator()( const Parameter& param )
     {
         OSLM_DEBUG( "itk::ImageSeriesWriter with PIXELTYPE "<<  fwTools::DynamicType::string<PIXELTYPE>() );
 
@@ -94,7 +93,7 @@ struct JpgITKSaverFunctor
         typename WriterType::Pointer writer = WriterType::New();
 
         // set observation (*2*)
-        itk::LightProcessObject::Pointer castHelper = (itk::LightProcessObject *)(imageIOWrite.GetPointer());
+        itk::LightProcessObject::Pointer castHelper = (itk::LightProcessObject*)(imageIOWrite.GetPointer());
         assert( castHelper.IsNotNull() );
         Progressor progress(castHelper, param.m_fwWriter, param.m_filename);
 
@@ -106,7 +105,8 @@ struct JpgITKSaverFunctor
 
         double min, max;
         ::fwData::Composite::sptr poolTF;
-        poolTF = image->getField< ::fwData::Composite>( ::fwComEd::Dictionary::m_transferFunctionCompositeId );
+        poolTF =
+            image->getField< ::fwData::Composite>( ::fwDataTools::fieldHelper::Image::m_transferFunctionCompositeId );
         if(poolTF)
         {
             ::fwData::Composite::iterator iter = poolTF->find(::fwData::TransferFunction::s_DEFAULT_TF_NAME);
@@ -120,7 +120,7 @@ struct JpgITKSaverFunctor
         }
         else
         {
-            ::fwComEd::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
+            ::fwDataTools::fieldHelper::MedicalImageHelpers::getMinMax(image, min, max);
         }
 
         rescaleFilter->SetWindowMinimum( min );

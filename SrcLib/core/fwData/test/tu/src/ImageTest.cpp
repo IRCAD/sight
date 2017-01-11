@@ -1,24 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <exception>
-#include <vector>
-#include <ostream>
-#include <map>
-#include <boost/date_time/posix_time/posix_time.hpp>
-
+#include "ImageTest.hpp"
 
 #include <fwData/Image.hpp>
 #include <fwData/Reconstruction.hpp>
 
-#include <fwComEd/helper/Image.hpp>
-#include <fwComEd/helper/Array.hpp>
+#include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/helper/Image.hpp>
 
-#include "ImageTest.hpp"
+#include <boost/date_time/posix_time/posix_time.hpp>
+
+#include <exception>
+#include <iostream>
+#include <map>
+#include <ostream>
+#include <vector>
 
 
 // Registers the fixture into the 'registry'
@@ -214,7 +214,7 @@ void ImageTest::testPixelType()
 void ImageTest::testSetGetPixel()
 {
     ::fwData::Image::sptr img = ::fwData::Image::New();
-    ::fwComEd::helper::Image imgHelper(img);
+    ::fwDataTools::helper::Image imgHelper(img);
 
     const ::boost::uint8_t DIMENSION = 3;
     ::fwTools::Type TYPE = ::fwTools::Type::create("int16");
@@ -226,11 +226,11 @@ void ImageTest::testSetGetPixel()
     img->allocate(VECTORSIZE, TYPE);
 
     ::fwData::Array::sptr array = img->getDataArray();
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
 
     // test 1 : use getPixelBuffer
     short count = 0;
-    short *iter = arrayHelper.begin<short>();
+    short* iter = arrayHelper.begin<short>();
     for (; iter != arrayHelper.end<short>(); ++iter)
     {
         *iter = count++;

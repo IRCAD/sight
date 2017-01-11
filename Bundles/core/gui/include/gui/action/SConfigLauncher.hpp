@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,7 +41,7 @@ namespace action
  *  configuration is launch several times.
  *
  * Example of this service configuration
- * @verbatim
+ * @code{.xml}
    <service impl="::gui::action::SConfigLauncher" type="::fwGui::IActionSrv">
         <config>
             <appConfig id="Visu2DID" >
@@ -52,7 +52,7 @@ namespace action
             </appConfig>
         </config>
    </service>
-   @endverbatim
+   @endcode
  */
 class GUI_CLASS_API SConfigLauncher : public ::fwGui::IActionSrv
 {
@@ -108,7 +108,7 @@ protected:
      * Call the IAction::configuring()
      *
      * Example of this service configuration
-     * @verbatim
+     * @code{.xml}
        <service impl="::gui::action::SConfigLauncher" type="::fwGui::IActionSrv">
            <config>
                 <appConfig id="Visu2DID" >
@@ -119,7 +119,7 @@ protected:
                 </appConfig>
             </config>
        </service>
-        @endverbatim
+        @endcode
      */
     virtual void configuring() throw(fwTools::Failed);
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,11 +28,8 @@ namespace registry
 {
 
 /**
- * @class AppConfigParameters
  * @brief This class allows to register all the configuration parameters which has the point extension
  *        "::fwServices::registry::AppConfigParameters".
- *
- * @date 2012
  */
 class FWSERVICES_CLASS_API AppConfigParameters : public ::fwCore::BaseObject
 {
@@ -58,7 +55,7 @@ public:
      * @brief Get the parameters associated to extension id.
      * @note This method is thread safe.
      **/
-    FWSERVICES_API const AppConfig::FieldAdaptorType & getParameters( const std::string & extensionId ) const;
+    FWSERVICES_API const FieldAdaptorType & getParameters( const std::string & extensionId ) const;
 
     /**
      * @brief Clear the registry.
@@ -68,7 +65,7 @@ public:
 
 protected:
 
-    typedef std::map< std::string, AppConfig::FieldAdaptorType > Registry;
+    typedef std::map< std::string, FieldAdaptorType > Registry;
 
     /// Container of parameter information
     Registry m_reg;

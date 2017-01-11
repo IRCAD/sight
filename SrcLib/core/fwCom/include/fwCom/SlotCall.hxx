@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,20 +10,16 @@
 #error fwCom/SlotCall.hpp not included
 #endif
 
-#include <boost/thread/future.hpp>
+#include "fwCom/exception/NoWorker.hpp"
+#include "fwCom/util/WeakCall.hpp"
+#include "fwCom/SlotRun.hxx"
 
 #include <fwCore/mt/types.hpp>
 
 #include <fwThread/TaskHandler.hpp>
 #include <fwThread/Worker.hpp>
 
-#include "fwCom/exception/NoWorker.hpp"
-
-#include "fwCom/util/WeakCall.hpp"
-
-#include "fwCom/SlotRun.hxx"
-
-#include "fwCom/util/log.hpp"
+#include <boost/thread/future.hpp>
 
 namespace fwCom
 {
@@ -40,14 +36,12 @@ template< typename R, typename ... A >
 
 template< typename R, typename ... A >
 typename SlotCall< R (A ...) >::SharedFutureType SlotCall< R (A ...) >::asyncCall(
-    const ::fwThread::Worker::sptr &worker, A ... args ) const
+    const ::fwThread::Worker::sptr& worker, A ... args ) const
 {
     if(!worker)
     {
         FW_RAISE_EXCEPTION( ::fwCom::exception::NoWorker("No valid worker.") );
     }
-
-    OSLM_COM("asyncCall '"<< this->getID() <<"' slot");
 
     return postWeakCall(
         worker,
@@ -84,7 +78,7 @@ typename SlotCall< R (A ...) >::SharedFutureType SlotCall< R (A ...) >::asyncCal
 
 template< typename R, typename ... A >
 template< typename WEAKCALL >
-::boost::shared_future< R > SlotCall< R (A ...) >::postWeakCall( const ::fwThread::Worker::sptr &worker, WEAKCALL f )
+::boost::shared_future< R > SlotCall< R (A ...) >::postWeakCall( const ::fwThread::Worker::sptr& worker, WEAKCALL f )
 {
     ::boost::packaged_task< R > task( f );
     ::boost::future< R > ufuture = task.get_future();

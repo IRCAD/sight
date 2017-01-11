@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,11 +11,9 @@
 #error fwCom/SlotConnection.hpp not included
 #endif
 
-#include <boost/bind.hpp>
-
-#include "fwCom/util/log.hpp"
 #include "fwCom/SlotRun.hpp"
 
+#include <boost/bind.hpp>
 
 namespace fwCom
 {
@@ -23,8 +21,8 @@ namespace fwCom
 
 template < typename ... A >
 inline std::shared_ptr< SlotConnection< void (A ...) > >  SlotConnection< void (A ...) >::New(
-    const SignalSptrType &signal,
-    const SlotRunSptrType &slot
+    const SignalSptrType& signal,
+    const SlotRunSptrType& slot
     )
 {
     return std::make_shared< SelfType >(signal, slot);
@@ -34,9 +32,9 @@ inline std::shared_ptr< SlotConnection< void (A ...) > >  SlotConnection< void (
 
 template < typename ... A >
 inline std::shared_ptr< SlotConnection< void (A ...) > > SlotConnection< void (A ...) >::New(
-    const SignalSptrType &signal,
-    const SlotBase::sptr &slot,
-    const SlotWrapperSptrType &slotWrapper
+    const SignalSptrType& signal,
+    const SlotBase::sptr& slot,
+    const SlotWrapperSptrType& slotWrapper
     )
 {
     return std::make_shared< SelfType >(signal, slot, slotWrapper);
@@ -45,8 +43,8 @@ inline std::shared_ptr< SlotConnection< void (A ...) > > SlotConnection< void (A
 //-----------------------------------------------------------------------------
 
 template < typename ... A >
-inline SlotConnection< void (A ...) >::SlotConnection(const SignalSptrType &signal,
-                                                      const SlotRunSptrType &slot)
+inline SlotConnection< void (A ...) >::SlotConnection(const SignalSptrType& signal,
+                                                      const SlotRunSptrType& slot)
     : m_signal(signal), m_connectedSlot(slot), m_pair(true, slot.get())
 {
 }
@@ -55,9 +53,9 @@ inline SlotConnection< void (A ...) >::SlotConnection(const SignalSptrType &sign
 
 template < typename ... A >
 inline SlotConnection< void (A ...) >::SlotConnection(
-    const SignalSptrType &signal,
-    const SlotBase::sptr &slot,
-    const SlotWrapperSptrType &slotWrapper
+    const SignalSptrType& signal,
+    const SlotBase::sptr& slot,
+    const SlotWrapperSptrType& slotWrapper
     )
     : m_signal(signal), m_connectedSlot(slot), m_slotWrapper(slotWrapper), m_pair(true, slotWrapper.get())
 {
@@ -78,33 +76,27 @@ inline void SlotConnection< void (A ...) >::connectNoLock()
 {
     SignalSptrType sig(m_signal);
     sig->m_slots.push_back( &m_pair );
-    OSLM_COM("Connect '"<< sig->getID() <<"' sig <=> '"<< m_connectedSlot.lock()->getID() <<"' slot");
 }
 
 //-----------------------------------------------------------------------------
 
 template < typename ... A >
-inline void SlotConnection< void (A ...) >::disconnectSignalNoLock(const SignalSptrType &sig)
+inline void SlotConnection< void (A ...) >::disconnectSignalNoLock(const SignalSptrType& sig)
 {
     sig->m_slots.remove( &m_pair );
     sig->m_connections.erase(m_connectedSlot);
-    OSLM_COM("Disconnect '"<< sig->getID() <<"' sig <=> '"  <<
-             (m_connectedSlot.expired() ? "<dead slot>" : m_connectedSlot.lock()->getID()) <<"' slot" );
 }
 
 //-----------------------------------------------------------------------------
 
 template < typename ... A >
-inline void SlotConnection< void (A ...) >::disconnectSlotNoLock(const SlotBase::sptr &slot)
+inline void SlotConnection< void (A ...) >::disconnectSlotNoLock(const SlotBase::sptr& slot)
 {
     try
     {
         std::shared_ptr< const SlotConnection< void (A ...) > > thisSptr =
             std::dynamic_pointer_cast< const SlotConnection< void (A ...) > > ( this->shared_from_this() );
         slot->m_connections.erase( thisSptr );
-        OSLM_COM("Disconnect '"
-                 << (m_signal.expired() ? "<dead signal>" : m_signal.lock()->getID())
-                 <<"' sig <=> '"  <<  slot->getID() <<"' slot" );
     }
     catch(const ::boost::bad_weak_ptr&)
     {

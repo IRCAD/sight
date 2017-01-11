@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,7 +31,7 @@ public:
 
     /**
      * Configuration example :
-       @verbatim
+       @code{.xml}
        <service ...>
        <config>
          <policy>ValveDump</policy>
@@ -41,7 +41,7 @@ public:
          </params>
        </config>
        </service>
-       @endverbatim
+       @endcode
      * */
     MEMORY_API virtual void configuring() throw ( ::fwTools::Failed );
 

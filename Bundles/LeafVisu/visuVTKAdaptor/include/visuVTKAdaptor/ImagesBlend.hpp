@@ -9,12 +9,13 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwServices/helper/SigSlotConnection.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Image.hpp>
 
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
 
 class vtkImageActor;
@@ -75,7 +76,7 @@ protected:
         std::string m_tfSelectionFwID;
         std::string m_selectedTFKey;
 
-        ::fwServices::helper::SigSlotConnection::sptr m_connections;
+        ::fwCom::helper::SigSlotConnection m_connections;
     };
 
     VISUVTKADAPTOR_API void doStart() throw(fwTools::Failed);
@@ -100,7 +101,7 @@ protected:
     RegisteredImageMap m_registeredImages;
 
 
-    vtkImageBlend *m_imageBlend;
+    vtkImageBlend* m_imageBlend;
     std::string m_imageRegisterId;
 
 };

@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuVTKAdaptor/ImageMultiDistances.hpp"
+
 #include "visuVTKAdaptor/Distance.hpp"
 
 #include <fwCom/Signal.hpp>
@@ -14,8 +15,6 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-
 #include <fwData/Boolean.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/Image.hpp>
@@ -23,7 +22,10 @@
 #include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwDataTools/fieldHelper/Image.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <fwTools/fwID.hpp>
 
@@ -36,9 +38,9 @@
 #include <vtkCubeSource.h>
 #include <vtkInteractorStyle.h>
 #include <vtkPolyDataMapper.h>
-#include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkRenderer.h>
 
 #include <boost/assign/std/vector.hpp>
 
@@ -57,12 +59,12 @@ class vtkDistanceDeleteCallBack : public vtkCommand
 
 public:
 
-    static vtkDistanceDeleteCallBack * New( ImageMultiDistances * service )
+    static vtkDistanceDeleteCallBack* New( ImageMultiDistances* service )
     {
         return new vtkDistanceDeleteCallBack(service);
     }
 
-    vtkDistanceDeleteCallBack( ImageMultiDistances *service )
+    vtkDistanceDeleteCallBack( ImageMultiDistances* service )
         : m_service(service),
           m_picker( vtkCellPicker::New() ),
           m_propCollection( vtkPropCollection::New() )
@@ -82,7 +84,7 @@ public:
         m_service->getAllSubProps(m_propCollection);
         m_propCollection->InitTraversal();
 
-        vtkProp *prop;
+        vtkProp* prop;
 
         while ( (prop = m_propCollection->GetNextProp()) )
         {
@@ -90,7 +92,7 @@ public:
         }
     }
 
-    virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
+    virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
         int pos[2];
         m_service->getInteractor()->GetLastEventPosition(pos);
@@ -110,8 +112,8 @@ public:
             this->fillPickList();
             if (m_picker->Pick( m_display, m_service->getRenderer() ) )
             {
-                vtkPropCollection *propc = m_picker->GetActors();
-                vtkProp *prop;
+                vtkPropCollection* propc = m_picker->GetActors();
+                vtkProp* prop;
 
                 propc->InitTraversal();
                 while ( (prop = propc->GetNextProp()) )
@@ -135,9 +137,9 @@ public:
 
 protected:
 
-    ImageMultiDistances * m_service;
-    vtkPicker * m_picker;
-    vtkPropCollection * m_propCollection;
+    ImageMultiDistances* m_service;
+    vtkPicker* m_picker;
+    vtkPropCollection* m_propCollection;
     double m_display[3];
     int m_lastPos[2];
 
@@ -253,7 +255,7 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
         SLM_ASSERT("serviceDistance not instanced", serviceDistance);
 
         // install  Color Field if none
-        pl->setDefaultField( ::fwComEd::Dictionary::m_colorId, generateColor() );
+        pl->setDefaultField( ::fwDataTools::fieldHelper::Image::m_colorId, generateColor() );
 
 
         // no mandatory to set picker id
@@ -285,7 +287,7 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
 
 ::fwData::Point::sptr ImageMultiDistances::screenToWorld(int X,int Y)
 {
-    double *world;
+    double* world;
     double display[3];
     double worldTmp[4];
     display[0] = X;
@@ -299,8 +301,8 @@ void ImageMultiDistances::installSubServices( ::fwData::PointList::sptr pl )
     else
     {
         // set temporaly the clipping around the focal point : see (1)
-        vtkCamera *camera         = this->getRenderer()->GetActiveCamera();
-        double *clippingCamBackup = camera->GetClippingRange();
+        vtkCamera* camera         = this->getRenderer()->GetActiveCamera();
+        double* clippingCamBackup = camera->GetClippingRange();
         camera->SetClippingRange( camera->GetDistance() - 0.1, camera->GetDistance() + 0.1 );  // set the clipping around the focal point
 
         world = worldTmp;
@@ -326,7 +328,7 @@ void ImageMultiDistances::doUpdate() throw(fwTools::Failed)
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     ::fwData::Vector::sptr distanceField;
-    distanceField = image->getField< ::fwData::Vector >( ::fwComEd::Dictionary::m_imageDistancesId);
+    distanceField = image->getField< ::fwData::Vector >( ::fwDataTools::fieldHelper::Image::m_imageDistancesId);
 
     bool isShown;
     isShown = image->getField("ShowDistances", ::fwData::Boolean::New(true))->value();
@@ -344,7 +346,7 @@ void ImageMultiDistances::doUpdate() throw(fwTools::Failed)
         {
             ::fwData::PointList::sptr distance    = ::fwData::PointList::dynamicCast(object);
             ::fwData::String::sptr relatedService = distance->getField< ::fwData::String >(
-                ::fwComEd::Dictionary::m_relatedServiceId);
+                ::fwDataTools::fieldHelper::Image::m_relatedServiceId);
 
             if ( filtering && relatedService )
             {
@@ -370,7 +372,7 @@ void ImageMultiDistances::removeDistance(::fwData::PointList::sptr plToRemove )
     this->unregisterServices();
 
     ::fwData::Vector::sptr distanceField;
-    distanceField = image->getField< ::fwData::Vector >( ::fwComEd::Dictionary::m_imageDistancesId);
+    distanceField = image->getField< ::fwData::Vector >( ::fwDataTools::fieldHelper::Image::m_imageDistancesId);
 
     ::fwData::Vector::IteratorType iter = std::find(distanceField->begin(), distanceField->end(), plToRemove);
     if(iter != distanceField->end())
@@ -396,10 +398,10 @@ void ImageMultiDistances::createNewDistance( std::string sceneId ) throw(::fwToo
     ::fwData::Image::sptr image     = this->getObject< ::fwData::Image >();
     ::fwData::PointList::sptr newPL = ::fwData::PointList::New();
 
-    newPL->setField( ::fwComEd::Dictionary::m_relatedServiceId, ::fwData::String::New( sceneId ) );
+    newPL->setField( ::fwDataTools::fieldHelper::Image::m_relatedServiceId, ::fwData::String::New( sceneId ) );
 
     ::fwData::Vector::sptr distanceField;
-    distanceField = image->setDefaultField< ::fwData::Vector >(::fwComEd::Dictionary::m_imageDistancesId,
+    distanceField = image->setDefaultField< ::fwData::Vector >(::fwDataTools::fieldHelper::Image::m_imageDistancesId,
                                                                ::fwData::Vector::New());
     distanceField->getContainer().push_back(newPL);
 

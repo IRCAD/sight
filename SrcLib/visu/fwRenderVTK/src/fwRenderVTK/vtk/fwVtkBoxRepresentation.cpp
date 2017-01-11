@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,8 +29,6 @@
      PURPOSE.  See the above copyright notice for more information.
 
    =========================================================================*/
-
-#ifndef ANDROID
 
 #include <vtkBoxRepresentation.h>
 #include <vtkActor.h>
@@ -73,7 +71,7 @@ fwVtkBoxRepresentation::fwVtkBoxRepresentation() : vtkBoxRepresentation()
 void fwVtkBoxRepresentation::WidgetInteraction(double e[2])
 {
     // Convert events to appropriate coordinate systems
-    vtkCamera *camera = this->Renderer->GetActiveCamera();
+    vtkCamera* camera = this->Renderer->GetActiveCamera();
     if ( !camera )
     {
         return;
@@ -162,5 +160,3 @@ void fwVtkBoxRepresentation::PrintSelf(ostream& os, vtkIndent indent)
     os << indent << "Scaling Enabled: " << (this->ScalingEnabled ? "On\n" : "Off\n");
     os << indent << "Rotation Enabled: " << (this->RotationEnabled ? "On\n" : "Off\n");
 }
-
-#endif //ANDROID

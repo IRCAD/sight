@@ -1,22 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <boost/cstdint.hpp>
+#include "fwDataIO/reader/GzBufferImageReader.hpp"
+
+#include "fwDataIO/reader/registry/macros.hpp"
+
+#include <fwData/Image.hpp>
+#include <fwData/Object.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwDataTools/helper/Image.hpp>
 
 #include <zlib.h>
 
-#include <fwData/Object.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <boost/cstdint.hpp>
 
-#include <fwComEd/helper/Image.hpp>
-
-#include "fwDataIO/reader/GzBufferImageReader.hpp"
-#include "fwDataIO/reader/registry/macros.hpp"
+#include <iostream>
 
 
 fwDataIOReaderRegisterMacro( ::fwDataIO::reader::GzBufferImageReader );
@@ -55,8 +57,8 @@ void GzBufferImageReader::read()
     size_t imageSizeInBytes = image->getSizeInBytes();
 
     image->allocate();
-    ::fwComEd::helper::Image helper(image);
-    char *ptr = static_cast<char*>(helper.getBuffer());
+    ::fwDataTools::helper::Image helper(image);
+    char* ptr = static_cast<char*>(helper.getBuffer());
 
     gzFile rawFile = gzopen(file.string().c_str(), "rb");
 

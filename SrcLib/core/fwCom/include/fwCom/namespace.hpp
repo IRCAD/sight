@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -96,7 +96,7 @@ namespace util
  *     result = slotBaseSum->call<int, int, int>(40,2);
  *     result = slotBaseLen->call<size_t, std::string>("R2D2");
  *
- * @subsection SlotAsync Asynchronous calls
+ * @subsection SlotAsyncCalls Asynchronous calls
  *
  * Slots are able to work with fwThread::Worker. If a Slot has a Worker, each
  * asynchronous execution request will be done in it's worker, otherwise
@@ -108,7 +108,7 @@ namespace util
  *     slotSum->setWorker(w);
  *     slotStart->setWorker(w);
  *
- * @subsubsection SlotAsync Asynchronous `run`
+ * @subsubsection SlotAsyncRun Asynchronous `run`
  *
  * `asyncRun` method returns a <a
  * href="http://www.boost.org/doc/libs/1_52_0/doc/html/thread/synchronization.html#thread.synchronization.futures">`boost::shared_future<
@@ -118,7 +118,7 @@ namespace util
  *     // do something else ...
  *     future.wait(); //ensures slotStart is finished before continuing
  *
- * @subsubsection SlotAsync Asynchronous `call`
+ * @subsubsection SlotAsyncCall Asynchronous `call`
  *
  * `asyncCall` method returns a <a
  * href="http://www.boost.org/doc/libs/1_52_0/doc/html/thread/synchronization.html#thread.synchronization.futures">
@@ -130,7 +130,7 @@ namespace util
  *     future.wait(); //ensures slotStart is finished before continuing
  *     int result = future.get();
  *
- * @subsubsection SlotAsync WeakCalls
+ * @subsubsection SlotAsyncWeakCall WeakCalls
  *
  * Slots asynchronous execution has been made 'weak'. That does mean that when an
  * async call/run is pending in a worker queue:

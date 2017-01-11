@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,8 @@
 #ifndef __SCENE2D_ADAPTOR_IADAPTOR_HPP__
 #define __SCENE2D_ADAPTOR_IADAPTOR_HPP__
 
-#include "scene2D/config.hpp"
 #include "scene2D/Render.hpp"
+#include "scene2D/config.hpp"
 #include "scene2D/data/Axis.hpp"
 #include "scene2D/data/Event.hpp"
 
@@ -47,10 +47,10 @@ public:
     /// Get the zValue.
     SCENE2D_API float getZValue() const;
 
-    /// Set the render that manage the IAdaptor.
+    /// Set the render that manages the IAdaptor.
     SCENE2D_API void setScene2DRender( ::scene2D::Render::sptr _scene2DRender);
 
-    /// Get the render that manage the IAdaptor.
+    /// Get the render that manages the IAdaptor.
     SCENE2D_API SPTR(::scene2D::Render) getScene2DRender() const;
 
     /// Get the object associated to the IAdaptor.
@@ -68,7 +68,7 @@ protected:
     SCENE2D_API virtual ~IAdaptor() throw();
 
     /// ToDo IM
-    SCENE2D_API virtual void info(std::ostream &_sstream );
+    SCENE2D_API virtual void info(std::ostream& _sstream );
 
     /// Not implemented in IAdaptor but in its subclasses
     SCENE2D_API void configuring() throw ( ::fwTools::Failed );
@@ -145,7 +145,7 @@ protected:
     typedef std::vector< ::scene2D::adaptor::IAdaptor::wptr > ManagedAdaptorVector;
 
     /// Return all managed adaptor
-    ManagedAdaptorVector & getRegisteredServices()
+    ManagedAdaptorVector& getRegisteredServices()
     {
         return m_managedAdaptors;
     }
@@ -156,10 +156,13 @@ protected:
     /// Unregister all adaptors
     SCENE2D_API void unregisterServices();
 
+    template< class DATATYPE >
+    SPTR(DATATYPE) getSafeInOut(const std::string& key) const;
+
 private:
 
     /// Register automatic connection on object
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     /// All managed adaptors
     ManagedAdaptorVector m_managedAdaptors;
@@ -168,6 +171,23 @@ private:
     ::scene2D::Render::wptr m_scene2DRender;
 
 };
+
+//------------------------------------------------------------------------------
+
+template< class DATATYPE >
+SPTR(DATATYPE) IAdaptor::getSafeInOut(const std::string& key) const
+{
+    if( ::fwServices::IService::isVersion2() )
+    {
+        return this->getScene2DRender()->getInOut<DATATYPE>(key);
+    }
+    else
+    {
+        return std::dynamic_pointer_cast<DATATYPE>( ::fwTools::fwID::getObject(key) );
+    }
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace adaptor
 } // namespace scene2D

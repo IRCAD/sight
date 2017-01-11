@@ -1,24 +1,25 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "opImageFilter/action/SThreshold.hpp"
 
-#include <fwTools/fwID.hpp>
-#include <fwTools/IntrinsicTypes.hpp>
-#include <fwTools/Dispatcher.hpp>
-#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwData/Image.hpp>
 
-#include <fwComEd/helper/Image.hpp>
+#include <fwDataTools/helper/Image.hpp>
+#include <fwDataTools/helper/ImageGetter.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <fwTools/Dispatcher.hpp>
+#include <fwTools/DynamicTypeKeyTypeMapping.hpp>
+#include <fwTools/IntrinsicTypes.hpp>
+#include <fwTools/fwID.hpp>
 
 namespace opImageFilter
 {
@@ -28,7 +29,7 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro(  ::fwGui::IActionSrv, ::opImageFilter::action::SThreshold, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::opImageFilter::action::SThreshold );
 
 //-----------------------------------------------------------------------------
 
@@ -64,12 +65,6 @@ void SThreshold::configuring() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
     this->initialize();
-
-    m_imageSrcUID = m_configuration->findConfigurationElement("imageIn")->getExistingAttributeValue("uid");
-    m_imageTgtUID = m_configuration->findConfigurationElement("imageOut")->getExistingAttributeValue("uid");
-
-    OSLM_INFO( "ImageIn UID = " << m_imageSrcUID);
-    OSLM_INFO( "ImageOut UID = " << m_imageTgtUID);
 }
 
 //-----------------------------------------------------------------------------
@@ -87,7 +82,7 @@ struct ThresholdFilter
     struct Parameter
     {
         double thresholdValue; ///< threshold value.
-        ::fwData::Image::sptr imageIn; ///< image source
+        ::fwData::Image::csptr imageIn; ///< image source
         ::fwData::Image::sptr imageOut; ///< image target: contains the result of the filter
     };
 
@@ -96,21 +91,21 @@ struct ThresholdFilter
      * @tparam PIXELTYPE image pixel type (uint8, uint16, int8, int16, float, double, ....)
      */
     template<class PIXELTYPE>
-    void operator()(Parameter &param)
+    void operator()(Parameter& param)
     {
         const PIXELTYPE thresholdValue = static_cast<PIXELTYPE>(param.thresholdValue);
-        ::fwData::Image::sptr imageIn  = param.imageIn;
+        ::fwData::Image::csptr imageIn = param.imageIn;
         ::fwData::Image::sptr imageOut = param.imageOut;
         SLM_ASSERT("Sorry, image must be 3D", imageIn->getNumberOfDimensions() == 3 );
         imageOut->copyInformation(imageIn); // Copy image size, type... without copying the buffer
         imageOut->allocate(); // Allocate the image buffer
 
-        ::fwComEd::helper::Image imageInHelper(imageIn); // helper used to access the image source buffer
-        ::fwComEd::helper::Image imageOutHelper(imageOut); // helper used to access the image target buffer
+        ::fwDataTools::helper::ImageGetter imageInHelper(imageIn); // helper used to access the image source buffer
+        ::fwDataTools::helper::Image imageOutHelper(imageOut); // helper used to access the image target buffer
 
         // Get image buffers
-        PIXELTYPE *buffer1 = (PIXELTYPE *)imageInHelper.getBuffer();
-        PIXELTYPE *buffer2 = (PIXELTYPE *)imageOutHelper.getBuffer();
+        const PIXELTYPE* buffer1 = (PIXELTYPE*)imageInHelper.getBuffer();
+        PIXELTYPE* buffer2       = (PIXELTYPE*)imageOutHelper.getBuffer();
 
         // Get number of pixels
         const size_t NbPixels = imageIn->getSize()[0] * imageIn->getSize()[1] * imageIn->getSize()[2];
@@ -118,7 +113,7 @@ struct ThresholdFilter
         // Fill the target buffer considering the thresholding
         for( size_t i = 0; i<NbPixels; ++i, ++buffer1, ++buffer2 )
         {
-            *buffer2 = ( *buffer1 < thresholdValue ) ? 0 : std::numeric_limits<PIXELTYPE>::max();
+            * buffer2 = ( *buffer1 < thresholdValue ) ? 0 : std::numeric_limits<PIXELTYPE>::max();
         }
     }
 };
@@ -136,12 +131,12 @@ void SThreshold::updating() throw ( ::fwTools::Failed )
     ThresholdFilter::Parameter param; // filter parameters: threshold value, image source, image target
 
     // Get source image
-    OSLM_ASSERT("Image 1 not found. UID : " << m_imageSrcUID, ::fwTools::fwID::exist(m_imageSrcUID));
-    param.imageIn = ::fwData::Image::dynamicCast( ::fwTools::fwID::getObject(m_imageSrcUID) );
+    param.imageIn = this->getInput< ::fwData::Image >("source");
+    SLM_ASSERT("'source' key not found", param.imageIn);
 
     // Get target image
-    OSLM_ASSERT("Image 2 not found. UID : " << m_imageTgtUID, ::fwTools::fwID::exist(m_imageTgtUID));
-    param.imageOut = ::fwData::Image::dynamicCast( ::fwTools::fwID::getObject(m_imageTgtUID) );
+    param.imageOut = this->getInOut< ::fwData::Image >("target");
+    SLM_ASSERT("'target' key not found", param.imageOut);
 
     param.thresholdValue = threshold;
 

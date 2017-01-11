@@ -38,7 +38,7 @@
             <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
                 <gui>
                     <layout>
-                        <menuItem name="Dump all" icon="Bundles/monitorQt_0-1/icon-dump.svg" />
+                        <menuItem name="Dump all" icon="@BUNDLE_PREFIX@/monitorQt_0-1/icon-dump.svg" />
                     </layout>
                 </gui>
                 <registry>

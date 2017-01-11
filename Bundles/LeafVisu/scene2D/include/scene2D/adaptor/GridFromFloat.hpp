@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,11 +50,11 @@ protected:
      * @brief Configuring the GridFromFloat adaptor.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
        <adaptor id="grid1" class="::scene2D::adaptor::GridFromFloat" objectId="myData">
         <config xMin="-750" xMax="750" yMin="-0.7" yMax="1.7" xSpacing="100" ySpacing="0.1" color="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="1"/>
        </adaptor>
-       @endverbatim
+       @endcode
      *
      * - objectId : ::fwData::Float
      *

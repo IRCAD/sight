@@ -4,7 +4,6 @@ set( VERSION 0.1 )
 set( TYPE BUNDLE )
 set( DEPENDENCIES
     fwCom
-    fwComEd
     fwCore
     fwData
     fwDataCamp
@@ -17,5 +16,8 @@ set( DEPENDENCIES
     fwTools
     fwVtkIO
 )
-set( REQUIREMENTS  )
-
+set( REQUIREMENTS
+    dataReg
+    servicesReg
+    visuVTK
+)

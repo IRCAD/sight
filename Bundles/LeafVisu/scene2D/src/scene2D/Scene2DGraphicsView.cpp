@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -244,6 +244,7 @@ void Scene2DGraphicsView::setViewport( ::scene2D::data::Viewport::sptr viewport 
 void Scene2DGraphicsView::updateFromViewport()
 {
     ::scene2D::data::Viewport::sptr viewport = m_viewport.lock();
+    SLM_ASSERT("Viewport is not set", viewport);
 
     this->fitInView(
         viewport->getX(), viewport->getY(), viewport->getWidth(), viewport->getHeight(),

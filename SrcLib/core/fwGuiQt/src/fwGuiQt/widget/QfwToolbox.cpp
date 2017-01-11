@@ -1,22 +1,24 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QFrame>
-#include <QPixmap>
-#include <QIcon>
-#include <QVBoxLayout>
-
 #include "fwGuiQt/widget/QfwToolbox.hpp"
+
+#include <QApplication>
+#include <QFrame>
+#include <QIcon>
+#include <QPixmap>
+#include <QStyleOption>
+#include <QVBoxLayout>
 
 namespace fwGuiQt
 {
 namespace widget
 {
 
-static const char *branch_closed[] = {
+static const char* branch_closed[] = {
     "8 17 2 1",
 /* colors */
     "- c #000000",
@@ -41,7 +43,7 @@ static const char *branch_closed[] = {
     "aaaaaaaa"
 };
 
-static const char *branch_open[] = {
+static const char* branch_open[] = {
     "11 6 2 1",
 /* colors */
     "- c #000000",
@@ -61,7 +63,7 @@ QfwToolBox::~QfwToolBox()
 
 //-----------------------------------------------------------------------------
 
-QfwToolBox::QfwToolBox(QWidget *parent, Qt::WindowFlags f) :  QFrame(parent, f)
+QfwToolBox::QfwToolBox(QWidget* parent, Qt::WindowFlags f) :  QFrame(parent, f)
 {
     this->layout = new QFormLayout(this);
     this->layout->setMargin(0);
@@ -73,7 +75,7 @@ QfwToolBox::QfwToolBox(QWidget *parent, Qt::WindowFlags f) :  QFrame(parent, f)
 
 //-----------------------------------------------------------------------------
 
-::fwGuiQt::widget::Page *QfwToolBox::page(QWidget *widget) const
+::fwGuiQt::widget::Page* QfwToolBox::page(QWidget *widget) const
 {
     if (!widget)
     {
@@ -92,7 +94,7 @@ QfwToolBox::QfwToolBox(QWidget *parent, Qt::WindowFlags f) :  QFrame(parent, f)
 
 //-----------------------------------------------------------------------------
 
-::fwGuiQt::widget::Page *QfwToolBox::page(int index)
+::fwGuiQt::widget::Page* QfwToolBox::page(int index)
 {
     if (index >= 0 && index < pageList.size())
     {
@@ -103,7 +105,7 @@ QfwToolBox::QfwToolBox(QWidget *parent, Qt::WindowFlags f) :  QFrame(parent, f)
 
 //-----------------------------------------------------------------------------
 
-const ::fwGuiQt::widget::Page *QfwToolBox::page(int index) const
+const ::fwGuiQt::widget::Page* QfwToolBox::page(int index) const
 {
     if (index >= 0 && index < pageList.size())
     {
@@ -116,7 +118,7 @@ const ::fwGuiQt::widget::Page *QfwToolBox::page(int index) const
 
 void QfwToolBox::collapseItem(int index)
 {
-    Page *page = this->page(index);
+    Page* page = this->page(index);
     if(page)
     {
         page->sv->setVisible(false);
@@ -128,7 +130,7 @@ void QfwToolBox::collapseItem(int index)
 
 void QfwToolBox::expandItem(int index)
 {
-    Page *page = this->page(index);
+    Page* page = this->page(index);
     if(page)
     {
         page->sv->setVisible(true);
@@ -138,14 +140,14 @@ void QfwToolBox::expandItem(int index)
 
 //-----------------------------------------------------------------------------
 
-int QfwToolBox::addItem(QWidget *item, const QString &text)
+int QfwToolBox::addItem(QWidget* item, const QString& text)
 {
     return insertItem(-1, item, text);
 }
 
 //-----------------------------------------------------------------------------
 
-int QfwToolBox::insertItem(int index, QWidget *widget, const QString &text)
+int QfwToolBox::insertItem(int index, QWidget* widget, const QString& text)
 {
     if (!widget)
     {
@@ -157,25 +159,29 @@ int QfwToolBox::insertItem(int index, QWidget *widget, const QString &text)
     Page c;
     c.widget = widget;
     c.button = new QPushButton(this);
+    c.button->setObjectName("QfwToolBoxButton");
     c.button->setBackgroundRole(QPalette::Window);
     c.button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     c.button->setFocusPolicy(Qt::NoFocus);
     c.button->setCheckable(true);
-    QString style(
-        "text-align: left;"
-        "background-color: lightgray;"
-        "border-style: solid;"
-        "border-width: 1px;"
-        "border-color: darkgray;"
-        "height: 20px;"
-        );
     QPixmap pixOpen(branch_open);
     QPixmap pixClose(branch_closed);
     QIcon bIcon;
     bIcon.addPixmap( pixClose, QIcon::Normal, QIcon::Off );
     bIcon.addPixmap( pixOpen, QIcon::Active, QIcon::On );
     c.setIcon(bIcon);
-    c.button->setStyleSheet(style);
+    if(qApp->styleSheet().isEmpty())
+    {
+        QString style(
+            "text-align: left;"
+            "background-color: lightgray;"
+            "border-style: solid;"
+            "border-width: 1px;"
+            "border-color: darkgray;"
+            "height: 20px;"
+            );
+        c.button->setStyleSheet(style);
+    }
     connect(c.button, SIGNAL(toggled(bool)), this, SLOT(buttonToggled(bool)));
 
     c.sv = new QFrame(this);
@@ -207,7 +213,7 @@ int QfwToolBox::insertItem(int index, QWidget *widget, const QString &text)
 
 void QfwToolBox::buttonToggled(bool checked)
 {
-    QPushButton *tb = qobject_cast<QPushButton*>(this->sender());
+    QPushButton* tb = qobject_cast<QPushButton*>(this->sender());
     QWidget* item   = 0;
     for (PageList::ConstIterator i = pageList.constBegin(); i != pageList.constEnd(); ++i)
     {
@@ -218,7 +224,7 @@ void QfwToolBox::buttonToggled(bool checked)
         }
     }
     int index  = this->indexOf(item);
-    Page *page = this->page(index);
+    Page* page = this->page(index);
     page->sv->setVisible(checked);
 }
 
@@ -248,10 +254,10 @@ void QfwToolBox::relayout()
 
 //-----------------------------------------------------------------------------
 
-void QfwToolBox::widgetDestroyed(QObject *object)
+void QfwToolBox::widgetDestroyed(QObject* object)
 {
-    QWidget *p = (QWidget*)object;
-    Page *c    = page(p);
+    QWidget* p = (QWidget*)object;
+    Page* c    = page(p);
     if (!p || !c)
     {
         return;
@@ -268,7 +274,7 @@ void QfwToolBox::widgetDestroyed(QObject *object)
 
 void QfwToolBox::removeItem(int index)
 {
-    if (QWidget *w = widget(index))
+    if (QWidget* w = widget(index))
     {
         disconnect(w, SIGNAL(destroyed(QObject*)), this, SLOT(widgetDestroyed(QObject*)));
         w->setParent(this);
@@ -278,7 +284,7 @@ void QfwToolBox::removeItem(int index)
 
 //-----------------------------------------------------------------------------
 
-QWidget *QfwToolBox::widget(int index) const
+QWidget* QfwToolBox::widget(int index) const
 {
     if (index < 0 || index >= (int) this->pageList.size())
     {
@@ -289,9 +295,9 @@ QWidget *QfwToolBox::widget(int index) const
 
 //-----------------------------------------------------------------------------
 
-int QfwToolBox::indexOf(QWidget *widget) const
+int QfwToolBox::indexOf(QWidget* widget) const
 {
-    Page *c = (widget ? this->page(widget) : 0);
+    Page* c = (widget ? this->page(widget) : 0);
     return c ? this->pageList.indexOf(*c) : -1;
 }
 
@@ -299,7 +305,7 @@ int QfwToolBox::indexOf(QWidget *widget) const
 
 void QfwToolBox::setItemEnabled(int index, bool enabled)
 {
-    Page *c = this->page(index);
+    Page* c = this->page(index);
     if (!c)
     {
         return;
@@ -310,9 +316,9 @@ void QfwToolBox::setItemEnabled(int index, bool enabled)
 
 //-----------------------------------------------------------------------------
 
-void QfwToolBox::setItemText(int index, const QString &text)
+void QfwToolBox::setItemText(int index, const QString& text)
 {
-    Page *c = this->page(index);
+    Page* c = this->page(index);
     if (c)
     {
         c->setText(text);
@@ -321,9 +327,9 @@ void QfwToolBox::setItemText(int index, const QString &text)
 
 //-----------------------------------------------------------------------------
 
-void QfwToolBox::setItemToolTip(int index, const QString &toolTip)
+void QfwToolBox::setItemToolTip(int index, const QString& toolTip)
 {
-    Page *c = this->page(index);
+    Page* c = this->page(index);
     if (c)
     {
         c->setToolTip(toolTip);
@@ -334,7 +340,7 @@ void QfwToolBox::setItemToolTip(int index, const QString &toolTip)
 
 bool QfwToolBox::isItemEnabled(int index) const
 {
-    const Page *c = this->page(index);
+    const Page* c = this->page(index);
     return c && c->button->isEnabled();
 }
 
@@ -342,7 +348,7 @@ bool QfwToolBox::isItemEnabled(int index) const
 
 QString QfwToolBox::itemText(int index) const
 {
-    const Page *c = this->page(index);
+    const Page* c = this->page(index);
     return (c ? c->text() : QString());
 }
 
@@ -350,7 +356,7 @@ QString QfwToolBox::itemText(int index) const
 
 QString QfwToolBox::itemToolTip(int index) const
 {
-    const Page *c = this->page(index);
+    const Page* c = this->page(index);
     return (c ? c->toolTip() : QString());
 }
 

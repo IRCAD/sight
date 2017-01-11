@@ -1,14 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwServices/registry/AppConfig.hpp>
-#include <fwData/String.hpp>
-#include <fwTest/helper/Thread.hpp>
-
 #include "AppConfigTest.hpp"
+
+#include <fwServices/registry/AppConfig.hpp>
+
+#include <fwData/String.hpp>
+
+#include <fwTest/helper/Thread.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::AppConfigTest );
@@ -41,7 +43,7 @@ void AppConfigTest::parametersConfigTest()
     const std::string desc("Descritpion");
     const std::string bundleId("mybundle");
     const std::string bundleVersion("0-8");
-    ::fwServices::registry::AppInfo::ParamatersType parameters;
+    ::fwServices::registry::AppInfo::ParametersType parameters;
 
     parameters["TEST_IMAGE"]   = "";
     parameters["UID_SERVICE2"] = "myTestService2";
@@ -57,7 +59,7 @@ void AppConfigTest::parametersConfigTest()
     std::vector< std::string > configs = currentAppConfig->getConfigsFromGroup(group);
     CPPUNIT_ASSERT(!configs.empty());
 
-    ::fwServices::registry::AppConfig::FieldAdaptorType replaceFields;
+    ::fwServices::registry::FieldAdaptorType replaceFields;
     replaceFields["TEST_IMAGE"] = "objectUUID";
     const std::string uniqueIdentifier = ::fwServices::registry::AppConfig::getUniqueIdentifier();
     replaceFields["GENERIC_UID"] = uniqueIdentifier;
@@ -120,15 +122,15 @@ void AppConfigTest::concurentAccessToAppConfigTest()
     // Object's service A
     std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceA = cfg->addConfigurationElement("service");
     serviceA->setAttributeValue( "uid", "${GENERIC_UID}_myTestService1" );
-    serviceA->setAttributeValue( "type", "::fwComEd::ut::TestService" );
-    serviceA->setAttributeValue( "impl", "::fwComEd::ut::TestServiceImplementationImage" );
+    serviceA->setAttributeValue( "type", "::fwServices::ut::TestConfigService" );
+    serviceA->setAttributeValue( "impl", "::fwServices::ut::TestServiceImplementationImage" );
     serviceA->setAttributeValue( "autoConnect", "no" );
 
     // Object's service B
     std::shared_ptr< ::fwRuntime::EConfigurationElement > serviceB = cfg->addConfigurationElement("service");
     serviceB->setAttributeValue( "uid", "${UID_SERVICE2}" );
-    serviceB->setAttributeValue( "type", "::fwComEd::ut::TestService" );
-    serviceB->setAttributeValue( "impl", "::fwComEd::ut::TestServiceImplementationImage" );
+    serviceB->setAttributeValue( "type", "::fwServices::ut::TestConfigService" );
+    serviceB->setAttributeValue( "impl", "::fwServices::ut::TestServiceImplementationImage" );
     serviceB->setAttributeValue( "autoConnect", "no" );
 
     // Start method from object's services

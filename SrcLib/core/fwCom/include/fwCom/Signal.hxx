@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,6 @@
 #include "fwCom/Slot.hxx"
 #include "fwCom/SlotConnection.hpp"
 #include "fwCom/SlotConnection.hxx"
-#include "fwCom/util/log.hpp"
 #include "fwCom/util/remove_last_arg.hpp"
 
 #include <boost/function_types/function_arity.hpp>
@@ -91,7 +90,6 @@ template < typename R, typename ... A >
 void Signal< R (A ...) >::emit( A ... a ) const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
-    OSLM_COM("emit '"<< this->getID() <<"' sig ( nb connected slots = " << m_slots.size() << " )" );
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin(); iter != end; ++iter )
@@ -109,7 +107,6 @@ template < typename R, typename ... A >
 void Signal< R (A ...) >::asyncEmit( A ... a ) const
 {
     ::fwCore::mt::ReadLock lock(m_connectionsMutex);
-    OSLM_COM("asyncEmit '"<< this->getID() <<"' sig ( nb connected slots = " << m_slots.size() << " )" );
     typename SlotContainerType::const_iterator iter;
     typename SlotContainerType::const_iterator end = m_slots.end();
     for ( iter = m_slots.begin(); iter != end; ++iter )

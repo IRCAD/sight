@@ -36,14 +36,14 @@
         <?ifdef CPACK_WIX_UI_DIALOG?>
         <WixVariable Id="WixUIDialogBmp" Value="$(var.CPACK_WIX_UI_DIALOG)"/>
         <?endif?>
-        
-        
+
+
        <DirectoryRef Id="TARGETDIR">
             <Directory Id="ProgramMenuFolder">
                 <Directory Id="ApplicationProgramsFolder" Name="IRCAD"/>
             </Directory>
         </DirectoryRef>
-        
+
         <DirectoryRef Id="ApplicationProgramsFolder">
             <Component Id="ApplicationShortcut" Guid="$(var.CPACK_WIX_PRODUCT_GUID)">
                 <Shortcut
@@ -52,7 +52,7 @@
                     Icon='ProductIcon.ico'
                     IconIndex="0"
                     Target="[INSTALL_ROOT]@LAUNCHER_PATH@"
-                    Arguments=".\@PROFILE_PATH@" 
+                    Arguments=".\@PROFILE_PATH@"
                     WorkingDirectory="INSTALL_ROOT"
                 />
                 <Shortcut
@@ -62,15 +62,15 @@
                     Arguments="/x [ProductCode]"
                     Description="Uninstalls $(var.CPACK_PACKAGE_NAME)"
                     />
-            
-            
+
+
                 <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
                 <RegistryValue Root="HKCU" Key="Software\IRCAD\$(var.CPACK_PACKAGE_NAME)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
             </Component>
         </DirectoryRef>
 
         <Feature Id="MainApplication" Title="Main Application" Level="1">
-            <ComponentRef Id="ApplicationShortcut" />   
+            <ComponentRef Id="ApplicationShortcut" />
         </Feature>
 
         <FeatureRef Id="ProductFeature"/>

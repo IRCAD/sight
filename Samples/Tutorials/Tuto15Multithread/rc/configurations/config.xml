@@ -1,0 +1,136 @@
+﻿<extension implements="::fwServices::registry::AppConfig2">
+    <id>tuto15MultithreadConfig</id>
+    <parameters>
+    </parameters>
+    <config>
+
+        <object uid="mesh" type="::fwData::Mesh" />
+
+        <service uid="frame" type="::gui::frame::SDefaultFrame">
+            <gui>
+                <frame>
+                    <name>Tuto15Multithread</name>
+                    <icon>@BUNDLE_PREFIX@/Tuto15Multithread_0-1/tuto.ico</icon>
+                    <minSize width="720" height="600" />
+                </frame>
+                <menuBar />
+            </gui>
+            <registry>
+                <menuBar sid="menuBar" start="yes" />
+                <view sid="view" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
+            <gui>
+                <layout>
+                    <menu name="File" />
+                    <menu name="Deformation" />
+                </layout>
+            </gui>
+            <registry>
+                <menu sid="fileMenu" start="yes" />
+                <menu sid="deformationMenu" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="view" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="rendering1" start="yes" />
+                <view sid="rendering2" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="fileMenu" type="::gui::aspect::SDefaultMenu">
+            <gui>
+                <layout>
+                    <menuItem name="Open file" shortcut="Ctrl+O" />
+                    <separator />
+                    <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="openFileAction" start="yes" />
+                <menuItem sid="quitAction" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="deformationMenu" type="::gui::aspect::SDefaultMenu">
+            <gui>
+                <layout>
+                    <menuItem name="Start deformation" shortcut="Ctrl+D" />
+                    <menuItem name="Stop deformation" shortcut="Ctrl+F" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="startDeformationAction" start="yes" />
+                <menuItem sid="stopDeformationAction" start="yes" />
+            </registry>
+        </service>
+
+
+        <service uid="openFileAction" type="::gui::action::SStarter">
+            <start uid="reader" />
+        </service>
+
+        <service uid="quitAction" type="::gui::action::SQuit" />
+
+        <service uid="startDeformationAction" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>meshDeformation/startDeformation</slot>
+            </slots>
+        </service>
+
+        <service uid="stopDeformationAction" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>meshDeformation/stopDeformation</slot>
+            </slots>
+        </service>
+
+        <service uid="reader" type="::uiIO::editor::SIOSelector">
+            <inout key="target" uid="mesh" />
+            <type mode="reader" />
+        </service>
+
+        <!-- Visualization service for the first window. -->
+        <service uid="rendering1" type="::vtkSimpleMesh::SRenderer" autoConnect="yes" >
+            <in key="mesh" uid="mesh" />
+        </service>
+
+        <!-- Visualization service for the second window -->
+        <service uid="rendering2" type="::vtkSimpleMesh::SRenderer" autoConnect="yes" >
+            <in key="mesh" uid="mesh" />
+        </service>
+
+        <!--
+            Mesh deformation service:
+            This service runs a deformation method in another worker.
+            This method is called every 200 milliseconds.
+        -->
+        <service uid="meshDeformation" type="::vtkSimpleMesh::SSimpleMeshDeformation" worker="DEFORMATION_WORKER" >
+            <inout key="mesh" uid="mesh" />
+        </service>
+
+        <!-- Connect the signal slot of the service to receive the updating of camera position -->
+        <connect>
+            <signal>rendering1/camUpdated</signal>
+            <slot>rendering2/updateCamPosition</slot>
+        </connect>
+
+        <connect>
+            <signal>rendering2/camUpdated</signal>
+            <slot>rendering1/updateCamPosition</slot>
+        </connect>
+
+        <start uid="frame" />
+        <start uid="meshDeformation" />
+
+    </config>
+</extension>

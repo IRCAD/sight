@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -42,7 +42,7 @@ protected:
      * @brief Declare the configuration to define percent of reduction, image source and ModelSeries destination.
      *
      * Example of this service configuration
-     * @verbatim
+     * @code{.xml}
        <service impl="::opVTKMesh::SVTKMesher" type="::opVTKMesh::IMesher">
            <config>
                 <percentReduction>80</percentReduction>
@@ -50,7 +50,7 @@ protected:
                 <modelSeries>MODELSERIES_KEY</modelSeries>
             </config>
        </service>
-        @endverbatim
+        @endcode
      * - \b percentReduction: Specify the desired reduction in the total number of polygons (e.g., if
      *      TargetReduction is set to 90, this filter will try to reduce the data set to 10% of its original size)
      * - \b image: key of the source image into the composite

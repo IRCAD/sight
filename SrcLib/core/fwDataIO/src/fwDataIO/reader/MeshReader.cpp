@@ -1,17 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwDataIO/reader/MeshReader.hpp"
+
 #include "fwDataIO/reader/registry/macros.hpp"
 
-#include <fwComEd/helper/Array.hpp>
-#include <fwComEd/helper/Mesh.hpp>
-#include <fwData/location/SingleFile.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Object.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/helper/Mesh.hpp>
 
 #include <boost/cstdint.hpp>
 #include <boost/spirit/include/phoenix_bind.hpp>
@@ -20,6 +22,7 @@
 #include <boost/spirit/include/phoenix_statement.hpp>
 #include <boost/spirit/include/phoenix_stl.hpp>
 #include <boost/spirit/include/qi.hpp>
+
 #include <fstream>
 #include <iostream>
 
@@ -82,19 +85,19 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
     ::fwData::Array::sptr cellDataOffsetsArray = mesh->getCellDataOffsetsArray();
     ::fwData::Array::sptr cellNormalsArray     = mesh->getCellNormalsArray();
 
-    fwComEd::helper::Array pointHelper(pointArray);
-    fwComEd::helper::Array cellDataHelper(cellDataArray);
-    fwComEd::helper::Array cellNormalsHelper(cellNormalsArray);
-    fwComEd::helper::Array cellDataOffsetsHelper(cellDataOffsetsArray);
-    fwComEd::helper::Array cellTypesHelper(cellTypesArray);
+    ::fwDataTools::helper::Array pointHelper(pointArray);
+    ::fwDataTools::helper::Array cellDataHelper(cellDataArray);
+    ::fwDataTools::helper::Array cellNormalsHelper(cellNormalsArray);
+    ::fwDataTools::helper::Array cellDataOffsetsHelper(cellDataOffsetsArray);
+    ::fwDataTools::helper::Array cellTypesHelper(cellTypesArray);
 
 
     ::fwData::Array::SizeType pointArraySize;
     ::fwData::Array::SizeType cellArraySize;
 
-    ::fwData::Mesh::PointValueType  *pointArrayBuffer       = 0;
-    ::fwData::Mesh::CellValueType   *cellDataArrayBuffer    = 0;
-    ::fwData::Mesh::NormalValueType *cellNormalsArrayBuffer = 0;
+    ::fwData::Mesh::PointValueType* pointArrayBuffer        = 0;
+    ::fwData::Mesh::CellValueType* cellDataArrayBuffer      = 0;
+    ::fwData::Mesh::NormalValueType* cellNormalsArrayBuffer = 0;
 
     bool r = phrase_parse(first, last,
 
@@ -107,7 +110,7 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
                                   phx::push_back(phx::ref(pointArraySize),phx::ref(nbPoints)),
                                   phx::bind(&::fwData::Array::resize, pointArray, phx::ref(pointArraySize), true),
                                   ref(pointArrayBuffer) =
-                                      phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::PointValueType >,
+                                      phx::bind(&::fwDataTools::helper::Array::begin< ::fwData::Mesh::PointValueType >,
                                                 &pointHelper )
                               ]
 
@@ -128,10 +131,10 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
                                   phx::bind(&::fwData::Mesh::setCellDataSize, mesh, _1*3),
                                   phx::bind(&::fwData::Mesh::adjustAllocatedMemory, mesh),
                                   ref(cellDataArrayBuffer) =
-                                      phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::CellValueType >,
+                                      phx::bind(&::fwDataTools::helper::Array::begin< ::fwData::Mesh::CellValueType >,
                                                 &cellDataHelper ),
                                   ref(cellNormalsArrayBuffer) =
-                                      phx::bind(&::fwComEd::helper::Array::begin< ::fwData::Mesh::NormalValueType >,
+                                      phx::bind(&::fwDataTools::helper::Array::begin< ::fwData::Mesh::NormalValueType >,
                                                 &cellNormalsHelper )
                               ]
 
@@ -173,7 +176,7 @@ bool parseTrian2(Iterator first, Iterator last, ::fwData::Mesh::sptr mesh)
     // Check if normals array is filled of -1. values
     const float normalBadValue = -1.f;
     float normal               = normalBadValue;
-    int &n                     = *reinterpret_cast<int*>(&normal);
+    int& n                     = *reinterpret_cast<int*>(&normal);
 
     std::for_each(
         cellNormalsHelper.begin< int >(),
@@ -240,7 +243,7 @@ void MeshReader::read()
 
     //buffer = new char [length];
     buf.resize(length);
-    char *buffer = &buf[0];
+    char* buffer = &buf[0];
 
     file.read (buffer, length);
     file.close();

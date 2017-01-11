@@ -1,41 +1,41 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiMedDataQt/editor/SSeries.hpp"
 
+#include "uiMedDataQt/widget/EquipmentEditor.hpp"
+#include "uiMedDataQt/widget/PatientEditor.hpp"
+#include "uiMedDataQt/widget/SeriesEditor.hpp"
+#include "uiMedDataQt/widget/StudyEditor.hpp"
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
-
-#include <fwComEd/helper/SeriesDB.hpp>
 
 #include <fwData/Vector.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwMedData/Patient.hpp>
 #include <fwMedData/Study.hpp>
 
 #include <fwMedDataTools/functions.hpp>
+#include <fwMedDataTools/helper/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <fwTools/Object.hpp>
 
-#include "uiMedDataQt/widget/PatientEditor.hpp"
-#include "uiMedDataQt/widget/StudyEditor.hpp"
-#include "uiMedDataQt/widget/EquipmentEditor.hpp"
-#include "uiMedDataQt/widget/SeriesEditor.hpp"
-
-#include <QWidget>
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QPushButton>
+#include <QVBoxLayout>
+#include <QWidget>
 
 namespace uiMedData
 {
@@ -207,7 +207,7 @@ void SSeries::onExportClicked()
         series->setDescription(seriesInfo->getDescription());
         series->setPerformingPhysiciansName(seriesInfo->getPerformingPhysiciansName());
 
-        ::fwComEd::helper::SeriesDB helper(seriesDB);
+        ::fwMedDataTools::helper::SeriesDB helper(seriesDB);
         ::fwMedData::SeriesDB::iterator it = std::find(seriesDB->begin(), seriesDB->end(), series);
         if(it != seriesDB->end())
         {
@@ -260,8 +260,9 @@ void SSeries::configuring() throw(::fwTools::Failed)
 ::fwServices::IService::KeyConnectionsType SSeries::getObjSrvConnections() const
 {
     KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG, s_UPDATE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwMedData::SeriesDB::s_REMOVED_SERIES_SIG, s_UPDATE_SLOT ) );
+
+    connections.push_back( std::make_pair( ::fwData::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT ) );
+    connections.push_back( std::make_pair( ::fwData::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT ) );
 
     return connections;
 }

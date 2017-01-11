@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,15 +7,14 @@
 #ifndef __FWDATATOOLS_MESH_HPP__
 #define __FWDATATOOLS_MESH_HPP__
 
-#include <fwCore/base.hpp>
-
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/Mesh.hpp>
-
-#include <fwComEd/helper/Mesh.hpp>
-
 #include "fwDataTools/Vector.hxx"
 #include "fwDataTools/config.hpp"
+#include <fwDataTools/helper/Mesh.hpp>
+
+#include <fwCore/base.hpp>
+
+#include <fwData/Mesh.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 namespace fwDataTools
 {
@@ -23,7 +22,6 @@ namespace fwDataTools
 
 /**
  * @brief   This helper generates a mesh using specified structure (quad or triangle).
- * @class   Mesh
  */
 class Mesh
 {
@@ -106,7 +104,7 @@ public:
     FWDATATOOLS_API static bool hasUniqueCellType(::fwData::Mesh::sptr mesh, ::fwData::Mesh::CellTypes cell);
 
     /// Applied a transformation 4x4 on mesh
-    FWDATATOOLS_API static void transform( ::fwData::Mesh::sptr mesh, ::fwData::TransformationMatrix3D::sptr t );
+    FWDATATOOLS_API static void transform( ::fwData::Mesh::sptr mesh, ::fwData::TransformationMatrix3D::csptr t );
 
 };
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,7 +25,7 @@ Proxy::Proxy()
 
 Proxy::~Proxy()
 {
-    SLM_ASSERT("There are always " << m_channels.size() << " channels in Proxy", m_channels.empty());
+    SLM_ASSERT("There are still " << m_channels.size() << " channel(s) in the Proxy", m_channels.empty());
 }
 
 //-----------------------------------------------------------------------------
@@ -59,11 +59,15 @@ void Proxy::connect(ChannelKeyType channel, ::fwCom::SignalBase::sptr signal)
     }
 
     ::fwCore::mt::WriteLock lock(sigslots->m_mutex);
-    sigslots->m_signals.push_back(signal);
+    auto ret = sigslots->m_signals.insert(signal);
 
-    for( ::fwCom::SlotBase::sptr slot :  sigslots->m_slots )
+    if(ret.second)
     {
-        signal->connect( slot );
+        // Only connect if the signal was not already in the proxy
+        for( ::fwCom::SlotBase::sptr slot :  sigslots->m_slots )
+        {
+            signal->connect( slot );
+        }
     }
 }
 
@@ -91,11 +95,15 @@ void Proxy::connect(ChannelKeyType channel, ::fwCom::SlotBase::sptr slot)
     }
 
     ::fwCore::mt::WriteLock lock(sigslots->m_mutex);
-    sigslots->m_slots.push_back(slot);
+    auto ret = sigslots->m_slots.insert(slot);
 
-    for( ::fwCom::SignalBase::sptr signal :  sigslots->m_signals )
+    if(ret.second)
     {
-        signal->connect( slot );
+        // Only connect if the slot was not already in the proxy
+        for( ::fwCom::SignalBase::sptr signal :  sigslots->m_signals )
+        {
+            signal->connect( slot );
+        }
     }
 }
 

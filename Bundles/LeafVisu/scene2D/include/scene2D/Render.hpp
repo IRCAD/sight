@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,22 +8,23 @@
 #define __SCENE2D_RENDER_HPP__
 
 #include "scene2D/config.hpp"
-#include "scene2D/data/Event.hpp"
-#include "scene2D/data/Coord.hpp"
 #include "scene2D/data/Axis.hpp"
+#include "scene2D/data/Coord.hpp"
+#include "scene2D/data/Event.hpp"
 #include "scene2D/data/Viewport.hpp"
+
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include <fwRender/IRender.hpp>
 
 #include <fwServices/helper/Config.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
 
-#include <Qt>
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QResizeEvent>
+#include <Qt>
 
 //namespace fwData
 
@@ -80,7 +81,7 @@ public:
     SCENE2D_API void dispatchInteraction( SPTR(::scene2D::data::Event) _event );
 
     /// Returns the viewport coordinate point mapped to scene coordinates.
-    SCENE2D_API ::scene2D::data::Coord mapToScene( const ::scene2D::data::Coord & coord ) const;
+    SCENE2D_API ::scene2D::data::Coord mapToScene( const ::scene2D::data::Coord& coord ) const;
 
     /// Returns what happens to scene's aspect ratio on view resize events
     SCENE2D_API Qt::AspectRatioMode getAspectRatioMode() const;
@@ -98,13 +99,23 @@ public:
      */
     SCENE2D_API virtual KeyConnectionsType getObjSrvConnections() const;
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     */
+    SCENE2D_API virtual KeyConnectionsMap  getAutoConnections() const;
+
 protected:
 
     /**
      * @brief Configuring the Render service.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
        <service uid="GENERIC_UID_Scene2D" impl="::scene2D::Render" type="::fwRender::IRender" autoConnect="yes">
 
         <scene>
@@ -141,7 +152,7 @@ protected:
         </scene>
 
        </service>
-       @endverbatim
+       @endcode
      *
      * - \<scene x="-1100" y="-1.1" width="2500" height="1.2" /\> : Set the scene coordinates
      *
@@ -204,6 +215,9 @@ protected:
 
     SCENE2D_API void swapping()    throw ( ::fwTools::Failed );
 
+    /// Start/stop adaptors
+    SCENE2D_API void swapping(const KeyType& key) throw(::fwTools::Failed);
+
     /// Stop all the adaptors attached to the render related composite, stop all those rattached to the objects contained
     //  by the render related composite, clear the maps and call stopContext().
     SCENE2D_API void stopping()    throw ( ::fwTools::Failed );
@@ -212,6 +226,9 @@ private:
 
     /// A ConfigurationElement type representing a configuration.
     typedef SPTR (::fwRuntime::ConfigurationElement) ConfigurationType;
+
+    /// Map used to reference input objects
+    typedef std::map< std::string, ::fwData::Object::csptr > ConstObjectMapType;
 
     /// An internal class to store adaptors representations.
     class SceneAdaptor2D
@@ -272,17 +289,17 @@ private:
     void configureAdaptor ( ConfigurationType _conf );
 
     /// Get all the objects of the render related composite, and start all their related adaptors.
-    void startAdaptorsFromComposite(const ::fwData::Composite::ContainerType& objects);
+    void startAdaptorsFromComposite(const ConstObjectMapType& objects);
 
     /// Get all the objects of the render related composite, and stop all their related adaptors.
-    void stopAdaptorsFromComposite(const ::fwData::Composite::ContainerType& objects);
+    void stopAdaptorsFromComposite(const ConstObjectMapType& objects);
 
     /// Get all the objects of the render related composite, and swap all their related adaptors.
     void swapAdaptorsFromComposite(const ::fwData::Composite::ContainerType& objects);
 
     /// Get the SceneAdaptor2D related to the _adaptorID key in the m_adaptorID2SceneAdaptor2D map, add a service corresponding to _object,
     ///  set its render, its configuration, configure it, star it, check if its zValue is unique, store it in the m_zValue2AdaptorID map.
-    void startAdaptor(const AdaptorIDType& _adaptorID, const SPTR(::fwData::Object)& _object);
+    void startAdaptor(const AdaptorIDType& _adaptorID, const CSPTR(::fwData::Object)& _object);
 
     /// Swap the SceneAdaptor2D to _object.
     void swapAdaptor(const AdaptorIDType& _adaptorID, const SPTR(::fwData::Object)& _object);
@@ -334,10 +351,10 @@ private:
     ::scene2D::data::Coord m_sceneWidth;
 
     /// The scene.
-    QGraphicsScene * m_scene;
+    QGraphicsScene* m_scene;
 
     /// The view.
-    Scene2DGraphicsView * m_view;
+    Scene2DGraphicsView* m_view;
 
     /// If antialiasing is requested (deactivated by default because of a potential lack of performance)
     bool m_antialiasing;
@@ -346,7 +363,7 @@ private:
     Qt::AspectRatioMode m_aspectRatioMode;
 
     /// Signal/ Slot connection
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     typedef std::vector< ::fwRuntime::ConfigurationElement::sptr > ConnectConfigType;
     /// vector containing all the connections configurations
@@ -354,7 +371,7 @@ private:
     /// vector containing all the proxy configurations
     ConnectConfigType m_proxies;
 
-    typedef std::map< std::string, ::fwServices::helper::SigSlotConnection::sptr > ObjectConnectionsMapType;
+    typedef std::map< std::string, ::fwCom::helper::SigSlotConnection > ObjectConnectionsMapType;
     /// map containing the object key/connection relation
     ObjectConnectionsMapType m_objectConnections;
 

@@ -16,7 +16,6 @@
 #include <fwCore/base.hpp>
 #include <fwGui/registry/macros.hpp>
 
-#include <fwServices/registry/ObjectService.hpp>
 
 #include "fwGuiQt/QtMainFrame.hpp"
 #include "fwGuiQt/layoutManager/FrameLayoutManager.hpp"

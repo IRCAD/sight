@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -70,10 +70,10 @@ protected:
      *
      * Sample of declaration configuration :
      *
-     * @verbatim
+     * @code{.xml}
          <update compositeKey="reconstructionKey" onEvent="NEW_RECONSTRUCTION" fromUID="modelSeriesUid" actionType="ADD_OR_SWAP" />
          <update compositeKey="reconstructionKey" onEvent="CLEAR" fromUID="modelSeriesUid" actionType="REMOVE" />
-       @endverbatim
+       @endcode
      * Here, when the updater receives a message with the NEW_RECONSTRUCTION event from the object "modelSeriesUid" the object reconstructionKey is added or swapped in the composite.
      * When the updater receives a message with the CLEAR event from the object "modelSeriesUid" the object reconstructionKey is removed from the composite
      *

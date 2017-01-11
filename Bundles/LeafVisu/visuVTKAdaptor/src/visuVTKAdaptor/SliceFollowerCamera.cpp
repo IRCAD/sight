@@ -11,18 +11,17 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/macros.hpp>
 
 #include <vtkActor.h>
 #include <vtkCamera.h>
 #include <vtkInteractorStyleImage.h>
 #include <vtkMath.h>
 #include <vtkMatrix4x4.h>
-#include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkRenderer.h>
 #include <vtkTransform.h>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SliceFollowerCamera, ::fwData::Image );
@@ -138,7 +137,7 @@ void SliceFollowerCamera::updateSliceType(int from, int to)
 void SliceFollowerCamera::initializeCamera()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if (imageIsValid)
     {

@@ -10,21 +10,18 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Object.hpp>
-
 #include <fwData/String.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
-#include <fwServices/Base.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-
-#include <boost/assign/list_of.hpp>
 
 #include <vtkActor.h>
 #include <vtkCamera.h>
 #include <vtkInteractorStyleImage.h>
-#include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkRenderer.h>
+
+#include <boost/assign/list_of.hpp>
 
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Medical3DCamera, ::fwData::Object );
@@ -36,7 +33,7 @@ static const ::fwCom::Slots::SlotKeyType SET_AXIAL_SLOT    = "setAxial";
 static const ::fwCom::Slots::SlotKeyType SET_SAGITTAL_SLOT = "setSagittal";
 static const ::fwCom::Slots::SlotKeyType SET_FRONTAL_SLOT  = "setFrontal";
 
-std::map< std::string, ::fwComEd::helper::MedicalImageAdaptor::Orientation >
+std::map< std::string, ::fwDataTools::helper::MedicalImageAdaptor::Orientation >
 Medical3DCamera::m_orientationConversion = ::boost::assign::map_list_of
                                                (std::string("axial"), Z_AXIS)
                                                (std::string("frontal"), Y_AXIS)

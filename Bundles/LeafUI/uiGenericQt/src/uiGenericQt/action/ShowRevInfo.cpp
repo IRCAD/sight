@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -52,7 +52,7 @@ ShowRevInfo::~ShowRevInfo() throw()
 
 //------------------------------------------------------------------------------
 
-void ShowRevInfo::info(std::ostream &_sstream )
+void ShowRevInfo::info(std::ostream& _sstream )
 {
     _sstream << "ShowRevInfo" << std::endl;
 }
@@ -71,14 +71,14 @@ void ShowRevInfo::updating( ) throw(::fwTools::Failed)
     QDialog* dialog = new QDialog(qApp->activeWindow());
     dialog->setWindowTitle(QString("Revision info"));
 
-    QTextBrowser * htmlView = new QTextBrowser (dialog);
+    QTextBrowser* htmlView = new QTextBrowser (dialog);
     htmlView->setDocument(this->generateReport());
     htmlView->setOpenExternalLinks(true);
     htmlView->setMinimumSize(800, 600);
 
     QPushButton* okButton  = new QPushButton(QObject::tr("Ok"));
     QPushButton* genButton = new QPushButton(QObject::tr("Save report"));
-    QHBoxLayout *hLayout   = new QHBoxLayout();
+    QHBoxLayout* hLayout   = new QHBoxLayout();
     hLayout->addStretch();
     hLayout->addWidget(genButton);
     hLayout->addWidget(okButton);
@@ -153,8 +153,9 @@ QTextDocument* ShowRevInfo::generateReport()
     tableFormat.setBorderStyle(QTextFrameFormat::BorderStyle_Solid);
     tableFormat.setWidth(QTextLength(QTextLength::PercentageLength, 100));
 
-    ::boost::filesystem::path bundlePath = ::boost::filesystem::current_path() / "Bundles";
-    ::boost::filesystem::path libPath    = ::boost::filesystem::current_path() / "share";
+    ::boost::filesystem::path bundlePath = ::boost::filesystem::current_path() /
+                                           ::boost::filesystem::path(BUNDLE_PREFIX);
+    ::boost::filesystem::path libPath = ::boost::filesystem::current_path() / "share";
     const FindMapType& bundleMap = this->findRevInfo(bundlePath);
     const FindMapType& libMap    = this->findRevInfo(libPath);
 
@@ -244,7 +245,7 @@ void ShowRevInfo::getRevMap(const ShowRevInfo::FindMapType& findMap, ShowRevInfo
         length = file.tellg();
         file.seekg (0, std::ios::beg);
         buf.resize(length);
-        char *buffer = &buf[0];
+        char* buffer = &buf[0];
 
         file.read (buffer, length);
         file.close();

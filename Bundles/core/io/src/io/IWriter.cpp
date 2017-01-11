@@ -5,16 +5,23 @@
  * ****** END LICENSE BLOCK ****** */
 #include "io/IWriter.hpp"
 
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwCore/base.hpp>
-#include <fwServices/Base.hpp>
+
+#include <fwServices/macros.hpp>
 
 namespace io
 {
+
+static const ::fwCom::Slots::SlotKeyType s_CONFIGURE_WITH_IHM = "configureWithIHM";
 
 //-----------------------------------------------------------------------------
 
 IWriter::IWriter() throw()
 {
+    newSlot(s_CONFIGURE_WITH_IHM, &IWriter::configureWithIHM, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -25,7 +32,7 @@ IWriter::~IWriter() throw()
 
 //-----------------------------------------------------------------------------
 
-const ::boost::filesystem::path &IWriter::getFile() const
+const ::boost::filesystem::path& IWriter::getFile() const
 {
     FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & ::io::FILE));
     FW_RAISE_IF("Exactly one file must be define in location", m_locations.size() != 1);
@@ -34,7 +41,7 @@ const ::boost::filesystem::path &IWriter::getFile() const
 
 //-----------------------------------------------------------------------------
 
-void IWriter::setFile( const ::boost::filesystem::path &file)
+void IWriter::setFile( const ::boost::filesystem::path& file)
 {
     FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & ::io::FILE));
     m_locations.clear();
@@ -43,7 +50,7 @@ void IWriter::setFile( const ::boost::filesystem::path &file)
 
 //-----------------------------------------------------------------------------
 
-const ::io::LocationsType &IWriter::getFiles() const
+const ::io::LocationsType& IWriter::getFiles() const
 {
     FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & ::io::FILES));
     FW_RAISE_IF("At least one file must be define in location", m_locations.empty() );
@@ -52,7 +59,7 @@ const ::io::LocationsType &IWriter::getFiles() const
 
 //-----------------------------------------------------------------------------
 
-void IWriter::setFiles(const ::io::LocationsType &files)
+void IWriter::setFiles(const ::io::LocationsType& files)
 {
     FW_RAISE_IF("This reader doesn't manage files", !(this->getIOPathType() & ::io::FILES));
     m_locations = files;
@@ -60,7 +67,7 @@ void IWriter::setFiles(const ::io::LocationsType &files)
 
 //-----------------------------------------------------------------------------
 
-const ::boost::filesystem::path &IWriter::getFolder() const
+const ::boost::filesystem::path& IWriter::getFolder() const
 {
     FW_RAISE_IF("This reader doesn't manage folders", !(this->getIOPathType() & ::io::FOLDER));
     FW_RAISE_IF("Exactly one folder must be define in location", m_locations.size() !=1 );
@@ -69,7 +76,7 @@ const ::boost::filesystem::path &IWriter::getFolder() const
 
 //-----------------------------------------------------------------------------
 
-void IWriter::setFolder(const ::boost::filesystem::path &folder)
+void IWriter::setFolder(const ::boost::filesystem::path& folder)
 {
     FW_RAISE_IF("This reader doesn't manage folders", !(this->getIOPathType() & ::io::FOLDER));
     m_locations.clear();
@@ -78,7 +85,7 @@ void IWriter::setFolder(const ::boost::filesystem::path &folder)
 
 //-----------------------------------------------------------------------------
 
-const ::io::LocationsType &IWriter::getLocations() const
+const ::io::LocationsType& IWriter::getLocations() const
 {
     FW_RAISE_IF("At least one path must be define in location", m_locations.empty() );
     return m_locations;
@@ -100,12 +107,11 @@ void IWriter::configuring() throw (fwTools::Failed)
 
     SLM_ASSERT("This writer does not manage folders and a folder path is given in the configuration",
                ( this->getIOPathType() & ::io::FOLDER ) ||
-               ((!(this->getIOPathType() & ::io::FOLDER)) && (m_configuration->find("folder").size() == 0)) );
+               (m_configuration->find("folder").size() == 0));
 
     SLM_ASSERT("This writer does not manages files and a file path is given in the configuration",
                ( this->getIOPathType() & ::io::FILE || this->getIOPathType() & ::io::FILES ) ||
-               ((!( this->getIOPathType() & ::io::FILE || this->getIOPathType() & ::io::FILES )) &&
-                (m_configuration->find("file").size() == 0)) );
+               (m_configuration->find("file").size() == 0));
 
     if ( this->getIOPathType() & ::io::FILE )
     {

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,14 @@
 #ifndef __CTRLSELECTION_MANAGER_SFIELD_HPP__
 #define __CTRLSELECTION_MANAGER_SFIELD_HPP__
 
+#include "ctrlSelection/IManagerSrv.hpp"
+#include "ctrlSelection/config.hpp"
+
 #include <fwData/Object.hpp>
+
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/IService.hpp>
-
-#include "ctrlSelection/config.hpp"
-#include "ctrlSelection/IManagerSrv.hpp"
 
 namespace ctrlSelection
 {
@@ -21,7 +22,6 @@ namespace manager
 {
 
 /**
- * @class  SField
  * @brief  This services is a manager which starts, stops or swaps services on field contained in a composite when
  * it receive specific message (mainly sent by updater).
  */
@@ -62,7 +62,7 @@ protected:
      *
      * Sample of declaration configuration for a simple swapper service
      *
-     * @verbatim
+     * @code{.xml}
         <service uid="FieldManager" impl="::ctrlSelection::manager::SField" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
             <mode type="dummy" />
             <config>
@@ -84,7 +84,7 @@ protected:
                 </field>
             </config>
         </service>
-       @endverbatim
+       @endcode
      * With:
      * @li mode : must be "stop" or "dummy". The dummy mode doesn't stop the services when its attached field is deleted but swap it on a dummy field.
      * @li the fields, services, connect and proxy tags are defined as same as the configuration of fields and services.
@@ -100,7 +100,7 @@ protected:
     CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Implements info method derived from IService. Print classname.
-    CTRLSELECTION_API virtual void info( std::ostream &_sstream );
+    CTRLSELECTION_API virtual void info( std::ostream& _sstream );
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef ::fwData::Object::FieldNameType FieldNameType;
@@ -125,7 +125,7 @@ protected:
         ::fwData::Object::sptr m_dummy;
         ConfigurationType m_config;
         WPTR(::fwServices::IService) m_service;
-        ::fwServices::helper::SigSlotConnection::sptr m_connections;
+        ::fwCom::helper::SigSlotConnection m_connections;
         bool m_hasAutoConnection;
     };
 

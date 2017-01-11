@@ -4,12 +4,15 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/fwID.hpp>
-#include <fwServices/Base.hpp>
+#include "fwGui/GuiRegistry.hpp"
 
 #include "fwGui/IMenuSrv.hpp"
 #include "fwGui/IToolBarSrv.hpp"
-#include "fwGui/GuiRegistry.hpp"
+
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Get.hpp>
+
+#include <fwTools/fwID.hpp>
 
 namespace fwGui
 {
@@ -63,10 +66,20 @@ void GuiRegistry::unregisterSIDContainer(std::string sid)
 
 ::fwGui::container::fwContainer::sptr GuiRegistry::getSIDContainer(std::string sid)
 {
-    OSLM_ASSERT("No fwContainer with the sid "<<sid<<" exists in the SID container map.",
-                m_globalSIDToFwContainer.find(sid) != m_globalSIDToFwContainer.end());
-    // returns container in SID container map
+    // Returns container in SID container map, null if  not found.
+    if (!hasSIDContainer(sid))
+    {
+        return nullptr;
+    }
     return m_globalSIDToFwContainer[sid];
+}
+
+//-----------------------------------------------------------------------------
+
+bool GuiRegistry::hasSIDContainer(std::string sid)
+{
+    // Returns 'true' if the specified 'sid' is found in the SID container map, else 'false'.
+    return m_globalSIDToFwContainer.find(sid) != m_globalSIDToFwContainer.end();
 }
 
 //-----------------------------------------------------------------------------
@@ -93,10 +106,20 @@ void GuiRegistry::unregisterWIDContainer(std::string wid)
 
 ::fwGui::container::fwContainer::sptr GuiRegistry::getWIDContainer(std::string wid)
 {
-    OSLM_ASSERT("No fwContainer with the wid"<<wid<<" exists in the WID container map.",
-                m_globalWIDToFwContainer.find(wid) != m_globalWIDToFwContainer.end());
-    // returns container in WID container map
+    // Returns container in WID container map, null if  not found.
+    if (!hasWIDContainer(wid))
+    {
+        return nullptr;
+    }
     return m_globalWIDToFwContainer[wid];
+}
+
+//-----------------------------------------------------------------------------
+
+bool GuiRegistry::hasWIDContainer(std::string wid)
+{
+    // Returns 'true' if the specified 'wid' is found in the WID container map, else 'false'.
+    return m_globalWIDToFwContainer.find(wid) != m_globalWIDToFwContainer.end();
 }
 
 //-----------------------------------------------------------------------------

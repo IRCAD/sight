@@ -1,18 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <sstream>
-#include <fwTools/Type.hpp>
+#include "ImageTest.hpp"
 
-#include <fwComEd/helper/Array.hpp>
+#include <fwDataTools/Image.hpp>
+#include <fwDataTools/helper/Array.hpp>
 
 #include <fwTest/generator/Image.hpp>
-#include <fwDataTools/Image.hpp>
 
-#include "ImageTest.hpp"
+#include <fwTools/Type.hpp>
+
+#include <sstream>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwDataTools::ut::ImageTest );
@@ -68,7 +69,7 @@ void ImageTest::roiApplyTest()
         imgData = image->getDataArray();                                                                \
         roiData = roi->getDataArray();                                                                  \
                                                                                                         \
-        ::fwComEd::helper::Array roiDataHelper(roiData);                                                \
+        ::fwDataTools::helper::Array roiDataHelper(roiData);                                                \
                                                                                                         \
         CPPUNIT_ASSERT(imgData);                                                                        \
         CPPUNIT_ASSERT(imgData->getNumberOfElements());                                                 \
@@ -78,8 +79,8 @@ void ImageTest::roiApplyTest()
                                                                                                         \
         ::fwTest::generator::Image::randomizeArray(roi->getDataArray());                                      \
                                                                                                         \
-        char *begin = roiDataHelper.begin();                                                            \
-        char *end   = roiDataHelper.end();                                                              \
+        char* begin = roiDataHelper.begin();                                                            \
+        char* end   = roiDataHelper.end();                                                              \
         size_t part = (end - begin)/3;                                                                  \
                                                                                                         \
         std::fill(begin, begin + part, 0);                                                              \

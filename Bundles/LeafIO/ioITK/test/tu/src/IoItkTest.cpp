@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,8 +26,8 @@
 
 #include <fwThread/Worker.hpp>
 
-#include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>
+#include <fwTools/dateAndTime.hpp>
 
 #include <boost/assign/list_of.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -240,6 +240,13 @@ void IoItkTest::SeriesDBInrTest()
      */
     const ::boost::filesystem::path imageFile = ::fwTest::Data::dir() / "fw4spl/image/inr/image.inr.gz";
     const ::boost::filesystem::path skinFile  = ::fwTest::Data::dir() / "fw4spl/image/inr/skin.inr.gz";
+
+    CPPUNIT_ASSERT_MESSAGE("The file '" + imageFile.string() + "' does not exist",
+                           ::boost::filesystem::exists(imageFile));
+
+    CPPUNIT_ASSERT_MESSAGE("The file '" + skinFile.string() + "' does not exist",
+                           ::boost::filesystem::exists(skinFile));
+
     // Create Config
     ::fwRuntime::EConfigurationElement::sptr srvCfg       = ::fwRuntime::EConfigurationElement::New("service");
     ::fwRuntime::EConfigurationElement::sptr fileImageCfg = ::fwRuntime::EConfigurationElement::New("file");

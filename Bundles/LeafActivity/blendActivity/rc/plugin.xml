@@ -19,12 +19,14 @@
     <extension implements="::fwActivities::registry::Activities">
         <id>Blend</id>
         <title>Blend</title>
-        <desc>Blend activity</desc>
-        <icon>Bundles/media_0-1/icons/icon-blend.png</icon>
+        <desc>Activity to superimpose two images.</desc>
+        <icon>@BUNDLE_PREFIX@/media_0-1/icons/icon-blend.png</icon>
         <requirements>
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="2" maxOccurs="2" >
-              <key>FrontImage</key>
-              <key>BackImage</key>
+                <desc>Images series to superimpose. They must have the same size, spacing and origin.</desc>
+                <validator>::fwActivities::validator::ImageProperties</validator>
+                <key>FrontImage</key>
+                <key>BackImage</key>
             </requirement>
         </requirements>
         <builder>::fwActivities::builder::ActivitySeries</builder>

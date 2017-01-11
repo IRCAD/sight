@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -166,6 +166,112 @@ void processPlanning(
 
 // ----------------------------------------------------------------------------
 
+// Convert ProcessingDB Composite into ActivitySeries
+void processProcessing(
+    const ::fwAtoms::Map::sptr& oldCompositeMap,
+    const ::fwAtoms::Sequence::sptr& series,
+    const Image2ModelType& image2Model,
+    ::fwAtomsPatch::IPatch::NewVersionsType& newVersions)
+{
+    ::fwAtoms::Object::sptr oldProcessingDB = ::fwAtoms::Object::dynamicCast( (*oldCompositeMap)["processingDB"] );
+
+    ::fwAtoms::Map::sptr oldProcessings = oldProcessingDB->getAttribute< ::fwAtoms::Map >("values");
+
+    for( ::fwAtoms::Map::value_type oldProcessingAtom :  oldProcessings->getValue() )
+    {
+        ::fwAtoms::Map::sptr oldProcessing
+            = ::fwAtoms::Object::dynamicCast(oldProcessingAtom.second)->getAttribute< ::fwAtoms::Map >("values");
+
+
+        // Retrieves expert who performed the resection
+        ::fwAtoms::Object::sptr expert
+            = ::fwAtoms::Object::dynamicCast(oldProcessing->getValue().find("expert")->second);
+
+        ::fwAtoms::Sequence::sptr experts = ::fwAtoms::Sequence::New();
+        experts->push_back( ::fwAtoms::String::dynamicCast(expert->getAttribute< ::fwAtoms::String >("value")));
+
+        // Retrieves resection information
+        ::fwAtoms::Object::sptr information
+            = ::fwAtoms::Object::dynamicCast(oldProcessing->getValue().find("information")->second);
+        ::fwAtoms::String::sptr informationStr
+            = ::fwAtoms::String::dynamicCast(information->getAttribute< ::fwAtoms::String >("value"));
+
+        // Retrieves resection date and time
+        ::fwAtoms::Object::sptr dateTimeObj
+            = ::fwAtoms::Object::dynamicCast(oldProcessing->getValue().find("startDateTime")->second);
+        ::fwAtoms::String::sptr dateTimeStr
+            = ::fwAtoms::String::dynamicCast(dateTimeObj->getAttribute< ::fwAtoms::String >("value"));
+
+        ::fwAtoms::String::sptr time = ::fwAtoms::String::New("");
+        ::fwAtoms::String::sptr date = ::fwAtoms::String::New("");
+
+        std::string dateTimeStd = dateTimeStr->getString();
+        std::vector< std::string > strs;
+        ::boost::split(strs, dateTimeStd, ::boost::is_any_of(" "));
+
+        if(strs.size() >= 2)
+        {
+            date->setValue(strs[0]);
+            time->setValue(strs[1]);
+        }
+
+        ::fwAtomsPatch::StructuralCreatorDB::sptr creators = ::fwAtomsPatch::StructuralCreatorDB::getDefault();
+        ::fwAtoms::Object::sptr newActivitySeries          = creators->create( "::fwMedData::ActivitySeries", "1");
+
+        ::fwAtoms::Map::sptr activityDataMap = ::fwAtoms::Map::New();
+        activityDataMap->insert("processing", oldProcessingAtom.second);
+
+        ::fwAtoms::Object::sptr mapObj = ::fwAtoms::Object::New();
+        ::fwAtomsPatch::helper::setClassname(mapObj, "::fwData::Composite");
+        ::fwAtomsPatch::helper::setVersion(mapObj, "1");
+        ::fwAtomsPatch::helper::generateID(mapObj);
+        ::fwAtomsPatch::helper::cleanFields(mapObj);
+
+        ::fwAtomsPatch::helper::Object mapObjHelper(mapObj);
+        mapObjHelper.addAttribute("values", activityDataMap);
+
+        ::fwAtomsPatch::helper::Object helperActivity(newActivitySeries);
+        helperActivity.replaceAttribute("activity_config_id", ::fwAtoms::String::New("Processing"));
+        helperActivity.replaceAttribute("data", mapObj);
+
+        helperActivity.replaceAttribute("modality", ::fwAtoms::String::New("OT") );
+        helperActivity.replaceAttribute("instance_uid", ::fwAtoms::String::New(::fwTools::UUID::generateUUID()));
+        helperActivity.replaceAttribute("date", date);
+        helperActivity.replaceAttribute("time", time);
+        helperActivity.replaceAttribute("performing_physicians_name", experts);
+        helperActivity.replaceAttribute("description", informationStr);
+
+        // Check if the processing is associted to an acquisition
+        ::fwAtoms::Base::sptr acquisitionSelection = oldProcessing->getValue().find("acquisitionSelection")->second;
+        ::fwAtoms::Object::sptr acqSelectionObj    = ::fwAtoms::Object::dynamicCast(acquisitionSelection);
+        SLM_ASSERT("Failed to cast acquisition composite to object", acqSelectionObj);
+
+        ::fwAtoms::Map::sptr acqSelectionMap = acqSelectionObj->getAttribute< ::fwAtoms::Map >("values");
+
+        ::fwAtoms::Map::const_iterator iter = acqSelectionMap->getValue().find("selectedAcquisition");
+        if (iter != acqSelectionMap->getValue().end() )
+        {
+            // get associated image
+            ::fwAtoms::Base::sptr acquisition = iter->second;
+            ::fwAtoms::Object::sptr acqObj    = ::fwAtoms::Object::dynamicCast(acquisition);
+            SLM_ASSERT("Failed to cast acquisition to object", acqObj);
+
+            Image2ModelType::const_iterator it = image2Model.find(newVersions[acqObj]);
+            SLM_ASSERT("Didn't find image series related to acquisition", it != image2Model.end());
+            ::fwAtoms::Object::sptr imageSeries = it->first;
+
+            helperActivity.replaceAttribute("patient", imageSeries->getAttribute< ::fwAtoms::Object >("patient"));
+            helperActivity.replaceAttribute("study", imageSeries->getAttribute< ::fwAtoms::Object >("study"));
+            helperActivity.replaceAttribute("equipment", imageSeries->getAttribute< ::fwAtoms::Object >("equipment"));
+        }
+
+        series->push_back(newActivitySeries);
+    }
+
+}
+
+// ----------------------------------------------------------------------------
+
 void Composite::apply(
     const ::fwAtoms::Object::sptr& previous,
     const ::fwAtoms::Object::sptr& current,
@@ -304,6 +410,7 @@ void Composite::apply(
         }
 
         processPlanning(oldCompositeMap, series, image2Model, newVersions);
+        processProcessing(oldCompositeMap, series, image2Model, newVersions);
 
     } // End "MedicalWorkspace"
 }

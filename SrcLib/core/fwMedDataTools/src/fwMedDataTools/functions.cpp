@@ -1,17 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <string>
-#include <sstream>
+#include "fwMedDataTools/functions.hpp"
 
-#include <boost/date_time/posix_time/posix_time.hpp>
+// Skip this for now on Android, this allows us to get rid of GDCM
+#ifndef ANDROID
 
 #include <gdcmUIDGenerator.h>
 
-#include "fwMedDataTools/functions.hpp"
+#include <boost/date_time/posix_time/posix_time.hpp>
+
+#include <sstream>
+#include <string>
 
 namespace fwMedDataTools
 {
@@ -39,3 +42,4 @@ std::string generateStudyInstanceUid()
 
 } // namespace fwMedDataTools
 
+#endif // ANDROID

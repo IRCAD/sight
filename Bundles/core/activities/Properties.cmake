@@ -6,10 +6,10 @@ set( DEPENDENCIES
     fwCore 
     fwActivities
     fwCom
-    fwComEd
     fwData
     fwDataCamp
     fwGui
+    fwGuiQt
     fwMedData
     fwRuntime
     fwServices

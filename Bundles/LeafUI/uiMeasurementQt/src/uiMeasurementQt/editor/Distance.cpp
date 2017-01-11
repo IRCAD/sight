@@ -1,39 +1,34 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiMeasurementQt/editor/Distance.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwCore/base.hpp>
 
-
-#include <fwData/String.hpp>
+#include <fwData/Boolean.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
-#include <fwData/Boolean.hpp>
+#include <fwData/String.hpp>
 
-#include <fwComEd/Dictionary.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <QIcon>
+#include <QVBoxLayout>
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/convenience.hpp>
-
-#include <QVBoxLayout>
-#include <QIcon>
-
 
 namespace uiMeasurement
 {
@@ -68,7 +63,7 @@ void Distance::starting() throw(::fwTools::Failed)
     SLM_ASSERT("container not instanced", container);
 
     namespace fs = ::boost::filesystem;
-    fs::path pathImageDist ("Bundles/uiMeasurementQt_0-1/distance.png");
+    fs::path pathImageDist (std::string(BUNDLE_PREFIX) + "/uiMeasurementQt_0-1/distance.png");
     OSLM_ASSERT("Image "<< pathImageDist << "is missing", fs::exists(pathImageDist));
 
     QIcon imageDist(QString::fromStdString(pathImageDist.string()));
@@ -126,7 +121,7 @@ void Distance::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Distance::info( std::ostream &_sstream )
+void Distance::info( std::ostream& _sstream )
 {
 }
 
@@ -136,7 +131,17 @@ void Distance::onDistanceButton()
 {
     SLM_ASSERT("No scene UID!", !m_scenesUID.empty());
     SLM_TRACE_FUNC();
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
+
+    ::fwData::Image::sptr image;
+    if (this->isVersion2())
+    {
+        image = this->getInOut< ::fwData::Image >("image");
+    }
+    else
+    {
+        image = this->getObject< ::fwData::Image >();
+    }
+    SLM_ASSERT("'image' key is not found.", image);
 
     // force distance to be shown
     image->setField("ShowDistances",  ::fwData::Boolean::New(true));

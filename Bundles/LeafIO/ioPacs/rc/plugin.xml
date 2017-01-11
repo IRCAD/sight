@@ -1,0 +1,57 @@
+<plugin id="ioPacs" class="ioPacs::Plugin"  version="@DASH_VERSION@" >
+    <library name="ioPacs" />
+
+    <requirement id="dataReg"/>
+    <requirement id="gui" />
+    <requirement id="io" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::ioPacs::SPacsConfigurationEditor</service>
+        <object>::fwPacsIO::data::PacsConfiguration</object>
+        <desc>Pacs Configuration Editor</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::ioPacs::SPacsConfigurationInitializer</service>
+        <object>::fwPacsIO::data::PacsConfiguration</object>
+        <desc>Pacs Configuration Initializer</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::ioPacs::SProgressBarController</service>
+        <object>::fwData::Composite</object>
+        <desc>Progress Bar Controller</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::ioPacs::SQueryEditor</service>
+        <object>::fwMedData::SeriesDB</object>
+        <desc>Query Editor</desc>
+        </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::ioPacs::SSeriesPuller</service>
+        <object>::fwData::Vector</object>
+        <desc>Pull Series Controller</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::ioPacs::SSeriesPusher</service>
+        <object>::fwData::Object</object>
+        <desc>Push Series Controller</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::ioPacs::SSliceIndexDicomPullerEditor</service>
+        <object>::fwMedData::DicomSeries</object>
+        <desc>Slice Index Dicom Puller Editor</desc>
+    </extension>
+
+</plugin>

@@ -3,16 +3,16 @@ set( NAME uiMedDataQt )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
 set( DEPENDENCIES
-    fwMedDataTools
     fwActivities
     fwCom
-    fwComEd
     fwCore
     fwData
     fwDataCamp
+    fwDataTools
     fwGui
     fwGuiQt
     fwMedData
+    fwMedDataTools
     fwRuntime
     fwServices
     fwTools
@@ -20,8 +20,6 @@ set( DEPENDENCIES
     gui
     )
 set( REQUIREMENTS
-    visuVTKAdaptor
     uiImageQt
     ctrlSelection
     )
-

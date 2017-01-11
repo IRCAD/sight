@@ -7,10 +7,10 @@
 #ifndef __VISUVTKADAPTOR_IMAGESERIES_HPP__
 #define __VISUVTKADAPTOR_IMAGESERIES_HPP__
 
-#include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/NegatoMPR.hpp"
+#include "visuVTKAdaptor/config.hpp"
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
@@ -22,9 +22,8 @@ namespace visuVTKAdaptor
 
 /**
  * @brief This adaptor shows ImageSeries. Creates an adaptor for the image in the series.
- * @class ImageSeries
  */
-class VISUVTKADAPTOR_CLASS_API ImageSeries : public ::fwComEd::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API ImageSeries : public ::fwDataTools::helper::MedicalImageAdaptor,
                                              public ::fwRenderVTK::IVtkAdaptorService
 {
 

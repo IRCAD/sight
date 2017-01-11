@@ -8,27 +8,25 @@
 
 #include "visuVTKAdaptor/Distance.hpp"
 
-#include <fwComEd/Dictionary.hpp>
-
+#include <fwData/Material.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/Reconstruction.hpp>
-#include <fwData/Material.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkActor.h>
-#include <vtkCommand.h>
 #include <vtkAxisActor2D.h>
+#include <vtkCommand.h>
 #include <vtkDistanceRepresentation2D.h>
 #include <vtkHandleRepresentation.h>
 #include <vtkLineSource.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
-#include <vtkTextProperty.h>
 #include <vtkProperty2D.h>
 #include <vtkRenderer.h>
+#include <vtkTextProperty.h>
 
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Distance, ::fwData::PointList );
@@ -108,10 +106,10 @@ void Distance::doStart()
         this->slot(::fwServices::IService::s_UPDATE_SLOT));
 
     // set color to distance if Point List have Color Field
-    if ( ptList->getField( ::fwComEd::Dictionary::m_colorId ) )
+    if ( ptList->getField( ::fwDataTools::fieldHelper::Image::m_colorId ) )
     {
         ::fwData::Color::sptr color;
-        color = ptList->getField< ::fwData::Color >( ::fwComEd::Dictionary::m_colorId );
+        color = ptList->getField< ::fwData::Color >( ::fwDataTools::fieldHelper::Image::m_colorId );
         this->setAxisColor( color );
     }
 

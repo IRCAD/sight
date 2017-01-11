@@ -9,18 +9,18 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
+
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-
-#include <fwServices/helper/SigSlotConnection.hpp>
 
 namespace visuVTKAdaptor
 {
 
 class SliceCursor;
 
-class VISUVTKADAPTOR_CLASS_API NegatoMPR : public ::fwComEd::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API NegatoMPR : public ::fwDataTools::helper::MedicalImageAdaptor,
                                            public ::fwRenderVTK::IVtkAdaptorService
 {
 
@@ -84,13 +84,13 @@ protected:
     /**
      * @brief Configures the service
      *
-     * @verbatim
+     * @code{.xml}
        <adaptor id="negato" class="::visuVTKAdaptor::NegatoMPR" objectId="imageKey">
            <config renderer="default" picker="negatodefault" mode="2d" slices="1" sliceIndex="axial"
                    transform="trf" tfalpha="yes" interpolation="off" vtkimagesource="imgSource" actorOpacity="1.0"
                    selectedTFKey="tkKey" tfSelectionFwID="selectionID" />
        </adaptor>
-       @endverbatim
+       @endcode
      * - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects renderer.
      * - \b picker (mandatory): identifier of the picker
      * - \b mode (optional, 2d or 3d): defines the scene mode. In 2d mode, the camera follow the negato in
@@ -139,10 +139,14 @@ private:
 
     std::string m_imageSourceId;
 
+    std::string m_slicingStartingProxy; ///< channel of the proxy used to start slicing
+    std::string m_slicingStoppingProxy; ///< channel of the proxy used to stop slicing
+
+
     ::boost::logic::tribool m_3dModeEnabled;
     SliceMode m_sliceMode;
     SliceMode m_backupedSliceMode;
-    ::fwServices::helper::SigSlotConnection::sptr m_connections; /// store subservices connections
+    ::fwCom::helper::SigSlotConnection m_connections; /// store subservices connections
 
     ::fwRenderVTK::IVtkAdaptorService::wptr m_sliceCursor;
 };

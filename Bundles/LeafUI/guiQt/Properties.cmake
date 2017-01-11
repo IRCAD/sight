@@ -2,14 +2,15 @@
 set( NAME guiQt )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
-set( START ON ) 
+set( START ON )
 set( DEPENDENCIES
     fwActivities
-    fwComEd
     fwCom
     fwCore
     fwData
     fwDataCamp
+    fwDataTools
+    fwMedData
     fwGui
     fwGuiQt
     fwRuntime
@@ -22,4 +23,3 @@ set( PLUGINS
     platforms
     imageformats
 )
-

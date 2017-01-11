@@ -10,14 +10,14 @@
 #include "visuVTKAdaptor/config.hpp"
 
 #include <fwCom/Connection.hpp>
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
-#include <fwServices/helper/SigSlotConnection.hpp>
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 
 class vtkImageActor;
@@ -34,8 +34,37 @@ namespace visuVTKAdaptor
 
 /**
  * @brief Adaptor to display only one slice of an image
+ *
+ *
+ * @section Slots Slots
+ * - \b checkCtrlImage() : Check if ctrl image changed and update scene
+ * - \b updateSliceIndex() : update image slice index
+ * - \b updateSliceType() : update image slice type
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <adaptor id="imageSlice" class="::visuVTKAdaptor::ImageSlice" objectId="self">
+       <config renderer="default" picker="negatodefault" sliceIndex="axial"
+               transform="trf" ctrlimage="imageKey" interpolation="off" vtkimagesource="imgSource"
+               actorOpacity="1.0" />
+   </adaptor>
+   @endcode
+ *
+ * @subsection Configuration Configuration
+ *
+ * - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects renderer.
+ * - \b picker (mandatory): identifier of the picker
+ * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
+ * - \b transform (optional): the vtkTransform to associate to the adaptor
+ * - \b ctrlimage (mandatory): image to show
+ * - \b interpolation (optional, yes/no, default=yes): if true, the image pixels are interpolated
+ * - \b vtkimagesource (optional): source image, used for blend
+ * - \b actorOpacity (optional, default=1.0): actor opacity (float)
+ *
  */
-class VISUVTKADAPTOR_CLASS_API ImageSlice : public ::fwComEd::helper::MedicalImageAdaptor,
+
+class VISUVTKADAPTOR_CLASS_API ImageSlice : public ::fwDataTools::helper::MedicalImageAdaptor,
                                             public ::fwRenderVTK::IVtkAdaptorService
 {
 
@@ -59,7 +88,7 @@ public:
     {
         m_imageSourceId = id;
     }
-    void setVtkImageSource(vtkObject *obj)
+    void setVtkImageSource(vtkObject* obj)
     {
         m_imageSource = obj;
     }
@@ -95,25 +124,6 @@ protected:
 
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
 
-    /**
-     * @brief Configures the service
-     *
-     * @verbatim
-       <adaptor id="imageSlice" class="::visuVTKAdaptor::ImageSlice" objectId="self">
-           <config renderer="default" picker="negatodefault" sliceIndex="axial"
-                   transform="trf" ctrlimage="imageKey" interpolation="off" vtkimagesource="imgSource"
-                   actorOpacity="1.0" />
-       </adaptor>
-       @endverbatim
-     * - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects renderer.
-     * - \b picker (mandatory): identifier of the picker
-     * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
-     * - \b transform (optional): the vtkTransform to associate to the adaptor
-     * - \b ctrlimage (mandatory): image to show
-     * - \b interpolation (optional, yes/no, default=yes): if true, the image pixels are interpolated
-     * - \b vtkimagesource (optional): source image, used for blend
-     * - \b actorOpacity (optional, default=1.0): actor opacity (float)
-     */
     VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 
@@ -137,15 +147,15 @@ protected:
     double m_actorOpacity;
 
     std::string m_imageSourceId;
-    vtkObject  *m_imageSource;
+    vtkObject* m_imageSource;
 
-    vtkImageActor *m_imageActor;
+    vtkImageActor* m_imageActor;
 
-    vtkPolyData *m_planeOutlinePolyData;
-    vtkPolyDataMapper *m_planeOutlineMapper;
-    vtkActor *m_planeOutlineActor;
+    vtkPolyData* m_planeOutlinePolyData;
+    vtkPolyDataMapper* m_planeOutlineMapper;
+    vtkActor* m_planeOutlineActor;
 
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
 private:
 

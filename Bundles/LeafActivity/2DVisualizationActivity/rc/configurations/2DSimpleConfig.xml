@@ -1,0 +1,73 @@
+<extension implements="::fwServices::registry::AppConfig">
+    <id>2DSimpleConfig</id>
+    <parameters>
+        <param name="GENERIC_UID" />
+        <param name="WID_PARENT" />
+        <param name="objectID" />
+        <param name="imageID" />
+        <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
+    </parameters>
+    <config>
+        <object type="::fwData::Composite">
+
+            <service uid="${GENERIC_UID}_mainview" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view align="center" />
+                        <view align="bottom" minWidth="200" minHeight="30" resizable="no" />
+                    </layout>
+                </gui>
+                <registry>
+                    <parent wid="${WID_PARENT}" />
+                    <view sid="${GENERIC_UID}_gs" start="yes" />
+                    <view sid="${GENERIC_UID}_sliderIndexEditor" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="${GENERIC_UID}_gs" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
+                <scene>
+                    <picker id="picker" vtkclass="fwVtkCellPicker" />
+                    <renderer id="default" background="0.0" />
+                    <adaptor id="interactor4Negato" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                        <config renderer="default" style="InteractorStyle2DForNegato" />
+                    </adaptor>
+                    <adaptor id="imageText" class="::visuVTKAdaptor::ImageText" objectId="image">
+                        <config renderer="default" picker="picker" text="" color="#FFFFFF" />
+                    </adaptor>
+                    <adaptor id="seriesAdaptor" class="::visuVTKAdaptor::ImageSeries" objectId="imageSeries">
+                        <config renderer="default" picker="picker" autoresetcamera="yes" mode="2D" slices="1" sliceIndex="${orientation}" />
+                    </adaptor>
+                    <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="imageSeries">
+                        <config renderer="default" text="@patient.name" fontSize="15" hAlign="right" vAlign="top" />
+                    </adaptor>
+                    <adaptor id="imageSliceOrientationText" class="::visuVTKAdaptor::ImageSliceOrientationText" objectId="image">
+                        <config renderer="default">
+                            <locations>default</locations>
+                            <initialOrientation>${orientation}</initialOrientation>
+                        </config>
+                    </adaptor>
+                </scene>
+            </service>
+
+            <item key="imageSeries">
+                <object type="::fwMedData::ImageSeries" uid="${objectID}" src="ref">
+                </object>
+            </item>
+
+            <item key="image">
+                <object type="::fwData::Image" uid="${imageID}" src="ref">
+                    <service uid="${GENERIC_UID}_imageDumpLocker" impl="::ctrlMemory::LockDumpSrv" type="::fwServices::IController" autoConnect="no" />
+                    <service uid="${GENERIC_UID}_medicalImgConverter" impl="::ctrlSelection::MedicalImageSrv" type="::fwServices::IController" autoConnect="no" />
+                    <service uid="${GENERIC_UID}_sliderIndexEditor" type="::gui::editor::IEditor" impl="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+                        <sliceIndex>${orientation}</sliceIndex>
+                    </service>
+                </object>
+            </item>
+
+            <start uid="${GENERIC_UID}_imageDumpLocker" />
+            <start uid="${GENERIC_UID}_medicalImgConverter" />
+            <start uid="${GENERIC_UID}_mainview" />
+        </object>
+    </config>
+</extension>
+

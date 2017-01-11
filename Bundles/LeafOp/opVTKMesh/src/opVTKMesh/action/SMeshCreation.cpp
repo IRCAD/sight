@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "opVTKMesh/action/SMeshCreation.hpp"
-
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -21,14 +20,14 @@
 #include <fwVtkIO/helper/Mesh.hpp>
 #include <fwVtkIO/vtk.hpp>
 
-#include <vtkDiscreteMarchingCubes.h>
-#include <vtkWindowedSincPolyDataFilter.h>
-#include <vtkThreshold.h>
-#include <vtkPolyDataMapper.h>
 #include <vtkDecimatePro.h>
+#include <vtkDiscreteMarchingCubes.h>
 #include <vtkGeometryFilter.h>
-#include <vtkSmartPointer.h>
 #include <vtkImageData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkSmartPointer.h>
+#include <vtkThreshold.h>
+#include <vtkWindowedSincPolyDataFilter.h>
 
 
 namespace opVTKMesh
@@ -39,13 +38,11 @@ namespace action
 
 //-----------------------------------------------------------------------------
 
-fwServicesRegisterMacro( ::fwGui::IActionSrv, ::opVTKMesh::action::SMeshCreation, ::fwData::Object );
+fwServicesRegisterMacro( ::fwGui::IActionSrv, ::opVTKMesh::action::SMeshCreation );
 
 //-----------------------------------------------------------------------------
 
 SMeshCreation::SMeshCreation() throw() :
-    m_imageUID(""),
-    m_meshUID(""),
     m_reduction(0)
 {
 }
@@ -79,14 +76,6 @@ void SMeshCreation::configuring() throw ( ::fwTools::Failed )
     SLM_TRACE_FUNC();
     this->initialize();
 
-    SLM_ASSERT( "Mesh UID andImage UID must be defined in the service configuration",  m_configuration->findConfigurationElement(
-                    "image") && m_configuration->findConfigurationElement("mesh") );
-
-
-    m_imageUID = m_configuration->findConfigurationElement("image")->getExistingAttributeValue("uid");
-
-    m_meshUID = m_configuration->findConfigurationElement("mesh")->getExistingAttributeValue("uid");
-
     if (m_configuration->findConfigurationElement("percentReduction") &&
         m_configuration->findConfigurationElement("percentReduction")->hasAttribute("value"))
     {
@@ -95,8 +84,6 @@ void SMeshCreation::configuring() throw ( ::fwTools::Failed )
         m_reduction = boost::lexical_cast<unsigned int>(reduce);
     }
 
-    OSLM_INFO( "Image UID = " << m_imageUID);
-    OSLM_INFO( "Mesh UID = " << m_meshUID);
     OSLM_INFO( "Reduction value = " << m_reduction);
 }
 
@@ -106,11 +93,11 @@ void SMeshCreation::updating() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
 
-    /// Retreive object
-    OSLM_ASSERT("Not found the image defined by uid : " << m_imageUID, ::fwTools::fwID::exist(m_imageUID));
-    ::fwData::Image::sptr pImage = ::fwData::Image::dynamicCast( ::fwTools::fwID::getObject(m_imageUID) );
-    OSLM_ASSERT("Not found the mesh defined by uid : " << m_meshUID, ::fwTools::fwID::exist(m_meshUID));
-    ::fwData::Mesh::sptr pMesh = ::fwData::Mesh::dynamicCast( ::fwTools::fwID::getObject(m_meshUID) );
+    /// Retrieve objects
+    auto pImage = this->getInput< ::fwData::Image >("image");
+    SLM_ASSERT("'image' key not found", pImage);
+    auto pMesh = this->getInOut< ::fwData::Mesh >("mesh");
+    SLM_ASSERT("'mesh' key not found", pMesh);
 
     ///VTK Mesher
 

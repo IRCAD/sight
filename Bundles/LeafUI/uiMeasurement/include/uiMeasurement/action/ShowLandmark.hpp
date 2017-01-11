@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,7 +20,6 @@ namespace action
 
 /**
  * @brief   This action allows to show/hide image landmarks.
- * @class   ShowLandmark
  */
 class UIMEASUREMENT_CLASS_API ShowLandmark : public ::fwGui::IActionSrv
 {
@@ -40,6 +39,13 @@ public:
      */
     UIMEASUREMENT_API virtual KeyConnectionsType getObjSrvConnections() const;
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect Image::s_LANDMARK_DISPLAYED_SIG to this::s_SHOW_LANDMARK_SLOT
+     */
+    UIMEASUREMENT_API virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 protected:
 
     void configuring() throw (::fwTools::Failed);

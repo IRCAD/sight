@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,7 @@
 #include "scene2D/data/InitQtPen.hpp"
 #include "scene2D/Scene2DGraphicsView.hpp"
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <fwData/Float.hpp>
 #include <fwData/Histogram.hpp>
@@ -469,9 +469,7 @@ void CurvedHistogram::updateCurrentPoint(const ::scene2D::data::Event::sptr& _ev
         const double percent = m_painterPath->percentAtLength( key );
         QPointF qPoint       = m_painterPath->pointAtPercent( percent );
 
-        ::fwData::Point::sptr point =
-            ::fwData::Point::dynamicCast( ::fwTools::fwID::getObject( m_histogramPointUID ) );
-
+        ::fwData::Point::sptr point = this->getSafeInOut< ::fwData::Point>( m_histogramPointUID );
         SLM_ASSERT("m_histogramPointUID can't be null here.", point);
 
         point->getRefCoord()[0] = sceneCoord.getX();

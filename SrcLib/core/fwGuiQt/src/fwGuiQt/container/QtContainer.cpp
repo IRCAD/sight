@@ -95,5 +95,19 @@ void QtContainer::setVisible(bool isVisible)
 
 //-----------------------------------------------------------------------------
 
+void QtContainer::setEnabled(bool isEnabled)
+{
+    SLM_ASSERT("The QtContainer is not yet initialized, cleaning is thus impossible", m_container);
+    QWidget* parent   = m_container->parentWidget();
+    QDockWidget* dock = qobject_cast<QDockWidget*>(parent);
+    if(dock)
+    {
+        dock->setEnabled(isEnabled);
+    }
+    m_container->setEnabled(isEnabled);
+}
+
+//-----------------------------------------------------------------------------
+
 } // namespace container
 } // namespace fwGuiQt

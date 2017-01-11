@@ -57,20 +57,18 @@ void STranslate::starting()  throw ( ::fwTools::Failed )
 {
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
 
-    m_connection = ::fwServices::helper::SigSlotConnection::New();
-
     if (!m_sourceCompositeID.empty())
     {
         ::fwData::Composite::sptr source;
         source = ::fwData::Composite::dynamicCast(::fwTools::fwID::getObject(m_sourceCompositeID));
         SLM_ASSERT("Source composite is missing '" + m_sourceCompositeID + "'", source);
 
-        m_connection->connect(source, this->getSptr(), this->getObjSrvConnections() );
+        m_connections.connect(source, this->getSptr(), this->getObjSrvConnections() );
 
-        for( const ManagedTranslations::value_type & trans :  m_managedTranslations )
+        for( const ManagedTranslations::value_type& trans :  m_managedTranslations )
         {
-            const std::string &fromKey = trans.first;
-            const std::string &toKey   = trans.second;
+            const std::string& fromKey = trans.first;
+            const std::string& toKey   = trans.second;
 
             ::fwData::Composite::const_iterator iter = source->find(fromKey);
             if (iter != source->end())
@@ -85,8 +83,7 @@ void STranslate::starting()  throw ( ::fwTools::Failed )
 
 void STranslate::stopping()  throw ( ::fwTools::Failed )
 {
-    m_connection->disconnect();
-    m_connection.reset();
+    m_connections.disconnect();
 }
 
 //-----------------------------------------------------------------------------
@@ -97,7 +94,7 @@ void STranslate::configuring()  throw ( ::fwTools::Failed )
 
     if (conf.count("source"))
     {
-        const ::fwServices::IService::ConfigType & sourceCfg = conf.get_child("source");
+        const ::fwServices::IService::ConfigType& sourceCfg = conf.get_child("source");
         m_sourceCompositeID = sourceCfg.get_value<std::string>();
         SLM_ASSERT("Source composite is not defined", !m_sourceCompositeID.empty());
     }
@@ -109,7 +106,7 @@ void STranslate::configuring()  throw ( ::fwTools::Failed )
     m_managedTranslations.clear();
     BOOST_FOREACH( const ::fwServices::IService::ConfigType::value_type &v,  conf.equal_range("translate") )
     {
-        const ::fwServices::IService::ConfigType &translate = v.second;
+        const ::fwServices::IService::ConfigType& translate = v.second;
         const ::fwServices::IService::ConfigType xmlattr    = translate.get_child("<xmlattr>");
 
         SLM_FATAL_IF( "The attribute \"fromKey\" is missing, it represents the key of the object in the source "
@@ -142,7 +139,7 @@ void STranslate::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void STranslate::info( std::ostream &_sstream )
+void STranslate::info( std::ostream& _sstream )
 {
 }
 
@@ -153,8 +150,8 @@ void STranslate::addObjects(::fwData::Composite::ContainerType objects)
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     for ( ManagedTranslations::value_type elt : m_managedTranslations )
     {
-        const std::string &fromKey = elt.first;
-        const std::string &toKey   = elt.second;
+        const std::string& fromKey = elt.first;
+        const std::string& toKey   = elt.second;
 
         ::fwData::Composite::ContainerType::iterator iter = objects.find(fromKey);
         if (iter != objects.end())
@@ -173,8 +170,8 @@ void STranslate::changeObjects(::fwData::Composite::ContainerType newObjects,
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     for ( ManagedTranslations::value_type elt : m_managedTranslations )
     {
-        const std::string &fromKey = elt.first;
-        const std::string &toKey   = elt.second;
+        const std::string& fromKey = elt.first;
+        const std::string& toKey   = elt.second;
 
         ::fwData::Composite::ContainerType::iterator iter = newObjects.find(fromKey);
         if (iter != newObjects.end())
@@ -192,8 +189,8 @@ void STranslate::removeObjects(::fwData::Composite::ContainerType objects)
     ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
     for ( ManagedTranslations::value_type elt : m_managedTranslations )
     {
-        const std::string &fromKey = elt.first;
-        const std::string &toKey   = elt.second;
+        const std::string& fromKey = elt.first;
+        const std::string& toKey   = elt.second;
 
         ::fwData::Composite::ContainerType::iterator iter = objects.find(fromKey);
         if (iter != objects.end())

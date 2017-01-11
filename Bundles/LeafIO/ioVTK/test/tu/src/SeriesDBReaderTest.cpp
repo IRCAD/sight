@@ -1,38 +1,36 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fstream>
-#include <fwRuntime/EConfigurationElement.hpp>
-#include <fwRuntime/profile/Profile.hpp>
-
-#include <fwTools/System.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/AppConfigManager.hpp>
-#include <fwServices/registry/AppConfig.hpp>
-
-#include <fwData/location/ILocation.hpp>
+#include "SeriesDBReaderTest.hpp"
 
 #include <fwData/Image.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
+#include <fwData/location/ILocation.hpp>
+
+#include <fwDataCamp/visitor/CompareObjects.hpp>
+
+#include <fwDataTools/Image.hpp>
+#include <fwDataTools/helper/Image.hpp>
+
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/Series.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
-#include <fwDataCamp/visitor/CompareObjects.hpp>
+#include <fwRuntime/EConfigurationElement.hpp>
 
-#include <fwDataTools/Image.hpp>
-
-#include <fwComEd/helper/Image.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwTest/Data.hpp>
 
-#include "SeriesDBReaderTest.hpp"
+#include <fwTools/System.hpp>
+
+#include <boost/filesystem/operations.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioVTK::ut::SeriesDBReaderTest );
@@ -78,6 +76,13 @@ void SeriesDBReaderTest::testSeriesDBReader()
 {
     const ::boost::filesystem::path imageFile = ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk";
     const ::boost::filesystem::path meshFile  = ::fwTest::Data::dir() / "fw4spl/mesh/vtk/sphere.vtk";
+
+    CPPUNIT_ASSERT_MESSAGE("The file '" + imageFile.string() + "' does not exist",
+                           ::boost::filesystem::exists(imageFile));
+
+    CPPUNIT_ASSERT_MESSAGE("The file '" + meshFile.string() + "' does not exist",
+                           ::boost::filesystem::exists(meshFile));
+
 
     ::fwRuntime::EConfigurationElement::sptr readerSrvCfg = ::fwRuntime::EConfigurationElement::New("service");
     ::fwRuntime::EConfigurationElement::sptr file1Cfg     = ::fwRuntime::EConfigurationElement::New("file");
@@ -168,6 +173,9 @@ void SeriesDBReaderTest::testSeriesDBReader()
 void SeriesDBReaderTest::testMergeSeriesDBReader()
 {
     const ::boost::filesystem::path imageFile = ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk";
+
+    CPPUNIT_ASSERT_MESSAGE("The file '" + imageFile.string() + "' does not exist",
+                           ::boost::filesystem::exists(imageFile));
 
     ::fwRuntime::EConfigurationElement::sptr readerSrvCfg = ::fwRuntime::EConfigurationElement::New("service");
     ::fwRuntime::EConfigurationElement::sptr fileCfg      = ::fwRuntime::EConfigurationElement::New("file");

@@ -28,9 +28,42 @@ namespace editor
 {
 
 /**
- * @brief   This service show a menu button. The user can select one item in the menu and the service sends a message
- * containing the value of the item. This menu is configurable in xml.
- * @class   SSelectionMenuButton
+ * @brief   This service show a menu button. The user can select one item in the menu.
+ *
+ * When the user select an item, the signal \c selected(int selection) is emitted: it sends the value of the selected
+ * item.
+ *
+ * @note This service doesn’t modify its associated object, so it can work on any type of object.
+ *
+ * @section XML Example of configuration
+ * @code{.xml}
+    <service uid="sliceListNegato3DEditor" type="::gui::editor::IEditor" impl="::uiImage::SSelectionMenuButton">
+        <text>...</text>
+        <toolTip>...</toolTip>
+        <items>
+            <item text="One" value="1" />
+            <item text="Two" value="2" />
+            <item text="Six" value="6" />
+        </items>
+        <selected>2</selected>
+    </service>
+   @endcode
+ *
+ * - \b text (optional, default “>”): text displayed on the button
+ * - \b toolTip (optional): button tool tip
+ * - \b items: list of the menu items
+ * - \b item: one item
+ *    - \b text: the text displayed in the menu
+ *    - \b value: the value emitted when the item is selected
+ * - \b selected: the value of the item selected by default
+ *
+ * @section Signal Signal
+ * - \b selected(int): This signal is emitted when the user select an item. Sends the item value.
+ *
+ * @section Slots Slots
+ * - \b setEnabled(bool): This slots allows to enable/disable the button
+ * - \b enable(): This slot allows to enable the button
+ * - \b disable(): This slots allows to disable the button
  */
 class GUIQT_CLASS_API SSelectionMenuButton : public QObject,
                                              public ::gui::editor::IEditor
@@ -68,24 +101,7 @@ protected:
     /// Do nothing
     virtual void swapping() throw(::fwTools::Failed);
 
-    /**
-     * @brief Configure the editor.
-     *
-     * Example of configuration
-     * @verbatim
-       <service uid="sliceListNegato3DEditor" type="::gui::editor::IEditor" impl="::uiImage::SSelectionMenuButton">
-           <text>...</text>
-           <toolTip>...</toolTip>
-           <items>
-               <item text="One" value="1" />
-               <item text="Two" value="2" />
-               <item text="Six" value="6" />
-           </items>
-           <selected>2</selected>
-       </service>
-       @endverbatim
-
-     */
+    /// Configure the editor.
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
@@ -142,5 +158,3 @@ private:
 } // namespace guiQt
 
 #endif /*__GUIQT_EDITOR_SSELECTIONMENUBUTTON_HPP__*/
-
-

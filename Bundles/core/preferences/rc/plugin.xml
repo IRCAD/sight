@@ -1,0 +1,11 @@
+<plugin id="preferences" class="preferences::Plugin" version="@DASH_VERSION@" >
+
+    <library name="preferences"/>
+    
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwPreferences::IPreferences</type>
+        <service>::preferences::SPreferences</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+</plugin>

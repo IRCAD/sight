@@ -1,19 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ZipTest.hpp"
 
+#include <fwTest/Data.hpp>
+
+#include <fwTools/System.hpp>
+
 #include <fwZip/ReadZipArchive.hpp>
 #include <fwZip/WriteZipArchive.hpp>
 
-#include <fwTools/System.hpp>
-#include <fwTest/Data.hpp>
-
-#include <boost/filesystem/path.hpp>
 #include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem/path.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwZip::ut::ZipTest );
@@ -42,6 +43,9 @@ void ZipTest::commentTest()
     const ::boost::filesystem::path path        = dirPath / "jambon.zip";
     const ::boost::filesystem::path sourceFile  = ::fwTest::Data::dir() / "fw4spl/image/jpg/makao01.jpg";
     const ::boost::filesystem::path archiveFile = "makao.jpg";
+
+    CPPUNIT_ASSERT_MESSAGE("The file '" + sourceFile.string() + "' does not exist",
+                           ::boost::filesystem::exists(sourceFile));
 
 
     SPTR(WriteZipArchive) writer = std::make_shared<WriteZipArchive>(path, writerComment);

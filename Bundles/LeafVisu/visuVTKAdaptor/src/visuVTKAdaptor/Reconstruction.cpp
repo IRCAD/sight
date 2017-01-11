@@ -13,7 +13,7 @@
 #include <fwData/Reconstruction.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <vtkActor.h>
 #include <vtkCamera.h>

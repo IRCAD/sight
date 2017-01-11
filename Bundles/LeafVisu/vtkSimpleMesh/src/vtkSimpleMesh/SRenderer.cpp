@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,6 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
@@ -24,31 +23,36 @@
 #include <fwVtkIO/vtk.hpp>
 
 #include <vtkCamera.h>
-#include <vtkCamera.h>
 #include <vtkCommand.h>
-#include <vtkMatrix4x4.h>
-#include <vtkPolyData.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkPolyDataNormals.h>
-#include <vtkProperty.h>
-#include <vtkRenderer.h>
-#include <vtkRenderWindow.h>
-#include <vtkTransform.h>
 #ifndef ANDROID
 #include <vtkInteractorStyleTrackballCamera.h>
 #else
 #include <vtkInteractorStyleMultiTouchCamera.h>
 #endif
+#include <vtkMatrix4x4.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkProperty.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
+#include <vtkTransform.h>
 
 fwServicesRegisterMacro( ::fwRender::IRender, ::vtkSimpleMesh::SRenderer, ::fwData::Mesh );
 
 namespace vtkSimpleMesh
 {
 
+//-----------------------------------------------------------------------------
+
 const ::fwCom::Slots::SlotKeyType SRenderer::s_UPDATE_CAM_POSITION_SLOT = "updateCamPosition";
 const ::fwCom::Slots::SlotKeyType SRenderer::s_UPDATE_PIPELINE_SLOT     = "updatePipeline";
 const ::fwCom::Slots::SlotKeyType SRenderer::s_INIT_PIPELINE_SLOT       = "initPipeline";
 const ::fwCom::Signals::SignalKeyType SRenderer::s_CAM_UPDATED_SIG      = "camUpdated";
+
+static const std::string s_MESH_KEY = "mesh";
+
+//-----------------------------------------------------------------------------
 
 // vtkCommand used to catch the user interactions and notify the new camera position
 class vtkLocalCommand : public vtkCommand
@@ -83,11 +87,15 @@ private:
     bool m_isMousePressed;
 };
 
-SRenderer::SRenderer() throw() : m_render( 0 ), m_bPipelineIsInit(false)
+//-----------------------------------------------------------------------------
+
+SRenderer::SRenderer() throw() :
+    m_render( 0 ),
+    m_bPipelineIsInit(false)
 {
-    m_slotUpdateCamPosition = newSlot(s_UPDATE_CAM_POSITION_SLOT, &SRenderer::updateCamPosition, this);
-    m_slotUpdatePipeline    = newSlot(s_UPDATE_PIPELINE_SLOT, &SRenderer::updatePipeline, this);
-    m_slotInitPipeline      = newSlot(s_INIT_PIPELINE_SLOT, &SRenderer::initPipeline, this);
+    newSlot(s_UPDATE_CAM_POSITION_SLOT, &SRenderer::updateCamPosition, this);
+    newSlot(s_UPDATE_PIPELINE_SLOT, &SRenderer::updatePipeline, this);
+    newSlot(s_INIT_PIPELINE_SLOT, &SRenderer::initPipeline, this);
 
     m_sigCamUpdated = newSignal<CamUpdatedSignalType>(s_CAM_UPDATED_SIG);
 }
@@ -116,7 +124,8 @@ void SRenderer::starting() throw(fwTools::Failed)
 
     bool meshIsLoaded;
     {
-        ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+        ::fwData::Mesh::csptr mesh = this->getInput< ::fwData::Mesh >(s_MESH_KEY);
+        SLM_ASSERT("'" + s_MESH_KEY + "' key not found", mesh);
         ::fwData::mt::ObjectReadLock lock(mesh);
         meshIsLoaded = mesh->getNumberOfPoints() > 0;
     }
@@ -167,8 +176,9 @@ void SRenderer::updating() throw(fwTools::Failed)
 
 void SRenderer::initVTKPipeline()
 {
-    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
-    m_vtkPolyData             = vtkSmartPointer<vtkPolyData>::New();
+    ::fwData::Mesh::csptr mesh = this->getInput< ::fwData::Mesh >(s_MESH_KEY);
+    SLM_ASSERT("'" + s_MESH_KEY + "' key not found", mesh);
+    m_vtkPolyData = vtkSmartPointer<vtkPolyData>::New();
 
     {
         ::fwData::mt::ObjectReadLock lock(mesh);
@@ -201,7 +211,8 @@ void SRenderer::initVTKPipeline()
 
 void SRenderer::updateVTKPipeline(bool resetCamera)
 {
-    ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+    ::fwData::Mesh::csptr mesh = this->getInput< ::fwData::Mesh >(s_MESH_KEY);
+    SLM_ASSERT("'" + s_MESH_KEY + "' key not found", mesh);
 
     {
         ::fwData::mt::ObjectReadLock lock(mesh);
@@ -233,16 +244,14 @@ void SRenderer::notifyCamPositionUpdated()
     std::copy(camera->GetViewUp(), camera->GetViewUp()+3, viewUp.get());
 
     {
-        ::fwCom::Connection::Blocker block(m_sigCamUpdated->getConnection(m_slotUpdateCamPosition));
+        ::fwCom::Connection::Blocker block(m_sigCamUpdated->getConnection(this->slot(s_UPDATE_CAM_POSITION_SLOT)));
         m_sigCamUpdated->asyncEmit (position, focal, viewUp);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SRenderer::updateCamPosition(SharedArray positionValue,
-                                  SharedArray focalValue,
-                                  SharedArray viewUpValue)
+void SRenderer::updateCamPosition(SharedArray positionValue, SharedArray focalValue, SharedArray viewUpValue)
 {
     vtkCamera* camera = m_render->GetActiveCamera();
 
@@ -265,8 +274,9 @@ void SRenderer::initPipeline()
     }
     else
     {
-        m_vtkPolyData             = vtkSmartPointer<vtkPolyData>::New();
-        ::fwData::Mesh::sptr mesh = this->getObject< ::fwData::Mesh >();
+        m_vtkPolyData              = vtkSmartPointer<vtkPolyData>::New();
+        ::fwData::Mesh::csptr mesh = this->getInput< ::fwData::Mesh >(s_MESH_KEY);
+        SLM_ASSERT("'" + s_MESH_KEY + "' key not found", mesh);
         {
             ::fwData::mt::ObjectReadLock lock(mesh);
             ::fwVtkIO::helper::Mesh::toVTKMesh( mesh, m_vtkPolyData );
@@ -295,11 +305,11 @@ void SRenderer::updatePipeline()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SRenderer::getObjSrvConnections() const
+::fwServices::IService::KeyConnectionsMap SRenderer::getAutoConnections() const
 {
-    KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::fwData::Object::s_MODIFIED_SIG, s_INIT_PIPELINE_SLOT ) );
-    connections.push_back( std::make_pair( ::fwData::Mesh::s_VERTEX_MODIFIED_SIG, s_UPDATE_PIPELINE_SLOT ) );
+    KeyConnectionsMap connections;
+    connections.push( s_MESH_KEY, ::fwData::Object::s_MODIFIED_SIG, s_INIT_PIPELINE_SLOT );
+    connections.push( s_MESH_KEY, ::fwData::Mesh::s_VERTEX_MODIFIED_SIG, s_UPDATE_PIPELINE_SLOT );
     return connections;
 }
 

@@ -1,0 +1,50 @@
+<extension implements="::fwServices::registry::AppConfig2">
+    <id>PacsConfigurationManager</id>
+    <parameters>
+        <param name="PACS_CONFIGURATION" />
+        <param name="ICON_PATH" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
+    </parameters>
+    <config>
+        <object uid="${PACS_CONFIGURATION}" type="::fwPacsIO::data::PacsConfiguration" src="ref" />
+
+        <!-- MAIN FRAME -->
+        <service uid="pacsConfigurationManagerFrame" type="::gui::frame::SDefaultFrame" >
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>Pacs Configuration Manager</name>
+                    <icon>${ICON_PATH}</icon>
+                    <!--<minSize width="400" height="750" /> -->
+                    <style mode="STAY_ON_TOP" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="mainView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="mainView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view align="center" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="pacsConfigurationEditor" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="pacsConfigurationEditor" type="::ioPacs::SPacsConfigurationEditor" autoConnect="yes">
+            <inout key="config" uid="${PACS_CONFIGURATION}" />
+        </service>
+
+        <connect channel="${CLOSE_CONFIG_CHANNEL}">
+            <signal>pacsConfigurationManagerFrame/closed</signal>
+        </connect>
+
+        <!-- START AND STOP SERVICES -->
+        <start uid="pacsConfigurationManagerFrame" />
+
+    </config>
+</extension>

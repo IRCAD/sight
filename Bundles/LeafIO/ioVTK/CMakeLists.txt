@@ -1,23 +1,13 @@
 fwLoadProperties()
 
-fwUseForwardInclude(
-    fwData
-    fwRuntime
-    fwServices
-    fwJobs
-    fwThread
-    fwVtkIO
-    io
-)
-
-find_package(VTK REQUIRED)
+if(NOT ANDROID)
+    find_package(VTK COMPONENTS vtkIOImport REQUIRED NO_MODULE)
+endif()
 
 fwForwardInclude(
     ${VTK_INCLUDE_DIRS}
 )
 
-if (NOT ANDROID)
-    fwLink(
-        vtkIOImport
-    )
-endif()
+fwLink(
+    ${VTK_LIBRARIES}
+)

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,9 +19,23 @@ namespace updater
 {
 
 /**
- * @class  SObjFromSlot
- * @brief  Updates the composite from object given from slots.
+ * @brief  Registers/unregisters the object given by the slots.
  *
+ * @section Slots Slots
+ * - \b add(::fwData::Object::sptr) : Registers the given object in the OSR
+ * - \b remove(::fwData::Object::sptr) : Unregisters the object in the OSR
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+     <service type="::ctrlSelection::updater::SObjFromSlot">
+         <out key="object" uid="..." />
+     </service>
+     @endcode
+ * @subsection Output Output
+ * - \b object [::fwData::Object]: Object used to register/unregister the object given by the slots.
+ *
+ * @deprecated The slots 'addOrSwap', 'swapObj' and 'removeIfPresent' should be replaced by 'add' or 'remove'.
  */
 class CTRLSELECTION_CLASS_API SObjFromSlot : public ::ctrlSelection::IUpdaterSrv
 {
@@ -54,11 +68,11 @@ protected:
     /**
      * @brief Configures the service.
      *
-     * @verbatim
+     * @code{.xml}
        <service impl="::ctrlSelection::updater::SObjFromSlot">
            <compositeKey>key</compositeKey>
        </service>
-       @endverbatim
+       @endcode
      * - \b compositeKey key of the object to manage into the composite (add/swap/remove)
      */
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
@@ -73,7 +87,7 @@ protected:
     CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Implements info method derived from IService. Print classname.
-    CTRLSELECTION_API virtual void info( std::ostream &_sstream );
+    CTRLSELECTION_API virtual void info( std::ostream& _sstream );
 
     /**
      * @name Slots
@@ -105,6 +119,7 @@ private:
 
     std::string m_compositeKey; ///< key of the object to manage in the composite
 
+    std::string m_objectUid; ///< Uid of the object to output
 };
 
 } // updater

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,8 +18,31 @@ namespace action
 {
 
 /**
- * @brief Action to create a mesh from an image using VTK library
- **/
+ * @brief   Action to create a mesh from an image using VTK library
+ *
+ * @section Signals Signals
+ * - \b sent(int): Emitted when .
+ *
+ * @section Slots Slots
+ * - \b receive(int): .
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::opVTKMesh::action::SMeshCreation">
+            <in key="image" uid="..." />
+            <inout key="mesh" uid="..." />
+            <percentReduction value="0" />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b image [::fwData::Image]: source image.
+ * @subsection In-Out In-Out:
+ * - \b mesh [::fwData::Mesh]: target mesh.
+ * @subsection Configuration Configuration:
+ * - \b percentReduction: Specify the desired reduction in the total number of polygons (e.g., if
+ *      TargetReduction is set to 90, this filter will try to reduce the data set to 10% of its original size)..
+ */
 class OPVTKMESH_CLASS_API SMeshCreation : public ::fwGui::IActionSrv
 {
 
@@ -37,21 +60,7 @@ protected:
 
     OPVTKMESH_API void stopping() throw ( ::fwTools::Failed );
 
-    /**
-     * @brief Configure the service:
-     *
-     * @verbatim
-        <service uid="actionCreateMesh" type="::fwGui::IActionSrv" impl="::opVTKMesh::action::SMeshCreation">
-            <image uid="myImage" />
-            <mesh uid="myMesh" />
-            <percentReduction value="0" />
-        </service>
-       @endverbatim
-     * - \b image: uid of the source image
-     * - \b mesh: uid of the target mesh
-     * - \b percentReduction: Specify the desired reduction in the total number of polygons (e.g., if
-     *      TargetReduction is set to 90, this filter will try to reduce the data set to 10% of its original size).
-     */
+    /// Configure the service.
     OPVTKMESH_API void configuring() throw ( ::fwTools::Failed );
 
     /// Process the mesh creation from the image.
@@ -59,8 +68,6 @@ protected:
 
 private:
 
-    std::string m_imageUID;
-    std::string m_meshUID;
     unsigned int m_reduction;
 };
 

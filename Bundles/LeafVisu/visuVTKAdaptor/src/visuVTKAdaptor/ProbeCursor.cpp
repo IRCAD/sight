@@ -4,27 +4,26 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/ImageText.hpp"
 #include "visuVTKAdaptor/ProbeCursor.hpp"
+
+#include "visuVTKAdaptor/ImageText.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/helper/Image.hpp>
-
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/TransferFunction.hpp>
 
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/helper/Image.hpp>
+
 #include <fwRenderVTK/vtk/Helpers.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkAbstractPropPicker.h>
 #include <vtkActor.h>
@@ -41,7 +40,6 @@
 #include <vtkTextProperty.h>
 #include <vtkTransform.h>
 
-
 #include <boost/format.hpp>
 
 
@@ -55,12 +53,10 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Pr
 namespace visuVTKAdaptor
 {
 
-
-
 class ProbingCallback : public vtkCommand
 {
 public:
-    static ProbingCallback *New()
+    static ProbingCallback* New()
     {
         return new ProbingCallback();
     }
@@ -77,7 +73,7 @@ public:
     {
     }
 
-    virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
+    virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
         assert(m_priority>=0);
         SLM_ASSERT("m_adaptor not instanced", m_adaptor);
@@ -143,7 +139,7 @@ public:
         m_adaptor = adaptor;
     }
 
-    void setPicker( vtkAbstractPropPicker *adaptor)
+    void setPicker( vtkAbstractPropPicker* adaptor)
     {
         m_picker = adaptor;
     }
@@ -155,7 +151,7 @@ public:
 
 protected:
     ProbeCursor::sptr m_adaptor;
-    vtkAbstractPropPicker *m_picker;
+    vtkAbstractPropPicker* m_picker;
     float m_priority;
 
     bool m_mouseMoveObserved;
@@ -240,13 +236,14 @@ void ProbeCursor::doStart() throw(fwTools::Failed)
     m_cursorMapper->SetInputData( m_cursorPolyData );
     m_cursorActor->SetMapper(m_cursorMapper);
     m_cursorActor->GetProperty()->SetColor(1,0,0);
+    m_cursorActor->GetProperty()->SetOpacity(0.9);
     if(!this->getTransformId().empty())
     {
         m_cursorActor->SetUserTransform(this->getTransform());
     }
     this->addToRenderer(m_cursorActor);
 
-    ProbingCallback *observer = ProbingCallback::New();
+    ProbingCallback* observer = ProbingCallback::New();
     observer->setAdaptor( ProbeCursor::dynamicCast(this->getSptr()) );
     observer->setPicker(this->getPicker());
     observer->setPriority(  m_priority );
@@ -328,7 +325,7 @@ void ProbeCursor::updateView( double world[3] )
     }
     else
     {
-        ::fwComEd::helper::Image imageHelper(image);
+        ::fwDataTools::helper::Image imageHelper(image);
 
         std::string greyLevel = imageHelper.getPixelAsString(index[0], index[1], index[2] );
         txt = (::boost::format("(% 4li,% 4li, % 4li) : %s ") % index[0] % index[1] % index[2] % greyLevel ).str();
@@ -404,7 +401,7 @@ void ProbeCursor::buildPolyData()
         points->SetPoint(i, 0.0, 0.0, 0.0);
     }
 
-    vtkCellArray *cells = vtkCellArray::New();
+    vtkCellArray* cells = vtkCellArray::New();
     cells->Allocate(cells->EstimateSize(nbPoints,2));
 
     vtkIdType pts[2];

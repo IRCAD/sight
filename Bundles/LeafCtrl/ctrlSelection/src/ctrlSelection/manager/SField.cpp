@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,7 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
@@ -67,7 +67,7 @@ void SField::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SField::info( std::ostream &_sstream )
+void SField::info( std::ostream& _sstream )
 {
 }
 
@@ -86,7 +86,7 @@ void SField::stopping()  throw ( ::fwTools::Failed )
 
             if( subSrv->m_hasAutoConnection )
             {
-                subSrv->m_connections->disconnect();
+                subSrv->m_connections.disconnect();
             }
             subSrv->getService()->stop().wait();
             ::fwServices::OSR::unregisterService(subSrv->getService());
@@ -245,11 +245,7 @@ void SField::addField( const FieldNameType& fieldName, ::fwData::Object::sptr fi
             if ( cfg->getAttributeValue("autoConnect") == "yes" )
             {
                 subSrv->m_hasAutoConnection = true;
-                if (!subSrv->m_connections)
-                {
-                    subSrv->m_connections = ::fwServices::helper::SigSlotConnection::New();
-                }
-                subSrv->m_connections->connect( field, srv, srv->getObjSrvConnections() );
+                subSrv->m_connections.connect( field, srv, srv->getObjSrvConnections() );
             }
 
 
@@ -318,9 +314,9 @@ void SField::swapField(const FieldNameType& fieldName, ::fwData::Object::sptr fi
 
                 if (subSrv->m_hasAutoConnection)
                 {
-                    subSrv->m_connections->disconnect();
-                    subSrv->m_connections->connect( field, subSrv->getService(),
-                                                    subSrv->getService()->getObjSrvConnections() );
+                    subSrv->m_connections.disconnect();
+                    subSrv->m_connections.connect( field, subSrv->getService(),
+                                                   subSrv->getService()->getObjSrvConnections() );
                 }
             }
             else
@@ -374,7 +370,7 @@ void SField::removeField( const FieldNameType& fieldName )
             {
                 if( subSrv->m_hasAutoConnection )
                 {
-                    subSrv->m_connections->disconnect();
+                    subSrv->m_connections.disconnect();
                 }
 
                 subSrv->getService()->stop();
@@ -437,7 +433,6 @@ void SField::initOnDummyObject( const FieldNameType& fieldName )
             if ( cfg->getAttributeValue("autoConnect") == "yes" )
             {
                 subSrv->m_hasAutoConnection = true;
-                subSrv->m_connections       = ::fwServices::helper::SigSlotConnection::New();
             }
         }
         m_fieldsSubServices[fieldName] = subVecSrv;

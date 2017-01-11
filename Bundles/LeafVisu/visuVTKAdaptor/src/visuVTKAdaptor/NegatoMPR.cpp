@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuVTKAdaptor/NegatoMPR.hpp"
+
 #include "visuVTKAdaptor/NegatoOneSlice.hpp"
 #include "visuVTKAdaptor/NegatoSlicingInteractor.hpp"
 #include "visuVTKAdaptor/NegatoWindowingInteractor.hpp"
@@ -15,17 +16,16 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/String.hpp>
-#include <fwServices/Base.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/Proxy.hpp>
 
 #include <fwTools/fwID.hpp>
@@ -54,8 +54,6 @@ NegatoMPR::NegatoMPR() throw() :
     m_sliceMode(THREE_SLICES),
     m_backupedSliceMode(THREE_SLICES)
 {
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
-
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &NegatoMPR::updateSliceType, this);
     newSlot(s_UPDATE_SLICE_MODE_SLOT, &NegatoMPR::updateSliceMode, this);
     newSlot(s_SHOW_SLICE_SLOT, &NegatoMPR::showSlice, this);
@@ -83,8 +81,6 @@ void NegatoMPR::doStop() throw(fwTools::Failed)
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     //disconnect proxy
     ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
-    const std::string slicingStartingProxy = image->getID() + s_slicingStartingProxy;
-    const std::string slicingStoppingProxy = image->getID() + s_slicingStoppingProxy;
 
     for (auto srv : this->getRegisteredServices())
     {
@@ -92,19 +88,19 @@ void NegatoMPR::doStop() throw(fwTools::Failed)
         SlicesCursor::sptr sliceCursor                        = SlicesCursor::dynamicCast(srv.lock());
         if (negatoSlicingInteractor)
         {
-            proxy->disconnect(slicingStartingProxy, negatoSlicingInteractor->signal(
+            proxy->disconnect(m_slicingStartingProxy, negatoSlicingInteractor->signal(
                                   NegatoSlicingInteractor::s_SLICING_STARTED_SIG));
-            proxy->disconnect(slicingStoppingProxy, negatoSlicingInteractor->signal(
+            proxy->disconnect(m_slicingStoppingProxy, negatoSlicingInteractor->signal(
                                   NegatoSlicingInteractor::s_SLICING_STOPPED_SIG));
         }
 
         if (sliceCursor)
         {
-            proxy->disconnect(slicingStartingProxy, sliceCursor->slot(
+            proxy->disconnect(m_slicingStartingProxy, sliceCursor->slot(
                                   SlicesCursor::s_SHOW_FULL_CROSS_SLOT));
 
 
-            proxy->disconnect(slicingStoppingProxy, sliceCursor->slot(
+            proxy->disconnect(m_slicingStoppingProxy, sliceCursor->slot(
                                   SlicesCursor::s_SHOW_NORMAL_CROSS_SLOT));
         }
     }
@@ -117,7 +113,7 @@ void NegatoMPR::doStop() throw(fwTools::Failed)
 void NegatoMPR::doSwap() throw(fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if ( imageIsValid)
     {
@@ -148,7 +144,7 @@ void NegatoMPR::doUpdate() throw(::fwTools::Failed)
     this->doStop();
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if ( imageIsValid)
     {
@@ -174,16 +170,16 @@ void NegatoMPR::doUpdate() throw(::fwTools::Failed)
 
             /// Connect slicing signals/slots from NegatoSlicingInteractor to SlicesCursor using the image slicing proxy
             ::fwServices::registry::Proxy::sptr proxy = ::fwServices::registry::Proxy::getDefault();
-            const std::string slicingStartingProxy = image->getID() + s_slicingStartingProxy;
-            const std::string slicingStoppingProxy = image->getID() + s_slicingStoppingProxy;
-            proxy->connect(slicingStartingProxy, negatoSlicingInteractor->signal(
+            m_slicingStartingProxy                    = image->getID() + s_slicingStartingProxy;
+            m_slicingStoppingProxy                    = image->getID() + s_slicingStoppingProxy;
+            proxy->connect(m_slicingStartingProxy, negatoSlicingInteractor->signal(
                                NegatoSlicingInteractor::s_SLICING_STARTED_SIG));
-            proxy->connect(slicingStartingProxy, sliceCursor->slot(
+            proxy->connect(m_slicingStartingProxy, sliceCursor->slot(
                                SlicesCursor::s_SHOW_FULL_CROSS_SLOT));
 
-            proxy->connect(slicingStoppingProxy, negatoSlicingInteractor->signal(
+            proxy->connect(m_slicingStoppingProxy, negatoSlicingInteractor->signal(
                                NegatoSlicingInteractor::s_SLICING_STOPPED_SIG));
-            proxy->connect(slicingStoppingProxy, sliceCursor->slot(
+            proxy->connect(m_slicingStoppingProxy, sliceCursor->slot(
                                SlicesCursor::s_SHOW_NORMAL_CROSS_SLOT));
             m_sliceCursor = sliceCursor;
         }
@@ -384,8 +380,8 @@ void NegatoMPR::set3dMode( bool enabled )
     {
         service = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( image, adaptor );
         SLM_ASSERT("service not instanced", service);
-        ::fwComEd::helper::MedicalImageAdaptor::sptr adaptorSrv =
-            ::fwComEd::helper::MedicalImageAdaptor::dynamicCast(service);
+        ::fwDataTools::helper::MedicalImageAdaptor::sptr adaptorSrv =
+            ::fwDataTools::helper::MedicalImageAdaptor::dynamicCast(service);
         SLM_ASSERT("adaptorSrv not instanced", adaptorSrv);
         adaptorSrv->setOrientation((Orientation) axis);
     }

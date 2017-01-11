@@ -1,4 +1,4 @@
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::fwServices::registry::AppConfig2">
     <id>Blend</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -11,118 +11,95 @@
 
     <config>
 
-        <object type="::fwData::Composite">
+        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
+        <object uid="${AS_UID}" type="::fwMedData::ActivitySeries" src="ref" />
+        <object uid="${backgroundImageUid}" type="::fwData::Image" src="ref" />
+        <object uid="${frontImageUid}" type="::fwData::Image" src="ref" />
+        <object uid="myBlendSelectionComposite" type="::fwData::Composite" />
+        <object uid="TFComposite" type="::fwData::Composite" />
 
-            <service uid="${GENERIC_UID}_mainView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::CardinalLayoutManager">
-                        <view align="center" />
-                    </layout>
-                    <toolBar />
-                </gui>
-                <registry>
-                    <parent wid="${WID_PARENT}" />
-                    <toolBar sid="${GENERIC_UID}_toolBar" start="yes" />
-                    <view wid="${GENERIC_UID}_WID_VIEW" start="no" />
-                </registry>
-            </service>
+        <service uid="mainView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager">
+                    <view align="center" />
+                </layout>
+                <toolBar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolBar" start="yes" />
+                <view wid="subView" />
+            </registry>
+        </service>
 
-            <service uid="${GENERIC_UID}_toolBar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no">
-                <gui>
-                    <layout>
-                        <menuItem name="Blend view" style="radio" icon="Bundles/media_0-1/icons/icon-2D.png" />
-                        <menuItem name="Edit background Image TF" style="radio" icon="Bundles/media_0-1/icons/icon-tf1.svg" />
-                        <menuItem name="Edit front Image TF" style="radio" icon="Bundles/media_0-1/icons/icon-tf2.svg" />
-                        <menuItem name="Export Activity" icon="Bundles/media_0-1/icons/Export.svg"  />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="${GENERIC_UID}_action_blendView" start="no" />
-                    <menuItem sid="${GENERIC_UID}_action_bgTFView" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_action_frontTFView" start="yes" />
-                    <menuItem sid="${GENERIC_UID}_ActionExportActivity" start="yes" />
-                </registry>
-            </service>
+        <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
+            <gui>
+                <layout>
+                    <menuItem name="Blend view" style="radio" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-2D.png" />
+                    <menuItem name="Edit background Image TF" style="radio" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-tf1.svg" />
+                    <menuItem name="Edit front Image TF" style="radio" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-tf2.svg" />
+                    <menuItem name="Export Activity" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_blendView" start="no" />
+                <menuItem sid="action_bgTFView" start="yes" />
+                <menuItem sid="action_frontTFView" start="yes" />
+                <menuItem sid="ActionExportActivity" start="yes" />
+            </registry>
+        </service>
 
-            <item key="seriesDB">
-                <object uid="${SERIESDB}" src="ref" type="::fwMedData::SeriesDB">
-                    <service uid="${GENERIC_UID}_ActionExportActivity" type="::fwGui::IActionSrv" impl="::uiMedData::action::SExportSeries" autoConnect="yes">
-                        <seriesId>${AS_UID}</seriesId>
-                    </service>
-                </object>
-            </item>
-            
-            <item key="activitySeries">
-                <object uid="${AS_UID}" src="ref" type="::fwMedData::ActivitySeries" />
-            </item>
+        <service uid="ActionExportActivity" type="::uiMedData::action::SExportSeries">
+            <inout key="seriesDB" uid="${SERIESDB}" />
+            <inout key="series" uid="${AS_UID}" />
+        </service>
 
-            <item key="TFSelectionsKey">
-                <object uid="${GENERIC_UID}_TFComposite" type="::fwData::Composite" />
-            </item>
+        <service uid="myManagerLockDump" type="::ctrlMemory::manager::LockDumpManagerSrv" autoConnect="yes">
+            <in key="composite" uid="myBlendSelectionComposite" />
+        </service>
 
-            <item key="myBlendSelectionComposite">
-                <object uid="${GENERIC_UID}_myBlendSelectionComposite" type="::fwData::Composite">
-                
-                    <service uid="${GENERIC_UID}_myManagerLockDump" impl="::ctrlMemory::manager::LockDumpManagerSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" />
+        <service uid="medicalImageFrontSrv" type="::ctrlSelection::MedicalImageSrv">
+            <inout key="image" uid="${frontImageUid}" />
+        </service>
 
-                    <service uid="${GENERIC_UID}_action_blendView" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="yes">
-                        <state active="true" />
-                        <config>
-                            <appConfig id="ImageMix" >
-                               <parameters>
-                                    <parameter replace="SELECTED_myBlendSelectionComposite" by="${GENERIC_UID}_myBlendSelectionComposite"  />
-                                    <parameter replace="WID_VIEW" by="${GENERIC_UID}_WID_VIEW"  />
-                                    <parameter replace="TF_COMPOSITE_ID" by="${GENERIC_UID}_TFComposite"  />
-                                    <parameter replace="SELECTED_TF_KEYA" by="tfBackgroundImage"  />
-                                    <parameter replace="SELECTED_TF_KEYB" by="tfFrontImage"  />
-                               </parameters>
-                            </appConfig>
-                        </config>
-                    </service>
+        <service uid="medicalImageBgSrv" type="::ctrlSelection::MedicalImageSrv">
+            <inout key="image" uid="${backgroundImageUid}" />
+        </service>
 
-                    <service uid="${GENERIC_UID}_action_bgTFView" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="yes">
-                        <config>
-                            <appConfig id="TransferFunctionEditor" >
-                                <parameters>
-                                    <parameter replace="SELECTED_UID_myImage" by="${backgroundImageUid}"  />
-                                    <parameter replace="WID_VIEW" by="${GENERIC_UID}_WID_VIEW"  />
-                                    <parameter replace="TF_COMPOSITE_ID" by="${GENERIC_UID}_TFComposite"  />
-                                    <parameter replace="SELECTED_TF_KEY" by="tfBackgroundImage"  />
-                                </parameters>
-                            </appConfig>
-                        </config>
-                    </service>
+        <service uid="action_blendView" type="::gui::action::SConfigLauncher">
+            <state active="true" />
+            <inout key="myBlendSelectionComposite" uid="myBlendSelectionComposite" />
+            <inout key="TF_COMPOSITE_ID" uid="TFComposite" />
+            <inout key="backgroundImageUid" uid="${backgroundImageUid}" />
+            <inout key="frontImageUid" uid="${frontImageUid}" />
+            <appConfig id="ImageMix" />
+            <parameter replace="WID_PARENT" uid="subView" />
+            <parameter replace="SELECTED_TF_KEYA" by="tfBackgroundImage" />
+            <parameter replace="SELECTED_TF_KEYB" by="tfFrontImage" />
+        </service>
 
-                    <service uid="${GENERIC_UID}_action_frontTFView" type="::fwGui::IActionSrv" impl="::gui::action::SConfigLauncher" autoConnect="yes">
-                        <config>
-                            <appConfig id="TransferFunctionEditor" >
-                                <parameters>
-                                    <parameter replace="SELECTED_UID_myImage" by="${frontImageUid}"  />
-                                    <parameter replace="WID_VIEW" by="${GENERIC_UID}_WID_VIEW"  />
-                                    <parameter replace="TF_COMPOSITE_ID" by="${GENERIC_UID}_TFComposite"  />
-                                    <parameter replace="SELECTED_TF_KEY" by="tfFrontImage"  />
-                                </parameters>
-                            </appConfig>
-                        </config>
-                    </service>
-                    
-                    <item key="backgroundImage">
-                        <object uid="${backgroundImageUid}" type="::fwData::Image" src="ref" />
-                    </item>
-                    
-                    <item key="frontImage">
-                        <object uid="${frontImageUid}" type="::fwData::Image" src="ref" />
-                    </item>
-                </object>
-            </item>
+        <service uid="action_bgTFView" type="::gui::action::SConfigLauncher">
+            <inout key="myImage" uid="${backgroundImageUid}" />
+            <inout key="TF_COMPOSITE_ID" uid="TFComposite" />
+            <appConfig id="TransferFunctionEditor" />
+            <parameter replace="WID_PARENT" uid="subView" />
+            <parameter replace="SELECTED_TF_KEY" by="tfBackgroundImage" />
+        </service>
 
-            <!-- START AND STOP SERVICES -->
-            <start uid="${GENERIC_UID}_mainView" />
-            <start uid="${GENERIC_UID}_action_blendView" />
-            <start uid="${GENERIC_UID}_myManagerLockDump" />
+        <service uid="action_frontTFView" type="::gui::action::SConfigLauncher">
+            <inout key="TF_COMPOSITE_ID" uid="TFComposite" />
+            <inout key="myImage" uid="${backgroundImageUid}" />
+            <appConfig id="TransferFunctionEditor" />
+            <parameter replace="WID_PARENT" uid="subView" />
+            <parameter replace="SELECTED_TF_KEY" by="tfFrontImage" />
+        </service>
 
-        </object>
-
+        <!-- START AND STOP SERVICES -->
+        <start uid="mainView" />
+        <start uid="myManagerLockDump" />
+        <start uid="medicalImageFrontSrv" />
+        <start uid="medicalImageBgSrv" />
+        <start uid="action_blendView" />
 
     </config>
 </extension>

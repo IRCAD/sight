@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,29 +10,28 @@
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/Patient.hpp>
-
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
-#include <fwRuntime/profile/Profile.hpp>
-#include <fwServices/AppConfigManager.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/AppConfig.hpp>
+#include <fwRuntime/EConfigurationElement.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
+
 #include <fwTest/Data.hpp>
 #include <fwTest/generator/Image.hpp>
-
 #include <fwTest/generator/SeriesDB.hpp>
 #include <fwTest/helper/compare.hpp>
+
 #include <fwThread/Worker.hpp>
 
-#include <fwTools/dateAndTime.hpp>
 #include <fwTools/System.hpp>
+#include <fwTools/dateAndTime.hpp>
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/filesystem.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioVtkGdcm::ut::IoVtkGdcmTest );
@@ -65,6 +64,9 @@ void IoVtkGdcmTest::tearDown()
 void IoVtkGdcmTest::readerDicomTest( std::string srvImpl )
 {
     ::boost::filesystem::path dicomDataPath(::fwTest::Data::dir() / "fw4spl/Patient/Dicom/image_281433");
+
+    CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + dicomDataPath.string() + "' does not exist",
+                           ::boost::filesystem::exists(dicomDataPath));
 
     ::fwMedData::SeriesDB::sptr seriesDB               = ::fwMedData::SeriesDB::New();
     ::fwRuntime::EConfigurationElement::sptr readerCfg = ::fwRuntime::EConfigurationElement::New("service");

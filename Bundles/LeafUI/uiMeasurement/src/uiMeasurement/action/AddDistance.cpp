@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,18 +10,16 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
-#include <fwComEd/Dictionary.hpp>
-
 #include <fwCore/base.hpp>
 
-#include <fwData/Boolean.hpp>
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/Vector.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwDataTools/fieldHelper/Image.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <exception>
@@ -51,7 +49,7 @@ AddDistance::~AddDistance() throw()
 
 //------------------------------------------------------------------------------
 
-void AddDistance::info(std::ostream &_sstream )
+void AddDistance::info(std::ostream& _sstream )
 {
     _sstream << "Action for remove distance" << std::endl;
 }
@@ -88,7 +86,7 @@ void AddDistance::updating() throw(::fwTools::Failed)
     pl->getRefPoints().push_back( pt2 );
 
     ::fwData::Vector::sptr vectDist;
-    vectDist = image->setDefaultField(::fwComEd::Dictionary::m_imageDistancesId, ::fwData::Vector::New());
+    vectDist = image->setDefaultField(::fwDataTools::fieldHelper::Image::m_imageDistancesId, ::fwData::Vector::New());
 
     vectDist->getContainer().push_back(pl);
 

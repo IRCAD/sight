@@ -1,11 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiMeasurement/action/ShowLandmark.hpp"
-
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -14,12 +13,12 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
 #include <fwCore/base.hpp>
 
 #include <fwData/Boolean.hpp>
-#include <fwServices/Base.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
@@ -50,7 +49,7 @@ ShowLandmark::~ShowLandmark() throw()
 
 //------------------------------------------------------------------------------
 
-void ShowLandmark::info(std::ostream &_sstream )
+void ShowLandmark::info(std::ostream& _sstream )
 {
     _sstream << "Action for show distance" << std::endl;
 }
@@ -62,8 +61,8 @@ void ShowLandmark::updating() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    if (   !::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image) ||
-           !image->getField( ::fwComEd::Dictionary::m_imageLandmarksId ))
+    if (   !::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image) ||
+           !image->getField( ::fwDataTools::fieldHelper::Image::m_imageLandmarksId ))
     {
         this->::fwGui::IActionSrv::setIsActive(false);
         return;
@@ -76,8 +75,7 @@ void ShowLandmark::updating() throw(::fwTools::Failed)
     bool toShow = !isShown;
     image->setField("ShowLandmarks",  ::fwData::Boolean::New(toShow));
 
-    std::vector< ::fwServices::IService::sptr > services = ::fwServices::OSR::getServices < ::fwServices::IService > (
-        image);
+    auto services = ::fwServices::OSR::getServices < ::fwServices::IService > (image);
 
     this->::fwGui::IActionSrv::setIsActive(isShown);
 
@@ -136,6 +134,16 @@ void ShowLandmark::stopping() throw (::fwTools::Failed)
 {
     KeyConnectionsType connections;
     connections.push_back( std::make_pair( ::fwData::Image::s_LANDMARK_DISPLAYED_SIG, s_SHOW_LANDMARK_SLOT ) );
+
+    return connections;
+}
+
+//------------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap ShowLandmark::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push( "image", ::fwData::Image::s_LANDMARK_DISPLAYED_SIG, s_SHOW_LANDMARK_SLOT );
 
     return connections;
 }

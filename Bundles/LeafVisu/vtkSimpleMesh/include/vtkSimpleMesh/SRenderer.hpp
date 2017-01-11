@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,10 +13,10 @@
 
 #include <fwRenderVTK/IVtkRenderWindowInteractorManager.hpp>
 
-#include <boost/shared_array.hpp>
-
 #include <vtkCommand.h>
 #include <vtkSmartPointer.h>
+
+#include <boost/shared_array.hpp>
 
 // VTK
 class vtkRenderer;
@@ -28,7 +28,6 @@ namespace vtkSimpleMesh
 
 /**
  * @brief   Service rendering a ::fwData::Mesh using VTK.
- * @class   SRenderer
  *
  * This service displays a mesh in a scene.
  *
@@ -36,6 +35,24 @@ namespace vtkSimpleMesh
  *   - When the camera moved, a signal 'camUpdated' is emitted with the new camera information (position, focal and
  *     view up).
  *  - To update the camera without clicking, you could called the slot 'updateCamPosition'.
+ *
+ * @section Signals Signals
+ * - \b camUpdated(SharedArray, SharedArray, SharedArray): Emitted when the camera has moved.
+ *
+ * @section Slots Slots
+ * - \b updateCamPosition(SharedArray, SharedArray, SharedArray): update the camera position and orientation.
+ * - \b initPipeline(): initialize or reinitialize the vtk pipeline.
+ * - \b updatePipeline(): update the vtk pipeline.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::vtkSimpleMesh::SRenderer">
+            <in key="mesh" uid="..." />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b mesh [::fwData::Mesh]: mesh to be displayed.
  */
 class VTKSIMPLEMESH_CLASS_API SRenderer : public fwRender::IRender
 {
@@ -46,15 +63,8 @@ public:
     typedef ::boost::shared_array< double > SharedArray;
 
     VTKSIMPLEMESH_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CAM_POSITION_SLOT;
-    typedef ::fwCom::Slot<void (SharedArray, SharedArray, SharedArray)> UpdateCamPositionSlotType;
-
-    /// Slot to initialize pipeline
     VTKSIMPLEMESH_API static const ::fwCom::Slots::SlotKeyType s_INIT_PIPELINE_SLOT;
-    typedef ::fwCom::Slot<void ()> InitPipelineSlotType;
-
-    /// Slot to update pipeline
     VTKSIMPLEMESH_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_PIPELINE_SLOT;
-    typedef ::fwCom::Slot<void ()> UpdatePipelineSlotType;
 
     VTKSIMPLEMESH_API static const ::fwCom::Signals::SignalKeyType s_CAM_UPDATED_SIG;
     typedef ::fwCom::Signal< void (SharedArray, SharedArray, SharedArray) > CamUpdatedSignalType;
@@ -80,7 +90,7 @@ public:
      * Connect mesh::s_MODIFIED_SIG to this::s_INIT_PIPELINE_SLOT
      * Connect mesh::s_VERTEX_MODIFIED_SIG to this::s_UPDATE_PIPELINE_SLOT
      */
-    VTKSIMPLEMESH_API virtual KeyConnectionsType getObjSrvConnections() const;
+    VTKSIMPLEMESH_API virtual KeyConnectionsMap getAutoConnections() const;
 
 
 protected:
@@ -96,11 +106,6 @@ protected:
 
     /**
      * @brief This method is used to configure the service. Initialize the qt container.
-     *
-     * XML configuration sample:
-     * @verbatim
-       <service impl="::vtkSimpleMesh::SRenderer" type="::fwRender::IRender" autoConnect="yes" />
-       @endverbatim
      */
     VTKSIMPLEMESH_API virtual void configuring() throw(::fwTools::Failed);
 
@@ -121,7 +126,7 @@ protected:
     VTKSIMPLEMESH_API virtual void updating() throw(fwTools::Failed);
 
     /// @brief vtk renderer
-    vtkRenderer * m_render;
+    vtkRenderer* m_render;
 
 private:
 
@@ -156,15 +161,6 @@ private:
     bool m_bPipelineIsInit;
 
     vtkCommand* m_loc;
-
-    /// Slot to call updateCamPosition method
-    UpdateCamPositionSlotType::sptr m_slotUpdateCamPosition;
-
-    /// Slot to call initPipeline method
-    InitPipelineSlotType::sptr m_slotInitPipeline;
-
-    /// Slot to call initPipeline method
-    UpdatePipelineSlotType::sptr m_slotUpdatePipeline;
 
     /// Signal emitted when camera position is updated.
     CamUpdatedSignalType::sptr m_sigCamUpdated;

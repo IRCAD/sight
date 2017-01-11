@@ -1,6 +1,14 @@
 fwLoadProperties()
 find_package(CppUnit)
-find_package(VTK REQUIRED)
+
+find_package(VTK COMPONENTS
+    vtkIOLegacy
+    vtkFiltersSources
+    vtkCommonExecutionModel
+    vtkCommonDataModel
+    vtkCommonCore
+    REQUIRED
+    NO_MODULE )
 
 fwForwardInclude(
     ${CPPUNIT_INCLUDE_DIR}
@@ -9,9 +17,5 @@ fwForwardInclude(
 
 fwLink(
     ${CPPUNIT_LIBRARY}
-    vtkIOLegacy
-    vtkFiltersSources
-    vtkCommonExecutionModel
-    vtkCommonDataModel
-    vtkCommonCore
+    ${VTK_LIBRARIES}
 )

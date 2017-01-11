@@ -12,12 +12,12 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/helper/Image.hpp>
-
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/helper/Image.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -54,6 +54,9 @@ ImageText::~ImageText() throw()
 
 void ImageText::doStart() throw(::fwTools::Failed)
 {
+    ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+    this->setTransferFunctionSelection(tfSelection);
+
     this->Text::doStart();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
@@ -89,9 +92,9 @@ void ImageText::doUpdate() throw(::fwTools::Failed)
     std::stringstream ss;
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    if (::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
-        ::fwComEd::helper::Image imageHelper(image);
+        ::fwDataTools::helper::Image imageHelper(image);
         unsigned int axialIndex    = m_axialIndex->value();
         unsigned int frontalIndex  = m_frontalIndex->value();
         unsigned int sagittalIndex = m_sagittalIndex->value();

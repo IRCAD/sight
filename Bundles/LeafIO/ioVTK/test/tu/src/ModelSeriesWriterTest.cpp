@@ -1,36 +1,34 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <vector>
-#include <string>
-#include <set>
-
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/functional/hash.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/AppConfigManager.hpp>
-#include <fwServices/registry/AppConfig.hpp>
-
-#include <fwMedData/ModelSeries.hpp>
-#include <fwMedData/SeriesDB.hpp>
+#include "ModelSeriesWriterTest.hpp"
 
 #include <fwData/Reconstruction.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Array.hpp>
 
-#include <fwMemory/BufferObject.hpp>
-#include <fwTools/System.hpp>
+#include <fwMedData/ModelSeries.hpp>
+#include <fwMedData/SeriesDB.hpp>
+
+#include <fwRuntime/EConfigurationElement.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwTest/generator/SeriesDB.hpp>
 
-#include "ModelSeriesWriterTest.hpp"
+#include <fwTools/System.hpp>
+
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/functional/hash.hpp>
+
+#include <vector>
+#include <string>
+#include <set>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioVTK::ut::ModelSeriesWriterTest );

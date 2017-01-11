@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,13 +25,13 @@ namespace dialog
  * @date    2009-2010.
  *
  * Example of use:
- * @verbatim
+ * @code
    ::fwGui::dialog::InputDialog inputDlg;
    inputDlg.setTitle("Identification dialog");
    inputDlg.setMessage("Enter Pin Code: ");
    inputDlg.setInput ("<Enter your code here>");
    std::string inputText = inputDlg.getInput();
-   @endverbatim
+   @endcode
  */
 class FWGUIQT_CLASS_API InputDialog : public ::fwGui::dialog::IInputDialog
 {
@@ -71,5 +71,3 @@ protected:
 } // namespace fwGuiQt
 
 #endif /*__FWGUIQT_DIALOG_INPUTDIALOG_HPP__*/
-
-

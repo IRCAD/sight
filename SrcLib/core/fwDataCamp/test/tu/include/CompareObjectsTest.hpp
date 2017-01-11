@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,6 @@ namespace ut
 class CompareObjectsTest :  public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( CompareObjectsTest );
-CPPUNIT_TEST( compareSeriesDBTest );
 CPPUNIT_TEST( compareImageTest );
 CPPUNIT_TEST( compareReconstructionTest );
 CPPUNIT_TEST( compareBufferTest );
@@ -31,7 +30,6 @@ public:
     void setUp();
     void tearDown();
 
-    void compareSeriesDBTest();
     void compareImageTest();
     void compareReconstructionTest();
     void compareBufferTest();

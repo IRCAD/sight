@@ -1,28 +1,29 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ioAtoms/SReader.hpp"
 
+#include <fwAtomConversion/convert.hpp>
+
 #include <fwAtomsBoostIO/Reader.hpp>
 #include <fwAtomsBoostIO/types.hpp>
-
-#include <fwAtomConversion/convert.hpp>
 
 #include <fwAtomsFilter/IFilter.hpp>
 #include <fwAtomsFilter/factory/new.hpp>
 
-
-#include <fwData/Object.hpp>
-#include <fwData/Composite.hpp>
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/location/Folder.hpp>
+#include <fwAtomsPatch/PatchingManager.hpp>
 
 #include <fwCom/Signal.hxx>
 
-#include <fwComEd/helper/Composite.hpp>
+#include <fwData/Composite.hpp>
+#include <fwData/Object.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwDataTools/helper/Composite.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -31,25 +32,20 @@
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/Job.hpp>
 
-#include <fwServices/macros.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
-#include <fwZip/ReadDirArchive.hpp>
-#include <fwZip/ReadZipArchive.hpp>
-
-#include <fwMemory/IPolicy.hpp>
 #include <fwMemory/BufferManager.hpp>
+#include <fwMemory/IPolicy.hpp>
 #include <fwMemory/policy/BarrierDump.hpp>
 #include <fwMemory/policy/NeverDump.hpp>
 #include <fwMemory/tools/MemoryMonitorTools.hpp>
 
-#include <fwAtomsPatch/PatchingManager.hpp>
+#include <fwServices/macros.hpp>
 
-#include <boost/filesystem/path.hpp>
-#include <boost/assign/list_of.hpp>
+#include <fwZip/ReadDirArchive.hpp>
+#include <fwZip/ReadZipArchive.hpp>
+
 #include <boost/algorithm/string/join.hpp>
+#include <boost/assign/list_of.hpp>
+#include <boost/filesystem/path.hpp>
 
 namespace ioAtoms
 {
@@ -430,14 +426,14 @@ void SReader::updating() throw(::fwTools::Failed)
                 ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast(data);
                 SLM_ASSERT("Inject mode works only on a Composite object", composite );
 
-                ::fwComEd::helper::Composite helper(composite);
+                ::fwDataTools::helper::Composite helper(composite);
                 helper.add(m_inject, newData);
                 helper.notify();
             }
 
             this->notificationOfUpdate();
         }
-        catch( std::exception & e )
+        catch( std::exception& e )
         {
             OSLM_ERROR( e.what() );
             ::fwGui::dialog::MessageDialog::showMessageDialog("Atoms reader failed", e.what(),

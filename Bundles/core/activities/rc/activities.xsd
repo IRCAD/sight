@@ -15,6 +15,8 @@
               <xs:element name="requirement" maxOccurs="unbounded" minOccurs="0">
                 <xs:complexType>
                   <xs:sequence>
+                    <xs:element name="desc" type="xs:string" maxOccurs="1" minOccurs="0" />
+                    <xs:element name="validator" type="xs:string" maxOccurs="1" minOccurs="0" />
                     <xs:element name="key" maxOccurs="unbounded" minOccurs="0">
                       <xs:complexType>
                         <xs:simpleContent>
@@ -29,6 +31,7 @@
                   <xs:attribute type="xs:string" name="name" use="required"/>
                   <xs:attribute type="xs:string" name="type" use="required"/>
                   <xs:attribute type="xs:string" name="container" use="optional"/>
+                  <xs:attribute type="xs:string" name="create" use="optional"/>
                   <xs:attribute name="maxOccurs" use="optional">
                     <xs:simpleType>
                       <xs:union memberTypes="xs:unsignedInt unboundedtype" />
@@ -44,7 +47,7 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="builder" type="xs:string"/>
+        <xs:element name="builder" type="xs:string" minOccurs="0" maxOccurs="1"/>
 
         <xs:element name="validator" type="xs:string" minOccurs="0" maxOccurs="1" />
 
@@ -73,6 +76,3 @@
   </xs:simpleType>
 
 </xs:schema>
-
-
-

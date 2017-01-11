@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,29 +7,42 @@
 #ifndef __UIIMAGEQT_SLICEINDEXPOSITIONEDITOR_HPP__
 #define __UIIMAGEQT_SLICEINDEXPOSITIONEDITOR_HPP__
 
-#include <fwTools/Failed.hpp>
-#include <gui/editor/IEditor.hpp>
+#include "uiImageQt/config.hpp"
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+
 #include <fwGuiQt/SliceSelector.hpp>
 
-#include "uiImageQt/config.hpp"
+#include <fwTools/Failed.hpp>
+
+#include <gui/editor/IEditor.hpp>
 
 namespace uiImage
 {
 
 /**
  * @brief   SliceIndexPositionEditor service allows to change the slice index of an image.
- * @class   SliceIndexPositionEditor
- *
- * @date    2010.
  *
  * This is represented by
  *  - a slider to select the slice index
  *  - a choice list to select the slice orientation (axial, frontal, sagittal)
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service uid="..." type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+      <inout key="image" uid="..."/>
+      <sliceIndex>${orientationValue}</sliceIndex>
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b image [::fwData::Image]: image on which the slice index will be changed
+ *
+ * @subsection Configuration Configuration
+ * - \b sliceIndex : Axis on which the index will be changed, must be "axial", "frontal" or "sagittal".
  */
 class UIIMAGEQT_CLASS_API SliceIndexPositionEditor : public ::gui::editor::IEditor,
-                                                     public ::fwComEd::helper::MedicalImageAdaptor
+                                                     public ::fwDataTools::helper::MedicalImageAdaptor
 {
 
 public:
@@ -57,7 +70,7 @@ public:
 protected:
 
     /// @brief The slice type: axial, frontal, sagittal.
-    using ::fwComEd::helper::MedicalImageAdaptor::Orientation;
+    using ::fwDataTools::helper::MedicalImageAdaptor::Orientation;
 
     /**
      * @brief Install the layout.
@@ -79,17 +92,17 @@ protected:
      * @brief Configure the editor.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
        <service uid="slider_negato1" impl="::uiImage::SliceIndexPositionEditor" type="::gui::editor::IEditor" autoConnect="yes">
         <sliceIndex>axial</sliceIndex>
        </service>
-       @endverbatim
+       @endcode
        \b sliceIndex must be "axial", "frontal" or "sagittal".
      */
     virtual void configuring() throw(fwTools::Failed);
 
     /// Overrides
-    UIIMAGEQT_API virtual void info( std::ostream &_sstream );
+    UIIMAGEQT_API virtual void info( std::ostream& _sstream );
 
     /// Update the editor slider from the image slice index.
     UIIMAGEQT_API void updateSliceIndexFromImg();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -84,7 +84,7 @@ public:
      * @brief Initialize Line layout manager before the creation of layout.
      *
      * Example of configuration with cardinal layout.
-     * @verbatim
+     * @code{.xml}
        <service uid="subView2" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no" >
            <gui>
               <layout type="::fwGui::LineLayoutManager" >
@@ -98,7 +98,7 @@ public:
                <view sid="view2" start="yes" />
            </registry>
        </service>
-       @endverbatim
+       @endcode
      *  - \<layout type="::fwGui::LineLayoutManager" \> : define a line layout.
      *  - \<view proportion="0" minWidth="30" /\> : define a new view which can have the following attributes
      *   - \b orientation {horizontal | vertical} : define if the layout is vertical or horizontal.

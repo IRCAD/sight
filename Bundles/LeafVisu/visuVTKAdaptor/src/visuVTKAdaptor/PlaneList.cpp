@@ -20,9 +20,8 @@
 #include <fwData/Plane.hpp>
 #include <fwData/PlaneList.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <vtkActor.h>
 #include <vtkAssemblyNode.h>
@@ -58,12 +57,12 @@ class vtkPlaneDeleteCallBack : public vtkCommand
 {
 
 public:
-    static vtkPlaneDeleteCallBack *New( ::fwRenderVTK::IVtkAdaptorService *service)
+    static vtkPlaneDeleteCallBack* New( ::fwRenderVTK::IVtkAdaptorService* service)
     {
         return new vtkPlaneDeleteCallBack(service);
     }
 
-    vtkPlaneDeleteCallBack( ::fwRenderVTK::IVtkAdaptorService *service ) :
+    vtkPlaneDeleteCallBack( ::fwRenderVTK::IVtkAdaptorService* service ) :
         m_service(service),
         m_picker( vtkCellPicker::New() ),
         m_propCollection( vtkPropCollection::New() )
@@ -93,7 +92,7 @@ public:
         m_service->getAllSubProps(m_propCollection);
         m_propCollection->InitTraversal();
 
-        vtkProp *prop;
+        vtkProp* prop;
 
         while ( (prop = m_propCollection->GetNextProp()) )
         {
@@ -101,7 +100,7 @@ public:
         }
     }
 
-    virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
+    virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
         int pos[2];
         m_service->getInteractor()->GetLastEventPosition(pos);
@@ -142,8 +141,8 @@ public:
     bool getSelectedPlane()
     {
         bool isFind              = false;
-        vtkPropCollection *propc = m_picker->GetActors();
-        vtkProp *prop;
+        vtkPropCollection* propc = m_picker->GetActors();
+        vtkProp* prop;
 
         propc->InitTraversal();
         while ( (prop = propc->GetNextProp()) )
@@ -169,8 +168,8 @@ public:
 
 protected:
     ::fwRenderVTK::IVtkAdaptorService *m_service;
-    vtkPicker * m_picker;
-    vtkPropCollection * m_propCollection;
+    vtkPicker* m_picker;
+    vtkPropCollection* m_propCollection;
     double m_display[3];
     int m_lastPos[2];
     ::fwData::Plane::wptr m_pickedPlane;
@@ -211,8 +210,6 @@ void PlaneList::doStart() throw(fwTools::Failed)
     this->getInteractor()->AddObserver( "RightButtonReleaseEvent", m_rightButtonCommand, 1 );
 
     this->doUpdate();
-
-    m_planeConnections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //------------------------------------------------------------------------------
@@ -244,8 +241,8 @@ void PlaneList::doUpdate() throw(fwTools::Failed)
             }
             servicePlane->start();
 
-            m_planeConnections->connect(servicePlane, Plane::s_INTERACTION_STARTED_SIG, this->getSptr(),
-                                        s_UPDATE_SELECTION_SLOT);
+            m_planeConnections.connect(servicePlane, Plane::s_INTERACTION_STARTED_SIG, this->getSptr(),
+                                       s_UPDATE_SELECTION_SLOT);
 
             this->registerService(servicePlane);
         }
@@ -310,7 +307,7 @@ void PlaneList::doStop() throw(fwTools::Failed)
         m_rightButtonCommand->Delete();
         m_rightButtonCommand = 0;
     }
-    m_planeConnections->disconnect();
+    m_planeConnections.disconnect();
 
     this->unregisterServices();
 }

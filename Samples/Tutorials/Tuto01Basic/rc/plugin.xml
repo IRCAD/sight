@@ -1,0 +1,30 @@
+<!-- Application name and version (the version is automatically replaced by CMake
+     using the version defined in the Properties.cmake) -->
+<plugin id="Tuto01Basic" version="@DASH_VERSION@">
+
+    <!-- The bundles in requirements are automatically started when this 
+         Application is launched. -->
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+
+    <!-- Defines the App-config -->
+    <extension implements="::fwServices::registry::AppConfig2">
+        <id>tutoBasicConfig</id><!-- identifier of the configuration -->
+        <config>
+
+            <!-- Frame service -->
+            <service uid="myFrame" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>tutoBasicApplicationName</name>
+                        <icon>@BUNDLE_PREFIX@/Tuto01Basic_0-1/tuto.ico</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                </gui>
+            </service>
+
+            <start uid="myFrame" /><!-- start the frame service -->
+
+        </config>
+    </extension>
+</plugin>

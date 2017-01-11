@@ -1,16 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwData/location/SingleFile.hpp>
-#include <fwData/location/Folder.hpp>
-
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/IService.hpp>
-
 #include "fwGui/dialog/ILocationDialog.hpp"
+
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwServices/IService.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 namespace fwGui
 {
@@ -111,11 +111,10 @@ void ILocationDialog::saveDefaultLocation(::fwData::location::ILocation::sptr lo
     ::fwData::Composite::sptr prefUI;
 
     // Get preferences
-    std::vector< ::fwServices::IService::sptr > preferencesServicesList = ::fwServices::OSR::getServices(
-        "::preferences::IPreferencesService");
+    auto preferencesServicesList = ::fwServices::OSR::getServices("::fwPreferences::IPreferences");
     if(!preferencesServicesList.empty())
     {
-        ::fwServices::IService::sptr prefService = preferencesServicesList[0];
+        ::fwServices::IService::sptr prefService = *preferencesServicesList.begin();
         ::fwData::Composite::sptr prefs          = prefService->getObject< ::fwData::Composite >();
 
         ::fwData::Composite::sptr framesUI;

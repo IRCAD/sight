@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,8 +9,10 @@
 
 #include "ioData/config.hpp"
 
-#include <io/IReader.hpp>
+#include <fwData/Spline.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
+
+#include <io/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -19,9 +21,6 @@ namespace ioData
 {
 /**
  * @brief   Spline reader service.
- * @class   SplineReaderService
- *
- * @date    2009.
  *
  * Service reading a spline object.
  * @li This service has no specified start and stop method.
@@ -97,7 +96,7 @@ protected:
      * @brief Configure service. This method is called by configure() from base service ( ::fwServices::IService )
      *
      * XML configuration sample:
-     * @verbatim
+     * @code{.xml}
        <service uid="tubeReader" type="::io::IReader" impl="::ioData::SplineReaderService">
        <spline id="0" matrix="../matrix.trf" nbSides="10" radius="10">
         <point id="0"/>
@@ -106,7 +105,7 @@ protected:
         <point id="5"/>
        </spline>
        </service>
-       @endverbatim
+       @endcode
      */
     IODATA_API virtual void configuring( ) throw(::fwTools::Failed);
 
@@ -126,7 +125,7 @@ protected:
      *
      * @param[out] _sstream output stream
      */
-    IODATA_API virtual void info(std::ostream &_sstream );
+    IODATA_API virtual void info(std::ostream& _sstream );
     /// @}
 
 private:

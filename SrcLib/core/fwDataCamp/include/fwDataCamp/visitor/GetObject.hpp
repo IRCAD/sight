@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -75,10 +75,7 @@ struct PathVisitor
 };
 
 /**
- * @class   GetObject
  * @brief   This class is an helper to introspect a data and find an object (contained into this data) from a normalized path.
- *
- * @date    2013.
  */
 class FWDATACAMP_CLASS_API GetObject : public ::camp::ExtendedClassVisitor
 {
@@ -91,7 +88,7 @@ public:
      * @param object data object containing child object to retrieve
      * @param subObjPath normalized path targeting child object to retrieve
      */
-    FWDATACAMP_API GetObject( ::fwData::Object::sptr object, const std::string & subObjPath );
+    FWDATACAMP_API GetObject( ::fwData::Object::csptr object, const std::string& subObjPath );
 
     FWDATACAMP_API virtual ~GetObject();
 
@@ -131,7 +128,7 @@ private:
     std::string getNextPropertyName();
 
     /// Object given in constructor which will introspected
-    ::fwData::Object::sptr m_object;
+    ::fwData::Object::csptr m_object;
 
     /// Path of final object wanted from m_object
     const std::string m_subObjPath;

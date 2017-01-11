@@ -1,18 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <boost/cstdint.hpp>
+#include "fwDataIO/reader/GzArrayReader.hpp"
+
+#include "fwDataIO/reader/registry/macros.hpp"
+
+#include <fwDataTools/helper/Array.hpp>
 
 #include <zlib.h>
 
-#include <fwComEd/helper/Array.hpp>
+#include <boost/cstdint.hpp>
 
-#include "fwDataIO/reader/GzArrayReader.hpp"
-#include "fwDataIO/reader/registry/macros.hpp"
+#include <iostream>
 
 
 fwDataIOReaderRegisterMacro( ::fwDataIO::reader::GzArrayReader );
@@ -48,7 +50,7 @@ void GzArrayReader::read()
 
     ::fwData::Array::sptr array = this->getConcreteObject();
     size_t arraySizeInBytes = array->resize(array->getSize());
-    ::fwComEd::helper::Array helper(array);
+    ::fwDataTools::helper::Array helper(array);
     void* buff = helper.getBuffer();
 
     gzFile rawFile = gzopen(file.string().c_str(), "rb");

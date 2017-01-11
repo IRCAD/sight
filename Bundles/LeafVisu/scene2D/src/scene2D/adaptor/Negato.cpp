@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/adaptor/Negato.hpp"
+
 #include "scene2D/Scene2DGraphicsView.hpp"
 
 #include <fwCom/Signal.hpp>
@@ -15,21 +16,22 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/helper/Image.hpp>
-
 #include <fwData/Boolean.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/helper/Image.hpp>
 
-#include <QGraphicsItemGroup>
-#include <QPoint>
+#include <fwServices/macros.hpp>
+
 #include <QBitmap>
+#include <QGraphicsItemGroup>
 #include <QPixmap>
+#include <QPoint>
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Negato, ::fwData::Image );
 
@@ -44,7 +46,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSlic
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT      = "updateBuffer";
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT  = "updateVisibility";
 
-typedef ::fwComEd::helper::MedicalImageAdaptor MedicalImageAdaptor;
+typedef ::fwDataTools::helper::MedicalImageAdaptor MedicalImageAdaptor;
 
 //-----------------------------------------------------------------------------
 
@@ -117,17 +119,21 @@ void Negato::configuring() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Negato::updateBufferFromImage( QImage * qimg )
+void Negato::updateBufferFromImage( QImage* qimg )
 {
+    if(!qimg)
+    {
+        return;
+    }
     // Window min/max
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();
     const double wlMin = tf->getWLMinMax().first;
 
     // Window max
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    ::fwComEd::helper::Image imgHelper(image);
+    ::fwDataTools::helper::Image imgHelper(image);
     const ::fwData::Image::SizeType size = image->getSize();
-    const short * imgBuff                = static_cast<const short *>(imgHelper.getBuffer());
+    const short* imgBuff                 = static_cast<const short*>(imgHelper.getBuffer());
     const size_t imageZOffset            = size[0] * size[1];
 
     const double tfMin = tf->getMinMaxTFValues().first;
@@ -218,11 +224,14 @@ QRgb Negato::getQImageVal(const size_t index, const short* buffer, double wlMin,
 
 //---------------------------------------------------------------------------
 
-QImage * Negato::createQImage()
+QImage* Negato::createQImage()
 {
-    SLM_TRACE_FUNC();
-
     ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
+
+    if (!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img ))
+    {
+        return nullptr;
+    }
 
     const ::fwData::Image::SizeType size       = img->getSize();
     const ::fwData::Image::SpacingType spacing = img->getSpacing();
@@ -268,7 +277,7 @@ QImage * Negato::createQImage()
     }
 
     // Create empty QImage
-    QImage * qimage = new QImage(qImageSize[0], qImageSize[1], QImage::Format_RGB888);
+    QImage* qimage = new QImage(qImageSize[0], qImageSize[1], QImage::Format_RGB888);
 
     // Place m_pixmapItem
     m_pixmapItem->resetTransform();
@@ -289,6 +298,9 @@ QImage * Negato::createQImage()
 
 void Negato::doStart() throw ( ::fwTools::Failed )
 {
+    ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+    this->setTransferFunctionSelection(tfSelection);
+
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos( image );
     this->updateTransferFunction( image );
@@ -519,7 +531,7 @@ void Negato::processInteraction( ::scene2D::data::Event::sptr _event )
 
 //-----------------------------------------------------------------------------
 
-void Negato::changeImageMinMaxFromCoord( scene2D::data::Coord & oldCoord, scene2D::data::Coord & newCoord )
+void Negato::changeImageMinMaxFromCoord( scene2D::data::Coord& oldCoord, scene2D::data::Coord& newCoord )
 {
     ::fwData::Image::sptr image         = this->getObject< ::fwData::Image >();
     ::fwData::TransferFunction::sptr tf = this->getTransferFunction();

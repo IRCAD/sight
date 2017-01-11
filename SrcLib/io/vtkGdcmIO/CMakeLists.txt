@@ -1,14 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwCore
-    fwData
-    fwDataIO
-    fwMedData
-    fwMemory
-    fwTools
-    fwVtkIO
-    fwJobs
-)
 
 find_package(VTK REQUIRED)
 find_package(GDCM REQUIRED)

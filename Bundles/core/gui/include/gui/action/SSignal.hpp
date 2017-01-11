@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,6 +29,14 @@ namespace action
  *
  * Triggers a signal when the action is triggered.
  * If the action uses a confirmation, different signals are emitted depending on the confirmation result.
+ *
+ * @code{.xml}
+       <service uid="..." type="::gui::action::SSignal" />
+   @endcode
+ *
+ * See also ::fwGui::IActionSrv::configuring for more configuration parameters.
+ * @see IActionSrv::configuring
+ *
  */
 
 class GUI_CLASS_API SSignal : public ::fwGui::IActionSrv
@@ -62,7 +70,7 @@ protected:
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    GUI_API virtual void info(std::ostream &_sstream );
+    GUI_API virtual void info(std::ostream& _sstream );
 
     /**
      * @brief This method emit a signal.
@@ -71,13 +79,6 @@ protected:
 
     /**
      * @brief Configures the service
-     *
-       @verbatim
-       <service uid="..." type="::fwGui::IActionSrv" impl="::gui::action::SSignal" autoConnect="no" />
-       @endverbatim
-     *
-     * See also ::fwGui::IActionSrv::configuring for more configuration parameters.
-     * @see IActionSrv::configuring
      */
     GUI_API void configuring() throw( ::fwTools::Failed );
 

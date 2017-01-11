@@ -13,8 +13,8 @@
 #include <fwRuntime/Extension.hpp>
 #include <fwRuntime/helper.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
+#include <fwServices/op/Get.hpp>
 
 #include <fwTools/fwID.hpp>
 
@@ -41,7 +41,6 @@ SStarter::~SStarter() throw()
 
 void SStarter::starting() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
     this->actionServiceStarting();
 }
 
@@ -49,7 +48,8 @@ void SStarter::starting() throw( ::fwTools::Failed )
 
 void SStarter::stopping() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
+    std::vector< ::fwServices::IService::SharedFutureType > futures;
+
     for( VectPairIDActionType::value_type serviceUid :  m_uuidServices)
     {
         bool srv_exists = ::fwTools::fwID::exist(serviceUid.first );
@@ -58,17 +58,19 @@ void SStarter::stopping() throw( ::fwTools::Failed )
             ::fwServices::IService::sptr service = ::fwServices::get( serviceUid.first );
             if (service->isStarted())
             {
-                service->stop();
+                futures.push_back(service->stop());
             }
         }
     }
+
+    ::boost::wait_for_all(futures.begin(), futures.end());
 
     this->actionServiceStopping();
 }
 
 //-----------------------------------------------------------------------------
 
-void SStarter::info(std::ostream &_sstream )
+void SStarter::info(std::ostream& _sstream )
 {
     _sstream << "Starter Action" << std::endl;
 }
@@ -77,8 +79,6 @@ void SStarter::info(std::ostream &_sstream )
 
 void SStarter::updating() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
-
     for(size_t i = 0; i < m_uuidServices.size(); i++)
     {
         ActionType action = m_uuidServices.at(i).second;
@@ -183,7 +183,6 @@ void SStarter::updating() throw( ::fwTools::Failed )
 
 void SStarter::configuring() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
     this->initialize();
 
     for(ConfigurationType actionCfg :  m_configuration->getElements() )

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,12 +22,12 @@ namespace adaptor
  *
  * Configuration example:
  *
-   @verbatim
+   @code{.xml}
    <adaptor id="histogram" class="::scene2D::adaptor::CurvedHistogram" objectId="myCurvedHistogram">
        <config xAxis="xAxis" yAxis="axeCurvedHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25"
                zValue="6" histogramPointUID="HistogramPointID" borderWidth="2.0" />
    </adaptor>
-   @endverbatim
+   @endcode
  *
  * - \b innerColor         : the background color of the histogram
  * - \b borderColor        : the color of the histogram border

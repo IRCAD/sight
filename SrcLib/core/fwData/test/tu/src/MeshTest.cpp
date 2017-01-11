@@ -1,18 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/cstdint.hpp>
+#include "MeshTest.hpp"
 
 #include <fwData/Mesh.hpp>
 #include <fwData/ObjectLock.hpp>
 
-#include <fwComEd/helper/Mesh.hpp>
-#include <fwComEd/helper/Array.hpp>
+#include <fwDataTools/helper/Array.hpp>
+#include <fwDataTools/helper/Mesh.hpp>
 
-#include "MeshTest.hpp"
+#include <boost/cstdint.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::MeshTest );
@@ -77,7 +77,7 @@ void MeshTest::allocation()
     CPPUNIT_ASSERT_EQUAL((::fwData::Mesh::Id) 0, mesh->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL((::fwData::Mesh::Id) 0, mesh->getNumberOfCells());
 
-    ::fwComEd::helper::Mesh helper(mesh);
+    ::fwDataTools::helper::Mesh helper(mesh);
     helper.insertNextPoint(10, 20, 30);
     helper.insertNextPoint(10, 10, 10);
     helper.insertNextPoint(20, 20, 10);
@@ -164,7 +164,7 @@ void MeshTest::allocation()
 void MeshTest::insertion()
 {
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    ::fwComEd::helper::Mesh helper(mesh);
+    ::fwDataTools::helper::Mesh helper(mesh);
     helper.insertNextPoint(10, 20, 30);
     helper.insertNextPoint(10, 10, 10);
     helper.insertNextPoint(20, 20, 10);
@@ -224,7 +224,7 @@ void MeshTest::insertion()
 
 
     ::fwData::Array::sptr array = mesh->getPointsArray();
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
     CPPUNIT_ASSERT_EQUAL(*(arrayHelper.getItem< ::fwData::Mesh::PointValueType >({4},0)), pointArray[4][0]);
     CPPUNIT_ASSERT_EQUAL(*(arrayHelper.getItem< ::fwData::Mesh::PointValueType >({4},1)), pointArray[4][1]);
     CPPUNIT_ASSERT_EQUAL(*(arrayHelper.getItem< ::fwData::Mesh::PointValueType >({4},2)), pointArray[4][2]);
@@ -235,7 +235,7 @@ void MeshTest::insertion()
 void MeshTest::colorsNormals()
 {
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    ::fwComEd::helper::Mesh helper(mesh);
+    ::fwDataTools::helper::Mesh helper(mesh);
     helper.insertNextPoint(10, 20, 30);
     helper.insertNextPoint(10, 10, 10);
     helper.insertNextPoint(20, 20, 10);
@@ -306,7 +306,7 @@ void MeshTest::colorsNormals()
 void MeshTest::texCoords()
 {
     ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
-    ::fwComEd::helper::Mesh helper(mesh);
+    ::fwDataTools::helper::Mesh helper(mesh);
     helper.insertNextPoint(10, 20, 30);
     helper.insertNextPoint(10, 10, 10);
     helper.insertNextPoint(20, 20, 10);
@@ -365,10 +365,10 @@ void MeshTest::addingArray()
     ::fwData::Array::sptr pointArray = ::fwData::Array::New();
 
     pointArray->resize(::fwTools::Type::create< ::fwData::Mesh::PointValueType >(), {nbPoints}, 3, true);
-    ::fwComEd::helper::Array pointArrayHelper(pointArray);
+    ::fwDataTools::helper::Array pointArrayHelper(pointArray);
 
     ::fwData::Mesh::PointValueType count = 0;
-    ::fwData::Mesh::PointValueType *iter = pointArrayHelper.begin< ::fwData::Mesh::PointValueType >();
+    ::fwData::Mesh::PointValueType* iter = pointArrayHelper.begin< ::fwData::Mesh::PointValueType >();
     for (; iter != pointArrayHelper.end< ::fwData::Mesh::PointValueType >(); ++iter)
     {
         for (int i = 0; i<3; i++)
@@ -383,7 +383,7 @@ void MeshTest::addingArray()
 
     CPPUNIT_ASSERT_EQUAL(nbPoints, mesh->getNumberOfPoints());
 
-    ::fwComEd::helper::Mesh meshHelper(mesh);
+    ::fwDataTools::helper::Mesh meshHelper(mesh);
     ::fwData::Mesh::Id id = meshHelper.insertNextPoint(50, 50, 50);
     CPPUNIT_ASSERT_EQUAL(nbPoints, id);
     nbPoints++;
@@ -408,9 +408,9 @@ void MeshTest::addingArray()
     cellDataOffsetArray->resize(::fwTools::Type::create< ::fwData::Mesh::CellDataOffsetType >(), {nbCells}, 1, true);
     cellDataArray->resize(::fwTools::Type::create< ::fwData::Mesh::CellValueType >(), {nbCells*3}, 1, true);
 
-    ::fwComEd::helper::Array cellTypeArrayHelper(cellTypeArray);
-    ::fwComEd::helper::Array cellDataOffsetArrayHelper(cellDataOffsetArray);
-    ::fwComEd::helper::Array cellDataArrayHelper(cellDataArray);
+    ::fwDataTools::helper::Array cellTypeArrayHelper(cellTypeArray);
+    ::fwDataTools::helper::Array cellDataOffsetArrayHelper(cellDataOffsetArray);
+    ::fwDataTools::helper::Array cellDataArrayHelper(cellDataArray);
 
     ::fwData::Mesh::CellValueType counter = 0;
     for (int id = 0; id<nbCells; id++)
@@ -474,7 +474,7 @@ void MeshTest::copy()
     ::fwData::Mesh::sptr mesh            = ::fwData::Mesh::New();
     ::fwData::Mesh::sptr shallowCopyMesh = ::fwData::Mesh::New();
 
-    ::fwComEd::helper::Mesh meshHelper(mesh);
+    ::fwDataTools::helper::Mesh meshHelper(mesh);
 
     meshHelper.insertNextPoint(10, 20, 30);
     meshHelper.insertNextPoint(10, 10, 10);
@@ -505,7 +505,7 @@ void MeshTest::copy()
     // check deep copy
     ::fwData::Mesh::sptr deepCopyMesh;
     deepCopyMesh = ::fwData::Object::copy(mesh);
-    ::fwComEd::helper::Mesh deepCopyMeshHelper(deepCopyMesh);
+    ::fwDataTools::helper::Mesh deepCopyMeshHelper(deepCopyMesh);
 
     CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfPoints(), deepCopyMesh->getNumberOfPoints());
     CPPUNIT_ASSERT_EQUAL(mesh->getNumberOfCells(), deepCopyMesh->getNumberOfCells());

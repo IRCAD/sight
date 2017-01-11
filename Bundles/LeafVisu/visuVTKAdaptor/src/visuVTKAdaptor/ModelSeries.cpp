@@ -21,7 +21,6 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkActor.h>
 #include <vtkPolyDataMapper.h>
@@ -98,7 +97,7 @@ void ModelSeries::doUpdate() throw(fwTools::Failed)
     doStop();
 
     // doStop() disconnects everything, we have to restore connection with the data
-    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
 
     bool showRec;
     showRec = modelSeries->getField("ShowReconstructions", ::fwData::Boolean::New(true))->value();
@@ -110,8 +109,8 @@ void ModelSeries::doUpdate() throw(fwTools::Failed)
         ::visuVTKAdaptor::Texture::sptr textureAdaptor  = ::visuVTKAdaptor::Texture::dynamicCast(adaptor);
 
         SLM_ASSERT("textureAdaptor is NULL", textureAdaptor);
-        m_connections->connect(this->getSptr(), s_TEXTURE_APPLIED_SIG, textureAdaptor,
-                               ::visuVTKAdaptor::Texture::s_APPLY_TEXTURE_SLOT);
+        m_connections.connect(this->getSptr(), s_TEXTURE_APPLIED_SIG, textureAdaptor,
+                              ::visuVTKAdaptor::Texture::s_APPLY_TEXTURE_SLOT);
     }
 
     for( ::fwData::Reconstruction::sptr reconstruction :  modelSeries->getReconstructionDB() )
@@ -143,8 +142,9 @@ void ModelSeries::doUpdate() throw(fwTools::Failed)
 
             ::fwServices::registry::ObjectService::ServiceVectorType servicesVector;
             servicesVector = ::fwServices::OSR::getServices(mesh, "::visuVTKAdaptor::Mesh");
+            SLM_ASSERT("Missing material adaptor", !servicesVector.empty());
 
-            ::visuVTKAdaptor::Mesh::sptr meshAdaptor = ::visuVTKAdaptor::Mesh::dynamicCast(servicesVector[0]);
+            ::visuVTKAdaptor::Mesh::sptr meshAdaptor = ::visuVTKAdaptor::Mesh::dynamicCast(*servicesVector.begin());
 
             ::fwData::Material::sptr material = meshAdaptor->getMaterial();
             SLM_ASSERT("Missing material", material);
@@ -165,7 +165,7 @@ void ModelSeries::doSwap() throw(fwTools::Failed)
 
 void ModelSeries::doStop() throw(fwTools::Failed)
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
     this->unregisterServices();
 }
 

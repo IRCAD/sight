@@ -1,22 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "ProcessingTest.hpp"
+
+#include <fwData/Histogram.hpp>
+#include <fwData/Image.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
+
 #include <fwRuntime/EConfigurationElement.hpp>
 
-#include <fwTest/Exception.hpp>
-
-#include <fwData/Image.hpp>
-#include <fwData/Histogram.hpp>
-
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
-#include <fwComEd/helper/Array.hpp>
-
-#include "ProcessingTest.hpp"
+#include <fwTest/Exception.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::scene2D::ut::ProcessingTest );
@@ -64,7 +65,7 @@ void ProcessingTest::histogramTest()
     // Create image.
     image->allocate(sizeX, sizeY,  sizeZ, ::fwTools::Type("int16"));
     ::fwData::Array::sptr array = image->getDataArray();
-    ::fwComEd::helper::Array arrayHelper(array);
+    ::fwDataTools::helper::Array arrayHelper(array);
 
     ImageType* itr    = arrayHelper.begin< ImageType >();
     ImageType* itrEnd = arrayHelper.end< ImageType >();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,6 +23,7 @@ class ServiceTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE( ServiceTest );
 CPPUNIT_TEST( testServiceCreation );
+CPPUNIT_TEST( testServiceCreationWithMultipleData );
 CPPUNIT_TEST( testServiceCreationWithTemplateMethods );
 CPPUNIT_TEST( testServiceCreationWithUUID );
 CPPUNIT_TEST( testStartStopUpdate );
@@ -40,6 +41,9 @@ public:
 
     /// Test add and remove service
     void testServiceCreation();
+
+    /// Test add and remove service with multiple associated data
+    void testServiceCreationWithMultipleData();
 
     /// Test add and remove service using template methods
     void testServiceCreationWithTemplateMethods();

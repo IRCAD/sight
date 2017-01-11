@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,10 @@
 
 #include "fwCom/SlotRun.hpp"
 
-fwCorePredeclare( (fwThread)(Worker) );
+namespace fwThread
+{
+class Worker;
+}
 
 namespace fwCom
 {
@@ -60,7 +63,7 @@ struct SlotCall< R (A ...) > : SlotRun< void ( A ... ) >
      *
      * @throws NoWorker if given worker is not valid.
      */
-    virtual SharedFutureType asyncCall( const SPTR(::fwThread::Worker) &worker, A ... args ) const;
+    virtual SharedFutureType asyncCall( const SPTR(::fwThread::Worker)& worker, A ... args ) const;
 
     /**
      * @brief Call the Slot with the given parameters asynchronously.
@@ -75,7 +78,7 @@ struct SlotCall< R (A ...) > : SlotRun< void ( A ... ) >
     protected:
 
         template< typename WEAKCALL >
-        static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker) &worker, WEAKCALL f );
+        static ::boost::shared_future< R > postWeakCall( const SPTR(::fwThread::Worker)& worker, WEAKCALL f );
 
         /**
          * @brief Binds the given parameters to the call method within a R() function.

@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwDataTools/thread/RegionThreader.hpp"
 #include "fwDataTools/Mesh.hpp"
+
+#include "fwDataTools/thread/RegionThreader.hpp"
 
 #include <fwTools/NumericRoundCast.hxx>
 
@@ -37,7 +38,7 @@ void Mesh::initRand()
 bool Mesh::hasUniqueCellType(::fwData::Mesh::sptr mesh, ::fwData::Mesh::CellTypes cell)
 {
     bool res = true;
-    ::fwComEd::helper::Mesh meshHelper(mesh);
+    ::fwDataTools::helper::Mesh meshHelper(mesh);
     ::fwData::Mesh::CellTypesMultiArrayType cellTypes = meshHelper.getCellTypes();
 
     for(::fwData::Mesh::CellTypes type :  cellTypes)
@@ -55,7 +56,7 @@ bool Mesh::hasUniqueCellType(::fwData::Mesh::sptr mesh, ::fwData::Mesh::CellType
 typedef boost::multi_array_ref<Point, 1> PointsMultiArrayType;
 
 
-Vector<float> &computeTriangleNormal(const Point &p1, const Point &p2, const Point &p3, Vector<float> &n)
+Vector<float>& computeTriangleNormal(const Point& p1, const Point& p2, const Point& p3, Vector<float>& n)
 {
     n = Vector<float>(p1, p2);
     Vector<float> v(p1, p3);
@@ -66,12 +67,12 @@ Vector<float> &computeTriangleNormal(const Point &p1, const Point &p2, const Poi
 
 //------------------------------------------------------------------------------
 
-Vector<float> &computeTriangleNormal( const PointsMultiArrayType &points, const ::fwData::Mesh::CellValueType *cell,
-                                      Vector<float> &n)
+Vector<float>& computeTriangleNormal( const PointsMultiArrayType& points, const ::fwData::Mesh::CellValueType* cell,
+                                      Vector<float>& n)
 {
-    const Point &p1 = points[cell[0]];
-    const Point &p2 = points[cell[1]];
-    const Point &p3 = points[cell[2]];
+    const Point& p1 = points[cell[0]];
+    const Point& p2 = points[cell[1]];
+    const Point& p3 = points[cell[2]];
 
     computeTriangleNormal(p1, p2, p3, n);
     return n;
@@ -79,17 +80,17 @@ Vector<float> &computeTriangleNormal( const PointsMultiArrayType &points, const 
 
 //------------------------------------------------------------------------------
 
-Vector<float> &computeCellNormal( const PointsMultiArrayType &points, const ::fwData::Mesh::CellValueType *cell,
-                                  size_t cellSize, Vector<float> &n)
+Vector<float>& computeCellNormal( const PointsMultiArrayType& points, const ::fwData::Mesh::CellValueType* cell,
+                                  size_t cellSize, Vector<float>& n)
 {
     n = Vector<float>();
     Vector<float> v;
 
     for (size_t i = 0; i< cellSize; ++i)
     {
-        const Point &p1 = points[cell[i  ]];
-        const Point &p2 = points[cell[(i+1)% cellSize]];
-        const Point &p3 = points[cell[(i+2)% cellSize]];
+        const Point& p1 = points[cell[i  ]];
+        const Point& p2 = points[cell[(i+1)% cellSize]];
+        const Point& p3 = points[cell[(i+2)% cellSize]];
 
         computeTriangleNormal(p1, p2, p3, n);
 
@@ -103,12 +104,12 @@ Vector<float> &computeCellNormal( const PointsMultiArrayType &points, const ::fw
 
 //------------------------------------------------------------------------------
 
-void generateRegionCellNormals(::fwComEd::helper::Mesh::sptr meshHelper, const ::fwData::Mesh::Id regionMin,
+void generateRegionCellNormals(::fwDataTools::helper::Mesh::sptr meshHelper, const ::fwData::Mesh::Id regionMin,
                                const ::fwData::Mesh::Id regionMax)
 {
     ::fwData::Mesh::csptr mesh = meshHelper->getMesh();
-    ::fwComEd::helper::Array pointArrayHelper(mesh->getPointsArray());
-    ::fwComEd::helper::Array cellNormalsArrayHelper(mesh->getCellNormalsArray());
+    ::fwDataTools::helper::Array pointArrayHelper(mesh->getPointsArray());
+    ::fwDataTools::helper::Array cellNormalsArrayHelper(mesh->getCellNormalsArray());
 
     PointsMultiArrayType point = PointsMultiArrayType(
         static_cast<PointsMultiArrayType::element*>(pointArrayHelper.getBuffer()),
@@ -123,18 +124,18 @@ void generateRegionCellNormals(::fwComEd::helper::Mesh::sptr meshHelper, const :
     const Vector<float> vZero;
     ::fwData::Mesh::CellTypes type;
     ::fwData::Mesh::CellDataOffsetType offset;
-    ::fwData::Mesh::CellValueType *cell;
+    ::fwData::Mesh::CellValueType* cell;
     ::fwData::Mesh::Id cellLen = 0;
 
     const ::fwData::Mesh::Id numberOfCells = mesh->getNumberOfCells();
     const ::fwData::Mesh::Id cellDataSize  = mesh->getCellDataSize();
 
-    Vector< ::fwData::Mesh::NormalValueType > *normals =
+    Vector< ::fwData::Mesh::NormalValueType >* normals =
         cellNormalsArrayHelper.begin< Vector< ::fwData::Mesh::NormalValueType > >();
 
     for(::fwData::Mesh::Id i = regionMin; i<regionMax; ++i)
     {
-        Vector<float> &n = normals[i];
+        Vector<float>& n = normals[i];
 
         type   = cellTypes[i];
         offset = cellDataOffsets[i];
@@ -167,7 +168,7 @@ void generateRegionCellNormals(::fwComEd::helper::Mesh::sptr meshHelper, const :
 
 
 template <typename T>
-void vectorSum( std::vector< std::vector<T> > &vectors, size_t regionMin, size_t regionMax )
+void vectorSum( std::vector< std::vector<T> >& vectors, size_t regionMin, size_t regionMax )
 {
     if (vectors.empty())
     {
@@ -176,7 +177,7 @@ void vectorSum( std::vector< std::vector<T> > &vectors, size_t regionMin, size_t
 
     typename std::vector< std::vector<T> >::iterator vIter = vectors.begin();
 
-    std::vector<T> &res = vectors[0];
+    std::vector<T>& res = vectors[0];
 
     for (++vIter; vIter != vectors.end(); ++vIter)
     {
@@ -196,8 +197,8 @@ void Mesh::generateCellNormals(::fwData::Mesh::sptr mesh)
     if(numberOfCells > 0)
     {
         mesh->allocateCellNormals();
-        ::fwComEd::helper::Mesh::sptr meshHelper;
-        meshHelper = ::fwComEd::helper::Mesh::New(mesh);
+        ::fwDataTools::helper::Mesh::sptr meshHelper;
+        meshHelper = ::fwDataTools::helper::Mesh::New(mesh);
 
         ::fwDataTools::thread::RegionThreader rt((numberOfCells >= 200000) ? 4 : 1);
         rt( std::bind(&generateRegionCellNormals, meshHelper, std::placeholders::_1, std::placeholders::_2),
@@ -210,13 +211,13 @@ void Mesh::generateCellNormals(::fwData::Mesh::sptr mesh)
 typedef std::vector< std::vector< unsigned char > > CharVectors;
 typedef std::vector< std::vector< float > > FloatVectors;
 
-void generateRegionCellNormalsByPoints(FloatVectors &normalsData, CharVectors &normalCounts, size_t dataId,
-                                       ::fwComEd::helper::Mesh::sptr meshHelper, const ::fwData::Mesh::Id regionMin,
+void generateRegionCellNormalsByPoints(FloatVectors& normalsData, CharVectors& normalCounts, size_t dataId,
+                                       ::fwDataTools::helper::Mesh::sptr meshHelper, const ::fwData::Mesh::Id regionMin,
                                        const ::fwData::Mesh::Id regionMax)
 {
     ::fwData::Mesh::csptr mesh = meshHelper->getMesh();
-    FloatVectors::value_type &normalsResults = normalsData[dataId];
-    CharVectors::value_type  &normalCount    = normalCounts[dataId];
+    FloatVectors::value_type& normalsResults = normalsData[dataId];
+    CharVectors::value_type& normalCount     = normalCounts[dataId];
 
     const ::fwData::Mesh::Id nbOfPoints = mesh->getNumberOfPoints();
     normalsResults.resize(3*nbOfPoints, 0.f);
@@ -229,21 +230,21 @@ void generateRegionCellNormalsByPoints(FloatVectors &normalsData, CharVectors &n
 
     ::fwData::Mesh::CellTypes type;
     ::fwData::Mesh::CellDataOffsetType offset;
-    ::fwData::Mesh::CellValueType *cell;
+    ::fwData::Mesh::CellValueType* cell;
     ::fwData::Mesh::Id cellLen = 0;
 
     const ::fwData::Mesh::Id numberOfCells = mesh->getNumberOfCells();
     const ::fwData::Mesh::Id cellDataSize  = mesh->getCellDataSize();
 
-    ::fwComEd::helper::Array arrayHelper(mesh->getCellNormalsArray());
-    Vector< ::fwData::Mesh::NormalValueType > *normals =
+    ::fwDataTools::helper::Array arrayHelper(mesh->getCellNormalsArray());
+    Vector< ::fwData::Mesh::NormalValueType >* normals =
         arrayHelper.begin< Vector< ::fwData::Mesh::NormalValueType > >();
-    Vector< ::fwData::Mesh::NormalValueType > *normalResults =
-        reinterpret_cast< Vector< ::fwData::Mesh::NormalValueType > * >( &(*normalsResults.begin()));
+    Vector< ::fwData::Mesh::NormalValueType >* normalResults =
+        reinterpret_cast< Vector< ::fwData::Mesh::NormalValueType >* >( &(*normalsResults.begin()));
 
 
-    ::fwData::Mesh::CellValueType *pointId;
-    ::fwData::Mesh::CellValueType *cellEnd;
+    ::fwData::Mesh::CellValueType* pointId;
+    ::fwData::Mesh::CellValueType* cellEnd;
 
     for(::fwData::Mesh::Id i = regionMin; i<regionMax; ++i)
     {
@@ -272,7 +273,7 @@ void generateRegionCellNormalsByPoints(FloatVectors &normalsData, CharVectors &n
 
         for(pointId = cell; pointId != cellEnd; ++pointId)
         {
-            Vector< ::fwData::Mesh::NormalValueType > &res = normalResults[*pointId];
+            Vector< ::fwData::Mesh::NormalValueType >& res = normalResults[*pointId];
             res                   += normals[i];
             normalCount[*pointId] += 1;
         }
@@ -282,15 +283,15 @@ void generateRegionCellNormalsByPoints(FloatVectors &normalsData, CharVectors &n
 
 //------------------------------------------------------------------------------
 
-void normalizeRegionCellNormalsByPoints(FloatVectors::value_type &normalsData, CharVectors::value_type &normalCount,
+void normalizeRegionCellNormalsByPoints(FloatVectors::value_type& normalsData, CharVectors::value_type& normalCount,
                                         ::fwData::Mesh::sptr mesh, const ::fwData::Mesh::Id regionMin,
                                         const ::fwData::Mesh::Id regionMax)
 {
-    Vector< ::fwData::Mesh::NormalValueType > *normalSum =
-        reinterpret_cast< Vector< ::fwData::Mesh::NormalValueType > * >( &(*normalsData.begin()) );
+    Vector< ::fwData::Mesh::NormalValueType >* normalSum =
+        reinterpret_cast< Vector< ::fwData::Mesh::NormalValueType >* >( &(*normalsData.begin()) );
 
-    ::fwComEd::helper::Array arrayHelper(mesh->getPointNormalsArray());
-    Vector< ::fwData::Mesh::NormalValueType > *normals =
+    ::fwDataTools::helper::Array arrayHelper(mesh->getPointNormalsArray());
+    Vector< ::fwData::Mesh::NormalValueType >* normals =
         arrayHelper.begin< Vector< ::fwData::Mesh::NormalValueType > >();
 
     for ( ::fwData::Mesh::Id i = regionMin; i < regionMax; ++i)
@@ -321,8 +322,8 @@ void Mesh::generatePointNormals(::fwData::Mesh::sptr mesh)
 
         mesh->allocatePointNormals();
 
-        ::fwComEd::helper::Mesh::sptr meshHelper;
-        meshHelper = ::fwComEd::helper::Mesh::New(mesh);
+        ::fwDataTools::helper::Mesh::sptr meshHelper;
+        meshHelper = ::fwDataTools::helper::Mesh::New(mesh);
 
         ::fwDataTools::thread::RegionThreader rt((nbOfPoints >= 100000) ? 4 : 1);
 
@@ -388,8 +389,8 @@ void Mesh::shakeNormals(::fwData::Array::sptr array)
        && array->getNumberOfDimensions() == 1
        )
     {
-        ::fwComEd::helper::Array arrayHelper(array);
-        void *buf;
+        ::fwDataTools::helper::Array arrayHelper(array);
+        void* buf;
         buf = arrayHelper.getBuffer();
         const ::fwData::Mesh::Id nbOfNormals = array->getSize().at(0);
         typedef boost::multi_array_ref<Vector<float>, 1> NormalsMultiArrayType;
@@ -426,7 +427,7 @@ void Mesh::colorizeMeshPoints(::fwData::Mesh::sptr mesh)
 {
     mesh->allocatePointColors(::fwData::Mesh::RGB);
 
-    ::fwComEd::helper::Mesh meshHelper(mesh);
+    ::fwDataTools::helper::Mesh meshHelper(mesh);
 
     ::fwData::Mesh::ColorValueType color[4];
     size_t numberOfPoints = mesh->getNumberOfPoints();
@@ -444,7 +445,7 @@ void Mesh::colorizeMeshCells(::fwData::Mesh::sptr mesh)
 {
     mesh->allocateCellColors(::fwData::Mesh::RGBA);
 
-    ::fwComEd::helper::Mesh meshHelper(mesh);
+    ::fwDataTools::helper::Mesh meshHelper(mesh);
 
     ::fwData::Mesh::ColorValueType color[4];
     size_t numberOfCells = mesh->getNumberOfCells();
@@ -462,7 +463,7 @@ void Mesh::colorizeMeshCells(::fwData::Mesh::sptr mesh)
 
 void Mesh::shakePoint(::fwData::Mesh::sptr mesh)
 {
-    ::fwComEd::helper::Mesh meshHelper(mesh);
+    ::fwDataTools::helper::Mesh meshHelper(mesh);
 
     size_t nbPts = mesh->getNumberOfPoints();
     ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
@@ -477,10 +478,10 @@ void Mesh::shakePoint(::fwData::Mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
-void Mesh::transform( ::fwData::Mesh::sptr mesh, ::fwData::TransformationMatrix3D::sptr t )
+void Mesh::transform( ::fwData::Mesh::sptr mesh, ::fwData::TransformationMatrix3D::csptr t )
 {
     size_t nbPts = mesh->getNumberOfPoints();
-    ::fwComEd::helper::Mesh meshHelper(mesh);
+    ::fwDataTools::helper::Mesh meshHelper(mesh);
     ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
     ::fwData::Mesh::PointValueType x, y, z, xp, yp, zp, factor;
     for(size_t i = 0; i<nbPts; ++i )

@@ -36,6 +36,13 @@
         <object>::fwData::Mesh</object>
         <desc>Trian file writer</desc>
     </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::io::IReader</type>
+        <service>::ioData::SAttachmentSeriesReader</service>
+        <object>::fwMedData::SeriesDB</object>
+        <desc>AttachmentSeries reader</desc>
+    </extension>
     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>

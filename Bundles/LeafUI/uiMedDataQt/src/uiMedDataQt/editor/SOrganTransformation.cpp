@@ -6,31 +6,31 @@
 
 #include "uiMedDataQt/editor/SOrganTransformation.hpp"
 
-#include <fwComEd/helper/Composite.hpp>
-
 #include <fwData/Composite.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
+
 #include <fwDataTools/TransformationMatrix3D.hpp>
+#include <fwDataTools/helper/Composite.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+
 #include <fwTools/fwID.hpp>
 
+#include <QCheckBox>
+#include <QComboBox>
+#include <QGroupBox>
 #include <QListWidget>
 #include <QListWidgetItem>
-#include <QStringList>
-#include <QString>
-#include <QVBoxLayout>
-#include <QGroupBox>
 #include <QPushButton>
-#include <QComboBox>
-#include <QCheckBox>
+#include <QString>
+#include <QStringList>
+#include <QVBoxLayout>
 
 #include <map>
 
@@ -94,9 +94,9 @@ void SOrganTransformation::starting() throw( ::fwTools::Failed )
 
 
     QObject::connect(m_reconstructionListBox,
-                     SIGNAL(itemClicked (QListWidgetItem * )),
+                     SIGNAL(itemClicked (QListWidgetItem* )),
                      this,
-                     SLOT(onReconstructionCheck(QListWidgetItem *)));
+                     SLOT(onReconstructionCheck(QListWidgetItem*)));
     QObject::connect(m_resetButton, SIGNAL(clicked( )), this, SLOT(onResetClick()));
     QObject::connect(m_saveButton, SIGNAL(clicked( )), this, SLOT(onSaveClick()));
     QObject::connect(m_loadButton, SIGNAL(clicked( )), this, SLOT(onLoadClick()));
@@ -119,9 +119,9 @@ void SOrganTransformation::starting() throw( ::fwTools::Failed )
 void SOrganTransformation::stopping() throw( ::fwTools::Failed )
 {
     QObject::disconnect(m_reconstructionListBox,
-                        SIGNAL(itemClicked (QListWidgetItem * )),
+                        SIGNAL(itemClicked (QListWidgetItem* )),
                         this,
-                        SLOT(onReconstructionCheck(QListWidgetItem *)));
+                        SLOT(onReconstructionCheck(QListWidgetItem*)));
     QObject::disconnect(m_resetButton, SIGNAL(clicked( )), this, SLOT(onResetClick()));
     QObject::disconnect(m_saveButton, SIGNAL(clicked( )), this, SLOT(onSaveClick()));
     QObject::disconnect(m_loadButton, SIGNAL(clicked( )), this, SLOT(onLoadClick()));
@@ -209,7 +209,7 @@ void SOrganTransformation::notitfyTransformationMatrix(::fwData::TransformationM
 
 //------------------------------------------------------------------------------
 
-void SOrganTransformation::onReconstructionCheck(QListWidgetItem *currentItem)
+void SOrganTransformation::onReconstructionCheck(QListWidgetItem* currentItem)
 {
     ::fwData::Composite::sptr pComposite;
     if (::fwTools::fwID::exist(m_TMSUid))
@@ -221,7 +221,7 @@ void SOrganTransformation::onReconstructionCheck(QListWidgetItem *currentItem)
         ::fwData::Reconstruction::sptr pReconstruction = m_reconstructionMap[item_name];
         ::fwData::Mesh::sptr pMesh                     = pReconstruction->getMesh();
 
-        ::fwComEd::helper::Composite aCompositeHelper(pComposite);
+        ::fwDataTools::helper::Composite aCompositeHelper(pComposite);
         if ((currentItem->checkState()) == Qt::Checked)
         {
             if (pComposite->find(item_name) == pComposite->end())
@@ -332,7 +332,7 @@ void SOrganTransformation::onSelectAllChanged(int state)
     if (::fwTools::fwID::exist(m_TMSUid))
     {
         ::fwData::Composite::sptr composite = ::fwData::Composite::dynamicCast(::fwTools::fwID::getObject(m_TMSUid));
-        ::fwComEd::helper::Composite compositeHelper(composite);
+        ::fwDataTools::helper::Composite compositeHelper(composite);
 
         if(state == Qt::Checked)
         {

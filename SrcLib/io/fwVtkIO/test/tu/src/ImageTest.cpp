@@ -1,40 +1,39 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-
-#include <boost/assign/std/vector.hpp>
-#include <boost/assign/list_of.hpp>
-
-#include <vtkImageData.h>
-#include <vtkPolyData.h>
-#include <vtkSmartPointer.h>
-#include <vtkSphereSource.h>
-#include <vtkGenericDataObjectReader.h>
-
-#include <fwTools/System.hpp>
+#include "ImageTest.hpp"
 
 #include <fwData/Image.hpp>
+
+#include <fwDataTools/helper/Image.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/File.hpp>
 #include <fwTest/generator/Image.hpp>
 
-#include <fwComEd/helper/Image.hpp>
+#include <fwTools/System.hpp>
 
-#include <fwVtkIO/ImageWriter.hpp>
 #include <fwVtkIO/ImageReader.hpp>
+#include <fwVtkIO/ImageWriter.hpp>
 #include <fwVtkIO/MetaImageReader.hpp>
 #include <fwVtkIO/MetaImageWriter.hpp>
 #include <fwVtkIO/VtiImageReader.hpp>
 #include <fwVtkIO/VtiImageWriter.hpp>
 #include <fwVtkIO/vtk.hpp>
 
-#include "ImageTest.hpp"
+#include <vtkGenericDataObjectReader.h>
+#include <vtkImageData.h>
+#include <vtkPolyData.h>
+#include <vtkSmartPointer.h>
+#include <vtkSphereSource.h>
+
+#include <boost/assign/list_of.hpp>
+#include <boost/assign/std/vector.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwVtkIO::ut::ImageTest );
@@ -151,7 +150,7 @@ void ImageTest::testImageToVtk()
         ::fwData::Image::sptr image = ::fwData::Image::New();                                                                      \
         ::fwTest::generator::Image::generateImage(image, size, spacing, origin, ::fwTools::Type(imgtype));                         \
                                                                                                                                \
-        ::fwComEd::helper::Image imageHelper(image);                                                                               \
+        ::fwDataTools::helper::Image imageHelper(image);                                                                               \
                                                                                                                                \
         vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();                                         \
         ::fwVtkIO::toVTKImage(image, vtkImage);                                                                                      \
@@ -170,8 +169,8 @@ void ImageTest::testImageToVtk()
         CPPUNIT_ASSERT_MESSAGE( "Test failed for type " imgtype, \
                                 types.find( vtkImage->GetScalarType() ) != types.end() );         \
                                                                                                                                \
-        char *vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());                                                           \
-        char *ptr    = static_cast<char*>(imageHelper.getBuffer());                                                                   \
+        char* vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());                                                           \
+        char* ptr    = static_cast<char*>(imageHelper.getBuffer());                                                                   \
                                                                                                                                \
         CPPUNIT_ASSERT_MESSAGE( "Test failed for type " imgtype, \
                                 std::equal(ptr, ptr + image->getSizeInBytes(), vtkPtr) );         \
@@ -218,7 +217,7 @@ void ImageTest::testFromVtk()
         ::fwData::Image::sptr image = ::fwData::Image::New();                                                          \
         ::fwVtkIO::fromVTKImage(vtkImage, image);                                                                      \
                                                                                                                        \
-        ::fwComEd::helper::Image imageHelper(image);                                                                   \
+        ::fwDataTools::helper::Image imageHelper(image);                                                                   \
                                                                                                                        \
         COMPARE_IMAGE_ATTRS_MACRO(                                                                                     \
             vtkImage->GetDimensions(),                                                                             \
@@ -232,8 +231,8 @@ void ImageTest::testFromVtk()
                                                                                                                        \
         CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" imagename "> Failed ", ::fwTools::Type(type), image->getType() );    \
                                                                                                                        \
-        char *vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());                                               \
-        char *ptr    = static_cast<char*>(imageHelper.getBuffer());                                                       \
+        char* vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());                                               \
+        char* ptr    = static_cast<char*>(imageHelper.getBuffer());                                                       \
                                                                                                                        \
         CPPUNIT_ASSERT( std::equal(ptr, ptr + image->getSizeInBytes(), vtkPtr) );                                      \
     }
@@ -265,6 +264,9 @@ void ImageTest::mhdReaderTest()
 {
     const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/mhd/BostonTeapot.mhd" );
 
+    CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
+                           ::boost::filesystem::exists(imagePath));
+
     ::fwData::Image::sptr image             = ::fwData::Image::New();
     ::fwVtkIO::MetaImageReader::sptr reader = ::fwVtkIO::MetaImageReader::New();
     reader->setObject(image);
@@ -289,6 +291,12 @@ void ImageTest::mhdWriterTest()
 {
     const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/mhd/BostonTeapot.mhd" );
     const ::boost::filesystem::path zRawPath( ::fwTest::Data::dir() / "fw4spl/image/mhd/BostonTeapot.zraw" );
+
+    CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
+                           ::boost::filesystem::exists(imagePath));
+
+    CPPUNIT_ASSERT_MESSAGE("The file '" + zRawPath.string() + "' does not exist",
+                           ::boost::filesystem::exists(zRawPath));
 
     const ::boost::filesystem::path testFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.mhd");
     const ::boost::filesystem::path testZRawFile(::fwTools::System::getTemporaryFolder() / "BostonTeapot.zraw");
@@ -334,6 +342,9 @@ void ImageTest::vtiReaderTest()
 {
     const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/vti/BostonTeapot.vti" );
 
+    CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
+                           ::boost::filesystem::exists(imagePath));
+
     ::fwData::Image::sptr image            = ::fwData::Image::New();
     ::fwVtkIO::VtiImageReader::sptr reader = ::fwVtkIO::VtiImageReader::New();
 
@@ -376,6 +387,9 @@ void ImageTest::vtkReaderTest()
 {
     const ::boost::filesystem::path imagePath( ::fwTest::Data::dir() / "fw4spl/image/vtk/img.vtk" );
 
+    CPPUNIT_ASSERT_MESSAGE("The file '" + imagePath.string() + "' does not exist",
+                           ::boost::filesystem::exists(imagePath));
+
     ::fwData::Image::sptr image         = ::fwData::Image::New();
     ::fwVtkIO::ImageReader::sptr reader = ::fwVtkIO::ImageReader::New();
 
@@ -403,33 +417,36 @@ void ImageTest::vtkReaderTest()
         );
 
 
-#define VTK_READER_TEST(imagetype)                                                                                                                 \
-    {                                                                                                                                                  \
-        const ::boost::filesystem::path testFile(::fwTest::Data::dir() / "fw4spl/image/vtk/img-" imagetype ".vtk");                                    \
-                                                                                                                                                   \
-        ::fwData::Image::sptr image = ::fwData::Image::New();                                                                                                                \
-                                                                                                                                                   \
-        ::fwVtkIO::ImageReader::sptr reader = ::fwVtkIO::ImageReader::New();                                                                                                          \
-        reader->setObject(image);                                                                                                                      \
-        reader->setFile(testFile);                                                                                                                     \
-        reader->read();                                                                                                                                \
-                                                                                                                                                   \
-        vtkSmartPointer< vtkGenericDataObjectReader > vtkreader = vtkSmartPointer< vtkGenericDataObjectReader >::New();                                \
-        vtkreader->SetFileName(testFile.string().c_str());                                                                                             \
-        vtkreader->Update();                                                                                                                           \
-        vtkSmartPointer< vtkImageData > vtkImage = vtkImageData::SafeDownCast(vtkreader->GetOutput());                                                 \
-        CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" "fw4spl/image/vtk/img-" imagetype ".vtk" "> Failed ", \
-                                      ::fwTools::Type(imagetype), image->getType()); \
-                                                                                                                                                   \
-        COMPARE_IMAGE_ATTRS_MACRO(                                                                                                                     \
-            image->getSize(),                                                                                                                      \
-            image->getSpacing(),                                                                                                                   \
-            image->getOrigin(),                                                                                                                    \
-                                                                                                                                                   \
-            vtkImage->GetDimensions(),                                                                                                             \
-            vtkImage->GetSpacing(),                                                                                                                \
-            vtkImage->GetOrigin()                                                                                                                  \
-            );                                                                                                                                     \
+#define VTK_READER_TEST(imagetype)                                                                                      \
+    {                                                                                                                   \
+        const ::boost::filesystem::path testFile(::fwTest::Data::dir() / "fw4spl/image/vtk/img-" imagetype ".vtk");     \
+                                                                                                                        \
+        CPPUNIT_ASSERT_MESSAGE("The file '" + testFile.string() + "' does not exist",                                   \
+                               ::boost::filesystem::exists(testFile));                                                  \
+                                                                                                                        \
+        ::fwData::Image::sptr image = ::fwData::Image::New();                                                           \
+                                                                                                                        \
+        ::fwVtkIO::ImageReader::sptr reader = ::fwVtkIO::ImageReader::New();                                            \
+        reader->setObject(image);                                                                                       \
+        reader->setFile(testFile);                                                                                      \
+        reader->read();                                                                                                 \
+                                                                                                                        \
+        vtkSmartPointer< vtkGenericDataObjectReader > vtkreader = vtkSmartPointer< vtkGenericDataObjectReader >::New(); \
+        vtkreader->SetFileName(testFile.string().c_str());                                                              \
+        vtkreader->Update();                                                                                            \
+        vtkSmartPointer< vtkImageData > vtkImage = vtkImageData::SafeDownCast(vtkreader->GetOutput());                  \
+        CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" "fw4spl/image/vtk/img-" imagetype ".vtk" "> Failed ",                 \
+                                      ::fwTools::Type(imagetype), image->getType());                                    \
+                                                                                                                        \
+        COMPARE_IMAGE_ATTRS_MACRO(                                                                                      \
+            image->getSize(),                                                                                           \
+            image->getSpacing(),                                                                                        \
+            image->getOrigin(),                                                                                         \
+                                                                                                                        \
+            vtkImage->GetDimensions(),                                                                                  \
+            vtkImage->GetSpacing(),                                                                                     \
+            vtkImage->GetOrigin()                                                                                       \
+            );                                                                                                          \
     }
 
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,7 +16,10 @@
 
 #include <vector>
 
-fwCorePredeclare((fwData)(Vector))
+namespace fwData
+{
+class Vector;
+}
 
 fwCampAutoDeclareDataMacro((fwData)(Vector), FWDATA_API);
 
@@ -80,8 +83,8 @@ public:
     bool empty() const;
     SizeType size() const;
 
-    ValueType front();
-    ValueType back();
+    ValueType front() const;
+    ValueType back() const;
 
     ReferenceType operator[] ( size_type n );
     ConstReferenceType operator[] ( size_type n ) const;
@@ -204,14 +207,14 @@ inline Vector::SizeType Vector::size() const
 
 //-----------------------------------------------------------------------------
 
-inline Vector::ValueType Vector::front()
+inline Vector::ValueType Vector::front() const
 {
     return m_container.front();
 }
 
 //-----------------------------------------------------------------------------
 
-inline Vector::ValueType Vector::back()
+inline Vector::ValueType Vector::back() const
 {
     return m_container.back();
 }
@@ -297,4 +300,3 @@ inline std::vector< SPTR(DATATYPE) > Vector::getDataContainer() const
 } //namespace fwData
 
 #endif /* __FWDATA_VECTOR_HPP__ */
-

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -64,7 +64,8 @@ void setValue(vtkMedicalImageProperties *medprop,
 
 ImageSeriesWriter::ImageSeriesWriter(::fwDataIO::writer::IObjectWriter::Key key) :
     ::fwData::location::enableFolder< ::fwDataIO::writer::IObjectWriter >(this),
-    m_job(::fwJobs::Observer::New("VTK Image writer"))
+    m_job(::fwJobs::Observer::New("VTK Image writer")),
+    m_compressionTypes(CompressionTypes::RAW)
 {
 }
 
@@ -228,6 +229,7 @@ void ImageSeriesWriter::write()
     writer->SetFileDimensionality( 2 ); // test the 3D to 2D writing mode
     writer->SetMedicalImageProperties( medprop );
     writer->SetFileNames( filenames );
+    writer->SetCompressionType(static_cast<int>(m_compressionTypes));
 
     using namespace fwVtkIO::helper;
     vtkSmartPointer<vtkLambdaCommand> progressCallback;

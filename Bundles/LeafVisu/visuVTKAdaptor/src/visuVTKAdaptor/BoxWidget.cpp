@@ -10,9 +10,8 @@
 #include "visuVTKAdaptor/BoxWidget.hpp"
 
 #include <fwData/TransformationMatrix3D.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwRenderVTK/vtk/fwVtkBoxRepresentation.hpp>
 

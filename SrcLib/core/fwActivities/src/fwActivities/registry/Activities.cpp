@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,9 +23,14 @@ namespace registry
 {
 
 ActivityAppConfigParam::ActivityAppConfigParam(const ConfigType &config) :
-    replace(config.get<std::string>("<xmlattr>.replace")),
-    by(config.get<std::string>("<xmlattr>.by"))
+    replace(config.get<std::string>("<xmlattr>.replace"))
 {
+    by = config.get_optional<std::string>("<xmlattr>.uid").get_value_or("");
+    if(by.empty())
+    {
+        by = config.get<std::string>("<xmlattr>.by");
+    }
+
 }
 
 //-----------------------------------------------------------------------------
@@ -59,6 +64,8 @@ ActivityRequirement::ActivityRequirement(const ConfigType &config) :
     name(config.get<std::string>("<xmlattr>.name")),
     type(config.get<std::string>("<xmlattr>.type")),
     container(config.get_optional<std::string>("<xmlattr>.container").get_value_or("")),
+    description(config.get_optional<std::string>("desc").get_value_or("")),
+    validator(config.get_optional<std::string>("validator").get_value_or("")),
     minOccurs(config.get_optional<unsigned int>("<xmlattr>.minOccurs").get_value_or(1)),
     maxOccurs(config.get_optional<unsigned int>("<xmlattr>.maxOccurs").get_value_or(1))
 {
@@ -72,10 +79,17 @@ ActivityRequirement::ActivityRequirement(const ConfigType &config) :
         this->maxOccurs = std::numeric_limits<unsigned int>::max();
     }
 
+    std::string createStr = config.get_optional<std::string>("<xmlattr>.create").get_value_or("false");
+    SLM_ASSERT("'create' attribute must be 'true' or 'false'", createStr == "true" || createStr == "false");
+    create = (createStr == "true");
+    SLM_ASSERT("Create option is only available if minOccurs = 0 and maxOccurs = 1",
+               !create || (minOccurs == 0 && maxOccurs == 1));
+
     OSLM_ASSERT(
         "minOccurs value shall be equal or greater than 0 and lower or equal to maxOccurs (" << maxOccurs << ")",
         0 <= minOccurs && minOccurs <= maxOccurs);
-    OSLM_TRACE( "ActivityRequirement : " << name << " : " << type << ", " << minOccurs << "-" << maxOccurs );
+    OSLM_TRACE( "ActivityRequirement : " << name << " : " << type << ", " << minOccurs << "-" << maxOccurs
+                                         << "(" << description << ")");
 }
 
 //-----------------------------------------------------------------------------
@@ -86,7 +100,6 @@ ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension) &ext) :
     description(ext->findConfigurationElement("desc")->getValue()),
     icon(ext->findConfigurationElement("icon")->getValue()),
     tabInfo(title),
-    builderImpl(ext->findConfigurationElement("builder")->getValue()),
     bundleId(ext->getBundle()->getIdentifier()),
     bundleVersion(ext->getBundle()->getVersion().string()),
     appConfig(::fwRuntime::Convert::toPropertyTree(ext->findConfigurationElement("appConfig")).get_child("appConfig"))
@@ -119,8 +132,18 @@ ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension) &ext) :
         }
     }
 
+    ::fwRuntime::ConfigurationElement::csptr builderCfg = ext->findConfigurationElement("builder");
+    if (builderCfg)
+    {
+        builderImpl = builderCfg->getValue();
+    }
+    else
+    {
+        builderImpl = "::fwActivities::builder::ActivitySeriesInitData";
+    }
+
     // backward compatibility
-    ::fwRuntime::ConfigurationElement::sptr validatorCfg = ext->findConfigurationElement("validator");
+    ::fwRuntime::ConfigurationElement::csptr validatorCfg = ext->findConfigurationElement("validator");
     if(validatorCfg)
     {
         std::string validatorImplStr = validatorCfg->getValue();
@@ -138,6 +161,12 @@ ActivityInfo::ActivityInfo(const SPTR(::fwRuntime::Extension) &ext) :
         {
             validatorsImpl.push_back( validator.second.get_value<std::string>() );
         }
+    }
+
+    // Set Default validator if none is defined
+    if (validatorsImpl.empty())
+    {
+        validatorsImpl.push_back("::fwActivities::validator::DefaultActivity");
     }
 }
 

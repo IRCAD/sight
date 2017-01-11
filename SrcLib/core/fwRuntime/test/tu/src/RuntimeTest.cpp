@@ -37,7 +37,8 @@ void RuntimeTest::tearDown()
 void RuntimeTest::testRuntime()
 {
     // Bundles location
-    ::boost::filesystem::path location = ::boost::filesystem::current_path() / "Bundles/";
+    ::boost::filesystem::path location = ::boost::filesystem::current_path() /std::string( std::string(
+                                                                                               BUNDLE_PREFIX) + "/");
 
     CPPUNIT_ASSERT(::boost::filesystem::exists(location));
 

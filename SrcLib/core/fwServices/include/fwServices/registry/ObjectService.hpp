@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,8 @@
 #include "fwServices/config.hpp"
 #include "fwServices/IService.hpp"
 
-#include <fwCore/base.hpp>
+#include <fwCom/HasSignals.hpp>
+
 #include <fwCore/LogicStamp.hpp>
 #include <fwCore/mt/types.hpp>
 
@@ -24,7 +25,8 @@
 #include <boost/type_traits.hpp>
 
 #include <map>
-#include <vector>
+#include <unordered_map>
+#include <set>
 
 namespace fwData
 {
@@ -37,20 +39,18 @@ namespace registry
 {
 
 /**
- * @class ObjectService
- *
  * @brief maintain the relation between objects and services
  *
  * The API of ObjectService should not be directly invoked,
  * fwServices/op methods (i.e. add, get,...) should be used instead
- *
- *
  */
-class FWSERVICES_CLASS_API ObjectService : public ::fwCore::BaseObject
+class FWSERVICES_CLASS_API ObjectService : public ::fwCore::BaseObject,
+                                           public ::fwCom::HasSignals
 {
 public:
 
     fwCoreNonInstanciableClassDefinitionsMacro( (ObjectService)(::fwCore::BaseObject) );
+    fwCoreAllowSharedFromThis();
 
     /**
      * @brief Service container
@@ -58,12 +58,28 @@ public:
      */
     typedef ::boost::bimaps::bimap<
             ::boost::bimaps::multiset_of< ::fwCore::LogicStamp::LogicStampType >,
-            ::boost::bimaps::unordered_set_of< ::fwServices::IService::sptr >
+            ::boost::bimaps::multiset_of< ::fwServices::IService::sptr >
             > ServiceContainerType;
 
 
-    typedef std::vector< SPTR( ::fwData::Object ) >       ObjectVectorType;
-    typedef std::vector< SPTR( ::fwServices::IService ) > ServiceVectorType;
+    typedef std::set< CSPTR( ::fwData::Object ) >      ObjectVectorType;
+    typedef std::set< SPTR( ::fwServices::IService ) > ServiceVectorType;
+
+    typedef std::map< ::fwServices::IService::KeyType, WPTR( ::fwData::Object )> ObjectMapType;
+
+    /**
+     * @name Signals API
+     * @{
+     */
+    /// Type of signal m_sigRenderRequested
+    typedef ::fwCom::Signal< void (::fwData::Object::sptr, const std::string&) > RegisterSignalType;
+
+    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_REGISTERED_SIG;
+    FWSERVICES_API static const ::fwCom::Signals::SignalKeyType s_UNREGISTERED_SIG;
+    ///@}
+
+    /// Constructor
+    FWSERVICES_API ObjectService();
 
     /// Return some informations contain in the registry
     FWSERVICES_API std::string getRegistryInformation() const;
@@ -71,7 +87,6 @@ public:
     /**
      * @name Management of registrations
      */
-
     //@{
 
     /**
@@ -81,6 +96,21 @@ public:
      */
     FWSERVICES_API void registerService( ::fwData::Object::sptr obj, ::fwServices::IService::sptr service );
 
+    /**
+     * @brief Register the service (service) for the object (obj) at the given service key.
+     * It also updates IService::m_associatedObject of service to point to obj
+     * removal at obj destruction.
+     */
+    FWSERVICES_API void registerService(::fwData::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
+                                        ::fwServices::IService::AccessType access,
+                                        ::fwServices::IService::sptr service);
+
+    /**
+     * @brief Emit the signal 'registered'
+     */
+    FWSERVICES_API void registerServiceOutput(::fwData::Object::sptr object,
+                                              const ::fwServices::IService::KeyType& objKey,
+                                              ::fwServices::IService::sptr service);
     //@}
 
     /**
@@ -91,17 +121,29 @@ public:
 
     /**
      * @brief Remove the service (service) from the m_container
-     * It invokes service stop method first as well as related observations removal.
      */
     FWSERVICES_API void unregisterService(  ::fwServices::IService::sptr service );
 
     /**
-     * @brief container manipulator (Helper)
-     * remove service from ObjectService containers, do not perform any "semantic action" like
-     * stop service, remove comm channel
-     * @note (internal use) use with care
+     * @brief Remove an object key from a service
      */
-    void  removeFromContainer( ::fwServices::IService::sptr service );
+    FWSERVICES_API void unregisterService( const ::fwServices::IService::KeyType& objKey,
+                                           ::fwServices::IService::AccessType access,
+                                           ::fwServices::IService::sptr service );
+
+    /**
+     * @brief Emit the signal 'unregistered'
+     */
+    FWSERVICES_API void unregisterServiceOutput( const ::fwServices::IService::KeyType& objKey,
+                                                 ::fwServices::IService::sptr service );
+
+
+    /**
+     * @brief Remove the service (service) from the m_container
+     */
+    FWSERVICES_API bool isRegistered( const ::fwServices::IService::KeyType& objKey,
+                                      ::fwServices::IService::AccessType access,
+                                      ::fwServices::IService::sptr service );
 
     //@}
 
@@ -116,13 +158,13 @@ public:
      * @note Services may be associated to different object
      */
     template<class SERVICE>
-    std::vector< SPTR(SERVICE) > getServices() const;
+    std::set< SPTR(SERVICE) > getServices() const;
 
     /**
      * @brief Return a container with all services of type SERVICE associated to obj in m_container
      */
     template<class SERVICE>
-    std::vector< SPTR(SERVICE) > getServices(::fwData::Object::sptr obj) const;
+    std::set< SPTR(SERVICE) > getServices(::fwData::Object::sptr obj) const;
 
     /**
      * @brief Return registered services matching serviceType
@@ -130,13 +172,13 @@ public:
      * @note Invoke getServices( ::fwData::Object::sptr , const std::string & ) for each registered object
      *
      */
-    FWSERVICES_API ServiceVectorType getServices( const std::string & serviceType ) const;
+    FWSERVICES_API ServiceVectorType getServices( const std::string& serviceType ) const;
 
     /**
      * @brief Return a container of services of type serviceType which are attached to obj
      *
      */
-    FWSERVICES_API ServiceVectorType getServices( ::fwData::Object::sptr obj, const std::string & serviceType ) const;
+    FWSERVICES_API ServiceVectorType getServices( ::fwData::Object::sptr obj, const std::string& serviceType ) const;
 
     /**
      * @brief return a vector containing all services associated with the object obj
@@ -167,7 +209,7 @@ public:
      * @brief return true is obj has at least one service of type srvType
      *
      */
-    FWSERVICES_API bool has( ::fwData::Object::sptr obj, const std::string &srvType) const;
+    FWSERVICES_API bool has( ::fwData::Object::sptr obj, const std::string& srvType) const;
 
     /**
      * @brief return true if key is still present in OSR
@@ -191,6 +233,13 @@ public:
 
     //@}
 
+    /**
+     * @name New API for services with multiple data.
+     */
+
+    //@{
+
+    //@}
 protected:
 
     /**
@@ -210,8 +259,16 @@ private:
      * removal at obj destruction.
      * @warning not thread-safe
      */
-    void internalRegisterService( ::fwData::Object::sptr obj, ::fwServices::IService::sptr service );
+    void internalRegisterService( ::fwData::Object::sptr obj, ::fwServices::IService::sptr service,
+                                  const ::fwServices::IService::KeyType& objKey,
+                                  ::fwServices::IService::AccessType access);
 
+    /**
+     * @brief container manipulator (Helper)
+     * remove service from ObjectService containers, do not perform any "semantic action" like stopping service
+     * @note (internal use) use with care
+     */
+    void  removeFromContainer( ::fwServices::IService::sptr service );
 };
 
 } // namespace registry
@@ -243,24 +300,24 @@ FWSERVICES_API std::string getRegistryInformation();
  * @brief Wraps ObjectService::getServices
  */
 template<class SERVICE>
-std::vector< SPTR(SERVICE) > getServices();
+std::set< SPTR(SERVICE) > getServices();
 
 /**
  * @brief Wraps ObjectService::getServices
  */
 template<class SERVICE>
-std::vector< SPTR(SERVICE) > getServices(::fwData::Object::sptr obj);
+std::set< SPTR(SERVICE) > getServices(::fwData::Object::sptr obj);
 
 /**
  * @brief Wraps ObjectService::getServices
  */
-FWSERVICES_API ::fwServices::registry::ObjectService::ServiceVectorType getServices( const std::string & serviceType );
+FWSERVICES_API ::fwServices::registry::ObjectService::ServiceVectorType getServices( const std::string& serviceType );
 
 /**
  * @brief Wraps ObjectService::getServices
  */
 FWSERVICES_API ::fwServices::registry::ObjectService::ServiceVectorType getServices( ::fwData::Object::sptr obj,
-                                                                                     const std::string & serviceType );
+                                                                                     const std::string& serviceType );
 
 /**
  * @brief Wraps ObjectService::getServices
@@ -270,12 +327,25 @@ FWSERVICES_API ::fwServices::registry::ObjectService::ServiceVectorType getServi
 /**
  * @brief Wraps ObjectService::has
  */
-FWSERVICES_API bool has( ::fwData::Object::sptr obj, const std::string &srvType);
+FWSERVICES_API bool has( ::fwData::Object::sptr obj, const std::string& srvType);
 
 /**
  * @brief Wraps ObjectService::registerService
  */
 FWSERVICES_API void registerService( ::fwData::Object::sptr obj, ::fwServices::IService::sptr service );
+
+/**
+ * @brief Wraps ObjectService::registerService
+ */
+FWSERVICES_API void registerService(::fwData::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
+                                    ::fwServices::IService::AccessType access, ::fwServices::IService::sptr service);
+
+
+/**
+ * @brief Wraps ObjectService::registerServiceOutput
+ */
+FWSERVICES_API void registerServiceOutput(::fwData::Object::sptr obj, const ::fwServices::IService::KeyType& objKey,
+                                          ::fwServices::IService::sptr service);
 
 /**
  * @brief Wraps ObjectService::swapService
@@ -285,7 +355,30 @@ FWSERVICES_API void swapService( ::fwData::Object::sptr objDst, ::fwServices::IS
 /**
  * @brief Wraps ObjectService::unregisterService
  */
-FWSERVICES_API void unregisterService(  ::fwServices::IService::sptr service );
+FWSERVICES_API void unregisterService( ::fwServices::IService::sptr service );
+
+/**
+ * @brief Wraps ObjectService::unregisterService
+ */
+FWSERVICES_API void unregisterService( const ::fwServices::IService::KeyType& objKey,
+                                       ::fwServices::IService::AccessType access,
+                                       ::fwServices::IService::sptr service );
+
+/**
+ * @brief Wraps ObjectService::unregisterServiceOutput
+ */
+FWSERVICES_API void unregisterServiceOutput( const ::fwServices::IService::KeyType& objKey,
+                                             ::fwServices::IService::sptr service );
+
+/**
+ * @brief Wraps ObjectService::isRegistered
+ */
+FWSERVICES_API bool isRegistered( const ::fwServices::IService::KeyType& objKey,
+                                  ::fwServices::IService::AccessType access,
+                                  ::fwServices::IService::sptr service );
+
+FWSERVICES_API SPTR( ::fwServices::registry::ObjectService::RegisterSignalType ) getRegisterSignal();
+FWSERVICES_API SPTR( ::fwServices::registry::ObjectService::RegisterSignalType ) getUnregisterSignal();
 
 } // namespace OSR
 

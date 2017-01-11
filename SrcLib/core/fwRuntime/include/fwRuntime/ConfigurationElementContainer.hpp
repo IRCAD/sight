@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,9 +28,6 @@ struct ConfigurationElement;
 
 /**
  * @brief   Defines the generic configuration element container class.
- * @struct  ConfigurationElementContainer
- * @date    2004-2009
- *
  */
 struct FWRUNTIME_CLASS_API ConfigurationElementContainer
 {
@@ -43,8 +40,10 @@ struct FWRUNTIME_CLASS_API ConfigurationElementContainer
      * @{
      */
 
-    typedef std::vector< std::shared_ptr<ConfigurationElement> >    Container;  ///< Defines the configuration element container type.
-    typedef Container::iterator Iterator;                                           ///< Defines the configuration element container iterator type.
+    /// Defines the configuration element container type.
+    typedef std::vector< std::shared_ptr<ConfigurationElement> > Container;
+    ///< Defines the configuration element container iterator type.
+    typedef Container::iterator Iterator;
 
     //@}
 

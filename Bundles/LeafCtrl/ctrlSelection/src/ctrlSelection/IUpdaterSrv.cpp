@@ -4,11 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/fwID.hpp>
-
-#include <fwComEd/helper/Composite.hpp>
-
 #include "ctrlSelection/IUpdaterSrv.hpp"
+
+#include <fwDataTools/helper/Composite.hpp>
+
+#include <fwTools/fwID.hpp>
 
 namespace ctrlSelection
 {
@@ -126,7 +126,8 @@ void IUpdaterSrv::updateComposite(::fwData::Composite::sptr pComposite, ::fwData
     }
 
     // Use helper on composite
-    std::shared_ptr< ::fwComEd::helper::Composite > pCompositeHelper ( new ::fwComEd::helper::Composite( pComposite ) );
+    std::shared_ptr< ::fwDataTools::helper::Composite > pCompositeHelper ( new ::fwDataTools::helper::Composite(
+                                                                               pComposite ) );
 
     if(_action != DO_NOTHING)
     {

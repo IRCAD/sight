@@ -7,14 +7,15 @@
 #ifndef __CTRLSELECTION_MANAGER_SWAPPERSRV_HPP__
 #define __CTRLSELECTION_MANAGER_SWAPPERSRV_HPP__
 
-#include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IManagerSrv.hpp"
+#include "ctrlSelection/config.hpp"
+
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include <fwServices/helper/SigSlotConnection.hpp>
 #include <fwServices/IService.hpp>
 
 
@@ -24,7 +25,6 @@ namespace manager
 {
 
 /**
- * @class  SwapperSrv
  * @brief  This services is a manager which starts, stops or swaps services on object contained in a composite when
  * it receive specific message (mainly sent by updater).
  */
@@ -65,7 +65,7 @@ protected:
      *
      * Sample of declaration configuration for a simple swapper service
      *
-     * @verbatim
+     * @code{.xml}
         <service uid="myManager" impl="::ctrlSelection::manager::SwapperSrv" type="::ctrlSelection::IManagerSrv" autoConnect="yes" >
             <mode type="dummy" />
             <config>
@@ -91,7 +91,7 @@ protected:
                 </object>
             </config>
         </service>
-       @endverbatim
+       @endcode
      * With:
      * @li \b mode : must be "stop", "dummy" or "startAndUpdate".
      *     - The mode "stop", used by default, starts the services when their attached object is added in the compsite
@@ -117,7 +117,7 @@ protected:
     CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Implements info method derived from IService. Print classname.
-    CTRLSELECTION_API virtual void info( std::ostream &_sstream );
+    CTRLSELECTION_API virtual void info( std::ostream& _sstream );
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string ObjectIdType;
@@ -143,7 +143,7 @@ protected:
         ::fwData::Object::sptr m_dummy;
         ConfigurationType m_config;
         WPTR(::fwServices::IService) m_service;
-        ::fwServices::helper::SigSlotConnection::sptr m_connections;
+        ::fwCom::helper::SigSlotConnection m_connections;
         bool m_hasAutoConnection;
     };
 
@@ -160,9 +160,9 @@ protected:
     void removeObjects(::fwData::Composite::ContainerType objects);
 
     void initOnDummyObject( std::string objectId );
-    void addObject( const std::string &objectId, ::fwData::Object::sptr object );
-    void changeObject(const std::string &objectId, ::fwData::Object::sptr object);
-    void removeObject( const std::string &objectId );
+    void addObject( const std::string& objectId, ::fwData::Object::sptr object );
+    void changeObject(const std::string& objectId, ::fwData::Object::sptr object);
+    void removeObject( const std::string& objectId );
 
     ::fwServices::IService::sptr add( ::fwData::Object::sptr obj, ::fwRuntime::ConfigurationElement::sptr _elt );
 

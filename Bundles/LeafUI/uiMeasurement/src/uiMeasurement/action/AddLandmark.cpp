@@ -10,20 +10,20 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwCore/base.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/String.hpp>
-#include <fwGui/dialog/InputDialog.hpp>
 
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
+#include <fwGui/dialog/InputDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <exception>
 
@@ -50,7 +50,7 @@ AddLandmark::~AddLandmark() throw()
 
 //------------------------------------------------------------------------------
 
-void AddLandmark::info(std::ostream &_sstream )
+void AddLandmark::info(std::ostream& _sstream )
 {
     _sstream << "Action for remove distance" << std::endl;
 }
@@ -58,7 +58,7 @@ void AddLandmark::info(std::ostream &_sstream )
 //------------------------------------------------------------------------------
 
 // return true if label setting is NOT Canceled , name is modified !!!
-bool defineLabel(std::string &name)
+bool defineLabel(std::string& name)
 {
     bool res         = false;
     static int count = 1;
@@ -86,8 +86,16 @@ bool defineLabel(std::string &name)
 void AddLandmark::updating() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    if (!::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    ::fwData::Image::sptr image;
+    if (this->isVersion2())
+    {
+        image = this->getInOut< ::fwData::Image >("image");
+    }
+    else
+    {
+        image = this->getObject< ::fwData::Image >();
+    }
+    if (!::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog(
             "Add landmarks",
@@ -100,13 +108,13 @@ void AddLandmark::updating() throw(::fwTools::Failed)
     if ( defineLabel(value) )
     {
         //get landmarks
-        ::fwComEd::fieldHelper::MedicalImageHelpers::checkLandmarks(  image );
+        ::fwDataTools::fieldHelper::MedicalImageHelpers::checkLandmarks(  image );
         ::fwData::PointList::sptr landmarks = image->getField< ::fwData::PointList >(
-            ::fwComEd::Dictionary::m_imageLandmarksId);
+            ::fwDataTools::fieldHelper::Image::m_imageLandmarksId);
         SLM_ASSERT("landmarks not instanced", landmarks);
 
         // create a new point
-        ::fwData::Point::sptr newPoint = ::fwComEd::fieldHelper::MedicalImageHelpers::getImageSliceIndices( image );
+        ::fwData::Point::sptr newPoint = ::fwDataTools::fieldHelper::MedicalImageHelpers::getImageSliceIndices( image );
         // transform slice to mm
         std::transform( newPoint->getRefCoord().begin(),newPoint->getRefCoord().end(),
                         image->getSpacing().begin(),
@@ -122,7 +130,7 @@ void AddLandmark::updating() throw(::fwTools::Failed)
         // append to point the label
         ::fwData::String::sptr label = ::fwData::String::New();
         label->value()               = value;
-        newPoint->setField( ::fwComEd::Dictionary::m_labelId, label );
+        newPoint->setField( ::fwDataTools::fieldHelper::Image::m_labelId, label );
 
         image->setField("ShowLandmarks", ::fwData::Boolean::New(true));
 

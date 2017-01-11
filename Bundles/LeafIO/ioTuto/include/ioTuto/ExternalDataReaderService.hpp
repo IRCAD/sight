@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -64,10 +64,10 @@ protected:
      * @brief Configure service. This method is called by configure() from base service ( ::fwServices::IService )
      *
      * XML configuration sample:
-     * @verbatim
+     * @code{.xml}
        <service type="::ioTuto::ExternalDataReaderService">
        </service>
-       @endverbatim
+       @endcode
      *
      * Configure External data info filename.
      */

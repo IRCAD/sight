@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,6 +19,7 @@ namespace view
 
 /**
  * @brief Defines the generic layout for application.
+ * @see ::fwGui::IGuiContainer for the service configuration
  */
 class GUI_CLASS_API SDefaultView : public ::gui::view::IView
 {
@@ -65,7 +66,7 @@ protected:
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    GUI_API virtual void info(std::ostream &_sstream );
+    GUI_API virtual void info(std::ostream& _sstream );
     ///@}
 
 };

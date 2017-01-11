@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -80,7 +80,8 @@ protected:
 
     /**
      * @brief Parse the XML configuration
-     * @note Should invoked ( this->::IXMLParser::updating() ) from specific XMLParsers updating method to support both specific compositions and this generic one
+     * @note Should invoked ( this->::IXMLParser::updating() ) from specific XMLParsers updating method to support both
+     *       specific compositions and this generic one
      */
     FWSERVICES_API virtual void updating() throw(::fwTools::Failed);
 };

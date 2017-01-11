@@ -1,16 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/adaptor/IAdaptor.hpp"
+
 #include "scene2D/Scene2DGraphicsView.hpp"
 
+#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
-#include <fwServices/Base.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <QGraphicsItemGroup>
 
@@ -22,18 +25,19 @@ namespace adaptor
 
 IAdaptor::IAdaptor() throw() : m_zValue(0), m_opacity(1)
 {
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //-----------------------------------------------------------------------------
 
 IAdaptor::~IAdaptor() throw()
 {
+    m_xAxis.reset();
+    m_yAxis.reset();
 }
 
 //-----------------------------------------------------------------------------
 
-void IAdaptor::info(std::ostream &_sstream )
+void IAdaptor::info(std::ostream& _sstream )
 {
     /*_sstream << "IAdaptor : " ;
        this->SuperClass::info( _sstream ) ;*/
@@ -257,7 +261,7 @@ void IAdaptor::initializeViewportSize()
 
 void IAdaptor::starting() throw ( ::fwTools::Failed )
 {
-    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
 
     doStart();
 }
@@ -273,8 +277,8 @@ void IAdaptor::updating() throw ( ::fwTools::Failed )
 
 void IAdaptor::swapping() throw(fwTools::Failed)
 {
-    m_connections->disconnect();
-    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    m_connections.disconnect();
+    m_connections.connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
     doSwap();
 }
 
@@ -282,11 +286,8 @@ void IAdaptor::swapping() throw(fwTools::Failed)
 
 void IAdaptor::stopping() throw ( ::fwTools::Failed )
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
     doStop();
-
-    m_xAxis.reset();
-    m_yAxis.reset();
 }
 
 //-----------------------------------------------------------------------------

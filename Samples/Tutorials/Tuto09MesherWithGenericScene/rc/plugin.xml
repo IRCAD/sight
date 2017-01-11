@@ -1,0 +1,298 @@
+<!--
+    This tutorial shows a VTK scene containing a 3D image and a 3D model.
+    To use this application, you should open a 3D image mask of an organ. An used the mesher actions to creates a
+    reconstruction. Then, you can update the organ color, transparence, ... using the editors in the right.
+ -->
+<plugin id="Tuto09MesherWithGenericScene" version="@DASH_VERSION@">
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+
+
+    <extension implements="::fwServices::registry::AppConfig2">
+        <id>Tuto09MesherWithGenericScene</id>
+        <config>
+
+            <!-- Objects declaration -->
+            <object uid="modelSeriesId" type="::fwMedData::ModelSeries" />
+            <object uid="imageId" type="::fwData::Image" />
+            <object uid="reconstructionId" type="::fwData::Reconstruction" src="deferred" />
+
+            <!-- *************************************************************************************************** -->
+            <!-- UI services -->
+            <!-- *************************************************************************************************** -->
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>Tuto09MesherWithGenericScene</name>
+                        <icon>@BUNDLE_PREFIX@/Tuto09MesherWithGenericScene_0-1/tuto.ico</icon>
+                    </frame>
+                    <menuBar />
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <view sid="mainView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Mesher" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menu_File" start="yes" />
+                    <menu sid="menu_Mesher" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="mainView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view align="center" minWidth="200" />
+                        <view align="right" minWidth="200" minHeight="200" position="0" />
+                        <view align="right" minWidth="200" minHeight="80" position="1" />
+                        <view align="right" minWidth="200" minHeight="200" position="2" />
+                        <view align="bottom" minHeight="30" resizable="no" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericScene" start="yes" />
+                    <view sid="listOrganEditor" start="yes" />
+                    <view sid="organMaterialEditor" start="no" />
+                    <view sid="representationEditor" start="no" />
+                    <view sid="sceneEditorsView" start="yes" />
+                </registry>
+            </service>
+            <service uid="sceneEditorsView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="0" minWidth="30" />
+                        <view proportion="0" minWidth="50" />
+                        <view proportion="1" />
+                        <view proportion="0" minWidth="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="sliceListEditor" start="yes" />
+                    <view sid="showScanEditor" start="yes" />
+                    <view sid="sliderIndexEditor" start="yes" />
+                    <view sid="snapshotScene1Editor" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="progress_statusbar" type="::gui::editor::SJobBar" />
+
+            <service uid="snapshotScene1Editor" type="::uiVisu::SnapshotEditor" />
+
+            <service uid="menu_File" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Open image" shortcut="Ctrl+O" />
+                        <menuItem name="Save meshes" shortcut="Ctrl+S" />
+                        <separator />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="action_openImage" start="yes" />
+                    <menuItem sid="action_saveModelSeries" start="yes" />
+                    <menuItem sid="action_quit" start="yes" />
+                </registry>
+            </service>
+            <service uid="menu_Mesher" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Create Mesh 50" />
+                        <menuItem name="Create Mesh 80" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="action_createMesh50" start="yes" />
+                    <menuItem sid="action_createMesh80" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="action_openImage" type="::gui::action::SStarter">
+                <start uid="imageReader" />
+            </service>
+            <service uid="action_saveModelSeries" type="::gui::action::SStarter">
+                <start uid="modelSeriesWriter" />
+            </service>
+            <service uid="action_quit" type="::gui::action::SQuit" />
+
+            <service uid="action_createMesh50" type="::gui::action::SStarter">
+                <start_if_exists uid="mesher50ServiceUID" />
+            </service>
+            <service uid="action_createMesh80" type="::gui::action::SStarter">
+                <start_if_exists uid="mesher80ServiceUID" />
+            </service>
+            <service uid="sliceListEditor" type="::guiQt::editor::SSelectionMenuButton">
+                <toolTip>Manage slice visibility</toolTip>
+                <selected>3</selected>
+                <items>
+                    <item text="One slice" value="1" />
+                    <item text="three slices" value="3" />
+                </items>
+            </service>
+            <service uid="showScanEditor" type="::guiQt::editor::SSignalButton">
+                <config>
+                    <checkable>true</checkable>
+                    <icon>@BUNDLE_PREFIX@/media_0-1/icons/sliceHide.png</icon>
+                    <icon2>@BUNDLE_PREFIX@/media_0-1/icons/sliceShow.png</icon2>
+                    <iconWidth>40</iconWidth>
+                    <iconHeight>16</iconHeight>
+                    <checked>true</checked>
+                </config>
+            </service>
+
+            <service uid="listOrganEditor" type="::uiMedData::editor::SModelSeriesList" autoConnect="yes">
+                <in key="modelSeries" uid="modelSeriesId" />
+                <columns>
+                    <organ_name>@organ_name</organ_name>
+                </columns>
+            </service>
+
+            <service uid="sliderIndexEditor" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+                <in key="image" uid="imageId" />
+                <sliceIndex>axial</sliceIndex>
+            </service>
+
+            <!-- *************************************************************************************************** -->
+            <!-- Meshers services -->
+            <!-- *************************************************************************************************** -->
+            <service uid="mesher50ServiceUID" type="::opVTKMesh::SVTKMesher">
+                <in key="image" uid="imageId" />
+                <inout key="modelSeries" uid="modelSeriesId" />
+                <config>
+                    <percentReduction>50</percentReduction>
+                </config>
+            </service>
+
+            <service uid="mesher80ServiceUID" type="::opVTKMesh::SVTKMesher">
+                <in key="image" uid="imageId" />
+                <inout key="modelSeries" uid="modelSeriesId" />
+                <config>
+                    <percentReduction>80</percentReduction>
+                </config>
+            </service>
+
+            <!-- *************************************************************************************************** -->
+            <!-- Reader services -->
+            <!-- *************************************************************************************************** -->
+            <service uid="modelSeriesWriter" type="::uiIO::editor::SIOSelector">
+                <inout key="target" uid="modelSeriesId" />
+                <type mode="writer" />
+            </service>
+
+            <service uid="imageReader" type="::uiIO::editor::SIOSelector">
+                <inout key="target" uid="imageId" />
+                <type mode="reader" />
+            </service>
+
+            <!-- This service convert a simple fwData::Image to medical Image -->
+            <service uid="medicaImageConverter" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
+                <inout key="image" uid="imageId" />
+            </service>
+
+            <service uid="updaterReconstUID" type="::ctrlSelection::updater::SObjFromSlot">
+                <out key="object" uid="reconstructionId" />
+            </service>
+
+            <service uid="organMaterialEditor" type="::uiReconstruction::OrganMaterialEditor" autoConnect="yes">
+                <inout key="reconstruction" uid="reconstructionId" />
+            </service>
+
+            <service uid="representationEditor" type="::uiReconstruction::RepresentationEditor" autoConnect="yes">
+                <inout key="reconstruction" uid="reconstructionId" />
+            </service>
+
+            <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes" >
+                <in key="image" uid="imageId" />
+                <in key="modelSeries" uid="modelSeriesId" />
+                <scene>
+                    <picker id="myPicker" vtkclass="fwVtkCellPicker" />
+                    <renderer id="default" background="0.0" />
+                    <adaptor id="modelSeriesAdaptor" uid="modelSeriesAdaptorUid" class="::visuVTKAdaptor::ModelSeries" objectId="modelSeries">
+                        <config renderer="default" picker="" />
+                    </adaptor>
+                    <adaptor id="MPRNegato3D" uid="MPRNegatoScene3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
+                        <config renderer="default" picker="myPicker" mode="3D" slices="3" sliceIndex="axial" />
+                    </adaptor>
+                    <adaptor id="snapshot1" uid="snapshotUID" class="::visuVTKAdaptor::Snapshot" objectId="self">
+                        <config renderer="default" />
+                    </adaptor>
+
+                    <proxy channel="modelSeriesNormalChannel">
+                        <slot>modelSeriesAdaptorUid/updateNormalMode</slot>
+                    </proxy>
+
+                        <!--
+                            Connection for snapshot:
+                            connect the editor signal "snapped" to the adaptor slot "snap"
+                        -->
+                        <connect>
+                            <signal>snapshotScene1Editor/snapped</signal>
+                            <slot>snapshotUID/snap</slot>
+                        </connect>
+
+                        <!--
+                            Connection for 3D image slice:
+                            Connect the button (showScanEditor) signal "toggled" to the image adaptor (MPRNegatoScene3D)
+                            slot "showSlice", this signals/slots contains a boolean.
+                            The image slices will be show or hide when the button is checked/unchecked.
+
+                            The "waitForKey" attribut means that the signal and slot are connected only if the key
+                            "image" is present in the scene composite. It is recommanded to used because the adaptors
+                            exists only if the object is present.
+
+                        -->
+                        <connect>
+                            <signal>showScanEditor/toggled</signal>
+                            <slot>MPRNegatoScene3D/showSlice</slot>
+                        </connect>
+
+                        <!--
+                            Connection for 3D image slice:
+                            Connect the menu button (sliceListEditor) signal "selected" to the image adaptor
+                            (MPRNegatoScene3D) slot "updateSliceMode", this signals/slots contains an integer.
+                            This integer defines the number of slice to show (0, 1 or 3).
+                        -->
+                        <connect>
+                            <signal>sliceListEditor/selected</signal>
+                            <slot>MPRNegatoScene3D/updateSliceMode</slot>
+                        </connect>
+                </scene>
+            </service>
+
+            <connect>
+                <signal>modelSeriesWriter/jobCreated</signal>
+                <slot>progress_statusbar/showJob</slot>
+            </connect>
+
+            <connect>
+                <signal>listOrganEditor/reconstructionSelected</signal>
+                <slot>updaterReconstUID/addOrSwap</slot>
+            </connect>
+
+            <connect channel="modelSeriesNormalChannel">
+                <signal>representationEditor/normalsModeModified</signal>
+            </connect>
+
+            <start uid="mainFrame" />
+            <start uid="progress_statusbar" />
+            <start uid="updaterReconstUID" />
+            <start uid="medicaImageConverter" />
+
+            <!-- Deferred start -->
+            <start uid="representationEditor" />
+            <start uid="organMaterialEditor" />
+
+        </config>
+    </extension>
+
+</plugin>

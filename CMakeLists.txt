@@ -28,7 +28,35 @@ set_property(GLOBAL PROPERTY AUTOGEN_TARGETS_FOLDER automoc)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")  #racy backward compatibility
 
-set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
+if(UNIX AND NOT APPLE)
+    option(DEBIAN_INSTALL "Install apps in a Debian-way" OFF)
+endif()
+
+if(DEBIAN_INSTALL)
+    set(USE_SYSTEM_LIB CACHE BOOL ON)
+else()
+    option(USE_SYSTEM_LIB "Use system libraries to compile fw4spl" OFF)
+    if(NOT USE_SYSTEM_LIB)
+        set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
+    endif()
+endif()
+
+# Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH
+if(EXTERNAL_LIBRARIES)
+
+    list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIBRARIES})
+    list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_LIBRARIES})
+    list(APPEND CMAKE_FIND_ROOT_PATH ${EXTERNAL_LIBRARIES})
+
+elseif(USE_SYSTEM_LIB)
+
+    list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+    list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+    list(APPEND CMAKE_FIND_ROOT_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+
+endif()
+
+
 set(CREATE_SUBPROJECTS OFF CACHE BOOL "Create a project for each subproject")
 set(BUILD_TESTS ON CACHE BOOL "Configures projects associated tests (<project>Test projects)")
 set(ADDITIONAL_PROJECTS CACHE PATH
@@ -54,7 +82,17 @@ if(ADDITIONAL_PROJECTS)
             add_subdirectory(${ADDITIONAL_PROJECT} ${DIR_NAME})
         endif()
     endforeach()
-endif(ADDITIONAL_PROJECTS)
+endif()
+
+
+if(ANDROID)
+    set(BUNDLE_PREFIX "/data/data/com.fw4spl.${PROJECTS_TO_INSTALL}/Bundles")
+elseif(DEBIAN_INSTALL)
+    #To make a debian package we should install our bundle in /usr/share/...
+    set(BUNDLE_PREFIX "share/Bundles")
+else()
+    set(BUNDLE_PREFIX "Bundles")
+endif()
 
 # Set warning level and function export visibility on Unix
 if(UNIX)
@@ -72,6 +110,10 @@ if(UNIX)
         if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
             set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fcolor-diagnostics")
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcolor-diagnostics")
+        #Color output for gcc > 4.9
+        elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER "4.8.99")
+            set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fdiagnostics-color")
+            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fdiagnostics-color")
         endif()
     endif()
 endif()
@@ -115,13 +157,15 @@ set(SPYLOG_LEVEL_MAP_debug 5)
 set(SPYLOG_LEVEL_MAP_trace 6)
 set_property(CACHE SPYLOG_LEVEL PROPERTY STRINGS ${SPYLOG_LEVEL_VALUES} )
 
-# Globaly enabled c++11
-if(NOT WIN32)
+# require C++11 standard by default
+if(ANDROID)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++11")
-    if(APPLE)
-       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --stdlib=libc++")
-    endif(APPLE)
+else()
+    set(CMAKE_CXX_STANDARD 11)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
 endif()
+
+add_definitions(-DBUNDLE_PREFIX="${BUNDLE_PREFIX}")
 
 macro(groupMaker FWPROJECT_NAME)
     file(GLOB_RECURSE PRJ_SOURCES "${${FWPROJECT_NAME}_DIR}/*")
@@ -165,13 +209,13 @@ macro(initProject PRJNAME )
 
         list(APPEND ${FWPROJECT_NAME}_HEADERS ${HEADERS})
         list(APPEND ${FWPROJECT_NAME}_SOURCES ${SOURCES})
-    endforeach(SUBDIR)
+    endforeach()
 
     set (${FWPROJECT_NAME}_INCLUDE_DIR ${${FWPROJECT_NAME}_INCLUDE_DIR} PARENT_SCOPE)
     set (${FWPROJECT_NAME}_DIR     ${CMAKE_CURRENT_SOURCE_DIR}  PARENT_SCOPE)
     set (${FWPROJECT_NAME}_BUILD_DIR ${CMAKE_BINARY_DIR}/${FWPROJECT_NAME})
     set (${FWPROJECT_NAME}_BUILD_DIR ${${FWPROJECT_NAME}_BUILD_DIR} PARENT_SCOPE)
- 
+
     set (${FWPROJECT_NAME}_HEADERS ${${FWPROJECT_NAME}_HEADERS} PARENT_SCOPE)
     set (${FWPROJECT_NAME}_SOURCES ${${FWPROJECT_NAME}_SOURCES} PARENT_SCOPE)
 
@@ -189,7 +233,7 @@ macro(initProject PRJNAME )
     endif()
 
     groupMaker(${FWPROJECT_NAME})
-endmacro(initProject)
+endmacro()
 
 
 macro(setVersion FWPROJECT_NAME PROJECT_VERSION)
@@ -234,7 +278,7 @@ macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
     endif()
     unset(SPYLOG_VALID_VALUE)
 
-endmacro(configureProject)
+endmacro()
 
 
 macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
@@ -242,15 +286,16 @@ macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
     set(CREATED_RESOURCES_LIST)
     foreach(RESOURCE_FILE ${RESOURCES_FILES})
         file(RELATIVE_PATH REL_PATH "${RES_DIR}" "${RESOURCE_FILE}")
-        if ("${TARGET_DIR}/${REL_PATH}" MATCHES "^.*\\.(txt|xml)$")
+        if ("${TARGET_DIR}/${REL_PATH}" MATCHES "^.*\\.(txt|xml|cfg)$")
             set(COPY_COMMAND ${CMAKE_COMMAND}
-            -DIN_FILE="${RES_DIR}/${REL_PATH}"
-            -DOUT_FILE="${TARGET_DIR}/${REL_PATH}"
-            -DFWPROJECT_NAME="${FWPROJECT_NAME}"
-            -DDASH_VERSION="${${FWPROJECT_NAME}_DASH_VERSION}"
-            -DPROJECT_VERSION="${${FWPROJECT_NAME}_VERSION}"
-            -DTARGET_TYPE="${TARGET_TYPE}"
-            -P ${FWCMAKE_RESOURCE_PATH}/build/configure_file.cmake
+                             -DIN_FILE="${RES_DIR}/${REL_PATH}"
+                             -DOUT_FILE="${TARGET_DIR}/${REL_PATH}"
+                             -DFWPROJECT_NAME="${FWPROJECT_NAME}"
+                             -DDASH_VERSION="${${FWPROJECT_NAME}_DASH_VERSION}"
+                             -DPROJECT_VERSION="${${FWPROJECT_NAME}_VERSION}"
+                             -DBUNDLE_PREFIX="${BUNDLE_PREFIX}"
+                             -DTARGET_TYPE="${TARGET_TYPE}"
+                             -P ${FWCMAKE_RESOURCE_PATH}/build/configure_file.cmake
             )
             set(COPY_DEPENDS "${FWCMAKE_RESOURCE_PATH}/build/configure_file.cmake" )
         else()
@@ -266,7 +311,7 @@ macro(createResourcesTarget TARGET RES_DIR TARGET_DIR)
         LIST (APPEND CREATED_RESOURCES_LIST "${TARGET_DIR}/${REL_PATH}")
 
     endforeach()
-    
+
     add_custom_target("${TARGET}" ALL DEPENDS ${CREATED_RESOURCES_LIST} )
 
     # Adds project into folder rc
@@ -298,7 +343,7 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
         add_definitions(-D_CONSOLE)
     endif()
 
-    add_executable(${FWPROJECT_NAME} ${GUI_TYPE} 
+    add_executable(${FWPROJECT_NAME} ${GUI_TYPE}
         ${${FWPROJECT_NAME}_HEADERS}
         ${${FWPROJECT_NAME}_SOURCES}
         ${${FWPROJECT_NAME}_RC_FILES}
@@ -326,7 +371,7 @@ macro(fwExec FWPROJECT_NAME PROJECT_VERSION)
 
     # Adds project into folder exec
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "exec")
-endmacro(fwExec)
+endmacro()
 
 macro(fwCppunitTest FWPROJECT_NAME)
     set(options)
@@ -338,7 +383,7 @@ macro(fwCppunitTest FWPROJECT_NAME)
         "${FWCMAKE_RESOURCE_PATH}/cppunit/cppunit_main.cpp"
         "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/src/cppunit_main.cpp"
         IMMEDIATE @ONLY)
-        
+
     initProject( ${FWPROJECT_NAME} tu )
 
     set(${FWPROJECT_NAME}_TYPE "TEST")
@@ -352,7 +397,7 @@ macro(fwCppunitTest FWPROJECT_NAME)
         ${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/src/cppunit_main.cpp
         ${${FWPROJECT_NAME}_RC_FILES}
         ${${FWPROJECT_NAME}_CMAKE_FILES})
-    
+
     if(fwCppunitTest_BUNDLE)
         add_definitions(-DBUNDLE_TEST_PROFILE=\"share/tu_exec_${fwCppunitTest_BUNDLE}_0-0/profile.xml\")
     endif()
@@ -379,7 +424,7 @@ macro(fwCppunitTest FWPROJECT_NAME)
 
     # Adds project into folder test
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "test")
-  
+
     if(MSVC_IDE)
         # create the launch config for the current test
         set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/${FWPROJECT_NAME}")
@@ -388,7 +433,7 @@ macro(fwCppunitTest FWPROJECT_NAME)
         include(${FWCMAKE_RESOURCE_PATH}/install/win_install.cmake)
         if(NOT DEBUGGER_ENVIRONMENT)
             findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
-            set(DEBUGGER_ENVIRONMENT ${EXTERNAL_LIBRARIES_DIRECTORIES} 
+            set(DEBUGGER_ENVIRONMENT ${EXTERNAL_LIBRARIES_DIRECTORIES}
                 CACHE INTERNAL "List of all folders containing external libraries")
         endif()
         if(CMAKE_CL_64)
@@ -401,7 +446,7 @@ macro(fwCppunitTest FWPROJECT_NAME)
             "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/${FWPROJECT_NAME}.vcxproj.user"
             IMMEDIATE @ONLY)
     endif()
-endmacro(fwCppunitTest)
+endmacro()
 
 macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     initProject( ${FWPROJECT_NAME} )
@@ -450,10 +495,10 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
 
     # Adds project into folder lib
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "lib")
-    
+
     fwLibExtra()
 
-endmacro(fwLib)
+endmacro()
 
 macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     initProject( ${FWPROJECT_NAME} )
@@ -461,11 +506,11 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     set(${FWPROJECT_NAME}_TYPE ${${FWPROJECT_NAME}_TYPE} PARENT_SCOPE)
     setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
 
-    set(BUNDLE_DIR "${CMAKE_BINARY_DIR}/Bundles/${FWPROJECT_NAME}_${DASH_VERSION}")
+    set(BUNDLE_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}")
 
     if(EXISTS "${PRJ_SOURCE_DIR}/src")
-        add_library( ${FWPROJECT_NAME} SHARED ${ARGN} 
-            ${${FWPROJECT_NAME}_HEADERS} 
+        add_library( ${FWPROJECT_NAME} SHARED ${ARGN}
+            ${${FWPROJECT_NAME}_HEADERS}
             ${${FWPROJECT_NAME}_SOURCES}
             ${${FWPROJECT_NAME}_RC_FILES}
             ${${FWPROJECT_NAME}_CMAKE_FILES})
@@ -477,18 +522,18 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         set_target_properties(${FWPROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${BUNDLE_DIR})
         # Fixed path for multi-config builds (e.g. msvc)
         foreach( OUTPUTCONFIG ${CMAKE_CONFIGURATION_TYPES} )
-            string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )            
+            string( TOUPPER ${OUTPUTCONFIG} OUTPUTCONFIG )
             set_target_properties(${FWPROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${BUNDLE_DIR})
             set_target_properties(${FWPROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${BUNDLE_DIR})
             set_target_properties(${FWPROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_${OUTPUTCONFIG} ${BUNDLE_DIR})
         endforeach()
-        
+
         if(${FWPROJECT_NAME}_INSTALL)
             qt_plugins_setup() # search and setup qt plugins for each bundles
             install(
                 TARGETS ${FWPROJECT_NAME}
-                RUNTIME DESTINATION Bundles/${FWPROJECT_NAME}_${DASH_VERSION}
-                LIBRARY DESTINATION Bundles/${FWPROJECT_NAME}_${DASH_VERSION}
+                RUNTIME DESTINATION ${BUNDLE_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}
+                LIBRARY DESTINATION ${BUNDLE_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}
                 OPTIONAL NAMELINK_SKIP
                 )
         endif()
@@ -501,7 +546,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
 
         target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/")
     else()
-        add_custom_target(${FWPROJECT_NAME} SOURCES 
+        add_custom_target(${FWPROJECT_NAME} SOURCES
             ${${FWPROJECT_NAME}_RC_FILES}
             ${${FWPROJECT_NAME}_CMAKE_FILES})
     endif()
@@ -511,13 +556,13 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "app")
         if(MSVC_IDE)
             # create the launch config for the current app
-            set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/launcher.exe")
-            set(PROFILE "${CMAKE_BINARY_DIR}/Bundles/${FWPROJECT_NAME}_${DASH_VERSION}/profile.xml")
+            set(LAUNCHER "${CMAKE_BINARY_DIR}/bin/fwlauncher.exe")
+            set(PROFILE "${CMAKE_BINARY_DIR}/${BUNDLE_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}/profile.xml")
             set(WORKING_DIRECTORY "${CMAKE_BINARY_DIR}")
             include(${FWCMAKE_RESOURCE_PATH}/install/win_install.cmake)
             if(NOT DEBUGGER_ENVIRONMENT)
                 findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
-                set(DEBUGGER_ENVIRONMENT ${EXTERNAL_LIBRARIES_DIRECTORIES} 
+                set(DEBUGGER_ENVIRONMENT ${EXTERNAL_LIBRARIES_DIRECTORIES}
                     CACHE INTERNAL "List of all folders containing external libraries")
             endif()
             if(CMAKE_CL_64)
@@ -533,55 +578,37 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     else()
         set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "bundle")
     endif()
-        
+
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
         createResourcesTarget( ${FWPROJECT_NAME}_rc "${PRJ_SOURCE_DIR}/rc" "${BUNDLE_DIR}" )
-        add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc ) 
+        add_dependencies( ${FWPROJECT_NAME} ${FWPROJECT_NAME}_rc )
     endif()
+
     if(${FWPROJECT_NAME}_INSTALL)
-        createResourcesInstallTarget( "${BUNDLE_DIR}" Bundles/${FWPROJECT_NAME}_${DASH_VERSION} )
+        createResourcesInstallTarget( "${BUNDLE_DIR}" ${BUNDLE_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION} )
     endif()
     fwBundleExtra()
-endmacro(fwBundle)
-
-# Include the projects in parameter and their public dependencies and export them.
-# Public dependencies of a project are those defined either with fwForwardInclude or fwUseForwardInclude.
-macro(fwUseForwardInclude)
-    foreach(PROJECT ${ARGV})
-        get_target_property(PROJECT_INCLUDE_DIRECTORIES ${PROJECT} INTERFACE_INCLUDE_DIRECTORIES)
-        list(REMOVE_DUPLICATES PROJECT_INCLUDE_DIRECTORIES)
-        target_include_directories(${FWPROJECT_NAME} PUBLIC ${PROJECT_INCLUDE_DIRECTORIES})
-    endforeach(PROJECT)
-endmacro(fwUseForwardInclude)
-
-macro(fwUseForwardLink)
-    target_link_libraries(${FWPROJECT_NAME} PUBLIC ${ARGV})
-endmacro(fwUseForwardLink)
-
-macro(fwUseForward)
-    fwUseForwardInclude(${ARGV})
-    fwUseForwardLink(${ARGV})
-endmacro(fwUseForward)
+endmacro()
 
 # Include the projects in parameter and export them.
 # Compiling warnings will not be reported (because of SYSTEM).
 macro(fwForwardInclude)
     target_include_directories(${FWPROJECT_NAME} SYSTEM PUBLIC ${ARGV})
-endmacro(fwForwardInclude)
+endmacro()
 
 macro(fwForwardLink)
     target_link_libraries(${FWPROJECT_NAME} PUBLIC ${ARGV})
-endmacro(fwForwardLink)
+endmacro()
 
 # Include the projects in parameter but do not export them.
 # Compiling warnings will not be reported (because of SYSTEM).
 macro(fwInclude)
     target_include_directories(${FWPROJECT_NAME} SYSTEM PRIVATE ${ARGV})
-endmacro(fwInclude)
+endmacro()
 
 macro(fwLink)
     target_link_libraries(${FWPROJECT_NAME} PRIVATE ${ARGV})
-endmacro(fwLink)
+endmacro()
 
 
 # Defines project's linked dependencies on others projects
@@ -590,7 +617,7 @@ endmacro(fwLink)
 # WARNING : some part of this cmake file relies on this macro signature
 
 macro(fwUse)
-    target_link_libraries(${FWPROJECT_NAME} PRIVATE ${ARGV})
+    target_link_libraries(${FWPROJECT_NAME} PUBLIC ${ARGV})
 
     set(${FWPROJECT_NAME}_DEPENDENCIES)
     set(${FWPROJECT_NAME}_EXECUTABLE_DEPENDENCIES)
@@ -600,14 +627,14 @@ macro(fwUse)
     foreach(PROJECT ${ARGV})
         list(APPEND ${FWPROJECT_NAME}_DEPENDENCIES ${PROJECT})
         list(APPEND ${FWPROJECT_NAME}_${${PROJECT}_TYPE}_DEPENDENCIES ${PROJECT})
-    endforeach(PROJECT)
+    endforeach()
 
     set(${FWPROJECT_NAME}_DEPENDENCIES ${${FWPROJECT_NAME}_DEPENDENCIES} PARENT_SCOPE)
     set(${FWPROJECT_NAME}_EXECUTABLE_DEPENDENCIES ${${FWPROJECT_NAME}_EXECUTABLE_DEPENDENCIES} PARENT_SCOPE)
     set(${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES ${${FWPROJECT_NAME}_BUNDLE_DEPENDENCIES} PARENT_SCOPE)
     set(${FWPROJECT_NAME}_LIBRARY_DEPENDENCIES ${${FWPROJECT_NAME}_LIBRARY_DEPENDENCIES} PARENT_SCOPE)
 
-endmacro(fwUse)
+endmacro()
 
 
 
@@ -626,14 +653,14 @@ macro(fwReq)
     foreach(PROJECT ${ARGV})
         list(APPEND ${FWPROJECT_NAME}_REQUIREMENTS ${PROJECT})
         list(APPEND ${FWPROJECT_NAME}_${${PROJECT}_TYPE}_REQUIREMENTS ${PROJECT})
-    endforeach(PROJECT)
+    endforeach()
 
     set(${FWPROJECT_NAME}_REQUIREMENTS ${${FWPROJECT_NAME}_REQUIREMENTS} PARENT_SCOPE)
     set(${FWPROJECT_NAME}_EXECUTABLE_REQUIREMENTS ${${FWPROJECT_NAME}_EXECUTABLE_REQUIREMENTS} PARENT_SCOPE)
     set(${FWPROJECT_NAME}_BUNDLE_REQUIREMENTS ${${FWPROJECT_NAME}_BUNDLE_REQUIREMENTS} PARENT_SCOPE)
     set(${FWPROJECT_NAME}_LIBRARY_REQUIREMENTS ${${FWPROJECT_NAME}_LIBRARY_REQUIREMENTS} PARENT_SCOPE)
 
-endmacro(fwReq)
+endmacro()
 
 
 function(checkMissingDependencies DIR KEYWORD RESULT)
@@ -651,10 +678,10 @@ function(checkMissingDependencies DIR KEYWORD RESULT)
     foreach(DEPENDENCY ${DEPENDENCIES})
         if(NOT ${DEPENDENCY}_TYPE)
             list(APPEND DEPENDENCY_LIST ${DEPENDENCY})
-        endif(NOT ${DEPENDENCY}_TYPE)
-    endforeach(DEPENDENCY)
+        endif()
+    endforeach()
     set(${RESULT} ${DEPENDENCY_LIST} PARENT_SCOPE)
-endfunction(checkMissingDependencies)
+endfunction()
 
 
 function(findAllDependencies FWPROJECT_NAMES RESULT_VAR)
@@ -768,17 +795,24 @@ macro(addProject PROJECT)
     unset(PROJECT_CACHE)
 endmacro()
 
+# Parsing of 'fw-*.cmake' scripts
 if(EXTERNAL_LIBRARIES)
-    list(APPEND CMAKE_PREFIX_PATH ${EXTERNAL_LIBRARIES})
-    list(APPEND CMAKE_MODULE_PATH ${EXTERNAL_LIBRARIES})
-    list(APPEND CMAKE_FIND_ROOT_PATH ${EXTERNAL_LIBRARIES})
 
     file(GLOB LIB_CONFIGS ${EXTERNAL_LIBRARIES}/fw-*.cmake )
     foreach(LIB_CONFIG ${LIB_CONFIGS})
         message(STATUS "include : ${LIB_CONFIG}")
         include("${LIB_CONFIG}")
-    endforeach(LIB_CONFIG)
-endif(EXTERNAL_LIBRARIES)
+    endforeach()
+
+elseif(USE_SYSTEM_LIB)
+
+    file(GLOB LIB_CONFIGS ${FWCMAKE_RESOURCE_PATH}/modules/fw-*.cmake )
+    foreach(LIB_CONFIG ${LIB_CONFIGS})
+        message(STATUS "include : ${LIB_CONFIG}")
+        include("${LIB_CONFIG}")
+    endforeach()
+
+endif()
 
 
 set(PROJECTS_TO_BUILD CACHE STRING
@@ -802,8 +836,9 @@ if(ADDITIONAL_PROJECTS)
         list(APPEND PROJECTS_PROPERTIES ${ADDITIONAL_PROJECTS_PROPERTIES})
         set(ADDITIONAL_PROJECTS_SOURCE_DIR "${ADDITIONAL_PROJECTS_SOURCE_DIR} ${ADDITIONAL_PROJECT}")
     endforeach()
-endif(ADDITIONAL_PROJECTS)
+endif()
 
+unset(PROJECT_LIST)
 foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
     get_filename_component(PROJECT_DIR ${PROPERTIES_FILE} PATH)
 
@@ -865,7 +900,12 @@ endif()
 
 if(BUILD_TESTS)
     findTests("${PROJECT_LIST}" PROJECT_TESTS)
-    set(PROJECT_LIST ${PROJECT_LIST};${PROJECT_TESTS})
+    list(APPEND PROJECT_LIST ${PROJECT_TESTS})
+else()
+    findTests("${PROJECT_LIST}" PROJECT_TESTS)
+    if(PROJECT_TESTS)
+        list(REMOVE_ITEM PROJECT_LIST ${PROJECT_TESTS})
+    endif()
 endif()
 
 if(PROJECTS_TO_INSTALL)
@@ -884,7 +924,7 @@ if(PROJECTS_TO_INSTALL)
     unset(PROJECT_FOUND)
 endif()
 
-if(EXTERNAL_LIBRARIES)
+if(EXTERNAL_LIBRARIES OR USE_SYSTEM_LIB)
     set(APP_TO_BUILD)
     foreach(PROJECT ${PROJECT_LIST})
         addProject(${PROJECT})
@@ -898,7 +938,6 @@ if(EXTERNAL_LIBRARIES)
             endif()
         endif()
     endforeach()
-
 else()
     message("EXTERNAL_LIBRARIES variable is missing. Please, specify external libraries location to genereate CMake projects.")
 endif()

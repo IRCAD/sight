@@ -13,10 +13,8 @@
 #include <fwData/Reconstruction.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwServices/Base.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <vtkCommand.h>
 #include <vtkMatrix4x4.h>
@@ -158,6 +156,14 @@ void Transform::updateFromVtk()
     }
 
     vtkTrf->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
+}
+
+
+//------------------------------------------------------------------------------
+
+int Transform::getStartPriority()
+{
+    return -10;
 }
 
 //------------------------------------------------------------------------------

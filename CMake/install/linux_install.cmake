@@ -14,16 +14,18 @@ endfunction()
 
 #Linux install
 macro(linux_install PRJ_NAME)
-    findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
 
+    if(NOT USE_SYSTEM_LIB)
+        findExtLibDir(EXTERNAL_LIBRARIES_DIRECTORIES)
+    endif()
     set(CPACK_GENERATOR TGZ)
     string(TOLOWER ${PRJ_NAME} LOWER_PRJ_NAME)
     set(ICON_FILENAME ${LOWER_PRJ_NAME}.ico)
 
     if("${${PRJ_NAME}_TYPE}" STREQUAL  "APP")
 
-        set(LAUNCHER_PATH "bin/launcher-${launcher_VERSION}")
-        set(LAUNCHER "launcher-${launcher_VERSION}")
+        set(LAUNCHER_PATH "bin/fwlauncher-${fwlauncher_VERSION}")
+        set(LAUNCHER "fwlauncher-${fwlauncher_VERSION}")
         set(PROFILE_PATH "${PRJ_NAME}_${DASH_VERSION}/profile.xml")
 
     elseif("${${PRJ_NAME}_TYPE}" STREQUAL  "EXECUTABLE")
@@ -37,12 +39,18 @@ macro(linux_install PRJ_NAME)
     endif()
 
     #configure the 'fixup' script
-    configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/linux_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake @ONLY)
-    install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake)
+    if(NOT USE_SYSTEM_LIB)
+        configure_file(${FWCMAKE_RESOURCE_PATH}/install/linux/linux_fixup.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake @ONLY)
+        install(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/linux_fixup.cmake)
+    endif()
 
+    set(CPACK_OUTPUT_FILE_PREFIX packages)
     set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.") #look inside install dir for packaging
 
-    set(CPACK_PACKAGE_VENDOR "IRCAD")
+    execute_process( COMMAND uname -m COMMAND tr -d '\n' OUTPUT_VARIABLE ARCHITECTURE )
+
+    set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${VERSION}-linux_${ARCHITECTURE}")
+    set(CPACK_PACKAGE_VENDOR "IRCAD-IHU")
     set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
     set(CPACK_PACKAGE_VERSION "${VERSION}")
 
@@ -51,8 +59,10 @@ macro(linux_install PRJ_NAME)
         install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${PRJ_NAME}_${DASH_VERSION}.sh DESTINATION ${CMAKE_INSTALL_PREFIX} )
     endif()
 
-    #Copy the qt font directory inside install/libs
-    install( DIRECTORY "${EXTERNAL_LIBRARIES}/lib/fonts" DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+    if(NOT USE_SYSTEM_LIB)
+        #Copy the qt font directory inside install/libs
+        install( DIRECTORY "${EXTERNAL_LIBRARIES}/lib/fonts" DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/")
+    endif()
 
     include(CPack)
 

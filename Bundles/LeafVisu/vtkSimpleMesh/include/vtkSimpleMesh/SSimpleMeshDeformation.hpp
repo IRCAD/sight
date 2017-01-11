@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,19 +11,29 @@
 
 #include <fwData/Mesh.hpp>
 
-#include <fwThread/Timer.hpp>
-
-
 #include <fwServices/IController.hpp>
 
-
+#include <fwThread/Timer.hpp>
 
 namespace vtkSimpleMesh
 {
 
 /**
- * @brief   Service used to deform a mesh
- * @class   SSimpleMeshDeformation
+ * @brief   Service used to demonstrate how to deform a mesh.
+ *
+ * @section Slots Slots
+ * - \b startDeformation(): start the deformation of the mesh.
+ * - \b stopDeformation(): stop the deformation of the mesh..
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::vtkSimpleMesh::SSimpleMeshDeformation">
+            <inout key="mesh" uid="..." />
+       </service>
+   @endcode
+ * @subsection In-Out In-Out:
+ * - \b mesh [::fwData::Mesh]: mesh to deform.
  */
 class VTKSIMPLEMESH_CLASS_API SSimpleMeshDeformation : public ::fwServices::IController
 {
@@ -48,10 +58,8 @@ protected:
     /// Starting method. Initialize timer.
     VTKSIMPLEMESH_API virtual void starting() throw(fwTools::Failed);
 
-
     /// Configuring method.
     VTKSIMPLEMESH_API virtual void configuring() throw(::fwTools::Failed);
-
 
     /// Stopping method.
     VTKSIMPLEMESH_API virtual void stopping() throw(fwTools::Failed);
@@ -68,18 +76,18 @@ protected:
 private:
 
     /// Helper to copy quicly meshes ( only points, normals and point colors )
-    void copyMesh( const ::fwData::Mesh::sptr & src, const ::fwData::Mesh::sptr & dest ) const;
+    void copyMesh( const ::fwData::Mesh::sptr& src, const ::fwData::Mesh::sptr& dest ) const;
 
     /// Copy associated mesh to m_mesh and initialize m_transformMesh
     void initMeshBackup();
 
     /// Helper to compute mesh deformation
-    void computeDeformation( const ::fwData::Mesh::sptr & refMesh, const ::fwData::Mesh::sptr & transformMesh );
+    void computeDeformation( const ::fwData::Mesh::sptr& refMesh, const ::fwData::Mesh::sptr& transformMesh );
 
     /// Helper to compute mesh deformation
     void computeDeformation(
-        const ::fwData::Mesh::sptr & refMesh,
-        const ::fwData::Mesh::sptr & transformMesh,
+        const ::fwData::Mesh::sptr& refMesh,
+        const ::fwData::Mesh::sptr& transformMesh,
         float deformationPercent );
 
     ::fwThread::Timer::sptr m_timer;

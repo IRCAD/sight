@@ -11,12 +11,12 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/TransferFunction.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwRenderVTK/vtk/fwVtkWindowLevelLookupTable.hpp>
 
@@ -71,6 +71,9 @@ Image::~Image() throw()
 
 void Image::doStart() throw(fwTools::Failed)
 {
+    ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+    this->setTransferFunctionSelection(tfSelection);
+
     this->doUpdate();
     this->installTFConnections();
 }
@@ -97,7 +100,7 @@ void Image::doSwap() throw(fwTools::Failed)
 void Image::doUpdate() throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if (imageIsValid)
     {
@@ -208,7 +211,7 @@ void Image::updateImageOpacity()
             ::fwData::Boolean::sptr visible = img->getField< ::fwData::Boolean >( "VISIBILITY" );
             m_imageOpacity                  = (*visible) ? m_imageOpacity : 0.0;
         }
-        vtkImageBlend *imageBlend = vtkImageBlend::SafeDownCast(m_imageRegister);
+        vtkImageBlend* imageBlend = vtkImageBlend::SafeDownCast(m_imageRegister);
         imageBlend->SetOpacity(m_imagePortId, m_imageOpacity);
         OSLM_TRACE(
             "vtkImageBlend " << this->m_imageRegisterId << " opacity :" << m_imagePortId << "," << m_imageOpacity );
@@ -231,9 +234,9 @@ void Image::buildPipeline( )
         m_imageRegister = this->getVtkObject(m_imageRegisterId);
     }
 
-    vtkImageAlgorithm *algorithm  = vtkImageAlgorithm::SafeDownCast(m_imageRegister);
-    vtkImageData      *imageData  = vtkImageData::SafeDownCast(m_imageRegister);
-    vtkImageBlend     *imageBlend = vtkImageBlend::SafeDownCast(m_imageRegister);
+    vtkImageAlgorithm* algorithm = vtkImageAlgorithm::SafeDownCast(m_imageRegister);
+    vtkImageData* imageData      = vtkImageData::SafeDownCast(m_imageRegister);
+    vtkImageBlend* imageBlend    = vtkImageBlend::SafeDownCast(m_imageRegister);
 
     SLM_ASSERT("Invalid vtk image register", algorithm||imageData||imageBlend );
     if (imageBlend)
@@ -265,9 +268,9 @@ void Image::buildPipeline( )
 
 void Image::destroyPipeline( )
 {
-    vtkImageAlgorithm *algorithm  = vtkImageAlgorithm::SafeDownCast(m_imageRegister);
-    vtkImageData      *imageData  = vtkImageData::SafeDownCast(m_imageRegister);
-    vtkImageBlend     *imageBlend = vtkImageBlend::SafeDownCast(m_imageRegister);
+    vtkImageAlgorithm* algorithm = vtkImageAlgorithm::SafeDownCast(m_imageRegister);
+    vtkImageData* imageData      = vtkImageData::SafeDownCast(m_imageRegister);
+    vtkImageBlend* imageBlend    = vtkImageBlend::SafeDownCast(m_imageRegister);
 
     if (imageBlend)
     {

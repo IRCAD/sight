@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,6 +16,7 @@
 #include <fwJobs/IJob.hpp>
 
 #include <fwAtomsBoostIO/Writer.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 
 #include <set>
 
@@ -55,7 +56,7 @@ protected:
 
     /**
      * @brief Configures the writer
-       @verbatim
+       @code{.xml}
        <config>
         <patcher context="..." version="..." />
 
@@ -77,7 +78,7 @@ protected:
         </extensions>
 
        </config>
-       @endverbatim
+       @endcode
      *
      * archive : defines custom file extensions. The file to be saved with an extension given in 'archive' tag will be
      * written with the given backend in archive tag (the 'backend' attribute is mandatory). Extensions must begin with
@@ -121,7 +122,8 @@ protected:
     /// Current version of format
     std::string m_version;
 
-    /// Proposes a gui to select available exports (set m_exportedVersion). Returns false if user cancel the selection
+    /// Proposes a gui to select available exports (set m_exportedVersion).
+    /// Returns false if user cancel the selection.
     bool versionSelection();
 
     /// Allowed file extensions
@@ -135,6 +137,9 @@ protected:
 
     /// Signal emitted when job created.
     JobCreatedSignalType::sptr m_sigJobCreated;
+
+    /// Extension selected in file dialog
+    std::string m_selectedExtension;
 };
 
 } // namespace ioAtoms

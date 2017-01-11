@@ -1,13 +1,5 @@
 fwLoadProperties()
 
-fwUseForwardInclude(
-    fwComEd
-    fwCore
-    fwData
-    fwMath
-    fwTools
-)
-
 find_package(GLM REQUIRED)
 
 fwForwardInclude(

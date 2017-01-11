@@ -1,0 +1,67 @@
+<extension implements="::fwServices::registry::AppConfig2">
+    <id>DicomPreview</id>
+    <parameters>
+        <param name="ICON_PATH" />
+        <param name="SERIESDB" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
+    </parameters>
+    <config>
+
+        <object type="::fwMedData::SeriesDB" uid="${SERIESDB}" src="ref" />
+        <object type="::fwData::Vector" uid="dicomSelection" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="dicomPreviewFrame" type="::gui::frame::SDefaultFrame" >
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>DICOM Preview</name>
+                    <icon>${ICON_PATH}</icon>
+                     <!--<minSize width="400" height="750" />-->
+                </frame>
+            </gui>
+            <registry>
+                <view sid="mainView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="mainView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::CardinalLayoutManager" >
+                    <view caption="DICOM Information" align="center" minWidth="200" />
+                    <view caption="DICOM Preview" align="right" minWidth="200" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="dicomSelector" start="yes" />
+                <view wid="dicomPreview" start="yes" />
+            </registry>
+        </service>
+
+        <!-- DICOM SELECTION -->
+        <service uid="dicomSelector" type="::uiMedData::editor::SSelector" autoConnect="yes">
+            <inout key="selection" uid="dicomSelection" />
+            <inout key="seriesDB" uid="${SERIESDB}" />
+        </service>
+
+        <service uid="dicomViewer" type="::uiMedData::SSeriesViewer" autoConnect="yes">
+            <in key="series" uid="dicomSelection" />
+            <parentView wid="dicomPreview" />
+            <configs>
+                <config id="2DLocalPreviewConfig" type="::fwMedData::DicomSeries" />
+            </configs>
+        </service>
+
+        <connect channel="${CLOSE_CONFIG_CHANNEL}">
+            <signal>dicomPreviewFrame/closed</signal>
+        </connect>
+
+        <!-- START AND STOP SERVICES -->
+        <start uid="dicomPreviewFrame" />
+        <start uid="dicomViewer" />
+
+        <update uid="dicomSelector" />
+
+    </config>
+</extension>

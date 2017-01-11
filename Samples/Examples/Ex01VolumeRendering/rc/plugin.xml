@@ -1,0 +1,483 @@
+<!--
+                 graphical application overview.
+
+  =========================================================
+  |                   menuBar                             |
+  =========================================================
+  |                           |         |     TFEditor    |
+  |                           |         |=================|
+  |      genericScene1        | negato1 |                 |
+  |                           |         | Scene2D_Shutter |
+  |                           |         |                 |
+  =========================================================
+  |                           |         |                 |
+  |      genericScene2        |         |                 |
+  |                           | negato2 |     Scene2D     |
+  |===========================|         |================ |
+  | multiView_scene1_bottom   |         |  windowLevel    |
+  =========================================================
+Comment: Name inside the drawing are the uid of the service defined below.
+
+ This application allows to load an medical image and displays it:
+  - The genericscene1 displays the image with volume rendering by using the transfer function defined in TFEditor.
+  - The negato1 displays the image with a 2D multi-planar rendering by using the transfer function defined in TFEditor.
+
+  - The genericscene2 displays the image with a 3D multi-planar rendering by using the default transfer function (CT-GreyLevel).
+  - The negato2 displays the image with a 2D multi-planar rendering by using the default transfer function (CT-GreyLevel).
+
+ It also displays in Scene2D_Shutter the transfer function selected in TFEditor. Scene2D displays a range of the transfer function defined
+ by the gray range in Scene2D_Shutter.
+
+ -->
+
+<plugin id="Ex01VolumeRendering" version="@DASH_VERSION@" >
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+    <requirement id="scene2D" />
+
+    <extension implements="::fwServices::registry::AppConfig2">
+        <id>Ex01VolumeRendering</id>
+        <config>
+
+            <object uid="imageUID" type="::fwData::Image" />
+            <object uid="TFSet" type="::fwData::Composite" src="deferred" />
+            <object uid="TFSelectionsUID" type="::fwData::Composite" />
+            <object uid="Viewport" type="::scene2D::data::Viewport" />
+
+            <!--  Service entrance point for interface creation -->
+            <service uid="IHM" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>Ex01VolumeRendering</name>
+                        <icon>@BUNDLE_PREFIX@/Ex01VolumeRendering_0-1/tuto.ico</icon>
+                    </frame>
+                    <menuBar />
+                </gui>
+                <registry>
+                    <menuBar sid="menuBar" start="yes" />
+                    <view sid="multiView" start="yes" />
+                </registry>
+            </service>
+            <service uid="menuBar" type="::gui::aspect::SDefaultMenuBar" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menu_File" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menu_File" type="::gui::aspect::SDefaultMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open file" shortcut="Ctrl+O" />
+                        <menuItem name="Save file" shortcut="Ctrl+S" />
+                        <separator />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="action_openFile" start="yes" />
+                    <menuItem sid="action_saveFile" start="yes" />
+                    <menuItem sid="action_quit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="action_openFile" type="::gui::action::SStarter">
+                <start uid="readerPathFile" />
+            </service>
+
+            <service uid="action_saveFile" type="::gui::action::SStarter">
+                <start uid="writerPathFile" />
+            </service>
+
+            <service uid="action_quit" type="::gui::action::SQuit" />
+
+            <service uid="multiView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager" >
+                        <view align="center"  />
+                        <view align="right" caption="Parameters" minWidth="400" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="leftMultiView" start="yes" />
+                    <view sid="rightMultiView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="leftMultiView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager" >
+                        <orientation value="vertical" />
+                        <view proportion ="1" />
+                        <view proportion ="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="leftUpperMultiView" start="yes" />
+                    <view sid="leftBottomMultiView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="leftUpperMultiView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager" >
+                        <orientation value="horizontal" />
+                        <view proportion ="1" caption="Volume rendering" />
+                        <view proportion ="1" caption="Negato 1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericScene1" start="yes" />
+                    <view sid="negato1" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="leftBottomMultiView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager" >
+                        <orientation value="horizontal" />
+                        <view proportion ="1" caption="Negato 3D" />
+                        <view proportion ="1" caption="Negato 2"/>
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="multiView_scene1" start="yes" />
+                    <view sid="negato2" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="multiView_scene1" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager" >
+                        <view align="center" />
+                        <view align="bottom" minWidth="200" minHeight="30" resizable="no" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericScene2" start="yes" />
+                    <view sid="multiView_scene1_bottom" start="yes" />
+                </registry>
+            </service>
+            <service uid="multiView_scene1_bottom" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager" >
+                        <orientation value="horizontal" />
+                        <view proportion="0" minWidth="30" />
+                        <view proportion="0" minWidth="50" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="sliceListEditor" start="yes" />
+                    <view sid="showScanEditor" start="yes" />
+                    <view sid="sliderIndexEditor" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="rightMultiView" type="::gui::view::SDefaultView" >
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager" >
+                        <orientation value="vertical" />
+                        <view proportion ="0" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <view proportion ="0" />
+                    </layout>
+
+                </gui>
+                <registry>
+                    <view sid="TFEditor" start="no" />
+                    <view sid="Scene2D_Shutter" start="yes" />
+                    <view sid="Scene2D" start="yes" />
+                    <view sid="windowLevel" start="yes" />
+                </registry>
+            </service>
+
+            <!-- Image reader/writer -->
+
+            <service uid="readerPathFile" type="::uiIO::editor::SIOSelector">
+                <in key="image" uid="imageUID" />
+                <type mode="reader" />
+            </service>
+
+            <service uid="writerPathFile" type="::uiIO::editor::SIOSelector">
+                <inout key="image" uid="imageUID" />
+                <type mode="writer" />
+            </service>
+
+            <service uid="windowLevel" type="::uiImage::WindowLevel" >
+                <inout key="image" uid="imageUID" autoConnect="yes"/>
+                <inout key="TFSelections" uid="TFSelectionsUID" />
+                <config selectedTFKey="SelectedTF" />
+            </service>
+
+            <service uid="sliceListEditor" type="::guiQt::editor::SSelectionMenuButton">
+                <toolTip>Manage slice visibility</toolTip>
+                <selected>3</selected>
+                <items>
+                    <item text="One slice" value="1" />
+                    <item text="three slices" value="3" />
+                </items>
+            </service>
+
+            <service uid="showScanEditor" type="::guiQt::editor::SSignalButton">
+                <config>
+                    <checkable>true</checkable>
+                    <icon>@BUNDLE_PREFIX@/media_0-1/icons/sliceHide.png</icon>
+                    <icon2>@BUNDLE_PREFIX@/media_0-1/icons/sliceShow.png</icon2>
+                    <iconWidth>40</iconWidth>
+                    <iconHeight>16</iconHeight>
+                    <checked>true</checked>
+                </config>
+            </service>
+
+            <service uid="sliderIndexEditor" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes" >
+                <in key="image" uid="imageUID" />
+                <sliceIndex>axial</sliceIndex>
+            </service>
+
+            <!-- This manager adds/removes a field (m_transferFunctionCompositeId) on Image (image) -->
+            <service uid="fieldMgr" type="::gui::action::SPushField" >
+                <inout key="source" uid="imageUID" />
+                <out key="destination" uid="TFSet" />
+                <push field="m_transferFunctionCompositeId" />
+            </service>
+
+            <service uid="TFEditor" type="::uiTF::TransferFunctionEditor">
+                <inout key="transferFunctions" uid="TFSet" />
+                <inout key="TFSelections" uid="TFSelectionsUID" />
+                <config selectedTFKey="SelectedTF" />
+            </service>
+
+            <!-- This generic scene (genericScene1) uses the transfer function stores with key = SelectedTF in TFSelections -->
+            <service uid="genericScene1" type="::fwRenderVTK::SRender" autoConnect="yes" >
+                <in key="image" uid="imageUID" />
+                <inout key="TFSelections" uid="TFSelectionsUID" />
+                <scene>
+                    <picker id="picker" vtkclass="fwVtkCellPicker" />
+
+                    <renderer id="default" background="0.0" />
+
+                    <!-- Adaptor to visualize the medical image (image) with volume rendering. -->
+                    <adaptor id="vRAdaptor" class="::visuVTKVRAdaptor::Volume" objectId="image">
+                        <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                    </adaptor>
+
+                    <adaptor id="ImageText" class="::visuVTKAdaptor::ImageText" objectId="image">
+                        <config renderer="default" picker="picker" text="" color="#FFFFFF" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                    </adaptor>
+
+                </scene>
+            </service>
+
+            <!-- This generic scene (genericScene2) uses the default transfer function (CT-GreyLevel) -->
+            <service uid="genericScene2" type="::fwRenderVTK::SRender" autoConnect="yes" >
+                <in key="image" uid="imageUID" />
+                <scene>
+                    <picker id="picker" vtkclass="fwVtkCellPicker" />
+
+                    <renderer id="default" background="0.0" />
+
+                    <!-- Adaptor to visualize the medical image (image) in a 3D multi-planar rendering -->
+                    <adaptor id="MPRNegato3D" uid="MPRNegatoScene3D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
+                        <config renderer="default" picker="picker" mode="3D" slices="3" sliceIndex="axial" />
+                    </adaptor>
+
+                    <adaptor id="ImageText" class="::visuVTKAdaptor::ImageText" objectId="image">
+                        <config renderer="default" picker="picker" text="" color="#FFFFFF" />
+                    </adaptor>
+
+                    <adaptor id="cameraScene3DID" class="::visuVTKAdaptor::Medical3DCamera" objectId="image">
+                        <config renderer="default" sliceIndex="axial" />
+                    </adaptor>
+
+                    <connect waitForKey="image">
+                        <signal>showScanEditor/toggled</signal>
+                        <slot>MPRNegatoScene3D/showSlice</slot>
+                    </connect>
+
+                    <connect waitForKey="image">
+                        <signal>sliceListEditor/selected</signal>
+                        <slot>MPRNegatoScene3D/updateSliceMode</slot>
+                    </connect>
+
+                </scene>
+            </service>
+
+            <!-- This negato (negato1) uses the transfer function stores with key = SelectedTF in TFSelections -->
+            <service uid="negato1" type="::fwRenderVTK::SRender" autoConnect="yes" >
+                <in key="image" uid="imageUID" />
+                <inout key="TFSelections" uid="TFSelectionsUID" />
+                <scene>
+                    <picker id="picker" vtkclass="fwVtkCellPicker" />
+
+                    <renderer id="default" background="0.0" />
+
+                    <adaptor id="Interactor4Negato" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                        <config renderer="default" style="InteractorStyle2DForNegato" />
+                    </adaptor>
+
+                    <adaptor id="MPRNegato2D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
+                        <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                    </adaptor>
+
+                    <adaptor id="ImageText" class="::visuVTKAdaptor::ImageText" objectId="image">
+                        <config renderer="default" picker="picker" text="" color="#FFFFFF" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                    </adaptor>
+
+                </scene>
+            </service>
+
+            <!-- This negato (negato2) uses the default transfer function (CT-GreyLevel) -->
+            <service uid="negato2" type="::fwRenderVTK::SRender" autoConnect="yes" >
+                <in key="image" uid="imageUID" />
+                <scene>
+                    <picker id="picker" vtkclass="fwVtkCellPicker" />
+
+                    <renderer id="default" background="0.0" />
+
+                    <adaptor id="Interactor4Negato" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                        <config renderer="default" style="InteractorStyle2DForNegato" />
+                    </adaptor>
+
+                    <adaptor id="MPRNegato2D" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
+                        <config renderer="default" picker="picker" mode="2d" slices="1" sliceIndex="axial" />
+                    </adaptor>
+
+                    <adaptor id="ImageText" class="::visuVTKAdaptor::ImageText" objectId="image">
+                        <config renderer="default" picker="picker" text="" color="#FFFFFF" />
+                    </adaptor>
+
+                </scene>
+            </service>
+
+
+            <!-- Declaration of the 2D scene service uses to create the TF editor which draw the range of transfer function define by the Scene2D_Shutter -->
+            <service uid="Scene2D" type="::scene2D::Render" autoConnect="yes" >
+                <in key="image" uid="imageUID" />
+                <inout key="viewport" uid="Viewport" />
+                <inout key="TFSelections" uid="TFSelectionsUID" />
+                <scene>
+
+                    <scene x="-1100" y="-1.1" width="2100" height="1.2" antialiasing="true" />
+
+                    <viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" />
+
+                    <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
+                    <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
+                    <axis id="axeHistogramY" origin="0.0" scale="-0.0000025" scaleType="LINEAR" />
+
+                    <adaptor id="grid1" class="::scene2D::adaptor::Grid2D" objectId="self">
+                        <config xMin="-1000" xMax="1000" yMin="0" yMax="1" xSpacing="100" ySpacing="0.1" opacity="0.4" color="lightGray" xAxis="xAxis"
+                            yAxis="yAxis" zValue="2" viewportUID="viewport" />
+                    </adaptor>
+
+                    <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
+                        <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis"
+                            yAxis="yAxis" zValue="5" pointSize="12" viewportUID="viewport"
+                            selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                    </adaptor>
+
+                    <adaptor id="axisLeft" class="::scene2D::adaptor::Axis" objectId="self">
+                        <config xAxis="xAxis" yAxis="yAxis" zValue="4" color="cyan" unit="%" align="left" min="0" max="1" step="0.1" viewportUID="viewport" />
+                    </adaptor>
+
+                    <adaptor id="scaleValuesBottom" class="::scene2D::adaptor::ScaleValues" objectId="self">
+                        <config min="-900" max="1500" interval="100" fontSize="6" align="bottom" unit="Hfd." viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis"
+                            zValue="10" />
+                    </adaptor>
+
+                    <adaptor id="scaleValuesLeft" class="::scene2D::adaptor::ScaleValues" objectId="self">
+                        <config min="0.0" max="1.0" interval="0.1" fontSize="6" align="left" unit="%" viewportUID="viewport" color="cyan" xAxis="xAxis" yAxis="yAxis" zValue="10" />
+                    </adaptor>
+
+                    <adaptor id="scaleValuesTop" class="::scene2D::adaptor::ScaleValues" objectId="self">
+                        <config min="-900" max="1500" interval="100" fontSize="6" align="top" unit="Hfd." viewportUID="viewport" color="red" xAxis="xAxis" yAxis="yAxis" zValue="10" />
+                    </adaptor>
+
+                    <adaptor id="scaleValuesRight" class="::scene2D::adaptor::ScaleValues" objectId="self">
+                        <config min="0.0" max="1.0" interval="0.1" fontSize="6" align="right" unit="%" viewportUID="viewport" color="yellow" xAxis="xAxis" yAxis="yAxis" zValue="10" />
+                    </adaptor>
+
+                    <adaptor id="axisTestBottom" class="::scene2D::adaptor::Axis" objectId="self">
+                        <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="-900.0" max="1500" align="bottom" color="red" tickSize="5" interval="100" viewportUID="viewport" />
+                    </adaptor>
+
+                    <adaptor id="axisTestTop" class="::scene2D::adaptor::Axis" objectId="self">
+                        <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="-900.0" max="1500" align="top" color="green" tickSize="5" interval="100" viewportUID="viewport" />
+                    </adaptor>
+
+                    <adaptor id="axisTestLeft" class="::scene2D::adaptor::Axis" objectId="self">
+                        <config xAxis="xAxis" yAxis="yAxis" zValue="11" min="0" max="1.0" align="left" color="cyan" tickSize="5" interval="0.1" viewportUID="viewport" />
+                    </adaptor>
+
+                    <adaptor id="axisTestRight" class="::scene2D::adaptor::Axis" objectId="self">
+                        <config xAxis="xAxis" yAxis="yAxis" zValue="12" min="0" max="1.0" align="right" color="yellow" tickSize="5" interval="0.1" viewportUID="viewport" />
+                    </adaptor>
+
+                    <adaptor id="viewportUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="viewport">
+                        <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
+                    </adaptor>
+
+                </scene>
+
+            </service>
+
+            <!-- Declaration of the shutter service uses to focus a range of the transfer function which will be draw by the Scene2D service. -->
+            <service uid="Scene2D_Shutter" type="::scene2D::Render" autoConnect="yes" >
+                <in key="image" uid="imageUID" />
+                <inout key="viewport" uid="Viewport" />
+                <inout key="TFSelections" uid="TFSelectionsUID" />
+                <scene>
+
+                    <scene x="-1100" y="-1.1" width="2100" height="1.2" />
+                    <viewport id="view1" x="-1100" y="-1.1" width="2100" height="1.2" />
+
+                    <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
+                    <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
+
+                    <adaptor id="grid1" class="::scene2D::adaptor::Grid2D" objectId="self">
+                        <config xMin="-1100" xMax="3000" yMin="0.1" yMax="1.7" xSpacing="500" ySpacing="0.2" color="lightGray" xAxis="xAxis" yAxis="yAxis"
+                            zValue="1" viewportUID="viewport"/>
+                    </adaptor>
+
+                    <axis id="axeHistogramY" origin="0.0" scale="-0.000005" scaleType="LINEAR" />
+
+                    <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
+                        <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis"
+                            yAxis="yAxis" zValue="5" pointSize="12" viewportUID="viewport"
+                            selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                    </adaptor>
+
+                    <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="viewport">
+                        <config xAxis="xAxis" yAxis="yAxis" zValue="3" initialWidth="1000" initialPos="-100" />
+                    </adaptor>
+                </scene>
+            </service>
+
+            <connect>
+                <signal>imageUID/modified</signal>
+                <slot>fieldMgr/update</slot>
+            </connect>
+
+            <connect>
+                <signal>showScanEditor/toggled</signal>
+                <slot>sliceListEditor/setEnabled</slot>
+            </connect>
+
+            <start uid="fieldMgr" />
+            <start uid="IHM" />
+
+            <!-- Deferred start -->
+            <start uid="TFEditor" />
+
+        </config>
+    </extension>
+
+</plugin>

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,7 +13,6 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
@@ -70,7 +69,7 @@ void SwapperSrv::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::info( std::ostream &_sstream )
+void SwapperSrv::info( std::ostream& _sstream )
 {
 }
 
@@ -102,7 +101,7 @@ void SwapperSrv::stopping()  throw ( ::fwTools::Failed )
 
             if( subSrv->m_hasAutoConnection )
             {
-                subSrv->m_connections->disconnect();
+                subSrv->m_connections.disconnect();
             }
             subSrv->getService()->stop().wait();
             ::fwServices::OSR::unregisterService(subSrv->getService());
@@ -223,7 +222,7 @@ void SwapperSrv::addObjects(::fwData::Composite::ContainerType objects)
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::addObject( const std::string &objectId, ::fwData::Object::sptr object )
+void SwapperSrv::addObject( const std::string& objectId, ::fwData::Object::sptr object )
 {
     if(!m_managerConfiguration->find("object", "id", objectId).empty())
     {
@@ -247,11 +246,7 @@ void SwapperSrv::addObject( const std::string &objectId, ::fwData::Object::sptr 
             if ( cfg->getAttributeValue("autoConnect") == "yes" )
             {
                 subSrv->m_hasAutoConnection = true;
-                if (!subSrv->m_connections)
-                {
-                    subSrv->m_connections = ::fwServices::helper::SigSlotConnection::New();
-                }
-                subSrv->m_connections->connect( object, srv, srv->getObjSrvConnections() );
+                subSrv->m_connections.connect( object, srv, srv->getObjSrvConnections() );
             }
 
             std::string workerKey = cfg->getAttributeValue("worker");
@@ -301,7 +296,7 @@ void SwapperSrv::changeObjects(::fwData::Composite::ContainerType newObjects,
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::changeObject(const std::string &objectId, ::fwData::Object::sptr object)
+void SwapperSrv::changeObject(const std::string& objectId, ::fwData::Object::sptr object)
 {
     std::vector< ConfigurationType > confVec = m_managerConfiguration->find("object", "id", objectId);
     for( ConfigurationType cfg :  confVec )
@@ -323,9 +318,9 @@ void SwapperSrv::changeObject(const std::string &objectId, ::fwData::Object::spt
 
                 if (subSrv->m_hasAutoConnection)
                 {
-                    subSrv->m_connections->disconnect();
-                    subSrv->m_connections->connect( object, subSrv->getService(),
-                                                    subSrv->getService()->getObjSrvConnections() );
+                    subSrv->m_connections.disconnect();
+                    subSrv->m_connections.connect( object, subSrv->getService(),
+                                                   subSrv->getService()->getObjSrvConnections() );
                 }
             }
             else
@@ -354,7 +349,7 @@ void SwapperSrv::removeObjects( ::fwData::Composite::ContainerType objects )
 
 //-----------------------------------------------------------------------------
 
-void SwapperSrv::removeObject( const std::string &objectId )
+void SwapperSrv::removeObject( const std::string& objectId )
 {
     if(!m_managerConfiguration->find("object", "id", objectId).empty())
     {
@@ -374,7 +369,7 @@ void SwapperSrv::removeObject( const std::string &objectId )
 
             if (subSrv->m_hasAutoConnection)
             {
-                subSrv->m_connections->disconnect();
+                subSrv->m_connections.disconnect();
             }
             if(m_dummyStopMode)
             {
@@ -439,7 +434,6 @@ void SwapperSrv::initOnDummyObject( std::string objectId )
             if ( cfg->getAttributeValue("autoConnect") == "yes" )
             {
                 subSrv->m_hasAutoConnection = true;
-                subSrv->m_connections       = ::fwServices::helper::SigSlotConnection::New();
             }
 
             subVecSrv.push_back(subSrv);

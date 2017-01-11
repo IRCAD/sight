@@ -35,7 +35,7 @@ fi
 #Find the directories
 bindir=`dirname "$me"`
 libdir=`cd "$bindir/lib" ; pwd`
-bundledir=`cd "$bindir/Bundles"; pwd`
+bundledir=`cd "$bindir/@BUNDLE_PREFIX@"; pwd`
 fontdir=`cd "$libdir/fonts"; pwd`
 
 #export LD_LIBRARY_PATH
@@ -44,5 +44,5 @@ export LD_LIBRARY_PATH
 #export the path to the fonts (mandatory for Qt)
 QT_QPA_FONTDIR=$fontdir
 export QT_QPA_FONTDIR
-#Use CMAKE Variable of launcher and Profile.xml path
-exec "$bindir/@LAUNCHER_PATH@" "$bundledir/@PROFILE_PATH@" "-B" "$bundledir" "--rwd" "$bindir"
+#Use CMAKE Variable of fwlauncher and Profile.xml path
+exec "$bindir/bin/@LAUNCHER@" "$bundledir/@PROFILE_PATH@" "-B" "$bundledir" "--rwd" "$bindir/"

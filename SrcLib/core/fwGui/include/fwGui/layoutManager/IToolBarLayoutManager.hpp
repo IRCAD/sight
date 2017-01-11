@@ -7,9 +7,6 @@
 /**
  * @file fwGui/layoutManager/IToolBarLayoutManager.hpp
  * @brief This file defines the interface of the base class for managing a toolbar.
- *
- *
- * @date 2009-2010
  */
 
 #ifndef __FWGUI_LAYOUTMANAGER_ITOOLBARLAYOUTMANAGER_HPP__
@@ -32,8 +29,6 @@ namespace layoutManager
 
 /**
  * @brief   Defines the toolBar layout manager for IHM.
- * @class   IToolBarLayoutManager
- *
  */
 class FWGUI_CLASS_API IToolBarLayoutManager : public ::fwGui::GuiBaseObject
 {
@@ -103,15 +98,15 @@ public:
      * @brief Initialize layout managers.
      *
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
        <service uid="toolbar2" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
            <gui>
                <layout>
-                   <menuItem name="My item 2" style="check" icon="Bundles/TutoGui_0-1/icons/system.png" icon2="Bundles/TutoGui_0-1/icons/monkey.png" />
-                   <menuItem name="My item 3" style="check" icon="Bundles/TutoGui_0-1/icons/system.png"/>
+                   <menuItem name="My item 2" style="check" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png" icon2="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png" />
+                   <menuItem name="My item 3" style="check" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png"/>
                    <separator />
-                   <menuItem name="My item A" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
-                   <menuItem name="My item B" style="radio" icon="Bundles/TutoGui_0-1/icons/monkey.png"/>
+                   <menuItem name="My item A" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png"/>
+                   <menuItem name="My item B" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/monkey.png"/>
                    <separator />
                    <menu name="My menu" />
                    <separator />
@@ -127,11 +122,11 @@ public:
                <editor sid="editor" />
            </registry>
        </service>
-       @endverbatim
+       @endcode
      * This method analyzes the gui section of the configuration.
      *
      *  - \<layout\> (mandatory) : give the list of the menu item that will appear in the toolbar.
-     *  - \<menuItem name="My item 2" style="radio" icon="Bundles/TutoGui_0-1/icons/system.png"/\> :
+     *  - \<menuItem name="My item 2" style="radio" icon="@BUNDLE_PREFIX@/TutoGui_0-1/icons/system.png"/\> :
      *   - \b name (mandatory) : give the name of the menu item that will appear in the interface.
      *   - \b style {check|radio} : give the style of the menu item.
      *   - \b icon : give the path of the icon file

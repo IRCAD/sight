@@ -11,22 +11,18 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <fwData/Integer.hpp>
-#include <fwData/Image.hpp>
-#include <fwData/TransferFunction.hpp>
-#include <fwData/Float.hpp>
 #include <fwData/Color.hpp>
+#include <fwData/Float.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Integer.hpp>
+#include <fwData/TransferFunction.hpp>
+
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwRenderVTK/vtk/Helpers.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/Base.hpp>
-
-#include <boost/format.hpp>
 
 #include <vtkActor.h>
 #include <vtkParametricBoy.h>
@@ -37,6 +33,8 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSphereSource.h>
 #include <vtkTransform.h>
+
+#include <boost/format.hpp>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image3DCursor, ::fwData::Image );
 

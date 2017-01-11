@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -121,6 +121,16 @@ public:
     typedef boost::multi_array_ref<TexCoordValueType, 2> PointTexCoordsMultiArrayType;
     typedef boost::multi_array_ref<TexCoordValueType, 2> CellTexCoordsMultiArrayType;
 
+    typedef boost::const_multi_array_ref<PointValueType, 2> ConstPointsMultiArrayType;
+    typedef boost::const_multi_array_ref<CellTypes, 1> ConstCellTypesMultiArrayType;
+    typedef boost::const_multi_array_ref<CellValueType, 1> ConstCellDataMultiArrayType;
+    typedef boost::const_multi_array_ref<CellDataOffsetType, 1> ConstCellDataOffsetsMultiArrayType;
+    typedef boost::const_multi_array_ref<ColorValueType, 2> ConstPointColorsMultiArrayType;
+    typedef boost::const_multi_array_ref<ColorValueType, 2> ConstCellColorsMultiArrayType;
+    typedef boost::const_multi_array_ref<NormalValueType, 2> ConstPointNormalsMultiArrayType;
+    typedef boost::const_multi_array_ref<NormalValueType, 2> ConstCellNormalsMultiArrayType;
+    typedef boost::const_multi_array_ref<TexCoordValueType, 2> ConstPointTexCoordsMultiArrayType;
+    typedef boost::const_multi_array_ref<TexCoordValueType, 2> ConstCellTexCoordsMultiArrayType;
 
     /**
      * @brief Constructor

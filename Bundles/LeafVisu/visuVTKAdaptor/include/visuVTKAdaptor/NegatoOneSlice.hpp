@@ -11,8 +11,9 @@
 
 #include <fwData/Image.hpp>
 
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
 
 
 class vtkObject;
@@ -21,7 +22,7 @@ class vtkObject;
 namespace visuVTKAdaptor
 {
 
-class VISUVTKADAPTOR_CLASS_API NegatoOneSlice : public ::fwComEd::helper::MedicalImageAdaptor,
+class VISUVTKADAPTOR_CLASS_API NegatoOneSlice : public ::fwDataTools::helper::MedicalImageAdaptor,
                                                 public ::fwRenderVTK::IVtkAdaptorService
 {
 
@@ -45,7 +46,7 @@ public:
     {
         m_imageSourceId = id;
     }
-    void setVtkImageSource(vtkObject *obj)
+    void setVtkImageSource(vtkObject* obj)
     {
         m_imageSource = obj;
     }
@@ -74,13 +75,13 @@ protected:
     /**
      * @brief Configures the service
      *
-     * @verbatim
+     * @code{.xml}
        <adaptor id="negatoOneSlice" class="::visuVTKAdaptor::NegatoOneSlice" objectId="imageKey">
            <config renderer="default" picker="negatodefault" sliceIndex="axial"
                    transform="trf" tfalpha="yes" interpolation="off" vtkimagesource="imgSource" actorOpacity="1.0"
                    selectedTFKey="tkKey" tfSelectionFwID="selectionID" />
        </adaptor>
-       @endverbatim
+       @endcode
      * - \b renderer (mandatory): defines the renderer to show the arrow. It must be different from the 3D objects renderer.
      * - \b picker (mandatory): identifier of the picker
      * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato
@@ -96,7 +97,7 @@ protected:
 
     bool m_manageImageSource;
     std::string m_imageSourceId;
-    vtkObject  *m_imageSource;
+    vtkObject* m_imageSource;
 
     bool m_allowAlphaInTF;
     bool m_interpolation;

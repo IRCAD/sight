@@ -1,32 +1,33 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/data/Viewport.hpp"
 #include "scene2D/adaptor/TransferFunction.hpp"
-#include "scene2D/data/InitQtPen.hpp"
+
 #include "scene2D/Scene2DGraphicsView.hpp"
+#include "scene2D/data/InitQtPen.hpp"
+#include "scene2D/data/Viewport.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/helper/Image.hpp>
-
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/String.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/helper/Image.hpp>
 
+#include <fwServices/macros.hpp>
+
+#include <QColorDialog>
 #include <QGraphicsItemGroup>
 #include <QPoint>
-#include <QColorDialog>
 
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::TransferFunction, ::fwData::Image );
@@ -219,8 +220,8 @@ void TransferFunction::buildBounds()
 {
     ::scene2D::data::Viewport::sptr viewport = this->getScene2DRender()->getViewport();
 
-    QGraphicsEllipseItem* beginCircle = m_circles.front();
-    QGraphicsEllipseItem* endCircle   = m_circles.back();
+    const QGraphicsEllipseItem* beginCircle = m_circles.front();
+    const QGraphicsEllipseItem* endCircle   = m_circles.back();
 
     double x1 = viewport->getX() - 10;
     double x2 = beginCircle->rect().x() + beginCircle->pos().x() + m_circleWidth /2;
@@ -295,9 +296,8 @@ void TransferFunction::buildLinearLinesAndPolygons()
     QVector<QPointF> vect;
     QLinearGradient grad;
 
-    QGraphicsEllipseItem* firtsCircle = m_circles.front();
-    QGraphicsEllipseItem* lastCircle  = m_circles.back();
-
+    const QGraphicsEllipseItem* firtsCircle = m_circles.front();
+    const QGraphicsEllipseItem* lastCircle  = m_circles.back();
 
     double xBegin;
     double xEnd;
@@ -333,8 +333,7 @@ void TransferFunction::buildLinearLinesAndPolygons()
     double distanceMax = xEnd - xBegin;
 
     // Iterate on the circles vector to add line and polygon items to the lines and polygons vector
-    for ( std::vector< QGraphicsEllipseItem* >::iterator circleIt = m_circles.begin(); circleIt != m_circles.end()-1;
-          ++circleIt)
+    for ( auto circleIt = m_circles.cbegin(); circleIt != m_circles.cend()-1; ++circleIt)
     {
         QPointF p1((*circleIt)->rect().x() + (*circleIt)->pos().x() + m_circleWidth / 2,
                    (*circleIt)->rect().y() + (*circleIt)->pos().y() + m_circleHeight / 2);
@@ -379,12 +378,11 @@ void TransferFunction::buildLinearLinesAndPolygons()
 void TransferFunction::buildNearestLinesAndPolygons()
 {
     // Iterate on the circles vector to add line and polygon items to the lines and polygons vector
-    for ( std::vector< QGraphicsEllipseItem* >::iterator circleIt = m_circles.begin(); circleIt != m_circles.end();
-          ++circleIt)
+    for ( auto circleIt = m_circles.cbegin(); circleIt != m_circles.cend(); ++circleIt)
     {
         QGraphicsEllipseItem* circle = *circleIt;
         QGraphicsEllipseItem* previousCircle;
-        if (circleIt == m_circles.begin())
+        if (circleIt == m_circles.cbegin())
         {
             previousCircle = circle;
         }
@@ -393,7 +391,7 @@ void TransferFunction::buildNearestLinesAndPolygons()
             previousCircle = *(circleIt-1);
         }
         QGraphicsEllipseItem* nextCircle;
-        if (circleIt == m_circles.end()-1)
+        if (circleIt == m_circles.cend()-1)
         {
             nextCircle = circle;
         }
@@ -515,7 +513,7 @@ void TransferFunction::doStart() throw ( ::fwTools::Failed )
     m_circlePen.setCosmetic( true );
     m_circlePen.setWidthF( 0 );
 
-    m_viewport = ::scene2D::data::Viewport::dynamicCast( ::fwTools::fwID::getObject( m_viewportID ) );
+    m_viewport = this->getSafeInOut< ::scene2D::data::Viewport>( m_viewportID );
 
     m_connection = m_viewport->signal(::fwData::Object::s_MODIFIED_SIG)->connect(
         this->slot(::fwServices::IService::s_UPDATE_SLOT));
@@ -528,6 +526,9 @@ void TransferFunction::doStart() throw ( ::fwTools::Failed )
 
 void TransferFunction::doUpdate() throw ( ::fwTools::Failed )
 {
+    ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+    this->setTransferFunctionSelection(tfSelection);
+
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     this->updateImageInfos(image);
     this->updateTransferFunction(image);
@@ -570,20 +571,21 @@ void TransferFunction::doStop() throw ( ::fwTools::Failed )
     m_connection.disconnect();
 
     // Clear the items vectors and remove the layer (and all its children) from the scene
-    for (std::vector< QGraphicsEllipseItem* >::iterator circleIt = m_circles.begin(); circleIt != m_circles.end();
-         ++circleIt )
+    for (auto circleIt = m_circles.begin(); circleIt != m_circles.end(); ++circleIt )
     {
         delete *circleIt;
     }
+    m_circles.clear();
 
-    for( std::vector< QGraphicsItem* >::iterator linesPolyIt = m_linesAndPolygons.begin();
-         linesPolyIt != m_linesAndPolygons.end(); ++linesPolyIt)
+    for( auto linesPolyIt = m_linesAndPolygons.begin(); linesPolyIt != m_linesAndPolygons.end(); ++linesPolyIt)
     {
         delete *linesPolyIt;
     }
+    m_linesAndPolygons.clear();
 
     this->getScene2DRender()->getScene()->removeItem(m_layer);
     delete m_layer;
+    m_layer = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -972,7 +974,7 @@ double TransferFunction::pointValue(QGraphicsEllipseItem* circle)
 
 //-----------------------------------------------------------------------------
 
-::scene2D::data::Coord TransferFunction::coordViewToCoordItem( const ::scene2D::data::Coord & _coord )
+::scene2D::data::Coord TransferFunction::coordViewToCoordItem( const ::scene2D::data::Coord& _coord )
 {
     ::scene2D::data::Coord scenePoint = this->getScene2DRender()->mapToScene( _coord );
     return scenePoint;

@@ -11,9 +11,9 @@
 
 #include "visuVTKVRAdaptor/config.hpp"
 
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
-
 #include <fwData/Image.hpp>
+
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 #include <fwRenderVTK/SRender.hpp>
@@ -31,7 +31,37 @@ class vtkVolumeProperty;
 namespace visuVTKVRAdaptor
 {
 
-class VISUVTKVRADAPTOR_CLASS_API Volume : public ::fwComEd::helper::MedicalImageAdaptor,
+/**
+ * @brief This adaptor displays a volume image.
+ *
+ * @section Slots Slots
+ * - \b resetBoxWidget() : reset the clipping box widget around the volume.
+ * - \b activateBoxClipping(bool) : show/hide clipping box.
+ * - \b show(bool) : show/hide the volume.
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+     <adaptor id="VolumeScene3D" class="::visuVTKVRAdaptor::Volume" objectId="imageKey">
+         <config renderer="default" clippingplanes="clippingPlanesId" autoresetcamera="yes|no" croppingBox="yes|no"
+                 reductionFactor="0.5" cropBoxTransform="cropTransform" transform="trf" selectedTFKey="TFKey"
+                 tfSelectionFwID="tfComposite"/>
+     </adaptor>
+   @endcode
+ * @subsection Input Input
+ * - \b imageKey [::fwData::Image]: image to display.
+ * @subsection In-Out In-Out
+ * - \b tfSelectionFwID (optional) [::fwData::Composite]: composite containing the current transfer function.
+ * @subsection Configuration Configuration
+ * - \b renderer : ID of renderer the adaptor must use
+ * - \b clippingplanes (optional) : id of VTK object for clipping planes
+ * - \b autoresetcamera (optional, default: yes) : defines if the renderer must reset camera when updating image
+ * - \b croppingBox (optional, default: no) : defines if the cropping box must be shown
+ * - \b reductionFactor (optional, [0-1]) : factor to resample the original image.
+ * - \b cropBoxTransform (optional) : vtkTransform applied to the cropping box.
+ * - \b transform (optional) : vtkTransform applied to the volume.
+ * - \b selectedTFKey (optional) : key of the transfer funtion in the tf composite.
+ */
+class VISUVTKVRADAPTOR_CLASS_API Volume : public ::fwDataTools::helper::MedicalImageAdaptor,
                                           public ::fwRenderVTK::IVtkAdaptorService
 {
 
@@ -45,7 +75,7 @@ public:
 
     VISUVTKVRADAPTOR_API void setClippingPlanesId( ::fwRenderVTK::SRender::VtkObjectIdType id );
 
-    VISUVTKVRADAPTOR_API void setVtkClippingPlanes( vtkPlaneCollection *planes );
+    VISUVTKVRADAPTOR_API void setVtkClippingPlanes( vtkPlaneCollection* planes );
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -75,20 +105,6 @@ protected:
 
     /**
      * @brief Configures the service
-     *
-     * Configuration example :
-       @verbatim
-       <adaptor id="VolumeScene3D" class="::visuVTKVRAdaptor::Volume" objectId="imageKey">
-         <config renderer="default" clippingplanes="clippingPlanesId" autoresetcamera="yes|no" croppingBox="yes|no" reductionFactor="0.5"/>
-       </adaptor>
-       @endverbatim
-     *
-     * \b renderer : ID of renderer the adaptor must use
-     * \b clippingplanes : id of VTK object for clipping planes
-     * \b autoresetcamera : (not mandatory, default is yes) set if the renderer must reset camera when updating image
-     * \b croppingBox : (not mandatory, default is no) set if the cropping box must be shown
-     * \b reductionFactor [0-1]: factor to resample the original image.
-     *
      * @throw fwTools::Failed
      */
     VISUVTKVRADAPTOR_API void doConfigure() throw(fwTools::Failed);
@@ -108,31 +124,40 @@ protected:
     /// Slot: show/hide clipping box
     void activateBoxClipping( bool activate );
 
+    /// Slot: show/hide the volume
+    void show( bool isVisible );
+
     void buildPipeline();
 
     void updateImage( ::fwData::Image::sptr image  );
 
     void updateVolumeTransferFunction( ::fwData::Image::sptr image );
 
-    vtkPlaneCollection *m_clippingPlanes;
+    vtkPlaneCollection* m_clippingPlanes;
 
     ::fwRenderVTK::SRender::VtkObjectIdType m_clippingPlanesId;
 
-    vtkAbstractVolumeMapper  * m_volumeMapper;
-    vtkVolumeProperty        * m_volumeProperty;
-    vtkVolume                * m_volume;
+    vtkAbstractVolumeMapper* m_volumeMapper;
+    vtkVolumeProperty* m_volumeProperty;
+    vtkVolume* m_volume;
 
-    vtkPiecewiseFunction     * m_opacityTransferFunction;
-    vtkColorTransferFunction * m_colorTransferFunction;
+    vtkPiecewiseFunction* m_opacityTransferFunction;
+    vtkColorTransferFunction* m_colorTransferFunction;
 
-    vtkCommand               * m_abortCommand;
+    vtkCommand* m_abortCommand;
 
-    vtkBoxWidget2 * m_boxWidget;
-    vtkCommand    * m_croppingCommand;
-    vtkCommand    * m_transformCommand;
+    vtkBoxWidget2* m_boxWidget;
+    vtkCommand* m_croppingCommand;
+    vtkCommand* m_transformCommand;
 
-    /// Croping box default state
+    /// Cropping box default state
     bool m_croppingBoxDefaultState;
+
+    /// XML ID for the transformation matrix affected only to the cropBox.
+    std::string m_cropBoxTransformID;
+
+    /// Transformation matrix affected only to the cropBox.
+    vtkTransform* m_cropBoxTransform;
 
 private:
 

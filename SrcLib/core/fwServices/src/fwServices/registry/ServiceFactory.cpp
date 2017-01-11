@@ -4,19 +4,22 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <functional>
-#include <vector>
+#include "fwServices/registry/ServiceFactory.hpp"
+
+#include "fwServices/IService.hpp"
+#include "fwServices/registry/ActiveWorkers.hpp"
 
 #include <fwCore/util/LazyInstantiator.hpp>
+
+#include <fwData/Exception.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/profile/Profile.hpp>
 
-#include "fwServices/IService.hpp"
-#include "fwServices/registry/ActiveWorkers.hpp"
-#include "fwServices/registry/ServiceFactory.hpp"
+#include <functional>
+#include <vector>
 
 namespace fwServices
 {
@@ -43,11 +46,10 @@ void ServiceFactory::parseBundleInformation()
     for(ExtensionType extElt :  extElements)
     {
         std::vector< ConfigurationType > cfgEltVec = extElt->getElements();
-        SLM_ASSERT("extension element MUST have 3 or 4 elements", cfgEltVec.size() == 3 || cfgEltVec.size() == 4);
-        std::string type    = "";
-        std::string service = "";
-        std::string object  = "";
-        std::string desc    = "";
+        std::string type;
+        std::string service;
+        std::string object;
+        std::string desc;
 
         for(ConfigurationType cfgElt :  cfgEltVec)
         {
@@ -75,29 +77,15 @@ void ServiceFactory::parseBundleInformation()
         }
         SLM_ASSERT("Missing type element.", !type.empty());
         SLM_ASSERT("Missing service element.", !service.empty());
-        SLM_ASSERT("Missing object element.", !object.empty());
 
-        ServiceInfo::sptr info = ServiceInfo::New();
-        info->serviceType = type;
-        info->objectImpl  = object;
-        info->desc        = desc;
+        ServiceInfo info;
+        info.serviceType = type;
+        info.objectImpl  = object;
+        info.desc        = desc;
+        info.bundle      = cfgEltVec[0]->getBundle();
+        SLM_ASSERT("Bundle not find.", info.bundle );
 
-        info->bundle = cfgEltVec[0]->getBundle();
-        SLM_ASSERT("Bundle not find.", info->bundle );
-
-        bundleInfoMap[ service] = info;
-    }
-    // Verify object
-    for(SrvRegContainer::value_type bundle :  bundleInfoMap)
-    {
-        if ( bundle.second->objectImpl.empty() )
-        {
-            OSLM_WARN("Service " << bundle.first << " of type  "
-                                 << bundle.second->serviceType << " in bundle " << bundle.second->bundle->getIdentifier()
-                                 << " has not object defined in plugin.xml ( declaration missing in dataReg ? ). "
-                      "Else is a service of service (sorry but not managed in this version )");
-
-        }
+        bundleInfoMap.emplace(std::make_pair(service, info));
     }
 
 #if SPYLOG_LEVEL >= 5
@@ -107,34 +95,32 @@ void ServiceFactory::parseBundleInformation()
 
     ::fwCore::mt::ReadToWriteLock lock(m_srvImplTosrvInfoMutex);
     // Merge data info
-    for(SrvRegContainer::value_type bundle :  bundleInfoMap)
+    for(SrvRegContainer::value_type bundle : bundleInfoMap)
     {
-
         SrvRegContainer::iterator iter = m_srvImplTosrvInfo.find( bundle.first );
 
         if ( iter != m_srvImplTosrvInfo.end() )
         {
-            OSLM_DEBUG("Have already information (from register macro) about this service ( "
-                       << bundle.first << " )." );
+            OSLM_DEBUG("Have already information (from register macro) about this service ( "<< bundle.first << " )." );
 
-            ServiceInfo::sptr info       = iter->second;
-            ServiceInfo::sptr infoBundle = bundle.second;
+            ServiceInfo& info       = iter->second;
+            ServiceInfo& infoBundle = bundle.second;
 
-            SLM_ASSERT("Try to add bundle, but bundle exists.", !info->bundle );
+            SLM_ASSERT("Try to add bundle, but bundle exists.", !info.bundle );
             SLM_ASSERT("Try to add bundle, but this srv is already register and has not the same srv type.",
-                       infoBundle->serviceType == info->serviceType );
+                       infoBundle.serviceType == info.serviceType );
             SLM_ASSERT("Try to add bundle, but this srv ("
                        << bundle.first << ")is already register and has not the same oimpl. ( "
-                       << infoBundle->objectImpl <<" != "<< info->objectImpl <<" )",
-                       infoBundle->objectImpl == info->objectImpl );
+                       << infoBundle.objectImpl <<" != "<< info.objectImpl <<" )",
+                       infoBundle.objectImpl == info.objectImpl );
 
-            info->bundle = infoBundle->bundle;
-            info->desc   = infoBundle->desc;
+            info.bundle = infoBundle.bundle;
+            info.desc   = infoBundle.desc;
         }
         else
         {
             ::fwCore::mt::UpgradeToWriteLock upgrade(lock);
-            m_srvImplTosrvInfo[ bundle.first ] = bundle.second;
+            m_srvImplTosrvInfo.emplace(std::make_pair(bundle.first, bundle.second));
         }
 
     }
@@ -148,50 +134,48 @@ void ServiceFactory::parseBundleInformation()
 
 //-----------------------------------------------------------------------------
 
-IService::sptr ServiceFactory::create( const std::string & _srvImpl ) const
+IService::sptr ServiceFactory::create( const std::string& _srvImpl ) const
 {
     IService::sptr service;
 
     ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( _srvImpl );
 
-    OSLM_ASSERT("The service called " << _srvImpl << " does not exist in the ServiceFactory "
-                , iter != m_srvImplTosrvInfo.end() );
+    OSLM_ASSERT("The service called '" << _srvImpl << "' does not exist in the ServiceFactory ",
+                iter != m_srvImplTosrvInfo.end() );
 
-    ServiceInfo::sptr info = iter->second;
+    const ServiceInfo& info = iter->second;
 
-    OSLM_DEBUG("SR create a new service ( classname = " << _srvImpl << " )");
+    OSLM_DEBUG("SR creates a new service ( classname = " << _srvImpl << " )");
 
-    if ( info->factory )
+    if ( info.factory )
     {
-        service = info->factory();
+        service = info.factory();
     }
     else
     {
         OSLM_ASSERT( "A bundle must declare the factory named"
                      << _srvImpl
                      <<", the service declaration might be missing (or misspelled) in a bundle plugin.",
-                     info->bundle );
-        OSLM_ASSERT( "The bundle '" + info->bundle->getIdentifier() + "' is already loaded and the factory '"
+                     info.bundle );
+        OSLM_ASSERT( "The bundle '" + info.bundle->getIdentifier() + "' is already loaded and the factory '"
                      + _srvImpl + "' is still missing. The service declaration might be missing (or misspelled)"
-                     "in a .cpp file.", !info->bundle->isStarted() );
+                     "in a .cpp file.", !info.bundle->isStarted() );
 
         lock.unlock(); // bundle->start() may trigger calls to addFactory
-        info->bundle->start();
+        info.bundle->start();
         lock.lock();
 
         ::fwRuntime::profile::getCurrentProfile()->setup();
 
-        SLM_ASSERT(
-            "After loading the bundle " << info->bundle->getIdentifier() << " , factory "
-                                        << _srvImpl << " is still missing. The service declaration might be missing (or misspelled) "
-            "in a cpp file.",
-            info->factory );
+        FW_RAISE_EXCEPTION_IF(
+            ::fwData::Exception( "After loading the bundle " + info.bundle->getIdentifier() + " , factory " + _srvImpl
+                                 + " is still missing. The service declaration might be missing (or misspelled) "
+                                 "in a cpp file."),
+            !info.factory );
 
-        service = info->factory();
+        service = info.factory();
     }
-
-    this->checkServicesNotDeclaredInPluginXml();
 
     // Setup worker here, this is a better place than the constructor
     // because here, the service slots are also setup
@@ -204,21 +188,20 @@ IService::sptr ServiceFactory::create( const std::string & _srvImpl ) const
 
 //-----------------------------------------------------------------------------
 
-IService::sptr ServiceFactory::create( const std::string & _srvType, const std::string & _srvImpl ) const
+IService::sptr ServiceFactory::create( const std::string& _srvType, const std::string& _srvImpl ) const
 {
 
 #ifdef _DEBUG
     {
         ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
 
-        OSLM_ASSERT("The service called " << _srvImpl << " does not exist in the ServiceFactory."
-                    ,
+        OSLM_ASSERT("The service called " << _srvImpl << " does not exist in the ServiceFactory.",
                     m_srvImplTosrvInfo.find( _srvImpl ) != m_srvImplTosrvInfo.end() );
 
         OSLM_ASSERT(
             "Conflincting types were defined for this service, "
-            << _srvType << " != " << m_srvImplTosrvInfo.find( _srvImpl )->second->serviceType,
-            _srvType == m_srvImplTosrvInfo.find( _srvImpl )->second->serviceType);
+            << _srvType << " != " << m_srvImplTosrvInfo.find( _srvImpl )->second.serviceType,
+            _srvType == m_srvImplTosrvInfo.find( _srvImpl )->second.serviceType);
     }
 #endif //_DEBUG
 
@@ -228,56 +211,67 @@ IService::sptr ServiceFactory::create( const std::string & _srvType, const std::
 
 //------------------------------------------------------------------------------
 
-void ServiceFactory::addFactory( ServiceInfo::FactoryType _factory,
-                                 const std::string & simpl,
-                                 const std::string & stype,
-                                 const std::string & oimpl)
+void ServiceFactory::addServiceFactory( FactoryType _factory,
+                                        const std::string& simpl,
+                                        const std::string& stype)
 {
-    OSLM_DEBUG( "New service registering : "
-                << " simpl =" << simpl
-                << " stype=" << stype
-                << " oimpl=" << oimpl
-                );
+    SLM_DEBUG("New service registering : simpl =" + simpl + " stype=" + stype);
 
     ::fwCore::mt::ReadToWriteLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::iterator iter = m_srvImplTosrvInfo.find( simpl );
 
-    ServiceInfo::sptr info;
-
     if ( iter != m_srvImplTosrvInfo.end() )
     {
-        OSLM_DEBUG("Have already information about this service ( " << simpl << " )." );
-        info = iter->second;
+        SLM_DEBUG("Have already information about this service ( " + simpl + " )." );
+        ServiceInfo& info = iter->second;
         OSLM_ASSERT("Try to add factory, but this srv ( " << simpl << " ) has already a registered factory.",
-                    !info->factory );
+                    !info.factory );
         OSLM_ASSERT("Try to add factory, but this srv ( "
                     << simpl << " ) is already register and has not the same srv type. ( "
-                    << stype << " != " << info->serviceType <<" )",
-                    stype == info->serviceType );
-        OSLM_ASSERT("Try to add factory, but this srv ( "
-                    << simpl << " ) is already register and has not the same oimpl. ( "
-                    << oimpl << " != " << info->objectImpl <<" )",
-                    oimpl == info->objectImpl );
+                    << stype << " != " << info.serviceType <<" )",
+                    stype == info.serviceType );
 
         ::fwCore::mt::UpgradeToWriteLock upgrade(lock);
-        info->factory = _factory;
+        info.factory = _factory;
     }
     else
     {
-        OSLM_DEBUG("Add new service factory in registry ( " << simpl << " )." );
+        SLM_DEBUG("Add new service factory in registry ( " + simpl + " )." );
         ::fwCore::mt::UpgradeToWriteLock upgrade(lock);
-        info              = m_srvImplTosrvInfo[simpl] = ServiceInfo::New();
-        info->serviceType = stype;
-        info->objectImpl  = oimpl;
-        info->factory     = _factory;
+        ServiceInfo info;
+        info.serviceType = stype;
+        info.factory     = _factory;
+        m_srvImplTosrvInfo.emplace(std::make_pair(simpl, info));
     }
-
 }
-
 
 //-----------------------------------------------------------------------------
 
-void ServiceFactory::printInfoMap( const SrvRegContainer & src ) const
+void ServiceFactory::addObjectFactory(const std::string& simpl, const std::string& oimpl)
+{
+    SLM_DEBUG("New object oimpl=" + oimpl + "registering to service: simpl =" + simpl);
+
+    ::fwCore::mt::ReadToWriteLock lock(m_srvImplTosrvInfoMutex);
+    SrvRegContainer::iterator iter = m_srvImplTosrvInfo.find( simpl );
+
+    OSLM_ASSERT("Try to associate an object to a service factory, but this srv is not yet registered.",
+                iter != m_srvImplTosrvInfo.end());
+
+    if ( iter != m_srvImplTosrvInfo.end() )
+    {
+        ServiceInfo& info = iter->second;
+        SLM_ASSERT("Try to add factory, but this srv ( " + simpl + " ) is already registered "
+                   "and has not the same oimpl. ( " + oimpl + " != " + info.objectImpl + ")",
+                   info.objectImpl.empty() || oimpl == info.objectImpl );
+
+        ::fwCore::mt::UpgradeToWriteLock upgrade(lock);
+        info.objectImpl = oimpl;
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void ServiceFactory::printInfoMap( const SrvRegContainer& src ) const
 {
     // not thread-safe
 
@@ -285,15 +279,15 @@ void ServiceFactory::printInfoMap( const SrvRegContainer & src ) const
     for(SrvRegContainer::value_type srvReg :  src)
     {
         OSLM_DEBUG(" Service name = " << srvReg.first );
-        OSLM_DEBUG("  - type   = " << srvReg.second->serviceType );
-        OSLM_DEBUG("  - object = " << srvReg.second->objectImpl);
+        OSLM_DEBUG("  - type   = " << srvReg.second.serviceType );
+        OSLM_DEBUG("  - object = " << srvReg.second.objectImpl);
 
-        OSLM_DEBUG_IF("  - bundle = " <<  srvReg.second->bundle->getIdentifier(), srvReg.second->bundle );
-        OSLM_DEBUG_IF("  - bundle = ( no bundle registered )", !srvReg.second->bundle );
+        OSLM_DEBUG_IF("  - bundle = " <<  srvReg.second.bundle->getIdentifier(), srvReg.second.bundle );
+        OSLM_DEBUG_IF("  - bundle = ( no bundle registered )", !srvReg.second.bundle );
 
         OSLM_DEBUG_IF("  - name after creation = "
-                      <<  srvReg.second->factory()->getClassname(), srvReg.second->factory );
-        OSLM_DEBUG_IF("  - name after creation = ( no factory registered )", !srvReg.second->factory );
+                      <<  srvReg.second.factory()->getClassname(), srvReg.second.factory );
+        OSLM_DEBUG_IF("  - name after creation = ( no factory registered )", !srvReg.second.factory );
     }
 }
 
@@ -305,7 +299,7 @@ void ServiceFactory::checkServicesNotDeclaredInPluginXml() const
     //Print information
     for(SrvRegContainer::value_type srvReg :  m_srvImplTosrvInfo)
     {
-        if ( !srvReg.second->bundle )
+        if ( !srvReg.second.bundle )
         {
             OSLM_WARN("Service " << srvReg.first << " is not declared/found in a plugin.xml." );
         }
@@ -330,9 +324,9 @@ std::vector< std::string > ServiceFactory::getImplementationIdFromObjectAndType(
     ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     for(SrvRegContainer::value_type srv :  m_srvImplTosrvInfo)
     {
-        ServiceInfo::sptr srvInfo = srv.second;
-        if(srvInfo->serviceType == type
-           && (srvInfo->objectImpl == object || srvInfo->objectImpl == "::fwData::Object") )
+        const ServiceInfo& srvInfo = srv.second;
+        if(srvInfo.serviceType == type
+           && (srvInfo.objectImpl == object || srvInfo.objectImpl == "::fwData::Object") )
         {
             serviceImpl.push_back(srv.first);
         }
@@ -354,23 +348,23 @@ std::string ServiceFactory::getDefaultImplementationIdFromObjectAndType( const s
     ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     for( SrvRegContainer::value_type srv :  m_srvImplTosrvInfo )
     {
-        ServiceInfo::sptr srvInfo = srv.second;
-        if ( srvInfo->serviceType == type )
+        const ServiceInfo& srvInfo = srv.second;
+        if ( srvInfo.serviceType == type )
         {
-            if ( srvInfo->objectImpl == object )
+            if ( srvInfo.objectImpl == object )
             {
                 OSLM_ASSERT("Method has already found a specific ("
                             << serviceImpl <<" != " << srv.first
-                            << ") service for the object " << srvInfo->objectImpl << ".",
+                            << ") service for the object " << srvInfo.objectImpl << ".",
                             !specificImplIsFound );
 
                 specificImplIsFound = true;
                 serviceImpl         = srv.first;
             }
-            else if ( srvInfo->objectImpl == "::fwData::Object" )
+            else if ( srvInfo.objectImpl == "::fwData::Object" )
             {
                 OSLM_ASSERT("Method has already found a generic service for the object ("
-                            << srvInfo->objectImpl << ").",
+                            << srvInfo.objectImpl << ").",
                             !genericImplIsFound );
 
                 genericImplIsFound = true;
@@ -395,7 +389,7 @@ std::string ServiceFactory::getObjectImplementation(const std::string& srvImpl) 
     ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( srvImpl );
     SLM_ASSERT("The service " << srvImpl << " is not found.", iter != m_srvImplTosrvInfo.end());
-    objImpl = iter->second->objectImpl;
+    objImpl = iter->second.objectImpl;
     return objImpl;
 }
 
@@ -407,13 +401,13 @@ std::string ServiceFactory::getServiceDescription(const std::string& srvImpl) co
     ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
     SrvRegContainer::const_iterator iter = m_srvImplTosrvInfo.find( srvImpl );
     SLM_ASSERT("The service " << srvImpl << " is not found.", iter != m_srvImplTosrvInfo.end());
-    srvDescription = iter->second->desc;
+    srvDescription = iter->second.desc;
     return srvDescription;
 }
 
 //-----------------------------------------------------------------------------
 
-bool ServiceFactory::checkServiceValidity(const std::string & objectClassName, const std::string & srvImpl) const
+bool ServiceFactory::checkServiceValidity(const std::string& objectClassName, const std::string& srvImpl) const
 {
     bool isValid = true;
     ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
@@ -421,15 +415,15 @@ bool ServiceFactory::checkServiceValidity(const std::string & objectClassName, c
     isValid &= ( iter != m_srvImplTosrvInfo.end() );
     if (isValid)
     {
-        ServiceInfo::sptr srvInfo = iter->second;
-        isValid &= (srvInfo->objectImpl == "::fwData::Object" || srvInfo->objectImpl == objectClassName);
+        const ServiceInfo& srvInfo = iter->second;
+        isValid &= (srvInfo.objectImpl == "::fwData::Object" || srvInfo.objectImpl == objectClassName);
     }
     return isValid;
 }
 
 //-----------------------------------------------------------------------------
 
-bool ServiceFactory::support(const std::string &object, const std::string &srvType, const std::string &srvImpl) const
+bool ServiceFactory::support(const std::string& object, const std::string& srvType, const std::string& srvImpl) const
 {
     bool isSupported = true;
     ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
@@ -437,16 +431,16 @@ bool ServiceFactory::support(const std::string &object, const std::string &srvTy
     isSupported &= ( iter != m_srvImplTosrvInfo.end());
     if (isSupported)
     {
-        ServiceInfo::sptr srvInfo = iter->second;
-        isSupported &= (srvInfo->objectImpl == "::fwData::Object" || srvInfo->objectImpl == object);
-        isSupported &= (srvInfo->serviceType == srvType);
+        const ServiceInfo& srvInfo = iter->second;
+        isSupported &= (srvInfo.objectImpl == "::fwData::Object" || srvInfo.objectImpl == object);
+        isSupported &= (srvInfo.serviceType == srvType);
     }
     return isSupported;
 }
 
 //-----------------------------------------------------------------------------
 
-bool ServiceFactory::support(const std::string & object, const std::string & srvType)
+bool ServiceFactory::support(const std::string& object, const std::string& srvType)
 {
     bool isSupported = false;
     SupportMapType::key_type key(object, srvType);
@@ -461,9 +455,9 @@ bool ServiceFactory::support(const std::string & object, const std::string & srv
         ::fwCore::mt::ReadLock lock(m_srvImplTosrvInfoMutex);
         for(SrvRegContainer::value_type srv :  m_srvImplTosrvInfo)
         {
-            ServiceInfo::sptr srvInfo = srv.second;
-            if(srvInfo->serviceType == srvType
-               && (srvInfo->objectImpl == object || srvInfo->objectImpl == "::fwData::Object") )
+            const ServiceInfo& srvInfo = srv.second;
+            if(srvInfo.serviceType == srvType
+               && (srvInfo.objectImpl == object || srvInfo.objectImpl == "::fwData::Object") )
             {
                 isSupported = true;
                 break;

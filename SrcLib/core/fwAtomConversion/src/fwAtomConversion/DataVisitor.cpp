@@ -1,45 +1,50 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <string>
+#include "fwAtomConversion/DataVisitor.hpp"
+
+#include "fwAtomConversion/convert.hpp"
+#include "fwAtomConversion/exception/ConversionNotManaged.hpp"
+#include "fwAtomConversion/mapper/factory/new.hpp"
+
+#include <fwAtoms/Base.hpp>
+#include <fwAtoms/Blob.hpp>
+#include <fwAtoms/Boolean.hpp>
+#include <fwAtoms/Map.hpp>
+#include <fwAtoms/Numeric.hpp>
+#include <fwAtoms/Numeric.hxx>
+#include <fwAtoms/Sequence.hpp>
+#include <fwAtoms/String.hpp>
+
+#include <fwCamp/Mapper/ValueMapper.hpp>
+#include <fwCamp/factory/new.hpp>
+
+#include <fwData/Array.hpp>
+#include <fwData/camp/mapper.hpp>
+
+#include <fwDataCamp/Version.hpp>
+
+#include <fwMedDataCamp/Version.hpp>
+
+#include <fwMemory/BufferObject.hpp>
+
+#include <fwTools/UUID.hpp>
 
 #include <boost/utility/enable_if.hpp>
 
 #include <camp/class.hpp>
 
-#include <fwCamp/factory/new.hpp>
-#include <fwCamp/Mapper/ValueMapper.hpp>
-
-#include <fwData/camp/mapper.hpp>
-#include <fwData/Array.hpp>
-
-#include <fwAtoms/Sequence.hpp>
-#include <fwAtoms/Map.hpp>
-#include <fwAtoms/Blob.hpp>
-#include <fwAtoms/Numeric.hpp>
-#include <fwAtoms/Numeric.hxx>
-#include <fwAtoms/String.hpp>
-#include <fwAtoms/Boolean.hpp>
-#include <fwAtoms/Base.hpp>
-
-#include <fwTools/UUID.hpp>
-#include <fwMemory/BufferObject.hpp>
-
-#include <fwDataCamp/Version.hpp>
-
-#include "fwAtomConversion/DataVisitor.hpp"
-#include "fwAtomConversion/mapper/factory/new.hpp"
-#include "fwAtomConversion/convert.hpp"
-#include "fwAtomConversion/exception/ConversionNotManaged.hpp"
+#include <string>
 
 
 namespace fwAtomConversion
 {
 
-static int dataCampVersion = ::fwDataCamp::Version::s_CURRENT_VERSION; // Hack to force link with fwDataCamp
+static int dataCampVersion    = ::fwDataCamp::Version::s_CURRENT_VERSION; // Hack to force link with fwDataCamp
+static int medDataCampVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION; // Hack to force link with fwMedDataCamp
 
 const std::string DataVisitor::CLASSNAME_METAINFO = "CLASSNAME_METAINFO";
 const std::string DataVisitor::ID_METAINFO        = "ID_METAINFO";
@@ -48,9 +53,9 @@ const std::string DataVisitor::ID_METAINFO        = "ID_METAINFO";
 
 struct DataConversionValueVisitor : public ::camp::ValueVisitor< ::fwAtoms::Base::sptr >
 {
-    DataVisitor::AtomCacheType & m_cache;
+    DataVisitor::AtomCacheType& m_cache;
 
-    DataConversionValueVisitor( DataVisitor::AtomCacheType & cache ) : m_cache(cache)
+    DataConversionValueVisitor( DataVisitor::AtomCacheType& cache ) : m_cache(cache)
     {
     }
 
@@ -97,13 +102,13 @@ struct DataConversionValueVisitor : public ::camp::ValueVisitor< ::fwAtoms::Base
 
             if( classname == "::fwMemory::BufferObject" )
             {
-                ::fwMemory::BufferObject * ptr = value.get< ::fwMemory::BufferObject * >();
-                baseObj                        = ::fwAtoms::Blob::New( ptr->getSptr() );
+                ::fwMemory::BufferObject* ptr = value.get< ::fwMemory::BufferObject* >();
+                baseObj                       = ::fwAtoms::Blob::New( ptr->getSptr() );
             }
             else
             {
                 // get fwData object
-                ::fwData::Object * ptr         = value.get< ::fwData::Object * >();
+                ::fwData::Object* ptr          = value.get< ::fwData::Object* >();
                 ::fwData::Object::sptr dataObj = ptr->getSptr();
 
                 baseObj = ::fwAtomConversion::convert( dataObj, m_cache );
@@ -116,7 +121,7 @@ struct DataConversionValueVisitor : public ::camp::ValueVisitor< ::fwAtoms::Base
 
 //-----------------------------------------------------------------------------
 
-DataVisitor::DataVisitor( ::fwData::Object::sptr dataObj, AtomCacheType & cache )
+DataVisitor::DataVisitor( ::fwData::Object::sptr dataObj, AtomCacheType& cache )
     : m_campDataObj( dataObj.get() ), m_cache( cache )
 {
 
@@ -133,8 +138,8 @@ DataVisitor::DataVisitor( ::fwData::Object::sptr dataObj, AtomCacheType & cache 
     std::size_t tagCount         = metaclass.tagCount();
     for ( std::size_t i = 0; i < tagCount; ++i )
     {
-        const ::camp::Value & tag = metaclass.tagId(i);
-        const ::camp::Value & val = metaclass.tag(tag);
+        const ::camp::Value& tag = metaclass.tagId(i);
+        const ::camp::Value& val = metaclass.tag(tag);
         m_atomObj->setMetaInfo( tag.to< std::string >(), val.to< std::string >() );
     }
 

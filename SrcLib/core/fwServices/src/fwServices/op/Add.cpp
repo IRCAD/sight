@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,7 @@
 
 #include <fwTools/fwID.hpp>
 
-#include "fwServices/Base.hpp"
+#include "fwServices/macros.hpp"
 #include "fwServices/IService.hpp"
 #include "fwServices/op/Add.hpp"
 #include "fwServices/registry/ServiceFactory.hpp"
@@ -29,9 +29,7 @@ namespace fwServices
     ::fwServices::OSR::registerService( obj, srv );
     if(!uid.empty())
     {
-#ifndef COM_LOG
         OSLM_ASSERT( "Try to set ID: "<<uid<<" but already has an ID: "<<srv->getID(), !srv->hasID() );
-#endif
         srv->setID( uid );
     }
     return srv;

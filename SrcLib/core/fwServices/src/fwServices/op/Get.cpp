@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,16 +17,17 @@ namespace fwServices
 ::fwServices::IService::sptr get( ::fwData::Object::sptr obj, std::string serviceType ) throw(fwTools::Failed )
 {
     ::fwServices::IService::sptr service;
-    std::vector< ::fwServices::IService::sptr >  services = ::fwServices::OSR::getServices( obj, serviceType );
-    OSLM_ASSERT("Service "<<serviceType<<" not unique, registered "<<services.size()<<" time", services.size() == 1);
-    return services.at(0);
+    auto services = ::fwServices::OSR::getServices( obj, serviceType );
+    OSLM_ASSERT("Service "<<serviceType<<" is not unique, registered "<<services.size()<<" times",
+                services.size() == 1);
+    return *services.begin();
 }
 
 //------------------------------------------------------------------------------
 
 ::fwServices::IService::sptr get( std::string uid ) throw(fwTools::Failed )
 {
-    OSLM_ASSERT("service not exist with uid "<<uid, ::fwTools::fwID::exist(uid ));
+    OSLM_ASSERT("service does not exist with uid "<<uid, ::fwTools::fwID::exist(uid ));
     return ::fwServices::IService::dynamicCast( ::fwTools::fwID::getObject( uid ) );
 }
 

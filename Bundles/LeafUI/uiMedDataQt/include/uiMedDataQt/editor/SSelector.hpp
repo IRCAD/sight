@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,7 +33,32 @@ namespace editor
 /**
  * @brief   This editor shows information about the medical data. It allows to manipulate
  *          (select, erase, ...) studies and series.
- * @class   SSelector
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+    <service uid="..." type="::uiMedData::editor::SSelector">
+        <inout key="seriesDB" uid="..." />
+        <inout key="selection" uid="..." />
+        <selectionMode>single|extended</selectionMode>
+        <allowedRemove>yes|no</allowedRemove>
+        <insertMode>yes|no</insertMode>
+        <icons>
+            <icon series="..." icon="..." />
+            <icon series="..." icon="..." />
+        </icons>
+    </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b seriesDB [::fwMedData::SeriesDB]: seriesDB on which the editor operates.
+ * - \b selection [::fwData::Vector]: defines the id of the ::fwData::Vector where the selection will be put or get.
+ * @subsection Configuration Configuration
+ * - \b selectionMode : defines the selection mode for the series, among {"single", "extended"}, where extended means "multiple"
+ * - \b allowedRemove : allows user to remove series, among {"yes", "no"}
+ * - \b insertMode : only allows selection of uiMedData::InsertSeries, among {"yes", "no"}
+ * - \b icons : defines the icon to associate for a series
+ *    - \b series : the series classname, e.g. {::fwMedData::ImageSeries, ::fwMedData::ModelSeries, ...}
+ *    - \b icon : the icon path
  */
 class UIMEDDATAQT_CLASS_API SSelector : public QObject,
                                         public ::gui::editor::IEditor
@@ -62,6 +87,14 @@ public:
      */
     UIMEDDATAQT_API virtual KeyConnectionsType getObjSrvConnections() const;
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect SeriesDB::s_ADDED_SERIES_SIG to this::s_ADD_SERIES_SLOT
+     * Connect SeriesDB::s_REMOVED_SERIES_SIG to this::s_REMOVE_SERIES_SLOT
+     */
+    UIMEDDATAQT_API virtual KeyConnectionsMap getAutoConnections() const;
 
 protected:
 
@@ -71,37 +104,13 @@ protected:
     /// Destroys GUI.
     virtual void stopping() throw(::fwTools::Failed);
 
-    /**
-     *
-     * @verbatim
-       <service uid="selector" impl="::uiMedData::editor::SSelector" type="::gui::editor::IEditor" autoConnect="yes">
-        <selectionId>selections</selectionId>
-        <selectionMode>single|extended</selectionMode>
-        <allowedRemove>yes|no</allowedRemove>
-        <insertMode>yes|no</insertMode>
-        <icons>
-            <icon series="::fwMedData::ImageSeries" icon="Bundles/media_0-1/icons/ImageSeries.svg" />
-            <icon series="::fwMedData::ModelSeries" icon="Bundles/media_0-1/icons/ModelSeries.svg" />
-        </icons>
-       </service>
-       @endverbatim
-     * - \b selectionId : defines the fwId of the ::fwData::Vector where the selection will be put or get.
-     * - \b selectionMode : defines the selection mode for the series
-     * - \b allowedRemove : allows user to remove series
-     * - \b insertMode : only allows selection of uiMedData::InsertSeries
-     * - \b icons : defines the icon to associate for a series
-     *    - \b series : the series classname
-     *    - \b icon : the icon path
-
-     */
+    /// Configures the service according to the xml tags found.
     virtual void configuring() throw (::fwTools::Failed);
 
     /// Fill selector with the series contained in SeriesDB.
     virtual void updating() throw (::fwTools::Failed);
 
-    virtual void info( std::ostream &_sstream );
-
-
+    virtual void info( std::ostream& _sstream );
 
 protected Q_SLOTS:
 
@@ -119,7 +128,7 @@ protected Q_SLOTS:
      * @param[in] index index of the clicked item in the selector.
      * @todo  Manages double click on a study.
      */
-    void onDoubleClick(const QModelIndex &index);
+    void onDoubleClick(const QModelIndex& index);
 
     /**
      * @brief Removes series from seriesDB and notify.

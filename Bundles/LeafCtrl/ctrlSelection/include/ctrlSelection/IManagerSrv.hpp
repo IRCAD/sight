@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,18 +10,14 @@
 #include "ctrlSelection/config.hpp"
 
 #include <fwServices/IService.hpp>
-
 #include <fwServices/helper/Config.hpp>
 
 namespace ctrlSelection
 {
 
 /**
- * @class   IManagerSrv
  * @brief   Base class for manager.
  * A manager starts, stops or swaps services on object contained in a composite when it receives specific message.
- *
- * @date    2007-2009.
  */
 class CTRLSELECTION_CLASS_API IManagerSrv : public ::fwServices::IService
 {
@@ -46,7 +42,7 @@ protected:
      */
     CTRLSELECTION_API virtual void swapping() throw ( ::fwTools::Failed );
 
-    typedef std::map< ObjectIdType, ::fwServices::helper::SigSlotConnection::sptr > ObjectConnectionsMapType;
+    typedef std::map< ObjectIdType, ::fwCom::helper::SigSlotConnection > ObjectConnectionsMapType;
 
     /**
      * @brief Manages all connections define in config associated to object.
@@ -56,7 +52,7 @@ protected:
      * @param object Object associated with the id
      * @param config configuration for this object
      */
-    void manageConnections(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config);
+    void manageConnections(const std::string& objectId, ::fwData::Object::sptr object, ConfigurationType config);
 
     /**
      * @brief Manages a connection define in config associated to object.
@@ -65,10 +61,10 @@ protected:
      * @param object Object associated with the id
      * @param config configuration for a \<connect\> tag associated this object
      */
-    void manageConnection(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config);
+    void manageConnection(const std::string& objectId, ::fwData::Object::sptr object, ConfigurationType config);
 
     /// Disconnects all registred connection for objectId.
-    void removeConnections(const std::string &objectId);
+    void removeConnections(const std::string& objectId);
 
     /**
      * @brief Manages all proxies connections define in config associated to object
@@ -78,10 +74,10 @@ protected:
      * @param object Object associated with the id
      * @param config configuration for this object
      */
-    void manageProxies(const std::string &objectId, ::fwData::Object::sptr object, ConfigurationType config);
+    void manageProxies(const std::string& objectId, ::fwData::Object::sptr object, ConfigurationType config);
 
     /// Disconnects all proxies associated to objectId;
-    void disconnectProxies(const std::string &objectId);
+    void disconnectProxies(const std::string& objectId);
 
     /// Registers connection associated to an object. Connections are connected/disconnected when the object is added/removed.
     ObjectConnectionsMapType m_objectConnections;

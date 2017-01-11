@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,7 +39,8 @@
 #include <fwData/Image.hpp>
 #include <fwData/ObjectLock.hpp>
 
-#include <fwComEd/helper/Image.hpp>
+#include <fwDataTools/helper/Image.hpp>
+#include <fwDataTools/helper/ImageGetter.hpp>
 
 #include "fwVtkIO/vtk.hpp"
 
@@ -49,7 +50,7 @@ namespace fwVtkIO
 
 
 TypeTranslator::fwToolsToVtkMap::mapped_type TypeTranslator::translate(
-    const TypeTranslator::fwToolsToVtkMap::key_type &key )
+    const TypeTranslator::fwToolsToVtkMap::key_type& key )
 {
     fwToolsToVtkMap::const_iterator it = s_toVtk.find( key );
     FW_RAISE_IF("Unknown Type: " << key, it == s_toVtk.end() );
@@ -57,7 +58,7 @@ TypeTranslator::fwToolsToVtkMap::mapped_type TypeTranslator::translate(
 }
 
 TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate(
-    const TypeTranslator::VtkTofwToolsMap::key_type &key )
+    const TypeTranslator::VtkTofwToolsMap::key_type& key )
 {
     VtkTofwToolsMap::const_iterator it = s_fromVtk.find( key );
     FW_RAISE_IF("Unknown Type: " << key, it == s_fromVtk.end() );
@@ -128,7 +129,7 @@ const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk
 
 //-----------------------------------------------------------------------------
 
-void toVTKImage( ::fwData::Image::sptr data,  vtkImageData *dst)
+void toVTKImage( ::fwData::Image::csptr data,  vtkImageData* dst)
 {
     vtkSmartPointer< vtkImageImport > importer = vtkSmartPointer< vtkImageImport >::New();
 
@@ -143,14 +144,14 @@ void toVTKImage( ::fwData::Image::sptr data,  vtkImageData *dst)
 
 
 template< typename IMAGETYPE >
-void *newBuffer(size_t size)
+void* newBuffer(size_t size)
 {
-    IMAGETYPE *destBuffer;
+    IMAGETYPE* destBuffer;
     try
     {
         destBuffer = new IMAGETYPE[ size ];
     }
-    catch (std::exception &e)
+    catch (std::exception& e)
     {
         OSLM_ERROR ("No enough memory to allocate an image of type "
                     << fwTools::makeDynamicType<IMAGETYPE>().string()
@@ -164,16 +165,16 @@ void *newBuffer(size_t size)
 //-----------------------------------------------------------------------------
 
 template< typename IMAGETYPE >
-void fromRGBBuffer( void *input, size_t size, void *&destBuffer)
+void fromRGBBuffer( void* input, size_t size, void*& destBuffer)
 {
     if(destBuffer == NULL)
     {
         destBuffer = newBuffer<IMAGETYPE>(size);
     }
 
-    IMAGETYPE *destBufferTyped = (IMAGETYPE*)destBuffer;
-    IMAGETYPE *inputTyped      = (IMAGETYPE*)input;
-    IMAGETYPE *finalPtr        = ((IMAGETYPE*)destBuffer) + size;
+    IMAGETYPE* destBufferTyped = (IMAGETYPE*)destBuffer;
+    IMAGETYPE* inputTyped      = (IMAGETYPE*)input;
+    IMAGETYPE* finalPtr        = ((IMAGETYPE*)destBuffer) + size;
     IMAGETYPE valR, valG,valB;
 
     while (destBufferTyped < finalPtr)
@@ -189,16 +190,16 @@ void fromRGBBuffer( void *input, size_t size, void *&destBuffer)
 //-----------------------------------------------------------------------------
 
 template< typename IMAGETYPE >
-void fromRGBBufferColor( void *input, size_t size, void *&destBuffer)
+void fromRGBBufferColor( void* input, size_t size, void*& destBuffer)
 {
     if(destBuffer == NULL)
     {
         destBuffer = newBuffer<IMAGETYPE>(size);
     }
 
-    IMAGETYPE *destBufferTyped = (IMAGETYPE*)destBuffer;
-    IMAGETYPE *inputTyped      = (IMAGETYPE*)input;
-    IMAGETYPE *finalPtr        = ((IMAGETYPE*)destBuffer) + size;
+    IMAGETYPE* destBufferTyped = (IMAGETYPE*)destBuffer;
+    IMAGETYPE* inputTyped      = (IMAGETYPE*)input;
+    IMAGETYPE* finalPtr        = ((IMAGETYPE*)destBuffer) + size;
 
     while (destBufferTyped < finalPtr)
     {
@@ -213,7 +214,7 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 {
     SLM_ASSERT("vtkImageData source and/or ::fwData::Image destination are not correct", destination && source );
 
-    ::fwComEd::helper::Image imageHelper(destination);
+    ::fwDataTools::helper::Image imageHelper(destination);
 
     // ensure image size correct
 //    source->UpdateInformation();
@@ -254,11 +255,11 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
 
     size_t size = std::accumulate(source->GetDimensions(), source->GetDimensions()+dim, 3, std::multiplies<size_t>() );
-    void *input = source->GetScalarPointer();
+    void* input = source->GetScalarPointer();
 
     if (size != 0)
     {
-        void *destBuffer;
+        void* destBuffer;
         int nbBytePerPixel = source->GetScalarSize();
         int nbComponents   = source->GetNumberOfScalarComponents();
         OSLM_TRACE("image size : " << size << " - nbBytePerPixel : " << nbBytePerPixel );
@@ -303,9 +304,9 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 
 //------------------------------------------------------------------------------
 
-void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image::sptr _pDataImage )
+void configureVTKImageImport( ::vtkImageImport* _pImageImport, ::fwData::Image::csptr _pDataImage )
 {
-    ::fwComEd::helper::Image imageHelper(_pDataImage);
+    ::fwDataTools::helper::ImageGetter imageHelper(_pDataImage);
 
     _pImageImport->SetDataSpacing(  _pDataImage->getSpacing().at(0),
                                     _pDataImage->getSpacing().at(1),
@@ -334,9 +335,9 @@ void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image:
 
 //-----------------------------------------------------------------------------
 
-vtkMatrix4x4 *  toVTKMatrix( ::fwData::TransformationMatrix3D::sptr _transfoMatrix )
+vtkMatrix4x4*  toVTKMatrix( ::fwData::TransformationMatrix3D::sptr _transfoMatrix )
 {
-    vtkMatrix4x4  *matrix = vtkMatrix4x4 ::New();
+    vtkMatrix4x4* matrix = vtkMatrix4x4 ::New();
     for(int l = 0; l<4; l++)
     {
         for(int c = 0; c <4; c++)

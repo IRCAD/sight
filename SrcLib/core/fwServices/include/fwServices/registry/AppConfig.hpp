@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,13 +8,14 @@
 #define __FWSERVICES_REGISTRY_APPCONFIG_HPP__
 
 #include "fwServices/config.hpp"
+#include "fwServices/registry/AppInfo.hpp"
 
 #include <fwCore/mt/types.hpp>
 
 #include <fwData/Composite.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/EConfigurationElement.hpp>
+#include <fwRuntime/Extension.hpp>
 
 #include <fwTools/macros.hpp>
 #include <fwTools/Object.hpp>
@@ -28,51 +29,14 @@ namespace fwServices
 namespace registry
 {
 
-
 /**
- * @class AppInfo
- *
- */
-class FWSERVICES_CLASS_API AppInfo : public ::fwCore::BaseObject
-{
-public:
-
-    fwCoreClassDefinitionsWithFactoryMacro( (AppInfo)(::fwCore::BaseObject), (()), new AppInfo );
-
-    /// Constructor, do nothing.
-    AppInfo()
-    {
-    }
-
-    /// Destructor, do nothing.
-    virtual ~AppInfo()
-    {
-    }
-
-    std::string group;
-    std::string desc;
-    typedef std::map< std::string, std::string > ParamatersType;
-    ParamatersType parameters;
-    ::fwRuntime::ConfigurationElement::csptr config;
-    std::string bundleId; ///< Bundle identifier (used to start the bundle when the appConfig is launched)
-    std::string bundleVersion; ///< Bundle version (used to start the bundle when the appConfig is launched)
-};
-
-
-/**
- * @class AppConfig
  * @brief This class allows to register all the configuration which has the point extension
  *        "::fwServices::registry::AppConfig".
- *
- * @date 2012.
  */
 class FWSERVICES_CLASS_API AppConfig : public ::fwCore::BaseObject
 {
 
 public:
-
-    /// Associations of <pattern, value>.
-    typedef std::map< std::string, std::string > FieldAdaptorType;
 
     fwCoreClassDefinitionsWithFactoryMacro( (AppConfig)(::fwCore::BaseObject), (()), new AppConfig);
 
@@ -96,14 +60,13 @@ public:
      * @param config the registered config.
      * @note This method is thread safe
      */
-    FWSERVICES_API void addAppInfo
-        (   const std::string & configId,
-        const std::string & group,
-        const std::string & desc,
-        const AppInfo::ParamatersType & parameters,
-        ::fwRuntime::ConfigurationElement::csptr config,
-        const std::string bundleId,
-        const std::string bundleVersion);
+    FWSERVICES_API void addAppInfo (   const std::string & configId,
+                                       const std::string & group,
+                                       const std::string & desc,
+                                       const AppInfo::ParametersType & parameters,
+                                       ::fwRuntime::ConfigurationElement::csptr config,
+                                       const std::string bundleId,
+                                       const std::string bundleVersion);
 
     /**
      * @brief  Return the adapted config with the identifier configId.

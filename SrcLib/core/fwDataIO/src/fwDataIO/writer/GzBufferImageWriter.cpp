@@ -1,20 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <boost/cstdint.hpp>
+#include "fwDataIO/writer/GzBufferImageWriter.hpp"
+
+#include "fwDataIO/writer/registry/macros.hpp"
+
+#include <fwData/Image.hpp>
+#include <fwData/Object.hpp>
+
+#include <fwDataTools/helper/Image.hpp>
 
 #include <zlib.h>
-#include <fwData/Object.hpp>
-#include <fwData/Image.hpp>
 
-#include <fwComEd/helper/Image.hpp>
+#include <boost/cstdint.hpp>
 
-#include "fwDataIO/writer/GzBufferImageWriter.hpp"
-#include "fwDataIO/writer/registry/macros.hpp"
+#include <iostream>
 
 
 fwDataIOWriterRegisterMacro( ::fwDataIO::writer::GzBufferImageWriter);
@@ -59,12 +62,12 @@ void GzBufferImageWriter::write()
         throw std::ios_base::failure(str);
     }
 
-    ::fwComEd::helper::Image imageHelper(image);
+    ::fwDataTools::helper::Image imageHelper(image);
 
     // file is OK : process now
     size_t imageSizeInBytes = image->getSizeInBytes();
 
-    char *ptr           = static_cast<char*>(imageHelper.getBuffer());
+    char* ptr           = static_cast<char*>(imageHelper.getBuffer());
     size_t writtenBytes = 0;
 
     int uncompressedbyteswrited;

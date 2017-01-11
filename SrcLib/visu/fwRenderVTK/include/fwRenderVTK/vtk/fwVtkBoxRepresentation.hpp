@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,8 +40,6 @@
 #ifndef __FWRENDERVTK_VTK_FWVTKBOXREPRESENTATION_HPP__
 #define __FWRENDERVTK_VTK_FWVTKBOXREPRESENTATION_HPP__
 
-#ifndef ANDROID
-
 #include "fwRenderVTK/config.hpp"
 
 #include <vtkBoxRepresentation.h>
@@ -69,7 +67,7 @@ class FWRENDERVTK_CLASS_API fwVtkBoxRepresentation : public vtkBoxRepresentation
 public:
     // Description:
     // Instantiate the class.
-    FWRENDERVTK_API static fwVtkBoxRepresentation *New();
+    FWRENDERVTK_API static fwVtkBoxRepresentation* New();
 
     // Description:
     // Standard methods for the class.
@@ -104,5 +102,4 @@ protected:
 
 };
 
-#endif //ANDROID
 #endif //__FWRENDERVTK_VTK_FWVTKBOXREPRESENTATION_HPP__

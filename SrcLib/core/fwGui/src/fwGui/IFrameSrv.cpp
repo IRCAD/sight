@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,11 @@
 #include "fwGui/IFrameSrv.hpp"
 #include "fwGui/Application.hpp"
 #include "fwGui/registry/worker.hpp"
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwThread/Worker.hpp>
 #include <fwThread/Worker.hxx>
@@ -20,7 +25,7 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <fwTools/fwID.hpp>
 
@@ -30,6 +35,10 @@ namespace fwGui
 const std::string IFrameSrv::CLOSE_POLICY_EXIT    = "exit";
 const std::string IFrameSrv::CLOSE_POLICY_NOTIFY  = "notify";
 const std::string IFrameSrv::CLOSE_POLICY_MESSAGE = "message";
+
+const ::fwCom::Slots::SlotKeyType IFrameSrv::s_SET_VISIBLE_SLOT = "setVisible";
+const ::fwCom::Slots::SlotKeyType IFrameSrv::s_SHOW_SLOT        = "show";
+const ::fwCom::Slots::SlotKeyType IFrameSrv::s_HIDE_SLOT        = "hide";
 
 const ::fwCom::Signals::SignalKeyType IFrameSrv::s_CLOSED_SIG = "closed";
 
@@ -42,6 +51,10 @@ IFrameSrv::IFrameSrv() :
     m_closePolicy("exit")
 {
     m_sigClosed = newSignal< ClosedSignalType >(s_CLOSED_SIG);
+
+    newSlot(s_SET_VISIBLE_SLOT, &IFrameSrv::setVisible, this);
+    newSlot(s_SHOW_SLOT, &IFrameSrv::show, this);
+    newSlot(s_HIDE_SLOT,&IFrameSrv::hide, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -284,6 +297,28 @@ void IFrameSrv::onCloseMessage()
 ::fwGui::container::fwContainer::sptr IFrameSrv::getProgressWidget()
 {
     return m_progressWidget.lock();
+}
+
+//-----------------------------------------------------------------------------
+
+void IFrameSrv::setVisible(bool isVisible)
+{
+    ::fwGui::container::fwContainer::sptr container = m_frameLayoutManager->getFrame();
+    container->setVisible(isVisible);
+}
+
+//-----------------------------------------------------------------------------
+
+void IFrameSrv::show()
+{
+    this->setVisible(true);
+}
+
+//-----------------------------------------------------------------------------
+
+void IFrameSrv::hide()
+{
+    this->setVisible(false);
 }
 
 //-----------------------------------------------------------------------------

@@ -22,11 +22,9 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <QAbstractButton>
 #include <QRadioButton>

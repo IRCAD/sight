@@ -8,6 +8,7 @@
 
 #include <fwActivities/IBuilder.hpp>
 #include <fwActivities/IValidator.hpp>
+#include <fwActivities/IActivityValidator.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -30,12 +31,11 @@
 #include <fwRuntime/Convert.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwServices/AppConfigManager.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/IAppConfigManager.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include <fwTools/fwID.hpp>
 #include <fwTools/UUID.hpp>
 
 #include <boost/foreach.hpp>
@@ -62,9 +62,10 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::activities::action::SActivityLau
 
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_LAUNCH_SERIES_SLOT        = "launchSeries";
-const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_UPDATE_STATE_SLOT         = "updateState";
-const ::fwCom::Signals::SignalKeyType SActivityLauncher::s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
+const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_LAUNCH_SERIES_SLOT          = "launchSeries";
+const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_LAUNCH_ACTIVITY_SERIES_SLOT = "launchActivitySeries";
+const ::fwCom::Slots::SlotKeyType SActivityLauncher::s_UPDATE_STATE_SLOT           = "updateState";
+const ::fwCom::Signals::SignalKeyType SActivityLauncher::s_ACTIVITY_LAUNCHED_SIG   = "activityLaunched";
 
 //------------------------------------------------------------------------------
 
@@ -74,10 +75,8 @@ SActivityLauncher::SActivityLauncher() throw() :
     m_sigActivityLaunched = newSignal< ActivityLaunchedSignalType >(s_ACTIVITY_LAUNCHED_SIG);
 
     newSlot(s_LAUNCH_SERIES_SLOT, &SActivityLauncher::launchSeries, this);
+    newSlot(s_LAUNCH_ACTIVITY_SERIES_SLOT, &SActivityLauncher::launchActivitySeries, this);
     newSlot(s_UPDATE_STATE_SLOT, &SActivityLauncher::updateState, this);
-
-
-    this->setWorker( m_associatedWorker );
 }
 
 //------------------------------------------------------------------------------
@@ -322,8 +321,30 @@ void SActivityLauncher::updateState()
     if(selection->size() == 1 && ::fwMedData::ActivitySeries::dynamicCast((*selection)[0]))
     {
         ::fwMedData::ActivitySeries::sptr as = ::fwMedData::ActivitySeries::dynamicCast((*selection)[0]);
-        isExecutable                         = ::fwActivities::registry::Activities::getDefault()->hasInfo(
-            as->getActivityConfigId());
+
+
+        if(m_filterMode == "include" || m_filterMode == "exclude")
+        {
+            const bool isIncludeMode = m_filterMode == "include";
+
+            KeysType::iterator keyIt = std::find(m_keys.begin(), m_keys.end(), as->getActivityConfigId());
+
+            if(keyIt != m_keys.end() && isIncludeMode)
+            {
+                isExecutable = true;
+            }
+            else if(keyIt == m_keys.end() && !isIncludeMode)
+            {
+                isExecutable = true;
+            }
+            isExecutable &= ::fwActivities::registry::Activities::getDefault()->hasInfo(
+                as->getActivityConfigId());
+        }
+        else
+        {
+            isExecutable = ::fwActivities::registry::Activities::getDefault()->hasInfo(
+                as->getActivityConfigId());
+        }
     }
     else
     {
@@ -368,9 +389,41 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
 
     if( !actSeries )
     {
-        OSLM_INFO("Activity <" << info.builderImpl << ">launch aborted");
+        std::string msg = "The activity <" + info.title + "> can't be launched. Builder <" + info.builderImpl +
+                          "> failed.";
+        ::fwGui::dialog::MessageDialog::showMessageDialog( "Activity can not be launched", msg,
+                                                           ::fwGui::dialog::IMessageDialog::WARNING);
+        OSLM_ERROR(msg);
         return;
     }
+
+    // Applies activity validator on activity series to check the data
+    if (!info.validatorsImpl.empty())
+    {
+        for (std::string validatorImpl : info.validatorsImpl)
+        {
+            /// Process activity validator
+            ::fwActivities::IValidator::sptr validator = ::fwActivities::validator::factory::New(validatorImpl);
+
+            ::fwActivities::IActivityValidator::sptr activityValidator =
+                ::fwActivities::IActivityValidator::dynamicCast(validator);
+
+            if (activityValidator)
+            {
+                ::fwActivities::IValidator::ValidationType validation = activityValidator->validate(actSeries);
+                if(!validation.first)
+                {
+                    std::string message = "The activity '" + info.title + "' can not be launched:\n" +
+                                          validation.second;
+                    ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch",
+                                                                      message,
+                                                                      ::fwGui::dialog::IMessageDialog::CRITICAL);
+                    return;
+                }
+            }
+        }
+    }
+
 
     ParametersType parameters = this->translateParameters(m_parameters);
     ::fwActivities::registry::ActivityMsg msg = ::fwActivities::registry::ActivityMsg(actSeries, info, parameters);
@@ -388,7 +441,7 @@ void SActivityLauncher::buildActivity(const ::fwActivities::registry::ActivityIn
         replaceMap["GENERIC_UID"]                                        =
             ::fwServices::registry::AppConfig::getUniqueIdentifier();
 
-        ::fwServices::AppConfigManager::sptr helper = ::fwServices::AppConfigManager::New();
+        ::fwServices::IAppConfigManager::sptr helper = ::fwServices::IAppConfigManager::New();
         helper->setConfig( viewConfigID, replaceMap );
         helper->launch();
         helper->stopAndDestroy();
@@ -461,12 +514,7 @@ bool SActivityLauncher::launchAS(::fwData::Vector::sptr &selection)
             }
             else
             {
-                ::fwActivities::registry::ActivityInfo info;
-                info = ::fwActivities::registry::Activities::getDefault()->getInfo(as->getActivityConfigId());
-                ParametersType parameters = this->translateParameters(m_parameters);
-                ::fwActivities::registry::ActivityMsg msg = ::fwActivities::registry::ActivityMsg(as, info, parameters);
-
-                m_sigActivityLaunched->asyncEmit(msg);
+                this->launchActivitySeries(as);
                 launchAS = true;
             }
         }
@@ -481,12 +529,7 @@ void SActivityLauncher::launchSeries(::fwMedData::Series::sptr series)
     ::fwMedData::ActivitySeries::sptr as = ::fwMedData::ActivitySeries::dynamicCast(series);
     if (as)
     {
-        ::fwActivities::registry::ActivityInfo info;
-        info = ::fwActivities::registry::Activities::getDefault()->getInfo(as->getActivityConfigId());
-        ParametersType parameters = this->translateParameters(m_parameters);
-        ::fwActivities::registry::ActivityMsg msg = ::fwActivities::registry::ActivityMsg(as, info, parameters);
-
-        m_sigActivityLaunched->asyncEmit(msg);
+        this->launchActivitySeries(as);
     }
     else
     {
@@ -512,6 +555,47 @@ void SActivityLauncher::launchSeries(::fwMedData::Series::sptr series)
                                                               ::fwGui::dialog::MessageDialog::WARNING);
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SActivityLauncher::launchActivitySeries(::fwMedData::ActivitySeries::sptr series)
+{
+    ::fwActivities::registry::ActivityInfo info;
+    info = ::fwActivities::registry::Activities::getDefault()->getInfo(series->getActivityConfigId());
+
+    // Applies activity validator on activity series to check the data
+    if (!info.validatorsImpl.empty())
+    {
+        for (std::string validatorImpl : info.validatorsImpl)
+        {
+            /// Process activity validator
+            ::fwActivities::IValidator::sptr validator = ::fwActivities::validator::factory::New(validatorImpl);
+
+            ::fwActivities::IActivityValidator::sptr activityValidator =
+                ::fwActivities::IActivityValidator::dynamicCast(validator);
+
+            if (activityValidator)
+            {
+                ::fwActivities::IValidator::ValidationType validation = activityValidator->validate(series);
+                if(!validation.first)
+                {
+                    std::string message = "The activity '" + info.title + "' can not be launched:\n" +
+                                          validation.second;
+                    ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch",
+                                                                      message,
+                                                                      ::fwGui::dialog::IMessageDialog::CRITICAL);
+                    return;
+                }
+            }
+        }
+    }
+
+
+    ParametersType parameters = this->translateParameters(m_parameters);
+    ::fwActivities::registry::ActivityMsg msg = ::fwActivities::registry::ActivityMsg(series, info, parameters);
+
+    m_sigActivityLaunched->asyncEmit(msg);
 }
 
 //------------------------------------------------------------------------------
@@ -562,4 +646,3 @@ SActivityLauncher::ParametersType SActivityLauncher::translateParameters( const 
 
 }
 }
-

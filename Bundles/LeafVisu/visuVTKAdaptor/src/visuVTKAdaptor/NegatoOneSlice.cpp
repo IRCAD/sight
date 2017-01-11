@@ -4,24 +4,26 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "visuVTKAdaptor/NegatoOneSlice.hpp"
+
 #include "visuVTKAdaptor/Image.hpp"
 #include "visuVTKAdaptor/ImageSlice.hpp"
-#include "visuVTKAdaptor/NegatoOneSlice.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwData/Color.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransferFunction.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 
 #include <fwVtkIO/vtk.hpp>
 
@@ -104,7 +106,7 @@ void NegatoOneSlice::cleanImageSource()
         ::fwData::Composite::sptr sceneComposite;
 
         image          = this->getObject< ::fwData::Image >();
-        sceneComposite = this->getRenderService()->getObject< ::fwData::Composite >();
+        sceneComposite = this->getRenderService()->getComposite();
 
         adaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >(
             sceneComposite,

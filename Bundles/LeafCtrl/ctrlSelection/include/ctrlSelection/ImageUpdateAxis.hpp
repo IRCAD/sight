@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,19 +7,18 @@
 #ifndef __CTRLSELECTION_IMAGEUPDATEAXIS_HPP__
 #define __CTRLSELECTION_IMAGEUPDATEAXIS_HPP__
 
-#include <fwServices/IService.hpp>
-#include <fwServices/IController.hpp>
-
-#include <fwComEd/helper/MedicalImageAdaptor.hpp>
-
 #include "ctrlSelection/config.hpp"
+
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+
+#include <fwServices/IController.hpp>
+#include <fwServices/IService.hpp>
 
 namespace ctrlSelection
 {
 
 
 /**
- * @class  ImageUpdateAxis
  * @brief  This service updates a fwData::Float given in configuration with the image axis.
  */
 class CTRLSELECTION_CLASS_API ImageUpdateAxis : public ::fwServices::IController
@@ -55,11 +54,11 @@ protected:
     /**
      * @brief Configures the service.
      *
-     * @verbatim
+     * @code{.xml}
        <service type="::fwServices::IController" impl="::ctrlSelection::ImageUpdateAxis" autoConnect="yes">
            <axis uid="imageAxis" orientation="axial" />
        </service>
-       @endverbatim
+       @endcode
      * - \b uid : fwID of the ::fwData::Float to update
      * - \b orientation : image orientation (axial, frontal or sagittal)
      */
@@ -72,7 +71,7 @@ protected:
     CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Implements info method derived from IService. Print classname.
-    CTRLSELECTION_API virtual void info( std::ostream &_sstream );
+    CTRLSELECTION_API virtual void info( std::ostream& _sstream );
 
 private:
 
@@ -90,7 +89,7 @@ private:
     std::string m_floatID;
 
     /// Orientation of the image axis.
-    ::fwComEd::helper::MedicalImageAdaptor::Orientation m_orientation;
+    ::fwDataTools::helper::MedicalImageAdaptor::Orientation m_orientation;
 };
 
 } // ctrlSelection

@@ -1,12 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __VTKSIMPLENEGATO_SRENDERER_HPP__
 #define __VTKSIMPLENEGATO_SRENDERER_HPP__
-
 
 #include "vtkSimpleNegato/config.hpp"
 
@@ -22,24 +21,29 @@ namespace vtkSimpleNegato
 {
 
 /**
- * @brief    Service rendering a ::fwData::Image using VTK.
- * @class    SRenderer
+ * @brief   Service rendering a ::fwData::Image using VTK.
  *
- * This service displays a 3D image in a scene.
+ * This service displays a 3D MPR in a scene. It is rather basic and can not be extended.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::vtkSimpleNegato::SRenderer">
+            <in key="image" uid="..." />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b image [::fwData::Image]: 3D image to be displayed.
  */
 class VTKSIMPLENEGATO_CLASS_API SRenderer : public fwRender::IRender
 {
 public:
     fwCoreServiceClassDefinitionsMacro ( (SRenderer)(::fwRender::IRender) );
 
-    /**
-     * @brief    Constructor
-     */
+    /// Constructor
     VTKSIMPLENEGATO_API SRenderer() throw();
 
-    /**
-     * @brief    Destructor
-     */
+    /// Destructor
     VTKSIMPLENEGATO_API virtual ~SRenderer() throw();
 
     /**
@@ -49,7 +53,7 @@ public:
      * Connect Image::s_MODIFIED_SIG to this::s_REFRESH_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_REFRESH_SLOT
      */
-    VTKSIMPLENEGATO_API virtual KeyConnectionsType getObjSrvConnections() const;
+    VTKSIMPLENEGATO_API virtual KeyConnectionsMap getAutoConnections() const;
 
 protected:
 
@@ -83,14 +87,7 @@ protected:
      */
     VTKSIMPLENEGATO_API virtual void configuring() throw(::fwTools::Failed);
 
-    /// @brief vtk renderer
-    vtkRenderer * m_render;
-
 private:
-
-    /// @brief VTK Interactor window manager
-    ::fwRenderVTK::IVtkRenderWindowInteractorManager::sptr m_interactorManager;
-
     /**
      * @brief VTK pipeline initialization method.
      *
@@ -107,6 +104,12 @@ private:
      */
     void updateVTKPipeline();
 
+    /// @brief vtk renderer
+    vtkRenderer* m_render;
+
+    /// @brief VTK Interactor window manager
+    ::fwRenderVTK::IVtkRenderWindowInteractorManager::sptr m_interactorManager;
+
     /// @brief image wireframe outline.
     vtkOutlineFilter* m_outline;
 
@@ -119,10 +122,7 @@ private:
     /// @brief vtk widget used in the negatoscope frontal plane.
     vtkImagePlaneWidget* m_negatoFrontal;
 
-    /**
-     * @brief the m_bPipelineIsInit value is \b true
-     * if the pipeline is initialized.
-     */
+    /// the m_bPipelineIsInit value is \b true if the pipeline is initialized.
     bool m_bPipelineIsInit;
 };
 

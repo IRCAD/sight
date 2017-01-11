@@ -1,15 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ctrlSelection/MedicalImageSrv.hpp"
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-#include <fwComEd/helper/Image.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/Image.hpp>
+
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/helper/Image.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -37,14 +40,27 @@ MedicalImageSrv::~MedicalImageSrv() throw()
 
 void MedicalImageSrv::convertImage()
 {
-    ::fwData::Image::sptr pImg = this->getObject< ::fwData::Image >();
-    if(::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg))
+    ::fwData::Image::sptr pImg;
+
+    if (this->isVersion2())
     {
-        ::fwComEd::helper::Image helper ( pImg );
+        pImg = this->getInOut< ::fwData::Image >("image");
+    }
+    else
+    {
+        pImg = this->getObject< ::fwData::Image >();
+    }
+    if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg))
+    {
+        ::fwDataTools::helper::Image helper ( pImg );
 
         helper.createLandmarks();
         helper.createTransferFunctionPool();
         helper.createImageSliceIndex();
+
+        auto sig = pImg->signal< ::fwData::Object::ModifiedSignalType >( ::fwData::Object::s_MODIFIED_SIG );
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        helper.notify();
     }
 }
 
@@ -89,7 +105,7 @@ void MedicalImageSrv::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void MedicalImageSrv::info( std::ostream &_sstream )
+void MedicalImageSrv::info( std::ostream& _sstream )
 {
 }
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,7 @@ struct GetCampValueVisitor : public camp::ValueVisitor< ::fwData::Object::sptr >
     std::string m_subObjPath;
     PathVisitor::sptr m_pathVisitor;
 
-    GetCampValueVisitor( const std::string & subObjPath, PathVisitor::sptr pathVisitor) :
+    GetCampValueVisitor( const std::string& subObjPath, PathVisitor::sptr pathVisitor) :
         m_subObjPath(subObjPath), m_pathVisitor(pathVisitor)
     {
     }
@@ -77,15 +77,15 @@ struct GetCampValueVisitor : public camp::ValueVisitor< ::fwData::Object::sptr >
             {
                 OSLM_DEBUG( "visit class= '" << metaclass.name() << "' ( classname = '"<< value.call(
                                 "classname") <<"' )" );
-                ::fwData::Object * ptr = value.get< ::fwData::Object * >();
+                ::fwData::Object* ptr = value.get< ::fwData::Object* >();
                 ::fwDataCamp::visitor::GetObject visitor( ptr->getSptr(), m_subObjPath );
                 val = visitor.get();
                 m_pathVisitor->merge(visitor.getPathVisitor());
             }
             else
             {
-                ::fwData::Object * ptr = value.get< ::fwData::Object * >();
-                val                    = ptr->getSptr();
+                ::fwData::Object* ptr = value.get< ::fwData::Object* >();
+                val                   = ptr->getSptr();
             }
         }
         else
@@ -101,13 +101,13 @@ struct GetCampValueVisitor : public camp::ValueVisitor< ::fwData::Object::sptr >
 
 //-----------------------------------------------------------------------------
 
-GetObject::GetObject( ::fwData::Object::sptr object, const std::string & subObjPath ) :
+GetObject::GetObject( ::fwData::Object::csptr object, const std::string& subObjPath ) :
     m_object(object), m_subObjPath(subObjPath),
     m_newSubObjPath(subObjPath),
     m_pathVisitor(std::make_shared<PathVisitor>(subObjPath))
 {
     SLM_FATAL_IF("Cannot retrieve an object with an empty path.", subObjPath.empty());
-    m_campObj      = camp::UserObject( object.get() );
+    m_campObj      = camp::UserObject( *object );
     m_propertyName = this->getNextPropertyName();
 }
 
@@ -187,10 +187,23 @@ void GetObject::visit(const camp::ArrayProperty& property)
 
         size_t index = ::boost::lexical_cast< size_t >( key );
 
-        ::camp::Value elemValue = property.get( m_campObj, index );
+        m_pathVisitor->addObject(key);
+
+        // If the index is out of range, camp throws an exception
+        // We need to catch it because this means we failed to reach the object
+        ::camp::Value elemValue;
+        try
+        {
+            elemValue = property.get( m_campObj, index );
+        }
+        catch(::camp::OutOfRange e)
+        {
+            FW_RAISE_EXCEPTION_MSG( ::fwDataCamp::exception::NullPointer,
+                                    "Index '" << index << "' not found in array property '" << name << "'.");
+        }
+
         GetCampValueVisitor visitor(m_newSubObjPath, m_pathVisitor);
         m_subObject = elemValue.visit( visitor );
-        m_pathVisitor->addObject(key);
     }
 }
 

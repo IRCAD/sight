@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -41,7 +41,7 @@ protected:
     /**
      * @brief Configuring method allows to configure an application with menu bar.
      * Example of configuration
-     * @verbatim
+     * @code{.xml}
        <service uid="menuBar" type="::fwGui::IMenuBarSrv" impl="::gui::aspect::SDefaultMenuBar" autoConnect="no" >
           <gui>
               <layout>
@@ -54,7 +54,7 @@ protected:
               <menu sid="myMenu2" start="yes" />
           </registry>
        </service>
-       @endverbatim
+       @endcode
      *  - \<gui\> \</gui\> : (mandatory) describe the interface of the service.
      *  - \<registry\> \</registry\> : (mandatory) describe the service management.
      *   - sid of the menu services

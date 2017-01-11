@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,7 +25,46 @@ namespace fwGui
 
 /**
  * @brief   Defines the service interface managing a frame.
- * @class   IFrameSrv
+ *
+ * @section Slots Slots
+ *
+ * - \b setVisible(bool isVisible) : this slot shows the container (if isVisible = true) or hides it.
+ * - \b show() : this slot shows the container.
+ * - \b hide() : this slot hides the container.
+ *
+ * @section XML Example of XML configuration
+ *
+ * Example of configuration
+ * @code{.xml}
+   <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
+     <window onclose="notify" />
+     <gui>
+         <frame>
+             <name>My App</name>
+             <icon>@BUNDLE_PREFIX@/myApp_1-0/icon.ico</icon>
+             <minSize width="800" height="600" />
+             <style mode="MODAL" />
+         </frame>
+         <toolBar />
+         <menuBar />
+     </gui>
+     <registry>
+         <toolBar sid="toolbar1" start="yes" />
+         <menuBar sid="menubar1" start="yes" />
+         <view sid="myView" start="yes" />
+     </registry>
+   </service>
+   @endcode
+ * - \<window onclose="notify" /\> : defines what to do when the frame is closed
+ *   - \b exit (by default) : the application is closed. Use it for the main frame.
+ *   - \b notify : send signal 'closed'
+ *   - \b message : a confirmation dialog appears asking user to confirm closing application
+ * - \<frame\> : defines the frame name, icon, size and style.
+ *   - \b style : defines frame style (modal, always on top, etc.), not mandatory.
+ *     Allowed values are MODAL, STAY_ON_TOP and DEFAULT (default value).
+ * - The toolBar section isn't mandatory.
+ * - The menuBar section isn't mandatory.
+
  */
 class FWGUI_CLASS_API IFrameSrv : public ::fwServices::IService
 {
@@ -48,6 +87,23 @@ public:
      * @}
      */
 
+    /**
+     * @name Slots Keys
+     * @{
+     */
+
+    /// Slot to show/hide the container
+    static const ::fwCom::Slots::SlotKeyType s_SET_VISIBLE_SLOT;
+
+    /// Slot to show the container
+    static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT;
+
+    /// Slot to hide the container
+    static const ::fwCom::Slots::SlotKeyType s_HIDE_SLOT;
+    /**
+     * @}
+     */
+
 
 protected:
 
@@ -58,37 +114,6 @@ protected:
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     /**
      * @brief Initialize frame managers.
-     *
-     * Example of configuration
-     * @verbatim
-        <service uid="mainFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
-            <window onclose="notify" />
-            <gui>
-                <frame>
-                    <name>My App</name>
-                    <icon>Bundles/myApp_1-0/icon.ico</icon>
-                    <minSize width="800" height="600" />
-                    <style mode="MODAL" />
-                </frame>
-                <toolBar />
-                <menuBar />
-            </gui>
-            <registry>
-                <toolBar sid="toolbar1" start="yes" />
-                <menuBar sid="menubar1" start="yes" />
-                <view sid="myView" start="yes" />
-            </registry>
-        </service>
-       @endverbatim
-     * - \<window onclose="notify" /\> : defines what to do when the frame is closed
-     *   - \b exit (by default) : the application is closed. Use it for the main frame.
-     *   - \b notify : send signal 'closed'
-     *   - \b message : a confirmation dialog appears asking user to confirm closing application
-     * - \<frame\> : defines the frame name, icon, size and style.
-     *   - \b style : defines frame style (modal, always on top, etc.), not mandatory.
-     *     Allowed values are MODAL, STAY_ON_TOP and DEFAULT (default value).
-     * - The toolBar section isn't mandatory.
-     * - The menuBar section isn't mandatory.
      *
      * @see ::fwGui::registrar::ViewRegistrar::initialize(), ::fwGui::layoutManager::IFrameLayoutManager::initialize(),
      *      ::fwGui::builder::IToolBarBuilder::initialize(), ::fwGui::builder::IMenuBarBuilder::initialize()
@@ -109,6 +134,13 @@ protected:
     FWGUI_API static ::fwGui::container::fwContainer::wptr m_progressWidget;
 
 private:
+
+    /// SLOT: show/hide the container
+    void setVisible(bool isVisible);
+    /// SLOT: show the container
+    void show();
+    /// SLOT: hide the container
+    void hide();
 
     void onCloseExit();
     void onCloseNotify();

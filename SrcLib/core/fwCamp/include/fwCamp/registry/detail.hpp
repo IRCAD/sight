@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,8 +14,14 @@
 
 #include "fwCamp/config.hpp"
 
-fwCorePredeclare((camp)(UserObject));
-fwCorePredeclare((fwTools)(Object));
+namespace camp
+{
+class UserObject;
+}
+namespace fwTools
+{
+class Object;
+}
 
 namespace fwCamp
 {

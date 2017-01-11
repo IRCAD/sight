@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,9 +10,6 @@
 #include "gui/config.hpp"
 
 #include <fwGui/IActionSrv.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwTools/Failed.hpp>
 
@@ -25,7 +22,17 @@ namespace action
 {
 
 /**
- * @brief   To add or remove object in composite with specific key.
+ * @brief   To add or remove an object in composite with specific key.
+ *
+ * @section XML Configuration
+ *
+ * @code{.xml}
+       <service impl="::gui::action::SPushObject">
+           <inout key="source" uid="compositeId" />
+           <out key="destination" uid="objectId" />
+           <push srcKey="item" />
+       </service>
+   @endcode
  */
 class GUI_CLASS_API SPushObject : public ::fwGui::IActionSrv
 {
@@ -43,36 +50,36 @@ public:
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
+     * @deprecated
      *
      * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
      * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
      */
     GUI_API virtual KeyConnectionsType getObjSrvConnections() const;
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect source Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     * Connect source Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_OBJECTS_SLOT
+     */
+    GUI_API virtual KeyConnectionsMap getAutoConnections() const;
+
 protected:
 
 
-    virtual void starting() throw(::fwTools::Failed);
-
-    virtual void stopping() throw(::fwTools::Failed);
-
-    virtual void updating() throw(::fwTools::Failed);
-
-
-    /**
-     * Call the IAction::configuring()
-     *
-     * Example of this service configuration
-     * @verbatim
-       <service impl="::gui::action::SPushObject" type="::fwGui::IActionSrv">
-           <push src="COMPOSITE_UID[KEY]" key="KEY_IN_COMPOSITE" />
-       </service>
-        @endverbatim
-     */
+    /// Configure the service.
     virtual void configuring() throw(fwTools::Failed);
 
-    /// Overrides
-    virtual void info( std::ostream &_sstream );
+    /// Register the action and check if the action is executable.
+    virtual void starting() throw(::fwTools::Failed);
+
+    /// Unregister the action.
+    virtual void stopping() throw(::fwTools::Failed);
+
+    /// Extract the object.
+    virtual void updating() throw(::fwTools::Failed);
 
 private:
 
@@ -91,11 +98,14 @@ private:
      */
     DestKeyMapType m_key2src;
     SrcKeyMapType m_srcMap;
+
+    /// Key in the source composite to extract
+    std::string m_srcKey;
 };
 
-} //action
-} // GUI
+} // namespace action
 
+} // namespace gui
 
 #endif // __GUI_ACTION_SPUSHOBJECT_HPP__
 

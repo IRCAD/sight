@@ -1,0 +1,126 @@
+<plugin id="Tuto06Filter" version="@DASH_VERSION@">
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="visuVTKQt" />
+
+    <extension implements="::fwServices::registry::AppConfig2">
+        <id>FilterConfig</id>
+        <config>
+
+            <object uid="myImage1" type="::fwData::Image" />
+            <object uid="myImage2" type="::fwData::Image" />
+
+            <!-- Windows & Main Menu -->
+            <service uid="myFrame" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>Filter</name>
+                        <icon>@BUNDLE_PREFIX@/Tuto06Filter_0-1/tuto.ico</icon>
+                        <minSize width="720" height="600" />
+                    </frame>
+                    <menuBar />
+                </gui>
+                <registry>
+                    <menuBar sid="myMenuBar" start="yes" />
+                    <view sid="myDefaultView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="myMenuBar" type="::gui::aspect::SDefaultMenuBar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Filter" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFile" start="yes" />
+                    <menu sid="menuFilter" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="myDefaultView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::CardinalLayoutManager">
+                        <view align="center" />
+                        <view align="right" minWidth="500" minHeight="100" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="RenderingImage1" start="yes" />
+                    <view sid="RenderingImage2" start="yes" />
+                </registry>
+            </service>
+
+            <!-- Menus -->
+            <service uid="menuFile" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Open image file" shortcut="Ctrl+O" />
+                        <separator />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionOpenImageFile" start="yes" />
+                    <menuItem sid="actionQuit" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="menuFilter" type="::gui::aspect::SDefaultMenu">
+                <gui>
+                    <layout>
+                        <menuItem name="Compute Image Filter" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="actionImageFilter" start="yes" />
+                </registry>
+            </service>
+
+            <!-- Actions -->
+            <service uid="actionQuit" type="::gui::action::SQuit" />
+            <service uid="actionOpenImageFile" type="::gui::action::SStarter" >
+                <start uid="readerPathImageFile" />
+            </service>
+
+            <!--
+                Filter action:
+                This action applies a threshold filter. The source image is 'myImage1' and the
+                output image is 'myImage2'.
+                The two images are declared below.
+             -->
+            <service uid="actionImageFilter" type="::opImageFilter::action::SThreshold">
+                <in key="source" uid="myImage1" />
+                <inout key="target" uid="myImage2" />
+            </service>
+
+            <!-- Image declaration: -->
+
+            <!--
+                1st Image of the composite:
+                This is the source image for the filtering.
+            -->
+            <service uid="RenderingImage1" type="::vtkSimpleNegato::SRenderer" autoConnect="yes" >
+                <in key="image" uid="myImage1" />
+            </service>
+
+            <service uid="readerPathImageFile" type="::uiIO::editor::SIOSelector">
+                <inout key="target" uid="myImage1" />
+                <type mode="reader" />
+            </service>
+
+            <!--
+                2nd Image of the composite:
+                This is the output image for the filtering.
+            -->
+            <service uid="RenderingImage2" type="::vtkSimpleNegato::SRenderer" autoConnect="yes" >
+                <in key="image" uid="myImage2" />
+            </service>
+
+            <start uid="myFrame" />
+
+        </config>
+    </extension>
+</plugin>

@@ -1,0 +1,99 @@
+<plugin id="tu_fwActivities" version="@DASH_VERSION@">
+
+    <extension-point id="::fwActivities::registry::Activities" schema="activities.xsd" />
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>Test0</id>
+        <title>Title Test0</title>
+        <desc>Desc Test0</desc>
+        <icon>Icon Test0</icon>
+        <requirements>
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" />
+            <requirement name="modelSeries" type="::fwMedData::ModelSeries" minOccurs="0" maxOccurs="2">
+                <key>key1</key>
+                <key>key2</key>
+            </requirement>
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="Test0">
+            <parameters>
+                <parameter replace="RefModel" by="@values.modelSeries" />
+                <parameter replace="RefImage" by="@values.imageSeries.image" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>Test1</id>
+        <title>test 1</title>
+        <desc>This is test 1.</desc>
+        <icon>Icon</icon>
+        <requirements>
+            <requirement name="imageSeries" type="::fwMedData::ImageSeries"><!-- default: minOccurs="1" maxOccurs="1" -->
+                <desc>Image Series that could be displayed in a 3D scene.</desc>
+            </requirement>
+            <requirement name="modelSeries" type="::fwMedData::ModelSeries">
+                <desc>Organs segmented from the image series that could be displayed in the 3D scene.</desc>
+            </requirement>
+            <requirement name="vectorImage" type="::fwMedData::ImageSeries" minOccurs="2" maxOccurs="*" container="vector">
+                <desc>Some image series...</desc>
+                <validator>::fwActivities::validator::ImageProperties</validator>
+            </requirement>
+            <requirement name="vectorModel" type="::fwMedData::ModelSeries" minOccurs="2" maxOccurs="*" container="vector">
+                <desc>
+                <![CDATA[
+                Vector containing at least <b>two</b> model series.
+                ]]>
+                </desc>
+            </requirement>
+            <requirement name="transformationMatrix" type="::fwData::TransformationMatrix3D" minOccurs="0" maxOccurs="1" create="true">
+                <desc>
+                <![CDATA[
+                Optional <b>matrix</b>.
+                It will be automatically generated if not defined. <br />
+                New matrix is identity.
+                ]]>
+                </desc>
+            </requirement>
+            <requirement name="float" type="::fwData::Float" minOccurs="1" maxOccurs="1">
+                <desc>This is a ::fwData::Float, we can also have ::fwData::Integer and ::fwData::String.</desc>
+            </requirement>
+            <requirement name="int" type="::fwData::Integer" minOccurs="0" maxOccurs="0">
+                <desc>This is a ::fwData::Integer, it will be automatically created and cannot be updated by the user.</desc>
+            </requirement>
+            <requirement name="boolean" type="::fwData::Boolean" minOccurs="1" maxOccurs="1">
+                <desc>This is a boolean. I don't think it can be useful, but it exists ;)</desc>
+            </requirement>
+            <requirement name="String" type="::fwData::String" minOccurs="0" maxOccurs="4">
+                <desc>
+                <![CDATA[
+                Currently, it is not visible in the editor, but the following strings will be store into a <b>::fwData::Composite</b>
+                with the keys:<br />
+                - Item1 <br />
+                - Item2 <br />
+                - Item3 <br />
+                - Item4 <br />
+                ]]>
+                </desc>
+                <key>Item1</key>
+                <key>Item2</key>
+                <key>Item3</key>
+                <key>Item4</key>
+            </requirement>
+        </requirements>
+        <appConfig id="Test1Config">
+            <parameters>
+                <parameter replace="evalModelSeriesVectorUid" by="@values.vectorModel" />
+                <parameter replace="evalImageSeriesVectorUid" by="@values.vectorImage" />
+                <parameter replace="evalImageFisrtUid" by="@values.vectorImage.values.0.image" />
+                <parameter replace="imageUid" by="@values.imageSeries.image" />
+                <parameter replace="modelSeriesExpiUid" by="@values.modelSeries" />
+                <parameter replace="transformationMatrixUid" by="@values.transformationMatrix" />
+                <parameter replace="floatUid" by="!values.float" />
+                <parameter replace="intUid" by="@values.int" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+</plugin>
+

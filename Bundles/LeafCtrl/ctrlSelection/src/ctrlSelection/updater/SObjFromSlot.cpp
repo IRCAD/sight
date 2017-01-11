@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,10 +13,10 @@
 
 #include <fwData/Composite.hpp>
 
-#include <fwComEd/helper/Composite.hpp>
+#include <fwDataTools/helper/Composite.hpp>
 
-#include <fwServices/Base.hpp>
-
+#include <fwServices/macros.hpp>
+#include <fwServices/registry/ObjectService.hpp>
 
 namespace ctrlSelection
 {
@@ -29,6 +29,8 @@ const ::fwCom::Slots::SlotKeyType SObjFromSlot::s_ADD_SLOT               = "add"
 const ::fwCom::Slots::SlotKeyType SObjFromSlot::s_SWAP_OBJ_SLOT          = "swapObj";
 const ::fwCom::Slots::SlotKeyType SObjFromSlot::s_REMOVE_SLOT            = "remove";
 const ::fwCom::Slots::SlotKeyType SObjFromSlot::s_REMOVE_IF_PRESENT_SLOT = "removeIfPresent";
+
+static const std::string s_OBJECT = "object";
 
 //-----------------------------------------------------------------------------
 
@@ -59,13 +61,14 @@ void SObjFromSlot::configuring()  throw ( ::fwTools::Failed )
 {
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigType;
 
-    ConfigType cfg = m_configuration->findConfigurationElement("compositeKey");
+    if(!this->isVersion2())
+    {
+        ConfigType cfg = m_configuration->findConfigurationElement("compositeKey");
+        SLM_ASSERT("Missing element 'compositeKey'", cfg );
 
-    SLM_ASSERT("Missing element 'compositeKey'", cfg );
-
-    m_compositeKey = cfg->getValue();
-
-    SLM_ASSERT("Missing 'compositeKey' value", !m_compositeKey.empty());
+        m_compositeKey = cfg->getValue();
+        SLM_ASSERT("Missing 'compositeKey' value", !m_compositeKey.empty());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -89,7 +92,7 @@ void SObjFromSlot::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SObjFromSlot::info( std::ostream &_sstream )
+void SObjFromSlot::info( std::ostream& _sstream )
 {
 }
 
@@ -97,57 +100,92 @@ void SObjFromSlot::info( std::ostream &_sstream )
 
 void SObjFromSlot::add(::fwData::Object::sptr obj)
 {
-    ::fwComEd::helper::Composite helper( this->getObject< ::fwData::Composite >() );
-    helper.add(m_compositeKey, obj);
-    helper.notify();
+    if(this->isVersion2())
+    {
+        this->setOutput(s_OBJECT, obj);
+    }
+    else
+    {
+        ::fwDataTools::helper::Composite helper( this->getObject< ::fwData::Composite >() );
+        helper.add(m_compositeKey, obj);
+        helper.notify();
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SObjFromSlot::addOrSwap(::fwData::Object::sptr obj)
 {
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-    ::fwComEd::helper::Composite helper(composite);
-    if (composite->find(m_compositeKey) == composite->end())
+    if(this->isVersion2())
     {
-        helper.add(m_compositeKey, obj);
+        this->setOutput(s_OBJECT, obj);
     }
     else
     {
-        helper.swap(m_compositeKey, obj);
+        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+        ::fwDataTools::helper::Composite helper(composite);
+        if (composite->find(m_compositeKey) == composite->end())
+        {
+            helper.add(m_compositeKey, obj);
+        }
+        else
+        {
+            helper.swap(m_compositeKey, obj);
+        }
+        helper.notify();
     }
-    helper.notify();
 }
 
 //-----------------------------------------------------------------------------
 
 void SObjFromSlot::swap(::fwData::Object::sptr obj)
 {
-    ::fwComEd::helper::Composite helper( this->getObject< ::fwData::Composite >() );
-    helper.swap(m_compositeKey, obj);
-    helper.notify();
+    if(this->isVersion2())
+    {
+        this->setOutput(s_OBJECT, obj);
+    }
+    else
+    {
+        ::fwDataTools::helper::Composite helper( this->getObject< ::fwData::Composite >() );
+        helper.swap(m_compositeKey, obj);
+        helper.notify();
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SObjFromSlot::remove()
 {
-    ::fwComEd::helper::Composite helper( this->getObject< ::fwData::Composite >() );
-    helper.remove(m_compositeKey);
-    helper.notify();
+    if(this->isVersion2())
+    {
+        this->setOutput(s_OBJECT, nullptr);
+    }
+    else
+    {
+        ::fwDataTools::helper::Composite helper( this->getObject< ::fwData::Composite >() );
+        helper.remove(m_compositeKey);
+        helper.notify();
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SObjFromSlot::removeIfPresent()
 {
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-    ::fwComEd::helper::Composite helper(composite);
-    if (composite->find(m_compositeKey) != composite->end())
+    if(this->isVersion2())
     {
-        helper.remove(m_compositeKey);
+        this->setOutput(s_OBJECT, nullptr);
     }
-    helper.notify();
+    else
+    {
+        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+        ::fwDataTools::helper::Composite helper(composite);
+        if (composite->find(m_compositeKey) != composite->end())
+        {
+            helper.remove(m_compositeKey);
+        }
+        helper.notify();
+    }
 }
 
 //-----------------------------------------------------------------------------

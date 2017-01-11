@@ -10,11 +10,11 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/helper/Composite.hpp>
-
 #include <fwCore/base.hpp>
 
 #include <fwData/Composite.hpp>
+
+#include <fwDataTools/helper/Composite.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -23,16 +23,16 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
 #include <io/IReader.hpp>
 #include <io/IWriter.hpp>
 
-#include <string>
 #include <sstream>
+#include <string>
 
 namespace uiIO
 {
@@ -176,7 +176,7 @@ void SIOSelector::updating() throw( ::fwTools::Failed )
     std::vector< std::pair < std::string, std::string > > availableExtensionsMap;
     std::vector< std::string > availableExtensionsSelector;
 
-    for( const std::string &serviceId :  availableExtensionsId )
+    for( const std::string& serviceId :  availableExtensionsId )
     {
         bool serviceIsSelectedByUser =
             std::find( m_selectedServices.begin(), m_selectedServices.end(),
@@ -293,14 +293,25 @@ void SIOSelector::updating() throw( ::fwTools::Failed )
                     {
                         object                              = ::fwData::factory::New(objType);
                         ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite>();
-                        ::fwComEd::helper::Composite helper(composite);
+                        ::fwDataTools::helper::Composite helper(composite);
                         helper.add(m_inject, object);
 
                         helper.notify();
                     }
                 }
 
-                ::io::IReader::sptr reader = ::fwServices::add< ::io::IReader >( object, extensionId );
+                ::io::IReader::sptr reader;
+                if (this->isVersion2())
+                {
+                    auto factory = ::fwServices::registry::ServiceFactory::getDefault();
+                    reader = ::io::IReader::dynamicCast(factory->create( "::io::IReader", extensionId ));
+                    ::fwServices::OSR::registerService(object, ::io::s_DATA_KEY,
+                                                       ::fwServices::IService::AccessType::INOUT, reader);
+                }
+                else
+                {
+                    reader = ::fwServices::add< ::io::IReader >( object, extensionId );
+                }
                 reader->setWorker(m_associatedWorker);
 
                 if ( hasConfigForService )
@@ -315,20 +326,39 @@ void SIOSelector::updating() throw( ::fwTools::Failed )
                     jobCreatedSignal->connect(m_slotForwardJob);
                 }
 
-                reader->start();
-                reader->configureWithIHM();
+                try
+                {
+                    reader->start();
+                    reader->configureWithIHM();
 
-                ::fwGui::Cursor cursor;
-                cursor.setCursor(::fwGui::ICursor::BUSY);
-                reader->update();
-                cursor.setDefaultCursor();
+                    ::fwGui::Cursor cursor;
+                    cursor.setCursor(::fwGui::ICursor::BUSY);
+                    reader->update();
+                    cursor.setDefaultCursor();
 
-                reader->stop();
-                ::fwServices::OSR::unregisterService(reader);
+                    reader->stop();
+                    ::fwServices::OSR::unregisterService(reader);
+                }
+                catch (std::exception& e)
+                {
+                    std::string msg = "Failed to read : \n" + std::string(e.what());
+                    ::fwGui::dialog::MessageDialog::showMessageDialog("Reader Error", msg);
+                }
             }
             else
             {
-                ::io::IWriter::sptr writer = ::fwServices::add< ::io::IWriter >( this->getObject(), extensionId );
+                ::io::IWriter::sptr writer;
+                if (this->isVersion2())
+                {
+                    auto factory = ::fwServices::registry::ServiceFactory::getDefault();
+                    writer = ::io::IWriter::dynamicCast(factory->create( "::io::IWriter", extensionId ));
+                    ::fwServices::OSR::registerService(this->getObject(), ::io::s_DATA_KEY,
+                                                       ::fwServices::IService::AccessType::INPUT, writer);
+                }
+                else
+                {
+                    writer = ::fwServices::add< ::io::IWriter >( this->getObject(), extensionId );
+                }
                 writer->setWorker(m_associatedWorker);
 
                 if ( hasConfigForService )
@@ -343,16 +373,24 @@ void SIOSelector::updating() throw( ::fwTools::Failed )
                     jobCreatedSignal->connect(m_slotForwardJob);
                 }
 
-                writer->start();
-                writer->configureWithIHM();
+                try
+                {
+                    writer->start();
+                    writer->configureWithIHM();
 
-                ::fwGui::Cursor cursor;
-                cursor.setCursor(::fwGui::ICursor::BUSY);
-                writer->update();
-                cursor.setDefaultCursor();
+                    ::fwGui::Cursor cursor;
+                    cursor.setCursor(::fwGui::ICursor::BUSY);
+                    writer->update();
+                    cursor.setDefaultCursor();
 
-                writer->stop();
-                ::fwServices::OSR::unregisterService(writer);
+                    writer->stop();
+                    ::fwServices::OSR::unregisterService(writer);
+                }
+                catch (std::exception& e)
+                {
+                    std::string msg = "Failed to write : \n" +  std::string(e.what());
+                    ::fwGui::dialog::MessageDialog::showMessageDialog("Writer Error", msg);
+                }
             }
         }
     }
@@ -363,7 +401,7 @@ void SIOSelector::updating() throw( ::fwTools::Failed )
         {
             ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Reader not found");
-            messageBox.setMessage( "There are not available readers for this data type." );
+            messageBox.setMessage( "There are no available readers for this data type." );
             messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
             messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();
@@ -372,7 +410,7 @@ void SIOSelector::updating() throw( ::fwTools::Failed )
         {
             ::fwGui::dialog::MessageDialog messageBox;
             messageBox.setTitle("Writer not found");
-            messageBox.setMessage( "There are not available writers for this data type." );
+            messageBox.setMessage( "There are no available writers for this data type." );
             messageBox.setIcon(::fwGui::dialog::IMessageDialog::WARNING);
             messageBox.addButton(::fwGui::dialog::IMessageDialog::OK);
             messageBox.show();
@@ -382,7 +420,7 @@ void SIOSelector::updating() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SIOSelector::info( std::ostream &_sstream )
+void SIOSelector::info( std::ostream& _sstream )
 {
     // Update message
     _sstream << "SIOSelector";

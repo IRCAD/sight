@@ -11,11 +11,11 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwData/Image.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
+#include <fwServices/macros.hpp>
 
 #include <vtkActor2D.h>
 #include <vtkRenderer.h>
@@ -86,7 +86,7 @@ public:
         textProp->SetVerticalJustificationToBottom();
     }
 
-    void setText(const std::string &str)
+    void setText(const std::string& str)
     {
         m_rightStr     = "-";
         m_leftStr      = "-";
@@ -111,23 +111,23 @@ public:
 
     }
 
-    void setOrientation( ::fwComEd::helper::MedicalImageAdaptor::Orientation orientation )
+    void setOrientation( ::fwDataTools::helper::MedicalImageAdaptor::Orientation orientation )
     {
         switch (orientation)
         {
-            case ::fwComEd::helper::MedicalImageAdaptor::X_AXIS: // Sagittal
+            case ::fwDataTools::helper::MedicalImageAdaptor::X_AXIS: // Sagittal
                 m_rightMapper->SetInput(m_anteriorStr.c_str());
                 m_leftMapper->SetInput(m_porteriorStr.c_str());
                 m_topMapper->SetInput(m_superiorStr.c_str());
                 m_bottomMapper->SetInput(m_inferiorStr.c_str());
                 break;
-            case ::fwComEd::helper::MedicalImageAdaptor::Y_AXIS: // Frontal
+            case ::fwDataTools::helper::MedicalImageAdaptor::Y_AXIS: // Frontal
                 m_rightMapper->SetInput(m_leftStr.c_str());
                 m_leftMapper->SetInput(m_rightStr.c_str());
                 m_topMapper->SetInput(m_superiorStr.c_str());
                 m_bottomMapper->SetInput(m_inferiorStr.c_str());
                 break;
-            case ::fwComEd::helper::MedicalImageAdaptor::Z_AXIS: // Axial
+            case ::fwDataTools::helper::MedicalImageAdaptor::Z_AXIS: // Axial
                 m_rightMapper->SetInput(m_leftStr.c_str());
                 m_leftMapper->SetInput(m_rightStr.c_str());
                 m_topMapper->SetInput(m_anteriorStr.c_str());
@@ -231,7 +231,7 @@ void ImageSliceOrientationText::doUpdate() throw(::fwTools::Failed)
 
 void ImageSliceOrientationText::setOrientation( Orientation orientation )
 {
-    this->::fwComEd::helper::MedicalImageAdaptor::setOrientation(orientation);
+    this->::fwDataTools::helper::MedicalImageAdaptor::setOrientation(orientation);
     m_pimpl->setOrientation(orientation);
 }
 

@@ -15,9 +15,7 @@
 
 #include <fwData/Mesh.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwVtkIO/helper/Mesh.hpp>
 

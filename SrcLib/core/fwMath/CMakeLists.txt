@@ -1,7 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwCore
-)
 
 find_package(GLM REQUIRED)
 

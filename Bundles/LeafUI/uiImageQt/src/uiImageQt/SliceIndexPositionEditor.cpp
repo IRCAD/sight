@@ -14,29 +14,27 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwCore/base.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
 
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
-#include <QWidget>
 #include <QVBoxLayout>
+#include <QWidget>
 
-#include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <functional>
 
@@ -47,9 +45,9 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::SliceIndexPositionEd
 
 const std::string* SliceIndexPositionEditor::SLICE_INDEX_FIELDID[ 3 ] =
 {
-    &fwComEd::Dictionary::m_sagittalSliceIndexId,
-    &fwComEd::Dictionary::m_frontalSliceIndexId,
-    &fwComEd::Dictionary::m_axialSliceIndexId
+    &fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId,
+    &fwDataTools::fieldHelper::Image::m_frontalSliceIndexId,
+    &fwDataTools::fieldHelper::Image::m_axialSliceIndexId
 };
 
 static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
@@ -77,7 +75,7 @@ void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget * const container = qtContainer->getQtContainer();
+    QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
     QVBoxLayout* layout = new QVBoxLayout( container );
@@ -128,11 +126,10 @@ void SliceIndexPositionEditor::configuring() throw(fwTools::Failed)
 
     if( this->m_configuration->size() > 0 )
     {
-        ::fwRuntime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin();
-        SLM_ASSERT("Only one xml element \"sliceIndex\" is accepted.",
-                   this->m_configuration->size() == 1 && (*iter)->getName() == "sliceIndex" );
-        SLM_ASSERT("The xml element \"sliceIndex\" is empty.", !(*iter)->getValue().empty() );
-        std::string orientation = (*iter)->getValue();
+        std::vector< ::fwRuntime::ConfigurationElement::sptr > slideIndexCfg = m_configuration->find("sliceIndex");
+        SLM_ASSERT("Only one xml element \"sliceIndex\" is accepted.", slideIndexCfg.size() == 1 );
+        SLM_ASSERT("The xml element \"sliceIndex\" is empty.", !(*slideIndexCfg.begin())->getValue().empty() );
+        std::string orientation = (*slideIndexCfg.begin())->getValue();
         ::boost::algorithm::trim(orientation);
         ::boost::algorithm::to_lower(orientation);
 
@@ -160,7 +157,7 @@ void SliceIndexPositionEditor::configuring() throw(fwTools::Failed)
 void SliceIndexPositionEditor::updating() throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
     m_sliceSelectorPanel->setEnable(imageIsValid);
     this->updateImageInfos(image);
     this->updateSliceIndexFromImg();
@@ -183,9 +180,9 @@ void SliceIndexPositionEditor::updateSliceIndex(int axial, int frontal, int sagi
 
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    image->setField( fwComEd::Dictionary::m_axialSliceIndexId, m_axialIndex);
-    image->setField( fwComEd::Dictionary::m_frontalSliceIndexId, m_frontalIndex);
-    image->setField( fwComEd::Dictionary::m_sagittalSliceIndexId, m_sagittalIndex);
+    image->setField( fwDataTools::fieldHelper::Image::m_axialSliceIndexId, m_axialIndex);
+    image->setField( fwDataTools::fieldHelper::Image::m_frontalSliceIndexId, m_frontalIndex);
+    image->setField( fwDataTools::fieldHelper::Image::m_sagittalSliceIndexId, m_sagittalIndex);
     this->updateSliceIndexFromImg();
 }
 
@@ -206,7 +203,7 @@ void SliceIndexPositionEditor::updateSliceType(int from, int to)
 
 //------------------------------------------------------------------------------
 
-void SliceIndexPositionEditor::info( std::ostream &_sstream )
+void SliceIndexPositionEditor::info( std::ostream& _sstream )
 {
 }
 
@@ -216,7 +213,7 @@ void SliceIndexPositionEditor::updateSliceIndexFromImg()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    if (::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
+    if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image))
     {
         // Get Index
         std::string fieldID = *SLICE_INDEX_FIELDID[m_orientation];

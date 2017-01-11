@@ -25,6 +25,18 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::view::IView</type>
+        <service>::guiQt::editor::SDynamicView</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::guiQt::editor::SSlider</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::guiQt::editor::SSignalButton</service>
         <object>::fwData::Object</object>
@@ -33,6 +45,12 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::guiQt::editor::SSelectionMenuButton</service>
+        <object>::fwData::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+       <type>::gui::editor::IEditor</type>
+        <service>::guiQt::editor::SParameters</service>
         <object>::fwData::Object</object>
     </extension>
 

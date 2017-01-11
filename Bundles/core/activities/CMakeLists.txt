@@ -1,11 +1,5 @@
 fwLoadProperties()
 
-fwUseForwardInclude(
-    fwActivities
-    fwGui
-    fwRuntime
-    fwTools
-)
 
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 find_package (Boost COMPONENTS regex REQUIRED)
@@ -23,3 +17,5 @@ fwLink(
     ${Qt5Gui_LIBRARIES}
     ${Qt5Widgets_LIBRARIES}
 )
+
+set_target_properties(${FWPROJECT_NAME} PROPERTIES AUTOMOC TRUE)

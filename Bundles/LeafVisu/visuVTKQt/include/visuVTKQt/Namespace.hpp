@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,13 +8,13 @@
 #define __VISUVTKQT_NAMESPACE_HPP__
 
 /**
- * @brief       The namespace visuVTKQt contains a vtk Renderer window interactor manager using Qt.
- * @namespace   visuVTKQt
- *
- * @date        2009-2010.
- *
+ * @ingroup apprequirement
+ * @brief   The bundle visuVTKQt contains a vtk Renderer window interactor manager using Qt. It must be set in the
+ *          application (or activity) \p \<requirement\> in order to use a VTK scene in an application using Qt.
  */
 namespace visuVTKQt
 {
+
 }
+
 #endif /* __VISUVTKQT_NAMESPACE_HPP__ */

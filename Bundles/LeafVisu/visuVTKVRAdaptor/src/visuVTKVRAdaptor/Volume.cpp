@@ -11,9 +11,9 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
-
 #include <fwData/TransferFunction.hpp>
+
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -29,8 +29,8 @@
 #include <vtkObjectFactory.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkPlaneCollection.h>
-#include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
+#include <vtkRenderer.h>
 #include <vtkSmartVolumeMapper.h>
 #include <vtkTransform.h>
 #include <vtkVolume.h>
@@ -47,7 +47,7 @@ public:
 
     static TransformCallback* New(Volume* adaptor)
     {
-        TransformCallback *cb = new TransformCallback;
+        TransformCallback* cb = new TransformCallback;
         cb->m_adaptor = adaptor;
         return cb;
     }
@@ -68,14 +68,14 @@ class AbortCallback : public vtkCommand
 {
 public:
 
-    static AbortCallback *New()
+    static AbortCallback* New()
     {
         return new AbortCallback();
     }
 
-    virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
+    virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
-        vtkRenderWindow *win = vtkRenderWindow::SafeDownCast(caller);
+        vtkRenderWindow* win = vtkRenderWindow::SafeDownCast(caller);
         if ( win )
         {
             if( win->GetEventPending() )
@@ -92,14 +92,14 @@ class CroppingCallback : public vtkCommand
 {
 public:
 
-    static CroppingCallback *New(Volume* adaptor)
+    static CroppingCallback* New(Volume* adaptor)
     {
-        CroppingCallback *callback = new CroppingCallback();
+        CroppingCallback* callback = new CroppingCallback();
         callback->m_adaptor = adaptor;
         return callback;
     }
 
-    virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
+    virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
         m_adaptor->crop();
         m_adaptor->updateTransform();
@@ -111,11 +111,12 @@ private:
 
 static const ::fwCom::Slots::SlotKeyType s_RESET_BOX_WIDGET_SLOT      = "resetBoxWidget";
 static const ::fwCom::Slots::SlotKeyType s_ACTIVATE_BOX_CLIPPING_SLOT = "activateBoxClipping";
+static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT                  = "show";
 
 //------------------------------------------------------------------------------
 
 Volume::Volume() throw() :
-    ::fwComEd::helper::MedicalImageAdaptor(),
+    ::fwDataTools::helper::MedicalImageAdaptor(),
     ::fwRenderVTK::IVtkAdaptorService(),
     m_clippingPlanes(nullptr),
     m_volumeMapper( vtkSmartVolumeMapper::New()),
@@ -128,17 +129,19 @@ Volume::Volume() throw() :
     m_croppingCommand(nullptr),
     m_transformCommand(nullptr),
     m_croppingBoxDefaultState(true),
+    m_cropBoxTransform(nullptr),
     m_autoResetCamera(true),
     m_reductionFactor(1.0)
 {
     m_boxWidget->KeyPressActivationOff();
     m_boxWidget->SetRotationEnabled(0);
-    vtkBoxRepresentation *repr = vtkBoxRepresentation::New();
+    vtkBoxRepresentation* repr = vtkBoxRepresentation::New();
     m_boxWidget->SetRepresentation(repr);
     repr->Delete();
 
     newSlot(s_RESET_BOX_WIDGET_SLOT, &Volume::resetBoxWidget, this);
     newSlot(s_ACTIVATE_BOX_CLIPPING_SLOT, &Volume::activateBoxClipping, this);
+    newSlot(s_SHOW_SLOT, &Volume::show, this);
 
     this->installTFSlots(this);
 }
@@ -175,7 +178,7 @@ void Volume::setClippingPlanesId(::fwRenderVTK::SRender::VtkObjectIdType id)
 
 //------------------------------------------------------------------------------
 
-void Volume::setVtkClippingPlanes(vtkPlaneCollection *planes)
+void Volume::setVtkClippingPlanes(vtkPlaneCollection* planes)
 {
     m_clippingPlanes = planes;
 }
@@ -184,6 +187,9 @@ void Volume::setVtkClippingPlanes(vtkPlaneCollection *planes)
 
 void Volume::doStart() throw(fwTools::Failed)
 {
+    ::fwData::Composite::wptr tfSelection = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+    this->setTransferFunctionSelection(tfSelection);
+
     this->addToRenderer(m_volume);
 
     this->getInteractor()->GetRenderWindow()->AddObserver("AbortCheckEvent", m_abortCommand);
@@ -192,15 +198,22 @@ void Volume::doStart() throw(fwTools::Failed)
 
     this->activateBoxClipping( m_croppingBoxDefaultState );
 
-    vtkTransform* transform = this->getTransform();
-    if(transform)
+    if(!m_cropBoxTransformID.empty())
+    {
+        m_cropBoxTransform = vtkTransform::SafeDownCast( m_renderService.lock()->getVtkObject(m_cropBoxTransformID));
+    }
+
+    if(m_cropBoxTransform)
     {
         m_transformCommand = TransformCallback::New(this);
-        transform->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
+        m_cropBoxTransform->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
     }
 
     m_croppingCommand = CroppingCallback::New(this);
     m_boxWidget->AddObserver(vtkCommand::InteractionEvent, m_croppingCommand);
+
+
+    m_volume->SetUserTransform(this->getTransform());
 }
 
 //------------------------------------------------------------------------------
@@ -215,10 +228,9 @@ void Volume::doStop() throw(fwTools::Failed)
     m_croppingCommand->Delete();
     m_croppingCommand = nullptr;
 
-    vtkTransform* transform = this->getTransform();
-    if(transform)
+    if(m_cropBoxTransform)
     {
-        transform->RemoveObserver( m_transformCommand );
+        m_cropBoxTransform->RemoveObserver( m_transformCommand );
         m_transformCommand->Delete();
         m_transformCommand = nullptr;
     }
@@ -238,13 +250,17 @@ void Volume::doSwap() throw(fwTools::Failed)
 void Volume::doUpdate() throw(::fwTools::Failed)
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
-    bool imageIsValid = ::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
+    bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
 
     if (imageIsValid)
     {
         this->buildPipeline();
         this->updateImage(image);
         this->updateVolumeTransferFunction(image);
+    }
+    else
+    {
+        this->updateTransferFunction(image);
     }
 }
 
@@ -282,10 +298,17 @@ void Volume::doConfigure() throw(fwTools::Failed)
     }
     this->parseTFConfig( m_configuration );
 
+    // Show croppingBox
     if(m_configuration->hasAttribute("croppingBox") &&
        m_configuration->getAttributeValue("croppingBox") == "no")
     {
         m_croppingBoxDefaultState = false;
+    }
+
+    // Get the boundingBox transformation matrix
+    if(m_configuration->hasAttribute("cropBoxTransform"))
+    {
+        m_cropBoxTransformID = m_configuration->getAttributeValue("cropBoxTransform");
     }
 
     if(m_configuration->hasAttribute("reductionFactor"))
@@ -300,7 +323,7 @@ void Volume::updateImage( ::fwData::Image::sptr image  )
 {
     this->updateImageInfos(image);
 
-    vtkImageImport *imageImport = vtkImageImport::New();
+    vtkImageImport* imageImport = vtkImageImport::New();
     ::fwVtkIO::configureVTKImageImport( imageImport, image );
 
 
@@ -312,7 +335,7 @@ void Volume::updateImage( ::fwData::Image::sptr image  )
 
     if ( m_reductionFactor < 1.0 )
     {
-        vtkImageResample *resample = vtkImageResample::New();
+        vtkImageResample* resample = vtkImageResample::New();
         resample->SetInputConnection( imageImport->GetOutputPort() );
         resample->SetAxisMagnificationFactor(0, m_reductionFactor);
         resample->SetAxisMagnificationFactor(1, m_reductionFactor);
@@ -328,7 +351,7 @@ void Volume::updateImage( ::fwData::Image::sptr image  )
     m_boxWidget->GetRepresentation()->SetPlaceFactor(1.0);
     m_boxWidget->GetRepresentation()->PlaceWidget(m_volumeMapper->GetBounds());
     m_boxWidget->SetInteractor(this->getInteractor());
-    m_boxWidget->On();
+
     vtkVolumeMapper::SafeDownCast(m_volumeMapper)->CroppingOn();
     vtkVolumeMapper::SafeDownCast(m_volumeMapper)->SetCroppingRegionPlanes( m_volumeMapper->GetBounds() );
 
@@ -360,9 +383,9 @@ void Volume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
         m_colorTransferFunction->AllowDuplicateScalarsOn();
         m_opacityTransferFunction->AllowDuplicateScalarsOn();
 
-        for(const ::fwData::TransferFunction::TFDataType::value_type &tfPoint :  pTF->getTFData())
+        for(const ::fwData::TransferFunction::TFDataType::value_type& tfPoint :  pTF->getTFData())
         {
-            const ::fwData::TransferFunction::TFValueType &value = *valueIter;
+            const ::fwData::TransferFunction::TFValueType& value = *valueIter;
             ::fwData::TransferFunction::TFValueType valuePrevious = *valueIter;
             ::fwData::TransferFunction::TFValueType valueNext     = *valueIter;
             if(valueIter != values.begin())
@@ -374,7 +397,7 @@ void Volume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
                 valueNext = *(valueIter + 1);
             }
 
-            const ::fwData::TransferFunction::TFColor &color = tfPoint.second;
+            const ::fwData::TransferFunction::TFColor& color = tfPoint.second;
 
             m_colorTransferFunction->AddRGBPoint(valuePrevious + (value - valuePrevious) / 2., color.r, color.g,
                                                  color.b );
@@ -388,17 +411,15 @@ void Volume::updateVolumeTransferFunction( ::fwData::Image::sptr image )
     }
     else
     {
-        for(const ::fwData::TransferFunction::TFDataType::value_type &tfPoint :  pTF->getTFData())
+        for(const ::fwData::TransferFunction::TFDataType::value_type& tfPoint :  pTF->getTFData())
         {
-            const ::fwData::TransferFunction::TFValueType &value = *(valueIter++);
-            const ::fwData::TransferFunction::TFColor &color     = tfPoint.second;
+            const ::fwData::TransferFunction::TFValueType& value = *(valueIter++);
+            const ::fwData::TransferFunction::TFColor& color     = tfPoint.second;
 
             m_colorTransferFunction->AddRGBPoint( value, color.r, color.g, color.b );
             m_opacityTransferFunction->AddPoint(  value, color.a );
         }
     }
-
-    ::fwData::TransferFunction::TFValuePairType minMax = pTF->getMinMaxTFValues();
 
     m_colorTransferFunction->SetClamping(!pTF->getIsClamped());
     m_opacityTransferFunction->SetClamping(!pTF->getIsClamped());
@@ -412,8 +433,8 @@ void Volume::buildPipeline( )
 {
     if (!m_clippingPlanesId.empty())
     {
-        vtkObject          *o      = this->getVtkObject(m_clippingPlanesId);
-        vtkPlaneCollection *planes = vtkPlaneCollection::SafeDownCast(o);
+        vtkObject* o               = this->getVtkObject(m_clippingPlanesId);
+        vtkPlaneCollection* planes = vtkPlaneCollection::SafeDownCast(o);
         this->setVtkClippingPlanes( planes );
     }
 
@@ -500,16 +521,15 @@ void Volume::crop()
 
 void Volume::updateTransform()
 {
-    vtkTransform* transform = this->getTransform();
-    if(transform)
+    if(m_cropBoxTransform)
     {
-        vtkBoxRepresentation *repr = vtkBoxRepresentation::SafeDownCast( m_boxWidget->GetRepresentation() );
+        vtkBoxRepresentation* repr = vtkBoxRepresentation::SafeDownCast( m_boxWidget->GetRepresentation() );
         if( repr )
         {
-            transform->RemoveObserver(m_transformCommand);
-            repr->GetTransform(transform);
-            transform->Modified();
-            transform->AddObserver(vtkCommand::ModifiedEvent, m_transformCommand);
+            m_cropBoxTransform->RemoveObserver(m_transformCommand);
+            repr->GetTransform(m_cropBoxTransform);
+            m_cropBoxTransform->Modified();
+            m_cropBoxTransform->AddObserver(vtkCommand::ModifiedEvent, m_transformCommand);
         }
     }
 }
@@ -518,17 +538,25 @@ void Volume::updateTransform()
 
 void Volume::updateCropBoxTransform()
 {
-    vtkTransform* transform = this->getTransform();
-    if(transform)
+    if(m_cropBoxTransform)
     {
-        vtkBoxRepresentation *repr = vtkBoxRepresentation::SafeDownCast( m_boxWidget->GetRepresentation() );
+        vtkBoxRepresentation* repr = vtkBoxRepresentation::SafeDownCast( m_boxWidget->GetRepresentation() );
         if( repr )
         {
             m_boxWidget->RemoveObserver(m_croppingCommand);
-            repr->SetTransform(transform);
+            repr->SetTransform(m_cropBoxTransform);
             m_boxWidget->AddObserver(vtkCommand::InteractionEvent, m_croppingCommand);
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void Volume::show(bool isVisible)
+{
+    m_volume->SetVisibility(isVisible);
+    this->setVtkPipelineModified();
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------

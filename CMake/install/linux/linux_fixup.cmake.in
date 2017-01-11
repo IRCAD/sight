@@ -1,38 +1,39 @@
 #This script is called at install time only on linux OS
 #It will be configured at configure time, only '@' variables will be replaced.
-
-
 #function to find libs and Bundles/* directories
 function(findFwlibsAndBundles FWLIBS_BUNDLES_DIRECTORIES)
-    file(GLOB_RECURSE LIBS @CMAKE_INSTALL_PREFIX@/*@CMAKE_SHARED_LIBRARY_SUFFIX@*)
+    file(GLOB_RECURSE LIBS @CMAKE_INSTALL_PREFIX@/@BUNDLE_PREFIX@/*@CMAKE_SHARED_LIBRARY_SUFFIX@*)
     list(REMOVE_DUPLICATES LIBS)
     set(FOLDERS)
     foreach(LIB ${LIBS})
         get_filename_component(LIB_DIR "${LIB}" DIRECTORY)
         list(APPEND FOLDERS ${LIB_DIR})
     endforeach()
-    list(REMOVE_DUPLICATES FOLDERS)
+    if(FOLDERS)
+        list(REMOVE_DUPLICATES FOLDERS)
+    endif()
     set(${FWLIBS_BUNDLES_DIRECTORIES} ${FOLDERS} PARENT_SCOPE)
 endfunction()
 
 #Find all /*/.so* in /Bundles /plugins /share
-file(GLOB_RECURSE BUNDLES FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/Bundles/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
+file(GLOB_RECURSE BUNDLES FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/@BUNDLE_PREFIX@/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
 file(GLOB_RECURSE PLUGINS FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/plugins/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
 file(GLOB_RECURSE SHARE FOLLOW_SYMLINKS "@CMAKE_INSTALL_PREFIX@/share/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
+
 include(BundleUtilities)
-set(LIBS)
+set(LIBS "")
 list(APPEND LIBS ${BUNDLES} ${PLUGINS} ${SHARE})
 #Look for all directories containing '.so*' files
 findFwlibsAndBundles(FWLIBS_BUNDLES_DIRECTORIES)
 list(APPEND FWLIBS_BUNDLES_DIRECTORIES @EXTERNAL_LIBRARIES_DIRECTORIES@)
-#Call fixup bundle on the launcher and on all 'plugins' libraries (like bundle, plugins and share)
+list(APPEND FWLIBS_BUNDLES_DIRECTORIES @CMAKE_INSTALL_PREFIX@/lib)
+#Call fixup bundle on the fwlauncher and on all 'plugins' libraries (like bundle, plugins and share)
 fixup_bundle("@CMAKE_INSTALL_PREFIX@/@LAUNCHER_PATH@" "${LIBS}" "${FWLIBS_BUNDLES_DIRECTORIES}")
 
 #Move all libraries in 'lib' folder
 #Not needed but much more elegant
 file(GLOB_RECURSE FIXED_LIBS "@CMAKE_INSTALL_PREFIX@/bin/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
-file(GLOB_RECURSE TOREMOVE_LIBS "@CMAKE_INSTALL_PREFIX@/lib/*@CMAKE_SHARED_LIBRARY_SUFFIX@*")
-file(REMOVE ${TOREMOVE_LIBS})
+
 foreach(LIB ${FIXED_LIBS})
     file(COPY ${LIB} DESTINATION "@CMAKE_INSTALL_PREFIX@/lib/")
     file(REMOVE ${LIB})

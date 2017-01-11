@@ -104,5 +104,43 @@
             </object>
         </config>
     </extension>
+
+    <extension implements="::fwServices::registry::AppConfig2">
+        <id>LoadLandmark2</id>
+        <parameters>
+            <param name="landmark" />
+            <param name="file" />
+        </parameters>
+        <config>
+            <object uid="${landmark}" src="ref" />
+
+            <service uid="LoadLandmark" type="::ioAtoms::SReader" >
+                <inout key="data" uid="${landmark}" />
+                <file>${file}</file>
+                <patcher context="Landmark" version="V1" />
+            </service>
+            <start uid="LoadLandmark" />
+            <update uid="LoadLandmark" />
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfig2">
+        <id>SaveLandmark2</id>
+        <parameters>
+            <param name="landmark" />
+            <param name="file" />
+        </parameters>
+        <config>
+            <object uid="${landmark}" src="ref" />
+
+            <service uid="SaveLandmark" type="::ioAtoms::SWriter" >
+                <inout key="data" uid="${landmark}" />
+                <file>${file}</file>
+                <patcher context="Landmark" version="V1" />
+            </service>
+            <start uid="SaveLandmark" />
+            <update uid="SaveLandmark" />
+        </config>
+    </extension>
     
 </plugin>

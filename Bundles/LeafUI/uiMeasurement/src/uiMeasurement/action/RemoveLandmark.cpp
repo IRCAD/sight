@@ -1,30 +1,30 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <sstream>
-#include <boost/lexical_cast.hpp>
+#include "uiMeasurement/action/RemoveLandmark.hpp"
+
 #include <fwCore/base.hpp>
 
-#include <exception>
-
-#include <fwServices/Base.hpp>
-#include <fwServices/macros.hpp>
-
 #include <fwData/Image.hpp>
-#include <fwData/String.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
+#include <fwData/String.hpp>
 #include <fwData/Vector.hpp>
 
-#include <fwComEd/Dictionary.hpp>
-#include <fwComEd/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
 
 #include <fwGui/dialog/SelectorDialog.hpp>
 
-#include "uiMeasurement/action/RemoveLandmark.hpp"
+#include <fwServices/macros.hpp>
+
+#include <boost/lexical_cast.hpp>
+
+#include <exception>
+#include <sstream>
 
 
 namespace uiMeasurement
@@ -50,20 +50,20 @@ RemoveLandmark::~RemoveLandmark() throw()
 
 //------------------------------------------------------------------------------
 
-void RemoveLandmark::info(std::ostream &_sstream )
+void RemoveLandmark::info(std::ostream& _sstream )
 {
     _sstream << "Action for remove landmark" << std::endl;
 }
 
 //------------------------------------------------------------------------------
 
-::fwData::Point::sptr RemoveLandmark::getLandmarkToRemove(::fwData::Image::sptr image, bool &removeAll)
+::fwData::Point::sptr RemoveLandmark::getLandmarkToRemove(::fwData::Image::sptr image, bool& removeAll)
 {
     ::fwData::Point::sptr landmarkToRemove;
     removeAll = false;
 
     ::fwData::PointList::sptr landmarksBackup = image->getField< ::fwData::PointList >(
-        ::fwComEd::Dictionary::m_imageLandmarksId );
+        ::fwDataTools::fieldHelper::Image::m_imageLandmarksId );
     SLM_ASSERT("No Field ImageLandmarks", landmarksBackup);
 
     std::vector< std::string > selections;
@@ -72,7 +72,8 @@ void RemoveLandmark::info(std::ostream &_sstream )
 
     for(::fwData::Point::sptr landmark :  landmarksBackup->getRefPoints())
     {
-        ::fwData::String::sptr name = landmark->getField< ::fwData::String >(::fwComEd::Dictionary::m_labelId);
+        ::fwData::String::sptr name = landmark->getField< ::fwData::String >(
+            ::fwDataTools::fieldHelper::Image::m_labelId);
         SLM_ASSERT("No Field LabelId", name);
         selections.push_back( *name );
         correspondance[ *name ] = landmark;
@@ -114,9 +115,9 @@ void RemoveLandmark::updating( ) throw(::fwTools::Failed)
 
     ::fwData::Image::sptr image         = this->getObject< ::fwData::Image >();
     ::fwData::PointList::sptr landmarks = image->getField< ::fwData::PointList >(
-        ::fwComEd::Dictionary::m_imageLandmarksId );
+        ::fwDataTools::fieldHelper::Image::m_imageLandmarksId );
 
-    if (::fwComEd::fieldHelper::MedicalImageHelpers::checkImageValidity(image) && landmarks)
+    if (::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image) && landmarks)
     {
         if (!landmarks->getRefPoints().empty())
         {
@@ -138,7 +139,7 @@ void RemoveLandmark::updating( ) throw(::fwTools::Failed)
             if ( requestAll )
             {
                 // backup
-                image->removeField( ::fwComEd::Dictionary::m_imageLandmarksId ); // erase field
+                image->removeField( ::fwDataTools::fieldHelper::Image::m_imageLandmarksId ); // erase field
                 this->notify(image, landmarkToRemove);
             }
         }

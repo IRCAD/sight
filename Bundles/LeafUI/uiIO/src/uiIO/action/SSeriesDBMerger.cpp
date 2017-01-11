@@ -10,16 +10,16 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/helper/SeriesDB.hpp>
-
 #include <fwGui/Cursor.hpp>
 
 #include <fwJobs/IJob.hpp>
 
 #include <fwMedData/Series.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwMedDataTools/helper/SeriesDB.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Add.hpp>
 #include <fwServices/registry/ServiceConfig.hpp>
 
 namespace uiIO
@@ -49,7 +49,7 @@ SSeriesDBMerger::~SSeriesDBMerger() throw()
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBMerger::info(std::ostream &_sstream )
+void SSeriesDBMerger::info(std::ostream& _sstream )
 {
     _sstream << "Action for add SeriesDB" << std::endl;
 }
@@ -113,7 +113,7 @@ void SSeriesDBMerger::updating( ) throw(::fwTools::Failed)
     ioSelectorSrv->stop();
     ::fwServices::OSR::unregisterService( ioSelectorSrv );
 
-    ::fwComEd::helper::SeriesDB sDBhelper(seriesDB);
+    ::fwMedDataTools::helper::SeriesDB sDBhelper(seriesDB);
     sDBhelper.merge(localSeriesDB);
     sDBhelper.notify();
 }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,9 @@
 #include "fwGui/registrar/ToolBarRegistrar.hpp"
 
 #include <fwTools/fwID.hpp>
-#include <fwServices/Base.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Get.hpp>
 
 #include <utility>
 
@@ -21,7 +23,7 @@ namespace registrar
 
 //-----------------------------------------------------------------------------
 
-ToolBarRegistrar::ToolBarRegistrar(const std::string &sid) : m_sid(sid)
+ToolBarRegistrar::ToolBarRegistrar(const std::string& sid) : m_sid(sid)
 {
 }
 
@@ -117,7 +119,7 @@ void ToolBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
     std::vector < ConfigurationType > vectEditors = configuration->find("editor");
     for( ConfigurationType editor :  vectEditors)
     {
-        SLM_ASSERT("<editor> tag must have sid attribute", editor->hasAttribute("sid"));
+        SLM_ASSERT("<editor> tag must have sid attribute", editor->hasAttribute("sid")  || editor->hasAttribute("wid"));
         if(editor->hasAttribute("sid"))
         {
             bool start = false;
@@ -132,6 +134,11 @@ void ToolBarRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr confi
             OSLM_ASSERT("Action " << sid << " already exists for this toolBar", m_editorSids.find(
                             sid) == m_editorSids.end());
             m_editorSids[sid] = SIDToolBarMapType::mapped_type(index, start);
+        }
+        else if(editor->hasAttribute("wid"))
+        {
+            std::string wid = editor->getAttributeValue("wid");
+            m_editorWids[wid] = index;
         }
         index++;
     }
@@ -210,6 +217,13 @@ void ToolBarRegistrar::manage(std::vector< ::fwGui::container::fwContainer::sptr
             service->start();
         }
     }
+
+    for( WIDToolBarMapType::value_type wid :  m_editorWids)
+    {
+        OSLM_ASSERT("Container index "<< wid.second <<" is bigger than subViews size!", wid.second < containers.size());
+        container = containers.at( wid.second );
+        ::fwGui::GuiRegistry::registerWIDContainer(wid.first, container);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -245,6 +259,10 @@ void ToolBarRegistrar::unmanage()
             service->stop();
         }
         ::fwGui::GuiRegistry::unregisterSIDContainer(sid.first);
+    }
+    for( WIDToolBarMapType::value_type wid :  m_editorWids)
+    {
+        ::fwGui::GuiRegistry::unregisterWIDContainer(wid.first);
     }
 }
 

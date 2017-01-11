@@ -15,7 +15,6 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
