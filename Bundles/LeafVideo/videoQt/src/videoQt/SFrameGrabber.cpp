@@ -4,23 +4,25 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "videoQt/SFrameGrabber.hpp"
 #include "videoQt/player/VideoRegistry.hpp"
 
-#include "videoQt/SFrameGrabber.hpp"
-
-#include <fwCore/base.hpp>
+#include <arData/Camera.hpp>
+#include <arData/FrameTL.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
-#include <fwComEd/helper/Image.hpp>
+
+#include <fwCore/base.hpp>
+
+#include <fwDataTools/helper/Image.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
-#include <fwTools/Type.hpp>
-#include <fwServices/Base.hpp>
 
-#include <extData/FrameTL.hpp>
-#include <arData/Camera.hpp>
+#include <fwServices/macros.hpp>
+
+#include <fwTools/Type.hpp>
 
 #include <QImage>
 #include <QSize>
@@ -34,16 +36,7 @@ namespace videoQt
 //-----------------------------------------------------------------------------
 
 
-fwServicesRegisterMacro( ::fwServices::IController, ::videoQt::SFrameGrabber, ::extData::FrameTL);
-
-const ::fwCom::Signals::SignalKeyType SFrameGrabber::s_POSITION_MODIFIED_SIG = "positionModified";
-const ::fwCom::Signals::SignalKeyType SFrameGrabber::s_DURATION_MODIFIED_SIG = "durationModified";
-
-const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_START_CAMERA_SLOT       = "startCamera";
-const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_STOP_CAMERA_SLOT        = "stopCamera";
-const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_PAUSE_CAMERA_SLOT       = "pauseCamera";
-const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_LOOP_VIDEO_SLOT         = "loopVideo";
-const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_SET_POSITION_VIDEO_SLOT = "setPositionVideo";
+fwServicesRegisterMacro( ::arServices::IGrabber, ::videoQt::SFrameGrabber, ::arData::FrameTL);
 
 //-----------------------------------------------------------------------------
 
@@ -52,14 +45,7 @@ SFrameGrabber::SFrameGrabber() throw() : m_loopVideo(false),
                                          m_horizontallyFlip(false),
                                          m_verticallyFlip(false)
 {
-    newSignal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
-    newSignal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
 
-    newSlot( s_START_CAMERA_SLOT, &SFrameGrabber::startCamera, this );
-    newSlot( s_STOP_CAMERA_SLOT, &SFrameGrabber::stopCamera, this );
-    newSlot( s_PAUSE_CAMERA_SLOT, &SFrameGrabber::pauseCamera, this );
-    newSlot( s_LOOP_VIDEO_SLOT, &SFrameGrabber::toggleLoopMode, this );
-    newSlot( s_SET_POSITION_VIDEO_SLOT, &SFrameGrabber::setPosition, this );
 }
 
 //-----------------------------------------------------------------------------
@@ -86,10 +72,13 @@ void SFrameGrabber::stopping() throw(::fwTools::Failed)
 
 void SFrameGrabber::configuring()  throw ( ::fwTools::Failed )
 {
-    ::fwRuntime::ConfigurationElement::sptr cameraCfg = m_configuration->findConfigurationElement("cameraFwId");
-    SLM_ASSERT("Missing tag 'cameraFwId'", cameraCfg);
-    m_cameraID = cameraCfg->getValue();
-    SLM_ASSERT("tag 'cameraFwId' must not be empty", !m_cameraID.empty());
+    if(!this->isVersion2())
+    {
+        ::fwRuntime::ConfigurationElement::sptr cameraCfg = m_configuration->findConfigurationElement("cameraFwId");
+        SLM_ASSERT("Missing tag 'cameraFwId'", cameraCfg);
+        m_cameraID = cameraCfg->getValue();
+        SLM_ASSERT("tag 'cameraFwId' must not be empty", !m_cameraID.empty());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -102,7 +91,7 @@ void SFrameGrabber::updating() throw ( ::fwTools::Failed )
 
 void SFrameGrabber::startCamera()
 {
-    ::arData::Camera::sptr camera            = this->getCamera();
+    ::arData::Camera::csptr camera           = this->getCamera();
     ::arData::Camera::SourceType eSourceType = camera->getCameraSource();
 
     // Make sure the user has selected a valid source
@@ -110,8 +99,6 @@ void SFrameGrabber::startCamera()
     {
         this->stopCamera();
         this->setMirror(false, false);
-
-
 
     #ifdef WIN32
         if( ::arData::Camera::DEVICE == eSourceType )
@@ -129,6 +116,10 @@ void SFrameGrabber::startCamera()
             QObject::connect(m_videoPlayer, SIGNAL(frameAvailable(QVideoFrame)), this, SLOT(presentFrame(QVideoFrame)));
 
             m_videoPlayer->play();
+
+            auto sig = this->signal< ::arServices::IGrabber::CameraStartedSignalType >(
+                ::arServices::IGrabber::s_CAMERA_STARTED_SIG);
+            sig->asyncEmit();
         }
     }
 }
@@ -169,10 +160,18 @@ void SFrameGrabber::stopCamera()
         m_videoPlayer = nullptr;
 
         // Reset the timeline and send a black frame
-        ::extData::FrameTL::sptr timeline = this->getObject< ::extData::FrameTL >();
+        ::arData::FrameTL::sptr timeline;
+        if(this->isVersion2())
+        {
+            timeline = this->getInOut< ::arData::FrameTL >("frameTL");
+        }
+        else
+        {
+            timeline = this->getObject< ::arData::FrameTL >();
+        }
         const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec() + 1;
-        SPTR(::extData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
-        ::boost::uint8_t* destBuffer                = reinterpret_cast< ::boost::uint8_t* >( buffer->addElement(0) );
+        SPTR(::arData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
+        ::boost::uint8_t* destBuffer               = reinterpret_cast< ::boost::uint8_t* >( buffer->addElement(0) );
 
         std::fill(destBuffer,
                   destBuffer + timeline->getWidth() * timeline->getHeight() * timeline->getNumberOfComponents(), 0);
@@ -181,19 +180,31 @@ void SFrameGrabber::stopCamera()
         timeline->clearTimeline();
         timeline->pushObject(buffer);
 
-        auto sigTL = timeline->signal< ::extData::TimeLine::ObjectPushedSignalType >(
-            ::extData::TimeLine::s_OBJECT_PUSHED_SIG );
+        auto sigTL = timeline->signal< ::arData::TimeLine::ObjectPushedSignalType >(
+            ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
         sigTL->asyncEmit(timestamp);
+
+        auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
+            ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
+        sig->asyncEmit();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-SPTR(::arData::Camera) SFrameGrabber::getCamera()
+CSPTR(::arData::Camera) SFrameGrabber::getCamera()
 {
-    ::fwTools::Object::sptr obj   = ::fwTools::fwID::getObject(m_cameraID);
-    ::arData::Camera::sptr camera = ::arData::Camera::dynamicCast(obj);
-    FW_RAISE_IF("Camera not found", !camera);
+    ::arData::Camera::csptr camera;
+    if(this->isVersion2())
+    {
+        camera = this->getInput< ::arData::Camera>("camera");
+    }
+    else
+    {
+        ::fwTools::Object::csptr obj = ::fwTools::fwID::getObject(m_cameraID);
+        camera                       = ::arData::Camera::dynamicConstCast(obj);
+        FW_RAISE_IF("Camera not found", !camera);
+    }
     return camera;
 }
 
@@ -246,17 +257,24 @@ void SFrameGrabber::presentFrame(const QVideoFrame& frame)
         return;
     }
 
-    ::extData::FrameTL::sptr timeline = this->getObject< ::extData::FrameTL >();
+    ::arData::FrameTL::sptr timeline;
+    if(this->isVersion2())
+    {
+        timeline = this->getInOut< ::arData::FrameTL >("frameTL");
+    }
+    else
+    {
+        timeline = this->getObject< ::arData::FrameTL >();
+    }
+
     // If we have the same output format, we can take the fast path
     const int width  = frame.width();
     const int height = frame.height();
 
-    if(height != timeline->getHeight() ||
-       width  != timeline->getWidth())
+    if(static_cast<unsigned int>(height) != timeline->getHeight() ||
+       static_cast<unsigned int>(width) != timeline->getWidth())
     {
-        timeline->initPoolSize(static_cast<size_t>(width),
-                               static_cast<size_t>(height),
-                               ::fwTools::Type::s_UINT8, 4);
+        timeline->initPoolSize(static_cast<size_t>(width), static_cast<size_t>(height), ::fwTools::Type::s_UINT8, 4);
     }
 
     // This is called on a different worker than the service, so we must lock the frame
@@ -264,7 +282,7 @@ void SFrameGrabber::presentFrame(const QVideoFrame& frame)
 
     const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
 
-    SPTR(::extData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
+    SPTR(::arData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
     std::uint64_t* destBuffer = reinterpret_cast< std::uint64_t* >( buffer->addElement(0) );
 
     SLM_ASSERT("Pixel format must be RGB32", frame.pixelFormat() == QVideoFrame::Format_RGB32 ||
@@ -289,11 +307,11 @@ void SFrameGrabber::presentFrame(const QVideoFrame& frame)
                             QVideoFrame::imageFormatFromPixelFormat(frame.pixelFormat()))
                      .mirrored(m_horizontallyFlip, m_verticallyFlip);
 
-        frameBuffer = reinterpret_cast< const std::uint64_t *>( imgFlipped.bits() );
+        frameBuffer = reinterpret_cast< const std::uint64_t*>( imgFlipped.bits() );
     }
     else
     {
-        frameBuffer = reinterpret_cast< const std::uint64_t *>( mappedFrame.bits() );
+        frameBuffer = reinterpret_cast< const std::uint64_t*>( mappedFrame.bits() );
     }
 
     // Unmap when we don't need access to .bits() any longer
@@ -313,8 +331,8 @@ void SFrameGrabber::presentFrame(const QVideoFrame& frame)
     // push buffer and notify
     timeline->pushObject(buffer);
 
-    ::extData::TimeLine::ObjectPushedSignalType::sptr sig;
-    sig = timeline->signal< ::extData::TimeLine::ObjectPushedSignalType >(::extData::TimeLine::s_OBJECT_PUSHED_SIG );
+    ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
+    sig = timeline->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG );
     sig->asyncEmit(timestamp);
 }
 

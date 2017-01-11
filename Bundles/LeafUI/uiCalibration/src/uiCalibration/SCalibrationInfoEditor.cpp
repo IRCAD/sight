@@ -1,10 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiCalibration/SCalibrationInfoEditor.hpp"
+
+#include <fwServices/macros.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
@@ -12,12 +14,8 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwData/Composite.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/IController.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <arData/CalibrationInfo.hpp>
 
@@ -26,56 +24,39 @@
 
 namespace uiCalibration
 {
-fwServicesRegisterMacro(::gui::editor::IEditor, ::uiCalibration::SCalibrationInfoEditor, ::fwData::Composite);
+fwServicesRegisterMacro(::gui::editor::IEditor, ::uiCalibration::SCalibrationInfoEditor, ::fwData::Object);
 
 const ::fwCom::Slots::SlotKeyType SCalibrationInfoEditor::s_REMOVE_SLOT        = "remove";
 const ::fwCom::Slots::SlotKeyType SCalibrationInfoEditor::s_RESET_SLOT         = "reset";
 const ::fwCom::Slots::SlotKeyType SCalibrationInfoEditor::s_GET_SELECTION_SLOT = "getSelection";
 
+static const std::string s_CALIBRATION_INFO_1 = "calInfo1";
+static const std::string s_CALIBRATION_INFO_2 = "calInfo2";
+
+
 // ----------------------------------------------------------------------------
 
-SCalibrationInfoEditor::SCalibrationInfoEditor() throw () : m_calInfo1Key(""),
-                                                            m_calInfo2Key("")
+SCalibrationInfoEditor::SCalibrationInfoEditor() throw ()
 {
-    m_slotRemove       = ::fwCom::newSlot( &SCalibrationInfoEditor::remove, this );
-    m_slotReset        = ::fwCom::newSlot( &SCalibrationInfoEditor::reset, this );
-    m_slotGetSelection = ::fwCom::newSlot( &SCalibrationInfoEditor::getSelection, this );
-
-    ::fwCom::HasSlots::m_slots( s_REMOVE_SLOT, m_slotRemove);
-    ::fwCom::HasSlots::m_slots( s_RESET_SLOT, m_slotReset);
-    ::fwCom::HasSlots::m_slots( s_GET_SELECTION_SLOT, m_slotGetSelection);
-
-
-
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
+    newSlot(s_REMOVE_SLOT, &SCalibrationInfoEditor::remove, this);
+    newSlot(s_RESET_SLOT, &SCalibrationInfoEditor::reset, this);
+    newSlot(s_GET_SELECTION_SLOT, &SCalibrationInfoEditor::getSelection, this);
 }
-
 
 // ----------------------------------------------------------------------------
 
 void SCalibrationInfoEditor::updating() throw (fwTools::Failed)
 {
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-
-    ::fwData::Composite::ConstIteratorType cmpIt1 = composite->find(m_calInfo1Key);
-
-    SLM_ASSERT("Key : "+m_calInfo1Key+" not found !",cmpIt1 != composite->end());
-
-    ::arData::CalibrationInfo::sptr calInfo1 = ::arData::CalibrationInfo::dynamicCast(cmpIt1->second);
-
-    SLM_ASSERT("Object "+m_calInfo1Key+" is not a CalibrationInfo !",calInfo1);
+    ::arData::CalibrationInfo::sptr calInfo1 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_1);
+    SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !",calInfo1);
 
     ::arData::CalibrationInfo::PointListContainerType plList1 = calInfo1->getPointListContainer();
 
     m_capturesListWidget->clear();
 
-    if(m_calInfo2Key != "")
+    ::arData::CalibrationInfo::sptr calInfo2 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_2);
+    if(calInfo2)
     {
-        ::fwData::Composite::ConstIteratorType cmpIt2 = composite->find(m_calInfo2Key);
-        SLM_ASSERT("Key : "+m_calInfo2Key+" not found !",cmpIt2 != composite->end());
-        ::arData::CalibrationInfo::sptr calInfo2 = ::arData::CalibrationInfo::dynamicCast(cmpIt2->second);
-        SLM_ASSERT("Object "+m_calInfo2Key+" is not a CalibrationInfo !",calInfo2);
-
         ::arData::CalibrationInfo::PointListContainerType plList2 = calInfo2->getPointListContainer();
 
         size_t captureIdx = 0;
@@ -115,14 +96,6 @@ void SCalibrationInfoEditor::updating() throw (fwTools::Failed)
 void SCalibrationInfoEditor::configuring() throw (fwTools::Failed)
 {
     fwGui::IGuiContainerSrv::initialize();
-
-    SLM_ASSERT("Parameter CalInfo1 are not found in xml", m_configuration->findConfigurationElement("CalInfo1") );
-    m_calInfo1Key = m_configuration->findConfigurationElement("CalInfo1")->getValue();
-
-    if(m_configuration->findConfigurationElement("CalInfo2"))
-    {
-        m_calInfo2Key = m_configuration->findConfigurationElement("CalInfo2")->getValue();
-    }
 }
 
 // ----------------------------------------------------------------------------
@@ -176,45 +149,37 @@ void SCalibrationInfoEditor::stopping() throw (fwTools::Failed)
 
 void SCalibrationInfoEditor::remove()
 {
-    int idx = m_capturesListWidget->currentRow();
+    int row = m_capturesListWidget->currentRow();
 
-    if(idx >= 0)
+    if(row >= 0)
     {
-        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+        const size_t idx = static_cast<size_t>(row);
 
-        ::fwData::Composite::ConstIteratorType cmpIt1 = composite->find(m_calInfo1Key);
-        SLM_ASSERT("Key : "+m_calInfo1Key+" not found !",cmpIt1 != composite->end());
-        ::arData::CalibrationInfo::sptr calInfo1 = ::arData::CalibrationInfo::dynamicCast(cmpIt1->second);
-        SLM_ASSERT("Object "+m_calInfo1Key+" is not a CalibrationInfo !",calInfo1);
+        ::arData::CalibrationInfo::sptr calInfo1 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_1);
+        SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !",calInfo1);
+
+        ::arData::CalibrationInfo::sptr calInfo2 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_2);
 
         calInfo1->removeRecord(idx);
 
         //Notify
         {
-            ::arData::CalibrationInfo::RemovedRecordSignalType::sptr sig1;
-            sig1 = calInfo1->signal< ::arData::CalibrationInfo::RemovedRecordSignalType >(
+            auto sig = calInfo1->signal< ::arData::CalibrationInfo::RemovedRecordSignalType >(
                 ::arData::CalibrationInfo::s_REMOVED_RECORD_SIG );
-            ::fwCom::Connection::Blocker block(sig1->getConnection(m_slotUpdate));
-            sig1->asyncEmit();
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
         }
 
-        if(m_calInfo2Key != "")
+        if(calInfo2)
         {
-            ::fwData::Composite::ConstIteratorType cmpIt2 = composite->find(m_calInfo2Key);
-            SLM_ASSERT("Key : "+m_calInfo2Key+" not found !",cmpIt2 != composite->end());
-
-            ::arData::CalibrationInfo::sptr calInfo2 = ::arData::CalibrationInfo::dynamicCast(cmpIt2->second);
-            SLM_ASSERT("Object "+m_calInfo1Key+" is not a CalibrationInfo !",calInfo2);
-
             calInfo2->removeRecord(idx);
 
             //Notify
             {
-                ::arData::CalibrationInfo::RemovedRecordSignalType::sptr sig2;
-                sig2 = calInfo2->signal< ::arData::CalibrationInfo::RemovedRecordSignalType >(
+                auto sig = calInfo2->signal< ::arData::CalibrationInfo::RemovedRecordSignalType >(
                     ::arData::CalibrationInfo::s_REMOVED_RECORD_SIG );
-                ::fwCom::Connection::Blocker block(sig2->getConnection(m_slotUpdate));
-                sig2->asyncEmit();
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                sig->asyncEmit();
             }
         }
 
@@ -226,42 +191,31 @@ void SCalibrationInfoEditor::remove()
 
 void SCalibrationInfoEditor::reset()
 {
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+    ::arData::CalibrationInfo::sptr calInfo1 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_1);
+    SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !",calInfo1);
 
-    ::fwData::Composite::ConstIteratorType cmpIt1 = composite->find(m_calInfo1Key);
-    SLM_ASSERT("Key : "+m_calInfo1Key+" not found !",cmpIt1 != composite->end());
-
-    ::arData::CalibrationInfo::sptr calInfo1 = ::arData::CalibrationInfo::dynamicCast(cmpIt1->second);
-    SLM_ASSERT("Object "+m_calInfo1Key+" is not a CalibrationInfo !",calInfo1);
+    ::arData::CalibrationInfo::sptr calInfo2 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_2);
 
     calInfo1->resetRecords();
 
     //Notify
     {
-        ::arData::CalibrationInfo::ResetRecordSignalType::sptr sig1;
-        sig1 = calInfo1->signal< ::arData::CalibrationInfo::ResetRecordSignalType >(
+        auto sig = calInfo1->signal< ::arData::CalibrationInfo::ResetRecordSignalType >(
             ::arData::CalibrationInfo::s_RESET_RECORD_SIG);
-        ::fwCom::Connection::Blocker block(sig1->getConnection(m_slotUpdate));
-        sig1->asyncEmit();
+        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        sig->asyncEmit();
     }
 
-    if(m_calInfo2Key != "")
+    if(calInfo2)
     {
-        ::fwData::Composite::ConstIteratorType cmpIt2 = composite->find(m_calInfo2Key);
-        SLM_ASSERT("Key : "+m_calInfo2Key+" not found !",cmpIt2 != composite->end());
-
-        ::arData::CalibrationInfo::sptr calInfo2 = ::arData::CalibrationInfo::dynamicCast(cmpIt2->second);
-        SLM_ASSERT("Object "+m_calInfo1Key+" is not a CalibrationInfo !",calInfo2);
-
         calInfo2->resetRecords();
 
         //Notify
         {
-            ::arData::CalibrationInfo::ResetRecordSignalType::sptr sig2;
-            sig2 = calInfo2->signal< ::arData::CalibrationInfo::ResetRecordSignalType >(
+            auto sig = calInfo2->signal< ::arData::CalibrationInfo::ResetRecordSignalType >(
                 ::arData::CalibrationInfo::s_RESET_RECORD_SIG);
-            ::fwCom::Connection::Blocker block(sig2->getConnection(m_slotUpdate));
-            sig2->asyncEmit();
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            sig->asyncEmit();
         }
     }
 
@@ -273,22 +227,18 @@ void SCalibrationInfoEditor::reset()
 
 void SCalibrationInfoEditor::getSelection()
 {
-    int idx = m_capturesListWidget->currentRow();
+    int row = m_capturesListWidget->currentRow();
 
-    if(idx >= 0)
+    if(row >= 0)
     {
-        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+        const size_t idx = static_cast<size_t>(row);
 
-        ::fwData::Composite::ConstIteratorType cmpIt1 = composite->find(m_calInfo1Key);
-        SLM_ASSERT("Key : "+m_calInfo1Key+" not found !",cmpIt1 != composite->end());
-
-        ::arData::CalibrationInfo::sptr calInfo1 = ::arData::CalibrationInfo::dynamicCast(cmpIt1->second);
-        SLM_ASSERT("Object "+m_calInfo1Key+" is not a CalibrationInfo !",calInfo1);
+        ::arData::CalibrationInfo::sptr calInfo1 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_1);
+        SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !",calInfo1);
 
         //Notify
         {
-            ::arData::CalibrationInfo::GetRecordSignalType::sptr sig;
-            sig = calInfo1->signal< ::arData::CalibrationInfo::GetRecordSignalType >(
+            auto sig = calInfo1->signal< ::arData::CalibrationInfo::GetRecordSignalType >(
                 ::arData::CalibrationInfo::s_GET_RECORD_SIG);
             sig->asyncEmit(idx);
         }

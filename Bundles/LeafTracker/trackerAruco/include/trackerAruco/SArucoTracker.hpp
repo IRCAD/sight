@@ -17,7 +17,7 @@
 
 #include <fwCore/HiResClock.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <aruco/markerdetector.h>
 
@@ -25,10 +25,57 @@ namespace trackerAruco
 {
 
 /**
- * @class   SArucoTracker
  * @brief   Class used to track multiple tags with ArUco.
+ *
+ * @section Signals Signals
+ * - \b detectionDone(::fwCore::HiResClock::HiResClockType) : This signal is emitted when the tracker find tags.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service uid="..." type="::trackerAruco::SArucoTracker" >
+            <in key="frameTL" uid="frameTLUid" autoConnect="yes"/>
+            <in key="camera" uid="cameraUid" />
+            <inout group="tagTL" >
+                <key uid="WireTimeline" />
+                <key uid="PatientTimeline" />
+                <key uid="TableTimeline" />
+            </inout>
+            <config>
+                <track>
+                    <markers id="42,1,100,54" />
+                    <markers id="32,10" />
+                    <markers id="52,45" />
+                </track>
+                <threshold>
+                    <method>ADPT_THRES</method>
+                    <blockSize>7</blockSize>
+                    <constant>7</constant>
+                </threshold>
+                <patternWidth>106</patternWidth>
+                <debugMarkers>yes</debugMarkers>
+            </config>
+        </service>
+   @endcode
+ * @subsection Input Input
+ * - \b frameTL [::arData::FrameTL]: camera used to display video.
+ * - \b camera [::arData::Camera]: camera calibration.
+ *
+ * @subsection In-Out In-Out
+ * - \b tagTL [::arData::MarkerTL]: list of markers timelines where to extract the tags. The number of tagTL inout keys
+ * must match the number of \b markers entries in the config below.
+ *
+ * @subsection Configuration Configuration
+ *  - \b track (mandatory)
+ *      - \b markers (mandatory) : list of the tracked markers.
+ *           - \b id (mandatory) : ids of the markers to detect.
+ *  - \b threshold (optional)
+ *      - \b method (mandatory): can be ADPT_THRES, FIXED_THRES or CANNY.
+ *      - \b blockSize : parameter of the chosen method
+ *      - \b constant : parameter of the chosen method
+ *  - \b patternWidth (optional): width of the pattern(s).
+ *  - \b debugMarkers : if value is yes markers debugging mode is activated.
  */
-
 class TRACKERARUCO_CLASS_API SArucoTracker : public ::tracker::ITracker
 {
 public:
@@ -40,41 +87,27 @@ public:
     /// Key in m_signals map of signal m_sigDetectionDone
     TRACKERARUCO_API static const ::fwCom::Signals::SignalKeyType s_DETECTION_DONE_SIG;
 
+    ///Slot called when threshold method changed
     TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_METHOD_SLOT;
-
+    ///Slot called when block size changed
     TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_BLOCKSIZE_SLOT;
-
+    ///Slot called when constant parameters changed
     TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_CONSTANT_SLOT;
-
+    ///Slot called when border width changed
     TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_BORDERWIDTH_SLOT;
-
+    ///Slot called when pattern width changed
     TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_PATTERNWIDTH_SLOT;
-
+    ///Slot called when method for corner refinement changed
     TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_CORNERREFINEMENT_SLOT;
-
+    ///Slot called when debug mode is enabled/disabled
     TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_DISPLAY_TAGS_SLOT;
-
+    ///Slot called when speed of detection changed
     TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_SPEED_SLOT;
-
+    ///Slot called when marker is detected
     TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_DETECT_MARKER_SLOT;
 
-    typedef ::fwCom::Slot<void (::fwCore::HiResClock::HiResClockType)> DetectMarkerSlotType;
-
-    typedef ::fwCom::Slot< void (unsigned int) >       ChangeMethodSlotType;
-    typedef ::fwCom::Slot< void (double) >             ChangeBlockSizeSlotType;
-    typedef ::fwCom::Slot< void (double) >             ChangeConstantSlotType;
-    typedef ::fwCom::Slot< void (double) >             ChangeBorderWidthSlotType;
-    typedef ::fwCom::Slot< void (double) >             ChangePatternWidthSlotType;
-    typedef ::fwCom::Slot< void (unsigned int) >       ChangeCornerRefinementSlotType;
-    typedef ::fwCom::Slot< void (unsigned int) >       ChangeSpeedSlotType;
-    typedef ::fwCom::Slot< void (bool) >               DisplayTagsSlotType;
-
-
-
-    typedef std::map<int, std::string> MarkerMapType;
-
-    typedef std::pair< std::string, std::vector< int > >   MarkerPairType;
-    typedef std::vector< MarkerPairType >                  TimelineVectorType;
+    typedef std::vector< int >          MarkerIDType;
+    typedef std::vector< MarkerIDType > MarkerIDVectorType;
 
     /**
      * @brief Constructor.
@@ -86,46 +119,17 @@ public:
      */
     TRACKERARUCO_API virtual ~SArucoTracker() throw ();
 
+    /**
+     * @brief Returns proposals to connect service slots to associated object signals,
+     * this method is used for obj/srv auto connection
+     *
+     * Connect TimeLine::s_OBJECT_PUSHED_SIG to this::s_DETECT_MARKER_SLOT
+     */
+    TRACKERARUCO_API virtual KeyConnectionsMap getAutoConnections() const;
+
 protected:
     /**
      * @brief Configuring method : This method is used to configure the service.
-     *
-     * The method verifies if the configuration is well written and retrieves user parameter values.
-     *
-     * @code{.xml}
-        <service uid="..." impl="::trackerAruco::SArucoTracker" autoConnect="no">
-            <config>
-                <timelineVideo>timelineA</timelineVideo>
-                <camera>camera1</camera>
-                <track>
-                    <markers id="42,1,100,54" timeline="WireTimeline" />
-                    <markers id="32,10" timeline="PatientTimeline" />
-                    <markers id="52,45" timeline="TableTimeline" />
-                </track>
-                <threshold>
-                    <method>ADPT_THRES</method>
-                    <blockSize>7</blockSize>
-                    <constant>7</constant>
-                </threshold>
-                <patternWidth>106</patternWidth>
-                <debugMarkers>yes</debugMarkers>
-            </config>
-        </service>
-       @endcode
-     * With :
-     * None of these parameters are mandatory.
-     *  - \b timelineVideo (mandatory) : input data.
-     *  - \b camera (mandatory) camera key
-     *  - \b track (mandatory)
-     *      - \b markers (mandatory) : list of the tracked markers and its associated timeline.
-     *           - \b id (mandatory) : ids of the markers to detect.
-     *           - \b timeline (mandatory) : timeline to store result.
-     *  - \b threshold (optional)
-     *      - \b method (mandatory): can be ADPT_THRES, FIXED_THRES or CANNY.
-     *      - \b blockSize : parameter of the chosen method
-     *      - \b constant : parameter of the chosen method
-     *  - \b patternWidth (optional): width of the pattern(s).
-     *  - \b debugMarkers : if value is yes markers debugging mode is activated.
      */
     TRACKERARUCO_API void configuring() throw (fwTools::Failed);
 
@@ -166,15 +170,8 @@ protected:
 
 private:
 
-    /// Video timeline key
-    std::string m_timelineVideoKey;
-
-    /// Marker map ['id':'timeline_key']
-    MarkerMapType m_markers;
-
-    /// Video camera key
-    std::string m_cameraKey;
-
+    /// Marker vector [[0,1,2],[4,5,6]]
+    MarkerIDVectorType m_markers;
     /// Marker detector
     ::aruco::MarkerDetector* m_arUcoTracker;
     /// arUCO camera parameters
@@ -192,12 +189,6 @@ private:
     /// True if tracker is initialized
     bool m_isInitialized;
 
-    /// Slots used when the frame have been refreshed
-    DetectMarkerSlotType::sptr m_slotDetectMarker;
-
-    /// Connections
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
-
     /// BlockSize of the pixel neighborhood that is used to calculate a threshold value for the pixel
     double m_blockSize;
 
@@ -214,30 +205,8 @@ private:
     ::aruco::MarkerDetector::ThresholdMethods m_thresholdMethod;
     ::aruco::MarkerDetector::CornerRefinementMethod m_cornerRefinement;
 
-    /// The timeline vector. containing a MarkerPairType object;
-    TimelineVectorType m_timelineVector;
-
     /// Signal to emit when
     DetectionDoneSignalType::sptr m_sigDetectionDone;
-
-    ///Slot called when threshold method changed
-    ChangeMethodSlotType::sptr m_slotChangeMethod;
-    ///Slot called when block size changed
-    ChangeBlockSizeSlotType::sptr m_slotChangeBlockSize;
-    ///Slot called when constant parameters changed
-    ChangeConstantSlotType::sptr m_slotChangeConstant;
-    ///Slot called when border width changed
-    ChangeBorderWidthSlotType::sptr m_slotChangeBorderWidth;
-    ///Slot called when pattern width changed
-    ChangePatternWidthSlotType::sptr m_slotChangePatternWidth;
-    ///Slot called when method for corner refinemement changed
-    ChangeCornerRefinementSlotType::sptr m_slotChangeCornerRefinement;
-    ///Slot called when speed of detection changed
-    ChangeSpeedSlotType::sptr m_slotChangeSpeed;
-    ///Slot called when debug mode is enabled/disabled
-    DisplayTagsSlotType::sptr m_slotDisplayTags;
-
-
 };
 
 } //namespace trackerAruco

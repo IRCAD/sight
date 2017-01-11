@@ -13,7 +13,7 @@
 
 #include <fwData/Object.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 

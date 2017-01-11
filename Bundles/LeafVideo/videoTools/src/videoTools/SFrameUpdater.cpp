@@ -1,25 +1,25 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "videoTools/SFrameUpdater.hpp"
 
+#include <arData/timeline/Buffer.hpp>
+
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwThread/Worker.hpp>
-
-#include <fwData/Object.hpp>
 #include <fwData/Composite.hpp>
+#include <fwData/Object.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <extData/timeline/Buffer.hpp>
+#include <fwDataTools/helper/Array.hpp>
 
-#include <fwComEd/helper/Array.hpp>
+#include <fwServices/macros.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwThread/Worker.hpp>
 
 fwServicesRegisterMacro( ::fwServices::IController, ::videoTools::SFrameUpdater, ::fwData::Composite );
 
@@ -41,12 +41,7 @@ SFrameUpdater::SFrameUpdater() throw() :
     m_sigRenderRequested = RenderRequestedSignalType::New();
     m_signals( s_RENDER_REQUESTED_SIG,  m_sigRenderRequested);
 
-
-
-
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
-
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //-----------------------------------------------------------------------------
@@ -57,47 +52,72 @@ SFrameUpdater::~SFrameUpdater() throw()
 
 //-----------------------------------------------------------------------------
 
+::fwServices::IService::KeyConnectionsMap SFrameUpdater::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    connections.push( "frameTL", ::arData::TimeLine::s_OBJECT_PUSHED_SIG,
+                      ::videoTools::SFrameUpdater::s_UPDATE_FRAME_SLOT );
+
+    return connections;
+}
+
+//-----------------------------------------------------------------------------
+
 void SFrameUpdater::starting() throw(fwTools::Failed)
 {
-    m_imageInitialized                  = false;
-    ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+    m_imageInitialized = false;
 
-    m_frameTL = ::extData::FrameTL::dynamicCast((*composite)[m_frameTLKey]);
-    OSLM_ASSERT("The timeline \"" << m_frameTL << "\" is not valid.", m_frameTL);
+    if(!this->isVersion2())
+    {
+        ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
+        m_frameTL                           = ::arData::FrameTL::dynamicCast((*composite)[m_frameTLKey]);
+        OSLM_ASSERT("The timeline \"" << m_frameTL << "\" is not valid.", m_frameTL);
 
-    m_image = ::fwData::Image::dynamicCast((*composite)[m_imageKey]);
-    OSLM_ASSERT("The image \"" << m_imageKey << "\" is not valid.", m_image);
+        m_image = ::fwData::Image::dynamicCast((*composite)[m_imageKey]);
+        OSLM_ASSERT("The image \"" << m_imageKey << "\" is not valid.", m_image);
 
-    m_connections->connect(m_frameTL, ::extData::TimeLine::s_OBJECT_PUSHED_SIG, this->getSptr(),
-                           ::videoTools::SFrameUpdater::s_UPDATE_FRAME_SLOT);
+        m_connections.connect( ::arData::FrameTL::constCast(m_frameTL),
+                               ::arData::TimeLine::s_OBJECT_PUSHED_SIG, this->getSptr(),
+                               ::videoTools::SFrameUpdater::s_UPDATE_FRAME_SLOT);
+    }
+    else
+    {
+        m_frameTL = this->getInput< ::arData::FrameTL>("frameTL");
+        m_image   = this->getInOut< ::fwData::Image>("frame");
+    }
+
 }
 
 //-----------------------------------------------------------------------------
 
 void SFrameUpdater::configuring() throw(::fwTools::Failed)
 {
-    ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("The service ::videoTools::SFrameUpdater must have a \"config\" element.",config);
+    if(!this->isVersion2())
+    {
+        ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
+        SLM_ASSERT("The service ::videoTools::SFrameUpdater must have a \"config\" element.",config);
 
 
-    //frameTLKey
-    ::fwRuntime::ConfigurationElement::sptr configframeTLKey = config->findConfigurationElement("frameTLKey");
-    SLM_ASSERT("The frame timeline of the service ::videoTools::SFrameUpdater is not specified "
-               "(frameTLKey element is missing)", configframeTLKey);
-    m_frameTLKey = configframeTLKey->getValue();
+        //frameTLKey
+        ::fwRuntime::ConfigurationElement::sptr configframeTLKey = config->findConfigurationElement("frameTLKey");
+        SLM_ASSERT("The frame timeline of the service ::videoTools::SFrameUpdater is not specified "
+                   "(frameTLKey element is missing)", configframeTLKey);
+        m_frameTLKey = configframeTLKey->getValue();
 
-    //image
-    ::fwRuntime::ConfigurationElement::sptr configImage = config->findConfigurationElement("imageKey");
-    SLM_ASSERT("The image key of the service ::videoTools::SFrameUpdater is not specified "
-               "(imageKey element is missing)", configImage);
-    m_imageKey = configImage->getValue();
+        //image
+        ::fwRuntime::ConfigurationElement::sptr configImage = config->findConfigurationElement("imageKey");
+        SLM_ASSERT("The image key of the service ::videoTools::SFrameUpdater is not specified "
+                   "(imageKey element is missing)", configImage);
+        m_imageKey = configImage->getValue();
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SFrameUpdater::stopping() throw(::fwTools::Failed)
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
 }
 
 //-----------------------------------------------------------------------------
@@ -160,10 +180,10 @@ void SFrameUpdater::updateImage()
         ::fwData::mt::ObjectWriteLock destLock(m_image);
         ::fwData::Array::sptr array = m_image->getDataArray();
 
-        ::fwComEd::helper::Array arrayHelper(array);
+        ::fwDataTools::helper::Array arrayHelper(array);
 
         ::fwCore::HiResClock::HiResClockType timestamp = m_frameTL->getNewerTimestamp();
-        CSPTR(::extData::FrameTL::BufferType) buffer   = m_frameTL->getClosestBuffer(timestamp);
+        CSPTR(::arData::FrameTL::BufferType) buffer    = m_frameTL->getClosestBuffer(timestamp);
 
         OSLM_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
         if(buffer)
@@ -172,7 +192,7 @@ void SFrameUpdater::updateImage()
 
             const ::boost::uint8_t* frameBuff = &buffer->getElement(0);
 
-            ::extData::timeline::Buffer::BufferDataType index = arrayHelper.begin< ::boost::uint8_t >();
+            ::arData::timeline::Buffer::BufferDataType index = arrayHelper.begin< ::boost::uint8_t >();
 
             std::copy( frameBuff, frameBuff+buffer->getSize(), index);
 

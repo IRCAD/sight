@@ -13,7 +13,7 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/IController.hpp>
 
 
@@ -21,33 +21,13 @@
 namespace ctrlCamera
 {
 /**
- * @class SExtractDeviceInfo
  * @brief This service extract camera informations in configuration using android device name.
- */
-class CTRLCAMERA_CLASS_API SExtractDeviceInfo : public ::fwServices::IController
-{
-public:
-
-    fwCoreServiceClassDefinitionsMacro ( (SExtractDeviceInfo)(::fwServices::IController) );
-
-    /// Constructor
-    CTRLCAMERA_API SExtractDeviceInfo();
-
-    /// Destructor
-    CTRLCAMERA_API ~SExtractDeviceInfo();
-
-protected:
-
-    /// Does nothing
-    CTRLCAMERA_API virtual void starting() throw( ::fwTools::Failed );
-
-    /**
-     * @brief Configure the service
-     *
-     * @code{.xml}
-        <service uid="..." type="::fwServices::IController" impl="::ctrlCamera::SExtractDeviceInfo" autoConnect="no">
-            <cameraUid>cameraUid</cameraUid>
-
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service uid="..." type="::ctrlCamera::SExtractDeviceInfo">
+            <inout key="camera" uid="..." />
             <devices>
                 <device>
                     <name>Nexus10</name>
@@ -74,12 +54,32 @@ protected:
             <!-- or -->
             <configId>my config</configId>
            </service>
-       @endcode
-     * - cameraUid: uid of the ::arData::Camera to configure
-     * - One of devices or configId tag is needed:
-     *  - \b devices: configuration of devices
-     *  - \b configId: id of a ServiceConfig containing devices configuration.
-     */
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b camera [::arData::Camera]: Camera to update according to device information.
+ * @subsection Configuration Configuration
+ * - One of devices or configId tag is needed:
+ *  - \b devices: configuration of devices
+ *  - \b configId: id of a ServiceConfig containing devices configuration.
+ */
+class CTRLCAMERA_CLASS_API SExtractDeviceInfo : public ::fwServices::IController
+{
+public:
+
+    fwCoreServiceClassDefinitionsMacro ( (SExtractDeviceInfo)(::fwServices::IController) );
+
+    /// Constructor
+    CTRLCAMERA_API SExtractDeviceInfo();
+
+    /// Destructor
+    CTRLCAMERA_API ~SExtractDeviceInfo();
+
+protected:
+
+    /// Does nothing
+    CTRLCAMERA_API virtual void starting() throw( ::fwTools::Failed );
+
+    /// Configure the service
     CTRLCAMERA_API virtual void configuring() throw( ::fwTools::Failed );
 
     /// Does nothing
@@ -93,9 +93,6 @@ private:
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
     typedef std::map< std::string, ConfigurationType > DeviceConfigType;
     typedef ::fwRuntime::ConfigurationElementContainer::Container CfgContainer;
-
-    std::string m_cameraUid;
-    ::arData::Camera::sptr m_camera;
 
     DeviceConfigType m_devicesConfig;
 

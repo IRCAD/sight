@@ -1,4 +1,1 @@
 fwLoadProperties()
-fwUseForwardInclude(
-    fwAtomsPatch
-)

@@ -4,12 +4,10 @@
     <requirement id="gui" />
     <requirement id="visuVTKAdaptor" />
     <requirement id="visuVTKARAdaptor" />
-    <requirement id="videoQt" />
+    <requirement id="visuVTKQt" />
     <requirement id="media" />
-    <requirement id="mediaExt" />
     <requirement id="arMedia" />
-    <requirement id="videoCalibration" />
-    <requirement id="uiCalibration" />
+    <requirement id="validators" />
 
     <xi:include href="configurations/calibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calIntrinsicView.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
@@ -18,20 +16,21 @@
     <xi:include href="configurations/displayImageConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/displayTwoImagesConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/toolsCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    
-    
+    <xi:include href="configurations/calibrationEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/videoEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
     <extension implements="::fwActivities::registry::Activities">
         <id>Calibration</id>
         <title>Calibration</title>
-        <desc>Calibration activity</desc>
-        <icon>Bundles/arMedia_0-1/icons/calibrationActivity.svg</icon>
+        <desc>Calibrate the intrinsic and extrinsic parameters of cameras.</desc>
+        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg</icon>
         <requirements>
              <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="0" maxOccurs="0" />
         </requirements>
         <builder>::fwActivities::builder::ActivitySeriesInitData</builder>
         <appConfig id="calibration">
             <parameters>
-                <parameter replace="cameraSeriesUid" by="@values.cameraSeries" />
+                <parameter replace="cameraSeries" by="@values.cameraSeries" />
             </parameters>
         </appConfig>
     </extension>
@@ -39,19 +38,52 @@
     <extension implements="::fwActivities::registry::Activities">
         <id>toolsCalibration</id>
         <title>ToolsCalibration</title>
-        <desc>Tools Calibration activity</desc>
-        <icon>Bundles/arMedia_0-1/icons/calibrationActivity.svg</icon>
+        <desc>This activity allows to calibrate a tool.</desc>
+        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg</icon>
         <requirements>
-             <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1" />
+             <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
+                <desc>Stereo calibrated camera series.</desc>
+                <validator>::validators::CameraSeries::StereoCamera</validator>
+             </requirement>
+             <requirement name="tagsIdString" type="::fwData::String" minOccurs="1" maxOccurs="1">
+                <desc>
+                <![CDATA[
+                    Identifier of the tag used to calibrate the tool (separated by a ','). <br />
+                    Ex.: <b>101</b>
+                ]]>
+                </desc>
+                <validator>::calibrationActivity::validator::TagId</validator>
+             </requirement>
         </requirements>
-        <builder>::calibrationActivity::builder::ToolCalibrationBuilder</builder>
-        <validator>::calibrationActivity::validator::ToolsCalibration</validator>
         <appConfig id="toolsCalibration">
             <parameters>
-                <parameter replace="camera1Uid" by="@values.cameraSeries.cameras.0" />
-                <parameter replace="camera2Uid" by="@values.cameraSeries.cameras.1" />
-                <parameter replace="cameraExtrinsicUid" by="@values.cameraSeries.extrinsic_matrices.1" />
+                <parameter replace="camera1" by="@values.cameraSeries.cameras.0" />
+                <parameter replace="camera2" by="@values.cameraSeries.cameras.1" />
+                <parameter replace="cameraExtrinsic" by="@values.cameraSeries.extrinsic_matrices.1" />
                 <parameter replace="tagsId" by="!values.tagsIdString" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>calibrationEdition</id>
+        <title>Calibration Edition</title>
+        <desc>
+            <![CDATA[
+                This activity allows to edit a calibration: <br />
+                - edit the video file/stream<br />
+                - edit the resolution
+            ]]>
+        </desc>
+        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/configuration.svg</icon>
+        <requirements>
+             <requirement name="cameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
+                <desc>Calibrated camera series.</desc>
+             </requirement>
+        </requirements>
+        <appConfig id="calibrationEdition">
+            <parameters>
+                <parameter replace="cameraSeries" by="@values.cameraSeries" />
             </parameters>
         </appConfig>
     </extension>

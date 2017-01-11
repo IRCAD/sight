@@ -12,7 +12,6 @@ set( DEPENDENCIES
     fwGui
     fwGuiQt
     fwCom
-    fwComEd
     
     gui
 )

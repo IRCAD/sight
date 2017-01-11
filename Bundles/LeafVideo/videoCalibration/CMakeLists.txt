@@ -1,16 +1,5 @@
 fwLoadProperties()
 
-fwUseForwardInclude(
-    fwCore
-    fwComEd
-    fwData
-    fwRuntime
-    fwServices
-    fwTools
-    fwGui
-    arData
-    ARLcore
-)
 
 find_package(OpenCV REQUIRED)
 find_package(Qt5 COMPONENTS Core Widgets REQUIRED)

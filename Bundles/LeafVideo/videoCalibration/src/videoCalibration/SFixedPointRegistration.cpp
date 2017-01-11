@@ -6,19 +6,20 @@
 
 #include "videoCalibration/SFixedPointRegistration.hpp"
 
-#include <fwData/Composite.hpp>
-#include <fwData/Array.hpp>
-
 #include <arData/CalibrationInfo.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwComEd/helper/Array.hpp>
+#include <fwData/Array.hpp>
+#include <fwData/Composite.hpp>
 
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwDataTools/helper/Array.hpp>
+
+#include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwServices/IService.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <arlcore/PointsList.h>
 
@@ -31,10 +32,8 @@ fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SFixedPoi
 
 // ----------------------------------------------------------------------------
 
-SFixedPointRegistration::SFixedPointRegistration() throw () :
-    m_pointListUID("")
+SFixedPointRegistration::SFixedPointRegistration() throw ()
 {
-
 }
 
 // ----------------------------------------------------------------------------
@@ -47,20 +46,12 @@ SFixedPointRegistration::~SFixedPointRegistration() throw ()
 
 void SFixedPointRegistration::configuring() throw (fwTools::Failed)
 {
-    typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-
-    const ConfigurationType PLConfig = m_configuration->findConfigurationElement("pointList");
-    SLM_ASSERT("element 'pointList' is missing.", PLConfig);
-    m_pointListUID = PLConfig->getValue();
 }
 
 // ----------------------------------------------------------------------------
 
 void SFixedPointRegistration::starting() throw (fwTools::Failed)
 {
-    ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(m_pointListUID);
-    SLM_ASSERT("Object '" + m_pointListUID + "' is not found", obj);
-    m_pointList = ::fwData::PointList::dynamicCast(obj);
 }
 
 // ----------------------------------------------------------------------------
@@ -73,11 +64,21 @@ void SFixedPointRegistration::swapping() throw (fwTools::Failed)
 
 void SFixedPointRegistration::updating() throw (fwTools::Failed)
 {
-    m_calibrationMatrix = this->getObject< ::fwData::TransformationMatrix3D >();
+    auto pointList         = this->getInput< ::fwData::PointList >("pointList");
+    auto calibrationMatrix = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
 
     ::arlCore::PointList::sptr arlPL = ::arlCore::PointList::New();
 
-    ::fwData::PointList::PointListContainer plcontainer = m_pointList->getPoints();
+    ::fwData::PointList::PointListContainer plcontainer = pointList->getPoints();
+
+    if (plcontainer.empty())
+    {
+        SLM_WARN("No marker points are defined");
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Empty List", "No marker points are defined.",
+                                                          ::fwGui::dialog::IMessageDialog::WARNING);
+        return;
+    }
+
     //for all points in pointlist
     for(unsigned int i = 0; i< plcontainer.size(); ++i)
     {
@@ -100,14 +101,14 @@ void SFixedPointRegistration::updating() throw (fwTools::Failed)
     //TODO: estimation of the rotation between marker and tool tip
 
     //put the distance into matrix
-    m_calibrationMatrix->setCoefficient(0,3,centerEstimation->x());
-    m_calibrationMatrix->setCoefficient(1,3,centerEstimation->y());
-    m_calibrationMatrix->setCoefficient(2,3,centerEstimation->z());
+    calibrationMatrix->setCoefficient(0,3,centerEstimation->x());
+    calibrationMatrix->setCoefficient(1,3,centerEstimation->y());
+    calibrationMatrix->setCoefficient(2,3,centerEstimation->z());
 
 
     OSLM_DEBUG("Sphere center : "<<centerEstimation->x()<<" ; "<<centerEstimation->y()<<" ; "<<centerEstimation->z());
 
-    auto sig = m_calibrationMatrix->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType >
+    auto sig = calibrationMatrix->signal< ::fwData::TransformationMatrix3D::ModifiedSignalType >
                    (::fwData::TransformationMatrix3D::s_MODIFIED_SIG);
     sig->asyncEmit();
 }
@@ -117,9 +118,6 @@ void SFixedPointRegistration::updating() throw (fwTools::Failed)
 void SFixedPointRegistration::stopping() throw (fwTools::Failed)
 {
 }
-
-// ----------------------------------------------------------------------------
-
 
 // ----------------------------------------------------------------------------
 

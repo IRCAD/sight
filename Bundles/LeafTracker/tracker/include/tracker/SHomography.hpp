@@ -11,11 +11,14 @@
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
+
 #include <fwCore/HiResClock.hpp>
 #include <fwCore/mt/types.hpp>
+
 #include <fwData/Composite.hpp>
-#include <fwServices/Base.hpp>
+
 #include <fwServices/IController.hpp>
+#include <fwServices/macros.hpp>
 
 #include <arlcore/Point.h>
 #include <arlcore/Reconst3D.h>
@@ -26,7 +29,35 @@ namespace tracker
 
 /**
  * @brief   SHomography Class used to compute the rigid transformation.
- * @class   SHomography.
+ *
+ * @section Slots Slots
+ * - \b register(::fwCore::HiResClock::HiResClockType timestamp) : computes the homography.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+     <service uid="..." type="::tracker::SHomography">
+         <in group="markerTL" autoConnect="yes">
+             <key uid="markerTL1" />
+             <key uid="markerTL2" />
+         </in>
+         <in group="camera">
+             <key uid="cam1" />
+             <key uid="cam2" />
+         </in>
+         <in key="extrinsic" uid="matrix1" />
+         <inout key="matrixTL" uid="matrixTL1" />
+         <patternWidth>80</patternWidth>
+     </service>
+   @endcode
+ * @subsection Input Input
+ * - \b markerTL [::arData::MarkerTL]: timeline for markers.
+ * - \b camera [::arData::Camera]: calibrated cameras.
+ * - \b extrinsic [::fwData::TransformationMatrix3D]: extrinsic matrix, only used if you have two cameras configured.
+ * @subsection In-Out In-Out
+ * - \b matrixTL [::arData::MatrixTL]: timaline of 3D transformation matrices.
+ * @subsection Configuration Configuration
+ * - \b patternWidth : width of the tag.
  */
 class TRACKER_CLASS_API SHomography : public ::fwServices::IController
 {
@@ -34,7 +65,6 @@ public:
     fwCoreServiceClassDefinitionsMacro((SHomography)(fwServices::IController));
 
     static const ::fwCom::Slots::SlotKeyType s_REGISTER_SLOT;
-    typedef ::fwCom::Slot<void (::fwCore::HiResClock::HiResClockType)> RegisterSlotType;
 
     typedef std::vector< ::arlCore::Point::csptr > ARLPointListType;
     typedef std::vector<std::string> VectKeyType;
@@ -49,26 +79,12 @@ public:
      */
     TRACKER_API virtual ~SHomography() throw ();
 
+    /// Connect MarkerTL::s_OBJECT_PUSHED_SIG to s_REGISTER_SLOT
+    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+
 protected:
     /**
      * @brief Configuring method : This method is used to configure the service.
-     * @code{.xml}
-        <service uid="..." impl="::tracker::SHomography" autoConnect="no">
-            <config>
-                <markerTL>
-                    <key>markerTL1</key>
-                    <key>markerTL2</key>
-                </markerTL>
-                <camera>
-                    <key>cam1</key>
-                    <key>cam2</key>
-                </camera>
-                <extrinsic>matrix1</extrinsic>
-                <matrixTL>matrixTL1</matrixTL>
-                <patternWidth>80</patternWidth>
-            </config>
-        </service>
-       @endcode
      */
     TRACKER_API void configuring() throw (fwTools::Failed);
 
@@ -101,17 +117,8 @@ private:
     /// Marker pattern width.
     double m_patternWidth;
 
-    /// Marker timeline keys
-    VectKeyType m_markerTLKeys;
-
-    /// Camera timeline keys
-    VectKeyType m_cameraKeys;
-
     /// Matrix timeline keys
     std::string m_matrixKey;
-
-    /// Extrinsic matrix key in composite
-    std::string m_extrinsicKey;
 
     /// True if the service is initialized (timelines and ARLCameras)
     bool m_isInitialized;
@@ -119,11 +126,8 @@ private:
     /// ARL planeSystem
     ::arlCore::PlaneSystem* m_planeSystem;
 
-    /// Slots used when the frame have been refreshed
-    RegisterSlotType::sptr m_slotRegister;
-
     /// Connections
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 
     /// Points of the 3D model of the marker
     ARLPointListType m_3dModel;

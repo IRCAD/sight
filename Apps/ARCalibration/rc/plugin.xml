@@ -2,40 +2,43 @@
 
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
-    <requirement id="extDataReg" />
     <requirement id="arDataReg" />
     <requirement id="patchMedicalData" />
     <requirement id="arPatchMedicalData" />
     <requirement id="memory" />
     <requirement id="preferences" />
-    
+    <requirement id="activities" />
+    <requirement id="uiMedDataQt" />
+    <requirement id="filterVRRender" />
+
+    <xi:include href="configurations/activitySelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ARCalibrationBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwServices::registry::AppConfigParameters">
         <id>ARCalibrationAppBase</id>
         <parameters>
-            <param name="appName" value="ARCalibration 0.2" />
-            <param name="appIconPath" value="Bundles/ARCalibration_0-2/arcalibration.ico" />
+            <param name="appName" value="ARCalibration 0.3" />
+            <param name="appIconPath" value="@BUNDLE_PREFIX@/ARCalibration_0-3/arcalibration.ico" />
         </parameters>
     </extension>
 
-    <extension implements="::fwServices::registry::AppConfig">
+    <extension implements="::fwServices::registry::AppConfig2">
         <id>CameraExportSelection</id>
         <parameters>
             <param name="selection" />
         </parameters>
         <config>
-            <object uid="${selection}" src="ref">
-                <service uid="export_selection" impl="::uiIO::editor::SIOSelector" autoConnect="yes">
-                    <type mode="writer" />
-                    <selection mode="include" />
-                    <addSelection service="::ioAtoms::SWriter" />
-                    <config id="ARMDAtomsConfig" service="::ioAtoms::SWriter" />
-                </service>
-                <start uid="export_selection" />
-                <update uid="export_selection" />
-            </object>
+            <object uid="${selection}" src="ref" />
+            <service uid="export_selection" type="::uiIO::editor::SIOSelector" autoConnect="yes">
+                <inout key="target" uid="${selection}" />
+                <type mode="writer" />
+                <selection mode="include" />
+                <addSelection service="::ioAtoms::SWriter" />
+                <config id="ARMDAtomsConfig" service="::ioAtoms::SWriter" />
+            </service>
+            <start uid="export_selection" />
+            <update uid="export_selection" />
         </config>
     </extension>
 
@@ -55,24 +58,15 @@
         </appConfig>
     </extension>
 
-    <extension implements="::fwServices::registry::ServiceConfig">
-        <id>ARMDAtomsConfig</id>
-        <desc>reader/writer config to read/write an atom representing a medical data</desc>
-        <config>
-            <patcher context="MedicalData" version="V10AR" />
-        </config>
-    </extension>
-
-    <extension implements="::fwServices::registry::ServiceConfig">
-        <id>ARSDBAtomsReaderIOSelectorConfig</id>
-        <service>::uiIO::editor::SIOSelector</service>
-        <desc>Atoms seriesDB reader for arData.</desc>
-        <config>
-            <type mode="reader" />
-            <selection mode="include" />
-            <addSelection service="::ioAtoms::SReader" />
-            <config id="ARMDAtomsConfig" service="::ioAtoms::SReader" />
-        </config>
+    <extension implements="::fwActivities::registry::Activities">
+        <id>activitySelector</id>
+        <title>Choose your activity</title>
+        <desc>Activity selector for ARSurg</desc>
+        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/selector.svg</icon>
+        <requirements />
+        <appConfig id="activitySelector">
+            <parameters />
+        </appConfig>
     </extension>
 
 </plugin>

@@ -5,16 +5,13 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES
     fwCore
     fwCom
-    fwComEd
     fwData
     fwRuntime
     fwServices
     fwTools
     arData
-    extData
     fwCom
     fwGui
     io
 )
 set( REQUIREMENTS io dataReg servicesReg)
-

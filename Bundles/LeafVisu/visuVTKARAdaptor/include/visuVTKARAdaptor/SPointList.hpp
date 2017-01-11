@@ -10,7 +10,7 @@
 #include "visuVTKARAdaptor/config.hpp"
 
 #include <fwCore/base.hpp>
-#include <fwData/Color.hpp>
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 namespace fwData
@@ -22,7 +22,6 @@ namespace visuVTKARAdaptor
 {
 
 /**
- * @class   SPointList
  * @brief   Display a 2D point list.
  *
  *  This adaptor works on a ::fwData::PointList.
@@ -53,12 +52,14 @@ protected:
     /**
      * @code{.xml}
        <adaptor id="points" class="::visuVTKARAdaptor::SPointList" objectId="pointListKey">
-        <config renderer="default" imageId="${imageId1}" color="#cb1f72"/>
+           <config renderer="default" imageId="${imageId1}"cameraUID="cameraUid" color="#cb1f72" radius="3.0" />
        </adaptor>
        @endcode
      * - \b renderer : defines the renderer to show the arrow. It must be different from the 3D objects renderer.
-     * - \b imageId : Id of the image used to extract the resolution of the source image.
+     * - \b imageId(optional if camera is set) : Id of the image used to extract the resolution of the source image.
+     * - \b camera(optional if image is set) : camera for taking account the optical center.
      * - \b color(optional) : color used to display the points.
+     * - \b radius (optional) : size of the point beeing displayed.
      */
     VISUVTKARADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
@@ -73,11 +74,18 @@ private:
     /// Copy of the points so that we can modify them freely
     PointListType m_pointList;
 
-    /// color of the points
-    ::fwData::Color::sptr m_ptColor;
-
     /// uid of the image where the points come from - used to get the resolution
     std::string m_imageId;
+
+    /// uid of the camera
+    std::string m_cameraUID;
+
+    ///handle the color
+    std::string m_hexaColor;
+
+    ///handle the size
+    std::string m_radius;
+
 };
 
 

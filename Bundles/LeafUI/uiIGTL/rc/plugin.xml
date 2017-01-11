@@ -1,0 +1,24 @@
+<plugin id="uiIGTL" class="::uiIGTL::Plugin" version="@DASH_VERSION@" >
+
+    <library name="uiIGTL" />
+
+    <requirement id="gui" />
+
+   <extension implements="::fwServices::registry::ServiceFactory">
+       <type>::gui::editor::IEditor</type>
+       <service>::uiIGTL::SConnexionStatusViewer</service>
+       <object>::fwData::Object</object>
+   </extension>
+
+   <extension implements="::fwServices::registry::ServiceFactory">
+       <type>::gui::editor::IDialogEditor</type>
+       <service>::uiIGTL::SServerConfigEditor</service>
+       <object>::fwData::Object</object>
+   </extension>
+
+   <extension implements="::fwServices::registry::ServiceFactory">
+       <type>::gui::editor::IDialogEditor</type>
+       <service>::uiIGTL::SClientConfigEditor</service>
+       <object>::fwData::Object</object>
+   </extension>
+</plugin>

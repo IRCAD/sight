@@ -11,8 +11,9 @@
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
 
 
 namespace fwData
@@ -33,7 +34,6 @@ namespace visuVTKARAdaptor
 
 /**
  * @brief   Adaptor to place the camera in the scene
- * @class   SCamera
  */
 class VISUVTKARADAPTOR_CLASS_API SCamera : public ::fwRenderVTK::IVtkAdaptorService
 {
@@ -101,12 +101,12 @@ private:
 
     std::string m_cameraUID; ///< uid of the camera
 
-    SPTR(::arData::Camera) m_camera; ///< camera used to calibrate vtk camera
+    CSPTR(::arData::Camera) m_camera; ///< camera used to calibrate vtk camera
 
     vtkPerspectiveTransform* m_transOrig; ///<  VTK original perspective transform.
     vtkCommand* m_cameraCommand; ///< VTK camera command.
 
-    ::fwServices::helper::SigSlotConnection::sptr m_connections; ///< Connection to image
+    ::fwCom::helper::SigSlotConnection m_connections; ///< Connection to image
 
     CalibrateSlotType::sptr m_slotCalibrate; ///< Slot to calibrate camera
 };

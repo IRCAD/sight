@@ -10,21 +10,39 @@
 #include "videoCalibration/ICalibration.hpp"
 #include "videoCalibration/config.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-
 namespace videoCalibration
 {
 /**
  * @brief   SOpenCVExtrinsic service that computes extrinsic calibration with openCV.
- * @class   SOpenCVExtrinsic
+ *
+ * @section Slots Slots
+ * - \b updateChessboardSize() : Received when the chessboard preferences parameters change.
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::videoCalibration::SOpenCVExtrinsic">
+            <in key="calibrationInfo1" uid="..." />
+            <in key="calibrationInfo2" uid="..." />
+            <inout key="cameraSeries" uid="..." />
+            <camIndex>...</camIndex>
+            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b calibrationInfo1 [::arData::CalibrationInfo]: Data of the first camera used to compute the calibration.
+ * - \b calibrationInfo2 [::arData::CalibrationInfo]: Data of the second camera used to compute the calibration.
+ * @subsection In-Out In-Out:
+ * - \b camera [::arData::CameraSeries]: Output calibration.
+ * @subsection Configuration Configuration:
+ * - \b camIndex (optional, default: 1): index of the camera in \b cameraSeries used to compute extrinsic matrix
+ *      (from camera[0] to camera[index]).
+ * - \b board : preference key to retrieve the number of square in 2 dimensions of the chessboard.
  */
 class VIDEOCALIBRATION_CLASS_API SOpenCVExtrinsic : public ::videoCalibration::ICalibration
 {
 public:
     fwCoreServiceClassDefinitionsMacro((SOpenCVExtrinsic)(::videoCalibration::ICalibration));
-
-    typedef ::fwCom::Slot <void (int, int, float)> UpdateChessboardSizeSlotType;
 
     /// Constructor.
     VIDEOCALIBRATION_API SOpenCVExtrinsic() throw ();
@@ -34,22 +52,7 @@ public:
 
 protected:
 
-    /**
-     * @brief Configures the service.
-     * @code{.xml}
-       <service impl="::videoCalibration::SExtrinsic" >
-            <calibrationInfo1ID> ... </calibrationInfo1ID>
-            <calibrationInfo2ID> ... </calibrationInfo2ID>
-            <camIndex>...</camIndex>
-            <board width="17" height="13" />
-       </service>
-       @endcode
-     * - \b calibrationInfo1ID: FwId of the first calibrationInfo.
-     * - \b calibrationInfo2ID: FwId of the second calibrationInfo.
-     * - \b camIndex (optional, default: 1): index of the camera in cameraSeries used to compute extrinsic matrix
-     *      (from camera[0] to camera[index]).
-     * - \b board : defines the number of square in 2 dimensions of the chessboard.
-     */
+    /// Configures the service.
     VIDEOCALIBRATION_API void configuring() throw (fwTools::Failed);
 
     /// Does nothing.
@@ -64,20 +67,27 @@ protected:
     /// Removes connections
     VIDEOCALIBRATION_API void stopping() throw (fwTools::Failed);
 
+private:
+
     /**
      * @brief SLOT: update the chessboard size.
-     * @param width chessboard's width expresses by the number of square.
-     * @param height chessboard's height expresses by the number of square.
      */
-    void updateChessboardSize(const int width, const int height, const float squareSize);
-
-private:
+    void updateChessboardSize();
 
     /// FwId of the first calibrationInfo
     std::string m_calibrationInfo1ID;
 
     /// FwId of the second calibrationInfo
     std::string m_calibrationInfo2ID;
+
+    /// Preference key to retrieve width of the chessboard used for calibration
+    std::string m_widthKey;
+
+    /// Preference key to retrieve height of the chessboard used for calibration
+    std::string m_heightKey;
+
+    /// Preference key to retrieve size of the chessboard'square used for calibration
+    std::string m_squareSizeKey;
 
     /// Width of the chessboard used for calibration
     unsigned int m_width;
@@ -90,9 +100,6 @@ private:
 
     /// Index of the camera in cameraSeries used to compute extrinsic matrix (from camera[0] to camera[index]).
     size_t m_camIndex;
-
-    /// Slot that calls update chessboard size method
-    UpdateChessboardSizeSlotType::sptr m_slotUpdateChessboardSize;
 };
 } // namespace videoCalibration
 

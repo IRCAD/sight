@@ -1,13 +1,5 @@
 fwLoadProperties()
 
-fwUseForwardInclude(
-    fwCore
-    fwData
-    fwRuntime
-    arData
-    arDataCamp
-    fwServices
-)
 
 find_package(Boost COMPONENTS system REQUIRED)
 

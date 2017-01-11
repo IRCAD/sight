@@ -9,21 +9,43 @@
 
 #include "maths/config.hpp"
 
+#include <fwCom/helper/SigSlotConnection.hpp>
+
 #include <fwCore/base.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwServices/helper/SigSlotConnection.hpp>
 #include <fwServices/IController.hpp>
 
 
 namespace maths
 {
-
 /**
- * @brief   This service concatenates the matrices.
- * @class   SConcatenateMatrices
+ * @brief   This service concatenates N matrices together.
+ *
+ * The computation of the concatenation is triggered when updating the service.
+ * Auto-connections to the matrices can also be used to force the service to recompute the output matrix.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service uid="..." type="::maths::SConcatenateMatrices">
+            <in group="matrix">
+                <key uid="..." />
+                <key uid="..." inverse="true"/>
+                <key uid="..." autoConnect="yes"/>
+            </in>
+            <inout key="output" uid="..." />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b matrix [::fwData::TransformationMatrix3D]: List of matrix keys to concatenate. For each input matrix, it is
+ * possible to invert it before multiplying with it by specifying \b inverse="true".
+ * The autoConnect is connected to the update slot, thus is will trigger a new concatenation.
+ * @subsection In-Out In-Out:
+ * - \b output [::fwData::TransformationMatrix3D]: Output matrix.
  */
+
 class MATHS_CLASS_API SConcatenateMatrices : public ::fwServices::IController
 {
 
@@ -44,17 +66,7 @@ public:
     }
 
 protected:
-    /**
-     * @brief This method is used to configure the service.
-     *
-     * @code{.xml}
-       <service impl="::maths::SConcatenateMatrices" type="::fwServices::IController">
-           <matrix>matrix1Uid</matrix>
-           <matrix inverse="true" connect="false">matrix2Uid</matrix>
-           <matrix>matrix3Uid</matrix>
-       </service>
-       @endcode
-     */
+    /// This method is used to configure the service.
     MATHS_API void configuring() throw (fwTools::Failed);
 
     /// This method is used to initialize the service.
@@ -62,11 +74,6 @@ protected:
 
     /// Does nothing.
     MATHS_API void stopping() throw (fwTools::Failed);
-
-    /// Does nothing.
-    void swapping() throw (fwTools::Failed)
-    {
-    }
 
     /// Does nothing.
     MATHS_API void updating() throw (fwTools::Failed);
@@ -85,7 +92,7 @@ private:
 
     MatrixVectorType m_matrixVector; ///< The vector of TransformMatrix struct
 
-    ::fwServices::helper::SigSlotConnection::sptr m_connections; ///< connection to matrices
+    ::fwCom::helper::SigSlotConnection m_connections; ///< connection to matrices
 };
 
 } //namespace maths

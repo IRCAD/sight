@@ -9,18 +9,18 @@
 
 #include "videoQt/config.hpp"
 
-#include <extData/FrameTL.hpp>
+#include <arData/FrameTL.hpp>
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
 
-#include <fwCore/base.hpp>
 #include <fwCore/HiResClock.hpp>
-
-#include <fwTools/fwID.hpp>
+#include <fwCore/base.hpp>
 
 #include <fwServices/IController.hpp>
-#include <fwServices/helper/SigSlotConnection.hpp>
+
+#include <fwTools/fwID.hpp>
 
 #include <boost/filesystem/path.hpp>
 
@@ -32,8 +32,32 @@ class Image;
 
 namespace videoQt
 {
+
 /**
  * @brief This service saves the timeline's frame on disk.
+ *
+ * The service saves the frame when it is pushed in the timeline.
+ *
+ * @warning In order to start/stop recording, this service must not be auto-connected.
+ *
+ * @section Slots Slots
+ * - \b saveFrame(::fwCore::HiResClock::HiResClockType timestamp) : save the frame with the given timestamp
+ * - \b startRecord() : start listening the timeline
+ * - \b stopRecord() : stop listening the timeline
+ * - \b pauseRecord() : toggle (start or stop) listening the the timeline
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::videoQt::SFrameRecorder">
+       <in key="frameTL" uid="..." />
+       <path>...</path>
+    </service>
+   @endcode
+ * @subsection Input Input
+ * - \b frameTL [ ::arData::FrameTL]: timeline containing the frame to save on disk.
+ * @subsection Configuration Configuration
+ * - \b path: path to the directory where the frames are saved
  */
 class VIDEOQT_CLASS_API SFrameRecorder : public ::fwServices::IController
 {
@@ -64,8 +88,6 @@ public:
     typedef ::fwCom::Slot<void ()> PauseRecordSlotType;
     /// @}
 
-    ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
-
 protected:
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
@@ -78,14 +100,7 @@ protected:
     /// Does nothing.
     VIDEOQT_API virtual void updating() throw(::fwTools::Failed);
 
-    /**
-     * @code{.xml}
-       <service impl="::videoQt::SFrameRecorder" autoConnect="yes">
-           <path>...</path>
-       </service>
-       @endcode
-     * - \b path: path to the directory where the frames are saved
-     **/
+    /// Parse the configuration
     VIDEOQT_API virtual void configuring() throw( ::fwTools::Failed );
 
 private:
@@ -127,7 +142,7 @@ private:
     bool m_isPaused;
 
     /// Helper to manage connections between the timeline and this service.
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 };
 
 } //namespace videoQt

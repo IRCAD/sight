@@ -17,7 +17,7 @@
 #include <fwThread/Timer.hpp>
 
 
-namespace extData
+namespace arData
 {
 class FrameTL;
 class MatrixTL;
@@ -32,8 +32,27 @@ class TransformationMatrix3D;
 namespace syncTimeline
 {
 /**
- * @brief   SMatrixTLSynchronizer service synchronizes video frame and tracking matrix.
- * @class   SMatrixTLSynchronizer
+ * @brief   SMatrixTLSynchronizer service synchronizes tracking matrices.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+     <service uid="matrixToolsSynchronizer" type="::syncTimeline::SMatrixTLSynchronizer">
+         <in key="matrixTL" uid="matrixToolsTL" autoConnect="yes" />
+         <inout group="matrices">
+             <key uid="markerEndoMX" />
+             <key uid="tipEndoMX" />
+             <key uid="markerTool1MX" />
+             <key uid="tipTool1MX" />
+             <key uid="markerTool2MX" />
+             <key uid="tipTool2MX" />
+         </inout>
+     </service>
+   @endcode
+ * @subsection Input Input
+ * - \b matrixTL [::arData::MatrixTL]: matrix timeline used to extract matrices.
+ * @subsection In-Out In-Out
+ * - \b matrices [::fwData::TransformationMatrix3D]: list of TransformationMatrix3D used to store extracted matrices.
  */
 class SYNCTIMELINE_CLASS_API SMatrixTLSynchronizer : public ::arServices::ISynchronizer
 {
@@ -57,22 +76,8 @@ public:
     typedef std::map< unsigned long, std::string > MatrixIndexNameType;
 
 protected:
-    /**
-     * @brief This method is used to configure the service.
-     *
-     * @code{.xml}
-       <service impl="::syncTimeline::SMatrixTLSynchronizer" type="::arServices::ISynchronizer">
-           <matrices>
-               <matrix index="0" to="matrix0" />
-               <matrix index="1" to="matrix1" />
-               <matrix index="2" to="matrix2" />
-            </matrices>
-       </service>
-       @endcode
-     * - \b matrices defines the matrixTL to synchronize.
-     *   - \b index: index of the matrix in the timeline.
-     *   - \b to: uid of the TransformationMatrix3D where to extract the matrix.
-     */
+
+    /// Does nothing
     SYNCTIMELINE_API void configuring() throw (::fwTools::Failed);
 
     /// This method is used to initialize the service.
@@ -87,7 +92,7 @@ protected:
     /// Synchronize
     SYNCTIMELINE_API void synchronize();
 
-    SYNCTIMELINE_API ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;
+    SYNCTIMELINE_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
 private:
 

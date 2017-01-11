@@ -2,32 +2,41 @@
 set( NAME calibrationActivity )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
-set( START ON)
 set( DEPENDENCIES
     fwCore
     fwData
-    fwRuntime
     fwActivities
-    fwGui
-    arData
 )
 set( REQUIREMENTS
-        servicesReg
-        dataReg
-        extDataReg
-        arDataReg
-        gui
-        ioData
-        visuVTKAdaptor
-        visuVTKARAdaptor
-        media
-        mediaExt
-        arMedia
-        videoQt
-        uiTools
-        uiIO
-        uiCalibration
-        videoCalibration
-        videoTools
-        trackerAruco
-        )
+    ctrlCamp
+
+    servicesReg
+    dataReg
+    arDataReg
+
+    gui
+
+    ioData
+
+    visuVTKQt
+    visuVTKAdaptor
+    visuVTKARAdaptor
+
+    arMedia
+    media
+
+    uiTools
+    uiIO
+    uiCalibration
+    uiPreferences
+
+    videoCalibration
+    videoQt
+    videoTools
+
+    trackerAruco
+
+    validators
+    
+    preferences
+)

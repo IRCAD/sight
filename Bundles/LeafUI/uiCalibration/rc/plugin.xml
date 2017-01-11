@@ -6,15 +6,15 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiCalibration::SCalibrationInfoEditor</service>
-        <object>::fwData::Composite</object>
+        <object>::fwData::Object</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiCalibration::SCameraInformationEditor</service>
         <object>::arData::Camera</object>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiCalibration::SCameraSeriesEditor</service>
@@ -44,7 +44,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
         <service>::uiCalibration::SDisplayCalibrationInfo</service>
-        <object>::fwData::Composite</object>
+        <object>::fwData::Object</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">

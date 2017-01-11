@@ -1,0 +1,546 @@
+<plugin id="EchoEd" version="@DASH_VERSION@" >
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="patchMedicalData" />
+    <requirement id="preferences" />
+    <requirement id="visuVTKQt" />
+
+    <xi:include xmlns:xi="http://www.w3.org/2003/XInclude" href="configurations/cameraView.xml"/>
+
+    <extension implements="::fwServices::registry::AppConfig2">
+        <id>EchoEdConfig</id>
+        <config>
+            <object uid="seriesDB" type="::fwMedData::SeriesDB" />
+            <object uid="modelSeries" type="::fwMedData::ModelSeries" src="deferred"/>
+
+            <service uid="loader" type="::ioAtoms::SReader">
+                <inout key="target" uid="seriesDB" />
+
+                <file>Data/Patient.jsonz</file>
+                <!-- <inject>ReadData</inject> -->
+                <uuidPolicy>Strict</uuidPolicy>
+                <patcher context="MedicalData" version="V09ALA" />
+
+                <archive backend="jsonz">
+                    <extension>.jsonz</extension>
+                </archive>
+
+                <extensions>
+                    <extension>.jsonz</extension>
+                </extensions>
+
+            </service>
+
+            <service uid="extractObject" type="::ctrlCamp::SExtractObj">
+                <inout key="source" uid="seriesDB">
+            <!--                    <extract from="@values.0" />-->
+                    <extract from="@values.1" />
+                </inout>
+                <out group="target">
+            <!--                    <key uid="images"/>-->
+                    <key uid="modelSeries"/>
+                </out>
+            </service>
+
+            <service uid="startView" type="::fwServices::SConfigController">
+                <inout key="modelSeries" uid="modelSeries" />
+                <appConfig id="EchoEdView" />
+                <parameters>
+                </parameters>
+            </service>
+
+            <start uid="loader" />
+            <start uid="extractObject" />
+
+            <!-- Deferred start -->
+            <start uid="startView" />
+
+            <update uid="loader" />
+            <update uid="extractObject" />
+        </config>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfig2">
+        <id>EchoEdView</id>
+        <parameters>
+            <param name="modelSeries" />
+        </parameters>
+        <config>
+
+            <object uid="echoImage" type="::fwData::Image" />
+            <object uid="echoCTImage" type="::fwData::Image" />
+
+            <object uid="${modelSeries}" type="::fwMedData::ModelSeries" src="ref"/>
+            <object uid="skin" type="::fwData::Mesh" src="deferred"/>
+            <object uid="liver" type="::fwData::Mesh" src="deferred"/>
+            <object uid="portalVein" type="::fwData::Mesh" src="deferred"/>
+            <object uid="venousSystem" type="::fwData::Mesh" src="deferred"/>
+            <object uid="bones" type="::fwData::Mesh" src="deferred"/>
+
+            <object uid="echoMesh" type="::fwData::Mesh" />
+            <object uid="probeMesh" type="::fwData::Mesh" />
+
+            <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
+            <object uid="trackedProbeMatrix" type="::fwData::TransformationMatrix3D" />
+            <object uid="probeMatrix" type="::fwData::TransformationMatrix3D" />
+            <object uid="echoMatrix" type="::fwData::TransformationMatrix3D" />
+
+            <object uid="cameraMatrix" type="::fwData::TransformationMatrix3D">
+                <matrix>
+                <![CDATA[
+                    1    0    0    0
+                    0    1    0    87.3204
+                    0    0    1    -214.624
+                    0    0    0    1
+                ]]>
+                </matrix>
+            </object>
+
+            <object uid="cameraOrganMatrix" type="::fwData::TransformationMatrix3D">
+                <matrix>
+                <![CDATA[
+                0.996695    0.0737316    0.0340895    162.031
+                -0.0635657    0.446656    0.892445    -379.151
+                0.0505751    -0.891663    0.449867    -33.1624
+                0           0            0            1
+                ]]>
+                </matrix>
+            </object>
+
+            <object uid="cameraOutsideMatrix" type="::fwData::TransformationMatrix3D">
+                <matrix>
+                <![CDATA[
+                    0.999999    0.000928135    0.00112939    246.58
+                    -0.00145735    0.572495    0.819907    -829.2
+                    0.000114414    -0.819907    0.572496    -466.204
+                    0            0            0            1
+                ]]>
+                </matrix>
+            </object>
+
+            <object uid="staticProbeMatrix" type="::fwData::TransformationMatrix3D">
+                <matrix>
+                <![CDATA[
+                    1   0   0   0
+                    0   1   0  -50
+                    0   0   1   0
+                    0   0   0   1
+                ]]>
+                </matrix>
+            </object>
+
+            <object uid="staticEchoMatrix" type="::fwData::TransformationMatrix3D">
+                <matrix>
+                <![CDATA[
+                    1   0   0   0
+                    0   1   0  -30
+                    0   0   1   0
+                    0   0   0   1
+                ]]>
+                </matrix>
+            </object>
+
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame">
+                <gui>
+                    <frame>
+                        <name>EchoEd</name>
+                        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/echoEd.ico</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="mainView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="mainView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view align="top" proportion="1"/>
+                        <view align="bottom" proportion="0" />
+                    </layout>
+                    <toolBar>
+                        <toolBitmapSize height="50" width="50" />
+                    </toolBar>
+                </gui>
+                <registry>
+                    <toolBar sid="toolBar" start="yes" />
+                    <view sid="windowView" start="yes"/>
+                    <view sid="editorView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="windowView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view align="left" proportion="4"/>
+                        <view align="right" proportion="3" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="imageView" start="yes"/>
+                    <view sid="sideView" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="editorView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view />
+                        <view />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="sliderCranioCaudal" start="yes"/>
+                    <view sid="sliderRadial" start="yes"/>
+                </registry>
+            </service>
+
+            <service uid="igtlClientEditor" type="::uiIGTL::SClientConfigEditor"/>
+
+            <service uid="sideView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="organView" start="no"/>
+                    <view sid="outsideView" start="no"/>
+                </registry>
+            </service>
+
+            <service uid="imageView" type="::gui::view::SDefaultView">
+                <gui>
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="echoView" start="yes"/>
+                    <view sid="scanView" start="yes"/>
+                </registry>
+            </service>
+
+            <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
+                <gui>
+                    <layout>
+                        <editor />
+
+                        <menuItem name="add scan view" icon="@BUNDLE_PREFIX@/media_0-1/icons/ManageOrgan.png" style="check"/>
+                        <separator/>
+                        <menuItem name="start listener" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/Network-Receiving.svg"/>
+                        <menuItem name="stop listener"  icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/Network-Stop-Receiving.svg"/>
+                        <menuItem name="configure listener" icon="@BUNDLE_PREFIX@/media_0-1/icons/Settings.svg" />
+                        <separator/>
+                        <menuItem name="Launch Camera" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="action_scanView" start="yes" />
+                    <menuItem sid="startClient" start="yes" />
+                    <menuItem sid="stopClient" start="yes" />
+                    <menuItem sid="configureClient" start="yes" />
+                    <menuItem sid="startCamera" start="yes" />
+                </registry>
+            </service>
+
+            <service uid="startCamera" type="::gui::action::SConfigLauncher">
+                <appConfig id="cameraView" />
+                <parameters>
+                </parameters>
+            </service>
+
+            <service uid="startClient" type="::gui::action::SStarter">
+                <start uid="matrixNetworkListener"/>
+            </service>
+
+            <service uid="stopClient" type="::gui::action::SStarter">
+                <stop uid="matrixNetworkListener"/>
+            </service>
+
+            <service uid="configureClient" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>igtlClientEditor/update</slot>
+                </slots>
+            </service>
+
+            <service uid="organView" type="::fwRenderVTK::SRender" autoConnect="yes">
+                <in key="echoImage" uid="echoImage" />
+                <in key="echoMatrix" uid="echoMatrix" />
+                <in key="liver" uid="liver" />
+                <in key="portalVein" uid="portalVein" />
+                <in key="venousSystem" uid="venousSystem" />
+                <in key="bones" uid="bones" />
+                <in key="echoMesh" uid="echoMesh" />
+                <in key="matrixOrgan" uid="cameraOrganMatrix" />
+
+                <scene autoRender="true">
+                    <renderer id="default" background="#b2dff4" />
+
+                    <adaptor id="TextureAdaptor" class="::visuVTKAdaptor::Texture" objectId="echoImage">
+                        <config renderer="default" picker="" autoresetcamera="no"/>
+                    </adaptor>
+
+                    <adaptor id="echoMatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="echoMatrix">
+                          <config renderer="default" picker="" transform="echoMatrixTransform" />
+                    </adaptor>
+
+                    <adaptor id="liverAdaptor" class="::visuVTKAdaptor::Mesh" objectId="liver">
+                          <config renderer="default" picker="" color="#f4382a60" autoresetcamera="no" />
+                    </adaptor>
+
+                    <adaptor id="portalVeinAdaptor" class="::visuVTKAdaptor::Mesh" objectId="portalVein">
+                         <config renderer="default" picker="" color="#f42a5f" autoresetcamera="no" />
+                    </adaptor>
+
+                    <adaptor id="venousSystemAdaptor" class="::visuVTKAdaptor::Mesh" objectId="venousSystem">
+                         <config renderer="default" picker="" color="#2a5af4" autoresetcamera="no" />
+                    </adaptor>
+
+                    <adaptor id="bonesAdaptor" class="::visuVTKAdaptor::Mesh" objectId="bones">
+                         <config renderer="default" picker="" color="#ffffff60" autoresetcamera="no" />
+                    </adaptor>
+
+                    <adaptor id="echoMesh" class="::visuVTKAdaptor::Mesh" objectId="echoMesh">
+                          <config renderer="default" picker="" transform="echoMatrixTransform" texture="TextureAdaptor" autoresetcamera="no"  />
+                    </adaptor>
+
+                    <adaptor id="camera" class="::visuVTKARAdaptor::SCamera" objectId="matrixOrgan">
+                        <config renderer="default" />
+                    </adaptor>
+
+                </scene>
+            </service>
+
+            <service uid="echoView" type="::fwRenderVTK::SRender" autoConnect="yes">
+
+                <in key="echoMesh" uid="echoMesh" />
+                <in key="echoImage" uid="echoImage" />
+                <in key="matrix" uid="cameraMatrix" />
+
+                <scene autoRender="true">
+                    <renderer id="default" background="0.0" />
+
+                    <adaptor id="echoMesh" class="::visuVTKAdaptor::Mesh" objectId="echoMesh">
+                        <config renderer="default" picker="" texture="TextureAdaptor" autoresetcamera="no" />
+                    </adaptor>
+
+                    <adaptor id="TextureAdaptor" class="::visuVTKAdaptor::Texture" objectId="echoImage">
+                        <config renderer="default" picker="" autoresetcamera="no"/>
+                    </adaptor>
+
+                    <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                        <config renderer="default" style="InteractorStyle2DForNegato" />
+                    </adaptor>
+
+                    <adaptor id="camera" class="::visuVTKARAdaptor::SCamera" objectId="matrix">
+                        <config renderer="default" />
+                    </adaptor>
+
+                </scene>
+            </service>
+
+            <service uid="scanView" type="::fwRenderVTK::SRender" autoConnect="yes">
+
+                <in key="echoMesh" uid="echoMesh" />
+                <in key="echoCTImage" uid="echoCTImage" />
+                <in key="matrix" uid="cameraMatrix" />
+
+                <scene autoRender="true">
+                    <renderer id="default" background="0.0" />
+
+                    <adaptor id="echoMesh" class="::visuVTKAdaptor::Mesh" objectId="echoMesh">
+                        <config renderer="default" picker="" texture="TextureAdaptor" filtering="linear" autoresetcamera="no"/>
+                    </adaptor>
+
+                    <adaptor id="TextureAdaptor" class="::visuVTKAdaptor::Texture" objectId="echoCTImage">
+                        <config renderer="default" picker="" />
+                    </adaptor>
+
+                    <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                        <config renderer="default" style="InteractorStyle2DForNegato" />
+                    </adaptor>
+
+                    <adaptor id="camera" class="::visuVTKARAdaptor::SCamera" objectId="matrix">
+                        <config renderer="default" />
+                    </adaptor>
+
+                </scene>
+            </service>
+
+            <service uid="outsideView" type="::fwRenderVTK::SRender" autoConnect="yes">
+
+                <in key="skin" uid="skin" />
+                <in key="probeMesh" uid="probeMesh" />
+                <in key="probeMatrix" uid="probeMatrix" />
+                <in key="matrixOutside" uid="cameraOutsideMatrix" />
+
+                <scene autoRender="true">
+                    <renderer id="default" background="#b2dff4" />
+
+                    <adaptor id="meshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="skin">
+                          <config renderer="default" picker="" color="#FFDEAD" autoresetcamera="no" />
+                     </adaptor>
+
+                     <adaptor id="probeMatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="probeMatrix">
+                        <config renderer="default" picker="" transform="probeMatrixTransform" />
+                     </adaptor>
+
+                     <adaptor id="probeMeshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="probeMesh">
+                         <config renderer="default" picker="" transform="probeMatrixTransform" autoresetcamera="no" />
+                     </adaptor>
+
+                     <adaptor id="camera" class="::visuVTKARAdaptor::SCamera" objectId="matrixOutside">
+                         <config renderer="default" />
+                     </adaptor>
+                </scene>
+
+            </service>
+
+            <service uid="extractOrgans" type="::ctrlCamp::SExtractMeshByType">
+                <inout key="source" uid="${modelSeries}">
+                    <extract type="Skin" />
+                    <extract type="Liver" />
+                    <extract type="PortalVein" />
+                    <extract type="VenousSystem" />
+                    <extract type="Bones" />
+                </inout>
+                <out group="target">
+                    <key uid="skin" />
+                    <key uid="liver" />
+                    <key uid="portalVein" />
+                    <key uid="venousSystem" />
+                    <key uid="bones" />
+                </out>
+            </service>
+
+            <service uid="sliderCranioCaudal" type="::guiQt::editor::SSlider">
+                <text>Craniocaudal</text>
+                <value>95</value>
+                <defaultValue>95</defaultValue>
+                <range>
+                    <min>95</min>
+                    <max>194</max>
+                </range>
+            </service>
+
+            <service uid="sliderRadial" type="::guiQt::editor::SSlider">
+                <text>Radial</text>
+                <value>160</value>
+                <defaultValue>160</defaultValue>
+                <range>
+                    <min>160</min>
+                    <max>259</max>
+                </range>
+            </service>
+
+            <service uid="imageManager" type="::echoEdSimu::SImageManager" >
+                <inout key="echoImage" uid="echoImage" />
+                <inout key="echoCTImage" uid="echoCTImage" />
+            </service>
+
+            <service uid="action_scanView" type="::gui::action::SModifyLayout">
+                <config>
+                    <show_or_hide sid="scanView" />
+                </config>
+            </service>
+
+            <service uid="matrixNetworkListener" type="::ioIGTL::SOpenIGTLinkListener">
+                <inout key="target" uid="identityMatrix" />
+                <server>172.20.10.5:4242</server>
+            </service>
+
+            <service uid="probePosition" type="::echoEdSimu::SProbePosition" >
+                <inout key="target" uid="identityMatrix" />
+            </service>
+
+            <service uid="concatenateProbeMatrices" type="::maths::SConcatenateMatrices" >
+                <in group="matrix">
+                    <key uid="trackedProbeMatrix" autoConnect="yes"/>
+                    <key uid="staticProbeMatrix"/>
+                </in>
+                <inout key="output" uid="probeMatrix" />
+            </service>
+
+            <service uid="concatenateEchoMatrices" type="::maths::SConcatenateMatrices" >
+                <in group="matrix">
+                    <key uid="trackedProbeMatrix" autoConnect="yes"/>
+                    <key uid="staticEchoMatrix"/>
+                </in>
+                <inout key="output" uid="echoMatrix" />
+            </service>
+
+            <service uid="computeMatrixFromCell" type="::echoEdSimu::SComputeMatrixFromCell" >
+                <in key="radialMesh" uid="skin" />
+                <inout key="matrix" uid="trackedProbeMatrix" />
+            </service>
+
+            <service uid="probeMeshReader" type="::ioVTK::SMeshReader" >
+                <inout key="target" uid="probeMesh" />
+                <file>Data/USProbe.vtk</file>
+            </service>
+
+            <service uid="probeMeshGenerator" type="::echoEdSimu::SProbeMesh" >
+                <in key="mesh" uid="echoMesh" />
+            </service>
+
+            <connect>
+                <signal>igtlClientEditor/configurationUpdated</signal>
+                <slot>matrixNetworkListener/updateConfiguration</slot>
+            </connect>
+
+            <connect>
+                <signal>sliderCranioCaudal/valueChanged</signal>
+                <slot>imageManager/updateCranioCaudal</slot>
+                <slot>computeMatrixFromCell/updateSingle</slot>
+            </connect>
+
+            <connect>
+                <signal>sliderRadial/valueChanged</signal>
+                <slot>imageManager/updateRadial</slot>
+                <slot>computeMatrixFromCell/updateSingle</slot>
+            </connect>
+
+            <connect>
+                <signal>probePosition/positionModified</signal>
+                <slot>imageManager/updateBoth</slot>
+                <slot>computeMatrixFromCell/updateBoth</slot>
+            </connect>
+
+            <connect>
+                <signal>identityMatrix/modified</signal>
+                <slot>probePosition/update</slot>
+            </connect>
+
+            <start uid="mainFrame" />
+            <start uid="probeMeshReader" />
+            <start uid="probeMeshGenerator" />
+            <start uid="extractOrgans" />
+            <start uid="imageManager" />
+            <start uid="concatenateProbeMatrices" />
+            <start uid="concatenateEchoMatrices" />
+            <start uid="igtlClientEditor" />
+            <start uid="probePosition" />
+
+            <!-- Deferred start -->
+            <start uid="computeMatrixFromCell" />
+            <start uid="organView" />
+            <start uid="outsideView" />
+
+            <update uid="probeMeshReader" />
+            <update uid="extractOrgans" />
+            <update uid="probeMeshGenerator" />
+            <update uid="action_scanView" />
+
+        </config>
+    </extension>
+</plugin>

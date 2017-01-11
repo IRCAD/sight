@@ -16,7 +16,7 @@
 #include <fwServices/IController.hpp>
 #include <fwThread/Timer.hpp>
 
-namespace extData
+namespace arData
 {
 class FrameTL;
 class MatrixTL;
@@ -32,7 +32,6 @@ namespace videoTools
 {
 /**
  * @brief   SMatrixTLSelector service synchronizes video frame and tracking matrixes.
- * @class   SMatrixTLSelector
  */
 class VIDEOTOOLS_CLASS_API SMatrixTLSelector : public ::arServices::ISynchronizer
 {
@@ -63,14 +62,14 @@ public:
 
         std::vector<std::string> m_timelineKeyVect;
         /// registers matrix timeline with its id in composite
-        std::map<std::string, SPTR(::extData::MatrixTL)> m_timelineObjectMap;
+        std::map<std::string, SPTR(::arData::MatrixTL)> m_timelineObjectMap;
     };
 
     typedef std::vector< MatrixCfgType > MatrixCfgVectorType;
 
     typedef std::map<std::string, std::string> FrameKeysType;
 
-    typedef std::map<std::string, SPTR(::extData::FrameTL)> FrameTLKeyType;
+    typedef std::map<std::string, SPTR(::arData::FrameTL)> FrameTLKeyType;
     typedef std::map<std::string, SPTR(::fwData::Image)> ImageKeyType;
 
 protected:

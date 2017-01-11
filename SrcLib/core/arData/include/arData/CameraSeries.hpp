@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -79,13 +79,13 @@ public:
     ARDATA_API void addCamera(const ::arData::Camera::sptr & camera);
 
     /// Returns the camera at the index.
-    ARDATA_API ::arData::Camera::sptr getCamera(size_t index);
+    ARDATA_API ::arData::Camera::sptr getCamera(size_t index) const;
 
     /// Remove the camera with the index
     ARDATA_API void removeCamera(const ::arData::Camera::sptr & camera);
 
     /// Returns the number of cameras
-    size_t getNumberOfCameras()
+    size_t getNumberOfCameras() const
     {
         return m_cameras.size();
     }
@@ -106,14 +106,14 @@ public:
      * @return Returns the extrinsic transformation matrix, or null if not defined.
      * @note By default, the first matrix (index=0) is initialized to identity, the other are nullptr.
      */
-    ARDATA_API ::fwData::TransformationMatrix3D::sptr getExtrinsicMatrix(size_t index);
+    ARDATA_API ::fwData::TransformationMatrix3D::sptr getExtrinsicMatrix(size_t index) const;
 
     /**
      * @brief Gets the extrinsic matrix corresponding to the transformation from camera[0] to camera[1].
      * @return Returns the extrinsic transformation matrix, or null if not defined.
      * @deprecated Use getExtrinsicMatrix(1) instead of this method
      */
-    ::fwData::TransformationMatrix3D::sptr getExtrinsicMatrix()
+    ::fwData::TransformationMatrix3D::sptr getExtrinsicMatrix() const
     {
         return this->getExtrinsicMatrix(1);
     }

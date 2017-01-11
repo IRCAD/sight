@@ -1,3 +1,0 @@
-fwLoadProperties()
-
-fwUseForwardInclude( fwServices )

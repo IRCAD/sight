@@ -9,17 +9,14 @@ set( DEPENDENCIES
     fwServices
     fwTools
     fwMath
-    fwComEd
     fwCom
     arData
-    extData
     fwMedData
-    
+
     tracker
 )
 set( REQUIREMENTS dataReg
                   servicesReg
-                  extDataReg
                   arDataReg
 )
 

@@ -3,17 +3,16 @@ set( NAME videoCalibration )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
 set( DEPENDENCIES
+    arData
+    ARLcore
+    fwCom
     fwCore
-    fwComEd
     fwData
+    fwDataTools
+    fwGui
     fwRuntime
     fwServices
     fwTools
-    arData
-    extData
-    ARLcore
-    fwCom
-    fwGui
+    fwPreferences
 )
 set( REQUIREMENTS dataReg servicesReg)
-

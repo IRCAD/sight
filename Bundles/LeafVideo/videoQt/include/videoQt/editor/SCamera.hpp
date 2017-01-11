@@ -24,7 +24,22 @@ namespace editor
 
 /**
  * @brief   This editor allows to select the device to use. It updates the data camera identifier.
- * @class   SCamera
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+    <service uid="..." type="::videoQt::editor::SCamera" autoConnect="no">
+        <inout key="camera" uid="..."/>
+        <videoSupport>yes</videoSupport>
+    </service>
+   @endcode
+ *
+ * @subsection In-Out In-Out
+ * - \b camera [::arData::Camera]: device used
+ *
+ * @subsection Configuration Configuration
+ * - \b videoSupport (optional, by default "no") : if we can open a video file in addition with cameras
+ *
  */
 class VIDEOQT_CLASS_API SCamera : public QObject,
                                   public ::gui::editor::IEditor

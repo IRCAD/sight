@@ -7,11 +7,13 @@
 #include "tracker/SHomography.hpp"
 
 #include <arData/Camera.hpp>
-#include <extData/FrameTL.hpp>
 #include <arData/MarkerTL.hpp>
-#include <extData/MatrixTL.hpp>
+
+#include <arData/FrameTL.hpp>
+#include <arData/MatrixTL.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
+
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 #include <fwCom/Signal.hpp>
@@ -25,7 +27,7 @@
 
 #include <limits>
 
-fwServicesRegisterMacro(::fwServices::IController, ::tracker::SHomography, ::fwData::Composite);
+fwServicesRegisterMacro(::fwServices::IController, ::tracker::SHomography, ::fwData::Object);
 
 
 //-----------------------------------------------------------------------------
@@ -37,6 +39,11 @@ namespace tracker
 
 const ::fwCom::Slots::SlotKeyType SHomography::s_REGISTER_SLOT = "register";
 
+const ::fwServices::IService::KeyType s_MARKERTL_INPUT  = "markerTL";
+const ::fwServices::IService::KeyType s_CAMERA_INPUT    = "camera";
+const ::fwServices::IService::KeyType s_EXTRINSIC_INPUT = "extrinsic";
+const ::fwServices::IService::KeyType s_MATRIXTL_INOUT  = "matrixTL";
+
 //-----------------------------------------------------------------------------
 
 SHomography::SHomography() throw () :
@@ -45,12 +52,7 @@ SHomography::SHomography() throw () :
     m_isInitialized(false),
     m_planeSystem(NULL)
 {
-    m_slotRegister = ::fwCom::newSlot(&SHomography::doRegistration, this);
-    ::fwCom::HasSlots::m_slots(s_REGISTER_SLOT, m_slotRegister);
-
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
-
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
+    newSlot(s_REGISTER_SLOT, &SHomography::doRegistration, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -64,47 +66,9 @@ SHomography::~SHomography() throw ()
 void SHomography::configuring() throw (::fwTools::Failed)
 {
     typedef ::fwRuntime::ConfigurationElementContainer::Container CfgContainer;
-    ::fwRuntime::ConfigurationElement::sptr cfg = m_configuration->findConfigurationElement("config");
-    SLM_ASSERT("Tag 'config' not found.", cfg);
-
-    {
-        ::fwRuntime::ConfigurationElement::sptr cfgMarkerTL = cfg->findConfigurationElement("markerTL");
-        SLM_ASSERT("Tag 'markerTL' not found.", cfgMarkerTL);
-        for(const CfgContainer::value_type& elt : cfgMarkerTL->getElements())
-        {
-            m_markerTLKeys.push_back(elt->getValue());
-        }
-    }
-
-    {
-        ::fwRuntime::ConfigurationElement::sptr cfgCamera = cfg->findConfigurationElement("camera");
-        SLM_ASSERT("Tag 'camera' not found.", cfgCamera);
-        for(const CfgContainer::value_type& elt : cfgCamera->getElements())
-        {
-            m_cameraKeys.push_back(elt->getValue());
-        }
-    }
-
-    SLM_ASSERT("Not same number of markers and cameras", !m_markerTLKeys.empty() &&
-               m_markerTLKeys.size() == m_cameraKeys.size());
-
-    ::fwRuntime::ConfigurationElement::sptr cfgExtrinsic = cfg->findConfigurationElement("extrinsic");
-    SLM_ASSERT("Tag 'extrinsic' not found.",
-               (!cfgExtrinsic && m_cameraKeys.size() == 1) || (cfgExtrinsic && m_cameraKeys.size() > 1));
-    if (cfgExtrinsic)
-    {
-        m_extrinsicKey = cfgExtrinsic->getValue();
-    }
-
-    // gets matrix timeline
-    {
-        ::fwRuntime::ConfigurationElement::sptr cfgMatrixTL = cfg->findConfigurationElement("matrixTL");
-        SLM_ASSERT("Tag 'matrixTL' not found.", cfgMatrixTL);
-        m_matrixKey = cfgMatrixTL->getValue();
-    }
 
     // gets pattern width
-    ::fwRuntime::ConfigurationElement::sptr cfgPatternWidth = cfg->findConfigurationElement("patternWidth");
+    ::fwRuntime::ConfigurationElement::sptr cfgPatternWidth = m_configuration->findConfigurationElement("patternWidth");
     if (cfgPatternWidth)
     {
         m_patternWidth = ::boost::lexical_cast< double >(cfgPatternWidth->getValue());
@@ -116,7 +80,6 @@ void SHomography::configuring() throw (::fwTools::Failed)
 void SHomography::starting() throw (::fwTools::Failed)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
-    ::fwData::Composite::sptr comp = this->getObject< ::fwData::Composite >();
 
     //3D Points
     const double halfWidth = m_patternWidth * .5;
@@ -125,16 +88,6 @@ void SHomography::starting() throw (::fwTools::Failed)
     m_3dModel.push_back(::arlCore::Point::PointFactory(halfWidth, halfWidth, 0));
     m_3dModel.push_back(::arlCore::Point::PointFactory(halfWidth, -halfWidth, 0));
     m_3dModel.push_back(::arlCore::Point::PointFactory(-halfWidth, -halfWidth, 0));
-
-
-    //Connections
-    for(const VectKeyType::value_type& elt : m_markerTLKeys)
-    {
-        ::arData::MarkerTL::sptr timeline = comp->at< ::arData::MarkerTL >(elt);
-        m_connections->connect(timeline, ::extData::TimeLine::s_OBJECT_PUSHED_SIG, this->getSptr(),
-                               ::tracker::SHomography::s_REGISTER_SLOT);
-    }
-
 }
 
 //-----------------------------------------------------------------------------
@@ -150,7 +103,7 @@ void SHomography::stopping() throw (::fwTools::Failed)
     delete m_planeSystem;
     m_arlCameras.clear();
     m_3dModel.clear();
-    m_connections->disconnect();
+    m_connections.disconnect();
     m_lastTimestamp = 0;
     m_isInitialized = false;
 }
@@ -178,13 +131,11 @@ void SHomography::doRegistration(::fwCore::HiResClock::HiResClockType timestamp)
     {
         if (timestamp > m_lastTimestamp)
         {
-            ::fwData::Composite::sptr comp = this->getObject< ::fwData::Composite >();
-
             ::fwCore::HiResClock::HiResClockType newerTimestamp =
                 std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
-            for(const VectKeyType::value_type& elt : m_markerTLKeys)
+            for(size_t i = 0; i < this->getKeyGroupSize(s_MARKERTL_INPUT); ++i)
             {
-                ::arData::MarkerTL::sptr markerTL              = comp->at< ::arData::MarkerTL >(elt);
+                auto markerTL = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, i);
                 ::fwCore::HiResClock::HiResClockType timestamp = markerTL->getNewerTimestamp();
                 if(timestamp == 0)
                 {
@@ -198,15 +149,14 @@ void SHomography::doRegistration(::fwCore::HiResClock::HiResClockType timestamp)
 
             // We consider that all timeline have the same number of elements
             // This is WRONG if we have more than two cameras
-            ::arData::MarkerTL::sptr markerTL = comp->at< ::arData::MarkerTL >(
-                m_markerTLKeys[0]);
+            auto markerTL = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, 0);
             const CSPTR(::arData::MarkerTL::BufferType) buffer = markerTL->getClosestBuffer(newerTimestamp);
             const unsigned int numMarkers = buffer->getMaxElementNum();
 
-            ::extData::MatrixTL::sptr matrixTL = comp->at< ::extData::MatrixTL >(m_matrixKey);
+            ::arData::MatrixTL::sptr matrixTL = this->getInOut< ::arData::MatrixTL >(s_MATRIXTL_INOUT);
 
             // Push matrix in timeline
-            SPTR(::extData::MatrixTL::BufferType) matrixBuf;
+            SPTR(::arData::MatrixTL::BufferType) matrixBuf;
 
             // For each marker
             bool matrixBufferCreated = false;
@@ -217,9 +167,9 @@ void SHomography::doRegistration(::fwCore::HiResClock::HiResClockType timestamp)
                 size_t indexTL = 0;
 
                 // For each camera timeline
-                for(const VectKeyType::value_type& elt : m_markerTLKeys)
+                for(size_t i = 0; i< this->getKeyGroupSize(s_MARKERTL_INPUT); ++i)
                 {
-                    ::arData::MarkerTL::sptr markerTL                  = comp->at< ::arData::MarkerTL >(elt);
+                    auto markerTL = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, i);
                     const CSPTR(::arData::MarkerTL::BufferType) buffer = markerTL->getClosestBuffer(newerTimestamp);
 
                     if(buffer->isPresent(markerIndex))
@@ -279,9 +229,9 @@ void SHomography::doRegistration(::fwCore::HiResClock::HiResClockType timestamp)
             if(matrixBufferCreated)
             {
                 //Notify
-                ::extData::TimeLine::ObjectPushedSignalType::sptr sig;
-                sig = matrixTL->signal< ::extData::TimeLine::ObjectPushedSignalType >(
-                    ::extData::TimeLine::s_OBJECT_PUSHED_SIG );
+                ::arData::TimeLine::ObjectPushedSignalType::sptr sig;
+                sig = matrixTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(
+                    ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
                 sig->asyncEmit(timestamp);
 
             }
@@ -295,21 +245,19 @@ void SHomography::initialize()
 {
     // Initialization of timelines
 
-    ::fwData::Composite::sptr comp = this->getObject< ::fwData::Composite >();
-
-    ::arData::MarkerTL::sptr firstTimeline = comp->at< ::arData::MarkerTL >(m_markerTLKeys[0]);
+    ::arData::MarkerTL::csptr firstTimeline = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, 0);
 
     const unsigned int maxElementNum = firstTimeline->getMaxElementNum();
 
-    for(const VectKeyType::value_type& elt : m_markerTLKeys)
+    for(size_t i = 0; i < this->getKeyGroupSize(s_MARKERTL_INPUT); ++i)
     {
-        ::arData::MarkerTL::sptr timeline = comp->at< ::arData::MarkerTL >(elt);
+        ::arData::MarkerTL::csptr timeline = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, 0);
 
         SLM_ASSERT("Timelines should have the same maximum number of elements",
                    maxElementNum == timeline->getMaxElementNum());
     }
 
-    ::extData::MatrixTL::sptr matrixTL = comp->at< ::extData::MatrixTL >(m_matrixKey);
+    ::arData::MatrixTL::sptr matrixTL = this->getInOut< ::arData::MatrixTL >(s_MATRIXTL_INOUT);
     // initialized matrix timeline
     matrixTL->initPoolSize(maxElementNum);
 
@@ -319,11 +267,11 @@ void SHomography::initialize()
 
     unsigned int count = 0;
 
-    for(const VectKeyType::value_type& camKey : m_cameraKeys)
+    for(size_t idx = 0; idx < this->getKeyGroupSize(s_CAMERA_INPUT); ++idx)
     {
         ++count;
-        ::arData::Camera::sptr camera = comp->at< ::arData::Camera >(camKey);
-        OSLM_FATAL_IF("Camera with key '" << camKey << "' not found", !camera);
+        ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT, idx);
+        OSLM_FATAL_IF("Camera[" << idx << "] not found", !camera);
 
         ::arlCore::Camera* arlCamera = new ::arlCore::Camera(*m_planeSystem);
 
@@ -345,10 +293,9 @@ void SHomography::initialize()
         // set extrinsic matrix only for camera 2
         if (count == 2)
         {
-            ::fwData::TransformationMatrix3D::sptr extrinsicMatrix =
-                comp->at< ::fwData::TransformationMatrix3D >(m_extrinsicKey);
+            auto extrinsicMatrix = this->getInput< ::fwData::TransformationMatrix3D >(s_EXTRINSIC_INPUT);
 
-            OSLM_FATAL_IF("Extrinsic matrix with key '" << m_extrinsicKey << "' not found", !extrinsicMatrix);
+            SLM_FATAL_IF("Extrinsic matrix with key '" + s_EXTRINSIC_INPUT + "' not found", !extrinsicMatrix);
 
             for (unsigned int i = 0; i < 4; ++i)
             {
@@ -362,6 +309,17 @@ void SHomography::initialize()
         m_arlCameras.push_back(arlCamera);
     }
     m_isInitialized = true;
+}
+
+//-----------------------------------------------------------------------------
+
+::fwServices::IService::KeyConnectionsMap SHomography::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+
+    connections.push( "markerTL", ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_REGISTER_SLOT );
+
+    return connections;
 }
 
 //-----------------------------------------------------------------------------

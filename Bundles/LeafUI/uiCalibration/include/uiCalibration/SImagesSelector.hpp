@@ -9,7 +9,7 @@
 
 #include "uiCalibration/config.hpp"
 
-#include <extData/FrameTL.hpp>
+#include <arData/FrameTL.hpp>
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
@@ -27,8 +27,25 @@ namespace uiCalibration
 {
 
 /**
- * @brief   This editor allows to add images into the vector from an ::extData::FrameTL.
- * @class   SImagesSelector
+ * @brief   This editor allows to add images into a ::fwData::Vector from an ::arData::FrameTL.
+ *
+ * @section Slots Slots
+ * - \b add(::fwCore::HiResClock::HiResClockType): .
+ * - \b remove(): .
+ * - \b reset(): .
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service uid="SImagesSelectorInstance" type="::uiCalibration::SImagesSelector">
+            <in key="frameTL" uid="..." />
+            <inout key="selection" uid="..." />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b frameTL [::arData::FrameTL]: frame timeline used to extract images.
+ * @subsection In-Out In-Out:
+ * - \b key2 [::fwData::Vector]: vector containing extracted images.
  */
 class UICALIBRATION_CLASS_API SImagesSelector : public QObject,
                                                 public ::gui::editor::IEditor
@@ -49,34 +66,25 @@ public:
      * @name Slots API
      * @{
      */
+    UICALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_ADD_SLOT;
+    typedef ::fwCom::Slot<void (::fwCore::HiResClock::HiResClockType)> AddSlotType;
+
     UICALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_SLOT;
     typedef ::fwCom::Slot<void ()> RemoveSlotType;
 
     UICALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_RESET_SLOT;
     typedef ::fwCom::Slot<void ()> ResetSlotType;
-
-    UICALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_ADD_SLOT;
-    typedef ::fwCom::Slot<void (::fwCore::HiResClock::HiResClockType)> AddSlotType;
-
     ///@}
 
 protected:
 
-    /**
-     * @brief method description:
-     * @code{.xml}
-        <service uid="SImagesSelectorInstance" impl="::uiCalibration::SImagesSelector" type="::gui::editor::IEditor">
-             <frameTLUid>frameTL</frameTLUid>
-        </service>
-       @endcode
-     * - \b frameTLUid : uid of the frame timeline used to extract images
-     */
+    /// Configure the editor.
     UICALIBRATION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
-    /// FILL ME.
+    /// Initialize the widgets.
     UICALIBRATION_API virtual void starting()  throw ( ::fwTools::Failed );
 
-    /// FILL ME.
+    /// destroy the widgets.
     UICALIBRATION_API virtual void stopping()  throw ( ::fwTools::Failed );
 
     /// FILL ME.
@@ -84,28 +92,19 @@ protected:
 
 protected:
 
-    /**
-     * @brief Slot called when the user presses the remove acquisition button.
-     */
+    /// Slot: called when the user presses the remove acquisition button.
     UICALIBRATION_API void remove();
 
-    /**
-     * @brief Slot called when the user presses the reset button.
-     */
+    /// Slot: called when the user presses the reset button.
     UICALIBRATION_API void reset();
 
-    /**
-     * @brief Slot to add an image in the vector.
-     */
+    /// Slot: to add an image in the vector.
     UICALIBRATION_API void add(::fwCore::HiResClock::HiResClockType timestamp);
 
 private:
 
-    /// Frame timeline Uid
-    std::string m_frameTLUid;
-
     /// Frame timeline used to extract images
-    ::extData::FrameTL::sptr m_frameTL;
+    ::arData::FrameTL::csptr m_frameTL;
 
     /// Index of the last acquisition.
     int m_captureIdx;
@@ -115,10 +114,6 @@ private:
 
     /// Calibration point list.
     QPointer< QListWidget > m_capturesListWidget;
-
-    RemoveSlotType::sptr m_slotRemove;
-    ResetSlotType::sptr m_slotReset;
-    AddSlotType::sptr m_slotAdd;
 
 };
 

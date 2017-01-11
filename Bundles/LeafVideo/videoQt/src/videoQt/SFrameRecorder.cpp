@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,24 +7,25 @@
 #include "videoQt/SFrameRecorder.hpp"
 
 #include <fwCom/Slots.hxx>
-#include <fwComEd/helper/Vector.hpp>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Point.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/IController.hpp>
+#include <fwDataTools/helper/Vector.hpp>
 
-#include <boost/filesystem.hpp>
+#include <fwServices/IController.hpp>
+#include <fwServices/macros.hpp>
 
 #include <QImage>
 #include <QString>
 
+#include <boost/filesystem.hpp>
+
 namespace videoQt
 {
 
-fwServicesRegisterMacro( ::fwServices::IController, ::videoQt::SFrameRecorder, ::extData::FrameTL);
+fwServicesRegisterMacro( ::fwServices::IController, ::videoQt::SFrameRecorder, ::arData::FrameTL);
 
 //-----------------------------------------------------------------------------
 
@@ -32,6 +33,10 @@ const ::fwCom::Slots::SlotKeyType SFrameRecorder::s_SAVE_FRAME_SLOT   = "saveFra
 const ::fwCom::Slots::SlotKeyType SFrameRecorder::s_START_RECORD_SLOT = "startRecord";
 const ::fwCom::Slots::SlotKeyType SFrameRecorder::s_STOP_RECORD_SLOT  = "stopRecord";
 const ::fwCom::Slots::SlotKeyType SFrameRecorder::s_PAUSE_RECORD_SLOT = "pauseRecord";
+
+static const ::fwServices::IService::KeyType s_FRAMETL_INPUT = "frameTL";
+
+//-----------------------------------------------------------------------------
 
 SFrameRecorder::SFrameRecorder() throw() : m_count(0),
                                            m_isRecording(false),
@@ -63,7 +68,6 @@ SFrameRecorder::~SFrameRecorder() throw()
 void SFrameRecorder::starting() throw(::fwTools::Failed)
 {
     ::boost::filesystem::create_directories(m_path);
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
 }
 
 //-----------------------------------------------------------------------------
@@ -94,9 +98,9 @@ void SFrameRecorder::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
 {
     if (m_isRecording && !m_isPaused)
     {
-        ::extData::FrameTL::sptr frameTL = this->getObject< ::extData::FrameTL >();
+        ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(s_FRAMETL_INPUT);
 
-        CSPTR(::extData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
+        CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
         OSLM_WARN_IF("No frame found in timeline for timestamp : " << timestamp, !buffer);
 
         if(buffer)
@@ -105,9 +109,9 @@ void SFrameRecorder::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
             int height = static_cast<int>(frameTL->getHeight());
             QImage image(width, height, QImage::Format_ARGB32);
 
-            ::boost::uint64_t* imageBuffer = reinterpret_cast< ::boost::uint64_t *>( image.bits() );
+            ::boost::uint64_t* imageBuffer = reinterpret_cast< ::boost::uint64_t*>( image.bits() );
             const ::boost::uint64_t* frameBuffer =
-                reinterpret_cast< const ::boost::uint64_t *>( &buffer->getElement(0) );
+                reinterpret_cast< const ::boost::uint64_t*>( &buffer->getElement(0) );
 
             const unsigned int size = static_cast<unsigned int>(width * height) >> 1;
 
@@ -131,20 +135,19 @@ void SFrameRecorder::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
 
 //------------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsType SFrameRecorder::getObjSrvConnections() const
-{
-    ::fwServices::IService::KeyConnectionsType connections;
-    connections.push_back( std::make_pair( ::extData::FrameTL::s_OBJECT_PUSHED_SIG, s_SAVE_FRAME_SLOT ) );
-
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
 void SFrameRecorder::startRecord()
 {
-    m_connections->disconnect();
-    m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+    ::arData::FrameTL::csptr frameTL = this->getInput< ::arData::FrameTL >(s_FRAMETL_INPUT);
+
+    if (frameTL->getType() != ::fwTools::Type::s_UINT8 || frameTL->getNumberOfComponents() != 4)
+    {
+        SLM_ERROR("Frame type not managed. Only image with type 'uint8' with 4 components are managed.");
+        return;
+    }
+
+    m_connections.disconnect();
+    m_connections.connect(frameTL, ::arData::FrameTL::s_OBJECT_PUSHED_SIG,
+                          this->getSptr(), s_SAVE_FRAME_SLOT);
     m_isRecording = true;
     m_isPaused    = false;
 }
@@ -153,7 +156,7 @@ void SFrameRecorder::startRecord()
 
 void SFrameRecorder::stopRecord()
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
     m_isRecording = false;
 }
 //------------------------------------------------------------------------------
@@ -162,12 +165,15 @@ void SFrameRecorder::pauseRecord()
 {
     if (m_isRecording && !m_isPaused)
     {
-        m_connections->disconnect();
+        m_connections.disconnect();
         m_isPaused = true;
     }
     else if (m_isRecording && m_isPaused)
     {
-        m_connections->connect(this->getObject(), this->getSptr(), this->getObjSrvConnections());
+        m_connections.connect(this->getInput< ::arData::FrameTL >(s_FRAMETL_INPUT),
+                              ::arData::FrameTL::s_OBJECT_PUSHED_SIG,
+                              this->getSptr(), s_SAVE_FRAME_SLOT);
+
         m_isPaused = false;
     }
 }

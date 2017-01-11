@@ -10,11 +10,12 @@
 #include "maths/config.hpp"
 
 #include <fwCom/Slot.hpp>
+#include <fwCom/helper/SigSlotConnection.hpp>
+
 #include <fwCore/base.hpp>
 
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwServices/helper/SigSlotConnection.hpp>
 #include <fwServices/IController.hpp>
 
 
@@ -24,10 +25,27 @@ namespace maths
 /**
  * @brief   This service switch between several matrices.
  *
- * Each time the slot s_SWITCH_SLOT is called the next matrix given in the configuration is copied on the matrix bound
- * to the service. Is is also possible to give the index of the matrix to use with the slot s_SWITCH_TO_SLOT.
+ * @section Slots Slots
+ * - \b switchMatrix() : Each time the slot switchMatrix() is called the next matrix given in the configuration is copied on the matrix bound
+ * to the service
+ * - \b switchToMatrix(int index) : switch to the matrix at the given index
  *
- * @class   SSwitchMatrices
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service uid="..." type="::maths::SSwitchMatrices" autoConnect="yes">
+            <in group="matrix">
+                <key uid="..." />
+                <key uid="..." />
+            </in>
+            <inout key="output" uid="..." />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b matrix [::fwData::TransformationMatrix3D]: List of two matrices keys to switch.
+ * @subsection In-Out In-Out:
+ * - \b output [::fwData::TransformationMatrix3D]: Output matrix.
+ *
  */
 class MATHS_CLASS_API SSwitchMatrices : public ::fwServices::IController
 {
@@ -55,16 +73,8 @@ public:
     typedef ::fwCom::Slot<void (size_t)> SwitchToSlotType;
 
 protected:
-    /**
-     * @brief This method is used to configure the service.
-     *
-     * @code{.xml}
-       <service impl="::maths::SSwitchMatrices" type="::fwServices::IController">
-           <matrix>matrix1Uid</matrix>
-           <matrix>matrix2Uid</matrix>
-       </service>
-       @endcode
-     */
+
+    /// This method is used to configure the service.
     MATHS_API void configuring() throw (fwTools::Failed);
 
     /// This method is used to initialize the service.
@@ -90,19 +100,7 @@ protected:
 
 private:
 
-    struct TransformMatrix
-    {
-        ::fwData::TransformationMatrix3D::sptr m_matrix;
-        std::string m_uid;
-    };
-
-    typedef std::vector< TransformMatrix > MatrixVectorType;
-
-    MatrixVectorType m_matrixVector; ///< The vector of TransformMatrix struct
-
     size_t m_indexOfDesiredMatrix;
-
-    ::fwServices::helper::SigSlotConnection::sptr m_connections; ///< connection to matrices
 };
 
 } //namespace maths

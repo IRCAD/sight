@@ -6,26 +6,29 @@
 
 #include "videoQt/editor/SCamera.hpp"
 
+#include "videoQt/editor/CameraDeviceDlg.hpp"
+
 #include <arData/Camera.hpp>
-#include <arUtils/preferences.hpp>
+
+#include <arPreferences/preferences.hpp>
 
 #include <fwCom/Signal.hxx>
 
 #include <fwData/Object.hpp>
-#include <fwData/location/SingleFile.hpp>
 #include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwGui/dialog/InputDialog.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGuiQt/container/QtContainer.hpp>
-#include <fwGui/dialog/InputDialog.hpp>
+#include <fwServices/macros.hpp>
 
-#include <fwServices/Base.hpp>
 #include <fwTools/pathDifference.hpp>
-
-#include "videoQt/editor/CameraDeviceDlg.hpp"
 
 #include <QByteArray>
 #include <QCamera>
@@ -141,10 +144,18 @@ void SCamera::onApply(int index)
 
 void SCamera::onChooseFile()
 {
-    ::arData::Camera::sptr camera = this->getObject< ::arData::Camera >();
+    ::arData::Camera::sptr camera;
+    if (this->isVersion2())
+    {
+        camera = this->getInOut< ::arData::Camera >("camera");
+    }
+    else
+    {
+        camera = this->getObject< ::arData::Camera >();
+    }
 
     // Check preferences
-    std::string videoDir = ::arUtils::getVideoDir();
+    const ::boost::filesystem::path videoDirPreferencePath(::arPreferences::getVideoDir());
 
     static ::boost::filesystem::path _sDefaultPath;
 
@@ -155,6 +166,7 @@ void SCamera::onChooseFile()
     dialogFile.addFilter("avi","*.avi");
     dialogFile.addFilter("m4v","*.m4v");
     dialogFile.addFilter("mkv","*.mkv");
+    dialogFile.addFilter("All files","*.*");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
@@ -166,9 +178,25 @@ void SCamera::onChooseFile()
         _sDefaultPath = result->getPath().parent_path();
         dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
         videoPath = result->getPath();
-        ::boost::filesystem::path videoDirPath(videoDir);
-        videoPath = ::fwTools::getPathDifference(videoDirPath, videoPath);
+        if(::boost::filesystem::is_directory(videoDirPreferencePath))
+        {
+            ::boost::filesystem::path videoRelativePath;
+            videoRelativePath = ::fwTools::getPathDifference(videoDirPreferencePath, videoPath);
 
+            ::boost::filesystem::path concatenatedPath = videoDirPreferencePath / videoRelativePath;
+            if(::boost::filesystem::exists(concatenatedPath))
+            {
+                videoPath = videoRelativePath;
+            }
+            else
+            {
+                SLM_WARN("Relative path '"+videoRelativePath.string()+"' genrerated with preference is not valid.");
+            }
+        }
+        else
+        {
+            SLM_WARN("Video directory '"+videoDirPreferencePath.string()+"' stored in preference is not valid.");
+        }
         camera->setCameraSource(::arData::Camera::FILE);
         camera->setVideoFile(videoPath.string());
 
@@ -182,7 +210,15 @@ void SCamera::onChooseFile()
 
 void SCamera::onChooseStream()
 {
-    ::arData::Camera::sptr camera = this->getObject< ::arData::Camera >();
+    ::arData::Camera::sptr camera;
+    if (this->isVersion2())
+    {
+        camera = this->getInOut< ::arData::Camera >("camera");
+    }
+    else
+    {
+        camera = this->getObject< ::arData::Camera >();
+    }
 
     ::fwGui::dialog::InputDialog inputDialog;
     std::string streamSource;
@@ -207,7 +243,15 @@ void SCamera::onChooseDevice()
     ::videoQt::editor::CameraDeviceDlg camDialog;
     camDialog.exec();
 
-    ::arData::Camera::sptr camera = this->getObject< ::arData::Camera >();
+    ::arData::Camera::sptr camera;
+    if (this->isVersion2())
+    {
+        camera = this->getInOut< ::arData::Camera >("camera");
+    }
+    else
+    {
+        camera = this->getObject< ::arData::Camera >();
+    }
     bool isSelected = camDialog.getSelectedCamera(camera);
     if(isSelected)
     {

@@ -12,7 +12,7 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 #include <QComboBox>
 
 #include <QVBoxLayout>
@@ -50,7 +50,7 @@ void SOpticalCenterEditor::starting() throw(::fwTools::Failed)
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
-    ::arData::Camera::sptr camera = this->getObject< ::arData::Camera >();
+    ::arData::Camera::sptr camera = this->getInOut< ::arData::Camera >("camera");
     OSLM_ASSERT("Camera " << this->getID() << " must be calibrated.", camera->getIsCalibrated());
 
     QWidget* const container = qtContainer->getQtContainer();

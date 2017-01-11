@@ -1,18 +1,4 @@
 fwLoadProperties()
-fwUseForwardInclude(
-        fwComEd
-        fwCore
-        extData
-        fwData
-        fwGui
-        fwGuiQt
-        fwCom
-        fwRuntime 
-        fwServices 
-        fwTools 
-        arData
-        gui 
-)
 
 find_package(Qt5 COMPONENTS Core Multimedia MultimediaWidgets REQUIRED)
 

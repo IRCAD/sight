@@ -1,34 +1,35 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "videoCalibration/SOpenCVExtrinsic.hpp"
 
+#include <arData/CalibrationInfo.hpp>
+#include <arData/Camera.hpp>
+#include <arData/CameraSeries.hpp>
+
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwTools/fwID.hpp>
-#include <fwTools/Object.hpp>
+#include <fwData/PointList.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+
+#include <fwPreferences/helper.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/IService.hpp>
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
-#include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
+#include <fwTools/Object.hpp>
+#include <fwTools/fwID.hpp>
 
-#include <arData/CameraSeries.hpp>
-#include <arData/Camera.hpp>
-#include <arData/CalibrationInfo.hpp>
-
-#include <opencv2/core.hpp>
 #include <opencv2/calib3d.hpp>
+#include <opencv2/core.hpp>
 
 fwServicesRegisterMacro(::videoCalibration::ICalibration, ::videoCalibration::SOpenCVExtrinsic, ::arData::CameraSeries);
 
@@ -39,38 +40,24 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "update
 
 // ----------------------------------------------------------------------------
 
-SOpenCVExtrinsic::SOpenCVExtrinsic() throw () : m_width(0),
-                                                m_height(0),
+SOpenCVExtrinsic::SOpenCVExtrinsic() throw () : m_width(11),
+                                                m_height(8),
                                                 m_squareSize(20.0),
                                                 m_camIndex(1)
 {
-
-    m_slotUpdateChessboardSize = newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SOpenCVExtrinsic::updateChessboardSize, this);
+    newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SOpenCVExtrinsic::updateChessboardSize, this);
 }
 
 // ----------------------------------------------------------------------------
 
 SOpenCVExtrinsic::~SOpenCVExtrinsic() throw ()
 {
-
 }
 
 //------------------------------------------------------------------------------
 
 void SOpenCVExtrinsic::configuring() throw (fwTools::Failed)
 {
-    ::fwRuntime::ConfigurationElement::sptr cfg1 = m_configuration->findConfigurationElement("calibrationInfo1ID");
-    SLM_ASSERT("Tag 'calibrationInfo1ID' not found.", cfg1);
-
-    m_calibrationInfo1ID = cfg1->getValue();
-    SLM_ASSERT("'calibrationInfo1ID' is empty.", !m_calibrationInfo1ID.empty());
-
-    ::fwRuntime::ConfigurationElement::sptr cfg2 = m_configuration->findConfigurationElement("calibrationInfo2ID");
-    SLM_ASSERT("Tag 'calibrationInfo2ID' not found.", cfg2);
-
-    m_calibrationInfo2ID = cfg2->getValue();
-    SLM_ASSERT("'calibrationInfo2ID' is empty.", !m_calibrationInfo2ID.empty());
-
     ::fwRuntime::ConfigurationElement::sptr cfgIdx = m_configuration->findConfigurationElement("camIndex");
     if(cfgIdx)
     {
@@ -83,20 +70,17 @@ void SOpenCVExtrinsic::configuring() throw (fwTools::Failed)
     SLM_ASSERT("Tag 'board' not found.", cfgBoard);
 
     SLM_ASSERT("Attribute 'width' is missing.", cfgBoard->hasAttribute("width"));
-    std::string width = cfgBoard->getAttributeValue("width");
-    SLM_ASSERT("Attribute 'width' is empty", !width.empty());
-    m_width = ::boost::lexical_cast< unsigned int> (width);
+    m_widthKey = cfgBoard->getAttributeValue("width");
+    SLM_ASSERT("Attribute 'width' is empty", !m_widthKey.empty());
 
     SLM_ASSERT("Attribute 'height' is missing.", cfgBoard->hasAttribute("height"));
-    std::string height = cfgBoard->getAttributeValue("height");
-    SLM_ASSERT("Attribute 'height' is empty", !height.empty());
-    m_height = ::boost::lexical_cast< unsigned int> (height);
+    m_heightKey = cfgBoard->getAttributeValue("height");
+    SLM_ASSERT("Attribute 'height' is empty", !m_heightKey.empty());
 
     if( cfgBoard->hasAttribute("squareSize"))
     {
-        std::string squareSize = cfgBoard->getAttributeValue("squareSize");
-        SLM_ASSERT("Attribute 'squareSize' is empty", !squareSize.empty());
-        m_squareSize = std::stof(squareSize);
+        m_squareSizeKey = cfgBoard->getAttributeValue("squareSize");
+        SLM_ASSERT("Attribute 'squareSize' is empty", !m_squareSizeKey.empty());
     }
 }
 
@@ -104,6 +88,7 @@ void SOpenCVExtrinsic::configuring() throw (fwTools::Failed)
 
 void SOpenCVExtrinsic::starting() throw (fwTools::Failed)
 {
+    this->updateChessboardSize();
 }
 
 // ----------------------------------------------------------------------------
@@ -124,18 +109,16 @@ void SOpenCVExtrinsic::swapping() throw (fwTools::Failed)
 
 void SOpenCVExtrinsic::updating() throw (fwTools::Failed)
 {
-    ::arData::CameraSeries::sptr camSeries = this->getObject< ::arData::CameraSeries >();
-
-    ::fwTools::Object::sptr obj1             = ::fwTools::fwID::getObject(m_calibrationInfo1ID);
-    ::arData::CalibrationInfo::sptr calInfo1 = ::arData::CalibrationInfo::dynamicCast(obj1);
-    SLM_ASSERT("Object with id '" + m_calibrationInfo1ID + "' is not an 'arData::CalibrationInfo'", calInfo1);
-
-    ::fwTools::Object::sptr obj2             = ::fwTools::fwID::getObject(m_calibrationInfo2ID);
-    ::arData::CalibrationInfo::sptr calInfo2 = ::arData::CalibrationInfo::dynamicCast(obj2);
-    SLM_ASSERT("Object with id '" + m_calibrationInfo2ID + "' is not an 'arData::CalibrationInfo'", calInfo2);
+    ::arData::CameraSeries::sptr camSeries = this->getInOut< ::arData::CameraSeries >("cameraSeries");
 
     SLM_ASSERT("camera index must be > 0 and < camSeries->getNumberOfCameras()",
                m_camIndex > 0 && m_camIndex < camSeries->getNumberOfCameras());
+
+    ::arData::CalibrationInfo::csptr calInfo1 = this->getInput< ::arData::CalibrationInfo>("calibrationInfo1");
+    ::arData::CalibrationInfo::csptr calInfo2 = this->getInput< ::arData::CalibrationInfo>("calibrationInfo2");
+
+    SLM_ASSERT("Object with 'calibrationInfo1' is not found", calInfo1);
+    SLM_ASSERT("Object with 'calibrationInfo2' is not found", calInfo2);
 
     SLM_WARN_IF("Calibration info is empty.", calInfo1->getPointListContainer().empty());
     if(!calInfo1->getPointListContainer().empty())
@@ -227,7 +210,7 @@ void SOpenCVExtrinsic::updating() throw (fwTools::Failed)
             cameraMatrix2.at<double>(1,1) = cam2->getFy();
             cameraMatrix2.at<double>(0,2) = cam2->getCx();
             cameraMatrix2.at<double>(1,2) = cam2->getCy();
-            for (int i = 0; i < 5; ++i)
+            for (size_t i = 0; i < 5; ++i)
             {
                 distortionCoefficients1[i] = static_cast<float>(cam1->getDistortionCoefficient()[i]);
                 distortionCoefficients2[i] = static_cast<float>(cam2->getDistortionCoefficient()[i]);
@@ -245,11 +228,11 @@ void SOpenCVExtrinsic::updating() throw (fwTools::Failed)
         OSLM_DEBUG("Calibration error :" << err);
 
         ::fwData::TransformationMatrix3D::sptr matrix = ::fwData::TransformationMatrix3D::New();
-        for (int i = 0; i<3; ++i)
+        for (size_t i = 0; i<3; ++i)
         {
-            for (int j = 0; j<3; ++j)
+            for (size_t j = 0; j<3; ++j)
             {
-                matrix->setCoefficient(i,j, rotationMatrix.at<double>(i,j));
+                matrix->setCoefficient(i,j, rotationMatrix.at<double>(static_cast<int>(i),static_cast<int>(j)));
             }
         }
         matrix->setCoefficient(0,3, translationVector.at<double>(0,0));
@@ -271,11 +254,23 @@ void SOpenCVExtrinsic::updating() throw (fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SOpenCVExtrinsic::updateChessboardSize(const int width, const int height, const float squareSize)
+void SOpenCVExtrinsic::updateChessboardSize()
 {
-    m_width      = width;
-    m_height     = height;
-    m_squareSize = squareSize;
+    const std::string widthStr = ::fwPreferences::getPreference(m_widthKey);
+    if(!widthStr.empty())
+    {
+        m_width = std::stoi(widthStr);
+    }
+    const std::string heightStr = ::fwPreferences::getPreference(m_heightKey);
+    if(!heightStr.empty())
+    {
+        m_height = std::stoi(heightStr);
+    }
+    const std::string squareSizeStr = ::fwPreferences::getPreference(m_squareSizeKey);
+    if(!squareSizeStr.empty())
+    {
+        m_squareSize = std::stof(squareSizeStr);
+    }
 }
 
 //------------------------------------------------------------------------------

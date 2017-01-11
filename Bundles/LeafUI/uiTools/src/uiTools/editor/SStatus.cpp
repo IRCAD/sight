@@ -12,8 +12,7 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/IService.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>

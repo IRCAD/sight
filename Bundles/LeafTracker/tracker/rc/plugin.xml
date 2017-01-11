@@ -5,7 +5,7 @@
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwServices::IController</type>
         <service>::tracker::SHomography</service>
-        <object>::fwData::Composite</object>
+        <object>::fwData::Object</object>
     </extension>
 
 </plugin>

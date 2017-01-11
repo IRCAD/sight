@@ -11,7 +11,7 @@
 #include "videoTools/config.hpp"
 
 #include <arServices/ISynchronizer.hpp>
-#include <extData/MatrixTL.hpp>
+#include <arData/MatrixTL.hpp>
 
 #include <fwCore/base.hpp>
 #include <fwCom/Slot.hpp>
@@ -24,7 +24,6 @@ namespace videoTools
 {
 /**
  * @brief   SMatrixSynchronizer reads the content of a MatrixTL into a TransformationMatrix3D.
- * @class   SMatrixSynchronizer
  */
 class VIDEOTOOLS_CLASS_API SMatrixSynchronizer : public ::arServices::ISynchronizer
 {
@@ -55,11 +54,16 @@ protected:
      *
      * @code{.xml}
        <service impl="::videoTools::SMatrixSynchronizer" type="::arServices::ISynchronizer">
-            <TL>MatrixTLUid</TL>
+            <inout>Matrix</inout>
+            <in>MatrixTL</in>
        </service>
-       @endcode
-     * - \b TL : Defines the uid of the MatrixTL containing the matrices.
+     * @endcode
+     *
+     * @subsection In-Out In-Out
+     * - \b TL [::arData::MatrixTL]:  Defines the uid of the MatrixTL containing the matrices.
+     *
      */
+
     VIDEOTOOLS_API void configuring() throw (fwTools::Failed);
 
     /// This method is used to initialize the service.
@@ -69,21 +73,12 @@ protected:
     VIDEOTOOLS_API void stopping() throw (fwTools::Failed);
 
     /// Does nothing.
-    VIDEOTOOLS_API void swapping() throw (fwTools::Failed)
-    {
-    }
-
-    /// Does nothing.
     VIDEOTOOLS_API void updating() throw (fwTools::Failed)
     {
     }
 
 private:
 
-    /// The uid of the MatrixTL
-    std::string m_matrixUid;
-    /// The matrixTL
-    ::extData::MatrixTL::sptr m_matrixTL;
     /// slot to update the TransformationMatrix3D with the timeline buffer
     UpdateMatrixSlotType::sptr m_slotUpdateMatrix;
     /// Last timestamp

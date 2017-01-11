@@ -1,0 +1,79 @@
+﻿<plugin id="Ex02TimeLine" class="::Ex02TimeLine::Plugin" version="@DASH_VERSION@" >
+
+    <library name="Ex02TimeLine" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IService</type>
+        <service>::Ex02TimeLine::SProducer</service>
+        <object>::Ex02TimeLine::MessageTL</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IService</type>
+        <service>::Ex02TimeLine::SConsumer</service>
+        <object>::Ex02TimeLine::MessageTL</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IService</type>
+        <service>::Ex02TimeLine::SMain</service>
+        <object>::fwData::Composite</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfig">
+        <id>Ex02TimeLineConfig</id>
+        <config>
+
+            <object type="::fwData::Composite">
+
+                <service uid="main" impl="::Ex02TimeLine::SMain" type="::fwServices::IService" autoConnect="no"/>
+
+                <item key="messageTL">
+                    <object uid="messageTLUId" type="::Ex02TimeLine::MessageTL">
+
+                        <service uid="producer1" impl="::Ex02TimeLine::SProducer" type="::fwServices::IService" autoConnect="no" worker="producer">
+                            <message>Hello</message>
+                            <id>0</id>
+                            <period>1000</period>
+                            <timelineSize>2</timelineSize>
+                        </service>
+                        <service uid="producer2" impl="::Ex02TimeLine::SProducer" type="::fwServices::IService" autoConnect="no" worker="producer">
+                            <message>World</message>
+                            <id>1</id>
+                            <period>2000</period>
+                        </service>
+                        <service uid="producer3" impl="::Ex02TimeLine::SProducer" type="::fwServices::IService" autoConnect="no" worker="producer">
+                            <message>!!!!!</message>
+                            <id>1</id>
+                            <period>5000</period>
+                        </service>
+                        <service uid="consumer1" impl="::Ex02TimeLine::SConsumer" type="::fwServices::IService" autoConnect="no" worker="consumer">
+                            <id>100</id>
+                        </service>
+                        <service uid="consumer2" impl="::Ex02TimeLine::SConsumer" type="::fwServices::IService" autoConnect="no" worker="consumer">
+                            <id>200</id>
+                            <period>5000</period>
+                        </service>
+
+                    </object>
+                </item>
+
+                <connect>
+                    <signal>messageTLUId/objectPushed</signal>
+                    <slot>consumer1/consume</slot>
+                </connect>
+
+                <start uid="producer1" />
+                <start uid="producer2" />
+                <start uid="producer3" />
+                <start uid="consumer1" />
+                <start uid="consumer2" />
+                <start uid="main" />
+
+                <update uid="main" />
+            </object>
+
+        </config>
+    </extension>
+
+</plugin>

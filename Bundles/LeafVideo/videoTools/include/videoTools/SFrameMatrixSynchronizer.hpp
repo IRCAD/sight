@@ -16,8 +16,11 @@
 #include <fwServices/IController.hpp>
 #include <fwThread/Timer.hpp>
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
 
-namespace extData
+
+namespace arData
 {
 class FrameTL;
 class MatrixTL;
@@ -32,15 +35,73 @@ class TransformationMatrix3D;
 namespace videoTools
 {
 /**
- * @brief   SFrameMatrixSynchronizer service synchronizes video frame and tracking matrix.
- * @class   SFrameMatrixSynchronizer
+ * @brief SFrameMatrixSynchronizer service synchronizes video frame and tracking matrix.
+ *
+ * @section Signals Signals
+ * - \b synchronizationDone(::fwCore::HiResClock::HiResClockType) : Emitted when the sync is done.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::videoTools::SFrameMatrixSynchronizer">
+            <in group="frameTL">
+                <key uid="frameTL1" />
+                <key uid="frameTL4" />
+                <key uid="frameTL6" />
+            </in>
+            <inout group="image">
+                <key uid="videoImage1" />
+                <key uid="videoImage2" />
+                <key uid="videoImage3" />
+            </inout>
+            <in group="matrixTL">
+                <key uid="matrixTL1" />
+                <key uid="matrixTL2" />
+            </in>
+            <inout group="matrices0">
+                <key uid="matrix0" />
+                <key uid="matrix1" />
+                <key uid="matrix2" />
+            </inout>
+            <inout group="matrices1">
+                <key uid="matrix3" />
+                <key uid="matrix4" />
+            </inout>
+            <framerate>30</framerate>
+       </service>
+   @endcode
+ * @subsection Input Input
+ * - \b frameTL [::arData::FrameTL]: defines the frameTL to synchronize. The number of \b frameTL keys must match the
+ * number of \b image keys.
+ * - \b matrixTL [::extData::MatrixTL]: defines the matrixTL to synchronize. The number of \b matrixTL keys must match
+ * the number of \b matricesX group.
+ *
+ * @subsection In-Out In-Out
+ * - \b image [::fwData::Image]: defines the images where to extract the image. The number of \b image keys must match
+ * the number of \b frameTL keys.
+ * - \b matricesX [::fwData::TransformationMatrix3D]: defines the matrices where to extract the matrices from the
+ * timeline. X must be replaced by the index of the associated \b MatrixTL key (index begin at 0).
+ *
+ * @subsection Configuration Configuration
+ * - \b matrices defines the matrixTL to synchronize.
+ *   - \b from: key of the matrix timeline to extract matrix.
+ *   - \b to: key of the TransformationMatrix3D where to extract the matrix.
+ * - \b framerate defines the framerate to call synchronization.
+ * @note If the matrix timeline last update delay is greater than 500ms, the matrix is not synchronized.
  */
 class VIDEOTOOLS_CLASS_API SFrameMatrixSynchronizer : public ::arServices::ISynchronizer
 {
-
 public:
 
     fwCoreServiceClassDefinitionsMacro((SFrameMatrixSynchronizer)(fwServices::IController));
+
+    /**
+     * @name Signal API
+     * @{
+     */
+    typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > SynchronizationDoneSignalType;
+    VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_SYNCHRONIZATION_DONE_SIG;
+    /** @} */
 
     /**
      * @brief Constructor.
@@ -58,8 +119,8 @@ public:
     typedef std::pair< std::string, unsigned int > MatrixVectorTypePair;
     typedef std::vector<MatrixVectorTypePair> MatrixVectorType;
     typedef std::map<std::string, MatrixVectorType> MatrixKeysType;
-    typedef std::map<std::string, SPTR(::extData::FrameTL)> FrameTLKeyType;
-    typedef std::map<std::string, SPTR(::extData::MatrixTL)> MatrixTLKeyType;
+    typedef std::map<std::string, CSPTR(::arData::FrameTL)> FrameTLKeyType;
+    typedef std::map<std::string, CSPTR(::arData::MatrixTL)> MatrixTLKeyType;
     typedef std::map<std::string, SPTR(::fwData::Image)> ImageKeyType;
     typedef std::pair< SPTR(::fwData::TransformationMatrix3D), unsigned int > MatrixKeyVectorTypePair;
     typedef std::vector<MatrixKeyVectorTypePair> MatrixKeyVectorType;
@@ -68,35 +129,6 @@ public:
 protected:
     /**
      * @brief This method is used to configure the service.
-     *
-     * @code{.xml}
-       <service impl="::videoTools::SFrameMatrixSynchronizer" type="::arServices::ISynchronizer">
-           <frames>
-               <frame from="frame1TL" to="frame1" />
-               <frame from="frame2TL" to="frame2" />
-           </frames>
-           <matrices>
-               <timeline from="matrixTL1">
-                   <matrix index="0" to="matrix0" />
-                   <matrix index="1" to="matrix1" />
-                   <matrix index="2" to="matrix2" />
-               </timeline>
-               <timeline from="matrixTL2">
-                   <matrix index="0" to="matrix3" />
-                   <matrix index="8" to="matrix4" />
-               </timeline>
-           </matrices>
-           <framerate>30</framerate>
-       </service>
-       @endcode
-     * - \b frames defines the frameTL to synchronize.
-     *   - \b from: key of the frame timeline to extract image.
-     *   - \b to: key of the image where to extract the image.
-     * - \b matrices defines the matrixTL to synchronize.
-     *   - \b from: key of the matrix timeline to extract matrix.
-     *   - \b to: key of the TransformationMatrix3D where to extract the matrix.
-     * - \b framerate defines the framerate to call synchronization.
-     * @note If the matrix timeline last update delay is greater than 500ms, the matrix is not synchronized.
      */
     VIDEOTOOLS_API void configuring() throw (fwTools::Failed);
 
@@ -106,18 +138,11 @@ protected:
     /// Stops timer and clear TLs & Matrixes.
     VIDEOTOOLS_API void stopping() throw (fwTools::Failed);
 
-    /// Does nothing.
-    VIDEOTOOLS_API void swapping() throw (fwTools::Failed)
-    {
-    }
-
-    /// Does nothing.
-    VIDEOTOOLS_API void updating() throw (fwTools::Failed)
-    {
-    }
-
     /// Synchronizes TLs
     VIDEOTOOLS_API void synchronize();
+
+    /// Do nothing.
+    VIDEOTOOLS_API void updating() throw (fwTools::Failed);
 
 private:
 
@@ -144,6 +169,9 @@ private:
 
     /// Timer used for the update
     ::fwThread::Timer::sptr m_timer;
+
+    /// Signal emitted when the synchronization of the frame timeline and the matrix timeline is done.
+    SynchronizationDoneSignalType::sptr m_sigSynchronizationDone;
 };
 
 } //namespace videoTools

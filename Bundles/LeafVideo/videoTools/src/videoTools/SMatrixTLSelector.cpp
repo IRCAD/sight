@@ -1,28 +1,28 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2016.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "videoTools/SMatrixTLSelector.hpp"
 
-#include <fwRuntime/ConfigurationElement.hpp>
+#include <arData/FrameTL.hpp>
+#include <arData/MatrixTL.hpp>
+#include <arData/timeline/Buffer.hpp>
 
-#include <fwTools/fwID.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
-#include <extData/MatrixTL.hpp>
-#include <extData/FrameTL.hpp>
-#include <extData/timeline/Buffer.hpp>
+#include <fwDataTools/helper/Array.hpp>
 
-#include <fwCom/Signal.hxx>
-#include <fwComEd/helper/Array.hpp>
+#include <fwRuntime/ConfigurationElement.hpp>
 
-#include <fwServices/Base.hpp>
-#include <fwServices/registry/ObjectService.hpp>
+#include <fwServices/macros.hpp>
+
+#include <fwTools/fwID.hpp>
 
 #include <functional>
 
@@ -108,8 +108,8 @@ void SMatrixTLSelector::starting() throw (fwTools::Failed)
     ::fwData::Composite::sptr comp = this->getObject< ::fwData::Composite >();
     for(FrameKeysType::value_type elt : m_frameKeys)
     {
-        ::extData::FrameTL::sptr frameTL = comp->at< ::extData::FrameTL >(elt.first);
-        ::fwData::Image::sptr frame      = comp->at< ::fwData::Image >(elt.second);
+        ::arData::FrameTL::sptr frameTL = comp->at< ::arData::FrameTL >(elt.first);
+        ::fwData::Image::sptr frame     = comp->at< ::fwData::Image >(elt.second);
 
         m_frameTLs[elt.first] = frameTL;
         m_images[elt.first]   = frame;
@@ -120,7 +120,7 @@ void SMatrixTLSelector::starting() throw (fwTools::Failed)
         matrixConfig.m_matrix = comp->at< ::fwData::TransformationMatrix3D >(matrixConfig.m_matrixID);
         for(auto timelineKey : matrixConfig.m_timelineKeyVect)
         {
-            matrixConfig.m_timelineObjectMap[timelineKey] = comp->at< ::extData::MatrixTL >(timelineKey);
+            matrixConfig.m_timelineObjectMap[timelineKey] = comp->at< ::arData::MatrixTL >(timelineKey);
         }
     }
 
@@ -174,7 +174,7 @@ void SMatrixTLSelector::synchronize()
         ::fwCore::HiResClock::HiResClockType currentTimestamp =
             std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
 
-        ::extData::MatrixTL::sptr matrixTL;
+        ::arData::MatrixTL::sptr matrixTL;
 
         for(auto elt : matrixCfg.m_timelineObjectMap)
         {
@@ -201,7 +201,7 @@ void SMatrixTLSelector::synchronize()
 
         if(matrixTL)
         {
-            CSPTR(::extData::MatrixTL::BufferType) buffer = matrixTL->getBuffer(currentTimestamp);
+            CSPTR(::arData::MatrixTL::BufferType) buffer = matrixTL->getBuffer(currentTimestamp);
             if(buffer)
             {
                 size_t index = matrixCfg.m_index;
@@ -242,8 +242,8 @@ void SMatrixTLSelector::updateFrames(::fwCore::HiResClock::HiResClockType timest
 {
     for(FrameTLKeyType::value_type elt : m_frameTLs)
     {
-        ::extData::FrameTL::sptr frameTL = elt.second;
-        ::fwData::Image::sptr image      = m_images[elt.first];
+        ::arData::FrameTL::sptr frameTL = elt.second;
+        ::fwData::Image::sptr image     = m_images[elt.first];
 
         ::fwData::Image::SizeType size(3);
         size[0] = frameTL->getWidth();
@@ -278,9 +278,9 @@ void SMatrixTLSelector::updateFrames(::fwCore::HiResClock::HiResClockType timest
         ::fwData::mt::ObjectWriteLock destLock(image);
         ::fwData::Array::sptr array = image->getDataArray();
 
-        ::fwComEd::helper::Array arrayHelper(array);
+        ::fwDataTools::helper::Array arrayHelper(array);
 
-        CSPTR(::extData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
+        CSPTR(::arData::FrameTL::BufferType) buffer = frameTL->getClosestBuffer(timestamp);
 
         if(!buffer)
         {

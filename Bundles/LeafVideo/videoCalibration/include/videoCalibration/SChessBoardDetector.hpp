@@ -9,27 +9,59 @@
 
 #include "videoCalibration/config.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/PointList.hpp>
-#include <extData/FrameTL.hpp>
+#include <arData/FrameTL.hpp>
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
+#include <fwData/Image.hpp>
+#include <fwData/PointList.hpp>
+
 #include <fwServices/IController.hpp>
 
-#include <vector>
 #include <string>
+#include <vector>
 
 namespace videoCalibration
 {
 
 /**
- * @class SChessBoardDetector
  * @brief This service updates CalibrationInfo objects with the points detected from chessboard.
  *
  * This service is used by calling 'detectPoints' slot. It checks on each timeline if points are visible in each
- * frame. Then it add the detected points and the associated image in the CalibrationInfo.
+ * frame. Then it adds the detected points and the associated image in the CalibrationInfo.
+ *
+ * @section Signals Signals
+ * - \b chessboardDetected(): Emitted when the chessboard is detected on the current image.
+ * - \b chessboardNotDetected(): Emitted when the chessboard is not detected on the current image.
+ *
+ * @section Slots Slots
+ * - \b checkPoints(::fwCore::HiResClock::HiResClockType): Try to detect the chessboard in the image(s) from the
+ * timeline(s) at the given timestamp.
+ * - \b detectPoints(): Request to store the current image in the calibration data, if the chessboard is detected.
+ * - \b updateChessboardSize(): update the parameters of the chessboard from preferences.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+       <service uid="..." impl="::videoCalibration::SChessBoardDetector" >
+            <in group="timeline">
+                <key uid="..." />
+                <key uid="..." />
+            </in>
+            <inout group="calInfo">
+                <key uid="..." />
+                <key uid="..." />
+            </inout>
+           <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" />
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b timeline [::arData::FrameTL]: timelines containing the images to detect the chessboard.
+ * @subsection In-Out In-Out:
+ * - \b key2 [::arData::CalibrationInfo]: calibration object where to store the detected images.
+ * @subsection Configuration Configuration:
+ * - \b board : preference key to retrieve the number of squares of the board in width and height.
  */
 class VIDEOCALIBRATION_CLASS_API SChessBoardDetector : public ::fwServices::IController
 {
@@ -65,27 +97,11 @@ public:
 
 protected:
 
-    /**
-     * @brief Configures the service
-     *
-     * @code{.xml}
-        <service uid="..." impl="::videoCalibration::SChessBoardDetector" autoConnect="no">
-            <calibration timeline="timeline1" calInfo="calInfo1" />
-            <calibration timeline="timeline2" calInfo="calInfo2" />
-            <board width="17" height="13" />
-        </service>
-       @endcode
-     * - \b timeline : key of frame timeline in the composite.
-     * - \b calInfo : key of the CalibrationInfo in the composite
-     * - \b board : number of square in board width and height
-     */
+    /// Configure the service.
     VIDEOCALIBRATION_API void configuring() throw (fwTools::Failed);
 
     /// Does nothing.
     VIDEOCALIBRATION_API void starting() throw (fwTools::Failed);
-
-    /// Does nothing.
-    VIDEOCALIBRATION_API void swapping() throw (fwTools::Failed);
 
     /// Does nothing.
     VIDEOCALIBRATION_API void updating() throw (fwTools::Failed);
@@ -93,10 +109,8 @@ protected:
     /// Does nothing.
     VIDEOCALIBRATION_API void stopping() throw (fwTools::Failed);
 
-    /**
-     * @name Slots API
-     * @{
-     */
+
+private:
 
     /**
      * @brief SLOT : check if chessboard is visible and send corresponding signal
@@ -112,13 +126,8 @@ protected:
 
     /**
      * @brief SLOT: update the chessboard size.
-     * @param width chessboard's width expresses by the number of square.
-     * @param height chessboard's height expresses by the number of square.
      */
-    VIDEOCALIBRATION_API void updateChessboardSize(const int width, const int height);
-    ///@}
-
-private:
+    VIDEOCALIBRATION_API void updateChessboardSize();
 
     /**
      * @brief Detect chessboard points
@@ -127,26 +136,26 @@ private:
      * @param yDim the number of chessboard squares vertically
      * @return The list of chessboard points or NULL if no points are detected
      */
-    static SPTR(::fwData::PointList) detectChessboard(::extData::FrameTL::sptr tl,
+    static SPTR(::fwData::PointList) detectChessboard(::arData::FrameTL::csptr tl,
                                                       ::fwCore::HiResClock::HiResClockType timestamp,
                                                       size_t xDim, size_t yDim);
 
     /**
      * @brief Creates an image from frame timeline
      */
-    ::fwData::Image::sptr createImage(::extData::FrameTL::sptr tl, ::fwCore::HiResClock::HiResClockType timestamp);
-
-    /// Keys of timeline in the composite
-    std::vector< std::string > m_timeLineKeys;
-
-    /// Keys of CalibrationInfo in the composite
-    std::vector< std::string > m_calInfoKeys;
+    ::fwData::Image::sptr createImage(arData::FrameTL::csptr tl, ::fwCore::HiResClock::HiResClockType timestamp);
 
     /// Signal emitted when chessboard is detected
     ChessboardDetectedSignalType::sptr m_sigChessboardDetected;
 
     /// Signal emitted when chessboard is not detected
     ChessboardNotDetectedSignalType::sptr m_sigChessboardNotDetected;
+
+    /// Preference key to retrieve width of the chessboard used for calibration
+    std::string m_widthKey;
+
+    /// Preference key to retrieve height of the chessboard used for calibration
+    std::string m_heightKey;
 
     /// Width of the chessboard used for calibration
     size_t m_width;
@@ -156,9 +165,6 @@ private:
 
     /// Used to know if we detected the chessboard the last time we check
     bool m_isDetected;
-
-    /// Frame time line objects
-    std::vector< ::extData::FrameTL::sptr> m_frameTLs;
 
     /// Last valid chessboard points for each timeline
     std::vector< ::fwData::PointList::sptr> m_pointsLists;

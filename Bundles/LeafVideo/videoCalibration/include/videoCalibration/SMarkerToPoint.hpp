@@ -9,11 +9,6 @@
 
 #include "videoCalibration/config.hpp"
 
-#include <fwData/Image.hpp>
-#include <fwData/Point.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-#include <extData/MatrixTL.hpp>
-
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
@@ -26,9 +21,24 @@ namespace videoCalibration
 {
 
 /**
- * @class SMarkerToPoint
  * @brief This service update a pointlist with the center of the marker (from a matrixTL) when the extractMarker slot is called
  * This service can be used to save the displacement of a marker in time. (each point of the pointlist will be a position).
+ *
+ * @section Slots Slots
+ * - \b addPoint() : Add marker position in the pointList. Position is extracted from matrixTL.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+     <service uid="markerToPoint" type="::videoCalibration::SMarkerToPoint">
+         <in key="matrixTL" uid="matrixTL" />
+         <inout key="pointList" uid="markersPL" />
+     </service>
+   @endcode
+ * @subsection Input Input
+ * - \b matrixTL [::arData::MatrixTL]: timeline for tool matrices.
+ * @subsection In-Out In-Out
+ * - \b pointList [::fwData::Pointlist]: marker position.
  */
 class VIDEOCALIBRATION_CLASS_API SMarkerToPoint : public ::fwServices::IController
 {
@@ -39,7 +49,7 @@ public:
      * @name Slots API
      * @{
      */
-    VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_ADD_MARKER_SLOT;
+    VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT;
     ///@}
 
 
@@ -51,16 +61,7 @@ public:
 
 protected:
 
-    /**
-     * @brief Configures the service
-     *
-     * @code{.xml}
-        <service uid="..." impl="::videoCalibration::SMarkerToPoint" autoConnect="no">
-             <matrixTL>matrixTLUid</matrixTL>
-        </service>
-       @endcode
-     * - \b matrixTL : key of the matrix timeline (marker position)
-     */
+    /// Does nothing
     VIDEOCALIBRATION_API void configuring() throw (fwTools::Failed);
 
     /// Does nothing.
@@ -75,16 +76,8 @@ protected:
     /// Does nothing.
     VIDEOCALIBRATION_API void stopping() throw (fwTools::Failed);
 
-    /**
-     * @brief Slot called to extract position from the latest matrix of the MatrixTL
-     */
-    VIDEOCALIBRATION_API void findPosition();
-
-private:
-
-    std::string m_matrixTLUid; ///< matrixTL UID
-    ::extData::MatrixTL::sptr m_matrixTL;///< matrixTL
-
+    /// Slot called to extract position from the latest matrix of the MatrixTL and push it in the pointList
+    VIDEOCALIBRATION_API void addPoint();
 };
 
 } //namespace videoCalibration

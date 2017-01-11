@@ -21,7 +21,16 @@ namespace uiCalibration
 
 /**
  * @brief   This editor shows sliders to configure an intrinsic camera calibration.
- * @class   SOpticalCenterEditor
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+     <service type="::uiCalibration::SOpticalCenterEditor">
+         <inout key="camera" uid="..." />
+     </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b camera [::fwData::Mesh]: camera to edit.
  */
 class UICALIBRATION_CLASS_API SOpticalCenterEditor : public QObject,
                                                      public ::gui::editor::IEditor
@@ -39,15 +48,7 @@ public:
 
 protected:
 
-    /**
-     * @brief method description:
-     * @code{.xml}
-        <service uid="SOpticalCenterEditorInstance" impl="::uiCalibration::SOpticalCenterEditor" type="::gui::editor::IEditor">
-             <cameraSrcUid>...</cameraSrcUid>
-        </service>
-       @endcode
-     * - \b cameraSrcUid (optional) : deepCopy source camera on starting if it exists.
-     */
+    /// Does nothing
     UICALIBRATION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
     /// Create UI.
@@ -73,8 +74,6 @@ private:
     QPointer<QLabel> m_cxLabel;   ///< Label for cx value
     QPointer<QLabel> m_cyLabel;   ///< Label for cy value
     QPointer<QLabel> m_fyLabel;   ///< Label for fy value
-
-    std::string m_cameraSrcUid; ///< uid of the source camera
 };
 
 } // uiCalibration

@@ -7,19 +7,14 @@
 #ifndef __UICALIBRATION_SCAMERASERIESEDITOR_HPP__
 #define __UICALIBRATION_SCAMERASERIESEDITOR_HPP__
 
-#include <list>
+#include "uiCalibration/config.hpp"
 
 #include <QPointer>
 #include <QComboBox>
 #include <QLabel>
 #include <QVector>
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-
 #include <gui/editor/IEditor.hpp>
-
-#include "uiCalibration/config.hpp"
 
 namespace uiCalibration
 {

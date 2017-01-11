@@ -10,7 +10,7 @@
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include <fwServices/Base.hpp>
+#include <fwServices/macros.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -71,8 +71,6 @@ void SAddMatrices::configuring() throw (::fwTools::Failed)
 
 void SAddMatrices::starting() throw (fwTools::Failed)
 {
-    m_connections = ::fwServices::helper::SigSlotConnection::New();
-
     for( TransformMatrix &currentMatrix : m_matrixVector)
     {
         ::fwTools::Object::sptr obj = ::fwTools::fwID::getObject(currentMatrix.m_uid);
@@ -83,7 +81,7 @@ void SAddMatrices::starting() throw (fwTools::Failed)
 
         if(currentMatrix.m_connect)
         {
-            m_connections->connect(currentMatrix.m_matrix, this->getSptr(), this->getObjSrvConnections());
+            m_connections.connect(currentMatrix.m_matrix, this->getSptr(), this->getObjSrvConnections());
         }
     }
 }
@@ -92,7 +90,7 @@ void SAddMatrices::starting() throw (fwTools::Failed)
 
 void SAddMatrices::stopping() throw (fwTools::Failed)
 {
-    m_connections->disconnect();
+    m_connections.disconnect();
 }
 
 // ----------------------------------------------------------------------------

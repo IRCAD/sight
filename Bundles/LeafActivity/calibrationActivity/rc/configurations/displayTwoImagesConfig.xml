@@ -1,7 +1,6 @@
-<extension implements="::fwServices::registry::AppConfig">
+<extension implements="::fwServices::registry::AppConfig2">
     <id>displayTwoImagesConfig</id>
     <parameters>
-        <param name="GENERIC_UID" />
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
         <param name="imageId1" />
         <param name="imageId2" />
@@ -10,91 +9,81 @@
     </parameters>
     <config>
 
-        <!-- <object uid="${imageUid}" src="ref" type="::fwData::Image"> -->
-        <object uid="${GENERIC_UID}_composite" type="::fwData::Composite">
-            <service uid="${GENERIC_UID}_BasicViewerFrame" type="::fwGui::IFrameSrv" impl="::gui::frame::SDefaultFrame" autoConnect="no">
-                <window onclose="notify" />
-                <gui>
-                    <frame>
-                        <name>Display calibration images</name>
-                        <minSize width="900" height="600" />
-                    </frame>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_myDefaultView" start="yes" />
-                </registry>
-            </service>
+        <object uid="${imageId1}" src='ref' type="::fwData::Image" />
+        <object uid="${imageId2}" src='ref' type="::fwData::Image" />
+        <object uid="${pointListId1}" src='ref' type="::fwData::PointList" />
+        <object uid="${pointListId2}" src='ref' type="::fwData::PointList" />
 
-            <service uid="${GENERIC_UID}_myDefaultView" type="::gui::view::IView" impl="::gui::view::SDefaultView" autoConnect="no">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="horizontal" />
-                        <view />
-                        <view />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="${GENERIC_UID}_view_image1" start="no" />
-                    <view sid="${GENERIC_UID}_view_image2" start="no" />
-                </registry>
-            </service>
+        <service uid="BasicViewerFrame" type="::gui::frame::SDefaultFrame" >
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>Display calibration images</name>
+                    <minSize width="900" height="600" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="myDefaultView" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="${GENERIC_UID}_view_image1" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
-                <scene>
-                    <renderer id="default" background="0.0" />
-                    <adaptor id="interactor2D" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                        <config renderer="default" style="InteractorStyle2DForNegato" />
-                    </adaptor>
-                    <adaptor id="video" class="::visuVTKARAdaptor::SVideoAdapter" objectId="imageKey1">
-                        <config renderer="default" />
-                    </adaptor>
-                    <adaptor id="points" class="::visuVTKARAdaptor::SPointList" objectId="pointListKey1">
-                        <config renderer="default" imageId="${imageId1}" color="#cb1f72" />
-                    </adaptor>
-                </scene>
-            </service>
+        <service uid="myDefaultView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view />
+                    <view />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="viewImage1" start="yes" />
+                <view sid="viewImage2" start="yes" />
+            </registry>
+        </service>
 
-            <service uid="${GENERIC_UID}_view_image2" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
-                <scene>
-                    <renderer id="default" background="0.0" />
-                    <adaptor id="interactor2D" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                        <config renderer="default" style="InteractorStyle2DForNegato" />
-                    </adaptor>
-                    <adaptor id="video" class="::visuVTKARAdaptor::SVideoAdapter" objectId="imageKey2">
-                        <config renderer="default" />
-                    </adaptor>
-                    <adaptor id="points" class="::visuVTKARAdaptor::SPointList" objectId="pointListKey2">
-                        <config renderer="default" imageId="${imageId2}" color="#31f4e3" />
-                    </adaptor>
-                </scene>
-            </service>
+        <service uid="viewImage1" type="::fwRenderVTK::SRender" autoConnect="yes">
 
-            <item key="imageKey1">
-                <object uid="${imageId1}" src='ref' type="::fwData::Image" />
-            </item>
-            <item key="imageKey2">
-                <object uid="${imageId2}" src='ref' type="::fwData::Image" />
-            </item>
+            <in key="imageKey" uid="${imageId1}" />
+            <in key="pointListKey" uid="${pointListId1}" />
 
-            <item key="pointListKey1">
-                <object uid="${pointListId1}" src='ref' type="::fwData::PointList" />
-            </item>
-            <item key="pointListKey2">
-                <object uid="${pointListId2}" src='ref' type="::fwData::PointList" />
-            </item>
+            <scene>
+                <renderer id="default" background="0.0" />
+                <adaptor id="interactor2D" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="InteractorStyle2DForNegato" />
+                </adaptor>
+                <adaptor id="video" class="::visuVTKARAdaptor::SVideoAdapter" objectId="imageKey">
+                    <config renderer="default" />
+                </adaptor>
+                <adaptor id="points" class="::visuVTKARAdaptor::SPointList" objectId="pointListKey">
+                    <config renderer="default" imageId="imageKey" color="#cb1f72" />
+                </adaptor>
+            </scene>
+        </service>
 
-            <proxy channel="${CLOSE_CONFIG_CHANNEL}">
-                <signal>${GENERIC_UID}_BasicViewerFrame/closed</signal>
-            </proxy>
+        <service uid="viewImage2" type="::fwRenderVTK::SRender" autoConnect="yes">
 
-            <start uid="${GENERIC_UID}_BasicViewerFrame" />
-            <start uid="${GENERIC_UID}_view_image1" />
-            <start uid="${GENERIC_UID}_view_image2" />
+            <in key="imageKey" uid="${imageId2}" />
+            <in key="pointListKey" uid="${pointListId2}" />
 
-            <update uid="${GENERIC_UID}_view_image1" />
-            <update uid="${GENERIC_UID}_view_image2" />
+            <scene>
+                <renderer id="default" background="0.0" />
+                <adaptor id="interactor2D" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="InteractorStyle2DForNegato" />
+                </adaptor>
+                <adaptor id="video" class="::visuVTKARAdaptor::SVideoAdapter" objectId="imageKey">
+                    <config renderer="default" />
+                </adaptor>
+                <adaptor id="points" class="::visuVTKARAdaptor::SPointList" objectId="pointListKey">
+                    <config renderer="default" imageId="imageKey" color="#31f4e3" />
+                </adaptor>
+            </scene>
+        </service>
 
-        </object>
+        <connect channel="${CLOSE_CONFIG_CHANNEL}">
+            <signal>BasicViewerFrame/closed</signal>
+        </connect>
+
+        <start uid="BasicViewerFrame" />
 
     </config>
 </extension>

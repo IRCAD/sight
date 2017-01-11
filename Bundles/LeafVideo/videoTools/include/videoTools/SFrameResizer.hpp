@@ -9,16 +9,16 @@
 
 #include "videoTools/config.hpp"
 
-#include <extData/FrameTL.hpp>
+#include <arData/FrameTL.hpp>
+
 #include <arServices/IOperator.hpp>
 
 namespace videoTools
 {
 
 /**
- * @brief   Operator that resizes buffer coming from an input extData::FrameTL and pushes them into an output timeline.
+ * @brief   Operator that resizes buffer coming from an input arData::FrameTL and pushes them into an output timeline.
  *          This service uses OpenCV to perform the resize processing.
- * @class   SFrameResizer
  */
 class VIDEOTOOLS_CLASS_API SFrameResizer : public ::arServices::IOperator
 {
@@ -71,10 +71,10 @@ private:
     std::string m_outputTLKey;
 
     /// Frame timeline
-    ::extData::FrameTL::sptr m_inputTL;
+    ::arData::FrameTL::sptr m_inputTL;
 
     /// Frame timeline
-    ::extData::FrameTL::sptr m_outputTL;
+    ::arData::FrameTL::sptr m_outputTL;
 
     /// Resize ratio
     float m_ratio[2];
@@ -83,7 +83,7 @@ private:
     int m_interpolationMethod;
 
     /// Connections
-    ::fwServices::helper::SigSlotConnection::sptr m_connections;
+    ::fwCom::helper::SigSlotConnection m_connections;
 };
 
 } // videoTools

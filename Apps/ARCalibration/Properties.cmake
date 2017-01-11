@@ -1,44 +1,40 @@
 
 set( NAME ARCalibration )
-set( VERSION 0.2 )
+set( VERSION 0.3 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
     dataReg
-    extDataReg
     arDataReg
     servicesReg
-    gui
-    guiQt
-    io
-    ioAtoms
+
     patchMedicalData
     arPatchMedicalData
+
+    gui
+    guiQt
+
+    io
+    ioAtoms
+    ioCalibration
+    ioARActivity
+
     uiIO
     uiGenericQt
     uiMedDataQt
-    uiImageQt
-    ctrlSelection
-    memory
+
     media
-    mediaExt
     arMedia
-    visuVTK
-    visuVTKQt
-    videoQt
-    visuVTKAdaptor
-    visuVTKARAdaptor
+
     activities
     calibrationActivity
-    uiCalibration
-    appXml
+
+    appXml2
+    fwlauncher
+    memory
+
     preferences
-    videoTools
-    ioCalibration
-    videoCalibration
-    launcher
-    uiTools
-    trackerAruco
+    uiPreferences
     )
 
-bundleParam(appXml PARAM_LIST config parameters PARAM_VALUES ARCalibrationBase ARCalibrationAppBase)
+bundleParam(appXml2 PARAM_LIST config parameters PARAM_VALUES ARCalibrationBase ARCalibrationAppBase)

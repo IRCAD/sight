@@ -8,6 +8,7 @@ find_package(aruco REQUIRED)
 
 fwInclude(
     ${Boost_INCLUDE_DIRS}
+    ${OpenCV_INCLUDE_DIRS}
 )
 fwLink(
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
