@@ -86,50 +86,6 @@ function(pch_msvc_hook variable access value current_list_file stack)
 
 endfunction()
 
-function(pch_cxx_hook variable access value current_list_file stack)
-
-    if(NOT CMAKE_PCH_COMPILER_TARGETS)
-        return()
-    endif()
-    list(LENGTH CMAKE_PCH_COMPILER_TARGETS length)
-    foreach(index RANGE -${length} -1)
-        list(GET CMAKE_PCH_COMPILER_TARGETS ${index} target)
-
-        SET(dephelp ${target}_pch_dephelp)
-
-        get_target_property(DIRINC ${target} INCLUDE_DIRECTORIES)
-        list(APPEND listinc ${DIRINC})
-
-        list(APPEND srcTargets ${target})
-        while(srcTargets)
-            list(GET srcTargets 0 srcTarget)
-            list(APPEND visited ${srcTarget})
-            list(REMOVE_AT srcTargets 0)
-            foreach(depends ${${srcTarget}_DEPENDENCIES})
-                list(APPEND targets ${depends})
-
-                list(FIND visited ${depends} targetFound)
-                if(targetFound EQUAL -1)
-                    list(APPEND srcTargets ${depends})
-                endif()
-
-            endforeach()
-        endwhile()
-
-        if(targets)
-            list(REMOVE_DUPLICATES targets)
-        endif()
-
-        foreach(depends ${targets})
-            get_target_property(DIRINC ${depends} INCLUDE_DIRECTORIES)
-            list(APPEND listinc ${DIRINC})
-        endforeach()
-        target_include_directories(${dephelp} SYSTEM PRIVATE "${listinc}")
-        target_compile_options(${dephelp} PRIVATE "-fPIC")
-    endforeach()
-
-endfunction()
-
 function(export_all_flags _filename)
   set(_compile_definitions "$<TARGET_PROPERTY:${_target},COMPILE_DEFINITIONS>")
   set(_include_directories "$<TARGET_PROPERTY:${_target},INCLUDE_DIRECTORIES>")
@@ -156,12 +112,12 @@ endmacro()
 function(add_precompiled_header _target _input)
   cmake_parse_arguments(_PCH "FORCEINCLUDE" "SOURCE_CXX:SOURCE_C" "" ${ARGN})
 
-  get_filename_component(_input_we ${_input} NAME_WE)
-  get_filename_component(_input_pch ${_input} NAME)
-
-  set(_PCH_SOURCE_CXX "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp")
-
   if(MSVC)
+
+    get_filename_component(_input_we ${_input} NAME_WE)
+    get_filename_component(_input_pch ${_input} NAME)
+
+    set(_PCH_SOURCE_CXX "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp")
 
     set(_cxx_path "${CMAKE_CURRENT_BINARY_DIR}/cxx_pch")
     make_directory("${_cxx_path}")
@@ -237,38 +193,40 @@ function(add_precompiled_header _target _input)
     # hopelessly these guys don't manage to get passed by the global CMake switch, add them manually
     list(APPEND CXXFLAGS "-std=gnu++11" "-fPIC")
 
-    if(${CMAKE_GENERATOR} STREQUAL "Ninja")
-        # With Ninja, IMPLICIT_DEPENDS is not supported, thus we have to use an another way to get correct dependencies
-        # so that the pch is recompiled when one of its include file changes.
-        # We mimic what OpenCV does by using a dummy library containing a single source file including the pch, and
-        # then the pch has a dependency on this target.
-        # There is a little overhead obviously but this is the best we can do now, and it is better than using an
-        # outdated pch.
-        set(dephelp_library ${_target}_pch_dephelp)
-        _PCH_WRITE_PCHDEP_CXX(${_target} "${_input}" _pch_dephelp_cxx)
-        ADD_LIBRARY(${dephelp_library} STATIC "${_pch_dephelp_cxx}" "${_input}" )
-        set_target_properties(${dephelp_library} PROPERTIES
-            ARCHIVE_OUTPUT_DIRECTORY "${LIBRARY_OUTPUT_PATH}"
-        )
-    endif()
-
     # Hacky custom command to replace the " in the -D by \"
     add_custom_command(
       OUTPUT "${_pch_flags_file}"
       COMMAND sed 's/"/\\\\"/g' ${_pch_response_file}.in > ${_pch_flags_file}
       DEPENDS "${_pch_flags_file}.in"
       COMMENT "Fixing ${_pch_flags_file}")
-    add_custom_command(
-      OUTPUT "${_pchfile}"
-      COMMAND "${CMAKE_COMMAND}" -E copy "${_pch_header}" "${_pchfile}"
-      DEPENDS "${_pch_header}"
-      IMPLICIT_DEPENDS CXX "${_pch_header}"
-      COMMENT "Updating ${_name}")
-    add_custom_command(
-      OUTPUT "${_output_cxx}"
-      COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} -x c++-header -o "${_output_cxx}" "${_pchfile}" ${CXXFLAGS}
-      DEPENDS "${_pchfile}" "${_pch_flags_file}" "${dephelp_library}"
-      COMMENT "Precompiling ${_name} for ${_target} (C++)")
+
+    if(${CMAKE_GENERATOR} STREQUAL "Ninja")
+      # Ninja generator does not support IMPLICIT_DEPENDS, thus we have to use an another way to get correct
+      # dependencies so that the pch is recompiled when one of its include file changes.
+      # We generate the dependencies file manually with the compiler
+      file(RELATIVE_PATH relative_output_cxx "${CMAKE_BINARY_DIR}" "${_output_cxx}")
+
+      add_custom_command(
+        OUTPUT "${_pch_binary_dir}/pch.d"
+        COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} ${CXXFLAGS} -M -MF "${_pch_binary_dir}/pch.d" "${_pch_header}"
+        COMMAND sed -i 's|pch.o|${relative_output_cxx}|' "${_pch_binary_dir}/pch.d"
+        DEPENDS "${_pch_header}" "${_pch_flags_file}"
+        COMMENT "Generating pch deps file for ${_target} (C++)")
+      add_custom_command(
+        OUTPUT "${_output_cxx}"
+        COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} -x c++-header -o "${_output_cxx}" "${_pch_header}" ${CXXFLAGS}
+        DEPENDS "${_pch_header}" "${_pch_flags_file}" "${_pch_binary_dir}/pch.d"
+        DEPFILE "${_pch_binary_dir}/pch.d"
+        COMMENT "Precompiling ${_name} for ${_target} (C++)")
+    else()
+      add_custom_command(
+        OUTPUT "${_output_cxx}"
+        COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} -x c++-header -o "${_output_cxx}" "${_pch_header}" ${CXXFLAGS}
+        DEPENDS "${_pch_header}" "${_pch_flags_file}"
+        IMPLICIT_DEPENDS CXX "${_pch_header}"
+        COMMENT "Precompiling ${_name} for ${_target} (C++)")
+    endif()
+
 
     get_property(_sources TARGET ${_target} PROPERTY SOURCES)
     foreach(_source ${_sources})
@@ -284,14 +242,14 @@ function(add_precompiled_header _target _input)
         if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
             list(APPEND _pch_compile_flags -include-pch "${_output_cxx}")
         else()
-            list(INSERT _pch_compile_flags 0 -include "${_pchfile}")
+            list(INSERT _pch_compile_flags 0 -include "${_pch_header}")
         endif()
 
         get_source_file_property(_object_depends "${_source}" OBJECT_DEPENDS)
         if(NOT _object_depends)
           set(_object_depends)
         endif()
-        list(APPEND _object_depends "${_pchfile}")
+        list(APPEND _object_depends "${_pch_header}")
         if(_source MATCHES \\.\(cc|cxx|cpp\)$)
           list(APPEND _object_depends "${_output_cxx}")
         else()
@@ -306,22 +264,3 @@ function(add_precompiled_header _target _input)
     endforeach()
   endif()
 endfunction()
-
-macro(_PCH_WRITE_PCHDEP_CXX _target _include_file _dephelp)
-
-    set(${_dephelp} ${CMAKE_CURRENT_BINARY_DIR}/${_target}_pch_dephelp.cxx)
-    add_custom_command(
-      OUTPUT "${${_dephelp}}"
-      COMMAND ${CMAKE_COMMAND} -E echo "\\#include \\\"${_include_file}\\\"" >  "${${_dephelp}}"
-      COMMAND ${CMAKE_COMMAND} -E echo "int testfunction\\(\\)\\;"         >> "${${_dephelp}}"
-      COMMAND ${CMAKE_COMMAND} -E echo "int testfunction\\(\\)"            >> "${${_dephelp}}"
-      COMMAND ${CMAKE_COMMAND} -E echo "{"                                 >> "${${_dephelp}}"
-      COMMAND ${CMAKE_COMMAND} -E echo "    \\return 0\\;"                 >> "${${_dephelp}}"
-      COMMAND ${CMAKE_COMMAND} -E echo "}"                                 >> "${${_dephelp}}"
-      DEPENDS "${_include_file}"
-      )
-
-      list(APPEND CMAKE_PCH_COMPILER_TARGETS ${_target})
-      set(CMAKE_PCH_COMPILER_TARGETS "${CMAKE_PCH_COMPILER_TARGETS}" PARENT_SCOPE)
-
-endmacro(_PCH_WRITE_PCHDEP_CXX )
