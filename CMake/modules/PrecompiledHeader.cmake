@@ -100,6 +100,41 @@ function(export_all_flags _filename)
   file(GENERATE OUTPUT "${_filename}" CONTENT "${_compile_definitions}${_include_directories}${_compile_flags}${_compile_options}${_define_symbol}\n")
 endfunction()
 
+function(assign_precompiled_header _target _pch _pch_header)
+
+    get_property(_sources TARGET ${_target} PROPERTY SOURCES)
+    foreach(_source ${_sources})
+        set(_pch_compile_flags "")
+
+        if(_source MATCHES \\.\(cc|cxx|cpp\)$)
+            get_source_file_property(_pch_compile_flags "${_source}" COMPILE_FLAGS)
+            if(NOT _pch_compile_flags)
+                set(_pch_compile_flags)
+            endif()
+            separate_arguments(_pch_compile_flags)
+            list(APPEND _pch_compile_flags -Winvalid-pch)
+            if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+                list(APPEND _pch_compile_flags -include-pch "${_pch}")
+            else()
+                # TODO: Test!
+                list(INSERT _pch_compile_flags 0 -include "${_pch_header}")
+            endif()
+
+            get_source_file_property(_object_depends "${_source}" OBJECT_DEPENDS)
+            if(NOT _object_depends)
+                set(_object_depends)
+            endif()
+            list(APPEND _object_depends "${_pch}")
+
+            combine_arguments(_pch_compile_flags)
+            set_source_files_properties(${_source} PROPERTIES
+                COMPILE_FLAGS "${_pch_compile_flags}"
+                OBJECT_DEPENDS "${_object_depends}")
+        endif()
+    endforeach()
+
+endfunction()
+
 macro(add_precompiled_header_cpp _target)
   if(MSVC)
     list(APPEND ${FWPROJECT_NAME}_SOURCES
@@ -113,7 +148,6 @@ function(add_precompiled_header _target _input)
   cmake_parse_arguments(_PCH "FORCEINCLUDE" "SOURCE_CXX:SOURCE_C" "" ${ARGN})
 
   if(MSVC)
-
     get_filename_component(_input_we ${_input} NAME_WE)
     get_filename_component(_input_pch ${_input} NAME)
 
@@ -227,40 +261,61 @@ function(add_precompiled_header _target _input)
         COMMENT "Precompiling ${_name} for ${_target} (C++)")
     endif()
 
-
-    get_property(_sources TARGET ${_target} PROPERTY SOURCES)
-    foreach(_source ${_sources})
-      set(_pch_compile_flags "")
-
-      if(_source MATCHES \\.\(cc|cxx|cpp|c\)$)
-        get_source_file_property(_pch_compile_flags "${_source}" COMPILE_FLAGS)
-        if(NOT _pch_compile_flags)
-          set(_pch_compile_flags)
-        endif()
-        separate_arguments(_pch_compile_flags)
-        list(APPEND _pch_compile_flags -Winvalid-pch)
-        if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-            list(APPEND _pch_compile_flags -include-pch "${_output_cxx}")
-        else()
-            list(INSERT _pch_compile_flags 0 -include "${_pch_header}")
-        endif()
-
-        get_source_file_property(_object_depends "${_source}" OBJECT_DEPENDS)
-        if(NOT _object_depends)
-          set(_object_depends)
-        endif()
-        list(APPEND _object_depends "${_pch_header}")
-        if(_source MATCHES \\.\(cc|cxx|cpp\)$)
-          list(APPEND _object_depends "${_output_cxx}")
-        else()
-          list(APPEND _object_depends "${_output_c}")
-        endif()
-
-        combine_arguments(_pch_compile_flags)
-        set_source_files_properties(${_source} PROPERTIES
-          COMPILE_FLAGS "${_pch_compile_flags}"
-          OBJECT_DEPENDS "${_object_depends}")
-      endif()
-    endforeach()
+    assign_precompiled_header(${_target} ${_output_cxx} ${_pch_header})
   endif()
+endfunction()
+
+function(use_precompiled_header _target _input)
+    cmake_parse_arguments(_PCH "FORCEINCLUDE" "SOURCE_CXX:SOURCE_C" "" ${ARGN})
+
+    # TODO: Test!
+    if(MSVC)
+        get_filename_component(_input_we ${_input} NAME_WE)
+        get_filename_component(_input_pch ${_input} NAME)
+
+        set(_cxx_path "${CMAKE_CURRENT_BINARY_DIR}/cxx_pch")
+        set(_pch_cxx_header "${CMAKE_CURRENT_SOURCE_DIR}/include/${_target}/pch.hpp")
+        set(_pch_cxx_pch "${_cxx_path}/${_input_we}.pch")
+
+        get_target_property(sources ${_target} SOURCES)
+        foreach(_source ${sources})
+            set(_pch_compile_flags "")
+            if(_source MATCHES \\.\(cc|cxx|cpp\)$)
+
+                set(_pch_compile_flags "${_pch_compile_flags} \"/Fp${_pch_cxx_pch}\" /Yu${_input}")
+                set_source_files_properties("${_source}" PROPERTIES OBJECT_DEPENDS "${_pch_cxx_pch}")
+                # Force the include of the PCH on every source file
+                set(_pch_compile_flags "${_pch_compile_flags} /FI${_input}")
+
+                get_source_file_property(_object_depends "${_source}" OBJECT_DEPENDS)
+                if(NOT _object_depends)
+                    set(_object_depends)
+                endif()
+
+                # TODO is this needed ?
+                list(APPEND _object_depends "${_pch_cxx_header}")
+
+                set_source_files_properties(${_source}  PROPERTIES
+                                                        COMPILE_FLAGS "${_pch_compile_flags}"
+                                                        OBJECT_DEPENDS "${_object_depends}")
+            endif()
+        endforeach()
+    endif(MSVC)
+
+    if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+        get_filename_component(_name ${_input} NAME)
+        set(_pch_binary_dir "${CMAKE_BINARY_DIR}")
+        set(_pchfile "${_pch_binary_dir}/${_input}/include/${_input}/pch.hpp")
+        set(_pch_header "${_input}/pch.hpp")
+
+        if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+            set(_outdir "${_pchfile}.pch")
+        else()
+            set(_outdir "${_pchfile}.gch")
+        endif()
+        set(_output_cxx "${_outdir}")
+
+        assign_precompiled_header(${_target} ${_output_cxx} ${_pch_header})
+
+    endif()
 endfunction()
