@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,18 +7,15 @@
 #ifndef __FWATOMSPATCH_VERSIONSGRAPH_HPP__
 #define __FWATOMSPATCH_VERSIONSGRAPH_HPP__
 
-
-#include <boost/graph/graph_traits.hpp>
-#include <boost/graph/adjacency_list.hpp>
+#include "fwAtomsPatch/LinkDescriptor.hpp"
+#include "fwAtomsPatch/VersionDescriptor.hpp"
+#include "fwAtomsPatch/config.hpp"
 
 #include <fwCore/BaseObject.hpp>
 #include <fwCore/mt/types.hpp>
 
-#include "fwAtomsPatch/VersionDescriptor.hpp"
-#include "fwAtomsPatch/LinkDescriptor.hpp"
-
-#include "fwAtomsPatch/config.hpp"
-
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/graph_traits.hpp>
 
 namespace fwAtomsPatch
 {
@@ -101,7 +98,7 @@ public:
     /**
      * @brief Get connected versions
      */
-    FWATOMSPATCH_API std::vector< std::string > getConnectedVersions(const std::string &currentVersion);
+    FWATOMSPATCH_API std::vector< std::string > getConnectedVersions(const std::string& currentVersion);
 
 private:
 

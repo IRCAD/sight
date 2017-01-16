@@ -8,8 +8,10 @@
 #define __FWTOOLS_PCH_HPP__
 
 #include <fwCore/base.hpp>
+#include <fwCore/mt/types.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <boost/filesystem.hpp>
+#include <boost/graph/named_graph.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/mpl/accumulate.hpp>
 #include <boost/mpl/apply.hpp>
@@ -22,5 +24,9 @@
 #include <boost/mpl/transform.hpp>
 #include <boost/mpl/vector.hpp>
 #include <boost/type_traits.hpp>
+
+#include <exception>
+#include <map>
+#include <vector>
 
 #endif // __FWTOOLS_PCH_HPP__

@@ -21,3 +21,4 @@ set( REQUIREMENTS
     servicesReg
     visuVTK
 )
+set( USE_PCH_FROM_TARGET fwRenderVTK )

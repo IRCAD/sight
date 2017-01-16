@@ -7,6 +7,9 @@
 #ifndef __FWATOMS_PCH_HPP__
 #define __FWATOMS_PCH_HPP__
 
-#include "fwAtoms/Base.hpp"
+#include <fwCore/base.hpp>
+#include <fwCore/util/FactoryRegistry.hpp>
+
+#include <boost/lexical_cast.hpp>
 
 #endif // __FWATOMS_PCH_HPP__

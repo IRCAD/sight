@@ -7,6 +7,29 @@
 #ifndef __FWRENDERVTK_PCH_HPP__
 #define __FWRENDERVTK_PCH_HPP__
 
-#include <fwServices/IService.hpp>
+// Cause an internal compiler error on windows...
+#ifndef _WIN32
+#include <fwCom/HasSlots.hpp>
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+#endif // _WIN32
+
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
+
+#include <fwServices/macros.hpp>
+
+#include <vtkActor.h>
+#include <vtkCellPicker.h>
+#include <vtkCommand.h>
+#include <vtkMatrix4x4.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkRenderer.h>
+#include <vtkSmartPointer.h>
+#include <vtkTransform.h>
 
 #endif // __FWRENDERVTK_PCH_HPP__
