@@ -7,7 +7,7 @@ addons:
     - git
 branches:
     only:
-        - fw4spl_0.11.0
+        - dev
 compiler:
     - gcc
 before_script:
