@@ -15,11 +15,6 @@
 #include <tchar.h>
 #include <windows.h>
 
-#include <boost/filesystem/convenience.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/regex.hpp>
-
 #include <iomanip>
 #include <iostream>
 
@@ -42,16 +37,16 @@ Win32MemoryMonitorTools::~Win32MemoryMonitorTools()
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t Win32MemoryMonitorTools::estimateFreeMem()
+std::uint64_t Win32MemoryMonitorTools::estimateFreeMem()
 {
-    ::boost::uint64_t freeMemory = 0;
+    std::uint64_t freeMemory = 0;
 #ifdef _M_X64
     freeMemory = getFreeSystemMemory();
 #else
-    ::boost::uint64_t windowsLimitForAProcess = 1.2 * 1024 * 1024 * 1024; // 1.5 Go
-    ::boost::uint64_t freeMem                 = std::min(
+    std::uint64_t windowsLimitForAProcess = 1.2 * 1024 * 1024 * 1024; // 1.5 Go
+    std::uint64_t freeMem                 = std::min(
         getFreeSystemMemory(), windowsLimitForAProcess - getUsedProcessMemory());
-    freeMemory = std::max((::boost::uint64_t) 0, freeMem );
+    freeMemory = std::max((std::uint64_t) 0, freeMem );
 #endif
     return freeMemory;
 }
@@ -115,7 +110,7 @@ void Win32MemoryMonitorTools::printProcessMemoryInformation()
 
 void Win32MemoryMonitorTools::printSystemMemoryInformation()
 {
-    ::boost::uint64_t oToKo = 1024;
+    std::uint64_t oToKo = 1024;
 
     MEMORYSTATUSEX statex;
 
@@ -142,7 +137,7 @@ void Win32MemoryMonitorTools::printMemoryInformation()
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t Win32MemoryMonitorTools::getTotalSystemMemory()
+std::uint64_t Win32MemoryMonitorTools::getTotalSystemMemory()
 {
     MEMORYSTATUSEX statex;
 
@@ -154,7 +149,7 @@ void Win32MemoryMonitorTools::printMemoryInformation()
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t Win32MemoryMonitorTools::getUsedSystemMemory()
+std::uint64_t Win32MemoryMonitorTools::getUsedSystemMemory()
 {
     MEMORYSTATUSEX statex;
 
@@ -166,7 +161,7 @@ void Win32MemoryMonitorTools::printMemoryInformation()
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t Win32MemoryMonitorTools::getFreeSystemMemory()
+std::uint64_t Win32MemoryMonitorTools::getFreeSystemMemory()
 {
     MEMORYSTATUSEX statex;
 
@@ -178,9 +173,9 @@ void Win32MemoryMonitorTools::printMemoryInformation()
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t Win32MemoryMonitorTools::getUsedProcessMemory()
+std::uint64_t Win32MemoryMonitorTools::getUsedProcessMemory()
 {
-    ::boost::uint64_t memory = 0;
+    std::uint64_t memory = 0;
 
     BOOL result;
     PROCESS_MEMORY_COUNTERS_EX pmc;

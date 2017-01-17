@@ -7,7 +7,6 @@
 #ifndef __FWCOMMAND_PCH_HPP__
 #define __FWCOMMAND_PCH_HPP__
 
-#include <fwTools/Object.hpp>
-#include <fwTools/macros.hpp>
+#include "fwCommand/ICommand.hpp"
 
 #endif // __FWCOMMAND_PCH_HPP__

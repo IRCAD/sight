@@ -10,11 +10,6 @@
 
 #include <fwCore/base.hpp>
 
-#include <boost/filesystem/convenience.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/regex.hpp>
-
 #include <mach/mach.h>
 #include <mach/mach_host.h>
 #include <mach/mach_init.h>
@@ -46,9 +41,9 @@ DarwinMemoryMonitorTools::~DarwinMemoryMonitorTools()
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t DarwinMemoryMonitorTools::estimateFreeMem()
+std::uint64_t DarwinMemoryMonitorTools::estimateFreeMem()
 {
-    ::boost::uint64_t freeMemory = 0;
+    std::uint64_t freeMemory = 0;
 
     freeMemory = getFreeSystemMemory();
 
@@ -65,10 +60,10 @@ DarwinMemoryMonitorTools::~DarwinMemoryMonitorTools()
     }
 
     // Hard coded 3Gb limit for 32bit process
-    const ::boost::uint64_t maxMemory         = 3221225472LL; // 3 Go
-    const ::boost::uint64_t usedProcessMemory = getUsedProcessMemory();
+    const std::uint64_t maxMemory         = 3221225472LL; // 3 Go
+    const std::uint64_t usedProcessMemory = getUsedProcessMemory();
     freeMemory = std::min( maxMemory - usedProcessMemory, freeMemory);
-    const ::boost::uint64_t maxVMemory = 4294967296LL; // 4 Go
+    const std::uint64_t maxVMemory = 4294967296LL; // 4 Go
     freeMemory = std::min( maxVMemory - t_info.virtual_size, freeMemory);
 #endif
 
@@ -97,7 +92,7 @@ void DarwinMemoryMonitorTools::printMemoryInformation()
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t DarwinMemoryMonitorTools::getTotalSystemMemory()
+std::uint64_t DarwinMemoryMonitorTools::getTotalSystemMemory()
 {
     static int64_t physical_memory = 0;
 
@@ -115,7 +110,7 @@ void DarwinMemoryMonitorTools::printMemoryInformation()
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t DarwinMemoryMonitorTools::getUsedSystemMemory()
+std::uint64_t DarwinMemoryMonitorTools::getUsedSystemMemory()
 {
     vm_size_t page_size;
     mach_port_t mach_port;
@@ -141,7 +136,7 @@ void DarwinMemoryMonitorTools::printMemoryInformation()
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t DarwinMemoryMonitorTools::getFreeSystemMemory()
+std::uint64_t DarwinMemoryMonitorTools::getFreeSystemMemory()
 {
     vm_size_t page_size;
     mach_port_t mach_port;
@@ -166,7 +161,7 @@ void DarwinMemoryMonitorTools::printMemoryInformation()
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t DarwinMemoryMonitorTools::getUsedProcessMemory()
+std::uint64_t DarwinMemoryMonitorTools::getUsedProcessMemory()
 {
     struct task_basic_info t_info;
     mach_msg_type_number_t t_info_count = TASK_BASIC_INFO_COUNT;

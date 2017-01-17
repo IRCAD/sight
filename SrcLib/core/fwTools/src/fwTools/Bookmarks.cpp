@@ -6,12 +6,7 @@
 
 #include "fwTools/Bookmarks.hpp"
 
-#include "fwTools/Failed.hpp"
 #include "fwTools/Object.hpp"
-
-#include <fwCore/Demangler.hpp>
-
-#include <boost/lexical_cast.hpp>
 
 namespace fwTools
 {

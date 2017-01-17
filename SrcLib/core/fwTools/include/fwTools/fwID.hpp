@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,15 +7,14 @@
 #ifndef __FWTOOLS_FWID_HPP__
 #define __FWTOOLS_FWID_HPP__
 
-#include <string>
-
-#include <boost/unordered_map.hpp>
+#include "fwTools/config.hpp"
 
 #include <fwCore/base.hpp>
 #include <fwCore/mt/types.hpp>
 
-#include "fwTools/config.hpp"
-#include "fwTools/macros.hpp"
+#include <boost/unordered_map.hpp>
+
+#include <string>
 
 namespace fwTools
 {
@@ -23,9 +22,6 @@ namespace fwTools
 class Object;
 /**
  * @brief   Defines ID for fwTools::Object. It is used to associate ID with object.
- * @class   fwID
- *
- * @date    2007-2012.
  */
 class FWTOOLS_CLASS_API fwID
 {
@@ -34,7 +30,6 @@ public:
     fwCoreNonInstanciableClassDefinitionsMacro( (fwID) );
 
     typedef std::string IDType;
-
 
     typedef enum
     {
@@ -71,14 +66,13 @@ protected:
     /**
      * @brief Returns the id of the object. If it is not set and the policy value is
      * \li EMPTY then an empty id is returned
-     * \li GENERATE (default) then a new ID will be generated (and recorded ) using the pattern "CLASSNAME-NUM". NUM is always increasing
+     * \li GENERATE (default) then a new ID will be generated (and recorded ) using the pattern "CLASSNAME-NUM". NUM is
+     * always increasing
      * \li MUST_EXIST then an exception Failed is raised
      * @note We consider an object be constant whatever if its id is generated.
      * @note This method is thread-safe.
      */
     FWTOOLS_API IDType getID( Policy policy = GENERATE ) const;
-
-
 
     /**
      * @brief Set a newID  for the object, (newID must not exist in fwID), the oldest one is released.
@@ -99,7 +93,6 @@ protected:
     fwID()
     {
     }          // cannot be instantiated
-
 
 private:
 
@@ -146,6 +139,5 @@ private:
 };
 
 }
-
 
 #endif /* __FWTOOLS_FWID_HPP__ */

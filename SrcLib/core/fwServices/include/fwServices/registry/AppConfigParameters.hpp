@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,19 +7,17 @@
 #ifndef __FWSERVICES_REGISTRY_APPCONFIGPARAMETERS_HPP__
 #define __FWSERVICES_REGISTRY_APPCONFIGPARAMETERS_HPP__
 
-#include <map>
+#include "fwServices/config.hpp"
+#include "fwServices/registry/AppConfig.hpp"
 
 #include <fwCore/mt/types.hpp>
 
-#include <fwTools/Object.hpp>
-#include <fwTools/macros.hpp>
-
-#include <fwRuntime/EConfigurationElement.hpp>
 #include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRuntime/EConfigurationElement.hpp>
 
-#include "fwServices/config.hpp"
+#include <fwTools/Object.hpp>
 
-#include "fwServices/registry/AppConfig.hpp"
+#include <map>
 
 namespace fwServices
 {
@@ -55,7 +53,7 @@ public:
      * @brief Get the parameters associated to extension id.
      * @note This method is thread safe.
      **/
-    FWSERVICES_API const FieldAdaptorType & getParameters( const std::string & extensionId ) const;
+    FWSERVICES_API const FieldAdaptorType& getParameters( const std::string& extensionId ) const;
 
     /**
      * @brief Clear the registry.
@@ -79,7 +77,6 @@ protected:
     /// The global instance of the app config parameters.
     static AppConfigParameters::sptr s_appConfigParameters;
 
-
 };
 
 } // namespace registry
@@ -87,5 +84,4 @@ protected:
 } // namespace fwServices
 
 #endif // __FWSERVICES_REGISTRY_APPCONFIGPARAMETERS_HPP__
-
 

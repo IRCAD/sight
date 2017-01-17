@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,10 @@
 #ifndef __FWRENDERVTK_FACTORY_NEW_HPP__
 #define __FWRENDERVTK_FACTORY_NEW_HPP__
 
-#include <string>
-
-
-#include <fwTools/macros.hpp>
-
 #include "fwRenderVTK/config.hpp"
 #include "fwRenderVTK/registry/detail.hpp"
+
+#include <string>
 
 namespace fwRenderVTK
 {
@@ -22,7 +19,6 @@ class IVtkRenderWindowInteractorManager;
 
 namespace factory
 {
-
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New();
 
@@ -40,10 +36,8 @@ Key()
 }
 };
 
-
 FWRENDERVTK_API SPTR( ::fwRenderVTK::IVtkRenderWindowInteractorManager ) New(
     const ::fwRenderVTK::registry::KeyType & classname );
-
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
@@ -56,5 +50,4 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New()
 } // namespace fwRenderVTK
 
 #endif /* __FWRENDERVTK_FACTORY_NEW_HPP__ */
-
 

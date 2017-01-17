@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,10 +9,10 @@
 
 #if defined(linux) || defined(__linux)
 
-#include <boost/cstdint.hpp>
-#include <string>
-
 #include "fwMemory/config.hpp"
+
+#include <cstdint>
+#include <string>
 
 namespace fwMemory
 {
@@ -23,13 +23,13 @@ namespace tools
 
 struct MemInfo {
 
-    ::boost::uint64_t total;
-    ::boost::uint64_t free;
-    ::boost::uint64_t buffered;
-    ::boost::uint64_t cached;
-    ::boost::uint64_t swapcached;
-    ::boost::uint64_t swaptotal;
-    ::boost::uint64_t swapfree;
+    std::uint64_t total;
+    std::uint64_t free;
+    std::uint64_t buffered;
+    std::uint64_t cached;
+    std::uint64_t swapcached;
+    std::uint64_t swaptotal;
+    std::uint64_t swapfree;
 
     MemInfo()
     {
@@ -48,16 +48,16 @@ struct MemInfo {
 
 struct Status {
 
-    ::boost::uint64_t VmPeak;
-    ::boost::uint64_t VmSize;
-    ::boost::uint64_t VmLck;
-    ::boost::uint64_t VmHWM;
-    ::boost::uint64_t VmRSS;
-    ::boost::uint64_t VmData;
-    ::boost::uint64_t VmStk;
-    ::boost::uint64_t VmExe;
-    ::boost::uint64_t VmLib;
-    ::boost::uint64_t VmPTE;
+    std::uint64_t VmPeak;
+    std::uint64_t VmSize;
+    std::uint64_t VmLck;
+    std::uint64_t VmHWM;
+    std::uint64_t VmRSS;
+    std::uint64_t VmData;
+    std::uint64_t VmStk;
+    std::uint64_t VmExe;
+    std::uint64_t VmLib;
+    std::uint64_t VmPTE;
 
     Status()
     {
@@ -86,11 +86,7 @@ public:
 
     FWMEMORY_API ~PosixMemoryMonitorTools();
 
-
-
-    FWMEMORY_API static ::boost::uint64_t estimateFreeMem();
-
-
+    FWMEMORY_API static std::uint64_t estimateFreeMem();
 
     FWMEMORY_API static void printProcessMemoryInformation();
 
@@ -98,38 +94,34 @@ public:
 
     FWMEMORY_API static void printMemoryInformation();
 
+    FWMEMORY_API static std::uint64_t getTotalSystemMemory();
 
+    FWMEMORY_API static std::uint64_t getUsedSystemMemory();
 
-    FWMEMORY_API static ::boost::uint64_t getTotalSystemMemory();
+    FWMEMORY_API static std::uint64_t getFreeSystemMemory();
 
-    FWMEMORY_API static ::boost::uint64_t getUsedSystemMemory();
-
-    FWMEMORY_API static ::boost::uint64_t getFreeSystemMemory();
-
-
-
-    FWMEMORY_API static ::boost::uint64_t getUsedProcessMemory();
+    FWMEMORY_API static std::uint64_t getUsedProcessMemory();
 
 private:
 
-    static ::boost::uint64_t s_pageSize;
-    static ::boost::uint64_t s_totalMemory;
+    static std::uint64_t s_pageSize;
+    static std::uint64_t s_totalMemory;
 
     /* Extract numbers from a string between the start and end indices */
-    static ::boost::uint64_t extract_number( char *str, int start, int end );
+    static std::uint64_t extract_number( char* str, int start, int end );
 
     /* Parse the contents of /proc/meminfo file into the meminfo structure */
-    static void get_memory_stats( MemInfo & meminfo );
+    static void get_memory_stats( MemInfo& meminfo );
 
-    static void printStatus( Status & stat );
+    static void printStatus( Status& stat );
 
-    static void analyseMemInfo( std::string & line, MemInfo & meminfo );
+    static void analyseMemInfo( std::string& line, MemInfo& meminfo );
 
-    static void analyseStatusLine( std::string & line, Status & stat );
+    static void analyseStatusLine( std::string& line, Status& stat );
 
-    static void getStatusOfPid( int pid, Status & stat);
+    static void getStatusOfPid( int pid, Status& stat);
 
-    static void getAllStatus(Status & allStat);
+    static void getAllStatus(Status& allStat);
 
     static void printAllStatus();
 };

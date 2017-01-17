@@ -7,6 +7,8 @@
 #ifndef __FWMEMORY_PCH_HPP__
 #define __FWMEMORY_PCH_HPP__
 
+#include "fwMemory/policy/registry/macros.hpp"
+
 #include <fwCore/base.hpp>
 
 #endif // __FWMEMORY_PCH_HPP__

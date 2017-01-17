@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,21 +7,19 @@
 #ifndef __FWTOOLS_PROGRESSTOLOGGER_HPP__
 #define __FWTOOLS_PROGRESSTOLOGGER_HPP__
 
-#include <string>
 #include <fwTools/config.hpp>
 
-#include <boost/weak_ptr.hpp>
 #include <boost/signals2.hpp>
+
+#include <string>
 
 namespace fwTools
 {
 
 /**
- * @brief   Class ProgressToLogger is an ProgressAdviser::ProgressHandler, it receive notification from its ProgressAdviser
+ * @brief   Class ProgressToLogger is an ProgressAdviser::ProgressHandler, it receive notification from its
+ * ProgressAdviser
  * and send the progress to the logging system ( SpyLog )
- * @class   ProgressToLogger
- *
- * @date    2007-2009.
  */
 class FWTOOLS_CLASS_API ProgressToLogger  : public ::boost::signals2::trackable
 {

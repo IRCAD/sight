@@ -28,7 +28,6 @@
 #include <fwCore/base.hpp>
 #include <fwCore/mt/types.hpp>
 
-#include <fwTools/DynamicAttributes.hxx>
 #include <fwTools/Object.hpp>
 
 #include <string>
@@ -47,7 +46,6 @@ namespace fwData
  * containing a specific Object. When accessing to this object with getField("dummy") we get the specific Object
  */
 class FWDATA_CLASS_API Object  : public ::fwTools::Object,
-                                 public ::fwTools::DynamicAttributes< ::fwData::Object >,
                                  public ::fwCom::HasSignals
 {
 public:

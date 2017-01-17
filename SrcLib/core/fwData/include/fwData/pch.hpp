@@ -17,7 +17,6 @@
 #include <fwCore/base.hpp>
 #include <fwCore/mt/types.hpp>
 
-#include <fwTools/DynamicAttributes.hxx>
 #include <fwTools/Object.hpp>
 
 #include <string>

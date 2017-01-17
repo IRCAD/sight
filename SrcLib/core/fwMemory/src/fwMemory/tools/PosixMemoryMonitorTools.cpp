@@ -38,8 +38,8 @@ namespace fwMemory
 namespace tools
 {
 
-::boost::uint64_t PosixMemoryMonitorTools::s_pageSize    = sysconf(_SC_PAGE_SIZE);
-::boost::uint64_t PosixMemoryMonitorTools::s_totalMemory = sysconf(_SC_PHYS_PAGES) * s_pageSize;
+std::uint64_t PosixMemoryMonitorTools::s_pageSize    = sysconf(_SC_PAGE_SIZE);
+std::uint64_t PosixMemoryMonitorTools::s_totalMemory = sysconf(_SC_PHYS_PAGES) * s_pageSize;
 
 //-----------------------------------------------------------------------------
 
@@ -55,12 +55,12 @@ PosixMemoryMonitorTools::~PosixMemoryMonitorTools()
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t PosixMemoryMonitorTools::estimateFreeMem()
+std::uint64_t PosixMemoryMonitorTools::estimateFreeMem()
 {
-    ::boost::uint64_t freeMemory = 0;
+    std::uint64_t freeMemory = 0;
 
-//  ::boost::uint64_t systemMemoryAverageInNormalCase = 500 * 1024 * 1024; // 500 Mo
-//  ::boost::uint64_t memoryUsedByProcess = MemoryMonitor::getDefault()->totalUsedSizeInBytes()
+//  std::uint64_t systemMemoryAverageInNormalCase = 500 * 1024 * 1024; // 500 Mo
+//  std::uint64_t memoryUsedByProcess = MemoryMonitor::getDefault()->totalUsedSizeInBytes()
 //                                          + 50 * 1024 * 1024; // + 50 Mo of librairies;
 //  freeMemory = ( getTotalSystemMemory() < systemMemoryAverageInNormalCase + memoryUsedByProcess?
 //                 0:
@@ -87,7 +87,7 @@ void PosixMemoryMonitorTools::printSystemMemoryInformation()
 {
     MemInfo memory;
     get_memory_stats(memory);
-    ::boost::uint64_t oToKMo = 1024*1024;
+    std::uint64_t oToKMo = 1024*1024;
 
     OSLM_INFO("Total memory: " << memory.total/oToKMo<< " Mo");
     OSLM_INFO("Free memory:  " << memory.free/oToKMo << " Mo");
@@ -101,8 +101,8 @@ void PosixMemoryMonitorTools::printSystemMemoryInformation()
     getAllStatus( allStat );
     printStatus( allStat );
 
-    ::boost::uint64_t computedFree = ( memory.total - allStat.VmRSS ) / oToKMo;
-    ::boost::uint64_t free         = memory.free / oToKMo;
+    std::uint64_t computedFree = ( memory.total - allStat.VmRSS ) / oToKMo;
+    std::uint64_t free         = memory.free / oToKMo;
     OSLM_INFO(  "(ComputedFree, Free, Diff) - ( "
                 << std::setw(5) << computedFree
                 << std::setw(5) << free
@@ -122,21 +122,21 @@ void PosixMemoryMonitorTools::printMemoryInformation()
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t PosixMemoryMonitorTools::getTotalSystemMemory()
+std::uint64_t PosixMemoryMonitorTools::getTotalSystemMemory()
 {
     return s_totalMemory;
 }
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t PosixMemoryMonitorTools::getUsedSystemMemory()
+std::uint64_t PosixMemoryMonitorTools::getUsedSystemMemory()
 {
     return getTotalSystemMemory() - getFreeSystemMemory();
 }
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t PosixMemoryMonitorTools::getFreeSystemMemory()
+std::uint64_t PosixMemoryMonitorTools::getFreeSystemMemory()
 {
     //Status allStat;
     //getAllStatus( allStat );
@@ -147,7 +147,7 @@ void PosixMemoryMonitorTools::printMemoryInformation()
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t PosixMemoryMonitorTools::getUsedProcessMemory()
+std::uint64_t PosixMemoryMonitorTools::getUsedProcessMemory()
 {
     Status stat;
     getStatusOfPid( getpid(), stat );
@@ -158,7 +158,7 @@ void PosixMemoryMonitorTools::printMemoryInformation()
 
 //------------------------------------------------------------------------------
 
-::boost::uint64_t PosixMemoryMonitorTools::extract_number(char* str, int start, int end)
+std::uint64_t PosixMemoryMonitorTools::extract_number(char* str, int start, int end)
 {
     int i, j;
     char buf[end-start];
@@ -220,37 +220,37 @@ void PosixMemoryMonitorTools::analyseMemInfo( std::string& line, MemInfo& meminf
     if ( line.find("MemTotal") != std::string::npos )
     {
         std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
-        meminfo.total = ::boost::lexical_cast< ::boost::uint64_t >(size) * 1024;
+        meminfo.total = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("MemFree") != std::string::npos )
     {
         std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
-        meminfo.free = ::boost::lexical_cast< ::boost::uint64_t >(size) * 1024;
+        meminfo.free = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("Buffers") != std::string::npos )
     {
         std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
-        meminfo.buffered = ::boost::lexical_cast< ::boost::uint64_t >(size) * 1024;
+        meminfo.buffered = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("SwapCached") != std::string::npos ) // Test before => line.find("Cached")
     {
         std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
-        meminfo.swapcached = ::boost::lexical_cast< ::boost::uint64_t >(size) * 1024;
+        meminfo.swapcached = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("Cached") != std::string::npos )
     {
         std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
-        meminfo.cached = ::boost::lexical_cast< ::boost::uint64_t >(size) * 1024;
+        meminfo.cached = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("SwapTotal") != std::string::npos )
     {
         std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
-        meminfo.swaptotal = ::boost::lexical_cast< ::boost::uint64_t >(size) * 1024;
+        meminfo.swaptotal = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("SwapFree") != std::string::npos )
     {
         std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
-        meminfo.swapfree = ::boost::lexical_cast< ::boost::uint64_t >(size) * 1024;
+        meminfo.swapfree = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
 }
 
@@ -282,52 +282,52 @@ void PosixMemoryMonitorTools::analyseStatusLine( std::string& line, Status& stat
     if ( line.find("VmPeak") != std::string::npos )
     {
         std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
-        stat.VmPeak = ::boost::lexical_cast< ::boost::uint64_t >(size) * 1024;
+        stat.VmPeak = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("VmSize") != std::string::npos )
     {
         std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
-        stat.VmSize = ::boost::lexical_cast< ::boost::uint64_t >(size) * 1024;
+        stat.VmSize = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("VmLck") != std::string::npos )
     {
         std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
-        stat.VmLck = ::boost::lexical_cast< ::boost::uint64_t >(size) * 1024;
+        stat.VmLck = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("VmHWM") != std::string::npos )
     {
         std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
-        stat.VmHWM = ::boost::lexical_cast< ::boost::uint64_t >(size) * 1024;
+        stat.VmHWM = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("VmRSS") != std::string::npos )
     {
         std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
-        stat.VmRSS = ::boost::lexical_cast< ::boost::uint64_t >(size) * 1024;
+        stat.VmRSS = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("VmData") != std::string::npos )
     {
         std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
-        stat.VmData = ::boost::lexical_cast< ::boost::uint64_t >(size) * 1024;
+        stat.VmData = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("VmStk") != std::string::npos )
     {
         std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
-        stat.VmStk = ::boost::lexical_cast< ::boost::uint64_t >(size) * 1024;
+        stat.VmStk = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("VmExe") != std::string::npos )
     {
         std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
-        stat.VmExe = ::boost::lexical_cast< ::boost::uint64_t >(size) * 1024;
+        stat.VmExe = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("VmLib") != std::string::npos )
     {
         std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
-        stat.VmLib = ::boost::lexical_cast< ::boost::uint64_t >(size) * 1024;
+        stat.VmLib = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
     else if ( line.find("VmPTE") != std::string::npos )
     {
         std::string size = regex_replace(line, e, machine_format, ::boost::match_default | ::boost::format_sed);
-        stat.VmPTE = ::boost::lexical_cast< ::boost::uint64_t >(size) * 1024;
+        stat.VmPTE = ::boost::lexical_cast< std::uint64_t >(size) * 1024;
     }
 }
 
@@ -406,16 +406,16 @@ void PosixMemoryMonitorTools::printAllStatus()
     ::boost::regex e("[0-9]+");
     int oToMo = 1024 * 1024;
 
-    ::boost::uint64_t totalVmPeak = 0;
-    ::boost::uint64_t totalVmSize = 0;
-    ::boost::uint64_t totalVmLck  = 0;
-    ::boost::uint64_t totalVmHWM  = 0;
-    ::boost::uint64_t totalVmRSS  = 0;
-    ::boost::uint64_t totalVmData = 0;
-    ::boost::uint64_t totalVmStk  = 0;
-    ::boost::uint64_t totalVmExe  = 0;
-    ::boost::uint64_t totalVmLib  = 0;
-    ::boost::uint64_t totalVmPTE  = 0;
+    std::uint64_t totalVmPeak = 0;
+    std::uint64_t totalVmSize = 0;
+    std::uint64_t totalVmLck  = 0;
+    std::uint64_t totalVmHWM  = 0;
+    std::uint64_t totalVmRSS  = 0;
+    std::uint64_t totalVmData = 0;
+    std::uint64_t totalVmStk  = 0;
+    std::uint64_t totalVmExe  = 0;
+    std::uint64_t totalVmLib  = 0;
+    std::uint64_t totalVmPTE  = 0;
 
     for(    ::boost::filesystem::directory_iterator it(path);
             it != ::boost::filesystem::directory_iterator();

@@ -7,7 +7,6 @@
 #ifndef __FWRUNTIME_PCH_HPP__
 #define __FWRUNTIME_PCH_HPP__
 
-#include <memory>
-#include <string>
+#include "fwRuntime/ConfigurationElement.hpp"
 
 #endif // __FWRUNTIME_PCH_HPP__

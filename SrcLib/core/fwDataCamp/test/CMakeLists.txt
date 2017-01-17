@@ -1,3 +1,5 @@
+add_definitions(-DCAMP_COMPILATION)
+
 fwLoadProperties()
 find_package(CppUnit)
 find_package(CAMP REQUIRED)
@@ -10,4 +12,3 @@ fwLink(
     ${CAMP_LIBRARIES}
     ${CPPUNIT_LIBRARY}
 )
-
