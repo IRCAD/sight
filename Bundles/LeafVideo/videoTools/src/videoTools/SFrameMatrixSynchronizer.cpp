@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,6 +24,7 @@
 
 #include <fwTools/fwID.hpp>
 
+#include <algorithm>
 #include <functional>
 
 fwServicesRegisterMacro(::arServices::ISynchronizer, ::videoTools::SFrameMatrixSynchronizer, ::fwData::Composite);
@@ -107,6 +108,13 @@ void SFrameMatrixSynchronizer::configuring() throw (::fwTools::Failed)
     {
         m_timeStep = 1000 / ::boost::lexical_cast< unsigned int >(framerateConfig->getValue());
     }
+
+    ConfigurationType toleranceConfig = m_configuration->findConfigurationElement("tolerance");
+    if(toleranceConfig)
+    {
+        m_tolerance = ::boost::lexical_cast< unsigned int >(toleranceConfig->getValue());
+    }
+
 }
 
 // ----------------------------------------------------------------------------
@@ -141,7 +149,7 @@ void SFrameMatrixSynchronizer::starting() throw (fwTools::Failed)
             {
                 matricesVector.push_back(
                     std::make_pair(this->getInOut< ::fwData::TransformationMatrix3D >(
-                                       s_MATRICES_INOUT+std::to_string(i), j),j));
+                                       s_MATRICES_INOUT+std::to_string(i), j), j));
             }
             m_matrices["matrixTL" + std::to_string(i)] = matricesVector;
         }
@@ -204,7 +212,9 @@ void SFrameMatrixSynchronizer::synchronize()
     // Timestamp reference for the synchronization
     ::fwCore::HiResClock::HiResClockType frameTimestamp = 0;
 
-    typedef std::vector<std::string> TimelineType;
+    typedef std::pair< ::fwCore::HiResClock::HiResClockType, std::string> TimeLinePairType;
+    typedef std::vector< TimeLinePairType > TimelineType;
+    typedef std::vector< std::string > MatrixTimelineType;
 
     // Get timestamp for synchronization
     TimelineType availableFramesTL;
@@ -224,7 +234,7 @@ void SFrameMatrixSynchronizer::synchronize()
             {
                 // Sets the reference timestamp as the minimum value
                 frameTimestamp = std::min(frameTimestamp, tlTimestamp);
-                availableFramesTL.push_back(elt.first);
+                availableFramesTL.push_back(std::make_pair(tlTimestamp, elt.first));
             }
             // Otherwise keep the most recent timestamp as frameTimestamp
             else
@@ -232,8 +242,14 @@ void SFrameMatrixSynchronizer::synchronize()
                 // If the difference between the TLs timestamp is superior to the tolerance
                 // we set the reference timestamp as the maximum of them
                 frameTimestamp = std::max(frameTimestamp, tlTimestamp);
-                availableFramesTL.clear();
-                availableFramesTL.push_back(elt.first);
+                availableFramesTL.push_back(std::make_pair(tlTimestamp, elt.first));
+
+                // Now remove all frames that are too far away
+                availableFramesTL.erase(std::remove_if(availableFramesTL.begin(), availableFramesTL.end(),
+                                                       [ = ](const TimeLinePairType& tl)
+                    {
+                        return std::abs(frameTimestamp - tl.first) >= m_tolerance;
+                    }), availableFramesTL.end());
             }
         }
         else
@@ -242,10 +258,9 @@ void SFrameMatrixSynchronizer::synchronize()
         }
     }
 
-    ::fwCore::HiResClock::HiResClockType matrixTimestamp =
-        std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
+    ::fwCore::HiResClock::HiResClockType matrixTimestamp = frameTimestamp;
 
-    TimelineType availableMatricesTL;
+    MatrixTimelineType availableMatricesTL;
     availableMatricesTL.reserve(m_matrixTLs.size());
     for(MatrixTLKeyType::value_type elt : m_matrixTLs)
     {
@@ -266,8 +281,8 @@ void SFrameMatrixSynchronizer::synchronize()
 
     for(TimelineType::value_type key : availableFramesTL)
     {
-        ::arData::FrameTL::csptr frameTL = m_frameTLs[key];
-        ::fwData::Image::sptr image      = m_images[key];
+        ::arData::FrameTL::csptr frameTL = m_frameTLs[key.second];
+        ::fwData::Image::sptr image      = m_images[key.second];
 
         ::fwData::Image::SizeType size(3);
         size[0] = frameTL->getWidth();
@@ -283,17 +298,17 @@ void SFrameMatrixSynchronizer::synchronize()
         {
             const ::fwData::Image::SpacingType::value_type voxelSize = 1;
             image->allocate(size, frameTL->getType(), frameTL->getNumberOfComponents());
-            ::fwData::Image::OriginType origin(3,0);
+            ::fwData::Image::OriginType origin(3, 0);
 
             image->setOrigin(origin);
-            ::fwData::Image::SpacingType spacing(3,voxelSize);
+            ::fwData::Image::SpacingType spacing(3, voxelSize);
             image->setSpacing(spacing);
             image->setWindowWidth(1);
             image->setWindowCenter(0);
 
             m_imagesInitialized = true;
 
-            //Notify (needed for instance to update the texture in ::visuVTKARAdaptor::SVideoAdapter)
+            // Notify (needed for instance to update the texture in ::visuVTKARAdaptor::SVideoAdapter)
             auto sig = image->signal< ::fwData::Image::ModifiedSignalType >(
                 ::fwData::Image::s_MODIFIED_SIG );
             sig->asyncEmit();
@@ -312,19 +327,18 @@ void SFrameMatrixSynchronizer::synchronize()
             return;
         }
 
-
         const ::boost::uint8_t* frameBuff = &buffer->getElement(0);
         ::boost::uint8_t* index = arrayHelper.begin< ::boost::uint8_t >();
         std::copy( frameBuff, frameBuff+buffer->getSize(), index);
 
-        //Notify
+        // Notify
         auto sig = image->signal< ::fwData::Image::BufferModifiedSignalType >(
             ::fwData::Image::s_BUFFER_MODIFIED_SIG );
         sig->asyncEmit();
     }
 
     bool matrixFound = false;
-    for(TimelineType::value_type key : availableMatricesTL)
+    for(MatrixTimelineType::value_type key : availableMatricesTL)
     {
         ::arData::MatrixTL::csptr matrixTL           = m_matrixTLs[key];
         CSPTR(::arData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(matrixTimestamp);
@@ -349,7 +363,7 @@ void SFrameMatrixSynchronizer::synchronize()
                         {
                             for(unsigned int j = 0; j < 4; ++j)
                             {
-                                matrix->setCoefficient(i,j,values[i*4+j]);
+                                matrix->setCoefficient(i, j, values[i*4+j]);
                             }
                         }
 
@@ -381,6 +395,5 @@ void SFrameMatrixSynchronizer::updating() throw (fwTools::Failed)
 }
 
 // ----------------------------------------------------------------------------
-
 
 }  // namespace videoTools
