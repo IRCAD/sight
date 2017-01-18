@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,6 +26,7 @@
 #include <fwTools/Type.hpp>
 
 #include <boost/filesystem/operations.hpp>
+#include <boost/regex.hpp>
 
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
@@ -35,12 +36,11 @@ namespace videoOpenCV
 
 static const ::fwServices::IService::KeyType s_FRAMETL = "frameTL";
 
-//-----------------------------------------------------------------------------
-
+// -----------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::arServices::IGrabber, ::videoOpenCV::SFrameGrabber, ::arData::FrameTL);
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 SFrameGrabber::SFrameGrabber() throw() :
     m_loopVideo(false),
@@ -50,39 +50,39 @@ SFrameGrabber::SFrameGrabber() throw() :
     m_worker = ::fwThread::Worker::New();
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 SFrameGrabber::~SFrameGrabber() throw()
 {
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 void SFrameGrabber::starting() throw(::fwTools::Failed)
 {
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 void SFrameGrabber::stopping() throw(::fwTools::Failed)
 {
     this->stopCamera();
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 void SFrameGrabber::configuring()  throw ( ::fwTools::Failed )
 {
 
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 void SFrameGrabber::updating() throw ( ::fwTools::Failed )
 {
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 void SFrameGrabber::startCamera()
 {
@@ -123,14 +123,14 @@ void SFrameGrabber::startCamera()
     }
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 void SFrameGrabber::pauseCamera()
 {
     m_timer->isRunning() ? m_timer->stop() : m_timer->start();
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 void SFrameGrabber::stopCamera()
 {
@@ -162,7 +162,7 @@ void SFrameGrabber::stopCamera()
 
         ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
 
-        const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec() + 1;
+        const ::fwCore::HiResClock::HiResClockType timestamp = frameTL->getNewerTimestamp() + 1;
 
         SPTR(::arData::FrameTL::BufferType) buffer = frameTL->createBuffer(timestamp);
         ::boost::uint8_t* destBuffer               = reinterpret_cast< ::boost::uint8_t* >( buffer->addElement(0) );
@@ -185,7 +185,7 @@ void SFrameGrabber::stopCamera()
     m_isInitialized = false;
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 void SFrameGrabber::readVideo(const ::boost::filesystem::path& file)
 {
@@ -222,7 +222,7 @@ void SFrameGrabber::readVideo(const ::boost::filesystem::path& file)
     }
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const std::string& extension)
 {
@@ -242,7 +242,7 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         }
     }
 
-    //Sort in alphabetical order (ex: img_001, img_002...)
+    // Sort in alphabetical order (ex: img_001, img_002...)
     std::sort(m_imageToRead.begin(), m_imageToRead.end());
 
     if (!m_imageToRead.empty())
@@ -297,7 +297,7 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
     }
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 void SFrameGrabber::grabVideo()
 {
@@ -397,7 +397,7 @@ void SFrameGrabber::grabVideo()
     }
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 void SFrameGrabber::grabImage()
 {
@@ -407,21 +407,30 @@ void SFrameGrabber::grabImage()
     {
         ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
 
-        ::boost::filesystem::path imagePath = m_imageToRead[m_imageCount];
+        const ::boost::filesystem::path imagePath = m_imageToRead[m_imageCount];
+
+        const std::string imageName = imagePath.filename().string();
+        static const boost::regex s_TIMESTAMP("[^0-9]*([0-9]*)[^0-9]*");
+        boost::smatch match;
+        if (!boost::regex_match(imageName, match, s_TIMESTAMP))
+        {
+            SLM_ERROR("Could not find a timestamp in file name: " + imageName);
+            return;
+        }
+        const std::string timestampStr = match[1].str();
 
         ::cv::Mat image = ::cv::imread(imagePath.string(), ::cv::IMREAD_UNCHANGED);
 
-        ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+        ::fwCore::HiResClock::HiResClockType timestamp = std::stod(timestampStr);
 
-        size_t width  = static_cast<size_t>(image.size().width);
-        size_t height = static_cast<size_t>(image.size().height);
+        const size_t width  = static_cast<size_t>(image.size().width);
+        const size_t height = static_cast<size_t>(image.size().height);
 
         if (width == frameTL->getWidth() && height == frameTL->getHeight())
         {
 
             auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
             sigPosition->asyncEmit(static_cast<std::int64_t>(m_imageCount)  * 30);
-
 
             // Get the buffer of the timeline to fill
             SPTR(::arData::FrameTL::BufferType) bufferOut = frameTL->createBuffer(timestamp);
@@ -447,7 +456,6 @@ void SFrameGrabber::grabImage()
 
             frameTL->pushObject(bufferOut);
 
-
             auto sig =
                 frameTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG);
             sig->asyncEmit(timestamp);
@@ -465,14 +473,14 @@ void SFrameGrabber::grabImage()
     }
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 void SFrameGrabber::toggleLoopMode()
 {
     m_loopVideo = !m_loopVideo;
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 void SFrameGrabber::setPosition(int64_t position)
 {
@@ -492,6 +500,6 @@ void SFrameGrabber::setPosition(int64_t position)
     }
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 } // namespace videoOpenCV
