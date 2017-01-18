@@ -13,13 +13,13 @@ namespace arServices
 
 // -----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType IRegisterer::s_COMPUTE_MATRIX_SLOT = "computeMatrix";
+const ::fwCom::Slots::SlotKeyType IRegisterer::s_COMPUTE_REGISTRATION_SLOT = "computeRegistration";
 
 // ----------------------------------------------------------------------------
 
 IRegisterer::IRegisterer() throw ()
 {
-    newSlot(s_COMPUTE_MATRIX_SLOT, &IRegisterer::computeMatrix, this);
+    newSlot(s_COMPUTE_REGISTRATION_SLOT, &IRegisterer::computeRegistration, this);
 }
 
 // ----------------------------------------------------------------------------

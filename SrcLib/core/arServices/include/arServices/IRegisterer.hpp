@@ -18,7 +18,7 @@ namespace arServices
  *          Must be implemented for services that register objects together.
  *
  * @section Slots Slots
- * - \b computeMatrix(::fwCore::HiResClock::HiResClockType) : Compute the registration matrix.
+ * - \b computeRegistration(::fwCore::HiResClock::HiResClockType) : Compute the registration matrix.
  */
 class ARSERVICES_CLASS_API IRegisterer : public fwServices::IService
 {
@@ -30,7 +30,7 @@ public:
      * @name Slots API
      * @{
      */
-    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_COMPUTE_MATRIX_SLOT;
+    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_COMPUTE_REGISTRATION_SLOT;
     ///@}
 
     /**
@@ -46,7 +46,7 @@ public:
 protected:
 
     /// Register matrix slot
-    ARSERVICES_API virtual void computeMatrix(::fwCore::HiResClock::HiResClockType timestamp) = 0;
+    ARSERVICES_API virtual void computeRegistration(::fwCore::HiResClock::HiResClockType timestamp) = 0;
 };
 
 } // namespace arServices
