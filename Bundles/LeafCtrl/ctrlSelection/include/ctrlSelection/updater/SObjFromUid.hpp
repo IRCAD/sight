@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,8 @@
 #ifndef __CTRLSELECTION_UPDATER_SOBJFROMUID_HPP__
 #define __CTRLSELECTION_UPDATER_SOBJFROMUID_HPP__
 
-#include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IUpdaterSrv.hpp"
+#include "ctrlSelection/config.hpp"
 
 #include <fwData/Object.hpp>
 
@@ -19,17 +19,37 @@ namespace updater
 {
 
 /**
- * @class  SObjFromUid
- * @brief  Updates the composite from object given by uid. The objects is added/swapped/removed from composite when the
+ * @brief Updates the composite from object given by uid. The objects is added/swapped/removed from composite when the
  * respective slot is called.
  *
+ * @section Slots Slots
+ * - \b add() : Adds the object into the composite with the key given by config.
+ * - \b addOrSwap() : Adds the object if it is not present in the composite, else swaps it.
+ * - \b swapObj() : Swaps the object into the composite with the key given by config.
+ * - \b remove() : Removes the object from the composite at the key given by config.
+ * - \b removeIfPresent() : Removes the object from the composite at the key given by config if it is present.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::ctrlSelection::updater::SObjFromUid">
+      <inout key="composite" uid="..." />
+      <inout key="object" uid="..." />
+      <compositeKey>...</compositeKey>
+   </service>
+   @endcode
+ * @subsection In-Out In-Out
+ * - \b composite [::fwData::Composite]: Composite where to add/swap/remove objects.
+ * - \b object [::fwData::Object]: object to add/swap/remove into the composite.
+ * @subsection Configuration Configuration
+ * - \b compositeKey : key of the object in the composite
  */
 class CTRLSELECTION_CLASS_API SObjFromUid : public ::ctrlSelection::IUpdaterSrv
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SObjFromUid)(::ctrlSelection::IUpdaterSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SObjFromUid)(::ctrlSelection::IUpdaterSrv) );
 
     /// Constructor.  Do nothing.
     CTRLSELECTION_API SObjFromUid() throw();
@@ -52,17 +72,7 @@ public:
 
 protected:
 
-    /**
-     * @brief Configures the service.
-     *
-     * @code{.xml}
-       <service impl="::ctrlSelection::updater::SObjFromUid">
-           <uid>objecUid</uid>
-           <compositeKey>key</compositeKey>
-       </service>
-       @endcode
-     * - \b compositeKey key of the object to manage into the composite (add/swap/remove)
-     */
+    /// Configures the service.
     CTRLSELECTION_API virtual void configuring()  throw ( ::fwTools::Failed );
 
     /// Implements starting method derived from IService. Do nothing.
@@ -75,7 +85,7 @@ protected:
     CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
     /// Implements info method derived from IService. Print classname.
-    CTRLSELECTION_API virtual void info( std::ostream &_sstream );
+    CTRLSELECTION_API virtual void info( std::ostream& _sstream );
 
     /**
      * @name Slots
@@ -94,10 +104,10 @@ protected:
     /// Swaps the object into the composite with the key given by config.
     void swap();
 
-    /// Adds the object from the composite with the key given by config.
+    /// Removes the object from the composite at the key given by config.
     void remove();
 
-    /// Adds the object into the composite with the key given by config if it is present.
+    /// Removes the object from the composite at the key given by config if it is present.
     void removeIfPresent();
     /**
      * @}
