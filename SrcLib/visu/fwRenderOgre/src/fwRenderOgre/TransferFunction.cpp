@@ -1,36 +1,37 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/TransferFunction.hpp"
+
 #include <fwRenderOgre/Utils.hpp>
 
 #include <OgreHardwarePixelBuffer.h>
+
 #include <OGRE/OgreTextureManager.h>
 
 #include <cstdint>  // for std::uint_8
-
 
 namespace fwRenderOgre
 {
 
 static const size_t TEXTURE_SIZE = 256;
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 TransferFunction::TransferFunction()
 {
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 TransferFunction::~TransferFunction()
 {
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 void TransferFunction::createTexture(const ::Ogre::String& _parentId)
 {
@@ -48,7 +49,7 @@ void TransferFunction::createTexture(const ::Ogre::String& _parentId)
     }
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 void TransferFunction::removeTexture()
 {
@@ -56,9 +57,9 @@ void TransferFunction::removeTexture()
     m_texture.setNull();
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
-void TransferFunction::updateTexture(const ::fwData::TransferFunction::sptr& _tf)
+void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _tf)
 {
     // Retrieves the pixel buffer from the texture
     ::Ogre::HardwarePixelBufferSharedPtr pixBuffer = m_texture->getBuffer();
@@ -144,6 +145,6 @@ void TransferFunction::updateTexture(const ::fwData::TransferFunction::sptr& _tf
     pixBuffer->unlock();
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 } // Namespace fwRenderOgre
