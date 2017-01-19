@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,6 +13,7 @@
 #include "visuVTKAdaptor/config.hpp"
 
 // FW4SPL Includes
+#include <fwData/Color.hpp>
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 // VTK Includes
@@ -29,7 +30,7 @@ class VISUVTKADAPTOR_CLASS_API Axes : public ::fwRenderVTK::IVtkAdaptorService
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Axes)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Axes)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API Axes() throw();
     VISUVTKADAPTOR_API virtual ~Axes() throw();
@@ -55,10 +56,13 @@ protected:
 
     void buildPipeline();
 
-    fwVtkAxesActor * m_axesActor;
+    fwVtkAxesActor* m_axesActor;
+    vtkSmartPointer< vtkActor> m_sphereActor;
     double m_length;
     bool m_labelOn;
+    bool m_sphereOn;
     vtkSmartPointer< vtkTransform> m_transformAxes;
+    ::fwData::Color::sptr m_color;
 
     ///X,Y and Z Labels
     std::string m_xLabel;
