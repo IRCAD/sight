@@ -28,8 +28,8 @@
 
 #include <fwTools/Type.hpp>
 
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/imgproc.hpp>
+#include <pcl/common/transforms.h>
+#include <pcl/io/vtk_lib_io.h>
 
 namespace videoPCL
 {
@@ -287,16 +287,16 @@ void SFrameGrabber::grabImage()
 
             // Get the buffer of the timeline to fill
             SPTR(::arData::FrameTL::BufferType) bufferOut = frameTL->createBuffer(timestamp);
-            ::boost::float* frameBuffOut                  = reinterpret_cast< float* >( bufferOut->addElement(0));
+            float* frameBuffOut = reinterpret_cast< float* >( bufferOut->addElement(0));
 
             const size_t cloudSize = inputCloud.size();
             for (size_t i = 0; i < cloudSize; ++i)
             {
                 pcl::PointXYZ tmpPoint = inputCloud[i];
-                &destPositionsBuffer[0] = tmpPoint.x;
-                &destPositionsBuffer[1] = tmpPoint.y;
-                &destPositionsBuffer[2] = tmpPoint.z;
-                frameBuffOut           += 3;
+                frameBuffOut[0] = tmpPoint.x;
+                frameBuffOut[1] = tmpPoint.y;
+                frameBuffOut[2] = tmpPoint.z;
+                frameBuffOut   += 3;
             }
 
             frameTL->pushObject(bufferOut);
