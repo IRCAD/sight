@@ -11,9 +11,6 @@
 
 #include <arServices/IGrabber.hpp>
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
-
 #include <fwCore/mt/types.hpp>
 
 #include <fwThread/Timer.hpp>
@@ -127,7 +124,7 @@ private:
     /// list of image paths to read
     ImageFilesType m_imageToRead;
 
-    /// Mutex to protect concurrent access for m_videoCapture and m_imageToRead
+    /// Mutex to protect concurrent access for m_imageToRead
     mutable ::fwCore::mt::Mutex m_mutex;
 };
 

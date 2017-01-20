@@ -11,22 +11,14 @@
 
 #include <arPreferences/preferences.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/regex.hpp>
-
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hxx>
-
-#include <fwCore/base.hpp>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
-
 #include <fwServices/macros.hpp>
 
-#include <fwTools/Type.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/regex.hpp>
 
 #include <pcl/common/transforms.h>
 #include <pcl/io/vtk_lib_io.h>
@@ -36,11 +28,11 @@ namespace videoPCL
 
 static const ::fwServices::IService::KeyType s_FRAMETL = "frameTL";
 
-// -----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::arServices::IGrabber, ::videoPCL::SFrameGrabber, ::arData::FrameTL);
 
-// -----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 SFrameGrabber::SFrameGrabber() throw() :
     m_loopVideo(false),
@@ -50,39 +42,39 @@ SFrameGrabber::SFrameGrabber() throw() :
     m_worker = ::fwThread::Worker::New();
 }
 
-// -----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 SFrameGrabber::~SFrameGrabber() throw()
 {
 }
 
-// -----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SFrameGrabber::starting() throw(::fwTools::Failed)
 {
 }
 
-// -----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SFrameGrabber::stopping() throw(::fwTools::Failed)
 {
     this->stopCamera();
 }
 
-// -----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SFrameGrabber::configuring()  throw ( ::fwTools::Failed )
 {
 
 }
 
-// -----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SFrameGrabber::updating() throw ( ::fwTools::Failed )
 {
 }
 
-// -----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SFrameGrabber::startCamera()
 {
@@ -123,14 +115,14 @@ void SFrameGrabber::startCamera()
     }
 }
 
-// -----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SFrameGrabber::pauseCamera()
 {
     m_timer->isRunning() ? m_timer->stop() : m_timer->start();
 }
 
-// -----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SFrameGrabber::stopCamera()
 {
@@ -181,7 +173,7 @@ void SFrameGrabber::stopCamera()
     m_isInitialized = false;
 }
 
-// -----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const std::string& extension)
 {
@@ -245,7 +237,7 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
     }
 }
 
-// -----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SFrameGrabber::grabImage()
 {
@@ -292,7 +284,7 @@ void SFrameGrabber::grabImage()
             const size_t cloudSize = inputCloud.size();
             for (size_t i = 0; i < cloudSize; ++i)
             {
-                pcl::PointXYZ tmpPoint = inputCloud[i];
+                const pcl::PointXYZ& tmpPoint = inputCloud[i];
                 frameBuffOut[0] = tmpPoint.x;
                 frameBuffOut[1] = tmpPoint.y;
                 frameBuffOut[2] = tmpPoint.z;
@@ -318,14 +310,14 @@ void SFrameGrabber::grabImage()
     }
 }
 
-// -----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SFrameGrabber::toggleLoopMode()
 {
     m_loopVideo = !m_loopVideo;
 }
 
-// -----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void SFrameGrabber::setPosition(int64_t position)
 {
@@ -341,6 +333,6 @@ void SFrameGrabber::setPosition(int64_t position)
     }
 }
 
-// -----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 } // namespace videoPCL
