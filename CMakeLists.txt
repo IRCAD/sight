@@ -940,6 +940,7 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
 
         # If not using a custom pch the pch tar
         if(ENABLE_PCH)
+            set(${NAME}_PROJECT_DIR "${PROJECT_DIR}")
             getPchTarget(${NAME} ${PROJECT_DIR} ${TYPE} ${USE_PCH_FROM_TARGET})
 
             if(NOT ${${NAME}_PCH_TARGET} STREQUAL ${NAME})

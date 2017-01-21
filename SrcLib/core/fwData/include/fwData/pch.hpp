@@ -7,15 +7,13 @@
 #ifndef __FWDATA_PCH_HPP__
 #define __FWDATA_PCH_HPP__
 
-#include "fwData/config.hpp"
-#include "fwData/factory/new.hpp"
-#include "fwData/registry/detail.hpp"
-
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
 
 #include <fwCore/base.hpp>
+#include <fwCore/macros.hpp>
 #include <fwCore/mt/types.hpp>
+#include <fwCore/util/FactoryRegistry.hpp>
 
 #include <fwTools/Object.hpp>
 

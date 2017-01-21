@@ -116,8 +116,6 @@ function(assign_precompiled_header _target _pch _pch_header)
             if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
                 list(APPEND _pch_compile_flags -include-pch "${_pch}")
             else()
-                # TODO: Test!
-                message("${_pch_header}" "${_pch}")
                 list(INSERT _pch_compile_flags 0 -include "${_pch_header}")
             endif()
 
@@ -207,6 +205,10 @@ function(add_precompiled_header _target _input)
         set(_outdir "${_pchfile}.pch")
     else()
         set(_outdir "${_pchfile}.gch")
+
+        get_target_property(_target_include_directories ${_target} INCLUDE_DIRECTORIES)
+        list(APPEND _target_include_directories ${_pch_binary_dir}/include/${_target})
+        set_target_properties(${_target} PROPERTIES INCLUDE_DIRECTORIES "${_target_include_directories}" )
     endif()
     set(_output_cxx "${_outdir}")
 
@@ -228,10 +230,11 @@ function(add_precompiled_header _target _input)
     # hopelessly these guys don't manage to get passed by the global CMake switch, add them manually
     list(APPEND CXXFLAGS "-std=gnu++11" "-fPIC")
 
-    # Hacky custom command to replace the " in the -D by \"
+    # Hacky custom command to remove the custom defines that would prevent from sharing the pch
+    # and they should be useless anyway
     add_custom_command(
       OUTPUT "${_pch_flags_file}"
-      COMMAND sed 's/"/\\\\"/g' ${_pch_response_file}.in > ${_pch_flags_file}
+      COMMAND sed 's/"/\\\\"/g' ${_pch_response_file}.in | sed '/_VER=\\\|_EXPORTS/d' > ${_pch_flags_file}
       DEPENDS "${_pch_flags_file}.in"
       COMMENT "Fixing ${_pch_flags_file}")
 
@@ -262,20 +265,21 @@ function(add_precompiled_header _target _input)
         COMMENT "Precompiling ${_name} for ${_target} (C++)")
     endif()
 
-    assign_precompiled_header(${_target} ${_output_cxx} ${_pch_header})
+    assign_precompiled_header(${_target} ${_output_cxx} pch.hpp)
   endif()
 endfunction()
 
 function(use_precompiled_header _target _input)
     cmake_parse_arguments(_PCH "FORCEINCLUDE" "SOURCE_CXX:SOURCE_C" "" ${ARGN})
 
+
     # TODO: Test!
     if(MSVC)
         get_filename_component(_input_we ${_input} NAME_WE)
         get_filename_component(_input_pch ${_input} NAME)
 
+        set(_pch_header "${${_input}_PROJECT_DIR}/include/${_input}/pch.hpp")
         set(_cxx_path "${CMAKE_CURRENT_BINARY_DIR}/cxx_pch")
-        set(_pch_cxx_header "${CMAKE_CURRENT_SOURCE_DIR}/include/${_target}/pch.hpp")
         set(_pch_cxx_pch "${_cxx_path}/${_input_we}.pch")
 
         get_target_property(sources ${_target} SOURCES)
@@ -294,7 +298,7 @@ function(use_precompiled_header _target _input)
                 endif()
 
                 # TODO is this needed ?
-                list(APPEND _object_depends "${_pch_cxx_header}")
+                list(APPEND _object_depends "${_pch_header}")
 
                 set_source_files_properties(${_source}  PROPERTIES
                                                         COMPILE_FLAGS "${_pch_compile_flags}"
@@ -304,15 +308,19 @@ function(use_precompiled_header _target _input)
     endif(MSVC)
 
     if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+        set(_pch_header "pch.hpp")
         get_filename_component(_name ${_input} NAME)
         set(_pch_binary_dir "${CMAKE_BINARY_DIR}")
         set(_pchfile "${_pch_binary_dir}/${_input}/include/${_input}/pch.hpp")
-        set(_pch_header "${_input}/pch.hpp")
 
         if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
             set(_outdir "${_pchfile}.pch")
         else()
             set(_outdir "${_pchfile}.gch")
+
+            get_target_property(_target_include_directories ${_target} INCLUDE_DIRECTORIES)
+            list(APPEND _target_include_directories ${_pch_binary_dir}/${_input}/include/${_input})
+            set_target_properties(${_target} PROPERTIES INCLUDE_DIRECTORIES "${_target_include_directories}" )
         endif()
         set(_output_cxx "${_outdir}")
 
