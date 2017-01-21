@@ -12,9 +12,9 @@
 #include <fwCore/base.hpp>
 #include <fwCore/mt/types.hpp>
 
-#include <boost/unordered_map.hpp>
-
+#include <cstdint>
 #include <string>
+#include <unordered_map>
 
 namespace fwTools
 {
@@ -122,8 +122,8 @@ private:
 
     IDType m_id;
 
-    typedef ::boost::unordered_map< IDType, WPTR(::fwTools::Object ) > Dictionary;
-    typedef ::boost::unordered_map< std::string, ::boost::uint32_t >  CategorizedCounter;
+    typedef std::unordered_map< IDType, WPTR(::fwTools::Object ) > Dictionary;
+    typedef std::unordered_map< std::string, std::uint32_t >  CategorizedCounter;
 
     static Dictionary m_dictionary;
     static CategorizedCounter m_CategorizedCounter;

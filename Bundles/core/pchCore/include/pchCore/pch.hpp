@@ -7,6 +7,9 @@
 #ifndef __PCHCORE_PCH_HPP__
 #define __PCHCORE_PCH_HPP__
 
+#include <fwCore/Demangler.hpp>
+#include <fwCore/LogicStamp.hpp>
+#include <fwCore/TimeStamp.hpp>
 #include <fwCore/base.hpp>
 #include <fwCore/util/FactoryRegistry.hpp>
 
@@ -19,14 +22,20 @@
 #include <boost/mpl/copy.hpp>
 #include <boost/mpl/empty.hpp>
 #include <boost/mpl/eval_if.hpp>
+#include <boost/mpl/if.hpp>
 #include <boost/mpl/placeholders.hpp>
 #include <boost/mpl/push_front.hpp>
 #include <boost/mpl/transform.hpp>
 #include <boost/mpl/vector.hpp>
 #include <boost/type_traits.hpp>
 
+#include <cstdint>
 #include <exception>
+#include <functional>
 #include <map>
+#include <string>
+#include <typeinfo>
+#include <unordered_map>
 #include <vector>
 
 #endif // __PCHCORE_PCH_HPP__

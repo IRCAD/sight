@@ -16,8 +16,21 @@
 #include <fwCom/Slots.hxx>
 #endif // _WIN32
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwData/Image.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/Mesh.hpp>
+#include <fwData/Point.hpp>
+#include <fwData/String.hpp>
+#include <fwData/Reconstruction.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
+#include <fwDataTools/fieldHelper/Image.hpp>
+#include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
+#include <fwDataTools/helper/Image.hpp>
+
+#include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 
 #include <vtkActor.h>

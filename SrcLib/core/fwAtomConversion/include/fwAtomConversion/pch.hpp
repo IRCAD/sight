@@ -4,12 +4,11 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOVTK_PCH_HPP__
-#define __IOVTK_PCH_HPP__
+#ifndef __FWATOMCONVERSION_PCH_HPP__
+#define __FWATOMCONVERSION_PCH_HPP__
 
-#include <io/IReader.hpp>
-#include <io/IWriter.hpp>
+#include <fwAtoms/Object.hpp>
 
-#include <boost/filesystem/path.hpp>
+#include <boost/graph/named_graph.hpp>
 
-#endif // __IOVTK_PCH_HPP__
+#endif // __FWATOMCONVERSION_PCH_HPP__

@@ -14,4 +14,3 @@ set( DEPENDENCIES
     fwTools
 )
 set( REQUIREMENTS  )
-set( USE_PCH_FROM_TARGET fwAtoms )
