@@ -117,6 +117,7 @@ function(assign_precompiled_header _target _pch _pch_header)
                 list(APPEND _pch_compile_flags -include-pch "${_pch}")
             else()
                 # TODO: Test!
+                message("${_pch_header}" "${_pch}")
                 list(INSERT _pch_compile_flags 0 -include "${_pch_header}")
             endif()
 
@@ -243,7 +244,7 @@ function(add_precompiled_header _target _input)
       add_custom_command(
         OUTPUT "${_pch_binary_dir}/pch.d"
         COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} ${CXXFLAGS} -M -MF "${_pch_binary_dir}/pch.d" "${_pch_header}"
-        COMMAND sed -i 's|pch.o|${relative_output_cxx}|' "${_pch_binary_dir}/pch.d"
+        COMMAND sed -i 's|^pch\.o|${relative_output_cxx}|' "${_pch_binary_dir}/pch.d"
         DEPENDS "${_pch_header}" "${_pch_flags_file}"
         COMMENT "Generating pch deps file for ${_target} (C++)")
       add_custom_command(

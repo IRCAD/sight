@@ -512,15 +512,12 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "lib")
 
     if(ENABLE_PCH)
-        if(${FWPROJECT_NAME}_USE_PCH_FROM_TARGET)
-            message(STATUS "Use precompiled header in target ${FWPROJECT_NAME} from ${${FWPROJECT_NAME}_USE_PCH_FROM_TARGET}")
-            use_precompiled_header(${FWPROJECT_NAME} ${${FWPROJECT_NAME}_USE_PCH_FROM_TARGET})
-        elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/${FWPROJECT_NAME}/pch.hpp")
-            message(STATUS "Use custom precompiled header in target: ${FWPROJECT_NAME}")
+        if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
             add_precompiled_header(${FWPROJECT_NAME} include/${FWPROJECT_NAME}/pch.hpp)
+            message(STATUS "Use custom precompiled header")
         else()
-            message(STATUS "Use default precompiled header in target: ${FWPROJECT_NAME}")
-            use_precompiled_header(${FWPROJECT_NAME} fwTools)
+            use_precompiled_header(${FWPROJECT_NAME} ${${FWPROJECT_NAME}_PCH_TARGET})
+            message(STATUS "Use ${${FWPROJECT_NAME}_PCH_TARGET} precompiled header")
         endif()
     endif()
 
@@ -579,18 +576,14 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/")
 
         if(ENABLE_PCH)
-            if(${FWPROJECT_NAME}_USE_PCH_FROM_TARGET)
-                message(STATUS "Use precompiled header in target ${FWPROJECT_NAME} from ${${FWPROJECT_NAME}_USE_PCH_FROM_TARGET}")
-                use_precompiled_header(${FWPROJECT_NAME} ${${FWPROJECT_NAME}_USE_PCH_FROM_TARGET})
-            elseif(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/${FWPROJECT_NAME}/pch.hpp")
-                message(STATUS "Use precompiled header in target: ${FWPROJECT_NAME}")
+            if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
                 add_precompiled_header(${FWPROJECT_NAME} include/${FWPROJECT_NAME}/pch.hpp)
+                message(STATUS "Use custom precompiled header")
             else()
-                message(STATUS "Use default precompiled header in target: ${FWPROJECT_NAME}")
-                use_precompiled_header(${FWPROJECT_NAME} fwGui)
+                use_precompiled_header(${FWPROJECT_NAME} ${${FWPROJECT_NAME}_PCH_TARGET})
+                message(STATUS "Use ${${FWPROJECT_NAME}_PCH_TARGET} precompiled header")
             endif()
         endif()
-
     else()
         add_custom_target(${FWPROJECT_NAME} SOURCES
             ${${FWPROJECT_NAME}_RC_FILES}
@@ -765,6 +758,25 @@ function(findTests FWPROJECTS RESULT_VAR)
     set(${RESULT_VAR} ${RESULT} PARENT_SCOPE)
 endfunction()
 
+function(getPchTarget FWPROJECT_NAME PROJECT_DIR TYPE)
+
+    if(ARGN)
+        # Use pch from an another target
+        set(${FWPROJECT_NAME}_PCH_TARGET ${ARGN} PARENT_SCOPE)
+    elseif(EXISTS "${PROJECT_DIR}/include/${FWPROJECT_NAME}/pch.hpp")
+        # Custom pch
+        set(${FWPROJECT_NAME}_PCH_TARGET ${FWPROJECT_NAME} PARENT_SCOPE)
+    else()
+        # Default pch
+        if( TYPE STREQUAL "BUNDLE" )
+            set(${FWPROJECT_NAME}_PCH_TARGET pchServices PARENT_SCOPE)
+        else()
+            set(${FWPROJECT_NAME}_PCH_TARGET pchCore PARENT_SCOPE)
+        endif()
+    endif()
+
+endfunction()
+
 macro(loadProperties PROPERTIES_FILE)
     unset(NAME)
     unset(OPTIONS)
@@ -786,8 +798,6 @@ macro(fwLoadProperties)
     loadProperties("Properties.cmake")
 
     string( TOUPPER "${TYPE}" TYPE )
-
-    set(${NAME}_USE_PCH_FROM_TARGET "${USE_PCH_FROM_TARGET}")
 
     if( TYPE STREQUAL "EXECUTABLE" )
         fwExec(${NAME} ${VERSION} ${OPTIONS})
@@ -923,8 +933,20 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
             message(FATAL_ERROR "${PROPERTIES_FILE}: A project NAME must be unique in the workspace. ${NAME} already defined there : ${${NAME}_DIR}")
         endif()
 
+        string( TOUPPER "${TYPE}" TYPE )
+
         set(${NAME}_DEPENDENCIES "${DEPENDENCIES}")
         set(${NAME}_REQUIREMENTS "${REQUIREMENTS}")
+
+        # If not using a custom pch the pch tar
+        if(ENABLE_PCH)
+            getPchTarget(${NAME} ${PROJECT_DIR} ${TYPE} ${USE_PCH_FROM_TARGET})
+
+            if(NOT ${${NAME}_PCH_TARGET} STREQUAL ${NAME})
+                list(APPEND ${NAME}_REQUIREMENTS ${${NAME}_PCH_TARGET})
+            endif()
+        endif()
+
         set(${NAME}_VERSION "${VERSION}")
         set(${NAME}_DIR "${PROJECT_DIR}")
 

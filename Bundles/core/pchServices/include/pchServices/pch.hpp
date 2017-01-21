@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWGUI_PCH_HPP__
-#define __FWGUI_PCH_HPP__
+#ifndef __PCHSERVICES_PCH_HPP__
+#define __PCHSERVICES_PCH_HPP__
 
 // Cause an internal compiler error on windows...
 #ifndef _WIN32
@@ -24,4 +24,4 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 
-#endif // __FWGUI_PCH_HPP__
+#endif // __PCHSERVICES_PCH_HPP__
