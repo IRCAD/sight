@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,9 +8,15 @@
 
 #include "videoQt/editor/CameraDeviceDlg.hpp"
 
-#include <arData/Camera.hpp>
+#include <arData/CameraSeries.hpp>
 
 #include <arPreferences/preferences.hpp>
+
+#include <QByteArray>
+#include <QCamera>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
 
 #include <fwCom/Signal.hxx>
 
@@ -30,22 +36,18 @@
 
 #include <fwTools/pathDifference.hpp>
 
-#include <QByteArray>
-#include <QCamera>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QPushButton>
-
 namespace videoQt
 {
 namespace editor
 {
 
-fwServicesRegisterMacro( ::gui::editor::IEditor, ::videoQt::editor::SCamera, ::arData::Camera );
+fwServicesRegisterMacro( ::gui::editor::IEditor, ::videoQt::editor::SCamera );
 
 //------------------------------------------------------------------------------
 
-SCamera::SCamera() throw() : m_bVideoSupport(false)
+SCamera::SCamera() throw() :
+    m_bVideoSupport(false),
+    m_numCreateCameras(0)
 {
 }
 
@@ -53,6 +55,18 @@ SCamera::SCamera() throw() : m_bVideoSupport(false)
 
 SCamera::~SCamera() throw()
 {
+}
+
+//------------------------------------------------------------------------------
+
+void SCamera::configuring() throw(fwTools::Failed)
+{
+    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+
+    m_bVideoSupport    = (config.get<std::string>("videoSupport", "no") == "yes");
+    m_numCreateCameras = config.get<size_t>("createCameraNumber", 0);
+
+    this->initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -84,6 +98,32 @@ void SCamera::starting() throw(::fwTools::Failed)
     container->setLayout(layout);
 
     QObject::connect(m_devicesComboBox, SIGNAL(activated(int)), this, SLOT(onApply(int)));
+
+    // Create camera data if necessary
+    auto cameraSeries = this->getInOut< ::arData::CameraSeries >("cameraSeries");
+    if(cameraSeries)
+    {
+        const size_t numCameras = cameraSeries->getNumberOfCameras();
+        if(numCameras == 0)
+        {
+            SLM_ASSERT("No camera data in the CameraSeries.", m_numCreateCameras != 0);
+
+            for(size_t i = 0; i < m_numCreateCameras; ++i)
+            {
+                ::arData::Camera::sptr camera = ::arData::Camera::New();
+                cameraSeries->addCamera(camera);
+                auto sig = cameraSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(
+                    ::arData::CameraSeries::s_ADDED_CAMERA_SIG);
+                sig->asyncEmit(camera);
+            }
+            OSLM_INFO("No camera data in the CameraSeries, " << m_numCreateCameras << " will be created.");
+        }
+        else
+        {
+            SLM_ASSERT("CameraSeries contains camera data but the service is configured to create " <<
+                       m_numCreateCameras <<" cameras.", m_numCreateCameras != 0);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -92,21 +132,6 @@ void SCamera::stopping() throw(::fwTools::Failed)
 {
     this->getContainer()->clean();
     this->destroy();
-}
-
-//------------------------------------------------------------------------------
-
-void SCamera::configuring() throw(fwTools::Failed)
-{
-    ConfigurationType cfgVideo = m_configuration->findConfigurationElement("videoSupport");
-
-    if(cfgVideo)
-    {
-        std::string str = cfgVideo->getValue();
-        m_bVideoSupport = (str == "yes");
-    }
-
-    this->initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -144,15 +169,7 @@ void SCamera::onApply(int index)
 
 void SCamera::onChooseFile()
 {
-    ::arData::Camera::sptr camera;
-    if (this->isVersion2())
-    {
-        camera = this->getInOut< ::arData::Camera >("camera");
-    }
-    else
-    {
-        camera = this->getObject< ::arData::Camera >();
-    }
+    std::vector< ::arData::Camera::sptr > cameras = this->getCameras();
 
     // Check preferences
     const ::boost::filesystem::path videoDirPreferencePath(::arPreferences::getVideoDir());
@@ -162,47 +179,50 @@ void SCamera::onChooseFile()
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Choose a file to load a video");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("mp4","*.mp4");
-    dialogFile.addFilter("avi","*.avi");
-    dialogFile.addFilter("m4v","*.m4v");
-    dialogFile.addFilter("mkv","*.mkv");
-    dialogFile.addFilter("All files","*.*");
+    dialogFile.addFilter("mp4", "*.mp4");
+    dialogFile.addFilter("avi", "*.avi");
+    dialogFile.addFilter("m4v", "*.m4v");
+    dialogFile.addFilter("mkv", "*.mkv");
+    dialogFile.addFilter("All files", "*.*");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
-    ::fwData::location::SingleFile::sptr result;
-    ::boost::filesystem::path videoPath;
-    result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
-    if (result)
+    for(auto& camera : cameras)
     {
-        _sDefaultPath = result->getPath().parent_path();
-        dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-        videoPath = result->getPath();
-        if(::boost::filesystem::is_directory(videoDirPreferencePath))
+        ::fwData::location::SingleFile::sptr result;
+        ::boost::filesystem::path videoPath;
+        result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
+        if (result)
         {
-            ::boost::filesystem::path videoRelativePath;
-            videoRelativePath = ::fwTools::getPathDifference(videoDirPreferencePath, videoPath);
-
-            ::boost::filesystem::path concatenatedPath = videoDirPreferencePath / videoRelativePath;
-            if(::boost::filesystem::exists(concatenatedPath))
+            _sDefaultPath = result->getPath().parent_path();
+            dialogFile.saveDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
+            videoPath = result->getPath();
+            if(::boost::filesystem::is_directory(videoDirPreferencePath))
             {
-                videoPath = videoRelativePath;
+                ::boost::filesystem::path videoRelativePath;
+                videoRelativePath = ::fwTools::getPathDifference(videoDirPreferencePath, videoPath);
+
+                ::boost::filesystem::path concatenatedPath = videoDirPreferencePath / videoRelativePath;
+                if(::boost::filesystem::exists(concatenatedPath))
+                {
+                    videoPath = videoRelativePath;
+                }
+                else
+                {
+                    SLM_WARN("Relative path '"+videoRelativePath.string()+"' genrerated with preference is not valid.");
+                }
             }
             else
             {
-                SLM_WARN("Relative path '"+videoRelativePath.string()+"' genrerated with preference is not valid.");
+                SLM_WARN("Video directory '"+videoDirPreferencePath.string()+"' stored in preference is not valid.");
             }
-        }
-        else
-        {
-            SLM_WARN("Video directory '"+videoDirPreferencePath.string()+"' stored in preference is not valid.");
-        }
-        camera->setCameraSource(::arData::Camera::FILE);
-        camera->setVideoFile(videoPath.string());
+            camera->setCameraSource(::arData::Camera::FILE);
+            camera->setVideoFile(videoPath.string());
 
-        ::arData::Camera::ModifiedSignalType::sptr sig;
-        sig = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
-        sig->asyncEmit();
+            ::arData::Camera::ModifiedSignalType::sptr sig;
+            sig = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
+            sig->asyncEmit();
+        }
     }
 }
 
@@ -210,29 +230,25 @@ void SCamera::onChooseFile()
 
 void SCamera::onChooseStream()
 {
-    ::arData::Camera::sptr camera;
-    if (this->isVersion2())
-    {
-        camera = this->getInOut< ::arData::Camera >("camera");
-    }
-    else
-    {
-        camera = this->getObject< ::arData::Camera >();
-    }
+    std::vector< ::arData::Camera::sptr > cameras = this->getCameras();
 
-    ::fwGui::dialog::InputDialog inputDialog;
-    std::string streamSource;
-
-    inputDialog.setTitle ("Enter stream source");
-    streamSource = inputDialog.getInput();
-    if(!streamSource.empty())
+    for(auto& camera : cameras)
     {
-        camera->setCameraSource(::arData::Camera::STREAM);
-        camera->setStreamUrl(streamSource);
+        ::fwGui::dialog::InputDialog inputDialog;
+        std::string streamSource;
 
-        ::arData::Camera::ModifiedSignalType::sptr sig;
-        sig = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
-        sig->asyncEmit();
+        inputDialog.setTitle("Enter stream source");
+
+        streamSource = inputDialog.getInput();
+        if(!streamSource.empty())
+        {
+            camera->setCameraSource(::arData::Camera::STREAM);
+            camera->setStreamUrl(streamSource);
+
+            ::arData::Camera::ModifiedSignalType::sptr sig;
+            sig = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
+            sig->asyncEmit();
+        }
     }
 }
 
@@ -240,25 +256,51 @@ void SCamera::onChooseStream()
 
 void SCamera::onChooseDevice()
 {
-    ::videoQt::editor::CameraDeviceDlg camDialog;
-    camDialog.exec();
+    std::vector< ::arData::Camera::sptr > cameras = this->getCameras();
 
-    ::arData::Camera::sptr camera;
+    for(auto& camera : cameras)
+    {
+        ::videoQt::editor::CameraDeviceDlg camDialog;
+        camDialog.exec();
+
+        bool isSelected = camDialog.getSelectedCamera(camera);
+        if(isSelected)
+        {
+            ::arData::Camera::ModifiedSignalType::sptr sig;
+            sig = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
+            sig->asyncEmit();
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+std::vector< ::arData::Camera::sptr > SCamera::getCameras()
+{
+    std::vector< ::arData::Camera::sptr > cameras;
     if (this->isVersion2())
     {
-        camera = this->getInOut< ::arData::Camera >("camera");
+        auto cameraSeries = this->getInOut< ::arData::CameraSeries >("cameraSeries");
+        if(cameraSeries)
+        {
+            const size_t numCameras = cameraSeries->getNumberOfCameras();
+            for(size_t i = 0; i < numCameras; ++i)
+            {
+                cameras.push_back(cameraSeries->getCamera(i));
+            }
+        }
+        else
+        {
+            cameras.push_back(this->getInOut< ::arData::Camera >("camera"));
+        }
     }
     else
     {
-        camera = this->getObject< ::arData::Camera >();
+        // TODO: When removing this appXml1 branch we can make the method const
+        cameras.push_back(this->getObject< ::arData::Camera >());
     }
-    bool isSelected = camDialog.getSelectedCamera(camera);
-    if(isSelected)
-    {
-        ::arData::Camera::ModifiedSignalType::sptr sig;
-        sig = camera->signal< ::arData::Camera::ModifiedSignalType >( ::arData::Camera::s_MODIFIED_SIG );
-        sig->asyncEmit();
-    }
+
+    return cameras;
 }
 
 //------------------------------------------------------------------------------
