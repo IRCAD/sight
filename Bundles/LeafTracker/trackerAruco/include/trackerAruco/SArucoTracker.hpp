@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,15 +9,16 @@
 
 #include "trackerAruco/config.hpp"
 
-#include <tracker/ITracker.hpp>
-
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-#include <fwData/Composite.hpp>
 
 #include <fwCore/HiResClock.hpp>
 
+#include <fwData/Composite.hpp>
+
 #include <fwServices/macros.hpp>
+
+#include <tracker/ITracker.hpp>
 
 #include <aruco/markerdetector.h>
 
@@ -27,14 +28,22 @@ namespace trackerAruco
 /**
  * @brief   Class used to track multiple tags with ArUco.
  *
+ * @see ::tracker::ITracker
+ *
  * @section Signals Signals
  * - \b detectionDone(::fwCore::HiResClock::HiResClockType) : This signal is emitted when the tracker find tags.
+ *
+ * @section Slots Slots
+ * @subsection Inherited Inherited slots (from ITracker)
+ * - \b track(timestamp) : Slot to fills the timeline with the new positions of the grid
+ * - \b startTracking() : Slot called when the user wants to start tracking
+ * - \b stopTracking() : Slot called when the user wants to stop tracking
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
         <service uid="..." type="::trackerAruco::SArucoTracker" >
-            <in key="frameTL" uid="frameTLUid" autoConnect="yes"/>
+            <in key="timeline" uid="frameTLUid" autoConnect="yes"/>
             <in key="camera" uid="cameraUid" />
             <inout group="tagTL" >
                 <key uid="WireTimeline" />
@@ -55,10 +64,11 @@ namespace trackerAruco
                 <patternWidth>106</patternWidth>
                 <debugMarkers>yes</debugMarkers>
             </config>
+            <dropObj>true</dropObj>
         </service>
    @endcode
  * @subsection Input Input
- * - \b frameTL [::arData::FrameTL]: camera used to display video.
+ * - \b timeline [::arData::FrameTL]: camera used to display video. It is the main timeline used for the tracking.
  * - \b camera [::arData::Camera]: camera calibration.
  *
  * @subsection In-Out In-Out
@@ -75,6 +85,8 @@ namespace trackerAruco
  *      - \b constant : parameter of the chosen method
  *  - \b patternWidth (optional): width of the pattern(s).
  *  - \b debugMarkers : if value is yes markers debugging mode is activated.
+ *  - \b dropObj : defines if the tracker should drop few objects from the timeline (and always get the last one) or
+ *  not.
  */
 class TRACKERARUCO_CLASS_API SArucoTracker : public ::tracker::ITracker
 {
@@ -119,14 +131,6 @@ public:
      */
     TRACKERARUCO_API virtual ~SArucoTracker() throw ();
 
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection
-     *
-     * Connect TimeLine::s_OBJECT_PUSHED_SIG to this::s_DETECT_MARKER_SLOT
-     */
-    TRACKERARUCO_API virtual KeyConnectionsMap getAutoConnections() const;
-
 protected:
     /**
      * @brief Configuring method : This method is used to configure the service.
@@ -148,8 +152,8 @@ protected:
      */
     TRACKERARUCO_API void stopping() throw (fwTools::Failed);
 
-    /// Detect marker slot
-    void detectMarker(::fwCore::HiResClock::HiResClockType timestamp);
+    /// Detect marker
+    TRACKERARUCO_API virtual void tracking(::fwCore::HiResClock::HiResClockType& timestamp);
 
     /// Threshold method slot
     void setMethod(unsigned int);
@@ -183,9 +187,6 @@ private:
     /// Marker pattern width.
     double m_patternWidth;
 
-    /// Last timestamp
-    ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
-
     /// True if tracker is initialized
     bool m_isInitialized;
 
@@ -209,6 +210,6 @@ private:
     DetectionDoneSignalType::sptr m_sigDetectionDone;
 };
 
-} //namespace trackerAruco
+} // namespace trackerAruco
 
 #endif /* __TRACKERARUCO_SARUCOTRACKER_HPP__ */
