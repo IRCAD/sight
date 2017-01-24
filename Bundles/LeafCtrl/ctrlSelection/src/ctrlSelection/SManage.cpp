@@ -105,12 +105,6 @@ void SManage::updating() throw ( ::fwTools::Failed )
 
 // -----------------------------------------------------------------------------
 
-void SManage::info( std::ostream& _sstream )
-{
-}
-
-// -----------------------------------------------------------------------------
-
 void SManage::add()
 {
     if (this->isVersion2())

@@ -112,9 +112,6 @@ protected:
     /// Implements updating method derived from IService. Do nothing.
     CTRLSELECTION_API virtual void updating() throw ( ::fwTools::Failed );
 
-    /// Implements info method derived from IService. Print classname.
-    CTRLSELECTION_API virtual void info( std::ostream& _sstream );
-
     /**
      * @name Slots
      * @{
