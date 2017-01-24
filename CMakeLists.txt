@@ -467,14 +467,19 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
 
     setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
 
-    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/${FWPROJECT_NAME}/pch.hpp" AND ENABLE_PCH)
-        add_precompiled_header_cpp(${FWPROJECT_NAME})
+    if(MSVC)
+        if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
+            add_precompiled_header_cpp(${FWPROJECT_NAME})
+        endif()
+        set(${FWPROJECT_NAME}_PCH_LIB $<TARGET_OBJECTS:${${FWPROJECT_NAME}_PCH_TARGET}_PCH_OBJ>)
     endif()
 
-    add_library(${FWPROJECT_NAME} ${ARGN} ${${FWPROJECT_NAME}_HEADERS}
-               ${${FWPROJECT_NAME}_SOURCES}
-               ${${FWPROJECT_NAME}_RC_FILES}
-               ${${FWPROJECT_NAME}_CMAKE_FILES})
+    add_library(${FWPROJECT_NAME} ${ARGN}
+        ${${FWPROJECT_NAME}_HEADERS}
+        ${${FWPROJECT_NAME}_SOURCES}
+        ${${FWPROJECT_NAME}_RC_FILES}
+        ${${FWPROJECT_NAME}_CMAKE_FILES}
+        ${${FWPROJECT_NAME}_PCH_LIB})
 
     configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
@@ -531,18 +536,22 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     set(${FWPROJECT_NAME}_TYPE ${${FWPROJECT_NAME}_TYPE} PARENT_SCOPE)
     setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
 
-    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/${FWPROJECT_NAME}/pch.hpp" AND ENABLE_PCH)
-        add_precompiled_header_cpp(${FWPROJECT_NAME})
+    if(MSVC)
+        if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
+            add_precompiled_header_cpp(${FWPROJECT_NAME})
+        endif()
+        set(${FWPROJECT_NAME}_PCH_LIB $<TARGET_OBJECTS:${${FWPROJECT_NAME}_PCH_TARGET}_PCH_OBJ>)
     endif()
 
     set(BUNDLE_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}")
 
     if(EXISTS "${PRJ_SOURCE_DIR}/src")
-        add_library( ${FWPROJECT_NAME} SHARED ${ARGN}
+        add_library(${FWPROJECT_NAME} ${ARGN}
             ${${FWPROJECT_NAME}_HEADERS}
             ${${FWPROJECT_NAME}_SOURCES}
             ${${FWPROJECT_NAME}_RC_FILES}
-            ${${FWPROJECT_NAME}_CMAKE_FILES})
+            ${${FWPROJECT_NAME}_CMAKE_FILES}
+            ${${FWPROJECT_NAME}_PCH_LIB})
 
         configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 

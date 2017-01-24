@@ -75,13 +75,63 @@ function(pch_msvc_hook variable access value current_list_file stack)
         list(GET CMAKE_PCH_COMPILER_TARGET_FLAGS ${index} flags)
         set(pch_target ${target}.pch)
 
-        get_target_property(automoc ${target} AUTOMOC)
-        if(automoc)
-            set(_PCH_SOURCE_CXX "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp")
-            get_source_file_property(_pch_object_depends ${_PCH_SOURCE_CXX} OBJECT_DEPENDS)
-            list(APPEND _pch_object_depends "${target}/CMakeFiles/${target}.dir/${FWPROJECT_NAME}_automoc.cpp.obj")
-            set_source_files_properties(${_PCH_SOURCE_CXX} PROPERTIES OBJECT_DEPENDS "${_pch_object_depends}" )
+#        get_target_property(automoc ${target} AUTOMOC)
+#        if(automoc)
+#            set(_PCH_SOURCE_CXX "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp")
+#            get_source_file_property(_pch_object_depends ${_PCH_SOURCE_CXX} OBJECT_DEPENDS)
+#            list(APPEND _pch_object_depends "${target}/CMakeFiles/${target}.dir/${FWPROJECT_NAME}_automoc.cpp.obj")
+#            set_source_files_properties(${_PCH_SOURCE_CXX} PROPERTIES OBJECT_DEPENDS "${_pch_object_depends}" )
+#        endif()
+
+        # Find OBJ pch target dependencies
+        get_target_property(DIRINC ${target} INCLUDE_DIRECTORIES)
+        list(APPEND listinc ${DIRINC})
+
+        list(APPEND srcTargets ${target})
+        while(srcTargets)
+            list(GET srcTargets 0 srcTarget)
+            list(APPEND visited ${srcTarget})
+            list(REMOVE_AT srcTargets 0)
+            foreach(depends ${${srcTarget}_DEPENDENCIES})
+                list(APPEND targets ${depends})
+
+                list(FIND visited ${depends} targetFound)
+                if(targetFound EQUAL -1)
+                    list(APPEND srcTargets ${depends})
+                endif()
+
+            endforeach()
+        endwhile()
+
+        if(targets)
+            list(REMOVE_DUPLICATES targets)
         endif()
+        list(APPEND targets ${target})
+
+        # Add the same include directories than the regular target
+        foreach(depends ${targets})
+            get_target_property(DIRINC ${depends} INTERFACE_INCLUDE_DIRECTORIES)
+            list(APPEND listinc ${DIRINC})
+        endforeach()
+        target_include_directories(${target}_PCH_OBJ SYSTEM PRIVATE "${listinc}")
+
+        get_target_property(def ${target} COMPILE_DEFINITIONS)
+        list(APPEND defines ${def})
+
+        get_target_property(def ${target} DEFINE_SYMBOL)
+        list(APPEND defines ${def})
+
+        foreach(def ${defines})
+
+            string(REGEX REPLACE ".*_VER=\"[0-9]-[0-9]\"" "" def1 ${def})
+            if(def1)
+                string(REGEX REPLACE ".*_EXPORTS" "" def2 ${def1})
+
+                if(def2)
+                    target_compile_definitions(${target}_PCH_OBJ PRIVATE ${def2})
+                endif()
+            endif()
+        endforeach()
     endforeach()
 
 endfunction()
@@ -135,12 +185,15 @@ function(assign_precompiled_header _target _pch _pch_header)
 endfunction()
 
 macro(add_precompiled_header_cpp _target)
-  if(MSVC)
-    list(APPEND ${FWPROJECT_NAME}_SOURCES
-        "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp"
-        "${CMAKE_CURRENT_SOURCE_DIR}/include/${_target}/pch.hpp"
-    )
-  endif()
+    add_library(${_target}_PCH_OBJ OBJECT "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp")
+
+    if(MSVC14)
+        set(INPUT_PDB_NAME "vc140.pdb")
+    elseif(MSVC12)
+        set(INPUT_PDB_NAME "vc120.pdb")
+    endif()
+    set_target_properties(${_target}_PCH_OBJ PROPERTIES COMPILE_PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${_target}/CMakeFiles/${_target}.dir/")
+    get_target_property(depends ${_target}_PCH_OBJ COMPILE_PDB_OUTPUT_DIRECTORY)
 endmacro()
 
 function(add_precompiled_header _target _input)
@@ -152,45 +205,60 @@ function(add_precompiled_header _target _input)
 
     set(_PCH_SOURCE_CXX "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp")
 
-    set(_cxx_path "${CMAKE_CURRENT_BINARY_DIR}/cxx_pch")
+    set(_cxx_path "${CMAKE_CURRENT_BINARY_DIR}/include/${_target}")
     make_directory("${_cxx_path}")
     set(_pch_cxx_header "${CMAKE_CURRENT_SOURCE_DIR}/include/${_target}/pch.hpp")
     set(_pch_cxx_pch "${_cxx_path}/${_input_we}.pch")
+    set(_pch_cxx_pdb "${_cxx_path}/${_input_we}.pdb")
 
     get_target_property(sources ${_target} SOURCES)
     foreach(_source ${sources})
-      set(_pch_compile_flags "")
-      if(_source MATCHES \\.\(cc|cxx|cpp\)$)
+        set(_pch_compile_flags "")
+        if(_source MATCHES \\.\(cc|cxx|cpp\)$)
 
+            set(_pch_compile_flags "${_pch_compile_flags} \"/Fp${_pch_cxx_pch}\" /Yu${_input}")
+            set_source_files_properties("${_source}" PROPERTIES OBJECT_DEPENDS "${_pch_cxx_pch}")
+            # Force the include of the PCH on every source file
+            set(_pch_compile_flags "${_pch_compile_flags} /FI${_input}")
+
+            get_source_file_property(_object_depends "${_source}" OBJECT_DEPENDS)
+            if(NOT _object_depends)
+                set(_object_depends)
+            endif()
+
+            list(APPEND _object_depends "${_pch_cxx_header}")
+
+            set_source_files_properties(${_source} PROPERTIES
+                COMPILE_FLAGS "${_pch_compile_flags}"
+                OBJECT_DEPENDS "${_object_depends}")
+        endif()
+    endforeach()
+
+    get_target_property(sources ${_target}_PCH_OBJ SOURCES)
+    foreach(_source ${sources})
+        set(_pch_compile_flags "")
         if(_source STREQUAL "${_PCH_SOURCE_CXX}")
-          set(_pch_compile_flags "${_pch_compile_flags} \"/Fp${_pch_cxx_pch}\" /Yc${_input_pch} \"/I${CMAKE_CURRENT_SOURCE_DIR}\\include\\${_target}\"")
-          set(_pch_source_cxx_found TRUE)
-          set_source_files_properties("${_source}" PROPERTIES OBJECT_OUTPUTS "${_pch_cxx_pch}")
-        else()
-          set(_pch_compile_flags "${_pch_compile_flags} \"/Fp${_pch_cxx_pch}\" /Yu${_input}")
-          set(_pch_source_cxx_needed TRUE)
-          set_source_files_properties("${_source}" PROPERTIES OBJECT_DEPENDS "${_pch_cxx_pch}")
-          # Force the include of the PCH on every source file
-          set(_pch_compile_flags "${_pch_compile_flags} /FI${_input}")
+            set(_pch_compile_flags "${_pch_compile_flags} \"/Fp${_pch_cxx_pch}\" /Yc${_input_pch} \"/I${CMAKE_CURRENT_SOURCE_DIR}\\include\\${_target}\"")
+            set(_pch_source_cxx_found TRUE)
+            set_source_files_properties("${_source}" PROPERTIES OBJECT_OUTPUTS "${_pch_cxx_pch}")
+
+            get_source_file_property(_object_depends "${_source}" OBJECT_DEPENDS)
+            if(NOT _object_depends)
+                set(_object_depends)
+            endif()
+
+            list(APPEND _object_depends "${_pch_cxx_header}")
+
+            set_source_files_properties(${_source} PROPERTIES
+                COMPILE_FLAGS "${_pch_compile_flags}"
+                OBJECT_DEPENDS "${_object_depends}")
         endif()
-
-        get_source_file_property(_object_depends "${_source}" OBJECT_DEPENDS)
-        if(NOT _object_depends)
-          set(_object_depends)
-        endif()
-
-        list(APPEND _object_depends "${_pch_cxx_header}")
-
-        set_source_files_properties(${_source} PROPERTIES
-          COMPILE_FLAGS "${_pch_compile_flags}"
-          OBJECT_DEPENDS "${_object_depends}")
-      endif()
     endforeach()
 
     list(APPEND CMAKE_PCH_COMPILER_TARGETS ${_target})
     set(CMAKE_PCH_COMPILER_TARGETS "${CMAKE_PCH_COMPILER_TARGETS}" PARENT_SCOPE)
 
-    if(_pch_source_cxx_needed AND NOT _pch_source_cxx_found)
+    if(NOT _pch_source_cxx_found)
       message(FATAL_ERROR "A source file ${_PCH_SOURCE_CXX} for ${_input} is required for MSVC builds. Can be set with the SOURCE_CXX option.")
     endif()
   endif(MSVC)
@@ -249,20 +317,20 @@ function(add_precompiled_header _target _input)
         COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} ${CXXFLAGS} -M -MF "${_pch_binary_dir}/pch.d" "${_pch_header}"
         COMMAND sed -i 's|^pch\.o|${relative_output_cxx}|' "${_pch_binary_dir}/pch.d"
         DEPENDS "${_pch_header}" "${_pch_flags_file}"
-        COMMENT "Generating pch deps file for ${_target} (C++)")
+        COMMENT "Generating pch deps file for ${_target} (PCH)")
       add_custom_command(
         OUTPUT "${_output_cxx}"
         COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} -x c++-header -o "${_output_cxx}" "${_pch_header}" ${CXXFLAGS}
         DEPENDS "${_pch_header}" "${_pch_flags_file}" "${_pch_binary_dir}/pch.d"
         DEPFILE "${_pch_binary_dir}/pch.d"
-        COMMENT "Precompiling ${_name} for ${_target} (C++)")
+        COMMENT "Precompiling ${_name} for ${_target} (PCH)")
     else()
       add_custom_command(
         OUTPUT "${_output_cxx}"
         COMMAND "${CMAKE_CXX_COMPILER}" ${_compiler_FLAGS} -x c++-header -o "${_output_cxx}" "${_pch_header}" ${CXXFLAGS}
         DEPENDS "${_pch_header}" "${_pch_flags_file}"
         IMPLICIT_DEPENDS CXX "${_pch_header}"
-        COMMENT "Precompiling ${_name} for ${_target} (C++)")
+        COMMENT "Precompiling ${_name} for ${_target} (PCH)")
     endif()
 
     assign_precompiled_header(${_target} ${_output_cxx} pch.hpp)
@@ -272,25 +340,41 @@ endfunction()
 function(use_precompiled_header _target _input)
     cmake_parse_arguments(_PCH "FORCEINCLUDE" "SOURCE_CXX:SOURCE_C" "" ${ARGN})
 
-
-    # TODO: Test!
     if(MSVC)
-        get_filename_component(_input_we ${_input} NAME_WE)
-        get_filename_component(_input_pch ${_input} NAME)
+        if(MSVC14)
+            set(INPUT_PDB_NAME "vc140.pdb")
+        elseif(MSVC12)
+            set(INPUT_PDB_NAME "vc120.pdb")
+        endif()
+
+        file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/${_input}/CMakeFiles/${_input}.dir/${INPUT_PDB_NAME}" INPUT_PDB_FILE)
+        file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/${_target}/CMakeFiles/${_target}.dir/" OUTPUT_PDB_PATH)
+
+        add_custom_target(
+            ${_target}_pchCopy
+            COMMAND xcopy /D /Y ${INPUT_PDB_FILE} ${OUTPUT_PDB_PATH}
+            DEPENDS ${${_target}_DEPENDENCIES} ${_input}
+        )
+        add_dependencies( ${_target} ${_target}_pchCopy)
+
+        get_target_property(_target_include_directories ${_target} INCLUDE_DIRECTORIES)
+        list(APPEND _target_include_directories "${${_input}_PROJECT_DIR}/include/${_input}")
+        set_target_properties(${_target} PROPERTIES INCLUDE_DIRECTORIES "${_target_include_directories}" )
 
         set(_pch_header "${${_input}_PROJECT_DIR}/include/${_input}/pch.hpp")
-        set(_cxx_path "${CMAKE_CURRENT_BINARY_DIR}/cxx_pch")
-        set(_pch_cxx_pch "${_cxx_path}/${_input_we}.pch")
+        set(_pch_binary_dir "${CMAKE_BINARY_DIR}")
+        set(_cxx_path "${_pch_binary_dir}/${_input}/include/${_input}")
+        set(_pch_cxx_pch "${_cxx_path}/pch.pch")
 
         get_target_property(sources ${_target} SOURCES)
         foreach(_source ${sources})
             set(_pch_compile_flags "")
             if(_source MATCHES \\.\(cc|cxx|cpp\)$)
 
-                set(_pch_compile_flags "${_pch_compile_flags} \"/Fp${_pch_cxx_pch}\" /Yu${_input}")
+                set(_pch_compile_flags "${_pch_compile_flags} \"/Fp${_pch_cxx_pch}\" /Yu${_pch_header}")
                 set_source_files_properties("${_source}" PROPERTIES OBJECT_DEPENDS "${_pch_cxx_pch}")
                 # Force the include of the PCH on every source file
-                set(_pch_compile_flags "${_pch_compile_flags} /FI${_input}")
+                set(_pch_compile_flags "${_pch_compile_flags} /FI${_pch_header}")
 
                 get_source_file_property(_object_depends "${_source}" OBJECT_DEPENDS)
                 if(NOT _object_depends)
@@ -309,7 +393,6 @@ function(use_precompiled_header _target _input)
 
     if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
         set(_pch_header "pch.hpp")
-        get_filename_component(_name ${_input} NAME)
         set(_pch_binary_dir "${CMAKE_BINARY_DIR}")
         set(_pchfile "${_pch_binary_dir}/${_input}/include/${_input}/pch.hpp")
 
