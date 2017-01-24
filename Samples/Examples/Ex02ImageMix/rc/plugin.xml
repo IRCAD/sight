@@ -153,11 +153,11 @@
                 <item key="compositeVisu">
                     <object uid="compositeVisu" type="::fwData::Composite">
 
-                        <service uid="updaterBackImgUID" impl="::ctrlSelection::updater::SObjFromUid" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                        <service uid="updaterBackImgUID" impl="::ctrlSelection::SManage" autoConnect="no">
                             <uid>backgroundImageUID</uid>
                             <compositeKey>backgroundImage</compositeKey>
                         </service>
-                        <service uid="updaterFrontImgUID" impl="::ctrlSelection::updater::SObjFromUid" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                        <service uid="updaterFrontImgUID" impl="::ctrlSelection::SManage" autoConnect="no">
                             <uid>frontImageUID</uid>
                             <compositeKey>frontImage</compositeKey>
                         </service>

@@ -4,58 +4,86 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __CTRLSELECTION_UPDATER_SOBJFROMUID_HPP__
-#define __CTRLSELECTION_UPDATER_SOBJFROMUID_HPP__
+#ifndef __CTRLSELECTION_SMANAGE_HPP__
+#define __CTRLSELECTION_SMANAGE_HPP__
 
-#include "ctrlSelection/IUpdaterSrv.hpp"
 #include "ctrlSelection/config.hpp"
 
 #include <fwData/Object.hpp>
 
+#include <fwServices/IController.hpp>
+
 namespace ctrlSelection
 {
 
-namespace updater
-{
-
 /**
- * @brief Updates the composite from object given by uid. The objects is added/swapped/removed from composite when the
- * respective slot is called.
+ * @brief This service manages an object (add/swap/remove) into a container object (composite, vector, seriesDB).
+ *
+ * It works on different objects:
+ * - ::fwData::Composite: the object is added/swapped/removed from composite at the given key when the respective slot
+ *   is called.
+ * - ::fwData::Vector: the object is added or removed from the container
+ * - ::fwMedData::SeriesDB: the object is added or removed from the container
  *
  * @section Slots Slots
- * - \b add() : Adds the object into the composite with the key given by config.
- * - \b addOrSwap() : Adds the object if it is not present in the composite, else swaps it.
- * - \b swapObj() : Swaps the object into the composite with the key given by config.
- * - \b remove() : Removes the object from the composite at the key given by config.
- * - \b removeIfPresent() : Removes the object from the composite at the key given by config if it is present.
+ * - \b add() : Adds the object into the target (vector, seriesDB, composite), if target is a Composite, it is add at
+ *   the key given by config.
+ * - \b addOrSwap() : Adds the object if it is not present in the target, else if target is a compsite, the object is
+ *   swapped.
+ * - \b swapObj() : Only if target is a Composite : swaps the object into the composite with the key given by config.
+ * - \b remove() : Removes the object.
+ * - \b removeIfPresent() : Removes the object if it is present.
  *
  * @section XML XML Configuration
  *
+ * For ::fwData::Composite:
  * @code{.xml}
-   <service type="::ctrlSelection::updater::SObjFromUid">
-      <inout key="composite" uid="..." />
+   <service type="::ctrlSelection::SManage">
       <inout key="object" uid="..." />
+      <inout key="composite" uid="..." />
       <compositeKey>...</compositeKey>
    </service>
    @endcode
+ *
+ * For ::fwData::Vector:
+ * @code{.xml}
+   <service type="::ctrlSelection::SManage">
+      <inout key="object" uid="..." />
+      <inout key="vector" uid="..." />
+   </service>
+   @endcode
+ *
+ * For ::fwDMedata::SeriesDB:
+ * @code{.xml}
+   <service type="::ctrlSelection::SManage">
+      <inout key="object" uid="..." />
+      <inout key="seriesDB" uid="..." />
+   </service>
+   @endcode
+ *
  * @subsection In-Out In-Out
- * - \b composite [::fwData::Composite]: Composite where to add/swap/remove objects.
- * - \b object [::fwData::Object]: object to add/swap/remove into the composite.
+ * - \b object [::fwData::Object]: object to add/swap/remove.
+ * - \b composite [::fwData::Composite] (optional): Composite where to add/swap/remove object.
+ * - \b vector [::fwData::Vector] (optional): Vector where to add/remove object.
+ * - \b seriesDB [::fwMedData::SeriesDB] (optional): SeriesDB where to add/remove object.
+ *
+ * <b>Only one of the target (composite, vector or seriesDB) is allowed.</b>
+ * For SeriesDB, the object must inherit of Series
  * @subsection Configuration Configuration
- * - \b compositeKey : key of the object in the composite
+ * - \b compositeKey (optional, only if target object in a Composite) : key of the object in the composite
  */
-class CTRLSELECTION_CLASS_API SObjFromUid : public ::ctrlSelection::IUpdaterSrv
+class CTRLSELECTION_CLASS_API SManage : public ::fwServices::IController
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (SObjFromUid)(::ctrlSelection::IUpdaterSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SManage)(::fwServices::IController) );
 
     /// Constructor.  Do nothing.
-    CTRLSELECTION_API SObjFromUid() throw();
+    CTRLSELECTION_API SManage() throw();
 
     /// Destructor. Do nothing.
-    CTRLSELECTION_API virtual ~SObjFromUid() throw();
+    CTRLSELECTION_API virtual ~SManage() throw();
 
     /**
      * @name Slots
@@ -120,7 +148,6 @@ private:
 
 };
 
-} // updater
 } // ctrlSelection
 
-#endif // __CTRLSELECTION_UPDATER_SOBJFROMUID_HPP__
+#endif // __CTRLSELECTION_SMANAGE_HPP__
