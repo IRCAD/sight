@@ -140,7 +140,7 @@
             <item key="visuConfig">
                 <object uid="${GENERIC_UID}_VisuComposite" type="::fwData::Composite">
                    
-                    <service uid="${GENERIC_UID}_viewPointsUpdater" impl="::ctrlSelection::updater::SObjFromUid" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                    <service uid="${GENERIC_UID}_viewPointsUpdater" impl="::ctrlSelection::SManage" autoConnect="no">
                         <uid>${ViewPointsVectorUid}</uid>
                         <compositeKey>vectorViewPoints</compositeKey>
                     </service>

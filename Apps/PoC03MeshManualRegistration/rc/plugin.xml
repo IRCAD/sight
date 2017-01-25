@@ -33,7 +33,7 @@
                 <item key="compositeVisu">
                     <object uid="compositeVisuUID" type="::fwData::Composite">
 
-                        <service uid="updaterImageUID" impl="::ctrlSelection::updater::SObjFromUid" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                        <service uid="updaterImageUID" impl="::ctrlSelection::SManage" autoConnect="no">
                             <uid>imageUID</uid>
                             <compositeKey>image</compositeKey>
                         </service>
