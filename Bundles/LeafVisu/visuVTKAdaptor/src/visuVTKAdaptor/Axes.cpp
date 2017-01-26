@@ -137,7 +137,7 @@ void Axes::doConfigure() throw(fwTools::Failed)
     }
     else
     {
-        m_color = ::fwData::Color::New(0.2f, 1.2f, 1.3f, 1.0f);
+        m_color = ::fwData::Color::New(1.0f, 1.0f, 1.0f, 1.0f);
     }
 }
 

@@ -25,7 +25,20 @@ namespace visuVTKAdaptor
 
 /**
  * @brief Render axes in the generic scene.
+ *
+ * @code{.xml}
+      <adaptor id="..." class="::visuVTKAdaptor::Axes" objectId="self">
+       <config renderer="default" length="..." transform="..." label="..." marker="..." markerColor="..." />
+      </adaptor>
+     @endcode
+ * - \b renderer : defines the renderer to show the axes.
+ * - \b length : defines the length of the axes.
+ * - \b transform : transformation matrix applied to the axes.
+ * - \b label : display the name of the axes.
+ * - \b marker(no) : enable the sphere marker.
+ * - \b markerColor(#FFFFFF) : color of the sphere marker.
  */
+
 class VISUVTKADAPTOR_CLASS_API Axes : public ::fwRenderVTK::IVtkAdaptorService
 {
 public:
@@ -57,11 +70,15 @@ protected:
     void buildPipeline();
 
     fwVtkAxesActor* m_axesActor;
-    vtkSmartPointer< vtkActor> m_sphereActor;
     double m_length;
     bool m_labelOn;
-    bool m_sphereOn;
     vtkSmartPointer< vtkTransform> m_transformAxes;
+
+    /// actor for the sphere marker
+    vtkSmartPointer< vtkActor> m_sphereActor;
+    /// boolean to show the sphere marker
+    bool m_sphereOn;
+    /// color of the sphere marker
     ::fwData::Color::sptr m_color;
 
     ///X,Y and Z Labels
