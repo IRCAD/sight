@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,10 +8,10 @@
 #define __FWVTKIO_VTK_HPP__
 
 
+#include "fwVtkIO/config.hpp"
+
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
-
-#include "fwVtkIO/config.hpp"
 
 
 // forward declaration
@@ -30,9 +30,8 @@ struct TypeTranslator
     typedef std::map< ::fwTools::Type, int> fwToolsToVtkMap;
     typedef std::map< int, ::fwTools::Type> VtkTofwToolsMap;
 
-    static fwToolsToVtkMap::mapped_type translate( const fwToolsToVtkMap::key_type &key );
-
-    static VtkTofwToolsMap::mapped_type translate( const VtkTofwToolsMap::key_type &key );
+    FWVTKIO_API static fwToolsToVtkMap::mapped_type translate( const fwToolsToVtkMap::key_type& key );
+    FWVTKIO_API static VtkTofwToolsMap::mapped_type translate( const VtkTofwToolsMap::key_type& key );
 
     static const fwToolsToVtkMap s_toVtk;
     static const VtkTofwToolsMap s_fromVtk;
@@ -57,7 +56,7 @@ FWVTKIO_API int getVtkScalarType(::fwData::Image::sptr image);
  * allocate a new vtkImage from a ::fwData::Image, vtkImage doesn't manage its buffer (the buffer is not copied)
  *
  */
-FWVTKIO_API void toVTKImage( ::fwData::Image::csptr _data,  vtkImageData *dst);
+FWVTKIO_API void toVTKImage( ::fwData::Image::csptr _data,  vtkImageData* dst);
 
 /*!
  * @brief Convert a vtkImageData* to a ::fwData::Image::sptr.
@@ -75,7 +74,7 @@ FWVTKIO_API void fromVTKImage( vtkImageData* _source, ::fwData::Image::sptr _des
  * @param[in] _pDataImage ::fwData::Image::sptr.
  * @param[out] _pImageImport vtkImageImport*.
  */
-FWVTKIO_API void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fwData::Image::csptr _pDataImage );
+FWVTKIO_API void configureVTKImageImport( ::vtkImageImport* _pImageImport, ::fwData::Image::csptr _pDataImage );
 
 /*!
  * @brief Convert a ::fwData::TransformationMatrix3D::sptr to a vtkMatrix4x4*.
@@ -83,7 +82,7 @@ FWVTKIO_API void configureVTKImageImport( ::vtkImageImport * _pImageImport, ::fw
  * @param[in] _transfoMatrix ::fwData::TransformationMatrix3D::sptr.
  * @return vtkPolyData*.
  */
-FWVTKIO_API vtkMatrix4x4 *  toVTKMatrix(  ::fwData::TransformationMatrix3D::sptr _transfoMatrix );
+FWVTKIO_API vtkMatrix4x4*  toVTKMatrix(  ::fwData::TransformationMatrix3D::sptr _transfoMatrix );
 
 /*!
  * @brief Convert a vtkMatrix4x4* to a ::fwData::TransformationMatrix3D::sptr.

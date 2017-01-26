@@ -1,10 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ImageTest.hpp"
+
+#include <fwVtkIO/ImageReader.hpp>
+#include <fwVtkIO/ImageWriter.hpp>
+#include <fwVtkIO/MetaImageReader.hpp>
+#include <fwVtkIO/MetaImageWriter.hpp>
+#include <fwVtkIO/VtiImageReader.hpp>
+#include <fwVtkIO/VtiImageWriter.hpp>
+#include <fwVtkIO/vtk.hpp>
 
 #include <fwData/Image.hpp>
 
@@ -16,16 +24,9 @@
 
 #include <fwTools/System.hpp>
 
-#include <fwVtkIO/ImageReader.hpp>
-#include <fwVtkIO/ImageWriter.hpp>
-#include <fwVtkIO/MetaImageReader.hpp>
-#include <fwVtkIO/MetaImageWriter.hpp>
-#include <fwVtkIO/VtiImageReader.hpp>
-#include <fwVtkIO/VtiImageWriter.hpp>
-#include <fwVtkIO/vtk.hpp>
-
 #include <vtkGenericDataObjectReader.h>
 #include <vtkImageData.h>
+#include <vtkPointData.h>
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 #include <vtkSphereSource.h>
@@ -76,6 +77,14 @@ static const ::fwData::Image::OriginType bostonTeapotOrigin   = list_of(1.1)(2.2
                               static_cast< ::fwData::Image::SizeType::value_type >(size[2]) );                              \
     }
 
+#define COMPARE_IMAGE_FULL_ATTRS_MACRO(expSize, expSpacing, expOrigin, expNbComponents, size, spacing, origin, \
+                                       nbComponents)                                                                                        \
+    {  \
+        COMPARE_IMAGE_ATTRS_MACRO(expSize, expSpacing, expOrigin, size, spacing, origin) \
+        CPPUNIT_ASSERT_EQUAL( static_cast< size_t >(expNbComponents), \
+                              static_cast< size_t >( nbComponents) );  \
+    }
+
 
 #define WRITER_TEST(writerclass, readerclass, imagetype, filename)                                                                 \
     {                                                                                                                                  \
@@ -112,22 +121,22 @@ static const ::fwData::Image::OriginType bostonTeapotOrigin   = list_of(1.1)(2.2
             )                                                                                                                      \
     }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 void ImageTest::setUp()
 {
     // Set up context before running a test.
-    srand(time(NULL));
+    srand(static_cast<unsigned int>(time(NULL)));
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 void ImageTest::tearDown()
 {
     // Clean up after the test run.
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 void ImageTest::testImageToVtk()
 {
@@ -193,7 +202,7 @@ void ImageTest::testImageToVtk()
 
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 
 void ImageTest::testFromVtk()
@@ -237,6 +246,40 @@ void ImageTest::testFromVtk()
         CPPUNIT_ASSERT( std::equal(ptr, ptr + image->getSizeInBytes(), vtkPtr) );                                      \
     }
 
+    #define IMAGE_FROM_VTK_GEN_TEST(nbComponents, type)                                                                   \
+    {                                                                                                                  \
+        vtkSmartPointer< vtkImageData > vtkImage = vtkSmartPointer< vtkImageData >::New();                              \
+        \
+        CPPUNIT_ASSERT(vtkImage);  \
+        vtkImage->SetDimensions(64, 64, 1); \
+        vtkImage->SetSpacing(1.0, 1.0, 0.0); \
+        int dataType = ::fwVtkIO::TypeTranslator::translate(::fwTools::Type::create(type)); \
+        vtkImage->AllocateScalars(dataType, nbComponents);     \
+        \
+        ::fwData::Image::sptr image = ::fwData::Image::New();                                                          \
+        ::fwVtkIO::fromVTKImage(vtkImage, image);                                                                      \
+        \
+        ::fwDataTools::helper::Image imageHelper(image);                                                                   \
+        \
+        COMPARE_IMAGE_FULL_ATTRS_MACRO(                                                                                     \
+            vtkImage->GetDimensions(),                                                                             \
+            vtkImage->GetSpacing(),                                                                                \
+            vtkImage->GetOrigin(),                                                                                  \
+            vtkImage->GetPointData()->GetScalars()->GetNumberOfComponents(),                                                                      \
+                \
+            image->getSize(),                                                                                      \
+            image->getSpacing(),                                                                                   \
+            image->getOrigin(),                                                                                     \
+            image->getNumberOfComponents()                                                                          \
+            );  \
+        CPPUNIT_ASSERT_EQUAL_MESSAGE( "test on <" type "> Failed ", ::fwTools::Type(type), image->getType() );    \
+        \
+        char* vtkPtr = static_cast<char*>(vtkImage->GetScalarPointer());                                               \
+        char* ptr    = static_cast<char*>(imageHelper.getBuffer());                                                       \
+        \
+        CPPUNIT_ASSERT( std::equal(ptr, ptr + image->getSizeInBytes(), vtkPtr) );           \
+    }
+
 #define GENERATED_IMAGE_FROM_VTK_TEST(type)                        \
     IMAGE_FROM_VTK_TEST("fw4spl/image/vtk/img-" type ".vtk", type)
 
@@ -256,9 +299,11 @@ void ImageTest::testFromVtk()
 
     GENERATED_IMAGE_FROM_VTK_TEST("float" );
     GENERATED_IMAGE_FROM_VTK_TEST("double");
+
+    IMAGE_FROM_VTK_GEN_TEST(4, "uint8");
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 void ImageTest::mhdReaderTest()
 {
@@ -285,7 +330,7 @@ void ImageTest::mhdReaderTest()
 
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 void ImageTest::mhdWriterTest()
 {
@@ -323,12 +368,12 @@ void ImageTest::mhdWriterTest()
 
 
 
-    WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"int8", "imageTest.mhd");
-    WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"uint8", "imageTest.mhd");
-    WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"int16", "imageTest.mhd");
-    WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"uint16", "imageTest.mhd");
-    WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"int32", "imageTest.mhd");
-    WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"uint32", "imageTest.mhd");
+    WRITER_TEST(::fwVtkIO::MetaImageWriter, ::fwVtkIO::MetaImageReader, "int8", "imageTest.mhd");
+    WRITER_TEST(::fwVtkIO::MetaImageWriter, ::fwVtkIO::MetaImageReader, "uint8", "imageTest.mhd");
+    WRITER_TEST(::fwVtkIO::MetaImageWriter, ::fwVtkIO::MetaImageReader, "int16", "imageTest.mhd");
+    WRITER_TEST(::fwVtkIO::MetaImageWriter, ::fwVtkIO::MetaImageReader, "uint16", "imageTest.mhd");
+    WRITER_TEST(::fwVtkIO::MetaImageWriter, ::fwVtkIO::MetaImageReader, "int32", "imageTest.mhd");
+    WRITER_TEST(::fwVtkIO::MetaImageWriter, ::fwVtkIO::MetaImageReader, "uint32", "imageTest.mhd");
     // WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"int64", "imageTest.mhd");
     // WRITER_TEST(::fwVtkIO::MetaImageWriter,::fwVtkIO::MetaImageReader,"uint64", "imageTest.mhd");
 
@@ -336,7 +381,7 @@ void ImageTest::mhdWriterTest()
     ::boost::filesystem::remove(zFile);
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 void ImageTest::vtiReaderTest()
 {
@@ -366,22 +411,22 @@ void ImageTest::vtiReaderTest()
 
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 void ImageTest::vtiWriterTest()
 {
 
-    WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"int8", "imageTest.vti");
-    WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"uint8", "imageTest.vti");
-    WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"int16", "imageTest.vti");
-    WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"uint16", "imageTest.vti");
-    WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"int32", "imageTest.vti");
-    WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"uint32", "imageTest.vti");
+    WRITER_TEST(::fwVtkIO::VtiImageWriter, ::fwVtkIO::VtiImageReader, "int8", "imageTest.vti");
+    WRITER_TEST(::fwVtkIO::VtiImageWriter, ::fwVtkIO::VtiImageReader, "uint8", "imageTest.vti");
+    WRITER_TEST(::fwVtkIO::VtiImageWriter, ::fwVtkIO::VtiImageReader, "int16", "imageTest.vti");
+    WRITER_TEST(::fwVtkIO::VtiImageWriter, ::fwVtkIO::VtiImageReader, "uint16", "imageTest.vti");
+    WRITER_TEST(::fwVtkIO::VtiImageWriter, ::fwVtkIO::VtiImageReader, "int32", "imageTest.vti");
+    WRITER_TEST(::fwVtkIO::VtiImageWriter, ::fwVtkIO::VtiImageReader, "uint32", "imageTest.vti");
     // WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"int64", "imageTest.vti");
     // WRITER_TEST(::fwVtkIO::VtiImageWriter,::fwVtkIO::VtiImageReader,"uint64", "imageTest.vti");
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 void ImageTest::vtkReaderTest()
 {
@@ -398,13 +443,13 @@ void ImageTest::vtkReaderTest()
     reader->read();
 
     ::fwData::Image::SizeType vtkSize;
-    vtkSize += 230,170,58;
+    vtkSize += 230, 170, 58;
 
     ::fwData::Image::SpacingType vtkSpacing;
     vtkSpacing += 1.732, 1.732, 3.2;
 
     ::fwData::Image::OriginType vtkOrigin;
-    vtkOrigin += 34.64,86.6,56;
+    vtkOrigin += 34.64, 86.6, 56;
 
     COMPARE_IMAGE_ATTRS_MACRO(
         vtkSize,
@@ -462,21 +507,21 @@ void ImageTest::vtkReaderTest()
     VTK_READER_TEST("double");
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 void ImageTest::vtkWriterTest()
 {
-    WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"int8", "imageTest.vtk");
-    WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"uint8", "imageTest.vtk");
-    WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"int16", "imageTest.vtk");
-    WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"uint16", "imageTest.vtk");
-    WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"int32", "imageTest.vtk");
-    WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"uint32", "imageTest.vtk");
+    WRITER_TEST(::fwVtkIO::ImageWriter, ::fwVtkIO::ImageReader, "int8", "imageTest.vtk");
+    WRITER_TEST(::fwVtkIO::ImageWriter, ::fwVtkIO::ImageReader, "uint8", "imageTest.vtk");
+    WRITER_TEST(::fwVtkIO::ImageWriter, ::fwVtkIO::ImageReader, "int16", "imageTest.vtk");
+    WRITER_TEST(::fwVtkIO::ImageWriter, ::fwVtkIO::ImageReader, "uint16", "imageTest.vtk");
+    WRITER_TEST(::fwVtkIO::ImageWriter, ::fwVtkIO::ImageReader, "int32", "imageTest.vtk");
+    WRITER_TEST(::fwVtkIO::ImageWriter, ::fwVtkIO::ImageReader, "uint32", "imageTest.vtk");
     // WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"int64", "imageTest.vtk");
     // WRITER_TEST(::fwVtkIO::ImageWriter,::fwVtkIO::ImageReader,"uint64", "imageTest.vtk");
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 } // namespace ut
 } // namespace fwVtkIO
