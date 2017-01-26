@@ -13,7 +13,5 @@ set( DEPENDENCIES
         fwGui
         arServices
         arPreferences
-
-        io
 )
 set( REQUIREMENTS  )

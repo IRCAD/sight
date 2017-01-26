@@ -11,14 +11,14 @@
 
 #include <arPreferences/preferences.hpp>
 
+#include <boost/filesystem/operations.hpp>
+#include <boost/regex.hpp>
+
 #include <fwCom/Signal.hxx>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwServices/macros.hpp>
-
-#include <boost/filesystem/operations.hpp>
-#include <boost/regex.hpp>
 
 #include <pcl/common/transforms.h>
 #include <pcl/io/vtk_lib_io.h>
@@ -88,7 +88,7 @@ void SFrameGrabber::startCamera()
     if (camera->getCameraSource() == ::arData::Camera::FILE)
     {
         ::boost::filesystem::path file = camera->getVideoFile();
-        ::boost::filesystem::path videoDir(::arPreferences::getVideoDir());
+        const ::boost::filesystem::path videoDir(::arPreferences::getVideoDir());
 
         // For compatibility with old calibration with absolute path
         if (!file.is_absolute())
@@ -96,7 +96,7 @@ void SFrameGrabber::startCamera()
             file = videoDir / file;
         }
 
-        ::boost::filesystem::path ext = file.extension();
+        const ::boost::filesystem::path ext = file.extension();
 
         if (ext.string() == ".pcd" )
         {
@@ -219,7 +219,7 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         m_isInitialized = true;
 
         /// FIXME allow to configure the timestamp (or read it in the image name ?)
-        size_t fps = 33;
+        const size_t fps = 33;
 
         auto sigDuration = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
         sigDuration->asyncEmit(static_cast<std::int64_t>(m_imageToRead.size() * fps));
@@ -245,7 +245,7 @@ void SFrameGrabber::grabImage()
 
     if (m_imageCount < m_imageToRead.size())
     {
-        ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
+        auto frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
 
         const ::boost::filesystem::path imagePath = m_imageToRead[m_imageCount];
 
@@ -266,14 +266,13 @@ void SFrameGrabber::grabImage()
             return;
         }
 
-        ::fwCore::HiResClock::HiResClockType timestamp = std::stod(timestampStr);
+        const ::fwCore::HiResClock::HiResClockType timestamp = std::stod(timestampStr);
 
         const size_t width  = static_cast<size_t>(inputCloud.width);
         const size_t height = static_cast<size_t>(inputCloud.height);
 
         if (width == frameTL->getWidth() && height == frameTL->getHeight())
         {
-
             auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
             sigPosition->asyncEmit(static_cast<std::int64_t>(m_imageCount)  * 30);
 
@@ -281,13 +280,11 @@ void SFrameGrabber::grabImage()
             SPTR(::arData::FrameTL::BufferType) bufferOut = frameTL->createBuffer(timestamp);
             float* frameBuffOut = reinterpret_cast< float* >( bufferOut->addElement(0));
 
-            const size_t cloudSize = inputCloud.size();
-            for (size_t i = 0; i < cloudSize; ++i)
+            for(const auto& pt : inputCloud.points)
             {
-                const pcl::PointXYZ& tmpPoint = inputCloud[i];
-                frameBuffOut[0] = tmpPoint.x;
-                frameBuffOut[1] = tmpPoint.y;
-                frameBuffOut[2] = tmpPoint.z;
+                frameBuffOut[0] = pt.x;
+                frameBuffOut[1] = pt.y;
+                frameBuffOut[2] = pt.z;
                 frameBuffOut   += 3;
             }
 
@@ -325,7 +322,7 @@ void SFrameGrabber::setPosition(int64_t position)
 
     if (!m_imageToRead.empty())
     {
-        size_t newPos = static_cast<size_t>(position / 30);
+        const size_t newPos = static_cast<size_t>(position / 30);
         if (newPos < m_imageToRead.size())
         {
             m_imageCount = newPos;
