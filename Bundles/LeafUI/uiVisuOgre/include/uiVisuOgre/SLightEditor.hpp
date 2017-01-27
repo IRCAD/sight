@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #ifndef __UIVISUOGRE_SLIGHTEDITOR_HPP__
 #define __UIVISUOGRE_SLIGHTEDITOR_HPP__
 
@@ -35,7 +41,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SLightEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SLightEditor)(::gui::editor::IEditor) );
 
     /**
      * @name Slots API

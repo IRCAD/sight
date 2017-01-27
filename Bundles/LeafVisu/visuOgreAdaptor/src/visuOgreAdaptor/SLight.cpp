@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -44,13 +44,13 @@ const ::fwCom::Slots::SlotKeyType SLight::s_SET_DOUBLE_PARAMETER_SLOT = "setDoub
 //------------------------------------------------------------------------------
 
 SLight::SLight() throw() :
-    m_light        (nullptr),
-    m_lightName    (""),
-    m_lightType    (::Ogre::Light::LT_DIRECTIONAL),
+    m_light(nullptr),
+    m_lightName(""),
+    m_lightType(::Ogre::Light::LT_DIRECTIONAL),
     m_useOrphanNode(true),
-    m_switchedOn   (true),
-    m_thetaOffset  (0.f),
-    m_phiOffset    (0.f)
+    m_switchedOn(true),
+    m_thetaOffset(0.f),
+    m_phiOffset(0.f)
 {
     newSlot(s_SET_X_OFFSET_SLOT, &SLight::setThetaOffset, this);
     newSlot(s_SET_Y_OFFSET_SLOT, &SLight::setPhiOffset, this);
@@ -59,12 +59,12 @@ SLight::SLight() throw() :
 //------------------------------------------------------------------------------
 
 SLight::SLight(::fwRenderOgre::ILight::Key key) :
-    m_light        (nullptr),
-    m_lightName    (""),
+    m_light(nullptr),
+    m_lightName(""),
     m_useOrphanNode(true),
-    m_switchedOn   (true),
-    m_thetaOffset  (0.f),
-    m_phiOffset    (0.f)
+    m_switchedOn(true),
+    m_thetaOffset(0.f),
+    m_phiOffset(0.f)
 {
     newSlot(s_SET_X_OFFSET_SLOT, &SLight::setThetaOffset, this);
     newSlot(s_SET_Y_OFFSET_SLOT, &SLight::setPhiOffset, this);
@@ -209,12 +209,13 @@ void SLight::setThetaOffset(float _thetaOffset)
 {
     SLM_ASSERT("Unable to update an offset if the light's node isn't attached to a parent node", !m_useOrphanNode);
 
+    float thetaDelta = _thetaOffset - m_thetaOffset;
     m_thetaOffset = _thetaOffset;
 
-    ::Ogre::Radian thetaOffsetRad(::Ogre::Degree(static_cast< ::Ogre::Real>(m_thetaOffset)));
+    ::Ogre::Radian thetaOffsetRadDelta(::Ogre::Degree(static_cast< ::Ogre::Real>(thetaDelta)));
     ::Ogre::Vector3 xAxis = this->getLayer()->getDefaultCamera()->getRight();
 
-    m_light->getParentSceneNode()->rotate(xAxis, thetaOffsetRad, ::Ogre::Node::TS_WORLD);
+    m_light->getParentSceneNode()->rotate(xAxis, thetaOffsetRadDelta, ::Ogre::Node::TS_WORLD);
     this->requestRender();
 }
 
@@ -224,12 +225,13 @@ void SLight::setPhiOffset(float _phiOffset)
 {
     SLM_ASSERT("Unable to update an offset if the light's node isn't attached to a parent node", !m_useOrphanNode);
 
+    float phiDelta = _phiOffset - m_phiOffset;
     m_phiOffset = _phiOffset;
 
-    ::Ogre::Radian phiOffsetRad(::Ogre::Degree(static_cast< ::Ogre::Real>(m_phiOffset)));
+    ::Ogre::Radian phiOffsetRadDelta(::Ogre::Degree(static_cast< ::Ogre::Real>(phiDelta)));
     ::Ogre::Vector3 yAxis = this->getLayer()->getDefaultCamera()->getUp();
 
-    m_light->getParentSceneNode()->rotate(yAxis, phiOffsetRad, ::Ogre::Node::TS_WORLD);
+    m_light->getParentSceneNode()->rotate(yAxis, phiOffsetRadDelta, ::Ogre::Node::TS_WORLD);
     this->requestRender();
 }
 
@@ -262,7 +264,7 @@ void SLight::createTransformService()
     auto transformService = this->getTransformService();
 
     transformService->setID(this->getID() + "_" + transformService->getID());
-    transformService->setRenderService ( this->getRenderService() );
+    transformService->setRenderService( this->getRenderService() );
     transformService->setLayerID(m_layerID);
     transformService->setTransformId(this->getTransformId());
     transformService->setParentTransformId(this->getParentTransformId());

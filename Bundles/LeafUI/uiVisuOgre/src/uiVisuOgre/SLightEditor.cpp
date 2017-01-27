@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include "uiVisuOgre/SLightEditor.hpp"
 
 #include "uiVisuOgre/helper/Utils.hpp"
@@ -160,14 +166,14 @@ void SLightEditor::onEditSpecularColor(bool _checked)
 
 void SLightEditor::onEditThetaOffset(int _value)
 {
-    m_currentLight->setThetaOffset(static_cast<float>(_value));
+    m_currentLight->setThetaOffset(static_cast<float>(_value - 90));
 }
 
 //------------------------------------------------------------------------------
 
 void SLightEditor::onEditPhiOffset(int _value)
 {
-    m_currentLight->setPhiOffset(static_cast<float>(_value));
+    m_currentLight->setPhiOffset(static_cast<float>(_value - 90));
 }
 
 //------------------------------------------------------------------------------
@@ -185,10 +191,10 @@ void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
 
     if(!m_currentLight->isOrphanNode())
     {
-        m_thetaSlider->setValue(static_cast<int>(m_currentLight->getThetaOffset()));
+        m_thetaSlider->setValue(static_cast<int>(m_currentLight->getThetaOffset() + 90));
         m_thetaSlider->setEnabled(true);
 
-        m_phiSlider->setValue(static_cast<int>(m_currentLight->getPhiOffset()));
+        m_phiSlider->setValue(static_cast<int>(m_currentLight->getPhiOffset() + 90));
         m_phiSlider->setEnabled(true);
     }
     else
