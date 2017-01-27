@@ -4,9 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWTEST_PCH_HPP__
-#define __FWTEST_PCH_HPP__
+#include "pchData/pch.hpp"
 
-#include <fwData/Object.hpp>
-
-#endif // __FWTEST_PCH_HPP__
+// Empty source file
+// This is only to get a source file compiled, otherwise CMake would consider this target as an utility target
+// And the pch would not be generated properly

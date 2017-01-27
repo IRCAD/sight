@@ -9,4 +9,4 @@ set( DEPENDENCIES
     fwMedData
 )
 set( REQUIREMENTS  )
-set( USE_PCH_FROM_TARGET fwMedData )
+set( USE_PCH_FROM_TARGET pchData )
