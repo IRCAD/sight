@@ -18,6 +18,13 @@
 
 namespace fwGui
 {
+namespace container
+{
+class fwContainer;
+class fwMenuBar;
+class fwToolBar;
+}
+
 namespace registrar
 {
 
@@ -42,7 +49,7 @@ public:
     /// Destructor. Do nothing
     FWGUI_API virtual ~ViewRegistrar();
 
-    FWGUI_API virtual ::fwGui::container::fwContainer::sptr getParent();
+    FWGUI_API virtual SPTR(::fwGui::container::fwContainer) getParent();
 
     FWGUI_API virtual void setParent(std::string wid);
 
@@ -102,19 +109,19 @@ public:
      * @pre ViewRegistrar must be initialized before.
      * @pre sub containers must be instanced before.
      */
-    FWGUI_API virtual void manage(std::vector< ::fwGui::container::fwContainer::sptr > subViews );
+    FWGUI_API virtual void manage(std::vector< SPTR(::fwGui::container::fwContainer) > subViews );
 
     /**
      * @brief Register menu bar.
      * If start="yes" in configuration the menu bar services will be started.
      */
-    FWGUI_API virtual void manageMenuBar(::fwGui::container::fwMenuBar::sptr menuBar );
+    FWGUI_API virtual void manageMenuBar(SPTR(::fwGui::container::fwMenuBar) menuBar );
 
     /**
      * @brief Register tool bar.
      * If start="yes" in configuration the tool bar services will be started.
      */
-    FWGUI_API virtual void manageToolBar(::fwGui::container::fwToolBar::sptr toolBar );
+    FWGUI_API virtual void manageToolBar(SPTR(::fwGui::container::fwToolBar) toolBar );
 
     /**
      * @brief Stopping view manager.
@@ -160,7 +167,7 @@ protected:
     SIDToolBarPairType m_toolBarSid;
 
     std::string m_parentWid;
-    ::fwGui::container::fwContainer::sptr m_parentContainer;
+    SPTR(::fwGui::container::fwContainer) m_parentContainer;
 
     /// Main service ID associate with this ViewRegistrar
     std::string m_sid;

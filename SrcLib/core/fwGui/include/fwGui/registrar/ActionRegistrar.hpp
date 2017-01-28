@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,11 +7,7 @@
 #ifndef __FWGUI_REGISTRAR_ACTIONREGISTRAR_HPP__
 #define __FWGUI_REGISTRAR_ACTIONREGISTRAR_HPP__
 
-#include <fwRuntime/ConfigurationElement.hpp>
-
 #include "fwGui/GuiBaseObject.hpp"
-#include "fwGui/container/fwMenu.hpp"
-#include "fwGui/container/fwMenuItem.hpp"
 #include "fwGui/config.hpp"
 
 namespace fwGui
@@ -21,9 +17,6 @@ namespace registrar
 
 /**
  * @brief   Defines the action registrar for IHM.
- * @class   ActionRegistrar
- *
- * @date    2009-2010.
  *
  */
 class FWGUI_CLASS_API ActionRegistrar : public ::fwGui::GuiBaseObject
@@ -35,7 +28,7 @@ public:
                                             new ActionRegistrar );
 
     /// Constructor.
-    FWGUI_API ActionRegistrar( const std::string &sid);
+    FWGUI_API ActionRegistrar( const std::string& sid);
 
     /// Destructor. Do nothing
     FWGUI_API virtual ~ActionRegistrar();
@@ -65,5 +58,4 @@ protected:
 } // namespace fwGui
 
 #endif /*__FWGUI_REGISTRAR_ACTIONREGISTRAR_HPP__*/
-
 
