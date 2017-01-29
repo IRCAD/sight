@@ -75,14 +75,6 @@ function(pch_msvc_hook variable access value current_list_file stack)
         list(GET CMAKE_PCH_COMPILER_TARGET_FLAGS ${index} flags)
         set(pch_target ${target}.pch)
 
-#        get_target_property(automoc ${target} AUTOMOC)
-#        if(automoc)
-#            set(_PCH_SOURCE_CXX "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp")
-#            get_source_file_property(_pch_object_depends ${_PCH_SOURCE_CXX} OBJECT_DEPENDS)
-#            list(APPEND _pch_object_depends "${target}/CMakeFiles/${target}.dir/${FWPROJECT_NAME}_automoc.cpp.obj")
-#            set_source_files_properties(${_PCH_SOURCE_CXX} PROPERTIES OBJECT_DEPENDS "${_pch_object_depends}" )
-#        endif()
-
         # Find OBJ pch target dependencies
         get_target_property(DIRINC ${target} INCLUDE_DIRECTORIES)
         list(APPEND listinc ${DIRINC})
@@ -108,25 +100,28 @@ function(pch_msvc_hook variable access value current_list_file stack)
         endif()
         list(APPEND targets ${target})
 
-        # Add the same include directories than the regular target
+        # In the following we configure the object library used to compile the pch
+
+        # 1. Add the same include directories than the regular target
         foreach(depends ${targets})
             get_target_property(DIRINC ${depends} INTERFACE_INCLUDE_DIRECTORIES)
             list(APPEND listinc ${DIRINC})
         endforeach()
         target_include_directories(${target}_PCH_OBJ SYSTEM PRIVATE "${listinc}")
 
+        # 2. Add the same compile definitions
         get_target_property(def ${target} COMPILE_DEFINITIONS)
         list(APPEND defines ${def})
 
+        # 3. Add the same define symbols
         get_target_property(def ${target} DEFINE_SYMBOL)
         list(APPEND defines ${def})
 
+        # 4. Remove symbols that would not defined by other targets using this pch
         foreach(def ${defines})
-
             string(REGEX REPLACE ".*_VER=\"[0-9]-[0-9]\"" "" def1 ${def})
             if(def1)
                 string(REGEX REPLACE ".*_EXPORTS" "" def2 ${def1})
-
                 if(def2)
                     target_compile_definitions(${target}_PCH_OBJ PRIVATE ${def2})
                 endif()
@@ -152,6 +147,7 @@ endfunction()
 
 function(assign_precompiled_header _target _pch _pch_header)
 
+    # Iterate over all source files and request pch usage
     get_property(_sources TARGET ${_target} PROPERTY SOURCES)
     foreach(_source ${_sources})
         set(_pch_compile_flags "")
@@ -185,15 +181,13 @@ function(assign_precompiled_header _target _pch _pch_header)
 endfunction()
 
 macro(add_precompiled_header_cpp _target)
-    add_library(${_target}_PCH_OBJ OBJECT "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp")
 
-    if(MSVC14)
-        set(INPUT_PDB_NAME "vc140.pdb")
-    elseif(MSVC12)
-        set(INPUT_PDB_NAME "vc120.pdb")
-    endif()
-    set_target_properties(${_target}_PCH_OBJ PROPERTIES COMPILE_PDB_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${_target}/CMakeFiles/${_target}.dir/")
-    get_target_property(depends ${_target}_PCH_OBJ COMPILE_PDB_OUTPUT_DIRECTORY)
+    # Add an "object" library to compile the pch
+    # That allows to share the pch, targets using this pch can then link with the pch.obj thanks to this fake library
+    # This also help us to remove some unwanted compile definitions (see pch_msvc_hook function)
+    add_library(${_target}_PCH_OBJ OBJECT "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp")
+    set_target_properties(${_target}_PCH_OBJ PROPERTIES COMPILE_PDB_OUTPUT_DIRECTORY
+        "${CMAKE_BINARY_DIR}/${_target}/CMakeFiles/${_target}.dir/")
 endmacro()
 
 function(add_precompiled_header _target _input)
@@ -211,6 +205,7 @@ function(add_precompiled_header _target _input)
     set(_pch_cxx_pch "${_cxx_path}/${_input_we}.pch")
     set(_pch_cxx_pdb "${_cxx_path}/${_input_we}.pdb")
 
+    # Iterate over all source files and request pch usage
     get_target_property(sources ${_target} SOURCES)
     foreach(_source ${sources})
         set(_pch_compile_flags "")
@@ -234,6 +229,7 @@ function(add_precompiled_header _target _input)
         endif()
     endforeach()
 
+    # Iterate over the pch source file and compile the pch
     get_target_property(sources ${_target}_PCH_OBJ SOURCES)
     foreach(_source ${sources})
         set(_pch_compile_flags "")
@@ -255,6 +251,8 @@ function(add_precompiled_header _target _input)
         endif()
     endforeach()
 
+    # Add this target to process in pch_msvc_hook
+    # Indeed at this point all compile definitions and include directories may be not set yet
     list(APPEND CMAKE_PCH_COMPILER_TARGETS ${_target})
     set(CMAKE_PCH_COMPILER_TARGETS "${CMAKE_PCH_COMPILER_TARGETS}" PARENT_SCOPE)
 
@@ -350,12 +348,14 @@ function(use_precompiled_header _target _input)
         file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/${_input}/CMakeFiles/${_input}.dir/${INPUT_PDB_NAME}" INPUT_PDB_FILE)
         file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/${_target}/CMakeFiles/${_target}.dir/" OUTPUT_PDB_PATH)
 
+        # Copy the pdb from the library where the pch belongs to the library using the pch
+        # We need to do that otherwise cl.exe miss the debugging symbols of the pdb and fails
         add_custom_target(
-            ${_target}_pchCopy
+            ${_target}_pdbCopy
             COMMAND xcopy /D /Y ${INPUT_PDB_FILE} ${OUTPUT_PDB_PATH}
             DEPENDS ${${_target}_DEPENDENCIES} ${_input}
         )
-        add_dependencies( ${_target} ${_target}_pchCopy)
+        add_dependencies( ${_target} ${_target}_pdbCopy)
 
         get_target_property(_target_include_directories ${_target} INCLUDE_DIRECTORIES)
         list(APPEND _target_include_directories "${${_input}_PROJECT_DIR}/include/${_input}")
@@ -366,6 +366,7 @@ function(use_precompiled_header _target _input)
         set(_cxx_path "${_pch_binary_dir}/${_input}/include/${_input}")
         set(_pch_cxx_pch "${_cxx_path}/pch.pch")
 
+        # Iterate over all source files and request pch usage
         get_target_property(sources ${_target} SOURCES)
         foreach(_source ${sources})
             set(_pch_compile_flags "")
@@ -381,7 +382,6 @@ function(use_precompiled_header _target _input)
                     set(_object_depends)
                 endif()
 
-                # TODO is this needed ?
                 list(APPEND _object_depends "${_pch_header}")
 
                 set_source_files_properties(${_source}  PROPERTIES
