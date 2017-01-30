@@ -1,6 +1,6 @@
 
 set( NAME pchCore )
 set( VERSION 0.1 )
-set( TYPE BUNDLE )
+set( TYPE LIBRARY )
 set( DEPENDENCIES fwCore )
 set( REQUIREMENTS )
