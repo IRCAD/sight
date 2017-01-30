@@ -16,6 +16,7 @@
 #include <fwCom/Slots.hxx>
 #endif // _WIN32
 
+#include <fwData/Image.hpp>
 #include <fwData/Object.hpp>
 
 #endif // __PCHDATA_PCH_HPP__

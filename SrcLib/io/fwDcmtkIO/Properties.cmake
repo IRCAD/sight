@@ -20,3 +20,4 @@ set( DEPENDENCIES
     fwZip
     )
 set( REQUIREMENTS )
+set( USE_PCH_FROM_TARGET pchServices )

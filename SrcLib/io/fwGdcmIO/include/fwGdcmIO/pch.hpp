@@ -7,8 +7,9 @@
 #ifndef __FWGDCMIO_PCH_HPP__
 #define __FWGDCMIO_PCH_HPP__
 
-// To include first because of Windows compilation
-// The #ifdef prevents our hook to reformat the includes
+// We need this PCH because of Windows.
+// These files need to be included first in each cpp, don't know why but this has been like this for ages...
+// The #ifdef is just a hack to prevents sheldon from reordering the includes
 #ifdef WIN32
 #include <gdcmSurfaceHelper.h>
 #include <gdcmUIDGenerator.h>
