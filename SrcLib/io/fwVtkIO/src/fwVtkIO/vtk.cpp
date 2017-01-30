@@ -13,6 +13,9 @@
 
 #include <fwMath/MeshFunctions.hpp>
 
+#include <boost/assign/list_of.hpp>
+#include <boost/cast.hpp>
+
 #include <vtkCell.h>
 #include <vtkCellType.h>
 #include <vtkDataArray.h>
@@ -31,9 +34,6 @@
 #include <vtkSmartPointer.h>
 #include <vtkType.h>
 #include <vtkUnstructuredGrid.h>
-
-#include <boost/assign/list_of.hpp>
-#include <boost/cast.hpp>
 
 #include <cstring>
 #include <functional>
