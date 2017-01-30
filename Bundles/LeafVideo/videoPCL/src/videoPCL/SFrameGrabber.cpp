@@ -198,7 +198,7 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
 
     if (!m_imageToRead.empty())
     {
-        pcl::PointCloud<pcl::PointXYZ> inputCloud;
+        ::pcl::PointCloud<pcl::PointXYZ> inputCloud;
         if (pcl::io::loadPCDFile<pcl::PointXYZ> (m_imageToRead.front().string(), inputCloud) == -1)
         {
             SLM_ERROR("Couldn't read input pointcloud file " +  m_imageToRead.front().string());
@@ -213,7 +213,7 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         }
         else
         {
-            OSLM_ERROR("Image width or height is equal to 0.");
+            SLM_ERROR("Image width or height is equal to 0.");
             return;
         }
         m_isInitialized = true;
@@ -250,8 +250,8 @@ void SFrameGrabber::grabImage()
         const ::boost::filesystem::path imagePath = m_imageToRead[m_imageCount];
 
         const std::string imageName = imagePath.filename().string();
-        static const boost::regex s_TIMESTAMP("[^0-9]*([0-9]*)[^0-9]*");
-        boost::smatch match;
+        static const ::boost::regex s_TIMESTAMP("[^0-9]*([0-9]*)[^0-9]*");
+        ::boost::smatch match;
         if (!boost::regex_match(imageName, match, s_TIMESTAMP))
         {
             SLM_ERROR("Could not find a timestamp in file name: " + imageName);
@@ -259,7 +259,7 @@ void SFrameGrabber::grabImage()
         }
         const std::string timestampStr = match[1].str();
 
-        pcl::PointCloud<pcl::PointXYZ> inputCloud;
+        ::pcl::PointCloud<pcl::PointXYZ> inputCloud;
         if (pcl::io::loadPCDFile<pcl::PointXYZ> (imagePath.string(), inputCloud) == -1)
         {
             SLM_ERROR("Couldn't read input pointcloud file " +  imagePath.string());
