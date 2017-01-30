@@ -34,15 +34,14 @@ const ::fwCom::Slots::SlotKeyType Axes::s_UPDATE_VISIBILITY_SLOT = "updateVisibi
 
 Axes::Axes() throw() :
     m_axesActor(fwVtkAxesActor::New()),
+    m_sphereActor(nullptr),
     m_length(1.),
     m_labelOn(true),
+    m_sphereOn(false),
     m_transformAxes(vtkTransform::New()),
     m_xLabel("x"),
     m_yLabel("y"),
-    m_zLabel("z"),
-    m_sphereOn(false),
-    m_sphereActor(vtkSmartPointer< vtkActor>::New())
-
+    m_zLabel("z")
 {
     newSlot(s_UPDATE_VISIBILITY_SLOT, &Axes::updateVisibility, this);
 }
@@ -99,7 +98,7 @@ void Axes::doUpdate() throw(fwTools::Failed)
 
 void Axes::doConfigure() throw(fwTools::Failed)
 {
-    assert( m_configuration->getName() == "config" );
+    SLM_ASSERT( "Wrong config name specified.", m_configuration->getName() == "config" );
     if ( m_configuration->hasAttribute( "length" ) )
     {
         m_length = boost::lexical_cast<double>( m_configuration->getAttributeValue( "length" ) );
@@ -130,7 +129,7 @@ void Axes::doConfigure() throw(fwTools::Failed)
     }
     if ( m_configuration->hasAttribute( "markerColor" ) )
     {
-        std::string strColor = m_configuration->getAttributeValue("markerColor");
+        const std::string strColor = m_configuration->getAttributeValue("markerColor");
 
         m_color = ::fwData::Color::New();
         m_color->setRGBA(strColor);
@@ -161,13 +160,13 @@ void Axes::buildPipeline()
     if(m_sphereOn)
     {
         // build a vtkSphereSource
-        vtkSmartPointer<vtkSphereSource> sphereSource =
-            vtkSmartPointer<vtkSphereSource>::New();
-        sphereSource->SetRadius(m_length/4.0);
-        vtkSmartPointer<vtkPolyDataMapper> mapper =
-            vtkSmartPointer<vtkPolyDataMapper>::New();
+        const double sizeRatio = 4.0;
+        auto sphereSource      = vtkSmartPointer<vtkSphereSource>::New();
+        sphereSource->SetRadius(m_length/sizeRatio);
+        auto mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
         mapper->SetInputConnection(sphereSource->GetOutputPort());
 
+        m_sphereActor = vtkSmartPointer<vtkActor>::New();
         m_sphereActor->SetMapper(mapper);
         m_sphereActor->GetProperty()->SetColor(m_color->red(), m_color->green(), m_color->blue());
         m_sphereActor->GetProperty()->SetOpacity(m_color->alpha());
