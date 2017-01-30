@@ -12,17 +12,11 @@
 
 #include <arPreferences/preferences.hpp>
 
-#include <QByteArray>
-#include <QCamera>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QPushButton>
-
 #include <fwCom/Signal.hxx>
 
-#include <fwData/Object.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
+#include <fwData/Object.hpp>
 
 #include <fwGui/dialog/InputDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
@@ -35,6 +29,12 @@
 #include <fwServices/macros.hpp>
 
 #include <fwTools/pathDifference.hpp>
+
+#include <QByteArray>
+#include <QCamera>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
 
 namespace videoQt
 {
@@ -177,7 +177,6 @@ void SCamera::onChooseFile()
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose a file to load a video");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("mp4", "*.mp4");
     dialogFile.addFilter("avi", "*.avi");
@@ -187,8 +186,11 @@ void SCamera::onChooseFile()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
+    size_t count = 0;
     for(auto& camera : cameras)
     {
+        dialogFile.setTitle("Choose a file to load for video source #" + std::to_string(count++));
+
         ::fwData::location::SingleFile::sptr result;
         ::boost::filesystem::path videoPath;
         result = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -232,12 +234,13 @@ void SCamera::onChooseStream()
 {
     std::vector< ::arData::Camera::sptr > cameras = this->getCameras();
 
+    size_t count = 0;
     for(auto& camera : cameras)
     {
         ::fwGui::dialog::InputDialog inputDialog;
         std::string streamSource;
 
-        inputDialog.setTitle("Enter stream source");
+        inputDialog.setTitle("Enter stream url for video source #" + std::to_string(count++));
 
         streamSource = inputDialog.getInput();
         if(!streamSource.empty())
@@ -258,9 +261,11 @@ void SCamera::onChooseDevice()
 {
     std::vector< ::arData::Camera::sptr > cameras = this->getCameras();
 
+    size_t count = 0;
     for(auto& camera : cameras)
     {
         ::videoQt::editor::CameraDeviceDlg camDialog;
+        camDialog.setWindowTitle(QString("Camera device selector for video source #%1").arg(count++));
         camDialog.exec();
 
         bool isSelected = camDialog.getSelectedCamera(camera);
