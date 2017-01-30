@@ -28,8 +28,9 @@ namespace videoPCL
 /**
  * @brief   Defines the service which grab video frame.
  *
- * @note Only file source is currently managed.
- * @note You can load images in a folder like img_<timestamp>.<ext> (ex. img_642752427.jgp)
+ * @note Only 'file' source is currently managed.
+ * @note You can load 2D point cloud in a folder like img_<timestamp>.pcd (ex. img_642752427.pcd). The service uses
+ * the timestamp to order the frames and to push them in the timeline.
  *
  * @section Signals Signals
  * - \b positionModified(std::int64_t) : Emitted when the position in the video is modified during playing.
