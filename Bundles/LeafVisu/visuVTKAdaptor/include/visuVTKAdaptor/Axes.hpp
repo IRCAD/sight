@@ -9,16 +9,14 @@
 
 #ifndef ANDROID
 
-// Config include
 #include "visuVTKAdaptor/config.hpp"
 
-// FW4SPL Includes
 #include <fwData/Color.hpp>
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-// VTK Includes
-#include <vtkSmartPointer.h>
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
 #include <fwRenderVTK/vtk/fwVtkAxesActor.hpp>
+
+#include <vtkSmartPointer.h>
 
 namespace visuVTKAdaptor
 {

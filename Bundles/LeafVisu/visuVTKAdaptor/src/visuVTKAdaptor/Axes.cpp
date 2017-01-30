@@ -12,6 +12,8 @@
 
 #include <fwServices/macros.hpp>
 
+#include <boost/lexical_cast.hpp>
+
 #include <vtkCommand.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProp3D.h>
@@ -19,8 +21,6 @@
 #include <vtkRenderer.h>
 #include <vtkSphereSource.h>
 #include <vtkTransform.h>
-
-#include <boost/lexical_cast.hpp>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Axes, ::fwData::Object );
 
