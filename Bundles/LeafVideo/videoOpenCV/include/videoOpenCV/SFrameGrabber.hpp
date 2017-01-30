@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,12 +9,12 @@
 
 #include "videoOpenCV/config.hpp"
 
+#include <arServices/IGrabber.hpp>
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
 #include <fwCore/mt/types.hpp>
-
-#include <arServices/IGrabber.hpp>
 
 #include <fwThread/Timer.hpp>
 
@@ -34,7 +34,8 @@ namespace videoOpenCV
  * @brief   Defines the service which grab video frame.
  *
  * @note Only file source is currently managed.
- * @note You can load images in a folder like img_<timestamp>.<ext> (ex. img_642752427.jgp)
+ * @note You can load images in a folder like img_<timestamp>.<ext> (ex. img_642752427.jgp). The service uses
+ * the timestamp to order the frames and to push them in the timeline.
  *
  * @section Signals Signals
  * - \b positionModified(std::int64_t) : Emitted when the position in the video is modified during playing.
@@ -53,19 +54,22 @@ namespace videoOpenCV
         <service type="::videoOpenCV::SFrameGrabber">
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
+            <fps>30</fps>
         </service>
    @endcode
  * @subsection Input Input
  * - \b camera [::arData::Camera]: camera used to display video.
  * @subsection In-Out In-Out
  * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
+ * @subsection Configuration Configuration
+ * - \b fps (optional) : target playback frame rate when playing an image sequence (default: 30).
  */
 class VIDEOOPENCV_CLASS_API SFrameGrabber : public ::arServices::IGrabber
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SFrameGrabber)(::arServices::IGrabber) );
+    fwCoreServiceClassDefinitionsMacro( (SFrameGrabber)(::arServices::IGrabber) );
 
     /// Constructor. Do nothing.
     VIDEOOPENCV_API SFrameGrabber() throw();
@@ -123,6 +127,9 @@ private:
 
     /// state of the timeline initialization
     bool m_isInitialized;
+
+    /// fps used to read the video
+    unsigned int m_fps;
 
     /// counter used by the image reader
     size_t m_imageCount;

@@ -11,14 +11,14 @@
 
 #include <arPreferences/preferences.hpp>
 
-#include <boost/filesystem/operations.hpp>
-#include <boost/regex.hpp>
-
 #include <fwCom/Signal.hxx>
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
 #include <fwServices/macros.hpp>
+
+#include <boost/filesystem/operations.hpp>
+#include <boost/regex.hpp>
 
 #include <pcl/common/transforms.h>
 #include <pcl/io/vtk_lib_io.h>
@@ -37,6 +37,7 @@ fwServicesRegisterMacro( ::arServices::IGrabber, ::videoPCL::SFrameGrabber, ::ar
 SFrameGrabber::SFrameGrabber() throw() :
     m_loopVideo(false),
     m_isInitialized(false),
+    m_fps(30),
     m_imageCount(0)
 {
     m_worker = ::fwThread::Worker::New();
@@ -65,7 +66,11 @@ void SFrameGrabber::stopping() throw(::fwTools::Failed)
 
 void SFrameGrabber::configuring()  throw ( ::fwTools::Failed )
 {
+    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
 
+    m_fps = config.get<unsigned int>("fps", 30);
+
+    OSLM_ASSERT("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps > 0 && m_fps <= 60);
 }
 
 //------------------------------------------------------------------------------
@@ -104,7 +109,7 @@ void SFrameGrabber::startCamera()
         }
         else
         {
-            OSLM_ERROR("Wrong file format. The format should be *.pcd .");
+            OSLM_ERROR("Wrong file format. The format should be *.pcd.");
         }
     }
     else
@@ -218,18 +223,15 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         }
         m_isInitialized = true;
 
-        /// FIXME allow to configure the timestamp (or read it in the image name ?)
-        const size_t fps = 33;
-
         auto sigDuration = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
-        sigDuration->asyncEmit(static_cast<std::int64_t>(m_imageToRead.size() * fps));
+        sigDuration->asyncEmit(static_cast<std::int64_t>(m_imageToRead.size() * m_fps));
 
         auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
         sigPosition->asyncEmit(0);
 
         m_timer = m_worker->createTimer();
 
-        ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(fps);
+        ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(1000/m_fps);
 
         m_timer->setFunction(std::bind(&SFrameGrabber::grabImage, this));
         m_timer->setDuration(duration);
@@ -274,7 +276,7 @@ void SFrameGrabber::grabImage()
         if (width == frameTL->getWidth() && height == frameTL->getHeight())
         {
             auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
-            sigPosition->asyncEmit(static_cast<std::int64_t>(m_imageCount)  * 30);
+            sigPosition->asyncEmit(static_cast<std::int64_t>(m_imageCount)  * m_fps);
 
             // Get the buffer of the timeline to fill
             SPTR(::arData::FrameTL::BufferType) bufferOut = frameTL->createBuffer(timestamp);

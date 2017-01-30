@@ -48,12 +48,15 @@ namespace videoPCL
         <service type="::videoPCL::SFrameGrabber">
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
+            <fps>30</fps>
         </service>
    @endcode
  * @subsection Input Input
  * - \b camera [::arData::Camera]: camera used to display video.
  * @subsection In-Out In-Out
  * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
+ * @subsection Configuration Configuration
+ * - \b fps (optional) : target playback frame rate (default: 30).
  */
 class VIDEOPCL_CLASS_API SFrameGrabber : public ::arServices::IGrabber
 {
@@ -109,6 +112,9 @@ private:
 
     /// state of the loop mode
     bool m_loopVideo;
+
+    /// fps used to read the video
+    unsigned int m_fps;
 
     /// state of the timeline initialization
     bool m_isInitialized;
