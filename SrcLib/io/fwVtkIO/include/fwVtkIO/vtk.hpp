@@ -7,12 +7,10 @@
 #ifndef __FWVTKIO_VTK_HPP__
 #define __FWVTKIO_VTK_HPP__
 
-
 #include "fwVtkIO/config.hpp"
 
 #include <fwData/Image.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
-
 
 // forward declaration
 class vtkPolyData;

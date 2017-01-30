@@ -85,7 +85,6 @@ static const ::fwData::Image::OriginType bostonTeapotOrigin   = list_of(1.1)(2.2
                               static_cast< size_t >( nbComponents) );  \
     }
 
-
 #define WRITER_TEST(writerclass, readerclass, imagetype, filename)                                                                 \
     {                                                                                                                                  \
         const ::boost::filesystem::path testFile(::fwTools::System::getTemporaryFolder() / filename);                                  \
@@ -203,7 +202,6 @@ void ImageTest::testImageToVtk()
 }
 
 // ------------------------------------------------------------------------------
-
 
 void ImageTest::testFromVtk()
 {
@@ -366,8 +364,6 @@ void ImageTest::mhdWriterTest()
     ::boost::filesystem::remove(testFile);
     ::boost::filesystem::remove(testZRawFile);
 
-
-
     WRITER_TEST(::fwVtkIO::MetaImageWriter, ::fwVtkIO::MetaImageReader, "int8", "imageTest.mhd");
     WRITER_TEST(::fwVtkIO::MetaImageWriter, ::fwVtkIO::MetaImageReader, "uint8", "imageTest.mhd");
     WRITER_TEST(::fwVtkIO::MetaImageWriter, ::fwVtkIO::MetaImageReader, "int16", "imageTest.mhd");
@@ -406,8 +402,6 @@ void ImageTest::vtiReaderTest()
         image->getSpacing(),
         image->getOrigin()
         );
-
-
 
 }
 
@@ -461,7 +455,6 @@ void ImageTest::vtkReaderTest()
         image->getOrigin()
         );
 
-
 #define VTK_READER_TEST(imagetype)                                                                                      \
     {                                                                                                                   \
         const ::boost::filesystem::path testFile(::fwTest::Data::dir() / "fw4spl/image/vtk/img-" imagetype ".vtk");     \
@@ -493,7 +486,6 @@ void ImageTest::vtkReaderTest()
             vtkImage->GetOrigin()                                                                                       \
             );                                                                                                          \
     }
-
 
     VTK_READER_TEST("int8"  );
     VTK_READER_TEST("uint8" );

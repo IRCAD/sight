@@ -40,10 +40,8 @@
 #include <numeric>
 #include <stdexcept>
 
-
 namespace fwVtkIO
 {
-
 
 // ------------------------------------------------------------------------------
 
@@ -64,9 +62,6 @@ TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate(
     FW_RAISE_IF("Unknown Type: " << key, it == s_fromVtk.end() );
     return it->second;
 }
-
-
-
 
 const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk
     = boost::assign::map_list_of
@@ -89,9 +84,6 @@ const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk
           ( fwTools::Type::create("uint64"), VTK_UNSIGNED_LONG )
 #endif
     ;
-
-
-
 
 const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk
     = boost::assign::map_list_of
@@ -126,7 +118,6 @@ const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk
 #endif
     ;
 
-
 // -----------------------------------------------------------------------------
 
 void toVTKImage( ::fwData::Image::csptr data,  vtkImageData* dst)
@@ -141,7 +132,6 @@ void toVTKImage( ::fwData::Image::csptr data,  vtkImageData* dst)
 }
 
 // -----------------------------------------------------------------------------
-
 
 template< typename IMAGETYPE >
 void* newBuffer(size_t size)
@@ -186,7 +176,6 @@ void fromRGBBuffer( void* input, size_t size, void*& destBuffer)
     }
 }
 
-
 // -----------------------------------------------------------------------------
 
 template< typename IMAGETYPE >
@@ -208,7 +197,6 @@ void fromRGBBufferColor( void* input, size_t size, void*& destBuffer)
 }
 
 // -----------------------------------------------------------------------------
-
 
 void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 {
@@ -252,7 +240,6 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
         destination->setSpacing( ::fwData::Image::SpacingType(source->GetSpacing(), source->GetSpacing()+dim) );
         destination->setOrigin( ::fwData::Image::OriginType(source->GetOrigin(), source->GetOrigin()+dim) );
     }
-
 
     const int nbComponents = source->GetNumberOfScalarComponents();
     const size_t size      =
