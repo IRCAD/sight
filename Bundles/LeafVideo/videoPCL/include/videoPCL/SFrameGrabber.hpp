@@ -4,15 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __VIDEOOPENCV_SFRAMEGRABBER_HPP__
-#define __VIDEOOPENCV_SFRAMEGRABBER_HPP__
+#ifndef __VIDEOPCL_SFRAMEGRABBER_HPP__
+#define __VIDEOPCL_SFRAMEGRABBER_HPP__
 
-#include "videoOpenCV/config.hpp"
+#include "videoPCL/config.hpp"
 
 #include <arServices/IGrabber.hpp>
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
 
 #include <fwCore/mt/types.hpp>
 
@@ -20,21 +17,19 @@
 
 #include <fwTools/Failed.hpp>
 
-#include <opencv2/videoio.hpp>
-
 namespace arData
 {
 class Camera;
 }
 
-namespace videoOpenCV
+namespace videoPCL
 {
 
 /**
  * @brief   Defines the service which grab video frame.
  *
- * @note Only file source is currently managed.
- * @note You can load images in a folder like img_<timestamp>.<ext> (ex. img_642752427.jgp). The service uses
+ * @note Only 'file' source is currently managed.
+ * @note You can load 2D point cloud in a folder like img_<timestamp>.pcd (ex. img_642752427.pcd). The service uses
  * the timestamp to order the frames and to push them in the timeline.
  *
  * @section Signals Signals
@@ -51,7 +46,7 @@ namespace videoOpenCV
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="::videoOpenCV::SFrameGrabber">
+        <service type="::videoPCL::SFrameGrabber">
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
             <fps>30</fps>
@@ -62,9 +57,9 @@ namespace videoOpenCV
  * @subsection In-Out In-Out
  * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
  * @subsection Configuration Configuration
- * - \b fps (optional) : target playback frame rate when playing an image sequence (default: 30).
+ * - \b fps (optional) : target playback frame rate (default: 30).
  */
-class VIDEOOPENCV_CLASS_API SFrameGrabber : public ::arServices::IGrabber
+class VIDEOPCL_CLASS_API SFrameGrabber : public ::arServices::IGrabber
 {
 
 public:
@@ -72,24 +67,24 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SFrameGrabber)(::arServices::IGrabber) );
 
     /// Constructor. Do nothing.
-    VIDEOOPENCV_API SFrameGrabber() throw();
+    VIDEOPCL_API SFrameGrabber() throw();
 
     /// Destructor. Do nothing.
-    VIDEOOPENCV_API virtual ~SFrameGrabber() throw();
+    VIDEOPCL_API virtual ~SFrameGrabber() throw();
 
 protected:
 
     /// Initialize the layout and the camera.
-    VIDEOOPENCV_API virtual void starting() throw( ::fwTools::Failed );
+    VIDEOPCL_API virtual void starting() throw( ::fwTools::Failed );
 
     /// Destroy the layout.
-    VIDEOOPENCV_API virtual void stopping() throw( ::fwTools::Failed );
+    VIDEOPCL_API virtual void stopping() throw( ::fwTools::Failed );
 
     /// Do nothing.
-    VIDEOOPENCV_API virtual void updating() throw(::fwTools::Failed);
+    VIDEOPCL_API virtual void updating() throw(::fwTools::Failed);
 
     /// Do nothing.
-    VIDEOOPENCV_API virtual void configuring() throw( ::fwTools::Failed );
+    VIDEOPCL_API virtual void configuring() throw( ::fwTools::Failed );
 
     /// SLOT : Initialize and start camera (restart camera if is already started)
     virtual void startCamera();
@@ -110,14 +105,8 @@ private:
 
     typedef std::vector< ::boost::filesystem::path > ImageFilesType;
 
-    /// Initializes the video reader, start the timer
-    void readVideo(const ::boost::filesystem::path& file);
-
     /// Initializes the image reader, start the timer
     void readImages(const ::boost::filesystem::path& folder, const std::string& extension);
-
-    /// Reads the next video frame
-    void grabVideo();
 
     /// Reads the next image
     void grabImage();
@@ -139,16 +128,13 @@ private:
     /// Worker for the grabVideo or grabFrame timer
     ::fwThread::Worker::sptr m_worker;
 
-    /// openCV video grabber
-    ::cv::VideoCapture m_videoCapture;
-
     /// list of image paths to read
     ImageFilesType m_imageToRead;
 
-    /// Mutex to protect concurrent access for m_videoCapture and m_imageToRead
+    /// Mutex to protect concurrent access for m_imageToRead
     mutable ::fwCore::mt::Mutex m_mutex;
 };
 
 } // namespace videoOpenCV
 
-#endif /*__VIDEOOPENCV_SFRAMEGRABBER_HPP__*/
+#endif /*__VIDEOPCL_SFRAMEGRABBER_HPP__*/

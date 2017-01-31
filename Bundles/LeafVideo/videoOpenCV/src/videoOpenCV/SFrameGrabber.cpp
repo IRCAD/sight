@@ -45,6 +45,7 @@ fwServicesRegisterMacro( ::arServices::IGrabber, ::videoOpenCV::SFrameGrabber, :
 SFrameGrabber::SFrameGrabber() throw() :
     m_loopVideo(false),
     m_isInitialized(false),
+    m_fps(30),
     m_imageCount(0)
 {
     m_worker = ::fwThread::Worker::New();
@@ -73,7 +74,11 @@ void SFrameGrabber::stopping() throw(::fwTools::Failed)
 
 void SFrameGrabber::configuring()  throw ( ::fwTools::Failed )
 {
+    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
 
+    m_fps = config.get<unsigned int>("fps", 30);
+
+    OSLM_ASSERT("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps > 0 && m_fps <= 60);
 }
 
 // -----------------------------------------------------------------------------
@@ -278,18 +283,15 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         }
         m_isInitialized = true;
 
-        /// FIXME allow to configure the timestamp (or read it in the image name ?)
-        size_t fps = 33;
-
         auto sigDuration = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
-        sigDuration->asyncEmit(static_cast<std::int64_t>(m_imageToRead.size() * fps));
+        sigDuration->asyncEmit(static_cast<std::int64_t>(m_imageToRead.size() * m_fps));
 
         auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
         sigPosition->asyncEmit(0);
 
         m_timer = m_worker->createTimer();
 
-        ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(fps);
+        ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(1000/m_fps);
 
         m_timer->setFunction(std::bind(&SFrameGrabber::grabImage, this));
         m_timer->setDuration(duration);
