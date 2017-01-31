@@ -91,7 +91,7 @@ vec3 gradientNormal(vec3 uvw)
     vec3 hy = vec3(0, h.y, 0);
     vec3 hz = vec3(0, 0, h.z);
 
-    return normalize( vec3(
+    return -normalize( vec3(
                 (texture(u_image, uvw + hx).r - texture(u_image, uvw - hx).r),
                 (texture(u_image, uvw + hy).r - texture(u_image, uvw - hy).r),
                 (texture(u_image, uvw + hz).r - texture(u_image, uvw - hz).r)
