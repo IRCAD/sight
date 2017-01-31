@@ -27,7 +27,8 @@ namespace uiVisuOgre
  * @brief User interface to select light adaptor from a selected layer or create a new one.
  *
  * @section Slots Slots
- * - \b initLightList(::fwRenderOgre::Layer::sptr): populates the list of available light adaptors for the current layer.
+ * - \b initLightList(::fwRenderOgre::Layer::sptr): populates the list of available light adaptors for the current
+ * layer.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -40,7 +41,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SLightSelector)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SLightSelector)(::gui::editor::IEditor) );
 
     /**
      * @name Signals API
@@ -87,7 +88,7 @@ protected Q_SLOTS:
 
     /// Slot: called when a light is selected.
     /// Loads the selected light parameters in the light editor.
-    void onSelectedLightItem(QListWidgetItem* _item);
+    void onSelectedLightItem(QListWidgetItem* _item, QListWidgetItem* _previous);
 
     /// Slot: called when a light is checked.
     /// Switched on or off the light according to its current state.

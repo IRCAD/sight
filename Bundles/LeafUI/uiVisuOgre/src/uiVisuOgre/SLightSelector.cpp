@@ -90,8 +90,8 @@ void SLightSelector::starting() throw(::fwTools::Failed)
 
     QObject::connect(m_lightsState, SIGNAL(stateChanged(int)), this, SLOT(onChangedLightsState(int)));
 
-    QObject::connect(m_lightsList, SIGNAL(itemActivated(QListWidgetItem*)),
-                     this, SLOT(onSelectedLightItem(QListWidgetItem*)));
+    QObject::connect(m_lightsList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+                     this, SLOT(onSelectedLightItem(QListWidgetItem*, QListWidgetItem*)));
     QObject::connect(m_lightsList, SIGNAL(itemChanged(QListWidgetItem*)),
                      this, SLOT(onCheckedLightItem(QListWidgetItem*)));
 
@@ -111,8 +111,8 @@ void SLightSelector::stopping() throw(::fwTools::Failed)
 
     QObject::disconnect(m_lightsState, SIGNAL(stateChanged(int)), this, SLOT(onChangedLightsState(int)));
 
-    QObject::disconnect(m_lightsList, SIGNAL(itemActivated(QListWidgetItem*)),
-                        this, SLOT(onSelectedLightItem(QListWidgetItem*)));
+    QObject::disconnect(m_lightsList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+                        this, SLOT(onSelectedLightItem(QListWidgetItem*, QListWidgetItem*)));
     QObject::disconnect(m_lightsList, SIGNAL(itemChanged(QListWidgetItem*)),
                         this, SLOT(onCheckedLightItem(QListWidgetItem*)));
 
@@ -161,14 +161,17 @@ void SLightSelector::onChangedLightsState(int _state)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onSelectedLightItem(QListWidgetItem* _item)
+void SLightSelector::onSelectedLightItem(QListWidgetItem* _item, QListWidgetItem* _previous)
 {
-    m_currentLight = this->retrieveLightAdaptor(_item->text().toStdString());
+    if(_item)
+    {
+        m_currentLight = this->retrieveLightAdaptor(_item->text().toStdString());
 
-    auto sig = this->signal<LightSelectedSignalType>(s_LIGHT_SELECTED_SIG);
-    sig->asyncEmit(m_currentLight);
+        auto sig = this->signal<LightSelectedSignalType>(s_LIGHT_SELECTED_SIG);
+        sig->asyncEmit(m_currentLight);
 
-    m_removeLightBtn->setEnabled(true);
+        m_removeLightBtn->setEnabled(true);
+    }
 }
 
 //------------------------------------------------------------------------------
