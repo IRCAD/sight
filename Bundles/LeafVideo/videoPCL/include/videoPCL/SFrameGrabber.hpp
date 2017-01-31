@@ -114,11 +114,11 @@ private:
     /// state of the loop mode
     bool m_loopVideo;
 
-    /// fps used to read the video
-    unsigned int m_fps;
-
     /// state of the timeline initialization
     bool m_isInitialized;
+
+    /// fps used to read the video
+    unsigned int m_fps;
 
     /// counter used by the image reader
     size_t m_imageCount;
