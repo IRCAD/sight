@@ -213,9 +213,9 @@ void SLight::setThetaOffset(float _thetaOffset)
     m_thetaOffset = _thetaOffset;
 
     ::Ogre::Radian thetaOffsetRadDelta(::Ogre::Degree(static_cast< ::Ogre::Real>(thetaDelta)));
-    ::Ogre::Vector3 xAxis = this->getLayer()->getDefaultCamera()->getRight();
+    ::Ogre::Vector3 yAxis = m_light->getParentSceneNode()->getParentSceneNode()->getOrientation().yAxis();
 
-    m_light->getParentSceneNode()->rotate(xAxis, thetaOffsetRadDelta, ::Ogre::Node::TS_WORLD);
+    m_light->getParentSceneNode()->rotate(yAxis, thetaOffsetRadDelta, ::Ogre::Node::TS_WORLD);
     this->requestRender();
 }
 
@@ -229,9 +229,9 @@ void SLight::setPhiOffset(float _phiOffset)
     m_phiOffset = _phiOffset;
 
     ::Ogre::Radian phiOffsetRadDelta(::Ogre::Degree(static_cast< ::Ogre::Real>(phiDelta)));
-    ::Ogre::Vector3 yAxis = this->getLayer()->getDefaultCamera()->getUp();
+    ::Ogre::Vector3 xAxis = m_light->getParentSceneNode()->getParentSceneNode()->getOrientation().xAxis();
 
-    m_light->getParentSceneNode()->rotate(yAxis, phiOffsetRadDelta, ::Ogre::Node::TS_WORLD);
+    m_light->getParentSceneNode()->rotate(xAxis, phiOffsetRadDelta, ::Ogre::Node::TS_WORLD);
     this->requestRender();
 }
 
