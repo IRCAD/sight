@@ -7,8 +7,8 @@
 #ifndef __VISUOGREADAPTOR_SMATERIAL_HPP__
 #define __VISUOGREADAPTOR_SMATERIAL_HPP__
 
-#include "visuOgreAdaptor/STexture.hpp"
 #include "visuOgreAdaptor/config.hpp"
+#include "visuOgreAdaptor/STexture.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
@@ -19,11 +19,11 @@
 
 #include <fwRenderOgre/IAdaptor.hpp>
 
+#include <boost/shared_ptr.hpp>
+
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreMaterial.h>
-
-#include <boost/shared_ptr.hpp>
 
 #include <regex>
 
@@ -35,13 +35,12 @@ class Material;
 namespace visuOgreAdaptor
 {
 
-
 class VISUOGREADAPTOR_CLASS_API SMaterial : public ::fwRenderOgre::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SMaterial)(::fwRenderOgre::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SMaterial)(::fwRenderOgre::IAdaptor) );
 
     /**
      * @name Slots API

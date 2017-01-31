@@ -13,13 +13,13 @@
 
 #include <gui/editor/IEditor.hpp>
 
+#include <OGRE/OgreColourValue.h>
+
 #include <QComboBox>
 #include <QLabel>
 #include <QPointer>
 #include <QPushButton>
 #include <QSlider>
-
-#include <OGRE/OgreColourValue.h>
 
 namespace uiVisuOgre
 {

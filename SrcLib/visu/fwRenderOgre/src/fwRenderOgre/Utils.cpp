@@ -159,7 +159,6 @@ void Utils::addResourcesPath(const std::string& path)
         rs->setConfigOption("Display Frequency", "60");
 #endif
 
-
         root->setRenderSystem(rs);
 
         root->initialise(false);
@@ -289,7 +288,7 @@ void Utils::destroyOgreRoot()
         // uint32
         return numberOfComponent == 3 ? ::Ogre::PF_R32G32B32_UINT : ::Ogre::PF_R32G32B32A32_UINT;
     }
-    else if (pixelType =="signed char" )
+    else if (pixelType == "signed char" )
     {
         // int8
         return numberOfComponent == 3 ? ::Ogre::PF_R8G8B8_SINT : ::Ogre::PF_R8G8B8A8_SINT;
@@ -304,7 +303,7 @@ void Utils::destroyOgreRoot()
         // int32
         return numberOfComponent == 3 ? ::Ogre::PF_R32G32B32_SINT : ::Ogre::PF_R32G32B32A32_SINT;
     }
-    else if (pixelType =="unsigned long" )
+    else if (pixelType == "unsigned long" )
     {
         // int64
         return numberOfComponent == 3 ? ::Ogre::PF_SHORT_RGB : ::Ogre::PF_SHORT_RGBA;
@@ -340,9 +339,9 @@ void Utils::loadOgreTexture(const ::fwData::Image::sptr& _image, ::Ogre::Texture
         // Conversion from fwData::Image to ::Ogre::Image
         ::Ogre::Image ogreImage = ::fwRenderOgre::Utils::convertFwDataImageToOgreImage(_image);
 
-        if( _texture->getWidth()  != ogreImage.getWidth() ||
+        if( _texture->getWidth() != ogreImage.getWidth() ||
             _texture->getHeight() != ogreImage.getHeight() ||
-            _texture->getDepth()  != ogreImage.getDepth() ||
+            _texture->getDepth() != ogreImage.getDepth() ||
             _texture->getTextureType() != _texType ||
             _texture->getFormat() != pixelFormat )
         {
@@ -352,7 +351,7 @@ void Utils::loadOgreTexture(const ::fwData::Image::sptr& _image, ::Ogre::Texture
         }
 
         // Copy image's pixel box into texture buffer
-        _texture->getBuffer(0,0)->blitFromMemory(ogreImage.getPixelBox(0,0));
+        _texture->getBuffer(0, 0)->blitFromMemory(ogreImage.getPixelBox(0, 0));
     }
 }
 
@@ -400,9 +399,9 @@ void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Im
 
     if(srcType == ::fwTools::Type::s_INT16)
     {
-        if( _texture->getWidth()  != _image->getSize()[0] ||
+        if( _texture->getWidth() != _image->getSize()[0] ||
             _texture->getHeight() != _image->getSize()[1] ||
-            _texture->getDepth()  != _image->getSize()[2]    )
+            _texture->getDepth() != _image->getSize()[2]    )
         {
             ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize()[0], _image->getSize()[1],
                                                    _image->getSize()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D, false);
@@ -413,9 +412,9 @@ void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Im
     }
     else if(srcType == ::fwTools::Type::s_INT32)
     {
-        if( _texture->getWidth()  != _image->getSize()[0] ||
+        if( _texture->getWidth() != _image->getSize()[0] ||
             _texture->getHeight() != _image->getSize()[1] ||
-            _texture->getDepth()  != _image->getSize()[2]    )
+            _texture->getDepth() != _image->getSize()[2]    )
         {
             ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize()[0], _image->getSize()[1],
                                                    _image->getSize()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D,
@@ -427,9 +426,9 @@ void Utils::convertImageForNegato( ::Ogre::Texture* _texture, const ::fwData::Im
     }
     else if(srcType == ::fwTools::Type::s_UINT8)
     {
-        if( _texture->getWidth()  != _image->getSize()[0] ||
+        if( _texture->getWidth() != _image->getSize()[0] ||
             _texture->getHeight() != _image->getSize()[1] ||
-            _texture->getDepth()  != _image->getSize()[2]    )
+            _texture->getDepth() != _image->getSize()[2]    )
         {
             ::fwRenderOgre::Utils::allocateTexture(_texture, _image->getSize()[0], _image->getSize()[1],
                                                    _image->getSize()[2], ::Ogre::PF_L16, ::Ogre::TEX_TYPE_3D, false);

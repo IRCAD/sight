@@ -8,9 +8,9 @@
 
 #include "fwRenderOgre/ICamera.hpp"
 #include "fwRenderOgre/ILight.hpp"
+#include "fwRenderOgre/interactor/TrackballInteractor.hpp"
 #include "fwRenderOgre/SRender.hpp"
 #include "fwRenderOgre/Utils.hpp"
-#include "fwRenderOgre/interactor/TrackballInteractor.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
@@ -66,23 +66,23 @@ const std::string Layer::DEFAULT_LIGHT_NAME  = "DefaultLight";
 //-----------------------------------------------------------------------------
 
 Layer::Layer() :
-    m_sceneManager         (nullptr),
-    m_renderWindow         (nullptr),
-    m_viewport             (nullptr),
-    m_stereoMode           (StereoModeType::NONE),
-    m_rawCompositorChain   (""),
-    m_coreCompositor       (nullptr),
+    m_sceneManager(nullptr),
+    m_renderWindow(nullptr),
+    m_viewport(nullptr),
+    m_stereoMode(StereoModeType::NONE),
+    m_rawCompositorChain(""),
+    m_coreCompositor(nullptr),
     m_transparencyTechnique(::fwRenderOgre::compositor::DEFAULT),
-    m_numPeels             (8),
-    m_depth                (1),
-    m_topColor             ("#333333"),
-    m_bottomColor          ("#333333"),
-    m_topScale             (0.f),
-    m_bottomScale          (1.f),
-    m_hasCoreCompositor    (false),
-    m_hasCompositorChain   (false),
-    m_sceneCreated         (false),
-    m_hasDefaultLight      (true)
+    m_numPeels(8),
+    m_depth(1),
+    m_topColor("#333333"),
+    m_bottomColor("#333333"),
+    m_topScale(0.f),
+    m_bottomScale(1.f),
+    m_hasCoreCompositor(false),
+    m_hasCompositorChain(false),
+    m_sceneCreated(false),
+    m_hasDefaultLight(true)
 {
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
     newSignal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
@@ -149,7 +149,7 @@ void Layer::createScene()
     SLM_ASSERT("Scene manager must be initialized", m_sceneManager);
     SLM_ASSERT("Render window must be initialized", m_renderWindow);
 
-    m_sceneManager->setAmbientLight(::Ogre::ColourValue(0.8f,0.8f,0.8f));
+    m_sceneManager->setAmbientLight(::Ogre::ColourValue(0.8f, 0.8f, 0.8f));
 
     m_cameraManager = ::fwRenderOgre::ICamera::createCameraManager();
     m_cameraManager->setLayerID(this->getLayerID());
@@ -218,8 +218,8 @@ void Layer::createScene()
 
     // Creating Camera Scene Node
     ::Ogre::SceneNode* cameraNode = m_sceneManager->getRootSceneNode()->createChildSceneNode("CameraNode");
-    cameraNode->setPosition(Ogre::Vector3(0,0,5));
-    cameraNode->lookAt(Ogre::Vector3(0,0,1), ::Ogre::Node::TS_WORLD);
+    cameraNode->setPosition(Ogre::Vector3(0, 0, 5));
+    cameraNode->lookAt(Ogre::Vector3(0, 0, 1), ::Ogre::Node::TS_WORLD);
 
     // Attach Camera and Headlight to fit vtk light
     m_cameraManager->setTransformName(cameraNode->getName());
@@ -245,7 +245,7 @@ void Layer::createScene()
 
     // If there is any interactor adaptor in xml, m_moveInteractor will be overwritten by InteractorStyle adaptor
     ::fwRenderOgre::interactor::IMovementInteractor::sptr interactor =
-        ::fwRenderOgre::interactor::IMovementInteractor::dynamicCast (
+        ::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(
             ::fwRenderOgre::interactorFactory::New("::fwRenderOgre::interactor::TrackballInteractor"));
 
     interactor->setSceneID(m_sceneManager->getName());
@@ -623,12 +623,11 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
                 for (int i = 0; i < 2; i++ )
                 {
                     dist    = a*corners[i] + b*corners[2+j] + c*corners[4+k] + d;
-                    maxNear = (dist<maxNear) ? dist : maxNear;
-                    minFar  = (dist>minFar) ? dist : minFar;
+                    maxNear = (dist < maxNear) ? dist : maxNear;
+                    minFar  = (dist > minFar) ? dist : minFar;
                 }
             }
         }
-
 
         // Give ourselves a little breathing room
         maxNear = 0.99f*maxNear - (minFar - maxNear)*0.5f;
@@ -642,7 +641,6 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
 
         // Make sure near is not bigger than far
         maxNear = (maxNear >= minFar) ? (0.01f*minFar) : (maxNear);
-
 
         const auto& chain          = this->getCompositorChain();
         const auto saoCompositorIt = std::find_if(chain.begin(), chain.end(),
@@ -672,7 +670,7 @@ void Layer::doRayCast(int x, int y, int width, int height)
 {
     if(m_selectInteractor)
     {
-        OSLM_ASSERT("SelectInteractor Isn't initialized, add the adaptor to your xml file.",m_selectInteractor);
+        OSLM_ASSERT("SelectInteractor Isn't initialized, add the adaptor to your xml file.", m_selectInteractor);
 
         if(!m_selectInteractor->isPickerInitialized())
         {

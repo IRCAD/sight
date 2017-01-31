@@ -133,4 +133,3 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New()
 
 #endif /* __FWRENDEROGRE_FACTORY_NEW_HPP__ */
 
-

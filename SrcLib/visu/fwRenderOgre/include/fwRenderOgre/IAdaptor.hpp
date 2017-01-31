@@ -7,9 +7,9 @@
 #ifndef __FWRENDEROGRE_IADAPTOR_HPP__
 #define __FWRENDEROGRE_IADAPTOR_HPP__
 
+#include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/IHasAdaptors.hpp"
 #include "fwRenderOgre/SRender.hpp"
-#include "fwRenderOgre/config.hpp"
 
 #include <fwCom/helper/SigSlotConnection.hpp>
 
@@ -18,7 +18,6 @@
 #include <OGRE/OgreSceneManager.h>
 
 #include <string>
-
 
 namespace fwRenderOgre
 {
@@ -31,7 +30,7 @@ class FWRENDEROGRE_CLASS_API IAdaptor : public ::fwServices::IService,
 {
 friend class SRender;
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro ( (IAdaptor)(::fwServices::IService) );
+    fwCoreNonInstanciableClassDefinitionsMacro( (IAdaptor)(::fwServices::IService) );
 
     /// Set the layer ID
     FWRENDEROGRE_API void setLayerID(const std::string& id);

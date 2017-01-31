@@ -327,7 +327,7 @@ void SNegato2D::doSwap() throw(fwTools::Failed)
 void SNegato2D::updateCameraWindowBounds()
 {
 
-    ::Ogre::Real renderWindowWidth,renderWindowHeight, renderWindowRatio;
+    ::Ogre::Real renderWindowWidth, renderWindowHeight, renderWindowRatio;
     ::Ogre::RenderSystem* renderSystem = getSceneManager()->getDestinationRenderSystem();
 
     renderWindowWidth  = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualWidth());

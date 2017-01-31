@@ -7,11 +7,11 @@
 #ifndef __FWRENDEROGRE_ILIGHT_HPP__
 #define __FWRENDEROGRE_ILIGHT_HPP__
 
-#include "fwRenderOgre/IAdaptor.hpp"
-#include "fwRenderOgre/SRender.hpp"
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/factory/new.hpp"
+#include "fwRenderOgre/IAdaptor.hpp"
 #include "fwRenderOgre/registry/detail.hpp"
+#include "fwRenderOgre/SRender.hpp"
 
 #include <fwData/Color.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
@@ -102,5 +102,4 @@ public:
 } // namespace fwRenderOgre
 
 #endif // __FWRENDEROGRE_ILIGHT_HPP__
-
 

@@ -27,7 +27,6 @@ const IVolumeRenderer::CubeFacePositionsMap IVolumeRenderer::s_cubeFaces = {
     { IVolumeRenderer::X_NEGATIVE, { 6, 7, 4, 3 } }
 };
 
-
 /// Image local and texture coordinates /!\ This order matters to our intersection algorithm.
 static const ::Ogre::Vector3 s_imagePositions[8] = {
     ::Ogre::Vector3(1, 1, 1),
@@ -56,14 +55,14 @@ IVolumeRenderer::IVolumeRenderer(std::string parentId,
                                  ::Ogre::TexturePtr imageTexture,
                                  TransferFunction& gpuTF,
                                  PreIntegrationTable& preintegrationTable) :
-    m_parentId               (parentId),
-    m_sceneManager           (sceneManager),
-    m_3DOgreTexture          (imageTexture),
-    m_gpuTF                  (gpuTF),
-    m_preIntegrationTable    (preintegrationTable),
-    m_volumeSceneNode        (volumeNode),
-    m_nbSlices               (512),
-    m_preIntegratedRendering (false)
+    m_parentId(parentId),
+    m_sceneManager(sceneManager),
+    m_3DOgreTexture(imageTexture),
+    m_gpuTF(gpuTF),
+    m_preIntegrationTable(preintegrationTable),
+    m_volumeSceneNode(volumeNode),
+    m_nbSlices(512),
+    m_preIntegratedRendering(false)
 {
     m_camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
 
@@ -78,7 +77,6 @@ IVolumeRenderer::~IVolumeRenderer()
 }
 
 //-----------------------------------------------------------------------------
-
 
 void IVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr tf)
 {

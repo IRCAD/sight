@@ -9,9 +9,9 @@
 
 #include "uiVisuOgre/config.hpp"
 
-#include <QColor>
-
 #include <OGRE/OgreColourValue.h>
+
+#include <QColor>
 
 namespace uiVisuOgre
 {

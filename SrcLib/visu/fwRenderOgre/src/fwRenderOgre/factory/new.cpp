@@ -16,6 +16,8 @@ namespace fwRenderOgre
 namespace factory
 {
 
+//------------------------------------------------------------------------------
+
 ::fwRenderOgre::IRenderWindowInteractorManager::sptr New( const ::fwRenderOgre::registry::KeyType& classname )
 {
     return ::fwRenderOgre::registry::get()->create(classname);
@@ -26,6 +28,8 @@ namespace factory
 namespace cameraFactory
 {
 
+//------------------------------------------------------------------------------
+
 ::fwRenderOgre::ICamera::sptr New( const ::fwRenderOgre::registry::KeyType& classname )
 {
     return ::fwRenderOgre::registry::getCameraRegistry()->create(classname);
@@ -35,6 +39,8 @@ namespace cameraFactory
 
 namespace lightFactory
 {
+
+//------------------------------------------------------------------------------
 
 ::fwRenderOgre::ILight::sptr New( const ::fwRenderOgre::registry::KeyType& classname )
 {
@@ -54,5 +60,4 @@ SPTR(::fwRenderOgre::interactor::IInteractor) New( const ::fwRenderOgre::registr
 } // namespace interactorFactory
 
 } // namespace fwRenderOgre
-
 

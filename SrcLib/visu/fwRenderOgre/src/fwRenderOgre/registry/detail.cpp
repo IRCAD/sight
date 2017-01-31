@@ -8,7 +8,6 @@
 
 #include <fwCore/util/LazyInstantiator.hpp>
 
-
 namespace fwRenderOgre
 {
 
@@ -53,5 +52,4 @@ SPTR(LightFactoryType) getLightRegistry()
 } // namespace registry
 
 } // namespace fwRenderOgre
-
 

@@ -119,7 +119,8 @@ public:
      * @return vector of constants, each element is a tuple with the constant name, its definition and the shader type.
      */
     FWRENDEROGRE_API static ShaderConstantsType findShaderConstants(::Ogre::GpuProgramParametersSharedPtr params,
-                                                                    ::Ogre::GpuProgramType _shaderType, bool _enableLightConstants = false);
+                                                                    ::Ogre::GpuProgramType _shaderType,
+                                                                    bool _enableLightConstants = false);
 
     /**
      * @brief Create a fw4spl data that can be used to interact with a shader parameter.

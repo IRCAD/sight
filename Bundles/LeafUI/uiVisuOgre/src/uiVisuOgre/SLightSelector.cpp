@@ -18,14 +18,14 @@
 
 #include <visuOgreAdaptor/SMaterial.hpp>
 
+#include <OGRE/OgreColourValue.h>
+
 #include <QColor>
 #include <QColorDialog>
 #include <QHBoxLayout>
 #include <QString>
 #include <QVBoxLayout>
 #include <QWidget>
-
-#include <OGRE/OgreColourValue.h>
 
 namespace uiVisuOgre
 {

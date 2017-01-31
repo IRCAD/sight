@@ -7,7 +7,6 @@
 #ifndef __FWRENDEROGRE_PICKER_IPICKER_HPP__
 #define __FWRENDEROGRE_PICKER_IPICKER_HPP__
 
-
 #include "fwRenderOgre/config.hpp"
 
 #include <fwCore/BaseObject.hpp>
@@ -16,13 +15,11 @@
 #include <OGRE/OgrePrerequisites.h>
 #include <OGRE/OgreVector3.h>
 
-
 namespace fwRenderOgre
 {
 
 namespace picker
 {
-
 
 class FWRENDEROGRE_CLASS_API IPicker
 {
@@ -42,8 +39,6 @@ public:
 
     FWRENDEROGRE_API void setSceneManager(::Ogre::SceneManager*);
     FWRENDEROGRE_API bool hasSceneManager();
-
-
 
 protected:
 

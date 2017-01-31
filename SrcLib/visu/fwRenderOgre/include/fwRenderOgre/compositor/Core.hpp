@@ -39,8 +39,10 @@ enum transparencyTechnique
  * Manages principal compositor for a layer's 3D scene
  */
 class FWRENDEROGRE_CLASS_API Core   //TODO : Manage occlusion query
-                                    //    The current commented ligns in this class are standing for occlusion query purposes
-                                    //    An example of working occlusion query is used in the experimental branch flavien_sg rev 76
+                                    //    The current commented ligns in this class are standing for occlusion query
+                                    // purposes
+                                    //    An example of working occlusion query is used in the experimental branch
+                                    // flavien_sg rev 76
                                     //public ::Ogre::FrameListener,
                                     //public ::Ogre::RenderTargetListener,
                                     //public ::Ogre::RenderObjectListener

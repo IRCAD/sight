@@ -6,9 +6,9 @@
 
 #include "fwRenderOgre/picker/IPicker.hpp"
 
+#include <fwRenderOgre/collisionTools/CollisionTools.hpp>
 #include <fwRenderOgre/Layer.hpp>
 #include <fwRenderOgre/Utils.hpp>
-#include <fwRenderOgre/collisionTools/CollisionTools.hpp>
 
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
@@ -41,6 +41,8 @@ IPicker::~IPicker()
 {
 }
 
+//------------------------------------------------------------------------------
+
 bool IPicker::executeRaySceneQuery(int x, int y, int width, int height)
 {
     ::Ogre::Ray r = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME)->getCameraToViewportRay(
@@ -59,7 +61,6 @@ bool IPicker::executeRaySceneQuery(int x, int y, int width, int height)
     ::fwRenderOgre::CollisionTools tool = ::fwRenderOgre::CollisionTools(m_sceneManager);
     bool entityFound = tool.raycast(r, m_rayIntersect, m_selectedObject, distance,
                                     ::Ogre::SceneManager::ENTITY_TYPE_MASK);
-
 
     if (entityFound)
     {
@@ -145,7 +146,6 @@ bool IPicker::hasSceneManager()
 {
     return m_hasSceneManager;
 }
-
 
 // ----------------------------------------------------------------------------
 

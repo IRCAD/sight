@@ -6,9 +6,9 @@
 
 #include "visuOgreAdaptor/SMaterial.hpp"
 
+#include "visuOgreAdaptor/defines.hpp"
 #include "visuOgreAdaptor/SShaderParameter.hpp"
 #include "visuOgreAdaptor/STexture.hpp"
-#include "visuOgreAdaptor/defines.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
@@ -25,9 +25,9 @@
 #include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/helper/Field.hpp>
 
+#include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/Utils.hpp>
-#include <fwRenderOgre/helper/Shading.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -63,13 +63,13 @@ static const std::string s_NORMALS_PASS = "NormalsPass";
 
 SMaterial::SMaterial() throw() :
     m_materialTemplateName(DEFAULT_MATERIAL_TEMPLATE_NAME),
-    m_hasMeshNormal       (true),
-    m_hasVertexColor      (false),
-    m_hasPrimitiveColor   (false),
-    m_primitiveType       (::fwData::Mesh::TRIANGLE),
-    m_meshBoundingBox     (::Ogre::Vector3::ZERO, ::Ogre::Vector3::ZERO),
-    m_normalLengthFactor  (0.1f),
-    m_lightsNumber        (1)
+    m_hasMeshNormal(true),
+    m_hasVertexColor(false),
+    m_hasPrimitiveColor(false),
+    m_primitiveType(::fwData::Mesh::TRIANGLE),
+    m_meshBoundingBox(::Ogre::Vector3::ZERO, ::Ogre::Vector3::ZERO),
+    m_normalLengthFactor(0.1f),
+    m_lightsNumber(1)
 {
     newSlot(s_UPDATE_FIELD_SLOT, &SMaterial::updateField, this);
     newSlot(s_SWAP_TEXTURE_SLOT, &SMaterial::swapTexture, this);
@@ -504,7 +504,6 @@ void SMaterial::updatePolygonMode(int polygonMode)
                 std::string fpName = edgePass->getFragmentProgramName();
                 fpName = ::fwRenderOgre::helper::Shading::setPermutationInProgramName(fpName, "Edge_Normal");
                 edgePass->setFragmentProgram(fpName);
-
 
                 edgePass->setPolygonMode(::Ogre::PM_WIREFRAME);
             }

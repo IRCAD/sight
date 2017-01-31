@@ -59,5 +59,3 @@ const int ::fwRenderOgre::ILight::s_OFFSET_RANGE = 180;
 
 } // namespace fwRenderOgre
 
-
-

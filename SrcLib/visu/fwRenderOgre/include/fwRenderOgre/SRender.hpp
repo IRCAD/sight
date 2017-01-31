@@ -7,16 +7,16 @@
 #ifndef __FWRENDEROGRE_SRENDER_HPP__
 #define __FWRENDEROGRE_SRENDER_HPP__
 
+#include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/IRenderWindowInteractorManager.hpp"
 #include "fwRenderOgre/Layer.hpp"
-#include "fwRenderOgre/Utils.hpp"
-#include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/picker/IPicker.hpp"
+#include "fwRenderOgre/Utils.hpp"
 
+#include <fwCom/helper/SigSlotConnection.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
 
@@ -108,7 +108,7 @@ class FWRENDEROGRE_CLASS_API SRender : public ::fwRender::IRender
 
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SRender)(::fwRender::IRender) );
+    fwCoreServiceClassDefinitionsMacro( (SRender)(::fwRender::IRender) );
 
     FWRENDEROGRE_API SRender() throw();
     FWRENDEROGRE_API virtual ~SRender() throw();
@@ -211,7 +211,7 @@ private:
     /// Wrapper class containing an adaptor
     struct SceneAdaptor
     {
-        SPTR (IAdaptor) getService() const
+        SPTR(IAdaptor) getService() const
         {
             return m_service.lock();
         }

@@ -12,9 +12,9 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
+#include <fwRenderOgre/helper/Scene.hpp>
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/SRender.hpp>
-#include <fwRenderOgre/helper/Scene.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -101,7 +101,7 @@ void STransform::doStart() throw(fwTools::Failed)
 void STransform::updateFromOgre()
 {
     ::fwData::mt::ObjectWriteLock lock(m_fwTransform);
-    for(size_t lt = 0; lt<4; lt++)
+    for(size_t lt = 0; lt < 4; lt++)
     {
         for (size_t lt = 0; lt < 4; lt++)
         {
@@ -128,9 +128,9 @@ void STransform::doUpdate() throw(fwTools::Failed)
     // Multithreaded lock
     ::fwData::mt::ObjectReadLock lock(m_fwTransform);
 
-    for(size_t lt = 0; lt<4; lt++)
+    for(size_t lt = 0; lt < 4; lt++)
     {
-        for(size_t ct = 0; ct<4; ct++)
+        for(size_t ct = 0; ct < 4; ct++)
         {
             m_ogreTransform[ct][lt] = static_cast< ::Ogre::Real >(m_fwTransform->getCoefficient(ct, lt));
         }

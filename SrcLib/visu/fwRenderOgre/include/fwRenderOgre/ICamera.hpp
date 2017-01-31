@@ -7,11 +7,11 @@
 #ifndef __FWRENDEROGRE_ICAMERA_HPP__
 #define __FWRENDEROGRE_ICAMERA_HPP__
 
-#include "fwRenderOgre/IAdaptor.hpp"
-#include "fwRenderOgre/SRender.hpp"
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/factory/new.hpp"
+#include "fwRenderOgre/IAdaptor.hpp"
 #include "fwRenderOgre/registry/detail.hpp"
+#include "fwRenderOgre/SRender.hpp"
 
 #include <fwGui/container/fwContainer.hpp>
 

@@ -57,24 +57,24 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_DOUBLE_PARAMETER_SLOT    
 //-----------------------------------------------------------------------------
 
 SVolumeRender::SVolumeRender() throw() :
-    m_volumeRenderer         (nullptr),
-    m_sceneManager           (nullptr),
-    m_volumeSceneNode        (nullptr),
-    m_camera                 (nullptr),
-    m_nbSlices               (512),
-    m_preIntegratedRendering (false),
-    m_ambientOcclusion       (false),
-    m_colorBleeding          (false),
-    m_shadows                (false),
-    m_widgetVisibilty        (true),
-    m_illum                  (nullptr),
-    m_satSizeRatio           (0.25f),
-    m_satShells              (4),
-    m_satShellRadius         (4),
-    m_satConeAngle           (0.1f),
-    m_satConeSamples         (50),
-    m_aoFactor               (1.f),
-    m_colorBleedingFactor    (1.f)
+    m_volumeRenderer(nullptr),
+    m_sceneManager(nullptr),
+    m_volumeSceneNode(nullptr),
+    m_camera(nullptr),
+    m_nbSlices(512),
+    m_preIntegratedRendering(false),
+    m_ambientOcclusion(false),
+    m_colorBleeding(false),
+    m_shadows(false),
+    m_widgetVisibilty(true),
+    m_illum(nullptr),
+    m_satSizeRatio(0.25f),
+    m_satShells(4),
+    m_satShellRadius(4),
+    m_satConeAngle(0.1f),
+    m_satConeSamples(50),
+    m_aoFactor(1.f),
+    m_colorBleedingFactor(1.f)
 {
     this->installTFSlots(this);
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);

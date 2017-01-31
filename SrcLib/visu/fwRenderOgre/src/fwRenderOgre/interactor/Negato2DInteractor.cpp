@@ -40,8 +40,8 @@ Negato2DInteractor::Negato2DInteractor() :
     m_currentHeight(10),
     m_camera(nullptr)
 {
-    m_minimumCorner = ::Ogre::Vector3(-1.,-1.,0.);
-    m_maximumCorner = ::Ogre::Vector3(1.,1.,0.);
+    m_minimumCorner = ::Ogre::Vector3(-1., -1., 0.);
+    m_maximumCorner = ::Ogre::Vector3(1., 1., 0.);
 }
 
 // ----------------------------------------------------------------------------
@@ -71,7 +71,6 @@ void Negato2DInteractor::wheelEvent(int delta, int mouseX, int mouseY)
         // Update Camera Scale
         m_currentWidth  = m_zoomScale * m_totalWidth;
         m_currentHeight = m_zoomScale * m_totalHeight;
-
 
         ::Ogre::Real leftScreenBordure = xTexture - static_cast< ::Ogre::Real >(mouseX) / m_renderWindowWidth *
                                          m_currentWidth;
@@ -209,7 +208,7 @@ void Negato2DInteractor::resetCameraPosition()
     {
         m_camera    = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
         m_cameraPos = m_camera->getPosition();
-        m_camera->setOrthoWindow(1.f,1.f);
+        m_camera->setOrthoWindow(1.f, 1.f);
     }
     return m_camera;
 }

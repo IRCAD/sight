@@ -6,9 +6,9 @@
 
 #include "fwRenderOgre/vr/RayTracingVolumeRenderer.hpp"
 
+#include "fwRenderOgre/helper/Shading.hpp"
 #include "fwRenderOgre/SRender.hpp"
 #include "fwRenderOgre/Utils.hpp"
-#include "fwRenderOgre/helper/Shading.hpp"
 
 #include <fwCore/Profiling.hpp>
 
@@ -51,15 +51,17 @@ public:
                                  ::Ogre::TexturePtr tfTexture,
                                  float& sampleDistance,
                                  ::Ogre::SceneNode* volumeSceneNode) :
-        m_renderTargets   (renderTargets),
+        m_renderTargets(renderTargets),
         m_invWorldViewProj(invWorldViewProj),
-        m_image3DTexture  (image3DTexture),
-        m_tfTexture       (tfTexture),
-        m_sampleDistance  (sampleDistance),
-        m_volumeSceneNode (volumeSceneNode)
+        m_image3DTexture(image3DTexture),
+        m_tfTexture(tfTexture),
+        m_sampleDistance(sampleDistance),
+        m_volumeSceneNode(volumeSceneNode)
     {
 
     }
+
+    //------------------------------------------------------------------------------
 
     virtual void notifyMaterialRender(::Ogre::uint32, ::Ogre::MaterialPtr& mtl)
     {
@@ -135,6 +137,8 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
     {
     }
 
+    //------------------------------------------------------------------------------
+
     virtual void cameraPreRenderScene(::Ogre::Camera*)
     {
         auto layer = m_renderer->getLayer();
@@ -170,6 +174,8 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
         }
     }
 
+    //------------------------------------------------------------------------------
+
     void setCurrentMtlName(const std::string& currentMtlName)
     {
         m_currentMtlName = currentMtlName;
@@ -191,19 +197,19 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    double aoFactor,
                                                    double colorBleedingFactor) :
     IVolumeRenderer(parentId, layer->getSceneManager(), parentNode, imageTexture, gpuTF, preintegrationTable),
-    m_entryPointGeometry (nullptr),
-    m_imageSize          (::fwData::Image::SizeType({ 1, 1, 1 })),
-    m_mode3D             (mode3D),
-    m_ambientOcclusion   (ambientOcclusion),
-    m_colorBleeding      (colorBleeding),
-    m_shadows            (shadows),
-    m_aoFactor           (aoFactor),
+    m_entryPointGeometry(nullptr),
+    m_imageSize(::fwData::Image::SizeType({ 1, 1, 1 })),
+    m_mode3D(mode3D),
+    m_ambientOcclusion(ambientOcclusion),
+    m_colorBleeding(colorBleeding),
+    m_shadows(shadows),
+    m_aoFactor(aoFactor),
     m_colorBleedingFactor(colorBleedingFactor),
-    m_illumVolume        (nullptr),
-    m_focalLength        (0.f),
-    m_cameraListener     (nullptr),
-    m_compositorListener (nullptr),
-    m_layer              (layer)
+    m_illumVolume(nullptr),
+    m_focalLength(0.f),
+    m_cameraListener(nullptr),
+    m_compositorListener(nullptr),
+    m_layer(layer)
 {
     m_gridSize   = { 2, 2, 2 };
     m_bricksSize = { 8, 8, 8 };

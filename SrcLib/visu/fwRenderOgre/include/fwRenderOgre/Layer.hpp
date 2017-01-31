@@ -7,13 +7,13 @@
 #ifndef __FWRENDEROGRE_LAYER_HPP__
 #define __FWRENDEROGRE_LAYER_HPP__
 
-#include "fwRenderOgre/IRenderWindowInteractorManager.hpp"
 #include "fwRenderOgre/compositor/ChainManager.hpp"
 #include "fwRenderOgre/compositor/Core.hpp"
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/interactor/IInteractor.hpp"
 #include "fwRenderOgre/interactor/IMovementInteractor.hpp"
 #include "fwRenderOgre/interactor/IPickerInteractor.hpp"
+#include "fwRenderOgre/IRenderWindowInteractorManager.hpp"
 
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/HasSlots.hpp>

@@ -48,4 +48,3 @@ FWRENDEROGRE_API SPTR(LightFactoryType) getLightRegistry();
 
 #endif /* __FWRENDEROGRE_REGISTRY_DETAIL_HPP__ */
 
-

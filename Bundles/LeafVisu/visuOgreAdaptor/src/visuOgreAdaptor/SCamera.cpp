@@ -10,13 +10,13 @@
 
 #include <fwCom/Slots.hxx>
 
-#include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
+#include <fwRenderOgre/registry/macros.hpp>
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/Utils.hpp>
-#include <fwRenderOgre/registry/macros.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -41,10 +41,10 @@ const ::fwCom::Slots::SlotKeyType SCamera::s_UPDATE_TF_SLOT = "updateTransformat
 //------------------------------------------------------------------------------
 
 SCamera::SCamera() throw() :
-    m_camera          (nullptr),
-    m_cameraName      (""),
+    m_camera(nullptr),
+    m_cameraName(""),
     m_nearClipDistance(1.f),
-    m_aspectRatio     (0.f)
+    m_aspectRatio(0.f)
 {
     newSlot(s_UPDATE_TF_SLOT, &SCamera::updateTF3D, this);
     newSlot(s_CALIBRATE_SLOT, &SCamera::calibrate, this);
@@ -53,10 +53,10 @@ SCamera::SCamera() throw() :
 //------------------------------------------------------------------------------
 
 SCamera::SCamera(::fwRenderOgre::ICamera::Key key) :
-    m_camera          (nullptr),
-    m_cameraName      (""),
+    m_camera(nullptr),
+    m_cameraName(""),
     m_nearClipDistance(1.f),
-    m_aspectRatio     (0.f)
+    m_aspectRatio(0.f)
 {
     newSlot(s_UPDATE_TF_SLOT, &SCamera::updateTF3D, this);
     newSlot(s_CALIBRATE_SLOT, &SCamera::calibrate, this);
@@ -188,7 +188,7 @@ void SCamera::updateTF3D()
             // Set the 3x3 matrix representing the rotation
             newTransMat[i][j] = mat33[i][j];
 
-            if( i==j )
+            if( i == j )
             {
                 // Set the scale factor
                 newTransMat[i][j] = newTransMat[i][j] * scale[i];

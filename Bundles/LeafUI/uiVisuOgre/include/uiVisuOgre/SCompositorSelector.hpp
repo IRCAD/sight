@@ -9,8 +9,8 @@
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwRenderOgre/Layer.hpp>
 #include <fwRenderOgre/compositor/ChainManager.hpp>
+#include <fwRenderOgre/Layer.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
@@ -37,8 +37,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SCompositorSelector)(::gui::editor::IEditor) );
-
+    fwCoreServiceClassDefinitionsMacro( (SCompositorSelector)(::gui::editor::IEditor) );
 
     /** @} */
 
@@ -64,7 +63,8 @@ protected:
     /**
      * @brief method description:
      * @code{.xml}
-        <service uid="SCompositorSelectorInstance" impl="::uiVisuOgre::SCompositorSelector" type="::gui::editor::IEditor">
+        <service uid="SCompositorSelectorInstance" impl="::uiVisuOgre::SCompositorSelector"
+     * type="::gui::editor::IEditor">
              <parameter>param</parameter>
         </service>
        @endcode

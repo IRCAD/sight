@@ -129,7 +129,7 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
         rotateX.normalise();
 
         // 3 - Now determine the rotation direction
-        if(rotateX.dotProduct(Ogre::Vector3(1.f,0.f,0.f)) < 0.f)
+        if(rotateX.dotProduct(Ogre::Vector3(1.f, 0.f, 0.f)) < 0.f)
         {
             dy_float *= -1;
         }
@@ -158,7 +158,7 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
         rotateY.normalise();
 
         // 3 - Now determine the rotation direction
-        if(rotateY.dotProduct(Ogre::Vector3(0.f,1.f,0.f)) < 0.f)
+        if(rotateY.dotProduct(Ogre::Vector3(0.f, 1.f, 0.f)) < 0.f)
         {
             dx_float *= -1;
         }

@@ -6,8 +6,8 @@
 
 #include "fwRenderOgre/IAdaptor.hpp"
 
-#include <fwRenderOgre/Utils.hpp>
 #include <fwRenderOgre/registry/Adaptor.hpp>
+#include <fwRenderOgre/Utils.hpp>
 
 #include <fwCom/Slots.hxx>
 

@@ -26,7 +26,7 @@ namespace interactor
 
 VRWidgetsInteractor::VRWidgetsInteractor() throw() :
     m_pickedObject(nullptr),
-    m_widget      (nullptr)
+    m_widget(nullptr)
 {
 }
 

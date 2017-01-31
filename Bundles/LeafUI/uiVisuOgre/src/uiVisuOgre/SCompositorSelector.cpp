@@ -19,12 +19,12 @@
 
 #include <material/Plugin.hpp>
 
-#include <QListWidgetItem>
-#include <QWidget>
-
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
 #include <OGRE/OgreResourceManager.h>
+
+#include <QListWidgetItem>
+#include <QWidget>
 
 namespace uiVisuOgre
 {

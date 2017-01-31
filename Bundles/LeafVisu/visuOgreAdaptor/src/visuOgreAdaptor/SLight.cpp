@@ -11,9 +11,9 @@
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
 
+#include <fwRenderOgre/registry/macros.hpp>
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/Utils.hpp>
-#include <fwRenderOgre/registry/macros.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>

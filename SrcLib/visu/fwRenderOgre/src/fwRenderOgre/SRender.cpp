@@ -7,8 +7,8 @@
 #include "fwRenderOgre/SRender.hpp"
 
 #include "fwRenderOgre/IAdaptor.hpp"
-#include "fwRenderOgre/Utils.hpp"
 #include "fwRenderOgre/registry/Adaptor.hpp"
+#include "fwRenderOgre/Utils.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
@@ -121,15 +121,15 @@ void SRender::configuring() throw(fwTools::Failed)
         }
     }
 
-    auto adaptorConfigs = m_configuration->findAllConfigurationElement ("adaptor");
+    auto adaptorConfigs = m_configuration->findAllConfigurationElement("adaptor");
     for (const auto& currentConfig : adaptorConfigs)
     {
-        SLM_ASSERT("Missing 'uid' attribute in adaptor configuration", currentConfig->hasAttribute ("uid"));
-        SLM_ASSERT("Missing 'start' attribute in adaptor configuration", currentConfig->hasAttribute ("start"));
+        SLM_ASSERT("Missing 'uid' attribute in adaptor configuration", currentConfig->hasAttribute("uid"));
+        SLM_ASSERT("Missing 'start' attribute in adaptor configuration", currentConfig->hasAttribute("start"));
 
         SceneAdaptor adaptor;
-        std::string uid        = currentConfig->getAttributeValue ("uid");
-        std::string startValue = currentConfig->getAttributeValue ("start");
+        std::string uid        = currentConfig->getAttributeValue("uid");
+        std::string startValue = currentConfig->getAttributeValue("start");
 
         SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
                    startValue == "yes" || startValue == "no");
@@ -496,7 +496,7 @@ void SRender::stopContext()
 ::fwRenderOgre::Layer::sptr SRender::getLayer(const ::std::string& sceneID)
 {
     OSLM_ASSERT("Empty sceneID", !sceneID.empty());
-    OSLM_ASSERT("Layer ID "<< sceneID <<" does not exist", m_layers.find(sceneID) !=  m_layers.end());
+    OSLM_ASSERT("Layer ID "<< sceneID <<" does not exist", m_layers.find(sceneID) != m_layers.end());
 
     ::fwRenderOgre::Layer::sptr layer = m_layers.at(sceneID);
 

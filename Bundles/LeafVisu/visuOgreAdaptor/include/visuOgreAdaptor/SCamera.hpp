@@ -7,12 +7,12 @@
 #ifndef __VISUOGREADAPTOR_SCAMERA_HPP__
 #define __VISUOGREADAPTOR_SCAMERA_HPP__
 
-#include "visuOgreAdaptor/STransform.hpp"
 #include "visuOgreAdaptor/config.hpp"
+#include "visuOgreAdaptor/STransform.hpp"
 
+#include <fwCom/helper/SigSlotConnection.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwRenderOgre/ICamera.hpp>
 #include <fwRenderOgre/ITransformable.hpp>

@@ -10,8 +10,8 @@
 
 #include <fwCom/Signal.hxx>
 
-#include <fwData/Point.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/Point.hpp>
 
 #include <fwRenderOgre/Utils.hpp>
 
@@ -96,7 +96,7 @@ void SVideo::doConfigure() throw(::fwTools::Failed)
     const std::string reverse = m_configuration->getAttributeValue("reverse");
     if (!reverse.empty() )
     {
-        if( reverse=="true" )
+        if( reverse == "true" )
         {
             m_reverse = true;
         }
@@ -111,7 +111,7 @@ void SVideo::doUpdate() throw(::fwTools::Failed)
 
     // Getting FW4SPL Image
     ::fwData::Image::csptr imageF4s = this->getInput< ::fwData::Image>("image");
-    SLM_ASSERT("Problem getting the image",imageF4s);
+    SLM_ASSERT("Problem getting the image", imageF4s);
 
     ::fwData::Image::SizeType size       = imageF4s->getSize();
     ::fwData::Image::SpacingType spacing = imageF4s->getSpacing();
@@ -150,14 +150,14 @@ void SVideo::doUpdate() throw(::fwTools::Failed)
                                 static_cast< ::Ogre::Real >(size[1]) * static_cast< ::Ogre::Real >(spacing[1]));
 
         // Create Ogre Entity
-        ::Ogre::Entity* ent = sceneManager->createEntity(entityName,videoMeshName);
+        ::Ogre::Entity* ent = sceneManager->createEntity(entityName, videoMeshName);
 
         ent->setMaterialName(thisID + "_VideoMaterial");
 
         // Add the entity to the scene
         ::Ogre::SceneNode* sn = sceneManager->getRootSceneNode()->createChildSceneNode(nodeName);
         sn->attachObject(ent);
-        sn->setPosition(0,0,0);
+        sn->setPosition(0, 0, 0);
 
         ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
         cam->setProjectionType(::Ogre::PT_ORTHOGRAPHIC);
@@ -185,8 +185,7 @@ void SVideo::doUpdate() throw(::fwTools::Failed)
         }
     }
 
-
-    m_texture->getBuffer(0,0)->blitFromMemory(imageOgre.getPixelBox(0,0));
+    m_texture->getBuffer(0, 0)->blitFromMemory(imageOgre.getPixelBox(0, 0));
 
     lock.unlock();
 
@@ -205,7 +204,6 @@ void SVideo::doUpdate() throw(::fwTools::Failed)
     connections.push( "image", ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT );
     return connections;
 }
-
 
 //------------------------------------------------------------------------------
 

@@ -253,7 +253,7 @@ void SMesh::doStart() throw(::fwTools::Failed)
         auto mtlAdaptors = this->getRenderService()->getAdaptors< ::visuOgreAdaptor::SMaterial>();
 
         auto result =
-            std::find_if(mtlAdaptors.begin(), mtlAdaptors.end(),[this](const ::visuOgreAdaptor::SMaterial::sptr& srv)
+            std::find_if(mtlAdaptors.begin(), mtlAdaptors.end(), [this](const ::visuOgreAdaptor::SMaterial::sptr& srv)
             {
                 return srv->getMaterialName() == m_materialName;
             });
@@ -813,7 +813,6 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
     }
 }
 
-
 //-----------------------------------------------------------------------------
 
 void SMesh::bindLayer(const ::fwData::Mesh::sptr& _mesh, BufferBinding _binding,
@@ -1065,7 +1064,6 @@ void SMesh::clearMesh()
     }
 }
 
-
 //------------------------------------------------------------------------------
 
 ::visuOgreAdaptor::SMaterial::sptr SMesh::createMaterialService(const std::string& _materialSuffix)
@@ -1167,7 +1165,7 @@ void SMesh::createTransformService()
         auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
 
         transformService->setID(this->getID() + "_" + transformService->getID());
-        transformService->setRenderService ( this->getRenderService() );
+        transformService->setRenderService( this->getRenderService() );
         transformService->setLayerID(m_layerID);
         transformService->setTransformId(this->getTransformId());
         transformService->setParentTransformId(this->getParentTransformId());

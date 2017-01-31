@@ -7,8 +7,8 @@
 #ifndef __VISUOGREADAPTOR_SLIGHT_HPP__
 #define __VISUOGREADAPTOR_SLIGHT_HPP__
 
-#include "visuOgreAdaptor/STransform.hpp"
 #include "visuOgreAdaptor/config.hpp"
+#include "visuOgreAdaptor/STransform.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
