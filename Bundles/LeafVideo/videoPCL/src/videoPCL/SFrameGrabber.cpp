@@ -23,6 +23,8 @@
 #include <pcl/common/transforms.h>
 #include <pcl/io/vtk_lib_io.h>
 
+#include <cstdint>
+
 namespace videoPCL
 {
 
@@ -158,7 +160,7 @@ void SFrameGrabber::stopCamera()
         const ::fwCore::HiResClock::HiResClockType timestamp = frameTL->getNewerTimestamp() + 1;
 
         SPTR(::arData::FrameTL::BufferType) buffer = frameTL->createBuffer(timestamp);
-        ::boost::uint8_t* destBuffer               = reinterpret_cast< ::boost::uint8_t* >( buffer->addElement(0) );
+        std::uint8_t* destBuffer = reinterpret_cast< std::uint8_t* >( buffer->addElement(0) );
 
         std::fill(destBuffer,
                   destBuffer + frameTL->getWidth() * frameTL->getHeight() * frameTL->getNumberOfComponents(), 0);
@@ -203,8 +205,8 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
 
     if (!m_imageToRead.empty())
     {
-        ::pcl::PointCloud<pcl::PointXYZ> inputCloud;
-        if (pcl::io::loadPCDFile<pcl::PointXYZ> (m_imageToRead.front().string(), inputCloud) == -1)
+        ::pcl::PointCloud< ::pcl::PointXYZ> inputCloud;
+        if (::pcl::io::loadPCDFile< ::pcl::PointXYZ> (m_imageToRead.front().string(), inputCloud) == -1)
         {
             SLM_ERROR("Couldn't read input pointcloud file " +  m_imageToRead.front().string());
         }
@@ -254,15 +256,15 @@ void SFrameGrabber::grabImage()
         const std::string imageName = imagePath.filename().string();
         static const ::boost::regex s_TIMESTAMP("[^0-9]*([0-9]*)[^0-9]*");
         ::boost::smatch match;
-        if (!boost::regex_match(imageName, match, s_TIMESTAMP))
+        if (!::boost::regex_match(imageName, match, s_TIMESTAMP))
         {
             SLM_ERROR("Could not find a timestamp in file name: " + imageName);
             return;
         }
         const std::string timestampStr = match[1].str();
 
-        ::pcl::PointCloud<pcl::PointXYZ> inputCloud;
-        if (pcl::io::loadPCDFile<pcl::PointXYZ> (imagePath.string(), inputCloud) == -1)
+        ::pcl::PointCloud< ::pcl::PointXYZ> inputCloud;
+        if (::pcl::io::loadPCDFile< ::pcl::PointXYZ> (imagePath.string(), inputCloud) == -1)
         {
             SLM_ERROR("Couldn't read input pointcloud file " +  imagePath.string());
             return;
