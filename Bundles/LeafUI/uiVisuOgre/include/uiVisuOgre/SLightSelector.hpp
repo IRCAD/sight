@@ -26,6 +26,9 @@ namespace uiVisuOgre
 /**
  * @brief User interface to select light adaptor from a selected layer or create a new one.
  *
+ * @section Signals Signals
+ * - \b lightSelected(::fwRenderOgre::ILight::sptr): Emitted when a light is selected in the list widget.
+ *
  * @section Slots Slots
  * - \b initLightList(::fwRenderOgre::Layer::sptr): populates the list of available light adaptors for the current
  * layer.

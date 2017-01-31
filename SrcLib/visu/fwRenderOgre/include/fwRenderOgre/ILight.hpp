@@ -28,7 +28,7 @@ namespace fwRenderOgre
 {
 
 /**
- * @brief
+ * @brief Defines the service interface managing the light adaptor.
  *
  */
 class FWRENDEROGRE_CLASS_API ILight : public ::fwRenderOgre::IAdaptor
@@ -66,6 +66,7 @@ public:
 
     FWRENDEROGRE_API static const int s_OFFSET_RANGE;
 
+    /// ILight factory method.
     FWRENDEROGRE_API static ILight::sptr createLightManager(::fwData::TransformationMatrix3D::sptr _transform,
                                                             ::fwData::Color::sptr _diffuse,
                                                             ::fwData::Color::sptr _specular);
@@ -76,27 +77,43 @@ public:
     /// Destructor. Do nothing.
     FWRENDEROGRE_API virtual ~ILight();
 
+    /// Light name getter.
     FWRENDEROGRE_API virtual const std::string& getName() const = 0;
+    /// Light name setter.
     FWRENDEROGRE_API virtual void setName(std::string _name)
-                                                                       = 0;
+        = 0;
+    /// Light type getter.
     FWRENDEROGRE_API virtual ::Ogre::Light::LightTypes getType() const = 0;
+    /// Light type setter.
     FWRENDEROGRE_API virtual void setType(::Ogre::Light::LightTypes _type)
-                                                                         = 0;
+        = 0;
+    /// Diffuse color getter.
     FWRENDEROGRE_API virtual ::Ogre::ColourValue getDiffuseColor() const = 0;
+    /// Diffuse color setter using Ogre::ColourValue.
     FWRENDEROGRE_API virtual void setDiffuseColor(::Ogre::ColourValue _diffuseColor)
-                                                                          = 0;
+        = 0;
+    /// Specular color getter.
     FWRENDEROGRE_API virtual ::Ogre::ColourValue getSpecularColor() const = 0;
+    /// Specular color setter using Ogre::ColourValue.
     FWRENDEROGRE_API virtual void setSpecularColor(::Ogre::ColourValue _specularColor)
         = 0;
+    /// Parent tranform id setter.
     FWRENDEROGRE_API virtual void setParentTransformName(
         const ::fwRenderOgre::SRender::OgreObjectIdType& _parentTransformName) = 0;
-    FWRENDEROGRE_API virtual bool isSwitchedOn() const                         = 0;
-    FWRENDEROGRE_API virtual void switchOn(bool _on)                           = 0;
-    FWRENDEROGRE_API virtual float getThetaOffset() const                      = 0;
-    FWRENDEROGRE_API virtual void setThetaOffset(float _theta)                 = 0;
-    FWRENDEROGRE_API virtual float getPhiOffset() const                        = 0;
-    FWRENDEROGRE_API virtual void setPhiOffset(float _phi)                     = 0;
-    FWRENDEROGRE_API virtual bool isOrphanNode() const                         = 0;
+    /// Light activation flag getter.
+    FWRENDEROGRE_API virtual bool isSwitchedOn() const = 0;
+    /// Light activation flag setter.
+    FWRENDEROGRE_API virtual void switchOn(bool _on) = 0;
+    /// Theta offset getter.
+    FWRENDEROGRE_API virtual float getThetaOffset() const = 0;
+    /// Theta offset setter.
+    FWRENDEROGRE_API virtual void setThetaOffset(float _theta) = 0;
+    /// Phi offset getter.
+    FWRENDEROGRE_API virtual float getPhiOffset() const = 0;
+    /// Phi offset setter.
+    FWRENDEROGRE_API virtual void setPhiOffset(float _phi) = 0;
+    /// Indicates if the light is attached to a parent node or not.
+    FWRENDEROGRE_API virtual bool isOrphanNode() const = 0;
 };
 
 } // namespace fwRenderOgre

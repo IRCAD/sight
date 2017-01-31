@@ -57,7 +57,7 @@ public:
     /// Factory Constructor.
     VISUOGREADAPTOR_API SCamera(::fwRenderOgre::ICamera::Key key);
 
-    /// Destructor. Does nothing
+    /// Destructor. Does nothing.
     VISUOGREADAPTOR_API virtual ~SCamera() throw();
 
     /**
@@ -68,16 +68,16 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_TF_SLOT;
     /** @} */
 
-    /// Updates Transformation Matrix
+    /// Updates Transformation Matrix.
     VISUOGREADAPTOR_API virtual void updateTF3D();
 
-    /// Returns proposals to connect service slots to associated object signals
+    /// Returns proposals to connect service slots to associated object signals.
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
     /// Associated ogre camera getter.
     VISUOGREADAPTOR_API virtual ::Ogre::Camera* getCamera();
 
-    /// Instanciates the associated Ogre camera and the transformation matrix
+    /// Instanciates the associated Ogre camera and the transformation matrix.
     VISUOGREADAPTOR_API virtual void createCamera(const std::string& _name, ::Ogre::SceneManager* _sceneManager);
 
     /// Near clipping plane position setter.
@@ -89,19 +89,20 @@ public:
     /// Aspect ratio setter.
     VISUOGREADAPTOR_API virtual void setAspectRatio(::Ogre::Real _ratio);
 
+    /// Transform Id setter.
     VISUOGREADAPTOR_API virtual void setTransformName(::fwRenderOgre::SRender::OgreObjectIdType newId);
 
 protected:
     /// Starting method. Does nothing.
     VISUOGREADAPTOR_API void doStart() throw(fwTools::Failed);
 
-    /// Stopping method
+    /// Stopping method.
     VISUOGREADAPTOR_API void doStop() throw(fwTools::Failed);
 
     /// Configures the service.
     VISUOGREADAPTOR_API void doConfigure() throw(fwTools::Failed);
 
-    /// Swaping method, only asks for a updating
+    /// Swaping method, only asks for a updating.
     VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
 
     /// Updating method. Does nothing.
@@ -115,10 +116,10 @@ private:
     /// Creates a transform Service, and attaches it to a corresponding scene node in the scene.
     void createTransformService();
 
-    /// Attaches a movable object to the associated scene node
+    /// Attaches a movable object to the associated scene node.
     void attachNode(Ogre::MovableObject* _node);
 
-    /// Calibrate the camera parameters according to an arData::Camera
+    /// Calibrate the camera parameters according to an arData::Camera.
     void calibrate();
 
     /// Ogre camera managed by this adaptor.
@@ -136,7 +137,7 @@ private:
     /// Aspect ratio for the frustum viewport.
     ::Ogre::Real m_aspectRatio;
 
-    /// camera used to calibrate ogre camera
+    /// camera used to calibrate ogre camera.
     CSPTR(::arData::Camera) m_calibration;
 };
 
