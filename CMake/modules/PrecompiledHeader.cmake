@@ -54,6 +54,13 @@
 
 include(CMakeParseArguments)
 
+if(ENABLE_PCH)
+    if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+        # We need 3.7 because of DEPFILE in add_custom_command
+        cmake_minimum_required(VERSION 3.7)
+    endif()
+endif()
+
 macro(combine_arguments _variable)
   set(_result "")
   foreach(_element ${${_variable}})
