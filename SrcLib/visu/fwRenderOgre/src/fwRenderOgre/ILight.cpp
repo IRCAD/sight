@@ -45,6 +45,17 @@ const int ::fwRenderOgre::ILight::s_OFFSET_RANGE = 180;
 
 //-----------------------------------------------------------------------------
 
+void ILight::destroyLightManager(ILight::sptr _lightManager)
+{
+    if(_lightManager)
+    {
+        _lightManager->stop();
+        ::fwServices::OSR::unregisterService(_lightManager);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 ::fwRenderOgre::ILight::ILight()
 {
 }

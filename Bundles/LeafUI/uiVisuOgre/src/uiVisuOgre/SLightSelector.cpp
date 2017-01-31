@@ -216,11 +216,10 @@ void SLightSelector::onAddLight(bool _checked)
 
 void SLightSelector::onRemoveLight(bool _checked)
 {
+    ::fwRenderOgre::ILight::destroyLightManager(m_currentLight);
+
     if(m_currentLight)
     {
-        m_currentLight->stop();
-        ::fwServices::OSR::unregisterService(m_currentLight);
-
         ::fwRenderOgre::Layer::sptr currentLayer = m_currentLayer.lock();
 
         currentLayer->removeAdaptor(m_currentLight);

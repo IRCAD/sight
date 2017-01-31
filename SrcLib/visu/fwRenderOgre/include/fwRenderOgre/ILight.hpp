@@ -71,6 +71,9 @@ public:
                                                             ::fwData::Color::sptr _diffuse,
                                                             ::fwData::Color::sptr _specular);
 
+    /// ILight stopping and unregistrating method.
+    FWRENDEROGRE_API static void destroyLightManager(ILight::sptr _lightManager);
+
     /// Constructor. Do nothing.
     FWRENDEROGRE_API ILight();
 

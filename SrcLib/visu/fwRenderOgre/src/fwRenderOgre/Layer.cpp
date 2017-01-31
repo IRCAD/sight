@@ -361,14 +361,8 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
 
 void Layer::destroy()
 {
-    if(m_lightManager)
-    {
-        m_lightManager->stop();
-        ::fwServices::OSR::unregisterService(m_lightManager);
-    }
-
-    m_cameraManager->stop();
-    ::fwServices::OSR::unregisterService(m_cameraManager);
+    ::fwRenderOgre::ICamera::destroyCameraManager(m_cameraManager);
+    ::fwRenderOgre::ILight::destroyLightManager(m_lightManager);
 
     ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
     m_sceneManager = nullptr;

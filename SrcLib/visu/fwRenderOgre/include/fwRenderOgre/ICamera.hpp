@@ -64,6 +64,9 @@ public:
     /// ICamera factory method.
     FWRENDEROGRE_API static ICamera::sptr createCameraManager();
 
+    /// ICamera stopping and unregistrating method.
+    FWRENDEROGRE_API static void destroyCameraManager(ICamera::sptr _cameraManager);
+
     /// Constructor. Do nothing.
     FWRENDEROGRE_API ICamera();
 

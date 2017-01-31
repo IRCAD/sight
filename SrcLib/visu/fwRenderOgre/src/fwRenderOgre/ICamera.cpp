@@ -32,6 +32,17 @@ const ::fwRenderOgre::ICamera::FactoryRegistryKeyType ICamera::REGISTRY_KEY = ":
 
 //-----------------------------------------------------------------------------
 
+void ICamera::destroyCameraManager(ICamera::sptr _cameraManager)
+{
+    if(_cameraManager)
+    {
+        _cameraManager->stop();
+        ::fwServices::OSR::unregisterService(_cameraManager);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 ::fwRenderOgre::ICamera::ICamera()
 {
 }
