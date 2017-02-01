@@ -10,15 +10,12 @@
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/registry/detail.hpp"
 
-#include <boost/make_shared.hpp>
-
 #include <string>
 
 namespace fwRenderOgre
 {
 
 class IRenderWindowInteractorManager;
-class ICamera;
 class ILight;
 
 namespace factory
@@ -50,36 +47,6 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New()
 }
 
 } // namespace factory
-
-namespace cameraFactory
-{
-
-template<class CLASSNAME > SPTR( CLASSNAME )  New();
-
-/**
- * @brief Key class used to restrict access to Object construction.
- * See http://www.drdobbs.com/184402053
- */
-class Key
-{
-template<typename CLASSNAME>
-friend SPTR( CLASSNAME ) fwRenderOgre::cameraFactory::New();
-
-Key()
-{
-}
-};
-
-FWRENDEROGRE_API SPTR( ::fwRenderOgre::ICamera ) New(
-    const ::fwRenderOgre::registry::KeyType & classname );
-
-template<class CLASSNAME > SPTR( CLASSNAME )  New()
-{
-    SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
-    return obj;
-}
-
-} // namespace cameraFactory
 
 namespace lightFactory
 {

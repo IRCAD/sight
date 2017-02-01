@@ -14,7 +14,7 @@
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
-#include <fwRenderOgre/ICamera.hpp>
+#include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
 
 #include <OGRE/OgreMovableObject.h>
@@ -52,18 +52,15 @@ namespace visuOgreAdaptor
  * With :
  * - \b name (optional): defines a name for the associated Ogre camera.
  */
-class VISUOGREADAPTOR_CLASS_API SCamera : public ::fwRenderOgre::ICamera,
+class VISUOGREADAPTOR_CLASS_API SCamera : public ::fwRenderOgre::IAdaptor,
                                           public ::fwRenderOgre::ITransformable
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro((SCamera)(::fwRenderOgre::ICamera));
+    fwCoreServiceClassDefinitionsMacro((SCamera)(::fwRenderOgre::IAdaptor));
 
     /// Constructor.
     VISUOGREADAPTOR_API SCamera() throw();
-
-    /// Factory Constructor.
-    VISUOGREADAPTOR_API SCamera(::fwRenderOgre::ICamera::Key key);
 
     /// Destructor. Does nothing.
     VISUOGREADAPTOR_API virtual ~SCamera() throw();
@@ -84,9 +81,6 @@ public:
 
     /// Associated ogre camera getter.
     VISUOGREADAPTOR_API virtual ::Ogre::Camera* getCamera();
-
-    /// Instanciates the associated Ogre camera and the transformation matrix.
-    VISUOGREADAPTOR_API virtual void createCamera(const std::string& _name, ::Ogre::SceneManager* _sceneManager);
 
     /// Near clipping plane position setter.
     VISUOGREADAPTOR_API virtual void setNearClipDistance(::Ogre::Real _nearClipDistance);
@@ -133,9 +127,6 @@ private:
     /// Ogre camera managed by this adaptor.
     ::Ogre::Camera* m_camera;
 
-    /// Name of the associated Ogre camera.
-    std::string m_cameraName;
-
     /// Position of the near clipping plane.
     ::Ogre::Real m_nearClipDistance;
 
@@ -147,6 +138,9 @@ private:
 
     /// camera used to calibrate ogre camera.
     CSPTR(::arData::Camera) m_calibration;
+
+    /// Connection with the layer
+    ::fwCom::helper::SigSlotConnection m_layerConnection;
 };
 
 //------------------------------------------------------------------------------

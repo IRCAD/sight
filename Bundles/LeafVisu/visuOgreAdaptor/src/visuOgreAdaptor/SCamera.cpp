@@ -14,24 +14,22 @@
 #include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <fwRenderOgre/registry/macros.hpp>
 #include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
+#include <OgreCamera.h>
 #include <OgreMatrix4.h>
+#include <OgreSceneManager.h>
 #include <OgreSceneNode.h>
 #include <OgreVector3.h>
 
-fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SCamera, ::fwData::TransformationMatrix3D);
-
-fwRenderOgreRegisterCameraMacro( ::visuOgreAdaptor::SCamera,
-                                 ::fwRenderOgre::ICamera::REGISTRY_KEY );
-
 namespace visuOgreAdaptor
 {
+
+fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SCamera, ::fwData::TransformationMatrix3D);
 
 //------------------------------------------------------------------------------
 
@@ -42,19 +40,6 @@ const ::fwCom::Slots::SlotKeyType SCamera::s_UPDATE_TF_SLOT = "updateTransformat
 
 SCamera::SCamera() throw() :
     m_camera(nullptr),
-    m_cameraName(""),
-    m_nearClipDistance(1.f),
-    m_aspectRatio(0.f)
-{
-    newSlot(s_UPDATE_TF_SLOT, &SCamera::updateTF3D, this);
-    newSlot(s_CALIBRATE_SLOT, &SCamera::calibrate, this);
-}
-
-//------------------------------------------------------------------------------
-
-SCamera::SCamera(::fwRenderOgre::ICamera::Key key) :
-    m_camera(nullptr),
-    m_cameraName(""),
     m_nearClipDistance(1.f),
     m_aspectRatio(0.f)
 {
@@ -72,30 +57,19 @@ SCamera::~SCamera() throw()
 
 void SCamera::doConfigure() throw(::fwTools::Failed)
 {
-    SLM_ASSERT("No config tag", m_configuration->getName() == "config");
-
-    if(m_configuration->hasAttribute("name"))
-    {
-        m_cameraName = m_configuration->getAttributeValue("name");
-    }
 }
 
 //------------------------------------------------------------------------------
 
 void SCamera::doStart() throw(::fwTools::Failed)
 {
+    m_camera      = this->getLayer()->getDefaultCamera();
     m_calibration = this->getInput< ::arData::Camera >("calibration");
-
-    if(!m_camera)
-    {
-        m_cameraName = this->getID() + "_" + m_cameraName;
-        m_camera     = this->getSceneManager()->createCamera(m_cameraName);
-
-        this->setTransformId(m_cameraName + "_node");
-    }
 
     this->createTransformService();
 
+    m_layerConnection.connect(this->getLayer(), ::fwRenderOgre::Layer::s_CAMERA_UPDATED_SIG,
+                              this->getSptr(), s_UPDATE_TF_SLOT);
     if (m_calibration)
     {
         this->calibrate();
@@ -164,14 +138,15 @@ void SCamera::doSwap() throw(::fwTools::Failed)
 
 void SCamera::doStop() throw(::fwTools::Failed)
 {
+    m_layerConnection.disconnect();
 }
 
 //------------------------------------------------------------------------------
 
 void SCamera::updateTF3D()
 {
-    ::Ogre::SceneNode* camNode     = m_camera->getParentSceneNode();
-    ::Ogre::Quaternion orientation = camNode->getOrientation();
+    const ::Ogre::SceneNode* camNode      = m_camera->getParentSceneNode();
+    const ::Ogre::Quaternion& orientation = camNode->getOrientation();
 
     ::Ogre::Matrix3 mat33;
     orientation.ToRotationMatrix(mat33);
@@ -219,14 +194,6 @@ void SCamera::updateTF3D()
     connections.push( "transform", ::fwData::Object::s_MODIFIED_SIG, s_UPDATE_SLOT );
     connections.push( "calibration", ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT );
     return connections;
-}
-
-//-----------------------------------------------------------------------------
-
-void SCamera::createCamera(const std::string& _name, ::Ogre::SceneManager* _sceneManager)
-{
-    m_cameraName = _name;
-    m_camera     = _sceneManager->createCamera(m_cameraName);
 }
 
 //------------------------------------------------------------------------------
