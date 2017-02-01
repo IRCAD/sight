@@ -13,12 +13,12 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 namespace tracker
 {
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 const ::fwCom::Slots::SlotKeyType ITracker::s_TRACK_SLOT          = "track";
 const ::fwCom::Slots::SlotKeyType ITracker::s_START_TRACKING_SLOT = "startTracking";
@@ -26,7 +26,7 @@ const ::fwCom::Slots::SlotKeyType ITracker::s_STOP_TRACKING_SLOT  = "stopTrackin
 
 const ::fwServices::IService::KeyType ITracker::s_TIMELINE_INPUT = "timeline";
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 ITracker::ITracker() :
     m_lastTimestamp(0),
@@ -38,26 +38,26 @@ ITracker::ITracker() :
     newSlot(s_STOP_TRACKING_SLOT, &ITracker::stopTracking, this);
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 ITracker::~ITracker()
 {
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void ITracker::configuring() throw (::fwTools::Failed)
 {
     const ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
     if (config.count("dropObj"))
     {
-        std::string dropStr = config.get< std::string >("dropObj");
+        const std::string dropStr = config.get< std::string >("dropObj");
         SLM_ASSERT("'dropObj' value must be 'true' or 'false'.", dropStr == "true" || dropStr == "false");
         m_dropObj = (dropStr == "true");
     }
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void ITracker::track(::fwCore::HiResClock::HiResClockType timestamp)
 {
@@ -89,7 +89,7 @@ void ITracker::track(::fwCore::HiResClock::HiResClockType timestamp)
     }
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 ::fwServices::IService::KeyConnectionsMap ITracker::getAutoConnections() const
 {
@@ -100,21 +100,21 @@ void ITracker::track(::fwCore::HiResClock::HiResClockType timestamp)
     return connections;
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void ITracker::startTracking()
 {
     m_isTracking = true;
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void ITracker::stopTracking()
 {
     m_isTracking = false;
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 } // namespace tracker
 

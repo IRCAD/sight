@@ -13,9 +13,6 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#define FW_PROFILING_DISABLED
-#include <fwCore/Profiling.hpp>
-
 #include <fwData/Composite.hpp>
 
 #include <aruco/aruco.h>
@@ -28,12 +25,12 @@
 #include <opencv2/core.hpp>
 #include <opencv2/opencv.hpp>
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 namespace trackerAruco
 {
 fwServicesRegisterMacro(::tracker::ITracker, ::trackerAruco::SArucoTracker, ::fwData::Composite);
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 const ::fwCom::Signals::SignalKeyType SArucoTracker::s_DETECTION_DONE_SIG = "detectionDone";
 
@@ -49,7 +46,7 @@ const ::fwCom::Slots::SlotKeyType SArucoTracker::s_DISPLAY_TAGS_SLOT            
 const ::fwServices::IService::KeyType s_CAMERA_INPUT      = "camera";
 const ::fwServices::IService::KeyType s_TAGTL_INOUT_GROUP = "tagTL";
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 SArucoTracker::SArucoTracker() throw () :
     m_arUcoTracker(nullptr),
@@ -77,13 +74,13 @@ SArucoTracker::SArucoTracker() throw () :
     newSlot(s_DISPLAY_TAGS_SLOT, &SArucoTracker::displayTags, this);
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 SArucoTracker::~SArucoTracker() throw ()
 {
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void SArucoTracker::configuring() throw (::fwTools::Failed)
 {
@@ -103,9 +100,9 @@ void SArucoTracker::configuring() throw (::fwTools::Failed)
             const std::string markersIDStr = elt->getAttributeValue("id");
             ::boost::tokenizer<> tok(markersIDStr);
             MarkerIDType markersID;
-            for( ::boost::tokenizer<>::iterator it = tok.begin(); it != tok.end(); ++it)
+            for( const auto& it: tok)
             {
-                const int id = ::boost::lexical_cast< int >(*it);
+                const int id = ::boost::lexical_cast< int >(it);
                 markersID.push_back(id);
             }
             m_markers.push_back(markersID);
@@ -169,7 +166,7 @@ void SArucoTracker::configuring() throw (::fwTools::Failed)
     }
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void SArucoTracker::starting() throw (::fwTools::Failed)
 {
@@ -183,7 +180,7 @@ void SArucoTracker::starting() throw (::fwTools::Failed)
     m_isTracking = true;
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void SArucoTracker::stopping() throw (::fwTools::Failed)
 {
@@ -193,13 +190,13 @@ void SArucoTracker::stopping() throw (::fwTools::Failed)
     m_isTracking    = false;
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void SArucoTracker::updating() throw (::fwTools::Failed)
 {
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
 {
@@ -273,7 +270,7 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
         size_t tagTLIndex  = 0;
         for(const auto& markersID : m_markers)
         {
-            unsigned int color[3] = {0, 0, 0};
+            std::array<unsigned int, 3> color = {{0, 0, 0}};
             color[index]                      = 255;
             ::arData::MarkerTL::sptr markerTL =
                 this->getInOut< ::arData::MarkerTL >(s_TAGTL_INOUT_GROUP, tagTLIndex);
@@ -330,7 +327,7 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
     }
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void SArucoTracker::setMethod(unsigned int method)
 {
@@ -353,35 +350,35 @@ void SArucoTracker::setMethod(unsigned int method)
     }
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void SArucoTracker::setBlockSize(double size)
 {
     m_blockSize = size;
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void SArucoTracker::setConstant(double constant)
 {
     m_constant = constant;
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void SArucoTracker::setBorderWidth(double borderWidth)
 {
     m_borderWidth = borderWidth;
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void SArucoTracker::setPatternWidth(double patternWidth)
 {
     m_patternWidth = patternWidth;
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void SArucoTracker::setCornerRefinement(unsigned int method)
 {
@@ -407,7 +404,7 @@ void SArucoTracker::setCornerRefinement(unsigned int method)
     }
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void SArucoTracker::setSpeed(unsigned int value)
 {
@@ -417,7 +414,7 @@ void SArucoTracker::setSpeed(unsigned int value)
     }
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void SArucoTracker::displayTags(bool b)
 {

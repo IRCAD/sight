@@ -11,8 +11,8 @@
 
 #include <fwCore/HiResClock.hpp>
 
-#include <fwServices/IService.hpp>
 #include <fwServices/config.hpp>
+#include <fwServices/IService.hpp>
 
 namespace tracker
 {
@@ -53,7 +53,7 @@ public:
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
     /// Return true if the tracking is started.
-    bool isTracking()
+    bool isTracking() const
     {
         return m_isTracking;
     }
@@ -65,7 +65,7 @@ public:
     }
 
     /// Return true if tracker drop frames
-    bool isDropping()
+    bool isDropping() const
     {
         return m_dropObj;
     }
