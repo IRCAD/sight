@@ -947,11 +947,13 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
         set(${NAME}_DEPENDENCIES "${DEPENDENCIES}")
         set(${NAME}_REQUIREMENTS "${REQUIREMENTS}")
 
-        # If not using a custom pch the pch tar
-        if(ENABLE_PCH)
+        # Get the pch target, test the existence of type variable to exclude unbuilt projects
+        if(ENABLE_PCH AND TYPE)
             set(${NAME}_PROJECT_DIR "${PROJECT_DIR}")
+
             getPchTarget(${NAME} ${PROJECT_DIR} ${TYPE} ${USE_PCH_FROM_TARGET})
 
+            # Append the pch target as a dependency (duplicate will be stripped later if it was already a dependency)
             if(NOT ${${NAME}_PCH_TARGET} STREQUAL ${NAME})
                 list(APPEND ${NAME}_REQUIREMENTS ${${NAME}_PCH_TARGET})
             endif()
