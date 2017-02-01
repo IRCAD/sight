@@ -676,20 +676,21 @@ void SMaterial::updateShadingMode( int shadingMode  )
 
                     if(updateLightsNumber)
                     {
-                        if(ogrePass->getVertexProgramName() != "")
+                        ::Ogre::GpuProgramParametersSharedPtr vp = ogrePass->getVertexProgramParameters();
+
+                        if(vp->_findNamedConstantDefinition("u_numLights"))
                         {
-                            ::fwRenderOgre::helper::Shading::updateUniform<int>(
-                                ogrePass->getVertexProgramParameters(),
-                                ::Ogre::GPT_VERTEX_PROGRAM, "u_numLights",
-                                m_lightsNumber);
+                            vp->setNamedConstant("u_numLights", m_lightsNumber);
                         }
 
-                        if(ogrePass->getFragmentProgramName() != "")
+                        if(!ogrePass->getFragmentProgramName().empty())
                         {
-                            ::fwRenderOgre::helper::Shading::updateUniform<int>(
-                                ogrePass->getFragmentProgramParameters(),
-                                ::Ogre::GPT_FRAGMENT_PROGRAM, "u_numLights",
-                                m_lightsNumber);
+                            ::Ogre::GpuProgramParametersSharedPtr fp = ogrePass->getFragmentProgramParameters();
+
+                            if(fp->_findNamedConstantDefinition("u_numLights"))
+                            {
+                                fp->setNamedConstant("u_numLights", m_lightsNumber);
+                            }
                         }
                     }
                 }

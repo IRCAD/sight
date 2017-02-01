@@ -130,42 +130,7 @@ public:
      */
     FWRENDEROGRE_API static SPTR(::fwData::Object) createObjectFromShaderParameter(::Ogre::GpuConstantType _type,
                                                                                    ConstantValueType _value);
-
-    /**
-     * @brief Loops through the constants of a shader and updates the specified constant when it has been found.
-     *
-     * @param[in] _parameters shader parameters
-     * @param[in] _shaderType type of the shader (vertex, fragment or geometry)
-     * @param[in] _uniformName name of the constant to update
-     * @param[in] _uniform updated value for the constant
-     * @param[in] _enableLightParams indicates whether or not the method should look into the light related uniforms
-     */
-    template<class T>
-    FWRENDEROGRE_API static void updateUniform(::Ogre::GpuProgramParametersSharedPtr _parameters,
-                                               ::Ogre::GpuProgramType _shaderType,
-                                               std::string _uniformName, T _uniform,
-                                               bool _enableLightParams = true);
 };
-
-//-----------------------------------------------------------------------------
-
-template<class T>
-void Shading::updateUniform(::Ogre::GpuProgramParametersSharedPtr _parameters,
-                            ::Ogre::GpuProgramType _shaderType, std::string _uniformName, T _uniform,
-                            bool _enableLightParams)
-{
-    ::fwRenderOgre::helper::Shading::ShaderConstantsType constants =
-        ::fwRenderOgre::helper::Shading::findShaderConstants(_parameters, _shaderType, _enableLightParams);
-
-    std::for_each(constants.begin(), constants.end(),
-                  [&](::fwRenderOgre::helper::Shading::ShaderConstantType constantTuple)
-            {
-                if(std::get<0>(constantTuple) == _uniformName)
-                {
-                    _parameters->setNamedConstant(_uniformName, _uniform);
-                }
-            });
-}
 
 //-----------------------------------------------------------------------------
 

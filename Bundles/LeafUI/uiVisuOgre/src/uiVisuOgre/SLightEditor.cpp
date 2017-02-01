@@ -166,14 +166,14 @@ void SLightEditor::onEditSpecularColor(bool _checked)
 
 void SLightEditor::onEditThetaOffset(int _value)
 {
-    m_currentLight->setThetaOffset(static_cast<float>(_value - 90));
+    m_currentLight->setThetaOffset(static_cast<float>(_value - ::fwRenderOgre::ILight::s_OFFSET_RANGE / 2));
 }
 
 //------------------------------------------------------------------------------
 
 void SLightEditor::onEditPhiOffset(int _value)
 {
-    m_currentLight->setPhiOffset(static_cast<float>(_value - 90));
+    m_currentLight->setPhiOffset(static_cast<float>(_value - ::fwRenderOgre::ILight::s_OFFSET_RANGE / 2));
 }
 
 //------------------------------------------------------------------------------
@@ -191,10 +191,12 @@ void SLightEditor::editLight(::fwRenderOgre::ILight::sptr _lightAdaptor)
 
     if(!m_currentLight->isOrphanNode())
     {
-        m_thetaSlider->setValue(static_cast<int>(m_currentLight->getThetaOffset() + 90));
+        m_thetaSlider->setValue(static_cast<int>(m_currentLight->getThetaOffset() +
+                                                 ::fwRenderOgre::ILight::s_OFFSET_RANGE / 2));
         m_thetaSlider->setEnabled(true);
 
-        m_phiSlider->setValue(static_cast<int>(m_currentLight->getPhiOffset() + 90));
+        m_phiSlider->setValue(static_cast<int>(m_currentLight->getPhiOffset() + ::fwRenderOgre::ILight::s_OFFSET_RANGE /
+                                               2));
         m_phiSlider->setEnabled(true);
     }
     else
