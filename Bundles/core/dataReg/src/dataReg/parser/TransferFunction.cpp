@@ -18,14 +18,14 @@ namespace dataReg
 namespace parser
 {
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 void TransferFunction::updating( ) throw(fwTools::Failed)
 {
     SLM_FATAL("This method is deprecated, and this shouldn't be used.");
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 void TransferFunction::createConfig( ::fwTools::Object::sptr _obj )
 {
@@ -56,13 +56,12 @@ void TransferFunction::createConfig( ::fwTools::Object::sptr _obj )
                                                       newColor->blue(), newColor->alpha());
             tf->addTFColor(value, color);
         }
+        tf->setWLMinMax(tf->getMinMaxTFValues());
     }
-
-    tf->setWLMinMax(tf->getMinMaxTFValues());
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
-} //namespace parser
-} //namespace dataReg
+} // namespace parser
+} // namespace dataReg
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,8 +11,7 @@
  * @brief This file defines fwCore base macros.
  */
 
-#include <string>
-#include <memory>
+#include "fwCore/Demangler.hpp"
 
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/comparison/equal.hpp>
@@ -33,7 +32,9 @@
 #include <boost/preprocessor/seq/transform.hpp>
 #include <boost/preprocessor/tuple/elem.hpp>
 
-#include "fwCore/Demangler.hpp"
+#include <memory>
+#include <string>
+#include <type_traits>
 
 #ifdef _WIN32
 #pragma warning(disable: 4003)
@@ -231,17 +232,27 @@
     /** Const unique pointer type  */                                                                      \
     typedef CUPTR ( __FWCORE_TYPEDEF_SELF_NAME ) __FWCORE_TYPEDEF_UNIQUE_PTR_CONST_NAME;
 
+
 /*
  * Cast definition for casting from baseclassname and derived to _classname_
  */
-#define __FWCORE_GENERATE_CAST(_classname_, _baseclassname_)                                                                             \
-    /** @brief Cast to dynamic shared pointer   */                                                                                       \
-    template< class BASETYPE > static __FWCORE_TYPEDEF_SHARED_PTR_NAME __FWCORE_DYNAMIC_CAST_FUNC_NAME ( \
-        BASETYPE const &p )             \
-    {                                                                                                                                    \
-        return std::dynamic_pointer_cast< _classname_ >(p);                                                                          \
-    };                                                                                                                                   \
-    /** @brief Const shared pointer cast to dynamic pointer */                                                                           \
+#define __FWCORE_GENERATE_CAST(_classname_, _baseclassname_)                                                    \
+    /** @brief Cast to dynamic shared pointer   */                                                              \
+    template< class BASETYPE, typename = typename std::enable_if < std::is_const<BASETYPE>::value >::type >     \
+    static std::shared_ptr< const _classname_> __FWCORE_DYNAMIC_CAST_FUNC_NAME (                                \
+        const std::shared_ptr<BASETYPE> &p )                                                                    \
+    {                                                                                                           \
+        return std::dynamic_pointer_cast< const _classname_ >(p);                                               \
+    };                                                                                                          \
+    template< class BASETYPE, typename = typename std::enable_if < !std::is_const<BASETYPE>::value >::type >    \
+    static std::shared_ptr<_classname_> __FWCORE_DYNAMIC_CAST_FUNC_NAME (                                       \
+        const std::shared_ptr<BASETYPE> &p )                                                                    \
+    {                                                                                                           \
+        return std::dynamic_pointer_cast< _classname_ >(p);                                                     \
+    };                                                                                                          \
+    /** @brief Const shared pointer cast to dynamic pointer \
+     *  @deprecated simply use dynamicCast instead, now it handles const or not const arguments. \
+     */                                                                                                         \
     template< class BASETYPE > static __FWCORE_TYPEDEF_SHARED_PTR_CONST_NAME __FWCORE_DYNAMIC_CONST_CAST_FUNC_NAME ( \
         BASETYPE const &p ) \
     {                                                                                                                                    \
