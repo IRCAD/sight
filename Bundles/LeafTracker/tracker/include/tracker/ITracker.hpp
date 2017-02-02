@@ -11,7 +11,6 @@
 
 #include <fwCore/HiResClock.hpp>
 
-#include <fwServices/config.hpp>
 #include <fwServices/IService.hpp>
 
 namespace tracker
@@ -34,7 +33,8 @@ namespace tracker
  * @subsection Input Input
  * - \b timeline : timeline used to retrieve the tracked objects
  * @subsection Configuration Configuration
- * - \b dropObj : defines if the tracker should drop few objects from the timeline (and always get the last one) or not.
+ * - \b dropObj(optional, default=true) : defines if the tracker should drop few objects from the timeline (and always
+ *   get the last one) or not.
  */
 class TRACKER_CLASS_API ITracker : public ::fwServices::IService
 {
@@ -98,10 +98,7 @@ protected:
      * @brief process the tracking
      * @param[in,out] timestamp the timestamp of the processes object of the timeline
      */
-    TRACKER_API virtual void tracking(::fwCore::HiResClock::HiResClockType& timestamp)
-    {
-        // todo set as pure virtual = 0
-    }
+    TRACKER_API virtual void tracking(::fwCore::HiResClock::HiResClockType& timestamp) = 0;
 
     /// timestamp of the last tracking
     ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
