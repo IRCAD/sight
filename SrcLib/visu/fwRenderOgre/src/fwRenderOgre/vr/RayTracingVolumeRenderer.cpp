@@ -88,21 +88,26 @@ public:
 
         // Set light directions in shader.
         ::Ogre::LightList closestLights                       = m_volumeSceneNode->getAttachedObject(0)->queryLights();
-        ::Ogre::GpuConstantDefinition lightDirArrayDefinition = vr3DParams->getConstantDefinition("u_lightDirs");
+        ::Ogre::GpuConstantDefinition lightDirArrayDefinition = vr3DParams->getConstantDefinition("u_lightDir");
 
-        for(unsigned i = 0; i < lightDirArrayDefinition.arraySize; ++i)
+        OSLM_ASSERT("Light list is longer than light constant definitions : " <<
+                    closestLights.size() << " > " << lightDirArrayDefinition.arraySize,
+                    closestLights.size() <= lightDirArrayDefinition.arraySize);
+
+        const size_t numLights = closestLights.size();
+        for(unsigned i = 0; i < numLights; ++i)
         {
             ::Ogre::Vector3 lightDir = -closestLights[i]->getDerivedDirection();
+            vr3DParams->setNamedConstant("u_lightDir[" + std::to_string(i) + "]", lightDir);
 
-            vr3DParams->setNamedConstant("u_lightDirs[" + std::to_string(i) + "]", lightDir);
+            ::Ogre::ColourValue colourDiffuse = closestLights[i]->getDiffuseColour();
+            vr3DParams->setNamedConstant("u_lightDiffuse[" + std::to_string(i) + "]", colourDiffuse);
+
+            ::Ogre::ColourValue colourSpecular = closestLights[i]->getSpecularColour();
+            vr3DParams->setNamedConstant("u_lightSpecular[" + std::to_string(i) + "]", colourSpecular);
         }
 
-        ::Ogre::Vector4 diffuse(1.2f, 1.2f, 1.2f, 1.f);
-        vr3DParams->setNamedConstant("u_diffuse", diffuse);
-
-        ::Ogre::Vector4 specular(2.5f, 2.5f, 2.5f, 1.f);
         ::Ogre::Vector4 shininess(10.f, 0.f, 0.f, 0.f);
-        vr3DParams->setNamedConstant("u_specular", specular);
         vr3DParams->setNamedConstant("u_shininess", shininess);
     }
 
@@ -211,8 +216,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_compositorListener(nullptr),
     m_layer(layer)
 {
-    m_gridSize   = { 2, 2, 2 };
-    m_bricksSize = { 8, 8, 8 };
+    m_gridSize   = {{ 2, 2, 2 }};
+    m_bricksSize = {{ 8, 8, 8 }};
 
     const std::string vrMaterials[16]
     {
@@ -369,7 +374,8 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
         for(size_t i = 0; i < 3; ++i)
         {
             m_gridSize[i] =
-                static_cast<int>(m_imageSize[i] / m_bricksSize[i] + (m_imageSize[i] % m_bricksSize[i] != 0));
+                static_cast<int>(m_imageSize[i]) / m_bricksSize[i] +
+                (static_cast<int>(m_imageSize[i]) % m_bricksSize[i] != 0);
         }
 
         if(!m_gridTexture.isNull())
