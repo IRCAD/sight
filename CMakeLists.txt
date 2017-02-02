@@ -283,7 +283,14 @@ macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
     mark_as_advanced(SPYLOG_LEVEL_${FWPROJECT_NAME})
 
     if( SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}} )
-        target_compile_definitions(${FWPROJECT_NAME} PRIVATE SPYLOG_LEVEL=${SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}}})
+        if(ENABLE_PCH AND (${TARGET_TYPE} MATCHES "LIBRARY" OR ${TARGET_TYPE} MATCHES "BUNDLE" ))
+            target_compile_definitions(${FWPROJECT_NAME}
+                PRIVATE SPYLOG_LEVEL_${FWPROJECT_NAME}=${SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}}})
+        else()
+            target_compile_definitions(${FWPROJECT_NAME}
+                PRIVATE SPYLOG_LEVEL=${SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}}}
+                PRIVATE SPYLOG_NO_INCLUDE=1)
+        endif()
     else()
         message(SEND_ERROR "${SPYLOG_LEVEL_${FWPROJECT_NAME}} is not a valid value for SPYLOG_LEVEL_${FWPROJECT_NAME}" )
     endif()
@@ -467,7 +474,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
 
     setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
 
-    if(MSVC)
+    if(ENABLE_PCH AND MSVC)
         if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
             add_precompiled_header_cpp(${FWPROJECT_NAME})
         endif()
@@ -517,6 +524,12 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "lib")
 
     if(ENABLE_PCH)
+        # create the config.hpp for the current library
+        configure_file(
+            "${CMAKE_SOURCE_DIR}/CMake/build/spyLogLevel.hpp.in"
+            "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${FWPROJECT_NAME}/spyLogLevel.hpp"
+            IMMEDIATE @ONLY)
+
         if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
             add_precompiled_header(${FWPROJECT_NAME} include/${FWPROJECT_NAME}/pch.hpp)
             message(STATUS "Use custom precompiled header")
@@ -536,7 +549,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     set(${FWPROJECT_NAME}_TYPE ${${FWPROJECT_NAME}_TYPE} PARENT_SCOPE)
     setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
 
-    if(MSVC)
+    if(ENABLE_PCH AND MSVC)
         if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
             add_precompiled_header_cpp(${FWPROJECT_NAME})
         endif()
@@ -585,6 +598,12 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
         target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/")
 
         if(ENABLE_PCH)
+            # create the config.hpp for the current library
+            configure_file(
+                "${CMAKE_SOURCE_DIR}/CMake/build/spyLogLevel.hpp.in"
+                "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${FWPROJECT_NAME}/spyLogLevel.hpp"
+                IMMEDIATE @ONLY)
+
             if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
                 add_precompiled_header(${FWPROJECT_NAME} include/${FWPROJECT_NAME}/pch.hpp)
                 message(STATUS "Use custom precompiled header")
