@@ -52,9 +52,8 @@
         <!-- ******************************* Services ***************************************** -->
 
         <service uid="volumeRenderingScene" type="::fwRenderOgre::SRender" autoConnect="yes">
-            <scene overlay="true" fullscreen="yes" />
-
-            <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
+            <scene fullscreen="yes" />
+            <background topColor="#000000" bottomColor="#000000" topScale="0.7" bottomScale="1.0" />
 
             <layer id="default" depth="1" compositors="Default" mode3D="AutoStereo8"/>
 
