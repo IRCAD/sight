@@ -204,7 +204,7 @@
 
         <!-- Trackers -->
         <service uid="tracker1" type="::trackerAruco::SArucoTracker" worker="tracking">
-            <in key="frameTL" uid="frame1TL" autoConnect="yes" />
+            <in key="timeline" uid="frame1TL" autoConnect="yes" />
             <in key="camera" uid="${camera1}" />
             <inout group="tagTL">
                 <key uid="tagTL1" />
@@ -224,7 +224,7 @@
         </service>
 
         <service uid="tracker2" type="::trackerAruco::SArucoTracker" worker="tracking2">
-            <in key="frameTL" uid="frame2TL" autoConnect="yes" />
+            <in key="timeline" uid="frame2TL" autoConnect="yes" />
             <in key="camera" uid="${camera2}" />
             <inout group="tagTL">
                 <key uid="tagTL2" />

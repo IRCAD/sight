@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,7 +22,6 @@
 
 #include <arlcore/Point.h>
 #include <arlcore/Reconst3D.h>
-
 
 namespace tracker
 {
@@ -55,7 +54,7 @@ namespace tracker
  * - \b camera [::arData::Camera]: calibrated cameras.
  * - \b extrinsic [::fwData::TransformationMatrix3D]: extrinsic matrix, only used if you have two cameras configured.
  * @subsection In-Out In-Out
- * - \b matrixTL [::arData::MatrixTL]: timaline of 3D transformation matrices.
+ * - \b matrixTL [::arData::MatrixTL]: timeline of 3D transformation matrices.
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */
@@ -139,6 +138,6 @@ private:
     ::fwCore::mt::Mutex m_mutex;
 };
 
-} //namespace tracker
+} // namespace tracker
 
 #endif /* __TRACKER_SHOMOGRAPHY_HPP__ */
