@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,18 +7,17 @@
 #ifndef __FWPACSIO_SERIESENQUIRER_HPP__
 #define __FWPACSIO_SERIESENQUIRER_HPP__
 
-#include <dcmtk/config/osconfig.h>
-
 #include "fwPacsIO/config.hpp"
 
-#include <dcmtk/dcmnet/scu.h>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
+
 #include <fwCore/BaseObject.hpp>
-#include <fwCore/macros.hpp>
-#include <fwTools/macros.hpp>
 
 #include <boost/filesystem/path.hpp>
+
+#include <dcmtk/config/osconfig.h>
+#include <dcmtk/dcmnet/scu.h>
 
 namespace fwPacsIO
 {
@@ -98,7 +97,6 @@ public:
      */
     FWPACSIO_API OFList< QRResponse* > findSeriesByUID(const std::string& uid);
 
-
     /**
      * @brief Find SOPInstanceUID of the specified instance
      * @param[in] seriesInstanceUID Series instance UID
@@ -170,7 +168,6 @@ protected:
      * @return OFTrue on success
      */
     FWPACSIO_API OFCondition sendStoreRequest(const ::boost::filesystem::path& path);
-
 
     /// Handle MOVE Response (Override)
     FWPACSIO_API virtual OFCondition handleMOVEResponse(

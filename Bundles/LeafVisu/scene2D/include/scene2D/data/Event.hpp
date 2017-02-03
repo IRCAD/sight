@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,6 +10,8 @@
 #include "scene2D/config.hpp"
 #include "scene2D/data/Coord.hpp"
 #include "scene2D/data/Size.hpp"
+
+#include <fwData/Object.hpp>
 
 #include <Qt>
 
@@ -60,7 +62,6 @@ public:
         AltModifier
     } Modifier;
 
-
     fwCoreClassDefinitionsWithFactoryMacro( (Event)(::fwData::Object), (()), ::fwData::factory::New< Event >);
 
     /**
@@ -74,7 +75,7 @@ public:
     SCENE2D_API void shallowCopy( const ::fwData::Object::csptr& _source );
 
     /// Defines deep copy
-    SCENE2D_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType &cache );
+    SCENE2D_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache );
 
     bool isAccepted() const;
     void setAccepted(bool accepted);
@@ -226,7 +227,6 @@ inline void Event::setType(Type type)
 
 } // namespace data
 } // namespace scene2D
-
 
 #endif // __SCENE2D_DATA_EVENT_HPP__
 

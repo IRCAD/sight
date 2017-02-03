@@ -1,28 +1,30 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/adaptor/Grid2D.hpp"
-#include "scene2D/data/InitQtPen.hpp"
+
 #include "scene2D/Scene2DGraphicsView.hpp"
+#include "scene2D/data/InitQtPen.hpp"
+
+#include <fwData/Composite.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwData/Composite.hpp>
 
 #include <QGraphicsItemGroup>
 
-
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Grid2D, ::fwData::Composite );
-
 
 namespace scene2D
 {
 namespace adaptor
 {
 
-Grid2D::Grid2D() throw() : m_xSpacing(10), m_ySpacing(10)
+Grid2D::Grid2D() throw() :
+    m_xSpacing(10),
+    m_ySpacing(10)
 {
 }
 
@@ -44,24 +46,22 @@ void Grid2D::configuring() throw ( ::fwTools::Failed )
 
     SLM_TRACE("IAdaptor configuring ok");
 
-
     // Set the x/y min/max values
-    m_xMin = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("xMin") );
-    m_xMax = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("xMax") );
-    m_yMin = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("yMin") );
-    m_yMax = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("yMax") );
-
+    m_xMin = std::stof( m_configuration->getAttributeValue("xMin") );
+    m_xMax = std::stof( m_configuration->getAttributeValue("xMax") );
+    m_yMin = std::stof( m_configuration->getAttributeValue("yMin") );
+    m_yMax = std::stof( m_configuration->getAttributeValue("yMax") );
 
     // If the corresponding attributes are present in the config, set the xSpacing, ySpacing between
     // the lines and color of the lines:
     if (!m_configuration->getAttributeValue("xSpacing").empty())
     {
-        m_xSpacing = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("xSpacing") );
+        m_xSpacing = std::stof( m_configuration->getAttributeValue("xSpacing") );
     }
 
     if (!m_configuration->getAttributeValue("ySpacing").empty())
     {
-        m_ySpacing = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("ySpacing") );
+        m_ySpacing = std::stof( m_configuration->getAttributeValue("ySpacing") );
     }
 
     if (!m_configuration->getAttributeValue("color").empty())
@@ -217,6 +217,4 @@ void Grid2D::doStop() throw ( ::fwTools::Failed )
 
 } // namespace adaptor
 } // namespace scene2D
-
-
 

@@ -11,6 +11,8 @@
 
 #include <fwGui/IActionSrv.hpp>
 
+#include <boost/filesystem/path.hpp>
+
 namespace uiMeasurement
 {
 namespace action
@@ -32,7 +34,7 @@ namespace action
 class UIMEASUREMENT_CLASS_API SaveLandmark : public ::fwGui::IActionSrv
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SaveLandmark)( ::fwGui::IActionSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SaveLandmark)( ::fwGui::IActionSrv) );
 
     UIMEASUREMENT_API SaveLandmark() throw();
 

@@ -1,16 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "WriterReaderTest.hpp"
 
+#include <fwGdcmIO/reader/SeriesDB.hpp>
+#include <fwGdcmIO/writer/Series.hpp>
+#include <fwGdcmIO/writer/SeriesDB.hpp>
+
 #include <fwData/Boolean.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
-#include <fwData/Object.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/Reconstruction.hpp>
 #include <fwData/String.hpp>
@@ -20,10 +23,6 @@
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
-
-#include <fwGdcmIO/reader/SeriesDB.hpp>
-#include <fwGdcmIO/writer/Series.hpp>
-#include <fwGdcmIO/writer/SeriesDB.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
@@ -55,10 +54,12 @@ double tolerance(double num)
     return std::floor(num * 1000. + .5) / 1000;
 }
 
+//------------------------------------------------------------------------------
+
 void roundSpacing(::fwData::Image::sptr image)
 {
     ::fwData::Image::SpacingType spacing = image->getSpacing();
-    std::transform (spacing.begin(), spacing.end(), spacing.begin(), tolerance);
+    std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
     image->setSpacing(spacing);
 }
 

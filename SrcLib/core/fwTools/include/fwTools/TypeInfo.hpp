@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,17 +7,14 @@
 #ifndef __FWTOOLS_TYPEINFO_HPP__
 #define __FWTOOLS_TYPEINFO_HPP__
 
-#include <typeinfo>
 #include "fwTools/config.hpp"
-#include <cassert>
+
+#include <typeinfo>
 
 namespace fwTools
 {
 /**
  * @brief   Purpose: offer a first-class, comparable wrapper over std::type_info ( but copy construcible )
- * @class   TypeInfo
- *
- * @date    2007-2009.
  *
  * Code imported from Loki-Library and adapted for FW4SPL
  */
@@ -37,7 +34,7 @@ public:
      * @param[in] ti the TypeInfo to copy
      * @return the copied TypeInfo
      */
-    FWTOOLS_API TypeInfo &operator=(const TypeInfo &ti);
+    FWTOOLS_API TypeInfo& operator=(const TypeInfo& ti);
 
     /**
      * @brief access for the wrapped std::type_info
@@ -53,7 +50,6 @@ public:
     {
         return *pInfo_;
     }
-
 
     // Compatibility functions
     /**
@@ -73,7 +69,6 @@ private:
     /// std::type_info are not copiable but its pointer yes and typeid always return same reference !!!
     const std::type_info* pInfo_;
 };
-
 
 // COMPARISON OPERATOR
 /**

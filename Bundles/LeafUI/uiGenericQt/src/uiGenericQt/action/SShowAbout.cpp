@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -87,8 +87,8 @@ void SShowAbout::configuring() throw(::fwTools::Failed)
         const std::string& w = cfgSize->getExistingAttributeValue("width");
         const std::string& h = cfgSize->getExistingAttributeValue("height");
 
-        m_size.setWidth(::boost::lexical_cast< int >(w));
-        m_size.setHeight(::boost::lexical_cast< int >(h));
+        m_size.setWidth(std::stoi(w));
+        m_size.setHeight(std::stoi(h));
 
         OSLM_TRACE("Set frame size to (" << m_size.width() << ", " << m_size.height() << ")");
     }
@@ -108,7 +108,7 @@ void SShowAbout::updating( ) throw(::fwTools::Failed)
     QWebView* htmlView = new QWebView(dialog);
     htmlView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
     htmlView->load( url );
-    QObject::connect( htmlView, SIGNAL(linkClicked(const QUrl &)),this, SLOT(onUrlClicked(const QUrl &)));
+    QObject::connect( htmlView, SIGNAL(linkClicked(const QUrl &)), this, SLOT(onUrlClicked(const QUrl &)));
 #else
     QTextBrowser* htmlView = new QTextBrowser(dialog);
     htmlView->setSource(url);

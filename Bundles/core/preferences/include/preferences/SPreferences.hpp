@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,6 +10,8 @@
 #include "preferences/config.hpp"
 
 #include <fwPreferences/IPreferences.hpp>
+
+#include <boost/filesystem/path.hpp>
 
 namespace preferences
 {
@@ -25,7 +27,7 @@ class PREFERENCES_CLASS_API SPreferences : public ::fwPreferences::IPreferences
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SPreferences)(::fwPreferences::IPreferences) );
+    fwCoreServiceClassDefinitionsMacro( (SPreferences)(::fwPreferences::IPreferences) );
 
     ///Destructor
 

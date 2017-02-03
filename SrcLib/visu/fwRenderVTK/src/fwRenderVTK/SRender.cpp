@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,7 @@
 #include "fwRenderVTK/SRender.hpp"
 
 #include "fwRenderVTK/IVtkAdaptorService.hpp"
+#include "fwRenderVTK/IVtkRenderWindowInteractorManager.hpp"
 #include "fwRenderVTK/OffScreenInteractorManager.hpp"
 #include "fwRenderVTK/vtk/InteractorStyle3DForNegato.hpp"
 
@@ -26,6 +27,8 @@
 #include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
+
+#include <fwThread/Timer.hpp>
 
 #include <fwTools/fwID.hpp>
 
@@ -48,7 +51,6 @@
 fwServicesRegisterMacro( ::fwRender::IRender, ::fwRenderVTK::SRender, ::fwData::Composite );
 
 using namespace fwServices;
-
 
 namespace fwRenderVTK
 {
@@ -99,9 +101,9 @@ void SRender::configureRenderer( ConfigurationType conf )
 
 //vtk depth peeling not available on android (Offscreen rendering issues)
 #ifndef ANDROID
-        m_renderers[id]->SetUseDepthPeeling     ( 1  );
+        m_renderers[id]->SetUseDepthPeeling( 1  );
         m_renderers[id]->SetMaximumNumberOfPeels( 8  );
-        m_renderers[id]->SetOcclusionRatio      ( 0. );
+        m_renderers[id]->SetOcclusionRatio( 0. );
 #endif
 
         if(conf->hasAttribute("layer") )
@@ -145,7 +147,7 @@ void SRender::configurePicker( ConfigurationType conf )
     if(m_pickers.count(id) == 0)
     {
         m_pickers[id] = vtkAbstractPropPicker::SafeDownCast(vtkInstantiator::CreateInstance(vtkclass.c_str()));
-        OSLM_ASSERT("'" << vtkclass.c_str() << "' instantiation failled.",m_pickers[id]);
+        OSLM_ASSERT("'" << vtkclass.c_str() << "' instantiation failled.", m_pickers[id]);
         m_pickers[id]->InitializePickList();
         m_pickers[id]->PickFromListOn();
         vtkPicker* picker = vtkPicker::SafeDownCast(m_pickers[id]);
@@ -200,7 +202,7 @@ void SRender::configureObject( ConfigurationType conf )
 
     if ( m_sceneAdaptors.count(id) == 0 && object )
     {
-        OSLM_TRACE ("Adding service : IVtkAdaptorService " << adaptor << " on "<< objectId );
+        OSLM_TRACE("Adding service : IVtkAdaptorService " << adaptor << " on "<< objectId );
         SceneAdaptor adaptee;
         adaptee.m_config = *(conf->begin());
         if (!uid.empty())
@@ -240,10 +242,10 @@ void SRender::configureObject( ConfigurationType conf )
     {
         SceneAdaptor& adaptee = m_sceneAdaptors[id];
         SLM_ASSERT("Adaptor service expired !", adaptee.getService() );
-        OSLM_ASSERT( adaptee.getService()->getID() <<  " is not started ",adaptee.getService()->isStarted());
+        OSLM_ASSERT( adaptee.getService()->getID() <<  " is not started ", adaptee.getService()->isStarted());
         if (object)
         {
-            OSLM_TRACE ("Swapping IVtkAdaptorService " << adaptor << " on "<< objectId );
+            OSLM_TRACE("Swapping IVtkAdaptorService " << adaptor << " on "<< objectId );
             if(adaptee.getService()->getObject() != object)
             {
                 adaptee.getService()->swap( ::fwData::Object::constCast(object) );
@@ -265,7 +267,7 @@ void SRender::configureObject( ConfigurationType conf )
     }
     else
     {
-        OSLM_TRACE ( "'"<< objectId << "' inexistent, passing by '" << adaptor << "'");
+        OSLM_TRACE( "'"<< objectId << "' inexistent, passing by '" << adaptor << "'");
     }
 }
 
@@ -350,7 +352,7 @@ void SRender::configuring() throw(fwTools::Failed)
     SLM_FATAL_IF( "Depreciated tag \"win\" in configuration", m_configuration->findConfigurationElement("win") );
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > vectConfig = m_configuration->find("scene");
-    SLM_ASSERT("Missing 'scene' configuration.",!vectConfig.empty());
+    SLM_ASSERT("Missing 'scene' configuration.", !vectConfig.empty());
     m_sceneConfiguration = vectConfig.at(0);
 
     m_offScreenImageKey = m_sceneConfiguration->getAttributeValue("offScreen");
@@ -625,7 +627,7 @@ void SRender::configureObjects(::fwData::Composite::ContainerType objects)
 
     for( ::fwData::Composite::ContainerType::value_type objectId :  objects)
     {
-        std::vector< ConfigurationType > confVec = m_sceneConfiguration->find("adaptor","objectId",objectId.first);
+        std::vector< ConfigurationType > confVec = m_sceneConfiguration->find("adaptor", "objectId", objectId.first);
         for( ConfigurationType cfg :  confVec )
         {
             this->configureObject(cfg);
@@ -681,7 +683,7 @@ void SRender::swapping(const IService::KeyType& key) throw(::fwTools::Failed)
         ::fwServices::helper::Config::disconnectProxies(key, m_proxyMap);
     }
 
-    std::vector< ConfigurationType > confVec = m_sceneConfiguration->find("adaptor","objectId", key);
+    std::vector< ConfigurationType > confVec = m_sceneConfiguration->find("adaptor", "objectId", key);
     for( ConfigurationType cfg : confVec )
     {
         this->configureObject(cfg);
@@ -855,7 +857,7 @@ vtkObject* SRender::getVtkObject(const VtkObjectIdType& objectId) const
 
 //-----------------------------------------------------------------------------
 
-SPTR (IVtkAdaptorService) SRender::getAdaptor(const SRender::AdaptorIdType& adaptorId) const
+SPTR(IVtkAdaptorService) SRender::getAdaptor(const SRender::AdaptorIdType& adaptorId) const
 {
     IVtkAdaptorService::sptr adaptor;
     SceneAdaptorsMapType::const_iterator it = m_sceneAdaptors.find(adaptorId);

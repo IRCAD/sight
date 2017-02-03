@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,16 +7,16 @@
 #ifndef __FWITKIO_ITKPP_HXX__
 #define __FWITKIO_ITKPP_HXX__
 
-#include <fwTools/DynamicType.hpp>
+#include "fwItkIO/itk.hpp"
 
-#include <assert.h>
+#include <fwTools/DynamicType.hpp>
 
 #include <itkCastImageFilter.h>
 
-#include "fwItkIO/itk.hpp"
-
 namespace fwItkIO
 {
+
+//------------------------------------------------------------------------------
 
 template< class PIXELTYPE, int VDimension, class ScannerType >
 typename ScannerType::Pointer  itkppScannerFactory( ::fwData::Image::sptr imageData)

@@ -46,7 +46,7 @@ void TransferFunction::createConfig( ::fwTools::Object::sptr _obj )
             SLM_ASSERT("Missing attribute 'color'", stepConfig->hasAttribute("color"));
             SLM_ASSERT("Missing attribute 'value'", stepConfig->hasAttribute("value"));
 
-            double value         = ::boost::lexical_cast<double>(stepConfig->getAttributeValue("value"));
+            double value         = std::stod(stepConfig->getAttributeValue("value"));
             std::string strColor = stepConfig->getAttributeValue("color");
 
             ::fwData::Color::sptr newColor = ::fwData::Color::New();

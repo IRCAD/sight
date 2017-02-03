@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,6 +29,7 @@
 
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/assign.hpp>
 #include <boost/math/special_functions/round.hpp>
 #include <boost/numeric/ublas/io.hpp>
 #include <boost/numeric/ublas/lu.hpp>
@@ -74,7 +75,7 @@ void Image::readImagePlaneModule()
 
     // Image Position (Patient) - Type 1
     const double* gdcmOrigin = gdcmImage.GetOrigin();
-    ::fwData::Image::OriginType origin(3,0);
+    ::fwData::Image::OriginType origin(3, 0);
     if ( gdcmOrigin != 0 )
     {
         std::copy( gdcmOrigin, gdcmOrigin+3, origin.begin() );
@@ -88,15 +89,15 @@ void Image::readImagePlaneModule()
 
     // Image's spacing
     const double* gdcmSpacing = gdcmImage.GetSpacing();
-    ::fwData::Image::SpacingType spacing (3,1);
+    ::fwData::Image::SpacingType spacing(3, 1);
     if ( gdcmSpacing != 0 )
     {
         std::copy( gdcmSpacing, gdcmSpacing+dimension, spacing.begin() );
     }
 
     // Compute Z image spacing when extra information is required
-    std::string sliceThickness       = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0018,0x0050>(dataset);
-    std::string spacingBetweenSlices = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0018,0x0088>(dataset);
+    std::string sliceThickness       = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0018, 0x0050>(dataset);
+    std::string spacingBetweenSlices = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0018, 0x0088>(dataset);
 
     if(m_dicomSeries->hasComputedValues("SliceThickness"))
     {
@@ -136,7 +137,7 @@ void Image::readVOILUTModule()
     const ::gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
     //Image's window center (double)
-    std::string windowCenter = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0028,0x1050>(dataset);
+    std::string windowCenter = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0028, 0x1050>(dataset);
     std::vector<std::string> splitedWindowCenters;
     if ( !windowCenter.empty() )
     {
@@ -147,7 +148,7 @@ void Image::readVOILUTModule()
     OSLM_TRACE("Image's window center : " << m_object->getWindowCenter());
 
     //Image's window width (double)
-    std::string windowWidth = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0028,0x1051>(dataset);
+    std::string windowWidth = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0028, 0x1051>(dataset);
     std::vector<std::string> splitedWindowWidth;
     if ( !windowWidth.empty() )
     {
@@ -170,10 +171,10 @@ std::vector<double> getRescaleInterceptSlopeValue(::gdcm::ImageReader* imageRead
     std::vector< double > rescale = ::gdcm::ImageHelper::GetRescaleInterceptSlopeValue(imageReader->GetFile());
 
     // Correct Rescale Intercept and Rescale Slope as GDCM may fail to retrieve them.
-    if(dataset.FindDataElement(::gdcm::Tag(0x0028,0x1052)) && dataset.FindDataElement(::gdcm::Tag(0x0028,0x1053)))
+    if(dataset.FindDataElement(::gdcm::Tag(0x0028, 0x1052)) && dataset.FindDataElement(::gdcm::Tag(0x0028, 0x1053)))
     {
-        rescale[0] = ::fwGdcmIO::helper::DicomData::getTagValue<0x0028,0x1052, double>(dataset);
-        rescale[1] = ::fwGdcmIO::helper::DicomData::getTagValue<0x0028,0x1053, double>(dataset);
+        rescale[0] = ::fwGdcmIO::helper::DicomData::getTagValue<0x0028, 0x1052, double>(dataset);
+        rescale[1] = ::fwGdcmIO::helper::DicomData::getTagValue<0x0028, 0x1053, double>(dataset);
     }
 
     return rescale;
@@ -206,14 +207,14 @@ void Image::readImagePixelModule()
 
     // Compute final image type
     ::fwDicomTools::Image imageHelper(
-        samplesPerPixel,bitsAllocated,bitsStored, highBit, pixelRepresentation, rescaleSlope, rescaleIntercept);
+        samplesPerPixel, bitsAllocated, bitsStored, highBit, pixelRepresentation, rescaleSlope, rescaleIntercept);
     ::fwTools::Type imageType = imageHelper.findImageTypeFromMinMaxValues();
     m_object->setType(imageType);
     ::gdcm::PixelFormat targetPixelFormat = ::fwGdcmIO::helper::DicomData::getPixelType(m_object);
 
     // Compute number of components
-    std::string photometricInterpretation = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0028,0x0004>(dataset);
-    std::string pixelPresentation         = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0008,0x9205>(dataset);
+    std::string photometricInterpretation = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0028, 0x0004>(dataset);
+    std::string pixelPresentation         = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0008, 0x9205>(dataset);
 
     if(photometricInterpretation == "MONOCHROME2")
     {
@@ -261,7 +262,6 @@ void Image::readImagePixelModule()
     bool performRescale = (photometricInterpretation != "PALETTE COLOR" && pixelPresentation != "COLOR");
     char* imageBuffer   = this->readImageBuffer(dimensions, bitsAllocated, targetPixelFormat.GetBitsAllocated(),
                                                 performRescale);
-
 
     // Correct image buffer according to the image orientation
     if(!m_cancelled && m_enableBufferRotation)
@@ -363,7 +363,6 @@ char* Image::readImageBuffer(const std::vector<unsigned int>& dimensions, unsign
             throw ::fwGdcmIO::exception::Failed(ss.str());
         }
 
-
         // Rescale
         if(performRescale)
         {
@@ -397,7 +396,7 @@ char* Image::readImageBuffer(const std::vector<unsigned int>& dimensions, unsign
 
         // Reference SOP Instance UID in dicomInstance for SR reading
         const ::gdcm::DataSet& gdcmDatasetRoot = frameReader.GetFile().GetDataSet();
-        const std::string sopInstanceUID       = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0008,0x0018>(
+        const std::string sopInstanceUID       = ::fwGdcmIO::helper::DicomData::getTrimmedTagValue<0x0008, 0x0018>(
             gdcmDatasetRoot);
         if(!sopInstanceUID.empty())
         {
@@ -497,30 +496,30 @@ char* Image::correctImageOrientation(char* buffer, const std::vector<unsigned in
     const fwVec3d imageOrientationW = ::fwMath::cross(imageOrientationU, imageOrientationV);
 
     // Create orientation matrix
-    Image::MatrixType matrix(4,4);
-    matrix(0,0) = imageOrientationU[0];
-    matrix(1,0) = imageOrientationU[1];
-    matrix(2,0) = imageOrientationU[2];
-    matrix(3,0) = 0;
-    matrix(0,1) = imageOrientationV[0];
-    matrix(1,1) = imageOrientationV[1];
-    matrix(2,1) = imageOrientationV[2];
-    matrix(3,1) = 0;
-    matrix(0,2) = imageOrientationW[0];
-    matrix(1,2) = imageOrientationW[1];
-    matrix(2,2) = imageOrientationW[2];
-    matrix(3,2) = 0;
-    matrix(0,3) = 0;
-    matrix(1,3) = 0;
-    matrix(2,3) = 0;
-    matrix(3,3) = 1;
+    Image::MatrixType matrix(4, 4);
+    matrix(0, 0) = imageOrientationU[0];
+    matrix(1, 0) = imageOrientationU[1];
+    matrix(2, 0) = imageOrientationU[2];
+    matrix(3, 0) = 0;
+    matrix(0, 1) = imageOrientationV[0];
+    matrix(1, 1) = imageOrientationV[1];
+    matrix(2, 1) = imageOrientationV[2];
+    matrix(3, 1) = 0;
+    matrix(0, 2) = imageOrientationW[0];
+    matrix(1, 2) = imageOrientationW[1];
+    matrix(2, 2) = imageOrientationW[2];
+    matrix(3, 2) = 0;
+    matrix(0, 3) = 0;
+    matrix(1, 3) = 0;
+    matrix(2, 3) = 0;
+    matrix(3, 3) = 1;
 
     // Compute inverse matrix in order to rotate the buffer
     Image::MatrixType inverseMatrix  = this->computeInverseMatrix(matrix);
     Image::MatrixType identityMatrix = ::boost::numeric::ublas::identity_matrix< double >(inverseMatrix.size1());
 
     // Check whether the image must be rotated or not
-    if(!::boost::numeric::ublas::detail::expression_type_check(inverseMatrix,identityMatrix))
+    if(!::boost::numeric::ublas::detail::expression_type_check(inverseMatrix, identityMatrix))
     {
         // Compute new image size
         VectorType sizeVector(4);
@@ -559,19 +558,19 @@ char* Image::correctImageOrientation(char* buffer, const std::vector<unsigned in
                     // Compute old position
                     VectorType oldPosition = ::boost::numeric::ublas::prod(newPosition, matrix);
                     oldx =
-                        (oldSizeVector[0]>
+                        (oldSizeVector[0] >
                          0) ? static_cast<unsigned short>(oldPosition[0]) : static_cast<unsigned short>((
                                                                                                             dimensions.
                                                                                                             at(0)-1)+
                                                                                                         oldPosition[0]);
                     oldy =
-                        (oldSizeVector[1]>
+                        (oldSizeVector[1] >
                          0) ? static_cast<unsigned short>(oldPosition[1]) : static_cast<unsigned short>((
                                                                                                             dimensions.
                                                                                                             at(1)-1)+
                                                                                                         oldPosition[1]);
                     oldz =
-                        (oldSizeVector[2]>
+                        (oldSizeVector[2] >
                          0) ? static_cast<unsigned short>(oldPosition[2]) : static_cast<unsigned short>((
                                                                                                             dimensions.
                                                                                                             at(2)-1)+
@@ -603,8 +602,8 @@ char* Image::correctImageOrientation(char* buffer, const std::vector<unsigned in
         spacingVector(0) = spacing[0];
         spacingVector(1) = spacing[1];
         spacingVector(2) = spacing[2];
-        VectorType newSpacingVector = ::boost::numeric::ublas::prod(spacingVector,inverseMatrix);
-        ::fwData::Image::SpacingType newSpacing(3,1);
+        VectorType newSpacingVector = ::boost::numeric::ublas::prod(spacingVector, inverseMatrix);
+        ::fwData::Image::SpacingType newSpacing(3, 1);
         newSpacing[0] = fabs(newSpacingVector[0]);
         newSpacing[1] = fabs(newSpacingVector[1]);
         newSpacing[2] = fabs(newSpacingVector[2]);
@@ -616,8 +615,8 @@ char* Image::correctImageOrientation(char* buffer, const std::vector<unsigned in
         originVector(0) = origin[0];
         originVector(1) = origin[1];
         originVector(2) = origin[2];
-        VectorType newOriginVector = ::boost::numeric::ublas::prod(originVector,inverseMatrix);
-        ::fwData::Image::OriginType newOrigin(3,0);
+        VectorType newOriginVector = ::boost::numeric::ublas::prod(originVector, inverseMatrix);
+        ::fwData::Image::OriginType newOrigin(3, 0);
         newOrigin[0] = newOriginVector[0];
         newOrigin[1] = newOriginVector[1];
         newOrigin[2] = newOriginVector[2];
@@ -635,7 +634,7 @@ char* Image::correctImageOrientation(char* buffer, const std::vector<unsigned in
 Image::MatrixType Image::computeInverseMatrix(MatrixType matrix)
 {
     // Create output matrix (identity)
-    Image::MatrixType output(matrix.size1(),matrix.size2());
+    Image::MatrixType output(matrix.size1(), matrix.size2());
     output.assign(::boost::numeric::ublas::identity_matrix< double >(output.size1()));
 
     // Create a permutation matrix for the LU-factorization

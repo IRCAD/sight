@@ -1,0 +1,25 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2017.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#ifndef __@PROJECT_NAME_UPCASE@_SPYLOGLEVEL_HPP__
+#define __@PROJECT_NAME_UPCASE@_SPYLOGLEVEL_HPP__
+
+#include <boost/preprocessor/control/expr_iif.hpp>
+#include <boost/preprocessor/comparison/greater_equal.hpp>
+
+// This file is included in 2 different ways whe using PCH:
+// - From the config.hpp, it the compile unit uses a PCH (this it is included at the very beginning)
+// - From the command line, if a PCH is being compiled
+
+// We undef first the macro to remove the definition from the PCH
+// So far indeed, the log level of the PCH was used
+#undef __FWCORE_IF_ENABLED
+
+// Now define the macro with the log level of this target
+#define __FWCORE_IF_ENABLED( level, expr ) \
+    BOOST_PP_EXPR_IIF( BOOST_PP_GREATER_EQUAL(SPYLOG_LEVEL_@FWPROJECT_NAME@, level), expr)
+
+#endif // __@PROJECT_NAME_UPCASE@_SPYLOGLEVEL_HPP__

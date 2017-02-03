@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,8 +12,10 @@
 #include "fwDicomIOFilter/factory/new.hpp"
 #include "fwDicomIOFilter/registry/detail.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
 #include <fwLog/Logger.hpp>
+
+#include <fwMedData/DicomSeries.hpp>
+
 #include <fwTools/Object.hpp>
 
 namespace fwDicomIOFilter
@@ -22,8 +24,7 @@ namespace fwDicomIOFilter
 /**
  * @brief Base class for Dicom instance filter.
  */
-class FWDICOMIOFILTER_CLASS_API IFilter :   public ::fwTools::Object,
-                                            public ::fwTools::DynamicAttributes< ::fwDicomIOFilter::IFilter >
+class FWDICOMIOFILTER_CLASS_API IFilter :   public ::fwTools::Object
 {
 public:
 
@@ -98,6 +99,5 @@ protected:
 };
 
 } // namespace fwDicomIOFilter
-
 
 #endif /* __FWDICOMIOFILTER_IFILTER_HPP__ */

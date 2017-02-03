@@ -1,17 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "gui/view/SDefaultView.hpp"
 
-#include <fwData/Object.hpp>
-
 #include <fwServices/macros.hpp>
 
 #include <fwTools/fwID.hpp>
-
 
 namespace gui
 {
@@ -19,7 +16,6 @@ namespace view
 {
 
 fwServicesRegisterMacro( ::gui::view::IView, ::gui::view::SDefaultView, ::fwData::Object );
-
 
 SDefaultView::SDefaultView() throw()
 {
@@ -56,7 +52,7 @@ void SDefaultView::stopping() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SDefaultView::info(std::ostream &_sstream )
+void SDefaultView::info(std::ostream& _sstream )
 {
     SLM_TRACE_FUNC();
 }

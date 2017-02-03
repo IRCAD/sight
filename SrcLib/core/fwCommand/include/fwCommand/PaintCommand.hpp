@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,8 +12,6 @@
 #include <fwData/Image.hpp>
 
 #include <fwDataTools/helper/Image.hpp>
-
-#include <fwTools/macros.hpp>
 
 #include <boost/cstdint.hpp>
 
@@ -45,7 +43,6 @@ public:
     /// Register paint voxel on image
     FWCOMMAND_API void paint( ::fwData::Image::BufferIndexType index, ::fwData::Image::BufferType oldValue,
                               ::fwData::Image::BufferType newValue );
-
 
     FWCOMMAND_API void prePaint( ::fwData::Image::IndexType x, ::fwData::Image::IndexType y,
                                  ::fwData::Image::IndexType z );
@@ -89,8 +86,6 @@ private:
 
 };
 
-
 } // namespace fwCommand
-
 
 #endif //__FWCOMMAND_PAINTCOMMAND_HPP__

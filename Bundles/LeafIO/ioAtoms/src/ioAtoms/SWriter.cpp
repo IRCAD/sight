@@ -1,27 +1,34 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ioAtoms/SReader.hpp"
 #include "ioAtoms/SWriter.hpp"
 
-#include <fwAtomsBoostIO/types.hpp>
-#include <fwAtomsBoostIO/Writer.hpp>
+#include "ioAtoms/SReader.hpp"
 
 #include <fwAtomConversion/convert.hpp>
+
+#include <fwAtomsBoostIO/Writer.hpp>
+#include <fwAtomsBoostIO/types.hpp>
+
+#include <fwAtomsPatch/PatchingManager.hpp>
+#include <fwAtomsPatch/VersionsGraph.hpp>
+#include <fwAtomsPatch/VersionsManager.hpp>
 
 #include <fwCom/Signal.hxx>
 
 #include <fwData/Composite.hpp>
-#include <fwData/location/SingleFile.hpp>
 #include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+
+#include <fwDataCamp/visitor/RecursiveLock.hpp>
 
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/SelectorDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
+#include <fwGui/dialog/SelectorDialog.hpp>
 
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/Job.hpp>
@@ -31,15 +38,9 @@
 #include <fwZip/WriteDirArchive.hpp>
 #include <fwZip/WriteZipArchive.hpp>
 
-#include <fwDataCamp/visitor/RecursiveLock.hpp>
-
-#include <fwAtomsPatch/VersionsManager.hpp>
-#include <fwAtomsPatch/VersionsGraph.hpp>
-#include <fwAtomsPatch/PatchingManager.hpp>
-
-#include <boost/filesystem/path.hpp>
 #include <boost/algorithm/string/join.hpp>
-
+#include <boost/assign.hpp>
+#include <boost/filesystem/path.hpp>
 
 namespace ioAtoms
 {
@@ -54,9 +55,9 @@ static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
 
 SWriter::SWriter() :
     m_useAtomsPatcher(false),
-    m_exportedVersion ("Undefined"),
-    m_context ("Undefined"),
-    m_version ("Undefined")
+    m_exportedVersion("Undefined"),
+    m_context("Undefined"),
+    m_version("Undefined")
 {
     m_sigJobCreated = newSignal< JobCreatedSignalType >( JOB_CREATED_SIGNAL );
 
@@ -272,7 +273,7 @@ void SWriter::updating() throw(::fwTools::Failed)
     }
 
     // Mutex data lock
-    ::fwDataCamp::visitor::RecursiveLock recursiveLock (obj);
+    ::fwDataCamp::visitor::RecursiveLock recursiveLock(obj);
 
     ::fwAtoms::Object::sptr atom;
     const unsigned int progressBarOffset = 10;
@@ -365,8 +366,6 @@ void SWriter::updating() throw(::fwTools::Failed)
             runningJob.done();
         }, m_associatedWorker );
 
-
-
     ::fwJobs::Aggregator::sptr jobs = ::fwJobs::Aggregator::New(extension + " writer");
     jobs->add(convertJob);
     jobs->add(patchingJob);
@@ -379,7 +378,7 @@ void SWriter::updating() throw(::fwTools::Failed)
     {
         jobs->run().get();
     }
-    catch( std::exception & e )
+    catch( std::exception& e )
     {
         OSLM_ERROR( e.what() );
         ::fwGui::dialog::MessageDialog::showMessageDialog("Medical data writer failed",

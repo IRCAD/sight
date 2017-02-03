@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,7 +40,6 @@ static std::stringstream spiritDebugStream;
 
 #include <fwCore/exceptionmacros.hpp>
 
-#include <fwData/Object.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/StructureTraitsDictionary.hpp>
 #include <fwData/StructureTraits.hpp>
@@ -52,7 +51,6 @@ static std::stringstream spiritDebugStream;
 #include <string>
 
 fwDataIOReaderRegisterMacro( ::fwDataIO::reader::DictionaryReader );
-
 
 namespace fwDataIO
 {
@@ -94,7 +92,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 //------------------------------------------------------------------------------
 
-inline std::string trim ( std::string &s )
+inline std::string trim ( std::string& s )
 {
     return ::boost::algorithm::trim_copy(s);
 }
@@ -105,7 +103,7 @@ inline std::string trim ( std::string &s )
 std::string  reformatString(std::string& expr)
 {
     std::string trimStr = ::boost::algorithm::trim_copy(expr);
-    std::string result  = ::boost::algorithm::to_upper_copy(trimStr.substr(0,1))
+    std::string result  = ::boost::algorithm::to_upper_copy(trimStr.substr(0, 1))
                           + ::boost::algorithm::to_lower_copy(trimStr.substr(1));
     return (result);
 }
@@ -114,7 +112,7 @@ std::string  reformatString(std::string& expr)
 /// Return the list of availabe value for the key of the map m.
 
 template< typename MapType >
-std::string getValues(const MapType & m)
+std::string getValues(const MapType& m)
 {
     std::stringstream str;
     typedef typename MapType::const_iterator const_iterator;
@@ -135,11 +133,11 @@ namespace fwDataIO
 namespace qi    = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
-
 template <typename Iterator>
 struct line_parser : qi::grammar<Iterator, std::vector <line>() >
 {
-    line_parser() : line_parser::base_type(lines)
+    line_parser() :
+        line_parser::base_type(lines)
     {
         using qi::int_;
         using qi::lit;
@@ -186,7 +184,6 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
         stringSet       = stringWithComma[qi::_val = phx::bind(trim, qi::_1)];
         stringWithComma = *( (alnum| char_(",_"))[qi::_val += qi::_1] | blank[qi::_val += " "] );
 
-
         dbl = omit[*blank] >> double_ >> omit[*blank];
 
     #ifdef BOOST_SPIRIT_DEBUG
@@ -204,7 +201,7 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
         qi::on_error< qi::fail>
         (
             line
-            , phx::ref( (std::ostream &)error )
+            , phx::ref( (std::ostream&)error )
             << phx::val("Error! Expecting ")
             << qi::_4                              // what failed?
             << phx::val(" here: \"")
@@ -232,8 +229,10 @@ struct line_parser : qi::grammar<Iterator, std::vector <line>() >
 
 namespace reader
 {
+//------------------------------------------------------------------------------
+
 template <typename Iterator>
-std::pair<bool,std::string> parse(Iterator first,  Iterator last, std::string& buf, std::vector<fwDataIO::line>& lines)
+std::pair<bool, std::string> parse(Iterator first,  Iterator last, std::string& buf, std::vector<fwDataIO::line>& lines)
 {
     using boost::spirit::ascii::space;
     using boost::spirit::ascii::blank;
@@ -257,8 +256,8 @@ std::pair<bool,std::string> parse(Iterator first,  Iterator last, std::string& b
 
 //------------------------------------------------------------------------------
 
-DictionaryReader::DictionaryReader(::fwDataIO::reader::IObjectReader::Key key)
-    : ::fwData::location::enableSingleFile< IObjectReader >(this)
+DictionaryReader::DictionaryReader(::fwDataIO::reader::IObjectReader::Key key) :
+    ::fwData::location::enableSingleFile< IObjectReader >(this)
 {
 }
 
@@ -288,20 +287,18 @@ void DictionaryReader::read()
     std::string errorOpen = "Unable to open " + path.string();
     FW_RAISE_IF(errorOpen, !file.is_open());
 
-    file.seekg (0, std::ios::end);
+    file.seekg(0, std::ios::end);
     length = file.tellg();
-    file.seekg (0, std::ios::beg);
-
+    file.seekg(0, std::ios::beg);
 
     buf.resize(length);
-    char *buffer = &buf[0];
+    char* buffer = &buf[0];
 
-    file.read (buffer, length);
+    file.read(buffer, length);
     file.close();
 
-
     std::vector < ::fwDataIO::line > dicolines;
-    std::pair<bool,std::string> result = parse(buffer, buffer+length, buf, dicolines);
+    std::pair<bool, std::string> result = parse(buffer, buffer+length, buf, dicolines);
 
     std::string error = "Unable to parse " + path.string() + " : Bad file format.Error : " + result.second;
     FW_RAISE_IF(error, !result.first);

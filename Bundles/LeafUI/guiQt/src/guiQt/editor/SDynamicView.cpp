@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,15 +9,9 @@
 #include <fwActivities/IActivityValidator.hpp>
 #include <fwActivities/IValidator.hpp>
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-#include <fwCom/Signals.hpp>
-#include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-
-#include <fwCore/base.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Composite.hpp>
@@ -25,21 +19,20 @@
 
 #include <fwDataCamp/getObject.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/GuiRegistry.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include <fwTools/dateAndTime.hpp>
 #include <fwTools/UUID.hpp>
+#include <fwTools/dateAndTime.hpp>
 
-#include <QtGui>
-#include <QTabWidget>
 #include <QBoxLayout>
+#include <QTabWidget>
+#include <QtGui>
 
 #include <boost/foreach.hpp>
 
@@ -132,7 +125,7 @@ void SDynamicView::starting() throw(::fwTools::Failed)
 
     QWidget* qtContainer = parentContainer->getQtContainer();
     m_tabWidget = new QTabWidget(qtContainer);
-    m_tabWidget->setTabsClosable ( true );
+    m_tabWidget->setTabsClosable( true );
     m_tabWidget->setDocumentMode( true );
     m_tabWidget->setMovable( true );
 
@@ -162,7 +155,7 @@ void SDynamicView::stopping() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     while(m_tabWidget->count())
     {
-        this->closeTab(0,true);
+        this->closeTab(0, true);
     }
     m_tabWidget->clear();
     this->getContainer()->clean();
@@ -220,7 +213,6 @@ void SDynamicView::launchActivity(::fwMedData::ActivitySeries::sptr activitySeri
         }
     }
 
-
     SDynamicViewInfo viewInfo = this->createViewInfo(activitySeries);
     viewInfo.closable = true;
 
@@ -271,7 +263,7 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
         return;
     }
 
-    if ( m_titleToCount.find( info.title ) !=  m_titleToCount.end() )
+    if ( m_titleToCount.find( info.title ) != m_titleToCount.end() )
     {
         m_titleToCount[ info.title ]++;
     }
@@ -280,7 +272,7 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
         m_titleToCount[ info.title ] = 1;
     }
 
-    QString finalTitle = QString("%1 %2").arg( info.title.c_str(),"(%1)" ).arg( m_titleToCount[ info.title ] );
+    QString finalTitle = QString("%1 %2").arg( info.title.c_str(), "(%1)" ).arg( m_titleToCount[ info.title ] );
     info.wid = QString("SDynamicView-%1").arg(count++).toStdString();
 
     ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
@@ -550,7 +542,7 @@ void SDynamicView::translateParameters( ::fwData::Object::sptr sourceObj, const 
         else
         {
             std::string parameterToReplace = param.by;
-            if (parameterToReplace.substr(0,1) == "!")
+            if (parameterToReplace.substr(0, 1) == "!")
             {
                 parameterToReplace.replace(0, 1, "@");
             }
@@ -562,7 +554,7 @@ void SDynamicView::translateParameters( ::fwData::Object::sptr sourceObj, const 
 
             std::string parameterValue = obj->getID();
 
-            if(stringParameter && param.by.substr(0,1) == "!")
+            if(stringParameter && param.by.substr(0, 1) == "!")
             {
                 parameterValue = stringParameter->getValue();
             }

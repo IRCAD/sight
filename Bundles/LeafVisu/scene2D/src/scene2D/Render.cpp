@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -114,9 +114,9 @@ void Render::dispatchInteraction( SPTR(::scene2D::data::Event)_event)
 ::scene2D::data::Coord Render::mapToScene( const ::scene2D::data::Coord& coord ) const
 {
     /// Returns the viewport coordinate point mapped to scene coordinates.
-    QPoint qp ( static_cast<int>(coord.getX()), static_cast<int>(coord.getY()) );
+    QPoint qp( static_cast<int>(coord.getX()), static_cast<int>(coord.getY()) );
     QPointF qps = m_view->mapToScene(qp);
-    return ::scene2D::data::Coord(qps.x(),qps.y());
+    return ::scene2D::data::Coord(qps.x(), qps.y());
 }
 
 //-----------------------------------------------------------------------------
@@ -163,7 +163,6 @@ void Render::configuring() throw ( ::fwTools::Failed )
             OSLM_ASSERT("Bad scene configurationType, unknown xml node : " << (*iter)->getName(), false);
         }
     }
-
 
 }
 
@@ -452,7 +451,7 @@ void Render::startContext()
         this->getContainer());
 
     m_scene = new QGraphicsScene( m_sceneStart.getX(), m_sceneStart.getY(), m_sceneWidth.getX(), m_sceneWidth.getY());
-    m_scene->setBackgroundBrush(QBrush(QColor(0,0,0)));
+    m_scene->setBackgroundBrush(QBrush(QColor(0, 0, 0)));
     m_scene->setFocus( Qt::MouseFocusReason );
 
     SPTR(::scene2D::data::Viewport) viewport = ::scene2D::data::Viewport::dynamicCast( m_objectID2Object["view1"] );
@@ -514,14 +513,13 @@ void Render::configureAxis( ConfigurationType _conf )
     std::string scale     = _conf->getAttributeValue("scale");
     std::string scaleType = _conf->getAttributeValue("scaleType");
 
-
     if(m_objectID2Object.count(id) == 0)
     {
         m_objectID2Object[id] = ::scene2D::data::Axis::New();
         SLM_ASSERT( "Sorry, axis ptr is null",  m_objectID2Object[id] );
-        ::scene2D::data::Axis::dynamicCast(m_objectID2Object[id])->setOrigin (::boost::lexical_cast< float >( origin ));
-        ::scene2D::data::Axis::dynamicCast(m_objectID2Object[id])->setScale (::boost::lexical_cast< float >( scale ));
-        ::scene2D::data::Axis::dynamicCast(m_objectID2Object[id])->setScaleType ( scaleType );
+        ::scene2D::data::Axis::dynamicCast(m_objectID2Object[id])->setOrigin(std::stof( origin ));
+        ::scene2D::data::Axis::dynamicCast(m_objectID2Object[id])->setScale(std::stof( scale ));
+        ::scene2D::data::Axis::dynamicCast(m_objectID2Object[id])->setScaleType( scaleType );
     }
 }
 
@@ -541,10 +539,10 @@ void Render::configureViewport( ConfigurationType _conf )
 
     m_objectID2Object[id] = ::scene2D::data::Viewport::New();
     SLM_ASSERT( "Sorry, viewport ptr is null",  m_objectID2Object[id] );
-    ::scene2D::data::Viewport::dynamicCast(m_objectID2Object[id])->setX (::boost::lexical_cast< float >( x ));
-    ::scene2D::data::Viewport::dynamicCast(m_objectID2Object[id])->setY (::boost::lexical_cast< float >( y ));
-    ::scene2D::data::Viewport::dynamicCast(m_objectID2Object[id])->setWidth (::boost::lexical_cast< float >( width ));
-    ::scene2D::data::Viewport::dynamicCast(m_objectID2Object[id])->setHeight (::boost::lexical_cast< float >( height ));
+    ::scene2D::data::Viewport::dynamicCast(m_objectID2Object[id])->setX(std::stof( x ));
+    ::scene2D::data::Viewport::dynamicCast(m_objectID2Object[id])->setY(std::stof( y ));
+    ::scene2D::data::Viewport::dynamicCast(m_objectID2Object[id])->setWidth(std::stof( width ));
+    ::scene2D::data::Viewport::dynamicCast(m_objectID2Object[id])->setHeight(std::stof( height ));
 }
 
 //-----------------------------------------------------------------------------
@@ -560,10 +558,10 @@ void Render::configureScene( ConfigurationType _conf )
     std::string width  = _conf->getAttributeValue("width");
     std::string height = _conf->getAttributeValue("height");
 
-    m_sceneStart.setX( ::boost::lexical_cast< float >( x ) );
-    m_sceneStart.setY( ::boost::lexical_cast< float >( y ) );
-    m_sceneWidth.setX( ::boost::lexical_cast< float >( width ) );
-    m_sceneWidth.setY( ::boost::lexical_cast< float >( height ) );
+    m_sceneStart.setX( std::stof( x ) );
+    m_sceneStart.setY( std::stof( y ) );
+    m_sceneWidth.setX( std::stof( width ) );
+    m_sceneWidth.setY( std::stof( height ) );
 
     if( _conf->hasAttribute("antialiasing"))
     {
@@ -735,8 +733,8 @@ void Render::stopAdaptor(const AdaptorIDType& _adaptorID)
 void Render::updateSceneSize( float ratioPercent )
 {
     QRectF rec = m_scene->itemsBoundingRect();
-    qreal x,y,w,h;
-    rec.getRect(&x,&y,&w,&h);
+    qreal x, y, w, h;
+    rec.getRect(&x, &y, &w, &h);
 
     if ( ratioPercent != 0 )
     {
@@ -746,7 +744,7 @@ void Render::updateSceneSize( float ratioPercent )
         h = h + h * ratioPercent;
         x = centerX - w/2.0;
         y = centerY - h/2.0;
-        rec.setRect(x,y,w,h);
+        rec.setRect(x, y, w, h);
     }
     m_sceneStart.setX( x );
     m_sceneStart.setY( y );
@@ -815,6 +813,4 @@ void Render::removeObjects(::fwData::Composite::ContainerType objects)
 //-----------------------------------------------------------------------------
 
 } // namespace scene2D
-
-
 

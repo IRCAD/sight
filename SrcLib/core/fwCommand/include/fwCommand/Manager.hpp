@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,14 @@
 #ifndef __FWCOMMAND_MANAGER_HPP__
 #define __FWCOMMAND_MANAGER_HPP__
 
-#include <deque>
-#include <boost/cstdint.hpp>
+#include "fwCommand/ICommand.hpp"
+#include "fwCommand/config.hpp"
 
 #include <fwTools/Object.hpp>
-#include <fwTools/macros.hpp>
 
-#include "fwCommand/config.hpp"
-#include "fwCommand/ICommand.hpp"
+#include <boost/cstdint.hpp>
+
+#include <deque>
 
 namespace fwCommand
 {
@@ -29,7 +29,7 @@ class FWCOMMAND_CLASS_API Manager : public ::fwTools::Object
 public:
 
     fwCoreClassDefinitionsWithNFactoriesMacro( (Manager)(::fwTools::Object),
-                                               ((std::make_shared< Manager >,() ))
+                                               ((std::make_shared< Manager >, () ))
                                                    ((ManagerFactory,
                                                      ((::boost::uint32_t))((::boost::uint32_t)) (
                                                          (::boost::uint32_t))  ))
@@ -39,12 +39,14 @@ public:
      * @brief Default constructor.
      *
      * @param maxUndoLevel maximum number of command that could be stored in the history
-     * @param maxUndoMemory maximum number of byte that could be stored in the history (but the latest queued command is ignored by the memory usage counter. See below for more explanation)
+     * @param maxUndoMemory maximum number of byte that could be stored in the history (but the latest queued command is
+     * ignored by the memory usage counter. See below for more explanation)
      * @param maxCommandMemory maximum number of byte that could be used by a single command
      *
      * If the size of a single command is greater than maxCommandMemory, then it would not be stored in the history.
      *
-     * @remarks The latest queued command is ignored by the memory usage counter in order to ensure that the latest command could always being stored in the history.
+     * @remarks The latest queued command is ignored by the memory usage counter in order to ensure that the latest
+     * command could always being stored in the history.
      * @remarks The maximum memory used by the history is maxUndoMemory + maxCommandMemory.
      */
     FWCOMMAND_API Manager( const ::boost::uint32_t maxUndoLevel = 0, const ::boost::uint32_t maxUndoMemory = 0,
@@ -58,7 +60,6 @@ public:
      * @brief Destructor.
      */
     FWCOMMAND_API virtual ~Manager() throw();
-
 
     /**
      * @name History management methods.
@@ -90,7 +91,6 @@ public:
      */
     FWCOMMAND_API void clear();
     //@}
-
 
     /**
      * @brief Retrieves the first undoable command.
@@ -181,7 +181,6 @@ protected:
      */
     CmdList::iterator m_lastCmd;
 
-
     /**
      * @brief Remove first command in m_listCmd and desalocate this command.
      *
@@ -192,8 +191,6 @@ protected:
     ::fwServices::IService::wptr m_serviceNotifier;
 };
 
-
 } // namespace fwCommand
-
 
 #endif // __FWCOMMAND_MANAGER_HPP__

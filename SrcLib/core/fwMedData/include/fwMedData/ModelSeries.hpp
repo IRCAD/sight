@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,8 @@
 #ifndef __FWMEDDATA_MODELSERIES_HPP__
 #define __FWMEDDATA_MODELSERIES_HPP__
 
-#include "fwMedData/config.hpp"
 #include "fwMedData/Series.hpp"
+#include "fwMedData/config.hpp"
 #include "fwMedData/types.hpp"
 
 #include <fwCom/Signal.hpp>
@@ -16,10 +16,7 @@
 
 #include <fwData/factory/new.hpp>
 
-#include <fwData/Object.hpp>
-
 #include <vector>
-
 
 fwCampAutoDeclareDataMacro((fwMedData)(ModelSeries), FWMEDDATA_API);
 
@@ -30,7 +27,6 @@ class Reconstruction;
 
 namespace fwMedData
 {
-
 
 /**
  * @brief Holds models data
@@ -56,16 +52,16 @@ public:
     FWMEDDATA_API virtual ~ModelSeries();
 
     /// Defines shallow copy
-    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr &_source );
+    FWMEDDATA_API void shallowCopy( const ::fwData::Object::csptr& _source );
 
     /// Defines deep copy
-    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr &_source, DeepCopyCacheType &cache );
+    FWMEDDATA_API void cachedDeepCopy( const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache );
 
     /**
      * @name Getters / Setters
      * @{ */
-    const ReconstructionVectorType &getReconstructionDB() const;
-    void setReconstructionDB(const ReconstructionVectorType &val);
+    const ReconstructionVectorType& getReconstructionDB() const;
+    void setReconstructionDB(const ReconstructionVectorType& val);
     /**  @} */
 
     /***
@@ -119,7 +115,7 @@ inline const ModelSeries::ReconstructionVectorType& ModelSeries::getReconstructi
 
 //-----------------------------------------------------------------------------
 
-inline void ModelSeries::setReconstructionDB(const ModelSeries::ReconstructionVectorType &val)
+inline void ModelSeries::setReconstructionDB(const ModelSeries::ReconstructionVectorType& val)
 {
     m_reconstructionDB = val;
 }
@@ -129,5 +125,4 @@ inline void ModelSeries::setReconstructionDB(const ModelSeries::ReconstructionVe
 }   //end namespace fwMedData
 
 #endif // __FWMEDDATA_MODELSERIES_HPP__
-
 

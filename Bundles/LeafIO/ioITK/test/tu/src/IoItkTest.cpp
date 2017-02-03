@@ -1,12 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "IoItkTest.hpp"
-
-#include <fwData/Object.hpp>
 
 #include <fwDataTools/Image.hpp>
 
@@ -32,12 +30,10 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/filesystem/operations.hpp>
 
-
 using namespace ::boost::assign;
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioITK::ut::IoItkTest );
-
 
 namespace ioITK
 {
@@ -112,7 +108,6 @@ void IoItkTest::testImageSeriesWriterJPG()
     ::boost::filesystem::remove_all( path.string() );
 }
 
-
 //------------------------------------------------------------------------------
 
 void IoItkTest::testImageWriterJPG()
@@ -145,13 +140,15 @@ double tolerance(double num)
     return std::floor(num * 100. + .5) / 100.;
 }
 
+//------------------------------------------------------------------------------
+
 void IoItkTest::testSaveLoadInr()
 {
     ::fwData::Image::sptr image = ::fwData::Image::New();
     ::fwTest::generator::Image::generateRandomImage(image, ::fwTools::Type::create("int16"));
 
     // inr only support image origin (0,0,0)
-    ::fwData::Image::OriginType origin(3,0);
+    ::fwData::Image::OriginType origin(3, 0);
     image->setOrigin(origin);
 
     // save image in inr
@@ -174,7 +171,7 @@ void IoItkTest::testSaveLoadInr()
     ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
     ::fwData::Image::SpacingType spacing = image2->getSpacing();
-    std::transform (spacing.begin(), spacing.end(), spacing.begin(), tolerance);
+    std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
     image2->setSpacing(spacing);
 
     // check Image
@@ -196,7 +193,7 @@ void IoItkTest::ImageSeriesInrTest()
     imageSeries->setImage(image);
 
     // inr only support image origin (0,0,0)
-    ::fwData::Image::OriginType origin(3,0);
+    ::fwData::Image::OriginType origin(3, 0);
     image->setOrigin(origin);
 
     // save image in inr
@@ -219,7 +216,7 @@ void IoItkTest::ImageSeriesInrTest()
     ::boost::filesystem::remove_all( PATH.parent_path().string() );
 
     ::fwData::Image::SpacingType spacing = image2->getSpacing();
-    std::transform (spacing.begin(), spacing.end(), spacing.begin(), tolerance);
+    std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
     image2->setSpacing(spacing);
 
     // check Image

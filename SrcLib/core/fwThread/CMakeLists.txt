@@ -1,5 +1,6 @@
 fwLoadProperties()
+
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
-    add_definitions(-DWIN32_LEAN_AND_MEAN)
+    target_compile_definitions(${FWPROJECT_NAME} PRIVATE "-DWIN32_LEAN_AND_MEAN")
 endif()
 

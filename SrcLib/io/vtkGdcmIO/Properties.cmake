@@ -12,5 +12,4 @@ set( DEPENDENCIES
     fwVtkIO
     fwJobs
 )
-set( REQUIREMENTS  )
-
+set( REQUIREMENTS )

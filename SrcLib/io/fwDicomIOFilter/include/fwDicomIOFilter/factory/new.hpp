@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,10 +10,6 @@
 #include "fwDicomIOFilter/config.hpp"
 #include "fwDicomIOFilter/registry/detail.hpp"
 
-#include <fwTools/DynamicAttributes.hxx>
-#include <fwTools/macros.hpp>
-
-
 #include <string>
 
 namespace fwDicomIOFilter
@@ -23,7 +19,6 @@ class IFilter;
 
 namespace factory
 {
-
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New();
 
@@ -41,17 +36,11 @@ Key()
 }
 };
 
-
 FWDICOMIOFILTER_API SPTR( ::fwDicomIOFilter::IFilter ) New( const ::fwDicomIOFilter::registry::KeyType & classname );
-
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
     SPTR(CLASSNAME) obj = std::make_shared< CLASSNAME >( Key() );
-
-    ::fwTools::DynamicAttributesBase* dynAttr = obj.get();
-    dynAttr->__FWTOOLS_ATTRIBUTES_REGISTER_FUNC_NAME();
-
     return obj;
 }
 
@@ -60,5 +49,4 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New()
 } // namespace fwDicomIOFilter
 
 #endif /* __FWDICOMIOFILTER_FACTORY_NEW_HPP__ */
-
 

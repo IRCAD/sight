@@ -2,7 +2,7 @@
 set( NAME fwAtomConversion )
 set( VERSION 0.1 )
 set( TYPE LIBRARY )
-set( DEPENDENCIES 
+set( DEPENDENCIES
     fwAtoms
     fwCamp
     fwCore
@@ -14,4 +14,3 @@ set( DEPENDENCIES
     fwTools
 )
 set( REQUIREMENTS  )
-

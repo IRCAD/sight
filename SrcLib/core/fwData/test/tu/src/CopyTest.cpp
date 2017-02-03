@@ -1,8 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "CopyTest.hpp"
 
 #include <fwData/Array.hpp>
 #include <fwData/Boolean.hpp>
@@ -19,18 +21,17 @@
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Node.hpp>
-#include <fwData/Object.hpp>
 #include <fwData/Plane.hpp>
 #include <fwData/PlaneList.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/Port.hpp>
 #include <fwData/ProcessObject.hpp>
+#include <fwData/ROITraits.hpp>
 #include <fwData/Reconstruction.hpp>
 #include <fwData/ReconstructionTraits.hpp>
 #include <fwData/Resection.hpp>
 #include <fwData/ResectionDB.hpp>
-#include <fwData/ROITraits.hpp>
 #include <fwData/Spline.hpp>
 #include <fwData/String.hpp>
 #include <fwData/StructureTraits.hpp>
@@ -42,9 +43,6 @@
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/MultiFiles.hpp>
 #include <fwData/location/SingleFile.hpp>
-
-#include "CopyTest.hpp"
-
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::CopyTest);
@@ -136,7 +134,6 @@ void CopyTest::severalReferencesCopyTest()
     CPPUNIT_ASSERT_EQUAL((*compositeCopy)["A"], compositeCopy->getField("F2"));
     CPPUNIT_ASSERT_EQUAL((*compositeCopy)["A"], (*compositeCopy)["B"]);
 
-
     ::fwData::Vector::sptr vector = ::fwData::Vector::New();
 
     vector->getContainer().push_back(composite);
@@ -149,8 +146,6 @@ void CopyTest::severalReferencesCopyTest()
     CPPUNIT_ASSERT_EQUAL((*vectorCopy)[0], vectorCopy->getField("F1"));
     CPPUNIT_ASSERT_EQUAL((*vectorCopy)[0], vectorCopy->getField("F2"));
     CPPUNIT_ASSERT_EQUAL((*vectorCopy)[0], (*vectorCopy)[1]);
-
-
 
     ::fwData::List::sptr list = ::fwData::List::New();
 
@@ -179,7 +174,6 @@ void CopyTest::recursiveCopyTest()
     ::fwData::Vector::sptr vectorCopy;
     ::fwData::List::sptr listCopy;
 
-
     (*composite)["A"] = composite;
     (*composite)["B"] = composite;
 
@@ -192,8 +186,6 @@ void CopyTest::recursiveCopyTest()
     CPPUNIT_ASSERT_EQUAL((*compositeCopy)["A"], compositeCopy->getField("F2"));
     CPPUNIT_ASSERT_EQUAL((*compositeCopy)["A"], (*compositeCopy)["B"]);
 
-
-
     vector->getContainer().push_back(vector);
     vector->getContainer().push_back(vector);
     vector->setField("F1", vector);
@@ -205,9 +197,6 @@ void CopyTest::recursiveCopyTest()
     CPPUNIT_ASSERT_EQUAL((*vectorCopy)[0], vectorCopy->getField("F2"));
     CPPUNIT_ASSERT_EQUAL((*vectorCopy)[0], (*vectorCopy)[1]);
 
-
-
-
     list->getContainer().push_back(list);
     list->getContainer().push_back(list);
     list->setField("F1", list);
@@ -218,7 +207,6 @@ void CopyTest::recursiveCopyTest()
     CPPUNIT_ASSERT_EQUAL((*listCopy).front(), listCopy->getField("F1"));
     CPPUNIT_ASSERT_EQUAL((*listCopy).front(), listCopy->getField("F2"));
     CPPUNIT_ASSERT_EQUAL((*listCopy).front(), (*listCopy).back());
-
 
     ::fwData::Object::FieldMapType zeroFields;
     composite->getContainer().clear();
@@ -237,12 +225,9 @@ void CopyTest::recursiveCopyTest()
     list->getContainer().push_back(vector);
     list->setField("F1", vector);
 
-
     compositeCopy = ::fwData::Object::copy(composite);
     vectorCopy    = ::fwData::Object::copy(vector);
     listCopy      = ::fwData::Object::copy(list);
-
-
 
     CPPUNIT_ASSERT( list != compositeCopy->getField("F1") );
     CPPUNIT_ASSERT( list != (*compositeCopy)["A"] );
@@ -254,7 +239,6 @@ void CopyTest::recursiveCopyTest()
     CPPUNIT_ASSERT_EQUAL((*listCopy).front(), listCopy->getField("F1"));
     CPPUNIT_ASSERT_EQUAL((*vectorCopy)[0], vectorCopy->getField("F1"));
     CPPUNIT_ASSERT_EQUAL((*compositeCopy)["A"], compositeCopy->getField("F1"));
-
 
     //ensures copy cache is not persistant
     CPPUNIT_ASSERT( listCopy != compositeCopy->getField("F1") );
@@ -281,7 +265,6 @@ void CopyTest::recursiveCopyTest()
         CPPUNIT_ASSERT_EQUAL(insideVector, V(insideVector->getField("F1")->getField("F1")->getField("F1")));
         CPPUNIT_ASSERT_EQUAL(insideComposite, C(insideComposite->getField("F1")->getField("F1")->getField("F1")));
     }
-
 
     //list->vector->composite->list
     {
@@ -311,9 +294,6 @@ void CopyTest::recursiveCopyTest()
         CPPUNIT_ASSERT_EQUAL(insideComposite, C(insideComposite->getField("F1")->getField("F1")->getField("F1")));
     }
 
-
-
-
     composite->getContainer().clear();
     vector->getContainer().clear();
     list->getContainer().clear();
@@ -330,7 +310,6 @@ void CopyTest::recursiveCopyTest()
     list->getContainer().push_back(vector);
     list->setField("F1", composite);
 
-
     compositeCopy = ::fwData::Object::copy(composite);
 
     {
@@ -342,7 +321,6 @@ void CopyTest::recursiveCopyTest()
 
         ::fwData::Vector::sptr insideVector      = V(fieldList->front());
         ::fwData::Composite::sptr fieldComposite = C(fieldList->getField("F1"));
-
 
         CPPUNIT_ASSERT_EQUAL(compositeCopy, insideComposite );
         CPPUNIT_ASSERT_EQUAL(insideComposite, fieldComposite );

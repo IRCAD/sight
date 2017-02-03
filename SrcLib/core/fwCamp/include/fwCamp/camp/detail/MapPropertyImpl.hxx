@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,12 @@
 #ifndef __FWCAMP_CAMP_DETAIL_MAPPROPERTYIMPL_HXX__
 #define __FWCAMP_CAMP_DETAIL_MAPPROPERTYIMPL_HXX__
 
-#include <camp/userobject.hpp>
-
+#include "fwCamp/camp/customtype.hpp"
 #include <fwCamp/Mapper/ValueMapper.hpp>
+
+#include <camp/class.hpp>
+#include <camp/classbuilder.hpp>
+#include <camp/userobject.hpp>
 
 namespace camp
 {
@@ -20,30 +23,36 @@ namespace detail
 template <typename A>
 MapPropertyImpl<A>::MapPropertyImpl(const std::string& name, const A& accessor) :
     camp::MapProperty(name, camp::mapType<ValueType>())
-    ,m_accessor(accessor)
+    ,
+    m_accessor(accessor)
 {
 }
+
+//------------------------------------------------------------------------------
 
 template <typename A>
 std::size_t MapPropertyImpl<A>::getSize(const UserObject& object) const
 {
     return Mapper::size(map(object));
 }
+//------------------------------------------------------------------------------
+
 template <typename A>
 void MapPropertyImpl<A>::set(const UserObject& object, const Value& key, const Value& value) const
 {
     const typename Mapper::KeyType& typedKey      = key.to< typename Mapper::KeyType >();
     const typename Mapper::MappedType& typedValue = value.to< typename Mapper::MappedType >();
 
-    Mapper::set(map(object), typedKey,typedValue );
+    Mapper::set(map(object), typedKey, typedValue );
 }
 
+//------------------------------------------------------------------------------
 
 template <typename A>
 MapProperty::ValuePair MapPropertyImpl<A>::getElement(const UserObject& object, std::size_t index ) const
 {
 
-    ValueType p (Mapper::get(map(object),index));
+    ValueType p(Mapper::get(map(object), index));
     return ValuePair(p.first, p.second);
 }
 
@@ -62,7 +71,6 @@ struct PropertyMapper<A, camp::mappingType>
 {
     typedef MapPropertyImpl<A> Type;
 };
-
 
 } // namespace detail
 } // namespace camp

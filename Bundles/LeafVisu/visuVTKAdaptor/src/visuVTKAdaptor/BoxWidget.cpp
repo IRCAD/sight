@@ -1,29 +1,30 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef ANDROID
 
-#include "visuVTKAdaptor/Transform.hpp"
 #include "visuVTKAdaptor/BoxWidget.hpp"
 
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwServices/macros.hpp>
+#include "visuVTKAdaptor/Transform.hpp"
 
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwRenderVTK/vtk/fwVtkBoxRepresentation.hpp>
 
-#include <vtkRenderWindowInteractor.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderer.h>
+#include <fwServices/macros.hpp>
+
+#include <vtkBoxRepresentation.h>
+#include <vtkBoxWidget2.h>
 #include <vtkCamera.h>
 #include <vtkCommand.h>
 #include <vtkMatrix4x4.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkRenderer.h>
 #include <vtkTransform.h>
-#include <vtkBoxRepresentation.h>
-#include <vtkBoxWidget2.h>
 
 #include <boost/lexical_cast.hpp>
 
@@ -34,26 +35,31 @@ class BoxClallback : public ::vtkCommand
 {
 public:
 
+    //------------------------------------------------------------------------------
+
     static BoxClallback* New(::visuVTKAdaptor::BoxWidget* adaptor)
     {
-        BoxClallback *cb = new BoxClallback;
+        BoxClallback* cb = new BoxClallback;
         cb->m_adaptor = adaptor;
         return cb;
     }
 
-    BoxClallback() : m_adaptor(nullptr)
+    BoxClallback() :
+        m_adaptor(nullptr)
     {
     }
     ~BoxClallback()
     {
     }
 
+    //------------------------------------------------------------------------------
+
     virtual void Execute( ::vtkObject* pCaller, unsigned long eventId, void* )
     {
         m_adaptor->updateFromVtk();
     }
 
-    ::visuVTKAdaptor::BoxWidget *m_adaptor;
+    ::visuVTKAdaptor::BoxWidget* m_adaptor;
 };
 
 // BoxWidget
@@ -104,10 +110,10 @@ void BoxWidget::doStart() throw( ::fwTools::Failed )
 {
     m_transform = getTransform();
     SLM_ASSERT("BoxWidget need a vtkTransform", m_transform);
-    fwVtkBoxRepresentation *boxRep = fwVtkBoxRepresentation::New();
+    fwVtkBoxRepresentation* boxRep = fwVtkBoxRepresentation::New();
     boxRep->SetPlaceFactor(m_scaleFactor);
 
-    double bounds[] = {-1,1,-1,1,-1,1};
+    double bounds[] = {-1, 1, -1, 1, -1, 1};
     boxRep->PlaceWidget(bounds);
 
     m_vtkBoxWidget = ::vtkBoxWidget2::New();
@@ -153,7 +159,7 @@ void BoxWidget::updateFromVtk()
 {
     m_vtkBoxWidget->RemoveObserver( m_boxWidgetCommand );
 
-    vtkBoxRepresentation *repr = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );
+    vtkBoxRepresentation* repr = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );
     if( repr )
     {
         repr->GetTransform(m_transform);
@@ -163,11 +169,11 @@ void BoxWidget::updateFromVtk()
     ::fwData::TransformationMatrix3D::sptr trf = this->getObject< ::fwData::TransformationMatrix3D >();
     vtkMatrix4x4* mat = m_transform->GetMatrix();
 
-    for(int lt = 0; lt<4; lt++)
+    for(int lt = 0; lt < 4; lt++)
     {
-        for(int ct = 0; ct<4; ct++)
+        for(int ct = 0; ct < 4; ct++)
         {
-            trf->setCoefficient(lt,ct, mat->GetElement(lt,ct));
+            trf->setCoefficient(lt, ct, mat->GetElement(lt, ct));
         }
     }
 
@@ -185,16 +191,16 @@ void BoxWidget::updateFromVtk()
 void BoxWidget::doUpdate() throw( ::fwTools::Failed )
 {
     m_vtkBoxWidget->RemoveObserver( m_boxWidgetCommand );
-    vtkBoxRepresentation *repr = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );
+    vtkBoxRepresentation* repr = vtkBoxRepresentation::SafeDownCast( m_vtkBoxWidget->GetRepresentation() );
     if( repr )
     {
         vtkMatrix4x4* mat = m_transform->GetMatrix();
         ::fwData::TransformationMatrix3D::sptr transMat = this->getObject< ::fwData::TransformationMatrix3D >();
-        for(int lt = 0; lt<4; lt++)
+        for(int lt = 0; lt < 4; lt++)
         {
-            for(int ct = 0; ct<4; ct++)
+            for(int ct = 0; ct < 4; ct++)
             {
-                mat->SetElement(lt, ct, transMat->getCoefficient(lt,ct));
+                mat->SetElement(lt, ct, transMat->getCoefficient(lt, ct));
             }
         }
 
