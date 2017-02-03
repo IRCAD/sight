@@ -50,7 +50,7 @@ public:
     TRACKER_API static const ::fwServices::IService::KeyType s_TIMELINE_INPUT;
 
     /// Defines the auto-connection between the timeline and the 'track' slot
-    ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    TRACKER_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
     /// Return true if the tracking is started.
     bool isTracking() const
@@ -73,10 +73,10 @@ public:
 protected:
 
     ///@brief ITracker constructor. Do nothing.
-    ITracker();
+    TRACKER_API ITracker();
 
     ///@brief ITracker destructor. Do nothing.
-    virtual ~ITracker();
+    TRACKER_API virtual ~ITracker();
 
     TRACKER_API virtual void configuring() throw (::fwTools::Failed);
 
