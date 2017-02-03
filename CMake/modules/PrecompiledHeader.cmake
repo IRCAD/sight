@@ -346,23 +346,25 @@ function(use_precompiled_header _target _input)
     cmake_parse_arguments(_PCH "FORCEINCLUDE" "SOURCE_CXX:SOURCE_C" "" ${ARGN})
 
     if(MSVC)
-        if(MSVC14)
-            set(INPUT_PDB_NAME "vc140.pdb")
-        elseif(MSVC12)
-            set(INPUT_PDB_NAME "vc120.pdb")
+        if(${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo")
+            if(MSVC14)
+                set(INPUT_PDB_NAME "vc140.pdb")
+            elseif(MSVC12)
+                set(INPUT_PDB_NAME "vc120.pdb")
+            endif()
+
+            file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/${_input}/CMakeFiles/${_input}.dir/${INPUT_PDB_NAME}" INPUT_PDB_FILE)
+            file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/${_target}/CMakeFiles/${_target}.dir/" OUTPUT_PDB_PATH)
+
+            # Copy the pdb from the library where the pch belongs to the library using the pch
+            # We need to do that otherwise cl.exe miss the debugging symbols of the pdb and fails
+            add_custom_target(
+                ${_target}_pdbCopy
+                COMMAND xcopy /D /Y ${INPUT_PDB_FILE} ${OUTPUT_PDB_PATH}
+                DEPENDS ${${_target}_DEPENDENCIES} ${_input}
+                )
+            add_dependencies( ${_target} ${_target}_pdbCopy)
         endif()
-
-        file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/${_input}/CMakeFiles/${_input}.dir/${INPUT_PDB_NAME}" INPUT_PDB_FILE)
-        file(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}/${_target}/CMakeFiles/${_target}.dir/" OUTPUT_PDB_PATH)
-
-        # Copy the pdb from the library where the pch belongs to the library using the pch
-        # We need to do that otherwise cl.exe miss the debugging symbols of the pdb and fails
-        add_custom_target(
-            ${_target}_pdbCopy
-            COMMAND xcopy /D /Y ${INPUT_PDB_FILE} ${OUTPUT_PDB_PATH}
-            DEPENDS ${${_target}_DEPENDENCIES} ${_input}
-        )
-        add_dependencies( ${_target} ${_target}_pdbCopy)
 
         target_include_directories(${_target} PRIVATE "${${_input}_PROJECT_DIR}/include/${_input}" )
 
