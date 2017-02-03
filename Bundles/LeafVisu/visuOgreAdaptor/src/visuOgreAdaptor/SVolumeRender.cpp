@@ -24,6 +24,10 @@
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTextureManager.h>
 
+// For now deactivate the specific optimizations for autostereo that causes
+// blending problem with the background
+#define ENABLE_AUTO_STEREO_OPTIM
+
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVolumeRender, ::fwData::Image);
 
 //-----------------------------------------------------------------------------
@@ -299,17 +303,24 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     }
     else
     {
+#ifdef ENABLE_AUTO_STEREO_OPTIM
+        const auto stereoMode = layer->getStereoMode();
+#else
+        const auto stereoMode = ::fwRenderOgre::Layer::StereoModeType::NONE;
+#endif
+
         m_volumeRenderer = new ::fwRenderOgre::vr::RayTracingVolumeRenderer(this->getID(),
                                                                             layer,
                                                                             m_volumeSceneNode,
                                                                             m_3DOgreTexture,
                                                                             m_gpuTF,
                                                                             m_preIntegrationTable,
-                                                                            layer->getStereoMode(),
+                                                                            stereoMode,
                                                                             m_ambientOcclusion,
                                                                             m_colorBleeding);
 
-        if(layer->getStereoMode() != ::fwRenderOgre::Layer::StereoModeType::NONE)
+        // For now we always deactivate the path with ray tracing optimized shader and use the classic shader
+        if(stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE)
         {
             auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer*>(m_volumeRenderer);
 
@@ -334,8 +345,10 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 
     m_volumeConnection.connect(layer, ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
                                this->getSptr(), ::visuOgreAdaptor::SVolumeRender::s_RESIZE_VIEWPORT_SLOT);
+#ifdef ENABLE_AUTO_STEREO_OPTIM
     m_volumeConnection.connect(layer, ::fwRenderOgre::Layer::s_MODE3D_CHANGED_SIG,
                                this->getSptr(), ::visuOgreAdaptor::SVolumeRender::s_SET_MODE3D_SLOT);
+#endif
 
     initWidgets();
     m_widgets->setVisibility(m_widgetVisibilty);
