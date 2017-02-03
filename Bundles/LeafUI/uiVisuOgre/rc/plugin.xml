@@ -63,11 +63,11 @@
         <desc>service description</desc>
     </extension>
 
-<!--     <extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiVisuOgre::SLightEditor</service>
         <object>::fwData::Composite</object>
         <desc>service description</desc>
-    </extension> -->
+    </extension>
 
 </plugin>

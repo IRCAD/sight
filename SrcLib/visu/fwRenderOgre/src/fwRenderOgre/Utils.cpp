@@ -109,7 +109,13 @@ void Utils::addResourcesPath(const std::string& path)
         s_overlaySystem = new ::Ogre::OverlaySystem();
 
         const Ogre::RenderSystemList& rsList = root->getAvailableRenderers();
-        Ogre::RenderSystem* rs               = rsList[0];
+
+        Ogre::RenderSystem* rs;
+
+        if(!rsList.empty())
+        {
+            rs = rsList.front();
+        }
 
         /*
            This list setup the search order for used render system.
