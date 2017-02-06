@@ -78,7 +78,8 @@ SVolumeRender::SVolumeRender() throw() :
     m_satConeAngle(0.1f),
     m_satConeSamples(50),
     m_aoFactor(1.f),
-    m_colorBleedingFactor(1.f)
+    m_colorBleedingFactor(1.f),
+    m_autoResetCamera(true)
 {
     this->installTFSlots(this);
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
@@ -117,6 +118,12 @@ SVolumeRender::~SVolumeRender() throw()
 void SVolumeRender::doConfigure() throw ( ::fwTools::Failed )
 {
     SLM_ASSERT("No config tag", m_configuration->getName() == "config");
+
+    if(m_configuration->hasAttribute("autoresetcamera"))
+    {
+        std::string autoResetCamera = m_configuration->getAttributeValue("autoresetcamera");
+        m_autoResetCamera = (autoResetCamera == "yes");
+    }
 
     if(m_configuration->hasAttribute("preintegration"))
     {
@@ -363,8 +370,10 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
         m_volumeSceneNode->setVisible(false, false);
     }
 
-    this->getRenderService()->resetCameraCoordinates(m_layerID);
-
+    if (m_autoResetCamera)
+    {
+        this->getRenderService()->resetCameraCoordinates(m_layerID);
+    }
     m_volumeRenderer->tfUpdate(this->getTransferFunction());
 
     this->requestRender();

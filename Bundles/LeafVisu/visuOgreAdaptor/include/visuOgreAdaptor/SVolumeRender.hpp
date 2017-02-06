@@ -261,6 +261,9 @@ private:
     /// Factor parameter used to weight the color bleeding.
     double m_colorBleedingFactor;
 
+    /// Sets whether the camera must be auto reset when a mesh is updated or not.
+    bool m_autoResetCamera;
+
     /// Handle connections between the layer and the volume renderer.
     ::fwCom::helper::SigSlotConnection m_volumeConnection;
 };

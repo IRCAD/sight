@@ -103,12 +103,9 @@ void STransform::updateFromOgre()
     ::fwData::mt::ObjectWriteLock lock(m_fwTransform);
     for(size_t lt = 0; lt < 4; lt++)
     {
-        for (size_t lt = 0; lt < 4; lt++)
+        for (size_t ct = 0; ct < 4; ct++)
         {
-            for (size_t ct = 0; ct < 4; ct++)
-            {
-                m_fwTransform->setCoefficient(lt, ct, m_ogreTransform[ct][lt]);
-            }
+            m_fwTransform->setCoefficient(ct, lt, m_ogreTransform[ct][lt]);
         }
     }
 

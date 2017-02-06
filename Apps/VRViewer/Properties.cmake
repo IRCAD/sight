@@ -10,6 +10,7 @@ set( REQUIREMENTS
     gui
     guiQt
     io
+    ioActivity
     ioData
     ioAtoms
     ioDicom
@@ -29,6 +30,7 @@ set( REQUIREMENTS
     material
     media
     preferences
+    rdTools
     )
 
 bundleParam(appXml2 PARAM_LIST config PARAM_VALUES VRViewer_Extension)

@@ -10,16 +10,9 @@
     <requirement id="scene2D" />
     <requirement id="preferences" />
     <requirement id="ioDicom" />
+    <requirement id="ioActivity" />
 
     <xi:include href="configurations/OgreVolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-
-    <extension implements="::fwServices::registry::ServiceConfig">
-        <id>MDAtomsConfig</id>
-        <desc>reader/writer config to read/write an atom representing a medical data</desc>
-        <config>
-            <patcher context="MedicalData" version="V09ALA" />
-        </config>
-    </extension>
 
     <extension implements="::fwServices::registry::ServiceConfig">
          <id>SSeriesDBMergerConfig</id>
@@ -60,6 +53,7 @@
             <object uid="viewport" type="::scene2D::data::Viewport" />
             <object uid="histogram" type="::fwData::Histogram" />
             <object uid="histogramPoint" type="::fwData::Point" />
+            <object uid="cameraTF" type="::fwData::TransformationMatrix3D" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -129,13 +123,17 @@
             <service uid="menu_File" type="::gui::aspect::SDefaultMenu" >
                 <gui>
                     <layout>
-                        <menuItem name="Open image..." shortcut="Ctrl+O" />
+                        <menuItem name="Import a DICOM image..." shortcut="Ctrl+I" />
+                        <menuItem name="Load a preset..." shortcut="Ctrl+O" />
+                        <menuItem name="Save as a preset..." shortcut="Ctrl+S" />
                         <separator />
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="actionImport" start="yes" />
+                    <menuItem sid="actionLoadPreset" start="yes" />
+                    <menuItem sid="actionSavePreset" start="yes" />
                     <menuItem sid="actionQuit" start="yes" />
                 </registry>
             </service>
@@ -143,13 +141,17 @@
             <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
                 <gui>
                     <layout>
-                        <menuItem name="Load a DICOM image" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
+                        <menuItem name="Import a DICOM image" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
+                        <menuItem name="Load a preset" icon="@BUNDLE_PREFIX@/media_0-1/icons/Import.svg" />
+                        <menuItem name="Save as a preset" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
                         <menuItem name="Show/hide box cropping" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-box.png" style="check" />
                         <editor name="Show/hide box cropping"  />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="actionImport" />
+                    <menuItem sid="actionLoadPreset" />
+                    <menuItem sid="actionSavePreset" />
                     <menuItem sid="ActionResetBoxWidget" start="yes" />
                     <editor wid="ToolBarParent" />
                 </registry>
@@ -159,6 +161,19 @@
             <service uid="actionImport" type="::uiIO::action::SSeriesDBMerger" autoConnect="yes">
                 <inout key="seriesDB" uid="dicomSeriesDB"/>
                 <IOSelectorSrvConfig name="SSeriesDBMergerConfig" />
+            </service>
+
+            <service uid="actionLoadPreset" type="::uiIO::action::SSeriesDBMerger" autoConnect="yes">
+                <inout key="seriesDB" uid="dicomSeriesDB"/>
+                <IOSelectorSrvConfig name="SDBAtomsReaderIOSelectorConfig" />
+            </service>
+
+            <service uid="actionSavePreset" type="::gui::action::SStarter">
+                <start uid="writer" />
+            </service>
+
+            <service uid="writer" type="::uiIO::editor::SIOSelector" config="SDBAtomsWriterIOSelectorConfig">
+                <inout key="seriesDB" uid="dicomSeriesDB"/>
             </service>
 
             <service uid="actionQuit" type="::gui::action::SQuit"  />
@@ -174,6 +189,7 @@
                 <appConfig id="OgreVolumeRendering" />
                 <inout key="image" uid="image" />
                 <inout key="TFSelections" uid="TFSelections" />
+                <inout key="cameraTF" uid="cameraTF" />
                 <parameter replace="WID_PARENT" uid="OgreVolumeRenderingView" />
                 <parameter replace="SETTINGS_WID_PARENT" uid="OgreVolumeRenderingSettingsView" />
                 <parameter replace="TOOLBAR_WID_PARENT" uid="ToolBarParent" />
@@ -219,7 +235,7 @@
             </service>
 
             <service uid="Scene2D" type="::scene2D::Render" autoConnect="yes">
-                <in key="image" uid="image" optional="yes"/>
+                <in key="image" uid="image" />
                 <in key="histogram" uid="histogram" />
                 <inout key="histogramPoint" uid="histogramPoint" />
                 <inout key="viewport" uid="viewport" />
@@ -310,6 +326,13 @@
                </out>
             </service>
 
+            <service uid="copyCameraTF" type="::ctrlCamp::SCopy" >
+                <in key="source" uid="selections">
+                    <extract from="@values.0.image.fields.cameraTransform" />
+                </in>
+                <inout key="target" uid="cameraTF"/>
+            </service>
+
             <service uid="medicalImage" type="::ctrlSelection::MedicalImageSrv" >
                 <inout key="image" uid="image" />
             </service>
@@ -327,9 +350,19 @@
                 <config selectedTFKey="SelectedTF" />
             </service>
 
+            <service uid="pushCameraTFInImage" type="::rdTools::SAddField" >
+                <inout group="source">
+                    <key uid="cameraTF" />
+                </inout>
+                <inout key="target" uid="image" />
+                <field id="cameraTransform" />
+            </service>
+
             <connect>
                 <signal>selections/addedObjects</signal>
                 <slot>extractImage/update</slot>
+                <slot>pushCameraTFInImage/update</slot>
+                <slot>copyCameraTF/update</slot>
             </connect>
 
             <connect>
@@ -348,6 +381,11 @@
             <start uid="cfgOgreVolumeRendering" />
             <start uid="windowLevelVR" />
             <start uid="computeHistogram" />
+            <start uid="pushCameraTFInImage" />
+            <start uid="copyCameraTF" />
+
+            <!-- Deferred update -->
+            <update uid="pushCameraTFInImage" />
 
         </config>
 
