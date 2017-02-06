@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,6 +40,15 @@
 #include <OGRE/Overlay/OgreOverlay.h>
 #include <OGRE/Overlay/OgreOverlayContainer.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
+
+#include <boost/tokenizer.hpp>
+
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
+
+#include <fwDataTools/Color.hpp>
+
+#include <fwThread/Worker.hpp>
 
 #include <stack>
 

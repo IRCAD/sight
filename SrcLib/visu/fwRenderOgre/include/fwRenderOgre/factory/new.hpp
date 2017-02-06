@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,8 +9,6 @@
 
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/registry/detail.hpp"
-
-#include <fwTools/macros.hpp>
 
 #include <boost/make_shared.hpp>
 
@@ -132,4 +130,3 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New()
 } // namespace fwRenderOgre
 
 #endif /* __FWRENDEROGRE_FACTORY_NEW_HPP__ */
-
