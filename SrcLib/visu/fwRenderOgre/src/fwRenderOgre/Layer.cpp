@@ -25,6 +25,8 @@
 
 #include <fwThread/Worker.hpp>
 
+#include <boost/tokenizer.hpp>
+
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreCompositorManager.h>
@@ -40,15 +42,6 @@
 #include <OGRE/Overlay/OgreOverlay.h>
 #include <OGRE/Overlay/OgreOverlayContainer.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
-
-#include <boost/tokenizer.hpp>
-
-#include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
-
-#include <fwDataTools/Color.hpp>
-
-#include <fwThread/Worker.hpp>
 
 #include <stack>
 

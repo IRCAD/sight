@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,6 @@ namespace uiVisuOgre
 
 /**
  * @brief   Allows to select an Ogre material template and apply it to the current reconstruction
- * @class   SMaterialSelector
  */
 class UIVISUOGRE_CLASS_API SMaterialSelector : public QObject,
                                                public ::gui::editor::IEditor
