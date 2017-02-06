@@ -7,14 +7,14 @@
 #ifndef __UIVISUOGRE_STEXTURESELECTOR_HPP__
 #define __UIVISUOGRE_STEXTURESELECTOR_HPP__
 
+#include "uiVisuOgre/config.hpp"
+
 #include <fwData/Reconstruction.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>
-
-#include "uiVisuOgre/config.hpp"
 
 class QPushButton;
 
@@ -33,7 +33,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (STextureSelector)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (STextureSelector)(::gui::editor::IEditor) );
 
     UIVISUOGRE_API STextureSelector() throw();
     UIVISUOGRE_API virtual ~STextureSelector() throw();
@@ -43,7 +43,7 @@ protected:
     /**
      * @brief method description:
      * @code{.xml}
-        <service uid="STextureSelectorInstance" impl="::uiVisuOgre::STextureSelector" type="::editor::IEditor">
+        <service uid="STextureSelectorInstance" type="::uiVisuOgre::STextureSelector">
         </service>
        @endcode
      */

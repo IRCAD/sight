@@ -63,8 +63,7 @@ protected:
     /**
      * @brief method description:
      * @code{.xml}
-        <service uid="SCompositorSelectorInstance" impl="::uiVisuOgre::SCompositorSelector"
-     * type="::gui::editor::IEditor">
+        <service uid="SCompositorSelectorInstance" type="::uiVisuOgre::SCompositorSelector">
              <parameter>param</parameter>
         </service>
        @endcode

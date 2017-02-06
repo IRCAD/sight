@@ -7,6 +7,8 @@
 #ifndef __UIVISUOGRE_SMATERIALSELECTOR_HPP__
 #define __UIVISUOGRE_SMATERIALSELECTOR_HPP__
 
+#include "uiVisuOgre/config.hpp"
+
 #include <fwData/Reconstruction.hpp>
 
 #include <fwTools/Failed.hpp>
@@ -18,8 +20,6 @@
 #include <QPointer>
 #include <QPushButton>
 #include <QString>
-
-#include "uiVisuOgre/config.hpp"
 
 namespace uiVisuOgre
 {
@@ -35,7 +35,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SMaterialSelector)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SMaterialSelector)(::gui::editor::IEditor) );
 
     /// Constructor.
     UIVISUOGRE_API SMaterialSelector() throw();
@@ -56,7 +56,7 @@ protected:
     /**
      * @brief method description:
      * @code{.xml}
-        <service uid="SMaterialSelectorInstance" impl="::uiVisuOgre::SMaterialSelector" type="::gui::editor::IEditor">
+        <service uid="SMaterialSelectorInstance" type="::uiVisuOgre::SMaterialSelector">
         </service>
        @endcode
      */
