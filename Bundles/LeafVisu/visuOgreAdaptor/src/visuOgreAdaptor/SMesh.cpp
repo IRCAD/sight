@@ -168,7 +168,7 @@ void visuOgreAdaptor::SMesh::updateVisibility(bool isVisible)
 
 //-----------------------------------------------------------------------------
 
-void SMesh::doConfigure() throw(fwTools::Failed)
+void SMesh::doConfigure() throw(::fwTools::Failed)
 {
     std::string color = m_configuration->getAttributeValue("color");
 
@@ -271,7 +271,7 @@ void SMesh::doStart() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SMesh::doStop() throw(fwTools::Failed)
+void SMesh::doStop() throw(::fwTools::Failed)
 {
     if(!m_transformService.expired())
     {
@@ -302,7 +302,7 @@ void SMesh::doStop() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SMesh::doSwap() throw(fwTools::Failed)
+void SMesh::doSwap() throw(::fwTools::Failed)
 {
     doStop();
     doStart();

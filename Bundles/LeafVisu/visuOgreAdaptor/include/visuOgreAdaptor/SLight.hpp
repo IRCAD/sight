@@ -43,6 +43,10 @@ namespace visuOgreAdaptor
         <config name="sceneLight" parentTransformId="cameraTF" switchedOn="yes" thetaOffset="30.5" phiOffset="45" />
     </service>
  * @endcode
+ * @subsection In-Out In-Out
+ * - \b transform [::fwData::TransformationMatrix3D]: transform matrix for the light.
+ * - \b diffuseColor [::fwData::Color]: diffuse color of the light.
+ * - \b specularColor [::fwData::Color]: specular color of the light.
  * With :
  * - \b name (optional): defines a name for the associated Ogre light.
  * - \b parentTransformId (optional): name of the parent transform node.
@@ -79,25 +83,25 @@ public:
 
 protected:
     /// Starting method. Do nothing
-    VISUOGREADAPTOR_API void doStart() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
 
     /// Stopping method
-    VISUOGREADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
 
     /// Configures the service.
-    VISUOGREADAPTOR_API void doConfigure() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
 
     /// Swaping method, only asks for an updating.
-    VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
 
     /// Updates the light position and orientation
-    VISUOGREADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
 
     /// Light name getter.
     VISUOGREADAPTOR_API virtual const std::string& getName() const;
 
     /// Light name setter.
-    VISUOGREADAPTOR_API virtual void setName(std::string _name);
+    VISUOGREADAPTOR_API virtual void setName(const std::string& _name);
 
     /// Light type getter.
     VISUOGREADAPTOR_API virtual ::Ogre::Light::LightTypes getType() const;
@@ -199,7 +203,7 @@ inline const std::string& SLight::getName() const
 
 //------------------------------------------------------------------------------
 
-inline void SLight::setName(std::string _name)
+inline void SLight::setName(const std::string& _name)
 {
     m_lightName = _name;
 }

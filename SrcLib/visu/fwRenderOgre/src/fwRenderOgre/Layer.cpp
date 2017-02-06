@@ -223,7 +223,6 @@ void Layer::createScene()
     cameraNode->setPosition(Ogre::Vector3(0, 0, 5));
     cameraNode->lookAt(Ogre::Vector3(0, 0, 1), ::Ogre::Node::TS_WORLD);
 
-    // Attach Camera and Headlight to fit vtk light
     m_cameraManager->setTransformName(cameraNode->getName());
     cameraNode->attachObject(m_cameraManager->getCamera());
     m_renderService.lock()->addAdaptor(m_cameraManager);
@@ -836,7 +835,7 @@ bool Layer::isSceneCreated() const
 
 //-------------------------------------------------------------------------------------
 
-::Ogre::Camera* Layer::getDefaultCamera()
+::Ogre::Camera* Layer::getDefaultCamera() const
 {
     return m_cameraManager->getCamera();
 }

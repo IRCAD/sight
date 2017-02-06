@@ -31,7 +31,12 @@ namespace visuOgreAdaptor
 {
 
 /**
- * @brief   Adaptor from fw4 Camera to Ogre Camera
+ * @brief Adaptor from f4s Camera to Ogre Camera.
+ *
+ * @section Slots Slots
+ * - \b updateTF3D(): Called when the Ogre transform matrix has been updated and updates the transform service
+ * accordingly.
+ * - \b calibrate(): Applies calibration information to Ogre camera.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -41,6 +46,9 @@ namespace visuOgreAdaptor
  *      <config name="sceneCamera" />
  *  </service>
  * @endcode
+ * @subsection Input Input
+ * - \b transform [::fwData::TransformationMatrix3D]: transform matrix for the camera.
+ * - \b calibration [::arData::Camera]: camera containing calibration information.
  * With :
  * - \b name (optional): defines a name for the associated Ogre camera.
  */
@@ -94,19 +102,19 @@ public:
 
 protected:
     /// Starting method. Does nothing.
-    VISUOGREADAPTOR_API void doStart() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
 
     /// Stopping method.
-    VISUOGREADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
 
     /// Configures the service.
-    VISUOGREADAPTOR_API void doConfigure() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
 
     /// Swaping method, only asks for a updating.
-    VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
 
     /// Updating method. Does nothing.
-    VISUOGREADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
 
 private:
 
@@ -117,7 +125,7 @@ private:
     void createTransformService();
 
     /// Attaches a movable object to the associated scene node.
-    void attachNode(Ogre::MovableObject* _node);
+    void attachNode(::Ogre::MovableObject* _node);
 
     /// Calibrate the camera parameters according to an arData::Camera.
     void calibrate();

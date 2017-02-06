@@ -84,7 +84,7 @@ SRender::~SRender() throw()
 
 //-----------------------------------------------------------------------------
 
-void SRender::configuring() throw(fwTools::Failed)
+void SRender::configuring() throw(::fwTools::Failed)
 {
     this->initialize();
 
@@ -144,7 +144,7 @@ void SRender::configuring() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SRender::starting() throw(fwTools::Failed)
+void SRender::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
@@ -194,7 +194,7 @@ void SRender::starting() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SRender::stopping() throw(fwTools::Failed)
+void SRender::stopping() throw(::fwTools::Failed)
 {
     m_connections.disconnect();
 
@@ -231,7 +231,7 @@ void SRender::stopping() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SRender::updating() throw(fwTools::Failed)
+void SRender::updating() throw(::fwTools::Failed)
 {
 }
 

@@ -82,20 +82,20 @@ void IAdaptor::starting() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::stopping() throw(fwTools::Failed)
+void IAdaptor::stopping() throw(::fwTools::Failed)
 {
     doStop();
 }
 //------------------------------------------------------------------------------
 
-void IAdaptor::swapping() throw(fwTools::Failed)
+void IAdaptor::swapping() throw(::fwTools::Failed)
 {
     doSwap();
 }
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::updating() throw(fwTools::Failed)
+void IAdaptor::updating() throw(::fwTools::Failed)
 {
     doUpdate();
 }

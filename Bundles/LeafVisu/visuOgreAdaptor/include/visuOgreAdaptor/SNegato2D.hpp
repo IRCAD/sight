@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,11 +40,11 @@ public:
 protected:
     /// Instanciates the texture, material, pass and texture unit state
     /// Sets the connection between attached data and the receive slot
-    VISUOGREADAPTOR_API void doStart() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
     /// Disconnects the attached data from the receive slot
-    VISUOGREADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
     /// Requests a rendering of the scene.
-    VISUOGREADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
 
     /**
      * @brief Configures the service
@@ -62,7 +62,7 @@ protected:
      */
     VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
     /// Performs stop, start and update.
-    VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
 
     /// Returns proposals to connect service slots to associated object signals
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;

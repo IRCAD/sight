@@ -5,8 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/interactor/TrackballInteractor.hpp"
-#include <fwRenderOgre/Layer.hpp>
-#include <fwRenderOgre/registry/macros.hpp>
+#include "fwRenderOgre/Layer.hpp"
+#include "fwRenderOgre/registry/macros.hpp"
 
 #include <fwCom/Signal.hxx>
 

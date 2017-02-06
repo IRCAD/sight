@@ -78,7 +78,7 @@ SLight::~SLight() throw()
 
 //------------------------------------------------------------------------------
 
-void SLight::doConfigure() throw(fwTools::Failed)
+void SLight::doConfigure() throw(::fwTools::Failed)
 {
     SLM_ASSERT("No config tag", m_configuration->getName() == "config");
 
@@ -89,7 +89,7 @@ void SLight::doConfigure() throw(fwTools::Failed)
 
     if(m_configuration->hasAttribute("switchedOn"))
     {
-        std::string switchedOnStr = m_configuration->getAttributeValue("switchedOn");
+        const std::string switchedOnStr = m_configuration->getAttributeValue("switchedOn");
         m_switchedOn = (switchedOnStr == "yes");
     }
 
@@ -99,13 +99,13 @@ void SLight::doConfigure() throw(fwTools::Failed)
 
         if(m_configuration->hasAttribute("thetaOffset"))
         {
-            std::string thetaOffsetStr = m_configuration->getAttributeValue("thetaOffset");
+            const std::string thetaOffsetStr = m_configuration->getAttributeValue("thetaOffset");
             m_thetaOffset = std::stof(thetaOffsetStr);
         }
 
         if(m_configuration->hasAttribute("phiOffset"))
         {
-            std::string phiOffsetStr = m_configuration->getAttributeValue("phiOffset");
+            const std::string phiOffsetStr = m_configuration->getAttributeValue("phiOffset");
             m_phiOffset = std::stof(phiOffsetStr);
         }
     }
@@ -113,7 +113,7 @@ void SLight::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLight::doStart() throw(fwTools::Failed)
+void SLight::doStart() throw(::fwTools::Failed)
 {
     m_lightDiffuseColor  = this->getInOut< ::fwData::Color >("diffuseColor");
     m_lightSpecularColor = this->getInOut< ::fwData::Color >("specularColor");
@@ -149,18 +149,18 @@ void SLight::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SLight::doUpdate() throw(fwTools::Failed)
+void SLight::doUpdate() throw(::fwTools::Failed)
 {
     SLM_ASSERT("Missing color data objects.", m_lightDiffuseColor && m_lightSpecularColor);
 
-    ::Ogre::ColourValue diffuseColor(m_lightDiffuseColor->red(),
-                                     m_lightDiffuseColor->green(),
-                                     m_lightDiffuseColor->blue(),
-                                     m_lightDiffuseColor->alpha());
-    ::Ogre::ColourValue specularColor(m_lightSpecularColor->red(),
-                                      m_lightSpecularColor->green(),
-                                      m_lightSpecularColor->blue(),
-                                      m_lightSpecularColor->alpha());
+    const ::Ogre::ColourValue diffuseColor(m_lightDiffuseColor->red(),
+                                           m_lightDiffuseColor->green(),
+                                           m_lightDiffuseColor->blue(),
+                                           m_lightDiffuseColor->alpha());
+    const ::Ogre::ColourValue specularColor(m_lightSpecularColor->red(),
+                                            m_lightSpecularColor->green(),
+                                            m_lightSpecularColor->blue(),
+                                            m_lightSpecularColor->alpha());
 
     m_light->setDiffuseColour(diffuseColor);
     m_light->setSpecularColour(specularColor);
@@ -209,7 +209,7 @@ void SLight::setThetaOffset(float _thetaOffset)
 {
     SLM_ASSERT("Unable to update an offset if the light's node isn't attached to a parent node", !m_useOrphanNode);
 
-    float thetaDelta = _thetaOffset - m_thetaOffset;
+    const float thetaDelta = _thetaOffset - m_thetaOffset;
     m_thetaOffset = _thetaOffset;
 
     ::Ogre::Radian thetaOffsetRadDelta(::Ogre::Degree(static_cast< ::Ogre::Real>(thetaDelta)));
@@ -225,7 +225,7 @@ void SLight::setPhiOffset(float _phiOffset)
 {
     SLM_ASSERT("Unable to update an offset if the light's node isn't attached to a parent node", !m_useOrphanNode);
 
-    float phiDelta = _phiOffset - m_phiOffset;
+    const float phiDelta = _phiOffset - m_phiOffset;
     m_phiOffset = _phiOffset;
 
     ::Ogre::Radian phiOffsetRadDelta(::Ogre::Degree(static_cast< ::Ogre::Real>(phiDelta)));
@@ -293,14 +293,14 @@ void SLight::attachNode(Ogre::MovableObject* _node)
 
 //------------------------------------------------------------------------------
 
-void SLight::doSwap() throw(fwTools::Failed)
+void SLight::doSwap() throw(::fwTools::Failed)
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void SLight::doStop() throw(fwTools::Failed)
+void SLight::doStop() throw(::fwTools::Failed)
 {
     if(!m_transformService.expired())
     {

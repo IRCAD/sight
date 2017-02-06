@@ -6,8 +6,8 @@
 
 #include "fwRenderOgre/Utils.hpp"
 
+#include "fwRenderOgre/compositor/MaterialMgrListener.hpp"
 #include "fwRenderOgre/factory/R2VBRenderable.hpp"
-#include <fwRenderOgre/compositor/MaterialMgrListener.hpp>
 
 #include <fwCore/spyLog.hpp>
 

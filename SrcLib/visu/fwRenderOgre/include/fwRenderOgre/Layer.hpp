@@ -238,7 +238,7 @@ public:
 
     FWRENDEROGRE_API bool isSceneCreated() const;
 
-    FWRENDEROGRE_API ::Ogre::Camera* getDefaultCamera();
+    FWRENDEROGRE_API ::Ogre::Camera* getDefaultCamera() const;
 
     /// Default light flag setter.
     FWRENDEROGRE_API void setHasDefaultLight(bool hasDefaultLight);

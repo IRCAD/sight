@@ -83,7 +83,7 @@ public:
     /// Light name getter.
     FWRENDEROGRE_API virtual const std::string& getName() const = 0;
     /// Light name setter.
-    FWRENDEROGRE_API virtual void setName(std::string _name)
+    FWRENDEROGRE_API virtual void setName(const std::string& _name)
         = 0;
     /// Light type getter.
     FWRENDEROGRE_API virtual ::Ogre::Light::LightTypes getType() const = 0;

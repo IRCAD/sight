@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2017.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,7 @@ public:
      * @param _ogreColor the Ogre color to convert.
      * @return the converted QColor.
      */
-    UIVISUOGRE_API static QColor converOgreColorToQColor(const ::Ogre::ColourValue& _ogreColor);
+    UIVISUOGRE_API static const QColor converOgreColorToQColor(const ::Ogre::ColourValue& _ogreColor);
 
     /**
      * @brief convertQColorToOgreColor

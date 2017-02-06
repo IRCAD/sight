@@ -6,8 +6,8 @@
 
 #include "fwRenderOgre/interactor/Negato2DInteractor.hpp"
 
-#include <fwRenderOgre/Layer.hpp>
-#include <fwRenderOgre/registry/macros.hpp>
+#include "fwRenderOgre/Layer.hpp"
+#include "fwRenderOgre/registry/macros.hpp"
 
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreCamera.h>

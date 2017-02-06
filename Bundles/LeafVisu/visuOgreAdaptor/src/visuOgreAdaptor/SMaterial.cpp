@@ -180,7 +180,7 @@ int SMaterial::getStartPriority()
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doConfigure() throw(fwTools::Failed)
+void SMaterial::doConfigure() throw(::fwTools::Failed)
 {
     if(m_configuration->hasAttribute("materialTemplate"))
     {
@@ -216,7 +216,7 @@ void SMaterial::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doStart() throw(fwTools::Failed)
+void SMaterial::doStart() throw(::fwTools::Failed)
 {
     if(!m_shadingMode.empty())
     {
@@ -284,7 +284,7 @@ void SMaterial::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doStop() throw(fwTools::Failed)
+void SMaterial::doStop() throw(::fwTools::Failed)
 {
     m_material.setNull();
     m_textureConnection.disconnect();
@@ -299,7 +299,7 @@ void SMaterial::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doSwap() throw(fwTools::Failed)
+void SMaterial::doSwap() throw(::fwTools::Failed)
 {
     SLM_TRACE("SWAPPING Material");
     this->stopping();
@@ -308,7 +308,7 @@ void SMaterial::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doUpdate() throw(fwTools::Failed)
+void SMaterial::doUpdate() throw(::fwTools::Failed)
 {
     ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
 

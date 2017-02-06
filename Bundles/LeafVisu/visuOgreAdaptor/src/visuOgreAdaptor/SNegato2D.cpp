@@ -315,7 +315,7 @@ void SNegato2D::createPlane(const fwData::Image::SpacingType& _spacing)
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::doSwap() throw(fwTools::Failed)
+void SNegato2D::doSwap() throw(::fwTools::Failed)
 {
     this->stopping();
     this->starting();

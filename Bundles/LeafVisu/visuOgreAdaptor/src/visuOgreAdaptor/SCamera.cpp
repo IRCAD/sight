@@ -70,7 +70,7 @@ SCamera::~SCamera() throw()
 
 //------------------------------------------------------------------------------
 
-void SCamera::doConfigure() throw(fwTools::Failed)
+void SCamera::doConfigure() throw(::fwTools::Failed)
 {
     SLM_ASSERT("No config tag", m_configuration->getName() == "config");
 
@@ -82,7 +82,7 @@ void SCamera::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCamera::doStart() throw(fwTools::Failed)
+void SCamera::doStart() throw(::fwTools::Failed)
 {
     m_calibration = this->getInput< ::arData::Camera >("calibration");
 
@@ -104,7 +104,7 @@ void SCamera::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCamera::doUpdate() throw(fwTools::Failed)
+void SCamera::doUpdate() throw(::fwTools::Failed)
 {
 }
 
@@ -140,7 +140,7 @@ void SCamera::createTransformService()
 
 //-----------------------------------------------------------------------------
 
-void SCamera::attachNode(Ogre::MovableObject* _node)
+void SCamera::attachNode(::Ogre::MovableObject* _node)
 {
     auto transformService = this->getTransformService();
 
@@ -155,14 +155,14 @@ void SCamera::attachNode(Ogre::MovableObject* _node)
 
 //------------------------------------------------------------------------------
 
-void SCamera::doSwap() throw(fwTools::Failed)
+void SCamera::doSwap() throw(::fwTools::Failed)
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::doStop() throw(fwTools::Failed)
+void SCamera::doStop() throw(::fwTools::Failed)
 {
 }
 

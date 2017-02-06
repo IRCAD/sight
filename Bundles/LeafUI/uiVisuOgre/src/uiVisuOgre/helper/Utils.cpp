@@ -1,3 +1,9 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
 #include "uiVisuOgre/helper/Utils.hpp"
 
 namespace uiVisuOgre
@@ -8,7 +14,7 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-QColor Utils::converOgreColorToQColor(const ::Ogre::ColourValue& _ogreColor)
+const QColor Utils::converOgreColorToQColor(const ::Ogre::ColourValue& _ogreColor)
 {
     int r = static_cast<int>(_ogreColor.r * 255);
     int g = static_cast<int>(_ogreColor.g * 255);

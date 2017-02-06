@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,8 @@
 #include "visuOgreAdaptor/SInteractorStyle.hpp"
 
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slots.hxx>
 #include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwRenderOgre/interactor/IInteractor.hpp>
 #include <fwRenderOgre/interactor/IMovementInteractor.hpp>
@@ -51,7 +51,7 @@ SInteractorStyle::~SInteractorStyle() throw()
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::doConfigure() throw(fwTools::Failed)
+void SInteractorStyle::doConfigure() throw(::fwTools::Failed)
 {
     SLM_ASSERT("Interactor style not found, in xml, config style must be 'Default', 'Fixed', 'Negato2D', 'Mesh', "
                "or 'Video'",
@@ -61,16 +61,16 @@ void SInteractorStyle::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::doStart() throw(fwTools::Failed)
+void SInteractorStyle::doStart() throw(::fwTools::Failed)
 {
     this->setInteractorStyle();
 
-    if(!std::strcmp("Mesh",m_configuredStyle.c_str()) || !std::strcmp("Video",m_configuredStyle.c_str()))
+    if(!std::strcmp("Mesh", m_configuredStyle.c_str()) || !std::strcmp("Video", m_configuredStyle.c_str()))
     {
         ::fwRenderOgre::interactor::IPickerInteractor::sptr pickerInteractor =
             this->getRenderService()->getLayer(m_layerID)->getSelectInteractor();
 
-        OSLM_ASSERT("There is no interactor found for this layer",pickerInteractor);
+        OSLM_ASSERT("There is no interactor found for this layer", pickerInteractor);
 
         //Connect all the modification signals of the frameTL to our updating function
         m_connections.connect(pickerInteractor,
@@ -82,20 +82,20 @@ void SInteractorStyle::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::doUpdate() throw(fwTools::Failed)
+void SInteractorStyle::doUpdate() throw(::fwTools::Failed)
 {
     this->setInteractorStyle();
 }
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::doSwap() throw(fwTools::Failed)
+void SInteractorStyle::doSwap() throw(::fwTools::Failed)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SInteractorStyle::doStop() throw(fwTools::Failed)
+void SInteractorStyle::doStop() throw(::fwTools::Failed)
 {
 }
 
@@ -118,7 +118,7 @@ void SInteractorStyle::setInteractorStyle()
         this->getRenderService()->getLayer(m_layerID)->setMoveInteractor(
             ::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(interactor));
     }
-    if(!std::strcmp("Mesh",m_configuredStyle.c_str()) || !std::strcmp("Video",m_configuredStyle.c_str()))
+    if(!std::strcmp("Mesh", m_configuredStyle.c_str()) || !std::strcmp("Video", m_configuredStyle.c_str()))
     {
         this->getRenderService()->getLayer(m_layerID)->setSelectInteractor(
             ::fwRenderOgre::interactor::IPickerInteractor::dynamicCast(interactor));

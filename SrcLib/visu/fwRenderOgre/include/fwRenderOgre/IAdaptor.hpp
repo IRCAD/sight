@@ -64,11 +64,11 @@ protected:
     //@{
     /// Overrides
     FWRENDEROGRE_API virtual void info(std::ostream& _sstream );
-    FWRENDEROGRE_API void configuring() throw(fwTools::Failed);
-    FWRENDEROGRE_API void starting() throw(fwTools::Failed);
-    FWRENDEROGRE_API void stopping() throw(fwTools::Failed);
-    FWRENDEROGRE_API void swapping() throw(fwTools::Failed);
-    FWRENDEROGRE_API void updating() throw(fwTools::Failed);
+    FWRENDEROGRE_API void configuring() throw(::fwTools::Failed);
+    FWRENDEROGRE_API void starting() throw(::fwTools::Failed);
+    FWRENDEROGRE_API void stopping() throw(::fwTools::Failed);
+    FWRENDEROGRE_API void swapping() throw(::fwTools::Failed);
+    FWRENDEROGRE_API void updating() throw(::fwTools::Failed);
     //@}
 
     /**

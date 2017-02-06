@@ -56,7 +56,7 @@ protected:
     VISUOGREADAPTOR_API void doStop() throw ( ::fwTools::Failed );
 
     /// Calls updating()
-    VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
 
     /// Updated the frame from the current Image.
     VISUOGREADAPTOR_API void doUpdate() throw ( ::fwTools::Failed );

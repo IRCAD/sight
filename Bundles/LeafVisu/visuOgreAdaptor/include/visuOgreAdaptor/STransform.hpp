@@ -52,15 +52,15 @@ public:
 
 protected:
     /// Creates the ::Ogre::SceneNode corresonding to the associated transform matrix.
-    VISUOGREADAPTOR_API void doStart() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
     /// Unregisters the service
-    VISUOGREADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
     /// Takes the attribute "parent" from m_config, and then puts it in m_parentTransformUID
-    VISUOGREADAPTOR_API void doConfigure() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
     /// Calls updating
-    VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
     /// Updates m_transform and m_ogreTransformNode from ::fwData::TransformationMatrix3D
-    VISUOGREADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
 
     /// Ogre transform node.
     ::Ogre::SceneNode* m_transformNode;

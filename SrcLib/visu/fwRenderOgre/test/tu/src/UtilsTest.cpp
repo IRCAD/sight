@@ -6,7 +6,7 @@
 
 #include "UtilsTest.hpp"
 
-#include "fwRenderOgre/Utils.hpp"
+#include <fwRenderOgre/Utils.hpp>
 
 #include <OGRE/OgreColourValue.h>
 
