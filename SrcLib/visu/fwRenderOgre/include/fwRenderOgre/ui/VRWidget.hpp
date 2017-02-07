@@ -7,9 +7,7 @@
 #ifndef __FWRENDEROGRE_UI_VRWIDGET_HPP__
 #define __FWRENDEROGRE_UI_VRWIDGET_HPP__
 
-#include <fwCom/HasSlots.hpp>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwRenderOgre/registry/macros.hpp>
 
@@ -29,7 +27,7 @@ namespace ui
 /**
  * @brief Holds the clipping widgets, used to clip/move/scale the volume.
  */
-class VRWidget : public ::fwCom::HasSlots
+class VRWidget
 {
 public:
 
@@ -54,7 +52,8 @@ public:
                               ::Ogre::Camera* camera,
                               SRender::sptr renderService,
                               ::Ogre::SceneManager* sceneManager,
-                              ::fwRenderOgre::vr::IVolumeRenderer* renderer) throw();
+                              ::fwRenderOgre::vr::IVolumeRenderer* renderer,
+                              ::fwData::TransformationMatrix3D::sptr clippingMatrix) throw();
 
     /// Destructor.
     FWRENDEROGRE_API virtual ~VRWidget() throw();
@@ -179,6 +178,8 @@ private:
     /// Materials
     ::Ogre::MaterialPtr m_sphereHighlightMtl, m_frameMtl, m_frameHighlightMtl, m_faceMtl;
 
+    /// Pointer to the adaptor clipping matrix
+    ::fwData::TransformationMatrix3D::sptr m_clippingMatrix;
 };
 
 } // namespace ui

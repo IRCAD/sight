@@ -267,6 +267,7 @@ void SVolumeRender::updatingTFWindowing(double window, double level)
 
     connections.push( "image", ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
     connections.push( "image", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
+    connections.push( "clippingMatrix", ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
 
     return connections;
 }
@@ -882,14 +883,11 @@ void SVolumeRender::initWidgets()
 {
     // Create widgets.
     {
-        auto widget = new ::fwRenderOgre::ui::VRWidget(this->getID(),
-                                                       m_volumeSceneNode,
-                                                       m_camera,
-                                                       this->getRenderService(),
-                                                       m_sceneManager,
-                                                       m_volumeRenderer);
+        auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>("clippingMatrix");
 
-        m_widgets = std::shared_ptr< ::fwRenderOgre::ui::VRWidget >(widget);
+        m_widgets = ::std::make_shared< ::fwRenderOgre::ui::VRWidget >(this->getID(), m_volumeSceneNode,
+                                                                       m_camera, this->getRenderService(),
+                                                                       m_sceneManager, m_volumeRenderer,clippingMatrix);
     }
 
     // Connect widgets to interactor.
@@ -897,8 +895,7 @@ void SVolumeRender::initWidgets()
         ::fwRenderOgre::Layer::sptr layer                        = this->getRenderService()->getLayer(m_layerID);
         ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getInteractor();
 
-        auto vrInteractor =
-            std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
+        auto vrInteractor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
 
         if(vrInteractor)
         {

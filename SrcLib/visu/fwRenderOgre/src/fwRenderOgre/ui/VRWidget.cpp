@@ -1,16 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/ui/VRWidget.hpp"
 
-#include <boost/algorithm/clamp.hpp>
-
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hxx>
+
+#include <boost/algorithm/clamp.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreEntity.h>
@@ -19,9 +17,9 @@
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgrePlane.h>
+#include <OGRE/OgreRay.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTechnique.h>
-#include <OGRE/OgreRay.h>
 #include <OGRE/OgreViewport.h>
 
 #include <numeric>
@@ -38,26 +36,43 @@ VRWidget::VRWidget(const std::string id,
                    ::Ogre::Camera* camera,
                    SRender::sptr renderService,
                    ::Ogre::SceneManager* sceneManager,
-                   ::fwRenderOgre::vr::IVolumeRenderer* renderer) throw() :
-    m_selectionMode   (NONE),
-    m_id              (id),
-    m_sceneManager    (sceneManager),
-    m_camera          (camera),
-    m_renderService   (renderService),
-    m_volumeSceneNode (parentSceneNode),
-    m_widgetSceneNode (m_volumeSceneNode->createChildSceneNode()),
-    m_renderer        (renderer),
-    m_boundingBox     (nullptr),
-    m_selectedFace    (nullptr),
-    m_selectedWidget  (nullptr)
+                   ::fwRenderOgre::vr::IVolumeRenderer* renderer,
+                   ::fwData::TransformationMatrix3D::sptr clippingMatrix) throw() :
+    m_selectionMode(NONE),
+    m_id(id),
+    m_sceneManager(sceneManager),
+    m_camera(camera),
+    m_renderService(renderService),
+    m_volumeSceneNode(parentSceneNode),
+    m_widgetSceneNode(m_volumeSceneNode->createChildSceneNode()),
+    m_renderer(renderer),
+    m_boundingBox(nullptr),
+    m_selectedFace(nullptr),
+    m_selectedWidget(nullptr),
+    m_clippingMatrix(clippingMatrix)
 {
-    m_clippingCube = { ::Ogre::Vector3(0, 0, 0), ::Ogre::Vector3(1, 1, 1) };
+    m_clippingCube = {{ ::Ogre::Vector3(0, 0, 0), ::Ogre::Vector3(1, 1, 1) }};
+
+    // Initialize the clipping cube with the clipping matrix if it is provided
+    if(m_clippingMatrix != nullptr)
+    {
+        ::Ogre::Matrix4 m_ogreTransform;
+        for(size_t lt = 0; lt < 4; lt++)
+        {
+            for(size_t ct = 0; ct < 4; ct++)
+            {
+                m_ogreTransform[ct][lt] = static_cast< ::Ogre::Real >(m_clippingMatrix->getCoefficient(ct, lt));
+            }
+        }
+        m_clippingCube[0] = m_ogreTransform.transformAffine(m_clippingCube[0]);
+        m_clippingCube[1] = m_ogreTransform.transformAffine(m_clippingCube[1]);
+    }
     initWidgets();
 }
 
 //-----------------------------------------------------------------------------
 
-VRWidget::~VRWidget()
+VRWidget::~VRWidget() throw()
 {
     ::Ogre::MaterialManager::getSingleton().remove(m_sphereHighlightMtl->getHandle());
     ::Ogre::MaterialManager::getSingleton().remove(m_frameMtl->getHandle());
@@ -70,11 +85,11 @@ VRWidget::~VRWidget()
 
 //-----------------------------------------------------------------------------
 
-std::array< ::Ogre::Vector3,
-            4 > VRWidget::getFacePositions(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName) const
+std::array< ::Ogre::Vector3, 4 >
+VRWidget::getFacePositions(::fwRenderOgre::vr::IVolumeRenderer::CubeFace _faceName) const
 {
-    const ::fwRenderOgre::vr::IVolumeRenderer::CubeFacePositionList positionIndices = m_renderer->s_cubeFaces.at(
-        _faceName);
+    const ::fwRenderOgre::vr::IVolumeRenderer::CubeFacePositionList positionIndices =
+        m_renderer->s_cubeFaces.at(_faceName);
     std::array< ::Ogre::Vector3, 4 > facePositions;
 
     auto BBpositions = getClippingBoxPositions();
@@ -97,16 +112,16 @@ Ogre::Vector3 VRWidget::getFaceCenter(::fwRenderOgre::vr::IVolumeRenderer::CubeF
 
 std::array< ::Ogre::Vector3, 8 > VRWidget::getClippingBoxPositions() const
 {
-    return {
-               ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[1].y, m_clippingCube[1].z),
-               ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[0].y, m_clippingCube[1].z),
-               ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[1].y, m_clippingCube[0].z),
-               ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[1].y, m_clippingCube[1].z),
-               ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[0].y, m_clippingCube[1].z),
-               ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[0].y, m_clippingCube[0].z),
-               ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[1].y, m_clippingCube[0].z),
-               ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[0].y, m_clippingCube[0].z)
-    };
+    return {{
+                ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[1].y, m_clippingCube[1].z),
+                ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[0].y, m_clippingCube[1].z),
+                ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[1].y, m_clippingCube[0].z),
+                ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[1].y, m_clippingCube[1].z),
+                ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[0].y, m_clippingCube[1].z),
+                ::Ogre::Vector3(m_clippingCube[1].x, m_clippingCube[0].y, m_clippingCube[0].z),
+                ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[1].y, m_clippingCube[0].z),
+                ::Ogre::Vector3(m_clippingCube[0].x, m_clippingCube[0].y, m_clippingCube[0].z)
+            }};
 }
 
 //-----------------------------------------------------------------------------
@@ -116,7 +131,26 @@ void VRWidget::updateClippingCube()
     const ::Ogre::Vector3 min = m_clippingCube[0];
     const ::Ogre::Vector3 max = m_clippingCube[1];
 
-    m_renderer->clipImage(::Ogre::AxisAlignedBox(min, max));
+    const ::Ogre::AxisAlignedBox aaBox(min, max);
+
+    // Update clipping matrix if it is provided
+    if(m_clippingMatrix != nullptr)
+    {
+        const ::Ogre::Vector3 size = aaBox.getSize();
+
+        m_clippingMatrix->setCoefficient(0,0, static_cast<double>(size.x));
+        m_clippingMatrix->setCoefficient(1,1, static_cast<double>(size.y));
+        m_clippingMatrix->setCoefficient(2,2, static_cast<double>(size.z));
+
+        m_clippingMatrix->setCoefficient(0,3, static_cast<double>(m_clippingCube[0].x));
+        m_clippingMatrix->setCoefficient(1,3, static_cast<double>(m_clippingCube[0].y));
+        m_clippingMatrix->setCoefficient(2,3, static_cast<double>(m_clippingCube[0].z));
+
+        auto sig = m_clippingMatrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
+        sig->asyncEmit();
+    }
+
+    m_renderer->clipImage(aaBox);
 }
 
 //-----------------------------------------------------------------------------
@@ -311,7 +345,7 @@ void VRWidget::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screenX, 
 
         // Check for overlap.
         const float eps = 0.001f;
-        for(int i = 0; i < 3; ++i)
+        for(size_t i = 0; i < 3; ++i)
         {
             if(tmpClippingCube[0][i] > m_clippingCube[1][i])
             {
@@ -379,7 +413,6 @@ void VRWidget::moveClippingBox(int x, int y, int dx, int dy)
         m_volumeSceneNode->convertWorldToLocalPosition(oldPosRay.getOrigin()),
         m_volumeSceneNode->convertWorldToLocalDirection(oldPosRay.getDirection(), true)
         );
-
 
     const ::Ogre::Vector3 min = m_clippingCube[0];
     const ::Ogre::Vector3 max = m_clippingCube[1];
