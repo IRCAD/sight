@@ -168,7 +168,14 @@
                 <IOSelectorSrvConfig name="SDBAtomsReaderIOSelectorConfig" />
             </service>
 
-            <service uid="actionSavePreset" type="::gui::action::SStarter">
+            <service uid="actionSavePreset" type="::gui::action::SSlotCaller">
+                <slots>
+                    <slot>startWriter/update</slot>
+                    <slot>pushTFInImage/update</slot>
+                </slots>
+            </service>
+
+            <service uid="startWriter" type="::gui::action::SStarter">
                 <start uid="writer" />
             </service>
 
@@ -305,12 +312,30 @@
                 </scene>
             </service>
 
+            <!-- *********************************** Image TF management ******************************************* -->
             <service uid="tfm" type="::uiTF::TransferFunctionEditor" >
                 <inout key="transferFunctions" uid="TFPool" />
                 <inout key="TFSelections" uid="TFSelections" />
                 <config selectedTFKey="SelectedTF" />
             </service>
 
+            <service uid="medicalImage" type="::ctrlSelection::MedicalImageSrv" >
+                <inout key="image" uid="image" />
+            </service>
+
+            <service uid="computeHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
+                <in key="image" uid="image" />
+                <inout key="histogram" uid="histogram" />
+                <binsWidth>5.0</binsWidth>
+            </service>
+
+            <service uid="windowLevelVR" type="::uiImage::WindowLevel" autoConnect="yes">
+                <inout key="image" uid="image" autoConnect="yes"/>
+                <inout key="TFSelections" uid="TFSelections" />
+                <config selectedTFKey="SelectedTF" />
+            </service>
+
+            <!-- *********************************** Data extraction *********************************************** -->
             <service uid="selector" type="::uiMedData::editor::SSelector" autoConnect="yes">
                 <inout key="seriesDB" uid="dicomSeriesDB"/>
                 <inout key="selection" uid="selections" />
@@ -333,21 +358,11 @@
                 <inout key="target" uid="cameraTF"/>
             </service>
 
-            <service uid="medicalImage" type="::ctrlSelection::MedicalImageSrv" >
-                <inout key="image" uid="image" />
-            </service>
-
-            <service uid="computeHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
-                <in key="image" uid="image" />
-                <inout key="histogram" uid="histogram" />
-                <binsWidth>5.0</binsWidth>
-            </service>
-
-            <!-- Negato windowing service -->
-            <service uid="windowLevelVR" type="::uiImage::WindowLevel" autoConnect="yes">
-                <inout key="image" uid="image" autoConnect="yes"/>
-                <inout key="TFSelections" uid="TFSelections" />
-                <config selectedTFKey="SelectedTF" />
+            <service uid="copyTF" type="::ctrlCamp::SCopy" >
+                <in key="source" uid="selections">
+                    <extract from="@values.0.image.fields.tf" />
+                </in>
+                <inout key="target" uid="TFSelections"/>
             </service>
 
             <service uid="pushCameraTFInImage" type="::rdTools::SAddField" >
@@ -358,11 +373,21 @@
                 <field id="cameraTransform" />
             </service>
 
+            <service uid="pushTFInImage" type="::rdTools::SAddField" >
+                <inout group="source">
+                    <key uid="TFSelections" />
+                </inout>
+                <inout key="target" uid="image" />
+                <field id="tf" />
+            </service>
+
+            <!-- *********************************** Connections *************************************************** -->
             <connect>
                 <signal>selections/addedObjects</signal>
                 <slot>extractImage/update</slot>
                 <slot>pushCameraTFInImage/update</slot>
                 <slot>copyCameraTF/update</slot>
+                <slot>copyTF/update</slot>
             </connect>
 
             <connect>
@@ -375,6 +400,7 @@
             <start uid="Scene2D" />
             <start uid="Scene2D_Shutter" />
             <start uid="extractImage" />
+            <start uid="startWriter" />
 
             <!-- Deferred start -->
             <start uid="medicalImage" />
@@ -382,7 +408,9 @@
             <start uid="windowLevelVR" />
             <start uid="computeHistogram" />
             <start uid="pushCameraTFInImage" />
+            <start uid="pushTFInImage" />
             <start uid="copyCameraTF" />
+            <start uid="copyTF" />
 
             <!-- Deferred update -->
             <update uid="pushCameraTFInImage" />
