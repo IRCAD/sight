@@ -93,15 +93,15 @@ void SCamera::createTransformService()
         transform = ::fwData::TransformationMatrix3D::New();
     }
 
-    m_transformService = ::fwServices::add< ::fwRenderOgre::IAdaptor >(transform,
-                                                                       "::visuOgreAdaptor::STransform");
+    m_transformService = ::fwServices::add< ::fwRenderOgre::IAdaptor >(transform, "::visuOgreAdaptor::STransform");
     SLM_ASSERT("Transform service is null", m_transformService.lock());
     auto transformService = this->getTransformService();
 
     transformService->setID(this->getID() + "_" + transformService->getID());
     transformService->setRenderService(this->getRenderService());
     transformService->setLayerID(m_layerID);
-    transformService->setTransformId(this->getTransformId());
+    // For now we use the only one Ogre camera in the layer as input
+    transformService->setTransformId(m_camera->getParentSceneNode()->getName());
     transformService->setParentTransformId(this->getParentTransformId());
 
     transformService->start();
