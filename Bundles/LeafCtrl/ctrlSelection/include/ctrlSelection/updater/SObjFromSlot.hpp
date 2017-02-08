@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,8 @@
 #ifndef __CTRLSELECTION_UPDATER_SOBJFROMSLOT_HPP__
 #define __CTRLSELECTION_UPDATER_SOBJFROMSLOT_HPP__
 
-#include "ctrlSelection/config.hpp"
 #include "ctrlSelection/IUpdaterSrv.hpp"
-
-#include <fwData/Object.hpp>
+#include "ctrlSelection/config.hpp"
 
 namespace ctrlSelection
 {
@@ -42,7 +40,7 @@ class CTRLSELECTION_CLASS_API SObjFromSlot : public ::ctrlSelection::IUpdaterSrv
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SObjFromSlot)(::ctrlSelection::IUpdaterSrv) );
+    fwCoreServiceClassDefinitionsMacro( (SObjFromSlot)(::ctrlSelection::IUpdaterSrv) );
 
     /// Constructor.  Do nothing.
     CTRLSELECTION_API SObjFromSlot() throw();

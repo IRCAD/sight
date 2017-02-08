@@ -1,28 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
 #include "fwData/Image.hpp"
-#include "fwData/registry/macros.hpp"
-#include "fwData/registry/macros.hpp"
+
 #include "fwData/Exception.hpp"
+#include "fwData/registry/macros.hpp"
 
-#include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-
-#include <fwCore/base.hpp>
 
 #include <fwTools/DynamicType.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
 
-#include <climits>
+#include <boost/assign.hpp>
+
 #include <numeric>
-#include <functional>
-#include <algorithm>
-#include <sstream>
 
 //------------------------------------------------------------------------------
 
@@ -76,7 +70,7 @@ Image::~Image() throw()
 
 //-----------------------------------------------------------------------------
 
-void Image::shallowCopy(const Object::csptr &_source )
+void Image::shallowCopy(const Object::csptr& _source )
 {
     Image::csptr other = Image::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -92,7 +86,7 @@ void Image::shallowCopy(const Object::csptr &_source )
 
 //-----------------------------------------------------------------------------
 
-void Image::cachedDeepCopy(const Object::csptr &_source, DeepCopyCacheType &cache)
+void Image::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
 {
     Image::csptr other = Image::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -134,7 +128,6 @@ void Image::setDataArray(::fwData::Array::sptr array, bool copyArrayInfo)
 
 //------------------------------------------------------------------------------
 
-
 size_t Image::allocate() throw(::fwData::Exception)
 {
     if (!m_dataArray)
@@ -149,7 +142,7 @@ size_t Image::allocate() throw(::fwData::Exception)
 //------------------------------------------------------------------------------
 
 size_t Image::allocate(SizeType::value_type x, SizeType::value_type y,  SizeType::value_type z,
-                       const ::fwTools::Type &type, size_t numberOfComponents) throw(::fwData::Exception)
+                       const ::fwTools::Type& type, size_t numberOfComponents) throw(::fwData::Exception)
 {
     m_size               = { x, y, z};
     m_type               = type;
@@ -159,7 +152,7 @@ size_t Image::allocate(SizeType::value_type x, SizeType::value_type y,  SizeType
 
 //------------------------------------------------------------------------------
 
-size_t Image::allocate(const SizeType &size, const ::fwTools::Type &type, size_t numberOfComponents)
+size_t Image::allocate(const SizeType& size, const ::fwTools::Type& type, size_t numberOfComponents)
 throw(::fwData::Exception)
 {
     m_size               = size;
@@ -225,7 +218,7 @@ void Image::setType(::fwTools::Type type)
 
 //------------------------------------------------------------------------------
 
-void Image::setType(const std::string &type)
+void Image::setType(const std::string& type)
 {
     m_type = ::fwTools::Type(type);
 }
@@ -252,42 +245,42 @@ size_t Image::getNumberOfDimensions() const
 
 //------------------------------------------------------------------------------
 
-const Image::SpacingType & Image::getSpacing() const
+const Image::SpacingType& Image::getSpacing() const
 {
     return m_spacing;
 }
 
 //------------------------------------------------------------------------------
 
-void Image::setSpacing(const SpacingType &spacing)
+void Image::setSpacing(const SpacingType& spacing)
 {
     m_spacing = spacing;
 }
 
 //------------------------------------------------------------------------------
 
-const Image::OriginType & Image::getOrigin() const
+const Image::OriginType& Image::getOrigin() const
 {
     return m_origin;
 }
 
 //------------------------------------------------------------------------------
 
-void Image::setOrigin(const OriginType &origin)
+void Image::setOrigin(const OriginType& origin)
 {
     m_origin = origin;
 }
 
 //------------------------------------------------------------------------------
 
-const Image::SizeType & Image::getSize() const
+const Image::SizeType& Image::getSize() const
 {
     return m_size;
 }
 
 //------------------------------------------------------------------------------
 
-void Image::setSize(const SizeType &size)
+void Image::setSize(const SizeType& size)
 {
     m_size = size;
 }

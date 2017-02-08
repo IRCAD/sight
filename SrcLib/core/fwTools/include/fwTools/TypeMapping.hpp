@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,19 +7,17 @@
 #ifndef __FWTOOLS_TYPEMAPPING_HPP__
 #define __FWTOOLS_TYPEMAPPING_HPP__
 
-#include <iterator>
-#include <boost/static_assert.hpp>
-#include <assert.h>
-#include <stdexcept>
-
-#include <boost/mpl/is_sequence.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/empty.hpp>
-#include <boost/mpl/size.hpp>
-#include <boost/mpl/if.hpp>
-
 #include <boost/mpl/front.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/mpl/is_sequence.hpp>
 #include <boost/mpl/pop_front.hpp>
+#include <boost/mpl/size.hpp>
+#include <boost/static_assert.hpp>
+
+#include <iterator>
+#include <stdexcept>
 
 namespace fwTools
 {
@@ -30,7 +28,6 @@ struct isMappingMultiMPLHelper;
 
 template< class T, class KeyType >
 struct isMappingSingleMPLHelper;
-
 
 //
 /**
@@ -56,37 +53,31 @@ struct isMappingSingleMPLHelper;
  * @endcode
  */
 template< class TSingle_or_TSEQ, class KeyType_or_KeyTypeContainer >
-bool isMapping(const KeyType_or_KeyTypeContainer &key)
+bool isMapping(const KeyType_or_KeyTypeContainer& key)
 {
     namespace mpl = ::boost::mpl;
     typedef BOOST_DEDUCED_TYPENAME mpl::if_<
             mpl::is_sequence< TSingle_or_TSEQ >,
-            isMappingMultiMPLHelper< TSingle_or_TSEQ,KeyType_or_KeyTypeContainer >,
-            isMappingSingleMPLHelper< TSingle_or_TSEQ,KeyType_or_KeyTypeContainer >
+            isMappingMultiMPLHelper< TSingle_or_TSEQ, KeyType_or_KeyTypeContainer >,
+            isMappingSingleMPLHelper< TSingle_or_TSEQ, KeyType_or_KeyTypeContainer >
             >::type typex;
     return typex::evaluate(key);
 
 }
 
-
-
-
-
 /**
- * @brief   an isMapping() helper : This function is called iff TSingle_or_TSEQ is not a sequence and isMapping<SingleType> is not specialized
+ * @brief   an isMapping() helper : This function is called iff TSingle_or_TSEQ is not a sequence and
+ * isMapping<SingleType> is not specialized
  * This class is intended to avoid developer to forgive the specialization of isMapping<TYPE>
- * @class   isMappingSingleMPLHelper
  * @tparam  T the type to test
  * @tparam  KeyType the type to match
- *
- * @date    2007-2009.
  */
 template< class T, class KeyType >
 struct isMappingSingleMPLHelper
 {
 
     /// this function is called iff TSingle_or_TSEQ is not a sequence and isMapping<SingleType>
-    static bool evaluate(const KeyType &key)
+    static bool evaluate(const KeyType& key)
     {
         FwCoreNotUsedMacro(key);
         BOOST_STATIC_ASSERT(sizeof(T) == 0);  // note its a compilator workaround of BOOST_STATIC_ASSERT(false);
@@ -98,7 +89,6 @@ struct isMappingSingleMPLHelper
     }
 };
 
-
 /**
  * @brief   Test whatever a typelist is mapping a container of KeyType
  *
@@ -107,52 +97,45 @@ struct isMappingSingleMPLHelper
 template< class TSEQ, class KeyTypeContainer >
 bool isMappingMulti(const KeyTypeContainer& keys)
 {
-    return isMappingMultiMPLHelper<TSEQ,KeyTypeContainer>::evaluate(keys);
+    return isMappingMultiMPLHelper<TSEQ, KeyTypeContainer>::evaluate(keys);
 }
 
-
-
-
 /**
- * @class   EmptyListMapping
  * @brief an helper to isMapping() using iterator
- *
- * @date    2007-2009.
  */
 template<  class KeyTypeContainer >
 struct EmptyListMapping
 {
-    static bool evaluate(typename KeyTypeContainer::const_iterator & begin,
-                         typename KeyTypeContainer::const_iterator & end)
+    //------------------------------------------------------------------------------
+
+    static bool evaluate(typename KeyTypeContainer::const_iterator& begin,
+                         typename KeyTypeContainer::const_iterator& end)
     {
         assert( begin == end ); // assertion fails iff TypeList & KeyType container does not have the same size
         return true; // an empty typelist with an emty keyType matches
     }
 };
 
-
-
-
 /**
- * @class   isMappingMultiMPLHelper
- * @brief an helper to isMapping() using iterator : this class is called when TSEQ is a sequence. it is recursivelly called with head element
+ * @brief an helper to isMapping() using iterator : this class is called when TSEQ is a sequence. it is recursivelly
+ * called with head element
  * removed from TSEQ
- *
- * @date    2007-2009.
  */
 template< class TSEQ, class KeyTypeContainer >
 struct
 isMappingMultiMPLHelper
 {
-    static bool evaluate(typename KeyTypeContainer::const_iterator & begin,
-                         typename KeyTypeContainer::const_iterator & end);
+    static bool evaluate(typename KeyTypeContainer::const_iterator& begin,
+                         typename KeyTypeContainer::const_iterator& end);
+
+    //------------------------------------------------------------------------------
 
     static bool evaluate(const KeyTypeContainer& keys)
     {
 
         namespace mpl = ::boost::mpl;
 
-        if ( keys.size() !=  static_cast<unsigned long>(mpl::size<TSEQ>::value) )
+        if ( keys.size() != static_cast<unsigned long>(mpl::size<TSEQ>::value) )
         {
             std::string msg("isMappingMulti TypeList & KeyType container does not have the same size !!!");
             throw std::invalid_argument(msg);
@@ -161,17 +144,18 @@ isMappingMultiMPLHelper
 
         typename KeyTypeContainer::const_iterator begin = keys.begin(); // needed to have cste ptr
         typename KeyTypeContainer::const_iterator end   = keys.end();
-        return isMappingMultiMPLHelper<TSEQ,KeyTypeContainer>::evaluate( begin, end );
+        return isMappingMultiMPLHelper<TSEQ, KeyTypeContainer>::evaluate( begin, end );
 
     }
 
 };
 
+//------------------------------------------------------------------------------
 
 template< class TSEQ, class KeyTypeContainer >
 bool
-isMappingMultiMPLHelper<TSEQ,KeyTypeContainer>::evaluate(typename KeyTypeContainer::const_iterator & begin,
-                                                         typename KeyTypeContainer::const_iterator & end)
+isMappingMultiMPLHelper<TSEQ, KeyTypeContainer>::evaluate(typename KeyTypeContainer::const_iterator& begin,
+                                                          typename KeyTypeContainer::const_iterator& end)
 {
     namespace mpl = ::boost::mpl;
 
@@ -181,7 +165,7 @@ isMappingMultiMPLHelper<TSEQ,KeyTypeContainer>::evaluate(typename KeyTypeContain
     typedef BOOST_DEDUCED_TYPENAME mpl::if_<
             mpl::empty<Tail>,
             EmptyListMapping < KeyTypeContainer >,
-            isMappingMultiMPLHelper <Tail,KeyTypeContainer >
+            isMappingMultiMPLHelper <Tail, KeyTypeContainer >
             >::type typex;
 
     bool firstKeyIsOK = isMapping< Head >( *begin );     // call a isMapping with a single key
@@ -196,9 +180,6 @@ isMappingMultiMPLHelper<TSEQ,KeyTypeContainer>::evaluate(typename KeyTypeContain
 
 }
 
-
-
 } // namespace fwTools
-
 
 #endif /*__FWTOOLS_TYPEMAPPING_HPP__*/

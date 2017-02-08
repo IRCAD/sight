@@ -1,21 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/Scene2DGraphicsView.hpp"
 #include "scene2D/adaptor/HistogramCursor.hpp"
-#include "scene2D/data/InitQtPen.hpp"
 
-#include <fwServices/macros.hpp>
+#include "scene2D/Scene2DGraphicsView.hpp"
+#include "scene2D/data/InitQtPen.hpp"
 
 #include <fwData/Histogram.hpp>
 #include <fwData/Point.hpp>
 
-#include <QGraphicsEllipseItem>
-#include <QFont>
+#include <fwServices/macros.hpp>
 
+#include <QFont>
+#include <QGraphicsEllipseItem>
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::HistogramCursor, ::fwData::Histogram);
 
@@ -25,7 +25,12 @@ namespace adaptor
 {
 
 HistogramCursor::HistogramCursor() throw() :
-    m_color("red"), m_borderColor(Qt::gray), m_opacity(0.8f), m_index(nullptr), m_pointSize(6.f), m_layer(nullptr)
+    m_color("red"),
+    m_borderColor(Qt::gray),
+    m_opacity(0.8f),
+    m_index(nullptr),
+    m_pointSize(6.f),
+    m_layer(nullptr)
 {
 }
 
@@ -50,7 +55,7 @@ void HistogramCursor::configuring() throw( ::fwTools::Failed)
 
     if (!m_configuration->getAttributeValue("opacity").empty())
     {
-        m_opacity = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("opacity") );
+        m_opacity = std::stof( m_configuration->getAttributeValue("opacity") );
     }
 
     if (!m_configuration->getAttributeValue("borderColor").empty())
@@ -60,7 +65,7 @@ void HistogramCursor::configuring() throw( ::fwTools::Failed)
 
     if (!m_configuration->getAttributeValue("pointSize").empty())
     {
-        m_pointSize = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("pointSize") );
+        m_pointSize = std::stof( m_configuration->getAttributeValue("pointSize") );
     }
 
     SLM_ASSERT("A viewport attribute must be specified with 'viewportUID'.",

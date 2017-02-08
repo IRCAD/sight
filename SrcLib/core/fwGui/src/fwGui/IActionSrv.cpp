@@ -1,22 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwGui/IActionSrv.hpp"
 
 #include "fwGui/dialog/IMessageDialog.hpp"
 #include "fwGui/dialog/MessageDialog.hpp"
-#include "fwGui/IActionSrv.hpp"
 
-#include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
-#include <fwCore/base.hpp>
-
 #include <fwServices/macros.hpp>
+
 #include <fwTools/fwID.hpp>
 
 namespace fwGui
@@ -47,7 +44,7 @@ IActionSrv::IActionSrv() :
     newSlot(s_SET_INEXECUTABLE_SLOT, &IActionSrv::setInexecutable, this);
     newSlot(s_SET_VISIBLE_SLOT, &IActionSrv::setVisible, this);
     newSlot(s_SHOW_SLOT, &IActionSrv::show, this);
-    newSlot(s_HIDE_SLOT,&IActionSrv::hide, this);
+    newSlot(s_HIDE_SLOT, &IActionSrv::hide, this);
 }
 
 //-----------------------------------------------------------------------------

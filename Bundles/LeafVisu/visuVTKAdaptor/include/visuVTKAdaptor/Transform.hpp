@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,20 +16,20 @@
 #include <vector>
 
 class vtkTransform;
+class vtkCommand;
 
 namespace visuVTKAdaptor
 {
 
 /**
  * @brief Adaptor to manage a TransformationMatrix3D from a vtkTransform and vice versa
- * @class Transform
  */
 class VISUVTKADAPTOR_CLASS_API Transform : public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Transform)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Transform)(::fwRenderVTK::IVtkAdaptorService) );
 
     /// Constructor
     VISUVTKADAPTOR_API Transform() throw();
@@ -37,10 +37,10 @@ public:
     VISUVTKADAPTOR_API virtual ~Transform() throw();
 
     /// Set a new vtkTransform
-    VISUVTKADAPTOR_API void setTransform(vtkTransform *t);
+    VISUVTKADAPTOR_API void setTransform(vtkTransform* t);
 
     /// Returns the current vtkTransform
-    VISUVTKADAPTOR_API vtkTransform *getTransform();
+    VISUVTKADAPTOR_API vtkTransform* getTransform();
 
     /// Updates the TransformationMatrix3D from the vtkTransform
     VISUVTKADAPTOR_API void updateFromVtk();
@@ -89,9 +89,6 @@ protected:
     /// Parent vtkTransform (optional)
     vtkSmartPointer<vtkTransform> m_parentTransform;
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

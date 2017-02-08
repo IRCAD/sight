@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,7 +7,6 @@
 #include "fwMedData/NavigationSeries.hpp"
 
 #include <fwData/Exception.hpp>
-#include <fwData/Object.hpp>
 #include <fwData/registry/macros.hpp>
 
 fwDataRegisterMacro( ::fwMedData::NavigationSeries );
@@ -15,7 +14,8 @@ fwDataRegisterMacro( ::fwMedData::NavigationSeries );
 namespace fwMedData
 {
 
-NavigationSeries::NavigationSeries(::fwData::Object::Key key) : Series(key)
+NavigationSeries::NavigationSeries(::fwData::Object::Key key) :
+    Series(key)
 {
 }
 

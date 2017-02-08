@@ -1,21 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/adaptor/Line.hpp"
+
 #include "scene2D/data/InitQtPen.hpp"
 
-#include <fwServices/macros.hpp>
 #include <fwData/Composite.hpp>
+
+#include <fwServices/macros.hpp>
 
 #include <QGraphicsItemGroup>
 
-
-
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Line, ::fwData::Composite );
-
 
 namespace scene2D
 {
@@ -23,8 +22,10 @@ namespace adaptor
 {
 
 Line::Line() throw() :
-    m_x1(0.f), m_x2(0.f),
-    m_y1(0.f), m_y2(0.f),
+    m_x1(0.f),
+    m_x2(0.f),
+    m_y1(0.f),
+    m_y2(0.f),
     m_lineType(PLAIN),
     m_layer(nullptr)
 {
@@ -49,10 +50,10 @@ void Line::configuring() throw ( ::fwTools::Failed )
     SLM_TRACE("IAdaptor configuring ok");
 
     // Set the beginning and ending coordinates values
-    m_x1 = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("x1") );
-    m_x2 = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("x2") );
-    m_y1 = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("y1") );
-    m_y2 = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("y2") );
+    m_x1 = std::stof( m_configuration->getAttributeValue("x1") );
+    m_x2 = std::stof( m_configuration->getAttributeValue("x2") );
+    m_y1 = std::stof( m_configuration->getAttributeValue("y1") );
+    m_y2 = std::stof( m_configuration->getAttributeValue("y2") );
 
     // If the corresponding attributes are present in the config, set the color of the line
     if (!m_configuration->getAttributeValue("color").empty())
@@ -125,6 +126,4 @@ void Line::doStop() throw ( ::fwTools::Failed )
 
 } // namespace adaptor
 } // namespace scene2D
-
-
 

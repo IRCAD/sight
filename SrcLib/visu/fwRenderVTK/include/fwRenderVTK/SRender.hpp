@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,7 +7,6 @@
 #ifndef __FWRENDERVTK_SRENDER_HPP__
 #define __FWRENDERVTK_SRENDER_HPP__
 
-#include "fwRenderVTK/IVtkRenderWindowInteractorManager.hpp"
 #include "fwRenderVTK/config.hpp"
 
 #include <fwCom/helper/SigSlotConnection.hpp>
@@ -20,8 +19,6 @@
 
 #include <fwServices/helper/Config.hpp>
 
-#include <fwThread/Timer.hpp>
-
 #include <map>
 
 class vtkRenderWindow;
@@ -30,17 +27,22 @@ class vtkAbstractPropPicker;
 class vtkObject;
 class vtkTransform;
 
+// Forward declarations
 namespace fwData
 {
-
 class TransformationMatrix3D;
+}
 
+namespace fwThread
+{
+class Timer;
 }
 
 namespace fwRenderVTK
 {
 
 class IVtkAdaptorService;
+class IVtkRenderWindowInteractorManager;
 
 /**
  * @brief The generic scene service shows adaptors in a 3D VTK scene.
@@ -48,7 +50,7 @@ class IVtkAdaptorService;
 class FWRENDERVTK_CLASS_API SRender : public ::fwRender::IRender
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SRender)(::fwRender::IRender) );
+    fwCoreServiceClassDefinitionsMacro( (SRender)(::fwRender::IRender) );
 
     typedef std::string RendererIdType;
     typedef std::string PickerIdType;
@@ -80,15 +82,19 @@ public:
     FWRENDERVTK_API vtkObject* getVtkObject(const VtkObjectIdType& objectId) const;
 
     /// Returns the adaptor with the given id
-    FWRENDERVTK_API SPTR (IVtkAdaptorService) getAdaptor(const AdaptorIdType &adaptorId) const;
+    FWRENDERVTK_API SPTR(IVtkAdaptorService) getAdaptor(const AdaptorIdType &adaptorId) const;
 
     /// Get a vtkTransform in the SRender, referenced by a key. Create it if it does not exist.
     FWRENDERVTK_API vtkTransform* getOrAddVtkTransform( const VtkObjectIdType& _id );
+
+    //------------------------------------------------------------------------------
 
     bool getPendingRenderRequest()
     {
         return m_pendingRenderRequest;
     }
+    //------------------------------------------------------------------------------
+
     void setPendingRenderRequest(bool b)
     {
         m_pendingRenderRequest = b;
@@ -172,7 +178,8 @@ protected:
      *  - \b height (optional, "720" by default): height for off screen render
      *  - \b renderer
      *     - \b id (mandatory): the identifier of the renderer
-     *     - \b layer (optional): defines the layer of the vtkRenderer. This is only used if there are layered renderers.
+     *     - \b layer (optional): defines the layer of the vtkRenderer. This is only used if there are layered
+     * renderers.
      *     - \b background (optional): the background color of the rendering screen. The color value can be defines as a
      *       grey level value (ex . 1.0 for white) or as a hexadecimal value (ex : \#ffffff for white).
      *  - \b vtkObject
@@ -228,15 +235,14 @@ private:
     ConfigurationType m_sceneConfiguration;
 
     /// @brief VTK Interactor window manager
-    ::fwRenderVTK::IVtkRenderWindowInteractorManager::sptr m_interactorManager;
-
+    SPTR( ::fwRenderVTK::IVtkRenderWindowInteractorManager ) m_interactorManager;
 
     class SceneAdaptor
     {
 
     public:
 
-        SPTR (IVtkAdaptorService) getService() const
+        SPTR(IVtkAdaptorService) getService() const
         {
             return m_service.lock();
         }
@@ -282,7 +288,7 @@ private:
     bool m_offScreen; ///< if true, scene is render in off screen
 
     /// Timer used for the update
-    ::fwThread::Timer::sptr m_timer;
+    SPTR( ::fwThread::Timer ) m_timer;
 
     void startContext();
     void stopContext();

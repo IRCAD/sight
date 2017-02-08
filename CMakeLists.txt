@@ -11,6 +11,15 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile_config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin_config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/generic_install.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/helper.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/modules/PrecompiledHeader.cmake)
+
+
+if(MSVC)
+    if(NOT DEFINED CMAKE_PCH_COMPILER_TARGETS)
+        # this will be executed in just before makefile generation
+        variable_watch(CMAKE_BACKWARDS_COMPATIBILITY pch_msvc_hook)
+    endif()
+endif(MSVC)
 
 set(BUILD_SHARED_LIBS ON)
 if (NOT CMAKE_BUILD_TYPE)
@@ -40,6 +49,8 @@ else()
         set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
     endif()
 endif()
+
+set(ENABLE_PCH ON CACHE BOOL "Use pre-compiled headers to speedup the compilation")
 
 # Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH
 if(EXTERNAL_LIBRARIES)
@@ -256,7 +267,7 @@ macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
 
     set_target_properties(${FWPROJECT_NAME} PROPERTIES DEFINE_SYMBOL ${PROJECT_NAME_UPCASE}_EXPORTS)
 
-    add_definitions(-D${PROJECT_NAME_UPCASE}_VER="${DASH_VERSION}")
+    target_compile_definitions(${FWPROJECT_NAME} PRIVATE ${PROJECT_NAME_UPCASE}_VER="${DASH_VERSION}")
 
     get_target_property(TARGET_TYPE ${FWPROJECT_NAME} TYPE)
 
@@ -272,7 +283,14 @@ macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
     mark_as_advanced(SPYLOG_LEVEL_${FWPROJECT_NAME})
 
     if( SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}} )
-        add_definitions(-DSPYLOG_LEVEL=${SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}}})
+        if(ENABLE_PCH AND (${TARGET_TYPE} MATCHES "LIBRARY" OR ${TARGET_TYPE} MATCHES "BUNDLE" ))
+            target_compile_definitions(${FWPROJECT_NAME}
+                PRIVATE SPYLOG_LEVEL_${FWPROJECT_NAME}=${SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}}})
+        else()
+            target_compile_definitions(${FWPROJECT_NAME}
+                PRIVATE SPYLOG_LEVEL=${SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}}}
+                PRIVATE SPYLOG_NO_INCLUDE=1)
+        endif()
     else()
         message(SEND_ERROR "${SPYLOG_LEVEL_${FWPROJECT_NAME}} is not a valid value for SPYLOG_LEVEL_${FWPROJECT_NAME}" )
     endif()
@@ -456,10 +474,19 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
 
     setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
 
-    add_library(${FWPROJECT_NAME} ${ARGN} ${${FWPROJECT_NAME}_HEADERS}
-               ${${FWPROJECT_NAME}_SOURCES}
-               ${${FWPROJECT_NAME}_RC_FILES}
-               ${${FWPROJECT_NAME}_CMAKE_FILES})
+    if(ENABLE_PCH AND MSVC)
+        if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
+            add_precompiled_header_cpp(${FWPROJECT_NAME})
+        endif()
+        set(${FWPROJECT_NAME}_PCH_LIB $<TARGET_OBJECTS:${${FWPROJECT_NAME}_PCH_TARGET}_PCH_OBJ>)
+    endif()
+
+    add_library(${FWPROJECT_NAME} ${ARGN}
+        ${${FWPROJECT_NAME}_HEADERS}
+        ${${FWPROJECT_NAME}_SOURCES}
+        ${${FWPROJECT_NAME}_RC_FILES}
+        ${${FWPROJECT_NAME}_CMAKE_FILES}
+        ${${FWPROJECT_NAME}_PCH_LIB})
 
     configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
@@ -496,6 +523,22 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     # Adds project into folder lib
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "lib")
 
+    if(ENABLE_PCH)
+        # create the config.hpp for the current library
+        configure_file(
+            "${CMAKE_SOURCE_DIR}/CMake/build/spyLogLevel.hpp.in"
+            "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${FWPROJECT_NAME}/spyLogLevel.hpp"
+            IMMEDIATE @ONLY)
+
+        if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
+            add_precompiled_header(${FWPROJECT_NAME} include/${FWPROJECT_NAME}/pch.hpp)
+            message(STATUS "Use custom precompiled header")
+        else()
+            use_precompiled_header(${FWPROJECT_NAME} ${${FWPROJECT_NAME}_PCH_TARGET})
+            message(STATUS "Use ${${FWPROJECT_NAME}_PCH_TARGET} precompiled header")
+        endif()
+    endif()
+
     fwLibExtra()
 
 endmacro()
@@ -506,14 +549,22 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     set(${FWPROJECT_NAME}_TYPE ${${FWPROJECT_NAME}_TYPE} PARENT_SCOPE)
     setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
 
+    if(ENABLE_PCH AND MSVC)
+        if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
+            add_precompiled_header_cpp(${FWPROJECT_NAME})
+        endif()
+        set(${FWPROJECT_NAME}_PCH_LIB $<TARGET_OBJECTS:${${FWPROJECT_NAME}_PCH_TARGET}_PCH_OBJ>)
+    endif()
+
     set(BUNDLE_DIR "${CMAKE_BINARY_DIR}/${BUNDLE_PREFIX}/${FWPROJECT_NAME}_${DASH_VERSION}")
 
     if(EXISTS "${PRJ_SOURCE_DIR}/src")
-        add_library( ${FWPROJECT_NAME} SHARED ${ARGN}
+        add_library(${FWPROJECT_NAME} ${ARGN}
             ${${FWPROJECT_NAME}_HEADERS}
             ${${FWPROJECT_NAME}_SOURCES}
             ${${FWPROJECT_NAME}_RC_FILES}
-            ${${FWPROJECT_NAME}_CMAKE_FILES})
+            ${${FWPROJECT_NAME}_CMAKE_FILES}
+            ${${FWPROJECT_NAME}_PCH_LIB})
 
         configureProject( ${FWPROJECT_NAME} ${PROJECT_VERSION} )
 
@@ -545,6 +596,22 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
             IMMEDIATE @ONLY)
 
         target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/")
+
+        if(ENABLE_PCH)
+            # create the config.hpp for the current library
+            configure_file(
+                "${CMAKE_SOURCE_DIR}/CMake/build/spyLogLevel.hpp.in"
+                "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/${FWPROJECT_NAME}/spyLogLevel.hpp"
+                IMMEDIATE @ONLY)
+
+            if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
+                add_precompiled_header(${FWPROJECT_NAME} include/${FWPROJECT_NAME}/pch.hpp)
+                message(STATUS "Use custom precompiled header")
+            else()
+                use_precompiled_header(${FWPROJECT_NAME} ${${FWPROJECT_NAME}_PCH_TARGET})
+                message(STATUS "Use ${${FWPROJECT_NAME}_PCH_TARGET} precompiled header")
+            endif()
+        endif()
     else()
         add_custom_target(${FWPROJECT_NAME} SOURCES
             ${${FWPROJECT_NAME}_RC_FILES}
@@ -719,6 +786,25 @@ function(findTests FWPROJECTS RESULT_VAR)
     set(${RESULT_VAR} ${RESULT} PARENT_SCOPE)
 endfunction()
 
+function(getPchTarget FWPROJECT_NAME PROJECT_DIR TYPE)
+
+    if(ARGN)
+        # Use pch from an another target
+        set(${FWPROJECT_NAME}_PCH_TARGET ${ARGN} PARENT_SCOPE)
+    elseif(EXISTS "${PROJECT_DIR}/include/${FWPROJECT_NAME}/pch.hpp")
+        # Custom pch
+        set(${FWPROJECT_NAME}_PCH_TARGET ${FWPROJECT_NAME} PARENT_SCOPE)
+    else()
+        # Default pch
+        if( TYPE STREQUAL "BUNDLE" )
+            set(${FWPROJECT_NAME}_PCH_TARGET pchServices PARENT_SCOPE)
+        else()
+            set(${FWPROJECT_NAME}_PCH_TARGET pchCore PARENT_SCOPE)
+        endif()
+    endif()
+
+endfunction()
+
 macro(loadProperties PROPERTIES_FILE)
     unset(NAME)
     unset(OPTIONS)
@@ -730,6 +816,7 @@ macro(loadProperties PROPERTIES_FILE)
     unset(CPPUNITTEST_OPTIONS)
     unset(UNIQUE)
     unset(PLATFORM)
+    unset(USE_PCH_FROM_TARGET)
 
     include("${PROPERTIES_FILE}")
 endmacro()
@@ -874,8 +961,23 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
             message(FATAL_ERROR "${PROPERTIES_FILE}: A project NAME must be unique in the workspace. ${NAME} already defined there : ${${NAME}_DIR}")
         endif()
 
+        string( TOUPPER "${TYPE}" TYPE )
+
         set(${NAME}_DEPENDENCIES "${DEPENDENCIES}")
         set(${NAME}_REQUIREMENTS "${REQUIREMENTS}")
+
+        # Get the pch target, test the existence of type variable to exclude unbuilt projects
+        if(ENABLE_PCH AND TYPE)
+            set(${NAME}_PROJECT_DIR "${PROJECT_DIR}")
+
+            getPchTarget(${NAME} ${PROJECT_DIR} ${TYPE} ${USE_PCH_FROM_TARGET})
+
+            # Append the pch target as a dependency (duplicate will be stripped later if it was already a dependency)
+            if(NOT ${${NAME}_PCH_TARGET} STREQUAL ${NAME})
+                list(APPEND ${NAME}_REQUIREMENTS ${${NAME}_PCH_TARGET})
+            endif()
+        endif()
+
         set(${NAME}_VERSION "${VERSION}")
         set(${NAME}_DIR "${PROJECT_DIR}")
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,11 +11,9 @@
 #include <fwCom/Signals.hpp>
 
 #include <fwData/mt/ObjectWriteLock.hpp>
-#include <fwData/Object.hpp>
 
-#include <fwDataCamp/getObject.hpp>
 #include <fwDataCamp/exception/ObjectNotFound.hpp>
-
+#include <fwDataCamp/getObject.hpp>
 
 namespace ctrlCamp
 {
@@ -156,7 +154,7 @@ void SCopy::copy()
     }
     else
     {
-        if (m_target.substr(0,1) == "@")
+        if (m_target.substr(0, 1) == "@")
         {
             target = ::fwDataCamp::getObject(this->getObject(), m_target);
             SLM_ASSERT("Invalid seshat path : '" + m_target + "'", target);
@@ -169,7 +167,7 @@ void SCopy::copy()
             SLM_ASSERT("Object '" + m_target + "' is not a fwData::Object (" + obj->getClassname() + ")", target);
         }
     }
-    if (m_source.substr(0,1) == "@")
+    if (m_source.substr(0, 1) == "@")
     {
         source = ::fwDataCamp::getObject(this->getObject(), m_source);
         SLM_ERROR_IF("Invalid seshat path '" + m_source + "' or object does not exist", !source);
@@ -241,6 +239,5 @@ void SCopy::copy()
 }
 
 //-----------------------------------------------------------------------------
-
 
 } // namespace ctrlCamp

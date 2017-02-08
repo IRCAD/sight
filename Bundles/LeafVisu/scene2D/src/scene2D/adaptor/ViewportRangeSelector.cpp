@@ -1,12 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/adaptor/ViewportRangeSelector.hpp"
-#include "scene2D/data/Viewport.hpp"
+
 #include "scene2D/Scene2DGraphicsView.hpp"
+#include "scene2D/data/Viewport.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -15,7 +16,6 @@
 
 #include <QGraphicsRectItem>
 
-
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ViewportRangeSelector,
                          ::scene2D::data::Viewport);
 
@@ -23,7 +23,6 @@ namespace scene2D
 {
 namespace adaptor
 {
-
 
 ViewportRangeSelector::ViewportRangeSelector() throw() :
     m_shutter(nullptr),
@@ -58,7 +57,7 @@ void ViewportRangeSelector::configuring() throw( ::fwTools::Failed)
 
     if (!m_configuration->getAttributeValue("initialWidth").empty())
     {
-        m_initialWidth = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("initialWidth") );
+        m_initialWidth = std::stof( m_configuration->getAttributeValue("initialWidth") );
 
         if( m_initialWidth > viewportWidth || m_initialWidth < m_clickCatchRange )
         {
@@ -75,7 +74,7 @@ void ViewportRangeSelector::configuring() throw( ::fwTools::Failed)
 
     if (!m_configuration->getAttributeValue("initialPos").empty())
     {
-        m_initialX = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("initialPos") );
+        m_initialX = std::stof( m_configuration->getAttributeValue("initialPos") );
 
         if( m_initialX < viewport->getX() || (m_initialX + m_initialWidth) > viewportWidth)
         {
@@ -216,11 +215,13 @@ void ViewportRangeSelector::processInteraction( ::scene2D::data::Event::sptr _ev
             }
             else if( onShutterMiddle )
             {
-                this->getScene2DRender()->getView()->setCursor( Qt::OpenHandCursor );   // open hand, for moving the whole shutter
+                this->getScene2DRender()->getView()->setCursor( Qt::OpenHandCursor );   // open hand, for moving the
+                                                                                        // whole shutter
             }
             else
             {
-                this->getScene2DRender()->getView()->setCursor( Qt::ArrowCursor );      // reset the cursor to the default cursor
+                this->getScene2DRender()->getView()->setCursor( Qt::ArrowCursor );      // reset the cursor to the
+                                                                                        // default cursor
             }
         }
 
@@ -369,8 +370,8 @@ bool ViewportRangeSelector::mouseOnShutterRight( ::scene2D::data::Coord _coord)
 
     double shutterRightPos = shutterCoordPair.first + m_shutter->rect().width() * m_xAxis->getScale();
 
-    return ( _coord.getX() >=  shutterRightPos - m_clickCatchRange )
-           && ( _coord.getX() <=  shutterRightPos + m_clickCatchRange );
+    return ( _coord.getX() >= shutterRightPos - m_clickCatchRange )
+           && ( _coord.getX() <= shutterRightPos + m_clickCatchRange );
 }
 
 //---------------------------------------------------------------------------------------------------------------

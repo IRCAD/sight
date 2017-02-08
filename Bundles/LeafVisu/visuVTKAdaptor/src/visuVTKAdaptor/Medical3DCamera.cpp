@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,6 @@
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/Object.hpp>
 #include <fwData/String.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
@@ -22,7 +21,6 @@
 #include <vtkRenderer.h>
 
 #include <boost/assign/list_of.hpp>
-
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Medical3DCamera, ::fwData::Object );
 
@@ -52,8 +50,6 @@ Medical3DCamera::Medical3DCamera() throw() :
     ::fwCom::HasSlots::m_slots(SET_AXIAL_SLOT, m_slotSetAxial)
         (SET_SAGITTAL_SLOT, m_slotSetSagittal)
         (SET_FRONTAL_SLOT, m_slotSetFrontal);
-
-
 
     this->setWorker(m_associatedWorker);
 }
@@ -167,9 +163,9 @@ void Medical3DCamera::updateView()
 
 void Medical3DCamera::resetSagittalView()
 {
-    m_camera->SetPosition(-1,0,0);
-    m_camera->SetFocalPoint(0,0,0);
-    m_camera->SetViewUp(0,0,1);
+    m_camera->SetPosition(-1, 0, 0);
+    m_camera->SetFocalPoint(0, 0, 0);
+    m_camera->SetViewUp(0, 0, 1);
     this->getRenderer()->ResetCamera();
     this->setVtkPipelineModified();
 }
@@ -178,9 +174,9 @@ void Medical3DCamera::resetSagittalView()
 
 void Medical3DCamera::resetFrontalView()
 {
-    m_camera->SetPosition(0,-1,0);
-    m_camera->SetFocalPoint(0,0,0);
-    m_camera->SetViewUp(0,0,1);
+    m_camera->SetPosition(0, -1, 0);
+    m_camera->SetFocalPoint(0, 0, 0);
+    m_camera->SetViewUp(0, 0, 1);
     this->getRenderer()->ResetCamera();
     this->setVtkPipelineModified();
 
@@ -190,9 +186,9 @@ void Medical3DCamera::resetFrontalView()
 
 void Medical3DCamera::resetAxialView()
 {
-    m_camera->SetPosition(0,0,-1);
-    m_camera->SetFocalPoint(0,0,0);
-    m_camera->SetViewUp(0,-1,0);
+    m_camera->SetPosition(0, 0, -1);
+    m_camera->SetFocalPoint(0, 0, 0);
+    m_camera->SetViewUp(0, -1, 0);
     this->getRenderer()->ResetCamera();
     this->setVtkPipelineModified();
 }

@@ -1,6 +1,16 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2017.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
 
 #ifndef __@PROJECT_NAME_UPCASE@_CONFIG_HPP__
 #define __@PROJECT_NAME_UPCASE@_CONFIG_HPP__
+
+    // This helps to override the log level when using PCH
+    #if defined(@PROJECT_NAME_UPCASE@_EXPORTS) && !defined(SPYLOG_NO_INCLUDE)
+        #include "spyLogLevel.hpp"
+    #endif
 
     #ifdef _WIN32
 

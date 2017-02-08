@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,6 @@
 #include <fwServices/IService.hpp>
 
 #include <fwCom/Signals.hpp>
-#include <fwData/Object.hpp>
 
 #include <boost/chrono/duration.hpp>
 
@@ -59,7 +58,9 @@ public:
     {
     }
 
-    void cachedDeepCopy( const Object::csptr& _source, DeepCopyCacheType &cache )
+    //------------------------------------------------------------------------------
+
+    void cachedDeepCopy( const Object::csptr& _source, DeepCopyCacheType& cache )
     {
     }
 };
@@ -69,7 +70,7 @@ public:
 class IBasicTest : public ::fwServices::IService
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (IBasicTest)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (IBasicTest)(::fwServices::IService) );
 };
 
 class SBasicTest : public IBasicTest,
@@ -77,7 +78,7 @@ class SBasicTest : public IBasicTest,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SBasicTest)(IBasicTest) );
+    fwCoreServiceClassDefinitionsMacro( (SBasicTest)(IBasicTest) );
 
     bool m_updateFinished;
     bool m_swapFinished;
@@ -85,6 +86,8 @@ public:
     SBasicTest();
 
 protected:
+
+    //------------------------------------------------------------------------------
 
     virtual void configuring() throw ( ::fwTools::Failed )
     {
@@ -101,7 +104,7 @@ class SReaderTest : public IBasicTest
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SReaderTest)(IBasicTest) );
+    fwCoreServiceClassDefinitionsMacro( (SReaderTest)(IBasicTest) );
 
     SReaderTest()
     {
@@ -109,15 +112,23 @@ public:
 
 protected:
 
+    //------------------------------------------------------------------------------
+
     virtual void configuring() throw ( ::fwTools::Failed )
     {
     }
+    //------------------------------------------------------------------------------
+
     virtual void starting() throw ( ::fwTools::Failed )
     {
     }
+    //------------------------------------------------------------------------------
+
     virtual void stopping() throw ( ::fwTools::Failed )
     {
     }
+    //------------------------------------------------------------------------------
+
     virtual void swapping() throw ( ::fwTools::Failed )
     {
     }
@@ -132,7 +143,7 @@ public:
 
     typedef ::fwCom::Signal< void () > ChangedSignalType;
 
-    fwCoreServiceClassDefinitionsMacro ( (SReader2Test)(IBasicTest) );
+    fwCoreServiceClassDefinitionsMacro( (SReader2Test)(IBasicTest) );
 
     SReader2Test();
 
@@ -140,15 +151,23 @@ public:
 
 protected:
 
+    //------------------------------------------------------------------------------
+
     virtual void configuring() throw ( ::fwTools::Failed )
     {
     }
+    //------------------------------------------------------------------------------
+
     virtual void starting() throw ( ::fwTools::Failed )
     {
     }
+    //------------------------------------------------------------------------------
+
     virtual void stopping() throw ( ::fwTools::Failed )
     {
     }
+    //------------------------------------------------------------------------------
+
     virtual void swapping() throw ( ::fwTools::Failed )
     {
     }
@@ -164,8 +183,7 @@ class SShowTest : public IBasicTest,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SShowTest)(IBasicTest) );
-
+    fwCoreServiceClassDefinitionsMacro( (SShowTest)(IBasicTest) );
 
     SShowTest();
 
@@ -179,15 +197,23 @@ public:
 
 protected:
 
+    //------------------------------------------------------------------------------
+
     virtual void configuring() throw ( ::fwTools::Failed )
     {
     }
+    //------------------------------------------------------------------------------
+
     virtual void starting() throw ( ::fwTools::Failed )
     {
     }
+    //------------------------------------------------------------------------------
+
     virtual void stopping() throw ( ::fwTools::Failed )
     {
     }
+    //------------------------------------------------------------------------------
+
     virtual void swapping() throw ( ::fwTools::Failed )
     {
     }
@@ -205,7 +231,7 @@ class SShow2Test : public IBasicTest,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SShow2Test)(IBasicTest) );
+    fwCoreServiceClassDefinitionsMacro( (SShow2Test)(IBasicTest) );
 
     static const ::fwCom::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT;
 
@@ -215,15 +241,23 @@ public:
 
 protected:
 
+    //------------------------------------------------------------------------------
+
     virtual void configuring() throw ( ::fwTools::Failed )
     {
     }
+    //------------------------------------------------------------------------------
+
     virtual void starting() throw ( ::fwTools::Failed )
     {
     }
+    //------------------------------------------------------------------------------
+
     virtual void stopping() throw ( ::fwTools::Failed )
     {
     }
+    //------------------------------------------------------------------------------
+
     virtual void swapping() throw ( ::fwTools::Failed )
     {
     }

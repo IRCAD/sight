@@ -1,5 +1,4 @@
 fwLoadProperties()
-add_definitions("-DQT_NO_KEYWORDS")
 
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 

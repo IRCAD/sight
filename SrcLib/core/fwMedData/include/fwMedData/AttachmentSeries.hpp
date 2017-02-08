@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,6 @@
 #include "fwMedData/config.hpp"
 #include "fwMedData/types.hpp"
 
-#include <fwData/Object.hpp>
 #include <fwData/factory/new.hpp>
 
 #include <fwMemory/BufferObject.hpp>
@@ -19,7 +18,6 @@
 #include <boost/filesystem/path.hpp>
 
 fwCampAutoDeclareDataMacro((fwMedData)(AttachmentSeries), FWMEDDATA_API);
-
 
 namespace fwMedData
 {
@@ -57,7 +55,6 @@ public:
         LOCAL    = 2,   /*! The attachment file are on the local machine. */
         EMBEDDED = 3    /*! The attachment are saved in this AttachmentSeries. */
     } AttachmentAvailability;
-
 
     /**
      * @brief Local path of attachment file
@@ -97,5 +94,4 @@ protected:
 }   //end namespace fwMedData
 
 #endif // __FWMEDDATA_ATTACHMENTSERIES_HPP__
-
 

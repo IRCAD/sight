@@ -1,21 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "scene2D/Scene2DGraphicsView.hpp"
 #include "scene2D/adaptor/HistogramValue.hpp"
-#include "scene2D/data/InitQtPen.hpp"
 
-#include <fwServices/macros.hpp>
+#include "scene2D/Scene2DGraphicsView.hpp"
+#include "scene2D/data/InitQtPen.hpp"
 
 #include <fwData/Histogram.hpp>
 #include <fwData/Point.hpp>
 
-#include <QGraphicsEllipseItem>
-#include <QFont>
+#include <fwServices/macros.hpp>
 
+#include <QFont>
+#include <QGraphicsEllipseItem>
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::HistogramValue, ::fwData::Histogram);
 
@@ -25,7 +25,11 @@ namespace adaptor
 {
 
 HistogramValue::HistogramValue() throw() :
-    m_color(Qt::white), m_isInteracting(false),  m_text(nullptr), m_fontSize(8.f), m_layer(nullptr)
+    m_color(Qt::white),
+    m_isInteracting(false),
+    m_text(nullptr),
+    m_fontSize(8.f),
+    m_layer(nullptr)
 {
 }
 
@@ -50,7 +54,7 @@ void HistogramValue::configuring() throw( ::fwTools::Failed)
 
     if (!m_configuration->getAttributeValue("fontSize").empty())
     {
-        m_fontSize = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("fontSize") );
+        m_fontSize = std::stof( m_configuration->getAttributeValue("fontSize") );
     }
 
     SLM_ASSERT("A viewport attribute must be specified with 'viewportUID'.",
@@ -76,7 +80,6 @@ void HistogramValue::doStart() throw( ::fwTools::Failed)
     m_font.setLetterSpacing( QFont::AbsoluteSpacing, 0.2 );
     m_font.setKerning( true );
     m_font.setFixedPitch( true );
-
 
     m_text = new QGraphicsSimpleTextItem();
     m_text->setBrush( QBrush(m_color.color()) );

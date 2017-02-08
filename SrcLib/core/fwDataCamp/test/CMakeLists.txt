@@ -1,4 +1,5 @@
 fwLoadProperties()
+
 find_package(CppUnit)
 find_package(CAMP REQUIRED)
 
@@ -11,3 +12,4 @@ fwLink(
     ${CPPUNIT_LIBRARY}
 )
 
+target_compile_definitions(${FWPROJECT_NAME} PRIVATE "-DCAMP_COMPILATION")

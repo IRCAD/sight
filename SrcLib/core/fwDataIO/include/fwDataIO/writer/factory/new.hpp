@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,10 @@
 #ifndef __FWDATAIO_WRITER_FACTORY_NEW_HPP__
 #define __FWDATAIO_WRITER_FACTORY_NEW_HPP__
 
-#include <string>
-
-
-#include <fwTools/macros.hpp>
-#include <fwTools/DynamicAttributes.hxx>
-
 #include "fwDataIO/config.hpp"
 #include "fwDataIO/writer/registry/detail.hpp"
+
+#include <string>
 
 namespace fwDataIO
 {
@@ -25,7 +21,6 @@ class IObjectWriter;
 
 namespace factory
 {
-
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New();
 
@@ -43,9 +38,7 @@ Key()
 }
 };
 
-
 FWDATAIO_API SPTR( ::fwDataIO::writer::IObjectWriter ) New( const ::fwDataIO::writer::registry::KeyType & classname );
-
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New()
 {
@@ -61,5 +54,4 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New()
 } // namespace fwDataIO
 
 #endif /* __FWDATAIO_WRITER_FACTORY_NEW_HPP__ */
-
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,19 +7,17 @@
 #ifndef __FWCOMMAND_UNDOREDOMANAGER_HPP__
 #define __FWCOMMAND_UNDOREDOMANAGER_HPP__
 
-#include <deque>
-
-#include <boost/signals2/signal.hpp>
-#include <boost/signals2/connection.hpp>
-#include <boost/cstdint.hpp>
-
-#include <fwTools/Object.hpp>
-#include <fwTools/macros.hpp>
-
-
-#include "fwCommand/config.hpp"
 #include "fwCommand/ICommand.hpp"
 #include "fwCommand/Manager.hpp"
+#include "fwCommand/config.hpp"
+
+#include <fwTools/Object.hpp>
+
+#include <boost/cstdint.hpp>
+#include <boost/signals2/connection.hpp>
+#include <boost/signals2/signal.hpp>
+
+#include <deque>
 
 namespace fwCommand
 {
@@ -41,7 +39,6 @@ public:
     /// Return the unique Instance, create it if required at first access
     FWCOMMAND_API static UndoRedoManager::sptr getDefault();
 
-
     /**
      * @brief Default constructor.
      */
@@ -51,7 +48,6 @@ public:
      * @brief Destructor.
      */
     FWCOMMAND_API virtual ~UndoRedoManager() throw();
-
 
     /**
      * @name History management methods.
@@ -83,7 +79,6 @@ public:
      */
     FWCOMMAND_API void clear();
     //@}
-
 
     /**
      * @brief Retrieves the first undoable command.
@@ -134,7 +129,6 @@ public:
      */
     FWCOMMAND_API void removeManager();
 
-
     FWCOMMAND_API ConnectionType connect(SignalType::slot_function_type subscriber);
 
     FWCOMMAND_API void disconnect(ConnectionType subscriber);
@@ -143,13 +137,10 @@ protected:
 
     Manager::sptr m_currentManager;
 
-
 private:
     SignalType m_sig;
 };
 
-
 } // namespace fwCommand
-
 
 #endif // __FWCOMMAND_UNDOREDOMANAGER_HPP__

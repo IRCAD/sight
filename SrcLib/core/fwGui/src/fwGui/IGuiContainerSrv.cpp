@@ -1,10 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGui/IGuiContainerSrv.hpp"
+
+#include "fwGui/builder/IContainerBuilder.hpp"
+#include "fwGui/builder/ISlideViewBuilder.hpp"
+#include "fwGui/builder/IToolBarBuilder.hpp"
+#include "fwGui/container/fwContainer.hpp"
+#include "fwGui/layoutManager/IViewLayoutManager.hpp"
+#include "fwGui/registrar/ViewRegistrar.hpp"
 #include "fwGui/registry/worker.hpp"
 
 #include <fwCom/Slot.hpp>
@@ -13,7 +20,9 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwCore/base.hpp>
+
 #include <fwServices/macros.hpp>
+
 #include <fwTools/fwID.hpp>
 
 namespace fwGui
@@ -28,16 +37,16 @@ const ::fwCom::Slots::SlotKeyType IGuiContainerSrv::s_HIDE_SLOT        = "hide";
 
 //-----------------------------------------------------------------------------
 
-IGuiContainerSrv::IGuiContainerSrv()
-    : m_viewLayoutManagerIsCreated (false),
-      m_hasToolBar(false)
+IGuiContainerSrv::IGuiContainerSrv() :
+    m_viewLayoutManagerIsCreated(false),
+    m_hasToolBar(false)
 {
     newSlot(s_SET_ENABLED_SLOT, &IGuiContainerSrv::setEnabled, this);
     newSlot(s_ENABLE_SLOT, &IGuiContainerSrv::enable, this);
     newSlot(s_DISABLE_SLOT, &IGuiContainerSrv::disable, this);
     newSlot(s_SET_VISIBLE_SLOT, &IGuiContainerSrv::setVisible, this);
     newSlot(s_SHOW_SLOT, &IGuiContainerSrv::show, this);
-    newSlot(s_HIDE_SLOT,&IGuiContainerSrv::hide, this);
+    newSlot(s_HIDE_SLOT, &IGuiContainerSrv::hide, this);
 }
 
 //-----------------------------------------------------------------------------

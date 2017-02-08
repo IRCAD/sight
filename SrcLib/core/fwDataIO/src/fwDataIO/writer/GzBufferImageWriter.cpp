@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,6 @@
 #include "fwDataIO/writer/registry/macros.hpp"
 
 #include <fwData/Image.hpp>
-#include <fwData/Object.hpp>
 
 #include <fwDataTools/helper/Image.hpp>
 
@@ -19,9 +18,7 @@
 
 #include <iostream>
 
-
 fwDataIOWriterRegisterMacro( ::fwDataIO::writer::GzBufferImageWriter);
-
 
 namespace fwDataIO
 {
@@ -31,8 +28,8 @@ namespace writer
 
 //------------------------------------------------------------------------------
 
-GzBufferImageWriter::GzBufferImageWriter(::fwDataIO::writer::IObjectWriter::Key key)
-    : ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
+GzBufferImageWriter::GzBufferImageWriter(::fwDataIO::writer::IObjectWriter::Key key) :
+    ::fwData::location::enableSingleFile< ::fwDataIO::writer::IObjectWriter >(this)
 {
 }
 
@@ -46,7 +43,7 @@ GzBufferImageWriter::~GzBufferImageWriter()
 
 void GzBufferImageWriter::write()
 {
-    assert( getFile().empty() ==  false );
+    assert( getFile().empty() == false );
 
     ::fwData::Image::sptr image = getConcreteObject();
     OSLM_TRACE( "GzBufferImageWriter::write()" << image.get() << " " << image->className());
@@ -80,9 +77,9 @@ void GzBufferImageWriter::write()
 
     gzclose(rawFile);
 
-    assert( uncompressedbyteswrited != 0 && writtenBytes==imageSizeInBytes);
+    assert( uncompressedbyteswrited != 0 && writtenBytes == imageSizeInBytes);
 
-    if ( uncompressedbyteswrited != 0 && writtenBytes==imageSizeInBytes)
+    if ( uncompressedbyteswrited != 0 && writtenBytes == imageSizeInBytes)
     {
         std::string str = "GzBufferImageWriter::write unable to write ";
         str += getFile().string();

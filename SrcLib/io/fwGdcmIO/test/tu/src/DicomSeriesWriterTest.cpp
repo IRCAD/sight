@@ -1,18 +1,16 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "DicomSeriesWriterTest.hpp"
 
-#include <fwData/Object.hpp>
-
-#include <fwDataCamp/visitor/CompareObjects.hpp>
-
 #include <fwGdcmIO/helper/DicomAnonymizer.hpp>
 #include <fwGdcmIO/helper/DicomSeriesWriter.hpp>
 #include <fwGdcmIO/reader/SeriesDB.hpp>
+
+#include <fwDataCamp/visitor/CompareObjects.hpp>
 
 #include <fwMedData/DicomSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
@@ -37,6 +35,8 @@ namespace fwGdcmIO
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void DicomSeriesWriterTest::setUp()
 {
     // Set up context before running a test.
@@ -45,7 +45,6 @@ void DicomSeriesWriterTest::setUp()
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + srcPath.string() + "' does not exist",
                            ::boost::filesystem::exists(srcPath));
-
 
     // Read source Dicom
     ::fwGdcmIO::reader::SeriesDB::sptr reader = ::fwGdcmIO::reader::SeriesDB::New();

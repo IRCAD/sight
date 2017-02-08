@@ -1,21 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/adaptor/Histogram.hpp"
-#include "scene2D/data/InitQtPen.hpp"
-#include "scene2D/Scene2DGraphicsView.hpp"
 
-#include <fwServices/macros.hpp>
+#include "scene2D/Scene2DGraphicsView.hpp"
+#include "scene2D/data/InitQtPen.hpp"
 
 #include <fwData/Histogram.hpp>
 #include <fwData/Point.hpp>
 
+#include <fwServices/macros.hpp>
+
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
-
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::Histogram, ::fwData::Histogram);
 
@@ -29,7 +29,10 @@ const float Histogram::SCALE = 1.1f; // vertical scaling factor applied at each 
 
 //---------------------------------------------------------------------------------------------------------
 
-Histogram::Histogram() throw() : m_color("green"), m_opacity( 0.80f ), m_scale(1.0)
+Histogram::Histogram() throw() :
+    m_color("green"),
+    m_opacity( 0.80f ),
+    m_scale(1.0)
 {
     m_layer = NULL;
 }
@@ -59,7 +62,7 @@ void Histogram::configuring() throw( ::fwTools::Failed)
 
     if (!m_configuration->getAttributeValue("opacity").empty())
     {
-        m_opacity = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("opacity") );
+        m_opacity = std::stof( m_configuration->getAttributeValue("opacity") );
     }
 
     m_histogramPointUID = m_configuration->getAttributeValue("histogramPointUID");

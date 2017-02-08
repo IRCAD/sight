@@ -1,30 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifdef _WIN32
 
-#include <assert.h>
-#include <iomanip>
-#include <iostream>
-
-#include <boost/regex.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/convenience.hpp>
+#include "fwMemory/tools/Win32MemoryMonitorTools.hpp"
 
 #include <fwCore/base.hpp>
 
-#include "fwMemory/tools/Win32MemoryMonitorTools.hpp"
-
-
-#include <windows.h>
-#include <stdio.h>
 #include <psapi.h>
+#include <stdio.h>
 #include <tchar.h>
+#include <windows.h>
 
+#include <iomanip>
+#include <iostream>
 
 namespace fwMemory
 {
@@ -45,16 +37,16 @@ Win32MemoryMonitorTools::~Win32MemoryMonitorTools()
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t Win32MemoryMonitorTools::estimateFreeMem()
+std::uint64_t Win32MemoryMonitorTools::estimateFreeMem()
 {
-    ::boost::uint64_t freeMemory = 0;
+    std::uint64_t freeMemory = 0;
 #ifdef _M_X64
     freeMemory = getFreeSystemMemory();
 #else
-    ::boost::uint64_t windowsLimitForAProcess = 1.2 * 1024 * 1024 * 1024; // 1.5 Go
-    ::boost::uint64_t freeMem                 = std::min(
+    std::uint64_t windowsLimitForAProcess = 1.2 * 1024 * 1024 * 1024; // 1.5 Go
+    std::uint64_t freeMem                 = std::min(
         getFreeSystemMemory(), windowsLimitForAProcess - getUsedProcessMemory());
-    freeMemory = std::max((::boost::uint64_t) 0, freeMem );
+    freeMemory = std::max((std::uint64_t) 0, freeMem );
 #endif
     return freeMemory;
 }
@@ -66,7 +58,6 @@ void Win32MemoryMonitorTools::printProcessMemoryInformation()
     DWORD processID = GetCurrentProcessId();
     HANDLE hProcess;
 
-
     hProcess = OpenProcess( PROCESS_QUERY_INFORMATION |PROCESS_VM_READ,
                             FALSE,
                             processID );
@@ -75,7 +66,7 @@ void Win32MemoryMonitorTools::printProcessMemoryInformation()
     {
         // Get the process name.
         int nameSize = 100;
-        char * name  = new char[nameSize];
+        char* name   = new char[nameSize];
 
         HMODULE hMod;
         DWORD cbNeeded;
@@ -119,12 +110,12 @@ void Win32MemoryMonitorTools::printProcessMemoryInformation()
 
 void Win32MemoryMonitorTools::printSystemMemoryInformation()
 {
-    ::boost::uint64_t oToKo = 1024;
+    std::uint64_t oToKo = 1024;
 
     MEMORYSTATUSEX statex;
 
     statex.dwLength = sizeof (statex);
-    GlobalMemoryStatusEx (&statex);
+    GlobalMemoryStatusEx(&statex);
 
     SLM_INFO( "-- System memory information --" );
     OSLM_INFO( "    There is " << statex.dwMemoryLoad               <<  " percent of memory in use." );
@@ -146,45 +137,45 @@ void Win32MemoryMonitorTools::printMemoryInformation()
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t Win32MemoryMonitorTools::getTotalSystemMemory()
+std::uint64_t Win32MemoryMonitorTools::getTotalSystemMemory()
 {
     MEMORYSTATUSEX statex;
 
     statex.dwLength = sizeof (statex);
-    GlobalMemoryStatusEx (&statex);
+    GlobalMemoryStatusEx(&statex);
 
     return statex.ullTotalPhys;
 }
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t Win32MemoryMonitorTools::getUsedSystemMemory()
+std::uint64_t Win32MemoryMonitorTools::getUsedSystemMemory()
 {
     MEMORYSTATUSEX statex;
 
     statex.dwLength = sizeof (statex);
-    GlobalMemoryStatusEx (&statex);
+    GlobalMemoryStatusEx(&statex);
 
     return statex.ullTotalPhys - statex.ullAvailPhys;
 }
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t Win32MemoryMonitorTools::getFreeSystemMemory()
+std::uint64_t Win32MemoryMonitorTools::getFreeSystemMemory()
 {
     MEMORYSTATUSEX statex;
 
     statex.dwLength = sizeof (statex);
-    GlobalMemoryStatusEx (&statex);
+    GlobalMemoryStatusEx(&statex);
 
     return statex.ullAvailPhys;
 }
 
 //-----------------------------------------------------------------------------
 
-::boost::uint64_t Win32MemoryMonitorTools::getUsedProcessMemory()
+std::uint64_t Win32MemoryMonitorTools::getUsedProcessMemory()
 {
-    ::boost::uint64_t memory = 0;
+    std::uint64_t memory = 0;
 
     BOOL result;
     PROCESS_MEMORY_COUNTERS_EX pmc;

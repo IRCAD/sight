@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,6 +30,7 @@
 #include <vtkPiecewiseFunction.h>
 #include <vtkPlaneCollection.h>
 #include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
 #include <vtkSmartVolumeMapper.h>
 #include <vtkTransform.h>
@@ -45,12 +46,16 @@ class TransformCallback : public ::vtkCommand
 {
 public:
 
+    //------------------------------------------------------------------------------
+
     static TransformCallback* New(Volume* adaptor)
     {
         TransformCallback* cb = new TransformCallback;
         cb->m_adaptor = adaptor;
         return cb;
     }
+
+    //------------------------------------------------------------------------------
 
     virtual void Execute( ::vtkObject* caller, unsigned long, void* )
     {
@@ -68,10 +73,14 @@ class AbortCallback : public vtkCommand
 {
 public:
 
+    //------------------------------------------------------------------------------
+
     static AbortCallback* New()
     {
         return new AbortCallback();
     }
+
+    //------------------------------------------------------------------------------
 
     virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
@@ -92,12 +101,16 @@ class CroppingCallback : public vtkCommand
 {
 public:
 
+    //------------------------------------------------------------------------------
+
     static CroppingCallback* New(Volume* adaptor)
     {
         CroppingCallback* callback = new CroppingCallback();
         callback->m_adaptor = adaptor;
         return callback;
     }
+
+    //------------------------------------------------------------------------------
 
     virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
@@ -212,7 +225,6 @@ void Volume::doStart() throw(fwTools::Failed)
     m_croppingCommand = CroppingCallback::New(this);
     m_boxWidget->AddObserver(vtkCommand::InteractionEvent, m_croppingCommand);
 
-
     m_volume->SetUserTransform(this->getTransform());
 }
 
@@ -325,7 +337,6 @@ void Volume::updateImage( ::fwData::Image::sptr image  )
 
     vtkImageImport* imageImport = vtkImageImport::New();
     ::fwVtkIO::configureVTKImageImport( imageImport, image );
-
 
     m_volumeMapper->RemoveAllClippingPlanes();
     if (m_clippingPlanes)
@@ -513,7 +524,7 @@ void Volume::crop()
     }
     else
     {
-        mapper->SetCroppingRegionPlanes(0.,0.,0.,0.,0.,0.);
+        mapper->SetCroppingRegionPlanes(0., 0., 0., 0., 0., 0.);
     }
 }
 

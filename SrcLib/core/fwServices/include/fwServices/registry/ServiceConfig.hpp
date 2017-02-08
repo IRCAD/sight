@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,8 +10,8 @@
 #include "fwServices/config.hpp"
 
 #include <fwRuntime/ConfigurationElement.hpp>
+
 #include <fwTools/Object.hpp>
-#include <fwTools/macros.hpp>
 
 #include <map>
 
@@ -21,10 +21,7 @@ namespace fwServices
 namespace registry
 {
 
-
 /**
- * @class ServiceConfigInfo
- *
  */
 class FWSERVICES_CLASS_API ServiceConfigInfo : public ::fwCore::BaseObject
 {
@@ -47,13 +44,9 @@ public:
     ::fwRuntime::ConfigurationElement::csptr config;
 };
 
-
 /**
  * @brief This class allows to register all the service configuration which has the point extension
  *        "::fwServices::registry::ServiceConfig".
- * @class ServiceConfig
- *
- *
  *
  * Registry config like :
  * @code{.xml}
@@ -98,24 +91,24 @@ public:
      * @param config   the registered config
      * @note This method is thread safe
      */
-    FWSERVICES_API void addServiceConfigInfo( const std::string & configId,
-                                              const std::string & service,
-                                              const std::string & desc,
+    FWSERVICES_API void addServiceConfigInfo( const std::string& configId,
+                                              const std::string& service,
+                                              const std::string& desc,
                                               ::fwRuntime::ConfigurationElement::csptr config );
 
     /**
      * @brief Returns the configuration with the given id for the service with the given implementation
      * @note This method is thread safe
      */
-    FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getServiceConfig( const std::string & configId,
-                                                                              const std::string &serviceImpl =
+    FWSERVICES_API ::fwRuntime::ConfigurationElement::csptr getServiceConfig( const std::string& configId,
+                                                                              const std::string& serviceImpl =
                                                                                   "" ) const;
 
     /**
      * @brief Returns the description of the given configuration name.
      * @note This method is thread safe
      */
-    FWSERVICES_API const std::string& getConfigDesc( const std::string & configId ) const;
+    FWSERVICES_API const std::string& getConfigDesc( const std::string& configId ) const;
 
     /**
      * @brief Returns a vector containing the names of the available config for the service with the given
@@ -154,5 +147,4 @@ protected:
 } // namespace fwServices
 
 #endif // __FWSERVICES_REGISTRY_SERVICECONFIG_HPP__
-
 

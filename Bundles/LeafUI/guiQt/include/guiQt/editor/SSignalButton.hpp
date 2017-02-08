@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,12 +16,13 @@
 #include <QPointer>
 #include <QPushButton>
 
+#include <boost/filesystem/path.hpp>
+
 namespace guiQt
 {
 
 namespace editor
 {
-
 
 /**
  * @brief   This editor shows a button and send a signal when it is clicked.
@@ -67,8 +68,7 @@ class GUIQT_CLASS_API SSignalButton : public QObject,
 Q_OBJECT
 public:
 
-
-    fwCoreServiceClassDefinitionsMacro ( (SSignalButton)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SSignalButton)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
     GUIQT_API SSignalButton() throw();
@@ -102,7 +102,7 @@ protected:
     /**
      * @brief This method is used to give information about the service. Do nothing.
      */
-    GUIQT_API virtual void info(std::ostream &_sstream );
+    GUIQT_API virtual void info(std::ostream& _sstream );
 
     ///@}
 

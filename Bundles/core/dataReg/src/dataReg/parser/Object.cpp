@@ -1,12 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "dataReg/parser/Object.hpp"
-
-#include <fwData/Object.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -60,7 +58,6 @@ void Object::updating( ) throw(fwTools::Failed)
     SLM_FATAL("This method is deprecated, and thus, shouldn't be used.");
 }
 
-
 //------------------------------------------------------------------------------
 
 void Object::createConfig( ::fwTools::Object::sptr _obj )
@@ -88,7 +85,6 @@ void Object::createConfig( ::fwTools::Object::sptr _obj )
                              "or GET_OBJECT.",
                              buildMode == BUILD_OBJECT || buildMode == GET_OBJECT );
             }
-
 
             SLM_ASSERT( "The xml element \"item\" must have an attribute named \"key\" .",
                         elem->hasAttribute("key") );

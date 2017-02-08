@@ -1,25 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "SeriesEnquirerTest.hpp"
 
-#include <fwDcmtkIO/helper/DicomSearch.hpp>
-
 #include <fwPacsIO/helper/Series.hpp>
+
+#include <fwDcmtkIO/helper/DicomSearch.hpp>
 
 #include <fwTest/Data.hpp>
 #include <fwTest/Exception.hpp>
 
 #include <fwThread/Worker.hpp>
 
-#include <fwTools/System.hpp>
-
-#include <boost/chrono/chrono.hpp>
+#include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/thread/thread.hpp>
 
 #include <dcmtk/config/osconfig.h>
 
@@ -116,7 +113,6 @@ void SeriesEnquirerTest::pushSeries()
 
     CPPUNIT_ASSERT_MESSAGE("The file '" + path.string() + "' does not exist",
                            ::boost::filesystem::exists(path));
-
 
     std::vector<std::string> filenames;
     ::fwDcmtkIO::helper::DicomSearch::searchRecursively(path, filenames);

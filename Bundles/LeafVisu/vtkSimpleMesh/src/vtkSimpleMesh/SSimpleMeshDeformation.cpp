@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,7 +10,6 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Mesh.hpp>
-#include <fwData/Object.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 #include <fwData/mt/ObjectReadToWriteLock.hpp>
 
@@ -86,14 +85,14 @@ void SSimpleMeshDeformation::updating() throw(fwTools::Failed)
     {
         m_hiRestimer.reset();
         m_hiRestimer.start();
-        this->computeDeformation(m_mesh,m_transformMesh);
+        this->computeDeformation(m_mesh, m_transformMesh);
         m_hiRestimer.stop();
         OSLM_INFO("Deformation time (milli sec) = " << m_hiRestimer.getElapsedTimeInMilliSec());
 
         lock.upgrade();
         m_hiRestimer.reset();
         m_hiRestimer.start();
-        copyMesh(m_transformMesh,mesh);
+        copyMesh(m_transformMesh, mesh);
         m_hiRestimer.stop();
         OSLM_INFO("Copy time (milli sec) = " << m_hiRestimer.getElapsedTimeInMilliSec());
         lock.downgrade();
@@ -171,7 +170,7 @@ void SSimpleMeshDeformation::computeDeformation (
     // Compute limits
     float ymin = points[0][1];
     float ymax = points[0][1];
-    for(size_t i = 0; i!=nbPts; ++i)
+    for(size_t i = 0; i != nbPts; ++i)
     {
         const float val = points[i][1];
         if ( val < ymin )
@@ -190,7 +189,7 @@ void SSimpleMeshDeformation::computeDeformation (
     float strafe        = maxDeformation * sizeRef;
     float currentStrafe = deformationPercent * strafe;
 
-    for(size_t i = 0; i<nbPts; ++i )
+    for(size_t i = 0; i < nbPts; ++i )
     {
         float y = points[i][1];
         if( y < yref )
@@ -244,7 +243,6 @@ void SSimpleMeshDeformation::initMeshBackup()
 
         auto mesh = this->getInOut< ::fwData::Mesh >(s_MESH_KEY);
         ::fwData::mt::ObjectReadToWriteLock lock(mesh);
-
 
         lock.upgrade();
         ::fwDataTools::Mesh::generatePointNormals(mesh);

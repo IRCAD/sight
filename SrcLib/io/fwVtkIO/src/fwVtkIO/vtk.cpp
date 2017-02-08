@@ -1,40 +1,9 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-#include <cstring>
-#include <functional>
-#include <numeric>
-#include <stdexcept>
-
-#include <boost/assign/list_of.hpp>
-#include <boost/cast.hpp>
-
-#include <vtkImageImport.h>
-#include <vtkSetGet.h>
-#include <vtkType.h>
-
-// for mesh
-#include <vtkCell.h>
-#include <vtkCellType.h>
-#include <vtkPoints.h>
-#include <vtkPolyData.h>
-#include <vtkUnstructuredGrid.h>
-#include <vtkPolyDataWriter.h>
-#include <vtkImageData.h>
-#include <vtkImageImport.h>
-#include <vtkImageExport.h>
-#include <vtkMatrix4x4.h>
-#include <vtkPolyDataNormals.h>
-#include <vtkLookupTable.h>
-
-#include <vtkDataSetAttributes.h>
-#include <vtkDataArray.h>
-#include <vtkPointData.h>
-#include <vtkSmartPointer.h>
-
-#include <fwMath/MeshFunctions.hpp>
+#include "fwVtkIO/vtk.hpp"
 
 #include <fwData/Image.hpp>
 #include <fwData/ObjectLock.hpp>
@@ -42,12 +11,39 @@
 #include <fwDataTools/helper/Image.hpp>
 #include <fwDataTools/helper/ImageGetter.hpp>
 
-#include "fwVtkIO/vtk.hpp"
+#include <fwMath/MeshFunctions.hpp>
 
+#include <boost/assign/list_of.hpp>
+#include <boost/cast.hpp>
+
+#include <vtkCell.h>
+#include <vtkCellType.h>
+#include <vtkDataArray.h>
+#include <vtkDataSetAttributes.h>
+#include <vtkImageData.h>
+#include <vtkImageExport.h>
+#include <vtkImageImport.h>
+#include <vtkLookupTable.h>
+#include <vtkMatrix4x4.h>
+#include <vtkPointData.h>
+#include <vtkPoints.h>
+#include <vtkPolyData.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkPolyDataWriter.h>
+#include <vtkSetGet.h>
+#include <vtkSmartPointer.h>
+#include <vtkType.h>
+#include <vtkUnstructuredGrid.h>
+
+#include <cstring>
+#include <functional>
+#include <numeric>
+#include <stdexcept>
 
 namespace fwVtkIO
 {
 
+// ------------------------------------------------------------------------------
 
 TypeTranslator::fwToolsToVtkMap::mapped_type TypeTranslator::translate(
     const TypeTranslator::fwToolsToVtkMap::key_type& key )
@@ -57,6 +53,8 @@ TypeTranslator::fwToolsToVtkMap::mapped_type TypeTranslator::translate(
     return it->second;
 }
 
+// ------------------------------------------------------------------------------
+
 TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate(
     const TypeTranslator::VtkTofwToolsMap::key_type& key )
 {
@@ -64,9 +62,6 @@ TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate(
     FW_RAISE_IF("Unknown Type: " << key, it == s_fromVtk.end() );
     return it->second;
 }
-
-
-
 
 const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk
     = boost::assign::map_list_of
@@ -89,9 +84,6 @@ const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk
           ( fwTools::Type::create("uint64"), VTK_UNSIGNED_LONG )
 #endif
     ;
-
-
-
 
 const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk
     = boost::assign::map_list_of
@@ -126,8 +118,7 @@ const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk
 #endif
     ;
 
-
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 void toVTKImage( ::fwData::Image::csptr data,  vtkImageData* dst)
 {
@@ -140,8 +131,7 @@ void toVTKImage( ::fwData::Image::csptr data,  vtkImageData* dst)
     dst->ShallowCopy(importer->GetOutput());
 }
 
-//-----------------------------------------------------------------------------
-
+// -----------------------------------------------------------------------------
 
 template< typename IMAGETYPE >
 void* newBuffer(size_t size)
@@ -153,16 +143,16 @@ void* newBuffer(size_t size)
     }
     catch (std::exception& e)
     {
-        OSLM_ERROR ("No enough memory to allocate an image of type "
-                    << fwTools::makeDynamicType<IMAGETYPE>().string()
-                    << " and of size "<< size << "." << std::endl
-                    << e.what() );
+        OSLM_ERROR("No enough memory to allocate an image of type "
+                   << fwTools::makeDynamicType<IMAGETYPE>().string()
+                   << " and of size "<< size << "." << std::endl
+                   << e.what() );
         throw;
     }
     return destBuffer;
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 template< typename IMAGETYPE >
 void fromRGBBuffer( void* input, size_t size, void*& destBuffer)
@@ -175,7 +165,7 @@ void fromRGBBuffer( void* input, size_t size, void*& destBuffer)
     IMAGETYPE* destBufferTyped = (IMAGETYPE*)destBuffer;
     IMAGETYPE* inputTyped      = (IMAGETYPE*)input;
     IMAGETYPE* finalPtr        = ((IMAGETYPE*)destBuffer) + size;
-    IMAGETYPE valR, valG,valB;
+    IMAGETYPE valR, valG, valB;
 
     while (destBufferTyped < finalPtr)
     {
@@ -186,8 +176,7 @@ void fromRGBBuffer( void* input, size_t size, void*& destBuffer)
     }
 }
 
-
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 template< typename IMAGETYPE >
 void fromRGBBufferColor( void* input, size_t size, void*& destBuffer)
@@ -207,8 +196,7 @@ void fromRGBBufferColor( void* input, size_t size, void*& destBuffer)
     }
 }
 
-//-----------------------------------------------------------------------------
-
+// -----------------------------------------------------------------------------
 
 void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
 {
@@ -253,56 +241,33 @@ void fromVTKImage( vtkImageData* source, ::fwData::Image::sptr destination )
         destination->setOrigin( ::fwData::Image::OriginType(source->GetOrigin(), source->GetOrigin()+dim) );
     }
 
-
-    size_t size = std::accumulate(source->GetDimensions(), source->GetDimensions()+dim, 3, std::multiplies<size_t>() );
-    void* input = source->GetScalarPointer();
+    const int nbComponents = source->GetNumberOfScalarComponents();
+    const size_t size      =
+        std::accumulate(source->GetDimensions(), source->GetDimensions()+dim, std::max(3,
+                                                                                       nbComponents),
+                        std::multiplies<size_t>() );
+    const void* input = source->GetScalarPointer();
 
     if (size != 0)
     {
         void* destBuffer;
-        int nbBytePerPixel = source->GetScalarSize();
-        int nbComponents   = source->GetNumberOfScalarComponents();
+        const int nbBytePerPixel = source->GetScalarSize();
         OSLM_TRACE("image size : " << size << " - nbBytePerPixel : " << nbBytePerPixel );
 
-        destination->setNumberOfComponents(3);
-        if (nbComponents == 3 && nbBytePerPixel == 2)
-        {
-            SLM_TRACE ("RGB 16bits");
+        OSLM_TRACE(nbComponents << " components, " << TypeTranslator::translate( source->GetScalarType() ));
+        destination->setType( TypeTranslator::translate( source->GetScalarType() ) );
+        destination->setNumberOfComponents(nbComponents);
+        destination->allocate();
+        ::fwData::ObjectLock lock(destination);
+        destBuffer = imageHelper.getBuffer();
+        const size_t sizeInBytes = destination->getSizeInBytes();
+        std::memcpy(destBuffer, input, sizeInBytes);
 
-            destination->setType( "uint16" );
-            destination->allocate();
-            ::fwData::ObjectLock lock(destination);
-            destBuffer = imageHelper.getBuffer();
-            SLM_ASSERT("Image allocation error", destBuffer != NULL);
-            fromRGBBufferColor< unsigned short >(input, size, destBuffer);
-        }
-        else if (nbComponents == 3 && nbBytePerPixel == 1)
-        {
-            SLM_TRACE ("RGB 8bits");
-
-            destination->setType( "uint8" );
-            destination->allocate();
-            ::fwData::ObjectLock lock(destination);
-            destBuffer = imageHelper.getBuffer();
-            SLM_ASSERT("Image allocation error", destBuffer != NULL);
-            fromRGBBufferColor< unsigned char >(input, size, destBuffer);
-        }
-        else
-        {
-            SLM_TRACE ("Luminance image");
-            destination->setType( TypeTranslator::translate( source->GetScalarType() ) );
-            destination->setNumberOfComponents(nbComponents);
-            destination->allocate();
-            ::fwData::ObjectLock lock(destination);
-            destBuffer = imageHelper.getBuffer();
-            size_t sizeInBytes = destination->getSizeInBytes();
-            std::memcpy(destBuffer, input, sizeInBytes);
-        }
     }
 
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 void configureVTKImageImport( ::vtkImageImport* _pImageImport, ::fwData::Image::csptr _pDataImage )
 {
@@ -333,14 +298,14 @@ void configureVTKImageImport( ::vtkImageImport* _pImageImport, ::fwData::Image::
     _pImageImport->SetDataScalarType( TypeTranslator::translate(_pDataImage->getType()) );
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 vtkMatrix4x4*  toVTKMatrix( ::fwData::TransformationMatrix3D::sptr _transfoMatrix )
 {
     vtkMatrix4x4* matrix = vtkMatrix4x4 ::New();
-    for(int l = 0; l<4; l++)
+    for(int l = 0; l < 4; l++)
     {
-        for(int c = 0; c <4; c++)
+        for(int c = 0; c < 4; c++)
         {
             matrix->SetElement(l, c, _transfoMatrix->getCoefficient(l, c));
         }
@@ -348,22 +313,22 @@ vtkMatrix4x4*  toVTKMatrix( ::fwData::TransformationMatrix3D::sptr _transfoMatri
     return matrix;
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 bool fromVTKMatrix( vtkMatrix4x4* _matrix, ::fwData::TransformationMatrix3D::sptr _transfoMatrix)
 {
     SLM_TRACE_FUNC();
     bool res = true;
-    for(int l = 0; l<4; l++)
+    for(int l = 0; l < 4; l++)
     {
-        for(int c = 0; c <4; c++)
+        for(int c = 0; c < 4; c++)
         {
-            _transfoMatrix->setCoefficient(l,c, _matrix->GetElement(l,c));
+            _transfoMatrix->setCoefficient(l, c, _matrix->GetElement(l, c));
         }
     }
     return res;
 }
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 } // namespace fwVtkIO

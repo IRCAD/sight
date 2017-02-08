@@ -10,6 +10,5 @@ set( DEPENDENCIES
     fwTools
     fwActivities
 )
-
 set( REQUIREMENTS  )
-
+set( USE_PCH_FROM_TARGET fwAtomConversion )

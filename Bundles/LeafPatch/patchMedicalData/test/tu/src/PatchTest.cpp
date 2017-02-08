@@ -1,13 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
 #include "PatchTest.hpp"
-
-#include <fwData/Object.hpp>
 
 #include <fwDataTools/Image.hpp>
 
@@ -35,7 +32,6 @@
 #include <fwTools/dateAndTime.hpp>
 
 #include <boost/filesystem/operations.hpp>
-
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::patchMedicalData::ut::PatchTest );
@@ -131,7 +127,7 @@ void PatchTest::patchMedicalDataTest()
 
     //<patcher context="..." version="..." />
     ::fwRuntime::EConfigurationElement::sptr patcherCfg = ::fwRuntime::EConfigurationElement::New("patcher");
-    patcherCfg->setAttributeValue("context","MedicalData");
+    patcherCfg->setAttributeValue("context", "MedicalData");
     patcherCfg->setAttributeValue("version", ::fwMDSemanticPatch::PatchLoader::getCurrentVersion());
     srvCfg->addConfigurationElement(patcherCfg);
 
@@ -148,16 +144,14 @@ void PatchTest::patchMedicalDataTest()
                          series->getInstanceUID());
     CPPUNIT_ASSERT_EQUAL(std::string("20081028"), series->getDate());
     CPPUNIT_ASSERT_EQUAL(std::string("174446"), series->getTime());
-    CPPUNIT_ASSERT_EQUAL(std::string("Original image"),series->getDescription());
+    CPPUNIT_ASSERT_EQUAL(std::string("Original image"), series->getDescription());
     CPPUNIT_ASSERT_EQUAL(std::string("CT"), series->getModality());
-
 
     ::fwMedData::Patient::sptr patient = series->getPatient();
     CPPUNIT_ASSERT( patient );
     CPPUNIT_ASSERT_EQUAL(std::string("12592 ARTHRO GENOU  G"), patient->getPatientId());
     CPPUNIT_ASSERT_EQUAL(std::string("19790618"), patient->getBirthdate());
     CPPUNIT_ASSERT_EQUAL(std::string("M"), patient->getSex());
-
 
     ::fwMedData::Study::sptr study = series->getStudy();
     CPPUNIT_ASSERT( study );
@@ -176,9 +170,9 @@ void PatchTest::patchMedicalDataTest()
     // Test split between meshes and image
     std::vector< ::fwMedData::Series::sptr > otherSeries = getOtherSeries( sdb );
     CPPUNIT_ASSERT_EQUAL( (size_t) 2, otherSeries.size() );
-    CPPUNIT_ASSERT( otherSeries[0]->getStudy()     !=  otherSeries[1]->getStudy() );
-    CPPUNIT_ASSERT( otherSeries[0]->getPatient()   !=  otherSeries[1]->getPatient() );
-    CPPUNIT_ASSERT( otherSeries[0]->getEquipment() !=  otherSeries[1]->getEquipment() );
+    CPPUNIT_ASSERT( otherSeries[0]->getStudy() != otherSeries[1]->getStudy() );
+    CPPUNIT_ASSERT( otherSeries[0]->getPatient() != otherSeries[1]->getPatient() );
+    CPPUNIT_ASSERT( otherSeries[0]->getEquipment() != otherSeries[1]->getEquipment() );
 
     ::fwMedData::Patient::sptr p1 = otherSeries[0]->getPatient();
     ::fwMedData::Patient::sptr p2 = otherSeries[1]->getPatient();

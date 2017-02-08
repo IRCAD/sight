@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,10 @@
 #ifndef __FWGUI_FACTORY_NEW_HPP__
 #define __FWGUI_FACTORY_NEW_HPP__
 
-#include <string>
-
-
-#include <fwTools/macros.hpp>
-
 #include "fwGui/config.hpp"
 #include "fwGui/registry/detail.hpp"
+
+#include <string>
 
 namespace fwGui
 {
@@ -22,7 +19,6 @@ class GuiBaseObject;
 
 namespace factory
 {
-
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New();
 
@@ -53,5 +49,4 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New()
 } // namespace fwGui
 
 #endif /* __FWGUI_FACTORY_NEW_HPP__ */
-
 

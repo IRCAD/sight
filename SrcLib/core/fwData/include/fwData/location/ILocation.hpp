@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,14 @@
 #ifndef __FWDATA_LOCATION_ILOCATION_HPP__
 #define __FWDATA_LOCATION_ILOCATION_HPP__
 
-#include "fwData/config.hpp"
 #include "fwData/Object.hpp"
+#include "fwData/config.hpp"
 
+#include <boost/filesystem/path.hpp>
 
 namespace fwData
 {
 /**
- * @namespace ::fwData::location
  * @brief This namespace contains the classes which define a %location ( fileSystem, directory(IES) etc.... ).
  */
 namespace location
@@ -42,13 +42,12 @@ protected:
     FWDATA_API virtual ~ILocation();
 };
 
-
 /**
  * @brief Get reader or writer %location
  * @param[in] rw reader or writer
  */
 template<class LOCATION, class RW >
-inline typename LOCATION::sptr getLocation(RW *rw)
+inline typename LOCATION::sptr getLocation(RW* rw)
 {
     SLM_ASSERT("rw not instanced", rw);
     typename LOCATION::sptr location;
@@ -63,7 +62,7 @@ inline typename LOCATION::sptr getLocation(RW *rw)
 
 /// test if a Reader/writer (ie a class implementing get/setLocation) have an specialized LOCATION
 template<class LOCATION, class RW >
-inline bool have(RW *rw)
+inline bool have(RW* rw)
 {
     return (LOCATION::dynamicCast( rw->getLocation() )) ? true : false;
 }

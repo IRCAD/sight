@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,12 +9,13 @@
 
 #ifndef ANDROID
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
 #include "visuVTKAdaptor/config.hpp"
+
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 class vtkTransform;
 class vtkBoxWidget2;
-
+class vtkCommand;
 
 namespace visuVTKAdaptor
 {
@@ -46,7 +47,7 @@ protected:
 
 private:
 
-    ::vtkBoxWidget2* m_vtkBoxWidget;
+    vtkBoxWidget2* m_vtkBoxWidget;
     vtkCommand* m_boxWidgetCommand;
 
     double m_scaleFactor;

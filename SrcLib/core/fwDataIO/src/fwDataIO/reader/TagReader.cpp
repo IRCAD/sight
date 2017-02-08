@@ -1,28 +1,26 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <iostream>
-#include <fstream>
+#include "fwDataIO/reader/TagReader.hpp"
 
-#include <boost/cstdint.hpp>
+#include "fwDataIO/reader/registry/macros.hpp"
+
+#include <fwData/Point.hpp>
+#include <fwData/PointList.hpp>
+#include <fwData/Tag.hpp>
+#include <fwData/location/SingleFile.hpp>
 
 #include <fwMath/IntrasecTypes.hpp>
 
-#include <fwData/Tag.hpp>
-#include <fwData/PointList.hpp>
-#include <fwData/Point.hpp>
-#include <fwData/Object.hpp>
-#include <fwData/location/SingleFile.hpp>
+#include <boost/cstdint.hpp>
 
-#include "fwDataIO/reader/TagReader.hpp"
-#include "fwDataIO/reader/registry/macros.hpp"
-
+#include <fstream>
+#include <iostream>
 
 fwDataIOReaderRegisterMacro( ::fwDataIO::reader::TagReader );
-
 
 namespace fwDataIO
 {
@@ -32,8 +30,8 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-TagReader::TagReader(::fwDataIO::reader::IObjectReader::Key key)
-    : ::fwData::location::enableSingleFile< IObjectReader >(this)
+TagReader::TagReader(::fwDataIO::reader::IObjectReader::Key key) :
+    ::fwData::location::enableSingleFile< IObjectReader >(this)
 {
 }
 
@@ -51,9 +49,8 @@ void TagReader::read()
     ::boost::filesystem::path path =
         ::std::dynamic_pointer_cast< ::fwData::location::SingleFile >(m_location)->getPath();
 
-
     OSLM_INFO( "[TagReader::read] Tag file: " << path);
-    assert( path.empty() ==  false );
+    assert( path.empty() == false );
 
     ::std::shared_ptr< ::fwData::Tag > tag = getConcreteObject();
 
@@ -72,14 +69,14 @@ void TagReader::read()
     int n;
     file>>name;
     file>>n;
-    if(n>=1)
+    if(n >= 1)
     {
         file>>type;
 
-        if(type=="ARTAG" || type=="CHESSBOARD" || type=="ARToolKitPlus_MARKER_ID_BCH")
+        if(type == "ARTAG" || type == "CHESSBOARD" || type == "ARToolKitPlus_MARKER_ID_BCH")
         {
             int nbPts;
-            double x,y,z;
+            double x, y, z;
             double radius = 0.0;
             file>>x>>y>>z;
             file>>nbPts;

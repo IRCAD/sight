@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,10 @@
 #ifndef __FWACTIVITIES_BUILDER_FACTORY_NEW_HPP__
 #define __FWACTIVITIES_BUILDER_FACTORY_NEW_HPP__
 
-#include <string>
-
-
-#include <fwTools/macros.hpp>
-
-#include "fwActivities/config.hpp"
 #include "fwActivities/builder/registry/detail.hpp"
+#include "fwActivities/config.hpp"
+
+#include <string>
 
 namespace fwActivities
 {
@@ -24,7 +21,6 @@ namespace builder
 {
 namespace factory
 {
-
 
 template<class CLASSNAME > SPTR( CLASSNAME )  New();
 
@@ -55,5 +51,4 @@ template<class CLASSNAME > SPTR( CLASSNAME )  New()
 } // namespace fwActivities
 
 #endif /* __FWACTIVITIES_BUILDER_FACTORY_NEW_HPP__ */
-
 

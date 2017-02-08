@@ -1,20 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "scene2D/adaptor/ScaleValues.hpp"
-#include "scene2D/data/InitQtPen.hpp"
+
 #include "scene2D/Scene2DGraphicsView.hpp"
+#include "scene2D/data/InitQtPen.hpp"
+
+#include <fwData/Composite.hpp>
 
 #include <fwServices/macros.hpp>
-#include <fwData/Composite.hpp>
 
 #include <QGraphicsItemGroup>
 
 fwServicesRegisterMacro( ::scene2D::adaptor::IAdaptor, ::scene2D::adaptor::ScaleValues, ::fwData::Composite );
-
 
 namespace scene2D
 {
@@ -22,9 +23,14 @@ namespace adaptor
 {
 
 ScaleValues::ScaleValues() throw() :
-    m_min(0.f), m_max(0.f),
-    m_interval(10.), m_step(1), m_fontSize(8.f),
-    m_showUnit(true), m_unit(nullptr), m_layer(nullptr)
+    m_min(0.f),
+    m_max(0.f),
+    m_interval(10.),
+    m_step(1),
+    m_fontSize(8.f),
+    m_showUnit(true),
+    m_unit(nullptr),
+    m_layer(nullptr)
 {
 }
 
@@ -52,16 +58,14 @@ void ScaleValues::configuring() throw ( ::fwTools::Failed )
     SLM_ASSERT("'min' atttribute is missing.", !min.empty());
     SLM_ASSERT("'min' atttribute is missing.", !max.empty());
 
-    m_min = ::boost::lexical_cast< double >( min );
-    m_max = ::boost::lexical_cast< double >( max );
-
+    m_min = std::stod( min );
+    m_max = std::stod( max );
 
     // Interval configuration
     if (!m_configuration->getAttributeValue("interval").empty())
     {
-        m_interval = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("interval") );
+        m_interval = std::stof( m_configuration->getAttributeValue("interval") );
     }
-
 
     // Color configuration
     const std::string color = m_configuration->getAttributeValue("color");
@@ -74,13 +78,11 @@ void ScaleValues::configuring() throw ( ::fwTools::Failed )
         ::scene2D::data::InitQtPen::setPenColor(m_pen, "white", m_opacity);
     }
 
-
     // Font size configuratiion
     if (!m_configuration->getAttributeValue("fontSize").empty())
     {
-        m_fontSize = ::boost::lexical_cast< float >( m_configuration->getAttributeValue("fontSize") );
+        m_fontSize = std::stof( m_configuration->getAttributeValue("fontSize") );
     }
-
 
     // Viewport configuratiion
     SLM_ASSERT("A viewport attribute must be specified with 'viewportUID'.",
@@ -91,7 +93,6 @@ void ScaleValues::configuring() throw ( ::fwTools::Failed )
         m_viewportID = m_configuration->getAttributeValue("viewportUID");
     }
 
-
     // Show unit
     const std::string showUnit = m_configuration->getAttributeValue("showUnit");
     if(showUnit == "true" || showUnit == "false")
@@ -99,10 +100,8 @@ void ScaleValues::configuring() throw ( ::fwTools::Failed )
         m_showUnit = (showUnit == "true");
     }
 
-
     // Unit text configuration
     m_displayedUnit = m_configuration->getAttributeValue("unit");
-
 
     // 'align' attribute configuration
     m_align = m_configuration->getAttributeValue("align");
@@ -437,9 +436,7 @@ void ScaleValues::doStop() throw ( ::fwTools::Failed )
     m_connection.disconnect();
 }
 
-
 } // namespace adaptor
 
 } // namespace scene2D
-
 

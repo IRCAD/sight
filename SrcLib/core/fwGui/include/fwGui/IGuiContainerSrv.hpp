@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,21 +8,33 @@
 #define __FWGUI_IGUICONTAINERSRV_HPP__
 
 #include "fwGui/config.hpp"
-#include "fwGui/container/fwContainer.hpp"
-#include "fwGui/registrar/ViewRegistrar.hpp"
-#include "fwGui/layoutManager/IViewLayoutManager.hpp"
-#include "fwGui/builder/IToolBarBuilder.hpp"
-#include "fwGui/builder/IContainerBuilder.hpp"
-#include "fwGui/builder/ISlideViewBuilder.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
 #include <fwServices/IService.hpp>
 
-
 namespace fwGui
 {
+// Forward declarations
+namespace container
+{
+class fwContainer;
+}
+namespace layoutManager
+{
+class IViewLayoutManager;
+}
+namespace registrar
+{
+class ViewRegistrar;
+}
+namespace builder
+{
+class IToolBarBuilder;
+class IContainerBuilder;
+class ISlideViewBuilder;
+}
 
 /**
  * @brief   Defines the service interface managing the layout.
@@ -70,7 +82,8 @@ namespace fwGui
  *     - \b ::fwGui::LineLayoutManager : all views will be on the same line or column (it depends of the orientation
  *           value attribute)
  *           @see ::fwGui::layoutManager::LineLayoutManagerBase
- *     - \b ::fwGui::CardinalLayoutManager : all views will be added around a central view define by the align attribute.
+ *     - \b ::fwGui::CardinalLayoutManager : all views will be added around a central view define by the align
+ * attribute.
  *           @see ::fwGui::layoutManager::CardinalLayoutManagerBase
  *     - \b ::fwGui::TabLayoutManager : all views will be draw as tab.
  *           @see ::fwGui::layoutManager::TabLayoutManagerBase
@@ -95,9 +108,9 @@ class FWGUI_CLASS_API IGuiContainerSrv : public ::fwServices::IService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IGuiContainerSrv)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (IGuiContainerSrv)(::fwServices::IService) );
 
-    FWGUI_API ::fwGui::container::fwContainer::sptr getContainer();
+    FWGUI_API SPTR(::fwGui::container::fwContainer) getContainer();
 
     FWGUI_API void setParent(std::string wid);
 
@@ -112,7 +125,8 @@ protected:
     /**
      * @brief Initialize managers.
      *
-       @see ::fwGui::registrar::ViewRegistrar::initialize(), ::fwGui::layoutManager::IViewLayoutManager::initialize(), ::fwGui::builder::IToolBarBuilder::initialize()
+       @see ::fwGui::registrar::ViewRegistrar::initialize(), ::fwGui::layoutManager::IViewLayoutManager::initialize(),
+     *::fwGui::builder::IToolBarBuilder::initialize()
      */
     FWGUI_API void initialize();
 
@@ -153,7 +167,7 @@ protected:
 
 private:
 
-    typedef std::vector< ::fwGui::builder::ISlideViewBuilder::sptr > SlideViewContainerType;
+    typedef std::vector< SPTR(::fwGui::builder::ISlideViewBuilder) > SlideViewContainerType;
 
     /// SLOT: enable/disable the container
     void setEnabled(bool isEnabled);
@@ -173,11 +187,11 @@ private:
     void initializeSlideViewBuilder( ::fwRuntime::ConfigurationElement::sptr slideViewConfig );
 
     bool m_viewLayoutManagerIsCreated;
-    ::fwGui::layoutManager::IViewLayoutManager::sptr m_viewLayoutManager;
+    SPTR( ::fwGui::layoutManager::IViewLayoutManager) m_viewLayoutManager;
 
-    ::fwGui::registrar::ViewRegistrar::sptr m_viewRegistrar;
-    ::fwGui::builder::IToolBarBuilder::sptr m_toolBarBuilder;
-    ::fwGui::builder::IContainerBuilder::sptr m_containerBuilder;
+    SPTR( ::fwGui::registrar::ViewRegistrar) m_viewRegistrar;
+    SPTR( ::fwGui::builder::IToolBarBuilder) m_toolBarBuilder;
+    SPTR( ::fwGui::builder::IContainerBuilder) m_containerBuilder;
     SlideViewContainerType m_slideViewBuilders;
 
     ConfigurationType m_viewRegistrarConfig;
@@ -191,5 +205,4 @@ private:
 } // namespace fwGui
 
 #endif /*__FWGUI_IGUICONTAINERSRV_HPP__*/
-
 

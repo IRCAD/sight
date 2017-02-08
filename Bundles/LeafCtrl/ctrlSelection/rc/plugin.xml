@@ -72,8 +72,8 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::ctrlSelection::IUpdaterSrv</type>
-        <service>::ctrlSelection::updater::SObjFromUid</service>
+        <type>::fwServices::IController</type>
+        <service>::ctrlSelection::SManage</service>
         <object>::fwData::Composite</object>
     </extension>
 

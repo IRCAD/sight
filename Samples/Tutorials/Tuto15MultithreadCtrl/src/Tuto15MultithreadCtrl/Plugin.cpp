@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "Tuto15MultithreadCtrl/Plugin.hpp"
+
 #include "Tuto15MultithreadCtrl/SReadArray.hpp"
 
 #include <fwCom/Signal.hxx>
@@ -12,7 +13,6 @@
 #include <fwCore/spyLog.hpp>
 
 #include <fwData/Array.hpp>
-#include <fwData/Object.hpp>
 
 #include <fwRuntime/profile/Profile.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
@@ -69,6 +69,8 @@ void Plugin::uninitialize() throw()
 {
     SLM_TRACE_FUNC();
 }
+
+//------------------------------------------------------------------------------
 
 int Plugin::run() throw()
 {
@@ -129,7 +131,6 @@ int Plugin::run() throw()
 
     OSLM_INFO("Done computing " << count << " square roots : " << d);
 
-
     // Disconnect the signals and slots
     showConnection.disconnect();
     incrementConnection.disconnect();
@@ -155,6 +156,5 @@ int Plugin::run() throw()
 
     return 0;
 }
-
 
 } // namespace Tuto15MultithreadCtrl

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,6 +27,8 @@
 #include <vtkCubeSource.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderWindowInteractor.h>
+
+#include <boost/tokenizer.hpp>
 
 #define START_INTERACTION_EVENT vtkCommand::LeftButtonPressEvent
 #define STOP_INTERACTION_EVENT  vtkCommand::LeftButtonReleaseEvent
@@ -68,16 +70,19 @@ const ::fwCom::Signals::SignalKeyType PickerInteractor::s_PICKED_SIGNAL = "picke
 
 //------------------------------------------------------------------------------
 
-
 class PickerInteractorCallback : public vtkCommand
 {
 public:
+    //------------------------------------------------------------------------------
+
     static PickerInteractorCallback* New()
     {
         return new PickerInteractorCallback();
     }
 
-    PickerInteractorCallback() : m_picker(nullptr), m_eventId(nullptr)
+    PickerInteractorCallback() :
+        m_picker(nullptr),
+        m_eventId(nullptr)
     {
         this->PassiveObserverOn();
     }
@@ -85,6 +90,8 @@ public:
     ~PickerInteractorCallback()
     {
     }
+
+    //------------------------------------------------------------------------------
 
     virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
@@ -94,9 +101,11 @@ public:
         this->process(vtkRenderWindowInteractor::SafeDownCast(caller), eventId);
     }
 
+    //------------------------------------------------------------------------------
+
     bool pickSomething()
     {
-        int x,y;
+        int x, y;
         double display[3];
 
         m_adaptor->getInteractor()->GetEventPosition(x, y);
@@ -107,6 +116,7 @@ public:
         return (m_picker->Pick( display, m_adaptor->getRenderer() ) != 0);
     }
 
+    //------------------------------------------------------------------------------
 
     void process(vtkRenderWindowInteractor* caller, unsigned long eventId) // from
     {
@@ -136,7 +146,7 @@ public:
                 info.m_modifierMask |=
                     caller->GetShiftKey() ? ::fwDataTools::PickingInfo::SHIFT : ::fwDataTools::PickingInfo::NONE;
 
-                vtkCellPicker* picker = vtkCellPicker::SafeDownCast ( m_picker );
+                vtkCellPicker* picker = vtkCellPicker::SafeDownCast( m_picker );
                 if (picker)
                 {
                     info.m_cellId         = picker->GetCellId();
@@ -160,15 +170,21 @@ public:
         }
     }
 
+    //------------------------------------------------------------------------------
+
     void setAdaptor( PickerInteractor::sptr adaptor)
     {
         m_adaptor = adaptor;
     }
 
+    //------------------------------------------------------------------------------
+
     void setPicker( vtkAbstractPropPicker* picker)
     {
         m_picker = picker;
     }
+
+    //------------------------------------------------------------------------------
 
     void setEventId(PickerInteractor::SetEventIdType* eventId)
     {
@@ -187,7 +203,8 @@ protected:
 
 //------------------------------------------------------------------------------
 
-PickerInteractor::PickerInteractor() throw() : m_interactionCommand(nullptr)
+PickerInteractor::PickerInteractor() throw() :
+    m_interactionCommand(nullptr)
 {
     newSignal<PickedSignalType>(s_PICKED_SIGNAL);
 }

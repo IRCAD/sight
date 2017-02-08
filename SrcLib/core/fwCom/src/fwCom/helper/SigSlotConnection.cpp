@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,10 +50,10 @@ void SigSlotConnection::connect(const ::fwCom::HasSignals::csptr& hasSignals, ::
     }
     catch (::fwCom::exception::AlreadyConnected& e)
     {
-        const ::fwTools::Object::csptr source = ::fwTools::Object::dynamicConstCast(hasSignals);
+        const ::fwTools::Object::csptr source = ::fwTools::Object::dynamicCast(hasSignals);
         auto sourceID                         = source ? source->getID() : "";
 
-        const ::fwTools::Object::csptr target = ::fwTools::Object::dynamicConstCast(hasSlots);
+        const ::fwTools::Object::csptr target = ::fwTools::Object::dynamicCast(hasSlots);
         auto targetID                         = target ? target->getID() : "";
 
         OSLM_ERROR("Can't connect signal '" + sourceID + "/" + signalKey + "' with slot '"
@@ -89,10 +89,10 @@ void SigSlotConnection::connect(const ::fwCom::HasSignals::csptr& hasSignals,
         }
         catch (::fwCom::exception::AlreadyConnected& e)
         {
-            const ::fwTools::Object::csptr source = ::fwTools::Object::dynamicConstCast(hasSignals);
+            const ::fwTools::Object::csptr source = ::fwTools::Object::dynamicCast(hasSignals);
             auto sourceID                         = source ? source->getID() : "";
 
-            const ::fwTools::Object::csptr target = ::fwTools::Object::dynamicConstCast(hasSlots);
+            const ::fwTools::Object::csptr target = ::fwTools::Object::dynamicCast(hasSlots);
             auto targetID                         = target ? target->getID() : "";
 
             OSLM_ERROR("Can't connect signal '" + sourceID + "/" + keys.first + "' with slot '"

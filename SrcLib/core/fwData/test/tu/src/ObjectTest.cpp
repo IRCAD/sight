@@ -1,18 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwData/Object.hpp>
-#include <fwData/Float.hpp>
-
 #include "ObjectTest.hpp"
 
+#include <fwData/Float.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwData::ut::ObjectTest );
-
 
 namespace fwData
 {
@@ -56,7 +53,7 @@ void ObjectTest::fieldTest()
 
     ::fwData::Object::FieldMapType localFields       = obj->getFields();
     ::fwData::Object::FieldMapType localFieldsBackup = obj->getFields();
-    localFields.insert( ::fwData::Object::FieldMapType::value_type(FIELD_ID2,fieldObj2));
+    localFields.insert( ::fwData::Object::FieldMapType::value_type(FIELD_ID2, fieldObj2));
 
     CPPUNIT_ASSERT_EQUAL(obj->getFields().size(), size_t(1));
     CPPUNIT_ASSERT_EQUAL(obj->getField(FIELD_ID1), fieldObj1);

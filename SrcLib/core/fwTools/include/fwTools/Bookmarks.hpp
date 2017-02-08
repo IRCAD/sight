@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,26 +7,21 @@
 #ifndef __FWTOOLS_BOOKMARKS_HPP__
 #define __FWTOOLS_BOOKMARKS_HPP__
 
-#include <string>
-#include <list>
-
-#include <boost/unordered_map.hpp>
+#include "fwTools/config.hpp"
 
 #include <fwCore/base.hpp>
 
-
-#include "fwTools/config.hpp"
-#include "fwTools/macros.hpp"
+#include <list>
+#include <string>
+#include <unordered_map>
 
 namespace fwTools
 {
 
 class Object;
 /**
- * @brief   Allows to add a bookmark to an object, the bookmark name is unique (in time), an object can have several bookmarks
- * @class   Bookmarks
- *
- * @date    2007-2011.
+ * @brief   Allows to add a bookmark to an object, the bookmark name is unique (in time), an object can have several
+ * bookmarks
  * @note    expired object do not erase its bookmarks
  **/
 class FWTOOLS_CLASS_API Bookmarks
@@ -54,7 +49,6 @@ public:
      */
     FWTOOLS_API static SPTR(::fwTools::Object ) getObject( BookmarkName _bookmark );
 
-
     /**
      * @brief Retrieves the list of bookmarks attach to an object
      */
@@ -65,18 +59,16 @@ public:
      */
     FWTOOLS_API static std::list<BookmarkName> getBookmarks();
 
-
     FWTOOLS_API virtual ~Bookmarks();
 protected:
 
     FWTOOLS_API Bookmarks();
 
-    typedef ::boost::unordered_map< BookmarkName, WPTR(::fwTools::Object ) > Dictionary;
+    typedef ::std::unordered_map< BookmarkName, WPTR(::fwTools::Object ) > Dictionary;
 
     static Dictionary m_dictionary;
 };
 
 }
-
 
 #endif /* __FWTOOLS_BOOKMARKS_HPP__ */

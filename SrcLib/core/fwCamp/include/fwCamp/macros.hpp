@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,21 @@
 #ifndef __FWCAMP_MACROS_HPP__
 #define __FWCAMP_MACROS_HPP__
 
-#include <boost/preprocessor/seq/fold_left.hpp>
+#ifndef CAMP_COMPILATION
 
-#include <camp/class.hpp>
-#include <camp/camptype.hpp>
-#include <camp/enum.hpp>
+#define fwCampAutoDeclareMacro( desc, export)
+#define fwCampAutoDeclareDataMacro( desc, export)
+#define fwCampMakeFriendDataMacro(desc)
+
+#else
 
 #include <fwCore/macros.hpp>
+
+#include <boost/preprocessor/seq/fold_left.hpp>
+
+#include <camp/camptype.hpp>
+#include <camp/class.hpp>
+#include <camp/enum.hpp>
 
 #define __FWCAMP_CAT(_s_, _state_, _elem_) BOOST_PP_CAT(_state_, _elem_)
 #define __FWCAMP_NAMESPACE_CAT(_s_, _state_, _elem_) _state_::_elem_
@@ -28,7 +36,7 @@
 #define __FWCAMP_DECLARE_LOCAL_FUNC_NAME(desc)  BOOST_PP_CAT(localDeclare, __FWCAMP_FUNC_SUFFIX(desc))
 
 #define __FWCAMP_CLASS_BUILDER_TYPE(desc) \
-    camp::ClassBuilder< __FWCAMP_NAMESPACE_NAME(desc) >
+    camp::ClassBuilder < __FWCAMP_NAMESPACE_NAME(desc) >
 
 #define __FWCAMP_AUTO_TYPE_NONCOPYABLE(type, registerFunc) \
     CAMP_TYPE_NONCOPYABLE( type)
@@ -48,14 +56,14 @@
     BOOST_PP_CAT(__FWCAMP_FUNC_SUFFIX(desc), Reg)
 
 #define __FWCAMP__USEROBJREG(desc) \
-    ::fwCamp::UserObjectRegistrar< __FWCAMP_NAMESPACE_NAME(desc)>
+    ::fwCamp::UserObjectRegistrar < __FWCAMP_NAMESPACE_NAME(desc) >
 //----------------------------------------------------------------------------
-
 
 /**
  *
  * desc is a BOOST_PP_SEQ
- * fwCampMakeFriendMacro((a)(b)(c)) expands to : Friend void ::fwCampDeclareabc(camp::ClassBuilder< ::a::b::c > &builder)
+ * fwCampMakeFriendMacro((a)(b)(c)) expands to : Friend void ::fwCampDeclareabc(camp::ClassBuilder< ::a::b::c >
+ *&builder)
  */
 #define fwCampMakeFriendDataMacro(desc) \
     friend void ::__FWCAMP_DECLARE_FUNC_NAME(desc)(__FWCAMP_CLASS_BUILDER_TYPE(desc) &builder); \
@@ -89,7 +97,6 @@
 
 //----------------------------------------------------------------------------
 
-
 #define fwCampAutoDeclareEnumMacro(desc) \
     void __FWCAMP_DECLARE_FUNC_NAME(desc)(camp::EnumBuilder &); \
     inline void __FWCAMP_DECLARE_LOCAL_FUNC_NAME(desc)() \
@@ -102,12 +109,10 @@
 
 //----------------------------------------------------------------------------
 
-
 #define fwCampImplementMacro(desc) \
     void __FWCAMP_DECLARE_FUNC_NAME(desc)(__FWCAMP_CLASS_BUILDER_TYPE(desc) &builder)
 
 //----------------------------------------------------------------------------
-
 
 #define fwCampImplementDataMacro(desc) \
     static __FWCAMP__USEROBJREG(desc) __FWCAMP__REG_NAME(desc)(BOOST_PP_STRINGIZE( __FWCAMP_NAMESPACE_NAME(desc) )); \
@@ -115,15 +120,12 @@
 
 //----------------------------------------------------------------------------
 
-
 /**
  * @brief Implementation of enumeration into camp introspection
  * @see fwCampAutoDeclareEnumMacro
  */
 #define fwCampImplementEnumMacro(desc) \
-    void __FWCAMP_DECLARE_FUNC_NAME(desc)(camp::EnumBuilder &builder)
-
-
+    void __FWCAMP_DECLARE_FUNC_NAME(desc)(camp::EnumBuilder& builder)
 
 /**
  * @brief This macro is used when you want to set a smart pointer into an object
@@ -170,20 +172,13 @@
 \
     private: \
 \
-        boost::function< ReturnType (ClassType&)> m_getter; \
+        boost::function< ReturnType(ClassType&)> m_getter; \
     }; \
 \
     } \
     }
 
-
-
+#endif
 
 #endif // __FWCAMP_MACROS_HPP__
-
-
-
-
-
-
 

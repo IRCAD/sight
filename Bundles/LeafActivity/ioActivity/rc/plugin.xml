@@ -4,6 +4,7 @@
     <requirement id="uiIO" />
     <requirement id="media" />
     <requirement id="filterVRRender" />
+    <requirement id="activities" />
 
     <!-- Activity used to export an image series. -->
     <extension implements="::fwActivities::registry::Activities">
@@ -136,7 +137,7 @@
             <config id="MDAtomsConfig" service="::ioAtoms::SReader" />
         </config>
     </extension>
-    
+
     <!-- Service config used to write a seriesDB using ioAtoms. -->
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>SDBAtomsWriterIOSelectorConfig</id>
@@ -149,7 +150,7 @@
             <config id="MDAtomsConfig" service="::ioAtoms::SWriter" />
         </config>
     </extension>
-    
+
     <!-- Service config used to read SeriesDB with all the available reader for SeriesDB. -->
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>FullSDBReaderIOSelectorConfig</id>
@@ -185,7 +186,7 @@
             <patcher context="MedicalData" version="V09ALA" />
         </config>
     </extension>
-    
+
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>ActivityReaderConfig</id>
         <service>::uiIO::editor::SIOSelector</service>
@@ -209,5 +210,5 @@
             <config id="ActivityMDAtomsConfig" service="::ioAtoms::SWriter" />
         </config>
     </extension>
-    
+
 </plugin>

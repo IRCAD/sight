@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,14 +18,14 @@ namespace dataReg
 namespace parser
 {
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 void TransferFunction::updating( ) throw(fwTools::Failed)
 {
     SLM_FATAL("This method is deprecated, and this shouldn't be used.");
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
 void TransferFunction::createConfig( ::fwTools::Object::sptr _obj )
 {
@@ -46,23 +46,22 @@ void TransferFunction::createConfig( ::fwTools::Object::sptr _obj )
             SLM_ASSERT("Missing attribute 'color'", stepConfig->hasAttribute("color"));
             SLM_ASSERT("Missing attribute 'value'", stepConfig->hasAttribute("value"));
 
-            double value         = ::boost::lexical_cast<double>(stepConfig->getAttributeValue("value"));
+            double value         = std::stod(stepConfig->getAttributeValue("value"));
             std::string strColor = stepConfig->getAttributeValue("color");
 
             ::fwData::Color::sptr newColor = ::fwData::Color::New();
             newColor->setRGBA(strColor);
 
-            ::fwData::TransferFunction::TFColor color(newColor->red(),newColor->green(),
-                                                      newColor->blue(),newColor->alpha());
-            tf->addTFColor(value,color);
+            ::fwData::TransferFunction::TFColor color(newColor->red(), newColor->green(),
+                                                      newColor->blue(), newColor->alpha());
+            tf->addTFColor(value, color);
         }
+        tf->setWLMinMax(tf->getMinMaxTFValues());
     }
-
-    tf->setWLMinMax(tf->getMinMaxTFValues());
 }
 
-//------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------
 
-} //namespace parser
-} //namespace dataReg
+} // namespace parser
+} // namespace dataReg
 

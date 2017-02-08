@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,12 +12,13 @@
 
 #include <fwTools/DynamicType.hpp>
 
-#include <assert.h>
 #include <itkImage.h>
 #include <itkImageRegion.h>
 
 namespace fwItkIO
 {
+
+//------------------------------------------------------------------------------
 
 template< class ITKIMAGE>
 void dataImageFactory( typename ITKIMAGE::Pointer itkImage, ::fwData::Image::sptr _dataImage,
@@ -25,14 +26,13 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage, ::fwData::Image::spt
 {
     SLM_ASSERT("_dataImage not instanced", _dataImage);
 
-
     // Add by arnaud
     ::boost::uint8_t dim = ITKIMAGE::ImageDimension;
-    ::fwData::Image::SpacingType _vSpacing(dim,1);
-    ::fwData::Image::OriginType _vOrigin(dim,0);
-    ::fwData::Image::SizeType _vSize(dim,0);
+    ::fwData::Image::SpacingType _vSpacing(dim, 1);
+    ::fwData::Image::OriginType _vOrigin(dim, 0);
+    ::fwData::Image::SizeType _vSize(dim, 0);
 
-    for (boost::uint8_t d = 0; d<dim; ++d)
+    for (boost::uint8_t d = 0; d < dim; ++d)
     {
         // _vOrigin[d] = itkImage->GetBufferedRegion().GetIndex()[d];
         _vOrigin[d]  = itkImage->GetOrigin()[d];
@@ -63,9 +63,8 @@ void dataImageFactory( typename ITKIMAGE::Pointer itkImage, ::fwData::Image::spt
                                _dataImage->getType(), _vSize, 1 );
     }
 
-
     // Post Condition correct PixelType
-    SLM_ASSERT("Sorry, pixel type is not correct", _dataImage->getType()!= fwTools::Type() );
+    SLM_ASSERT("Sorry, pixel type is not correct", _dataImage->getType() != fwTools::Type() );
 }
 
 //------------------------------------------------------------------------------
@@ -74,7 +73,7 @@ template< class ITKIMAGE>
 ::fwData::Image::sptr dataImageFactory( typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage )
 {
     ::fwData::Image::sptr data = ::fwData::Image::New();
-    ::fwItkIO::dataImageFactory< ITKIMAGE >(itkImage,data, bufferManagerIsDataImage);
+    ::fwItkIO::dataImageFactory< ITKIMAGE >(itkImage, data, bufferManagerIsDataImage);
     return data;
 }
 
@@ -101,7 +100,7 @@ typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::csptr imageDa
 
     // update spacing information ; workaround due to GetSpacing const
     typename ITKIMAGE::SpacingType spacing = itkImage->GetSpacing();
-    for (boost::uint8_t d = 0; d<ITKIMAGE::ImageDimension; ++d)
+    for (boost::uint8_t d = 0; d < ITKIMAGE::ImageDimension; ++d)
     {
         spacing[d] = imageData->getSpacing()[d];
     }
@@ -116,7 +115,7 @@ typename ITKIMAGE::Pointer fwDataImageToItkImage( ::fwData::Image::csptr imageDa
     itk::ImageRegion< ITKIMAGE::ImageDimension > itkRegion;
 
     unsigned long nbpixels = 1;
-    for (::boost::uint8_t d = 0; d<ITKIMAGE::ImageDimension; ++d)
+    for (::boost::uint8_t d = 0; d < ITKIMAGE::ImageDimension; ++d)
     {
         // itkRegion.SetIndex( d,  static_cast<int>(imageData->getCRefOrigin()[d]) );
         itkRegion.SetSize( d,   static_cast<unsigned long>(imageData->getSize()[d]) );

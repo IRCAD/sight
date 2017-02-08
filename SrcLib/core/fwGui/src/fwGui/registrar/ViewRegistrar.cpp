@@ -1,16 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGui/GuiRegistry.hpp"
 #include "fwGui/registrar/ViewRegistrar.hpp"
+
+#include "fwGui/GuiRegistry.hpp"
+#include "fwGui/container/fwContainer.hpp"
+#include "fwGui/container/fwMenuBar.hpp"
+#include "fwGui/container/fwToolBar.hpp"
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
-
-#include <fwTools/fwID.hpp>
 
 #include <utility>
 
@@ -21,9 +23,9 @@ namespace registrar
 
 //-----------------------------------------------------------------------------
 
-ViewRegistrar::ViewRegistrar(const std::string& sid)
-    : m_parentWid(""),
-      m_sid(sid)
+ViewRegistrar::ViewRegistrar(const std::string& sid) :
+    m_parentWid(""),
+    m_sid(sid)
 {
 }
 
@@ -81,7 +83,7 @@ void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
     // initialize m_sids and m_wids map with configuration
     std::vector < ConfigurationType > vectViews      = configuration->find("view");
     std::vector < ConfigurationType > vectSlideViews = configuration->find("slideView");
-    std::copy (vectSlideViews.begin(), vectSlideViews.end(), std::back_inserter(vectViews));
+    std::copy(vectSlideViews.begin(), vectSlideViews.end(), std::back_inserter(vectViews));
 
     for( ConfigurationType view :  vectViews)
     {
@@ -95,7 +97,7 @@ void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
                 std::string startValue = view->getAttributeValue("start");
                 SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
                            startValue == "yes" || startValue == "no");
-                start = (startValue=="yes");
+                start = (startValue == "yes");
             }
             std::string sid = view->getAttributeValue("sid");
             m_sids[sid] = SIDContainerMapType::mapped_type(index, start);
@@ -121,7 +123,7 @@ void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
                 std::string startValue = menuBarCfg->getAttributeValue("start");
                 SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
                            startValue == "yes" || startValue == "no");
-                start = (startValue=="yes");
+                start = (startValue == "yes");
             }
             std::string sid = menuBarCfg->getAttributeValue("sid");
             m_menuBarSid = std::make_pair( sid, start);
@@ -141,7 +143,7 @@ void ViewRegistrar::initialize( ::fwRuntime::ConfigurationElement::sptr configur
                 std::string startValue = toolBarCfg->getAttributeValue("start");
                 SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
                            startValue == "yes" || startValue == "no");
-                start = (startValue=="yes");
+                start = (startValue == "yes");
             }
             std::string sid = toolBarCfg->getAttributeValue("sid");
             m_toolBarSid = std::make_pair( sid, start);
