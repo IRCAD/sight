@@ -392,6 +392,7 @@ void SModelSeriesList::onShowReconstructions(int state )
 
     m_checkAllButton->setEnabled(!visible);
     m_unCheckAllButton->setEnabled(!visible);
+    m_tree->setEnabled(!visible);
 
     ::fwMedData::ModelSeries::sptr modelSeries = this->getObject< ::fwMedData::ModelSeries >();
     modelSeries->setField("ShowReconstructions",  ::fwData::Boolean::New(state == Qt::Unchecked) );
