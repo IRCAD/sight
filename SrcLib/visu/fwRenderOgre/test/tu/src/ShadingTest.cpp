@@ -1,22 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
+
+#include "ShadingTest.hpp"
 
 #include "fwData/Array.hpp"
 #include "fwData/Color.hpp"
 #include "fwData/Float.hpp"
 #include "fwData/Integer.hpp"
 
-#include <fwDataTools/helper/Array.hpp>
-
-#include "fwRenderOgre/Utils.hpp"
-#include "fwRenderOgre/helper/Shading.hpp"
-
 #include "fwTools/Type.hpp"
 
-#include "ShadingTest.hpp"
+#include <fwRenderOgre/helper/Shading.hpp>
+#include <fwRenderOgre/Utils.hpp>
+
+#include <fwDataTools/helper/Array.hpp>
 
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreTechnique.h>

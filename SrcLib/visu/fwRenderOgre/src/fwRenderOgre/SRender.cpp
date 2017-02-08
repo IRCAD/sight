@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/SRender.hpp"
 
-#include <fwRenderOgre/IAdaptor.hpp>
-#include <fwRenderOgre/Utils.hpp>
-#include <fwRenderOgre/registry/Adaptor.hpp>
+#include "fwRenderOgre/IAdaptor.hpp"
+#include "fwRenderOgre/registry/Adaptor.hpp"
+#include "fwRenderOgre/Utils.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
@@ -84,7 +84,7 @@ SRender::~SRender() throw()
 
 //-----------------------------------------------------------------------------
 
-void SRender::configuring() throw(fwTools::Failed)
+void SRender::configuring() throw(::fwTools::Failed)
 {
     this->initialize();
 
@@ -121,15 +121,15 @@ void SRender::configuring() throw(fwTools::Failed)
         }
     }
 
-    auto adaptorConfigs = m_configuration->findAllConfigurationElement ("adaptor");
+    auto adaptorConfigs = m_configuration->findAllConfigurationElement("adaptor");
     for (const auto& currentConfig : adaptorConfigs)
     {
-        SLM_ASSERT("Missing 'uid' attribute in adaptor configuration", currentConfig->hasAttribute ("uid"));
-        SLM_ASSERT("Missing 'start' attribute in adaptor configuration", currentConfig->hasAttribute ("start"));
+        SLM_ASSERT("Missing 'uid' attribute in adaptor configuration", currentConfig->hasAttribute("uid"));
+        SLM_ASSERT("Missing 'start' attribute in adaptor configuration", currentConfig->hasAttribute("start"));
 
         SceneAdaptor adaptor;
-        std::string uid        = currentConfig->getAttributeValue ("uid");
-        std::string startValue = currentConfig->getAttributeValue ("start");
+        std::string uid        = currentConfig->getAttributeValue("uid");
+        std::string startValue = currentConfig->getAttributeValue("start");
 
         SLM_ASSERT("Wrong value '"<< startValue <<"' for 'start' attribute (require yes or no)",
                    startValue == "yes" || startValue == "no");
@@ -144,7 +144,7 @@ void SRender::configuring() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SRender::starting() throw(fwTools::Failed)
+void SRender::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
@@ -180,7 +180,7 @@ void SRender::starting() throw(fwTools::Failed)
     {
         // Create a default black background
         ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
-        ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
+        ogreLayer->setRenderService(::fwRenderOgre::SRender::dynamicCast(this->shared_from_this()));
         ogreLayer->setID("backgroundLayer");
         ogreLayer->setDepth(0);
         ogreLayer->setWorker(m_associatedWorker);
@@ -194,7 +194,7 @@ void SRender::starting() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SRender::stopping() throw(fwTools::Failed)
+void SRender::stopping() throw(::fwTools::Failed)
 {
     m_connections.disconnect();
 
@@ -231,7 +231,7 @@ void SRender::stopping() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SRender::updating() throw(fwTools::Failed)
+void SRender::updating() throw(::fwTools::Failed)
 {
 }
 
@@ -252,6 +252,7 @@ void SRender::configureLayer( ConfigurationType conf )
     const std::string transparencyTechnique = conf->getAttributeValue("transparency");
     const std::string numPeels              = conf->getAttributeValue("numPeels");
     const std::string mode3D                = conf->getAttributeValue("mode3D");
+    const std::string defaultLight          = conf->getAttributeValue("defaultLight");
 
     SLM_ASSERT( "'id' required attribute missing or empty", !id.empty() );
     SLM_ASSERT( "'layer' required attribute missing or empty", !layer.empty() );
@@ -263,7 +264,7 @@ void SRender::configureLayer( ConfigurationType conf )
     SLM_ASSERT("Attribute 'layer' must be greater than 0", layerDepth > 0);
 
     ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
-    ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
+    ogreLayer->setRenderService(::fwRenderOgre::SRender::dynamicCast(this->shared_from_this()));
     ogreLayer->setID(id);
     ogreLayer->setDepth(layerDepth);
     ogreLayer->setWorker(m_associatedWorker);
@@ -273,6 +274,11 @@ void SRender::configureLayer( ConfigurationType conf )
 
     ogreLayer->setCoreCompositorEnabled(id == "default", transparencyTechnique, numPeels);
     ogreLayer->setCompositorChainEnabled(compositors != "", compositors);
+
+    if(!defaultLight.empty() && defaultLight == "no")
+    {
+        ogreLayer->setHasDefaultLight(false);
+    }
 
     // Finally, the layer is pushed in the map
     m_layers[id] = ogreLayer;
@@ -285,10 +291,11 @@ void SRender::configureBackgroundLayer( ConfigurationType conf )
     SLM_ASSERT( "'id' required attribute missing or empty", !this->getID().empty() );
 
     ::fwRenderOgre::Layer::sptr ogreLayer = ::fwRenderOgre::Layer::New();
-    ogreLayer->setRenderService(SRender::dynamicCast(this->shared_from_this()));
-    ogreLayer->setID("backgroundLayer");
+    ogreLayer->setRenderService(::fwRenderOgre::SRender::dynamicCast(this->shared_from_this()));
+    ogreLayer->setID(s_OGREBACKGROUNDID);
     ogreLayer->setDepth(0);
     ogreLayer->setWorker(m_associatedWorker);
+    ogreLayer->setHasDefaultLight(false);
 
     if (conf)
     {
@@ -337,13 +344,13 @@ void SRender::startObject()
     if (this->isStarted())
     {
         std::vector< WPTR(IAdaptor) > startAdaptors;
+        auto servicesVector = ::fwServices::OSR::getServices("::fwRenderOgre::IAdaptor");
 
         for(auto& sceneAdaptor : m_adaptors)
         {
             if(sceneAdaptor.second.m_start)
             {
-                auto servicesVector = ::fwServices::OSR::getServices("::fwRenderOgre::IAdaptor");
-                auto result         =
+                auto result =
                     std::find_if(servicesVector.begin(), servicesVector.end(),
                                  [sceneAdaptor](const ::fwServices::IService::sptr& srv)
                     {
@@ -422,6 +429,29 @@ void SRender::computeCameraClipping()
 
 //-----------------------------------------------------------------------------
 
+void SRender::addAdaptor(::fwRenderOgre::IAdaptor::sptr _adaptor)
+{
+    SceneAdaptor newAdaptor;
+    newAdaptor.m_service = _adaptor;
+    newAdaptor.m_start   = true;
+
+    auto adaptorId = _adaptor->getID();
+
+    m_adaptors[adaptorId] = newAdaptor;
+
+    auto& registry = ::fwRenderOgre::registry::getAdaptorRegistry();
+    registry[adaptorId] = this->getID();
+}
+
+//-----------------------------------------------------------------------------
+
+void SRender::removeAdaptor(::fwRenderOgre::IAdaptor::sptr _adaptor)
+{
+    m_adaptors.erase(_adaptor->getID());
+}
+
+//-----------------------------------------------------------------------------
+
 void SRender::render()
 {
     this->requestRender();
@@ -466,7 +496,7 @@ void SRender::stopContext()
 ::fwRenderOgre::Layer::sptr SRender::getLayer(const ::std::string& sceneID)
 {
     OSLM_ASSERT("Empty sceneID", !sceneID.empty());
-    OSLM_ASSERT("Layer ID "<< sceneID <<" does not exist", m_layers.find(sceneID) !=  m_layers.end());
+    OSLM_ASSERT("Layer ID "<< sceneID <<" does not exist", m_layers.find(sceneID) != m_layers.end());
 
     ::fwRenderOgre::Layer::sptr layer = m_layers.at(sceneID);
 

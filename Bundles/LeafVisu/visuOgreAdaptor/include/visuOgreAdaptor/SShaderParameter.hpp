@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,8 @@
 #ifndef __VISUOGREADAPTOR_SSHADERPARAMETER_HPP__
 #define __VISUOGREADAPTOR_SSHADERPARAMETER_HPP__
 
-#include "visuOgreAdaptor/IParameter.hpp"
-
 #include "visuOgreAdaptor/config.hpp"
+#include "visuOgreAdaptor/IParameter.hpp"
 
 namespace visuOgreAdaptor
 {
@@ -35,7 +34,7 @@ class VISUOGREADAPTOR_CLASS_API SShaderParameter : public ::visuOgreAdaptor::IPa
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SShaderParameter)(::visuOgreAdaptor::IParameter) );
+    fwCoreServiceClassDefinitionsMacro( (SShaderParameter)(::visuOgreAdaptor::IParameter) );
 
     /// Constructor.
     VISUOGREADAPTOR_API SShaderParameter() throw();
@@ -44,7 +43,7 @@ public:
     VISUOGREADAPTOR_API virtual ~SShaderParameter() throw();
 
     /// Set the value of the member m_materialName.
-    VISUOGREADAPTOR_API void setMaterialName(std::string matName);
+    VISUOGREADAPTOR_API void setMaterialName(const std::string& matName);
 
 protected:
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,8 +32,9 @@ public:
         std::array<float, 4> f;
         std::array<double, 4> d;
     };
-    typedef std::vector< std::tuple< ::Ogre::String, ::Ogre::GpuConstantType,
-                                     ::Ogre::GpuProgramType, ConstantValueType> > ShaderConstantsType;
+    typedef std::tuple< ::Ogre::String, ::Ogre::GpuConstantType,
+                        ::Ogre::GpuProgramType, ConstantValueType > ShaderConstantType;
+    typedef std::vector<ShaderConstantType> ShaderConstantsType;
 
     /**
      * @brief Returns true if the given technique computes a pixel color.
@@ -113,10 +114,13 @@ public:
      * @brief Create a fw4spl data that can be used to interact with a shader parameter.
      *
      * @param[in] _params shader parameters
+     * @param[in] _shaderType shader type (vertex, fragment or geometry)
+     * @param[in] _enableLightConstants indicates whether or not the method should look into the light related constants
      * @return vector of constants, each element is a tuple with the constant name, its definition and the shader type.
      */
     FWRENDEROGRE_API static ShaderConstantsType findShaderConstants(::Ogre::GpuProgramParametersSharedPtr params,
-                                                                    ::Ogre::GpuProgramType _shaderType);
+                                                                    ::Ogre::GpuProgramType _shaderType,
+                                                                    bool _enableLightConstants = false);
 
     /**
      * @brief Create a fw4spl data that can be used to interact with a shader parameter.
@@ -127,6 +131,8 @@ public:
     FWRENDEROGRE_API static SPTR(::fwData::Object) createObjectFromShaderParameter(::Ogre::GpuConstantType _type,
                                                                                    ConstantValueType _value);
 };
+
+//-----------------------------------------------------------------------------
 
 } // namespace helper
 

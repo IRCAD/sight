@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,15 +7,15 @@
 #ifndef __FWRENDEROGRE_INTERACTOR_IINTERACTOR_HPP__
 #define __FWRENDEROGRE_INTERACTOR_IINTERACTOR_HPP__
 
+#include <fwRenderOgre/config.hpp>
 #include <fwRenderOgre/factory/new.hpp>
 #include <fwRenderOgre/registry/detail.hpp>
-#include <fwRenderOgre/config.hpp>
 
+#include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slot.hpp>
-#include <fwCom/HasSignals.hpp>
+#include <fwCom/Slots.hpp>
 
 #include <fwCore/BaseObject.hpp>
 
@@ -31,7 +31,6 @@ namespace interactor
 {
 
 /**
- * @class IInteractor
  * @brief Interface implementation for all the interaction with the mouse
  */
 class FWRENDEROGRE_CLASS_API IInteractor : public ::fwCore::BaseObject,
@@ -71,10 +70,8 @@ public:
      * @name Signals API
      * @{
      */
-
     typedef ::fwCom::Signal< void ( ::fwData::Object::sptr ) > PointClickedSigType;
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_POINT_CLICKED_SIG;
-
     /** @} */
 
     fwCoreNonInstanciableClassDefinitionsMacro( (IInteractor)(::fwCore::BaseObject) )
@@ -105,10 +102,8 @@ protected:
      * @name Signals attributes
      * @{
      */
-
-    ///Signal trigerred when action has been trigerred
+    /// Signal triggered when an action has been triggered
     PointClickedSigType::sptr m_sigPointClicked;
-
     /**
      * @}
      */

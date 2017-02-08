@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,8 @@
 #ifndef __VISUOGREADAPTOR_SMATERIAL_HPP__
 #define __VISUOGREADAPTOR_SMATERIAL_HPP__
 
-#include "visuOgreAdaptor/STexture.hpp"
 #include "visuOgreAdaptor/config.hpp"
+#include "visuOgreAdaptor/STexture.hpp"
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
@@ -19,11 +19,11 @@
 
 #include <fwRenderOgre/IAdaptor.hpp>
 
+#include <boost/shared_ptr.hpp>
+
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreMaterial.h>
-
-#include <boost/shared_ptr.hpp>
 
 #include <regex>
 
@@ -35,13 +35,12 @@ class Material;
 namespace visuOgreAdaptor
 {
 
-
 class VISUOGREADAPTOR_CLASS_API SMaterial : public ::fwRenderOgre::IAdaptor
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SMaterial)(::fwRenderOgre::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SMaterial)(::fwRenderOgre::IAdaptor) );
 
     /**
      * @name Slots API
@@ -121,19 +120,19 @@ protected:
      *  - \b shadingMode (optional, none/flat/gouraud/phong, default=phong) : name of the used shading mode
      *  - \b normalLength (optional, default=0.1) : factor defining the length of the normals
      */
-    VISUOGREADAPTOR_API void doConfigure() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
 
     /// Starting method under fixed function pipeline
-    VISUOGREADAPTOR_API void doStart() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
 
     /// Stopping method
-    VISUOGREADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
 
     /// Swapping method, updating
-    VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
 
     /// Updating method, updates fixed function pipeline parameters
-    VISUOGREADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
 
 private:
 
@@ -149,9 +148,6 @@ private:
 
     /// Loads material parameters from ressources
     void loadMaterialParameters();
-
-    /// Updates material parameters from a specific template
-    void loadShaderParameters(::Ogre::GpuProgramParametersSharedPtr params, std::string shaderType);
 
     /// Updates material options mode (standard, point normals or cells normals)
     void updateOptionsMode( int optionMode );
@@ -224,6 +220,9 @@ private:
 
     /// The configured shading mode
     std::string m_shadingMode;
+
+    /// Current number of lights in the scene.
+    int m_lightsNumber;
 };
 
 //------------------------------------------------------------------------------

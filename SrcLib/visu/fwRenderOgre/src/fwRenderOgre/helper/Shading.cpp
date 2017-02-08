@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,6 +32,7 @@ static const std::regex s_PEEL_REGEX(".*/peel.*");
 static const std::regex s_WEIGHT_BLEND_REGEX(".*/weightBlend.*");
 static const std::regex s_TRANSMITTANCE_BLEND_REGEX(".*/transmittanceBlend.*");
 static const std::regex s_DEPTH_MAP_REGEX("(.*depth.*)|(.*backDepth.*)");
+static const std::regex s_LIGHT_PARAM_REGEX("u_(numLights|light(Ambient|Dir|Diffuse|Specular).*)");
 
 static const std::string s_AMBIENT       = "Ambient";
 static const std::string s_FLAT          = "Flat";
@@ -238,7 +239,8 @@ Shading::ShaderConstantsType Shading::findMaterialConstants(::Ogre::Material& _m
 //------------------------------------------------------------------------------
 
 Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramParametersSharedPtr _params,
-                                                          ::Ogre::GpuProgramType _shaderType)
+                                                          ::Ogre::GpuProgramType _shaderType,
+                                                          bool _enableLightConstants)
 {
     ShaderConstantsType parameters;
 
@@ -247,6 +249,16 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
     // Get only user constants
     for (const auto& cstDef : constantsDefinitionMap.map)
     {
+        if(!_enableLightConstants)
+        {
+            bool isLightConstant = std::regex_match(static_cast<std::string>(cstDef.first), s_LIGHT_PARAM_REGEX);
+
+            if(isLightConstant)
+            {
+                continue;
+            }
+        }
+
         if (!::Ogre::StringUtil::endsWith(cstDef.first, "[0]") && !_params->findAutoConstantEntry(cstDef.first))
         {
             ConstantValueType constantValue;

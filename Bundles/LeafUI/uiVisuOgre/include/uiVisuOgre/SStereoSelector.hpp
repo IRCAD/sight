@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,17 +7,18 @@
 #ifndef __UIVISUOGRE_SSTEREOSELECTOR_HPP__
 #define __UIVISUOGRE_SSTEREOSELECTOR_HPP__
 
-#include <gui/editor/IEditor.hpp>
-#include <fwRenderOgre/Layer.hpp>
-#include <fwRenderOgre/compositor/ChainManager.hpp>
+#include "uiVisuOgre/config.hpp"
 
+#include <fwRenderOgre/compositor/ChainManager.hpp>
+#include <fwRenderOgre/Layer.hpp>
+
+#include <gui/editor/IEditor.hpp>
+
+#include <QComboBox>
 #include <QObject>
 #include <QPointer>
-#include <QComboBox>
 
 #include <vector>
-
-#include "uiVisuOgre/config.hpp"
 
 namespace uiVisuOgre
 {
@@ -32,8 +33,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SStereoSelector)(::gui::editor::IEditor) );
-
+    fwCoreServiceClassDefinitionsMacro( (SStereoSelector)(::gui::editor::IEditor) );
 
     /// Constructor.
     UIVISUOGRE_API SStereoSelector() throw();
@@ -46,7 +46,7 @@ protected:
     /**
      * @brief method description:
      * @code{.xml}
-        <service uid="SStereoSelectorInstance" impl="::uiVisuOgre::SStereoSelector" type="::gui::editor::IEditor">
+        <service uid="SStereoSelectorInstance" type="::uiVisuOgre::SStereoSelector">
              <parameter>param</parameter>
         </service>
        @endcode

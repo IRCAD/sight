@@ -42,7 +42,7 @@
         <desc>service description</desc>
     </extension>
 
-<extension implements="::fwServices::registry::ServiceFactory">
+    <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiVisuOgre::SStereoSelector</service>
         <object>::fwData::Composite</object>
@@ -54,6 +54,20 @@
         <service>::uiVisuOgre::SCoreCompositorEditor</service>
         <object>::fwData::Composite</object>
         <desc>service description</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiVisuOgre::SLightSelector</service>
+        <object>::fwData::Composite</object>
+        <desc>User interface to select light adaptor from a selected layer or create a new one.</desc>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiVisuOgre::SLightEditor</service>
+        <object>::fwData::Composite</object>
+        <desc>User interface to edit a light adaptor.</desc>
     </extension>
 
 </plugin>

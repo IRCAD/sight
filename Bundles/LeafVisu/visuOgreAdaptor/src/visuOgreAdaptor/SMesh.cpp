@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -168,7 +168,7 @@ void visuOgreAdaptor::SMesh::updateVisibility(bool isVisible)
 
 //-----------------------------------------------------------------------------
 
-void SMesh::doConfigure() throw(fwTools::Failed)
+void SMesh::doConfigure() throw(::fwTools::Failed)
 {
     std::string color = m_configuration->getAttributeValue("color");
 
@@ -253,7 +253,7 @@ void SMesh::doStart() throw(::fwTools::Failed)
         auto mtlAdaptors = this->getRenderService()->getAdaptors< ::visuOgreAdaptor::SMaterial>();
 
         auto result =
-            std::find_if(mtlAdaptors.begin(), mtlAdaptors.end(),[this](const ::visuOgreAdaptor::SMaterial::sptr& srv)
+            std::find_if(mtlAdaptors.begin(), mtlAdaptors.end(), [this](const ::visuOgreAdaptor::SMaterial::sptr& srv)
             {
                 return srv->getMaterialName() == m_materialName;
             });
@@ -271,7 +271,7 @@ void SMesh::doStart() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SMesh::doStop() throw(fwTools::Failed)
+void SMesh::doStop() throw(::fwTools::Failed)
 {
     if(!m_transformService.expired())
     {
@@ -302,7 +302,7 @@ void SMesh::doStop() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SMesh::doSwap() throw(fwTools::Failed)
+void SMesh::doSwap() throw(::fwTools::Failed)
 {
     doStop();
     doStart();
@@ -412,12 +412,12 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
         // 1st buffer
         declMain->addElement(m_binding[POSITION_NORMAL], offset, ::Ogre::VET_FLOAT3, ::Ogre::VES_POSITION);
-        offset += ::Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
+        offset += ::Ogre::VertexElement::getTypeSize(::Ogre::VET_FLOAT3);
 
         if(m_hasNormal)
         {
             declMain->addElement(m_binding[POSITION_NORMAL], offset, ::Ogre::VET_FLOAT3, ::Ogre::VES_NORMAL);
-            offset += ::Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
+            offset += ::Ogre::VertexElement::getTypeSize(::Ogre::VET_FLOAT3);
         }
 
         // Set vertex buffer binding so buffer 0 is bound to our vertex buffer
@@ -544,7 +544,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
                 OSLM_DEBUG("Index #" << m_subMeshes[i]->indexData->indexCount );
 
                 // Lock index data ow, we are going to write into it in the next loop
-                indexBuffer[i] = ibuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+                indexBuffer[i] = ibuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
             }
             else
             {
@@ -729,7 +729,7 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
     ::Ogre::HardwareVertexBufferSharedPtr vbuf = bind->getBuffer(m_binding[POSITION_NORMAL]);
 
     /// Upload the index data to the card
-    void* pVertex = vbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+    void* pVertex = vbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
 
     // Update Ogre Mesh with ::fwData::Mesh
     ::fwData::mt::ObjectReadLock lock(mesh);
@@ -813,7 +813,6 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
     }
 }
 
-
 //-----------------------------------------------------------------------------
 
 void SMesh::bindLayer(const ::fwData::Mesh::sptr& _mesh, BufferBinding _binding,
@@ -895,11 +894,11 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
                 const ::fwData::Mesh::CellTypesEnum cellType = static_cast< ::fwData::Mesh::CellTypesEnum>(i);
                 if ( cellType == ::fwData::Mesh::TRIANGLE)
                 {
-                    numIndicesTotal += m_subMeshes[i]->indexData->indexCount / 3;
+                    numIndicesTotal += static_cast<unsigned int>(m_subMeshes[i]->indexData->indexCount / 3);
                 }
                 else
                 {
-                    numIndicesTotal += m_subMeshes[i]->indexData->indexCount >> 2;
+                    numIndicesTotal += static_cast<unsigned int>(m_subMeshes[i]->indexData->indexCount >> 2);
                 }
             }
         }
@@ -945,7 +944,7 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
         // Source points
         ::Ogre::HardwareVertexBufferSharedPtr cbuf = bind->getBuffer(m_binding[COLOUR]);
         ::Ogre::RGBA* pColor                       =
-            static_cast< ::Ogre::RGBA* >( cbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD) );
+            static_cast< ::Ogre::RGBA* >( cbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD) );
 
         // Destination
         const auto colors           = meshHelper.getPointColors();
@@ -1011,7 +1010,7 @@ void SMesh::updateTexCoords(const ::fwData::Mesh::sptr& mesh)
 
         ::Ogre::VertexBufferBinding* bind           = m_ogreMesh->sharedVertexData->vertexBufferBinding;
         ::Ogre::HardwareVertexBufferSharedPtr uvbuf = bind->getBuffer(m_binding[TEXCOORD]);
-        void* pBuf = uvbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+        void* pBuf = uvbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
         float* pUV = static_cast< float* >( pBuf );
 
         ::fwData::Mesh::PointTexCoordsMultiArrayType uvCoord = meshHelper.getPointTexCoords();
@@ -1064,7 +1063,6 @@ void SMesh::clearMesh()
         m_r2vbEntity = nullptr;
     }
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -1167,7 +1165,7 @@ void SMesh::createTransformService()
         auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
 
         transformService->setID(this->getID() + "_" + transformService->getID());
-        transformService->setRenderService ( this->getRenderService() );
+        transformService->setRenderService( this->getRenderService() );
         transformService->setLayerID(m_layerID);
         transformService->setTransformId(this->getTransformId());
         transformService->setParentTransformId(this->getParentTransformId());
@@ -1275,7 +1273,7 @@ void SMesh::modifyTexCoords()
 
 //-----------------------------------------------------------------------------
 
-void SMesh::attachNode(Ogre::MovableObject* _node)
+void SMesh::attachNode(::Ogre::MovableObject* _node)
 {
     auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
 

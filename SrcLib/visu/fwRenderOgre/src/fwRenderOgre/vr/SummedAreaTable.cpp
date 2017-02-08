@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwRenderOgre/Utils.hpp"
 #include "fwRenderOgre/vr/SummedAreaTable.hpp"
+
+#include "fwRenderOgre/Utils.hpp"
 
 #include <OGRE/OgreCompositor.h>
 #include <OGRE/OgreCompositorChain.h>
@@ -39,7 +40,9 @@ public:
     {
     }
 
-    virtual void notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr& mat)
+    //------------------------------------------------------------------------------
+
+    virtual void notifyMaterialRender(::Ogre::uint32 pass_id, Ogre::MaterialPtr& mat)
     {
         ::Ogre::Pass* satInitPass = mat->getTechnique(0)->getPass(0);
 
@@ -65,7 +68,9 @@ public:
     {
     }
 
-    virtual void notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr& mat)
+    //------------------------------------------------------------------------------
+
+    virtual void notifyMaterialRender(::Ogre::uint32 pass_id, Ogre::MaterialPtr& mat)
     {
         ::Ogre::Pass* satPass = mat->getTechnique(0)->getPass(0);
 
@@ -87,15 +92,15 @@ private:
 //-----------------------------------------------------------------------------
 
 SummedAreaTable::SummedAreaTable(std::string _parentId, ::Ogre::SceneManager* _sceneManager, float _sizeRatio) :
-    m_satSizeRatio      (_sizeRatio),
-    m_satSize           (
+    m_satSizeRatio(_sizeRatio),
+    m_satSize(
         {
             0, 0, 0
         }),
-    m_currentImageSize  ({ 0, 0, 0}),
-    m_parentId          (_parentId),
-    m_sceneManager      (_sceneManager),
-    m_dummyCamera       (nullptr)
+    m_currentImageSize({ 0, 0, 0}),
+    m_parentId(_parentId),
+    m_sceneManager(_sceneManager),
+    m_dummyCamera(nullptr)
 {
 }
 

@@ -1,13 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/interactor/TrackballInteractor.hpp"
+#include "fwRenderOgre/Layer.hpp"
+#include "fwRenderOgre/registry/macros.hpp"
 
 #include <fwCom/Signal.hxx>
-#include <fwRenderOgre/registry/macros.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreNode.h>
@@ -60,7 +61,7 @@ void TrackballInteractor::wheelEvent(int delta, int x, int y)
     m_fZoom = fNewZoom;
 
     // Last, translate the camera
-    ::Ogre::Camera* camera     = m_sceneManager->getCamera("PlayerCam");
+    ::Ogre::Camera* camera     = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
     ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
     ::Ogre::Vector3 direction  = camera->getDirection();
     direction                  = direction * z;
@@ -107,7 +108,7 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
     ::Ogre::Real dx_float = static_cast< ::Ogre::Real>(dx);
     ::Ogre::Real dy_float = static_cast< ::Ogre::Real>(dy);
 
-    ::Ogre::Camera* camera     = m_sceneManager->getCamera("PlayerCam");
+    ::Ogre::Camera* camera     = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
     ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
 
     // Current orientation of the camera
@@ -118,7 +119,7 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
     // Rotate around the right vector according to the dy of the mouse
     {
         // 1 - Move to the center of the target
-        camNode->translate(Ogre::Vector3(0.f, 0.f, -m_lookAtZ), ::Ogre::Node::TS_LOCAL);
+        camNode->translate(::Ogre::Vector3(0.f, 0.f, -m_lookAtZ), ::Ogre::Node::TS_LOCAL);
 
         // 2 - Find rotation axis. We project the mouse movement onto the right and up vectors of the camera
         // We take the absolute to get a positive axis, and then we invert the angle when needed to rotate smoothly
@@ -128,7 +129,7 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
         rotateX.normalise();
 
         // 3 - Now determine the rotation direction
-        if(rotateX.dotProduct(Ogre::Vector3(1.f,0.f,0.f)) < 0.f)
+        if(rotateX.dotProduct(::Ogre::Vector3(1.f, 0.f, 0.f)) < 0.f)
         {
             dy_float *= -1;
         }
@@ -141,13 +142,13 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
         camNode->rotate( rotate );
 
         // 6 - Go backward in the inverse direction
-        camNode->translate(Ogre::Vector3(0.f, 0.f, m_lookAtZ), ::Ogre::Node::TS_LOCAL);
+        camNode->translate(::Ogre::Vector3(0.f, 0.f, m_lookAtZ), ::Ogre::Node::TS_LOCAL);
     }
 
     // Rotate around the up vector according to the dx of the mouse
     {
         // 1 - Move to the center of the target
-        camNode->translate(Ogre::Vector3(0.f, 0.f, -m_lookAtZ), ::Ogre::Node::TS_LOCAL);
+        camNode->translate(::Ogre::Vector3(0.f, 0.f, -m_lookAtZ), ::Ogre::Node::TS_LOCAL);
 
         // 2 - Find rotation axis. We project the mouse movement onto the right and up vectors of the camera
         // We take the absolute to get a positive axis, and then we invert the angle when needed to rotate smoothly
@@ -157,7 +158,7 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
         rotateY.normalise();
 
         // 3 - Now determine the rotation direction
-        if(rotateY.dotProduct(Ogre::Vector3(0.f,1.f,0.f)) < 0.f)
+        if(rotateY.dotProduct(::Ogre::Vector3(0.f, 1.f, 0.f)) < 0.f)
         {
             dx_float *= -1;
         }
@@ -170,9 +171,8 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
         camNode->rotate( rotate );
 
         // 6 - Go backward in the inverse direction
-        camNode->translate(Ogre::Vector3(0.f, 0.f, m_lookAtZ), ::Ogre::Node::TS_LOCAL);
+        camNode->translate(::Ogre::Vector3(0.f, 0.f, m_lookAtZ), ::Ogre::Node::TS_LOCAL);
     }
-
 }
 
 // ----------------------------------------------------------------------------
@@ -181,7 +181,7 @@ void TrackballInteractor::cameraTranslate(int xmove, int ymove)
 {
     float dx = static_cast<float>(xmove) / (m_mouseScale * 10.f);
     float dy = static_cast<float>(-ymove) / (m_mouseScale * 10.f);
-    ::Ogre::Camera* camera     = m_sceneManager->getCamera("PlayerCam");
+    ::Ogre::Camera* camera     = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
     ::Ogre::SceneNode* camNode = camera->getParentSceneNode();
 
     ::Ogre::Vector3 vec(dx, dy, 0.f);

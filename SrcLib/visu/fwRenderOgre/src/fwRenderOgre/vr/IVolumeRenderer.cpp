@@ -1,10 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/vr/IVolumeRenderer.hpp"
+
+#include "fwRenderOgre/Layer.hpp"
 
 #include <boost/algorithm/clamp.hpp>
 
@@ -24,7 +26,6 @@ const IVolumeRenderer::CubeFacePositionsMap IVolumeRenderer::s_cubeFaces = {
     { IVolumeRenderer::X_POSITIVE, { 0, 1, 5, 2 } },
     { IVolumeRenderer::X_NEGATIVE, { 6, 7, 4, 3 } }
 };
-
 
 /// Image local and texture coordinates /!\ This order matters to our intersection algorithm.
 static const ::Ogre::Vector3 s_imagePositions[8] = {
@@ -54,16 +55,16 @@ IVolumeRenderer::IVolumeRenderer(std::string parentId,
                                  ::Ogre::TexturePtr imageTexture,
                                  TransferFunction& gpuTF,
                                  PreIntegrationTable& preintegrationTable) :
-    m_parentId               (parentId),
-    m_sceneManager           (sceneManager),
-    m_3DOgreTexture          (imageTexture),
-    m_gpuTF                  (gpuTF),
-    m_preIntegrationTable    (preintegrationTable),
-    m_volumeSceneNode        (volumeNode),
-    m_nbSlices               (512),
-    m_preIntegratedRendering (false)
+    m_parentId(parentId),
+    m_sceneManager(sceneManager),
+    m_3DOgreTexture(imageTexture),
+    m_gpuTF(gpuTF),
+    m_preIntegrationTable(preintegrationTable),
+    m_volumeSceneNode(volumeNode),
+    m_nbSlices(512),
+    m_preIntegratedRendering(false)
 {
-    m_camera = m_sceneManager->getCamera("PlayerCam");
+    m_camera = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
 
     std::copy(s_imagePositions, s_imagePositions + 8, m_clippedImagePositions);
 }
@@ -76,7 +77,6 @@ IVolumeRenderer::~IVolumeRenderer()
 }
 
 //-----------------------------------------------------------------------------
-
 
 void IVolumeRenderer::tfUpdate(fwData::TransferFunction::sptr tf)
 {

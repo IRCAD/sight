@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/vr/RayTracingVolumeRenderer.hpp"
 
+#include "fwRenderOgre/helper/Shading.hpp"
 #include "fwRenderOgre/SRender.hpp"
 #include "fwRenderOgre/Utils.hpp"
-#include "fwRenderOgre/helper/Shading.hpp"
 
 #include <fwCore/Profiling.hpp>
 
@@ -51,15 +51,17 @@ public:
                                  ::Ogre::TexturePtr tfTexture,
                                  float& sampleDistance,
                                  ::Ogre::SceneNode* volumeSceneNode) :
-        m_renderTargets   (renderTargets),
+        m_renderTargets(renderTargets),
         m_invWorldViewProj(invWorldViewProj),
-        m_image3DTexture  (image3DTexture),
-        m_tfTexture       (tfTexture),
-        m_sampleDistance  (sampleDistance),
-        m_volumeSceneNode (volumeSceneNode)
+        m_image3DTexture(image3DTexture),
+        m_tfTexture(tfTexture),
+        m_sampleDistance(sampleDistance),
+        m_volumeSceneNode(volumeSceneNode)
     {
 
     }
+
+    //------------------------------------------------------------------------------
 
     virtual void notifyMaterialRender(::Ogre::uint32, ::Ogre::MaterialPtr& mtl)
     {
@@ -135,6 +137,8 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
     {
     }
 
+    //------------------------------------------------------------------------------
+
     virtual void cameraPreRenderScene(::Ogre::Camera*)
     {
         auto layer = m_renderer->getLayer();
@@ -170,6 +174,8 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
         }
     }
 
+    //------------------------------------------------------------------------------
+
     void setCurrentMtlName(const std::string& currentMtlName)
     {
         m_currentMtlName = currentMtlName;
@@ -191,19 +197,19 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    double aoFactor,
                                                    double colorBleedingFactor) :
     IVolumeRenderer(parentId, layer->getSceneManager(), parentNode, imageTexture, gpuTF, preintegrationTable),
-    m_entryPointGeometry (nullptr),
-    m_imageSize          (::fwData::Image::SizeType({ 1, 1, 1 })),
-    m_mode3D             (mode3D),
-    m_ambientOcclusion   (ambientOcclusion),
-    m_colorBleeding      (colorBleeding),
-    m_shadows            (shadows),
-    m_aoFactor           (aoFactor),
+    m_entryPointGeometry(nullptr),
+    m_imageSize(::fwData::Image::SizeType({ 1, 1, 1 })),
+    m_mode3D(mode3D),
+    m_ambientOcclusion(ambientOcclusion),
+    m_colorBleeding(colorBleeding),
+    m_shadows(shadows),
+    m_aoFactor(aoFactor),
     m_colorBleedingFactor(colorBleedingFactor),
-    m_illumVolume        (nullptr),
-    m_focalLength        (0.f),
-    m_cameraListener     (nullptr),
-    m_compositorListener (nullptr),
-    m_layer              (layer)
+    m_illumVolume(nullptr),
+    m_focalLength(0.f),
+    m_cameraListener(nullptr),
+    m_compositorListener(nullptr),
+    m_layer(layer)
 {
     m_gridSize   = { 2, 2, 2 };
     m_bricksSize = { 8, 8, 8 };
@@ -237,8 +243,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                             m_parentId + "_entryPointsTexture" + std::to_string(i),
                                             ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                                             ::Ogre::TEX_TYPE_2D,
-                                            m_camera->getViewport()->getActualWidth(),
-                                            m_camera->getViewport()->getActualHeight(),
+                                            static_cast<unsigned int>(m_camera->getViewport()->getActualWidth()),
+                                            static_cast<unsigned int>(m_camera->getViewport()->getActualHeight()),
                                             1,
                                             0,
                                             ::Ogre::PF_FLOAT32_RGB,
@@ -360,7 +366,7 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
     {
         m_imageSize = newSize;
 
-        for(int i = 0; i < 3; ++i)
+        for(size_t i = 0; i < 3; ++i)
         {
             m_gridSize[i] =
                 static_cast<int>(m_imageSize[i] / m_bricksSize[i] + (m_imageSize[i] % m_bricksSize[i] != 0));
@@ -670,7 +676,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
 
         subMesh->vertexData              = new ::Ogre::VertexData();
         subMesh->vertexData->vertexStart = 0;
-        subMesh->vertexData->vertexCount = nbVtx;
+        subMesh->vertexData->vertexCount = static_cast<size_t>(nbVtx);
 
         ::Ogre::VertexDeclaration* decl = subMesh->vertexData->vertexDeclaration;
 
@@ -922,9 +928,9 @@ void RayTracingVolumeRenderer::createGridTexture()
             m_parentId + "_gridTexture",
             ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
             ::Ogre::TEX_TYPE_3D,
-            m_gridSize[0],
-            m_gridSize[1],
-            m_gridSize[2],
+            static_cast<unsigned int>(m_gridSize[0]),
+            static_cast<unsigned int>(m_gridSize[1]),
+            static_cast<unsigned int>(m_gridSize[2]),
             1,
             ::Ogre::PF_R8,
             ::Ogre::TU_RENDERTARGET
@@ -943,7 +949,7 @@ void RayTracingVolumeRenderer::createGridTexture()
 
         ::Ogre::VertexData* meshVtxData = r2vbSrcMesh->getSubMesh(0)->vertexData;
 
-        meshVtxData->vertexCount = m_gridSize[0] * m_gridSize[1] * m_gridSize[2];
+        meshVtxData->vertexCount = static_cast<size_t>(m_gridSize[0] * m_gridSize[1] * m_gridSize[2]);
 
         ::Ogre::HardwareVertexBufferSharedPtr vtxBuffer =
             ::Ogre::HardwareBufferManager::getSingleton().createVertexBuffer(
@@ -951,7 +957,7 @@ void RayTracingVolumeRenderer::createGridTexture()
                 meshVtxData->vertexCount,
                 ::Ogre::HardwareBuffer::HBU_STATIC_WRITE_ONLY);
 
-        for(int i = 0; i < static_cast<int>(meshVtxData->vertexCount); ++i)
+        for(size_t i = 0; i < meshVtxData->vertexCount; ++i)
         {
             vtxBuffer->writeData(
                 i * ::Ogre::VertexElement::getTypeSize(::Ogre::VET_INT1),

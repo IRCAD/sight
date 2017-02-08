@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,11 @@
 #ifndef __FWRENDEROGRE_ITRANSFORMABLE_HPP__
 #define __FWRENDEROGRE_ITRANSFORMABLE_HPP__
 
+#include "fwRenderOgre/config.hpp"
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/SRender.hpp>
 
 #include <OgreMatrix4.h>
-
-#include "fwRenderOgre/config.hpp"
 
 namespace fwRenderOgre
 {
@@ -49,7 +48,7 @@ public:
 
 protected:
     /// Ogre transformation of this service
-    ::Ogre::Matrix4 m_transform;
+    ::Ogre::Matrix4 m_ogreTransform;
     /// Attached transform service
     ::fwRenderOgre::IAdaptor::wptr m_transformService;
 

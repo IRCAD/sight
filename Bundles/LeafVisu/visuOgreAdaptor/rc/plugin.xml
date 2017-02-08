@@ -91,4 +91,11 @@
         <desc>service description</desc>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderOgre::IAdaptor</type>
+        <service>::visuOgreAdaptor::SLight</service>
+        <object>::fwData::TransformationMatrix3D</object>
+        <desc>service description</desc>
+    </extension>
+
 </plugin>

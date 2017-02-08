@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef __FWRENDEROGRE_IADAPTOR_HPP__
 #define __FWRENDEROGRE_IADAPTOR_HPP__
 
+#include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/IHasAdaptors.hpp"
 #include "fwRenderOgre/SRender.hpp"
-#include "fwRenderOgre/config.hpp"
 
 #include <fwCom/helper/SigSlotConnection.hpp>
 
@@ -18,7 +18,6 @@
 #include <OGRE/OgreSceneManager.h>
 
 #include <string>
-
 
 namespace fwRenderOgre
 {
@@ -31,16 +30,20 @@ class FWRENDEROGRE_CLASS_API IAdaptor : public ::fwServices::IService,
 {
 friend class SRender;
 public:
-    fwCoreNonInstanciableClassDefinitionsMacro ( (IAdaptor)(::fwServices::IService) );
+    fwCoreNonInstanciableClassDefinitionsMacro( (IAdaptor)(::fwServices::IService) );
 
     /// Set the layer ID
     FWRENDEROGRE_API void setLayerID(const std::string& id);
+
+    FWRENDEROGRE_API const std::string& getLayerID() const;
 
     /// Set the render service using this adaptor
     FWRENDEROGRE_API void setRenderService( SRender::sptr service );
 
     /// Get the render service using this adaptor
     FWRENDEROGRE_API SRender::sptr getRenderService() const;
+
+    FWRENDEROGRE_API Layer::sptr getLayer() const;
 
     /// Returns the priority of the adaptor - some adaptors may have to be started before other ones
     FWRENDEROGRE_API virtual int getStartPriority();
@@ -61,11 +64,11 @@ protected:
     //@{
     /// Overrides
     FWRENDEROGRE_API virtual void info(std::ostream& _sstream );
-    FWRENDEROGRE_API void configuring() throw(fwTools::Failed);
-    FWRENDEROGRE_API void starting() throw(fwTools::Failed);
-    FWRENDEROGRE_API void stopping() throw(fwTools::Failed);
-    FWRENDEROGRE_API void swapping() throw(fwTools::Failed);
-    FWRENDEROGRE_API void updating() throw(fwTools::Failed);
+    FWRENDEROGRE_API void configuring() throw(::fwTools::Failed);
+    FWRENDEROGRE_API void starting() throw(::fwTools::Failed);
+    FWRENDEROGRE_API void stopping() throw(::fwTools::Failed);
+    FWRENDEROGRE_API void swapping() throw(::fwTools::Failed);
+    FWRENDEROGRE_API void updating() throw(::fwTools::Failed);
     //@}
 
     /**

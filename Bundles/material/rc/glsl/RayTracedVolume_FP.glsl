@@ -30,11 +30,16 @@ uniform mat4 u_invWorldViewProj;
 
 #endif // MODE3D
 
-uniform vec3 u_lightDirs[1];
 uniform vec3 u_cameraPos;
 uniform float u_shininess;
-uniform vec3 u_specular;
-uniform vec3 u_diffuse;
+
+#define MAX_LIGHTS 10
+
+uniform int u_numLights;
+
+uniform vec3 u_lightDir[MAX_LIGHTS];
+uniform vec3 u_lightDiffuse[MAX_LIGHTS];
+uniform vec3 u_lightSpecular[MAX_LIGHTS];
 
 uniform float u_sampleDistance;
 
@@ -56,24 +61,24 @@ vec4 sampleTransferFunction(float intensity);
 
 //-----------------------------------------------------------------------------
 
-#define NUM_LIGHTS 1
-
 vec3 lighting(vec3 _normal, vec3 _position, vec3 _diffuse)
 {
-    vec3 vecToCam = normalize(_position - u_cameraPos);
+    vec3 vecToCam = normalize(u_cameraPos - _position);
 
-    float fLitDiffuse = 0;
-    float fLitSpecular = 0;
+    vec3 diffuse = vec3(0.0);
+    vec3 specular = vec3(0.0);
 
-    for(int i = 0; i < NUM_LIGHTS; ++i)
+    for(int i = 0; i < u_numLights; ++i)
     {
-        fLitDiffuse += abs(dot( _normal, normalize(u_lightDirs[i]) ));
+        float fLitDiffuse = clamp(dot( normalize(-u_lightDir[i]), _normal ), 0, 1);
+        diffuse += fLitDiffuse * u_lightDiffuse[i] * _diffuse;
 
-        vec3 r = reflect(normalize(u_lightDirs[i]), _normal);
-        fLitSpecular += pow( clamp(dot( vecToCam, r ), 0, 1), u_shininess);
+        vec3 r = reflect(u_lightDir[i], _normal);
+        float fLitSpecular = pow( clamp(dot( r, vecToCam ), 0, 1), u_shininess);
+        specular += fLitSpecular * u_lightSpecular[i];
     }
 
-    return vec3(u_diffuse * _diffuse * fLitDiffuse + u_specular.rgb * fLitSpecular);
+    return vec3(diffuse + specular);
 }
 
 //-----------------------------------------------------------------------------
@@ -86,7 +91,7 @@ vec3 gradientNormal(vec3 uvw)
     vec3 hy = vec3(0, h.y, 0);
     vec3 hz = vec3(0, 0, h.z);
 
-    return normalize( vec3(
+    return -normalize( vec3(
                 (texture(u_image, uvw + hx).r - texture(u_image, uvw - hx).r),
                 (texture(u_image, uvw + hy).r - texture(u_image, uvw - hy).r),
                 (texture(u_image, uvw + hz).r - texture(u_image, uvw - hz).r)

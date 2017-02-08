@@ -1,11 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef __UIVISUOGRE_SMATERIALSELECTOR_HPP__
 #define __UIVISUOGRE_SMATERIALSELECTOR_HPP__
+
+#include "uiVisuOgre/config.hpp"
 
 #include <fwData/Reconstruction.hpp>
 
@@ -19,14 +21,11 @@
 #include <QPushButton>
 #include <QString>
 
-#include "uiVisuOgre/config.hpp"
-
 namespace uiVisuOgre
 {
 
 /**
  * @brief   Allows to select an Ogre material template and apply it to the current reconstruction
- * @class   SMaterialSelector
  */
 class UIVISUOGRE_CLASS_API SMaterialSelector : public QObject,
                                                public ::gui::editor::IEditor
@@ -35,7 +34,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SMaterialSelector)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SMaterialSelector)(::gui::editor::IEditor) );
 
     /// Constructor.
     UIVISUOGRE_API SMaterialSelector() throw();
@@ -56,7 +55,7 @@ protected:
     /**
      * @brief method description:
      * @code{.xml}
-        <service uid="SMaterialSelectorInstance" impl="::uiVisuOgre::SMaterialSelector" type="::gui::editor::IEditor">
+        <service uid="SMaterialSelectorInstance" type="::uiVisuOgre::SMaterialSelector">
         </service>
        @endcode
      */

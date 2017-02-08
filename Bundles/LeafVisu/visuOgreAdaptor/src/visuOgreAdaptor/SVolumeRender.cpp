@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -57,24 +57,24 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_DOUBLE_PARAMETER_SLOT    
 //-----------------------------------------------------------------------------
 
 SVolumeRender::SVolumeRender() throw() :
-    m_volumeRenderer         (nullptr),
-    m_sceneManager           (nullptr),
-    m_volumeSceneNode        (nullptr),
-    m_camera                 (nullptr),
-    m_nbSlices               (512),
-    m_preIntegratedRendering (false),
-    m_ambientOcclusion       (false),
-    m_colorBleeding          (false),
-    m_shadows                (false),
-    m_widgetVisibilty        (true),
-    m_illum                  (nullptr),
-    m_satSizeRatio           (0.25f),
-    m_satShells              (4),
-    m_satShellRadius         (4),
-    m_satConeAngle           (0.1f),
-    m_satConeSamples         (50),
-    m_aoFactor               (1.f),
-    m_colorBleedingFactor    (1.f)
+    m_volumeRenderer(nullptr),
+    m_sceneManager(nullptr),
+    m_volumeSceneNode(nullptr),
+    m_camera(nullptr),
+    m_nbSlices(512),
+    m_preIntegratedRendering(false),
+    m_ambientOcclusion(false),
+    m_colorBleeding(false),
+    m_shadows(false),
+    m_widgetVisibilty(true),
+    m_illum(nullptr),
+    m_satSizeRatio(0.25f),
+    m_satShells(4),
+    m_satShellRadius(4),
+    m_satConeAngle(0.1f),
+    m_satConeSamples(50),
+    m_aoFactor(1.f),
+    m_colorBleedingFactor(1.f)
 {
     this->installTFSlots(this);
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
@@ -98,7 +98,7 @@ SVolumeRender::SVolumeRender() throw() :
     newSlot(s_SET_INT_PARAMETER_SLOT, &SVolumeRender::setIntParameter, this);
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SVolumeRender::setDoubleParameter, this);
 
-    m_transform     = ::Ogre::Matrix4::IDENTITY;
+    m_ogreTransform = ::Ogre::Matrix4::IDENTITY;
     m_renderingMode = VR_MODE_RAY_TRACING;
 }
 
@@ -275,7 +275,7 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 
     m_sceneManager    = this->getSceneManager();
     m_volumeSceneNode = m_sceneManager->getRootSceneNode()->createChildSceneNode();
-    m_camera          = m_sceneManager->getCamera("PlayerCam");
+    m_camera          = this->getLayer()->getDefaultCamera();
 
     // Create textures
     m_3DOgreTexture = ::Ogre::TextureManager::getSingleton().create(
@@ -499,7 +499,8 @@ void SVolumeRender::updateSatSizeRatio(int sizeRatio)
 {
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
-        m_satSizeRatio = static_cast<float>(sizeRatio) * .25;
+        float scaleCoef(.25f);
+        m_satSizeRatio = static_cast<float>(sizeRatio) * scaleCoef;
         m_illum->updateSatFromRatio(m_satSizeRatio);
 
         this->updateVolumeIllumination();
@@ -636,10 +637,10 @@ void SVolumeRender::toggleAmbientOcclusion(bool ambientOcclusion)
         rayCastVolumeRenderer->setAmbientOcclusion(m_ambientOcclusion);
 
         this->updateSampling(m_nbSlices);
-        this->updateSatSizeRatio(m_satSizeRatio * 4);
+        this->updateSatSizeRatio(static_cast<int>(m_satSizeRatio * 4));
         this->updateSatShellsNumber(m_satShells);
         this->updateSatShellRadius(m_satShellRadius);
-        this->updateSatConeAngle(m_satConeAngle * 100);
+        this->updateSatConeAngle(static_cast<int>(m_satConeAngle * 100));
         this->updateSatConeSamples(m_satConeSamples);
 
         if(m_preIntegratedRendering)
@@ -677,10 +678,10 @@ void SVolumeRender::toggleColorBleeding(bool colorBleeding)
         rayCastVolumeRenderer->setColorBleeding(m_colorBleeding);
 
         this->updateSampling(m_nbSlices);
-        this->updateSatSizeRatio(m_satSizeRatio * 4);
+        this->updateSatSizeRatio(static_cast<int>(m_satSizeRatio * 4));
         this->updateSatShellsNumber(m_satShells);
         this->updateSatShellRadius(m_satShellRadius);
-        this->updateSatConeAngle(m_satConeAngle * 100);
+        this->updateSatConeAngle(static_cast<int>(m_satConeAngle * 100));
         this->updateSatConeSamples(m_satConeSamples);
 
         if(m_preIntegratedRendering)
@@ -718,10 +719,10 @@ void SVolumeRender::toggleShadows(bool shadows)
         rayCastVolumeRenderer->setShadows(m_shadows);
 
         this->updateSampling(m_nbSlices);
-        this->updateSatSizeRatio(m_satSizeRatio * 4);
+        this->updateSatSizeRatio(static_cast<int>(m_satSizeRatio * 4));
         this->updateSatShellsNumber(m_satShells);
         this->updateSatShellRadius(m_satShellRadius);
-        this->updateSatConeAngle(m_satConeAngle * 100);
+        this->updateSatConeAngle(static_cast<int>(m_satConeAngle * 100));
         this->updateSatConeSamples(m_satConeSamples);
 
         if(m_preIntegratedRendering)

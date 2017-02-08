@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -34,7 +34,7 @@ class UIVISUOGRE_CLASS_API SShaderParameterEditor : public ::gui::editor::IEdito
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SShaderParameterEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SShaderParameterEditor)(::gui::editor::IEditor) );
 
     typedef std::string EditorImplementationType;
     typedef std::string ObjectClassnameType;
@@ -55,7 +55,7 @@ protected:
      * @brief Configure the editor to associate with each object type
      *
      * @code{.xml}
-       <service uid="paramView" impl="::uiVisuOgre::SShaderParameterEditor" type="::gui::editor::IEditor" autoConnect="yes">
+       <service uid="paramView" type="::uiVisuOgre::SShaderParameterEditor" autoConnect="yes">
        </service>
        @endcode
      * for which:\n

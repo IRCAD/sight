@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef __VISUOGREADAPTOR_IPARAMETER_HPP__
 #define __VISUOGREADAPTOR_IPARAMETER_HPP__
 
-#include <fwRenderOgre/IAdaptor.hpp>
-
 #include "visuOgreAdaptor/config.hpp"
+
+#include <fwRenderOgre/IAdaptor.hpp>
 
 namespace visuOgreAdaptor
 {
@@ -42,7 +42,7 @@ class VISUOGREADAPTOR_CLASS_API IParameter : public ::fwRenderOgre::IAdaptor
 
 public:
 
-    fwCoreNonInstanciableClassDefinitionsMacro ( (IParameter)(::fwRenderOgre::IAdaptor) );
+    fwCoreNonInstanciableClassDefinitionsMacro( (IParameter)(::fwRenderOgre::IAdaptor) );
 
     /**
      * @name Slots API
@@ -70,7 +70,7 @@ public:
     VISUOGREADAPTOR_API void setShaderType(::Ogre::GpuProgramType shaderType);
 
     /// Set the name of the parameter m_paramName.
-    VISUOGREADAPTOR_API void setParamName(std::string paramName);
+    VISUOGREADAPTOR_API void setParamName(const std::string& paramName);
 
     /// Get the name of the parameter m_paramName.
     VISUOGREADAPTOR_API const std::string& getParamName() const;

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,15 +7,16 @@
 #ifndef __VISUOGREADAPTOR_STEXTURE_HPP__
 #define __VISUOGREADAPTOR_STEXTURE_HPP__
 
+#include "visuOgreAdaptor/config.hpp"
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 #include <fwCom/Slot.hpp>
 
-#include <fwData/Material.hpp>
 #include <fwData/Image.hpp>
-#include <fwRenderOgre/IAdaptor.hpp>
+#include <fwData/Material.hpp>
 
-#include "visuOgreAdaptor/config.hpp"
+#include <fwRenderOgre/IAdaptor.hpp>
 
 namespace visuOgreAdaptor
 {
@@ -30,7 +31,7 @@ class VISUOGREADAPTOR_CLASS_API STexture : public ::fwRenderOgre::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (STexture)(::fwRenderOgre::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (STexture)(::fwRenderOgre::IAdaptor) );
 
     VISUOGREADAPTOR_API STexture() throw();
     VISUOGREADAPTOR_API virtual ~STexture() throw();
@@ -62,7 +63,7 @@ public:
 protected:
 
     /// Creates the managed Ogre texture
-    VISUOGREADAPTOR_API void doStart() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
 
     /**
      * @brief Configure the adaptor.
@@ -78,16 +79,16 @@ protected:
      *  - \b useAlpha (optional, true/false, default=true) : whether or not the alpha channel is used
      *  - \b dynamic (optional, true/false, default=false) : whether or not the texture is updated frequently
      */
-    VISUOGREADAPTOR_API void doConfigure() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
 
     /// Calls updating()
-    VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
 
     /// Updates the attached
-    VISUOGREADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
 
     /// Does nothing
-    VISUOGREADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
 
     /// Returns proposals to connect service slots to associated object signals
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsType getObjSrvConnections() const;

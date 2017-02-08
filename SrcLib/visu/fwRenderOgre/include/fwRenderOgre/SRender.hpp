@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,15 +8,15 @@
 #define __FWRENDEROGRE_SRENDER_HPP__
 
 #include "fwRenderOgre/config.hpp"
-#include <fwRenderOgre/IRenderWindowInteractorManager.hpp>
-#include <fwRenderOgre/Layer.hpp>
-#include <fwRenderOgre/Utils.hpp>
-#include <fwRenderOgre/picker/IPicker.hpp>
+#include "fwRenderOgre/IRenderWindowInteractorManager.hpp"
+#include "fwRenderOgre/Layer.hpp"
+#include "fwRenderOgre/picker/IPicker.hpp"
+#include "fwRenderOgre/Utils.hpp"
 
+#include <fwCom/helper/SigSlotConnection.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
-#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwData/Composite.hpp>
 
@@ -46,7 +46,7 @@ class Layer;
     <in key="meshTFKey" uid="meshTFUID" />
 
     <scene renderMode="auto">
-        <renderer id="rendererId" layer="1" compositors="Invert;Laplace;Posterize" />
+        <layer id="rendererId" depth="1" compositors="Invert;Laplace;Posterize" defaultLight="no" />
 
         <adaptor id="meshAdaptor" class="::visuOgreAdaptor::SMesh" objectId="meshKey">
             <config dynamic="true" transform="meshTFAdaptor" texture="texLiver"/>
@@ -99,15 +99,16 @@ class Layer;
  *    - \b numPeels (optional): number of peels for the selected transparency technique.
  *                              Not used for WeightedBlended OIT
  *    - \b compositors (optional): defines the default compositor chain. The compositors are separated by semicolons
- *    - \b fullscreen (optional, default="no"): Show the scene in full screen.
- *    - \b stereoMode (optional, default="no"): sets the mode used for stereoscopic 3D rendering,
+ *    - \b fullscreen (optional, yes/no, default="no"): Show the scene in full screen.
+ *    - \b stereoMode (optional, yes/no, default="no"): Sets the mode used for stereoscopic 3D rendering,
  *                                          available modes are "AutoStereo5", "AutoStereo8" and "no".
+ *    - \b defaultLight (optional, yes/no, default="yes"): Sets if a default light is created in the layer.
  */
 class FWRENDEROGRE_CLASS_API SRender : public ::fwRender::IRender
 
 {
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SRender)(::fwRender::IRender) );
+    fwCoreServiceClassDefinitionsMacro( (SRender)(::fwRender::IRender) );
 
     FWRENDEROGRE_API SRender() throw();
     FWRENDEROGRE_API virtual ~SRender() throw();
@@ -116,7 +117,7 @@ public:
     typedef std::string OgreObjectIdType;
     typedef std::string SceneIdType;
 
-    /// Actives layouts in the scene
+    /// Actives layouts in the scene.
     typedef std::map< SceneIdType, SPTR(::fwRenderOgre::Layer) > LayerMapType;
 
     FWRENDEROGRE_API static const std::string s_OGREBACKGROUNDID;
@@ -134,51 +135,57 @@ public:
      * @{
      */
     typedef ::fwCom::Slot< void () > StartObjectSlotType;
-    /// Slot: Start each adaptor contained in this render service
+    /// Slot: Start each adaptor contained in this render service.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_START_OBJECT_SLOT;
 
     typedef ::fwCom::Slot< void () > ComputeCameraOrigSlotType;
-    /// Slot: Computes the parameters to reset the camera
+    /// Slot: Computes the parameters to reset the camera.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_COMPUTE_CAMERA_ORIG_SLOT;
 
     typedef ::fwCom::Slot< void () > ComputeCameraClippingSlotType;
-    /// Slot: Computes the parameters to reset the camera
+    /// Slot: Computes the parameters to reset the camera.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_COMPUTE_CAMERA_CLIPPING_SLOT;
 
     typedef ::fwCom::Slot< void (int, int, int, int) > DoRayCastSlotType;
-    /// Slot: Request the picker to do a ray cast according to the passed position
+    /// Slot: Request the picker to do a ray cast according to the passed position.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_DO_RAY_CAST_SLOT;
     /** @} */
 
-    /// Set this render service as the current OpenGL context
+    /// Sets this render service as the current OpenGL context.
     FWRENDEROGRE_API void makeCurrent();
 
-    /// Request a render from the Ogre render engine
+    /// Requests a render from the Ogre render engine.
     FWRENDEROGRE_API void requestRender();
 
-    /// Returns true if the scene is shown on screen
+    /// Returns true if the scene is shown on screen.
     FWRENDEROGRE_API bool isShownOnScreen();
 
-    /// Returns the scene manager corresponding to the sceneID
+    /// Returns the scene manager corresponding to the sceneID.
     FWRENDEROGRE_API ::Ogre::SceneManager* getSceneManager(const ::std::string& sceneID);
 
-    /// Returns the layer corresponding to the sceneID
+    /// Returns the layer corresponding to the sceneID.
     FWRENDEROGRE_API ::fwRenderOgre::Layer::sptr getLayer(const ::std::string& sceneID);
 
-    /// Returns this render layers
+    /// Returns this render layers.
     FWRENDEROGRE_API LayerMapType getLayers();
 
-    /// Returns m_interactorManager
+    /// Returns m_interactorManager.
     FWRENDEROGRE_API ::fwRenderOgre::IRenderWindowInteractorManager::sptr getInteractorManager() const;
 
-    /// Reset camera parameters with the actual global bounding box
+    /// Resets camera parameters with the actual global bounding box.
     FWRENDEROGRE_API void resetCameraCoordinates(const std::string& _layerId);
 
-    /// Compute camera parameters with the actual global bounding box
+    /// Computes camera parameters with the actual global bounding box.
     FWRENDEROGRE_API void computeCameraClipping();
 
-    /// Return true if the ogre context is ready to be used
+    /// Returns true if the ogre context is ready to be used.
     FWRENDEROGRE_API bool isReady() const;
+
+    /// Adds a new adaptor to the map.
+    FWRENDEROGRE_API void addAdaptor(SPTR(::fwRenderOgre::IAdaptor) _adaptor);
+
+    /// Removes an adaptor from the map.
+    FWRENDEROGRE_API void removeAdaptor(SPTR(::fwRenderOgre::IAdaptor) _adaptor);
 
     template<class T>
     std::vector<SPTR(T)> getAdaptors() const;
@@ -204,7 +211,7 @@ private:
     /// Wrapper class containing an adaptor
     struct SceneAdaptor
     {
-        SPTR (IAdaptor) getService() const
+        SPTR(IAdaptor) getService() const
         {
             return m_service.lock();
         }

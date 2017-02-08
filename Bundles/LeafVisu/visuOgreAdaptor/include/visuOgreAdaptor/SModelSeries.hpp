@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -29,7 +29,7 @@ class VISUOGREADAPTOR_CLASS_API SModelSeries : public ::fwRenderOgre::IAdaptor,
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SModelSeries)(::fwRenderOgre::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SModelSeries)(::fwRenderOgre::IAdaptor) );
 
     /// Constructor.
     VISUOGREADAPTOR_API SModelSeries() throw();
@@ -59,7 +59,7 @@ protected:
      */
     VISUOGREADAPTOR_API void doConfigure() throw(::fwTools::Failed);
     /// Calls updating
-    VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
     /// Redraws all (stops then restarts sub services)
     VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
     /// Closes connections and unregisters service.

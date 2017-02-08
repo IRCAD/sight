@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -61,38 +61,38 @@ public:
 
 #ifdef ETM_TERRAIN
     const ET::TerrainInfo* mTerrainInfo;
-    FWRENDEROGRE_API CollisionTools(Ogre::SceneManager* sceneMgr, const ET::TerrainInfo* terrainInfo);
+    FWRENDEROGRE_API CollisionTools(::Ogre::SceneManager* sceneMgr, const ET::TerrainInfo* terrainInfo);
 #endif
 
-    FWRENDEROGRE_API CollisionTools(Ogre::SceneManager* sceneMgr);
+    FWRENDEROGRE_API CollisionTools(::Ogre::SceneManager* sceneMgr);
     FWRENDEROGRE_API ~CollisionTools();
 
-    FWRENDEROGRE_API bool raycastFromCamera(Ogre::RenderWindow* rw, Ogre::Camera* camera,
+    FWRENDEROGRE_API bool raycastFromCamera(::Ogre::RenderWindow* rw, Ogre::Camera* camera,
                                             const Ogre::Vector2& mousecoords, Ogre::Vector3& result,
-                                            Ogre::MovableObject*& target,float& closest_distance,
+                                            Ogre::MovableObject*& target, float& closest_distance,
                                             const Ogre::uint32 queryMask = 0xFFFFFFFF);
     // convenience wrapper with Ogre::Entity to it:
-    FWRENDEROGRE_API bool raycastFromCamera(Ogre::RenderWindow* rw, Ogre::Camera* camera,
+    FWRENDEROGRE_API bool raycastFromCamera(::Ogre::RenderWindow* rw, Ogre::Camera* camera,
                                             const Ogre::Vector2& mousecoords, Ogre::Vector3& result,
-                                            Ogre::Entity*& target,float& closest_distance,
+                                            Ogre::Entity*& target, float& closest_distance,
                                             const Ogre::uint32 queryMask = 0xFFFFFFFF);
 
     FWRENDEROGRE_API bool collidesWithEntity(const Ogre::Vector3& fromPoint, const Ogre::Vector3& toPoint,
                                              const float collisionRadius = 2.5f, const float rayHeightLevel = 0.0f,
                                              const Ogre::uint32 queryMask = 0xFFFFFFFF);
 
-    FWRENDEROGRE_API void calculateY(Ogre::SceneNode* n, const bool doTerrainCheck = true, const bool doGridCheck =
+    FWRENDEROGRE_API void calculateY(::Ogre::SceneNode* n, const bool doTerrainCheck = true, const bool doGridCheck =
                                          true, const float gridWidth = 1.0f,
                                      const Ogre::uint32 queryMask = 0xFFFFFFFF);
 
     FWRENDEROGRE_API float getTSMHeightAt(const float x, const float z);
 
     FWRENDEROGRE_API bool raycastFromPoint(const Ogre::Vector3& point, const Ogre::Vector3& normal,
-                                           Ogre::Vector3& result,Ogre::MovableObject*& target,float& closest_distance,
+                                           Ogre::Vector3& result, Ogre::MovableObject*& target, float& closest_distance,
                                            const Ogre::uint32 queryMask = 0xFFFFFFFF);
     // convenience wrapper with Ogre::Entity to it:
     FWRENDEROGRE_API bool raycastFromPoint(const Ogre::Vector3& point, const Ogre::Vector3& normal,
-                                           Ogre::Vector3& result,Ogre::Entity*& target,float& closest_distance,
+                                           Ogre::Vector3& result, Ogre::Entity*& target, float& closest_distance,
                                            const Ogre::uint32 queryMask = 0xFFFFFFFF);
 
     FWRENDEROGRE_API bool raycast(const Ogre::Ray& ray, Ogre::Vector3& result, Ogre::MovableObject*& target,

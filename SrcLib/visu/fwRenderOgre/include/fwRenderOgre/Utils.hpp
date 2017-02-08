@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,18 +7,19 @@
 #ifndef __FWRENDEROGRE_UTILS_HPP__
 #define __FWRENDEROGRE_UTILS_HPP__
 
+#include "fwRenderOgre/config.hpp"
+
+#include <fwData/Color.hpp>
 #include <fwData/Image.hpp>
 
-
-#include <OGRE/OgreRoot.h>
+#include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreImage.h>
 #include <OGRE/OgrePixelFormat.h>
+#include <OGRE/OgreRoot.h>
 #include <OGRE/OgreTexture.h>
 #include <OGRE/Overlay/OgreOverlaySystem.h>
 
 #include <string>
-
-#include "fwRenderOgre/config.hpp"
 
 fwCorePredeclare((fwRenderOgre)(factory)(R2VBRenderable))
 
@@ -108,6 +109,13 @@ public:
                                                  ::Ogre::TextureType _texType, bool _dynamic);
 
     FWRENDEROGRE_API static ::Ogre::OverlaySystem* getOverlaySystem();
+
+    /**
+     * @brief convertOgreColorToFwColor
+     * @param[in] _ogreColor Color to convert into a f4s color
+     * @return The converted f4s color
+     */
+    FWRENDEROGRE_API static ::fwData::Color::sptr convertOgreColorToFwColor(const Ogre::ColourValue& _ogreColor);
 
 private:
     static ::Ogre::OverlaySystem* s_overlaySystem;
