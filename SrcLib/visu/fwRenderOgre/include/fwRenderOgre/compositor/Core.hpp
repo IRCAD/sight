@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,6 +18,12 @@
 
 #include "fwRenderOgre/config.hpp"
 
+namespace fwRenderOgre
+{
+
+namespace compositor
+{
+
 /// OIT (Ordrer Independent Transparency) techniques supported
 enum transparencyTechnique
 {
@@ -29,18 +35,14 @@ enum transparencyTechnique
     CELSHADING_DEPTHPEELING,
 };
 
-namespace fwRenderOgre
-{
-
-namespace compositor
-{
-
 /**
  * Manages principal compositor for a layer's 3D scene
  */
 class FWRENDEROGRE_CLASS_API Core   //TODO : Manage occlusion query
-                                    //    The current commented ligns in this class are standing for occlusion query purposes
-                                    //    An example of working occlusion query is used in the experimental branch flavien_sg rev 76
+                                    //    The current commented ligns in this class are standing for occlusion query
+                                    // purposes
+                                    //    An example of working occlusion query is used in the experimental branch
+                                    // flavien_sg rev 76
                                     //public ::Ogre::FrameListener,
                                     //public ::Ogre::RenderTargetListener,
                                     //public ::Ogre::RenderObjectListener

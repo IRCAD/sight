@@ -1,20 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/interactor/Negato2DInteractor.hpp"
 
-#include <fwRenderOgre/registry/macros.hpp>
+#include "fwRenderOgre/Layer.hpp"
+#include "fwRenderOgre/registry/macros.hpp"
 
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreEntity.h>
-#include <OGRE/OgreRenderSystem.h>
-#include <OGRE/OgreVector3.h>
-#include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreMesh.h>
+#include <OGRE/OgreRenderSystem.h>
+#include <OGRE/OgreSceneNode.h>
+#include <OGRE/OgreVector3.h>
 #include <OGRE/OgreViewport.h>
 
 #include <stack>
@@ -39,8 +40,8 @@ Negato2DInteractor::Negato2DInteractor() :
     m_currentHeight(10),
     m_camera(nullptr)
 {
-    m_minimumCorner = ::Ogre::Vector3(-1.,-1.,0.);
-    m_maximumCorner = ::Ogre::Vector3(1.,1.,0.);
+    m_minimumCorner = ::Ogre::Vector3(-1., -1., 0.);
+    m_maximumCorner = ::Ogre::Vector3(1., 1., 0.);
 }
 
 // ----------------------------------------------------------------------------
@@ -70,7 +71,6 @@ void Negato2DInteractor::wheelEvent(int delta, int mouseX, int mouseY)
         // Update Camera Scale
         m_currentWidth  = m_zoomScale * m_totalWidth;
         m_currentHeight = m_zoomScale * m_totalHeight;
-
 
         ::Ogre::Real leftScreenBordure = xTexture - static_cast< ::Ogre::Real >(mouseX) / m_renderWindowWidth *
                                          m_currentWidth;
@@ -206,9 +206,9 @@ void Negato2DInteractor::resetCameraPosition()
 {
     if(!m_camera)
     {
-        m_camera    = m_sceneManager->getCamera("PlayerCam");
+        m_camera    = m_sceneManager->getCamera(::fwRenderOgre::Layer::DEFAULT_CAMERA_NAME);
         m_cameraPos = m_camera->getPosition();
-        m_camera->setOrthoWindow(1.f,1.f);
+        m_camera->setOrthoWindow(1.f, 1.f);
     }
     return m_camera;
 }

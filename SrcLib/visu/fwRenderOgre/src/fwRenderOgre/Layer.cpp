@@ -1,23 +1,33 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwRenderOgre/Layer.hpp>
-#include <fwRenderOgre/SRender.hpp>
-#include <fwRenderOgre/Utils.hpp>
-#include <fwRenderOgre/interactor/TrackballInteractor.hpp>
+#include "fwRenderOgre/Layer.hpp"
+
+#include "fwRenderOgre/ICamera.hpp"
+#include "fwRenderOgre/ILight.hpp"
+#include "fwRenderOgre/interactor/TrackballInteractor.hpp"
+#include "fwRenderOgre/SRender.hpp"
+#include "fwRenderOgre/Utils.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
+#include <fwData/Color.hpp>
+#include <fwData/Material.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+
 #include <fwDataTools/Color.hpp>
+
+#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwThread/Worker.hpp>
 
+#include <boost/tokenizer.hpp>
+
 #include <OGRE/OgreAxisAlignedBox.h>
-#include <OGRE/OgreCamera.h>
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreEntity.h>
@@ -38,6 +48,8 @@
 namespace fwRenderOgre
 {
 
+//-----------------------------------------------------------------------------
+
 const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG         = "layerInitialized";
 const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG       = "layerResized";
 const ::fwCom::Signals::SignalKeyType Layer::s_COMPOSITOR_UPDATED_SIG = "compositorUpdated";
@@ -50,6 +62,11 @@ const ::fwCom::Slots::SlotKeyType Layer::s_USE_CELSHADING_SLOT = "useCelShading"
 
 //-----------------------------------------------------------------------------
 
+const std::string Layer::DEFAULT_CAMERA_NAME = "DefaultCam";
+const std::string Layer::DEFAULT_LIGHT_NAME  = "DefaultLight";
+
+//-----------------------------------------------------------------------------
+
 Layer::Layer() :
     m_sceneManager(nullptr),
     m_renderWindow(nullptr),
@@ -57,17 +74,17 @@ Layer::Layer() :
     m_stereoMode(StereoModeType::NONE),
     m_rawCompositorChain(""),
     m_coreCompositor(nullptr),
-    m_transparencyTechnique(DEFAULT),
+    m_transparencyTechnique(::fwRenderOgre::compositor::DEFAULT),
     m_numPeels(8),
     m_depth(1),
     m_topColor("#333333"),
     m_bottomColor("#333333"),
     m_topScale(0.f),
     m_bottomScale(1.f),
-    m_camera(nullptr),
     m_hasCoreCompositor(false),
     m_hasCompositorChain(false),
-    m_sceneCreated(false)
+    m_sceneCreated(false),
+    m_hasDefaultLight(true)
 {
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
     newSignal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
@@ -134,13 +151,14 @@ void Layer::createScene()
     SLM_ASSERT("Scene manager must be initialized", m_sceneManager);
     SLM_ASSERT("Render window must be initialized", m_renderWindow);
 
-    m_sceneManager->setAmbientLight(::Ogre::ColourValue(0.8f,0.8f,0.8f));
+    m_sceneManager->setAmbientLight(::Ogre::ColourValue(0.8f, 0.8f, 0.8f));
 
-    // Create the camera
-    m_camera = m_sceneManager->createCamera("PlayerCam");
-    m_camera->setNearClipDistance(1);
+    m_cameraManager = ::fwRenderOgre::ICamera::createCameraManager();
+    m_cameraManager->setLayerID(this->getLayerID());
+    m_cameraManager->createCamera(Layer::DEFAULT_CAMERA_NAME, m_sceneManager);
+    m_cameraManager->setNearClipDistance(1);
 
-    m_viewport = m_renderWindow->addViewport(m_camera, m_depth);
+    m_viewport = m_renderWindow->addViewport(m_cameraManager->getCamera(), m_depth);
 
     m_compositorChainManager = fwc::ChainManager::uptr(new fwc::ChainManager(m_viewport));
 
@@ -197,26 +215,38 @@ void Layer::createScene()
     }
 
     // Alter the camera aspect ratio to match the viewport
-    m_camera->setAspectRatio(Ogre::Real(m_viewport->getActualWidth()) / ::Ogre::Real(m_viewport->getActualHeight()));
-
-    ::Ogre::Light* light = m_sceneManager->createLight("MainLight");
-    light->setType(::Ogre::Light::LT_DIRECTIONAL);
-    light->setDirection(::Ogre::Vector3(0,0,-1));
-    light->setDiffuseColour(::Ogre::ColourValue());
-    light->setSpecularColour(::Ogre::ColourValue());
+    m_cameraManager->setAspectRatio(::Ogre::Real(m_viewport->getActualWidth()) /
+                                    ::Ogre::Real(m_viewport->getActualHeight()));
 
     // Creating Camera Scene Node
     ::Ogre::SceneNode* cameraNode = m_sceneManager->getRootSceneNode()->createChildSceneNode("CameraNode");
-    cameraNode->setPosition(Ogre::Vector3(0,0,5));
-    cameraNode->lookAt(Ogre::Vector3(0,0,1), ::Ogre::Node::TS_WORLD);
+    cameraNode->setPosition(::Ogre::Vector3(0, 0, 5));
+    cameraNode->lookAt(::Ogre::Vector3(0, 0, 1), ::Ogre::Node::TS_WORLD);
 
-    // Attach Camera and Headlight to fit vtk light
-    cameraNode->attachObject(m_camera);
-    cameraNode->attachObject(light);
+    m_cameraManager->setTransformName(cameraNode->getName());
+    cameraNode->attachObject(m_cameraManager->getCamera());
+    m_renderService.lock()->addAdaptor(m_cameraManager);
+
+    if(m_hasDefaultLight)
+    {
+        m_defaultLightTransform     = ::fwData::TransformationMatrix3D::New();
+        m_defaultLightDiffuseColor  = ::fwData::Color::New();
+        m_defaultLightSpecularColor = ::fwData::Color::New();
+
+        m_lightManager = ::fwRenderOgre::ILight::createLightManager(m_defaultLightTransform,
+                                                                    m_defaultLightDiffuseColor,
+                                                                    m_defaultLightSpecularColor);
+        m_lightManager->setName(Layer::DEFAULT_LIGHT_NAME);
+        m_lightManager->setType(::Ogre::Light::LT_DIRECTIONAL);
+        m_lightManager->setParentTransformName(cameraNode->getName());
+        m_lightManager->setLayerID(this->getLayerID());
+
+        m_renderService.lock()->addAdaptor(m_lightManager);
+    }
 
     // If there is any interactor adaptor in xml, m_moveInteractor will be overwritten by InteractorStyle adaptor
     ::fwRenderOgre::interactor::IMovementInteractor::sptr interactor =
-        ::fwRenderOgre::interactor::IMovementInteractor::dynamicCast (
+        ::fwRenderOgre::interactor::IMovementInteractor::dynamicCast(
             ::fwRenderOgre::interactorFactory::New("::fwRenderOgre::interactor::TrackballInteractor"));
 
     interactor->setSceneID(m_sceneManager->getName());
@@ -294,11 +324,13 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE:
         {
             m_moveInteractor->mouseMoveEvent(info.button, info.x, info.y, info.dx, info.dy);
+            m_cameraManager->updateTF3D();
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE:
         {
             m_moveInteractor->wheelEvent(info.delta, info.x, info.y);
+            m_cameraManager->updateTF3D();
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE:
@@ -330,9 +362,11 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
 
 void Layer::destroy()
 {
+    ::fwRenderOgre::ICamera::destroyCameraManager(m_cameraManager);
+    ::fwRenderOgre::ILight::destroyLightManager(m_lightManager);
+
     ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
     m_sceneManager = nullptr;
-    m_camera       = nullptr;
 }
 
 // ----------------------------------------------------------------------------
@@ -370,6 +404,22 @@ void Layer::setRenderService( const ::fwRenderOgre::SRender::sptr& _service)
     SLM_ASSERT("service not instanced", _service);
 
     m_renderService = _service;
+}
+
+// ----------------------------------------------------------------------------
+
+void Layer::addAdaptor(::fwRenderOgre::IAdaptor::sptr _adaptor)
+{
+    SLM_ASSERT("Adaptor not instanced", _adaptor);
+    m_renderService.lock()->addAdaptor(_adaptor);
+}
+
+// ----------------------------------------------------------------------------
+
+void Layer::removeAdaptor(::fwRenderOgre::IAdaptor::sptr _adaptor)
+{
+    SLM_ASSERT("Adaptor not instanced", _adaptor);
+    m_renderService.lock()->removeAdaptor(_adaptor);
 }
 
 // ----------------------------------------------------------------------------
@@ -472,19 +522,20 @@ void Layer::resetCameraCoordinates() const
 {
     ::Ogre::AxisAlignedBox worldCoordBoundingBox = computeCameraParameters();
 
-    if(m_camera && m_camera->getProjectionType() == ::Ogre::PT_PERSPECTIVE)
+    if(m_cameraManager->getCamera() && m_cameraManager->getCamera()->getProjectionType() == ::Ogre::PT_PERSPECTIVE)
     {
         // Check if bounding box is valid, otherwise, do nothing.
         if( worldCoordBoundingBox == ::Ogre::AxisAlignedBox::EXTENT_NULL ||
             worldCoordBoundingBox == ::Ogre::AxisAlignedBox::EXTENT_INFINITE)
         {
-            ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
+            ::Ogre::SceneNode* camNode = m_cameraManager->getCamera()->getParentSceneNode();
 
             camNode->setPosition(0.f, 0.f, 0.f);
+            m_cameraManager->updateTF3D();
         }
         else
         {
-            ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
+            ::Ogre::SceneNode* camNode = m_cameraManager->getCamera()->getParentSceneNode();
             // Arbitrary coefficient
             ::Ogre::Real boundingBoxLength = worldCoordBoundingBox.getSize().length() > 0 ?
                                              worldCoordBoundingBox.getSize().length() : 0;
@@ -503,8 +554,8 @@ void Layer::resetCameraCoordinates() const
             m_moveInteractor->setMouseScale( coeffZoom );
 
             resetCameraClippingRange(worldCoordBoundingBox);
+            m_cameraManager->updateTF3D();
         }
-
 
         m_renderService.lock()->requestRender();
     }
@@ -521,7 +572,7 @@ void Layer::resetCameraClippingRange() const
 
 void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBoundingBox) const
 {
-    if(m_camera && m_camera->getProjectionType() == ::Ogre::PT_PERSPECTIVE)
+    if(m_cameraManager->getCamera() && m_cameraManager->getCamera()->getProjectionType() == ::Ogre::PT_PERSPECTIVE)
     {
         // Check if bounding box is valid, otherwise, do nothing.
         if( worldCoordBoundingBox == ::Ogre::AxisAlignedBox::EXTENT_NULL ||
@@ -530,7 +581,7 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
             return;
         }
 
-        ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
+        ::Ogre::SceneNode* camNode = m_cameraManager->getCamera()->getParentSceneNode();
 
         // Set the direction of the camera
         ::Ogre::Quaternion quat   = camNode->getOrientation();
@@ -567,12 +618,11 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
                 for (int i = 0; i < 2; i++ )
                 {
                     dist    = a*corners[i] + b*corners[2+j] + c*corners[4+k] + d;
-                    maxNear = (dist<maxNear) ? dist : maxNear;
-                    minFar  = (dist>minFar) ? dist : minFar;
+                    maxNear = (dist < maxNear) ? dist : maxNear;
+                    minFar  = (dist > minFar) ? dist : minFar;
                 }
             }
         }
-
 
         // Give ourselves a little breathing room
         maxNear = 0.99f*maxNear - (minFar - maxNear)*0.5f;
@@ -587,7 +637,6 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
         // Make sure near is not bigger than far
         maxNear = (maxNear >= minFar) ? (0.01f*minFar) : (maxNear);
 
-
         const auto& chain          = this->getCompositorChain();
         const auto saoCompositorIt = std::find_if(chain.begin(), chain.end(),
                                                   ::fwRenderOgre::compositor::ChainManager::FindCompositorByName("SAO"));
@@ -596,14 +645,14 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
         {
             // Near and far for SAO
             OSLM_TRACE("Near SAO");
-            m_camera->setNearClipDistance( 1 );
-            m_camera->setFarClipDistance( 10000 );
+            m_cameraManager->setNearClipDistance( 1 );
+            m_cameraManager->setFarClipDistance( 10000 );
         }
         else
         {
             OSLM_TRACE("Near normal");
-            m_camera->setNearClipDistance( maxNear );
-            m_camera->setFarClipDistance( minFar );
+            m_cameraManager->setNearClipDistance( maxNear );
+            m_cameraManager->setFarClipDistance( minFar );
 
         }
 
@@ -616,7 +665,7 @@ void Layer::doRayCast(int x, int y, int width, int height)
 {
     if(m_selectInteractor)
     {
-        OSLM_ASSERT("SelectInteractor Isn't initialized, add the adaptor to your xml file.",m_selectInteractor);
+        OSLM_ASSERT("SelectInteractor Isn't initialized, add the adaptor to your xml file.", m_selectInteractor);
 
         if(!m_selectInteractor->isPickerInitialized())
         {
@@ -669,23 +718,23 @@ void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechn
     {
         if(transparencyTechnique == "DepthPeeling")
         {
-            m_transparencyTechnique = DEPTHPEELING;
+            m_transparencyTechnique = ::fwRenderOgre::compositor::DEPTHPEELING;
         }
         else if(transparencyTechnique == "CelShadingDepthPeeling")
         {
-            m_transparencyTechnique = CELSHADING_DEPTHPEELING;
+            m_transparencyTechnique = ::fwRenderOgre::compositor::CELSHADING_DEPTHPEELING;
         }
         else if(transparencyTechnique == "DualDepthPeeling")
         {
-            m_transparencyTechnique = DUALDEPTHPEELING;
+            m_transparencyTechnique = ::fwRenderOgre::compositor::DUALDEPTHPEELING;
         }
         else if(transparencyTechnique == "WeightedBlended")
         {
-            m_transparencyTechnique = WEIGHTEDBLENDEDOIT;
+            m_transparencyTechnique = ::fwRenderOgre::compositor::WEIGHTEDBLENDEDOIT;
         }
         else if(transparencyTechnique == "HybridTransparency")
         {
-            m_transparencyTechnique = HYBRIDTRANSPARENCY;
+            m_transparencyTechnique = ::fwRenderOgre::compositor::HYBRIDTRANSPARENCY;
         }
         else
         {
@@ -782,6 +831,56 @@ IHasAdaptors::AdaptorVector Layer::getRegisteredAdaptors() const
 bool Layer::isSceneCreated() const
 {
     return m_sceneCreated;
+}
+
+//-------------------------------------------------------------------------------------
+
+::Ogre::Camera* Layer::getDefaultCamera() const
+{
+    return m_cameraManager->getCamera();
+}
+
+//-------------------------------------------------------------------------------------
+
+void Layer::setHasDefaultLight(bool hasDefaultLight)
+{
+    m_hasDefaultLight = hasDefaultLight;
+}
+
+//-------------------------------------------------------------------------------------
+
+int Layer::getLightsNumber() const
+{
+    auto lightAdaptors = this->getRenderService()->getAdaptors< ::fwRenderOgre::ILight >();
+    int lightsNumber(0);
+
+    std::for_each(lightAdaptors.begin(), lightAdaptors.end(), [&](::fwRenderOgre::ILight::sptr adaptor)
+        {
+            if(adaptor->getLayerID() == this->getLayerID())
+            {
+                ++lightsNumber;
+            }
+        });
+
+    return lightsNumber;
+}
+
+//-------------------------------------------------------------------------------------
+
+std::vector< ::fwRenderOgre::ILight::sptr > Layer::getLightAdaptors() const
+{
+    auto lightAdaptors = this->getRenderService()->getAdaptors< ::fwRenderOgre::ILight >();
+    std::vector< ::fwRenderOgre::ILight::sptr > layerLightAdaptors;
+
+    std::for_each(lightAdaptors.begin(), lightAdaptors.end(), [&](::fwRenderOgre::ILight::sptr lightAdaptor)
+        {
+            if(lightAdaptor->getLayerID() == this->getLayerID())
+            {
+                layerLightAdaptors.push_back(lightAdaptor);
+            }
+        });
+
+    return layerLightAdaptors;
 }
 
 //-------------------------------------------------------------------------------------

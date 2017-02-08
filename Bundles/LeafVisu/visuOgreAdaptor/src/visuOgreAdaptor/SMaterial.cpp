@@ -1,13 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuOgreAdaptor/SMaterial.hpp"
+
+#include "visuOgreAdaptor/defines.hpp"
 #include "visuOgreAdaptor/SShaderParameter.hpp"
 #include "visuOgreAdaptor/STexture.hpp"
-#include "visuOgreAdaptor/defines.hpp"
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
@@ -24,9 +25,9 @@
 #include <fwDataTools/helper/Array.hpp>
 #include <fwDataTools/helper/Field.hpp>
 
+#include <fwRenderOgre/helper/Shading.hpp>
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/Utils.hpp>
-#include <fwRenderOgre/helper/Shading.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
@@ -67,7 +68,8 @@ SMaterial::SMaterial() throw() :
     m_hasPrimitiveColor(false),
     m_primitiveType(::fwData::Mesh::TRIANGLE),
     m_meshBoundingBox(::Ogre::Vector3::ZERO, ::Ogre::Vector3::ZERO),
-    m_normalLengthFactor(0.1f)
+    m_normalLengthFactor(0.1f),
+    m_lightsNumber(1)
 {
     newSlot(s_UPDATE_FIELD_SLOT, &SMaterial::updateField, this);
     newSlot(s_SWAP_TEXTURE_SLOT, &SMaterial::swapTexture, this);
@@ -178,7 +180,7 @@ int SMaterial::getStartPriority()
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doConfigure() throw(fwTools::Failed)
+void SMaterial::doConfigure() throw(::fwTools::Failed)
 {
     if(m_configuration->hasAttribute("materialTemplate"))
     {
@@ -214,7 +216,7 @@ void SMaterial::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doStart() throw(fwTools::Failed)
+void SMaterial::doStart() throw(::fwTools::Failed)
 {
     if(!m_shadingMode.empty())
     {
@@ -282,7 +284,7 @@ void SMaterial::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doStop() throw(fwTools::Failed)
+void SMaterial::doStop() throw(::fwTools::Failed)
 {
     m_material.setNull();
     m_textureConnection.disconnect();
@@ -297,7 +299,7 @@ void SMaterial::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doSwap() throw(fwTools::Failed)
+void SMaterial::doSwap() throw(::fwTools::Failed)
 {
     SLM_TRACE("SWAPPING Material");
     this->stopping();
@@ -306,7 +308,7 @@ void SMaterial::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SMaterial::doUpdate() throw(fwTools::Failed)
+void SMaterial::doUpdate() throw(::fwTools::Failed)
 {
     ::fwData::Material::sptr material = this->getObject < ::fwData::Material >();
 
@@ -503,7 +505,6 @@ void SMaterial::updatePolygonMode(int polygonMode)
                 fpName = ::fwRenderOgre::helper::Shading::setPermutationInProgramName(fpName, "Edge_Normal");
                 edgePass->setFragmentProgram(fpName);
 
-
                 edgePass->setPolygonMode(::Ogre::PM_WIREFRAME);
             }
         }
@@ -555,6 +556,20 @@ void SMaterial::updateShadingMode( int shadingMode  )
 {
     ::fwData::Material::ShadingType mode = static_cast< ::fwData::Material::ShadingType >(shadingMode);
 
+    bool updateLightsNumber(false);
+
+    if(mode != ::fwData::Material::AMBIENT)
+    {
+        int currentLightsNumber = this->getLayer()->getLightsNumber();
+
+        // We need to update the number of lights supported in the material if it has changed
+        if(m_lightsNumber != currentLightsNumber && currentLightsNumber > 0)
+        {
+            m_lightsNumber     = currentLightsNumber;
+            updateLightsNumber = true;
+        }
+    }
+
     ::Ogre::String permutation;
     permutation = ::fwRenderOgre::helper::Shading::getPermutation(mode, this->hasDiffuseTexture(),
                                                                   m_hasVertexColor);
@@ -603,7 +618,7 @@ void SMaterial::updateShadingMode( int shadingMode  )
                         m_perPrimitiveColorTextureName,
                         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, true);
 
-                    SLM_ASSERT("Texture should have been created before in SMesh !", !result.second);
+                    SLM_ASSERT("Texture should have been created before in SMesh", !result.second);
 
                     ::Ogre::TexturePtr tex = result.first.dynamicCast< ::Ogre::Texture>();
 
@@ -620,7 +635,7 @@ void SMaterial::updateShadingMode( int shadingMode  )
                         const auto unitStateCount = ogrePass->getNumTextureUnitStates();
 
                         // Unit state is set to 10 in the material file, but the real index is set here
-                        // Ogre packs texture unit indices so we can't use spare indices :'(
+                        // Ogre packs texture unit indices so we can't use spare indices
                         ogrePass->getGeometryProgramParameters()->setNamedConstant("u_colorPrimitiveTexture",
                                                                                    unitStateCount - 1);
                     }
@@ -645,10 +660,10 @@ void SMaterial::updateShadingMode( int shadingMode  )
                     fpName = ::fwRenderOgre::helper::Shading::setPermutationInProgramName(fpName, permutation);
                     ogrePass->setFragmentProgram(fpName);
 
+                    const bool colorPass = ::fwRenderOgre::helper::Shading::isColorTechnique(*tech);
+
                     if(m_texAdaptor)
                     {
-                        const bool colorPass = ::fwRenderOgre::helper::Shading::isColorTechnique(*tech);
-
                         // Updates the u_hasTextureAlpha flag uniform according to the configuration
                         // of the texture adaptor
                         if(this->hasDiffuseTexture() && colorPass)
@@ -656,6 +671,26 @@ void SMaterial::updateShadingMode( int shadingMode  )
                             int useTextureAlpha = static_cast<int>(m_texAdaptor->getUseAlpha());
                             ogrePass->getFragmentProgramParameters()->setNamedConstant("u_useTextureAlpha",
                                                                                        useTextureAlpha);
+                        }
+                    }
+
+                    if(updateLightsNumber)
+                    {
+                        ::Ogre::GpuProgramParametersSharedPtr vp = ogrePass->getVertexProgramParameters();
+
+                        if(vp->_findNamedConstantDefinition("u_numLights"))
+                        {
+                            vp->setNamedConstant("u_numLights", m_lightsNumber);
+                        }
+
+                        if(!ogrePass->getFragmentProgramName().empty())
+                        {
+                            ::Ogre::GpuProgramParametersSharedPtr fp = ogrePass->getFragmentProgramParameters();
+
+                            if(fp->_findNamedConstantDefinition("u_numLights"))
+                            {
+                                fp->setNamedConstant("u_numLights", m_lightsNumber);
+                            }
                         }
                     }
                 }

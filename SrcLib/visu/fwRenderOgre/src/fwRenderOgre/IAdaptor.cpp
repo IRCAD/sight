@@ -1,20 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/IAdaptor.hpp"
 
-#include <fwCom/Slots.hxx>
-
 #include <fwRenderOgre/registry/Adaptor.hpp>
-#include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/Utils.hpp>
 
+#include <fwCom/Slots.hxx>
+
+#include <fwServices/helper/Config.hpp>
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
-#include <fwServices/helper/Config.hpp>
 
 namespace fwRenderOgre
 {
@@ -83,20 +82,20 @@ void IAdaptor::starting() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::stopping() throw(fwTools::Failed)
+void IAdaptor::stopping() throw(::fwTools::Failed)
 {
     doStop();
 }
 //------------------------------------------------------------------------------
 
-void IAdaptor::swapping() throw(fwTools::Failed)
+void IAdaptor::swapping() throw(::fwTools::Failed)
 {
     doSwap();
 }
 
 //------------------------------------------------------------------------------
 
-void IAdaptor::updating() throw(fwTools::Failed)
+void IAdaptor::updating() throw(::fwTools::Failed)
 {
     doUpdate();
 }
@@ -125,6 +124,13 @@ void IAdaptor::setLayerID(const std::string& id)
 
 //------------------------------------------------------------------------------
 
+const std::string& IAdaptor::getLayerID() const
+{
+    return m_layerID;
+}
+
+//------------------------------------------------------------------------------
+
 void IAdaptor::setRenderService( SRender::sptr service)
 {
     SLM_ASSERT("service not instanced", service);
@@ -138,6 +144,13 @@ void IAdaptor::setRenderService( SRender::sptr service)
 SRender::sptr IAdaptor::getRenderService() const
 {
     return m_renderService.lock();
+}
+
+//------------------------------------------------------------------------------
+
+Layer::sptr IAdaptor::getLayer() const
+{
+    return this->getRenderService()->getLayer(m_layerID);
 }
 
 //------------------------------------------------------------------------------

@@ -1,14 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwRenderOgre/compositor/MaterialMgrListener.hpp>
+#include <fwRenderOgre/helper/Shading.hpp>
 
 #include <fwCore/spyLog.hpp>
-
-#include <fwRenderOgre/helper/Shading.hpp>
 
 #include <OGRE/OgreHighLevelGpuProgram.h>
 #include <OGRE/OgreHighLevelGpuProgramManager.h>
@@ -333,7 +332,7 @@ MaterialMgrListener::~MaterialMgrListener()
 
 // ----------------------------------------------------------------------------
 
-Ogre::Technique* MaterialMgrListener::copyTechnique(Ogre::Technique* _tech,
+Ogre::Technique* MaterialMgrListener::copyTechnique(::Ogre::Technique* _tech,
                                                     const ::Ogre::String& _schemeName,
                                                     ::Ogre::Material* _originalMaterial)
 {

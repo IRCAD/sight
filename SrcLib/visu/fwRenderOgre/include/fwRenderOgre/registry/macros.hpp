@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,11 +7,13 @@
 #ifndef __FWRENDEROGRE_REGISTRY_MACROS_HPP__
 #define __FWRENDEROGRE_REGISTRY_MACROS_HPP__
 
-#include <boost/preprocessor/cat.hpp>
-#include <boost/preprocessor/stringize.hpp>
-
+#include "fwRenderOgre/ICamera.hpp"
+#include "fwRenderOgre/ILight.hpp"
 #include "fwRenderOgre/IRenderWindowInteractorManager.hpp"
 #include "fwRenderOgre/registry/detail.hpp"
+
+#include <boost/preprocessor/cat.hpp>
+#include <boost/preprocessor/stringize.hpp>
 
 namespace fwRenderOgre
 {
@@ -25,6 +27,14 @@ namespace registry
 #define fwRenderOgreRegisterInteractorMacro( OgreInteractorClassname )                                          \
     static ::fwRenderOgre::interactor::IInteractor::Registrar< OgreInteractorClassname >                                \
     BOOST_PP_CAT( s__factory__record__, __LINE__) ( BOOST_PP_STRINGIZE(OgreInteractorClassname) );
+
+#define fwRenderOgreRegisterCameraMacro( OgreCameraClassname, FunctorKey )                               \
+    static ::fwRenderOgre::ICamera::Registrar< OgreCameraClassname >    \
+    BOOST_PP_CAT( s__factory__record__, __LINE__) ( FunctorKey );
+
+#define fwRenderOgreRegisterLightMacro( OgreLightClassname, FunctorKey )                               \
+    static ::fwRenderOgre::ILight::Registrar< OgreLightClassname >    \
+    BOOST_PP_CAT( s__factory__record__, __LINE__) ( FunctorKey );
 
 } // end namespace registry
 } // end namespace fwRenderOgre

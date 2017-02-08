@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,8 +9,8 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/Material.hpp>
 #include <fwData/Image.hpp>
+#include <fwData/Material.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
 
 #include <fwRenderOgre/Utils.hpp>
@@ -74,7 +74,7 @@ int STexture::getStartPriority()
 
 //------------------------------------------------------------------------------
 
-void STexture::doConfigure() throw(fwTools::Failed)
+void STexture::doConfigure() throw(::fwTools::Failed)
 {
     if(m_configuration->hasAttribute("textureName"))
     {
@@ -111,7 +111,7 @@ void STexture::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void STexture::doStart() throw(fwTools::Failed)
+void STexture::doStart() throw(::fwTools::Failed)
 {
     m_texture = ::Ogre::TextureManager::getSingleton().createOrRetrieve(
         m_textureName,
@@ -123,7 +123,7 @@ void STexture::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void STexture::doUpdate() throw(fwTools::Failed)
+void STexture::doUpdate() throw(::fwTools::Failed)
 {
     // Retrieves associated f4s image
     ::fwData::Image::sptr imageF4s = ::fwData::Image::dynamicCast(this->getObject());
@@ -145,14 +145,14 @@ void STexture::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void STexture::doSwap() throw(fwTools::Failed)
+void STexture::doSwap() throw(::fwTools::Failed)
 {
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void STexture::doStop() throw(fwTools::Failed)
+void STexture::doStop() throw(::fwTools::Failed)
 {
     // This is necessary, otherwise we have "ghost" textures later we reload a new texture
     m_texture->freeInternalResources();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,8 +9,8 @@
 
 #include "uiVisuOgre/config.hpp"
 
-#include <fwRenderOgre/Layer.hpp>
 #include <fwRenderOgre/compositor/ChainManager.hpp>
+#include <fwRenderOgre/Layer.hpp>
 
 #include <gui/editor/IEditor.hpp>
 
@@ -37,8 +37,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SCompositorSelector)(::gui::editor::IEditor) );
-
+    fwCoreServiceClassDefinitionsMacro( (SCompositorSelector)(::gui::editor::IEditor) );
 
     /** @} */
 
@@ -64,7 +63,7 @@ protected:
     /**
      * @brief method description:
      * @code{.xml}
-        <service uid="SCompositorSelectorInstance" impl="::uiVisuOgre::SCompositorSelector" type="::gui::editor::IEditor">
+        <service uid="SCompositorSelectorInstance" type="::uiVisuOgre::SCompositorSelector">
              <parameter>param</parameter>
         </service>
        @endcode
@@ -107,7 +106,7 @@ private:
     /// Iterates through the compositor chain and checks the enabled compositors
     void checkEnabledCompositors();
 
-    /// Iterates through the compositor chain and unckecks them
+    /// Iterates through the compositor chain and unchecks them
     void uncheckCompositors();
 
     /// Indicates if a compositor is enabled on the layer

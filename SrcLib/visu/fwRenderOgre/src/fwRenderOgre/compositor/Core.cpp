@@ -1,20 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include <fwRenderOgre/compositor/Core.hpp>
-
 #include <fwRenderOgre/Utils.hpp>
 
-#include <OGRE/OgreCompositorInstance.h>
-#include <OGRE/OgreHardwareOcclusionQuery.h>
-#include <OGRE/OgreCompositor.h>
-#include <OGRE/OgreCompositorChain.h>
-#include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreCompositionPass.h>
 #include <OGRE/OgreCompositionTargetPass.h>
+#include <OGRE/OgreCompositor.h>
+#include <OGRE/OgreCompositorChain.h>
+#include <OGRE/OgreCompositorInstance.h>
+#include <OGRE/OgreCompositorManager.h>
+#include <OGRE/OgreHardwareOcclusionQuery.h>
 
 namespace fwRenderOgre
 {
@@ -197,7 +196,7 @@ void Core::setTransparencyDepthOfDepthPeeling(int depth)
 
     // 3 is the first ping pong target
     const int firstPingPongTarget = 4;
-    for (int i = firstPingPongTarget; i<numOfTargetPass; i++)
+    for (int i = firstPingPongTarget; i < numOfTargetPass; i++)
     {
         // When a target is discarded, the next one becomes the current one (eg : if I remove the 2nd target,
         // the 3rd target becomes the new 2nd target)
@@ -205,7 +204,7 @@ void Core::setTransparencyDepthOfDepthPeeling(int depth)
     }
 
     // Ping pong peel and blend
-    for(int i = 0; i<depth; i++)
+    for(int i = 0; i < depth; i++)
     {
         std::string pingPong = (i%2) ? "ing" : "ong";
 
@@ -249,11 +248,11 @@ void Core::setTransparencyDepthOfDepthPeeling(int depth)
                 ::Ogre::CompositionPass* dpCompPassRenderQuad = dpCompTargetBlend->createPass();
                 dpCompPassRenderQuad->setType(::Ogre::CompositionPass::PT_RENDERQUAD);
                 dpCompPassRenderQuad->setMaterialName(m_celShadingName+"DepthPeeling/Blend");
-                dpCompPassRenderQuad->setInput(0, "p" + pingPong + "Buffer",0);
+                dpCompPassRenderQuad->setInput(0, "p" + pingPong + "Buffer", 0);
                 if(!m_celShadingName.empty())
                 {
-                    dpCompPassRenderQuad->setInput(1, "p" + pingPong + "Buffer",1);
-                    dpCompPassRenderQuad->setInput(2, "p" + pingPong + "Buffer",2);
+                    dpCompPassRenderQuad->setInput(1, "p" + pingPong + "Buffer", 1);
+                    dpCompPassRenderQuad->setInput(2, "p" + pingPong + "Buffer", 2);
                 }
 
             }
@@ -274,7 +273,7 @@ void Core::setTransparencyDepthOfDualDepthPeeling(int depth)
 
     // 3 is the first ping pong target
     const int firstPingPongTarget = 2;
-    for (int i = firstPingPongTarget; i<numOfTargetPass; i++)
+    for (int i = firstPingPongTarget; i < numOfTargetPass; i++)
     {
         // When a target is discarded, the next one becomes the current one (eg : if I remove the 2nd target,
         // the 3rd target becomes the new 2nd target)
@@ -282,7 +281,7 @@ void Core::setTransparencyDepthOfDualDepthPeeling(int depth)
     }
 
     // Ping pong peel and blend
-    for(int i = 0; i<depth; i++)
+    for(int i = 0; i < depth; i++)
     {
         std::string pingPong = (i%2) ? "ing" : "ong";
 
@@ -298,7 +297,7 @@ void Core::setTransparencyDepthOfDualDepthPeeling(int depth)
             {
                 ::Ogre::CompositionPass* dpCompPassClear = dpCompTargetPeel->createPass();
                 dpCompPassClear->setType(::Ogre::CompositionPass::PT_CLEAR);
-                dpCompPassClear->setClearColour(Ogre::ColourValue(-1.f,0.f,0.f,0.f));
+                dpCompPassClear->setClearColour(::Ogre::ColourValue(-1.f, 0.f, 0.f, 0.f));
             }
 
             // Material scheme
@@ -327,8 +326,8 @@ void Core::setTransparencyDepthOfDualDepthPeeling(int depth)
                 ::Ogre::CompositionPass* dpCompPassRenderQuad = dpCompTargetBlend->createPass();
                 dpCompPassRenderQuad->setType(::Ogre::CompositionPass::PT_RENDERQUAD);
                 dpCompPassRenderQuad->setMaterialName("DualDepthPeeling/Blend");
-                dpCompPassRenderQuad->setInput(0, "p" + pingPong + "Buffer",3);
-                dpCompPassRenderQuad->setInput(1, "p" + pingPong + "Buffer",5);
+                dpCompPassRenderQuad->setInput(0, "p" + pingPong + "Buffer", 3);
+                dpCompPassRenderQuad->setInput(1, "p" + pingPong + "Buffer", 5);
             }
         }
     }
@@ -348,7 +347,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
     // 3 is the first ping pong target
     const int firstPingPongTarget = 4;
 
-    for (int i = firstPingPongTarget; i<numOfTargetPass; i++)
+    for (int i = firstPingPongTarget; i < numOfTargetPass; i++)
     {
         // When a target is discarded, the next one becomes the current one (eg : if I remove the 2nd target,
         // the 3rd target becomes the new 2nd target)
@@ -356,7 +355,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
     }
 
     // Ping pong peel and blend
-    for(int i = 0; i<(depth/2)*2; i++)
+    for(int i = 0; i < (depth/2)*2; i++)
     {
         std::string pingPong = (i%2) ? "ing" : "ong";
 
@@ -400,7 +399,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
                 ::Ogre::CompositionPass* dpCompPassRenderQuad = dpCompTargetBlend->createPass();
                 dpCompPassRenderQuad->setType(::Ogre::CompositionPass::PT_RENDERQUAD);
                 dpCompPassRenderQuad->setMaterialName("DepthPeeling/Blend");
-                dpCompPassRenderQuad->setInput(0, "p" + pingPong + "Buffer",0);
+                dpCompPassRenderQuad->setInput(0, "p" + pingPong + "Buffer", 0);
             }
         }
     }
@@ -417,7 +416,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
         {
             ::Ogre::CompositionPass* dpCompPassClear = dpCompTargetOcclusion->createPass();
             dpCompPassClear->setType(::Ogre::CompositionPass::PT_CLEAR);
-            dpCompPassClear->setClearColour(::Ogre::ColourValue(1.f,1.f,1.f,1.f));
+            dpCompPassClear->setClearColour(::Ogre::ColourValue(1.f, 1.f, 1.f, 1.f));
         }
 
         // Material scheme
@@ -473,7 +472,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
         {
             ::Ogre::CompositionPass* dpCompPassClear = dpCompTargetTransmittance->createPass();
             dpCompPassClear->setType(::Ogre::CompositionPass::PT_CLEAR);
-            dpCompPassClear->setClearColour(::Ogre::ColourValue(1.f,1.f,1.f,1.f));
+            dpCompPassClear->setClearColour(::Ogre::ColourValue(1.f, 1.f, 1.f, 1.f));
         }
 
         // Material scheme
@@ -488,7 +487,6 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
             dpCompPassRenderScene->setType(::Ogre::CompositionPass::PT_RENDERSCENE);
         }
     }
-
 
     // WBOIT blend buffer
     {
@@ -507,7 +505,6 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
             dpCompPassRenderQuad->setInput(1, "transmittance");
         }
     }
-
 
     // Blend final (Depth Peeling + WBOIT) buffer
     {

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -87,7 +87,7 @@ void SNegato2D::doStart() throw(::fwTools::Failed)
     m_plane = new ::fwRenderOgre::Plane(this->getID(), m_negatoSceneNode, getSceneManager(),
                                         OrientationMode::X_AXIS, false, m_3DOgreTexture, m_filtering);
 
-    this->getSceneManager()->getCamera("PlayerCam")->setProjectionType( ::Ogre::ProjectionType::PT_ORTHOGRAPHIC );
+    this->getLayer()->getDefaultCamera()->setProjectionType( ::Ogre::ProjectionType::PT_ORTHOGRAPHIC );
 
     this->installTFConnections();
 
@@ -315,7 +315,7 @@ void SNegato2D::createPlane(const fwData::Image::SpacingType& _spacing)
 
 //------------------------------------------------------------------------------
 
-void SNegato2D::doSwap() throw(fwTools::Failed)
+void SNegato2D::doSwap() throw(::fwTools::Failed)
 {
     this->stopping();
     this->starting();
@@ -327,14 +327,14 @@ void SNegato2D::doSwap() throw(fwTools::Failed)
 void SNegato2D::updateCameraWindowBounds()
 {
 
-    ::Ogre::Real renderWindowWidth,renderWindowHeight, renderWindowRatio;
+    ::Ogre::Real renderWindowWidth, renderWindowHeight, renderWindowRatio;
     ::Ogre::RenderSystem* renderSystem = getSceneManager()->getDestinationRenderSystem();
 
     renderWindowWidth  = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualWidth());
     renderWindowHeight = static_cast< ::Ogre::Real >(renderSystem->_getViewport()->getActualHeight());
     renderWindowRatio  = renderWindowWidth / renderWindowHeight;
 
-    ::Ogre::Camera* cam = this->getSceneManager()->getCamera("PlayerCam");
+    ::Ogre::Camera* cam = this->getLayer()->getDefaultCamera();
 
     if( renderWindowWidth < renderWindowHeight)
     {

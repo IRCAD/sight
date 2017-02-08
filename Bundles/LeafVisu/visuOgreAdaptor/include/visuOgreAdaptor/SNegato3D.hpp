@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,7 +35,7 @@ public:
 
     typedef ::fwDataTools::helper::MedicalImageAdaptor::Orientation OrientationMode;
 
-    fwCoreServiceClassDefinitionsMacro ( (SNegato3D)(::fwRenderOgre::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SNegato3D)(::fwRenderOgre::IAdaptor) );
 
     /// Constructor
     VISUOGREADAPTOR_API SNegato3D() throw();
@@ -58,11 +58,11 @@ public:
 protected:
 
     /// Starts the service,
-    VISUOGREADAPTOR_API void doStart() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doStart() throw(::fwTools::Failed);
     /// Stops the service, disconnects connections.
-    VISUOGREADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doStop() throw(::fwTools::Failed);
     /// Requests rendering of the scene.
-    VISUOGREADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doUpdate() throw(::fwTools::Failed);
 
     /**
      * @brief Configures the service
@@ -80,7 +80,7 @@ protected:
      */
     VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
     /// Performs stop, start and update.
-    VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
 
     /// Returns proposals to connect service slots to associated object signals
     VISUOGREADAPTOR_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
@@ -101,7 +101,6 @@ private:
 
     /// Slot: update image slice index
     void changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex);
-
 
     /// Makes the planes process their meshes
     void createPlanes(const ::fwData::Image::SpacingType& _spacing, const fwData::Image::OriginType& _origin);

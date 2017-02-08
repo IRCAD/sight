@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,12 @@
 #ifndef __VISUOGREADAPTOR_SVIDEO_HPP__
 #define __VISUOGREADAPTOR_SVIDEO_HPP__
 
+#include "visuOgreAdaptor/config.hpp"
+
 #include <fwRenderOgre/IAdaptor.hpp>
 
 #include <OGRE/OgreImage.h>
 #include <OGRE/OgreTexture.h>
-
-#include "visuOgreAdaptor/config.hpp"
 
 namespace visuOgreAdaptor
 {
@@ -25,7 +25,7 @@ class VISUOGREADAPTOR_CLASS_API SVideo : public ::fwRenderOgre::IAdaptor
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SVideo)(::fwRenderOgre::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SVideo)(::fwRenderOgre::IAdaptor) );
 
     typedef ::fwCom::Signal< void ( double* ) > UpdateSizeSigType;
     VISUOGREADAPTOR_API static const ::fwCom::Signals::SignalKeyType s_UPDATE_SIZE_SIG;
@@ -41,7 +41,7 @@ protected:
     /**
      * @brief method description:
      * @code{.xml}
-        <service uid="SVideoInstance" impl="::visuOgreAdaptor::SVideo" type="::fwRenderOgre::IAdaptor">
+        <service uid="SVideoInstance" type="::visuOgreAdaptor::SVideo">
              <parameter>param</parameter>
         </service>
        @endcode
@@ -56,7 +56,7 @@ protected:
     VISUOGREADAPTOR_API void doStop() throw ( ::fwTools::Failed );
 
     /// Calls updating()
-    VISUOGREADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUOGREADAPTOR_API void doSwap() throw(::fwTools::Failed);
 
     /// Updated the frame from the current Image.
     VISUOGREADAPTOR_API void doUpdate() throw ( ::fwTools::Failed );

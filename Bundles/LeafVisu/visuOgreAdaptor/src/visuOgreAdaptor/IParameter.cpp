@@ -1,12 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuOgreAdaptor/IParameter.hpp"
-#include "visuOgreAdaptor/SMaterial.hpp"
+
 #include "visuOgreAdaptor/defines.hpp"
+#include "visuOgreAdaptor/SMaterial.hpp"
 
 #include <fwCom/Slots.hxx>
 
@@ -75,7 +76,7 @@ void IParameter::setShaderType(::Ogre::GpuProgramType shaderType)
 
 //------------------------------------------------------------------------------
 
-void IParameter::setParamName(std::string paramName)
+void IParameter::setParamName(const std::string& paramName)
 {
     m_paramName = paramName;
 }

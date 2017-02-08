@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,16 +13,16 @@
 
 #include <fwServices/macros.hpp>
 
-#include <algorithm>
-
-#include <OgreCompositorChain.h>
-#include <OgreCompositorManager.h>
-#include <OgreCompositorInstance.h>
 #include <OgreCompositor.h>
+#include <OgreCompositorChain.h>
+#include <OgreCompositorInstance.h>
+#include <OgreCompositorManager.h>
 #include <OgreGpuProgramParams.h>
 #include <OgreMaterial.h>
 #include <OgreMaterialManager.h>
 #include <OgreTechnique.h>
+
+#include <algorithm>
 
 namespace visuOgreAdaptor
 {
@@ -34,13 +34,15 @@ fwServicesRegisterMacro( ::visuOgreAdaptor::IParameter, ::visuOgreAdaptor::SComp
 class CompositorListener : public ::Ogre::CompositorInstance::Listener
 {
 public:
-    CompositorListener(::Ogre::Viewport* _vp, SCompositorParameter::sptr _adaptor)
-        : m_adaptor(_adaptor)
+    CompositorListener(::Ogre::Viewport* _vp, SCompositorParameter::sptr _adaptor) :
+        m_adaptor(_adaptor)
     {
     }
     ~CompositorListener()
     {
     }
+
+    //------------------------------------------------------------------------------
 
     void notifyMaterialRender(::Ogre::uint32 pass_id, ::Ogre::MaterialPtr& mat)
     {
@@ -68,7 +70,7 @@ SCompositorParameter::~SCompositorParameter() throw()
 
 //------------------------------------------------------------------------------
 
-void SCompositorParameter::updateValue(Ogre::MaterialPtr& _mat)
+void SCompositorParameter::updateValue(::Ogre::MaterialPtr& _mat)
 {
     this->setMaterial(_mat);
     this->updating();

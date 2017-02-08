@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,9 @@
 #ifndef __VISUOGREADAPTOR_SMESH_HPP__
 #define __VISUOGREADAPTOR_SMESH_HPP__
 
-#include <fwRenderOgre/IAdaptor.hpp>
-#include <fwRenderOgre/ITransformable.hpp>
+#include "visuOgreAdaptor/config.hpp"
+#include "visuOgreAdaptor/SMaterial.hpp"
+#include "visuOgreAdaptor/STransform.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Slot.hpp>
@@ -16,12 +17,10 @@
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 
+#include <fwRenderOgre/IAdaptor.hpp>
+#include <fwRenderOgre/ITransformable.hpp>
+
 #include <Ogre.h>
-
-#include "visuOgreAdaptor/config.hpp"
-#include "visuOgreAdaptor/SMaterial.hpp"
-#include "visuOgreAdaptor/STransform.hpp"
-
 
 namespace fwData
 {
@@ -35,7 +34,6 @@ namespace fwRenderOgre
 {
 class R2VBRenderable;
 }
-
 
 namespace visuOgreAdaptor
 {
@@ -138,15 +136,15 @@ private:
     };
 
     /// Configures the adaptor
-    void doConfigure() throw(fwTools::Failed);
+    void doConfigure() throw(::fwTools::Failed);
     /// Manually creates a Mesh in the Default Ogre Ressource group
-    void doStart    () throw(fwTools::Failed);
+    void doStart    () throw(::fwTools::Failed);
     /// Deletes the mesh after unregistering the service, and shutting connections.
-    void doStop     () throw(fwTools::Failed);
+    void doStop     () throw(::fwTools::Failed);
     /// Performs a Stop -> Start
-    void doSwap     () throw(fwTools::Failed);
+    void doSwap     () throw(::fwTools::Failed);
     /// Checks if the fwData::Mesh has changed, and updates it if it has.
-    void doUpdate   () throw(fwTools::Failed);
+    void doUpdate   () throw(::fwTools::Failed);
 
     ::Ogre::Entity* newEntity();
 

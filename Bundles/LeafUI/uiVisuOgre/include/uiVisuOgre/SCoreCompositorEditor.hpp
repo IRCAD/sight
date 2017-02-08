@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,6 @@ class QDoubleSpinBox;
 // needed for the samples number
 class QSpinBox;
 
-
 namespace uiVisuOgre
 {
 
@@ -46,7 +45,7 @@ Q_OBJECT
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SCoreCompositorEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SCoreCompositorEditor)(::gui::editor::IEditor) );
 
     /// Constructor.
     UIVISUOGRE_API SCoreCompositorEditor() throw();
@@ -59,7 +58,7 @@ protected:
     /**
      * @brief method description:
      * @code{.xml}
-        <service uid="SCoreCompositorEditorInstance" impl="::uiVisuOgre::SCoreCompositorEditor" type="::gui::editor::IEditor">
+        <service uid="SCoreCompositorEditorInstance" type="::uiVisuOgre::SCoreCompositorEditor">
              <parameter>param</parameter>
         </service>
        @endcode

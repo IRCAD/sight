@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,31 +10,29 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
+#include <fwRenderOgre/compositor/Core.hpp>
+#include <fwRenderOgre/SRender.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwRenderOgre/SRender.hpp>
-#include <fwRenderOgre/compositor/Core.hpp>
-
 #include <material/Plugin.hpp>
-
-#include <QWidget>
-#include <QVBoxLayout>
 
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
 #include <OGRE/OgreResourceManager.h>
 
 #include <QAbstractButton>
-#include <QRadioButton>
-#include <QVBoxLayout>
-#include <QGroupBox>
 #include <QButtonGroup>
-#include <QComboBox>
-#include <QLineEdit>
-#include <QSlider>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QDoubleSpinBox>
+#include <QGroupBox>
+#include <QLineEdit>
+#include <QRadioButton>
+#include <QSlider>
+#include <QVBoxLayout>
+#include <QWidget>
 
 namespace uiVisuOgre
 {
@@ -68,14 +66,14 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
 
     QVBoxLayout* layout = new QVBoxLayout();
 
-    QLabel* labelLayerSelector = new QLabel(tr("3D layer selected"),m_container);
+    QLabel* labelLayerSelector = new QLabel(tr("3D layer selected"), m_container);
     layout->addWidget(labelLayerSelector);
     m_layersBox = new QComboBox(m_container);
     layout->addWidget(m_layersBox);
 
     // Transparency depth managment
     {
-        QLabel* labelTransparency = new QLabel(tr("Transparency depth"),m_container);
+        QLabel* labelTransparency = new QLabel(tr("Transparency depth"), m_container);
         layout->addWidget(labelTransparency);
         m_transparencyDepthSlider = new QSlider(Qt::Horizontal, m_container);
         layout->addWidget(m_transparencyDepthSlider);
@@ -95,56 +93,56 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
 
         m_transparencyButtonGroup = new QButtonGroup(groupBox);
 
-        m_buttonDefault = new QRadioButton ( tr("Default"), groupBox );
+        m_buttonDefault = new QRadioButton( tr("Default"), groupBox );
         m_buttonDefault->setMinimumSize(m_buttonDefault->sizeHint());
         m_buttonDefault->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonDefault, 0);
         layoutGroupBox->addWidget(m_buttonDefault);
-        m_labelDefault = new QLabel(tr("<i>No Order Independent Transparency</i>"),m_container);
+        m_labelDefault = new QLabel(tr("<i>No Order Independent Transparency</i>"), m_container);
         m_labelDefault->setEnabled(false);
         layoutGroupBox->addWidget(m_labelDefault);
 
-        m_buttonDepthPeeling = new QRadioButton ( tr("Depth Peeling"), groupBox );
+        m_buttonDepthPeeling = new QRadioButton( tr("Depth Peeling"), groupBox );
         m_buttonDepthPeeling->setMinimumSize(m_buttonDepthPeeling->sizeHint());
         m_buttonDepthPeeling->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonDepthPeeling, 1);
         layoutGroupBox->addWidget(m_buttonDepthPeeling);
-        m_labelDepthPeeling = new QLabel(tr("<i>Exact color blending but slowest technique</i>"),m_container);
+        m_labelDepthPeeling = new QLabel(tr("<i>Exact color blending but slowest technique</i>"), m_container);
         m_labelDepthPeeling->setEnabled(false);
         layoutGroupBox->addWidget(m_labelDepthPeeling);
 
         m_buttonDualDepthPeeling =
-            new QRadioButton ( tr("Dual Depth Peeling"), groupBox );
+            new QRadioButton( tr("Dual Depth Peeling"), groupBox );
         m_buttonDualDepthPeeling->setMinimumSize(m_buttonDualDepthPeeling->sizeHint());
         m_buttonDualDepthPeeling->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonDualDepthPeeling, 2);
         layoutGroupBox->addWidget(m_buttonDualDepthPeeling);
-        m_labelDualDepthPeeling = new QLabel(tr("<i>Exact color blending but slow technique</i>"),m_container);
+        m_labelDualDepthPeeling = new QLabel(tr("<i>Exact color blending but slow technique</i>"), m_container);
         m_labelDualDepthPeeling->setEnabled(false);
         layoutGroupBox->addWidget(m_labelDualDepthPeeling);
 
         m_buttonWeightedBlendedOIT =
-            new QRadioButton ( tr("Weighted Blended OIT"), groupBox );
+            new QRadioButton( tr("Weighted Blended OIT"), groupBox );
         m_buttonWeightedBlendedOIT->setMinimumSize(m_buttonWeightedBlendedOIT->sizeHint());
         m_buttonWeightedBlendedOIT->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonWeightedBlendedOIT, 3);
         layoutGroupBox->addWidget(m_buttonWeightedBlendedOIT);
-        m_labelWeightedBlendedOIT = new QLabel(tr("<i>Approximative color blending but fastest</i>"),m_container);
+        m_labelWeightedBlendedOIT = new QLabel(tr("<i>Approximative color blending but fastest</i>"), m_container);
         m_labelWeightedBlendedOIT->setEnabled(false);
         layoutGroupBox->addWidget(m_labelWeightedBlendedOIT);
 
         m_buttonHybridTransparency =
-            new QRadioButton ( tr("Hybrid transparency"), groupBox );
+            new QRadioButton( tr("Hybrid transparency"), groupBox );
         m_buttonHybridTransparency->setMinimumSize(m_buttonHybridTransparency->sizeHint());
         m_buttonHybridTransparency->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonHybridTransparency, 4);
         layoutGroupBox->addWidget(m_buttonHybridTransparency);
         m_labelHybridTransparency =
-            new QLabel(tr("<i>Depth Peeling + Weighted Blended OIT = half exact half fast</i>"),m_container);
+            new QLabel(tr("<i>Depth Peeling + Weighted Blended OIT = half exact half fast</i>"), m_container);
         m_labelHybridTransparency->setEnabled(false);
         layoutGroupBox->addWidget(m_labelHybridTransparency);
 
-        m_buttonCelShadingDepthPeeling = new QRadioButton ( tr("CelShading + Depth Peeling"), groupBox );
+        m_buttonCelShadingDepthPeeling = new QRadioButton( tr("CelShading + Depth Peeling"), groupBox );
         m_buttonCelShadingDepthPeeling->setMinimumSize(m_buttonDepthPeeling->sizeHint());
         m_buttonCelShadingDepthPeeling->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonCelShadingDepthPeeling, 5);
@@ -252,22 +250,22 @@ void SCoreCompositorEditor::onSelectedLayerItem(int index)
     {
         switch (m_currentCoreCompositor->getTransparencyTechnique())
         {
-            case DEFAULT:
+            case ::fwRenderOgre::compositor::DEFAULT:
                 m_transparencyButtonGroup->button(0)->setChecked(true);
                 break;
-            case DEPTHPEELING:
+            case ::fwRenderOgre::compositor::DEPTHPEELING:
                 m_transparencyButtonGroup->button(1)->setChecked(true);
                 break;
-            case DUALDEPTHPEELING:
+            case ::fwRenderOgre::compositor::DUALDEPTHPEELING:
                 m_transparencyButtonGroup->button(2)->setChecked(true);
                 break;
-            case WEIGHTEDBLENDEDOIT:
+            case ::fwRenderOgre::compositor::WEIGHTEDBLENDEDOIT:
                 m_transparencyButtonGroup->button(3)->setChecked(true);
                 break;
-            case HYBRIDTRANSPARENCY:
+            case ::fwRenderOgre::compositor::HYBRIDTRANSPARENCY:
                 m_transparencyButtonGroup->button(4)->setChecked(true);
                 break;
-            case CELSHADING_DEPTHPEELING:
+            case ::fwRenderOgre::compositor::CELSHADING_DEPTHPEELING:
                 m_transparencyButtonGroup->button(5)->setChecked(true);
                 break;
         }
@@ -299,22 +297,28 @@ void SCoreCompositorEditor::onEditTransparency(int index)
         switch (index)
         {
             case 0:
-                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(DEFAULT);
+                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(
+                    ::fwRenderOgre::compositor::DEFAULT);
                 break;
             case 1:
-                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(DEPTHPEELING);
+                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(
+                    ::fwRenderOgre::compositor::DEPTHPEELING);
                 break;
             case 2:
-                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(DUALDEPTHPEELING);
+                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(
+                    ::fwRenderOgre::compositor::DUALDEPTHPEELING);
                 break;
             case 3:
-                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(WEIGHTEDBLENDEDOIT);
+                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(
+                    ::fwRenderOgre::compositor::WEIGHTEDBLENDEDOIT);
                 break;
             case 4:
-                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(HYBRIDTRANSPARENCY);
+                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(
+                    ::fwRenderOgre::compositor::HYBRIDTRANSPARENCY);
                 break;
             case 5:
-                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(CELSHADING_DEPTHPEELING);
+                transparencyUpdated = m_currentCoreCompositor->setTransparencyTechnique(
+                    ::fwRenderOgre::compositor::CELSHADING_DEPTHPEELING);
                 break;
         }
 

@@ -77,7 +77,7 @@
             </registry>
         </service>
 
-        <!-- ******************************* Actions ****************************************** -->
+        <!-- ************************************* Actions ************************************ -->
 
         <service uid="actionNegato3DInteractor" type="::gui::action::SModifyLayout" >
             <config>
@@ -103,7 +103,7 @@
             </slots>
         </service>
 
-        <!-- Begin Generic Scene ***************************************** -->
+        <!-- ******************************* Begin Generic Scene ******************************* -->
 
         <service uid="${genericSceneUID}" type="::fwRenderOgre::SRender" >
             <scene overlay="true" />
@@ -144,9 +144,9 @@
             <config layer="default" selectedTFKey="SelectedTF" />
         </service>
 
-        <!-- End Generic Scene ***************************************** -->
+        <!-- ********************************* End Generic Scene ******************************* -->
 
-        <!-- ******************************* Services ***************************************** -->
+        <!-- ************************************* Services ************************************ -->
 
         <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
             <in group="frameTL">
