@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,20 +7,18 @@
 #ifndef __ZMQNETWORK_SOCKET_HPP__
 #define __ZMQNETWORK_SOCKET_HPP__
 
-#include "zmqNetwork/config.hpp"
 #include "zmqNetwork/Exception.hpp"
+#include "zmqNetwork/config.hpp"
+
+#include <igtlProtocol/DataConverter.hpp>
+
+#include <zmq.hpp>
 
 #include <fwCore/Exception.hpp>
 
 #include <fwData/Object.hpp>
 
-#include <fwTools/macros.hpp>
-
-#include <igtlProtocol/DataConverter.hpp>
-
-#include <boost/function.hpp>
 #include <string>
-#include <zmq.hpp>
 
 namespace zmqNetwork
 {
@@ -150,7 +148,6 @@ public:
      */
     ZMQNETWORK_API std::string getDeviceNameOut();
 
-
 private:
 
     /**
@@ -206,7 +203,6 @@ private:
     //device name in sended IGTL message
 
     std::string m_deviceNameOut;
-
 
 };
 }//namespace zmqNetwork

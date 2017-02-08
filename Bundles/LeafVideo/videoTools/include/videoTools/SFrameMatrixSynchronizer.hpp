@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,15 +10,18 @@
 #include "videoTools/config.hpp"
 
 #include <arServices/ISynchronizer.hpp>
-#include <fwCore/base.hpp>
-#include <fwCore/HiResClock.hpp>
-#include <fwData/Composite.hpp>
-#include <fwServices/IController.hpp>
-#include <fwThread/Timer.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
+#include <fwCore/HiResClock.hpp>
+#include <fwCore/base.hpp>
+
+#include <fwData/Composite.hpp>
+
+#include <fwServices/IController.hpp>
+
+#include <fwThread/Timer.hpp>
 
 namespace arData
 {
@@ -68,6 +71,7 @@ namespace videoTools
                 <key uid="matrix4" />
             </inout>
             <framerate>30</framerate>
+            <tolerance>500</tolerance>
        </service>
    @endcode
  * @subsection Input Input
@@ -87,7 +91,8 @@ namespace videoTools
  *   - \b from: key of the matrix timeline to extract matrix.
  *   - \b to: key of the TransformationMatrix3D where to extract the matrix.
  * - \b framerate defines the framerate to call synchronization.
- * @note If the matrix timeline last update delay is greater than 500ms, the matrix is not synchronized.
+ * - \b tolerance defines the maximum distance between two frames (default = 500).
+ *  If a timeline exceeds this tolerance it will not be synchronized.
  */
 class VIDEOTOOLS_CLASS_API SFrameMatrixSynchronizer : public ::arServices::ISynchronizer
 {
@@ -174,5 +179,5 @@ private:
     SynchronizationDoneSignalType::sptr m_sigSynchronizationDone;
 };
 
-} //namespace videoTools
+} // namespace videoTools
 #endif  // __VIDEOTOOLS_SFRAMEMATRIXSYNCHRONIZER_HPP__

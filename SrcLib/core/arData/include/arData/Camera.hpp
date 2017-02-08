@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,13 +9,14 @@
 
 #include "arData/config.hpp"
 
+#include <boost/cstdint.hpp>
+#include <boost/filesystem/path.hpp>
+
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
 #include <fwData/Object.hpp>
 #include <fwData/factory/new.hpp>
-
-#include <boost/cstdint.hpp>
 
 #include <array>
 #include <utility>
@@ -25,7 +26,6 @@ fwCampAutoDeclareDataMacro((arData)(Camera), ARDATA_API);
 namespace arData
 {
 /**
- * @class   Camera
  * @brief   This class defines a camera object.
  */
 class ARDATA_CLASS_API Camera : public ::fwData::Object
@@ -106,8 +106,7 @@ public:
     ARDATA_API void shallowCopy( const ::fwData::Object::csptr& _source );
 
     /// Defines deep copy
-    ARDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType &cache);
-
+    ARDATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache);
 
     /**@name Signals API
      * @{
@@ -202,11 +201,13 @@ public:
     /**
      * @brief distortion coefficient
      * @{ */
-    const DistArrayType &getDistortionCoefficient () const
+    const DistArrayType& getDistortionCoefficient () const
     {
         return m_distortionCoefficient;
     }
-    void setDistortionCoefficient (const DistArrayType &val)
+    //------------------------------------------------------------------------------
+
+    void setDistortionCoefficient (const DistArrayType& val)
     {
         m_distortionCoefficient = val;
     }
@@ -219,6 +220,8 @@ public:
     {
         return m_skew;
     }
+
+    //------------------------------------------------------------------------------
 
     void setSkew (double val)
     {
@@ -233,6 +236,8 @@ public:
     {
         return m_isCalibrated;
     }
+    //------------------------------------------------------------------------------
+
     void setIsCalibrated (bool val)
     {
         m_isCalibrated = val;
@@ -258,7 +263,7 @@ public:
     }
 
     /// Sets the human-readable description of the camera (only available in SourceType DEVICE mode).
-    void setDescription(const std::string & description)
+    void setDescription(const std::string& description)
     {
         m_description = description;
     }
@@ -270,7 +275,7 @@ public:
     }
 
     /// Sets the device name of the camera (only available in SourceType DEVICE mode).
-    void setCameraID(const std::string & cameraID)
+    void setCameraID(const std::string& cameraID)
     {
         m_cameraID = cameraID;
     }

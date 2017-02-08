@@ -96,7 +96,7 @@
             <service uid="trackingEditor" type="::uiTracking::SArucoTrackerEditor" autoConnect="yes" />
 
             <service uid="tracker" type="::trackerAruco::SArucoTracker"  worker="tracking">
-                <in key="frameTL" uid="frameTL" autoConnect="yes"/>
+                <in key="timeline" uid="frameTL" autoConnect="yes"/>
                 <in key="camera" uid="camera" />
                 <inout group="tagTL" >
                     <key uid="tagTL" />

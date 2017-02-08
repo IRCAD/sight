@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,15 +9,16 @@
 
 #include "igtlNetwork/config.hpp"
 
-#include <fwCore/Exception.hpp>
-#include <fwData/Object.hpp>
-#include <fwTools/macros.hpp>
-
 #include <igtlProtocol/DataConverter.hpp>
 
 #include <boost/type.hpp>
-#include <igtl/igtlSocket.h>
+
+#include <fwCore/Exception.hpp>
+
+#include <fwData/Object.hpp>
+
 #include <igtl/igtlMessageHeader.h>
+#include <igtl/igtlSocket.h>
 
 #include <set>
 #include <string>
@@ -36,7 +37,6 @@ public:
      * @brief default constructor
      */
     IGTLNETWORK_API INetwork();
-
 
     /**
      * @brief Destructor if a connection is opened the destructor close it
@@ -89,7 +89,6 @@ public:
     IGTLNETWORK_API ::igtl::MessageBase::Pointer receiveBody (::igtl::MessageHeader::Pointer header) throw (::fwCore::
                                                                                                             Exception);
 
-
     /**
      * @brief get socket
      *
@@ -129,7 +128,6 @@ public:
      * return std::string
      */
     IGTLNETWORK_API std::string getDeviceNameOut();
-
 
 protected:
     /// client socket

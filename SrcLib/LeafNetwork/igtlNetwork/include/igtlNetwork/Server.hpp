@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,17 +7,14 @@
 #ifndef __IGTLNETWORK_SERVER_HPP__
 #define __IGTLNETWORK_SERVER_HPP__
 
-#include "igtlNetwork/config.hpp"
 #include "igtlNetwork/Client.hpp"
 #include "igtlNetwork/INetwork.hpp"
+#include "igtlNetwork/config.hpp"
+
+#include <boost/type.hpp>
 
 #include <fwCore/Exception.hpp>
 #include <fwCore/mt/types.hpp>
-
-#include <fwTools/macros.hpp>
-
-#include <boost/type.hpp>
-#include <boost/thread.hpp>
 
 #include <igtl/igtlServerSocket.h>
 
@@ -88,7 +85,6 @@ public:
      */
     IGTLNETWORK_API ::boost::uint16_t getPort() const;
 
-
     /**
      * @brief method to run server and start event loop of server
      */
@@ -121,7 +117,6 @@ public:
      */
     IGTLNETWORK_API void setMessageDeviceName(std::string deviceName);
 
-
 private:
 
     /// server socket
@@ -148,6 +143,5 @@ private:
 };
 
 }
-
 
 #endif // __IGTLNETWORK_SERVER_HPP__
