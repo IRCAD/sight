@@ -1,13 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Mesh.hpp"
 #include "visuVTKAdaptor/Reconstruction.hpp"
 
-#include <fwTools/fwID.hpp>
+#include "visuVTKAdaptor/Mesh.hpp"
+
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -15,24 +15,23 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
+#include <fwTools/fwID.hpp>
+
 #include <vtkActor.h>
 #include <vtkCamera.h>
 #include <vtkMath.h>
+#include <vtkMatrix4x4.h>
 #include <vtkPicker.h>
+#include <vtkPlaneCollection.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTransform.h>
-#include <vtkMatrix4x4.h>
-#include <vtkProperty.h>
-#include <vtkPlaneCollection.h>
-#include <vtkPolyDataNormals.h>
-
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Reconstruction,
                          ::fwData::Reconstruction );
-
-
 
 namespace visuVTKAdaptor
 {
@@ -96,18 +95,18 @@ void Reconstruction::createMeshService()
         ::visuVTKAdaptor::Mesh::sptr meshAdaptor = Mesh::dynamicCast(meshService);
 
         meshService->setRenderService( this->getRenderService() );
-        meshService->setRenderId     ( this->getRenderId()      );
-        meshService->setPickerId     ( this->getPickerId()      );
-        meshService->setTransformId  ( this->getTransformId() );
-        meshService->setAutoRender   ( this->getAutoRender() );
+        meshService->setRenderId( this->getRenderId()      );
+        meshService->setPickerId( this->getPickerId()      );
+        meshService->setTransformId( this->getTransformId() );
+        meshService->setAutoRender( this->getAutoRender() );
 
         meshAdaptor->setClippingPlanesId( m_clippingPlanesId             );
         //meshAdaptor->setSharpEdgeAngle  ( m_sharpEdgeAngle               );
-        meshAdaptor->setShowClippedPart ( true );
-        meshAdaptor->setMaterial        ( reconstruction->getMaterial()  );
-        meshAdaptor->setAutoResetCamera ( m_autoResetCamera );
+        meshAdaptor->setShowClippedPart( true );
+        meshAdaptor->setMaterial( reconstruction->getMaterial()  );
+        meshAdaptor->setAutoResetCamera( m_autoResetCamera );
         meshService->start();
-        meshAdaptor->updateVisibility  ( reconstruction->getIsVisible() );
+        meshAdaptor->updateVisibility( reconstruction->getIsVisible() );
         meshAdaptor->update();
 
         m_meshService = meshService;
@@ -139,8 +138,8 @@ void Reconstruction::doUpdate() throw(fwTools::Failed)
         ::visuVTKAdaptor::Mesh::sptr meshAdaptor      = Mesh::dynamicCast(meshService);
         //meshAdaptor->setSharpEdgeAngle( m_sharpEdgeAngle );
 
-        meshAdaptor->setMaterial     ( reconstruction->getMaterial());
-        meshAdaptor->swap            ( reconstruction->getMesh() );
+        meshAdaptor->setMaterial( reconstruction->getMaterial());
+        meshAdaptor->swap( reconstruction->getMesh() );
         meshAdaptor->updateVisibility( reconstruction->getIsVisible());
 
     }
