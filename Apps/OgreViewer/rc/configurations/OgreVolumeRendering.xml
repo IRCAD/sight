@@ -4,6 +4,7 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="imageUID" />
+        <param name="maskUID" />
         <param name="TFSelections" />
     </parameters>
     <config>
@@ -11,6 +12,7 @@
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${imageUID}"  type="::fwData::Image" src="ref" />
+        <object uid="${maskUID}"  type="::fwData::Image" src="ref" />
         <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
@@ -61,6 +63,7 @@
 
         <service uid="volumeRender" type="::visuOgreAdaptor::SVolumeRender" >
             <in key="image" uid="${imageUID}" autoConnect="yes" />
+            <in key="mask" uid="${maskUID}" autoConnect="yes" />
             <inout key="TF" uid="${TFSelections}" />
             <config layer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" />
         </service>

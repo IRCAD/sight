@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -59,14 +59,22 @@ namespace visuOgreAdaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <adaptor uid="volumeRender" class="::visuOgreAdaptor::SVolumeRender" objectId="image">
-         <config renderer="default"
+    <service uid="volumeRender" type="::visuOgreAdaptor::SVolumeRender">
+        <in key="image" uid="imageUID" autoConnect="yes" />
+        <in key="mask" uid="maskUID" autoConnect="yes" />
+        <inout key="TF" uid="TFSelections" />
+        <config renderer="default"
                  preintegration="yes" mode="slice" ao="no" colorBleeding="no" shadows="no"
                  satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
                  aoFactor="0.5" colorBleedingFactor="0.5"
-                 selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-    </adaptor>
+                 selectedTFKey="SelectedTF" />
+    </service>
    @endcode
+ * @subsection Input Input:
+ * - \b image [::fwData::Image]: input volume data.
+ * - \b mask [::fwData::Image]: segmented data.
+ * @subsection In-Out In-Out:
+ * - \b TF [::fwData::Composite]: Selected transfer function.
  * With :
  * - \b renderer (optional): defines the renderer displaying the volume.
  * - \b preintegration (optional, yes/no, default=no): use pre-integration.
@@ -94,7 +102,7 @@ class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SVolumeRender)(::fwRenderOgre::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SVolumeRender)(::fwRenderOgre::IAdaptor) );
 
     /**
      * @name Slots API

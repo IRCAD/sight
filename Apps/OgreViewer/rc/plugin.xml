@@ -17,6 +17,7 @@
     <xi:include href="configurations/OgreVolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ManageOgreOrganWithSeries.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/OgreLightManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/OgreIDVR.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>MDAtomsConfig</id>
@@ -34,6 +35,7 @@
 
             <object uid="modelSeriesUID" type="::fwMedData::ModelSeries" />
             <object uid="imageUID" type="::fwData::Image" />
+            <object uid="maskUID" type="::fwData::Image" />
             <object uid="TFPool" type="::fwData::Composite" />
             <object uid="TFSelections" type="::fwData::Composite" />
 
@@ -108,6 +110,7 @@
                         <view caption="Organ manager" selected="yes" />
                         <view caption="Light manager" />
                         <view caption="Negato histogram" />
+                        <view caption="IDVR" />
                     </layout>
                 </gui>
                 <registry>
@@ -115,6 +118,7 @@
                     <view wid="organView" start="yes" />
                     <view wid="lightView" start="yes" />
                     <view sid="histogramView" start="yes" />
+                    <view wid="idvrView" start="yes" />
                 </registry>
             </service>
 
@@ -228,6 +232,7 @@
             <service uid="cfgOgreVolumeRendering" type="::fwServices::SConfigController" >
                 <appConfig id="OgreVolumeRendering" />
                 <inout key="imageUID" uid="imageUID" />
+                <inout key="maskUID" uid="maskUID" />
                 <inout key="TFSelections" uid="TFSelections" />
                 <parameter replace="WID_PARENT" uid="OgreVolumeRenderingView" />
             </service>
@@ -242,6 +247,13 @@
             <service uid="cfgLightManager"  type="::fwServices::SConfigController">
                 <appConfig id="OgreLightManager" />
                 <parameter replace="WID_PARENT" uid="lightView" />
+                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/arMedia_0-1/icons/app.ico" />
+            </service>
+
+            <service uid="cfgIDVRManager"  type="::fwServices::SConfigController">
+                <appConfig id="OgreIDVR" />
+                <inout key="maskUID" uid="maskUID" />
+                <parameter replace="WID_PARENT" uid="idvrView" />
                 <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/arMedia_0-1/icons/app.ico" />
             </service>
 
@@ -415,6 +427,7 @@
             <start uid="cfgOgreVolumeRendering" />
             <start uid="cfgOrganManagerConfig" />
             <start uid="cfgLightManager" />
+            <start uid="cfgIDVRManager" />
             <start uid="compositorSelector" />
             <start uid="compositorParameters" />
             <start uid="CoreEditor" />
