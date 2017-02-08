@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -38,12 +38,14 @@ public:
     VolIllumCompositorListener(int& currentSliceIndex, int nbShells, int shellRadius,
                                float coneAngle, int samplesAlongCone) :
         m_currentSliceIndex(currentSliceIndex),
-        m_nbShells         (nbShells),
-        m_shellRadius      (shellRadius),
-        m_coneAngle        (coneAngle),
-        m_samplesAlongCone (samplesAlongCone)
+        m_nbShells(nbShells),
+        m_shellRadius(shellRadius),
+        m_coneAngle(coneAngle),
+        m_samplesAlongCone(samplesAlongCone)
     {
     }
+
+    //------------------------------------------------------------------------------
 
     virtual void notifyMaterialRender(::Ogre::uint32 pass_id, ::Ogre::MaterialPtr& mat)
     {
@@ -52,6 +54,8 @@ public:
 
         volIllumParams->setNamedConstant("u_sliceIndex", m_currentSliceIndex);
     }
+
+    //------------------------------------------------------------------------------
 
     virtual void notifyMaterialSetup(::Ogre::uint32 pass_id, ::Ogre::MaterialPtr& mat)
     {
@@ -81,16 +85,16 @@ private:
 SATVolumeIllumination::SATVolumeIllumination(std::string parentId, ::Ogre::SceneManager* sceneManager,
                                              float satSizeRatio, bool ao, bool shadows, int nbShells, int shellRadius,
                                              float coneAngle, int samplesAlongCone) :
-    m_sat             (parentId, sceneManager, satSizeRatio),
-    m_ao              (ao),
-    m_shadows         (shadows),
-    m_nbShells        (nbShells),
-    m_shellRadius     (shellRadius),
-    m_coneAngle       (coneAngle),
+    m_sat(parentId, sceneManager, satSizeRatio),
+    m_ao(ao),
+    m_shadows(shadows),
+    m_nbShells(nbShells),
+    m_shellRadius(shellRadius),
+    m_coneAngle(coneAngle),
     m_samplesAlongCone(samplesAlongCone),
-    m_parentId        (parentId),
-    m_dummyCamera     (nullptr),
-    m_sceneManager    (sceneManager)
+    m_parentId(parentId),
+    m_dummyCamera(nullptr),
+    m_sceneManager(sceneManager)
 {
 
 }
@@ -113,7 +117,7 @@ void SATVolumeIllumination::updateSatFromRatio(float _satSizeRatio)
 
 //-----------------------------------------------------------------------------
 
-void SATVolumeIllumination::SATUpdate(Ogre::TexturePtr _img, Ogre::TexturePtr _tf)
+void SATVolumeIllumination::SATUpdate(::Ogre::TexturePtr _img, Ogre::TexturePtr _tf)
 {
     m_sat.computeParallel(_img, _tf);
     this->updateVolIllum();

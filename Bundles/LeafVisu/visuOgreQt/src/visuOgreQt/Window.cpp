@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -353,7 +353,7 @@ bool Window::eventFilter(QObject* target, QEvent* event)
                 for (unsigned short i = 0; i < numViewports; i++)
                 {
                     viewport = m_ogreRenderWindow->getViewport(i);
-                    viewport->getCamera()->setAspectRatio(Ogre::Real(this->width()) / ::Ogre::Real(this->height()));
+                    viewport->getCamera()->setAspectRatio(::Ogre::Real(this->width()) / ::Ogre::Real(this->height()));
                 }
 
                 if (viewport && ::Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))

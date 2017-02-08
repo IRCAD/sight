@@ -278,7 +278,7 @@ void SLight::createTransformService()
 
 //-----------------------------------------------------------------------------
 
-void SLight::attachNode(Ogre::MovableObject* _node)
+void SLight::attachNode(::Ogre::MovableObject* _node)
 {
     auto transformService = this->getTransformService();
 

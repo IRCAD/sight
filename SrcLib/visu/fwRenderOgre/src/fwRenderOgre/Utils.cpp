@@ -124,9 +124,9 @@ void Utils::addResourcesPath(const std::string& path)
 
         renderOrder.push_back("OpenGL");
         //renderOrder.push_back("OpenGL 3+");
-        for (Ogre::StringVector::iterator iter = renderOrder.begin(); iter != renderOrder.end(); iter++)
+        for (::Ogre::StringVector::iterator iter = renderOrder.begin(); iter != renderOrder.end(); iter++)
         {
-            for (Ogre::RenderSystemList::const_iterator it = rsList.begin(); it != rsList.end(); it++)
+            for (::Ogre::RenderSystemList::const_iterator it = rsList.begin(); it != rsList.end(); it++)
             {
                 if ((*it)->getName().find(*iter) != Ogre::String::npos)
                 {
@@ -145,7 +145,7 @@ void Utils::addResourcesPath(const std::string& path)
             {
                 if (!root->showConfigDialog())
                 {
-                    OGRE_EXCEPT(Ogre::Exception::ERR_INVALIDPARAMS,
+                    OGRE_EXCEPT(::Ogre::Exception::ERR_INVALIDPARAMS,
                                 "Abort render system configuration",
                                 "Window::initialize");
                 }

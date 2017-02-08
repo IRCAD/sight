@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -39,7 +39,7 @@ public:
     FWRENDEROGRE_API void updateVolIllum();
 
     /// Recomputes the SAT and the illumination volume when the image or the TF changed.
-    FWRENDEROGRE_API void SATUpdate(Ogre::TexturePtr _img, Ogre::TexturePtr _tf);
+    FWRENDEROGRE_API void SATUpdate(::Ogre::TexturePtr _img, Ogre::TexturePtr _tf);
 
     /// Illumination volume texture getter.
     FWRENDEROGRE_API ::Ogre::TexturePtr getIlluminationVolume();

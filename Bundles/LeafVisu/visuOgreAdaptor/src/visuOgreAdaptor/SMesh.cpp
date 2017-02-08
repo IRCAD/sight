@@ -412,12 +412,12 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
 
         // 1st buffer
         declMain->addElement(m_binding[POSITION_NORMAL], offset, ::Ogre::VET_FLOAT3, ::Ogre::VES_POSITION);
-        offset += ::Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
+        offset += ::Ogre::VertexElement::getTypeSize(::Ogre::VET_FLOAT3);
 
         if(m_hasNormal)
         {
             declMain->addElement(m_binding[POSITION_NORMAL], offset, ::Ogre::VET_FLOAT3, ::Ogre::VES_NORMAL);
-            offset += ::Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
+            offset += ::Ogre::VertexElement::getTypeSize(::Ogre::VET_FLOAT3);
         }
 
         // Set vertex buffer binding so buffer 0 is bound to our vertex buffer
@@ -544,7 +544,7 @@ void SMesh::updateMesh(const ::fwData::Mesh::sptr& mesh)
                 OSLM_DEBUG("Index #" << m_subMeshes[i]->indexData->indexCount );
 
                 // Lock index data ow, we are going to write into it in the next loop
-                indexBuffer[i] = ibuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+                indexBuffer[i] = ibuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
             }
             else
             {
@@ -729,7 +729,7 @@ void SMesh::updateVertices(const ::fwData::Mesh::sptr& mesh)
     ::Ogre::HardwareVertexBufferSharedPtr vbuf = bind->getBuffer(m_binding[POSITION_NORMAL]);
 
     /// Upload the index data to the card
-    void* pVertex = vbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+    void* pVertex = vbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
 
     // Update Ogre Mesh with ::fwData::Mesh
     ::fwData::mt::ObjectReadLock lock(mesh);
@@ -944,7 +944,7 @@ void SMesh::updateColors(const ::fwData::Mesh::sptr& mesh)
         // Source points
         ::Ogre::HardwareVertexBufferSharedPtr cbuf = bind->getBuffer(m_binding[COLOUR]);
         ::Ogre::RGBA* pColor                       =
-            static_cast< ::Ogre::RGBA* >( cbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD) );
+            static_cast< ::Ogre::RGBA* >( cbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD) );
 
         // Destination
         const auto colors           = meshHelper.getPointColors();
@@ -1010,7 +1010,7 @@ void SMesh::updateTexCoords(const ::fwData::Mesh::sptr& mesh)
 
         ::Ogre::VertexBufferBinding* bind           = m_ogreMesh->sharedVertexData->vertexBufferBinding;
         ::Ogre::HardwareVertexBufferSharedPtr uvbuf = bind->getBuffer(m_binding[TEXCOORD]);
-        void* pBuf = uvbuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+        void* pBuf = uvbuf->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
         float* pUV = static_cast< float* >( pBuf );
 
         ::fwData::Mesh::PointTexCoordsMultiArrayType uvCoord = meshHelper.getPointTexCoords();
@@ -1273,7 +1273,7 @@ void SMesh::modifyTexCoords()
 
 //-----------------------------------------------------------------------------
 
-void SMesh::attachNode(Ogre::MovableObject* _node)
+void SMesh::attachNode(::Ogre::MovableObject* _node)
 {
     auto transformService = ::visuOgreAdaptor::STransform::dynamicCast(m_transformService.lock());
 

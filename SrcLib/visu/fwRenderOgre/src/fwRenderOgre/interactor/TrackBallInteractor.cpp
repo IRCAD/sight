@@ -119,7 +119,7 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
     // Rotate around the right vector according to the dy of the mouse
     {
         // 1 - Move to the center of the target
-        camNode->translate(Ogre::Vector3(0.f, 0.f, -m_lookAtZ), ::Ogre::Node::TS_LOCAL);
+        camNode->translate(::Ogre::Vector3(0.f, 0.f, -m_lookAtZ), ::Ogre::Node::TS_LOCAL);
 
         // 2 - Find rotation axis. We project the mouse movement onto the right and up vectors of the camera
         // We take the absolute to get a positive axis, and then we invert the angle when needed to rotate smoothly
@@ -129,7 +129,7 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
         rotateX.normalise();
 
         // 3 - Now determine the rotation direction
-        if(rotateX.dotProduct(Ogre::Vector3(1.f, 0.f, 0.f)) < 0.f)
+        if(rotateX.dotProduct(::Ogre::Vector3(1.f, 0.f, 0.f)) < 0.f)
         {
             dy_float *= -1;
         }
@@ -142,13 +142,13 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
         camNode->rotate( rotate );
 
         // 6 - Go backward in the inverse direction
-        camNode->translate(Ogre::Vector3(0.f, 0.f, m_lookAtZ), ::Ogre::Node::TS_LOCAL);
+        camNode->translate(::Ogre::Vector3(0.f, 0.f, m_lookAtZ), ::Ogre::Node::TS_LOCAL);
     }
 
     // Rotate around the up vector according to the dx of the mouse
     {
         // 1 - Move to the center of the target
-        camNode->translate(Ogre::Vector3(0.f, 0.f, -m_lookAtZ), ::Ogre::Node::TS_LOCAL);
+        camNode->translate(::Ogre::Vector3(0.f, 0.f, -m_lookAtZ), ::Ogre::Node::TS_LOCAL);
 
         // 2 - Find rotation axis. We project the mouse movement onto the right and up vectors of the camera
         // We take the absolute to get a positive axis, and then we invert the angle when needed to rotate smoothly
@@ -158,7 +158,7 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
         rotateY.normalise();
 
         // 3 - Now determine the rotation direction
-        if(rotateY.dotProduct(Ogre::Vector3(0.f, 1.f, 0.f)) < 0.f)
+        if(rotateY.dotProduct(::Ogre::Vector3(0.f, 1.f, 0.f)) < 0.f)
         {
             dx_float *= -1;
         }
@@ -171,7 +171,7 @@ void TrackballInteractor::cameraRotate(int dx, int dy)
         camNode->rotate( rotate );
 
         // 6 - Go backward in the inverse direction
-        camNode->translate(Ogre::Vector3(0.f, 0.f, m_lookAtZ), ::Ogre::Node::TS_LOCAL);
+        camNode->translate(::Ogre::Vector3(0.f, 0.f, m_lookAtZ), ::Ogre::Node::TS_LOCAL);
     }
 }
 

@@ -163,7 +163,7 @@ private:
     ::visuOgreAdaptor::STransform::sptr getTransformService();
 
     /// Attaches a movable object to the associated scene node
-    void attachNode(Ogre::MovableObject* _node);
+    void attachNode(::Ogre::MovableObject* _node);
 
     /// Ogre light managed by this adaptor.
     ::Ogre::Light* m_light;

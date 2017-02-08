@@ -215,13 +215,13 @@ void Layer::createScene()
     }
 
     // Alter the camera aspect ratio to match the viewport
-    m_cameraManager->setAspectRatio(Ogre::Real(m_viewport->getActualWidth()) /
+    m_cameraManager->setAspectRatio(::Ogre::Real(m_viewport->getActualWidth()) /
                                     ::Ogre::Real(m_viewport->getActualHeight()));
 
     // Creating Camera Scene Node
     ::Ogre::SceneNode* cameraNode = m_sceneManager->getRootSceneNode()->createChildSceneNode("CameraNode");
-    cameraNode->setPosition(Ogre::Vector3(0, 0, 5));
-    cameraNode->lookAt(Ogre::Vector3(0, 0, 1), ::Ogre::Node::TS_WORLD);
+    cameraNode->setPosition(::Ogre::Vector3(0, 0, 5));
+    cameraNode->lookAt(::Ogre::Vector3(0, 0, 1), ::Ogre::Node::TS_WORLD);
 
     m_cameraManager->setTransformName(cameraNode->getName());
     cameraNode->attachObject(m_cameraManager->getCamera());
