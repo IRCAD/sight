@@ -165,13 +165,12 @@ void Reconstruction::doStop() throw(fwTools::Failed)
 void Reconstruction::setForceHide(bool hide)
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getObject < ::fwData::Reconstruction >();
-    this->setVisibility((hide ? false : reconstruction->getIsVisible()));
+    this->updateVisibility((hide ? false : reconstruction->getIsVisible()));
 }
-
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::setVisibility(bool visible)
+void Reconstruction::updateVisibility(bool visible)
 {
     SLM_TRACE_FUNC();
     if (!m_meshService.expired())
@@ -200,14 +199,6 @@ void Reconstruction::setAutoResetCamera(bool autoResetCamera)
 void Reconstruction::updateMesh(SPTR(::fwData::Mesh))
 {
     this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void Reconstruction::updateVisibility()
-{
-    ::fwData::Reconstruction::sptr reconstruction = this->getObject < ::fwData::Reconstruction >();
-    this->setForceHide(!reconstruction->getIsVisible());
 }
 
 //------------------------------------------------------------------------------

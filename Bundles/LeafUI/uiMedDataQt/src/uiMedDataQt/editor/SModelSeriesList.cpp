@@ -371,16 +371,16 @@ void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem * item, int colum
     ::fwData::Reconstruction::sptr rec = ::fwData::Reconstruction::dynamicCast(::fwTools::fwID::getObject(id));
     SLM_ASSERT("rec not instanced", rec);
 
-    bool itemIsChecked = (item->checkState(0) == Qt::Checked);
+    const bool itemIsChecked = (item->checkState(0) == Qt::Checked);
 
     if (rec->getIsVisible() != itemIsChecked)
     {
-        rec->setIsVisible(item->checkState(0));
+        rec->setIsVisible(itemIsChecked);
 
         ::fwData::Reconstruction::VisibilityModifiedSignalType::sptr sig;
         sig = rec->signal< ::fwData::Reconstruction::VisibilityModifiedSignalType >(
             ::fwData::Reconstruction::s_VISIBILITY_MODIFIED_SIG);
-        sig->asyncEmit();
+        sig->asyncEmit(itemIsChecked);
     }
 }
 

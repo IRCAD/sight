@@ -48,9 +48,6 @@ public:
 
     VISUVTKADAPTOR_API void setForceHide(bool hide);
 
-    /// Set underlying actor visible or not
-    VISUVTKADAPTOR_API void setVisibility(bool visible);
-
     /// Active/Inactive automatic reset on camera for triangular mesh adaptor. By default =true.
     VISUVTKADAPTOR_API void setAutoResetCamera(bool autoResetCamera);
 
@@ -70,7 +67,7 @@ public:
 
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
     /// slot used to update visibility
-    typedef ::fwCom::Slot<void ()> UpdateVisibilitySlotType;
+    typedef ::fwCom::Slot<void (bool)> UpdateVisibilitySlotType;
 
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_NORMAL_MODE_SLOT;
     /// slot used to update normal mode (0: none, 1: point, 2: cell)
@@ -117,7 +114,7 @@ protected:
     void updateMesh(SPTR(::fwData::Mesh));
 
     /// Slot: update visibility
-    void updateVisibility();
+    void updateVisibility(bool visible);
 
     /**
      * @}

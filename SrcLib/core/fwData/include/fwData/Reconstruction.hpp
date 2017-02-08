@@ -123,7 +123,7 @@ public:
     FWDATA_API static const ::fwCom::Signals::SignalKeyType s_MESH_CHANGED_SIG;
 
     /// Type of signal when mesh is modified
-    typedef ::fwCom::Signal< void () > VisibilityModifiedSignalType;
+    typedef ::fwCom::Signal< void (bool) > VisibilityModifiedSignalType;
 
     /// Key in m_signals map of signal m_sigVisibilityModified
     FWDATA_API static const ::fwCom::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
