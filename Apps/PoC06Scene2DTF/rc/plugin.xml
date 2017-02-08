@@ -283,7 +283,7 @@
 
                         </service>
 
-                        <service uid="updaterUID" impl="::ctrlSelection::updater::SObjFromUid" type="::ctrlSelection::IUpdaterSrv" autoConnect="no">
+                        <service uid="updaterUID" impl="::ctrlSelection::SManage" autoConnect="no">
                             <uid>imageUID</uid>
                             <compositeKey>image</compositeKey>
                         </service>

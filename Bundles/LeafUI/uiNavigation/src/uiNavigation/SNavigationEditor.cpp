@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,23 +9,25 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwTools/fwID.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwServices/op/Get.hpp>
-#include <fwServices/macros.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Get.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <fwTools/fwID.hpp>
 
-#include <QWidget>
-#include <QPushButton>
 #include <QGridLayout>
-#include <QSlider>
 #include <QLineEdit>
+#include <QPushButton>
+#include <QSlider>
+#include <QWidget>
+
+#include <boost/lexical_cast.hpp>
 
 #include <functional>
 

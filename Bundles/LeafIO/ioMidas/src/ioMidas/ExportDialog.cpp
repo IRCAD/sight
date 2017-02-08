@@ -1,44 +1,47 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <istream>
+#include "ioMidas/ExportDialog.hpp"
 
-#include <QFormLayout>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QGroupBox>
-#include <QUrl>
-#include <QString>
-#include <QTabWidget>
-#include <QInputDialog>
-#include <QLineEdit>
-#include <QPushButton>
-#include <QLabel>
-#include <QListWidget>
-#include <QComboBox>
-#include <QProgressBar>
-
-#include <boost/filesystem.hpp>
-
-#include <json_spirit/json_spirit_writer_template.h>
+#include "ioMidas/FolderDialog.hpp"
 
 #include <fwCore/Exception.hpp>
+
+#include <fwData/location/Folder.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/Patient.hpp>
 
-#include <fwData/location/Folder.hpp>
 #include <fwTools/System.hpp>
 
-#include <midasIO/RequestHandler.hpp>
 #include <midasIO/IResponseHandler.hpp>
 #include <midasIO/ModelSeriesWriter.hpp>
+#include <midasIO/RequestHandler.hpp>
 
-#include "ioMidas/FolderDialog.hpp"
-#include "ioMidas/ExportDialog.hpp"
+#include <QComboBox>
+#include <QFormLayout>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QInputDialog>
+#include <QLabel>
+#include <QLineEdit>
+#include <QListWidget>
+#include <QProgressBar>
+#include <QPushButton>
+#include <QString>
+#include <QTabWidget>
+#include <QUrl>
+#include <QVBoxLayout>
+
+#include <boost/filesystem.hpp>
+#include <boost/lexical_cast.hpp>
+
+#include <json_spirit/json_spirit_writer_template.h>
+
+#include <istream>
 
 namespace ioMidas
 {
