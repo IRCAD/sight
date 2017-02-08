@@ -28,7 +28,7 @@ public:
      * @param _ogreColor the Ogre color to convert.
      * @return the converted QColor.
      */
-    UIVISUOGRE_API static const QColor converOgreColorToQColor(const ::Ogre::ColourValue& _ogreColor);
+    UIVISUOGRE_API static QColor converOgreColorToQColor(const ::Ogre::ColourValue& _ogreColor);
 
     /**
      * @brief convertQColorToOgreColor

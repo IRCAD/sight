@@ -14,12 +14,12 @@ namespace helper
 
 //------------------------------------------------------------------------------
 
-const QColor Utils::converOgreColorToQColor(const ::Ogre::ColourValue& _ogreColor)
+QColor Utils::converOgreColorToQColor(const ::Ogre::ColourValue& _ogreColor)
 {
-    int r = static_cast<int>(_ogreColor.r * 255);
-    int g = static_cast<int>(_ogreColor.g * 255);
-    int b = static_cast<int>(_ogreColor.b * 255);
-    int a = static_cast<int>(_ogreColor.a * 255);
+    const int r = static_cast<int>(_ogreColor.r * 255);
+    const int g = static_cast<int>(_ogreColor.g * 255);
+    const int b = static_cast<int>(_ogreColor.b * 255);
+    const int a = static_cast<int>(_ogreColor.a * 255);
 
     return QColor(r, g, b, a);
 }
@@ -28,10 +28,10 @@ const QColor Utils::converOgreColorToQColor(const ::Ogre::ColourValue& _ogreColo
 
 ::Ogre::ColourValue Utils::convertQColorToOgreColor(const QColor& _qColor)
 {
-    float r = static_cast<float>(_qColor.red()) / 255.f;
-    float g = static_cast<float>(_qColor.green()) / 255.f;
-    float b = static_cast<float>(_qColor.blue()) / 255.f;
-    float a = static_cast<float>(_qColor.alpha()) / 255.f;
+    const float r = static_cast<float>(_qColor.red()) / 255.f;
+    const float g = static_cast<float>(_qColor.green()) / 255.f;
+    const float b = static_cast<float>(_qColor.blue()) / 255.f;
+    const float a = static_cast<float>(_qColor.alpha()) / 255.f;
 
     return ::Ogre::ColourValue(r, g, b, a);
 }
