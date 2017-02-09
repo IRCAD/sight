@@ -35,7 +35,7 @@
             </config>
         </service>
 
-        <service uid="maskReader" type="::ioVTK::SImageReader" >
+        <service uid="maskReader" type="::ioVTK::SImageReader" worker="w_maskReader">
             <in key="target" uid="${maskUID}" />
             <type mode="reader" />
         </service>
@@ -45,6 +45,7 @@
         <connect>
             <signal>selectMask/clicked</signal>
             <slot>maskReader/configureWithIHM</slot>
+            <slot>maskReader/update</slot>
         </connect>
 
         <start uid="idvrView" />

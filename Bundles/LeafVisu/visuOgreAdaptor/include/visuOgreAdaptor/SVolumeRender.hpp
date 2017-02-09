@@ -61,8 +61,8 @@ namespace visuOgreAdaptor
  * @code{.xml}
     <service uid="volumeRender" type="::visuOgreAdaptor::SVolumeRender">
         <in key="image" uid="imageUID" autoConnect="yes" />
-        <in key="mask" uid="maskUID" autoConnect="yes" />
         <inout key="TF" uid="TFSelections" />
+        <inout key="mask" uid="maskUID" autoConnect="yes" />
         <config renderer="default"
                  preintegration="yes" mode="slice" ao="no" colorBleeding="no" shadows="no"
                  satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
@@ -72,9 +72,9 @@ namespace visuOgreAdaptor
    @endcode
  * @subsection Input Input:
  * - \b image [::fwData::Image]: input volume data.
- * - \b mask [::fwData::Image]: segmented data.
  * @subsection In-Out In-Out:
  * - \b TF [::fwData::Composite]: Selected transfer function.
+ * - \b mask [::fwData::Image]: segmented data.
  * With :
  * - \b renderer (optional): defines the renderer displaying the volume.
  * - \b preintegration (optional, yes/no, default=no): use pre-integration.
@@ -109,6 +109,7 @@ public:
      * @{
      */
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEW_IMAGE_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEW_MASK_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAMPLING_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_AO_FACTOR_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_COLOR_BLEEDING_FACTOR_SLOT;
@@ -170,6 +171,7 @@ protected:
 private:
 
     void newImage();
+    void newMask();
     void updateSampling(int nbSamples);
     void updateAOFactor(double aoFactor);
     void updateColorBleedingFactor(double colorBleedingFactor);
@@ -208,6 +210,8 @@ private:
 
     /// 3D Image texture.
     ::Ogre::TexturePtr m_3DOgreTexture;
+
+    ::Ogre::TexturePtr m_maskTexture;
 
     /// TF texture used for rendering.
     ::fwRenderOgre::TransferFunction m_gpuTF;

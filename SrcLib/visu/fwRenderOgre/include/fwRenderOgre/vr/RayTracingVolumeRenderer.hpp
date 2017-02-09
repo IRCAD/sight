@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef __FWRENDEROGRE_VR_RAYTRACINGVOLUMERENDERER_HPP__
 #define __FWRENDEROGRE_VR_RAYTRACINGVOLUMERENDERER_HPP__
 
+#include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/Layer.hpp"
 #include "fwRenderOgre/R2VBRenderable.hpp"
-#include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/vr/IVolumeRenderer.hpp"
 #include "fwRenderOgre/vr/SATVolumeIllumination.hpp"
 
@@ -49,6 +49,7 @@ public:
                                               Layer::sptr layer,
                                               ::Ogre::SceneNode* parentNode,
                                               ::Ogre::TexturePtr imageTexture,
+                                              ::Ogre::TexturePtr maskTexture,
                                               TransferFunction& gpuTF,
                                               PreIntegrationTable& preintegrationTable,
                                               ::fwRenderOgre::Layer::StereoModeType mode3D,
@@ -133,6 +134,8 @@ private:
 
     /// Returns the parameters of the current fragment shader.
     ::Ogre::GpuProgramParametersSharedPtr retrieveCurrentProgramParams();
+
+    ::Ogre::TexturePtr m_maskTexture;
 
     /// Object containing the proxy geometry, this is a cube for now.
     ::Ogre::ManualObject* m_entryPointGeometry;

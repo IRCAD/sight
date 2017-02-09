@@ -34,6 +34,7 @@ namespace visuOgreAdaptor
 //-----------------------------------------------------------------------------
 
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEW_IMAGE_SLOT                    = "newImage";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_NEW_MASK_SLOT                     = "newMask";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_SAMPLING_SLOT              = "updateSampling";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_AO_FACTOR_SLOT             = "updateAOFactor";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_UPDATE_COLOR_BLEEDING_FACTOR_SLOT = "updateColorBleedingFactor";
@@ -78,6 +79,7 @@ SVolumeRender::SVolumeRender() throw() :
 {
     this->installTFSlots(this);
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
+    newSlot(s_NEW_MASK_SLOT, &SVolumeRender::newMask, this);
     newSlot(s_UPDATE_SAMPLING_SLOT, &SVolumeRender::updateSampling, this);
     newSlot(s_UPDATE_AO_FACTOR_SLOT, &SVolumeRender::updateAOFactor, this);
     newSlot(s_UPDATE_COLOR_BLEEDING_FACTOR_SLOT, &SVolumeRender::updateColorBleedingFactor, this);
@@ -256,6 +258,8 @@ void SVolumeRender::updatingTFWindowing(double window, double level)
 
     connections.push( "image", ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
     connections.push( "image", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
+    connections.push( "mask", ::fwData::Image::s_MODIFIED_SIG, s_NEW_MASK_SLOT );
+    connections.push( "mask", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEW_MASK_SLOT );
 
     return connections;
 }
@@ -283,6 +287,11 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
         ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
         true);
 
+    m_maskTexture = ::Ogre::TextureManager::getSingleton().create(
+        this->getID() + "_MaskTexture",
+        ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+        true);
+
     m_gpuTF.createTexture(this->getID());
     m_preIntegrationTable.createTexture(this->getID());
 
@@ -303,6 +312,7 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
                                                                             layer,
                                                                             m_volumeSceneNode,
                                                                             m_3DOgreTexture,
+                                                                            m_maskTexture,
                                                                             m_gpuTF,
                                                                             m_preIntegrationTable,
                                                                             layer->getStereoMode(),
@@ -438,6 +448,14 @@ void SVolumeRender::newImage()
     m_volumeSceneNode->setVisible(true, m_widgets->getVisibility());
 
     this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::newMask()
+{
+    ::fwData::Image::sptr mask = this->getInOut< ::fwData::Image>("mask");
+    ::fwRenderOgre::Utils::convertImageForNegato(m_maskTexture.get(), mask);
 }
 
 //-----------------------------------------------------------------------------
