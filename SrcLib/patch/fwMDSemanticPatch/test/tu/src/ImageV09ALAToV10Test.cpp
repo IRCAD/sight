@@ -109,8 +109,8 @@ void ImageV09ALAToV10Test::applyPatchTest()
     ::fwAtoms::Map::sptr newFieldMap = ::fwAtoms::Map::dynamicCast(patchedObj->getAttribute("fields"));
     CPPUNIT_ASSERT(newFieldMap);
 
-    CPPUNIT_ASSERT(newFieldMap->find("m_imageLandmarksId") != newFieldMap->end());
-    ::fwAtoms::Object::sptr landmarks = ::fwAtoms::Object::dynamicCast((*newFieldMap)["m_imageLandmarksId"]);
+    CPPUNIT_ASSERT(newFieldMap->find("m_landmarksId") != newFieldMap->end());
+    ::fwAtoms::Object::sptr landmarks = ::fwAtoms::Object::dynamicCast((*newFieldMap)["m_landmarksId"]);
     CPPUNIT_ASSERT(landmarks);
     CPPUNIT_ASSERT_EQUAL(std::string("::fwData::Landmarks"), ::fwAtomsPatch::helper::getClassname(landmarks));
     CPPUNIT_ASSERT(landmarks->getAttribute("landmarks"));

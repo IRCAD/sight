@@ -73,7 +73,7 @@ void Image::apply(
         ::fwAtomsPatch::helper::Object helperLandmarks( currentLandmarks );
 
         ::fwAtoms::Map::sptr currentFieldMap = ::fwAtoms::Map::dynamicCast(current->getAttribute("fields"));
-        currentFieldMap->insert("m_imageLandmarksId", currentLandmarks);
+        currentFieldMap->insert("m_landmarksId", currentLandmarks);
 
         ::fwAtoms::Map::sptr landmarksMap = ::fwAtoms::Map::dynamicCast(currentLandmarks->getAttribute("landmarks"));
 

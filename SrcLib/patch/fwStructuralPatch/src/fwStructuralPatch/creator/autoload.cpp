@@ -5,6 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwStructuralPatch/creator/fwData/Landmarks1.hpp"
+#include "fwStructuralPatch/creator/fwData/PointList1.hpp"
 #include "fwStructuralPatch/creator/fwMedData/ActivitySeries1.hpp"
 #include "fwStructuralPatch/creator/fwMedData/Equipment1.hpp"
 #include "fwStructuralPatch/creator/fwMedData/ImageSeries1.hpp"
@@ -33,6 +34,7 @@ struct runner
         creators->registerCreator(::fwStructuralPatch::creator::fwMedData::ActivitySeries1::New());
         creators->registerCreator(::fwStructuralPatch::creator::fwMedData::ActivitySeries1::New());
         creators->registerCreator(::fwStructuralPatch::creator::fwData::Landmarks1::New());
+        creators->registerCreator(::fwStructuralPatch::creator::fwData::PointList1::New());
     }
 
     static runner r;

@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __FWMDSEMANTICPATCH_V09ALA_V10_FWDATA_IMAGE_HPP__
-#define __FWMDSEMANTICPATCH_V09ALA_V10_FWDATA_IMAGE_HPP__
+#ifndef __FWMDSEMANTICPATCH_V10_V09ALA_FWDATA_IMAGE_HPP__
+#define __FWMDSEMANTICPATCH_V10_V09ALA_FWDATA_IMAGE_HPP__
 
 #include "fwMDSemanticPatch/config.hpp"
 
@@ -13,14 +13,14 @@
 
 namespace fwMDSemanticPatch
 {
-namespace V09ALA
-{
 namespace V10
+{
+namespace V09ALA
 {
 namespace fwData
 {
 
-/// Patch the 'landmarks' field of an image from version 'V9ALA' to 'V10' within 'MedicalData' context.
+/// Patch the 'landmarks' field of an image from version 'V10' to 'V09ALA' within 'MedicalData' context.
 class FWMDSEMANTICPATCH_CLASS_API Image : public ::fwAtomsPatch::ISemanticPatch
 {
 public:
@@ -39,7 +39,7 @@ public:
     /**
      * @brief Applies patch.
      *
-     * Converts the "m_imageLandmarksId" field from a ::fwData::PointList to a ::fwData::Landmarks in "m_landmarksId" .
+     * Converts the "m_landmarksId" field from a ::fwData::Landmarks to a ::fwData::PointList in "m_imageLandmarksId" .
      */
     FWMDSEMANTICPATCH_API virtual void apply(
         const ::fwAtoms::Object::sptr& previous,
@@ -49,9 +49,9 @@ public:
 };
 
 } // namespace fwData
-} // namespace V10
 } // namespace V09ALA
+} // namespace V10
 } // namespace fwMDSemanticPatch
 
-#endif /* __FWMDSEMANTICPATCH_V09ALA_V10_FWDATA_IMAGE_HPP__ */
+#endif /* __FWMDSEMANTICPATCH_V10_V09ALA_FWDATA_IMAGE_HPP__ */
 
