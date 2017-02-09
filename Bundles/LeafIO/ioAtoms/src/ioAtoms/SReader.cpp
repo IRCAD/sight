@@ -11,13 +11,14 @@
 #include <fwAtomsBoostIO/Reader.hpp>
 #include <fwAtomsBoostIO/types.hpp>
 
-#include <fwAtomsFilter/IFilter.hpp>
 #include <fwAtomsFilter/factory/new.hpp>
+#include <fwAtomsFilter/IFilter.hpp>
 
 #include <fwAtomsPatch/PatchingManager.hpp>
 
 #include <fwCom/Signal.hxx>
 
+#include <fwData/Array.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
@@ -415,7 +416,15 @@ void SReader::updating() throw(::fwTools::Failed)
                                                 << "' where a '" << data->getClassname() << "' was expected",
                              newData->getClassname() != data->getClassname() );
 
-                data->shallowCopy(newData);
+                if(newData->getClassname() == "::fwData::Array")
+                {
+                    ::fwData::Array::dynamicCast(data)->swap( ::fwData::Array::dynamicCast(newData) );
+                }
+                else
+                {
+                    data->shallowCopy(newData);
+                }
+
             }
             else
             {
