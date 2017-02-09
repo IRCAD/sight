@@ -416,7 +416,7 @@ void SReader::updating() throw(::fwTools::Failed)
                                                 << "' where a '" << data->getClassname() << "' was expected",
                              newData->getClassname() != data->getClassname() );
 
-                if(newData->getClassname() == "::fwData::Array")
+                if(newData->getClassname() == ::fwData::Array::classname())
                 {
                     ::fwData::Array::dynamicCast(data)->swap( ::fwData::Array::dynamicCast(newData) );
                 }
