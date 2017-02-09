@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,11 @@
 #ifndef __FWDATACAMP_AUTOLOAD_HPP__
 #define __FWDATACAMP_AUTOLOAD_HPP__
 
-#include <fwCamp/macros.hpp>
+#include "fwDataCamp/Material.hpp"
+#include "fwDataCamp/StructureTraits.hpp"
+#include "fwDataCamp/TransferFunction.hpp"
 
+#include <fwCamp/macros.hpp>
 
 #include <fwData/Array.hpp>
 #include <fwData/Boolean.hpp>
@@ -20,8 +23,11 @@
 #include <fwData/Histogram.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Integer.hpp>
+#include <fwData/Landmarks.hpp>
 #include <fwData/Line.hpp>
 #include <fwData/List.hpp>
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Plane.hpp>
@@ -30,24 +36,17 @@
 #include <fwData/PointList.hpp>
 #include <fwData/Port.hpp>
 #include <fwData/ProcessObject.hpp>
-#include <fwData/ROITraits.hpp>
 #include <fwData/Reconstruction.hpp>
 #include <fwData/ReconstructionTraits.hpp>
 #include <fwData/Resection.hpp>
 #include <fwData/ResectionDB.hpp>
+#include <fwData/ROITraits.hpp>
 #include <fwData/String.hpp>
 #include <fwData/StructureTraits.hpp>
 #include <fwData/StructureTraitsDictionary.hpp>
 #include <fwData/Tag.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/Vector.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
-
-#include "fwDataCamp/Material.hpp"
-#include "fwDataCamp/StructureTraits.hpp"
-#include "fwDataCamp/TransferFunction.hpp"
-
 
 namespace fwDataCamp
 {
@@ -100,12 +99,11 @@ struct runner
         localDeclarefwDatalocationSingleFile();
         localDeclarefwDataProcessObject();
         localDeclarefwDataTag();
+        localDeclarefwDataLandmarks();
     }
 
     static runner r;
 };
 } //end namespace fwDataCamp
-
-
 
 #endif //__FWDATACAMP_AUTOLOAD_HPP__

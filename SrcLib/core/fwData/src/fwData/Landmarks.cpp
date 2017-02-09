@@ -193,7 +193,7 @@ void Landmarks::addPoint(const std::string& name, const Landmarks::PointType& po
 void Landmarks::insertPoint(const std::string& name, const size_t index, const Landmarks::PointType& point)
 {
     Landmarks::LandmarksGroup& group = this->getGroup(name);
-    auto iter                        = group.m_points.begin() + index;
+    auto iter                        = group.m_points.begin() + static_cast< PointContainer::difference_type >(index);
     group.m_points.insert(iter, point);
 }
 
@@ -230,7 +230,7 @@ void Landmarks::removePoint(const std::string& name, size_t index)
     FW_RAISE_EXCEPTION_IF(std::out_of_range("index out of range in group '" + name + "'"),
                           index >= group.m_points.size());
 
-    auto iter = group.m_points.begin() + index;
+    auto iter = group.m_points.begin() + static_cast< PointContainer::difference_type >(index);
     OSLM_LOG(this->getNumberOfPoints());
     group.m_points.erase(iter);
     OSLM_LOG(this->getNumberOfPoints());
