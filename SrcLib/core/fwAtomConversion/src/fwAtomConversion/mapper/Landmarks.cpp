@@ -175,8 +175,8 @@ fwAtomConversionRegisterMacro( ::fwAtomConversion::mapper::Landmarks, ::fwData::
                                    resultPt.size() != 3 );
 
             ::fwData::Landmarks::PointType pt = {{
-                                                     std::stof(resultPt[0]), std::stof(resultPt[1]),
-                                                     std::stof(resultPt[2])
+                                                     std::stod(resultPt[0]), std::stod(resultPt[1]),
+                                                     std::stod(resultPt[2])
                                                  }};
             landmarks->addPoint(name, pt);
         }

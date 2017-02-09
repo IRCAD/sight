@@ -185,7 +185,6 @@ void Landmarks::addPoint(const std::string& name, const Landmarks::PointType& po
 {
     Landmarks::LandmarksGroup& group = this->getGroup(name);
     group.m_points.push_back(point);
-    OSLM_LOG("point: " << m_landmarks.at(name).m_points.size());
 }
 
 //------------------------------------------------------------------------------
@@ -231,9 +230,7 @@ void Landmarks::removePoint(const std::string& name, size_t index)
                           index >= group.m_points.size());
 
     auto iter = group.m_points.begin() + static_cast< PointContainer::difference_type >(index);
-    OSLM_LOG(this->getNumberOfPoints());
     group.m_points.erase(iter);
-    OSLM_LOG(this->getNumberOfPoints());
 }
 
 //------------------------------------------------------------------------------

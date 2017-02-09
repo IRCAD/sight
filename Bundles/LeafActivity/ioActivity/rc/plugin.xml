@@ -168,7 +168,7 @@
         <id>MDAtomsConfig</id>
         <desc>Reader/Writer for atoms representing a medical data</desc>
         <config>
-            <patcher context="MedicalData" version="V09ALA" />
+            <patcher context="MedicalData" version="V10" />
             <filter>VRRenderMedicalDataV2</filter>
         </config>
     </extension>
@@ -183,7 +183,7 @@
             <extensions>
                 <extension label="Zipped Activity Project">.apz</extension>
             </extensions>
-            <patcher context="MedicalData" version="V09ALA" />
+            <patcher context="MedicalData" version="V10" />
         </config>
     </extension>
 
