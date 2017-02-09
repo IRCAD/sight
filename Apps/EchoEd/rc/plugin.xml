@@ -20,7 +20,7 @@
                 <file>Data/Patient.jsonz</file>
                 <!-- <inject>ReadData</inject> -->
                 <uuidPolicy>Strict</uuidPolicy>
-                <patcher context="MedicalData" version="V09ALA" />
+                <patcher context="MedicalData" version="V10" />
 
                 <archive backend="jsonz">
                     <extension>.jsonz</extension>
