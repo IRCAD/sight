@@ -48,7 +48,7 @@
         <id>ARMDAtomsConfig</id>
         <desc>Reader/Writer for atoms representing a medical data</desc>
         <config>
-            <patcher context="MedicalData" version="V10AR" />
+            <patcher context="MedicalData" version="V11AR" />
             <filter>VRRenderMedicalDataV2</filter>
         </config>
     </extension>
@@ -63,7 +63,7 @@
             <extensions>
                 <extension label="Zipped Activity Project">.apz</extension>
             </extensions>
-            <patcher context="MedicalData" version="V10AR" />
+            <patcher context="MedicalData" version="V11AR" />
         </config>
     </extension>
     
