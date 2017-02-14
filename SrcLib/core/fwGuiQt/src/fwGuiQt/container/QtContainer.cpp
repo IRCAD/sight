@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,7 +19,8 @@ namespace container
 
 //-----------------------------------------------------------------------------
 
-QtContainer::QtContainer(::fwGui::GuiBaseObject::Key key) throw() : m_container(0)
+QtContainer::QtContainer(::fwGui::GuiBaseObject::Key key) throw() :
+    m_container(0)
 {
 }
 
@@ -52,14 +53,14 @@ void QtContainer::destroyContainer()
     SLM_ASSERT("The QWidget is not yet initialized", m_container);
     if(m_container)
     {
-        delete m_container;
+        m_container->deleteLater();
         m_container = NULL;
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void QtContainer::setQtContainer(QWidget *container)
+void QtContainer::setQtContainer(QWidget* container)
 {
     m_container = container;
 }
