@@ -11,4 +11,9 @@
         <service>::uiMeasurement::editor::Distance</service>
         <object>::fwData::Image</object>
     </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::uiMeasurementQt::editor::SLandmarks</service>
+    </extension>
 </plugin>
