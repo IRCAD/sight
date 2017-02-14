@@ -110,8 +110,7 @@ public:
         }
 
         // Set light directions in shader.
-        ::Ogre::LightList closestLights                       = m_volumeSceneNode->getAttachedObject(0)->queryLights();
-        ::Ogre::GpuConstantDefinition lightDirArrayDefinition = vrParams->getConstantDefinition("u_lightDir");
+        ::Ogre::LightList closestLights = m_volumeSceneNode->getAttachedObject(0)->queryLights();
 
         const size_t numLights = closestLights.size();
         for(unsigned i = 0; i < numLights; ++i)
@@ -650,7 +649,7 @@ void RayTracingVolumeRenderer::initCompositors()
     /* Mono mode */
     if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE)
     {
-        m_compositorName = "RayTracedVolume_comp";
+        m_compositorName = "RayTracedVolumeMono";
     }
     /* stereo mode */
     else
@@ -664,18 +663,8 @@ void RayTracingVolumeRenderer::initCompositors()
     auto viewport = m_layer.lock()->getViewport();
     ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
 
-    //for(auto comp : compChain->getCompositors())
-    //{
-    //std::cout << comp->getCompositor()->getName() << " " << comp->getEnabled() << std::endl;
-    //}
-
-    //compChain->removeAllCompositors();
-
     compositorManager.addCompositor(viewport, m_compositorName);
     compositorManager.setCompositorEnabled(viewport, m_compositorName, true);
-
-    //compositorManager.addCompositor(viewport, "FinalChainCompositor");
-    //compositorManager.setCompositorEnabled(viewport, "FinalChainCompositor", true);
 
     auto compositorInstance = compChain->getCompositor(m_compositorName);
 
@@ -716,8 +705,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
     }
     m_entryPointGeometry->end();
 
-    //m_entryPointGeometry->setVisible(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE);
-    m_entryPointGeometry->setVisible(0);
+    m_entryPointGeometry->setVisible(false);
 
     m_volumeSceneNode->attachObject(m_entryPointGeometry);
 
@@ -803,8 +791,7 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 
     ::Ogre::RenderOperation renderOp;
     m_proxyGeometryGenerator->getRenderOperation(renderOp);
-    //m_entryPointGeometry->setVisible(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE);
-    m_entryPointGeometry->setVisible(0);
+    m_entryPointGeometry->setVisible(false);
 
     ::Ogre::Matrix4 worldMat;
     m_proxyGeometryGenerator->getWorldTransforms(&worldMat);

@@ -1,4 +1,4 @@
-compositor RayTracedVolume3D5
+compositor RayTracedVolumeMono
 {
     technique
     {
@@ -11,8 +11,25 @@ compositor RayTracedVolume3D5
                 buffers depth
             }
 
-            pass render_scene
+            pass render_quad
             {
+                material RayTracedVolume
+            }
+        }
+    }
+}
+
+compositor RayTracedVolume3D5
+{
+    technique
+    {
+        // Final pass
+        target_output
+        {
+            input previous
+            pass clear
+            {
+                buffers depth
             }
 
             pass render_quad
@@ -34,10 +51,6 @@ compositor RayTracedVolume3D8
             pass clear
             {
                 buffers depth
-            }
-
-            pass render_scene
-            {
             }
 
             pass render_quad
