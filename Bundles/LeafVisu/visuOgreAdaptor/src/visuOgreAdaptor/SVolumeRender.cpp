@@ -371,7 +371,7 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
         m_volumeSceneNode->setVisible(false, false);
     }
 
-    if (m_autoResetCamera)
+    if (m_autoResetCamera && !this->getImage()->getField("cameraTransform"))
     {
         this->getRenderService()->resetCameraCoordinates(m_layerID);
     }

@@ -79,7 +79,7 @@
             <in key="image" uid="${image}" autoConnect="yes" />
             <inout key="TF" uid="${TFSelections}" />
             <inout key="clippingMatrix" uid="${clippingMatrix}" />
-            <config layer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" autoresetcamera="no" />
+            <config layer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" />
         </service>
 
         <service uid="volumeRenderingEditor" type="::guiQt::editor::SParameters" autoConnect="no">
