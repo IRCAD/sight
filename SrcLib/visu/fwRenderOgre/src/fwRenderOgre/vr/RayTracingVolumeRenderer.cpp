@@ -12,6 +12,7 @@
 
 #include <fwCore/Profiling.hpp>
 
+#include <OGRE/OgreCompositor.h>
 #include <OGRE/OgreCompositorChain.h>
 #include <OGRE/OgreCompositorInstance.h>
 #include <OGRE/OgreCompositorManager.h>
@@ -41,21 +42,23 @@ namespace vr
 
 //-----------------------------------------------------------------------------
 
-class RayTracingVolumeRenderer::AutoStereoCompositorListener : public ::Ogre::CompositorInstance::Listener
+class RayTracingVolumeRenderer::RayTracingCompositorListener : public ::Ogre::CompositorInstance::Listener
 {
 public:
 
-    AutoStereoCompositorListener(std::vector< ::Ogre::TexturePtr>& renderTargets,
+    RayTracingCompositorListener(std::vector< ::Ogre::TexturePtr>& renderTargets,
                                  std::vector< ::Ogre::Matrix4>& invWorldViewProj,
                                  ::Ogre::TexturePtr image3DTexture,
                                  ::Ogre::TexturePtr tfTexture,
                                  float& sampleDistance,
+                                 bool is3DMode,
                                  ::Ogre::SceneNode* volumeSceneNode) :
         m_renderTargets(renderTargets),
         m_invWorldViewProj(invWorldViewProj),
         m_image3DTexture(image3DTexture),
         m_tfTexture(tfTexture),
         m_sampleDistance(sampleDistance),
+        m_is3DMode(is3DMode),
         m_volumeSceneNode(volumeSceneNode)
     {
 
@@ -73,37 +76,58 @@ public:
         imageTexUnitState->setTextureName(m_image3DTexture->getName());
         tfTexUnitState->setTextureName(m_tfTexture->getName());
 
-        ::Ogre::GpuProgramParametersSharedPtr vr3DParams = pass->getFragmentProgramParameters();
+        ::Ogre::GpuProgramParametersSharedPtr vrParams = pass->getFragmentProgramParameters();
 
-        vr3DParams->setNamedConstant("u_invWorldViewProjs", m_invWorldViewProj.data(), m_invWorldViewProj.size());
-        vr3DParams->setNamedConstant("u_sampleDistance", m_sampleDistance);
-
-        for(unsigned i = 0; i < m_renderTargets.size(); ++i)
+        if(!m_is3DMode)
         {
-            ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("entryPoints" + std::to_string(i));
+            vrParams->setNamedConstant("u_invWorldViewProj", m_invWorldViewProj.data(), m_invWorldViewProj.size());
+        }
+        else
+        {
+            vrParams->setNamedConstant("u_invWorldViewProjs", m_invWorldViewProj.data(), m_invWorldViewProj.size());
+        }
+        vrParams->setNamedConstant("u_sampleDistance", m_sampleDistance);
 
-            OSLM_ASSERT("No texture named " << i, texUnitState);
-            texUnitState->setTextureName(m_renderTargets[i]->getName());
+        /* mono mode */
+        if(!m_is3DMode)
+        {
+            ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("entryPoints");
+
+            OSLM_ASSERT("No texture named entryPoints", texUnitState);
+            OSLM_ASSERT("No render target available for entry points (Mono mode).", m_renderTargets.size() > 0);
+            texUnitState->setTextureName(m_renderTargets[0]->getName());
+        }
+        /* stereo mode */
+        else
+        {
+            for(unsigned i = 0; i < m_renderTargets.size(); ++i)
+            {
+                ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("entryPoints" + std::to_string(i));
+
+                OSLM_ASSERT("No texture named " << i, texUnitState);
+                texUnitState->setTextureName(m_renderTargets[i]->getName());
+            }
         }
 
         // Set light directions in shader.
         ::Ogre::LightList closestLights                       = m_volumeSceneNode->getAttachedObject(0)->queryLights();
-        ::Ogre::GpuConstantDefinition lightDirArrayDefinition = vr3DParams->getConstantDefinition("u_lightDirs");
+        ::Ogre::GpuConstantDefinition lightDirArrayDefinition = vrParams->getConstantDefinition("u_lightDir");
 
-        for(unsigned i = 0; i < lightDirArrayDefinition.arraySize; ++i)
+        const size_t numLights = closestLights.size();
+        for(unsigned i = 0; i < numLights; ++i)
         {
             ::Ogre::Vector3 lightDir = -closestLights[i]->getDerivedDirection();
+            vrParams->setNamedConstant("u_lightDir[" + std::to_string(i) + "]", lightDir);
 
-            vr3DParams->setNamedConstant("u_lightDirs[" + std::to_string(i) + "]", lightDir);
+            ::Ogre::ColourValue colourDiffuse = closestLights[i]->getDiffuseColour();
+            vrParams->setNamedConstant("u_lightDiffuse[" + std::to_string(i) + "]", colourDiffuse);
+
+            ::Ogre::ColourValue colourSpecular = closestLights[i]->getSpecularColour();
+            vrParams->setNamedConstant("u_lightSpecular[" + std::to_string(i) + "]", colourSpecular);
         }
 
-        ::Ogre::Vector4 diffuse(1.2f, 1.2f, 1.2f, 1.f);
-        vr3DParams->setNamedConstant("u_diffuse", diffuse);
-
-        ::Ogre::Vector4 specular(2.5f, 2.5f, 2.5f, 1.f);
         ::Ogre::Vector4 shininess(10.f, 0.f, 0.f, 0.f);
-        vr3DParams->setNamedConstant("u_specular", specular);
-        vr3DParams->setNamedConstant("u_shininess", shininess);
+        vrParams->setNamedConstant("u_shininess", shininess);
     }
 
 private:
@@ -117,6 +141,8 @@ private:
     ::Ogre::TexturePtr m_tfTexture;
 
     float& m_sampleDistance;
+
+    bool m_is3DMode;
 
     ::Ogre::SceneNode* m_volumeSceneNode;
 
@@ -216,26 +242,6 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_gridSize   = { 2, 2, 2 };
     m_bricksSize = { 8, 8, 8 };
 
-    const std::string vrMaterials[16]
-    {
-        "RayTracedVolume",
-        "RayTracedVolume_AmbientOcclusion",
-        "RayTracedVolume_ColorBleeding",
-        "RayTracedVolume_Shadows",
-        "RayTracedVolume_AmbientOcclusion_ColorBleeding",
-        "RayTracedVolume_AmbientOcclusion_Shadows",
-        "RayTracedVolume_ColorBleeding_Shadows",
-        "RayTracedVolume_VolumeIllumination",
-        "RayTracedVolume_PreIntegrated",
-        "RayTracedVolume_PreIntegrated_AmbientOcclusion",
-        "RayTracedVolume_PreIntegrated_ColorBleeding",
-        "RayTracedVolume_PreIntegrated_Shadows",
-        "RayTracedVolume_PreIntegrated_AmbientOcclusion_ColorBleeding",
-        "RayTracedVolume_PreIntegrated_AmbientOcclusion_Shadows",
-        "RayTracedVolume_PreIntegrated_ColorBleeding_Shadows",
-        "RayTracedVolume_PreIntegrated_VolumeIllumination"
-    };
-
     const unsigned nbViewpoints = m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ? 8 :
                                   m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 ? 5 : 1;
 
@@ -253,63 +259,15 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                             ::Ogre::TU_RENDERTARGET ));
     }
 
-    for(const std::string& mtlName : vrMaterials)
-    {
-        ::Ogre::MaterialPtr volumeMtl              = ::Ogre::MaterialManager::getSingleton().getByName(mtlName);
-        ::Ogre::Material::TechniqueIterator techIt = volumeMtl->getTechniqueIterator();
-
-        while( techIt.hasMoreElements())
-        {
-            ::Ogre::Technique* tech = techIt.getNext();
-            SLM_ASSERT("Technique is not set", tech);
-
-            if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
-            {
-                ::Ogre::Pass* pass = tech->getPass(0);
-
-                ::Ogre::TextureUnitState* tex3DState          = pass->getTextureUnitState("image");
-                ::Ogre::TextureUnitState* texTFState          = pass->getTextureUnitState("transferFunction");
-                ::Ogre::TextureUnitState* texEntryPointsState = pass->getTextureUnitState("entryPoints");
-                ::Ogre::TextureUnitState* texIlluminationVol  = pass->getTextureUnitState("illuminationVolume");
-
-                // Keep the texture unit states for materials "VolumeIlluminationRayTracedVolume" and
-                // "PreIntegratedVolumeIlluminationRayTracedVolume" to reuse them later when the illuminationVolume
-                // texture will be computed
-                if(texIlluminationVol)
-                {
-                    m_rayTracedTexUnitStates.push_back(texIlluminationVol);
-                }
-
-                SLM_ASSERT("'image' texture unit is not found", tex3DState);
-                SLM_ASSERT("'transferFunction' texture unit is not found", texTFState);
-                SLM_ASSERT("'entryPoints' texture unit is not found", texEntryPointsState);
-
-                tex3DState->setTexture(m_3DOgreTexture);
-                texEntryPointsState->setTexture(m_entryPointsTextures[0]);
-
-                if(mtlName.find("PreIntegrated") != std::string::npos)
-                {
-                    texTFState->setTexture(m_preIntegrationTable.getTexture());
-                }
-                else
-                {
-                    texTFState->setTexture(m_gpuTF.getTexture());
-                }
-            }
-        }
-    }
-
-    for(::Ogre::TexturePtr entryPtsText : m_entryPointsTextures)
-    {
-        ::Ogre::RenderTexture* renderTexture = entryPtsText->getBuffer()->getRenderTarget();
-        renderTexture->addViewport(m_camera);
-    }
+    initMaterials();
 
     initEntryPoints();
 
     updateMatNames();
 
     setSampling(m_nbSlices);
+
+    initCompositors();
 }
 
 //-----------------------------------------------------------------------------
@@ -534,33 +492,6 @@ void RayTracingVolumeRenderer::setShadows(bool shadows)
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::configure3DViewport()
-{
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-
-    m_compositorName = m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ?
-                       "RayTracedVolume3D8" :
-                       "RayTracedVolume3D5";
-
-    auto viewport = m_layer.lock()->getViewport();
-    compositorManager.addCompositor(viewport, m_compositorName);
-    compositorManager.setCompositorEnabled(viewport, m_compositorName, true);
-
-    ::Ogre::CompositorChain* compChain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(viewport);
-
-    auto compositorInstance = compChain->getCompositor(m_compositorName);
-
-    m_compositorListener = new RayTracingVolumeRenderer::AutoStereoCompositorListener(m_entryPointsTextures,
-                                                                                      m_viewPointMatrices,
-                                                                                      m_3DOgreTexture,
-                                                                                      m_gpuTF.getTexture(),
-                                                                                      m_sampleDistance,
-                                                                                      m_volumeSceneNode);
-    compositorInstance->addListener(m_compositorListener);
-}
-
-//-----------------------------------------------------------------------------
-
 void RayTracingVolumeRenderer::setFocalLength(float focalLength)
 {
     m_focalLength = focalLength;
@@ -636,6 +567,133 @@ void RayTracingVolumeRenderer::resizeViewport(int w, int h)
 
 //-----------------------------------------------------------------------------
 
+void RayTracingVolumeRenderer::initMaterials()
+{
+    const std::string vrMaterials[16]
+    {
+        "RayTracedVolume",
+        "RayTracedVolume_AmbientOcclusion",
+        "RayTracedVolume_ColorBleeding",
+        "RayTracedVolume_Shadows",
+        "RayTracedVolume_AmbientOcclusion_ColorBleeding",
+        "RayTracedVolume_AmbientOcclusion_Shadows",
+        "RayTracedVolume_ColorBleeding_Shadows",
+        "RayTracedVolume_VolumeIllumination",
+        "RayTracedVolume_PreIntegrated",
+        "RayTracedVolume_PreIntegrated_AmbientOcclusion",
+        "RayTracedVolume_PreIntegrated_ColorBleeding",
+        "RayTracedVolume_PreIntegrated_Shadows",
+        "RayTracedVolume_PreIntegrated_AmbientOcclusion_ColorBleeding",
+        "RayTracedVolume_PreIntegrated_AmbientOcclusion_Shadows",
+        "RayTracedVolume_PreIntegrated_ColorBleeding_Shadows",
+        "RayTracedVolume_PreIntegrated_VolumeIllumination"
+    };
+
+    /* Loop over the materials to set their texture initial state */
+    for(const std::string& mtlName : vrMaterials)
+    {
+        ::Ogre::MaterialPtr volumeMtl              = ::Ogre::MaterialManager::getSingleton().getByName(mtlName);
+        ::Ogre::Material::TechniqueIterator techIt = volumeMtl->getTechniqueIterator();
+
+        while( techIt.hasMoreElements())
+        {
+            ::Ogre::Technique* tech = techIt.getNext();
+            SLM_ASSERT("Technique is not set", tech);
+
+            if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
+            {
+                ::Ogre::Pass* pass = tech->getPass(0);
+
+                ::Ogre::TextureUnitState* tex3DState          = pass->getTextureUnitState("image");
+                ::Ogre::TextureUnitState* texTFState          = pass->getTextureUnitState("transferFunction");
+                ::Ogre::TextureUnitState* texEntryPointsState = pass->getTextureUnitState("entryPoints");
+                ::Ogre::TextureUnitState* texIlluminationVol  = pass->getTextureUnitState("illuminationVolume");
+
+                // Keep the texture unit states for materials "VolumeIlluminationRayTracedVolume" and
+                // "PreIntegratedVolumeIlluminationRayTracedVolume" to reuse them later when the illuminationVolume
+                // texture will be computed
+                if(texIlluminationVol)
+                {
+                    m_rayTracedTexUnitStates.push_back(texIlluminationVol);
+                }
+
+                SLM_ASSERT("'image' texture unit is not found", tex3DState);
+                SLM_ASSERT("'transferFunction' texture unit is not found", texTFState);
+                SLM_ASSERT("'entryPoints' texture unit is not found", texEntryPointsState);
+
+                tex3DState->setTexture(m_3DOgreTexture);
+                texEntryPointsState->setTexture(m_entryPointsTextures[0]);
+
+                if(mtlName.find("PreIntegrated") != std::string::npos)
+                {
+                    texTFState->setTexture(m_preIntegrationTable.getTexture());
+                }
+                else
+                {
+                    texTFState->setTexture(m_gpuTF.getTexture());
+                }
+            }
+        }
+    }
+
+    for(::Ogre::TexturePtr entryPtsText : m_entryPointsTextures)
+    {
+        ::Ogre::RenderTexture* renderTexture = entryPtsText->getBuffer()->getRenderTarget();
+        renderTexture->addViewport(m_camera);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::initCompositors()
+{
+    /* Mono mode */
+    if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE)
+    {
+        m_compositorName = "RayTracedVolume_comp";
+    }
+    /* stereo mode */
+    else
+    {
+        m_compositorName = m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ?
+                           "RayTracedVolume3D8" :
+                           "RayTracedVolume3D5";
+    }
+
+    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+    auto viewport = m_layer.lock()->getViewport();
+    ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
+
+    //for(auto comp : compChain->getCompositors())
+    //{
+    //std::cout << comp->getCompositor()->getName() << " " << comp->getEnabled() << std::endl;
+    //}
+
+    //compChain->removeAllCompositors();
+
+    compositorManager.addCompositor(viewport, m_compositorName);
+    compositorManager.setCompositorEnabled(viewport, m_compositorName, true);
+
+    //compositorManager.addCompositor(viewport, "FinalChainCompositor");
+    //compositorManager.setCompositorEnabled(viewport, "FinalChainCompositor", true);
+
+    auto compositorInstance = compChain->getCompositor(m_compositorName);
+
+    m_compositorListener = new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
+                                                                                      m_viewPointMatrices,
+                                                                                      m_3DOgreTexture,
+                                                                                      m_gpuTF.getTexture(),
+                                                                                      m_sampleDistance,
+                                                                                      (m_mode3D !=
+                                                                                       ::fwRenderOgre::Layer::
+                                                                                       StereoModeType::NONE),
+                                                                                      m_volumeSceneNode);
+
+    compositorInstance->addListener(m_compositorListener);
+}
+
+//-----------------------------------------------------------------------------
+
 void RayTracingVolumeRenderer::initEntryPoints()
 {
     const std::string mtlName = m_preIntegratedRendering ? "PreIntegratedRayTracedVolume" : "RayTracedVolume";
@@ -658,7 +716,8 @@ void RayTracingVolumeRenderer::initEntryPoints()
     }
     m_entryPointGeometry->end();
 
-    m_entryPointGeometry->setVisible(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE);
+    //m_entryPointGeometry->setVisible(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE);
+    m_entryPointGeometry->setVisible(0);
 
     m_volumeSceneNode->attachObject(m_entryPointGeometry);
 
@@ -744,7 +803,8 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 
     ::Ogre::RenderOperation renderOp;
     m_proxyGeometryGenerator->getRenderOperation(renderOp);
-    m_entryPointGeometry->setVisible(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE);
+    //m_entryPointGeometry->setVisible(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE);
+    m_entryPointGeometry->setVisible(0);
 
     ::Ogre::Matrix4 worldMat;
     m_proxyGeometryGenerator->getWorldTransforms(&worldMat);
@@ -771,6 +831,11 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
         ::Ogre::RenderTexture* renderTexture = entryPtsText->getBuffer()->getRenderTarget();
         renderTexture->getViewport(0)->clear(::Ogre::FBT_COLOUR | ::Ogre::FBT_DEPTH, ::Ogre::ColourValue::White);
 
+        if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE)
+        {
+            ::Ogre::Matrix4 worldViewProj = projMat * m_camera->getViewMatrix() * worldMat;
+            m_viewPointMatrices.push_back(worldViewProj.inverse());
+        }
         if(m_mode3D != ::fwRenderOgre::Layer::StereoModeType::NONE)
         {
             const ::Ogre::Matrix4 shearTransform = frustumShearTransform(angle);

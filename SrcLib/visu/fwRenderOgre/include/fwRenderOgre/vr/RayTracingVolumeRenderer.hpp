@@ -91,9 +91,6 @@ public:
     /// Sets soft shadows usage.
     FWRENDEROGRE_API virtual void setShadows(bool shadows);
 
-    /// Configures to layer to handle stereoscopic rendering by adding the stereo VR compositor to the chain.
-    FWRENDEROGRE_API void configure3DViewport();
-
     /// Sets the focal distance used for stereo rendering.
     /// A focal length of 0 focuses on the front of the image and a length of 1 focuses on the back.
     FWRENDEROGRE_API void setFocalLength(float focalLength);
@@ -112,13 +109,19 @@ public:
 
 private:
 
+    /// Init the materials with parameters/texture state
+    void initMaterials();
+
+    /// Initialize the compositors used after the step computing the ray entry points
+    void initCompositors();
+
     /// Creates the proxy geometry defining the entry points for rays.
     void initEntryPoints();
 
     /// Creates a new grid texture and sets shader parameters for volume bricking.
     void createGridTexture();
 
-    /// Renders the proxy geometry too fill the entry point texture.
+    /// Renders the proxy geometry to fill the entry point texture.
     void computeEntryPointsTexture();
 
     /// Compute the focal length in camera space.
@@ -200,9 +203,9 @@ private:
     struct CameraListener;
     CameraListener* m_cameraListener;
 
-    /// Compositor listener class used to upload uniforms for autostereo.
-    class AutoStereoCompositorListener;
-    AutoStereoCompositorListener* m_compositorListener;
+    /// Compositor listener class used to upload uniforms for mono/stereo ray tracing materials.
+    class RayTracingCompositorListener;
+    RayTracingCompositorListener* m_compositorListener;
 
     std::string m_compositorName;
 

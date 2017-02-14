@@ -319,17 +319,12 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
                                                                             m_ambientOcclusion,
                                                                             m_colorBleeding);
 
-        if(layer->getStereoMode() != ::fwRenderOgre::Layer::StereoModeType::NONE)
-        {
-            auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer*>(m_volumeRenderer);
+        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer*>(m_volumeRenderer);
 
-            OSLM_ERROR_IF("Stereo rendering is supported only by ray casting VR.", !rayCastVolumeRenderer);
+        OSLM_ERROR_IF("Stereo rendering is supported only by ray casting VR.", !rayCastVolumeRenderer);
 
-            rayCastVolumeRenderer->configure3DViewport();
-
-            // Initially focus on the image center.
-            setFocalDistance(50);
-        }
+        // Initially focus on the image center.
+        setFocalDistance(50);
     }
 
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)

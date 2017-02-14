@@ -28,6 +28,8 @@ uniform sampler2D u_entryPoints;
 
 uniform mat4 u_invWorldViewProj;
 
+in vec2 uv;
+
 #endif // MODE3D
 
 uniform vec3 u_cameraPos;
@@ -240,7 +242,7 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 void main(void)
 {
 #ifndef MODE3D
-    vec2 rayEntryExit = texelFetch(u_entryPoints, ivec2(gl_FragCoord.xy), 0).rg;
+    vec2 rayEntryExit = texture(u_entryPoints, uv).rg;
 
     float entryDepth =  rayEntryExit.r;
     float exitDepth  = -rayEntryExit.g;

@@ -1,0 +1,24 @@
+compositor RayTracedVolume_comp
+{
+    technique
+    {
+        // Final pass
+        target_output
+        {
+            input previous
+            pass clear
+            {
+                buffers depth
+            }
+
+            pass render_scene
+            {
+            }
+
+            pass render_quad
+            {
+                material RayTracedVolume
+            }
+        }
+    }
+}
