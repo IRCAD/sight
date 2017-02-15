@@ -8,10 +8,10 @@
 
 #include "fwGui/IActionSrv.hpp"
 #include "fwGui/IMenuItemCallback.hpp"
-#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwThread/Worker.hpp>
 #include <fwThread/Worker.hxx>

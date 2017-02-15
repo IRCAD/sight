@@ -1,12 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-
 #include "fwGui/dialog/LocationDialog.hpp"
+
 #include <fwServices/registry/ActiveWorkers.hpp>
 
 namespace fwGui
@@ -19,11 +18,11 @@ LocationDialog::LocationDialog()
 {
 
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(::boost::function< void() >(
-                                                           [&] {
+                                                                                    [&] {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ILocationDialog::REGISTRY_KEY);
                 m_implementation = ::fwGui::dialog::ILocationDialog::dynamicCast(guiObj);
             })
-                                                       ).wait();
+                                                                                ).wait();
 }
 
 //------------------------------------------------------------------------------
@@ -54,9 +53,9 @@ void LocationDialog::setType( ::fwGui::dialog::ILocationDialog::Types type)
 
 //-----------------------------------------------------------------------------
 
-void LocationDialog::addFilter(const std::string &filterName, const std::string &wildcardList )
+void LocationDialog::addFilter(const std::string& filterName, const std::string& wildcardList )
 {
-    m_implementation->addFilter(filterName,wildcardList);
+    m_implementation->addFilter(filterName, wildcardList);
 }
 
 //-----------------------------------------------------------------------------
@@ -109,7 +108,6 @@ std::string LocationDialog::getCurrentSelection() const
 }
 
 //-----------------------------------------------------------------------------
-
 
 } //namespace dialog
 } //namespace fwGui

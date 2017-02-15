@@ -1,14 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ModelSeriesWriterTest.hpp"
 
-#include <fwData/Reconstruction.hpp>
-#include <fwData/Mesh.hpp>
 #include <fwData/Array.hpp>
+#include <fwData/Mesh.hpp>
+#include <fwData/Reconstruction.hpp>
 
 #include <fwMedData/ModelSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
@@ -22,13 +22,13 @@
 
 #include <fwTools/System.hpp>
 
-#include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 #include <boost/functional/hash.hpp>
 
-#include <vector>
-#include <string>
 #include <set>
+#include <string>
+#include <vector>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioVTK::ut::ModelSeriesWriterTest );
@@ -106,7 +106,7 @@ void runModelSeriesSrv(
 
 //------------------------------------------------------------------------------
 
-size_t recHash(const ::fwData::Reconstruction::sptr &rec)
+size_t recHash(const ::fwData::Reconstruction::sptr& rec)
 {
     ::fwData::Mesh::sptr mesh = rec->getMesh();
 
@@ -122,19 +122,19 @@ size_t recHash(const ::fwData::Reconstruction::sptr &rec)
 
     bo   = points->getBufferObject();
     lock = (bo->lock());
-    buf.append(static_cast< char * >(lock.getBuffer()), bo->getSize());
+    buf.append(static_cast< char* >(lock.getBuffer()), bo->getSize());
 
     bo   = cellTypes->getBufferObject();
     lock = (bo->lock());
-    buf.append(static_cast< char * >(lock.getBuffer()), bo->getSize());
+    buf.append(static_cast< char* >(lock.getBuffer()), bo->getSize());
 
     bo   = cellData->getBufferObject();
     lock = (bo->lock());
-    buf.append(static_cast< char * >(lock.getBuffer()), bo->getSize());
+    buf.append(static_cast< char* >(lock.getBuffer()), bo->getSize());
 
     bo   = cellDataOffsets->getBufferObject();
     lock = (bo->lock());
-    buf.append(static_cast< char * >(lock.getBuffer()), bo->getSize());
+    buf.append(static_cast< char* >(lock.getBuffer()), bo->getSize());
 
     ::boost::hash<std::string> stringHash;
     return stringHash(buf);

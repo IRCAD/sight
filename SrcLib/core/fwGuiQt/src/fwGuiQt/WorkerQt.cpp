@@ -9,9 +9,6 @@
 #include "fwGuiQt/App.hpp"
 #include "fwGuiQt/util/FuncSlot.hpp"
 
-
-#include <fwServices/registry/ActiveWorkers.hpp>
-
 #include <fwRuntime/profile/Profile.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
@@ -115,7 +112,6 @@ protected:
 //-----------------------------------------------------------------------------
 
 /**
- * @class TimerQt
  * @brief Private Timer implementation using Qt.
  */
 class TimerQt : public ::fwThread::Timer

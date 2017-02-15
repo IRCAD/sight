@@ -12,7 +12,6 @@
 #include "fwGui/container/fwContainer.hpp"
 #include "fwGui/layoutManager/IViewLayoutManager.hpp"
 #include "fwGui/registrar/ViewRegistrar.hpp"
-#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
@@ -22,6 +21,7 @@
 #include <fwCore/base.hpp>
 
 #include <fwServices/macros.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwTools/fwID.hpp>
 

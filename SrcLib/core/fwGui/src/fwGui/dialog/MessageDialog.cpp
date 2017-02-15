@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGui/dialog/MessageDialog.hpp"
+
 #include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <boost/function.hpp>
@@ -62,7 +63,7 @@ MessageDialog::~MessageDialog()
 
 //-----------------------------------------------------------------------------
 
-void MessageDialog::setTitle( const std::string &title )
+void MessageDialog::setTitle( const std::string& title )
 {
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( ::boost::function<void()>([&]
             {
@@ -75,7 +76,7 @@ void MessageDialog::setTitle( const std::string &title )
 
 //-----------------------------------------------------------------------------
 
-void MessageDialog::setMessage( const std::string &msg )
+void MessageDialog::setMessage( const std::string& msg )
 {
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( ::boost::function<void()>([&]
             {

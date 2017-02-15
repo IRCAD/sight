@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
 #include "fwGui/dialog/SelectorDialog.hpp"
+
 #include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <boost/bind.hpp>
@@ -16,7 +16,6 @@ namespace fwGui
 {
 namespace dialog
 {
-
 
 //-----------------------------------------------------------------------------
 
@@ -48,6 +47,8 @@ SelectorDialog::SelectorDialog()
     create();
 }
 
+//------------------------------------------------------------------------------
+
 void SelectorDialog::create()
 {
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
@@ -72,7 +73,8 @@ void SelectorDialog::setTitle(std::string title)
 std::string SelectorDialog::show()
 {
     ::boost::function< std::string() > f         = ::boost::bind(&ISelectorDialog::show, m_implementation);
-    ::boost::shared_future< std::string > future = ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< std::string >(f);
+    ::boost::shared_future< std::string > future =
+        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< std::string >(f);
     future.wait();
     return future.get();
 }
@@ -89,7 +91,7 @@ void SelectorDialog::setSelections(std::vector< std::string > _selections)
 
 //-----------------------------------------------------------------------------
 
-void SelectorDialog::setMessage(const std::string &msg)
+void SelectorDialog::setMessage(const std::string& msg)
 {
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
             {

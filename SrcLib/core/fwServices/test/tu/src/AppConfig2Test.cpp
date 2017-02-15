@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,10 +21,10 @@
 
 #include <fwTest/helper/Thread.hpp>
 
-#include <TestService.hpp>
-
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
+
+#include <TestService.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwServices::ut::AppConfig2Test );
@@ -48,6 +48,8 @@ namespace ut
     WAIT(::fwTools::fwID::getObject(srv) != nullptr && \
          ::fwServices::IService::dynamicCast(::fwTools::fwID::getObject(srv))->getStatus() \
          == ::fwServices::IService::STARTED)
+
+//------------------------------------------------------------------------------
 
 void AppConfig2Test::setUp()
 {
@@ -774,7 +776,7 @@ void AppConfig2Test::optionalKeyTest()
     CPPUNIT_ASSERT(srv1->getIsUpdated());
     srv1->resetIsUpdated();
 
-    CPPUNIT_ASSERT(data1   == srv1->getInput< ::fwData::Object>("data1") );
+    CPPUNIT_ASSERT(data1 == srv1->getInput< ::fwData::Object>("data1") );
     CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("data2") );
     CPPUNIT_ASSERT(nullptr == srv1->getInput< ::fwData::Object>("data3") );
 
@@ -1054,10 +1056,10 @@ void AppConfig2Test::keyGroupTest()
         WAIT(data3 == srv2->getInput< ::fwData::Object>("dataGroup1#0"));
 
         CPPUNIT_ASSERT(2 == srv2->getKeyGroupSize("dataGroup0") );
-        CPPUNIT_ASSERT(data1   == srv2->getInput< ::fwData::Object>("dataGroup0#0") );
+        CPPUNIT_ASSERT(data1 == srv2->getInput< ::fwData::Object>("dataGroup0#0") );
         CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("dataGroup0#1") );
 
-        CPPUNIT_ASSERT(data1   == srv2->getInput< ::fwData::Object>("dataGroup0", 0 ) );
+        CPPUNIT_ASSERT(data1 == srv2->getInput< ::fwData::Object>("dataGroup0", 0 ) );
         CPPUNIT_ASSERT(nullptr == srv2->getInput< ::fwData::Object>("dataGroup0", 1 ) );
 
         CPPUNIT_ASSERT(3 == srv2->getKeyGroupSize("dataGroup1") );
@@ -1117,7 +1119,7 @@ void AppConfig2Test::concurentAccessToAppConfig2Test()
     const unsigned int nbThreads = 20;
     std::vector< SPTR(::fwTest::helper::Thread) > threads;
 
-    for (unsigned int i = 0; i<nbThreads; ++i)
+    for (unsigned int i = 0; i < nbThreads; ++i)
     {
         SPTR(::fwTest::helper::Thread) thread;
         thread = std::shared_ptr< ::fwTest::helper::Thread >(
@@ -1125,7 +1127,7 @@ void AppConfig2Test::concurentAccessToAppConfig2Test()
         threads.push_back(thread);
     }
 
-    for (unsigned int i = 0; i<nbThreads; ++i)
+    for (unsigned int i = 0; i < nbThreads; ++i)
     {
         std::stringstream str;
         str << "thread " << i;
@@ -1143,7 +1145,7 @@ void AppConfig2Test::concurentAccessToAppConfig2Test()
 ::fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildParametersConfig()
 {
     // Configuration on fwTools::Object which uid is objectUUID
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("object"));
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg( new ::fwRuntime::EConfigurationElement("object"));
     cfg->setAttributeValue( "uid", "${TEST_IMAGE}");
     cfg->setAttributeValue( "type", "::fwData::Image");
 
@@ -1182,7 +1184,7 @@ void AppConfig2Test::concurentAccessToAppConfig2Test()
 
 ::fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildStartStopConfig()
 {
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("config"));
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg( new ::fwRuntime::EConfigurationElement("config"));
 
     std::shared_ptr< ::fwRuntime::EConfigurationElement > objCfg = cfg->addConfigurationElement("object");
     objCfg->setAttributeValue( "uid", "data1Id");
@@ -1286,7 +1288,7 @@ void AppConfig2Test::concurentAccessToAppConfig2Test()
 fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildAutoConnectTestConfig()
 {
     // Configuration on fwTools::Object which uid is objectUUID
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("config"));
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg( new ::fwRuntime::EConfigurationElement("config"));
 
     std::shared_ptr< ::fwRuntime::EConfigurationElement > objCfg = cfg->addConfigurationElement("object");
     objCfg->setAttributeValue( "uid", "data1Id");
@@ -1389,7 +1391,7 @@ fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildAutoConnectTestConfig
 
 fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildConnectionConfig()
 {
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("config"));
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg( new ::fwRuntime::EConfigurationElement("config"));
 
     std::shared_ptr< ::fwRuntime::EConfigurationElement > objCfg = cfg->addConfigurationElement("object");
     objCfg->setAttributeValue( "uid", "data1Id");
@@ -1505,7 +1507,7 @@ fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildConnectionConfig()
 
 fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildOptionalKeyConfig()
 {
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("config"));
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg( new ::fwRuntime::EConfigurationElement("config"));
 
     std::shared_ptr< ::fwRuntime::EConfigurationElement > objCfg = cfg->addConfigurationElement("object");
     objCfg->setAttributeValue( "uid", "data1Id");
@@ -1620,7 +1622,7 @@ fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildOptionalKeyConfig()
 
 fwRuntime::ConfigurationElement::sptr AppConfig2Test::buildKeyGroupConfig()
 {
-    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg ( new ::fwRuntime::EConfigurationElement("config"));
+    std::shared_ptr< ::fwRuntime::EConfigurationElement > cfg( new ::fwRuntime::EConfigurationElement("config"));
 
     std::shared_ptr< ::fwRuntime::EConfigurationElement > objCfg = cfg->addConfigurationElement("object");
     objCfg->setAttributeValue( "uid", "data1Id");

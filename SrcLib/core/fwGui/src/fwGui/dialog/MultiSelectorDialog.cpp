@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
 #include "fwGui/dialog/MultiSelectorDialog.hpp"
+
 #include <fwServices/registry/ActiveWorkers.hpp>
 
 namespace fwGui
@@ -17,7 +17,7 @@ namespace dialog
 MultiSelectorDialog::MultiSelectorDialog()
 {
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(::boost::function< void() >(
-                                                           [this] {
+                                                                                    [this] {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IMultiSelectorDialog::REGISTRY_KEY);
                 m_implementation = ::fwGui::dialog::IMultiSelectorDialog::dynamicCast(guiObj);
             })).wait();
@@ -57,7 +57,7 @@ void MultiSelectorDialog::setSelections(Selections _selections)
 
 //-----------------------------------------------------------------------------
 
-void MultiSelectorDialog::setMessage(const std::string &msg)
+void MultiSelectorDialog::setMessage(const std::string& msg)
 {
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&] {

@@ -7,7 +7,6 @@
 #include "fwGui/IFrameSrv.hpp"
 
 #include "fwGui/Application.hpp"
-#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -15,6 +14,7 @@
 #include <fwCom/Slots.hxx>
 
 #include <fwServices/macros.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwThread/Worker.hpp>
 #include <fwThread/Worker.hxx>

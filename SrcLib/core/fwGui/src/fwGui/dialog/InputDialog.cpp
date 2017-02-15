@@ -1,9 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
 
 #include "fwGui/dialog/InputDialog.hpp"
 
@@ -15,7 +14,7 @@ namespace dialog
 {
 //-----------------------------------------------------------------------------
 
-std::string InputDialog::showInputDialog(const std::string& title, const std::string& message, const std::string &text)
+std::string InputDialog::showInputDialog(const std::string& title, const std::string& message, const std::string& text)
 {
     ::fwGui::dialog::InputDialog inputBox(title, message, text);
     return inputBox.getInput();
@@ -34,7 +33,7 @@ InputDialog::InputDialog()
 
 //-----------------------------------------------------------------------------
 
-InputDialog::InputDialog(const std::string& title, const std::string& message, const std::string &text)
+InputDialog::InputDialog(const std::string& title, const std::string& message, const std::string& text)
 {
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >( [&]
             {
@@ -54,7 +53,7 @@ InputDialog::~InputDialog()
 
 //-----------------------------------------------------------------------------
 
-void InputDialog::setTitle( const std::string &title )
+void InputDialog::setTitle( const std::string& title )
 {
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
             {
@@ -64,7 +63,7 @@ void InputDialog::setTitle( const std::string &title )
 
 //-----------------------------------------------------------------------------
 
-void InputDialog::setMessage( const std::string &msg )
+void InputDialog::setMessage( const std::string& msg )
 {
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >( [&]
             {
@@ -74,7 +73,7 @@ void InputDialog::setMessage( const std::string &msg )
 
 //-----------------------------------------------------------------------------
 
-void InputDialog::setInput(const std::string &text)
+void InputDialog::setInput(const std::string& text)
 {
     ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
             {
@@ -87,7 +86,8 @@ void InputDialog::setInput(const std::string &text)
 std::string InputDialog::getInput()
 {
     ::boost::function< std::string() > func = ::boost::bind(&IInputDialog::getInput, m_implementation);
-    ::boost::shared_future< std::string > f = ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<std::string>(func);
+    ::boost::shared_future< std::string > f =
+        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<std::string>(func);
     f.wait();
     return f.get();
 }
@@ -96,6 +96,4 @@ std::string InputDialog::getInput()
 
 } //namespace dialog
 } // namespace fwGui
-
-
 

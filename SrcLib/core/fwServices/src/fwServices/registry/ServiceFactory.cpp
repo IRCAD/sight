@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,9 +14,9 @@
 #include <fwData/Exception.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/Runtime.hpp>
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/profile/Profile.hpp>
+#include <fwRuntime/Runtime.hpp>
 
 #include <functional>
 #include <vector>
@@ -184,7 +184,6 @@ IService::sptr ServiceFactory::create( const std::string& _srvImpl ) const
 
     return service;
 }
-
 
 //-----------------------------------------------------------------------------
 

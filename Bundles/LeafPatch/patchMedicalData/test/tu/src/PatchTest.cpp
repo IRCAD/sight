@@ -8,9 +8,6 @@
 
 #include <fwDataTools/Image.hpp>
 
-
-#include <fwServices/registry/ActiveWorkers.hpp>
-
 #include <fwMDSemanticPatch/PatchLoader.hpp>
 
 #include <fwMedData/Equipment.hpp>
@@ -21,6 +18,7 @@
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
+#include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
@@ -29,8 +27,8 @@
 
 #include <fwThread/Worker.hpp>
 
-#include <fwTools/System.hpp>
 #include <fwTools/dateAndTime.hpp>
+#include <fwTools/System.hpp>
 
 #include <boost/filesystem/operations.hpp>
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,13 +22,12 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwServices/registry/ActiveWorkers.hpp>
-
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 
 #include <fwServices/macros.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwVtkIO/ImageReader.hpp>
 #include <fwVtkIO/MetaImageReader.hpp>
@@ -69,9 +68,9 @@ void SImageReader::configureWithIHM()
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Choose a file to load an image");
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("Vtk","*.vtk");
-    dialogFile.addFilter("Vti","*.vti");
-    dialogFile.addFilter("MetaImage","*.mhd");
+    dialogFile.addFilter("Vtk", "*.vtk");
+    dialogFile.addFilter("Vti", "*.vti");
+    dialogFile.addFilter("MetaImage", "*.mhd");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
@@ -110,7 +109,7 @@ void SImageReader::stopping() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SImageReader::info( std::ostream &_sstream )
+void SImageReader::info( std::ostream& _sstream )
 {
     _sstream << "SImageReader::info";
 }
@@ -125,7 +124,8 @@ void SImageReader::updating() throw ( ::fwTools::Failed )
         ::fwData::Image::sptr pImage = this->getObject< ::fwData::Image >();
         SLM_ASSERT("pImage not instanced", pImage);
 
-        // Read new image path and update image. If the reading process is a success, we notify all listeners that image has been modified.
+        // Read new image path and update image. If the reading process is a success, we notify all listeners that image
+        // has been modified.
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
@@ -148,7 +148,7 @@ void SImageReader::updating() throw ( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-template< typename READER > typename READER::sptr configureReader(const ::boost::filesystem::path &imgFile )
+template< typename READER > typename READER::sptr configureReader(const ::boost::filesystem::path& imgFile )
 {
     typename READER::sptr reader = READER::New();
     reader->setFile(imgFile);
@@ -205,7 +205,7 @@ bool SImageReader::loadImage( const ::boost::filesystem::path imgFile, ::fwData:
         // Raise exception  for superior level
         FW_RAISE_EXCEPTION(e);
     }
-    catch (const std::exception & e)
+    catch (const std::exception& e)
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,11 +7,11 @@
 #ifndef __FWSERVICES_REGISTRY_ACTIVEWORKERS_HPP__
 #define __FWSERVICES_REGISTRY_ACTIVEWORKERS_HPP__
 
+#include "fwServices/config.hpp"
+
 #include <fwCore/mt/types.hpp>
 
 #include <fwThread/Worker.hpp>
-
-#include "fwServices/config.hpp"
 
 namespace fwServices
 {
@@ -47,7 +47,7 @@ public:
      * @brief Get a worker registered with key, if the key does not exist a null sptr is returned
      * @note This method is thread safe.
      */
-    FWSERVICES_API ::fwThread::Worker::sptr getWorker( const WorkerKeyType & key ) const;
+    FWSERVICES_API ::fwThread::Worker::sptr getWorker( const WorkerKeyType& key ) const;
 
     /// Register the default active worker.
     FWSERVICES_API static void setDefaultWorker( ::fwThread::Worker::sptr worker );
@@ -62,7 +62,7 @@ public:
      * @brief Registers a worker
      * @note This method is thread safe.
      */
-    FWSERVICES_API void addWorker( const WorkerKeyType & key, ::fwThread::Worker::sptr worker );
+    FWSERVICES_API void addWorker( const WorkerKeyType& key, ::fwThread::Worker::sptr worker );
 
     /**
      * @brief Initializes registry, creates and registers the default worker
@@ -78,7 +78,6 @@ public:
 
     /// Returns an instance of ActiveWorkers.
     FWSERVICES_API static ActiveWorkers::sptr getDefault();
-
 
 protected:
 

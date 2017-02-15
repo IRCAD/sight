@@ -8,9 +8,6 @@
 
 #include <fwCore/base.hpp>
 
-
-#include <fwServices/registry/ActiveWorkers.hpp>
-
 #include <fwGuiQt/App.hpp>
 #include <fwGuiQt/WorkerQt.hpp>
 

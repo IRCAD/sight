@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,17 +10,15 @@
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
-#include <fwDataTools/Image.hpp>
 #include <fwDataTools/helper/Image.hpp>
-
-
-#include <fwServices/registry/ActiveWorkers.hpp>
+#include <fwDataTools/Image.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwTest/Data.hpp>
@@ -128,7 +126,7 @@ void ImageReaderWriterTest::testVtkImageReader()
     sizeExpected[1] = 170;
     sizeExpected[2] = 58;
 
-    runImageSrv("::io::IReader","::ioVTK::SImageReader",getIOConfiguration(file), image);
+    runImageSrv("::io::IReader", "::ioVTK::SImageReader", getIOConfiguration(file), image);
 
     // Data read.
     ::fwData::Image::SpacingType spacingRead = image->getSpacing();
@@ -163,7 +161,7 @@ void ImageReaderWriterTest::testVtiImageReader()
                            ::boost::filesystem::exists(file));
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    runImageSrv("::io::IReader","::ioVTK::SImageReader",getIOConfiguration(file), image);
+    runImageSrv("::io::IReader", "::ioVTK::SImageReader", getIOConfiguration(file), image);
 
     // Data expected
     const size_t dim = 3;
@@ -188,7 +186,6 @@ void ImageReaderWriterTest::testVtiImageReader()
     ::fwData::Image::SpacingType spacingRead = image->getSpacing();
     ::fwData::Image::SpacingType originRead  = image->getOrigin();
     ::fwData::Image::SizeType sizeRead       = image->getSize();
-
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -219,7 +216,7 @@ void ImageReaderWriterTest::testMhdImageReader()
                            ::boost::filesystem::exists(file));
 
     ::fwData::Image::sptr image = ::fwData::Image::New();
-    runImageSrv("::io::IReader","::ioVTK::SImageReader",getIOConfiguration(file), image);
+    runImageSrv("::io::IReader", "::ioVTK::SImageReader", getIOConfiguration(file), image);
 
     // Data expected
     const size_t dim = 3;
@@ -244,8 +241,6 @@ void ImageReaderWriterTest::testMhdImageReader()
     ::fwData::Image::SpacingType spacingRead = image->getSpacing();
     ::fwData::Image::SpacingType originRead  = image->getOrigin();
     ::fwData::Image::SizeType sizeRead       = image->getSize();
-
-
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -281,7 +276,6 @@ void ImageReaderWriterTest::testImageReaderExtension()
     {
         const std::string srvtype("::io::IReader");
         const std::string srvname("::ioVTK::SImageReader");
-
 
         ::fwServices::IService::sptr srv;
         srv = ::fwServices::registry::ServiceFactory::getDefault()->create( srvtype, srvname );
@@ -326,12 +320,11 @@ void ImageReaderWriterTest::testVtkImageWriter()
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vtk";
 
-    runImageSrv("::io::IWriter","::ioVTK::SImageWriter",getIOConfiguration(file), image);
-
+    runImageSrv("::io::IWriter", "::ioVTK::SImageWriter", getIOConfiguration(file), image);
 
     // Read image from disk
     ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
-    runImageSrv("::io::IReader","::ioVTK::SImageReader",getIOConfiguration(file), imageFromDisk);
+    runImageSrv("::io::IReader", "::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     ::boost::filesystem::remove(file);
 
@@ -339,7 +332,6 @@ void ImageReaderWriterTest::testVtkImageWriter()
     ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
     ::fwData::Image::SpacingType originRead  = imageFromDisk->getOrigin();
     ::fwData::Image::SizeType sizeRead       = imageFromDisk->getSize();
-
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -386,7 +378,7 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
 
     // Read image series
     ::fwData::Image::sptr newImage = ::fwData::Image::New();
-    runImageSrv("::io::IReader","::ioVTK::SImageReader", getIOConfiguration(file), newImage);
+    runImageSrv("::io::IReader", "::ioVTK::SImageReader", getIOConfiguration(file), newImage);
 
     ::fwTest::helper::ExcludeSetType exclude;
     exclude.insert("window_center");
@@ -421,18 +413,16 @@ void ImageReaderWriterTest::testVtiImageWriter()
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder() / "temporaryFile.vti";
 
-    runImageSrv("::io::IWriter","::ioVTK::SImageWriter",getIOConfiguration(file), image);
-
+    runImageSrv("::io::IWriter", "::ioVTK::SImageWriter", getIOConfiguration(file), image);
 
     // Read image from disk
     ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
-    runImageSrv("::io::IReader","::ioVTK::SImageReader",getIOConfiguration(file), imageFromDisk);
+    runImageSrv("::io::IReader", "::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     // Data read
     ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
     ::fwData::Image::SpacingType originRead  = imageFromDisk->getOrigin();
     ::fwData::Image::SizeType sizeRead       = imageFromDisk->getSize();
-
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -457,7 +447,6 @@ void ImageReaderWriterTest::testVtiImageWriter()
 
     CPPUNIT_ASSERT_EQUAL( image->getType(), imageFromDisk->getType());
     CPPUNIT_ASSERT( std::equal(ptrOnGeneratedImage, ptrOnGeneratedImage + image->getSizeInBytes(), ptrOnReadImage) );
-
 
 }
 
@@ -487,17 +476,16 @@ void ImageReaderWriterTest::testMhdImageWriter()
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.mhd";
 
-    runImageSrv("::io::IWriter","::ioVTK::SImageWriter",getIOConfiguration(file), image);
+    runImageSrv("::io::IWriter", "::ioVTK::SImageWriter", getIOConfiguration(file), image);
 
     // Read image from disk
     ::fwData::Image::sptr imageFromDisk = ::fwData::Image::New();
-    runImageSrv("::io::IReader","::ioVTK::SImageReader",getIOConfiguration(file), imageFromDisk);
+    runImageSrv("::io::IReader", "::ioVTK::SImageReader", getIOConfiguration(file), imageFromDisk);
 
     // Data read
     ::fwData::Image::SpacingType spacingRead = imageFromDisk->getSpacing();
     ::fwData::Image::SpacingType originRead  = imageFromDisk->getOrigin();
     ::fwData::Image::SizeType sizeRead       = imageFromDisk->getSize();
-
 
     CPPUNIT_ASSERT_EQUAL(spacingExpected.size(), spacingRead.size() );
     CPPUNIT_ASSERT_EQUAL(originExpected.size(), originRead.size() );
@@ -514,7 +502,6 @@ void ImageReaderWriterTest::testMhdImageWriter()
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on x", sizeExpected[0], sizeRead[0]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", sizeExpected[1], sizeRead[1]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on z", sizeExpected[2], sizeRead[2]);
-
 
     ::fwDataTools::helper::Image imageHelper(image);
     ::fwDataTools::helper::Image imageFromDiskHelper(imageFromDisk);
@@ -552,11 +539,9 @@ void ImageReaderWriterTest::testImageWriterExtension()
     // Write to vtk image.
     const ::boost::filesystem::path file = ::fwTools::System::getTemporaryFolder()/ "temporaryFile.xxx";
 
-
     {
         const std::string srvtype("::io::IWriter");
         const std::string srvname("::ioVTK::SImageWriter");
-
 
         ::fwServices::IService::sptr srv;
         srv = ::fwServices::registry::ServiceFactory::getDefault()->create( srvtype, srvname );

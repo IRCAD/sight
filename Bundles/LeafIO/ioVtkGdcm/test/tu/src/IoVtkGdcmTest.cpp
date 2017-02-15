@@ -1,13 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "IoVtkGdcmTest.hpp"
-
-
-#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/Patient.hpp>
@@ -17,6 +14,7 @@
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
 #include <fwTest/Data.hpp>
@@ -26,8 +24,8 @@
 
 #include <fwThread/Worker.hpp>
 
-#include <fwTools/System.hpp>
 #include <fwTools/dateAndTime.hpp>
+#include <fwTools/System.hpp>
 
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/filesystem.hpp>
@@ -36,7 +34,6 @@
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::ioVtkGdcm::ut::IoVtkGdcmTest );
-
 
 namespace ioVtkGdcm
 {
@@ -98,7 +95,7 @@ void IoVtkGdcmTest::readerDicomTest( std::string srvImpl )
     double imgSpacingY                = 0.667969;
     double imgSpacingZ                = 1.5;
 
-    ::fwData::Image::OriginType imgOriginExpected (3,0);
+    ::fwData::Image::OriginType imgOriginExpected(3, 0);
 
     size_t imgSizeX_Expected = 512;
     size_t imgSizeY_Expected = 512;
@@ -204,7 +201,6 @@ void IoVtkGdcmTest::imageSeriesWriterTest()
     writerSrv->update().wait();
     writerSrv->stop().wait();
     ::fwServices::OSR::unregisterService( writerSrv );
-
 
     // Load Dicom from disk
     ::fwMedData::SeriesDB::sptr seriesDB = ::fwMedData::SeriesDB::New();
