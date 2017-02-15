@@ -3,6 +3,10 @@
 uniform sampler3D u_image;
 uniform sampler2D u_tfTexture;
 
+#ifdef MImP
+uniform sampler2D u_IC;
+#endif
+
 #if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 uniform sampler3D u_illuminationVolume;
 uniform vec4 u_volIllumFactor;
@@ -253,6 +257,16 @@ void main(void)
     }
 
     gl_FragDepth = entryDepth;
+
+
+    #ifdef MImP
+        float importance = texture(u_IC, uv).b;
+
+        if(importance > 0.0)
+        {
+            entryDepth = importance;
+        }
+    #endif // MImP
 
     vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, u_invWorldViewProj);
     vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, u_invWorldViewProj);

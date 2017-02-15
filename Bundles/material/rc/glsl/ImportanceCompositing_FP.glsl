@@ -58,22 +58,23 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in vec3 ra
     vec4 result = vec4(0);
 
     float rayExitLength = length(rayExit);
-    float maxValue = 0.;
 
     int iterCount = 0;
+
+    // For the segmentation we have a [0, 255] range
+    // So we check for value superior to 128: 128 / 65536 = 0.001953125
+    float edge = 0.5 + 0.001953125;
+
     for(float t = 0; iterCount < 65000 && t < rayLength; iterCount += 1, t += sampleDistance)
     {
         float maskValue = texture(u_mask, rayPos).r;
-        maxValue = max(maxValue, maskValue);
 
-        result = vec4(vec3(maxValue), 1.);
-
-        // if(maskValue > 0.5)
-        // {
-        //     //float depth = length(rayPos) / rayExitLength;
-        //     result = vec4(0., 0., 1., 1.);
-        //     break;
-        // }
+        if(maskValue > edge)
+        {
+            float depth = length(rayPos) / rayExitLength;
+            result = vec4(uv.x, uv.y, depth, 1.);
+            break;
+        }
 
         rayPos += rayDir;
     }

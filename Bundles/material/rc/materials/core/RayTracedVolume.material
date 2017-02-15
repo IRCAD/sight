@@ -12,6 +12,62 @@ vertex_program RayTracedVolume_VP glsl
 
 //----------------------------------------------
 
+fragment_program RayTracedVolume_MImP_FP glsl
+{
+    source RayTracedVolume_FP.glsl
+    attach TransferFunction_FP
+    preprocessor_defines MImP=1
+
+    default_params
+    {
+        param_named_auto u_viewportWidth viewport_width
+        param_named_auto u_viewportHeight viewport_height
+        param_named_auto u_clippingNear near_clip_distance
+        param_named_auto u_clippingFar far_clip_distance
+        param_named u_sampleDistance float 0.002
+        param_named u_image int 0
+        param_named u_tfTexture int 1
+        param_named u_entryPoints int 2
+        param_named u_IC int 3
+        // Lighting
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_shininess surface_shininess
+        param_named u_numLights int 1
+        param_named u_lightDir[0] float4 0 0 0 0
+        param_named u_lightDir[1] float4 0 0 0 0
+        param_named u_lightDir[2] float4 0 0 0 0
+        param_named u_lightDir[3] float4 0 0 0 0
+        param_named u_lightDir[4] float4 0 0 0 0
+        param_named u_lightDir[5] float4 0 0 0 0
+        param_named u_lightDir[6] float4 0 0 0 0
+        param_named u_lightDir[7] float4 0 0 0 0
+        param_named u_lightDir[8] float4 0 0 0 0
+        param_named u_lightDir[9] float4 0 0 0 0
+        param_named u_lightDiffuse[0] float4 0 0 0 0
+        param_named u_lightDiffuse[1] float4 0 0 0 0
+        param_named u_lightDiffuse[2] float4 0 0 0 0
+        param_named u_lightDiffuse[3] float4 0 0 0 0
+        param_named u_lightDiffuse[4] float4 0 0 0 0
+        param_named u_lightDiffuse[5] float4 0 0 0 0
+        param_named u_lightDiffuse[6] float4 0 0 0 0
+        param_named u_lightDiffuse[7] float4 0 0 0 0
+        param_named u_lightDiffuse[8] float4 0 0 0 0
+        param_named u_lightDiffuse[9] float4 0 0 0 0
+        param_named u_lightSpecular[0] float4 0 0 0 0
+        param_named u_lightSpecular[1] float4 0 0 0 0
+        param_named u_lightSpecular[2] float4 0 0 0 0
+        param_named u_lightSpecular[3] float4 0 0 0 0
+        param_named u_lightSpecular[4] float4 0 0 0 0
+        param_named u_lightSpecular[5] float4 0 0 0 0
+        param_named u_lightSpecular[6] float4 0 0 0 0
+        param_named u_lightSpecular[7] float4 0 0 0 0
+        param_named u_lightSpecular[8] float4 0 0 0 0
+        param_named u_lightSpecular[9] float4 0 0 0 0
+    }
+}
+
+//----------------------------------------------
+
 fragment_program RayTracedVolume_FP glsl
 {
     source RayTracedVolume_FP.glsl
@@ -659,6 +715,52 @@ material RayTracedVolume
             }
 
             texture_unit entryPoints
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}
+
+//----------------------------------------------
+
+material RayTracedVolume_MImP
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            scene_blend alpha_blend
+
+            vertex_program_ref RenderQuad_VP
+            {
+            }
+
+            fragment_program_ref RayTracedVolume_MImP_FP
+            {
+            }
+
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+
+            texture_unit transferFunction
+            {
+                filtering none
+            }
+
+            texture_unit entryPoints
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit IC
             {
                 tex_address_mode clamp
                 filtering none

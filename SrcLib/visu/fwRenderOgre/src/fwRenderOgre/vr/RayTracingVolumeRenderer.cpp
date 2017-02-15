@@ -691,23 +691,23 @@ void RayTracingVolumeRenderer::initCompositors()
 
     compositorInstance->addListener(m_compositorListener);
 
-    compositorManager.addCompositor(viewport, m_compositorName);
-    compositorManager.setCompositorEnabled(viewport, m_compositorName, true);
+    //compositorManager.addCompositor(viewport, m_compositorName);
+    //compositorManager.setCompositorEnabled(viewport, m_compositorName, true);
 
-    compositorInstance = compChain->getCompositor(m_compositorName);
+    //compositorInstance = compChain->getCompositor(m_compositorName);
 
-    m_compositorListener = new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
-                                                                                      m_viewPointMatrices,
-                                                                                      m_3DOgreTexture,
-                                                                                      m_maskTexture,
-                                                                                      m_gpuTF.getTexture(),
-                                                                                      m_sampleDistance,
-                                                                                      (m_mode3D !=
-                                                                                       ::fwRenderOgre::Layer::
-                                                                                       StereoModeType::NONE),
-                                                                                      m_volumeSceneNode);
+    //m_compositorListener = new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
+    //m_viewPointMatrices,
+    //m_3DOgreTexture,
+    //m_maskTexture,
+    //m_gpuTF.getTexture(),
+    //m_sampleDistance,
+    //(m_mode3D !=
+    //::fwRenderOgre::Layer::
+    //StereoModeType::NONE),
+    //m_volumeSceneNode);
 
-    compositorInstance->addListener(m_compositorListener);
+    //compositorInstance->addListener(m_compositorListener);
 }
 
 //-----------------------------------------------------------------------------

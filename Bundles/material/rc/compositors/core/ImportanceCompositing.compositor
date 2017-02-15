@@ -2,6 +2,21 @@ compositor ImportanceCompositingMono
 {
     technique
     {
+        texture IC target_width target_height PF_FLOAT32_RGBA
+
+        target IC
+        {
+            input none
+            pass clear
+            {
+            }
+
+            pass render_quad
+            {
+                material ImportanceCompositing
+            }
+        }
+
         // Final pass
         target_output
         {
@@ -13,7 +28,8 @@ compositor ImportanceCompositingMono
 
             pass render_quad
             {
-                material ImportanceCompositing
+                material RayTracedVolume_MImP
+                /*input 3 IC*/
             }
         }
     }
