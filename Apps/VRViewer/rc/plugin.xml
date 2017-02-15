@@ -62,7 +62,7 @@
                 <gui>
                     <frame>
                         <name>VRViewer</name>
-                        <icon>@BUNDLE_PREFIX@/VRViewer_0-1/ogre_head.svg</icon>
+                        <icon>@BUNDLE_PREFIX@/VRViewer_@DASH_VERSION@/ogre_head.svg</icon>
                         <minSize width="1280" height="720" />
                     </frame>
                     <menuBar />
