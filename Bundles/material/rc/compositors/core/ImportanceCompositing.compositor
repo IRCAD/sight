@@ -1,0 +1,21 @@
+compositor ImportanceCompositingMono
+{
+    technique
+    {
+        // Final pass
+        target_output
+        {
+            input previous
+            pass clear
+            {
+                buffers depth
+            }
+
+            pass render_quad
+            {
+                material ImportanceCompositing
+            }
+        }
+    }
+}
+

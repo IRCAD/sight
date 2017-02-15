@@ -49,6 +49,7 @@ public:
     RayTracingCompositorListener(std::vector< ::Ogre::TexturePtr>& renderTargets,
                                  std::vector< ::Ogre::Matrix4>& invWorldViewProj,
                                  ::Ogre::TexturePtr image3DTexture,
+                                 ::Ogre::TexturePtr maskTexture,
                                  ::Ogre::TexturePtr tfTexture,
                                  float& sampleDistance,
                                  bool is3DMode,
@@ -56,6 +57,7 @@ public:
         m_renderTargets(renderTargets),
         m_invWorldViewProj(invWorldViewProj),
         m_image3DTexture(image3DTexture),
+        m_maskTexture(maskTexture),
         m_tfTexture(tfTexture),
         m_sampleDistance(sampleDistance),
         m_is3DMode(is3DMode),
@@ -71,10 +73,16 @@ public:
         ::Ogre::Pass* pass = mtl->getTechnique(0)->getPass(0);
 
         ::Ogre::TextureUnitState* imageTexUnitState = pass->getTextureUnitState("image");
+        ::Ogre::TextureUnitState* maskTexUnitState  = pass->getTextureUnitState("mask");
         ::Ogre::TextureUnitState* tfTexUnitState    = pass->getTextureUnitState("transferFunction");
 
         imageTexUnitState->setTextureName(m_image3DTexture->getName());
         tfTexUnitState->setTextureName(m_tfTexture->getName());
+
+        if(maskTexUnitState)
+        {
+            maskTexUnitState->setTextureName(m_maskTexture->getName());
+        }
 
         ::Ogre::GpuProgramParametersSharedPtr vrParams = pass->getFragmentProgramParameters();
 
@@ -136,6 +144,8 @@ private:
     std::vector< ::Ogre::Matrix4>& m_invWorldViewProj;
 
     ::Ogre::TexturePtr m_image3DTexture;
+
+    ::Ogre::TexturePtr m_maskTexture;
 
     ::Ogre::TexturePtr m_tfTexture;
 
@@ -663,14 +673,33 @@ void RayTracingVolumeRenderer::initCompositors()
     auto viewport = m_layer.lock()->getViewport();
     ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
 
-    compositorManager.addCompositor(viewport, m_compositorName);
-    compositorManager.setCompositorEnabled(viewport, m_compositorName, true);
+    compositorManager.addCompositor(viewport, "ImportanceCompositingMono");
+    compositorManager.setCompositorEnabled(viewport, "ImportanceCompositingMono", true);
 
-    auto compositorInstance = compChain->getCompositor(m_compositorName);
+    auto compositorInstance = compChain->getCompositor("ImportanceCompositingMono");
 
     m_compositorListener = new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
                                                                                       m_viewPointMatrices,
                                                                                       m_3DOgreTexture,
+                                                                                      m_maskTexture,
+                                                                                      m_gpuTF.getTexture(),
+                                                                                      m_sampleDistance,
+                                                                                      (m_mode3D !=
+                                                                                       ::fwRenderOgre::Layer::
+                                                                                       StereoModeType::NONE),
+                                                                                      m_volumeSceneNode);
+
+    compositorInstance->addListener(m_compositorListener);
+
+    compositorManager.addCompositor(viewport, m_compositorName);
+    compositorManager.setCompositorEnabled(viewport, m_compositorName, true);
+
+    compositorInstance = compChain->getCompositor(m_compositorName);
+
+    m_compositorListener = new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
+                                                                                      m_viewPointMatrices,
+                                                                                      m_3DOgreTexture,
+                                                                                      m_maskTexture,
                                                                                       m_gpuTF.getTexture(),
                                                                                       m_sampleDistance,
                                                                                       (m_mode3D !=

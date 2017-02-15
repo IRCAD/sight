@@ -138,6 +138,7 @@ private:
     /// Returns the parameters of the current fragment shader.
     ::Ogre::GpuProgramParametersSharedPtr retrieveCurrentProgramParams();
 
+    /// Texture of the segmentation mask.
     ::Ogre::TexturePtr m_maskTexture;
 
     /// Object containing the proxy geometry, this is a cube for now.
