@@ -1,16 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
 #include "PatchTest.hpp"
 
 #include <fwData/Object.hpp>
-#include <fwDataTools/Image.hpp>
 
-#include <fwGui/registry/worker.hpp>
+#include <fwDataTools/Image.hpp>
 
 #include <fwMedData/Equipment.hpp>
 #include <fwMedData/ImageSeries.hpp>
@@ -20,6 +18,7 @@
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
+#include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
@@ -33,7 +32,6 @@
 
 #include <boost/assign/list_of.hpp>
 #include <boost/filesystem/operations.hpp>
-
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arPatchMedicalData::ut::PatchTest );
@@ -49,7 +47,7 @@ void PatchTest::setUp()
 {
     // Set up context before running a test.
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
-    ::fwGui::registry::worker::init(worker);
+    ::fwServices::registry::ActiveWorkers::setDefaultWorker(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -57,7 +55,7 @@ void PatchTest::setUp()
 void PatchTest::tearDown()
 {
     // Clean up after the test run.
-    ::fwGui::registry::worker::reset();
+    ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -73,9 +71,9 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::
     ::fwServices::OSR::registerService( readObj, readerSrv );
     readerSrv->setConfiguration(srvCfg);
     readerSrv->configure();
-    readerSrv->start();
-    readerSrv->update();
-    readerSrv->stop();
+    readerSrv->start().wait();
+    readerSrv->update().wait();
+    readerSrv->stop().wait();
     ::fwServices::OSR::unregisterService( readerSrv );
 
     return readObj;
@@ -129,8 +127,8 @@ void PatchTest::arPatchMedicalDataTest()
 
     //<patcher context="..." version="..." />
     ::fwRuntime::EConfigurationElement::sptr patcherCfg = ::fwRuntime::EConfigurationElement::New("patcher");
-    patcherCfg->setAttributeValue("context","MedicalData");
-    patcherCfg->setAttributeValue("version","V10AR");
+    patcherCfg->setAttributeValue("context", "MedicalData");
+    patcherCfg->setAttributeValue("version", "V10AR");
     srvCfg->addConfigurationElement(patcherCfg);
 
     ::fwMedData::SeriesDB::sptr sdb = read< ::fwMedData::SeriesDB >(srvCfg, "::ioAtoms::SReader" );
@@ -146,16 +144,14 @@ void PatchTest::arPatchMedicalDataTest()
                          series->getInstanceUID());
     CPPUNIT_ASSERT_EQUAL(std::string("20081028"), series->getDate());
     CPPUNIT_ASSERT_EQUAL(std::string("174446"), series->getTime());
-    CPPUNIT_ASSERT_EQUAL(std::string("Original image"),series->getDescription());
+    CPPUNIT_ASSERT_EQUAL(std::string("Original image"), series->getDescription());
     CPPUNIT_ASSERT_EQUAL(std::string("CT"), series->getModality());
-
 
     ::fwMedData::Patient::sptr patient = series->getPatient();
     CPPUNIT_ASSERT( patient );
     CPPUNIT_ASSERT_EQUAL(std::string("12592 ARTHRO GENOU  G"), patient->getPatientId());
     CPPUNIT_ASSERT_EQUAL(std::string("19790618"), patient->getBirthdate());
     CPPUNIT_ASSERT_EQUAL(std::string("M"), patient->getSex());
-
 
     ::fwMedData::Study::sptr study = series->getStudy();
     CPPUNIT_ASSERT( study );
@@ -174,9 +170,9 @@ void PatchTest::arPatchMedicalDataTest()
     // Test split between meshes and image
     std::vector< ::fwMedData::Series::sptr > otherSeries = getOtherSeries( sdb );
     CPPUNIT_ASSERT_EQUAL( (size_t) 2, otherSeries.size() );
-    CPPUNIT_ASSERT( otherSeries[0]->getStudy()     !=  otherSeries[1]->getStudy() );
-    CPPUNIT_ASSERT( otherSeries[0]->getPatient()   !=  otherSeries[1]->getPatient() );
-    CPPUNIT_ASSERT( otherSeries[0]->getEquipment() !=  otherSeries[1]->getEquipment() );
+    CPPUNIT_ASSERT( otherSeries[0]->getStudy() != otherSeries[1]->getStudy() );
+    CPPUNIT_ASSERT( otherSeries[0]->getPatient() != otherSeries[1]->getPatient() );
+    CPPUNIT_ASSERT( otherSeries[0]->getEquipment() != otherSeries[1]->getEquipment() );
 
     ::fwMedData::Patient::sptr p1 = otherSeries[0]->getPatient();
     ::fwMedData::Patient::sptr p2 = otherSeries[1]->getPatient();
