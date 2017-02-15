@@ -5,7 +5,7 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGui/dialog/MessageDialog.hpp"
-#include "fwGui/registry/worker.hpp"
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <boost/function.hpp>
 
@@ -28,7 +28,7 @@ IMessageDialog::Buttons MessageDialog::showMessageDialog(
 
 MessageDialog::MessageDialog()
 {
-    ::fwGui::registry::worker::get()->postTask<void>( ::boost::function<void()>([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( ::boost::function<void()>([&]
             {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IMessageDialog::REGISTRY_KEY);
                 m_implementation = ::fwGui::dialog::IMessageDialog::dynamicCast(guiObj);
@@ -40,7 +40,7 @@ MessageDialog::MessageDialog()
 MessageDialog::MessageDialog(
     const std::string& title, const std::string& message, ::fwGui::dialog::IMessageDialog::Icons icon)
 {
-    ::fwGui::registry::worker::get()->postTask<void>( ::boost::function<void()>([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( ::boost::function<void()>([&]
             {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IMessageDialog::REGISTRY_KEY);
                 m_implementation = ::fwGui::dialog::IMessageDialog::dynamicCast(guiObj);
@@ -64,7 +64,7 @@ MessageDialog::~MessageDialog()
 
 void MessageDialog::setTitle( const std::string &title )
 {
-    ::fwGui::registry::worker::get()->postTask<void>( ::boost::function<void()>([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( ::boost::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -77,7 +77,7 @@ void MessageDialog::setTitle( const std::string &title )
 
 void MessageDialog::setMessage( const std::string &msg )
 {
-    ::fwGui::registry::worker::get()->postTask<void>( ::boost::function<void()>([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( ::boost::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -90,7 +90,7 @@ void MessageDialog::setMessage( const std::string &msg )
 
 void MessageDialog::setIcon( ::fwGui::dialog::IMessageDialog::Icons icon )
 {
-    ::fwGui::registry::worker::get()->postTask<void>( ::boost::function<void()>([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( ::boost::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -103,7 +103,7 @@ void MessageDialog::setIcon( ::fwGui::dialog::IMessageDialog::Icons icon )
 
 void MessageDialog::addButton( ::fwGui::dialog::IMessageDialog::Buttons button )
 {
-    ::fwGui::registry::worker::get()->postTask<void>( ::boost::function<void()>([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( ::boost::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -116,7 +116,7 @@ void MessageDialog::addButton( ::fwGui::dialog::IMessageDialog::Buttons button )
 
 void MessageDialog::setDefaultButton( ::fwGui::dialog::IMessageDialog::Buttons button )
 {
-    ::fwGui::registry::worker::get()->postTask<void>( ::boost::function<void()>([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( ::boost::function<void()>([&]
             {
                 if(m_implementation)
                 {
@@ -134,7 +134,7 @@ void MessageDialog::setDefaultButton( ::fwGui::dialog::IMessageDialog::Buttons b
         typedef ::fwGui::dialog::IMessageDialog::Buttons R;
 
         ::boost::function<R()> func = ::boost::bind(&IMessageDialog::show, m_implementation);
-        ::boost::shared_future<R> f = ::fwGui::registry::worker::get()->postTask<R>(func);
+        ::boost::shared_future<R> f = ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<R>(func);
         f.wait();
 
         return f.get();

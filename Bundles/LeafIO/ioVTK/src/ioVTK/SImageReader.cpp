@@ -21,7 +21,8 @@
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/registry/worker.hpp>
+
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/IJob.hpp>

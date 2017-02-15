@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,28 +9,28 @@
 #include "fwGuiQt/App.hpp"
 #include "fwGuiQt/util/FuncSlot.hpp"
 
-#include <fwCore/util/LazyInstantiator.hpp>
-
-#include <fwGui/registry/worker.hpp>
-
-#include <fwThread/Worker.hpp>
-#include <fwThread/Timer.hpp>
 
 #include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwRuntime/profile/Profile.hpp>
 
+#include <fwServices/registry/ActiveWorkers.hpp>
+
+#include <fwThread/Timer.hpp>
+#include <fwThread/Worker.hpp>
+
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
-#include <functional>
-#include <QEvent>
-#include <QDir>
-#include <QPointer>
-#include <QTimer>
-#include <QStringList>
-#include <QSharedPointer>
-#include <QFont>
 
+#include <QDir>
+#include <QEvent>
+#include <QFont>
+#include <QPointer>
+#include <QSharedPointer>
+#include <QStringList>
+#include <QTimer>
+
+#include <functional>
 
 namespace fwGuiQt
 {
@@ -38,7 +38,7 @@ namespace fwGuiQt
 class WorkerQtTask : public QEvent
 {
 public:
-    WorkerQtTask( const ::fwThread::Worker::TaskType &handler ) :
+    WorkerQtTask( const ::fwThread::Worker::TaskType& handler ) :
         QEvent( static_cast< QEvent::Type >(s_WORKER_QT_TASK_EVENT_TYPE) ),
         m_handler( handler )
     {
@@ -59,8 +59,6 @@ protected:
 
 const int WorkerQtTask::s_WORKER_QT_TASK_EVENT_TYPE = QEvent::registerEventType();
 
-
-
 /**
  * @brief Private implementation of fwThread::Worker using boost::asio.
  */
@@ -71,7 +69,7 @@ public:
 
     WorkerQt();
 
-    void init( int& argc, char **argv, bool guiEnabled = true );
+    void init( int& argc, char** argv, bool guiEnabled = true );
 
     virtual ~WorkerQt();
 
@@ -104,16 +102,12 @@ protected:
     ::fwThread::ThreadIdType m_threadId;
 };
 
-
 //-----------------------------------------------------------------------------
 
-::fwThread::Worker::sptr getQtWorker(int& argc, char **argv, bool guiEnabled)
+::fwThread::Worker::sptr getQtWorker(int& argc, char** argv, bool guiEnabled)
 {
     SPTR(WorkerQt) workerQt = std::make_shared< WorkerQt >();
     workerQt->init(argc, argv, guiEnabled);
-
-    ::fwServices::registry::ActiveWorkers::getDefault()->addWorker(
-        ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER, workerQt);
 
     return workerQt;
 }
@@ -185,7 +179,6 @@ protected:
 
 //------------------------------------------------------------------------------
 
-
 // ---------- WorkerQt private implementation ----------
 
 WorkerQt::WorkerQt() :
@@ -197,7 +190,7 @@ WorkerQt::WorkerQt() :
 
 //------------------------------------------------------------------------------
 
-void WorkerQt::init( int& argc, char **argv, bool guiEnabled )
+void WorkerQt::init( int& argc, char** argv, bool guiEnabled )
 {
     OSLM_TRACE("Init Qt" << ::fwThread::getCurrentThreadId() <<" Start");
 
@@ -283,7 +276,8 @@ void WorkerQt::processTasks(PeriodType maxtime)
 
 // ---------- Timer private implementation ----------
 
-TimerQt::TimerQt() : m_timerQt( new QTimer(qApp) )
+TimerQt::TimerQt() :
+    m_timerQt( new QTimer(qApp) )
 {
     m_qtFunc = new ::fwGuiQt::util::FuncSlot();
     QObject::connect(m_timerQt, SIGNAL(timeout()), m_qtFunc, SLOT(trigger()));
@@ -338,7 +332,6 @@ void TimerQt::updatedFunction()
 {
     m_qtFunc->setFunction(m_function);
 }
-
 
 } //namespace fwGuiQt
 

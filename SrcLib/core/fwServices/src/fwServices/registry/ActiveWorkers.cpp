@@ -4,16 +4,13 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwCore/util/LazyInstantiator.hpp"
 #include "fwServices/registry/ActiveWorkers.hpp"
 
 namespace fwServices
 {
 namespace registry
 {
-
-//-----------------------------------------------------------------------------
-
-ActiveWorkers::sptr ActiveWorkers::s_currentActiveWorkers = ActiveWorkers::New();
 
 //-----------------------------------------------------------------------------
 
@@ -35,7 +32,7 @@ ActiveWorkers::~ActiveWorkers()
 
 ActiveWorkers::sptr ActiveWorkers::getDefault()
 {
-    return ActiveWorkers::s_currentActiveWorkers;
+    return ::fwCore::util::LazyInstantiator< ActiveWorkers >::getInstance();
 }
 
 //-----------------------------------------------------------------------------
@@ -52,6 +49,21 @@ ActiveWorkers::sptr ActiveWorkers::getDefault()
     }
 
     return ::fwThread::Worker::sptr();
+}
+
+//-----------------------------------------------------------------------------
+
+void ActiveWorkers::setDefaultWorker(fwThread::Worker::sptr worker)
+{
+    ::fwServices::registry::ActiveWorkers::getDefault()->addWorker(
+        ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER, worker);
+}
+
+//-----------------------------------------------------------------------------
+
+::fwThread::Worker::sptr ActiveWorkers::getDefaultWorker()
+{
+    return ActiveWorkers::getDefault()->getWorker( registry::ActiveWorkers::s_DEFAULT_WORKER );
 }
 
 //-----------------------------------------------------------------------------

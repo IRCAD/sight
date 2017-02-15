@@ -70,9 +70,9 @@ void runModelSeriesSrv(
 
     CPPUNIT_ASSERT_NO_THROW( srv->setConfiguration( cfg ) );
     CPPUNIT_ASSERT_NO_THROW( srv->configure() );
-    CPPUNIT_ASSERT_NO_THROW( srv->start() );
-    CPPUNIT_ASSERT_NO_THROW( srv->update() );
-    CPPUNIT_ASSERT_NO_THROW( srv->stop() );
+    CPPUNIT_ASSERT_NO_THROW( srv->start().wait() );
+    CPPUNIT_ASSERT_NO_THROW( srv->update().wait() );
+    CPPUNIT_ASSERT_NO_THROW( srv->stop().wait() );
     ::fwServices::OSR::unregisterService( srv );
 }
 

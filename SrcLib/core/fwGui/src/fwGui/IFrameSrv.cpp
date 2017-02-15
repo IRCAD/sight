@@ -7,7 +7,7 @@
 #include "fwGui/IFrameSrv.hpp"
 
 #include "fwGui/Application.hpp"
-#include "fwGui/registry/worker.hpp"
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -125,7 +125,7 @@ void IFrameSrv::create()
 {
     SLM_ASSERT("FrameLayoutManager must be initialized.", m_frameLayoutManager);
 
-    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
         {
             m_frameLayoutManager->createFrame();
         })).wait();
@@ -162,7 +162,7 @@ void IFrameSrv::create()
 
     if (m_hasMenuBar)
     {
-        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
             {
                 m_menuBarBuilder->createMenuBar(frame);
             })).wait();
@@ -172,7 +172,7 @@ void IFrameSrv::create()
 
     if (m_hasToolBar)
     {
-        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
             {
                 m_toolBarBuilder->createToolBar(frame);
             })).wait();
@@ -192,7 +192,7 @@ void IFrameSrv::destroy()
         m_viewRegistrar->unmanageToolBar();
         SLM_ASSERT("ToolBarBuilder must be initialized.", m_toolBarBuilder);
 
-        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
             {
                 m_toolBarBuilder->destroyToolBar();
             })).wait();
@@ -203,7 +203,7 @@ void IFrameSrv::destroy()
         m_viewRegistrar->unmanageMenuBar();
         SLM_ASSERT("MenuBarBuilder must be initialized.", m_menuBarBuilder);
 
-        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
             {
                 m_menuBarBuilder->destroyMenuBar();
             })).wait();
@@ -212,7 +212,7 @@ void IFrameSrv::destroy()
     m_viewRegistrar->unmanage();
     SLM_ASSERT("FrameLayoutManager must be initialized.", m_frameLayoutManager);
 
-    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
         {
             m_frameLayoutManager->destroyFrame();
         })).wait();

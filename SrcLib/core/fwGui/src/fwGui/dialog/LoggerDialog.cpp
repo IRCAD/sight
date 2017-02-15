@@ -6,7 +6,7 @@
 
 #include "fwGui/dialog/LoggerDialog.hpp"
 
-#include <fwGui/registry/worker.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwThread/Worker.hpp>
 #include <fwThread/Worker.hxx>
@@ -80,7 +80,7 @@ bool LoggerDialog::show()
     if(m_implementation)
     {
         ::boost::function<bool()> func = ::boost::bind(&ILoggerDialog::show, m_implementation);
-        ::boost::shared_future<bool> f = ::fwGui::registry::worker::get()->postTask<bool>(func);
+        ::boost::shared_future<bool> f = ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<bool>(func);
         f.wait();
 
         return f.get();

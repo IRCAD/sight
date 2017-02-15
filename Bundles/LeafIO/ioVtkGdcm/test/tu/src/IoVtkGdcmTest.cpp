@@ -6,7 +6,8 @@
 
 #include "IoVtkGdcmTest.hpp"
 
-#include <fwGui/registry/worker.hpp>
+
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/Patient.hpp>
@@ -48,7 +49,7 @@ void IoVtkGdcmTest::setUp()
 {
     // Set up context before running a test.
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
-    ::fwGui::registry::worker::init(worker);
+    ::fwServices::registry::ActiveWorkers::setDefaultWorker(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -56,7 +57,7 @@ void IoVtkGdcmTest::setUp()
 void IoVtkGdcmTest::tearDown()
 {
     // Clean up after the test run.
-    ::fwGui::registry::worker::reset();
+    ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //-----------------------------------------------------------------------------
@@ -82,9 +83,9 @@ void IoVtkGdcmTest::readerDicomTest( std::string srvImpl )
 
     srv->setConfiguration( readerCfg );
     srv->configure();
-    srv->start();
-    srv->update();
-    srv->stop();
+    srv->start().wait();
+    srv->update().wait();
+    srv->stop().wait();
     ::fwServices::OSR::unregisterService( srv );
 
     // Patient expected
@@ -199,9 +200,9 @@ void IoVtkGdcmTest::imageSeriesWriterTest()
 
     writerSrv->setConfiguration( srvConfig );
     writerSrv->configure();
-    writerSrv->start();
-    writerSrv->update();
-    writerSrv->stop();
+    writerSrv->start().wait();
+    writerSrv->update().wait();
+    writerSrv->stop().wait();
     ::fwServices::OSR::unregisterService( writerSrv );
 
 
@@ -216,9 +217,9 @@ void IoVtkGdcmTest::imageSeriesWriterTest()
 
     readerSrv->setConfiguration( srvConfig ); // use same config as writer
     readerSrv->configure();
-    readerSrv->start();
-    readerSrv->update();
-    readerSrv->stop();
+    readerSrv->start().wait();
+    readerSrv->update().wait();
+    readerSrv->stop().wait();
     ::fwServices::OSR::unregisterService( readerSrv );
 
     // Clean the written data

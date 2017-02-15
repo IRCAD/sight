@@ -19,20 +19,16 @@ namespace registry
 {
 
 /**
- * @class ActiveWorkers
  * @brief This class to register active worker in the system, creates a default worker
- *
- * @date 2012.
  */
 class FWSERVICES_CLASS_API ActiveWorkers : public ::fwCore::BaseObject
 {
 
 public:
 
-    fwCoreClassDefinitionsWithFactoryMacro(
-        (ActiveWorkers)(::fwCore::BaseObject),
-        (()),
-        std::make_shared< ActiveWorkers >);
+    fwCoreClassDefinitionsWithFactoryMacro((ActiveWorkers)(::fwCore::BaseObject),
+                                           (()),
+                                           std::make_shared< ActiveWorkers >);
 
     typedef std::string WorkerKeyType;
 
@@ -52,6 +48,15 @@ public:
      * @note This method is thread safe.
      */
     FWSERVICES_API ::fwThread::Worker::sptr getWorker( const WorkerKeyType & key ) const;
+
+    /// Register the default active worker.
+    FWSERVICES_API static void setDefaultWorker( ::fwThread::Worker::sptr worker );
+
+    /**
+     * @brief Get the default registered worker
+     * @note This method is thread safe.
+     */
+    static FWSERVICES_API ::fwThread::Worker::sptr getDefaultWorker();
 
     /**
      * @brief Registers a worker
@@ -73,6 +78,7 @@ public:
 
     /// Returns an instance of ActiveWorkers.
     FWSERVICES_API static ActiveWorkers::sptr getDefault();
+
 
 protected:
 

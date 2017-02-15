@@ -49,7 +49,7 @@ AppConfigManager2::AppConfigManager2() :
     newSlot(s_ADD_OBJECTS_SLOT, &AppConfigManager2::addObjects, this);
     newSlot(s_REMOVE_OBJECTS_SLOT, &AppConfigManager2::removeObjects, this);
 
-    auto defaultWorker = registry::ActiveWorkers::getDefault()->getWorker( registry::ActiveWorkers::s_DEFAULT_WORKER );
+    auto defaultWorker = ::fwServices::registry::ActiveWorkers::getDefaultWorker();
     ::fwCom::HasSlots::m_slots.setWorker( defaultWorker );
 }
 

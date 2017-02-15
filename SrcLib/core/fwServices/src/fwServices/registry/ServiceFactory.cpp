@@ -180,7 +180,7 @@ IService::sptr ServiceFactory::create( const std::string& _srvImpl ) const
     // Setup worker here, this is a better place than the constructor
     // because here, the service slots are also setup
     // This allow to setup
-    service->setWorker( registry::ActiveWorkers::getDefault()->getWorker( registry::ActiveWorkers::s_DEFAULT_WORKER ) );
+    service->setWorker( ::fwServices::registry::ActiveWorkers::getDefaultWorker() );
 
     return service;
 }

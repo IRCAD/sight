@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGui/registry/worker.hpp"
+#include <fwServices/registry/ActiveWorkers.hpp>
 #include "fwGui/dialog/ProgressDialog.hpp"
 
 #include <boost/function.hpp>
@@ -17,7 +17,7 @@ namespace dialog
 
 ProgressDialog::ProgressDialog(const std::string &title,const std::string &message)
 {
-    ::fwGui::registry::worker::get()->postTask<void>(
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&] {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IProgressDialog::REGISTRY_KEY);
                 m_implementation = ::fwGui::dialog::IProgressDialog::dynamicCast(guiObj);
@@ -33,14 +33,14 @@ ProgressDialog::ProgressDialog(const std::string &title,const std::string &messa
 
 ProgressDialog::~ProgressDialog()
 {
-    ::fwGui::registry::worker::get()->postTask<void>( [&] { m_implementation.reset(); } ).wait();
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>( [&] { m_implementation.reset(); } ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 void ProgressDialog::setTitle(const std::string &title)
 {
-    ::fwGui::registry::worker::get()->postTask<void>(
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&] {
                 if(m_implementation)
                 {
@@ -53,7 +53,7 @@ void ProgressDialog::setTitle(const std::string &title)
 
 void ProgressDialog::setMessage(const std::string &msg)
 {
-    ::fwGui::registry::worker::get()->postTask<void>(
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&] {
                 if(m_implementation)
                 {
@@ -66,7 +66,7 @@ void ProgressDialog::setMessage(const std::string &msg)
 
 void ProgressDialog::operator()(float percent,std::string msg)
 {
-    ::fwGui::registry::worker::get()->postTask<void>(
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&] {
                 if(m_implementation)
                 {
@@ -80,7 +80,7 @@ void ProgressDialog::operator()(float percent,std::string msg)
 
 void ProgressDialog::setCancelCallback(CancelCallbackType callback)
 {
-    ::fwGui::registry::worker::get()->postTask<void>(
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&] {
                 if(m_implementation)
                 {
@@ -100,7 +100,7 @@ void ProgressDialog::cancelPressed()
 
 void ProgressDialog::hideCancelButton()
 {
-    ::fwGui::registry::worker::get()->postTask<void>(
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
         [&] {
                 m_implementation->hideCancelButton();
             } ).wait();

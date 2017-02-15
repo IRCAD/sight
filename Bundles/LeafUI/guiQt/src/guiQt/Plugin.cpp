@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,8 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwGui/registry/worker.hpp>
+
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwGuiQt/App.hpp>
 #include <fwGuiQt/WorkerQt.hpp>
@@ -49,7 +50,8 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
     char** argv = profile->getRawParams();
 
     m_workerQt = ::fwGuiQt::getQtWorker(argc, argv);
-    ::fwGui::registry::worker::init(m_workerQt);
+
+    ::fwServices::registry::ActiveWorkers::setDefaultWorker(m_workerQt);
 
     m_workerQt->post( std::bind( &Plugin::loadStyleSheet, this ) );
 
@@ -80,7 +82,6 @@ int Plugin::run() throw()
     int result = ::boost::any_cast<int>(m_workerQt->getFuture().get());
 
     ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
-    ::fwGui::registry::worker::reset();
     m_workerQt.reset();
 
     return result;

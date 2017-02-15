@@ -13,7 +13,8 @@
 #include <fwDataTools/Image.hpp>
 #include <fwDataTools/helper/Image.hpp>
 
-#include <fwGui/registry/worker.hpp>
+
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 
@@ -63,9 +64,9 @@ void runImageSrv(
 
     CPPUNIT_ASSERT_NO_THROW( srv->setConfiguration(cfg) );
     CPPUNIT_ASSERT_NO_THROW( srv->configure() );
-    CPPUNIT_ASSERT_NO_THROW( srv->start() );
-    CPPUNIT_ASSERT_NO_THROW( srv->update() );
-    CPPUNIT_ASSERT_NO_THROW( srv->stop() );
+    CPPUNIT_ASSERT_NO_THROW( srv->start().wait() );
+    CPPUNIT_ASSERT_NO_THROW( srv->update().wait() );
+    CPPUNIT_ASSERT_NO_THROW( srv->stop().wait() );
     ::fwServices::OSR::unregisterService( srv );
 }
 
@@ -75,7 +76,7 @@ void ImageReaderWriterTest::setUp()
 {
     // Set up context before running a test.
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
-    ::fwGui::registry::worker::init(worker);
+    ::fwServices::registry::ActiveWorkers::setDefaultWorker(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -83,7 +84,7 @@ void ImageReaderWriterTest::setUp()
 void ImageReaderWriterTest::tearDown()
 {
     // Clean up after the test run.
-    ::fwGui::registry::worker::reset();
+    ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -291,9 +292,9 @@ void ImageReaderWriterTest::testImageReaderExtension()
 
         CPPUNIT_ASSERT_NO_THROW( srv->setConfiguration(getIOConfiguration(file)) );
         CPPUNIT_ASSERT_NO_THROW( srv->configure() );
-        CPPUNIT_ASSERT_NO_THROW( srv->start() );
-        CPPUNIT_ASSERT_THROW( srv->update(), ::fwTools::Failed);
-        CPPUNIT_ASSERT_NO_THROW( srv->stop() );
+        CPPUNIT_ASSERT_NO_THROW( srv->start().wait() );
+        CPPUNIT_ASSERT_THROW( srv->update().get(), ::fwTools::Failed);
+        CPPUNIT_ASSERT_NO_THROW( srv->stop().wait() );
         ::fwServices::OSR::unregisterService( srv );
     }
     ::boost::filesystem::remove(file);
@@ -566,9 +567,9 @@ void ImageReaderWriterTest::testImageWriterExtension()
 
         CPPUNIT_ASSERT_NO_THROW( srv->setConfiguration(getIOConfiguration(file)) );
         CPPUNIT_ASSERT_NO_THROW( srv->configure() );
-        CPPUNIT_ASSERT_NO_THROW( srv->start() );
-        CPPUNIT_ASSERT_THROW( srv->update(), ::fwTools::Failed);
-        CPPUNIT_ASSERT_NO_THROW( srv->stop() );
+        CPPUNIT_ASSERT_NO_THROW( srv->start().wait() );
+        CPPUNIT_ASSERT_THROW( srv->update().get(), ::fwTools::Failed);
+        CPPUNIT_ASSERT_NO_THROW( srv->stop().wait() );
         ::fwServices::OSR::unregisterService( srv );
     }
 }

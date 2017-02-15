@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGui/registry/worker.hpp"
+#include <fwServices/registry/ActiveWorkers.hpp>
 #include "fwGui/dialog/PulseProgressDialog.hpp"
 
 #include <boost/bind.hpp>
@@ -22,7 +22,7 @@ PulseProgressDialog::PulseProgressDialog(
     ::fwGui::dialog::IPulseProgressDialog::MilliSecond frequenceRefresh )
 {
 
-    ::fwGui::registry::worker::get()->postTask<void>(::boost::function<void()>(
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function<void()>(
                                                          [&] {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IPulseProgressDialog::REGISTRY_KEY);
                 m_implementation = ::fwGui::dialog::IPulseProgressDialog::dynamicCast(guiObj);
@@ -66,7 +66,7 @@ void PulseProgressDialog::show()
 {
     if (m_implementation)
     {
-        ::fwGui::registry::worker::get()->postTask<void>(
+        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
             ::boost::bind(&IPulseProgressDialog::show, m_implementation)).wait();
     }
     else

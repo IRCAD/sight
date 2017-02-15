@@ -152,8 +152,6 @@ void AppConfig2Test::parametersConfigTest()
 
 void AppConfig2Test::startStopTest()
 {
-    auto defaultWorker = registry::ActiveWorkers::getDefault()->getWorker( registry::ActiveWorkers::s_DEFAULT_WORKER );
-
     ::fwRuntime::ConfigurationElement::csptr config = this->buildStartStopConfig();
     m_appConfigMgr                                  = this->launchAppConfigMgr("startStopTest", config);
 
