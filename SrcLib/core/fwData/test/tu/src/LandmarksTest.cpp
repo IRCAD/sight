@@ -51,10 +51,10 @@ void LandmarksTest::copyTest()
     const bool VISIBILITY1                      = true;
     const bool VISIBILITY2                      = false;
     const bool VISIBILITY3                      = true;
-    const ::fwData::Landmarks::PointType POINT1 = {3.5, 5.8, 2.56};
-    const ::fwData::Landmarks::PointType POINT2 = {8.25, 56.0, 45.4};
-    const ::fwData::Landmarks::PointType POINT3 = {0.0, 0.0, 0.0};
-    const ::fwData::Landmarks::PointType POINT4 = {0.5, 0.6, 0.7};
+    const ::fwData::Landmarks::PointType POINT1 = {{3.5, 5.8, 2.56}};
+    const ::fwData::Landmarks::PointType POINT2 = {{8.25, 56.0, 45.4}};
+    const ::fwData::Landmarks::PointType POINT3 = {{0.0, 0.0, 0.0}};
+    const ::fwData::Landmarks::PointType POINT4 = {{0.5, 0.6, 0.7}};
 
     CPPUNIT_ASSERT_NO_THROW(landmarks->addGroup(GROUP1, COLOR1, SIZE1, SHAPE1, VISIBILITY1));
     CPPUNIT_ASSERT_NO_THROW(landmarks->addGroup(GROUP2, COLOR2, SIZE2, SHAPE2, VISIBILITY2));
