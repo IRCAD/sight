@@ -146,9 +146,7 @@ private:
     std::vector< ::Ogre::Matrix4>& m_invWorldViewProj;
 
     ::Ogre::TexturePtr m_image3DTexture;
-
     ::Ogre::TexturePtr m_maskTexture;
-
     ::Ogre::TexturePtr m_tfTexture;
 
     float& m_sampleDistance;
@@ -156,7 +154,6 @@ private:
     bool m_is3DMode;
 
     ::Ogre::SceneNode* m_volumeSceneNode;
-
 };
 
 //-----------------------------------------------------------------------------
@@ -661,7 +658,7 @@ void RayTracingVolumeRenderer::initCompositors()
     /* Mono mode */
     if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE)
     {
-        m_compositorName = "RayTracedVolumeMono";
+        m_compositorName = "ImportanceCompositingMono";
     }
     /* stereo mode */
     else
@@ -675,21 +672,10 @@ void RayTracingVolumeRenderer::initCompositors()
     auto viewport = m_layer.lock()->getViewport();
     ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
 
-    //::Ogre::TexturePtr IC = ::Ogre::TextureManager::getSingleton().createManual(
-    //m_parentId + "_IC",
-    //::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-    //::Ogre::TEX_TYPE_2D,
-    //static_cast<unsigned int>(m_camera->getViewport()->getActualWidth()),
-    //static_cast<unsigned int>(m_camera->getViewport()->getActualHeight()),
-    //1,
-    //0,
-    //::Ogre::PF_FLOAT32_RGBA,
-    //::Ogre::TU_RENDERTARGET );
+    compositorManager.addCompositor(viewport, m_compositorName);
+    compositorManager.setCompositorEnabled(viewport, m_compositorName, true);
 
-    compositorManager.addCompositor(viewport, "ImportanceCompositingMono");
-    compositorManager.setCompositorEnabled(viewport, "ImportanceCompositingMono", true);
-
-    auto compositorInstance = compChain->getCompositor("ImportanceCompositingMono");
+    auto compositorInstance = compChain->getCompositor(m_compositorName);
 
     /* Ensure that we have the color parameters set for the current material */
     auto tech  = compositorInstance->getTechnique();
@@ -722,24 +708,6 @@ void RayTracingVolumeRenderer::initCompositors()
                                                                                       m_volumeSceneNode);
 
     compositorInstance->addListener(m_compositorListener);
-
-    //compositorManager.addCompositor(viewport, m_compositorName);
-    //compositorManager.setCompositorEnabled(viewport, m_compositorName, true);
-
-    //compositorInstance = compChain->getCompositor(m_compositorName);
-
-    //m_compositorListener = new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
-    //m_viewPointMatrices,
-    //m_3DOgreTexture,
-    //m_maskTexture,
-    //m_gpuTF.getTexture(),
-    //m_sampleDistance,
-    //(m_mode3D !=
-    //::fwRenderOgre::Layer::
-    //StereoModeType::NONE),
-    //m_volumeSceneNode);
-
-    //compositorInstance->addListener(m_compositorListener);
 }
 
 //-----------------------------------------------------------------------------

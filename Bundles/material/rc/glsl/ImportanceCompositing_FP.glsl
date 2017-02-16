@@ -53,11 +53,9 @@ vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
 
 //-----------------------------------------------------------------------------
 
-vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in vec3 rayExit, in float sampleDistance)
+vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float sampleDistance)
 {
     vec4 result = vec4(0);
-
-    float rayExitLength = length(rayExit);
 
     int iterCount = 0;
 
@@ -65,19 +63,15 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in vec3 ra
     // So we check for value superior to 128: 128 / 65536 = 0.001953125
     float edge = 0.5 + 0.001953125;
 
-    float maskValue1 = texture(u_mask, rayPos).r;
-    rayPos += rayDir;
-
     for(float t = 0; iterCount < 65000 && t < rayLength; iterCount += 1, t += sampleDistance)
     {
         float maskValue = texture(u_mask, rayPos).r;
 
-        if(maskValue1 > edge)
+        if(maskValue > edge)
         {
-            float depth = length(rayPos) / rayExitLength;
-            //float depth = length(rayPos);
+            float depth = length(rayPos);
             result = vec4(uv.x, uv.y, depth, 1.);
-            //gl_FragDepth = depth;
+            break;
         }
 
         rayPos += rayDir;
@@ -110,7 +104,7 @@ void main(void)
     float rayLength = length(rayExit - rayEntry);
 
     vec3 rayPos = rayEntry;
-    vec4 result = launchRay(rayPos, rayDir, rayLength, rayExit, u_sampleDistance);
+    vec4 result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
 
     fragColor = result;
 }
