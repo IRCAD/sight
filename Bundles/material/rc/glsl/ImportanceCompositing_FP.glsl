@@ -69,8 +69,7 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 
         if(maskValue > edge)
         {
-            float depth = length(rayPos);
-            result = vec4(uv.x, uv.y, depth, 1.);
+            result = vec4(rayPos, 1.);
             break;
         }
 

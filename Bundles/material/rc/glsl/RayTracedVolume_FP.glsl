@@ -256,20 +256,20 @@ void main(void)
         discard;
     }
 
-    #if MIMP
-        float importance = texture(u_IC, uv).b;
-
-        if(importance > 0.0)
-        {
-            entryDepth = importance;
-        }
-    #endif // MIMP
-
     gl_FragDepth = entryDepth;
 
     vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, u_invWorldViewProj);
-
     vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, u_invWorldViewProj);
+
+#if MIMP
+    vec4 importance = texture(u_IC, uv);
+
+    if(importance.r != 0.)
+    {
+        rayEntry = importance.rgb;
+    }
+
+#endif // MIMP
 
     vec3 rayDir   = normalize(rayExit - rayEntry) * u_sampleDistance;
 
