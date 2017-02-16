@@ -146,4 +146,12 @@ void CameraSeries::setExtrinsicMatrix(size_t index, ::fwData::TransformationMatr
 
 //------------------------------------------------------------------------------
 
+void CameraSeries::clear()
+{
+    m_cameras.clear();
+    m_extrinsicMatrices.clear();
+}
+
+//------------------------------------------------------------------------------
+
 } //namespace arData

@@ -118,6 +118,11 @@ public:
         return this->getExtrinsicMatrix(1);
     }
 
+    /**
+     * @brief Remove all cameras and matrices
+     */
+    ARDATA_API void clear();
+
 protected:
 
     /// Contains camera
