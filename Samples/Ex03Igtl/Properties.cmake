@@ -22,7 +22,6 @@ set( REQUIREMENTS
     ioIGTL
     ioData
     uiIO
-    uiIGTL
     uiPreferences
     )
 

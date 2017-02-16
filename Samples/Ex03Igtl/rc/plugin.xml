@@ -89,7 +89,7 @@
             <service uid="configureClient" type="::uiPreferences::action::SPreferencesConfiguration">
                 <preference>
                     <type>text</type>
-                    <name>Client IP adress</name>
+                    <name>Client IP address</name>
                     <key>CLIENT_IP_KEY</key>
                     <default_value>127.0.0.1</default_value>
                 </preference>
