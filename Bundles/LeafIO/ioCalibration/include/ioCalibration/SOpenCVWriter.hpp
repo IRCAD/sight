@@ -1,22 +1,28 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __IOCALIBRATION_SEXPORTCALIBRATIONXML_HPP__
-#define __IOCALIBRATION_SEXPORTCALIBRATIONXML_HPP__
-
-#include <io/IWriter.hpp>
+#ifndef __IOCALIBRATION_SOPENCVWRITER_HPP__
+#define __IOCALIBRATION_SOPENCVWRITER_HPP__
 
 #include "ioCalibration/config.hpp"
+
+#include <io/IWriter.hpp>
 
 namespace ioCalibration
 {
 /**
- * @brief The SExportCalibrationXml class
- * This class export arData::CameraSeries in xml files with openCV
- * Structure of the file will be :
+ * @brief SOpenCVWriter class exports arData::CameraSeries in xml/yaml files using openCV
+ *
+ * @code{.xml}
+       <service uid="..." type="::ioCalibration::SExportCalibrationXml" >
+           <in key="target" uid="..." />
+       </service>
+ * @endcode
+ *
+ * An Example of the xml structure:
  * @code{.xml}
     <?xml version="1.0"?>
     <opencv_storage>
@@ -49,31 +55,30 @@ namespace ioCalibration
     </opencv_storage>
  * @endcode
  */
-class IOCALIBRATION_CLASS_API SExportCalibrationXml : public ::io::IWriter
+class IOCALIBRATION_CLASS_API SOpenCVWriter : public ::io::IWriter
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SExportCalibrationXml)(::io::IWriter));
+    fwCoreServiceClassDefinitionsMacro((SOpenCVWriter)(::io::IWriter));
 
     ///Constructor
-    IOCALIBRATION_API SExportCalibrationXml();
+    IOCALIBRATION_API SOpenCVWriter();
 
     //Destructor
-    IOCALIBRATION_API ~SExportCalibrationXml();
+    IOCALIBRATION_API ~SOpenCVWriter();
 
 protected:
-
 
     /// configure with IHM
     IOCALIBRATION_API void configureWithIHM() throw(fwTools::Failed);
 
+    /**
+     * @brief Prompt a dialog to define file location.
+     * @return boolean if a location has been choosen
+     */
+    IOCALIBRATION_API virtual bool defineLocationGUI();
 
     /**
      * @brief Configures the service.
-     * @code{.xml}
-       <service impl="::ioCalibration::SExportCalibrationXml" >
-           <type mode="writer" />
-       </service>
-       @endcode
      */
     IOCALIBRATION_API void configuring() throw (fwTools::Failed);
 
@@ -92,9 +97,8 @@ protected:
     /// Returns managed path type, here service manages only single file
     ::io::IOPathType getIOPathType() const;
 
-
 };
 
 } //namespace ioCalibration
 
-#endif // __IOCALIBRATION_SEXPORTCALIBRATIONXML_HPP__
+#endif // __IOCALIBRATION_SOPENCVWRITER_HPP__
