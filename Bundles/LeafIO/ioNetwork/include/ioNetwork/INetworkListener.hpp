@@ -76,15 +76,6 @@ public:
     /// Destructor
     IONETWORK_API virtual ~INetworkListener();
 
-    /**
-     * @brief set new host to listener
-     *
-     * @param[in] host ip or hostname
-     * @param[in] port port in unsigned 16bit integer
-     */
-    IONETWORK_API virtual void setHost(std::string const& host,
-                                       ::boost::uint16_t const port) throw (::fwTools::Failed) = 0;
-
 protected:
     /// Overrides
     IONETWORK_API virtual void configuring() throw (::fwTools::Failed);

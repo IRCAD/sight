@@ -1,55 +1,33 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ioIGTL/SOpenIGTLinkSender.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
+#include "ioIGTL/helper/preferences.hpp"
+
+#include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
 
-#include <fwData/Object.hpp>
-#include <fwServices/macros.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
-#include <fwCore/spyLog.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <boost/lexical_cast.hpp>
-#include <boost/function.hpp>
+#include <fwServices/macros.hpp>
 
 #include <functional>
 
-fwServicesRegisterMacro (::ioNetwork::INetworkSender, ::ioIGTL::SOpenIGTLinkSender, ::fwData::Object);
+fwServicesRegisterMacro(::ioNetwork::INetworkSender, ::ioIGTL::SOpenIGTLinkSender);
 
 namespace ioIGTL
 {
 
-const ::fwCom::Slots::SlotKeyType SOpenIGTLinkSender::s_UPDATE_CONFIGURATION_SLOT = "updateConfiguration";
-const ::fwCom::Slots::SlotKeyType SOpenIGTLinkSender::s_START_SENDING_SLOT        = "startSending";
-const ::fwCom::Slots::SlotKeyType SOpenIGTLinkSender::s_STOP_SENDING_SLOT         = "stopSending";
-
 //-----------------------------------------------------------------------------
 
-SOpenIGTLinkSender::SOpenIGTLinkSender() :
-    ioNetwork::INetworkSender(),
-    m_port(4242),
-    m_isSending(false),
-    m_deviceName("")
+SOpenIGTLinkSender::SOpenIGTLinkSender()
 {
-    m_updateConfigurationSlot = ::fwCom::newSlot (&SOpenIGTLinkSender::updateConfiguration, this);
-    m_startSendingSlot        = ::fwCom::newSlot (&SOpenIGTLinkSender::startSending, this);
-    m_stopSendingSlot         = ::fwCom::newSlot (&SOpenIGTLinkSender::stopSending, this);
-    ::fwCom::HasSlots::m_slots (SOpenIGTLinkSender::s_UPDATE_CONFIGURATION_SLOT, m_updateConfigurationSlot )
-        (SOpenIGTLinkSender::s_START_SENDING_SLOT, m_startSendingSlot )
-        (SOpenIGTLinkSender::s_STOP_SENDING_SLOT, m_stopSendingSlot );
-
-    ::fwCom::HasSlots::m_slots.setWorker (m_associatedWorker);
-    m_server = ::igtlNetwork::Server::sptr (new ::igtlNetwork::Server());
+    m_server = std::make_shared< ::igtlNetwork::Server>();
 }
 
 //-----------------------------------------------------------------------------
@@ -62,32 +40,10 @@ SOpenIGTLinkSender::~SOpenIGTLinkSender()
 
 void SOpenIGTLinkSender::configuring() throw (::fwTools::Failed)
 {
+    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
 
-    if (m_configuration != NULL && m_configuration->findConfigurationElement ("port"))
-    {
-        m_port = ::boost::lexical_cast< ::boost::uint16_t > (
-            m_configuration->findConfigurationElement ("port")->getValue());
-    }
-
-    if(m_configuration != NULL && m_configuration->findConfigurationElement ("deviceName"))
-    {
-        m_deviceName = ::boost::lexical_cast< std::string >(
-            m_configuration->findConfigurationElement ("deviceName")->getValue());
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SOpenIGTLinkSender::updateConfiguration(::boost::uint16_t const port)
-{
-    m_port = port;
-}
-
-//-----------------------------------------------------------------------------
-
-void SOpenIGTLinkSender::setPort(boost::uint16_t const port) throw (::fwTools::Failed)
-{
-    this->updateConfiguration(port);
+    m_portConfig = config.get("port", "4242");
+    m_deviceName = config.get("deviceName", "");
 }
 
 //-----------------------------------------------------------------------------
@@ -95,67 +51,57 @@ void SOpenIGTLinkSender::setPort(boost::uint16_t const port) throw (::fwTools::F
 void SOpenIGTLinkSender::starting() throw (::fwTools::Failed)
 {
     ::ioNetwork::INetworkSender::starting();
-    m_serverWorker = ::fwThread::Worker::New();
+
+    try
+    {
+        std::uint16_t port = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
+        m_server->start(port);
+
+        m_serverFuture = std::async(std::launch::async, std::bind(&::igtlNetwork::Server::runServer, m_server) );
+        m_sigServerStarted->asyncEmit();
+    }
+    catch (::fwCore::Exception& e)
+    {
+        ::fwGui::dialog::MessageDialog::showMessageDialog("Error", "Cannot start the server: " +
+                                                          std::string(e.what()),
+                                                          ::fwGui::dialog::IMessageDialog::CRITICAL);
+        // Only report the error on console (this normally happens only if we have requested the disconnection)
+        SLM_ERROR(e.what());
+        this->slot(s_STOP_SLOT)->asyncRun();
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void SOpenIGTLinkSender::stopping() throw (::fwTools::Failed)
 {
-    this->::ioNetwork::INetworkSender::stopping();
-    this->stopSending();
-}
+    ::fwGui::dialog::MessageDialog msgDialog;
 
-//-----------------------------------------------------------------------------
-
-void SOpenIGTLinkSender::startSending()
-{
-    if(!m_isSending)
+    try
     {
-        std::function<void() > task = std::bind(&::igtlNetwork::Server::runServer, m_server);
-        try
-        {
-            m_server->start (m_port);
-
-            m_serverWorker->post(task);
-            m_sigServerStarted->asyncEmit();
-            m_isSending = true;
-        }
-        catch (::fwCore::Exception& e)
-        {
-            ::fwGui::dialog::MessageDialog::showMessageDialog ("Error", "Cannot start the server: " +
-                                                               std::string(e.what()),
-                                                               ::fwGui::dialog::IMessageDialog::CRITICAL);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SOpenIGTLinkSender::stopSending()
-{
-    if(m_isSending)
-    {
-        ::fwGui::dialog::MessageDialog msgDialog;
-
-        try
+        if(m_server->isStarted())
         {
             m_server->stop();
-            m_serverWorker->stop();
-            m_sigServerStopped->asyncEmit();
-            m_isSending = false;
         }
-        catch (::fwCore::Exception& e)
-        {
-            msgDialog.showMessageDialog ("Error", e.what());
-        }
+        m_serverFuture.wait();
+        m_sigServerStopped->asyncEmit();
     }
+    catch (::fwCore::Exception& e)
+    {
+        msgDialog.showMessageDialog("Error", e.what());
+    }
+    catch (std::future_error& e)
+    {
+        // This happens when the server failed to start, so we just ignore it silently.
+    }
+
+    ::ioNetwork::INetworkSender::stopping();
 }
 
 //-----------------------------------------------------------------------------
 void SOpenIGTLinkSender::sendObject(const ::fwData::Object::sptr& obj)
 {
-    if(m_deviceName!="")
+    if(m_deviceName != "")
     {
         m_server->setMessageDeviceName(m_deviceName);
     }
@@ -165,5 +111,4 @@ void SOpenIGTLinkSender::sendObject(const ::fwData::Object::sptr& obj)
 //-----------------------------------------------------------------------------
 
 } // namespace ioIGTL
-
 
