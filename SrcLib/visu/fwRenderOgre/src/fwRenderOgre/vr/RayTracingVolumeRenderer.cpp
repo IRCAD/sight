@@ -12,6 +12,8 @@
 
 #include <fwCore/Profiling.hpp>
 
+#include <OGRE/OgreCompositionPass.h>
+#include <OGRE/OgreCompositionTargetPass.h>
 #include <OGRE/OgreCompositor.h>
 #include <OGRE/OgreCompositorChain.h>
 #include <OGRE/OgreCompositorInstance.h>
@@ -673,10 +675,40 @@ void RayTracingVolumeRenderer::initCompositors()
     auto viewport = m_layer.lock()->getViewport();
     ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
 
+    //::Ogre::TexturePtr IC = ::Ogre::TextureManager::getSingleton().createManual(
+    //m_parentId + "_IC",
+    //::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+    //::Ogre::TEX_TYPE_2D,
+    //static_cast<unsigned int>(m_camera->getViewport()->getActualWidth()),
+    //static_cast<unsigned int>(m_camera->getViewport()->getActualHeight()),
+    //1,
+    //0,
+    //::Ogre::PF_FLOAT32_RGBA,
+    //::Ogre::TU_RENDERTARGET );
+
     compositorManager.addCompositor(viewport, "ImportanceCompositingMono");
     compositorManager.setCompositorEnabled(viewport, "ImportanceCompositingMono", true);
 
     auto compositorInstance = compChain->getCompositor("ImportanceCompositingMono");
+
+    /* Ensure that we have the color parameters set for the current material */
+    auto tech  = compositorInstance->getTechnique();
+    auto tpass = tech->getOutputTargetPass();
+    for( auto pass : tpass->getPassIterator() )
+    {
+        auto mtl = pass->getMaterial();
+
+        if(!mtl.isNull())
+        {
+            std::cout << mtl->getName() << std::endl;
+            ::Ogre::ColourValue diffuse(1.2f, 1.2f, 1.2f, 1.f);
+            mtl->setDiffuse(diffuse);
+
+            ::Ogre::ColourValue specular(2.5f, 2.5f, 2.5f, 1.f);
+            mtl->setSpecular( specular );
+            mtl->setShininess( 10 );
+        }
+    }
 
     m_compositorListener = new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
                                                                                       m_viewPointMatrices,

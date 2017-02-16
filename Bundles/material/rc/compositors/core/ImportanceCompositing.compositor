@@ -2,7 +2,7 @@ compositor ImportanceCompositingMono
 {
     technique
     {
-        texture IC target_width target_height PF_FLOAT32_RGBA
+        texture IC target_width target_height PF_FLOAT32_RGBA pooled
 
         target IC
         {
@@ -20,7 +20,7 @@ compositor ImportanceCompositingMono
         // Final pass
         target_output
         {
-            input previous
+            input none
             pass clear
             {
                 buffers depth
@@ -29,7 +29,7 @@ compositor ImportanceCompositingMono
             pass render_quad
             {
                 material RayTracedVolume_MImP
-                /*input 3 IC*/
+                input 3 IC
             }
         }
     }
