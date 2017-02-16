@@ -186,6 +186,7 @@ void SRender::starting() throw(::fwTools::Failed)
         ogreLayer->setWorker(m_associatedWorker);
         ogreLayer->setBackgroundColor("#000000", "#000000");
         ogreLayer->setBackgroundScale(0, 0.5);
+        ogreLayer->setHasDefaultLight(false);
 
         m_layers[s_OGREBACKGROUNDID] = ogreLayer;
     }
