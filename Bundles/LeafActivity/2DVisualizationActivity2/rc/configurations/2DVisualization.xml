@@ -55,7 +55,7 @@
             <registry>
                 <menuItem sid="ActionLoadLandmark" start="yes" />
                 <menuItem sid="ActionSaveLandmark" start="yes" />
-                <menuItem sid="ActionFocusLandmark" start="yes" />
+                <menuItem sid="ActionSFocusLandmark" start="yes" />
                 <menuItem sid="ActionEditLandmark" start="yes" />
                 <menuItem sid="ActionAddDistance" start="yes" />
                 <menuItem sid="ActionRemoveDistance" start="yes" />
@@ -118,8 +118,9 @@
             <inout key="image" uid="${image}" />
         </service>
 
-        <service uid="ActionFocusLandmark" type="::uiMeasurement::action::FocusLandmark" >
-            <in key="image" uid="${image}" />
+        <service uid="ActionSFocusLandmark" type="::uiMeasurement::action::SFocusLandmark" >
+            <in key="landmarks" uid="${landmarks}" autoConnect="yes" />
+            <inout key="image" uid="${image}" />
         </service>
 
         <service uid="ActionLoadLandmark" type="::gui::action::SSlotCaller" >

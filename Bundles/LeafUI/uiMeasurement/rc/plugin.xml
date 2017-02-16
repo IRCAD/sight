@@ -51,7 +51,7 @@
     
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwGui::IActionSrv</type>
-        <service>::uiMeasurement::action::FocusLandmark</service>
+        <service>::uiMeasurement::action::SFocusLandmark</service>
         <object>::fwData::Image</object>
     </extension>
         

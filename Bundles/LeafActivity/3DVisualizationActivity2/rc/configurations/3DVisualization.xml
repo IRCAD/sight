@@ -91,7 +91,7 @@
                 <menuItem sid="action_SagittalViewMPR3D" start="no" />
                 <menuItem sid="ActionLoadLandmark" start="yes" />
                 <menuItem sid="ActionSaveLandmark" start="yes" />
-                <menuItem sid="ActionFocusLandmark" start="no" />
+                <menuItem sid="ActionSFocusLandmark" start="no" />
                 <menuItem sid="ActionEditLandmark" start="yes" />
                 <menuItem sid="ActionAddDistance" start="no" />
                 <menuItem sid="ActionRemoveDistance" start="no" />
@@ -207,8 +207,9 @@
             <parameter replace="patient_name" by="${patient_name}" />
         </service>
 
-        <service uid="ActionFocusLandmark" type="::uiMeasurement::action::FocusLandmark" >
-            <in key="image" uid="optionalInputImage" />
+        <service uid="ActionSFocusLandmark" type="::uiMeasurement::action::SFocusLandmark" >
+            <in key="landmarks" uid="${landmarks}" autoConnect="yes" />
+            <inout key="image" uid="optionalInputImage" />
         </service>
 
         <service uid="ActionLoadLandmark" type="::gui::action::SSlotCaller" >
@@ -309,6 +310,7 @@
         <start uid="ActionShowNormalCross" />
         <start uid="ActionShowFullCross" />
         <start uid="MedicalImageSrv" />
+        <start uid="ActionSFocusLandmark" />
 
         <start uid="extractLandmarks" />
 
