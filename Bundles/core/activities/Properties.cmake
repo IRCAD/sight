@@ -14,6 +14,7 @@ set( DEPENDENCIES
     fwRuntime
     fwServices
     fwTools
+    fwMedDataTools
     gui
 )
 set( REQUIREMENTS  )
