@@ -60,7 +60,9 @@ void NetworkListenerWidget::onStart()
             m_listener->setConfiguration(it->second);
             m_listener->configure();
         }
-        m_listener->setHost(m_hostnameEditor->text().toStdString(), (::boost::uint16_t)m_portEditor->value());
+        SLM_ASSERT("Configuration must be modified to use the hostname and port set in the editor.", false);
+        // The virtual function was removed, it is not necessary, the configuration can be modified
+//        m_listener->setHost(m_hostnameEditor->text().toStdString(), (::boost::uint16_t)m_portEditor->value());
         this->onStart();
     }
 }
