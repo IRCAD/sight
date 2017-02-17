@@ -21,7 +21,6 @@ set( REQUIREMENTS
     tracker
     trackerAruco
     arMedia
-    uiTracking
     preferences
     )
 

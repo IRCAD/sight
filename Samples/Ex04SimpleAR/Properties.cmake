@@ -20,7 +20,6 @@ set( REQUIREMENTS
     servicesReg
     tracker
     trackerAruco
-    uiTracking
     videoQt
     videoTools
     visuVTK
