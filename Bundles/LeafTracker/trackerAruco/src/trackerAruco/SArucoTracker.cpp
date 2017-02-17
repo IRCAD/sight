@@ -30,19 +30,15 @@
 
 namespace trackerAruco
 {
-fwServicesRegisterMacro(::tracker::ITracker, ::trackerAruco::SArucoTracker, ::fwData::Composite);
+fwServicesRegisterMacro(::tracker::ITracker, ::trackerAruco::SArucoTracker);
 //-----------------------------------------------------------------------------
 
 const ::fwCom::Signals::SignalKeyType SArucoTracker::s_DETECTION_DONE_SIG = "detectionDone";
 
-const ::fwCom::Slots::SlotKeyType SArucoTracker::s_CHANGE_METHOD_SLOT           = "changeMethod";
-const ::fwCom::Slots::SlotKeyType SArucoTracker::s_CHANGE_BLOCKSIZE_SLOT        = "changeBlockSize";
-const ::fwCom::Slots::SlotKeyType SArucoTracker::s_CHANGE_CONSTANT_SLOT         = "changeConstant";
-const ::fwCom::Slots::SlotKeyType SArucoTracker::s_CHANGE_BORDERWIDTH_SLOT      = "changeBorderWidth";
-const ::fwCom::Slots::SlotKeyType SArucoTracker::s_CHANGE_PATTERNWIDTH_SLOT     = "changePatternWidth";
-const ::fwCom::Slots::SlotKeyType SArucoTracker::s_CHANGE_CORNERREFINEMENT_SLOT = "changeCornerRefinement";
-const ::fwCom::Slots::SlotKeyType SArucoTracker::s_CHANGE_SPEED_SLOT            = "changeSpeed";
-const ::fwCom::Slots::SlotKeyType SArucoTracker::s_DISPLAY_TAGS_SLOT            = "displayTags";
+const ::fwCom::Slots::SlotKeyType SArucoTracker::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
+const ::fwCom::Slots::SlotKeyType SArucoTracker::s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
+const ::fwCom::Slots::SlotKeyType SArucoTracker::s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
+const ::fwCom::Slots::SlotKeyType SArucoTracker::s_SET_ENUM_PARAMETER_SLOT   = "setEnumParameter";
 
 const ::fwServices::IService::KeyType s_CAMERA_INPUT      = "camera";
 const ::fwServices::IService::KeyType s_TAGTL_INOUT_GROUP = "tagTL";
@@ -65,14 +61,10 @@ SArucoTracker::SArucoTracker() throw () :
 {
     m_sigDetectionDone = newSignal<DetectionDoneSignalType>(s_DETECTION_DONE_SIG);
 
-    newSlot(s_CHANGE_METHOD_SLOT, &SArucoTracker::setMethod, this);
-    newSlot(s_CHANGE_CORNERREFINEMENT_SLOT, &SArucoTracker::setCornerRefinement, this);
-    newSlot(s_CHANGE_BLOCKSIZE_SLOT, &SArucoTracker::setBlockSize, this);
-    newSlot(s_CHANGE_CONSTANT_SLOT, &SArucoTracker::setConstant, this);
-    newSlot(s_CHANGE_BORDERWIDTH_SLOT, &SArucoTracker::setBorderWidth, this);
-    newSlot(s_CHANGE_PATTERNWIDTH_SLOT, &SArucoTracker::setPatternWidth, this);
-    newSlot(s_CHANGE_SPEED_SLOT, &SArucoTracker::setSpeed, this);
-    newSlot(s_DISPLAY_TAGS_SLOT, &SArucoTracker::displayTags, this);
+    newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SArucoTracker::setDoubleParameter, this);
+    newSlot(s_SET_INT_PARAMETER_SLOT, &SArucoTracker::setIntParameter, this);
+    newSlot(s_SET_BOOL_PARAMETER_SLOT, &SArucoTracker::setBoolParameter, this);
+    newSlot(s_SET_ENUM_PARAMETER_SLOT, &SArucoTracker::setEnumParameter, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -330,97 +322,111 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
 
 //-----------------------------------------------------------------------------
 
-void SArucoTracker::setMethod(unsigned int method)
+void SArucoTracker::setIntParameter(int _val, string _key)
 {
-    if(method == 0)
+    if(_key == "pattern")
     {
-        m_thresholdMethod = ::aruco::MarkerDetector::ADPT_THRES;
+        m_patternWidth = static_cast<double>(_val);
     }
-    else if(method == 1)
+    else if(_key == "speed")
     {
-        m_thresholdMethod = ::aruco::MarkerDetector::FIXED_THRES;
-    }
-    else if(method == 2)
-    {
-        m_thresholdMethod = ::aruco::MarkerDetector::CANNY;
+        m_speed = static_cast< unsigned int >(_val);
     }
     else
     {
-        SLM_FATAL("Threshold method set in parameter is not allowed. "
-                  "Allowed values : ADPT_THRES, FIXED_THRES, CANNY");
+        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SArucoTracker::setBlockSize(double size)
+void SArucoTracker::setDoubleParameter(double _val, string _key)
 {
-    m_blockSize = size;
-}
-
-//-----------------------------------------------------------------------------
-
-void SArucoTracker::setConstant(double constant)
-{
-    m_constant = constant;
-}
-
-//-----------------------------------------------------------------------------
-
-void SArucoTracker::setBorderWidth(double borderWidth)
-{
-    m_borderWidth = borderWidth;
-}
-
-//-----------------------------------------------------------------------------
-
-void SArucoTracker::setPatternWidth(double patternWidth)
-{
-    m_patternWidth = patternWidth;
-}
-
-//-----------------------------------------------------------------------------
-
-void SArucoTracker::setCornerRefinement(unsigned int method)
-{
-    if(method == ::aruco::MarkerDetector::NONE)
+    if(_key == "blocksize")
     {
-        m_cornerRefinement = ::aruco::MarkerDetector::NONE;
+        m_blockSize = _val;
     }
-    else if(method == ::aruco::MarkerDetector::HARRIS)
+    else if(_key == "constant")
     {
-        m_cornerRefinement = ::aruco::MarkerDetector::HARRIS;
+        m_constant = _val;
     }
-    else if(method == ::aruco::MarkerDetector::SUBPIX)
+    else if(_key == "borderwidth")
     {
-        m_cornerRefinement = ::aruco::MarkerDetector::SUBPIX;
-    }
-    else if(method == ::aruco::MarkerDetector::LINES)
-    {
-        m_cornerRefinement = ::aruco::MarkerDetector::LINES;
+        m_borderWidth = _val;
     }
     else
     {
-        // ?
+        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SArucoTracker::setSpeed(unsigned int value)
+void SArucoTracker::setBoolParameter(bool _val, string _key)
 {
-    if(value <= 3)
+    if(_key == "debugMode")
     {
-        m_speed = value;
+        m_debugMarkers = _val;
+    }
+    else
+    {
+        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SArucoTracker::displayTags(bool b)
+void SArucoTracker::setEnumParameter(string _val, string _key)
 {
-    m_debugMarkers = b;
+    if(_key == "method")
+    {
+        if(_val == "ADPT_THRES" )
+        {
+            m_thresholdMethod = ::aruco::MarkerDetector::ADPT_THRES;
+        }
+        else if(_val == "FIXED_THRES")
+        {
+            m_thresholdMethod = ::aruco::MarkerDetector::FIXED_THRES;
+        }
+        else if(_val == "CANNY")
+        {
+            m_thresholdMethod = ::aruco::MarkerDetector::CANNY;
+        }
+        else
+        {
+            SLM_ERROR("Value : '"+ _val + "' is not supported");
+        }
+    }
+    else if(_key == "corner")
+    {
+        if(_val == "NONE" )
+        {
+            m_cornerRefinement = ::aruco::MarkerDetector::NONE;
+        }
+        else if(_val == "HARRIS")
+        {
+            m_cornerRefinement = ::aruco::MarkerDetector::HARRIS;
+        }
+        else if(_val == "SUBPIX")
+        {
+            m_cornerRefinement = ::aruco::MarkerDetector::SUBPIX;
+        }
+        else if(_val == "LINES")
+        {
+            m_cornerRefinement = ::aruco::MarkerDetector::LINES;
+        }
+        else
+        {
+            SLM_ERROR("Value : '"+ _val + "' is not supported");
+        }
+    }
+    else
+    {
+        SLM_ERROR("The slot key : '"+ _key + "' is not handled");
+    }
 }
+
+//-----------------------------------------------------------------------------
 
 } // namespace trackerAruco
 
