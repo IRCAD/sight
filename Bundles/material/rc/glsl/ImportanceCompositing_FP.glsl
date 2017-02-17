@@ -55,7 +55,7 @@ vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
 
 vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float sampleDistance)
 {
-    vec4 result = vec4(0);
+    vec4 result = vec4(0.0, 0.0, 1.0, 1.0);
 
     int iterCount = 0;
 
@@ -83,7 +83,8 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 
 void main(void)
 {
-    vec2 rayEntryExit = texture(u_entryPoints, uv).rg;
+    vec2 rayEntryExit = texelFetch(u_entryPoints, ivec2(gl_FragCoord), 0).rg;
+    //vec2 rayEntryExit = texture(u_entryPoints, uv).rg;
 
     float entryDepth =  rayEntryExit.r;
     float exitDepth  = -rayEntryExit.g;

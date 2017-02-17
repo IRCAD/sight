@@ -9,6 +9,7 @@ fragment_program ImportanceCompositing_FP glsl
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
+        //param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_mask int 1
@@ -63,7 +64,7 @@ material ImportanceCompositing
             cull_software none
             scene_blend alpha_blend
 
-            vertex_program_ref RenderQuad_VP
+            vertex_program_ref RayTracedVolume_VP
             {
             }
 

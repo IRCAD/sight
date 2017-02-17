@@ -1,15 +1,3 @@
-//-----------------------------------------------
-
-vertex_program RayTracedVolume_VP glsl
-{
-    source RayTracedVolume_VP.glsl
-
-    default_params
-    {
-        param_named_auto u_worldViewProj worldviewproj_matrix
-    }
-}
-
 //----------------------------------------------
 
 fragment_program RayTracedVolume_MImP_FP glsl
@@ -24,6 +12,7 @@ fragment_program RayTracedVolume_MImP_FP glsl
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
+        //param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -79,6 +68,7 @@ fragment_program RayTracedVolume_FP glsl
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
+        param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -695,7 +685,7 @@ material RayTracedVolume
             cull_software none
             scene_blend alpha_blend
 
-            vertex_program_ref RenderQuad_VP
+            vertex_program_ref RayTracedVolume_VP
             {
             }
 
@@ -735,7 +725,7 @@ material RayTracedVolume_MImP
             cull_software none
             scene_blend alpha_blend
 
-            vertex_program_ref RenderQuad_VP
+            vertex_program_ref RayTracedVolume_VP
             {
             }
 
@@ -760,7 +750,7 @@ material RayTracedVolume_MImP
                 filtering none
             }
 
-            texture_unit u_IC
+            texture_unit IC
             {
                 tex_address_mode clamp
                 filtering none

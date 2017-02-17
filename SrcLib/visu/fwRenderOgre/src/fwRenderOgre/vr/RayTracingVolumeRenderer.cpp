@@ -849,6 +849,12 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 
         if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE)
         {
+            ::Ogre::Matrix4 projMat   = m_camera->getProjectionMatrix();
+            ::Ogre::Matrix4 transform = ::Ogre::Matrix4::IDENTITY;
+            transform[1][1]           = -1;
+            //transform = transform.inverse();
+
+            projMat                       = projMat * transform;
             ::Ogre::Matrix4 worldViewProj = projMat * m_camera->getViewMatrix() * worldMat;
             m_viewPointMatrices.push_back(worldViewProj.inverse());
         }
