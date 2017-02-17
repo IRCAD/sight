@@ -167,6 +167,10 @@ void SOpenCVReader::updating() throw (fwTools::Failed)
 
         camSeries->addCamera(cam);
 
+        auto sig = camSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(
+                    ::arData::CameraSeries::s_ADDED_CAMERA_SIG);
+        sig->asyncEmit(cam);
+
         ::cv::Mat extrinsic;
         fs["extrinsic"] >> extrinsic;
 
