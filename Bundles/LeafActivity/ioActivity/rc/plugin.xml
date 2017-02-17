@@ -211,4 +211,13 @@
         </config>
     </extension>
 
+    <!-- Service config used for ioAtoms reader and writer to read landmarks -->
+    <extension implements="::fwServices::registry::ServiceConfig">
+        <id>LandmarksAtomsConfig</id>
+        <desc>Reader/Writer for atoms representing a medical data</desc>
+        <config>
+            <patcher context="Landmark" version="V2" />
+        </config>
+    </extension>
+
 </plugin>

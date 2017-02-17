@@ -11,6 +11,7 @@
         <!-- data -->
         <param name="modelSeries" />
         <param name="imageComposite" />
+        <param name="landmarks" />
         <param name="patient_name"  default="" />
 
     </parameters>
@@ -20,6 +21,7 @@
         <object uid="${AS_UID}" type="::fwMedData::ActivitySeries" src="ref" />
         <object uid="${modelSeries}" type="::fwMedData::ModelSeries" src="ref" />
         <object uid="${imageComposite}" type="::fwData::Composite" src="ref" />
+        <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
         <object uid="optionalInputImage" type="::fwData::Image" src="deferred" />
 
         <service uid="mainView" type="::gui::view::SDefaultView">
@@ -28,6 +30,7 @@
                     <orientation value="horizontal" />
                     <view align="center" />
                     <view align="right"  />
+                    <view align="left" visible="false" />
                 </layout>
                 <toolBar />
             </gui>
@@ -36,6 +39,7 @@
                 <toolBar sid="toolBar" start="yes" />
                 <view wid="view_negato1" start="yes" />
                 <view sid="view_negato2_and_3" start="no" />
+                <view sid="landmarksEditor" start="yes" />
             </registry>
         </service>
 
@@ -61,12 +65,10 @@
                     <menuItem name="3D MPR Frontal view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-frontal.png" />
                     <menuItem name="3D MPR Sagittal view" icon="@BUNDLE_PREFIX@/media_0-1/icons/icon-sagittal.png" />
                     <separator />
-                    <menuItem name="New landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Add-landmark.png" />
-                    <menuItem name="Remove landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Remove-landmark.png" />
                     <menuItem name="Load landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Load-landmark.png" />
                     <menuItem name="Save landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Save-landmark.png" />
                     <menuItem name="Focus landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Find-landmark.png" />
-                    <menuItem name="Hide/Show landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/View-landmark.png" />
+                    <menuItem name="Display Landmarks editor" icon="@BUNDLE_PREFIX@/media_0-1/icons/View-landmark.png" style="check" />
                     <separator />
                     <menuItem name="Add distance" icon="@BUNDLE_PREFIX@/media_0-1/icons/distance.png" />
                     <menuItem name="Remove distance" icon="@BUNDLE_PREFIX@/media_0-1/icons/RemoveDistance.png" />
@@ -87,12 +89,10 @@
                 <menuItem sid="action_AxialViewMPR3D" start="no" />
                 <menuItem sid="action_FrontalViewMPR3D" start="no" />
                 <menuItem sid="action_SagittalViewMPR3D" start="no" />
-                <menuItem sid="ActionNewLandmark" start="no" />
-                <menuItem sid="ActionRemoveLandmark" start="no" />
-                <menuItem sid="ActionLoadLandmark" start="no" />
-                <menuItem sid="ActionSaveLandmark" start="no" />
+                <menuItem sid="ActionLoadLandmark" start="yes" />
+                <menuItem sid="ActionSaveLandmark" start="yes" />
                 <menuItem sid="ActionFocusLandmark" start="no" />
-                <menuItem sid="ActionHideLandmark" start="no" />
+                <menuItem sid="ActionEditLandmark" start="yes" />
                 <menuItem sid="ActionAddDistance" start="no" />
                 <menuItem sid="ActionRemoveDistance" start="no" />
                 <menuItem sid="ActionHideDistance" start="no" />
@@ -136,11 +136,13 @@
             <appConfig id="3DNegatoWithAcq" />
             <inout key="imageComposite" uid="${imageComposite}" />
             <inout key="modelSeries" uid="${modelSeries}" />
+            <inout key="landmarks" uid="${landmarks}" />
             <parameter replace="orientation" by="axial" />
             <parameter replace="WID_PARENT" uid="view_negato1" />
             <parameter replace="patient_name" by="${patient_name}" />
             <parameter replace="ModelRepresentationChannel" uid="ModelRepresentationChannel" />
             <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
+            <parameter replace="PickingChannel" uid="pickerChannel" />
             <parameter replace="Medical3DCamera" uid="Medical3DCamera" />
             <parameter replace="CrossTypeChannel" uid="crossTypeChannel" />
         </service>
@@ -172,6 +174,13 @@
             <push srcKey="OptionalInputImageKey" />
         </service>
 
+        <service uid="extractLandmarks" type="::ctrlCamp::SCopy" >
+            <in key="source" uid="optionalInputImage">
+                <extract from="@fields.m_landmarksId" />
+            </in>
+            <inout key="target" uid="${landmarks}"/>
+        </service>
+
         <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv" >
             <inout key="image" uid="optionalInputImage" />
         </service>
@@ -179,8 +188,10 @@
         <service uid="cfgNegato2" type="::fwServices::SConfigController" >
             <appConfig id="2DNegato" />
             <inout key="image" uid="optionalInputImage" />
+            <inout key="landmarks" uid="${landmarks}" />
             <parameter replace="WID_PARENT" uid="view_negato2" />
             <parameter replace="CrossTypeChannel" uid="crossTypeChannel" />
+            <parameter replace="PickingChannel" uid="pickerChannel" />
             <parameter replace="orientation" by="frontal" />
             <parameter replace="patient_name" by="${patient_name}" />
         </service>
@@ -188,8 +199,10 @@
         <service uid="cfgNegato3" type="::fwServices::SConfigController">
             <appConfig id="2DNegato" />
             <inout key="image" uid="optionalInputImage" />
+            <inout key="landmarks" uid="${landmarks}" />
             <parameter replace="WID_PARENT" uid="view_negato3" />
             <parameter replace="CrossTypeChannel" uid="crossTypeChannel" />
+            <parameter replace="PickingChannel" uid="pickerChannel" />
             <parameter replace="orientation" by="sagittal" />
             <parameter replace="patient_name" by="${patient_name}" />
         </service>
@@ -197,20 +210,39 @@
         <service uid="ActionFocusLandmark" type="::uiMeasurement::action::FocusLandmark" >
             <in key="image" uid="optionalInputImage" />
         </service>
-        <service uid="ActionNewLandmark" type="::uiMeasurement::action::AddLandmark" >
-            <inout key="image" uid="optionalInputImage" />
+
+        <service uid="ActionLoadLandmark" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>LoadLandmark/update</slot>
+            </slots>
         </service>
-        <service uid="ActionRemoveLandmark" type="::uiMeasurement::action::RemoveLandmark" >
-            <inout key="image" uid="optionalInputImage" />
+
+        <service uid="ActionSaveLandmark" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>SaveLandmark/update</slot>
+            </slots>
         </service>
-        <service uid="ActionLoadLandmark" type="::uiMeasurement::action::LoadLandmark" >
-            <inout key="image" uid="optionalInputImage" />
+
+        <service uid="LoadLandmark" type="::uiIO::editor::SIOSelector" >
+            <inout key="data" uid="${landmarks}" />
+            <type mode="reader" />
+            <selection mode="include" />
+            <addSelection service="::ioAtoms::SReader" />
+            <config id="LandmarksAtomsConfig" service="::ioAtoms::SReader" />
         </service>
-        <service uid="ActionSaveLandmark" type="::uiMeasurement::action::SaveLandmark" >
-            <in key="image" uid="optionalInputImage" />
+
+        <service uid="SaveLandmark" type="::uiIO::editor::SIOSelector" >
+            <inout key="data" uid="${landmarks}" />
+            <type mode="writer" />
+            <selection mode="include" />
+            <addSelection service="::ioAtoms::SWriter" />
+            <config id="LandmarksAtomsConfig" service="::ioAtoms::SWriter" />
         </service>
-        <service uid="ActionHideLandmark" type="::uiMeasurement::action::ShowLandmark" autoConnect="yes" >
-            <inout key="image" uid="optionalInputImage" />
+
+        <service uid="ActionEditLandmark" type="::gui::action::SBooleanSlotCaller">
+            <slots>
+                <slot>landmarksEditor/setVisible</slot>
+            </slots>
         </service>
         <service uid="ActionAddDistance" type="::uiMeasurement::action::AddDistance">
             <inout key="image" uid="optionalInputImage" />
@@ -243,10 +275,18 @@
             <inout key="series" uid="${AS_UID}" />
         </service>
 
+        <service uid="landmarksEditor" type="::uiMeasurementQt::editor::SLandmarks" autoConnect="yes">
+            <inout key="landmarks" uid="${landmarks}" />
+        </service>
+
         <connect channel="crossTypeChannel">
             <signal>ActionHideCross/crossTypeModified</signal>
             <signal>ActionShowNormalCross/crossTypeModified</signal>
             <signal>ActionShowFullCross/crossTypeModified</signal>
+        </connect>
+
+        <connect channel="pickerChannel">
+            <slot>landmarksEditor/addPickedPoint</slot>
         </connect>
 
         <!-- START AND STOP SERVICES -->
@@ -254,17 +294,14 @@
         <start uid="extractImage" />
         <start uid="cfgNegato1" />
 
+        <start uid="LoadLandmark" />
+        <start uid="SaveLandmark" />
+
         <!-- Deferred start -->
         <start uid="LockImageSrv" />
         <start uid="view_negato2_and_3" />
         <start uid="cfgNegato2" />
         <start uid="cfgNegato3" />
-        <start uid="ActionFocusLandmark" />
-        <start uid="ActionNewLandmark" />
-        <start uid="ActionRemoveLandmark" />
-        <start uid="ActionLoadLandmark" />
-        <start uid="ActionSaveLandmark" />
-        <start uid="ActionHideLandmark" />
         <start uid="ActionAddDistance" />
         <start uid="ActionRemoveDistance" />
         <start uid="ActionHideDistance" />
@@ -273,7 +310,10 @@
         <start uid="ActionShowFullCross" />
         <start uid="MedicalImageSrv" />
 
+        <start uid="extractLandmarks" />
+
         <update uid="extractImage" />
+        <update uid="extractLandmarks" />
 
     </config>
 </extension>

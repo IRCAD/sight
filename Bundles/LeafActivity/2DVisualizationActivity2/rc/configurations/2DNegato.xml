@@ -3,6 +3,7 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="image" />
+        <param name="landmarks" />
         <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
         <param name="patient_name" default="" />
         <param name="IMAGE_LOCATIONS" default="" />
@@ -12,6 +13,7 @@
     <config>
 
         <object uid="${image}" type="::fwData::Image" src="ref" />
+        <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
 
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
@@ -49,6 +51,7 @@
         <!-- Generic Scene Negato -->
         <service uid="negato" type="::fwRenderVTK::SRender" autoConnect="yes">
             <in key="imageKey" uid="${image}" />
+            <in key="landmarksKey" uid="${landmarks}" />
             <scene>
                 <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
 
@@ -85,7 +88,7 @@
                     <config filter="true" renderer="default" picker="negatodefault" />
                 </adaptor>
 
-                <adaptor id="landmarksNegato" class="::visuVTKAdaptor::ImageLandmarks" objectId="imageKey">
+                <adaptor id="landmarksNegato" class="::visuVTKAdaptor::SLandmarks" objectId="landmarksKey">
                     <config renderer="default" picker="negatodefault" />
                 </adaptor>
 

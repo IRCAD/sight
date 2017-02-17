@@ -102,7 +102,7 @@
                 <adaptor id="multiDistances" class="::visuVTKAdaptor::ImageMultiDistances" objectId="image">
                     <config filter="true" renderer="default" picker="negato2default" />
                 </adaptor>
-                <adaptor id="landmarksNegato2" class="::visuVTKAdaptor::ImageLandmarks" objectId="image">
+                <adaptor id="landmarksNegato2" class="::visuVTKAdaptor::SLandmarks" objectId="image">
                     <config renderer="default" picker="negato2default" />
                 </adaptor>
 

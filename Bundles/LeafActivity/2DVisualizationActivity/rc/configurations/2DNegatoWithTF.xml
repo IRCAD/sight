@@ -79,7 +79,7 @@
                                 <config filter="true" renderer="default" picker="negatodefault" />
                             </adaptor>
 
-                            <adaptor id="landmarksNegato" class="::visuVTKAdaptor::ImageLandmarks" objectId="imageKey">
+                            <adaptor id="landmarksNegato" class="::visuVTKAdaptor::SLandmarks" objectId="imageKey">
                                 <config renderer="default" picker="negatodefault" />
                             </adaptor>
 

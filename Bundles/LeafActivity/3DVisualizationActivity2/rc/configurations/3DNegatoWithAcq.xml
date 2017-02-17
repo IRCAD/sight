@@ -4,16 +4,19 @@
         <param name="WID_PARENT" />
         <param name="imageComposite" />
         <param name="modelSeries" />
+        <param name="landmarks" />
         <param name="patient_name" default="" />
         <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
         <param name="ModelRepresentationChannel" />
         <param name="ModelDisplayChannel" />
         <param name="CrossTypeChannel" default="crossTypeChannel" />
+        <param name="PickingChannel" default="pickingChannel" />
         <param name="Medical3DCamera" />
     </parameters>
     <config>
         <object uid="${modelSeries}" type="::fwMedData::ModelSeries" src="ref" />
         <object uid="${imageComposite}" type="::fwData::Composite" src="ref" />
+        <object uid="${landmarks}" type="::fwData::Landmarks" src="ref" />
         <object uid="optionalInputImage" type="::fwData::Image" src="deferred" />
 
         <service uid="mainView" type="::gui::view::SDefaultView">
@@ -75,6 +78,7 @@
         <service uid="negato" type="::fwRenderVTK::SRender" autoConnect="yes">
             <in key="modelSeriesKey" uid="${modelSeries}" />
             <in key="imageKey" uid="optionalInputImage" optional="yes" />
+            <in key="landmarksKey" uid="${landmarks}" optional="yes" />
             <scene>
 
                 <picker id="negatodefault" vtkclass="fwVtkCellPicker" />
@@ -91,6 +95,10 @@
 
                 <adaptor id="interactor" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                     <config renderer="default" style="InteractorStyle3DForNegato" />
+                </adaptor>
+
+                <adaptor id="pickerInteractor" uid="pickerInteractor" class="::visuVTKAdaptor::PickerInteractor" objectId="self" >
+                    <config renderer="default" picker="negatodefault" event="MOUSE_LEFT_UP"/>
                 </adaptor>
 
                 <adaptor id="medicalCamera" uid="${Medical3DCamera}" class="::visuVTKAdaptor::Medical3DCamera" objectId="self">
@@ -113,7 +121,7 @@
                     <config filter="true" renderer="default" picker="negatodefault" />
                 </adaptor>
 
-                <adaptor id="landmarksNegato" class="::visuVTKAdaptor::ImageLandmarks" objectId="imageKey">
+                <adaptor id="landmarksNegato" class="::visuVTKAdaptor::SLandmarks" objectId="landmarksKey">
                     <config renderer="default" picker="negatodefault" />
                 </adaptor>
 
@@ -126,6 +134,10 @@
                 </proxy>
                 <proxy channel="${ModelDisplayChannel}" waitForKey="modelSeriesKey">
                     <slot>modelSeries/showReconstructions</slot>
+                </proxy>
+
+                <proxy channel="${PickingChannel}" >
+                    <signal>pickerInteractor/picked</signal>
                 </proxy>
 
                 <connect>
