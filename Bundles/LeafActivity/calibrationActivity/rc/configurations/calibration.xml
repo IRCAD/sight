@@ -6,6 +6,10 @@
         <param name="AS_UID" />
         <param name="cameraSeries" />
         <param name="videoGrabberImpl" default="::videoQt::SFrameGrabber" />
+        <param name="enabledPreviousChannel" default="enabledPreviousChannel" />
+        <param name="enabledNextChannel" default="enabledNextChannel" />
+        <param name="previousActivityChannel" default="previousActivityChannel" />
+        <param name="nextActivityChannel" default="nextActivityChannel" />
     </parameters>
     <config>
 
@@ -35,8 +39,9 @@
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
+                    <menuItem name="Previous" icon="@BUNDLE_PREFIX@/media_0-1/icons/Previous.svg" />
+                    <menuItem name="Next" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
                     <menuItem name="Export camera series" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
-                    <menuItem name="Export activity" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/export_activity.svg" />
                     <separator />
                     <menuItem name="Export XML" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/save.svg" />
                     <separator />
@@ -46,8 +51,9 @@
                 </layout>
             </gui>
             <registry>
+                <menuItem sid="ActionPrevious" start="yes" />
+                <menuItem sid="ActionNext" start="yes" />
                 <menuItem sid="ActionExport" start="yes" />
-                <menuItem sid="ActionExportActivity" start="yes" />
                 <menuItem sid="ActionWriteXmlCalib" start="yes" />
                 <editor sid="cameraLauncher" start="no" />
                 <menuItem sid="action_chessBoardSize" start="yes" />
@@ -114,9 +120,14 @@
             <inout key="series" uid="${cameraSeries}" />
         </service>
 
-        <service uid="ActionExportActivity" type="::uiMedData::action::SExportSeries" autoConnect="yes">
-            <inout key="seriesDB" uid="${SERIESDB}" />
-            <inout key="series" uid="${AS_UID}" />
+        <!-- The action "previous" and "next" are visible only if the application use a "SActivitySequencer".
+             This service send signals to enable or not the actions. -->
+        <service uid="ActionPrevious" type="::gui::action::SSignal">
+            <state visible="false" />
+        </service>
+
+        <service uid="ActionNext" type="::gui::action::SSignal">
+            <state visible="false" />
         </service>
 
         <service uid="CalibrationXmlWriter" type="::uiIO::editor::SIOSelector" >
@@ -130,6 +141,32 @@
 
         <connect channel="preferencesModifiedProxy">
             <signal>action_chessBoardSize/parametersModified</signal>
+        </connect>
+
+        <!-- Connection to enable "previous" action. It should be connected to a SActivitySequencer in the application
+             configuration.-->
+        <connect channel="${enabledPreviousChannel}">
+            <slot>ActionExport/hide</slot>
+            <slot>ActionPrevious/show</slot>
+            <slot>ActionPrevious/setIsExecutable</slot>
+        </connect>
+
+        <!-- Connection to called 'previous' slot of the application's SActivitySequencer. -->
+        <connect channel="${previousActivityChannel}">
+            <signal>ActionPrevious/triggered</signal>
+        </connect>
+
+        <!-- Connection to enable "next" action. It should be connected to a SActivitySequencer in the application
+             configuration.-->
+        <connect channel="${enabledNextChannel}">
+            <slot>ActionExport/hide</slot>
+            <slot>ActionNext/show</slot>
+            <slot>ActionNext/setIsExecutable</slot>
+        </connect>
+
+        <!-- Connection to called 'next' slot of the application's SActivitySequencer. -->
+        <connect channel="${nextActivityChannel}">
+            <signal>ActionNext/triggered</signal>
         </connect>
 
         <!-- START AND STOP SERVICES -->
