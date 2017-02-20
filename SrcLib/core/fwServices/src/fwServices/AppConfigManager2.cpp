@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -199,6 +199,11 @@ void AppConfigManager2::destroy()
 
     m_cfgElem.reset();
     m_createdObjects.clear();
+    m_deferredObjects.clear();
+    m_deferredServices.clear();
+    m_deferredStartSrv.clear();
+    m_deferredUpdateSrv.clear();
+    m_servicesProxies.clear();
 
     m_state = STATE_DESTROYED;
 }
@@ -209,7 +214,6 @@ void AppConfigManager2::setIsUnitTest(bool isUnitTest)
 {
     m_isUnitTest = isUnitTest;
 }
-
 
 // ------------------------------------------------------------------------
 
@@ -784,6 +788,8 @@ void AppConfigManager2::destroyProxies()
     {
         this->destroyProxy(itProxy.first, itProxy.second);
     }
+
+    m_createdObjectsProxies.clear();
 }
 
 //------------------------------------------------------------------------------
