@@ -31,6 +31,8 @@ uniform float u_viewportHeight;
 uniform float u_clippingNear;
 uniform float u_clippingFar;
 
+uniform float u_renderTargetFlipping;
+
 out vec4 fragColor;
 
 //-----------------------------------------------------------------------------
@@ -39,6 +41,10 @@ vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
 {
     // TODO: Simplify this -> uniforms
     vec3 screenPos = vec3(gl_FragCoord.xy / vec2(u_viewportWidth, u_viewportHeight), depth);
+    if(u_renderTargetFlipping < 0)
+    {
+        screenPos.y = 1.0 - screenPos.y;
+    }
     screenPos -= 0.5;
     screenPos *= 2.0;
 
@@ -55,7 +61,7 @@ vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
 
 vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float sampleDistance)
 {
-    vec4 result = vec4(0.0, 0.0, 1.0, 1.0);
+    vec4 result = vec4(0.0);
 
     int iterCount = 0;
 
@@ -83,8 +89,7 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 
 void main(void)
 {
-    vec2 rayEntryExit = texelFetch(u_entryPoints, ivec2(gl_FragCoord), 0).rg;
-    //vec2 rayEntryExit = texture(u_entryPoints, uv).rg;
+    vec2 rayEntryExit = texture(u_entryPoints, uv).rg;
 
     float entryDepth =  rayEntryExit.r;
     float exitDepth  = -rayEntryExit.g;
@@ -93,8 +98,6 @@ void main(void)
     {
         discard;
     }
-
-    //gl_FragDepth = entryDepth;
 
     vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, u_invWorldViewProj);
     vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, u_invWorldViewProj);

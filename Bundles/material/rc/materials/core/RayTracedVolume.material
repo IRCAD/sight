@@ -725,7 +725,7 @@ material RayTracedVolume_MImP
             cull_software none
             scene_blend alpha_blend
 
-            vertex_program_ref RayTracedVolume_VP
+            vertex_program_ref RenderQuad_VP
             {
             }
 
