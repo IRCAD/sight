@@ -77,16 +77,16 @@ void Server::broadcast(::fwData::Object::sptr obj)
 {
     std::vector<Client::sptr>::iterator it;
 
-    for (it = m_clients.begin(); it != m_clients.end(); ++it)
+    for (it = m_clients.begin(); it != m_clients.end(); )
     {
         if (!(*it)->sendObject(obj))
         {
             (*it)->disconnect();
             it = m_clients.erase(it);
-            if (it == m_clients.end())
-            {
-                break;
-            }
+        }
+        else
+        {
+            ++it;
         }
     }
 }
@@ -97,16 +97,16 @@ void Server::broadcast(::igtl::MessageBase::Pointer msg)
 {
     std::vector<Client::sptr>::iterator it;
 
-    for (it = m_clients.begin(); it != m_clients.end(); ++it)
+    for (it = m_clients.begin(); it != m_clients.end(); )
     {
         if (!(*it)->sendMsg(msg))
         {
             (*it)->disconnect();
             it = m_clients.erase(it);
-            if (it == m_clients.end())
-            {
-                break;
-            }
+        }
+        else
+        {
+            ++it;
         }
     }
 }
