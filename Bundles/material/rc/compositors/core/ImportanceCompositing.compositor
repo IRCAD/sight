@@ -2,9 +2,9 @@ compositor ImportanceCompositingMono
 {
     technique
     {
-        texture IC target_width target_height PF_FLOAT32_RGBA pooled
+        texture mrt_IC target_width target_height PF_FLOAT32_RGBA PF_FLOAT32_RGBA pooled chain_scope
 
-        target IC
+        target mrt_IC
         {
             input none
             pass clear
@@ -16,6 +16,15 @@ compositor ImportanceCompositingMono
                 material ImportanceCompositing
             }
         }
+    }
+}
+
+compositor ICRayTracedVolume
+{
+    technique
+    {
+        texture_ref mrt_IC ImportanceCompositingMono mrt_IC
+        texture_ref JFA JFAInit JFAFinal
 
         // Final pass
         target_output
@@ -29,7 +38,8 @@ compositor ImportanceCompositingMono
             pass render_quad
             {
                 material RayTracedVolume_MImP
-                input 3 IC
+                input 3 mrt_IC 0
+                input 4 JFA
             }
         }
     }

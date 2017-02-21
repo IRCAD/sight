@@ -208,6 +208,8 @@ private:
     class RayTracingCompositorListener;
     RayTracingCompositorListener* m_compositorListener;
 
+    class JFACompositorListener;
+
     std::string m_compositorName;
 
     ::fwRenderOgre::Layer::wptr m_layer;

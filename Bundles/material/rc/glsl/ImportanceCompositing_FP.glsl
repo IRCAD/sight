@@ -33,7 +33,8 @@ uniform float u_clippingFar;
 
 uniform float u_renderTargetFlipping;
 
-out vec4 fragColor;
+layout (location = 0) out vec4 mrt_IC_RayTracing;
+layout (location = 1) out vec4 mrt_IC_JFA;
 
 //-----------------------------------------------------------------------------
 
@@ -59,9 +60,10 @@ vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
 
 //-----------------------------------------------------------------------------
 
-vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float sampleDistance)
+void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float sampleDistance, inout vec4 IC_RayTracing, inout vec4 IC_JFA)
 {
-    vec4 result = vec4(0.0);
+    IC_RayTracing = vec4(0.0);
+    IC_JFA = vec4(0.0);
 
     int iterCount = 0;
 
@@ -75,14 +77,13 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 
         if(maskValue > edge)
         {
-            result = vec4(rayPos, 1.);
+            IC_RayTracing = vec4(rayPos, 1.);
+            IC_JFA = vec4(gl_FragCoord.x / u_viewportWidth, gl_FragCoord.y / u_viewportHeight, rayPos.z, 1.);
             break;
         }
 
         rayPos += rayDir;
     }
-
-    return result;
 }
 
 //-----------------------------------------------------------------------------
@@ -107,7 +108,5 @@ void main(void)
     float rayLength = length(rayExit - rayEntry);
 
     vec3 rayPos = rayEntry;
-    vec4 result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
-
-    fragColor = result;
+    launchRay(rayPos, rayDir, rayLength, u_sampleDistance, mrt_IC_RayTracing, mrt_IC_JFA);
 }

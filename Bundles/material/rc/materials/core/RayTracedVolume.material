@@ -18,6 +18,7 @@ fragment_program RayTracedVolume_MImP_FP glsl
         param_named u_tfTexture int 1
         param_named u_entryPoints int 2
         param_named u_IC int 3
+        param_named u_JFA int 4
         // Lighting
         param_named_auto u_cameraPos camera_position
         param_named_auto u_shininess surface_shininess
@@ -751,6 +752,12 @@ material RayTracedVolume_MImP
             }
 
             texture_unit IC
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit JFA
             {
                 tex_address_mode clamp
                 filtering none

@@ -1,0 +1,109 @@
+compositor JFAInit
+{
+    technique
+    {
+        texture JFAFinal target_width target_height PF_FLOAT32_RGBA pooled chain_scope
+        texture JFAPing target_width target_height PF_FLOAT32_RGBA pooled chain_scope
+        texture JFAPong target_width target_height PF_FLOAT32_RGBA pooled chain_scope
+
+        texture_ref mrt_IC ImportanceCompositingMono mrt_IC
+
+        target JFAPing
+        {
+            input none
+            pass clear
+            {
+
+            }
+            pass render_quad
+            {
+                material JFA
+                input 0 mrt_IC 1
+            }
+        }
+
+        target JFAPong
+        {
+            input none
+            pass clear
+            {
+            }
+        }
+    }
+}
+
+compositor JFAPingComp
+{
+    technique
+    {
+        texture_ref JFAPingLocal JFAInit JFAPing
+        texture_ref JFAPongLocal JFAInit JFAPong
+
+        target JFAPongLocal
+        {
+            input none
+            pass render_quad
+            {
+                material JFA
+                input 0 JFAPingLocal
+            }
+        }
+    }
+}
+
+compositor JFAPongComp
+{
+    technique
+    {
+        texture_ref JFAPingLocal JFAInit JFAPing
+        texture_ref JFAPongLocal JFAInit JFAPong
+
+        target JFAPingLocal
+        {
+            input none
+            pass render_quad
+            {
+                material JFA
+                input 0 JFAPongLocal
+            }
+        }
+    }
+}
+
+compositor JFAFinalPingComp
+{
+    technique
+    {
+        texture_ref JFAPingLocal JFAInit JFAPing
+        texture_ref JFAFinal JFAInit JFAFinal
+
+        target JFAFinal
+        {
+            input none
+            pass render_quad
+            {
+                material JFA
+                input 0 JFAPingLocal
+            }
+        }
+    }
+}
+
+compositor JFAFinalPongComp
+{
+    technique
+    {
+        texture_ref JFAFinal JFAInit JFAFinal
+        texture_ref JFAPongLocal JFAInit JFAPong
+
+        target JFAFinal
+        {
+            input none
+            pass render_quad
+            {
+                material JFA
+                input 0 JFAPongLocal
+            }
+        }
+    }
+}

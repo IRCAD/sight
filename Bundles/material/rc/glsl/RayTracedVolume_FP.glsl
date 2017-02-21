@@ -5,6 +5,7 @@ uniform sampler2D u_tfTexture;
 
 #if MIMP
 uniform sampler2D u_IC;
+uniform sampler2D u_JFA;
 #endif
 
 #if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
