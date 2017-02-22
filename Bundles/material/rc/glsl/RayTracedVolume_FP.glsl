@@ -3,9 +3,14 @@
 uniform sampler3D u_image;
 uniform sampler2D u_tfTexture;
 
-#if MIMP
+#if IDVR >= 1
 uniform sampler2D u_IC;
+#endif
+#if IDVR == 1
 uniform sampler2D u_JFA;
+#endif
+#if IDVR == 2 || IDVR == 3
+uniform sampler3D u_mask;
 #endif
 
 #if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
@@ -36,6 +41,8 @@ uniform mat4 u_invWorldViewProj;
 in vec2 uv;
 
 #endif // MODE3D
+
+uniform float u_renderTargetFlipping;
 
 uniform vec3 u_cameraPos;
 uniform float u_shininess;
@@ -153,6 +160,10 @@ vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
 {
     // TODO: Simplify this -> uniforms
     vec3 screenPos = vec3(gl_FragCoord.xy / vec2(u_viewportWidth, u_viewportHeight), depth);
+    if(u_renderTargetFlipping < 0)
+    {
+        screenPos.y = 1.0 - screenPos.y;
+    }
     screenPos -= 0.5;
     screenPos *= 2.0;
 
@@ -183,6 +194,14 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
     const float opacityCorrectionFactor = 200.;
 
     vec4 result = vec4(0);
+
+#if IDVR == 2 || IDVR == 3
+    // For the segmentation we have a [0, 255] range
+    // So we check for value superior to 128: 128 / 65536 = 0.001953125
+    float edge = 0.5 + 0.001953125;
+#endif
+
+    float nbSamples = 0.0;
 
     int iterCount = 0;
     for(float t = 0; iterCount < 65000 && t < rayLength; iterCount += 1, t += sampleDistance)
@@ -228,6 +247,16 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
             tfColour.rgb *= pow(1+volIllum.rgb, u_volIllumFactor.rgb);
 #endif // COLOR_BLEEDING
 
+// Average Importance Compositing
+#if IDVR == 2
+            vec4 aimc = texture(u_IC, uv);
+            // We ensure that we have a number of samples > 0, to be in the region of interest
+            if(aimc.r > 0 && nbSamples <= aimc.r)
+            {
+                tfColour.a = tfColour.a * 0.05;
+            }
+#endif
+
             composite(result, tfColour);
 
             if(result.a > 0.99)
@@ -237,6 +266,7 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
         }
 
         rayPos += rayDir;
+        nbSamples += 1.0f;
     }
 
     return result;
@@ -262,24 +292,26 @@ void main(void)
     vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, u_invWorldViewProj);
     vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, u_invWorldViewProj);
 
-#if MIMP
+#if IDVR == 1
     vec4 importance = texture(u_IC, uv);
 
-    if(importance.r != 0.)
+    // If we have an importance factor, we move the ray accordingly
+    if(importance.r > 0.0f)
     {
         rayEntry = importance.rgb;
     }
+    /* Otherwise, we use the distance to the closest important point */
+    /* to dig into the volume */
     else
     {
         vec4 distance = texture(u_JFA, uv);
         vec3 dir = normalize(rayExit - rayEntry);
         if(entryDepth > distance.b)
         {
-            rayEntry += dir * (distance.b - distance.a * 1.0);
+            rayEntry += dir * (distance.b - distance.a * 3.0);
         }
     }
-
-#endif // MIMP
+#endif // IDVR == 1
 
     vec3 rayDir   = normalize(rayExit - rayEntry) * u_sampleDistance;
 

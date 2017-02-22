@@ -1,4 +1,5 @@
-compositor ImportanceCompositingMono
+// Maximum importance projection (MImP) with support for countersink geometry (CSG)
+compositor IDVR_MImP_CSG_Comp
 {
     technique
     {
@@ -13,17 +14,62 @@ compositor ImportanceCompositingMono
 
             pass render_quad
             {
-                material ImportanceCompositing
+                material IDVR_MImP_Mat
             }
         }
     }
 }
 
-compositor ICRayTracedVolume
+// Average importance projection (AImC)
+compositor IDVR_AImC_Comp
 {
     technique
     {
-        texture_ref mrt_IC ImportanceCompositingMono mrt_IC
+        texture IC target_width target_height PF_FLOAT32_RGBA pooled chain_scope
+
+        target IC
+        {
+            input none
+            pass clear
+            {
+            }
+
+            pass render_quad
+            {
+                material IDVR_AImC_Mat
+            }
+        }
+    }
+}
+
+// VIsibility Preserving Importance Compositing (VPImC)
+compositor IDVR_VPImC_Comp
+{
+    technique
+    {
+        texture IC target_width target_height PF_FLOAT32_RGBA pooled chain_scope
+
+        target IC
+        {
+            input none
+            pass clear
+            {
+            }
+
+            pass render_quad
+            {
+                material IDVR_VPImC_Mat
+            }
+        }
+    }
+}
+
+// Ray tracing compositor with support for MImP and CSG
+compositor RayTracedVolume_MImP_CSG_Comp
+{
+    technique
+    {
+        texture_ref mrt_IC IDVR_MImP_CSG_Comp mrt_IC
         texture_ref JFA JFAInit JFAFinal
 
         // Final pass
@@ -40,6 +86,56 @@ compositor ICRayTracedVolume
                 material RayTracedVolume_MImP
                 input 3 mrt_IC 0
                 input 4 JFA
+            }
+        }
+    }
+}
+
+// Ray tracing compositor with support for AImC
+compositor RayTracedVolume_AImC_Comp
+{
+    technique
+    {
+        texture_ref IC IDVR_AImC_Comp IC
+
+        // Final pass
+        target_output
+        {
+            input none
+            pass clear
+            {
+                buffers depth
+            }
+
+            pass render_quad
+            {
+                material RayTracedVolume_AImC
+                input 3 IC 0
+            }
+        }
+    }
+}
+
+// Ray tracing compositor with support for VPImC
+compositor RayTracedVolume_VPImC_Comp
+{
+    technique
+    {
+        texture_ref IC IDVR_VPImC_Comp IC
+
+        // Final pass
+        target_output
+        {
+            input none
+            pass clear
+            {
+                buffers depth
+            }
+
+            pass render_quad
+            {
+                material RayTracedVolume_VPImC
+                input 3 IC 0
             }
         }
     }

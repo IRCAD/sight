@@ -692,7 +692,9 @@ void RayTracingVolumeRenderer::initCompositors()
     /* Mono mode */
     if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE)
     {
-        m_compositorName = "ImportanceCompositingMono";
+        m_compositorName = "IDVR_MImP_CSG_Comp";
+        //m_compositorName = "IDVR_AImC_Comp";
+        //m_compositorName = "IDVR_VPImC_Comp";
     }
     /* stereo mode */
     else
@@ -742,7 +744,7 @@ void RayTracingVolumeRenderer::initCompositors()
     compositorInstance->addListener(m_compositorListener);
 
     std::cout << "Viewport:" << m_camera->getViewport()->getActualWidth() << " " <<
-            m_camera->getViewport()->getActualHeight() << std::endl;
+        m_camera->getViewport()->getActualHeight() << std::endl;
     double nbPasses =
         std::nearbyint(std::max(std::log(m_camera->getViewport()->getActualWidth()) / std::log(2.0),
                                 std::log(m_camera->getViewport()->getActualHeight()) / std::log(2.0)));
@@ -793,7 +795,9 @@ void RayTracingVolumeRenderer::initCompositors()
     cl = new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(i), static_cast<float>(nbPasses));
     compositorInstance->addListener(cl);
 
-    compositorInstance = compositorManager.addCompositor(viewport, "ICRayTracedVolume");
+    compositorInstance = compositorManager.addCompositor(viewport, "RayTracedVolume_MImP_CSG_Comp");
+    //compositorInstance = compositorManager.addCompositor(viewport, "RayTracedVolume_AImC_Comp");
+    //compositorInstance = compositorManager.addCompositor(viewport, "RayTracedVolume_VPImC_Comp");
     SLM_ASSERT("Compositor could not be initialized", compositorInstance);
     compositorInstance->setEnabled(true);
 
