@@ -269,6 +269,15 @@ void main(void)
     {
         rayEntry = importance.rgb;
     }
+    else
+    {
+        vec4 distance = texture(u_JFA, uv);
+        vec3 dir = normalize(rayExit - rayEntry);
+        if(entryDepth > distance.b)
+        {
+            rayEntry += dir * (distance.b - distance.a * 1.0);
+        }
+    }
 
 #endif // MIMP
 

@@ -61,5 +61,5 @@ void main()
 
     /* Finally we store the coordiante of the closest point we find */
     /* We also store the distance to the closest point in the blue channel */
-    fragColor = vec4(closestPoint, dstMin, 1.0);
+    fragColor = vec4(closestPoint, depthClosestPoint, dstMin);
 }
