@@ -169,23 +169,27 @@ void SFrameGrabber::stopCamera()
         {
             timeline = this->getObject< ::arData::FrameTL >();
         }
-        const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec() + 1;
-        SPTR(::arData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
-        ::boost::uint8_t* destBuffer               = reinterpret_cast< ::boost::uint8_t* >( buffer->addElement(0) );
 
-        std::fill(destBuffer,
-                  destBuffer + timeline->getWidth() * timeline->getHeight() * timeline->getNumberOfComponents(), 0);
+        if(timeline->isAllocated())
+        {
+            const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec() + 1;
+            SPTR(::arData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
+            ::boost::uint8_t* destBuffer               = reinterpret_cast< ::boost::uint8_t* >( buffer->addElement(0) );
 
-        // push buffer and notify
-        timeline->clearTimeline();
-        timeline->pushObject(buffer);
+            std::fill(destBuffer,
+                      destBuffer + timeline->getWidth() * timeline->getHeight() * timeline->getNumberOfComponents(), 0);
 
-        auto sigTL = timeline->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-            ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
-        sigTL->asyncEmit(timestamp);
+            // push buffer and notify
+            timeline->clearTimeline();
+            timeline->pushObject(buffer);
+
+            auto sigTL = timeline->signal< ::arData::TimeLine::ObjectPushedSignalType >(
+                        ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+            sigTL->asyncEmit(timestamp);
+        }
 
         auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
-            ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
+                    ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
         sig->asyncEmit();
     }
 }
