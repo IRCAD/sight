@@ -23,6 +23,9 @@ namespace videoCalibration
 
 const ::fwCom::Slots::SlotKeyType SReprojectionError::s_COMPUTE_SLOT = "compute";
 
+const ::fwCom::Slots::SlotKeyType SReprojectionError::s_SET_BOOL_PARAMETER_SLOT  = "setBoolParameter";
+const ::fwCom::Slots::SlotKeyType SReprojectionError::s_SET_COLOR_PARAMETER_SLOT = "setColorParameter";
+
 static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
 
 const ::fwServices::IService::KeyType s_MARKERTL_INPUT  = "markerTL";
@@ -36,10 +39,14 @@ const ::fwServices::IService::KeyType s_FRAMETL_INPUT   = "frameTL";
 SReprojectionError::SReprojectionError() :
     m_lastTimestamp(0),
     m_patternWidth(80),
+    m_cvColor(::cv::Scalar(255, 255, 255, 255)),
     m_display(true)
 {
     newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
     newSlot(s_COMPUTE_SLOT, &SReprojectionError::compute, this);
+
+    newSlot(s_SET_BOOL_PARAMETER_SLOT, &SReprojectionError::setBoolParameter, this);
+    newSlot(s_SET_COLOR_PARAMETER_SLOT, &SReprojectionError::setColorParameter, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -73,6 +80,9 @@ void SReprojectionError::starting() throw(::fwTools::Failed)
     m_objectPoints.push_back( ::cv::Point3f(halfWidth, -halfWidth, 0) );
     m_objectPoints.push_back( ::cv::Point3f(-halfWidth, -halfWidth, 0) );
 
+    //TODO: Add an option to use a chessboard instead of a marker
+    // --> configure height, width and square size(in mm)
+
     auto camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
 
     m_cameraMatrix                  = ::cv::Mat::eye(3, 3, CV_64F);
@@ -102,9 +112,6 @@ void SReprojectionError::compute(fwCore::HiResClock::HiResClockType timestamp)
 {
     if(timestamp > m_lastTimestamp)
     {
-        ::fwCore::HiResClock::HiResClockType newerTimestamp =
-            std::numeric_limits< ::fwCore::HiResClock::HiResClockType >::max();
-
         auto matrixTL = this->getInput< ::arData::MatrixTL >(s_MATRIXTL_INPUT);
         auto markerTL = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT);
         ::fwCore::HiResClock::HiResClockType ts = matrixTL->getNewerTimestamp();
@@ -158,7 +165,7 @@ void SReprojectionError::compute(fwCore::HiResClock::HiResClockType timestamp)
 
             this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(errP.first);
 
-            if(m_display)
+            if(m_display) //draw reprojected points
             {
                 auto frameTL = this->getInput< ::arData::FrameTL >(s_FRAMETL_INPUT);
                 SLM_ASSERT("The input "+ s_FRAMETL_INPUT +" is not valid.", frameTL);
@@ -176,14 +183,39 @@ void SReprojectionError::compute(fwCore::HiResClock::HiResClockType timestamp)
 
                     for(size_t i = 0; i < reprojectedP.size(); ++i)
                     {
-                        ::cv::circle(img, reprojectedP[i], 7, ::cv::Scalar(0, 255, 255, 255), 1, ::cv::LINE_8);
+                        ::cv::circle(img, reprojectedP[i], 7, m_cvColor, 1, ::cv::LINE_8);
                     }
-
                 }
-
             }
         }
+    }
+}
 
+//-----------------------------------------------------------------------------
+
+void SReprojectionError::setBoolParameter(bool _val, std::string _key)
+{
+    if(_key == "display")
+    {
+        m_display = _val;
+    }
+    else
+    {
+        SLM_ERROR("the key '" + _key + "' is not handled");
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SReprojectionError::setColorParameter(std::array<uint8_t, 4> _val, std::string _key)
+{
+    if(_key == "color")
+    {
+        m_cvColor = ::cv::Scalar(_val[0], _val[1], _val[2], 255);
+    }
+    else
+    {
+        SLM_ERROR("the key '" + _key + "' is not handled");
     }
 }
 

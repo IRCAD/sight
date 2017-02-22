@@ -15,6 +15,8 @@ set( REQUIREMENTS
     gui
     guiQt
     ioCalibration
+    uiPreferences
+    uiTools
     maths
     preferences
     servicesReg
@@ -22,6 +24,7 @@ set( REQUIREMENTS
     trackerAruco
     videoQt
     videoTools
+    videoCalibration
     visuVTK
     visuVTKAdaptor
     visuVTKARAdaptor

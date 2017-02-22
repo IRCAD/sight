@@ -52,7 +52,10 @@ public:
     /// Double changed signal type
     typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;
 
-    static const ::fwCom::Slots::SlotKeyType s_COMPUTE_SLOT;
+    VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_COMPUTE_SLOT;
+
+    VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
+    VIDEOCALIBRATION_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
 
     ///Constructor
     VIDEOCALIBRATION_API SReprojectionError();
@@ -88,18 +91,26 @@ private:
 
     void compute(::fwCore::HiResClock::HiResClockType timestamp);
 
+    ///Slot called when a color value is changed
+    void setColorParameter(std::array< std::uint8_t, 4 > _val, std::string _key);
+    ///Slot called when a boolean value is changed
+    void setBoolParameter(bool _val, std::string _key);
+
     /// Last timestamp
     ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
 
     /// Marker pattern width.
     double m_patternWidth;
 
-    ///
+    /// 3D object points
     std::vector< ::cv::Point3f > m_objectPoints;
-
+    /// Camera Matrix (fx, fy, cx, cy)
     ::cv::Mat m_cameraMatrix;
+    ///Distorsion coefficient
     ::cv::Mat m_distorsionCoef;
-
+    /// Color of the reprojection circle
+    ::cv::Scalar m_cvColor;
+    /// if true: display circle centered at reprojection point.
     bool m_display;
 
 };
