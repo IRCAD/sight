@@ -804,13 +804,11 @@ void RayTracingVolumeRenderer::initCompositors()
 
     compositorInstance->addListener(m_icListener);
 
-    std::cout << "Viewport:" << m_camera->getViewport()->getActualWidth() << " " <<
-        m_camera->getViewport()->getActualHeight() << std::endl;
     double nbPasses =
         std::nearbyint(std::max(std::log(m_camera->getViewport()->getActualWidth()) / std::log(2.0),
                                 std::log(m_camera->getViewport()->getActualHeight()) / std::log(2.0)));
-    std::cout << nbPasses << std::endl;
 
+#if 1
     compositorInstance = compositorManager.addCompositor(viewport, "JFAInit");
     SLM_ASSERT("Compositor could not be initialized", compositorInstance);
     compositorInstance->setEnabled(true);
@@ -857,6 +855,7 @@ void RayTracingVolumeRenderer::initCompositors()
     m_jfaListener =
         new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(i), static_cast<float>(nbPasses));
     compositorInstance->addListener(m_jfaListener);
+#endif
 
     compositorInstance = compositorManager.addCompositor(viewport, "RayTracedVolume_MImP_Comp");
     //compositorInstance = compositorManager.addCompositor(viewport, "RayTracedVolume_AImC_Comp");
@@ -894,10 +893,12 @@ void RayTracingVolumeRenderer::initCompositors()
         }
     }
 
+#if 0
     for(auto ci : compChain->getCompositors())
     {
         std::cout << ci->getCompositor()->getName() << " " << ci->getEnabled() << std::endl;
     }
+#endif
 }
 
 //-----------------------------------------------------------------------------

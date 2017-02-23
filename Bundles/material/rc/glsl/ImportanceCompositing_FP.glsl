@@ -108,27 +108,13 @@ void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
             break;
         }
 #endif
-#if IDVR == 2
-// Average Importance compositing
+#if IDVR == 2 || IDVR == 3
+// Average Importance compositing & Visibility preserving Importance Compositing
 // We count the number of samples until the first important object
 // We will ponder those samples by the lowest important samples
         if(maskValue > edge)
         {
             IC_RayTracing = vec4(nbSamples, 0.0f, 0.0f, 1.0f);
-            break;
-        }
-#endif
-#if IDVR == 3
-// Visibility preserving Importance Compositing
-
-        float intensity = texture(u_image, rayPos).r;
-        vec4  tfColour  = sampleTransferFunction(intensity);
-
-        composite(alphaAccum, tfColour);
-
-        if(maskValue > edge)
-        {
-            IC_RayTracing = vec4(nbSamples, alphaAccum.a, 0.0f, 1.0f);
             break;
         }
 #endif

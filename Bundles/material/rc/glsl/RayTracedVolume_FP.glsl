@@ -201,7 +201,11 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
     float edge = 0.5 + 0.001953125;
 #endif
 
+#if IDVR == 3
+// With Visibility preserving importance compositing
+// We count the number of samples until we reach the important feature
     float nbSamples = 0.0;
+#endif
 
     int iterCount = 0;
     for(float t = 0; iterCount < 65000 && t < rayLength; iterCount += 1, t += sampleDistance)
@@ -257,16 +261,37 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
             }
 #endif
 
+#if IDVR == 3
+            vec4 aimc = texture(u_IC, uv);
+            // We ensure that we have a number of samples > 0, to be in the region of interest
+            if(aimc.r > 0 && int(nbSamples) == int(aimc.r))
+            {
+                result.a = 0.3;
+            }
+#endif
+
             composite(result, tfColour);
 
-            if(result.a > 0.99)
+            if(result.a > 0.99
+#if IDVR == 3
+// In the case of Visibility preserving importance compositing
+// We need to ensure thet we reach a certain amount of samples
+// Before cutting off the compositing and breaking the ray casting
+// Otherwise we will miss the important feature
+            && int(nbSamples) < int(aimc.r)
+#endif
+            )
             {
                 break;
             }
         }
 
         rayPos += rayDir;
+#if IDVR == 3
+// With Visibility preserving importance compositing
+// We count the number of samples until we reach the important feature
         nbSamples += 1.0f;
+#endif
     }
 
     return result;
@@ -292,6 +317,8 @@ void main(void)
     vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, u_invWorldViewProj);
     vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, u_invWorldViewProj);
 
+    vec3 rayDir   = normalize(rayExit - rayEntry);
+
 #if IDVR == 1
     vec4 importance = texture(u_IC, uv);
 
@@ -305,15 +332,18 @@ void main(void)
     else
     {
         vec4 distance = texture(u_JFA, uv);
-        vec3 dir = normalize(rayExit - rayEntry);
-        if(entryDepth > distance.b)
+
+        // Compute the countersink factor to adjust the rayEntry
+        float csg = (distance.b - distance.a * 3.0);
+        // Ensure that we have a correct distance for the csg factor
+        if(csg > 0)
         {
-            rayEntry += dir * (distance.b - distance.a * 3.0);
+            rayEntry += rayDir * csg;
         }
     }
 #endif // IDVR == 1
 
-    vec3 rayDir   = normalize(rayExit - rayEntry) * u_sampleDistance;
+    rayDir = rayDir * u_sampleDistance;
 
     float rayLength = length(rayExit - rayEntry);
 
