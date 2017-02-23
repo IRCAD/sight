@@ -73,10 +73,6 @@
                         <config image="${imageUid}" renderer="default" picker=""/>
                     </adaptor>
 
-                    <adaptor id="landmarksNegato" class="::visuVTKAdaptor::ImageLandmarks" objectId="${imageKey}">
-                        <config renderer="default" picker="negatodefault" />
-                    </adaptor>
-
                     <adaptor id="PointList" class="::visuVTKAdaptor::LabeledPointList" objectId="${selectedPointsKey}">
                         <config renderer="default" picker="negatodefault" />
                     </adaptor>

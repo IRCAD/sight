@@ -216,10 +216,6 @@
                     <config filter="true" renderer="default" picker="negatodefault" />
                 </adaptor>
 
-                <adaptor id="landmarksNegato" class="::visuVTKAdaptor::ImageLandmarks" objectId="imageKey">
-                    <config renderer="default" picker="negatodefault" />
-                </adaptor>
-
                 <adaptor id="Picker" uid="Picker2" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
                     <config renderer="default" picker="negatodefault" />
                 </adaptor>
@@ -260,10 +256,6 @@
 
                 <adaptor id="multiDistances" class="::visuVTKAdaptor::ImageMultiDistances" objectId="imageKey">
                     <config filter="true" renderer="default" picker="negatodefault" />
-                </adaptor>
-
-                <adaptor id="landmarksNegato" class="::visuVTKAdaptor::ImageLandmarks" objectId="imageKey">
-                    <config renderer="default" picker="negatodefault" />
                 </adaptor>
 
                 <adaptor id="Picker" uid="Picker3" class="::visuVTKAdaptor::PickerInteractor" objectId="self">
@@ -338,7 +330,6 @@
         <service uid="MoveAlongSpline" type="::ctrlSplineNavigation::SMoveAlongSpline" autoConnect="yes" >
             <in key="points" uid="${SplinePointListUid}"/>
         </service>
-
 
         <service uid="ComputeCPR2D" type="::ctrlComputeCPR::SComputeCPR2D" autoConnect="yes">
             <inout key="image" uid="ImageCPRUid" />
