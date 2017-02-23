@@ -11,46 +11,11 @@ fragment_program IDVR_MImP_FP glsl
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
         param_named_auto u_renderTargetFlipping render_target_flipping
-        //param_named_auto u_invWorldViewProj inverse_worldviewproj_matrix
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_mask int 1
         param_named u_tfTexture int 2
         param_named u_entryPoints int 3
-        // Lighting
-        param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
-        param_named u_numLights int 1
-        param_named u_lightDir[0] float4 0 0 0 0
-        param_named u_lightDir[1] float4 0 0 0 0
-        param_named u_lightDir[2] float4 0 0 0 0
-        param_named u_lightDir[3] float4 0 0 0 0
-        param_named u_lightDir[4] float4 0 0 0 0
-        param_named u_lightDir[5] float4 0 0 0 0
-        param_named u_lightDir[6] float4 0 0 0 0
-        param_named u_lightDir[7] float4 0 0 0 0
-        param_named u_lightDir[8] float4 0 0 0 0
-        param_named u_lightDir[9] float4 0 0 0 0
-        param_named u_lightDiffuse[0] float4 0 0 0 0
-        param_named u_lightDiffuse[1] float4 0 0 0 0
-        param_named u_lightDiffuse[2] float4 0 0 0 0
-        param_named u_lightDiffuse[3] float4 0 0 0 0
-        param_named u_lightDiffuse[4] float4 0 0 0 0
-        param_named u_lightDiffuse[5] float4 0 0 0 0
-        param_named u_lightDiffuse[6] float4 0 0 0 0
-        param_named u_lightDiffuse[7] float4 0 0 0 0
-        param_named u_lightDiffuse[8] float4 0 0 0 0
-        param_named u_lightDiffuse[9] float4 0 0 0 0
-        param_named u_lightSpecular[0] float4 0 0 0 0
-        param_named u_lightSpecular[1] float4 0 0 0 0
-        param_named u_lightSpecular[2] float4 0 0 0 0
-        param_named u_lightSpecular[3] float4 0 0 0 0
-        param_named u_lightSpecular[4] float4 0 0 0 0
-        param_named u_lightSpecular[5] float4 0 0 0 0
-        param_named u_lightSpecular[6] float4 0 0 0 0
-        param_named u_lightSpecular[7] float4 0 0 0 0
-        param_named u_lightSpecular[8] float4 0 0 0 0
-        param_named u_lightSpecular[9] float4 0 0 0 0
     }
 }
 
@@ -74,42 +39,8 @@ fragment_program IDVR_AImC_FP glsl
         param_named u_tfTexture int 2
         param_named u_entryPoints int 3
         // Importance compositing : level of sparseness
-        param_name u_losImportant float 0.8
-        param_name u_losNotImportant float 0.2
-        // Lighting
-        param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
-        param_named u_numLights int 1
-        param_named u_lightDir[0] float4 0 0 0 0
-        param_named u_lightDir[1] float4 0 0 0 0
-        param_named u_lightDir[2] float4 0 0 0 0
-        param_named u_lightDir[3] float4 0 0 0 0
-        param_named u_lightDir[4] float4 0 0 0 0
-        param_named u_lightDir[5] float4 0 0 0 0
-        param_named u_lightDir[6] float4 0 0 0 0
-        param_named u_lightDir[7] float4 0 0 0 0
-        param_named u_lightDir[8] float4 0 0 0 0
-        param_named u_lightDir[9] float4 0 0 0 0
-        param_named u_lightDiffuse[0] float4 0 0 0 0
-        param_named u_lightDiffuse[1] float4 0 0 0 0
-        param_named u_lightDiffuse[2] float4 0 0 0 0
-        param_named u_lightDiffuse[3] float4 0 0 0 0
-        param_named u_lightDiffuse[4] float4 0 0 0 0
-        param_named u_lightDiffuse[5] float4 0 0 0 0
-        param_named u_lightDiffuse[6] float4 0 0 0 0
-        param_named u_lightDiffuse[7] float4 0 0 0 0
-        param_named u_lightDiffuse[8] float4 0 0 0 0
-        param_named u_lightDiffuse[9] float4 0 0 0 0
-        param_named u_lightSpecular[0] float4 0 0 0 0
-        param_named u_lightSpecular[1] float4 0 0 0 0
-        param_named u_lightSpecular[2] float4 0 0 0 0
-        param_named u_lightSpecular[3] float4 0 0 0 0
-        param_named u_lightSpecular[4] float4 0 0 0 0
-        param_named u_lightSpecular[5] float4 0 0 0 0
-        param_named u_lightSpecular[6] float4 0 0 0 0
-        param_named u_lightSpecular[7] float4 0 0 0 0
-        param_named u_lightSpecular[8] float4 0 0 0 0
-        param_named u_lightSpecular[9] float4 0 0 0 0
+        param_named u_losImportant float 0.8
+        param_named u_losNotImportant float 0.2
     }
 }
 
@@ -135,42 +66,8 @@ fragment_program IDVR_VPImC_FP glsl
         param_named u_tfTexture int 2
         param_named u_entryPoints int 3
         // Importance compositing : level of sparseness
-        param_name u_losImportant float 0.8
-        param_name u_losNotImportant float 0.2
-        // Lighting
-        param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
-        param_named u_numLights int 1
-        param_named u_lightDir[0] float4 0 0 0 0
-        param_named u_lightDir[1] float4 0 0 0 0
-        param_named u_lightDir[2] float4 0 0 0 0
-        param_named u_lightDir[3] float4 0 0 0 0
-        param_named u_lightDir[4] float4 0 0 0 0
-        param_named u_lightDir[5] float4 0 0 0 0
-        param_named u_lightDir[6] float4 0 0 0 0
-        param_named u_lightDir[7] float4 0 0 0 0
-        param_named u_lightDir[8] float4 0 0 0 0
-        param_named u_lightDir[9] float4 0 0 0 0
-        param_named u_lightDiffuse[0] float4 0 0 0 0
-        param_named u_lightDiffuse[1] float4 0 0 0 0
-        param_named u_lightDiffuse[2] float4 0 0 0 0
-        param_named u_lightDiffuse[3] float4 0 0 0 0
-        param_named u_lightDiffuse[4] float4 0 0 0 0
-        param_named u_lightDiffuse[5] float4 0 0 0 0
-        param_named u_lightDiffuse[6] float4 0 0 0 0
-        param_named u_lightDiffuse[7] float4 0 0 0 0
-        param_named u_lightDiffuse[8] float4 0 0 0 0
-        param_named u_lightDiffuse[9] float4 0 0 0 0
-        param_named u_lightSpecular[0] float4 0 0 0 0
-        param_named u_lightSpecular[1] float4 0 0 0 0
-        param_named u_lightSpecular[2] float4 0 0 0 0
-        param_named u_lightSpecular[3] float4 0 0 0 0
-        param_named u_lightSpecular[4] float4 0 0 0 0
-        param_named u_lightSpecular[5] float4 0 0 0 0
-        param_named u_lightSpecular[6] float4 0 0 0 0
-        param_named u_lightSpecular[7] float4 0 0 0 0
-        param_named u_lightSpecular[8] float4 0 0 0 0
-        param_named u_lightSpecular[9] float4 0 0 0 0
+        param_named u_losImportant float 0.8
+        param_named u_losNotImportant float 0.2
     }
 }
 
@@ -240,21 +137,10 @@ material IDVR_AImC_Mat
             {
             }
 
-            texture_unit image
-            {
-                tex_address_mode clamp
-                filtering bilinear
-            }
-
             texture_unit mask
             {
                 tex_address_mode clamp
                 filtering bilinear
-            }
-
-            texture_unit transferFunction
-            {
-                filtering none
             }
 
             texture_unit entryPoints

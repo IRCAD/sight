@@ -12,17 +12,6 @@ uniform mat4 u_invWorldViewProj;
 
 in vec2 uv;
 
-uniform vec3 u_cameraPos;
-uniform float u_shininess;
-
-#define MAX_LIGHTS 10
-
-uniform int u_numLights;
-
-uniform vec3 u_lightDir[MAX_LIGHTS];
-uniform vec3 u_lightDiffuse[MAX_LIGHTS];
-uniform vec3 u_lightSpecular[MAX_LIGHTS];
-
 uniform float u_sampleDistance;
 
 uniform float u_viewportWidth;

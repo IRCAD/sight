@@ -209,6 +209,10 @@ private:
     RayTracingCompositorListener* m_compositorListener;
 
     class JFACompositorListener;
+    JFACompositorListener* m_jfaListener;
+
+    class ICCompositorListener;
+    ICCompositorListener* m_icListener;
 
     std::string m_compositorName;
 

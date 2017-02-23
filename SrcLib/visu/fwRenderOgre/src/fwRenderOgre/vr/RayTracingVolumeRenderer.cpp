@@ -77,6 +77,51 @@ private:
 
 //-----------------------------------------------------------------------------
 
+class RayTracingVolumeRenderer::ICCompositorListener : public ::Ogre::CompositorInstance::Listener
+{
+public:
+
+    ICCompositorListener(std::vector< ::Ogre::Matrix4>& invWorldViewProj,
+                         ::Ogre::TexturePtr maskTexture,
+                         ::Ogre::TexturePtr entryPoints,
+                         float& sampleDistance) :
+        m_invWorldViewProj(invWorldViewProj),
+        m_maskTexture(maskTexture),
+        m_entryPoints(entryPoints),
+        m_sampleDistance(sampleDistance)
+    {
+
+    }
+
+    //------------------------------------------------------------------------------
+
+    virtual void notifyMaterialRender(::Ogre::uint32, ::Ogre::MaterialPtr& mtl)
+    {
+        ::Ogre::Pass* pass = mtl->getTechnique(0)->getPass(0);
+
+        ::Ogre::TextureUnitState* maskTexUnitState        = pass->getTextureUnitState("mask");
+        ::Ogre::TextureUnitState* entryPointsTexUnitState = pass->getTextureUnitState("entryPoints");
+
+        maskTexUnitState->setTextureName(m_maskTexture->getName());
+        entryPointsTexUnitState->setTextureName(m_entryPoints->getName());
+
+        ::Ogre::GpuProgramParametersSharedPtr vrParams = pass->getFragmentProgramParameters();
+        vrParams->setNamedConstant("u_invWorldViewProj", m_invWorldViewProj.data(), m_invWorldViewProj.size());
+        vrParams->setNamedConstant("u_sampleDistance", m_sampleDistance);
+    }
+
+private:
+
+    std::vector< ::Ogre::Matrix4>& m_invWorldViewProj;
+
+    ::Ogre::TexturePtr m_maskTexture;
+    ::Ogre::TexturePtr m_entryPoints;
+
+    float& m_sampleDistance;
+};
+
+//-----------------------------------------------------------------------------
+
 class RayTracingVolumeRenderer::RayTracingCompositorListener : public ::Ogre::CompositorInstance::Listener
 {
 public:
@@ -84,7 +129,7 @@ public:
     RayTracingCompositorListener(std::vector< ::Ogre::TexturePtr>& renderTargets,
                                  std::vector< ::Ogre::Matrix4>& invWorldViewProj,
                                  ::Ogre::TexturePtr image3DTexture,
-                                 ::Ogre::TexturePtr maskTexture,
+//                                 ::Ogre::TexturePtr maskTexture,
                                  ::Ogre::TexturePtr tfTexture,
                                  float& sampleDistance,
                                  bool is3DMode,
@@ -92,7 +137,7 @@ public:
         m_renderTargets(renderTargets),
         m_invWorldViewProj(invWorldViewProj),
         m_image3DTexture(image3DTexture),
-        m_maskTexture(maskTexture),
+//        m_maskTexture(maskTexture),
         m_tfTexture(tfTexture),
         m_sampleDistance(sampleDistance),
         m_is3DMode(is3DMode),
@@ -108,16 +153,16 @@ public:
         ::Ogre::Pass* pass = mtl->getTechnique(0)->getPass(0);
 
         ::Ogre::TextureUnitState* imageTexUnitState = pass->getTextureUnitState("image");
-        ::Ogre::TextureUnitState* maskTexUnitState  = pass->getTextureUnitState("mask");
-        ::Ogre::TextureUnitState* tfTexUnitState    = pass->getTextureUnitState("transferFunction");
+//        ::Ogre::TextureUnitState* maskTexUnitState  = pass->getTextureUnitState("mask");
+        ::Ogre::TextureUnitState* tfTexUnitState = pass->getTextureUnitState("transferFunction");
 
         imageTexUnitState->setTextureName(m_image3DTexture->getName());
         tfTexUnitState->setTextureName(m_tfTexture->getName());
 
-        if(maskTexUnitState)
-        {
-            maskTexUnitState->setTextureName(m_maskTexture->getName());
-        }
+//        if(maskTexUnitState)
+//        {
+//            maskTexUnitState->setTextureName(m_maskTexture->getName());
+//        }
 
         ::Ogre::GpuProgramParametersSharedPtr vrParams = pass->getFragmentProgramParameters();
 
@@ -179,7 +224,7 @@ private:
     std::vector< ::Ogre::Matrix4>& m_invWorldViewProj;
 
     ::Ogre::TexturePtr m_image3DTexture;
-    ::Ogre::TexturePtr m_maskTexture;
+//    ::Ogre::TexturePtr m_maskTexture;
     ::Ogre::TexturePtr m_tfTexture;
 
     float& m_sampleDistance;
@@ -611,24 +656,40 @@ void RayTracingVolumeRenderer::resizeViewport(int w, int h)
 
 void RayTracingVolumeRenderer::initMaterials()
 {
-    const std::string vrMaterials[16]
+    const std::string vrMaterials[32]
     {
         "RayTracedVolume",
         "RayTracedVolume_AmbientOcclusion",
         "RayTracedVolume_ColorBleeding",
-        "RayTracedVolume_Shadows",
         "RayTracedVolume_AmbientOcclusion_ColorBleeding",
+        "RayTracedVolume_Shadows",
         "RayTracedVolume_AmbientOcclusion_Shadows",
         "RayTracedVolume_ColorBleeding_Shadows",
-        "RayTracedVolume_VolumeIllumination",
+        "RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows",
         "RayTracedVolume_PreIntegrated",
-        "RayTracedVolume_PreIntegrated_AmbientOcclusion",
-        "RayTracedVolume_PreIntegrated_ColorBleeding",
-        "RayTracedVolume_PreIntegrated_Shadows",
-        "RayTracedVolume_PreIntegrated_AmbientOcclusion_ColorBleeding",
-        "RayTracedVolume_PreIntegrated_AmbientOcclusion_Shadows",
-        "RayTracedVolume_PreIntegrated_ColorBleeding_Shadows",
-        "RayTracedVolume_PreIntegrated_VolumeIllumination"
+        "RayTracedVolume_AmbientOcclusion_PreIntegrated",
+        "RayTracedVolume_ColorBleeding_PreIntegrated",
+        "RayTracedVolume_AmbientOcclusion_ColorBleeding_PreIntegrated",
+        "RayTracedVolume_Shadows_PreIntegrated",
+        "RayTracedVolume_AmbientOcclusion_Shadows_PreIntegrated",
+        "RayTracedVolume_ColorBleeding_Shadows_PreIntegrated",
+        "RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_PreIntegrated",
+        "RayTracedVolume_MImP",
+        "RayTracedVolume_AmbientOcclusion_MImP",
+        "RayTracedVolume_ColorBleeding_MImP",
+        "RayTracedVolume_AmbientOcclusion_ColorBleeding_MImP",
+        "RayTracedVolume_Shadows_MImP",
+        "RayTracedVolume_AmbientOcclusion_Shadows_MImP",
+        "RayTracedVolume_ColorBleeding_Shadows_MImP",
+        "RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_MImP",
+        "RayTracedVolume_PreIntegrated_MImP",
+        "RayTracedVolume_AmbientOcclusion_PreIntegrated_MImP",
+        "RayTracedVolume_ColorBleeding_PreIntegrated_MImP",
+        "RayTracedVolume_AmbientOcclusion_ColorBleeding_PreIntegrated_MImP",
+        "RayTracedVolume_Shadows_PreIntegrated_MImP",
+        "RayTracedVolume_AmbientOcclusion_Shadows_PreIntegrated_MImP",
+        "RayTracedVolume_ColorBleeding_Shadows_PreIntegrated_MImP",
+        "RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_PreIntegrated_MImP"
     };
 
     /* Loop over the materials to set their texture initial state */
@@ -730,18 +791,12 @@ void RayTracingVolumeRenderer::initCompositors()
         }
     }
 
-    m_compositorListener = new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
-                                                                                      m_viewPointMatrices,
-                                                                                      m_3DOgreTexture,
-                                                                                      m_maskTexture,
-                                                                                      m_gpuTF.getTexture(),
-                                                                                      m_sampleDistance,
-                                                                                      (m_mode3D !=
-                                                                                       ::fwRenderOgre::Layer::
-                                                                                       StereoModeType::NONE),
-                                                                                      m_volumeSceneNode);
+    m_icListener = new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
+                                                                      m_maskTexture,
+                                                                      m_entryPointsTextures[0],
+                                                                      m_sampleDistance);
 
-    compositorInstance->addListener(m_compositorListener);
+    compositorInstance->addListener(m_icListener);
 
     std::cout << "Viewport:" << m_camera->getViewport()->getActualWidth() << " " <<
         m_camera->getViewport()->getActualHeight() << std::endl;
@@ -754,8 +809,9 @@ void RayTracingVolumeRenderer::initCompositors()
     SLM_ASSERT("Compositor could not be initialized", compositorInstance);
     compositorInstance->setEnabled(true);
 
-    auto cl = new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(0), static_cast<float>(nbPasses));
-    compositorInstance->addListener(cl);
+    m_jfaListener =
+        new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(0), static_cast<float>(nbPasses));
+    compositorInstance->addListener(m_jfaListener);
 
     int i = 0;
     for(i = 0; i < nbPasses - 2; i++)
@@ -773,10 +829,10 @@ void RayTracingVolumeRenderer::initCompositors()
             compositorInstance->setEnabled(true);
         }
 
-        cl =
+        m_jfaListener =
             new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(i + 1),
                                                                 static_cast<float>(nbPasses));
-        compositorInstance->addListener(cl);
+        compositorInstance->addListener(m_jfaListener);
     }
 
     if(i % 2 == 0)
@@ -792,10 +848,11 @@ void RayTracingVolumeRenderer::initCompositors()
         compositorInstance->setEnabled(true);
     }
 
-    cl = new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(i), static_cast<float>(nbPasses));
-    compositorInstance->addListener(cl);
+    m_jfaListener =
+        new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(i), static_cast<float>(nbPasses));
+    compositorInstance->addListener(m_jfaListener);
 
-    compositorInstance = compositorManager.addCompositor(viewport, "RayTracedVolume_MImP_CSG_Comp");
+    compositorInstance = compositorManager.addCompositor(viewport, "RayTracedVolume_MImP_Comp");
     //compositorInstance = compositorManager.addCompositor(viewport, "RayTracedVolume_AImC_Comp");
     //compositorInstance = compositorManager.addCompositor(viewport, "RayTracedVolume_VPImC_Comp");
     SLM_ASSERT("Compositor could not be initialized", compositorInstance);
@@ -804,7 +861,6 @@ void RayTracingVolumeRenderer::initCompositors()
     m_compositorListener = new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
                                                                                       m_viewPointMatrices,
                                                                                       m_3DOgreTexture,
-                                                                                      m_maskTexture,
                                                                                       m_gpuTF.getTexture(),
                                                                                       m_sampleDistance,
                                                                                       (m_mode3D !=
