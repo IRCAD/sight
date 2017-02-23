@@ -177,234 +177,241 @@
             </service>
 
 
-        <!-- Calibration reader (here OpenCV's XML/YAML) -->
-        <service uid="CalibrationReader" type="::ioCalibration::SOpenCVReader">
-            <inout key="target" uid="cameraSeries"/>
-        </service>
+            <!-- Calibration reader (here OpenCV's XML/YAML) -->
+            <service uid="CalibrationReader" type="::ioCalibration::SOpenCVReader">
+                <inout key="target" uid="cameraSeries"/>
+            </service>
 
-        <!-- preference save the video directory and re-open the same directory at next launch of the app -->
-        <service uid="actionVideoDir" type="::uiPreferences::action::SPreferencesConfiguration" >
-            <preference>
-                <type>path</type>
-                <name>Video directory</name>
-                <key>VIDEO_DIR_PREF</key>
-                <default_value>...</default_value>
-            </preference>
-        </service>
+            <!-- preference save the video directory and re-open the same directory at next launch of the app -->
+            <service uid="actionVideoDir" type="::uiPreferences::action::SPreferencesConfiguration" >
+                <preference>
+                    <type>path</type>
+                    <name>Video directory</name>
+                    <key>VIDEO_DIR_PREF</key>
+                    <default_value>...</default_value>
+                </preference>
+            </service>
 
-        <!-- extract a ::arData::Camera from the ::arData::CameraSeries -->
-        <service uid="Extractor" type="::ctrlCamp::SExtractObj" >
-           <inout key="source" uid="cameraSeries">
-               <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
-           </inout>
-           <out group="target">
-               <key uid="camera"/> <!-- destination -->
-           </out>
-        </service>
+            <!-- extract a ::arData::Camera from the ::arData::CameraSeries -->
+            <service uid="Extractor" type="::ctrlCamp::SExtractObj" >
+               <inout key="source" uid="cameraSeries">
+                   <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
+               </inout>
+               <out group="target">
+                   <key uid="camera"/> <!-- destination -->
+               </out>
+            </service>
 
-        <!-- Scene in which the video and the 3D will be rendered -->
-        <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-            <in key="camera" uid="camera" />
-            <in key="image" uid="videoImage" />
-            <in key="transform" uid="inverseMat" />
-            <in key="identity" uid="identity" />
+            <!-- Scene in which the video and the 3D will be rendered -->
+            <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+                <in key="camera" uid="camera" />
+                <in key="image" uid="videoImage" />
+                <in key="transform" uid="inverseMat" />
+                <in key="identity" uid="identity" />
 
-            <scene>
-                <renderer id="video" layer="0" background="0.0" />
-                <renderer id="default" layer="1" background="0.0" />
+                <scene>
+                    <renderer id="video" layer="0" background="0.0" />
+                    <renderer id="default" layer="1" background="0.0" />
 
-                <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="image">
-                    <config renderer="video" cameraUID="camera"/>
-                </adaptor>
+                    <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="image">
+                        <config renderer="video" cameraUID="camera"/>
+                    </adaptor>
 
-                <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
-                    <config renderer="default" style="InteractorStyle2DForNegato" />
-                </adaptor>
+                    <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                        <config renderer="default" style="InteractorStyle2DForNegato" />
+                    </adaptor>
 
-                <adaptor id="registrationTransform" class="::visuVTKAdaptor::Transform" objectId="transform">
-                    <config renderer="default" picker="" transform="registrationMatrix" />
-                </adaptor>
+                    <adaptor id="registrationTransform" class="::visuVTKAdaptor::Transform" objectId="transform">
+                        <config renderer="default" picker="" transform="registrationMatrix" />
+                    </adaptor>
 
-                <adaptor id="axis" class="::visuVTKAdaptor::Axes" objectId="self">
-                    <config renderer="default" transform="registrationMatrix" autoresetcamera="yes" length="50"/>
-                </adaptor>
+                    <adaptor uid="axis" id="axis" class="::visuVTKAdaptor::Axes" objectId="self">
+                        <config renderer="default" transform="registrationMatrix" autoresetcamera="yes" length="50"/>
+                    </adaptor>
 
-                <adaptor id="cameraAdaptor" class="::visuVTKARAdaptor::SCamera" objectId="identity">
-                    <config renderer="default" cameraUID="camera"/>
-                </adaptor>
+                    <adaptor id="cameraAdaptor" class="::visuVTKARAdaptor::SCamera" objectId="identity">
+                        <config renderer="default" cameraUID="camera"/>
+                    </adaptor>
 
-            </scene>
-        </service>
+                    <connect>
+                        <signal>tracker/markerDetected</signal>
+                        <slot>axis/updateVisibility</slot>
+                    </connect>
 
-        <!-- GUI to handle aruco tracking parameters -->
-        <service uid="arucoParams" type="::guiQt::editor::SParameters" >
-            <parameters>
-                <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
-                <param type="enum" name="Detection Method" key="method" defaultValue="ADPT_THRES" values="ADPT_THRES,FIXED_THRES,CANNY" />
-                <param type="enum" name="Corner ref." key="corner" defaultValue="SUBPIX" values="NONE,HARRIS,SUBPIX,LINES" />
-                <param type="double" name="block size" key="blocksize" defaultValue="7." min="0." max="30." />
-                <param type="double" name="constant" key="constant" defaultValue="7." min="0." max="50." />
-                <param type="double" name="border width(%)" key="borderwidth" defaultValue="0.01" min="0." max="99.9" />
-                <param type="int" name="Pattern Width(mm)" key="pattern" defaultValue="60" min="10" max="1000" />
-                <param type="int" name="Speed" key="speed" defaultValue="3" min="1" max="3" />
-            </parameters>
-        </service>
+                </scene>
 
-        <service uid="reprojectionParams" type="::guiQt::editor::SParameters" >
-            <parameters>
-                <param type="bool" name="Show reprojection" key="display" defaultValue="true" />
-                <param type="color" name="Circle color" key="color" defaultValue="#00ff00" />
-            </parameters>
-        </service>
+            </service>
 
-        <!-- Gui Service to display a value in a QLabel -->
-        <service uid="errorLabel" type="::uiTools::editor::STextStatus">
-            <text>Reprojection Error (RMSE)</text>
-        </service>
+            <!-- GUI to handle aruco tracking parameters -->
+            <service uid="arucoParams" type="::guiQt::editor::SParameters" >
+                <parameters>
+                    <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
+                    <param type="enum" name="Detection Method" key="method" defaultValue="ADPT_THRES" values="ADPT_THRES,FIXED_THRES,CANNY" />
+                    <param type="enum" name="Corner ref." key="corner" defaultValue="SUBPIX" values="NONE,HARRIS,SUBPIX,LINES" />
+                    <param type="double" name="block size" key="blocksize" defaultValue="7." min="0." max="30." />
+                    <param type="double" name="constant" key="constant" defaultValue="7." min="0." max="50." />
+                    <param type="double" name="border width(%)" key="borderwidth" defaultValue="0.01" min="0." max="99.9" />
+                    <param type="int" name="Pattern Width(mm)" key="pattern" defaultValue="60" min="10" max="1000" />
+                    <param type="int" name="Speed" key="speed" defaultValue="3" min="1" max="3" />
+                </parameters>
+            </service>
 
-        <!-- GUI to select camera (device, file, or stream) -->
-        <service uid="CameraSelector" type="::videoQt::editor::SCamera" >
-            <inout key="camera" uid="camera" />
-            <videoSupport>yes</videoSupport>
-        </service>
+            <service uid="reprojectionParams" type="::guiQt::editor::SParameters" >
+                <parameters>
+                    <param type="bool" name="Show reprojection" key="display" defaultValue="true" />
+                    <param type="color" name="Circle color" key="color" defaultValue="#00ff00" />
+                </parameters>
+            </service>
 
-        <!-- Grab image from camera device and fill a frame timeline -->
-        <service uid="frameGrabber" type="::videoQt::SFrameGrabber" >
-            <in key="camera" uid="camera" />
-            <inout key="frameTL" uid="frameTL" />
-        </service>
+            <!-- Gui Service to display a value in a QLabel -->
+            <service uid="errorLabel" type="::uiTools::editor::STextStatus">
+                <text>Reprojection Error (RMSE)</text>
+            </service>
 
-        <!-- Aruco tracker service -->
-        <service uid="tracker" type="::trackerAruco::SArucoTracker"  worker="tracking">
-            <in key="timeline" uid="frameTL" autoConnect="yes"/>
-            <in key="camera" uid="camera" />
-            <inout group="tagTL" >
-                <key uid="tagTL" /> <!-- timeline of detected tag(s) -->
-            </inout>
-            <config>
-                <track>
-                    <marker id="101" /> <!-- list of id -->
-                </track>
-                <threshold>
-                    <method>ADPT_THRES</method>
-                    <blockSize>7</blockSize>
-                    <constant>7</constant>
-                </threshold>
+            <!-- GUI to select camera (device, file, or stream) -->
+            <service uid="CameraSelector" type="::videoQt::editor::SCamera" >
+                <inout key="camera" uid="camera" />
+                <videoSupport>yes</videoSupport>
+            </service>
+
+            <!-- Grab image from camera device and fill a frame timeline -->
+            <service uid="frameGrabber" type="::videoQt::SFrameGrabber" >
+                <in key="camera" uid="camera" />
+                <inout key="frameTL" uid="frameTL" />
+            </service>
+
+            <!-- Aruco tracker service -->
+            <service uid="tracker" type="::trackerAruco::SArucoTracker"  worker="tracking">
+                <in key="timeline" uid="frameTL" autoConnect="yes"/>
+                <in key="camera" uid="camera" />
+                <inout group="tagTL" >
+                    <key uid="tagTL" /> <!-- timeline of detected tag(s) -->
+                </inout>
+                <config>
+                    <track>
+                        <marker id="101" /> <!-- list of id -->
+                    </track>
+                    <threshold>
+                        <method>ADPT_THRES</method>
+                        <blockSize>7</blockSize>
+                        <constant>7</constant>
+                    </threshold>
+                    <patternWidth>60</patternWidth>
+                    <debugMarkers>yes</debugMarkers>
+                </config>
+            </service>
+
+            <!-- This will compute the pose of the camera with tag(s) detected by aruco -->
+            <service uid="registration" type="::tracker::SHomography" worker="registration">
+                <in group="markerTL" autoConnect="yes">
+                    <key uid="tagTL" />
+                </in>
+                <in group="camera">
+                    <key uid="camera" />
+                </in>
+                <inout key="matrixTL" uid="matrixTL" />
                 <patternWidth>60</patternWidth>
-                <debugMarkers>yes</debugMarkers>
-            </config>
-        </service>
+            </service>
 
-        <!-- This will compute the pose of the camera with tag(s) detected by aruco -->
-        <service uid="registration" type="::tracker::SHomography" worker="registration">
-            <in group="markerTL" autoConnect="yes">
-                <key uid="tagTL" />
-            </in>
-            <in group="camera">
-                <key uid="camera" />
-            </in>
-            <inout key="matrixTL" uid="matrixTL" />
-            <patternWidth>60</patternWidth>
-        </service>
+            <!-- This will compute the reprojection error -->
+            <service uid="error" type="::videoCalibration::SReprojectionError" worker="error">
+                <in key="matrixTL" uid="matrixTL" autoConnect="yes"/> <!-- automaticaly updates when matrixTL is modified -->
+                <in key="markerTL" uid="tagTL"/>
+                <in key="frameTL" uid="frameTL"/>
+                <in key="camera" uid="camera"/>
+                <in key="extrinsic" uid="matrix"/>
+                <patternWidth>60</patternWidth>
+            </service>
 
-        <!-- This will compute the reprojection error -->
-        <service uid="error" type="::videoCalibration::SReprojectionError" worker="error">
-            <in key="matrixTL" uid="matrixTL" autoConnect="yes"/> <!-- automaticaly updates when matrixTL is modified -->
-            <in key="markerTL" uid="tagTL"/>
-            <in key="frameTL" uid="frameTL"/>
-            <in key="camera" uid="camera"/>
-            <in key="extrinsic" uid="matrix"/>
-            <patternWidth>60</patternWidth>
-        </service>
+            <!-- To synchronize matrix, frame and detection -->
+            <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer"  worker="videoWorker">
+                <in group="frameTL">
+                    <key uid="frameTL" />
+                </in>
+                <inout group="image">
+                    <key uid="videoImage" />
+                </inout>
+                <in group="matrixTL">
+                    <key uid="matrixTL" />
+                </in>
+                <inout group="matrices0">
+                    <key uid="matrix" />
+                </inout>
+                <framerate>30</framerate>
+                <tolerance>100</tolerance>
+            </service>
 
-        <!-- To synchronize matrix, frame and detection -->
-        <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer"  worker="videoWorker">
-            <in group="frameTL">
-                <key uid="frameTL" />
-            </in>
-            <inout group="image">
-                <key uid="videoImage" />
-            </inout>
-            <in group="matrixTL">
-                <key uid="matrixTL" />
-            </in>
-            <inout group="matrices0">
-                <key uid="matrix" />
-            </inout>
-            <framerate>30</framerate>
-            <tolerance>100</tolerance>
-        </service>
+            <!-- to multiply matrices (here only used to inverse "matrix" )-->
+            <service uid="concatenate" type="::maths::SConcatenateMatrices" >
+                <in group="matrix">
+                    <key uid="matrix" autoConnect="yes" inverse="false"/>
+                    <key uid="identity"/>
+                </in>
+                <inout key="output" uid="inverseMat" />
+            </service>
 
-        <!-- to multiply matrices (here only used to inverse "matrix" )-->
-        <service uid="concatenate" type="::maths::SConcatenateMatrices" >
-            <in group="matrix">
-                <key uid="matrix" autoConnect="yes" inverse="false"/>
-                <key uid="identity"/>
-            </in>
-            <inout key="output" uid="inverseMat" />
-        </service>
+            <!-- signal/slot connection -->
 
-        <!-- signal/slot connection -->
+            <connect>
+                <signal>reprojectionParams/colorChanged</signal>
+                <slot>error/setColorParameter</slot>
+            </connect>
 
-        <connect>
-            <signal>reprojectionParams/colorChanged</signal>
-            <slot>error/setColorParameter</slot>
-        </connect>
+            <connect>
+                <signal>reprojectionParams/boolChanged</signal>
+                <slot>error/setBoolParameter</slot>
+            </connect>
 
-        <connect>
-            <signal>reprojectionParams/boolChanged</signal>
-            <slot>error/setBoolParameter</slot>
-        </connect>
+            <connect>
+                <signal>error/errorComputed</signal>
+                <slot>errorLabel/setDoubleParameter</slot>
+            </connect>
 
-        <connect>
-            <signal>error/errorComputed</signal>
-            <slot>errorLabel/setDoubleParameter</slot>
-        </connect>
+            <connect>
+                <signal>arucoParams/boolChanged</signal>
+                <slot>tracker/setBoolParameter</slot>
+            </connect>
 
-        <connect>
-            <signal>arucoParams/boolChanged</signal>
-            <slot>tracker/setBoolParameter</slot>
-        </connect>
+            <connect>
+                <signal>arucoParams/intChanged</signal>
+                <slot>tracker/setIntParameter</slot>
+            </connect>
 
-        <connect>
-            <signal>arucoParams/intChanged</signal>
-            <slot>tracker/setIntParameter</slot>
-        </connect>
+            <connect>
+                <signal>arucoParams/doubleChanged</signal>
+                <slot>tracker/setDoubleParameter</slot>
+            </connect>
 
-        <connect>
-            <signal>arucoParams/doubleChanged</signal>
-            <slot>tracker/setDoubleParameter</slot>
-        </connect>
+            <connect>
+                <signal>arucoParams/enumChanged</signal>
+                <slot>tracker/setEnumParameter</slot>
+            </connect>
 
-        <connect>
-            <signal>arucoParams/enumChanged</signal>
-            <slot>tracker/setEnumParameter</slot>
-        </connect>
+            <connect>
+                <signal>cameraSeries/addedCamera</signal>
+                <slot>Extractor/update</slot>
+            </connect>
 
-        <connect>
-            <signal>cameraSeries/addedCamera</signal>
-            <slot>Extractor/update</slot>
-        </connect>
+            <connect>
+                <signal>camera/idModified</signal>
+                <slot>frameGrabber/stopCamera</slot>
+            </connect>
 
-        <connect>
-            <signal>camera/idModified</signal>
-            <slot>frameGrabber/stopCamera</slot>
-        </connect>
 
-        <!-- start services -->
-        <start uid="mainFrame" />
-        <start uid="frameGrabber" />
-        <start uid="synchronizer" />
-        <start uid="tracker" />
-        <start uid="error" />
-        <start uid="CalibrationReader"/>
-        <start uid="CameraSelector" />
-        <start uid="Extractor" />
-        <start uid="registration" />
-        <start uid="concatenate" />
-        <start uid="genericScene" />
+            <!-- start services -->
+            <start uid="mainFrame" />
+            <start uid="frameGrabber" />
+            <start uid="synchronizer" />
+            <start uid="tracker" />
+            <start uid="error" />
+            <start uid="CalibrationReader"/>
+            <start uid="CameraSelector" />
+            <start uid="Extractor" />
+            <start uid="registration" />
+            <start uid="concatenate" />
+            <start uid="genericScene" />
 
-        <update uid="actionHide" />
+            <update uid="actionHide" />
 
         </config>
     </extension>
