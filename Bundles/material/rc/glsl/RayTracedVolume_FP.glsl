@@ -199,9 +199,7 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
     // For the segmentation we have a [0, 255] range
     // So we check for value superior to 128: 128 / 65536 = 0.001953125
     float edge = 0.5 + 0.001953125;
-#endif
 
-#if IDVR == 3
 // With Visibility preserving importance compositing
 // We count the number of samples until we reach the important feature
     float nbSamples = 0.0;
@@ -275,10 +273,10 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
             if(result.a > 0.99
 #if IDVR == 3
 // In the case of Visibility preserving importance compositing
-// We need to ensure thet we reach a certain amount of samples
+// We need to ensure that we reach a certain amount of samples
 // Before cutting off the compositing and breaking the ray casting
 // Otherwise we will miss the important feature
-            && int(nbSamples) < int(aimc.r)
+            && int(nbSamples) > int(aimc.r)
 #endif
             )
             {
@@ -287,7 +285,7 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
         }
 
         rayPos += rayDir;
-#if IDVR == 3
+#if IDVR == 2 || IDVR == 3
 // With Visibility preserving importance compositing
 // We count the number of samples until we reach the important feature
         nbSamples += 1.0f;

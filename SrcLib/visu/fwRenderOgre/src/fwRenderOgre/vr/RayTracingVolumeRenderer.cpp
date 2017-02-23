@@ -16,7 +16,6 @@
 #include <OGRE/OgreCompositionTargetPass.h>
 #include <OGRE/OgreCompositor.h>
 #include <OGRE/OgreCompositorChain.h>
-#include <OGRE/OgreCompositorInstance.h>
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreDepthBuffer.h>
 #include <OGRE/OgreHardwareBufferManager.h>
@@ -129,7 +128,6 @@ public:
     RayTracingCompositorListener(std::vector< ::Ogre::TexturePtr>& renderTargets,
                                  std::vector< ::Ogre::Matrix4>& invWorldViewProj,
                                  ::Ogre::TexturePtr image3DTexture,
-//                                 ::Ogre::TexturePtr maskTexture,
                                  ::Ogre::TexturePtr tfTexture,
                                  float& sampleDistance,
                                  bool is3DMode,
@@ -137,7 +135,6 @@ public:
         m_renderTargets(renderTargets),
         m_invWorldViewProj(invWorldViewProj),
         m_image3DTexture(image3DTexture),
-//        m_maskTexture(maskTexture),
         m_tfTexture(tfTexture),
         m_sampleDistance(sampleDistance),
         m_is3DMode(is3DMode),
@@ -153,16 +150,10 @@ public:
         ::Ogre::Pass* pass = mtl->getTechnique(0)->getPass(0);
 
         ::Ogre::TextureUnitState* imageTexUnitState = pass->getTextureUnitState("image");
-//        ::Ogre::TextureUnitState* maskTexUnitState  = pass->getTextureUnitState("mask");
-        ::Ogre::TextureUnitState* tfTexUnitState = pass->getTextureUnitState("transferFunction");
+        ::Ogre::TextureUnitState* tfTexUnitState    = pass->getTextureUnitState("transferFunction");
 
         imageTexUnitState->setTextureName(m_image3DTexture->getName());
         tfTexUnitState->setTextureName(m_tfTexture->getName());
-
-//        if(maskTexUnitState)
-//        {
-//            maskTexUnitState->setTextureName(m_maskTexture->getName());
-//        }
 
         ::Ogre::GpuProgramParametersSharedPtr vrParams = pass->getFragmentProgramParameters();
 
@@ -224,7 +215,6 @@ private:
     std::vector< ::Ogre::Matrix4>& m_invWorldViewProj;
 
     ::Ogre::TexturePtr m_image3DTexture;
-//    ::Ogre::TexturePtr m_maskTexture;
     ::Ogre::TexturePtr m_tfTexture;
 
     float& m_sampleDistance;
@@ -322,7 +312,6 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_illumVolume(nullptr),
     m_focalLength(0.f),
     m_cameraListener(nullptr),
-    m_compositorListener(nullptr),
     m_layer(layer)
 {
     m_gridSize   = { 2, 2, 2 };
@@ -362,20 +351,12 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 {
     m_camera->removeListener(m_cameraListener);
-    if(m_compositorListener)
-    {
-        auto layer = m_layer.lock();
 
-        ::Ogre::CompositorChain* compChain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
-            layer->getViewport());
+    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+    auto viewport = m_layer.lock()->getViewport();
+    ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
 
-        auto compositorInstance = compChain->getCompositor(m_compositorName);
-        compositorInstance->removeListener(m_compositorListener);
-
-        ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-        compositorManager.setCompositorEnabled(layer->getViewport(), m_compositorName, false);
-        compositorManager.removeCompositor(layer->getViewport(), m_compositorName);
-    }
+    this->cleanCompositorChain(compChain);
 
     if(m_r2vbSource)
     {
@@ -589,6 +570,290 @@ void RayTracingVolumeRenderer::setFocalLength(float focalLength)
 
 void RayTracingVolumeRenderer::setIDVRMethod(std::string method)
 {
+    SLM_ASSERT("IDVR isn't currently supported with autostereo mode",
+               m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE);
+
+    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+    auto viewport = m_layer.lock()->getViewport();
+    ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
+
+    this->cleanCompositorChain(compChain);
+
+    auto compositorInstance = compositorManager.addCompositor(viewport, "Default");
+    SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+    compositorInstance->setEnabled(true);
+
+    m_compositorListeners.push_back(nullptr);
+
+    compositorInstance = compositorManager.addCompositor(viewport, "FinalChainCompositor");
+    SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+    compositorInstance->setEnabled(true);
+
+    m_compositorListeners.push_back(nullptr);
+
+    if(method == "MImP")
+    {
+        m_compositorName = "IDVR_MImP_Comp";
+
+        compositorInstance = compositorManager.addCompositor(viewport, m_compositorName);
+        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+        compositorInstance->setEnabled(true);
+
+        // Ensure that we have the color parameters set for the current material
+        auto tech  = compositorInstance->getTechnique();
+        auto tpass = tech->getOutputTargetPass();
+
+        for( auto pass : tpass->getPassIterator() )
+        {
+            auto mtl = pass->getMaterial();
+
+            if(!mtl.isNull())
+            {
+                this->setMaterialLightParams(mtl);
+            }
+        }
+
+        m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
+                                                                                           m_maskTexture,
+                                                                                           m_entryPointsTextures[0],
+                                                                                           m_sampleDistance));
+
+        compositorInstance->addListener(m_compositorListeners.back());
+
+        double nbPasses =
+            std::nearbyint(std::max(std::log(m_camera->getViewport()->getActualWidth()) / std::log(2.0),
+                                    std::log(m_camera->getViewport()->getActualHeight()) / std::log(2.0)));
+
+        compositorInstance = compositorManager.addCompositor(viewport, "JFAInit");
+        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+        compositorInstance->setEnabled(true);
+
+        m_compositorListeners.push_back(new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(0),
+                                                                                            static_cast<float>(nbPasses)));
+        compositorInstance->addListener(m_compositorListeners.back());
+
+        int i = 0;
+        for(i = 0; i < nbPasses - 2; i++)
+        {
+            if(i % 2 == 0)
+            {
+                compositorInstance = compositorManager.addCompositor(viewport, "JFAPingComp");
+                SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+                compositorInstance->setEnabled(true);
+            }
+            else
+            {
+                compositorInstance = compositorManager.addCompositor(viewport, "JFAPongComp");
+                SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+                compositorInstance->setEnabled(true);
+            }
+
+            m_compositorListeners.push_back(new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(i +
+                                                                                                                   1),
+                                                                                                static_cast<float>(
+                                                                                                    nbPasses)));
+            compositorInstance->addListener(m_compositorListeners.back());
+        }
+
+        if(i % 2 == 0)
+        {
+            compositorInstance = compositorManager.addCompositor(viewport, "JFAFinalPingComp");
+            SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+            compositorInstance->setEnabled(true);
+        }
+        else
+        {
+            compositorInstance = compositorManager.addCompositor(viewport, "JFAFinalPongComp");
+            SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+            compositorInstance->setEnabled(true);
+        }
+
+        m_compositorListeners.push_back(new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(i),
+                                                                                            static_cast<float>(nbPasses)));
+        compositorInstance->addListener(m_compositorListeners.back());
+
+        compositorInstance = compositorManager.addCompositor(viewport, "RayTracedVolume_MImP_Comp");
+        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+        compositorInstance->setEnabled(true);
+
+        m_compositorListeners.push_back(new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
+                                                                                                   m_viewPointMatrices,
+                                                                                                   m_3DOgreTexture,
+                                                                                                   m_gpuTF.getTexture(),
+                                                                                                   m_sampleDistance,
+                                                                                                   (m_mode3D !=
+                                                                                                    ::fwRenderOgre::
+                                                                                                    Layer::
+                                                                                                    StereoModeType::NONE),
+                                                                                                   m_volumeSceneNode));
+        compositorInstance->addListener(m_compositorListeners.back());
+
+        // Ensure that we have the color parameters set for the current material
+        tech  = compositorInstance->getTechnique();
+        tpass = tech->getOutputTargetPass();
+
+        for( auto pass : tpass->getPassIterator() )
+        {
+            auto mtl = pass->getMaterial();
+
+            if(!mtl.isNull())
+            {
+                this->setMaterialLightParams(mtl);
+            }
+        }
+    }
+    else if(method == "AImC")
+    {
+        m_compositorName = "IDVR_AImC_Comp";
+
+        compositorInstance = compositorManager.addCompositor(viewport, m_compositorName);
+        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+        compositorInstance->setEnabled(true);
+
+        // Ensure that we have the color parameters set for the current material
+        auto tech  = compositorInstance->getTechnique();
+        auto tpass = tech->getOutputTargetPass();
+
+        for( auto pass : tpass->getPassIterator() )
+        {
+            auto mtl = pass->getMaterial();
+
+            if(!mtl.isNull())
+            {
+                this->setMaterialLightParams(mtl);
+            }
+        }
+
+        m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
+                                                                                           m_maskTexture,
+                                                                                           m_entryPointsTextures[0],
+                                                                                           m_sampleDistance));
+
+        compositorInstance->addListener(m_compositorListeners.back());
+
+        compositorInstance = compositorManager.addCompositor(viewport, "RayTracedVolume_AImC_Comp");
+        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+        compositorInstance->setEnabled(true);
+
+        m_compositorListeners.push_back(new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
+                                                                                                   m_viewPointMatrices,
+                                                                                                   m_3DOgreTexture,
+                                                                                                   m_gpuTF.getTexture(),
+                                                                                                   m_sampleDistance,
+                                                                                                   (m_mode3D !=
+                                                                                                    ::fwRenderOgre::
+                                                                                                    Layer::
+                                                                                                    StereoModeType::NONE),
+                                                                                                   m_volumeSceneNode));
+        compositorInstance->addListener(m_compositorListeners.back());
+
+        // Ensure that we have the color parameters set for the current material
+        tech  = compositorInstance->getTechnique();
+        tpass = tech->getOutputTargetPass();
+
+        for( auto pass : tpass->getPassIterator() )
+        {
+            auto mtl = pass->getMaterial();
+
+            if(!mtl.isNull())
+            {
+                this->setMaterialLightParams(mtl);
+            }
+        }
+    }
+    else if(method == "VPImC")
+    {
+        m_compositorName = "IDVR_VPImC_Comp";
+
+        compositorInstance = compositorManager.addCompositor(viewport, m_compositorName);
+        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+        compositorInstance->setEnabled(true);
+
+        // Ensure that we have the color parameters set for the current material
+        auto tech  = compositorInstance->getTechnique();
+        auto tpass = tech->getOutputTargetPass();
+
+        for( auto pass : tpass->getPassIterator() )
+        {
+            auto mtl = pass->getMaterial();
+
+            if(!mtl.isNull())
+            {
+                this->setMaterialLightParams(mtl);
+            }
+        }
+
+        m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
+                                                                                           m_maskTexture,
+                                                                                           m_entryPointsTextures[0],
+                                                                                           m_sampleDistance));
+
+        compositorInstance->addListener(m_compositorListeners.back());
+
+        compositorInstance = compositorManager.addCompositor(viewport, "RayTracedVolume_VPImC_Comp");
+        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+        compositorInstance->setEnabled(true);
+
+        m_compositorListeners.push_back(new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
+                                                                                                   m_viewPointMatrices,
+                                                                                                   m_3DOgreTexture,
+                                                                                                   m_gpuTF.getTexture(),
+                                                                                                   m_sampleDistance,
+                                                                                                   (m_mode3D !=
+                                                                                                    ::fwRenderOgre::
+                                                                                                    Layer::
+                                                                                                    StereoModeType::NONE),
+                                                                                                   m_volumeSceneNode));
+        compositorInstance->addListener(m_compositorListeners.back());
+
+        // Ensure that we have the color parameters set for the current material
+        tech  = compositorInstance->getTechnique();
+        tpass = tech->getOutputTargetPass();
+
+        for( auto pass : tpass->getPassIterator() )
+        {
+            auto mtl = pass->getMaterial();
+
+            if(!mtl.isNull())
+            {
+                this->setMaterialLightParams(mtl);
+            }
+        }
+    }
+    else // None
+    {
+        m_compositorName = "RayTracedVolume_Comp";
+
+        compositorInstance = compositorManager.addCompositor(viewport, m_compositorName);
+        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+        compositorInstance->setEnabled(true);
+
+        m_compositorListeners.push_back(new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
+                                                                                                   m_viewPointMatrices,
+                                                                                                   m_3DOgreTexture,
+                                                                                                   m_gpuTF.getTexture(),
+                                                                                                   m_sampleDistance,
+                                                                                                   (m_mode3D !=
+                                                                                                    ::fwRenderOgre::
+                                                                                                    Layer::
+                                                                                                    StereoModeType::NONE),
+                                                                                                   m_volumeSceneNode));
+        compositorInstance->addListener(m_compositorListeners.back());
+
+        // Ensure that we have the color parameters set for the current material
+        auto tech  = compositorInstance->getTechnique();
+        auto tpass = tech->getOutputTargetPass();
+
+        for( auto pass : tpass->getPassIterator() )
+        {
+            auto mtl = pass->getMaterial();
+
+            if(!mtl.isNull())
+            {
+                this->setMaterialLightParams(mtl);
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -759,9 +1024,7 @@ void RayTracingVolumeRenderer::initCompositors()
     /* Mono mode */
     if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE)
     {
-        m_compositorName = "IDVR_MImP_CSG_Comp";
-        //m_compositorName = "IDVR_AImC_Comp";
-        //m_compositorName = "IDVR_VPImC_Comp";
+        m_compositorName = "RayTracedVolume_Comp";
     }
     /* stereo mode */
     else
@@ -775,130 +1038,49 @@ void RayTracingVolumeRenderer::initCompositors()
     auto viewport = m_layer.lock()->getViewport();
     ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
 
-    auto compositorInstance = compositorManager.addCompositor(viewport, m_compositorName);
+    // Start from an empty compositor chain
+    this->cleanCompositorChain(compChain);
+
+    auto compositorInstance = compositorManager.addCompositor(viewport, "Default");
     SLM_ASSERT("Compositor could not be initialized", compositorInstance);
     compositorInstance->setEnabled(true);
 
-    /* Ensure that we have the color parameters set for the current material */
+    m_compositorListeners.push_back(nullptr);
+
+    compositorInstance = compositorManager.addCompositor(viewport, "FinalChainCompositor");
+    SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+    compositorInstance->setEnabled(true);
+
+    m_compositorListeners.push_back(nullptr);
+
+    compositorInstance = compositorManager.addCompositor(viewport, m_compositorName);
+    SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+    compositorInstance->setEnabled(true);
+
+    m_compositorListeners.push_back(new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
+                                                                                               m_viewPointMatrices,
+                                                                                               m_3DOgreTexture,
+                                                                                               m_gpuTF.getTexture(),
+                                                                                               m_sampleDistance,
+                                                                                               (m_mode3D !=
+                                                                                                ::fwRenderOgre::Layer::
+                                                                                                StereoModeType::NONE),
+                                                                                               m_volumeSceneNode));
+    compositorInstance->addListener(m_compositorListeners.back());
+
+    // Ensure that we have the color parameters set for the current material
     auto tech  = compositorInstance->getTechnique();
     auto tpass = tech->getOutputTargetPass();
+
     for( auto pass : tpass->getPassIterator() )
     {
         auto mtl = pass->getMaterial();
 
         if(!mtl.isNull())
         {
-            ::Ogre::ColourValue diffuse(1.2f, 1.2f, 1.2f, 1.f);
-            mtl->setDiffuse(diffuse);
-
-            ::Ogre::ColourValue specular(2.5f, 2.5f, 2.5f, 1.f);
-            mtl->setSpecular( specular );
-            mtl->setShininess( 10 );
+            this->setMaterialLightParams(mtl);
         }
     }
-
-    m_icListener = new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
-                                                                      m_maskTexture,
-                                                                      m_entryPointsTextures[0],
-                                                                      m_sampleDistance);
-
-    compositorInstance->addListener(m_icListener);
-
-    double nbPasses =
-        std::nearbyint(std::max(std::log(m_camera->getViewport()->getActualWidth()) / std::log(2.0),
-                                std::log(m_camera->getViewport()->getActualHeight()) / std::log(2.0)));
-
-#if 1
-    compositorInstance = compositorManager.addCompositor(viewport, "JFAInit");
-    SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-    compositorInstance->setEnabled(true);
-
-    m_jfaListener =
-        new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(0), static_cast<float>(nbPasses));
-    compositorInstance->addListener(m_jfaListener);
-
-    int i = 0;
-    for(i = 0; i < nbPasses - 2; i++)
-    {
-        if(i % 2 == 0)
-        {
-            compositorInstance = compositorManager.addCompositor(viewport, "JFAPingComp");
-            SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-            compositorInstance->setEnabled(true);
-        }
-        else
-        {
-            compositorInstance = compositorManager.addCompositor(viewport, "JFAPongComp");
-            SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-            compositorInstance->setEnabled(true);
-        }
-
-        m_jfaListener =
-            new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(i + 1),
-                                                                static_cast<float>(nbPasses));
-        compositorInstance->addListener(m_jfaListener);
-    }
-
-    if(i % 2 == 0)
-    {
-        compositorInstance = compositorManager.addCompositor(viewport, "JFAFinalPingComp");
-        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-        compositorInstance->setEnabled(true);
-    }
-    else
-    {
-        compositorInstance = compositorManager.addCompositor(viewport, "JFAFinalPongComp");
-        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-        compositorInstance->setEnabled(true);
-    }
-
-    m_jfaListener =
-        new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(i), static_cast<float>(nbPasses));
-    compositorInstance->addListener(m_jfaListener);
-#endif
-
-    compositorInstance = compositorManager.addCompositor(viewport, "RayTracedVolume_MImP_Comp");
-    //compositorInstance = compositorManager.addCompositor(viewport, "RayTracedVolume_AImC_Comp");
-    //compositorInstance = compositorManager.addCompositor(viewport, "RayTracedVolume_VPImC_Comp");
-    SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-    compositorInstance->setEnabled(true);
-
-    m_compositorListener = new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
-                                                                                      m_viewPointMatrices,
-                                                                                      m_3DOgreTexture,
-                                                                                      m_gpuTF.getTexture(),
-                                                                                      m_sampleDistance,
-                                                                                      (m_mode3D !=
-                                                                                       ::fwRenderOgre::Layer::
-                                                                                       StereoModeType::NONE),
-                                                                                      m_volumeSceneNode);
-
-    compositorInstance->addListener(m_compositorListener);
-
-    /* Ensure that we have the color parameters set for the current material */
-    tech  = compositorInstance->getTechnique();
-    tpass = tech->getOutputTargetPass();
-    for( auto pass : tpass->getPassIterator() )
-    {
-        auto mtl = pass->getMaterial();
-
-        if(!mtl.isNull())
-        {
-            ::Ogre::ColourValue diffuse(1.2f, 1.2f, 1.2f, 1.f);
-            mtl->setDiffuse(diffuse);
-
-            ::Ogre::ColourValue specular(2.5f, 2.5f, 2.5f, 1.f);
-            mtl->setSpecular( specular );
-            mtl->setShininess( 10 );
-        }
-    }
-
-#if 0
-    for(auto ci : compChain->getCompositors())
-    {
-        std::cout << ci->getCompositor()->getName() << " " << ci->getEnabled() << std::endl;
-    }
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -1165,12 +1347,7 @@ void RayTracingVolumeRenderer::updateMatNames()
 
     // Set colors
     ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
-    ::Ogre::ColourValue diffuse(1.2f, 1.2f, 1.2f, 1.f);
-    material->setDiffuse(diffuse);
-
-    ::Ogre::ColourValue specular(2.5f, 2.5f, 2.5f, 1.f);
-    material->setSpecular( specular );
-    material->setShininess( 10 );
+    this->setMaterialLightParams(material);
 
     // Set all parameters
     if(ao)
@@ -1190,6 +1367,39 @@ void RayTracingVolumeRenderer::updateMatNames()
     OSLM_ASSERT("Material '" + m_currentMtlName + "' not found", !currentMtl.isNull());
 
     return currentMtl->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::setMaterialLightParams(::Ogre::MaterialPtr mtl)
+{
+    ::Ogre::ColourValue diffuse(1.2f, 1.2f, 1.2f, 1.f);
+    mtl->setDiffuse(diffuse);
+
+    ::Ogre::ColourValue specular(2.5f, 2.5f, 2.5f, 1.f);
+    mtl->setSpecular( specular );
+    mtl->setShininess( 10 );
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::cleanCompositorChain(::Ogre::CompositorChain* compChain)
+{
+    // Remove all associated listeners from the compositor chain
+    for(size_t i(0); i < m_compositorListeners.size(); ++i)
+    {
+        ::Ogre::CompositorInstance::Listener* listener = m_compositorListeners[i];
+
+        if(listener)
+        {
+            compChain->getCompositor(i)->removeListener(listener);
+            delete listener;
+        }
+    }
+
+    // Then clean the whole chain
+    compChain->removeAllCompositors();
+    m_compositorListeners.clear();
 }
 
 //-----------------------------------------------------------------------------

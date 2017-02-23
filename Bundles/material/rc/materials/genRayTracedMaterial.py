@@ -74,13 +74,14 @@ cfgShadows       = ['Shadows',          'SHADOWS=1',           { }]
 
 cfgPreIntegration = ['PreIntegrated', 'PREINTEGRATION=1', { 'preIntParams' : preIntParams }]
 
-cfgMImP  = ['MImP', 'IDVR=1', { }]
-cfgAImC  = ['AImC', 'IDVR=2', { }]
+cfgMImP  = ['MImP',  'IDVR=1', { }]
+cfgAImC  = ['AImC',  'IDVR=2', { }]
+cfgVPImC = ['VPImC', 'IDVR=3', { }]
 
 ## Configurations for fragment programs and materials
 configsListFP = []
 
-configsListFP += generatePermutations(cfgDefault, cfgAO, cfgColorBleeding, cfgShadows, cfgPreIntegration, cfgMImP, cfgAImC)
+configsListFP += generatePermutations(cfgDefault, cfgAO, cfgColorBleeding, cfgShadows, cfgPreIntegration, cfgMImP, cfgAImC, cfgVPImC)
 
 env = Environment(loader=PackageLoader('genRayTracedMaterial', 'genTemplates'),trim_blocks=True)
 template = env.get_template('RayTracedVolume.material.tpl')

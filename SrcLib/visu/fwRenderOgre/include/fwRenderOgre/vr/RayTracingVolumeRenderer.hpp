@@ -13,6 +13,7 @@
 #include "fwRenderOgre/vr/IVolumeRenderer.hpp"
 #include "fwRenderOgre/vr/SATVolumeIllumination.hpp"
 
+#include <OGRE/OgreCompositorInstance.h>
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreMaterialManager.h>
@@ -141,6 +142,12 @@ private:
     /// Returns the parameters of the current fragment shader.
     ::Ogre::GpuProgramParametersSharedPtr retrieveCurrentProgramParams();
 
+    /// Sets the default diffuse, specular and shininess in the material.
+    void setMaterialLightParams(::Ogre::MaterialPtr mtl);
+
+    /// Removes all listeners and compositors from the current chain.
+    void cleanCompositorChain(Ogre::CompositorChain* compChain);
+
     /// Texture of the segmentation mask.
     ::Ogre::TexturePtr m_maskTexture;
 
@@ -210,15 +217,14 @@ private:
     struct CameraListener;
     CameraListener* m_cameraListener;
 
-    /// Compositor listener class used to upload uniforms for mono/stereo ray tracing materials.
+    /// Compositor listener classes used to upload uniforms for mono/stereo ray tracing materials.
     class RayTracingCompositorListener;
-    RayTracingCompositorListener* m_compositorListener;
-
     class JFACompositorListener;
-    JFACompositorListener* m_jfaListener;
-
     class ICCompositorListener;
-    ICCompositorListener* m_icListener;
+
+    /// List of all listeners associated to the VR's compositor chain.
+    /// If a compositor has no listener, we store a nullptr in the corresponding entry.
+    std::vector< ::Ogre::CompositorInstance::Listener*> m_compositorListeners;
 
     std::string m_compositorName;
 

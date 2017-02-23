@@ -34,7 +34,7 @@
 
         <service uid="idvrMethodSelector" type="::guiQt::editor::SParameters">
             <parameters>
-                <param type="enum" name="Importance-driven VR Methods" key="idvrMethod" defaultValue="None" values="None,MImP,AImP,VPImC" />
+                <param type="enum" name="Importance-driven VR Methods" key="idvrMethod" defaultValue="None" values="None,MImP,AImC,VPImC" />
             </parameters>
         </service>
 

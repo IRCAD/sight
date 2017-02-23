@@ -396,7 +396,7 @@ compositor RayTracedVolume_MImP_Comp
 {
 	technique
 	{
-        texture_ref mrt_IC IDVR_MImP_CSG_Comp mrt_IC
+        texture_ref mrt_IC IDVR_MImP_Comp mrt_IC
         texture_ref JFA JFAInit JFAFinal
 	
 		// Final pass
@@ -424,7 +424,7 @@ compositor RayTracedVolume_AmbientOcclusion_MImP_Comp
 {
 	technique
 	{
-        texture_ref mrt_IC IDVR_MImP_CSG_Comp mrt_IC
+        texture_ref mrt_IC IDVR_MImP_Comp mrt_IC
         texture_ref JFA JFAInit JFAFinal
 	
 		// Final pass
@@ -452,7 +452,7 @@ compositor RayTracedVolume_ColorBleeding_MImP_Comp
 {
 	technique
 	{
-        texture_ref mrt_IC IDVR_MImP_CSG_Comp mrt_IC
+        texture_ref mrt_IC IDVR_MImP_Comp mrt_IC
         texture_ref JFA JFAInit JFAFinal
 	
 		// Final pass
@@ -480,7 +480,7 @@ compositor RayTracedVolume_AmbientOcclusion_ColorBleeding_MImP_Comp
 {
 	technique
 	{
-        texture_ref mrt_IC IDVR_MImP_CSG_Comp mrt_IC
+        texture_ref mrt_IC IDVR_MImP_Comp mrt_IC
         texture_ref JFA JFAInit JFAFinal
 	
 		// Final pass
@@ -508,7 +508,7 @@ compositor RayTracedVolume_Shadows_MImP_Comp
 {
 	technique
 	{
-        texture_ref mrt_IC IDVR_MImP_CSG_Comp mrt_IC
+        texture_ref mrt_IC IDVR_MImP_Comp mrt_IC
         texture_ref JFA JFAInit JFAFinal
 	
 		// Final pass
@@ -536,7 +536,7 @@ compositor RayTracedVolume_AmbientOcclusion_Shadows_MImP_Comp
 {
 	technique
 	{
-        texture_ref mrt_IC IDVR_MImP_CSG_Comp mrt_IC
+        texture_ref mrt_IC IDVR_MImP_Comp mrt_IC
         texture_ref JFA JFAInit JFAFinal
 	
 		// Final pass
@@ -564,7 +564,7 @@ compositor RayTracedVolume_ColorBleeding_Shadows_MImP_Comp
 {
 	technique
 	{
-        texture_ref mrt_IC IDVR_MImP_CSG_Comp mrt_IC
+        texture_ref mrt_IC IDVR_MImP_Comp mrt_IC
         texture_ref JFA JFAInit JFAFinal
 	
 		// Final pass
@@ -592,7 +592,7 @@ compositor RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_MImP_Comp
 {
 	technique
 	{
-        texture_ref mrt_IC IDVR_MImP_CSG_Comp mrt_IC
+        texture_ref mrt_IC IDVR_MImP_Comp mrt_IC
         texture_ref JFA JFAInit JFAFinal
 	
 		// Final pass
@@ -620,7 +620,7 @@ compositor RayTracedVolume_PreIntegrated_MImP_Comp
 {
 	technique
 	{
-        texture_ref mrt_IC IDVR_MImP_CSG_Comp mrt_IC
+        texture_ref mrt_IC IDVR_MImP_Comp mrt_IC
         texture_ref JFA JFAInit JFAFinal
 	
 		// Final pass
@@ -648,7 +648,7 @@ compositor RayTracedVolume_AmbientOcclusion_PreIntegrated_MImP_Comp
 {
 	technique
 	{
-        texture_ref mrt_IC IDVR_MImP_CSG_Comp mrt_IC
+        texture_ref mrt_IC IDVR_MImP_Comp mrt_IC
         texture_ref JFA JFAInit JFAFinal
 	
 		// Final pass
@@ -676,7 +676,7 @@ compositor RayTracedVolume_ColorBleeding_PreIntegrated_MImP_Comp
 {
 	technique
 	{
-        texture_ref mrt_IC IDVR_MImP_CSG_Comp mrt_IC
+        texture_ref mrt_IC IDVR_MImP_Comp mrt_IC
         texture_ref JFA JFAInit JFAFinal
 	
 		// Final pass
@@ -704,7 +704,7 @@ compositor RayTracedVolume_AmbientOcclusion_ColorBleeding_PreIntegrated_MImP_Com
 {
 	technique
 	{
-        texture_ref mrt_IC IDVR_MImP_CSG_Comp mrt_IC
+        texture_ref mrt_IC IDVR_MImP_Comp mrt_IC
         texture_ref JFA JFAInit JFAFinal
 	
 		// Final pass
@@ -732,7 +732,7 @@ compositor RayTracedVolume_Shadows_PreIntegrated_MImP_Comp
 {
 	technique
 	{
-        texture_ref mrt_IC IDVR_MImP_CSG_Comp mrt_IC
+        texture_ref mrt_IC IDVR_MImP_Comp mrt_IC
         texture_ref JFA JFAInit JFAFinal
 	
 		// Final pass
@@ -760,7 +760,7 @@ compositor RayTracedVolume_AmbientOcclusion_Shadows_PreIntegrated_MImP_Comp
 {
 	technique
 	{
-        texture_ref mrt_IC IDVR_MImP_CSG_Comp mrt_IC
+        texture_ref mrt_IC IDVR_MImP_Comp mrt_IC
         texture_ref JFA JFAInit JFAFinal
 	
 		// Final pass
@@ -788,7 +788,7 @@ compositor RayTracedVolume_ColorBleeding_Shadows_PreIntegrated_MImP_Comp
 {
 	technique
 	{
-        texture_ref mrt_IC IDVR_MImP_CSG_Comp mrt_IC
+        texture_ref mrt_IC IDVR_MImP_Comp mrt_IC
         texture_ref JFA JFAInit JFAFinal
 	
 		// Final pass
@@ -816,7 +816,7 @@ compositor RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_PreIntegrated_
 {
 	technique
 	{
-        texture_ref mrt_IC IDVR_MImP_CSG_Comp mrt_IC
+        texture_ref mrt_IC IDVR_MImP_Comp mrt_IC
         texture_ref JFA JFAInit JFAFinal
 	
 		// Final pass
@@ -858,7 +858,7 @@ compositor RayTracedVolume_AImC_Comp
 			pass render_quad
 			{
 				material RayTracedVolume_AImC
-                input 3 IC 0
+                input 3 IC
 			}
 		}
 	}
@@ -884,7 +884,7 @@ compositor RayTracedVolume_AmbientOcclusion_AImC_Comp
 			pass render_quad
 			{
 				material RayTracedVolume_AmbientOcclusion_AImC
-                input 3 IC 0
+                input 3 IC
 			}
 		}
 	}
@@ -910,7 +910,7 @@ compositor RayTracedVolume_ColorBleeding_AImC_Comp
 			pass render_quad
 			{
 				material RayTracedVolume_ColorBleeding_AImC
-                input 3 IC 0
+                input 3 IC
 			}
 		}
 	}
@@ -936,7 +936,7 @@ compositor RayTracedVolume_AmbientOcclusion_ColorBleeding_AImC_Comp
 			pass render_quad
 			{
 				material RayTracedVolume_AmbientOcclusion_ColorBleeding_AImC
-                input 3 IC 0
+                input 3 IC
 			}
 		}
 	}
@@ -962,7 +962,7 @@ compositor RayTracedVolume_Shadows_AImC_Comp
 			pass render_quad
 			{
 				material RayTracedVolume_Shadows_AImC
-                input 3 IC 0
+                input 3 IC
 			}
 		}
 	}
@@ -988,7 +988,7 @@ compositor RayTracedVolume_AmbientOcclusion_Shadows_AImC_Comp
 			pass render_quad
 			{
 				material RayTracedVolume_AmbientOcclusion_Shadows_AImC
-                input 3 IC 0
+                input 3 IC
 			}
 		}
 	}
@@ -1014,7 +1014,7 @@ compositor RayTracedVolume_ColorBleeding_Shadows_AImC_Comp
 			pass render_quad
 			{
 				material RayTracedVolume_ColorBleeding_Shadows_AImC
-                input 3 IC 0
+                input 3 IC
 			}
 		}
 	}
@@ -1040,7 +1040,7 @@ compositor RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_AImC_Comp
 			pass render_quad
 			{
 				material RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_AImC
-                input 3 IC 0
+                input 3 IC
 			}
 		}
 	}
@@ -1066,7 +1066,7 @@ compositor RayTracedVolume_PreIntegrated_AImC_Comp
 			pass render_quad
 			{
 				material RayTracedVolume_PreIntegrated_AImC
-                input 3 IC 0
+                input 3 IC
 			}
 		}
 	}
@@ -1092,7 +1092,7 @@ compositor RayTracedVolume_AmbientOcclusion_PreIntegrated_AImC_Comp
 			pass render_quad
 			{
 				material RayTracedVolume_AmbientOcclusion_PreIntegrated_AImC
-                input 3 IC 0
+                input 3 IC
 			}
 		}
 	}
@@ -1118,7 +1118,7 @@ compositor RayTracedVolume_ColorBleeding_PreIntegrated_AImC_Comp
 			pass render_quad
 			{
 				material RayTracedVolume_ColorBleeding_PreIntegrated_AImC
-                input 3 IC 0
+                input 3 IC
 			}
 		}
 	}
@@ -1144,7 +1144,7 @@ compositor RayTracedVolume_AmbientOcclusion_ColorBleeding_PreIntegrated_AImC_Com
 			pass render_quad
 			{
 				material RayTracedVolume_AmbientOcclusion_ColorBleeding_PreIntegrated_AImC
-                input 3 IC 0
+                input 3 IC
 			}
 		}
 	}
@@ -1170,7 +1170,7 @@ compositor RayTracedVolume_Shadows_PreIntegrated_AImC_Comp
 			pass render_quad
 			{
 				material RayTracedVolume_Shadows_PreIntegrated_AImC
-                input 3 IC 0
+                input 3 IC
 			}
 		}
 	}
@@ -1196,7 +1196,7 @@ compositor RayTracedVolume_AmbientOcclusion_Shadows_PreIntegrated_AImC_Comp
 			pass render_quad
 			{
 				material RayTracedVolume_AmbientOcclusion_Shadows_PreIntegrated_AImC
-                input 3 IC 0
+                input 3 IC
 			}
 		}
 	}
@@ -1222,7 +1222,7 @@ compositor RayTracedVolume_ColorBleeding_Shadows_PreIntegrated_AImC_Comp
 			pass render_quad
 			{
 				material RayTracedVolume_ColorBleeding_Shadows_PreIntegrated_AImC
-                input 3 IC 0
+                input 3 IC
 			}
 		}
 	}
@@ -1248,7 +1248,423 @@ compositor RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_PreIntegrated_
 			pass render_quad
 			{
 				material RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_PreIntegrated_AImC
-                input 3 IC 0
+                input 3 IC
+			}
+		}
+	}
+}
+
+//----------------------------------------------
+
+compositor RayTracedVolume_VPImC_Comp
+{
+	technique
+	{
+		texture_ref IC IDVR_VPImC_Comp IC
+	
+		// Final pass
+		target_output
+		{
+			input none
+			pass clear
+			{
+				buffers depth
+			}
+
+			pass render_quad
+			{
+				material RayTracedVolume_VPImC
+                input 3 IC
+			}
+		}
+	}
+}
+
+//----------------------------------------------
+
+compositor RayTracedVolume_AmbientOcclusion_VPImC_Comp
+{
+	technique
+	{
+		texture_ref IC IDVR_VPImC_Comp IC
+	
+		// Final pass
+		target_output
+		{
+			input none
+			pass clear
+			{
+				buffers depth
+			}
+
+			pass render_quad
+			{
+				material RayTracedVolume_AmbientOcclusion_VPImC
+                input 3 IC
+			}
+		}
+	}
+}
+
+//----------------------------------------------
+
+compositor RayTracedVolume_ColorBleeding_VPImC_Comp
+{
+	technique
+	{
+		texture_ref IC IDVR_VPImC_Comp IC
+	
+		// Final pass
+		target_output
+		{
+			input none
+			pass clear
+			{
+				buffers depth
+			}
+
+			pass render_quad
+			{
+				material RayTracedVolume_ColorBleeding_VPImC
+                input 3 IC
+			}
+		}
+	}
+}
+
+//----------------------------------------------
+
+compositor RayTracedVolume_AmbientOcclusion_ColorBleeding_VPImC_Comp
+{
+	technique
+	{
+		texture_ref IC IDVR_VPImC_Comp IC
+	
+		// Final pass
+		target_output
+		{
+			input none
+			pass clear
+			{
+				buffers depth
+			}
+
+			pass render_quad
+			{
+				material RayTracedVolume_AmbientOcclusion_ColorBleeding_VPImC
+                input 3 IC
+			}
+		}
+	}
+}
+
+//----------------------------------------------
+
+compositor RayTracedVolume_Shadows_VPImC_Comp
+{
+	technique
+	{
+		texture_ref IC IDVR_VPImC_Comp IC
+	
+		// Final pass
+		target_output
+		{
+			input none
+			pass clear
+			{
+				buffers depth
+			}
+
+			pass render_quad
+			{
+				material RayTracedVolume_Shadows_VPImC
+                input 3 IC
+			}
+		}
+	}
+}
+
+//----------------------------------------------
+
+compositor RayTracedVolume_AmbientOcclusion_Shadows_VPImC_Comp
+{
+	technique
+	{
+		texture_ref IC IDVR_VPImC_Comp IC
+	
+		// Final pass
+		target_output
+		{
+			input none
+			pass clear
+			{
+				buffers depth
+			}
+
+			pass render_quad
+			{
+				material RayTracedVolume_AmbientOcclusion_Shadows_VPImC
+                input 3 IC
+			}
+		}
+	}
+}
+
+//----------------------------------------------
+
+compositor RayTracedVolume_ColorBleeding_Shadows_VPImC_Comp
+{
+	technique
+	{
+		texture_ref IC IDVR_VPImC_Comp IC
+	
+		// Final pass
+		target_output
+		{
+			input none
+			pass clear
+			{
+				buffers depth
+			}
+
+			pass render_quad
+			{
+				material RayTracedVolume_ColorBleeding_Shadows_VPImC
+                input 3 IC
+			}
+		}
+	}
+}
+
+//----------------------------------------------
+
+compositor RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_VPImC_Comp
+{
+	technique
+	{
+		texture_ref IC IDVR_VPImC_Comp IC
+	
+		// Final pass
+		target_output
+		{
+			input none
+			pass clear
+			{
+				buffers depth
+			}
+
+			pass render_quad
+			{
+				material RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_VPImC
+                input 3 IC
+			}
+		}
+	}
+}
+
+//----------------------------------------------
+
+compositor RayTracedVolume_PreIntegrated_VPImC_Comp
+{
+	technique
+	{
+		texture_ref IC IDVR_VPImC_Comp IC
+	
+		// Final pass
+		target_output
+		{
+			input none
+			pass clear
+			{
+				buffers depth
+			}
+
+			pass render_quad
+			{
+				material RayTracedVolume_PreIntegrated_VPImC
+                input 3 IC
+			}
+		}
+	}
+}
+
+//----------------------------------------------
+
+compositor RayTracedVolume_AmbientOcclusion_PreIntegrated_VPImC_Comp
+{
+	technique
+	{
+		texture_ref IC IDVR_VPImC_Comp IC
+	
+		// Final pass
+		target_output
+		{
+			input none
+			pass clear
+			{
+				buffers depth
+			}
+
+			pass render_quad
+			{
+				material RayTracedVolume_AmbientOcclusion_PreIntegrated_VPImC
+                input 3 IC
+			}
+		}
+	}
+}
+
+//----------------------------------------------
+
+compositor RayTracedVolume_ColorBleeding_PreIntegrated_VPImC_Comp
+{
+	technique
+	{
+		texture_ref IC IDVR_VPImC_Comp IC
+	
+		// Final pass
+		target_output
+		{
+			input none
+			pass clear
+			{
+				buffers depth
+			}
+
+			pass render_quad
+			{
+				material RayTracedVolume_ColorBleeding_PreIntegrated_VPImC
+                input 3 IC
+			}
+		}
+	}
+}
+
+//----------------------------------------------
+
+compositor RayTracedVolume_AmbientOcclusion_ColorBleeding_PreIntegrated_VPImC_Comp
+{
+	technique
+	{
+		texture_ref IC IDVR_VPImC_Comp IC
+	
+		// Final pass
+		target_output
+		{
+			input none
+			pass clear
+			{
+				buffers depth
+			}
+
+			pass render_quad
+			{
+				material RayTracedVolume_AmbientOcclusion_ColorBleeding_PreIntegrated_VPImC
+                input 3 IC
+			}
+		}
+	}
+}
+
+//----------------------------------------------
+
+compositor RayTracedVolume_Shadows_PreIntegrated_VPImC_Comp
+{
+	technique
+	{
+		texture_ref IC IDVR_VPImC_Comp IC
+	
+		// Final pass
+		target_output
+		{
+			input none
+			pass clear
+			{
+				buffers depth
+			}
+
+			pass render_quad
+			{
+				material RayTracedVolume_Shadows_PreIntegrated_VPImC
+                input 3 IC
+			}
+		}
+	}
+}
+
+//----------------------------------------------
+
+compositor RayTracedVolume_AmbientOcclusion_Shadows_PreIntegrated_VPImC_Comp
+{
+	technique
+	{
+		texture_ref IC IDVR_VPImC_Comp IC
+	
+		// Final pass
+		target_output
+		{
+			input none
+			pass clear
+			{
+				buffers depth
+			}
+
+			pass render_quad
+			{
+				material RayTracedVolume_AmbientOcclusion_Shadows_PreIntegrated_VPImC
+                input 3 IC
+			}
+		}
+	}
+}
+
+//----------------------------------------------
+
+compositor RayTracedVolume_ColorBleeding_Shadows_PreIntegrated_VPImC_Comp
+{
+	technique
+	{
+		texture_ref IC IDVR_VPImC_Comp IC
+	
+		// Final pass
+		target_output
+		{
+			input none
+			pass clear
+			{
+				buffers depth
+			}
+
+			pass render_quad
+			{
+				material RayTracedVolume_ColorBleeding_Shadows_PreIntegrated_VPImC
+                input 3 IC
+			}
+		}
+	}
+}
+
+//----------------------------------------------
+
+compositor RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_PreIntegrated_VPImC_Comp
+{
+	technique
+	{
+		texture_ref IC IDVR_VPImC_Comp IC
+	
+		// Final pass
+		target_output
+		{
+			input none
+			pass clear
+			{
+				buffers depth
+			}
+
+			pass render_quad
+			{
+				material RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_PreIntegrated_VPImC
+                input 3 IC
 			}
 		}
 	}

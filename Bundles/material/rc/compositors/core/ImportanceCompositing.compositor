@@ -1,5 +1,5 @@
 // Maximum importance projection (MImP) with support for countersink geometry (CSG)
-compositor IDVR_MImP_CSG_Comp
+compositor IDVR_MImP_Comp
 {
     technique
     {

@@ -6,7 +6,7 @@ compositor JFAInit
         texture JFAPing target_width target_height PF_FLOAT32_RGBA pooled chain_scope
         texture JFAPong target_width target_height PF_FLOAT32_RGBA pooled chain_scope
 
-        texture_ref mrt_IC IDVR_MImP_CSG_Comp mrt_IC
+        texture_ref mrt_IC IDVR_MImP_Comp mrt_IC
 
         target JFAPing
         {
