@@ -3,6 +3,7 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="maskUID" />
+        <param name="idvrParamChannel" />
         <param name="ICON_PATH" />
     </parameters>
 
@@ -19,15 +20,23 @@
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
+                    <view proportion="0" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
+                <view sid="idvrMethodSelector" start="yes" />
                 <view sid="selectMask" start="yes" />
             </registry>
         </service>
 
         <!-- ************************************* Services ************************************ -->
+
+        <service uid="idvrMethodSelector" type="::guiQt::editor::SParameters">
+            <parameters>
+                <param type="enum" name="Importance-driven VR Methods" key="idvrMethod" defaultValue="None" values="None,MImP,AImP,VPImC" />
+            </parameters>
+        </service>
 
         <service uid="selectMask" type="::guiQt::editor::SSignalButton">
             <config>
@@ -46,6 +55,10 @@
             <signal>selectMask/clicked</signal>
             <slot>maskReader/configureWithIHM</slot>
             <slot>maskReader/update</slot>
+        </connect>
+
+        <connect channel="${idvrParamChannel}">
+            <signal>idvrMethodSelector/enumChanged</signal>
         </connect>
 
         <start uid="idvrView" />

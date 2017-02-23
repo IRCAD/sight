@@ -5,6 +5,7 @@
         <param name="WID_PARENT" />
         <param name="imageUID" />
         <param name="maskUID" />
+        <param name="idvrParamChannel" />
         <param name="TFSelections" />
     </parameters>
     <config>
@@ -121,6 +122,10 @@
         <connect>
             <signal>vrAdvancedEditor2/doubleChanged</signal>
             <slot>volumeRender/setDoubleParameter</slot>
+        </connect>
+
+        <connect channel="${idvrParamChannel}">
+            <slot>volumeRender/setEnumParameter</slot>
         </connect>
 
         <start uid="OgreVolumeRendering" />

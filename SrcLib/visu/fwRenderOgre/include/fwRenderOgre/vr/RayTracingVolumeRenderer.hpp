@@ -95,6 +95,9 @@ public:
     /// A focal length of 0 focuses on the front of the image and a length of 1 focuses on the back.
     FWRENDEROGRE_API void setFocalLength(float focalLength);
 
+    /// Allows to setup the importance driven method used during the rendering
+    FWRENDEROGRE_API void setIDVRMethod(std::string method);
+
     /// Computes image positions, updates the proxy geometry.
     FWRENDEROGRE_API virtual void clipImage(const ::Ogre::AxisAlignedBox& clippingBox);
 
@@ -196,6 +199,9 @@ private:
     std::string m_currentMtlName;
 
     SATVolumeIllumination* m_illumVolume;
+
+    /// Name of the method used for Importance driven volume rendering
+    std::string m_idvrMethod;
 
     /// Focal distance in object space : 0 = object front, 1 = object back.
     float m_focalLength;

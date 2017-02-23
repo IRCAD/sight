@@ -56,6 +56,7 @@ namespace visuOgreAdaptor
  * - \b setBoolParameter(bool, string): Calls a bool parameter slot according to the given key.
  * - \b setIntParameter(int, string): Calls an int parameter slot according to the given key.
  * - \b setDoubleParameter(double, string): Calls a double parameter slot according to the given key.
+ * - \b setEnumParameter(string, string): Calls a double parameter slot according to the given key.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -129,6 +130,7 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT;
     /** @} */
 
     /// Constructor.
@@ -191,6 +193,7 @@ private:
     void setBoolParameter(bool val, std::string key);
     void setIntParameter(int val, std::string key);
     void setDoubleParameter(double val, std::string key);
+    void setEnumParameter(std::string val, std::string key);
 
     /// Creates widgets and connects its slots to interactor signals.
     void initWidgets();

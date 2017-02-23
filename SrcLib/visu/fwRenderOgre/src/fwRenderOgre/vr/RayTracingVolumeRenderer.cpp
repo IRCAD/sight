@@ -585,6 +585,12 @@ void RayTracingVolumeRenderer::setFocalLength(float focalLength)
     computeRealFocalLength();
 }
 
+//------------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::setIDVRMethod(std::string method)
+{
+}
+
 //-----------------------------------------------------------------------------
 
 void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingBox)
