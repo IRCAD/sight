@@ -15,8 +15,9 @@
 
 namespace calibration3d
 {
+
 /**
- *
+ * @brief helper contains useful functions related to calibration or 3d reconstruction.
  */
 namespace helper
 {
@@ -31,7 +32,8 @@ typedef std::pair< double, std::vector< ::cv::Point2f > > ErrorAndPointsType;
  * @param _tvecs: translation vector
  * @param _cameraMatrix: camera matrix (fx, fy, cx, cy)
  * @param _distCoeffs: distorsion coefficients of the camera
- * @return double arithmetical mean error
+ * @return std::pair< double, std::vector< ::cv::Point2f > >, first element is the arithmetical root-squared mean error
+ * and the second element is a vector of reprojected 2d points (for display purpose)
  */
 CALIBRATION3D_API ErrorAndPointsType computeReprojectionError( const std::vector< ::cv::Point3f >& _objectPoints,
                                                                const std::vector< ::cv::Point2f >& _imagePoints,

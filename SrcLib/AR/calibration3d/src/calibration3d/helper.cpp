@@ -18,6 +18,7 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
                                             const ::cv::Mat& _rvecs, const ::cv::Mat& _tvecs,
                                             const ::cv::Mat& _cameraMatrix, const ::cv::Mat& _distCoeffs)
 {
+
     ErrorAndPointsType errorAndProjectedPoints;
     std::vector< ::cv::Point2f > imagePoints2;
     int totalPoints = 0;
