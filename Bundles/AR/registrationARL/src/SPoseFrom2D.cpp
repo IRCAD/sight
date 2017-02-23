@@ -7,28 +7,24 @@
 #include "registrationARL/SPoseFrom2D.hpp"
 
 #include <arData/Camera.hpp>
-#include <arData/MarkerTL.hpp>
-
 #include <arData/FrameTL.hpp>
+#include <arData/MarkerTL.hpp>
 #include <arData/MatrixTL.hpp>
 
-#include <fwData/TransformationMatrix3D.hpp>
-
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
+
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <arlcore/MatrixR.h>
 
 #include <boost/container/vector.hpp>
-#include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include <limits>
 
-fwServicesRegisterMacro(::fwServices::IController, ::registrationARL::SPoseFrom2D, ::fwData::Object);
-
+fwServicesRegisterMacro(::arServices::IRegisterer, ::registrationARL::SPoseFrom2D);
 
 //-----------------------------------------------------------------------------
 
@@ -36,8 +32,6 @@ namespace registrationARL
 {
 
 //-----------------------------------------------------------------------------
-
-const ::fwCom::Slots::SlotKeyType SPoseFrom2D::s_REGISTER_SLOT = "register";
 
 const ::fwServices::IService::KeyType s_MARKERTL_INPUT  = "markerTL";
 const ::fwServices::IService::KeyType s_CAMERA_INPUT    = "camera";
@@ -52,7 +46,7 @@ SPoseFrom2D::SPoseFrom2D() throw () :
     m_isInitialized(false),
     m_planeSystem(NULL)
 {
-    newSlot(s_REGISTER_SLOT, &SPoseFrom2D::doRegistration, this);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -116,7 +110,7 @@ void SPoseFrom2D::updating() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2D::doRegistration(::fwCore::HiResClock::HiResClockType timestamp)
+void SPoseFrom2D::computeRegistration(::fwCore::HiResClock::HiResClockType timestamp)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
@@ -167,7 +161,7 @@ void SPoseFrom2D::doRegistration(::fwCore::HiResClock::HiResClockType timestamp)
                 size_t indexTL = 0;
 
                 // For each camera timeline
-                for(size_t i = 0; i< this->getKeyGroupSize(s_MARKERTL_INPUT); ++i)
+                for(size_t i = 0; i < this->getKeyGroupSize(s_MARKERTL_INPUT); ++i)
                 {
                     auto markerTL = this->getInput< ::arData::MarkerTL >(s_MARKERTL_INPUT, i);
                     const CSPTR(::arData::MarkerTL::BufferType) buffer = markerTL->getClosestBuffer(newerTimestamp);
@@ -179,7 +173,8 @@ void SPoseFrom2D::doRegistration(::fwCore::HiResClock::HiResClockType timestamp)
                         ARLPointListType pl;
                         for(size_t i = 0; i < 4; ++i)
                         {
-                            pl.push_back(::arlCore::Point::PointFactory(registrationARLBuffer[i*2], registrationARLBuffer[i*2+1]));
+                            pl.push_back(::arlCore::Point::PointFactory(registrationARLBuffer[i*2],
+                                                                        registrationARLBuffer[i*2+1]));
                         }
                         markerPts.push_back(pl);
                         arlCameras.push_back(m_arlCameras[indexTL]);
@@ -193,7 +188,7 @@ void SPoseFrom2D::doRegistration(::fwCore::HiResClock::HiResClockType timestamp)
                 }
 
                 ::arlCore::vnl_rigid_matrix vnlMatrix;
-                std::vector< double > optimiser_parameters(1,1), log;
+                std::vector< double > optimiser_parameters(1, 1), log;
 
                 if (!::arlCore::planarHomographyRegistration_3D_2D(*arlCameras.front(), markerPts.front(), m_3dModel,
                                                                    vnlMatrix, optimiser_parameters, log, false))
@@ -261,7 +256,6 @@ void SPoseFrom2D::initialize()
     // initialized matrix timeline
     matrixTL->initPoolSize(maxElementNum);
 
-
     // Initialization of ARLCameras
     m_planeSystem = new ::arlCore::PlaneSystem();
 
@@ -317,7 +311,7 @@ void SPoseFrom2D::initialize()
 {
     KeyConnectionsMap connections;
 
-    connections.push( "markerTL", ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_REGISTER_SLOT );
+    connections.push( "markerTL", ::arData::TimeLine::s_OBJECT_PUSHED_SIG, s_COMPUTE_REGISTRATION_SLOT );
 
     return connections;
 }

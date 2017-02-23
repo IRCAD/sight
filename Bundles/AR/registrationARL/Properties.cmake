@@ -3,17 +3,15 @@ set( NAME registrationARL )
 set( VERSION 0.1 )
 set( TYPE BUNDLE )
 set( DEPENDENCIES
-    fwRuntime
+    arData
+    ARLcore
+    arServices
+    calibration3d
+    fwCom
     fwCore
     fwData
-    fwDataTools
-    fwServices
-    fwTools
     fwMath
-    ARLcore
-    fwCom
-    arData
-    calibration3d
+    fwRuntime
 )
 
 set( REQUIREMENTS dataReg

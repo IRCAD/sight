@@ -9,15 +9,11 @@
 
 #include "registrationARL/config.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <arServices/IRegisterer.hpp>
 
 #include <fwCore/HiResClock.hpp>
 #include <fwCore/mt/types.hpp>
 
-#include <fwData/Composite.hpp>
-
-#include <fwServices/IController.hpp>
 #include <fwServices/macros.hpp>
 
 #include <arlcore/Point.h>
@@ -27,10 +23,10 @@ namespace registrationARL
 {
 
 /**
- * @brief   SPoseFrom2D Class used to compute the rigid transformation.
+ * @brief   SPoseFrom2D Class used to compute the 3d pose of a object using 2d points.
  *
  * @section Slots Slots
- * - \b register(::fwCore::HiResClock::HiResClockType timestamp) : computes the homography.
+ * - \b computeRegistration(::fwCore::HiResClock::HiResClockType timestamp) : computes the registration.
  *
  * @section XML XML Configuration
  *
@@ -58,12 +54,10 @@ namespace registrationARL
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */
-class REGISTRATIONARL_CLASS_API SPoseFrom2D : public ::fwServices::IController
+class REGISTRATIONARL_CLASS_API SPoseFrom2D : public ::arServices::IRegisterer
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SPoseFrom2D)(fwServices::IController));
-
-    static const ::fwCom::Slots::SlotKeyType s_REGISTER_SLOT;
+    fwCoreServiceClassDefinitionsMacro((SPoseFrom2D)(::arServices::IRegisterer));
 
     typedef std::vector< ::arlCore::Point::csptr > ARLPointListType;
     typedef std::vector<std::string> VectKeyType;
@@ -103,7 +97,7 @@ protected:
     REGISTRATIONARL_API void stopping() throw (fwTools::Failed);
 
     /// Register matrix slot
-    void doRegistration(::fwCore::HiResClock::HiResClockType timestamp);
+    void computeRegistration(::fwCore::HiResClock::HiResClockType timestamp);
 
 private:
 
