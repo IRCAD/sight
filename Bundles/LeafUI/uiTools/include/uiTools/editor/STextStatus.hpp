@@ -26,7 +26,7 @@ namespace editor
  * Values are set using slots
  *
  * @code{.xml}
- * <service uid="..." type="::gui::editor::IEditor" impl="::uiTools::editor::STextStatus" autoConnect="yes">
+ * <service uid="..." type="::uiTools::editor::STextStatus">
  *    <label> my label </label>
  * </service>
  * @endcode

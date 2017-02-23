@@ -17,9 +17,7 @@
             <object uid="cameraSeries" type="::arData::CameraSeries" />
             <object uid="camera" type="::arData::Camera" src="deferred" />
 
-            <object uid="frameTL" type="::arData::FrameTL">
-                <value>100</value>
-            </object>
+            <object uid="frameTL" type="::arData::FrameTL"/>
             <object uid="tagTL" type="::arData::MarkerTL" />
             <object uid="videoImage" type="::fwData::Image" />
             <object uid="matrixTL" type="::arData::MatrixTL" />
@@ -265,7 +263,7 @@
 
             <!-- Gui Service to display a value in a QLabel -->
             <service uid="errorLabel" type="::uiTools::editor::STextStatus">
-                <text>Reprojection Error (RMSE)</text>
+                <label>Reprojection Error (RMSE)</label>
             </service>
 
             <!-- GUI to select camera (device, file, or stream) -->
