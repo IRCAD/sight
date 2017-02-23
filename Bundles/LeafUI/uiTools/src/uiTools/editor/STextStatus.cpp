@@ -87,7 +87,7 @@ void STextStatus::configuring() throw(fwTools::Failed)
     this->initialize();
 
     auto txtCfg = m_configuration->findConfigurationElement("label");
-    SLM_ASSERT("'<text>' configuration element is missing.", txtCfg);
+    SLM_ASSERT("'<label>' configuration element is missing.", txtCfg);
     QString txt = QString::fromStdString(txtCfg->getValue());
 
     m_labelStaticText->setText(QString(txt + ": "));

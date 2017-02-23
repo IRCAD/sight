@@ -30,7 +30,7 @@ namespace editor
  *    <label> my label </label>
  * </service>
  * @endcode
- * - \b text (optional, by default "") : the text to show before size of the vector
+ * - \b label (optional, by default "") : the text to show before size of the vector
  */
 class UITOOLS_CLASS_API STextStatus : public QObject,
                                       public ::gui::editor::IEditor
