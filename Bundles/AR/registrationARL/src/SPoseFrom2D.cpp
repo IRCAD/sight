@@ -1,10 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "tracker/SHomography.hpp"
+#include "registrationARL/SPoseFrom2D.hpp"
 
 #include <arData/Camera.hpp>
 #include <arData/MarkerTL.hpp>
@@ -27,17 +27,17 @@
 
 #include <limits>
 
-fwServicesRegisterMacro(::fwServices::IController, ::tracker::SHomography, ::fwData::Object);
+fwServicesRegisterMacro(::fwServices::IController, ::registrationARL::SPoseFrom2D, ::fwData::Object);
 
 
 //-----------------------------------------------------------------------------
 
-namespace tracker
+namespace registrationARL
 {
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType SHomography::s_REGISTER_SLOT = "register";
+const ::fwCom::Slots::SlotKeyType SPoseFrom2D::s_REGISTER_SLOT = "register";
 
 const ::fwServices::IService::KeyType s_MARKERTL_INPUT  = "markerTL";
 const ::fwServices::IService::KeyType s_CAMERA_INPUT    = "camera";
@@ -46,24 +46,24 @@ const ::fwServices::IService::KeyType s_MATRIXTL_INOUT  = "matrixTL";
 
 //-----------------------------------------------------------------------------
 
-SHomography::SHomography() throw () :
+SPoseFrom2D::SPoseFrom2D() throw () :
     m_lastTimestamp(0),
     m_patternWidth(80),
     m_isInitialized(false),
     m_planeSystem(NULL)
 {
-    newSlot(s_REGISTER_SLOT, &SHomography::doRegistration, this);
+    newSlot(s_REGISTER_SLOT, &SPoseFrom2D::doRegistration, this);
 }
 
 //-----------------------------------------------------------------------------
 
-SHomography::~SHomography() throw ()
+SPoseFrom2D::~SPoseFrom2D() throw ()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SHomography::configuring() throw (::fwTools::Failed)
+void SPoseFrom2D::configuring() throw (::fwTools::Failed)
 {
     typedef ::fwRuntime::ConfigurationElementContainer::Container CfgContainer;
 
@@ -77,7 +77,7 @@ void SHomography::configuring() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SHomography::starting() throw (::fwTools::Failed)
+void SPoseFrom2D::starting() throw (::fwTools::Failed)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
@@ -92,7 +92,7 @@ void SHomography::starting() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SHomography::stopping() throw (::fwTools::Failed)
+void SPoseFrom2D::stopping() throw (::fwTools::Failed)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
@@ -110,13 +110,13 @@ void SHomography::stopping() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SHomography::updating() throw (::fwTools::Failed)
+void SPoseFrom2D::updating() throw (::fwTools::Failed)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SHomography::doRegistration(::fwCore::HiResClock::HiResClockType timestamp)
+void SPoseFrom2D::doRegistration(::fwCore::HiResClock::HiResClockType timestamp)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
@@ -174,12 +174,12 @@ void SHomography::doRegistration(::fwCore::HiResClock::HiResClockType timestamp)
 
                     if(buffer->isPresent(markerIndex))
                     {
-                        const float* trackerBuffer = buffer->getElement(markerIndex);
+                        const float* registrationARLBuffer = buffer->getElement(markerIndex);
 
                         ARLPointListType pl;
                         for(size_t i = 0; i < 4; ++i)
                         {
-                            pl.push_back(::arlCore::Point::PointFactory(trackerBuffer[i*2], trackerBuffer[i*2+1]));
+                            pl.push_back(::arlCore::Point::PointFactory(registrationARLBuffer[i*2], registrationARLBuffer[i*2+1]));
                         }
                         markerPts.push_back(pl);
                         arlCameras.push_back(m_arlCameras[indexTL]);
@@ -241,7 +241,7 @@ void SHomography::doRegistration(::fwCore::HiResClock::HiResClockType timestamp)
 
 //-----------------------------------------------------------------------------
 
-void SHomography::initialize()
+void SPoseFrom2D::initialize()
 {
     // Initialization of timelines
 
@@ -313,7 +313,7 @@ void SHomography::initialize()
 
 //-----------------------------------------------------------------------------
 
-::fwServices::IService::KeyConnectionsMap SHomography::getAutoConnections() const
+::fwServices::IService::KeyConnectionsMap SPoseFrom2D::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
@@ -324,5 +324,5 @@ void SHomography::initialize()
 
 //-----------------------------------------------------------------------------
 
-} // namespace tracker
+} // namespace registrationARL
 

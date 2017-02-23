@@ -22,6 +22,7 @@ set( REQUIREMENTS
     servicesReg
     tracker
     trackerAruco
+    registrationARL
     videoQt
     videoTools
     videoCalibration
