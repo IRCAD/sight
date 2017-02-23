@@ -33,7 +33,8 @@ namespace trackerAruco
 fwServicesRegisterMacro(::tracker::ITracker, ::trackerAruco::SArucoTracker);
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType SArucoTracker::s_DETECTION_DONE_SIG = "detectionDone";
+const ::fwCom::Signals::SignalKeyType SArucoTracker::s_DETECTION_DONE_SIG  = "detectionDone";
+const ::fwCom::Signals::SignalKeyType SArucoTracker::s_MARKER_DETECTED_SIG = "markerDetected";
 
 const ::fwCom::Slots::SlotKeyType SArucoTracker::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
 const ::fwCom::Slots::SlotKeyType SArucoTracker::s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
@@ -60,6 +61,8 @@ SArucoTracker::SArucoTracker() throw () :
     m_cornerRefinement(::aruco::MarkerDetector::SUBPIX)
 {
     m_sigDetectionDone = newSignal<DetectionDoneSignalType>(s_DETECTION_DONE_SIG);
+
+    newSignal<MarkerDetectedSignalType>(s_MARKER_DETECTED_SIG);
 
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SArucoTracker::setDoubleParameter, this);
     newSlot(s_SET_INT_PARAMETER_SLOT, &SArucoTracker::setIntParameter, this);
@@ -236,6 +239,7 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
     OSLM_WARN_IF("Buffer not found with timestamp "<< timestamp, !buffer );
     if(buffer)
     {
+        bool foundMarker = false;
         m_lastTimestamp = timestamp;
 
         const std::uint8_t* frameBuff = &buffer->getElement(0);
@@ -276,6 +280,7 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
                 {
                     if (detectedMarkers[i].id == markerID)
                     {
+                        foundMarker = true;
                         if(m_debugMarkers)
                         {
                             detectedMarkers[i].draw(inImage, cvScalar(color[0], color[1], color[2], 255), 2);
@@ -308,6 +313,8 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
                 sig->asyncEmit(timestamp);
             }
 
+            this->signal<MarkerDetectedSignalType>(s_MARKER_DETECTED_SIG)->asyncEmit(foundMarker);
+
             ++index;
             if(index >= 3)
             {
@@ -316,6 +323,7 @@ void SArucoTracker::tracking(::fwCore::HiResClock::HiResClockType& timestamp)
             ++tagTLIndex;
         }
         // Emit
+
         m_sigDetectionDone->asyncEmit(timestamp);
     }
 }

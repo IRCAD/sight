@@ -95,6 +95,7 @@ public:
     fwCoreServiceClassDefinitionsMacro((SArucoTracker)(tracker::ITracker));
 
     typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > DetectionDoneSignalType;
+    typedef ::fwCom::Signal< void (bool) > MarkerDetectedSignalType;
 
     /**
      * @name Signal API
@@ -102,6 +103,8 @@ public:
      */
     /// Key in m_signals map of signal m_sigDetectionDone
     TRACKERARUCO_API static const ::fwCom::Signals::SignalKeyType s_DETECTION_DONE_SIG;
+    /// Signal always emitted with boolean true if a least a maker from id list is found, false otherwise.
+    TRACKERARUCO_API static const ::fwCom::Signals::SignalKeyType s_MARKER_DETECTED_SIG;
     /** @} */
     /**
      * @name Slots API
