@@ -136,7 +136,9 @@ public:
                                  std::vector< ::Ogre::Matrix4>& invWorldViewProj,
                                  ::Ogre::TexturePtr image3DTexture,
                                  ::Ogre::TexturePtr tfTexture,
-                                 PreIntegrationTable& preIntegrationTable,
+                                 ::fwRenderOgre::vr::SATVolumeIllumination* volIllum,
+                                 ::Ogre::Vector4& volIllumFactor,
+                                 ::fwRenderOgre::vr::PreIntegrationTable& preIntegrationTable,
                                  float& sampleDistance,
                                  bool is3DMode,
                                  ::Ogre::SceneNode* volumeSceneNode) :
@@ -144,6 +146,8 @@ public:
         m_invWorldViewProj(invWorldViewProj),
         m_image3DTexture(image3DTexture),
         m_tfTexture(tfTexture),
+        m_volIllum(volIllum),
+        m_volIllumFactor(volIllumFactor),
         m_preIntegrationTable(preIntegrationTable),
         m_sampleDistance(sampleDistance),
         m_is3DMode(is3DMode),
@@ -158,8 +162,9 @@ public:
     {
         ::Ogre::Pass* pass = mtl->getTechnique(0)->getPass(0);
 
-        ::Ogre::TextureUnitState* imageTexUnitState = pass->getTextureUnitState("image");
-        ::Ogre::TextureUnitState* tfTexUnitState    = pass->getTextureUnitState("transferFunction");
+        ::Ogre::TextureUnitState* imageTexUnitState    = pass->getTextureUnitState("image");
+        ::Ogre::TextureUnitState* tfTexUnitState       = pass->getTextureUnitState("transferFunction");
+        ::Ogre::TextureUnitState* volIllumTexUnitState = pass->getTextureUnitState("illuminationVolume");
 
         imageTexUnitState->setTextureName(m_image3DTexture->getName());
 
@@ -170,6 +175,11 @@ public:
         else
         {
             tfTexUnitState->setTextureName(m_tfTexture->getName());
+        }
+
+        if(m_volIllum && volIllumTexUnitState)
+        {
+            volIllumTexUnitState->setTextureName(m_volIllum->getIlluminationVolume()->getName());
         }
 
         /* mono mode */
@@ -242,18 +252,21 @@ public:
 
 private:
 
-    std::vector< ::Ogre::TexturePtr>& m_renderTargets;
+    const std::vector< ::Ogre::TexturePtr>& m_renderTargets;
 
-    std::vector< ::Ogre::Matrix4>& m_invWorldViewProj;
+    const std::vector< ::Ogre::Matrix4>& m_invWorldViewProj;
 
-    ::Ogre::TexturePtr m_image3DTexture;
-    ::Ogre::TexturePtr m_tfTexture;
+    const ::Ogre::TexturePtr m_image3DTexture;
+    const ::Ogre::TexturePtr m_tfTexture;
 
-    PreIntegrationTable& m_preIntegrationTable;
+    ::fwRenderOgre::vr::SATVolumeIllumination* m_volIllum;
+    const ::Ogre::Vector4& m_volIllumFactor;
 
-    float& m_sampleDistance;
+    const ::fwRenderOgre::vr::PreIntegrationTable& m_preIntegrationTable;
 
-    bool m_is3DMode;
+    const float& m_sampleDistance;
+
+    const bool m_is3DMode;
 
     ::Ogre::SceneNode* m_volumeSceneNode;
 };
@@ -341,9 +354,9 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_ambientOcclusion(ambientOcclusion),
     m_colorBleeding(colorBleeding),
     m_shadows(shadows),
-    m_aoFactor(aoFactor),
-    m_colorBleedingFactor(colorBleedingFactor),
+    m_volIllumFactor(colorBleedingFactor, colorBleedingFactor, colorBleedingFactor, aoFactor),
     m_illumVolume(nullptr),
+    m_idvrMethod("None"),
     m_focalLength(0.f),
     m_cameraListener(nullptr),
     m_layer(layer)
@@ -368,16 +381,16 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                             ::Ogre::TU_RENDERTARGET ));
     }
 
-    initMaterials();
+    for(::Ogre::TexturePtr entryPtsText : m_entryPointsTextures)
+    {
+        ::Ogre::RenderTexture* renderTexture = entryPtsText->getBuffer()->getRenderTarget();
+        renderTexture->addViewport(m_camera);
+    }
 
     initCompositors();
-
     initEntryPoints();
 
-    updateMatNames();
-
     setSampling(m_nbSlices);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -450,12 +463,6 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
     if(m_preIntegratedRendering)
     {
         m_preIntegrationTable.imageUpdate(image, tf, m_sampleDistance);
-
-        auto minMax = m_preIntegrationTable.getMinMax();
-
-        ::Ogre::GpuProgramParametersSharedPtr currentParams = this->retrieveCurrentProgramParams();
-        currentParams->setNamedConstant("u_min", minMax.first);
-        currentParams->setNamedConstant("u_max", minMax.second);
     }
 }
 
@@ -508,32 +515,21 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
     m_nbSlices = nbSamples;
 
     computeSampleDistance(getCameraPlane());
-
-    this->retrieveCurrentProgramParams()->setNamedConstant("u_sampleDistance", m_sampleDistance);
 }
 
 //-----------------------------------------------------------------------------
 
 void RayTracingVolumeRenderer::setAOFactor(double aoFactor)
 {
-    m_aoFactor = aoFactor;
-
-    ::Ogre::Real cbFactor = static_cast< ::Ogre::Real>(m_colorBleedingFactor);
-    ::Ogre::Vector4 volIllumFactor(cbFactor, cbFactor, cbFactor, static_cast< ::Ogre::Real>(m_aoFactor));
-
-    this->retrieveCurrentProgramParams()->setNamedConstant("u_volIllumFactor", volIllumFactor);
+    m_volIllumFactor.w = static_cast< ::Ogre::Real>(aoFactor);
 }
 
 //-----------------------------------------------------------------------------
 
 void RayTracingVolumeRenderer::setColorBleedingFactor(double colorBleedingFactor)
 {
-    m_colorBleedingFactor = colorBleedingFactor;
-
-    ::Ogre::Real cbFactor = static_cast< ::Ogre::Real>(m_colorBleedingFactor);
-    ::Ogre::Vector4 volIllumFactor(cbFactor, cbFactor, cbFactor, static_cast< ::Ogre::Real>(m_aoFactor));
-
-    this->retrieveCurrentProgramParams()->setNamedConstant("u_volIllumFactor", volIllumFactor);
+    ::Ogre::Real cbFactor = static_cast< ::Ogre::Real>(colorBleedingFactor);
+    m_volIllumFactor      = ::Ogre::Vector4(cbFactor, cbFactor, cbFactor, m_volIllumFactor.w);
 }
 
 //-----------------------------------------------------------------------------
@@ -541,12 +537,6 @@ void RayTracingVolumeRenderer::setColorBleedingFactor(double colorBleedingFactor
 void RayTracingVolumeRenderer::setIlluminationVolume(SATVolumeIllumination* illuminationVolume)
 {
     m_illumVolume = illuminationVolume;
-
-    std::for_each(m_rayTracedTexUnitStates.begin(), m_rayTracedTexUnitStates.end(),
-                  [illuminationVolume](::Ogre::TextureUnitState* tus)
-            {
-                tus->setTexture(illuminationVolume->getIlluminationVolume());
-            });
 }
 
 //-----------------------------------------------------------------------------
@@ -558,20 +548,7 @@ void RayTracingVolumeRenderer::setPreIntegratedRendering(bool preIntegratedRende
 
     m_preIntegratedRendering = preIntegratedRendering;
 
-    this->updateMatNames();
-
-    // Disable or enable the compositor using pre-integration (based on currentMtlName)
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    auto viewport = m_layer.lock()->getViewport();
-    ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
-
-    // Start from an empty compositor chain
-    this->cleanCompositorChain(compChain);
-    this->setupDefaultCompositorChain();
-
-    // Add the initial ray tracing compositor
-    m_compositorName = m_currentMtlName + "_Comp";
-    this->addRayTracingCompositor(m_compositorName);
+    this->initCompositors();
 }
 
 //-----------------------------------------------------------------------------
@@ -580,8 +557,9 @@ void RayTracingVolumeRenderer::setAmbientOcclusion(bool ambientOcclusion)
 {
     m_ambientOcclusion = ambientOcclusion;
 
-    this->updateMatNames();
-    m_entryPointGeometry->setMaterialName(0, m_currentMtlName);
+    this->updateVolIllumMat();
+
+    this->initCompositors();
 }
 
 //-----------------------------------------------------------------------------
@@ -590,8 +568,9 @@ void RayTracingVolumeRenderer::setColorBleeding(bool colorBleeding)
 {
     m_colorBleeding = colorBleeding;
 
-    this->updateMatNames();
-    m_entryPointGeometry->setMaterialName(0, m_currentMtlName);
+    this->updateVolIllumMat();
+
+    this->initCompositors();
 }
 
 //-----------------------------------------------------------------------------
@@ -600,8 +579,9 @@ void RayTracingVolumeRenderer::setShadows(bool shadows)
 {
     m_shadows = shadows;
 
-    this->updateMatNames();
-    m_entryPointGeometry->setMaterialName(0, m_currentMtlName);
+    this->updateVolIllumMat();
+
+    this->initCompositors();
 }
 
 //-----------------------------------------------------------------------------
@@ -616,255 +596,14 @@ void RayTracingVolumeRenderer::setFocalLength(float focalLength)
 
 void RayTracingVolumeRenderer::setIDVRMethod(std::string method)
 {
+    m_idvrMethod = method;
+
     ::Ogre::CompositorInstance* compositorInstance = nullptr;
 
     SLM_ASSERT("IDVR isn't currently supported with autostereo mode",
                m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE);
 
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    auto viewport = m_layer.lock()->getViewport();
-    ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
-
-    this->cleanCompositorChain(compChain);
-    this->setupDefaultCompositorChain();
-
-    if(method == "MImP")
-    {
-        m_compositorName = "IDVR_MImP_Comp";
-
-        compositorInstance = compositorManager.addCompositor(viewport, m_compositorName);
-        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-        compositorInstance->setEnabled(true);
-
-        // Ensure that we have the color parameters set for the current material
-        auto tech  = compositorInstance->getTechnique();
-        auto tpass = tech->getOutputTargetPass();
-
-        for( auto pass : tpass->getPassIterator() )
-        {
-            auto mtl = pass->getMaterial();
-
-            if(!mtl.isNull())
-            {
-                this->setMaterialLightParams(mtl);
-            }
-        }
-
-        m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
-                                                                                           m_maskTexture,
-                                                                                           m_entryPointsTextures[0],
-                                                                                           m_sampleDistance));
-
-        compositorInstance->addListener(m_compositorListeners.back());
-
-        double nbPasses =
-            std::nearbyint(std::max(std::log(m_camera->getViewport()->getActualWidth()) / std::log(2.0),
-                                    std::log(m_camera->getViewport()->getActualHeight()) / std::log(2.0)));
-
-        compositorInstance = compositorManager.addCompositor(viewport, "JFAInit");
-        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-        compositorInstance->setEnabled(true);
-
-        m_compositorListeners.push_back(new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(0),
-                                                                                            static_cast<float>(nbPasses)));
-        compositorInstance->addListener(m_compositorListeners.back());
-
-        int i = 0;
-        for(i = 0; i < nbPasses - 2; i++)
-        {
-            if(i % 2 == 0)
-            {
-                compositorInstance = compositorManager.addCompositor(viewport, "JFAPingComp");
-                SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-                compositorInstance->setEnabled(true);
-            }
-            else
-            {
-                compositorInstance = compositorManager.addCompositor(viewport, "JFAPongComp");
-                SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-                compositorInstance->setEnabled(true);
-            }
-
-            m_compositorListeners.push_back(new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(i +
-                                                                                                                   1),
-                                                                                                static_cast<float>(
-                                                                                                    nbPasses)));
-            compositorInstance->addListener(m_compositorListeners.back());
-        }
-
-        if(i % 2 == 0)
-        {
-            compositorInstance = compositorManager.addCompositor(viewport, "JFAFinalPingComp");
-            SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-            compositorInstance->setEnabled(true);
-        }
-        else
-        {
-            compositorInstance = compositorManager.addCompositor(viewport, "JFAFinalPongComp");
-            SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-            compositorInstance->setEnabled(true);
-        }
-
-        m_compositorListeners.push_back(new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(i),
-                                                                                            static_cast<float>(nbPasses)));
-        compositorInstance->addListener(m_compositorListeners.back());
-
-        compositorInstance = compositorManager.addCompositor(viewport, "RayTracedVolume_MImP_Comp");
-        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-        compositorInstance->setEnabled(true);
-
-        m_compositorListeners.push_back(new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
-                                                                                                   m_viewPointMatrices,
-                                                                                                   m_3DOgreTexture,
-                                                                                                   m_gpuTF.getTexture(),
-                                                                                                   m_preIntegrationTable,
-                                                                                                   m_sampleDistance,
-                                                                                                   (m_mode3D !=
-                                                                                                    ::fwRenderOgre::
-                                                                                                    Layer::
-                                                                                                    StereoModeType::NONE),
-                                                                                                   m_volumeSceneNode));
-        compositorInstance->addListener(m_compositorListeners.back());
-
-        // Ensure that we have the color parameters set for the current material
-        tech  = compositorInstance->getTechnique();
-        tpass = tech->getOutputTargetPass();
-
-        for( auto pass : tpass->getPassIterator() )
-        {
-            auto mtl = pass->getMaterial();
-
-            if(!mtl.isNull())
-            {
-                this->setMaterialLightParams(mtl);
-            }
-        }
-    }
-    else if(method == "AImC")
-    {
-        m_compositorName = "IDVR_AImC_Comp";
-
-        compositorInstance = compositorManager.addCompositor(viewport, m_compositorName);
-        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-        compositorInstance->setEnabled(true);
-
-        // Ensure that we have the color parameters set for the current material
-        auto tech  = compositorInstance->getTechnique();
-        auto tpass = tech->getOutputTargetPass();
-
-        for( auto pass : tpass->getPassIterator() )
-        {
-            auto mtl = pass->getMaterial();
-
-            if(!mtl.isNull())
-            {
-                this->setMaterialLightParams(mtl);
-            }
-        }
-
-        m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
-                                                                                           m_maskTexture,
-                                                                                           m_entryPointsTextures[0],
-                                                                                           m_sampleDistance));
-
-        compositorInstance->addListener(m_compositorListeners.back());
-
-        compositorInstance = compositorManager.addCompositor(viewport, "RayTracedVolume_AImC_Comp");
-        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-        compositorInstance->setEnabled(true);
-
-        m_compositorListeners.push_back(new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
-                                                                                                   m_viewPointMatrices,
-                                                                                                   m_3DOgreTexture,
-                                                                                                   m_gpuTF.getTexture(),
-                                                                                                   m_preIntegrationTable,
-                                                                                                   m_sampleDistance,
-                                                                                                   (m_mode3D !=
-                                                                                                    ::fwRenderOgre::
-                                                                                                    Layer::
-                                                                                                    StereoModeType::NONE),
-                                                                                                   m_volumeSceneNode));
-        compositorInstance->addListener(m_compositorListeners.back());
-
-        // Ensure that we have the color parameters set for the current material
-        tech  = compositorInstance->getTechnique();
-        tpass = tech->getOutputTargetPass();
-
-        for( auto pass : tpass->getPassIterator() )
-        {
-            auto mtl = pass->getMaterial();
-
-            if(!mtl.isNull())
-            {
-                this->setMaterialLightParams(mtl);
-            }
-        }
-    }
-    else if(method == "VPImC")
-    {
-        m_compositorName = "IDVR_VPImC_Comp";
-
-        compositorInstance = compositorManager.addCompositor(viewport, m_compositorName);
-        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-        compositorInstance->setEnabled(true);
-
-        // Ensure that we have the color parameters set for the current material
-        auto tech  = compositorInstance->getTechnique();
-        auto tpass = tech->getOutputTargetPass();
-
-        for( auto pass : tpass->getPassIterator() )
-        {
-            auto mtl = pass->getMaterial();
-
-            if(!mtl.isNull())
-            {
-                this->setMaterialLightParams(mtl);
-            }
-        }
-
-        m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
-                                                                                           m_maskTexture,
-                                                                                           m_entryPointsTextures[0],
-                                                                                           m_sampleDistance));
-
-        compositorInstance->addListener(m_compositorListeners.back());
-
-        compositorInstance = compositorManager.addCompositor(viewport, "RayTracedVolume_VPImC_Comp");
-        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-        compositorInstance->setEnabled(true);
-
-        m_compositorListeners.push_back(new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
-                                                                                                   m_viewPointMatrices,
-                                                                                                   m_3DOgreTexture,
-                                                                                                   m_gpuTF.getTexture(),
-                                                                                                   m_preIntegrationTable,
-                                                                                                   m_sampleDistance,
-                                                                                                   (m_mode3D !=
-                                                                                                    ::fwRenderOgre::
-                                                                                                    Layer::
-                                                                                                    StereoModeType::NONE),
-                                                                                                   m_volumeSceneNode));
-        compositorInstance->addListener(m_compositorListeners.back());
-
-        // Ensure that we have the color parameters set for the current material
-        tech  = compositorInstance->getTechnique();
-        tpass = tech->getOutputTargetPass();
-
-        for( auto pass : tpass->getPassIterator() )
-        {
-            auto mtl = pass->getMaterial();
-
-            if(!mtl.isNull())
-            {
-                this->setMaterialLightParams(mtl);
-            }
-        }
-    }
-    else // None
-    {
-        m_compositorName = "RayTracedVolume_Comp";
-        this->addRayTracingCompositor(m_compositorName);
-    }
+    this->initCompositors();
 }
 
 //-----------------------------------------------------------------------------
@@ -936,117 +675,8 @@ void RayTracingVolumeRenderer::resizeViewport(int w, int h)
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::initMaterials()
-{
-    const std::string vrMaterials[32]
-    {
-        "RayTracedVolume",
-        "RayTracedVolume_AmbientOcclusion",
-        "RayTracedVolume_ColorBleeding",
-        "RayTracedVolume_AmbientOcclusion_ColorBleeding",
-        "RayTracedVolume_Shadows",
-        "RayTracedVolume_AmbientOcclusion_Shadows",
-        "RayTracedVolume_ColorBleeding_Shadows",
-        "RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows",
-        "RayTracedVolume_PreIntegrated",
-        "RayTracedVolume_AmbientOcclusion_PreIntegrated",
-        "RayTracedVolume_ColorBleeding_PreIntegrated",
-        "RayTracedVolume_AmbientOcclusion_ColorBleeding_PreIntegrated",
-        "RayTracedVolume_Shadows_PreIntegrated",
-        "RayTracedVolume_AmbientOcclusion_Shadows_PreIntegrated",
-        "RayTracedVolume_ColorBleeding_Shadows_PreIntegrated",
-        "RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_PreIntegrated",
-        "RayTracedVolume_MImP",
-        "RayTracedVolume_AmbientOcclusion_MImP",
-        "RayTracedVolume_ColorBleeding_MImP",
-        "RayTracedVolume_AmbientOcclusion_ColorBleeding_MImP",
-        "RayTracedVolume_Shadows_MImP",
-        "RayTracedVolume_AmbientOcclusion_Shadows_MImP",
-        "RayTracedVolume_ColorBleeding_Shadows_MImP",
-        "RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_MImP",
-        "RayTracedVolume_PreIntegrated_MImP",
-        "RayTracedVolume_AmbientOcclusion_PreIntegrated_MImP",
-        "RayTracedVolume_ColorBleeding_PreIntegrated_MImP",
-        "RayTracedVolume_AmbientOcclusion_ColorBleeding_PreIntegrated_MImP",
-        "RayTracedVolume_Shadows_PreIntegrated_MImP",
-        "RayTracedVolume_AmbientOcclusion_Shadows_PreIntegrated_MImP",
-        "RayTracedVolume_ColorBleeding_Shadows_PreIntegrated_MImP",
-        "RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_PreIntegrated_MImP"
-    };
-
-    /* Loop over the materials to set their texture initial state */
-    for(const std::string& mtlName : vrMaterials)
-    {
-        ::Ogre::MaterialPtr volumeMtl              = ::Ogre::MaterialManager::getSingleton().getByName(mtlName);
-        ::Ogre::Material::TechniqueIterator techIt = volumeMtl->getTechniqueIterator();
-
-        while( techIt.hasMoreElements())
-        {
-            ::Ogre::Technique* tech = techIt.getNext();
-            SLM_ASSERT("Technique is not set", tech);
-
-            if(::fwRenderOgre::helper::Shading::isColorTechnique(*tech))
-            {
-                ::Ogre::Pass* pass = tech->getPass(0);
-
-                ::Ogre::TextureUnitState* tex3DState          = pass->getTextureUnitState("image");
-                ::Ogre::TextureUnitState* texTFState          = pass->getTextureUnitState("transferFunction");
-                ::Ogre::TextureUnitState* texEntryPointsState = pass->getTextureUnitState("entryPoints");
-                ::Ogre::TextureUnitState* texIlluminationVol  = pass->getTextureUnitState("illuminationVolume");
-
-                // Keep the texture unit states for materials "VolumeIlluminationRayTracedVolume" and
-                // "PreIntegratedVolumeIlluminationRayTracedVolume" to reuse them later when the illuminationVolume
-                // texture will be computed
-                if(texIlluminationVol)
-                {
-                    m_rayTracedTexUnitStates.push_back(texIlluminationVol);
-                }
-
-                SLM_ASSERT("'image' texture unit is not found", tex3DState);
-                SLM_ASSERT("'transferFunction' texture unit is not found", texTFState);
-                SLM_ASSERT("'entryPoints' texture unit is not found", texEntryPointsState);
-
-                tex3DState->setTexture(m_3DOgreTexture);
-                texEntryPointsState->setTexture(m_entryPointsTextures[0]);
-
-                if(mtlName.find("PreIntegrated") != std::string::npos)
-                {
-                    texTFState->setTexture(m_preIntegrationTable.getTexture());
-                }
-                else
-                {
-                    texTFState->setTexture(m_gpuTF.getTexture());
-                }
-            }
-        }
-    }
-
-    for(::Ogre::TexturePtr entryPtsText : m_entryPointsTextures)
-    {
-        ::Ogre::RenderTexture* renderTexture = entryPtsText->getBuffer()->getRenderTarget();
-        renderTexture->addViewport(m_camera);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void RayTracingVolumeRenderer::initCompositors()
 {
-    ::Ogre::CompositorInstance* compositorInstance = nullptr;
-
-    /* Mono mode */
-    if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE)
-    {
-        m_compositorName = "RayTracedVolume_Comp";
-    }
-    /* stereo mode */
-    else
-    {
-        m_compositorName = m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ?
-                           "RayTracedVolume3D8" :
-                           "RayTracedVolume3D5";
-    }
-
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     auto viewport = m_layer.lock()->getViewport();
     ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
@@ -1056,7 +686,7 @@ void RayTracingVolumeRenderer::initCompositors()
     this->setupDefaultCompositorChain();
 
     // Add the initial ray tracing compositor
-    this->addRayTracingCompositor(m_compositorName);
+    this->buildCompositorChain();
 }
 
 //-----------------------------------------------------------------------------
@@ -1253,66 +883,8 @@ Ogre::Matrix4 RayTracingVolumeRenderer::frustumShearTransform(float angle) const
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::updateMatNames()
+void RayTracingVolumeRenderer::updateVolIllumMat()
 {
-    bool ao = false;
-    m_currentMtlName = "RayTracedVolume";
-
-    if(m_preIntegratedRendering)
-    {
-        m_currentMtlName += "_PreIntegrated";
-    }
-
-    if(m_ambientOcclusion)
-    {
-        ao = true;
-        if(m_colorBleeding)
-        {
-            if (m_shadows)
-            {
-                m_currentMtlName += "_VolumeIllumination";
-            }
-            else
-            {
-                m_currentMtlName += "_AmbientOcclusion_ColorBleeding";
-            }
-        }
-        else
-        {
-            if(m_shadows)
-            {
-                m_currentMtlName += "_AmbientOcclusion_Shadows";
-            }
-            else
-            {
-                m_currentMtlName += "_AmbientOcclusion";
-            }
-        }
-    }
-    else
-    {
-        if(m_colorBleeding)
-        {
-            ao = true;
-            if(m_shadows)
-            {
-                m_currentMtlName += "_ColorBleeding_Shadows";
-            }
-            else
-            {
-                m_currentMtlName += "_ColorBleeding";
-            }
-        }
-        else
-        {
-            if(m_shadows)
-            {
-                ao                = true;
-                m_currentMtlName += "_Shadows";
-            }
-        }
-    }
-
     std::string volIllumMtl = "VolIllum";
 
     volIllumMtl += m_ambientOcclusion || m_colorBleeding ? "_AO" : "";
@@ -1320,16 +892,48 @@ void RayTracingVolumeRenderer::updateMatNames()
 
     SLM_ASSERT("Camera listener not instantiated", m_cameraListener);
     m_cameraListener->setCurrentMtlName(volIllumMtl);
+}
 
-    // Set colors
-    ::Ogre::MaterialPtr material = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName);
-    this->setMaterialLightParams(material);
+//-----------------------------------------------------------------------------
 
-    // Set all parameters
-    if(ao)
+void RayTracingVolumeRenderer::updateCompositorName()
+{
+    m_compositorName = "RayTracedVolume";
+
+    if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE)
     {
-        this->setAOFactor(m_aoFactor);
-        this->setColorBleedingFactor(m_colorBleedingFactor);
+        if(m_ambientOcclusion)
+        {
+            m_compositorName += "_AmbientOcclusion";
+        }
+
+        if(m_colorBleeding)
+        {
+            m_compositorName += "_ColorBleeding";
+        }
+
+        if(m_shadows)
+        {
+            m_compositorName += "_Shadows";
+        }
+
+        if(m_preIntegratedRendering)
+        {
+            m_compositorName += "_PreIntegrated";
+        }
+
+        if(m_idvrMethod != "None")
+        {
+            m_compositorName += "_" + m_idvrMethod;
+        }
+
+        m_compositorName += "_Comp";
+    }
+    else
+    {
+        m_compositorName += m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ?
+                            "3D8" :
+                            "3D5";
     }
 }
 
@@ -1359,12 +963,160 @@ void RayTracingVolumeRenderer::setMaterialLightParams(::Ogre::MaterialPtr mtl)
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::addRayTracingCompositor(std::string rtCompName)
+void RayTracingVolumeRenderer::buildCompositorChain()
 {
+    this->updateCompositorName();
+
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     auto viewport = m_layer.lock()->getViewport();
 
-    ::Ogre::CompositorInstance* compositorInstance = compositorManager.addCompositor(viewport, rtCompName);
+    ::Ogre::CompositorInstance* compositorInstance = nullptr;
+    std::string idvrCompositorName;
+
+    SLM_ASSERT("IDVR isn't currently supported with autostereo mode",
+               m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE);
+
+    if(m_idvrMethod == "MImP")
+    {
+        idvrCompositorName = "IDVR_MImP_Comp";
+
+        compositorInstance = compositorManager.addCompositor(viewport, idvrCompositorName);
+        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+        compositorInstance->setEnabled(true);
+
+        // Ensure that we have the color parameters set for the current material
+        auto tech  = compositorInstance->getTechnique();
+        auto tpass = tech->getOutputTargetPass();
+
+        for( auto pass : tpass->getPassIterator() )
+        {
+            auto mtl = pass->getMaterial();
+
+            if(!mtl.isNull())
+            {
+                this->setMaterialLightParams(mtl);
+            }
+        }
+
+        m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
+                                                                                           m_maskTexture,
+                                                                                           m_entryPointsTextures[0],
+                                                                                           m_sampleDistance));
+
+        compositorInstance->addListener(m_compositorListeners.back());
+
+        double nbPasses =
+            std::nearbyint(std::max(std::log(m_camera->getViewport()->getActualWidth()) / std::log(2.0),
+                                    std::log(m_camera->getViewport()->getActualHeight()) / std::log(2.0)));
+
+        compositorInstance = compositorManager.addCompositor(viewport, "JFAInit");
+        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+        compositorInstance->setEnabled(true);
+
+        m_compositorListeners.push_back(new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(0),
+                                                                                            static_cast<float>(nbPasses)));
+        compositorInstance->addListener(m_compositorListeners.back());
+
+        int i = 0;
+        for(i = 0; i < nbPasses - 2; i++)
+        {
+            if(i % 2 == 0)
+            {
+                compositorInstance = compositorManager.addCompositor(viewport, "JFAPingComp");
+                SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+                compositorInstance->setEnabled(true);
+            }
+            else
+            {
+                compositorInstance = compositorManager.addCompositor(viewport, "JFAPongComp");
+                SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+                compositorInstance->setEnabled(true);
+            }
+
+            m_compositorListeners.push_back(new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(i +
+                                                                                                                   1),
+                                                                                                static_cast<float>(
+                                                                                                    nbPasses)));
+            compositorInstance->addListener(m_compositorListeners.back());
+        }
+
+        if(i % 2 == 0)
+        {
+            compositorInstance = compositorManager.addCompositor(viewport, "JFAFinalPingComp");
+            SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+            compositorInstance->setEnabled(true);
+        }
+        else
+        {
+            compositorInstance = compositorManager.addCompositor(viewport, "JFAFinalPongComp");
+            SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+            compositorInstance->setEnabled(true);
+        }
+
+        m_compositorListeners.push_back(new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(i),
+                                                                                            static_cast<float>(nbPasses)));
+        compositorInstance->addListener(m_compositorListeners.back());
+    }
+    else if(m_idvrMethod == "AImC")
+    {
+        idvrCompositorName = "IDVR_AImC_Comp";
+
+        compositorInstance = compositorManager.addCompositor(viewport, idvrCompositorName);
+        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+        compositorInstance->setEnabled(true);
+
+        // Ensure that we have the color parameters set for the current material
+        auto tech  = compositorInstance->getTechnique();
+        auto tpass = tech->getOutputTargetPass();
+
+        for( auto pass : tpass->getPassIterator() )
+        {
+            auto mtl = pass->getMaterial();
+
+            if(!mtl.isNull())
+            {
+                this->setMaterialLightParams(mtl);
+            }
+        }
+
+        m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
+                                                                                           m_maskTexture,
+                                                                                           m_entryPointsTextures[0],
+                                                                                           m_sampleDistance));
+
+        compositorInstance->addListener(m_compositorListeners.back());
+    }
+    else if(m_idvrMethod == "VPImC")
+    {
+        idvrCompositorName = "IDVR_VPImC_Comp";
+
+        compositorInstance = compositorManager.addCompositor(viewport, idvrCompositorName);
+        SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+        compositorInstance->setEnabled(true);
+
+        // Ensure that we have the color parameters set for the current material
+        auto tech  = compositorInstance->getTechnique();
+        auto tpass = tech->getOutputTargetPass();
+
+        for( auto pass : tpass->getPassIterator() )
+        {
+            auto mtl = pass->getMaterial();
+
+            if(!mtl.isNull())
+            {
+                this->setMaterialLightParams(mtl);
+            }
+        }
+
+        m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
+                                                                                           m_maskTexture,
+                                                                                           m_entryPointsTextures[0],
+                                                                                           m_sampleDistance));
+
+        compositorInstance->addListener(m_compositorListeners.back());
+    }
+
+    compositorInstance = compositorManager.addCompositor(viewport, m_compositorName);
     SLM_ASSERT("Compositor could not be initialized", compositorInstance);
     compositorInstance->setEnabled(true);
 
@@ -1372,6 +1124,8 @@ void RayTracingVolumeRenderer::addRayTracingCompositor(std::string rtCompName)
                                                                                                m_viewPointMatrices,
                                                                                                m_3DOgreTexture,
                                                                                                m_gpuTF.getTexture(),
+                                                                                               m_illumVolume,
+                                                                                               m_volIllumFactor,
                                                                                                m_preIntegrationTable,
                                                                                                m_sampleDistance,
                                                                                                (m_mode3D !=

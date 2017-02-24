@@ -114,7 +114,6 @@ fragment_program RayTracedVolume_AmbientOcclusion_FP glsl
         param_named u_lightSpecular[9] float4 0 0 0 0
         // Volume Illumination
         param_named u_illuminationVolume int 3
-
         param_named u_volIllumFactor float4 1.0 1.0 1.0 1.0
     }
 }
@@ -173,7 +172,6 @@ fragment_program RayTracedVolume_ColorBleeding_FP glsl
         param_named u_lightSpecular[9] float4 0 0 0 0
         // Volume Illumination
         param_named u_illuminationVolume int 3
-
         param_named u_volIllumFactor float4 1.0 1.0 1.0 1.0
     }
 }
@@ -232,7 +230,6 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_FP glsl
         param_named u_lightSpecular[9] float4 0 0 0 0
         // Volume Illumination
         param_named u_illuminationVolume int 3
-
         param_named u_volIllumFactor float4 1.0 1.0 1.0 1.0
     }
 }
@@ -291,7 +288,6 @@ fragment_program RayTracedVolume_Shadows_FP glsl
         param_named u_lightSpecular[9] float4 0 0 0 0
         // Volume Illumination
         param_named u_illuminationVolume int 3
-
         param_named u_volIllumFactor float4 1.0 1.0 1.0 1.0
     }
 }
@@ -350,7 +346,6 @@ fragment_program RayTracedVolume_AmbientOcclusion_Shadows_FP glsl
         param_named u_lightSpecular[9] float4 0 0 0 0
         // Volume Illumination
         param_named u_illuminationVolume int 3
-
         param_named u_volIllumFactor float4 1.0 1.0 1.0 1.0
     }
 }
@@ -409,7 +404,6 @@ fragment_program RayTracedVolume_ColorBleeding_Shadows_FP glsl
         param_named u_lightSpecular[9] float4 0 0 0 0
         // Volume Illumination
         param_named u_illuminationVolume int 3
-
         param_named u_volIllumFactor float4 1.0 1.0 1.0 1.0
     }
 }
@@ -468,7 +462,6 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_FP glsl
         param_named u_lightSpecular[9] float4 0 0 0 0
         // Volume Illumination
         param_named u_illuminationVolume int 3
-
         param_named u_volIllumFactor float4 1.0 1.0 1.0 1.0
     }
 }
@@ -588,7 +581,6 @@ fragment_program RayTracedVolume_AmbientOcclusion_PreIntegrated_FP glsl
         param_named u_max float 0
         // Volume Illumination
         param_named u_illuminationVolume int 3
-
         param_named u_volIllumFactor float4 1.0 1.0 1.0 1.0
     }
 }
@@ -650,7 +642,6 @@ fragment_program RayTracedVolume_ColorBleeding_PreIntegrated_FP glsl
         param_named u_max float 0
         // Volume Illumination
         param_named u_illuminationVolume int 3
-
         param_named u_volIllumFactor float4 1.0 1.0 1.0 1.0
     }
 }
@@ -712,7 +703,6 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_PreIntegrated_FP
         param_named u_max float 0
         // Volume Illumination
         param_named u_illuminationVolume int 3
-
         param_named u_volIllumFactor float4 1.0 1.0 1.0 1.0
     }
 }
@@ -774,7 +764,6 @@ fragment_program RayTracedVolume_Shadows_PreIntegrated_FP glsl
         param_named u_max float 0
         // Volume Illumination
         param_named u_illuminationVolume int 3
-
         param_named u_volIllumFactor float4 1.0 1.0 1.0 1.0
     }
 }
@@ -836,7 +825,6 @@ fragment_program RayTracedVolume_AmbientOcclusion_Shadows_PreIntegrated_FP glsl
         param_named u_max float 0
         // Volume Illumination
         param_named u_illuminationVolume int 3
-
         param_named u_volIllumFactor float4 1.0 1.0 1.0 1.0
     }
 }
@@ -898,7 +886,6 @@ fragment_program RayTracedVolume_ColorBleeding_Shadows_PreIntegrated_FP glsl
         param_named u_max float 0
         // Volume Illumination
         param_named u_illuminationVolume int 3
-
         param_named u_volIllumFactor float4 1.0 1.0 1.0 1.0
     }
 }
@@ -960,7 +947,6 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_PreInteg
         param_named u_max float 0
         // Volume Illumination
         param_named u_illuminationVolume int 3
-
         param_named u_volIllumFactor float4 1.0 1.0 1.0 1.0
     }
 }
@@ -4039,7 +4025,7 @@ material RayTracedVolume_AmbientOcclusion
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -4086,7 +4072,7 @@ material RayTracedVolume_ColorBleeding
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -4133,7 +4119,7 @@ material RayTracedVolume_AmbientOcclusion_ColorBleeding
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -4180,7 +4166,7 @@ material RayTracedVolume_Shadows
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -4227,7 +4213,7 @@ material RayTracedVolume_AmbientOcclusion_Shadows
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -4274,7 +4260,7 @@ material RayTracedVolume_ColorBleeding_Shadows
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -4321,7 +4307,7 @@ material RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -4368,7 +4354,7 @@ material RayTracedVolume_PreIntegrated
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -4410,7 +4396,7 @@ material RayTracedVolume_AmbientOcclusion_PreIntegrated
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -4457,7 +4443,7 @@ material RayTracedVolume_ColorBleeding_PreIntegrated
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -4504,7 +4490,7 @@ material RayTracedVolume_AmbientOcclusion_ColorBleeding_PreIntegrated
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -4551,7 +4537,7 @@ material RayTracedVolume_Shadows_PreIntegrated
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -4598,7 +4584,7 @@ material RayTracedVolume_AmbientOcclusion_Shadows_PreIntegrated
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -4645,7 +4631,7 @@ material RayTracedVolume_ColorBleeding_Shadows_PreIntegrated
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -4692,7 +4678,7 @@ material RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_PreIntegrated
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -4792,7 +4778,7 @@ material RayTracedVolume_AmbientOcclusion_MImP
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -4850,7 +4836,7 @@ material RayTracedVolume_ColorBleeding_MImP
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -4908,7 +4894,7 @@ material RayTracedVolume_AmbientOcclusion_ColorBleeding_MImP
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -4966,7 +4952,7 @@ material RayTracedVolume_Shadows_MImP
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -5024,7 +5010,7 @@ material RayTracedVolume_AmbientOcclusion_Shadows_MImP
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -5082,7 +5068,7 @@ material RayTracedVolume_ColorBleeding_Shadows_MImP
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -5140,7 +5126,7 @@ material RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_MImP
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -5198,7 +5184,7 @@ material RayTracedVolume_PreIntegrated_MImP
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -5251,7 +5237,7 @@ material RayTracedVolume_AmbientOcclusion_PreIntegrated_MImP
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -5309,7 +5295,7 @@ material RayTracedVolume_ColorBleeding_PreIntegrated_MImP
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -5367,7 +5353,7 @@ material RayTracedVolume_AmbientOcclusion_ColorBleeding_PreIntegrated_MImP
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -5425,7 +5411,7 @@ material RayTracedVolume_Shadows_PreIntegrated_MImP
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -5483,7 +5469,7 @@ material RayTracedVolume_AmbientOcclusion_Shadows_PreIntegrated_MImP
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -5541,7 +5527,7 @@ material RayTracedVolume_ColorBleeding_Shadows_PreIntegrated_MImP
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -5599,7 +5585,7 @@ material RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_PreIntegrated_MI
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -5710,7 +5696,7 @@ material RayTracedVolume_AmbientOcclusion_AImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -5768,7 +5754,7 @@ material RayTracedVolume_ColorBleeding_AImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -5826,7 +5812,7 @@ material RayTracedVolume_AmbientOcclusion_ColorBleeding_AImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -5884,7 +5870,7 @@ material RayTracedVolume_Shadows_AImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -5942,7 +5928,7 @@ material RayTracedVolume_AmbientOcclusion_Shadows_AImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -6000,7 +5986,7 @@ material RayTracedVolume_ColorBleeding_Shadows_AImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -6058,7 +6044,7 @@ material RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_AImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -6116,7 +6102,7 @@ material RayTracedVolume_PreIntegrated_AImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -6169,7 +6155,7 @@ material RayTracedVolume_AmbientOcclusion_PreIntegrated_AImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -6227,7 +6213,7 @@ material RayTracedVolume_ColorBleeding_PreIntegrated_AImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -6285,7 +6271,7 @@ material RayTracedVolume_AmbientOcclusion_ColorBleeding_PreIntegrated_AImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -6343,7 +6329,7 @@ material RayTracedVolume_Shadows_PreIntegrated_AImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -6401,7 +6387,7 @@ material RayTracedVolume_AmbientOcclusion_Shadows_PreIntegrated_AImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -6459,7 +6445,7 @@ material RayTracedVolume_ColorBleeding_Shadows_PreIntegrated_AImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -6517,7 +6503,7 @@ material RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_PreIntegrated_AI
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -6628,7 +6614,7 @@ material RayTracedVolume_AmbientOcclusion_VPImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -6686,7 +6672,7 @@ material RayTracedVolume_ColorBleeding_VPImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -6744,7 +6730,7 @@ material RayTracedVolume_AmbientOcclusion_ColorBleeding_VPImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -6802,7 +6788,7 @@ material RayTracedVolume_Shadows_VPImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -6860,7 +6846,7 @@ material RayTracedVolume_AmbientOcclusion_Shadows_VPImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -6918,7 +6904,7 @@ material RayTracedVolume_ColorBleeding_Shadows_VPImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -6976,7 +6962,7 @@ material RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_VPImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -7034,7 +7020,7 @@ material RayTracedVolume_PreIntegrated_VPImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -7087,7 +7073,7 @@ material RayTracedVolume_AmbientOcclusion_PreIntegrated_VPImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -7145,7 +7131,7 @@ material RayTracedVolume_ColorBleeding_PreIntegrated_VPImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -7203,7 +7189,7 @@ material RayTracedVolume_AmbientOcclusion_ColorBleeding_PreIntegrated_VPImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -7261,7 +7247,7 @@ material RayTracedVolume_Shadows_PreIntegrated_VPImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -7319,7 +7305,7 @@ material RayTracedVolume_AmbientOcclusion_Shadows_PreIntegrated_VPImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -7377,7 +7363,7 @@ material RayTracedVolume_ColorBleeding_Shadows_PreIntegrated_VPImC
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 
@@ -7435,7 +7421,7 @@ material RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_PreIntegrated_VP
     {
         pass
         {
-            cull_hardware anticlockwise
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 

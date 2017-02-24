@@ -73,15 +73,15 @@ void composite(inout vec4 dest, in vec4 src)
 
 void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float sampleDistance, inout vec4 IC_RayTracing, inout vec4 IC_JFA)
 {
-#if IDVR == 1
+#if IDVR == 1 // MImP
     IC_JFA = vec4(0.0);
     //IC_RayTracing = vec4(rayPos, 1.0);
     IC_RayTracing = vec4(0.0, 0.0, 0.0, 1.0);
 #endif
-#if IDVR == 2
+#if IDVR == 2 // AImC
     IC_RayTracing = vec4(0.0, 0.0, 0.0, 0.0);
 #endif
-#if IDVR == 3
+#if IDVR == 3 // VPImC
     IC_RayTracing = vec4(0.0, 0.0, 0.0, 0.0);
     vec4 alphaAccum = vec4(0.0);
 #endif

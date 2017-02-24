@@ -78,8 +78,7 @@ fragment_program RayTracedVolume{{ name }}_FP glsl
         'COLOR_BLEEDING' in defines or
         'SHADOWS' in defines %}
         // Volume Illumination
-        param_named u_illuminationVolume int {% if 'IDVR' in defines %}{% if 'IDVR=1' in defines %}5{% else %}4{% endif %}{% else %}3
-{% endif %}
+        param_named u_illuminationVolume int {% if 'IDVR' in defines %}{% if 'IDVR=1' in defines %}5{% else %}4{% endif %}{% else %}3{% endif %}
 
         param_named u_volIllumFactor float4 1.0 1.0 1.0 1.0
 {% endif %}
@@ -174,11 +173,7 @@ material RayTracedVolume{{ name }}
     {
         pass
         {
-            cull_hardware{% if 'AMBIENT_OCCLUSION' in defines or
-                               'COLOR_BLEEDING' in defines or
-                               'SHADOWS' in defines or
-                               'PREINTEGRATION' in defines %} anticlockwise{% else %} none{% endif %}
-
+            cull_hardware none
             cull_software none
             scene_blend alpha_blend
 

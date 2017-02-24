@@ -113,9 +113,6 @@ public:
 
 private:
 
-    /// Init the materials with parameters/texture state
-    void initMaterials();
-
     /// Initialize the compositors used after the step computing the ray entry points
     void initCompositors();
 
@@ -137,7 +134,10 @@ private:
 
     /// Updates the ray traced and volume illumination materials according to pre-integration and volume illumination
     /// flags.
-    void updateMatNames();
+    void updateVolIllumMat();
+
+    /// Updates the current compositor name according to VR effects flags.
+    void updateCompositorName();
 
     /// Returns the parameters of the current fragment shader.
     ::Ogre::GpuProgramParametersSharedPtr retrieveCurrentProgramParams();
@@ -146,7 +146,7 @@ private:
     void setMaterialLightParams(::Ogre::MaterialPtr mtl);
 
     /// Appends a specific Ray-Tracing to the compositor chain
-    void addRayTracingCompositor(std::string rtCompName);
+    void buildCompositorChain();
 
     /// Sets up a default compositor chain with the Default and FinalChainCompositor
     void setupDefaultCompositorChain();
@@ -201,12 +201,8 @@ private:
     /// Sets usage of soft shadows.
     bool m_shadows;
 
-    /// Factor parameter used to weight the ambient occlusion. It is replicated three times to fill the RGB channels of
-    /// a GLSL vec4.
-    double m_aoFactor;
-
-    /// Factor parameter used to weight the color bleeding. It is used to fill the alpha channel of a GLSL vec4.
-    double m_colorBleedingFactor;
+    /// Factor parameter used to weight ambient occlusion (A channel) and color bleeding (RGB channels).
+    ::Ogre::Vector4 m_volIllumFactor;
 
     /// Name of the current volume illumination material.
     std::string m_currentMtlName;
