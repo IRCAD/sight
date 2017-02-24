@@ -145,6 +145,12 @@ private:
     /// Sets the default diffuse, specular and shininess in the material.
     void setMaterialLightParams(::Ogre::MaterialPtr mtl);
 
+    /// Appends a specific Ray-Tracing to the compositor chain
+    void addRayTracingCompositor(std::string rtCompName);
+
+    /// Sets up a default compositor chain with the Default and FinalChainCompositor
+    void setupDefaultCompositorChain();
+
     /// Removes all listeners and compositors from the current chain.
     void cleanCompositorChain(Ogre::CompositorChain* compChain);
 
