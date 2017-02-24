@@ -34,10 +34,12 @@ BarrierDump::BarrierDump() :
 void BarrierDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
                                      BufferInfo::SizeType size )
 {
+    SLM_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
     m_totalAllocated -= info.size;
     m_totalAllocated += size;
     if(!info.loaded)
     {
+        SLM_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
         m_totalDumped -= info.size;
     }
     this->apply();
@@ -49,10 +51,12 @@ void BarrierDump::allocationRequest( BufferInfo &info, ::fwMemory::BufferManager
 void BarrierDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
                               BufferInfo::SizeType size )
 {
+    SLM_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
     m_totalAllocated -= info.size;
     m_totalAllocated += size;
     if(!info.loaded)
     {
+        SLM_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
         m_totalDumped -= info.size;
     }
     this->apply();
@@ -64,10 +68,12 @@ void BarrierDump::setRequest( BufferInfo &info, ::fwMemory::BufferManager::Const
 void BarrierDump::reallocateRequest( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer,
                                      BufferInfo::SizeType newSize )
 {
+    SLM_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
     m_totalAllocated -= info.size;
     m_totalAllocated += newSize;
     if(!info.loaded)
     {
+        SLM_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
         m_totalDumped -= info.size;
     }
     this->apply();
@@ -80,8 +86,10 @@ void BarrierDump::destroyRequest( BufferInfo &info, ::fwMemory::BufferManager::C
 {
     if(!info.loaded)
     {
+        SLM_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
         m_totalDumped -= info.size;
     }
+    SLM_ASSERT("Memory allocation inconsistency", m_totalAllocated >= info.size);
     m_totalAllocated -= info.size;
 }
 
@@ -111,6 +119,7 @@ void BarrierDump::dumpSuccess( BufferInfo &info, ::fwMemory::BufferManager::Cons
 
 void BarrierDump::restoreSuccess( BufferInfo &info, ::fwMemory::BufferManager::ConstBufferPtrType buffer )
 {
+    SLM_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
     m_totalDumped -= info.size;
 }
 
