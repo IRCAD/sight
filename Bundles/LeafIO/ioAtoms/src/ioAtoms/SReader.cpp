@@ -32,12 +32,6 @@
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/Job.hpp>
 
-#include <fwMemory/BufferManager.hpp>
-#include <fwMemory/IPolicy.hpp>
-#include <fwMemory/policy/BarrierDump.hpp>
-#include <fwMemory/policy/NeverDump.hpp>
-#include <fwMemory/tools/MemoryMonitorTools.hpp>
-
 #include <fwServices/macros.hpp>
 
 #include <fwZip/ReadDirArchive.hpp>
@@ -205,61 +199,10 @@ void SReader::configuring() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-struct SetDumpPolicy
-{
-    SetDumpPolicy()
-    {
-        ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
-        m_lock = ::fwCore::mt::WriteLock( manager->getMutex() );
-        if( manager )
-        {
-            ::fwMemory::IPolicy::sptr policy = manager->getDumpPolicy();
-            if( ::fwMemory::policy::NeverDump::dynamicCast(policy) )
-            {
-                ::fwMemory::policy::BarrierDump::sptr newDumpPolicy = ::fwMemory::policy::BarrierDump::New();
-                ::fwMemory::BufferManager::BufferStats stats        = manager->getBufferStats().get();
-
-                size_t aliveMemory = stats.totalManaged - stats.totalDumped;
-                size_t freeMemory  = ::fwMemory::tools::MemoryMonitorTools::estimateFreeMem() / 2;
-                size_t barrier     =
-                    std::max( aliveMemory, std::max( freeMemory, static_cast<size_t>(500L * 1024 * 1024) ) );
-
-                newDumpPolicy->setBarrier( barrier );
-                manager->setDumpPolicy( newDumpPolicy );
-                m_oldPolicy = policy;
-            }
-        }
-    }
-
-    ~SetDumpPolicy()
-    {
-        try
-        {
-            ::fwMemory::BufferManager::sptr manager = ::fwMemory::BufferManager::getDefault();
-            if( manager && m_oldPolicy )
-            {
-                manager->setDumpPolicy( m_oldPolicy );
-                m_oldPolicy.reset();
-            }
-        }
-        catch(...)
-        {
-            SLM_ASSERT("Failed to restore old policy", 0);
-        }
-    }
-
-    ::fwMemory::IPolicy::sptr m_oldPolicy;
-    ::fwCore::mt::WriteLock m_lock;
-};
-
-//-----------------------------------------------------------------------------
-
 void SReader::updating() throw(::fwTools::Failed)
 {
     if(this->hasLocationDefined())
     {
-        SetDumpPolicy policy;
-
         ::fwData::Object::sptr data = this->getObject< ::fwData::Object >();
 
         ::fwGui::Cursor cursor;

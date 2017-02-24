@@ -111,7 +111,6 @@ protected:
 
     /**
      * @brief Tests file extension, applies the good atom reader, and converts atom in fwData::Composite
-     * @note  Before reading, set dump policy to 'barrier dump' if policy is 'never dump', then reset old policy.
      */
     IOATOMS_API void updating() throw(::fwTools::Failed);
 
@@ -122,9 +121,6 @@ private:
 
     /// Notify modification on associated object if reading succeeded
     void notificationOfUpdate();
-
-    /// Initial dump policy
-    SPTR(::fwMemory::IPolicy) m_oldPolicy;
 
     /// fwAtomsConversion uuid policy
     std::string m_inject;
