@@ -271,6 +271,10 @@ void TimerAsio::call(const ::boost::system::error_code & error)
 {
     if(!error)
     {
+        // We keep a reference to prevent a deletion of the Timer before the call back is over
+        // This means the timer may delete itself, this is not awesome but that seems to be enough for now
+        TimerAsio::sptr deleteLater = std::dynamic_pointer_cast<TimerAsio>(shared_from_this());
+
         TimeDurationType duration;
         bool oneShot;
         {
@@ -291,6 +295,7 @@ void TimerAsio::call(const ::boost::system::error_code & error)
             m_running = false;
         }
     }
+
 }
 
 void TimerAsio::cancelNoLock()

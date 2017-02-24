@@ -256,11 +256,33 @@ void WorkerTest::timerTest()
     CPPUNIT_ASSERT(handler.m_threadCheckOk);
     CPPUNIT_ASSERT_EQUAL(1, handler.m_step);
 
+    // This test was added to reproduce a bug that is now fixed
+    // The timer could be deleted before the call back is over
+    // To reproduce that issue, we need to ensure that the callee access the memory in the bounds of the timer
+    // at the end of the callback
+    // We could not derive easily from WorkerAsio to create the conditions of the crash, but you can modify it
+    // if necessary to reproduce. It is quite hard to achieve since it depends on the actual runtime memory layout
+    // - Declare a new *last* member in WorkerAsio -> int64_t m_checkMemory;
+    // - Initialize it to 12345 in the constructor
+    // - Assert that m_checkMemory==12345 in TimerAsio::call() at the end of the if
+    // - You may need to uncomment the tests above
+    {
+        ::fwThread::Timer::sptr timer = worker->createTimer();
+        duration = ::boost::chrono::milliseconds(10);
+        timer->setFunction( [duration]() {
+            ::boost::this_thread::sleep_for( duration*90 );
+        } );
 
+        timer->setDuration(duration);
+
+        timer->start();
+        ::boost::this_thread::sleep_for( duration * 2 );
+        timer->stop();
+
+        timer.reset();
+    }
 
     worker->stop();
-    // CPPUNIT_ASSERT_EQUAL(3, handler.m_step);
-    // CPPUNIT_ASSERT_EQUAL(true, handler.m_threadCheckOk);
 }
 
 //-----------------------------------------------------------------------------
