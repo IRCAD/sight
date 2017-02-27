@@ -6,7 +6,6 @@ set( DEPENDENCIES
     arData
     ARLcore
     arServices
-    calibration3d
     fwCom
     fwCore
     fwData

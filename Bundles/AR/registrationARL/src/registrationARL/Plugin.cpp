@@ -7,6 +7,7 @@
 #include "registrationARL/Plugin.hpp"
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+
 #include <fwServices/macros.hpp>
 
 namespace registrationARL
@@ -18,9 +19,13 @@ Plugin::~Plugin() throw()
 {
 }
 
+//------------------------------------------------------------------------------
+
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
 }
+
+//------------------------------------------------------------------------------
 
 void Plugin::stop() throw()
 {

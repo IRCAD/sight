@@ -14,6 +14,8 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
+#include <fwCore/Profiling.hpp>
+
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <arlcore/MatrixR.h>

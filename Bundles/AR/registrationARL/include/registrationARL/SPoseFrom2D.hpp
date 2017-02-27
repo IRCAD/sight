@@ -62,7 +62,7 @@ public:
     typedef std::vector< ::arlCore::Point::csptr > ARLPointListType;
     typedef std::vector<std::string> VectKeyType;
 
-    /**s
+    /**
      * @brief Constructor.
      */
     REGISTRATIONARL_API SPoseFrom2D() throw ();
@@ -125,10 +125,10 @@ private:
     /// Points of the 3D model of the marker
     ARLPointListType m_3dModel;
 
-    ///< ARL cameras
+    /// ARL cameras
     std::vector< const ::arlCore::Camera* > m_arlCameras;
 
-    ///< Mutex used to lock access of doRegistration
+    /// Mutex used to lock access of doRegistration
     ::fwCore::mt::Mutex m_mutex;
 };
 
