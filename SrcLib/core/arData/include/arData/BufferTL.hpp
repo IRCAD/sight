@@ -89,7 +89,7 @@ public:
     ARDATA_API static const size_t s_DEFAULT_TIMELINE_MAX_SIZE;
 
     /// Return true if the pool is allocated
-    ARDATA_API bool isAllocated() const
+    bool isAllocated() const
     {
         return m_pool != nullptr;
     }
