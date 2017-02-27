@@ -41,6 +41,21 @@ CALIBRATION3D_API ErrorAndPointsType computeReprojectionError( const std::vector
                                                                const ::cv::Mat& _cameraMatrix,
                                                                const ::cv::Mat& _distCoeffs);
 
+/**
+ * @brief cameraPoseMonocular
+ * @param _objectPoints: vector of 3d points corresponding to the object
+ * @param _imagePoints: vector of 2d points
+ * @param _cameraMatrix: camera matrix (fx, fy, cx, cy)
+ * @param _distCoeffs: distorsion coefficients of the camera
+ * @param _flag: ::cv::solvePnP method to use
+ * @return ::cv::Mat (4x4 with float values) corresponding to the camera pose
+ */
+CALIBRATION3D_API ::cv::Matx44f cameraPoseMonocular(const std::vector< ::cv::Point3f >& _objectPoints,
+                                                    const std::vector< ::cv::Point2f >& _imagePoints,
+                                                    const ::cv::Mat _cameraMatrix,
+                                                    const ::cv::Mat& _distCoeffs,
+                                                    const int _flag = CV_ITERATIVE);
+
 }
 
 } //namespace calibration3d
