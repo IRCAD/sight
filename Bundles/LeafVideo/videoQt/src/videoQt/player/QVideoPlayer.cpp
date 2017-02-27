@@ -133,7 +133,7 @@ void QVideoPlayer::play()
 
 //------------------------------------------------------------------------------
 
-void QVideoPlayer::onError(QMediaPlayer::Error error)
+void QVideoPlayer::onError(QMediaPlayer::Error error) const
 {
     ::fwGui::dialog::MessageDialog msgDialog;
 

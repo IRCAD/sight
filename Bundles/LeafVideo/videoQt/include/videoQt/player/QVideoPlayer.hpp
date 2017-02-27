@@ -85,7 +85,7 @@ private:
 
 private Q_SLOTS:
 
-    void onError(QMediaPlayer::Error);
+    void onError(QMediaPlayer::Error) const;
 };
 
 } //namespace player
