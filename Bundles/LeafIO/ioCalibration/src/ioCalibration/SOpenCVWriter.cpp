@@ -39,14 +39,14 @@ SOpenCVWriter::~SOpenCVWriter()
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVWriter::configuring() throw (fwTools::Failed)
+void SOpenCVWriter::configuring() throw (::fwTools::Failed)
 {
     ::io::IWriter::configuring();
 }
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVWriter::configureWithIHM() throw (fwTools::Failed)
+void SOpenCVWriter::configureWithIHM() throw (::fwTools::Failed)
 {
     this->defineLocationGUI();
 }
@@ -88,31 +88,31 @@ bool SOpenCVWriter::defineLocationGUI()
 
 //----------------------------------------------------------------------------
 
-void SOpenCVWriter::starting() throw (fwTools::Failed)
+void SOpenCVWriter::starting() throw (::fwTools::Failed)
 {
 
 }
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVWriter::stopping() throw (fwTools::Failed)
+void SOpenCVWriter::stopping() throw (::fwTools::Failed)
 {
 
 }
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVWriter::updating() throw (fwTools::Failed)
+void SOpenCVWriter::updating() throw (::fwTools::Failed)
 {
 
     ::arData::CameraSeries::csptr camSeries = this->getInput< ::arData::CameraSeries >("target");
     SLM_ASSERT("CameraSeries is null", camSeries);
 
-    bool dialog = false;
+    bool use_dialog = false;
     if(!this->hasLocationDefined())
     {
-        dialog = this->defineLocationGUI();
-        if(!dialog)
+        use_dialog = this->defineLocationGUI();
+        if(!use_dialog)
         {
             return;
         }
@@ -151,20 +151,20 @@ void SOpenCVWriter::updating() throw (fwTools::Failed)
 
     fs<<"nbCameras"<<static_cast<int>(numberOfCameras);
 
-    for( size_t i = 0; i < numberOfCameras; ++i)
+    for( size_t c = 0; c < numberOfCameras; ++c)
     {
         std::stringstream camNum;
-        camNum << "camera_"<<i;
+        camNum << "camera_"<<c;
 
         fs << camNum.str() << "{";
-        fs << "id"<<camSeries->getCamera(i)->getCameraID().c_str();
-        fs << "description" << camSeries->getCamera(i)->getDescription().c_str();
-        fs << "imageWidth" << static_cast< int> (camSeries->getCamera(i)->getWidth());
-        fs << "imageHeight" << static_cast< int >(camSeries->getCamera(i)->getHeight());
-        fs << "matrix" << cameraMatrices[i];
-        fs << "distortion" << cameraDistCoefs[i];
+        fs << "id"<<camSeries->getCamera(c)->getCameraID().c_str();
+        fs << "description" << camSeries->getCamera(c)->getDescription().c_str();
+        fs << "imageWidth" << static_cast< int> (camSeries->getCamera(c)->getWidth());
+        fs << "imageHeight" << static_cast< int >(camSeries->getCamera(c)->getHeight());
+        fs << "matrix" << cameraMatrices[c];
+        fs << "distortion" << cameraDistCoefs[c];
 
-        extrinsicMatrix = camSeries->getExtrinsicMatrix(i);
+        extrinsicMatrix = camSeries->getExtrinsicMatrix(c);
         if(extrinsicMatrix)
         {
             for(int i = 0; i < 4; ++i)
@@ -183,7 +183,7 @@ void SOpenCVWriter::updating() throw (fwTools::Failed)
     fs.release();
 
     //clear locations only if it was configured through GUI.
-    if(dialog)
+    if(use_dialog)
     {
         this->clearLocations();
     }
@@ -191,7 +191,7 @@ void SOpenCVWriter::updating() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVWriter::swapping() throw (fwTools::Failed)
+void SOpenCVWriter::swapping() throw (::fwTools::Failed)
 {
     this->stop();
     this->start();
