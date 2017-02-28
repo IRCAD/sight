@@ -55,13 +55,13 @@ cv::Matx44f cameraPoseMonocular(const std::vector<cv::Point3f>& _objectPoints,
     T = ::cv::Mat::eye(4, 4, CV_64F);
 
     //solvePnP
-    ::cv::solvePnP(_objectPoints, _imagePoints, _cameraMatrix,_distCoeffs,rvec, tvec, _flag);
+    ::cv::solvePnP(_objectPoints, _imagePoints, _cameraMatrix, _distCoeffs, rvec, tvec, false, _flag);
 
     // to matrix
     ::cv::Rodrigues(rvec, R); // R is 3x3
 
-    T( ::cv::Range(0,3), ::cv::Range(0,3) ) = R * 1; // copies R into T
-    T( ::cv::Range(0,3), ::cv::Range(3,4) ) = tvec * 1; // copies tvec into T
+    T( ::cv::Range(0, 3), ::cv::Range(0, 3) ) = R * 1; // copies R into T
+    T( ::cv::Range(0, 3), ::cv::Range(3, 4) ) = tvec * 1; // copies tvec into T
 
     return ::cv::Matx44f(T);
 
