@@ -560,7 +560,7 @@ void SLandmarks::onRemoveSelection()
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::addPickedPoint(fwDataTools::PickingInfo pickingInfo)
+void SLandmarks::addPickedPoint(::fwDataTools::PickingInfo pickingInfo)
 {
     if(pickingInfo.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP &&
        pickingInfo.m_modifierMask & ::fwDataTools::PickingInfo::CTRL)
@@ -590,7 +590,7 @@ void SLandmarks::addPickedPoint(fwDataTools::PickingInfo pickingInfo)
         }
         else // Advanced mode and a point or a group is selected.
         {
-            int topLevelIndex = m_treeWidget->indexOfTopLevelItem(item);
+            const int topLevelIndex = m_treeWidget->indexOfTopLevelItem(item);
 
             if(topLevelIndex == -1) // Point selected, add new point to parent group.
             {
@@ -678,7 +678,7 @@ void SLandmarks::removeGroup(std::string name)
     {
         item->removeChild(item->child(0));
     }
-    int index                = m_treeWidget->indexOfTopLevelItem(item);
+    const int index          = m_treeWidget->indexOfTopLevelItem(item);
     QTreeWidgetItem* topItem = m_treeWidget->takeTopLevelItem(index);
     delete topItem;
 }
@@ -842,7 +842,7 @@ std::string SLandmarks::generateNewGroupName() const
 
 //------------------------------------------------------------------------------
 
-std::array<float, 4> SLandmarks::generateNewColor() const
+std::array<float, 4> SLandmarks::generateNewColor()
 {
     std::array<float, 4> color = {{rand()%255/255.f, rand()%255/255.f, rand()%255/255.f, 1.f}};
     return color;
@@ -873,7 +873,7 @@ bool SLandmarks::currentSelection(std::string& selection) const
 
 //------------------------------------------------------------------------------
 
-QColor SLandmarks::convertToQColor(const fwData::Landmarks::ColorType& color) const
+QColor SLandmarks::convertToQColor(const ::fwData::Landmarks::ColorType& color)
 {
     return QColor(
         static_cast<int>(color[0]*255),
@@ -885,7 +885,7 @@ QColor SLandmarks::convertToQColor(const fwData::Landmarks::ColorType& color) co
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::setColorButtonIcon(QPushButton* button, const QColor& color) const
+void SLandmarks::setColorButtonIcon(QPushButton* button, const QColor& color)
 {
     const int iconSize = button->style()->pixelMetric(QStyle::PM_LargeIconSize);
     QPixmap pix(iconSize, iconSize);

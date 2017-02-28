@@ -158,23 +158,23 @@ private:
     /// Slot: update group properties in editor.
     void modifyGroup(std::string name);
 
+    /// Gets the name of the currently selected group, returns false if no group is selected.
+    bool currentSelection(std::string& selection) const;
+
+    /// Get tree item representing the group.
+    QTreeWidgetItem* getGroupItem(const std::string& groupName) const;
+
     /// Generate a group name that doesn't exist already.
     std::string generateNewGroupName() const;
 
     /// Generate a new random color
-    std::array<float, 4> generateNewColor() const;
-
-    /// Gets the name of the currently selected group, returns false if no group is selected.
-    bool currentSelection(std::string& selection) const;
+    static std::array<float, 4> generateNewColor();
 
     /// Converts a landmark color to a QColor.
-    QColor convertToQColor(const ::fwData::Landmarks::ColorType& color) const;
+    static QColor convertToQColor(const ::fwData::Landmarks::ColorType& color);
 
     /// Draws a colored square on the button.
-    void setColorButtonIcon(QPushButton* button, const QColor& color) const;
-
-    /// Get tree item representing the group.
-    QTreeWidgetItem* getGroupItem(const std::string& groupName) const;
+    static void setColorButtonIcon(QPushButton* button, const QColor& color);
 
     QPointer<QTreeWidget> m_treeWidget;
 
