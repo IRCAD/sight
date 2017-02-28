@@ -37,14 +37,14 @@ SOpenCVReader::~SOpenCVReader()
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVReader::configuring() throw (fwTools::Failed)
+void SOpenCVReader::configuring() throw (::fwTools::Failed)
 {
     ::io::IReader::configuring();
 }
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVReader::configureWithIHM() throw (fwTools::Failed)
+void SOpenCVReader::configureWithIHM() throw (::fwTools::Failed)
 {
     this->defineLocationGUI();
 }
@@ -86,37 +86,31 @@ bool SOpenCVReader::defineLocationGUI()
 
 //----------------------------------------------------------------------------
 
-void SOpenCVReader::starting() throw (fwTools::Failed)
+void SOpenCVReader::starting() throw (::fwTools::Failed)
 {
 
 }
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVReader::stopping() throw (fwTools::Failed)
+void SOpenCVReader::stopping() throw (::fwTools::Failed)
 {
 
 }
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVReader::updating() throw (fwTools::Failed)
+void SOpenCVReader::updating() throw (::fwTools::Failed)
 {
 
     ::arData::CameraSeries::sptr camSeries = this->getInOut< ::arData::CameraSeries >("target");
 
-    //Clean CameraSeries
-    if(camSeries->getNumberOfCameras() > 0)
-    {
-        camSeries->clear();
-    }
-
-    bool dialog = false;
+    bool use_dialog = false;
     //use dialog only if no file was configured
     if(!this->hasLocationDefined())
     {
-        dialog = this->defineLocationGUI();
-        if(!dialog)
+        use_dialog = this->defineLocationGUI();
+        if(!use_dialog)
         {
             return;
         }
@@ -128,13 +122,19 @@ void SOpenCVReader::updating() throw (fwTools::Failed)
         SLM_ERROR("The file "+ this->getFile().string() + " cannot be opened.");
     }
 
+    //Clean CameraSeries
+    if(camSeries->getNumberOfCameras() > 0)
+    {
+        camSeries->clear();
+    }
+
     int nbCameras;
     fs["nbCameras"] >> nbCameras;
 
-    for(size_t i = 0; i < nbCameras; ++i)
+    for(int c = 0; c < nbCameras; ++c)
     {
         std::stringstream camNum;
-        camNum<<"camera_"<<i;
+        camNum<<"camera_"<<c;
 
         ::cv::FileNode n = fs[camNum.str()];
 
@@ -168,7 +168,7 @@ void SOpenCVReader::updating() throw (fwTools::Failed)
         camSeries->addCamera(cam);
 
         auto sig = camSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(
-                    ::arData::CameraSeries::s_ADDED_CAMERA_SIG);
+            ::arData::CameraSeries::s_ADDED_CAMERA_SIG);
         sig->asyncEmit(cam);
 
         ::cv::Mat extrinsic;
@@ -187,7 +187,7 @@ void SOpenCVReader::updating() throw (fwTools::Failed)
                 }
             }
 
-            camSeries->setExtrinsicMatrix(i, extMat);
+            camSeries->setExtrinsicMatrix(static_cast<size_t>(c), extMat);
         }
     }
 
@@ -197,7 +197,7 @@ void SOpenCVReader::updating() throw (fwTools::Failed)
     sig->asyncEmit();
 
     //clear locations only if it was configured through GUI.
-    if(dialog)
+    if(use_dialog)
     {
         this->clearLocations();
     }
@@ -205,7 +205,7 @@ void SOpenCVReader::updating() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVReader::swapping() throw (fwTools::Failed)
+void SOpenCVReader::swapping() throw (::fwTools::Failed)
 {
     this->stop();
     this->start();
