@@ -39,8 +39,8 @@
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar" >
             <gui>
                 <layout>
-                    <menuItem name="Previous" icon="@BUNDLE_PREFIX@/media_0-1/icons/Previous.svg" />
-                    <menuItem name="Next" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
+                    <menuItem name="Previous" icon="@BUNDLE_PREFIX@/media_0-1/icons/Back.svg" />
+                    <menuItem name="Next" icon="@BUNDLE_PREFIX@/media_0-1/icons/Next.svg" />
                     <menuItem name="Export camera series" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
                     <separator />
                     <menuItem name="Export XML" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/save.svg" />
