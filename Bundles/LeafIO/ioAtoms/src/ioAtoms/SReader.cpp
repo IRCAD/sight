@@ -416,6 +416,9 @@ void SReader::updating() throw(::fwTools::Failed)
                                                 << "' where a '" << data->getClassname() << "' was expected",
                              newData->getClassname() != data->getClassname() );
 
+                // Workaround to read a fwData::Array.
+                // The shallowCopy of a fwData::Array is not allowed due to unknown buffer owner.
+                // So in the case of reading an Array we swap buffers.
                 if(newData->getClassname() == ::fwData::Array::classname())
                 {
                     ::fwData::Array::dynamicCast(data)->swap( ::fwData::Array::dynamicCast(newData) );
