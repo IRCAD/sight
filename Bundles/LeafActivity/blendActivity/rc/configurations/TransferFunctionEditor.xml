@@ -102,9 +102,6 @@
                 <adaptor id="multiDistances" class="::visuVTKAdaptor::ImageMultiDistances" objectId="image">
                     <config filter="true" renderer="default" picker="negato2default" />
                 </adaptor>
-                <adaptor id="landmarksNegato2" class="::visuVTKAdaptor::SLandmarks" objectId="image">
-                    <config renderer="default" picker="negato2default" />
-                </adaptor>
 
                 <adaptor id="nameAdaptor" class="::visuVTKAdaptor::Text" objectId="image">
                     <config renderer="default" text="${patient_name}" fontSize="15" hAlign="right" vAlign="top" />
