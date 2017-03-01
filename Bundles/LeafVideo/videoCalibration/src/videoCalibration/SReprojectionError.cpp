@@ -13,6 +13,10 @@
 
 #include <calibration3d/helper.hpp>
 
+#include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <opencv2/calib3d.hpp>
 #include <opencv2/opencv.hpp>
 

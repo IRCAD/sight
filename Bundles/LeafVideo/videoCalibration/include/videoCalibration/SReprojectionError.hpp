@@ -11,6 +11,8 @@
 
 #include <fwCore/HiResClock.hpp>
 
+#include <fwCom/Signal.hpp>
+
 #include <fwServices/IController.hpp>
 
 #include <opencv2/core.hpp>

@@ -8,6 +8,8 @@
 
 #include <arData/CameraSeries.hpp>
 
+#include <fwCom/Signal.hxx>
+
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 #include <fwData/mt/ObjectReadLock.hpp>
