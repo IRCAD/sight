@@ -803,8 +803,22 @@ void SLandmarks::selectPoint(std::string groupName, size_t index)
 
         currentItem = currentItem->child(static_cast<int>(index));
     }
-
     m_treeWidget->setCurrentItem(currentItem);
+
+    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+
+    const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(groupName);
+
+    // Set widget values
+    m_sizeSlider->setValue(static_cast<int>(group.m_size));
+    m_visibilityCheckbox->setChecked(group.m_visibility);
+
+    const QString shapeText = group.m_shape == ::fwData::Landmarks::Shape::CUBE ? "Cube" : "Sphere";
+    m_shapeSelector->setCurrentText(shapeText);
+
+    float transparency = group.m_color[3];
+    m_transparencySlider->setValue(static_cast<int>(transparency * m_transparencySlider->maximum()));
+
     m_groupEditorWidget->show();
     m_treeWidget->blockSignals(false);
 }
