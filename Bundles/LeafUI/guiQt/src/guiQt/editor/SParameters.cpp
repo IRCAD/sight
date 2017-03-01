@@ -18,6 +18,7 @@
 #include <fwTools/Object.hpp>
 
 #include <boost/foreach.hpp>
+#include <boost/tokenizer.hpp>
 
 #include <QCheckBox>
 #include <QColorDialog>
@@ -155,11 +156,11 @@ void SParameters::starting() throw (::fwTools::Failed)
             const std::string options = cfg.get<std::string>("<xmlattr>.values");
             //split values separated by ','
             std::vector<std::string> strings;
-            std::istringstream f(options);
-            std::string s;
-            while (getline(f, s, ','))
+            const ::boost::char_separator<char> sep(", ;");
+            const ::boost::tokenizer< ::boost::char_separator<char> > tok {options, sep};
+            for(const auto& t : tok)
             {
-                strings.push_back(s);
+                strings.push_back(t);
             }
 
             this->createEnumWidget(*layout, row, key, defaultValue, strings);
@@ -747,7 +748,7 @@ void SParameters::createEnumWidget(QGridLayout& layout, int row, const std::stri
         ++idx;
     }
 
-    layout.addWidget(menu, row, 1);
+    layout.addWidget(menu, row, 2);
 
     QObject::connect(menu, SIGNAL(currentIndexChanged(int)), this, SLOT(onChangeEnum(int)));
 

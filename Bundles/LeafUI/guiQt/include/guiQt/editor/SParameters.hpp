@@ -17,8 +17,6 @@
 #include <QPushButton>
 #include <QSignalMapper>
 
-#include <cstdint>
-
 namespace guiQt
 {
 
@@ -67,7 +65,7 @@ namespace editor
  * - \b max: maximum value, if relevant for the data type.
  * - \b widget: choose the type of the widget, if relevant for the data type. Currently the only type that provides
  * a choice is 'int' : you can choose either "spin" or "slider".
- * - \b values: list of possible values separated by a comma ',' (only for enum type).
+ * - \b values: list of possible values separated by a comma ',' a space ' ' or a semicolon ';' (only for enum type).
  */
 class GUIQT_CLASS_API SParameters : public QObject,
                                     public ::gui::editor::IEditor
