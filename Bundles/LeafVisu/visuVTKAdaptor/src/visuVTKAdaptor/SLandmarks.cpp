@@ -354,6 +354,7 @@ void SLandmarks::insertPoint(std::string groupName, size_t index)
 
 void SLandmarks::removePoint(std::string groupName, size_t index)
 {
+    this->deselect();
     LandmarksWidgetContainerType& landmarkHandleGroup = m_handles[groupName];
 
     auto& handleToRemove = landmarkHandleGroup[index];
@@ -560,8 +561,12 @@ void SLandmarks::selectPoint(std::string groupName, size_t index)
 
 void SLandmarks::deselectPoint(std::string groupName, size_t index)
 {
-    m_timer->stop();
-    m_timer.reset();
+    if(m_timer)
+    {
+        m_timer->stop();
+        m_timer.reset();
+    }
+
     const ::fwData::Landmarks::sptr& landmarks = this->getObject< ::fwData::Landmarks >();
 
     LandmarkWidgetType& widget = m_handles.at(groupName).at(index);
