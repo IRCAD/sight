@@ -40,7 +40,8 @@ namespace visuVTKAdaptor
  * - \b modifyPoint(groupName, index): modify point position
  * - \b renameGroup(oldName, newName): update the label with the new name
  * - \b selectPoint(groupName, index): select the point (blink from point color to green)
- * - \b deselectPoint(groupName, index): deselec the point (reset current color)
+ * - \b deselectPoint(groupName, index): deselect the point (reset current color)
+ * - \b show(bool): show or hide the landmarks
  *
  * @section XML XML Configuration
  *
@@ -57,6 +58,7 @@ class VISUVTKADAPTOR_CLASS_API SLandmarks : public ::fwRenderVTK::IVtkAdaptorSer
 public:
 
     fwCoreServiceClassDefinitionsMacro( (SLandmarks)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreAllowSharedFromThis();
 
     /// Widget used to display and interact with landmarks.
     typedef vtkSmartPointer< vtkHandleWidget > LandmarkWidgetType;
@@ -78,8 +80,8 @@ public:
      */
     VISUVTKADAPTOR_API virtual KeyConnectionsType getObjSrvConnections() const;
 
-    /// Returns point associated to widget.
-    fwData::Landmarks::PointType* getPoint(const LandmarkWidgetType& widget);
+    /// Deselect the current point and emit the corresponding Landmarks signal
+    void deselect();
 
 protected:
 
@@ -89,12 +91,6 @@ protected:
     VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
-
-    std::list< ::fwRenderVTK::IVtkAdaptorService::sptr > m_subServices;
-
-    vtkCommand* m_rightButtonCommand;
-
-    bool m_needSubservicesDeletion;
 
 private:
 
@@ -109,6 +105,8 @@ private:
 
     /// Maps Landmarks widget to its vtkCommand
     typedef std::map< LandmarkWidgetType, vtkCommand* > WidgetCommandMapType;
+
+    typedef std::pair< std::string, size_t > PointPairType;
 
     /// Slot: called when a new point is appended to the group.
     void addPoint(std::string groupName);
@@ -144,10 +142,16 @@ private:
     void changeColor(const vtkSmartPointer< ::fwRenderVTK::vtk::fwHandleRepresentation3D >& rep,
                      const std::array<double, 3>& color1, const std::array<double, 3>& color2);
 
+    /// Remove all the points from the scene
+    void clearLandmarks();
+
     /// Creates a new handle configured with it's group attributes and it's position.
     vtkSmartPointer<vtkHandleWidget> newHandle(const ::fwData::Landmarks::sptr& landmarks,
                                                const std::string& groupName,
                                                size_t pointIndex);
+
+    /// command to listen left click outside landmarks to deselect them
+    vtkCommand* m_noSelectionCommand;
 
     /// Structure holding all widgets groups and mapping them to their names.
     GroupWidgetsMapType m_handles;
@@ -160,6 +164,9 @@ private:
 
     /// Timer used to blink selected point
     ::fwThread::Timer::sptr m_timer;
+
+    /// Selected point information (groupName, index)
+    PointPairType m_selectedPoint;
 
     /// Counter to switch color for selected point: (even: green, odd: point default color)
     size_t m_count;

@@ -64,6 +64,7 @@ static const ::fwCom::Slots::SlotKeyType s_MODIFY_POINT_SLOT   = "modifyPoint";
 static const ::fwCom::Slots::SlotKeyType s_RENAME_GROUP_SLOT   = "renameGroup";
 static const ::fwCom::Slots::SlotKeyType s_SELECT_POINT_SLOT   = "selectPoint";
 static const ::fwCom::Slots::SlotKeyType s_DESELECT_POINT_SLOT = "deselectPoint";
+static const ::fwCom::Slots::SlotKeyType s_SHOW_SLOT           = "show";
 
 //------------------------------------------------------------------------------
 
@@ -139,7 +140,7 @@ public:
         SLM_ASSERT("handler not instanced", handler);
         double* world = representation->GetWorldPosition();
 
-        if ( eventId == vtkCommand::InteractionEvent|| eventId == vtkCommand::EndInteractionEvent )
+        if ( eventId == vtkCommand::InteractionEvent)
         {
             double display[3];
             int x, y;
@@ -152,32 +153,25 @@ public:
             {
                 ::fwRenderVTK::vtk::getNearestPickedPosition(m_picker, m_renderer, world);
             }
+
+            auto& point = m_landmarks->getPoint(m_groupName, m_pointIndex);
+            std::copy( world, world+3, point.begin() );
+
+            representation->SetWorldPosition(world);
+            m_labelActor->GetPositionCoordinate()->SetValue(world);
+
+            auto sig = m_landmarks->signal< ::fwData::Landmarks::PointModifiedSigType >
+                           ( ::fwData::Landmarks::s_POINT_MODIFIED_SIG );
+            {
+                ::fwCom::Connection::Blocker block(sig->getConnection(m_pointModifiedSlot));
+                sig->asyncEmit(m_groupName, m_pointIndex);
+            }
         }
         else if (eventId == vtkCommand::StartInteractionEvent)
         {
             auto sig = m_landmarks->signal< ::fwData::Landmarks::PointSelectedSignalType >
                            (::fwData::Landmarks::s_POINT_SELECTED_SIG);
             sig->asyncEmit(m_groupName, m_pointIndex);
-        }
-
-        auto& point = m_landmarks->getPoint(m_groupName, m_pointIndex);
-        std::copy( world, world+3, point.begin() );
-
-        representation->SetWorldPosition(world);
-        m_labelActor->GetPositionCoordinate()->SetValue(world);
-
-        auto sig = m_landmarks->signal< ::fwData::Landmarks::PointModifiedSigType >
-                       ( ::fwData::Landmarks::s_POINT_MODIFIED_SIG );
-        {
-            ::fwCom::Connection::Blocker block(sig->getConnection(m_pointModifiedSlot));
-            sig->asyncEmit(m_groupName, m_pointIndex);
-        }
-
-        if (eventId == vtkCommand::EndInteractionEvent)
-        {
-            auto sigDeselect = m_landmarks->signal< ::fwData::Landmarks::PointDeselectedSignalType >
-                                   (::fwData::Landmarks::s_POINT_DESELECTED_SIG);
-            sigDeselect->asyncEmit(m_groupName, m_pointIndex);
         }
     }
 
@@ -200,9 +194,47 @@ protected:
 
 //------------------------------------------------------------------------------
 
+class vtkDeselectLandmarksCallBack : public vtkCommand
+{
+
+public:
+
+//------------------------------------------------------------------------------
+
+    static vtkDeselectLandmarksCallBack* New()
+    {
+        return new vtkDeselectLandmarksCallBack();
+    }
+
+//------------------------------------------------------------------------------
+
+    vtkDeselectLandmarksCallBack()
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void setAdaptor(const SLandmarks::sptr& adaptor)
+    {
+        m_adaptor = adaptor;
+    }
+
+//------------------------------------------------------------------------------
+
+    virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
+    {
+        m_adaptor->deselect();
+    }
+
+protected:
+
+    SLandmarks::sptr m_adaptor;
+};
+
+//------------------------------------------------------------------------------
+
 SLandmarks::SLandmarks() throw() :
-    m_rightButtonCommand(nullptr),
-    m_needSubservicesDeletion(false),
+    m_noSelectionCommand(nullptr),
     m_count(0)
 {
     this->newSlot(s_ADD_POINT_SLOT, &SLandmarks::addPoint, this);
@@ -215,6 +247,7 @@ SLandmarks::SLandmarks() throw() :
     this->newSlot(s_RENAME_GROUP_SLOT, &SLandmarks::renameGroup, this);
     this->newSlot(s_SELECT_POINT_SLOT, &SLandmarks::selectPoint, this);
     this->newSlot(s_DESELECT_POINT_SLOT, &SLandmarks::deselectPoint, this);
+    this->newSlot(s_SHOW_SLOT, &SLandmarks::show, this);
 }
 
 //------------------------------------------------------------------------------
@@ -233,6 +266,12 @@ void SLandmarks::doConfigure() throw(fwTools::Failed)
 
 void SLandmarks::doStart() throw(fwTools::Failed)
 {
+    vtkDeselectLandmarksCallBack* callback = vtkDeselectLandmarksCallBack::New();
+    callback->setAdaptor(this->getSptr());
+    m_noSelectionCommand = callback;
+    this->getInteractor()->AddObserver(vtkCommand::LeftButtonPressEvent, m_noSelectionCommand);
+    this->getInteractor()->AddObserver(vtkCommand::RightButtonReleaseEvent, m_noSelectionCommand);
+
     this->doUpdate();
 }
 
@@ -248,7 +287,7 @@ void SLandmarks::doSwap() throw(fwTools::Failed)
 
 void SLandmarks::doUpdate() throw(fwTools::Failed)
 {
-    this->doStop();
+    this->clearLandmarks();
 
     ::fwData::Landmarks::csptr landmarks = this->getObject< ::fwData::Landmarks >();
 
@@ -261,6 +300,20 @@ void SLandmarks::doUpdate() throw(fwTools::Failed)
 
     this->getRenderer()->ResetCameraClippingRange();
     this->setVtkPipelineModified();
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::doStop() throw(fwTools::Failed)
+{
+    this->clearLandmarks();
+    if (m_noSelectionCommand)
+    {
+        this->getInteractor()->RemoveObserver(m_noSelectionCommand);
+        m_noSelectionCommand->Delete();
+        m_noSelectionCommand = nullptr;
+    }
+
 }
 
 //------------------------------------------------------------------------------
@@ -470,6 +523,15 @@ void SLandmarks::renameGroup(std::string oldName, std::string newName)
 
 void SLandmarks::selectPoint(std::string groupName, size_t index)
 {
+    // deselect the current selected point
+    if (m_timer)
+    {
+        this->deselectPoint(m_selectedPoint.first, m_selectedPoint.second);
+    }
+
+    m_selectedPoint.first  = groupName;
+    m_selectedPoint.second = index;
+
     LandmarkWidgetType& widget =
         m_handles.at(groupName).at(index);
 
@@ -478,11 +540,6 @@ void SLandmarks::selectPoint(std::string groupName, size_t index)
 
     const double* color = rep->GetProperty()->GetColor();
 
-    if (m_timer)
-    {
-        m_timer->stop();
-        m_timer.reset();
-    }
     m_timer = m_associatedWorker->createTimer();
 
     ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(500);
@@ -504,6 +561,7 @@ void SLandmarks::selectPoint(std::string groupName, size_t index)
 void SLandmarks::deselectPoint(std::string groupName, size_t index)
 {
     m_timer->stop();
+    m_timer.reset();
     const ::fwData::Landmarks::sptr& landmarks = this->getObject< ::fwData::Landmarks >();
 
     LandmarkWidgetType& widget = m_handles.at(groupName).at(index);
@@ -520,6 +578,22 @@ void SLandmarks::deselectPoint(std::string groupName, size_t index)
     rep->GetProperty()->SetColor(castedColour);
     this->setVtkPipelineModified();
     this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::deselect()
+{
+    if (m_timer)
+    {
+        const ::fwData::Landmarks::csptr& landmarks = this->getObject< ::fwData::Landmarks >();
+
+        this->deselectPoint(m_selectedPoint.first, m_selectedPoint.second);
+        auto sig = landmarks->signal< ::fwData::Landmarks::PointDeselectedSignalType >(
+            ::fwData::Landmarks::s_POINT_DESELECTED_SIG);
+        ::fwCom::Connection::Blocker block(sig->getConnection(this->slot(s_DESELECT_POINT_SLOT)));
+        sig->asyncEmit(m_selectedPoint.first, m_selectedPoint.second);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -546,32 +620,13 @@ void SLandmarks::changeColor(const vtkSmartPointer< ::fwRenderVTK::vtk::fwHandle
 
 //------------------------------------------------------------------------------
 
-::fwData::Landmarks::PointType* SLandmarks::getPoint(const SLandmarks::LandmarkWidgetType& widget)
+void SLandmarks::clearLandmarks()
 {
-    ::fwData::Landmarks::PointType* result = nullptr;
-
-    ::fwData::Landmarks::sptr landmarks = this->getObject< ::fwData::Landmarks >();
-
-    const ::fwData::Landmarks::GroupNameContainer groupNames = landmarks->getGroupNames();
-
-    for(const auto& name : groupNames)
+    while (!m_handles.empty())
     {
-        auto widgetGroup = m_handles[name];
-
-        auto pointIter = std::find(widgetGroup.begin(), widgetGroup.end(), widget);
-
-        if(pointIter != widgetGroup.end())
-        {
-            auto group = landmarks->getGroup(name);
-
-            size_t pointIndex = static_cast<size_t>(std::distance(widgetGroup.begin(), pointIter));
-
-            result = &group.m_points[pointIndex];
-            break;
-        }
+        const std::string name = m_handles.begin()->first;
+        this->removeGroup(name);
     }
-
-    return result;
 }
 
 //------------------------------------------------------------------------------
@@ -653,17 +708,6 @@ vtkSmartPointer< vtkHandleWidget > SLandmarks::newHandle(const ::fwData::Landmar
     handle->AddObserver(vtkCommand::StartInteractionEvent, updateCallback);
 
     return handle;
-}
-
-//------------------------------------------------------------------------------
-
-void SLandmarks::doStop() throw(fwTools::Failed)
-{
-    while (!m_handles.empty())
-    {
-        const std::string name = m_handles.begin()->first;
-        this->removeGroup(name);
-    }
 }
 
 //------------------------------------------------------------------------------
