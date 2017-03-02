@@ -25,9 +25,14 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::gui::view::IView</type>
+        <type>::gui::view::IActivityView</type>
         <service>::guiQt::editor::SDynamicView</service>
         <object>::fwData::Object</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::view::IActivityView</type>
+        <service>::guiQt::editor::SActivityView</service>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">

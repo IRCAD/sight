@@ -13,6 +13,9 @@ set( DEPENDENCIES
     fwTools
     fwThread
     fwJobs
+    fwMedData
+    fwDataCamp
+    fwActivities
 )
 set( REQUIREMENTS  )
 
