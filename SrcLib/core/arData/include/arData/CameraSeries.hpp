@@ -1,9 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
-
 
 #ifndef __ARDATA_CAMERASERIES_HPP__
 #define __ARDATA_CAMERASERIES_HPP__
@@ -24,20 +23,18 @@
 #include <map>
 #include <vector>
 
-
 fwCampAutoDeclareDataMacro((arData)(CameraSeries), ARDATA_API);
 
 namespace arData
 {
 /**
- * @class  CameraSeries
  * @brief  This class contains the information about cameras (container of camera and extrinsec matrix).
  */
 
 class ARDATA_CLASS_API CameraSeries : public ::fwMedData::Series
 {
 public:
-    fwCoreClassDefinitionsWithFactoryMacro((CameraSeries)( ::fwData::Object),(()),
+    fwCoreClassDefinitionsWithFactoryMacro((CameraSeries)( ::fwData::Object), (()),
                                            ::fwData::factory::New< CameraSeries >);
 
     fwCampMakeFriendDataMacro((arData)(CameraSeries));
@@ -57,8 +54,7 @@ public:
     ARDATA_API void shallowCopy( const ::fwData::Object::csptr& _source );
 
     /// Defines deep copy
-    ARDATA_API void cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType &cache);
-
+    ARDATA_API void cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache);
 
     /**@name Signals API
      * @{
@@ -76,13 +72,13 @@ public:
     typedef std::vector< ::fwData::TransformationMatrix3D::sptr > MatricesContainer;
 
     /// Adds a camera in the cameraSeries.
-    ARDATA_API void addCamera(const ::arData::Camera::sptr & camera);
+    ARDATA_API void addCamera(const ::arData::Camera::sptr& camera);
 
     /// Returns the camera at the index.
     ARDATA_API ::arData::Camera::sptr getCamera(size_t index) const;
 
     /// Remove the camera with the index
-    ARDATA_API void removeCamera(const ::arData::Camera::sptr & camera);
+    ARDATA_API void removeCamera(const ::arData::Camera::sptr& camera);
 
     /// Returns the number of cameras
     size_t getNumberOfCameras() const
@@ -118,11 +114,6 @@ public:
         return this->getExtrinsicMatrix(1);
     }
 
-    /**
-     * @brief Remove all cameras and matrices
-     */
-    ARDATA_API void clear();
-
 protected:
 
     /// Contains camera
@@ -143,6 +134,5 @@ protected:
 };
 
 } //namespace arData
-
 
 #endif  // __ARDATA_CAMERASERIES_HPP__
