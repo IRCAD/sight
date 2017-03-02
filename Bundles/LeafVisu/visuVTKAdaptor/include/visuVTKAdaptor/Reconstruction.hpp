@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -30,16 +30,20 @@ class VISUVTKADAPTOR_CLASS_API Reconstruction : public ::fwRenderVTK::IVtkAdapto
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Reconstruction)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Reconstruction)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API Reconstruction() throw();
 
     VISUVTKADAPTOR_API virtual ~Reconstruction() throw();
 
+    //------------------------------------------------------------------------------
+
     void setClippingPlanes(::fwRenderVTK::SRender::VtkObjectIdType id)
     {
         m_clippingPlanesId = id;
     }
+
+    //------------------------------------------------------------------------------
 
     void setSharpEdgeAngle(double angle)
     {
@@ -47,9 +51,6 @@ public:
     }
 
     VISUVTKADAPTOR_API void setForceHide(bool hide);
-
-    /// Set underlying actor visible or not
-    VISUVTKADAPTOR_API void setVisibility(bool visible);
 
     /// Active/Inactive automatic reset on camera for triangular mesh adaptor. By default =true.
     VISUVTKADAPTOR_API void setAutoResetCamera(bool autoResetCamera);
@@ -70,7 +71,7 @@ public:
 
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
     /// slot used to update visibility
-    typedef ::fwCom::Slot<void ()> UpdateVisibilitySlotType;
+    typedef ::fwCom::Slot<void (bool)> UpdateVisibilitySlotType;
 
     VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_NORMAL_MODE_SLOT;
     /// slot used to update normal mode (0: none, 1: point, 2: cell)
@@ -117,7 +118,7 @@ protected:
     void updateMesh(SPTR(::fwData::Mesh));
 
     /// Slot: update visibility
-    void updateVisibility();
+    void updateVisibility(bool visible);
 
     /**
      * @}
@@ -143,7 +144,6 @@ private:
      * @}
      */
 };
-
 
 } //namespace visuVTKAdaptor
 
