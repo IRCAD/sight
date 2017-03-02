@@ -18,8 +18,6 @@ set( REQUIREMENTS
     gui
     guiQt
 
-    uiIGTL
-
     media
     arMedia
 

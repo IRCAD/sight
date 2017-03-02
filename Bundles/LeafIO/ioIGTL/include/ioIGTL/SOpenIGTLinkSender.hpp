@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,97 +9,66 @@
 
 #include "ioIGTL/config.hpp"
 
-#include <fwTools/Failed.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
+
 #include <fwData/Object.hpp>
+
+#include <fwTools/Failed.hpp>
+
 #include <igtlNetwork/Client.hpp>
 #include <igtlNetwork/Server.hpp>
+
 #include <ioNetwork/INetworkSender.hpp>
-#include <fwThread/Worker.hpp>
 
-#include <boost/type.hpp>
-#include <boost/thread.hpp>
-
+#include <cstdint>
+#include <future>
 #include <string>
 
 namespace ioIGTL
 {
 
 /**
+ * @brief    Network server that uses OpenIGTLink protocol
  *
- * @brief class for a network server in service class use OpenIGTLink
+ * @section XML XML Configuration
+ * @code{.xml}
+        <service uid="..." type="::ioIGTL::SOpenIGTLinkSender">
+            <in key="object" uid="..." />
+            <deviceName>...</deviceName>
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b target [::fwData::Object]: .
+ * @subsection Configuration Configuration:
+ * - \b deviceName(optional) : device to set in the message.
  */
+
 class IOIGTL_CLASS_API SOpenIGTLinkSender : public ::ioNetwork::INetworkSender
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SOpenIGTLinkSender)( ::ioNetwork::INetworkSender ) );
-
-    IOIGTL_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_CONFIGURATION_SLOT;
-    typedef ::fwCom::Slot< void (::boost::uint16_t const) > UpdateConfigurationSlotType;
-
-    IOIGTL_API static const ::fwCom::Slots::SlotKeyType s_START_SENDING_SLOT;
-    typedef ::fwCom::Slot< void () > StartSendingSlotType;
-
-    IOIGTL_API static const ::fwCom::Slots::SlotKeyType s_STOP_SENDING_SLOT;
-    typedef ::fwCom::Slot< void () > StopSendingSlotType;
+    fwCoreServiceClassDefinitionsMacro( (SOpenIGTLinkSender)( ::ioNetwork::INetworkSender ) );
 
     /// Constructor
     IOIGTL_API SOpenIGTLinkSender();
-
 
     /// Destructor
     IOIGTL_API virtual ~SOpenIGTLinkSender();
 
 protected:
 
-    /**
-     * @brief configure the server. Need the port in xml
-     * @code{.xml}
-     * <service type="::ioNetwork::INetworkSender" impl="::ioIGTL::SOpenIGTSender" uid="networkSender" autoConnect="no">
-     *      <port>4242</port>
-     *      <deviceName>FW4SPL</deviceName>
-     * </service>
-     *
-     * - deviceName is optional (if set,sended message have 'deviceName' name).
-     *
-     * @endcode
-     */
+    /// Configure port and device name
     IOIGTL_API virtual void configuring() throw ( ::fwTools::Failed );
 
-    /**
-     * @brief start the server. This method block actually
-     */
+    /// Start the server.
     IOIGTL_API virtual void starting() throw ( ::fwTools::Failed );
 
-    /**
-     * @brief stop the server
-     */
+    /// Stop the server
     IOIGTL_API virtual void stopping() throw ( ::fwTools::Failed );
 
-    /**
-     * @brief change the port of the server use it before start
-     */
-    IOIGTL_API void setPort(boost::uint16_t const port) throw (::fwTools::Failed);
-
-
 private:
-
-    /**
-     * @brief slot called when configuration of sender is updated
-     *
-     * @see ioNetwork::INetworkSender
-     */
-    void updateConfiguration(::boost::uint16_t const port);
-
-    /// Starts the server
-    IOIGTL_API void startSending();
-
-    /// Stops the server
-    IOIGTL_API void stopSending();
-
     /**
      * @brief method to send data. Linked to m_slotSendData
      *
@@ -110,29 +79,15 @@ private:
     /// Server instance
     ::igtlNetwork::Server::sptr m_server;
 
-    /// Port to listen
-    ::boost::uint16_t m_port;
+    /// Future used to wait for the server
+    std::future<void> m_serverFuture;
 
-    /// Worker smart pointer to run the server loop in a separate thread
-    ::fwThread::Worker::sptr m_serverWorker;
-
-    ///Slot to update configuration
-    UpdateConfigurationSlotType::sptr m_updateConfigurationSlot;
-
-    ///Slot to start sending
-    StartSendingSlotType::sptr m_startSendingSlot;
-
-    ///Slot to stop sending
-    StopSendingSlotType::sptr m_stopSendingSlot;
-
-    ///True is server is sending
-    bool m_isSending;
+    /// port preference key
+    std::string m_portConfig;
 
     ///device name
     std::string m_deviceName;
 };
-
-
 
 } // namespace ioIGTL
 

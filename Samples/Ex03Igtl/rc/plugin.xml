@@ -3,18 +3,20 @@
     <requirement id="dataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
+    <requirement id="preferences" />
 
-    <extension implements="::fwServices::registry::AppConfig">
+    <extension implements="::fwServices::registry::AppConfig2">
         <id>Ex03IgtlConfig</id>
         <config>
 
-        <object type="::fwData::Composite">
+            <object uid="objectMeshUid" type="::fwData::Mesh" />
+            <object uid="identityMatrix" type="::fwData::TransformationMatrix3D" />
 
-            <service uid="MyIHM" impl="::gui::frame::SDefaultFrame" type="::fwGui::IFrameSrv" autoConnect="no">
+            <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
                         <name>Ex03Igtl</name>
-                        <icon>@BUNDLE_PREFIX@/Ex03Igtl_0-1/tuto.ico</icon>
+                        <icon>@BUNDLE_PREFIX@/Ex03Igtl_@DASH_VERSION@/tuto.ico</icon>
                     </frame>
                     <toolBar />
                 </gui>
@@ -24,7 +26,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbar" type="::fwGui::IToolBarSrv" impl="::gui::aspect::SDefaultToolBar" autoConnect="no" >
+            <service uid="toolbar" type="::gui::aspect::SDefaultToolBar"  >
                 <gui>
                     <layout>
                     <editor />
@@ -38,7 +40,6 @@
                         <menuItem name="stop listener"  icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/Network-Stop-Receiving.svg"/>
                         <menuItem name="configure listener" icon="@BUNDLE_PREFIX@/media_0-1/icons/Settings.svg" />
                         <separator/>
-
                     </layout>
                 </gui>
                 <registry>
@@ -52,58 +53,60 @@
                 </registry>
             </service>
 
-            <service uid="actionLoadMesh" impl="::gui::action::SSlotCaller" autoConnect="no">
+            <service uid="actionLoadMesh" type="::gui::action::SSlotCaller" >
                 <slots>
                     <slot>objectMeshReader/update</slot>
                 </slots>
             </service>
 
-            <service uid="startServer" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
-                <slots>
-                    <slot>matrixNetworkSender/startSending</slot>
-                </slots>
+            <service uid="startServer" type="::gui::action::SStarter" >
+                <start uid="matrixNetworkSender" />
             </service>
 
-            <service uid="stopServer" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
-                <slots>
-                    <slot>matrixNetworkSender/stopSending</slot>
-                </slots>
+            <service uid="stopServer" type="::gui::action::SStarter" >
+                <state executable="false" />
+                <stop uid="matrixNetworkSender" />
             </service>
 
-            <service uid="configureServer" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
-                <slots>
-                    <slot>igtlServerEditor/update</slot>
-                </slots>
+            <service uid="configureServer" type="::uiPreferences::action::SPreferencesConfiguration">
+                <preference>
+                    <type>number</type>
+                    <name>Server port</name>
+                    <key>SERVER_PORT_KEY</key>
+                    <default_value>4242</default_value>
+                </preference>
             </service>
 
-            <service uid="startClient" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
-                    <start uid="matrixNetworkListener"/>
+            <service uid="startClient" type="::gui::action::SStarter" >
+                <start uid="matrixNetworkListener" />
             </service>
 
-            <service uid="stopClient" type="::fwGui::IActionSrv" impl="::gui::action::SStarter" autoConnect="no">
-                    <stop uid="matrixNetworkListener"/>
+            <service uid="stopClient" type="::gui::action::SStarter" >
+                <state executable="false" />
+                <stop uid="matrixNetworkListener" />
             </service>
 
-            <service uid="configureClient" type="::fwGui::IActionSrv" impl="::gui::action::SSlotCaller" autoConnect="no">
-                <slots>
-                    <slot>igtlClientEditor/update</slot>
-                </slots>
+            <service uid="configureClient" type="::uiPreferences::action::SPreferencesConfiguration">
+                <preference>
+                    <type>text</type>
+                    <name>Client IP address</name>
+                    <key>CLIENT_IP_KEY</key>
+                    <default_value>127.0.0.1</default_value>
+                </preference>
+                <preference>
+                    <type>number</type>
+                    <name>Client port</name>
+                    <key>CLIENT_PORT_KEY</key>
+                    <default_value>4242</default_value>
+                </preference>
             </service>
 
-
-
-            <service uid="igtlClientEditor" impl="::uiIGTL::SClientConfigEditor" autoConnect="no"/>
-
-            <service uid="igtlServerEditor" impl="::uiIGTL::SServerConfigEditor" autoConnect="no"/>
-
-            <service uid="3DView" impl="::fwRenderVTK::SRender" type="::fwRender::IRender" autoConnect="yes">
+            <service uid="3DView" type="::fwRenderVTK::SRender" autoConnect="yes">
+                <in key="identityMatrix" uid="identityMatrix" />
+                <in key="objectMesh" uid="objectMeshUid" />
                 <scene>
                     <renderer id="default" layer="1" background="0.0" />
                     <renderer id="background" layer="0" background="0.0" />
-
-                    <adaptor id="trackingObjectMatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="meshToTabletMatrix">
-                        <config renderer="default" picker="" transform="trackingObjectMatrixTransform"/>
-                    </adaptor>
 
                     <adaptor id="camera" class="::visuVTKAdaptor::Camera2" objectId="identityMatrix">
                         <config renderer="default"/>
@@ -115,40 +118,49 @@
                 </scene>
             </service>
 
-            <item key="objectMesh">
-                <object uid="objectMeshUid" type="::fwData::Mesh">
-                    <service uid="objectMeshReader" impl="::uiIO::editor::SIOSelector" type="::gui::editor::IDialogEditor" autoConnect="no" />
-                </object>
-            </item>
+            <service uid="objectMeshReader" type="::uiIO::editor::SIOSelector" >
+                <inout key="target" uid="objectMeshUid" />
+            </service>
 
-            <item key="identityMatrix">
-                <object uid="${GENERIC_UID}_identityMatrix" type="::fwData::TransformationMatrix3D" >
-                     <service uid="matrixNetworkListener" type="::ioNetwork::INetworkListener" impl="::ioIGTL::SOpenIGTLinkListener" autoConnect="no">
-                            <server>127.0.0.1:4242</server>
-                     </service>
-                     <service uid="matrixNetworkSender" type="::ioNetwork::INetworkSender" impl="::ioIGTL::SOpenIGTLinkSender" autoConnect="no">
-                             <port>4242</port>
-                     </service>
-                </object>
-            </item>
+            <service uid="matrixNetworkListener" type="::ioIGTL::SOpenIGTLinkListener" >
+                <inout key="target" uid="identityMatrix" />
+                <server>%CLIENT_IP_KEY%:%CLIENT_PORT_KEY%</server>
+            </service>
+
+            <service uid="matrixNetworkSender" type="::ioIGTL::SOpenIGTLinkSender" >
+                <in key="target" uid="identityMatrix" />
+                <port>%SERVER_PORT_KEY%</port>
+            </service>
 
             <connect>
-                <signal>igtlClientEditor/configurationUpdated</signal>
-                <slot>matrixNetworkListener/updateConfiguration</slot>
+                <signal>matrixNetworkSender/serverStarted</signal>
+                <slot>startServer/setInexecutable</slot>
+                <slot>stopServer/setExecutable</slot>
             </connect>
 
             <connect>
-                <signal>igtlServerEditor/configurationUpdated</signal>
-                <slot>matrixNetworkSender/updateConfiguration</slot>
+                <signal>matrixNetworkSender/serverStopped</signal>
+                <slot>startServer/setExecutable</slot>
+                <slot>stopServer/setInexecutable</slot>
             </connect>
 
-            <start uid="MyIHM" />
-            <start uid="igtlClientEditor" />
-            <start uid="igtlServerEditor" />
+            <connect>
+                <signal>matrixNetworkListener/clientConnected</signal>
+                <slot>startClient/setInexecutable</slot>
+                <slot>stopClient/setExecutable</slot>
+            </connect>
+
+            <connect>
+                <signal>matrixNetworkListener/clientDisconnected</signal>
+                <slot>startClient/setExecutable</slot>
+                <slot>stopClient/setInexecutable</slot>
+            </connect>
+
+            <start uid="mainFrame" />
             <start uid="objectMeshReader" />
-            <start uid="matrixNetworkSender" />
 
-        </object>
+            <update uid="startServer" />
+
         </config>
     </extension>
 

@@ -59,7 +59,9 @@ void NetworkSenderWidget::onStart()
             m_sender->setConfiguration(it->second);
             m_sender->configure();
         }
-        m_sender->setPort( m_portEditor->value());
+        SLM_ASSERT("Configuration must be modified to use the port set in the editor.", false);
+        // The virtual function was removed, it is not necessary, the configuration can be modified
+//        m_sender->setPort( m_portEditor->value());
         this->onStart();
     }
 }

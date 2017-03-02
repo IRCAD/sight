@@ -11,24 +11,23 @@
 
 #include <fwData/Object.hpp>
 
-#include <fwThread/Worker.hpp>
-
 #include <igtlNetwork/Client.hpp>
 
 #include <ioNetwork/INetworkListener.hpp>
 
 #include <string>
+#include <future>
 
 namespace ioIGTL
 {
 
 /**
- * @brief class for network client service use OpenIGTLink
+ * @brief   Network client that uses OpenIGTLink protocol
  *
  * @section XML XML Configuration
  * @code{.xml}
  * <service uid="..." type="::ioIGTL::SOpenIGTLinkListener" >
- *      <inout key="object" uid="..." />
+ *      <inout key="target" uid="..." />
  *      <server>127.0.0.1:4242</server>
  *      <deviceName>...</deviceName>
  *      <deviceName>...</deviceName>
@@ -59,42 +58,15 @@ public:
     IOIGTL_API virtual ~SOpenIGTLinkListener();
 
 protected:
-    /**
-     * @brief configure method to configure the network client. Need hostname and port in this format addr:port
-     *
-     * @code{.xml}
-     * <service uid="..." type="::ioIGTL::SOpenIGTLinkListener" >
-     *      <server>127.0.0.1:4242</server>
-     *      <deviceName>...</deviceName>
-     *      <deviceName>...</deviceName>
-     *      ...
-     * </service>
-     * @endcode
-     *
-     * - deviceName(optional) : filter by device Name in Message, by default all message will be processed
-     *
-     */
+
+    /// Configure port, hostname and device name
     IOIGTL_API virtual void configuring() throw ( ::fwTools::Failed );
 
-    /**
-     * @brief start the client and try to connect to the server specify in configuration
-     */
+    /// start the client and try to connect to the server specify in configuration
     IOIGTL_API virtual void starting() throw ( ::fwTools::Failed );
 
-    /**
-     * @brief disconnect the client from the server
-     */
+    /// disconnect the client from the server
     IOIGTL_API virtual void stopping() throw ( ::fwTools::Failed );
-
-    /**
-     * @brief method to set host and port of listener
-     *
-     * @see ioNetwork::INetworkListener
-     *
-     * @param[in] hostname hostname or ip of the server
-     * @param[in] port port of the server
-     */
-    IOIGTL_API void setHost(std::string const& hostname, ::boost::uint16_t const port) throw (::fwTools::Failed);
 
 private:
 
@@ -109,27 +81,17 @@ private:
      */
     void manageTimeline(::fwData::Object::sptr obj);
 
-    ///Helper to parse preference key
-    std::string getPreferenceKey(const std::string& key) const;
-
-
-    /// listener thread for receiving data from client socket
-    ::fwThread::Worker::sptr m_clientWorker;
-
     /// client socket
     ::igtlNetwork::Client m_client;
 
-    /// hostname preference key
-    std::string m_hostnameKey;
+    /// Future used to wait for the client
+    std::future<void> m_clientFuture;
 
-    /// port preference key
-    std::string m_portKey;
+    /// hostname config key
+    std::string m_hostnameConfig;
 
-    /// hostname
-    std::string m_hostname;
-
-    /// port
-    ::boost::uint16_t m_port;
+    /// port config key
+    std::string m_portConfig;
 
     ///Type of timeline
     typedef enum TimelineType

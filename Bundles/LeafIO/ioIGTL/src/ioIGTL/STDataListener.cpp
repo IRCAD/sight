@@ -1,10 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ioIGTL/STDataListener.hpp"
+
+#include "ioIGTL/helper/preferences.hpp"
 
 #include <arData/MatrixTL.hpp>
 
@@ -16,28 +18,23 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwPreferences/helper.hpp>
-
 #include <fwServices/macros.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
-
-#include <fwTools/Failed.hpp>
 
 #include <boost/lexical_cast.hpp>
 
 #include <functional>
 #include <string>
 
-fwServicesRegisterMacro (::ioNetwork::INetworkListener, ::ioIGTL::STDataListener, ::arData::MatrixTL);
+fwServicesRegisterMacro(::ioNetwork::INetworkListener, ::ioIGTL::STDataListener, ::arData::MatrixTL);
 
 namespace ioIGTL
 {
 
+static const std::string s_TIMELINE_KEY = "timeline";
+
 //-----------------------------------------------------------------------------
 
-STDataListener::STDataListener() :
-    m_hostname("127.0.0.1"),
-    m_port(4242)
+STDataListener::STDataListener()
 {
 }
 
@@ -51,37 +48,20 @@ STDataListener::~STDataListener()
 
 void STDataListener::configuring() throw (::fwTools::Failed)
 {
-    std::string serverInfo;
-    std::string portStr;
-    std::string hostnameStr;
-    std::string::size_type splitPosition;
-
     SLM_ASSERT("Configuration not found", m_configuration != NULL);
-    if (m_configuration->findConfigurationElement ("server"))
+    if (m_configuration->findConfigurationElement("server"))
     {
-        serverInfo = m_configuration->findConfigurationElement ("server")->getValue();
-        SLM_INFO ("OpenIGTLinkListener::configure server: " + serverInfo);
-        splitPosition = serverInfo.find (':');
-        SLM_ASSERT ("Server info not formatted correctly", splitPosition != std::string::npos);
+        const std::string serverInfo = m_configuration->findConfigurationElement("server")->getValue();
+        SLM_INFO("OpenIGTLinkListener::configure server: " + serverInfo);
+        const std::string::size_type splitPosition = serverInfo.find(':');
+        SLM_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
 
-        hostnameStr = serverInfo.substr (0, splitPosition);
-        portStr     = serverInfo.substr (splitPosition + 1, serverInfo.size());
-
-        m_hostnameKey = this->getPreferenceKey(hostnameStr);
-        m_portKey     = this->getPreferenceKey(portStr);
-
-        if(m_hostnameKey.empty())
-        {
-            m_hostname = hostnameStr;
-        }
-        if(m_portKey.empty())
-        {
-            m_port = ::boost::lexical_cast< std::uint16_t > (portStr);
-        }
+        m_hostnameConfig = serverInfo.substr(0, splitPosition);
+        m_portConfig     = serverInfo.substr(splitPosition + 1, serverInfo.size());
     }
     else
     {
-        throw ::fwTools::Failed ("Server element not found");
+        throw ::fwTools::Failed("Server element not found");
     }
 
     std::vector < ::fwRuntime::ConfigurationElement::sptr > deviceNames = m_configuration->find("deviceName");
@@ -123,7 +103,10 @@ void STDataListener::runClient() throw (::fwTools::Failed)
     // 1. Connection
     try
     {
-        m_client.connect (m_hostname, m_port);
+        const std::uint16_t port = ::ioIGTL::helper::getPreferenceKey<std::uint16_t>(m_portConfig);
+        const std::string hostname = ::ioIGTL::helper::getPreferenceKey<std::string>(m_hostnameConfig);
+
+        m_client.connect(hostname, port);
     }
     catch (::fwCore::Exception& ex)
     {
@@ -132,7 +115,7 @@ void STDataListener::runClient() throw (::fwTools::Failed)
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            msgDialog.showMessageDialog ("Connection error", ex.what());
+            msgDialog.showMessageDialog("Connection error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else
@@ -163,7 +146,7 @@ void STDataListener::runClient() throw (::fwTools::Failed)
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            msgDialog.showMessageDialog ("Error", ex.what());
+            msgDialog.showMessageDialog("Error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else
@@ -177,41 +160,13 @@ void STDataListener::runClient() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void STDataListener::setHost(std::string const& hostname, std::uint16_t const port) throw (::fwTools::Failed)
-{
-    m_hostname = hostname;
-    m_port     = port;
-}
-
-//-----------------------------------------------------------------------------
-
 void STDataListener::starting() throw (::fwTools::Failed)
 {
-    if(!m_hostnameKey.empty())
-    {
-        std::string hostname = ::fwPreferences::getPreference(m_hostnameKey);
-        if(!hostname.empty())
-        {
-            m_hostname = hostname;
-        }
-    }
-    if(!m_portKey.empty())
-    {
-        std::string port = ::fwPreferences::getPreference(m_portKey);
-        if(!port.empty())
-        {
-            m_port = ::boost::lexical_cast< std::uint16_t > (port);
-        }
-    }
-
-    ::arData::MatrixTL::sptr matTL = this->getObject< ::arData::MatrixTL >();
+    ::arData::MatrixTL::sptr matTL = this->getInOut< ::arData::MatrixTL>(s_TIMELINE_KEY);
     matTL->setMaximumSize(10);
     matTL->initPoolSize(static_cast< unsigned int >(m_matrixNameIndex.size()));
 
-    std::function<void() > task = std::bind (&STDataListener::runClient, this);
-    m_clientWorker = ::fwThread::Worker::New();
-
-    m_clientWorker->post(task);
+    m_clientFuture = std::async(std::launch::async, std::bind(&STDataListener::runClient, this));
 }
 
 //-----------------------------------------------------------------------------
@@ -219,7 +174,7 @@ void STDataListener::starting() throw (::fwTools::Failed)
 void STDataListener::stopping() throw (::fwTools::Failed)
 {
     m_client.disconnect();
-    m_clientWorker->stop();
+    m_clientFuture.wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -227,7 +182,7 @@ void STDataListener::stopping() throw (::fwTools::Failed)
 void STDataListener::manageTimeline(const ::fwData::Composite::sptr& obj)
 {
     ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-    ::arData::MatrixTL::sptr matTL                 = this->getObject< ::arData::MatrixTL >();
+    ::arData::MatrixTL::sptr matTL                 = this->getInOut< ::arData::MatrixTL>(s_TIMELINE_KEY);
     SPTR(::arData::MatrixTL::BufferType) matrixBuf;
     matrixBuf = matTL->createBuffer(timestamp);
 
@@ -246,11 +201,11 @@ void STDataListener::manageTimeline(const ::fwData::Composite::sptr& obj)
             values = transfoMatrix->getCoefficients();
             float matrixValues[16];
             bool isZero = true;
-            for(unsigned int i = 0; i< 16; ++i)
+            for(unsigned int i = 0; i < 16; ++i)
             {
                 matrixValues[i] = static_cast< float >(values[i]);
                 //Test if matrix contains only '0' except last value (always '1)
-                isZero &= i<15 ? (matrixValues[i] == 0.f) : true;
+                isZero &= i < 15 ? (matrixValues[i] == 0.f) : true;
             }
             //don't push the matrix if it contains only '0'
             if(!isZero)
@@ -269,20 +224,5 @@ void STDataListener::manageTimeline(const ::fwData::Composite::sptr& obj)
 
 //-----------------------------------------------------------------------------
 
-std::string STDataListener::getPreferenceKey(const std::string& key) const
-{
-    std::string keyResult;
-    size_t first = key.find('%');
-    size_t last  = key.rfind('%');
-    if (first == 0 && last == key.size() - 1)
-    {
-        keyResult = key.substr(1, key.size() - 2);
-    }
-    return keyResult;
-}
-
-//-----------------------------------------------------------------------------
-
 } // namespace ioIGTL
-
 

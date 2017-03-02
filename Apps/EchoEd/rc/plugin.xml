@@ -200,7 +200,20 @@
                 </registry>
             </service>
 
-            <service uid="igtlClientEditor" type="::uiIGTL::SClientConfigEditor"/>
+            <service uid="configureClient" type="::uiPreferences::action::SPreferencesConfiguration">
+                <preference>
+                    <type>text</type>
+                    <name>Client IP address</name>
+                    <key>CLIENT_IP_KEY</key>
+                    <default_value>127.0.0.1</default_value>
+                </preference>
+                <preference>
+                    <type>number</type>
+                    <name>Client port</name>
+                    <key>CLIENT_PORT_KEY</key>
+                    <default_value>4242</default_value>
+                </preference>
+            </service>
 
             <service uid="sideView" type="::gui::view::SDefaultView">
                 <gui>
@@ -265,12 +278,6 @@
 
             <service uid="stopClient" type="::gui::action::SStarter">
                 <stop uid="matrixNetworkListener"/>
-            </service>
-
-            <service uid="configureClient" type="::gui::action::SSlotCaller">
-                <slots>
-                    <slot>igtlClientEditor/update</slot>
-                </slots>
             </service>
 
             <service uid="organView" type="::fwRenderVTK::SRender" autoConnect="yes">
@@ -494,11 +501,6 @@
             </service>
 
             <connect>
-                <signal>igtlClientEditor/configurationUpdated</signal>
-                <slot>matrixNetworkListener/updateConfiguration</slot>
-            </connect>
-
-            <connect>
                 <signal>sliderCranioCaudal/valueChanged</signal>
                 <slot>imageManager/updateCranioCaudal</slot>
                 <slot>computeMatrixFromCell/updateSingle</slot>
@@ -528,7 +530,6 @@
             <start uid="imageManager" />
             <start uid="concatenateProbeMatrices" />
             <start uid="concatenateEchoMatrices" />
-            <start uid="igtlClientEditor" />
             <start uid="probePosition" />
 
             <!-- Deferred start -->

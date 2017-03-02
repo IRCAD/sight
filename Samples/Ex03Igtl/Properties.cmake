@@ -1,6 +1,6 @@
 
 set( NAME Ex03Igtl )
-set( VERSION 0.1 )
+set( VERSION 0.2 )
 set( TYPE APP )
 set( UNIQUE TRUE)
 set( DEPENDENCIES  )
@@ -10,18 +10,19 @@ set( REQUIREMENTS
     guiQt
     servicesReg
     fwlauncher
-    appXml
+    appXml2
     visuVTK
     visuVTKQt
     visuVTKAdaptor
     media
+    preferences
     io
     ioVTK
     ioNetwork
     ioIGTL
     ioData
     uiIO
-    uiIGTL
+    uiPreferences
     )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex03IgtlConfig)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex03IgtlConfig)
