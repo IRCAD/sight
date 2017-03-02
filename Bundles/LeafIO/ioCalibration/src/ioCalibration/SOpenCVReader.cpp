@@ -12,7 +12,8 @@
 
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
-#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectReadToWriteLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
@@ -65,8 +66,7 @@ bool SOpenCVReader::defineLocationGUI()
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);
-    dialogFile.addFilter("XML file", "*.xml");
-    dialogFile.addFilter("yaml file", "*.yaml");
+    dialogFile.addFilter("XML or YAML file", "*.xml *.yml *.yaml");
 
     ::fwData::location::SingleFile::sptr result
         = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -124,11 +124,23 @@ void SOpenCVReader::updating() throw (::fwTools::Failed)
         SLM_ERROR("The file "+ this->getFile().string() + " cannot be opened.");
     }
 
-    //Clean CameraSeries
-    if(camSeries->getNumberOfCameras() > 0)
+    //Remove all CameraSeries
+    // lock cameraSeries
+    ::fwData::mt::ObjectReadToWriteLock lock(camSeries);
+
+    for(size_t c = 0; c < camSeries->getNumberOfCameras(); ++c)
     {
-        camSeries->clear();
+        ::arData::Camera::sptr cam = camSeries->getCamera(c);
+        lock.upgrade();
+        camSeries->removeCamera(cam);
+
+        auto sig = camSeries->signal< ::arData::CameraSeries::RemovedCameraSignalType >
+                       (::arData::CameraSeries::s_REMOVED_CAMERA_SIG);
+        sig->asyncEmit(cam);
+
     }
+
+    lock.unlock();
 
     int nbCameras;
     fs["nbCameras"] >> nbCameras;
@@ -167,6 +179,7 @@ void SOpenCVReader::updating() throw (::fwTools::Failed)
                                       dist.at<double>(3),
                                       dist.at<double>(4));
 
+        ::fwData::mt::ObjectWriteLock writeLock(camSeries);
         camSeries->addCamera(cam);
 
         auto sig = camSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(
@@ -188,8 +201,11 @@ void SOpenCVReader::updating() throw (::fwTools::Failed)
                                                                         static_cast<int>(j)));
                 }
             }
-
+            ::fwData::mt::ObjectWriteLock writeLock(camSeries);
             camSeries->setExtrinsicMatrix(static_cast<size_t>(c), extMat);
+
+            auto sig = camSeries->signal< ::arData::CameraSeries::ExtrinsicCalibratedSignalType >
+                           (::arData::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG);
         }
     }
 

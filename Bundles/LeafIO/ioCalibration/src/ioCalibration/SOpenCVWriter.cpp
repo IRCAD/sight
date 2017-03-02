@@ -66,7 +66,7 @@ bool SOpenCVWriter::defineLocationGUI()
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);
     dialogFile.addFilter("XML file", "*.xml");
-    dialogFile.addFilter("yaml file", "*.yaml");
+    dialogFile.addFilter("YAML file", "*.yaml *.yml");
 
     ::fwData::location::SingleFile::sptr result
         = ::fwData::location::SingleFile::dynamicCast( dialogFile.show() );
@@ -118,6 +118,7 @@ void SOpenCVWriter::updating() throw (::fwTools::Failed)
         }
     }
 
+    ::fwData::mt::ObjectReadLock lock(camSeries);
     size_t numberOfCameras = camSeries->getNumberOfCameras();
 
     std::vector< ::arData::Camera::sptr > cameras;
