@@ -378,6 +378,9 @@ void SVolumeRender::doStop() throw ( ::fwTools::Failed )
     ::Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture->getHandle());
     m_3DOgreTexture.setNull();
 
+    ::Ogre::TextureManager::getSingleton().remove(m_maskTexture->getHandle());
+    m_maskTexture.setNull();
+
     m_gpuTF.removeTexture();
     m_preIntegrationTable.removeTexture();
 
@@ -819,6 +822,12 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
     {
         this->toggleWidgets(val);
     }
+    else if(key == "idvrCSG")
+    {
+        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+        rayCastVolumeRenderer->toggleIDVRCountersinkGeometry(val);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -867,6 +876,18 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
     {
         this->updateColorBleedingFactor(val);
     }
+    else if(key == "idvrVPImCAlphaCorrection")
+    {
+        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+        rayCastVolumeRenderer->setIDVRVPImCAlphaCorrection(val);
+    }
+    else if(key == "idvrAImCAlphaCorrection")
+    {
+        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+        rayCastVolumeRenderer->setIDVRAImCAlphaCorrection(val);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -879,6 +900,24 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRMethod(val);
         this->requestRender();
+    }
+    else if(key == "3DMode")
+    {
+        if(val == "None")
+        {
+            ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
+            layer->setStereoMode(::fwRenderOgre::Layer::StereoModeType::NONE);
+        }
+        else if(val == "Autostereo(5)")
+        {
+            ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
+            layer->setStereoMode(::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5);
+        }
+        else if(val == "Autostereo(8)")
+        {
+            ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
+            layer->setStereoMode(::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8);
+        }
     }
 }
 

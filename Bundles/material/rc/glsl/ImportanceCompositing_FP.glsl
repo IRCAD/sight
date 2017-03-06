@@ -75,7 +75,6 @@ void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 {
 #if IDVR == 1 // MImP
     IC_JFA = vec4(0.0);
-    //IC_RayTracing = vec4(rayPos, 1.0);
     IC_RayTracing = vec4(0.0, 0.0, 0.0, 1.0);
 #endif
 #if IDVR == 2 // AImC
@@ -103,7 +102,6 @@ void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
         if(maskValue > edge)
         {
             IC_RayTracing = vec4(rayPos, 1.);
-            //IC_JFA = vec4(gl_FragCoord.x / u_viewportWidth, gl_FragCoord.y / u_viewportHeight, rayPos.z, 1.);
             IC_JFA = vec4(uv.x, uv.y, rayPos.z, 1.);
             break;
         }
@@ -133,7 +131,7 @@ void main(void)
     float entryDepth =  rayEntryExit.r;
     float exitDepth  = -rayEntryExit.g;
 
-    if(/*gl_FragCoord.z > entryDepth ||*/ exitDepth == -1)
+    if(exitDepth == -1)
     {
         discard;
     }

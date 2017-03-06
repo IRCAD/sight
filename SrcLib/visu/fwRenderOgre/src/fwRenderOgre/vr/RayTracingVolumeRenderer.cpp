@@ -18,9 +18,13 @@
 #include <OGRE/OgreCompositorChain.h>
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreDepthBuffer.h>
+#include <OGRE/OgreException.h>
+#include <OGRE/OgreGpuProgramManager.h>
 #include <OGRE/OgreHardwareBufferManager.h>
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreHardwareVertexBuffer.h>
+#include <OGRE/OgreHighLevelGpuProgram.h>
+#include <OGRE/OgreHighLevelGpuProgramManager.h>
 #include <OGRE/OgreLight.h>
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMesh.h>
@@ -29,10 +33,12 @@
 #include <OGRE/OgreRenderTexture.h>
 #include <OGRE/OgreRoot.h>
 #include <OGRE/OgreSubMesh.h>
+#include <OGRE/OgreTexture.h>
 #include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreViewport.h>
 
 #include <algorithm>
+#include <regex>
 #include <string>
 
 namespace fwRenderOgre
@@ -57,9 +63,8 @@ public:
     virtual void notifyMaterialSetup(::Ogre::uint32, ::Ogre::MaterialPtr& mtl)
     {
         ::Ogre::Technique* tech = mtl->getBestTechnique();
-        ::Ogre::Pass* pass      = mtl->getBestTechnique()->getPass(0);
 
-        for(int i = 0; i < tech->getNumPasses(); i++ )
+        for(short unsigned int i = 0; i < tech->getNumPasses(); i++ )
         {
             ::Ogre::GpuProgramParametersSharedPtr vrParams = tech->getPass(i)->getFragmentProgramParameters();
 
@@ -134,74 +139,14 @@ public:
 
     RayTracingCompositorListener(std::vector< ::Ogre::TexturePtr>& renderTargets,
                                  std::vector< ::Ogre::Matrix4>& invWorldViewProj,
-                                 ::Ogre::TexturePtr image3DTexture,
-                                 ::Ogre::TexturePtr tfTexture,
-                                 ::fwRenderOgre::vr::SATVolumeIllumination* volIllum,
-                                 ::Ogre::Vector4& volIllumFactor,
-                                 ::fwRenderOgre::vr::PreIntegrationTable& preIntegrationTable,
-                                 float& sampleDistance,
                                  bool is3DMode,
                                  ::Ogre::SceneNode* volumeSceneNode) :
         m_renderTargets(renderTargets),
         m_invWorldViewProj(invWorldViewProj),
-        m_image3DTexture(image3DTexture),
-        m_tfTexture(tfTexture),
-        m_volIllum(volIllum),
-        m_volIllumFactor(volIllumFactor),
-        m_preIntegrationTable(preIntegrationTable),
-        m_sampleDistance(sampleDistance),
         m_is3DMode(is3DMode),
         m_volumeSceneNode(volumeSceneNode)
     {
 
-    }
-
-    //------------------------------------------------------------------------------
-
-    virtual void notifyMaterialSetup(::Ogre::uint32, ::Ogre::MaterialPtr& mtl)
-    {
-        ::Ogre::Pass* pass = mtl->getTechnique(0)->getPass(0);
-
-        ::Ogre::TextureUnitState* imageTexUnitState    = pass->getTextureUnitState("image");
-        ::Ogre::TextureUnitState* tfTexUnitState       = pass->getTextureUnitState("transferFunction");
-        ::Ogre::TextureUnitState* volIllumTexUnitState = pass->getTextureUnitState("illuminationVolume");
-
-        imageTexUnitState->setTextureName(m_image3DTexture->getName());
-
-        if(mtl->getName().find("PreIntegrated") != std::string::npos)
-        {
-            tfTexUnitState->setTextureName(m_preIntegrationTable.getTexture()->getName());
-        }
-        else
-        {
-            tfTexUnitState->setTextureName(m_tfTexture->getName());
-        }
-
-        if(m_volIllum && volIllumTexUnitState)
-        {
-            volIllumTexUnitState->setTextureName(m_volIllum->getIlluminationVolume()->getName());
-        }
-
-        /* mono mode */
-        if(!m_is3DMode)
-        {
-            ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("entryPoints");
-
-            OSLM_ASSERT("No texture named entryPoints", texUnitState);
-            OSLM_ASSERT("No render target available for entry points (Mono mode).", m_renderTargets.size() > 0);
-            texUnitState->setTextureName(m_renderTargets[0]->getName());
-        }
-        /* stereo mode */
-        else
-        {
-            for(unsigned i = 0; i < m_renderTargets.size(); ++i)
-            {
-                ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("entryPoints" + std::to_string(i));
-
-                OSLM_ASSERT("No texture named " << i, texUnitState);
-                texUnitState->setTextureName(m_renderTargets[i]->getName());
-            }
-        }
     }
 
     //------------------------------------------------------------------------------
@@ -220,12 +165,14 @@ public:
         {
             vrParams->setNamedConstant("u_invWorldViewProjs", m_invWorldViewProj.data(), m_invWorldViewProj.size());
         }
-        vrParams->setNamedConstant("u_sampleDistance", m_sampleDistance);
 
         // Set light directions in shader.
         ::Ogre::LightList closestLights = m_volumeSceneNode->getAttachedObject(0)->queryLights();
 
         const size_t numLights = closestLights.size();
+
+        vrParams->setNamedConstant("u_numLights", static_cast<int>(numLights));
+
         for(unsigned i = 0; i < numLights; ++i)
         {
             ::Ogre::Vector3 lightDir = -closestLights[i]->getDerivedDirection();
@@ -240,14 +187,6 @@ public:
 
         ::Ogre::Vector4 shininess(10.f, 0.f, 0.f, 0.f);
         vrParams->setNamedConstant("u_shininess", shininess);
-
-        auto minMax = m_preIntegrationTable.getMinMax();
-
-        if(mtl->getName().find("PreIntegrated") != std::string::npos)
-        {
-            vrParams->setNamedConstant("u_min", minMax.first);
-            vrParams->setNamedConstant("u_max", minMax.second);
-        }
     }
 
 private:
@@ -255,16 +194,6 @@ private:
     const std::vector< ::Ogre::TexturePtr>& m_renderTargets;
 
     const std::vector< ::Ogre::Matrix4>& m_invWorldViewProj;
-
-    const ::Ogre::TexturePtr m_image3DTexture;
-    const ::Ogre::TexturePtr m_tfTexture;
-
-    ::fwRenderOgre::vr::SATVolumeIllumination* m_volIllum;
-    const ::Ogre::Vector4& m_volIllumFactor;
-
-    const ::fwRenderOgre::vr::PreIntegrationTable& m_preIntegrationTable;
-
-    const float& m_sampleDistance;
 
     const bool m_is3DMode;
 
@@ -351,9 +280,13 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_entryPointGeometry(nullptr),
     m_imageSize(::fwData::Image::SizeType({ 1, 1, 1 })),
     m_mode3D(mode3D),
+    m_fpPPDefines(""),
     m_ambientOcclusion(ambientOcclusion),
     m_colorBleeding(colorBleeding),
     m_shadows(shadows),
+    m_idvrCSG(false),
+    m_idvrAImCAlphaCorrection(0.05f),
+    m_idvrVPImCAlphaCorrection(0.3f),
     m_volIllumFactor(colorBleedingFactor, colorBleedingFactor, colorBleedingFactor, aoFactor),
     m_illumVolume(nullptr),
     m_idvrMethod("None"),
@@ -385,6 +318,26 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     {
         ::Ogre::RenderTexture* renderTexture = entryPtsText->getBuffer()->getRenderTarget();
         renderTexture->addViewport(m_camera);
+    }
+
+    // First check that we did not already instanced Shared parameters
+    // This can happen when reinstancing this class (e.g. switching 3D mode)
+    try
+    {
+        m_RTVSharedParameters = ::Ogre::GpuProgramManager::getSingleton().getSharedParameters("RTVParams");
+    }
+    catch(::Ogre::InvalidParametersException e)
+    {
+        m_RTVSharedParameters = ::Ogre::GpuProgramManager::getSingleton().createSharedParameters("RTVParams");
+
+        // define the shared param structure
+        m_RTVSharedParameters->addConstantDefinition("u_vpimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
+        m_RTVSharedParameters->addConstantDefinition("u_aimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
+        m_RTVSharedParameters->addConstantDefinition("u_sampleDistance", ::Ogre::GCT_FLOAT1);
+        m_RTVSharedParameters->addConstantDefinition("u_min", ::Ogre::GCT_INT1);
+        m_RTVSharedParameters->addConstantDefinition("u_max", ::Ogre::GCT_INT1);
+        m_RTVSharedParameters->setNamedConstant("u_aimcalphaCorrection", m_idvrAImCAlphaCorrection);
+        m_RTVSharedParameters->setNamedConstant("u_vpimcalphaCorrection", m_idvrVPImCAlphaCorrection);
     }
 
     initCompositors();
@@ -430,6 +383,249 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 
 //-----------------------------------------------------------------------------
 
+void RayTracingVolumeRenderer::addRayTracingCompositor()
+{
+    // Get the required managers
+    // We need to use the GpuProgramManager and not the HighLevelGpuProgramManager
+    // Because we must be able to clear the microcode cache of previous version of shaders
+    // Otherwise we end up using the same version of the shader when recompiling with different preprocessor options
+    ::Ogre::GpuProgramManager* gpm = ::Ogre::GpuProgramManager::getSingletonPtr();
+
+    //gpm->setSaveMicrocodesToCache(false);
+
+    ::Ogre::MaterialManager* mm   = ::Ogre::MaterialManager::getSingletonPtr();
+    ::Ogre::CompositorManager& cm = ::Ogre::CompositorManager::getSingleton();
+    ::Ogre::TextureManager& tm    = ::Ogre::TextureManager::getSingleton();
+
+    // Remove resources and purge microcodes from cache to avoid cache effects when using preprocessor defines
+    ::Ogre::ResourcePtr resource;
+    resource = gpm->getResourceByName("RTV_VP", ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+    if(!resource.isNull())
+    {
+        gpm->remove(resource);
+        gpm->removeMicrocodeFromCache(resource->getName());
+    }
+    resource = gpm->getResourceByName("RTV_FP", ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+    if(!resource.isNull())
+    {
+        gpm->remove(resource);
+        gpm->removeMicrocodeFromCache(resource->getName());
+    }
+    resource = mm->getResourceByName("RTV_Mat", ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+    if(!resource.isNull())
+    {
+        mm->remove(resource);
+    }
+    resource = cm.getResourceByName("RTV_Comp", ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+    if(!resource.isNull())
+    {
+        cm.remove(resource);
+    }
+
+    // Vertex shader
+    Ogre::GpuProgramPtr vsp = gpm->createProgram("RTV_VP", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                                                 "RenderQuad_VP.glsl", Ogre::GPT_VERTEX_PROGRAM, "glsl");
+    vsp->escalateLoading();
+    vsp->load();
+
+    // Fragment shader
+    ::Ogre::GpuProgramPtr fsp = gpm->createProgram("RTV_FP", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                                                   "RayTracedVolume_FP.glsl", ::Ogre::GPT_FRAGMENT_PROGRAM, "glsl");
+    fsp->setParameter("attach", "TransferFunction_FP");
+    if(m_fpPPDefines.size() > 0)
+    {
+        fsp->setParameter("preprocessor_defines", m_fpPPDefines);
+    }
+    fsp->escalateLoading();
+    fsp->load();
+
+    // Material
+    ::Ogre::MaterialPtr mat = mm->create("RTV_Mat", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    // Get the already created pass through the already created technique
+    Ogre::Technique* tech = mat->getTechnique(0);
+    Ogre::Pass* pass      = tech->getPass(0);
+    pass->setCullingMode(::Ogre::CULL_NONE);
+    pass->setSceneBlending(::Ogre::SBF_SOURCE_ALPHA, ::Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
+
+    pass->setVertexProgram("RTV_VP");
+    pass->getVertexProgramParameters()->setNamedAutoConstant("u_worldViewProj",
+                                                             Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+
+    pass->setFragmentProgram("RTV_FP");
+    pass->getFragmentProgramParameters()->setNamedAutoConstant("u_viewportWidth",
+                                                               Ogre::GpuProgramParameters::ACT_VIEWPORT_WIDTH);
+    pass->getFragmentProgramParameters()->setNamedAutoConstant("u_viewportHeight",
+                                                               Ogre::GpuProgramParameters::ACT_VIEWPORT_HEIGHT);
+    pass->getFragmentProgramParameters()->setNamedAutoConstant("u_clippingNear",
+                                                               Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
+    pass->getFragmentProgramParameters()->setNamedAutoConstant("u_clippingFar",
+                                                               Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
+    pass->getFragmentProgramParameters()->setNamedAutoConstant("u_cameraPos",
+                                                               Ogre::GpuProgramParameters::ACT_LOD_CAMERA_POSITION);
+    pass->getFragmentProgramParameters()->addSharedParameters("RTVParams");
+
+    // Setup textures
+    int numTexUnit = 0;
+    ::Ogre::TextureUnitState* texUnitState;
+    // Volume data
+    texUnitState = pass->createTextureUnitState();
+    texUnitState->setTextureName(m_3DOgreTexture->getName(), ::Ogre::TEX_TYPE_3D);
+    texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+    texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+    pass->getFragmentProgramParameters()->setNamedConstant("u_image", numTexUnit++);
+
+    // Transfer function
+    if(m_fpPPDefines.find("PREINTEGRATION=1") != std::string::npos)
+    {
+        texUnitState = pass->createTextureUnitState(m_preIntegrationTable.getTexture()->getName());
+        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+    }
+    else
+    {
+        texUnitState = pass->createTextureUnitState(m_gpuTF.getTexture()->getName());
+        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+    }
+    pass->getFragmentProgramParameters()->setNamedConstant("u_tfTexture", numTexUnit++);
+
+    if(m_fpPPDefines.find("AMBIENT_OCCLUSION=1") != std::string::npos)
+    {
+        texUnitState = pass->createTextureUnitState(m_illumVolume->getIlluminationVolume()->getName());
+        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+
+        pass->getFragmentProgramParameters()->setNamedConstant("u_illuminationVolume", numTexUnit++);
+        pass->getFragmentProgramParameters()->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
+    }
+
+    if(m_fpPPDefines.find("IDVR=1") != std::string::npos)
+    {
+        ::Ogre::TexturePtr mrt_IC;
+
+        auto rm = tm.getResourceIterator();
+        for(auto r : rm)
+        {
+            // We match only the first target (0 at the end) of the mrt_IC texture
+            std::regex re("(.*)(\\/mrt_IC\\/)(.*)(0)$");
+
+            if(std::regex_match(r.second->getName(), re))
+            {
+                mrt_IC = tm.getByName(r.second->getName());
+
+                texUnitState = pass->createTextureUnitState(mrt_IC->getName());
+                texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+                texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+
+                pass->getFragmentProgramParameters()->setNamedConstant("u_IC", numTexUnit++);
+                break;
+            }
+        }
+    }
+
+    if(m_fpPPDefines.find("IDVR=2") != std::string::npos
+       || m_fpPPDefines.find("IDVR=3") != std::string::npos
+       )
+    {
+        ::Ogre::TexturePtr IC;
+
+        auto rm = tm.getResourceIterator();
+        for(auto r : rm)
+        {
+            // We match only the IC texture only
+            std::regex re("(.*)(\\/" + m_idvrMethod + "\\/)(.*)");
+
+            if(std::regex_match(r.second->getName(), re))
+            {
+                IC = tm.getByName(r.second->getName());
+
+                texUnitState = pass->createTextureUnitState(IC->getName());
+                texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+                texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+
+                pass->getFragmentProgramParameters()->setNamedConstant("u_IC", numTexUnit++);
+                if(m_idvrMethod == "AImC")
+                {
+                    pass->getFragmentProgramParameters()->setNamedConstant("u_aimcAlphaCorrection",
+                                                                           m_idvrAImCAlphaCorrection);
+                }
+                else
+                {
+                    pass->getFragmentProgramParameters()->setNamedConstant("u_vpimcAlphaCorrection",
+                                                                           m_idvrVPImCAlphaCorrection);
+                }
+                break;
+            }
+        }
+    }
+
+    if(m_fpPPDefines.find("IDVR=1") != std::string::npos)
+    {
+        ::Ogre::TexturePtr jfa;
+
+        auto rm = tm.getResourceIterator();
+        for(auto r : rm)
+        {
+            if(r.second->getName().find("JFAFinal") != std::string::npos)
+            {
+                jfa = tm.getByName(r.second->getName());
+
+                texUnitState = pass->createTextureUnitState(jfa->getName());
+                texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+                texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+
+                pass->getFragmentProgramParameters()->setNamedConstant("u_JFA", numTexUnit++);
+                break;
+            }
+        }
+    }
+
+    /* mono mode */
+    if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE)
+    {
+        texUnitState = pass->createTextureUnitState(m_entryPointsTextures[0]->getName());
+        texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
+        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+
+        pass->getFragmentProgramParameters()->setNamedConstant("u_entryPoints", numTexUnit++);
+    }
+    /* stereo mode */
+    else
+    {
+        for(unsigned i = 0; i < m_entryPointsTextures.size(); ++i)
+        {
+            ::Ogre::TextureUnitState* texUnitState = pass->createTextureUnitState(m_entryPointsTextures[i]->getName());
+            texUnitState->setTextureName(m_entryPointsTextures[i]->getName());
+
+            std::ostringstream oss;
+            oss << "u_entryPoints" << i;
+            pass->getFragmentProgramParameters()->setNamedConstant(oss.str(), numTexUnit++);
+        }
+    }
+
+    // Create compositor
+    ::Ogre::CompositorPtr comp = cm.create("RTV_Comp", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    {
+        ::Ogre::CompositionTechnique* ct = comp->createTechnique();
+        {
+            ::Ogre::CompositionTargetPass* ctp = ct->getOutputTargetPass();
+            {
+                ctp->setInputMode(::Ogre::CompositionTargetPass::IM_NONE);
+
+                //{
+                //::Ogre::CompositionPass * cp = ctp->createPass();
+                //cp->setType(::Ogre::CompositionPass::PT_CLEAR);
+                //}
+                {
+                    ::Ogre::CompositionPass* cp = ctp->createPass();
+                    cp->setType(::Ogre::CompositionPass::PT_RENDERQUAD);
+                    cp->setMaterialName("RTV_Mat");
+                }
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData::TransferFunction::sptr tf)
 {
     this->scaleCube(image->getSpacing());
@@ -463,6 +659,13 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
     if(m_preIntegratedRendering)
     {
         m_preIntegrationTable.imageUpdate(image, tf, m_sampleDistance);
+
+        // After having updated the preintegrated transfer function
+        // We update the corresponding shader parameters
+        auto minMax = m_preIntegrationTable.getMinMax();
+
+        m_RTVSharedParameters->setNamedConstant("u_min", minMax.first);
+        m_RTVSharedParameters->setNamedConstant("u_max", minMax.second);
     }
 }
 
@@ -515,6 +718,9 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
     m_nbSlices = nbSamples;
 
     computeSampleDistance(getCameraPlane());
+
+    // Update the sample distance in the shaders
+    m_RTVSharedParameters->setNamedConstant("u_sampleDistance", m_sampleDistance);
 }
 
 //-----------------------------------------------------------------------------
@@ -597,11 +803,6 @@ void RayTracingVolumeRenderer::setFocalLength(float focalLength)
 void RayTracingVolumeRenderer::setIDVRMethod(std::string method)
 {
     m_idvrMethod = method;
-
-    ::Ogre::CompositorInstance* compositorInstance = nullptr;
-
-    SLM_ASSERT("IDVR isn't currently supported with autostereo mode",
-               m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE);
 
     this->initCompositors();
 }
@@ -898,43 +1099,70 @@ void RayTracingVolumeRenderer::updateVolIllumMat()
 
 void RayTracingVolumeRenderer::updateCompositorName()
 {
-    m_compositorName = "RayTracedVolume";
+    std::ostringstream ppDefs;
+
+    ppDefs.str("");
 
     if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE)
     {
         if(m_ambientOcclusion)
         {
-            m_compositorName += "_AmbientOcclusion";
+            ppDefs << (ppDefs.str() == "" ? "" : ",") << "AMBIENT_OCCLUSION=1";
         }
 
         if(m_colorBleeding)
         {
-            m_compositorName += "_ColorBleeding";
+            ppDefs << (ppDefs.str() == "" ? "" : ",") << "COLOR_BLEEDING=1";
         }
 
         if(m_shadows)
         {
-            m_compositorName += "_Shadows";
+            ppDefs << (ppDefs.str() == "" ? "" : ",") << "SHADOWS=1";
         }
 
         if(m_preIntegratedRendering)
         {
-            m_compositorName += "_PreIntegrated";
+            ppDefs << (ppDefs.str() == "" ? "" : ",") << "PREINTEGRATION=1";
         }
 
         if(m_idvrMethod != "None")
         {
-            m_compositorName += "_" + m_idvrMethod;
+            if(m_idvrMethod == "MImP")
+            {
+                ppDefs << (ppDefs.str() == "" ? "" : ",") << "IDVR=1";
+                if(m_idvrCSG)
+                {
+                    ppDefs << (ppDefs.str() == "" ? "" : ",") << "CSG=1";
+                }
+            }
+            else if(m_idvrMethod == "AImC")
+            {
+                ppDefs << (ppDefs.str() == "" ? "" : ",") << "IDVR=2";
+            }
+            else if(m_idvrMethod == "VPImC")
+            {
+                ppDefs << (ppDefs.str() == "" ? "" : ",") << "IDVR=3";
+            }
         }
-
-        m_compositorName += "_Comp";
     }
     else
     {
-        m_compositorName += m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ?
-                            "3D8" :
-                            "3D5";
+        ppDefs << (ppDefs.str() == "" ? "" : ",") << "MODE3D=1";
+        if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
+        {
+            ppDefs << (ppDefs.str() == "" ? "" : ",") << "VIEWPOINTS=5";
+        }
+        else if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
+        {
+            ppDefs << (ppDefs.str() == "" ? "" : ",") << "VIEWPOINTS=8";
+        }
+        else
+        {
+            ppDefs << (ppDefs.str() == "" ? "" : ",") << "VIEWPOINTS=1";
+        }
     }
+
+    m_fpPPDefines = ppDefs.str();
 }
 
 //-----------------------------------------------------------------------------
@@ -972,9 +1200,6 @@ void RayTracingVolumeRenderer::buildCompositorChain()
 
     ::Ogre::CompositorInstance* compositorInstance = nullptr;
     std::string idvrCompositorName;
-
-    SLM_ASSERT("IDVR isn't currently supported with autostereo mode",
-               m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE);
 
     if(m_idvrMethod == "MImP")
     {
@@ -1116,18 +1341,14 @@ void RayTracingVolumeRenderer::buildCompositorChain()
         compositorInstance->addListener(m_compositorListeners.back());
     }
 
-    compositorInstance = compositorManager.addCompositor(viewport, m_compositorName);
+    this->addRayTracingCompositor();
+
+    compositorInstance = compositorManager.addCompositor(viewport, "RTV_Comp");
     SLM_ASSERT("Compositor could not be initialized", compositorInstance);
     compositorInstance->setEnabled(true);
 
     m_compositorListeners.push_back(new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
                                                                                                m_viewPointMatrices,
-                                                                                               m_3DOgreTexture,
-                                                                                               m_gpuTF.getTexture(),
-                                                                                               m_illumVolume,
-                                                                                               m_volIllumFactor,
-                                                                                               m_preIntegrationTable,
-                                                                                               m_sampleDistance,
                                                                                                (m_mode3D !=
                                                                                                 ::fwRenderOgre::Layer::
                                                                                                 StereoModeType::NONE),
@@ -1188,6 +1409,39 @@ void RayTracingVolumeRenderer::cleanCompositorChain(::Ogre::CompositorChain* com
     // Then clean the whole chain
     compChain->removeAllCompositors();
     m_compositorListeners.clear();
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::toggleIDVRCountersinkGeometry(bool CSG)
+{
+    m_idvrCSG = CSG;
+
+    this->initCompositors();
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::setIDVRAImCAlphaCorrection(double alphaCorrection)
+{
+    m_idvrAImCAlphaCorrection = static_cast<float>(alphaCorrection);
+
+    if(m_idvrMethod == "AImC")
+    {
+        m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", static_cast<float>(alphaCorrection));
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::setIDVRVPImCAlphaCorrection(double alphaCorrection)
+{
+    m_idvrVPImCAlphaCorrection = static_cast<float>(alphaCorrection);
+
+    if(m_idvrMethod == "VPImC")
+    {
+        m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", static_cast<float>(alphaCorrection));
+    }
 }
 
 //-----------------------------------------------------------------------------

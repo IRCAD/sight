@@ -25,9 +25,9 @@ compositor IDVR_AImC_Comp
 {
     technique
     {
-        texture IC target_width target_height PF_FLOAT32_RGBA pooled chain_scope
+        texture AImC target_width target_height PF_FLOAT32_RGBA pooled chain_scope
 
-        target IC
+        target AImC
         {
             input none
             pass clear
@@ -47,9 +47,9 @@ compositor IDVR_VPImC_Comp
 {
     technique
     {
-        texture IC target_width target_height PF_FLOAT32_RGBA pooled chain_scope
+        texture VPImC target_width target_height PF_FLOAT32_RGBA pooled chain_scope
 
-        target IC
+        target VPImC
         {
             input none
             pass clear

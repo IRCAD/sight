@@ -3,8 +3,10 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="maskUID" />
-        <param name="idvrParamChannel" />
         <param name="ICON_PATH" />
+        <param name="idvrEnumParamChannel" />
+        <param name="idvrBoolParamChannel" />
+        <param name="idvrDoubleParamChannel" />
     </parameters>
 
     <config>
@@ -25,8 +27,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="idvrMethodSelector" start="yes" />
                 <view sid="selectMask" start="yes" />
+                <view sid="idvrMethodSelector" start="yes" />
             </registry>
         </service>
 
@@ -35,6 +37,9 @@
         <service uid="idvrMethodSelector" type="::guiQt::editor::SParameters">
             <parameters>
                 <param type="enum" name="Importance-driven VR Methods" key="idvrMethod" defaultValue="None" values="None,MImP,AImC,VPImC" />
+                <param type="bool" name="Enable Countersink geometry for MImP" key="idvrCSG" defaultValue="false" />
+                <param type="double" name="Alpha correction for AImC" key="idvrAImCAlphaCorrection" defaultValue="0.05" min="0.0" max="1.0" />
+                <param type="double" name="Alpha correction for VPImP" key="idvrVPImCAlphaCorrection" defaultValue="0.3" min="0.0" max="1.0" />
             </parameters>
         </service>
 
@@ -57,8 +62,16 @@
             <slot>maskReader/update</slot>
         </connect>
 
-        <connect channel="${idvrParamChannel}">
+        <connect channel="${idvrEnumParamChannel}">
             <signal>idvrMethodSelector/enumChanged</signal>
+        </connect>
+
+        <connect channel="${idvrBoolParamChannel}">
+            <signal>idvrMethodSelector/boolChanged</signal>
+        </connect>
+
+        <connect channel="${idvrDoubleParamChannel}">
+            <signal>idvrMethodSelector/doubleChanged</signal>
         </connect>
 
         <start uid="idvrView" />

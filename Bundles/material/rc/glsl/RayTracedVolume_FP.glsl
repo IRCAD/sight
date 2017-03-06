@@ -68,6 +68,13 @@ uniform int u_min;
 uniform int u_max;
 #endif // PREINTEGRATION
 
+#if IDVR == 2
+uniform float u_aimcAlphaCorrection;
+#endif
+#if IDVR == 3
+uniform float u_vpimcAlphaCorrection;
+#endif
+
 out vec4 fragColor;
 
 //-----------------------------------------------------------------------------
@@ -255,7 +262,7 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
             // We ensure that we have a number of samples > 0, to be in the region of interest
             if(aimc.r > 0 && nbSamples <= aimc.r)
             {
-                tfColour.a = tfColour.a * 0.05;
+                tfColour.a = tfColour.a * u_aimcAlphaCorrection;
             }
 #endif
 
@@ -264,7 +271,8 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
             // We ensure that we have a number of samples > 0, to be in the region of interest
             if(aimc.r > 0 && int(nbSamples) == int(aimc.r))
             {
-                result.a = 0.3;
+                result.rgb = result.rgb * u_vpimcAlphaCorrection;
+                result.a = u_vpimcAlphaCorrection;
             }
 #endif
 
@@ -305,7 +313,7 @@ void main(void)
     float entryDepth =  rayEntryExit.r;
     float exitDepth  = -rayEntryExit.g;
 
-    if(/*gl_FragCoord.z > entryDepth ||*/ exitDepth == -1)
+    if(exitDepth == -1)
     {
         discard;
     }
@@ -325,6 +333,7 @@ void main(void)
     {
         rayEntry = importance.rgb;
     }
+#ifdef CSG
     /* Otherwise, we use the distance to the closest important point */
     /* to dig into the volume */
     else
@@ -339,6 +348,7 @@ void main(void)
             rayEntry += rayDir * csg;
         }
     }
+#endif
 #endif // IDVR == 1
 
     rayDir = rayDir * u_sampleDistance;
@@ -365,7 +375,7 @@ void main(void)
         float entryDepth =  rayEntryPoints[i].r;
         float exitDepth  = -rayEntryPoints[i].g;
 
-        if(/*gl_FragCoord.z > entryDepth ||*/ exitDepth == -1)
+        if(exitDepth == -1)
         {
             fragColor[i] = 0;
             continue;

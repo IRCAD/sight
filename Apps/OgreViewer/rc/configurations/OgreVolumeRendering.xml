@@ -5,8 +5,10 @@
         <param name="WID_PARENT" />
         <param name="imageUID" />
         <param name="maskUID" />
-        <param name="idvrParamChannel" />
         <param name="TFSelections" />
+        <param name="idvrEnumParamChannel" />
+        <param name="idvrBoolParamChannel" />
+        <param name="idvrDoubleParamChannel" />
     </parameters>
     <config>
 
@@ -76,6 +78,7 @@
         <service uid="vrBasicEditor" type="::guiQt::editor::SParameters" autoConnect="no">
             <parameters>
                 <param type="bool" name="Widgets" key="widgets" defaultValue="false" />
+                <param type="enum" name="3DMode" key="3DMode" defaultValue="None" values="None,Autostereo(5),Autostereo(8)" />
                 <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="1024" />
                 <param type="int" name="Focal length" key="focalLength" defaultValue="50" min="0" max="100" />
                 <param type="bool" name="Pre-integration" key="preIntegration" defaultValue="false" />
@@ -105,6 +108,11 @@
         </connect>
 
         <connect>
+            <signal>vrBasicEditor/enumChanged</signal>
+            <slot>volumeRender/setEnumParameter</slot>
+        </connect>
+
+        <connect>
             <signal>vrBasicEditor/intChanged</signal>
             <slot>volumeRender/setIntParameter</slot>
         </connect>
@@ -124,8 +132,16 @@
             <slot>volumeRender/setDoubleParameter</slot>
         </connect>
 
-        <connect channel="${idvrParamChannel}">
+        <connect channel="${idvrEnumParamChannel}">
             <slot>volumeRender/setEnumParameter</slot>
+        </connect>
+
+        <connect channel="${idvrBoolParamChannel}">
+            <slot>volumeRender/setBoolParameter</slot>
+        </connect>
+
+        <connect channel="${idvrDoubleParamChannel}">
+            <slot>volumeRender/setDoubleParameter</slot>
         </connect>
 
         <start uid="OgreVolumeRendering" />

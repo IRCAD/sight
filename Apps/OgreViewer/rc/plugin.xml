@@ -235,7 +235,9 @@
                 <inout key="maskUID" uid="maskUID" />
                 <inout key="TFSelections" uid="TFSelections" />
                 <parameter replace="WID_PARENT" uid="OgreVolumeRenderingView" />
-                <parameter replace="idvrParamChannel" by="idvrParamChannel" />
+                <parameter replace="idvrEnumParamChannel" by="idvrEnumParamChannel" />
+                <parameter replace="idvrBoolParamChannel" by="idvrBoolParamChannel" />
+                <parameter replace="idvrDoubleParamChannel" by="idvrDoubleParamChannel" />
             </service>
 
             <service uid="cfgOrganManagerConfig"  type="::fwServices::SConfigController">
@@ -256,7 +258,9 @@
                 <inout key="maskUID" uid="maskUID" />
                 <parameter replace="WID_PARENT" uid="idvrView" />
                 <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/arMedia_0-1/icons/app.ico" />
-                <parameter replace="idvrParamChannel" by="idvrParamChannel" />
+                <parameter replace="idvrEnumParamChannel" by="idvrEnumParamChannel" />
+                <parameter replace="idvrBoolParamChannel" by="idvrBoolParamChannel" />
+                <parameter replace="idvrDoubleParamChannel" by="idvrDoubleParamChannel" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->

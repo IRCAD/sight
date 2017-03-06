@@ -63,6 +63,9 @@ public:
     /// Does nothing.
     FWRENDEROGRE_API virtual ~RayTracingVolumeRenderer();
 
+    /// Function to build and a tailor-made ray tracing compositor to the compositor chain
+    FWRENDEROGRE_API virtual void addRayTracingCompositor();
+
     /// Function called when a new image is being rendered.
     FWRENDEROGRE_API virtual void imageUpdate(::fwData::Image::sptr image, ::fwData::TransferFunction::sptr tf);
 
@@ -107,6 +110,15 @@ public:
 
     /// IllumVolume getter.
     FWRENDEROGRE_API SATVolumeIllumination* getIllumVolume();
+
+    /// Toggle countersink geometry when using Importance Driven Volume Rendering
+    void toggleIDVRCountersinkGeometry(bool);
+
+    /// Setup the alpha correction factor used in the VPImC method
+    void setIDVRAImCAlphaCorrection(double);
+
+    /// Setup the alpha correction factor used in the VPImC method
+    void setIDVRVPImCAlphaCorrection(double);
 
     /// Layer getter
     ::fwRenderOgre::Layer::sptr getLayer() const;
@@ -192,6 +204,9 @@ private:
     /// Sets stereoscopic volume rendering for autostereoscopic monitors.
     ::fwRenderOgre::Layer::StereoModeType m_mode3D;
 
+    /// Comma separated list of preprocessor defines to use in fragment shaders
+    std::string m_fpPPDefines;
+
     /// Sets usage of ambient occlusion.
     bool m_ambientOcclusion;
 
@@ -201,11 +216,27 @@ private:
     /// Sets usage of soft shadows.
     bool m_shadows;
 
+    /// Sets usage of countersink geometry for IDVR
+    bool m_idvrCSG;
+
+    /// Sets the alpha correction for AImC
+    float m_idvrAImCAlphaCorrection;
+
+    /// Sets the alpha correction for VPImC
+    float m_idvrVPImCAlphaCorrection;
+
     /// Factor parameter used to weight ambient occlusion (A channel) and color bleeding (RGB channels).
     ::Ogre::Vector4 m_volIllumFactor;
 
     /// Name of the current volume illumination material.
     std::string m_currentMtlName;
+
+    /// Shared parameters used for Ray tracing. This should help avoiding using the listener.
+    /// We resort to those parameters because setting them using:
+    /// ::Ogre::MaterialManager::getSingletonPtr()->getByName("RTV_Mat")->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant(paramName,
+    // m_idvrAlphaCorrection);
+    /// Only seems to update them when instancing the corresponding material
+    ::Ogre::GpuSharedParametersPtr m_RTVSharedParameters;
 
     SATVolumeIllumination* m_illumVolume;
 
@@ -227,8 +258,6 @@ private:
     /// List of all listeners associated to the VR's compositor chain.
     /// If a compositor has no listener, we store a nullptr in the corresponding entry.
     std::vector< ::Ogre::CompositorInstance::Listener*> m_compositorListeners;
-
-    std::string m_compositorName;
 
     ::fwRenderOgre::Layer::wptr m_layer;
 };
