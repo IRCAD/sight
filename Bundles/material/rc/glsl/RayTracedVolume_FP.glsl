@@ -21,12 +21,25 @@ uniform vec4 u_volIllumFactor;
 #ifdef MODE3D
 uniform sampler2D u_entryPoints0;
 uniform sampler2D u_entryPoints1;
+#if (VIEWPOINTS > 2)
 uniform sampler2D u_entryPoints2;
+#endif    /* (VIEWPOINTS > 2) */
+#if (VIEWPOINTS > 3)
 uniform sampler2D u_entryPoints3;
+#endif    /* (VIEWPOINTS > 3) */
+#if (VIEWPOINTS > 4)
 uniform sampler2D u_entryPoints4;
+#endif    /* (VIEWPOINTS > 4) */
+#if (VIEWPOINTS > 5)
 uniform sampler2D u_entryPoints5;
+#endif    /* (VIEWPOINTS > 5) */
+#if (VIEWPOINTS > 6)
 uniform sampler2D u_entryPoints6;
+#endif    /* (VIEWPOINTS > 6) */
+#if (VIEWPOINTS > 7)
 uniform sampler2D u_entryPoints7;
+#endif    /* (VIEWPOINTS > 7) */
+
 
 uniform mat4 u_invWorldViewProjs[VIEWPOINTS];
 

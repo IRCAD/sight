@@ -291,6 +291,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_illumVolume(nullptr),
     m_idvrMethod("None"),
     m_focalLength(0.f),
+    m_lobeOffset(1.f),
     m_cameraListener(nullptr),
     m_layer(layer)
 {
@@ -334,6 +335,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         m_RTVSharedParameters->addConstantDefinition("u_vpimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_aimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_sampleDistance", ::Ogre::GCT_FLOAT1);
+        m_RTVSharedParameters->addConstantDefinition("u_lobeOffset", ::Ogre::GCT_FLOAT1);
+        m_RTVSharedParameters->addConstantDefinition("u_volIllumFactor", ::Ogre::GCT_FLOAT4);
         m_RTVSharedParameters->addConstantDefinition("u_min", ::Ogre::GCT_INT1);
         m_RTVSharedParameters->addConstantDefinition("u_max", ::Ogre::GCT_INT1);
         m_RTVSharedParameters->setNamedConstant("u_aimcalphaCorrection", m_idvrAImCAlphaCorrection);
@@ -494,7 +497,8 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
         pass->getFragmentProgramParameters()->setNamedConstant("u_illuminationVolume", numTexUnit++);
-        pass->getFragmentProgramParameters()->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
+        // Update the shader parameter
+        m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
     }
 
     if(m_fpPPDefines.find("IDVR=1") != std::string::npos)
@@ -544,13 +548,11 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
                 pass->getFragmentProgramParameters()->setNamedConstant("u_IC", numTexUnit++);
                 if(m_idvrMethod == "AImC")
                 {
-                    pass->getFragmentProgramParameters()->setNamedConstant("u_aimcAlphaCorrection",
-                                                                           m_idvrAImCAlphaCorrection);
+                    m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
                 }
                 else
                 {
-                    pass->getFragmentProgramParameters()->setNamedConstant("u_vpimcAlphaCorrection",
-                                                                           m_idvrVPImCAlphaCorrection);
+                    m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
                 }
                 break;
             }
@@ -599,6 +601,8 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
             oss << "u_entryPoints" << i;
             pass->getFragmentProgramParameters()->setNamedConstant(oss.str(), numTexUnit++);
         }
+
+        m_RTVSharedParameters->setNamedConstant("u_lobeOffset", m_lobeOffset);
     }
 
     // Create compositor
@@ -728,6 +732,9 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
 void RayTracingVolumeRenderer::setAOFactor(double aoFactor)
 {
     m_volIllumFactor.w = static_cast< ::Ogre::Real>(aoFactor);
+
+    // Update the shader parameter
+    m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
 }
 
 //-----------------------------------------------------------------------------
@@ -736,6 +743,9 @@ void RayTracingVolumeRenderer::setColorBleedingFactor(double colorBleedingFactor
 {
     ::Ogre::Real cbFactor = static_cast< ::Ogre::Real>(colorBleedingFactor);
     m_volIllumFactor      = ::Ogre::Vector4(cbFactor, cbFactor, cbFactor, m_volIllumFactor.w);
+
+    // Update the shader parameter
+    m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
 }
 
 //-----------------------------------------------------------------------------

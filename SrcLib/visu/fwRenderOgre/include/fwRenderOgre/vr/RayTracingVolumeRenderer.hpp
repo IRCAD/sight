@@ -246,6 +246,9 @@ private:
     /// Focal distance in object space : 0 = object front, 1 = object back.
     float m_focalLength;
 
+    /// Lobe offset parameter used in 3D mode
+    float m_lobeOffset;
+
     /// Camera listener class used to compute the entry points textures before rendering.
     struct CameraListener;
     CameraListener* m_cameraListener;
