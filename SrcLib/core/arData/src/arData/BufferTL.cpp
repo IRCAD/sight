@@ -42,6 +42,8 @@ void BufferTL::allocPoolSize(std::size_t size)
 {
     this->clearTimeline();
     ::fwCore::mt::WriteLock lock(m_tlMutex);
+
+    SLM_ASSERT( "Allocation size must be greater than 0", size > 0 );
     m_pool = std::make_shared< PoolType >(size);
 }
 

@@ -72,6 +72,8 @@ void FrameTL::initPoolSize(size_t width, size_t height, const ::fwTools::Type& t
 
     std::size_t size = width * height * numberOfComponents * type.sizeOf();
 
+    SLM_ASSERT("width or height or numberOfComponents is null", size != 0);
+
     m_maxElementNum = maxElementNum;
     this->allocPoolSize(size * m_maxElementNum);
 }

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,6 +9,8 @@
 
 #include "videoQt/config.hpp"
 
+#include <boost/filesystem/path.hpp>
+
 #include <QAbstractVideoSurface>
 #include <QCamera>
 #include <QMediaPlayer>
@@ -16,8 +18,6 @@
 #include <QObject>
 #include <QPointer>
 #include <QVideoFrame>
-
-#include <boost/filesystem/path.hpp>
 
 namespace videoQt
 {
@@ -82,6 +82,10 @@ private:
 
     /// state of the loop mode
     bool m_loopVideo;
+
+private Q_SLOTS:
+
+    void onError(QMediaPlayer::Error) const;
 };
 
 } //namespace player
