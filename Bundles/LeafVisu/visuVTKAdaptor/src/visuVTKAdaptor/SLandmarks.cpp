@@ -487,6 +487,7 @@ void SLandmarks::modifyPoint(std::string groupName, size_t index)
     LabelActorType textActor = m_labels[widget];
     textActor->GetPositionCoordinate()->SetValue(point.data());
 
+    this->getRenderer()->ResetCameraClippingRange();
     this->setVtkPipelineModified();
     this->requestRender();
 }
