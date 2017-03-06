@@ -1,15 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "Tuto15MultithreadCtrl/SIncrementArray.hpp"
+#include "Tuto16MultithreadConsole/SIncrementArray.hpp"
 
 #include <fwCom/Signal.hxx>
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
 #include <fwData/Array.hpp>
@@ -21,16 +18,16 @@
 
 #include <fwThread/Timer.hpp>
 
-#include <boost/date_time/posix_time/posix_time.hpp>
-
 #include <functional>
 
-fwServicesRegisterMacro( ::fwServices::IController, ::Tuto15MultithreadCtrl::SIncrementArray, ::fwData::Array );
+fwServicesRegisterMacro( ::fwServices::IController, ::Tuto16MultithreadConsole::SIncrementArray, ::fwData::Array );
 
-namespace Tuto15MultithreadCtrl
+namespace Tuto16MultithreadConsole
 {
 
 static const ::fwCom::Slots::SlotKeyType s_START_TIMER_SLOT = "startTimer";
+
+//------------------------------------------------------------------------------
 
 SIncrementArray::SIncrementArray() throw() :
     m_periodInMillisec(500)
@@ -38,17 +35,22 @@ SIncrementArray::SIncrementArray() throw() :
     newSlot(s_START_TIMER_SLOT, &SIncrementArray::startTimer, this);
 }
 
+//------------------------------------------------------------------------------
+
 SIncrementArray::~SIncrementArray() throw()
 {
 }
 
+//------------------------------------------------------------------------------
+
 void SIncrementArray::starting() throw( ::fwTools::Failed )
 {
-    SLM_TRACE_FUNC();
     m_timer = m_associatedWorker->createTimer();
     m_timer->setFunction( std::bind(&SIncrementArray::updating, this) );
     m_timer->setDuration( ::boost::chrono::milliseconds(m_periodInMillisec) );
 }
+
+//------------------------------------------------------------------------------
 
 void SIncrementArray::stopping() throw( ::fwTools::Failed )
 {
@@ -59,9 +61,11 @@ void SIncrementArray::stopping() throw( ::fwTools::Failed )
     m_timer.reset();
 }
 
+//------------------------------------------------------------------------------
+
 void SIncrementArray::updating() throw( ::fwTools::Failed )
 {
-    ::fwData::Array::sptr array = this->getObject< ::fwData::Array >();
+    ::fwData::Array::sptr array = this->getInOut< ::fwData::Array >("array");
     ::fwData::mt::ObjectWriteLock writeLock(array);
 
     SLM_ASSERT("No array.", array);
@@ -83,20 +87,27 @@ void SIncrementArray::updating() throw( ::fwTools::Failed )
     ::fwData::Object::ModifiedSignalType::sptr sig
         = array->signal< ::fwData::Object::ModifiedSignalType>( ::fwData::Object::s_MODIFIED_SIG );
     {
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        ::fwCom::Connection::Blocker blockUpdate(sig->getConnection(m_slotUpdate));
+        ::fwCom::Connection::Blocker blockTimer(sig->getConnection(this->slot(s_START_TIMER_SLOT)));
         sig->asyncEmit();
     }
 
 }
+
+//------------------------------------------------------------------------------
 
 void SIncrementArray::configuring() throw( ::fwTools::Failed )
 {
 
 }
 
+//------------------------------------------------------------------------------
+
 void SIncrementArray::startTimer()
 {
     m_timer->start();
 }
 
-} // namespace Tuto15MultithreadCtrl
+//------------------------------------------------------------------------------
+
+} // namespace Tuto16MultithreadConsole

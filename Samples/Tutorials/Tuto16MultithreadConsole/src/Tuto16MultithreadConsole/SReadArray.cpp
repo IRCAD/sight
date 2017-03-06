@@ -1,10 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "Tuto15MultithreadCtrl/SReadArray.hpp"
+#include "Tuto16MultithreadConsole/SReadArray.hpp"
 
 #include <fwCom/Signal.hxx>
 
@@ -15,31 +15,40 @@
 
 #include <fwServices/macros.hpp>
 
+fwServicesRegisterMacro( ::fwServices::IController, ::Tuto16MultithreadConsole::SReadArray, ::fwData::Array );
 
-fwServicesRegisterMacro( ::fwServices::IController, ::Tuto15MultithreadCtrl::SReadArray, ::fwData::Array );
-
-namespace Tuto15MultithreadCtrl
+namespace Tuto16MultithreadConsole
 {
+
+//------------------------------------------------------------------------------
 
 SReadArray::SReadArray() throw()
 {
 }
 
+//------------------------------------------------------------------------------
+
 SReadArray::~SReadArray() throw()
 {
 }
+
+//------------------------------------------------------------------------------
 
 void SReadArray::starting() throw( ::fwTools::Failed )
 {
 }
 
+//------------------------------------------------------------------------------
+
 void SReadArray::stopping() throw( ::fwTools::Failed )
 {
 }
 
+//------------------------------------------------------------------------------
+
 void SReadArray::updating() throw( ::fwTools::Failed )
 {
-    ::fwData::Array::sptr array = this->getObject< ::fwData::Array >();
+    ::fwData::Array::sptr array = this->getInOut< ::fwData::Array >("array");
     ::fwData::mt::ObjectWriteLock writeLock(array);
     SLM_ASSERT("No array.", array);
 
@@ -62,9 +71,13 @@ void SReadArray::updating() throw( ::fwTools::Failed )
     sig->asyncEmit();
 }
 
+//------------------------------------------------------------------------------
+
 void SReadArray::configuring() throw( ::fwTools::Failed )
 {
 
 }
 
-} // namespace Tuto15MultithreadCtrl
+//------------------------------------------------------------------------------
+
+} // namespace Tuto16MultithreadConsole
