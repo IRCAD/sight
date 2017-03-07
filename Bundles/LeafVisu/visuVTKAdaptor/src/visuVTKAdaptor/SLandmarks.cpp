@@ -354,7 +354,11 @@ void SLandmarks::insertPoint(std::string groupName, size_t index)
 
 void SLandmarks::removePoint(std::string groupName, size_t index)
 {
-    this->deselect();
+    if (m_timer && m_selectedPoint.first == groupName && m_selectedPoint.second == index)
+    {
+        m_timer->stop();
+        m_timer.reset();
+    }
     LandmarksWidgetContainerType& landmarkHandleGroup = m_handles[groupName];
 
     auto& handleToRemove = landmarkHandleGroup[index];
