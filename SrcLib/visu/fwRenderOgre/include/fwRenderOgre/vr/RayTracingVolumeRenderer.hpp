@@ -112,13 +112,13 @@ public:
     FWRENDEROGRE_API SATVolumeIllumination* getIllumVolume();
 
     /// Toggle countersink geometry when using Importance Driven Volume Rendering
-    void toggleIDVRCountersinkGeometry(bool);
+    FWRENDEROGRE_API void toggleIDVRCountersinkGeometry(bool);
 
     /// Setup the alpha correction factor used in the VPImC method
-    void setIDVRAImCAlphaCorrection(double);
+    FWRENDEROGRE_API void setIDVRAImCAlphaCorrection(double);
 
     /// Setup the alpha correction factor used in the VPImC method
-    void setIDVRVPImCAlphaCorrection(double);
+    FWRENDEROGRE_API void setIDVRVPImCAlphaCorrection(double);
 
     /// Layer getter
     ::fwRenderOgre::Layer::sptr getLayer() const;

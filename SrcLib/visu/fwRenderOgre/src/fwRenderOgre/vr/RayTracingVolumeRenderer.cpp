@@ -339,8 +339,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         m_RTVSharedParameters->addConstantDefinition("u_volIllumFactor", ::Ogre::GCT_FLOAT4);
         m_RTVSharedParameters->addConstantDefinition("u_min", ::Ogre::GCT_INT1);
         m_RTVSharedParameters->addConstantDefinition("u_max", ::Ogre::GCT_INT1);
-        m_RTVSharedParameters->setNamedConstant("u_aimcalphaCorrection", m_idvrAImCAlphaCorrection);
-        m_RTVSharedParameters->setNamedConstant("u_vpimcalphaCorrection", m_idvrVPImCAlphaCorrection);
+        m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
+        m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
     }
 
     initCompositors();
@@ -753,6 +753,10 @@ void RayTracingVolumeRenderer::setColorBleedingFactor(double colorBleedingFactor
 void RayTracingVolumeRenderer::setIlluminationVolume(SATVolumeIllumination* illuminationVolume)
 {
     m_illumVolume = illuminationVolume;
+
+    // Trigger compositor re-initialization when changing the illumination volume
+    // to make sure the texture has been taken care of
+    this->initCompositors();
 }
 
 //-----------------------------------------------------------------------------
