@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,25 +14,25 @@
 #include <fwTools/fwID.hpp>
 
 #include <vtkAbstractPropPicker.h>
+#include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
-#include <vtkRenderer.h>
 #include <vtkTransform.h>
-
-
 
 namespace fwRenderVTK
 {
 
-IVtkAdaptorService::IVtkAdaptorService() throw()
-    : m_comChannelPriority(0.5),
-      m_vtkPipelineModified(true),
-      m_rendererId ("default"),
-      m_pickerId   (""), // by default no Picker
-      m_transformId   (""), // by default no Transform
-      m_propCollection ( vtkPropCollection::New() ),
-      m_autoRender(true),
-      m_autoConnect(true)
+IVtkAdaptorService::IVtkAdaptorService() throw() :
+    m_comChannelPriority(0.5),
+    m_vtkPipelineModified(true),
+    m_rendererId("default"),
+    m_pickerId(""),
+    // by default no Picker
+    m_transformId(""),
+    // by default no Transform
+    m_propCollection( vtkPropCollection::New() ),
+    m_autoRender(true),
+    m_autoConnect(true)
 {
 }
 
@@ -40,6 +40,8 @@ IVtkAdaptorService::~IVtkAdaptorService() throw()
 {
     m_propCollection->Delete();
 }
+
+//------------------------------------------------------------------------------
 
 void IVtkAdaptorService::info(std::ostream& _sstream )
 {
@@ -51,14 +53,13 @@ void IVtkAdaptorService::info(std::ostream& _sstream )
 
 void IVtkAdaptorService::configuring() throw(fwTools::Failed)
 {
-    this->setPickerId    ( m_configuration->getAttributeValue ( "picker"    ) );
-    this->setRenderId    ( m_configuration->getAttributeValue ( "renderer"  ) );
-    this->setTransformId ( m_configuration->getAttributeValue ( "transform" ) );
+    this->setPickerId( m_configuration->getAttributeValue( "picker"    ) );
+    this->setRenderId( m_configuration->getAttributeValue( "renderer"  ) );
+    this->setTransformId( m_configuration->getAttributeValue( "transform" ) );
     doConfigure();
 }
 
 //------------------------------------------------------------------------------
-
 
 void IVtkAdaptorService::starting() throw(fwTools::Failed)
 {
@@ -140,7 +141,9 @@ int IVtkAdaptorService::getStartPriority()
 
 void IVtkAdaptorService::requestRender()
 {
-    if ( this->getRenderService()->isStarted() && this->getRenderService()->isShownOnScreen()
+    if ( (this->getRenderService()->getStatus() == ::fwServices::IService::STARTED ||
+          this->getRenderService()->getStatus() == ::fwServices::IService::SWAPPING)
+         && this->getRenderService()->isShownOnScreen()
          && m_vtkPipelineModified && m_autoRender )
     {
         if ( !this->getRenderService()->getPendingRenderRequest())
@@ -387,7 +390,6 @@ void IVtkAdaptorService::removeAllPropFromRenderer()
     this->unregisterProps();
     this->setVtkPipelineModified();
 }
-
 
 } // namespace fwRenderVTK
 
