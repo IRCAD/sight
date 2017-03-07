@@ -10,11 +10,6 @@
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/MeshFactory.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
-
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 namespace fwData
@@ -65,17 +60,14 @@ public:
      * @name Slots API
      * @{
      */
-    VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_MESH_SLOT;
     /// slot used to update mesh
-    typedef ::fwCom::Slot<void (SPTR(::fwData::Mesh))> UpdateMeshSlotType;
+    VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_MESH_SLOT;
 
-    VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
     /// slot used to update visibility
-    typedef ::fwCom::Slot<void (bool)> UpdateVisibilitySlotType;
+    VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
 
-    VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_NORMAL_MODE_SLOT;
     /// slot used to update normal mode (0: none, 1: point, 2: cell)
-    typedef ::fwCom::Slot<void (std::uint8_t)> UpdateNormalModeSlotType;
+    VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_NORMAL_MODE_SLOT;
 
     /// Slot: used to update normal display(0: none, 1: point, 2: cell)
     void updateNormalMode(std::uint8_t mode);
@@ -127,22 +119,6 @@ protected:
 private:
     bool m_autoResetCamera;
 
-    /**
-     * @name Slots attributes
-     * @{
-     */
-
-    /// Slot used to update mesh
-    UpdateMeshSlotType::sptr m_slotUpdateMesh;
-
-    /// Slot used to update visibility
-    UpdateVisibilitySlotType::sptr m_slotUpdateVisibility;
-
-    /// slot used to update normal mode (0: none, 1: point, 2: cell)
-    UpdateNormalModeSlotType::sptr m_slotUpdateNormalMode;
-    /**
-     * @}
-     */
 };
 
 } //namespace visuVTKAdaptor

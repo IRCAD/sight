@@ -8,6 +8,11 @@
 
 #include "visuVTKAdaptor/Mesh.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -45,9 +50,9 @@ Reconstruction::Reconstruction() throw() :
     m_sharpEdgeAngle(180.),
     m_autoResetCamera(true)
 {
-    m_slotUpdateMesh       = newSlot(s_UPDATE_MESH_SLOT, &Reconstruction::updateMesh, this);
-    m_slotUpdateVisibility = newSlot(s_UPDATE_VISIBILITY_SLOT, &Reconstruction::updateVisibility, this);
-    m_slotUpdateNormalMode = newSlot(s_UPDATE_NORMAL_MODE_SLOT, &Reconstruction::updateNormalMode, this);
+    newSlot(s_UPDATE_MESH_SLOT, &Reconstruction::updateMesh, this);
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &Reconstruction::updateVisibility, this);
+    newSlot(s_UPDATE_NORMAL_MODE_SLOT, &Reconstruction::updateNormalMode, this);
 }
 
 //------------------------------------------------------------------------------
