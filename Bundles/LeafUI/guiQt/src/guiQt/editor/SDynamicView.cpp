@@ -207,7 +207,7 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
     info.wid = QString("SDynamicView-%1").arg(count++).toStdString();
 
     ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
-    QWidget* widget = new QWidget();
+    QWidget* widget = new QWidget(m_tabWidget);
     subContainer->setQtContainer(widget);
     ::fwGui::GuiRegistry::registerWIDContainer(info.wid, subContainer);
 

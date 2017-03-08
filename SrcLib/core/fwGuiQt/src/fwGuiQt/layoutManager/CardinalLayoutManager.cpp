@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,18 +7,17 @@
 #include "fwGuiQt/layoutManager/CardinalLayoutManager.hpp"
 
 #include <fwCore/base.hpp>
+
 #include <fwGui/registry/macros.hpp>
 
-#include <QMainWindow>
-#include <QDockWidget>
 #include <QBoxLayout>
+#include <QDockWidget>
 #include <QGroupBox>
+#include <QMainWindow>
 #include <QScrollArea>
-
 
 fwGuiRegisterMacro( ::fwGui::CardinalLayoutManager,
                     ::fwGui::layoutManager::CardinalLayoutManagerBase::REGISTRY_KEY );
-
 
 namespace fwGui
 {
@@ -43,32 +42,32 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
     SLM_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
 
-    QWidget *qtContainer = m_parentContainer->getQtContainer();
+    QWidget* qtContainer = m_parentContainer->getQtContainer();
     m_qtWindow = new QMainWindow(  );
 
-    QBoxLayout *layout = new QBoxLayout(QBoxLayout::LeftToRight);
+    QBoxLayout* layout = new QBoxLayout(QBoxLayout::LeftToRight);
     if (qtContainer->layout())
     {
         QWidget().setLayout(qtContainer->layout());
     }
-    layout->setContentsMargins(0,0,0,0);
+    layout->setContentsMargins(0, 0, 0, 0);
     qtContainer->setLayout(layout);
     layout->addWidget( m_qtWindow );
 
-    const std::list< ViewInfo> &views = this->getViewsInfo();
+    const std::list< ViewInfo>& views = this->getViewsInfo();
 
     bool hasCentral = false;
 
     for ( ViewInfo viewInfo : views)
     {
-        QWidget *insideWidget;
-        QScrollArea *scrollArea;
+        QWidget* insideWidget;
+        QScrollArea* scrollArea;
 
-        if(viewInfo.m_align==CENTER)
+        if(viewInfo.m_align == CENTER)
         {
             if(viewInfo.m_caption.first)
             {
-                QGroupBox *groupbox = new QGroupBox(m_qtWindow);
+                QGroupBox* groupbox = new QGroupBox(m_qtWindow);
                 groupbox->setTitle(QString::fromStdString(viewInfo.m_caption.second));
                 insideWidget = groupbox;
             }
@@ -77,7 +76,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
                 insideWidget = new QWidget(m_qtWindow);
             }
 
-            QWidget *widget = insideWidget;
+            QWidget* widget = insideWidget;
             SLM_ASSERT("multiple center views are not managed in Qt version of CardinalLayoutManager",
                        !hasCentral);
 
@@ -85,7 +84,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
             {
                 scrollArea = new QScrollArea(m_qtWindow);
                 scrollArea->setWidget(widget);
-                scrollArea->setWidgetResizable ( true );
+                scrollArea->setWidgetResizable( true );
                 m_qtWindow->setCentralWidget(scrollArea);
             }
             else
@@ -98,7 +97,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
         }
         else
         {
-            QDockWidget *dockWidget = new QDockWidget(m_qtWindow);
+            QDockWidget* dockWidget = new QDockWidget(m_qtWindow);
             insideWidget = new QWidget(dockWidget);
             QDockWidget::DockWidgetFeatures features;
 
@@ -106,19 +105,19 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
 
             Qt::DockWidgetArea area;
 
-            if(viewInfo.m_align==RIGHT)
+            if(viewInfo.m_align == RIGHT)
             {
                 area = Qt::RightDockWidgetArea;
             }
-            else if(viewInfo.m_align==LEFT)
+            else if(viewInfo.m_align == LEFT)
             {
                 area = Qt::LeftDockWidgetArea;
             }
-            else if(viewInfo.m_align==BOTTOM)
+            else if(viewInfo.m_align == BOTTOM)
             {
                 area = Qt::BottomDockWidgetArea;
             }
-            else if(viewInfo.m_align==TOP)
+            else if(viewInfo.m_align == TOP)
             {
                 area = Qt::TopDockWidgetArea;
             }
@@ -129,21 +128,33 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
             if(viewInfo.m_caption.first)
             {
                 dockWidget->setWindowTitle( QString::fromStdString(viewInfo.m_caption.second) );
+                dockWidget->setMinimumSize(0, 0);
             }
             else
             {
                 // Remove title bar
-                QWidget *widget = new QWidget();
-                dockWidget->setMinimumSize(std::max(viewInfo.m_minSize.first,0), std::max(viewInfo.m_minSize.second,0));
-                dockWidget->setTitleBarWidget(widget);
+                // Ensure widget->sizeHint() doesn't return a -1 size that will trigger a runtime warning:
+                // As setTitleBarWidget require a widget that have a valid QWidget::sizeHint()
+                // and QWidget::sizeHint() return -1 for widget without a layout...
+                QHBoxLayout* layout = new QHBoxLayout;
+                layout->setSpacing(0);
+                layout->setMargin(0);
 
+                QWidget* widget = new QWidget;
+
+                const QSize maximumSize(0, 0);
+                widget->setLayout(layout);
+
+                dockWidget->setMinimumSize(std::max(viewInfo.m_minSize.first, 0),
+                                           std::max(viewInfo.m_minSize.second, 0));
+                dockWidget->setTitleBarWidget(widget);
             }
 
             if (viewInfo.m_useScrollBar)
             {
                 scrollArea = new QScrollArea(dockWidget);
                 scrollArea->setWidget(insideWidget);
-                scrollArea->setWidgetResizable ( true );
+                scrollArea->setWidgetResizable(true);
                 dockWidget->setWidget(scrollArea);
             }
             else
@@ -160,11 +171,11 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
 
         if (viewInfo.m_useScrollBar)
         {
-            scrollArea->setMinimumSize(std::max(viewInfo.m_minSize.first,0), std::max(viewInfo.m_minSize.second,0));
+            scrollArea->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
         }
         else
         {
-            insideWidget->setMinimumSize(std::max(viewInfo.m_minSize.first,0), std::max(viewInfo.m_minSize.second,0));
+            insideWidget->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
         }
 
         //TODO
@@ -178,7 +189,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
         m_subViews.push_back(subContainer);
     }
 
-    m_qtWindow->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+    m_qtWindow->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
 //-----------------------------------------------------------------------------
@@ -194,6 +205,4 @@ void CardinalLayoutManager::destroyLayout()
 //-----------------------------------------------------------------------------
 
 } // namespace fwGui
-
-
 
