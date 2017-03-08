@@ -141,8 +141,6 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
                 layout->setMargin(0);
 
                 QWidget* widget = new QWidget;
-
-                const QSize maximumSize(0, 0);
                 widget->setLayout(layout);
 
                 dockWidget->setMinimumSize(std::max(viewInfo.m_minSize.first, 0),
