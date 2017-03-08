@@ -556,7 +556,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
         }
         else
         {
-            m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
+            m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
         }
     }
 
@@ -1459,6 +1459,7 @@ void RayTracingVolumeRenderer::setIDVRAImCAlphaCorrection(double alphaCorrection
     if(m_idvrMethod == "AImC")
     {
         m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", static_cast<float>(alphaCorrection));
+        this->getLayer()->requestRender();
     }
 }
 
@@ -1471,6 +1472,7 @@ void RayTracingVolumeRenderer::setIDVRVPImCAlphaCorrection(double alphaCorrectio
     if(m_idvrMethod == "VPImC")
     {
         m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", static_cast<float>(alphaCorrection));
+        this->getLayer()->requestRender();
     }
 }
 
