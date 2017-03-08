@@ -160,9 +160,6 @@ private:
     /// Appends a specific Ray-Tracing to the compositor chain
     void buildCompositorChain();
 
-    /// Sets up a default compositor chain with the Default and FinalChainCompositor
-    void setupDefaultCompositorChain();
-
     /// Removes all listeners and compositors from the current chain.
     void cleanCompositorChain(Ogre::CompositorChain* compChain);
 

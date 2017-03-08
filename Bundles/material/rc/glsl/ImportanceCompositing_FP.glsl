@@ -44,7 +44,7 @@ vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
 {
     // TODO: Simplify this -> uniforms
     vec3 screenPos = vec3(gl_FragCoord.xy / vec2(u_viewportWidth, u_viewportHeight), depth);
-    if(u_renderTargetFlipping < 0)
+    //if(u_renderTargetFlipping < 0)
     {
         screenPos.y = 1.0 - screenPos.y;
     }

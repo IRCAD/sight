@@ -448,6 +448,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     Ogre::Technique* tech = mat->getTechnique(0);
     Ogre::Pass* pass      = tech->getPass(0);
     pass->setCullingMode(::Ogre::CULL_NONE);
+    pass->setDepthCheckEnabled(false);
     pass->setSceneBlending(::Ogre::SBF_SOURCE_ALPHA, ::Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
 
     pass->setVertexProgram("RTV_VP");
@@ -612,12 +613,13 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
         {
             ::Ogre::CompositionTargetPass* ctp = ct->getOutputTargetPass();
             {
-                ctp->setInputMode(::Ogre::CompositionTargetPass::IM_NONE);
+                ctp->setInputMode(::Ogre::CompositionTargetPass::IM_PREVIOUS);
 
-                //{
-                //::Ogre::CompositionPass * cp = ctp->createPass();
-                //cp->setType(::Ogre::CompositionPass::PT_CLEAR);
-                //}
+                {
+                    ::Ogre::CompositionPass* cp = ctp->createPass();
+                    cp->setType(::Ogre::CompositionPass::PT_CLEAR);
+                    cp->setClearBuffers(::Ogre::FBT_DEPTH);
+                }
                 {
                     ::Ogre::CompositionPass* cp = ctp->createPass();
                     cp->setType(::Ogre::CompositionPass::PT_RENDERQUAD);
@@ -895,13 +897,27 @@ void RayTracingVolumeRenderer::initCompositors()
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     auto viewport = m_layer.lock()->getViewport();
     ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
+    ::Ogre::CompositorInstance* compositorInstance;
 
     // Start from an empty compositor chain
     this->cleanCompositorChain(compChain);
-    this->setupDefaultCompositorChain();
+
+    // Setup the Default compositor, that notably handles the Widget modifying the entryPoints
+    compositorInstance = compositorManager.addCompositor(viewport, "Default");
+    SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+    compositorInstance->setEnabled(true);
+    // Push back a dummy listener
+    m_compositorListeners.push_back(nullptr);
 
     // Add the initial ray tracing compositor
     this->buildCompositorChain();
+
+    // Setup the Final Chain Compositor
+    compositorInstance = compositorManager.addCompositor(viewport, "FinalChainCompositor");
+    SLM_ASSERT("Compositor could not be initialized", compositorInstance);
+    compositorInstance->setEnabled(true);
+    // Push back a dummy listener
+    m_compositorListeners.push_back(nullptr);
 }
 
 //-----------------------------------------------------------------------------
@@ -1382,26 +1398,6 @@ void RayTracingVolumeRenderer::buildCompositorChain()
             this->setMaterialLightParams(mtl);
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void RayTracingVolumeRenderer::setupDefaultCompositorChain()
-{
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    auto viewport = m_layer.lock()->getViewport();
-
-    ::Ogre::CompositorInstance* compositorInstance = compositorManager.addCompositor(viewport, "Default");
-    SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-    compositorInstance->setEnabled(true);
-
-    m_compositorListeners.push_back(nullptr);
-
-    compositorInstance = compositorManager.addCompositor(viewport, "FinalChainCompositor");
-    SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-    compositorInstance->setEnabled(true);
-
-    m_compositorListeners.push_back(nullptr);
 }
 
 //-----------------------------------------------------------------------------

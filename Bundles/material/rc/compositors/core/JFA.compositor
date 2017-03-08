@@ -29,6 +29,15 @@ compositor JFAInit
             {
             }
         }
+
+        target_output
+        {
+            input previous
+            pass clear
+            {
+                buffers depth
+            }
+        }
     }
 }
 
@@ -46,6 +55,15 @@ compositor JFAPingComp
             {
                 material JFA
                 input 0 JFAPingLocal
+            }
+        }
+
+        target_output
+        {
+            input previous
+            pass clear
+            {
+                buffers depth
             }
         }
     }
@@ -67,6 +85,15 @@ compositor JFAPongComp
                 input 0 JFAPongLocal
             }
         }
+
+        target_output
+        {
+            input previous
+            pass clear
+            {
+                buffers depth
+            }
+        }
     }
 }
 
@@ -86,6 +113,15 @@ compositor JFAFinalPingComp
                 input 0 JFAPingLocal
             }
         }
+
+        target_output
+        {
+            input previous
+            pass clear
+            {
+                buffers depth
+            }
+        }
     }
 }
 
@@ -103,6 +139,15 @@ compositor JFAFinalPongComp
             {
                 material JFA
                 input 0 JFAPongLocal
+            }
+        }
+
+        target_output
+        {
+            input previous
+            pass clear
+            {
+                buffers depth
             }
         }
     }
