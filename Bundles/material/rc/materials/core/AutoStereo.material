@@ -62,27 +62,27 @@ material AutoStereo5
             texture_unit 0
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 1
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 2
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 3
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 4
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
         }
     }
@@ -112,42 +112,42 @@ material AutoStereo8
             texture_unit 0
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 1
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 2
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 3
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 4
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 5
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 6
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 7
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
         }
     }
