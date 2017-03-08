@@ -6,6 +6,7 @@
         <param name="AS_UID" />
         <param name="image" />
         <param name="landmarks" />
+        <param name="advancedLandmarksEditor" default="yes" />
     </parameters>
     <config>
         <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
@@ -111,7 +112,7 @@
 
         <service uid="landmarksEditor" type="::uiMeasurementQt::editor::SLandmarks" autoConnect="yes">
             <inout key="landmarks" uid="${landmarks}" />
-            <advanced>yes</advanced>
+            <advanced>${advancedLandmarksEditor}</advanced>
         </service>
 
         <service uid="MedicalImageSrv" type="::ctrlSelection::MedicalImageSrv" autoConnect="yes">
