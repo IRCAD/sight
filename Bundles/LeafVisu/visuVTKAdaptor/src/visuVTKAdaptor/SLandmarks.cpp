@@ -269,7 +269,7 @@ void SLandmarks::doStart() throw(fwTools::Failed)
     vtkDeselectLandmarksCallBack* callback = vtkDeselectLandmarksCallBack::New();
     callback->setAdaptor(this->getSptr());
     m_noSelectionCommand = callback;
-    this->getInteractor()->AddObserver(vtkCommand::LeftButtonPressEvent, m_noSelectionCommand);
+    this->getInteractor()->AddObserver(vtkCommand::RightButtonPressEvent, m_noSelectionCommand);
     this->getInteractor()->AddObserver(vtkCommand::RightButtonReleaseEvent, m_noSelectionCommand);
 
     this->doUpdate();
