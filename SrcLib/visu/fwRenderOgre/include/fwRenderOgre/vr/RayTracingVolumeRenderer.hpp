@@ -231,7 +231,7 @@ private:
     /// Shared parameters used for Ray tracing. This should help avoiding using the listener.
     /// We resort to those parameters because setting them using:
     /// ::Ogre::MaterialManager::getSingletonPtr()->getByName("RTV_Mat")->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant(paramName,
-    // m_idvrAlphaCorrection);
+    /// m_idvrAlphaCorrection);
     /// Only seems to update them when instancing the corresponding material
     ::Ogre::GpuSharedParametersPtr m_RTVSharedParameters;
 
@@ -260,6 +260,17 @@ private:
     std::vector< ::Ogre::CompositorInstance::Listener*> m_compositorListeners;
 
     ::fwRenderOgre::Layer::wptr m_layer;
+
+    static const std::string s_MIMP_COMPOSITOR;
+    static const std::string s_AIMC_COMPOSITOR;
+    static const std::string s_VPIMC_COMPOSITOR;
+
+    static const std::string s_MIMP_DEFINE;
+    static const std::string s_AIMC_DEFINE;
+    static const std::string s_VPIMC_DEFINE;
+
+    static const std::string s_IMPORTANCE_COMPOSITING_TEXTURE;
+    static const std::string s_JUMP_FLOOD_ALGORITHM_TEXTURE;
 };
 
 //-----------------------------------------------------------------------------

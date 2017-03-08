@@ -38,6 +38,7 @@
 #include <OGRE/OgreViewport.h>
 
 #include <algorithm>
+#include <map>
 #include <regex>
 #include <string>
 
@@ -137,11 +138,9 @@ class RayTracingVolumeRenderer::RayTracingCompositorListener : public ::Ogre::Co
 {
 public:
 
-    RayTracingCompositorListener(std::vector< ::Ogre::TexturePtr>& renderTargets,
-                                 std::vector< ::Ogre::Matrix4>& invWorldViewProj,
+    RayTracingCompositorListener(std::vector< ::Ogre::Matrix4>& invWorldViewProj,
                                  bool is3DMode,
                                  ::Ogre::SceneNode* volumeSceneNode) :
-        m_renderTargets(renderTargets),
         m_invWorldViewProj(invWorldViewProj),
         m_is3DMode(is3DMode),
         m_volumeSceneNode(volumeSceneNode)
@@ -190,8 +189,6 @@ public:
     }
 
 private:
-
-    const std::vector< ::Ogre::TexturePtr>& m_renderTargets;
 
     const std::vector< ::Ogre::Matrix4>& m_invWorldViewProj;
 
@@ -262,6 +259,19 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
 
 //-----------------------------------------------------------------------------
 
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_MIMP_COMPOSITOR  = "IDVR_MImP_Comp";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_AIMC_COMPOSITOR  = "IDVR_AImC_Comp";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_VPIMC_COMPOSITOR = "IDVR_VPImC_Comp";
+
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_MIMP_DEFINE  = "IDVR=1";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_AIMC_DEFINE  = "IDVR=2";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_VPIMC_DEFINE = "IDVR=3";
+
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_IMPORTANCE_COMPOSITING_TEXTURE = "IC";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_JUMP_FLOOD_ALGORITHM_TEXTURE   = "JFA";
+
+//-----------------------------------------------------------------------------
+
 RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    Layer::sptr layer,
                                                    ::Ogre::SceneNode* parentNode,
@@ -287,7 +297,10 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_idvrCSG(false),
     m_idvrAImCAlphaCorrection(0.05f),
     m_idvrVPImCAlphaCorrection(0.3f),
-    m_volIllumFactor(colorBleedingFactor, colorBleedingFactor, colorBleedingFactor, aoFactor),
+    m_volIllumFactor(static_cast< ::Ogre::Real>(colorBleedingFactor),
+                     static_cast< ::Ogre::Real>(colorBleedingFactor),
+                     static_cast< ::Ogre::Real>(colorBleedingFactor),
+                     static_cast< ::Ogre::Real>(aoFactor)),
     m_illumVolume(nullptr),
     m_idvrMethod("None"),
     m_focalLength(0.f),
@@ -468,6 +481,8 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
                                                                Ogre::GpuProgramParameters::ACT_LOD_CAMERA_POSITION);
     pass->getFragmentProgramParameters()->addSharedParameters("RTVParams");
 
+    std::map<std::string, int> textureUnits;
+
     // Setup textures
     int numTexUnit = 0;
     ::Ogre::TextureUnitState* texUnitState;
@@ -476,6 +491,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     texUnitState->setTextureName(m_3DOgreTexture->getName(), ::Ogre::TEX_TYPE_3D);
     texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
     texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+    textureUnits["u_image"] = numTexUnit;
     pass->getFragmentProgramParameters()->setNamedConstant("u_image", numTexUnit++);
 
     // Transfer function
@@ -489,6 +505,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
         texUnitState = pass->createTextureUnitState(m_gpuTF.getTexture()->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
     }
+    textureUnits["u_tfTexture"] = numTexUnit;
     pass->getFragmentProgramParameters()->setNamedConstant("u_tfTexture", numTexUnit++);
 
     if(m_fpPPDefines.find("AMBIENT_OCCLUSION=1") != std::string::npos)
@@ -497,87 +514,49 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
+        textureUnits["u_illuminationVolume"] = numTexUnit;
         pass->getFragmentProgramParameters()->setNamedConstant("u_illuminationVolume", numTexUnit++);
         // Update the shader parameter
         m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
     }
 
-    if(m_fpPPDefines.find("IDVR=1") != std::string::npos)
+    // Importance Compositing texture: MImP | AImC | VPImC
+    if(m_fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos ||
+       m_fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
+       m_fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
     {
-        ::Ogre::TexturePtr mrt_IC;
+        texUnitState = pass->createTextureUnitState();
+        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
-        auto rm = tm.getResourceIterator();
-        for(auto r : rm)
-        {
-            // We match only the first target (0 at the end) of the mrt_IC texture
-            std::regex re("(.*)(\\/mrt_IC\\/)(.*)(0)$");
-
-            if(std::regex_match(r.second->getName(), re))
-            {
-                mrt_IC = tm.getByName(r.second->getName());
-
-                texUnitState = pass->createTextureUnitState(mrt_IC->getName());
-                texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
-                texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-
-                pass->getFragmentProgramParameters()->setNamedConstant("u_IC", numTexUnit++);
-                break;
-            }
-        }
+        textureUnits[this->s_IMPORTANCE_COMPOSITING_TEXTURE] = numTexUnit;
+        pass->getFragmentProgramParameters()->setNamedConstant("u_" + this->s_IMPORTANCE_COMPOSITING_TEXTURE,
+                                                               numTexUnit++);
     }
 
-    if(m_fpPPDefines.find("IDVR=2") != std::string::npos
-       || m_fpPPDefines.find("IDVR=3") != std::string::npos
-       )
+    // JFA texture: MImP
+    if(m_fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos)
     {
-        ::Ogre::TexturePtr IC;
+        texUnitState = pass->createTextureUnitState();
+        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
-        auto rm = tm.getResourceIterator();
-        for(auto r : rm)
-        {
-            // We match only the IC texture only
-            std::regex re("(.*)(\\/" + m_idvrMethod + "\\/)(.*)");
-
-            if(std::regex_match(r.second->getName(), re))
-            {
-                IC = tm.getByName(r.second->getName());
-
-                texUnitState = pass->createTextureUnitState(IC->getName());
-                texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
-                texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-
-                pass->getFragmentProgramParameters()->setNamedConstant("u_IC", numTexUnit++);
-                if(m_idvrMethod == "AImC")
-                {
-                    m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
-                }
-                else
-                {
-                    m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
-                }
-                break;
-            }
-        }
+        textureUnits[this->s_JUMP_FLOOD_ALGORITHM_TEXTURE] = numTexUnit;
+        pass->getFragmentProgramParameters()->setNamedConstant("u_" + this->s_JUMP_FLOOD_ALGORITHM_TEXTURE,
+                                                               numTexUnit++);
     }
 
-    if(m_fpPPDefines.find("IDVR=1") != std::string::npos)
+    // Alpha Correction: AImC | VPImC
+    if(m_fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
+       m_fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
     {
-        ::Ogre::TexturePtr jfa;
-
-        auto rm = tm.getResourceIterator();
-        for(auto r : rm)
+        if(m_idvrMethod == "AImC")
         {
-            if(r.second->getName().find("JFAFinal") != std::string::npos)
-            {
-                jfa = tm.getByName(r.second->getName());
-
-                texUnitState = pass->createTextureUnitState(jfa->getName());
-                texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
-                texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-
-                pass->getFragmentProgramParameters()->setNamedConstant("u_JFA", numTexUnit++);
-                break;
-            }
+            m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
+        }
+        else
+        {
+            m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
         }
     }
 
@@ -588,6 +567,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
         texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
+        textureUnits["u_entryPoints"] = numTexUnit;
         pass->getFragmentProgramParameters()->setNamedConstant("u_entryPoints", numTexUnit++);
     }
     /* stereo mode */
@@ -600,6 +580,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
 
             std::ostringstream oss;
             oss << "u_entryPoints" << i;
+            textureUnits["u_entryPoints" + i] = numTexUnit;
             pass->getFragmentProgramParameters()->setNamedConstant(oss.str(), numTexUnit++);
         }
 
@@ -611,6 +592,32 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     {
         ::Ogre::CompositionTechnique* ct = comp->createTechnique();
         {
+            if(m_fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos)
+            {
+                ::Ogre::CompositionTechnique::TextureDefinition* def = ct->createTextureDefinition(
+                    this->s_IMPORTANCE_COMPOSITING_TEXTURE);
+                def->refCompName = this->s_MIMP_COMPOSITOR;
+                def->refTexName  = this->s_IMPORTANCE_COMPOSITING_TEXTURE;
+
+                def              = ct->createTextureDefinition(this->s_JUMP_FLOOD_ALGORITHM_TEXTURE);
+                def->refCompName = "JFAInit";
+                def->refTexName  = "JFAFinal";
+            }
+            else if(m_fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos)
+            {
+                ::Ogre::CompositionTechnique::TextureDefinition* def = ct->createTextureDefinition(
+                    this->s_IMPORTANCE_COMPOSITING_TEXTURE);
+                def->refCompName = this->s_AIMC_COMPOSITOR;
+                def->refTexName  = this->s_IMPORTANCE_COMPOSITING_TEXTURE;
+            }
+            else if(m_fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
+            {
+                ::Ogre::CompositionTechnique::TextureDefinition* def = ct->createTextureDefinition(
+                    this->s_IMPORTANCE_COMPOSITING_TEXTURE);
+                def->refCompName = this->s_VPIMC_COMPOSITOR;
+                def->refTexName  = this->s_IMPORTANCE_COMPOSITING_TEXTURE;
+            }
+
             ::Ogre::CompositionTargetPass* ctp = ct->getOutputTargetPass();
             {
                 ctp->setInputMode(::Ogre::CompositionTargetPass::IM_PREVIOUS);
@@ -624,6 +631,20 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
                     ::Ogre::CompositionPass* cp = ctp->createPass();
                     cp->setType(::Ogre::CompositionPass::PT_RENDERQUAD);
                     cp->setMaterialName("RTV_Mat");
+
+                    if(m_fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos ||
+                       m_fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
+                       m_fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
+                    {
+                        cp->setInput(textureUnits[this->s_IMPORTANCE_COMPOSITING_TEXTURE],
+                                     this->s_IMPORTANCE_COMPOSITING_TEXTURE);
+                    }
+
+                    if(m_fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos)
+                    {
+                        cp->setInput(textureUnits[this->s_JUMP_FLOOD_ALGORITHM_TEXTURE],
+                                     this->s_JUMP_FLOOD_ALGORITHM_TEXTURE);
+                    }
                 }
             }
         }
@@ -1377,8 +1398,7 @@ void RayTracingVolumeRenderer::buildCompositorChain()
     SLM_ASSERT("Compositor could not be initialized", compositorInstance);
     compositorInstance->setEnabled(true);
 
-    m_compositorListeners.push_back(new RayTracingVolumeRenderer::RayTracingCompositorListener(m_entryPointsTextures,
-                                                                                               m_viewPointMatrices,
+    m_compositorListeners.push_back(new RayTracingVolumeRenderer::RayTracingCompositorListener(m_viewPointMatrices,
                                                                                                (m_mode3D !=
                                                                                                 ::fwRenderOgre::Layer::
                                                                                                 StereoModeType::NONE),
