@@ -6,7 +6,7 @@ compositor JFAInit
         texture JFAPing target_width target_height PF_FLOAT32_RGBA pooled chain_scope
         texture JFAPong target_width target_height PF_FLOAT32_RGBA pooled chain_scope
 
-        texture_ref mrt_IC IDVR_MImP_Comp mrt_IC
+        texture_ref IC IDVR_MImP_Comp IC
 
         target JFAPing
         {
@@ -18,7 +18,7 @@ compositor JFAInit
             pass render_quad
             {
                 material JFA
-                input 0 mrt_IC 1
+                input 0 IC 1
             }
         }
 

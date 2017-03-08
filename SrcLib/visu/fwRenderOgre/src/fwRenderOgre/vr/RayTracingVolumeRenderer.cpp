@@ -580,7 +580,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
 
             std::ostringstream oss;
             oss << "u_entryPoints" << i;
-            textureUnits["u_entryPoints" + i] = numTexUnit;
+            textureUnits[oss.str()] = numTexUnit;
             pass->getFragmentProgramParameters()->setNamedConstant(oss.str(), numTexUnit++);
         }
 
@@ -592,6 +592,8 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     {
         ::Ogre::CompositionTechnique* ct = comp->createTechnique();
         {
+            // Create references to textures defined in previous compositor with chain_scope
+            // In order to locally access them (similar to the texture_ref keyword)
             if(m_fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos)
             {
                 ::Ogre::CompositionTechnique::TextureDefinition* def = ct->createTextureDefinition(
@@ -618,6 +620,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
                 def->refTexName  = this->s_IMPORTANCE_COMPOSITING_TEXTURE;
             }
 
+            // Modify the target_output pass
             ::Ogre::CompositionTargetPass* ctp = ct->getOutputTargetPass();
             {
                 ctp->setInputMode(::Ogre::CompositionTargetPass::IM_PREVIOUS);
@@ -632,6 +635,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
                     cp->setType(::Ogre::CompositionPass::PT_RENDERQUAD);
                     cp->setMaterialName("RTV_Mat");
 
+                    // add locally defined texture_ref as input to the corresponding texture unit
                     if(m_fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos ||
                        m_fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
                        m_fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
