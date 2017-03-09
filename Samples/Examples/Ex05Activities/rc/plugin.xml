@@ -50,10 +50,14 @@
             <requirement name="image" type="::fwData::Image" minOccurs="1" maxOccurs="1">
                 <desc>Image that will be display by this activity.</desc>
             </requirement>
+            <requirement name="landmarks" type="::fwData::Landmarks" minOccurs="0" maxOccurs="0">
+                <desc>Landmarks that will be created in this activity.</desc>
+            </requirement>
         </requirements>
         <appConfig id="Ex05ImageDisplaying">
             <parameters>
                  <parameter replace="image" by="@values.image" />
+                 <parameter replace="landmarks" by="@values.landmarks" />
             </parameters>
         </appConfig>
     </extension>

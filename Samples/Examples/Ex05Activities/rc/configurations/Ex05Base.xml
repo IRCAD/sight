@@ -90,7 +90,6 @@
                 <parameter replace="enabledNextChannel" uid="enabledNextChannel" />
                 <parameter replace="previousActivityChannel" uid="previousActivityChannel" />
                 <parameter replace="nextActivityChannel" uid="nextActivityChannel" />
-                <parameter replace="videoGrabberImpl" by="::videoVLC::SFrameGrabber" />
             </parameters>
         </service>
 
