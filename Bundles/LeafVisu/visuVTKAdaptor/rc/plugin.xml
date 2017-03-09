@@ -98,8 +98,8 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
-        <service>::visuVTKAdaptor::ImageLandmarks</service>
-        <object>::fwData::Image</object>
+        <service>::visuVTKAdaptor::SLandmarks</service>
+        <object>::fwData::Landmarks</object>
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">

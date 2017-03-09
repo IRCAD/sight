@@ -8,6 +8,7 @@ set( REQUIREMENTS
     guiQt
     uiMeasurement
     uiMeasurementQt
+    ctrlCamp
     ctrlSelection
     uiImageQt
     uiVisu

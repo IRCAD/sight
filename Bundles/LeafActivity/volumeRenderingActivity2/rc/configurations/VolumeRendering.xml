@@ -22,6 +22,8 @@
         <!-- input image -->
         <object uid="${image}" type="::fwData::Image" src="ref" />
 
+        <object uid="landmarks" type="::fwData::Landmarks" />
+
         <!-- Transfer function -->
         <object uid="TFSet" type="::fwData::Composite" src="deferred" />
         <object uid="TFSelections" type="::fwData::Composite" />
@@ -337,6 +339,7 @@
             <appConfig id="2DNegatoWithTF" />
             <inout key="image" uid="${image}" />
             <inout key="TFSelections" uid="TFSelections" />
+            <inout key="landmarks" uid="landmarks" />
             <parameter replace="selectedTFKey" by="SelectedTF" />
             <parameter replace="patient_name" by="${patient_name}" />
             <parameter replace="WID_PARENT" uid="view_negato" />
@@ -392,20 +395,13 @@
             <inout key="histogram" uid="Histogram" />
             <binsWidth>5.0</binsWidth>
         </service>
-<!--
-        <item key="LightSelection">
-            <object uid="LightSelection" type="::fwData::Composite">
 
-                <service uid="LightSwapper" type="::ctrlSelection::manager::SwapperSrv" autoConnect="yes">
-                    <mode type="stop" />
-                    <config>
-                        <object uid="selectedLight" type="::fwData::Composite">
-                        </object>
-                    </config>
-                </service>
-
-            </object>
-        </item>-->
+        <service uid="extractLandmarks" type="::ctrlCamp::SCopy" >
+            <in key="source" uid="${image}">
+                <extract from="@fields.m_landmarksId" />
+            </in>
+            <inout key="target" uid="landmarks"/>
+        </service>
 
         <connect channel="crossTypeChannel">
             <signal>ActionHideCross/crossTypeModified</signal>
@@ -423,12 +419,14 @@
         <start uid="vr" />
         <start uid="cfgNegato" />
         <start uid="fieldMgr" />
+        <start uid="extractLandmarks" />
 
         <!-- Deferred start -->
         <start uid="action_organManager" />
         <start uid="tfm" />
 
         <update uid="fieldMgr" />
+        <update uid="extractLandmarks" />
 
     </config>
 </extension>

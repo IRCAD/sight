@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,6 +31,7 @@ CPPUNIT_TEST( dataFactoryNotFoundExceptionTest );
 CPPUNIT_TEST( campFactoryNotFoundExceptionTest );
 CPPUNIT_TEST( conversionNotManagedExceptionTest );
 CPPUNIT_TEST( nullPtrManagmentTest );
+CPPUNIT_TEST( landmarksConversionTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -60,7 +61,6 @@ public:
     /// Test recursive data conversion
     void recursiveObjectTest();
 
-
     /// Test exception throwing if uuid already exist
     void uuidExceptionTest();
 
@@ -82,12 +82,12 @@ public:
     /// Test null ptr management (null ptr attribut, null ptr in vector, null ptr in map)
     void nullPtrManagmentTest();
 
-};
+    //// Test fwData::Landmarks conversion
+    void landmarksConversionTest();
 
+};
 
 }  // namespace ut
 }  // namespace fwAtomConversion
-
-
 
 #endif // __FWATOMCONVERSION_UT_CONVERSIONTEST_HPP__
