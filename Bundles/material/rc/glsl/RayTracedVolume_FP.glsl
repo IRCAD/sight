@@ -81,6 +81,9 @@ uniform int u_min;
 uniform int u_max;
 #endif // PREINTEGRATION
 
+#if IDVR == 1
+uniform float u_countersinkSlope;
+#endif
 #if IDVR == 2
 uniform float u_aimcAlphaCorrection;
 #endif
@@ -354,7 +357,7 @@ void main(void)
         vec4 distance = texture(u_JFA, uv);
 
         // Compute the countersink factor to adjust the rayEntry
-        float csg = (distance.b - distance.a * 3.0);
+        float csg = (distance.b - distance.a * (1. / u_countersinkSlope));
         // Ensure that we have a correct distance for the csg factor
         if(csg > 0)
         {

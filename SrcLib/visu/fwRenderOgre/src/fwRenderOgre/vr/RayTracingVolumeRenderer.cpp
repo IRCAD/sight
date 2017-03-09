@@ -295,6 +295,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_colorBleeding(colorBleeding),
     m_shadows(shadows),
     m_idvrCSG(false),
+    m_idvrCSGSlope(0.3f),
     m_idvrAImCAlphaCorrection(0.05f),
     m_idvrVPImCAlphaCorrection(0.3f),
     m_volIllumFactor(static_cast< ::Ogre::Real>(colorBleedingFactor),
@@ -345,6 +346,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         m_RTVSharedParameters = ::Ogre::GpuProgramManager::getSingleton().createSharedParameters("RTVParams");
 
         // define the shared param structure
+        m_RTVSharedParameters->addConstantDefinition("u_countersinkSlope", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_vpimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_aimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_sampleDistance", ::Ogre::GCT_FLOAT1);
@@ -352,6 +354,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         m_RTVSharedParameters->addConstantDefinition("u_volIllumFactor", ::Ogre::GCT_FLOAT4);
         m_RTVSharedParameters->addConstantDefinition("u_min", ::Ogre::GCT_INT1);
         m_RTVSharedParameters->addConstantDefinition("u_max", ::Ogre::GCT_INT1);
+        m_RTVSharedParameters->setNamedConstant("u_countersinkSlope", m_idvrCSGSlope);
         m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
         m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
     }
@@ -481,6 +484,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
                                                                Ogre::GpuProgramParameters::ACT_LOD_CAMERA_POSITION);
     pass->getFragmentProgramParameters()->addSharedParameters("RTVParams");
 
+    // We use this map to keep track of the texture units IDs
     std::map<std::string, int> textureUnits;
 
     // Setup textures
@@ -943,6 +947,8 @@ void RayTracingVolumeRenderer::initCompositors()
     compositorInstance->setEnabled(true);
     // Push back a dummy listener
     m_compositorListeners.push_back(nullptr);
+
+    this->getLayer()->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -1450,8 +1456,20 @@ void RayTracingVolumeRenderer::cleanCompositorChain(::Ogre::CompositorChain* com
 void RayTracingVolumeRenderer::toggleIDVRCountersinkGeometry(bool CSG)
 {
     m_idvrCSG = CSG;
-
     this->initCompositors();
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::setIDVRCountersinkSlope(double slope)
+{
+    m_idvrCSGSlope = static_cast<float>(slope);
+
+    if(m_idvrMethod == "MImP")
+    {
+        m_RTVSharedParameters->setNamedConstant("u_countersinkSlope", m_idvrCSGSlope);
+        this->getLayer()->requestRender();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1462,7 +1480,7 @@ void RayTracingVolumeRenderer::setIDVRAImCAlphaCorrection(double alphaCorrection
 
     if(m_idvrMethod == "AImC")
     {
-        m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", static_cast<float>(alphaCorrection));
+        m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
         this->getLayer()->requestRender();
     }
 }
@@ -1475,7 +1493,7 @@ void RayTracingVolumeRenderer::setIDVRVPImCAlphaCorrection(double alphaCorrectio
 
     if(m_idvrMethod == "VPImC")
     {
-        m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", static_cast<float>(alphaCorrection));
+        m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
         this->getLayer()->requestRender();
     }
 }

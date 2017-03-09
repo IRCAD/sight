@@ -99,7 +99,7 @@ public:
     /// A focal length of 0 focuses on the front of the image and a length of 1 focuses on the back.
     FWRENDEROGRE_API void setFocalLength(float focalLength);
 
-    /// Allows to setup the importance driven method used during the rendering
+    /// Allows to setup the importance driven method used during the rendering.
     FWRENDEROGRE_API void setIDVRMethod(std::string method);
 
     /// Computes image positions, updates the proxy geometry.
@@ -111,13 +111,16 @@ public:
     /// IllumVolume getter.
     FWRENDEROGRE_API SATVolumeIllumination* getIllumVolume();
 
-    /// Toggle countersink geometry when using Importance Driven Volume Rendering
+    /// Toggle countersink geometry when using Importance Driven Volume Rendering.
     FWRENDEROGRE_API void toggleIDVRCountersinkGeometry(bool);
 
-    /// Setup the alpha correction factor used in the VPImC method
+    /// Setup the countersink geometry slope used in the MImP method.
+    FWRENDEROGRE_API void setIDVRCountersinkSlope(double);
+
+    /// Setup the alpha correction factor used in the VPImC method.
     FWRENDEROGRE_API void setIDVRAImCAlphaCorrection(double);
 
-    /// Setup the alpha correction factor used in the VPImC method
+    /// Setup the alpha correction factor used in the VPImC method.
     FWRENDEROGRE_API void setIDVRVPImCAlphaCorrection(double);
 
     /// Layer getter
@@ -213,13 +216,16 @@ private:
     /// Sets usage of soft shadows.
     bool m_shadows;
 
-    /// Sets usage of countersink geometry for IDVR
+    /// Sets usage of countersink geometry for MImP.
     bool m_idvrCSG;
 
-    /// Sets the alpha correction for AImC
+    /// Sets countersink geometry slope for MImP.
+    float m_idvrCSGSlope;
+
+    /// Sets the alpha correction for AImC.
     float m_idvrAImCAlphaCorrection;
 
-    /// Sets the alpha correction for VPImC
+    /// Sets the alpha correction for VPImC.
     float m_idvrVPImCAlphaCorrection;
 
     /// Factor parameter used to weight ambient occlusion (A channel) and color bleeding (RGB channels).

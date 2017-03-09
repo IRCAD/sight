@@ -876,6 +876,12 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
     {
         this->updateColorBleedingFactor(val);
     }
+    else if(key == "idvrCSGSlope")
+    {
+        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+        rayCastVolumeRenderer->setIDVRCountersinkSlope(val);
+    }
     else if(key == "idvrVPImCAlphaCorrection")
     {
         auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
