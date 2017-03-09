@@ -161,9 +161,8 @@ void SModelSeriesList::starting() throw(::fwTools::Failed)
     QWidget* const container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
 
-    QVBoxLayout* layout = new QVBoxLayout(container);
-
-    QHBoxLayout* layoutButton = new QHBoxLayout(container);
+    QVBoxLayout* layout = new QVBoxLayout;
+    QHBoxLayout* layoutButton = new QHBoxLayout;
     layout->addLayout(layoutButton);
 
     if (m_enableHideAll)
