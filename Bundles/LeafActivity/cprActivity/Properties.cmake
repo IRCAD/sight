@@ -12,6 +12,7 @@ set( REQUIREMENTS
     ctrlSelection
     uiVisu
     uiVisuQt
+    visuVTKQt
     visuVTKAdaptor
     visuVTKVRAdaptor
     uiImageQt

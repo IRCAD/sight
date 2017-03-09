@@ -2,7 +2,6 @@
 
     <requirement id="servicesReg" />
     <requirement id="dataReg" />
-    <requirement id="arDataReg" />
     
     <requirement id="patchMedicalData" />
     
@@ -42,6 +41,7 @@
         <id>activitySelector</id>
         <title>Choose your activity</title>
         <desc>Activity selector for VRRenderExt</desc>
+        <icon>NONE</icon>
         <requirements />
         <appConfig id="activitySelector">
             <parameters />
