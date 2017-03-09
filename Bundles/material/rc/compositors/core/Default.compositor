@@ -33,3 +33,23 @@ compositor Default
         }
     }
 }
+
+compositor DefaultRT
+{
+    technique
+    {
+        // Final pass
+        target_output
+        {
+            input none
+            pass clear
+            {
+            }
+
+            shadows off
+            pass render_scene
+            {
+            }
+        }
+    }
+}

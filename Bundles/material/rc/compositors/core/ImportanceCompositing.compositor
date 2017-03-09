@@ -21,10 +21,6 @@ compositor IDVR_MImP_Comp
         target_output
         {
             input previous
-            pass clear
-            {
-                buffers depth
-            }
         }
     }
 }
@@ -52,10 +48,6 @@ compositor IDVR_AImC_Comp
         target_output
         {
             input previous
-            pass clear
-            {
-                buffers depth
-            }
         }
     }
 }
@@ -83,10 +75,6 @@ compositor IDVR_VPImC_Comp
         target_output
         {
             input previous
-            pass clear
-            {
-                buffers depth
-            }
         }
     }
 }
