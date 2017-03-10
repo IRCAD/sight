@@ -14,6 +14,7 @@
 #include <vtkInteractorObserver.h>
 #include <vtkMath.h>
 #include <vtkObjectFactory.h>
+#include <vtkPolyDataMapper.h>
 #include <vtkPolyDataNormals.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
