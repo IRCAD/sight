@@ -221,7 +221,6 @@ void VRWidget::initWidgets()
     m_selectedFace->setRenderQueueGroup(::Ogre::RENDER_QUEUE_BACKGROUND);
 
     // Create a pickable sphere for each cube face
-//    ::Ogre::LogManager::getSingleton().getDefaultLog()->logMessage("Creating widget Spheres ...");
     for(unsigned i = 0; i < 6; ++i)
     {
         auto currentFace = static_cast< ::fwRenderOgre::vr::IVolumeRenderer::CubeFace>(i);

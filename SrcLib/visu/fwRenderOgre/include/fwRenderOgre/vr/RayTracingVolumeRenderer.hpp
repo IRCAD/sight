@@ -154,9 +154,6 @@ private:
     /// Updates the current compositor name according to VR effects flags.
     void updateCompositorName();
 
-    /// Returns the parameters of the current fragment shader.
-    ::Ogre::GpuProgramParametersSharedPtr retrieveCurrentProgramParams();
-
     /// Sets the default diffuse, specular and shininess in the material.
     void setMaterialLightParams(::Ogre::MaterialPtr mtl);
 
@@ -231,9 +228,6 @@ private:
     /// Factor parameter used to weight ambient occlusion (A channel) and color bleeding (RGB channels).
     ::Ogre::Vector4 m_volIllumFactor;
 
-    /// Name of the current volume illumination material.
-    std::string m_currentMtlName;
-
     /// Shared parameters used for Ray tracing. This should help avoiding using the listener.
     /// We resort to those parameters because setting them using:
     /// ::Ogre::MaterialManager::getSingletonPtr()->getByName("RTV_Mat")->getTechnique(0)->getPass(0)->getFragmentProgramParameters()->setNamedConstant(paramName,
@@ -267,14 +261,30 @@ private:
 
     ::fwRenderOgre::Layer::wptr m_layer;
 
+    /// IDVR methods names.
+    static const std::string s_NONE;
+    static const std::string s_MIMP;
+    static const std::string s_AIMC;
+    static const std::string s_VPIMC;
+
+    /// IDVR compositors names.
     static const std::string s_MIMP_COMPOSITOR;
     static const std::string s_AIMC_COMPOSITOR;
     static const std::string s_VPIMC_COMPOSITOR;
 
+    /// VR effects shader defines.
+    static const std::string s_AO_DEFINE;
+    static const std::string s_COLOR_BLEEDING_DEFINE;
+    static const std::string s_SHADOWS_DEFINE;
+    static const std::string s_PREINTEGRATION_DEFINE;
+
+    /// IDVR shader defines.
     static const std::string s_MIMP_DEFINE;
+    static const std::string s_CSG_DEFINE;
     static const std::string s_AIMC_DEFINE;
     static const std::string s_VPIMC_DEFINE;
 
+    /// IDVR textures.
     static const std::string s_IMPORTANCE_COMPOSITING_TEXTURE;
     static const std::string s_JUMP_FLOOD_ALGORITHM_TEXTURE;
 };

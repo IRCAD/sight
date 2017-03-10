@@ -456,6 +456,8 @@ void SVolumeRender::newMask()
 {
     ::fwData::Image::sptr mask = this->getInOut< ::fwData::Image>("mask");
     ::fwRenderOgre::Utils::convertImageForNegato(m_maskTexture.get(), mask);
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------

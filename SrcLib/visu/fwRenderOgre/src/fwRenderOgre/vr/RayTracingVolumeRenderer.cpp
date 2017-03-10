@@ -39,7 +39,6 @@
 
 #include <algorithm>
 #include <map>
-#include <regex>
 #include <string>
 
 namespace fwRenderOgre
@@ -259,11 +258,22 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
 
 //-----------------------------------------------------------------------------
 
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_NONE  = "None";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_MIMP  = "MImP";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_AIMC  = "AImC";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_VPIMC = "VPImC";
+
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_MIMP_COMPOSITOR  = "IDVR_MImP_Comp";
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_AIMC_COMPOSITOR  = "IDVR_AImC_Comp";
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_VPIMC_COMPOSITOR = "IDVR_VPImC_Comp";
 
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_AO_DEFINE             = "AMBIENT_OCCLUSION=1";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_COLOR_BLEEDING_DEFINE = "COLOR_BLEEDING=1";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_SHADOWS_DEFINE        = "SHADOWS=1";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_PREINTEGRATION_DEFINE = "PREINTEGRATION=1";
+
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_MIMP_DEFINE  = "IDVR=1";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_DEFINE   = "CSG=1";
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_AIMC_DEFINE  = "IDVR=2";
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_VPIMC_DEFINE = "IDVR=3";
 
@@ -303,7 +313,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                      static_cast< ::Ogre::Real>(colorBleedingFactor),
                      static_cast< ::Ogre::Real>(aoFactor)),
     m_illumVolume(nullptr),
-    m_idvrMethod("None"),
+    m_idvrMethod(this->s_NONE),
     m_focalLength(0.f),
     m_lobeOffset(1.f),
     m_cameraListener(nullptr),
@@ -337,11 +347,9 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
     // First check that we did not already instanced Shared parameters
     // This can happen when reinstancing this class (e.g. switching 3D mode)
-    try
-    {
-        m_RTVSharedParameters = ::Ogre::GpuProgramManager::getSingleton().getSharedParameters("RTVParams");
-    }
-    catch(::Ogre::InvalidParametersException e)
+    ::Ogre::GpuProgramManager::SharedParametersMap spMap =
+        ::Ogre::GpuProgramManager::getSingleton().getAvailableSharedParameters();
+    if(spMap["RTVParams"].isNull())
     {
         m_RTVSharedParameters = ::Ogre::GpuProgramManager::getSingleton().createSharedParameters("RTVParams");
 
@@ -357,6 +365,10 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         m_RTVSharedParameters->setNamedConstant("u_countersinkSlope", m_idvrCSGSlope);
         m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
         m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
+    }
+    else
+    {
+        m_RTVSharedParameters = spMap["RTVParams"];
     }
 
     initCompositors();
@@ -414,7 +426,6 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
 
     ::Ogre::MaterialManager* mm   = ::Ogre::MaterialManager::getSingletonPtr();
     ::Ogre::CompositorManager& cm = ::Ogre::CompositorManager::getSingleton();
-    ::Ogre::TextureManager& tm    = ::Ogre::TextureManager::getSingleton();
 
     // Remove resources and purge microcodes from cache to avoid cache effects when using preprocessor defines
     ::Ogre::ResourcePtr resource;
@@ -498,7 +509,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     pass->getFragmentProgramParameters()->setNamedConstant("u_image", numTexUnit++);
 
     // Transfer function
-    if(m_fpPPDefines.find("PREINTEGRATION=1") != std::string::npos)
+    if(m_fpPPDefines.find(this->s_PREINTEGRATION_DEFINE) != std::string::npos)
     {
         texUnitState = pass->createTextureUnitState(m_preIntegrationTable.getTexture()->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
@@ -511,7 +522,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     textureUnits["u_tfTexture"] = numTexUnit;
     pass->getFragmentProgramParameters()->setNamedConstant("u_tfTexture", numTexUnit++);
 
-    if(m_fpPPDefines.find("AMBIENT_OCCLUSION=1") != std::string::npos)
+    if(m_fpPPDefines.find(this->s_AO_DEFINE) != std::string::npos)
     {
         texUnitState = pass->createTextureUnitState(m_illumVolume->getIlluminationVolume()->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
@@ -553,7 +564,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     if(m_fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
        m_fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
     {
-        if(m_idvrMethod == "AImC")
+        if(m_idvrMethod == this->s_AIMC)
         {
             m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
         }
@@ -841,6 +852,17 @@ void RayTracingVolumeRenderer::setFocalLength(float focalLength)
 
 void RayTracingVolumeRenderer::setIDVRMethod(std::string method)
 {
+    bool isSupported(false);
+
+    if(method == this->s_NONE ||
+       method == this->s_MIMP ||
+       method == this->s_AIMC ||
+       method == this->s_VPIMC)
+    {
+        isSupported = true;
+    }
+
+    SLM_ASSERT("IDVR method '" + method + "' isn't supported by the ray tracing volume renderer.", isSupported);
     m_idvrMethod = method;
 
     this->initCompositors();
@@ -1162,41 +1184,41 @@ void RayTracingVolumeRenderer::updateCompositorName()
     {
         if(m_ambientOcclusion)
         {
-            ppDefs << (ppDefs.str() == "" ? "" : ",") << "AMBIENT_OCCLUSION=1";
+            ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_AO_DEFINE;
         }
 
         if(m_colorBleeding)
         {
-            ppDefs << (ppDefs.str() == "" ? "" : ",") << "COLOR_BLEEDING=1";
+            ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_COLOR_BLEEDING_DEFINE;
         }
 
         if(m_shadows)
         {
-            ppDefs << (ppDefs.str() == "" ? "" : ",") << "SHADOWS=1";
+            ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_SHADOWS_DEFINE;
         }
 
         if(m_preIntegratedRendering)
         {
-            ppDefs << (ppDefs.str() == "" ? "" : ",") << "PREINTEGRATION=1";
+            ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_PREINTEGRATION_DEFINE;
         }
 
-        if(m_idvrMethod != "None")
+        if(m_idvrMethod != this->s_NONE)
         {
-            if(m_idvrMethod == "MImP")
+            if(m_idvrMethod == this->s_MIMP)
             {
-                ppDefs << (ppDefs.str() == "" ? "" : ",") << "IDVR=1";
+                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_MIMP_DEFINE;
                 if(m_idvrCSG)
                 {
-                    ppDefs << (ppDefs.str() == "" ? "" : ",") << "CSG=1";
+                    ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_DEFINE;
                 }
             }
-            else if(m_idvrMethod == "AImC")
+            else if(m_idvrMethod == this->s_AIMC)
             {
-                ppDefs << (ppDefs.str() == "" ? "" : ",") << "IDVR=2";
+                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_AIMC_DEFINE;
             }
-            else if(m_idvrMethod == "VPImC")
+            else if(m_idvrMethod == this->s_VPIMC)
             {
-                ppDefs << (ppDefs.str() == "" ? "" : ",") << "IDVR=3";
+                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_VPIMC_DEFINE;
             }
         }
     }
@@ -1218,18 +1240,6 @@ void RayTracingVolumeRenderer::updateCompositorName()
     }
 
     m_fpPPDefines = ppDefs.str();
-}
-
-//-----------------------------------------------------------------------------
-
-::Ogre::GpuProgramParametersSharedPtr RayTracingVolumeRenderer::retrieveCurrentProgramParams()
-{
-    ::Ogre::MaterialPtr currentMtl = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName,
-                                                                                       ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
-    OSLM_ASSERT("Material '" + m_currentMtlName + "' not found", !currentMtl.isNull());
-
-    return currentMtl->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
 }
 
 //-----------------------------------------------------------------------------
@@ -1256,9 +1266,9 @@ void RayTracingVolumeRenderer::buildCompositorChain()
     ::Ogre::CompositorInstance* compositorInstance = nullptr;
     std::string idvrCompositorName;
 
-    if(m_idvrMethod == "MImP")
+    if(m_idvrMethod == this->s_MIMP)
     {
-        idvrCompositorName = "IDVR_MImP_Comp";
+        idvrCompositorName = this->s_MIMP_COMPOSITOR;
 
         compositorInstance = compositorManager.addCompositor(viewport, idvrCompositorName);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
@@ -1337,9 +1347,9 @@ void RayTracingVolumeRenderer::buildCompositorChain()
                                                                                             static_cast<float>(nbPasses)));
         compositorInstance->addListener(m_compositorListeners.back());
     }
-    else if(m_idvrMethod == "AImC")
+    else if(m_idvrMethod == this->s_AIMC)
     {
-        idvrCompositorName = "IDVR_AImC_Comp";
+        idvrCompositorName = this->s_AIMC_COMPOSITOR;
 
         compositorInstance = compositorManager.addCompositor(viewport, idvrCompositorName);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
@@ -1366,9 +1376,9 @@ void RayTracingVolumeRenderer::buildCompositorChain()
 
         compositorInstance->addListener(m_compositorListeners.back());
     }
-    else if(m_idvrMethod == "VPImC")
+    else if(m_idvrMethod == this->s_VPIMC)
     {
-        idvrCompositorName = "IDVR_VPImC_Comp";
+        idvrCompositorName = this->s_VPIMC_COMPOSITOR;
 
         compositorInstance = compositorManager.addCompositor(viewport, idvrCompositorName);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
@@ -1459,7 +1469,7 @@ void RayTracingVolumeRenderer::setIDVRCountersinkSlope(double slope)
 {
     m_idvrCSGSlope = static_cast<float>(slope);
 
-    if(m_idvrMethod == "MImP")
+    if(m_idvrMethod == this->s_MIMP)
     {
         m_RTVSharedParameters->setNamedConstant("u_countersinkSlope", m_idvrCSGSlope);
         this->getLayer()->requestRender();
@@ -1472,7 +1482,7 @@ void RayTracingVolumeRenderer::setIDVRAImCAlphaCorrection(double alphaCorrection
 {
     m_idvrAImCAlphaCorrection = static_cast<float>(alphaCorrection);
 
-    if(m_idvrMethod == "AImC")
+    if(m_idvrMethod == this->s_AIMC)
     {
         m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
         this->getLayer()->requestRender();
@@ -1485,7 +1495,7 @@ void RayTracingVolumeRenderer::setIDVRVPImCAlphaCorrection(double alphaCorrectio
 {
     m_idvrVPImCAlphaCorrection = static_cast<float>(alphaCorrection);
 
-    if(m_idvrMethod == "VPImC")
+    if(m_idvrMethod == this->s_VPIMC)
     {
         m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
         this->getLayer()->requestRender();
