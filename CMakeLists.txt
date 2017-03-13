@@ -35,6 +35,12 @@ endif()
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY AUTOGEN_TARGETS_FOLDER automoc)
 
+if(MSVC AND ENABLE_PCH)
+    # Force set debug compile flags.
+    # Store debug information in the .obj file instead of a PDB.
+    set(CMAKE_CXX_FLAGS_DEBUG "/MDd /Z7 /Ob0 /Od /RTC1" CACHE STRING "Debug flags" FORCE)
+endif()
+
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -D_DEBUG")  #racy backward compatibility
 
 if(UNIX AND NOT APPLE)
