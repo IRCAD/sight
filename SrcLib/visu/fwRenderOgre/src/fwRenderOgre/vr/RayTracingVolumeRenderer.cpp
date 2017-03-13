@@ -227,16 +227,20 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
                     ::Ogre::LightList closestLights =
                         m_renderer->m_volumeSceneNode->getAttachedObject(0)->queryLights();
 
-                    ::Ogre::Vector3 lightDir = m_renderer->m_volumeSceneNode->convertLocalToWorldDirection(
-                        closestLights[0]->getDerivedDirection(), true);
+                    if(!closestLights.empty())
+                    {
+                        ::Ogre::Vector3 lightDir = m_renderer->m_volumeSceneNode->convertLocalToWorldDirection(
+                            closestLights[0]->getDerivedDirection(), true);
 
-                    ::Ogre::Pass* satIllumPass = ::Ogre::MaterialManager::getSingleton().getByName(
-                        m_currentMtlName)->getTechnique(0)->getPass(0);
-                    ::Ogre::GpuProgramParametersSharedPtr satIllumParams = satIllumPass->getFragmentProgramParameters();
+                        ::Ogre::Pass* satIllumPass = ::Ogre::MaterialManager::getSingleton().getByName(
+                            m_currentMtlName)->getTechnique(0)->getPass(0);
+                        ::Ogre::GpuProgramParametersSharedPtr satIllumParams =
+                            satIllumPass->getFragmentProgramParameters();
 
-                    satIllumParams->setNamedConstant("u_lightDir", lightDir);
+                        satIllumParams->setNamedConstant("u_lightDir", lightDir);
 
-                    m_renderer->m_illumVolume->updateVolIllum();
+                        m_renderer->m_illumVolume->updateVolIllum();
+                    }
                 }
                 // Recompute the focal length in case the camera moved.
                 m_renderer->computeRealFocalLength();
@@ -814,7 +818,6 @@ void RayTracingVolumeRenderer::setAmbientOcclusion(bool ambientOcclusion)
     m_ambientOcclusion = ambientOcclusion;
 
     this->updateVolIllumMat();
-
     this->initCompositors();
 }
 
@@ -825,7 +828,6 @@ void RayTracingVolumeRenderer::setColorBleeding(bool colorBleeding)
     m_colorBleeding = colorBleeding;
 
     this->updateVolIllumMat();
-
     this->initCompositors();
 }
 
@@ -836,7 +838,6 @@ void RayTracingVolumeRenderer::setShadows(bool shadows)
     m_shadows = shadows;
 
     this->updateVolIllumMat();
-
     this->initCompositors();
 }
 

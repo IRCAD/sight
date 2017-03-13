@@ -133,6 +133,14 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT;
     /** @} */
 
+    /// Volume rendering effects.
+    typedef enum
+    {
+        VR_AMBIENT_OCCLUSION,
+        VR_COLOR_BLEEDING,
+        VR_SHADOWS
+    } VREffectType;
+
     /// Constructor.
     VISUOGREADAPTOR_API SVolumeRender() throw();
 
@@ -200,6 +208,9 @@ private:
 
     /// Computes the volume illumination and applies it to the ray tracing renderer
     void updateVolumeIllumination();
+
+    /// Updates or creates the illumination volume according to the given VR effect.
+    void toggleVREffect(VREffectType vrEffect);
 
     /// Rendering mode.
     enum
