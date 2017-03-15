@@ -41,6 +41,10 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 
 void Plugin::stop() throw()
 {
+    if(m_worker)
+    {
+        m_worker->stop();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -51,7 +55,7 @@ int Plugin::run() throw()
     m_worker->getFuture().wait(); // This is required to start WorkerAsio loop
 
     ::fwRuntime::profile::getCurrentProfile()->cleanup();
-    const int result = ::boost::any_cast<int>(m_worker->getFuture().get());
+    const std::uint64_t result = ::boost::any_cast<std::uint64_t>(m_worker->getFuture().get());
 
     ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
     ::fwGui::registry::worker::reset();
