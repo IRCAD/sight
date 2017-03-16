@@ -1,12 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
 #include "fwGui/dialog/SelectorDialog.hpp"
-#include "fwGui/registry/worker.hpp"
+
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <boost/bind.hpp>
 
@@ -16,7 +16,6 @@ namespace fwGui
 {
 namespace dialog
 {
-
 
 //-----------------------------------------------------------------------------
 
@@ -33,7 +32,7 @@ SelectorDialog::SelectorDialog(const std::string& title, const std::string& mess
                                std::vector< std::string > _selections)
 {
     create();
-    ::fwGui::registry::worker::get()->postTask<void>([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>([&]
             {
                 m_implementation->setTitle(title);
                 m_implementation->setMessage( message );
@@ -48,9 +47,11 @@ SelectorDialog::SelectorDialog()
     create();
 }
 
+//------------------------------------------------------------------------------
+
 void SelectorDialog::create()
 {
-    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
             {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ISelectorDialog::REGISTRY_KEY);
                 m_implementation = ::fwGui::dialog::ISelectorDialog::dynamicCast(guiObj);
@@ -61,7 +62,7 @@ void SelectorDialog::create()
 
 void SelectorDialog::setTitle(std::string title)
 {
-    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >( [&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >( [&]
             {
                 m_implementation->setTitle(title);
             })).wait();
@@ -72,7 +73,8 @@ void SelectorDialog::setTitle(std::string title)
 std::string SelectorDialog::show()
 {
     ::boost::function< std::string() > f         = ::boost::bind(&ISelectorDialog::show, m_implementation);
-    ::boost::shared_future< std::string > future = ::fwGui::registry::worker::get()->postTask< std::string >(f);
+    ::boost::shared_future< std::string > future =
+        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< std::string >(f);
     future.wait();
     return future.get();
 }
@@ -81,7 +83,7 @@ std::string SelectorDialog::show()
 
 void SelectorDialog::setSelections(std::vector< std::string > _selections)
 {
-    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
             {
                 m_implementation->setSelections( _selections );
             })).wait();
@@ -89,9 +91,9 @@ void SelectorDialog::setSelections(std::vector< std::string > _selections)
 
 //-----------------------------------------------------------------------------
 
-void SelectorDialog::setMessage(const std::string &msg)
+void SelectorDialog::setMessage(const std::string& msg)
 {
-    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
             {
                 m_implementation->setMessage( msg );
             })).wait();

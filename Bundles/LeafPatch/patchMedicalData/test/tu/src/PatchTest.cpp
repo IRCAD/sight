@@ -8,8 +8,6 @@
 
 #include <fwDataTools/Image.hpp>
 
-#include <fwGui/registry/worker.hpp>
-
 #include <fwMDSemanticPatch/PatchLoader.hpp>
 
 #include <fwMedData/Equipment.hpp>
@@ -20,6 +18,7 @@
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
+#include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
@@ -28,8 +27,8 @@
 
 #include <fwThread/Worker.hpp>
 
-#include <fwTools/System.hpp>
 #include <fwTools/dateAndTime.hpp>
+#include <fwTools/System.hpp>
 
 #include <boost/filesystem/operations.hpp>
 
@@ -46,8 +45,7 @@ namespace ut
 void PatchTest::setUp()
 {
     // Set up context before running a test.
-    ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
-    ::fwGui::registry::worker::init(worker);
+    ::fwServices::registry::ActiveWorkers::setDefaultWorker( ::fwThread::Worker::New() );
 }
 
 //------------------------------------------------------------------------------
@@ -55,7 +53,7 @@ void PatchTest::setUp()
 void PatchTest::tearDown()
 {
     // Clean up after the test run.
-    ::fwGui::registry::worker::reset();
+    ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -71,9 +69,9 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::
     ::fwServices::OSR::registerService( readObj, readerSrv );
     readerSrv->setConfiguration(srvCfg);
     readerSrv->configure();
-    readerSrv->start();
-    readerSrv->update();
-    readerSrv->stop();
+    readerSrv->start().wait();
+    readerSrv->update().wait();
+    readerSrv->stop().wait();
     ::fwServices::OSR::unregisterService( readerSrv );
 
     return readObj;

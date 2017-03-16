@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,14 @@
 #include "SeriesDBReaderTest.hpp"
 
 #include <fwData/Image.hpp>
+#include <fwData/location/ILocation.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
-#include <fwData/location/ILocation.hpp>
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
-#include <fwDataTools/Image.hpp>
 #include <fwDataTools/helper/Image.hpp>
+#include <fwDataTools/Image.hpp>
 
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/ModelSeries.hpp>
@@ -83,7 +83,6 @@ void SeriesDBReaderTest::testSeriesDBReader()
     CPPUNIT_ASSERT_MESSAGE("The file '" + meshFile.string() + "' does not exist",
                            ::boost::filesystem::exists(meshFile));
 
-
     ::fwRuntime::EConfigurationElement::sptr readerSrvCfg = ::fwRuntime::EConfigurationElement::New("service");
     ::fwRuntime::EConfigurationElement::sptr file1Cfg     = ::fwRuntime::EConfigurationElement::New("file");
     ::fwRuntime::EConfigurationElement::sptr file2Cfg     = ::fwRuntime::EConfigurationElement::New("file");
@@ -124,7 +123,6 @@ void SeriesDBReaderTest::testSeriesDBReader()
     sizeExpected[0] = 230;
     sizeExpected[1] = 170;
     sizeExpected[2] = 58;
-
 
     CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->size());
 
@@ -194,9 +192,9 @@ void SeriesDBReaderTest::testMergeSeriesDBReader()
     ::fwServices::OSR::registerService(seriesDB, srv);
     srv->setConfiguration(readerSrvCfg);
     srv->configure();
-    srv->start();
-    srv->update();
-    srv->stop();
+    srv->start().wait();
+    srv->update().wait();
+    srv->stop().wait();
     ::fwServices::OSR::unregisterService(srv);
 
     CPPUNIT_ASSERT_EQUAL(size_t(2), seriesDB->size());

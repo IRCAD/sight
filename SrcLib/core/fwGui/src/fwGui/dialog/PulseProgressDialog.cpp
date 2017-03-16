@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwGui/registry/worker.hpp"
 #include "fwGui/dialog/PulseProgressDialog.hpp"
+
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <boost/bind.hpp>
 
@@ -16,14 +17,14 @@ namespace dialog
 //-----------------------------------------------------------------------------
 
 PulseProgressDialog::PulseProgressDialog(
-    const std::string &title,
+    const std::string& title,
     ::fwGui::dialog::IPulseProgressDialog::Stuff stuff,
-    const std::string &msg,
+    const std::string& msg,
     ::fwGui::dialog::IPulseProgressDialog::MilliSecond frequenceRefresh )
 {
 
-    ::fwGui::registry::worker::get()->postTask<void>(::boost::function<void()>(
-                                                         [&] {
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function<void()>(
+                                                                                  [&] {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(IPulseProgressDialog::REGISTRY_KEY);
                 m_implementation = ::fwGui::dialog::IPulseProgressDialog::dynamicCast(guiObj);
                 if (m_implementation)
@@ -42,7 +43,7 @@ PulseProgressDialog::PulseProgressDialog(
 
 //-----------------------------------------------------------------------------
 
-void PulseProgressDialog::setTitle(const std::string &title)
+void PulseProgressDialog::setTitle(const std::string& title)
 {
     if (m_implementation)
     {
@@ -52,7 +53,7 @@ void PulseProgressDialog::setTitle(const std::string &title)
 
 //-----------------------------------------------------------------------------
 
-void PulseProgressDialog::setMessage(const std::string &msg)
+void PulseProgressDialog::setMessage(const std::string& msg)
 {
     if (m_implementation)
     {
@@ -66,7 +67,7 @@ void PulseProgressDialog::show()
 {
     if (m_implementation)
     {
-        ::fwGui::registry::worker::get()->postTask<void>(
+        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(
             ::boost::bind(&IPulseProgressDialog::show, m_implementation)).wait();
     }
     else

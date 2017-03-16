@@ -13,12 +13,11 @@
 
 #include <fwDataTools/helper/Array.hpp>
 
-#include <fwGui/registry/worker.hpp>
-
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
+#include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
@@ -45,7 +44,7 @@ void IoAtomsTest::setUp()
 {
     // Set up context before running a test.
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
-    ::fwGui::registry::worker::init(worker);
+    ::fwServices::registry::ActiveWorkers::setDefaultWorker(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -53,7 +52,7 @@ void IoAtomsTest::setUp()
 void IoAtomsTest::tearDown()
 {
     // Clean up after the test run.
-    ::fwGui::registry::worker::reset();
+    ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -79,9 +78,9 @@ void write(const ::fwRuntime::EConfigurationElement::sptr& srvCfg, const SPTR(T)
     ::fwServices::OSR::registerService( obj, writerSrv );
     writerSrv->setConfiguration(srvCfg);
     writerSrv->configure();
-    writerSrv->start();
-    writerSrv->update();
-    writerSrv->stop();
+    writerSrv->start().wait();
+    writerSrv->update().wait();
+    writerSrv->stop().wait();
     ::fwServices::OSR::unregisterService( writerSrv );
 }
 
@@ -96,9 +95,9 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::
     ::fwServices::OSR::registerService( readObj, readerSrv );
     readerSrv->setConfiguration(srvCfg);
     readerSrv->configure();
-    readerSrv->start();
-    readerSrv->update();
-    readerSrv->stop();
+    readerSrv->start().wait();
+    readerSrv->update().wait();
+    readerSrv->stop().wait();
     ::fwServices::OSR::unregisterService( readerSrv );
 
     return readObj;

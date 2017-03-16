@@ -8,10 +8,10 @@
 
 #include "fwGui/IActionSrv.hpp"
 #include "fwGui/IMenuItemCallback.hpp"
-#include "fwGui/registry/worker.hpp"
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 #include <fwThread/Worker.hpp>
 #include <fwThread/Worker.hxx>
@@ -81,7 +81,7 @@ void IMenuSrv::create()
     SLM_ASSERT("Parent menu is unknown.", menu);
     m_layoutManager->setCallbacks(callbacks);
 
-    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
         {
             m_layoutManager->createLayout(menu);
         })).wait();
@@ -95,7 +95,7 @@ void IMenuSrv::create()
 void IMenuSrv::destroy()
 {
     m_registrar->unmanage();
-    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
         {
             m_layoutManager->destroyLayout();
         })).wait();
@@ -110,14 +110,14 @@ void IMenuSrv::actionServiceStopping(std::string actionSrvSID)
 
     if (m_hideActions)
     {
-        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
             {
                 m_layoutManager->menuItemSetVisible(menuItem, false);
             })).wait();
     }
     else
     {
-        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
             {
                 m_layoutManager->menuItemSetEnabled(menuItem, false);
             })).wait();
@@ -133,7 +133,7 @@ void IMenuSrv::actionServiceStarting(std::string actionSrvSID)
 
     if (m_hideActions)
     {
-        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
             {
                 m_layoutManager->menuItemSetVisible(menuItem, true);
             })).wait();
@@ -143,7 +143,7 @@ void IMenuSrv::actionServiceStarting(std::string actionSrvSID)
         ::fwServices::IService::sptr service = ::fwServices::get( actionSrvSID );
         ::fwGui::IActionSrv::sptr actionSrv  = ::fwGui::IActionSrv::dynamicCast(service);
 
-        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
             {
                 m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
                 m_layoutManager->menuItemSetChecked(menuItem, actionSrv->getIsActive());
@@ -159,7 +159,7 @@ void IMenuSrv::actionServiceSetActive(std::string actionSrvSID, bool isActive)
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
-    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >( [&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >( [&]
         {
             m_layoutManager->menuItemSetChecked(menuItem, isActive);
         })).wait();
@@ -172,7 +172,7 @@ void IMenuSrv::actionServiceSetExecutable(std::string actionSrvSID, bool isExecu
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
-    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
         {
             m_layoutManager->menuItemSetEnabled(menuItem, isExecutable);
         })).wait();
@@ -185,7 +185,7 @@ void IMenuSrv::actionServiceSetVisible(std::string actionSrvSID, bool isVisible)
     ::fwGui::container::fwMenuItem::sptr menuItem = m_registrar->getFwMenuItem(actionSrvSID,
                                                                                m_layoutManager->getMenuItems());
 
-    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
         {
             m_layoutManager->menuItemSetVisible(menuItem, isVisible);
         })).wait();

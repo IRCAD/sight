@@ -6,8 +6,6 @@
 
 #include "console/Plugin.hpp"
 
-#include <fwGui/registry/worker.hpp>
-
 #include <fwRuntime/profile/Profile.hpp>
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
 
@@ -30,9 +28,7 @@ Plugin::~Plugin() throw()
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
     m_worker = ::fwThread::Worker::New();
-    ::fwServices::registry::ActiveWorkers::getDefault()->addWorker(
-        ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER, m_worker);
-    ::fwGui::registry::worker::init(m_worker);
+    ::fwServices::registry::ActiveWorkers::setDefaultWorker(m_worker);
 
     ::fwRuntime::profile::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
 }
@@ -58,7 +54,6 @@ int Plugin::run() throw()
     const std::uint64_t result = ::boost::any_cast<std::uint64_t>(m_worker->getFuture().get());
 
     ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
-    ::fwGui::registry::worker::reset();
     m_worker.reset();
 
     return result;
