@@ -17,6 +17,7 @@ uniform sampler2D u_entryPoints4;
 uniform sampler2D u_entryPoints5;
 uniform sampler2D u_entryPoints6;
 uniform sampler2D u_entryPoints7;
+uniform sampler2D u_background;
 
 uniform mat4 u_invWorldViewProjs[VIEWPOINTS];
 
@@ -272,8 +273,10 @@ void main(void)
         discard;
     }
 
-    fragColor.a = 0;
+    fragColor.a = 1;
 
+    vec3 subPixelRayColor;
+    vec3 subPixelRayAlpha;
     for(int i = 0; i < 3; ++ i)
     {
         float entryDepth =  rayEntryPoints[i].r;
@@ -281,7 +284,7 @@ void main(void)
 
         if(/*gl_FragCoord.z > entryDepth ||*/ exitDepth == -1)
         {
-            fragColor[i] = 0;
+            subPixelRayColor[i] = 0;
             continue;
         }
 
@@ -302,11 +305,14 @@ void main(void)
         vec4 result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
 
 #ifdef MODE3D
-        fragColor[i] = result[i];
-        fragColor.a += result.a;
+        subPixelRayColor[i] = result[i];
+        subPixelRayAlpha[i] = result.a;
     }
 
-    fragColor.a /= 3;
+    vec3 backgroundSample = vec3(0,0,0);
+
+    fragColor.rgb = mix(backgroundSample, subPixelRayColor, subPixelRayAlpha);
+
     gl_FragDepth = nbRays == 0 ? 1.f : fragDepth / float(nbRays);
 
 #else

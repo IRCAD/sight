@@ -20,7 +20,7 @@
                 <gui>
                     <frame>
                         <name>TutoOgreGenericScene</name>
-                        <icon>@BUNDLE_PREFIX@/TutoOgreGenericScene_0-1/tuto.ico</icon>
+                        <icon>@BUNDLE_PREFIX@/TutoOgreGenericScene_@DASH_VERSION@/tuto.ico</icon>
                         <minSize width="1024" height="768" />
                     </frame>
                     <menuBar />

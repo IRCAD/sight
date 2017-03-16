@@ -86,23 +86,22 @@ void SCamera::doUpdate() throw(::fwTools::Failed)
 
 void SCamera::createTransformService()
 {
-    ::fwData::TransformationMatrix3D::csptr transform =
-        this->getInput< ::fwData::TransformationMatrix3D >("transform");
+    auto transform = this->getInput< ::fwData::TransformationMatrix3D >("transform");
 
     if(!transform)
     {
         transform = ::fwData::TransformationMatrix3D::New();
     }
 
-    m_transformService = ::fwServices::add< ::fwRenderOgre::IAdaptor >(transform,
-                                                                       "::visuOgreAdaptor::STransform");
+    m_transformService = ::fwServices::add< ::fwRenderOgre::IAdaptor >(transform, "::visuOgreAdaptor::STransform");
     SLM_ASSERT("Transform service is null", m_transformService.lock());
     auto transformService = this->getTransformService();
 
     transformService->setID(this->getID() + "_" + transformService->getID());
     transformService->setRenderService(this->getRenderService());
     transformService->setLayerID(m_layerID);
-    transformService->setTransformId(this->getTransformId());
+    // For now we use the only one Ogre camera in the layer as input
+    transformService->setTransformId(m_camera->getParentSceneNode()->getName());
     transformService->setParentTransformId(this->getParentTransformId());
 
     transformService->start();
@@ -139,6 +138,8 @@ void SCamera::doSwap() throw(::fwTools::Failed)
 void SCamera::doStop() throw(::fwTools::Failed)
 {
     m_layerConnection.disconnect();
+
+    this->unregisterServices();
 }
 
 //------------------------------------------------------------------------------
@@ -151,8 +152,8 @@ void SCamera::updateTF3D()
     ::Ogre::Matrix3 mat33;
     orientation.ToRotationMatrix(mat33);
 
-    ::Ogre::Vector3 position = camNode->getPosition();
-    ::Ogre::Vector3 scale    = camNode->getScale();
+    const ::Ogre::Vector3& position = camNode->getPosition();
+    const ::Ogre::Vector3& scale    = camNode->getScale();
 
     ::Ogre::Matrix4 newTransMat;
 
@@ -232,7 +233,7 @@ void SCamera::calibrate()
 {
     if ( m_calibration )
     {
-        double fy = m_calibration->getFy();
+        const double fy = m_calibration->getFy();
         m_camera->setFOVy(
             ::Ogre::Radian(static_cast< ::Ogre::Real >(2.0 *
                                                        atan(static_cast< double >(m_calibration->getHeight() / 2.0) /

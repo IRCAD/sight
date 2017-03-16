@@ -20,7 +20,7 @@
 
 // Set this to 1 to display the FPS in the console output
 #ifndef DISPLAY_OGRE_FPS
-#define DISPLAY_OGRE_FPS 1
+//#define DISPLAY_OGRE_FPS 1
 #endif
 
 #define ZOOM_SPEED 0.2
