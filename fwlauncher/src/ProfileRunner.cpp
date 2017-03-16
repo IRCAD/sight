@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,8 +17,9 @@
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/positional_options.hpp>
 #include <boost/program_options/variables_map.hpp>
-#include <ostream>
 
+#include <csignal>
+#include <ostream>
 #include <stdio.h>
 #include <string>
 #include <vector>
@@ -38,8 +39,6 @@
 #define GET_DEFAULT_PROFILE(x) #x
 #define GET_DEFAULT_PROFILE2(x) GET_DEFAULT_PROFILE(x)
 #define DEFAULT_PROFILE_STRING  GET_DEFAULT_PROFILE2(DEFAULT_PROFILE)
-
-
 
 //------------------------------------------------------------------------------
 #if defined(_WIN32) && _MSC_VER > 1499 &&  _MSC_VER < 1600 // Visual C++ 2008 only
@@ -75,6 +74,8 @@ typedef std::vector< std::string > StringListType;
 
 namespace std
 {
+//------------------------------------------------------------------------------
+
 template<class A1, class A2>
 inline ostream& operator<<(ostream& s, vector<A1, A2> const& vec)
 {
@@ -105,6 +106,18 @@ PathType absolute( const PathType& path )
 
 //-----------------------------------------------------------------------------
 
+volatile sig_atomic_t gSignalStatus = 0;
+//------------------------------------------------------------------------------
+
+void signal_handler(int signal)
+{
+    gSignalStatus = signal;
+    ::fwRuntime::profile::getCurrentProfile()->cleanup();
+    ::fwRuntime::profile::getCurrentProfile()->stop();
+}
+
+//-----------------------------------------------------------------------------
+
 int main(int argc, char* argv[])
 {
     PathListType bundlePaths;
@@ -115,7 +128,7 @@ int main(int argc, char* argv[])
     po::options_description options("Launcher options");
     options.add_options()
         ("help,h", "Show help message")
-        ("bundle-path,B", po::value(&bundlePaths)->default_value(PathListType(1,std::string(BUNDLE_PREFIX) + "/")),
+        ("bundle-path,B", po::value(&bundlePaths)->default_value(PathListType(1, std::string(BUNDLE_PREFIX) + "/")),
         "Adds a bundle path")
         ("rwd", po::value(&rwd)->default_value("./"), "Sets runtime working directory")
     ;
@@ -198,7 +211,7 @@ int main(int argc, char* argv[])
     if(fileLog)
     {
         FILE* pFile = fopen(logFile.c_str(), "w");
-        if (pFile==NULL)
+        if (pFile == NULL)
         {
             ::boost::system::error_code err;
             PathType sysTmp = fs::temp_directory_path(err);
@@ -218,9 +231,9 @@ int main(int argc, char* argv[])
         else
         {
             // creates SLM.log in default logFile directory
-            fclose(pFile);
             logger.addFileAppender(logFile, static_cast<SpyLogger::LevelType>(logLevel));
         }
+        fclose(pFile);
     }
 
 #ifdef __MACOSX__
@@ -262,11 +275,10 @@ int main(int argc, char* argv[])
     std::transform( bundlePaths.begin(), bundlePaths.end(), bundlePaths.begin(), absolute );
     profileFile = fs::absolute(profileFile);
 
-    bool isChdirOk = false;
 #ifdef _WIN32
-    isChdirOk = (bool)(SetCurrentDirectory(rwd.string().c_str()) != 0);
+    const bool isChdirOk = (bool)(SetCurrentDirectory(rwd.string().c_str()) != 0);
 #else
-    isChdirOk = ( chdir(rwd.string().c_str()) == 0 );
+    const bool isChdirOk = ( chdir(rwd.string().c_str()) == 0 );
 #endif // _WIN32
     OSLM_ERROR_IF( "Was not able to change directory to : " << rwd, !isChdirOk);
 
@@ -293,11 +305,17 @@ int main(int argc, char* argv[])
             profile = ::fwRuntime::io::ProfileReader::createProfile(profileFile);
             ::fwRuntime::profile::setCurrentProfile(profile);
 
+            // Install a signal handler
+            std::signal(SIGINT, signal_handler);
+
             profile->setParams(profileArgs);
 
             profile->start();
             profile->run();
-            profile->stop();
+            if(gSignalStatus == 0)
+            {
+                profile->stop();
+            }
         }
         catch(std::exception& e)
         {

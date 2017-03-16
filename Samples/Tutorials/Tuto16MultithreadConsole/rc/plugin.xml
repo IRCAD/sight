@@ -1,0 +1,66 @@
+﻿<plugin id="Tuto16MultithreadConsole" class="::Tuto16MultithreadConsole::Plugin" version="@DASH_VERSION@" >
+
+    <library name="Tuto16MultithreadConsole" />
+
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::Tuto16MultithreadConsole::SReadArray</service>
+        <object>::fwData::Array</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::Tuto16MultithreadConsole::SShowArray</service>
+        <object>::fwData::Array</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::Tuto16MultithreadConsole::SIncrementArray</service>
+        <object>::fwData::Array</object>
+    </extension>
+
+    <extension implements="::fwServices::registry::AppConfig2">
+        <id>Tuto16MultithreadConsoleConfig</id>
+        <parameters>
+        </parameters>
+        <config>
+
+            <object uid="array" type="::fwData::Array" />
+
+            <!-- Simulate the reading of an array of integers. It simply fills 10 values from 0 to 9. -->
+            <service uid="readArray" type="::Tuto16MultithreadConsole::SReadArray" worker="worker1">
+                <inout key="array" uid="array" />
+            </service>
+
+            <!-- Increment each element of the array every 500ms. -->
+            <service uid="incrementArray" type="::Tuto16MultithreadConsole::SIncrementArray" worker="worker2">
+                <inout key="array" uid="array" />
+            </service>
+
+            <!-- Display the content of the array. -->
+            <service uid="showArray" type="::Tuto16MultithreadConsole::SShowArray" worker="worker3">
+                <in key="array" uid="array" />
+            </service>
+
+            <!-- Start the increment of the array when it is read, show the content every time the array is modified -->
+            <connect>
+                <signal>array/modified</signal>
+                <slot>incrementArray/startTimer</slot>
+                <slot>showArray/update</slot>
+            </connect>
+
+            <start uid="readArray" />
+            <start uid="incrementArray" />
+            <start uid="showArray" />
+
+            <!-- Read the array -->
+            <update uid="readArray" />
+
+        </config>
+    </extension>
+
+</plugin>
