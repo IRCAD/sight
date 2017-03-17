@@ -32,7 +32,7 @@ fragment_program RayTracedVolume{{ name }}_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -111,9 +111,10 @@ fragment_program VR/RayTracedVolume3D5_FP glsl
         param_named u_entryPoints2 int 4
         param_named u_entryPoints3 int 5
         param_named u_entryPoints4 int 6
+        param_named u_background int 7
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
@@ -148,9 +149,10 @@ fragment_program VR/RayTracedVolume3D8_FP glsl
         param_named u_entryPoints5 int 7
         param_named u_entryPoints6 int 8
         param_named u_entryPoints7 int 9
+        param_named u_background int 10
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10

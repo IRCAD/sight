@@ -60,29 +60,28 @@ namespace visuOgreAdaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="volumeRender" type="::visuOgreAdaptor::SVolumeRender">
-        <in key="image" uid="imageUID" autoConnect="yes" />
-        <inout key="TF" uid="TFSelections" />
-        <inout key="mask" uid="maskUID" autoConnect="yes" />
+    <service uid="..." type="::visuOgreAdaptor::SVolumeRender" >
+        <in key="image" uid="..." autoConnect="yes" />
+        <inout key="TF" uid="..." />
+        <inout key="clippingMatrix" uid="..." />
         <config renderer="default"
-                 preintegration="yes" mode="slice" ao="no" colorBleeding="no" shadows="no"
-                 satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
-                 aoFactor="0.5" colorBleedingFactor="0.5"
-                 selectedTFKey="SelectedTF" />
+                preintegration="yes" mode="slice" ao="no" colorBleeding="no" shadows="no"
+                satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
+                aoFactor="0.5" colorBleedingFactor="0.5" selectedTFKey="SelectedTF" />
     </service>
    @endcode
- * @subsection Input Input:
+ * @subsection Input Input
  * - \b image [::fwData::Image]: input volume data.
- * @subsection In-Out In-Out:
- * - \b TF [::fwData::Composite]: Selected transfer function.
+ * @subsection In-Out In-Out
+ * - \b TF [::fwData::Composite]: composite containing transfer functions.
  * - \b mask [::fwData::Image]: segmented data.
- * With :
+ * - \b clippingMatrix [::fwData::TransformationMatrix3D]: matrix used to clip the volume.
+ * @subsection Configuration Configuration
  * - \b renderer (optional): defines the renderer displaying the volume.
  * - \b preintegration (optional, yes/no, default=no): use pre-integration.
  * - \b widgets (optional, yes/no, default=yes): display VR widgets.
  * - \b mode (optional, slice/raycasting, default=raycasting): Rendering mode.
  * - \b selectedTFKey (mandatory): TF key.
- * - \b tfSelectionFwID (mandatory): TF selection.
  * Only if the raycasting render mode is activated :
  * - \b ao (optional, yes/no, default=no): Ambient occlusion usage.
  * - \b colorBleeding (optional, yes/no, default=no): Color bleeding usage.
@@ -286,6 +285,9 @@ private:
 
     /// Factor parameter used to weight the color bleeding.
     double m_colorBleedingFactor;
+
+    /// Sets whether the camera must be auto reset when a mesh is updated or not.
+    bool m_autoResetCamera;
 
     /// Handle connections between the layer and the volume renderer.
     ::fwCom::helper::SigSlotConnection m_volumeConnection;

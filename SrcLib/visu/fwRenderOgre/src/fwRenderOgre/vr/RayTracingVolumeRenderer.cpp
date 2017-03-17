@@ -242,6 +242,7 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
                         m_renderer->m_illumVolume->updateVolIllum();
                     }
                 }
+
                 // Recompute the focal length in case the camera moved.
                 m_renderer->computeRealFocalLength();
 
@@ -323,8 +324,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_cameraListener(nullptr),
     m_layer(layer)
 {
-    m_gridSize   = { 2, 2, 2 };
-    m_bricksSize = { 8, 8, 8 };
+    m_gridSize   = {{ 2, 2, 2 }};
+    m_bricksSize = {{ 8, 8, 8 }};
 
     const unsigned nbViewpoints = m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ? 8 :
                                   m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 ? 5 : 1;
@@ -684,7 +685,8 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
         for(size_t i = 0; i < 3; ++i)
         {
             m_gridSize[i] =
-                static_cast<int>(m_imageSize[i] / m_bricksSize[i] + (m_imageSize[i] % m_bricksSize[i] != 0));
+                static_cast<int>(m_imageSize[i]) / m_bricksSize[i] +
+                (static_cast<int>(m_imageSize[i]) % m_bricksSize[i] != 0);
         }
 
         if(!m_gridTexture.isNull())

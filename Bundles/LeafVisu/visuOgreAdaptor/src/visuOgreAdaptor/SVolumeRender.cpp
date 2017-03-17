@@ -24,6 +24,10 @@
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTextureManager.h>
 
+// For now deactivate the specific optimizations for autostereo that causes
+// blending problem with the background
+#define ENABLE_AUTO_STEREO_OPTIM
+
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVolumeRender, ::fwData::Image);
 
 //-----------------------------------------------------------------------------
@@ -76,7 +80,8 @@ SVolumeRender::SVolumeRender() throw() :
     m_satConeAngle(0.1f),
     m_satConeSamples(50),
     m_aoFactor(1.f),
-    m_colorBleedingFactor(1.f)
+    m_colorBleedingFactor(1.f),
+    m_autoResetCamera(true)
 {
     this->installTFSlots(this);
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
@@ -117,6 +122,12 @@ SVolumeRender::~SVolumeRender() throw()
 void SVolumeRender::doConfigure() throw ( ::fwTools::Failed )
 {
     SLM_ASSERT("No config tag", m_configuration->getName() == "config");
+
+    if(m_configuration->hasAttribute("autoresetcamera"))
+    {
+        std::string autoResetCamera = m_configuration->getAttributeValue("autoresetcamera");
+        m_autoResetCamera = (autoResetCamera == "yes");
+    }
 
     if(m_configuration->hasAttribute("preintegration"))
     {
@@ -262,6 +273,7 @@ void SVolumeRender::updatingTFWindowing(double window, double level)
     connections.push( "image", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
     connections.push( "mask", ::fwData::Image::s_MODIFIED_SIG, s_NEW_MASK_SLOT );
     connections.push( "mask", ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_NEW_MASK_SLOT );
+    connections.push( "clippingMatrix", ::fwData::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT );
 
     return connections;
 }
@@ -310,6 +322,12 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     }
     else
     {
+#ifdef ENABLE_AUTO_STEREO_OPTIM
+        const auto stereoMode = layer->getStereoMode();
+#else
+        const auto stereoMode = ::fwRenderOgre::Layer::StereoModeType::NONE;
+#endif
+
         m_volumeRenderer = new ::fwRenderOgre::vr::RayTracingVolumeRenderer(this->getID(),
                                                                             layer,
                                                                             m_volumeSceneNode,
@@ -317,7 +335,7 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
                                                                             m_maskTexture,
                                                                             m_gpuTF,
                                                                             m_preIntegrationTable,
-                                                                            layer->getStereoMode(),
+                                                                            stereoMode,
                                                                             m_ambientOcclusion,
                                                                             m_colorBleeding);
 
@@ -341,10 +359,12 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 
     m_volumeConnection.connect(layer, ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
                                this->getSptr(), ::visuOgreAdaptor::SVolumeRender::s_RESIZE_VIEWPORT_SLOT);
+#ifdef ENABLE_AUTO_STEREO_OPTIM
     m_volumeConnection.connect(layer, ::fwRenderOgre::Layer::s_MODE3D_CHANGED_SIG,
                                this->getSptr(), ::visuOgreAdaptor::SVolumeRender::s_SET_MODE3D_SLOT);
+#endif
 
-    initWidgets();
+    this->initWidgets();
     m_widgets->setVisibility(m_widgetVisibilty);
 
     bool isValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(this->getImage());
@@ -357,8 +377,10 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
         m_volumeSceneNode->setVisible(false, false);
     }
 
-    this->getRenderService()->resetCameraCoordinates(m_layerID);
-
+    if (m_autoResetCamera && !this->getImage()->getField("cameraTransform"))
+    {
+        this->getRenderService()->resetCameraCoordinates(m_layerID);
+    }
     m_volumeRenderer->tfUpdate(this->getTransferFunction());
 
     this->requestRender();
@@ -836,14 +858,12 @@ void SVolumeRender::initWidgets()
 {
     // Create widgets.
     {
-        auto widget = new ::fwRenderOgre::ui::VRWidget(this->getID(),
-                                                       m_volumeSceneNode,
-                                                       m_camera,
-                                                       this->getRenderService(),
-                                                       m_sceneManager,
-                                                       m_volumeRenderer);
+        auto clippingMatrix = this->getInOut< ::fwData::TransformationMatrix3D>("clippingMatrix");
 
-        m_widgets = std::shared_ptr< ::fwRenderOgre::ui::VRWidget >(widget);
+        m_widgets = ::std::make_shared< ::fwRenderOgre::ui::VRWidget >(this->getID(), m_volumeSceneNode,
+                                                                       m_camera, this->getRenderService(),
+                                                                       m_sceneManager, m_volumeRenderer,
+                                                                       clippingMatrix);
     }
 
     // Connect widgets to interactor.
@@ -851,8 +871,7 @@ void SVolumeRender::initWidgets()
         ::fwRenderOgre::Layer::sptr layer                        = this->getRenderService()->getLayer(m_layerID);
         ::fwRenderOgre::interactor::IInteractor::sptr interactor = layer->getInteractor();
 
-        auto vrInteractor =
-            std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
+        auto vrInteractor = std::dynamic_pointer_cast< ::fwRenderOgre::interactor::VRWidgetsInteractor >(interactor);
 
         if(vrInteractor)
         {

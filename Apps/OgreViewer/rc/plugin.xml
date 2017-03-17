@@ -51,7 +51,7 @@
                 <gui>
                     <frame>
                         <name>Ogre Viewer</name>
-                        <icon>@BUNDLE_PREFIX@/OgreViewer_0-1/ogre_head.svg</icon>
+                        <icon>@BUNDLE_PREFIX@/OgreViewer_@DASH_VERSION@/ogre_head.svg</icon>
                         <minSize width="1100" height="700" />
                     </frame>
                     <menuBar />

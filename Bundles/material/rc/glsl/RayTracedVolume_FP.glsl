@@ -40,6 +40,7 @@ uniform sampler2D u_entryPoints6;
 uniform sampler2D u_entryPoints7;
 #endif    /* (VIEWPOINTS > 7) */
 
+uniform sampler2D u_background;
 
 uniform mat4 u_invWorldViewProjs[VIEWPOINTS];
 
@@ -280,7 +281,7 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
             {
                 tfColour.a = tfColour.a * u_aimcAlphaCorrection;
             }
-#endif
+#endif // IDVR == 2
 
 #if IDVR == 3
             vec4 aimc = texture(u_IC, uv);
@@ -290,7 +291,7 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
                 result.rgb = result.rgb * u_vpimcAlphaCorrection;
                 result.a = u_vpimcAlphaCorrection;
             }
-#endif
+#endif // IDVR == 3
 
             composite(result, tfColour);
 
@@ -301,7 +302,7 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 // Before cutting off the compositing and breaking the ray casting
 // Otherwise we will miss the important feature
             && int(nbSamples) > int(aimc.r)
-#endif
+#endif // IDVR == 3
             )
             {
                 break;
@@ -313,7 +314,7 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 // With Visibility preserving importance compositing
 // We count the number of samples until we reach the important feature
         nbSamples += 1.0f;
-#endif
+#endif // IDVR == 2 || IDVR == 3
     }
 
     return result;
@@ -384,8 +385,10 @@ void main(void)
         discard;
     }
 
-    fragColor.a = 0;
+    fragColor.a = 1;
 
+    vec3 subPixelRayColor;
+    vec3 subPixelRayAlpha;
     for(int i = 0; i < 3; ++ i)
     {
         float entryDepth =  rayEntryPoints[i].r;
@@ -393,7 +396,7 @@ void main(void)
 
         if(exitDepth == -1)
         {
-            fragColor[i] = 0;
+            subPixelRayColor[i] = 0;
             continue;
         }
 
@@ -414,11 +417,14 @@ void main(void)
         vec4 result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
 
 #ifdef MODE3D
-        fragColor[i] = result[i];
-        fragColor.a += result.a;
+        subPixelRayColor[i] = result[i];
+        subPixelRayAlpha[i] = result.a;
     }
 
-    fragColor.a /= 3;
+    vec3 backgroundSample = vec3(0,0,0);
+
+    fragColor.rgb = mix(backgroundSample, subPixelRayColor, subPixelRayAlpha);
+
     gl_FragDepth = nbRays == 0 ? 1.f : fragDepth / float(nbRays);
 
 #else

@@ -6,28 +6,20 @@
 
 #include "fwRenderOgre/Layer.hpp"
 
-#include "fwRenderOgre/ICamera.hpp"
-#include "fwRenderOgre/ILight.hpp"
-#include "fwRenderOgre/interactor/TrackballInteractor.hpp"
-#include "fwRenderOgre/SRender.hpp"
-#include "fwRenderOgre/Utils.hpp"
+#include <fwRenderOgre/ILight.hpp>
+#include <fwRenderOgre/Layer.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
-#include <fwData/Color.hpp>
-#include <fwData/Material.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-
 #include <fwDataTools/Color.hpp>
-
-#include <fwServices/registry/ObjectService.hpp>
 
 #include <fwThread/Worker.hpp>
 
 #include <boost/tokenizer.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
+#include <OGRE/OgreCamera.h>
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreEntity.h>
@@ -54,6 +46,7 @@ const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG         = "layerIn
 const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG       = "layerResized";
 const ::fwCom::Signals::SignalKeyType Layer::s_COMPOSITOR_UPDATED_SIG = "compositorUpdated";
 const ::fwCom::Signals::SignalKeyType Layer::s_MODE3D_CHANGED_SIG     = "StereoModeChanged";
+const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_UPDATED_SIG     = "CameraUpdated";
 
 const ::fwCom::Slots::SlotKeyType Layer::s_INTERACTION_SLOT    = "interaction";
 const ::fwCom::Slots::SlotKeyType Layer::s_DESTROY_SLOT        = "destroy";
@@ -81,6 +74,7 @@ Layer::Layer() :
     m_bottomColor("#333333"),
     m_topScale(0.f),
     m_bottomScale(1.f),
+    m_camera(nullptr),
     m_hasCoreCompositor(false),
     m_hasCompositorChain(false),
     m_sceneCreated(false),
@@ -90,6 +84,7 @@ Layer::Layer() :
     newSignal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
     newSignal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
     newSignal<StereoModeChangedSignalType>(s_MODE3D_CHANGED_SIG);
+    newSignal<CameraUpdatedSignalType>(s_CAMERA_UPDATED_SIG);
 
     newSlot(s_INTERACTION_SLOT, &Layer::interaction, this);
     newSlot(s_DESTROY_SLOT, &Layer::destroy, this);
@@ -153,12 +148,11 @@ void Layer::createScene()
 
     m_sceneManager->setAmbientLight(::Ogre::ColourValue(0.8f, 0.8f, 0.8f));
 
-    m_cameraManager = ::fwRenderOgre::ICamera::createCameraManager();
-    m_cameraManager->setLayerID(this->getLayerID());
-    m_cameraManager->createCamera(Layer::DEFAULT_CAMERA_NAME, m_sceneManager);
-    m_cameraManager->setNearClipDistance(1);
+    // Create the camera
+    m_camera = m_sceneManager->createCamera(DEFAULT_CAMERA_NAME);
+    m_camera->setNearClipDistance(1);
 
-    m_viewport = m_renderWindow->addViewport(m_cameraManager->getCamera(), m_depth);
+    m_viewport = m_renderWindow->addViewport(m_camera, m_depth);
 
     m_compositorChainManager = fwc::ChainManager::uptr(new fwc::ChainManager(m_viewport));
 
@@ -215,17 +209,14 @@ void Layer::createScene()
     }
 
     // Alter the camera aspect ratio to match the viewport
-    m_cameraManager->setAspectRatio(::Ogre::Real(m_viewport->getActualWidth()) /
-                                    ::Ogre::Real(m_viewport->getActualHeight()));
+    m_camera->setAspectRatio(Ogre::Real(m_viewport->getActualWidth()) / ::Ogre::Real(m_viewport->getActualHeight()));
 
     // Creating Camera Scene Node
     ::Ogre::SceneNode* cameraNode = m_sceneManager->getRootSceneNode()->createChildSceneNode("CameraNode");
     cameraNode->setPosition(::Ogre::Vector3(0, 0, 5));
     cameraNode->lookAt(::Ogre::Vector3(0, 0, 1), ::Ogre::Node::TS_WORLD);
 
-    m_cameraManager->setTransformName(cameraNode->getName());
-    cameraNode->attachObject(m_cameraManager->getCamera());
-    m_renderService.lock()->addAdaptor(m_cameraManager);
+    cameraNode->attachObject(m_camera);
 
     if(m_hasDefaultLight)
     {
@@ -324,13 +315,11 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::MOUSEMOVE:
         {
             m_moveInteractor->mouseMoveEvent(info.button, info.x, info.y, info.dx, info.dy);
-            m_cameraManager->updateTF3D();
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE:
         {
             m_moveInteractor->wheelEvent(info.delta, info.x, info.y);
-            m_cameraManager->updateTF3D();
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE:
@@ -356,17 +345,18 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
             break;
         }
     }
+    this->signal<CameraUpdatedSignalType>(s_CAMERA_UPDATED_SIG)->asyncEmit();
 }
 
 // ----------------------------------------------------------------------------
 
 void Layer::destroy()
 {
-    ::fwRenderOgre::ICamera::destroyCameraManager(m_cameraManager);
     ::fwRenderOgre::ILight::destroyLightManager(m_lightManager);
 
     ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
     m_sceneManager = nullptr;
+    m_camera       = nullptr;
 }
 
 // ----------------------------------------------------------------------------
@@ -522,20 +512,19 @@ void Layer::resetCameraCoordinates() const
 {
     ::Ogre::AxisAlignedBox worldCoordBoundingBox = computeCameraParameters();
 
-    if(m_cameraManager->getCamera() && m_cameraManager->getCamera()->getProjectionType() == ::Ogre::PT_PERSPECTIVE)
+    if(m_camera && m_camera->getProjectionType() == ::Ogre::PT_PERSPECTIVE)
     {
         // Check if bounding box is valid, otherwise, do nothing.
         if( worldCoordBoundingBox == ::Ogre::AxisAlignedBox::EXTENT_NULL ||
             worldCoordBoundingBox == ::Ogre::AxisAlignedBox::EXTENT_INFINITE)
         {
-            ::Ogre::SceneNode* camNode = m_cameraManager->getCamera()->getParentSceneNode();
+            ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
 
             camNode->setPosition(0.f, 0.f, 0.f);
-            m_cameraManager->updateTF3D();
         }
         else
         {
-            ::Ogre::SceneNode* camNode = m_cameraManager->getCamera()->getParentSceneNode();
+            ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
             // Arbitrary coefficient
             ::Ogre::Real boundingBoxLength = worldCoordBoundingBox.getSize().length() > 0 ?
                                              worldCoordBoundingBox.getSize().length() : 0;
@@ -554,7 +543,6 @@ void Layer::resetCameraCoordinates() const
             m_moveInteractor->setMouseScale( coeffZoom );
 
             resetCameraClippingRange(worldCoordBoundingBox);
-            m_cameraManager->updateTF3D();
         }
 
         m_renderService.lock()->requestRender();
@@ -572,7 +560,7 @@ void Layer::resetCameraClippingRange() const
 
 void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBoundingBox) const
 {
-    if(m_cameraManager->getCamera() && m_cameraManager->getCamera()->getProjectionType() == ::Ogre::PT_PERSPECTIVE)
+    if(m_camera && m_camera->getProjectionType() == ::Ogre::PT_PERSPECTIVE)
     {
         // Check if bounding box is valid, otherwise, do nothing.
         if( worldCoordBoundingBox == ::Ogre::AxisAlignedBox::EXTENT_NULL ||
@@ -581,7 +569,7 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
             return;
         }
 
-        ::Ogre::SceneNode* camNode = m_cameraManager->getCamera()->getParentSceneNode();
+        ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
 
         // Set the direction of the camera
         ::Ogre::Quaternion quat   = camNode->getOrientation();
@@ -645,17 +633,15 @@ void Layer::resetCameraClippingRange(const ::Ogre::AxisAlignedBox& worldCoordBou
         {
             // Near and far for SAO
             OSLM_TRACE("Near SAO");
-            m_cameraManager->setNearClipDistance( 1 );
-            m_cameraManager->setFarClipDistance( 10000 );
+            m_camera->setNearClipDistance( 1 );
+            m_camera->setFarClipDistance( 10000 );
         }
         else
         {
             OSLM_TRACE("Near normal");
-            m_cameraManager->setNearClipDistance( maxNear );
-            m_cameraManager->setFarClipDistance( minFar );
-
+            m_camera->setNearClipDistance( maxNear );
+            m_camera->setFarClipDistance( minFar );
         }
-
     }
 }
 
@@ -837,7 +823,7 @@ bool Layer::isSceneCreated() const
 
 ::Ogre::Camera* Layer::getDefaultCamera() const
 {
-    return m_cameraManager->getCamera();
+    return m_camera;
 }
 
 //-------------------------------------------------------------------------------------

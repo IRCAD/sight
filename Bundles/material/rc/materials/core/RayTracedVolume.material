@@ -25,7 +25,7 @@ fragment_program RayTracedVolume_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -80,7 +80,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -138,7 +138,7 @@ fragment_program RayTracedVolume_ColorBleeding_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -196,7 +196,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -254,7 +254,7 @@ fragment_program RayTracedVolume_Shadows_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -312,7 +312,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_Shadows_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -370,7 +370,7 @@ fragment_program RayTracedVolume_ColorBleeding_Shadows_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -428,7 +428,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -486,7 +486,7 @@ fragment_program RayTracedVolume_PreIntegrated_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -544,7 +544,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_PreIntegrated_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -605,7 +605,7 @@ fragment_program RayTracedVolume_ColorBleeding_PreIntegrated_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -666,7 +666,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_PreIntegrated_FP
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -727,7 +727,7 @@ fragment_program RayTracedVolume_Shadows_PreIntegrated_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -788,7 +788,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_Shadows_PreIntegrated_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -849,7 +849,7 @@ fragment_program RayTracedVolume_ColorBleeding_Shadows_PreIntegrated_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -910,7 +910,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_PreInteg
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -971,7 +971,7 @@ fragment_program RayTracedVolume_MImP_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -1029,7 +1029,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_MImP_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -1090,7 +1090,7 @@ fragment_program RayTracedVolume_ColorBleeding_MImP_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -1151,7 +1151,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_MImP_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -1212,7 +1212,7 @@ fragment_program RayTracedVolume_Shadows_MImP_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -1273,7 +1273,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_Shadows_MImP_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -1334,7 +1334,7 @@ fragment_program RayTracedVolume_ColorBleeding_Shadows_MImP_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -1395,7 +1395,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_MImP_FP 
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -1456,7 +1456,7 @@ fragment_program RayTracedVolume_PreIntegrated_MImP_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -1517,7 +1517,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_PreIntegrated_MImP_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -1581,7 +1581,7 @@ fragment_program RayTracedVolume_ColorBleeding_PreIntegrated_MImP_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -1645,7 +1645,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_PreIntegrated_MI
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -1709,7 +1709,7 @@ fragment_program RayTracedVolume_Shadows_PreIntegrated_MImP_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -1773,7 +1773,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_Shadows_PreIntegrated_MImP_FP 
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -1837,7 +1837,7 @@ fragment_program RayTracedVolume_ColorBleeding_Shadows_PreIntegrated_MImP_FP gls
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -1901,7 +1901,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_PreInteg
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -1965,7 +1965,7 @@ fragment_program RayTracedVolume_AImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -2022,7 +2022,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_AImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -2082,7 +2082,7 @@ fragment_program RayTracedVolume_ColorBleeding_AImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -2142,7 +2142,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_AImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -2202,7 +2202,7 @@ fragment_program RayTracedVolume_Shadows_AImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -2262,7 +2262,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_Shadows_AImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -2322,7 +2322,7 @@ fragment_program RayTracedVolume_ColorBleeding_Shadows_AImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -2382,7 +2382,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_AImC_FP 
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -2442,7 +2442,7 @@ fragment_program RayTracedVolume_PreIntegrated_AImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -2502,7 +2502,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_PreIntegrated_AImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -2565,7 +2565,7 @@ fragment_program RayTracedVolume_ColorBleeding_PreIntegrated_AImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -2628,7 +2628,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_PreIntegrated_AI
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -2691,7 +2691,7 @@ fragment_program RayTracedVolume_Shadows_PreIntegrated_AImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -2754,7 +2754,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_Shadows_PreIntegrated_AImC_FP 
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -2817,7 +2817,7 @@ fragment_program RayTracedVolume_ColorBleeding_Shadows_PreIntegrated_AImC_FP gls
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -2880,7 +2880,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_PreInteg
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -2943,7 +2943,7 @@ fragment_program RayTracedVolume_VPImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -3000,7 +3000,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_VPImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -3060,7 +3060,7 @@ fragment_program RayTracedVolume_ColorBleeding_VPImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -3120,7 +3120,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_VPImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -3180,7 +3180,7 @@ fragment_program RayTracedVolume_Shadows_VPImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -3240,7 +3240,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_Shadows_VPImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -3300,7 +3300,7 @@ fragment_program RayTracedVolume_ColorBleeding_Shadows_VPImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -3360,7 +3360,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_VPImC_FP
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -3420,7 +3420,7 @@ fragment_program RayTracedVolume_PreIntegrated_VPImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -3480,7 +3480,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_PreIntegrated_VPImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -3543,7 +3543,7 @@ fragment_program RayTracedVolume_ColorBleeding_PreIntegrated_VPImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -3606,7 +3606,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_PreIntegrated_VP
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -3669,7 +3669,7 @@ fragment_program RayTracedVolume_Shadows_PreIntegrated_VPImC_FP glsl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -3732,7 +3732,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_Shadows_PreIntegrated_VPImC_FP
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -3795,7 +3795,7 @@ fragment_program RayTracedVolume_ColorBleeding_Shadows_PreIntegrated_VPImC_FP gl
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -3858,7 +3858,7 @@ fragment_program RayTracedVolume_AmbientOcclusion_ColorBleeding_Shadows_PreInteg
         param_named u_entryPoints int 2
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named u_lightDir[0] float4 0 0 0 0
         param_named u_lightDir[1] float4 0 0 0 0
@@ -3925,9 +3925,10 @@ fragment_program VR/RayTracedVolume3D5_FP glsl
         param_named u_entryPoints2 int 4
         param_named u_entryPoints3 int 5
         param_named u_entryPoints4 int 6
+        param_named u_background int 7
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10
@@ -3962,9 +3963,10 @@ fragment_program VR/RayTracedVolume3D8_FP glsl
         param_named u_entryPoints5 int 7
         param_named u_entryPoints6 int 8
         param_named u_entryPoints7 int 9
+        param_named u_background int 10
         // Lighting
         param_named_auto u_cameraPos camera_position
-        param_named_auto u_shininess surface_shininess
+        param_named u_shininess float4 0 0 0 0
         param_named u_numLights int 1
         param_named_auto u_lightDir light_position_array 10
         param_named_auto u_lightDiffuse light_diffuse_colour_array 10

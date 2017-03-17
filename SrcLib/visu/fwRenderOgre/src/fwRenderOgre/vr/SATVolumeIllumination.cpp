@@ -130,11 +130,6 @@ void SATVolumeIllumination::updateVolIllum()
     // Do this for now but at the end we should use our own texture
     m_illuminationVolume = m_sat.getSpareTexture();
 
-//    if(m_illuminationVolume.isNull())
-//    {
-//        this->updateTexture();
-//    }
-
     const int depth = m_illuminationVolume->getDepth();
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
