@@ -114,6 +114,11 @@ void SReprojectionError::stopping() throw(::fwTools::Failed)
 
 void SReprojectionError::compute(fwCore::HiResClock::HiResClockType timestamp)
 {
+    if(!this->isStarted())
+    {
+        return;
+    }
+
     if(timestamp > m_lastTimestamp)
     {
         auto matrixTL = this->getInput< ::arData::MatrixTL >(s_MATRIXTL_INPUT);
