@@ -7,6 +7,10 @@
         <param name="image" />
         <param name="landmarks" />
         <param name="advancedLandmarksEditor" default="yes" />
+        <param name="enabledPreviousChannel" default="enabledPreviousChannel" />
+        <param name="enabledNextChannel" default="enabledNextChannel" />
+        <param name="previousActivityChannel" default="previousActivityChannel" />
+        <param name="nextActivityChannel" default="nextActivityChannel" />
     </parameters>
     <config>
         <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
@@ -37,6 +41,8 @@
         <service uid="toolBar" type="::gui::aspect::SDefaultToolBar">
             <gui>
                 <layout>
+                    <menuItem name="Previous" icon="@BUNDLE_PREFIX@/media_0-1/icons/Back.svg" />
+                    <menuItem name="Next" icon="@BUNDLE_PREFIX@/media_0-1/icons/Next.svg" />
                     <menuItem name="Load landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Load-landmark.png" />
                     <menuItem name="Save landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Save-landmark.png" />
                     <menuItem name="Focus landmark" icon="@BUNDLE_PREFIX@/media_0-1/icons/Find-landmark.png" />
@@ -54,6 +60,8 @@
                 </layout>
             </gui>
             <registry>
+                <menuItem sid="ActionPrevious" start="yes" />
+                <menuItem sid="ActionNext" start="yes" />
                 <menuItem sid="ActionLoadLandmark" start="yes" />
                 <menuItem sid="ActionSaveLandmark" start="yes" />
                 <menuItem sid="ActionSFocusLandmark" start="yes" />
@@ -151,6 +159,16 @@
             <in key="image" uid="${image}" />
         </service>
 
+        <!-- The action "previous" and "next" are visible only if the application use a "SActivitySequencer".
+             This service send signals to enable or not the actions. -->
+        <service uid="ActionPrevious" type="::gui::action::SSignal">
+            <state visible="false" />
+        </service>
+
+        <service uid="ActionNext" type="::gui::action::SSignal">
+            <state visible="false" />
+        </service>
+
         <service uid="LoadLandmark" type="::uiIO::editor::SIOSelector" >
             <inout key="data" uid="${landmarks}" />
             <type mode="reader" />
@@ -189,6 +207,32 @@
 
         <connect channel="pickerChannel">
             <slot>landmarksEditor/addPickedPoint</slot>
+        </connect>
+
+        <!-- Connection to enable "previous" action. It should be connected to a SActivitySequencer in the application
+             configuration.-->
+        <connect channel="${enabledPreviousChannel}">
+            <slot>ActionExportActivity/hide</slot>
+            <slot>ActionPrevious/show</slot>
+            <slot>ActionPrevious/setIsExecutable</slot>
+        </connect>
+
+        <!-- Connection to called 'previous' slot of the application's SActivitySequencer. -->
+        <connect channel="${previousActivityChannel}">
+            <signal>ActionPrevious/triggered</signal>
+        </connect>
+
+        <!-- Connection to enable "next" action. It should be connected to a SActivitySequencer in the application
+             configuration.-->
+        <connect channel="${enabledNextChannel}">
+            <slot>ActionExportActivity/hide</slot>
+            <slot>ActionNext/show</slot>
+            <slot>ActionNext/setIsExecutable</slot>
+        </connect>
+
+        <!-- Connection to called 'next' slot of the application's SActivitySequencer. -->
+        <connect channel="${nextActivityChannel}">
+            <signal>ActionNext/triggered</signal>
         </connect>
 
 
