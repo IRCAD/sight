@@ -40,6 +40,6 @@ endif()
 fwForwardInclude(
     ${VTK_INCLUDE_DIRS}
 )
-fwLink(
+fwForwardLink(
     ${VTK_LIBRARIES}
 )
