@@ -95,28 +95,26 @@ public:
     fwCoreServiceClassDefinitionsMacro((SArucoTracker)(tracker::ITracker));
 
     typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > DetectionDoneSignalType;
+    typedef ::fwCom::Signal< void (bool) > MarkerDetectedSignalType;
 
+    /**
+     * @name Signal API
+     * @{
+     */
     /// Key in m_signals map of signal m_sigDetectionDone
     TRACKERARUCO_API static const ::fwCom::Signals::SignalKeyType s_DETECTION_DONE_SIG;
-
-    ///Slot called when threshold method changed
-    TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_METHOD_SLOT;
-    ///Slot called when block size changed
-    TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_BLOCKSIZE_SLOT;
-    ///Slot called when constant parameters changed
-    TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_CONSTANT_SLOT;
-    ///Slot called when border width changed
-    TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_BORDERWIDTH_SLOT;
-    ///Slot called when pattern width changed
-    TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_PATTERNWIDTH_SLOT;
-    ///Slot called when method for corner refinement changed
-    TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_CORNERREFINEMENT_SLOT;
-    ///Slot called when debug mode is enabled/disabled
-    TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_DISPLAY_TAGS_SLOT;
-    ///Slot called when speed of detection changed
-    TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_SPEED_SLOT;
-    ///Slot called when marker is detected
-    TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_DETECT_MARKER_SLOT;
+    /// Signal always emitted with boolean true if a least a maker from id list is found, false otherwise.
+    TRACKERARUCO_API static const ::fwCom::Signals::SignalKeyType s_MARKER_DETECTED_SIG;
+    /** @} */
+    /**
+     * @name Slots API
+     * @{
+     */
+    TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
+    TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
+    TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
+    TRACKERARUCO_API static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT;
+    /** @} */
 
     typedef std::vector< int >          MarkerIDType;
     typedef std::vector< MarkerIDType > MarkerIDVectorType;
@@ -155,24 +153,16 @@ protected:
     /// Detect marker
     TRACKERARUCO_API virtual void tracking(::fwCore::HiResClock::HiResClockType& timestamp);
 
-    /// Threshold method slot
-    void setMethod(unsigned int);
-    /// 'Constant' parameters slot
-    void setConstant(double);
-    /// Block size slot
-    void setBlockSize(double);
-    /// BorderWidth slot (not used)
-    void setBorderWidth(double);
-    /// PatternWidth slot (not used)
-    void setPatternWidth(double);
-    /// Method for corner refinement slot
-    void setCornerRefinement(unsigned int);
-    /// Method that change speed of detection (the lower the better but also the slower)
-    void setSpeed(unsigned int);
-    /// Method that display tags
-    void displayTags(bool);
-
 private:
+
+    ///Slot called when a integer value is changed
+    void setIntParameter(int _val, std::string _key);
+    ///Slot called when a double value is changed
+    void setDoubleParameter(double _val, std::string _key);
+    ///Slot called when a boolean value is changed
+    void setBoolParameter(bool _val, std::string _key);
+    ///Slot called when a enum value is changed
+    void setEnumParameter(std::string _val, std::string _key);
 
     /// Marker vector [[0,1,2],[4,5,6]]
     MarkerIDVectorType m_markers;

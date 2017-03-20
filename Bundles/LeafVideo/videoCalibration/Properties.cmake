@@ -5,6 +5,7 @@ set( TYPE BUNDLE )
 set( DEPENDENCIES
     arData
     ARLcore
+    calibration3d
     fwCom
     fwCore
     fwData

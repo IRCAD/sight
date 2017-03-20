@@ -17,6 +17,7 @@ set( REQUIREMENTS
     gui
 
     ioData
+    ioCalibration
 
     visuVTKQt
     visuVTKAdaptor
@@ -37,6 +38,6 @@ set( REQUIREMENTS
     trackerAruco
 
     validators
-    
+
     preferences
 )

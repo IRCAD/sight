@@ -43,7 +43,7 @@
                     <menuItem name="Next" icon="@BUNDLE_PREFIX@/media_0-1/icons/Next.svg" />
                     <menuItem name="Export camera series" icon="@BUNDLE_PREFIX@/media_0-1/icons/Export.svg" />
                     <separator />
-                    <menuItem name="Export XML" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/save.svg" />
+                    <menuItem name="Export xml/yaml" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/save.svg" />
                     <separator />
                     <editor />
                     <separator />
@@ -54,7 +54,7 @@
                 <menuItem sid="ActionPrevious" start="yes" />
                 <menuItem sid="ActionNext" start="yes" />
                 <menuItem sid="ActionExport" start="yes" />
-                <menuItem sid="ActionWriteXmlCalib" start="yes" />
+                <menuItem sid="ActionWriteCalib" start="yes" />
                 <editor sid="cameraLauncher" start="no" />
                 <menuItem sid="action_chessBoardSize" start="yes" />
             </registry>
@@ -62,13 +62,13 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="ActionWriteXmlCalib" type="::gui::action::SSlotCaller" >
+        <service uid="ActionWriteCalib" type="::gui::action::SSlotCaller" >
             <slots>
-                <slot>CalibrationXmlWriter/update</slot>
+                <slot>CalibrationWriter/update</slot>
             </slots>
         </service>
 
-        <service uid="cameraLauncher" type="::uiCalibration::SCameraConfigLauncher" >
+         <service uid="cameraLauncher" type="::uiCalibration::SCameraConfigLauncher" >
             <inout key="cameraSeries" uid="${cameraSeries}" />
             <inout key="activitySeries" uid="${AS_UID}" />
             <config>
@@ -114,7 +114,7 @@
                 <default_value>20</default_value>
             </preference>
         </service>
-        
+
         <service uid="ActionExport" type="::uiMedData::action::SExportSeries" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="series" uid="${cameraSeries}" />
@@ -128,13 +128,10 @@
 
         <service uid="ActionNext" type="::gui::action::SSignal">
             <state visible="false" />
+        <service uid="CalibrationWriter" type="::ioCalibration::SOpenCVWriter">
+            <in key="target" uid="${cameraSeries}"/>
         </service>
 
-        <service uid="CalibrationXmlWriter" type="::uiIO::editor::SIOSelector" >
-            <inout key="target" uid="${cameraSeries}" />
-            <type mode="writer" />
-            <selection mode="include" />
-            <addSelection service="::ioCalibration::SExportCalibrationXml" />
         </service>
 
         <!-- ******************************* Connections ************************************** -->
@@ -172,7 +169,7 @@
         <!-- START AND STOP SERVICES -->
         <start uid="mainView" />
         <start uid="cameraLauncher" /> <!-- Must be started after mainView -->
-        <start uid="CalibrationXmlWriter" />
+        <start uid="CalibrationWriter" />
 
     </config>
 </extension>
