@@ -181,17 +181,18 @@ void SOpenCVReader::updating() throw (::fwTools::Failed)
 
         ::fwData::mt::ObjectWriteLock writeLock(camSeries);
         camSeries->addCamera(cam);
+        writeLock.unlock();
 
         auto sig = camSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(
             ::arData::CameraSeries::s_ADDED_CAMERA_SIG);
         sig->asyncEmit(cam);
 
         ::cv::Mat extrinsic;
-        fs["extrinsic"] >> extrinsic;
+        n["extrinsic"] >> extrinsic;
 
         if(!extrinsic.empty())
         {
-            ::fwData::TransformationMatrix3D::sptr extMat;
+            ::fwData::TransformationMatrix3D::sptr extMat = ::fwData::TransformationMatrix3D::New();
 
             for(size_t i = 0; i < 4; ++i)
             {
@@ -201,9 +202,9 @@ void SOpenCVReader::updating() throw (::fwTools::Failed)
                                                                         static_cast<int>(j)));
                 }
             }
-            ::fwData::mt::ObjectWriteLock writeLock(camSeries);
+            writeLock.lock();
             camSeries->setExtrinsicMatrix(static_cast<size_t>(c), extMat);
-
+            writeLock.unlock();
             auto sig = camSeries->signal< ::arData::CameraSeries::ExtrinsicCalibratedSignalType >
                            (::arData::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG);
         }
