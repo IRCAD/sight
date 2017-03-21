@@ -2,10 +2,4 @@
 
     <library name="tracker" />
 
-    <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::fwServices::IController</type>
-        <service>::tracker::SHomography</service>
-        <object>::fwData::Object</object>
-    </extension>
-
 </plugin>
