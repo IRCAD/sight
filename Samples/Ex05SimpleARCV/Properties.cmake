@@ -1,0 +1,35 @@
+
+set( NAME Ex05SimpleARCV )
+set( VERSION 0.1 )
+set( TYPE APP )
+set( DEPENDENCIES  )
+set( REQUIREMENTS
+
+    activities
+    appXml2
+    arDataReg
+    arMedia
+    ctrlCamp
+    dataReg
+    fwlauncher
+    gui
+    guiQt
+    ioCalibration
+    uiPreferences
+    uiTools
+    maths
+    preferences
+    servicesReg
+    trackerAruco
+    registrationCV
+    videoQt
+    videoTools
+    videoCalibration
+    visuVTK
+    visuVTKAdaptor
+    visuVTKARAdaptor
+    visuVTKQt
+
+    )
+
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex05SimpleARCVConfig)
