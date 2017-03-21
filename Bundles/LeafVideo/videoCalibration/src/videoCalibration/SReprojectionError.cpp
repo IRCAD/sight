@@ -17,6 +17,8 @@
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
+#include <fwServices/macros.hpp>
+
 #include <opencv2/calib3d.hpp>
 #include <opencv2/opencv.hpp>
 
