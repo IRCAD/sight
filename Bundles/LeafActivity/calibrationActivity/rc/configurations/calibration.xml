@@ -128,10 +128,10 @@
 
         <service uid="ActionNext" type="::gui::action::SSignal">
             <state visible="false" />
-        <service uid="CalibrationWriter" type="::ioCalibration::SOpenCVWriter">
-            <in key="target" uid="${cameraSeries}"/>
         </service>
 
+        <service uid="CalibrationWriter" type="::ioCalibration::SOpenCVWriter">
+            <in key="target" uid="${cameraSeries}"/>
         </service>
 
         <!-- ******************************* Connections ************************************** -->
