@@ -4,14 +4,12 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "registrationCV/SPoseFrom2D.hpp"
+#include "registrationARL/SPoseFrom2d.hpp"
 
 #include <arData/Camera.hpp>
 #include <arData/FrameTL.hpp>
 #include <arData/MarkerTL.hpp>
 #include <arData/MatrixTL.hpp>
-
-#include <calibration3d/helper.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -28,11 +26,11 @@
 
 #include <limits>
 
-fwServicesRegisterMacro(::arServices::IRegisterer, ::registrationCV::SPoseFrom2D);
+fwServicesRegisterMacro(::arServices::IRegisterer, ::registrationARL::SPoseFrom2d);
 
 //-----------------------------------------------------------------------------
 
-namespace registrationCV
+namespace registrationARL
 {
 
 //-----------------------------------------------------------------------------
@@ -44,23 +42,24 @@ const ::fwServices::IService::KeyType s_MATRIXTL_INOUT  = "matrixTL";
 
 //-----------------------------------------------------------------------------
 
-SPoseFrom2D::SPoseFrom2D() throw () :
+SPoseFrom2d::SPoseFrom2d() throw () :
     m_lastTimestamp(0),
     m_patternWidth(80),
-    m_isInitialized(false)
+    m_isInitialized(false),
+    m_planeSystem(NULL)
 {
 
 }
 
 //-----------------------------------------------------------------------------
 
-SPoseFrom2D::~SPoseFrom2D() throw ()
+SPoseFrom2d::~SPoseFrom2d() throw ()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2D::configuring() throw (::fwTools::Failed)
+void SPoseFrom2d::configuring() throw (::fwTools::Failed)
 {
     typedef ::fwRuntime::ConfigurationElementContainer::Container CfgContainer;
 
@@ -74,26 +73,31 @@ void SPoseFrom2D::configuring() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2D::starting() throw (::fwTools::Failed)
+void SPoseFrom2d::starting() throw (::fwTools::Failed)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
     //3D Points
-    const float halfWidth = m_patternWidth * .5;
+    const double halfWidth = m_patternWidth * .5;
 
-    m_3dModel.push_back( ::cv::Point3f(-halfWidth, halfWidth, 0));
-    m_3dModel.push_back( ::cv::Point3f(halfWidth, halfWidth, 0));
-    m_3dModel.push_back( ::cv::Point3f(halfWidth, -halfWidth, 0));
-    m_3dModel.push_back( ::cv::Point3f(-halfWidth, -halfWidth, 0));
+    m_3dModel.push_back(::arlCore::Point::PointFactory(-halfWidth, halfWidth, 0));
+    m_3dModel.push_back(::arlCore::Point::PointFactory(halfWidth, halfWidth, 0));
+    m_3dModel.push_back(::arlCore::Point::PointFactory(halfWidth, -halfWidth, 0));
+    m_3dModel.push_back(::arlCore::Point::PointFactory(-halfWidth, -halfWidth, 0));
 }
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2D::stopping() throw (::fwTools::Failed)
+void SPoseFrom2d::stopping() throw (::fwTools::Failed)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
-    m_cameras.clear();
+    for(const ::arlCore::Camera* cam : m_arlCameras)
+    {
+        delete cam;
+    }
+    delete m_planeSystem;
+    m_arlCameras.clear();
     m_3dModel.clear();
     m_connections.disconnect();
     m_lastTimestamp = 0;
@@ -102,13 +106,13 @@ void SPoseFrom2D::stopping() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2D::updating() throw (::fwTools::Failed)
+void SPoseFrom2d::updating() throw (::fwTools::Failed)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2D::computeRegistration(::fwCore::HiResClock::HiResClockType timestamp)
+void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType timestamp)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
@@ -154,7 +158,8 @@ void SPoseFrom2D::computeRegistration(::fwCore::HiResClock::HiResClockType times
             bool matrixBufferCreated = false;
             for(unsigned int markerIndex = 0; markerIndex < numMarkers; ++markerIndex)
             {
-                std::vector< Marker > markers;
+                std::vector< ARLPointListType > markerPts;
+                std::vector< const ::arlCore::Camera* > arlCameras;
                 size_t indexTL = 0;
 
                 // For each camera timeline
@@ -165,44 +170,38 @@ void SPoseFrom2D::computeRegistration(::fwCore::HiResClock::HiResClockType times
 
                     if(buffer->isPresent(markerIndex))
                     {
-                        const float* registrationCVBuffer = buffer->getElement(markerIndex);
+                        const float* registrationARLBuffer = buffer->getElement(markerIndex);
 
-                        Marker currentMarker;
+                        ARLPointListType pl;
                         for(size_t i = 0; i < 4; ++i)
                         {
-                            currentMarker.corners2D.push_back( ::cv::Point2f(registrationCVBuffer[i*2],
-                                                                             registrationCVBuffer[i*2+1]));
+                            pl.push_back(::arlCore::Point::PointFactory(registrationARLBuffer[i*2],
+                                                                        registrationARLBuffer[i*2+1]));
                         }
-                        markers.push_back(currentMarker);
+                        markerPts.push_back(pl);
+                        arlCameras.push_back(m_arlCameras[indexTL]);
                     }
                     ++indexTL;
                 }
 
-                if(markers.empty())
+                if(markerPts.empty())
                 {
-                    SLM_WARN("No Markers!")
                     continue;
                 }
 
-                float matrixValues[16];
+                ::arlCore::vnl_rigid_matrix vnlMatrix;
+                std::vector< double > optimiser_parameters(1, 1), log;
 
-                if(markers.size() == 1)
+                if (!::arlCore::planarHomographyRegistration_3D_2D(*arlCameras.front(), markerPts.front(), m_3dModel,
+                                                                   vnlMatrix, optimiser_parameters, log, false))
                 {
-                    ::cv::Matx44f Rt = this->cameraPoseFromMono(markers[0]);
 
-                    for (unsigned int i = 0; i < 4; ++i)
-                    {
-                        for (unsigned int j = 0; j < 4; ++j)
-                        {
-                            matrixValues[4*i+j] = Rt(i, j);
-                        }
-                    }
+                    SLM_WARN("Unable to compute planar homography registration.");
                 }
-                else
-                {
-                    SLM_WARN("More than 2 cameras is not handle for the moment");
-                    continue;
-                }
+
+                ::arlCore::multiViewPointRegistration3D2D(arlCameras, markerPts, m_3dModel, vnlMatrix,
+                                                          ::arlCore::ARLCORE_PR_ISPPC, optimiser_parameters, log,
+                                                          false);
 
                 if(!matrixBufferCreated)
                 {
@@ -211,8 +210,17 @@ void SPoseFrom2D::computeRegistration(::fwCore::HiResClock::HiResClockType times
                     matrixBufferCreated = true;
                 }
 
-                matrixBuf->setElement(matrixValues, markerIndex);
+                float matrixValues[16];
 
+                for (unsigned int i = 0; i < 4; ++i)
+                {
+                    for (unsigned int j = 0; j < 4; ++j)
+                    {
+                        matrixValues[4*i+j] = static_cast<float>(vnlMatrix[i][j]);
+                    }
+                }
+
+                matrixBuf->setElement(matrixValues, markerIndex);
             }
 
             if(matrixBufferCreated)
@@ -224,14 +232,13 @@ void SPoseFrom2D::computeRegistration(::fwCore::HiResClock::HiResClockType times
                 sig->asyncEmit(timestamp);
 
             }
-
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2D::initialize()
+void SPoseFrom2d::initialize()
 {
     // Initialization of timelines
 
@@ -251,6 +258,9 @@ void SPoseFrom2D::initialize()
     // initialized matrix timeline
     matrixTL->initPoolSize(maxElementNum);
 
+    // Initialization of ARLCameras
+    m_planeSystem = new ::arlCore::PlaneSystem();
+
     unsigned int count = 0;
 
     for(size_t idx = 0; idx < this->getKeyGroupSize(s_CAMERA_INPUT); ++idx)
@@ -259,78 +269,47 @@ void SPoseFrom2D::initialize()
         ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT, idx);
         OSLM_FATAL_IF("Camera[" << idx << "] not found", !camera);
 
-        Camera cam;
-        cam.intrinsicMat = ::cv::Mat::eye(3, 3, CV_64F);
+        ::arlCore::Camera* arlCamera = new ::arlCore::Camera(*m_planeSystem);
 
-        cam.intrinsicMat.at<double>(0, 0) = camera->getFx();
-        cam.intrinsicMat.at<double>(1, 1) = camera->getFy();
-        cam.intrinsicMat.at<double>(0, 2) = camera->getCx();
-        cam.intrinsicMat.at<double>(1, 2) = camera->getCy();
+        arlCamera->init();
 
-        cam.distCoef = ::cv::Mat::zeros(5, 1, CV_64F);
-
-        for (size_t i = 0; i < 5; ++i)
+        arlCamera->setcx(camera->getCx());
+        arlCamera->setcy(camera->getCy());
+        arlCamera->setfx(camera->getFx());
+        arlCamera->setfy(camera->getFy());
+        ::arData::Camera::DistArrayType dist = camera->getDistortionCoefficient();
+        for (unsigned int i = 0; i < 5; ++i)
         {
-            cam.distCoef.at<double>(static_cast<int>(i)) = camera->getDistortionCoefficient()[i];
+            arlCamera->setkc(i, dist[i]);
         }
+        arlCamera->setAlphaC(camera->getSkew());
 
-        // set extrinsic matrix only if stereo.
+        ::arlCore::vnl_rigid_matrix matrix;
+
+        // set extrinsic matrix only for camera 2
         if (count == 2)
         {
-            m_isStereo = true;
-
             auto extrinsicMatrix = this->getInput< ::fwData::TransformationMatrix3D >(s_EXTRINSIC_INPUT);
 
             SLM_FATAL_IF("Extrinsic matrix with key '" + s_EXTRINSIC_INPUT + "' not found", !extrinsicMatrix);
 
-            m_extrinsic.Matrix4x4   = ::cv::Mat::eye(4, 4, CV_64F);
-            m_extrinsic.rotation    = ::cv::Mat::eye(3, 3, CV_64F);
-            m_extrinsic.translation = ::cv::Mat::eye(3, 1, CV_64F);
-
-            for (unsigned int i = 0; i < 3; ++i)
+            for (unsigned int i = 0; i < 4; ++i)
             {
-                for (unsigned int j = 0; j < 3; ++j)
+                for (unsigned int j = 0; j < 4; ++j)
                 {
-                    m_extrinsic.rotation.at<double>(i, j)  = extrinsicMatrix->getCoefficient(i, j);
-                    m_extrinsic.Matrix4x4.at<double>(i, j) = extrinsicMatrix->getCoefficient(i, j);
+                    matrix[i][j] = extrinsicMatrix->getCoefficient(i, j);
                 }
             }
-
-            m_extrinsic.translation.at<double>(0, 0) = extrinsicMatrix->getCoefficient(0, 3);
-            m_extrinsic.translation.at<double>(1, 0) = extrinsicMatrix->getCoefficient(1, 3);
-            m_extrinsic.translation.at<double>(2, 0) = extrinsicMatrix->getCoefficient(2, 3);
-
-            m_extrinsic.Matrix4x4.at<double>(0, 3) = extrinsicMatrix->getCoefficient(0, 3);
-            m_extrinsic.Matrix4x4.at<double>(1, 3) = extrinsicMatrix->getCoefficient(1, 3);
-            m_extrinsic.Matrix4x4.at<double>(2, 3) = extrinsicMatrix->getCoefficient(2, 3);
-
         }
-        m_cameras.push_back(cam);
+        arlCamera->setExtrinsic(matrix);
+        m_arlCameras.push_back(arlCamera);
     }
     m_isInitialized = true;
 }
 
 //-----------------------------------------------------------------------------
 
-cv::Matx44f SPoseFrom2D::cameraPoseFromStereo(SPoseFrom2D::Marker _markerCam1, SPoseFrom2D::Marker _markerCam2)
-{
-    SLM_ERROR("Not implemented!");
-}
-
-//-----------------------------------------------------------------------------
-
-cv::Matx44f SPoseFrom2D::cameraPoseFromMono(SPoseFrom2D::Marker _markerCam1)
-{
-
-    ::cv::Matx44f pose =
-        ::calibration3d::helper::cameraPoseMonocular(m_3dModel, _markerCam1.corners2D,
-                                                     m_cameras[0].intrinsicMat, m_cameras[0].distCoef);
-    return pose;
-}
-
-//-----------------------------------------------------------------------------
-
-::fwServices::IService::KeyConnectionsMap SPoseFrom2D::getAutoConnections() const
+::fwServices::IService::KeyConnectionsMap SPoseFrom2d::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
@@ -341,5 +320,5 @@ cv::Matx44f SPoseFrom2D::cameraPoseFromMono(SPoseFrom2D::Marker _markerCam1)
 
 //-----------------------------------------------------------------------------
 
-} // namespace registrationCV
+} // namespace registrationARL
 

@@ -300,7 +300,7 @@
             </service>
 
             <!-- This will compute the pose of the camera with tag(s) detected by aruco -->
-            <service uid="registration" type="::registrationARL::SPoseFrom2D" worker="registration">
+            <service uid="registration" type="::registrationARL::SPoseFrom2d" worker="registration">
                 <in group="markerTL" autoConnect="yes">
                     <key uid="tagTL" />
                 </in>

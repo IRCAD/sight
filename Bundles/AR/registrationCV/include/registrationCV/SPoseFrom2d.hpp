@@ -4,10 +4,10 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __REGISTRATIONARL_SPOSEFROM2D_HPP__
-#define __REGISTRATIONARL_SPOSEFROM2D_HPP__
+#ifndef __REGISTRATIONCV_SPOSEFROM2D_HPP__
+#define __REGISTRATIONCV_SPOSEFROM2D_HPP__
 
-#include "registrationARL/config.hpp"
+#include "registrationCV/config.hpp"
 
 #include <arServices/IRegisterer.hpp>
 
@@ -16,14 +16,13 @@
 
 #include <fwServices/macros.hpp>
 
-#include <arlcore/Point.h>
-#include <arlcore/Reconst3D.h>
+#include <opencv2/core.hpp>
 
-namespace registrationARL
+namespace registrationCV
 {
 
 /**
- * @brief   SPoseFrom2D Class used to compute the 3d pose of a object using 2d points.
+ * @brief   SPoseFrom2d Class used to compute the 3d pose of a object using 2d points.
  *
  * @section Slots Slots
  * - \b computeRegistration(::fwCore::HiResClock::HiResClockType timestamp) : computes the registration.
@@ -31,7 +30,7 @@ namespace registrationARL
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service uid="..." type="::registrationARL::SPoseFrom2D">
+     <service uid="..." type="::registrationCV::SPoseFrom2d">
          <in group="markerTL" autoConnect="yes">
              <key uid="markerTL1" />
              <key uid="markerTL2" />
@@ -54,23 +53,22 @@ namespace registrationARL
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */
-class REGISTRATIONARL_CLASS_API SPoseFrom2D : public ::arServices::IRegisterer
+class REGISTRATIONCV_CLASS_API SPoseFrom2d : public ::arServices::IRegisterer
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SPoseFrom2D)(::arServices::IRegisterer));
+    fwCoreServiceClassDefinitionsMacro((SPoseFrom2d)(::arServices::IRegisterer));
 
-    typedef std::vector< ::arlCore::Point::csptr > ARLPointListType;
     typedef std::vector<std::string> VectKeyType;
 
     /**
      * @brief Constructor.
      */
-    REGISTRATIONARL_API SPoseFrom2D() throw ();
+    REGISTRATIONCV_API SPoseFrom2d() throw ();
 
     /**
      * @brief Destructor.
      */
-    REGISTRATIONARL_API virtual ~SPoseFrom2D() throw ();
+    REGISTRATIONCV_API virtual ~SPoseFrom2d() throw ();
 
     /// Connect MarkerTL::s_OBJECT_PUSHED_SIG to s_REGISTER_SLOT
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
@@ -79,30 +77,70 @@ protected:
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    REGISTRATIONARL_API void configuring() throw (fwTools::Failed);
+    REGISTRATIONCV_API void configuring() throw (fwTools::Failed);
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    REGISTRATIONARL_API void starting() throw (fwTools::Failed);
+    REGISTRATIONCV_API void starting() throw (fwTools::Failed);
 
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    REGISTRATIONARL_API void updating() throw (fwTools::Failed);
+    REGISTRATIONCV_API void updating() throw (fwTools::Failed);
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    REGISTRATIONARL_API void stopping() throw (fwTools::Failed);
+    REGISTRATIONCV_API void stopping() throw (fwTools::Failed);
 
     /// Register matrix slot
     void computeRegistration(::fwCore::HiResClock::HiResClockType timestamp);
 
 private:
 
-    /// Initialized ARL cameras
+    /**
+     * @brief The Marker struct:
+     * to handle marker object, with 4 corners 2D, and optionnaly a centroïd
+     */
+    struct Marker
+    {
+        std::vector< ::cv::Point2f > corners2D;
+        ::cv::Point3f centroid;
+    };
+
+    /**
+     * @brief The Camera struct : to handle intrinsic parameters and distorsion coeficient.
+     */
+    struct Camera
+    {
+        ::cv::Mat intrinsicMat;
+        ::cv::Mat distCoef;
+    };
+    /**
+     * @brief The Extrinsic struct : to handle several format of extrinsic matrix
+     */
+    struct Extrinsic
+    {
+        ::cv::Mat rotation;
+        ::cv::Mat translation;
+        ::cv::Mat Matrix4x4;
+    };
+
+    /// Initialize cameras
     void initialize();
+
+    /**
+     * @brief : Compute the camera position from a maker detected on two separated view
+     * @param : Marker points in each view
+     *
+     **/
+    ::cv::Matx44f cameraPoseFromStereo(Marker _markerCam1, Marker _markerCam2);
+
+    /**
+     * @brief :Compute the camera position from a marker detected in one view
+     **/
+    ::cv::Matx44f cameraPoseFromMono(Marker _markerCam1);
 
     /// Last timestamp
     ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
@@ -116,22 +154,24 @@ private:
     /// True if the service is initialized (timelines and ARLCameras)
     bool m_isInitialized;
 
-    /// ARL planeSystem
-    ::arlCore::PlaneSystem* m_planeSystem;
-
     /// Connections
     ::fwCom::helper::SigSlotConnection m_connections;
 
-    /// Points of the 3D model of the marker
-    ARLPointListType m_3dModel;
+    /// 3d model
+    std::vector< ::cv::Point3f > m_3dModel;
 
-    /// ARL cameras
-    std::vector< const ::arlCore::Camera* > m_arlCameras;
+    ///std::vector of cameras
+    std::vector < Camera > m_cameras;
+    ///Extrinsic matrix
+    Extrinsic m_extrinsic;
+
+    ///Check if we are in stereo-vision or not
+    bool m_isStereo;
 
     /// Mutex used to lock access of doRegistration
     ::fwCore::mt::Mutex m_mutex;
 };
 
-} // namespace registrationARL
+} // namespace registrationCV
 
-#endif /* __REGISTRATIONARL_SPOSEFROM2D_HPP__ */
+#endif /* __REGISTRATIONCV_SPOSEFROM2D_HPP__ */
