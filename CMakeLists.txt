@@ -483,7 +483,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
 
     setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
 
-    if(ENABLE_PCH AND MSVC)
+    if(ENABLE_PCH AND MSVC AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
         if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
             add_precompiled_header_cpp(${FWPROJECT_NAME})
         endif()
@@ -532,7 +532,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     # Adds project into folder lib
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "lib")
 
-    if(ENABLE_PCH)
+    if(ENABLE_PCH AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
         # create the config.hpp for the current library
         configure_file(
             "${CMAKE_SOURCE_DIR}/CMake/build/spyLogLevel.hpp.in"
@@ -558,7 +558,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     set(${FWPROJECT_NAME}_TYPE ${${FWPROJECT_NAME}_TYPE} PARENT_SCOPE)
     setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
 
-    if(ENABLE_PCH AND MSVC)
+    if(ENABLE_PCH AND MSVC AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
         if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
             add_precompiled_header_cpp(${FWPROJECT_NAME})
         endif()
@@ -606,7 +606,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
 
         target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/")
 
-        if(ENABLE_PCH)
+        if(ENABLE_PCH AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
             # create the config.hpp for the current library
             configure_file(
                 "${CMAKE_SOURCE_DIR}/CMake/build/spyLogLevel.hpp.in"
@@ -826,6 +826,7 @@ macro(loadProperties PROPERTIES_FILE)
     unset(UNIQUE)
     unset(PLATFORM)
     unset(USE_PCH_FROM_TARGET)
+    unset(DISABLE_PCH)
 
     include("${PROPERTIES_FILE}")
 endmacro()
@@ -974,9 +975,10 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
 
         set(${NAME}_DEPENDENCIES "${DEPENDENCIES}")
         set(${NAME}_REQUIREMENTS "${REQUIREMENTS}")
+        set(${NAME}_DISABLE_PCH  "${DISABLE_PCH}")
 
         # Get the pch target, test the existence of type variable to exclude unbuilt projects
-        if(ENABLE_PCH AND TYPE)
+        if(ENABLE_PCH AND TYPE AND NOT ${NAME}_DISABLE_PCH)
             set(${NAME}_PROJECT_DIR "${PROJECT_DIR}")
 
             getPchTarget(${NAME} ${PROJECT_DIR} ${TYPE} ${USE_PCH_FROM_TARGET})
