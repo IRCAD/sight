@@ -11,7 +11,7 @@ For general information, see [documentation](http://fw4spl.readthedocs.org/) or 
 Install
 =======
 
-See how to install fw4spl [here](http://fw4spl.readthedocs.org/en/fw4spl_0.11.0/Installation/index.html).
+See how to install fw4spl [here](http://fw4spl.readthedocs.org/en/dev/Installation/index.html).
 
 To be able to compile the code in this repository, please note that you need an extra dependencies repository as well, called [fw4spl-ext-deps](https://github.com/fw4spl-org/fw4spl-ext-deps). Then to add this repository to your project build, you must add the path of the repository to the *ADDITIONAL_PROJECTS* CMake variable (multiple paths can be given by separating them with semicolons).
 
