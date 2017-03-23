@@ -132,24 +132,24 @@
             <slot>activitySequencer/sendInfo</slot>
         </connect>
 
-        <!-- Connection to enable previous action (when the curren activity is not the first) -->
+        <!-- Connection to enable previous action (when the current activity is not the first) -->
         <connect channel="enabledPreviousChannel">
             <signal>activitySequencer/enabledPrevious</signal>
             <slot>actionPrevious/setIsExecutable</slot>
         </connect>
 
-        <!-- Connection to enable next action (when the curren activity is not the last) -->
+        <!-- Connection to enable next action (when the current activity is not the last) -->
         <connect channel="enabledNextChannel">
             <signal>activitySequencer/enabledNext</signal>
             <slot>actionNext/setIsExecutable</slot>
         </connect>
 
-        <!-- The activity sequencer should reveive the call of "previous" action. -->
+        <!-- The activity sequencer should receive the call from the "previous" action. -->
         <connect channel="previousActivityChannel">
             <slot>activitySequencer/previous</slot>
         </connect>
 
-        <!-- The activity sequencer should reveive the call of "next" action. -->
+        <!-- The activity sequencer should receive the call from the "next" action. -->
         <connect channel="nextActivityChannel">
             <slot>activitySequencer/next</slot>
         </connect>
