@@ -37,6 +37,8 @@ namespace visuOgreAdaptor
  * @section Slots Slots
  * - \b newImage(): Called when a new image is loaded.
  * - \b updateSampling(int): Called when the sampling is changed and updates the volume renderer accordingly.
+ * - \b updateOpacityCorrection(int): Called when the opacity correction factor is changed and updates the volume
+ * renderer accordingly.
  * - \b updateAOFactor(double) : Called when the ambient occlusion factor is changed and computes the SAT.
  * - \b updateColorBleedingFactor(double) : Called when the color bleeding factor is changed and computes the SAT.
  * - \b updateSatSizeRatio(int) : Called when the SAT ratio is changed and computes it again with the new corresponding
@@ -182,6 +184,7 @@ private:
     void newImage();
     void newMask();
     void updateSampling(int nbSamples);
+    void updateOpacityCorrection(int opacityCorrection);
     void updateAOFactor(double aoFactor);
     void updateColorBleedingFactor(double colorBleedingFactor);
     void updateSatSizeRatio(int sizeRatio);

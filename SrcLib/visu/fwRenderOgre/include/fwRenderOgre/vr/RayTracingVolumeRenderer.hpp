@@ -75,6 +75,9 @@ public:
     /// Sets the number of samples per view ray.
     FWRENDEROGRE_API virtual void setSampling(uint16_t nbSamples);
 
+    /// Sets the opacity correction factor.
+    FWRENDEROGRE_API void setOpacityCorrection(int opacityCorrection);
+
     /// Ambient occlusion factor setter.
     FWRENDEROGRE_API virtual void setAOFactor(double aoFactor);
 
@@ -227,6 +230,9 @@ private:
 
     /// Factor parameter used to weight ambient occlusion (A channel) and color bleeding (RGB channels).
     ::Ogre::Vector4 m_volIllumFactor;
+
+    /// Inverse of the sampling rate accounted by the TF.
+    float m_opacityCorrectionFactor;
 
     /// Shared parameters used for Ray tracing. This should help avoiding using the listener.
     /// We resort to those parameters because setting them using:

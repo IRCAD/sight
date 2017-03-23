@@ -347,6 +347,8 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
         setFocalDistance(50);
     }
 
+    m_gpuTF.setSampleDistance(m_volumeRenderer->getSamplingRate());
+
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
     {
         m_illum = new ::fwRenderOgre::vr::SATVolumeIllumination(this->getID(), m_sceneManager, m_satSizeRatio,
@@ -490,12 +492,24 @@ void SVolumeRender::updateSampling(int nbSamples)
     m_nbSlices = static_cast<uint16_t>(nbSamples);
 
     m_volumeRenderer->setSampling(m_nbSlices);
+    m_gpuTF.setSampleDistance(m_volumeRenderer->getSamplingRate());
 
     if(m_preIntegratedRendering)
     {
         m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_volumeRenderer->getSamplingRate());
     }
 
+    this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::updateOpacityCorrection(int opacityCorrection)
+{
+    auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+    OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+
+    rayCastVolumeRenderer->setOpacityCorrection(opacityCorrection);
     this->requestRender();
 }
 
@@ -762,6 +776,10 @@ void SVolumeRender::setIntParameter(int val, std::string key)
     if(key == "sampling")
     {
         this->updateSampling(val);
+    }
+    else if(key == "opacityCorrection")
+    {
+        this->updateOpacityCorrection(val);
     }
     else if(key == "satSizeRatio")
     {

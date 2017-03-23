@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,9 +9,9 @@
 
 #include "fwRenderOgre/config.hpp"
 
-#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
-
 #include "fwTools/fwID.hpp"
+
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
 
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMesh.h>
@@ -69,7 +69,7 @@ public:
 
     FWRENDEROGRE_API void setEntityOpacity( float _f );
 
-    /// Adds or updates the texture containing the transfer function datas in the negato passes
+    /// Adds or updates the texture containing the transfer function data in the negato passes
     FWRENDEROGRE_API void setTFData(const ::Ogre::TexturePtr _tfTexture);
 
     FWRENDEROGRE_API void switchThresholding(bool _threshold);

@@ -8,30 +8,32 @@
 
 #include <fwRenderOgre/Utils.hpp>
 
-#include <OgreHardwarePixelBuffer.h>
-
 #include <OGRE/OgreTextureManager.h>
 
+#include <OgreHardwarePixelBuffer.h>
+
 #include <cstdint>  // for std::uint_8
+#include <math.h>   // for log
 
 namespace fwRenderOgre
 {
 
 static const size_t TEXTURE_SIZE = 256;
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-TransferFunction::TransferFunction()
+TransferFunction::TransferFunction() :
+    m_sampleDistance(1.f)
 {
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 TransferFunction::~TransferFunction()
 {
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void TransferFunction::createTexture(const ::Ogre::String& _parentId)
 {
@@ -44,12 +46,12 @@ void TransferFunction::createTexture(const ::Ogre::String& _parentId)
             ::Ogre::TEX_TYPE_2D,                                        // type
             TEXTURE_SIZE, TEXTURE_SIZE,                                 // width, height
             0,                                                          // number of mipmaps (depth)
-            ::Ogre::PF_A8R8G8B8,                                        // pixel format
+            ::Ogre::PF_FLOAT32_RGBA,                                    // pixel format
             ::Ogre::TU_DYNAMIC_WRITE_ONLY_DISCARDABLE);                 // usage
     }
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void TransferFunction::removeTexture()
 {
@@ -57,7 +59,7 @@ void TransferFunction::removeTexture()
     m_texture.setNull();
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _tf)
 {
@@ -67,7 +69,7 @@ void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _t
     // Discards the entire buffer while locking so that we can easily refill it from scratch
     pixBuffer->lock(::Ogre::HardwareBuffer::HBL_DISCARD);
     ::Ogre::PixelBox pixBox = pixBuffer->getCurrentLock();
-    std::uint8_t* pDest = static_cast<std::uint8_t*>(pixBox.data);
+    float* pDest = static_cast<float*>(pixBox.data);
 
     // Retrieves the transfer function's data map
     const ::fwData::TransferFunction::TFDataType tfData = _tf->getTFData();
@@ -91,16 +93,19 @@ void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _t
     const ::fwData::TransferFunction::TFColor lBoundaryColor = isTFClamped ? black : tfData.cbegin()->second;
     const ::fwData::TransferFunction::TFColor rBoundaryColor = isTFClamped ? black : tfData.crbegin()->second;
 
+    const double lBoundaryExtinction = -std::log(1.f - lBoundaryColor.a) / m_sampleDistance;
+    const double rBoundaryExtinction = -std::log(1.f - rBoundaryColor.a) / m_sampleDistance;
+
     // Counter used to iterate through the texture buffer without exceeding its limit
     size_t k = 0;
 
     // LEFT BOUNDARY
     for(; k < lScaledBoundary; ++k)
     {
-        *pDest++ = static_cast<std::uint8_t>(lBoundaryColor.b * 255);
-        *pDest++ = static_cast<std::uint8_t>(lBoundaryColor.g * 255);
-        *pDest++ = static_cast<std::uint8_t>(lBoundaryColor.r * 255);
-        *pDest++ = static_cast<std::uint8_t>(lBoundaryColor.a * 255);
+        *pDest++ = static_cast<float>(lBoundaryColor.r);
+        *pDest++ = static_cast<float>(lBoundaryColor.g);
+        *pDest++ = static_cast<float>(lBoundaryColor.b);
+        *pDest++ = static_cast<float>(lBoundaryExtinction);
     }
 
     // Retrieves intensity value for each TF value
@@ -114,6 +119,9 @@ void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _t
         size_t lIntensityValue = static_cast<size_t>(*intensityValues.begin() + halfTextureSize);
         size_t rIntensityValue = static_cast<size_t>(*intensityValues.rbegin() + halfTextureSize);
 
+        // We need to compute the extinction values for every interpolated colors.
+        double extinction(0.);
+
         // For each couple of TF nodes, we generate interpolated colors for a range in the texture starting from a left
         // scaled value to a right one
         for(k = lIntensityValue; k < rIntensityValue; ++k)
@@ -125,26 +133,28 @@ void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _t
             value = (value - intensityMinMax.first) * (tfMinMax.second - tfMinMax.first) * invWindow + tfMinMax.first;
 
             ::fwData::TransferFunction::TFColor interpolatedColor = _tf->getInterpolatedColor(value);
+            extinction                                            = -std::log(1.f - interpolatedColor.a) /
+                                                                    m_sampleDistance;
 
-            *pDest++ = static_cast<std::uint8_t>(interpolatedColor.b * 255);
-            *pDest++ = static_cast<std::uint8_t>(interpolatedColor.g * 255);
-            *pDest++ = static_cast<std::uint8_t>(interpolatedColor.r * 255);
-            *pDest++ = static_cast<std::uint8_t>(interpolatedColor.a * 255);
+            *pDest++ = static_cast<float>(interpolatedColor.r);
+            *pDest++ = static_cast<float>(interpolatedColor.g);
+            *pDest++ = static_cast<float>(interpolatedColor.b);
+            *pDest++ = static_cast<float>(extinction);
         }
     }
 
     // RIGHT BOUNDARY
     for(; k < TEXTURE_SIZE * TEXTURE_SIZE; ++k)
     {
-        *pDest++ = static_cast<std::uint8_t>(rBoundaryColor.b * 255);
-        *pDest++ = static_cast<std::uint8_t>(rBoundaryColor.g * 255);
-        *pDest++ = static_cast<std::uint8_t>(rBoundaryColor.r * 255);
-        *pDest++ = static_cast<std::uint8_t>(rBoundaryColor.a * 255);
+        *pDest++ = static_cast<float>(rBoundaryColor.r);
+        *pDest++ = static_cast<float>(rBoundaryColor.g);
+        *pDest++ = static_cast<float>(rBoundaryColor.b);
+        *pDest++ = static_cast<float>(rBoundaryExtinction);
     }
 
     pixBuffer->unlock();
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 } // Namespace fwRenderOgre

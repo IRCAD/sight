@@ -80,6 +80,8 @@ uniform float u_clippingFar;
 #ifdef PREINTEGRATION
 uniform int u_min;
 uniform int u_max;
+#else
+uniform float u_opacityCorrectionFactor;
 #endif // PREINTEGRATION
 
 #if IDVR == 1
@@ -213,10 +215,6 @@ void composite(inout vec4 dest, in vec4 src)
 
 vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float sampleDistance)
 {
-    // Opacity correction factor =
-    // Inverse of the sampling rate accounted by the TF.
-    const float opacityCorrectionFactor = 200.;
-
     vec4 result = vec4(0);
 
 #if IDVR == 2 || IDVR == 3
@@ -244,7 +242,8 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 #else
         float intensity = texture(u_image, rayPos).r;
 
-        vec4  tfColour  = sampleTransferFunction(intensity);
+        vec4  tfColour = sampleTransferFunction(intensity);
+        tfColour.a     = 1 - exp(-tfColour.a * u_sampleDistance);
 #endif // PREINTEGRATION
 
         if(tfColour.a > 0)
@@ -256,7 +255,7 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 #ifndef PREINTEGRATION
             // Adjust opacity to sample distance.
             // This could be done when generating the TF texture to improve performance.
-            tfColour.a   = 1 - pow(1 - tfColour.a, u_sampleDistance * opacityCorrectionFactor);
+            tfColour.a   = 1 - pow(1 - tfColour.a, u_sampleDistance * u_opacityCorrectionFactor);
 #endif // PREINTEGRATION
 
 #if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
@@ -365,7 +364,7 @@ void main(void)
             rayEntry += rayDir * csg;
         }
     }
-#endif
+#endif // CSG
 #endif // IDVR == 1
 
     rayDir = rayDir * u_sampleDistance;

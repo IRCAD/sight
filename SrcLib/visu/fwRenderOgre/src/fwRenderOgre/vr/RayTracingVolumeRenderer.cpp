@@ -317,6 +317,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                      static_cast< ::Ogre::Real>(colorBleedingFactor),
                      static_cast< ::Ogre::Real>(colorBleedingFactor),
                      static_cast< ::Ogre::Real>(aoFactor)),
+    m_opacityCorrectionFactor(200.f),
     m_illumVolume(nullptr),
     m_idvrMethod(this->s_NONE),
     m_focalLength(0.f),
@@ -364,22 +365,24 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         m_RTVSharedParameters->addConstantDefinition("u_aimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_sampleDistance", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_lobeOffset", ::Ogre::GCT_FLOAT1);
+        m_RTVSharedParameters->addConstantDefinition("u_opacityCorrectionFactor", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_volIllumFactor", ::Ogre::GCT_FLOAT4);
         m_RTVSharedParameters->addConstantDefinition("u_min", ::Ogre::GCT_INT1);
         m_RTVSharedParameters->addConstantDefinition("u_max", ::Ogre::GCT_INT1);
         m_RTVSharedParameters->setNamedConstant("u_countersinkSlope", m_idvrCSGSlope);
         m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
         m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
+        m_RTVSharedParameters->setNamedConstant("u_opacityCorrectionFactor", m_opacityCorrectionFactor);
     }
     else
     {
         m_RTVSharedParameters = spMap["RTVParams"];
     }
 
-    initCompositors();
-    initEntryPoints();
+    this->initCompositors();
+    this->initEntryPoints();
 
-    setSampling(m_nbSlices);
+    this->setSampling(m_nbSlices);
 }
 
 //-----------------------------------------------------------------------------
@@ -697,7 +700,7 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
 
         this->createGridTexture();
 
-        tfUpdate(tf);
+        this->tfUpdate(tf);
 
         m_proxyGeometryGenerator->manualUpdate();
     }
@@ -767,6 +770,16 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
 
     // Update the sample distance in the shaders
     m_RTVSharedParameters->setNamedConstant("u_sampleDistance", m_sampleDistance);
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::setOpacityCorrection(int opacityCorrection)
+{
+    m_opacityCorrectionFactor = static_cast<float>(opacityCorrection);
+
+    // Update shader parameter
+    m_RTVSharedParameters->setNamedConstant("u_opacityCorrectionFactor", m_opacityCorrectionFactor);
 }
 
 //-----------------------------------------------------------------------------
@@ -1063,7 +1076,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
         tex3DState->setTexture(m_3DOgreTexture);
         texTFState->setTexture(m_gpuTF.getTexture());
 
-        createGridTexture();
+        this->createGridTexture();
     }
 
     // Render geometry.
