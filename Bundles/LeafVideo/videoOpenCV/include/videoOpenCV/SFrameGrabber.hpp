@@ -20,6 +20,8 @@
 
 #include <fwTools/Failed.hpp>
 
+#include <boost/filesystem/path.hpp>
+
 #include <opencv2/videoio.hpp>
 
 namespace arData

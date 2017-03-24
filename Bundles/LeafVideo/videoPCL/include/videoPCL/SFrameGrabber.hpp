@@ -17,6 +17,8 @@
 
 #include <fwTools/Failed.hpp>
 
+#include <boost/filesystem/path.hpp>
+
 namespace arData
 {
 class Camera;
