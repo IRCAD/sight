@@ -112,7 +112,7 @@ SummedAreaTable::~SummedAreaTable()
 
 //-----------------------------------------------------------------------------
 
-void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::TexturePtr _gpuTf)
+void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::TexturePtr _gpuTf, float _sampleDistance)
 {
     if(m_sourceBuffer.isNull())
     {
@@ -131,11 +131,13 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::Text
     tex3DState->setTexture(_imgTexture);
     texTFState->setTexture(_gpuTf);
 
+    satInitPass->getFragmentProgramParameters()->setNamedConstant("u_sampleDistance", _sampleDistance);
+
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     const int depth = static_cast<int>(m_satSize[2]);
 
     // Copy our original image to the source buffer.
-    for(int sliceIndex = 0; sliceIndex < depth; ++sliceIndex)
+    for(size_t sliceIndex = 0; sliceIndex < static_cast<size_t>(depth); ++sliceIndex)
     {
         ::Ogre::Viewport* vp = m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex)->getViewport(0);
 
@@ -149,7 +151,7 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::Text
     }
 
     // Enable SAT compositor.
-    for(int sliceIndex = 0; sliceIndex < depth; ++sliceIndex)
+    for(size_t sliceIndex = 0; sliceIndex < static_cast<size_t>(depth); ++sliceIndex)
     {
         ::Ogre::Viewport* vp = m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex)->getViewport(0);
 
@@ -166,7 +168,7 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::Text
 
     for(m_passOrientation = 0; m_passOrientation < 3; ++m_passOrientation)
     {
-        const int dim      = static_cast<int>(m_satSize[m_passOrientation]);
+        const int dim      = static_cast<int>(m_satSize[static_cast<size_t>(m_passOrientation)]);
         const int nbPasses = static_cast<int>(std::ceil(std::log(dim) / std::log(m_nbTextReads)));
 
         m_readOffset = 1;
@@ -177,7 +179,7 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::Text
 
             for(m_sliceIndex = 0; m_sliceIndex < depth; ++m_sliceIndex)
             {
-                m_targetBuffer->getBuffer()->getRenderTarget(m_sliceIndex)->update(false);
+                m_targetBuffer->getBuffer()->getRenderTarget(static_cast<size_t>(m_sliceIndex))->update(false);
             }
 
             m_readOffset *= m_nbTextReads;
@@ -188,7 +190,7 @@ void SummedAreaTable::computeParallel(::Ogre::TexturePtr _imgTexture, Ogre::Text
     }
 
     // Disable SAT compositor.
-    for(int sliceIndex = 0; sliceIndex < depth; ++sliceIndex)
+    for(size_t sliceIndex = 0; sliceIndex < static_cast<size_t>(depth); ++sliceIndex)
     {
         ::Ogre::Viewport* vp = m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex)->getViewport(0);
 
@@ -240,9 +242,9 @@ void SummedAreaTable::updateSatFromRatio(float _sizeRatio)
 
 void SummedAreaTable::initializeSAT()
 {
-    int width  = static_cast<int>(m_satSize[0]);
-    int height = static_cast<int>(m_satSize[1]);
-    int depth  = static_cast<int>(m_satSize[2]);
+    std::uint8_t width  = static_cast<std::uint8_t>(m_satSize[0]);
+    std::uint8_t height = static_cast<std::uint8_t>(m_satSize[1]);
+    std::uint8_t depth  = static_cast<std::uint8_t>(m_satSize[2]);
 
     ::Ogre::TextureManager& textureManager = ::Ogre::TextureManager::getSingleton();
 
@@ -285,7 +287,7 @@ void SummedAreaTable::initializeSAT()
         m_dummyCamera = m_sceneManager->createCamera(m_parentId + "_SummedAreaTable_DummyCamera");
     }
 
-    for(int sliceIndex = 0; sliceIndex < depth; ++sliceIndex)
+    for(size_t sliceIndex = 0; sliceIndex < static_cast<size_t>(depth); ++sliceIndex)
     {
         // Init source buffer
         ::Ogre::RenderTarget* renderTarget = m_sourceBuffer->getBuffer()->getRenderTarget(sliceIndex);
@@ -336,7 +338,9 @@ void SummedAreaTable::computeSequential(::fwData::Image::sptr _image, fwData::Tr
         {
             for(int x = 0; x < static_cast<int>(m_satSize[0]); ++x)
             {
-                int16_t* imgValue = static_cast<int16_t*>(imageHelper.getPixelBuffer(x, y, z));
+                int16_t* imgValue =
+                    static_cast<int16_t*>(imageHelper.getPixelBuffer(static_cast<size_t>(x), static_cast<size_t>(y),
+                                                                     static_cast<size_t>(z)));
 
                 satVal = applyTf(_tf, *imgValue)
                          + getSatValue(satBuffer, x-1, y-1, z-1)
@@ -392,14 +396,16 @@ void SummedAreaTable::computeSequential(::fwData::Image::sptr _image, fwData::Tr
         return ::glm::vec4(0.f);
     }
 
-    return satBuffer[x + m_satSize[0] * y + m_satSize[0] * m_satSize[1] * z];
+    return satBuffer[static_cast<size_t>(x) + m_satSize[0] * static_cast<size_t>(y) + m_satSize[0] * m_satSize[1] *
+                     static_cast<size_t>(z)];
 }
 
 //-----------------------------------------------------------------------------
 
 void SummedAreaTable::setSatValue(::glm::vec4* satBuffer, glm::vec4 value, int x, int y, int z)
 {
-    satBuffer[x + m_satSize[0] * y + m_satSize[0] * m_satSize[1] * z] = value;
+    satBuffer[static_cast<size_t>(x) + m_satSize[0] * static_cast<size_t>(y) + m_satSize[0] * m_satSize[1] *
+              static_cast<size_t>(z)] = value;
 }
 
 //-----------------------------------------------------------------------------

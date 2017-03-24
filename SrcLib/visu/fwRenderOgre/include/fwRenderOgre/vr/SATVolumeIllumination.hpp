@@ -39,7 +39,7 @@ public:
     FWRENDEROGRE_API void updateVolIllum();
 
     /// Recomputes the SAT and the illumination volume when the image or the TF changed.
-    FWRENDEROGRE_API void SATUpdate(::Ogre::TexturePtr _img, Ogre::TexturePtr _tf);
+    FWRENDEROGRE_API void SATUpdate(::Ogre::TexturePtr _img, Ogre::TexturePtr _tf, float _sampleDistance);
 
     /// Illumination volume texture getter.
     FWRENDEROGRE_API ::Ogre::TexturePtr getIlluminationVolume();

@@ -494,6 +494,11 @@ void SVolumeRender::updateSampling(int nbSamples)
     m_volumeRenderer->setSampling(m_nbSlices);
     m_gpuTF.setSampleDistance(m_volumeRenderer->getSamplingRate());
 
+    if(m_ambientOcclusion || m_colorBleeding || m_shadows)
+    {
+        this->updateVolumeIllumination();
+    }
+
     if(m_preIntegratedRendering)
     {
         m_preIntegrationTable.tfUpdate(this->getTransferFunction(), m_volumeRenderer->getSamplingRate());
@@ -903,7 +908,7 @@ void SVolumeRender::initWidgets()
 
 void SVolumeRender::updateVolumeIllumination()
 {
-    m_illum->SATUpdate(m_3DOgreTexture, m_gpuTF.getTexture());
+    m_illum->SATUpdate(m_3DOgreTexture, m_gpuTF.getTexture(), m_volumeRenderer->getSamplingRate());
 
     // Volume illumination is only implemented for raycasting rendering
     if(m_renderingMode == VR_MODE_RAY_TRACING)

@@ -19,12 +19,12 @@ namespace vr
 //-----------------------------------------------------------------------------
 
 const IVolumeRenderer::CubeFacePositionsMap IVolumeRenderer::s_cubeFaces = {
-    { IVolumeRenderer::Z_POSITIVE, { 3, 4, 1, 0 } },
-    { IVolumeRenderer::Z_NEGATIVE, { 2, 5, 7, 6 } },
-    { IVolumeRenderer::Y_POSITIVE, { 2, 6, 3, 0 } },
-    { IVolumeRenderer::Y_NEGATIVE, { 1, 4, 7, 5 } },
-    { IVolumeRenderer::X_POSITIVE, { 0, 1, 5, 2 } },
-    { IVolumeRenderer::X_NEGATIVE, { 6, 7, 4, 3 } }
+    { IVolumeRenderer::Z_POSITIVE, {{ 3, 4, 1, 0 }} },
+    { IVolumeRenderer::Z_NEGATIVE, {{ 2, 5, 7, 6 }} },
+    { IVolumeRenderer::Y_POSITIVE, {{ 2, 6, 3, 0 }} },
+    { IVolumeRenderer::Y_NEGATIVE, {{ 1, 4, 7, 5 }} },
+    { IVolumeRenderer::X_POSITIVE, {{ 0, 1, 5, 2 }} },
+    { IVolumeRenderer::X_NEGATIVE, {{ 6, 7, 4, 3 }} }
 };
 
 /// Image local and texture coordinates /!\ This order matters to our intersection algorithm.

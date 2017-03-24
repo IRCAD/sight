@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,10 +14,10 @@
 
 #include <fwDataTools/helper/Image.hpp>
 
+#include <glm/glm.hpp>
+
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreTexture.h>
-
-#include <glm/glm.hpp>
 
 namespace fwRenderOgre
 {
@@ -43,7 +43,8 @@ public:
     FWRENDEROGRE_API void computeSequential(::fwData::Image::sptr _image, fwData::TransferFunction::sptr _tf);
 
     /// Computes the SAT using Hensley's recursive doubling algorithm.
-    FWRENDEROGRE_API void computeParallel(::Ogre::TexturePtr _imgTexture, ::Ogre::TexturePtr _gpuTf);
+    FWRENDEROGRE_API void computeParallel(::Ogre::TexturePtr _imgTexture, ::Ogre::TexturePtr _gpuTf,
+                                          float _sampleDistance);
 
     /// Returns the texture holding the SAT.
     FWRENDEROGRE_API ::Ogre::TexturePtr getTexture() const;
@@ -92,7 +93,8 @@ private:
     /// The index of the slice to which we currently render.
     int m_sliceIndex;
 
-    /// The read offset based on the number of reads per fragment shader (r) and the pass index (i) : m_readOffset = r^i.
+    /// The read offset based on the number of reads per fragment shader (r) and the pass index (i) : m_readOffset =
+    // r^i.
     int m_readOffset;
 
     /// The depth of the current slice.
