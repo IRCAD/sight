@@ -80,7 +80,7 @@
                 <param type="bool" name="Widgets" key="widgets" defaultValue="false" />
                 <param type="enum" name="3DMode" key="3DMode" defaultValue="None" values="None,Autostereo(5),Autostereo(8)" />
                 <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="1024" />
-                <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="1" max="1000" />
+                <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="1" max="200" />
                 <param type="int" name="Focal length" key="focalLength" defaultValue="50" min="0" max="100" />
                 <param type="bool" name="Pre-integration" key="preIntegration" defaultValue="false" />
                 <param type="bool" name="Ambient occlusion" key="ambientOcclusion" defaultValue="false" />

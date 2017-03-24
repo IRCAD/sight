@@ -1585,6 +1585,7 @@ void RayTracingVolumeRenderer::createGridTexture()
 
         gridGeneratorParams->setNamedConstant("u_gridResolution", m_gridSize.data(), 3, 1);
         gridGeneratorParams->setNamedConstant("u_brickSize", m_bricksSize.data(), 3, 1);
+        gridGeneratorParams->setNamedConstant("u_sampleDistance", m_sampleDistance);
 
         ::Ogre::MaterialPtr geomGeneratorMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricks");
 

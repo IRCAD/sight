@@ -3,10 +3,7 @@
 uniform sampler3D u_image;
 uniform sampler3D u_mask;
 
-uniform sampler2D u_tfTexture;
-
 uniform sampler2D u_entryPoints;
-
 
 uniform mat4 u_invWorldViewProj;
 
@@ -34,9 +31,6 @@ uniform float u_losNotImportant;
 out vec4 mrt_IC_RayTracing;
 #endif
 #endif
-
-//-----------------------------------------------------------------------------
-vec4 sampleTransferFunction(float intensity);
 
 //-----------------------------------------------------------------------------
 

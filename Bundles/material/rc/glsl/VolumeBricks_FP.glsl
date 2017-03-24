@@ -7,6 +7,8 @@ uniform int u_slice;
 
 uniform sampler3D u_image;
 
+uniform float u_sampleDistance;
+
 out float o_brickMax;
 
 vec4 sampleTransferFunction(float intensity);
@@ -30,6 +32,7 @@ void main()
             {
                 float intensity    = texelFetch(u_image, ivec3(u, v, w), 0).r; // const
                 float voxelOpacity = sampleTransferFunction(intensity).a; // const
+                voxelOpacity = 1 - exp(-voxelOpacity * u_sampleDistance);
 
                 brickMax = brickMax || voxelOpacity != 0;
             }
