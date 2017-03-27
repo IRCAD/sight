@@ -4,6 +4,11 @@ uniform mat4 u_worldViewProj;
 uniform mat4 u_world;
 uniform mat4 u_normalMatrix;
 
+#ifdef AUTOSTEREO
+uniform mat4 u_worldView;
+uniform mat4 u_proj;
+#endif // AUTOSTEREO
+
 in vec4 position;
 in vec3 normal;
 
@@ -71,7 +76,11 @@ void main(void)
 
 #else
 
+#ifdef AUTOSTEREO
+    gl_Position = u_proj * u_worldView * position;
+#else
     gl_Position = u_worldViewProj * position;
+#endif
 
 #   if defined(PIXEL_LIT) || defined(CEL_SHADING)
     outNormal_WS = normalize(u_normalMatrix * vec4(normal, 0.f)).xyz;

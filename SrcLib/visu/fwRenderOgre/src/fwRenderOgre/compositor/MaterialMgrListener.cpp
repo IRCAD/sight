@@ -4,8 +4,9 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwRenderOgre/compositor/MaterialMgrListener.hpp>
-#include <fwRenderOgre/helper/Shading.hpp>
+#include "fwRenderOgre/compositor/MaterialMgrListener.hpp"
+
+#include "fwRenderOgre/helper/Shading.hpp"
 
 #include <fwCore/spyLog.hpp>
 
@@ -23,9 +24,9 @@ namespace compositor
 
 MaterialMgrListener::~MaterialMgrListener()
 {
-    OSLM_ERROR("bye bye" );
-
 }
+
+// ----------------------------------------------------------------------------
 
 ::Ogre::Technique* fwRenderOgre::compositor::MaterialMgrListener::handleSchemeNotFound(unsigned short _schemeIndex,
                                                                                        const ::Ogre::String &_schemeName,
@@ -354,70 +355,51 @@ Ogre::Technique* MaterialMgrListener::copyTechnique(::Ogre::Technique* _tech,
                                                            const std::string& _algoPassName,
                                                            const std::string& _baseName)
 {
-    auto& mgr = ::Ogre::HighLevelGpuProgramManager::getSingleton();
-
-    auto resource = mgr.getResourceByName(_name, "Materials");
-    if( !resource.isNull() )
-    {
-        return resource.dynamicCast< ::Ogre::GpuProgram>();
-    }
-    resource = mgr.getResourceByName(_baseName, ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
-    auto srcProgram = resource.dynamicCast< ::Ogre::GpuProgram>();
-
-    // Create shader object
-    ::Ogre::HighLevelGpuProgramPtr newProgram;
-    newProgram = mgr.createProgram(_name, "Materials", "glsl", ::Ogre::GPT_FRAGMENT_PROGRAM);
+    // Determine shader source file and parameters
+    std::string sourceFileName;
+    ::fwRenderOgre::helper::Shading::GpuProgramParametersType parameters;
 
     // Set specific shader according to the algo and the pass
     if(_algoName == "DepthPeeling")
     {
-        newProgram->setSourceFile("DepthPeelingPeel_FP.glsl");
-        newProgram->setParameter("attach", "DepthPeelingCommon_FP");
+        sourceFileName = "DepthPeelingPeel_FP.glsl";
+        parameters.push_back(std::make_pair<std::string, std::string>("attach", "DepthPeelingCommon_FP"));
     }
     else if(_algoName == "DualDepthPeeling")
     {
-        newProgram->setSourceFile("DualDepthPeelingPeel_FP.glsl");
-        newProgram->setParameter("attach", "DepthPeelingCommon_FP");
+        sourceFileName = "DualDepthPeelingPeel_FP.glsl";
+        parameters.push_back(std::make_pair<std::string, std::string>("attach", "DepthPeelingCommon_FP"));
     }
     else if(_algoName == "HybridTransparency")
     {
         if(_algoPassName == "peel" || _algoPassName == "peelInit")
         {
-            newProgram->setSourceFile("DepthPeelingPeel_FP.glsl");
-            newProgram->setParameter("attach", "DepthPeelingCommon_FP");
+            sourceFileName = "DepthPeelingPeel_FP.glsl";
+            parameters.push_back(std::make_pair<std::string, std::string>("attach", "DepthPeelingCommon_FP"));
         }
         else
         {
-            newProgram->setSourceFile("WeightedBlended_Weight_Blend_FP.glsl");
-            newProgram->setParameter("attach", "DepthPeelingCommon_FP");
-            newProgram->setParameter("preprocessor_defines", "HYBRID=1");
+            sourceFileName = "WeightedBlended_Weight_Blend_FP.glsl";
+            parameters.push_back(std::make_pair<std::string, std::string>("attach", "DepthPeelingCommon_FP"));
+            parameters.push_back(std::make_pair<std::string, std::string>("preprocessor_defines", "HYBRID=1"));
         }
     }
     else if(_algoName == "WeightedBlended")
     {
-        newProgram->setSourceFile("WeightedBlended_Weight_Blend_FP.glsl");
+        sourceFileName = "WeightedBlended_Weight_Blend_FP.glsl";
     }
     else if(_algoName == "CelShadingDepthPeeling")
     {
-        newProgram->setSourceFile("CelShadingDepthPeelingPeel_FP.glsl");
-        newProgram->setParameter("attach", "DepthPeelingCommon_FP");
+        sourceFileName = "CelShadingDepthPeelingPeel_FP.glsl";
+        parameters.push_back(std::make_pair<std::string, std::string>("attach", "DepthPeelingCommon_FP"));
     }
     else
     {
         OSLM_FATAL("Unreachable code");
     }
 
-    // Grab previous attached shaders and add them to the new program
-    ::Ogre::String attachedShaders = srcProgram->getParameter("attach");
-    newProgram->setParameter("attach", attachedShaders);
-
-    // Copy parameters from the source program
-    const ::Ogre::GpuProgramParametersSharedPtr& baseParams = srcProgram->getDefaultParameters();
-    const ::Ogre::GpuProgramParametersSharedPtr& params     = newProgram->getDefaultParameters();
-    params->copyMatchingNamedConstantsFrom(*baseParams);
-
-    newProgram->load();
-    return ::Ogre::GpuProgramPtr(newProgram);
+    return ::fwRenderOgre::helper::Shading::createProgramFrom(_name, sourceFileName, parameters,
+                                                              ::Ogre::GPT_FRAGMENT_PROGRAM, _baseName);
 }
 
 // ----------------------------------------------------------------------------

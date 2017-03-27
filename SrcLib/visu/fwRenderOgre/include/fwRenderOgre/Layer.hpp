@@ -133,9 +133,6 @@ public:
     /// Add a disabled compositor name to the ChainManager.
     FWRENDEROGRE_API void addAvailableCompositor(std::string compositorName);
 
-    /// Removes all available compositors from the ChainManager.
-    FWRENDEROGRE_API void clearAvailableCompositors();
-
     /// Enables/Disables a compositor according to the isEnabled flag.
     FWRENDEROGRE_API void updateCompositorState(std::string compositorName, bool isEnabled);
 

@@ -125,9 +125,11 @@
                 <inout key="image" uid="imageUID" />
             </service>
 
-            <service uid="meshReader" type="::uiIO::editor::SIOSelector" >
+<!--            <service uid="meshReader" type="::uiIO::editor::SIOSelector" >-->
+            <service uid="meshReader" type="::ioVTK::SMeshReader" >
                 <inout key="target" uid="meshUID" />
                 <type mode="reader" />
+                <file>/home/fbridault/dev/f4s/data/liver.vtk</file>
             </service>
 
             <service uid="textureReader" type="::uiIO::editor::SIOSelector" >
@@ -137,8 +139,9 @@
 
             <!-- ####################################  Begin Generic Scene ######################################### -->
             <service uid="genericSceneOgre" type="::fwRenderOgre::SRender">
-                <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
-                <layer id="default" depth="1" />
+                <scene fullscreen="yes" />
+<!--                <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />-->
+                <layer id="default" depth="1" compositors="AutoStereo8" />
                 <adaptor uid="interactorAdaptor" start="yes" />
                 <adaptor uid="cameraAdaptor" start="yes" />
                 <adaptor uid="meshAdaptor" start="yes" />
@@ -181,6 +184,8 @@
             <start uid="mainFrame" />
             <start uid="imageReader" />
 
+            <start uid="meshReader" />
+            <update uid="meshReader" />
         </config>
     </extension>
 

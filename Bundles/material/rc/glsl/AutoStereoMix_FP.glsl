@@ -74,7 +74,7 @@ void main()
 
         /*    xy is always positive.
          */
-        xy = (gl_FragCoord.x * 3.0) + gl_FragCoord.y + u_lobeOffset + 0.5;
+        xy = (gl_FragCoord.x * 3.0) - gl_FragCoord.y + u_lobeOffset + 0.5;
 
         /*    First viewpoint for this pixel.
          */

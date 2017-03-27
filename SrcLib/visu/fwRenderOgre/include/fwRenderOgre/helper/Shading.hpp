@@ -35,6 +35,7 @@ public:
     typedef std::tuple< ::Ogre::String, ::Ogre::GpuConstantType,
                         ::Ogre::GpuProgramType, ConstantValueType > ShaderConstantType;
     typedef std::vector<ShaderConstantType> ShaderConstantsType;
+    typedef std::vector< std::pair< std::string, std::string > > GpuProgramParametersType;
 
     /**
      * @brief Returns true if the given technique computes a pixel color.
@@ -130,6 +131,23 @@ public:
      */
     FWRENDEROGRE_API static SPTR(::fwData::Object) createObjectFromShaderParameter(::Ogre::GpuConstantType _type,
                                                                                    ConstantValueType _value);
+
+    /**
+     * @brief Create a gpu program variant based from an existing gpu program.
+     *        Typically used when we want to add some preprocessor defines.
+     *
+     * @param[in] _name name of gpu program resource
+     * @param[in] _sourceFileName name of the glsl source file
+     * @param[in] _sourceFileName name of the glsl source file
+     * @param[in] _parameters parameters of the program
+     * @param[in] _shaderType shader type (vertex, fragment or geometry)
+     * @param[in] _baseName name of the base gpu program
+     */
+    FWRENDEROGRE_API static ::Ogre::GpuProgramPtr createProgramFrom(const std::string& _name,
+                                                                    const std::string& _sourceFileName,
+                                                                    const GpuProgramParametersType& _parameters,
+                                                                    ::Ogre::GpuProgramType _shaderType,
+                                                                    const std::string& _baseName);
 };
 
 //-----------------------------------------------------------------------------

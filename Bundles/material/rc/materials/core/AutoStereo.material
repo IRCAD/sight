@@ -8,7 +8,7 @@ fragment_program AutoStereo8/Mix glsl
 
         default_params
         {
-                param_named u_lobeOffset float 1.f
+                param_named u_lobeOffset float 0.f
                 param_named u_srcTextures0 int 0
                 param_named u_srcTextures1 int 1
                 param_named u_srcTextures2 int 2
@@ -29,7 +29,7 @@ fragment_program AutoStereo5/Mix glsl
 
         default_params
         {
-                param_named u_lobeOffset float 1.f
+                param_named u_lobeOffset float 0.f
                 param_named u_srcTextures0 int 0
                 param_named u_srcTextures1 int 1
                 param_named u_srcTextures2 int 2

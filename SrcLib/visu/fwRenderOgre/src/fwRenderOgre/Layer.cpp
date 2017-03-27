@@ -286,15 +286,6 @@ void Layer::addAvailableCompositor(std::string compositorName)
 
 // ----------------------------------------------------------------------------
 
-void Layer::clearAvailableCompositors()
-{
-    m_renderService.lock()->makeCurrent();
-    m_compositorChainManager->clearCompositorChain();
-    m_renderService.lock()->requestRender();
-}
-
-// ----------------------------------------------------------------------------
-
 void Layer::updateCompositorState(std::string compositorName, bool isEnabled)
 {
     m_renderService.lock()->makeCurrent();
@@ -320,6 +311,8 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE:
         {
             m_moveInteractor->wheelEvent(info.delta, info.x, info.y);
+
+            ::Ogre::Matrix4 projMat = m_camera->getProjectionMatrix();
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE:
