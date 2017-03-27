@@ -118,10 +118,39 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
         {
             compositorToUpdate->second = _isEnabled;
             compositorManager.setCompositorEnabled(m_ogreViewport, _compositorName, _isEnabled);
+
+            if(_compositorName.find("AutoStereo") != std::string::npos)
+            {
+                if(m_autostereoListener)
+                {
+                    ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
+                    m_autostereoListener = nullptr;
+                }
+
+                if(_isEnabled)
+                {
+                    SLM_ASSERT("m_autostereoListener should be null", m_autostereoListener == nullptr);
+
+                    auto layer  = _renderService->getLayer(_layerId);
+                    auto camera = layer->getDefaultCamera();
+                    SLM_ASSERT("camera is null", camera);
+                    if(_compositorName == "AutoStereo5")
+                    {
+                        m_autostereoListener = new listener::AutoStereoCompositorListener(5, *camera);
+                    }
+                    else
+                    {
+                        m_autostereoListener = new listener::AutoStereoCompositorListener(8, *camera);
+
+                    }
+                    ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
+                }
+            }
+
+            this->updateCompositorAdaptors(_compositorName, _isEnabled, _layerId, _renderService);
         }
     }
 
-    this->updateCompositorAdaptors(_compositorName, _isEnabled, _layerId, _renderService);
 
 }
 

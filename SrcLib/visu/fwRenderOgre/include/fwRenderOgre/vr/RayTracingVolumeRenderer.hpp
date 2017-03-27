@@ -13,6 +13,8 @@
 #include "fwRenderOgre/vr/IVolumeRenderer.hpp"
 #include "fwRenderOgre/vr/SATVolumeIllumination.hpp"
 
+#include "fwRenderOgre/compositor/listener/AutoStereo.hpp"
+
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreMaterialManager.h>
@@ -90,13 +92,6 @@ public:
     /// Sets soft shadows usage.
     FWRENDEROGRE_API virtual void setShadows(bool shadows);
 
-    /// Configures to layer to handle stereoscopic rendering by adding the stereo VR compositor to the chain.
-    FWRENDEROGRE_API void configure3DViewport();
-
-    /// Sets the focal distance used for stereo rendering.
-    /// A focal length of 0 focuses on the front of the image and a length of 1 focuses on the back.
-    FWRENDEROGRE_API void setFocalLength(float focalLength);
-
     /// Computes image positions, updates the proxy geometry.
     FWRENDEROGRE_API virtual void clipImage(const ::Ogre::AxisAlignedBox& clippingBox);
 
@@ -120,9 +115,6 @@ private:
     /// Renders the proxy geometry too fill the entry point texture.
     void computeEntryPointsTexture();
 
-    /// Compute the focal length in camera space.
-    void computeRealFocalLength();
-
     /// Computes the shear warp to apply to a frustum for multi-view rendering based on the angle with the original
     /// camera.
     ::Ogre::Matrix4 frustumShearTransform(float angle) const;
@@ -131,8 +123,9 @@ private:
     /// flags.
     void updateMatNames();
 
-    /// Returns the parameters of the current fragment shader.
-    ::Ogre::GpuProgramParametersSharedPtr retrieveCurrentProgramParams();
+    /// Set a named constant into the current fragment shader.
+    template<typename T>
+    void setFpNamedConstant(const std::string& _name, T value);
 
     /// Object containing the proxy geometry, this is a cube for now.
     ::Ogre::ManualObject* m_entryPointGeometry;
@@ -167,7 +160,7 @@ private:
     std::array< int, 3 > m_bricksSize;
 
     /// Sets stereoscopic volume rendering for autostereoscopic monitors.
-    ::fwRenderOgre::Layer::StereoModeType m_mode3D;
+    ::fwRenderOgre::Layer::StereoModeType m_stereoMode;
 
     /// Sets usage of ambient occlusion.
     bool m_ambientOcclusion;
@@ -190,20 +183,16 @@ private:
 
     SATVolumeIllumination* m_illumVolume;
 
-    /// Focal distance in object space : 0 = object front, 1 = object back.
-    float m_focalLength;
-
     /// Camera listener class used to compute the entry points textures before rendering.
     struct CameraListener;
     CameraListener* m_cameraListener;
 
-    /// Compositor listener class used to upload uniforms for autostereo.
-    class AutoStereoCompositorListener;
-    AutoStereoCompositorListener* m_compositorListener;
-
     std::string m_compositorName;
 
     ::fwRenderOgre::Layer::wptr m_layer;
+
+    /// Autostereo listener
+    compositor::listener::AutoStereoCompositorListener* m_autostereoListener;
 };
 
 //-----------------------------------------------------------------------------
@@ -219,6 +208,35 @@ inline ::fwRenderOgre::vr::SATVolumeIllumination* RayTracingVolumeRenderer::getI
 inline ::fwRenderOgre::Layer::sptr RayTracingVolumeRenderer::getLayer() const
 {
     return m_layer.lock();
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename T>
+void RayTracingVolumeRenderer::setFpNamedConstant(const std::string& _name, T _value)
+{
+    auto& mtlMgr = ::Ogre::MaterialManager::getSingleton();
+    ::Ogre::MaterialPtr currentMtl = mtlMgr.getByName(m_currentMtlName,
+                                                      ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+
+    OSLM_ASSERT("Material '" + m_currentMtlName + "' not found", !currentMtl.isNull());
+
+    ::Ogre::Material::TechniqueIterator techIt = currentMtl->getTechniqueIterator();
+    while( techIt.hasMoreElements())
+    {
+        ::Ogre::Technique* technique = techIt.getNext();
+
+        SLM_ASSERT("Technique is not set", technique);
+
+        ::Ogre::Technique::PassIterator passIt = technique->getPassIterator();
+
+        while ( passIt.hasMoreElements() )
+        {
+            ::Ogre::Pass* ogrePass = passIt.getNext();
+
+            ogrePass->getFragmentProgramParameters()->setNamedConstant(_name, _value);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

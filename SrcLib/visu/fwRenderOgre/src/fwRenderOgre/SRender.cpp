@@ -252,13 +252,13 @@ void SRender::configureLayer( ConfigurationType conf )
     const std::string compositors           = conf->getAttributeValue("compositors");
     const std::string transparencyTechnique = conf->getAttributeValue("transparency");
     const std::string numPeels              = conf->getAttributeValue("numPeels");
-    const std::string mode3D                = conf->getAttributeValue("mode3D");
+    const std::string stereoMode            = conf->getAttributeValue("stereoMode");
     const std::string defaultLight          = conf->getAttributeValue("defaultLight");
 
     SLM_ASSERT( "'id' required attribute missing or empty", !id.empty() );
     SLM_ASSERT( "'layer' required attribute missing or empty", !layer.empty() );
-    SLM_ASSERT( "Unknown 3D mode : " << mode3D,
-                mode3D.empty() || mode3D == "no" || mode3D == "AutoStereo5" || mode3D == "AutoStereo8");
+    SLM_ASSERT( "Unknown 3D mode : " << stereoMode,
+                stereoMode.empty() || stereoMode == "no" || stereoMode == "AutoStereo5" || stereoMode == "AutoStereo8");
 
     const int layerDepth = ::boost::lexical_cast<int>(layer);
 
@@ -269,12 +269,12 @@ void SRender::configureLayer( ConfigurationType conf )
     ogreLayer->setID(id);
     ogreLayer->setDepth(layerDepth);
     ogreLayer->setWorker(m_associatedWorker);
-    ogreLayer->setStereoMode(mode3D == "AutoStereo5" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 :
-                             mode3D == "AutoStereo8" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 :
+    ogreLayer->setStereoMode(stereoMode == "AutoStereo5" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 :
+                             stereoMode == "AutoStereo8" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 :
                              ::fwRenderOgre::Layer::StereoModeType::NONE);
 
     ogreLayer->setCoreCompositorEnabled(id == "default", transparencyTechnique, numPeels);
-    ogreLayer->setCompositorChainEnabled(compositors != "", compositors);
+    ogreLayer->setCompositorChainEnabled(compositors);
 
     if(!defaultLight.empty() && defaultLight == "no")
     {

@@ -24,10 +24,6 @@
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTextureManager.h>
 
-// For now deactivate the specific optimizations for autostereo that causes
-// blending problem with the background
-#define ENABLE_AUTO_STEREO_OPTIM
-
 fwServicesRegisterMacro(::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SVolumeRender, ::fwData::Image);
 
 //-----------------------------------------------------------------------------
@@ -52,8 +48,7 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_COLOR_BLEEDING_SLOT   
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_SHADOWS_SLOT               = "toggleShadows";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT               = "toggleWidgets";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT              = "resizeViewport";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_FOCAL_DISTANCE_SLOT           = "setFocalDistance";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_MODE3D_SLOT                   = "setStereoMode";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_STEREO_MODE_SLOT                   = "setStereoMode";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_BOOL_PARAMETER_SLOT           = "setBoolParameter";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_INT_PARAMETER_SLOT            = "setIntParameter";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_DOUBLE_PARAMETER_SLOT         = "setDoubleParameter";
@@ -97,8 +92,7 @@ SVolumeRender::SVolumeRender() throw() :
     newSlot(s_TOGGLE_SHADOWS_SLOT, &SVolumeRender::toggleShadows, this);
     newSlot(s_TOGGLE_WIDGETS_SLOT, &SVolumeRender::toggleWidgets, this);
     newSlot(s_RESIZE_VIEWPORT_SLOT, &SVolumeRender::resizeViewport, this);
-    newSlot(s_SET_FOCAL_DISTANCE_SLOT, &SVolumeRender::setFocalDistance, this);
-    newSlot(s_SET_MODE3D_SLOT, &SVolumeRender::setStereoMode, this);
+    newSlot(s_SET_STEREO_MODE_SLOT, &SVolumeRender::setStereoMode, this);
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SVolumeRender::setBoolParameter, this);
     newSlot(s_SET_INT_PARAMETER_SLOT, &SVolumeRender::setIntParameter, this);
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SVolumeRender::setDoubleParameter, this);
@@ -311,11 +305,8 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     }
     else
     {
-#ifdef ENABLE_AUTO_STEREO_OPTIM
+
         const auto stereoMode = layer->getStereoMode();
-#else
-        const auto stereoMode = ::fwRenderOgre::Layer::StereoModeType::NONE;
-#endif
 
         m_volumeRenderer = new ::fwRenderOgre::vr::RayTracingVolumeRenderer(this->getID(),
                                                                             layer,
@@ -326,19 +317,6 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
                                                                             stereoMode,
                                                                             m_ambientOcclusion,
                                                                             m_colorBleeding);
-
-        // For now we always deactivate the path with ray tracing optimized shader and use the classic shader
-        if(stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE)
-        {
-            auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer*>(m_volumeRenderer);
-
-            OSLM_ERROR_IF("Stereo rendering is supported only by ray casting VR.", !rayCastVolumeRenderer);
-
-            rayCastVolumeRenderer->configure3DViewport();
-
-            // Initially focus on the image center.
-            setFocalDistance(50);
-        }
     }
 
     if(m_ambientOcclusion || m_colorBleeding || m_shadows)
@@ -353,10 +331,8 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
 
     m_volumeConnection.connect(layer, ::fwRenderOgre::Layer::s_RESIZE_LAYER_SIG,
                                this->getSptr(), ::visuOgreAdaptor::SVolumeRender::s_RESIZE_VIEWPORT_SLOT);
-#ifdef ENABLE_AUTO_STEREO_OPTIM
-    m_volumeConnection.connect(layer, ::fwRenderOgre::Layer::s_MODE3D_CHANGED_SIG,
-                               this->getSptr(), ::visuOgreAdaptor::SVolumeRender::s_SET_MODE3D_SLOT);
-#endif
+    m_volumeConnection.connect(layer, ::fwRenderOgre::Layer::s_STEREO_MODE_CHANGED_SIG,
+                               this->getSptr(), ::visuOgreAdaptor::SVolumeRender::s_SET_STEREO_MODE_SLOT);
 
     initWidgets();
     m_widgets->setVisibility(m_widgetVisibilty);
@@ -780,23 +756,6 @@ void SVolumeRender::resizeViewport(int w, int h)
 
 //-----------------------------------------------------------------------------
 
-void SVolumeRender::setFocalDistance(int focalDistance)
-{
-    if(this->getRenderService()->getLayer(m_layerID)->getStereoMode() != ::fwRenderOgre::Layer::StereoModeType::NONE)
-    {
-        auto rayTracingRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer*>(m_volumeRenderer);
-
-        if(rayTracingRenderer)
-        {
-            rayTracingRenderer->setFocalLength(static_cast<float>(focalDistance) / 100);
-
-            this->requestRender();
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void SVolumeRender::setStereoMode(::fwRenderOgre::Layer::StereoModeType mode)
 {
     this->doStop();
@@ -856,10 +815,6 @@ void SVolumeRender::setIntParameter(int val, std::string key)
     else if(key == "satConeSamples")
     {
         this->updateSatConeSamples(val);
-    }
-    else if(key == "focalLength")
-    {
-        this->setFocalDistance(val);
     }
 }
 

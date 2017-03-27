@@ -22,7 +22,12 @@ namespace listener
 class AutoStereoCompositorListener : public ::Ogre::MaterialManager::Listener
 {
 public:
+    /// Constructor for surface rendering
     AutoStereoCompositorListener(unsigned int _numViewPoints, ::Ogre::Camera& _camera);
+
+    /// Constructor for volume rendering
+    AutoStereoCompositorListener(unsigned int _numViewPoints, ::Ogre::Camera& _camera,
+                                 std::vector< ::Ogre::TexturePtr>* renderTargets);
 
     /// Callback called each time a scheme is not found
     virtual ::Ogre::Technique* handleSchemeNotFound(unsigned short _schemeIndex, const ::Ogre::String& _schemeName,
@@ -39,6 +44,8 @@ private:
 
     /// Camera used for rendering.
     ::Ogre::Camera& m_camera;
+
+    std::vector< ::Ogre::TexturePtr>* m_renderTargets;
 };
 
 } // namespace listener

@@ -42,11 +42,11 @@ namespace fwRenderOgre
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG         = "layerInitialized";
-const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG       = "layerResized";
-const ::fwCom::Signals::SignalKeyType Layer::s_COMPOSITOR_UPDATED_SIG = "compositorUpdated";
-const ::fwCom::Signals::SignalKeyType Layer::s_MODE3D_CHANGED_SIG     = "StereoModeChanged";
-const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_UPDATED_SIG     = "CameraUpdated";
+const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG          = "layerInitialized";
+const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG        = "layerResized";
+const ::fwCom::Signals::SignalKeyType Layer::s_COMPOSITOR_UPDATED_SIG  = "compositorUpdated";
+const ::fwCom::Signals::SignalKeyType Layer::s_STEREO_MODE_CHANGED_SIG = "StereoModeChanged";
+const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_UPDATED_SIG      = "CameraUpdated";
 
 const ::fwCom::Slots::SlotKeyType Layer::s_INTERACTION_SLOT    = "interaction";
 const ::fwCom::Slots::SlotKeyType Layer::s_DESTROY_SLOT        = "destroy";
@@ -83,7 +83,7 @@ Layer::Layer() :
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
     newSignal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
     newSignal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
-    newSignal<StereoModeChangedSignalType>(s_MODE3D_CHANGED_SIG);
+    newSignal<StereoModeChangedSignalType>(s_STEREO_MODE_CHANGED_SIG);
     newSignal<CameraUpdatedSignalType>(s_CAMERA_UPDATED_SIG);
 
     newSlot(s_INTERACTION_SLOT, &Layer::interaction, this);
@@ -242,32 +242,34 @@ void Layer::createScene()
 
     interactor->setSceneID(m_sceneManager->getName());
 
-    // Set compositor
-    //this->addCompositor(m_compositorName);
-    //this->setCompositorEnabled(m_compositorName);
-
+    // Setup transparency compositors
     if(m_hasCoreCompositor)
     {
         this->setupCore();
     }
 
-    if(m_stereoMode == StereoModeType::NONE)
+    m_compositorChainManager->setOgreViewport(m_viewport);
+
+    // Setup custom compositors and autostereo
     {
-        m_compositorChainManager->setOgreViewport(m_viewport);
+        ::boost::char_separator<char> sep(";");
+        ::boost::tokenizer< ::boost::char_separator<char> > tok(m_rawCompositorChain, sep);
+        std::vector< fwc::ChainManager::CompositorIdType> compositorChain;
 
-        if(m_hasCompositorChain)
+        for(const auto& it : tok)
         {
-            ::boost::char_separator<char> sep(";");
-            ::boost::tokenizer< ::boost::char_separator<char> > tok(m_rawCompositorChain, sep);
-            std::vector< fwc::ChainManager::CompositorIdType> compositorChain;
-
-            for(const auto& it : tok)
-            {
-                compositorChain.push_back(it);
-            }
-
-            m_compositorChainManager->setCompositorChain(compositorChain, m_id, m_renderService.lock());
+            compositorChain.push_back(it);
         }
+        if(m_stereoMode != StereoModeType::NONE)
+        {
+            compositorChain.push_back(m_stereoMode == StereoModeType::AUTOSTEREO_8 ?
+                                      "AutoStereo8" : "AutoStereo5");
+        }
+
+        m_compositorChainManager->setCompositorChain(compositorChain, m_id, m_renderService.lock());
+
+        m_compositorChainManager->addAvailableCompositor("AutoStereo5");
+        m_compositorChainManager->addAvailableCompositor("AutoStereo8");
     }
 
     this->setMoveInteractor(interactor);
@@ -311,8 +313,6 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::WHEELMOVE:
         {
             m_moveInteractor->wheelEvent(info.delta, info.x, info.y);
-
-            ::Ogre::Matrix4 projMat = m_camera->getProjectionMatrix();
             break;
         }
         case ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo::RESIZE:
@@ -666,9 +666,26 @@ void Layer::requestRender()
 
 void Layer::setStereoMode(StereoModeType mode)
 {
+    const std::string oldCompositorName = m_stereoMode == StereoModeType::AUTOSTEREO_8 ?
+                                          "AutoStereo8" : "AutoStereo5";
+
+    // Disable the old compositor
+    if(m_stereoMode != StereoModeType::NONE && m_compositorChainManager)
+    {
+        m_compositorChainManager->updateCompositorState(oldCompositorName, false, m_id, m_renderService.lock());
+    }
+
+    // Enable the new one
     m_stereoMode = mode;
 
-    auto sig = this->signal<StereoModeChangedSignalType>(s_MODE3D_CHANGED_SIG);
+    const std::string compositorName = m_stereoMode == StereoModeType::AUTOSTEREO_8 ?
+                                       "AutoStereo8" : "AutoStereo5";
+    if(m_stereoMode != StereoModeType::NONE && m_compositorChainManager)
+    {
+        m_compositorChainManager->updateCompositorState(compositorName, true, m_id, m_renderService.lock());
+    }
+
+    auto sig = this->signal<StereoModeChangedSignalType>(s_STEREO_MODE_CHANGED_SIG);
     sig->asyncEmit(m_stereoMode);
 }
 
@@ -729,9 +746,9 @@ void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechn
 
 //-------------------------------------------------------------------------------------
 
-void Layer::setCompositorChainEnabled(bool hasCoreChain, std::string compositorChain)
+void Layer::setCompositorChainEnabled(const std::string& compositorChain)
 {
-    m_hasCompositorChain = hasCoreChain;
+    m_hasCompositorChain = !compositorChain.empty();
 
     if(m_hasCompositorChain)
     {

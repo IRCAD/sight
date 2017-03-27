@@ -82,7 +82,7 @@ public:
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_COMPOSITOR_UPDATED_SIG;
     typedef ::fwCom::Signal<void (std::string, bool, ::fwRenderOgre::Layer::sptr)> CompositorUpdatedSignalType;
 
-    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_MODE3D_CHANGED_SIG;
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_STEREO_MODE_CHANGED_SIG;
     typedef ::fwCom::Signal<void (StereoModeType)> StereoModeChangedSignalType;
 
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_UPDATED_SIG;
@@ -211,7 +211,7 @@ public:
                                                    std::string numPeels = "");
 
     /// Sets if this layer has a configured compositor chain.
-    FWRENDEROGRE_API void setCompositorChainEnabled(bool hasCoreChain, std::string compositorChain);
+    FWRENDEROGRE_API void setCompositorChainEnabled(const std::string& compositorChain);
 
     /// Gets if this layer needs a layer's 3D scene.
     FWRENDEROGRE_API bool isCoreCompositorEnabled();
