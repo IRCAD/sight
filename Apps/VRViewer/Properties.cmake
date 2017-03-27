@@ -31,6 +31,7 @@ set( REQUIREMENTS
     media
     preferences
     rdTools
+    patchMedicalData
     )
 
 bundleParam(appXml2 PARAM_LIST config PARAM_VALUES VRViewer_Extension)

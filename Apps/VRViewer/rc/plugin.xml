@@ -11,6 +11,7 @@
     <requirement id="preferences" />
     <requirement id="ioDicom" />
     <requirement id="ioActivity" />
+    <requirement id="patchMedicalData" />
 
     <xi:include href="configurations/OgreVolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
