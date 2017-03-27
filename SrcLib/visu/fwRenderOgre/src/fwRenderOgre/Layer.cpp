@@ -66,12 +66,14 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
 {
     Layer* m_layer;
     int m_frameId;
+    ::fwRenderOgre::interactor::IMovementInteractor::sptr m_interactor;
 
     //------------------------------------------------------------------------------
 
-    LayerCameraListener(Layer* renderer) :
+    LayerCameraListener(Layer* renderer, ::fwRenderOgre::interactor::IMovementInteractor::sptr interactor) :
         m_layer(renderer),
-        m_frameId(0)
+        m_frameId(0),
+        m_interactor(interactor)
     {
     }
 
@@ -84,6 +86,13 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
         auto stereoMode = m_layer->getStereoMode();
         if(stereoMode != Layer::StereoModeType::NONE)
         {
+            // Set the focal length using the point of interest of the interactor
+            // This works well for the trackball but this would need to be adjusted for an another interactor type
+            // For a FPS camera style for instance, we would fix the focal length once and for all according
+            // to the scale of the world
+            float focalLength = std::max(0.001f, std::abs(m_interactor->getLookAtZ()));
+            _camera->setFocalLength(focalLength);
+
             const int frameId = m_layer->getRenderService()->getInteractorManager()->getFrameId();
             if(frameId != m_frameId)
             {
@@ -101,7 +110,7 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
                     angle    = eyeAngle * -3.5f;
                 }
 
-                auto& gpuProgramMgr            = ::Ogre::GpuProgramManager::getSingleton();
+                auto& gpuProgramMgr = ::Ogre::GpuProgramManager::getSingleton();
 
                 for(size_t i = 0; i < 8; ++i)
                 {
@@ -124,7 +133,7 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
 
                     {
                         const std::string projParamName = "ProjectionMatrixParam/"+std::to_string(i);
-                        auto it = sharedParameterMap.find(projParamName);
+                        auto it                         = sharedParameterMap.find(projParamName);
                         if(it != sharedParameterMap.end())
                         {
                             it->second->setNamedConstant("u_proj", projMat);
@@ -132,7 +141,7 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
                     }
                     {
                         const std::string projParamName = "InverseProjectionMatrixParam/"+std::to_string(i);
-                        auto it = sharedParameterMap.find(projParamName);
+                        auto it                         = sharedParameterMap.find(projParamName);
                         if(it != sharedParameterMap.end())
                         {
                             it->second->setNamedConstant("u_invProj", projMat.inverse());
@@ -166,7 +175,8 @@ Layer::Layer() :
     m_hasCoreCompositor(false),
     m_hasCompositorChain(false),
     m_sceneCreated(false),
-    m_hasDefaultLight(true)
+    m_hasDefaultLight(true),
+    m_cameraListener(nullptr)
 {
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
     newSignal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
@@ -306,9 +316,6 @@ void Layer::createScene()
 
     cameraNode->attachObject(m_camera);
 
-    m_cameraListener = new LayerCameraListener(this);
-    m_camera->addListener(m_cameraListener);
-
     if(m_hasDefaultLight)
     {
         m_defaultLightTransform     = ::fwData::TransformationMatrix3D::New();
@@ -332,6 +339,10 @@ void Layer::createScene()
             ::fwRenderOgre::interactorFactory::New("::fwRenderOgre::interactor::TrackballInteractor"));
 
     interactor->setSceneID(m_sceneManager->getName());
+    this->setMoveInteractor(interactor);
+
+    m_cameraListener = new LayerCameraListener(this, interactor);
+    m_camera->addListener(m_cameraListener);
 
     // Setup transparency compositors
     if(m_hasCoreCompositor)
@@ -362,8 +373,6 @@ void Layer::createScene()
         m_compositorChainManager->addAvailableCompositor("AutoStereo5");
         m_compositorChainManager->addAvailableCompositor("AutoStereo8");
     }
-
-    this->setMoveInteractor(interactor);
 
     m_sceneCreated = true;
 
@@ -517,6 +526,11 @@ void Layer::setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::s
 
     m_connections.connect(interactor, ::fwRenderOgre::interactor::IMovementInteractor::s_RESET_CAMERA_SIG,
                           this->getSptr(), s_RESET_CAMERA_SLOT);
+
+    if(m_cameraListener)
+    {
+        m_cameraListener->m_interactor = interactor;
+    }
 }
 
 // ----------------------------------------------------------------------------

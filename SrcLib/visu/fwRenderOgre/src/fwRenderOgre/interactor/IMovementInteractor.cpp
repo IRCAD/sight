@@ -48,5 +48,12 @@ void IMovementInteractor::setMouseScale(float mouseScale)
 
 // ----------------------------------------------------------------------------
 
+float IMovementInteractor::getLookAtZ() const
+{
+    return m_lookAtZ;
+}
+
+// ----------------------------------------------------------------------------
+
 } // namespace interactor
 } // namespace fwRenderOgre
