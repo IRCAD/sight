@@ -49,7 +49,8 @@ const ::fwCom::Slots::SlotKeyType IParameter::s_SET_INT3_PARAMETER_SLOT    = "se
 //------------------------------------------------------------------------------
 
 IParameter::IParameter() throw() :
-    m_shaderType(::Ogre::GPT_FRAGMENT_PROGRAM)
+    m_shaderType(::Ogre::GPT_FRAGMENT_PROGRAM),
+    m_dirty(true)
 {
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &IParameter::setBoolParameter, this);
     newSlot(s_SET_COLOR_PARAMETER_SLOT, &IParameter::setColorParameter, this);
@@ -123,7 +124,7 @@ void IParameter::doConfigure() throw(::fwTools::Failed)
 
 void IParameter::doUpdate() throw(::fwTools::Failed)
 {
-    if(m_material.isNull())
+    if(m_material.isNull() || !m_dirty)
     {
         return;
     }
@@ -164,6 +165,7 @@ void IParameter::doUpdate() throw(::fwTools::Failed)
             this->requestRender();
         }
     }
+    m_dirty = false;
 }
 
 //------------------------------------------------------------------------------
@@ -336,6 +338,8 @@ void IParameter::setBoolParameter(bool value, std::string name)
 {
     if(name == m_paramName)
     {
+        m_dirty = true;
+
         ::fwData::Object::sptr obj          = this->getObject();
         ::fwData::Boolean::sptr paramObject = ::fwData::Boolean::dynamicCast(obj);
         paramObject->setValue(value);
@@ -350,6 +354,8 @@ void IParameter::setColorParameter(std::array<uint8_t, 4> color, std::string nam
 {
     if(name == m_paramName)
     {
+        m_dirty = true;
+
         ::fwData::Object::sptr obj        = this->getObject();
         ::fwData::Color::sptr paramObject = ::fwData::Color::dynamicCast(obj);
         paramObject->setRGBA(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f, color[3] / 255.f);
@@ -364,6 +370,8 @@ void IParameter::setIntParameter(int value, std::string name)
 {
     if(name == m_paramName)
     {
+        m_dirty = true;
+
         ::fwData::Object::sptr obj          = this->getObject();
         ::fwData::Integer::sptr paramObject = ::fwData::Integer::dynamicCast(obj);
         paramObject->setValue(value);
@@ -378,6 +386,8 @@ void IParameter::setInt2Parameter(int value1, int value2, std::string name)
 {
     if(name == m_paramName)
     {
+        m_dirty = true;
+
         ::fwData::Object::sptr obj        = this->getObject();
         ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(obj);
 
@@ -401,6 +411,8 @@ void IParameter::setInt3Parameter(int value1, int value2, int value3, std::strin
 {
     if(name == m_paramName)
     {
+        m_dirty = true;
+
         ::fwData::Object::sptr obj        = this->getObject();
         ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(obj);
 
@@ -424,6 +436,8 @@ void IParameter::setDoubleParameter(double value, std::string name)
 {
     if(name == m_paramName)
     {
+        m_dirty = true;
+
         ::fwData::Object::sptr obj        = this->getObject();
         ::fwData::Float::sptr paramObject = ::fwData::Float::dynamicCast(obj);
         paramObject->setValue(static_cast<float>(value));
@@ -438,6 +452,8 @@ void IParameter::setDouble2Parameter(double value1, double value2, std::string n
 {
     if(name == m_paramName)
     {
+        m_dirty = true;
+
         ::fwData::Object::sptr obj        = this->getObject();
         ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(obj);
 
@@ -470,6 +486,8 @@ void IParameter::setDouble3Parameter(double value1, double value2, double value3
 {
     if(name == m_paramName)
     {
+        m_dirty = true;
+
         ::fwData::Object::sptr obj        = this->getObject();
         ::fwData::Array::sptr arrayObject = ::fwData::Array::dynamicCast(obj);
 

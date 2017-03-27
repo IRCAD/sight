@@ -128,6 +128,8 @@ private:
     ::Ogre::GpuProgramType m_shaderType;
     /// Pointer on the material
     ::Ogre::MaterialPtr m_material;
+    /// Dirty flag to know if we must trigger an update or not
+    bool m_dirty;
 };
 
 } // visuOgreAdaptor
