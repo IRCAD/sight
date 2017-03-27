@@ -17,6 +17,9 @@ uniform sampler2D u_srcTextures5;
 uniform sampler2D u_srcTextures6;
 uniform sampler2D u_srcTextures7;
 
+uniform float u_vpWidth;
+uniform float u_vpHeight;
+uniform float u_collimation;
 
 
 /*    The quad's display position, for lobe tracking ((dispx * 3) + dispy).
@@ -35,25 +38,25 @@ void main()
     vec3        color;
 
     {
-        colors[0] = texture(u_srcTextures0, uv);
-        colors[1] = texture(u_srcTextures1, uv);
+        colors[0] = texture(u_srcTextures0, vec2(uv.x + u_collimation * 3.5/u_vpWidth, uv.y) );
+        colors[1] = texture(u_srcTextures1, vec2(uv.x + u_collimation * 2.5/u_vpWidth, uv.y) );
 #if (VIEWPOINTS > 2)
-        colors[2] = texture(u_srcTextures2, uv);
+        colors[2] = texture(u_srcTextures2, vec2(uv.x + u_collimation * 1.5/u_vpWidth, uv.y) );
 #endif    /*(VIEWPOINTS > 2)    */
 #if (VIEWPOINTS > 3)
-        colors[3] = texture(u_srcTextures3, uv);
+        colors[3] = texture(u_srcTextures3, vec2(uv.x + u_collimation * 0.5/u_vpWidth, uv.y) );
 #endif    /*(VIEWPOINTS > 3)    */
 #if (VIEWPOINTS > 4)
-        colors[4] = texture(u_srcTextures4, uv);
+        colors[4] = texture(u_srcTextures4, vec2(uv.x + u_collimation * -0.5/u_vpWidth, uv.y) );
 #endif    /*(VIEWPOINTS > 4)    */
 #if (VIEWPOINTS > 5)
-        colors[5] = texture(u_srcTextures5, uv);
+        colors[5] = texture(u_srcTextures5, vec2(uv.x + u_collimation * -1.5/u_vpWidth, uv.y) );
 #endif    /*(VIEWPOINTS > 5)    */
 #if (VIEWPOINTS > 6)
-        colors[6] = texture(u_srcTextures6, uv);
+        colors[6] = texture(u_srcTextures6, vec2(uv.x + u_collimation * -2.5/u_vpWidth, uv.y) );
 #endif    /*(VIEWPOINTS > 6)    */
 #if (VIEWPOINTS > 7)
-        colors[7] = texture(u_srcTextures7, uv);
+        colors[7] = texture(u_srcTextures7, vec2(uv.x + u_collimation * -3.5/u_vpWidth, uv.y) );
 #endif    /*(VIEWPOINTS > 7)    */
 
         /*    While there are only n viewpoints, colors[] array size

@@ -8,7 +8,10 @@ fragment_program AutoStereo8/Mix glsl
 
         default_params
         {
+                param_named_auto u_vpWidth viewport_width
+                param_named_auto u_vpHeight viewport_height
                 param_named u_lobeOffset float 0.f
+                param_named u_collimation float 0.f
                 param_named u_srcTextures0 int 0
                 param_named u_srcTextures1 int 1
                 param_named u_srcTextures2 int 2
@@ -29,7 +32,10 @@ fragment_program AutoStereo5/Mix glsl
 
         default_params
         {
+                param_named_auto u_vpWidth viewport_width
+                param_named_auto u_vpHeight viewport_height
                 param_named u_lobeOffset float 0.f
+                param_named u_collimation float 0.f
                 param_named u_srcTextures0 int 0
                 param_named u_srcTextures1 int 1
                 param_named u_srcTextures2 int 2

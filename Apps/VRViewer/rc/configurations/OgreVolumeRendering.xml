@@ -85,7 +85,7 @@
         <service uid="volumeRenderingEditor" type="::guiQt::editor::SParameters" autoConnect="no">
             <parameters>
                 <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="512" />
-                <param type="int" name="Focal length" key="focalLength" defaultValue="50" min="0" max="100" />
+                <param type="int" name="Collimation" key="collimation" defaultValue="0" min="-10" max="10" />
             </parameters>
         </service>
 

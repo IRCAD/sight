@@ -15,6 +15,7 @@
             <object uid="meshTF" type="::fwData::TransformationMatrix3D" />
             <object uid="TFSelections" type="::fwData::Composite" />
             <object uid="cameraTF" type="::fwData::TransformationMatrix3D" />
+            <object uid="collimation"  type="::fwData::Float" />
 
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
                 <gui>
@@ -95,12 +96,14 @@
                         <view proportion="1" />
                         <view proportion="1" />
                         <view proportion="1" />
+                        <view proportion="1" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="sliderIndexEditor" start="yes" />
                     <view sid="windowLevel" start="yes" />
                     <view sid="transparencyEditor" start="yes" />
+                    <view sid="collimationEditor" start="yes" />
                 </registry>
             </service>
 
@@ -123,6 +126,12 @@
 
             <service uid="transparencyEditor" type="::uiImage::ImageTransparency" autoConnect="yes" >
                 <inout key="image" uid="imageUID" />
+            </service>
+
+            <service uid="collimationEditor" type="::guiQt::editor::SParameters" autoConnect="no">
+                <parameters>
+                    <param type="double" name="Collimation" key="u_collimation" defaultValue="0" min="-100" max="100" />
+                </parameters>
             </service>
 
 <!--            <service uid="meshReader" type="::uiIO::editor::SIOSelector" >-->
@@ -148,6 +157,7 @@
                 <adaptor uid="materialAdaptor" start="yes" />
                 <adaptor uid="negato3DAdaptor" start="yes" />
                 <adaptor uid="textureAdaptor" start="yes" />
+                <adaptor uid="compositorAdaptor" start="yes" />
             </service>
 
             <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle" >
@@ -179,6 +189,16 @@
                 <in key="texture" uid="textureUID" />
                 <config layer="default" textureName="meshTexture" filtering="linear" wrapping="repeat" />
             </service>
+
+            <service uid="compositorAdaptor" type="::visuOgreAdaptor::SCompositorParameter">
+                <inout key="param" uid="collimation" />
+                <config layer="default" compositorName="AutoStereo8" parameter="u_collimation" shaderType="fragment" />
+            </service>
+
+            <connect>
+                <signal>collimationEditor/doubleChanged</signal>
+                <slot>compositorAdaptor/setDoubleParameter</slot>
+            </connect>
             <!-- ####################################  End Generic Scene ########################################### -->
 
             <start uid="mainFrame" />
