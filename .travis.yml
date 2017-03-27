@@ -13,6 +13,7 @@ addons:
 branches:
     only:
         - dev
+        - master
 compiler:
     - gcc
 before_script:
@@ -34,7 +35,7 @@ before_script:
     - git reset --hard
     - git clean -f -d
     - cd $TRAVIS_BUILD_DIR/build
-    - $CMAKE_BIN -DCMAKE_INSTALL_PREFIX:PATH=/tmp $TRAVIS_BUILD_DIR/ -DBUILD_DOCUMENTATION:BOOL=ON -DBUILD_TESTS:BOOL=OFF -DDOXYGEN_EXECUTABLE:FILEPATH=$DOXYGEN_BIN -DENABLE_PCH:BOOL=OFF
+    - $CMAKE_BIN -DCMAKE_INSTALL_PREFIX:PATH=/tmp $TRAVIS_BUILD_DIR/ -DCMAKE_BUILD_TYPE:STRING=Debug -DBUILD_DOCUMENTATION:BOOL=ON -DBUILD_TESTS:BOOL=OFF -DDOXYGEN_EXECUTABLE:FILEPATH=$DOXYGEN_BIN -DENABLE_PCH:BOOL=OFF
     - cd $TRAVIS_BUILD_DIR
 script:
     - fw4spl-git/hooks/sheldon $TRAVIS_COMMIT_RANGE
