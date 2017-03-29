@@ -97,6 +97,7 @@ uniform float u_vpimcAlphaCorrection;
 out vec4 fragColor;
 
 //-----------------------------------------------------------------------------
+
 vec4 sampleTransferFunction(float intensity);
 
 //-----------------------------------------------------------------------------
@@ -350,8 +351,8 @@ void main(void)
         rayEntry = importance.rgb;
     }
 #ifdef CSG
-    /* Otherwise, we use the distance to the closest important point */
-    /* to dig into the volume */
+    // Otherwise, we use the distance to the closest important point
+    // to dig into the volume
     else
     {
         vec4 distance = texture(u_JFA, uv);

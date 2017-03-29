@@ -36,7 +36,6 @@ fragment_program VolumeBricksGrid_FP glsl
 
     default_params
     {
-        param_named u_gridResolution int3 64 64 17
         param_named u_brickSize int3 8 8 8
         param_named u_slice int 0
         param_named u_image int 0
@@ -69,7 +68,6 @@ geometry_program VolumeBricks_GP glsl
         param_named u_bricksGrid int 0
 
         param_named u_imageResolution int3 512 512 129
-        param_named u_gridResolution int3 64 64 17
         param_named u_brickSize int3 8 8 8
         param_named u_boundingBoxMin float3 0 0 0
         param_named u_boundingBoxMax float3 1 1 1

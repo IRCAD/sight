@@ -699,10 +699,7 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
         }
 
         this->createGridTexture();
-
         this->tfUpdate(tf);
-
-        m_proxyGeometryGenerator->manualUpdate();
     }
 
     if(m_preIntegratedRendering)
@@ -1083,7 +1080,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
     m_proxyGeometryGenerator->manualUpdate();
 }
 
-//-----------------------------------------------------------------------------.
+//-----------------------------------------------------------------------------
 
 void RayTracingVolumeRenderer::computeEntryPointsTexture()
 {
@@ -1583,16 +1580,13 @@ void RayTracingVolumeRenderer::createGridTexture()
 
         ::Ogre::GpuProgramParametersSharedPtr gridGeneratorParams = gridPass->getFragmentProgramParameters();
 
-        gridGeneratorParams->setNamedConstant("u_gridResolution", m_gridSize.data(), 3, 1);
         gridGeneratorParams->setNamedConstant("u_brickSize", m_bricksSize.data(), 3, 1);
         gridGeneratorParams->setNamedConstant("u_sampleDistance", m_sampleDistance);
 
         ::Ogre::MaterialPtr geomGeneratorMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricks");
-
-        ::Ogre::Pass* geomGenerationPass = geomGeneratorMtl->getTechnique(0)->getPass(0);
+        ::Ogre::Pass* geomGenerationPass     = geomGeneratorMtl->getTechnique(0)->getPass(0);
 
         ::Ogre::GpuProgramParametersSharedPtr geomGeneratorVtxParams = geomGenerationPass->getVertexProgramParameters();
-
         geomGeneratorVtxParams->setNamedConstant("u_gridResolution", m_gridSize.data(), 3, 1);
 
         ::Ogre::GpuProgramParametersSharedPtr geomGeneratorGeomParams =
@@ -1602,16 +1596,13 @@ void RayTracingVolumeRenderer::createGridTexture()
         const std::vector<int> imageSize(m_imageSize.begin(), m_imageSize.end());
 
         geomGeneratorGeomParams->setNamedConstant("u_imageResolution", imageSize.data(), 3, 1);
-        geomGeneratorGeomParams->setNamedConstant("u_gridResolution", m_gridSize.data(), 3, 1);
         geomGeneratorGeomParams->setNamedConstant("u_brickSize", m_bricksSize.data(), 3, 1);
 
         ::Ogre::TextureUnitState* gridTexState = geomGenerationPass->getTextureUnitState("gridVolume");
 
-        SLM_ASSERT("'grid' texture unit is not found", gridTexState);
-
+        SLM_ASSERT("'gridVolume' texture unit is not found", gridTexState);
         gridTexState->setTexture(m_gridTexture);
     }
-
 }
 
 //-----------------------------------------------------------------------------

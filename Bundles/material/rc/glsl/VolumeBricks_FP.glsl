@@ -1,6 +1,5 @@
 #version 330
 
-uniform ivec3 u_gridResolution;
 uniform ivec3 u_brickSize;
 
 uniform int u_slice;
@@ -11,7 +10,11 @@ uniform float u_sampleDistance;
 
 out float o_brickMax;
 
+//-----------------------------------------------------------------------------
+
 vec4 sampleTransferFunction(float intensity);
+
+//-----------------------------------------------------------------------------
 
 void main()
 {
