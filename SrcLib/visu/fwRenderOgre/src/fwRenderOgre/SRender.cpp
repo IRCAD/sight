@@ -192,7 +192,10 @@ void SRender::starting() throw(::fwTools::Failed)
 
         m_layers[s_OGREBACKGROUNDID] = ogreLayer;
     }
-    this->startContext();
+
+    m_interactorManager = ::fwRenderOgre::IRenderWindowInteractorManager::createManager();
+    m_interactorManager->setRenderService(this->getSptr());
+    m_interactorManager->createContainer( this->getContainer(), m_showOverlay, m_renderOnDemand, m_fullscreen );
 }
 
 //-----------------------------------------------------------------------------
@@ -228,7 +231,9 @@ void SRender::stopping() throw(::fwTools::Failed)
     stopAdaptors.clear();
     m_layers.clear();
 
-    this->stopContext();
+    m_interactorManager->disconnectInteractor();
+    m_interactorManager.reset();
+
     this->destroy();
 }
 
@@ -465,25 +470,6 @@ void SRender::render()
 bool SRender::isShownOnScreen()
 {
     return this->getContainer()->isShownOnScreen();
-}
-
-//-----------------------------------------------------------------------------
-
-void SRender::startContext()
-{
-    m_interactorManager = ::fwRenderOgre::IRenderWindowInteractorManager::createManager();
-    m_interactorManager->setRenderService(this->getSptr());
-    m_interactorManager->createContainer( this->getContainer(), m_showOverlay, m_renderOnDemand, m_fullscreen );
-}
-
-//-----------------------------------------------------------------------------
-
-void SRender::stopContext()
-{
-    SLM_TRACE_FUNC();
-
-    m_interactorManager->disconnectInteractor();
-    m_interactorManager.reset();
 }
 
 // ----------------------------------------------------------------------------

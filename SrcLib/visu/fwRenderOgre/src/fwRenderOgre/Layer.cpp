@@ -51,7 +51,6 @@ const ::fwCom::Signals::SignalKeyType Layer::s_STEREO_MODE_CHANGED_SIG = "Stereo
 const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_UPDATED_SIG      = "CameraUpdated";
 
 const ::fwCom::Slots::SlotKeyType Layer::s_INTERACTION_SLOT    = "interaction";
-const ::fwCom::Slots::SlotKeyType Layer::s_DESTROY_SLOT        = "destroy";
 const ::fwCom::Slots::SlotKeyType Layer::s_RESET_CAMERA_SLOT   = "resetCamera";
 const ::fwCom::Slots::SlotKeyType Layer::s_USE_CELSHADING_SLOT = "useCelShading";
 
@@ -127,10 +126,7 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
 
                     angle += eyeAngle;
 
-                    ::Ogre::GpuSharedParametersPtr params;
-
                     const auto& sharedParameterMap = gpuProgramMgr.getAvailableSharedParameters();
-
                     {
                         const std::string projParamName = "ProjectionMatrixParam/"+std::to_string(i);
                         auto it                         = sharedParameterMap.find(projParamName);
@@ -185,7 +181,6 @@ Layer::Layer() :
     newSignal<CameraUpdatedSignalType>(s_CAMERA_UPDATED_SIG);
 
     newSlot(s_INTERACTION_SLOT, &Layer::interaction, this);
-    newSlot(s_DESTROY_SLOT, &Layer::destroy, this);
     newSlot(s_RESET_CAMERA_SLOT, &Layer::resetCameraCoordinates, this);
 }
 
@@ -193,6 +188,16 @@ Layer::Layer() :
 
 Layer::~Layer()
 {
+    if(m_camera && m_cameraListener)
+    {
+        m_camera->removeListener(m_cameraListener);
+        delete m_cameraListener;
+        m_cameraListener = nullptr;
+    }
+
+    ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
+    m_sceneManager = nullptr;
+    m_camera       = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -439,19 +444,6 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
     }
     this->signal<CameraUpdatedSignalType>(s_CAMERA_UPDATED_SIG)->asyncEmit();
-}
-
-// ----------------------------------------------------------------------------
-
-void Layer::destroy()
-{
-    m_camera->removeListener(m_cameraListener);
-
-    ::fwRenderOgre::ILight::destroyLightManager(m_lightManager);
-
-    ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
-    m_sceneManager = nullptr;
-    m_camera       = nullptr;
 }
 
 // ----------------------------------------------------------------------------

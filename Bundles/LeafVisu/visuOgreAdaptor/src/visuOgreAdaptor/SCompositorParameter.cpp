@@ -114,6 +114,8 @@ void SCompositorParameter::doStart() throw(::fwTools::Failed)
 
 void SCompositorParameter::doStop() throw(::fwTools::Failed)
 {
+    this->IParameter::doStop();
+
     // Association of a listener attached to this adaptor to the configured compositor
     m_compositor->removeListener(m_listener);
     delete m_listener;

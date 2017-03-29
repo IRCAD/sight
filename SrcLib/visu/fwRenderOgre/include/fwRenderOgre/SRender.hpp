@@ -230,11 +230,6 @@ private:
     /// Configuration element shared pointer
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
-    /// Start Ogre OpenGL context
-    void startContext();
-    /// Stop Ogre OpenGL context
-    void stopContext();
-
     /// Configure background layer of the scene
     void configureBackgroundLayer( ConfigurationType conf );
     /// Configure each layer of the scene

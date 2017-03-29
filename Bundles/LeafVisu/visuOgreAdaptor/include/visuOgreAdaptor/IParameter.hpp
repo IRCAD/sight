@@ -86,6 +86,9 @@ protected:
     /// Updates the shader parameter values and requests a render of the scene.
     VISUOGREADAPTOR_API virtual void doUpdate() throw ( ::fwTools::Failed );
 
+    /// Clear the mesh pointer.
+    VISUOGREADAPTOR_API virtual void doStop() throw ( ::fwTools::Failed );
+
     /// Set the parameter for a given technique
     VISUOGREADAPTOR_API virtual bool setParameter(::Ogre::Technique& technique);
 

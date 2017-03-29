@@ -30,7 +30,7 @@ public:
     FWRENDEROGRE_API TrackballInteractor();
 
     /// Destructor
-    FWRENDEROGRE_API ~TrackballInteractor();
+    virtual FWRENDEROGRE_API ~TrackballInteractor();
 
     /**
      * @brief Mouse's left button press + movement callback.

@@ -99,9 +99,6 @@ public:
     /// Slot: Request the picker to do a ray cast according to the passed position
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_INTERACTION_SLOT;
 
-    /// Slot: Request the deletion of the scene manager
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_DESTROY_SLOT;
-
     /// Slot: Request the reset of camera
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_RESET_CAMERA_SLOT;
 
@@ -258,9 +255,6 @@ public:
 private:
     /// Slot: Interact with the scene.
     void interaction(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo);
-
-    /// Slot: Destroy the scene.
-    void destroy();
 
     /// Compute bounding box of the scene.
     ::Ogre::AxisAlignedBox computeWorldBoundingBox() const;

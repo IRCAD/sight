@@ -170,6 +170,13 @@ void IParameter::doUpdate() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
+void IParameter::doStop() throw ( ::fwTools::Failed )
+{
+    m_material.setNull();
+}
+
+//------------------------------------------------------------------------------
+
 bool IParameter::setParameter(::Ogre::Technique& technique)
 {
     /// Contains the different parameters for the shader
