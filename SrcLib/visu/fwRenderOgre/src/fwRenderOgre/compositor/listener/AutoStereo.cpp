@@ -59,54 +59,83 @@ AutoStereoCompositorListener::AutoStereoCompositorListener(std::vector<Ogre::Tex
         }
 
         const std::string passIdStr = _schemeName.substr(11);
-        const int passId = std::stoi(passIdStr);
+        const int passId            = std::stoi(passIdStr);
 
         ::Ogre::Technique* defaultTech = _originalMaterial->getTechnique(0);
         newTech                        = this->copyTechnique(defaultTech, _schemeName, _originalMaterial);
 
-        const auto pass           = newTech->getPass(0);
-        const auto baseName       = pass->getVertexProgramName();
-        const auto sourceFileName = pass->getVertexProgram()->getSourceFile();
-        const auto newName        = baseName + "+AutoStereo";
-
-        ::fwRenderOgre::helper::Shading::GpuProgramParametersType parameters;
-        parameters.push_back(std::make_pair<std::string, std::string>("preprocessor_defines", "AUTOSTEREO=1"));
-
-        ::fwRenderOgre::helper::Shading::createProgramFrom(newName, sourceFileName, parameters,
-                                                           ::Ogre::GPT_VERTEX_PROGRAM, baseName);
-
-        pass->setVertexProgram(newName);
-
-        auto vertexParams = pass->getVertexProgramParameters();
-
-        // First check that we did not already instanced Shared parameters
-        // This can happen when reinstancing this class (e.g. switching 3D mode)
-        const std::string projParamName = "ProjectionMatrixParam/"+passIdStr;
-
-        auto& gpuProgramMgr = ::Ogre::GpuProgramManager::getSingleton();
-        const auto& sharedParameterMap = gpuProgramMgr.getAvailableSharedParameters();
-
-        if(sharedParameterMap.find(projParamName) == sharedParameterMap.end())
+        const auto pass             = newTech->getPass(0);
         {
-            m_projectionParam = ::Ogre::GpuProgramManager::getSingleton().createSharedParameters(projParamName);
+            const auto vpBaseName       = pass->getVertexProgramName();
+            const auto vpSourceFileName = pass->getVertexProgram()->getSourceFile();
+            const auto vpNewName        = vpBaseName + "+AutoStereo";
 
-            // define the shared param structure
-            m_projectionParam->addConstantDefinition("u_proj", ::Ogre::GCT_MATRIX_4X4);
+            ::fwRenderOgre::helper::Shading::GpuProgramParametersType parameters;
+            parameters.push_back(std::make_pair<std::string, std::string>("preprocessor_defines", "AUTOSTEREO=1"));
+
+            ::fwRenderOgre::helper::Shading::createProgramFrom(vpNewName, vpSourceFileName, parameters,
+                                                               ::Ogre::GPT_VERTEX_PROGRAM, vpBaseName);
+
+            pass->setVertexProgram(vpNewName);
+            auto vpParams = pass->getVertexProgramParameters();
+
+            // We use a shared parameters block to upload the custom projection matrices
+            const std::string projParamName = "ProjectionMatrixParam/"+passIdStr;
+
+            auto& gpuProgramMgr            = ::Ogre::GpuProgramManager::getSingleton();
+            const auto& sharedParameterMap = gpuProgramMgr.getAvailableSharedParameters();
+
+            if(sharedParameterMap.find(projParamName) == sharedParameterMap.end())
+            {
+                auto projParam = ::Ogre::GpuProgramManager::getSingleton().createSharedParameters(projParamName);
+
+                // define the shared param structure
+                projParam->addConstantDefinition("u_proj", ::Ogre::GCT_MATRIX_4X4);
+            }
+
+            vpParams->addSharedParameters(projParamName);
+            vpParams->setNamedAutoConstant("u_worldView", ::Ogre::GpuProgramParameters::ACT_WORLDVIEW_MATRIX);
+
+            if(vpBaseName == "RayTracedVolume_VP")
+            {
+                ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("entryPoints");
+
+                OSLM_ASSERT("No texture named " << passId, texUnitState);
+                texUnitState->setTextureName((*m_renderTargets)[static_cast<size_t>(passId)]->getName());
+            }
         }
-        else
+
+        const auto fpBaseName       = pass->getFragmentProgramName();
+        if(fpBaseName == "RayTracedVolume_FP")
         {
-            m_projectionParam = ::Ogre::GpuProgramManager::getSingleton().getSharedParameters(projParamName);
-        }
+            const auto fpSourceFileName = pass->getFragmentProgram()->getSourceFile();
+            const auto fpNewName        = fpBaseName + "+AutoStereo";
 
-        vertexParams->addSharedParameters(projParamName);
-        vertexParams->setNamedAutoConstant("u_worldView", ::Ogre::GpuProgramParameters::ACT_WORLDVIEW_MATRIX);
+            ::fwRenderOgre::helper::Shading::GpuProgramParametersType parameters;
+            parameters.push_back(std::make_pair<std::string, std::string>("preprocessor_defines", "AUTOSTEREO=1"));
 
-        if(baseName == "RayTracedVolume_VP")
-        {
-            ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("entryPoints");
+            ::fwRenderOgre::helper::Shading::createProgramFrom(fpNewName, fpSourceFileName, parameters,
+                                                               ::Ogre::GPT_FRAGMENT_PROGRAM, fpBaseName);
 
-            OSLM_ASSERT("No texture named " << passId, texUnitState);
-            texUnitState->setTextureName((*m_renderTargets)[static_cast<size_t>(passId)]->getName());
+            pass->setFragmentProgram(fpNewName);
+            auto fpParams = pass->getFragmentProgramParameters();
+
+            // We use a shared parameters block to upload the custom projection matrices
+            const std::string projParamName = "InverseProjectionMatrixParam/"+passIdStr;
+
+            auto& gpuProgramMgr            = ::Ogre::GpuProgramManager::getSingleton();
+            const auto& sharedParameterMap = gpuProgramMgr.getAvailableSharedParameters();
+
+            if(sharedParameterMap.find(projParamName) == sharedParameterMap.end())
+            {
+                auto params = ::Ogre::GpuProgramManager::getSingleton().createSharedParameters(projParamName);
+
+                // define the shared param structure
+                params->addConstantDefinition("u_invProj", ::Ogre::GCT_MATRIX_4X4);
+            }
+
+            fpParams->addSharedParameters(projParamName);
+            fpParams->setNamedAutoConstant("u_invWorldView",::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEW_MATRIX);
         }
     }
 
@@ -129,6 +158,7 @@ Ogre::Technique* AutoStereoCompositorListener::copyTechnique(::Ogre::Technique* 
 
     return newTech;
 }
+
 //------------------------------------------------------------------------------
 
 } // namespace listener

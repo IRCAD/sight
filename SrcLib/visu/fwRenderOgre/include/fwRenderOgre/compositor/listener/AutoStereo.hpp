@@ -10,7 +10,6 @@
 #include "fwRenderOgre/config.hpp"
 
 #include <OgreMaterialManager.h>
-#include <OgreGpuProgramParams.h>
 
 namespace fwRenderOgre
 {
@@ -39,8 +38,6 @@ private:
                                    ::Ogre::Material* _originalMaterial);
 
     std::vector< ::Ogre::TexturePtr>* m_renderTargets;
-
-    ::Ogre::GpuSharedParametersPtr m_projectionParam;
 };
 
 } // namespace listener

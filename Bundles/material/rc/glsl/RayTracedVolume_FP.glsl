@@ -12,6 +12,11 @@ uniform sampler2D u_entryPoints;
 
 uniform mat4 u_invWorldViewProj;
 
+#ifdef AUTOSTEREO
+uniform mat4 u_invWorldView;
+uniform mat4 u_invProj;
+#endif // AUTOSTEREO
+
 uniform vec3 u_cameraPos;
 uniform float u_shininess;
 
@@ -191,8 +196,14 @@ void main(void)
 
     gl_FragDepth = entryDepth;
 
-    vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, u_invWorldViewProj);
-    vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, u_invWorldViewProj);
+#ifdef AUTOSTEREO
+    mat4x4 invWorldViewProj = u_invWorldView * u_invProj;
+#else
+    mat4x4 invWorldViewProj = u_invWorldViewProj;
+#endif
+
+    vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, invWorldViewProj);
+    vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, invWorldViewProj);
 
     vec3 rayDir   = normalize(rayExit - rayEntry) * u_sampleDistance;
 

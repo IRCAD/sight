@@ -101,33 +101,43 @@ struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
                     angle    = eyeAngle * -3.5f;
                 }
 
+                auto& gpuProgramMgr            = ::Ogre::GpuProgramManager::getSingleton();
+
                 for(size_t i = 0; i < 8; ++i)
                 {
+                    const auto shearTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(
+                        *_camera, angle);
+
+                    ::Ogre::Matrix4 projMat = _camera->getProjectionMatrixWithRSDepth();
+                    projMat                 = projMat * shearTransform;
+
+                    projMat[1][0] = -projMat[1][0];
+                    projMat[1][1] = -projMat[1][1];
+                    projMat[1][2] = -projMat[1][2];
+                    projMat[1][3] = -projMat[1][3];
+
+                    angle += eyeAngle;
+
                     ::Ogre::GpuSharedParametersPtr params;
-                    try
+
+                    const auto& sharedParameterMap = gpuProgramMgr.getAvailableSharedParameters();
+
                     {
                         const std::string projParamName = "ProjectionMatrixParam/"+std::to_string(i);
-                        params = ::Ogre::GpuProgramManager::getSingleton().getSharedParameters(projParamName);
+                        auto it = sharedParameterMap.find(projParamName);
+                        if(it != sharedParameterMap.end())
+                        {
+                            it->second->setNamedConstant("u_proj", projMat);
+                        }
                     }
-                    catch(::Ogre::InvalidParametersException e)
                     {
+                        const std::string projParamName = "InverseProjectionMatrixParam/"+std::to_string(i);
+                        auto it = sharedParameterMap.find(projParamName);
+                        if(it != sharedParameterMap.end())
+                        {
+                            it->second->setNamedConstant("u_invProj", projMat.inverse());
+                        }
                     }
-                    if(!params.isNull())
-                    {
-                        const auto shearTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(
-                            *_camera, angle);
-
-                        ::Ogre::Matrix4 projMat = _camera->getProjectionMatrixWithRSDepth();
-                        projMat                 = projMat * shearTransform;
-
-                        projMat[1][0] = -projMat[1][0];
-                        projMat[1][1] = -projMat[1][1];
-                        projMat[1][2] = -projMat[1][2];
-                        projMat[1][3] = -projMat[1][3];
-
-                        params->setNamedConstant("u_proj", projMat);
-                    }
-                    angle += eyeAngle;
                 }
 
                 m_frameId = frameId;
