@@ -348,6 +348,10 @@ private:
 
     /// Specular color of the specular light.
     SPTR(::fwData::Color) m_defaultLightSpecularColor;
+
+    /// Camera listener class used to pass the projection matrix for autostereo shaders.
+    struct LayerCameraListener;
+    LayerCameraListener* m_cameraListener;
 };
 
 }

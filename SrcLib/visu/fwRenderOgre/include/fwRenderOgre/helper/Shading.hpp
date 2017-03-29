@@ -148,6 +148,7 @@ public:
                                                                     const GpuProgramParametersType& _parameters,
                                                                     ::Ogre::GpuProgramType _shaderType,
                                                                     const std::string& _baseName);
+
 };
 
 //-----------------------------------------------------------------------------

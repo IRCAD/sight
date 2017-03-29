@@ -149,11 +149,11 @@
 
             <!-- ####################################  Begin Generic Scene ######################################### -->
             <service uid="genericSceneOgre" type="::fwRenderOgre::SRender">
-                <scene fullscreen="yes" />
+                <scene fullscreen="no" />
                 <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
-                <layer id="default" depth="1" compositors="AutoStereo8"/>
+                <layer id="default" depth="1" stereoMode="AutoStereo8"/>
                 <adaptor uid="interactorAdaptor" start="yes" />
-<!--                <adaptor uid="meshAdaptor" start="yes" />-->
+                <adaptor uid="meshAdaptor" start="yes" />
                 <adaptor uid="materialAdaptor" start="yes" />
 <!--                <adaptor uid="negato3DAdaptor" start="yes" />-->
                 <adaptor uid="textureAdaptor" start="yes" />
@@ -206,7 +206,7 @@
             <start uid="imageReader" />
 
             <start uid="meshReader" />
-            <update uid="imageReader" />
+            <update uid="meshReader" />
         </config>
     </extension>
 

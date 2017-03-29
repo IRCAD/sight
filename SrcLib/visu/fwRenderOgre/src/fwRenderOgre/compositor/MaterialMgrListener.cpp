@@ -325,7 +325,7 @@ MaterialMgrListener::~MaterialMgrListener()
     }
     else
     {
-        OSLM_ERROR("not found : " << _schemeName );
+        OSLM_INFO("not found : " << _schemeName );
     }
 
     return newTech;

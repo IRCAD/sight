@@ -6,6 +6,7 @@
 
 #include "fwRenderOgre/vr/RayTracingVolumeRenderer.hpp"
 
+#include "fwRenderOgre/helper/Camera.hpp"
 #include "fwRenderOgre/helper/Shading.hpp"
 #include "fwRenderOgre/SRender.hpp"
 #include "fwRenderOgre/Utils.hpp"
@@ -172,8 +173,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
     if(m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE)
     {
-        m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(numViewPoints, *m_camera,
-                                                                                      &m_entryPointsTextures);
+        m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(&m_entryPointsTextures);
         ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
     }
 
@@ -656,7 +656,7 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 
         if(m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE)
         {
-            const ::Ogre::Matrix4 shearTransform = this->frustumShearTransform(angle);
+            const auto shearTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
 
             angle  += eyeAngle;
             projMat = projMat * shearTransform;
@@ -665,21 +665,6 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
         m_sceneManager->manualRender(&renderOp, pass, renderTexture->getViewport(0), worldMat,
                                      m_camera->getViewMatrix(), projMat);
     }
-}
-
-//-----------------------------------------------------------------------------
-
-Ogre::Matrix4 RayTracingVolumeRenderer::frustumShearTransform(float angle) const
-{
-    ::Ogre::Matrix4 shearTransform = ::Ogre::Matrix4::IDENTITY;
-
-    const float focalLength  = m_camera->getFocalLength();
-    const float xshearFactor = std::tan(angle);
-
-    shearTransform[0][2] = -xshearFactor;
-    shearTransform[0][3] = -focalLength * xshearFactor;
-
-    return shearTransform;
 }
 
 //-----------------------------------------------------------------------------

@@ -134,15 +134,7 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
                     auto layer  = _renderService->getLayer(_layerId);
                     auto camera = layer->getDefaultCamera();
                     SLM_ASSERT("camera is null", camera);
-                    if(_compositorName == "AutoStereo5")
-                    {
-                        m_autostereoListener = new listener::AutoStereoCompositorListener(5, *camera);
-                    }
-                    else
-                    {
-                        m_autostereoListener = new listener::AutoStereoCompositorListener(8, *camera);
-
-                    }
+                    m_autostereoListener = new listener::AutoStereoCompositorListener();
                     ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
                 }
             }
@@ -150,7 +142,6 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
             this->updateCompositorAdaptors(_compositorName, _isEnabled, _layerId, _renderService);
         }
     }
-
 
 }
 
@@ -185,15 +176,7 @@ void ChainManager::setCompositorChain(const std::vector<CompositorIdType>& _comp
                 auto layer  = _renderService->getLayer(_layerId);
                 auto camera = layer->getDefaultCamera();
                 SLM_ASSERT("camera is null", camera);
-                if(compositorName == "AutoStereo5")
-                {
-                    m_autostereoListener = new listener::AutoStereoCompositorListener(5, *camera);
-                }
-                else
-                {
-                    m_autostereoListener = new listener::AutoStereoCompositorListener(8, *camera);
-
-                }
+                m_autostereoListener = new listener::AutoStereoCompositorListener();
                 ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
             }
 

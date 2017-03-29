@@ -115,10 +115,6 @@ private:
     /// Renders the proxy geometry too fill the entry point texture.
     void computeEntryPointsTexture();
 
-    /// Computes the shear warp to apply to a frustum for multi-view rendering based on the angle with the original
-    /// camera.
-    ::Ogre::Matrix4 frustumShearTransform(float angle) const;
-
     /// Updates the ray traced and volume illumination materials according to pre-integration and volume illumination
     /// flags.
     void updateMatNames();

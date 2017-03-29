@@ -10,6 +10,7 @@
 #include "fwRenderOgre/config.hpp"
 
 #include <OgreMaterialManager.h>
+#include <OgreGpuProgramParams.h>
 
 namespace fwRenderOgre
 {
@@ -23,11 +24,10 @@ class AutoStereoCompositorListener : public ::Ogre::MaterialManager::Listener
 {
 public:
     /// Constructor for surface rendering
-    AutoStereoCompositorListener(unsigned int _numViewPoints, ::Ogre::Camera& _camera);
+    AutoStereoCompositorListener();
 
     /// Constructor for volume rendering
-    AutoStereoCompositorListener(unsigned int _numViewPoints, ::Ogre::Camera& _camera,
-                                 std::vector< ::Ogre::TexturePtr>* renderTargets);
+    AutoStereoCompositorListener(std::vector< ::Ogre::TexturePtr>* renderTargets);
 
     /// Callback called each time a scheme is not found
     virtual ::Ogre::Technique* handleSchemeNotFound(unsigned short _schemeIndex, const ::Ogre::String& _schemeName,
@@ -35,17 +35,12 @@ public:
                                                     const ::Ogre::Renderable* _renderable);
 
 private:
-    Ogre::Matrix4 frustumShearTransform(float angle) const;
     Ogre::Technique* copyTechnique(::Ogre::Technique* _tech, const::Ogre::String& _schemeName,
                                    ::Ogre::Material* _originalMaterial);
 
-    /// Number of viewpoints
-    unsigned int m_numViewPoints;
-
-    /// Camera used for rendering.
-    ::Ogre::Camera& m_camera;
-
     std::vector< ::Ogre::TexturePtr>* m_renderTargets;
+
+    ::Ogre::GpuSharedParametersPtr m_projectionParam;
 };
 
 } // namespace listener

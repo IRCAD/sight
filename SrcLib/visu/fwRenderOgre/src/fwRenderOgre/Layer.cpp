@@ -6,6 +6,7 @@
 
 #include "fwRenderOgre/Layer.hpp"
 
+#include <fwRenderOgre/helper/Camera.hpp>
 #include <fwRenderOgre/ILight.hpp>
 #include <fwRenderOgre/Layer.hpp>
 
@@ -24,6 +25,7 @@
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreException.h>
+#include <OGRE/OgreGpuProgramManager.h>
 #include <OGRE/OgreLight.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreRectangle2D.h>
@@ -59,6 +61,82 @@ const std::string Layer::DEFAULT_CAMERA_NAME = "DefaultCam";
 const std::string Layer::DEFAULT_LIGHT_NAME  = "DefaultLight";
 
 //-----------------------------------------------------------------------------
+
+struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
+{
+    Layer* m_layer;
+    int m_frameId;
+
+    //------------------------------------------------------------------------------
+
+    LayerCameraListener(Layer* renderer) :
+        m_layer(renderer),
+        m_frameId(0)
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    virtual void cameraPreRenderScene(::Ogre::Camera* _camera)
+    {
+        SLM_ASSERT("Layer is not set", m_layer );
+
+        auto stereoMode = m_layer->getStereoMode();
+        if(stereoMode != Layer::StereoModeType::NONE)
+        {
+            const int frameId = m_layer->getRenderService()->getInteractorManager()->getFrameId();
+            if(frameId != m_frameId)
+            {
+                float eyeAngle = 0.f;
+                float angle    = 0.f;
+
+                if(stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
+                {
+                    eyeAngle = 0.02321f;
+                    angle    = eyeAngle * -2.f;
+                }
+                else if(stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
+                {
+                    eyeAngle = 0.01625f;
+                    angle    = eyeAngle * -3.5f;
+                }
+
+                for(size_t i = 0; i < 8; ++i)
+                {
+                    ::Ogre::GpuSharedParametersPtr params;
+                    try
+                    {
+                        const std::string projParamName = "ProjectionMatrixParam/"+std::to_string(i);
+                        params = ::Ogre::GpuProgramManager::getSingleton().getSharedParameters(projParamName);
+                    }
+                    catch(::Ogre::InvalidParametersException e)
+                    {
+                    }
+                    if(!params.isNull())
+                    {
+                        const auto shearTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(
+                            *_camera, angle);
+
+                        ::Ogre::Matrix4 projMat = _camera->getProjectionMatrixWithRSDepth();
+                        projMat                 = projMat * shearTransform;
+
+                        projMat[1][0] = -projMat[1][0];
+                        projMat[1][1] = -projMat[1][1];
+                        projMat[1][2] = -projMat[1][2];
+                        projMat[1][3] = -projMat[1][3];
+
+                        params->setNamedConstant("u_proj", projMat);
+                    }
+                    angle += eyeAngle;
+                }
+
+                m_frameId = frameId;
+            }
+        }
+    }
+
+    //------------------------------------------------------------------------------
+};
 
 Layer::Layer() :
     m_sceneManager(nullptr),
@@ -218,6 +296,9 @@ void Layer::createScene()
 
     cameraNode->attachObject(m_camera);
 
+    m_cameraListener = new LayerCameraListener(this);
+    m_camera->addListener(m_cameraListener);
+
     if(m_hasDefaultLight)
     {
         m_defaultLightTransform     = ::fwData::TransformationMatrix3D::New();
@@ -345,6 +426,8 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
 
 void Layer::destroy()
 {
+    m_camera->removeListener(m_cameraListener);
+
     ::fwRenderOgre::ILight::destroyLightManager(m_lightManager);
 
     ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
