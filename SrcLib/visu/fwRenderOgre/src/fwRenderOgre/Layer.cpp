@@ -559,7 +559,7 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
 
 //-----------------------------------------------------------------------------
 
-::Ogre::AxisAlignedBox Layer::computeCameraParameters() const
+::Ogre::AxisAlignedBox Layer::computeWorldBoundingBox() const
 {
     // The bounding box in which all the object's bounding boxes will be merged
     ::Ogre::AxisAlignedBox worldCoordBoundingBox;
@@ -613,7 +613,7 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
 
 void Layer::resetCameraCoordinates() const
 {
-    ::Ogre::AxisAlignedBox worldCoordBoundingBox = computeCameraParameters();
+    const ::Ogre::AxisAlignedBox worldCoordBoundingBox = this->computeWorldBoundingBox();
 
     if(m_camera && m_camera->getProjectionType() == ::Ogre::PT_PERSPECTIVE)
     {
@@ -622,22 +622,21 @@ void Layer::resetCameraCoordinates() const
             worldCoordBoundingBox == ::Ogre::AxisAlignedBox::EXTENT_INFINITE)
         {
             ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
-
             camNode->setPosition(0.f, 0.f, 0.f);
         }
         else
         {
-            ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
             // Arbitrary coefficient
-            ::Ogre::Real boundingBoxLength = worldCoordBoundingBox.getSize().length() > 0 ?
-                                             worldCoordBoundingBox.getSize().length() : 0;
+            const ::Ogre::Real boundingBoxLength = worldCoordBoundingBox.getSize().length() > 0 ?
+                                                   worldCoordBoundingBox.getSize().length() : 0;
 
-            float coeffZoom = static_cast<float>(boundingBoxLength) * 1.2f;
+            float coeffZoom = static_cast<float>(boundingBoxLength);
             OSLM_DEBUG("Zoom coefficient : " << coeffZoom);
 
             // Set the direction of the camera
-            ::Ogre::Quaternion quat   = camNode->getOrientation();
-            ::Ogre::Vector3 direction = quat.zAxis();
+            ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
+            const ::Ogre::Quaternion quat   = camNode->getOrientation();
+            const ::Ogre::Vector3 direction = quat.zAxis();
 
             // Set the position of the camera
             camNode->setPosition((worldCoordBoundingBox.getCenter() + coeffZoom * direction ) );
@@ -654,9 +653,37 @@ void Layer::resetCameraCoordinates() const
 
 //-----------------------------------------------------------------------------
 
+void Layer::computeCameraParameters() const
+{
+    const ::Ogre::AxisAlignedBox worldCoordBoundingBox = this->computeWorldBoundingBox();
+
+    if(m_camera && m_camera->getProjectionType() == ::Ogre::PT_PERSPECTIVE)
+    {
+        // Check if bounding box is valid, otherwise, do nothing.
+        if( worldCoordBoundingBox != ::Ogre::AxisAlignedBox::EXTENT_NULL &&
+            worldCoordBoundingBox != ::Ogre::AxisAlignedBox::EXTENT_INFINITE)
+        {
+            ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
+            const ::Ogre::Quaternion quat   = camNode->getOrientation();
+            const ::Ogre::Vector3 direction = quat.zAxis();
+            const ::Ogre::Vector3 position  = camNode->getPosition();
+
+            const ::Ogre::Vector3 div = (position - worldCoordBoundingBox.getCenter()) / direction;
+            const float distance      = div.z;
+
+            // Update interactor's mouse scale
+            m_moveInteractor->setMouseScale( distance );
+
+            resetCameraClippingRange(worldCoordBoundingBox);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void Layer::resetCameraClippingRange() const
 {
-    resetCameraClippingRange(computeCameraParameters());
+    resetCameraClippingRange(computeWorldBoundingBox());
 }
 
 //-----------------------------------------------------------------------------

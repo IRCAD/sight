@@ -48,7 +48,7 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_COLOR_BLEEDING_SLOT   
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_SHADOWS_SLOT               = "toggleShadows";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_TOGGLE_WIDGETS_SLOT               = "toggleWidgets";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_RESIZE_VIEWPORT_SLOT              = "resizeViewport";
-const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_STEREO_MODE_SLOT                   = "setStereoMode";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_STEREO_MODE_SLOT              = "setStereoMode";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_BOOL_PARAMETER_SLOT           = "setBoolParameter";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_INT_PARAMETER_SLOT            = "setIntParameter";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_DOUBLE_PARAMETER_SLOT         = "setDoubleParameter";
@@ -347,9 +347,16 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
         m_volumeSceneNode->setVisible(false, false);
     }
 
-    if (m_autoResetCamera && !this->getImage()->getField("cameraTransform"))
+    if (m_autoResetCamera )
     {
-        this->getRenderService()->resetCameraCoordinates(m_layerID);
+        if(this->getImage()->getField("cameraTransform"))
+        {
+            this->getLayer()->computeCameraParameters();
+        }
+        else
+        {
+            this->getRenderService()->resetCameraCoordinates(m_layerID);
+        }
     }
     m_volumeRenderer->tfUpdate(this->getTransferFunction());
 
@@ -842,7 +849,8 @@ void SVolumeRender::initWidgets()
 
         m_widgets = ::std::make_shared< ::fwRenderOgre::ui::VRWidget >(this->getID(), m_volumeSceneNode,
                                                                        m_camera, this->getRenderService(),
-                                                                       m_sceneManager, m_volumeRenderer,clippingMatrix);
+                                                                       m_sceneManager, m_volumeRenderer,
+                                                                       clippingMatrix);
     }
 
     // Connect widgets to interactor.

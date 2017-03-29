@@ -136,8 +136,11 @@ public:
     /// Enables/Disables a compositor according to the isEnabled flag.
     FWRENDEROGRE_API void updateCompositorState(std::string compositorName, bool isEnabled);
 
-    /// Place and align camera's focal with the boundingBox.
+    /// Place and align camera's focal with the world boundingBox.
     FWRENDEROGRE_API void resetCameraCoordinates() const;
+
+    /// Compute camera's focal with the world boundingBox.
+    FWRENDEROGRE_API void computeCameraParameters() const;
 
     /// Reset the camera clipping range (near and far).
     FWRENDEROGRE_API void resetCameraClippingRange() const;
@@ -260,7 +263,7 @@ private:
     void destroy();
 
     /// Compute bounding box of the scene.
-    ::Ogre::AxisAlignedBox computeCameraParameters() const;
+    ::Ogre::AxisAlignedBox computeWorldBoundingBox() const;
 
     /// Setups default compositor for a layer's 3D scene.
     void setupCore();
