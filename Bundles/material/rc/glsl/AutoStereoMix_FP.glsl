@@ -90,6 +90,12 @@ void main()
         color = vec3(colors[vp + 2].r, colors[vp + 1].g, colors[vp + 0].b);
     }
 
+    // Only black background for now
+    vec3 bgnd = vec3(0,0,0);
+
+    vec3 alphas = vec3(colors[vp + 2].a, colors[vp + 1].a, colors[vp + 0].a);
+    color = mix(bgnd, color, alphas);
+
     /*    4: Store the final R/G/B values.
      */
     gl_FragColor = vec4(color, 1.0);
