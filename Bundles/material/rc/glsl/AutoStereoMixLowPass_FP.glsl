@@ -25,6 +25,8 @@ uniform    float            u_lobeOffset;
 
 in vec2 uv;
 
+out vec4 fragColor;
+
 /*----------------------------------------------------------------------------*/
 
 void main()
@@ -90,6 +92,5 @@ void main()
 
     /*    4: Store the final R/G/B values.
      */
-    gl_FragColor = vec4(color, 1.0);
-    return;
+    fragColor = vec4(color, 1.0);
 }
