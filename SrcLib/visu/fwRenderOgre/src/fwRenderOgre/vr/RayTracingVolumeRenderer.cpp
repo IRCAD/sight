@@ -498,6 +498,8 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
                                                                Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
     pass->getFragmentProgramParameters()->setNamedAutoConstant("u_clippingFar",
                                                                Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
+    pass->getFragmentProgramParameters()->setNamedAutoConstant("u_renderTargetFlipping",
+                                                               Ogre::GpuProgramParameters::ACT_RENDER_TARGET_FLIPPING);
     pass->getFragmentProgramParameters()->setNamedAutoConstant("u_cameraPos",
                                                                Ogre::GpuProgramParameters::ACT_LOD_CAMERA_POSITION);
     pass->getFragmentProgramParameters()->addSharedParameters("RTVParams");

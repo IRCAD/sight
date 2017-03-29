@@ -26,6 +26,7 @@ fragment_program RayTracedVolume{{ name }}_FP glsl
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
+        param_named_auto u_renderTargetFlipping render_target_flipping
         param_named u_sampleDistance float 0.002
         param_named u_image int 0
         param_named u_tfTexture int 1
@@ -101,6 +102,7 @@ fragment_program VR/RayTracedVolume3D5_FP glsl
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
+        param_named_auto u_renderTargetFlipping render_target_flipping
         param_named_auto u_cameraPos camera_position
         param_named u_sampleDistance float 0.002
         param_named u_lobeOffset float 1.
@@ -136,6 +138,7 @@ fragment_program VR/RayTracedVolume3D8_FP glsl
         param_named_auto u_viewportHeight viewport_height
         param_named_auto u_clippingNear near_clip_distance
         param_named_auto u_clippingFar far_clip_distance
+        param_named_auto u_renderTargetFlipping render_target_flipping
         param_named_auto u_cameraPos camera_position
         param_named u_sampleDistance float 0.002
         param_named u_lobeOffset float 1.
