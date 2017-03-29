@@ -149,7 +149,7 @@
 
             <!-- ####################################  Begin Generic Scene ######################################### -->
             <service uid="genericSceneOgre" type="::fwRenderOgre::SRender">
-                <scene fullscreen="no" />
+                <scene fullscreen="yes" />
                 <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
                 <layer id="default" depth="1" stereoMode="AutoStereo8"/>
                 <adaptor uid="interactorAdaptor" start="yes" />

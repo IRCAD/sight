@@ -527,6 +527,9 @@ void Layer::setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::s
     m_connections.connect(interactor, ::fwRenderOgre::interactor::IMovementInteractor::s_RESET_CAMERA_SIG,
                           this->getSptr(), s_RESET_CAMERA_SLOT);
 
+    m_connections.connect(interactor, ::fwRenderOgre::interactor::IMovementInteractor::s_RENDER_REQUESTED_SIG,
+                          this->getRenderService(), ::fwRenderOgre::SRender::s_REQUEST_RENDER_SLOT);
+
     if(m_cameraListener)
     {
         m_cameraListener->m_interactor = interactor;

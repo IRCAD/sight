@@ -91,7 +91,7 @@
 
         <service uid="volumeRenderingEditor" type="::guiQt::editor::SParameters" autoConnect="no">
             <parameters>
-                <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="512" />
+                <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="1024" />
                 <param type="double" name="Collimation" key="u_collimation" defaultValue="0" min="-20" max="20" />
             </parameters>
         </service>
