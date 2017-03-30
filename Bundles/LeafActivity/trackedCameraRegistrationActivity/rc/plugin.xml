@@ -1,9 +1,6 @@
 <plugin id="trackedCameraRegistrationActivity" version="@DASH_VERSION@">
 
     <requirement id="activities" />
-    <requirement id="uiSelector" />
-    <requirement id="videoOpenni" />
-    <requirement id="rdTools" />
     <requirement id="visuVTKQt" />
     <requirement id="visuVTKARAdaptor" />
 

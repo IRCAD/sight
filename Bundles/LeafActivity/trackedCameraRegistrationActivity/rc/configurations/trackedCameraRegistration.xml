@@ -12,14 +12,14 @@
 
         <object uid="${rgbCameraSeries}" type="::arData::CameraSeries" src="ref"/>
         <object uid="${senseCameraSeries}" type="::arData::CameraSeries" src="ref"/>
-        
+
         <object uid="${markerMesh}" type="::fwData::Mesh" src="ref"/>
-        
+
         <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
 
-        <object uid="rgbCamera" type="::arData::Camera" src="deferred" /> 
-        <object uid="senseCamera" type="::arData::Camera" src="deferred" /> 
-        
+        <object uid="rgbCamera" type="::arData::Camera" src="deferred" />
+        <object uid="senseCamera" type="::arData::Camera" src="deferred" />
+
         <object uid="senseFrameTLDepth" type="::arData::FrameTL" />
         <object uid="senseFrameTLColor" type="::arData::FrameTL" />
         <object uid="rgbFrameTLColor" type="::arData::FrameTL" />
@@ -62,7 +62,7 @@
                    ]]>
             </matrix>
         </object>
-        
+
         <object uid="senseTag2Matrix" type="::fwData::TransformationMatrix3D" >
             <matrix>
                    <![CDATA[
@@ -117,11 +117,11 @@
                 <menuItem sid="actionSaveMatrix" start="yes"/>
             </registry>
         </service>
-        
+
         <!-- *************************** End layouts declaration ****************************** -->
 
         <!-- *************************** Begin services declaration ***************** -->
-        
+
         <service uid="loadRgbCameraView" type="::fwServices::SConfigController">
             <appConfig id="rgbCameraView" />
             <parameter replace="WID_PARENT" uid="rgbVideoView" />
@@ -130,13 +130,13 @@
             <parameter replace="frameTL" uid="rgbFrameTLColor" />
             <parameter replace="imageVideo" uid="rgbImageVideo" />
             <parameter replace="markerMesh" uid="${markerMesh}" />
-            
+
             <parameter replace="matrixTL" uid="rgbMatrixTL" />
             <parameter replace="tagMatrix1" uid="currentTag1Matrix" />
             <parameter replace="tagMatrix2" uid="rgbTag2Matrix" />
             <parameter replace="tagsToDetect" by="101,128" />
         </service>
-        
+
         <service uid="loadSenseCameraView" type="::fwServices::SConfigController">
             <appConfig id="rgbCameraView" />
             <parameter replace="WID_PARENT" uid="senseVideoView" />
@@ -145,7 +145,7 @@
             <parameter replace="frameTL" uid="senseFrameTLColor" />
             <parameter replace="imageVideo" uid="senseImageVideo" />
             <parameter replace="markerMesh" uid="${markerMesh}" />
-            
+
             <parameter replace="matrixTL" uid="senseMatrixTL" />
             <parameter replace="tagMatrix1" uid="senseTag1Matrix" />
             <parameter replace="tagMatrix2" uid="senseTag2Matrix" />
@@ -175,7 +175,7 @@
             <framerate>30</framerate>
         </service>
 
-        <service uid="rgbFrameGrabber" type="::videoVLC::SFrameGrabber" >
+        <service uid="rgbFrameGrabber" type="::videoQt::SFrameGrabber" >
             <in key="camera" uid="rgbCamera" />
             <inout key="frameTL" uid="rgbFrameTLColor" />
         </service>
@@ -184,7 +184,7 @@
             <!-- <in key="camera" uid="senseCamera" /> -->
             <!-- <inout key="frameTL" uid="senseFrameTLColor" /> -->
         <!-- </service> -->
-        
+
         <!-- Manages Sense camera configuration -->
         <service uid="senseFrameGrabber" type="::videoOpenni::SScan" worker="scanWorker">
             <inout key="frameTLDepth" uid="senseFrameTLDepth" />
@@ -223,14 +223,14 @@
                 <slot>matrixWriter/update</slot>
             </slots>
         </service>
-        
+
         <service uid="matrixWriter" type="::uiIO::editor::SIOSelector">
             <in key="target" uid="registrationMatrix" />
             <type mode="writer" />
             <selection mode="include" />
             <addSelection service="::ioData::TransformationMatrix3DWriterService" />
         </service>
-        
+
         <service uid="extractRgbCamera" type="::ctrlCamp::SExtractObj">
             <inout key="source" uid="${rgbCameraSeries}">
                 <extract from="@cameras.0" />
@@ -288,11 +288,11 @@
             <signal>senseFrameGrabber/cameraStarted</signal>
             <slot>extractSenseCamera/update</slot>
         </connect>
-        
+
         <!-- *************************** End connect declaration ****************************** -->
 
         <!-- *************************** Begin Start ****************************************** -->
-        
+
         <start uid="mainView" />
         <start uid="concatenateRegistrationMatrix" />
         <start uid="concatenateTag1ARMatrix" />
@@ -306,7 +306,7 @@
 
         <start uid="loadRgbCameraView" />
         <start uid="loadSenseCameraView" />
-        
+
         <!-- *************************** End Start ****************************************** -->
 
         <!-- *************************** Begin Update ****************************************** -->
