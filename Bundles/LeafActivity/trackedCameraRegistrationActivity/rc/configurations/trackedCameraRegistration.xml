@@ -1,0 +1,320 @@
+<extension implements="::fwServices::registry::AppConfig2">
+    <id>TrackedCameraRegistration</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="AS_UID" />
+        <param name="SERIESDB" />
+        <param name="rgbCameraSeries" />
+        <param name="senseCameraSeries" />
+        <param name="markerMesh" />
+    </parameters>
+    <config>
+
+        <object uid="${rgbCameraSeries}" type="::arData::CameraSeries" src="ref"/>
+        <object uid="${senseCameraSeries}" type="::arData::CameraSeries" src="ref"/>
+        
+        <object uid="${markerMesh}" type="::fwData::Mesh" src="ref"/>
+        
+        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
+
+        <object uid="rgbCamera" type="::arData::Camera" src="deferred" /> 
+        <object uid="senseCamera" type="::arData::Camera" src="deferred" /> 
+        
+        <object uid="senseFrameTLDepth" type="::arData::FrameTL" />
+        <object uid="senseFrameTLColor" type="::arData::FrameTL" />
+        <object uid="rgbFrameTLColor" type="::arData::FrameTL" />
+
+        <object uid="rgbImageVideo" type="::fwData::Image" />
+        <object uid="senseImageVideo" type="::fwData::Image" />
+
+        <object uid="rgbMatrixTL" type="::arData::MatrixTL" />
+        <object uid="senseMatrixTL" type="::arData::MatrixTL" />
+
+        <object uid="rgbTag1Matrix" type="::fwData::TransformationMatrix3D" >
+            <matrix>
+                   <![CDATA[
+                       1  0  0  1000
+                       0  1  0  1000
+                       0  0  1  -1000
+                       0  0  0  1
+                   ]]>
+            </matrix>
+        </object>
+
+        <object uid="rgbTag2Matrix" type="::fwData::TransformationMatrix3D" >
+            <matrix>
+                   <![CDATA[
+                       1  0  0  1000
+                       0  1  0  1000
+                       0  0  1  -1000
+                       0  0  0  1
+                   ]]>
+            </matrix>
+        </object>
+
+        <object uid="senseTag1Matrix" type="::fwData::TransformationMatrix3D" >
+            <matrix>
+                   <![CDATA[
+                       1  0  0  1000
+                       0  1  0  1000
+                       0  0  1  -1000
+                       0  0  0  1
+                   ]]>
+            </matrix>
+        </object>
+        
+        <object uid="senseTag2Matrix" type="::fwData::TransformationMatrix3D" >
+            <matrix>
+                   <![CDATA[
+                       1  0  0  1000
+                       0  1  0  1000
+                       0  0  1  -1000
+                       0  0  0  1
+                   ]]>
+            </matrix>
+        </object>
+
+        <object uid="registrationMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="arTag1Matrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="currentTag1Matrix" type="::fwData::TransformationMatrix3D" />
+
+        <!-- ***************************************** Begin layouts declaration ***************************************** -->
+
+        <service uid="mainView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+                <toolBar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolbar" start="yes" />
+                <view wid="rgbVideoView" start="yes" />
+                <view wid="senseVideoView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
+            <gui>
+                <layout>
+                    <menuItem name="start" icon="@BUNDLE_PREFIX@/rdMedia_0-1/icons/start.svg" />
+                    <menuItem name="stop" icon="@BUNDLE_PREFIX@/rdMedia_0-1/icons/stop.svg" />
+                    <separator />
+                    <menuItem name="Compute registration matrix" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg"/>
+                    <menuItem name="Switch matrices" style="check" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/reset.svg"/>
+                    <separator />
+                    <menuItem name="Export registration matrix" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/save.svg"/>
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="startVideo" start="yes" />
+                <menuItem sid="stopVideo" start="yes" />
+                <menuItem sid="actionConcatenateRegistrationMatrix" start="yes" />
+                <menuItem sid="actionSwitchMatrices" start="yes" />
+                <menuItem sid="actionSaveMatrix" start="yes"/>
+            </registry>
+        </service>
+        
+        <!-- *************************** End layouts declaration ****************************** -->
+
+        <!-- *************************** Begin services declaration ***************** -->
+        
+        <service uid="loadRgbCameraView" type="::fwServices::SConfigController">
+            <appConfig id="rgbCameraView" />
+            <parameter replace="WID_PARENT" uid="rgbVideoView" />
+
+            <inout key="camera" uid="rgbCamera" />
+            <parameter replace="frameTL" uid="rgbFrameTLColor" />
+            <parameter replace="imageVideo" uid="rgbImageVideo" />
+            <parameter replace="markerMesh" uid="${markerMesh}" />
+            
+            <parameter replace="matrixTL" uid="rgbMatrixTL" />
+            <parameter replace="tagMatrix1" uid="currentTag1Matrix" />
+            <parameter replace="tagMatrix2" uid="rgbTag2Matrix" />
+            <parameter replace="tagsToDetect" by="101,128" />
+        </service>
+        
+        <service uid="loadSenseCameraView" type="::fwServices::SConfigController">
+            <appConfig id="rgbCameraView" />
+            <parameter replace="WID_PARENT" uid="senseVideoView" />
+
+            <inout key="camera" uid="senseCamera" />
+            <parameter replace="frameTL" uid="senseFrameTLColor" />
+            <parameter replace="imageVideo" uid="senseImageVideo" />
+            <parameter replace="markerMesh" uid="${markerMesh}" />
+            
+            <parameter replace="matrixTL" uid="senseMatrixTL" />
+            <parameter replace="tagMatrix1" uid="senseTag1Matrix" />
+            <parameter replace="tagMatrix2" uid="senseTag2Matrix" />
+            <parameter replace="tagsToDetect" by="101" />
+        </service>
+
+        <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
+            <in group="frameTL">
+                <key uid="rgbFrameTLColor"/>
+                <key uid="senseFrameTLColor"/>
+            </in>
+            <inout group="image">
+                <key uid="rgbImageVideo"/>
+                <key uid="senseImageVideo"/>
+            </inout>
+            <in group="matrixTL">
+                <key uid="rgbMatrixTL"/>
+                <key uid="senseMatrixTL"/>
+            </in>
+            <inout group="matrices0">
+                <key uid="rgbTag1Matrix"/>
+                <key uid="rgbTag2Matrix"/>
+            </inout>
+            <inout group="matrices1">
+                <key uid="senseTag1Matrix"/>
+            </inout>
+            <framerate>30</framerate>
+        </service>
+
+        <service uid="rgbFrameGrabber" type="::videoVLC::SFrameGrabber" >
+            <in key="camera" uid="rgbCamera" />
+            <inout key="frameTL" uid="rgbFrameTLColor" />
+        </service>
+
+        <!-- <service uid="senseFrameGrabber" type="::videoVLC::SFrameGrabber" > -->
+            <!-- <in key="camera" uid="senseCamera" /> -->
+            <!-- <inout key="frameTL" uid="senseFrameTLColor" /> -->
+        <!-- </service> -->
+        
+        <!-- Manages Sense camera configuration -->
+        <service uid="senseFrameGrabber" type="::videoOpenni::SScan" worker="scanWorker">
+            <inout key="frameTLDepth" uid="senseFrameTLDepth" />
+            <inout key="frameTLColors" uid="senseFrameTLColor" />
+            <inout key="cameraSeries" uid="${senseCameraSeries}" />
+        </service>
+
+        <service uid="startVideo" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>rgbFrameGrabber/startCamera</slot>
+                <slot>senseFrameGrabber/startCamera</slot>
+            </slots>
+        </service>
+
+        <service uid="stopVideo" type="::gui::action::SSlotCaller" >
+            <slots>
+                <slot>rgbFrameGrabber/stopCamera</slot>
+                <slot>senseFrameGrabber/stopCamera</slot>
+            </slots>
+        </service>
+
+        <service uid="actionConcatenateRegistrationMatrix" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>concatenateRegistrationMatrix/update</slot>
+            </slots>
+        </service>
+
+        <service uid="actionSwitchMatrices" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>switchMatrices/switchMatrix</slot>
+            </slots>
+        </service>
+
+        <service uid="actionSaveMatrix" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>matrixWriter/update</slot>
+            </slots>
+        </service>
+        
+        <service uid="matrixWriter" type="::uiIO::editor::SIOSelector">
+            <in key="target" uid="registrationMatrix" />
+            <type mode="writer" />
+            <selection mode="include" />
+            <addSelection service="::ioData::TransformationMatrix3DWriterService" />
+        </service>
+        
+        <service uid="extractRgbCamera" type="::ctrlCamp::SExtractObj">
+            <inout key="source" uid="${rgbCameraSeries}">
+                <extract from="@cameras.0" />
+            </inout>
+           <out group="target">
+               <key uid="rgbCamera"/>
+           </out>
+        </service>
+
+        <service uid="extractSenseCamera" type="::ctrlCamp::SExtractObj">
+            <inout key="source" uid="${senseCameraSeries}" >
+            <!-- Extract camera 0 for rgb tests, extract camera 1 when using sense  -->
+                <extract from="@cameras.1" />
+            </inout>
+           <out group="target">
+               <key uid="senseCamera"/>
+           </out>
+        </service>
+
+        <service uid="concatenateRegistrationMatrix" type="::maths::SConcatenateMatrices" >
+            <in group="matrix">
+                <key uid="rgbTag2Matrix" inverse="true" />
+                <key uid="rgbTag1Matrix" />
+                <key uid="senseTag1Matrix" inverse="true" />
+            </in>
+            <inout key="output" uid="registrationMatrix" />
+        </service>
+
+        <service uid="concatenateTag1ARMatrix" type="::maths::SConcatenateMatrices" >
+            <in group="matrix">
+                <key uid="rgbTag2Matrix" autoConnect="yes" />
+                <key uid="registrationMatrix" autoConnect="yes" />
+                <key uid="senseTag1Matrix" autoConnect="yes" />
+            </in>
+            <inout key="output" uid="arTag1Matrix" />
+        </service>
+
+        <service uid="switchMatrices" type="::maths::SSwitchMatrices" autoConnect="yes">
+            <in group="matrix">
+                <key uid="rgbTag1Matrix" />
+                <key uid="arTag1Matrix" />
+            </in>
+            <inout key="output" uid="currentTag1Matrix" />
+       </service>
+
+        <!-- *************************** End services declaration ***************************** -->
+
+        <!-- *************************** Begin proxies declaration **************************** -->
+
+        <!-- *************************** End proxies declaration ****************************** -->
+
+        <!-- *************************** Begin connect declaration **************************** -->
+
+        <connect>
+            <signal>senseFrameGrabber/cameraStarted</signal>
+            <slot>extractSenseCamera/update</slot>
+        </connect>
+        
+        <!-- *************************** End connect declaration ****************************** -->
+
+        <!-- *************************** Begin Start ****************************************** -->
+        
+        <start uid="mainView" />
+        <start uid="concatenateRegistrationMatrix" />
+        <start uid="concatenateTag1ARMatrix" />
+        <start uid="switchMatrices" />
+        <start uid="matrixWriter" />
+        <start uid="extractRgbCamera" />
+        <start uid="extractSenseCamera" />
+        <start uid="synchronizer" />
+        <start uid="rgbFrameGrabber" />
+        <start uid="senseFrameGrabber" />
+
+        <start uid="loadRgbCameraView" />
+        <start uid="loadSenseCameraView" />
+        
+        <!-- *************************** End Start ****************************************** -->
+
+        <!-- *************************** Begin Update ****************************************** -->
+
+        <update uid="extractRgbCamera" />
+        <update uid="extractSenseCamera" />
+
+        <!-- *************************** End Update ****************************************** -->
+
+    </config>
+</extension>
