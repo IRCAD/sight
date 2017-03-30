@@ -1,6 +1,6 @@
 
 set( NAME VRViewer )
-set( VERSION 0.2 )
+set( VERSION 0.3 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
