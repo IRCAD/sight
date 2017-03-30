@@ -312,6 +312,12 @@
         <service>::visuVTKAdaptor::ImageSliceOrientationText</service>
         <object>::fwData::Object</object>
     </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwRenderVTK::IVtkAdaptorService</type>
+        <service>::visuVTKAdaptor::Line</service>
+        <object>::fwData::Object</object>
+    </extension>
 </plugin>
 
 
