@@ -49,6 +49,12 @@ ChainManager::ChainManager(::Ogre::Viewport* _viewport) :
 
 ChainManager::~ChainManager()
 {
+    if(m_autostereoListener)
+    {
+        ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
+        delete m_autostereoListener;
+        m_autostereoListener = nullptr;
+    }
     this->unregisterServices();
 }
 
@@ -93,7 +99,12 @@ void ChainManager::clearCompositorChain(const std::string& _layerId, ::fwRenderO
         {
             SLM_ASSERT("m_autostereoListener should be null", m_autostereoListener == nullptr);
 
-            ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
+            if(m_autostereoListener)
+            {
+                ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
+                delete m_autostereoListener;
+                m_autostereoListener = nullptr;
+            }
         }
     }
 
@@ -124,6 +135,7 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
                 if(m_autostereoListener)
                 {
                     ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
+                    delete m_autostereoListener;
                     m_autostereoListener = nullptr;
                 }
 

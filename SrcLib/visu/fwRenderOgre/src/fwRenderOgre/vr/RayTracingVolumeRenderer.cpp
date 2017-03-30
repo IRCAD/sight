@@ -124,7 +124,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_colorBleedingFactor(colorBleedingFactor),
     m_illumVolume(nullptr),
     m_cameraListener(nullptr),
-    m_layer(layer)
+    m_layer(layer),
+    m_autostereoListener(nullptr)
 {
     m_gridSize   = {{ 2, 2, 2 }};
     m_bricksSize = {{ 8, 8, 8 }};
@@ -244,9 +245,12 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
     {
         ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
         delete m_autostereoListener;
+        m_autostereoListener = nullptr;
     }
 
     m_camera->removeListener(m_cameraListener);
+    delete m_cameraListener;
+    m_cameraListener = nullptr;
 
     if(m_r2vbSource)
     {
@@ -264,6 +268,7 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
     {
         ::Ogre::TextureManager::getSingleton().remove(texture->getHandle());
     }
+    m_entryPointsTextures.clear();
 
     if(!m_gridTexture.isNull())
     {

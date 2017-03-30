@@ -37,6 +37,39 @@ AutoStereoCompositorListener::AutoStereoCompositorListener(std::vector<Ogre::Tex
 {
 }
 
+//-----------------------------------------------------------------------------
+
+AutoStereoCompositorListener::~AutoStereoCompositorListener()
+{
+    // We need to clean the VR techniques because we want to set the correct textures
+    // Cleanng the texture forces the listener to be triggered and then to create the techniques with the new textures
+    for(auto& tech : m_createdTechniques)
+    {
+        ::Ogre::Material* mtl = tech->getParent();
+        ::Ogre::Material::TechniqueIterator techIt = mtl->getTechniqueIterator();
+
+        std::vector< unsigned short > removeTechniqueVector;
+
+        unsigned short index = 0;
+        while( techIt.hasMoreElements())
+        {
+            ::Ogre::Technique* technique = techIt.getNext();
+            if(tech == technique)
+            {
+                removeTechniqueVector.push_back(index);
+            }
+            ++index;
+        }
+
+        // Remove in inverse order otherwise the index we stored becomes invalid ;-)
+        for(auto it = removeTechniqueVector.rbegin(); it != removeTechniqueVector.rend(); ++it )
+        {
+            mtl->removeTechnique(*it);
+        }
+    }
+    m_renderTargets = nullptr;
+}
+
 //------------------------------------------------------------------------------
 
 ::Ogre::Technique* AutoStereoCompositorListener::handleSchemeNotFound(unsigned short _schemeIndex,
@@ -60,11 +93,17 @@ AutoStereoCompositorListener::AutoStereoCompositorListener(std::vector<Ogre::Tex
 
         const std::string passIdStr = _schemeName.substr(11);
         const int passId            = std::stoi(passIdStr);
+        if( m_renderTargets != nullptr && passId >= m_renderTargets->size())
+        {
+            // We reach this branch when switching between two stereo modes
+            // because the new compositor is instantiated but the volume adaptor is not yet restarted
+            return nullptr;
+        }
 
         ::Ogre::Technique* defaultTech = _originalMaterial->getTechnique(0);
         newTech                        = this->copyTechnique(defaultTech, _schemeName, _originalMaterial);
 
-        const auto pass             = newTech->getPass(0);
+        const auto pass = newTech->getPass(0);
         {
             const auto vpBaseName       = pass->getVertexProgramName();
             const auto vpSourceFileName = pass->getVertexProgram()->getSourceFile();
@@ -102,10 +141,11 @@ AutoStereoCompositorListener::AutoStereoCompositorListener(std::vector<Ogre::Tex
 
                 OSLM_ASSERT("No texture named " << passId, texUnitState);
                 texUnitState->setTextureName((*m_renderTargets)[static_cast<size_t>(passId)]->getName());
+                m_createdTechniques.push_back(newTech);
             }
         }
 
-        const auto fpBaseName       = pass->getFragmentProgramName();
+        const auto fpBaseName = pass->getFragmentProgramName();
         if(fpBaseName == "RayTracedVolume_FP")
         {
             const auto fpSourceFileName = pass->getFragmentProgram()->getSourceFile();
@@ -135,7 +175,8 @@ AutoStereoCompositorListener::AutoStereoCompositorListener(std::vector<Ogre::Tex
             }
 
             fpParams->addSharedParameters(projParamName);
-            fpParams->setNamedAutoConstant("u_invWorldView",::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEW_MATRIX);
+            fpParams->setNamedAutoConstant("u_invWorldView",
+                                           ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEW_MATRIX);
         }
     }
 

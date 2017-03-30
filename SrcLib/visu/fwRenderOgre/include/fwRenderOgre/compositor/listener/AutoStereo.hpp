@@ -28,6 +28,9 @@ public:
     /// Constructor for volume rendering
     AutoStereoCompositorListener(std::vector< ::Ogre::TexturePtr>* renderTargets);
 
+    /// Destructor
+    ~AutoStereoCompositorListener();
+
     /// Callback called each time a scheme is not found
     virtual ::Ogre::Technique* handleSchemeNotFound(unsigned short _schemeIndex, const ::Ogre::String& _schemeName,
                                                     ::Ogre::Material* _originalMaterial, unsigned short _lodIndex,
@@ -37,7 +40,11 @@ private:
     Ogre::Technique* copyTechnique(::Ogre::Technique* _tech, const::Ogre::String& _schemeName,
                                    ::Ogre::Material* _originalMaterial);
 
+    /// render targets used for computing the entry points in VR
     std::vector< ::Ogre::TexturePtr>* m_renderTargets;
+
+    /// list of techniques to be removed from the material when destroying the listener
+    std::vector< ::Ogre::Technique*> m_createdTechniques;
 };
 
 } // namespace listener

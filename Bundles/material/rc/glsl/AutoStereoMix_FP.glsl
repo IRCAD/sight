@@ -40,26 +40,23 @@ void main()
     vec3        color;
 
     {
+#if VIEWPOINTS == 5
+        colors[0] = texture(u_srcTextures0, vec2(uv.x + u_collimation * 2./u_vpWidth, uv.y) );
+        colors[1] = texture(u_srcTextures1, vec2(uv.x + u_collimation * 1./u_vpWidth, uv.y) );
+        colors[2] = texture(u_srcTextures2, vec2(uv.x + u_collimation * 0./u_vpWidth, uv.y) );
+        colors[3] = texture(u_srcTextures3, vec2(uv.x + u_collimation * -1./u_vpWidth, uv.y) );
+        colors[4] = texture(u_srcTextures4, vec2(uv.x + u_collimation * -2./u_vpWidth, uv.y) );
+#endif
+#if VIEWPOINTS == 8
         colors[0] = texture(u_srcTextures0, vec2(uv.x + u_collimation * 3.5/u_vpWidth, uv.y) );
         colors[1] = texture(u_srcTextures1, vec2(uv.x + u_collimation * 2.5/u_vpWidth, uv.y) );
-#if (VIEWPOINTS > 2)
         colors[2] = texture(u_srcTextures2, vec2(uv.x + u_collimation * 1.5/u_vpWidth, uv.y) );
-#endif    /*(VIEWPOINTS > 2)    */
-#if (VIEWPOINTS > 3)
         colors[3] = texture(u_srcTextures3, vec2(uv.x + u_collimation * 0.5/u_vpWidth, uv.y) );
-#endif    /*(VIEWPOINTS > 3)    */
-#if (VIEWPOINTS > 4)
         colors[4] = texture(u_srcTextures4, vec2(uv.x + u_collimation * -0.5/u_vpWidth, uv.y) );
-#endif    /*(VIEWPOINTS > 4)    */
-#if (VIEWPOINTS > 5)
         colors[5] = texture(u_srcTextures5, vec2(uv.x + u_collimation * -1.5/u_vpWidth, uv.y) );
-#endif    /*(VIEWPOINTS > 5)    */
-#if (VIEWPOINTS > 6)
         colors[6] = texture(u_srcTextures6, vec2(uv.x + u_collimation * -2.5/u_vpWidth, uv.y) );
-#endif    /*(VIEWPOINTS > 6)    */
-#if (VIEWPOINTS > 7)
         colors[7] = texture(u_srcTextures7, vec2(uv.x + u_collimation * -3.5/u_vpWidth, uv.y) );
-#endif    /*(VIEWPOINTS > 7)    */
+#endif // VIEWPOINTS == 8
 
         /*    While there are only n viewpoints, colors[] array size
          *    is (n + 2): we copy colors[0] (colors[1]) into
