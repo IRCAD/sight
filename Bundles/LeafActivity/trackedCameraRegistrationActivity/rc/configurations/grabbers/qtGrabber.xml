@@ -1,0 +1,68 @@
+<extension implements="::fwServices::registry::AppConfig2">
+    <id>vlcGrabber</id>
+    <parameters>
+
+        <param name="frameGrabber" />
+        <param name="frameTL" />
+        <param name="camera" />
+        <param name="cameraSeries" />
+
+    </parameters>
+    <config>
+
+        <!-- *************************** Begin objects declaration **************************** -->
+
+        <object uid="${cameraSeries}" type="::arData::CameraSeries" src="ref" />
+        <object uid="${camera}" type="::arData::Camera" src="ref" />
+        <object uid="${frameTL}" type="::arData::FrameTL" src="ref" />
+
+        <object uid="cameraDeferred" type="::arData::Camera" src="deferred" />
+        <!-- *************************** End objects declaration ****************************** -->
+
+        <!-- *************************** Begin layouts declaration **************************** -->
+        <!-- *************************** End layouts declaration ****************************** -->
+
+        <!-- *************************** Begin services declaration ***************** -->
+
+        <service uid="${frameGrabber}" type="::videoQt::SFrameGrabber" >
+            <in key="camera" uid="cameraDeferred" />
+            <inout key="frameTL" uid="${frameTL}" />
+        </service>
+        
+        <service uid="extractCamera" type="::ctrlCamp::SExtractObj">
+            <inout key="source" uid="${cameraSeries}" >
+                <extract from="@cameras.0" />
+            </inout>
+           <out group="target">
+               <key uid="cameraDeferred"/>
+           </out>
+        </service>
+
+       <service uid="copyCamera" type="::ctrlCamp::SCopy" >
+           <in key="source" uid="cameraDeferred" />
+           <inout key="target" uid="${camera}" />
+       </service>
+
+        <!-- *************************** End services declaration ***************************** -->
+
+        <!-- *************************** Begin proxies declaration **************************** -->
+
+        <!-- *************************** End proxies declaration ****************************** -->
+
+        <!-- *************************** Begin connect declaration **************************** -->
+
+        <!-- *************************** End connect declaration ****************************** -->
+
+        <!-- *************************** Begin Start ****************************************** -->
+        
+        <!-- *************************** End Start ******************************************** -->
+
+        <start uid="extractCamera"/>
+        <start uid="${frameGrabber}"/>
+        <start uid="copyCamera"/>
+
+        <update uid="extractCamera"/>
+        <update uid="copyCamera"/>
+        
+    </config>
+</extension>

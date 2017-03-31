@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,6 +40,8 @@ class CameraCallback : public ::vtkCommand
 {
 public:
 
+    //------------------------------------------------------------------------------
+
     static CameraCallback* New(::visuVTKARAdaptor::SCamera* adaptor)
     {
         CameraCallback* cb = new CameraCallback;
@@ -54,6 +56,8 @@ public:
     ~CameraCallback()
     {
     }
+
+    //------------------------------------------------------------------------------
 
     virtual void Execute(::vtkObject* pCaller, unsigned long eventId, void*)
     {
@@ -123,6 +127,8 @@ void SCamera::doStart() throw(fwTools::Failed)
         m_camera = this->getSafeInput< ::arData::Camera>(m_cameraUID);
         SLM_ASSERT("Missing camera", m_camera);
 
+        m_connections.connect(m_camera, ::arData::Camera::s_MODIFIED_SIG,
+                              this->getSptr(), s_CALIBRATE_SLOT);
         m_connections.connect(m_camera, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG,
                               this->getSptr(), s_CALIBRATE_SLOT);
 
@@ -192,7 +198,6 @@ void SCamera::updateFromVtk()
 
     trans->Delete();
 }
-
 
 //-----------------------------------------------------------------------------
 

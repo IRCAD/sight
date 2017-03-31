@@ -7,6 +7,7 @@
         <param name="rgbCameraSeries" />
         <param name="senseCameraSeries" />
         <param name="markerMesh" />
+        <param name="mode" />
     </parameters>
     <config>
 
@@ -17,10 +18,9 @@
 
         <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
 
-        <object uid="rgbCamera" type="::arData::Camera" src="deferred" />
-        <object uid="senseCamera" type="::arData::Camera" src="deferred" />
+        <object uid="rgbCamera" type="::arData::Camera" src="deferred" /> 
+        <object uid="senseCamera" type="::arData::Camera" />
 
-        <object uid="senseFrameTLDepth" type="::arData::FrameTL" />
         <object uid="senseFrameTLColor" type="::arData::FrameTL" />
         <object uid="rgbFrameTLColor" type="::arData::FrameTL" />
 
@@ -127,13 +127,13 @@
             <parameter replace="WID_PARENT" uid="rgbVideoView" />
 
             <inout key="camera" uid="rgbCamera" />
-            <parameter replace="frameTL" uid="rgbFrameTLColor" />
-            <parameter replace="imageVideo" uid="rgbImageVideo" />
-            <parameter replace="markerMesh" uid="${markerMesh}" />
-
-            <parameter replace="matrixTL" uid="rgbMatrixTL" />
-            <parameter replace="tagMatrix1" uid="currentTag1Matrix" />
-            <parameter replace="tagMatrix2" uid="rgbTag2Matrix" />
+            <inout key="frameTL" uid="rgbFrameTLColor" />
+            <inout key="imageVideo" uid="rgbImageVideo" />
+            <inout key="markerMesh" uid="${markerMesh}" />
+            
+            <inout key="matrixTL" uid="rgbMatrixTL" />
+            <inout key="tagMatrix1" uid="currentTag1Matrix" />
+            <inout key="tagMatrix2" uid="rgbTag2Matrix" />
             <parameter replace="tagsToDetect" by="101,128" />
         </service>
 
@@ -142,14 +142,32 @@
             <parameter replace="WID_PARENT" uid="senseVideoView" />
 
             <inout key="camera" uid="senseCamera" />
-            <parameter replace="frameTL" uid="senseFrameTLColor" />
-            <parameter replace="imageVideo" uid="senseImageVideo" />
-            <parameter replace="markerMesh" uid="${markerMesh}" />
-
-            <parameter replace="matrixTL" uid="senseMatrixTL" />
-            <parameter replace="tagMatrix1" uid="senseTag1Matrix" />
-            <parameter replace="tagMatrix2" uid="senseTag2Matrix" />
+            <inout key="frameTL" uid="senseFrameTLColor" />
+            <inout key="imageVideo" uid="senseImageVideo" />
+            <inout key="markerMesh" uid="${markerMesh}" />
+            
+            <inout key="matrixTL" uid="senseMatrixTL" />
+            <inout key="tagMatrix1" uid="senseTag1Matrix" />
+            <inout key="tagMatrix2" uid="senseTag2Matrix" />
             <parameter replace="tagsToDetect" by="101" />
+        </service>
+
+        <service uid="loadGrabberOpenni" type="::fwServices::SConfigController">
+            <appConfig id="openniGrabber" />
+
+            <inout key="cameraSeries" uid="${senseCameraSeries}" />
+            <inout key="camera" uid="senseCamera" />
+            <inout key="frameTL" uid="senseFrameTLColor" />
+            <parameter replace="frameGrabber" uid="senseFrameGrabber" />
+        </service>
+
+        <service uid="loadGrabberQt" type="::fwServices::SConfigController">
+            <appConfig id="vlcGrabber" />
+
+            <inout key="cameraSeries" uid="${senseCameraSeries}" />
+            <inout key="camera" uid="senseCamera" />
+            <inout key="frameTL" uid="senseFrameTLColor" />
+            <parameter replace="frameGrabber" uid="senseFrameGrabber" />
         </service>
 
         <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
@@ -179,19 +197,6 @@
             <in key="camera" uid="rgbCamera" />
             <inout key="frameTL" uid="rgbFrameTLColor" />
         </service>
-
-        <!-- <service uid="senseFrameGrabber" type="::videoVLC::SFrameGrabber" > -->
-            <!-- <in key="camera" uid="senseCamera" /> -->
-            <!-- <inout key="frameTL" uid="senseFrameTLColor" /> -->
-        <!-- </service> -->
-
-        <!-- Manages Sense camera configuration -->
-        <service uid="senseFrameGrabber" type="::videoOpenni::SScan" worker="scanWorker">
-            <inout key="frameTLDepth" uid="senseFrameTLDepth" />
-            <inout key="frameTLColors" uid="senseFrameTLColor" />
-            <inout key="cameraSeries" uid="${senseCameraSeries}" />
-        </service>
-
         <service uid="startVideo" type="::gui::action::SSlotCaller" >
             <slots>
                 <slot>rgbFrameGrabber/startCamera</slot>
@@ -240,16 +245,6 @@
            </out>
         </service>
 
-        <service uid="extractSenseCamera" type="::ctrlCamp::SExtractObj">
-            <inout key="source" uid="${senseCameraSeries}" >
-            <!-- Extract camera 0 for rgb tests, extract camera 1 when using sense  -->
-                <extract from="@cameras.1" />
-            </inout>
-           <out group="target">
-               <key uid="senseCamera"/>
-           </out>
-        </service>
-
         <service uid="concatenateRegistrationMatrix" type="::maths::SConcatenateMatrices" >
             <in group="matrix">
                 <key uid="rgbTag2Matrix" inverse="true" />
@@ -284,11 +279,6 @@
 
         <!-- *************************** Begin connect declaration **************************** -->
 
-        <connect>
-            <signal>senseFrameGrabber/cameraStarted</signal>
-            <slot>extractSenseCamera/update</slot>
-        </connect>
-
         <!-- *************************** End connect declaration ****************************** -->
 
         <!-- *************************** Begin Start ****************************************** -->
@@ -299,20 +289,17 @@
         <start uid="switchMatrices" />
         <start uid="matrixWriter" />
         <start uid="extractRgbCamera" />
-        <start uid="extractSenseCamera" />
         <start uid="synchronizer" />
-        <start uid="rgbFrameGrabber" />
-        <start uid="senseFrameGrabber" />
-
         <start uid="loadRgbCameraView" />
         <start uid="loadSenseCameraView" />
-
+        <start uid="loadGrabber${mode}" />
+        <start uid="rgbFrameGrabber" />
+        
         <!-- *************************** End Start ****************************************** -->
 
         <!-- *************************** Begin Update ****************************************** -->
 
         <update uid="extractRgbCamera" />
-        <update uid="extractSenseCamera" />
 
         <!-- *************************** End Update ****************************************** -->
 

@@ -115,6 +115,7 @@
                 <id>toolsCalibration</id>
                 <id>calibrationEdition</id>
                 <id>TrackedCameraRegistration</id>
+                <id>TrackedSenseCameraRegistration</id>
             </filter>
         </service>
 
