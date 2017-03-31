@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,7 +15,6 @@
 #include <fwDataTools/helper/Image.hpp>
 
 #include <fwServices/macros.hpp>
-
 
 namespace ctrlSelection
 {
@@ -52,15 +51,19 @@ void MedicalImageSrv::convertImage()
     }
     if(::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(pImg))
     {
-        ::fwDataTools::helper::Image helper ( pImg );
+        ::fwDataTools::helper::Image helper( pImg );
 
-        helper.createLandmarks();
-        helper.createTransferFunctionPool();
-        helper.createImageSliceIndex();
+        bool isModified = false;
+        isModified |= helper.createLandmarks();
+        isModified |= helper.createTransferFunctionPool();
+        isModified |= helper.createImageSliceIndex();
 
-        auto sig = pImg->signal< ::fwData::Object::ModifiedSignalType >( ::fwData::Object::s_MODIFIED_SIG );
-        ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-        helper.notify();
+        if (isModified)
+        {
+            auto sig = pImg->signal< ::fwData::Object::ModifiedSignalType >( ::fwData::Object::s_MODIFIED_SIG );
+            ::fwCom::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            helper.notify();
+        }
     }
 }
 
