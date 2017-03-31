@@ -279,6 +279,11 @@
 
         <!-- *************************** Begin connect declaration **************************** -->
 
+        <connect>
+            <signal>synchronizer/allMatricesFound</signal>
+            <slot>actionConcatenateRegistrationMatrix/setIsExecutable</slot>
+        </connect>
+
         <!-- *************************** End connect declaration ****************************** -->
 
         <!-- *************************** Begin Start ****************************************** -->
@@ -294,7 +299,7 @@
         <start uid="loadSenseCameraView" />
         <start uid="loadGrabber${mode}" />
         <start uid="rgbFrameGrabber" />
-        
+
         <!-- *************************** End Start ****************************************** -->
 
         <!-- *************************** Begin Update ****************************************** -->
