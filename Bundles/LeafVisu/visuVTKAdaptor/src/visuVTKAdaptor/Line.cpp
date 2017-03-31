@@ -10,11 +10,14 @@
 
 #include <fwServices/macros.hpp>
 
+#include <boost/lexical_cast.hpp>
+
 #include <vtkActor.h>
 #include <vtkFloatArray.h>
 #include <vtkImageData.h>
 #include <vtkPointData.h>
 #include <vtkProperty.h>
+#include <vtkRenderer.h>
 #include <vtkTexture.h>
 #include <vtkTransform.h>
 
@@ -31,10 +34,10 @@ const ::fwCom::Slots::SlotKeyType Line::s_UPDATE_LENGTH_SLOT     = "updateLength
 
 Line::Line() throw() :
     m_lineActor(vtkSmartPointer<vtkActor>::New()),
-    m_mapper(vtkSmartPointer<vtkPolyDataMapper>::New()),
     m_vtkLine(vtkSmartPointer<vtkLineSource>::New()),
-    m_length(1.),
-    m_width(1.),
+    m_mapper(vtkSmartPointer<vtkPolyDataMapper>::New()),
+    m_length(1.f),
+    m_width(1.f),
     m_transformLine(vtkSmartPointer<vtkTransform>::New()),
     m_dotLine(false)
 {
@@ -84,11 +87,11 @@ void Line::doConfigure() throw(fwTools::Failed)
     SLM_ASSERT( "Wrong config name specified.", m_configuration->getName() == "config" );
     if ( m_configuration->hasAttribute( "length" ) )
     {
-        m_length = boost::lexical_cast<double>( m_configuration->getAttributeValue( "length" ) );
+        m_length = boost::lexical_cast<float>( m_configuration->getAttributeValue( "length" ) );
     }
     if ( m_configuration->hasAttribute( "width" ) )
     {
-        m_width = boost::lexical_cast<double>( m_configuration->getAttributeValue( "width" ) );
+        m_width = boost::lexical_cast<float>( m_configuration->getAttributeValue( "width" ) );
     }
     if ( m_configuration->hasAttribute( "color" ) )
     {
@@ -133,9 +136,10 @@ void Line::updateLine()
     textureCoordinates->SetNumberOfComponents(2);
     textureCoordinates->SetName("TextureCoordinates");
 
-    float tuple[2] = {0.0, 0.0};
+    float tuple[2] = {0.0f, 0.0f};
     textureCoordinates->InsertNextTuple(tuple);
-    tuple[0] = m_length/8.0; tuple[1] = 0.0;
+    tuple[0] = m_length / 8.0f;
+    tuple[1] = 0.0f;
     textureCoordinates->InsertNextTuple(tuple);
 
     line->GetPointData()->SetTCoords(textureCoordinates);
@@ -159,9 +163,10 @@ void Line::buildPipeline()
     textureCoordinates->SetNumberOfComponents(2);
     textureCoordinates->SetName("TextureCoordinates");
 
-    float tuple[2] = {0.0, 0.0};
+    float tuple[2] = {0.0f, 0.0f};
     textureCoordinates->InsertNextTuple(tuple);
-    tuple[0] = m_length/8.0; tuple[1] = 0.0;
+    tuple[0] = m_length / 8.0f;
+    tuple[1] = 0.0f;
     textureCoordinates->InsertNextTuple(tuple);
 
     line->GetPointData()->SetTCoords(textureCoordinates);
@@ -182,10 +187,10 @@ void Line::buildPipeline()
         // fill the image
         unsigned char* iptr = (unsigned char*) stippleImage->GetScalarPointer( 0, 0, 0 );
 
-        std::memset(iptr, 0, 8*sizeof(unsigned char));
-        iptr[0] = m_color->red()*255;
-        iptr[1] = m_color->green()*255;
-        iptr[2] = m_color->blue()*255;
+        std::memset(iptr, 0, 8 * sizeof(unsigned char));
+        iptr[0] = static_cast<unsigned char>(m_color->red() * 255.0f);
+        iptr[1] = static_cast<unsigned char>(m_color->green() * 255.0f);
+        iptr[2] = static_cast<unsigned char>(m_color->blue() * 255.0f);
         iptr[3] = 255;
 
         // create a texture from the image

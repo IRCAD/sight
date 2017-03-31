@@ -17,6 +17,7 @@
 
 #include <vtkActor.h>
 #include <vtkLineSource.h>
+#include <vtkPolyDataMapper.h>
 #include <vtkSmartPointer.h>
 
 namespace visuVTKAdaptor
@@ -27,7 +28,7 @@ namespace visuVTKAdaptor
  *
  * @code{.xml}
       <adaptor id="..." class="::visuVTKAdaptor::Line" objectId="self">
-       <config renderer="default" length="..." width="..." transform="..." color="..." lineOptions="dot"/>
+       <config renderer="default" length="..." width="..." transform="..." color="..." dotted="dot"/>
       </adaptor>
      @endcode
  * - \b renderer : defines the renderer to show the line.
@@ -72,15 +73,15 @@ protected:
     VISUVTKADAPTOR_API void doConfigure() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
 
-    void Line::buildPipeline();
-    void Line::updateLine();
+    void buildPipeline();
+    void updateLine();
 
-    vtkSmartPointer<vtkLineSource> m_vtkLine;
     vtkSmartPointer<vtkActor> m_lineActor;
+    vtkSmartPointer<vtkLineSource> m_vtkLine;
     vtkSmartPointer<vtkPolyDataMapper> m_mapper;
 
     float m_length; /// length of the line
-    double m_width; /// width of the line
+    float m_width; /// width of the line
     vtkSmartPointer< vtkTransform> m_transformLine; /// transformation applied to the line
     ::fwData::Color::sptr m_color; /// color of the line
     bool m_dotLine;
