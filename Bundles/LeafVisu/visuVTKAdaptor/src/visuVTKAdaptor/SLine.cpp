@@ -1,10 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Line.hpp"
+#include "visuVTKAdaptor/SLine.hpp"
 
 #include <fwCom/Slots.hxx>
 
@@ -21,18 +21,18 @@
 #include <vtkTexture.h>
 #include <vtkTransform.h>
 
-fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Line, ::fwData::Object );
+fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SLine, ::fwData::Object );
 
 namespace visuVTKAdaptor
 {
 //------------------------------------------------------------------------------
 
-const ::fwCom::Slots::SlotKeyType Line::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
-const ::fwCom::Slots::SlotKeyType Line::s_UPDATE_LENGTH_SLOT     = "updateLength";
+const ::fwCom::Slots::SlotKeyType SLine::s_UPDATE_VISIBILITY_SLOT = "updateVisibility";
+const ::fwCom::Slots::SlotKeyType SLine::s_UPDATE_LENGTH_SLOT     = "updateLength";
 
 //------------------------------------------------------------------------------
 
-Line::Line() throw() :
+SLine::SLine() throw() :
     m_lineActor(vtkSmartPointer<vtkActor>::New()),
     m_vtkLine(vtkSmartPointer<vtkLineSource>::New()),
     m_mapper(vtkSmartPointer<vtkPolyDataMapper>::New()),
@@ -41,20 +41,20 @@ Line::Line() throw() :
     m_transformLine(vtkSmartPointer<vtkTransform>::New()),
     m_dotLine(false)
 {
-    newSlot(s_UPDATE_VISIBILITY_SLOT, &Line::updateVisibility, this);
-    newSlot(s_UPDATE_LENGTH_SLOT, &Line::updateLength, this);
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &SLine::updateVisibility, this);
+    newSlot(s_UPDATE_LENGTH_SLOT, &SLine::updateLength, this);
 }
 
 //------------------------------------------------------------------------------
 
-Line::~Line() throw()
+SLine::~SLine() throw()
 {
     m_lineActor = 0;
 }
 
 //------------------------------------------------------------------------------
 
-void Line::doStart() throw(fwTools::Failed)
+void SLine::doStart() throw(fwTools::Failed)
 {
     this->buildPipeline();
     this->addToRenderer( m_lineActor );
@@ -62,7 +62,7 @@ void Line::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Line::doStop() throw(fwTools::Failed)
+void SLine::doStop() throw(fwTools::Failed)
 {
     this->removeAllPropFromRenderer();
     this->getRenderer()->RemoveActor(m_lineActor);
@@ -70,28 +70,28 @@ void Line::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Line::doSwap() throw(fwTools::Failed)
+void SLine::doSwap() throw(fwTools::Failed)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Line::doUpdate() throw(fwTools::Failed)
+void SLine::doUpdate() throw(fwTools::Failed)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Line::doConfigure() throw(fwTools::Failed)
+void SLine::doConfigure() throw(fwTools::Failed)
 {
     SLM_ASSERT( "Wrong config name specified.", m_configuration->getName() == "config" );
     if ( m_configuration->hasAttribute( "length" ) )
     {
-        m_length = boost::lexical_cast<float>( m_configuration->getAttributeValue( "length" ) );
+        m_length = ::boost::lexical_cast<float>( m_configuration->getAttributeValue( "length" ) );
     }
     if ( m_configuration->hasAttribute( "width" ) )
     {
-        m_width = boost::lexical_cast<float>( m_configuration->getAttributeValue( "width" ) );
+        m_width = ::boost::lexical_cast<float>( m_configuration->getAttributeValue( "width" ) );
     }
     if ( m_configuration->hasAttribute( "color" ) )
     {
@@ -116,7 +116,7 @@ void Line::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Line::updateVisibility(bool _isVisible)
+void SLine::updateVisibility(bool _isVisible)
 {
     m_lineActor->SetVisibility(_isVisible);
 
@@ -125,7 +125,7 @@ void Line::updateVisibility(bool _isVisible)
 }
 
 //------------------------------------------------------------------------------
-void Line::updateLine()
+void SLine::updateLine()
 {
     m_vtkLine->SetPoint2(0.0, 0.0, m_length);
     m_vtkLine->Update();
@@ -148,7 +148,7 @@ void Line::updateLine()
 }
 
 //------------------------------------------------------------------------------
-void Line::buildPipeline()
+void SLine::buildPipeline()
 {
     vtkTransform* transform = m_renderService.lock()->getOrAddVtkTransform(m_transformId);
 
@@ -209,7 +209,7 @@ void Line::buildPipeline()
     this->setVtkPipelineModified();
 }
 //------------------------------------------------------------------------------
-void Line::updateLength(float length)
+void SLine::updateLength(float length)
 {
     m_length = length;
     this->updateLine();

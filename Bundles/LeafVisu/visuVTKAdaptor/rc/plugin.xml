@@ -315,7 +315,7 @@
 
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::fwRenderVTK::IVtkAdaptorService</type>
-        <service>::visuVTKAdaptor::Line</service>
+        <service>::visuVTKAdaptor::SLine</service>
         <object>::fwData::Object</object>
     </extension>
 </plugin>
