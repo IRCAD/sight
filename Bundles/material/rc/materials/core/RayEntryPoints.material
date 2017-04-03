@@ -12,12 +12,26 @@ vertex_program RayEntryPoints_VP glsl
 
 //----------------------------------------------
 
-fragment_program RayEntryPoints_FP glsl
+fragment_program RayEntryPoints_FrontFaces_FP glsl
 {
     source RayEntryPoints_FP.glsl
-
+    preprocessor_defines FRONT_FACES=1
     default_params
     {
+    }
+}
+
+//----------------------------------------------
+
+fragment_program RayEntryPoints_BackFaces_FP glsl
+{
+    source RayEntryPoints_FP.glsl
+    preprocessor_defines BACK_FACES=1
+    default_params
+    {
+        param_named u_frontFaces int 0
+        param_named_auto u_vpWidth viewport_width
+        param_named_auto u_vpHeight viewport_height
     }
 }
 
@@ -27,21 +41,44 @@ material RayEntryPoints
 {
     technique
     {
-        pass
-        {            
-            scene_blend src_colour dest_colour
-            scene_blend_op min
+        pass FrontFaces
+        {
+            scene_blend one zero
+            scene_blend_op add
             depth_check off
             depth_write off
-            cull_hardware none
+            cull_hardware anticlockwise
             cull_software none
 
             vertex_program_ref RayEntryPoints_VP
             {
             }
 
-            fragment_program_ref RayEntryPoints_FP
+            fragment_program_ref RayEntryPoints_FrontFaces_FP
             {
+            }
+        }
+
+        pass BackFaces
+        {
+            scene_blend one zero
+            depth_check off
+            depth_write off
+            cull_hardware clockwise
+            cull_software none
+
+            vertex_program_ref RayEntryPoints_VP
+            {
+            }
+
+            fragment_program_ref RayEntryPoints_BackFaces_FP
+            {
+            }
+
+            texture_unit frontFaces
+            {
+                tex_address_mode clamp
+                filtering bilinear
             }
         }
     }

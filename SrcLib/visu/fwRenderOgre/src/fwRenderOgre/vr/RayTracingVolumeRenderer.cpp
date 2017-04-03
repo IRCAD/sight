@@ -325,14 +325,25 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_cameraListener(nullptr),
     m_layer(layer)
 {
-    m_gridSize   = {{ 2, 2, 2 }};
-    m_bricksSize = {{ 8, 8, 8 }};
+    m_gridSize  = {{ 2, 2, 2 }};
+    m_brickSize = {{ 8, 8, 8 }};
 
     const unsigned nbViewpoints = m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ? 8 :
                                   m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 ? 5 : 1;
 
     for(unsigned i = 0; i < nbViewpoints; ++i)
     {
+        m_frontFacesTextures.push_back(::Ogre::TextureManager::getSingleton().createManual(
+                                           m_parentId + "_frontFacesTexture" + std::to_string(i),
+                                           ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                                           ::Ogre::TEX_TYPE_2D,
+                                           static_cast<unsigned int>(m_camera->getViewport()->getActualWidth()),
+                                           static_cast<unsigned int>(m_camera->getViewport()->getActualHeight()),
+                                           1,
+                                           0,
+                                           ::Ogre::PF_FLOAT16_RGB,
+                                           ::Ogre::TU_RENDERTARGET ));
+
         m_entryPointsTextures.push_back(::Ogre::TextureManager::getSingleton().createManual(
                                             m_parentId + "_entryPointsTexture" + std::to_string(i),
                                             ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -341,13 +352,13 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                             static_cast<unsigned int>(m_camera->getViewport()->getActualHeight()),
                                             1,
                                             0,
-                                            ::Ogre::PF_FLOAT32_RGB,
+                                            ::Ogre::PF_FLOAT16_RGBA,
                                             ::Ogre::TU_RENDERTARGET ));
-    }
 
-    for(::Ogre::TexturePtr entryPtsText : m_entryPointsTextures)
-    {
-        ::Ogre::RenderTexture* renderTexture = entryPtsText->getBuffer()->getRenderTarget();
+        ::Ogre::RenderTexture* renderTexture = m_frontFacesTextures.front()->getBuffer()->getRenderTarget();
+        renderTexture->addViewport(m_camera);
+
+        renderTexture = m_entryPointsTextures.front()->getBuffer()->getRenderTarget();
         renderTexture->addViewport(m_camera);
     }
 
@@ -408,6 +419,11 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
     m_volumeSceneNode->detachObject(m_proxyGeometryGenerator);
     m_sceneManager->destroyManualObject(m_entryPointGeometry);
     m_sceneManager->destroyMovableObject(m_proxyGeometryGenerator);
+
+    for(auto& texture : m_frontFacesTextures)
+    {
+        ::Ogre::TextureManager::getSingleton().remove(texture->getHandle());
+    }
 
     for(auto& texture : m_entryPointsTextures)
     {
@@ -587,6 +603,13 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     /* mono mode */
     if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE)
     {
+        texUnitState = pass->createTextureUnitState(m_frontFacesTextures[0]->getName());
+        texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
+        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+
+        textureUnits["u_frontFaces"] = numTexUnit;
+        pass->getFragmentProgramParameters()->setNamedConstant("u_frontFaces", numTexUnit++);
+
         texUnitState = pass->createTextureUnitState(m_entryPointsTextures[0]->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
@@ -690,8 +713,8 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
         for(size_t i = 0; i < 3; ++i)
         {
             m_gridSize[i] =
-                static_cast<int>(m_imageSize[i]) / m_bricksSize[i] +
-                (static_cast<int>(m_imageSize[i]) % m_bricksSize[i] != 0);
+                static_cast<int>(m_imageSize[i]) / m_brickSize[i] +
+                (static_cast<int>(m_imageSize[i]) % m_brickSize[i] != 0);
         }
 
         if(!m_gridTexture.isNull())
@@ -936,6 +959,19 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
 
 void RayTracingVolumeRenderer::resizeViewport(int w, int h)
 {
+    for(::Ogre::TexturePtr frontFacesTexture : m_frontFacesTextures)
+    {
+        frontFacesTexture->freeInternalResources();
+
+        frontFacesTexture->setWidth(static_cast< ::Ogre::uint32>(w));
+        frontFacesTexture->setHeight(static_cast< ::Ogre::uint32>(h));
+
+        frontFacesTexture->createInternalResources();
+
+        ::Ogre::RenderTexture* renderTexture = frontFacesTexture->getBuffer()->getRenderTarget();
+        renderTexture->addViewport(m_camera);
+    }
+
     for(::Ogre::TexturePtr entryPtsTexture : m_entryPointsTextures)
     {
         entryPtsTexture->freeInternalResources();
@@ -1067,13 +1103,13 @@ void RayTracingVolumeRenderer::initEntryPoints()
         ::Ogre::Pass* gridPass = gridMtl->getTechnique(0)->getPass(0);
 
         ::Ogre::TextureUnitState* tex3DState = gridPass->getTextureUnitState("image");
-        ::Ogre::TextureUnitState* texTFState = gridPass->getTextureUnitState("transferFunction");
+//        ::Ogre::TextureUnitState* texTFState = gridPass->getTextureUnitState("transferFunction");
 
         SLM_ASSERT("'image' texture unit is not found", tex3DState);
-        SLM_ASSERT("'transferFunction' texture unit is not found", texTFState);
+//        SLM_ASSERT("'transferFunction' texture unit is not found", texTFState);
 
         tex3DState->setTexture(m_3DOgreTexture);
-        texTFState->setTexture(m_gpuTF.getTexture());
+//        texTFState->setTexture(m_gpuTF.getTexture());
 
         this->createGridTexture();
     }
@@ -1087,8 +1123,6 @@ void RayTracingVolumeRenderer::initEntryPoints()
 void RayTracingVolumeRenderer::computeEntryPointsTexture()
 {
     m_proxyGeometryGenerator->setVisible(false);
-
-    ::Ogre::Pass* pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass(0);
 
     ::Ogre::RenderOperation renderOp;
     m_proxyGeometryGenerator->getRenderOperation(renderOp);
@@ -1112,31 +1146,43 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 
     m_viewPointMatrices.clear();
 
-    for(::Ogre::TexturePtr entryPtsText : m_entryPointsTextures)
+    ::Ogre::Pass* pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass("FrontFaces");
+
+    size_t i(0);
+
+    for(::Ogre::TexturePtr frontFacesText : m_frontFacesTextures)
     {
         ::Ogre::Matrix4 projMat = m_camera->getProjectionMatrix();
 
-        ::Ogre::RenderTexture* renderTexture = entryPtsText->getBuffer()->getRenderTarget();
-        renderTexture->getViewport(0)->clear(::Ogre::FBT_COLOUR | ::Ogre::FBT_DEPTH, ::Ogre::ColourValue::White);
-
-        if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE)
-        {
-            ::Ogre::Matrix4 worldViewProj = projMat * m_camera->getViewMatrix() * worldMat;
-            m_viewPointMatrices.push_back(worldViewProj.inverse());
-        }
-        else
+        // Move to the next view point if we're in 3D mode
+        if(m_mode3D != ::fwRenderOgre::Layer::StereoModeType::NONE)
         {
             const ::Ogre::Matrix4 shearTransform = frustumShearTransform(angle);
 
             angle  += eyeAngle;
             projMat = projMat * shearTransform;
-
-            ::Ogre::Matrix4 worldViewProj = projMat * m_camera->getViewMatrix() * worldMat;
-            m_viewPointMatrices.push_back(worldViewProj.inverse());
         }
 
-        m_sceneManager->manualRender(&renderOp, pass, renderTexture->getViewport(0), worldMat,
-                                     m_camera->getViewMatrix(), projMat);
+        ::Ogre::Matrix4 worldViewProj = projMat * m_camera->getViewMatrix() * worldMat;
+        m_viewPointMatrices.push_back(worldViewProj.inverse());
+
+        ::Ogre::Viewport* entryPtsVp = frontFacesText->getBuffer()->getRenderTarget()->getViewport(0);
+        entryPtsVp->clear(::Ogre::FBT_COLOUR | ::Ogre::FBT_DEPTH, ::Ogre::ColourValue::Black);
+
+        // 1st step: front faces
+        m_sceneManager->manualRender(&renderOp, pass, entryPtsVp, worldMat, m_camera->getViewMatrix(), projMat);
+
+        pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass("BackFaces");
+
+        ::Ogre::TextureUnitState* frontFacesTus = pass->getTextureUnitState("frontFaces");
+        SLM_ASSERT("'frontFaces' texture unit is not found", frontFacesTus);
+
+        frontFacesTus->setTexture(frontFacesText);
+
+        // 2nd step: back faces - front faces to have directions
+        entryPtsVp = m_entryPointsTextures[i++]->getBuffer()->getRenderTarget()->getViewport(0);
+        entryPtsVp->clear(::Ogre::FBT_COLOUR | ::Ogre::FBT_DEPTH, ::Ogre::ColourValue::Black);
+        m_sceneManager->manualRender(&renderOp, pass, entryPtsVp, worldMat, m_camera->getViewMatrix(), projMat);
     }
 }
 
@@ -1305,7 +1351,7 @@ void RayTracingVolumeRenderer::buildCompositorChain()
 
         m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
                                                                                            m_maskTexture,
-                                                                                           m_entryPointsTextures[0],
+                                                                                           m_frontFacesTextures[0],
                                                                                            m_sampleDistance));
 
         compositorInstance->addListener(m_compositorListeners.back());
@@ -1386,7 +1432,7 @@ void RayTracingVolumeRenderer::buildCompositorChain()
 
         m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
                                                                                            m_maskTexture,
-                                                                                           m_entryPointsTextures[0],
+                                                                                           m_frontFacesTextures[0],
                                                                                            m_sampleDistance));
 
         compositorInstance->addListener(m_compositorListeners.back());
@@ -1415,7 +1461,7 @@ void RayTracingVolumeRenderer::buildCompositorChain()
 
         m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
                                                                                            m_maskTexture,
-                                                                                           m_entryPointsTextures[0],
+                                                                                           m_frontFacesTextures[0],
                                                                                            m_sampleDistance));
 
         compositorInstance->addListener(m_compositorListeners.back());
@@ -1582,7 +1628,7 @@ void RayTracingVolumeRenderer::createGridTexture()
 
         ::Ogre::GpuProgramParametersSharedPtr gridGeneratorParams = gridPass->getFragmentProgramParameters();
 
-        gridGeneratorParams->setNamedConstant("u_brickSize", m_bricksSize.data(), 3, 1);
+        gridGeneratorParams->setNamedConstant("u_brickSize", m_brickSize.data(), 3, 1);
         gridGeneratorParams->setNamedConstant("u_sampleDistance", m_sampleDistance);
 
         ::Ogre::MaterialPtr geomGeneratorMtl = ::Ogre::MaterialManager::getSingleton().getByName("VolumeBricks");
@@ -1598,7 +1644,7 @@ void RayTracingVolumeRenderer::createGridTexture()
         const std::vector<int> imageSize(m_imageSize.begin(), m_imageSize.end());
 
         geomGeneratorGeomParams->setNamedConstant("u_imageResolution", imageSize.data(), 3, 1);
-        geomGeneratorGeomParams->setNamedConstant("u_brickSize", m_bricksSize.data(), 3, 1);
+        geomGeneratorGeomParams->setNamedConstant("u_brickSize", m_brickSize.data(), 3, 1);
 
         ::Ogre::TextureUnitState* gridTexState = geomGenerationPass->getTextureUnitState("gridVolume");
 

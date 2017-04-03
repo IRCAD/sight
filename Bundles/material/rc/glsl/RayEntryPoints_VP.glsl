@@ -2,9 +2,12 @@
 
 uniform mat4 u_worldViewProj;
 
-in vec4 position;
+in vec3 position;
+
+out vec3 localPosition;
 
 void main()
 {
-    gl_Position = u_worldViewProj * position;
+	localPosition = position;
+    gl_Position = u_worldViewProj * vec4(position, 1.);
 }

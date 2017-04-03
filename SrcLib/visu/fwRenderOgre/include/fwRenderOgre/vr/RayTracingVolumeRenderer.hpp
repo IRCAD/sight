@@ -181,6 +181,9 @@ private:
     /// Grid defining volume bricks.
     ::Ogre::TexturePtr m_gridTexture;
 
+    /// Rasterized front faces of each viewpoint.
+    std::vector< ::Ogre::TexturePtr> m_frontFacesTextures;
+
     /// Ray entry and exit points for each pixel of each viewpoint.
     std::vector< ::Ogre::TexturePtr> m_entryPointsTextures;
 
@@ -199,7 +202,7 @@ private:
     std::array< int, 3 > m_gridSize;
 
     /// Size of a volume brick.
-    std::array< int, 3 > m_bricksSize;
+    std::array< int, 3 > m_brickSize;
 
     /// Sets stereoscopic volume rendering for autostereoscopic monitors.
     ::fwRenderOgre::Layer::StereoModeType m_mode3D;

@@ -48,6 +48,7 @@ uniform float u_lobeOffset;
 
 in vec2 uv;
 #else
+uniform sampler2D u_frontFaces;
 uniform sampler2D u_entryPoints;
 
 uniform mat4 u_invWorldViewProj;
@@ -328,22 +329,29 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 void main(void)
 {
 #ifndef MODE3D
-    vec2 rayEntryExit = texture(u_entryPoints, uv).rg;
+    //vec2 rayEntryExit = texture(u_entryPoints, uv).rg;
 
-    float entryDepth =  rayEntryExit.r;
-    float exitDepth  = -rayEntryExit.g;
+    vec3 localRayEntry = texture(u_frontFaces, uv).rgb;
+    vec4 localRayDir   = texture(u_entryPoints, uv);
 
-    if(exitDepth == -1)
-    {
-        discard;
-    }
+    // float entryDepth =  rayEntryExit.r;
+    // float exitDepth  = -rayEntryExit.g;
 
-    gl_FragDepth = entryDepth;
+    // if(exitDepth == -1)
+    // {
+    //     discard;
+    // }
 
-    vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, u_invWorldViewProj);
-    vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, u_invWorldViewProj);
+    //gl_FragDepth = entryDepth;
 
-    vec3 rayDir   = normalize(rayExit - rayEntry);
+    // vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, u_invWorldViewProj);
+    // vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, u_invWorldViewProj);
+
+    vec3 rayEntry = localRayEntry;
+    vec3 rayExit  = localRayEntry + localRayDir.rgb * localRayDir.a;
+
+    // vec3 rayDir   = normalize(rayExit - rayEntry);
+    vec3 rayDir = localRayDir.rgb;
 
 #if IDVR == 1
     vec4 importance = texture(u_IC, uv);
@@ -373,7 +381,7 @@ void main(void)
 
     rayDir = rayDir * u_sampleDistance;
 
-    float rayLength = length(rayExit - rayEntry);
+    float rayLength = localRayDir.a;// length(rayExit - rayEntry);
 
 #else
     int nbRays = 0;
