@@ -75,8 +75,11 @@ protected:
 
 private:
 
-    /// SLOT: add the current frame in the video
+    /// SLOT: save current matrices.
     void saveMatrix(::fwCore::HiResClock::HiResClockType timestamp);
+
+    /// Write matrices in csv file
+    void write(::fwCore::HiResClock::HiResClockType timestamp);
 
     /// SLOT: Start recording
     void startRecord();

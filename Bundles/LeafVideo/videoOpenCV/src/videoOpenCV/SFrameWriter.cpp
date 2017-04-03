@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,17 +14,17 @@
 #include <fwData/Composite.hpp>
 #include <fwData/location/Folder.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <opencv2/core.hpp>
-#include <opencv2/opencv.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/imgcodecs.hpp>
+#include <fwServices/macros.hpp>
 
 #include <boost/filesystem/operations.hpp>
+
+#include <opencv2/core.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/opencv.hpp>
 
 namespace videoOpenCV
 {
@@ -34,6 +34,7 @@ fwServicesRegisterMacro( ::io::IWriter, ::videoOpenCV::SFrameWriter, ::arData::F
 static const ::fwCom::Slots::SlotKeyType s_SAVE_FRAME   = "saveFrame";
 static const ::fwCom::Slots::SlotKeyType s_START_RECORD = "startRecord";
 static const ::fwCom::Slots::SlotKeyType s_STOP_RECORD  = "stopRecord";
+static const ::fwCom::Slots::SlotKeyType s_WRITE        = "write";
 
 //------------------------------------------------------------------------------
 
@@ -44,6 +45,7 @@ SFrameWriter::SFrameWriter() throw() :
     newSlot(s_SAVE_FRAME, &SFrameWriter::saveFrame, this);
     newSlot(s_START_RECORD, &SFrameWriter::startRecord, this);
     newSlot(s_STOP_RECORD, &SFrameWriter::stopRecord, this);
+    newSlot(s_WRITE, &SFrameWriter::write, this);
 }
 
 //------------------------------------------------------------------------------
@@ -110,14 +112,21 @@ void SFrameWriter::updating() throw(::fwTools::Failed)
 {
 
     ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-    this->startRecord();
     this->saveFrame(timestamp);
+}
+
+//------------------------------------------------------------------------------
+
+void SFrameWriter::saveFrame(::fwCore::HiResClock::HiResClockType _timestamp)
+{
+    this->startRecord();
+    this->write(_timestamp);
     this->stopRecord();
 }
 
 //------------------------------------------------------------------------------
 
-void SFrameWriter::saveFrame(::fwCore::HiResClock::HiResClockType timestamp)
+void SFrameWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
 {
     if (m_isRecording)
     {
@@ -220,7 +229,7 @@ void SFrameWriter::stopRecord()
 ::fwServices::IService::KeyConnectionsMap SFrameWriter::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(::io::s_DATA_KEY, ::arData::FrameTL::s_OBJECT_PUSHED_SIG, s_SAVE_FRAME);
+    connections.push(::io::s_DATA_KEY, ::arData::FrameTL::s_OBJECT_PUSHED_SIG, s_WRITE);
     return connections;
 }
 

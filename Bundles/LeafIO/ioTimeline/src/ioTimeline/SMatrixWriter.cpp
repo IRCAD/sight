@@ -26,9 +26,10 @@ namespace ioTimeline
 
 fwServicesRegisterMacro( ::io::IWriter, ::ioTimeline::SMatrixWriter, ::arData::MatrixTL);
 
-static const ::fwCom::Slots::SlotKeyType s_SAVE_FRAME   = "saveMatrix";
+static const ::fwCom::Slots::SlotKeyType s_SAVE_MATRIX  = "saveMatrix";
 static const ::fwCom::Slots::SlotKeyType s_START_RECORD = "startRecord";
 static const ::fwCom::Slots::SlotKeyType s_STOP_RECORD  = "stopRecord";
+static const ::fwCom::Slots::SlotKeyType s_WRITE        = "write";
 
 //------------------------------------------------------------------------------
 
@@ -36,9 +37,10 @@ SMatrixWriter::SMatrixWriter() throw() :
     m_isRecording(false),
     m_filestream(nullptr)
 {
-    newSlot(s_SAVE_FRAME, &SMatrixWriter::saveMatrix, this);
+    newSlot(s_SAVE_MATRIX, &SMatrixWriter::saveMatrix, this);
     newSlot(s_START_RECORD, &SMatrixWriter::startRecord, this);
     newSlot(s_STOP_RECORD, &SMatrixWriter::stopRecord, this);
+    newSlot(s_WRITE, &SMatrixWriter::write, this);
 }
 
 //------------------------------------------------------------------------------
@@ -118,14 +120,21 @@ void SMatrixWriter::updating() throw(::fwTools::Failed)
 {
 
     ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
-    this->startRecord();
     this->saveMatrix(timestamp);
+}
+
+//------------------------------------------------------------------------------
+
+void SMatrixWriter::saveMatrix(::fwCore::HiResClock::HiResClockType _timestamp)
+{
+    this->startRecord();
+    this->write(_timestamp);
     this->stopRecord();
 }
 
 //------------------------------------------------------------------------------
 
-void SMatrixWriter::saveMatrix(::fwCore::HiResClock::HiResClockType timestamp)
+void SMatrixWriter::write(::fwCore::HiResClock::HiResClockType timestamp)
 {
     if (m_isRecording)
     {
@@ -136,11 +145,11 @@ void SMatrixWriter::saveMatrix(::fwCore::HiResClock::HiResClockType timestamp)
         CSPTR(::arData::MatrixTL::BufferType) buffer = matrixTL->getClosestBuffer(timestamp);
         if(buffer)
         {
-            *m_filestream << timestamp <<";";
+            size_t time = static_cast<size_t>(timestamp);
+            *m_filestream << time <<";";
             for(unsigned int i = 0; i < numberOfMat; ++i)
             {
                 const float* values = buffer->getElement(i);
-                //*m_filestream << i << ";";
                 for(unsigned int v = 0; v < 16; ++v)
                 {
                     *m_filestream << values[v] << ";";
@@ -190,7 +199,7 @@ void SMatrixWriter::stopRecord()
 ::fwServices::IService::KeyConnectionsMap SMatrixWriter::getAutoConnections() const
 {
     ::fwServices::IService::KeyConnectionsMap connections;
-    connections.push(::io::s_DATA_KEY, ::arData::MatrixTL::s_OBJECT_PUSHED_SIG, s_SAVE_FRAME);
+    connections.push(::io::s_DATA_KEY, ::arData::MatrixTL::s_OBJECT_PUSHED_SIG, s_WRITE);
     return connections;
 }
 

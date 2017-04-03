@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,7 +45,7 @@ class VIDEOOPENCV_CLASS_API SFrameWriter : public ::io::IWriter
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SFrameWriter)(::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (SFrameWriter)(::io::IWriter) );
 
     /// Constructor.
     VIDEOOPENCV_API SFrameWriter() throw();
@@ -80,6 +80,9 @@ private:
 
     /// SLOT: add the current frame in the video
     void saveFrame(::fwCore::HiResClock::HiResClockType timestamp);
+
+    /// write frame on the disk
+    void write(::fwCore::HiResClock::HiResClockType timestamp);
 
     /// SLOT: Start recording
     void startRecord();
