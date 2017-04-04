@@ -47,9 +47,10 @@ namespace visuVTKAdaptor
  *
  * @code{.xml}
         <adaptor id="..." class="::visuVTKAdaptor::Landmarks" objectId="imageKey">
-            <config renderer="default" picker="default" />
+            <config renderer="default" picker="default" transform="..."/>
         </adaptor>
    @endcode
+ * - \b transform : transformation matrix applied to the current landmark.
  *
  */
 class VISUVTKADAPTOR_CLASS_API SLandmarks : public ::fwRenderVTK::IVtkAdaptorService

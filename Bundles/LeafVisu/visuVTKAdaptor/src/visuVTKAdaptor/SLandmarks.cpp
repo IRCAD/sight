@@ -645,6 +645,8 @@ vtkSmartPointer< vtkHandleWidget > SLandmarks::newHandle(const ::fwData::Landmar
                                                          const std::string& groupName,
                                                          size_t pointIndex)
 {
+    vtkTransform* transform = m_renderService.lock()->getOrAddVtkTransform(m_transformId);
+
     const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(groupName);
     ::fwData::Landmarks::PointType& point = landmarks->getPoint(groupName, pointIndex);
 
@@ -672,7 +674,12 @@ vtkSmartPointer< vtkHandleWidget > SLandmarks::newHandle(const ::fwData::Landmar
     pointRep->SetHandleSize(group.m_size);
     pointRep->SetVisibility(group.m_visibility);
 
-    pointRep->SetWorldPosition(point.data());
+    // apply the transformation matrix on the current selected point
+    double origPoint[4]        = {point[0], point[1], point[2], 1.0};
+    double transformedPoint[4] = {0.0, 0.0, 0.0, 1.0};
+    transform->MultiplyPoint(origPoint, transformedPoint);
+
+    pointRep->SetWorldPosition(transformedPoint);
 
     handle->SetRepresentation(pointRep);
     handle->SetPriority(0.8f);
