@@ -323,8 +323,10 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_focalLength(0.f),
     m_lobeOffset(1.f),
     m_cameraListener(nullptr),
-    m_layer(layer)
+    m_layer(layer),
+    m_fullScreenQuad(new ::Ogre::Rectangle2D())
 {
+    m_fullScreenQuad->setCorners(-1,1,1,-1);
     m_gridSize  = {{ 2, 2, 2 }};
     m_brickSize = {{ 8, 8, 8 }};
 
@@ -333,17 +335,6 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
     for(unsigned i = 0; i < nbViewpoints; ++i)
     {
-        m_frontFacesTextures.push_back(::Ogre::TextureManager::getSingleton().createManual(
-                                           m_parentId + "_frontFacesTexture" + std::to_string(i),
-                                           ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                                           ::Ogre::TEX_TYPE_2D,
-                                           static_cast<unsigned int>(m_camera->getViewport()->getActualWidth()),
-                                           static_cast<unsigned int>(m_camera->getViewport()->getActualHeight()),
-                                           1,
-                                           0,
-                                           ::Ogre::PF_FLOAT16_RGB,
-                                           ::Ogre::TU_RENDERTARGET ));
-
         m_entryPointsTextures.push_back(::Ogre::TextureManager::getSingleton().createManual(
                                             m_parentId + "_entryPointsTexture" + std::to_string(i),
                                             ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -352,13 +343,10 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                             static_cast<unsigned int>(m_camera->getViewport()->getActualHeight()),
                                             1,
                                             0,
-                                            ::Ogre::PF_FLOAT16_RGBA,
+                                            ::Ogre::PF_FLOAT32_GR,
                                             ::Ogre::TU_RENDERTARGET ));
 
-        ::Ogre::RenderTexture* renderTexture = m_frontFacesTextures.front()->getBuffer()->getRenderTarget();
-        renderTexture->addViewport(m_camera);
-
-        renderTexture = m_entryPointsTextures.front()->getBuffer()->getRenderTarget();
+        ::Ogre::RenderTexture* renderTexture = m_entryPointsTextures.front()->getBuffer()->getRenderTarget();
         renderTexture->addViewport(m_camera);
     }
 
@@ -400,6 +388,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
 RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 {
+    delete m_fullScreenQuad;
     m_camera->removeListener(m_cameraListener);
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
@@ -419,11 +408,6 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
     m_volumeSceneNode->detachObject(m_proxyGeometryGenerator);
     m_sceneManager->destroyManualObject(m_entryPointGeometry);
     m_sceneManager->destroyMovableObject(m_proxyGeometryGenerator);
-
-    for(auto& texture : m_frontFacesTextures)
-    {
-        ::Ogre::TextureManager::getSingleton().remove(texture->getHandle());
-    }
 
     for(auto& texture : m_entryPointsTextures)
     {
@@ -603,13 +587,6 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     /* mono mode */
     if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE)
     {
-        texUnitState = pass->createTextureUnitState(m_frontFacesTextures[0]->getName());
-        texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
-        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-
-        textureUnits["u_frontFaces"] = numTexUnit;
-        pass->getFragmentProgramParameters()->setNamedConstant("u_frontFaces", numTexUnit++);
-
         texUnitState = pass->createTextureUnitState(m_entryPointsTextures[0]->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
@@ -959,19 +936,6 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
 
 void RayTracingVolumeRenderer::resizeViewport(int w, int h)
 {
-    for(::Ogre::TexturePtr frontFacesTexture : m_frontFacesTextures)
-    {
-        frontFacesTexture->freeInternalResources();
-
-        frontFacesTexture->setWidth(static_cast< ::Ogre::uint32>(w));
-        frontFacesTexture->setHeight(static_cast< ::Ogre::uint32>(h));
-
-        frontFacesTexture->createInternalResources();
-
-        ::Ogre::RenderTexture* renderTexture = frontFacesTexture->getBuffer()->getRenderTarget();
-        renderTexture->addViewport(m_camera);
-    }
-
     for(::Ogre::TexturePtr entryPtsTexture : m_entryPointsTextures)
     {
         entryPtsTexture->freeInternalResources();
@@ -1103,13 +1067,13 @@ void RayTracingVolumeRenderer::initEntryPoints()
         ::Ogre::Pass* gridPass = gridMtl->getTechnique(0)->getPass(0);
 
         ::Ogre::TextureUnitState* tex3DState = gridPass->getTextureUnitState("image");
-//        ::Ogre::TextureUnitState* texTFState = gridPass->getTextureUnitState("transferFunction");
+        ::Ogre::TextureUnitState* texTFState = gridPass->getTextureUnitState("transferFunction");
 
         SLM_ASSERT("'image' texture unit is not found", tex3DState);
-//        SLM_ASSERT("'transferFunction' texture unit is not found", texTFState);
+        SLM_ASSERT("'transferFunction' texture unit is not found", texTFState);
 
         tex3DState->setTexture(m_3DOgreTexture);
-//        texTFState->setTexture(m_gpuTF.getTexture());
+        texTFState->setTexture(m_gpuTF.getTexture());
 
         this->createGridTexture();
     }
@@ -1146,11 +1110,12 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 
     m_viewPointMatrices.clear();
 
-    ::Ogre::Pass* pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass("FrontFaces");
+    size_t i = 0;
 
-    size_t i(0);
+    ::Ogre::RenderOperation fsRenderOp;
+    m_fullScreenQuad->getRenderOperation(fsRenderOp);
 
-    for(::Ogre::TexturePtr frontFacesText : m_frontFacesTextures)
+    for(::Ogre::TexturePtr entryPtsText : m_entryPointsTextures)
     {
         ::Ogre::Matrix4 projMat = m_camera->getProjectionMatrix();
 
@@ -1166,23 +1131,38 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
         ::Ogre::Matrix4 worldViewProj = projMat * m_camera->getViewMatrix() * worldMat;
         m_viewPointMatrices.push_back(worldViewProj.inverse());
 
-        ::Ogre::Viewport* entryPtsVp = frontFacesText->getBuffer()->getRenderTarget()->getViewport(0);
-        entryPtsVp->clear(::Ogre::FBT_COLOUR | ::Ogre::FBT_DEPTH, ::Ogre::ColourValue::Black);
+        ::Ogre::Viewport* entryPtsVp = entryPtsText->getBuffer()->getRenderTarget()->getViewport(0);
+        entryPtsVp->clear(::Ogre::FBT_COLOUR | ::Ogre::FBT_DEPTH | ::Ogre::FBT_STENCIL, ::Ogre::ColourValue::White);
+
+        Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();
+        rs->setStencilCheckEnabled(true);
+        rs->setStencilBufferParams(Ogre::CMPF_ALWAYS_PASS, 0x1, 0xFFFFFFFF, 0xFFFFFFFF, Ogre::SOP_KEEP, Ogre::SOP_KEEP, Ogre::SOP_REPLACE);
 
         // 1st step: front faces
+        ::Ogre::Pass* pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass("BackFacesMax");
         m_sceneManager->manualRender(&renderOp, pass, entryPtsVp, worldMat, m_camera->getViewMatrix(), projMat);
 
+        rs->setStencilCheckEnabled(false);
         pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass("BackFaces");
+        m_sceneManager->manualRender(&renderOp, pass, entryPtsVp, worldMat, m_camera->getViewMatrix(), projMat);
 
-        ::Ogre::TextureUnitState* frontFacesTus = pass->getTextureUnitState("frontFaces");
-        SLM_ASSERT("'frontFaces' texture unit is not found", frontFacesTus);
-
-        frontFacesTus->setTexture(frontFacesText);
+        rs->setStencilCheckEnabled(true);
+        rs->setStencilBufferParams(Ogre::CMPF_ALWAYS_PASS, 0x2, 0xFFFFFFFF, 0xFFFFFFFF, Ogre::SOP_KEEP, Ogre::SOP_KEEP, Ogre::SOP_REPLACE);
 
         // 2nd step: back faces - front faces to have directions
-        entryPtsVp = m_entryPointsTextures[i++]->getBuffer()->getRenderTarget()->getViewport(0);
-        entryPtsVp->clear(::Ogre::FBT_COLOUR | ::Ogre::FBT_DEPTH, ::Ogre::ColourValue::Black);
+        pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass("FrontFaces");
         m_sceneManager->manualRender(&renderOp, pass, entryPtsVp, worldMat, m_camera->getViewMatrix(), projMat);
+
+        rs->setStencilBufferParams(Ogre::CMPF_EQUAL, 0x1, 0xFFFFFFFF);
+
+        ::Ogre::Matrix4 identity;
+        pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass("NearPlane");
+
+        m_sceneManager->manualRender(&fsRenderOp, pass, entryPtsVp, identity, m_camera->getViewMatrix(), projMat);
+
+        rs->setStencilCheckEnabled(false);
+        rs->setStencilBufferParams();
+
     }
 }
 
@@ -1351,7 +1331,7 @@ void RayTracingVolumeRenderer::buildCompositorChain()
 
         m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
                                                                                            m_maskTexture,
-                                                                                           m_frontFacesTextures[0],
+                                                                                           m_entryPointsTextures[0],
                                                                                            m_sampleDistance));
 
         compositorInstance->addListener(m_compositorListeners.back());
@@ -1432,7 +1412,7 @@ void RayTracingVolumeRenderer::buildCompositorChain()
 
         m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
                                                                                            m_maskTexture,
-                                                                                           m_frontFacesTextures[0],
+                                                                                           m_entryPointsTextures[0],
                                                                                            m_sampleDistance));
 
         compositorInstance->addListener(m_compositorListeners.back());
@@ -1461,7 +1441,7 @@ void RayTracingVolumeRenderer::buildCompositorChain()
 
         m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
                                                                                            m_maskTexture,
-                                                                                           m_frontFacesTextures[0],
+                                                                                           m_entryPointsTextures[0],
                                                                                            m_sampleDistance));
 
         compositorInstance->addListener(m_compositorListeners.back());

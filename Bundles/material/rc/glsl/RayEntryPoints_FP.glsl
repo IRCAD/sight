@@ -1,34 +1,30 @@
 #version 330
 
-#if BACK_FACES == 1
-uniform sampler2D u_frontFaces;
-uniform float u_vpWidth;
-uniform float u_vpHeight;
-#endif // BACK_FACE
-
-in vec3 localPosition;
-
-out vec4 fragColour;
+out vec2 fragColour;
 
 void main()
 {
 #if FRONT_FACES == 1
 
-    fragColour = vec4(localPosition, 1.);
+    fragColour = vec2(gl_FragCoord.z, 10000000.0);
 
 #endif // FRONT_FACES
 
-#if BACK_FACES == 1
+#if BACK_FACES_MAX == 1
 
-    vec2 texCoord = gl_FragCoord.xy / vec2( u_vpWidth, u_vpHeight );
-    vec3 frontFacesSample = texture(u_frontFaces, texCoord).rgb;
-
-    vec3 ray = localPosition - frontFacesSample;
-
-    vec3 rayDir     = normalize(ray);
-    float rayLength = length(ray);
-
-    fragColour = vec4(rayDir, rayLength);
+    fragColour = vec2(100000000.0, -gl_FragCoord.z);
 
 #endif // BACK_FACES
+
+#if BACK_FACES == 1
+
+    fragColour = vec2(gl_FragCoord.z, 10000000.0);
+
+#endif // BACK_FACES
+
+#if NEAR_PLANE == 1
+
+    fragColour = vec2(0., 10000000.0);
+
+#endif //  NEAR_PLANE
 }

@@ -17,6 +17,7 @@
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreMaterialManager.h>
+#include <OGRE/OgreRectangle2D.h>
 
 #include <vector>
 
@@ -181,9 +182,6 @@ private:
     /// Grid defining volume bricks.
     ::Ogre::TexturePtr m_gridTexture;
 
-    /// Rasterized front faces of each viewpoint.
-    std::vector< ::Ogre::TexturePtr> m_frontFacesTextures;
-
     /// Ray entry and exit points for each pixel of each viewpoint.
     std::vector< ::Ogre::TexturePtr> m_entryPointsTextures;
 
@@ -296,6 +294,8 @@ private:
     /// IDVR textures.
     static const std::string s_IMPORTANCE_COMPOSITING_TEXTURE;
     static const std::string s_JUMP_FLOOD_ALGORITHM_TEXTURE;
+
+    ::Ogre::Rectangle2D* m_fullScreenQuad;
 };
 
 //-----------------------------------------------------------------------------

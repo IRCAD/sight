@@ -407,9 +407,8 @@
                 <config selectedTFKey="SelectedTF" />
             </service>
 
-            <service uid="imageReader" type="::ioVTK::SImageReader" >
+            <service uid="imageReader" type="::uiIO::editor::SIOSelector" >
                 <in key="target" uid="imageUID" />
-                <file>/home/fnuttens/Dev/fw4spl/data/patient1.vtk</file>
                 <type mode="reader" />
             </service>
 
@@ -439,9 +438,6 @@
             <start uid="compositorParameters" />
             <start uid="CoreEditor" />
             <start uid="computeHistogram" />
-            <start uid="imageReader" />
-
-            <update uid="imageReader" />
 
         </config>
 
