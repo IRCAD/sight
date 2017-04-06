@@ -33,6 +33,7 @@ namespace visuVTKAdaptor
        <config renderer="default" length="..." width="..." transform="..." color="..." dotted="dot"/>
       </adaptor>
      @endcode
+ * @subsection Configuration Configuration
  * - \b renderer : defines the renderer to show the line.
  * - \b length : defines the length of the line.
  * - \b width : defines the width of the line.
