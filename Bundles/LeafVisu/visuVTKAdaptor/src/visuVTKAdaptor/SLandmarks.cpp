@@ -679,7 +679,13 @@ vtkSmartPointer< vtkHandleWidget > SLandmarks::newHandle(const ::fwData::Landmar
     double transformedPoint[4] = {0.0, 0.0, 0.0, 1.0};
     transform->MultiplyPoint(origPoint, transformedPoint);
 
-    pointRep->SetWorldPosition(transformedPoint);
+    // replace the coordinate of the point
+    for(size_t i = 0; i < point.size(); ++i)
+    {
+        point[i] = transformedPoint[i];
+    }
+
+    pointRep->SetWorldPosition(point.data());
 
     handle->SetRepresentation(pointRep);
     handle->SetPriority(0.8f);
