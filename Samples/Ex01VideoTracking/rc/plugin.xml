@@ -69,14 +69,15 @@
 
             <service uid="cameraView" type="::gui::view::SDefaultView" >
                 <gui>
-                    <layout type="::fwGui::CardinalLayoutManager">
-                        <view align="center" />
-                        <view align="right" />
+                    <layout type="::fwGui::LineLayoutManager">
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="0" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="genericScene" start="yes" />
-                    <view sid="trackingEditor" start="yes" />
+                    <view sid="parameters" start="yes" />
                 </registry>
             </service>
 
@@ -93,7 +94,18 @@
                 </scene>
             </service>
 
-            <service uid="trackingEditor" type="::uiTracking::SArucoTrackerEditor" autoConnect="yes" />
+            <service uid="parameters" type="::guiQt::editor::SParameters" >
+                <parameters>
+                    <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
+                    <param type="enum" name="Detection Method" key="method" defaultValue="CANNY" values="ADPT_THRES,FIXED_THRES,CANNY" />
+                    <param type="enum" name="Corner ref." key="corner" defaultValue="SUBPIX" values="NONE,HARRIS,SUBPIX,LINES" />
+                    <param type="double" name="block size" key="blocksize" defaultValue="7." min="0." max="30." />
+                    <param type="double" name="constant" key="constant" defaultValue="7." min="0." max="50." />
+                    <param type="double" name="border width(%)" key="borderwidth" defaultValue="0.01" min="0." max="99.9" />
+                    <param type="int" name="Pattern Width(mm)" key="pattern" defaultValue="60" min="10" max="1000" />
+                    <param type="int" name="Speed" key="speed" defaultValue="3" min="1" max="3" />
+                </parameters>
+            </service>
 
             <service uid="tracker" type="::trackerAruco::SArucoTracker"  worker="tracking">
                 <in key="timeline" uid="frameTL" autoConnect="yes"/>
@@ -134,51 +146,32 @@
                 <in key="camera" uid="camera" />
                 <inout key="frameTL" uid="frameTL" />
             </service>
-         
+
+            <connect>
+                <signal>parameters/boolChanged</signal>
+                <slot>tracker/setBoolParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters/intChanged</signal>
+                <slot>tracker/setIntParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters/doubleChanged</signal>
+                <slot>tracker/setDoubleParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters/enumChanged</signal>
+                <slot>tracker/setEnumParameter</slot>
+            </connect>
+
             <connect>
                 <signal>camera/idModified</signal>
                 <slot>frameGrabber/stopCamera</slot>
             </connect>
 
-            <connect>
-                <signal>trackingEditor/methodChanged</signal>
-                <slot>tracker/changeMethod</slot>
-            </connect>
-
-            <connect>
-                <signal>trackingEditor/cornerMethodChanged</signal>
-                <slot>tracker/changeCornerRefinement</slot>
-            </connect>
-
-            <connect>
-                <signal>trackingEditor/constantChanged</signal>
-                <slot>tracker/changeConstant</slot>
-            </connect>
-
-            <connect>
-                <signal>trackingEditor/blockSizeChanged</signal>
-                <slot>tracker/changeBlockSize</slot>
-            </connect>
-
-            <connect>
-                <signal>trackingEditor/borderWidthChanged</signal>
-                <slot>tracker/changeBorderWidth</slot>
-            </connect>
-
-            <connect>
-                <signal>trackingEditor/patternWidthChanged</signal>
-                <slot>tracker/changePatternWidth</slot>
-            </connect>
-
-            <connect>
-                <signal>trackingEditor/speedChanged</signal>
-                <slot>tracker/changeSpeed</slot>
-            </connect>
-
-            <connect>
-                <signal>trackingEditor/tagsDisplayed</signal>
-                <slot>tracker/displayTags</slot>
-            </connect>
 
             <start uid="mainFrame" />
             <start uid="frameGrabber" />

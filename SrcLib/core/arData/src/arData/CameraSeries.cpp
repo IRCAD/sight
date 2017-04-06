@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,12 +9,12 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
+
 #include <fwData/Exception.hpp>
 #include <fwData/Image.hpp>
 #include <fwData/Point.hpp>
 #include <fwData/PointList.hpp>
 #include <fwData/registry/macros.hpp>
-
 
 namespace arData
 {
@@ -27,7 +27,8 @@ const ::fwCom::Signals::SignalKeyType CameraSeries::s_EXTRINSIC_CALIBRATED_SIG =
 
 //------------------------------------------------------------------------------
 
-CameraSeries::CameraSeries(::fwData::Object::Key key) : Series(key)
+CameraSeries::CameraSeries(::fwData::Object::Key key) :
+    Series(key)
 {
     m_sigAddedCamera         = AddedCameraSignalType::New();
     m_sigRemovedCamera       = RemovedCameraSignalType::New();
@@ -36,7 +37,6 @@ CameraSeries::CameraSeries(::fwData::Object::Key key) : Series(key)
     ::fwCom::HasSignals::m_signals(s_ADDED_CAMERA_SIG, m_sigAddedCamera)
         (s_REMOVED_CAMERA_SIG, m_sigRemovedCamera)
         (s_EXTRINSIC_CALIBRATED_SIG, m_sigExtrinsicCalibrated);
-
 
 }
 
@@ -63,7 +63,7 @@ void CameraSeries::shallowCopy( const ::fwData::Object::csptr& _source )
 
 //------------------------------------------------------------------------------
 
-void CameraSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType &cache)
+void CameraSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache)
 {
     CameraSeries::csptr other = CameraSeries::dynamicConstCast(_source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -92,7 +92,7 @@ void CameraSeries::cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCo
 
 //------------------------------------------------------------------------------
 
-void CameraSeries::addCamera(const ::arData::Camera::sptr & camera)
+void CameraSeries::addCamera(const ::arData::Camera::sptr& camera)
 {
     FW_RAISE_IF("Camera already exists in CameraSeries.",
                 std::find(m_cameras.begin(), m_cameras.end(), camera) != m_cameras.end());
@@ -116,7 +116,7 @@ void CameraSeries::addCamera(const ::arData::Camera::sptr & camera)
 
 //------------------------------------------------------------------------------
 
-void CameraSeries::removeCamera(const ::arData::Camera::sptr & camera)
+void CameraSeries::removeCamera(const ::arData::Camera::sptr& camera)
 {
     CameraContainerType::iterator iter = std::find(m_cameras.begin(), m_cameras.end(), camera);
     FW_RAISE_IF("Camera not found in CameraSeries.", iter == m_cameras.end());

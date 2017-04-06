@@ -122,6 +122,11 @@ void SCameraConfigLauncher::starting() throw(::fwTools::Failed)
         {
             m_cameraComboBox->addItem(QString("Camera %1").arg(i+1));
         }
+
+        const bool moreThanOneCamera = (nbCam > 1);
+
+        m_extrinsicButton->setEnabled(moreThanOneCamera);
+        m_removeButton->setEnabled(moreThanOneCamera);
     }
 
     QObject::connect(m_cameraComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onCameraChanged(int)));

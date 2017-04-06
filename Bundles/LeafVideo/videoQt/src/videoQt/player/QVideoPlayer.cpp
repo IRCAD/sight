@@ -1,30 +1,32 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "videoQt/player/QVideoPlayer.hpp"
 
-#include <fwCore/spyLog.hpp>
-#include <fwCore/exceptionmacros.hpp>
-
 #include "videoQt/helper/formats.hpp"
 #include "videoQt/player/QVideoSurface.hpp"
+
+#include <fwCore/exceptionmacros.hpp>
+#include <fwCore/spyLog.hpp>
+
+#include <fwGui/dialog/MessageDialog.hpp>
 
 #include <boost/filesystem/operations.hpp>
 
 #include <QAbstractVideoSurface>
-#include <QVideoSurfaceFormat>
 #include <QCameraViewfinderSettings>
-
+#include <QVideoSurfaceFormat>
 
 namespace videoQt
 {
 namespace player
 {
 
-QVideoPlayer::QVideoPlayer() : m_loopVideo(false)
+QVideoPlayer::QVideoPlayer() :
+    m_loopVideo(false)
 {
 }
 
@@ -42,6 +44,9 @@ void QVideoPlayer::initCameraFile(const ::boost::filesystem::path& videoPath)
     FW_RAISE_IF("Invalid video path '"+videoPath.string()+"'", !::boost::filesystem::exists(videoPath));
 
     m_mediaPlayer = new QMediaPlayer(0, QMediaPlayer::VideoSurface);
+
+    // Letting the user to know when something bad happens, is generally a good idea
+    QObject::connect(m_mediaPlayer, SIGNAL(error(QMediaPlayer::Error)), this, SLOT(onError(QMediaPlayer::Error)));
 
     QString url = QString::fromStdString(videoPath.string());
     m_playlist = new QMediaPlaylist();
@@ -68,6 +73,9 @@ void QVideoPlayer::initCameraFile(const ::boost::filesystem::path& videoPath)
 void QVideoPlayer::initCameraStream(const std::string& strVideoUrl)
 {
     m_mediaPlayer = new QMediaPlayer(0, QMediaPlayer::VideoSurface);
+
+    // Letting the user to know when something bad happens, is generally a good idea
+    QObject::connect(m_mediaPlayer, SIGNAL(error(QMediaPlayer::Error)), this, SLOT(onError(QMediaPlayer::Error)));
 
     QString url = QString::fromStdString(strVideoUrl);
 
@@ -121,6 +129,13 @@ void QVideoPlayer::play()
     {
         m_camera->start();
     }
+}
+
+//------------------------------------------------------------------------------
+
+void QVideoPlayer::onError(QMediaPlayer::Error error) const
+{
+    ::fwGui::dialog::MessageDialog::showMessageDialog("QMediaPlayer error", m_mediaPlayer->errorString().toStdString());
 }
 
 //-----------------------------------------------------------------------------

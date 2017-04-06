@@ -11,13 +11,12 @@
 
 #include <fwData/Object.hpp>
 
-#include <fwThread/Worker.hpp>
-
 #include <igtlNetwork/Client.hpp>
 
 #include <ioNetwork/INetworkListener.hpp>
 
 #include <cstdint>
+#include <future>
 #include <map>
 #include <string>
 
@@ -71,28 +70,14 @@ public:
 
 protected:
 
-    /// Configures the service.
+    /// Configure port, hostname and device name
     IOIGTL_API virtual void configuring() throw ( ::fwTools::Failed );
 
-    /**
-     * @brief start the client and try to connect to the server specify in configuration
-     */
+    /// Start the client and try to connect to the server specify in configuration
     IOIGTL_API virtual void starting() throw ( ::fwTools::Failed );
 
-    /**
-     * @brief disconnect the client from the server
-     */
+    /// Disconnect the client from the server
     IOIGTL_API virtual void stopping() throw ( ::fwTools::Failed );
-
-    /**
-     * @brief method to set host and port of listener
-     *
-     * @see ioNetwork::INetworkListener
-     *
-     * @param[in] hostname hostname or ip of the server
-     * @param[in] port port of the server
-     */
-    IOIGTL_API void setHost(std::string const& hostname, std::uint16_t const port) throw (::fwTools::Failed);
 
 private:
 
@@ -101,32 +86,23 @@ private:
     ///Push received matrices in timeline
     void manageTimeline(const SPTR(fwData::Composite)& obj);
 
-    ///Helper to parse preference key
-    std::string getPreferenceKey(const std::string& key) const;
-
     /**
      * @brief method contain a loop with receive and when we receive we emit m_sigReceiveObject
      *        this method run in a thread
      */
     void runClient() throw ( ::fwTools::Failed );
 
-    /// listener thread for receiving data from client socket
-    ::fwThread::Worker::sptr m_clientWorker;
+    /// Future used to wait for the client
+    std::future<void> m_clientFuture;
 
     /// client socket
     ::igtlNetwork::Client m_client;
 
-    /// hostname preference key
-    std::string m_hostnameKey;
+    /// hostname config key
+    std::string m_hostnameConfig;
 
-    /// port preference key
-    std::string m_portKey;
-
-    /// hostname
-    std::string m_hostname;
-
-    /// port
-    std::uint16_t m_port;
+    /// port config key
+    std::string m_portConfig;
 
     MatrixNameIndexType m_matrixNameIndex;
 };

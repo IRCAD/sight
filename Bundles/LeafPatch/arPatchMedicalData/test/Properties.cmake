@@ -10,8 +10,7 @@ set( DEPENDENCIES
     fwRuntime
     fwMedData
     fwThread
-    fwGui
 )
-set( REQUIREMENTS dataReg servicesReg ioAtoms gui patchMedicalData arPatchMedicalData)
+set( REQUIREMENTS dataReg servicesReg ioAtoms patchMedicalData arPatchMedicalData)
 
 set(CPPUNITTEST_OPTIONS BUNDLE arPatchMedicalData WORKING_DIRECTORY ${CMAKE_BINARY_DIR})

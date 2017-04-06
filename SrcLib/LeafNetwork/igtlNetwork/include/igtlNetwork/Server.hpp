@@ -93,7 +93,7 @@ public:
     /**
      * @brief method to have the current number of clients
      */
-    IGTLNETWORK_API unsigned int getNumberOfClients();
+    IGTLNETWORK_API size_t getNumberOfClients();
     /**
      * @brief methdo to receive all headers of all connected clients
      *

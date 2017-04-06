@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "videoQt/SFrameGrabber.hpp"
+
 #include "videoQt/player/VideoRegistry.hpp"
 
 #include <arData/Camera.hpp>
@@ -24,26 +25,26 @@
 
 #include <fwTools/Type.hpp>
 
+#include <boost/filesystem/operations.hpp>
+
 #include <QImage>
 #include <QSize>
 #include <QVideoFrame>
-
-#include <boost/filesystem/operations.hpp>
 
 namespace videoQt
 {
 
 //-----------------------------------------------------------------------------
 
-
 fwServicesRegisterMacro( ::arServices::IGrabber, ::videoQt::SFrameGrabber, ::arData::FrameTL);
 
 //-----------------------------------------------------------------------------
 
-SFrameGrabber::SFrameGrabber() throw() : m_loopVideo(false),
-                                         m_videoPlayer(nullptr),
-                                         m_horizontallyFlip(false),
-                                         m_verticallyFlip(false)
+SFrameGrabber::SFrameGrabber() throw() :
+    m_loopVideo(false),
+    m_videoPlayer(nullptr),
+    m_horizontallyFlip(false),
+    m_verticallyFlip(false)
 {
 
 }
@@ -128,7 +129,8 @@ void SFrameGrabber::startCamera()
 
 void SFrameGrabber::pauseCamera()
 {
-    // because of the requestPlayer/releasePlayer mechanism, the m_videoPlayer may be invalid when the user presses the "pause" button
+    // because of the requestPlayer/releasePlayer mechanism, the m_videoPlayer may be invalid when the user presses the
+    // "pause" button
     if(m_videoPlayer)
     {
         m_videoPlayer->pause();
@@ -139,7 +141,8 @@ void SFrameGrabber::pauseCamera()
 
 void SFrameGrabber::stopCamera()
 {
-    // because of the requestPlayer/releasePlayer mechanism, the m_videoPlayer may be invalid when the user presses the "pause" button
+    // because of the requestPlayer/releasePlayer mechanism, the m_videoPlayer may be invalid when the user presses the
+    // "pause" button
     if(m_videoPlayer)
     {
         m_videoPlayer->stop();
@@ -169,20 +172,24 @@ void SFrameGrabber::stopCamera()
         {
             timeline = this->getObject< ::arData::FrameTL >();
         }
-        const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec() + 1;
-        SPTR(::arData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
-        ::boost::uint8_t* destBuffer               = reinterpret_cast< ::boost::uint8_t* >( buffer->addElement(0) );
 
-        std::fill(destBuffer,
-                  destBuffer + timeline->getWidth() * timeline->getHeight() * timeline->getNumberOfComponents(), 0);
+        if(timeline->isAllocated())
+        {
+            const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec() + 1;
+            SPTR(::arData::FrameTL::BufferType) buffer = timeline->createBuffer(timestamp);
+            std::uint8_t* destBuffer = buffer->addElement(0);
 
-        // push buffer and notify
-        timeline->clearTimeline();
-        timeline->pushObject(buffer);
+            std::fill(destBuffer,
+                      destBuffer + timeline->getWidth() * timeline->getHeight() * timeline->getNumberOfComponents(), 0);
 
-        auto sigTL = timeline->signal< ::arData::TimeLine::ObjectPushedSignalType >(
-            ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
-        sigTL->asyncEmit(timestamp);
+            // push buffer and notify
+            timeline->clearTimeline();
+            timeline->pushObject(buffer);
+
+            auto sigTL = timeline->signal< ::arData::TimeLine::ObjectPushedSignalType >(
+                ::arData::TimeLine::s_OBJECT_PUSHED_SIG );
+            sigTL->asyncEmit(timestamp);
+        }
 
         auto sig = this->signal< ::arServices::IGrabber::CameraStoppedSignalType >(
             ::arServices::IGrabber::s_CAMERA_STOPPED_SIG);
@@ -212,7 +219,8 @@ CSPTR(::arData::Camera) SFrameGrabber::getCamera()
 
 void SFrameGrabber::toggleLoopMode()
 {
-    // because of the requestPlayer/releasePlayer mechanism, the m_videoPlayer may be invalid when the user presses the "pause" button
+    // because of the requestPlayer/releasePlayer mechanism, the m_videoPlayer may be invalid when the user presses the
+    // "pause" button
     if(m_videoPlayer)
     {
         m_loopVideo = !m_loopVideo;
@@ -224,7 +232,8 @@ void SFrameGrabber::toggleLoopMode()
 
 void SFrameGrabber::setPosition(std::int64_t position)
 {
-    // because of the requestPlayer/releasePlayer mechanism, the m_videoPlayer may be invalid when the user presses the "pause" button
+    // because of the requestPlayer/releasePlayer mechanism, the m_videoPlayer may be invalid when the user presses the
+    // "pause" button
     if(m_videoPlayer)
     {
         m_videoPlayer->setPosition(position);

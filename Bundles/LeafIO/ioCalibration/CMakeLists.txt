@@ -1,6 +1,5 @@
 fwLoadProperties()
 
-
 find_package(OpenCV REQUIRED)
 
 fwInclude(
@@ -9,8 +8,6 @@ fwInclude(
 
 fwLink(
     opencv_core
-    opencv_calib3d
-    opencv_imgproc
 )
 
 

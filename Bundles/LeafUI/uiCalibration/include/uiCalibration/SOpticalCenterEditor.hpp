@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,10 +11,10 @@
 
 #include <gui/editor/IEditor.hpp>
 
+#include <QLabel>
 #include <QObject>
 #include <QPointer>
 #include <QSlider>
-#include <QLabel>
 
 namespace uiCalibration
 {
@@ -26,11 +26,22 @@ namespace uiCalibration
  *
  * @code{.xml}
      <service type="::uiCalibration::SOpticalCenterEditor">
-         <inout key="camera" uid="..." />
+         <in key="camera" uid="..." />
+         <inout key="matrix" uid="..." />
      </service>
    @endcode
+ * @subsection Input Input
+ * - \b camera [::arData::Camera]: camera to edit.
  * @subsection In-Out In-Out
- * - \b camera [::fwData::Mesh]: camera to edit.
+ * - \b matrix [::fwData::TransformationMatrix3D]: output matrix holding the delta values.
+ *
+ * This service takes a camera calibration and outputs a matrix holding the difference between
+ * the input parameters and the camera parameters set by the user. Those differences are stored like this:
+ * @verbatim
+   dFx 0   dCx 0
+   0   dFy dCy 0
+   0   0   0   0
+   0   0   0   0
  */
 class UICALIBRATION_CLASS_API SOpticalCenterEditor : public QObject,
                                                      public ::gui::editor::IEditor
@@ -38,7 +49,7 @@ class UICALIBRATION_CLASS_API SOpticalCenterEditor : public QObject,
 Q_OBJECT
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SOpticalCenterEditor)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SOpticalCenterEditor)(::gui::editor::IEditor) );
 
     /// Constructor.
     UICALIBRATION_API SOpticalCenterEditor() throw();
@@ -59,6 +70,9 @@ protected:
 
     /// Does nothing.
     UICALIBRATION_API virtual void updating() throw ( ::fwTools::Failed );
+
+    /// Defines the connection betwwen camera and matrix and this editor
+    UICALIBRATION_API virtual KeyConnectionsMap getAutoConnections() const;
 
 private Q_SLOTS:
 

@@ -57,7 +57,6 @@ bool Server::isStarted() const
 
 void Server::runServer()
 {
-
     Client::sptr newClient;
 
     while (this->isStarted())
@@ -77,16 +76,16 @@ void Server::broadcast(::fwData::Object::sptr obj)
 {
     std::vector<Client::sptr>::iterator it;
 
-    for (it = m_clients.begin(); it != m_clients.end(); ++it)
+    for (it = m_clients.begin(); it != m_clients.end(); )
     {
         if (!(*it)->sendObject(obj))
         {
             (*it)->disconnect();
             it = m_clients.erase(it);
-            if (it == m_clients.end())
-            {
-                break;
-            }
+        }
+        else
+        {
+            ++it;
         }
     }
 }
@@ -97,16 +96,16 @@ void Server::broadcast(::igtl::MessageBase::Pointer msg)
 {
     std::vector<Client::sptr>::iterator it;
 
-    for (it = m_clients.begin(); it != m_clients.end(); ++it)
+    for (it = m_clients.begin(); it != m_clients.end(); )
     {
         if (!(*it)->sendMsg(msg))
         {
             (*it)->disconnect();
             it = m_clients.erase(it);
-            if (it == m_clients.end())
-            {
-                break;
-            }
+        }
+        else
+        {
+            ++it;
         }
     }
 }
@@ -123,7 +122,7 @@ void Server::start (::boost::uint16_t port) throw (::fwCore::Exception)
         throw Exception("Server already started");
     }
 
-    result = this->m_serverSocket->CreateServer(port);
+    result = m_serverSocket->CreateServer(port);
     m_port = port;
 
     if (result != Server::s_SUCCESS)
@@ -140,7 +139,7 @@ Client::sptr Server::waitForConnection (int msec)
     ::igtl::ClientSocket::Pointer clientSocket;
     Client::sptr client;
 
-    clientSocket = this->m_serverSocket->WaitForConnection(msec);
+    clientSocket = m_serverSocket->WaitForConnection(static_cast<unsigned long>(msec));
     if (clientSocket.IsNotNull())
     {
         client = Client::sptr(new Client(clientSocket));
@@ -160,13 +159,12 @@ void Server::stop() throw (::fwCore::Exception)
 
     m_isStarted = false;
     m_clients.clear();
-    this->m_serverSocket->CloseSocket();
-
+    m_socket->CloseSocket();
 }
 
 //------------------------------------------------------------------------------
 
-unsigned int Server::getNumberOfClients()
+size_t Server::getNumberOfClients()
 {
     if(this->isStarted())
     {
