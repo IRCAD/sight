@@ -1,19 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwServices/registry/ActiveWorkers.hpp"
 
+#include "fwCore/util/LazyInstantiator.hpp"
+
 namespace fwServices
 {
 namespace registry
 {
-
-//-----------------------------------------------------------------------------
-
-ActiveWorkers::sptr ActiveWorkers::s_currentActiveWorkers = ActiveWorkers::New();
 
 //-----------------------------------------------------------------------------
 
@@ -35,12 +33,12 @@ ActiveWorkers::~ActiveWorkers()
 
 ActiveWorkers::sptr ActiveWorkers::getDefault()
 {
-    return ActiveWorkers::s_currentActiveWorkers;
+    return ::fwCore::util::LazyInstantiator< ActiveWorkers >::getInstance();
 }
 
 //-----------------------------------------------------------------------------
 
-::fwThread::Worker::sptr ActiveWorkers::getWorker( const WorkerKeyType & key ) const
+::fwThread::Worker::sptr ActiveWorkers::getWorker( const WorkerKeyType& key ) const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
 
@@ -56,7 +54,22 @@ ActiveWorkers::sptr ActiveWorkers::getDefault()
 
 //-----------------------------------------------------------------------------
 
-void ActiveWorkers::addWorker( const WorkerKeyType & key, ::fwThread::Worker::sptr worker )
+void ActiveWorkers::setDefaultWorker(fwThread::Worker::sptr worker)
+{
+    ::fwServices::registry::ActiveWorkers::getDefault()->addWorker(
+        ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER, worker);
+}
+
+//-----------------------------------------------------------------------------
+
+::fwThread::Worker::sptr ActiveWorkers::getDefaultWorker()
+{
+    return ActiveWorkers::getDefault()->getWorker( registry::ActiveWorkers::s_DEFAULT_WORKER );
+}
+
+//-----------------------------------------------------------------------------
+
+void ActiveWorkers::addWorker( const WorkerKeyType& key, ::fwThread::Worker::sptr worker )
 {
     ::fwCore::mt::WriteLock lock(m_registryMutex);
     m_workers.insert( WorkerMapType::value_type(key, worker) );

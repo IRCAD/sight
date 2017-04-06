@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,11 +9,6 @@
 
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/MeshFactory.hpp"
-
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slot.hxx>
-#include <fwCom/Slots.hpp>
-#include <fwCom/Slots.hxx>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
@@ -30,16 +25,20 @@ class VISUVTKADAPTOR_CLASS_API Reconstruction : public ::fwRenderVTK::IVtkAdapto
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Reconstruction)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Reconstruction)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API Reconstruction() throw();
 
     VISUVTKADAPTOR_API virtual ~Reconstruction() throw();
 
+    //------------------------------------------------------------------------------
+
     void setClippingPlanes(::fwRenderVTK::SRender::VtkObjectIdType id)
     {
         m_clippingPlanesId = id;
     }
+
+    //------------------------------------------------------------------------------
 
     void setSharpEdgeAngle(double angle)
     {
@@ -47,9 +46,6 @@ public:
     }
 
     VISUVTKADAPTOR_API void setForceHide(bool hide);
-
-    /// Set underlying actor visible or not
-    VISUVTKADAPTOR_API void setVisibility(bool visible);
 
     /// Active/Inactive automatic reset on camera for triangular mesh adaptor. By default =true.
     VISUVTKADAPTOR_API void setAutoResetCamera(bool autoResetCamera);
@@ -64,17 +60,14 @@ public:
      * @name Slots API
      * @{
      */
-    VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_MESH_SLOT;
     /// slot used to update mesh
-    typedef ::fwCom::Slot<void (SPTR(::fwData::Mesh))> UpdateMeshSlotType;
+    VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_MESH_SLOT;
 
-    VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
     /// slot used to update visibility
-    typedef ::fwCom::Slot<void ()> UpdateVisibilitySlotType;
+    VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
 
-    VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_NORMAL_MODE_SLOT;
     /// slot used to update normal mode (0: none, 1: point, 2: cell)
-    typedef ::fwCom::Slot<void (std::uint8_t)> UpdateNormalModeSlotType;
+    VISUVTKADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_NORMAL_MODE_SLOT;
 
     /// Slot: used to update normal display(0: none, 1: point, 2: cell)
     void updateNormalMode(std::uint8_t mode);
@@ -117,7 +110,7 @@ protected:
     void updateMesh(SPTR(::fwData::Mesh));
 
     /// Slot: update visibility
-    void updateVisibility();
+    void updateVisibility(bool visible);
 
     /**
      * @}
@@ -126,24 +119,7 @@ protected:
 private:
     bool m_autoResetCamera;
 
-    /**
-     * @name Slots attributes
-     * @{
-     */
-
-    /// Slot used to update mesh
-    UpdateMeshSlotType::sptr m_slotUpdateMesh;
-
-    /// Slot used to update visibility
-    UpdateVisibilitySlotType::sptr m_slotUpdateVisibility;
-
-    /// slot used to update normal mode (0: none, 1: point, 2: cell)
-    UpdateNormalModeSlotType::sptr m_slotUpdateNormalMode;
-    /**
-     * @}
-     */
 };
-
 
 } //namespace visuVTKAdaptor
 

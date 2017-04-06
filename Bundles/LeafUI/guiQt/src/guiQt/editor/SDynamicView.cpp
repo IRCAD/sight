@@ -19,45 +19,42 @@
 
 #include <fwDataCamp/getObject.hpp>
 
-#include <fwGui/GuiRegistry.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/GuiRegistry.hpp>
 
 #include <fwRuntime/operations.hpp>
 
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include <fwTools/UUID.hpp>
 #include <fwTools/dateAndTime.hpp>
+#include <fwTools/UUID.hpp>
+
+#include <boost/foreach.hpp>
 
 #include <QBoxLayout>
 #include <QTabWidget>
 #include <QtGui>
-
-#include <boost/foreach.hpp>
 
 namespace guiQt
 {
 namespace editor
 {
 
-static const ::fwCom::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT        = "launchActivity";
-static const ::fwCom::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT = "launchActivitySeries";
-static const ::fwCom::Slots::SlotKeyType s_CREATE_TAB_SLOT             = "createTab";
+static const ::fwCom::Slots::SlotKeyType s_CREATE_TAB_SLOT = "createTab";
 
 static const ::fwCom::Signals::SignalKeyType s_ACTIVITY_SELECTED_SLOT = "activitySelected";
 static const ::fwCom::Signals::SignalKeyType s_NOTHING_SELECTED_SLOT  = "nothingSelected";
 
-fwServicesRegisterMacro( ::gui::view::IView, ::guiQt::editor::SDynamicView, ::fwData::Object );
+fwServicesRegisterMacro( ::gui::view::IActivityView, ::guiQt::editor::SDynamicView, ::fwData::Object );
 
 //------------------------------------------------------------------------------
 
-SDynamicView::SDynamicView() throw()
+SDynamicView::SDynamicView() throw() :
+    m_mainActivityClosable(true)
 {
     m_dynamicConfigStartStop = false;
 
-    newSlot(s_LAUNCH_ACTIVITY_SLOT, &SDynamicView::launchActivity, this);
-    newSlot(s_LAUNCH_ACTIVITY_SERIES_SLOT, &SDynamicView::launchActivitySeries, this);
     newSlot(s_CREATE_TAB_SLOT, &SDynamicView::createTab, this);
 
     m_sigActivitySelected = newSignal< ActivitySelectedSignalType >(s_ACTIVITY_SELECTED_SLOT);
@@ -74,43 +71,19 @@ SDynamicView::~SDynamicView() throw()
 
 void SDynamicView::configuring() throw(fwTools::Failed)
 {
-    this->::fwGui::IGuiContainerSrv::initialize();
+    this->::gui::view::IActivityView::configuring();
 
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigType;
 
     ConfigType activityConfig = m_configuration->findConfigurationElement("mainActivity");
     if (activityConfig)
     {
-        std::string id = activityConfig->getAttributeValue("id");
-        SLM_ASSERT("main activity 'id' must be defined", !id.empty());
-
-        std::string closableStr = activityConfig->getAttributeValue("closable");
+        const std::string closableStr = activityConfig->getAttributeValue("closable");
         SLM_ASSERT("main activity 'closable' attribute value must be 'yes', 'true', 'no' or 'false'",
                    closableStr == "yes" || closableStr == "true" ||
                    closableStr == "no" || closableStr == "false");
-        bool closable = (closableStr == "yes" || closableStr == "true");
-        m_mainActivityInfo = std::make_pair(id, closable);
-    }
-
-    ConfigType config = m_configuration->findConfigurationElement("parameters");
-    if (config)
-    {
-        std::vector <ConfigType> params = config->find("parameter");
-        for (ConfigType cfg : params)
-        {
-            std::string replace = cfg->getAttributeValue("replace");
-            std::string by      = cfg->getAttributeValue("by");
-            if(by.empty())
-            {
-                by = cfg->getAttributeValue("uid");
-            }
-            SLM_ASSERT("'parameter' tag must contain valid 'replace' and 'by' attributes.",
-                       !replace.empty() && !by.empty());
-            ParameterType param;
-            param.replace = replace;
-            param.by      = by;
-            m_parameters.push_back(param);
-        }
+        const bool closable = (closableStr == "yes" || closableStr == "true");
+        m_mainActivityClosable = closable;
     }
 }
 
@@ -129,8 +102,8 @@ void SDynamicView::starting() throw(::fwTools::Failed)
     m_tabWidget->setDocumentMode( true );
     m_tabWidget->setMovable( true );
 
-    QObject::connect(m_tabWidget, SIGNAL(tabCloseRequested( int )), this, SLOT( closeTabSignal( int )));
-    QObject::connect(m_tabWidget, SIGNAL(currentChanged( int )), this, SLOT(changedTab( int )));
+    QObject::connect(m_tabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTabSignal(int)));
+    QObject::connect(m_tabWidget, SIGNAL(currentChanged(int)), this, SLOT(changedTab(int)));
 
     QBoxLayout* layout = new QBoxLayout(QBoxLayout::TopToBottom);
     if (qtContainer->layout())
@@ -142,7 +115,7 @@ void SDynamicView::starting() throw(::fwTools::Failed)
     layout->addWidget( m_tabWidget );
     m_currentWidget = 0;
 
-    if (!m_mainActivityInfo.first.empty())
+    if (!m_mainActivityId.empty())
     {
         this->buildMainActivity();
     }
@@ -179,54 +152,12 @@ void SDynamicView::swapping() throw(::fwTools::Failed)
 
 void SDynamicView::launchActivity(::fwMedData::ActivitySeries::sptr activitySeries)
 {
-    // Applies validator on activity series to check the data
-    ::fwActivities::registry::ActivityInfo info;
-    info = ::fwActivities::registry::Activities::getDefault()->getInfo(activitySeries->getActivityConfigId());
-
-    // load activity bundle
-    std::shared_ptr< ::fwRuntime::Bundle > bundle = ::fwRuntime::findBundle(info.bundleId, info.bundleVersion);
-    if (!bundle->isStarted())
+    if (this->validateActivity(activitySeries))
     {
-        bundle->start();
-    }
+        SDynamicViewInfo viewInfo = this->createViewInfo(activitySeries);
+        viewInfo.closable = true;
 
-    if (!info.validatorsImpl.empty())
-    {
-        for (std::string validatorImpl : info.validatorsImpl)
-        {
-            /// Process activity validator
-            ::fwActivities::IValidator::sptr validator = ::fwActivities::validator::factory::New(validatorImpl);
-
-            ::fwActivities::IActivityValidator::sptr activityValidator =
-                ::fwActivities::IActivityValidator::dynamicCast(validator);
-            SLM_ASSERT("Validator '" + validatorImpl + "' instantiation failed", activityValidator);
-
-            ::fwActivities::IValidator::ValidationType validation = activityValidator->validate(activitySeries);
-            if(!validation.first)
-            {
-                std::string message = "The activity '" + info.title + "' can not be launched:\n" + validation.second;
-                ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch",
-                                                                  message,
-                                                                  ::fwGui::dialog::IMessageDialog::CRITICAL);
-                return;
-            }
-        }
-    }
-
-    SDynamicViewInfo viewInfo = this->createViewInfo(activitySeries);
-    viewInfo.closable = true;
-
-    this->launchTab(viewInfo);
-}
-
-//------------------------------------------------------------------------------
-
-void SDynamicView::launchActivitySeries(::fwMedData::Series::sptr series)
-{
-    ::fwMedData::ActivitySeries::sptr activitySeries = ::fwMedData::ActivitySeries::dynamicCast(series);
-    if (activitySeries)
-    {
-        this->launchActivity(activitySeries);
+        this->launchTab(viewInfo);
     }
 }
 
@@ -276,7 +207,7 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
     info.wid = QString("SDynamicView-%1").arg(count++).toStdString();
 
     ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
-    QWidget* widget = new QWidget();
+    QWidget* widget = new QWidget(m_tabWidget);
     subContainer->setQtContainer(widget);
     ::fwGui::GuiRegistry::registerWIDContainer(info.wid, subContainer);
 
@@ -425,44 +356,16 @@ void SDynamicView::changedTab( int index )
 
 void SDynamicView::buildMainActivity()
 {
-    ::fwActivities::registry::ActivityInfo info;
-    info = ::fwActivities::registry::Activities::getDefault()->getInfo(m_mainActivityInfo.first);
+    ::fwMedData::ActivitySeries::sptr actSeries = this->createMainActivity();
 
-    ::fwMedData::ActivitySeries::sptr actSeries = ::fwMedData::ActivitySeries::New();
-    if (info.requirements.size() > 0)
+    if (actSeries)
     {
-        ::fwData::Composite::sptr data = actSeries->getData();
-        for (::fwActivities::registry::ActivityRequirement req : info.requirements)
-        {
-            if ((req.minOccurs == 0 && req.maxOccurs == 0) || req.create)
-            {
-                (*data)[req.name] = ::fwData::factory::New(req.type);
-            }
-            else
-            {
-                ::fwGui::dialog::MessageDialog::showMessageDialog(
-                    "Main activity",
-                    "The main activity " + m_mainActivityInfo.first + " can not be launched. \n"
-                    "This activity needs parameters that cannot be defined",
-                    ::fwGui::dialog::IMessageDialog::INFO);
-                return;
-            }
-        }
+        SDynamicViewInfo viewInfo;
+        viewInfo          = this->createViewInfo(actSeries);
+        viewInfo.closable = m_mainActivityClosable;
+
+        this->launchTab(viewInfo);
     }
-
-    actSeries->setModality("OT");
-    actSeries->setInstanceUID("fwActivities." + ::fwTools::UUID::generateUUID() );
-
-    ::boost::posix_time::ptime now = ::boost::posix_time::second_clock::local_time();
-    actSeries->setDate(::fwTools::getDate(now));
-    actSeries->setTime(::fwTools::getTime(now));
-    actSeries->setActivityConfigId(info.id);
-
-    SDynamicViewInfo viewInfo;
-    viewInfo          = this->createViewInfo(actSeries);
-    viewInfo.closable = m_mainActivityInfo.second;
-
-    this->launchTab(viewInfo);
 }
 
 //------------------------------------------------------------------------------
@@ -526,41 +429,6 @@ SDynamicView::SDynamicViewInfo SDynamicView::createViewInfo(::fwMedData::Activit
     viewInfo.replaceMap     = replaceMap;
 
     return viewInfo;
-}
-
-//------------------------------------------------------------------------------
-
-void SDynamicView::translateParameters( ::fwData::Object::sptr sourceObj, const ParametersType& parameters,
-                                        ReplaceMapType& replaceMap )
-{
-    for(const ParametersType::value_type& param :  parameters)
-    {
-        if(!param.isSeshat())
-        {
-            replaceMap[param.replace] = param.by;
-        }
-        else
-        {
-            std::string parameterToReplace = param.by;
-            if (parameterToReplace.substr(0, 1) == "!")
-            {
-                parameterToReplace.replace(0, 1, "@");
-            }
-
-            ::fwData::Object::sptr obj = ::fwDataCamp::getObject(sourceObj, parameterToReplace);
-            SLM_ASSERT("Invalid seshat path : '" + param.by + "'", obj);
-
-            ::fwData::String::sptr stringParameter = ::fwData::String::dynamicCast(obj);
-
-            std::string parameterValue = obj->getID();
-
-            if(stringParameter && param.by.substr(0, 1) == "!")
-            {
-                parameterValue = stringParameter->getValue();
-            }
-            replaceMap[param.replace] = parameterValue;
-        }
-    }
 }
 
 //------------------------------------------------------------------------------

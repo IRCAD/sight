@@ -1,22 +1,26 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwGui/IMenuBarSrv.hpp"
-#include "fwGui/registry/worker.hpp"
 
 #include <fwCore/base.hpp>
+
 #include <fwServices/macros.hpp>
-#include <fwTools/fwID.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
+
 #include <fwThread/Worker.hpp>
 #include <fwThread/Worker.hxx>
+
+#include <fwTools/fwID.hpp>
 
 namespace fwGui
 {
 
-IMenuBarSrv::IMenuBarSrv() : m_hideMenus(false)
+IMenuBarSrv::IMenuBarSrv() :
+    m_hideMenus(false)
 {
 }
 
@@ -66,7 +70,7 @@ void IMenuBarSrv::create()
     ::fwGui::container::fwMenuBar::sptr menuBar = m_registrar->getParent();
     SLM_ASSERT("Parent menuBar is unknown.", menuBar);
 
-    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >( [&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >( [&]
         {
             m_layoutManager->createLayout(menuBar);
         }) ).wait();
@@ -80,7 +84,7 @@ void IMenuBarSrv::destroy()
 {
     m_registrar->unmanage();
 
-    ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
         {
             m_layoutManager->destroyLayout();
         })).wait();
@@ -94,15 +98,15 @@ void IMenuBarSrv::menuServiceStopping(std::string menuSrvSID)
 
     if (m_hideMenus)
     {
-        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >( [&]
+        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >( [&]
             {
                 m_layoutManager->menuIsVisible(menu, false);
             }) ).wait();
     }
     else
     {
-        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >(
-                                                             [&] {
+        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >(
+                                                                                      [&] {
                 m_layoutManager->menuIsEnabled(menu, false);
             })).wait();
     }
@@ -116,14 +120,14 @@ void IMenuBarSrv::menuServiceStarting(std::string menuSrvSID)
 
     if (m_hideMenus)
     {
-        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
             {
                 m_layoutManager->menuIsVisible(menu, true);
             })).wait();
     }
     else
     {
-        ::fwGui::registry::worker::get()->postTask<void>(::boost::function< void() >([&]
+        ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask<void>(::boost::function< void() >([&]
             {
                 m_layoutManager->menuIsEnabled(menu, true);
             }) ).wait();

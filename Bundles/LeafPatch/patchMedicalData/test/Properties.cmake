@@ -10,9 +10,8 @@ set( DEPENDENCIES
     fwRuntime
     fwMedData
     fwThread
-    fwGui
     fwMDSemanticPatch
 )
-set( REQUIREMENTS dataReg servicesReg ioAtoms gui patchMedicalData )
+set( REQUIREMENTS dataReg servicesReg ioAtoms patchMedicalData )
 
 set(CPPUNITTEST_OPTIONS BUNDLE patchMedicalData WORKING_DIRECTORY ${CMAKE_BINARY_DIR})

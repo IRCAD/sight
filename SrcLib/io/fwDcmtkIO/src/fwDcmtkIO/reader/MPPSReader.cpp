@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,6 +27,30 @@ namespace fwDcmtkIO
 {
 namespace reader
 {
+
+//-----------------------------------------------------------------------------
+
+OFString searchTagInSequence(DcmDataset* dataset, const DcmTagKey& subSeq, const DcmTagKey& tag)
+{
+    OFString tagValue = "";
+    dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+
+    DcmSequenceOfItems* sequenceOfIt;
+    dataset->findAndGetSequence(subSeq, sequenceOfIt);
+    SLM_WARN_IF("No sequence found in 'DCM_ReferencedReferenceImageSequence'.", !sequenceOfIt);
+
+    if(sequenceOfIt)
+    {
+        const unsigned long lastEl = sequenceOfIt->card() - 1;
+
+        DcmItem* item = sequenceOfIt->getItem(lastEl);
+        item->findAndGetOFString(tag, tagValue);
+    }
+
+    return tagValue;
+}
+
+//-----------------------------------------------------------------------------
 
 MPPSReader::MPPSReader()
 {
@@ -62,15 +86,15 @@ MPPSReader::~MPPSReader()
     series->addComputedTagValue("PerformedProcedureStepStatus", std::string(mmpsStatus.c_str()));
 
     OFString entranceDosemGy;
-    dataset->findAndGetOFString(DCM_EntranceDoseInmGy,entranceDosemGy);
+    dataset->findAndGetOFString(DCM_EntranceDoseInmGy, entranceDosemGy);
     if(!entranceDosemGy.empty())
     {
         series->addComputedTagValue("EntranceDoseInmGy", std::string(entranceDosemGy.c_str()));
     }
 
     DcmSequenceOfItems* sequenceOfIt;
-    dataset->findAndGetSequence(DCM_ExposureDoseSequence,sequenceOfIt);
-    SLM_WARN_IF("No sequence found in 'DCM_ExposureDoseSequence'.",!sequenceOfIt);
+    dataset->findAndGetSequence(DCM_ExposureDoseSequence, sequenceOfIt);
+    SLM_WARN_IF("No sequence found in 'DCM_ExposureDoseSequence'.", !sequenceOfIt);
 
     if(sequenceOfIt)
     {
@@ -79,7 +103,7 @@ MPPSReader::~MPPSReader()
         DcmItem* item = sequenceOfIt->getItem(lastEl);
 
         OFString commentsRadiationDose;
-        item->findAndGetOFString(DCM_CommentsOnRadiationDose,commentsRadiationDose);
+        item->findAndGetOFString(DCM_CommentsOnRadiationDose, commentsRadiationDose);
 
         if(!commentsRadiationDose.empty())
         {
@@ -88,7 +112,7 @@ MPPSReader::~MPPSReader()
 
         //(0018,0060) DS [77]#   2, 1 KVP
         OFString kvp;
-        item->findAndGetOFString(DCM_KVP,kvp);
+        item->findAndGetOFString(DCM_KVP, kvp);
         if(!kvp.empty())
         {
             series->addComputedTagValue("KVP", std::string(kvp.c_str()));
@@ -96,7 +120,7 @@ MPPSReader::~MPPSReader()
 
         //(0018,1150) IS [25]# 2, 1 ExposureTime
         OFString exposureTime;
-        item->findAndGetOFString(DCM_ExposureTime,exposureTime);
+        item->findAndGetOFString(DCM_ExposureTime, exposureTime);
         if(!exposureTime.empty())
         {
             series->addComputedTagValue("ExposureTime", std::string(exposureTime.c_str()));
@@ -104,7 +128,7 @@ MPPSReader::~MPPSReader()
 
         //(0018,115a) CS [PULSED]#   6, 1 RadiationMode
         OFString radiationMode;
-        item->findAndGetOFString(DCM_RadiationMode,radiationMode);
+        item->findAndGetOFString(DCM_RadiationMode, radiationMode);
         if(!radiationMode.empty())
         {
             series->addComputedTagValue("RadiationMode", std::string(radiationMode.c_str()));
@@ -112,12 +136,21 @@ MPPSReader::~MPPSReader()
 
         //(0018,8151) DS [23500] # 6, 1 XRayTubeCurrentInuA
         OFString xRayTubeCurrentInuA;
-        item->findAndGetOFString(DCM_XRayTubeCurrentInuA,xRayTubeCurrentInuA);
+        item->findAndGetOFString(DCM_XRayTubeCurrentInuA, xRayTubeCurrentInuA);
 
         if(!xRayTubeCurrentInuA.empty())
         {
             series->addComputedTagValue("XRayTubeCurrentInuA", std::string(xRayTubeCurrentInuA.c_str()));
         }
+    }
+
+    // PerformedSeriesSequence, allows to find the associated image
+    OFString performedSeriesSequence;
+    performedSeriesSequence = searchTagInSequence(dataset, DCM_PerformedSeriesSequence, DCM_SeriesInstanceUID);
+
+    if(!performedSeriesSequence.empty())
+    {
+        series->addComputedTagValue("PerformedSeriesSequence", std::string(performedSeriesSequence.c_str()));
     }
 
     return series;

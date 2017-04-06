@@ -24,12 +24,16 @@
                 <desc>Image associated to the model.</desc>
                 <key path="@image" >OptionalInputImageKey</key>
             </requirement>
+            <requirement name="landmarks" type="::fwData::Landmarks" minOccurs="0" maxOccurs="0">
+                <desc>Landmarks to display.</desc>
+            </requirement>
         </requirements>
-        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <builder>::fwActivities::builder::ActivitySeriesInitData</builder>
         <appConfig id="3DVisualization">
             <parameters>
                 <parameter replace="imageComposite" uid="@values.imageSeries" />
                 <parameter replace="modelSeries" uid="@values.modelSeries" />
+                <parameter replace="landmarks" uid="@values.landmarks" />
                 <parameter replace="orientation" by="frontal" />
             </parameters>
         </appConfig>

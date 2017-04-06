@@ -6,16 +6,18 @@
 
 #include "IoAtomsTest.hpp"
 
+#include <fwData/Array.hpp>
 #include <fwData/Composite.hpp>
 
 #include <fwDataCamp/visitor/CompareObjects.hpp>
 
-#include <fwGui/registry/worker.hpp>
+#include <fwDataTools/helper/Array.hpp>
 
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
+#include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
@@ -42,7 +44,7 @@ void IoAtomsTest::setUp()
 {
     // Set up context before running a test.
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
-    ::fwGui::registry::worker::init(worker);
+    ::fwServices::registry::ActiveWorkers::setDefaultWorker(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -50,7 +52,7 @@ void IoAtomsTest::setUp()
 void IoAtomsTest::tearDown()
 {
     // Clean up after the test run.
-    ::fwGui::registry::worker::reset();
+    ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -76,9 +78,9 @@ void write(const ::fwRuntime::EConfigurationElement::sptr& srvCfg, const SPTR(T)
     ::fwServices::OSR::registerService( obj, writerSrv );
     writerSrv->setConfiguration(srvCfg);
     writerSrv->configure();
-    writerSrv->start();
-    writerSrv->update();
-    writerSrv->stop();
+    writerSrv->start().wait();
+    writerSrv->update().wait();
+    writerSrv->stop().wait();
     ::fwServices::OSR::unregisterService( writerSrv );
 }
 
@@ -93,9 +95,9 @@ SPTR(T) read(const ::fwRuntime::EConfigurationElement::sptr &srvCfg, const std::
     ::fwServices::OSR::registerService( readObj, readerSrv );
     readerSrv->setConfiguration(srvCfg);
     readerSrv->configure();
-    readerSrv->start();
-    readerSrv->update();
-    readerSrv->stop();
+    readerSrv->start().wait();
+    readerSrv->update().wait();
+    readerSrv->stop().wait();
     ::fwServices::OSR::unregisterService( readerSrv );
 
     return readObj;
@@ -207,9 +209,53 @@ void atomTest(const ::boost::filesystem::path& filePath)
 
 //------------------------------------------------------------------------------
 
+void atomTestSimpleData(const ::boost::filesystem::path& filePath)
+{
+    ::fwRuntime::EConfigurationElement::sptr srvCfg  = ::fwRuntime::EConfigurationElement::New("service");
+    ::fwRuntime::EConfigurationElement::sptr fileCfg = ::fwRuntime::EConfigurationElement::New("file");
+    fileCfg->setValue(filePath.string());
+    srvCfg->addConfigurationElement(fileCfg);
+
+    ::fwData::Array::sptr array = ::fwData::Array::New();
+    ::fwDataTools::helper::Array arrayHelper(array);
+    const size_t NB_COMPONENT = 1;
+    ::fwData::Array::SizeType size {10, 100};
+
+    array->resize("uint32", size, NB_COMPONENT, true);
+
+    unsigned int count = 0;
+    unsigned int* iter = arrayHelper.begin<unsigned int>();
+
+    for (; iter != arrayHelper.end<unsigned int>(); ++iter)
+    {
+        *iter = count++;
+    }
+
+    ::boost::filesystem::create_directories( filePath.parent_path() );
+
+    write< ::fwData::Array >(srvCfg, array, "::ioAtoms::SWriter");
+
+    ::fwData::Array::sptr readArray = read< ::fwData::Array >(srvCfg, "::ioAtoms::SReader");
+
+    {
+        ::fwDataCamp::visitor::CompareObjects visitor;
+        visitor.compare(array, readArray);
+        compareLog(visitor);
+        for(const auto& it : * visitor.getDifferences())
+        {
+            std::cout<<"first : "<<it.first<<" second "<<it.second<<std::endl;
+        }
+
+        CPPUNIT_ASSERT_MESSAGE("Objects not equal", visitor.getDifferences()->empty() );
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void IoAtomsTest::JSONTest()
 {
     atomTest(::fwTools::System::getTemporaryFolder() / "JSONTest" / "ioAtomsTest.json");
+    atomTestSimpleData(::fwTools::System::getTemporaryFolder() / "JSONTest" / "ioAtomsTest2.json");
 }
 
 //------------------------------------------------------------------------------
@@ -217,6 +263,7 @@ void IoAtomsTest::JSONTest()
 void IoAtomsTest::JSONZTest()
 {
     atomTest(::fwTools::System::getTemporaryFolder() / "JSONZTest" / "ioAtomsTest.jsonz");
+    atomTestSimpleData(::fwTools::System::getTemporaryFolder() / "JSONZTest" / "ioAtomsTest2.jsonz");
 }
 
 //------------------------------------------------------------------------------
@@ -224,6 +271,7 @@ void IoAtomsTest::JSONZTest()
 void IoAtomsTest::XMLTest()
 {
     atomTest(::fwTools::System::getTemporaryFolder() / "XMLTest" / "ioAtomsTest.xml");
+    atomTestSimpleData(::fwTools::System::getTemporaryFolder() / "XMLTest" / "ioAtomsTest2.xml");
 }
 
 //------------------------------------------------------------------------------
@@ -231,6 +279,7 @@ void IoAtomsTest::XMLTest()
 void IoAtomsTest::XMLZTest()
 {
     atomTest(::fwTools::System::getTemporaryFolder() / "XMLZTest" / "ioAtomsTest.xmlz");
+    atomTestSimpleData(::fwTools::System::getTemporaryFolder() / "XMLZTest" / "ioAtomsTest2.xmlz");
 }
 
 //------------------------------------------------------------------------------

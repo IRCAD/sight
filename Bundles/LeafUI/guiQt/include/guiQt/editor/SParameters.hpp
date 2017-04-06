@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,8 +10,6 @@
 #include "guiQt/config.hpp"
 
 #include <gui/editor/IEditor.hpp>
-
-#include <cstdint>
 
 #include <QGridLayout>
 #include <QObject>
@@ -43,6 +41,7 @@ namespace editor
  * - \b intChanged(int, std::string): Emitted when an integer parameter changes.
  * - \b int2Changed(int, int, std::string): Emitted when two integer parameters change.
  * - \b int3Changed(int, int, int, std::string): Emitted when three integer parameters change.
+ * - \b enumChanged(std::string, std::string): Emitted when enum parameter changes.
  *
  * @section XML XML Configuration
  *
@@ -52,6 +51,7 @@ namespace editor
             <param type="bool" name="boolean parameter" key="boolParam" defaultValue="false" />
             <param type="double" name="real parameter" key="doubleParam" defaultValue="" min="1.5" max="42.42" />
             <param type="int" name="integer parameter" key="intParam" defaultValue="1" min="0" max="255" />
+            <param type="enum" name="enum parameters" key="enumParam" defaultValue="p1" values="p1,p2,p3" />
         </parameters>
        </service>
    @endcode
@@ -65,13 +65,14 @@ namespace editor
  * - \b max: maximum value, if relevant for the data type.
  * - \b widget: choose the type of the widget, if relevant for the data type. Currently the only type that provides
  * a choice is 'int' : you can choose either "spin" or "slider".
+ * - \b values: list of possible values separated by a comma ',' a space ' ' or a semicolon ';' (only for enum type).
  */
 class GUIQT_CLASS_API SParameters : public QObject,
                                     public ::gui::editor::IEditor
 {
 Q_OBJECT
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SParameters)(::gui::editor::IEditor) );
+    fwCoreServiceClassDefinitionsMacro( (SParameters)(::gui::editor::IEditor) );
 
     /// Boolean changed signal type
     typedef ::fwCom::Signal< void (bool, std::string) > BooleanChangedSignalType;
@@ -88,6 +89,9 @@ public:
     typedef ::fwCom::Signal< void (int, std::string) > IntegerChangedSignalType;
     typedef ::fwCom::Signal< void (int, int, std::string) > Integer2ChangedSignalType;
     typedef ::fwCom::Signal< void (int, int, int, std::string) > Integer3ChangedSignalType;
+
+    /// Enum changed signal type
+    typedef ::fwCom::Signal< void (std::string, std::string) > EnumChangedSignalType;
 
     /// Constructor. Initializes signals
     GUIQT_API SParameters() throw ();
@@ -120,6 +124,9 @@ private Q_SLOTS:
 
     /// This method is called when an integer value changes
     void onChangeDouble(double value);
+
+    /// This method is called when selection changes (QComboBox)
+    void onChangeEnum(int value);
 
     /// This method is called to connect sliders and their labels
     void onSliderMapped(QWidget* widget);
@@ -158,6 +165,10 @@ private:
     /// Create the spin widget associated with an integer type
     void createIntegerSpinWidget(QGridLayout& layout, int row, const std::string& key,
                                  int defaultValue, int min, int max, int count);
+
+    /// Create a multi choice widget
+    void createEnumWidget(QGridLayout& layout, int row, const std::string& key, const std::string& defaultValue,
+                          const std::vector< std::string>& values);
 
     /// Allows to connect sliders and their labels
     QPointer< QSignalMapper> m_signalMapper;

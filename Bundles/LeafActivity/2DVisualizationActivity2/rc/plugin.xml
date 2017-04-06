@@ -26,11 +26,15 @@
             <requirement name="imageSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1">
                 <desc>Image to display.</desc>
             </requirement>
+            <requirement name="landmarks" type="::fwData::Landmarks" minOccurs="0" maxOccurs="0">
+                <desc>Landmarks to display.</desc>
+            </requirement>
         </requirements>
-        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <builder>::fwActivities::builder::ActivitySeriesInitData</builder>
         <appConfig id="2DVisualization">
             <parameters>
                 <parameter replace="image" uid="@values.imageSeries.image" />
+                <parameter replace="landmarks" uid="@values.landmarks" />
             </parameters>
         </appConfig>
     </extension>

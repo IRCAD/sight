@@ -1,0 +1,65 @@
+<plugin id="Ex05Activities" version="@DASH_VERSION@">
+
+    <requirement id="guiQt" />
+    <requirement id="visuVTKQt" />
+    <requirement id="dataReg" />
+    <requirement id="servicesReg" />
+    <requirement id="patchMedicalData" />
+    <requirement id="preferences" />
+    <requirement id="activities" />
+    <requirement id="filterVRRender" />
+
+    <xi:include href="configurations/Ex05Base.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/Ex05ImageReading.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/Ex05ImageDisplaying.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwServices::registry::AppConfigParameters">
+        <id>Ex05AppBase</id>
+        <parameters>
+            <param name="appName" value="Ex05 Activities @PROJECT_VERSION@" />
+            <param name="appIconPath" value="@BUNDLE_PREFIX@/Ex05Activities_@DASH_VERSION@/app.ico" />
+        </parameters>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>Ex05ImageReading</id>
+        <title>Image reading</title>
+        <desc>Activity to read an image</desc>
+        <icon>@BUNDLE_PREFIX@/media_0-1/icons/LoadActivity.svg</icon>
+        <requirements>
+            <!-- Requirement with minOccurs="0" maxOccurs="0" means that the object will be automatically created by the
+                 activity launcher and will be stored in the ActivitySeries. -->
+            <requirement name="image" type="::fwData::Image" minOccurs="0" maxOccurs="0">
+                <desc>Image that will be read by this activity.</desc>
+            </requirement>
+        </requirements>
+        <appConfig id="Ex05ImageReading">
+            <parameters>
+                 <parameter replace="image" by="@values.image" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>Ex05ImageDisplaying</id>
+        <title>Image displaying</title>
+        <desc>Activity to display an image</desc>
+        <icon>@BUNDLE_PREFIX@/media_0-1/icons/icon-2D.png</icon>
+        <requirements>
+            <!-- The image must be present to launch the activity -->
+            <requirement name="image" type="::fwData::Image" minOccurs="1" maxOccurs="1">
+                <desc>Image that will be display by this activity.</desc>
+            </requirement>
+            <requirement name="landmarks" type="::fwData::Landmarks" minOccurs="0" maxOccurs="0">
+                <desc>Landmarks that will be created in this activity.</desc>
+            </requirement>
+        </requirements>
+        <appConfig id="Ex05ImageDisplaying">
+            <parameters>
+                 <parameter replace="image" by="@values.image" />
+                 <parameter replace="landmarks" by="@values.landmarks" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+</plugin>

@@ -1,13 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
-
 #include "fwGui/dialog/LocationDialog.hpp"
-#include "fwGui/registry/worker.hpp"
+
+#include <fwServices/registry/ActiveWorkers.hpp>
 
 namespace fwGui
 {
@@ -18,12 +17,12 @@ namespace dialog
 LocationDialog::LocationDialog()
 {
 
-    ::fwGui::registry::worker::get()->postTask< void >(::boost::function< void() >(
-                                                           [&] {
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(::boost::function< void() >(
+                                                                                    [&] {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ILocationDialog::REGISTRY_KEY);
                 m_implementation = ::fwGui::dialog::ILocationDialog::dynamicCast(guiObj);
             })
-                                                       ).wait();
+                                                                                ).wait();
 }
 
 //------------------------------------------------------------------------------
@@ -39,7 +38,7 @@ LocationDialog::~LocationDialog()
     typedef SPTR (::fwData::location::ILocation) R;
 
     ::boost::function< R() > func = ::boost::bind(&ILocationDialog::show, m_implementation);
-    ::boost::shared_future< R > f = ::fwGui::registry::worker::get()->postTask< R >(func);
+    ::boost::shared_future< R > f = ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< R >(func);
 
     f.wait();
     return f.get();
@@ -54,9 +53,9 @@ void LocationDialog::setType( ::fwGui::dialog::ILocationDialog::Types type)
 
 //-----------------------------------------------------------------------------
 
-void LocationDialog::addFilter(const std::string &filterName, const std::string &wildcardList )
+void LocationDialog::addFilter(const std::string& filterName, const std::string& wildcardList )
 {
-    m_implementation->addFilter(filterName,wildcardList);
+    m_implementation->addFilter(filterName, wildcardList);
 }
 
 //-----------------------------------------------------------------------------
@@ -109,7 +108,6 @@ std::string LocationDialog::getCurrentSelection() const
 }
 
 //-----------------------------------------------------------------------------
-
 
 } //namespace dialog
 } //namespace fwGui

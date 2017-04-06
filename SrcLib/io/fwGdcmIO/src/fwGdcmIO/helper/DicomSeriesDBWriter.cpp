@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,20 +9,19 @@
 #include "fwGdcmIO/helper/DicomAnonymizer.hpp"
 #include "fwGdcmIO/helper/DicomSeriesWriter.hpp"
 
-#include <fwMedData/DicomSeries.hpp>
-#include <fwMedData/SeriesDB.hpp>
-#include <fwMedData/Series.hpp>
-
-#include <fwJobs/Observer.hpp>
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Job.hpp>
 #include <fwJobs/Observer.hpp>
 
+#include <fwMedData/DicomSeries.hpp>
+#include <fwMedData/Series.hpp>
+#include <fwMedData/SeriesDB.hpp>
+
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <fwZip/WriteZipArchive.hpp>
 #include <fwZip/WriteDirArchive.hpp>
+#include <fwZip/WriteZipArchive.hpp>
 
 namespace fwGdcmIO
 {
@@ -74,6 +73,8 @@ void DicomSeriesDBWriter::setProducer(std::string producer)
 {
     m_producer = producer;
 }
+
+//------------------------------------------------------------------------------
 
 void DicomSeriesDBWriter::enableZippedArchive(bool enable)
 {
@@ -154,8 +155,7 @@ void DicomSeriesDBWriter::write()
                         }
                     }
                 },
-                                                     ::fwServices::registry::ActiveWorkers::getDefault()->getWorker(
-                                                         ::fwServices::registry::ActiveWorkers::s_DEFAULT_WORKER));
+                                                     ::fwServices::registry::ActiveWorkers::getDefaultWorker());
 
         m_aggregator->addCancelHook([&](::fwJobs::IJob& subJob)
                 {

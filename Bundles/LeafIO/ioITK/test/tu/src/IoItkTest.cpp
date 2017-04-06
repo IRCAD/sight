@@ -8,13 +8,12 @@
 
 #include <fwDataTools/Image.hpp>
 
-#include <fwGui/registry/worker.hpp>
-
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
 #include <fwRuntime/EConfigurationElement.hpp>
 
+#include <fwServices/registry/ActiveWorkers.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
 
@@ -24,8 +23,8 @@
 
 #include <fwThread/Worker.hpp>
 
-#include <fwTools/System.hpp>
 #include <fwTools/dateAndTime.hpp>
+#include <fwTools/System.hpp>
 
 #include <boost/assign/list_of.hpp>
 #include <boost/filesystem/operations.hpp>
@@ -48,7 +47,7 @@ void IoItkTest::setUp()
 {
     // Set up context before running a test.
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
-    ::fwGui::registry::worker::init(worker);
+    ::fwServices::registry::ActiveWorkers::setDefaultWorker(worker);
 }
 
 //------------------------------------------------------------------------------
@@ -56,7 +55,7 @@ void IoItkTest::setUp()
 void IoItkTest::tearDown()
 {
     // Clean up after the test run.
-    ::fwGui::registry::worker::reset();
+    ::fwServices::registry::ActiveWorkers::getDefault()->clearRegistry();
 }
 
 //------------------------------------------------------------------------------
@@ -74,9 +73,9 @@ void executeService(
     ::fwServices::OSR::registerService( obj, srv );
     srv->setConfiguration(cfg);
     CPPUNIT_ASSERT_NO_THROW(srv->configure());
-    CPPUNIT_ASSERT_NO_THROW(srv->start());
-    CPPUNIT_ASSERT_NO_THROW(srv->update());
-    CPPUNIT_ASSERT_NO_THROW(srv->stop());
+    CPPUNIT_ASSERT_NO_THROW(srv->start().wait());
+    CPPUNIT_ASSERT_NO_THROW(srv->update().wait());
+    CPPUNIT_ASSERT_NO_THROW(srv->stop().wait());
     ::fwServices::OSR::unregisterService( srv );
 }
 

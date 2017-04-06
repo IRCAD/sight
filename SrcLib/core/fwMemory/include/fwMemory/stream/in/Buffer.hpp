@@ -12,6 +12,8 @@
 
 #include <fwCore/macros.hpp>
 
+#include <functional>
+
 namespace fwMemory
 {
 namespace stream

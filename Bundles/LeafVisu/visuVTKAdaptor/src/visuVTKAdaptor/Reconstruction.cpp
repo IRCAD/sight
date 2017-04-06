@@ -1,13 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Mesh.hpp"
 #include "visuVTKAdaptor/Reconstruction.hpp"
 
-#include <fwTools/fwID.hpp>
+#include "visuVTKAdaptor/Mesh.hpp"
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -15,24 +20,23 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
 
+#include <fwTools/fwID.hpp>
+
 #include <vtkActor.h>
 #include <vtkCamera.h>
 #include <vtkMath.h>
+#include <vtkMatrix4x4.h>
 #include <vtkPicker.h>
+#include <vtkPlaneCollection.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkPolyDataNormals.h>
+#include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkTransform.h>
-#include <vtkMatrix4x4.h>
-#include <vtkProperty.h>
-#include <vtkPlaneCollection.h>
-#include <vtkPolyDataNormals.h>
-
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Reconstruction,
                          ::fwData::Reconstruction );
-
-
 
 namespace visuVTKAdaptor
 {
@@ -46,9 +50,9 @@ Reconstruction::Reconstruction() throw() :
     m_sharpEdgeAngle(180.),
     m_autoResetCamera(true)
 {
-    m_slotUpdateMesh       = newSlot(s_UPDATE_MESH_SLOT, &Reconstruction::updateMesh, this);
-    m_slotUpdateVisibility = newSlot(s_UPDATE_VISIBILITY_SLOT, &Reconstruction::updateVisibility, this);
-    m_slotUpdateNormalMode = newSlot(s_UPDATE_NORMAL_MODE_SLOT, &Reconstruction::updateNormalMode, this);
+    newSlot(s_UPDATE_MESH_SLOT, &Reconstruction::updateMesh, this);
+    newSlot(s_UPDATE_VISIBILITY_SLOT, &Reconstruction::updateVisibility, this);
+    newSlot(s_UPDATE_NORMAL_MODE_SLOT, &Reconstruction::updateNormalMode, this);
 }
 
 //------------------------------------------------------------------------------
@@ -96,18 +100,18 @@ void Reconstruction::createMeshService()
         ::visuVTKAdaptor::Mesh::sptr meshAdaptor = Mesh::dynamicCast(meshService);
 
         meshService->setRenderService( this->getRenderService() );
-        meshService->setRenderId     ( this->getRenderId()      );
-        meshService->setPickerId     ( this->getPickerId()      );
-        meshService->setTransformId  ( this->getTransformId() );
-        meshService->setAutoRender   ( this->getAutoRender() );
+        meshService->setRenderId( this->getRenderId()      );
+        meshService->setPickerId( this->getPickerId()      );
+        meshService->setTransformId( this->getTransformId() );
+        meshService->setAutoRender( this->getAutoRender() );
 
         meshAdaptor->setClippingPlanesId( m_clippingPlanesId             );
         //meshAdaptor->setSharpEdgeAngle  ( m_sharpEdgeAngle               );
-        meshAdaptor->setShowClippedPart ( true );
-        meshAdaptor->setMaterial        ( reconstruction->getMaterial()  );
-        meshAdaptor->setAutoResetCamera ( m_autoResetCamera );
+        meshAdaptor->setShowClippedPart( true );
+        meshAdaptor->setMaterial( reconstruction->getMaterial()  );
+        meshAdaptor->setAutoResetCamera( m_autoResetCamera );
         meshService->start();
-        meshAdaptor->updateVisibility  ( reconstruction->getIsVisible() );
+        meshAdaptor->updateVisibility( reconstruction->getIsVisible() );
         meshAdaptor->update();
 
         m_meshService = meshService;
@@ -139,8 +143,8 @@ void Reconstruction::doUpdate() throw(fwTools::Failed)
         ::visuVTKAdaptor::Mesh::sptr meshAdaptor      = Mesh::dynamicCast(meshService);
         //meshAdaptor->setSharpEdgeAngle( m_sharpEdgeAngle );
 
-        meshAdaptor->setMaterial     ( reconstruction->getMaterial());
-        meshAdaptor->swap            ( reconstruction->getMesh() );
+        meshAdaptor->setMaterial( reconstruction->getMaterial());
+        meshAdaptor->swap( reconstruction->getMesh() );
         meshAdaptor->updateVisibility( reconstruction->getIsVisible());
 
     }
@@ -165,13 +169,12 @@ void Reconstruction::doStop() throw(fwTools::Failed)
 void Reconstruction::setForceHide(bool hide)
 {
     ::fwData::Reconstruction::sptr reconstruction = this->getObject < ::fwData::Reconstruction >();
-    this->setVisibility((hide ? false : reconstruction->getIsVisible()));
+    this->updateVisibility((hide ? false : reconstruction->getIsVisible()));
 }
-
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::setVisibility(bool visible)
+void Reconstruction::updateVisibility(bool visible)
 {
     SLM_TRACE_FUNC();
     if (!m_meshService.expired())
@@ -200,14 +203,6 @@ void Reconstruction::setAutoResetCamera(bool autoResetCamera)
 void Reconstruction::updateMesh(SPTR(::fwData::Mesh))
 {
     this->doUpdate();
-}
-
-//------------------------------------------------------------------------------
-
-void Reconstruction::updateVisibility()
-{
-    ::fwData::Reconstruction::sptr reconstruction = this->getObject < ::fwData::Reconstruction >();
-    this->setForceHide(!reconstruction->getIsVisible());
 }
 
 //------------------------------------------------------------------------------

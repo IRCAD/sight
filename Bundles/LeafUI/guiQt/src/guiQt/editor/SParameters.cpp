@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,16 +17,18 @@
 
 #include <fwTools/Object.hpp>
 
+#include <boost/foreach.hpp>
+#include <boost/tokenizer.hpp>
+
 #include <QCheckBox>
 #include <QColorDialog>
+#include <QComboBox>
 #include <QFormLayout>
 #include <QLabel>
 #include <QSlider>
 #include <QSpinBox>
 #include <QString>
 #include <QStyle>
-
-#include <boost/foreach.hpp>
 
 namespace guiQt
 {
@@ -46,6 +48,7 @@ static const ::fwCom::Signals::SignalKeyType DOUBLE3_CHANGED_SIG  = "double3Chan
 static const ::fwCom::Signals::SignalKeyType INTEGER_CHANGED_SIG  = "intChanged";
 static const ::fwCom::Signals::SignalKeyType INTEGER2_CHANGED_SIG = "int2Changed";
 static const ::fwCom::Signals::SignalKeyType INTEGER3_CHANGED_SIG = "int3Changed";
+static const ::fwCom::Signals::SignalKeyType ENUM_CHANGED_SIG     = "enumChanged";
 
 //-----------------------------------------------------------------------------
 
@@ -59,6 +62,7 @@ SParameters::SParameters() throw ()
     newSignal< IntegerChangedSignalType>(INTEGER_CHANGED_SIG);
     newSignal< Integer2ChangedSignalType>(INTEGER2_CHANGED_SIG);
     newSignal< Integer3ChangedSignalType>(INTEGER3_CHANGED_SIG);
+    newSignal< EnumChangedSignalType >(ENUM_CHANGED_SIG);
 
     m_signalMapper = new QSignalMapper(this);
     m_resetMapper  = new QSignalMapper(this);
@@ -101,23 +105,23 @@ void SParameters::starting() throw (::fwTools::Failed)
     {
         const ::fwServices::IService::ConfigType& cfg = param.second;
 
-        std::string name         = cfg.get< std::string >("<xmlattr>.name");
-        std::string key          = cfg.get< std::string >("<xmlattr>.key");
-        std::string type         = cfg.get< std::string >("<xmlattr>.type");
-        std::string defaultValue = cfg.get< std::string >("<xmlattr>.defaultValue");
-        std::string widget       = cfg.get< std::string >("<xmlattr>.widget", "slider");
+        const std::string name         = cfg.get< std::string >("<xmlattr>.name");
+        const std::string key          = cfg.get< std::string >("<xmlattr>.key");
+        const std::string type         = cfg.get< std::string >("<xmlattr>.type");
+        const std::string defaultValue = cfg.get< std::string >("<xmlattr>.defaultValue");
+        const std::string widget       = cfg.get< std::string >("<xmlattr>.widget", "slider");
 
         layout->addWidget(new QLabel(QString(name.c_str())), row, 0);
 
-        if(type=="bool")
+        if(type == "bool")
         {
             this->createBoolWidget(*layout, row, key, defaultValue);
         }
-        else if(type=="color")
+        else if(type == "color")
         {
             this->createColorWidget(*layout, row, key, defaultValue);
         }
-        else if(type=="double" || type=="double2" || type=="double3")
+        else if(type == "double" || type == "double2" || type == "double3")
         {
             const double min          = cfg.get<double>("<xmlattr>.min", 0.);
             const double max          = cfg.get<double>("<xmlattr>.max", 1.);
@@ -127,7 +131,7 @@ void SParameters::starting() throw (::fwTools::Failed)
 
             this->createDoubleWidget(*layout, row, key, defaultValue, min, max, count);
         }
-        else if(type=="int" || type=="int2" || type=="int3")
+        else if(type == "int" || type == "int2" || type == "int3")
         {
             const int min          = cfg.get<int>("<xmlattr>.min", 0);
             const int max          = cfg.get<int>("<xmlattr>.max", 100);
@@ -147,6 +151,21 @@ void SParameters::starting() throw (::fwTools::Failed)
                 this->createIntegerSliderWidget(*layout, row, key, defaultValue, min, max);
             }
         }
+        else if(type == "enum")
+        {
+            const std::string options = cfg.get<std::string>("<xmlattr>.values");
+            //split values separated by ','
+            std::vector<std::string> strings;
+            const ::boost::char_separator<char> sep(", ;");
+            const ::boost::tokenizer< ::boost::char_separator<char> > tok {options, sep};
+            for(const auto& t : tok)
+            {
+                strings.push_back(t);
+            }
+
+            this->createEnumWidget(*layout, row, key, defaultValue, strings);
+
+        }
         ++row;
     }
 }
@@ -163,6 +182,23 @@ void SParameters::stopping() throw (::fwTools::Failed)
 {
     this->getContainer()->clean();
     this->destroy();
+}
+
+//-----------------------------------------------------------------------------
+
+void SParameters::onChangeEnum(int value)
+{
+    const QObject* sender = this->sender();
+    const QString key     = sender->property("key").toString();
+
+    const QComboBox* box = dynamic_cast<const QComboBox*>(sender);
+
+    SLM_ASSERT("Wrong widget type", box);
+
+    QString selection = box->itemText(value);
+
+    this->signal<EnumChangedSignalType>(ENUM_CHANGED_SIG)->asyncEmit(selection.toStdString(),
+                                                                     key.toStdString());
 }
 
 //-----------------------------------------------------------------------------
@@ -487,7 +523,7 @@ void SParameters::createColorWidget(QGridLayout& layout, int row, const std::str
 
     QPushButton* colourButton = new QPushButton("Color");
     colourButton->setToolTip(tr("Selected color"));
-    colourButton->setMinimumSize (120,35);
+    colourButton->setMinimumSize(120, 35);
 
     std::string colorStr = "#ffffffff";
     if(!defaultValue.empty())
@@ -520,7 +556,7 @@ void SParameters::createColorWidget(QGridLayout& layout, int row, const std::str
     layout.addWidget(colourButton, row, 2);
     layout.addWidget(resetButton, row, 5);
 
-    QObject::connect(colourButton, SIGNAL(clicked ()), this, SLOT(onColorButton( )));
+    QObject::connect(colourButton, SIGNAL(clicked()), this, SLOT(onColorButton( )));
 
     // Connect reset button to the button
     m_resetMapper->setMapping(resetButton, colourButton);
@@ -590,7 +626,6 @@ void SParameters::createDoubleWidget(QGridLayout& layout, int row, const std::st
     }
 }
 
-
 //-----------------------------------------------------------------------------
 
 void SParameters::createIntegerSliderWidget(QGridLayout& layout, int row, const std::string& key,
@@ -650,7 +685,6 @@ void SParameters::createIntegerSliderWidget(QGridLayout& layout, int row, const 
     slider->setProperty(propName.c_str(), QVariant::fromValue< QSlider*>(slider));
 }
 
-
 //-----------------------------------------------------------------------------
 
 void SParameters::createIntegerSpinWidget(QGridLayout& layout, int row, const std::string& key,
@@ -698,6 +732,31 @@ void SParameters::createIntegerSpinWidget(QGridLayout& layout, int row, const st
         }
     }
 }
+
+//-----------------------------------------------------------------------------
+
+void SParameters::createEnumWidget(QGridLayout& layout, int row, const std::string& key,
+                                   const std::string& defaultValue,
+                                   const std::vector<std::string>& values)
+{
+    QComboBox* menu = new QComboBox();
+    menu->setProperty("key", QString(key.c_str()));
+    int idx = 0;
+    for(const auto& choice : values)
+    {
+        menu->insertItem(idx, choice.c_str());
+        ++idx;
+    }
+
+    layout.addWidget(menu, row, 2);
+
+    QObject::connect(menu, SIGNAL(currentIndexChanged(int)), this, SLOT(onChangeEnum(int)));
+
+    //Set the comboBox to the default value
+    menu->setCurrentText(QString::fromStdString(defaultValue));
+
+}
+
 //-----------------------------------------------------------------------------
 
 }   //namespace editor
