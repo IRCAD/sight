@@ -50,6 +50,7 @@ namespace visuVTKAdaptor
             <config renderer="default" picker="default" transform="..."/>
         </adaptor>
    @endcode
+ * @subsection Configuration Configuration
  * - \b transform : transformation matrix applied to the current landmark.
  *
  */
