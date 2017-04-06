@@ -132,7 +132,10 @@ void SFrameGrabber::startCamera()
 
 void SFrameGrabber::pauseCamera()
 {
-    m_timer->isRunning() ? m_timer->stop() : m_timer->start();
+    if (m_timer)
+    {
+        m_timer->isRunning() ? m_timer->stop() : m_timer->start();
+    }
 }
 
 // -----------------------------------------------------------------------------
