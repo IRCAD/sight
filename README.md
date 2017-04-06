@@ -20,7 +20,9 @@ Applications
 Install
 =======
 
-See how to install *FW4SPL* [here](http://fw4spl.readthedocs.org/en/dev/Installation/index.html).
+See how to install fw4spl :
+ - [stable version](http://fw4spl.readthedocs.org/en/master/Installation/index.html)
+ - [latest version](http://fw4spl.readthedocs.org/en/dev/Installation/index.html)
 
 To be able to compile the code in this repository, you need first to build Ogre3D library. So in your *fw4spl-deps* build, you must set the *ENABLED_OGRE_DEPS* CMake variable to *ON* and call *'make ogre'*. Then to add this repository to your project build, you must add the path of the repository to the *ADDITIONAL_PROJECTS* CMake variable (multiple paths can be given by separating them with semicolons).
 
