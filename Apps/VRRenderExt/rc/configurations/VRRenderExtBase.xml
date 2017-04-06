@@ -203,6 +203,7 @@
         <start uid="mainFrame" />
         <start uid="progress_statusbar" />
         <start uid="activitySeriesUpdater" />
+        <start uid="actionSaveActivity" />
 
     </config>
 </extension>
