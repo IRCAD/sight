@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,7 +9,6 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/helper.hpp>
 #include <fwRuntime/Runtime.hpp>
-
 
 namespace fwServices
 {
@@ -72,20 +71,20 @@ void ServiceConfig::parseBundleInformation()
 //-----------------------------------------------------------------------------
 
 void ServiceConfig::addServiceConfigInfo
-    (   const std::string & configId,
-    const std::string & service,
-    const std::string & desc,
+    (   const std::string& configId,
+    const std::string& service,
+    const std::string& desc,
     ::fwRuntime::ConfigurationElement::csptr config)
 {
     ::fwCore::mt::WriteLock lock(m_registryMutex);
 
-    OSLM_DEBUG( "New service config registring : "
+    OSLM_DEBUG( "New service config registering : "
                 << " configId = " << configId
                 << " service = " << service
                 << " desc = " << desc
                 );
 
-    SLM_ASSERT("The service config with the id "<< configId <<" already exist.",
+    SLM_ASSERT("The service config with the id "<< configId <<" already exists.",
                m_reg.find( configId ) == m_reg.end() );
 
     ServiceConfigInfo::sptr info = ServiceConfigInfo::New();
@@ -111,8 +110,8 @@ void ServiceConfig::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-::fwRuntime::ConfigurationElement::csptr ServiceConfig::getServiceConfig( const std::string & configId,
-                                                                          const std::string &serviceImpl ) const
+::fwRuntime::ConfigurationElement::csptr ServiceConfig::getServiceConfig( const std::string& configId,
+                                                                          const std::string& serviceImpl ) const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( configId );
@@ -125,7 +124,7 @@ void ServiceConfig::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-const std::string& ServiceConfig::getConfigDesc( const std::string & configId ) const
+const std::string& ServiceConfig::getConfigDesc( const std::string& configId ) const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     Registry::const_iterator iter = m_reg.find( configId );
