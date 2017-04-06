@@ -6,11 +6,10 @@
 
 #include "UtilsTest.hpp"
 
+#ifdef WIN32
+#define UIVISUOGRE_EXPORTS
+#endif
 #include "../../../src/uiVisuOgre/helper/Utils.cpp"
-
-#include <OGRE/OgreColourValue.h>
-
-#include <QColor>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::uiVisuOgre::ut::UtilsTest );

@@ -1,6 +1,6 @@
 
 set( NAME VRViewer )
-set( VERSION 0.1 )
+set( VERSION 0.2 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
@@ -10,6 +10,7 @@ set( REQUIREMENTS
     gui
     guiQt
     io
+    ioActivity
     ioData
     ioAtoms
     ioDicom
@@ -29,6 +30,7 @@ set( REQUIREMENTS
     material
     media
     preferences
+    rdTools
     )
 
 bundleParam(appXml2 PARAM_LIST config PARAM_VALUES VRViewer_Extension)
