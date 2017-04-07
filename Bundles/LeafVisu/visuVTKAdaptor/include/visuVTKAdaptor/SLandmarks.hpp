@@ -172,6 +172,9 @@ private:
 
     /// Counter to switch color for selected point: (even: green, odd: point default color)
     size_t m_count;
+
+    /// boolean to indicates if the transform is present
+    bool m_hasTransform;
 };
 
 } //namespace visuVTKAdaptor

@@ -235,7 +235,8 @@ protected:
 
 SLandmarks::SLandmarks() throw() :
     m_noSelectionCommand(nullptr),
-    m_count(0)
+    m_count(0),
+    m_hasTransform(false)
 {
     this->newSlot(s_ADD_POINT_SLOT, &SLandmarks::addPoint, this);
     this->newSlot(s_INSERT_POINT_SLOT, &SLandmarks::insertPoint, this);
@@ -260,6 +261,12 @@ SLandmarks::~SLandmarks() throw()
 
 void SLandmarks::doConfigure() throw(fwTools::Failed)
 {
+    SLM_ASSERT( "Wrong config name specified.", m_configuration->getName() == "config" );
+    if ( m_configuration->hasAttribute( "transform" ) )
+    {
+        m_hasTransform = true;
+    }
+
 }
 
 //------------------------------------------------------------------------------
@@ -645,8 +652,6 @@ vtkSmartPointer< vtkHandleWidget > SLandmarks::newHandle(const ::fwData::Landmar
                                                          const std::string& groupName,
                                                          size_t pointIndex)
 {
-    vtkTransform* transform = m_renderService.lock()->getOrAddVtkTransform(m_transformId);
-
     const ::fwData::Landmarks::LandmarksGroup& group = landmarks->getGroup(groupName);
     ::fwData::Landmarks::PointType& point = landmarks->getPoint(groupName, pointIndex);
 
@@ -674,15 +679,19 @@ vtkSmartPointer< vtkHandleWidget > SLandmarks::newHandle(const ::fwData::Landmar
     pointRep->SetHandleSize(group.m_size);
     pointRep->SetVisibility(group.m_visibility);
 
-    // apply the transformation matrix on the current selected point
-    double origPoint[4]        = {point[0], point[1], point[2], 1.0};
-    double transformedPoint[4] = {0.0, 0.0, 0.0, 1.0};
-    transform->MultiplyPoint(origPoint, transformedPoint);
-
-    // replace the coordinate of the point
-    for(size_t i = 0; i < point.size(); ++i)
+    if(m_hasTransform)
     {
-        point[i] = transformedPoint[i];
+        vtkTransform* transform = m_renderService.lock()->getOrAddVtkTransform(m_transformId);
+        // apply the transformation matrix on the current selected point
+        const double origPoint[4]  = {point[0], point[1], point[2], 1.0};
+        double transformedPoint[4] = {0.0, 0.0, 0.0, 1.0};
+        transform->MultiplyPoint(origPoint, transformedPoint);
+
+        // replace the coordinate of the point
+        for(size_t i = 0; i < point.size(); ++i)
+        {
+            point[i] = transformedPoint[i];
+        }
     }
 
     pointRep->SetWorldPosition(point.data());
