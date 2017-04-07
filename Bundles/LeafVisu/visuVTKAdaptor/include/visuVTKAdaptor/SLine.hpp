@@ -76,6 +76,8 @@ protected:
     VISUVTKADAPTOR_API void doConfigure() throw(::fwTools::Failed);
     VISUVTKADAPTOR_API void doSwap() throw(::fwTools::Failed);
 
+private:
+
     void buildPipeline();
     void updateLine();
 

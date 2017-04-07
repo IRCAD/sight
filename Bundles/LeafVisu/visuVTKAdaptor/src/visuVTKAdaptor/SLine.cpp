@@ -185,9 +185,9 @@ void SLine::buildPipeline()
         stippleImage->AllocateScalars(VTK_UNSIGNED_CHAR, 4);
 
         // fill the image
-        unsigned char* iptr = (unsigned char*) stippleImage->GetScalarPointer( 0, 0, 0 );
+        unsigned char* iptr = static_cast<unsigned char*>(stippleImage->GetScalarPointer( 0, 0, 0 ));
 
-        std::memset(iptr, 0, 8 * sizeof(unsigned char));
+        std::memset(iptr, 0, 8 );
         iptr[0] = static_cast<unsigned char>(m_color->red() * 255.0f);
         iptr[1] = static_cast<unsigned char>(m_color->green() * 255.0f);
         iptr[2] = static_cast<unsigned char>(m_color->blue() * 255.0f);
