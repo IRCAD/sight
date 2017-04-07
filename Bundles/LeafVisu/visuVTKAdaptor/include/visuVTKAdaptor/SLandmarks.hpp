@@ -18,6 +18,7 @@
 
 #include <vtkHandleWidget.h>
 #include <vtkSmartPointer.h>
+#include <vtkTransform.h>
 
 class vtkCommand;
 class vtkActor2D;
