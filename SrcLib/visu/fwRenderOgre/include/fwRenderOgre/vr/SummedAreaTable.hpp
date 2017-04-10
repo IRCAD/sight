@@ -84,7 +84,7 @@ private:
     /// Scene manager.
     ::Ogre::SceneManager* m_sceneManager;
 
-    /// Camera used
+    /// Camera used as a viewport of each slice of the SAT buffers.
     ::Ogre::Camera* m_dummyCamera;
 
     /// The pass orientation, horizontal = 0, vertical = 1, z-wise = 2.

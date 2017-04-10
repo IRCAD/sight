@@ -104,7 +104,7 @@ private:
     void moveAlongAxis();
 
     /// Sets the dimensions for the related members, and also creates a movable plane to instanciate the entity.
-    Ogre::MovablePlane* setDimensions();
+    ::Ogre::MovablePlane* setDimensions();
 
     /// Indicates whether the plane is used by a 3D negato or not
     bool m_is3D;

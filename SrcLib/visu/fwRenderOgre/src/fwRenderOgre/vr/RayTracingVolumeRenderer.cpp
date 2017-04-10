@@ -326,7 +326,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_layer(layer),
     m_fullScreenQuad(new ::Ogre::Rectangle2D())
 {
-    m_fullScreenQuad->setCorners(-1,1,1,-1);
+    m_fullScreenQuad->setCorners(-1, 1, 1, -1);
+
     m_gridSize  = {{ 2, 2, 2 }};
     m_brickSize = {{ 8, 8, 8 }};
 
@@ -346,7 +347,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                             ::Ogre::PF_FLOAT32_GR,
                                             ::Ogre::TU_RENDERTARGET ));
 
-        ::Ogre::RenderTexture* renderTexture = m_entryPointsTextures.front()->getBuffer()->getRenderTarget();
+        ::Ogre::RenderTexture* renderTexture = m_entryPointsTextures.back()->getBuffer()->getRenderTarget();
         renderTexture->addViewport(m_camera);
     }
 
@@ -461,13 +462,13 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     }
 
     // Vertex shader
-    Ogre::GpuProgramPtr vsp = gpm->createProgram("RTV_VP", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                                                 "RenderQuad_VP.glsl", Ogre::GPT_VERTEX_PROGRAM, "glsl");
+    ::Ogre::GpuProgramPtr vsp = gpm->createProgram("RTV_VP", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                                                   "RenderQuad_VP.glsl", ::Ogre::GPT_VERTEX_PROGRAM, "glsl");
     vsp->escalateLoading();
     vsp->load();
 
     // Fragment shader
-    ::Ogre::GpuProgramPtr fsp = gpm->createProgram("RTV_FP", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+    ::Ogre::GpuProgramPtr fsp = gpm->createProgram("RTV_FP", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                                                    "RayTracedVolume_FP.glsl", ::Ogre::GPT_FRAGMENT_PROGRAM, "glsl");
     fsp->setParameter("attach", "TransferFunction_FP");
     if(m_fpPPDefines.size() > 0)
@@ -478,30 +479,30 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     fsp->load();
 
     // Material
-    ::Ogre::MaterialPtr mat = mm->create("RTV_Mat", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    ::Ogre::MaterialPtr mat = mm->create("RTV_Mat", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
     // Get the already created pass through the already created technique
-    Ogre::Technique* tech = mat->getTechnique(0);
-    Ogre::Pass* pass      = tech->getPass(0);
+    ::Ogre::Technique* tech = mat->getTechnique(0);
+    ::Ogre::Pass* pass      = tech->getPass(0);
     pass->setCullingMode(::Ogre::CULL_NONE);
     pass->setSceneBlending(::Ogre::SBF_SOURCE_ALPHA, ::Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
 
     pass->setVertexProgram("RTV_VP");
     pass->getVertexProgramParameters()->setNamedAutoConstant("u_worldViewProj",
-                                                             Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+                                                             ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
 
     pass->setFragmentProgram("RTV_FP");
     pass->getFragmentProgramParameters()->setNamedAutoConstant("u_viewportWidth",
-                                                               Ogre::GpuProgramParameters::ACT_VIEWPORT_WIDTH);
+                                                               ::Ogre::GpuProgramParameters::ACT_VIEWPORT_WIDTH);
     pass->getFragmentProgramParameters()->setNamedAutoConstant("u_viewportHeight",
-                                                               Ogre::GpuProgramParameters::ACT_VIEWPORT_HEIGHT);
+                                                               ::Ogre::GpuProgramParameters::ACT_VIEWPORT_HEIGHT);
     pass->getFragmentProgramParameters()->setNamedAutoConstant("u_clippingNear",
-                                                               Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
+                                                               ::Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
     pass->getFragmentProgramParameters()->setNamedAutoConstant("u_clippingFar",
-                                                               Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
+                                                               ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
     pass->getFragmentProgramParameters()->setNamedAutoConstant("u_renderTargetFlipping",
-                                                               Ogre::GpuProgramParameters::ACT_RENDER_TARGET_FLIPPING);
+                                                               ::Ogre::GpuProgramParameters::ACT_RENDER_TARGET_FLIPPING);
     pass->getFragmentProgramParameters()->setNamedAutoConstant("u_cameraPos",
-                                                               Ogre::GpuProgramParameters::ACT_LOD_CAMERA_POSITION);
+                                                               ::Ogre::GpuProgramParameters::ACT_LOD_CAMERA_POSITION);
     pass->getFragmentProgramParameters()->addSharedParameters("RTVParams");
 
     // We use this map to keep track of the texture units IDs
@@ -612,7 +613,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     }
 
     // Create compositor
-    ::Ogre::CompositorPtr comp = cm.create("RTV_Comp", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    ::Ogre::CompositorPtr comp = cm.create("RTV_Comp", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
     {
         ::Ogre::CompositionTechnique* ct = comp->createTechnique();
         {
@@ -1134,26 +1135,40 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
         ::Ogre::Viewport* entryPtsVp = entryPtsText->getBuffer()->getRenderTarget()->getViewport(0);
         entryPtsVp->clear(::Ogre::FBT_COLOUR | ::Ogre::FBT_DEPTH | ::Ogre::FBT_STENCIL, ::Ogre::ColourValue::White);
 
-        Ogre::RenderSystem* rs = Ogre::Root::getSingleton().getRenderSystem();
+        // FIRST STEP - Back Faces max: find the exit points of the geometry.
+        ::Ogre::RenderSystem* rs = ::Ogre::Root::getSingleton().getRenderSystem();
         rs->setStencilCheckEnabled(true);
-        rs->setStencilBufferParams(Ogre::CMPF_ALWAYS_PASS, 0x1, 0xFFFFFFFF, 0xFFFFFFFF, Ogre::SOP_KEEP, Ogre::SOP_KEEP, Ogre::SOP_REPLACE);
 
-        // 1st step: front faces
+        // Set the stencil buffer to 1 where back faces are rasterized.
+        rs->setStencilBufferParams(::Ogre::CMPF_ALWAYS_PASS, 0x1, 0xFFFFFFFF, 0xFFFFFFFF, ::Ogre::SOP_KEEP,
+                                   ::Ogre::SOP_KEEP,
+                                   ::Ogre::SOP_REPLACE);
+
         ::Ogre::Pass* pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass("BackFacesMax");
         m_sceneManager->manualRender(&renderOp, pass, entryPtsVp, worldMat, m_camera->getViewMatrix(), projMat);
 
+        // SECOND STEP - Back Faces: find the closest back faces and initialize the entry points with their depths.
         rs->setStencilCheckEnabled(false);
         pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass("BackFaces");
         m_sceneManager->manualRender(&renderOp, pass, entryPtsVp, worldMat, m_camera->getViewMatrix(), projMat);
 
+        // THIRD STEP - Front Faces: update the entry points depths with the closest front faces occluding closest back
+        // faces.
         rs->setStencilCheckEnabled(true);
-        rs->setStencilBufferParams(Ogre::CMPF_ALWAYS_PASS, 0x2, 0xFFFFFFFF, 0xFFFFFFFF, Ogre::SOP_KEEP, Ogre::SOP_KEEP, Ogre::SOP_REPLACE);
 
-        // 2nd step: back faces - front faces to have directions
+        // Set the stencil buffer to 2 where front faces are rasterized.
+        rs->setStencilBufferParams(::Ogre::CMPF_ALWAYS_PASS, 0x2, 0xFFFFFFFF, 0xFFFFFFFF, ::Ogre::SOP_KEEP,
+                                   ::Ogre::SOP_KEEP,
+                                   ::Ogre::SOP_REPLACE);
+
         pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass("FrontFaces");
         m_sceneManager->manualRender(&renderOp, pass, entryPtsVp, worldMat, m_camera->getViewMatrix(), projMat);
 
-        rs->setStencilBufferParams(Ogre::CMPF_EQUAL, 0x1, 0xFFFFFFFF);
+        // FOURTH STEP - Near Plane: update the entry points depths with the near plane depth when when it is inside a
+        // brick.
+        // The stencil test passes if the current stencil buffer value is equal to 1.
+        // That is, where no front faces have been rasterized.
+        rs->setStencilBufferParams(::Ogre::CMPF_EQUAL, 0x1, 0xFFFFFFFF);
 
         ::Ogre::Matrix4 identity;
         pass = m_proxyGeometryGenerator->getMaterial()->getTechnique(0)->getPass("NearPlane");
@@ -1162,7 +1177,6 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 
         rs->setStencilCheckEnabled(false);
         rs->setStencilBufferParams();
-
     }
 }
 
@@ -1187,7 +1201,7 @@ void RayTracingVolumeRenderer::computeRealFocalLength()
 
 //-----------------------------------------------------------------------------
 
-Ogre::Matrix4 RayTracingVolumeRenderer::frustumShearTransform(float angle) const
+::Ogre::Matrix4 RayTracingVolumeRenderer::frustumShearTransform(float angle) const
 {
     ::Ogre::Matrix4 shearTransform = ::Ogre::Matrix4::IDENTITY;
 

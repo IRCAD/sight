@@ -38,7 +38,7 @@ vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
 {
     // TODO: Simplify this -> uniforms
     vec3 screenPos = vec3(gl_FragCoord.xy / vec2(u_viewportWidth, u_viewportHeight), depth);
-    //if(u_renderTargetFlipping < 0)
+    if(u_renderTargetFlipping < 0)
     {
         screenPos.y = 1.0 - screenPos.y;
     }
@@ -65,7 +65,7 @@ void composite(inout vec4 dest, in vec4 src)
 
 //-----------------------------------------------------------------------------
 
-void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float sampleDistance, inout vec4 IC_RayTracing, inout vec4 IC_JFA)
+void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, inout vec4 IC_RayTracing, inout vec4 IC_JFA)
 {
 #if IDVR == 1 // MImP
     IC_JFA = vec4(0.0);
@@ -87,7 +87,7 @@ void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 
     float nbSamples = 0.0f;
 
-    for(float t = 0; iterCount < 65000 && t < rayLength; iterCount += 1, t += sampleDistance)
+    for(float t = 0; iterCount < 65000 && t < rayLength; iterCount += 1, t += u_sampleDistance)
     {
         float maskValue = texture(u_mask, rayPos).r;
 
@@ -106,7 +106,7 @@ void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 // We will ponder those samples by the lowest important samples
         if(maskValue > edge)
         {
-            IC_RayTracing = vec4(nbSamples, 0.0f, 0.0f, 1.0f);
+            IC_RayTracing = vec4(nbSamples, 0., 0., 1.);
             break;
         }
 #endif
@@ -140,11 +140,11 @@ void main(void)
     vec3 rayPos = rayEntry;
 
 #if IDVR == 1
-    launchRay(rayPos, rayDir, rayLength, u_sampleDistance, mrt_IC_RayTracing, mrt_IC_JFA);
+    launchRay(rayPos, rayDir, rayLength, mrt_IC_RayTracing, mrt_IC_JFA);
 #else
 #if IDVR == 2 || IDVR == 3
     vec4 mrt_IC_JFA = vec4(0.0, 0.0, 0.0, 1.0);
-    launchRay(rayPos, rayDir, rayLength, u_sampleDistance, mrt_IC_RayTracing, mrt_IC_JFA);
+    launchRay(rayPos, rayDir, rayLength, mrt_IC_RayTracing, mrt_IC_JFA);
 #endif
 #endif
 }

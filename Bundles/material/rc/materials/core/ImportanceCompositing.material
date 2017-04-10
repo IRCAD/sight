@@ -17,6 +17,8 @@ fragment_program IDVR_MImP_FP glsl
     }
 }
 
+//----------------------------------------------
+
 fragment_program IDVR_AImC_FP glsl
 {
     source ImportanceCompositing_FP.glsl

@@ -349,7 +349,7 @@ void main(void)
     vec4 importance = texture(u_IC, uv);
 
     // If we have an importance factor, we move the ray accordingly
-    if(importance.r > 0.0f)
+    if(importance.r > 0.)
     {
         rayEntry = importance.rgb;
     }
