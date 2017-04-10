@@ -20,8 +20,6 @@
 
 #include <fwData/TransformationMatrix3D.hpp>
 
-#include <arlcore/MatrixR.h>
-
 #include <boost/container/vector.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
@@ -79,7 +77,7 @@ void SPoseFrom2d::starting() throw (::fwTools::Failed)
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
     //3D Points
-    const float halfWidth = m_patternWidth * .5;
+    const float halfWidth = static_cast<float>(m_patternWidth) * .5f;
 
     m_3dModel.push_back( ::cv::Point3f(-halfWidth, halfWidth, 0));
     m_3dModel.push_back( ::cv::Point3f(halfWidth, halfWidth, 0));

@@ -9,12 +9,10 @@
 
 /**
  * @brief       The namespace registrationARL contains services to do registration with arlcore.
- * @namespace   registrationARL
  */
 namespace registrationARL
 {
 
 } // namespace registrationARL
-
 
 #endif /* __REGISTRATIONARL_NAMESPACE_HPP__ */
