@@ -17,7 +17,7 @@ namespace ioTimeline
 {
 
 /**
- * @brief Thi service allows to save the timeline matrices in a csv file in a folder.
+ * @brief This service allows the user to save the timeline matrices in a csv file.
  *
  * @note The method 'updating' allows to save the timeline matrix with the current timestamp. If you want to save all
  * the
@@ -26,6 +26,8 @@ namespace ioTimeline
  * @section Slots Slots
  * - \b startRecord() : start recording
  * - \b stopRecord() : stop recording
+ * - \b write(::fwCore::HiResClock::HiResClockType) : write matrix in a csv file
+ * - \b saveMatrix(::fwCore::HiResClock::HiResClockType) : save current matrices
  *
  * @section XML XML Configuration
  *
@@ -75,16 +77,16 @@ protected:
 
 private:
 
-    /// SLOT: save current matrices.
+    /// SLOT: Save current matrices.
     void saveMatrix(::fwCore::HiResClock::HiResClockType timestamp);
 
-    /// Write matrices in csv file
+    /// SLOT: Write matrices in csv file
     void write(::fwCore::HiResClock::HiResClockType timestamp);
 
     /// SLOT: Start recording
     void startRecord();
 
-    /// SLOT: Strop recording
+    /// SLOT: Stop recording
     void stopRecord();
 
     bool m_isRecording; ///< flag if the service is recording.
