@@ -11,8 +11,9 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile_config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin_config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/generic_install.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/helper.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/modules/PrecompiledHeader.cmake)
 
+set(ENABLE_PCH ON CACHE BOOL "Use pre-compiled headers to speedup the compilation")
+include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/modules/PrecompiledHeader.cmake)
 
 if(MSVC)
     if(NOT DEFINED CMAKE_PCH_COMPILER_TARGETS)
@@ -58,8 +59,6 @@ else()
         set(EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
     endif()
 endif()
-
-set(ENABLE_PCH ON CACHE BOOL "Use pre-compiled headers to speedup the compilation")
 
 set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/)
 
