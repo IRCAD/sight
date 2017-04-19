@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwServices/IService.hpp"
+
 #include "fwServices/registry/ActiveWorkers.hpp"
 #include "fwServices/registry/ObjectService.hpp"
 #include "fwServices/registry/Proxy.hpp"
@@ -18,6 +19,7 @@
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwThread/Worker.hpp>
+
 #include <fwTools/fwID.hpp>
 
 #include <boost/property_tree/ptree.hpp>
@@ -45,10 +47,10 @@ int IService::s_version = 1;
 //-----------------------------------------------------------------------------
 
 IService::IService() :
-    m_configuration ( new ::fwRuntime::EConfigurationElement("EmptyConfigurationElement") ),
-    m_globalState ( STOPPED ),
-    m_updatingState ( NOTUPDATING ),
-    m_configurationState ( UNCONFIGURED )
+    m_configuration( new ::fwRuntime::EConfigurationElement("EmptyConfigurationElement") ),
+    m_globalState( STOPPED ),
+    m_updatingState( NOTUPDATING ),
+    m_configurationState( UNCONFIGURED )
 {
     newSignal<StartedSignalType>( s_STARTED_SIG );
     newSignal<UpdatedSignalType>( s_UPDATED_SIG );
@@ -202,16 +204,7 @@ IService::ConfigType IService::getConfigTree() const
     return ::fwRuntime::Convert::toPropertyTree(this->getConfiguration());
 }
 
-
 ////-----------------------------------------------------------------------------
-//
-//bool IService::checkConfiguration()
-//{
-//    ::std::stringstream stream ;
-//    bool checkingResult = ::fwServices::validation::checkService( this->className() , this->m_configuration , stream ) ;
-//    OSLM_TRACE("Configuration checking result for" << this->className() << " : " << stream.str() ) ;
-//    return checkingResult ;
-//}
 
 //-----------------------------------------------------------------------------
 
@@ -238,7 +231,7 @@ void IService::configure()
 void IService::reconfiguring() throw ( ::fwTools::Failed )
 {
     OSLM_FATAL(
-        "If this method (reconfiguring) is called, it must be overrided in the implementation ("<<this->getClassname()<<", "<< this->getID() <<
+        "If this method (reconfiguring) is called, it must be overriden in the implementation ("<<this->getClassname()<<", "<< this->getID() <<
         ")" );
 }
 
@@ -610,7 +603,7 @@ void IService::autoConnect()
         }
         else if(m_serviceConfig.m_objects.size() == 0)
         {
-            // Only use the old callback automatically in case we put a composite as the only one data
+            // Only use the old callback automatically in case we put a composite as the only data
             connections = this->getObjSrvConnections();
         }
 

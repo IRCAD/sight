@@ -1,12 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwServices/registry/AppConfig.hpp"
 
-#include <fwData/Composite.hpp>
 #include <fwData/Composite.hpp>
 #include <fwData/String.hpp>
 
@@ -98,10 +97,10 @@ void AppConfig::parseBundleInformation()
 //-----------------------------------------------------------------------------
 
 void AppConfig::addAppInfo
-    (   const std::string & configId,
-    const std::string & group,
-    const std::string & desc,
-    const AppInfo::ParametersType & parameters,
+    (   const std::string& configId,
+    const std::string& group,
+    const std::string& desc,
+    const AppInfo::ParametersType& parameters,
     ::fwRuntime::ConfigurationElement::csptr config,
     const std::string bundleId,
     const std::string bundleVersion)
@@ -112,7 +111,7 @@ void AppConfig::addAppInfo
                 << " configId =" << configId
                 );
 
-    SLM_ASSERT("The app config with the id = "<< configId <<" already exist.", m_reg.find( configId ) == m_reg.end() );
+    SLM_ASSERT("The app config with the id = "<< configId <<" already exists.", m_reg.find( configId ) == m_reg.end() );
 
     AppInfo::sptr info = AppInfo::New();
     info->group         = group;
@@ -141,7 +140,7 @@ void AppConfig::clearRegistry()
 //-----------------------------------------------------------------------------
 
 ::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig(
-    const std::string & configId,
+    const std::string& configId,
     const FieldAdaptorType fieldAdaptors ) const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
@@ -164,7 +163,7 @@ void AppConfig::clearRegistry()
         {
             fields[key.str()] = iter->second;
         }
-        else if ( param.second !=  s_mandatoryParameterIdentifier)
+        else if ( param.second != s_mandatoryParameterIdentifier)
         {
             fields[key.str()] = param.second;
         }
@@ -180,7 +179,7 @@ void AppConfig::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig( const std::string & configId,
+::fwRuntime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig( const std::string& configId,
                                                                               ::fwData::Composite::csptr replaceFields )
 const
 {
@@ -203,7 +202,7 @@ std::vector< std::string > AppConfig::getAllConfigs() const
 
 //-----------------------------------------------------------------------------
 
-std::vector< std::string > AppConfig::getConfigsFromGroup(const std::string & group) const
+std::vector< std::string > AppConfig::getConfigsFromGroup(const std::string& group) const
 {
     ::fwCore::mt::ReadLock lock(m_registryMutex);
     std::vector< std::string > ids;
@@ -223,7 +222,7 @@ std::vector< std::string > AppConfig::getConfigsFromGroup(const std::string & gr
 FieldAdaptorType AppConfig::compositeToFieldAdaptor( ::fwData::Composite::csptr fieldAdaptors ) const
 {
     FieldAdaptorType fields;
-    for(const ::fwData::Composite::value_type &elem :  *fieldAdaptors )
+    for(const ::fwData::Composite::value_type& elem :  * fieldAdaptors )
     {
         fields[elem.first] = ::fwData::String::dynamicCast( elem.second )->value();
     }
@@ -254,7 +253,7 @@ std::string AppConfig::getUniqueIdentifier(const std::string& serviceUid )
 //-----------------------------------------------------------------------------
 
 ::fwRuntime::EConfigurationElement::sptr AppConfig::adaptConfig( ::fwRuntime::ConfigurationElement::csptr _cfgElem,
-                                                                 const FieldAdaptorType & fieldAdaptors ) const
+                                                                 const FieldAdaptorType& fieldAdaptors ) const
 {
     SLM_TRACE_FUNC();
 
@@ -277,7 +276,7 @@ std::string AppConfig::getUniqueIdentifier(const std::string& serviceUid )
 
 //-----------------------------------------------------------------------------
 
-std::string AppConfig::adaptField( const std::string & _str, const FieldAdaptorType & fieldAdaptors ) const
+std::string AppConfig::adaptField( const std::string& _str, const FieldAdaptorType& fieldAdaptors ) const
 {
     std::string newStr = _str;
     if(!_str.empty())
@@ -286,7 +285,7 @@ std::string AppConfig::adaptField( const std::string & _str, const FieldAdaptorT
         {
             std::stringstream sstr;
             sstr << "(.*)" << fieldAdaptor.first << "(.*)";
-            ::boost::regex machine_regex ( sstr.str() );
+            ::boost::regex machine_regex( sstr.str() );
             if ( ::boost::regex_match( _str, machine_regex ) )
             {
                 std::stringstream machine_format;
@@ -302,7 +301,7 @@ std::string AppConfig::adaptField( const std::string & _str, const FieldAdaptorT
 
 //-----------------------------------------------------------------------------
 
-std::shared_ptr< ::fwRuntime::Bundle > AppConfig::getBundle(const std::string & configId)
+std::shared_ptr< ::fwRuntime::Bundle > AppConfig::getBundle(const std::string& configId)
 {
     Registry::const_iterator iter = m_reg.find( configId );
     SLM_ASSERT("The id " <<  configId << " is not found in the application configuration registry",
