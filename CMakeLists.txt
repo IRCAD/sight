@@ -11,8 +11,9 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile_config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin_config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/generic_install.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/helper.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/modules/PrecompiledHeader.cmake)
 
+set(ENABLE_PCH ON CACHE BOOL "Use pre-compiled headers to speedup the compilation")
+include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/modules/PrecompiledHeader.cmake)
 
 if(MSVC)
     if(NOT DEFINED CMAKE_PCH_COMPILER_TARGETS)
@@ -59,7 +60,7 @@ else()
     endif()
 endif()
 
-set(ENABLE_PCH ON CACHE BOOL "Use pre-compiled headers to speedup the compilation")
+set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/)
 
 # Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH
 if(EXTERNAL_LIBRARIES)
@@ -145,8 +146,6 @@ if(MSVC_IDE)
 endif()
 
 set(LIBRARY_OUTPUT_DIR lib)
-
-set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/)
 
 if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
     #http://stackoverflow.com/questions/6802903/c-ifdef-mac-os-x-question
