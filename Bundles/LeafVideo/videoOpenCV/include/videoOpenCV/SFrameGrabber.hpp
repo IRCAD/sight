@@ -49,6 +49,8 @@ namespace videoOpenCV
  * - \b pauseCamera() : Pause the video, it has no effect when playing a camera.
  * - \b loopVideo() : Toggle the loop of the playing.
  * - \b setPositionVideo(int) : Force the current time in the video.
+ * - \b nextImage() : Read the next image (in frame-by-frame mode).
+ * - \b previousImage() : Read the previous image (in frame-by-frame mode).
  *
  * @section XML XML Configuration
  *
@@ -57,6 +59,8 @@ namespace videoOpenCV
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
             <fps>30</fps>
+            <frameByFrame>false</frameByFrame>
+            <createTimestamp>false</createTimestamp>
         </service>
    @endcode
  * @subsection Input Input
@@ -65,6 +69,10 @@ namespace videoOpenCV
  * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
  * @subsection Configuration Configuration
  * - \b fps (optional) : target playback frame rate when playing an image sequence (default: 30).
+ * - \b frameByFrame (optional) : Use frame by frame mode, using nextImage and previousImage
+ *  (only available if reading set of images) (default: false).
+ * - \b createTimestamp (optional) : create a new timestamp instead of using name of image
+ * (only available if reading set of images) (default: false).
  */
 class VIDEOOPENCV_CLASS_API SFrameGrabber : public ::arServices::IGrabber
 {
@@ -78,6 +86,14 @@ public:
 
     /// Destructor. Do nothing.
     VIDEOOPENCV_API virtual ~SFrameGrabber() throw();
+
+    /**
+     * @name Slots API
+     * @{
+     */
+    VIDEOOPENCV_API static const ::fwCom::Slots::SlotKeyType s_NEXT_IMAGE_SLOT;
+    VIDEOOPENCV_API static const ::fwCom::Slots::SlotKeyType s_PREVIOUS_IMAGE_SLOT;
+    ///@}
 
 protected:
 
@@ -107,6 +123,12 @@ protected:
 
     /// SLOT : set the new position in the video.
     virtual void setPosition(int64_t position);
+
+    /// SLOT : read the next image (only in file mode, and if m_frameByFrame is enabled)
+    void nextImage();
+
+    /// SLOT : read the previous image (only in file mode, and if m_frameByFrame is enabled)
+    void previousImage();
 
 private:
 
@@ -149,6 +171,12 @@ private:
 
     /// Mutex to protect concurrent access for m_videoCapture and m_imageToRead
     mutable ::fwCore::mt::Mutex m_mutex;
+
+    /// frame -by-frame mode (true if enabled, false otherwise)
+    bool m_frameByFrame;
+    /// if true: create a new timestamp when reading image, if false: use the name of the image file as timestamp.
+    bool m_createNewTS;
+
 };
 
 } // namespace videoOpenCV

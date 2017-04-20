@@ -36,6 +36,9 @@ namespace videoOpenCV
 
 static const ::fwServices::IService::KeyType s_FRAMETL = "frameTL";
 
+const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_NEXT_IMAGE_SLOT     = "nextImage";
+const ::fwCom::Slots::SlotKeyType SFrameGrabber::s_PREVIOUS_IMAGE_SLOT = "previousImage";
+
 // -----------------------------------------------------------------------------
 
 fwServicesRegisterMacro( ::arServices::IGrabber, ::videoOpenCV::SFrameGrabber, ::arData::FrameTL);
@@ -46,9 +49,13 @@ SFrameGrabber::SFrameGrabber() throw() :
     m_loopVideo(false),
     m_isInitialized(false),
     m_fps(30),
-    m_imageCount(0)
+    m_imageCount(0),
+    m_frameByFrame(false),
+    m_createNewTS(false)
 {
     m_worker = ::fwThread::Worker::New();
+    newSlot(s_NEXT_IMAGE_SLOT, &SFrameGrabber::nextImage, this);
+    newSlot(s_PREVIOUS_IMAGE_SLOT, &SFrameGrabber::previousImage, this);
 }
 
 // -----------------------------------------------------------------------------
@@ -77,6 +84,10 @@ void SFrameGrabber::configuring()  throw ( ::fwTools::Failed )
     ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
 
     m_fps = config.get<unsigned int>("fps", 30);
+
+    m_frameByFrame = config.get<bool>("frameByFrame", false);
+
+    m_createNewTS = config.get<bool>("createTimestamp", false);
 
     OSLM_ASSERT("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps > 0 && m_fps <= 60);
 }
@@ -292,13 +303,24 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
         sigPosition->asyncEmit(0);
 
-        m_timer = m_worker->createTimer();
+        if(m_frameByFrame)
+        {
+            m_timer = m_worker->createTimer();
+            m_timer->setOneShot(true);
+            m_timer->setFunction(std::bind(&SFrameGrabber::grabImage, this));
+            m_timer->start();
+        }
+        else
+        {
+            m_timer = m_worker->createTimer();
 
-        ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(1000/m_fps);
+            ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(1000/m_fps);
 
-        m_timer->setFunction(std::bind(&SFrameGrabber::grabImage, this));
-        m_timer->setDuration(duration);
-        m_timer->start();
+            m_timer->setFunction(std::bind(&SFrameGrabber::grabImage, this));
+            m_timer->setDuration(duration);
+            m_timer->start();
+        }
+
     }
 }
 
@@ -425,8 +447,18 @@ void SFrameGrabber::grabImage()
         const std::string timestampStr = match[1].str();
 
         ::cv::Mat image = ::cv::imread(imagePath.string(), ::cv::IMREAD_UNCHANGED);
+        ::fwCore::HiResClock::HiResClockType timestamp;
 
-        ::fwCore::HiResClock::HiResClockType timestamp = std::stod(timestampStr);
+        //create a new timestamp
+        if(m_createNewTS)
+        {
+            timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
+        }
+        //use the image name as timestamp
+        else
+        {
+            timestamp = std::stod(timestampStr);
+        }
 
         const size_t width  = static_cast<size_t>(image.size().width);
         const size_t height = static_cast<size_t>(image.size().height);
@@ -505,6 +537,47 @@ void SFrameGrabber::setPosition(int64_t position)
     }
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+void SFrameGrabber::nextImage()
+{
+    if(m_frameByFrame)
+    {
+        if(m_imageCount < m_imageToRead.size())
+        {
+            m_timer->stop();
+            m_timer->start();
+        }
+        else
+        {
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Grabber", "No more image to read.");
+        }
+
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SFrameGrabber::previousImage()
+{
+    if(m_frameByFrame)
+    {
+        if(m_imageCount > 1)
+        {
+            m_imageCount = m_imageCount - 2;// m_imageCount is pointing to next image,so -1 = present image
+            m_timer->stop();
+            m_timer->start();
+        }
+        else
+        {
+            ::fwGui::dialog::MessageDialog::showMessageDialog(
+                "Grabber", "No previous image.");
+        }
+
+    }
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace videoOpenCV
