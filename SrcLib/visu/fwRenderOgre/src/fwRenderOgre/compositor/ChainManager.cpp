@@ -97,8 +97,6 @@ void ChainManager::clearCompositorChain(const std::string& _layerId, ::fwRenderO
 
         if(chain.first == "AutoStereo5" || chain.first == "AutoStereo8")
         {
-            SLM_ASSERT("m_autostereoListener should be null", m_autostereoListener == nullptr);
-
             if(m_autostereoListener)
             {
                 ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
