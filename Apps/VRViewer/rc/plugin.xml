@@ -11,6 +11,7 @@
     <requirement id="preferences" />
     <requirement id="ioDicom" />
     <requirement id="ioActivity" />
+    <requirement id="patchMedicalData" />
 
     <xi:include href="configurations/OgreVolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
@@ -61,7 +62,7 @@
             <service uid="ihm" type="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
-                        <name>VRViewer</name>
+                        <name>VRViewer @PROJECT_VERSION@</name>
                         <icon>@BUNDLE_PREFIX@/VRViewer_@DASH_VERSION@/ogre_head.svg</icon>
                         <minSize width="1280" height="720" />
                     </frame>

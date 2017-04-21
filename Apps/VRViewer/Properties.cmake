@@ -1,6 +1,6 @@
 
 set( NAME VRViewer )
-set( VERSION 0.2 )
+set( VERSION 0.3 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
@@ -31,6 +31,7 @@ set( REQUIREMENTS
     media
     preferences
     rdTools
+    patchMedicalData
     )
 
 bundleParam(appXml2 PARAM_LIST config PARAM_VALUES VRViewer_Extension)

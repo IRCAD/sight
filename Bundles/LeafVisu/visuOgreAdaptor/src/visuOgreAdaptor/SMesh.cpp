@@ -298,6 +298,8 @@ void SMesh::doStop() throw(::fwTools::Failed)
     auto& meshMgr = ::Ogre::MeshManager::getSingleton();
     meshMgr.remove(m_ogreMesh->getHandle());
     meshMgr.remove(m_r2vbMesh->getHandle());
+    m_ogreMesh.setNull();
+    m_r2vbMesh.setNull();
 }
 
 //-----------------------------------------------------------------------------

@@ -86,6 +86,9 @@ protected:
     /// Updates the shader parameter values and requests a render of the scene.
     VISUOGREADAPTOR_API virtual void doUpdate() throw ( ::fwTools::Failed );
 
+    /// Clear the mesh pointer.
+    VISUOGREADAPTOR_API virtual void doStop() throw ( ::fwTools::Failed );
+
     /// Set the parameter for a given technique
     VISUOGREADAPTOR_API virtual bool setParameter(::Ogre::Technique& technique);
 
@@ -128,6 +131,8 @@ private:
     ::Ogre::GpuProgramType m_shaderType;
     /// Pointer on the material
     ::Ogre::MaterialPtr m_material;
+    /// Dirty flag to know if we must trigger an update or not
+    bool m_dirty;
 };
 
 } // visuOgreAdaptor

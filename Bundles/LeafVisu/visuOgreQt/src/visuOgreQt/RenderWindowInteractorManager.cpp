@@ -130,15 +130,6 @@ void RenderWindowInteractorManager::disconnectInteractor()
                                                   ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo)), this,
                         SLOT(onInteracted(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo)));
 
-    ::fwServices::IService::sptr renderService      = m_renderService.lock();
-    ::fwRenderOgre::SRender::sptr ogreRenderService = ::fwRenderOgre::SRender::dynamicCast( renderService );
-
-    for(auto layerMap : ogreRenderService->getLayers())
-    {
-        ::fwRenderOgre::Layer::sptr layer = layerMap.second;
-        layer->slot(::fwRenderOgre::Layer::s_DESTROY_SLOT)->asyncRun();
-    }
-
     m_qOgreWidget->destroyWindow();
     m_qOgreWidget = nullptr;
 }

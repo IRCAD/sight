@@ -24,6 +24,7 @@
         <object uid="focalLengthIntVal" type="::fwData::Integer" />
 
         <object uid="vrWidgetsValue" type="::fwData::Boolean" />
+        <object uid="collimation"  type="::fwData::Float" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -59,11 +60,12 @@
             <scene fullscreen="yes" />
             <background topColor="#000000" bottomColor="#000000" topScale="0.7" bottomScale="1.0" />
 
-            <layer id="default" depth="1" compositors="Default" mode3D="AutoStereo8"/>
+            <layer id="default" depth="1" stereoMode="AutoStereo8"/>
 
             <adaptor uid="interactorAdaptor" start="yes" />
-            <adaptor uid="${VRAdaptor}" start="yes" />
             <adaptor uid="cameraAdaptor" start="yes" />
+            <adaptor uid="${VRAdaptor}" start="yes" />
+            <adaptor uid="compositorAdaptor" start="yes" />
         </service>
 
         <service uid="interactorAdaptor" type="::visuOgreAdaptor::SInteractorStyle" >
@@ -82,10 +84,15 @@
             <config layer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" />
         </service>
 
+        <service uid="compositorAdaptor" type="::visuOgreAdaptor::SCompositorParameter">
+            <inout key="param" uid="collimation" />
+            <config layer="default" compositorName="AutoStereo8" parameter="u_collimation" shaderType="fragment" />
+        </service>
+
         <service uid="volumeRenderingEditor" type="::guiQt::editor::SParameters" autoConnect="no">
             <parameters>
-                <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="512" />
-                <param type="int" name="Focal length" key="focalLength" defaultValue="50" min="0" max="100" />
+                <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="1024" />
+                <param type="double" name="Collimation" key="u_collimation" defaultValue="0" min="-20" max="20" />
             </parameters>
         </service>
 
@@ -103,6 +110,11 @@
                 <parent wid="${TOOLBAR_WID_PARENT}" />
             </registry>
         </service>
+
+        <connect>
+            <signal>volumeRenderingEditor/doubleChanged</signal>
+            <slot>compositorAdaptor/setDoubleParameter</slot>
+        </connect>
 
         <connect>
             <signal>volumeRenderingEditor/intChanged</signal>

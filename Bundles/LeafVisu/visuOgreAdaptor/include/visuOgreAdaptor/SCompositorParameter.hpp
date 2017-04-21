@@ -22,7 +22,7 @@ class CompositorListener;
  * @section XML XML Configuration
  * @code{.xml}
     <adaptor uid="paramAdaptor" class="::visuOgreAdaptor::SCompositorParameter">
-        <config renderer="layerName" compositorName="compositor" parameter="u_value" shaderType="fragment" />
+        <config layer="layerName" compositorName="compositor" parameter="u_value" shaderType="fragment" />
     </adaptor>
    @endcode
  *

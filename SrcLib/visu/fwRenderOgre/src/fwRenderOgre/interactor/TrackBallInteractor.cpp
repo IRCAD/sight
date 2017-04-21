@@ -10,6 +10,8 @@
 
 #include <fwCom/Signal.hxx>
 
+#include <fwServices/registry/ActiveWorkers.hpp>
+
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreNode.h>
 #include <OGRE/OgreSceneNode.h>
@@ -27,10 +29,23 @@ namespace interactor
 TrackballInteractor::TrackballInteractor() :
     IMovementInteractor(),
     m_width(1),
-    m_height(1)
+    m_height(1),
+    m_animate(false)
 {
 }
 
+// ----------------------------------------------------------------------------
+
+TrackballInteractor::~TrackballInteractor()
+{
+    // Join the animation thread if necessary
+    if(m_timer)
+    {
+        m_animate = false;
+        m_timer->stop();
+        m_timer.reset();
+    }
+}
 // ----------------------------------------------------------------------------
 
 void TrackballInteractor::mouseMoveEvent(MouseButton button, int, int, int dx, int dy)
@@ -98,6 +113,33 @@ void TrackballInteractor::keyPressEvent(int key)
     {
         auto sig = this->signal<ResetCameraSignalType>( s_RESET_CAMERA_SIG );
         sig->asyncEmit();
+    }
+
+    if(key == 'A' || key == 'a')
+    {
+        m_animate = !m_animate;
+
+        if(!m_animate)
+        {
+            m_timer->stop();
+            m_timer.reset();
+        }
+
+        if(m_animate)
+        {
+            // We use a timer on the main thread instead of a separate thread.
+            // Otherwise we get random visual errors even if we mutex all the functions.
+            auto worker = ::fwServices::registry::ActiveWorkers::getDefault()->getDefaultWorker();
+            m_timer = worker->createTimer();
+
+            m_timer->setFunction([&]()
+                    {
+                        this->cameraRotate(10, 0);
+                        m_sigRenderRequested->asyncEmit();
+                    } );
+            m_timer->setDuration(boost::chrono::milliseconds(33));
+            m_timer->start();
+        }
     }
 }
 
@@ -187,7 +229,6 @@ void TrackballInteractor::cameraTranslate(int xmove, int ymove)
     ::Ogre::Vector3 vec(dx, dy, 0.f);
 
     camNode->translate(vec, ::Ogre::Node::TS_LOCAL);
-
 }
 
 // ----------------------------------------------------------------------------

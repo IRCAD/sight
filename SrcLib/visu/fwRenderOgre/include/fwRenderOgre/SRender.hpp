@@ -149,6 +149,10 @@ public:
     typedef ::fwCom::Slot< void (int, int, int, int) > DoRayCastSlotType;
     /// Slot: Request the picker to do a ray cast according to the passed position.
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_DO_RAY_CAST_SLOT;
+
+    typedef ::fwCom::Slot< void () > RequestRenderSlotType;
+    /// Slot: Request a rendering.
+    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_REQUEST_RENDER_SLOT;
     /** @} */
 
     /// Sets this render service as the current OpenGL context.
@@ -225,11 +229,6 @@ private:
 
     /// Configuration element shared pointer
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
-
-    /// Start Ogre OpenGL context
-    void startContext();
-    /// Stop Ogre OpenGL context
-    void stopContext();
 
     /// Configure background layer of the scene
     void configureBackgroundLayer( ConfigurationType conf );
