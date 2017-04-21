@@ -11,9 +11,11 @@
 
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/MeshFactory.hpp"
+#include "visuVTKAdaptor/Point.hpp"
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
+#include <fwData/Color.hpp>
 #include <fwData/Point.hpp>
 
 #include <set>
@@ -34,6 +36,10 @@ public:
     VISUVTKADAPTOR_API PointList() throw();
 
     VISUVTKADAPTOR_API virtual ~PointList() throw();
+
+    VISUVTKADAPTOR_API void setRadius(const double);
+
+    VISUVTKADAPTOR_API void setColor(const fwData::Color::sptr);
 
 
     /**
@@ -76,6 +82,11 @@ private:
      * @}
      */
 
+    /// Points color
+    ::fwData::Color::sptr m_ptColor;
+
+    /// Points radius
+    double m_radius;
 };
 
 

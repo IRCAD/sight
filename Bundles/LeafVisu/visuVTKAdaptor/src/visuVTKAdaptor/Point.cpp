@@ -147,7 +147,7 @@ Point::Point() throw() :
 
     rep->GetSelectedProperty()->SetOpacity(.3);
     rep->GetMarkerProperty()->SetOpacity(.3);
-    rep->SetHandleSize(7);
+    rep->SetHandleSize(7.0);
 
     newSignal<InteractionStartedSignalType>(s_INTERACTION_STARTED_SIG);
 }
@@ -229,6 +229,17 @@ void Point::doStop() throw(fwTools::Failed)
     m_handle->SetInteractor(0);
 
     this->unregisterProps();
+}
+
+//------------------------------------------------------------------------------
+
+void Point::setRadius(double radius)
+{
+    ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation *rep =
+        ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::SafeDownCast(m_representation);
+    SLM_ASSERT("MarkedSphereHandleRepresentation cast failed", rep);
+    rep->SetHandleSize(radius);
+    this->setVtkPipelineModified();
 }
 
 //------------------------------------------------------------------------------

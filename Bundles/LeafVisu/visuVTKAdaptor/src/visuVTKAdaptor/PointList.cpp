@@ -40,10 +40,12 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLINE_SLOT = "updateSpline";
 
 //------------------------------------------------------------------------------
 
-PointList::PointList() throw()
+PointList::PointList() throw() : m_radius(7.0)
 {
     newSlot(s_ADD_POINT_SLOT, &PointList::addPoint, this);
     newSlot(s_UPDATE_SPLINE_SLOT, &PointList::updateSpline, this);
+
+    m_ptColor = ::fwData::Color::New();
 }
 
 //------------------------------------------------------------------------------
@@ -51,7 +53,6 @@ PointList::PointList() throw()
 PointList::~PointList() throw()
 {
 }
-
 //------------------------------------------------------------------------------
 
 void PointList::doConfigure() throw(fwTools::Failed)
@@ -122,10 +123,18 @@ void PointList::createServices(WeakPointListType &wPtList)
         SLM_ASSERT("Point Expired", !wpt.expired());
 
         ::fwData::Point::sptr pt                        = wpt.lock();
+
         ::fwRenderVTK::IVtkAdaptorService::sptr service =
             ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >
                 ( pt, "::visuVTKAdaptor::Point" );
         SLM_ASSERT("service not instanced", service);
+
+        ::visuVTKAdaptor::Point::sptr pointAdaptor = ::visuVTKAdaptor::Point::dynamicCast(service);
+
+        SLM_ASSERT("Bad cast of IVtkAdaptorService to Point", pointAdaptor);
+
+        pointAdaptor->setColor(m_ptColor->red(),m_ptColor->green(),m_ptColor->blue(),m_ptColor->alpha());
+        pointAdaptor->setRadius(m_radius);
 
         service->setRenderService(this->getRenderService());
         service->setRenderId( this->getRenderId() );
@@ -189,6 +198,20 @@ PointList::WeakPointListType PointList::getNewPoints()
     connections.push_back( std::make_pair( ::fwData::PointList::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT ) );
 
     return connections;
+}
+
+//------------------------------------------------------------------------------
+
+void PointList::setRadius(const double radius)
+{
+    m_radius = radius;
+}
+
+//------------------------------------------------------------------------------
+
+void PointList::setColor(const fwData::Color::sptr ptColor)
+{
+    m_ptColor = ptColor;
 }
 
 //------------------------------------------------------------------------------

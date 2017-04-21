@@ -36,6 +36,8 @@ public:
 
     VISUVTKADAPTOR_API virtual ~Point() throw();
 
+    VISUVTKADAPTOR_API void setRadius(double radius);
+
     VISUVTKADAPTOR_API void setColor(double red, double green, double blue, double alpha = 1.0);
 
     VISUVTKADAPTOR_API void setSelectedColor(double red, double green, double blue, double alpha = 1.0);
@@ -72,7 +74,6 @@ private:
     vtkHandleWidget         * m_handle;
     vtkHandleRepresentation * m_representation;
     vtkCommand              * m_pointUpdateCommand;
-
 };
 
 

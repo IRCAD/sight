@@ -9,6 +9,7 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
+#include <fwData/Color.hpp>
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 
@@ -52,6 +53,12 @@ protected:
     std::list< ::fwRenderVTK::IVtkAdaptorService::sptr > m_subServices;
 
     vtkCommand * m_rightButtonCommand;
+
+    /// Points color
+    ::fwData::Color::sptr m_ptColor;
+
+    /// Points radius
+    double m_radius;
 };
 
 

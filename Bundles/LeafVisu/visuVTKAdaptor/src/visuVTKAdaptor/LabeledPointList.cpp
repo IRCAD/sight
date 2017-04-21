@@ -168,7 +168,8 @@ protected:
 //------------------------------------------------------------------------------
 
 LabeledPointList::LabeledPointList() throw() :
-    m_rightButtonCommand(nullptr)
+    m_rightButtonCommand(nullptr),
+    m_radius(7.0)
 {
 }
 
@@ -182,6 +183,20 @@ LabeledPointList::~LabeledPointList() throw()
 
 void LabeledPointList::doConfigure() throw(fwTools::Failed)
 {
+    SLM_ASSERT("configuration missing", m_configuration->getName() == "config");
+
+    std::string hexaColor = m_configuration->getAttributeValue("color");
+    m_ptColor = ::fwData::Color::New();
+    if (!hexaColor.empty())
+    {
+        m_ptColor->setRGBA(hexaColor);
+    }
+
+    std::string radius = m_configuration->getAttributeValue("radius");
+    if(!radius.empty())
+    {
+        m_radius = std::stod(radius);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -221,6 +236,13 @@ void LabeledPointList::doUpdate() throw(fwTools::Failed)
         servicePointList = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( landmarks,
                                                                                    "::visuVTKAdaptor::PointList");
         SLM_ASSERT("servicePointList not instanced", servicePointList);
+
+        ::visuVTKAdaptor::PointList::sptr pointListAdaptor = ::visuVTKAdaptor::PointList::dynamicCast(servicePointList);
+
+        SLM_ASSERT("Bad cast of IVtkAdaptorService to servicePointList", pointListAdaptor);
+
+        pointListAdaptor->setColor(m_ptColor);
+        pointListAdaptor->setRadius(m_radius);
 
         servicePointList->setPickerId( this->getPickerId() );
         servicePointList->setRenderService( this->getRenderService() );
@@ -273,6 +295,5 @@ void LabeledPointList::doStop() throw(fwTools::Failed)
 }
 
 //------------------------------------------------------------------------------
-
 
 } //namespace visuVTKAdaptor
