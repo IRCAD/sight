@@ -58,6 +58,20 @@ PointList::~PointList() throw()
 
 void PointList::doConfigure() throw(fwTools::Failed)
 {
+    SLM_ASSERT("configuration missing", m_configuration->getName() == "config");
+
+    std::string hexaColor = m_configuration->getAttributeValue("color");
+    m_ptColor = ::fwData::Color::New();
+    if (!hexaColor.empty())
+    {
+        m_ptColor->setRGBA(hexaColor);
+    }
+
+    std::string radius = m_configuration->getAttributeValue("radius");
+    if(!radius.empty())
+    {
+        m_radius = std::stod(radius);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -134,14 +148,14 @@ void PointList::createServices(WeakPointListType& wPtList)
 
         SLM_ASSERT("Bad cast of IVtkAdaptorService to Point", pointAdaptor);
 
-        pointAdaptor->setColor(m_ptColor->red(), m_ptColor->green(), m_ptColor->blue(), m_ptColor->alpha());
-        pointAdaptor->setRadius(m_radius);
-
         service->setRenderService(this->getRenderService());
         service->setRenderId( this->getRenderId() );
         service->setPickerId( this->getPickerId() );
         service->setAutoRender( this->getAutoRender() );
         service->start();
+
+        pointAdaptor->setColor(m_ptColor->red(), m_ptColor->green(), m_ptColor->blue(), m_ptColor->alpha());
+        pointAdaptor->setRadius(m_radius);
 
         this->registerService(service);
     }

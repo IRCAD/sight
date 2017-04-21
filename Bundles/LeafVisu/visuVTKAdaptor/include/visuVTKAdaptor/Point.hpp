@@ -14,6 +14,8 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
+#include <fwData/Color.hpp>
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 class vtkHandleWidget;
@@ -22,6 +24,25 @@ class vtkCommand;
 
 namespace visuVTKAdaptor
 {
+
+/**
+ * @brief Adaptor to display a point.
+ *
+ * @section Signals Signals
+ * - interactionStarted : when point interaction is started.
+ *
+ * @code{.xml}
+      <adaptor id="..." class="::visuVTKAdaptor::Point" objectId="self">
+        <config renderer="default" picker="..." color="#FFFFFF" selectedColor="#FFFFFF" radius="10"/>
+      </adaptor>
+     @endcode
+ * @subsection Configuration Configuration
+ * - \b renderer : defines the renderer to show the point.
+ * - \b picker : defines the picker of the point.
+ * - \b color(#FFFFFF) : color of the point.
+ * - \b selectedColor(#FFFFFF) : color when the point is selected.
+ * - \b radius(double) : point radius.
+ */
 
 class VISUVTKADAPTOR_CLASS_API Point : public ::fwRenderVTK::IVtkAdaptorService
 {
@@ -71,6 +92,10 @@ private:
     vtkHandleWidget* m_handle;
     vtkHandleRepresentation* m_representation;
     vtkCommand* m_pointUpdateCommand;
+
+    ::fwData::Color::sptr m_ptColor;
+    ::fwData::Color::sptr m_ptSelectedColor;
+    double m_radius;
 };
 
 } //namespace visuVTKAdaptor

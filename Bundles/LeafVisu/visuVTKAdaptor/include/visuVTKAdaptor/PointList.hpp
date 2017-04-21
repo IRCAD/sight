@@ -24,6 +24,25 @@
 namespace visuVTKAdaptor
 {
 
+/**
+ * @brief Adaptor to display a point list.
+ *
+ * @section Slots Slots
+ * - addPoint(::fwData::Point::sptr) : add point in the list.
+ * - updateSpline() : Updates the spline's points.
+ *
+ * @code{.xml}
+      <adaptor id="..." class="::visuVTKAdaptor::PointList" objectId="self">
+        <config renderer="default" picker="..." color="#FFFFFF" radius="10"/>
+      </adaptor>
+     @endcode
+ * @subsection Configuration Configuration
+ * - \b renderer : defines the renderer to show the point list.
+ * - \b picker : defines the picker of the point list.
+ * - \b color(#FFFFFF) : color of the point.
+ * - \b radius(double) : point radius.
+ */
+
 class VISUVTKADAPTOR_CLASS_API PointList : public ::fwRenderVTK::IVtkAdaptorService
 {
 

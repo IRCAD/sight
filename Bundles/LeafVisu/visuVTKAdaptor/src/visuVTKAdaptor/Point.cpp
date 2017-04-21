@@ -133,8 +133,12 @@ protected:
 Point::Point() throw() :
     m_handle( vtkHandleWidget::New() ),
     m_representation( ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::New() ),
-    m_pointUpdateCommand(nullptr)
+    m_pointUpdateCommand(nullptr),
+    m_radius(7.0)
 {
+    m_ptColor         = ::fwData::Color::New();
+    m_ptSelectedColor = ::fwData::Color::New();
+
     m_handle->SetRepresentation(m_representation);
     m_handle->SetPriority(0.8f);
 
@@ -150,7 +154,7 @@ Point::Point() throw() :
 
     rep->GetSelectedProperty()->SetOpacity(.3);
     rep->GetMarkerProperty()->SetOpacity(.3);
-    rep->SetHandleSize(7.0);
+    rep->SetHandleSize(m_radius);
 
     newSignal<InteractionStartedSignalType>(s_INTERACTION_STARTED_SIG);
 }
@@ -171,6 +175,27 @@ Point::~Point() throw()
 
 void Point::doConfigure() throw(fwTools::Failed)
 {
+    SLM_ASSERT("configuration missing", m_configuration->getName() == "config");
+
+    std::string hexaSelectedColor = m_configuration->getAttributeValue("selectedColor");
+    m_ptSelectedColor = ::fwData::Color::New();
+    if (!hexaSelectedColor.empty())
+    {
+        m_ptSelectedColor->setRGBA(hexaSelectedColor);
+    }
+
+    std::string hexaColor = m_configuration->getAttributeValue("color");
+    m_ptColor = ::fwData::Color::New();
+    if (!hexaColor.empty())
+    {
+        m_ptColor->setRGBA(hexaColor);
+    }
+
+    std::string radius = m_configuration->getAttributeValue("radius");
+    if(!radius.empty())
+    {
+        m_radius = std::stod(radius);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -216,6 +241,21 @@ void Point::doUpdate() throw(fwTools::Failed)
     m_representation->SetWorldPosition( ps );
     //getRenderService()->update();
     getRenderer()->ResetCameraClippingRange();
+
+    ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation* rep =
+        ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::SafeDownCast(m_representation);
+
+    SLM_ASSERT("MarkedSphereHandleRepresentation cast failed", rep);
+
+    rep->SetHandleSize(m_radius);
+
+    rep->GetProperty()->SetColor(m_ptColor->red(), m_ptColor->green(), m_ptColor->blue());
+    rep->GetProperty()->SetOpacity(m_ptColor->alpha());
+
+    rep->GetSelectedProperty()->SetColor(m_ptSelectedColor->red(), m_ptSelectedColor->green(),
+                                         m_ptSelectedColor->blue());
+    rep->GetSelectedProperty()->SetOpacity(m_ptSelectedColor->alpha());
+
     this->setVtkPipelineModified();
 }
 
@@ -238,35 +278,24 @@ void Point::doStop() throw(fwTools::Failed)
 
 void Point::setRadius(double radius)
 {
-    ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation* rep =
-        ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::SafeDownCast(m_representation);
-    SLM_ASSERT("MarkedSphereHandleRepresentation cast failed", rep);
-    rep->SetHandleSize(radius);
-    this->setVtkPipelineModified();
+    m_radius = radius;
+    doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
 void Point::setColor(double red, double green, double blue, double alpha)
 {
-    ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation* rep =
-        ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::SafeDownCast(m_representation);
-    SLM_ASSERT("MarkedSphereHandleRepresentation cast failed", rep);
-    rep->GetProperty()->SetColor(red, green, blue);
-    rep->GetProperty()->SetOpacity(alpha);
-    this->setVtkPipelineModified();
+    m_ptColor->setRGBA(red, green, blue, alpha);
+    doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
 void Point::setSelectedColor(double red, double green, double blue, double alpha)
 {
-    ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation* rep =
-        ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::SafeDownCast(m_representation);
-    SLM_ASSERT("MarkedSphereHandleRepresentation cast failed", rep);
-    rep->GetSelectedProperty()->SetColor(red, green, blue);
-    rep->GetSelectedProperty()->SetOpacity(alpha);
-    this->setVtkPipelineModified();
+    m_ptSelectedColor->setRGBA(red, green, blue, alpha);
+    doUpdate();
 }
 
 //------------------------------------------------------------------------------

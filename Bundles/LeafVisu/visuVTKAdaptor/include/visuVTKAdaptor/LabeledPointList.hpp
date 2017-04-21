@@ -18,7 +18,7 @@ class vtkCommand;
 namespace visuVTKAdaptor
 {
 /**
- * @brief Adaptor to display a point list
+ * @brief Adaptor to display a labeled point list
  *
  * @code{.xml}
       <adaptor id="..." class="::visuVTKAdaptor::LabeledPointList" objectId="self">
@@ -26,8 +26,8 @@ namespace visuVTKAdaptor
       </adaptor>
      @endcode
  * @subsection Configuration Configuration
- * - \b renderer : defines the renderer to show the point list.
- * - \b picker : defines the picker of the point list.
+ * - \b renderer : defines the renderer to show the labeled point list.
+ * - \b picker : defines the picker of the labeled point list.
  * - \b color(#FFFFFF) : color of the points.
  * - \b radius(double) : points radius.
  */
