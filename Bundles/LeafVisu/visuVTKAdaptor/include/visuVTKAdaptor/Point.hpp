@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,14 +9,12 @@
 #ifndef __VISUVTKADAPTOR_POINT_HPP__
 #define __VISUVTKADAPTOR_POINT_HPP__
 
-
 #include "visuVTKAdaptor/config.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-
 
 class vtkHandleWidget;
 class vtkHandleRepresentation;
@@ -30,7 +28,7 @@ class VISUVTKADAPTOR_CLASS_API Point : public ::fwRenderVTK::IVtkAdaptorService
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Point)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Point)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API Point() throw();
 
@@ -69,15 +67,11 @@ protected:
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
-
 private:
-    vtkHandleWidget         * m_handle;
-    vtkHandleRepresentation * m_representation;
-    vtkCommand              * m_pointUpdateCommand;
+    vtkHandleWidget* m_handle;
+    vtkHandleRepresentation* m_representation;
+    vtkCommand* m_pointUpdateCommand;
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 

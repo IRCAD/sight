@@ -1,21 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef ANDROID
 
+#include "visuVTKAdaptor/Point.hpp"
 
 #include "fwRenderVTK/vtk/Helpers.hpp"
 #include "fwRenderVTK/vtk/MarkedSphereHandleRepresentation.hpp"
-#include "visuVTKAdaptor/Point.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwData/Point.hpp>
 #include <fwData/Material.hpp>
+#include <fwData/Point.hpp>
 
 #include <fwServices/macros.hpp>
 
@@ -32,7 +32,6 @@
 #include <vtkSphereSource.h>
 #include <vtkWidgetEventTranslator.h>
 
-
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Point, ::fwData::Point );
 
 namespace visuVTKAdaptor
@@ -46,20 +45,24 @@ class vtkPointUpdateCallBack : public vtkCommand
 {
 
 public:
-    static vtkPointUpdateCallBack *New( ::fwRenderVTK::IVtkAdaptorService *service)
+    //------------------------------------------------------------------------------
+
+    static vtkPointUpdateCallBack* New( ::fwRenderVTK::IVtkAdaptorService* service)
     {
         return new vtkPointUpdateCallBack(service);
     }
 
-    vtkPointUpdateCallBack( ::fwRenderVTK::IVtkAdaptorService *service ) :
+    vtkPointUpdateCallBack( ::fwRenderVTK::IVtkAdaptorService* service ) :
         m_service(service),
-        m_pickLimiter (0)
+        m_pickLimiter(0)
     {
     }
 
-    virtual void Execute( vtkObject *caller, unsigned long eventId, void *)
+    //------------------------------------------------------------------------------
+
+    virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
-        vtkHandleWidget *handler = vtkHandleWidget::SafeDownCast(caller);
+        vtkHandleWidget* handler = vtkHandleWidget::SafeDownCast(caller);
         if (!handler)
         {
             return;
@@ -67,21 +70,21 @@ public:
 
         if ( eventId == vtkCommand::StartInteractionEvent)
         {
-            handler->AddObserver("EndInteractionEvent",this );
-            handler->AddObserver("InteractionEvent",this );
+            handler->AddObserver("EndInteractionEvent", this );
+            handler->AddObserver("InteractionEvent", this );
 
         }
         else if ( eventId == vtkCommand::EndInteractionEvent )
         {
-            handler->RemoveObservers("EndInteractionEvent",this );
-            handler->RemoveObservers("InteractionEvent",this );
+            handler->RemoveObservers("EndInteractionEvent", this );
+            handler->RemoveObservers("InteractionEvent", this );
         }
 
         ::fwData::Point::sptr point = m_service->getObject< ::fwData::Point >();
 
-        vtkHandleRepresentation *representation = vtkHandleRepresentation::SafeDownCast(handler->GetRepresentation());
+        vtkHandleRepresentation* representation = vtkHandleRepresentation::SafeDownCast(handler->GetRepresentation());
         SLM_ASSERT("handler not instanced", handler);
-        double *world = representation->GetWorldPosition();
+        double* world = representation->GetWorldPosition();
 
         if ( (m_pickLimiter-- == 0 && eventId == vtkCommand::InteractionEvent)
              || eventId == vtkCommand::EndInteractionEvent )
@@ -89,8 +92,8 @@ public:
             m_pickLimiter = 2;
 
             double display[3];
-            int x,y;
-            handler->GetInteractor()->GetLastEventPosition(x,y);
+            int x, y;
+            handler->GetInteractor()->GetLastEventPosition(x, y);
             display[0] = x;
             display[1] = y;
             display[2] = 0;
@@ -135,14 +138,14 @@ Point::Point() throw() :
     m_handle->SetRepresentation(m_representation);
     m_handle->SetPriority(0.8f);
 
-    vtkWidgetEventTranslator *translator = m_handle->GetEventTranslator();
+    vtkWidgetEventTranslator* translator = m_handle->GetEventTranslator();
 
     translator->RemoveTranslation(vtkCommand::MiddleButtonPressEvent);
     translator->RemoveTranslation(vtkCommand::MiddleButtonReleaseEvent);
     translator->RemoveTranslation(vtkCommand::RightButtonPressEvent);
     translator->RemoveTranslation(vtkCommand::RightButtonReleaseEvent);
 
-    ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation *rep =
+    ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation* rep =
         ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::SafeDownCast(m_representation);
 
     rep->GetSelectedProperty()->SetOpacity(.3);
@@ -208,8 +211,8 @@ void Point::doUpdate() throw(fwTools::Failed)
     SLM_ASSERT("point not instanced", point);
 
     double ps[3];
-    assert ( point->getCRefCoord().size()==3 );
-    std::copy(point->getCRefCoord().begin(),point->getCRefCoord().end(), ps  );
+    assert( point->getCRefCoord().size() == 3 );
+    std::copy(point->getCRefCoord().begin(), point->getCRefCoord().end(), ps  );
     m_representation->SetWorldPosition( ps );
     //getRenderService()->update();
     getRenderer()->ResetCameraClippingRange();
@@ -235,7 +238,7 @@ void Point::doStop() throw(fwTools::Failed)
 
 void Point::setRadius(double radius)
 {
-    ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation *rep =
+    ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation* rep =
         ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::SafeDownCast(m_representation);
     SLM_ASSERT("MarkedSphereHandleRepresentation cast failed", rep);
     rep->SetHandleSize(radius);
@@ -246,7 +249,7 @@ void Point::setRadius(double radius)
 
 void Point::setColor(double red, double green, double blue, double alpha)
 {
-    ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation *rep =
+    ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation* rep =
         ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::SafeDownCast(m_representation);
     SLM_ASSERT("MarkedSphereHandleRepresentation cast failed", rep);
     rep->GetProperty()->SetColor(red, green, blue);
@@ -258,7 +261,7 @@ void Point::setColor(double red, double green, double blue, double alpha)
 
 void Point::setSelectedColor(double red, double green, double blue, double alpha)
 {
-    ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation *rep =
+    ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation* rep =
         ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::SafeDownCast(m_representation);
     SLM_ASSERT("MarkedSphereHandleRepresentation cast failed", rep);
     rep->GetSelectedProperty()->SetColor(red, green, blue);

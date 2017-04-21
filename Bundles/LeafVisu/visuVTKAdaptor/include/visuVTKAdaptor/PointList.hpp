@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,10 +13,10 @@
 #include "visuVTKAdaptor/MeshFactory.hpp"
 #include "visuVTKAdaptor/Point.hpp"
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
-
 #include <fwData/Color.hpp>
 #include <fwData/Point.hpp>
+
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 #include <set>
 #include <vector>
@@ -31,7 +31,7 @@ public:
     typedef std::vector< WPTR(::fwData::Point) > WeakPointListType;
     typedef std::set< WPTR(::fwData::Point) > WeakPointSetType;
 
-    fwCoreServiceClassDefinitionsMacro ( (PointList)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (PointList)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API PointList() throw();
 
@@ -40,7 +40,6 @@ public:
     VISUVTKADAPTOR_API void setRadius(const double);
 
     VISUVTKADAPTOR_API void setColor(const fwData::Color::sptr);
-
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -61,7 +60,7 @@ protected:
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
 
-    VISUVTKADAPTOR_API void createServices(WeakPointListType &wPtList);
+    VISUVTKADAPTOR_API void createServices(WeakPointListType& wPtList);
     VISUVTKADAPTOR_API WeakPointListType getWeakPointList();
     VISUVTKADAPTOR_API WeakPointListType getNewPoints();
 
@@ -88,7 +87,6 @@ private:
     /// Points radius
     double m_radius;
 };
-
 
 } //namespace visuVTKAdaptor
 

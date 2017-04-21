@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,8 +10,8 @@
 #include "visuVTKAdaptor/config.hpp"
 
 #include <fwData/Color.hpp>
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 class vtkCommand;
 
@@ -25,7 +25,7 @@ class VISUVTKADAPTOR_CLASS_API LabeledPointList : public ::fwRenderVTK::IVtkAdap
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (LabeledPointList)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (LabeledPointList)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API LabeledPointList() throw();
 
@@ -52,7 +52,7 @@ protected:
 
     std::list< ::fwRenderVTK::IVtkAdaptorService::sptr > m_subServices;
 
-    vtkCommand * m_rightButtonCommand;
+    vtkCommand* m_rightButtonCommand;
 
     /// Points color
     ::fwData::Color::sptr m_ptColor;
@@ -60,7 +60,6 @@ protected:
     /// Points radius
     double m_radius;
 };
-
 
 } //namespace visuVTKAdaptor
 

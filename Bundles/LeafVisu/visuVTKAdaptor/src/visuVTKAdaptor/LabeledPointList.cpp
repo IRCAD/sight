@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,8 +26,8 @@
 #include <vtkCommand.h>
 #include <vtkCubeSource.h>
 #include <vtkPolyDataMapper.h>
-#include <vtkRenderWindowInteractor.h>
 #include <vtkRenderer.h>
+#include <vtkRenderWindowInteractor.h>
 
 #include <algorithm>
 
@@ -42,15 +42,17 @@ class vtkLabeledPointDeleteCallBack : public vtkCommand
 {
 
 public:
+    //------------------------------------------------------------------------------
+
     static vtkLabeledPointDeleteCallBack* New( ::fwRenderVTK::IVtkAdaptorService* service)
     {
         return new vtkLabeledPointDeleteCallBack(service);
     }
 
-    vtkLabeledPointDeleteCallBack( ::fwRenderVTK::IVtkAdaptorService* service )
-        : m_service(service),
-          m_picker( vtkCellPicker::New() ),
-          m_propCollection( vtkPropCollection::New() )
+    vtkLabeledPointDeleteCallBack( ::fwRenderVTK::IVtkAdaptorService* service ) :
+        m_service(service),
+        m_picker( vtkCellPicker::New() ),
+        m_propCollection( vtkPropCollection::New() )
     {
         m_lastPos[0] = -1;
         m_lastPos[1] = -1;
@@ -69,6 +71,7 @@ public:
         m_propCollection = NULL;
     }
 
+    //------------------------------------------------------------------------------
 
     void fillPickList()
     {
@@ -84,6 +87,8 @@ public:
             m_picker->AddPickList(prop);
         }
     }
+
+    //------------------------------------------------------------------------------
 
     virtual void Execute( vtkObject* caller, unsigned long eventId, void*)
     {
@@ -127,6 +132,8 @@ public:
             }
         }
     }
+    //------------------------------------------------------------------------------
+
     bool getSelectedPoint()
     {
         bool isFind              = false;
@@ -136,8 +143,8 @@ public:
         propc->InitTraversal();
         while ( (prop = propc->GetNextProp()) )
         {
-            m_pickedPoint     = ::fwData::Point::dynamicCast(m_service->getAssociatedObject(prop,2));
-            m_pickedPointList = ::fwData::PointList::dynamicCast(m_service->getAssociatedObject(prop,1));
+            m_pickedPoint     = ::fwData::Point::dynamicCast(m_service->getAssociatedObject(prop, 2));
+            m_pickedPointList = ::fwData::PointList::dynamicCast(m_service->getAssociatedObject(prop, 1));
 
             if( !m_pickedPoint.expired() && !m_pickedPointList.expired() )
             {
@@ -250,7 +257,6 @@ void LabeledPointList::doUpdate() throw(fwTools::Failed)
         servicePointList->start();
 
         this->registerService( servicePointList );
-
 
         for( ::fwData::Point::sptr point :  landmarks->getRefPoints() )
         {
