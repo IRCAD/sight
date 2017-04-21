@@ -19,6 +19,17 @@ namespace visuVTKAdaptor
 {
 /**
  * @brief Adaptor to display a point list
+ *
+ * @code{.xml}
+      <adaptor id="..." class="::visuVTKAdaptor::LabeledPointList" objectId="self">
+        <config renderer="default" picker="..." color="#FFFFFF" radius="10"/>
+      </adaptor>
+     @endcode
+ * @subsection Configuration Configuration
+ * - \b renderer : defines the renderer to show the point list.
+ * - \b picker : defines the picker of the point list.
+ * - \b color(#FFFFFF) : color of the points.
+ * - \b radius(double) : points radius.
  */
 class VISUVTKADAPTOR_CLASS_API LabeledPointList : public ::fwRenderVTK::IVtkAdaptorService
 {
