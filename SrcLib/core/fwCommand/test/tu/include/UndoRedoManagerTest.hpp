@@ -20,6 +20,7 @@ CPPUNIT_TEST_SUITE( UndoRedoManagerTest );
 CPPUNIT_TEST(managerEnqueueTest);
 CPPUNIT_TEST(managerMemorySizeTest);
 CPPUNIT_TEST(managerCommandCountTest);
+CPPUNIT_TEST(managerClearQueueTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -33,7 +34,7 @@ public:
 
     void managerCommandCountTest();
 
-private:
+    void managerClearQueueTest();
 
 };
 

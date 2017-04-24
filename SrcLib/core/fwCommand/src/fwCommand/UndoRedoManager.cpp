@@ -99,6 +99,7 @@ void UndoRedoManager::clear()
 {
     m_commandQueue.clear();
     m_commandIndex = -1;
+    m_usedMemory   = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -110,9 +111,25 @@ size_t UndoRedoManager::getCommandCount() const
 
 //-----------------------------------------------------------------------------
 
+void UndoRedoManager::setCommandCount(size_t cmdCount)
+{
+    this->clear();
+    m_maxCommands = cmdCount;
+}
+
+//-----------------------------------------------------------------------------
+
 size_t UndoRedoManager::getHistorySize() const
 {
     return m_usedMemory;
+}
+
+//-----------------------------------------------------------------------------
+
+void UndoRedoManager::setHistorySize(size_t histSize)
+{
+    this->clear();
+    m_maxMemory = histSize;
 }
 
 //-----------------------------------------------------------------------------

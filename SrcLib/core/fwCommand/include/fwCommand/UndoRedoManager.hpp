@@ -61,8 +61,14 @@ public:
     /// Get the number of enqueued commands.
     FWCOMMAND_API size_t getCommandCount() const;
 
+    /// Set the maximum number of enqueued commands.
+    FWCOMMAND_API void setCommandCount(size_t cmdCount);
+
     /// Returns the amount of memory used by the history.
     FWCOMMAND_API size_t getHistorySize() const;
+
+    /// Set the maximum amount of memory used by the history.
+    FWCOMMAND_API void setHistorySize(size_t histSize);
 
 private:
 

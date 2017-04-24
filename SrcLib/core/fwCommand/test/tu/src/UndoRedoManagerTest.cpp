@@ -259,5 +259,30 @@ void UndoRedoManagerTest::managerCommandCountTest()
 
 //------------------------------------------------------------------------------
 
+void UndoRedoManagerTest::managerClearQueueTest()
+{
+    ::fwCommand::UndoRedoManager undoRedoManager;
+    CommandLog log;
+
+    for(int i = 0; i < 5; ++i)
+    {
+        BogusCommand::sptr testCmdI =
+            std::make_shared<BogusCommand>(BogusCommand("testCmd" + std::to_string(i), log));
+
+        undoRedoManager.enqueue(testCmdI);
+
+        // Ensure all the commands where added.
+        CPPUNIT_ASSERT_EQUAL(size_t(i + 1), undoRedoManager.getCommandCount());
+    }
+
+    undoRedoManager.clear();
+
+    CPPUNIT_ASSERT_EQUAL(size_t(0), undoRedoManager.getCommandCount());
+
+    CPPUNIT_ASSERT_EQUAL(false, undoRedoManager.undo());
+}
+
+//------------------------------------------------------------------------------
+
 } //namespace ut
 } //namespace registrationOp
