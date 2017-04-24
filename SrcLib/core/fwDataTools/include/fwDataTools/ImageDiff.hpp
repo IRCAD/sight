@@ -28,15 +28,17 @@ struct FWDATATOOLS_CLASS_API ImageDiff
 
     FWDATATOOLS_API ~ImageDiff();
 
-    /// Move constructor (swap buffers)
-    FWDATATOOLS_API ImageDiff(ImageDiff&& voxDiff);
-
     /// Copy constructor forbidden
-    ImageDiff(const ImageDiff& voxDiff) = delete;
+    FWDATATOOLS_API ImageDiff(const ImageDiff& other);
+
+    /// Copy assignement.
+    FWDATATOOLS_API ImageDiff& operator= (const ImageDiff& other);
 
     ::fwData::Image::IndexType m_index;
     ::fwData::Image::BufferType* m_oldValue;
     ::fwData::Image::BufferType* m_newValue;
+
+    unsigned char m_typeSize;
 };
 
 typedef std::vector<ImageDiff> ImageDiffsType;

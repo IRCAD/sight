@@ -13,6 +13,15 @@ namespace fwCommand
 
 //------------------------------------------------------------------------------
 
+ImageDiffCommand::ImageDiffCommand(const fwData::Image::sptr& img, fwDataTools::ImageDiffsType diff) :
+    m_img(img),
+    m_diff(diff)
+{
+
+}
+
+//------------------------------------------------------------------------------
+
 const size_t ImageDiffCommand::getSize() const
 {
     size_t imgEltSize = m_img->getPixelType().sizeOf() * m_img->getNumberOfComponents();
