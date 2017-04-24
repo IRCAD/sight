@@ -139,6 +139,8 @@ Point::Point() throw() :
     m_ptColor         = ::fwData::Color::New();
     m_ptSelectedColor = ::fwData::Color::New();
 
+    m_ptSelectedColor->setRGBA("#00FF00");
+
     m_handle->SetRepresentation(m_representation);
     m_handle->SetPriority(0.8f);
 
