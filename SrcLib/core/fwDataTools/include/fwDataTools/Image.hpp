@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,6 +8,7 @@
 #define __FWDATATOOLS_IMAGE_HPP__
 
 #include "fwDataTools/config.hpp"
+#include "fwDataTools/ImageDiff.hpp"
 #include <fwDataTools/helper/Array.hpp>
 
 #include <fwCore/base.hpp>
@@ -20,7 +21,6 @@
 
 namespace fwDataTools
 {
-
 
 /**
  * @brief   This class contains helper to generate and compare images.
@@ -46,6 +46,12 @@ public:
                                               ::fwData::Image::sptr imgRoiApplyed,
                                               ::fwData::Image::sptr roi );
 
+    /// Replaces changed pixels with their 'new' value.
+    FWDATATOOLS_API static void applyDiff( ::fwData::Image::sptr image, const ImageDiffsType& diff);
+
+    /// Replaces changed pixels with their 'old' value.
+    FWDATATOOLS_API static void revertDiff( ::fwData::Image::sptr image, const ImageDiffsType& diff);
+
     /**
      * @brief Merge mask in image imgDest: put value 'val' in imgDest when mask value != 0
      */
@@ -53,7 +59,6 @@ public:
     void mergeMask(::fwData::Image::sptr imgDest, ::fwData::Image::sptr mask, IMG_DEST_TYPE val );
 
 };
-
 
 //------------------------------------------------------------------------------
 
