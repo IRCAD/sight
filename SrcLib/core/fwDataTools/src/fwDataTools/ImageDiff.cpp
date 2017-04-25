@@ -86,6 +86,8 @@ ImageDiff& ImageDiff::operator=(ImageDiff&& other)
     other.m_newValue = nullptr;
 
     m_typeSize = other.m_typeSize;
+
+    return *this;
 }
 
 } // namespace fwDataTools
