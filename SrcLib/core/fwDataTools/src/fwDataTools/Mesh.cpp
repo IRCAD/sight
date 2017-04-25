@@ -1,14 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwDataTools/Mesh.hpp"
 
+#include "fwDataTools/helper/ArrayGetter.hpp"
 #include "fwDataTools/thread/RegionThreader.hpp"
 
 #include <fwTools/NumericRoundCast.hxx>
+
+#include <glm/vec3.hpp>
 
 #include <cstdlib>
 #include <ctime>
@@ -20,6 +23,8 @@ namespace fwDataTools
 
 struct RandFloat
 {
+    //------------------------------------------------------------------------------
+
     float operator()()
     {
         return ((rand() % 101 - 50.f)) / 500.f;
@@ -55,6 +60,7 @@ bool Mesh::hasUniqueCellType(::fwData::Mesh::sptr mesh, ::fwData::Mesh::CellType
 
 typedef boost::multi_array_ref<Point, 1> PointsMultiArrayType;
 
+//------------------------------------------------------------------------------
 
 Vector<float>& computeTriangleNormal(const Point& p1, const Point& p2, const Point& p3, Vector<float>& n)
 {
@@ -86,7 +92,7 @@ Vector<float>& computeCellNormal( const PointsMultiArrayType& points, const ::fw
     n = Vector<float>();
     Vector<float> v;
 
-    for (size_t i = 0; i< cellSize; ++i)
+    for (size_t i = 0; i < cellSize; ++i)
     {
         const Point& p1 = points[cell[i  ]];
         const Point& p2 = points[cell[(i+1)% cellSize]];
@@ -116,7 +122,6 @@ void generateRegionCellNormals(::fwDataTools::helper::Mesh::sptr meshHelper, con
         ::boost::extents[mesh->getNumberOfPoints()]
         );
 
-
     ::fwData::Mesh::CellTypesMultiArrayType cellTypes             = meshHelper->getCellTypes();
     ::fwData::Mesh::CellDataMultiArrayType cellData               = meshHelper->getCellData();
     ::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsets = meshHelper->getCellDataOffsets();
@@ -133,7 +138,7 @@ void generateRegionCellNormals(::fwDataTools::helper::Mesh::sptr meshHelper, con
     Vector< ::fwData::Mesh::NormalValueType >* normals =
         cellNormalsArrayHelper.begin< Vector< ::fwData::Mesh::NormalValueType > >();
 
-    for(::fwData::Mesh::Id i = regionMin; i<regionMax; ++i)
+    for(::fwData::Mesh::Id i = regionMin; i < regionMax; ++i)
     {
         Vector<float>& n = normals[i];
 
@@ -166,7 +171,6 @@ void generateRegionCellNormals(::fwDataTools::helper::Mesh::sptr meshHelper, con
 
 //------------------------------------------------------------------------------
 
-
 template <typename T>
 void vectorSum( std::vector< std::vector<T> >& vectors, size_t regionMin, size_t regionMax )
 {
@@ -181,7 +185,7 @@ void vectorSum( std::vector< std::vector<T> >& vectors, size_t regionMin, size_t
 
     for (++vIter; vIter != vectors.end(); ++vIter)
     {
-        for (size_t i = regionMin; i<regionMax; ++i)
+        for (size_t i = regionMin; i < regionMax; ++i)
         {
             res[i] += (*vIter)[i];
         }
@@ -211,6 +215,8 @@ void Mesh::generateCellNormals(::fwData::Mesh::sptr mesh)
 typedef std::vector< std::vector< unsigned char > > CharVectors;
 typedef std::vector< std::vector< float > > FloatVectors;
 
+//------------------------------------------------------------------------------
+
 void generateRegionCellNormalsByPoints(FloatVectors& normalsData, CharVectors& normalCounts, size_t dataId,
                                        ::fwDataTools::helper::Mesh::sptr meshHelper, const ::fwData::Mesh::Id regionMin,
                                        const ::fwData::Mesh::Id regionMax)
@@ -227,7 +233,6 @@ void generateRegionCellNormalsByPoints(FloatVectors& normalsData, CharVectors& n
     ::fwData::Mesh::CellDataMultiArrayType cellData               = meshHelper->getCellData();
     ::fwData::Mesh::CellDataOffsetsMultiArrayType cellDataOffsets = meshHelper->getCellDataOffsets();
 
-
     ::fwData::Mesh::CellTypes type;
     ::fwData::Mesh::CellDataOffsetType offset;
     ::fwData::Mesh::CellValueType* cell;
@@ -242,11 +247,10 @@ void generateRegionCellNormalsByPoints(FloatVectors& normalsData, CharVectors& n
     Vector< ::fwData::Mesh::NormalValueType >* normalResults =
         reinterpret_cast< Vector< ::fwData::Mesh::NormalValueType >* >( &(*normalsResults.begin()));
 
-
     ::fwData::Mesh::CellValueType* pointId;
     ::fwData::Mesh::CellValueType* cellEnd;
 
-    for(::fwData::Mesh::Id i = regionMin; i<regionMax; ++i)
+    for(::fwData::Mesh::Id i = regionMin; i < regionMax; ++i)
     {
         type    = cellTypes[i];
         offset  = cellDataOffsets[i];
@@ -299,13 +303,12 @@ void normalizeRegionCellNormalsByPoints(FloatVectors::value_type& normalsData, C
         CharVectors::value_type::value_type count = normalCount[i];
         normals[i] = normalSum[i];
 
-        if(count>1)
+        if(count > 1)
         {
             normals[i] /= count;
         }
     }
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -327,7 +330,6 @@ void Mesh::generatePointNormals(::fwData::Mesh::sptr mesh)
 
         ::fwDataTools::thread::RegionThreader rt((nbOfPoints >= 100000) ? 4 : 1);
 
-
         FloatVectors normalsData(rt.numberOfThread());
         CharVectors normalCounts(rt.numberOfThread());
 
@@ -345,12 +347,10 @@ void Mesh::generatePointNormals(::fwData::Mesh::sptr mesh)
                       std::placeholders::_1, std::placeholders::_2),
             nbOfPoints*3);
 
-
         rt( std::bind(&vectorSum<CharVectors::value_type::value_type>,
                       ::boost::ref(normalCounts),
                       std::placeholders::_1, std::placeholders::_2),
             nbOfPoints);
-
 
         rt( std::bind( &normalizeRegionCellNormalsByPoints,
                        ::boost::ref(normalsData[0]),
@@ -431,10 +431,10 @@ void Mesh::colorizeMeshPoints(::fwData::Mesh::sptr mesh)
 
     ::fwData::Mesh::ColorValueType color[4];
     size_t numberOfPoints = mesh->getNumberOfPoints();
-    for(size_t i = 0; i<numberOfPoints; ++i)
+    for(size_t i = 0; i < numberOfPoints; ++i)
     {
         color[0] = rand()%256;
-        color[1] = 0;//rand()%256;
+        color[1] = rand()%256;
         color[2] = rand()%256;
         meshHelper.setPointColor(i, color);
     }
@@ -449,11 +449,11 @@ void Mesh::colorizeMeshCells(::fwData::Mesh::sptr mesh)
 
     ::fwData::Mesh::ColorValueType color[4];
     size_t numberOfCells = mesh->getNumberOfCells();
-    for(size_t i = 0; i<numberOfCells; ++i)
+    for(size_t i = 0; i < numberOfCells; ++i)
     {
         color[0] = rand()%256;
         color[1] = rand()%256;
-        color[2] = 0;//rand()%256;
+        color[2] = rand()%256;
         color[3] = rand()%256;
         meshHelper.setCellColor(i, color);
     }
@@ -468,7 +468,7 @@ void Mesh::shakePoint(::fwData::Mesh::sptr mesh)
     size_t nbPts = mesh->getNumberOfPoints();
     ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
     RandFloat randFloat;
-    for(size_t i = 0; i<nbPts; ++i )
+    for(size_t i = 0; i < nbPts; ++i )
     {
         points[i][0] += randFloat()*5;
         points[i][1] += randFloat()*5;
@@ -484,33 +484,198 @@ void Mesh::transform( ::fwData::Mesh::sptr mesh, ::fwData::TransformationMatrix3
     ::fwDataTools::helper::Mesh meshHelper(mesh);
     ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
     ::fwData::Mesh::PointValueType x, y, z, xp, yp, zp, factor;
-    for(size_t i = 0; i<nbPts; ++i )
+    for(size_t i = 0; i < nbPts; ++i )
     {
         x  = points[i][0];
         y  = points[i][1];
         z  = points[i][2];
-        xp = ::fwTools::numericRoundCast< ::fwData::Mesh::PointValueType >(t->getCoefficient(0,0) * x
-                                                                           + t->getCoefficient(0,1) * y
-                                                                           + t->getCoefficient(0,2) * z
-                                                                           + t->getCoefficient(0,3));
-        yp = ::fwTools::numericRoundCast< ::fwData::Mesh::PointValueType >(t->getCoefficient(1,0) * x
-                                                                           + t->getCoefficient(1,1) * y
-                                                                           + t->getCoefficient(1,2) * z
-                                                                           + t->getCoefficient(1,3));
-        zp = ::fwTools::numericRoundCast< ::fwData::Mesh::PointValueType >(t->getCoefficient(2,0) * x
-                                                                           + t->getCoefficient(2,1) * y
-                                                                           + t->getCoefficient(2,2) * z
-                                                                           + t->getCoefficient(2,3));
-        factor = ::fwTools::numericRoundCast< ::fwData::Mesh::PointValueType >(t->getCoefficient(3,0) * x
-                                                                               + t->getCoefficient(3,1) * y
-                                                                               + t->getCoefficient(3,2) * z
-                                                                               + t->getCoefficient(3,3));
+        xp = ::fwTools::numericRoundCast< ::fwData::Mesh::PointValueType >(t->getCoefficient(0, 0) * x
+                                                                           + t->getCoefficient(0, 1) * y
+                                                                           + t->getCoefficient(0, 2) * z
+                                                                           + t->getCoefficient(0, 3));
+        yp = ::fwTools::numericRoundCast< ::fwData::Mesh::PointValueType >(t->getCoefficient(1, 0) * x
+                                                                           + t->getCoefficient(1, 1) * y
+                                                                           + t->getCoefficient(1, 2) * z
+                                                                           + t->getCoefficient(1, 3));
+        zp = ::fwTools::numericRoundCast< ::fwData::Mesh::PointValueType >(t->getCoefficient(2, 0) * x
+                                                                           + t->getCoefficient(2, 1) * y
+                                                                           + t->getCoefficient(2, 2) * z
+                                                                           + t->getCoefficient(2, 3));
+        factor = ::fwTools::numericRoundCast< ::fwData::Mesh::PointValueType >(t->getCoefficient(3, 0) * x
+                                                                               + t->getCoefficient(3, 1) * y
+                                                                               + t->getCoefficient(3, 2) * z
+                                                                               + t->getCoefficient(3, 3));
         points[i][0] = xp/factor;
         points[i][1] = yp/factor;
         points[i][2] = zp/factor;
     }
 }
 
+//------------------------------------------------------------------------------
+
+void Mesh::colorizeMeshPoints( const ::fwData::Mesh::sptr& mesh, const std::uint8_t colorR, const std::uint8_t colorG,
+                               const std::uint8_t colorB, const std::uint8_t colorA)
+{
+    ::fwData::Array::sptr itemColors = mesh->getPointColorsArray();
+    SLM_ASSERT("color array must be allocated", itemColors);
+
+    if ( itemColors && itemColors->getBufferObject() )
+    {
+        ::fwDataTools::helper::Array hArray( itemColors );
+
+        ::fwData::Mesh::ColorValueType* itemColorsBuffer = hArray.begin< ::fwData::Mesh::ColorValueType >();
+
+        fwData::Array::SizeType arraySize = itemColors->getSize();
+
+        const size_t nbrVertex = arraySize[0];
+
+        const size_t nbComponents = itemColors->getNumberOfComponents();
+
+        for (size_t numVertex = 0; numVertex < nbrVertex; ++numVertex)
+        {
+            itemColorsBuffer[numVertex * nbComponents + 0] = colorR;
+            itemColorsBuffer[numVertex * nbComponents + 1] = colorG;
+            itemColorsBuffer[numVertex * nbComponents + 2] = colorB;
+            if (nbComponents == 4)
+            {
+                itemColorsBuffer[numVertex * nbComponents + 3] = colorA;
+            }
+        }
+    }
+    ::fwData::Mesh::PointColorsModifiedSignalType::sptr sig;
+    sig = mesh->signal< ::fwData::Mesh::PointColorsModifiedSignalType >(
+        ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG);
+    sig->asyncEmit();
+}
+
+//-----------------------------------------------------------------------------
+
+void Mesh::colorizeMeshPoints( const ::fwData::Mesh::sptr& _mesh, const std::vector< size_t >& _vectorNumTriangle,
+                               const std::uint8_t _colorR, const std::uint8_t _colorG, const std::uint8_t _colorB,
+                               const std::uint8_t _colorA)
+{
+    ::fwDataTools::helper::ArrayGetter helperCells(_mesh->getCellDataArray());
+    const ::fwData::Mesh::CellValueType* cellsMesh = helperCells.begin< ::fwData::Mesh::CellValueType >();
+
+    ::fwData::Array::sptr itemColors = _mesh->getPointColorsArray();
+    SLM_ASSERT("color array must be allocated", itemColors);
+
+    ::fwDataTools::helper::Array hArray( itemColors );
+
+    ::fwData::Mesh::ColorValueType* itemColorsBuffer =
+        static_cast< ::fwData::Mesh::ColorValueType* >( hArray.getBuffer() );
+
+    const size_t nbrTriangle  = _vectorNumTriangle.size();
+    const size_t nbComponents = itemColors->getNumberOfComponents();
+
+    for (size_t numTriangle = 0; numTriangle < nbrTriangle; ++numTriangle)
+    {
+        const size_t indiceTriangle = _vectorNumTriangle[numTriangle];
+
+        const size_t indexPoint0 = cellsMesh[indiceTriangle * 3 + 0];
+        const size_t indexPoint1 = cellsMesh[indiceTriangle * 3 + 1];
+        const size_t indexPoint2 = cellsMesh[indiceTriangle * 3 + 2];
+
+        itemColorsBuffer[indexPoint0 * nbComponents + 0] = _colorR;
+        itemColorsBuffer[indexPoint0 * nbComponents + 1] = _colorG;
+        itemColorsBuffer[indexPoint0 * nbComponents + 2] = _colorB;
+
+        itemColorsBuffer[indexPoint1 * nbComponents + 0] = _colorR;
+        itemColorsBuffer[indexPoint1 * nbComponents + 1] = _colorG;
+        itemColorsBuffer[indexPoint1 * nbComponents + 2] = _colorB;
+
+        itemColorsBuffer[indexPoint2 * nbComponents + 0] = _colorR;
+        itemColorsBuffer[indexPoint2 * nbComponents + 1] = _colorG;
+        itemColorsBuffer[indexPoint2 * nbComponents + 2] = _colorB;
+
+        if (nbComponents == 4)
+        {
+            itemColorsBuffer[indexPoint0 * nbComponents + 3] = _colorA;
+            itemColorsBuffer[indexPoint1 * nbComponents + 3] = _colorA;
+            itemColorsBuffer[indexPoint2 * nbComponents + 3] = _colorA;
+        }
+    }
+    ::fwData::Mesh::PointColorsModifiedSignalType::sptr sig;
+    sig = _mesh->signal< ::fwData::Mesh::PointColorsModifiedSignalType >(
+        ::fwData::Mesh::s_POINT_COLORS_MODIFIED_SIG);
+    sig->asyncEmit();
+}
+
+//-----------------------------------------------------------------------------
+
+void Mesh::colorizeMeshCells(
+    const ::fwData::Mesh::sptr& mesh,
+    const std::uint8_t colorR,
+    const std::uint8_t colorG,
+    const std::uint8_t colorB,
+    const std::uint8_t colorA)
+{
+    ::fwData::Array::sptr itemColors = mesh->getCellColorsArray();
+    SLM_ASSERT("color array must be allocated", itemColors);
+
+    ::fwDataTools::helper::Array hArray( itemColors );
+
+    ::fwData::Mesh::ColorValueType* itemColorsBuffer =
+        static_cast< ::fwData::Mesh::ColorValueType* >( hArray.getBuffer() );
+
+    size_t triangleNbr        = mesh->getNumberOfCells();
+    const size_t nbComponents = itemColors->getNumberOfComponents();
+
+    for (size_t triangleNum = 0; triangleNum < triangleNbr; ++triangleNum)
+    {
+        itemColorsBuffer[triangleNum * nbComponents + 0] = colorR;
+        itemColorsBuffer[triangleNum * nbComponents + 1] = colorG;
+        itemColorsBuffer[triangleNum * nbComponents + 2] = colorB;
+        if (nbComponents == 4)
+        {
+            itemColorsBuffer[triangleNum * nbComponents + 3] = colorA;
+        }
+    }
+
+    ::fwData::Mesh::CellColorsModifiedSignalType::sptr sig;
+    sig = mesh->signal< ::fwData::Mesh::CellColorsModifiedSignalType >(
+        ::fwData::Mesh::s_CELL_COLORS_MODIFIED_SIG);
+    sig->asyncEmit();
+}
+
+//------------------------------------------------------------------------------
+
+void Mesh::colorizeMeshCells(
+    const ::fwData::Mesh::sptr& mesh,
+    const std::vector < size_t >& triangleIndexVector,
+    const std::uint8_t colorR,
+    const std::uint8_t colorG,
+    const std::uint8_t colorB,
+    const std::uint8_t colorA)
+{
+    ::fwData::Array::sptr itemColors = mesh->getCellColorsArray();
+    SLM_ASSERT("color array must be allocated", itemColors);
+
+    ::fwDataTools::helper::Array hArray( itemColors );
+
+    ::fwData::Mesh::ColorValueType* itemColorsBuffer =
+        static_cast< ::fwData::Mesh::ColorValueType* >( hArray.getBuffer() );
+
+    const size_t triangleNbr  = triangleIndexVector.size();
+    const size_t nbComponents = itemColors->getNumberOfComponents();
+
+    for (size_t triangleNum = 0; triangleNum < triangleNbr; ++triangleNum)
+    {
+        const size_t triangleIndex = triangleIndexVector[triangleNum];
+        itemColorsBuffer[triangleIndex * nbComponents + 0] = colorR;
+        itemColorsBuffer[triangleIndex * nbComponents + 1] = colorG;
+        itemColorsBuffer[triangleIndex * nbComponents + 2] = colorB;
+        if (nbComponents == 4)
+        {
+            itemColorsBuffer[triangleIndex * nbComponents + 3] = colorA;
+        }
+    }
+
+    ::fwData::Mesh::CellColorsModifiedSignalType::sptr sig;
+    sig = mesh->signal< ::fwData::Mesh::CellColorsModifiedSignalType >(
+        ::fwData::Mesh::s_CELL_COLORS_MODIFIED_SIG);
+    sig->asyncEmit();
+}
 //------------------------------------------------------------------------------
 
 } // namespace fwDataTools

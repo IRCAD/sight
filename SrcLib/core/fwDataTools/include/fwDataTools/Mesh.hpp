@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,8 @@
 #ifndef __FWDATATOOLS_MESH_HPP__
 #define __FWDATATOOLS_MESH_HPP__
 
-#include "fwDataTools/Vector.hxx"
 #include "fwDataTools/config.hpp"
+#include "fwDataTools/Vector.hxx"
 #include <fwDataTools/helper/Mesh.hpp>
 
 #include <fwCore/base.hpp>
@@ -19,7 +19,6 @@
 namespace fwDataTools
 {
 
-
 /**
  * @brief   This helper generates a mesh using specified structure (quad or triangle).
  */
@@ -29,7 +28,8 @@ class Mesh
 public:
 
     typedef std::map<Point, ::fwData::Mesh::Id> PointsMapType;
-
+    typedef std::array<double, 3> PositionType;
+    typedef std::array<size_t, 3> OrganizationType;
 
     /**
      * @brief Initialize 'rand' seed
@@ -105,6 +105,44 @@ public:
 
     /// Applied a transformation 4x4 on mesh
     FWDATATOOLS_API static void transform( ::fwData::Mesh::sptr mesh, ::fwData::TransformationMatrix3D::csptr t );
+
+    /**
+     * @brief Colorize the mesh points with the given color
+     * @pre point color array must be allocated
+     * @pre mesh must only contain triangle
+     */
+    FWDATATOOLS_API static void colorizeMeshPoints(const ::fwData::Mesh::sptr& mesh, const std::uint8_t colorR,
+                                                   const std::uint8_t colorG, const std::uint8_t colorB,
+                                                   const std::uint8_t colorA = 255);
+
+    /**
+     * @brief Colorize the mesh points associated to the triangle in _vectorNumTriangle
+     * @pre point color array must be allocated
+     * @pre mesh must only contain triangle
+     */
+    FWDATATOOLS_API static void colorizeMeshPoints(const ::fwData::Mesh::sptr& _mesh,
+                                                   const std::vector<size_t>& _vectorNumTriangle,
+                                                   const std::uint8_t _colorR, const std::uint8_t colorG,
+                                                   const std::uint8_t colorB, const std::uint8_t _colorA = 255);
+
+    /**
+     * @brief Colorize the mesh cells with the given rgb color
+     * @pre cell color array must be allocated
+     * @pre mesh must only contain triangle
+     */
+    FWDATATOOLS_API static void colorizeMeshCells(const::fwData::Mesh::sptr& mesh, const std::uint8_t colorR,
+                                                  const std::uint8_t colorG, const std::uint8_t colorB,
+                                                  const std::uint8_t _colorA = 255);
+    /**
+     * @brief Colorize the cells in vectorNumTriangle
+     * @pre cell color array must be allocated
+     * @pre mesh must only contain triangle
+     */
+    FWDATATOOLS_API static void colorizeMeshCells(const::fwData::Mesh::sptr& mesh,
+                                                  const std::vector<size_t>& triangleIndexVector,
+                                                  const std::uint8_t colorR,
+                                                  const std::uint8_t colorG, const std::uint8_t colorB,
+                                                  const std::uint8_t _colorA = 255);
 
 };
 
