@@ -26,13 +26,20 @@ struct FWDATATOOLS_CLASS_API ImageDiff
     FWDATATOOLS_API ImageDiff(const ::fwData::Image::IndexType index, const ::fwData::Image::BufferType* oldValue,
                               const ::fwData::Image::BufferType* newValue, const unsigned char imageTypeSize);
 
+    /// Destructor
     FWDATATOOLS_API ~ImageDiff();
 
-    /// Copy constructor forbidden
+    /// Copy constructor
     FWDATATOOLS_API ImageDiff(const ImageDiff& other);
+
+    /// Move constructor
+    FWDATATOOLS_API ImageDiff(ImageDiff&& other);
 
     /// Copy assignement.
     FWDATATOOLS_API ImageDiff& operator= (const ImageDiff& other);
+
+    /// Move assignement.
+    FWDATATOOLS_API ImageDiff& operator= (ImageDiff&& other);
 
     ::fwData::Image::IndexType m_index;
     ::fwData::Image::BufferType* m_oldValue;

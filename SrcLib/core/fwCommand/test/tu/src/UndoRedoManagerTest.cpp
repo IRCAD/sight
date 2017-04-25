@@ -50,7 +50,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual const size_t getSize() const
+    virtual size_t getSize() const
     {
         return m_size;
     }

@@ -38,30 +38,54 @@ ImageDiff::~ImageDiff()
 
 //-----------------------------------------------------------------------------
 
-ImageDiff::ImageDiff(const ImageDiff& other)
+ImageDiff::ImageDiff(const ImageDiff& other) :
+    m_index(other.m_index),
+    m_oldValue(new ::fwData::Image::BufferType[other.m_typeSize]),
+    m_newValue(new ::fwData::Image::BufferType[other.m_typeSize]),
+    m_typeSize(other.m_typeSize)
 {
-    m_index    = other.m_index;
-    m_typeSize = other.m_typeSize;
-    m_oldValue = new ::fwData::Image::BufferType[m_typeSize];
-    m_newValue = new ::fwData::Image::BufferType[m_typeSize];
     std::copy(other.m_oldValue, other.m_oldValue+m_typeSize, m_oldValue);
     std::copy(other.m_newValue, other.m_newValue+m_typeSize, m_newValue);
 }
 
 //-----------------------------------------------------------------------------
 
+ImageDiff::ImageDiff(ImageDiff&& other) :
+    m_index(other.m_index),
+    m_oldValue(other.m_oldValue),
+    m_newValue(other.m_newValue),
+    m_typeSize(other.m_typeSize)
+{
+    other.m_oldValue = nullptr;
+    other.m_newValue = nullptr;
+}
+
+//-----------------------------------------------------------------------------
+
 ImageDiff& ImageDiff::operator =(const ImageDiff& other)
 {
-    m_index = other.m_index;
-    delete[] m_oldValue;
-    delete[] m_newValue;
-    m_typeSize = other.m_typeSize;
-    m_oldValue = new ::fwData::Image::BufferType[m_typeSize];
-    m_newValue = new ::fwData::Image::BufferType[m_typeSize];
-    std::copy(other.m_oldValue, other.m_oldValue+m_typeSize, m_oldValue);
-    std::copy(other.m_newValue, other.m_newValue+m_typeSize, m_newValue);
+    ImageDiff tmpImageDiff(other);
+    *this = std::move(tmpImageDiff);
 
     return *this;
+}
+
+//-----------------------------------------------------------------------------
+
+ImageDiff& ImageDiff::operator=(ImageDiff&& other)
+{
+    m_index = other.m_index;
+
+    delete[] m_oldValue;
+    delete[] m_newValue;
+
+    m_oldValue = other.m_oldValue;
+    m_newValue = other.m_newValue;
+
+    other.m_oldValue = nullptr;
+    other.m_newValue = nullptr;
+
+    m_typeSize = other.m_typeSize;
 }
 
 } // namespace fwDataTools

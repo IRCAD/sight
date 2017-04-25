@@ -35,7 +35,7 @@ public:
     /**
      * @brief Retrieves the memory footprint of the command.
      */
-    FWCOMMAND_API virtual const size_t getSize() const = 0;
+    FWCOMMAND_API virtual size_t getSize() const = 0;
 
     /**
      * @brief Used to implement the redo operation.

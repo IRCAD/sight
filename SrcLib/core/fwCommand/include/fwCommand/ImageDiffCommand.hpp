@@ -25,7 +25,7 @@ public:
     FWCOMMAND_API ImageDiffCommand(const ::fwData::Image::sptr& img, ::fwDataTools::ImageDiffsType diff);
 
     /// The diff size.
-    FWCOMMAND_API virtual const size_t getSize() const;
+    FWCOMMAND_API virtual size_t getSize() const;
 
     /// Apply diff.
     FWCOMMAND_API virtual bool redo();

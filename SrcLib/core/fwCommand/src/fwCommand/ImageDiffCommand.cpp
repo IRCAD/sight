@@ -22,7 +22,7 @@ ImageDiffCommand::ImageDiffCommand(const fwData::Image::sptr& img, fwDataTools::
 
 //------------------------------------------------------------------------------
 
-const size_t ImageDiffCommand::getSize() const
+size_t ImageDiffCommand::getSize() const
 {
     size_t imgEltSize = m_img->getPixelType().sizeOf() * m_img->getNumberOfComponents();
 
