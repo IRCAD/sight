@@ -24,7 +24,11 @@ namespace ctrlHistory
  * @brief This service manages a command history.
  * The history is modified when receiving "undo", "redo", "enqueue" or "clear" signal.
  *
- *  * @section Slots Slots
+ * @section Signals Signals
+ * - \b canUndo(bool) : sent when the history is modified, notifies if an undo is still possible.
+ * - \b canRedo(bool) : sent when the history is modified, notifies if an redo is still possible.
+ *
+ * @section Slots Slots
  * - \b enqueue(::fwCommand::ICommand::sptr) : add a command to the history.
  * - \b undo() : undo the last command.
  * - \b redo() : redo the next command.
@@ -72,6 +76,8 @@ protected:
 
 private:
 
+    typedef ::fwCom::Signal<void (bool)> CanDoSignalType;
+
     /// SLOT: add a command to the history.
     void enqueue(::fwCommand::ICommand::sptr command);
 
@@ -83,6 +89,13 @@ private:
 
     /// SLOT: delete all commands from the history.
     void clear();
+
+    /// Send 'canUndo' and 'canRedo' signals.
+    void emitModifSig() const;
+
+    CanDoSignalType::sptr m_canUndoSig;
+
+    CanDoSignalType::sptr m_canRedoSig;
 
     ::fwCommand::UndoRedoManager m_undoRedoManager;
 };

@@ -26,6 +26,9 @@ namespace ctrlHistory
 
 fwServicesRegisterMacro(::fwServices::IService, ::ctrlHistory::SCommandHistory, ::fwData::Object);
 
+static const ::fwCom::Signals::SignalKeyType s_CANUNDO_SIGNAL = "canUndo";
+static const ::fwCom::Signals::SignalKeyType s_CANREDO_SIGNAL = "canRedo";
+
 static const ::fwCom::Slots::SlotKeyType s_ENQUEUE_SLOT = "enqueue";
 static const ::fwCom::Slots::SlotKeyType s_UNDO_SLOT    = "undo";
 static const ::fwCom::Slots::SlotKeyType s_REDO_SLOT    = "redo";
@@ -39,6 +42,9 @@ SCommandHistory::SCommandHistory()
     newSlot(s_UNDO_SLOT, &SCommandHistory::undo, this);
     newSlot(s_REDO_SLOT, &SCommandHistory::redo, this);
     newSlot(s_CLEAR_SLOT, &SCommandHistory::clear, this);
+
+    m_canUndoSig = newSignal< CanDoSignalType >( s_CANUNDO_SIGNAL );
+    m_canRedoSig = newSignal< CanDoSignalType >( s_CANREDO_SIGNAL );
 }
 
 //-----------------------------------------------------------------------------
@@ -72,6 +78,7 @@ void SCommandHistory::configuring() throw( ::fwTools::Failed )
 
 void SCommandHistory::starting() throw( ::fwTools::Failed )
 {
+    this->emitModifSig();
 }
 
 //-----------------------------------------------------------------------------
@@ -92,6 +99,7 @@ void SCommandHistory::stopping() throw( ::fwTools::Failed )
 void SCommandHistory::enqueue(fwCommand::ICommand::sptr command)
 {
     m_undoRedoManager.enqueue(command);
+    this->emitModifSig();
 }
 
 //-----------------------------------------------------------------------------
@@ -99,6 +107,7 @@ void SCommandHistory::enqueue(fwCommand::ICommand::sptr command)
 void SCommandHistory::undo()
 {
     m_undoRedoManager.undo();
+    this->emitModifSig();
 }
 
 //-----------------------------------------------------------------------------
@@ -106,6 +115,7 @@ void SCommandHistory::undo()
 void SCommandHistory::redo()
 {
     m_undoRedoManager.redo();
+    this->emitModifSig();
 }
 
 //-----------------------------------------------------------------------------
@@ -113,6 +123,15 @@ void SCommandHistory::redo()
 void SCommandHistory::clear()
 {
     m_undoRedoManager.clear();
+    this->emitModifSig();
+}
+
+//-----------------------------------------------------------------------------
+
+void SCommandHistory::emitModifSig() const
+{
+    m_canUndoSig->asyncEmit(m_undoRedoManager.canUndo());
+    m_canRedoSig->asyncEmit(m_undoRedoManager.canRedo());
 }
 
 //-----------------------------------------------------------------------------

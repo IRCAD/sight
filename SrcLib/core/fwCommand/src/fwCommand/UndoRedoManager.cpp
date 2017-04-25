@@ -22,18 +22,18 @@ UndoRedoManager::UndoRedoManager(size_t maxMemory, size_t maxCommands) :
 
 //-----------------------------------------------------------------------------
 
-void UndoRedoManager::enqueue(ICommand::sptr cmd)
+bool UndoRedoManager::enqueue(ICommand::sptr cmd)
 {
     if(m_maxMemory == 0)
     {
         SLM_WARN("Cannot add a command because maxMemory is 0.");
-        return;
+        return false;
     }
 
     if(cmd->getSize() > m_maxMemory)
     {
         SLM_WARN("The current command is bigger than the maximum history size");
-        return;
+        return false;
     }
 
     // Remove all commands following the current history point.
@@ -61,6 +61,8 @@ void UndoRedoManager::enqueue(ICommand::sptr cmd)
     m_commandQueue.push_back(cmd);
     m_usedMemory  += cmd->getSize();
     m_commandIndex = static_cast<std::int64_t>(m_commandQueue.size() - 1);
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -91,6 +93,20 @@ bool UndoRedoManager::undo()
     }
 
     return success;
+}
+
+//-----------------------------------------------------------------------------
+
+bool UndoRedoManager::canUndo() const
+{
+    return m_commandIndex > -1;
+}
+
+//-----------------------------------------------------------------------------
+
+bool UndoRedoManager::canRedo() const
+{
+    return (m_commandIndex != this->getCommandCount() - 1) && (this->getCommandCount() > 0);
 }
 
 //-----------------------------------------------------------------------------

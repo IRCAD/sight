@@ -36,8 +36,10 @@ public:
      * @brief Push a command to the history.
      *
      * @param[in] cmd the command
+     *
+     * @return false if the enqueue failed.
      */
-    FWCOMMAND_API void enqueue( ICommand::sptr cmd );
+    FWCOMMAND_API bool enqueue( ICommand::sptr cmd );
 
     /**
      * @brief Execute the next command if any.
@@ -53,9 +55,13 @@ public:
      */
     FWCOMMAND_API bool undo();
 
-    /**
-     * @brief Remove all commands in history.
-     */
+    /// Return true if we can undo.
+    FWCOMMAND_API bool canUndo() const;
+
+    /// Return true if we can redo.
+    FWCOMMAND_API bool canRedo() const;
+
+    /// Remove all commands in history.
     FWCOMMAND_API void clear();
 
     /// Get the number of enqueued commands.
