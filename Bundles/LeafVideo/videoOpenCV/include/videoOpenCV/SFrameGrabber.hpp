@@ -59,7 +59,7 @@ namespace videoOpenCV
             <in key="camera" uid="..." />
             <inout key="frameTL" uid="..." />
             <fps>30</fps>
-            <frameByFrame>false</frameByFrame>
+            <oneShot>false</oneShot>
             <createTimestamp>false</createTimestamp>
         </service>
    @endcode
@@ -69,7 +69,7 @@ namespace videoOpenCV
  * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
  * @subsection Configuration Configuration
  * - \b fps (optional) : target playback frame rate when playing an image sequence (default: 30).
- * - \b frameByFrame (optional) : Use frame by frame mode, using nextImage and previousImage
+ * - \b oneShot (optional) : Use frame by frame mode, using nextImage and previousImage
  *  (only available if reading set of images) (default: false).
  * - \b createTimestamp (optional) : create a new timestamp instead of using name of image
  * (only available if reading set of images) (default: false).
@@ -124,10 +124,10 @@ protected:
     /// SLOT : set the new position in the video.
     virtual void setPosition(int64_t position);
 
-    /// SLOT : read the next image (only in file mode, and if m_frameByFrame is enabled)
+    /// SLOT : read the next image (only in file mode, and if m_oneShot is enabled)
     void nextImage();
 
-    /// SLOT : read the previous image (only in file mode, and if m_frameByFrame is enabled)
+    /// SLOT : read the previous image (only in file mode, and if m_oneShot is enabled)
     void previousImage();
 
 private:
@@ -173,7 +173,7 @@ private:
     mutable ::fwCore::mt::Mutex m_mutex;
 
     /// frame -by-frame mode (true if enabled, false otherwise)
-    bool m_frameByFrame;
+    bool m_oneShot;
     /// if true: create a new timestamp when reading image, if false: use the name of the image file as timestamp.
     bool m_createNewTS;
 

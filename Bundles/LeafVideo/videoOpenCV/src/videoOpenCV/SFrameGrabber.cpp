@@ -50,7 +50,7 @@ SFrameGrabber::SFrameGrabber() throw() :
     m_isInitialized(false),
     m_fps(30),
     m_imageCount(0),
-    m_frameByFrame(false),
+    m_oneShot(false),
     m_createNewTS(false)
 {
     m_worker = ::fwThread::Worker::New();
@@ -85,7 +85,7 @@ void SFrameGrabber::configuring()  throw ( ::fwTools::Failed )
 
     m_fps = config.get<unsigned int>("fps", 30);
 
-    m_frameByFrame = config.get<bool>("frameByFrame", false);
+    m_oneShot = config.get<bool>("oneShot", false);
 
     m_createNewTS = config.get<bool>("createTimestamp", false);
 
@@ -303,7 +303,7 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
         sigPosition->asyncEmit(0);
 
-        if(m_frameByFrame)
+        if(m_oneShot)
         {
             m_timer = m_worker->createTimer();
             m_timer->setOneShot(true);
@@ -541,7 +541,7 @@ void SFrameGrabber::setPosition(int64_t position)
 
 void SFrameGrabber::nextImage()
 {
-    if(m_frameByFrame)
+    if(m_oneShot)
     {
         if(m_imageCount < m_imageToRead.size())
         {
@@ -561,7 +561,7 @@ void SFrameGrabber::nextImage()
 
 void SFrameGrabber::previousImage()
 {
-    if(m_frameByFrame)
+    if(m_oneShot)
     {
         if(m_imageCount > 1)
         {
