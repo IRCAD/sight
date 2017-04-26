@@ -87,6 +87,8 @@ void SMatricesReader::configuring() throw(::fwTools::Failed)
     m_fps = config.get<unsigned int>("fps", 30);
     OSLM_ASSERT("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps > 0 && m_fps <= 60);
 
+    m_createNewTS = config.get<bool>("createTimestamp", false);
+
     m_oneShot = config.get<bool>("oneShot", false);
 }
 
@@ -152,7 +154,7 @@ void SMatricesReader::readPrevious()
     {
         if(m_tsMatricesCount > 1)
         {
-            m_tsMatricesCount = m_tsMatricesCount - 2;// m_tsMatricesCount is pointing to next image,so -1 = present
+            m_tsMatricesCount = m_tsMatricesCount - 2;// m_tsMatricesCount is pointing to previous image,so -1 = present
                                                       // image
             m_timer->stop();
             m_timer->start();
