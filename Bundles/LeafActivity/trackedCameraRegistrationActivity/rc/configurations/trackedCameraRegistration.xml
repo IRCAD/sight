@@ -75,6 +75,7 @@
         </object>
 
         <object uid="registrationMatrix" type="::fwData::TransformationMatrix3D" />
+        <object uid="senseOpticalCenterMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="arTag1Matrix" type="::fwData::TransformationMatrix3D" />
         <object uid="currentTag1Matrix" type="::fwData::TransformationMatrix3D" />
 
@@ -134,6 +135,7 @@
             <inout key="matrixTL" uid="rgbMatrixTL" />
             <inout key="tagMatrix1" uid="currentTag1Matrix" />
             <inout key="tagMatrix2" uid="rgbTag2Matrix" />
+            <inout key="registrationMatrix" uid="senseOpticalCenterMatrix" />
             <parameter replace="tagsToDetect" by="101,128" />
         </service>
 
@@ -149,6 +151,7 @@
             <inout key="matrixTL" uid="senseMatrixTL" />
             <inout key="tagMatrix1" uid="senseTag1Matrix" />
             <inout key="tagMatrix2" uid="senseTag2Matrix" />
+            <inout key="registrationMatrix" uid="senseTag2Matrix" />
             <parameter replace="tagsToDetect" by="101" />
         </service>
 
@@ -254,6 +257,14 @@
             <inout key="output" uid="registrationMatrix" />
         </service>
 
+        <service uid="concatenatesSenseOpticalCenterMatrix" type="::maths::SConcatenateMatrices" >
+            <in group="matrix">
+                <key uid="rgbTag2Matrix" autoConnect="yes"/>
+                <key uid="registrationMatrix" autoConnect="yes" />
+            </in>
+            <inout key="output" uid="senseOpticalCenterMatrix" />
+        </service>
+
         <service uid="concatenateTag1ARMatrix" type="::maths::SConcatenateMatrices" >
             <in group="matrix">
                 <key uid="rgbTag2Matrix" autoConnect="yes" />
@@ -290,6 +301,7 @@
 
         <start uid="mainView" />
         <start uid="concatenateRegistrationMatrix" />
+        <start uid="concatenatesSenseOpticalCenterMatrix" />
         <start uid="concatenateTag1ARMatrix" />
         <start uid="switchMatrices" />
         <start uid="matrixWriter" />
