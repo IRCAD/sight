@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,7 @@
 #include "basicRegistration/SPointListRegistration.hpp"
 
 #include <fwCom/Signal.hxx>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/Composite.hpp>
 #include <fwData/Mesh.hpp>
@@ -25,15 +26,17 @@
 #include <vtkPoints.h>
 #include <vtkSmartPointer.h>
 
-
 fwServicesRegisterMacro( ::fwServices::IController, ::basicRegistration::SPointListRegistration, ::fwData::Composite );
-
 
 namespace basicRegistration
 {
 
-SPointListRegistration::SPointListRegistration()
+const ::fwCom::Slots::SlotKeyType SPointListRegistration::s_CHANGE_MODE = "changeMode";
+
+SPointListRegistration::SPointListRegistration() :
+    m_registrationMode(RIGID)
 {
+    newSlot(s_CHANGE_MODE, &SPointListRegistration::changeMode, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -92,7 +95,6 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
             ::fwData::TransformationMatrix3D::dynamicCast( (*composite)[ m_matrixKey ] );
     }
 
-
     if( registeredPL->getPoints().size() >= 3 &&
         registeredPL->getPoints().size() == referencePL->getPoints().size() )
     {
@@ -136,7 +138,20 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
 
         landmarkTransform->SetSourceLandmarks(sourcePts);
         landmarkTransform->SetTargetLandmarks(targetPts);
-        landmarkTransform->SetModeToRigidBody();
+
+        if(m_registrationMode == AFFINE)
+        {
+            landmarkTransform->SetModeToAffine();
+        }
+        else if(m_registrationMode == SIMILARITY)
+        {
+            landmarkTransform->SetModeToSimilarity();
+        }
+        else
+        {
+            landmarkTransform->SetModeToRigidBody();
+        }
+
         landmarkTransform->Update();
 
         // Get the resulting transformation matrix (this matrix takes the source points to the target points)
@@ -146,7 +161,7 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
         {
             for(size_t c = 0; c < 4; ++c)
             {
-                matrix->setCoefficient(l, c, m->GetElement(l,c));
+                matrix->setCoefficient(l, c, m->GetElement(l, c));
             }
         }
 
@@ -165,7 +180,7 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
     }
 }
 
-// ----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 void SPointListRegistration::swapping() throw ( ::fwTools::Failed )
 {
@@ -174,8 +189,29 @@ void SPointListRegistration::swapping() throw ( ::fwTools::Failed )
     this->starting();
 }
 
-// ----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+
+void SPointListRegistration::changeMode(std::string _value, std::string _key)
+{
+    if(_value == "RIGID")
+    {
+        m_registrationMode = RIGID;
+    }
+    else if( _value == "SIMILARITY")
+    {
+        m_registrationMode = SIMILARITY;
+    }
+    else if(_value == "AFFINE")
+    {
+        m_registrationMode = AFFINE;
+    }
+    else
+    {
+        SLM_ERROR("key "+ _value +" is not handled.");
+    }
+}
+
+//----------------------------------------------------------------------------
 
 } // namespace basicRegistration
-
 
