@@ -29,13 +29,11 @@ namespace videoOpenni
    <service uid="..." type ="::videoOpenni::SScan" >
         <inout key="frameTLDepth" uid="..." />
         <inout key="frameTLColors" uid="..." />
-        <inout key="cameraSeries" uid="..." />
    </service>
    @endcode
  * @subsection In-Out In-Out
  * - \b frameDepth [::arData::FrameTL]: Frame timeline of the depth video.
  * - \b frameColor [::arData::FrameTL]: Frame timeline of the color video.
- * - \b cameraSeries [::arData::CameraSeries]: Camera series that will contain device camera information.
  */
 class VIDEOOPENNI_CLASS_API SScan : public ::arServices::IGrabber
 {

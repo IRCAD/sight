@@ -140,7 +140,7 @@ void SScan::startCamera()
 
         if( m_camera.isPropertySupported(ONI_DEVICE_PROPERTY_IMAGE_REGISTRATION) )
         {
-            m_camera.setProperty(ONI_DEVICE_PROPERTY_IMAGE_REGISTRATION, ONI_IMAGE_REGISTRATION_DEPTH_TO_COLOR);
+            m_camera.setProperty(ONI_DEVICE_PROPERTY_IMAGE_REGISTRATION, ONI_IMAGE_REGISTRATION_OFF);
         }
         else
         {
@@ -197,50 +197,6 @@ void SScan::startCamera()
     {
         m_positionsTimeline->initPoolSize(widthDepth, heightDepth, ::fwTools::Type::s_FLOAT, 3);
         m_positionsTimeline->setMaximumSize(50);
-    }
-
-    ::arData::CameraSeries::sptr cameraSeries = this->getInOut< ::arData::CameraSeries>("cameraSeries");
-
-    ::arData::Camera::sptr depthCamera = ::arData::Camera::New();
-    ::arData::Camera::sptr colorCamera = ::arData::Camera::New();
-
-    cameraSeries->addCamera(depthCamera);
-    cameraSeries->addCamera(colorCamera);
-    {
-
-        depthCamera->setDescription("Depth camera");
-        depthCamera->setWidth(widthDepth);
-        depthCamera->setHeight(heightDepth);
-        depthCamera->setCx(widthDepth / 2);
-        depthCamera->setCy(heightDepth / 2);
-
-        const double fovX = static_cast<double>( m_depthStream.getHorizontalFieldOfView() );
-        const double fovY = static_cast<double>( m_depthStream.getVerticalFieldOfView() );
-
-        const double fx = 1./(std::tan(fovX * .5 ) / widthDepth * 2.);
-        const double fy = 1./(std::tan(fovY * .5 ) / heightDepth * 2.);
-
-        depthCamera->setFx(fx);
-        depthCamera->setFy(fy);
-        depthCamera->setIsCalibrated(true);
-    }
-
-    {
-        colorCamera->setDescription("Color camera");
-        colorCamera->setWidth(widthColor);
-        colorCamera->setHeight(heightColor);
-        colorCamera->setCx(widthColor / 2);
-        colorCamera->setCy(heightColor / 2);
-
-        const double fovX = static_cast<double>( m_colorStream.getHorizontalFieldOfView() );
-        const double fovY = static_cast<double>( m_colorStream.getVerticalFieldOfView() );
-
-        const double fx = 1./(std::tan(fovX * .5 ) / widthColor * 2.);
-        const double fy = 1./(std::tan(fovY * .5 ) / heightColor * 2.);
-
-        colorCamera->setFx(fx);
-        colorCamera->setFy(fy);
-        colorCamera->setIsCalibrated(true);
     }
 
     m_slotPresentFrame->asyncRun();
