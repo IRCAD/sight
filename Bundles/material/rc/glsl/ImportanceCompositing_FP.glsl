@@ -25,9 +25,6 @@ layout (location = 0) out vec4 mrt_IC_RayTracing;
 layout (location = 1) out vec4 mrt_IC_JFA;
 #else
 #if IDVR == 2 || IDVR == 3
-uniform float u_losImportant;
-uniform float u_losNotImportant;
-
 out vec4 mrt_IC_RayTracing;
 #endif
 #endif
@@ -70,13 +67,8 @@ void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, inout vec4
 #if IDVR == 1 // MImP
     IC_JFA = vec4(0.0);
     IC_RayTracing = vec4(0.0, 0.0, 0.0, 1.0);
-#endif
-#if IDVR == 2 // AImC
+#else
     IC_RayTracing = vec4(0.0, 0.0, 0.0, 0.0);
-#endif
-#if IDVR == 3 // VPImC
-    IC_RayTracing = vec4(0.0, 0.0, 0.0, 0.0);
-    vec4 alphaAccum = vec4(0.0);
 #endif
 
     int iterCount = 0;
@@ -91,25 +83,20 @@ void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, inout vec4
     {
         float maskValue = texture(u_mask, rayPos).r;
 
-// Maximum Importance compositing
-#if IDVR == 1
         if(maskValue > edge)
         {
+// Maximum Importance compositing
+#if IDVR == 1
             IC_RayTracing = vec4(rayPos, 1.);
             IC_JFA = vec4(uv.x, uv.y, rayPos.z, 1.);
-            break;
-        }
-#endif
-#if IDVR == 2 || IDVR == 3
+#else
 // Average Importance compositing & Visibility preserving Importance Compositing
 // We count the number of samples until the first important object
 // We will ponder those samples by the lowest important samples
-        if(maskValue > edge)
-        {
             IC_RayTracing = vec4(nbSamples, 0., 0., 1.);
+#endif
             break;
         }
-#endif
 
         rayPos += rayDir;
         nbSamples += 1.0f;
@@ -139,12 +126,9 @@ void main(void)
 
     vec3 rayPos = rayEntry;
 
-#if IDVR == 1
-    launchRay(rayPos, rayDir, rayLength, mrt_IC_RayTracing, mrt_IC_JFA);
-#else
 #if IDVR == 2 || IDVR == 3
     vec4 mrt_IC_JFA = vec4(0.0, 0.0, 0.0, 1.0);
+#endif
+
     launchRay(rayPos, rayDir, rayLength, mrt_IC_RayTracing, mrt_IC_JFA);
-#endif
-#endif
 }

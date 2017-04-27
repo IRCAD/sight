@@ -35,9 +35,6 @@ fragment_program IDVR_AImC_FP glsl
         param_named u_image int 0
         param_named u_mask int 1
         param_named u_entryPoints int 2
-        // Importance compositing : level of sparseness
-        param_named u_losImportant float 0.8
-        param_named u_losNotImportant float 0.2
     }
 }
 
@@ -59,9 +56,6 @@ fragment_program IDVR_VPImC_FP glsl
         param_named u_image int 0
         param_named u_mask int 1
         param_named u_entryPoints int 2
-        // Importance compositing : level of sparseness
-        param_named u_losImportant float 0.8
-        param_named u_losNotImportant float 0.2
     }
 }
 

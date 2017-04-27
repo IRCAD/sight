@@ -59,6 +59,7 @@ const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_BOOL_PARAMETER_SLOT      
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_INT_PARAMETER_SLOT            = "setIntParameter";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_DOUBLE_PARAMETER_SLOT         = "setDoubleParameter";
 const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_ENUM_PARAMETER_SLOT           = "setEnumParameter";
+const ::fwCom::Slots::SlotKeyType SVolumeRender::s_SET_COLOR_PARAMETER_SLOT          = "setColorParameter";
 
 //-----------------------------------------------------------------------------
 
@@ -106,6 +107,7 @@ SVolumeRender::SVolumeRender() throw() :
     newSlot(s_SET_INT_PARAMETER_SLOT, &SVolumeRender::setIntParameter, this);
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SVolumeRender::setDoubleParameter, this);
     newSlot(s_SET_ENUM_PARAMETER_SLOT, &SVolumeRender::setEnumParameter, this);
+    newSlot(s_SET_COLOR_PARAMETER_SLOT, &SVolumeRender::setColorParameter, this);
 
     m_ogreTransform = ::Ogre::Matrix4::IDENTITY;
     m_renderingMode = VR_MODE_RAY_TRACING;
@@ -830,6 +832,12 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRCountersinkSlope(val);
     }
+    else if(key == "idvrCSGBorderThickness")
+    {
+        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+        rayCastVolumeRenderer->setIDVRCSGBorderThickness(val);
+    }
     else if(key == "idvrVPImCAlphaCorrection")
     {
         auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
@@ -872,6 +880,18 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
             ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
             layer->setStereoMode(::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::setColorParameter(std::array<std::uint8_t, 4> color, std::string key)
+{
+    if(key == "idvrCSGBorderColor")
+    {
+        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+        rayCastVolumeRenderer->setIDVRCSGBorderColor(color);
     }
 }
 

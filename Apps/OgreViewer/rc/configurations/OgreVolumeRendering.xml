@@ -9,6 +9,7 @@
         <param name="idvrEnumParamChannel" />
         <param name="idvrBoolParamChannel" />
         <param name="idvrDoubleParamChannel" />
+        <param name="idvrColorParamChannel" />
     </parameters>
     <config>
 
@@ -143,6 +144,10 @@
 
         <connect channel="${idvrDoubleParamChannel}">
             <slot>volumeRender/setDoubleParameter</slot>
+        </connect>
+
+        <connect channel="${idvrColorParamChannel}">
+            <slot>volumeRender/setColorParameter</slot>
         </connect>
 
         <start uid="OgreVolumeRendering" />

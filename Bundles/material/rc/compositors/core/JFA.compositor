@@ -113,8 +113,8 @@ compositor JFAFinalPongComp
 {
     technique
     {
-        texture_ref JFAFinal JFAInit JFAFinal
         texture_ref JFAPongLocal JFAInit JFAPong
+        texture_ref JFAFinal JFAInit JFAFinal
 
         target JFAFinal
         {

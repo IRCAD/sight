@@ -59,6 +59,7 @@ namespace visuOgreAdaptor
  * - \b setIntParameter(int, string): Calls an int parameter slot according to the given key.
  * - \b setDoubleParameter(double, string): Calls a double parameter slot according to the given key.
  * - \b setEnumParameter(string, string): Calls a double parameter slot according to the given key.
+ * - \b setColorParameter(array<uint8_t, 4>, string): Calls a color parameter slot according to the given key.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -132,6 +133,7 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
     /** @} */
 
     /// Volume rendering effects.
@@ -204,6 +206,7 @@ private:
     void setIntParameter(int val, std::string key);
     void setDoubleParameter(double val, std::string key);
     void setEnumParameter(std::string val, std::string key);
+    void setColorParameter(std::array<uint8_t, 4> color, std::string key);
 
     /// Creates widgets and connects its slots to interactor signals.
     void initWidgets();

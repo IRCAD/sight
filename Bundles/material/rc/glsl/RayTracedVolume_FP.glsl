@@ -86,6 +86,8 @@ uniform float u_opacityCorrectionFactor;
 
 #if IDVR == 1
 uniform float u_countersinkSlope;
+uniform float u_csgBorderThickness;
+uniform vec3 u_csgBorderColor;
 #endif
 #if IDVR == 2
 uniform float u_aimcAlphaCorrection;
@@ -259,7 +261,7 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
 #ifndef PREINTEGRATION
             // Adjust opacity to sample distance.
             // This could be done when generating the TF texture to improve performance.
-            tfColour.a   = 1 - pow(1 - tfColour.a, u_sampleDistance * u_opacityCorrectionFactor);
+            tfColour.a = 1 - pow(1 - tfColour.a, u_sampleDistance * u_opacityCorrectionFactor);
 #endif // PREINTEGRATION
 
 #if AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
@@ -346,6 +348,9 @@ void main(void)
     vec3 rayDir   = normalize(rayExit - rayEntry);
 
 #if IDVR == 1
+
+    float csg = 0.;
+
     vec4 importance = texture(u_IC, uv);
 
     // If we have an importance factor, we move the ray accordingly
@@ -361,7 +366,7 @@ void main(void)
         vec4 distance = texture(u_JFA, uv);
 
         // Compute the countersink factor to adjust the rayEntry
-        float csg = (distance.b - distance.a * (1. / u_countersinkSlope));
+        csg = (distance.b - distance.a * (1. / u_countersinkSlope));
         // Ensure that we have a correct distance for the csg factor
         if(csg > 0)
         {
@@ -371,8 +376,8 @@ void main(void)
 #endif // CSG
 #endif // IDVR == 1
 
-    rayDir = rayDir * u_sampleDistance;
-
+    rayDir *= u_sampleDistance;
+    
     float rayLength = length(rayExit - rayEntry);
 
 #else
@@ -417,7 +422,21 @@ void main(void)
 
 #endif // MODE3D
         vec3 rayPos = rayEntry;
+
+#ifndef CSG
         vec4 result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
+#else
+        vec4 result;
+
+        if(csg > 0 && csg < u_csgBorderThickness)
+        {
+            result = vec4(u_csgBorderColor, 1.);
+        }
+        else
+        {
+            result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
+        }
+#endif // CSG
 
 #ifdef MODE3D
         subPixelRayColor[i] = result[i];

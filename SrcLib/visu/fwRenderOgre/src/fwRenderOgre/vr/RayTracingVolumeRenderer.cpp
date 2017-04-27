@@ -311,6 +311,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_shadows(shadows),
     m_idvrCSG(false),
     m_idvrCSGSlope(0.3f),
+    m_idvrCSGBorderThickness(0.05f),
+    m_idvrCSGBorderColor(::Ogre::ColourValue(1.f, 0.f, 0.f)),
     m_idvrAImCAlphaCorrection(0.05f),
     m_idvrVPImCAlphaCorrection(0.3f),
     m_volIllumFactor(static_cast< ::Ogre::Real>(colorBleedingFactor),
@@ -361,15 +363,19 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
         // define the shared param structure
         m_RTVSharedParameters->addConstantDefinition("u_countersinkSlope", ::Ogre::GCT_FLOAT1);
+        m_RTVSharedParameters->addConstantDefinition("u_csgBorderThickness", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_vpimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_aimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_sampleDistance", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_lobeOffset", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_opacityCorrectionFactor", ::Ogre::GCT_FLOAT1);
+        m_RTVSharedParameters->addConstantDefinition("u_csgBorderColor", ::Ogre::GCT_FLOAT3);
         m_RTVSharedParameters->addConstantDefinition("u_volIllumFactor", ::Ogre::GCT_FLOAT4);
         m_RTVSharedParameters->addConstantDefinition("u_min", ::Ogre::GCT_INT1);
         m_RTVSharedParameters->addConstantDefinition("u_max", ::Ogre::GCT_INT1);
         m_RTVSharedParameters->setNamedConstant("u_countersinkSlope", m_idvrCSGSlope);
+        m_RTVSharedParameters->setNamedConstant("u_csgBorderThickness", m_idvrCSGBorderThickness);
+        m_RTVSharedParameters->setNamedConstant("u_csgBorderColor", m_idvrCSGBorderColor);
         m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
         m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
         m_RTVSharedParameters->setNamedConstant("u_opacityCorrectionFactor", m_opacityCorrectionFactor);
@@ -1527,6 +1533,34 @@ void RayTracingVolumeRenderer::setIDVRCountersinkSlope(double slope)
     if(m_idvrMethod == this->s_MIMP)
     {
         m_RTVSharedParameters->setNamedConstant("u_countersinkSlope", m_idvrCSGSlope);
+        this->getLayer()->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::setIDVRCSGBorderThickness(double thickness)
+{
+    m_idvrCSGBorderThickness = static_cast<float>(thickness);
+
+    if(m_idvrMethod == this->s_MIMP)
+    {
+        m_RTVSharedParameters->setNamedConstant("u_csgBorderThickness", m_idvrCSGBorderThickness);
+        this->getLayer()->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::setIDVRCSGBorderColor(std::array<std::uint8_t, 4> color)
+{
+    m_idvrCSGBorderColor.r = color[0] / 256.f;
+    m_idvrCSGBorderColor.g = color[1] / 256.f;
+    m_idvrCSGBorderColor.b = color[2] / 256.f;
+
+    if(m_idvrMethod == this->s_MIMP)
+    {
+        m_RTVSharedParameters->setNamedConstant("u_csgBorderColor", m_idvrCSGBorderColor);
         this->getLayer()->requestRender();
     }
 }

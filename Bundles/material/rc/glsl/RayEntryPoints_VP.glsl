@@ -1,6 +1,8 @@
 #version 330
 
+#ifndef NEAR_PLANE
 uniform mat4 u_worldViewProj;
+#endif // NEAR_PLANE
 
 in vec3 position;
 

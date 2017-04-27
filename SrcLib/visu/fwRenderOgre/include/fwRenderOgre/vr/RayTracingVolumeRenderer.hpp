@@ -121,6 +121,12 @@ public:
     /// Setup the countersink geometry slope used in the MImP method.
     FWRENDEROGRE_API void setIDVRCountersinkSlope(double);
 
+    /// Setup the countersink geometry border thickness used in the MImP method.
+    FWRENDEROGRE_API void setIDVRCSGBorderThickness(double);
+
+    /// Setup the countersink geometry border color used in the MImP method.
+    FWRENDEROGRE_API void setIDVRCSGBorderColor(std::array<std::uint8_t, 4>);
+
     /// Setup the alpha correction factor used in the VPImC method.
     FWRENDEROGRE_API void setIDVRAImCAlphaCorrection(double);
 
@@ -222,6 +228,12 @@ private:
 
     /// Sets countersink geometry slope for MImP.
     float m_idvrCSGSlope;
+
+    /// Sets countersink geometry border thickness for MImP.
+    float m_idvrCSGBorderThickness;
+
+    /// Sets countersink geometry border color for MImP.
+    ::Ogre::ColourValue m_idvrCSGBorderColor;
 
     /// Sets the alpha correction for AImC.
     float m_idvrAImCAlphaCorrection;

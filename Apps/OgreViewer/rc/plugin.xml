@@ -238,6 +238,7 @@
                 <parameter replace="idvrEnumParamChannel" by="idvrEnumParamChannel" />
                 <parameter replace="idvrBoolParamChannel" by="idvrBoolParamChannel" />
                 <parameter replace="idvrDoubleParamChannel" by="idvrDoubleParamChannel" />
+                <parameter replace="idvrColorParamChannel" by="idvrColorParamChannel" />
             </service>
 
             <service uid="cfgOrganManagerConfig"  type="::fwServices::SConfigController">
@@ -261,6 +262,7 @@
                 <parameter replace="idvrEnumParamChannel" by="idvrEnumParamChannel" />
                 <parameter replace="idvrBoolParamChannel" by="idvrBoolParamChannel" />
                 <parameter replace="idvrDoubleParamChannel" by="idvrDoubleParamChannel" />
+                <parameter replace="idvrColorParamChannel" by="idvrColorParamChannel" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
