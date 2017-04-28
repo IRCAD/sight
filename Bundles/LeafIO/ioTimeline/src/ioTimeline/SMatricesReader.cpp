@@ -191,6 +191,11 @@ void SMatricesReader::readNext()
 
 void SMatricesReader::startReading()
 {
+    if (m_timer)
+    {
+        this->stopReading();
+    }
+
     if (!this->hasLocationDefined())
     {
         this->configureWithIHM();
@@ -282,10 +287,22 @@ void SMatricesReader::startReading()
 void SMatricesReader::stopReading()
 {
     m_isPlaying = false;
-    if(nullptr != m_filestream)
+
+    if (m_timer)
     {
-        m_filestream->close();
+        if (m_timer->isRunning())
+        {
+            m_timer->stop();
+        }
+        m_timer.reset();
     }
+
+    if(!m_tsMatrices.empty())
+    {
+        m_tsMatrices.clear();
+    }
+
+    m_tsMatricesCount = 0;
 }
 
 //------------------------------------------------------------------------------
