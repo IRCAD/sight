@@ -8,23 +8,29 @@
 #define __FWDATATOOLS_IMAGEDIFF_HPP__
 
 #include "fwDataTools/config.hpp"
+#include "fwDataTools/helper/Image.hpp"
 
 #include <fwData/Image.hpp>
-
-#include <vector>
 
 namespace fwDataTools
 {
 
 /**
- * @brief Structure used to memorize a pixel change in an image.
+ * @brief Class memorizing pixel changes in an image.
  */
-struct FWDATATOOLS_CLASS_API ImageDiff
+class FWDATATOOLS_CLASS_API ImageDiff
 {
+public:
 
-    /// Constructor (copy buffers)
-    FWDATATOOLS_API ImageDiff(const ::fwData::Image::IndexType index, const ::fwData::Image::BufferType* oldValue,
-                              const ::fwData::Image::BufferType* newValue, const unsigned char imageTypeSize);
+    struct ElementType
+    {
+        ::fwData::Image::IndexType m_index;
+        ::fwData::Image::BufferType* m_oldValue;
+        ::fwData::Image::BufferType* m_newValue;
+    };
+
+    /// Constructor.
+    FWDATATOOLS_API ImageDiff(const size_t imageElementSize = 0, const size_t reservedElements = 0);
 
     /// Destructor
     FWDATATOOLS_API ~ImageDiff();
@@ -41,14 +47,68 @@ struct FWDATATOOLS_CLASS_API ImageDiff
     /// Move assignement.
     FWDATATOOLS_API ImageDiff& operator= (ImageDiff&& other);
 
-    ::fwData::Image::IndexType m_index;
-    ::fwData::Image::BufferType* m_oldValue;
-    ::fwData::Image::BufferType* m_newValue;
+    /// Concatenate two diffs.
+    FWDATATOOLS_API void addDiff(const ImageDiff& diff);
 
-    unsigned char m_typeSize;
+    /// Append a new pixel diff.
+    FWDATATOOLS_API void addDiff(const ::fwData::Image::IndexType index, const ::fwData::Image::BufferType* oldValue,
+                                 const ::fwData::Image::BufferType* newValue);
+
+    /// Write the new values in the image.
+    FWDATATOOLS_API void applyDiff(helper::Image& img) const;
+
+    /// Write the old value back in the image.
+    FWDATATOOLS_API void revertDiff(helper::Image& img) const;
+
+    /// Return the amount of memory actually used by the elements.
+    FWDATATOOLS_API size_t getSize() const;
+
+    /// Returns the number of stored pixel diffs.
+    FWDATATOOLS_API size_t getNumberOfElements() const;
+
+    /// Set the number of elements to 0.
+    FWDATATOOLS_API void clear();
+
+    /// Reallocate the buffer to fit the actual size of the container.
+    FWDATATOOLS_API void shrink();
+
+    /// Returns the element at the given index
+    FWDATATOOLS_API ElementType getElement(size_t index) const;
+
+    /// Returns the image index from the element at the given index
+    inline ::fwData::Image::IndexType getElementDiffIndex(size_t eltIndex) const;
+
+private:
+
+    /// Write the new value in the image from one element.
+    void applyDiffElt(helper::Image& img, size_t eltIndex) const;
+
+    /// Write the old value back in the image from one element.
+    void revertDiffElt(helper::Image& img, size_t eltIndex) const;
+
+    /// The size of a single pixel diff.
+    size_t m_imgEltSize;
+
+    /// Size of an element (image index + old value + new value)
+    size_t m_eltSize;
+
+    /// Number of pixel diffs.
+    size_t m_nbElts;
+
+    /// The allocated buffer size.
+    size_t m_reservedSize;
+
+    /// The buffer holding the diff.
+    std::uint8_t* m_buffer;
 };
 
-typedef std::vector<ImageDiff> ImageDiffsType;
+//------------------------------------------------------------------------------
+
+fwData::Image::IndexType ImageDiff::getElementDiffIndex(size_t eltIndex) const
+{
+    std::uint8_t* eltPtr = m_buffer + eltIndex * m_eltSize;
+    return *reinterpret_cast< ::fwData::Image::IndexType* >(eltPtr);
+}
 
 } // namespace fwDataTools
 

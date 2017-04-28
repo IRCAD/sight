@@ -6,6 +6,10 @@
 
 #include "fwCommand/ImageDiffCommand.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
 #include <fwTools/Type.hpp>
 
 namespace fwCommand
@@ -13,27 +17,29 @@ namespace fwCommand
 
 //------------------------------------------------------------------------------
 
-ImageDiffCommand::ImageDiffCommand(const fwData::Image::sptr& img, fwDataTools::ImageDiffsType diff) :
-    m_img(img),
+ImageDiffCommand::ImageDiffCommand(const fwData::Image::sptr& img, fwDataTools::ImageDiff diff) :
+    m_imgHelper(img),
+    m_modifSig(img->signal< ::fwData::Image::BufferModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG)),
     m_diff(diff)
 {
-
+    m_diff.shrink();
 }
 
 //------------------------------------------------------------------------------
 
 size_t ImageDiffCommand::getSize() const
 {
-    size_t imgEltSize = m_img->getPixelType().sizeOf() * m_img->getNumberOfComponents();
-
-    return m_diff.capacity() * sizeof(::fwDataTools::ImageDiffsType::value_type) + 2 * m_diff.size() * imgEltSize;
+    return sizeof(*this) + m_diff.getSize();
 }
 
 //------------------------------------------------------------------------------
 
 bool ImageDiffCommand::redo()
 {
-    ::fwDataTools::Image::applyDiff(m_img, m_diff);
+    m_diff.applyDiff(m_imgHelper);
+
+    m_modifSig->asyncEmit();
+
     return true;
 }
 
@@ -41,7 +47,10 @@ bool ImageDiffCommand::redo()
 
 bool ImageDiffCommand::undo()
 {
-    ::fwDataTools::Image::revertDiff(m_img, m_diff);
+    m_diff.revertDiff(m_imgHelper);
+
+    m_modifSig->asyncEmit();
+
     return true;
 }
 

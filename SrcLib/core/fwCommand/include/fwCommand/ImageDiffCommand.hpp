@@ -22,7 +22,7 @@ class FWCOMMAND_CLASS_API ImageDiffCommand : public ICommand
 {
 public:
 
-    FWCOMMAND_API ImageDiffCommand(const ::fwData::Image::sptr& img, ::fwDataTools::ImageDiffsType diff);
+    FWCOMMAND_API ImageDiffCommand(const ::fwData::Image::sptr& img, ::fwDataTools::ImageDiff diff);
 
     /// The diff size.
     FWCOMMAND_API virtual size_t getSize() const;
@@ -38,9 +38,11 @@ public:
 
 private:
 
-    ::fwData::Image::sptr m_img;
+    ::fwDataTools::helper::Image m_imgHelper;
 
-    ::fwDataTools::ImageDiffsType m_diff;
+    ::fwData::Image::BufferModifiedSignalType::sptr m_modifSig;
+
+    ::fwDataTools::ImageDiff m_diff;
 
 };
 

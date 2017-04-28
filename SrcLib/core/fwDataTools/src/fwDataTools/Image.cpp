@@ -6,8 +6,6 @@
 
 #include "fwDataTools/Image.hpp"
 
-#include <fwDataTools/helper/Image.hpp>
-
 #include <fwTools/Combinatory.hpp>
 #include <fwTools/Dispatcher.hpp>
 #include <fwTools/DynamicTypeKeyTypeMapping.hpp>
@@ -183,35 +181,5 @@ bool Image::isRoiApplyed( ::fwData::Image::sptr image, ::fwData::Image::sptr roi
 }
 
 //------------------------------------------------------------------------------
-
-void Image::applyDiff(fwData::Image::sptr image, const ImageDiffsType& diff)
-{
-    helper::Image imgHelper(image);
-
-    for(const ImageDiff& pixelDiff : diff)
-    {
-        imgHelper.setPixelBuffer(pixelDiff.m_index, pixelDiff.m_newValue);
-    }
-
-    // Notify image modification.
-    auto sig = image->signal< ::fwData::Image::ModifiedSignalType >( ::fwData::Image::s_BUFFER_MODIFIED_SIG);
-    sig->asyncEmit();
-}
-
-//------------------------------------------------------------------------------
-
-void Image::revertDiff(fwData::Image::sptr image, const ImageDiffsType& diff)
-{
-    helper::Image imgHelper(image);
-
-    for(const ImageDiff& pixelDiff : diff)
-    {
-        imgHelper.setPixelBuffer(pixelDiff.m_index, pixelDiff.m_oldValue);
-    }
-
-    // Notify image modification.
-    auto sig = image->signal< ::fwData::Image::ModifiedSignalType >( ::fwData::Image::s_BUFFER_MODIFIED_SIG);
-    sig->asyncEmit();
-}
 
 } // namespace fwDataTools
