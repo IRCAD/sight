@@ -291,8 +291,14 @@ const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_GRAYSCAL
     "CSG_MODULATION=2";
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE =
     "CSG_MODULATION=3";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_LUMINANCE_DEFINE =
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_LUMINANCE1_DEFINE =
     "CSG_MODULATION=4";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_LUMINANCE2_DEFINE =
+    "CSG_MODULATION=5";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_LUMINANCE3_DEFINE =
+    "CSG_MODULATION=6";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_LUMINANCE4_DEFINE =
+    "CSG_MODULATION=7";
 
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_IMPORTANCE_COMPOSITING_TEXTURE = "IC";
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_JUMP_FLOOD_ALGORITHM_TEXTURE   = "JFA";
@@ -327,7 +333,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_idvrCSGBorderThickness(0.05f),
     m_idvrCSGBorderColor(::Ogre::ColourValue(1.f, 0.f, 0.f)),
     m_idvrCSGModulation(false),
-    m_idvrCSGModulationMethod(IDVRCSGModulationMethod::LUMINANCE),
+    m_idvrCSGModulationMethod(IDVRCSGModulationMethod::LUMINANCE1),
     m_idvrAImCAlphaCorrection(0.05f),
     m_idvrVPImCAlphaCorrection(0.3f),
     m_volIllumFactor(static_cast< ::Ogre::Real>(colorBleedingFactor),
@@ -1310,8 +1316,17 @@ void RayTracingVolumeRenderer::updateCompositorName()
                                 ppDefs <<
                                 (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE;
                                 break;
-                            case IDVRCSGModulationMethod::LUMINANCE:
-                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_LUMINANCE_DEFINE;
+                            case IDVRCSGModulationMethod::LUMINANCE1:
+                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_LUMINANCE1_DEFINE;
+                                break;
+                            case IDVRCSGModulationMethod::LUMINANCE2:
+                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_LUMINANCE2_DEFINE;
+                                break;
+                            case IDVRCSGModulationMethod::LUMINANCE3:
+                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_LUMINANCE3_DEFINE;
+                                break;
+                            case IDVRCSGModulationMethod::LUMINANCE4:
+                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_LUMINANCE4_DEFINE;
                                 break;
                         }
 

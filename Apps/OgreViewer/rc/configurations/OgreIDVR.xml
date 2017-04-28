@@ -44,7 +44,7 @@
                 <param type="double" name="Countersink geometry border thickness" key="idvrCSGBorderThickness" defaultValue="0.05" min="0.01" max="1.0" />
                 <param type="color" name="Countersink geometry border color" key="idvrCSGBorderColor" defaultValue="#ff0000ff" />
                 <param type="bool" name="Enable modulation for countersink geometry" key="idvrCSGModulation" defaultValue="false" />
-                <param type="enum" name="Countersink geometry modulation methods" key="idvrCSGModulationMethod" defaultValue="Luminance" values="Average_grayscale,Lightness_grayscale,Luminosity_grayscale,Luminance" />
+                <param type="enum" name="Countersink geometry modulation methods" key="idvrCSGModulationMethod" defaultValue="Luminance1" values="Average_grayscale,Lightness_grayscale,Luminosity_grayscale,Luminance1,Luminance2,Luminance3,Luminance4" />
                 <param type="double" name="Alpha correction for AImC" key="idvrAImCAlphaCorrection" defaultValue="0.05" min="0.0" max="1.0" />
                 <param type="double" name="Alpha correction for VPImP" key="idvrVPImCAlphaCorrection" defaultValue="0.3" min="0.0" max="1.0" />
             </parameters>

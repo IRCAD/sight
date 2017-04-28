@@ -39,7 +39,10 @@ public:
         AVERAGE_GRAYSCALE,
         LIGHTNESS_GRAYSCALE,
         LUMINOSITY_GRAYSCALE,
-        LUMINANCE
+        LUMINANCE1,
+        LUMINANCE2,
+        LUMINANCE3,
+        LUMINANCE4
     };
 
     /**
@@ -338,7 +341,10 @@ private:
     static const std::string s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE;
     static const std::string s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE;
     static const std::string s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE;
-    static const std::string s_CSG_MOD_LUMINANCE_DEFINE;
+    static const std::string s_CSG_MOD_LUMINANCE1_DEFINE;
+    static const std::string s_CSG_MOD_LUMINANCE2_DEFINE;
+    static const std::string s_CSG_MOD_LUMINANCE3_DEFINE;
+    static const std::string s_CSG_MOD_LUMINANCE4_DEFINE;
 
     /// IDVR textures.
     static const std::string s_IMPORTANCE_COMPOSITING_TEXTURE;

@@ -895,10 +895,25 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
                 ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::LUMINOSITY_GRAYSCALE);
         }
-        else if(val == "Luminance")
+        else if(val == "Luminance1")
         {
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
-                ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::LUMINANCE);
+                ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::LUMINANCE1);
+        }
+        else if(val == "Luminance2")
+        {
+            rayCastVolumeRenderer->setIDVRCSModulationMethod(
+                ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::LUMINANCE2);
+        }
+        else if(val == "Luminance3")
+        {
+            rayCastVolumeRenderer->setIDVRCSModulationMethod(
+                ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::LUMINANCE3);
+        }
+        else if(val == "Luminance4")
+        {
+            rayCastVolumeRenderer->setIDVRCSModulationMethod(
+                ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::LUMINANCE4);
         }
     }
     else if(key == "3DMode")

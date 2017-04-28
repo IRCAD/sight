@@ -219,10 +219,10 @@ void composite(inout vec4 dest, in vec4 src)
 
 //-----------------------------------------------------------------------------
 
-#if CSG_MODULATION == 4
+#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
 vec3 rgb2hsl(vec3 RGB);
 vec3 hsl2rgb(vec3 HSL);
-#endif // CSG_MODULATION == 4
+#endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
 
 //-----------------------------------------------------------------------------
 
@@ -467,12 +467,24 @@ void main(void)
                 float grayScale = 0.21 * color.r + 0.72 * color.g + 0.07 * color.b;
                 color.rgb = vec3(grayScale);
 #endif // CSG_MODULATION == 3
-#if CSG_MODULATION == 4 // Luminance
+
+#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7 // Luminance
                 vec3 hsl = rgb2hsl(color.rgb);
+
+#if CSG_MODULATION == 5 || CSG_MODULATION == 6
+                hsl.g += csg;
+#endif // CSG_MODULATION == 5 || CSG_MODULATION == 6
+
+#if CSG_MODULATION == 7
+                hsl.g -= csg;
+#endif // CSG_MODULATION == 7
+
+#if CSG_MODULATION == 4 || CSG_MODULATION == 6 || CSG_MODULATION == 7
                 hsl.b += csg;
+#endif // CSG_MODULATION == 4 || CSG_MODULATION == 6 || CSG_MODULATION == 7
 
                 color.rgb = hsl2rgb(hsl);
-#endif // CSG_MODULATION == 4
+#endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
 
                 result = color;
 #if CSG_BORDER == 1
