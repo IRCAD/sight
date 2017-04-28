@@ -34,6 +34,14 @@ class FWRENDEROGRE_CLASS_API RayTracingVolumeRenderer : public IVolumeRenderer
 {
 public:
 
+    enum class IDVRCSGModulationMethod
+    {
+        AVERAGE_GRAYSCALE,
+        LIGHTNESS_GRAYSCALE,
+        LUMINOSITY_GRAYSCALE,
+        LUMINANCE
+    };
+
     /**
      * @brief Constructor.
      * @param parentId             ID of the service using this renderer
@@ -121,11 +129,20 @@ public:
     /// Setup the countersink geometry slope used in the MImP method.
     FWRENDEROGRE_API void setIDVRCountersinkSlope(double);
 
+    /// Toggle countersink geometry border used in the MImP method.
+    FWRENDEROGRE_API void toggleIDVRCSGBorder(bool);
+
     /// Setup the countersink geometry border thickness used in the MImP method.
     FWRENDEROGRE_API void setIDVRCSGBorderThickness(double);
 
     /// Setup the countersink geometry border color used in the MImP method.
     FWRENDEROGRE_API void setIDVRCSGBorderColor(std::array<std::uint8_t, 4>);
+
+    /// Toggle the grayscale modulation for MImP countersink geometry.
+    FWRENDEROGRE_API void toggleIDVRCSGModulation(bool);
+
+    /// Setup the grayscale modulation method used for MImP countersink geometry.
+    FWRENDEROGRE_API void setIDVRCSModulationMethod(IDVRCSGModulationMethod);
 
     /// Setup the alpha correction factor used in the VPImC method.
     FWRENDEROGRE_API void setIDVRAImCAlphaCorrection(double);
@@ -229,11 +246,20 @@ private:
     /// Sets countersink geometry slope for MImP.
     float m_idvrCSGSlope;
 
+    /// Sets usage of countersink geometry border for MImP.
+    bool m_idvrCSGBorder;
+
     /// Sets countersink geometry border thickness for MImP.
     float m_idvrCSGBorderThickness;
 
     /// Sets countersink geometry border color for MImP.
     ::Ogre::ColourValue m_idvrCSGBorderColor;
+
+    /// Sets usage of modulation for MImP CSG.
+    bool m_idvrCSGModulation;
+
+    /// Name of the method used to compute the new color values in CSG.
+    IDVRCSGModulationMethod m_idvrCSGModulationMethod;
 
     /// Sets the alpha correction for AImC.
     float m_idvrAImCAlphaCorrection;
@@ -299,9 +325,20 @@ private:
 
     /// IDVR shader defines.
     static const std::string s_MIMP_DEFINE;
-    static const std::string s_CSG_DEFINE;
     static const std::string s_AIMC_DEFINE;
     static const std::string s_VPIMC_DEFINE;
+
+    /// IDVR MImP countersink geometry define.
+    static const std::string s_CSG_DEFINE;
+
+    /// IDVR MImP countersink geometry border define.
+    static const std::string s_CSG_BORDER_DEFINE;
+
+    /// IDVR MImP CSG modulation defines.
+    static const std::string s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE;
+    static const std::string s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE;
+    static const std::string s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE;
+    static const std::string s_CSG_MOD_LUMINANCE_DEFINE;
 
     /// IDVR textures.
     static const std::string s_IMPORTANCE_COMPOSITING_TEXTURE;

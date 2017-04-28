@@ -774,6 +774,18 @@ void SVolumeRender::setBoolParameter(bool val, std::string key)
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->toggleIDVRCountersinkGeometry(val);
     }
+    else if(key == "idvrCSGBorder")
+    {
+        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+        rayCastVolumeRenderer->toggleIDVRCSGBorder(val);
+    }
+    else if(key == "idvrCSGModulation")
+    {
+        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+        rayCastVolumeRenderer->toggleIDVRCSGModulation(val);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -862,6 +874,32 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRMethod(val);
         this->requestRender();
+    }
+    else if(key == "idvrCSGModulationMethod")
+    {
+        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+
+        if(val == "Average_grayscale")
+        {
+            rayCastVolumeRenderer->setIDVRCSModulationMethod(
+                ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::AVERAGE_GRAYSCALE);
+        }
+        else if(val == "Lightness_grayscale")
+        {
+            rayCastVolumeRenderer->setIDVRCSModulationMethod(
+                ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::LIGHTNESS_GRAYSCALE);
+        }
+        else if(val == "Luminosity_grayscale")
+        {
+            rayCastVolumeRenderer->setIDVRCSModulationMethod(
+                ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::LUMINOSITY_GRAYSCALE);
+        }
+        else if(val == "Luminance")
+        {
+            rayCastVolumeRenderer->setIDVRCSModulationMethod(
+                ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::LUMINANCE);
+        }
     }
     else if(key == "3DMode")
     {

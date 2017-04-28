@@ -278,9 +278,21 @@ const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_SHADOWS_DEFINE  
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_PREINTEGRATION_DEFINE = "PREINTEGRATION=1";
 
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_MIMP_DEFINE  = "IDVR=1";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_DEFINE   = "CSG=1";
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_AIMC_DEFINE  = "IDVR=2";
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_VPIMC_DEFINE = "IDVR=3";
+
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_DEFINE = "CSG=1";
+
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_BORDER_DEFINE = "CSG_BORDER=1";
+
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE =
+    "CSG_MODULATION=1";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE =
+    "CSG_MODULATION=2";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE =
+    "CSG_MODULATION=3";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_LUMINANCE_DEFINE =
+    "CSG_MODULATION=4";
 
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_IMPORTANCE_COMPOSITING_TEXTURE = "IC";
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_JUMP_FLOOD_ALGORITHM_TEXTURE   = "JFA";
@@ -311,8 +323,11 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_shadows(shadows),
     m_idvrCSG(false),
     m_idvrCSGSlope(0.3f),
+    m_idvrCSGBorder(false),
     m_idvrCSGBorderThickness(0.05f),
     m_idvrCSGBorderColor(::Ogre::ColourValue(1.f, 0.f, 0.f)),
+    m_idvrCSGModulation(false),
+    m_idvrCSGModulationMethod(IDVRCSGModulationMethod::LUMINANCE),
     m_idvrAImCAlphaCorrection(0.05f),
     m_idvrVPImCAlphaCorrection(0.3f),
     m_volIllumFactor(static_cast< ::Ogre::Real>(colorBleedingFactor),
@@ -477,6 +492,10 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     ::Ogre::GpuProgramPtr fsp = gpm->createProgram("RTV_FP", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                                                    "RayTracedVolume_FP.glsl", ::Ogre::GPT_FRAGMENT_PROGRAM, "glsl");
     fsp->setParameter("attach", "TransferFunction_FP");
+    if(this->m_idvrCSGModulation)
+    {
+        fsp->setParameter("attach", "ColorFormats_FP");
+    }
     if(m_fpPPDefines.size() > 0)
     {
         fsp->setParameter("preprocessor_defines", m_fpPPDefines);
@@ -1271,6 +1290,32 @@ void RayTracingVolumeRenderer::updateCompositorName()
                 if(m_idvrCSG)
                 {
                     ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_DEFINE;
+
+                    if(m_idvrCSGBorder)
+                    {
+                        ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_BORDER_DEFINE;
+                    }
+
+                    if(m_idvrCSGModulation)
+                    {
+                        switch(m_idvrCSGModulationMethod)
+                        {
+                            case IDVRCSGModulationMethod::AVERAGE_GRAYSCALE:
+                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE;
+                                break;
+                            case IDVRCSGModulationMethod::LIGHTNESS_GRAYSCALE:
+                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE;
+                                break;
+                            case IDVRCSGModulationMethod::LUMINOSITY_GRAYSCALE:
+                                ppDefs <<
+                                (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE;
+                                break;
+                            case IDVRCSGModulationMethod::LUMINANCE:
+                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_LUMINANCE_DEFINE;
+                                break;
+                        }
+
+                    }
                 }
             }
             else if(m_idvrMethod == this->s_AIMC)
@@ -1521,7 +1566,11 @@ void RayTracingVolumeRenderer::cleanCompositorChain(::Ogre::CompositorChain* com
 void RayTracingVolumeRenderer::toggleIDVRCountersinkGeometry(bool CSG)
 {
     m_idvrCSG = CSG;
-    this->initCompositors();
+
+    if(this->m_idvrMethod == this->s_MIMP)
+    {
+        this->initCompositors();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1530,10 +1579,22 @@ void RayTracingVolumeRenderer::setIDVRCountersinkSlope(double slope)
 {
     m_idvrCSGSlope = static_cast<float>(slope);
 
-    if(m_idvrMethod == this->s_MIMP)
+    if(m_idvrMethod == this->s_MIMP && m_idvrCSG)
     {
         m_RTVSharedParameters->setNamedConstant("u_countersinkSlope", m_idvrCSGSlope);
         this->getLayer()->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::toggleIDVRCSGBorder(bool border)
+{
+    m_idvrCSGBorder = border;
+
+    if(this->m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
+    {
+        this->initCompositors();
     }
 }
 
@@ -1543,7 +1604,7 @@ void RayTracingVolumeRenderer::setIDVRCSGBorderThickness(double thickness)
 {
     m_idvrCSGBorderThickness = static_cast<float>(thickness);
 
-    if(m_idvrMethod == this->s_MIMP)
+    if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder)
     {
         m_RTVSharedParameters->setNamedConstant("u_csgBorderThickness", m_idvrCSGBorderThickness);
         this->getLayer()->requestRender();
@@ -1558,10 +1619,34 @@ void RayTracingVolumeRenderer::setIDVRCSGBorderColor(std::array<std::uint8_t, 4>
     m_idvrCSGBorderColor.g = color[1] / 256.f;
     m_idvrCSGBorderColor.b = color[2] / 256.f;
 
-    if(m_idvrMethod == this->s_MIMP)
+    if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder)
     {
         m_RTVSharedParameters->setNamedConstant("u_csgBorderColor", m_idvrCSGBorderColor);
         this->getLayer()->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::toggleIDVRCSGModulation(bool modulation)
+{
+    m_idvrCSGModulation = modulation;
+
+    if(this->m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
+    {
+        this->initCompositors();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::setIDVRCSModulationMethod(IDVRCSGModulationMethod method)
+{
+    m_idvrCSGModulationMethod = method;
+
+    if(this->m_idvrMethod == this->s_MIMP && this->m_idvrCSG && this->m_idvrCSGModulation)
+    {
+        this->initCompositors();
     }
 }
 

@@ -219,6 +219,13 @@ void composite(inout vec4 dest, in vec4 src)
 
 //-----------------------------------------------------------------------------
 
+#if CSG_MODULATION == 4
+vec3 rgb2hsl(vec3 RGB);
+vec3 hsl2rgb(vec3 HSL);
+#endif // CSG_MODULATION == 4
+
+//-----------------------------------------------------------------------------
+
 vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float sampleDistance)
 {
     vec4 result = vec4(0);
@@ -428,9 +435,49 @@ void main(void)
 #else
         vec4 result;
 
-        if(csg > 0 && csg < u_csgBorderThickness)
+        if(csg > 0)
         {
-            result = vec4(u_csgBorderColor, 1.);
+#if CSG_BORDER == 1
+            if(csg < u_csgBorderThickness)
+            {
+                result = vec4(u_csgBorderColor, 1.);
+            }
+            else
+            {
+#endif // CSG_BORDER == 1
+                vec4 color = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
+
+#if CSG_MODULATION == 1 // Average grayscale
+                // The average method simply averages the values
+                float grayScale = (color.r + color.g + color.g) / 3.;
+                color.rgb = vec3(grayScale);
+#endif // CSG_MODULATION == 1
+#if CSG_MODULATION == 2 // Lightness grayscale
+                // The lightness method averages the most prominent and least prominent colors
+                float grayScale =
+                    (max(color.r, max(color.g, color.b)) +
+                     min(color.r, min(color.g, color.b))) / 2.;
+
+                color.rgb = vec3(grayScale);
+#endif // CSG_MODULATION == 2
+#if CSG_MODULATION == 3 // Luminosity grayscale
+                // The luminosity method is a more sophisticated version of the average method.
+                // It also averages the values, but it forms a weighted average to account for human perception.
+                // We’re more sensitive to green than other colors, so green is weighted most heavily.
+                float grayScale = 0.21 * color.r + 0.72 * color.g + 0.07 * color.b;
+                color.rgb = vec3(grayScale);
+#endif // CSG_MODULATION == 3
+#if CSG_MODULATION == 4 // Luminance
+                vec3 hsl = rgb2hsl(color.rgb);
+                hsl.b += csg;
+
+                color.rgb = hsl2rgb(hsl);
+#endif // CSG_MODULATION == 4
+
+                result = color;
+#if CSG_BORDER == 1
+            }
+#endif // CSG_BORDER == 1
         }
         else
         {

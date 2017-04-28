@@ -40,8 +40,11 @@
                 <param type="enum" name="Importance-driven VR Methods" key="idvrMethod" defaultValue="None" values="None,MImP,AImC,VPImC" />
                 <param type="bool" name="Enable Countersink geometry for MImP" key="idvrCSG" defaultValue="false" />
                 <param type="double" name="Countersink geometry slope" key="idvrCSGSlope" defaultValue="0.3" min="0.01" max="1.0" />
+                <param type="bool" name="Enable Countersink geometry border for MImP" key="idvrCSGBorder" defaultValue="false" />
                 <param type="double" name="Countersink geometry border thickness" key="idvrCSGBorderThickness" defaultValue="0.05" min="0.01" max="1.0" />
                 <param type="color" name="Countersink geometry border color" key="idvrCSGBorderColor" defaultValue="#ff0000ff" />
+                <param type="bool" name="Enable modulation for countersink geometry" key="idvrCSGModulation" defaultValue="false" />
+                <param type="enum" name="Countersink geometry modulation methods" key="idvrCSGModulationMethod" defaultValue="Luminance" values="Average_grayscale,Lightness_grayscale,Luminosity_grayscale,Luminance" />
                 <param type="double" name="Alpha correction for AImC" key="idvrAImCAlphaCorrection" defaultValue="0.05" min="0.0" max="1.0" />
                 <param type="double" name="Alpha correction for VPImP" key="idvrVPImCAlphaCorrection" defaultValue="0.3" min="0.0" max="1.0" />
             </parameters>
