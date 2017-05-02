@@ -150,11 +150,14 @@ public:
     /// Setup the grayscale modulation method used for MImP countersink geometry.
     FWRENDEROGRE_API void setIDVRCSModulationMethod(IDVRCSGModulationMethod);
 
+    /// Setup the wheighting factor for MImP CSG color modulation.
+    FWRENDEROGRE_API void setIDVRCSGModulationFactor(double);
+
     /// Toggle the opacity decrease for MImP countersink geometry.
     FWRENDEROGRE_API void toggleIDVRCSGOpacityDecrease(bool);
 
     /// Setup the opacity decrease factor used in the MImP CSG.
-    FWRENDEROGRE_API void setIDVRCSGOpacityDecrease(double);
+    FWRENDEROGRE_API void setIDVRCSGOpacityDecreaseFactor(double);
 
     /// Setup the alpha correction factor used in the VPImC method.
     FWRENDEROGRE_API void setIDVRAImCAlphaCorrection(double);
@@ -275,6 +278,9 @@ private:
 
     /// Name of the method used to compute the new color values in CSG.
     IDVRCSGModulationMethod m_idvrCSGModulationMethod;
+
+    /// Sets the wheighting factor for MImP CSG color modulation.
+    float m_idvrCSGModulationFactor;
 
     /// Sets usage of opacity decrease for MImP CSG.
     bool m_idvrCSGOpacityDecrease;

@@ -96,8 +96,12 @@ uniform float u_aimcAlphaCorrection;
 uniform float u_vpimcAlphaCorrection;
 #endif
 
+#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
+uniform float u_colorModulationFactor;
+#endif
+
 #ifdef CSG_OPACITY_DECREASE
-uniform float u_opacityDecrease;
+uniform float u_opacityDecreaseFactor;
 #endif // CSG_OPACITY_DECREASE
 
 out vec4 fragColor;
@@ -224,8 +228,8 @@ void composite(inout vec4 dest, in vec4 src)
 //-----------------------------------------------------------------------------
 
 #if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
-vec3 rgb2hsl(vec3 RGB);
-vec3 hsl2rgb(vec3 HSL);
+vec3 rgb2hsv(vec3 RGB);
+vec3 hsv2rgb(vec3 HSL);
 #endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
 
 //-----------------------------------------------------------------------------
@@ -480,29 +484,29 @@ void main(void)
 
 // CSG luminance and saturation modulations
 #if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
-                vec3 hsl = rgb2hsl(color.rgb);
+                vec3 hsv = rgb2hsv(color.rgb);
 
-// Color2 (CSG_MODULATION == 5) --> saturation increase
-// Color3 (CSG_MODULATION == 6) --> saturation and luminance increase
+// Saturation increase (CSG_MODULATION == 5)
+// Saturation and brightness increase (CSG_MODULATION == 6)
 #if CSG_MODULATION == 5 || CSG_MODULATION == 6
-                hsl.g += csg;
+                hsv.g += csg * u_colorModulationFactor;
 #endif // CSG_MODULATION == 5 || CSG_MODULATION == 6
 
-// Color4 (CSG_MODULATION == 7) --> saturation decrease
+// Saturation decrease (CSG_MODULATION == 7)
 #if CSG_MODULATION == 7
-                hsl.g -= csg;
+                hsv.g -= csg * u_colorModulationFactor;
 #endif // CSG_MODULATION == 7
 
-// Color1 (CSG_MODULATION == 4) --> luminance increase
+// Brightness increase (CSG_MODULATION == 4)
 #if CSG_MODULATION == 4 || CSG_MODULATION == 6 || CSG_MODULATION == 7
-                hsl.b += csg;
+                hsv.b += csg * u_colorModulationFactor;
 #endif // CSG_MODULATION == 4 || CSG_MODULATION == 6 || CSG_MODULATION == 7
 
-                color.rgb = hsl2rgb(hsl);
+                color.rgb = hsv2rgb(hsv);
 #endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
 
 #ifdef CSG_OPACITY_DECREASE
-                color.a -= 1. - csg * u_opacityDecrease;
+                color.a -= 1. - csg * u_opacityDecreaseFactor;
 #endif // CSG_OPACITY_DECREASE
 
                 result = color;

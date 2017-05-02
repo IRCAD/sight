@@ -336,6 +336,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_idvrCSGBorderColor(::Ogre::ColourValue(1.f, 0.f, 0.f)),
     m_idvrCSGModulation(false),
     m_idvrCSGModulationMethod(IDVRCSGModulationMethod::COLOR1),
+    m_idvrCSGModulationFactor(1.f),
     m_idvrCSGOpacityDecrease(false),
     m_idvrCSGOpacityDecreaseFactor(1.f),
     m_idvrAImCAlphaCorrection(0.05f),
@@ -389,7 +390,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         // define the shared param structure
         m_RTVSharedParameters->addConstantDefinition("u_countersinkSlope", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_csgBorderThickness", ::Ogre::GCT_FLOAT1);
-        m_RTVSharedParameters->addConstantDefinition("u_opacityDecrease", ::Ogre::GCT_FLOAT1);
+        m_RTVSharedParameters->addConstantDefinition("u_colorModulationFactor", ::Ogre::GCT_FLOAT1);
+        m_RTVSharedParameters->addConstantDefinition("u_opacityDecreaseFactor", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_vpimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_aimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_sampleDistance", ::Ogre::GCT_FLOAT1);
@@ -401,7 +403,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         m_RTVSharedParameters->addConstantDefinition("u_max", ::Ogre::GCT_INT1);
         m_RTVSharedParameters->setNamedConstant("u_countersinkSlope", m_idvrCSGSlope);
         m_RTVSharedParameters->setNamedConstant("u_csgBorderThickness", m_idvrCSGBorderThickness);
-        m_RTVSharedParameters->setNamedConstant("u_opacityDecrease", m_idvrCSGOpacityDecreaseFactor);
+        m_RTVSharedParameters->setNamedConstant("u_colorModulationFactor", m_idvrCSGModulationFactor);
+        m_RTVSharedParameters->setNamedConstant("u_opacityDecreaseFactor", m_idvrCSGOpacityDecreaseFactor);
         m_RTVSharedParameters->setNamedConstant("u_csgBorderColor", m_idvrCSGBorderColor);
         m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
         m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
@@ -1693,6 +1696,19 @@ void RayTracingVolumeRenderer::setIDVRCSModulationMethod(IDVRCSGModulationMethod
 
 //-----------------------------------------------------------------------------
 
+void RayTracingVolumeRenderer::setIDVRCSGModulationFactor(double modulationFactor)
+{
+    m_idvrCSGModulationFactor = modulationFactor;
+
+    if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
+    {
+        m_RTVSharedParameters->setNamedConstant("u_colorModulationFactor", m_idvrCSGModulationFactor);
+        this->getLayer()->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void RayTracingVolumeRenderer::toggleIDVRCSGOpacityDecrease(bool opacityDecrease)
 {
     m_idvrCSGOpacityDecrease = opacityDecrease;
@@ -1705,13 +1721,13 @@ void RayTracingVolumeRenderer::toggleIDVRCSGOpacityDecrease(bool opacityDecrease
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::setIDVRCSGOpacityDecrease(double opacityDecrease)
+void RayTracingVolumeRenderer::setIDVRCSGOpacityDecreaseFactor(double opacityDecrease)
 {
     m_idvrCSGOpacityDecreaseFactor = opacityDecrease;
 
     if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
     {
-        m_RTVSharedParameters->setNamedConstant("u_opacityDecrease", m_idvrCSGOpacityDecreaseFactor);
+        m_RTVSharedParameters->setNamedConstant("u_opacityDecreaseFactor", m_idvrCSGOpacityDecreaseFactor);
         this->getLayer()->requestRender();
     }
 }

@@ -862,11 +862,17 @@ void SVolumeRender::setDoubleParameter(double val, std::string key)
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
         rayCastVolumeRenderer->setIDVRCSGBorderThickness(val);
     }
+    else if(key == "idvrCSGModulationFactor")
+    {
+        auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
+        OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
+        rayCastVolumeRenderer->setIDVRCSGModulationFactor(val);
+    }
     else if(key == "idvrCSGOpacityDecreaseFactor")
     {
         auto rayCastVolumeRenderer = dynamic_cast< ::fwRenderOgre::vr::RayTracingVolumeRenderer* >(m_volumeRenderer);
         OSLM_ASSERT("The current VolumeRenderer must be a RayTracingVolumeRenderer", rayCastVolumeRenderer);
-        rayCastVolumeRenderer->setIDVRCSGOpacityDecrease(val);
+        rayCastVolumeRenderer->setIDVRCSGOpacityDecreaseFactor(val);
     }
     else if(key == "idvrVPImCAlphaCorrection")
     {
@@ -913,22 +919,22 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
                 ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::LUMINOSITY_GRAYSCALE);
         }
-        else if(val == "Color1")
+        else if(val == "Brightness_increase")
         {
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
                 ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::COLOR1);
         }
-        else if(val == "Color2")
+        else if(val == "Saturation_increase")
         {
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
                 ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::COLOR2);
         }
-        else if(val == "Color3")
+        else if(val == "SaturationBrightness_increase")
         {
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
                 ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::COLOR3);
         }
-        else if(val == "Color4")
+        else if(val == "Saturation_decrease")
         {
             rayCastVolumeRenderer->setIDVRCSModulationMethod(
                 ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::COLOR4);
