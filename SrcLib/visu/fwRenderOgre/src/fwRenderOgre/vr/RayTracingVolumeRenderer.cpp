@@ -281,9 +281,10 @@ const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_MIMP_DEFINE  = "
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_AIMC_DEFINE  = "IDVR=2";
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_VPIMC_DEFINE = "IDVR=3";
 
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_DEFINE = "CSG=1";
-
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_BORDER_DEFINE = "CSG_BORDER=1";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_DEFINE                  = "CSG=1";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_BORDER_DEFINE           = "CSG_BORDER=1";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_DISABLE_CONTEXT_DEFINE  = "CSG_DISABLE_CONTEXT=1";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_OPACITY_DECREASE_DEFINE = "CSG_OPACITY_DECREASE=1";
 
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE =
     "CSG_MODULATION=1";
@@ -291,13 +292,13 @@ const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_GRAYSCAL
     "CSG_MODULATION=2";
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE =
     "CSG_MODULATION=3";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_LUMINANCE1_DEFINE =
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_COLOR1_DEFINE =
     "CSG_MODULATION=4";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_LUMINANCE2_DEFINE =
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_COLOR2_DEFINE =
     "CSG_MODULATION=5";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_LUMINANCE3_DEFINE =
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_COLOR3_DEFINE =
     "CSG_MODULATION=6";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_LUMINANCE4_DEFINE =
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_COLOR4_DEFINE =
     "CSG_MODULATION=7";
 
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_IMPORTANCE_COMPOSITING_TEXTURE = "IC";
@@ -330,10 +331,13 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_idvrCSG(false),
     m_idvrCSGSlope(0.3f),
     m_idvrCSGBorder(false),
+    m_idvrCSGDisableContext(false),
     m_idvrCSGBorderThickness(0.05f),
     m_idvrCSGBorderColor(::Ogre::ColourValue(1.f, 0.f, 0.f)),
     m_idvrCSGModulation(false),
-    m_idvrCSGModulationMethod(IDVRCSGModulationMethod::LUMINANCE1),
+    m_idvrCSGModulationMethod(IDVRCSGModulationMethod::COLOR1),
+    m_idvrCSGOpacityDecrease(false),
+    m_idvrCSGOpacityDecreaseFactor(1.f),
     m_idvrAImCAlphaCorrection(0.05f),
     m_idvrVPImCAlphaCorrection(0.3f),
     m_volIllumFactor(static_cast< ::Ogre::Real>(colorBleedingFactor),
@@ -385,6 +389,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         // define the shared param structure
         m_RTVSharedParameters->addConstantDefinition("u_countersinkSlope", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_csgBorderThickness", ::Ogre::GCT_FLOAT1);
+        m_RTVSharedParameters->addConstantDefinition("u_opacityDecrease", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_vpimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_aimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_sampleDistance", ::Ogre::GCT_FLOAT1);
@@ -396,6 +401,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         m_RTVSharedParameters->addConstantDefinition("u_max", ::Ogre::GCT_INT1);
         m_RTVSharedParameters->setNamedConstant("u_countersinkSlope", m_idvrCSGSlope);
         m_RTVSharedParameters->setNamedConstant("u_csgBorderThickness", m_idvrCSGBorderThickness);
+        m_RTVSharedParameters->setNamedConstant("u_opacityDecrease", m_idvrCSGOpacityDecreaseFactor);
         m_RTVSharedParameters->setNamedConstant("u_csgBorderColor", m_idvrCSGBorderColor);
         m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
         m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
@@ -1301,6 +1307,14 @@ void RayTracingVolumeRenderer::updateCompositorName()
                     {
                         ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_BORDER_DEFINE;
                     }
+                    if(m_idvrCSGDisableContext)
+                    {
+                        ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_DISABLE_CONTEXT_DEFINE;
+                    }
+                    if(m_idvrCSGOpacityDecrease)
+                    {
+                        ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_OPACITY_DECREASE_DEFINE;
+                    }
 
                     if(m_idvrCSGModulation)
                     {
@@ -1316,17 +1330,17 @@ void RayTracingVolumeRenderer::updateCompositorName()
                                 ppDefs <<
                                 (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE;
                                 break;
-                            case IDVRCSGModulationMethod::LUMINANCE1:
-                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_LUMINANCE1_DEFINE;
+                            case IDVRCSGModulationMethod::COLOR1:
+                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_COLOR1_DEFINE;
                                 break;
-                            case IDVRCSGModulationMethod::LUMINANCE2:
-                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_LUMINANCE2_DEFINE;
+                            case IDVRCSGModulationMethod::COLOR2:
+                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_COLOR2_DEFINE;
                                 break;
-                            case IDVRCSGModulationMethod::LUMINANCE3:
-                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_LUMINANCE3_DEFINE;
+                            case IDVRCSGModulationMethod::COLOR3:
+                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_COLOR3_DEFINE;
                                 break;
-                            case IDVRCSGModulationMethod::LUMINANCE4:
-                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_LUMINANCE4_DEFINE;
+                            case IDVRCSGModulationMethod::COLOR4:
+                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_COLOR4_DEFINE;
                                 break;
                         }
 
@@ -1615,6 +1629,18 @@ void RayTracingVolumeRenderer::toggleIDVRCSGBorder(bool border)
 
 //-----------------------------------------------------------------------------
 
+void RayTracingVolumeRenderer::toggleIDVRCSGDisableContext(bool discard)
+{
+    m_idvrCSGDisableContext = discard;
+
+    if(this->m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
+    {
+        this->initCompositors();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void RayTracingVolumeRenderer::setIDVRCSGBorderThickness(double thickness)
 {
     m_idvrCSGBorderThickness = static_cast<float>(thickness);
@@ -1662,6 +1688,31 @@ void RayTracingVolumeRenderer::setIDVRCSModulationMethod(IDVRCSGModulationMethod
     if(this->m_idvrMethod == this->s_MIMP && this->m_idvrCSG && this->m_idvrCSGModulation)
     {
         this->initCompositors();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::toggleIDVRCSGOpacityDecrease(bool opacityDecrease)
+{
+    m_idvrCSGOpacityDecrease = opacityDecrease;
+
+    if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
+    {
+        this->initCompositors();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::setIDVRCSGOpacityDecrease(double opacityDecrease)
+{
+    m_idvrCSGOpacityDecreaseFactor = opacityDecrease;
+
+    if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
+    {
+        m_RTVSharedParameters->setNamedConstant("u_opacityDecrease", m_idvrCSGOpacityDecreaseFactor);
+        this->getLayer()->requestRender();
     }
 }
 

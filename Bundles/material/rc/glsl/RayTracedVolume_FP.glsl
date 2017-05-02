@@ -96,6 +96,10 @@ uniform float u_aimcAlphaCorrection;
 uniform float u_vpimcAlphaCorrection;
 #endif
 
+#ifdef CSG_OPACITY_DECREASE
+uniform float u_opacityDecrease;
+#endif // CSG_OPACITY_DECREASE
+
 out vec4 fragColor;
 
 //-----------------------------------------------------------------------------
@@ -379,6 +383,12 @@ void main(void)
         {
             rayEntry += rayDir * csg;
         }
+#if CSG_DISABLE_CONTEXT == 1
+        else
+        {
+            discard;
+        }
+#endif // CSG_DISABLE_CONTEXT == 1
     }
 #endif // CSG
 #endif // IDVR == 1
@@ -468,23 +478,32 @@ void main(void)
                 color.rgb = vec3(grayScale);
 #endif // CSG_MODULATION == 3
 
-#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7 // Luminance
+// CSG luminance and saturation modulations
+#if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
                 vec3 hsl = rgb2hsl(color.rgb);
 
+// Color2 (CSG_MODULATION == 5) --> saturation increase
+// Color3 (CSG_MODULATION == 6) --> saturation and luminance increase
 #if CSG_MODULATION == 5 || CSG_MODULATION == 6
                 hsl.g += csg;
 #endif // CSG_MODULATION == 5 || CSG_MODULATION == 6
 
+// Color4 (CSG_MODULATION == 7) --> saturation decrease
 #if CSG_MODULATION == 7
                 hsl.g -= csg;
 #endif // CSG_MODULATION == 7
 
+// Color1 (CSG_MODULATION == 4) --> luminance increase
 #if CSG_MODULATION == 4 || CSG_MODULATION == 6 || CSG_MODULATION == 7
                 hsl.b += csg;
 #endif // CSG_MODULATION == 4 || CSG_MODULATION == 6 || CSG_MODULATION == 7
 
                 color.rgb = hsl2rgb(hsl);
 #endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
+
+#ifdef CSG_OPACITY_DECREASE
+                color.a -= 1. - csg * u_opacityDecrease;
+#endif // CSG_OPACITY_DECREASE
 
                 result = color;
 #if CSG_BORDER == 1

@@ -39,10 +39,10 @@ public:
         AVERAGE_GRAYSCALE,
         LIGHTNESS_GRAYSCALE,
         LUMINOSITY_GRAYSCALE,
-        LUMINANCE1,
-        LUMINANCE2,
-        LUMINANCE3,
-        LUMINANCE4
+        COLOR1,
+        COLOR2,
+        COLOR3,
+        COLOR4
     };
 
     /**
@@ -135,6 +135,9 @@ public:
     /// Toggle countersink geometry border used in the MImP method.
     FWRENDEROGRE_API void toggleIDVRCSGBorder(bool);
 
+    /// Toggle context discard when using MImP countersink geometry.
+    FWRENDEROGRE_API void toggleIDVRCSGDisableContext(bool);
+
     /// Setup the countersink geometry border thickness used in the MImP method.
     FWRENDEROGRE_API void setIDVRCSGBorderThickness(double);
 
@@ -146,6 +149,12 @@ public:
 
     /// Setup the grayscale modulation method used for MImP countersink geometry.
     FWRENDEROGRE_API void setIDVRCSModulationMethod(IDVRCSGModulationMethod);
+
+    /// Toggle the opacity decrease for MImP countersink geometry.
+    FWRENDEROGRE_API void toggleIDVRCSGOpacityDecrease(bool);
+
+    /// Setup the opacity decrease factor used in the MImP CSG.
+    FWRENDEROGRE_API void setIDVRCSGOpacityDecrease(double);
 
     /// Setup the alpha correction factor used in the VPImC method.
     FWRENDEROGRE_API void setIDVRAImCAlphaCorrection(double);
@@ -252,6 +261,9 @@ private:
     /// Sets usage of countersink geometry border for MImP.
     bool m_idvrCSGBorder;
 
+    /// Sets whether or not the context should be discarded when using MImP countersink geometry.
+    bool m_idvrCSGDisableContext;
+
     /// Sets countersink geometry border thickness for MImP.
     float m_idvrCSGBorderThickness;
 
@@ -263,6 +275,12 @@ private:
 
     /// Name of the method used to compute the new color values in CSG.
     IDVRCSGModulationMethod m_idvrCSGModulationMethod;
+
+    /// Sets usage of opacity decrease for MImP CSG.
+    bool m_idvrCSGOpacityDecrease;
+
+    /// Sets the opacity decrease factor used in MImP CSG.
+    float m_idvrCSGOpacityDecreaseFactor;
 
     /// Sets the alpha correction for AImC.
     float m_idvrAImCAlphaCorrection;
@@ -333,18 +351,21 @@ private:
 
     /// IDVR MImP countersink geometry define.
     static const std::string s_CSG_DEFINE;
-
     /// IDVR MImP countersink geometry border define.
     static const std::string s_CSG_BORDER_DEFINE;
+    /// IDVR MImP countersink geometry disable context define.
+    static const std::string s_CSG_DISABLE_CONTEXT_DEFINE;
+    /// IDVR MImP countersink geometry opacity decrease define.
+    static const std::string s_CSG_OPACITY_DECREASE_DEFINE;
 
     /// IDVR MImP CSG modulation defines.
     static const std::string s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE;
     static const std::string s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE;
     static const std::string s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE;
-    static const std::string s_CSG_MOD_LUMINANCE1_DEFINE;
-    static const std::string s_CSG_MOD_LUMINANCE2_DEFINE;
-    static const std::string s_CSG_MOD_LUMINANCE3_DEFINE;
-    static const std::string s_CSG_MOD_LUMINANCE4_DEFINE;
+    static const std::string s_CSG_MOD_COLOR1_DEFINE;
+    static const std::string s_CSG_MOD_COLOR2_DEFINE;
+    static const std::string s_CSG_MOD_COLOR3_DEFINE;
+    static const std::string s_CSG_MOD_COLOR4_DEFINE;
 
     /// IDVR textures.
     static const std::string s_IMPORTANCE_COMPOSITING_TEXTURE;
