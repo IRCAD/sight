@@ -17,8 +17,8 @@ namespace fwCommand
 
 //------------------------------------------------------------------------------
 
-ImageDiffCommand::ImageDiffCommand(const fwData::Image::sptr& img, fwDataTools::ImageDiff diff) :
-    m_imgHelper(img),
+ImageDiffCommand::ImageDiffCommand(const ::fwData::Image::sptr& img, ::fwDataTools::ImageDiff diff) :
+    m_img(img),
     m_modifSig(img->signal< ::fwData::Image::BufferModifiedSignalType >(::fwData::Image::s_BUFFER_MODIFIED_SIG)),
     m_diff(diff)
 {
@@ -36,7 +36,7 @@ size_t ImageDiffCommand::getSize() const
 
 bool ImageDiffCommand::redo()
 {
-    m_diff.applyDiff(m_imgHelper);
+    m_diff.applyDiff(m_img);
 
     m_modifSig->asyncEmit();
 
@@ -47,7 +47,7 @@ bool ImageDiffCommand::redo()
 
 bool ImageDiffCommand::undo()
 {
-    m_diff.revertDiff(m_imgHelper);
+    m_diff.revertDiff(m_img);
 
     m_modifSig->asyncEmit();
 

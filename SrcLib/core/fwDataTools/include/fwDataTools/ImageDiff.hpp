@@ -55,10 +55,10 @@ public:
                                  const ::fwData::Image::BufferType* newValue);
 
     /// Write the new values in the image.
-    FWDATATOOLS_API void applyDiff(helper::Image& img) const;
+    FWDATATOOLS_API void applyDiff(const ::fwData::Image::sptr& img) const;
 
     /// Write the old value back in the image.
-    FWDATATOOLS_API void revertDiff(helper::Image& img) const;
+    FWDATATOOLS_API void revertDiff(const ::fwData::Image::sptr& img) const;
 
     /// Return the amount of memory actually used by the elements.
     FWDATATOOLS_API size_t getSize() const;

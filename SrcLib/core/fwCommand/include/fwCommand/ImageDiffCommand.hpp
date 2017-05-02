@@ -22,6 +22,7 @@ class FWCOMMAND_CLASS_API ImageDiffCommand : public ICommand
 {
 public:
 
+    /// Constructor, uses an image and a change list for that image.
     FWCOMMAND_API ImageDiffCommand(const ::fwData::Image::sptr& img, ::fwDataTools::ImageDiff diff);
 
     /// The diff size.
@@ -38,7 +39,7 @@ public:
 
 private:
 
-    ::fwDataTools::helper::Image m_imgHelper;
+    ::fwData::Image::sptr m_img;
 
     ::fwData::Image::BufferModifiedSignalType::sptr m_modifSig;
 

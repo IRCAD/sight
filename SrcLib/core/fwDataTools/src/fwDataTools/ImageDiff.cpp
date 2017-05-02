@@ -132,21 +132,25 @@ void ImageDiff::addDiff(const ::fwData::Image::IndexType index, const ::fwData::
 
 //------------------------------------------------------------------------------
 
-void ImageDiff::applyDiff(helper::Image& img) const
+void ImageDiff::applyDiff(const ::fwData::Image::sptr& img) const
 {
+    helper::Image imgHelper(img);
+
     for(size_t i = 0; i < m_nbElts; ++i)
     {
-        applyDiffElt(img, i);
+        applyDiffElt(imgHelper, i);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ImageDiff::revertDiff(helper::Image& img) const
+void ImageDiff::revertDiff(const ::fwData::Image::sptr& img) const
 {
+    helper::Image imgHelper(img);
+
     for(size_t i = 0; i < m_nbElts; ++i)
     {
-        revertDiffElt(img, i);
+        revertDiffElt(imgHelper, i);
     }
 }
 
