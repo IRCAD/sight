@@ -259,16 +259,19 @@
         <!-- Record Depth image -->
         <service uid="depthRecorder" type="::videoOpenCV::SFrameWriter" worker="recorder">
             <in key="data" uid="exportTLDepth" />
+            <folder>/home/tcollins/tmp/frames/depth</folder>
         </service>
 
         <!-- Record RGB image -->
         <service uid="rgbRecorder" type="::videoOpenCV::SFrameWriter" worker="recorder">
             <in key="data" uid="exportTLColor" />
+            <folder>/home/tcollins/tmp/frames/col</folder>
         </service>
 
         <!-- Record IR image -->
         <service uid="irRecorder" type="::videoOpenCV::SFrameWriter" worker="recorder">
             <in key="data" uid="exportTLIR" />
+            <folder>/home/tcollins/tmp/frames/ir</folder>
         </service>
 
         <!-- ***************************************** End scanning services declarations ***************************************** -->
