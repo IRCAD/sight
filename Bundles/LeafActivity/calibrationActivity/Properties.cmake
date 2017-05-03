@@ -33,6 +33,7 @@ set( REQUIREMENTS
 
     videoCalibration
     videoOpenCV
+    videoOpenni
     videoQt
     videoTools
 
