@@ -7,7 +7,6 @@
 #include "videoOpenni/SScan.hpp"
 
 #include <arData/Camera.hpp>
-#include <arData/CameraSeries.hpp>
 #include <arData/FrameTL.hpp>
 
 #include <fwCom/Signal.hxx>
