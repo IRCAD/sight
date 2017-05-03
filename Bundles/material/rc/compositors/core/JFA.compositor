@@ -37,6 +37,8 @@ compositor JFAInit
     }
 }
 
+//----------------------------------------------
+
 compositor JFAPingComp
 {
     technique
@@ -60,6 +62,8 @@ compositor JFAPingComp
         }
     }
 }
+
+//----------------------------------------------
 
 compositor JFAPongComp
 {
@@ -85,20 +89,47 @@ compositor JFAPongComp
     }
 }
 
+//----------------------------------------------
+
 compositor JFAFinalPingComp
 {
     technique
     {
         texture_ref JFAPingLocal JFAInit JFAPing
+        texture_ref JFAPongLocal JFAInit JFAPong
         texture_ref JFAFinal JFAInit JFAFinal
+        texture JFABlurV target_width target_height PF_FLOAT32_RGBA
 
-        target JFAFinal
+        // Raw JFA texture
+        target JFAPongLocal
         {
             input none
             pass render_quad
             {
                 material JFA
                 input 0 JFAPingLocal
+            }
+        }
+
+        // Vertically blurred JFA texture
+        target JFABlurV
+        {
+            input none
+            pass render_quad
+            {
+                material VerticalBlur
+                input 0 JFAPongLocal
+            }
+        }
+
+        // Fully blurred JFA texture
+        target JFAFinal
+        {
+            input none
+            pass render_quad
+            {
+                material HorizontalBlur
+                input 0 JFABlurV
             }
         }
 
@@ -109,20 +140,47 @@ compositor JFAFinalPingComp
     }
 }
 
+//----------------------------------------------
+
 compositor JFAFinalPongComp
 {
     technique
     {
+        texture_ref JFAPingLocal JFAInit JFAPing
         texture_ref JFAPongLocal JFAInit JFAPong
         texture_ref JFAFinal JFAInit JFAFinal
+        texture JFABlurV target_width target_height PF_FLOAT32_RGBA
 
-        target JFAFinal
+        // Raw JFA texture
+        target JFAPingLocal
         {
             input none
             pass render_quad
             {
                 material JFA
                 input 0 JFAPongLocal
+            }
+        }
+
+        // Vertically blurred JFA texture
+        target JFABlurV
+        {
+            input none
+            pass render_quad
+            {
+                material VerticalBlur
+                input 0 JFAPingLocal
+            }
+        }
+
+        // Fully blurred JFA texture
+        target JFAFinal
+        {
+            input none
+            pass render_quad
+            {
+                material HorizontalBlur
+                input 0 JFABlurV
             }
         }
 

@@ -51,9 +51,10 @@ class RayTracingVolumeRenderer::JFACompositorListener : public ::Ogre::Composito
 {
 public:
 
-    JFACompositorListener(float passIndex, float nbPasses) :
+    JFACompositorListener(float passIndex, float nbPasses, float& blurWeight) :
         m_passIndex(passIndex),
-        m_nbPasses(nbPasses)
+        m_nbPasses(nbPasses),
+        m_blurWeight(blurWeight)
     {
 
     }
@@ -62,14 +63,33 @@ public:
 
     virtual void notifyMaterialSetup(::Ogre::uint32, ::Ogre::MaterialPtr& mtl)
     {
-        ::Ogre::Technique* tech = mtl->getBestTechnique();
-
-        for(short unsigned int i = 0; i < tech->getNumPasses(); i++ )
+        if(mtl->getName().find("JFA") != std::string::npos)
         {
-            ::Ogre::GpuProgramParametersSharedPtr vrParams = tech->getPass(i)->getFragmentProgramParameters();
+            ::Ogre::Technique* tech = mtl->getBestTechnique();
 
-            vrParams->setNamedConstant("u_passIndex", m_passIndex);
-            vrParams->setNamedConstant("u_nbPasses", m_nbPasses);
+            for(short unsigned int i = 0; i < tech->getNumPasses(); i++ )
+            {
+                ::Ogre::GpuProgramParametersSharedPtr vrParams = tech->getPass(i)->getFragmentProgramParameters();
+
+                vrParams->setNamedConstant("u_passIndex", m_passIndex);
+                vrParams->setNamedConstant("u_nbPasses", m_nbPasses);
+            }
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    virtual void notifyMaterialRender(::Ogre::uint32, ::Ogre::MaterialPtr& mtl)
+    {
+        if(mtl->getName().find("Blur") != std::string::npos)
+        {
+            ::Ogre::Technique* tech = mtl->getBestTechnique();
+
+            for(short unsigned int i = 0; i < tech->getNumPasses(); i++ )
+            {
+                ::Ogre::GpuProgramParametersSharedPtr fParams = tech->getPass(i)->getFragmentProgramParameters();
+                fParams->setNamedConstant("u_blurWeight", m_blurWeight);
+            }
         }
     }
 
@@ -77,6 +97,8 @@ private:
 
     float m_passIndex;
     float m_nbPasses;
+
+    float& m_blurWeight;
 };
 
 //-----------------------------------------------------------------------------
@@ -330,6 +352,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_shadows(shadows),
     m_idvrCSG(false),
     m_idvrCSGSlope(0.3f),
+    m_idvrCSGBlurWeight(0.01f),
     m_idvrCSGBorder(false),
     m_idvrCSGDisableContext(false),
     m_idvrCSGBorderThickness(0.05f),
@@ -1442,7 +1465,8 @@ void RayTracingVolumeRenderer::buildCompositorChain()
         compositorInstance->setEnabled(true);
 
         m_compositorListeners.push_back(new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(0),
-                                                                                            static_cast<float>(nbPasses)));
+                                                                                            static_cast<float>(nbPasses),
+                                                                                            m_idvrCSGBlurWeight));
         compositorInstance->addListener(m_compositorListeners.back());
 
         int i = 0;
@@ -1464,7 +1488,8 @@ void RayTracingVolumeRenderer::buildCompositorChain()
             m_compositorListeners.push_back(new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(i +
                                                                                                                    1),
                                                                                                 static_cast<float>(
-                                                                                                    nbPasses)));
+                                                                                                    nbPasses),
+                                                                                                m_idvrCSGBlurWeight));
             compositorInstance->addListener(m_compositorListeners.back());
         }
 
@@ -1482,7 +1507,8 @@ void RayTracingVolumeRenderer::buildCompositorChain()
         }
 
         m_compositorListeners.push_back(new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(i),
-                                                                                            static_cast<float>(nbPasses)));
+                                                                                            static_cast<float>(nbPasses),
+                                                                                            m_idvrCSGBlurWeight));
         compositorInstance->addListener(m_compositorListeners.back());
     }
     else if(m_idvrMethod == this->s_AIMC)
@@ -1614,6 +1640,18 @@ void RayTracingVolumeRenderer::setIDVRCountersinkSlope(double slope)
     if(m_idvrMethod == this->s_MIMP && m_idvrCSG)
     {
         m_RTVSharedParameters->setNamedConstant("u_countersinkSlope", m_idvrCSGSlope);
+        this->getLayer()->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::setIDVRCSGBlurWeight(double blurWeight)
+{
+    m_idvrCSGBlurWeight = blurWeight;
+
+    if(m_idvrMethod == this->s_MIMP && m_idvrCSG)
+    {
         this->getLayer()->requestRender();
     }
 }

@@ -1,15 +1,11 @@
 #version 330
 
-//-------------------------------
-//BlurH_ps20.glsl
-// Horizontal Gaussian-Blur pass
-//-------------------------------
-
-in vec2 texCoord[5];
+in vec2 texCoord;
 
 out vec4 fragColour;
 
 uniform sampler2D Blur0;
+uniform float u_blurWeight;
 
 //----------------------------------------------
 
@@ -55,7 +51,7 @@ void main()
 
     for(int i = 0; i < 11; ++i)
     {
-        sum += texture(Blur0, texCoord[0] + pos[i] * 0.0100000) * samples[i];
+        sum += texture(Blur0, texCoord + pos[i] * u_blurWeight) * samples[i];
     }
 
     fragColour = sum;

@@ -132,6 +132,9 @@ public:
     /// Setup the countersink geometry slope used in the MImP method.
     FWRENDEROGRE_API void setIDVRCountersinkSlope(double);
 
+    /// Setup the countersink geometry blur weight factor used in the MImP method.
+    FWRENDEROGRE_API void setIDVRCSGBlurWeight(double);
+
     /// Toggle countersink geometry border used in the MImP method.
     FWRENDEROGRE_API void toggleIDVRCSGBorder(bool);
 
@@ -260,6 +263,9 @@ private:
 
     /// Sets countersink geometry slope for MImP.
     float m_idvrCSGSlope;
+
+    /// Sets countersink geometry blur weight for MImP.
+    float m_idvrCSGBlurWeight;
 
     /// Sets usage of countersink geometry border for MImP.
     bool m_idvrCSGBorder;
