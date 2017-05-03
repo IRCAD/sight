@@ -32,6 +32,7 @@ set( REQUIREMENTS
     uiPreferences
 
     videoCalibration
+    videoOpenCV
     videoQt
     videoTools
 

@@ -1,0 +1,346 @@
+<extension implements="::fwServices::registry::AppConfig2">
+    <id>RGBDCalibration</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="SERIESDB" />
+        <param name="AS_UID" />
+    </parameters>
+    <config>
+
+        <object uid="extractedModelSeries" type="::fwMedData::ModelSeries" />
+
+        <object uid="frameTLColor" type="::arData::FrameTL" />
+        <object uid="frameTLDepth" type="::arData::FrameTL" />
+
+        <object uid="exportTLColor" type="::arData::FrameTL" />
+        <object uid="exportTLDepth" type="::arData::FrameTL" />
+        <object uid="exportTLIR" type="::arData::FrameTL" />
+
+        <object uid="rgbCamera" type="::arData::Camera" src="deferred" />
+        <object uid="depthCamera" type="::arData::Camera" src="deferred" />
+
+        <object uid="imageDepth" type="::fwData::Image" />
+        <object uid="imageVideo" type="::fwData::Image" />
+        <object uid="snapshotDepth" type="::fwData::Image" />
+        <object uid="snapshotColor" type="::fwData::Image" />
+        <object uid="snapshotIR" type="::fwData::Image" />
+
+        <object uid="tFSelectionDepth" type="::fwData::Composite">
+            <item key="SelectedTF">
+                <object uid="selectedTF" type="::fwData::TransferFunction">
+                    <colors>
+                        <step color="#ff0000ff" value="1" />
+                        <step color="#ffff00ff" value="500" />
+                        <step color="#00ff00ff" value="1000" />
+                        <step color="#00ffffff" value="1500" />
+                        <step color="#0000ffff" value="2000" />
+                        <step color="#000000ff" value="4000" />
+                    </colors>
+                </object>
+            </item>
+        </object>
+
+        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
+        <object uid="${AS_UID}" type="::fwMedData::ActivitySeries" src="ref" />
+
+        <!-- ***************************************** Begin layouts declaration ***************************************** -->
+
+        <service uid="mainView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                </layout>
+                <toolBar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolBar sid="toolbar" start="yes" />
+                <view sid="scanningView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="toolbar" type="::gui::aspect::SDefaultToolBar">
+            <gui>
+                <layout>
+                    <menuItem name="start" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/start-cam.svg" />
+                    <menuItem name="stop" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/stop-cam.svg" />
+                    <separator />
+                    <menuItem name="configure depth record" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/configuration.svg" />
+                    <menuItem name="configure color record" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/configuration.svg" />
+                    <menuItem name="configure infrared record" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/configuration.svg" />
+                    <separator />
+                    <menuItem name="start record" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/camera-photo.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="startVideo" start="yes" />
+                <menuItem sid="stopVideo" start="yes" />
+
+                <menuItem sid="configureDepthRecord" start="yes" />
+                <menuItem sid="configureColorRecord" start="yes" />
+                <menuItem sid="configureIRRecord" start="yes" />
+
+                <menuItem sid="takeSnapshot" start="yes" />
+
+            </registry>
+        </service>
+
+        <!-- Begin Scanning views -->
+
+        <service uid="scanningView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="RGBDView" start="yes" />
+                <view sid="snapshotView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="RGBDView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="distanceMapRender" start="yes" />
+                <view sid="videoViewRender" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="snapshotView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="depthRender" start="yes" />
+                <view sid="colorRender" start="yes" />
+                <view sid="irRender" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ***************************************** End layouts declaration ***************************************** -->
+
+        <!-- ***************************************** Begin render scenes declarations ***************************************** -->
+
+        <!-- scanning related render scenes -->
+        <service uid="distanceMapRender" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <in key="imageDepth" uid="imageDepth" />
+            <inout key="tFSelectionDepth" uid="tFSelectionDepth" />
+            <scene>
+                <picker id="picker" vtkclass="fwVtkCellPicker" />
+                <renderer id="default" layer="0" background="0.0" />
+
+                <adaptor id="depthAdaptor" class="::visuVTKAdaptor::NegatoMPR" objectId="imageDepth">
+                    <config renderer="default" mode="2d" slices="1" picker="picker" selectedTFKey="SelectedTF" tfSelectionFwID="tFSelectionDepth" />
+                </adaptor>
+
+                <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="FixedInteractorStyle" />
+                </adaptor>
+            </scene>
+        </service>
+
+        <service uid="videoViewRender" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <in key="imageVideo" uid="imageVideo" />
+            <scene renderMode="timer">
+                <renderer id="default" layer="0" background="0.0" />
+
+                <adaptor id="videoAdaptor" class="::visuVTKARAdaptor::SVideoAdapter" objectId="imageVideo">
+                    <config renderer="default" />
+                </adaptor>
+
+                <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="InteractorStyle2DForNegato" />
+                </adaptor>
+            </scene>
+        </service>
+
+        <service uid="depthRender" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <in key="snapshotImage" uid="snapshotDepth" />
+            <inout key="tFSelectionDepth" uid="tFSelectionDepth" />
+            <scene>
+                <picker id="picker" vtkclass="fwVtkCellPicker" />
+                <renderer id="default" layer="0" background="0.0" />
+
+                <adaptor id="depthAdaptor" class="::visuVTKAdaptor::NegatoMPR" objectId="snapshotImage">
+                    <config renderer="default" mode="2d" slices="1" picker="picker" selectedTFKey="SelectedTF" tfSelectionFwID="tFSelectionDepth" />
+                </adaptor>
+
+                <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="InteractorStyle2DForNegato" />
+                </adaptor>
+
+            </scene>
+        </service>
+
+        <service uid="colorRender" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <in key="snapshotImage" uid="snapshotColor" />
+            <scene>
+                <renderer id="default" layer="0" background="0.0" />
+
+                <adaptor id="videoAdaptor" class="::visuVTKARAdaptor::SVideoAdapter" objectId="snapshotImage">
+                    <config renderer="default" />
+                </adaptor>
+
+                <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="InteractorStyle2DForNegato" />
+                </adaptor>
+
+            </scene>
+        </service>
+
+        <service uid="irRender" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <in key="snapshotImage" uid="snapshotIR" />
+            <scene>
+                <renderer id="default" layer="0" background="0.0" />
+
+                <adaptor id="videoAdaptor" class="::visuVTKARAdaptor::SVideoAdapter" objectId="snapshotImage">
+                    <config renderer="default" />
+                </adaptor>
+
+                <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="InteractorStyle2DForNegato" />
+                </adaptor>
+
+            </scene>
+        </service>
+
+        <!-- ***************************************** End render scenes declaration ***************************************** -->
+
+        <!-- ***************************************** Begin scanning services declarations ***************************************** -->
+
+        <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
+            <in group="frameTL">
+                <key uid="frameTLColor" />
+                <key uid="frameTLDepth" />
+            </in>
+            <inout group="image">
+                <key uid="imageVideo" />
+                <key uid="imageDepth" />
+            </inout>
+        </service>
+
+        <service uid="snapshotSynchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="synchronizer">
+            <in group="frameTL">
+                <key uid="exportTLDepth" />
+                <key uid="exportTLColor" />
+                <key uid="exportTLIR" />
+            </in>
+            <inout group="image">
+                <key uid="snapshotDepth" />
+                <key uid="snapshotColor" />
+                <key uid="snapshotIR" />
+            </inout>
+        </service>
+
+        <!-- Manages Sense camera configuration -->
+        <service uid="scanner" type="::videoOpenni::SScan" worker="scanWorker">
+            <inout key="frameTLDepth" uid="frameTLDepth" />
+            <inout key="frameTLColors" uid="frameTLColor" />
+            <inout key="snapshotTLDepth" uid="exportTLDepth" />
+            <inout key="snapshotTLColors" uid="exportTLColor" />
+            <inout key="snapshotTLIR" uid="exportTLIR" />
+        </service>
+
+        <!-- Record Depth image -->
+        <service uid="depthRecorder" type="::videoOpenCV::SFrameWriter" worker="recorder">
+            <in key="data" uid="exportTLDepth" />
+        </service>
+
+        <!-- Record RGB image -->
+        <service uid="rgbRecorder" type="::videoOpenCV::SFrameWriter" worker="recorder">
+            <in key="data" uid="exportTLColor" />
+        </service>
+
+        <!-- Record IR image -->
+        <service uid="irRecorder" type="::videoOpenCV::SFrameWriter" worker="recorder">
+            <in key="data" uid="exportTLIR" />
+        </service>
+
+        <!-- ***************************************** End scanning services declarations ***************************************** -->
+
+        <!-- ***************************************** Begin action services declarations ***************************************** -->
+
+        <!-- Mesh computation actions -->
+
+        <service uid="startVideo" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>startVideo/setInexecutable</slot>
+                <slot>scanner/startCamera</slot>
+                <slot>stopVideo/setExecutable</slot>
+                <slot>startSlots/update</slot>
+            </slots>
+        </service>
+
+        <service uid="stopVideo" type="::gui::action::SSlotCaller">
+            <state executable="false" />
+            <slots>
+                <slot>stopVideo/setInexecutable</slot>
+                <slot>scanner/stopCamera</slot>
+                <slot>startVideo/setExecutable</slot>
+                <slot>stopSlots/update</slot>
+            </slots>
+        </service>
+
+        <service uid="configureDepthRecord" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>depthRecorder/configureWithIHM</slot>
+            </slots>
+        </service>
+
+        <service uid="configureColorRecord" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>rgbRecorder/configureWithIHM</slot>
+            </slots>
+        </service>
+
+        <service uid="configureIRRecord" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>irRecorder/configureWithIHM</slot>
+            </slots>
+        </service>
+
+        <service uid="takeSnapshot" type="::gui::action::SSlotCaller">
+            <slots>
+                <slot>scanner/takeSnapshot</slot>
+                <slot>depthRecorder/update</slot>
+                <slot>rgbRecorder/update</slot>
+                <slot>irRecorder/update</slot>
+            </slots>
+        </service>
+
+        <!-- ***************************************** End action services declarations ***************************************** -->
+
+        <!-- ***************************************** Begin connections declarations ***************************************** -->
+
+        <!-- ***************************************** End connections declarations ***************************************** -->
+
+        <!-- layouts -->
+        <start uid="mainView" />
+
+        <!-- reconstruction services -->
+        <start uid="synchronizer" />
+        <start uid="snapshotSynchronizer" />
+        <start uid="scanner" />
+
+        <!-- recording service -->
+        <start uid="depthRecorder" />
+        <start uid="rgbRecorder" />
+        <start uid="irRecorder" />
+
+    </config>
+</extension>
