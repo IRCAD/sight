@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,12 +40,10 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
     pat->getClassname();
 
     //Force link with fwDataCamp
-    static const int fwDataCampVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(fwDataCampVersion);
+    m_fwDataCampVersion = ::fwDataCamp::Version::s_CURRENT_VERSION;
 
-    //Force link with rdDataCamp
-    static const int fwMedDataCampVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
-    FwCoreNotUsedMacro(fwMedDataCampVersion);
+    //Force link with fwMedDataCamp
+    m_fwMedDataCampVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
 }
 
 //-----------------------------------------------------------------------------
