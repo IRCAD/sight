@@ -256,6 +256,14 @@
             <inout key="snapshotTLIR" uid="exportTLIR" />
         </service>
 
+        <service uid="actionRecord" type="::uiTools::action::STimestampSlotCaller" >
+            <slots>
+                <slot>depthRecorder/saveFrame</slot>
+                <slot>rgbRecorder/saveFrame</slot>
+                <slot>irRecorder/saveFrame</slot>
+            </slots>
+        </service>
+
         <!-- Record Depth image -->
         <service uid="depthRecorder" type="::videoOpenCV::SFrameWriter" worker="recorder">
             <in key="data" uid="exportTLDepth" />
@@ -320,9 +328,7 @@
         <service uid="takeSnapshot" type="::gui::action::SSlotCaller">
             <slots>
                 <slot>scanner/takeSnapshot</slot>
-                <slot>depthRecorder/update</slot>
-                <slot>rgbRecorder/update</slot>
-                <slot>irRecorder/update</slot>
+                <slot>actionRecord/update</slot>
             </slots>
         </service>
 
@@ -339,6 +345,7 @@
         <start uid="synchronizer" />
         <start uid="snapshotSynchronizer" />
         <start uid="scanner" />
+        <start uid="actionRecord" />
 
         <!-- recording service -->
         <start uid="depthRecorder" />
