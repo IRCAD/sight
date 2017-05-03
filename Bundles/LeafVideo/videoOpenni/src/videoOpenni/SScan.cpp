@@ -525,6 +525,8 @@ void SScan::presentFrame()
             sig->asyncEmit(timestamp);
         }
 
+        // Exit asap if we are capturing, however we need to skip some frames especially for the color stream; the
+        // first frame are a bit blueish...
         if(m_capture && frameCaptureCount-- == 0)
         {
             return;
