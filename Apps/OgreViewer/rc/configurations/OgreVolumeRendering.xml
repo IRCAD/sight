@@ -15,8 +15,8 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${imageUID}"  type="::fwData::Image" src="ref" />
-        <object uid="${maskUID}"  type="::fwData::Image" src="ref" />
+        <object uid="${imageUID}"     type="::fwData::Image"     src="ref" />
+        <object uid="${maskUID}"      type="::fwData::Image"     src="ref" />
         <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
