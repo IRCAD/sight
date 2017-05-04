@@ -96,6 +96,10 @@ uniform float u_aimcAlphaCorrection;
 uniform float u_vpimcAlphaCorrection;
 #endif
 
+#ifdef CSG_DEPTH_LINES
+uniform float u_depthLinesThreshold;
+#endif // CSG_DEPTH_LINES
+
 #if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
 uniform float u_colorModulationFactor;
 #endif
@@ -365,6 +369,7 @@ void main(void)
 #if IDVR == 1
 
     float csg = 0.;
+    vec4 jfaDistance = vec4(0.);
 
     vec4 importance = texture(u_IC, uv);
 
@@ -378,12 +383,13 @@ void main(void)
     // to dig into the volume
     else
     {
-        vec4 distance = texture(u_JFA, uv);
+        jfaDistance = texture(u_JFA, uv);
 
         // Compute the countersink factor to adjust the rayEntry
-        csg = (distance.b - distance.a * (1. / u_countersinkSlope));
+        csg = (jfaDistance.b - jfaDistance.a * (1. / u_countersinkSlope));
+
         // Ensure that we have a correct distance for the csg factor
-        if(csg > 0)
+        if(csg > 0.)
         {
             rayEntry += rayDir * csg;
         }
@@ -429,7 +435,7 @@ void main(void)
             continue;
         }
 
-        nbRays ++;
+        nbRays++;
         fragDepth += entryDepth;
 
         mat4 invWorldViewProj = viewports[i];
@@ -452,9 +458,31 @@ void main(void)
         if(csg > 0)
         {
 #if CSG_BORDER == 1
-            if(csg < u_csgBorderThickness)
+            if(csg < u_csgBorderThickness
+#ifdef CSG_DEPTH_LINES
+               && int(jfaDistance.a * 1000.) % 16 == 0)
+#else
+            )
+#endif // CSG_DEPTH_LINES == 1
             {
+#ifndef CSG_DEPTH_LINES
                 result = vec4(u_csgBorderColor, 1.);
+#else
+                vec3 red   = vec3(1., 0., 0.);
+                vec3 green = vec3(0., 1., 0.);
+                vec3 blue  = vec3(0., 0., 1.);
+
+                float scale = 1. / u_depthLinesThreshold;
+
+                if(jfaDistance.a < u_depthLinesThreshold)
+                {
+                    result = vec4(mix(blue, green, jfaDistance.a * scale), 1.);
+                }
+                else
+                {
+                    result = vec4(mix(green, red, (jfaDistance.a - u_depthLinesThreshold) * scale), 1.);   
+                }
+#endif // CSG_DEPTH_LINES
             }
             else
             {

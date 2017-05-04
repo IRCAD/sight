@@ -307,6 +307,7 @@ const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_DEFINE      
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_BORDER_DEFINE           = "CSG_BORDER=1";
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_DISABLE_CONTEXT_DEFINE  = "CSG_DISABLE_CONTEXT=1";
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_OPACITY_DECREASE_DEFINE = "CSG_OPACITY_DECREASE=1";
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_DEPTH_LINES_DEFINE      = "CSG_DEPTH_LINES=1";
 
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE =
     "CSG_MODULATION=1";
@@ -358,10 +359,12 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_idvrCSGBorderThickness(0.05f),
     m_idvrCSGBorderColor(::Ogre::ColourValue(1.f, 0.f, 0.f)),
     m_idvrCSGModulation(false),
-    m_idvrCSGModulationMethod(IDVRCSGModulationMethod::COLOR1),
+    m_idvrCSGModulationMethod(IDVRCSGModulationMethod::AVERAGE_GRAYSCALE),
     m_idvrCSGModulationFactor(1.f),
     m_idvrCSGOpacityDecrease(false),
     m_idvrCSGOpacityDecreaseFactor(1.f),
+    m_idvrCSGDepthLines(false),
+    m_idvrCSGDepthLinesThreshold(0.07f),
     m_idvrAImCAlphaCorrection(0.05f),
     m_idvrVPImCAlphaCorrection(0.3f),
     m_volIllumFactor(static_cast< ::Ogre::Real>(colorBleedingFactor),
@@ -417,6 +420,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         m_RTVSharedParameters->addConstantDefinition("u_opacityDecreaseFactor", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_vpimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_aimcAlphaCorrection", ::Ogre::GCT_FLOAT1);
+        m_RTVSharedParameters->addConstantDefinition("u_depthLinesThreshold", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_sampleDistance", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_lobeOffset", ::Ogre::GCT_FLOAT1);
         m_RTVSharedParameters->addConstantDefinition("u_opacityCorrectionFactor", ::Ogre::GCT_FLOAT1);
@@ -431,6 +435,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         m_RTVSharedParameters->setNamedConstant("u_csgBorderColor", m_idvrCSGBorderColor);
         m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
         m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
+        m_RTVSharedParameters->setNamedConstant("u_depthLinesThreshold", m_idvrCSGDepthLinesThreshold);
         m_RTVSharedParameters->setNamedConstant("u_opacityCorrectionFactor", m_opacityCorrectionFactor);
     }
     else
@@ -1341,6 +1346,10 @@ void RayTracingVolumeRenderer::updateCompositorName()
                     {
                         ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_OPACITY_DECREASE_DEFINE;
                     }
+                    if(m_idvrCSGDepthLines)
+                    {
+                        ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_DEPTH_LINES_DEFINE;
+                    }
 
                     if(m_idvrCSGModulation)
                     {
@@ -1766,6 +1775,31 @@ void RayTracingVolumeRenderer::setIDVRCSGOpacityDecreaseFactor(double opacityDec
     if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
     {
         m_RTVSharedParameters->setNamedConstant("u_opacityDecreaseFactor", m_idvrCSGOpacityDecreaseFactor);
+        this->getLayer()->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::toggleIDVRDepthLines(bool depthLines)
+{
+    m_idvrCSGDepthLines = depthLines;
+
+    if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder)
+    {
+        this->initCompositors();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::setIDVRCSGDepthLinesThreshold(double threshold)
+{
+    m_idvrCSGDepthLinesThreshold = threshold;
+
+    if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder && this->m_idvrCSGDepthLines)
+    {
+        m_RTVSharedParameters->setNamedConstant("u_depthLinesThreshold", m_idvrCSGDepthLinesThreshold);
         this->getLayer()->requestRender();
     }
 }

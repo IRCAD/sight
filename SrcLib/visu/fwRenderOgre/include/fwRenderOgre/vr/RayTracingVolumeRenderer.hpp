@@ -162,6 +162,12 @@ public:
     /// Setup the opacity decrease factor used in the MImP CSG.
     FWRENDEROGRE_API void setIDVRCSGOpacityDecreaseFactor(double);
 
+    /// Toggle the depth lines for MImP countersink geometry.
+    FWRENDEROGRE_API void toggleIDVRDepthLines(bool);
+
+    /// Setup the depth lines gradation threshold used in the MImP CSG.
+    FWRENDEROGRE_API void setIDVRCSGDepthLinesThreshold(double);
+
     /// Setup the alpha correction factor used in the VPImC method.
     FWRENDEROGRE_API void setIDVRAImCAlphaCorrection(double);
 
@@ -294,6 +300,12 @@ private:
     /// Sets the opacity decrease factor used in MImP CSG.
     float m_idvrCSGOpacityDecreaseFactor;
 
+    /// Sets usage of depth lines for MImP CSG.
+    bool m_idvrCSGDepthLines;
+
+    /// Sets the gradation threshold of MImP CSG's depth lines.
+    float m_idvrCSGDepthLinesThreshold;
+
     /// Sets the alpha correction for AImC.
     float m_idvrAImCAlphaCorrection;
 
@@ -369,6 +381,8 @@ private:
     static const std::string s_CSG_DISABLE_CONTEXT_DEFINE;
     /// IDVR MImP countersink geometry opacity decrease define.
     static const std::string s_CSG_OPACITY_DECREASE_DEFINE;
+    /// IDVR MImP countersink geometry depth lines define.
+    static const std::string s_CSG_DEPTH_LINES_DEFINE;
 
     /// IDVR MImP CSG modulation defines.
     static const std::string s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE;
