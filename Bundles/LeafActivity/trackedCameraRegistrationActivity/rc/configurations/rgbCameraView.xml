@@ -122,7 +122,7 @@
                     <blockSize>7</blockSize>
                     <constant>7</constant>
                 </threshold>
-                <patternWidth>163</patternWidth>
+                <patternWidth>150</patternWidth>
                 <debugMarkers>yes</debugMarkers>
             </config>
         </service>
@@ -135,7 +135,7 @@
                 <key uid="${camera}" />
             </in>
             <inout key="matrixTL" uid="${matrixTL}" />
-            <patternWidth>163</patternWidth>
+            <patternWidth>150</patternWidth>
         </service>
 
 
