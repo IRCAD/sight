@@ -10,6 +10,7 @@ find_package(VTK
             vtkFiltersGeneral
             NO_MODULE
             REQUIRED)
+include(${VTK_USE_FILE})
 
 find_package(OpenCV REQUIRED) #used by aruco
 find_package(aruco REQUIRED)

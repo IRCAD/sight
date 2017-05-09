@@ -14,6 +14,7 @@ else()
                 NO_MODULE
                 REQUIRED)
 endif()
+include(${VTK_USE_FILE})
 fwForwardInclude(
     ${VTK_INCLUDE_DIRS}
 )
