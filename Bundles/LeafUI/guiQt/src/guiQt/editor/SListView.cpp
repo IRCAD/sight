@@ -25,8 +25,9 @@ namespace editor
 {
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::guiQt::editor::SListView, ::fwData::Object );
 
-const ::fwCom::Signals::SignalKeyType SListView::s_ITEM_ADDED_SIG   = "itemAdded";
-const ::fwCom::Signals::SignalKeyType SListView::s_ITEM_REMOVED_SIG = "itemRemoved";
+const ::fwCom::Signals::SignalKeyType SListView::s_ITEM_ADDED_SIG          = "itemAdded";
+const ::fwCom::Signals::SignalKeyType SListView::s_ITEM_REMOVED_SIG        = "itemRemoved";
+const ::fwCom::Signals::SignalKeyType SListView::s_ITEM_DOUBLE_CLICKED_SIG = "itemDoubleClicked";
 
 const ::fwCom::Slots::SlotKeyType SListView::s_INSERT_ITEM_SLOT = "insertItem";
 const ::fwCom::Slots::SlotKeyType SListView::s_REMOVE_ITEM_SLOT = "removeItem";
@@ -37,6 +38,7 @@ SListView::SListView() throw()
 {
     newSignal< ItemAddedSignalType>(s_ITEM_ADDED_SIG);
     newSignal< ItemRemovedSignalType>(s_ITEM_REMOVED_SIG);
+    newSignal< ItemDoubleClickedSignalType>(s_ITEM_DOUBLE_CLICKED_SIG);
 
     newSlot(s_INSERT_ITEM_SLOT, &SListView::insertItem, this);
     newSlot(s_REMOVE_ITEM_SLOT, &SListView::removeItem, this);
@@ -92,6 +94,8 @@ void SListView::starting() throw(::fwTools::Failed)
     m_listWidget->installEventFilter(this);
     layout->addWidget( m_listWidget );
 
+    connect(m_listWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this,
+            SLOT(onItemDoubleClicked(QListWidgetItem*)));
     container->setLayout(layout);
 }
 
@@ -136,6 +140,14 @@ void SListView::removeItem(int index)
 
     // notify
     this->signal<ItemRemovedSignalType>(s_ITEM_REMOVED_SIG)->asyncEmit(index);
+}
+
+//------------------------------------------------------------------------------
+
+void SListView::onItemDoubleClicked(QListWidgetItem* item)
+{
+    const int index = m_listWidget->row(item);
+    this->signal<ItemDoubleClickedSignalType>(s_ITEM_DOUBLE_CLICKED_SIG)->asyncEmit(index);
 }
 
 //------------------------------------------------------------------------------

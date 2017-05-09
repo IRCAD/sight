@@ -32,6 +32,7 @@ namespace editor
  * @section Signals Signals
  * - \b itemAdded(int): This editor emits the signal "itemAdded" with the index value of added item.
  * - \b itemRemoved(int): This editor emits the signal "itemRemoved" with the index value of removed item.
+ * - \b itemDoubleClicked(int): This editor emits the signal "itemDoubleClicked" with the index value of selected item.
  *
  * @section Slots Slots
  * - \b insertItem(int, std::string): This slot allows to add an item with its index and text.
@@ -61,6 +62,9 @@ public:
 
     GUIQT_API static const ::fwCom::Signals::SignalKeyType s_ITEM_REMOVED_SIG;
     typedef ::fwCom::Signal<void (int)> ItemRemovedSignalType;
+
+    GUIQT_API static const ::fwCom::Signals::SignalKeyType s_ITEM_DOUBLE_CLICKED_SIG;
+    typedef ::fwCom::Signal<void (int)> ItemDoubleClickedSignalType;
 
     /** @} */
 
@@ -113,6 +117,11 @@ protected Q_SLOTS:
 private:
 
     QPointer<QListWidget> m_listWidget; /// listWidget
+
+private Q_SLOTS:
+
+    /// called when an item is double clicked
+    void onItemDoubleClicked(QListWidgetItem* item);
 };
 
 }
