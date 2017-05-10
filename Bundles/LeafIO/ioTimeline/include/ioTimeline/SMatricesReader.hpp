@@ -21,7 +21,9 @@ namespace ioTimeline
 {
 
 /**
- * @brief This service reads a csv file and extract matrices from it to push it into a matrixTL.
+ * @brief
+ *
+ * This service reads a csv file and extract matrices from it to push it into a matrixTL.
  * This service can be used in two ways, first one is full-automatic by setting the framerate (oneShot off),
  * the second one is one-per-one using readNext and/or readPrevious slots.
  *
@@ -136,7 +138,7 @@ private:
 
     bool m_createNewTS; ///< bool to handle if we create a new timestamp
 
-    unsigned int m_fps; ///< fps used to read matrices
+    unsigned int m_fps; ///< fps used to read matrices (represent the matrices-per-second rate)
 
     bool m_oneShot; ///< oneShot mode (read matrices one-by-one)
 

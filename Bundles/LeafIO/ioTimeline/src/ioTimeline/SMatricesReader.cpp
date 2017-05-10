@@ -85,7 +85,7 @@ void SMatricesReader::configuring() throw(::fwTools::Failed)
     ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
 
     m_fps = config.get<unsigned int>("fps", 30);
-    OSLM_ASSERT("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps > 0 && m_fps <= 60);
+    OSLM_ASSERT("Fps setting is set to " << m_fps << " but should be > 0.", m_fps > 0);
 
     m_createNewTS = config.get<bool>("createTimestamp", false);
 
@@ -241,7 +241,7 @@ void SMatricesReader::startReading()
                 for(unsigned int m = 0; m < nbOfMatrices; ++m)
                 {
                     std::array< float, 16 > mat;
-                    for(unsigned int i = 0; i < 16; ++i)
+                    for(unsigned int i = 0; i < mat.size(); ++i)
                     {
                         mat[i] = std::stof(iter.current_token());
 
@@ -249,7 +249,6 @@ void SMatricesReader::startReading()
                         {
                             ++iter;
                         }
-
                     }
                     currentTsMat.matrices.push_back(mat);
                 }
