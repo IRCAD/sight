@@ -6,7 +6,7 @@ if(NOT ANDROID)
             vtkCommonCore
             REQUIRED
             NO_MODULE)
-            
+
     if(${VTK_MAJOR_VERSION} STREQUAL "7")
         find_package(VTK COMPONENTS
             vtkInteractionWidgets
@@ -36,6 +36,8 @@ else()
             REQUIRED
             NO_MODULE)
 endif()
+
+include(${VTK_USE_FILE})
 
 fwForwardInclude(
     ${VTK_INCLUDE_DIRS}
