@@ -105,7 +105,7 @@
             <service uid="frameGrabber" type="::videoOpenCV::SFrameGrabber" >
                 <in key="camera" uid="camera" />
                 <inout key="frameTL" uid="frameTL" />
-                <frameByFrame>true</frameByFrame>
+                <oneShot>true</oneShot>
                 <createTimestamp>true</createTimestamp>
             </service>
 
