@@ -21,7 +21,7 @@
                 <gui>
                     <frame>
                         <name>ExFrameByFrame</name>
-                        <icon>@BUNDLE_PREFIX@/Ex05FrameByFrame_0-1/ex05framebyframe.ico</icon>
+                        <icon>@BUNDLE_PREFIX@/Ex05FrameByFrame_@DASH_VERSION@/ex05framebyframe.ico</icon>
                     </frame>
                     <toolBar />
                 </gui>
