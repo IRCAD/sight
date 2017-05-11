@@ -76,6 +76,12 @@ public:
     GUIQT_API static const ::fwCom::Slots::SlotKeyType s_INSERT_ITEM_SLOT;
     GUIQT_API static const ::fwCom::Slots::SlotKeyType s_REMOVE_ITEM_SLOT;
 
+    /// SLOT : Called to insert an item at index.
+    void insertItem( int index, std::string value );
+
+    /// SLOT : Called to remove the item at the index position.
+    void removeItem(int index);
+
     ///@}
 
 protected:
@@ -99,20 +105,6 @@ protected:
 
     /// Configure the service
     virtual void configuring() throw(fwTools::Failed);
-
-    /// Signal when the item will be removed
-    ItemRemovedSignalType::sptr m_sigItemRemoved;
-
-    /// Signal when an item is added
-    ItemAddedSignalType::sptr m_sigAddedItem;
-
-protected Q_SLOTS:
-
-    /// SLOT : Called to insert an item at index.
-    void insertItem( int index, std::string value );
-
-    /// SLOT : Called to remove the item at the index position.
-    void removeItem(int index);
 
 private:
 
