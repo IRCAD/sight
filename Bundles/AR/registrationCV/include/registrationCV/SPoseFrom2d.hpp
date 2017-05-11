@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -135,12 +135,12 @@ private:
      * @param : Marker points in each view
      *
      **/
-    ::cv::Matx44f cameraPoseFromStereo(Marker _markerCam1, Marker _markerCam2);
+    const ::cv::Matx44f cameraPoseFromStereo(const Marker& _markerCam1, const Marker& _markerCam2) const;
 
     /**
      * @brief :Compute the camera position from a marker detected in one view
      **/
-    ::cv::Matx44f cameraPoseFromMono(Marker _markerCam1);
+    const ::cv::Matx44f cameraPoseFromMono(const Marker& _markerCam1) const;
 
     /// Last timestamp
     ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
@@ -162,14 +162,10 @@ private:
 
     ///std::vector of cameras
     std::vector < Camera > m_cameras;
+
     ///Extrinsic matrix
     Extrinsic m_extrinsic;
 
-    ///Check if we are in stereo-vision or not
-    bool m_isStereo;
-
-    /// Mutex used to lock access of doRegistration
-    ::fwCore::mt::Mutex m_mutex;
 };
 
 } // namespace registrationCV

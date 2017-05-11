@@ -127,9 +127,6 @@ private:
 
     /// ARL cameras
     std::vector< const ::arlCore::Camera* > m_arlCameras;
-
-    /// Mutex used to lock access of doRegistration
-    ::fwCore::mt::Mutex m_mutex;
 };
 
 } // namespace registrationARL

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2017.
+ * FW4SPL - Copyright (C) IRCAD, 2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,15 +16,7 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwCore/Profiling.hpp>
-
 #include <fwData/TransformationMatrix3D.hpp>
-
-#include <boost/container/vector.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-
-#include <limits>
 
 fwServicesRegisterMacro(::arServices::IRegisterer, ::registrationCV::SPoseFrom2d);
 
@@ -60,22 +52,15 @@ SPoseFrom2d::~SPoseFrom2d() throw ()
 
 void SPoseFrom2d::configuring() throw (::fwTools::Failed)
 {
-    typedef ::fwRuntime::ConfigurationElementContainer::Container CfgContainer;
-
-    // gets pattern width
-    ::fwRuntime::ConfigurationElement::sptr cfgPatternWidth = m_configuration->findConfigurationElement("patternWidth");
-    if (cfgPatternWidth)
-    {
-        m_patternWidth = ::boost::lexical_cast< double >(cfgPatternWidth->getValue());
-    }
+    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    m_patternWidth                            = config.get<double>("patternWidth", 80);
+    OSLM_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
 }
 
 //-----------------------------------------------------------------------------
 
 void SPoseFrom2d::starting() throw (::fwTools::Failed)
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
-
     //3D Points
     const float halfWidth = static_cast<float>(m_patternWidth) * .5f;
 
@@ -89,7 +74,6 @@ void SPoseFrom2d::starting() throw (::fwTools::Failed)
 
 void SPoseFrom2d::stopping() throw (::fwTools::Failed)
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
 
     m_cameras.clear();
     m_3dModel.clear();
@@ -108,7 +92,6 @@ void SPoseFrom2d::updating() throw (::fwTools::Failed)
 
 void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType timestamp)
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
 
     SLM_WARN_IF("Invoking doRegistration while service is STOPPED", this->isStopped() );
 
@@ -186,7 +169,7 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
 
                 if(markers.size() == 1)
                 {
-                    ::cv::Matx44f Rt = this->cameraPoseFromMono(markers[0]);
+                    const ::cv::Matx44f Rt = this->cameraPoseFromMono(markers[0]);
 
                     for (unsigned int i = 0; i < 4; ++i)
                     {
@@ -249,11 +232,8 @@ void SPoseFrom2d::initialize()
     // initialized matrix timeline
     matrixTL->initPoolSize(maxElementNum);
 
-    unsigned int count = 0;
-
     for(size_t idx = 0; idx < this->getKeyGroupSize(s_CAMERA_INPUT); ++idx)
     {
-        ++count;
         ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT, idx);
         OSLM_FATAL_IF("Camera[" << idx << "] not found", !camera);
 
@@ -273,10 +253,8 @@ void SPoseFrom2d::initialize()
         }
 
         // set extrinsic matrix only if stereo.
-        if (count == 2)
+        if (idx == 2)
         {
-            m_isStereo = true;
-
             auto extrinsicMatrix = this->getInput< ::fwData::TransformationMatrix3D >(s_EXTRINSIC_INPUT);
 
             SLM_FATAL_IF("Extrinsic matrix with key '" + s_EXTRINSIC_INPUT + "' not found", !extrinsicMatrix);
@@ -310,14 +288,17 @@ void SPoseFrom2d::initialize()
 
 //-----------------------------------------------------------------------------
 
-cv::Matx44f SPoseFrom2d::cameraPoseFromStereo(SPoseFrom2d::Marker _markerCam1, SPoseFrom2d::Marker _markerCam2)
+const cv::Matx44f SPoseFrom2d::cameraPoseFromStereo(const SPoseFrom2d::Marker& _markerCam1,
+                                                    const SPoseFrom2d::Marker& _markerCam2) const
 {
     SLM_ERROR("Not implemented!");
+    ::cv::Matx44f pose;
+    return pose;
 }
 
 //-----------------------------------------------------------------------------
 
-cv::Matx44f SPoseFrom2d::cameraPoseFromMono(SPoseFrom2d::Marker _markerCam1)
+const cv::Matx44f SPoseFrom2d::cameraPoseFromMono(const SPoseFrom2d::Marker& _markerCam1) const
 {
 
     ::cv::Matx44f pose =

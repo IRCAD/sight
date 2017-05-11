@@ -20,12 +20,6 @@
 
 #include <arlcore/MatrixR.h>
 
-#include <boost/container/vector.hpp>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
-
-#include <limits>
-
 fwServicesRegisterMacro(::arServices::IRegisterer, ::registrationARL::SPoseFrom2d);
 
 //-----------------------------------------------------------------------------
@@ -61,22 +55,15 @@ SPoseFrom2d::~SPoseFrom2d() throw ()
 
 void SPoseFrom2d::configuring() throw (::fwTools::Failed)
 {
-    typedef ::fwRuntime::ConfigurationElementContainer::Container CfgContainer;
-
-    // gets pattern width
-    ::fwRuntime::ConfigurationElement::sptr cfgPatternWidth = m_configuration->findConfigurationElement("patternWidth");
-    if (cfgPatternWidth)
-    {
-        m_patternWidth = ::boost::lexical_cast< double >(cfgPatternWidth->getValue());
-    }
+    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+    m_patternWidth                            = config.get<double>("patternWidth", 80);
+    OSLM_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
 }
 
 //-----------------------------------------------------------------------------
 
 void SPoseFrom2d::starting() throw (::fwTools::Failed)
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
-
     //3D Points
     const double halfWidth = m_patternWidth * .5;
 
@@ -90,8 +77,6 @@ void SPoseFrom2d::starting() throw (::fwTools::Failed)
 
 void SPoseFrom2d::stopping() throw (::fwTools::Failed)
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
-
     for(const ::arlCore::Camera* cam : m_arlCameras)
     {
         delete cam;
@@ -114,7 +99,6 @@ void SPoseFrom2d::updating() throw (::fwTools::Failed)
 
 void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType timestamp)
 {
-    ::fwCore::mt::ScopedLock lock(m_mutex);
 
     SLM_WARN_IF("Invoking doRegistration while service is STOPPED", this->isStopped() );
 
@@ -261,11 +245,8 @@ void SPoseFrom2d::initialize()
     // Initialization of ARLCameras
     m_planeSystem = new ::arlCore::PlaneSystem();
 
-    unsigned int count = 0;
-
     for(size_t idx = 0; idx < this->getKeyGroupSize(s_CAMERA_INPUT); ++idx)
     {
-        ++count;
         ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT, idx);
         OSLM_FATAL_IF("Camera[" << idx << "] not found", !camera);
 
@@ -287,7 +268,7 @@ void SPoseFrom2d::initialize()
         ::arlCore::vnl_rigid_matrix matrix;
 
         // set extrinsic matrix only for camera 2
-        if (count == 2)
+        if (idx == 2)
         {
             auto extrinsicMatrix = this->getInput< ::fwData::TransformationMatrix3D >(s_EXTRINSIC_INPUT);
 
