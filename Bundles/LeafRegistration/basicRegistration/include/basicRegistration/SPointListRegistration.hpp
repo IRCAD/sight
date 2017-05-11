@@ -21,7 +21,8 @@ namespace basicRegistration
  *          with a point in the reference list according to its label.
  *          The output is a transformation matrix.
  * @section Slots Slots
- * - \b changeMode(std::string, std::string): called when registration mode is changed
+ * - \b changeMode(std::string, std::string): called when registration mode is changed.
+ * Three modes are available : RIGID, SIMILARITY or AFFINE
  * @section XML XML Configuration
  * @code{.xml}
        <service uid="..." type="::basicRegistration::SPointListRegistration">
