@@ -148,14 +148,8 @@ private:
     /// Marker pattern width.
     double m_patternWidth;
 
-    /// Matrix timeline keys
-    std::string m_matrixKey;
-
-    /// True if the service is initialized (timelines and ARLCameras)
+    /// True if the service is initialized (timelines and cameras)
     bool m_isInitialized;
-
-    /// Connections
-    ::fwCom::helper::SigSlotConnection m_connections;
 
     /// 3d model
     std::vector< ::cv::Point3f > m_3dModel;

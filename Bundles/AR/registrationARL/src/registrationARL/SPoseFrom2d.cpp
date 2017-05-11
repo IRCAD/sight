@@ -268,7 +268,7 @@ void SPoseFrom2d::initialize()
         ::arlCore::vnl_rigid_matrix matrix;
 
         // set extrinsic matrix only for camera 2
-        if (idx == 2)
+        if (idx == 1)
         {
             auto extrinsicMatrix = this->getInput< ::fwData::TransformationMatrix3D >(s_EXTRINSIC_INPUT);
 

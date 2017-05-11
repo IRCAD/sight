@@ -77,7 +77,6 @@ void SPoseFrom2d::stopping() throw (::fwTools::Failed)
 
     m_cameras.clear();
     m_3dModel.clear();
-    m_connections.disconnect();
     m_lastTimestamp = 0;
     m_isInitialized = false;
 }
@@ -253,7 +252,7 @@ void SPoseFrom2d::initialize()
         }
 
         // set extrinsic matrix only if stereo.
-        if (idx == 2)
+        if (idx == 1)
         {
             auto extrinsicMatrix = this->getInput< ::fwData::TransformationMatrix3D >(s_EXTRINSIC_INPUT);
 
