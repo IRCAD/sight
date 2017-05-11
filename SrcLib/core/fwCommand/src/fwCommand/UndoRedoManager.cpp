@@ -6,6 +6,8 @@
 
 #include "fwCommand/UndoRedoManager.hpp"
 
+#include <fwCore/spyLog.hpp>
+
 namespace fwCommand
 {
 
