@@ -4,7 +4,6 @@
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-    <requirement id="registrationCV" />
     <requirement id="trackerAruco" />
     <requirement id="arMedia" />
     <requirement id="preferences" />

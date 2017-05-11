@@ -12,8 +12,8 @@ set( DEPENDENCIES
     fwCom
     arData
     fwMedData
+    arServices
 
-    tracker
 )
 set( REQUIREMENTS dataReg
                   servicesReg

@@ -4,16 +4,16 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __TRACKER_ITRACKER_HPP__
-#define __TRACKER_ITRACKER_HPP__
+#ifndef __ARSERVICES_ITRACKER_HPP__
+#define __ARSERVICES_ITRACKER_HPP__
 
-#include "tracker/config.hpp"
+#include "arServices/config.hpp"
 
 #include <fwCore/HiResClock.hpp>
 
 #include <fwServices/IService.hpp>
 
-namespace tracker
+namespace arServices
 {
 
 /**
@@ -36,21 +36,21 @@ namespace tracker
  * - \b dropObj(optional, default=true) : defines if the tracker should drop few objects from the timeline (and always
  *   get the last one) or not.
  */
-class TRACKER_CLASS_API ITracker : public ::fwServices::IService
+class ARSERVICES_CLASS_API ITracker : public ::fwServices::IService
 {
 
 public:
 
     fwCoreServiceClassDefinitionsMacro( (ITracker)(::fwServices::IService) );
 
-    TRACKER_API static const ::fwCom::Slots::SlotKeyType s_TRACK_SLOT;
-    TRACKER_API static const ::fwCom::Slots::SlotKeyType s_START_TRACKING_SLOT;
-    TRACKER_API static const ::fwCom::Slots::SlotKeyType s_STOP_TRACKING_SLOT;
+    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_TRACK_SLOT;
+    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_START_TRACKING_SLOT;
+    ARSERVICES_API static const ::fwCom::Slots::SlotKeyType s_STOP_TRACKING_SLOT;
 
-    TRACKER_API static const ::fwServices::IService::KeyType s_TIMELINE_INPUT;
+    ARSERVICES_API static const ::fwServices::IService::KeyType s_TIMELINE_INPUT;
 
     /// Defines the auto-connection between the timeline and the 'track' slot
-    TRACKER_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
+    ARSERVICES_API ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
 
     /// Return true if the tracking is started.
     bool isTracking() const
@@ -73,12 +73,12 @@ public:
 protected:
 
     ///@brief ITracker constructor. Do nothing.
-    TRACKER_API ITracker();
+    ARSERVICES_API ITracker();
 
     ///@brief ITracker destructor. Do nothing.
-    TRACKER_API virtual ~ITracker();
+    ARSERVICES_API virtual ~ITracker();
 
-    TRACKER_API virtual void configuring() throw (::fwTools::Failed);
+    ARSERVICES_API virtual void configuring() throw (::fwTools::Failed);
 
     /**
      * @brief This method calls tracking.
@@ -86,19 +86,19 @@ protected:
      * @warning If tracking is stopped, this method does nothing.
      * @note You should connect this method to the input timeline
      */
-    TRACKER_API virtual void track(::fwCore::HiResClock::HiResClockType timestamp);
+    ARSERVICES_API virtual void track(::fwCore::HiResClock::HiResClockType timestamp);
 
     /// start the tracking
-    TRACKER_API virtual void startTracking();
+    ARSERVICES_API virtual void startTracking();
 
     /// stop the tracking
-    TRACKER_API virtual void stopTracking();
+    ARSERVICES_API virtual void stopTracking();
 
     /**
      * @brief process the tracking
      * @param[in,out] timestamp the timestamp of the processes object of the timeline
      */
-    TRACKER_API virtual void tracking(::fwCore::HiResClock::HiResClockType& timestamp) = 0;
+    ARSERVICES_API virtual void tracking(::fwCore::HiResClock::HiResClockType& timestamp) = 0;
 
     /// timestamp of the last tracking
     ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
@@ -110,6 +110,6 @@ protected:
     bool m_isTracking;
 
 };
-} // tracker
+} // arServices
 
-#endif // __TRACKER_ITRACKER_HPP__
+#endif // __ARSERVICES_ITRACKER_HPP__

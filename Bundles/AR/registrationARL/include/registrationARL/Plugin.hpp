@@ -11,7 +11,6 @@
 
 #include <fwRuntime/Plugin.hpp>
 
-
 namespace registrationARL
 {
 
