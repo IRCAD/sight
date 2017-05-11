@@ -5,7 +5,7 @@ find_package(VTK COMPONENTS
         vtkCommonCore
         REQUIRED
         NO_MODULE)
-        
+
 if(${VTK_MAJOR_VERSION} STREQUAL "7")
     find_package(VTK COMPONENTS
         vtkRenderingOpenGL2

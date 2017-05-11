@@ -10,6 +10,8 @@ find_package(VTK COMPONENTS
     REQUIRED
     NO_MODULE )
 
+include(${VTK_USE_FILE})
+
 fwForwardInclude(
     ${CPPUNIT_INCLUDE_DIR}
     ${VTK_INCLUDE_DIRS}
