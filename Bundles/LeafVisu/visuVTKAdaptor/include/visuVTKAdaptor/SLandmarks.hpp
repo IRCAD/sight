@@ -18,7 +18,6 @@
 
 #include <vtkHandleWidget.h>
 #include <vtkSmartPointer.h>
-#include <vtkTransform.h>
 
 class vtkCommand;
 class vtkActor2D;
@@ -48,12 +47,9 @@ namespace visuVTKAdaptor
  *
  * @code{.xml}
         <adaptor id="..." class="::visuVTKAdaptor::Landmarks" objectId="imageKey">
-            <config renderer="default" picker="default" transform="..."/>
+            <config renderer="default" picker="default"/>
         </adaptor>
    @endcode
- * @subsection Configuration Configuration
- * - \b transform : transformation matrix applied to the current landmark.
- *
  */
 class VISUVTKADAPTOR_CLASS_API SLandmarks : public ::fwRenderVTK::IVtkAdaptorService
 {
@@ -174,8 +170,6 @@ private:
     /// Counter to switch color for selected point: (even: green, odd: point default color)
     size_t m_count;
 
-    /// boolean to indicates if the transform is present
-    bool m_hasTransform;
 };
 
 } //namespace visuVTKAdaptor
