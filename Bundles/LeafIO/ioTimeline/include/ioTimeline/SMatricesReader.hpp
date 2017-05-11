@@ -21,9 +21,8 @@ namespace ioTimeline
 {
 
 /**
- * @brief
+ * @brief This service reads a csv file and extract matrices from it to push it into a matrixTL.
  *
- * This service reads a csv file and extract matrices from it to push it into a matrixTL.
  * This service can be used in two ways, first one is full-automatic by setting the framerate (oneShot off),
  * the second one is one-per-one using readNext and/or readPrevious slots.
  *
