@@ -28,7 +28,7 @@ namespace trackerAruco
 /**
  * @brief   Class used to track multiple tags with ArUco.
  *
- * @see ::tracker::ITracker
+ * @see ::arServices::ITracker
  *
  * @section Signals Signals
  * - \b detectionDone(::fwCore::HiResClock::HiResClockType) : This signal is emitted when the tracker find tags.
