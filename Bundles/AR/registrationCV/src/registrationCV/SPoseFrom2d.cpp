@@ -165,23 +165,27 @@ void SPoseFrom2d::computeRegistration(::fwCore::HiResClock::HiResClockType times
                 }
 
                 float matrixValues[16];
-
+                ::cv::Matx44f Rt;
                 if(markers.size() == 1)
                 {
-                    const ::cv::Matx44f Rt = this->cameraPoseFromMono(markers[0]);
-
-                    for (unsigned int i = 0; i < 4; ++i)
-                    {
-                        for (unsigned int j = 0; j < 4; ++j)
-                        {
-                            matrixValues[4*i+j] = Rt(i, j);
-                        }
-                    }
+                    Rt = this->cameraPoseFromMono(markers[0]);
+                }
+                else if(markers.size() == 2)
+                {
+                    Rt = this->cameraPoseFromStereo(markers[0], markers[1]);
                 }
                 else
                 {
                     SLM_WARN("More than 2 cameras is not handle for the moment");
                     continue;
+                }
+
+                for (unsigned int i = 0; i < 4; ++i)
+                {
+                    for (unsigned int j = 0; j < 4; ++j)
+                    {
+                        matrixValues[4*i+j] = Rt(i, j);
+                    }
                 }
 
                 if(!matrixBufferCreated)
@@ -244,6 +248,9 @@ void SPoseFrom2d::initialize()
         cam.intrinsicMat.at<double>(0, 2) = camera->getCx();
         cam.intrinsicMat.at<double>(1, 2) = camera->getCy();
 
+        cam.imageSize.width  = static_cast<int>(camera->getWidth());
+        cam.imageSize.height = static_cast<int>(camera->getHeight());
+
         cam.distCoef = ::cv::Mat::zeros(5, 1, CV_64F);
 
         for (size_t i = 0; i < 5; ++i)
@@ -290,8 +297,13 @@ void SPoseFrom2d::initialize()
 const cv::Matx44f SPoseFrom2d::cameraPoseFromStereo(const SPoseFrom2d::Marker& _markerCam1,
                                                     const SPoseFrom2d::Marker& _markerCam2) const
 {
-    SLM_ERROR("Not implemented!");
-    ::cv::Matx44f pose;
+
+    ::cv::Matx44f pose = ::calibration3d::helper::cameraPoseStereo(m_cameras[0].intrinsicMat, m_cameras[0].distCoef,
+                                                                   m_cameras[1].intrinsicMat, m_cameras[1].distCoef,
+                                                                   _markerCam1.corners2D, _markerCam2.corners2D,
+                                                                   m_cameras[0].imageSize,
+                                                                   m_extrinsic.rotation, m_extrinsic.translation);
+
     return pose;
 }
 

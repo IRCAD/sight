@@ -45,9 +45,9 @@ ErrorAndPointsType computeReprojectionError(const std::vector< ::cv::Point3f >& 
 
 //-----------------------------------------------------------------------------
 
-cv::Matx44f cameraPoseMonocular(const std::vector<cv::Point3f>& _objectPoints,
-                                const std::vector<cv::Point2f>& _imagePoints, const cv::Mat _cameraMatrix,
-                                const cv::Mat& _distCoeffs, const int _flag)
+::cv::Matx44f cameraPoseMonocular(const std::vector< ::cv::Point3f>& _objectPoints,
+                                  const std::vector< ::cv::Point2f>& _imagePoints, const ::cv::Mat _cameraMatrix,
+                                  const ::cv::Mat& _distCoeffs, const int _flag)
 {
 
     SLM_ASSERT("There should be the same number of 3d points than 2d points",
@@ -67,6 +67,39 @@ cv::Matx44f cameraPoseMonocular(const std::vector<cv::Point3f>& _objectPoints,
 
     return ::cv::Matx44f(T);
 
+}
+
+//-----------------------------------------------------------------------------
+
+::cv::Matx44f cameraPoseStereo(const ::cv::Mat _cameraMatrix1, const ::cv::Mat& _distCoeffs1,
+                               const ::cv::Mat _cameraMatrix2, const ::cv::Mat& _distCoeffs2,
+                               const std::vector< ::cv::Point2f >& _imgPoints1,
+                               const std::vector< ::cv::Point2f >& _imgPoints2,
+                               const ::cv::Size _imgSize, const ::cv::Mat _R, const ::cv::Mat _T)
+{
+
+    ::cv::Mat R1, R2, P1, P2, Q;
+    ::cv::stereoRectify(_cameraMatrix1, _distCoeffs1, _cameraMatrix2, _distCoeffs2, _imgSize, _R, _T, R1, R2, P1, P2,
+                        Q);
+
+    SLM_ASSERT("There should be the same number of points in the two views",
+               _imgPoints1.size() == _imgPoints2.size());
+
+    ::cv::Mat p3d;
+    std::vector< ::cv::Point3f > p3d_corrected;
+    ::cv::triangulatePoints(P1, P2, _imgPoints1, _imgPoints2, p3d);
+
+    for(int i = 0; i < p3d.size[0]; ++i)
+    {
+        ::cv::Point3f p;
+        p.x = p3d.at<float>(i, 0) / p3d.at<float>(i, 3);
+        p.y = p3d.at<float>(i, 1) / p3d.at<float>(i, 3);
+        p.z = p3d.at<float>(i, 2) / p3d.at<float>(i, 3);
+
+        p3d_corrected.push_back(p);
+    }
+
+    return ::cv::Matx44f();
 }
 
 //-----------------------------------------------------------------------------

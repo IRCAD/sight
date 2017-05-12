@@ -56,6 +56,12 @@ CALIBRATION3D_API ::cv::Matx44f cameraPoseMonocular(const std::vector< ::cv::Poi
                                                     const ::cv::Mat& _distCoeffs,
                                                     const int _flag = CV_ITERATIVE);
 
+CALIBRATION3D_API ::cv::Matx44f cameraPoseStereo(const ::cv::Mat _cameraMatrix1, const ::cv::Mat& _distCoeffs1,
+                                                 const ::cv::Mat _cameraMatrix2, const ::cv::Mat& _distCoeffs2,
+                                                 const std::vector< ::cv::Point2f >& _imgPoints1,
+                                                 const std::vector< ::cv::Point2f >& _imgPoints2,
+                                                 const ::cv::Size _imgSize, const ::cv::Mat _R, const ::cv::Mat _T);
+
 }
 
 } //namespace calibration3d

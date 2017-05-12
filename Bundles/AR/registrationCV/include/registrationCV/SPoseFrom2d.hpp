@@ -114,6 +114,7 @@ private:
      */
     struct Camera
     {
+        ::cv::Size imageSize;
         ::cv::Mat intrinsicMat;
         ::cv::Mat distCoef;
     };
