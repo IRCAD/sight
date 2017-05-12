@@ -30,7 +30,6 @@ set( REQUIREMENTS
     material
     media
     preferences
-    rdTools
     patchMedicalData
     )
 
