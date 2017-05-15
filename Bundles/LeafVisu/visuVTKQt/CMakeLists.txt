@@ -1,8 +1,6 @@
 fwLoadProperties()
 
 find_package(Qt5 COMPONENTS Core Gui Widgets REQUIRED)
-find_package(VTK REQUIRED)
-include(${VTK_USE_FILE})
 
 fwForwardInclude(
     ${Qt5Core_INCLUDE_DIRS}
