@@ -10,4 +10,3 @@ set( DEPENDENCIES
     fwServices
 )
 set( REQUIREMENTS )
-set( USE_PCH_FROM_TARGET fwRenderVTK )
