@@ -17,6 +17,9 @@
 
 #include <boost/regex.hpp>
 
+#include <OGRE/OgreHighLevelGpuProgram.h>
+#include <OGRE/OgreHighLevelGpuProgramManager.h>
+
 #include <regex>
 
 namespace fwRenderOgre
