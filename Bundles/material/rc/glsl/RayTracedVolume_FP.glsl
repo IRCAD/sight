@@ -18,43 +18,16 @@ uniform sampler3D u_illuminationVolume;
 uniform vec4 u_volIllumFactor;
 #endif // AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 
-#ifdef MODE3D
-uniform sampler2D u_entryPoints0;
-uniform sampler2D u_entryPoints1;
-#if (VIEWPOINTS > 2)
-uniform sampler2D u_entryPoints2;
-#endif    /* (VIEWPOINTS > 2) */
-#if (VIEWPOINTS > 3)
-uniform sampler2D u_entryPoints3;
-#endif    /* (VIEWPOINTS > 3) */
-#if (VIEWPOINTS > 4)
-uniform sampler2D u_entryPoints4;
-#endif    /* (VIEWPOINTS > 4) */
-#if (VIEWPOINTS > 5)
-uniform sampler2D u_entryPoints5;
-#endif    /* (VIEWPOINTS > 5) */
-#if (VIEWPOINTS > 6)
-uniform sampler2D u_entryPoints6;
-#endif    /* (VIEWPOINTS > 6) */
-#if (VIEWPOINTS > 7)
-uniform sampler2D u_entryPoints7;
-#endif    /* (VIEWPOINTS > 7) */
-
-uniform sampler2D u_background;
-
-uniform mat4 u_invWorldViewProjs[VIEWPOINTS];
-
-uniform float u_lobeOffset;
-
 in vec2 uv;
-#else
+
 uniform sampler2D u_entryPoints;
 
 uniform mat4 u_invWorldViewProj;
 
-in vec2 uv;
-
-#endif // MODE3D
+#ifdef AUTOSTEREO
+uniform mat4 u_invWorldView;
+uniform mat4 u_invProj;
+#endif // AUTOSTEREO
 
 uniform float u_renderTargetFlipping;
 
@@ -152,48 +125,6 @@ vec3 gradientNormal(vec3 uvw)
                 (texture(u_image, uvw + hz).r - texture(u_image, uvw - hz).r)
     ));
 }
-
-//-----------------------------------------------------------------------------
-
-#ifdef MODE3D
-void getRayEntryExitPoints(out vec2 rayEntryPoints[3], out mat4 viewpoints[3])
-{
-    vec2 entryPoints[VIEWPOINTS];
-
-    entryPoints[0] = texture(u_entryPoints0, uv).rg;
-    entryPoints[1] = texture(u_entryPoints1, uv).rg;
-#if (VIEWPOINTS > 2)
-    entryPoints[2] = texture(u_entryPoints2, uv).rg;
-#endif    /*(VIEWPOINTS > 2)    */
-#if (VIEWPOINTS > 3)
-    entryPoints[3] = texture(u_entryPoints3, uv).rg;
-#endif    /*(VIEWPOINTS > 3)    */
-#if (VIEWPOINTS > 4)
-    entryPoints[4] = texture(u_entryPoints4, uv).rg;
-#endif    /*(VIEWPOINTS > 4)    */
-#if (VIEWPOINTS > 5)
-    entryPoints[5] = texture(u_entryPoints5, uv).rg;
-#endif    /*(VIEWPOINTS > 5)    */
-#if (VIEWPOINTS > 6)
-    entryPoints[6] = texture(u_entryPoints6, uv).rg;
-#endif    /*(VIEWPOINTS > 6)    */
-#if (VIEWPOINTS > 7)
-    entryPoints[7] = texture(u_entryPoints7, uv).rg;
-#endif    /*(VIEWPOINTS > 7)    */
-
-    float xy = (gl_FragCoord.x * 3.0) + gl_FragCoord.y + u_lobeOffset + 0.5;
-
-    int vp = (VIEWPOINTS - 1) - int(mod(xy, float(VIEWPOINTS)));
-
-    for(int i = 0; i < 3; ++i )
-    {
-        int index = (vp + i) % VIEWPOINTS;
-
-        viewpoints[2 - i]     = u_invWorldViewProjs[index];
-        rayEntryPoints[2 - i] = entryPoints[index];
-    }
-}
-#endif
 
 //-----------------------------------------------------------------------------
 
@@ -348,7 +279,6 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
 
 void main(void)
 {
-#ifndef MODE3D
     vec2 rayEntryExit = texture(u_entryPoints, uv).rg;
 
     float entryDepth =  rayEntryExit.r;
@@ -361,8 +291,14 @@ void main(void)
 
     gl_FragDepth = entryDepth;
 
-    vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, u_invWorldViewProj);
-    vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, u_invWorldViewProj);
+#ifdef AUTOSTEREO
+    mat4x4 invWorldViewProj = u_invWorldView * u_invProj;
+#else
+    mat4x4 invWorldViewProj = u_invWorldViewProj;
+#endif
+
+    vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, invWorldViewProj);
+    vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, invWorldViewProj);
 
     vec3 rayDir   = normalize(rayExit - rayEntry);
 
@@ -407,160 +343,106 @@ void main(void)
     
     float rayLength = length(rayExit - rayEntry);
 
-#else
-    int nbRays = 0;
-    float fragDepth = 0;
-    vec2 rayEntryPoints[3];
-    mat4 viewports[3];
-
-    getRayEntryExitPoints(rayEntryPoints, viewports);
-
-    if(rayEntryPoints[0].g == 1 && rayEntryPoints[1].g == 1 && rayEntryPoints[2].g == 1 )
-    {
-        discard;
-    }
-
-    fragColor.a = 1;
-
-    vec3 subPixelRayColor;
-    vec3 subPixelRayAlpha;
-    for(int i = 0; i < 3; ++ i)
-    {
-        float entryDepth =  rayEntryPoints[i].r;
-        float exitDepth  = -rayEntryPoints[i].g;
-
-        if(exitDepth == -1)
-        {
-            subPixelRayColor[i] = 0;
-            continue;
-        }
-
-        nbRays++;
-        fragDepth += entryDepth;
-
-        mat4 invWorldViewProj = viewports[i];
-
-        vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, invWorldViewProj);
-        vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, invWorldViewProj);
-
-        vec3 rayDir   = normalize(rayExit - rayEntry) * u_sampleDistance;
-
-        float rayLength = length(rayExit - rayEntry);
-
-#endif // MODE3D
-        vec3 rayPos = rayEntry;
+    vec3 rayPos = rayEntry;
 
 #ifndef CSG
-        vec4 result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
+    vec4 result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
 #else
-        vec4 result;
+    vec4 result;
 
-        if(csg > 0)
-        {
+    if(csg > 0)
+    {
 #if CSG_BORDER == 1
-            if(csg < u_csgBorderThickness
+        if(csg < u_csgBorderThickness
 #ifdef CSG_DEPTH_LINES
-               && int(jfaDistance.a * 1000.) % 16 == 0)
+           && int(jfaDistance.a * 1000.) % 16 == 0)
 #else
-            )
+        )
 #endif // CSG_DEPTH_LINES == 1
-            {
+        {
 #ifndef CSG_DEPTH_LINES
-                result = vec4(u_csgBorderColor, 1.);
+            result = vec4(u_csgBorderColor, 1.);
 #else
-                vec3 red   = vec3(1., 0., 0.);
-                vec3 green = vec3(0., 1., 0.);
-                vec3 blue  = vec3(0., 0., 1.);
+            vec3 red   = vec3(1., 0., 0.);
+            vec3 green = vec3(0., 1., 0.);
+            vec3 blue  = vec3(0., 0., 1.);
 
-                float scale = 1. / u_depthLinesThreshold;
+            float scale = 1. / u_depthLinesThreshold;
 
-                if(jfaDistance.a < u_depthLinesThreshold)
-                {
-                    result = vec4(mix(blue, green, jfaDistance.a * scale), 1.);
-                }
-                else
-                {
-                    result = vec4(mix(green, red, (jfaDistance.a - u_depthLinesThreshold) * scale), 1.);   
-                }
-#endif // CSG_DEPTH_LINES
+            if(jfaDistance.a < u_depthLinesThreshold)
+            {
+                result = vec4(mix(blue, green, jfaDistance.a * scale), 1.);
             }
             else
             {
+                result = vec4(mix(green, red, (jfaDistance.a - u_depthLinesThreshold) * scale), 1.);   
+            }
+#endif // CSG_DEPTH_LINES
+        }
+        else
+        {
 #endif // CSG_BORDER == 1
-                vec4 color = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
+            vec4 color = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
 
 #if CSG_MODULATION == 1 // Average grayscale
-                // The average method simply averages the values
-                float grayScale = (color.r + color.g + color.g) / 3.;
-                color.rgb = vec3(grayScale);
+            // The average method simply averages the values
+            float grayScale = (color.r + color.g + color.g) / 3.;
+            color.rgb = vec3(grayScale);
 #endif // CSG_MODULATION == 1
 #if CSG_MODULATION == 2 // Lightness grayscale
-                // The lightness method averages the most prominent and least prominent colors
-                float grayScale =
-                    (max(color.r, max(color.g, color.b)) +
-                     min(color.r, min(color.g, color.b))) / 2.;
+            // The lightness method averages the most prominent and least prominent colors
+            float grayScale =
+                (max(color.r, max(color.g, color.b)) +
+                 min(color.r, min(color.g, color.b))) / 2.;
 
-                color.rgb = vec3(grayScale);
+            color.rgb = vec3(grayScale);
 #endif // CSG_MODULATION == 2
 #if CSG_MODULATION == 3 // Luminosity grayscale
-                // The luminosity method is a more sophisticated version of the average method.
-                // It also averages the values, but it forms a weighted average to account for human perception.
-                // We’re more sensitive to green than other colors, so green is weighted most heavily.
-                float grayScale = 0.21 * color.r + 0.72 * color.g + 0.07 * color.b;
-                color.rgb = vec3(grayScale);
+            // The luminosity method is a more sophisticated version of the average method.
+            // It also averages the values, but it forms a weighted average to account for human perception.
+            // We’re more sensitive to green than other colors, so green is weighted most heavily.
+            float grayScale = 0.21 * color.r + 0.72 * color.g + 0.07 * color.b;
+            color.rgb = vec3(grayScale);
 #endif // CSG_MODULATION == 3
 
 // CSG luminance and saturation modulations
 #if CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
-                vec3 hsv = rgb2hsv(color.rgb);
+            vec3 hsv = rgb2hsv(color.rgb);
 
 // Saturation increase (CSG_MODULATION == 5)
 // Saturation and brightness increase (CSG_MODULATION == 6)
 #if CSG_MODULATION == 5 || CSG_MODULATION == 6
-                hsv.g += csg * u_colorModulationFactor;
+            hsv.g += csg * u_colorModulationFactor;
 #endif // CSG_MODULATION == 5 || CSG_MODULATION == 6
 
 // Saturation decrease (CSG_MODULATION == 7)
 #if CSG_MODULATION == 7
-                hsv.g -= csg * u_colorModulationFactor;
+            hsv.g -= csg * u_colorModulationFactor;
 #endif // CSG_MODULATION == 7
 
 // Brightness increase (CSG_MODULATION == 4)
 #if CSG_MODULATION == 4 || CSG_MODULATION == 6 || CSG_MODULATION == 7
-                hsv.b += csg * u_colorModulationFactor;
+            hsv.b += csg * u_colorModulationFactor;
 #endif // CSG_MODULATION == 4 || CSG_MODULATION == 6 || CSG_MODULATION == 7
 
-                color.rgb = hsv2rgb(hsv);
+            color.rgb = hsv2rgb(hsv);
 #endif // CSG_MODULATION == 4 || CSG_MODULATION == 5 || CSG_MODULATION == 6 || CSG_MODULATION == 7
 
 #ifdef CSG_OPACITY_DECREASE
-                color.a -= 1. - csg * u_opacityDecreaseFactor;
+            color.a -= 1. - csg * u_opacityDecreaseFactor;
 #endif // CSG_OPACITY_DECREASE
 
-                result = color;
+            result = color;
 #if CSG_BORDER == 1
-            }
+        }
 #endif // CSG_BORDER == 1
-        }
-        else
-        {
-            result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
-        }
+    }
+    else
+    {
+        result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
+    }
 #endif // CSG
 
-#ifdef MODE3D
-        subPixelRayColor[i] = result[i];
-        subPixelRayAlpha[i] = result.a;
-    }
-
-    vec3 backgroundSample = vec3(0,0,0);
-
-    fragColor.rgb = mix(backgroundSample, subPixelRayColor, subPixelRayAlpha);
-
-    gl_FragDepth = nbRays == 0 ? 1.f : fragDepth / float(nbRays);
-
-#else
     fragColor = result;
-#endif // MODE3D
 
 }

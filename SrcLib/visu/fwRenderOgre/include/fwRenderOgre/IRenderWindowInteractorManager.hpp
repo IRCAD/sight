@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,6 @@
 #include <OGRE/OgreRenderWindow.h>
 
 #include <string>
-
 
 namespace fwRenderOgre
 {
@@ -54,7 +53,6 @@ public:
          * @brief
          */
 
-
         int x;
         int y;
         int dx;
@@ -82,7 +80,6 @@ public:
             ::fwRenderOgre::registry::get()->addFactory(functorKey, &::fwRenderOgre::factory::New<T>);
         }
     };
-
 
     fwCoreNonInstanciableClassDefinitionsMacro( (IRenderWindowInteractorManager)(::fwCore::BaseObject) )
 
@@ -136,5 +133,4 @@ protected:
 } // namespace fwRenderOgre
 
 #endif // __FWRENDEROGRE_IRENDERWINDOWINTERACTORMANAGER_HPP__
-
 

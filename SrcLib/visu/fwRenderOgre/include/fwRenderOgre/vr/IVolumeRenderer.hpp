@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,9 +11,8 @@
 #include "fwData/TransferFunction.hpp"
 
 #include "fwRenderOgre/config.hpp"
-
-#include "fwRenderOgre/vr/PreIntegrationTable.hpp"
 #include "fwRenderOgre/TransferFunction.hpp"
+#include "fwRenderOgre/vr/PreIntegrationTable.hpp"
 
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreCamera.h>

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,8 @@
 #ifndef __FWRENDEROGRE_INTERACTOR_FIXEDSTYLEINTERACTOR_HPP__
 #define __FWRENDEROGRE_INTERACTOR_FIXEDSTYLEINTERACTOR_HPP__
 
-#include <fwRenderOgre/interactor/IMovementInteractor.hpp>
-
 #include "fwRenderOgre/config.hpp"
+#include <fwRenderOgre/interactor/IMovementInteractor.hpp>
 
 namespace fwRenderOgre
 {
@@ -17,7 +16,6 @@ namespace fwRenderOgre
 namespace interactor
 {
 /**
- * @class FixedStyleInteractor
  * @brief Fixed camera implementation. The mouse movements callbacks do nothing
  */
 

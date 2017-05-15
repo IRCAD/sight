@@ -6,6 +6,7 @@
 
 #include "fwRenderOgre/vr/RayTracingVolumeRenderer.hpp"
 
+#include "fwRenderOgre/helper/Camera.hpp"
 #include "fwRenderOgre/helper/Shading.hpp"
 #include "fwRenderOgre/SRender.hpp"
 #include "fwRenderOgre/Utils.hpp"
@@ -266,7 +267,6 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
                 }
 
                 // Recompute the focal length in case the camera moved.
-                m_renderer->computeRealFocalLength();
 
                 m_renderer->computeEntryPointsTexture();
 
@@ -346,7 +346,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_maskTexture(maskTexture),
     m_entryPointGeometry(nullptr),
     m_imageSize(::fwData::Image::SizeType({ 1, 1, 1 })),
-    m_mode3D(mode3D),
+    m_stereoMode(mode3D),
     m_fpPPDefines(""),
     m_ambientOcclusion(ambientOcclusion),
     m_colorBleeding(colorBleeding),
@@ -378,6 +378,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_lobeOffset(1.f),
     m_cameraListener(nullptr),
     m_layer(layer),
+    m_autostereoListener(nullptr),
     m_fullScreenQuad(new ::Ogre::Rectangle2D())
 {
     m_fullScreenQuad->setCorners(-1, 1, 1, -1);
@@ -385,17 +386,22 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_gridSize  = {{ 2, 2, 2 }};
     m_brickSize = {{ 8, 8, 8 }};
 
-    const unsigned nbViewpoints = m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ? 8 :
-                                  m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 ? 5 : 1;
+    const unsigned int numViewPoints = m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ? 8 :
+                                       m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 ? 5 : 1;
 
-    for(unsigned i = 0; i < nbViewpoints; ++i)
+    const float wRatio = numViewPoints != 1 ? 3.f / numViewPoints : 1.f;
+    const float hRatio = numViewPoints != 1 ? 0.5f : 1.f;
+
+    for(unsigned int i = 0; i < numViewPoints; ++i)
     {
         m_entryPointsTextures.push_back(::Ogre::TextureManager::getSingleton().createManual(
                                             m_parentId + "_entryPointsTexture" + std::to_string(i),
                                             ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                                             ::Ogre::TEX_TYPE_2D,
-                                            static_cast<unsigned int>(m_camera->getViewport()->getActualWidth()),
-                                            static_cast<unsigned int>(m_camera->getViewport()->getActualHeight()),
+                                            static_cast<unsigned int>(m_camera->getViewport()->getActualWidth() *
+                                                                      wRatio),
+                                            static_cast<unsigned int>(m_camera->getViewport()->getActualHeight() *
+                                                                      hRatio),
                                             1,
                                             0,
                                             ::Ogre::PF_FLOAT32_GR,
@@ -403,6 +409,12 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
         ::Ogre::RenderTexture* renderTexture = m_entryPointsTextures.back()->getBuffer()->getRenderTarget();
         renderTexture->addViewport(m_camera);
+    }
+
+    if(m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE)
+    {
+        m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(&m_entryPointsTextures);
+        ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
     }
 
     // First check that we did not already instanced Shared parameters
@@ -462,6 +474,17 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 
     this->cleanCompositorChain(compChain);
 
+    if(m_autostereoListener)
+    {
+        ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
+        delete m_autostereoListener;
+        m_autostereoListener = nullptr;
+    }
+
+    m_camera->removeListener(m_cameraListener);
+    delete m_cameraListener;
+    m_cameraListener = nullptr;
+
     if(m_r2vbSource)
     {
         auto mesh = m_r2vbSource->getMesh();
@@ -478,6 +501,7 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
     {
         ::Ogre::TextureManager::getSingleton().remove(texture->getHandle());
     }
+    m_entryPointsTextures.clear();
 
     if(!m_gridTexture.isNull())
     {
@@ -654,7 +678,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     }
 
     /* mono mode */
-    if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE)
+    if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::NONE)
     {
         texUnitState = pass->createTextureUnitState(m_entryPointsTextures[0]->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
@@ -887,7 +911,7 @@ void RayTracingVolumeRenderer::setIlluminationVolume(SATVolumeIllumination* illu
 void RayTracingVolumeRenderer::setPreIntegratedRendering(bool preIntegratedRendering)
 {
     OSLM_WARN_IF("Stereoscopic rendering doesn't implement pre-integration yet.",
-                 m_mode3D != ::fwRenderOgre::Layer::StereoModeType::NONE && preIntegratedRendering);
+                 m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE && preIntegratedRendering);
 
     m_preIntegratedRendering = preIntegratedRendering;
 
@@ -1005,12 +1029,16 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
 
 void RayTracingVolumeRenderer::resizeViewport(int w, int h)
 {
+    const auto numViewPoints = m_entryPointsTextures.size();
+    const float wRatio       = numViewPoints != 1 ? 3.f / numViewPoints : 1.f;
+    const float hRatio       = numViewPoints != 1 ? 0.5f : 1.f;
+
     for(::Ogre::TexturePtr entryPtsTexture : m_entryPointsTextures)
     {
         entryPtsTexture->freeInternalResources();
 
-        entryPtsTexture->setWidth(static_cast< ::Ogre::uint32>(w));
-        entryPtsTexture->setHeight(static_cast< ::Ogre::uint32>(h));
+        entryPtsTexture->setWidth(static_cast< ::Ogre::uint32>(w * wRatio));
+        entryPtsTexture->setHeight(static_cast< ::Ogre::uint32>(h * hRatio));
 
         entryPtsTexture->createInternalResources();
 
@@ -1166,12 +1194,12 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 
     float eyeAngle = 0.f;
     float angle    = 0.f;
-    if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
+    if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
     {
         eyeAngle = 0.02321f;
         angle    = eyeAngle * -2.f;
     }
-    else if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
+    else if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
     {
         eyeAngle = 0.01625f;
         angle    = eyeAngle * -3.5f;
@@ -1189,9 +1217,9 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
         ::Ogre::Matrix4 projMat = m_camera->getProjectionMatrix();
 
         // Move to the next view point if we're in 3D mode
-        if(m_mode3D != ::fwRenderOgre::Layer::StereoModeType::NONE)
+        if(m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE)
         {
-            const ::Ogre::Matrix4 shearTransform = frustumShearTransform(angle);
+            const auto shearTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
 
             angle  += eyeAngle;
             projMat = projMat * shearTransform;
@@ -1303,7 +1331,7 @@ void RayTracingVolumeRenderer::updateCompositorName()
 
     ppDefs.str("");
 
-    if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE)
+    if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::NONE)
     {
         if(m_ambientOcclusion)
         {
@@ -1395,11 +1423,11 @@ void RayTracingVolumeRenderer::updateCompositorName()
     else
     {
         ppDefs << (ppDefs.str() == "" ? "" : ",") << "MODE3D=1";
-        if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
+        if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
         {
             ppDefs << (ppDefs.str() == "" ? "" : ",") << "VIEWPOINTS=5";
         }
-        else if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
+        else if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
         {
             ppDefs << (ppDefs.str() == "" ? "" : ",") << "VIEWPOINTS=8";
         }
@@ -1586,7 +1614,7 @@ void RayTracingVolumeRenderer::buildCompositorChain()
     compositorInstance->setEnabled(true);
 
     m_compositorListeners.push_back(new RayTracingVolumeRenderer::RayTracingCompositorListener(m_viewPointMatrices,
-                                                                                               (m_mode3D !=
+                                                                                               (m_stereoMode !=
                                                                                                 ::fwRenderOgre::Layer::
                                                                                                 StereoModeType::NONE),
                                                                                                m_volumeSceneNode));

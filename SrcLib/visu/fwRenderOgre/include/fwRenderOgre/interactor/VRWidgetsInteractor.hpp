@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,12 @@
 #ifndef __FWRENDEROGRE_INTERACTOR_VRWIDGETSINTERACTOR_HPP__
 #define __FWRENDEROGRE_INTERACTOR_VRWIDGETSINTERACTOR_HPP__
 
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signals.hpp>
-
 #include "fwRenderOgre/interactor/TrackballInteractor.hpp"
 #include "fwRenderOgre/picker/IPicker.hpp"
 #include "fwRenderOgre/ui/VRWidget.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signals.hpp>
 
 #include <OGRE/OgreMovableObject.h>
 

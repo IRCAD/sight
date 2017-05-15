@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,8 +10,8 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/registry/macros.hpp>
+#include <fwRenderOgre/SRender.hpp>
 
 #include <QDesktopWidget>
 #include <QEvent>
@@ -130,15 +130,6 @@ void RenderWindowInteractorManager::disconnectInteractor()
                                                   ::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo)), this,
                         SLOT(onInteracted(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo)));
 
-    ::fwServices::IService::sptr renderService      = m_renderService.lock();
-    ::fwRenderOgre::SRender::sptr ogreRenderService = ::fwRenderOgre::SRender::dynamicCast( renderService );
-
-    for(auto layerMap : ogreRenderService->getLayers())
-    {
-        ::fwRenderOgre::Layer::sptr layer = layerMap.second;
-        layer->slot(::fwRenderOgre::Layer::s_DESTROY_SLOT)->asyncRun();
-    }
-
     m_qOgreWidget->destroyWindow();
     m_qOgreWidget = nullptr;
 }
@@ -220,7 +211,4 @@ void RenderWindowInteractorManager::onRayCastRequested(int _x, int _y, int _w, i
 //-----------------------------------------------------------------------------
 
 } // namespace visuOgreQt
-
-
-
 

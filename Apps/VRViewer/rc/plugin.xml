@@ -11,6 +11,7 @@
     <requirement id="preferences" />
     <requirement id="ioDicom" />
     <requirement id="ioActivity" />
+    <requirement id="patchMedicalData" />
 
     <xi:include href="configurations/OgreVolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
@@ -61,7 +62,7 @@
             <service uid="ihm" type="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
-                        <name>VRViewer</name>
+                        <name>VRViewer @PROJECT_VERSION@</name>
                         <icon>@BUNDLE_PREFIX@/VRViewer_@DASH_VERSION@/ogre_head.svg</icon>
                         <minSize width="1280" height="720" />
                     </frame>
@@ -172,9 +173,7 @@
             <service uid="actionSavePreset" type="::gui::action::SSlotCaller">
                 <slots>
                     <slot>startWriter/update</slot>
-                    <slot>pushCameraTFInImage/update</slot>
-                    <slot>pushTFInImage/update</slot>
-                    <slot>pushClippingMatrixInImage/update</slot>
+                    <slot>addFieldsInImage/update</slot>
                 </slots>
             </service>
 
@@ -376,28 +375,13 @@
                 <inout key="target" uid="clippingMatrix"/>
             </service>
 
-            <service uid="pushCameraTFInImage" type="::rdTools::SAddField" >
+            <service uid="addFieldsInImage" type="::ctrlSelection::SAddField" >
                 <inout group="source">
-                    <key uid="cameraTF" />
+                    <key uid="cameraTF" field="cameraTransform"/>
+                    <key uid="TFSelections" field="tf"/>
+                    <key uid="clippingMatrix" field="clippingMatrix"/>
                 </inout>
                 <inout key="target" uid="image" />
-                <field id="cameraTransform" />
-            </service>
-
-            <service uid="pushTFInImage" type="::rdTools::SAddField" >
-                <inout group="source">
-                    <key uid="TFSelections" />
-                </inout>
-                <inout key="target" uid="image" />
-                <field id="tf" />
-            </service>
-
-            <service uid="pushClippingMatrixInImage" type="::rdTools::SAddField" >
-                <inout group="source">
-                    <key uid="clippingMatrix" />
-                </inout>
-                <inout key="target" uid="image" />
-                <field id="clippingMatrix" />
             </service>
 
             <!-- *********************************** Connections *************************************************** -->
@@ -426,9 +410,7 @@
             <start uid="cfgOgreVolumeRendering" />
             <start uid="windowLevelVR" />
             <start uid="computeHistogram" />
-            <start uid="pushCameraTFInImage" />
-            <start uid="pushTFInImage" />
-            <start uid="pushClippingMatrixInImage" />
+            <start uid="addFieldsInImage" />
             <start uid="copyCameraTF" />
             <start uid="copyTF" />
             <start uid="copyClippingMatrix" />

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -61,11 +61,11 @@ void STextureSelector::starting() throw(::fwTools::Failed)
 
     m_loadButton = new QPushButton(QString("Load texture"), container);
     m_loadButton->setToolTip(QString("Selected organ's texture"));
-    m_loadButton->setMinimumSize (m_loadButton->sizeHint());
+    m_loadButton->setMinimumSize(m_loadButton->sizeHint());
 
     m_deleteButton = new QPushButton(QString("Remove texture"), container);
     m_deleteButton->setToolTip(QString("Remove organ's texture"));
-    m_deleteButton->setMinimumSize (m_deleteButton->sizeHint());
+    m_deleteButton->setMinimumSize(m_deleteButton->sizeHint());
 
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget( m_loadButton, 0 );
@@ -74,8 +74,8 @@ void STextureSelector::starting() throw(::fwTools::Failed)
     container->setLayout( layout );
     container->setEnabled(true);
 
-    QObject::connect(m_loadButton, SIGNAL(clicked ()), this, SLOT(onLoadButton( )));
-    QObject::connect(m_deleteButton, SIGNAL(clicked ()), this, SLOT(onDeleteButton( )));
+    QObject::connect(m_loadButton, SIGNAL(clicked()), this, SLOT(onLoadButton( )));
+    QObject::connect(m_deleteButton, SIGNAL(clicked()), this, SLOT(onDeleteButton( )));
 
     this->updating();
 }
@@ -86,7 +86,7 @@ void STextureSelector::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    QObject::disconnect(m_loadButton, SIGNAL(clicked ()), this, SLOT(onLoadButton( )));
+    QObject::disconnect(m_loadButton, SIGNAL(clicked()), this, SLOT(onLoadButton( )));
 
     this->getContainer()->clean();
     this->destroy();

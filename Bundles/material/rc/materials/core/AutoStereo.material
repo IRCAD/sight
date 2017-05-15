@@ -8,7 +8,10 @@ fragment_program AutoStereo8/Mix glsl
 
         default_params
         {
-                param_named u_lobeOffset float 1.f
+                param_named_auto u_vpWidth viewport_width
+                param_named_auto u_vpHeight viewport_height
+                param_named u_lobeOffset float 0.f
+                param_named u_collimation float 0.f
                 param_named u_srcTextures0 int 0
                 param_named u_srcTextures1 int 1
                 param_named u_srcTextures2 int 2
@@ -29,7 +32,10 @@ fragment_program AutoStereo5/Mix glsl
 
         default_params
         {
-                param_named u_lobeOffset float 1.f
+                param_named_auto u_vpWidth viewport_width
+                param_named_auto u_vpHeight viewport_height
+                param_named u_lobeOffset float 0.f
+                param_named u_collimation float 0.f
                 param_named u_srcTextures0 int 0
                 param_named u_srcTextures1 int 1
                 param_named u_srcTextures2 int 2
@@ -62,27 +68,27 @@ material AutoStereo5
             texture_unit 0
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 1
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 2
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 3
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 4
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
         }
     }
@@ -112,42 +118,42 @@ material AutoStereo8
             texture_unit 0
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 1
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 2
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 3
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 4
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 5
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 6
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
             texture_unit 7
             {
                 tex_address_mode clamp
-                filtering none
+                filtering bilinear
             }
         }
     }

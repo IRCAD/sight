@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,13 @@
 #ifndef __VISUOGREADAPTOR_SRECONSTRUCTION_HPP__
 #define __VISUOGREADAPTOR_SRECONSTRUCTION_HPP__
 
+#include "visuOgreAdaptor/config.hpp"
+#include "visuOgreAdaptor/SMesh.hpp"
+
 #include <fwCom/Slot.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
 #include <fwRenderOgre/ITransformable.hpp>
-
-#include "visuOgreAdaptor/config.hpp"
-#include "visuOgreAdaptor/SMesh.hpp"
 
 namespace fwData
 {
@@ -29,7 +29,7 @@ class VISUOGREADAPTOR_CLASS_API SReconstruction : public ::fwRenderOgre::IAdapto
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SReconstruction)(::fwRenderOgre::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SReconstruction)(::fwRenderOgre::IAdaptor) );
 
     /// Constructor.
     VISUOGREADAPTOR_API SReconstruction() throw();

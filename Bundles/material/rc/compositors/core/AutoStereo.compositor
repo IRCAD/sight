@@ -2,13 +2,101 @@ compositor AutoStereo5
 {
     technique
     {
-        // Final pass
+        texture rt_output target_width target_height PF_R8G8B8
+        texture rt0 target_width_scaled 0.6 target_height_scaled 0.5 PF_R8G8B8
+        texture rt1 target_width_scaled 0.6 target_height_scaled 0.5 PF_R8G8B8
+        texture rt2 target_width_scaled 0.6 target_height_scaled 0.5 PF_R8G8B8
+        texture rt3 target_width_scaled 0.6 target_height_scaled 0.5 PF_R8G8B8
+        texture rt4 target_width_scaled 0.6 target_height_scaled 0.5 PF_R8G8B8
+
+        target rt0
+        {
+            input none
+            pass clear
+            {
+            }
+
+            shadows off
+            material_scheme AutoStereo/0
+
+            pass render_scene
+            {
+            }
+        }
+
+        target rt1
+        {
+            input none
+            pass clear
+            {
+            }
+
+            shadows off
+            material_scheme AutoStereo/1
+
+            pass render_scene
+            {
+            }
+        }
+
+        target rt2
+        {
+            input none
+            pass clear
+            {
+            }
+
+            shadows off
+            material_scheme AutoStereo/2
+
+            pass render_scene
+            {
+            }
+        }
+
+        target rt3
+        {
+            input none
+            pass clear
+            {
+            }
+
+            shadows off
+            material_scheme AutoStereo/3
+
+            pass render_scene
+            {
+            }
+        }
+
+        target rt4
+        {
+            input none
+            pass clear
+            {
+            }
+
+            shadows off
+            material_scheme AutoStereo/4
+
+            pass render_scene
+            {
+            }
+        }
+
+        // Mix pass
         target_output
         {
             input none
             pass render_quad
             {
+                identifier 101
                 material AutoStereo5
+                input 0 rt0
+                input 1 rt1
+                input 2 rt2
+                input 3 rt3
+                input 4 rt4
             }
         }
     }
@@ -16,16 +104,155 @@ compositor AutoStereo5
 
 compositor AutoStereo8
 {
-    technique
+technique
+{
+    texture rt_output target_width target_height PF_R8G8B8
+    texture rt0 target_width_scaled 0.375 target_height_scaled 0.5 PF_R8G8B8
+    texture rt1 target_width_scaled 0.375 target_height_scaled 0.5 PF_R8G8B8
+    texture rt2 target_width_scaled 0.375 target_height_scaled 0.5 PF_R8G8B8
+    texture rt3 target_width_scaled 0.375 target_height_scaled 0.5 PF_R8G8B8
+    texture rt4 target_width_scaled 0.375 target_height_scaled 0.5 PF_R8G8B8
+    texture rt5 target_width_scaled 0.375 target_height_scaled 0.5 PF_R8G8B8
+    texture rt6 target_width_scaled 0.375 target_height_scaled 0.5 PF_R8G8B8
+    texture rt7 target_width_scaled 0.375 target_height_scaled 0.5 PF_R8G8B8
+
+    target rt0
     {
-        // Final pass
-        target_output
+        input none
+        pass clear
         {
-            input none
-            pass render_quad
-            {
-                material AutoStereo8
-            }
+        }
+
+        shadows off
+        material_scheme AutoStereo/0
+
+        pass render_scene
+        {
         }
     }
+
+    target rt1
+    {
+        input none
+        pass clear
+        {
+        }
+
+        shadows off
+        material_scheme AutoStereo/1
+
+        pass render_scene
+        {
+        }
+    }
+
+    target rt2
+    {
+        input none
+        pass clear
+        {
+        }
+
+        shadows off
+        material_scheme AutoStereo/2
+
+        pass render_scene
+        {
+        }
+    }
+
+    target rt3
+    {
+        input none
+        pass clear
+        {
+        }
+
+        shadows off
+        material_scheme AutoStereo/3
+
+        pass render_scene
+        {
+        }
+    }
+
+    target rt4
+    {
+        input none
+        pass clear
+        {
+        }
+
+        shadows off
+        material_scheme AutoStereo/4
+
+        pass render_scene
+        {
+        }
+    }
+
+    target rt5
+    {
+        input none
+        pass clear
+        {
+        }
+
+        shadows off
+        material_scheme AutoStereo/5
+
+        pass render_scene
+        {
+        }
+    }
+
+    target rt6
+    {
+        input none
+        pass clear
+        {
+        }
+
+        shadows off
+        material_scheme AutoStereo/6
+
+        pass render_scene
+        {
+        }
+    }
+
+    target rt7
+    {
+        input none
+        pass clear
+        {
+        }
+
+        shadows off
+        material_scheme AutoStereo/7
+
+        pass render_scene
+        {
+        }
+    }
+
+    // Mix pass
+    target_output
+    {
+        input none
+        pass render_quad
+        {
+            identifier 101
+            material AutoStereo8
+            input 0 rt0
+            input 1 rt1
+            input 2 rt2
+            input 3 rt3
+            input 4 rt4
+            input 5 rt5
+            input 6 rt6
+            input 7 rt7
+        }
+    }
+}
 }

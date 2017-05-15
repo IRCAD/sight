@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,11 +7,11 @@
 #ifndef __FWRENDEROGRE_INTERACTOR_IPICKERINTERACTOR_HPP__
 #define __FWRENDEROGRE_INTERACTOR_IPICKERINTERACTOR_HPP__
 
-#include <fwRenderOgre/factory/new.hpp>
-#include <fwRenderOgre/registry/detail.hpp>
 #include <fwRenderOgre/config.hpp>
+#include <fwRenderOgre/factory/new.hpp>
 #include <fwRenderOgre/interactor/IInteractor.hpp>
 #include <fwRenderOgre/picker/IPicker.hpp>
+#include <fwRenderOgre/registry/detail.hpp>
 
 #include <fwCore/BaseObject.hpp>
 
@@ -25,7 +25,6 @@ namespace interactor
 {
 
 /**
- * @class IPickerInteractor
  * @brief Interface implementation for all selection with the mouse
  */
 class FWRENDEROGRE_CLASS_API IPickerInteractor : public ::fwRenderOgre::interactor::IInteractor

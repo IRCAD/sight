@@ -7,6 +7,7 @@
 #ifndef __FWRENDEROGRE_VR_RAYTRACINGVOLUMERENDERER_HPP__
 #define __FWRENDEROGRE_VR_RAYTRACINGVOLUMERENDERER_HPP__
 
+#include "fwRenderOgre/compositor/listener/AutoStereo.hpp"
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/Layer.hpp"
 #include "fwRenderOgre/R2VBRenderable.hpp"
@@ -250,7 +251,7 @@ private:
     std::array< int, 3 > m_brickSize;
 
     /// Sets stereoscopic volume rendering for autostereoscopic monitors.
-    ::fwRenderOgre::Layer::StereoModeType m_mode3D;
+    ::fwRenderOgre::Layer::StereoModeType m_stereoMode;
 
     /// Comma separated list of preprocessor defines to use in fragment shaders
     std::string m_fpPPDefines;
@@ -349,7 +350,14 @@ private:
     /// If a compositor has no listener, we store a nullptr in the corresponding entry.
     std::vector< ::Ogre::CompositorInstance::Listener*> m_compositorListeners;
 
+    std::string m_compositorName;
+
     ::fwRenderOgre::Layer::wptr m_layer;
+
+    /// Autostereo listener
+    compositor::listener::AutoStereoCompositorListener* m_autostereoListener;
+
+    ::Ogre::Rectangle2D* m_fullScreenQuad;
 
     /// IDVR methods names.
     static const std::string s_NONE;
@@ -396,8 +404,6 @@ private:
     /// IDVR textures.
     static const std::string s_IMPORTANCE_COMPOSITING_TEXTURE;
     static const std::string s_JUMP_FLOOD_ALGORITHM_TEXTURE;
-
-    ::Ogre::Rectangle2D* m_fullScreenQuad;
 };
 
 //-----------------------------------------------------------------------------

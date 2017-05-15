@@ -1,4 +1,4 @@
-#version 420
+#version 410
 
 uniform sampler3D u_sat;
 
@@ -40,7 +40,7 @@ int getVoxelSecondaryCoord(in ivec2 lineOrigin, in vec2 lineVector, int x)
 float coneShadowQuery(in ivec3 voxelPos)
 {
     // Cone faces the light.
-    const vec3 coneDir = normalize(-u_lightDir);
+    vec3 coneDir = normalize(-u_lightDir);
     float coneAngle = u_scatteringConeAngle;
 
     int nbConeSamples = u_nbSamplesAlongCone;
@@ -71,7 +71,7 @@ float coneShadowQuery(in ivec3 voxelPos)
     ivec3 satSize = textureSize(u_sat, 0);
 
     // Coordinate on the primary axis where the cone exits the volume.
-    const int outCoord = coneDir[primaryAxis] < 0 ? 0 : satSize[primaryAxis] - 1;
+    int outCoord = coneDir[primaryAxis] < 0 ? 0 : satSize[primaryAxis] - 1;
 
     // Number of voxels separating our current voxel to the exit.
     int coneVoxelHeight = abs(voxelPos[primaryAxis] - outCoord);
@@ -91,12 +91,12 @@ float coneShadowQuery(in ivec3 voxelPos)
     }
 
     // Project cone origin and direction on the (primaryAxis, secondaryAxis0) plane.
-    const ivec2 projOrig0 = ivec2(voxelPos[primaryAxis], voxelPos[secondaryAxis0]);
-    vec2 projDir0 = vec2(coneDir[primaryAxis], coneDir[secondaryAxis0]);
+    ivec2 projOrig0  = ivec2(voxelPos[primaryAxis], voxelPos[secondaryAxis0]);
+    vec2  projDir0   = vec2(coneDir[primaryAxis], coneDir[secondaryAxis0]);
 
     // Do the same for the (primaryAxis, secondaryAxis1) plane.
-    const ivec2 projOrig1 = ivec2(voxelPos[primaryAxis], voxelPos[secondaryAxis1]);
-    vec2 projDir1 = vec2(coneDir[primaryAxis], coneDir[secondaryAxis1]);
+    ivec2 projOrig1  = ivec2(voxelPos[primaryAxis], voxelPos[secondaryAxis1]);
+    vec2  projDir1   = vec2(coneDir[primaryAxis], coneDir[secondaryAxis1]);
 
     vec2 v0, v1, v2, v3;
 
@@ -117,12 +117,12 @@ float coneShadowQuery(in ivec3 voxelPos)
     v3 = projDir1 + orth3;
 
     // The way the cone is facing.
-    const int coneOrientation = int(sign(coneDir[primaryAxis]));
+    int coneOrientation = int(sign(coneDir[primaryAxis]));
 
-    const int incr = (cuboidHeight + 1) * coneOrientation;
+    int incr = (cuboidHeight + 1) * coneOrientation;
 
-    const int beginCoord = outCoord   - coneOrientation * cuboidHeight/2;
-    const int endCoord   = beginCoord - (nbConeSamples) * incr;
+    int beginCoord = outCoord   - coneOrientation * cuboidHeight/2;
+    int endCoord   = beginCoord - (nbConeSamples) * incr;
 
     float coneSum = 0.f;
     int nbVoxels  = 0;

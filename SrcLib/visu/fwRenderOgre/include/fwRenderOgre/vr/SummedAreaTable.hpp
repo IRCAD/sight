@@ -84,7 +84,7 @@ private:
     /// Scene manager.
     ::Ogre::SceneManager* m_sceneManager;
 
-    /// Camera used as a viewport of each slice of the SAT buffers.
+    /// Camera used as a viewport for each slice of the SAT buffers.
     ::Ogre::Camera* m_dummyCamera;
 
     /// The pass orientation, horizontal = 0, vertical = 1, z-wise = 2.
@@ -94,7 +94,7 @@ private:
     int m_sliceIndex;
 
     /// The read offset based on the number of reads per fragment shader (r) and the pass index (i) : m_readOffset =
-    // r^i.
+    /// r^i.
     int m_readOffset;
 
     /// The depth of the current slice.

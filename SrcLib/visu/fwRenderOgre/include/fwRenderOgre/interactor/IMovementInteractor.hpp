@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,12 @@
 #ifndef __FWRENDEROGRE_INTERACTOR_IMOVEMENTINTERACTOR_HPP__
 #define __FWRENDEROGRE_INTERACTOR_IMOVEMENTINTERACTOR_HPP__
 
-#include <fwCore/BaseObject.hpp>
-
 #include <fwRenderOgre/config.hpp>
 #include <fwRenderOgre/factory/new.hpp>
 #include <fwRenderOgre/interactor/IInteractor.hpp>
 #include <fwRenderOgre/registry/detail.hpp>
+
+#include <fwCore/BaseObject.hpp>
 
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreVector3.h>
@@ -24,7 +24,6 @@ namespace interactor
 {
 
 /**
- * @class IMovementInteractor
  * @brief Interface implementation for all movement interaction with the mouse
  */
 class FWRENDEROGRE_CLASS_API IMovementInteractor : public ::fwRenderOgre::interactor::IInteractor
@@ -104,6 +103,9 @@ public:
 
     /// Update camera's move scale.
     FWRENDEROGRE_API virtual void setMouseScale(float mouseScale);
+
+    /// Get the distance to the point of interest.
+    FWRENDEROGRE_API float getLookAtZ() const;
 
 protected:
 

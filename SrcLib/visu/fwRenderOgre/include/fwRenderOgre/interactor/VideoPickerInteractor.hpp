@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,8 +13,8 @@
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slot.hpp>
+#include <fwCom/Slots.hpp>
 
 #include <fwData/Point.hpp>
 
@@ -27,7 +27,6 @@ namespace interactor
 {
 
 /**
- * @class VideoPickerInteractor
  * @brief Implementation for selection of points on Video
  */
 class FWRENDEROGRE_CLASS_API VideoPickerInteractor : public ::fwRenderOgre::interactor::IPickerInteractor

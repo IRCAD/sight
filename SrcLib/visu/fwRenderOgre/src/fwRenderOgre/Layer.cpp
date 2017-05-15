@@ -6,6 +6,7 @@
 
 #include "fwRenderOgre/Layer.hpp"
 
+#include <fwRenderOgre/helper/Camera.hpp>
 #include <fwRenderOgre/ILight.hpp>
 #include <fwRenderOgre/Layer.hpp>
 
@@ -24,6 +25,7 @@
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreException.h>
+#include <OGRE/OgreGpuProgramManager.h>
 #include <OGRE/OgreLight.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreRectangle2D.h>
@@ -42,14 +44,13 @@ namespace fwRenderOgre
 
 //-----------------------------------------------------------------------------
 
-const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG         = "layerInitialized";
-const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG       = "layerResized";
-const ::fwCom::Signals::SignalKeyType Layer::s_COMPOSITOR_UPDATED_SIG = "compositorUpdated";
-const ::fwCom::Signals::SignalKeyType Layer::s_MODE3D_CHANGED_SIG     = "StereoModeChanged";
-const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_UPDATED_SIG     = "CameraUpdated";
+const ::fwCom::Signals::SignalKeyType Layer::s_INIT_LAYER_SIG          = "layerInitialized";
+const ::fwCom::Signals::SignalKeyType Layer::s_RESIZE_LAYER_SIG        = "layerResized";
+const ::fwCom::Signals::SignalKeyType Layer::s_COMPOSITOR_UPDATED_SIG  = "compositorUpdated";
+const ::fwCom::Signals::SignalKeyType Layer::s_STEREO_MODE_CHANGED_SIG = "StereoModeChanged";
+const ::fwCom::Signals::SignalKeyType Layer::s_CAMERA_UPDATED_SIG      = "CameraUpdated";
 
 const ::fwCom::Slots::SlotKeyType Layer::s_INTERACTION_SLOT    = "interaction";
-const ::fwCom::Slots::SlotKeyType Layer::s_DESTROY_SLOT        = "destroy";
 const ::fwCom::Slots::SlotKeyType Layer::s_RESET_CAMERA_SLOT   = "resetCamera";
 const ::fwCom::Slots::SlotKeyType Layer::s_USE_CELSHADING_SLOT = "useCelShading";
 
@@ -59,6 +60,98 @@ const std::string Layer::DEFAULT_CAMERA_NAME = "DefaultCam";
 const std::string Layer::DEFAULT_LIGHT_NAME  = "DefaultLight";
 
 //-----------------------------------------------------------------------------
+
+struct Layer::LayerCameraListener : public ::Ogre::Camera::Listener
+{
+    Layer* m_layer;
+    int m_frameId;
+    ::fwRenderOgre::interactor::IMovementInteractor::sptr m_interactor;
+
+    //------------------------------------------------------------------------------
+
+    LayerCameraListener(Layer* renderer, ::fwRenderOgre::interactor::IMovementInteractor::sptr interactor) :
+        m_layer(renderer),
+        m_frameId(0),
+        m_interactor(interactor)
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    virtual void cameraPreRenderScene(::Ogre::Camera* _camera)
+    {
+        SLM_ASSERT("Layer is not set", m_layer );
+
+        auto stereoMode = m_layer->getStereoMode();
+        if(stereoMode != Layer::StereoModeType::NONE)
+        {
+            // Set the focal length using the point of interest of the interactor
+            // This works well for the trackball but this would need to be adjusted for an another interactor type
+            // For a FPS camera style for instance, we would fix the focal length once and for all according
+            // to the scale of the world
+            float focalLength = std::max(0.001f, std::abs(m_interactor->getLookAtZ()));
+            _camera->setFocalLength(focalLength);
+
+            const int frameId = m_layer->getRenderService()->getInteractorManager()->getFrameId();
+            if(frameId != m_frameId)
+            {
+                float eyeAngle = 0.f;
+                float angle    = 0.f;
+
+                if(stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
+                {
+                    eyeAngle = 0.02321f;
+                    angle    = eyeAngle * -2.f;
+                }
+                else if(stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
+                {
+                    eyeAngle = 0.01625f;
+                    angle    = eyeAngle * -3.5f;
+                }
+
+                auto& gpuProgramMgr = ::Ogre::GpuProgramManager::getSingleton();
+
+                for(size_t i = 0; i < 8; ++i)
+                {
+                    const auto shearTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(
+                        *_camera, angle);
+
+                    ::Ogre::Matrix4 projMat = _camera->getProjectionMatrixWithRSDepth();
+                    projMat                 = projMat * shearTransform;
+
+                    projMat[1][0] = -projMat[1][0];
+                    projMat[1][1] = -projMat[1][1];
+                    projMat[1][2] = -projMat[1][2];
+                    projMat[1][3] = -projMat[1][3];
+
+                    angle += eyeAngle;
+
+                    const auto& sharedParameterMap = gpuProgramMgr.getAvailableSharedParameters();
+                    {
+                        const std::string projParamName = "ProjectionMatrixParam/"+std::to_string(i);
+                        auto it                         = sharedParameterMap.find(projParamName);
+                        if(it != sharedParameterMap.end())
+                        {
+                            it->second->setNamedConstant("u_proj", projMat);
+                        }
+                    }
+                    {
+                        const std::string projParamName = "InverseProjectionMatrixParam/"+std::to_string(i);
+                        auto it                         = sharedParameterMap.find(projParamName);
+                        if(it != sharedParameterMap.end())
+                        {
+                            it->second->setNamedConstant("u_invProj", projMat.inverse());
+                        }
+                    }
+                }
+
+                m_frameId = frameId;
+            }
+        }
+    }
+
+    //------------------------------------------------------------------------------
+};
 
 Layer::Layer() :
     m_sceneManager(nullptr),
@@ -78,16 +171,16 @@ Layer::Layer() :
     m_hasCoreCompositor(false),
     m_hasCompositorChain(false),
     m_sceneCreated(false),
-    m_hasDefaultLight(true)
+    m_hasDefaultLight(true),
+    m_cameraListener(nullptr)
 {
     newSignal<InitLayerSignalType>(s_INIT_LAYER_SIG);
     newSignal<ResizeLayerSignalType>(s_RESIZE_LAYER_SIG);
     newSignal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
-    newSignal<StereoModeChangedSignalType>(s_MODE3D_CHANGED_SIG);
+    newSignal<StereoModeChangedSignalType>(s_STEREO_MODE_CHANGED_SIG);
     newSignal<CameraUpdatedSignalType>(s_CAMERA_UPDATED_SIG);
 
     newSlot(s_INTERACTION_SLOT, &Layer::interaction, this);
-    newSlot(s_DESTROY_SLOT, &Layer::destroy, this);
     newSlot(s_RESET_CAMERA_SLOT, &Layer::resetCameraCoordinates, this);
 }
 
@@ -95,6 +188,16 @@ Layer::Layer() :
 
 Layer::~Layer()
 {
+    if(m_camera && m_cameraListener)
+    {
+        m_camera->removeListener(m_cameraListener);
+        delete m_cameraListener;
+        m_cameraListener = nullptr;
+    }
+
+    ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
+    m_sceneManager = nullptr;
+    m_camera       = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -241,36 +344,40 @@ void Layer::createScene()
             ::fwRenderOgre::interactorFactory::New("::fwRenderOgre::interactor::TrackballInteractor"));
 
     interactor->setSceneID(m_sceneManager->getName());
+    this->setMoveInteractor(interactor);
 
-    // Set compositor
-    //this->addCompositor(m_compositorName);
-    //this->setCompositorEnabled(m_compositorName);
+    m_cameraListener = new LayerCameraListener(this, interactor);
+    m_camera->addListener(m_cameraListener);
 
+    // Setup transparency compositors
     if(m_hasCoreCompositor)
     {
         this->setupCore();
     }
 
-    if(m_stereoMode == StereoModeType::NONE)
+    m_compositorChainManager->setOgreViewport(m_viewport);
+
+    // Setup custom compositors and autostereo
     {
-        m_compositorChainManager->setOgreViewport(m_viewport);
+        ::boost::char_separator<char> sep(";");
+        ::boost::tokenizer< ::boost::char_separator<char> > tok(m_rawCompositorChain, sep);
+        std::vector< fwc::ChainManager::CompositorIdType> compositorChain;
 
-        if(m_hasCompositorChain)
+        for(const auto& it : tok)
         {
-            ::boost::char_separator<char> sep(";");
-            ::boost::tokenizer< ::boost::char_separator<char> > tok(m_rawCompositorChain, sep);
-            std::vector< fwc::ChainManager::CompositorIdType> compositorChain;
-
-            for(const auto& it : tok)
-            {
-                compositorChain.push_back(it);
-            }
-
-            m_compositorChainManager->setCompositorChain(compositorChain, m_id, m_renderService.lock());
+            compositorChain.push_back(it);
         }
-    }
+        if(m_stereoMode != StereoModeType::NONE)
+        {
+            compositorChain.push_back(m_stereoMode == StereoModeType::AUTOSTEREO_8 ?
+                                      "AutoStereo8" : "AutoStereo5");
+        }
 
-    this->setMoveInteractor(interactor);
+        m_compositorChainManager->setCompositorChain(compositorChain, m_id, m_renderService.lock());
+
+        m_compositorChainManager->addAvailableCompositor("AutoStereo5");
+        m_compositorChainManager->addAvailableCompositor("AutoStereo8");
+    }
 
     m_sceneCreated = true;
 
@@ -282,15 +389,6 @@ void Layer::createScene()
 void Layer::addAvailableCompositor(std::string compositorName)
 {
     m_compositorChainManager->addAvailableCompositor(compositorName);
-}
-
-// ----------------------------------------------------------------------------
-
-void Layer::clearAvailableCompositors()
-{
-    m_renderService.lock()->makeCurrent();
-    m_compositorChainManager->clearCompositorChain();
-    m_renderService.lock()->requestRender();
 }
 
 // ----------------------------------------------------------------------------
@@ -346,17 +444,6 @@ void Layer::interaction(::fwRenderOgre::IRenderWindowInteractorManager::Interact
         }
     }
     this->signal<CameraUpdatedSignalType>(s_CAMERA_UPDATED_SIG)->asyncEmit();
-}
-
-// ----------------------------------------------------------------------------
-
-void Layer::destroy()
-{
-    ::fwRenderOgre::ILight::destroyLightManager(m_lightManager);
-
-    ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
-    m_sceneManager = nullptr;
-    m_camera       = nullptr;
 }
 
 // ----------------------------------------------------------------------------
@@ -431,6 +518,14 @@ void Layer::setMoveInteractor(::fwRenderOgre::interactor::IMovementInteractor::s
 
     m_connections.connect(interactor, ::fwRenderOgre::interactor::IMovementInteractor::s_RESET_CAMERA_SIG,
                           this->getSptr(), s_RESET_CAMERA_SLOT);
+
+    m_connections.connect(interactor, ::fwRenderOgre::interactor::IMovementInteractor::s_RENDER_REQUESTED_SIG,
+                          this->getRenderService(), ::fwRenderOgre::SRender::s_REQUEST_RENDER_SLOT);
+
+    if(m_cameraListener)
+    {
+        m_cameraListener->m_interactor = interactor;
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -456,7 +551,7 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
 
 //-----------------------------------------------------------------------------
 
-::Ogre::AxisAlignedBox Layer::computeCameraParameters() const
+::Ogre::AxisAlignedBox Layer::computeWorldBoundingBox() const
 {
     // The bounding box in which all the object's bounding boxes will be merged
     ::Ogre::AxisAlignedBox worldCoordBoundingBox;
@@ -510,7 +605,7 @@ void Layer::setSelectInteractor(::fwRenderOgre::interactor::IPickerInteractor::s
 
 void Layer::resetCameraCoordinates() const
 {
-    ::Ogre::AxisAlignedBox worldCoordBoundingBox = computeCameraParameters();
+    const ::Ogre::AxisAlignedBox worldCoordBoundingBox = this->computeWorldBoundingBox();
 
     if(m_camera && m_camera->getProjectionType() == ::Ogre::PT_PERSPECTIVE)
     {
@@ -519,22 +614,21 @@ void Layer::resetCameraCoordinates() const
             worldCoordBoundingBox == ::Ogre::AxisAlignedBox::EXTENT_INFINITE)
         {
             ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
-
             camNode->setPosition(0.f, 0.f, 0.f);
         }
         else
         {
-            ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
             // Arbitrary coefficient
-            ::Ogre::Real boundingBoxLength = worldCoordBoundingBox.getSize().length() > 0 ?
-                                             worldCoordBoundingBox.getSize().length() : 0;
+            const ::Ogre::Real boundingBoxLength = worldCoordBoundingBox.getSize().length() > 0 ?
+                                                   worldCoordBoundingBox.getSize().length() : 0;
 
-            float coeffZoom = static_cast<float>(boundingBoxLength) * 1.2f;
+            float coeffZoom = static_cast<float>(boundingBoxLength);
             OSLM_DEBUG("Zoom coefficient : " << coeffZoom);
 
             // Set the direction of the camera
-            ::Ogre::Quaternion quat   = camNode->getOrientation();
-            ::Ogre::Vector3 direction = quat.zAxis();
+            ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
+            const ::Ogre::Quaternion quat   = camNode->getOrientation();
+            const ::Ogre::Vector3 direction = quat.zAxis();
 
             // Set the position of the camera
             camNode->setPosition((worldCoordBoundingBox.getCenter() + coeffZoom * direction ) );
@@ -551,9 +645,37 @@ void Layer::resetCameraCoordinates() const
 
 //-----------------------------------------------------------------------------
 
+void Layer::computeCameraParameters() const
+{
+    const ::Ogre::AxisAlignedBox worldCoordBoundingBox = this->computeWorldBoundingBox();
+
+    if(m_camera && m_camera->getProjectionType() == ::Ogre::PT_PERSPECTIVE)
+    {
+        // Check if bounding box is valid, otherwise, do nothing.
+        if( worldCoordBoundingBox != ::Ogre::AxisAlignedBox::EXTENT_NULL &&
+            worldCoordBoundingBox != ::Ogre::AxisAlignedBox::EXTENT_INFINITE)
+        {
+            ::Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
+            const ::Ogre::Quaternion quat   = camNode->getOrientation();
+            const ::Ogre::Vector3 direction = quat.zAxis();
+            const ::Ogre::Vector3 position  = camNode->getPosition();
+
+            const ::Ogre::Vector3 div = (position - worldCoordBoundingBox.getCenter()) / direction;
+            const float distance      = div.z;
+
+            // Update interactor's mouse scale
+            m_moveInteractor->setMouseScale( distance );
+
+            resetCameraClippingRange(worldCoordBoundingBox);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void Layer::resetCameraClippingRange() const
 {
-    resetCameraClippingRange(computeCameraParameters());
+    resetCameraClippingRange(computeWorldBoundingBox());
 }
 
 //-----------------------------------------------------------------------------
@@ -673,9 +795,26 @@ void Layer::requestRender()
 
 void Layer::setStereoMode(StereoModeType mode)
 {
+    const std::string oldCompositorName = m_stereoMode == StereoModeType::AUTOSTEREO_8 ?
+                                          "AutoStereo8" : "AutoStereo5";
+
+    // Disable the old compositor
+    if(m_stereoMode != StereoModeType::NONE && m_compositorChainManager)
+    {
+        m_compositorChainManager->updateCompositorState(oldCompositorName, false, m_id, m_renderService.lock());
+    }
+
+    // Enable the new one
     m_stereoMode = mode;
 
-    auto sig = this->signal<StereoModeChangedSignalType>(s_MODE3D_CHANGED_SIG);
+    const std::string compositorName = m_stereoMode == StereoModeType::AUTOSTEREO_8 ?
+                                       "AutoStereo8" : "AutoStereo5";
+    if(m_stereoMode != StereoModeType::NONE && m_compositorChainManager)
+    {
+        m_compositorChainManager->updateCompositorState(compositorName, true, m_id, m_renderService.lock());
+    }
+
+    auto sig = this->signal<StereoModeChangedSignalType>(s_STEREO_MODE_CHANGED_SIG);
     sig->asyncEmit(m_stereoMode);
 }
 
@@ -736,9 +875,9 @@ void Layer::setCoreCompositorEnabled(bool enabled, std::string transparencyTechn
 
 //-------------------------------------------------------------------------------------
 
-void Layer::setCompositorChainEnabled(bool hasCoreChain, std::string compositorChain)
+void Layer::setCompositorChainEnabled(const std::string& compositorChain)
 {
-    m_hasCompositorChain = hasCoreChain;
+    m_hasCompositorChain = !compositorChain.empty();
 
     if(m_hasCompositorChain)
     {
