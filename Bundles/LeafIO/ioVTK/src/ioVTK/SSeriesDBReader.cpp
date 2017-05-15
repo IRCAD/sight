@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -62,11 +62,11 @@ void SSeriesDBReader::configureWithIHM()
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setType(::fwGui::dialog::ILocationDialog::MULTI_FILES);
     dialogFile.setTitle("Choose vtk files to load Series");
-    dialogFile.addFilter("Vtk","*.vtk *.vti *.mhd *.vtu");
-    dialogFile.addFilter("Vtk files","*.vtk");
-    dialogFile.addFilter("Vti files","*.vti");
-    dialogFile.addFilter("Vtu files","*.vtu");
-    dialogFile.addFilter("MetaImage files","*.mhd");
+    dialogFile.addFilter("Vtk", "*.vtk *.vti *.mhd *.vtu");
+    dialogFile.addFilter("Vtk files", "*.vtk");
+    dialogFile.addFilter("Vti files", "*.vti");
+    dialogFile.addFilter("Vtu files", "*.vtu");
+    dialogFile.addFilter("MetaImage files", "*.mhd");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
@@ -162,17 +162,26 @@ void SSeriesDBReader::updating() throw(::fwTools::Failed)
 
         this->loadSeriesDB(this->getFiles(), localSeriesDB);
 
-        ::fwMedDataTools::helper::SeriesDB sDBhelper(seriesDB);
+        ::fwMedDataTools::helper::SeriesDB sdbHelper(seriesDB);
+        sdbHelper.clear();
+        // Notify removal.
+        sdbHelper.notify();
 
-        ::fwData::mt::ObjectWriteLock lock(seriesDB);
-        sDBhelper.merge(localSeriesDB);
-        sDBhelper.notify();
+        {
+            ::fwData::mt::ObjectWriteLock lock(seriesDB);
+            seriesDB->shallowCopy(localSeriesDB);
+        }
+
+        ::fwMedData::SeriesDB::ContainerType addedSeries = seriesDB->getContainer();
+
+        auto sig = seriesDB->signal< ::fwMedData::SeriesDB::AddedSeriesSignalType >(
+            ::fwMedData::SeriesDB::s_ADDED_SERIES_SIG);
+        sig->asyncEmit(addedSeries);
 
         cursor.setDefaultCursor();
     }
 }
 
 //------------------------------------------------------------------------------
-
 
 } // namespace ioVtk
