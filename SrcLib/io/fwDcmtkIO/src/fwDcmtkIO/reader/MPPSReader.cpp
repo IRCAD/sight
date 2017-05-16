@@ -94,9 +94,8 @@ MPPSReader::~MPPSReader()
 
     DcmSequenceOfItems* sequenceOfIt;
     dataset->findAndGetSequence(DCM_ExposureDoseSequence, sequenceOfIt);
-    SLM_WARN_IF("No sequence found in 'DCM_ExposureDoseSequence'.", !sequenceOfIt);
 
-    if(sequenceOfIt)
+    if(sequenceOfIt && sequenceOfIt->card() > 0)
     {
         unsigned long lastEl = sequenceOfIt->card() - 1;
 
@@ -142,6 +141,10 @@ MPPSReader::~MPPSReader()
         {
             series->addComputedTagValue("XRayTubeCurrentInuA", std::string(xRayTubeCurrentInuA.c_str()));
         }
+    }
+    else
+    {
+        SLM_WARN("No sequence found in 'DCM_ExposureDoseSequence'.");
     }
 
     // PerformedSeriesSequence, allows to find the associated image
