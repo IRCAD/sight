@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,16 +11,37 @@
 
 #include "visuVTKAdaptor/config.hpp"
 #include "visuVTKAdaptor/MeshFactory.hpp"
+#include "visuVTKAdaptor/Point.hpp"
+
+#include <fwData/Color.hpp>
+#include <fwData/Point.hpp>
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
-
-#include <fwData/Point.hpp>
 
 #include <set>
 #include <vector>
 
 namespace visuVTKAdaptor
 {
+
+/**
+ * @brief Adaptor to display a point list.
+ *
+ * @section Slots Slots
+ * - addPoint(::fwData::Point::sptr) : add point in the list.
+ * - updateSpline() : Updates the spline's points.
+ *
+ * @code{.xml}
+      <adaptor id="..." class="::visuVTKAdaptor::PointList" objectId="self">
+        <config renderer="default" picker="..." color="#FFFFFF" radius="10"/>
+      </adaptor>
+     @endcode
+ * @subsection Configuration Configuration
+ * - \b renderer : defines the renderer to show the point list.
+ * - \b picker : defines the picker of the point list.
+ * - \b color(#FFFFFF) : color of the point.
+ * - \b radius(double) : point radius.
+ */
 
 class VISUVTKADAPTOR_CLASS_API PointList : public ::fwRenderVTK::IVtkAdaptorService
 {
@@ -29,12 +50,15 @@ public:
     typedef std::vector< WPTR(::fwData::Point) > WeakPointListType;
     typedef std::set< WPTR(::fwData::Point) > WeakPointSetType;
 
-    fwCoreServiceClassDefinitionsMacro ( (PointList)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (PointList)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API PointList() throw();
 
     VISUVTKADAPTOR_API virtual ~PointList() throw();
 
+    VISUVTKADAPTOR_API void setRadius(const double);
+
+    VISUVTKADAPTOR_API void setColor(const fwData::Color::sptr);
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -55,7 +79,7 @@ protected:
     VISUVTKADAPTOR_API void doSwap() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
 
-    VISUVTKADAPTOR_API void createServices(WeakPointListType &wPtList);
+    VISUVTKADAPTOR_API void createServices(WeakPointListType& wPtList);
     VISUVTKADAPTOR_API WeakPointListType getWeakPointList();
     VISUVTKADAPTOR_API WeakPointListType getNewPoints();
 
@@ -76,8 +100,12 @@ private:
      * @}
      */
 
-};
+    /// Points color
+    ::fwData::Color::sptr m_ptColor;
 
+    /// Points radius
+    double m_radius;
+};
 
 } //namespace visuVTKAdaptor
 
