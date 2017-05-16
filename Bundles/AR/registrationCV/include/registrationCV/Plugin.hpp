@@ -1,18 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __TRACKER_PLUGIN_HPP__
-#define __TRACKER_PLUGIN_HPP__
+#ifndef __REGISTRATIONCV_PLUGIN_HPP__
+#define __REGISTRATIONCV_PLUGIN_HPP__
 
-#include "tracker/config.hpp"
+#include "registrationCV/config.hpp"
 
 #include <fwRuntime/Plugin.hpp>
 
-
-namespace tracker
+namespace registrationCV
 {
 
 struct Plugin : public ::fwRuntime::Plugin
@@ -38,6 +37,6 @@ struct Plugin : public ::fwRuntime::Plugin
     void stop() throw();
 };
 
-} // namespace tracker
+} // namespace registrationCV
 
-#endif // __TRACKER_PLUGIN_HPP__
+#endif // __REGISTRATIONCV_PLUGIN_HPP__

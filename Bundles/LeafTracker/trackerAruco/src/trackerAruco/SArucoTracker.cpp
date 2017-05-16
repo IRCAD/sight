@@ -30,7 +30,7 @@
 
 namespace trackerAruco
 {
-fwServicesRegisterMacro(::tracker::ITracker, ::trackerAruco::SArucoTracker);
+fwServicesRegisterMacro(::arServices::ITracker, ::trackerAruco::SArucoTracker);
 //-----------------------------------------------------------------------------
 
 const ::fwCom::Signals::SignalKeyType SArucoTracker::s_DETECTION_DONE_SIG  = "detectionDone";
@@ -80,7 +80,7 @@ SArucoTracker::~SArucoTracker() throw ()
 
 void SArucoTracker::configuring() throw (::fwTools::Failed)
 {
-    this->::tracker::ITracker::configuring();
+    this->::arServices::ITracker::configuring();
 
     ::fwRuntime::ConfigurationElement::sptr cfg = m_configuration->findConfigurationElement("config");
     SLM_ASSERT("Tag 'config' not found.", cfg);

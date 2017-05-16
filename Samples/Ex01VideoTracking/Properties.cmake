@@ -18,7 +18,6 @@ set( REQUIREMENTS
     visuVTKARAdaptor
     videoQt
     videoTools
-    tracker
     trackerAruco
     arMedia
     preferences

@@ -11,7 +11,6 @@ set( REQUIREMENTS
     guiQt
     maths
     media
-    tracker
     trackerAruco
     uiIO
     videoOpenni

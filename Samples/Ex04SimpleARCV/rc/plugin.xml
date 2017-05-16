@@ -1,4 +1,4 @@
-<plugin id="Ex04SimpleAR" version="@DASH_VERSION@">
+<plugin id="Ex04SimpleARCV" version="@DASH_VERSION@">
 
     <requirement id="dataReg" />
     <requirement id="arDataReg" />
@@ -9,7 +9,7 @@
     <requirement id="preferences" />
 
     <extension implements="::fwServices::registry::AppConfig2">
-        <id>Ex04SimpleARConfig</id>
+        <id>Ex04SimpleARCVConfig</id>
         <config>
 
             <!-- objects declarations -->
@@ -28,8 +28,8 @@
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
-                        <name>Ex04SimpleAR</name>
-                        <icon>@BUNDLE_PREFIX@/Ex04SimpleAR_0-1/app.ico</icon>
+                        <name>Ex04SimpleARCV</name>
+                        <icon>@BUNDLE_PREFIX@/Ex04SimpleARCV_@DASH_VERSION@/app.ico</icon>
                     </frame>
                     <menuBar />
                     <toolBar />
@@ -299,7 +299,7 @@
             </service>
 
             <!-- This will compute the pose of the camera with tag(s) detected by aruco -->
-            <service uid="registration" type="::registrationARL::SPoseFrom2d" worker="registration">
+            <service uid="registration" type="::registrationCV::SPoseFrom2d" worker="registration">
                 <in group="markerTL" autoConnect="yes">
                     <key uid="tagTL" />
                 </in>

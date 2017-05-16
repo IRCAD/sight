@@ -9,9 +9,9 @@
 
 #include "videoCalibration/config.hpp"
 
-#include <fwCore/HiResClock.hpp>
-
 #include <fwCom/Signal.hpp>
+
+#include <fwCore/HiResClock.hpp>
 
 #include <fwServices/IController.hpp>
 
@@ -27,7 +27,7 @@ namespace videoCalibration
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service uid="..." type="::tracker::SReprojectionError">
+     <service uid="..." type="::videoCalibration::SReprojectionError">
         <in key="matrixTL" uid="matrix"/>
         <in key="markerTL" uid="marker"/>
         <in key="camera" uid="camera1"/>

@@ -1,29 +1,34 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "tracker/Plugin.hpp"
+#include "registrationCV/Plugin.hpp"
 
 #include <fwRuntime/utils/GenericExecutableFactoryRegistrar.hpp>
+
 #include <fwServices/macros.hpp>
 
-namespace tracker
+namespace registrationCV
 {
 
-static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::tracker::Plugin");
+static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::registrationCV::Plugin");
 
 Plugin::~Plugin() throw()
 {
 }
 
+//------------------------------------------------------------------------------
+
 void Plugin::start() throw(::fwRuntime::RuntimeException)
 {
 }
+
+//------------------------------------------------------------------------------
 
 void Plugin::stop() throw()
 {
 }
 
-} // namespace tracker
+} // namespace registrationCV

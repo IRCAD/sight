@@ -2,10 +2,8 @@
 
     <library name="trackerAruco" />
 
-    <requirement id="tracker" />
-    
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::tracker::ITracker</type>
+        <type>::arServices::ITracker</type>
         <service>::trackerAruco::SArucoTracker</service>
         <object>::fwData::Composite</object>
     </extension>

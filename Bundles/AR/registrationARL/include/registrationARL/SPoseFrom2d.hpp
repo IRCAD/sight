@@ -4,38 +4,34 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __TRACKER_SHOMOGRAPHY_HPP__
-#define __TRACKER_SHOMOGRAPHY_HPP__
+#ifndef __REGISTRATIONARL_SPOSEFROM2D_HPP__
+#define __REGISTRATIONARL_SPOSEFROM2D_HPP__
 
-#include "tracker/config.hpp"
+#include "registrationARL/config.hpp"
 
-#include <fwCom/Slot.hpp>
-#include <fwCom/Slots.hpp>
+#include <arServices/IRegisterer.hpp>
 
 #include <fwCore/HiResClock.hpp>
 #include <fwCore/mt/types.hpp>
 
-#include <fwData/Composite.hpp>
-
-#include <fwServices/IController.hpp>
 #include <fwServices/macros.hpp>
 
 #include <arlcore/Point.h>
 #include <arlcore/Reconst3D.h>
 
-namespace tracker
+namespace registrationARL
 {
 
 /**
- * @brief   SHomography Class used to compute the rigid transformation.
+ * @brief   SPoseFrom2d Class used to compute the 3d pose of a object using 2d points.
  *
  * @section Slots Slots
- * - \b register(::fwCore::HiResClock::HiResClockType timestamp) : computes the homography.
+ * - \b computeRegistration(::fwCore::HiResClock::HiResClockType timestamp) : computes the registration.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-     <service uid="..." type="::tracker::SHomography">
+     <service uid="..." type="::registrationARL::SPoseFrom2d">
          <in group="markerTL" autoConnect="yes">
              <key uid="markerTL1" />
              <key uid="markerTL2" />
@@ -58,12 +54,10 @@ namespace tracker
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */
-class TRACKER_CLASS_API SHomography : public ::fwServices::IController
+class REGISTRATIONARL_CLASS_API SPoseFrom2d : public ::arServices::IRegisterer
 {
 public:
-    fwCoreServiceClassDefinitionsMacro((SHomography)(fwServices::IController));
-
-    static const ::fwCom::Slots::SlotKeyType s_REGISTER_SLOT;
+    fwCoreServiceClassDefinitionsMacro((SPoseFrom2d)(::arServices::IRegisterer));
 
     typedef std::vector< ::arlCore::Point::csptr > ARLPointListType;
     typedef std::vector<std::string> VectKeyType;
@@ -71,12 +65,12 @@ public:
     /**
      * @brief Constructor.
      */
-    TRACKER_API SHomography() throw ();
+    REGISTRATIONARL_API SPoseFrom2d() throw ();
 
     /**
      * @brief Destructor.
      */
-    TRACKER_API virtual ~SHomography() throw ();
+    REGISTRATIONARL_API virtual ~SPoseFrom2d() throw ();
 
     /// Connect MarkerTL::s_OBJECT_PUSHED_SIG to s_REGISTER_SLOT
     ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
@@ -85,25 +79,25 @@ protected:
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    TRACKER_API void configuring() throw (fwTools::Failed);
+    REGISTRATIONARL_API void configuring() throw (fwTools::Failed);
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    TRACKER_API void starting() throw (fwTools::Failed);
+    REGISTRATIONARL_API void starting() throw (fwTools::Failed);
 
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    TRACKER_API void updating() throw (fwTools::Failed);
+    REGISTRATIONARL_API void updating() throw (fwTools::Failed);
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    TRACKER_API void stopping() throw (fwTools::Failed);
+    REGISTRATIONARL_API void stopping() throw (fwTools::Failed);
 
     /// Register matrix slot
-    void doRegistration(::fwCore::HiResClock::HiResClockType timestamp);
+    void computeRegistration(::fwCore::HiResClock::HiResClockType timestamp);
 
 private:
 
@@ -131,13 +125,10 @@ private:
     /// Points of the 3D model of the marker
     ARLPointListType m_3dModel;
 
-    ///< ARL cameras
+    /// ARL cameras
     std::vector< const ::arlCore::Camera* > m_arlCameras;
-
-    ///< Mutex used to lock access of doRegistration
-    ::fwCore::mt::Mutex m_mutex;
 };
 
-} // namespace tracker
+} // namespace registrationARL
 
-#endif /* __TRACKER_SHOMOGRAPHY_HPP__ */
+#endif /* __REGISTRATIONARL_SPOSEFROM2D_HPP__ */
