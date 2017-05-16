@@ -116,7 +116,7 @@ private Q_SLOTS:
     void onItemDoubleClicked(QListWidgetItem* item);
 };
 
-}
-}
+}//namespace editor
+}//namespace guiQt
 
 #endif /*__GUIQT_EDITOR_SLISTVIEW_HPP__*/
