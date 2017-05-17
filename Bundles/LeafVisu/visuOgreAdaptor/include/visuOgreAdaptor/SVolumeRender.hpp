@@ -150,6 +150,9 @@ protected:
     /// Configures the service
     VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
 
+    /// Returns the priority of the adaptor
+    VISUOGREADAPTOR_API virtual int getStartPriority();
+
     /// Slot called on TF update.
     VISUOGREADAPTOR_API virtual void updatingTFPoints();
 
