@@ -4,7 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "tracker/ITracker.hpp"
+#include "arServices/ITracker.hpp"
 
 #include <arData/BufferTL.hpp>
 
@@ -15,7 +15,7 @@
 
 //-----------------------------------------------------------------------------
 
-namespace tracker
+namespace arServices
 {
 
 //-----------------------------------------------------------------------------
@@ -116,5 +116,5 @@ void ITracker::stopTracking()
 
 //-----------------------------------------------------------------------------
 
-} // namespace tracker
+} // namespace arServices
 

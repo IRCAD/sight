@@ -11,6 +11,7 @@
         <param name="tagMatrix2" />
         <param name="tagsToDetect" />
         <param name="markerMesh" />
+        <param name="registrationMatrix" />
 
     </parameters>
     <config>
@@ -24,6 +25,7 @@
         <object uid="${markerMesh}" type="::fwData::Mesh" src="ref"/>
         <object uid="${tagMatrix1}" type="::fwData::TransformationMatrix3D" src="ref"/>
         <object uid="${tagMatrix2}" type="::fwData::TransformationMatrix3D" src="ref"/>
+        <object uid="${registrationMatrix}" type="::fwData::TransformationMatrix3D" src="ref"/>
         
         <object uid="tagTL" type="::arData::MarkerTL" />
 
@@ -49,9 +51,10 @@
             <in key="imageVideo" uid="${imageVideo}" />
             <in key="markerMesh" uid="${markerMesh}" optional="yes" />
             <in key="camera" uid="${camera}" />
-            <inout key="tagMatrix1" uid="${tagMatrix1}" />
-            <inout key="tagMatrix2" uid="${tagMatrix2}" />
-            <inout key="identity" uid="identity" />
+            <in key="tagMatrix1" uid="${tagMatrix1}" />
+            <in key="tagMatrix2" uid="${tagMatrix2}" />
+            <in key="identity" uid="identity" />
+            <in key="registrationMatrix" uid="${registrationMatrix}" />
             <scene renderMode="timer">
                 <renderer id="video" layer="0" background="0.0" />
                 <renderer id="default" layer="1" background="0.0" />
@@ -72,12 +75,20 @@
                     <config renderer="default" picker="" transform="tagMatrixTransform2" />
                 </adaptor>
 
+                <adaptor id="registrationMatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="registrationMatrix">
+                    <config renderer="default" picker="" transform="registrationMatrixTransform" />
+                </adaptor>
+
                 <adaptor uid="axis1" id="axis1" class="::visuVTKAdaptor::Axes" objectId="self">
                     <config renderer="default" transform="tagMatrixTransform1" length="50"/>
                 </adaptor>
 
                 <adaptor uid="axis2" id="axis2" class="::visuVTKAdaptor::Axes" objectId="self">
                     <config renderer="default" transform="tagMatrixTransform2" length="50"/>
+                </adaptor>
+
+                <adaptor uid="axisRegistrationMatrix" id="axisRegistrationMatrix" class="::visuVTKAdaptor::Axes" objectId="self">
+                    <config renderer="default" transform="registrationMatrixTransform" length="50"/>
                 </adaptor>
 
                 <adaptor uid="markerMesh" id="markerMesh" class="::visuVTKAdaptor::Mesh" objectId="markerMesh">
@@ -96,6 +107,7 @@
                     <signal>tracker/markerDetected</signal>
                     <slot>axis1/updateVisibility</slot>
                     <slot>axis2/updateVisibility</slot>
+                    <slot>axisRegistrationMatrix/updateVisibility</slot>
                     <slot>markerMesh/updateVisibility</slot>
                     <slot>markerMesh2/updateVisibility</slot>
                 </connect>

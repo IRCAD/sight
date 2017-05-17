@@ -1,5 +1,5 @@
 
-set( NAME Ex04SimpleAR )
+set( NAME Ex04SimpleARCV )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
@@ -21,7 +21,7 @@ set( REQUIREMENTS
     preferences
     servicesReg
     trackerAruco
-    registrationARL
+    registrationCV
     videoQt
     videoTools
     videoCalibration
@@ -32,4 +32,4 @@ set( REQUIREMENTS
 
     )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex04SimpleARConfig)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex04SimpleARCVConfig)

@@ -1,5 +1,5 @@
 
-set( NAME Ex01VideoTracking )
+set( NAME Ex05FrameByFrame )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( UNIQUE TRUE)
@@ -17,10 +17,10 @@ set( REQUIREMENTS
     visuVTKAdaptor
     visuVTKARAdaptor
     videoQt
+    videoOpenCV
     videoTools
-    trackerAruco
     arMedia
     preferences
     )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex01VideoTrackingConfig)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex05FrameByFrameConfig)
