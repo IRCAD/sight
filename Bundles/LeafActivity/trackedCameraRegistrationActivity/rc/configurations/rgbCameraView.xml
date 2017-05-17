@@ -139,7 +139,7 @@
             </config>
         </service>
 
-        <service uid="homography" type="::tracker::SHomography" worker="registration">
+        <service uid="homography" type="::registrationARL::SPoseFrom2d" worker="registration">
             <in group="markerTL" autoConnect="yes">
                 <key uid="tagTL" />
             </in>

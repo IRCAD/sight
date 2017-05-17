@@ -11,6 +11,7 @@ set( REQUIREMENTS
     guiQt
     maths
     media
+    registrationARL
     trackerAruco
     uiIO
     videoOpenni
