@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,7 +8,6 @@
 #define __FWSERVICES_IPARAMETERSSERVICE_HPP__
 
 #include "fwServices/config.hpp"
-
 #include <fwServices/IService.hpp>
 
 #include <cstdint>
@@ -26,19 +25,22 @@ namespace fwServices
 
  * @section Slots Slots
  * - \b setBoolParameter(bool, std::string) : Receive a boolean parameter along with the identifier.
+ * - \b setColorParameter(std::array<std::uint8_t, 4>, std::string) : Receive a color along with the identifier.
  * - \b setDoubleParameter(double, std::string) : Receive a real parameter along with the identifier.
- * - \b setDoubleParameter(double, double, std::string) : Receive two real parameters along with the identifier.
- * - \b setDoubleParameter(double, double, double, std::string) : Receive three real parameters along with the identifier.
+ * - \b setDouble2Parameter(double, double, std::string) : Receive two real parameters along with the identifier.
+ * - \b setDouble3Parameter(double, double, double, std::string) : Receive three real parameters along with the
+ * identifier.
  * - \b setIntParameter(int, std::string) : Receive an integer parameter along with the identifier.
- * - \b setIntParameter(int, int, std::string) : Receive two integer parameters along with the identifier.
- * - \b setIntParameter(int, int, int, std::string) : Receive three integer parameters along with the identifier.
+ * - \b setInt2Parameter(int, int, std::string) : Receive two integer parameters along with the identifier.
+ * - \b setInt3Parameter(int, int, int, std::string) : Receive three integer parameters along with the identifier.
+ * - \b setEnumParameter(std::string, std::string) : Receive an enum parameter along with the identifier.
  */
 class FWSERVICES_CLASS_API IParametersService : public ::fwServices::IService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (IParametersService)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (IParametersService)(::fwServices::IService) );
 
     FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
     FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
@@ -48,6 +50,7 @@ public:
     FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
     FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_INT2_PARAMETER_SLOT;
     FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_INT3_PARAMETER_SLOT;
+    FWSERVICES_API static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT;
 
 protected:
 
@@ -80,6 +83,9 @@ protected:
 
     /// Slot: This method is used to set three int parameters.
     FWSERVICES_API virtual void setInt3Parameter(int val0, int val1, int val2, std::string key);
+
+    /// Slot: This method is used to set an enum parameter.
+    FWSERVICES_API virtual void setEnumParameter(std::string val, std::string key);
 };
 
 }

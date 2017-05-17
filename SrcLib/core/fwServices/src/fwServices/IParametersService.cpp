@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,7 +21,7 @@ const ::fwCom::Slots::SlotKeyType IParametersService::s_SET_DOUBLE3_PARAMETER_SL
 const ::fwCom::Slots::SlotKeyType IParametersService::s_SET_INT_PARAMETER_SLOT     = "setIntParameter";
 const ::fwCom::Slots::SlotKeyType IParametersService::s_SET_INT2_PARAMETER_SLOT    = "setInt2Parameter";
 const ::fwCom::Slots::SlotKeyType IParametersService::s_SET_INT3_PARAMETER_SLOT    = "setInt3Parameter";
-
+const ::fwCom::Slots::SlotKeyType IParametersService::s_SET_ENUM_PARAMETER_SLOT    = "setEnumParameter";
 
 //-----------------------------------------------------------------------------
 
@@ -35,6 +35,7 @@ IParametersService::IParametersService()
     newSlot(s_SET_INT_PARAMETER_SLOT, &IParametersService::setIntParameter, this);
     newSlot(s_SET_INT2_PARAMETER_SLOT, &IParametersService::setInt2Parameter, this);
     newSlot(s_SET_INT3_PARAMETER_SLOT, &IParametersService::setInt3Parameter, this);
+    newSlot(s_SET_ENUM_PARAMETER_SLOT, &IParametersService::setEnumParameter, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -95,6 +96,13 @@ void IParametersService::setInt2Parameter(int val0, int val1, std::string key)
 //-----------------------------------------------------------------------------
 
 void IParametersService::setInt3Parameter(int val0, int val1, int val2, std::string key)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+
+void IParametersService::setEnumParameter(std::string val, std::string key)
 {
 
 }

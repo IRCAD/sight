@@ -9,78 +9,52 @@
 
 #include "fwCommand/config.hpp"
 
-#include <fwServices/IService.hpp>
-
-#include <fwTools/Object.hpp>
-
-#include <boost/cstdint.hpp>
-
-#include <exception>
+#include <memory>
 #include <string>
 
 namespace fwCommand
 {
 
 /**
- * @brief The base class for all command.
- *
- * It provides do/undo operations as well as GetDescription operations for the easy
- * tracking of the executed command (quite useful when keeping a menu of last performed
- * operations).
+ * @brief The base class for commands.
  */
-class FWCOMMAND_CLASS_API ICommand : public ::fwTools::Object
+class FWCOMMAND_CLASS_API ICommand
 {
-
-protected:
-
-    ::fwServices::IService::wptr m_serviceNotifier;
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro( (ICommand)(::fwTools::Object) );
+    typedef std::shared_ptr<ICommand> sptr;
 
     /**
      * @brief Virtual destructor.
      */
-    virtual ~ICommand()
+    FWCOMMAND_API virtual ~ICommand()
     {
     }
 
     /**
      * @brief Retrieves the memory footprint of the command.
      */
-    FWCOMMAND_API virtual const boost::uint32_t  getSize() const = 0;
+    FWCOMMAND_API virtual size_t getSize() const = 0;
 
     /**
-     * @brief Pure virtual operation that in child classes encapsulates the logic of the change.
+     * @brief Used to implement the redo operation.
      */
-    FWCOMMAND_API virtual void apply() /*throw(std::exception)*/ = 0;    // FIXME std::exception to net::cmd::exception
+    FWCOMMAND_API virtual bool redo() = 0;
 
     /**
-     * @brief Pure virtual operation that in child classes encapsulates the logic of undoing a change.
+     * @brief Used to implement the undo operation.
      */
-    FWCOMMAND_API virtual void unapply() /*throw(std::exception)*/ = 0;
+    FWCOMMAND_API virtual bool undo() = 0;
 
     /**
-     * @brief Pure virtual operation that in child classes returns the description of the operation
-     *
-     * particularly useful for undo/redo lists presented to the user.
+     * @brief Return an optionnal description of the command.
      */
-    FWCOMMAND_API virtual const std::string getDescription( void ) const = 0;
-
-    //------------------------------------------------------------------------------
-
-    void setNotifier( ::fwServices::IService::sptr serviceNotifier )
+    FWCOMMAND_API virtual const std::string getDescription() const
     {
-        m_serviceNotifier = serviceNotifier;
+        return "";
     }
 
-    //------------------------------------------------------------------------------
-
-    ::fwServices::IService::sptr getNotifier()
-    {
-        return m_serviceNotifier.lock();
-    }
 };
 
 } // namespace fwCommand
