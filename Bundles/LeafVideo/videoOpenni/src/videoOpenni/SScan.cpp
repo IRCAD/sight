@@ -331,16 +331,6 @@ void SScan::pauseCamera()
 
 void SScan::takeSnapshot()
 {
-//    if (m_status != ::openni::STATUS_OK)
-//    {
-//        OSLM_ERROR("Device open failed." << ::openni::OpenNI::getExtendedError());
-//        ::fwGui::dialog::MessageDialog::showMessageDialog(
-//            "Sense Error",
-//            "Sense device is not available. Please check if it is plugged in.",
-//            ::fwGui::dialog::IMessageDialog::CRITICAL);
-//        return;
-//    }
-
     std::array<bool, 3> startedStreams;
     startedStreams.fill(false);
 
