@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,8 +12,7 @@
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 class vtkImageData;
-class vtkTexture;
-class vtkActor;
+class vtkImageActor;
 
 namespace arData
 {
@@ -48,7 +47,7 @@ class VISUVTKARADAPTOR_CLASS_API SVideoAdapter : public ::fwRenderVTK::IVtkAdapt
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SVideoAdapter)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (SVideoAdapter)(::fwRenderVTK::IVtkAdaptorService) );
 
     /// Constructor
     SVideoAdapter() throw();
@@ -99,8 +98,7 @@ private:
     void offsetOpticalCenter();
 
     vtkImageData* m_imageData; ///< vtk image created from current data Image. It is shown in the frame.
-    vtkTexture* m_texture;  ///< texture used to show the image
-    vtkActor * m_actor;  ///< actor to show frame
+    vtkImageActor* m_actor;   ///< actor to show frame
 
     bool m_isTextureInit; /// true if the texture is initialized
 

@@ -23,8 +23,8 @@
 
 #include <fwVtkIO/vtk.hpp>
 
-#include <vtkActor.h>
 #include <vtkCamera.h>
+#include <vtkImageActor.h>
 #include <vtkImageData.h>
 #include <vtkMatrix4x4.h>
 #include <vtkPlaneSource.h>
@@ -47,8 +47,7 @@ static const  ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT           = "calibrat
 
 SVideoAdapter::SVideoAdapter() throw() :
     m_imageData(vtkImageData::New()),
-    m_texture(vtkTexture::New()),
-    m_actor(vtkActor::New()),
+    m_actor(vtkImageActor::New()),
     m_isTextureInit(false),
     m_reverse(true)
 {
@@ -99,10 +98,6 @@ void SVideoAdapter::doConfigure() throw(fwTools::Failed)
 
 void SVideoAdapter::doStart() throw(fwTools::Failed)
 {
-    vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
-    vtkPlaneSource* plan      = vtkPlaneSource ::New();
-    mapper->SetInputConnection(plan->GetOutputPort());
-    m_actor->SetMapper(mapper);
     if (m_reverse)
     {
         m_actor->RotateZ(180);
@@ -155,18 +150,12 @@ void SVideoAdapter::doUpdate() throw(fwTools::Failed)
             m_actor->RotateY(180);
         }
 
-        const ::fwData::Image::SizeType size       = image->getSize();
-        const ::fwData::Image::SpacingType spacing = image->getSpacing();
+        const ::fwData::Image::SizeType size = image->getSize();
 
-        m_texture->SetInputData( m_imageData );
-        m_actor->SetScale(size[0]*spacing[0], size[1]*spacing[1], 1.);
+        m_actor->SetInputData(m_imageData);
         this->addToRenderer(m_actor);
 
         m_isTextureInit = true;
-
-        vtkProperty* property = m_actor->GetProperty();
-        property->RemoveTexture("texture");
-        property->SetTexture("texture", m_texture);
 
         this->getRenderer()->InteractiveOff();
         this->getRenderer()->GetActiveCamera()->ParallelProjectionOn();
@@ -207,7 +196,7 @@ void SVideoAdapter::updateImageOpacity()
     {
         ::fwData::Integer::sptr transparency = img->getField< ::fwData::Integer >( "TRANSPARENCY" );
         double imageOpacity = (100 - (*transparency) ) / 100.0;
-        m_actor->GetProperty()->SetOpacity(imageOpacity);
+        m_actor->SetOpacity(imageOpacity);
     }
     if(img->getField( "VISIBILITY" ) )
     {
