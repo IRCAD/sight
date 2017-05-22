@@ -65,6 +65,7 @@ SFrameWriter::~SFrameWriter() throw()
 
 void SFrameWriter::configuring() throw(::fwTools::Failed)
 {
+    ::io::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------

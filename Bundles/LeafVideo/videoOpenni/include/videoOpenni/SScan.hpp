@@ -21,21 +21,36 @@ namespace videoOpenni
 {
 
 /**
- * @brief   This service grabs the depth and color frames from a compatible RGBD camera (Kinect, Sense, etc...).
- * The frames are pushed into timelines.
+ * @brief   This service grabs the depth, color, ir frames from a compatible RGBD camera (Kinect, Sense, etc...).
+ *
+ * The frames are pushed into the timelines that are configured.
+ * According to the device, it may not be possible to grab all streams simultaneously. On the Sense and the Kinect for
+ * instance, it is not possible to get the color and the IR streams
+ * together.
+ *
+ * @section Slots Slots
+ * - \b takeSnapshot(): Push a frame inside each of the configured snapshot timelines.
  *
  * @section XML XML Configuration
  * @code{.xml}
    <service uid="..." type ="::videoOpenni::SScan" >
         <inout key="frameTLDepth" uid="..." />
         <inout key="frameTLColors" uid="..." />
-        <inout key="cameraSeries" uid="..." />
+        <inout key="frameTLIR" uid="..." />
+        <inout key="frameTLPositions" uid="..." />
+        <inout key="snapshotTLDepth" uid="..." />
+        <inout key="snapshotTLColors" uid="..." />
+        <inout key="snapshotTLIR" uid="..." />
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b frameDepth [::arData::FrameTL]: Frame timeline of the depth video.
- * - \b frameColor [::arData::FrameTL]: Frame timeline of the color video.
- * - \b cameraSeries [::arData::CameraSeries]: Camera series that will contain device camera information.
+ * - \b frameTLDepth [::arData::FrameTL]: Frame timeline of the depth stream.
+ * - \b frameTLColors [::arData::FrameTL]: Frame timeline of the color stream.
+ * - \b frameTLIR [::arData::FrameTL]: Frame timeline of the infrared stream.
+ * - \b frameTLPositions [::arData::FrameTL]: Timeline storing a point cloud computed from the depth stream.
+ * - \b snapshotTLDepth [::arData::FrameTL]: Frame timeline used to store snaphots of the color stream.
+ * - \b snapshotTLColors [::arData::FrameTL]: Frame timeline used to store snaphots of the depth stream.
+ * - \b snapshotTLIR [::arData::FrameTL]: Frame timeline used to store snaphots of the infrared stream.
  */
 class VIDEOOPENNI_CLASS_API SScan : public ::arServices::IGrabber
 {
@@ -48,6 +63,13 @@ public:
 
     /// Destructor. Does nothing.
     VIDEOOPENNI_API virtual ~SScan() throw();
+
+    /**
+     * @name Slots API
+     * @{
+     */
+    VIDEOOPENNI_API static const ::fwCom::Slots::SlotKeyType s_TAKE_SNAPSHOT_FRAME;
+    ///@}
 
 protected:
 
@@ -74,8 +96,9 @@ private:
     /// SLOT : Grabs and pushes depth and color frames in their corresponding timelines.
     virtual void presentFrame();
 
-    ///SLOT : Pause the grabbing
+    /// SLOT : Pause the grabbing
     virtual void pauseCamera();
+
     ///Not used
     virtual void toggleLoopMode()
     {
@@ -85,18 +108,31 @@ private:
     {
     }
 
+    /// SLOT : Take a snapshot
+    void takeSnapshot();
+
     ::openni::VideoFrameRef m_depthFrame; ///< Frame of the depth information.
     ::openni::VideoFrameRef m_colorFrame; ///< Frame of the color information.
+    ::openni::VideoFrameRef m_irFrame; ///< Frame of the infrared information.
 
     // Timelines
-    ::arData::FrameTL::sptr m_depthTimeline; ///< Depth timeline.
-    ::arData::FrameTL::sptr m_colorTimeline; ///< Color timeline.
+    ::arData::FrameTL::sptr m_depthTL; ///< Depth timeline.
+    ::arData::FrameTL::sptr m_colorTL; ///< Color timeline.
+    ::arData::FrameTL::sptr m_irTL; ///< Infrared timeline.
     ::arData::FrameTL::sptr m_positionsTimeline; ///< Positions timeline.
 
+    // Snapshot timelines
+    ::arData::FrameTL::sptr m_snapshotDepthTL; ///< Depth timeline.
+    ::arData::FrameTL::sptr m_snapshotColorTL; ///< Color timeline.
+    ::arData::FrameTL::sptr m_snapshotIRTL; ///< Infrared timeline.
+
     // Video Streams
-    ::openni::VideoStream m_depthStream; ///< Depth stream.
-    ::openni::VideoStream m_colorStream; ///< Color stream.
-    ::openni::VideoStream**       m_streams; ///< Ensemble of the streams.
+    ::openni::VideoStream m_depthStream;   ///< Depth stream.
+    ::openni::VideoStream m_colorStream;   ///< Color stream.
+    ::openni::VideoStream m_irStream;   ///< Infrared stream.
+
+    ::openni::VideoStream** m_streams; ///< All streams together, needed to provide to OpenNI.
+    std::map<size_t, ::openni::VideoStream*> m_streamMap; ///< Video streams map
 
     // Device
     ::openni::Device m_camera; ///< OpenNI camera.
@@ -110,6 +146,7 @@ private:
 
     mutable ::fwCore::mt::ReadWriteMutex m_videoFrameMutex; ///< Mutex to protect concurrent access of m_videoFrame.
 
+    bool m_capture; ///< Whether we are capturing frames.
 };
 }
 

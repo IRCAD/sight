@@ -30,7 +30,6 @@
         <service uid="${frameGrabber}" type="::videoOpenni::SScan" worker="scanWorker">
             <inout key="frameTLDepth" uid="depthFrameTL" />
             <inout key="frameTLColors" uid="${frameTL}" />
-            <inout key="cameraSeries" uid="${cameraSeries}" />
         </service>
 
         <service uid="extractCamera" type="::ctrlCamp::SExtractObj">

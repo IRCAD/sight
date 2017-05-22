@@ -134,12 +134,12 @@
                     <blockSize>7</blockSize>
                     <constant>7</constant>
                 </threshold>
-                <patternWidth>163</patternWidth>
+                <patternWidth>150</patternWidth>
                 <debugMarkers>yes</debugMarkers>
             </config>
         </service>
 
-        <service uid="homography" type="::tracker::SHomography" worker="registration">
+        <service uid="homography" type="::registrationARL::SPoseFrom2d" worker="registration">
             <in group="markerTL" autoConnect="yes">
                 <key uid="tagTL" />
             </in>
@@ -147,7 +147,7 @@
                 <key uid="${camera}" />
             </in>
             <inout key="matrixTL" uid="${matrixTL}" />
-            <patternWidth>163</patternWidth>
+            <patternWidth>150</patternWidth>
         </service>
 
 

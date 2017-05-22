@@ -47,7 +47,7 @@
             <requirement name="rgbCameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
                 <desc>CameraSeries containing the calibration for the RGB camera</desc>
             </requirement>
-            <requirement name="senseCameraSeries" type="::arData::CameraSeries" minOccurs="0" maxOccurs="1" create="true">
+            <requirement name="senseCameraSeries" type="::arData::CameraSeries" minOccurs="1" maxOccurs="1">
                 <desc>CameraSeries containing the calibration for the Sense camera</desc>
             </requirement>
             <requirement name="markerMesh" type="::fwData::Mesh" minOccurs="0" maxOccurs="1" create="true">
