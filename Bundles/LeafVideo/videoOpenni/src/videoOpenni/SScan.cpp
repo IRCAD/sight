@@ -92,14 +92,7 @@ void SScan::starting() throw(::fwTools::Failed)
         m_status = m_depthStream.create(m_camera, ::openni::SENSOR_DEPTH);
         m_depthStream.setMirroringEnabled(false);
 
-        if( m_camera.isPropertySupported(ONI_DEVICE_PROPERTY_IMAGE_REGISTRATION) )
-        {
-            m_camera.setProperty(ONI_DEVICE_PROPERTY_IMAGE_REGISTRATION, ONI_IMAGE_REGISTRATION_OFF);
-        }
-        else
-        {
-            SLM_ERROR("Depth to color registration is not supported, color matching will be wrong.");
-        }
+        m_camera.setProperty(ONI_DEVICE_PROPERTY_IMAGE_REGISTRATION, ONI_IMAGE_REGISTRATION_OFF);
 
         if(m_snapshotDepthTL != nullptr)
         {
