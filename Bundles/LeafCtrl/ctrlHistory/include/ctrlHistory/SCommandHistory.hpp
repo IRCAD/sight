@@ -65,10 +65,10 @@ protected:
     /// Set memory and command boundaries.
     CTRLHISTORY_API virtual void configuring() throw( ::fwTools::Failed );
 
-    /// Does nothing.
+    /// Notify if undo or redo are possible.
     CTRLHISTORY_API virtual void starting() throw( ::fwTools::Failed );
 
-    /// Does nothing.
+    /// Notify if undo or redo are possible.
     CTRLHISTORY_API virtual void updating() throw( ::fwTools::Failed );
 
     /// Clears the history.

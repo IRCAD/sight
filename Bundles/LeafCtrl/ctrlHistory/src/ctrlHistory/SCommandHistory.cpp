@@ -85,6 +85,7 @@ void SCommandHistory::starting() throw( ::fwTools::Failed )
 
 void SCommandHistory::updating() throw( ::fwTools::Failed )
 {
+    this->emitModifSig();
 }
 
 //-----------------------------------------------------------------------------
