@@ -349,13 +349,12 @@ void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::container::fw
 
 void VtkRenderWindowInteractorManager::uninstallInteractor()
 {
-    m_interactor = 0;
+    m_interactor = nullptr;
 
-    m_qVTKWidget->hide();
+    delete m_qVTKWidget;
+    m_qVTKWidget = nullptr;
 
     m_parentContainer->clean();
-
-    SLM_ASSERT("QVTKWidget has not been deleted", !m_qVTKWidget);
 }
 
 //-----------------------------------------------------------------------------

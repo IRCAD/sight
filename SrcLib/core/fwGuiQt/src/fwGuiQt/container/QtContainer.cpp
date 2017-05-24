@@ -39,11 +39,8 @@ void QtContainer::clean()
 {
     SLM_ASSERT("The QWidget is not yet initialized, cleaning is thus impossible", m_container);
 
-    m_container->adjustSize();
-    if (m_container->layout())
-    {
-        QWidget().setLayout(m_container->layout());
-    }
+    delete m_container->layout();
+    m_container->setLayout(nullptr);
 }
 
 //-----------------------------------------------------------------------------
