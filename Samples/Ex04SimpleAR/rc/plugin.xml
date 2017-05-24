@@ -4,7 +4,6 @@
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-    <requirement id="tracker" />
     <requirement id="trackerAruco" />
     <requirement id="arMedia" />
     <requirement id="preferences" />
@@ -300,7 +299,7 @@
             </service>
 
             <!-- This will compute the pose of the camera with tag(s) detected by aruco -->
-            <service uid="registration" type="::tracker::SHomography" worker="registration">
+            <service uid="registration" type="::registrationARL::SPoseFrom2d" worker="registration">
                 <in group="markerTL" autoConnect="yes">
                     <key uid="tagTL" />
                 </in>

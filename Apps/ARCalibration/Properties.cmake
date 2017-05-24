@@ -28,6 +28,7 @@ set( REQUIREMENTS
 
     activities
     calibrationActivity
+    trackedCameraRegistrationActivity
 
     appXml2
     fwlauncher

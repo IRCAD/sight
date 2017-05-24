@@ -242,7 +242,7 @@
                 <debugMarkers>yes</debugMarkers>
             </config>
         </service>
-        
+
         <!-- Synchronizer -->
         <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer" worker="videoWorker">
             <in group="frameTL">
@@ -256,7 +256,7 @@
             <framerate>30</framerate>
         </service>
 
-        <service uid="markerRegistration" type="::tracker::SHomography" worker="registration">
+        <service uid="markerRegistration" type="::registrationARL::SPoseFrom2d" worker="registration">
             <in group="markerTL" autoConnect="yes">
                 <key uid="tagTL1" />
                 <key uid="tagTL2" />

@@ -9,6 +9,8 @@
 
 #include "trackerAruco/config.hpp"
 
+#include <arServices/ITracker.hpp>
+
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
@@ -18,8 +20,6 @@
 
 #include <fwServices/macros.hpp>
 
-#include <tracker/ITracker.hpp>
-
 #include <aruco/markerdetector.h>
 
 namespace trackerAruco
@@ -28,7 +28,7 @@ namespace trackerAruco
 /**
  * @brief   Class used to track multiple tags with ArUco.
  *
- * @see ::tracker::ITracker
+ * @see ::arServices::ITracker
  *
  * @section Signals Signals
  * - \b detectionDone(::fwCore::HiResClock::HiResClockType) : This signal is emitted when the tracker find tags.
@@ -88,11 +88,11 @@ namespace trackerAruco
  *  - \b dropObj : defines if the tracker should drop few objects from the timeline (and always get the last one) or
  *  not.
  */
-class TRACKERARUCO_CLASS_API SArucoTracker : public ::tracker::ITracker
+class TRACKERARUCO_CLASS_API SArucoTracker : public ::arServices::ITracker
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro((SArucoTracker)(tracker::ITracker));
+    fwCoreServiceClassDefinitionsMacro((SArucoTracker)(arServices::ITracker));
 
     typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > DetectionDoneSignalType;
     typedef ::fwCom::Signal< void (bool) > MarkerDetectedSignalType;

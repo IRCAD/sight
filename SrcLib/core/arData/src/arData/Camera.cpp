@@ -1,22 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "arData/Camera.hpp"
 
-#include <fwCore/base.hpp>
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
-#include <fwData/registry/macros.hpp>
-#include <fwData/Exception.hpp>
+#include <fwCore/base.hpp>
 
-#include <boost/bimap/bimap.hpp>
+#include <fwData/Exception.hpp>
+#include <fwData/registry/macros.hpp>
+
 #include <boost/assign.hpp>
+#include <boost/bimap/bimap.hpp>
 
 fwDataRegisterMacro(::arData::Camera);
 
@@ -35,7 +35,8 @@ Camera::Camera( ::fwData::Object::Key key ) :
     m_isCalibrated(false),
     m_maxFrameRate(30.f),
     m_pixelFormat(INVALID),
-    m_cameraSource(UNKNOWN)
+    m_cameraSource(UNKNOWN),
+    m_scale(1.)
 {
     m_intrinsic.fill(0.);
     m_distortionCoefficient.fill(0.);
@@ -142,11 +143,12 @@ void Camera::shallowCopy( const ::fwData::Object::csptr& _source )
     m_videoFile             = other->m_videoFile;
     m_streamUrl             = other->m_streamUrl;
     m_cameraSource          = other->m_cameraSource;
+    m_scale                 = other->m_scale;
 }
 
 //------------------------------------------------------------------------------
 
-void Camera::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cache)
+void Camera::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
 {
     Camera::csptr other = Camera::dynamicConstCast(source);
     FW_RAISE_EXCEPTION_IF( ::fwData::Exception(
@@ -176,6 +178,7 @@ void Camera::cachedDeepCopy(const Object::csptr &source, DeepCopyCacheType &cach
     m_videoFile    = other->m_videoFile;
     m_streamUrl    = other->m_streamUrl;
     m_cameraSource = other->m_cameraSource;
+    m_scale        = other->m_scale;
 }
 
 // -------------------------------------------------------------------------

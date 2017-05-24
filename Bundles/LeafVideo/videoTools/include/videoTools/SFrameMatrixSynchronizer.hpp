@@ -14,8 +14,8 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
-#include <fwCore/HiResClock.hpp>
 #include <fwCore/base.hpp>
+#include <fwCore/HiResClock.hpp>
 
 #include <fwData/Composite.hpp>
 
@@ -42,6 +42,8 @@ namespace videoTools
  *
  * @section Signals Signals
  * - \b synchronizationDone(::fwCore::HiResClock::HiResClockType) : Emitted when the sync is done.
+ * - \b allMatricesFound(::fwCore::HiResClock::HiResClockType) : Emitted when the sync is done, contains a boolean to
+ *  signal if all the matrices are synchronized.
  *
  * @section XML XML Configuration
  *
@@ -106,6 +108,10 @@ public:
      */
     typedef ::fwCom::Signal< void (::fwCore::HiResClock::HiResClockType timestamp) > SynchronizationDoneSignalType;
     VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_SYNCHRONIZATION_DONE_SIG;
+
+    typedef ::fwCom::Signal< void (bool) > AllMatricesFoundSignalType;
+    VIDEOTOOLS_API static const ::fwCom::Signals::SignalKeyType s_ALL_MATRICES_FOUND_SIG;
+
     /** @} */
 
     /**
@@ -172,11 +178,18 @@ private:
     /// Time step used for the update
     unsigned int m_timeStep;
 
+    /// Total number of matrices in output (used to know if all the matrices are synchronized)
+    size_t m_totalOutputMatrices;
+
     /// Timer used for the update
     ::fwThread::Timer::sptr m_timer;
 
     /// Signal emitted when the synchronization of the frame timeline and the matrix timeline is done.
     SynchronizationDoneSignalType::sptr m_sigSynchronizationDone;
+
+    /// Signal emitted when the synchronization is done, contains a boolean to signal if all the matrices
+    ///  are synchronized.
+    AllMatricesFoundSignalType::sptr m_sigAllMatricesFound;
 };
 
 } // namespace videoTools

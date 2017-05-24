@@ -18,6 +18,7 @@
     <xi:include href="configurations/toolsCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/calibrationEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/videoEdition.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/rgbdCalibration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwActivities::registry::Activities">
         <id>Calibration</id>
@@ -84,6 +85,19 @@
         <appConfig id="calibrationEdition">
             <parameters>
                 <parameter replace="cameraSeries" by="@values.cameraSeries" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>RGBDCalibration</id>
+        <title>RGBD camera calibration</title>
+        <desc>Calibrate the intrinsic and extrinsic parameters of a RGBD camera.</desc>
+        <icon>@BUNDLE_PREFIX@/arMedia_0-1/icons/calibrationActivity.svg</icon>
+        <requirements>
+        </requirements>
+        <appConfig id="RGBDCalibration">
+            <parameters>
             </parameters>
         </appConfig>
     </extension>

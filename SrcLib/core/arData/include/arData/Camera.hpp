@@ -9,14 +9,14 @@
 
 #include "arData/config.hpp"
 
-#include <boost/cstdint.hpp>
-#include <boost/filesystem/path.hpp>
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
-#include <fwData/Object.hpp>
 #include <fwData/factory/new.hpp>
+#include <fwData/Object.hpp>
+
+#include <boost/cstdint.hpp>
+#include <boost/filesystem/path.hpp>
 
 #include <array>
 #include <utility>
@@ -328,6 +328,10 @@ public:
         m_streamUrl = streamUrl;
     }
 
+    void setScale(double scale);
+
+    double getScale() const;
+
 protected:
 
     //! Width video resolution
@@ -365,7 +369,26 @@ protected:
 
     //! Camera source (file, stream or device)
     SourceType m_cameraSource;
+
+    //! Used for depth sensor: scale of the depth values (default: 1.)
+    double m_scale;
 };
+
+//-----------------------------------------------------------------------------
+
+inline void Camera::setScale(double scale)
+{
+    m_scale = scale;
+}
+
+//-----------------------------------------------------------------------------
+
+inline double Camera::getScale() const
+{
+    return m_scale;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace arData
 

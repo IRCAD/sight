@@ -111,7 +111,9 @@ void SCamera::starting() throw(::fwTools::Failed)
             for(size_t i = 0; i < m_numCreateCameras; ++i)
             {
                 ::arData::Camera::sptr camera = ::arData::Camera::New();
+                const size_t index = cameraSeries->getNumberOfCameras();
                 cameraSeries->addCamera(camera);
+                cameraSeries->setExtrinsicMatrix(index, ::fwData::TransformationMatrix3D::New());
                 auto sig = cameraSeries->signal< ::arData::CameraSeries::AddedCameraSignalType >(
                     ::arData::CameraSeries::s_ADDED_CAMERA_SIG);
                 sig->asyncEmit(camera);

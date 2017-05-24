@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,22 +13,23 @@
 fwCampImplementDataMacro((arData)(Camera))
 {
     builder
-    .tag("object_version", "2")
+    .tag("object_version", "3")
     .tag("lib_name", "arData")
     .base< ::fwData::Object>()
-    .property("intrinsic",&::arData::Camera::m_intrinsic)
-    .property("is_calibrated",&::arData::Camera::m_isCalibrated)
-    .property("skew",&::arData::Camera::m_skew)
-    .property("distortion_coefficient",&::arData::Camera::m_distortionCoefficient)
-    .property("width",&::arData::Camera::m_width)
-    .property("height",&::arData::Camera::m_height)
-    .property("camera_id",&::arData::Camera::m_cameraID)
-    .property("description",&::arData::Camera::m_description)
-    .property("max_framerate",&::arData::Camera::m_maxFrameRate)
-    .property("video_file",&::arData::Camera::m_videoFile)
-    .property("stream_url",&::arData::Camera::m_streamUrl)
-    .property("camera_source",&::arData::Camera::m_cameraSource)
-    .property("pixel_format",&::arData::Camera::m_pixelFormat)
+    .property("intrinsic", &::arData::Camera::m_intrinsic)
+    .property("is_calibrated", &::arData::Camera::m_isCalibrated)
+    .property("skew", &::arData::Camera::m_skew)
+    .property("distortion_coefficient", &::arData::Camera::m_distortionCoefficient)
+    .property("width", &::arData::Camera::m_width)
+    .property("height", &::arData::Camera::m_height)
+    .property("camera_id", &::arData::Camera::m_cameraID)
+    .property("description", &::arData::Camera::m_description)
+    .property("max_framerate", &::arData::Camera::m_maxFrameRate)
+    .property("video_file", &::arData::Camera::m_videoFile)
+    .property("stream_url", &::arData::Camera::m_streamUrl)
+    .property("camera_source", &::arData::Camera::m_cameraSource)
+    .property("pixel_format", &::arData::Camera::m_pixelFormat)
+    .property("scale", &::arData::Camera::m_scale)
     ;
 }
 

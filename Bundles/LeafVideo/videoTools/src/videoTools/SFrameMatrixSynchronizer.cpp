@@ -13,8 +13,8 @@
 #include <fwCom/Signal.hxx>
 
 #include <fwData/Image.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/helper/Array.hpp>
 
@@ -33,6 +33,7 @@ namespace videoTools
 {
 
 const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZATION_DONE_SIG = "synchronizationDone";
+const ::fwCom::Signals::SignalKeyType SFrameMatrixSynchronizer::s_ALL_MATRICES_FOUND_SIG   = "allMatricesFound";
 
 const ::fwServices::IService::KeyType s_FRAMETL_INPUT  = "frameTL";
 const ::fwServices::IService::KeyType s_MATRIXTL_INPUT = "matrixTL";
@@ -47,6 +48,7 @@ SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() throw () :
     m_timeStep(33)
 {
     m_sigSynchronizationDone = newSignal<SynchronizationDoneSignalType>(s_SYNCHRONIZATION_DONE_SIG);
+    m_sigAllMatricesFound    = newSignal<AllMatricesFoundSignalType>(s_ALL_MATRICES_FOUND_SIG);
 }
 
 // ----------------------------------------------------------------------------
@@ -136,6 +138,7 @@ void SFrameMatrixSynchronizer::starting() throw (fwTools::Failed)
 
         const size_t numMatrixTLs = this->getKeyGroupSize(s_MATRIXTL_INPUT);
 
+        m_totalOutputMatrices = 0;
         for(size_t i = 0; i < numMatrixTLs; ++i)
         {
             // Get the group corresponding to the 'i' Matrix TimeLine. The name of this group is matrices0 for example.
@@ -151,6 +154,7 @@ void SFrameMatrixSynchronizer::starting() throw (fwTools::Failed)
                     std::make_pair(this->getInOut< ::fwData::TransformationMatrix3D >(
                                        s_MATRICES_INOUT+std::to_string(i), j), j));
             }
+            m_totalOutputMatrices                     += numMatrices;
             m_matrices["matrixTL" + std::to_string(i)] = matricesVector;
         }
     }
@@ -337,7 +341,8 @@ void SFrameMatrixSynchronizer::synchronize()
         sig->asyncEmit();
     }
 
-    bool matrixFound = false;
+    bool matrixFound       = false;
+    size_t syncMatricesNbr = 0;
     for(MatrixTimelineType::value_type key : availableMatricesTL)
     {
         ::arData::MatrixTL::csptr matrixTL           = m_matrixTLs[key];
@@ -372,6 +377,7 @@ void SFrameMatrixSynchronizer::synchronize()
                         sig->asyncEmit();
 
                         matrixFound = true;
+                        ++syncMatricesNbr;
                     }
                 }
                 else
@@ -386,6 +392,8 @@ void SFrameMatrixSynchronizer::synchronize()
     {
         m_sigSynchronizationDone->asyncEmit(frameTimestamp);
     }
+    m_sigAllMatricesFound->asyncEmit(m_totalOutputMatrices == syncMatricesNbr);
+
 }
 
 // ----------------------------------------------------------------------------

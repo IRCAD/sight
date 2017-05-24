@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "DataCampHelper.hpp"
 #include "CameraTest.hpp"
+
+#include "DataCampHelper.hpp"
 
 #include <arData/Camera.hpp>
 
@@ -19,10 +20,14 @@ namespace arDataCamp
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void CameraTest::setUp()
 {
     // Set up context before running a test.
 }
+
+//------------------------------------------------------------------------------
 
 void CameraTest::tearDown()
 {
@@ -49,6 +54,7 @@ void CameraTest::propertiesTest()
     const float MAX_FRAMERATE = 42.5f;
     const size_t WIDTH        = 1920;
     const size_t HEIGHT       = 1080;
+    const size_t SCALE        = 1.0450;
 
     ::arData::Camera::sptr camera = ::arData::Camera::New();
     camera->setCx(CX);
@@ -65,8 +71,7 @@ void CameraTest::propertiesTest()
     camera->setMaximumFrameRate(MAX_FRAMERATE);
     camera->setWidth(WIDTH);
     camera->setHeight(HEIGHT);
-
-
+    camera->setScale(SCALE);
 
     const DataCampHelper::PropertiesNameType dataProperties = {"fields",
                                                                "intrinsic",
@@ -81,8 +86,8 @@ void CameraTest::propertiesTest()
                                                                "video_file",
                                                                "stream_url",
                                                                "camera_source",
-                                                               "pixel_format"};
-
+                                                               "pixel_format",
+                                                               "scale"};
 
     DataCampHelper::visitProperties(camera->getClassname(), dataProperties);
     DataCampHelper::compareSimplePropertyValue(camera, "@description", DESC);
@@ -109,6 +114,8 @@ void CameraTest::propertiesTest()
                                                ::boost::lexical_cast<std::string>(WIDTH));
     DataCampHelper::compareSimplePropertyValue(camera, "@height",
                                                ::boost::lexical_cast<std::string>(HEIGHT));
+    DataCampHelper::compareSimplePropertyValue(camera, "@scale",
+                                               ::boost::lexical_cast<std::string>(SCALE));
 }
 
 //------------------------------------------------------------------------------

@@ -20,8 +20,8 @@ set( REQUIREMENTS
     maths
     preferences
     servicesReg
-    tracker
     trackerAruco
+    registrationARL
     videoQt
     videoTools
     videoCalibration

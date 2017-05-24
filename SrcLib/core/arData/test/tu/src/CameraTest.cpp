@@ -1,12 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwTools/NumericRoundCast.hxx>
-
-#include <fwTest/helper/compare.hpp>
+#include "CameraTest.hpp"
 
 #include <arData/Camera.hpp>
 
@@ -14,8 +12,9 @@
 
 #include <fwCore/spyLog.hpp>
 
-#include "CameraTest.hpp"
+#include <fwTest/helper/compare.hpp>
 
+#include <fwTools/NumericRoundCast.hxx>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::arData::ut::CameraTest );
@@ -67,6 +66,7 @@ void CameraTest::tearDown()
     const ::arData::Camera::PixelFormat PIXELFORMAT = ::arData::Camera::RGBA32;
     const std::string VIDEOFILE                     = "/tmp/video.mp4";
     const std::string STREAMURL                     = "rtsp://192.168.0.1/h264.sdp";
+    const double SCALE                              = 0.9996;
 
     ::arData::Camera::sptr camera = ::arData::Camera::New();
     camera->setCx(CX);
@@ -85,6 +85,7 @@ void CameraTest::tearDown()
     camera->setPixelFormat(PIXELFORMAT);
     camera->setVideoFile(VIDEOFILE);
     camera->setStreamUrl(STREAMURL);
+    camera->setScale(SCALE);
 
     return camera;
 }
@@ -115,6 +116,7 @@ void CameraTest::paramTest()
     const ::arData::Camera::PixelFormat PIXELFORMAT = ::arData::Camera::RGBA32;
     const std::string VIDEOFILE                     = "/tmp/video.mp4";
     const std::string STREAMURL                     = "rtsp://192.168.0.1/h264.sdp";
+    const double SCALE                              = 0.9796;
 
     ::arData::Camera::sptr camera = ::arData::Camera::New();
     camera->setCx(CX);
@@ -134,6 +136,7 @@ void CameraTest::paramTest()
     camera->setPixelFormat(PIXELFORMAT);
     camera->setVideoFile(VIDEOFILE);
     camera->setStreamUrl(STREAMURL);
+    camera->setScale(SCALE);
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(CX, camera->getCx(), 0.00001);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(CY, camera->getCy(), 0.00001);
@@ -158,6 +161,7 @@ void CameraTest::paramTest()
     CPPUNIT_ASSERT_EQUAL(PIXELFORMAT, camera->getPixelFormat());
     CPPUNIT_ASSERT_EQUAL(VIDEOFILE, camera->getVideoFile().string());
     CPPUNIT_ASSERT_EQUAL(STREAMURL, camera->getStreamUrl());
+    CPPUNIT_ASSERT_EQUAL(SCALE, camera->getScale());
 }
 
 //------------------------------------------------------------------------------
@@ -193,6 +197,7 @@ void CameraTest::shallowCopyTest()
     CPPUNIT_ASSERT_EQUAL(camera->getPixelFormat(), camera2->getPixelFormat());
     CPPUNIT_ASSERT_EQUAL(camera->getVideoFile(), camera2->getVideoFile());
     CPPUNIT_ASSERT_EQUAL(camera->getStreamUrl(), camera2->getStreamUrl());
+    CPPUNIT_ASSERT_EQUAL(camera->getScale(), camera2->getScale());
 }
 
 //------------------------------------------------------------------------------

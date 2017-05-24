@@ -1,0 +1,172 @@
+<extension implements="::fwServices::registry::AppConfig2">
+    <id>rgbCameraView</id>
+    <parameters>
+
+        <param name="WID_PARENT" />
+        <param name="frameTL" />
+        <param name="camera" />
+        <param name="imageVideo" />
+        <param name="matrixTL" />
+        <param name="tagMatrix1" />
+        <param name="tagMatrix2" />
+        <param name="tagsToDetect" />
+        <param name="markerMesh" />
+        <param name="registrationMatrix" />
+
+    </parameters>
+    <config>
+
+        <!-- *************************** Begin objects declaration **************************** -->
+
+        <object uid="${camera}" type="::arData::Camera" src="ref" />
+        <object uid="${frameTL}" type="::arData::FrameTL" src="ref" />
+        <object uid="${matrixTL}" type="::arData::MatrixTL" src="ref" />
+        <object uid="${imageVideo}" type="::fwData::Image" src="ref"/>
+        <object uid="${markerMesh}" type="::fwData::Mesh" src="ref"/>
+        <object uid="${tagMatrix1}" type="::fwData::TransformationMatrix3D" src="ref"/>
+        <object uid="${tagMatrix2}" type="::fwData::TransformationMatrix3D" src="ref"/>
+        <object uid="${registrationMatrix}" type="::fwData::TransformationMatrix3D" src="ref"/>
+        
+        <object uid="tagTL" type="::arData::MarkerTL" />
+
+        <object uid="identity" type="::fwData::TransformationMatrix3D" />
+
+        <!-- *************************** End objects declaration ****************************** -->
+
+        <!-- *************************** Begin layouts declaration **************************** -->
+        <service uid="videoView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="videoViewRender" start="yes"/>
+            </registry>
+        </service>
+        
+        <service uid="videoViewRender" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <in key="imageVideo" uid="${imageVideo}" />
+            <in key="markerMesh" uid="${markerMesh}" optional="yes" />
+            <in key="camera" uid="${camera}" />
+            <in key="tagMatrix1" uid="${tagMatrix1}" />
+            <in key="tagMatrix2" uid="${tagMatrix2}" />
+            <in key="identity" uid="identity" />
+            <in key="registrationMatrix" uid="${registrationMatrix}" />
+            <scene renderMode="timer">
+                <renderer id="video" layer="0" background="0.0" />
+                <renderer id="default" layer="1" background="0.0" />
+
+                <adaptor id="videoAdaptor" class="::visuVTKARAdaptor::SVideoAdapter" objectId="imageVideo">
+                    <config renderer="video" cameraUID="camera" />
+                </adaptor>
+
+                <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="FixedInteractorStyle" />
+                </adaptor>
+
+                <adaptor id="tagMatrixTransformAdaptor1" class="::visuVTKAdaptor::Transform" objectId="tagMatrix1">
+                    <config renderer="default" picker="" transform="tagMatrixTransform1" />
+                </adaptor>
+
+                <adaptor id="tagMatrixTransformAdaptor2" class="::visuVTKAdaptor::Transform" objectId="tagMatrix2">
+                    <config renderer="default" picker="" transform="tagMatrixTransform2" />
+                </adaptor>
+
+                <adaptor id="registrationMatrixTransformAdaptor" class="::visuVTKAdaptor::Transform" objectId="registrationMatrix">
+                    <config renderer="default" picker="" transform="registrationMatrixTransform" />
+                </adaptor>
+
+                <adaptor uid="axis1" id="axis1" class="::visuVTKAdaptor::Axes" objectId="self">
+                    <config renderer="default" transform="tagMatrixTransform1" length="50"/>
+                </adaptor>
+
+                <adaptor uid="axis2" id="axis2" class="::visuVTKAdaptor::Axes" objectId="self">
+                    <config renderer="default" transform="tagMatrixTransform2" length="50"/>
+                </adaptor>
+
+                <adaptor uid="axisRegistrationMatrix" id="axisRegistrationMatrix" class="::visuVTKAdaptor::Axes" objectId="self">
+                    <config renderer="default" transform="registrationMatrixTransform" length="50"/>
+                </adaptor>
+
+                <adaptor uid="markerMesh" id="markerMesh" class="::visuVTKAdaptor::Mesh" objectId="markerMesh">
+                    <config renderer="default" transform="tagMatrixTransform1" autoresetcamera="no" />
+                </adaptor>
+                
+                <adaptor uid="markerMesh2" id="markerMesh2" class="::visuVTKAdaptor::Mesh" objectId="markerMesh">
+                    <config renderer="default" transform="tagMatrixTransform2" autoresetcamera="no" />
+                </adaptor>
+
+                <adaptor id="cameraAdaptor" class="::visuVTKARAdaptor::SCamera" objectId="identity">
+                    <config renderer="default" cameraUID="camera"/>
+                </adaptor>
+
+                <connect>
+                    <signal>tracker/markerDetected</signal>
+                    <slot>axis1/updateVisibility</slot>
+                    <slot>axis2/updateVisibility</slot>
+                    <slot>axisRegistrationMatrix/updateVisibility</slot>
+                    <slot>markerMesh/updateVisibility</slot>
+                    <slot>markerMesh2/updateVisibility</slot>
+                </connect>
+
+            </scene>
+        </service>
+
+        <!-- *************************** End layouts declaration ****************************** -->
+
+        <!-- *************************** Begin services declaration ***************** -->
+        
+        <service uid="tracker" type="::trackerAruco::SArucoTracker"  worker="tracking">
+            <in key="timeline" uid="${frameTL}" autoConnect="yes"/>
+            <in key="camera" uid="${camera}" />
+            <inout group="tagTL" >
+                <key uid="tagTL" />
+            </inout>
+            <config>
+                <track>
+                    <marker id="${tagsToDetect}" />
+                </track>
+                <threshold>
+                    <method>ADPT_THRES</method>
+                    <blockSize>7</blockSize>
+                    <constant>7</constant>
+                </threshold>
+                <patternWidth>150</patternWidth>
+                <debugMarkers>yes</debugMarkers>
+            </config>
+        </service>
+
+        <service uid="homography" type="::registrationARL::SPoseFrom2d" worker="registration">
+            <in group="markerTL" autoConnect="yes">
+                <key uid="tagTL" />
+            </in>
+            <in group="camera">
+                <key uid="${camera}" />
+            </in>
+            <inout key="matrixTL" uid="${matrixTL}" />
+            <patternWidth>150</patternWidth>
+        </service>
+
+
+        <!-- *************************** End services declaration ***************************** -->
+
+        <!-- *************************** Begin proxies declaration **************************** -->
+
+        <!-- *************************** End proxies declaration ****************************** -->
+
+        <!-- *************************** Begin connect declaration **************************** -->
+
+        <!-- *************************** End connect declaration ****************************** -->
+
+        <!-- *************************** Begin Start ****************************************** -->
+        <start uid="videoView" />
+        <start uid="tracker" />
+        <start uid="homography" />
+
+        <!-- *************************** End Start ******************************************** -->
+
+    </config>
+</extension>
