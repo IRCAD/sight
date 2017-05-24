@@ -11,8 +11,9 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/profile_config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/build/plugin_config.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/generic_install.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/install/helper.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/modules/PrecompiledHeader.cmake)
 
+set(ENABLE_PCH ON CACHE BOOL "Use pre-compiled headers to speedup the compilation")
+include(${CMAKE_CURRENT_SOURCE_DIR}/CMake/modules/PrecompiledHeader.cmake)
 
 if(MSVC)
     if(NOT DEFINED CMAKE_PCH_COMPILER_TARGETS)
@@ -59,7 +60,7 @@ else()
     endif()
 endif()
 
-set(ENABLE_PCH ON CACHE BOOL "Use pre-compiled headers to speedup the compilation")
+set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/)
 
 # Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH
 if(EXTERNAL_LIBRARIES)
@@ -145,8 +146,6 @@ if(MSVC_IDE)
 endif()
 
 set(LIBRARY_OUTPUT_DIR lib)
-
-set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMake/)
 
 if(CMAKE_SYSTEM_NAME MATCHES "Darwin")
     #http://stackoverflow.com/questions/6802903/c-ifdef-mac-os-x-question
@@ -292,7 +291,8 @@ macro(configureProject FWPROJECT_NAME PROJECT_VERSION)
     mark_as_advanced(SPYLOG_LEVEL_${FWPROJECT_NAME})
 
     if( SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}} )
-        if(ENABLE_PCH AND (${TARGET_TYPE} MATCHES "LIBRARY" OR ${TARGET_TYPE} MATCHES "BUNDLE" ))
+        if(ENABLE_PCH AND (${TARGET_TYPE} MATCHES "LIBRARY" OR ${TARGET_TYPE} MATCHES "BUNDLE" ) 
+           AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
             target_compile_definitions(${FWPROJECT_NAME}
                 PRIVATE SPYLOG_LEVEL_${FWPROJECT_NAME}=${SPYLOG_LEVEL_MAP_${SPYLOG_LEVEL_${FWPROJECT_NAME}}})
         else()
@@ -483,7 +483,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
 
     setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
 
-    if(ENABLE_PCH AND MSVC)
+    if(ENABLE_PCH AND MSVC AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
         if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
             add_precompiled_header_cpp(${FWPROJECT_NAME})
         endif()
@@ -532,7 +532,7 @@ macro(fwLib FWPROJECT_NAME PROJECT_VERSION)
     # Adds project into folder lib
     set_target_properties(${FWPROJECT_NAME} PROPERTIES FOLDER "lib")
 
-    if(ENABLE_PCH)
+    if(ENABLE_PCH AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
         # create the config.hpp for the current library
         configure_file(
             "${CMAKE_SOURCE_DIR}/CMake/build/spyLogLevel.hpp.in"
@@ -558,7 +558,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
     set(${FWPROJECT_NAME}_TYPE ${${FWPROJECT_NAME}_TYPE} PARENT_SCOPE)
     setVersion(${FWPROJECT_NAME} ${PROJECT_VERSION})
 
-    if(ENABLE_PCH AND MSVC)
+    if(ENABLE_PCH AND MSVC AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
         if(${${FWPROJECT_NAME}_PCH_TARGET} STREQUAL ${FWPROJECT_NAME})
             add_precompiled_header_cpp(${FWPROJECT_NAME})
         endif()
@@ -606,7 +606,7 @@ macro(fwBundle FWPROJECT_NAME PROJECT_VERSION)
 
         target_include_directories(${FWPROJECT_NAME} PUBLIC "${CMAKE_BINARY_DIR}/${FWPROJECT_NAME}/include/")
 
-        if(ENABLE_PCH)
+        if(ENABLE_PCH AND NOT ${FWPROJECT_NAME}_DISABLE_PCH)
             # create the config.hpp for the current library
             configure_file(
                 "${CMAKE_SOURCE_DIR}/CMake/build/spyLogLevel.hpp.in"
@@ -826,6 +826,7 @@ macro(loadProperties PROPERTIES_FILE)
     unset(UNIQUE)
     unset(PLATFORM)
     unset(USE_PCH_FROM_TARGET)
+    unset(DISABLE_PCH)
 
     include("${PROPERTIES_FILE}")
 endmacro()
@@ -974,9 +975,10 @@ foreach(PROPERTIES_FILE ${PROJECTS_PROPERTIES})
 
         set(${NAME}_DEPENDENCIES "${DEPENDENCIES}")
         set(${NAME}_REQUIREMENTS "${REQUIREMENTS}")
+        set(${NAME}_DISABLE_PCH  "${DISABLE_PCH}")
 
         # Get the pch target, test the existence of type variable to exclude unbuilt projects
-        if(ENABLE_PCH AND TYPE)
+        if(ENABLE_PCH AND TYPE AND NOT ${NAME}_DISABLE_PCH)
             set(${NAME}_PROJECT_DIR "${PROJECT_DIR}")
 
             getPchTarget(${NAME} ${PROJECT_DIR} ${TYPE} ${USE_PCH_FROM_TARGET})

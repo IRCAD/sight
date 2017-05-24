@@ -284,6 +284,7 @@ void SActivitySequencer::storeActivityData()
                 // create empty composite for optional data
                 ::fwData::Composite::sptr optionalDataComposite = ::fwData::Composite::New();
                 composite->getContainer()[req.name]             = optionalDataComposite;
+                m_requirements[req.name]                        = optionalDataComposite;
             }
         }
 

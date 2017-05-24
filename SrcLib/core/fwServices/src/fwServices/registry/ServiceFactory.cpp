@@ -101,16 +101,18 @@ void ServiceFactory::parseBundleInformation()
 
         if ( iter != m_srvImplTosrvInfo.end() )
         {
-            OSLM_DEBUG("Have already information (from register macro) about this service ( "<< bundle.first << " )." );
+            OSLM_DEBUG(
+                "We already have informations about this service  (from register macro) ( "<< bundle.first <<
+                " )." );
 
             ServiceInfo& info       = iter->second;
             ServiceInfo& infoBundle = bundle.second;
 
             SLM_ASSERT("Try to add bundle, but bundle exists.", !info.bundle );
-            SLM_ASSERT("Try to add bundle, but this srv is already register and has not the same srv type.",
+            SLM_ASSERT("Try to add bundle, but this srv is already registered and doesn't have the same srv type.",
                        infoBundle.serviceType == info.serviceType );
             SLM_ASSERT("Try to add bundle, but this srv ("
-                       << bundle.first << ")is already register and has not the same oimpl. ( "
+                       << bundle.first << ")is already registered and doesn't have the same oimpl. ( "
                        << infoBundle.objectImpl <<" != "<< info.objectImpl <<" )",
                        infoBundle.objectImpl == info.objectImpl );
 
@@ -178,8 +180,8 @@ IService::sptr ServiceFactory::create( const std::string& _srvImpl ) const
     }
 
     // Setup worker here, this is a better place than the constructor
-    // because here, the service slots are also setup
-    // This allow to setup
+    // because here, the service slots are also set up
+    // This allows to setup
     service->setWorker( ::fwServices::registry::ActiveWorkers::getDefaultWorker() );
 
     return service;
@@ -198,7 +200,7 @@ IService::sptr ServiceFactory::create( const std::string& _srvType, const std::s
                     m_srvImplTosrvInfo.find( _srvImpl ) != m_srvImplTosrvInfo.end() );
 
         OSLM_ASSERT(
-            "Conflincting types were defined for this service, "
+            "Conflicting types were defined for this service, "
             << _srvType << " != " << m_srvImplTosrvInfo.find( _srvImpl )->second.serviceType,
             _srvType == m_srvImplTosrvInfo.find( _srvImpl )->second.serviceType);
     }
@@ -221,12 +223,12 @@ void ServiceFactory::addServiceFactory( FactoryType _factory,
 
     if ( iter != m_srvImplTosrvInfo.end() )
     {
-        SLM_DEBUG("Have already information about this service ( " + simpl + " )." );
+        SLM_DEBUG("We already have informations about this service ( " + simpl + " )." );
         ServiceInfo& info = iter->second;
-        OSLM_ASSERT("Try to add factory, but this srv ( " << simpl << " ) has already a registered factory.",
+        OSLM_ASSERT("Try to add factory, but this srv ( " << simpl << " ) already has a registered factory.",
                     !info.factory );
         OSLM_ASSERT("Try to add factory, but this srv ( "
-                    << simpl << " ) is already register and has not the same srv type. ( "
+                    << simpl << " ) is already registered and doesn't have the same srv type. ( "
                     << stype << " != " << info.serviceType <<" )",
                     stype == info.serviceType );
 
@@ -260,7 +262,7 @@ void ServiceFactory::addObjectFactory(const std::string& simpl, const std::strin
     {
         ServiceInfo& info = iter->second;
         SLM_ASSERT("Try to add factory, but this srv ( " + simpl + " ) is already registered "
-                   "and has not the same oimpl. ( " + oimpl + " != " + info.objectImpl + ")",
+                   "and does not have the same oimpl. ( " + oimpl + " != " + info.objectImpl + ")",
                    info.objectImpl.empty() || oimpl == info.objectImpl );
 
         ::fwCore::mt::UpgradeToWriteLock upgrade(lock);

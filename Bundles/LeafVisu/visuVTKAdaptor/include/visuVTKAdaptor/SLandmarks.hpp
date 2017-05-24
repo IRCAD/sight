@@ -47,10 +47,9 @@ namespace visuVTKAdaptor
  *
  * @code{.xml}
         <adaptor id="..." class="::visuVTKAdaptor::Landmarks" objectId="imageKey">
-            <config renderer="default" picker="default" />
+            <config renderer="default" picker="default"/>
         </adaptor>
    @endcode
- *
  */
 class VISUVTKADAPTOR_CLASS_API SLandmarks : public ::fwRenderVTK::IVtkAdaptorService
 {
@@ -170,6 +169,7 @@ private:
 
     /// Counter to switch color for selected point: (even: green, odd: point default color)
     size_t m_count;
+
 };
 
 } //namespace visuVTKAdaptor

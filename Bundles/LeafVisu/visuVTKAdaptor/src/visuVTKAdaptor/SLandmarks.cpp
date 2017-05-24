@@ -260,6 +260,7 @@ SLandmarks::~SLandmarks() throw()
 
 void SLandmarks::doConfigure() throw(fwTools::Failed)
 {
+
 }
 
 //------------------------------------------------------------------------------

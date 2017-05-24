@@ -1,12 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwDataTools/Image.hpp"
-
-#include <fwDataTools/helper/Array.hpp>
 
 #include <fwTools/Combinatory.hpp>
 #include <fwTools/Dispatcher.hpp>
@@ -29,6 +27,8 @@ struct RoiApplyerParam
 template<typename IMAGE_TYPE>
 struct RoiApplyer
 {
+    //------------------------------------------------------------------------------
+
     template<typename ROI_TYPE>
     void operator()( RoiApplyerParam& p )
     {
@@ -41,7 +41,6 @@ struct RoiApplyer
         ::fwData::Array::sptr roiData;
         imgData = p.img->getDataArray();
         roiData = p.roi->getDataArray();
-
 
         ::fwDataTools::helper::Array imgHelper(imgData);
         ::fwDataTools::helper::Array roiHelper(roiData);
@@ -67,6 +66,8 @@ struct RoiApplyer
 
 struct RoiApplyerCaller
 {
+    //------------------------------------------------------------------------------
+
     template<typename IMAGE_TYPE>
     void operator()( RoiApplyerParam& p )
     {
@@ -91,7 +92,6 @@ void Image::applyRoi( ::fwData::Image::sptr image, ::fwData::Image::sptr roi )
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RoiApplyerCaller >::invoke( image->getPixelType(), param );
 }
 
-
 //------------------------------------------------------------------------------
 
 struct RoiTesterParam
@@ -107,6 +107,8 @@ struct RoiTesterParam
 template<typename IMAGE_TYPE>
 struct RoiTester
 {
+
+    //------------------------------------------------------------------------------
 
     template<typename ROI_TYPE>
     void operator()( RoiTesterParam& p )
@@ -150,6 +152,8 @@ struct RoiTester
 
 struct RoiTesterCaller
 {
+    //------------------------------------------------------------------------------
+
     template<typename IMAGE_TYPE>
     void operator()( RoiTesterParam& p )
     {
@@ -175,5 +179,7 @@ bool Image::isRoiApplyed( ::fwData::Image::sptr image, ::fwData::Image::sptr roi
 
     return param.result;
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace fwDataTools

@@ -59,4 +59,10 @@
         <object>::fwData::Object</object>
     </extension>
 
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::gui::editor::IEditor</type>
+        <service>::guiQt::editor::SListView</service>
+        <object>::fwData::Object</object>
+    </extension>
+
 </plugin>

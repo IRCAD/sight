@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,14 +9,14 @@
 #ifndef __VISUVTKADAPTOR_POINT_HPP__
 #define __VISUVTKADAPTOR_POINT_HPP__
 
-
 #include "visuVTKAdaptor/config.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
+#include <fwData/Color.hpp>
 
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 class vtkHandleWidget;
 class vtkHandleRepresentation;
@@ -25,16 +25,37 @@ class vtkCommand;
 namespace visuVTKAdaptor
 {
 
+/**
+ * @brief Adaptor to display a point.
+ *
+ * @section Signals Signals
+ * - interactionStarted : when point interaction is started.
+ *
+ * @code{.xml}
+      <adaptor id="..." class="::visuVTKAdaptor::Point" objectId="self">
+        <config renderer="default" picker="..." color="#FFFFFF" selectedColor="#FFFFFF" radius="10"/>
+      </adaptor>
+     @endcode
+ * @subsection Configuration Configuration
+ * - \b renderer : defines the renderer to show the point.
+ * - \b picker : defines the picker of the point.
+ * - \b color(#FFFFFF) : color of the point.
+ * - \b selectedColor(#FFFFFF) : color when the point is selected.
+ * - \b radius(double) : point radius.
+ */
+
 class VISUVTKADAPTOR_CLASS_API Point : public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (Point)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Point)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API Point() throw();
 
     VISUVTKADAPTOR_API virtual ~Point() throw();
+
+    VISUVTKADAPTOR_API void setRadius(double radius);
 
     VISUVTKADAPTOR_API void setColor(double red, double green, double blue, double alpha = 1.0);
 
@@ -67,16 +88,15 @@ protected:
     VISUVTKADAPTOR_API void doUpdate() throw(fwTools::Failed);
     VISUVTKADAPTOR_API void doStop() throw(fwTools::Failed);
 
-
 private:
-    vtkHandleWidget         * m_handle;
-    vtkHandleRepresentation * m_representation;
-    vtkCommand              * m_pointUpdateCommand;
+    vtkHandleWidget* m_handle;
+    vtkHandleRepresentation* m_representation;
+    vtkCommand* m_pointUpdateCommand;
 
+    ::fwData::Color::sptr m_ptColor;
+    ::fwData::Color::sptr m_ptSelectedColor;
+    double m_radius;
 };
-
-
-
 
 } //namespace visuVTKAdaptor
 
