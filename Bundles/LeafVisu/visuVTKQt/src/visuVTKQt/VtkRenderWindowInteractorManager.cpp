@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -45,15 +45,18 @@
 class RetinHackRWI : public QVTKInteractor
 {
 protected:
-    RetinHackRWI() : QVTKInteractor()
+    RetinHackRWI() :
+        QVTKInteractor()
     {
     }
 
 public:
 
-    static RetinHackRWI *New();
+    static RetinHackRWI* New();
 
-    virtual int *GetLastEventPosition ()
+    //------------------------------------------------------------------------------
+
+    virtual int* GetLastEventPosition ()
     {
         auto LastPos = this->QVTKInteractor::GetLastEventPosition();
         const auto r = this->Ratio;
@@ -64,7 +67,9 @@ public:
         return LastRetinaPos;
     }
 
-    virtual void GetLastEventPosition (int &x, int &y)
+    //------------------------------------------------------------------------------
+
+    virtual void GetLastEventPosition (int& x, int& y)
     {
         auto LastPos = this->QVTKInteractor::GetLastEventPosition();
         const auto r = this->Ratio;
@@ -72,6 +77,8 @@ public:
         x = LastPos[0]*r;
         y = LastPos[1]*r;
     }
+
+    //------------------------------------------------------------------------------
 
     virtual void GetLastEventPosition (int xy[2])
     {
@@ -82,7 +89,9 @@ public:
         xy[1] = LastPos[1]*r;
     }
 
-    virtual int *GetEventPosition ()
+    //------------------------------------------------------------------------------
+
+    virtual int* GetEventPosition ()
     {
         auto Pos     = this->QVTKInteractor::GetEventPosition();
         const auto r = this->Ratio;
@@ -93,7 +102,9 @@ public:
         return RetinaPos;
     }
 
-    virtual void GetEventPosition (int &x, int &y)
+    //------------------------------------------------------------------------------
+
+    virtual void GetEventPosition (int& x, int& y)
     {
         auto Pos     = this->QVTKInteractor::GetEventPosition();
         const auto r = this->Ratio;
@@ -101,6 +112,8 @@ public:
         x = Pos[0]*r;
         y = Pos[1]*r;
     }
+
+    //------------------------------------------------------------------------------
 
     virtual void GetEventPosition (int xy[2])
     {
@@ -110,6 +123,8 @@ public:
         xy[0] = Pos[0]*r;
         xy[1] = Pos[1]*r;
     }
+
+    //------------------------------------------------------------------------------
 
     void SetDevicePixelRatio(int r)
     {
@@ -126,19 +141,21 @@ private:
 
 vtkStandardNewMacro(RetinHackRWI);
 
-
 class RetinhackRenderWindow : public vtkCocoaRenderWindow
 {
 protected:
-    RetinhackRenderWindow() : vtkCocoaRenderWindow()
+    RetinhackRenderWindow() :
+        vtkCocoaRenderWindow()
     {
     }
 
 public:
 
-    static RetinhackRenderWindow *New();
+    static RetinhackRenderWindow* New();
 
-    int *GetSize()
+    //------------------------------------------------------------------------------
+
+    int* GetSize()
     {
         this->vtkCocoaRenderWindow::GetSize();
 
@@ -148,7 +165,9 @@ public:
         return this->RetinaSize;
     }
 
-    int *GetScreenSize()
+    //------------------------------------------------------------------------------
+
+    int* GetScreenSize()
     {
         this->vtkCocoaRenderWindow::GetScreenSize();
 
@@ -158,12 +177,16 @@ public:
         return this->RetinaSize;
     }
 
-    vtkRenderWindowInteractor *MakeRenderWindowInteractor()
+    //------------------------------------------------------------------------------
+
+    vtkRenderWindowInteractor* MakeRenderWindowInteractor()
     {
         this->Interactor = RetinHackRWI::New();
         this->Interactor->SetRenderWindow(this);
         return this->Interactor;
     }
+
+    //------------------------------------------------------------------------------
 
     void SetDevicePixelRatio(int r)
     {
@@ -172,17 +195,17 @@ public:
     }
 
 private:
-    int RetinaSize[2] = {600,600};
+    int RetinaSize[2] = {600, 600};
     int Ratio         = 2;
 };
 
 vtkStandardNewMacro(RetinhackRenderWindow);
 
-
 class RetinhackVtkWidget : public QVTKWidget
 {
 public:
-    RetinhackVtkWidget(QWidget* container = nullptr) : QVTKWidget(container)
+    RetinhackVtkWidget(QWidget* container = nullptr) :
+        QVTKWidget(container)
     {
         vtkSmartPointer< vtkInteractorStyleTrackballCamera > interactorStyle
             = vtkInteractorStyleTrackballCamera::New();
@@ -197,6 +220,8 @@ public:
         this->SetRenderWindow(renderWindow);
 
     }
+
+    //------------------------------------------------------------------------------
 
     bool event(QEvent* e)
     {
@@ -230,6 +255,8 @@ public:
         return QVTKWidget::event(e);
     }
 
+    //------------------------------------------------------------------------------
+
     virtual void SetRenderWindow(vtkRenderWindow* rw)
     {
         QVTKWidget::SetRenderWindow(rw);
@@ -241,7 +268,6 @@ public:
         static_cast< RetinhackRenderWindow* >( this->mRenWin )->SetDevicePixelRatio(ratio);
     }
 
-
 protected:
     int m_ratio = -1;
 
@@ -252,26 +278,27 @@ protected:
 
 #endif //__APPLE__
 
-
-
 class DropFilter : public QObject
 {
 public:
-    DropFilter(::fwServices::IService::sptr service) : m_service(service)
+    DropFilter(::fwServices::IService::sptr service) :
+        m_service(service)
     {
     }
 protected:
-    bool eventFilter(QObject *obj, QEvent *event);
+    bool eventFilter(QObject* obj, QEvent* event);
 
 private:
     ::fwServices::IService::wptr m_service;
 };
 
-bool DropFilter::eventFilter(QObject *obj, QEvent *event)
+//------------------------------------------------------------------------------
+
+bool DropFilter::eventFilter(QObject* obj, QEvent* event)
 {
     if( event->type() == QEvent::DragEnter)
     {
-        QDragEnterEvent *dragEvent = dynamic_cast< QDragEnterEvent* >(event);
+        QDragEnterEvent* dragEvent = dynamic_cast< QDragEnterEvent* >(event);
         if (dragEvent->mimeData()->hasFormat("text/plain"))
         {
             QString data = dragEvent->mimeData()->text();
@@ -329,7 +356,7 @@ void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::container::fw
 
     m_qVTKWidget = new QVTKWidget(container);
 
-    QVBoxLayout *layout = new QVBoxLayout();
+    QVBoxLayout* layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
     //m_qVTKWidget->resize(container->width(), container->height());
     //m_qVTKWidget->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
@@ -359,7 +386,7 @@ void VtkRenderWindowInteractorManager::uninstallInteractor()
 
 //-----------------------------------------------------------------------------
 
-::vtkRenderWindowInteractor * VtkRenderWindowInteractorManager::getInteractor()
+::vtkRenderWindowInteractor* VtkRenderWindowInteractorManager::getInteractor()
 {
     return m_interactor;
 }
@@ -367,7 +394,4 @@ void VtkRenderWindowInteractorManager::uninstallInteractor()
 //-----------------------------------------------------------------------------
 
 } // namespace visuVTKQt
-
-
-
 
