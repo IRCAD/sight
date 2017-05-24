@@ -29,7 +29,7 @@ set( REQUIREMENTS
     activities
     ctrlSelection
     uiReconstructionQt
-    
+
     2DVisualizationActivity2
     3DVisualizationActivity2
     volumeRenderingActivity2
@@ -40,10 +40,10 @@ set( REQUIREMENTS
     dicomPacsWriterActivity
     cprActivity
     mesherActivity
-    
+
     media
-    arMedia
-    
+    mediaExt
+
     patchMedicalData
     filterVRRender
     preferences
