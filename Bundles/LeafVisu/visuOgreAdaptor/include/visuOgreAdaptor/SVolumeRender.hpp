@@ -51,7 +51,6 @@ namespace visuOgreAdaptor
  * - \b toggleShadows(bool): Toggle soft shadows.
  * - \b toggleWidgets(bool): Toggles widget visibility.
  * - \b resizeViewport(int, int): Called when the size of the viewport changes.
- * - \b setFocalDistance(int): Called to modify focal length (only useful for stereoscopic 3D).
  * - \b setStereoMode(int): Called to modify 3D stereoscopic 3D mode.
  * - \b setBoolParameter(bool, string): Calls a bool parameter slot according to the given key.
  * - \b setIntParameter(int, string): Calls an int parameter slot according to the given key.
@@ -122,7 +121,7 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_TOGGLE_WIDGETS_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_FOCAL_DISTANCE_SLOT;
-    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_MODE3D_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_STEREO_MODE_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
@@ -150,6 +149,9 @@ protected:
 
     /// Configures the service
     VISUOGREADAPTOR_API virtual void doConfigure() throw ( ::fwTools::Failed );
+
+    /// Returns the priority of the adaptor
+    VISUOGREADAPTOR_API virtual int getStartPriority();
 
     /// Slot called on TF update.
     VISUOGREADAPTOR_API virtual void updatingTFPoints();
@@ -182,7 +184,6 @@ private:
     void toggleShadows(bool shadows);
     void toggleWidgets(bool visible);
     void resizeViewport(int w, int h);
-    void setFocalDistance(int focalDistance);
     void setStereoMode(::fwRenderOgre::Layer::StereoModeType mode);
     void setBoolParameter(bool val, std::string key);
     void setIntParameter(int val, std::string key);

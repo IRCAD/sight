@@ -17,6 +17,9 @@
 
 #include <boost/regex.hpp>
 
+#include <OGRE/OgreHighLevelGpuProgram.h>
+#include <OGRE/OgreHighLevelGpuProgramManager.h>
+
 #include <regex>
 
 namespace fwRenderOgre
@@ -500,6 +503,58 @@ Shading::ShaderConstantsType Shading::findShaderConstants(::Ogre::GpuProgramPara
             OSLM_WARN("Object type "+GpuConstantTypeNames[_type-1]+" not supported yet");
     }
     return object;
+}
+
+// ----------------------------------------------------------------------------
+
+::Ogre::GpuProgramPtr Shading::createProgramFrom(const std::string& _name,
+                                                 const std::string& _sourceFileName,
+                                                 const GpuProgramParametersType& _parameters,
+                                                 ::Ogre::GpuProgramType _shaderType,
+                                                 const std::string& _baseName)
+{
+    auto& mgr = ::Ogre::HighLevelGpuProgramManager::getSingleton();
+
+    auto resource = mgr.getResourceByName(_name, "Materials");
+    if( !resource.isNull() )
+    {
+        return resource.dynamicCast< ::Ogre::GpuProgram>();
+    }
+
+    // Create shader object
+    ::Ogre::HighLevelGpuProgramPtr newProgram;
+    newProgram = mgr.createProgram(_name, "Materials", "glsl", _shaderType);
+
+    newProgram->setSourceFile(_sourceFileName);
+
+    auto srcResource = mgr.getResourceByName(_baseName, ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+    auto srcProgram  = srcResource.dynamicCast< ::Ogre::GpuProgram>();
+    ::Ogre::String preprocessorDefines = srcProgram->getParameter("preprocessor_defines");
+
+    for(const auto& params : _parameters)
+    {
+        if(params.first == "preprocessor_defines")
+        {
+            preprocessorDefines += preprocessorDefines.empty() ? params.second : "," + params.second;
+        }
+        else
+        {
+            newProgram->setParameter(params.first, params.second);
+        }
+    }
+    newProgram->setParameter("preprocessor_defines", preprocessorDefines);
+
+    // Grab previous attached shaders and add them to the new program
+    ::Ogre::String attachedShaders = srcProgram->getParameter("attach");
+    newProgram->setParameter("attach", attachedShaders);
+
+    // Copy parameters from the source program
+    const ::Ogre::GpuProgramParametersSharedPtr& baseParams = srcProgram->getDefaultParameters();
+    const ::Ogre::GpuProgramParametersSharedPtr& params     = newProgram->getDefaultParameters();
+    params->copyMatchingNamedConstantsFrom(*baseParams);
+
+    newProgram->load();
+    return ::Ogre::GpuProgramPtr(newProgram);
 }
 
 //-----------------------------------------------------------------------------

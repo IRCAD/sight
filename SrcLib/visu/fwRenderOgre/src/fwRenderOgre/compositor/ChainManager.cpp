@@ -1,17 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/compositor/ChainManager.hpp"
 
-#include <fwCore/spyLog.hpp>
-
+#include "fwRenderOgre/compositor/listener/AutoStereo.hpp"
 #include "fwRenderOgre/compositor/SaoListener.hpp"
 #include "fwRenderOgre/helper/Shading.hpp"
 #include "fwRenderOgre/IAdaptor.hpp"
+#include "fwRenderOgre/Layer.hpp"
 #include "fwRenderOgre/SRender.hpp"
+
+#include <fwCore/spyLog.hpp>
 
 #include <fwServices/registry/ObjectService.hpp>
 #include <fwServices/registry/ServiceFactory.hpp>
@@ -30,7 +32,6 @@ namespace fwRenderOgre
 namespace compositor
 {
 
-
 //-----------------------------------------------------------------------------
 
 const ChainManager::CompositorIdType ChainManager::FINAL_CHAIN_COMPOSITOR = "FinalChainCompositor";
@@ -38,7 +39,8 @@ const ChainManager::CompositorIdType ChainManager::FINAL_CHAIN_COMPOSITOR = "Fin
 //-----------------------------------------------------------------------------
 
 ChainManager::ChainManager(::Ogre::Viewport* _viewport) :
-    m_ogreViewport(_viewport)
+    m_ogreViewport(_viewport),
+    m_autostereoListener(nullptr)
 {
     m_adaptorsObjectsOwner = ::fwData::Composite::New();
 }
@@ -47,6 +49,12 @@ ChainManager::ChainManager(::Ogre::Viewport* _viewport) :
 
 ChainManager::~ChainManager()
 {
+    if(m_autostereoListener)
+    {
+        ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
+        delete m_autostereoListener;
+        m_autostereoListener = nullptr;
+    }
     this->unregisterServices();
 }
 
@@ -79,13 +87,23 @@ void ChainManager::addAvailableCompositor(CompositorIdType _compositorName)
 
 //-----------------------------------------------------------------------------
 
-void ChainManager::clearCompositorChain()
+void ChainManager::clearCompositorChain(const std::string& _layerId, ::fwRenderOgre::SRender::sptr _renderService)
 {
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     for(auto& chain : m_compositorChain)
     {
         compositorManager.setCompositorEnabled(m_ogreViewport, chain.first, false);
         compositorManager.removeCompositor(m_ogreViewport, chain.first);
+
+        if(chain.first == "AutoStereo5" || chain.first == "AutoStereo8")
+        {
+            if(m_autostereoListener)
+            {
+                ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
+                delete m_autostereoListener;
+                m_autostereoListener = nullptr;
+            }
+        }
     }
 
     m_compositorChain.clear();
@@ -109,10 +127,31 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
         {
             compositorToUpdate->second = _isEnabled;
             compositorManager.setCompositorEnabled(m_ogreViewport, _compositorName, _isEnabled);
+
+            if(_compositorName.find("AutoStereo") != std::string::npos)
+            {
+                if(m_autostereoListener)
+                {
+                    ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
+                    delete m_autostereoListener;
+                    m_autostereoListener = nullptr;
+                }
+
+                if(_isEnabled)
+                {
+                    SLM_ASSERT("m_autostereoListener should be null", m_autostereoListener == nullptr);
+
+                    auto layer  = _renderService->getLayer(_layerId);
+                    auto camera = layer->getDefaultCamera();
+                    SLM_ASSERT("camera is null", camera);
+                    m_autostereoListener = new listener::AutoStereoCompositorListener();
+                    ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
+                }
+            }
+
+            this->updateCompositorAdaptors(_compositorName, _isEnabled, _layerId, _renderService);
         }
     }
-
-    this->updateCompositorAdaptors(_compositorName, _isEnabled, _layerId, _renderService);
 
 }
 
@@ -121,7 +160,7 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
 void ChainManager::setCompositorChain(const std::vector<CompositorIdType>& _compositors,
                                       const std::string& _layerId, ::fwRenderOgre::SRender::sptr _renderService)
 {
-    this->clearCompositorChain();
+    this->clearCompositorChain(_layerId, _renderService);
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
 
@@ -139,6 +178,17 @@ void ChainManager::setCompositorChain(const std::vector<CompositorIdType>& _comp
             m_compositorChain.push_back(CompositorType(compositorName, true));
             compositorManager.addCompositor(m_ogreViewport, compositorName);
             compositorManager.setCompositorEnabled(m_ogreViewport, compositorName, true);
+
+            if(compositorName.find("AutoStereo") != std::string::npos)
+            {
+                SLM_ASSERT("m_autostereoListener should be null", m_autostereoListener == nullptr);
+
+                auto layer  = _renderService->getLayer(_layerId);
+                auto camera = layer->getDefaultCamera();
+                SLM_ASSERT("camera is null", camera);
+                m_autostereoListener = new listener::AutoStereoCompositorListener();
+                ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
+            }
 
             this->updateCompositorAdaptors(compositorName, true, _layerId, _renderService);
         }

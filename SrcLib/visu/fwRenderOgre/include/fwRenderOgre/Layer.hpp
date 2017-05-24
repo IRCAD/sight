@@ -82,7 +82,7 @@ public:
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_COMPOSITOR_UPDATED_SIG;
     typedef ::fwCom::Signal<void (std::string, bool, ::fwRenderOgre::Layer::sptr)> CompositorUpdatedSignalType;
 
-    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_MODE3D_CHANGED_SIG;
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_STEREO_MODE_CHANGED_SIG;
     typedef ::fwCom::Signal<void (StereoModeType)> StereoModeChangedSignalType;
 
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_CAMERA_UPDATED_SIG;
@@ -98,9 +98,6 @@ public:
 
     /// Slot: Request the picker to do a ray cast according to the passed position
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_INTERACTION_SLOT;
-
-    /// Slot: Request the deletion of the scene manager
-    FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_DESTROY_SLOT;
 
     /// Slot: Request the reset of camera
     FWRENDEROGRE_API static const ::fwCom::Slots::SlotKeyType s_RESET_CAMERA_SLOT;
@@ -133,14 +130,14 @@ public:
     /// Add a disabled compositor name to the ChainManager.
     FWRENDEROGRE_API void addAvailableCompositor(std::string compositorName);
 
-    /// Removes all available compositors from the ChainManager.
-    FWRENDEROGRE_API void clearAvailableCompositors();
-
     /// Enables/Disables a compositor according to the isEnabled flag.
     FWRENDEROGRE_API void updateCompositorState(std::string compositorName, bool isEnabled);
 
-    /// Place and align camera's focal with the boundingBox.
+    /// Place and align camera's focal with the world boundingBox.
     FWRENDEROGRE_API void resetCameraCoordinates() const;
+
+    /// Compute camera's focal with the world boundingBox.
+    FWRENDEROGRE_API void computeCameraParameters() const;
 
     /// Reset the camera clipping range (near and far).
     FWRENDEROGRE_API void resetCameraClippingRange() const;
@@ -214,7 +211,7 @@ public:
                                                    std::string numPeels = "");
 
     /// Sets if this layer has a configured compositor chain.
-    FWRENDEROGRE_API void setCompositorChainEnabled(bool hasCoreChain, std::string compositorChain);
+    FWRENDEROGRE_API void setCompositorChainEnabled(const std::string& compositorChain);
 
     /// Gets if this layer needs a layer's 3D scene.
     FWRENDEROGRE_API bool isCoreCompositorEnabled();
@@ -259,11 +256,8 @@ private:
     /// Slot: Interact with the scene.
     void interaction(::fwRenderOgre::IRenderWindowInteractorManager::InteractionInfo);
 
-    /// Slot: Destroy the scene.
-    void destroy();
-
     /// Compute bounding box of the scene.
-    ::Ogre::AxisAlignedBox computeCameraParameters() const;
+    ::Ogre::AxisAlignedBox computeWorldBoundingBox() const;
 
     /// Setups default compositor for a layer's 3D scene.
     void setupCore();
@@ -351,6 +345,10 @@ private:
 
     /// Specular color of the specular light.
     SPTR(::fwData::Color) m_defaultLightSpecularColor;
+
+    /// Camera listener class used to pass the projection matrix for autostereo shaders.
+    struct LayerCameraListener;
+    LayerCameraListener* m_cameraListener;
 };
 
 }

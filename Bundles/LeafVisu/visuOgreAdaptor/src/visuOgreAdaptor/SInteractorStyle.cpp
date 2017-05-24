@@ -46,7 +46,6 @@ SInteractorStyle::SInteractorStyle() throw()
 
 SInteractorStyle::~SInteractorStyle() throw()
 {
-    m_connections.disconnect();
 }
 
 //------------------------------------------------------------------------------
@@ -97,6 +96,7 @@ void SInteractorStyle::doSwap() throw(::fwTools::Failed)
 
 void SInteractorStyle::doStop() throw(::fwTools::Failed)
 {
+    m_connections.disconnect();
 }
 
 //------------------------------------------------------------------------------

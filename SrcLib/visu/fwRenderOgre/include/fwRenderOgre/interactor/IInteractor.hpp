@@ -72,6 +72,9 @@ public:
      */
     typedef ::fwCom::Signal< void ( ::fwData::Object::sptr ) > PointClickedSigType;
     FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_POINT_CLICKED_SIG;
+
+    typedef ::fwCom::Signal< void () > RenderRequestedSigType;
+    FWRENDEROGRE_API static const ::fwCom::Signals::SignalKeyType s_RENDER_REQUESTED_SIG;
     /** @} */
 
     fwCoreNonInstanciableClassDefinitionsMacro( (IInteractor)(::fwCore::BaseObject) )
@@ -104,6 +107,9 @@ protected:
      */
     /// Signal triggered when an action has been triggered
     PointClickedSigType::sptr m_sigPointClicked;
+
+    /// Signal triggered when a render is requested
+    RenderRequestedSigType::sptr m_sigRenderRequested;
     /**
      * @}
      */

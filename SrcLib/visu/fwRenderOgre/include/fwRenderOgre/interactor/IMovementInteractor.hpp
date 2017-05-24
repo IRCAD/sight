@@ -105,6 +105,9 @@ public:
     /// Update camera's move scale.
     FWRENDEROGRE_API virtual void setMouseScale(float mouseScale);
 
+    /// Get the distance to the point of interest.
+    FWRENDEROGRE_API float getLookAtZ() const;
+
 protected:
 
     /// Current point of interest, needed especially when rotating

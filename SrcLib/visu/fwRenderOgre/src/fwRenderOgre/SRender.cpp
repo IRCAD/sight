@@ -44,6 +44,7 @@ const ::fwCom::Slots::SlotKeyType SRender::s_START_OBJECT_SLOT            = "sta
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_ORIG_SLOT     = "computeCameraParameters";
 const ::fwCom::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT = "computeCameraClipping";
 const ::fwCom::Slots::SlotKeyType SRender::s_DO_RAY_CAST_SLOT             = "doRayCast";
+const ::fwCom::Slots::SlotKeyType SRender::s_REQUEST_RENDER_SLOT          = "requestRender";
 
 static const ::fwCom::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
 static const ::fwCom::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObject";
@@ -67,6 +68,7 @@ SRender::SRender() throw() :
     newSlot(s_COMPUTE_CAMERA_ORIG_SLOT, &SRender::resetCameraCoordinates, this);
     newSlot(s_COMPUTE_CAMERA_CLIPPING_SLOT, &SRender::computeCameraClipping, this);
     newSlot(s_DO_RAY_CAST_SLOT, &SRender::doRayCast, this);
+    newSlot(s_REQUEST_RENDER_SLOT, &SRender::requestRender, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -190,7 +192,10 @@ void SRender::starting() throw(::fwTools::Failed)
 
         m_layers[s_OGREBACKGROUNDID] = ogreLayer;
     }
-    this->startContext();
+
+    m_interactorManager = ::fwRenderOgre::IRenderWindowInteractorManager::createManager();
+    m_interactorManager->setRenderService(this->getSptr());
+    m_interactorManager->createContainer( this->getContainer(), m_showOverlay, m_renderOnDemand, m_fullscreen );
 }
 
 //-----------------------------------------------------------------------------
@@ -226,7 +231,9 @@ void SRender::stopping() throw(::fwTools::Failed)
     stopAdaptors.clear();
     m_layers.clear();
 
-    this->stopContext();
+    m_interactorManager->disconnectInteractor();
+    m_interactorManager.reset();
+
     this->destroy();
 }
 
@@ -252,13 +259,13 @@ void SRender::configureLayer( ConfigurationType conf )
     const std::string compositors           = conf->getAttributeValue("compositors");
     const std::string transparencyTechnique = conf->getAttributeValue("transparency");
     const std::string numPeels              = conf->getAttributeValue("numPeels");
-    const std::string mode3D                = conf->getAttributeValue("mode3D");
+    const std::string stereoMode            = conf->getAttributeValue("stereoMode");
     const std::string defaultLight          = conf->getAttributeValue("defaultLight");
 
     SLM_ASSERT( "'id' required attribute missing or empty", !id.empty() );
     SLM_ASSERT( "'layer' required attribute missing or empty", !layer.empty() );
-    SLM_ASSERT( "Unknown 3D mode : " << mode3D,
-                mode3D.empty() || mode3D == "no" || mode3D == "AutoStereo5" || mode3D == "AutoStereo8");
+    SLM_ASSERT( "Unknown 3D mode : " << stereoMode,
+                stereoMode.empty() || stereoMode == "no" || stereoMode == "AutoStereo5" || stereoMode == "AutoStereo8");
 
     const int layerDepth = ::boost::lexical_cast<int>(layer);
 
@@ -269,12 +276,12 @@ void SRender::configureLayer( ConfigurationType conf )
     ogreLayer->setID(id);
     ogreLayer->setDepth(layerDepth);
     ogreLayer->setWorker(m_associatedWorker);
-    ogreLayer->setStereoMode(mode3D == "AutoStereo5" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 :
-                             mode3D == "AutoStereo8" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 :
+    ogreLayer->setStereoMode(stereoMode == "AutoStereo5" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 :
+                             stereoMode == "AutoStereo8" ? ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 :
                              ::fwRenderOgre::Layer::StereoModeType::NONE);
 
     ogreLayer->setCoreCompositorEnabled(id == "default", transparencyTechnique, numPeels);
-    ogreLayer->setCompositorChainEnabled(compositors != "", compositors);
+    ogreLayer->setCompositorChainEnabled(compositors);
 
     if(!defaultLight.empty() && defaultLight == "no")
     {
@@ -463,25 +470,6 @@ void SRender::render()
 bool SRender::isShownOnScreen()
 {
     return this->getContainer()->isShownOnScreen();
-}
-
-//-----------------------------------------------------------------------------
-
-void SRender::startContext()
-{
-    m_interactorManager = ::fwRenderOgre::IRenderWindowInteractorManager::createManager();
-    m_interactorManager->setRenderService(this->getSptr());
-    m_interactorManager->createContainer( this->getContainer(), m_showOverlay, m_renderOnDemand, m_fullscreen );
-}
-
-//-----------------------------------------------------------------------------
-
-void SRender::stopContext()
-{
-    SLM_TRACE_FUNC();
-
-    m_interactorManager->disconnectInteractor();
-    m_interactorManager.reset();
 }
 
 // ----------------------------------------------------------------------------

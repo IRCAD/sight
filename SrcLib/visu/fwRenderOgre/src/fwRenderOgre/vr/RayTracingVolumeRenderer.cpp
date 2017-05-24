@@ -6,6 +6,7 @@
 
 #include "fwRenderOgre/vr/RayTracingVolumeRenderer.hpp"
 
+#include "fwRenderOgre/helper/Camera.hpp"
 #include "fwRenderOgre/helper/Shading.hpp"
 #include "fwRenderOgre/SRender.hpp"
 #include "fwRenderOgre/Utils.hpp"
@@ -38,94 +39,6 @@ namespace fwRenderOgre
 
 namespace vr
 {
-
-//-----------------------------------------------------------------------------
-
-class RayTracingVolumeRenderer::AutoStereoCompositorListener : public ::Ogre::CompositorInstance::Listener
-{
-public:
-
-    AutoStereoCompositorListener(std::vector< ::Ogre::TexturePtr>& renderTargets,
-                                 std::vector< ::Ogre::Matrix4>& invWorldViewProj,
-                                 ::Ogre::TexturePtr image3DTexture,
-                                 ::Ogre::TexturePtr tfTexture,
-                                 float& sampleDistance,
-                                 ::Ogre::SceneNode* volumeSceneNode) :
-        m_renderTargets(renderTargets),
-        m_invWorldViewProj(invWorldViewProj),
-        m_image3DTexture(image3DTexture),
-        m_tfTexture(tfTexture),
-        m_sampleDistance(sampleDistance),
-        m_volumeSceneNode(volumeSceneNode)
-    {
-
-    }
-
-    //------------------------------------------------------------------------------
-
-    virtual void notifyMaterialRender(::Ogre::uint32, ::Ogre::MaterialPtr& mtl)
-    {
-        ::Ogre::Pass* pass = mtl->getTechnique(0)->getPass(0);
-
-        ::Ogre::TextureUnitState* imageTexUnitState = pass->getTextureUnitState("image");
-        ::Ogre::TextureUnitState* tfTexUnitState    = pass->getTextureUnitState("transferFunction");
-
-        imageTexUnitState->setTextureName(m_image3DTexture->getName());
-        tfTexUnitState->setTextureName(m_tfTexture->getName());
-
-        ::Ogre::GpuProgramParametersSharedPtr vr3DParams = pass->getFragmentProgramParameters();
-
-        vr3DParams->setNamedConstant("u_invWorldViewProjs", m_invWorldViewProj.data(), m_invWorldViewProj.size());
-        vr3DParams->setNamedConstant("u_sampleDistance", m_sampleDistance);
-
-        for(unsigned i = 0; i < m_renderTargets.size(); ++i)
-        {
-            ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("entryPoints" + std::to_string(i));
-
-            OSLM_ASSERT("No texture named " << i, texUnitState);
-            texUnitState->setTextureName(m_renderTargets[i]->getName());
-        }
-
-        // Set light directions in shader.
-        ::Ogre::LightList closestLights                       = m_volumeSceneNode->getAttachedObject(0)->queryLights();
-        ::Ogre::GpuConstantDefinition lightDirArrayDefinition = vr3DParams->getConstantDefinition("u_lightDir");
-
-        OSLM_ASSERT("Light list is longer than light constant definitions : " <<
-                    closestLights.size() << " > " << lightDirArrayDefinition.arraySize,
-                    closestLights.size() <= lightDirArrayDefinition.arraySize);
-
-        const size_t numLights = closestLights.size();
-        for(unsigned i = 0; i < numLights; ++i)
-        {
-            ::Ogre::Vector3 lightDir = -closestLights[i]->getDerivedDirection();
-            vr3DParams->setNamedConstant("u_lightDir[" + std::to_string(i) + "]", lightDir);
-
-            ::Ogre::ColourValue colourDiffuse = closestLights[i]->getDiffuseColour();
-            vr3DParams->setNamedConstant("u_lightDiffuse[" + std::to_string(i) + "]", colourDiffuse);
-
-            ::Ogre::ColourValue colourSpecular = closestLights[i]->getSpecularColour();
-            vr3DParams->setNamedConstant("u_lightSpecular[" + std::to_string(i) + "]", colourSpecular);
-        }
-
-        ::Ogre::Vector4 shininess(10.f, 0.f, 0.f, 0.f);
-        vr3DParams->setNamedConstant("u_shininess", shininess);
-    }
-
-private:
-
-    std::vector< ::Ogre::TexturePtr>& m_renderTargets;
-
-    std::vector< ::Ogre::Matrix4>& m_invWorldViewProj;
-
-    ::Ogre::TexturePtr m_image3DTexture;
-
-    ::Ogre::TexturePtr m_tfTexture;
-
-    float& m_sampleDistance;
-
-    ::Ogre::SceneNode* m_volumeSceneNode;
-
-};
 
 //-----------------------------------------------------------------------------
 
@@ -170,7 +83,6 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
                     m_renderer->m_illumVolume->updateVolIllum();
                 }
                 // Recompute the focal length in case the camera moved.
-                m_renderer->computeRealFocalLength();
 
                 m_renderer->computeEntryPointsTexture();
 
@@ -204,17 +116,16 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     IVolumeRenderer(parentId, layer->getSceneManager(), parentNode, imageTexture, gpuTF, preintegrationTable),
     m_entryPointGeometry(nullptr),
     m_imageSize(::fwData::Image::SizeType({ 1, 1, 1 })),
-    m_mode3D(mode3D),
+    m_stereoMode(mode3D),
     m_ambientOcclusion(ambientOcclusion),
     m_colorBleeding(colorBleeding),
     m_shadows(shadows),
     m_aoFactor(aoFactor),
     m_colorBleedingFactor(colorBleedingFactor),
     m_illumVolume(nullptr),
-    m_focalLength(0.f),
     m_cameraListener(nullptr),
-    m_compositorListener(nullptr),
-    m_layer(layer)
+    m_layer(layer),
+    m_autostereoListener(nullptr)
 {
     m_gridSize   = {{ 2, 2, 2 }};
     m_bricksSize = {{ 8, 8, 8 }};
@@ -239,21 +150,32 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         "RayTracedVolume_PreIntegrated_VolumeIllumination"
     };
 
-    const unsigned nbViewpoints = m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ? 8 :
-                                  m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 ? 5 : 1;
+    const unsigned int numViewPoints = m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ? 8 :
+                                       m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5 ? 5 : 1;
 
-    for(unsigned i = 0; i < nbViewpoints; ++i)
+    const float wRatio = numViewPoints != 1 ? 3.f / numViewPoints : 1.f;
+    const float hRatio = numViewPoints != 1 ? 0.5f : 1.f;
+
+    for(unsigned int i = 0; i < numViewPoints; ++i)
     {
         m_entryPointsTextures.push_back(::Ogre::TextureManager::getSingleton().createManual(
                                             m_parentId + "_entryPointsTexture" + std::to_string(i),
                                             ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
                                             ::Ogre::TEX_TYPE_2D,
-                                            static_cast<unsigned int>(m_camera->getViewport()->getActualWidth()),
-                                            static_cast<unsigned int>(m_camera->getViewport()->getActualHeight()),
+                                            static_cast<unsigned int>(m_camera->getViewport()->getActualWidth() *
+                                                                      wRatio),
+                                            static_cast<unsigned int>(m_camera->getViewport()->getActualHeight() *
+                                                                      hRatio),
                                             1,
                                             0,
                                             ::Ogre::PF_FLOAT32_RGB,
                                             ::Ogre::TU_RENDERTARGET ));
+    }
+
+    if(m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE)
+    {
+        m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(&m_entryPointsTextures);
+        ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
     }
 
     for(const std::string& mtlName : vrMaterials)
@@ -319,21 +241,16 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
 RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 {
-    m_camera->removeListener(m_cameraListener);
-    if(m_compositorListener)
+    if(m_autostereoListener)
     {
-        auto layer = m_layer.lock();
-
-        ::Ogre::CompositorChain* compChain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(
-            layer->getViewport());
-
-        auto compositorInstance = compChain->getCompositor(m_compositorName);
-        compositorInstance->removeListener(m_compositorListener);
-
-        ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-        compositorManager.setCompositorEnabled(layer->getViewport(), m_compositorName, false);
-        compositorManager.removeCompositor(layer->getViewport(), m_compositorName);
+        ::Ogre::MaterialManager::getSingleton().removeListener(m_autostereoListener);
+        delete m_autostereoListener;
+        m_autostereoListener = nullptr;
     }
+
+    m_camera->removeListener(m_cameraListener);
+    delete m_cameraListener;
+    m_cameraListener = nullptr;
 
     if(m_r2vbSource)
     {
@@ -351,6 +268,7 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
     {
         ::Ogre::TextureManager::getSingleton().remove(texture->getHandle());
     }
+    m_entryPointsTextures.clear();
 
     if(!m_gridTexture.isNull())
     {
@@ -397,9 +315,8 @@ void RayTracingVolumeRenderer::imageUpdate(::fwData::Image::sptr image, ::fwData
 
         auto minMax = m_preIntegrationTable.getMinMax();
 
-        ::Ogre::GpuProgramParametersSharedPtr currentParams = this->retrieveCurrentProgramParams();
-        currentParams->setNamedConstant("u_min", minMax.first);
-        currentParams->setNamedConstant("u_max", minMax.second);
+        this->setFpNamedConstant("u_min", minMax.first);
+        this->setFpNamedConstant("u_max", minMax.second);
     }
 }
 
@@ -453,7 +370,7 @@ void RayTracingVolumeRenderer::setSampling(uint16_t nbSamples)
 
     computeSampleDistance(getCameraPlane());
 
-    this->retrieveCurrentProgramParams()->setNamedConstant("u_sampleDistance", m_sampleDistance);
+    this->setFpNamedConstant("u_sampleDistance", m_sampleDistance);
 }
 
 //-----------------------------------------------------------------------------
@@ -465,7 +382,7 @@ void RayTracingVolumeRenderer::setAOFactor(double aoFactor)
     ::Ogre::Real cbFactor = static_cast< ::Ogre::Real>(m_colorBleedingFactor);
     ::Ogre::Vector4 volIllumFactor(cbFactor, cbFactor, cbFactor, static_cast< ::Ogre::Real>(m_aoFactor));
 
-    this->retrieveCurrentProgramParams()->setNamedConstant("u_volIllumFactor", volIllumFactor);
+    this->setFpNamedConstant("u_volIllumFactor", volIllumFactor);
 }
 
 //-----------------------------------------------------------------------------
@@ -477,7 +394,7 @@ void RayTracingVolumeRenderer::setColorBleedingFactor(double colorBleedingFactor
     ::Ogre::Real cbFactor = static_cast< ::Ogre::Real>(m_colorBleedingFactor);
     ::Ogre::Vector4 volIllumFactor(cbFactor, cbFactor, cbFactor, static_cast< ::Ogre::Real>(m_aoFactor));
 
-    this->retrieveCurrentProgramParams()->setNamedConstant("u_volIllumFactor", volIllumFactor);
+    this->setFpNamedConstant("u_volIllumFactor", volIllumFactor);
 }
 
 //-----------------------------------------------------------------------------
@@ -498,7 +415,7 @@ void RayTracingVolumeRenderer::setIlluminationVolume(SATVolumeIllumination* illu
 void RayTracingVolumeRenderer::setPreIntegratedRendering(bool preIntegratedRendering)
 {
     OSLM_WARN_IF("Stereoscopic rendering doesn't implement pre-integration yet.",
-                 m_mode3D != ::fwRenderOgre::Layer::StereoModeType::NONE && preIntegratedRendering);
+                 m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE && preIntegratedRendering);
 
     m_preIntegratedRendering = preIntegratedRendering;
 
@@ -534,41 +451,6 @@ void RayTracingVolumeRenderer::setShadows(bool shadows)
 
     this->updateMatNames();
     m_entryPointGeometry->setMaterialName(0, m_currentMtlName);
-}
-
-//-----------------------------------------------------------------------------
-
-void RayTracingVolumeRenderer::configure3DViewport()
-{
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-
-    m_compositorName = m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8 ?
-                       "RayTracedVolume3D8" :
-                       "RayTracedVolume3D5";
-
-    auto viewport = m_layer.lock()->getViewport();
-    compositorManager.addCompositor(viewport, m_compositorName);
-    compositorManager.setCompositorEnabled(viewport, m_compositorName, true);
-
-    ::Ogre::CompositorChain* compChain = ::Ogre::CompositorManager::getSingleton().getCompositorChain(viewport);
-
-    auto compositorInstance = compChain->getCompositor(m_compositorName);
-
-    m_compositorListener = new RayTracingVolumeRenderer::AutoStereoCompositorListener(m_entryPointsTextures,
-                                                                                      m_viewPointMatrices,
-                                                                                      m_3DOgreTexture,
-                                                                                      m_gpuTF.getTexture(),
-                                                                                      m_sampleDistance,
-                                                                                      m_volumeSceneNode);
-    compositorInstance->addListener(m_compositorListener);
-}
-
-//-----------------------------------------------------------------------------
-
-void RayTracingVolumeRenderer::setFocalLength(float focalLength)
-{
-    m_focalLength = focalLength;
-    computeRealFocalLength();
 }
 
 //-----------------------------------------------------------------------------
@@ -624,12 +506,16 @@ void RayTracingVolumeRenderer::clipImage(const ::Ogre::AxisAlignedBox& clippingB
 
 void RayTracingVolumeRenderer::resizeViewport(int w, int h)
 {
+    const auto numViewPoints = m_entryPointsTextures.size();
+    const float wRatio       = numViewPoints != 1 ? 3.f / numViewPoints : 1.f;
+    const float hRatio       = numViewPoints != 1 ? 0.5f : 1.f;
+
     for(::Ogre::TexturePtr entryPtsTexture : m_entryPointsTextures)
     {
         entryPtsTexture->freeInternalResources();
 
-        entryPtsTexture->setWidth(static_cast< ::Ogre::uint32>(w));
-        entryPtsTexture->setHeight(static_cast< ::Ogre::uint32>(h));
+        entryPtsTexture->setWidth(static_cast< ::Ogre::uint32>(w * wRatio));
+        entryPtsTexture->setHeight(static_cast< ::Ogre::uint32>(h * hRatio));
 
         entryPtsTexture->createInternalResources();
 
@@ -662,7 +548,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
     }
     m_entryPointGeometry->end();
 
-    m_entryPointGeometry->setVisible(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE);
+    m_entryPointGeometry->setVisible(true);
 
     m_volumeSceneNode->attachObject(m_entryPointGeometry);
 
@@ -748,25 +634,23 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 
     ::Ogre::RenderOperation renderOp;
     m_proxyGeometryGenerator->getRenderOperation(renderOp);
-    m_entryPointGeometry->setVisible(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::NONE);
+    m_entryPointGeometry->setVisible(true);
 
     ::Ogre::Matrix4 worldMat;
     m_proxyGeometryGenerator->getWorldTransforms(&worldMat);
 
     float eyeAngle = 0.f;
     float angle    = 0.f;
-    if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
+    if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
     {
         eyeAngle = 0.02321f;
         angle    = eyeAngle * -2.f;
     }
-    else if(m_mode3D == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
+    else if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
     {
         eyeAngle = 0.01625f;
         angle    = eyeAngle * -3.5f;
     }
-
-    m_viewPointMatrices.clear();
 
     for(::Ogre::TexturePtr entryPtsText : m_entryPointsTextures)
     {
@@ -775,54 +659,17 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
         ::Ogre::RenderTexture* renderTexture = entryPtsText->getBuffer()->getRenderTarget();
         renderTexture->getViewport(0)->clear(::Ogre::FBT_COLOUR | ::Ogre::FBT_DEPTH, ::Ogre::ColourValue::White);
 
-        if(m_mode3D != ::fwRenderOgre::Layer::StereoModeType::NONE)
+        if(m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE)
         {
-            const ::Ogre::Matrix4 shearTransform = frustumShearTransform(angle);
+            const auto shearTransform = ::fwRenderOgre::helper::Camera::computeFrustumShearTransform(*m_camera, angle);
 
             angle  += eyeAngle;
             projMat = projMat * shearTransform;
-
-            ::Ogre::Matrix4 worldViewProj = projMat * m_camera->getViewMatrix() * worldMat;
-            m_viewPointMatrices.push_back(worldViewProj.inverse());
         }
 
         m_sceneManager->manualRender(&renderOp, pass, renderTexture->getViewport(0), worldMat,
                                      m_camera->getViewMatrix(), projMat);
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void RayTracingVolumeRenderer::computeRealFocalLength()
-{
-    const ::Ogre::Plane cameraPlane(m_camera->getRealDirection(), m_camera->getRealPosition());
-    const auto cameraDistComparator = [&cameraPlane](const ::Ogre::Vector3& v1, const ::Ogre::Vector3& v2)
-                                      { return cameraPlane.getDistance(v1) < cameraPlane.getDistance(v2); };
-
-    const auto closestFurthestImgPoints
-        = std::minmax_element(m_clippedImagePositions, m_clippedImagePositions + 8, cameraDistComparator);
-
-    const auto focusPoint = *closestFurthestImgPoints.first + m_focalLength *
-                            (*closestFurthestImgPoints.second - *closestFurthestImgPoints.first);
-
-    const float realFocalLength = m_camera->getRealPosition().distance(focusPoint);
-
-    m_camera->setFocalLength(realFocalLength);
-}
-
-//-----------------------------------------------------------------------------
-
-Ogre::Matrix4 RayTracingVolumeRenderer::frustumShearTransform(float angle) const
-{
-    ::Ogre::Matrix4 shearTransform = ::Ogre::Matrix4::IDENTITY;
-
-    const float focalLength  = m_camera->getFocalLength();
-    const float xshearFactor = std::tan(angle);
-
-    shearTransform[0][2] = -xshearFactor;
-    shearTransform[0][3] = -focalLength * xshearFactor;
-
-    return shearTransform;
 }
 
 //-----------------------------------------------------------------------------
@@ -910,18 +757,6 @@ void RayTracingVolumeRenderer::updateMatNames()
         this->setAOFactor(m_aoFactor);
         this->setColorBleedingFactor(m_colorBleedingFactor);
     }
-}
-
-//-----------------------------------------------------------------------------
-
-::Ogre::GpuProgramParametersSharedPtr RayTracingVolumeRenderer::retrieveCurrentProgramParams()
-{
-    ::Ogre::MaterialPtr currentMtl = ::Ogre::MaterialManager::getSingleton().getByName(m_currentMtlName,
-                                                                                       ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-
-    OSLM_ASSERT("Material '" + m_currentMtlName + "' not found", !currentMtl.isNull());
-
-    return currentMtl->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
 }
 
 //-----------------------------------------------------------------------------

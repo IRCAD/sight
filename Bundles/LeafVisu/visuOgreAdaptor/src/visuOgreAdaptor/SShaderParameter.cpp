@@ -63,6 +63,7 @@ void SShaderParameter::doStart() throw(::fwTools::Failed)
 
 void SShaderParameter::doStop() throw(::fwTools::Failed)
 {
+    this->IParameter::doStop();
 }
 
 //------------------------------------------------------------------------------

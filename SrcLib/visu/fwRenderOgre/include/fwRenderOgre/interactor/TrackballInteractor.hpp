@@ -10,6 +10,8 @@
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/interactor/IMovementInteractor.hpp"
 
+#include <fwThread/Timer.hpp>
+
 namespace fwRenderOgre
 {
 
@@ -26,6 +28,9 @@ public:
 
     /// Nothing done in the constructor
     FWRENDEROGRE_API TrackballInteractor();
+
+    /// Destructor
+    virtual FWRENDEROGRE_API ~TrackballInteractor();
 
     /**
      * @brief Mouse's left button press + movement callback.
@@ -82,6 +87,10 @@ private:
     int m_width;
     /// Current height of the render window
     int m_height;
+    /// Animate
+    bool m_animate;
+    /// Timer
+    ::fwThread::Timer::sptr m_timer;
 };
 
 }

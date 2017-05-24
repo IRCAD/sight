@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,11 @@
 #ifndef __FWRENDEROGRE_COMPOSITOR_CHAINMANAGER_HPP__
 #define __FWRENDEROGRE_COMPOSITOR_CHAINMANAGER_HPP__
 
-#include <fwData/Composite.hpp>
-
+#include "fwRenderOgre/compositor/listener/AutoStereo.hpp"
 #include "fwRenderOgre/config.hpp"
 #include "fwRenderOgre/IHasAdaptors.hpp"
+
+#include <fwData/Composite.hpp>
 
 #include <vector>
 
@@ -45,7 +46,8 @@ public:
     /// Inserts the new compositor in the compositor chain vector
     FWRENDEROGRE_API void addAvailableCompositor(CompositorIdType _compositorName);
     /// Clears the compositor chain
-    FWRENDEROGRE_API void clearCompositorChain();
+    FWRENDEROGRE_API void clearCompositorChain(const std::string& _layerId,
+                                               SPTR(::fwRenderOgre::SRender) _renderService);
     /// Enables or disables the target compositor
     FWRENDEROGRE_API void updateCompositorState(CompositorIdType _compositorName, bool _isEnabled,
                                                 const std::string& _layerId,
@@ -66,9 +68,12 @@ public:
     class FWRENDEROGRE_CLASS_API FindCompositorByName
     {
     public:
-        FindCompositorByName(const CompositorIdType& _name) : compositorName(_name)
+        FindCompositorByName(const CompositorIdType& _name) :
+            compositorName(_name)
         {
         }
+
+        //------------------------------------------------------------------------------
 
         bool operator()(const CompositorType& _compositor) const
         {
@@ -99,6 +104,9 @@ private:
 
     /// Map allowing to keep the objects of the created adaptors alive
     ::fwData::Composite::sptr m_adaptorsObjectsOwner;
+
+    /// Autostereo listener
+    listener::AutoStereoCompositorListener* m_autostereoListener;
 };
 
 //-----------------------------------------------------------------------------

@@ -8,28 +8,14 @@ uniform sampler3D u_illuminationVolume;
 uniform vec4 u_volIllumFactor;
 #endif // AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 
-#ifdef MODE3D
-uniform sampler2D u_entryPoints0;
-uniform sampler2D u_entryPoints1;
-uniform sampler2D u_entryPoints2;
-uniform sampler2D u_entryPoints3;
-uniform sampler2D u_entryPoints4;
-uniform sampler2D u_entryPoints5;
-uniform sampler2D u_entryPoints6;
-uniform sampler2D u_entryPoints7;
-uniform sampler2D u_background;
-
-uniform mat4 u_invWorldViewProjs[VIEWPOINTS];
-
-uniform float u_lobeOffset;
-
-in vec2 uv;
-#else
 uniform sampler2D u_entryPoints;
 
 uniform mat4 u_invWorldViewProj;
 
-#endif // MODE3D
+#ifdef AUTOSTEREO
+uniform mat4 u_invWorldView;
+uniform mat4 u_invProj;
+#endif // AUTOSTEREO
 
 uniform vec3 u_cameraPos;
 uniform float u_shininess;
@@ -98,48 +84,6 @@ vec3 gradientNormal(vec3 uvw)
                 (texture(u_image, uvw + hz).r - texture(u_image, uvw - hz).r)
     ));
 }
-
-//-----------------------------------------------------------------------------
-
-#ifdef MODE3D
-void getRayEntryExitPoints(out vec2 rayEntryPoints[3], out mat4 viewpoints[3])
-{
-    vec2 entryPoints[VIEWPOINTS];
-
-    entryPoints[0] = texture(u_entryPoints0, uv).rg;
-    entryPoints[1] = texture(u_entryPoints1, uv).rg;
-#if (VIEWPOINTS > 2)
-    entryPoints[2] = texture(u_entryPoints2, uv).rg;
-#endif    /*(VIEWPOINTS > 2)    */
-#if (VIEWPOINTS > 3)
-    entryPoints[3] = texture(u_entryPoints3, uv).rg;
-#endif    /*(VIEWPOINTS > 3)    */
-#if (VIEWPOINTS > 4)
-    entryPoints[4] = texture(u_entryPoints4, uv).rg;
-#endif    /*(VIEWPOINTS > 4)    */
-#if (VIEWPOINTS > 5)
-    entryPoints[5] = texture(u_entryPoints5, uv).rg;
-#endif    /*(VIEWPOINTS > 5)    */
-#if (VIEWPOINTS > 6)
-    entryPoints[6] = texture(u_entryPoints6, uv).rg;
-#endif    /*(VIEWPOINTS > 6)    */
-#if (VIEWPOINTS > 7)
-    entryPoints[7] = texture(u_entryPoints7, uv).rg;
-#endif    /*(VIEWPOINTS > 7)    */
-
-    float xy = (gl_FragCoord.x * 3.0) + gl_FragCoord.y + u_lobeOffset + 0.5;
-
-    int vp = (VIEWPOINTS - 1) - int(mod(xy, float(VIEWPOINTS)));
-
-    for(int i = 0; i < 3; ++i )
-    {
-        int index = (vp + i) % VIEWPOINTS;
-
-        viewpoints[2 - i]     = u_invWorldViewProjs[index];
-        rayEntryPoints[2 - i] = entryPoints[index];
-    }
-}
-#endif
 
 //-----------------------------------------------------------------------------
 
@@ -240,7 +184,6 @@ vec4 launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, in float s
 
 void main(void)
 {
-#ifndef MODE3D
     vec2 rayEntryExit = texelFetch(u_entryPoints, ivec2(gl_FragCoord.xy), 0).rg;
 
     float entryDepth =  rayEntryExit.r;
@@ -253,70 +196,22 @@ void main(void)
 
     gl_FragDepth = entryDepth;
 
-    vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, u_invWorldViewProj);
-    vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, u_invWorldViewProj);
+#ifdef AUTOSTEREO
+    mat4x4 invWorldViewProj = u_invWorldView * u_invProj;
+#else
+    mat4x4 invWorldViewProj = u_invWorldViewProj;
+#endif
+
+    vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, invWorldViewProj);
+    vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, invWorldViewProj);
 
     vec3 rayDir   = normalize(rayExit - rayEntry) * u_sampleDistance;
 
     float rayLength = length(rayExit - rayEntry);
 
-#else
-    int nbRays = 0;
-    float fragDepth = 0;
-    vec2 rayEntryPoints[3];
-    mat4 viewports[3];
+    vec3 rayPos = rayEntry;
+    vec4 result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
 
-    getRayEntryExitPoints(rayEntryPoints, viewports);
-
-    if(rayEntryPoints[0].g == 1 && rayEntryPoints[1].g == 1 && rayEntryPoints[2].g == 1 )
-    {
-        discard;
-    }
-
-    fragColor.a = 1;
-
-    vec3 subPixelRayColor;
-    vec3 subPixelRayAlpha;
-    for(int i = 0; i < 3; ++ i)
-    {
-        float entryDepth =  rayEntryPoints[i].r;
-        float exitDepth  = -rayEntryPoints[i].g;
-
-        if(/*gl_FragCoord.z > entryDepth ||*/ exitDepth == -1)
-        {
-            subPixelRayColor[i] = 0;
-            continue;
-        }
-
-        nbRays ++;
-        fragDepth += entryDepth;
-
-        mat4 invWorldViewProj = viewports[i];
-
-        vec3 rayEntry = getFragmentImageSpacePosition(entryDepth, invWorldViewProj);
-        vec3 rayExit  = getFragmentImageSpacePosition(exitDepth, invWorldViewProj);
-
-        vec3 rayDir   = normalize(rayExit - rayEntry) * u_sampleDistance;
-
-        float rayLength = length(rayExit - rayEntry);
-
-#endif // MODE3D
-        vec3 rayPos = rayEntry;
-        vec4 result = launchRay(rayPos, rayDir, rayLength, u_sampleDistance);
-
-#ifdef MODE3D
-        subPixelRayColor[i] = result[i];
-        subPixelRayAlpha[i] = result.a;
-    }
-
-    vec3 backgroundSample = vec3(0,0,0);
-
-    fragColor.rgb = mix(backgroundSample, subPixelRayColor, subPixelRayAlpha);
-
-    gl_FragDepth = nbRays == 0 ? 1.f : fragDepth / float(nbRays);
-
-#else
     fragColor = result;
-#endif // MODE3D
 
 }

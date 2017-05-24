@@ -21,7 +21,7 @@ namespace compositor
  * @class MaterialMgrListener
  *        Generates transparency techniques at runtime.
  */
-class FWRENDEROGRE_CLASS_API MaterialMgrListener : public Ogre::MaterialManager::Listener
+class FWRENDEROGRE_CLASS_API MaterialMgrListener : public ::Ogre::MaterialManager::Listener
 {
 public:
     /// Destructor
