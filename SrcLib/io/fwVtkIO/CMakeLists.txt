@@ -17,12 +17,11 @@ else()
         vtkIOLegacy
         vtkIOXML
         vtkFiltersGeometry
-        vtkInteractionStyle
-        vtkRenderingOpenGL2
-        vtkRenderingFreeType
         REQUIRED
         NO_MODULE)
 endif()
+
+find_package(GLEW)
 
 include(${VTK_USE_FILE})
 
@@ -32,4 +31,5 @@ fwForwardInclude(
 
 fwForwardLink(
     ${VTK_LIBRARIES}
+    ${GLEW_LIBRARIES}
 )
