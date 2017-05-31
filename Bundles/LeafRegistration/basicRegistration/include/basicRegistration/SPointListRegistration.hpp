@@ -51,6 +51,14 @@ public:
     BASICREGISTRATION_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_MODE;
     ///@}
 
+    /**
+     * @name Signals API
+     * @{
+     */
+    /// Emitted when registration error is computed
+    typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;
+    ///@}
+
     BASICREGISTRATION_API SPointListRegistration();
 
     BASICREGISTRATION_API virtual ~SPointListRegistration();

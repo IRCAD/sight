@@ -32,10 +32,12 @@ namespace basicRegistration
 {
 
 const ::fwCom::Slots::SlotKeyType SPointListRegistration::s_CHANGE_MODE = "changeMode";
+static const ::fwCom::Signals::SignalKeyType s_ERROR_COMPUTED_SIG       = "errorComputed";
 
 SPointListRegistration::SPointListRegistration() :
     m_registrationMode(RIGID)
 {
+    newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
     newSlot(s_CHANGE_MODE, &SPointListRegistration::changeMode, this);
 }
 
@@ -85,6 +87,7 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
         registeredPL = this->getInOut< ::fwData::PointList >("registeredPL");
         referencePL  = this->getInOut< ::fwData::PointList >("referencePL");
         matrix       = this->getInOut< ::fwData::TransformationMatrix3D >("output");
+
     }
     else
     {
@@ -119,17 +122,17 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
                     auto coord = pointRef->getRefCoord();
                     sourcePts->InsertNextPoint(coord[0], coord[1], coord[2]);
 
-                    OSLM_ERROR("referencePL : " << pointRef->getField< ::fwData::String >(
+                    OSLM_TRACE("referencePL : " << pointRef->getField< ::fwData::String >(
                                    ::fwDataTools::fieldHelper::Image::m_labelId )->value() );
-                    OSLM_ERROR(
+                    OSLM_TRACE(
                         "referencePL : " << pointRef->getCoord()[0] << " " << pointRef->getCoord()[1] << " " <<
                         pointRef->getCoord()[2] );
 
                     coord = pointReg->getRefCoord();
                     targetPts->InsertNextPoint(coord[0], coord[1], coord[2]);
-                    OSLM_ERROR("registeredPL : " << pointReg->getField< ::fwData::String >(
+                    OSLM_TRACE("registeredPL : " << pointReg->getField< ::fwData::String >(
                                    ::fwDataTools::fieldHelper::Image::m_labelId )->value() );
-                    OSLM_ERROR(
+                    OSLM_TRACE(
                         "registeredPL : " << pointReg->getCoord()[0] << " " << pointReg->getCoord()[1] << " " <<
                         pointReg->getCoord()[2] );
                 }
@@ -164,6 +167,36 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
                 matrix->setCoefficient(l, c, m->GetElement(l, c));
             }
         }
+
+        //compute RMSE
+        double errorValue = 0.;
+
+        for(vtkIdType i = 0; i < sourcePts->GetNumberOfPoints(); ++i)
+        {
+            double p1[3];
+            double p2[3];
+            double p2H[4] = { 1., 1., 1., 1.};//homogeneous coordinates
+            double newP[4];
+
+            sourcePts->GetPoint(i, p1);
+            targetPts->GetPoint(i, p2);
+
+            // to have homogeneous coordinates (x,y,z,w)
+            std::copy(std::begin(p2), std::end(p2), std::begin(p2H));
+
+            //p' = M*p
+            m->MultiplyPoint(p2H, newP);
+
+            errorValue += std::sqrt(((p1[0] - newP[0]) * (p1[0] - newP[0])) +
+                                    ((p1[1] - newP[1]) * (p1[1] - newP[1])) +
+                                    ((p1[2] - newP[2]) * (p1[2] - newP[2])));
+        }
+
+        errorValue /= sourcePts->GetNumberOfPoints();
+
+        OSLM_TRACE("RMSE : "<<errorValue);
+
+        this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(errorValue);
 
         // Notify Matrix modified
         auto sig = matrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
