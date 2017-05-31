@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,11 +9,10 @@
 
 #include "visuVTKAdaptor/config.hpp"
 
-#include <fwRenderVTK/IVtkAdaptorService.hpp>
-
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slots.hpp>
 
+#include <fwRenderVTK/IVtkAdaptorService.hpp>
 
 class vtkCommand;
 class vtkDepthSortPolyData;
@@ -41,13 +40,44 @@ class Transform;
 class VISUVTKADAPTOR_CLASS_API MeshVtkCommand;
 
 /**
- * @brief Display a mesh on the generic scene
+ * @brief   Display a ::fwData::Mesh in the generic scene
+ *
+ * @section Slots Slots
+ * - \b textureApplied() : a texture was applied.
+ * - \b updateVisibility(bool) : change the visibility of the mesh.
+ * - \b updatePointColors() : the mesh points colors were modified.
+ * - \b updateCellColors() : the mesh cells colors were modified.
+ * - \b updatePointNormals() : the mesh points normals were modified.
+ * - \b updateCellNormals() : the mesh cells normals were modified.
+ * - \b updatePointTexCoords() : the mesh points texture coordinates were modified.
+ * - \b updateCellTexCoords() : the mesh cells texture coordinates were modified.
+ * - \b showPointColors() : display the points colors (instead of cell colors).
+ * - \b showCellColors() : display the cells colors (instead of point colors).
+ * - \b hideColors() : hide the cells colors.
+ * - \b updateColorMode(std::uint8_t) : update the color mode (0 : hide, 1 : points colors, 2 : cells colors).
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <adaptor type="::visuVTKAdaptor::Mesh">
+            <config renderer="default" picker="" texture="TextureAdaptor" />
+       </adaptor>
+   @endcode
+ * @subsection Configuration Configuration:
+ * - \b color : hexadecimal color code of the diffuse material (i.e RGB "#ff00ff" or RGBA "#ff224508"). This overrides
+ * the current diffuse color of the mesh material.
+ * - \b unclippedcolor : hexadecimal color code of the diffuse material of the unclipped part.
+ * - \b autoresetcamera : reset the camera point of view when the mesh is modified ("yes" or "no", default: "yes") .
+ * - \b uvgen : generate UV coordinates ("sphere", "cylinder" or "plane").
+ * - \b texture : id of the optional texture adaptor, used to map a texture on the mesh. The mesh needs a valid UV
+ * coordinates layer, or to generate uv on-the-fly with the \b uvgen parameter.
+ * - \b shadingMode : "ambient", "flat", "gouraud" or "phong" (default: phong).
  */
 class VISUVTKADAPTOR_CLASS_API Mesh : public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (Mesh)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (Mesh)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_API Mesh() throw();
     VISUVTKADAPTOR_API virtual ~Mesh() throw();
@@ -113,7 +143,7 @@ public:
     VISUVTKADAPTOR_API void setShowClippedPart ( bool show );
     VISUVTKADAPTOR_API void setClippingPlanesId( ::fwRenderVTK::SRender::VtkObjectIdType id );
 
-    VISUVTKADAPTOR_API void setVtkClippingPlanes               ( vtkPlaneCollection *planes );
+    VISUVTKADAPTOR_API void setVtkClippingPlanes               ( vtkPlaneCollection* planes );
     VISUVTKADAPTOR_API void setActorPropertyToUnclippedMaterial( bool opt );
 
     /// Active/Inactive automatic reset on camera. By default =true.
@@ -191,10 +221,10 @@ protected:
      * @}
      */
 
-    vtkActor *newActor();
+    vtkActor* newActor();
     void buildPipeline();
 
-    void updateMesh ( SPTR(::fwData::Mesh) mesh );
+    void updateMesh( SPTR(::fwData::Mesh) mesh );
 
     void setServiceOnMaterial(::fwRenderVTK::IVtkAdaptorService::sptr &srv,
                               SPTR(::fwData::Material) material);
@@ -210,15 +240,15 @@ protected:
     bool m_showClippedPart;
     bool m_autoResetCamera;
 
-    vtkPolyData        *m_polyData;
-    vtkPolyDataMapper  *m_mapper;
-    vtkActor           *m_actor;
+    vtkPolyData* m_polyData;
+    vtkPolyDataMapper* m_mapper;
+    vtkActor* m_actor;
 
-    vtkPlaneCollection *m_clippingPlanes;
+    vtkPlaneCollection* m_clippingPlanes;
     ::fwRenderVTK::SRender::VtkObjectIdType m_clippingPlanesId;
 
-    MeshVtkCommand *m_planeCollectionShifterCallback;
-    MeshVtkCommand *m_servicesStarterCallback;
+    MeshVtkCommand* m_planeCollectionShifterCallback;
+    MeshVtkCommand* m_servicesStarterCallback;
 
     SPTR(::fwData::Material)       m_material;
     SPTR(::fwData::Material)       m_unclippedPartMaterial;
@@ -272,7 +302,9 @@ private:
 
 public:
 
-    vtkActor * getActor() const
+    //------------------------------------------------------------------------------
+
+    vtkActor* getActor() const
     {
         return m_actor;
     }

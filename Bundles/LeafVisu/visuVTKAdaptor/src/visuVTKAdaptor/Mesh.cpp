@@ -1,13 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "visuVTKAdaptor/Material.hpp"
 #include "visuVTKAdaptor/Mesh.hpp"
-#include "visuVTKAdaptor/MeshNormals.hpp"
 
+#include "visuVTKAdaptor/Material.hpp"
+#include "visuVTKAdaptor/MeshNormals.hpp"
 #include "visuVTKAdaptor/Texture.hpp"
 #include "visuVTKAdaptor/Transform.hpp"
 
@@ -19,7 +19,6 @@
 
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
-
 #include <fwData/mt/ObjectReadLock.hpp>
 
 #include <fwServices/macros.hpp>
@@ -31,12 +30,7 @@
 #include <vtkActor.h>
 #include <vtkCamera.h>
 #include <vtkCommand.h>
-
 #include <vtkDepthSortPolyData.h>
-#include <vtkTextureMapToCylinder.h>
-#include <vtkTextureMapToPlane.h>
-#include <vtkTextureMapToSphere.h>
-
 #include <vtkMath.h>
 #include <vtkMatrix4x4.h>
 #include <vtkPicker.h>
@@ -46,9 +40,10 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkTextureMapToCylinder.h>
+#include <vtkTextureMapToPlane.h>
+#include <vtkTextureMapToSphere.h>
 #include <vtkTransform.h>
-
-
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Mesh, ::fwData::Mesh );
 
@@ -61,7 +56,7 @@ namespace visuVTKAdaptor
 
 const ::fwCom::Signals::SignalKeyType Mesh::s_TEXTURE_APPLIED_SIG      = "textureApplied";
 const ::fwCom::Slots::SlotKeyType Mesh::s_UPDATE_VISIBILITY_SLOT       = "updateVisibility";
-const ::fwCom::Slots::SlotKeyType Mesh::s_UPDATE_POINT_COLORS_SLOT     = "updatepointColors";
+const ::fwCom::Slots::SlotKeyType Mesh::s_UPDATE_POINT_COLORS_SLOT     = "updatePointColors";
 const ::fwCom::Slots::SlotKeyType Mesh::s_UPDATE_CELL_COLORS_SLOT      = "updateCellColors";
 const ::fwCom::Slots::SlotKeyType Mesh::s_UPDATE_VERTEX_SLOT           = "updateVertex";
 const ::fwCom::Slots::SlotKeyType Mesh::s_UPDATE_POINT_NORMALS_SLOT    = "updatePointNormals";
@@ -87,22 +82,26 @@ class PlaneShifterCallback : public MeshVtkCommand
 {
 public:
 
+    //------------------------------------------------------------------------------
+
     static PlaneShifterCallback* New( vtkPlane* src,  vtkPlane* dst, double factor = 1.)
     {
         return new PlaneShifterCallback( src, dst, factor );
     }
 
     //--------------------------------------------------------------------------
-    PlaneShifterCallback( vtkPlane* src,  vtkPlane* dst, double factor )
-        : m_planeSrc(src),
-          m_planeDst(dst),
-          m_factor(factor)
+    PlaneShifterCallback( vtkPlane* src,  vtkPlane* dst, double factor ) :
+        m_planeSrc(src),
+        m_planeDst(dst),
+        m_factor(factor)
     {
         m_planeSrc->Register(this);
         m_planeDst->Register(this);
         src->AddObserver(vtkCommand::ModifiedEvent, this);
         this->Execute( 0, vtkCommand::ModifiedEvent, 0);
     }
+
+    //------------------------------------------------------------------------------
 
     void Stop()
     {
@@ -111,6 +110,7 @@ public:
         m_planeDst->UnRegister(this);
     }
 
+    //------------------------------------------------------------------------------
 
     virtual void Execute( vtkObject* caller, unsigned long eventId, void* )
     {
@@ -124,7 +124,7 @@ public:
 
             if (m_factor < 0)
             {
-                for (int i = 0; i<3; i++)
+                for (int i = 0; i < 3; i++)
                 {
                     n[i] = -n[i];
                 }
@@ -144,11 +144,11 @@ protected:
     double m_factor;
 };
 
-
-
 class PlaneCollectionShifterCallback : public MeshVtkCommand
 {
 public:
+
+    //------------------------------------------------------------------------------
 
     static PlaneCollectionShifterCallback* New(
         vtkPlaneCollection* src,
@@ -173,6 +173,8 @@ public:
         this->Execute( 0, vtkCommand::ModifiedEvent, 0);
     }
 
+    //------------------------------------------------------------------------------
+
     void Stop()
     {
         this->Clear();
@@ -180,6 +182,8 @@ public:
         m_planeCollectionSrc->UnRegister(this);
         m_planeCollectionDst->UnRegister(this);
     }
+
+    //------------------------------------------------------------------------------
 
     void Clear()
     {
@@ -193,6 +197,8 @@ public:
         }
         m_planeCallbacks.clear();
     }
+
+    //------------------------------------------------------------------------------
 
     virtual void Execute( vtkObject* caller, unsigned long eventId, void* )
     {
@@ -222,11 +228,11 @@ protected:
     double m_factor;
 };
 
-
-
 class PlaneCollectionAdaptorStarter : public MeshVtkCommand
 {
 public:
+
+    //------------------------------------------------------------------------------
 
     static PlaneCollectionAdaptorStarter* New(
         ::visuVTKAdaptor::Mesh::sptr service,
@@ -249,12 +255,16 @@ public:
         this->Execute( 0, vtkCommand::ModifiedEvent, 0);
     }
 
+    //------------------------------------------------------------------------------
+
     void Stop()
     {
         m_planeCollectionSrc->RemoveObserver(this);
         m_planeCollectionSrc->UnRegister(this);
         this->Clear();
     }
+
+    //------------------------------------------------------------------------------
 
     void Clear()
     {
@@ -288,6 +298,8 @@ public:
         }
     }
 
+    //------------------------------------------------------------------------------
+
     virtual void Execute( vtkObject* caller, unsigned long eventId, void* data)
     {
         ::visuVTKAdaptor::Mesh::sptr service;
@@ -316,7 +328,6 @@ public:
                 vtkPlaneCollection* newCollection = vtkPlaneCollection::New();
                 newCollection->AddItem(newPlane);
 
-
                 ::fwRenderVTK::IVtkAdaptorService::sptr meshService =
                     ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService > (
                         service->getObject(),
@@ -324,15 +335,15 @@ public:
 
                 ::visuVTKAdaptor::Mesh::sptr meshAdaptor = Mesh::dynamicCast(meshService);
 
-                meshAdaptor->setRenderService ( service->getRenderService()  );
-                meshAdaptor->setRenderId      ( service->getRenderId()       );
-                meshAdaptor->setPickerId      ( service->getPickerId()       );
-                meshAdaptor->setMaterial      ( service->getMaterial()       );
+                meshAdaptor->setRenderService( service->getRenderService()  );
+                meshAdaptor->setRenderId( service->getRenderId()       );
+                meshAdaptor->setPickerId( service->getPickerId()       );
+                meshAdaptor->setMaterial( service->getMaterial()       );
                 meshAdaptor->setVtkClippingPlanes( newCollection );
                 meshAdaptor->setAutoRender( service->getAutoRender() );
 
                 meshAdaptor->start();
-                meshAdaptor->updateVisibility ( service->getVisibility()     );
+                meshAdaptor->updateVisibility( service->getVisibility()     );
 
                 newPlane->Delete();
 
@@ -369,7 +380,6 @@ protected:
 
     double m_factor;
 };
-
 
 //------------------------------------------------------------------------------
 
@@ -469,7 +479,7 @@ void Mesh::doConfigure() throw(fwTools::Failed)
 
     if(m_configuration->hasAttribute("uvgen"))
     {
-        std::string uvGen = m_configuration->getAttributeValue ("uvgen");
+        std::string uvGen = m_configuration->getAttributeValue("uvgen");
         if(uvGen == "sphere")
         {
             m_uvgen = SPHERE;
@@ -487,6 +497,16 @@ void Mesh::doConfigure() throw(fwTools::Failed)
     if ( m_configuration->hasAttribute("texture") )
     {
         m_textureAdaptorUID = m_configuration->getAttributeValue("texture");
+    }
+
+    if ( m_configuration->hasAttribute("shadingMode") )
+    {
+        const std::string shading                         = m_configuration->getAttributeValue("shadingMode");
+        const ::fwData::Material::ShadingType shadingMode = (shading == "ambient") ? ::fwData::Material::AMBIENT :
+                                                            (shading == "flat") ? ::fwData::Material::FLAT :
+                                                            (shading == "gouraud") ? ::fwData::Material::GOURAUD :
+                                                            ::fwData::Material::PHONG;
+        m_material->setShadingMode(shadingMode);
     }
 }
 
@@ -549,7 +569,6 @@ void Mesh::doSwap() throw(fwTools::Failed)
     m_transformService.lock()->stop();
     ::fwServices::OSR::unregisterService(m_transformService.lock());
 
-
     ::fwRenderVTK::IVtkAdaptorService::sptr materialService              = m_materialService.lock();
     ::fwRenderVTK::IVtkAdaptorService::sptr unclippedPartMaterialService = m_unclippedPartMaterialService.lock();
 
@@ -592,9 +611,9 @@ void Mesh::createTransformService()
     SLM_ASSERT("Transform service NULL", m_transformService.lock());
     ::visuVTKAdaptor::Transform::sptr transformService = m_transformService.lock();
 
-    transformService->setRenderService ( this->getRenderService()  );
-    transformService->setRenderId      ( this->getRenderId()       );
-    transformService->setAutoRender    ( this->getAutoRender()     );
+    transformService->setRenderService( this->getRenderService()  );
+    transformService->setRenderId( this->getRenderId()       );
+    transformService->setAutoRender( this->getAutoRender()     );
 
     transformService->setTransform(vtkFieldTransform);
     m_transform->Concatenate(vtkFieldTransform);
@@ -719,9 +738,9 @@ void Mesh::createNormalsService()
         SLM_ASSERT("service not instanced", service);
 
         service->setRenderService( this->getRenderService() );
-        service->setRenderId     ( this->getRenderId()      );
-        service->setPickerId     ( this->getPickerId()      );
-        service->setAutoRender   ( this->getAutoRender()    );
+        service->setRenderId( this->getRenderId()      );
+        service->setPickerId( this->getPickerId()      );
+        service->setAutoRender( this->getAutoRender()    );
         ::visuVTKAdaptor::MeshNormals::dynamicCast(service)->setPolyData( m_polyData );
         service->start();
 
@@ -1127,7 +1146,4 @@ void Mesh::updateNormalMode(std::uint8_t mode)
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKAdaptor
-
-
-
 
