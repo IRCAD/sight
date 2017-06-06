@@ -214,7 +214,7 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
     }
 };
 
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------,---------------
 
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_AUTOSTEREO_DEFINE = "AUTOSTEREO=1";
 
@@ -340,6 +340,12 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                             0,
                                             ::Ogre::PF_FLOAT32_GR,
                                             ::Ogre::TU_RENDERTARGET ));
+    }
+
+    if(m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE)
+    {
+        m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(&m_entryPointsTextures);
+        ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
     }
 
     // First check that we did not already instanced Shared parameters
@@ -963,10 +969,7 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
 {
     this->updateRayTracingDefines();
 
-    ::Ogre::GpuProgramManager* gpm = ::Ogre::GpuProgramManager::getSingletonPtr();
-    ::Ogre::MaterialManager* mm    = ::Ogre::MaterialManager::getSingletonPtr();
-
-    ::Ogre::ResourcePtr resource;
+    ::Ogre::HighLevelGpuProgramManager& gpm = ::Ogre::HighLevelGpuProgramManager::getSingleton();
 
     static int i = 0;
     ++i;
@@ -975,40 +978,19 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
     ::Ogre::String fpName("RTV_FP_" + std::to_string(i));
     ::Ogre::String matName("RTV_Mat_" + std::to_string(i));
 
-    resource = gpm->getResourceByName(vpName, ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
-    if(!resource.isNull())
-    {
-        gpm->remove(resource);
-        gpm->removeMicrocodeFromCache(resource->getName());
-    }
-    resource = gpm->getResourceByName(fpName, ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
-    if(!resource.isNull())
-    {
-        gpm->remove(resource);
-        gpm->removeMicrocodeFromCache(resource->getName());
-    }
-
-    resource = mm->getResourceByName(matName, ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
-    if(!resource.isNull())
-    {
-        mm->remove(resource);
-    }
-
     // Vertex shader
-    ::Ogre::GpuProgramPtr vsp = gpm->createProgram(vpName,
-                                                   ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                                                   "RayTracedVolume_VP.glsl", ::Ogre::GPT_VERTEX_PROGRAM, "glsl");
+    ::Ogre::HighLevelGpuProgramPtr vsp = gpm.createProgram(vpName, "Materials", "glsl", ::Ogre::GPT_VERTEX_PROGRAM);
+    vsp->setSourceFile("RayTracedVolume_VP.glsl");
+
     if(m_vpPPDefines.size() > 0)
     {
         vsp->setParameter("preprocessor_defines", m_vpPPDefines);
     }
-    vsp->escalateLoading();
-    vsp->load();
 
     // Fragment shader
-    ::Ogre::GpuProgramPtr fsp = gpm->createProgram(fpName,
-                                                   ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                                                   "RayTracedVolume_FP.glsl", ::Ogre::GPT_FRAGMENT_PROGRAM, "glsl");
+    ::Ogre::HighLevelGpuProgramPtr fsp = gpm.createProgram(fpName, "Materials", "glsl", ::Ogre::GPT_FRAGMENT_PROGRAM);
+    fsp->setSourceFile("RayTracedVolume_FP.glsl");
+
     fsp->setParameter("attach", "TransferFunction_FP");
     if(this->m_idvrCSGModulation)
     {
@@ -1018,11 +1000,10 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
     {
         fsp->setParameter("preprocessor_defines", m_fpPPDefines);
     }
-    fsp->escalateLoading();
-    fsp->load();
 
     // Material
-    ::Ogre::MaterialPtr mat = mm->create(matName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    ::Ogre::MaterialManager& mm = ::Ogre::MaterialManager::getSingleton();
+    ::Ogre::MaterialPtr mat     = mm.create(matName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
     // Ensure that we have the color parameters set for the current material
     this->setMaterialLightParams(mat);
     // Get the already created pass through the already created technique
@@ -1144,7 +1125,9 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
     }
 
     // Entry points texture
-    texUnitState = pass->createTextureUnitState(m_entryPointsTextures[0]->getName());
+    texUnitState = pass->createTextureUnitState();
+    texUnitState->setName("entryPoints");
+    texUnitState->setTexture(m_entryPointsTextures[0]);
     texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
     texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
@@ -1447,11 +1430,11 @@ void RayTracingVolumeRenderer::updateRayTracingDefines()
     vpPPDefs.str("");
     fpPPDefs.str("");
 
-    if(m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE)
-    {
-        vpPPDefs << (vpPPDefs.str() == "" ? "" : ",") << this->s_AUTOSTEREO_DEFINE;
-        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_AUTOSTEREO_DEFINE;
-    }
+//    if(m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE)
+//    {
+//        vpPPDefs << (vpPPDefs.str() == "" ? "" : ",") << this->s_AUTOSTEREO_DEFINE;
+//        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_AUTOSTEREO_DEFINE;
+//    }
 
     if(m_ambientOcclusion)
     {
