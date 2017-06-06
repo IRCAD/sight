@@ -211,6 +211,13 @@ void SVolumeRender::doConfigure() throw ( ::fwTools::Failed )
     this->parseTFConfig(m_configuration);
 }
 
+//------------------------------------------------------------------------------
+
+int SVolumeRender::getStartPriority()
+{
+    return 10;
+}
+
 //-----------------------------------------------------------------------------
 
 void SVolumeRender::updatingTFPoints()

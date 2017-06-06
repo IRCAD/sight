@@ -18,6 +18,7 @@
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreMaterialManager.h>
+#include <OGRE/OgreTechnique.h>
 #include <OGRE/OgreRectangle2D.h>
 
 #include <vector>
