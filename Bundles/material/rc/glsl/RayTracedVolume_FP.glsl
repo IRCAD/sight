@@ -18,25 +18,21 @@ uniform sampler3D u_illuminationVolume;
 uniform vec4 u_volIllumFactor;
 #endif // AMBIENT_OCCLUSION || COLOR_BLEEDING || SHADOWS
 
-in vec2 uv;
-
 uniform sampler2D u_entryPoints;
-
-uniform mat4 u_invWorldViewProj;
 
 #ifdef AUTOSTEREO
 uniform mat4 u_invWorldView;
 uniform mat4 u_invProj;
+#else
+uniform mat4 u_invWorldViewProj;
 #endif // AUTOSTEREO
-
-uniform float u_renderTargetFlipping;
 
 uniform vec3 u_cameraPos;
 uniform float u_shininess;
 
 #define MAX_LIGHTS 10
 
-uniform int u_numLights;
+uniform float u_numLights;
 
 uniform vec3 u_lightDir[MAX_LIGHTS];
 uniform vec3 u_lightDiffuse[MAX_LIGHTS];
@@ -96,7 +92,7 @@ vec3 lighting(vec3 _normal, vec3 _position, vec3 _diffuse)
     vec3 diffuse = vec3(0.0);
     vec3 specular = vec3(0.0);
 
-    for(int i = 0; i < u_numLights; ++i)
+    for(int i = 0; i < int(u_numLights); ++i)
     {
         float fLitDiffuse = clamp(dot( normalize(-u_lightDir[i]), _normal ), 0, 1);
         diffuse += fLitDiffuse * u_lightDiffuse[i] * _diffuse;
@@ -132,13 +128,6 @@ vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
 {
     // TODO: Simplify this -> uniforms
     vec3 screenPos = vec3(gl_FragCoord.xy / vec2(u_viewportWidth, u_viewportHeight), depth);
-
-    // Ogre's auto parameter "render_target_flipping" is equal to -1 when the render target requires Y texture flipping.
-    if(u_renderTargetFlipping < 0)
-    {
-        screenPos.y = 1.0 - screenPos.y;
-    }
-
     screenPos -= 0.5;
     screenPos *= 2.0;
 
@@ -230,7 +219,7 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
 
 // Average Importance Compositing
 #if IDVR == 2
-            vec4 aimc = texture(u_IC, uv);
+            vec4 aimc = texelFetch(u_IC, ivec2(gl_FragCoord.xy), 0);
             // We ensure that we have a number of samples > 0, to be in the region of interest
             if(aimc.r > 0 && nbSamples <= aimc.r)
             {
@@ -239,7 +228,7 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
 #endif // IDVR == 2
 
 #if IDVR == 3
-            vec4 aimc = texture(u_IC, uv);
+            vec4 aimc = texelFetch(u_IC, ivec2(gl_FragCoord.xy), 0);
             // We ensure that we have a number of samples > 0, to be in the region of interest
             if(aimc.r > 0 && int(nbSamples) == int(aimc.r))
             {
@@ -279,7 +268,7 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
 
 void main(void)
 {
-    vec2 rayEntryExit = texture(u_entryPoints, uv).rg;
+    vec2 rayEntryExit = texelFetch(u_entryPoints, ivec2(gl_FragCoord.xy), 0).rg;
 
     float entryDepth =  rayEntryExit.r;
     float exitDepth  = -rayEntryExit.g;
@@ -307,7 +296,7 @@ void main(void)
     float csg = 0.;
     vec4 jfaDistance = vec4(0.);
 
-    vec4 importance = texture(u_IC, uv);
+    vec4 importance = texelFetch(u_IC, ivec2(gl_FragCoord.xy), 0);
 
     // If we have an importance factor, we move the ray accordingly
     if(importance.r > 0.)
@@ -319,7 +308,7 @@ void main(void)
     // to dig into the volume
     else
     {
-        jfaDistance = texture(u_JFA, uv);
+        jfaDistance = texelFetch(u_JFA, ivec2(gl_FragCoord.xy), 0);
 
         // Compute the countersink factor to adjust the rayEntry
         csg = (jfaDistance.b - jfaDistance.a * (1. / u_countersinkSlope));
@@ -340,7 +329,7 @@ void main(void)
 #endif // IDVR == 1
 
     rayDir *= u_sampleDistance;
-    
+
     float rayLength = length(rayExit - rayEntry);
 
     vec3 rayPos = rayEntry;
@@ -375,7 +364,7 @@ void main(void)
             }
             else
             {
-                result = vec4(mix(green, red, (jfaDistance.a - u_depthLinesThreshold) * scale), 1.);   
+                result = vec4(mix(green, red, (jfaDistance.a - u_depthLinesThreshold) * scale), 1.);
             }
 #endif // CSG_DEPTH_LINES
         }

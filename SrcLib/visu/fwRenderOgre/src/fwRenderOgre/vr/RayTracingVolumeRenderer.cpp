@@ -104,15 +104,14 @@ private:
 
 //-----------------------------------------------------------------------------
 
+// TODO: REMOVE ME !!!!!!!!!
 class RayTracingVolumeRenderer::ICCompositorListener : public ::Ogre::CompositorInstance::Listener
 {
 public:
 
-    ICCompositorListener(std::vector< ::Ogre::Matrix4>& invWorldViewProj,
-                         ::Ogre::TexturePtr maskTexture,
+    ICCompositorListener(::Ogre::TexturePtr maskTexture,
                          ::Ogre::TexturePtr entryPoints,
                          float& sampleDistance) :
-        m_invWorldViewProj(invWorldViewProj),
         m_maskTexture(maskTexture),
         m_entryPoints(entryPoints),
         m_sampleDistance(sampleDistance)
@@ -140,83 +139,15 @@ public:
         ::Ogre::Pass* pass = mtl->getTechnique(0)->getPass(0);
 
         ::Ogre::GpuProgramParametersSharedPtr vrParams = pass->getFragmentProgramParameters();
-        vrParams->setNamedConstant("u_invWorldViewProj", m_invWorldViewProj.data(), m_invWorldViewProj.size());
         vrParams->setNamedConstant("u_sampleDistance", m_sampleDistance);
     }
 
 private:
 
-    std::vector< ::Ogre::Matrix4>& m_invWorldViewProj;
-
     ::Ogre::TexturePtr m_maskTexture;
     ::Ogre::TexturePtr m_entryPoints;
 
     float& m_sampleDistance;
-};
-
-//-----------------------------------------------------------------------------
-
-class RayTracingVolumeRenderer::RayTracingCompositorListener : public ::Ogre::CompositorInstance::Listener
-{
-public:
-
-    RayTracingCompositorListener(std::vector< ::Ogre::Matrix4>& invWorldViewProj,
-                                 bool is3DMode,
-                                 ::Ogre::SceneNode* volumeSceneNode) :
-        m_invWorldViewProj(invWorldViewProj),
-        m_is3DMode(is3DMode),
-        m_volumeSceneNode(volumeSceneNode)
-    {
-
-    }
-
-    //------------------------------------------------------------------------------
-
-    virtual void notifyMaterialRender(::Ogre::uint32, ::Ogre::MaterialPtr& mtl)
-    {
-        ::Ogre::Pass* pass = mtl->getTechnique(0)->getPass(0);
-
-        ::Ogre::GpuProgramParametersSharedPtr vrParams = pass->getFragmentProgramParameters();
-
-        if(!m_is3DMode)
-        {
-            vrParams->setNamedConstant("u_invWorldViewProj", m_invWorldViewProj.data(), m_invWorldViewProj.size());
-        }
-        else
-        {
-            vrParams->setNamedConstant("u_invWorldViewProjs", m_invWorldViewProj.data(), m_invWorldViewProj.size());
-        }
-
-        // Set light directions in shader.
-        ::Ogre::LightList closestLights = m_volumeSceneNode->getAttachedObject(0)->queryLights();
-
-        const size_t numLights = closestLights.size();
-
-        vrParams->setNamedConstant("u_numLights", static_cast<int>(numLights));
-
-        for(unsigned i = 0; i < numLights; ++i)
-        {
-            ::Ogre::Vector3 lightDir = -closestLights[i]->getDerivedDirection();
-            vrParams->setNamedConstant("u_lightDir[" + std::to_string(i) + "]", lightDir);
-
-            ::Ogre::ColourValue colourDiffuse = closestLights[i]->getDiffuseColour();
-            vrParams->setNamedConstant("u_lightDiffuse[" + std::to_string(i) + "]", colourDiffuse);
-
-            ::Ogre::ColourValue colourSpecular = closestLights[i]->getSpecularColour();
-            vrParams->setNamedConstant("u_lightSpecular[" + std::to_string(i) + "]", colourSpecular);
-        }
-
-        ::Ogre::Vector4 shininess(10.f, 0.f, 0.f, 0.f);
-        vrParams->setNamedConstant("u_shininess", shininess);
-    }
-
-private:
-
-    const std::vector< ::Ogre::Matrix4>& m_invWorldViewProj;
-
-    const bool m_is3DMode;
-
-    ::Ogre::SceneNode* m_volumeSceneNode;
 };
 
 //-----------------------------------------------------------------------------
@@ -285,6 +216,8 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
 
 //-----------------------------------------------------------------------------
 
+const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_AUTOSTEREO_DEFINE = "AUTOSTEREO=1";
+
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_NONE  = "None";
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_MIMP  = "MImP";
 const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_AIMC  = "AImC";
@@ -336,7 +269,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                                    ::Ogre::TexturePtr maskTexture,
                                                    TransferFunction& gpuTF,
                                                    PreIntegrationTable& preintegrationTable,
-                                                   ::fwRenderOgre::Layer::StereoModeType mode3D,
+                                                   ::fwRenderOgre::Layer::StereoModeType stereoMode,
                                                    bool ambientOcclusion,
                                                    bool colorBleeding,
                                                    bool shadows,
@@ -346,7 +279,8 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_maskTexture(maskTexture),
     m_entryPointGeometry(nullptr),
     m_imageSize(::fwData::Image::SizeType({ 1, 1, 1 })),
-    m_stereoMode(mode3D),
+    m_stereoMode(stereoMode),
+    m_vpPPDefines(""),
     m_fpPPDefines(""),
     m_ambientOcclusion(ambientOcclusion),
     m_colorBleeding(colorBleeding),
@@ -406,15 +340,6 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                                             0,
                                             ::Ogre::PF_FLOAT32_GR,
                                             ::Ogre::TU_RENDERTARGET ));
-
-        ::Ogre::RenderTexture* renderTexture = m_entryPointsTextures.back()->getBuffer()->getRenderTarget();
-        renderTexture->addViewport(m_camera);
-    }
-
-    if(m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE)
-    {
-        m_autostereoListener = new compositor::listener::AutoStereoCompositorListener(&m_entryPointsTextures);
-        ::Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
     }
 
     // First check that we did not already instanced Shared parameters
@@ -455,8 +380,16 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         m_RTVSharedParameters = spMap["RTVParams"];
     }
 
-    this->initCompositors();
+    for(::Ogre::TexturePtr entryPtsText : m_entryPointsTextures)
+    {
+        ::Ogre::RenderTexture* renderTexture = entryPtsText->getBuffer()->getRenderTarget();
+        renderTexture->addViewport(m_camera);
+    }
+
     this->initEntryPoints();
+
+    this->initRayTracingMaterials();
+//        this->initCompositors();
 
     this->setSampling(m_nbSlices);
 }
@@ -551,7 +484,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
 
     // Vertex shader
     ::Ogre::GpuProgramPtr vsp = gpm->createProgram("RTV_VP", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                                                   "RenderQuad_VP.glsl", ::Ogre::GPT_VERTEX_PROGRAM, "glsl");
+                                                   "RayTracedVolume_VP.glsl", ::Ogre::GPT_VERTEX_PROGRAM, "glsl");
     vsp->escalateLoading();
     vsp->load();
 
@@ -562,6 +495,10 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     if(this->m_idvrCSGModulation)
     {
         fsp->setParameter("attach", "ColorFormats_FP");
+    }
+    if(m_vpPPDefines.size() > 0)
+    {
+        vsp->setParameter("preprocessor_defines", m_vpPPDefines);
     }
     if(m_fpPPDefines.size() > 0)
     {
@@ -579,23 +516,19 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     pass->setSceneBlending(::Ogre::SBF_SOURCE_ALPHA, ::Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
 
     pass->setVertexProgram("RTV_VP");
-    pass->getVertexProgramParameters()->setNamedAutoConstant("u_worldViewProj",
-                                                             ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+    ::Ogre::GpuProgramParametersSharedPtr vpParams = pass->getVertexProgramParameters();
+    vpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
 
     pass->setFragmentProgram("RTV_FP");
-    pass->getFragmentProgramParameters()->setNamedAutoConstant("u_viewportWidth",
-                                                               ::Ogre::GpuProgramParameters::ACT_VIEWPORT_WIDTH);
-    pass->getFragmentProgramParameters()->setNamedAutoConstant("u_viewportHeight",
-                                                               ::Ogre::GpuProgramParameters::ACT_VIEWPORT_HEIGHT);
-    pass->getFragmentProgramParameters()->setNamedAutoConstant("u_clippingNear",
-                                                               ::Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
-    pass->getFragmentProgramParameters()->setNamedAutoConstant("u_clippingFar",
-                                                               ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
-    pass->getFragmentProgramParameters()->setNamedAutoConstant("u_renderTargetFlipping",
-                                                               ::Ogre::GpuProgramParameters::ACT_RENDER_TARGET_FLIPPING);
-    pass->getFragmentProgramParameters()->setNamedAutoConstant("u_cameraPos",
-                                                               ::Ogre::GpuProgramParameters::ACT_LOD_CAMERA_POSITION);
-    pass->getFragmentProgramParameters()->addSharedParameters("RTVParams");
+    ::Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
+    fpParams->setNamedAutoConstant("u_viewportWidth", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_WIDTH);
+    fpParams->setNamedAutoConstant("u_viewportHeight", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_HEIGHT);
+    fpParams->setNamedAutoConstant("u_clippingNear", ::Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
+    fpParams->setNamedAutoConstant("u_clippingFar", ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
+    fpParams->setNamedAutoConstant("u_renderTargetFlipping",
+                                   ::Ogre::GpuProgramParameters::ACT_RENDER_TARGET_FLIPPING);
+    fpParams->setNamedAutoConstant("u_cameraPos", ::Ogre::GpuProgramParameters::ACT_LOD_CAMERA_POSITION);
+    fpParams->addSharedParameters("RTVParams");
 
     // We use this map to keep track of the texture units IDs
     std::map<std::string, int> textureUnits;
@@ -609,7 +542,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
     texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
     textureUnits["u_image"] = numTexUnit;
-    pass->getFragmentProgramParameters()->setNamedConstant("u_image", numTexUnit++);
+    fpParams->setNamedConstant("u_image", numTexUnit++);
 
     // Transfer function
     if(m_fpPPDefines.find(this->s_PREINTEGRATION_DEFINE) != std::string::npos)
@@ -623,7 +556,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
     }
     textureUnits["u_tfTexture"] = numTexUnit;
-    pass->getFragmentProgramParameters()->setNamedConstant("u_tfTexture", numTexUnit++);
+    fpParams->setNamedConstant("u_tfTexture", numTexUnit++);
 
     if(m_fpPPDefines.find(this->s_AO_DEFINE) != std::string::npos)
     {
@@ -632,7 +565,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
         textureUnits["u_illuminationVolume"] = numTexUnit;
-        pass->getFragmentProgramParameters()->setNamedConstant("u_illuminationVolume", numTexUnit++);
+        fpParams->setNamedConstant("u_illuminationVolume", numTexUnit++);
         // Update the shader parameter
         m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
     }
@@ -647,8 +580,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
         textureUnits[this->s_IMPORTANCE_COMPOSITING_TEXTURE] = numTexUnit;
-        pass->getFragmentProgramParameters()->setNamedConstant("u_" + this->s_IMPORTANCE_COMPOSITING_TEXTURE,
-                                                               numTexUnit++);
+        fpParams->setNamedConstant("u_" + this->s_IMPORTANCE_COMPOSITING_TEXTURE, numTexUnit++);
     }
 
     // JFA texture: MImP
@@ -659,8 +591,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
         textureUnits[this->s_JUMP_FLOOD_ALGORITHM_TEXTURE] = numTexUnit;
-        pass->getFragmentProgramParameters()->setNamedConstant("u_" + this->s_JUMP_FLOOD_ALGORITHM_TEXTURE,
-                                                               numTexUnit++);
+        fpParams->setNamedConstant("u_" + this->s_JUMP_FLOOD_ALGORITHM_TEXTURE, numTexUnit++);
     }
 
     // Alpha Correction: AImC | VPImC
@@ -677,32 +608,13 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
         }
     }
 
-    /* mono mode */
-    if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::NONE)
-    {
-        texUnitState = pass->createTextureUnitState(m_entryPointsTextures[0]->getName());
-        texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
-        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+    // Entry points texture
+    texUnitState = pass->createTextureUnitState(m_entryPointsTextures[0]->getName());
+    texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
+    texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
 
-        textureUnits["u_entryPoints"] = numTexUnit;
-        pass->getFragmentProgramParameters()->setNamedConstant("u_entryPoints", numTexUnit++);
-    }
-    /* stereo mode */
-    else
-    {
-        for(unsigned i = 0; i < m_entryPointsTextures.size(); ++i)
-        {
-            ::Ogre::TextureUnitState* texUnitState = pass->createTextureUnitState(m_entryPointsTextures[i]->getName());
-            texUnitState->setTextureName(m_entryPointsTextures[i]->getName());
-
-            std::ostringstream oss;
-            oss << "u_entryPoints" << i;
-            textureUnits[oss.str()] = numTexUnit;
-            pass->getFragmentProgramParameters()->setNamedConstant(oss.str(), numTexUnit++);
-        }
-
-        m_RTVSharedParameters->setNamedConstant("u_lobeOffset", m_lobeOffset);
-    }
+    textureUnits["u_entryPoints"] = numTexUnit;
+    fpParams->setNamedConstant("u_entryPoints", numTexUnit++);
 
     // Create compositor
     ::Ogre::CompositorPtr comp = cm.create("RTV_Comp", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
@@ -901,9 +813,7 @@ void RayTracingVolumeRenderer::setIlluminationVolume(SATVolumeIllumination* illu
 {
     m_illumVolume = illuminationVolume;
 
-    // Trigger compositor re-initialization when changing the illumination volume
-    // to make sure the texture has been taken care of
-    this->initCompositors();
+    this->initRayTracingMaterials();
 }
 
 //-----------------------------------------------------------------------------
@@ -915,7 +825,7 @@ void RayTracingVolumeRenderer::setPreIntegratedRendering(bool preIntegratedRende
 
     m_preIntegratedRendering = preIntegratedRendering;
 
-    this->initCompositors();
+    this->initRayTracingMaterials();
 }
 
 //-----------------------------------------------------------------------------
@@ -924,8 +834,8 @@ void RayTracingVolumeRenderer::setAmbientOcclusion(bool ambientOcclusion)
 {
     m_ambientOcclusion = ambientOcclusion;
 
+    this->initRayTracingMaterials();
     this->updateVolIllumMat();
-    this->initCompositors();
 }
 
 //-----------------------------------------------------------------------------
@@ -934,8 +844,8 @@ void RayTracingVolumeRenderer::setColorBleeding(bool colorBleeding)
 {
     m_colorBleeding = colorBleeding;
 
+    this->initRayTracingMaterials();
     this->updateVolIllumMat();
-    this->initCompositors();
 }
 
 //-----------------------------------------------------------------------------
@@ -944,8 +854,8 @@ void RayTracingVolumeRenderer::setShadows(bool shadows)
 {
     m_shadows = shadows;
 
+    this->initRayTracingMaterials();
     this->updateVolIllumMat();
-    this->initCompositors();
 }
 
 //-----------------------------------------------------------------------------
@@ -973,7 +883,7 @@ void RayTracingVolumeRenderer::setIDVRMethod(std::string method)
     SLM_ASSERT("IDVR method '" + method + "' isn't supported by the ray tracing volume renderer.", isSupported);
     m_idvrMethod = method;
 
-    this->initCompositors();
+    this->initRayTracingMaterials();
 }
 
 //-----------------------------------------------------------------------------
@@ -1049,8 +959,220 @@ void RayTracingVolumeRenderer::resizeViewport(int w, int h)
 
 //-----------------------------------------------------------------------------
 
+void RayTracingVolumeRenderer::initRayTracingMaterials()
+{
+    this->updateRayTracingDefines();
+
+    ::Ogre::GpuProgramManager* gpm = ::Ogre::GpuProgramManager::getSingletonPtr();
+    ::Ogre::MaterialManager* mm    = ::Ogre::MaterialManager::getSingletonPtr();
+
+    ::Ogre::ResourcePtr resource;
+
+    static int i = 0;
+    ++i;
+
+    ::Ogre::String vpName("RTV_VP_" + std::to_string(i));
+    ::Ogre::String fpName("RTV_FP_" + std::to_string(i));
+    ::Ogre::String matName("RTV_Mat_" + std::to_string(i));
+
+    resource = gpm->getResourceByName(vpName, ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+    if(!resource.isNull())
+    {
+        gpm->remove(resource);
+        gpm->removeMicrocodeFromCache(resource->getName());
+    }
+    resource = gpm->getResourceByName(fpName, ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+    if(!resource.isNull())
+    {
+        gpm->remove(resource);
+        gpm->removeMicrocodeFromCache(resource->getName());
+    }
+
+    resource = mm->getResourceByName(matName, ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+    if(!resource.isNull())
+    {
+        mm->remove(resource);
+    }
+
+    // Vertex shader
+    ::Ogre::GpuProgramPtr vsp = gpm->createProgram(vpName,
+                                                   ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                                                   "RayTracedVolume_VP.glsl", ::Ogre::GPT_VERTEX_PROGRAM, "glsl");
+    if(m_vpPPDefines.size() > 0)
+    {
+        vsp->setParameter("preprocessor_defines", m_vpPPDefines);
+    }
+    vsp->escalateLoading();
+    vsp->load();
+
+    // Fragment shader
+    ::Ogre::GpuProgramPtr fsp = gpm->createProgram(fpName,
+                                                   ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+                                                   "RayTracedVolume_FP.glsl", ::Ogre::GPT_FRAGMENT_PROGRAM, "glsl");
+    fsp->setParameter("attach", "TransferFunction_FP");
+    if(this->m_idvrCSGModulation)
+    {
+        fsp->setParameter("attach", "ColorFormats_FP");
+    }
+    if(m_fpPPDefines.size() > 0)
+    {
+        fsp->setParameter("preprocessor_defines", m_fpPPDefines);
+    }
+    fsp->escalateLoading();
+    fsp->load();
+
+    // Material
+    ::Ogre::MaterialPtr mat = mm->create(matName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    // Ensure that we have the color parameters set for the current material
+    this->setMaterialLightParams(mat);
+    // Get the already created pass through the already created technique
+    ::Ogre::Technique* tech = mat->getTechnique(0);
+
+    ::Ogre::Pass* pass = tech->getPass(0);
+    pass->setCullingMode(::Ogre::CULL_ANTICLOCKWISE);
+    pass->setSceneBlending(::Ogre::SBT_TRANSPARENT_ALPHA);
+
+    // Vertex program
+    pass->setVertexProgram(vpName);
+    ::Ogre::GpuProgramParametersSharedPtr vpParams = pass->getVertexProgramParameters();
+    vpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
+
+    // Fragment program
+    pass->setFragmentProgram(fpName);
+    ::Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
+    fpParams->setNamedAutoConstant("u_viewportWidth", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_WIDTH);
+    fpParams->setNamedAutoConstant("u_viewportHeight", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_HEIGHT);
+    fpParams->setNamedAutoConstant("u_clippingNear", ::Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
+    fpParams->setNamedAutoConstant("u_clippingFar", ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
+    fpParams->setNamedAutoConstant("u_cameraPos", ::Ogre::GpuProgramParameters::ACT_LOD_CAMERA_POSITION);
+    fpParams->setNamedAutoConstant("u_shininess", ::Ogre::GpuProgramParameters::ACT_SURFACE_SHININESS);
+    fpParams->setNamedAutoConstant("u_invWorldViewProj",
+                                   ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEWPROJ_MATRIX);
+    fpParams->setNamedAutoConstant("u_numLights", ::Ogre::GpuProgramParameters::ACT_LIGHT_COUNT);
+    for(int j = 0; j < 10; ++j)
+    {
+        auto number = "[" + std::to_string(j) + "]";
+        fpParams->setNamedAutoConstant("u_lightDir" + number, ::Ogre::GpuProgramParameters::ACT_LIGHT_POSITION, j);
+        fpParams->setNamedAutoConstant("u_lightDiffuse" + number,
+                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR, j);
+        fpParams->setNamedAutoConstant("u_lightSpecular" + number,
+                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_SPECULAR_COLOUR, j);
+    }
+    fpParams->addSharedParameters("RTVParams");
+
+    // We use this map to keep track of the texture units IDs
+    std::map<std::string, int> textureUnits;
+
+    // Setup textures
+    int numTexUnit = 0;
+    ::Ogre::TextureUnitState* texUnitState;
+    // Volume data
+    texUnitState = pass->createTextureUnitState();
+    texUnitState->setTextureName(m_3DOgreTexture->getName(), ::Ogre::TEX_TYPE_3D);
+    texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+    texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+    textureUnits["u_image"] = numTexUnit;
+
+    fpParams->setNamedConstant("u_image", numTexUnit++);
+
+    // Transfer function
+    if(m_fpPPDefines.find(this->s_PREINTEGRATION_DEFINE) != std::string::npos)
+    {
+        texUnitState = pass->createTextureUnitState(m_preIntegrationTable.getTexture()->getName());
+        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+    }
+    else
+    {
+        texUnitState = pass->createTextureUnitState(m_gpuTF.getTexture()->getName());
+        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+    }
+    textureUnits["u_tfTexture"] = numTexUnit;
+
+    fpParams->setNamedConstant("u_tfTexture", numTexUnit++);
+
+    if(m_fpPPDefines.find(this->s_AO_DEFINE) != std::string::npos)
+    {
+        texUnitState = pass->createTextureUnitState(m_illumVolume->getIlluminationVolume()->getName());
+        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+
+        textureUnits["u_illuminationVolume"] = numTexUnit;
+
+        fpParams->setNamedConstant("u_illuminationVolume", numTexUnit++);
+        // Update the shader parameter
+        m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
+    }
+
+    // Importance Compositing texture: MImP | AImC | VPImC
+    if(m_fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos ||
+       m_fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
+       m_fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
+    {
+        texUnitState = pass->createTextureUnitState();
+        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+
+        textureUnits[this->s_IMPORTANCE_COMPOSITING_TEXTURE] = numTexUnit;
+
+        fpParams->setNamedConstant("u_" + this->s_IMPORTANCE_COMPOSITING_TEXTURE, numTexUnit++);
+    }
+
+    // JFA texture: MImP
+    if(m_fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos)
+    {
+        texUnitState = pass->createTextureUnitState();
+        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+
+        textureUnits[this->s_JUMP_FLOOD_ALGORITHM_TEXTURE] = numTexUnit;
+
+        fpParams->setNamedConstant("u_" + this->s_JUMP_FLOOD_ALGORITHM_TEXTURE, numTexUnit++);
+    }
+
+    // Alpha Correction: AImC | VPImC
+    if(m_fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
+       m_fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
+    {
+        if(m_idvrMethod == this->s_AIMC)
+        {
+            m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
+        }
+        else
+        {
+            m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
+        }
+    }
+
+    // Entry points texture
+    texUnitState = pass->createTextureUnitState(m_entryPointsTextures[0]->getName());
+    texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
+    texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+
+    textureUnits["u_entryPoints"] = numTexUnit;
+
+    fpParams->setNamedConstant("u_entryPoints", numTexUnit++);
+
+    m_entryPointGeometry->setMaterialName(0, matName);
+
+//    if(m_idvrMethod == this->s_MIMP)
+//    {
+
+//    }
+//    else if(m_idvrMethod == this->s_AIMC)
+//    {
+
+//    }
+//    else if(m_idvrMethod == this->s_VPIMC)
+//    {
+
+//    }
+}
+
+//-----------------------------------------------------------------------------
+
 void RayTracingVolumeRenderer::initCompositors()
 {
+    SLM_FATAL("arezt");
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     auto viewport = m_layer.lock()->getViewport();
     ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
@@ -1083,7 +1205,7 @@ void RayTracingVolumeRenderer::initCompositors()
 
 void RayTracingVolumeRenderer::initEntryPoints()
 {
-    const std::string mtlName = m_preIntegratedRendering ? "PreIntegratedRayTracedVolume" : "RayTracedVolume";
+    const std::string mtlName = "RayTracedVolume";
 
     m_entryPointGeometry = m_sceneManager->createManualObject(m_parentId + "_RayTracingVREntryPoints");
 
@@ -1103,7 +1225,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
     }
     m_entryPointGeometry->end();
 
-    m_entryPointGeometry->setVisible(false);
+    m_entryPointGeometry->setVisible(true);
 
     m_volumeSceneNode->attachObject(m_entryPointGeometry);
 
@@ -1187,7 +1309,7 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
 
     ::Ogre::RenderOperation renderOp;
     m_proxyGeometryGenerator->getRenderOperation(renderOp);
-    m_entryPointGeometry->setVisible(false);
+    m_entryPointGeometry->setVisible(true);
 
     ::Ogre::Matrix4 worldMat;
     m_proxyGeometryGenerator->getWorldTransforms(&worldMat);
@@ -1205,10 +1327,6 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
         angle    = eyeAngle * -3.5f;
     }
 
-    m_viewPointMatrices.clear();
-
-    size_t i = 0;
-
     ::Ogre::RenderOperation fsRenderOp;
     m_fullScreenQuad->getRenderOperation(fsRenderOp);
 
@@ -1224,9 +1342,6 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
             angle  += eyeAngle;
             projMat = projMat * shearTransform;
         }
-
-        ::Ogre::Matrix4 worldViewProj = projMat * m_camera->getViewMatrix() * worldMat;
-        m_viewPointMatrices.push_back(worldViewProj.inverse());
 
         ::Ogre::Viewport* entryPtsVp = entryPtsText->getBuffer()->getRenderTarget()->getViewport(0);
         entryPtsVp->clear(::Ogre::FBT_COLOUR | ::Ogre::FBT_DEPTH | ::Ogre::FBT_STENCIL, ::Ogre::ColourValue::White);
@@ -1325,119 +1440,108 @@ void RayTracingVolumeRenderer::updateVolIllumMat()
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::updateCompositorName()
+void RayTracingVolumeRenderer::updateRayTracingDefines()
 {
-    std::ostringstream ppDefs;
+    std::ostringstream vpPPDefs, fpPPDefs;
 
-    ppDefs.str("");
+    vpPPDefs.str("");
+    fpPPDefs.str("");
 
-    if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::NONE)
+    if(m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE)
     {
-        if(m_ambientOcclusion)
-        {
-            ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_AO_DEFINE;
-        }
+        vpPPDefs << (vpPPDefs.str() == "" ? "" : ",") << this->s_AUTOSTEREO_DEFINE;
+        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_AUTOSTEREO_DEFINE;
+    }
 
-        if(m_colorBleeding)
-        {
-            ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_COLOR_BLEEDING_DEFINE;
-        }
+    if(m_ambientOcclusion)
+    {
+        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_AO_DEFINE;
+    }
 
-        if(m_shadows)
-        {
-            ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_SHADOWS_DEFINE;
-        }
+    if(m_colorBleeding)
+    {
+        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_COLOR_BLEEDING_DEFINE;
+    }
 
-        if(m_preIntegratedRendering)
-        {
-            ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_PREINTEGRATION_DEFINE;
-        }
+    if(m_shadows)
+    {
+        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_SHADOWS_DEFINE;
+    }
 
-        if(m_idvrMethod != this->s_NONE)
+    if(m_preIntegratedRendering)
+    {
+        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_PREINTEGRATION_DEFINE;
+    }
+
+    if(m_idvrMethod != this->s_NONE)
+    {
+        if(m_idvrMethod == this->s_MIMP)
         {
-            if(m_idvrMethod == this->s_MIMP)
+            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_MIMP_DEFINE;
+            if(m_idvrCSG)
             {
-                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_MIMP_DEFINE;
-                if(m_idvrCSG)
+                fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_DEFINE;
+
+                if(m_idvrCSGBorder)
                 {
-                    ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_DEFINE;
+                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_BORDER_DEFINE;
+                }
+                if(m_idvrCSGDisableContext)
+                {
+                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_DISABLE_CONTEXT_DEFINE;
+                }
+                if(m_idvrCSGOpacityDecrease)
+                {
+                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_OPACITY_DECREASE_DEFINE;
+                }
+                if(m_idvrCSGDepthLines)
+                {
+                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_DEPTH_LINES_DEFINE;
+                }
 
-                    if(m_idvrCSGBorder)
+                if(m_idvrCSGModulation)
+                {
+                    switch(m_idvrCSGModulationMethod)
                     {
-                        ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_BORDER_DEFINE;
-                    }
-                    if(m_idvrCSGDisableContext)
-                    {
-                        ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_DISABLE_CONTEXT_DEFINE;
-                    }
-                    if(m_idvrCSGOpacityDecrease)
-                    {
-                        ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_OPACITY_DECREASE_DEFINE;
-                    }
-                    if(m_idvrCSGDepthLines)
-                    {
-                        ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_DEPTH_LINES_DEFINE;
+                        case IDVRCSGModulationMethod::AVERAGE_GRAYSCALE:
+                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE;
+                            break;
+                        case IDVRCSGModulationMethod::LIGHTNESS_GRAYSCALE:
+                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE;
+                            break;
+                        case IDVRCSGModulationMethod::LUMINOSITY_GRAYSCALE:
+                            fpPPDefs <<
+                            (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE;
+                            break;
+                        case IDVRCSGModulationMethod::COLOR1:
+                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_COLOR1_DEFINE;
+                            break;
+                        case IDVRCSGModulationMethod::COLOR2:
+                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_COLOR2_DEFINE;
+                            break;
+                        case IDVRCSGModulationMethod::COLOR3:
+                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_COLOR3_DEFINE;
+                            break;
+                        case IDVRCSGModulationMethod::COLOR4:
+                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_COLOR4_DEFINE;
+                            break;
                     }
 
-                    if(m_idvrCSGModulation)
-                    {
-                        switch(m_idvrCSGModulationMethod)
-                        {
-                            case IDVRCSGModulationMethod::AVERAGE_GRAYSCALE:
-                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE;
-                                break;
-                            case IDVRCSGModulationMethod::LIGHTNESS_GRAYSCALE:
-                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE;
-                                break;
-                            case IDVRCSGModulationMethod::LUMINOSITY_GRAYSCALE:
-                                ppDefs <<
-                                (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE;
-                                break;
-                            case IDVRCSGModulationMethod::COLOR1:
-                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_COLOR1_DEFINE;
-                                break;
-                            case IDVRCSGModulationMethod::COLOR2:
-                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_COLOR2_DEFINE;
-                                break;
-                            case IDVRCSGModulationMethod::COLOR3:
-                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_COLOR3_DEFINE;
-                                break;
-                            case IDVRCSGModulationMethod::COLOR4:
-                                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_COLOR4_DEFINE;
-                                break;
-                        }
-
-                    }
                 }
             }
-            else if(m_idvrMethod == this->s_AIMC)
-            {
-                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_AIMC_DEFINE;
-            }
-            else if(m_idvrMethod == this->s_VPIMC)
-            {
-                ppDefs << (ppDefs.str() == "" ? "" : ",") << this->s_VPIMC_DEFINE;
-            }
         }
-    }
-    else
-    {
-        ppDefs << (ppDefs.str() == "" ? "" : ",") << "MODE3D=1";
-        if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5)
+        else if(m_idvrMethod == this->s_AIMC)
         {
-            ppDefs << (ppDefs.str() == "" ? "" : ",") << "VIEWPOINTS=5";
+            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_AIMC_DEFINE;
         }
-        else if(m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8)
+        else if(m_idvrMethod == this->s_VPIMC)
         {
-            ppDefs << (ppDefs.str() == "" ? "" : ",") << "VIEWPOINTS=8";
-        }
-        else
-        {
-            ppDefs << (ppDefs.str() == "" ? "" : ",") << "VIEWPOINTS=1";
+            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_VPIMC_DEFINE;
         }
     }
 
-    m_fpPPDefines = ppDefs.str();
+    m_vpPPDefines = vpPPDefs.str();
+    m_fpPPDefines = fpPPDefs.str();
 }
 
 //-----------------------------------------------------------------------------
@@ -1456,7 +1560,10 @@ void RayTracingVolumeRenderer::setMaterialLightParams(::Ogre::MaterialPtr mtl)
 
 void RayTracingVolumeRenderer::buildCompositorChain()
 {
-    this->updateCompositorName();
+    this->updateRayTracingDefines();
+
+    SLM_ASSERT("The RayTracingVolume compositor should be created only if autostereo mode is deactivated.",
+               m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::NONE);
 
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     auto viewport = m_layer.lock()->getViewport();
@@ -1486,10 +1593,10 @@ void RayTracingVolumeRenderer::buildCompositorChain()
             }
         }
 
-        m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
-                                                                                           m_maskTexture,
-                                                                                           m_entryPointsTextures[0],
-                                                                                           m_sampleDistance));
+        m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(
+                                            m_maskTexture,
+                                            m_entryPointsTextures[0],
+                                            m_sampleDistance));
 
         compositorInstance->addListener(m_compositorListeners.back());
 
@@ -1570,10 +1677,10 @@ void RayTracingVolumeRenderer::buildCompositorChain()
             }
         }
 
-        m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
-                                                                                           m_maskTexture,
-                                                                                           m_entryPointsTextures[0],
-                                                                                           m_sampleDistance));
+        m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(
+                                            m_maskTexture,
+                                            m_entryPointsTextures[0],
+                                            m_sampleDistance));
 
         compositorInstance->addListener(m_compositorListeners.back());
     }
@@ -1599,10 +1706,10 @@ void RayTracingVolumeRenderer::buildCompositorChain()
             }
         }
 
-        m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(m_viewPointMatrices,
-                                                                                           m_maskTexture,
-                                                                                           m_entryPointsTextures[0],
-                                                                                           m_sampleDistance));
+        m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(
+                                            m_maskTexture,
+                                            m_entryPointsTextures[0],
+                                            m_sampleDistance));
 
         compositorInstance->addListener(m_compositorListeners.back());
     }
@@ -1612,13 +1719,6 @@ void RayTracingVolumeRenderer::buildCompositorChain()
     compositorInstance = compositorManager.addCompositor(viewport, "RTV_Comp");
     SLM_ASSERT("Compositor could not be initialized", compositorInstance);
     compositorInstance->setEnabled(true);
-
-    m_compositorListeners.push_back(new RayTracingVolumeRenderer::RayTracingCompositorListener(m_viewPointMatrices,
-                                                                                               (m_stereoMode !=
-                                                                                                ::fwRenderOgre::Layer::
-                                                                                                StereoModeType::NONE),
-                                                                                               m_volumeSceneNode));
-    compositorInstance->addListener(m_compositorListeners.back());
 
     // Ensure that we have the color parameters set for the current material
     auto tech  = compositorInstance->getTechnique();
@@ -1651,6 +1751,9 @@ void RayTracingVolumeRenderer::cleanCompositorChain(::Ogre::CompositorChain* com
         }
     }
 
+    // TODO: wut ?
+//    m_layer.lock()->clearCompositorChain();
+
     // Then clean the whole chain
     compChain->removeAllCompositors();
     m_compositorListeners.clear();
@@ -1664,7 +1767,7 @@ void RayTracingVolumeRenderer::toggleIDVRCountersinkGeometry(bool CSG)
 
     if(this->m_idvrMethod == this->s_MIMP)
     {
-        this->initCompositors();
+        this->initRayTracingMaterials();
     }
 }
 
@@ -1685,7 +1788,7 @@ void RayTracingVolumeRenderer::setIDVRCountersinkSlope(double slope)
 
 void RayTracingVolumeRenderer::setIDVRCSGBlurWeight(double blurWeight)
 {
-    m_idvrCSGBlurWeight = blurWeight;
+    m_idvrCSGBlurWeight = static_cast<float>(blurWeight);
 
     if(m_idvrMethod == this->s_MIMP && m_idvrCSG)
     {
@@ -1701,7 +1804,7 @@ void RayTracingVolumeRenderer::toggleIDVRCSGBorder(bool border)
 
     if(this->m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
     {
-        this->initCompositors();
+        this->initRayTracingMaterials();
     }
 }
 
@@ -1713,7 +1816,7 @@ void RayTracingVolumeRenderer::toggleIDVRCSGDisableContext(bool discard)
 
     if(this->m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
     {
-        this->initCompositors();
+        this->initRayTracingMaterials();
     }
 }
 
@@ -1753,7 +1856,7 @@ void RayTracingVolumeRenderer::toggleIDVRCSGModulation(bool modulation)
 
     if(this->m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
     {
-        this->initCompositors();
+        this->initRayTracingMaterials();
     }
 }
 
@@ -1765,7 +1868,7 @@ void RayTracingVolumeRenderer::setIDVRCSModulationMethod(IDVRCSGModulationMethod
 
     if(this->m_idvrMethod == this->s_MIMP && this->m_idvrCSG && this->m_idvrCSGModulation)
     {
-        this->initCompositors();
+        this->initRayTracingMaterials();
     }
 }
 
@@ -1773,7 +1876,7 @@ void RayTracingVolumeRenderer::setIDVRCSModulationMethod(IDVRCSGModulationMethod
 
 void RayTracingVolumeRenderer::setIDVRCSGModulationFactor(double modulationFactor)
 {
-    m_idvrCSGModulationFactor = modulationFactor;
+    m_idvrCSGModulationFactor = static_cast<float>(modulationFactor);
 
     if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
     {
@@ -1790,7 +1893,7 @@ void RayTracingVolumeRenderer::toggleIDVRCSGOpacityDecrease(bool opacityDecrease
 
     if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
     {
-        this->initCompositors();
+        this->initRayTracingMaterials();
     }
 }
 
@@ -1798,7 +1901,7 @@ void RayTracingVolumeRenderer::toggleIDVRCSGOpacityDecrease(bool opacityDecrease
 
 void RayTracingVolumeRenderer::setIDVRCSGOpacityDecreaseFactor(double opacityDecrease)
 {
-    m_idvrCSGOpacityDecreaseFactor = opacityDecrease;
+    m_idvrCSGOpacityDecreaseFactor = static_cast<float>(opacityDecrease);
 
     if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
     {
@@ -1815,7 +1918,7 @@ void RayTracingVolumeRenderer::toggleIDVRDepthLines(bool depthLines)
 
     if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder)
     {
-        this->initCompositors();
+        this->initRayTracingMaterials();
     }
 }
 
@@ -1823,7 +1926,7 @@ void RayTracingVolumeRenderer::toggleIDVRDepthLines(bool depthLines)
 
 void RayTracingVolumeRenderer::setIDVRCSGDepthLinesThreshold(double threshold)
 {
-    m_idvrCSGDepthLinesThreshold = threshold;
+    m_idvrCSGDepthLinesThreshold = static_cast<float>(threshold);
 
     if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder && this->m_idvrCSGDepthLines)
     {

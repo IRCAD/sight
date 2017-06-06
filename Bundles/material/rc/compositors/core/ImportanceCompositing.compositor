@@ -12,9 +12,9 @@ compositor IDVR_MImP_Comp
             {
             }
 
-            pass render_quad
+            pass render_scene
             {
-                material IDVR_MImP_Mat
+                material_scheme IDVR_MImP_Mat
             }
         }
 

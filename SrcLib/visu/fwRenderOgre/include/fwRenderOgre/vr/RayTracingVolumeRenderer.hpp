@@ -66,7 +66,7 @@ public:
                                               ::Ogre::TexturePtr maskTexture,
                                               TransferFunction& gpuTF,
                                               PreIntegrationTable& preintegrationTable,
-                                              ::fwRenderOgre::Layer::StereoModeType mode3D,
+                                              ::fwRenderOgre::Layer::StereoModeType stereoMode,
                                               bool ambientOcclusion = false,
                                               bool colorBleeding = false,
                                               bool shadows = false,
@@ -180,6 +180,9 @@ public:
 
 private:
 
+    /// When using AutoStereo compositor, initialize the raytracing material.
+    void initRayTracingMaterials();
+
     /// Initialize the compositors used after the step computing the ray entry points
     void initCompositors();
 
@@ -204,7 +207,7 @@ private:
     void updateVolIllumMat();
 
     /// Updates the current compositor name according to VR effects flags.
-    void updateCompositorName();
+    void updateRayTracingDefines();
 
     /// Sets the default diffuse, specular and shininess in the material.
     void setMaterialLightParams(::Ogre::MaterialPtr mtl);
@@ -235,9 +238,6 @@ private:
 
     std::vector< ::Ogre::TextureUnitState* > m_rayTracedTexUnitStates;
 
-    /// Inverse world-view-projection matrices of each viewpoint.
-    std::vector< ::Ogre::Matrix4> m_viewPointMatrices;
-
     /// Render operation used to compute the brick grid.
     ::Ogre::RenderOperation m_gridRenderOp;
 
@@ -253,7 +253,10 @@ private:
     /// Sets stereoscopic volume rendering for autostereoscopic monitors.
     ::fwRenderOgre::Layer::StereoModeType m_stereoMode;
 
-    /// Comma separated list of preprocessor defines to use in fragment shaders
+    /// Comma separated list of preprocessor defines to use in vertex shaders.
+    std::string m_vpPPDefines;
+
+    /// Comma separated list of preprocessor defines to use in fragment shaders.
     std::string m_fpPPDefines;
 
     /// Sets usage of ambient occlusion.
@@ -358,6 +361,9 @@ private:
     compositor::listener::AutoStereoCompositorListener* m_autostereoListener;
 
     ::Ogre::Rectangle2D* m_fullScreenQuad;
+
+    /// Autostereo define.
+    static const std::string s_AUTOSTEREO_DEFINE;
 
     /// IDVR methods names.
     static const std::string s_NONE;

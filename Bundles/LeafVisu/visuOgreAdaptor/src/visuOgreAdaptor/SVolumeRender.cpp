@@ -318,7 +318,6 @@ void SVolumeRender::doStart() throw ( ::fwTools::Failed )
     }
     else
     {
-
         const auto stereoMode = layer->getStereoMode();
 
         m_volumeRenderer = new ::fwRenderOgre::vr::RayTracingVolumeRenderer(this->getID(),
@@ -950,24 +949,24 @@ void SVolumeRender::setEnumParameter(std::string val, std::string key)
                 ::fwRenderOgre::vr::RayTracingVolumeRenderer::IDVRCSGModulationMethod::COLOR4);
         }
     }
-    else if(key == "3DMode")
-    {
-        if(val == "None")
-        {
-            ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
-            layer->setStereoMode(::fwRenderOgre::Layer::StereoModeType::NONE);
-        }
-        else if(val == "Autostereo(5)")
-        {
-            ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
-            layer->setStereoMode(::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5);
-        }
-        else if(val == "Autostereo(8)")
-        {
-            ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
-            layer->setStereoMode(::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8);
-        }
-    }
+//    else if(key == "stereoMode")
+//    {
+//        if(val == "None")
+//        {
+//            ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
+//            layer->setStereoMode(::fwRenderOgre::Layer::StereoModeType::NONE);
+//        }
+//        else if(val == "Autostereo(5)")
+//        {
+//            ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
+//            layer->setStereoMode(::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_5);
+//        }
+//        else if(val == "Autostereo(8)")
+//        {
+//            ::fwRenderOgre::Layer::sptr layer = this->getRenderService()->getLayer(m_layerID);
+//            layer->setStereoMode(::fwRenderOgre::Layer::StereoModeType::AUTOSTEREO_8);
+//        }
+//    }
 }
 
 //-----------------------------------------------------------------------------

@@ -1,10 +1,10 @@
 #version 330
 
-uniform mat4 u_worldViewProj;
-
 #ifdef AUTOSTEREO
 uniform mat4 u_worldView;
 uniform mat4 u_proj;
+#else
+uniform mat4 u_worldViewProj;
 #endif // AUTOSTEREO
 
 in vec4 position;
