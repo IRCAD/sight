@@ -1,13 +1,10 @@
 #version 330
 
-uniform sampler3D u_image;
 uniform sampler3D u_mask;
 
 uniform sampler2D u_entryPoints;
 
 uniform mat4 u_invWorldViewProj;
-
-in vec2 uv;
 
 uniform float u_sampleDistance;
 
@@ -16,8 +13,6 @@ uniform float u_viewportHeight;
 
 uniform float u_clippingNear;
 uniform float u_clippingFar;
-
-uniform float u_renderTargetFlipping;
 
 // MImP with countersink geometry
 #if IDVR == 1
@@ -35,10 +30,6 @@ vec3 getFragmentImageSpacePosition(in float depth, in mat4 invWorldViewProj)
 {
     // TODO: Simplify this -> uniforms
     vec3 screenPos = vec3(gl_FragCoord.xy / vec2(u_viewportWidth, u_viewportHeight), depth);
-    if(u_renderTargetFlipping < 0)
-    {
-        screenPos.y = 1.0 - screenPos.y;
-    }
     screenPos -= 0.5;
     screenPos *= 2.0;
 
@@ -88,7 +79,7 @@ void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, inout vec4
 // Maximum Importance compositing
 #if IDVR == 1
             IC_RayTracing = vec4(rayPos, 1.);
-            IC_JFA = vec4(uv.x, uv.y, rayPos.z, 1.);
+            IC_JFA = vec4(vec2(gl_FragCoord.xy / vec2(u_viewportWidth, u_viewportHeight)), rayPos.z, 1.);
 #else
 // Average Importance compositing & Visibility preserving Importance Compositing
 // We count the number of samples until the first important object
@@ -107,7 +98,7 @@ void launchRay(inout vec3 rayPos, in vec3 rayDir, in float rayLength, inout vec4
 
 void main(void)
 {
-    vec2 rayEntryExit = texture(u_entryPoints, uv).rg;
+    vec2 rayEntryExit = texelFetch(u_entryPoints, ivec2(gl_FragCoord.xy), 0).rg;
 
     float entryDepth =  rayEntryExit.r;
     float exitDepth  = -rayEntryExit.g;

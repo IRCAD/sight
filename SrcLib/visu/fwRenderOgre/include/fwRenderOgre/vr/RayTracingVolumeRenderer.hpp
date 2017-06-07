@@ -77,10 +77,6 @@ public:
     /// Does nothing.
     FWRENDEROGRE_API virtual ~RayTracingVolumeRenderer();
 
-    /// Function to build and a tailor-made ray tracing compositor to the compositor chain
-    FWRENDEROGRE_API virtual void addRayTracingCompositor(const std::string& vpPPDefines,
-                                                          const std::string& fpPPDefines);
-
     /// Function called when a new image is being rendered.
     FWRENDEROGRE_API virtual void imageUpdate(::fwData::Image::sptr image, ::fwData::TransferFunction::sptr tf);
 
@@ -225,7 +221,7 @@ private:
     void buildCompositorChain();
 
     /// Removes all listeners and compositors from the current chain.
-    void cleanCompositorChain(Ogre::CompositorChain* compChain);
+    void cleanCompositorChain();
 
     /// Texture of the segmentation mask.
     ::Ogre::TexturePtr m_maskTexture;
@@ -349,7 +345,6 @@ private:
 
     /// Compositor listener classes used to upload uniforms for mono/stereo ray tracing materials.
     class JFACompositorListener;
-    class ICCompositorListener;
 
     /// List of all listeners associated to the VR's compositor chain.
     /// If a compositor has no listener, we store a nullptr in the corresponding entry.
@@ -364,55 +359,6 @@ private:
     compositor::listener::AutoStereoCompositorListener* m_autostereoListener;
 
     ::Ogre::Rectangle2D* m_fullScreenQuad;
-
-    /// Autostereo define.
-    static const std::string s_AUTOSTEREO_DEFINE;
-
-    /// IDVR methods names.
-    static const std::string s_NONE;
-    static const std::string s_MIMP;
-    static const std::string s_AIMC;
-    static const std::string s_VPIMC;
-
-    /// IDVR compositors names.
-    static const std::string s_MIMP_COMPOSITOR;
-    static const std::string s_AIMC_COMPOSITOR;
-    static const std::string s_VPIMC_COMPOSITOR;
-
-    /// VR effects shader defines.
-    static const std::string s_AO_DEFINE;
-    static const std::string s_COLOR_BLEEDING_DEFINE;
-    static const std::string s_SHADOWS_DEFINE;
-    static const std::string s_PREINTEGRATION_DEFINE;
-
-    /// IDVR shader defines.
-    static const std::string s_MIMP_DEFINE;
-    static const std::string s_AIMC_DEFINE;
-    static const std::string s_VPIMC_DEFINE;
-
-    /// IDVR MImP countersink geometry define.
-    static const std::string s_CSG_DEFINE;
-    /// IDVR MImP countersink geometry border define.
-    static const std::string s_CSG_BORDER_DEFINE;
-    /// IDVR MImP countersink geometry disable context define.
-    static const std::string s_CSG_DISABLE_CONTEXT_DEFINE;
-    /// IDVR MImP countersink geometry opacity decrease define.
-    static const std::string s_CSG_OPACITY_DECREASE_DEFINE;
-    /// IDVR MImP countersink geometry depth lines define.
-    static const std::string s_CSG_DEPTH_LINES_DEFINE;
-
-    /// IDVR MImP CSG modulation defines.
-    static const std::string s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE;
-    static const std::string s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE;
-    static const std::string s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE;
-    static const std::string s_CSG_MOD_COLOR1_DEFINE;
-    static const std::string s_CSG_MOD_COLOR2_DEFINE;
-    static const std::string s_CSG_MOD_COLOR3_DEFINE;
-    static const std::string s_CSG_MOD_COLOR4_DEFINE;
-
-    /// IDVR textures.
-    static const std::string s_IMPORTANCE_COMPOSITING_TEXTURE;
-    static const std::string s_JUMP_FLOOD_ALGORITHM_TEXTURE;
 };
 
 //-----------------------------------------------------------------------------

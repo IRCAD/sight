@@ -104,54 +104,6 @@ private:
 
 //-----------------------------------------------------------------------------
 
-// TODO: REMOVE ME !!!!!!!!!
-class RayTracingVolumeRenderer::ICCompositorListener : public ::Ogre::CompositorInstance::Listener
-{
-public:
-
-    ICCompositorListener(::Ogre::TexturePtr maskTexture,
-                         ::Ogre::TexturePtr entryPoints,
-                         float& sampleDistance) :
-        m_maskTexture(maskTexture),
-        m_entryPoints(entryPoints),
-        m_sampleDistance(sampleDistance)
-    {
-
-    }
-
-    //------------------------------------------------------------------------------
-
-    virtual void notifyMaterialSetup(::Ogre::uint32, ::Ogre::MaterialPtr& mtl)
-    {
-        ::Ogre::Pass* pass = mtl->getTechnique(0)->getPass(0);
-
-        ::Ogre::TextureUnitState* maskTexUnitState        = pass->getTextureUnitState("mask");
-        ::Ogre::TextureUnitState* entryPointsTexUnitState = pass->getTextureUnitState("entryPoints");
-
-        maskTexUnitState->setTextureName(m_maskTexture->getName());
-        entryPointsTexUnitState->setTextureName(m_entryPoints->getName());
-    }
-
-    //------------------------------------------------------------------------------
-
-    virtual void notifyMaterialRender(::Ogre::uint32, ::Ogre::MaterialPtr& mtl)
-    {
-        ::Ogre::Pass* pass = mtl->getTechnique(0)->getPass(0);
-
-        ::Ogre::GpuProgramParametersSharedPtr vrParams = pass->getFragmentProgramParameters();
-        vrParams->setNamedConstant("u_sampleDistance", m_sampleDistance);
-    }
-
-private:
-
-    ::Ogre::TexturePtr m_maskTexture;
-    ::Ogre::TexturePtr m_entryPoints;
-
-    float& m_sampleDistance;
-};
-
-//-----------------------------------------------------------------------------
-
 struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listener
 {
     RayTracingVolumeRenderer* m_renderer;
@@ -216,49 +168,48 @@ struct RayTracingVolumeRenderer::CameraListener : public ::Ogre::Camera::Listene
 
 //--------------------------------------------------------------,---------------
 
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_AUTOSTEREO_DEFINE = "AUTOSTEREO=1";
+const std::string s_AUTOSTEREO_DEFINE = "AUTOSTEREO=1";
 
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_NONE  = "None";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_MIMP  = "MImP";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_AIMC  = "AImC";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_VPIMC = "VPImC";
+const std::string s_NONE  = "None";
+const std::string s_MIMP  = "MImP";
+const std::string s_AIMC  = "AImC";
+const std::string s_VPIMC = "VPImC";
 
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_MIMP_COMPOSITOR  = "IDVR_MImP_Comp";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_AIMC_COMPOSITOR  = "IDVR_AImC_Comp";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_VPIMC_COMPOSITOR = "IDVR_VPImC_Comp";
+const std::string s_MIMP_COMPOSITOR         = "IDVR_MImP_Comp";
+const std::string s_AIMC_COMPOSITOR         = "IDVR_AImC_Comp";
+const std::string s_VPIMC_COMPOSITOR        = "IDVR_VPImC_Comp";
+const std::string s_JFAINIT_COMPOSITOR      = "JFAInit";
+const std::string s_JFAPING_COMPOSITOR      = "JFAPingComp";
+const std::string s_JFAPONG_COMPOSITOR      = "JFAPongComp";
+const std::string s_JFAFINALPING_COMPOSITOR = "JFAFinalPingComp";
+const std::string s_JFAFINALPONG_COMPOSITOR = "JFAFinalPongComp";
+const std::string S_DEFAULTRT_COMPOSITOR    = "DefaultRT";
 
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_AO_DEFINE             = "AMBIENT_OCCLUSION=1";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_COLOR_BLEEDING_DEFINE = "COLOR_BLEEDING=1";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_SHADOWS_DEFINE        = "SHADOWS=1";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_PREINTEGRATION_DEFINE = "PREINTEGRATION=1";
+const std::string s_AO_DEFINE             = "AMBIENT_OCCLUSION=1";
+const std::string s_COLOR_BLEEDING_DEFINE = "COLOR_BLEEDING=1";
+const std::string s_SHADOWS_DEFINE        = "SHADOWS=1";
+const std::string s_PREINTEGRATION_DEFINE = "PREINTEGRATION=1";
 
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_MIMP_DEFINE  = "IDVR=1";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_AIMC_DEFINE  = "IDVR=2";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_VPIMC_DEFINE = "IDVR=3";
+const std::string s_MIMP_DEFINE  = "IDVR=1";
+const std::string s_AIMC_DEFINE  = "IDVR=2";
+const std::string s_VPIMC_DEFINE = "IDVR=3";
 
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_DEFINE                  = "CSG=1";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_BORDER_DEFINE           = "CSG_BORDER=1";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_DISABLE_CONTEXT_DEFINE  = "CSG_DISABLE_CONTEXT=1";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_OPACITY_DECREASE_DEFINE = "CSG_OPACITY_DECREASE=1";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_DEPTH_LINES_DEFINE      = "CSG_DEPTH_LINES=1";
+const std::string s_CSG_DEFINE                  = "CSG=1";
+const std::string s_CSG_BORDER_DEFINE           = "CSG_BORDER=1";
+const std::string s_CSG_DISABLE_CONTEXT_DEFINE  = "CSG_DISABLE_CONTEXT=1";
+const std::string s_CSG_OPACITY_DECREASE_DEFINE = "CSG_OPACITY_DECREASE=1";
+const std::string s_CSG_DEPTH_LINES_DEFINE      = "CSG_DEPTH_LINES=1";
 
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE =
-    "CSG_MODULATION=1";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE =
-    "CSG_MODULATION=2";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE =
-    "CSG_MODULATION=3";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_COLOR1_DEFINE =
-    "CSG_MODULATION=4";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_COLOR2_DEFINE =
-    "CSG_MODULATION=5";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_COLOR3_DEFINE =
-    "CSG_MODULATION=6";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_CSG_MOD_COLOR4_DEFINE =
-    "CSG_MODULATION=7";
+const std::string s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE    = "CSG_MODULATION=1";
+const std::string s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE  = "CSG_MODULATION=2";
+const std::string s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE = "CSG_MODULATION=3";
+const std::string s_CSG_MOD_COLOR1_DEFINE               = "CSG_MODULATION=4";
+const std::string s_CSG_MOD_COLOR2_DEFINE               = "CSG_MODULATION=5";
+const std::string s_CSG_MOD_COLOR3_DEFINE               = "CSG_MODULATION=6";
+const std::string s_CSG_MOD_COLOR4_DEFINE               = "CSG_MODULATION=7";
 
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_IMPORTANCE_COMPOSITING_TEXTURE = "IC";
-const std::string fwRenderOgre::vr::RayTracingVolumeRenderer::s_JUMP_FLOOD_ALGORITHM_TEXTURE   = "JFA";
+const std::string s_IMPORTANCE_COMPOSITING_TEXTURE = "IC";
+const std::string s_JUMP_FLOOD_ALGORITHM_TEXTURE   = "JFA";
 
 //-----------------------------------------------------------------------------
 
@@ -305,7 +256,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
                      static_cast< ::Ogre::Real>(aoFactor)),
     m_opacityCorrectionFactor(200.f),
     m_illumVolume(nullptr),
-    m_idvrMethod(this->s_NONE),
+    m_idvrMethod(s_NONE),
     m_focalLength(0.f),
     m_lobeOffset(1.f),
     m_cameraListener(nullptr),
@@ -390,12 +341,9 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         renderTexture->addViewport(m_camera);
     }
 
-    this->initImportanceCompositingMaterials();
     this->initRayTracingMaterials();
 
     this->initEntryPoints();
-
-//        this->initCompositors();
 
     this->setSampling(m_nbSlices);
 }
@@ -407,11 +355,7 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
     delete m_fullScreenQuad;
     m_camera->removeListener(m_cameraListener);
 
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    auto viewport = m_layer.lock()->getViewport();
-    ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
-
-    this->cleanCompositorChain(compChain);
+    this->cleanCompositorChain();
 
     if(m_autostereoListener)
     {
@@ -445,243 +389,6 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
     if(!m_gridTexture.isNull())
     {
         ::Ogre::TextureManager::getSingleton().remove(m_gridTexture->getHandle());
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void RayTracingVolumeRenderer::addRayTracingCompositor(const std::string& vpPPDefines, const std::string& fpPPDefines)
-{
-    // Get the required managers
-    // We need to use the GpuProgramManager and not the HighLevelGpuProgramManager
-    // Because we must be able to clear the microcode cache of previous version of shaders
-    // Otherwise we end up using the same version of the shader when recompiling with different preprocessor options
-    ::Ogre::GpuProgramManager* gpm = ::Ogre::GpuProgramManager::getSingletonPtr();
-
-    //gpm->setSaveMicrocodesToCache(false);
-
-    ::Ogre::MaterialManager* mm   = ::Ogre::MaterialManager::getSingletonPtr();
-    ::Ogre::CompositorManager& cm = ::Ogre::CompositorManager::getSingleton();
-
-    // Remove resources and purge microcodes from cache to avoid cache effects when using preprocessor defines
-    ::Ogre::ResourcePtr resource;
-    resource = gpm->getResourceByName("RTV_VP", ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
-    if(!resource.isNull())
-    {
-        gpm->remove(resource);
-        gpm->removeMicrocodeFromCache(resource->getName());
-    }
-    resource = gpm->getResourceByName("RTV_FP", ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
-    if(!resource.isNull())
-    {
-        gpm->remove(resource);
-        gpm->removeMicrocodeFromCache(resource->getName());
-    }
-    resource = mm->getResourceByName("RTV_Mat", ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
-    if(!resource.isNull())
-    {
-        mm->remove(resource);
-    }
-    resource = cm.getResourceByName("RTV_Comp", ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
-    if(!resource.isNull())
-    {
-        cm.remove(resource);
-    }
-
-    // Vertex shader
-    ::Ogre::GpuProgramPtr vsp = gpm->createProgram("RTV_VP", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                                                   "RayTracedVolume_VP.glsl", ::Ogre::GPT_VERTEX_PROGRAM, "glsl");
-    vsp->escalateLoading();
-    vsp->load();
-
-    // Fragment shader
-    ::Ogre::GpuProgramPtr fsp = gpm->createProgram("RTV_FP", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-                                                   "RayTracedVolume_FP.glsl", ::Ogre::GPT_FRAGMENT_PROGRAM, "glsl");
-    fsp->setParameter("attach", "TransferFunction_FP");
-    if(this->m_idvrCSGModulation)
-    {
-        fsp->setParameter("attach", "ColorFormats_FP");
-    }
-    if(vpPPDefines.size() > 0)
-    {
-        vsp->setParameter("preprocessor_defines", vpPPDefines);
-    }
-    if(fpPPDefines.size() > 0)
-    {
-        fsp->setParameter("preprocessor_defines", fpPPDefines);
-    }
-    fsp->escalateLoading();
-    fsp->load();
-
-    // Material
-    ::Ogre::MaterialPtr mat = mm->create("RTV_Mat", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-    // Get the already created pass through the already created technique
-    ::Ogre::Technique* tech = mat->getTechnique(0);
-    ::Ogre::Pass* pass      = tech->getPass(0);
-    pass->setCullingMode(::Ogre::CULL_NONE);
-    pass->setSceneBlending(::Ogre::SBF_SOURCE_ALPHA, ::Ogre::SBF_ONE_MINUS_SOURCE_ALPHA);
-
-    pass->setVertexProgram("RTV_VP");
-    ::Ogre::GpuProgramParametersSharedPtr vpParams = pass->getVertexProgramParameters();
-    vpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
-
-    pass->setFragmentProgram("RTV_FP");
-    ::Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
-    fpParams->setNamedAutoConstant("u_viewportWidth", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_WIDTH);
-    fpParams->setNamedAutoConstant("u_viewportHeight", ::Ogre::GpuProgramParameters::ACT_VIEWPORT_HEIGHT);
-    fpParams->setNamedAutoConstant("u_clippingNear", ::Ogre::GpuProgramParameters::ACT_NEAR_CLIP_DISTANCE);
-    fpParams->setNamedAutoConstant("u_clippingFar", ::Ogre::GpuProgramParameters::ACT_FAR_CLIP_DISTANCE);
-    fpParams->setNamedAutoConstant("u_renderTargetFlipping",
-                                   ::Ogre::GpuProgramParameters::ACT_RENDER_TARGET_FLIPPING);
-    fpParams->setNamedAutoConstant("u_cameraPos", ::Ogre::GpuProgramParameters::ACT_LOD_CAMERA_POSITION);
-    fpParams->addSharedParameters("RTVParams");
-
-    // We use this map to keep track of the texture units IDs
-    std::map<std::string, int> textureUnits;
-
-    // Setup textures
-    int numTexUnit = 0;
-    ::Ogre::TextureUnitState* texUnitState;
-    // Volume data
-    texUnitState = pass->createTextureUnitState();
-    texUnitState->setTextureName(m_3DOgreTexture->getName(), ::Ogre::TEX_TYPE_3D);
-    texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
-    texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-    textureUnits["u_image"] = numTexUnit;
-    fpParams->setNamedConstant("u_image", numTexUnit++);
-
-    // Transfer function
-    if(fpPPDefines.find(this->s_PREINTEGRATION_DEFINE) != std::string::npos)
-    {
-        texUnitState = pass->createTextureUnitState(m_preIntegrationTable.getTexture()->getName());
-        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
-    }
-    else
-    {
-        texUnitState = pass->createTextureUnitState(m_gpuTF.getTexture()->getName());
-        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
-    }
-    textureUnits["u_tfTexture"] = numTexUnit;
-    fpParams->setNamedConstant("u_tfTexture", numTexUnit++);
-
-    if(fpPPDefines.find(this->s_AO_DEFINE) != std::string::npos)
-    {
-        texUnitState = pass->createTextureUnitState(m_illumVolume->getIlluminationVolume()->getName());
-        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
-        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-
-        textureUnits["u_illuminationVolume"] = numTexUnit;
-        fpParams->setNamedConstant("u_illuminationVolume", numTexUnit++);
-        // Update the shader parameter
-        m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
-    }
-
-    // Importance Compositing texture: MImP | AImC | VPImC
-    if(fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos ||
-       fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
-       fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
-    {
-        texUnitState = pass->createTextureUnitState();
-        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
-        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-
-        textureUnits[this->s_IMPORTANCE_COMPOSITING_TEXTURE] = numTexUnit;
-        fpParams->setNamedConstant("u_" + this->s_IMPORTANCE_COMPOSITING_TEXTURE, numTexUnit++);
-    }
-
-    // JFA texture: MImP
-    if(fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos)
-    {
-        texUnitState = pass->createTextureUnitState();
-        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
-        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-
-        textureUnits[this->s_JUMP_FLOOD_ALGORITHM_TEXTURE] = numTexUnit;
-        fpParams->setNamedConstant("u_" + this->s_JUMP_FLOOD_ALGORITHM_TEXTURE, numTexUnit++);
-    }
-
-    // Alpha Correction: AImC | VPImC
-    if(fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
-       fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
-    {
-        if(m_idvrMethod == this->s_AIMC)
-        {
-            m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
-        }
-        else
-        {
-            m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
-        }
-    }
-
-    // Entry points texture
-    texUnitState = pass->createTextureUnitState(m_entryPointsTextures[0]->getName());
-    texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
-    texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
-
-    textureUnits["u_entryPoints"] = numTexUnit;
-    fpParams->setNamedConstant("u_entryPoints", numTexUnit++);
-
-    // Create compositor
-    ::Ogre::CompositorPtr comp = cm.create("RTV_Comp", ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-    {
-        ::Ogre::CompositionTechnique* ct = comp->createTechnique();
-        {
-            // Create references to textures defined in previous compositor with chain_scope
-            // In order to locally access them (similar to the texture_ref keyword)
-            if(fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos)
-            {
-                ::Ogre::CompositionTechnique::TextureDefinition* def = ct->createTextureDefinition(
-                    this->s_IMPORTANCE_COMPOSITING_TEXTURE);
-                def->refCompName = this->s_MIMP_COMPOSITOR;
-                def->refTexName  = this->s_IMPORTANCE_COMPOSITING_TEXTURE;
-
-                def              = ct->createTextureDefinition(this->s_JUMP_FLOOD_ALGORITHM_TEXTURE);
-                def->refCompName = "JFAInit";
-                def->refTexName  = "JFAFinal";
-            }
-            else if(fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos)
-            {
-                ::Ogre::CompositionTechnique::TextureDefinition* def = ct->createTextureDefinition(
-                    this->s_IMPORTANCE_COMPOSITING_TEXTURE);
-                def->refCompName = this->s_AIMC_COMPOSITOR;
-                def->refTexName  = this->s_IMPORTANCE_COMPOSITING_TEXTURE;
-            }
-            else if(fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
-            {
-                ::Ogre::CompositionTechnique::TextureDefinition* def = ct->createTextureDefinition(
-                    this->s_IMPORTANCE_COMPOSITING_TEXTURE);
-                def->refCompName = this->s_VPIMC_COMPOSITOR;
-                def->refTexName  = this->s_IMPORTANCE_COMPOSITING_TEXTURE;
-            }
-
-            // Modify the target_output pass
-            ::Ogre::CompositionTargetPass* ctp = ct->getOutputTargetPass();
-            {
-                ctp->setInputMode(::Ogre::CompositionTargetPass::IM_PREVIOUS);
-
-                {
-                    ::Ogre::CompositionPass* cp = ctp->createPass();
-                    cp->setType(::Ogre::CompositionPass::PT_RENDERQUAD);
-                    cp->setMaterialName("RTV_Mat");
-
-                    // add locally defined texture_ref as input to the corresponding texture unit
-                    if(fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos ||
-                       fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
-                       fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
-                    {
-                        cp->setInput(textureUnits[this->s_IMPORTANCE_COMPOSITING_TEXTURE],
-                                     this->s_IMPORTANCE_COMPOSITING_TEXTURE);
-                    }
-
-                    if(fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos)
-                    {
-                        cp->setInput(textureUnits[this->s_JUMP_FLOOD_ALGORITHM_TEXTURE],
-                                     this->s_JUMP_FLOOD_ALGORITHM_TEXTURE);
-                    }
-                }
-            }
-        }
     }
 }
 
@@ -878,10 +585,10 @@ void RayTracingVolumeRenderer::setIDVRMethod(std::string method)
 {
     bool isSupported(false);
 
-    if(method == this->s_NONE ||
-       method == this->s_MIMP ||
-       method == this->s_AIMC ||
-       method == this->s_VPIMC)
+    if(method == s_NONE ||
+       method == s_MIMP ||
+       method == s_AIMC ||
+       method == s_VPIMC)
     {
         isSupported = true;
     }
@@ -979,15 +686,16 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
     // Only creates material if does not exist
     if(mm.resourceExists(matName))
     {
+        this->initCompositors();
         return;
     }
 
-    ::Ogre::String vpName("RTV_VP_" + std::to_string(hash));
-    ::Ogre::String fpName("RTV_FP_" + std::to_string(hash));
-
     ::Ogre::HighLevelGpuProgramManager& gpm = ::Ogre::HighLevelGpuProgramManager::getSingleton();
 
-    // Vertex shader
+    ///////////////////////////////////////////////////////////////////////////
+    /// Compile vertex shader
+    ::Ogre::String vpName("RTV_VP_" + std::to_string(hash));
+
     ::Ogre::HighLevelGpuProgramPtr vsp = gpm.createProgram(vpName, "Materials", "glsl", ::Ogre::GPT_VERTEX_PROGRAM);
     vsp->setSourceFile("RayTracedVolume_VP.glsl");
 
@@ -996,7 +704,9 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
         vsp->setParameter("preprocessor_defines", vpPPDefines);
     }
 
-    // Fragment shader
+    ///////////////////////////////////////////////////////////////////////////
+    /// Compile fragment shader
+    ::Ogre::String fpName("RTV_FP_" + std::to_string(hash));
     ::Ogre::HighLevelGpuProgramPtr fsp = gpm.createProgram(fpName, "Materials", "glsl", ::Ogre::GPT_FRAGMENT_PROGRAM);
     fsp->setSourceFile("RayTracedVolume_FP.glsl");
 
@@ -1010,7 +720,8 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
         fsp->setParameter("preprocessor_defines", fpPPDefines);
     }
 
-    // Material
+    ///////////////////////////////////////////////////////////////////////////
+    /// Create the material
     ::Ogre::MaterialPtr mat = mm.create(matName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
     // Ensure that we have the color parameters set for the current material
     this->setMaterialLightParams(mat);
@@ -1052,7 +763,8 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
     // We use this map to keep track of the texture units IDs
     std::map<std::string, int> textureUnits;
 
-    // Setup textures
+    ///////////////////////////////////////////////////////////////////////////
+    /// Setup texture unit states
     int numTexUnit = 0;
     ::Ogre::TextureUnitState* texUnitState;
     // Volume data
@@ -1065,7 +777,7 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
     fpParams->setNamedConstant("u_image", numTexUnit++);
 
     // Transfer function
-    if(fpPPDefines.find(this->s_PREINTEGRATION_DEFINE) != std::string::npos)
+    if(fpPPDefines.find(s_PREINTEGRATION_DEFINE) != std::string::npos)
     {
         texUnitState = pass->createTextureUnitState(m_preIntegrationTable.getTexture()->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
@@ -1079,7 +791,7 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
 
     fpParams->setNamedConstant("u_tfTexture", numTexUnit++);
 
-    if(fpPPDefines.find(this->s_AO_DEFINE) != std::string::npos)
+    if(fpPPDefines.find(s_AO_DEFINE) != std::string::npos)
     {
         texUnitState = pass->createTextureUnitState(m_illumVolume->getIlluminationVolume()->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
@@ -1092,37 +804,44 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
         m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
     }
 
+    const bool findMImP  = fpPPDefines.find(s_MIMP_DEFINE) != std::string::npos;
+    const bool findAImC  = fpPPDefines.find(s_AIMC_DEFINE) != std::string::npos;
+    const bool findVPImC = fpPPDefines.find(s_VPIMC_DEFINE) != std::string::npos;
+
     // Importance Compositing texture: MImP | AImC | VPImC
-    if(fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos ||
-       fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
-       fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
+    if(findMImP || findAImC || findVPImC)
     {
+        const std::string compositorRef = findMImP ? s_MIMP_COMPOSITOR :
+                                          findAImC ? s_AIMC_COMPOSITOR : s_VPIMC_COMPOSITOR;
         texUnitState = pass->createTextureUnitState();
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+        texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
+        texUnitState->setCompositorReference(compositorRef, "IC", 0);
 
-        textureUnits[this->s_IMPORTANCE_COMPOSITING_TEXTURE] = numTexUnit;
+        textureUnits[s_IMPORTANCE_COMPOSITING_TEXTURE] = numTexUnit;
 
-        fpParams->setNamedConstant("u_" + this->s_IMPORTANCE_COMPOSITING_TEXTURE, numTexUnit++);
+        fpParams->setNamedConstant("u_" + s_IMPORTANCE_COMPOSITING_TEXTURE, numTexUnit++);
     }
 
     // JFA texture: MImP
-    if(fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos)
+    if(findMImP)
     {
         texUnitState = pass->createTextureUnitState();
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+        texUnitState->setContentType(::Ogre::TextureUnitState::CONTENT_COMPOSITOR);
+        texUnitState->setCompositorReference(s_JFAINIT_COMPOSITOR, "JFAFinal", 0);
 
-        textureUnits[this->s_JUMP_FLOOD_ALGORITHM_TEXTURE] = numTexUnit;
+        textureUnits[s_JUMP_FLOOD_ALGORITHM_TEXTURE] = numTexUnit;
 
-        fpParams->setNamedConstant("u_" + this->s_JUMP_FLOOD_ALGORITHM_TEXTURE, numTexUnit++);
+        fpParams->setNamedConstant("u_" + s_JUMP_FLOOD_ALGORITHM_TEXTURE, numTexUnit++);
     }
 
     // Alpha Correction: AImC | VPImC
-    if(fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
-       fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
+    if(findAImC || findVPImC)
     {
-        if(m_idvrMethod == this->s_AIMC)
+        if(m_idvrMethod == s_AIMC)
         {
             m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
         }
@@ -1143,56 +862,72 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
 
     fpParams->setNamedConstant("u_entryPoints", numTexUnit++);
 
-//    if(m_idvrMethod == this->s_MIMP)
-//    {
+    ///////////////////////////////////////////////////////////////////////////
+    /// Create the technique that is used in ImportanceCompositing.compositor
+    if(m_idvrMethod != s_NONE )
+    {
+        auto tech = mat->createTechnique();
+        SLM_ASSERT("Can't create a new technique", tech);
 
-//    }
-//    else if(m_idvrMethod == this->s_AIMC)
-//    {
+        auto pass = tech->createPass();
+        SLM_ASSERT("Can't create a new pass", pass);
 
-//    }
-//    else if(m_idvrMethod == this->s_VPIMC)
-//    {
+        pass->setCullingMode(::Ogre::CullingMode::CULL_ANTICLOCKWISE);
+        pass->setSceneBlending(::Ogre::SceneBlendType::SBT_TRANSPARENT_ALPHA);
+        pass->setVertexProgram(vpName);
 
-    //    }
-}
+        ::Ogre::GpuProgramParametersSharedPtr vpParams = pass->getVertexProgramParameters();
+        vpParams->setNamedAutoConstant("u_worldViewProj", ::Ogre::GpuProgramParameters::ACT_WORLDVIEWPROJ_MATRIX);
 
-//------------------------------------------------------------------------------
+        if(m_idvrMethod == s_MIMP)
+        {
+            tech->setSchemeName("IDVR_MImP_Mat");
+            pass->setFragmentProgram("IDVR_MImP_FP");
+        }
+        else if(m_idvrMethod == s_AIMC)
+        {
+            tech->setSchemeName("IDVR_AImC_Mat");
+            pass->setFragmentProgram("IDVR_AImC_FP");
+        }
+        else if(m_idvrMethod == s_VPIMC)
+        {
 
-void RayTracingVolumeRenderer::initImportanceCompositingMaterials()
-{
+            tech->setSchemeName("IDVR_VPImC_Mat");
+            pass->setFragmentProgram("IDVR_VPImC_FP");
+        }
 
+        texUnitState = pass->createTextureUnitState();
+        texUnitState->setTextureName(m_maskTexture->getName(), ::Ogre::TEX_TYPE_3D);
+        texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
+        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+
+        texUnitState = pass->createTextureUnitState();
+        texUnitState->setName("entryPoints");
+        texUnitState->setTexture(m_entryPointsTextures[0]);
+        texUnitState->setTextureFiltering(::Ogre::TFO_NONE);
+        texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
+    }
+
+    this->initCompositors();
 }
 
 //-----------------------------------------------------------------------------
 
 void RayTracingVolumeRenderer::initCompositors()
 {
-    SLM_FATAL("arezt");
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    auto viewport = m_layer.lock()->getViewport();
-    ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
-    ::Ogre::CompositorInstance* compositorInstance;
-
     // Start from an empty compositor chain
-    this->cleanCompositorChain(compChain);
+    this->cleanCompositorChain();
 
     // Setup the Default compositor, that notably handles the Widget modifying the entryPoints
-    compositorInstance = compositorManager.addCompositor(viewport, "DefaultRT");
+    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+    auto viewport = m_layer.lock()->getViewport();
+
+    auto compositorInstance = compositorManager.addCompositor(viewport, S_DEFAULTRT_COMPOSITOR, 0);
     SLM_ASSERT("Compositor could not be initialized", compositorInstance);
     compositorInstance->setEnabled(true);
-    // Push back a dummy listener
-    m_compositorListeners.push_back(nullptr);
 
     // Add the initial ray tracing compositor
     this->buildCompositorChain();
-
-    // Setup the Final Chain Compositor
-    compositorInstance = compositorManager.addCompositor(viewport, "FinalChainCompositor");
-    SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-    compositorInstance->setEnabled(true);
-    // Push back a dummy listener
-    m_compositorListeners.push_back(nullptr);
 
     this->getLayer()->requestRender();
 }
@@ -1444,48 +1179,48 @@ std::tuple<std::string, std::string, size_t> RayTracingVolumeRenderer::computeRa
 
     if(m_ambientOcclusion)
     {
-        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_AO_DEFINE;
+        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_AO_DEFINE;
     }
 
     if(m_colorBleeding)
     {
-        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_COLOR_BLEEDING_DEFINE;
+        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_COLOR_BLEEDING_DEFINE;
     }
 
     if(m_shadows)
     {
-        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_SHADOWS_DEFINE;
+        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_SHADOWS_DEFINE;
     }
 
     if(m_preIntegratedRendering)
     {
-        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_PREINTEGRATION_DEFINE;
+        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_PREINTEGRATION_DEFINE;
     }
 
-    if(m_idvrMethod != this->s_NONE)
+    if(m_idvrMethod != s_NONE)
     {
-        if(m_idvrMethod == this->s_MIMP)
+        if(m_idvrMethod == s_MIMP)
         {
-            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_MIMP_DEFINE;
+            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_MIMP_DEFINE;
             if(m_idvrCSG)
             {
-                fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_DEFINE;
+                fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_DEFINE;
 
                 if(m_idvrCSGBorder)
                 {
-                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_BORDER_DEFINE;
+                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_BORDER_DEFINE;
                 }
                 if(m_idvrCSGDisableContext)
                 {
-                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_DISABLE_CONTEXT_DEFINE;
+                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_DISABLE_CONTEXT_DEFINE;
                 }
                 if(m_idvrCSGOpacityDecrease)
                 {
-                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_OPACITY_DECREASE_DEFINE;
+                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_OPACITY_DECREASE_DEFINE;
                 }
                 if(m_idvrCSGDepthLines)
                 {
-                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_DEPTH_LINES_DEFINE;
+                    fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_DEPTH_LINES_DEFINE;
                 }
 
                 if(m_idvrCSGModulation)
@@ -1493,39 +1228,39 @@ std::tuple<std::string, std::string, size_t> RayTracingVolumeRenderer::computeRa
                     switch(m_idvrCSGModulationMethod)
                     {
                         case IDVRCSGModulationMethod::AVERAGE_GRAYSCALE:
-                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE;
+                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_MOD_GRAYSCALE_AVERAGE_DEFINE;
                             break;
                         case IDVRCSGModulationMethod::LIGHTNESS_GRAYSCALE:
-                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE;
+                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_MOD_GRAYSCALE_LIGHTNESS_DEFINE;
                             break;
                         case IDVRCSGModulationMethod::LUMINOSITY_GRAYSCALE:
                             fpPPDefs <<
-                            (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE;
+                            (fpPPDefs.str() == "" ? "" : ",") << s_CSG_MOD_GRAYSCALE_LUMINOSITY_DEFINE;
                             break;
                         case IDVRCSGModulationMethod::COLOR1:
-                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_COLOR1_DEFINE;
+                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_MOD_COLOR1_DEFINE;
                             break;
                         case IDVRCSGModulationMethod::COLOR2:
-                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_COLOR2_DEFINE;
+                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_MOD_COLOR2_DEFINE;
                             break;
                         case IDVRCSGModulationMethod::COLOR3:
-                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_COLOR3_DEFINE;
+                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_MOD_COLOR3_DEFINE;
                             break;
                         case IDVRCSGModulationMethod::COLOR4:
-                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_CSG_MOD_COLOR4_DEFINE;
+                            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_CSG_MOD_COLOR4_DEFINE;
                             break;
                     }
 
                 }
             }
         }
-        else if(m_idvrMethod == this->s_AIMC)
+        else if(m_idvrMethod == s_AIMC)
         {
-            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_AIMC_DEFINE;
+            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_AIMC_DEFINE;
         }
-        else if(m_idvrMethod == this->s_VPIMC)
+        else if(m_idvrMethod == s_VPIMC)
         {
-            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_VPIMC_DEFINE;
+            fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << s_VPIMC_DEFINE;
         }
     }
 
@@ -1552,69 +1287,46 @@ void RayTracingVolumeRenderer::buildCompositorChain()
     size_t hash;
     std::tie(vpPPDefines, fpPPDefines, hash) = this->computeRayTracingDefines();
 
-    SLM_ASSERT("The RayTracingVolume compositor should be created only if autostereo mode is deactivated.",
-               m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::NONE);
-
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     auto viewport = m_layer.lock()->getViewport();
 
     ::Ogre::CompositorInstance* compositorInstance = nullptr;
     std::string idvrCompositorName;
 
-    if(m_idvrMethod == this->s_MIMP)
+    if(m_idvrMethod == s_MIMP)
     {
-        idvrCompositorName = this->s_MIMP_COMPOSITOR;
+        idvrCompositorName = s_MIMP_COMPOSITOR;
 
-        compositorInstance = compositorManager.addCompositor(viewport, idvrCompositorName);
+        compositorInstance = compositorManager.addCompositor(viewport, idvrCompositorName, 0);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
         compositorInstance->setEnabled(true);
 
-        // Ensure that we have the color parameters set for the current material
-        auto tech  = compositorInstance->getTechnique();
-        auto tpass = tech->getOutputTargetPass();
-
-        for( auto pass : tpass->getPassIterator() )
-        {
-            auto mtl = pass->getMaterial();
-
-            if(!mtl.isNull())
-            {
-                this->setMaterialLightParams(mtl);
-            }
-        }
-
-        m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(
-                                            m_maskTexture,
-                                            m_entryPointsTextures[0],
-                                            m_sampleDistance));
-
-        compositorInstance->addListener(m_compositorListeners.back());
-
-        double nbPasses =
+        const double numPasses =
             std::nearbyint(std::max(std::log(m_camera->getViewport()->getActualWidth()) / std::log(2.0),
                                     std::log(m_camera->getViewport()->getActualHeight()) / std::log(2.0)));
 
-        compositorInstance = compositorManager.addCompositor(viewport, "JFAInit");
+        int chainIndex = 1;
+        compositorInstance = compositorManager.addCompositor(viewport, s_JFAINIT_COMPOSITOR, chainIndex++);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
         compositorInstance->setEnabled(true);
 
         m_compositorListeners.push_back(new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(0),
-                                                                                            static_cast<float>(nbPasses),
+                                                                                            static_cast<float>(numPasses),
                                                                                             m_idvrCSGBlurWeight));
         compositorInstance->addListener(m_compositorListeners.back());
 
         int i = 0;
-        for(i = 0; i < nbPasses - 2; i++)
+        for(i = 0; i < numPasses - 2; i++)
         {
             if(i % 2 == 0)
             {
-                compositorInstance = compositorManager.addCompositor(viewport, "JFAPingComp");
+                compositorInstance = compositorManager.addCompositor(viewport, s_JFAPING_COMPOSITOR, chainIndex++);
                 SLM_ASSERT("Compositor could not be initialized", compositorInstance);
                 compositorInstance->setEnabled(true);
             }
             else
             {
-                compositorInstance = compositorManager.addCompositor(viewport, "JFAPongComp");
+                compositorInstance = compositorManager.addCompositor(viewport, s_JFAPONG_COMPOSITOR, chainIndex++);
                 SLM_ASSERT("Compositor could not be initialized", compositorInstance);
                 compositorInstance->setEnabled(true);
             }
@@ -1622,130 +1334,89 @@ void RayTracingVolumeRenderer::buildCompositorChain()
             m_compositorListeners.push_back(new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(i +
                                                                                                                    1),
                                                                                                 static_cast<float>(
-                                                                                                    nbPasses),
+                                                                                                    numPasses),
                                                                                                 m_idvrCSGBlurWeight));
             compositorInstance->addListener(m_compositorListeners.back());
         }
 
         if(i % 2 == 0)
         {
-            compositorInstance = compositorManager.addCompositor(viewport, "JFAFinalPingComp");
+            compositorInstance = compositorManager.addCompositor(viewport, s_JFAFINALPING_COMPOSITOR, chainIndex++);
             SLM_ASSERT("Compositor could not be initialized", compositorInstance);
             compositorInstance->setEnabled(true);
         }
         else
         {
-            compositorInstance = compositorManager.addCompositor(viewport, "JFAFinalPongComp");
+            compositorInstance = compositorManager.addCompositor(viewport, s_JFAFINALPONG_COMPOSITOR, chainIndex++);
             SLM_ASSERT("Compositor could not be initialized", compositorInstance);
             compositorInstance->setEnabled(true);
         }
 
         m_compositorListeners.push_back(new RayTracingVolumeRenderer::JFACompositorListener(static_cast<float>(i),
-                                                                                            static_cast<float>(nbPasses),
+                                                                                            static_cast<float>(numPasses),
                                                                                             m_idvrCSGBlurWeight));
         compositorInstance->addListener(m_compositorListeners.back());
     }
-    else if(m_idvrMethod == this->s_AIMC)
+    else if(m_idvrMethod == s_AIMC)
     {
-        idvrCompositorName = this->s_AIMC_COMPOSITOR;
+        idvrCompositorName = s_AIMC_COMPOSITOR;
 
-        compositorInstance = compositorManager.addCompositor(viewport, idvrCompositorName);
+        compositorInstance = compositorManager.addCompositor(viewport, idvrCompositorName, 0);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
         compositorInstance->setEnabled(true);
-
-        // Ensure that we have the color parameters set for the current material
-        auto tech  = compositorInstance->getTechnique();
-        auto tpass = tech->getOutputTargetPass();
-
-        for( auto pass : tpass->getPassIterator() )
-        {
-            auto mtl = pass->getMaterial();
-
-            if(!mtl.isNull())
-            {
-                this->setMaterialLightParams(mtl);
-            }
-        }
-
-        m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(
-                                            m_maskTexture,
-                                            m_entryPointsTextures[0],
-                                            m_sampleDistance));
-
-        compositorInstance->addListener(m_compositorListeners.back());
     }
-    else if(m_idvrMethod == this->s_VPIMC)
+    else if(m_idvrMethod == s_VPIMC)
     {
-        idvrCompositorName = this->s_VPIMC_COMPOSITOR;
+        idvrCompositorName = s_VPIMC_COMPOSITOR;
 
-        compositorInstance = compositorManager.addCompositor(viewport, idvrCompositorName);
+        compositorInstance = compositorManager.addCompositor(viewport, idvrCompositorName, 0);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
         compositorInstance->setEnabled(true);
-
-        // Ensure that we have the color parameters set for the current material
-        auto tech  = compositorInstance->getTechnique();
-        auto tpass = tech->getOutputTargetPass();
-
-        for( auto pass : tpass->getPassIterator() )
-        {
-            auto mtl = pass->getMaterial();
-
-            if(!mtl.isNull())
-            {
-                this->setMaterialLightParams(mtl);
-            }
-        }
-
-        m_compositorListeners.push_back(new RayTracingVolumeRenderer::ICCompositorListener(
-                                            m_maskTexture,
-                                            m_entryPointsTextures[0],
-                                            m_sampleDistance));
-
-        compositorInstance->addListener(m_compositorListeners.back());
-    }
-
-    this->addRayTracingCompositor(vpPPDefines, fpPPDefines);
-
-    compositorInstance = compositorManager.addCompositor(viewport, "RTV_Comp");
-    SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-    compositorInstance->setEnabled(true);
-
-    // Ensure that we have the color parameters set for the current material
-    auto tech  = compositorInstance->getTechnique();
-    auto tpass = tech->getOutputTargetPass();
-
-    for( auto pass : tpass->getPassIterator() )
-    {
-        auto mtl = pass->getMaterial();
-
-        if(!mtl.isNull())
-        {
-            this->setMaterialLightParams(mtl);
-        }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::cleanCompositorChain(::Ogre::CompositorChain* compChain)
+void RayTracingVolumeRenderer::cleanCompositorChain()
 {
-    // Remove all associated listeners from the compositor chain
-    for(size_t i(0); i < m_compositorListeners.size(); ++i)
-    {
-        ::Ogre::CompositorInstance::Listener* listener = m_compositorListeners[i];
+    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
+    auto viewport = m_layer.lock()->getViewport();
 
-        if(listener)
+    ::Ogre::CompositorChain* compChain = compositorManager.getCompositorChain(viewport);
+    SLM_ASSERT("Can't find compositor chain", compChain);
+
+    // Then clean the whole chain
+    const size_t numCompositors = compChain->getNumCompositors();
+    std::vector<size_t> removeCompositors;
+
+    for(size_t i = 0; i < numCompositors; ++i)
+    {
+        ::Ogre::CompositorInstance* targetComp = compChain->getCompositor(i);
+        SLM_ASSERT("Compositor instance is null", targetComp);
+        if(targetComp->getCompositor()->getName() == s_MIMP_COMPOSITOR ||
+           targetComp->getCompositor()->getName() == s_AIMC_COMPOSITOR||
+           targetComp->getCompositor()->getName() == s_VPIMC_COMPOSITOR||
+           targetComp->getCompositor()->getName() == s_JFAINIT_COMPOSITOR ||
+           targetComp->getCompositor()->getName() == s_JFAPING_COMPOSITOR ||
+           targetComp->getCompositor()->getName() == s_JFAPONG_COMPOSITOR ||
+           targetComp->getCompositor()->getName() == s_JFAFINALPING_COMPOSITOR ||
+           targetComp->getCompositor()->getName() == s_JFAFINALPONG_COMPOSITOR ||
+           targetComp->getCompositor()->getName() == S_DEFAULTRT_COMPOSITOR
+           )
         {
-            compChain->getCompositor(i)->removeListener(listener);
-            delete listener;
+            removeCompositors.push_back(i);
         }
     }
 
-    // TODO: wut ?
-//    m_layer.lock()->clearCompositorChain();
+    for(auto it = removeCompositors.rbegin(); it != removeCompositors.rend(); ++it )
+    {
+        compChain->removeCompositor(static_cast<size_t>(*it));
+    }
 
-    // Then clean the whole chain
-    compChain->removeAllCompositors();
+    // Remove all associated listeners from the compositor chain
+    std::for_each(m_compositorListeners.begin(), m_compositorListeners.end(),
+                  [](::Ogre::CompositorInstance::Listener* listener) { delete listener; }
+                  );
     m_compositorListeners.clear();
 }
 
@@ -1755,7 +1426,7 @@ void RayTracingVolumeRenderer::toggleIDVRCountersinkGeometry(bool CSG)
 {
     m_idvrCSG = CSG;
 
-    if(this->m_idvrMethod == this->s_MIMP)
+    if(this->m_idvrMethod == s_MIMP)
     {
         this->initRayTracingMaterials();
     }
@@ -1767,7 +1438,7 @@ void RayTracingVolumeRenderer::setIDVRCountersinkSlope(double slope)
 {
     m_idvrCSGSlope = static_cast<float>(slope);
 
-    if(m_idvrMethod == this->s_MIMP && m_idvrCSG)
+    if(m_idvrMethod == s_MIMP && m_idvrCSG)
     {
         m_RTVSharedParameters->setNamedConstant("u_countersinkSlope", m_idvrCSGSlope);
         this->getLayer()->requestRender();
@@ -1780,7 +1451,7 @@ void RayTracingVolumeRenderer::setIDVRCSGBlurWeight(double blurWeight)
 {
     m_idvrCSGBlurWeight = static_cast<float>(blurWeight);
 
-    if(m_idvrMethod == this->s_MIMP && m_idvrCSG)
+    if(m_idvrMethod == s_MIMP && m_idvrCSG)
     {
         this->getLayer()->requestRender();
     }
@@ -1792,7 +1463,7 @@ void RayTracingVolumeRenderer::toggleIDVRCSGBorder(bool border)
 {
     m_idvrCSGBorder = border;
 
-    if(this->m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
+    if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
         this->initRayTracingMaterials();
     }
@@ -1804,7 +1475,7 @@ void RayTracingVolumeRenderer::toggleIDVRCSGDisableContext(bool discard)
 {
     m_idvrCSGDisableContext = discard;
 
-    if(this->m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
+    if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
         this->initRayTracingMaterials();
     }
@@ -1816,7 +1487,7 @@ void RayTracingVolumeRenderer::setIDVRCSGBorderThickness(double thickness)
 {
     m_idvrCSGBorderThickness = static_cast<float>(thickness);
 
-    if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder)
+    if(m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder)
     {
         m_RTVSharedParameters->setNamedConstant("u_csgBorderThickness", m_idvrCSGBorderThickness);
         this->getLayer()->requestRender();
@@ -1831,7 +1502,7 @@ void RayTracingVolumeRenderer::setIDVRCSGBorderColor(std::array<std::uint8_t, 4>
     m_idvrCSGBorderColor.g = color[1] / 256.f;
     m_idvrCSGBorderColor.b = color[2] / 256.f;
 
-    if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder)
+    if(m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder)
     {
         m_RTVSharedParameters->setNamedConstant("u_csgBorderColor", m_idvrCSGBorderColor);
         this->getLayer()->requestRender();
@@ -1844,7 +1515,7 @@ void RayTracingVolumeRenderer::toggleIDVRCSGModulation(bool modulation)
 {
     m_idvrCSGModulation = modulation;
 
-    if(this->m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
+    if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
         this->initRayTracingMaterials();
     }
@@ -1856,7 +1527,7 @@ void RayTracingVolumeRenderer::setIDVRCSModulationMethod(IDVRCSGModulationMethod
 {
     m_idvrCSGModulationMethod = method;
 
-    if(this->m_idvrMethod == this->s_MIMP && this->m_idvrCSG && this->m_idvrCSGModulation)
+    if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGModulation)
     {
         this->initRayTracingMaterials();
     }
@@ -1868,7 +1539,7 @@ void RayTracingVolumeRenderer::setIDVRCSGModulationFactor(double modulationFacto
 {
     m_idvrCSGModulationFactor = static_cast<float>(modulationFactor);
 
-    if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
+    if(m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
         m_RTVSharedParameters->setNamedConstant("u_colorModulationFactor", m_idvrCSGModulationFactor);
         this->getLayer()->requestRender();
@@ -1881,7 +1552,7 @@ void RayTracingVolumeRenderer::toggleIDVRCSGOpacityDecrease(bool opacityDecrease
 {
     m_idvrCSGOpacityDecrease = opacityDecrease;
 
-    if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
+    if(m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
         this->initRayTracingMaterials();
     }
@@ -1893,7 +1564,7 @@ void RayTracingVolumeRenderer::setIDVRCSGOpacityDecreaseFactor(double opacityDec
 {
     m_idvrCSGOpacityDecreaseFactor = static_cast<float>(opacityDecrease);
 
-    if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG)
+    if(m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
         m_RTVSharedParameters->setNamedConstant("u_opacityDecreaseFactor", m_idvrCSGOpacityDecreaseFactor);
         this->getLayer()->requestRender();
@@ -1906,7 +1577,7 @@ void RayTracingVolumeRenderer::toggleIDVRDepthLines(bool depthLines)
 {
     m_idvrCSGDepthLines = depthLines;
 
-    if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder)
+    if(m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder)
     {
         this->initRayTracingMaterials();
     }
@@ -1918,7 +1589,7 @@ void RayTracingVolumeRenderer::setIDVRCSGDepthLinesThreshold(double threshold)
 {
     m_idvrCSGDepthLinesThreshold = static_cast<float>(threshold);
 
-    if(m_idvrMethod == this->s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder && this->m_idvrCSGDepthLines)
+    if(m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder && this->m_idvrCSGDepthLines)
     {
         m_RTVSharedParameters->setNamedConstant("u_depthLinesThreshold", m_idvrCSGDepthLinesThreshold);
         this->getLayer()->requestRender();
@@ -1931,7 +1602,7 @@ void RayTracingVolumeRenderer::setIDVRAImCAlphaCorrection(double alphaCorrection
 {
     m_idvrAImCAlphaCorrection = static_cast<float>(alphaCorrection);
 
-    if(m_idvrMethod == this->s_AIMC)
+    if(m_idvrMethod == s_AIMC)
     {
         m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
         this->getLayer()->requestRender();
@@ -1944,7 +1615,7 @@ void RayTracingVolumeRenderer::setIDVRVPImCAlphaCorrection(double alphaCorrectio
 {
     m_idvrVPImCAlphaCorrection = static_cast<float>(alphaCorrection);
 
-    if(m_idvrMethod == this->s_VPIMC)
+    if(m_idvrMethod == s_VPIMC)
     {
         m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
         this->getLayer()->requestRender();

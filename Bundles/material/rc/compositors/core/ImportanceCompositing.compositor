@@ -39,9 +39,9 @@ compositor IDVR_AImC_Comp
             {
             }
 
-            pass render_quad
+            pass render_scene
             {
-                material IDVR_AImC_Mat
+                material_scheme IDVR_AImC_Mat
             }
         }
 
@@ -66,9 +66,9 @@ compositor IDVR_VPImC_Comp
             {
             }
 
-            pass render_quad
+            pass render_scene
             {
-                material IDVR_VPImC_Mat
+                material_scheme IDVR_VPImC_Mat
             }
         }
 

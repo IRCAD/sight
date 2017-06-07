@@ -152,7 +152,6 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
             this->updateCompositorAdaptors(_compositorName, _isEnabled, _layerId, _renderService);
         }
     }
-
 }
 
 //-----------------------------------------------------------------------------
