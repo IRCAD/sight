@@ -39,8 +39,27 @@ void QtContainer::clean()
 {
     SLM_ASSERT("The QWidget is not yet initialized, cleaning is thus impossible", m_container);
 
-    delete m_container->layout();
-    m_container->setLayout(nullptr);
+    // Recursively delete all children but without deleting the layout (which will be deleted by the container itself)
+    QLayout* rootLayout = m_container->layout();
+
+    if(nullptr != rootLayout)
+    {
+        // This block layouting when there is a lot of child
+        m_container->setUpdatesEnabled(false);
+
+        for( QLayoutItem* child = rootLayout->takeAt(0); nullptr != child; child = rootLayout->takeAt(0))
+        {
+            delete child;
+        }
+
+        // Just to be sure there are no widget child that were not attached to a layout
+        qDeleteAll(m_container->findChildren<QWidget*>("", Qt::FindDirectChildrenOnly));
+
+        // Restore update
+        m_container->setUpdatesEnabled(true);
+        rootLayout->update();
+    }
+
 }
 
 //-----------------------------------------------------------------------------
