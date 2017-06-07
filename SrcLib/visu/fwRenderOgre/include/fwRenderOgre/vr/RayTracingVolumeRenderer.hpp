@@ -18,8 +18,8 @@
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreMaterialManager.h>
-#include <OGRE/OgreTechnique.h>
 #include <OGRE/OgreRectangle2D.h>
+#include <OGRE/OgreTechnique.h>
 
 #include <vector>
 
@@ -78,7 +78,8 @@ public:
     FWRENDEROGRE_API virtual ~RayTracingVolumeRenderer();
 
     /// Function to build and a tailor-made ray tracing compositor to the compositor chain
-    FWRENDEROGRE_API virtual void addRayTracingCompositor();
+    FWRENDEROGRE_API virtual void addRayTracingCompositor(const std::string& vpPPDefines,
+                                                          const std::string& fpPPDefines);
 
     /// Function called when a new image is being rendered.
     FWRENDEROGRE_API virtual void imageUpdate(::fwData::Image::sptr image, ::fwData::TransferFunction::sptr tf);
@@ -184,6 +185,9 @@ private:
     /// When using AutoStereo compositor, initialize the raytracing material.
     void initRayTracingMaterials();
 
+    /// Initialize the IDVR materials.
+    void initImportanceCompositingMaterials();
+
     /// Initialize the compositors used after the step computing the ray entry points
     void initCompositors();
 
@@ -208,7 +212,11 @@ private:
     void updateVolIllumMat();
 
     /// Updates the current compositor name according to VR effects flags.
-    void updateRayTracingDefines();
+    /// @return tuple containing a
+    /// - Comma separated list of preprocessor defines to use in vertex shaders.
+    /// - Comma separated list of preprocessor defines to use in fragment shaders.
+    /// - Hash allowing to identify the material
+    std::tuple<std::string, std::string, size_t> computeRayTracingDefines() const;
 
     /// Sets the default diffuse, specular and shininess in the material.
     void setMaterialLightParams(::Ogre::MaterialPtr mtl);
@@ -253,12 +261,6 @@ private:
 
     /// Sets stereoscopic volume rendering for autostereoscopic monitors.
     ::fwRenderOgre::Layer::StereoModeType m_stereoMode;
-
-    /// Comma separated list of preprocessor defines to use in vertex shaders.
-    std::string m_vpPPDefines;
-
-    /// Comma separated list of preprocessor defines to use in fragment shaders.
-    std::string m_fpPPDefines;
 
     /// Sets usage of ambient occlusion.
     bool m_ambientOcclusion;
@@ -346,7 +348,6 @@ private:
     CameraListener* m_cameraListener;
 
     /// Compositor listener classes used to upload uniforms for mono/stereo ray tracing materials.
-    class RayTracingCompositorListener;
     class JFACompositorListener;
     class ICCompositorListener;
 
@@ -354,7 +355,8 @@ private:
     /// If a compositor has no listener, we store a nullptr in the corresponding entry.
     std::vector< ::Ogre::CompositorInstance::Listener*> m_compositorListeners;
 
-    std::string m_compositorName;
+    /// Name of the material
+    std::string m_currentMtlName;
 
     ::fwRenderOgre::Layer::wptr m_layer;
 

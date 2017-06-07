@@ -280,8 +280,6 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     m_entryPointGeometry(nullptr),
     m_imageSize(::fwData::Image::SizeType({ 1, 1, 1 })),
     m_stereoMode(stereoMode),
-    m_vpPPDefines(""),
-    m_fpPPDefines(""),
     m_ambientOcclusion(ambientOcclusion),
     m_colorBleeding(colorBleeding),
     m_shadows(shadows),
@@ -392,9 +390,11 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         renderTexture->addViewport(m_camera);
     }
 
+    this->initImportanceCompositingMaterials();
+    this->initRayTracingMaterials();
+
     this->initEntryPoints();
 
-    this->initRayTracingMaterials();
 //        this->initCompositors();
 
     this->setSampling(m_nbSlices);
@@ -450,7 +450,7 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::addRayTracingCompositor()
+void RayTracingVolumeRenderer::addRayTracingCompositor(const std::string& vpPPDefines, const std::string& fpPPDefines)
 {
     // Get the required managers
     // We need to use the GpuProgramManager and not the HighLevelGpuProgramManager
@@ -502,13 +502,13 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     {
         fsp->setParameter("attach", "ColorFormats_FP");
     }
-    if(m_vpPPDefines.size() > 0)
+    if(vpPPDefines.size() > 0)
     {
-        vsp->setParameter("preprocessor_defines", m_vpPPDefines);
+        vsp->setParameter("preprocessor_defines", vpPPDefines);
     }
-    if(m_fpPPDefines.size() > 0)
+    if(fpPPDefines.size() > 0)
     {
-        fsp->setParameter("preprocessor_defines", m_fpPPDefines);
+        fsp->setParameter("preprocessor_defines", fpPPDefines);
     }
     fsp->escalateLoading();
     fsp->load();
@@ -551,7 +551,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     fpParams->setNamedConstant("u_image", numTexUnit++);
 
     // Transfer function
-    if(m_fpPPDefines.find(this->s_PREINTEGRATION_DEFINE) != std::string::npos)
+    if(fpPPDefines.find(this->s_PREINTEGRATION_DEFINE) != std::string::npos)
     {
         texUnitState = pass->createTextureUnitState(m_preIntegrationTable.getTexture()->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
@@ -564,7 +564,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     textureUnits["u_tfTexture"] = numTexUnit;
     fpParams->setNamedConstant("u_tfTexture", numTexUnit++);
 
-    if(m_fpPPDefines.find(this->s_AO_DEFINE) != std::string::npos)
+    if(fpPPDefines.find(this->s_AO_DEFINE) != std::string::npos)
     {
         texUnitState = pass->createTextureUnitState(m_illumVolume->getIlluminationVolume()->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
@@ -577,9 +577,9 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     }
 
     // Importance Compositing texture: MImP | AImC | VPImC
-    if(m_fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos ||
-       m_fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
-       m_fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
+    if(fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos ||
+       fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
+       fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
     {
         texUnitState = pass->createTextureUnitState();
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
@@ -590,7 +590,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     }
 
     // JFA texture: MImP
-    if(m_fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos)
+    if(fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos)
     {
         texUnitState = pass->createTextureUnitState();
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
@@ -601,8 +601,8 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
     }
 
     // Alpha Correction: AImC | VPImC
-    if(m_fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
-       m_fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
+    if(fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
+       fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
     {
         if(m_idvrMethod == this->s_AIMC)
         {
@@ -629,7 +629,7 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
         {
             // Create references to textures defined in previous compositor with chain_scope
             // In order to locally access them (similar to the texture_ref keyword)
-            if(m_fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos)
+            if(fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos)
             {
                 ::Ogre::CompositionTechnique::TextureDefinition* def = ct->createTextureDefinition(
                     this->s_IMPORTANCE_COMPOSITING_TEXTURE);
@@ -640,14 +640,14 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
                 def->refCompName = "JFAInit";
                 def->refTexName  = "JFAFinal";
             }
-            else if(m_fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos)
+            else if(fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos)
             {
                 ::Ogre::CompositionTechnique::TextureDefinition* def = ct->createTextureDefinition(
                     this->s_IMPORTANCE_COMPOSITING_TEXTURE);
                 def->refCompName = this->s_AIMC_COMPOSITOR;
                 def->refTexName  = this->s_IMPORTANCE_COMPOSITING_TEXTURE;
             }
-            else if(m_fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
+            else if(fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
             {
                 ::Ogre::CompositionTechnique::TextureDefinition* def = ct->createTextureDefinition(
                     this->s_IMPORTANCE_COMPOSITING_TEXTURE);
@@ -666,15 +666,15 @@ void RayTracingVolumeRenderer::addRayTracingCompositor()
                     cp->setMaterialName("RTV_Mat");
 
                     // add locally defined texture_ref as input to the corresponding texture unit
-                    if(m_fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos ||
-                       m_fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
-                       m_fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
+                    if(fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos ||
+                       fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
+                       fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
                     {
                         cp->setInput(textureUnits[this->s_IMPORTANCE_COMPOSITING_TEXTURE],
                                      this->s_IMPORTANCE_COMPOSITING_TEXTURE);
                     }
 
-                    if(m_fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos)
+                    if(fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos)
                     {
                         cp->setInput(textureUnits[this->s_JUMP_FLOOD_ALGORITHM_TEXTURE],
                                      this->s_JUMP_FLOOD_ALGORITHM_TEXTURE);
@@ -967,24 +967,33 @@ void RayTracingVolumeRenderer::resizeViewport(int w, int h)
 
 void RayTracingVolumeRenderer::initRayTracingMaterials()
 {
-    this->updateRayTracingDefines();
+    std::string vpPPDefines, fpPPDefines;
+    size_t hash;
+    std::tie(vpPPDefines, fpPPDefines, hash) = this->computeRayTracingDefines();
+
+    ::Ogre::String matName("RTV_Mat_" + std::to_string(hash));
+    m_currentMtlName = matName;
+
+    ::Ogre::MaterialManager& mm = ::Ogre::MaterialManager::getSingleton();
+
+    // Only creates material if does not exist
+    if(mm.resourceExists(matName))
+    {
+        return;
+    }
+
+    ::Ogre::String vpName("RTV_VP_" + std::to_string(hash));
+    ::Ogre::String fpName("RTV_FP_" + std::to_string(hash));
 
     ::Ogre::HighLevelGpuProgramManager& gpm = ::Ogre::HighLevelGpuProgramManager::getSingleton();
-
-    static int i = 0;
-    ++i;
-
-    ::Ogre::String vpName("RTV_VP_" + std::to_string(i));
-    ::Ogre::String fpName("RTV_FP_" + std::to_string(i));
-    ::Ogre::String matName("RTV_Mat_" + std::to_string(i));
 
     // Vertex shader
     ::Ogre::HighLevelGpuProgramPtr vsp = gpm.createProgram(vpName, "Materials", "glsl", ::Ogre::GPT_VERTEX_PROGRAM);
     vsp->setSourceFile("RayTracedVolume_VP.glsl");
 
-    if(m_vpPPDefines.size() > 0)
+    if(vpPPDefines.size() > 0)
     {
-        vsp->setParameter("preprocessor_defines", m_vpPPDefines);
+        vsp->setParameter("preprocessor_defines", vpPPDefines);
     }
 
     // Fragment shader
@@ -996,14 +1005,13 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
     {
         fsp->setParameter("attach", "ColorFormats_FP");
     }
-    if(m_fpPPDefines.size() > 0)
+    if(fpPPDefines.size() > 0)
     {
-        fsp->setParameter("preprocessor_defines", m_fpPPDefines);
+        fsp->setParameter("preprocessor_defines", fpPPDefines);
     }
 
     // Material
-    ::Ogre::MaterialManager& mm = ::Ogre::MaterialManager::getSingleton();
-    ::Ogre::MaterialPtr mat     = mm.create(matName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    ::Ogre::MaterialPtr mat = mm.create(matName, ::Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
     // Ensure that we have the color parameters set for the current material
     this->setMaterialLightParams(mat);
     // Get the already created pass through the already created technique
@@ -1057,7 +1065,7 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
     fpParams->setNamedConstant("u_image", numTexUnit++);
 
     // Transfer function
-    if(m_fpPPDefines.find(this->s_PREINTEGRATION_DEFINE) != std::string::npos)
+    if(fpPPDefines.find(this->s_PREINTEGRATION_DEFINE) != std::string::npos)
     {
         texUnitState = pass->createTextureUnitState(m_preIntegrationTable.getTexture()->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
@@ -1071,7 +1079,7 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
 
     fpParams->setNamedConstant("u_tfTexture", numTexUnit++);
 
-    if(m_fpPPDefines.find(this->s_AO_DEFINE) != std::string::npos)
+    if(fpPPDefines.find(this->s_AO_DEFINE) != std::string::npos)
     {
         texUnitState = pass->createTextureUnitState(m_illumVolume->getIlluminationVolume()->getName());
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
@@ -1085,9 +1093,9 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
     }
 
     // Importance Compositing texture: MImP | AImC | VPImC
-    if(m_fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos ||
-       m_fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
-       m_fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
+    if(fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos ||
+       fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
+       fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
     {
         texUnitState = pass->createTextureUnitState();
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
@@ -1099,7 +1107,7 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
     }
 
     // JFA texture: MImP
-    if(m_fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos)
+    if(fpPPDefines.find(this->s_MIMP_DEFINE) != std::string::npos)
     {
         texUnitState = pass->createTextureUnitState();
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
@@ -1111,8 +1119,8 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
     }
 
     // Alpha Correction: AImC | VPImC
-    if(m_fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
-       m_fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
+    if(fpPPDefines.find(this->s_AIMC_DEFINE) != std::string::npos ||
+       fpPPDefines.find(this->s_VPIMC_DEFINE) != std::string::npos)
     {
         if(m_idvrMethod == this->s_AIMC)
         {
@@ -1135,8 +1143,6 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
 
     fpParams->setNamedConstant("u_entryPoints", numTexUnit++);
 
-    m_entryPointGeometry->setMaterialName(0, matName);
-
 //    if(m_idvrMethod == this->s_MIMP)
 //    {
 
@@ -1148,7 +1154,14 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
 //    else if(m_idvrMethod == this->s_VPIMC)
 //    {
 
-//    }
+    //    }
+}
+
+//------------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::initImportanceCompositingMaterials()
+{
+
 }
 
 //-----------------------------------------------------------------------------
@@ -1188,11 +1201,9 @@ void RayTracingVolumeRenderer::initCompositors()
 
 void RayTracingVolumeRenderer::initEntryPoints()
 {
-    const std::string mtlName = "RayTracedVolume";
-
     m_entryPointGeometry = m_sceneManager->createManualObject(m_parentId + "_RayTracingVREntryPoints");
 
-    m_entryPointGeometry->begin(mtlName, ::Ogre::RenderOperation::OT_TRIANGLE_LIST);
+    m_entryPointGeometry->begin(m_currentMtlName, ::Ogre::RenderOperation::OT_TRIANGLE_LIST);
     {
         for(const auto& face : s_cubeFaces)
         {
@@ -1293,6 +1304,7 @@ void RayTracingVolumeRenderer::computeEntryPointsTexture()
     ::Ogre::RenderOperation renderOp;
     m_proxyGeometryGenerator->getRenderOperation(renderOp);
     m_entryPointGeometry->setVisible(true);
+    m_entryPointGeometry->setMaterialName(0, m_currentMtlName);
 
     ::Ogre::Matrix4 worldMat;
     m_proxyGeometryGenerator->getWorldTransforms(&worldMat);
@@ -1423,18 +1435,12 @@ void RayTracingVolumeRenderer::updateVolIllumMat()
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::updateRayTracingDefines()
+std::tuple<std::string, std::string, size_t> RayTracingVolumeRenderer::computeRayTracingDefines() const
 {
     std::ostringstream vpPPDefs, fpPPDefs;
 
     vpPPDefs.str("");
     fpPPDefs.str("");
-
-//    if(m_stereoMode != ::fwRenderOgre::Layer::StereoModeType::NONE)
-//    {
-//        vpPPDefs << (vpPPDefs.str() == "" ? "" : ",") << this->s_AUTOSTEREO_DEFINE;
-//        fpPPDefs << (fpPPDefs.str() == "" ? "" : ",") << this->s_AUTOSTEREO_DEFINE;
-//    }
 
     if(m_ambientOcclusion)
     {
@@ -1523,8 +1529,7 @@ void RayTracingVolumeRenderer::updateRayTracingDefines()
         }
     }
 
-    m_vpPPDefines = vpPPDefs.str();
-    m_fpPPDefines = fpPPDefs.str();
+    return std::make_tuple(vpPPDefs.str(), fpPPDefs.str(), std::hash<std::string>{} (vpPPDefs.str() + fpPPDefs.str()));
 }
 
 //-----------------------------------------------------------------------------
@@ -1543,7 +1548,9 @@ void RayTracingVolumeRenderer::setMaterialLightParams(::Ogre::MaterialPtr mtl)
 
 void RayTracingVolumeRenderer::buildCompositorChain()
 {
-    this->updateRayTracingDefines();
+    std::string vpPPDefines, fpPPDefines;
+    size_t hash;
+    std::tie(vpPPDefines, fpPPDefines, hash) = this->computeRayTracingDefines();
 
     SLM_ASSERT("The RayTracingVolume compositor should be created only if autostereo mode is deactivated.",
                m_stereoMode == ::fwRenderOgre::Layer::StereoModeType::NONE);
@@ -1697,7 +1704,7 @@ void RayTracingVolumeRenderer::buildCompositorChain()
         compositorInstance->addListener(m_compositorListeners.back());
     }
 
-    this->addRayTracingCompositor();
+    this->addRayTracingCompositor(vpPPDefines, fpPPDefines);
 
     compositorInstance = compositorManager.addCompositor(viewport, "RTV_Comp");
     SLM_ASSERT("Compositor could not be initialized", compositorInstance);
