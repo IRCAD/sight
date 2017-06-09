@@ -1,6 +1,6 @@
 fwLoadProperties()
 
-find_package(GLM REQUIRED)
+find_package(glm REQUIRED)
 
 fwForwardInclude(
     ${GLM_INCLUDE_DIR}
