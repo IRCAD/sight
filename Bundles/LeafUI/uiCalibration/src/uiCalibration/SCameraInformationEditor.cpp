@@ -1,29 +1,29 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiCalibration/SCameraInformationEditor.hpp"
 
+#include <arData/Camera.hpp>
+
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-
-#include <fwThread/Worker.hpp>
 
 #include <fwCore/base.hpp>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Integer.hpp>
 
-#include <arData/Camera.hpp>
-
-#include <fwTools/Object.hpp>
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/IController.hpp>
 #include <fwServices/macros.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <fwThread/Worker.hpp>
+
+#include <fwTools/Object.hpp>
 
 #include <QBoxLayout>
 #include <QGridLayout>
@@ -42,8 +42,6 @@ SCameraInformationEditor::SCameraInformationEditor() throw ()
     m_slotUpdateInfos = ::fwCom::newSlot(&SCameraInformationEditor::updateInformations, this);
     ::fwCom::HasSlots::m_slots(s_UPDATE_INFOS_SLOT, m_slotUpdateInfos);
 
-
-
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }
 
@@ -61,18 +59,14 @@ void SCameraInformationEditor::starting() throw (fwTools::Failed)
     fwGui::IGuiContainerSrv::create();
     fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
-    QWidget* container = qtContainer->getQtContainer();
-
     QBoxLayout* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
     mainLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-    container->setLayout(mainLayout);
 
-    QGridLayout * gridLayout = new QGridLayout();
-    QLabel * desc            = new QLabel("description: ");
+    QGridLayout* gridLayout = new QGridLayout();
+    QLabel* desc            = new QLabel("description: ");
     m_description = new QLabel();
     gridLayout->addWidget(desc, 0, 0);
     gridLayout->addWidget(m_description, 0, 1);
-
 
     QBoxLayout* titleLayout = new QBoxLayout(QBoxLayout::LeftToRight);
     m_isCalibrated = new QLabel();
@@ -113,16 +107,16 @@ void SCameraInformationEditor::starting() throw (fwTools::Failed)
     infoLayout->addWidget(m_p2, 2, 3);
     infoLayout->addWidget(m_k3, 2, 4);
 
-    updateInformations();
+    qtContainer->setLayout(mainLayout);
 
+    updateInformations();
 }
 
 // -------------------------------------------------------------------------
 
 void SCameraInformationEditor::stopping() throw (fwTools::Failed)
 {
-    getContainer()->clean();
-    fwGui::IGuiContainerSrv::destroy();
+    this->destroy();
 }
 
 // -------------------------------------------------------------------------

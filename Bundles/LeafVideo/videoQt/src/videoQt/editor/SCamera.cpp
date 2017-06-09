@@ -77,8 +77,6 @@ void SCamera::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
     QPointer<QLabel> sourceLabel = new QLabel(QObject::tr("Video source: "));
@@ -95,7 +93,7 @@ void SCamera::starting() throw(::fwTools::Failed)
         m_devicesComboBox->addItem("Stream...", "stream");
     }
 
-    container->setLayout(layout);
+    qtContainer->setLayout(layout);
 
     QObject::connect(m_devicesComboBox, SIGNAL(activated(int)), this, SLOT(onApply(int)));
 
@@ -132,7 +130,6 @@ void SCamera::starting() throw(::fwTools::Failed)
 
 void SCamera::stopping() throw(::fwTools::Failed)
 {
-    this->getContainer()->clean();
     this->destroy();
 }
 

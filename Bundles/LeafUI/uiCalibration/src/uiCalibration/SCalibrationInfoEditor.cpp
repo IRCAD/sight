@@ -1,12 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiCalibration/SCalibrationInfoEditor.hpp"
 
-#include <fwServices/macros.hpp>
+#include <arData/CalibrationInfo.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slot.hxx>
@@ -16,10 +16,10 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-
-#include <arData/CalibrationInfo.hpp>
+#include <fwServices/macros.hpp>
 
 #include <QHBoxLayout>
+
 #include <map>
 
 namespace uiCalibration
@@ -32,7 +32,6 @@ const ::fwCom::Slots::SlotKeyType SCalibrationInfoEditor::s_GET_SELECTION_SLOT =
 
 static const std::string s_CALIBRATION_INFO_1 = "calInfo1";
 static const std::string s_CALIBRATION_INFO_2 = "calInfo2";
-
 
 // ----------------------------------------------------------------------------
 
@@ -48,7 +47,7 @@ SCalibrationInfoEditor::SCalibrationInfoEditor() throw ()
 void SCalibrationInfoEditor::updating() throw (fwTools::Failed)
 {
     ::arData::CalibrationInfo::sptr calInfo1 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_1);
-    SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !",calInfo1);
+    SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
 
     ::arData::CalibrationInfo::PointListContainerType plList1 = calInfo1->getPointListContainer();
 
@@ -105,8 +104,6 @@ void SCalibrationInfoEditor::starting() throw (fwTools::Failed)
     fwGui::IGuiContainerSrv::create();
     fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
-    QWidget* const container = qtContainer->getQtContainer();
-
     // Creation of the Qt elements
 
     // Main container, VBox
@@ -116,15 +113,15 @@ void SCalibrationInfoEditor::starting() throw (fwTools::Failed)
     QHBoxLayout* nbItemsHBox = new QHBoxLayout();
 
     //     Fill the nbItemsHBox
-    QLabel* label = new QLabel("nb captures:", container);
+    QLabel* label = new QLabel("nb captures:");
     nbItemsHBox->addWidget(label);
 
-    m_nbCapturesLabel = new QLabel("-", container);
+    m_nbCapturesLabel = new QLabel("-");
     nbItemsHBox->addWidget(m_nbCapturesLabel);
     nbItemsHBox->addStretch();
 
     //   The ListWidget
-    m_capturesListWidget = new QListWidget(container);
+    m_capturesListWidget = new QListWidget();
     QObject::connect(m_capturesListWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this,
                      SLOT(onItemDoubleClicked(QListWidgetItem*)));
 
@@ -132,7 +129,7 @@ void SCalibrationInfoEditor::starting() throw (fwTools::Failed)
     vLayout->addLayout(nbItemsHBox);
     vLayout->addWidget(m_capturesListWidget);
 
-    container->setLayout(vLayout);
+    qtContainer->setLayout(vLayout);
 
     this->updating();
 }
@@ -141,7 +138,6 @@ void SCalibrationInfoEditor::starting() throw (fwTools::Failed)
 
 void SCalibrationInfoEditor::stopping() throw (fwTools::Failed)
 {
-    this->getContainer()->clean();
     ::fwGui::IGuiContainerSrv::destroy();
 }
 
@@ -156,7 +152,7 @@ void SCalibrationInfoEditor::remove()
         const size_t idx = static_cast<size_t>(row);
 
         ::arData::CalibrationInfo::sptr calInfo1 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_1);
-        SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !",calInfo1);
+        SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
 
         ::arData::CalibrationInfo::sptr calInfo2 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_2);
 
@@ -192,7 +188,7 @@ void SCalibrationInfoEditor::remove()
 void SCalibrationInfoEditor::reset()
 {
     ::arData::CalibrationInfo::sptr calInfo1 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_1);
-    SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !",calInfo1);
+    SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
 
     ::arData::CalibrationInfo::sptr calInfo2 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_2);
 
@@ -222,7 +218,6 @@ void SCalibrationInfoEditor::reset()
     m_capturesListWidget->clear();
 }
 
-
 // ----------------------------------------------------------------------------
 
 void SCalibrationInfoEditor::getSelection()
@@ -234,7 +229,7 @@ void SCalibrationInfoEditor::getSelection()
         const size_t idx = static_cast<size_t>(row);
 
         ::arData::CalibrationInfo::sptr calInfo1 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_1);
-        SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !",calInfo1);
+        SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
 
         //Notify
         {

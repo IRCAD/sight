@@ -55,8 +55,6 @@ void SOpticalCenterEditor::starting() throw(::fwTools::Failed)
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
-    QWidget* const container = qtContainer->getQtContainer();
-
     QVBoxLayout* vLayout  = new QVBoxLayout();
     QHBoxLayout* cxLayout = new QHBoxLayout();
     QHBoxLayout* cyLayout = new QHBoxLayout();
@@ -90,7 +88,7 @@ void SOpticalCenterEditor::starting() throw(::fwTools::Failed)
     vLayout->addLayout(cyLayout);
     vLayout->addLayout(fyLayout);
 
-    container->setLayout(vLayout);
+    qtContainer->setLayout(vLayout);
 
     QObject::connect(m_cxSlider, SIGNAL(valueChanged(int)), this, SLOT(onCxSliderChanged(int)));
     QObject::connect(m_cySlider, SIGNAL(valueChanged(int)), this, SLOT(onCySliderChanged(int)));
@@ -103,11 +101,6 @@ void SOpticalCenterEditor::starting() throw(::fwTools::Failed)
 
 void SOpticalCenterEditor::stopping() throw(::fwTools::Failed)
 {
-    QObject::disconnect(m_cxSlider, SIGNAL(valueChanged(int)), this, SLOT(onCxSliderChanged(int)));
-    QObject::disconnect(m_cySlider, SIGNAL(valueChanged(int)), this, SLOT(onCySliderChanged(int)));
-    QObject::disconnect(m_fySlider, SIGNAL(valueChanged(int)), this, SLOT(onFySliderChanged(int)));
-
-    this->getContainer()->clean();
     this->destroy();
 }
 

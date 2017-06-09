@@ -56,18 +56,15 @@ STextStatus::~STextStatus()
 void STextStatus::starting() throw(::fwTools::Failed)
 {
     this->create();
-    auto qtContainer   = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-    QWidget* container = qtContainer->getQtContainer();
+    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
-    SLM_ASSERT("container not instanced", container);
     QHBoxLayout* layout = new QHBoxLayout();
-
     layout->addWidget(m_labelStaticText);
     layout->addWidget(m_labelValue);
 
     layout->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
 
-    container->setLayout(layout);
+    qtContainer->setLayout(layout);
 
 }
 
@@ -75,8 +72,6 @@ void STextStatus::starting() throw(::fwTools::Failed)
 
 void STextStatus::stopping() throw(::fwTools::Failed)
 {
-    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-    qtContainer->clean();
     this->destroy();
 }
 

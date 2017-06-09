@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -32,7 +32,6 @@ namespace uiCalibration
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiCalibration::SImagesSelector, ::fwData::Vector);
 
-
 const ::fwCom::Slots::SlotKeyType SImagesSelector::s_ADD_SLOT    = "add";
 const ::fwCom::Slots::SlotKeyType SImagesSelector::s_REMOVE_SLOT = "remove";
 const ::fwCom::Slots::SlotKeyType SImagesSelector::s_RESET_SLOT  = "reset";
@@ -40,7 +39,8 @@ const ::fwCom::Slots::SlotKeyType SImagesSelector::s_RESET_SLOT  = "reset";
 const ::fwServices::IService::KeyType s_SELECTION_INOUT = "selection";
 
 //------------------------------------------------------------------------------
-SImagesSelector::SImagesSelector() throw() : m_captureIdx(0)
+SImagesSelector::SImagesSelector() throw() :
+    m_captureIdx(0)
 {
     newSlot( s_ADD_SLOT, &SImagesSelector::add, this );
     newSlot( s_REMOVE_SLOT, &SImagesSelector::remove, this );
@@ -70,8 +70,6 @@ void SImagesSelector::starting() throw(::fwTools::Failed)
     ::fwGui::IGuiContainerSrv::create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
-    QWidget* const container = qtContainer->getQtContainer();
-
     // Main container, VBox
     QVBoxLayout* vLayout = new QVBoxLayout();
 
@@ -79,21 +77,21 @@ void SImagesSelector::starting() throw(::fwTools::Failed)
     QHBoxLayout* nbItemsHBox = new QHBoxLayout();
 
     //     Fill the nbItemsHBox
-    QLabel* label = new QLabel("nb captures:", container);
+    QLabel* label = new QLabel("nb captures:");
     nbItemsHBox->addWidget(label);
 
-    m_nbCapturesLabel = new QLabel("0", container);
+    m_nbCapturesLabel = new QLabel("0");
     nbItemsHBox->addWidget(m_nbCapturesLabel);
     nbItemsHBox->addStretch();
 
     //   The ListWidget
-    m_capturesListWidget = new QListWidget(container);
+    m_capturesListWidget = new QListWidget();
 
     // Fill the main VBox
     vLayout->addLayout(nbItemsHBox);
     vLayout->addWidget(m_capturesListWidget);
 
-    container->setLayout(vLayout);
+    qtContainer->setLayout(vLayout);
 
     this->updating();
 }
@@ -102,8 +100,7 @@ void SImagesSelector::starting() throw(::fwTools::Failed)
 
 void SImagesSelector::stopping() throw(::fwTools::Failed)
 {
-    this->getContainer()->clean();
-    ::fwGui::IGuiContainerSrv::destroy();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -183,10 +180,10 @@ void SImagesSelector::add(::fwCore::HiResClock::HiResClockType timestamp)
 
     const ::fwData::Image::SpacingType::value_type voxelSize = 1;
     image->allocate(size, m_frameTL->getType(), m_frameTL->getNumberOfComponents());
-    ::fwData::Image::OriginType origin(3,0);
+    ::fwData::Image::OriginType origin(3, 0);
 
     image->setOrigin(origin);
-    ::fwData::Image::SpacingType spacing(3,voxelSize);
+    ::fwData::Image::SpacingType spacing(3, voxelSize);
     image->setSpacing(spacing);
     image->setWindowWidth(100);
     image->setWindowCenter(0);
