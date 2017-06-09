@@ -1,12 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiVisuOgre/SCompositorParameterEditor.hpp"
 
+#include <uiVisuOgre/helper/ParameterEditor.hpp>
+
 #include <fwGui/GuiRegistry.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRenderOgre/IAdaptor.hpp>
@@ -16,8 +19,6 @@
 #include <fwServices/op/Add.hpp>
 
 #include <visuOgreAdaptor/SCompositorParameter.hpp>
-
-#include <uiVisuOgre/helper/ParameterEditor.hpp>
 
 #include <QWidget>
 
@@ -55,13 +56,11 @@ void SCompositorParameterEditor::starting() throw(::fwTools::Failed)
 {
     this->create();
 
-    auto qtContainer         = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instantiated", container);
-    m_sizer = new QVBoxLayout(container);
-    m_sizer->setContentsMargins(0,0,0,0);
+    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
+    m_sizer = new QVBoxLayout();
+    m_sizer->setContentsMargins(0, 0, 0, 0);
 
-    container->setLayout(m_sizer);
+    qtContainer->setLayout(m_sizer);
 
     m_render.reset();
 
@@ -101,7 +100,6 @@ void SCompositorParameterEditor::starting() throw(::fwTools::Failed)
 
     SLM_ERROR_IF("SRender service '" + m_renderID + "' is not found.", m_render.expired());
 
-
     this->updating();
 }
 
@@ -111,8 +109,6 @@ void SCompositorParameterEditor::stopping() throw(::fwTools::Failed)
 {
     m_layerConnection.disconnect();
     this->clear();
-
-    this->getContainer()->clean();
     this->destroy();
 }
 

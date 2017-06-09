@@ -54,17 +54,15 @@ void SCompositorSelector::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instantiated", container);
 
-    m_layersBox       = new QComboBox(container);
-    m_compositorChain = new QListWidget(container);
+    m_layersBox       = new QComboBox();
+    m_compositorChain = new QListWidget();
 
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(m_layersBox);
     layout->addWidget(m_compositorChain);
 
-    container->setLayout( layout );
+    qtContainer->setLayout( layout );
 
     this->refreshRenderers();
 
@@ -79,11 +77,6 @@ void SCompositorSelector::stopping() throw(::fwTools::Failed)
 {
     m_connections.disconnect();
 
-    QObject::disconnect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
-    QObject::disconnect(m_compositorChain, SIGNAL(itemChanged(QListWidgetItem*)), this,
-                        SLOT(onSelectedCompositorItem(QListWidgetItem*)));
-
-    this->getContainer()->clean();
     this->destroy();
 }
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,19 +12,19 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
+#include <fwRenderOgre/SRender.hpp>
+
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ObjectService.hpp>
 
-#include <fwRenderOgre/SRender.hpp>
-
 #include <material/Plugin.hpp>
-
-#include <QWidget>
-#include <QHBoxLayout>
 
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreResource.h>
 #include <OGRE/OgreResourceManager.h>
+
+#include <QHBoxLayout>
+#include <QWidget>
 
 namespace uiVisuOgre
 {
@@ -51,17 +51,15 @@ void SStereoSelector::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instantiated", container);
 
-    m_layersBox = new QComboBox(container);
-    m_modeBox   = new QComboBox(container);
+    m_layersBox = new QComboBox();
+    m_modeBox   = new QComboBox();
 
     QHBoxLayout* layout = new QHBoxLayout();
     layout->addWidget(m_layersBox);
     layout->addWidget(m_modeBox);
 
-    container->setLayout( layout );
+    qtContainer->setLayout( layout );
 
     this->refreshRenderers();
 
@@ -83,10 +81,6 @@ void SStereoSelector::starting() throw(::fwTools::Failed)
 
 void SStereoSelector::stopping() throw(::fwTools::Failed)
 {
-    QObject::disconnect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
-    QObject::disconnect(m_modeBox, SIGNAL(activated(int)), this, SLOT(onSelectedModeItem(int)));
-
-    this->getContainer()->clean();
     this->destroy();
 }
 

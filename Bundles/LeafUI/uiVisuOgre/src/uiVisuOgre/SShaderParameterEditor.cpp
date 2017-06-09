@@ -1,13 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiVisuOgre/SShaderParameterEditor.hpp"
 
-#include <fwData/Mesh.hpp>
+#include <uiVisuOgre/helper/ParameterEditor.hpp>
+
 #include <fwData/Material.hpp>
+#include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 
 #include <fwGui/GuiRegistry.hpp>
@@ -19,8 +21,6 @@
 
 #include <visuOgreAdaptor/SMaterial.hpp>
 #include <visuOgreAdaptor/SShaderParameter.hpp>
-
-#include <uiVisuOgre/helper/ParameterEditor.hpp>
 
 #include <QWidget>
 
@@ -50,13 +50,12 @@ void SShaderParameterEditor::starting() throw(::fwTools::Failed)
 
     this->create();
 
-    auto qtContainer         = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instantiated", container);
-    m_sizer = new QVBoxLayout(container);
-    m_sizer->setContentsMargins(0,0,0,0);
+    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
-    container->setLayout(m_sizer);
+    m_sizer = new QVBoxLayout();
+    m_sizer->setContentsMargins(0, 0, 0, 0);
+
+    qtContainer->setLayout(m_sizer);
 
     this->updating();
 }
@@ -67,8 +66,6 @@ void SShaderParameterEditor::stopping() throw(::fwTools::Failed)
 {
     m_connections.disconnect();
     this->clear();
-
-    this->getContainer()->clean();
     this->destroy();
 }
 
