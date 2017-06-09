@@ -1,39 +1,40 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QPushButton>
-#include <QCheckBox>
-#include <QListWidget>
-#include <QList>
-#include <QGridLayout>
-#include <QString>
+#include "uiViewPoints/SViewPointsEditor.hpp"
 
-#include <fwTools/fwID.hpp>
+#include <fwCom/Signal.hxx>
+#include <fwCom/Signals.hpp>
+
+#include <fwData/String.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+#include <fwData/Vector.hpp>
+
+#include <fwGui/dialog/InputDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwData/Vector.hpp>
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/String.hpp>
-
-#include <fwServices/op/Get.hpp>
-#include <fwServices/macros.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Get.hpp>
 
-#include <fwCom/Signals.hpp>
-#include <fwCom/Signal.hxx>
+#include <fwTools/fwID.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
-#include <fwGui/dialog/InputDialog.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
+#include <QCheckBox>
+#include <QGridLayout>
+#include <QList>
+#include <QListWidget>
+#include <QPushButton>
+#include <QString>
 
-#include "uiViewPoints/SViewPointsEditor.hpp"
-
-fwServicesRegisterMacro(::gui::editor::IEditor,::uiViewPoints::SViewPointsEditor, ::fwData::Vector);
+fwServicesRegisterMacro(::gui::editor::IEditor, ::uiViewPoints::SViewPointsEditor, ::fwData::Vector);
 
 namespace uiViewPoints
 {
@@ -43,7 +44,8 @@ const std::string SViewPointsEditor::s_FIELD_NAME                               
 
 //------------------------------------------------------------------------------
 
-SViewPointsEditor::SViewPointsEditor() throw() : m_nbViewPoints(0)
+SViewPointsEditor::SViewPointsEditor() throw() :
+    m_nbViewPoints(0)
 {
     m_sigDirectTargetChanged = DirectTargetChangedSignalType::New();
     ::fwCom::HasSignals::m_signals(s_DIRECT_TARGET_CHANGED_SIG, m_sigDirectTargetChanged);
@@ -64,42 +66,39 @@ void SViewPointsEditor::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    QWidget* container = qtContainer->getQtContainer();
 
-    SLM_ASSERT("container not instanced", container);
+    m_addPointButton = new QPushButton(QObject::tr("Add view point"));
 
-    m_addPointButton = new QPushButton(QObject::tr("Add view point"),container);
-
-    m_renamePointButton = new QPushButton(QObject::tr("Rename view point"),container);
+    m_renamePointButton = new QPushButton(QObject::tr("Rename view point"));
     m_renamePointButton->setEnabled(false);
 
-    m_removePointButton = new QPushButton(QObject::tr("Remove view point"),container);
+    m_removePointButton = new QPushButton(QObject::tr("Remove view point"));
     m_removePointButton->setEnabled(false);
 
-    m_removeAllPointsButton = new QPushButton(QObject::tr("Remove all"),container);
+    m_removeAllPointsButton = new QPushButton(QObject::tr("Remove all"));
     m_removeAllPointsButton->setEnabled(false);
 
     m_viewPointsList = new QListWidget();
     m_viewPointsList->setSelectionMode(QAbstractItemView::SingleSelection);
 
-    QObject::connect(m_addPointButton, SIGNAL(clicked()), this,SLOT(onClickAddPoint()));
-    QObject::connect(m_renamePointButton, SIGNAL(clicked()), this,SLOT(onClickRenamePoint()));
-    QObject::connect(m_removePointButton, SIGNAL(clicked()), this,SLOT(onClickRemovePoint()));
-    QObject::connect(m_removeAllPointsButton, SIGNAL(clicked()), this,SLOT(onClickRemoveAllPoints()));
+    QObject::connect(m_addPointButton, SIGNAL(clicked()), this, SLOT(onClickAddPoint()));
+    QObject::connect(m_renamePointButton, SIGNAL(clicked()), this, SLOT(onClickRenamePoint()));
+    QObject::connect(m_removePointButton, SIGNAL(clicked()), this, SLOT(onClickRemovePoint()));
+    QObject::connect(m_removeAllPointsButton, SIGNAL(clicked()), this, SLOT(onClickRemoveAllPoints()));
     QObject::connect(
         m_viewPointsList, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
         this, SLOT(onDoubleClickItem(QListWidgetItem*)));
     QObject::connect(
         m_viewPointsList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onClickItem(QListWidgetItem*)));
 
-    QGridLayout* layout = new QGridLayout(container);
+    QGridLayout* layout = new QGridLayout();
     layout->addWidget(m_addPointButton, 0, 0, Qt::AlignTop);
     layout->addWidget(m_renamePointButton, 0, 1, Qt::AlignTop);
     layout->addWidget(m_removePointButton, 0, 2, Qt::AlignTop);
     layout->addWidget(m_removeAllPointsButton, 0, 3, Qt::AlignTop);
     layout->addWidget(m_viewPointsList, 1, 0, 1, 4);
 
-    container->setLayout(layout);
+    qtContainer->setLayout(layout);
 
     // Get the already existing points for export activity
     ::fwData::Vector::sptr vector = this->getObject< ::fwData::Vector>();
@@ -123,17 +122,6 @@ void SViewPointsEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    QObject::disconnect(m_addPointButton, SIGNAL(clicked()), this,SLOT(onClickAddPoint()));
-    QObject::disconnect(m_renamePointButton, SIGNAL(clicked()), this,SLOT(onClickRenamePoint()));
-    QObject::disconnect(m_removePointButton, SIGNAL(clicked()), this,SLOT(onClickRemovePoint()));
-    QObject::disconnect(m_removeAllPointsButton, SIGNAL(clicked()), this,SLOT(onClickRemoveAllPoints()));
-    QObject::disconnect(
-        m_viewPointsList, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
-        this, SLOT(onDoubleClickItem(QListWidgetItem*)));
-    QObject::disconnect(
-        m_viewPointsList, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onClickItem(QListWidgetItem*)));
-
-    this->getContainer()->clean();
     this->destroy();
 }
 
@@ -244,7 +232,7 @@ void SViewPointsEditor::onClickRemoveAllPoints()
 
 //------------------------------------------------------------------------------
 
-void SViewPointsEditor::onClickItem(QListWidgetItem * item)
+void SViewPointsEditor::onClickItem(QListWidgetItem* item)
 {
     m_renamePointButton->setEnabled(true);
     m_removePointButton->setEnabled(true);
@@ -252,7 +240,7 @@ void SViewPointsEditor::onClickItem(QListWidgetItem * item)
 
 //------------------------------------------------------------------------------
 
-void SViewPointsEditor::onDoubleClickItem(QListWidgetItem * item)
+void SViewPointsEditor::onDoubleClickItem(QListWidgetItem* item)
 {
     // See if a viewpoint is double clicked and get the associated matrix
     std::string name = (item->text()).toStdString();

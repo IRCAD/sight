@@ -1,36 +1,36 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiCPR/SCPREditor.hpp"
 
-#include <fwData/Image.hpp>
-
-#include <fwGuiQt/container/QtContainer.hpp>
-
-#include <fwTools/Object.hpp>
-
-#include <fwServices/op/Get.hpp>
-#include <fwServices/macros.hpp>
-#include <fwServices/registry/ActiveWorkers.hpp>
-
-#include <fwRuntime/ConfigurationElement.hpp>
-#include <fwRuntime/operations.hpp>
-
 #include <cpr/functions.hpp>
 
 #include <fwCom/Signal.hxx>
 
-#include <QString>
-#include <QWidget>
-#include <QLabel>
+#include <fwData/Image.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
+
+#include <fwRuntime/ConfigurationElement.hpp>
+#include <fwRuntime/operations.hpp>
+
+#include <fwServices/macros.hpp>
+#include <fwServices/op/Get.hpp>
+#include <fwServices/registry/ActiveWorkers.hpp>
+
+#include <fwTools/Object.hpp>
+
 #include <QDoubleSpinBox>
 #include <QGridLayout>
-#include <QSlider>
+#include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QSlider>
+#include <QString>
+#include <QWidget>
 
 fwServicesRegisterMacro(::gui::editor::IEditor, ::uiCPR::SCPREditor, ::fwData::Image);
 
@@ -74,8 +74,6 @@ void SCPREditor::starting() throw(::fwTools::Failed)
     // Get the Qt container
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    QWidget* container = qtContainer->getQtContainer();
-    SLM_ASSERT("Failed to instantiate container", container);
 
     // Get the source image to set the minimum and maximum of spacing and height.
     ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_KEY);
@@ -114,7 +112,7 @@ void SCPREditor::starting() throw(::fwTools::Failed)
     QObject::connect(m_computeButton, SIGNAL(clicked()), this, SLOT(onClickComputeSlotType()));
     QObject::connect(m_rotationSlider, SIGNAL(valueChanged(int)), this, SLOT(onChangeSliderValue(int)));
 
-    QGridLayout* hLayout = new QGridLayout(container);
+    QGridLayout* hLayout = new QGridLayout();
     hLayout->addWidget(new QLabel("Height:"), 0, 0, 1, 1);
     hLayout->addWidget(m_heightSpinBox, 0, 1, 1, 1);
     hLayout->addWidget(new QLabel("Spacing :"), 0, 2, 1, 1);
@@ -123,19 +121,18 @@ void SCPREditor::starting() throw(::fwTools::Failed)
     hLayout->addWidget(m_rotationSlider, 1, 0, 1, 3);
     hLayout->addWidget(m_angleText, 1, 3, 1, 1);
 
-    container->setLayout(hLayout);
+    qtContainer->setLayout(hLayout);
 }
 
 //------------------------------------------------------------------------------------------------------
 
 void SCPREditor::stopping() throw(::fwTools::Failed)
 {
-    QObject::disconnect(m_heightSpinBox, SIGNAL(valueChanged (double)), this, SLOT(onChangeHeightValue(double)));
-    QObject::disconnect(m_spacingSpinBox, SIGNAL(valueChanged (double)), this, SLOT(onChangeSpacingValue(double)));
-    QObject::disconnect(m_rotationSlider, SIGNAL(valueChanged (int)), this, SLOT(onChangeSliderValue(int)));
+    QObject::disconnect(m_heightSpinBox, SIGNAL(valueChanged(double)), this, SLOT(onChangeHeightValue(double)));
+    QObject::disconnect(m_spacingSpinBox, SIGNAL(valueChanged(double)), this, SLOT(onChangeSpacingValue(double)));
+    QObject::disconnect(m_rotationSlider, SIGNAL(valueChanged(int)), this, SLOT(onChangeSliderValue(int)));
     QObject::disconnect(m_computeButton, SIGNAL(clicked()), this, SLOT(onClickComputeSlotType()));
 
-    this->getContainer()->clean();
     this->destroy();
 }
 

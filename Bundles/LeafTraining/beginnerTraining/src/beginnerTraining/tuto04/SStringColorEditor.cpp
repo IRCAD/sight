@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -59,22 +59,21 @@ void SStringColorEditor::starting() throw ( ::fwTools::Failed )
     this->create(); // start with this inherited function
 
     // Retrieve Qt container
-    auto qtContainer   = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-    QWidget* container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
+    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
     // Change background color in red
-    QPalette p ( container->palette() );
+    QWidget* const container = qtContainer->getQtContainer();
+    QPalette p( container->palette() );
     p.setColor( QPalette::Background, Qt::red );
     container->setPalette(p);
     container->setAutoFillBackground( true );
 
     // Create textEditor
-    QVBoxLayout* layout = new QVBoxLayout( container );
-    m_textEditor = new QTextEdit( container );
+    QVBoxLayout* layout = new QVBoxLayout( );
+    m_textEditor = new QTextEdit(  );
     m_textEditor->setPlainText( "Edit text !" );
     layout->addWidget( m_textEditor );
-    container->setLayout( layout );
+    qtContainer->setLayout( layout );
 
     // Connect m_textEditor
     QObject::connect(m_textEditor, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
@@ -89,8 +88,8 @@ void SStringColorEditor::stopping() throw ( ::fwTools::Failed )
     // Disconnect m_textEditor
     QObject::disconnect(m_textEditor, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
 
-    this->getContainer()->clean(); // Erase widget content
-    this->destroy(); // finish with this inherited function
+    // Destroy the container and all its children
+    this->destroy();
 }
 
 //-----------------------------------------------------------------------------
@@ -132,7 +131,7 @@ void SStringColorEditor::notifyMessage()
 
 void SStringColorEditor::changeColor(std::array<uint8_t, 4> color, std::string key)
 {
-    if(key=="borderColor")
+    if(key == "borderColor")
     {
         SLM_TRACE_FUNC();
         // Retrieve Qt container
@@ -143,7 +142,7 @@ void SStringColorEditor::changeColor(std::array<uint8_t, 4> color, std::string k
         // Change background color
         QColor qtColor;
         qtColor.setRgb(color[0], color[1], color[2], color[3]);
-        QPalette p ( container->palette() );
+        QPalette p( container->palette() );
         p.setColor( QPalette::Background, qtColor );
         container->setPalette(p);
     }
@@ -153,6 +152,4 @@ void SStringColorEditor::changeColor(std::array<uint8_t, 4> color, std::string k
 
 } // namespace tuto04
 } // namespace beginnerTraining
-
-
 

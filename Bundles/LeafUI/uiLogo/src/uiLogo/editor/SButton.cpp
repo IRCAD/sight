@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,16 +9,18 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwServices/macros.hpp>
-#include <fwTools/Object.hpp>
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <QWidget>
+#include <fwServices/macros.hpp>
+
+#include <fwTools/Object.hpp>
+
 #include <QBoxLayout>
-#include <QPushButton>
 #include <QIcon>
 #include <QPixmap>
+#include <QPushButton>
 #include <QString>
+#include <QWidget>
 
 namespace uiLogo
 {
@@ -51,11 +53,8 @@ void SButton::starting() throw (::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer
         = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    QWidget* container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
-    QBoxLayout* layout = new QBoxLayout(QBoxLayout::LeftToRight, container);
-    container->setLayout(layout);
+    QBoxLayout* layout = new QBoxLayout(QBoxLayout::LeftToRight);
 
     QPushButton* button = new QPushButton();
 
@@ -78,6 +77,8 @@ void SButton::starting() throw (::fwTools::Failed)
 
     layout->addWidget(button);
 
+    qtContainer->setLayout(layout);
+
     QObject::connect(button, SIGNAL(clicked()), this, SLOT(onClick()));
 }
 
@@ -85,7 +86,6 @@ void SButton::starting() throw (::fwTools::Failed)
 
 void SButton::stopping() throw (::fwTools::Failed)
 {
-    this->getContainer()->clean();
     this->destroy();
 }
 
