@@ -681,7 +681,7 @@ Section "-Core installation"
 
     ; Optional registration
     Push "DisplayIcon"
-    Push "$INSTDIR\@CPACK_NSIS_INSTALLED_ICON_NAME@"
+    Push "$INSTDIR\Bundles\@CPACK_NSIS_PACKAGE_NAME@\@CPACK_NSIS_FW4SPL_APP_ICON@"
     Call ConditionalAddToRegisty
     Push "HelpLink"
     Push "@CPACK_NSIS_HELP_LINK@"
@@ -700,7 +700,7 @@ Section "-Core installation"
     @CPACK_NSIS_CREATE_ICONS@
     @CPACK_NSIS_CREATE_ICONS_EXTRA@
     CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
-    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\@CPACK_NSIS_DISPLAY_NAME@ @CPACK_PACKAGE_VERSION@.lnk" "$INSTDIR\bin\fwlauncher.exe" "Bundles\@CPACK_NSIS_PACKAGE_NAME@\profile.xml" "$INSTDIR\Bundles\@CPACK_NSIS_PACKAGE_NAME@\shortcut.ico" 0
+    CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\@CPACK_NSIS_DISPLAY_NAME@ @CPACK_PACKAGE_VERSION@.lnk" "$INSTDIR\bin\fwlauncher.exe" "Bundles\@CPACK_NSIS_PACKAGE_NAME@\profile.xml" "$INSTDIR\Bundles\@CPACK_NSIS_PACKAGE_NAME@\@CPACK_NSIS_FW4SPL_APP_ICON@" 0
 
     ;Read a value from an InstallOptions INI file
     !insertmacro MUI_INSTALLOPTIONS_READ $DO_NOT_ADD_TO_PATH "NSIS.InstallOptions.ini" "Field 2" "State"
@@ -740,7 +740,7 @@ SectionEnd
 
 Section "Desktop Shortcut" SHORTCUT
     SetOutPath "$INSTDIR"
-    CreateShortCut "$DESKTOP\@CPACK_NSIS_DISPLAY_NAME@ @CPACK_PACKAGE_VERSION@.lnk" "$INSTDIR\bin\fwlauncher.exe" "Bundles\@CPACK_NSIS_PACKAGE_NAME@\profile.xml" "$INSTDIR\Bundles\@CPACK_NSIS_PACKAGE_NAME@\desktop.ico" 0
+    CreateShortCut "$DESKTOP\@CPACK_NSIS_DISPLAY_NAME@ @CPACK_PACKAGE_VERSION@.lnk" "$INSTDIR\bin\fwlauncher.exe" "Bundles\@CPACK_NSIS_PACKAGE_NAME@\profile.xml" "$INSTDIR\Bundles\@CPACK_NSIS_PACKAGE_NAME@\@CPACK_NSIS_FW4SPL_APP_ICON@" 0
 SectionEnd
 
 ;--------------------------------
