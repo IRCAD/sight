@@ -93,11 +93,10 @@ void SDynamicView::starting() throw(::fwTools::Failed)
 {
     this->::fwGui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr parentContainer;
-    parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr parentContainer
+        = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
-    QWidget* qtContainer = parentContainer->getQtContainer();
-    m_tabWidget = new QTabWidget(qtContainer);
+    m_tabWidget = new QTabWidget();
     m_tabWidget->setTabsClosable( true );
     m_tabWidget->setDocumentMode( true );
     m_tabWidget->setMovable( true );
@@ -106,13 +105,10 @@ void SDynamicView::starting() throw(::fwTools::Failed)
     QObject::connect(m_tabWidget, SIGNAL(currentChanged(int)), this, SLOT(changedTab(int)));
 
     QBoxLayout* layout = new QBoxLayout(QBoxLayout::TopToBottom);
-    if (qtContainer->layout())
-    {
-        QWidget().setLayout(qtContainer->layout());
-    }
-    qtContainer->setLayout(layout);
-
     layout->addWidget( m_tabWidget );
+
+    parentContainer->setLayout(layout);
+
     m_currentWidget = 0;
 
     if (!m_mainActivityId.empty())
@@ -131,8 +127,8 @@ void SDynamicView::stopping() throw(::fwTools::Failed)
         this->closeTab(0, true);
     }
     m_tabWidget->clear();
-    this->getContainer()->clean();
-    this->::fwGui::IGuiContainerSrv::destroy();
+
+    this->destroy();
     m_tabWidget = 0;
 }
 
@@ -301,7 +297,6 @@ void SDynamicView::closeTab( int index, bool forceClose )
 
         ::fwGui::GuiRegistry::unregisterWIDContainer(info.wid);
 
-        info.container->clean();
         info.container->destroyContainer();
         info.container.reset();
         m_dynamicInfoMap.erase(widget);

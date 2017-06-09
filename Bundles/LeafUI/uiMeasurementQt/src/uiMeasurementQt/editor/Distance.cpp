@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -24,11 +24,11 @@
 #include <fwServices/IService.hpp>
 #include <fwServices/macros.hpp>
 
-#include <QIcon>
-#include <QVBoxLayout>
-
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/convenience.hpp>
+
+#include <QIcon>
+#include <QVBoxLayout>
 
 namespace uiMeasurement
 {
@@ -59,16 +59,14 @@ void Distance::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
     namespace fs = ::boost::filesystem;
-    fs::path pathImageDist (std::string(BUNDLE_PREFIX) + "/uiMeasurementQt_0-1/distance.png");
+    fs::path pathImageDist(std::string(BUNDLE_PREFIX) + "/uiMeasurementQt_0-1/distance.png");
     OSLM_ASSERT("Image "<< pathImageDist << "is missing", fs::exists(pathImageDist));
 
     QIcon imageDist(QString::fromStdString(pathImageDist.string()));
 
-    m_distButton = new QPushButton( imageDist, tr(""), container);
+    m_distButton = new QPushButton( imageDist, tr(""));
     m_distButton->setToolTip(tr("Distance"));
 
     QVBoxLayout* layout = new QVBoxLayout();
@@ -76,7 +74,7 @@ void Distance::starting() throw(::fwTools::Failed)
     layout->setContentsMargins(0, 0, 0, 0);
     QObject::connect(m_distButton, SIGNAL(clicked()), this, SLOT(onDistanceButton()));
 
-    container->setLayout( layout );
+    qtContainer->setLayout( layout );
 }
 
 //------------------------------------------------------------------------------
@@ -87,8 +85,7 @@ void Distance::stopping() throw(::fwTools::Failed)
 
     QObject::disconnect(m_distButton, SIGNAL(clicked()), this, SLOT(onDistanceButton()));
 
-    this->getContainer()->clean();
-    this->::fwGui::IGuiContainerSrv::destroy();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------

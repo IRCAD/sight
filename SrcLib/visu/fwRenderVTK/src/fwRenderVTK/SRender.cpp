@@ -34,17 +34,17 @@
 
 #include <fwVtkIO/vtk.hpp>
 
+#include <boost/function.hpp>
+#include <boost/lexical_cast.hpp>
+
 #include <vtkCellPicker.h>
 #include <vtkInstantiator.h>
-#include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
 #include <vtkRendererCollection.h>
+#include <vtkRenderWindow.h>
 #include <vtkSmartPointer.h>
 #include <vtkTransform.h>
 #include <vtkWindowToImageFilter.h>
-
-#include <boost/function.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <functional>
 
@@ -613,7 +613,6 @@ void SRender::stopping() throw(fwTools::Failed)
 
     if (!m_offScreen)
     {
-        this->getContainer()->clean();
         this->destroy();
     }
 }

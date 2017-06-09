@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,8 +33,8 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/UUID.hpp>
 #include <fwTools/dateAndTime.hpp>
+#include <fwTools/UUID.hpp>
 
 #include <QApplication>
 #include <QHBoxLayout>
@@ -206,8 +206,7 @@ void SActivityWizard::stopping() throw(::fwTools::Failed)
         QObject::disconnect(m_cancelButton.data(), &QPushButton::clicked, this, &SActivityWizard::onCancel);
     }
 
-    this->getContainer()->clean();
-    ::fwGui::IGuiContainerSrv::destroy();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -344,7 +343,6 @@ void SActivityWizard::updateActivity(::fwMedData::ActivitySeries::sptr activityS
     }
 }
 
-
 //------------------------------------------------------------------------------
 
 void SActivityWizard::updateActivitySeries(::fwMedData::Series::sptr series)
@@ -394,7 +392,6 @@ void SActivityWizard::onCancel()
     m_activityDataView->clear();
     m_sigCanceled->asyncEmit();
 }
-
 
 //------------------------------------------------------------------------------
 

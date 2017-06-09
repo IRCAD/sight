@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -23,6 +23,7 @@
 
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/SelectorDialog.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwMedData/ActivitySeries.hpp>
@@ -36,13 +37,12 @@
 #include <boost/foreach.hpp>
 
 #include <QGridLayout>
+#include <QGroupBox>
 #include <QLabel>
 #include <QPainter>
 #include <QPushButton>
-#include <QVBoxLayout>
-#include <QGroupBox>
 #include <QScrollArea>
-
+#include <QVBoxLayout>
 
 Q_DECLARE_METATYPE(::fwActivities::registry::ActivityInfo)
 
@@ -110,18 +110,14 @@ void SCreateActivity::starting() throw(::fwTools::Failed)
 
     fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
-    QWidget* const container = qtContainer->getQtContainer();
-
     QGroupBox* groupBox = new QGroupBox(tr("Activities") );
 
-    QScrollArea* scrollArea = new QScrollArea(container);
+    QScrollArea* scrollArea = new QScrollArea();
     scrollArea->setWidget(groupBox);
     scrollArea->setWidgetResizable(true);
 
     QVBoxLayout* mainLayout = new QVBoxLayout();
     mainLayout->addWidget(scrollArea);
-
-    container->setLayout(mainLayout);
 
     m_buttonGroup = new QButtonGroup(groupBox);
 
@@ -141,6 +137,7 @@ void SCreateActivity::starting() throw(::fwTools::Failed)
     int numRows        = static_cast<int>(std::floor(std::sqrt(static_cast<float>(m_activitiesInfo.size()))));
     numCols = numCols + numCols + 1;
 
+    QWidget* const container = qtContainer->getQtContainer();
     container->setObjectName("activities");
     std::string styleGrid("QGridLayout#activities {"
                           "border-width: 4px;"
@@ -201,6 +198,8 @@ void SCreateActivity::starting() throw(::fwTools::Failed)
     activitiesLayout->setRowMinimumHeight(numRows * 3, 5);
     activitiesLayout->setRowStretch(numRows * 3, 2);
 
+    qtContainer->setLayout(mainLayout);
+
     this->connect(m_buttonGroup, SIGNAL(buttonClicked(int)), SLOT(onClicked(int)));
 }
 
@@ -209,10 +208,8 @@ void SCreateActivity::starting() throw(::fwTools::Failed)
 void SCreateActivity::stopping() throw(::fwTools::Failed)
 {
     this->disconnect();
-    this->getContainer()->clean();
-    ::fwGui::IGuiContainerSrv::destroy();
+    this->destroy();
 }
-
 
 //------------------------------------------------------------------------------
 

@@ -30,12 +30,12 @@
 
 #include <fwServices/macros.hpp>
 
-#include <QVBoxLayout>
-#include <QWidget>
-
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
+
+#include <QVBoxLayout>
+#include <QWidget>
 
 #include <functional>
 
@@ -76,12 +76,10 @@ void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
-    QVBoxLayout* layout = new QVBoxLayout( container );
+    QVBoxLayout* layout = new QVBoxLayout( );
 
-    m_sliceSelectorPanel = new ::fwGuiQt::SliceSelector( container );
+    m_sliceSelectorPanel = new ::fwGuiQt::SliceSelector();
     m_sliceSelectorPanel->setEnable(false);
 
     ::fwGuiQt::SliceSelector::ChangeIndexCallback changeIndexCallback;
@@ -100,7 +98,7 @@ void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
     this->updateImageInfos(image);
     this->updateSliceTypeFromImg(m_orientation);
 
-    container->setLayout( layout );
+    qtContainer->setLayout( layout );
 
     this->updating();
 }
@@ -109,14 +107,8 @@ void SliceIndexPositionEditor::starting() throw(::fwTools::Failed)
 
 void SliceIndexPositionEditor::stopping() throw(::fwTools::Failed)
 {
-    if(m_sliceSelectorPanel)
-    {
-        delete m_sliceSelectorPanel;
-        m_sliceSelectorPanel = 0;
-    }
-
-    this->getContainer()->clean();
     this->destroy();
+    m_sliceSelectorPanel = nullptr;
 }
 
 //------------------------------------------------------------------------------

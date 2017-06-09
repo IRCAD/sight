@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -59,34 +59,31 @@ void PointEditor::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
     QHBoxLayout* hLayout = new QHBoxLayout();
 
-    QLabel* staticText_x = new QLabel( tr("x:"), container);
+    QLabel* staticText_x = new QLabel( tr("x:"));
     hLayout->addWidget( staticText_x, 0, Qt::AlignVCenter );
 
-    m_textCtrl_x = new QLineEdit( container );
+    m_textCtrl_x = new QLineEdit();
     m_textCtrl_x->setValidator( new QDoubleValidator(m_textCtrl_x) );
     hLayout->addWidget( m_textCtrl_x, 1, Qt::AlignVCenter );
 
-    QLabel* staticText_y = new QLabel( tr("y:"), container );
+    QLabel* staticText_y = new QLabel( tr("y:") );
     hLayout->addWidget( staticText_y, 0, Qt::AlignVCenter );
 
-    m_textCtrl_y = new QLineEdit( container );
+    m_textCtrl_y = new QLineEdit();
     m_textCtrl_y->setValidator( new QDoubleValidator(m_textCtrl_y) );
     hLayout->addWidget( m_textCtrl_y, 1, Qt::AlignVCenter );
 
-    QLabel* staticText_z = new QLabel( tr("z:"), container );
+    QLabel* staticText_z = new QLabel( tr("z:"));
     hLayout->addWidget( staticText_z, 0, Qt::AlignVCenter );
 
-    m_textCtrl_z = new QLineEdit( container );
+    m_textCtrl_z = new QLineEdit();
     m_textCtrl_z->setValidator( new QDoubleValidator(m_textCtrl_z) );
     hLayout->addWidget( m_textCtrl_z, 1, Qt::AlignVCenter );
 
-
-    container->setLayout( hLayout );
+    qtContainer->setLayout( hLayout );
     this->updating();
 }
 
@@ -96,8 +93,7 @@ void PointEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    this->getContainer()->clean();
-    this->::fwGui::IGuiContainerSrv::destroy();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------

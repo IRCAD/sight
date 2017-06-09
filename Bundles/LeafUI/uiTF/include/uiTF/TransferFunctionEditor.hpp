@@ -14,9 +14,9 @@
 
 #include <gui/editor/IEditor.hpp>
 
-#include <QObject>
-
 #include <boost/filesystem/path.hpp>
+
+#include <QObject>
 
 class QComboBox;
 class QPushButton;
@@ -136,7 +136,6 @@ private:
     QPushButton* m_renameButton;
     QPushButton* m_importButton;
     QPushButton* m_exportButton;
-    QWidget* m_container;
 
     /// fwID of tf selection ( used during configuration )
     std::string m_tfSelectionFwID;

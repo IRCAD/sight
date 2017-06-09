@@ -1,41 +1,40 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QColor>
-#include <QColorDialog>
-#include <QPushButton>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QLabel>
-#include <QSlider>
-#include <QPixmap>
-#include <QStyle>
+#include "uiReconstructionQt/OrganMaterialEditor.hpp"
 
 #include <fwCore/base.hpp>
 
-#include <fwData/Reconstruction.hpp>
 #include <fwData/Material.hpp>
 #include <fwData/Mesh.hpp>
+#include <fwData/Reconstruction.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
 #include <fwServices/op/Get.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
-
-#include "uiReconstructionQt/OrganMaterialEditor.hpp"
+#include <QColor>
+#include <QColorDialog>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPixmap>
+#include <QPushButton>
+#include <QSlider>
+#include <QStyle>
+#include <QVBoxLayout>
 
 namespace uiReconstruction
 {
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiReconstruction::OrganMaterialEditor, ::fwData::Reconstruction );
-
 
 OrganMaterialEditor::OrganMaterialEditor() throw()
 {
@@ -54,25 +53,23 @@ void OrganMaterialEditor::starting() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
     this->create();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
+    ::fwGuiQt::container::QtContainer::sptr qtContainer
+        = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
 
-    m_colourButton = new QPushButton(tr("Color"), container);
+    m_colourButton = new QPushButton(tr("Color"));
     m_colourButton->setToolTip(tr("Selected organ's color"));
-    m_colourButton->setMinimumSize (m_colourButton->sizeHint());
+    m_colourButton->setMinimumSize(m_colourButton->sizeHint());
 
-    QLabel* transparencyLabel = new QLabel(tr("Transparency : "), container);
-    m_opacitySlider = new QSlider( Qt::Horizontal, container);
+    QLabel* transparencyLabel = new QLabel(tr("Transparency : "));
+    m_opacitySlider = new QSlider( Qt::Horizontal);
     m_opacitySlider->setToolTip(tr("Selected organ's opacity"));
-    m_opacitySlider->setRange(0,100);
+    m_opacitySlider->setRange(0, 100);
     m_opacitySlider->setTickInterval(20);
     m_opacitySlider->setTickPosition(QSlider::TicksBelow);
-    m_opacitySlider->setMinimumSize (m_opacitySlider->sizeHint());
+    m_opacitySlider->setMinimumSize(m_opacitySlider->sizeHint());
 
-    m_transparencyValue = new QLabel("", container);
-    m_transparencyValue->setMinimumSize (m_transparencyValue->sizeHint());
+    m_transparencyValue = new QLabel("");
+    m_transparencyValue->setMinimumSize(m_transparencyValue->sizeHint());
 
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget( m_colourButton, 0 );
@@ -83,11 +80,11 @@ void OrganMaterialEditor::starting() throw(::fwTools::Failed)
     transparencyLayout->addWidget( m_transparencyValue, 0);
     layout->addLayout( transparencyLayout, 0);
 
-    container->setLayout( layout );
-    container->setEnabled(false);
+    qtContainer->setLayout( layout );
+    qtContainer->setEnabled(false);
 
     QObject::connect(m_opacitySlider, SIGNAL(valueChanged( int )), this, SLOT(onOpacitySlider( int )));
-    QObject::connect(m_colourButton, SIGNAL(clicked ()), this, SLOT(onColorButton( )));
+    QObject::connect(m_colourButton, SIGNAL(clicked()), this, SLOT(onColorButton( )));
 
     this->updating();
 }
@@ -99,9 +96,8 @@ void OrganMaterialEditor::stopping() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 
     QObject::disconnect(m_opacitySlider, SIGNAL(valueChanged( int )), this, SLOT(onOpacitySlider( int )));
-    QObject::disconnect(m_colourButton, SIGNAL(clicked ()), this, SLOT(onColorButton( )));
+    QObject::disconnect(m_colourButton, SIGNAL(clicked()), this, SLOT(onColorButton( )));
 
-    this->getContainer()->clean();
     this->destroy();
 }
 
@@ -129,7 +125,7 @@ void OrganMaterialEditor::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void OrganMaterialEditor::info( std::ostream &_sstream )
+void OrganMaterialEditor::info( std::ostream& _sstream )
 {
 }
 
@@ -195,7 +191,7 @@ void OrganMaterialEditor::refreshMaterial( )
     container->setEnabled(!reconstruction->getOrganName().empty());
 
     ::fwData::Material::sptr material = reconstruction->getMaterial();
-    QColor materialColor = QColor (
+    QColor materialColor = QColor(
         material->diffuse()->red()*255,
         material->diffuse()->green()*255,
         material->diffuse()->blue()*255,

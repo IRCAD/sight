@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,15 +7,13 @@
 #ifndef __FWGUIQT_SLICESELECTOR_HPP__
 #define __FWGUIQT_SLICESELECTOR_HPP__
 
+#include "fwGuiQt/config.hpp"
+
+#include <boost/function.hpp>
 
 #include <QObject>
 #include <QPointer>
 #include <QWidget>
-
-#include <boost/function.hpp>
-
-#include "fwGuiQt/config.hpp"
-
 
 // Qt
 class QSlider;
@@ -40,8 +38,7 @@ public:
      * @brief Constructor.
      * @param parent The parent widget.
      */
-    FWGUIQT_API SliceSelector( QWidget* const parent) throw();
-
+    FWGUIQT_API SliceSelector( QWidget* const parent = nullptr) throw();
 
     /// @brief Destructor.
     FWGUIQT_API virtual ~SliceSelector() throw();

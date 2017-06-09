@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -16,10 +16,8 @@
 #include <fwData/String.hpp>
 #include <fwData/Image.hpp>
 
-
 #include <fwDataTools/fieldHelper/Image.hpp>
 #include <fwDataTools/helper/Composite.hpp>
-
 
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
@@ -39,13 +37,12 @@ using fwTools::fwID;
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::basicRegistration::SImagesSubstract, ::fwData::Composite );
 
-
 namespace basicRegistration
 {
 
-SImagesSubstract::SImagesSubstract() throw()
-    : ::gui::editor::IEditor(),
-      mpComputeButton(0)
+SImagesSubstract::SImagesSubstract() throw() :
+    ::gui::editor::IEditor(),
+    mpComputeButton(0)
 {
 
 }
@@ -54,10 +51,14 @@ SImagesSubstract::~SImagesSubstract() throw()
 {
 }
 
+//------------------------------------------------------------------------------
+
 void SImagesSubstract::configuring() throw ( ::fwTools::Failed )
 {
     this->initialize();
 }
+
+//------------------------------------------------------------------------------
 
 void SImagesSubstract::starting() throw ( ::fwTools::Failed )
 {
@@ -75,13 +76,15 @@ void SImagesSubstract::starting() throw ( ::fwTools::Failed )
     container->setLayout( layout );
 }
 
+//------------------------------------------------------------------------------
+
 void SImagesSubstract::stopping() throw ( ::fwTools::Failed )
 {
-    QObject::disconnect(mpComputeButton, SIGNAL(clicked( )), this, SLOT(OnCompute()));
-    this->getContainer()->clean();
     this->destroy();
 
 }
+
+//------------------------------------------------------------------------------
 
 void SImagesSubstract::updating() throw ( ::fwTools::Failed )
 {
@@ -159,6 +162,8 @@ void SImagesSubstract::updating() throw ( ::fwTools::Failed )
     }
 }
 
+//------------------------------------------------------------------------------
+
 void SImagesSubstract::swapping() throw ( ::fwTools::Failed )
 {
     // Classic default approach to update service when oject change
@@ -168,11 +173,12 @@ void SImagesSubstract::swapping() throw ( ::fwTools::Failed )
 
 }
 
+//------------------------------------------------------------------------------
+
 void SImagesSubstract::OnCompute()
 {
     this->updating();
 }
 
 } // namespace basicRegistration
-
 

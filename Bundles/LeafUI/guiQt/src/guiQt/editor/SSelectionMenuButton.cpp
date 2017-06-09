@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,15 +27,15 @@
 
 #include <fwTools/fwID.hpp>
 
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/convenience.hpp>
+
 #include <QAction>
 #include <QMenu>
 #include <QPushButton>
 #include <QString>
 #include <QVBoxLayout>
 #include <QWidget>
-
-#include <boost/filesystem.hpp>
-#include <boost/filesystem/convenience.hpp>
 
 namespace guiQt
 {
@@ -114,14 +114,12 @@ void SSelectionMenuButton::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
-    m_dropDownButton = new QPushButton( QString::fromStdString(m_text), container );
+    m_dropDownButton = new QPushButton( QString::fromStdString(m_text) );
     m_dropDownButton->setToolTip( QString::fromStdString(m_toolTip));
 //    m_dropDownButton->setMaximumWidth(40);
 
-    m_pDropDownMenu = new QMenu(container);
+    m_pDropDownMenu = new QMenu();
     m_actionGroup   = new QActionGroup(m_pDropDownMenu);
 
     for (auto item : m_items)
@@ -140,11 +138,11 @@ void SSelectionMenuButton::starting() throw(::fwTools::Failed)
     QObject::connect(m_actionGroup, SIGNAL(triggered(QAction*)), this, SLOT(onSelection(QAction*)));
     m_dropDownButton->setMenu(m_pDropDownMenu);
 
-    QVBoxLayout* vLayout = new QVBoxLayout(container);
+    QVBoxLayout* vLayout = new QVBoxLayout();
     vLayout->addWidget( m_dropDownButton);
-    vLayout->setContentsMargins(0,0,0,0);
+    vLayout->setContentsMargins(0, 0, 0, 0);
 
-    container->setLayout( vLayout );
+    qtContainer->setLayout( vLayout );
 }
 
 //------------------------------------------------------------------------------
@@ -157,7 +155,6 @@ void SSelectionMenuButton::stopping() throw(::fwTools::Failed)
         m_actionGroup->removeAction(action);
     }
 
-    this->getContainer()->clean();
     this->destroy();
 }
 

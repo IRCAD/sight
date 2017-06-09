@@ -49,19 +49,11 @@ void SActivityView::starting() throw(::fwTools::Failed)
 {
     this->::fwGui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr parentContainer;
-    parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-
-    QWidget* qtContainer = parentContainer->getQtContainer();
+    ::fwGuiQt::container::QtContainer::sptr parentContainer
+        = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
     QVBoxLayout* layout = new QVBoxLayout();
-    if (qtContainer->layout())
-    {
-        QWidget().setLayout(qtContainer->layout());
-    }
-    qtContainer->setLayout(layout);
-
-    QWidget* widget = new QWidget();
+    QWidget* widget     = new QWidget();
     layout->addWidget( widget );
 
     ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
@@ -69,6 +61,8 @@ void SActivityView::starting() throw(::fwTools::Failed)
     subContainer->setQtContainer(widget);
     m_wid = this->getID() + "_container";
     ::fwGui::GuiRegistry::registerWIDContainer(m_wid, subContainer);
+
+    parentContainer->setLayout(layout);
 
     m_configManager = ::fwServices::IAppConfigManager::New();
 
@@ -90,8 +84,8 @@ void SActivityView::stopping() throw(::fwTools::Failed)
     {
         m_configManager->stopAndDestroy();
     }
-    this->getContainer()->clean();
-    this->::fwGui::IGuiContainerSrv::destroy();
+
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------

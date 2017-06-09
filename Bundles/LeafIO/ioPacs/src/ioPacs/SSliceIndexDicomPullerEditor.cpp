@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -42,15 +42,15 @@
 
 #include <fwTools/System.hpp>
 
-#include <QApplication>
-#include <QComboBox>
-#include <QHBoxLayout>
-#include <QMouseEvent>
-
 #include <boost/asio/placeholders.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>
+
+#include <QApplication>
+#include <QComboBox>
+#include <QHBoxLayout>
+#include <QMouseEvent>
 
 #include <iterator>
 
@@ -97,7 +97,7 @@ void SSliceIndexDicomPullerEditor::configuring() throw(::fwTools::Failed)
 
     ::fwRuntime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
     SLM_ASSERT("The service ::ioPacs::SPacsConfigurationInitializer must have "
-               "a \"config\" element.",config);
+               "a \"config\" element.", config);
 
     bool success;
 
@@ -132,9 +132,7 @@ void SSliceIndexDicomPullerEditor::starting() throw(::fwTools::Failed)
     ::fwGui::IGuiContainerSrv::create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
-    QWidget* const container = qtContainer->getQtContainer();
-    QHBoxLayout* layout      = new QHBoxLayout();
-    container->setLayout(layout);
+    QHBoxLayout* layout = new QHBoxLayout();
 
     ::fwMedData::DicomSeries::csptr dicomSeries = this->getInOut< ::fwMedData::DicomSeries >("series");
     SLM_ASSERT("DicomSeries should not be null !", dicomSeries);
@@ -142,13 +140,13 @@ void SSliceIndexDicomPullerEditor::starting() throw(::fwTools::Failed)
 
     // Slider
     m_sliceIndexSlider = new QSlider(Qt::Horizontal);
-    layout->addWidget(m_sliceIndexSlider,1);
+    layout->addWidget(m_sliceIndexSlider, 1);
     m_sliceIndexSlider->setRange(0, static_cast<unsigned int>(m_numberOfSlices-1));
     m_sliceIndexSlider->setValue(static_cast<unsigned int>(m_numberOfSlices/2));
 
     // Line Edit
     m_sliceIndexLineEdit = new QLineEdit();
-    layout->addWidget(m_sliceIndexLineEdit,0);
+    layout->addWidget(m_sliceIndexLineEdit, 0);
     m_sliceIndexLineEdit->setReadOnly(true);
     m_sliceIndexLineEdit->setMaximumWidth(80);
 
@@ -156,6 +154,7 @@ void SSliceIndexDicomPullerEditor::starting() throw(::fwTools::Failed)
     ss << m_sliceIndexSlider->value() << " / " << (m_numberOfSlices-1);
     m_sliceIndexLineEdit->setText(std::string(ss.str()).c_str());
 
+    qtContainer->setLayout(layout);
 
     // Connect the signals
     QObject::connect(m_sliceIndexSlider, SIGNAL(valueChanged(int)), this, SLOT(changeSliceIndex(int)));
@@ -165,7 +164,6 @@ void SSliceIndexDicomPullerEditor::starting() throw(::fwTools::Failed)
 
     // Create reader
     ::fwServices::registry::ServiceFactory::sptr srvFactory = ::fwServices::registry::ServiceFactory::getDefault();
-
 
     ::io::IReader::sptr dicomReader;
     dicomReader = ::io::IReader::dynamicCast(srvFactory->create(m_dicomReaderType));
@@ -225,8 +223,7 @@ void SSliceIndexDicomPullerEditor::stopping() throw(::fwTools::Failed)
     // Disconnect the signals
     QObject::disconnect(m_sliceIndexSlider, SIGNAL(valueChanged(int)), this, SLOT(changeSliceIndex(int)));
 
-    this->getContainer()->clean();
-    this->::fwGui::IGuiContainerSrv::destroy();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -299,7 +296,6 @@ void SSliceIndexDicomPullerEditor::readImage(std::size_t selectedSliceIndex)
 
     SLM_INFO("Create " + tmpPath.string());
     ::boost::filesystem::create_directories(tmpPath);
-
 
     SLM_ASSERT("Dicom data shall be available before reading them.",
                dicomSeries->getDicomAvailability() != ::fwMedData::DicomSeries::NONE
