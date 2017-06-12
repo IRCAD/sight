@@ -85,6 +85,12 @@ void SActivityView::stopping() throw(::fwTools::Failed)
         m_configManager->stopAndDestroy();
     }
 
+    ::fwGui::container::fwContainer::sptr subContainer = ::fwGui::GuiRegistry::getWIDContainer(m_wid);
+    ::fwGui::GuiRegistry::unregisterWIDContainer(m_wid);
+
+    subContainer->destroyContainer();
+
+
     this->destroy();
 }
 
