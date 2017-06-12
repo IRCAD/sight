@@ -39,7 +39,7 @@ CardinalLayoutManager::~CardinalLayoutManager()
 void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr parent )
 {
     SLM_TRACE_FUNC();
-    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
+    m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
     SLM_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
 
     m_qtWindow = new QMainWindow(  );
@@ -48,7 +48,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget( m_qtWindow );
 
-    qtContainer->setLayout(layout);
+    m_parentContainer->setLayout(layout);
 
     const std::list< ViewInfo>& views = this->getViewsInfo();
 
