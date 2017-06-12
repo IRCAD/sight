@@ -17,9 +17,6 @@ else()
         vtkIOLegacy
         vtkIOXML
         vtkFiltersGeometry
-        vtkInteractionStyle
-        vtkRenderingOpenGL2
-        vtkRenderingFreeType
         REQUIRED
         NO_MODULE)
 endif()

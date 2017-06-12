@@ -11,12 +11,7 @@ fwForwardInclude(
 
 fwLink(
     ${GDCM_LIBRARIES}
-
-    vtkInteractionStyle
-    vtkIOImage
-    vtkCommonExecutionModel
-    vtkCommonDataModel
-    vtkCommonCore
+    ${VTK_LIBRARIES}
 
     vtkgdcm
     gdcmMSFF
