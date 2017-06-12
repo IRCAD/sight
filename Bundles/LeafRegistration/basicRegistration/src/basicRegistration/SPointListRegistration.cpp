@@ -174,17 +174,16 @@ void SPointListRegistration::updating() throw ( ::fwTools::Failed )
         for(vtkIdType i = 0; i < sourcePts->GetNumberOfPoints(); ++i)
         {
             double p1[3];
-            double p2[3];
-            double p2H[4] = { 1., 1., 1., 1.};//homogeneous coordinates
-            double newP[4];
-
             sourcePts->GetPoint(i, p1);
+            double p2[3];
             targetPts->GetPoint(i, p2);
 
             // to have homogeneous coordinates (x,y,z,w)
+            double p2H[4] = { 1., 1., 1., 1.};
             std::copy(std::begin(p2), std::end(p2), std::begin(p2H));
 
             //p' = M*p
+            double newP[4];
             m->MultiplyPoint(p2H, newP);
 
             errorValue += std::sqrt(((p1[0] - newP[0]) * (p1[0] - newP[0])) +
