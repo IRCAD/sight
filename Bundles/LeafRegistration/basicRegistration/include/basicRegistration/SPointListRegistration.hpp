@@ -20,6 +20,8 @@ namespace basicRegistration
  * @brief   Register a point list against a reference point list. Each point in the list to register is matched
  *          with a point in the reference list according to its label.
  *          The output is a transformation matrix.
+ * @section Signals Signals
+ * - \b errorComputed(double): emitted when registration error is computed.
  * @section Slots Slots
  * - \b changeMode(std::string, std::string): called when registration mode is changed.
  * Three modes are available : RIGID, SIMILARITY or AFFINE
@@ -49,6 +51,14 @@ public:
      * @{
      */
     BASICREGISTRATION_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_MODE;
+    ///@}
+
+    /**
+     * @name Signals API
+     * @{
+     */
+    /// Emitted when registration error is computed
+    typedef ::fwCom::Signal< void (double) > ErrorComputedSignalType;
     ///@}
 
     BASICREGISTRATION_API SPointListRegistration();
