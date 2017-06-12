@@ -90,7 +90,6 @@ void SActivityView::stopping() throw(::fwTools::Failed)
 
     subContainer->destroyContainer();
 
-
     this->destroy();
 }
 
