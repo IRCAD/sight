@@ -61,6 +61,7 @@ namespace videoOpenCV
             <fps>30</fps>
             <oneShot>false</oneShot>
             <createTimestamp>false</createTimestamp>
+            <useTimelapse>true</useTimelapse>
         </service>
    @endcode
  * @subsection Input Input
@@ -69,6 +70,8 @@ namespace videoOpenCV
  * - \b frameTL [::arData::FrameTL]: timeline where to extract the video frames.
  * @subsection Configuration Configuration
  * - \b fps (optional) : target playback frame rate when playing an image sequence (default: 30).
+ * - \b useTimelapse (optional): if true, the difference between two image's timestamps will be use as timer duration,
+ *      the 'fps' value will be ignore.
  * - \b oneShot (optional) : Use frame by frame mode, using nextImage and previousImage
  *  (only available if reading set of images) (default: false).
  * - \b createTimestamp (optional) : create a new timestamp instead of using name of image
@@ -133,6 +136,7 @@ protected:
 private:
 
     typedef std::vector< ::boost::filesystem::path > ImageFilesType;
+    typedef std::vector< double > ImageTimestampsType;
 
     /// Initializes the video reader, start the timer
     void readVideo(const ::boost::filesystem::path& file);
@@ -169,14 +173,20 @@ private:
     /// list of image paths to read
     ImageFilesType m_imageToRead;
 
+    /// list of the image timestamps
+    ImageTimestampsType m_imageTimestamps;
+
     /// Mutex to protect concurrent access for m_videoCapture and m_imageToRead
     mutable ::fwCore::mt::Mutex m_mutex;
 
     /// frame -by-frame mode (true if enabled, false otherwise)
     bool m_oneShot;
+
     /// if true: create a new timestamp when reading image, if false: use the name of the image file as timestamp.
     bool m_createNewTS;
 
+    /// if true: the difference between two image's timestamps will be use as timer duration
+    bool m_useTimelapse;
 };
 
 } // namespace videoOpenCV
