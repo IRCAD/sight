@@ -40,7 +40,6 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiMeasurementQt::editor::SLan
 static const ::fwServices::IService::KeyType s_LANDMARKS_INOUT = "landmarks";
 static const char* s_GROUP_PROPERTY_NAME                       = "group";
 static const int s_GROUP_NAME_ROLE                             = ::Qt::UserRole + 1;
-static const float s_DEFAULT_POINT_SIZE                        = 10.;
 
 static const ::fwCom::Slots::SlotKeyType s_ADD_PICKED_POINT_SLOT = "addPickedPoint";
 static const ::fwCom::Slots::SlotKeyType s_ADD_POINT_SLOT        = "addPoint";
@@ -84,10 +83,19 @@ void SLandmarks::configuring()
 
     const ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
 
-    const std::string advancedMode = config.get_optional<std::string>("advanced").get_value_or("no");
+    const std::string defaultPointSize = config.get_optional<std::string>("size").get_value_or("10.0");
+    const std::string advancedMode     = config.get_optional<std::string>("advanced").get_value_or("no");
 
     SLM_FATAL_IF("'advanced' value must be 'yes' or 'no', here : '" + advancedMode + "'.",
                  advancedMode != "yes" && advancedMode != "no");
+    try
+    {
+        m_defaultPointSize = std::stof(defaultPointSize);
+    }
+    catch(const std::invalid_argument& ia)
+    {
+        SLM_FATAL("'size' value must be a positive number between 1 and 100");
+    }
 
     m_advancedMode = (advancedMode == "yes");
 }
@@ -488,7 +496,7 @@ void SLandmarks::onAddNewGroup()
     ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
 
     const std::string groupName = this->generateNewGroupName();
-    landmarks->addGroup(groupName, this->generateNewColor(), s_DEFAULT_POINT_SIZE);
+    landmarks->addGroup(groupName, this->generateNewColor(), m_defaultPointSize);
 
     this->addGroup(groupName);
 
@@ -573,7 +581,7 @@ void SLandmarks::addPickedPoint(::fwDataTools::PickingInfo pickingInfo)
         if(item == nullptr || !m_advancedMode) // No selection or simple mode, create a new group.
         {
             groupName = this->generateNewGroupName();
-            landmarks->addGroup(groupName, this->generateNewColor(), s_DEFAULT_POINT_SIZE);
+            landmarks->addGroup(groupName, this->generateNewColor(), m_defaultPointSize);
 
             this->addGroup(groupName);
 

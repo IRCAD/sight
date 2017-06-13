@@ -48,6 +48,7 @@ namespace editor
  * @code{.xml}
         <service uid="..." type="::uiMeasurementQt::editor::SLandmarks" >
            <inout key="landmarks" uid="..." />
+           <size>10.0</size>
            <advanced>yes</advanced>
         </service>
        @endcode
@@ -55,6 +56,7 @@ namespace editor
  * - \b landmarks [::fwData::Landmarks]: the landmarks structure on which this editor is working.
  *
  * @subsection Configuration Configuration
+ * - \b size (optional, default="10.0") : default size of created landmarks
  * - \b advanced (optional, default="no") : if "yes", use the advanced mode displaying point information
  * and groups with multiple points.
  */
@@ -194,6 +196,9 @@ private:
 
     /// Used to disable/enable advanced mode.
     bool m_advancedMode;
+
+    /// Used to set the default landmarks size
+    float m_defaultPointSize;
 
 };
 } // namespace editor
