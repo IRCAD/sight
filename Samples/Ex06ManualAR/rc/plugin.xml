@@ -5,7 +5,6 @@
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
     <requirement id="trackerAruco" />
-    <requirement id="arMedia" />
     <requirement id="preferences" />
 
     <extension implements="::fwServices::registry::AppConfig2">
@@ -14,7 +13,11 @@
 
             <!-- objects declarations -->
             <object uid="cameraSeries" type="::arData::CameraSeries" />
-            <object uid="camera" type="::arData::Camera" src="deferred" />
+
+            <object uid="cameraRGB" type="::arData::Camera" src="deferred" />
+            <object uid="cameraDepth" type="::arData::Camera" src="deferred" />
+
+            <object uid="seriesDB" type="::fwMedData::SeriesDB" />
 
             <object uid="frameTL" type="::arData::FrameTL"/>
             <object uid="tagTL" type="::arData::MarkerTL" />
@@ -22,7 +25,9 @@
             <object uid="matrix" type="::fwData::TransformationMatrix3D" />
             <object uid="identity" type="::fwData::TransformationMatrix3D" />
             <object uid="inverseMat" type="::fwData::TransformationMatrix3D" />
+            <object uid="extrinsic" type="::fwData::TransformationMatrix3D" src="deferred" />
             <object uid="mesh" type="::fwData::Mesh" />
+            <object uid="modelseries" type="::fwMedData::ModelSeries" src="deferred"/>
 
             <!-- declaration of the views, menu and toolbar -->
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
@@ -83,22 +88,24 @@
                         <separator/>
                         <menuItem name="Load Transformation" icon="@BUNDLE_PREFIX@/media_0-1/icons/Plus.svg"/>
                         <separator/>
-                        <menuItem name="Load Mesh" icon="@BUNDLE_PREFIX@/media_0-1/icons/Plus.svg"/>
+                        <menuItem name="Load Model" icon="@BUNDLE_PREFIX@/media_0-1/icons/Plus.svg"/>
                         <separator/>
                         <editor />
                         <menuItem name="start" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/start-cam.svg" />
                         <menuItem name="stop" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/stop-cam.svg" />
                         <menuItem name="pause" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/pause-cam.svg" />
+                        <menuItem name="Manage organs color" icon="@BUNDLE_PREFIX@/media_0-1/icons/ManageOrgan.png" style="check" />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="loadCalib" start="yes" />
                     <menuItem sid="loadTrf" start="yes" />
-                    <menuItem sid="loadMesh" start="yes" />
+                    <menuItem sid="loadModel" start="yes" />
                     <editor sid="CameraSelector" />
                     <menuItem sid="startVideo" start="yes" />
                     <menuItem sid="stopVideo" start="yes" />
                     <menuItem sid="pauseVideo" start="yes" />
+                    <menuItem sid="organManager" start="no" />
                 </registry>
             </service>
 
@@ -119,9 +126,9 @@
                 </slots>
             </service>
 
-            <service uid="loadMesh" type="::gui::action::SSlotCaller" >
+            <service uid="loadModel" type="::gui::action::SSlotCaller" >
                 <slots>
-                    <slot>MeshReader/update</slot>
+                    <slot>ModelReader/update</slot>
                 </slots>
             </service>
 
@@ -143,6 +150,27 @@
                 </slots>
             </service>
 
+            <service uid="organManager" type="::gui::action::SConfigLauncher">
+                <appConfig id="OrganManagerWithSeries" />
+                <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelseries" />
+                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/Ex06ManualAR_0-1/app.ico" />
+                <parameter replace="ModelRepresentationChannel" uid="ModelRepresentationChannel" />
+                <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
+            </service>
+
+            <service uid="ModelReader" type="::uiIO::editor::SIOSelector">
+                <inout key="target" uid="seriesDB" />
+                <type mode="reader" />
+            </service>
+
+            <service uid="extractModelSeries" type="::ctrlCamp::SExtractObj">
+                <inout key="source" uid="seriesDB">
+                    <extract from="@values.0" />
+                </inout>
+               <out group="target">
+                   <key uid="modelseries"/>
+               </out>
+            </service>
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
             <service uid="CalibrationReader" type="::ioCalibration::SOpenCVReader">
@@ -155,14 +183,6 @@
                 <selection mode="include" />
                 <addSelection service="::ioData::TransformationMatrix3DReaderService" />
             </service>
-
-            <service uid="MeshReader" type="::uiIO::editor::SIOSelector">
-                <inout key="target" uid="mesh" />
-                <type mode="reader" /><!-- mode is optional (by default it is "reader") -->
-                <selection mode="include" />
-                <addSelection service="::ioVTK::SMeshReader" />
-            </service>
-
 
             <!-- preference save the video directory and re-open the same directory at next launch of the app -->
             <service uid="actionVideoDir" type="::uiPreferences::action::SPreferencesConfiguration" >
@@ -177,27 +197,34 @@
             <!-- extract a ::arData::Camera from the ::arData::CameraSeries -->
             <service uid="Extractor" type="::ctrlCamp::SExtractObj" >
                <inout key="source" uid="cameraSeries">
-                   <extract from="@cameras.0" /> <!-- Camp path of the first camera in cameraSeries -->
+
+                   <extract from="@cameras.0" /><!-- Camp path of the first camera in cameraSeries -->
+                   <extract from="@cameras.1" />
+                   <extract from="@extrinsic_matrices.1" />
                </inout>
                <out group="target">
-                   <key uid="camera"/> <!-- destination -->
+                   <key uid="cameraDepth"/>
+                   <key uid="cameraRGB" />
+                   <key uid="extrinsic"/> <!-- destination -->
                </out>
             </service>
 
             <!-- Scene in which the video and the 3D will be rendered -->
             <service uid="genericScene" type="::fwRenderVTK::SRender" autoConnect="yes">
-                <in key="camera" uid="camera" />
+                <in key="cameraD" uid="cameraDepth" />
+                <in key="cameraRGB" uid="cameraRGB" />
                 <in key="image" uid="videoImage" />
                 <in key="transform" uid="inverseMat" />
                 <in key="identity" uid="identity" />
-                <in key="mesh" uid="mesh" />
+                <in key="modelseries" uid="modelseries" />
 
                 <scene>
+
                     <renderer id="video" layer="0" background="0.0" />
                     <renderer id="default" layer="1" background="0.0" />
 
                     <adaptor id="videoAdapter" class="::visuVTKARAdaptor::SVideoAdapter" objectId="image">
-                        <config renderer="video" cameraUID="camera"/>
+                        <config renderer="video" cameraUID="cameraRGB"/>
                     </adaptor>
 
                     <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
@@ -208,13 +235,21 @@
                         <config renderer="default" picker="" transform="registrationMatrix" />
                     </adaptor>
 
-                    <adaptor id="meshAdaptor" class="::visuVTKAdaptor::Mesh" objectId="mesh">
-                        <config renderer="default" transform="registrationMatrix"/>
+                    <adaptor id="modelseriesADP" uid="modelseriesADP" class="::visuVTKAdaptor::ModelSeries" objectId="modelseries">
+                        <config renderer="default" picker="default" autoresetcamera="no" color="" transform="registrationMatrix" />
                     </adaptor>
 
                     <adaptor id="cameraAdaptor" class="::visuVTKARAdaptor::SCamera" objectId="identity">
-                        <config renderer="default" cameraUID="camera"/>
+                        <config renderer="default" cameraUID="cameraRGB"/>
                     </adaptor>
+
+                    <proxy channel="ModelRepresentationChannel" waitForKey="modelseries">
+                        <slot>modelseriesADP/updateNormalMode</slot>
+                    </proxy>
+
+                    <proxy channel="ModelDisplayChannel" waitForKey="modelseries">
+                        <slot>modelseriesADP/showReconstructions</slot>
+                    </proxy>
 
                 </scene>
 
@@ -223,13 +258,13 @@
 
             <!-- GUI to select camera (device, file, or stream) -->
             <service uid="CameraSelector" type="::videoQt::editor::SCamera" >
-                <inout key="camera" uid="camera" />
+                <inout key="camera" uid="cameraRGB" />
                 <videoSupport>yes</videoSupport>
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->
-            <service uid="frameGrabber" type="::videoQt::SFrameGrabber" >
-                <in key="camera" uid="camera" />
+            <service uid="frameGrabber" type="::videoOpenCV::SFrameGrabber" >
+                <in key="camera" uid="cameraRGB" />
                 <inout key="frameTL" uid="frameTL" />
             </service>
 
@@ -237,8 +272,8 @@
             <!-- to multiply matrices (here only used to inverse "matrix" )-->
             <service uid="concatenate" type="::maths::SConcatenateMatrices" >
                 <in group="matrix">
+                    <key uid="extrinsic" autoConnect="yes" inverse="false"/>
                     <key uid="matrix" autoConnect="yes" inverse="false"/>
-                    <key uid="identity"/>
                 </in>
                 <inout key="output" uid="inverseMat" />
             </service>
@@ -258,27 +293,36 @@
 
             <!-- signal/slot connection -->
 
+        <!-- Extract the model series when it is added to SDB -->
+            <connect>
+                <signal>seriesDB/modified</signal>
+                <signal>seriesDB/addedSeries</signal>
+                <slot>extractModelSeries/update</slot>
+            </connect>
+
            <connect>
                 <signal>cameraSeries/addedCamera</signal>
                 <slot>Extractor/update</slot>
             </connect>
 
             <connect>
-                <signal>camera/idModified</signal>
+                <signal>cameraRGB/idModified</signal>
                 <slot>frameGrabber/stopCamera</slot>
             </connect>
 
 
             <!-- start services -->
             <start uid="mainFrame" />
+            <start uid="extractModelSeries" />
             <start uid="frameGrabber" />
             <start uid="CalibrationReader"/>
             <start uid="TransformReader"/>
-            <start uid="MeshReader"/>
+            <start uid="ModelReader"/>
             <start uid="CameraSelector" />
             <start uid="synchronizer" />
             <start uid="Extractor" />
             <start uid="concatenate" />
+            <start uid="organManager" />
             <start uid="genericScene" />
 
         </config>

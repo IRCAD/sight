@@ -25,6 +25,7 @@ set( REQUIREMENTS
     videoQt
     videoTools
     videoCalibration
+    videoOpenCV
     visuVTK
     visuVTKAdaptor
     visuVTKARAdaptor
@@ -33,6 +34,9 @@ set( REQUIREMENTS
     ioData
     uiIO
     ioVTK
+    ioAtoms
+    3DVisualizationActivity2
+    uiMedDataQt
 
     )
 
