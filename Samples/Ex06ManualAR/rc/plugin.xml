@@ -263,7 +263,7 @@
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->
-            <service uid="frameGrabber" type="::videoOpenCV::SFrameGrabber" >
+            <service uid="frameGrabber" type="::videoQt::SFrameGrabber" >
                 <in key="camera" uid="cameraRGB" />
                 <inout key="frameTL" uid="frameTL" />
             </service>

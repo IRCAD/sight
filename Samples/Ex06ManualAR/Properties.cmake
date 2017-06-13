@@ -25,7 +25,6 @@ set( REQUIREMENTS
     videoQt
     videoTools
     videoCalibration
-    videoOpenCV
     visuVTK
     visuVTKAdaptor
     visuVTKARAdaptor
