@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,6 +22,8 @@
 
 #include <fwServices/macros.hpp>
 
+#include <boost/assign/list_of.hpp>
+
 #include <vtkActor.h>
 #include <vtkCellArray.h>
 #include <vtkCellData.h>
@@ -31,9 +33,6 @@
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkTransform.h>
-
-#include <boost/assign/list_of.hpp>
-
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::SlicesCursor, ::fwData::Image );
 
@@ -146,7 +145,6 @@ void SlicesCursor::doStop() throw(fwTools::Failed)
 // id point AB, BC, CD, AD  = 0,1,...,3
 // id point ABM, BCM, CDM, ADM = 4,..,7
 
-
 void SlicesCursor::buildPolyData()
 {
     int nbPoints      = 8;
@@ -159,9 +157,9 @@ void SlicesCursor::buildPolyData()
     }
 
     vtkCellArray* cells = vtkCellArray::New();
-    cells->Allocate(cells->EstimateSize(nbPoints,2));
+    cells->Allocate(cells->EstimateSize(nbPoints, 2));
 
-    for ( int line = 0; line<4; ++line)
+    for ( int line = 0; line < 4; ++line)
     {
         vtkLine* lineCell = vtkLine::New();
         lineCell->GetPointIds()->SetId(0, line );
@@ -181,7 +179,7 @@ void SlicesCursor::buildPolyData()
 
 void SlicesCursor::barycenter( double ptA[3], double ptB[3], float scale, double result[3] )
 {
-    for (int i = 0; i<3; ++i )
+    for (int i = 0; i < 3; ++i )
     {
         result[i] = scale*ptA[i] + (1-scale)*ptB[i];
     }
@@ -198,7 +196,7 @@ void SlicesCursor::computeCrossPoints( double _ptA[3], double _ptB[3], double _p
     double norm2AP      = 0;
 
     // Compute AB x scale / 2 = |A'P| x AB = |PB'| x AB
-    for (int i = 0; i<3; ++i )
+    for (int i = 0; i < 3; ++i )
     {
         ptPBprime[i]  = ( _ptB[i] - _ptA[i] ) * (1-_scale)/2.0;
         norm2PBprime += ptPBprime[i]*ptPBprime[i];
@@ -210,7 +208,7 @@ void SlicesCursor::computeCrossPoints( double _ptA[3], double _ptB[3], double _p
     //          BPrime = P + pB' = P + |PB'| x AB
     if ( norm2PBprime > norm2BP )
     {
-        for (int i = 0; i<3; ++i )
+        for (int i = 0; i < 3; ++i )
         {
             _ptAprime[i] = _ptP[i] - ptPBprime[i];
             _ptBprime[i] = _ptB[i];
@@ -218,7 +216,7 @@ void SlicesCursor::computeCrossPoints( double _ptA[3], double _ptB[3], double _p
     }
     else if ( norm2PBprime > norm2AP )
     {
-        for (int i = 0; i<3; ++i )
+        for (int i = 0; i < 3; ++i )
         {
             _ptAprime[i] = _ptA[i];
             _ptBprime[i] = _ptP[i] + ptPBprime[i];
@@ -226,7 +224,7 @@ void SlicesCursor::computeCrossPoints( double _ptA[3], double _ptB[3], double _p
     }
     else
     {
-        for (int i = 0; i<3; ++i )
+        for (int i = 0; i < 3; ++i )
         {
             _ptAprime[i] = _ptP[i] - ptPBprime[i];
             _ptBprime[i] = _ptP[i] + ptPBprime[i];
@@ -245,20 +243,28 @@ void SlicesCursor::buildColorAttribute()
     typedef  unsigned char* RGBColor;
     typedef std::map< std::string, std::pair< RGBColor, RGBColor> >  DicoType;
     DicoType dict;
-    dict["colorXAxis"] = std::make_pair(green,red);
+    dict["colorXAxis"] = std::make_pair(green, red);
     dict["colorYAxis"] = std::make_pair(red, blue);
     dict["colorZAxis"] = std::make_pair(blue, green );
 
-
-    for ( DicoType::iterator i = dict.begin(); i!= dict.end(); ++i )
+    for ( DicoType::iterator i = dict.begin(); i != dict.end(); ++i )
     {
         vtkUnsignedCharArray* colors = vtkUnsignedCharArray::New();
         colors->SetNumberOfComponents(3);
         colors->SetName(  i->first.c_str() );
+
+        // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
+ #if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
+        colors->InsertNextTypedTuple(  i->second.first  );
+        colors->InsertNextTypedTuple(  i->second.second );
+        colors->InsertNextTypedTuple(  i->second.first  );
+        colors->InsertNextTypedTuple(  i->second.second );
+#else
         colors->InsertNextTupleValue(  i->second.first  );
         colors->InsertNextTupleValue(  i->second.second );
         colors->InsertNextTupleValue(  i->second.first  );
         colors->InsertNextTupleValue(  i->second.second );
+#endif
         m_cursorPolyData->GetCellData()->AddArray(colors);
     }
     m_cursorMapper->SetScalarModeToUseCellFieldData();
@@ -325,15 +331,15 @@ void SlicesCursor::updateImageSliceIndex( ::fwData::Image::sptr image )
         const ::fwData::Image::OriginType origin   = image->getOrigin();
         const ::fwData::Image::SizeType size       = image->getSize();
         double sliceWorld[3];
-        for (int dim = 0; dim<3; ++dim )
+        for (int dim = 0; dim < 3; ++dim )
         {
             sliceWorld[dim] = pos[dim] * spacing[dim] + origin.at(dim);
         }
 
         double cursorPoints[8][3]; // point AB,BC,CD,AD,ABM,BCM,CDM,ADM
-        for ( int p = 0; p<2; ++p )
+        for ( int p = 0; p < 2; ++p )
         {
-            for (int dim = 0; dim<3; ++dim )
+            for (int dim = 0; dim < 3; ++dim )
             {
                 if ( (dim + p + 1)%3 == m_orientation )
                 {
@@ -429,6 +435,5 @@ void SlicesCursor::updateImage()
 }
 
 //-----------------------------------------------------------------------------
-
 
 } //namespace visuVTKAdaptor
