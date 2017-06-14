@@ -29,9 +29,9 @@
 #include <vtkObjectFactory.h>
 #include <vtkPiecewiseFunction.h>
 #include <vtkPlaneCollection.h>
+#include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
-#include <vtkRenderer.h>
 #include <vtkSmartVolumeMapper.h>
 #include <vtkTransform.h>
 #include <vtkVolume.h>
@@ -50,7 +50,7 @@ public:
 
     static TransformCallback* New(Volume* adaptor)
     {
-        TransformCallback* cb = new TransformCallback;
+        TransformCallback* cb = new TransformCallback();
         cb->m_adaptor = adaptor;
         return cb;
     }
@@ -220,6 +220,11 @@ void Volume::doStart() throw(fwTools::Failed)
     {
         m_transformCommand = TransformCallback::New(this);
         m_cropBoxTransform->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
+
+        vtkBoxRepresentation* repr = vtkBoxRepresentation::SafeDownCast( m_boxWidget->GetRepresentation() );
+        repr->SetTransform(m_cropBoxTransform);
+
+        this->crop();
     }
 
     m_croppingCommand = CroppingCallback::New(this);
