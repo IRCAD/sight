@@ -52,7 +52,8 @@ SFrameGrabber::SFrameGrabber() throw() :
     m_imageCount(0),
     m_oneShot(false),
     m_createNewTS(false),
-    m_useTimelapse(true)
+    m_useTimelapse(true),
+    m_isPaused(false)
 {
     m_worker = ::fwThread::Worker::New();
     newSlot(s_NEXT_IMAGE_SLOT, &SFrameGrabber::nextImage, this);
@@ -123,6 +124,8 @@ void SFrameGrabber::startCamera()
             file = videoDir / file;
         }
 
+        m_isPaused = false;
+
         ::boost::filesystem::path ext = file.extension();
 
         if (ext.string() == ".png" || ext.string() == ".jpg" || ext.string() == ".tiff" )
@@ -146,9 +149,10 @@ void SFrameGrabber::startCamera()
 
 void SFrameGrabber::pauseCamera()
 {
+    m_isPaused = !m_isPaused;
     if (m_timer)
     {
-        m_timer->isRunning() ? m_timer->stop() : m_timer->start();
+        m_isPaused ? m_timer->stop() : m_timer->start();
     }
 }
 
@@ -476,7 +480,9 @@ void SFrameGrabber::grabImage()
 
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
-    if (m_imageCount < m_imageToRead.size())
+    // When using time lapse, the timer is set to "one shot": it is stopped when this method is called and re-started
+    // at the end of it. So we need to add a boolean to check if the grabber is paused when the method is called.
+    if (!m_isPaused && m_imageCount < m_imageToRead.size())
     {
         ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
 
@@ -542,6 +548,8 @@ void SFrameGrabber::grabImage()
 
                 const std::size_t currentImage = m_imageCount;
                 const double currentTime       = m_imageTimestamps[currentImage] + elapsedTime;
+
+                // If the next image delay is already passed, drop the image and check the next one.
                 while (nextDuration < elapsedTime && m_imageCount+1 < m_imageToRead.size())
                 {
                     nextDuration = m_imageTimestamps[m_imageCount+1] - currentTime;
@@ -579,7 +587,7 @@ void SFrameGrabber::grabImage()
             SLM_ERROR("Images doesn't have the same size.");
         }
     }
-    else if (m_loopVideo)
+    else if (!m_isPaused && m_loopVideo)
     {
         m_imageCount = 0;
     }

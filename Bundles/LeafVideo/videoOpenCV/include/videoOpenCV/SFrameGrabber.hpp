@@ -187,6 +187,9 @@ private:
 
     /// if true: the difference between two image's timestamps will be use as timer duration
     bool m_useTimelapse;
+
+    /// if true: the grabber is paused
+    bool m_isPaused;
 };
 
 } // namespace videoOpenCV
