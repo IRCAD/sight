@@ -288,7 +288,6 @@ void SVideoAdapter::offsetOpticalCenter()
 void SVideoAdapter::updatingTFPoints()
 {
     ::fwVtkIO::helper::TransferFunction::toVtkLookupTable(this->getTransferFunction(), m_lookupTable);
-    SLM_ERROR("updating TF points");
 }
 
 //------------------------------------------------------------------------------
@@ -296,7 +295,6 @@ void SVideoAdapter::updatingTFPoints()
 void SVideoAdapter::updatingTFWindowing(double window, double level)
 {
     ::fwVtkIO::helper::TransferFunction::toVtkLookupTable(this->getTransferFunction(), m_lookupTable);
-    SLM_ERROR("updating TF windowing");
 }
 
 //------------------------------------------------------------------------------
