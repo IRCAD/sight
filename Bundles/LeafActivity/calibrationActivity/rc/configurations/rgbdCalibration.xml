@@ -29,6 +29,7 @@
             <item key="SelectedTF">
                 <object uid="selectedTF" type="::fwData::TransferFunction">
                     <colors>
+                        <step color="#000000ff" value="0" />
                         <step color="#ff0000ff" value="1" />
                         <step color="#ffff00ff" value="500" />
                         <step color="#00ff00ff" value="1000" />
