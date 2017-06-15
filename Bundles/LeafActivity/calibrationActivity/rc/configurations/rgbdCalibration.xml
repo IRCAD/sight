@@ -144,8 +144,8 @@
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <renderer id="default" layer="0" background="0.0" />
 
-                <adaptor id="depthAdaptor" class="::visuVTKAdaptor::NegatoMPR" objectId="imageDepth">
-                    <config renderer="default" mode="2d" slices="1" picker="picker" selectedTFKey="SelectedTF" tfSelectionFwID="tFSelectionDepth" />
+                <adaptor id="depthAdaptor" class="::visuVTKARAdaptor::SVideoAdapter" objectId="imageDepth">
+                    <config renderer="default" selectedTFKey="SelectedTF" tfSelectionFwID="tFSelectionDepth" />
                 </adaptor>
 
                 <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
