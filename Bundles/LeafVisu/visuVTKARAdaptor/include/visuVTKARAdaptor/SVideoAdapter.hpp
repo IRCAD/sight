@@ -92,6 +92,16 @@ protected:
     /// Removes the actor from the renderer
     VISUVTKARADAPTOR_API void doStop() throw(fwTools::Failed);
 
+    /**
+     *  @brief Called when transfer function points are modified.
+     */
+    VISUVTKARADAPTOR_API virtual void updatingTFPoints() override;
+
+    /**
+     *  @brief Called when transfer function windowing is modified.
+     */
+    VISUVTKARADAPTOR_API virtual void updatingTFWindowing(double window, double level) override;
+
 private:
 
     /// Slot: Update image opacity and visibility

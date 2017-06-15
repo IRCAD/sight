@@ -125,10 +125,10 @@ void SVideoAdapter::doStart() throw(fwTools::Failed)
 
     if(m_hasTF)
     {
-        std::string const& id = this->getTFSelectionFwID();
-        auto const& tf        = this->getSafeInOut< ::fwData::Composite>(id);
+        auto const& tf = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
         this->setTransferFunctionSelection(tf);
-        ::fwVtkIO::helper::TransferFunction::toVtkLookupTable(this->getTransferFunction(), m_lookupTable);
+        this->installTFConnections();
+        this->updatingTFPoints();
     }
 
     this->doUpdate();
@@ -280,6 +280,18 @@ void SVideoAdapter::offsetOpticalCenter()
             m_actor->SetPosition(-shiftX, shiftY, 0);
         }
     }
+}
+
+void SVideoAdapter::updatingTFPoints()
+{
+    ::fwVtkIO::helper::TransferFunction::toVtkLookupTable(this->getTransferFunction(), m_lookupTable);
+    SLM_ERROR("updating TF points");
+}
+
+void SVideoAdapter::updatingTFWindowing(double window, double level)
+{
+    ::fwVtkIO::helper::TransferFunction::toVtkLookupTable(this->getTransferFunction(), m_lookupTable);
+    SLM_ERROR("updating TF windowing");
 }
 
 //------------------------------------------------------------------------------
