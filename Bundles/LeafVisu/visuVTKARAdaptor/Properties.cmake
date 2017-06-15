@@ -6,6 +6,7 @@ set( DEPENDENCIES
         fwCore
         fwData
         fwDataCamp
+        fwDataTools
         fwMath
         fwRenderVTK
         fwRuntime
@@ -14,6 +15,6 @@ set( DEPENDENCIES
         fwVtkIO
         arData
 )
-        
+
 set( REQUIREMENTS  )
 

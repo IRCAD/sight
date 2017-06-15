@@ -21,11 +21,14 @@
 
 #include <fwServices/macros.hpp>
 
+#include <fwVtkIO/helper/TransferFunction.hpp>
 #include <fwVtkIO/vtk.hpp>
 
 #include <vtkCamera.h>
 #include <vtkImageActor.h>
 #include <vtkImageData.h>
+#include <vtkImageMapper3D.h>
+#include <vtkImageMapToColors.h>
 #include <vtkMatrix4x4.h>
 #include <vtkPlaneSource.h>
 #include <vtkPolyDataMapper.h>
@@ -49,12 +52,14 @@ SVideoAdapter::SVideoAdapter() throw() :
     m_imageData(vtkImageData::New()),
     m_actor(vtkImageActor::New()),
     m_isTextureInit(false),
-    m_reverse(true)
+    m_reverse(true),
+    m_lookupTable(vtkSmartPointer<vtkLookupTable>::New())
 {
     newSlot(s_UPDATE_IMAGE_SLOT, &SVideoAdapter::updateImage, this);
     newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SVideoAdapter::updateImageOpacity, this);
     newSlot(s_SHOW_SLOT, &SVideoAdapter::show, this);
     newSlot(s_CALIBRATE_SLOT, &SVideoAdapter::offsetOpticalCenter, this);
+    this->installTFSlots(this);
 }
 
 //------------------------------------------------------------------------------
@@ -92,6 +97,8 @@ void SVideoAdapter::doConfigure() throw(fwTools::Failed)
         m_reverse = false;
     }
     this->setPickerId(m_configuration->getAttributeValue("picker"));
+    this->parseTFConfig(m_configuration);
+    m_hasTF = !(this->getTFSelectionFwID() == "");
 }
 
 //------------------------------------------------------------------------------
@@ -114,6 +121,14 @@ void SVideoAdapter::doStart() throw(fwTools::Failed)
                               this->getSptr(), s_CALIBRATE_SLOT);
         m_connections.connect(m_camera, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG,
                               this->getSptr(), s_CALIBRATE_SLOT);
+    }
+
+    if(m_hasTF)
+    {
+        std::string const& id = this->getTFSelectionFwID();
+        auto const& tf        = this->getSafeInOut< ::fwData::Composite>(id);
+        this->setTransferFunctionSelection(tf);
+        ::fwVtkIO::helper::TransferFunction::toVtkLookupTable(this->getTransferFunction(), m_lookupTable);
     }
 
     this->doUpdate();
@@ -152,7 +167,18 @@ void SVideoAdapter::doUpdate() throw(fwTools::Failed)
 
         const ::fwData::Image::SizeType size = image->getSize();
 
-        m_actor->SetInputData(m_imageData);
+        if(m_hasTF)
+        {
+            auto scalarValuesToColors = vtkSmartPointer<vtkImageMapToColors>::New();
+            scalarValuesToColors->SetLookupTable(m_lookupTable);
+            scalarValuesToColors->PassAlphaToOutputOn();
+            scalarValuesToColors->SetInputData(m_imageData);
+            m_actor->GetMapper()->SetInputConnection(scalarValuesToColors->GetOutputPort());
+        }
+        else
+        {
+            m_actor->SetInputData(m_imageData);
+        }
         this->addToRenderer(m_actor);
 
         m_isTextureInit = true;
