@@ -93,7 +93,7 @@ void SFrameGrabber::configuring()  throw ( ::fwTools::Failed )
 
     m_useTimelapse = config.get<bool>("useTimelapse", true);
 
-    OSLM_ASSERT("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps > 0 && m_fps <= 60);
+    OSLM_FATAL_IF("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps == 0 || m_fps > 60);
 }
 
 // -----------------------------------------------------------------------------
