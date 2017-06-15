@@ -53,7 +53,8 @@ SVideoAdapter::SVideoAdapter() throw() :
     m_actor(vtkImageActor::New()),
     m_isTextureInit(false),
     m_reverse(true),
-    m_lookupTable(vtkSmartPointer<vtkLookupTable>::New())
+    m_lookupTable(vtkSmartPointer<vtkLookupTable>::New()),
+    m_hasTF(false)
 {
     newSlot(s_UPDATE_IMAGE_SLOT, &SVideoAdapter::updateImage, this);
     newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SVideoAdapter::updateImageOpacity, this);
@@ -282,11 +283,15 @@ void SVideoAdapter::offsetOpticalCenter()
     }
 }
 
+//------------------------------------------------------------------------------
+
 void SVideoAdapter::updatingTFPoints()
 {
     ::fwVtkIO::helper::TransferFunction::toVtkLookupTable(this->getTransferFunction(), m_lookupTable);
     SLM_ERROR("updating TF points");
 }
+
+//------------------------------------------------------------------------------
 
 void SVideoAdapter::updatingTFWindowing(double window, double level)
 {
