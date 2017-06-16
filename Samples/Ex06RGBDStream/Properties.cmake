@@ -27,8 +27,8 @@ set( REQUIREMENTS
     videoTools
     videoOpenni
 
+    arMedia
     media
-    rdMedia
 )
 
 bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex06RGBDStream)

@@ -58,8 +58,8 @@
                 <gui>
                     <layout>
                         <editor />
-                        <menuItem name="start" icon="@BUNDLE_PREFIX@/rdMedia_0-1/icons/start.svg" />
-                        <menuItem name="stop" icon="@BUNDLE_PREFIX@/rdMedia_0-1/icons/stop.svg" />
+                        <menuItem name="start" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/start-cam.svg" />
+                        <menuItem name="stop" icon="@BUNDLE_PREFIX@/arMedia_0-1/icons/stop-cam.svg" />
                     </layout>
                 </gui>
                 <registry>
