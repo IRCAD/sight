@@ -51,7 +51,9 @@ SFrameGrabber::SFrameGrabber() throw() :
     m_fps(30),
     m_imageCount(0),
     m_oneShot(false),
-    m_createNewTS(false)
+    m_createNewTS(false),
+    m_useTimelapse(true),
+    m_isPaused(false)
 {
     m_worker = ::fwThread::Worker::New();
     newSlot(s_NEXT_IMAGE_SLOT, &SFrameGrabber::nextImage, this);
@@ -89,7 +91,9 @@ void SFrameGrabber::configuring()  throw ( ::fwTools::Failed )
 
     m_createNewTS = config.get<bool>("createTimestamp", false);
 
-    OSLM_ASSERT("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps > 0 && m_fps <= 60);
+    m_useTimelapse = config.get<bool>("useTimelapse", true);
+
+    OSLM_FATAL_IF("Fps setting is set to " << m_fps << " but should be in ]0;60].", m_fps == 0 || m_fps > 60);
 }
 
 // -----------------------------------------------------------------------------
@@ -120,6 +124,8 @@ void SFrameGrabber::startCamera()
             file = videoDir / file;
         }
 
+        m_isPaused = false;
+
         ::boost::filesystem::path ext = file.extension();
 
         if (ext.string() == ".png" || ext.string() == ".jpg" || ext.string() == ".tiff" )
@@ -143,9 +149,10 @@ void SFrameGrabber::startCamera()
 
 void SFrameGrabber::pauseCamera()
 {
+    m_isPaused = !m_isPaused;
     if (m_timer)
     {
-        m_timer->isRunning() ? m_timer->stop() : m_timer->start();
+        m_isPaused ? m_timer->stop() : m_timer->start();
     }
 }
 
@@ -168,6 +175,7 @@ void SFrameGrabber::stopCamera()
         m_videoCapture.release();
     }
     m_imageToRead.clear();
+    m_imageTimestamps.clear();
     m_imageCount = 0;
 
     if (m_isInitialized)
@@ -266,6 +274,21 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
 
     if (!m_imageToRead.empty())
     {
+        // Find the timestamps of all the images
+        for (const ::boost::filesystem::path& imagePath : m_imageToRead)
+        {
+            const std::string imageName = imagePath.filename().string();
+            static const ::boost::regex s_TIMESTAMP("[^0-9]*([0-9]*)[^0-9]*");
+            ::boost::smatch match;
+            if (!::boost::regex_match(imageName, match, s_TIMESTAMP))
+            {
+                SLM_ERROR("Could not find a timestamp in file name: " + imageName);
+                return;
+            }
+            const std::string timestampStr = match[1].str();
+            m_imageTimestamps.push_back(std::stoul(timestampStr));
+        }
+
         std::string file = m_imageToRead.front().string();
         ::cv::Mat image = ::cv::imread(file, ::cv::IMREAD_UNCHANGED);
 
@@ -298,7 +321,18 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         m_isInitialized = true;
 
         auto sigDuration = this->signal< DurationModifiedSignalType >( s_DURATION_MODIFIED_SIG );
-        sigDuration->asyncEmit(static_cast<std::int64_t>(m_imageToRead.size() * m_fps));
+
+        std::int64_t videoDuration;
+        if (!m_useTimelapse)
+        {
+            videoDuration = static_cast<std::int64_t>(m_imageToRead.size() * m_fps);
+        }
+        else
+        {
+            videoDuration = static_cast<std::int64_t>(m_imageTimestamps.back()) -
+                            static_cast<std::int64_t>(m_imageTimestamps.front());
+        }
+        sigDuration->asyncEmit(videoDuration);
 
         auto sigPosition = this->signal< PositionModifiedSignalType >( s_POSITION_MODIFIED_SIG );
         sigPosition->asyncEmit(0);
@@ -314,13 +348,27 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         {
             m_timer = m_worker->createTimer();
 
-            ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(1000/m_fps);
+            ::fwThread::Timer::TimeDurationType duration;
+            if (!m_useTimelapse)
+            {
+                duration = ::boost::chrono::milliseconds(1000/m_fps);
+            }
+            else if (m_imageToRead.size() >= 2)
+            {
+                duration = ::boost::chrono::milliseconds(
+                    static_cast<std::int64_t>(m_imageTimestamps[1] - m_imageTimestamps[0]));
+                m_timer->setOneShot(true);
+            }
+            else
+            {
+                OSLM_ERROR("Only one image to read, set 'oneShot' mode to true.");
+                return;
+            }
 
             m_timer->setFunction(std::bind(&SFrameGrabber::grabImage, this));
             m_timer->setDuration(duration);
             m_timer->start();
         }
-
     }
 }
 
@@ -428,23 +476,17 @@ void SFrameGrabber::grabVideo()
 
 void SFrameGrabber::grabImage()
 {
+    const double t0 = ::fwCore::HiResClock::getTimeInMilliSec();
+
     ::fwCore::mt::ScopedLock lock(m_mutex);
 
-    if (m_imageCount < m_imageToRead.size())
+    // When using time lapse, the timer is set to "one shot": it is stopped when this method is called and re-started
+    // at the end of it. So we need to add a boolean to check if the grabber is paused when the method is called.
+    if (!m_isPaused && m_imageCount < m_imageToRead.size())
     {
         ::arData::FrameTL::sptr frameTL = this->getInOut< ::arData::FrameTL >(s_FRAMETL);
 
         const ::boost::filesystem::path imagePath = m_imageToRead[m_imageCount];
-
-        const std::string imageName = imagePath.filename().string();
-        static const boost::regex s_TIMESTAMP("[^0-9]*([0-9]*)[^0-9]*");
-        boost::smatch match;
-        if (!boost::regex_match(imageName, match, s_TIMESTAMP))
-        {
-            SLM_ERROR("Could not find a timestamp in file name: " + imageName);
-            return;
-        }
-        const std::string timestampStr = match[1].str();
 
         ::cv::Mat image = ::cv::imread(imagePath.string(), ::cv::IMREAD_UNCHANGED);
         ::fwCore::HiResClock::HiResClockType timestamp;
@@ -454,10 +496,10 @@ void SFrameGrabber::grabImage()
         {
             timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
         }
-        //use the image name as timestamp
+        //use the image timestamp
         else
         {
-            timestamp = std::stod(timestampStr);
+            timestamp = m_imageTimestamps[m_imageCount];
         }
 
         const size_t width  = static_cast<size_t>(image.size().width);
@@ -497,14 +539,55 @@ void SFrameGrabber::grabImage()
                 frameTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG);
             sig->asyncEmit(timestamp);
 
-            m_imageCount++;
+            const double t1          = ::fwCore::HiResClock::getTimeInMilliSec();
+            const double elapsedTime = t1 - t0;
+
+            if (m_useTimelapse)
+            {
+                double nextDuration = 0.;
+
+                const std::size_t currentImage = m_imageCount;
+                const double currentTime       = m_imageTimestamps[currentImage] + elapsedTime;
+
+                // If the next image delay is already passed, drop the image and check the next one.
+                while (nextDuration < elapsedTime && m_imageCount+1 < m_imageTimestamps.size())
+                {
+                    nextDuration = m_imageTimestamps[m_imageCount+1] - currentTime;
+                    ++m_imageCount;
+                }
+
+                // If it is the last image: stop the timer or loop
+                if (m_imageCount+1 == m_imageToRead.size())
+                {
+                    m_timer->stop();
+                    if (m_loopVideo)
+                    {
+                        m_imageCount                                 = 0;
+                        ::fwThread::Timer::TimeDurationType duration = ::boost::chrono::milliseconds(1000/m_fps);
+                        m_timer->setDuration(duration);
+                        m_timer->start();
+                    }
+                }
+                else
+                {
+                    ::fwThread::Timer::TimeDurationType duration =
+                        ::boost::chrono::milliseconds(static_cast<std::int64_t>(nextDuration));
+                    m_timer->stop();
+                    m_timer->setDuration(duration);
+                    m_timer->start();
+                }
+            }
+            else
+            {
+                ++m_imageCount;
+            }
         }
         else
         {
             SLM_ERROR("Images doesn't have the same size.");
         }
     }
-    else if (m_loopVideo)
+    else if (!m_isPaused && m_loopVideo)
     {
         m_imageCount = 0;
     }
