@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,6 +25,8 @@
 
 #include <fwServices/macros.hpp>
 
+#include <boost/math/special_functions/fpclassify.hpp>
+
 #include <QApplication>
 #include <QComboBox>
 #include <QDoubleValidator>
@@ -35,8 +37,6 @@
 #include <QSignalMapper>
 #include <QToolButton>
 #include <QWidget>
-
-#include <boost/math/special_functions/fpclassify.hpp>
 
 #include <functional>
 
@@ -72,42 +72,40 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
     QGridLayout* layout = new QGridLayout();
 
-    m_valueTextMin = new QLineEdit( container );
+    m_valueTextMin = new QLineEdit();
     QDoubleValidator* minValidator = new QDoubleValidator(m_valueTextMin);
     m_valueTextMin->setValidator(minValidator);
 
-    m_valueTextMax = new QLineEdit( container );
+    m_valueTextMax = new QLineEdit();
     QDoubleValidator*  maxValidator = new QDoubleValidator(m_valueTextMax);
     m_valueTextMax->setValidator(maxValidator);
 
-    m_rangeSlider = new ::fwGuiQt::widget::QRangeSlider(container);
+    m_rangeSlider = new ::fwGuiQt::widget::QRangeSlider();
 
-    m_toggleTFButton = new QToolButton(container);
+    m_toggleTFButton = new QToolButton();
     QIcon ico;
     QString squareIcon(BUNDLE_PREFIX "/uiImageQt_" UIIMAGEQT_VER "/square.png");
     QString rampIcon(BUNDLE_PREFIX "/uiImageQt_" UIIMAGEQT_VER "/ramp.png");
-    ico.addPixmap(QPixmap(squareIcon), QIcon::Normal,QIcon::On);
-    ico.addPixmap(QPixmap(rampIcon), QIcon::Normal,QIcon::Off);
+    ico.addPixmap(QPixmap(squareIcon), QIcon::Normal, QIcon::On);
+    ico.addPixmap(QPixmap(rampIcon), QIcon::Normal, QIcon::Off);
     m_toggleTFButton->setIcon(ico);
     m_toggleTFButton->setCheckable(true);
 
-    m_toggleAutoButton = new QToolButton(container);
+    m_toggleAutoButton = new QToolButton();
     QIcon icon;
     QString windo(BUNDLE_PREFIX "/uiImageQt_" UIIMAGEQT_VER "/windowing.svg");
-    icon.addFile(windo, QSize(), QIcon::Normal,QIcon::On);
+    icon.addFile(windo, QSize(), QIcon::Normal, QIcon::On);
     QString nowindo(BUNDLE_PREFIX "/uiImageQt_" UIIMAGEQT_VER "/nowindowing.svg");
-    icon.addFile(nowindo, QSize(), QIcon::Normal,QIcon::Off);
+    icon.addFile(nowindo, QSize(), QIcon::Normal, QIcon::Off);
     m_toggleAutoButton->setIcon(icon);
     m_toggleAutoButton->setToolTip("Automatic Windowing");
     m_toggleAutoButton->setCheckable(true);
     m_toggleAutoButton->setChecked(m_autoWindowing);
 
-    m_dynamicRangeSelection = new QToolButton(container);
+    m_dynamicRangeSelection = new QToolButton();
     m_dynamicRangeSelection->setPopupMode(QToolButton::InstantPopup);
 
     m_dynamicRangeMenu = new QMenu(m_dynamicRangeSelection);
@@ -124,7 +122,6 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     action4->setData(QVariant(4));
     //action5->setData(QVariant(5));
 
-
     layout->addWidget( m_rangeSlider,  0, 0, 1, -1 );
     layout->addWidget( m_valueTextMin, 1, 0 );
     layout->addWidget( m_toggleTFButton, 1, 1 );
@@ -132,8 +129,7 @@ void WindowLevel::starting() throw(::fwTools::Failed)
     layout->addWidget( m_dynamicRangeSelection, 1, 3 );
     layout->addWidget( m_valueTextMax, 1, 4 );
 
-
-    container->setLayout( layout );
+    qtContainer->setLayout( layout );
     this->updating();
 
     m_dynamicRangeSignalMapper = new QSignalMapper(this);
@@ -164,12 +160,6 @@ void WindowLevel::stopping() throw(::fwTools::Failed)
                         SLOT(onTextEditingFinished( )));
     QObject::disconnect(m_valueTextMax, SIGNAL(editingFinished( )), this,
                         SLOT(onTextEditingFinished( )));
-
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer() );
-
-    // deletes contained widgets
-    this->getContainer()->clean();
 
     this->destroy();
 }
@@ -276,7 +266,7 @@ void WindowLevel::updatingTFWindowing(double window, double level)
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
     bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
-    SLM_ASSERT("Image is not valid",imageIsValid);
+    SLM_ASSERT("Image is not valid", imageIsValid);
     this->updateTransferFunction(image);
 
     ::fwData::TransferFunction::sptr pTF = this->getTransferFunction();
@@ -356,7 +346,7 @@ void WindowLevel::onWindowLevelWidgetChanged(double _min, double _max)
     double imageMin = this->toWindowLevel(_min);
     double imageMax = this->toWindowLevel(_max);
     this->updateImageWindowLevel(imageMin, imageMax);
-    this->updateTextWindowLevel (imageMin, imageMax);
+    this->updateTextWindowLevel(imageMin, imageMax);
 }
 
 //------------------------------------------------------------------------------
@@ -426,7 +416,7 @@ void WindowLevel::onToggleTF(bool squareTF)
     if( squareTF )
     {
         newTF = ::fwData::TransferFunction::New();
-        ::fwData::TransferFunction::TFColor color(1.,1.,1.,1.);
+        ::fwData::TransferFunction::TFColor color(1., 1., 1., 1.);
         newTF->setName("SquareTF");
         newTF->addTFColor(0.0, color);
         newTF->addTFColor(1.0, color);

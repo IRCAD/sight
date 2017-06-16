@@ -100,8 +100,6 @@ void SLandmarks::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
     QVBoxLayout* layout     = new QVBoxLayout();
     QGridLayout* gridLayout = new QGridLayout();
@@ -137,7 +135,7 @@ void SLandmarks::starting() throw(::fwTools::Failed)
     m_groupEditorWidget = new QWidget();
     m_groupEditorWidget->setLayout(gridLayout);
 
-    m_treeWidget = new QTreeWidget(container);
+    m_treeWidget = new QTreeWidget();
     QLabel* helperTextLabel = new QLabel("Use 'Ctrl+Left Click' to add new landmarks");
     layout->addWidget(helperTextLabel);
 
@@ -161,7 +159,7 @@ void SLandmarks::starting() throw(::fwTools::Failed)
 
     m_treeWidget->setHeaderLabels(headers);
 
-    container->setLayout( layout );
+    qtContainer->setLayout( layout );
 
     this->updating();
 }
@@ -198,8 +196,7 @@ void SLandmarks::updating() throw(::fwTools::Failed)
 
 void SLandmarks::stopping() throw(::fwTools::Failed)
 {
-    this->getContainer()->clean();
-    this->::fwGui::IGuiContainerSrv::destroy();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------

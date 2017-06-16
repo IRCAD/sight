@@ -42,17 +42,13 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
     SLM_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
 
-    QWidget* qtContainer = m_parentContainer->getQtContainer();
     m_qtWindow = new QMainWindow(  );
 
     QBoxLayout* layout = new QBoxLayout(QBoxLayout::LeftToRight);
-    if (qtContainer->layout())
-    {
-        QWidget().setLayout(qtContainer->layout());
-    }
     layout->setContentsMargins(0, 0, 0, 0);
-    qtContainer->setLayout(layout);
     layout->addWidget( m_qtWindow );
+
+    m_parentContainer->setLayout(layout);
 
     const std::list< ViewInfo>& views = this->getViewsInfo();
 
@@ -195,9 +191,7 @@ void CardinalLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr 
 void CardinalLayoutManager::destroyLayout()
 {
     this->destroySubViews();
-
     m_parentContainer->clean();
-
 }
 
 //-----------------------------------------------------------------------------

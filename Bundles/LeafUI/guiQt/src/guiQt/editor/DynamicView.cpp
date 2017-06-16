@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,11 +28,11 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/AppConfig.hpp>
 
-#include <QtGui>
-#include <QTabWidget>
-#include <QBoxLayout>
-
 #include <boost/foreach.hpp>
+
+#include <QBoxLayout>
+#include <QTabWidget>
+#include <QtGui>
 
 namespace guiQt
 {
@@ -50,12 +50,11 @@ AppConfig::AppConfig(const ConfigType& config) :
     std::string closableStr = config.get_optional<std::string>("<xmlattr>.closable").get_value_or("true");
     closable = (closableStr == "true");
 
-
     tabInfo = config.get_optional<std::string>("<xmlattr>.tabinfo").get_value_or("");
 
     if(config.count("parameters") == 1 )
     {
-        const ConfigType &configParameters = config.get_child("parameters");
+        const ConfigType& configParameters = config.get_child("parameters");
         BOOST_FOREACH( const ConfigType::value_type &v,  configParameters.equal_range("parameter") )
         {
             ParameterType parameter( v.second );
@@ -88,27 +87,22 @@ void DynamicView::starting() throw(::fwTools::Failed)
 
     this->::fwGui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr parentContainer;
-    parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+    ::fwGuiQt::container::QtContainer::sptr parentContainer
+        = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
-    QWidget* qtContainer = parentContainer->getQtContainer();
-    m_tabWidget = new QTabWidget(qtContainer);
-    m_tabWidget->setTabsClosable ( true );
+    m_tabWidget = new QTabWidget();
+    m_tabWidget->setTabsClosable( true );
     m_tabWidget->setDocumentMode( true );
     m_tabWidget->setMovable( true );
 
     QObject::connect(m_tabWidget, SIGNAL(tabCloseRequested( int )), this, SLOT( closeTabSignal( int )));
     QObject::connect(m_tabWidget, SIGNAL(currentChanged( int )), this, SLOT(changedTab( int )));
 
-
-    QBoxLayout *layout = new QBoxLayout(QBoxLayout::TopToBottom);
-    if (qtContainer->layout())
-    {
-        QWidget().setLayout(qtContainer->layout());
-    }
-    qtContainer->setLayout(layout);
-
+    QBoxLayout* layout = new QBoxLayout(QBoxLayout::TopToBottom);
     layout->addWidget( m_tabWidget );
+
+    parentContainer->setLayout(layout);
+
     m_currentWidget = 0;
 
     if(!m_appConfig.id.empty())
@@ -125,13 +119,11 @@ void DynamicView::stopping() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     while(m_tabWidget->count())
     {
-        this->closeTab(0,true);
+        this->closeTab(0, true);
     }
     m_tabWidget->clear();
-    ::fwGuiQt::container::QtContainer::sptr parentContainer;
-    parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-    parentContainer->clean();
-    this->::fwGui::IGuiContainerSrv::destroy();
+
+    this->destroy();
     m_tabWidget = 0;
 }
 
@@ -146,7 +138,7 @@ void DynamicView::configuring() throw(fwTools::Failed)
         SLM_ASSERT("There must be one (and only one) <config/> element.",
                    this->getConfigTree().get_child("service").count("config") == 1 );
         const ::fwServices::IService::ConfigType srvconfig = this->getConfigTree().get_child("service");
-        const ::fwServices::IService::ConfigType &config   = srvconfig.get_child("config");
+        const ::fwServices::IService::ConfigType& config   = srvconfig.get_child("config");
 
         const std::string dynamicConfig =
             config.get_optional<std::string>("<xmlattr>.dynamicConfigStartStop").get_value_or("false");
@@ -154,7 +146,7 @@ void DynamicView::configuring() throw(fwTools::Failed)
 
         if(config.count("appConfig") == 1 )
         {
-            const ::fwServices::IService::ConfigType &appConfig = config.get_child("appConfig");
+            const ::fwServices::IService::ConfigType& appConfig = config.get_child("appConfig");
             m_appConfig = AppConfig(appConfig);
         }
         OSLM_ASSERT("At most 1 <appConfig> tag is allowed", config.count("appConfig") < 2);
@@ -190,7 +182,7 @@ DynamicView::DynamicViewInfo DynamicView::buildDynamicViewInfo(const AppConfig& 
         else
         {
             std::string parameterToReplace = param.by;
-            if (parameterToReplace.substr(0,1) == "!")
+            if (parameterToReplace.substr(0, 1) == "!")
             {
                 parameterToReplace.replace(0, 1, "@");
             }
@@ -202,7 +194,7 @@ DynamicView::DynamicViewInfo DynamicView::buildDynamicViewInfo(const AppConfig& 
 
             std::string parameterValue = obj->getID();
 
-            if(stringParameter && param.by.substr(0,1) == "!")
+            if(stringParameter && param.by.substr(0, 1) == "!")
             {
                 parameterValue = stringParameter->getValue();
             }
@@ -254,7 +246,7 @@ void DynamicView::launchTab(DynamicViewInfo& info)
         return;
     }
 
-    if ( m_titleToCount.find( info.title ) !=  m_titleToCount.end() )
+    if ( m_titleToCount.find( info.title ) != m_titleToCount.end() )
     {
         m_titleToCount[ info.title ]++;
     }
@@ -263,11 +255,11 @@ void DynamicView::launchTab(DynamicViewInfo& info)
         m_titleToCount[ info.title ] = 1;
     }
 
-    QString finalTitle = QString("%1 %2").arg( info.title.c_str(),"(%1)" ).arg( m_titleToCount[ info.title ] );
+    QString finalTitle = QString("%1 %2").arg( info.title.c_str(), "(%1)" ).arg( m_titleToCount[ info.title ] );
     info.wid = QString("DynamicView-%1").arg(count++).toStdString();
 
     ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
-    QWidget *widget = new QWidget();
+    QWidget* widget = new QWidget();
     subContainer->setQtContainer(widget);
     ::fwGui::GuiRegistry::registerWIDContainer(info.wid, subContainer);
 
@@ -289,7 +281,7 @@ void DynamicView::launchTab(DynamicViewInfo& info)
             helper->create();
         }
     }
-    catch( std::exception & e )
+    catch( std::exception& e )
     {
         ::fwGui::dialog::MessageDialog::showMessageDialog("Activity launch failed",
                                                           e.what(),
@@ -299,7 +291,6 @@ void DynamicView::launchTab(DynamicViewInfo& info)
 
     info.container = subContainer;
     info.helper    = helper;
-
 
     m_dynamicInfoMap[widget] = info;
     m_tabIDList.insert(info.tabID);
@@ -318,7 +309,7 @@ void DynamicView::launchTab(DynamicViewInfo& info)
 
 //------------------------------------------------------------------------------
 
-void DynamicView::info( std::ostream &_sstream )
+void DynamicView::info( std::ostream& _sstream )
 {
 }
 
@@ -333,7 +324,7 @@ void DynamicView::closeTabSignal( int index )
 
 void DynamicView::closeTab( int index, bool forceClose )
 {
-    QWidget *widget = m_tabWidget->widget(index);
+    QWidget* widget = m_tabWidget->widget(index);
 
     SLM_ASSERT("Widget is not in dynamicInfoMap", m_dynamicInfoMap.find(widget) != m_dynamicInfoMap.end());
     DynamicViewInfo info = m_dynamicInfoMap[widget];
@@ -360,7 +351,6 @@ void DynamicView::closeTab( int index, bool forceClose )
 
         ::fwGui::GuiRegistry::unregisterWIDContainer(info.wid);
 
-        info.container->clean();
         info.container->destroyContainer();
         info.container.reset();
         m_dynamicInfoMap.erase(widget);
@@ -377,7 +367,7 @@ void DynamicView::closeTab( int index, bool forceClose )
 
 void DynamicView::changedTab( int index )
 {
-    QWidget *widget = m_tabWidget->widget(index);
+    QWidget* widget = m_tabWidget->widget(index);
 
     if (m_dynamicConfigStartStop && widget != m_currentWidget)
     {

@@ -25,8 +25,11 @@
 #include <fwServices/macros.hpp>
 #include <fwServices/registry/ActiveWorkers.hpp>
 
-#include <fwTools/Stringizer.hpp>
 #include <fwTools/fwID.hpp>
+#include <fwTools/Stringizer.hpp>
+
+#include <boost/bind.hpp>
+#include <boost/lexical_cast.hpp>
 
 #include <QComboBox>
 #include <QFuture>
@@ -34,12 +37,9 @@
 #include <QItemDelegate>
 #include <QStringList>
 #include <QTableWidgetItem>
+#include <QtConcurrentRun>
 #include <QTimer>
 #include <QVBoxLayout>
-#include <QtConcurrentRun>
-
-#include <boost/bind.hpp>
-#include <boost/lexical_cast.hpp>
 
 namespace monitor
 {
@@ -432,16 +432,14 @@ void DumpEditor::starting() throw(::fwTools::Failed)
 {
     this->::fwGui::IGuiContainerSrv::create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
+    ::fwGuiQt::container::QtContainer::sptr qtContainer
+        = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
 
-    m_updateTimer = new QTimer(container);
+    m_updateTimer = new QTimer(qtContainer->getQtContainer());
     m_updateTimer->setInterval(300);
     m_updateTimer->setSingleShot(true);
 
-    m_list   = new QTableWidget(container);
+    m_list   = new QTableWidget();
     m_mapper = new QSignalMapper();
 
     m_list->setColumnCount(5);
@@ -453,32 +451,31 @@ void DumpEditor::starting() throw(::fwTools::Failed)
     header.push_back("Action");
     m_list->setHorizontalHeaderLabels(header);
 
-    m_refresh = new QPushButton(tr("Refresh"), container);
+    m_refresh = new QPushButton(tr("Refresh"));
     QVBoxLayout* sizer = new QVBoxLayout();
 
     QHBoxLayout* sizerButton = new QHBoxLayout();
     sizerButton->addWidget(m_refresh);
 
     sizerButton->addItem(new QSpacerItem(10, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
-    QFrame* verticalLine = new QFrame(container);
+    QFrame* verticalLine = new QFrame();
     verticalLine->setFrameShape(QFrame::VLine);
     verticalLine->setFrameShadow(QFrame::Sunken);
     sizerButton->addWidget(verticalLine);
 
     sizer->addLayout(sizerButton);
     sizer->addWidget(m_list, 2);
-    container->setLayout( sizer );
 
-    PolicyComboBoxDelegate* policyComboBoxDelegate = new PolicyComboBoxDelegate(container);
-    PolicyTableModel* policyTableModel             = new PolicyTableModel(container);
-    m_policyEditor = new QTableView(container);
+    m_policyEditor = new QTableView();
+    PolicyComboBoxDelegate* policyComboBoxDelegate = new PolicyComboBoxDelegate(m_policyEditor);
+    PolicyTableModel* policyTableModel             = new PolicyTableModel(m_policyEditor);
     m_policyEditor->setModel(policyTableModel);
     m_policyEditor->setItemDelegateForRow(0, policyComboBoxDelegate);
     m_policyEditor->setSortingEnabled(false);
     m_policyEditor->horizontalHeader()->hide();
 
-    InfoTableModel* infoTableModel = new InfoTableModel(container);
-    m_infoEditor = new QTableView(container);
+    InfoTableModel* infoTableModel = new InfoTableModel();
+    m_infoEditor = new QTableView();
     m_infoEditor->setModel(infoTableModel);
     m_infoEditor->horizontalHeader()->hide();
 
@@ -487,7 +484,8 @@ void DumpEditor::starting() throw(::fwTools::Failed)
     tablesLayout->addWidget(m_policyEditor);
 
     sizer->addLayout(tablesLayout);
-    // sizer->addWidget(m_policyEditor);
+
+    qtContainer->setLayout( sizer );
 
     QObject::connect(m_refresh, SIGNAL(clicked()), this, SLOT(onRefreshButton( )));
     QObject::connect(m_mapper, SIGNAL(mapped(int)), this, SLOT(changeStatus(int)));
@@ -516,8 +514,7 @@ void DumpEditor::stopping() throw(::fwTools::Failed)
     QObject::disconnect(m_mapper, SIGNAL(mapped(int)), this, SLOT(changeStatus(int)));
     QObject::disconnect(&m_watcher, SIGNAL(finished()), this, SLOT(onBufferInfo()));
 
-    this->getContainer()->clean();
-    this->::fwGui::IGuiContainerSrv::destroy();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------

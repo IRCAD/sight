@@ -141,8 +141,6 @@ void SSlider::starting() throw(::fwTools::Failed)
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
     m_valueSlider = new QSlider(Qt::Horizontal);
@@ -207,7 +205,7 @@ void SSlider::starting() throw(::fwTools::Failed)
 
     }
 
-    container->setLayout(layout);
+    qtContainer->setLayout(layout);
 
     this->resetValue();
 }
@@ -220,7 +218,6 @@ void SSlider::stopping() throw(::fwTools::Failed)
 
     QObject::disconnect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(setValue(int)));
 
-    this->getContainer()->clean();
     this->destroy();
 }
 //------------------------------------------------------------------------------

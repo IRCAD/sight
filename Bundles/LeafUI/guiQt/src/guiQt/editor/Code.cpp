@@ -1,23 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "guiQt/editor/Code.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwCore/base.hpp>
 
 #include <fwData/String.hpp>
 
-#include <fwServices/macros.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
 #include <fwGuiQt/container/QtContainer.hpp>
 #include <fwGuiQt/highlighter/CppHighlighter.hpp>
 #include <fwGuiQt/highlighter/PythonHighlighter.hpp>
+
+#include <fwServices/macros.hpp>
 
 #include <QHBoxLayout>
 
@@ -36,7 +36,8 @@ const std::string Code::CPP    = "Cpp";
 
 //------------------------------------------------------------------------------
 
-Code::Code() throw() : m_language(PYTHON)
+Code::Code() throw() :
+    m_language(PYTHON)
 {
 }
 
@@ -55,13 +56,11 @@ void Code::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
     ::fwData::String::sptr stringObj = this->getObject< ::fwData::String >();
 
     QHBoxLayout* layout = new QHBoxLayout();
-    m_valueCtrl = new QTextEdit( container );
+    m_valueCtrl = new QTextEdit( );
     layout->addWidget( m_valueCtrl, 1);
 
     if(m_language == PYTHON )
@@ -77,7 +76,7 @@ void Code::starting() throw(::fwTools::Failed)
         OSLM_WARN("Language "<<m_language<<" not yet supported.");
     }
 
-    container->setLayout( layout );
+    qtContainer->setLayout( layout );
 
     QObject::connect(m_valueCtrl, SIGNAL(textChanged()), this, SLOT(onModifyValue()));
     this->updating();
@@ -91,8 +90,7 @@ void Code::stopping() throw(::fwTools::Failed)
 
     QObject::disconnect(m_valueCtrl, SIGNAL(textChanged(QString)), this, SLOT(onModifyValue(QString)));
 
-    this->getContainer()->clean();
-    this->::fwGui::IGuiContainerSrv::destroy();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -134,7 +132,7 @@ void Code::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Code::info( std::ostream &_sstream )
+void Code::info( std::ostream& _sstream )
 {
     _sstream << "String Editor";
 }
@@ -174,7 +172,6 @@ void Code::onModifyValue()
 }
 
 //------------------------------------------------------------------------------
-
 
 } // namespace editor
 

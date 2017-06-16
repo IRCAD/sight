@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,7 @@
 #include "fwGuiQt/layoutManager/LineLayoutManager.hpp"
 
 #include <fwCore/base.hpp>
+
 #include <fwGui/registry/macros.hpp>
 
 #include <QBoxLayout>
@@ -15,7 +16,6 @@
 #include <QStyle>
 
 fwGuiRegisterMacro( ::fwGui::LineLayoutManager, ::fwGui::layoutManager::LineLayoutManagerBase::REGISTRY_KEY );
-
 
 namespace fwGui
 {
@@ -40,10 +40,9 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
     SLM_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
 
-    QBoxLayout *layout = new QBoxLayout(QBoxLayout::LeftToRight);
+    QBoxLayout* layout = new QBoxLayout(QBoxLayout::LeftToRight);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    QWidget *qtContainer    = m_parentContainer->getQtContainer();
     Orientation orientation = this->getOrientation();
 
     if( orientation == VERTICAL )
@@ -51,13 +50,7 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
         layout->setDirection(QBoxLayout::TopToBottom);
     }
 
-    if (qtContainer->layout())
-    {
-        QWidget().setLayout(qtContainer->layout());
-    }
-    qtContainer->setLayout(layout);
-
-    const std::list< ViewInfo> &views = this->getViewsInfo();
+    const std::list< ViewInfo>& views = this->getViewsInfo();
     for ( ViewInfo viewInfo : views)
     {
         if(viewInfo.m_isSpacer)
@@ -66,21 +59,21 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
         }
         else
         {
-            QWidget *panel;
+            QWidget* panel;
             int border = viewInfo.m_border;
             if(viewInfo.m_caption.first)
             {
-                QGroupBox *groupbox = new QGroupBox(qtContainer);
+                QGroupBox* groupbox = new QGroupBox();
                 groupbox->setTitle(QString::fromStdString(viewInfo.m_caption.second));
                 panel   = groupbox;
                 border += groupbox->style()->pixelMetric(QStyle::PM_LayoutTopMargin);
             }
             else
             {
-                panel = new QWidget(qtContainer);
+                panel = new QWidget();
             }
-            panel->setMinimumSize(std::max(viewInfo.m_minSize.first,0), std::max(viewInfo.m_minSize.second,0));
-            panel->setContentsMargins(border, border,border, border);
+            panel->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
+            panel->setContentsMargins(border, border, border, border);
 
             ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
             subContainer->setQtContainer(panel);
@@ -88,9 +81,9 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
 
             if(viewInfo.m_useScrollBar)
             {
-                QScrollArea *scrollArea = new QScrollArea(qtContainer);
+                QScrollArea* scrollArea = new QScrollArea();
                 scrollArea->setWidget(panel);
-                scrollArea->setWidgetResizable ( true );
+                scrollArea->setWidgetResizable( true );
 
                 layout->addWidget( scrollArea );
                 layout->setStretchFactor(scrollArea, viewInfo.m_proportion);
@@ -104,6 +97,8 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
             subContainer->setVisible( viewInfo.m_visible );
         }
     }
+
+    m_parentContainer->setLayout(layout);
 }
 
 //-----------------------------------------------------------------------------
@@ -111,7 +106,6 @@ void LineLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr pare
 void LineLayoutManager::destroyLayout()
 {
     this->destroySubViews();
-    QWidget *qtContainer = m_parentContainer->getQtContainer();
     m_parentContainer->clean();
 }
 

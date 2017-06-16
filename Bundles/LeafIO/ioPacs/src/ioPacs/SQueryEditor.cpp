@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -19,14 +19,14 @@
 
 #include <fwServices/macros.hpp>
 
-#include <QGridLayout>
-#include <QHBoxLayout>
-#include <QLabel>
-
 #include <boost/filesystem/operations.hpp>
 #include <boost/foreach.hpp>
 
 #include <dcmtk/dcmnet/scu.h>
+
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QLabel>
 
 namespace ioPacs
 {
@@ -66,17 +66,14 @@ void SQueryEditor::starting() throw(::fwTools::Failed)
     ::fwGui::IGuiContainerSrv::create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
-    QWidget* const container = qtContainer->getQtContainer();
-
     // Main Widget
     QGridLayout* layout = new QGridLayout();
-    container->setLayout(layout);
 
     m_patientNameLineEdit    = new QLineEdit();
     m_patientNameQueryButton = new QPushButton("Send");
-    layout->addWidget(new QLabel("Patient name:"),0, 0);
-    layout->addWidget(m_patientNameLineEdit,0, 1);
-    layout->addWidget(m_patientNameQueryButton,0, 2);
+    layout->addWidget(new QLabel("Patient name:"), 0, 0);
+    layout->addWidget(m_patientNameLineEdit, 0, 1);
+    layout->addWidget(m_patientNameQueryButton, 0, 2);
 
     m_beginStudyDateEdit = new QDateEdit();
     m_beginStudyDateEdit->setDate(QDate::currentDate());
@@ -86,13 +83,14 @@ void SQueryEditor::starting() throw(::fwTools::Failed)
     m_endStudyDateEdit->setDisplayFormat("dd.MM.yyyy");
     m_studyDateQueryButton = new QPushButton("Send");
     QHBoxLayout* dateLayout = new QHBoxLayout();
-    layout->addWidget(new QLabel("Study date:"),1, 0);
-    layout->addLayout(dateLayout,1, 1);
-    layout->addWidget(m_studyDateQueryButton,1, 2);
+    layout->addWidget(new QLabel("Study date:"), 1, 0);
+    layout->addLayout(dateLayout, 1, 1);
+    layout->addWidget(m_studyDateQueryButton, 1, 2);
     dateLayout->addWidget(m_beginStudyDateEdit);
     dateLayout->addWidget(m_endStudyDateEdit);
+
     //Set layout
-    container->setLayout(layout);
+    qtContainer->setLayout(layout);
 
     // Connect the signals
     QObject::connect(m_patientNameLineEdit, SIGNAL(returnPressed()), this, SLOT(queryPatientName()));
@@ -122,8 +120,7 @@ void SQueryEditor::stopping() throw(::fwTools::Failed)
     QObject::disconnect(m_beginStudyDateEdit, SIGNAL(dateChanged(QDate)), this, SLOT(queryStudyDate()));
     QObject::disconnect(m_endStudyDateEdit, SIGNAL(dateChanged(QDate)), this, SLOT(queryStudyDate()));
 
-    this->getContainer()->clean();
-    this->::fwGui::IGuiContainerSrv::destroy();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------

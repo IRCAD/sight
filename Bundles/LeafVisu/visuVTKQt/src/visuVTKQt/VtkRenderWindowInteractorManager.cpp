@@ -351,15 +351,12 @@ void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::container::fw
 {
     SLM_ASSERT("Invalid parent.", _parent );
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( _parent );
-    QWidget* container = m_parentContainer->getQtContainer();
-    SLM_ASSERT("The container is not a qtContainer.", container );
 
-    m_qVTKWidget = new QVTKWidget(container);
+    m_qVTKWidget = new QVTKWidget();
 
     QVBoxLayout* layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
-    //m_qVTKWidget->resize(container->width(), container->height());
-    //m_qVTKWidget->setSizePolicy(QSizePolicy::MinimumExpanding,QSizePolicy::MinimumExpanding);
+
     if(m_renderService.lock())
     {
         m_qVTKWidget->setAcceptDrops(true);
@@ -367,7 +364,7 @@ void VtkRenderWindowInteractorManager::installInteractor( ::fwGui::container::fw
     }
 
     layout->addWidget(m_qVTKWidget);
-    container->setLayout(layout);
+    m_parentContainer->setLayout(layout);
 
     m_interactor = m_qVTKWidget->GetRenderWindow()->GetInteractor();
 }

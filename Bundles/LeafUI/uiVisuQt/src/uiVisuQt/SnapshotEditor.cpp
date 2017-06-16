@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,14 +22,14 @@
 
 #include <fwServices/macros.hpp>
 
-#include <QWidget>
-#include <QString>
-#include <QIcon>
-#include <QPushButton>
-#include <QHBoxLayout>
-
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/convenience.hpp>
+
+#include <QHBoxLayout>
+#include <QIcon>
+#include <QPushButton>
+#include <QString>
+#include <QWidget>
 
 namespace uiVisu
 {
@@ -37,7 +37,6 @@ namespace uiVisu
 const ::fwCom::Signals::SignalKeyType SnapshotEditor::s_SNAPPED_SIG = "snapped";
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::SnapshotEditor, ::fwData::Object );
-
 
 SnapshotEditor::SnapshotEditor() throw()
 {
@@ -57,21 +56,20 @@ void SnapshotEditor::starting() throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
     this->create();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer() );
-    QWidget *container = qtContainer->getQtContainer();
+    ::fwGuiQt::container::QtContainer::sptr qtContainer
+        = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
 
     ::boost::filesystem::path path(std::string(BUNDLE_PREFIX) + "/uiVisuQt_" + std::string(
                                        UIVISUQT_VER) + "/camera-photo.png");
     QIcon icon(QString::fromStdString(path.string()));
-    m_snapButton = new QPushButton(icon, "", container);
+    m_snapButton = new QPushButton(icon, "");
     m_snapButton->setToolTip(QObject::tr("Snapshot"));
 
-    QHBoxLayout *hlayout = new QHBoxLayout(container);
+    QHBoxLayout* hlayout = new QHBoxLayout();
     hlayout->addWidget(m_snapButton);
-    hlayout->setContentsMargins(0,0,0,0);
+    hlayout->setContentsMargins(0, 0, 0, 0);
 
-    container->setLayout(hlayout);
+    qtContainer->setLayout(hlayout);
 
     QObject::connect(m_snapButton, SIGNAL(clicked()), this, SLOT(onSnapButton()));
 
@@ -82,12 +80,7 @@ void SnapshotEditor::starting() throw(::fwTools::Failed)
 void SnapshotEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer() );
 
-    QObject::disconnect(m_snapButton, SIGNAL(clicked()), this, SLOT(onSnapButton()));
-
-    qtContainer->clean();
     this->destroy();
 }
 
@@ -113,7 +106,7 @@ void SnapshotEditor::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SnapshotEditor::info( std::ostream &_sstream )
+void SnapshotEditor::info( std::ostream& _sstream )
 {
 }
 
@@ -124,7 +117,7 @@ void SnapshotEditor::onSnapButton()
     SLM_TRACE_FUNC();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget *container = qtContainer->getQtContainer();
+    QWidget* container = qtContainer->getQtContainer();
     SLM_ASSERT("container not instanced", container);
     if( container->isVisible() )
     {
@@ -155,12 +148,12 @@ std::string SnapshotEditor::requestFileName()
 
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Save snapshot as");
-    dialogFile.addFilter("Image file","*.jpg *.jpeg *.bmp *.png *.tiff");
-    dialogFile.addFilter("jpeg","*.jpg *.jpeg");
-    dialogFile.addFilter("bmp","*.bmp");
-    dialogFile.addFilter("png","*.png");
-    dialogFile.addFilter("tiff","*.tiff");
-    dialogFile.addFilter("all","*.*");
+    dialogFile.addFilter("Image file", "*.jpg *.jpeg *.bmp *.png *.tiff");
+    dialogFile.addFilter("jpeg", "*.jpg *.jpeg");
+    dialogFile.addFilter("bmp", "*.bmp");
+    dialogFile.addFilter("png", "*.png");
+    dialogFile.addFilter("tiff", "*.tiff");
+    dialogFile.addFilter("all", "*.*");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr result;

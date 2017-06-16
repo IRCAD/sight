@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -63,8 +63,6 @@ SSeries::SSeries()
         (s_SERIES_EXPORTED_SIG, m_sigSeriesExported)
     ;
 
-
-
     // worker was set by IService
     ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
 }
@@ -92,7 +90,6 @@ void SSeries::starting() throw(::fwTools::Failed)
     m_equipmentEditor = new ::uiMedData::widget::EquipmentEditor();
     m_seriesEditor    = new ::uiMedData::widget::SeriesEditor();
 
-
     QVBoxLayout* studyEquipmentLayout = new QVBoxLayout();
     studyEquipmentLayout->addWidget(m_studyEditor);
     studyEquipmentLayout->addWidget(m_equipmentEditor);
@@ -101,7 +98,6 @@ void SSeries::starting() throw(::fwTools::Failed)
     editorLayout->addWidget(m_patientEditor);
     editorLayout->addLayout(studyEquipmentLayout);
     editorLayout->addWidget(m_seriesEditor);
-
 
     QVBoxLayout* layout = new QVBoxLayout(container);
     layout->addLayout(editorLayout);
@@ -122,8 +118,7 @@ void SSeries::starting() throw(::fwTools::Failed)
 
 void SSeries::stopping() throw(::fwTools::Failed)
 {
-    this->getContainer()->clean();
-    this->::fwGui::IGuiContainerSrv::destroy();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------

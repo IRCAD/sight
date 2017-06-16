@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,8 +11,8 @@
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
 
-#include <fwDataTools/TransformationMatrix3D.hpp>
 #include <fwDataTools/helper/Composite.hpp>
+#include <fwDataTools/TransformationMatrix3D.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -74,27 +74,24 @@ void SOrganTransformation::starting() throw( ::fwTools::Failed )
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
-    QVBoxLayout* layout = new QVBoxLayout(container);
+    QVBoxLayout* layout = new QVBoxLayout();
 
-    QGroupBox* groupBox = new QGroupBox(tr("Organs"), container );
+    QGroupBox* groupBox = new QGroupBox(tr("Organs") );
     layout->addWidget( groupBox);
 
-    QVBoxLayout* layoutGroupBox = new QVBoxLayout(container);
+    QVBoxLayout* layoutGroupBox = new QVBoxLayout();
     groupBox->setLayout(layoutGroupBox);
 
-    m_selectAllCheckBox     = new QCheckBox(tr("Select All"), container );
+    m_selectAllCheckBox     = new QCheckBox(tr("Select All")  );
     m_reconstructionListBox = new QListWidget( groupBox);
-    m_resetButton           = new QPushButton(tr("Reset"), container );
-    m_saveButton            = new QPushButton(tr("Save"), container );
-    m_loadButton            = new QPushButton(tr("Load"), container );
-    m_saveSelectionComboBox = new QComboBox(container);
-
+    m_resetButton           = new QPushButton(tr("Reset") );
+    m_saveButton            = new QPushButton(tr("Save") );
+    m_loadButton            = new QPushButton(tr("Load") );
+    m_saveSelectionComboBox = new QComboBox();
 
     QObject::connect(m_reconstructionListBox,
-                     SIGNAL(itemClicked (QListWidgetItem* )),
+                     SIGNAL(itemClicked(QListWidgetItem* )),
                      this,
                      SLOT(onReconstructionCheck(QListWidgetItem*)));
     QObject::connect(m_resetButton, SIGNAL(clicked( )), this, SLOT(onResetClick()));
@@ -106,10 +103,10 @@ void SOrganTransformation::starting() throw( ::fwTools::Failed )
     layoutGroupBox->addWidget( m_reconstructionListBox, 1);
     layoutGroupBox->addWidget( m_resetButton, 0);
     layoutGroupBox->addWidget( m_saveButton, 0);
-    layoutGroupBox->addWidget( m_saveSelectionComboBox,0);
+    layoutGroupBox->addWidget( m_saveSelectionComboBox, 0);
     layoutGroupBox->addWidget( m_loadButton, 0);
 
-    container->setLayout( layout );
+    qtContainer->setLayout( layout );
 
     this->updating();
 }
@@ -119,7 +116,7 @@ void SOrganTransformation::starting() throw( ::fwTools::Failed )
 void SOrganTransformation::stopping() throw( ::fwTools::Failed )
 {
     QObject::disconnect(m_reconstructionListBox,
-                        SIGNAL(itemClicked (QListWidgetItem* )),
+                        SIGNAL(itemClicked(QListWidgetItem* )),
                         this,
                         SLOT(onReconstructionCheck(QListWidgetItem*)));
     QObject::disconnect(m_resetButton, SIGNAL(clicked( )), this, SLOT(onResetClick()));
@@ -127,7 +124,6 @@ void SOrganTransformation::stopping() throw( ::fwTools::Failed )
     QObject::disconnect(m_loadButton, SIGNAL(clicked( )), this, SLOT(onLoadClick()));
     QObject::disconnect(m_selectAllCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onSelectAllChanged(int)));
 
-    this->getContainer()->clean();
     this->destroy();
 }
 
@@ -194,7 +190,7 @@ void SOrganTransformation::refresh()
             {
                 item->setCheckState(Qt::Unchecked);
             }
-            m_reconstructionListBox->addItem (item);
+            m_reconstructionListBox->addItem(item);
         }
     }
 }

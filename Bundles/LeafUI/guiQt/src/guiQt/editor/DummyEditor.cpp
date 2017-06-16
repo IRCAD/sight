@@ -1,24 +1,25 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <string>
+#include "guiQt/editor/DummyEditor.hpp"
 
-#include <QVBoxLayout>
+#include <fwCore/base.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwCore/base.hpp>
-
 #include <fwServices/macros.hpp>
+
 #include <fwTools/fwID.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <QVBoxLayout>
 
-#include "guiQt/editor/DummyEditor.hpp"
+#include <string>
 
 namespace gui
 {
@@ -29,7 +30,8 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::gui::editor::DummyEditor, ::f
 
 //-----------------------------------------------------------------------------
 
-DummyEditor::DummyEditor() throw() : m_text("")
+DummyEditor::DummyEditor() throw() :
+    m_text("")
 {
 }
 
@@ -48,14 +50,12 @@ void DummyEditor::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
     QVBoxLayout* layout = new QVBoxLayout();
     std::string text    = m_text.empty() ? this->getID() : m_text;
-    m_staticText = new QLabel( QString::fromStdString(text), container);
+    m_staticText = new QLabel( QString::fromStdString(text));
     layout->addWidget( m_staticText );
-    container->setLayout( layout );
+    qtContainer->setLayout( layout );
     QPalette palette;
     QColor color(rand()%256, rand()%256, rand()%256);
     palette.setBrush(QPalette::Window, QBrush(color));
@@ -72,8 +72,6 @@ void DummyEditor::stopping() throw(::fwTools::Failed)
         this->getContainer() );
     SLM_ASSERT("container not instanced", qtContainer->getQtContainer());
 
-    // deletes contained widgets
-    qtContainer->clean();
     this->destroy();
 }
 
@@ -105,7 +103,7 @@ void DummyEditor::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void DummyEditor::info( std::ostream &_sstream )
+void DummyEditor::info( std::ostream& _sstream )
 {
     SLM_TRACE_FUNC();
 }

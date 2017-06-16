@@ -158,10 +158,8 @@ void SModelSeriesList::starting() throw(::fwTools::Failed)
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer
         = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
-    QVBoxLayout* layout = new QVBoxLayout;
+    QVBoxLayout* layout       = new QVBoxLayout;
     QHBoxLayout* layoutButton = new QHBoxLayout;
     layout->addLayout(layoutButton);
 
@@ -184,7 +182,7 @@ void SModelSeriesList::starting() throw(::fwTools::Failed)
 
     layout->addWidget( m_tree, 1 );
 
-    container->setLayout( layout );
+    qtContainer->setLayout( layout );
 
     QObject::connect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
                      this, SLOT(onCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
@@ -211,7 +209,6 @@ void SModelSeriesList::stopping() throw(::fwTools::Failed)
     QObject::disconnect(m_tree, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
                         this, SLOT(onCurrentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
 
-    this->getContainer()->clean();
     this->destroy();
 }
 

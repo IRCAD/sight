@@ -84,8 +84,6 @@ void SListView::starting() throw(::fwTools::Failed)
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
     layout->setObjectName("SListViewLayout");
@@ -96,7 +94,8 @@ void SListView::starting() throw(::fwTools::Failed)
 
     connect(m_listWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this,
             SLOT(onItemDoubleClicked(QListWidgetItem*)));
-    container->setLayout(layout);
+
+    qtContainer->setLayout(layout);
 }
 
 //------------------------------------------------------------------------------
@@ -105,7 +104,6 @@ void SListView::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    this->getContainer()->clean();
     this->destroy();
 }
 //------------------------------------------------------------------------------

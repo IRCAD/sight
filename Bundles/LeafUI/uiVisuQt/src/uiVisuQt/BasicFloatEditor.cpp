@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,23 +15,19 @@
 #include <fwData/Float.hpp>
 #include <fwData/String.hpp>
 
-#include <fwServices/macros.hpp>
-#include <fwServices/IService.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
-
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <QHBoxLayout>
-#include <QDoubleValidator>
+#include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
+
 #include <QApplication>
+#include <QDoubleValidator>
+#include <QHBoxLayout>
 
 namespace uiVisu
 {
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiVisu::BasicFloatEditor, ::fwData::Float );
-
 
 BasicFloatEditor::BasicFloatEditor() throw()
 {
@@ -52,19 +48,17 @@ void BasicFloatEditor::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
     ::fwData::Float::sptr floatObj = this->getObject< ::fwData::Float >();
 
     QHBoxLayout* layout               = new QHBoxLayout();
     QDoubleValidator* doubleValidator = new QDoubleValidator( m_valueCtrl );
 
-    m_valueCtrl = new QLineEdit( container );
+    m_valueCtrl = new QLineEdit(  );
     m_valueCtrl->setValidator( doubleValidator );
     layout->addWidget( m_valueCtrl, 1);
 
-    container->setLayout( layout );
+    qtContainer->setLayout( layout );
 
     QObject::connect(m_valueCtrl, SIGNAL(textChanged(QString)), this, SLOT(onModifyValue(QString)));
 
@@ -79,8 +73,7 @@ void BasicFloatEditor::stopping() throw(::fwTools::Failed)
 
     QObject::disconnect(m_valueCtrl, SIGNAL(textChanged(QString)), this, SLOT(onModifyValue(QString)));
 
-    this->getContainer()->clean();
-    this->::fwGui::IGuiContainerSrv::destroy();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -117,7 +110,7 @@ void BasicFloatEditor::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void BasicFloatEditor::info( std::ostream &_sstream )
+void BasicFloatEditor::info( std::ostream& _sstream )
 {
     _sstream << "Float Editor";
 }
