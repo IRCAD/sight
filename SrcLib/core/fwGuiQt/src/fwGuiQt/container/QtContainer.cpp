@@ -74,9 +74,6 @@ void QtContainer::clean()
             delete child;
         }
 
-        // Just to be sure there are no widget child that were not attached to a layout
-        //qDeleteAll(m_container->findChildren<QWidget*>("", Qt::FindDirectChildrenOnly));
-
         // Restore update
         m_container->setUpdatesEnabled(true);
     }
