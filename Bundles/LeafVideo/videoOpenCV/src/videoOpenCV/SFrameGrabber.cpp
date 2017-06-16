@@ -278,9 +278,9 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
         for (const ::boost::filesystem::path& imagePath : m_imageToRead)
         {
             const std::string imageName = imagePath.filename().string();
-            static const boost::regex s_TIMESTAMP("[^0-9]*([0-9]*)[^0-9]*");
-            boost::smatch match;
-            if (!boost::regex_match(imageName, match, s_TIMESTAMP))
+            static const ::boost::regex s_TIMESTAMP("[^0-9]*([0-9]*)[^0-9]*");
+            ::boost::smatch match;
+            if (!::boost::regex_match(imageName, match, s_TIMESTAMP))
             {
                 SLM_ERROR("Could not find a timestamp in file name: " + imageName);
                 return;
@@ -544,13 +544,13 @@ void SFrameGrabber::grabImage()
 
             if (m_useTimelapse)
             {
-                double nextDuration = 0;
+                double nextDuration = 0.;
 
                 const std::size_t currentImage = m_imageCount;
                 const double currentTime       = m_imageTimestamps[currentImage] + elapsedTime;
 
                 // If the next image delay is already passed, drop the image and check the next one.
-                while (nextDuration < elapsedTime && m_imageCount+1 < m_imageToRead.size())
+                while (nextDuration < elapsedTime && m_imageCount+1 < m_imageTimestamps.size())
                 {
                     nextDuration = m_imageTimestamps[m_imageCount+1] - currentTime;
                     ++m_imageCount;
