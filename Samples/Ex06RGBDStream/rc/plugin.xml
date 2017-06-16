@@ -153,9 +153,9 @@
                 <inout key="TFSelections" uid="tfSelectionDepth" />
                 <scene>
 
-                    <scene x="-1100" y="-1.1" width="2400" height="1.2" antialiasing="true" />
+                    <scene x="-10" y="-1.1" width="5500" height="1.2" antialiasing="true" />
 
-                    <viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" />
+                    <viewport id="view1" x="0" y="-1.1" width="1200" height="1.2" />
 
                     <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                     <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
@@ -163,12 +163,12 @@
                     <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
 
                     <adaptor id="grid" class="::scene2D::adaptor::Grid2D" objectId="self">
-                        <config xMin="-1200" xMax="1500" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1"
+                        <config xMin="-10" xMax="5500" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1"
                                 opacity="0.25" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
                     </adaptor>
 
                     <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
-                        <config x1="-1200" x2="1500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
+                        <config x1="-10" x2="5500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
                     </adaptor>
 
                     <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self">
@@ -214,9 +214,9 @@
                 <inout key="viewport" uid="viewport" />
                 <in key="myHistogram" uid="histogram" />
                 <scene>
-                    <scene x="-1100" y="-1.1" width="2400" height="1.2" />
+                    <scene x="-10" y="-1.1" width="5100" height="1.2" />
 
-                    <viewport id="view1" x="-1100" y="-1.1" width="2400" height="1.2" />
+                    <viewport id="view1" x="-10" y="-1.1" width="5100" height="1.2" />
 
                     <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                     <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
@@ -224,11 +224,11 @@
                     <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
 
                     <adaptor id="shutterGrid" class="::scene2D::adaptor::Grid2D" objectId="self">
-                        <config xMin="-1200" xMax="1400" yMin="-0.7" yMax="1.7" xSpacing="200" ySpacing="0.2" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
+                        <config xMin="-10" xMax="5100" yMin="-0.7" yMax="1.7" xSpacing="200" ySpacing="0.2" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
                     </adaptor>
 
                     <adaptor id="shutterAbscissa" class="::scene2D::adaptor::Line" objectId="self">
-                        <config x1="-1200" x2="1400" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
+                        <config x1="-10" x2="5100" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
                     </adaptor>
 
                     <adaptor id="shutterOrdinate" class="::scene2D::adaptor::Line" objectId="self">
@@ -236,7 +236,7 @@
                     </adaptor>
 
                     <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="viewport">
-                        <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1200" initialPos="-700" />
+                        <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1200" initialPos="0" />
                     </adaptor>
 
                     <adaptor id="shutterHistogram" class="::scene2D::adaptor::Histogram" objectId="myHistogram">
