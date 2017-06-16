@@ -9,7 +9,12 @@
 
 #include "visuVTKARAdaptor/config.hpp"
 
+#include <fwDataTools/helper/MedicalImageAdaptor.hpp>
+
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
+
+#include <vtkLookupTable.h>
+#include <vtkSmartPointer.h>
 
 class vtkImageData;
 class vtkImageActor;
@@ -42,8 +47,12 @@ namespace visuVTKARAdaptor
  * - \b renderer : defines the renderer to show the arrow. It must be different from the 3D objects renderer.
  * - \b cameraUID (optional) : defines the uid of the camera used to place video plane.
  * - \b reverse (optional)(default: true) : if true, the actor is rotated in z and y axis.
+ * - \b tfSelectionFwID (optional) : ID of a composite containing transfer functions
+ * - \b selectedTFKey (optional) : key of the transfer function within the tfSelection to pass the image through
+ *      when rendering
  */
-class VISUVTKARADAPTOR_CLASS_API SVideoAdapter : public ::fwRenderVTK::IVtkAdaptorService
+class VISUVTKARADAPTOR_CLASS_API SVideoAdapter : public ::fwDataTools::helper::MedicalImageAdaptor,
+                                                 public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
@@ -83,6 +92,16 @@ protected:
     /// Removes the actor from the renderer
     VISUVTKARADAPTOR_API void doStop() throw(fwTools::Failed);
 
+    /**
+     *  @brief Called when transfer function points are modified.
+     */
+    VISUVTKARADAPTOR_API virtual void updatingTFPoints() override;
+
+    /**
+     *  @brief Called when transfer function windowing is modified.
+     */
+    VISUVTKARADAPTOR_API virtual void updatingTFWindowing(double window, double level) override;
+
 private:
 
     /// Slot: Update image opacity and visibility
@@ -99,12 +118,15 @@ private:
 
     vtkImageData* m_imageData; ///< vtk image created from current data Image. It is shown in the frame.
     vtkImageActor* m_actor;   ///< actor to show frame
+    vtkSmartPointer<vtkLookupTable> m_lookupTable; ///< Vtk LUT representing the fw4spl TF
 
     bool m_isTextureInit; /// true if the texture is initialized
 
     std::string m_cameraUID; ///< uid of the camera
 
     bool m_reverse; ///< if true, the actor is rotated in z and y axis.
+
+    bool m_hasTF; ///< True if the adaptor uses a transfer function
 
     CSPTR(::arData::Camera) m_camera; ///< camera used to retrieve the optical center
 };
