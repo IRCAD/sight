@@ -16,6 +16,8 @@
 #include <fwMedData/ImageSeries.hpp>
 #include <fwMedData/SeriesDB.hpp>
 
+#include <fwMedDataCamp/Version.hpp>
+
 #include <fwTest/generator/Image.hpp>
 #include <fwTest/generator/SeriesDB.hpp>
 
@@ -51,6 +53,9 @@ void compare(::fwData::Object::sptr objRef, ::fwData::Object::sptr objComp)
 void ImageSeriesWriterTest::setUp()
 {
     // Set up context before running a test.
+
+    // HACK: force link with fwMedDataCamp. Needed when calling ::fwDataCamp::visitor::CompareObjects::compare.
+    m_medDataCampVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
 }
 
 //------------------------------------------------------------------------------
@@ -64,6 +69,9 @@ void ImageSeriesWriterTest::tearDown()
 
 void ImageSeriesWriterTest::writeReadTest()
 {
+    // HACK, we don't want the compiler to optimize 'm_medDataCampVersion' out.
+    CPPUNIT_ASSERT_EQUAL(::fwMedDataCamp::Version::s_CURRENT_VERSION, m_medDataCampVersion);
+
     ::fwTest::generator::Image::initRand();
     ::fwMedData::ImageSeries::sptr imgSeries;
     imgSeries = ::fwTest::generator::SeriesDB::createImageSeries();

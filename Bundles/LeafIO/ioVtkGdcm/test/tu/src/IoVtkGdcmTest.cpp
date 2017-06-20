@@ -11,6 +11,8 @@
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
 
+#include <fwMedDataCamp/Version.hpp>
+
 #include <fwRuntime/EConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
@@ -44,6 +46,9 @@ namespace ut
 
 void IoVtkGdcmTest::setUp()
 {
+    // HACK: force link with fwMedDataCamp. Needed when calling ::fwDataCamp::visitor::CompareObjects::compare.
+    m_medDataCampVersion = ::fwMedDataCamp::Version::s_CURRENT_VERSION;
+
     // Set up context before running a test.
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
     ::fwServices::registry::ActiveWorkers::setDefaultWorker(worker);
@@ -61,6 +66,9 @@ void IoVtkGdcmTest::tearDown()
 
 void IoVtkGdcmTest::readerDicomTest( std::string srvImpl )
 {
+    // HACK, we don't want the compiler to optimize 'm_medDataCampVersion' out.
+    CPPUNIT_ASSERT_EQUAL(::fwMedDataCamp::Version::s_CURRENT_VERSION, m_medDataCampVersion);
+
     ::boost::filesystem::path dicomDataPath(::fwTest::Data::dir() / "fw4spl/Patient/Dicom/image_281433");
 
     CPPUNIT_ASSERT_MESSAGE("The dicom directory '" + dicomDataPath.string() + "' does not exist",

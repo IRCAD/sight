@@ -5,9 +5,10 @@ set( TYPE TEST )
 set( DEPENDENCIES
     fwCore
     fwData
-    fwDataCamp
-    fwDataIO
     fwMedData
+    fwDataCamp
+    fwMedDataCamp
+    fwDataIO
     fwServices
     fwTest
     fwTools
