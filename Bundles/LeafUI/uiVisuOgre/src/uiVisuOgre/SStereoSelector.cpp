@@ -51,17 +51,15 @@ void SStereoSelector::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instantiated", container);
 
-    m_layersBox = new QComboBox(container);
-    m_modeBox   = new QComboBox(container);
+    m_layersBox = new QComboBox();
+    m_modeBox   = new QComboBox();
 
     QHBoxLayout* layout = new QHBoxLayout();
     layout->addWidget(m_layersBox);
     layout->addWidget(m_modeBox);
 
-    container->setLayout( layout );
+    qtContainer->setLayout( layout );
 
     this->refreshRenderers();
 
@@ -83,10 +81,6 @@ void SStereoSelector::starting() throw(::fwTools::Failed)
 
 void SStereoSelector::stopping() throw(::fwTools::Failed)
 {
-    QObject::disconnect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
-    QObject::disconnect(m_modeBox, SIGNAL(activated(int)), this, SLOT(onSelectedModeItem(int)));
-
-    this->getContainer()->clean();
     this->destroy();
 }
 

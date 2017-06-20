@@ -65,15 +65,13 @@ void SLightSelector::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer());
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instantiated", container);
 
-    m_layersBox       = new QComboBox(container);
-    m_lightsState     = new QCheckBox("Switch lights on/off", container);
-    m_lightsList      = new QListWidget(container);
-    m_addLightBtn     = new QPushButton("Add light", container);
-    m_removeLightBtn  = new QPushButton("Remove light", container);
-    m_ambientColorBtn = new QPushButton("Scene ambient color", container);
+    m_layersBox       = new QComboBox();
+    m_lightsState     = new QCheckBox("Switch lights on/off");
+    m_lightsList      = new QListWidget();
+    m_addLightBtn     = new QPushButton("Add light");
+    m_removeLightBtn  = new QPushButton("Remove light");
+    m_ambientColorBtn = new QPushButton("Scene ambient color");
 
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(m_layersBox);
@@ -88,7 +86,7 @@ void SLightSelector::starting() throw(::fwTools::Failed)
     layout->addLayout(addRemoveLayout);
     layout->addWidget(m_ambientColorBtn);
 
-    container->setLayout(layout);
+    qtContainer->setLayout(layout);
 
     this->refreshLayers();
 
@@ -113,21 +111,6 @@ void SLightSelector::stopping() throw(::fwTools::Failed)
 {
     m_connections.disconnect();
 
-    QObject::disconnect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
-
-    QObject::disconnect(m_lightsState, SIGNAL(stateChanged(int)), this, SLOT(onChangedLightsState(int)));
-
-    QObject::disconnect(m_lightsList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
-                        this, SLOT(onSelectedLightItem(QListWidgetItem*, QListWidgetItem*)));
-    QObject::disconnect(m_lightsList, SIGNAL(itemChanged(QListWidgetItem*)),
-                        this, SLOT(onCheckedLightItem(QListWidgetItem*)));
-
-    QObject::disconnect(m_addLightBtn, SIGNAL(clicked(bool)), this, SLOT(onAddLight(bool)));
-    QObject::disconnect(m_removeLightBtn, SIGNAL(clicked(bool)), this, SLOT(onRemoveLight(bool)));
-
-    QObject::disconnect(m_ambientColorBtn, SIGNAL(clicked(bool)), this, SLOT(onEditAmbientColor(bool)));
-
-    this->getContainer()->clean();
     this->destroy();
 }
 

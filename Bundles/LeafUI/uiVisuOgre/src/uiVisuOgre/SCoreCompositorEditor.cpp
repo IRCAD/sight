@@ -61,21 +61,19 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    m_container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instantiated", m_container);
 
     QVBoxLayout* layout = new QVBoxLayout();
 
-    QLabel* labelLayerSelector = new QLabel(tr("3D layer selected"), m_container);
+    QLabel* labelLayerSelector = new QLabel(tr("3D layer selected"));
     layout->addWidget(labelLayerSelector);
-    m_layersBox = new QComboBox(m_container);
+    m_layersBox = new QComboBox();
     layout->addWidget(m_layersBox);
 
     // Transparency depth managment
     {
-        QLabel* labelTransparency = new QLabel(tr("Transparency depth"), m_container);
+        QLabel* labelTransparency = new QLabel(tr("Transparency depth"));
         layout->addWidget(labelTransparency);
-        m_transparencyDepthSlider = new QSlider(Qt::Horizontal, m_container);
+        m_transparencyDepthSlider = new QSlider(Qt::Horizontal);
         layout->addWidget(m_transparencyDepthSlider);
         m_transparencyDepthSlider->setEnabled(false);
         m_transparencyDepthSlider->setTickInterval(1);
@@ -86,7 +84,7 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
 
     // Transparency selector
     {
-        QGroupBox* groupBox         = new QGroupBox(tr("Transparency technique"), m_container);
+        QGroupBox* groupBox         = new QGroupBox(tr("Transparency technique"));
         QVBoxLayout* layoutGroupBox = new QVBoxLayout();
         groupBox->setLayout(layoutGroupBox);
         layout->addWidget(groupBox);
@@ -98,7 +96,7 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
         m_buttonDefault->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonDefault, 0);
         layoutGroupBox->addWidget(m_buttonDefault);
-        m_labelDefault = new QLabel(tr("<i>No Order Independent Transparency</i>"), m_container);
+        m_labelDefault = new QLabel(tr("<i>No Order Independent Transparency</i>"));
         m_labelDefault->setEnabled(false);
         layoutGroupBox->addWidget(m_labelDefault);
 
@@ -107,7 +105,7 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
         m_buttonDepthPeeling->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonDepthPeeling, 1);
         layoutGroupBox->addWidget(m_buttonDepthPeeling);
-        m_labelDepthPeeling = new QLabel(tr("<i>Exact color blending but slowest technique</i>"), m_container);
+        m_labelDepthPeeling = new QLabel(tr("<i>Exact color blending but slowest technique</i>"));
         m_labelDepthPeeling->setEnabled(false);
         layoutGroupBox->addWidget(m_labelDepthPeeling);
 
@@ -117,7 +115,7 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
         m_buttonDualDepthPeeling->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonDualDepthPeeling, 2);
         layoutGroupBox->addWidget(m_buttonDualDepthPeeling);
-        m_labelDualDepthPeeling = new QLabel(tr("<i>Exact color blending but slow technique</i>"), m_container);
+        m_labelDualDepthPeeling = new QLabel(tr("<i>Exact color blending but slow technique</i>"));
         m_labelDualDepthPeeling->setEnabled(false);
         layoutGroupBox->addWidget(m_labelDualDepthPeeling);
 
@@ -127,7 +125,7 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
         m_buttonWeightedBlendedOIT->setEnabled(false);
         m_transparencyButtonGroup->addButton(m_buttonWeightedBlendedOIT, 3);
         layoutGroupBox->addWidget(m_buttonWeightedBlendedOIT);
-        m_labelWeightedBlendedOIT = new QLabel(tr("<i>Approximative color blending but fastest</i>"), m_container);
+        m_labelWeightedBlendedOIT = new QLabel(tr("<i>Approximative color blending but fastest</i>"));
         m_labelWeightedBlendedOIT->setEnabled(false);
         layoutGroupBox->addWidget(m_labelWeightedBlendedOIT);
 
@@ -138,7 +136,7 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
         m_transparencyButtonGroup->addButton(m_buttonHybridTransparency, 4);
         layoutGroupBox->addWidget(m_buttonHybridTransparency);
         m_labelHybridTransparency =
-            new QLabel(tr("<i>Depth Peeling + Weighted Blended OIT = half exact half fast</i>"), m_container);
+            new QLabel(tr("<i>Depth Peeling + Weighted Blended OIT = half exact half fast</i>"));
         m_labelHybridTransparency->setEnabled(false);
         layoutGroupBox->addWidget(m_labelHybridTransparency);
 
@@ -148,13 +146,12 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
         m_transparencyButtonGroup->addButton(m_buttonCelShadingDepthPeeling, 5);
         layoutGroupBox->addWidget(m_buttonCelShadingDepthPeeling);
         m_labelCelShadingDepthPeeling = new QLabel(tr(
-                                                       "<i>Depth peeling with an edge detection per layer.</i>"),
-                                                   m_container);
+                                                       "<i>Depth peeling with an edge detection per layer.</i>"));
         m_labelCelShadingDepthPeeling->setEnabled(false);
         layoutGroupBox->addWidget(m_labelCelShadingDepthPeeling);
     }
 
-    m_container->setLayout( layout );
+    qtContainer->setLayout( layout );
 
     this->refreshRenderers();
 
@@ -167,9 +164,6 @@ void SCoreCompositorEditor::starting() throw(::fwTools::Failed)
 
 void SCoreCompositorEditor::stopping() throw(::fwTools::Failed)
 {
-    QObject::disconnect(m_layersBox, SIGNAL(activated(int)), this, SLOT(onSelectedLayerItem(int)));
-
-    this->getContainer()->clean();
     this->destroy();
 }
 

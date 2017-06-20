@@ -50,13 +50,12 @@ void SShaderParameterEditor::starting() throw(::fwTools::Failed)
 
     this->create();
 
-    auto qtContainer         = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instantiated", container);
-    m_sizer = new QVBoxLayout(container);
+    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
+
+    m_sizer = new QVBoxLayout();
     m_sizer->setContentsMargins(0, 0, 0, 0);
 
-    container->setLayout(m_sizer);
+    qtContainer->setLayout(m_sizer);
 
     this->updating();
 }
@@ -67,8 +66,6 @@ void SShaderParameterEditor::stopping() throw(::fwTools::Failed)
 {
     m_connections.disconnect();
     this->clear();
-
-    this->getContainer()->clean();
     this->destroy();
 }
 
