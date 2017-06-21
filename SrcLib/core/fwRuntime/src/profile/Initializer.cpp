@@ -1,17 +1,17 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
+#include "fwRuntime/profile/Initializer.hpp"
 
-#include "fwRuntime/Runtime.hpp"
 #include "fwRuntime/Bundle.hpp"
-
 #include "fwRuntime/profile/Profile.hpp"
 #include "fwRuntime/profile/Uninitializer.hpp"
-#include "fwRuntime/profile/Initializer.hpp"
+#include "fwRuntime/Runtime.hpp"
+
+#include <fwCore/base.hpp>
 
 namespace fwRuntime
 {
@@ -21,8 +21,9 @@ namespace profile
 
 //------------------------------------------------------------------------------
 
-Initializer::Initializer( const std::string & identifier )
-    : m_identifier( identifier )
+Initializer::Initializer( const std::string& identifier, const Version& version) :
+    m_identifier( identifier ),
+    m_version( version )
 {
 }
 
@@ -30,19 +31,21 @@ Initializer::Initializer( const std::string & identifier )
 
 void Initializer::apply()
 {
-    SPTR( Bundle )  bundle = Runtime::getDefault()->findBundle(m_identifier);
-    OSLM_FATAL_IF("Unable to initialize bundle " << m_identifier << ". Not found.", bundle == 0);
+    SPTR( Bundle )  bundle = Runtime::getDefault()->findEnabledBundle(m_identifier, m_version);
+    SLM_FATAL_IF("Unable to initialize bundle " + m_identifier + "_" + m_version.string() + ". Not found.",
+                 bundle == 0);
     try
     {
         if (!bundle->isInitialized())
         {
             bundle->initialize();
-            ::fwRuntime::profile::getCurrentProfile()->add( SPTR(Uninitializer) (new Uninitializer(m_identifier)));
+            ::fwRuntime::profile::getCurrentProfile()->add( SPTR(Uninitializer) (new Uninitializer(m_identifier,
+                                                                                                   m_version)));
         }
     }
-    catch( const std::exception & e )
+    catch( const std::exception& e )
     {
-        OSLM_FATAL("Unable to initialize bundle " << m_identifier << ". " << e.what());
+        SLM_FATAL("Unable to initialize bundle " + m_identifier + "_" + m_version.string() + ". " + e.what());
     }
 }
 

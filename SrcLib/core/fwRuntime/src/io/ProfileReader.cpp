@@ -1,15 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRuntime/io/ProfileReader.hpp"
-
-#include <string>
-#include <sstream>
-#include <boost/filesystem/operations.hpp>
-#include <libxml/parser.h>
 
 #include "fwRuntime/io/Validator.hpp"
 #include "fwRuntime/profile/Activater.hpp"
@@ -18,31 +13,37 @@
 #include "fwRuntime/Runtime.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 
+#include <boost/filesystem/operations.hpp>
+
+#include <libxml/parser.h>
+
+#include <sstream>
+#include <string>
+
 namespace fwRuntime
 {
 
 namespace io
 {
 
-std::string ProfileReader::ID                    ("id");
-std::string ProfileReader::NAME                  ("name");
-std::string ProfileReader::VALUE                 ("value");
-std::string ProfileReader::VERSION               ("version");
-std::string ProfileReader::CHECK_SINGLE_INSTANCE ("check-single-instance");
-std::string ProfileReader::ACTIVATE              ("activate");
-std::string ProfileReader::START                 ("start");
-std::string ProfileReader::PARAM                 ("param");
-std::string ProfileReader::DIS_EXT_PT            ("disable-extension-point");
-std::string ProfileReader::DIS_EXT               ("disable-extension");
+std::string ProfileReader::ID("id");
+std::string ProfileReader::NAME("name");
+std::string ProfileReader::VALUE("value");
+std::string ProfileReader::VERSION("version");
+std::string ProfileReader::CHECK_SINGLE_INSTANCE("check-single-instance");
+std::string ProfileReader::ACTIVATE("activate");
+std::string ProfileReader::START("start");
+std::string ProfileReader::PARAM("param");
+std::string ProfileReader::DIS_EXT_PT("disable-extension-point");
+std::string ProfileReader::DIS_EXT("disable-extension");
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< ::fwRuntime::profile::Profile > ProfileReader::createProfile( const boost::filesystem::path & path )
+std::shared_ptr< ::fwRuntime::profile::Profile > ProfileReader::createProfile( const boost::filesystem::path& path )
 {
     // Normalizes the path.
     boost::filesystem::path normalizedPath(path);
     normalizedPath.normalize();
-
 
     // Asserts that the repository is a valid directory path.
     if(boost::filesystem::exists(normalizedPath) == false || boost::filesystem::is_directory(normalizedPath) == true)
@@ -75,9 +76,9 @@ std::shared_ptr< ::fwRuntime::profile::Profile > ProfileReader::createProfile( c
         // Get the root node.
         xmlNodePtr rootNode = xmlDocGetRootElement(document);
 
-        char* pName    = (char *) xmlGetProp(rootNode, (const xmlChar*) NAME.c_str());
-        char* pVersion = (char *) xmlGetProp(rootNode, (const xmlChar*) VERSION.c_str());
-        char* pChkInst = (char *) xmlGetProp(rootNode, (const xmlChar*) CHECK_SINGLE_INSTANCE.c_str());
+        char* pName    = (char*) xmlGetProp(rootNode, (const xmlChar*) NAME.c_str());
+        char* pVersion = (char*) xmlGetProp(rootNode, (const xmlChar*) VERSION.c_str());
+        char* pChkInst = (char*) xmlGetProp(rootNode, (const xmlChar*) CHECK_SINGLE_INSTANCE.c_str());
 
         SLM_ASSERT("Application profile MUST have a name attribute", pName);
         SLM_ASSERT("Application profile MUST have a version attribute", pVersion);
@@ -114,7 +115,6 @@ std::shared_ptr< ::fwRuntime::profile::Profile > ProfileReader::createProfile( c
 std::shared_ptr< ::fwRuntime::profile::Profile > ProfileReader::processProfile(xmlNodePtr node)
 {
     using namespace ::fwRuntime::profile;
-
 
     // Process child nodes.
     SPTR(Profile) profile = std::make_shared<Profile>();
@@ -264,6 +264,7 @@ std::shared_ptr< ::fwRuntime::profile::Starter > ProfileReader::processStarter(x
     // Processes all attributes.
     xmlAttrPtr curAttr;
     std::string identifier;
+    std::string version;
     for(curAttr = node->properties; curAttr != 0; curAttr = curAttr->next)
     {
         if(xmlStrcmp(curAttr->name, (const xmlChar*) ID.c_str()) == 0)
@@ -271,11 +272,17 @@ std::shared_ptr< ::fwRuntime::profile::Starter > ProfileReader::processStarter(x
             identifier = (const char*) curAttr->children->content;
             continue;
         }
+
+        if(xmlStrcmp(curAttr->name, (const xmlChar*) VERSION.c_str()) == 0)
+        {
+            version = (const char*) curAttr->children->content;
+            continue;
+        }
     }
 
     // Creates the activater object.
     using ::fwRuntime::profile::Starter;
-    std::shared_ptr< Starter > starter( new Starter(identifier) );
+    std::shared_ptr< Starter > starter( new Starter(identifier, Version(version)) );
     return starter;
 }
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,7 +20,6 @@
 #include "fwRuntime/Extension.hpp"
 #include "fwRuntime/profile/Activater.hpp"
 
-
 namespace fwRuntime
 {
 
@@ -29,29 +28,29 @@ namespace profile
 
 //------------------------------------------------------------------------------
 
-Activater::Activater( const std::string & identifier, const std::string & version )
-    :   m_identifier( identifier ),
-      m_version( version )
+Activater::Activater( const std::string& identifier, const std::string& version ) :
+    m_identifier( identifier ),
+    m_version( version )
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Activater::addParameter( const std::string & identifier, const std::string & value )
+void Activater::addParameter( const std::string& identifier, const std::string& value )
 {
     m_parameters[identifier] = value;
 }
 
 //------------------------------------------------------------------------------
 
-void Activater::addDisableExtensionPoint( const std::string & identifier )
+void Activater::addDisableExtensionPoint( const std::string& identifier )
 {
     m_disableExtensionPoints.push_back(identifier);
 }
 
 //------------------------------------------------------------------------------
 
-void Activater::addDisableExtension( const std::string & identifier )
+void Activater::addDisableExtension( const std::string& identifier )
 {
     m_disableExtensions.push_back(identifier);
 }
@@ -61,7 +60,7 @@ void Activater::addDisableExtension( const std::string & identifier )
 void Activater::apply()
 {
     std::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findBundle(m_identifier, m_version);
-    OSLM_FATAL_IF("Unable to activate Bundle " << m_identifier << "_" << m_version << ". Not found.", bundle==0);
+    SLM_FATAL_IF("Unable to activate Bundle " + m_identifier + "_" + m_version.string() + ". Not found.", bundle == 0);
 
     bundle->setEnable( true );
 

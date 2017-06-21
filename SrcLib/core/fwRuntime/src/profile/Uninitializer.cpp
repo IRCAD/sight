@@ -1,16 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwCore/base.hpp>
-
-#include "fwRuntime/Runtime.hpp"
-#include "fwRuntime/Bundle.hpp"
-
 #include "fwRuntime/profile/Uninitializer.hpp"
 
+#include "fwRuntime/Bundle.hpp"
+#include "fwRuntime/Runtime.hpp"
+
+#include <fwCore/base.hpp>
 
 namespace fwRuntime
 {
@@ -20,8 +19,9 @@ namespace profile
 
 //------------------------------------------------------------------------------
 
-Uninitializer::Uninitializer( const std::string & identifier )
-    : m_identifier( identifier )
+Uninitializer::Uninitializer( const std::string& identifier, const Version& version ) :
+    m_identifier( identifier ),
+    m_version( version )
 {
 }
 
@@ -29,15 +29,16 @@ Uninitializer::Uninitializer( const std::string & identifier )
 
 void Uninitializer::apply()
 {
-    std::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findBundle(m_identifier);
-    OSLM_FATAL_IF("Unable to uninitialize bundle " << m_identifier << ". Not found.", bundle == 0);
+    std::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findEnabledBundle(m_identifier, m_version);
+    SLM_FATAL_IF("Unable to uninitialize bundle " + m_identifier + "_" + m_version.string() + ". Not found.",
+                 bundle == 0);
     try
     {
         bundle->uninitialize();
     }
-    catch( const std::exception & e )
+    catch( const std::exception& e )
     {
-        OSLM_FATAL("Unable to uninitialize bundle " << m_identifier << ". " << e.what());
+        SLM_FATAL("Unable to uninitialize bundle " + m_identifier + "_" + m_version.string() + ". " + e.what());
     }
 }
 

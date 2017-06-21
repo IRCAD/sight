@@ -1,20 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRuntime/profile/Profile.hpp"
 
-#include "fwRuntime/Runtime.hpp"
+#include "fwRuntime/Bundle.hpp"
+#include "fwRuntime/Extension.hpp"
 #include "fwRuntime/profile/Activater.hpp"
+#include "fwRuntime/profile/Initializer.hpp"
 #include "fwRuntime/profile/Starter.hpp"
 #include "fwRuntime/profile/Stopper.hpp"
-#include "fwRuntime/profile/Initializer.hpp"
 #include "fwRuntime/profile/Uninitializer.hpp"
-
-#include "fwRuntime/Extension.hpp"
-#include "fwRuntime/Bundle.hpp"
+#include "fwRuntime/Runtime.hpp"
 
 #include <algorithm>
 #include <cstring>
@@ -31,6 +30,8 @@ namespace
 template< typename E >
 struct Apply
 {
+    //------------------------------------------------------------------------------
+
     void operator() ( E e )
     {
         e->apply();
@@ -42,10 +43,14 @@ struct Apply
 
 Profile::wptr current_profile;
 
+//------------------------------------------------------------------------------
+
 void setCurrentProfile(Profile::sptr prof)
 {
     current_profile = prof;
 }
+
+//------------------------------------------------------------------------------
 
 Profile::sptr getCurrentProfile()
 {
@@ -117,7 +122,7 @@ void Profile::start()
     std::for_each( m_activaters.begin(), m_activaters.end(), Apply< ActivaterContainer::value_type >() );
 
     // Check validity of extension
-    Runtime * rntm( Runtime::getDefault() );
+    Runtime* rntm( Runtime::getDefault() );
     for( Runtime::ExtensionIterator i = rntm->extensionsBegin(); i != rntm->extensionsEnd(); ++i )
     {
         SPTR( Extension ) extension( *i );
@@ -127,7 +132,7 @@ void Profile::start()
     }
 
     std::for_each( m_starters.begin(), m_starters.end(), Apply< StarterContainer::value_type >() );
-    OSLM_TRACE( "NB INITIALIZERS" <<  m_initializers.size() );
+    OSLM_TRACE( "NB INITIALIZERS: " <<  m_initializers.size() );
 }
 
 //------------------------------------------------------------------------------
@@ -196,7 +201,7 @@ void Profile::setParams(int argc, char** argv)
 
 //------------------------------------------------------------------------------
 
-void Profile::setParams(const Profile::ParamsContainer &params)
+void Profile::setParams(const Profile::ParamsContainer& params)
 {
     m_params = params;
 
@@ -210,7 +215,7 @@ void Profile::setParams(const Profile::ParamsContainer &params)
     m_argv = new char*[m_params.size()];
 
     // for each string, allocate memory in the character array and copy
-    for(size_t i = 0; i<m_params.size(); i++)
+    for(size_t i = 0; i < m_params.size(); i++)
     {
         size_t paramSize = m_params[i].size();
         m_argv[i] = new char[paramSize+1];
