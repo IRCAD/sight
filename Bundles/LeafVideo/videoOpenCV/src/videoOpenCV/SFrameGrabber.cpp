@@ -286,7 +286,7 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
                 return;
             }
             const std::string timestampStr = match[1].str();
-            m_imageTimestamps.push_back(std::stoul(timestampStr));
+            m_imageTimestamps.push_back(std::stod(timestampStr));
         }
 
         std::string file = m_imageToRead.front().string();
