@@ -1,0 +1,108 @@
+<extension implements="::fwServices::registry::AppConfig2">
+    <id>TransferFunctionEditor</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="image" />
+        <param name="histogram" />
+        <param name="TFSelections" />
+        <param name="SelectedTFKey" />
+        <param name="TFPath" default="@BUNDLE_PREFIX@/uiTF_0-1/tf"/>
+    </parameters>
+
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${image}"     type="::fwData::Image"     src="ref" />
+        <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
+        <object uid="${histogram}" type="::fwData::Histogram" src="ref"/>
+
+        <object uid="TFSet" type="::fwData::Composite" src="deferred" />
+
+        <object uid="landmarks" type="::fwData::Landmarks" />
+
+        <service uid="tfEditor" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" minHeight="30" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="tfm" start="no" />
+                <view sid="tfmTab" start="yes" />
+            </registry>
+        </service>
+
+        <!-- This manager adds/removes a field (m_transferFunctionCompositeId) on Image (image) -->
+        <service uid="fieldMgr" type="::gui::action::SPushField">
+            <inout key="source" uid="${image}" />
+            <out key="destination" uid="TFSet" />
+            <push field="m_transferFunctionCompositeId" />
+        </service>
+
+        <service uid="tfm" type="::uiTF::TransferFunctionEditor">
+            <inout key="transferFunctions" uid="TFSet" />
+            <inout key="TFSelections" uid="${TFSelections}" />
+            <config selectedTFKey="${SelectedTFKey}" useDefaultPath="no">
+                <path>${TFPath}</path>
+            </config>
+        </service>
+
+        <service uid="tfmTab" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::TabLayoutManager">
+                    <view caption="TF-Negato" />
+                    <view caption="TF-Scene2D" />
+                </layout>
+            </gui>
+            <registry>
+                <view wid="negatoView" />
+                <view wid="tfScene" />
+            </registry>
+        </service>
+
+        <service uid="cfgNegato" type="::fwServices::SConfigController">
+            <appConfig id="2DNegatoWithTF" />
+            <inout key="image" uid="${image}" />
+            <inout key="TFSelections" uid="${TFSelections}" />
+            <inout key="landmarks" uid="landmarks" />
+            <parameter replace="WID_PARENT" uid="negatoView" />
+            <parameter replace="selectedTFKey" by="${SelectedTFKey}" />
+        </service>
+
+        <service uid="tfWidget" type="::fwServices::SConfigController">
+            <appConfig id="TransferFunctionWidget" />
+            <inout key="image" uid="${image}"/>
+            <inout key="histogram" uid="${histogram}"/>
+            <inout key="TFSelections" uid="${TFSelections}" />
+            <parameter replace="WID_PARENT" uid="tfScene"/>
+            <parameter replace="SelectedTFKey" by="${SelectedTFKey}" />
+        </service>
+
+        <service uid="extractLandmarks" type="::ctrlCamp::SCopy" >
+            <in key="source" uid="${image}">
+                <extract from="@fields.m_landmarksId" />
+            </in>
+            <inout key="target" uid="landmarks"/>
+        </service>
+
+        <connect>
+            <signal>${image}/modified</signal>
+            <slot>fieldMgr/update</slot>
+        </connect>
+
+        <start uid="tfEditor" />
+        <start uid="fieldMgr" />
+        <start uid="extractLandmarks" />
+        <start uid="tfWidget" />
+        <start uid="cfgNegato" />
+        <start uid="tfm" />
+
+        <update uid="fieldMgr" />
+        <update uid="extractLandmarks" />
+
+    </config>
+</extension>

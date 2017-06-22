@@ -8,6 +8,9 @@
     <requirement id="io" />
     <requirement id="ioAtoms" />
 
+    <xi:include href="configurations/TransferFunctionWidget.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/TransferFunctionEditor.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
     <extension implements="::fwServices::registry::ServiceFactory">
         <type>::gui::editor::IEditor</type>
         <service>::uiTF::TransferFunctionEditor</service>
