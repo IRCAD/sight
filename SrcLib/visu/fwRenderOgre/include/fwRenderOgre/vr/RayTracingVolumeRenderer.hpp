@@ -181,10 +181,7 @@ private:
     /// When using AutoStereo compositor, initialize the raytracing material.
     void createRayTracingMaterial();
 
-    /// Initialize the IDVR materials.
-    void initImportanceCompositingMaterials();
-
-    /// Initialize the compositors used after the step computing the ray entry points
+    /// Initializes the compositors used after the step computing the ray entry points
     void initCompositors();
 
     /// Creates the proxy geometry defining the entry points for rays.

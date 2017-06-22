@@ -343,6 +343,10 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
 
     this->createRayTracingMaterial();
 
+    // Disable the default compositor since we use the render_scene one
+    auto viewport = m_layer.lock()->getViewport();
+    ::Ogre::CompositorManager::getSingleton().setCompositorEnabled(viewport, "Default", false);
+
     this->initEntryPoints();
 
     this->setSampling(m_nbSlices);
@@ -749,14 +753,14 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     fpParams->setNamedAutoConstant("u_invWorldViewProj",
                                    ::Ogre::GpuProgramParameters::ACT_INVERSE_WORLDVIEWPROJ_MATRIX);
     fpParams->setNamedAutoConstant("u_numLights", ::Ogre::GpuProgramParameters::ACT_LIGHT_COUNT);
-    for(int j = 0; j < 10; ++j)
+    for(size_t i = 0; i < 10; ++i)
     {
-        auto number = "[" + std::to_string(j) + "]";
-        fpParams->setNamedAutoConstant("u_lightDir" + number, ::Ogre::GpuProgramParameters::ACT_LIGHT_POSITION, j);
+        auto number = "[" + std::to_string(i) + "]";
+        fpParams->setNamedAutoConstant("u_lightDir" + number, ::Ogre::GpuProgramParameters::ACT_LIGHT_POSITION, i);
         fpParams->setNamedAutoConstant("u_lightDiffuse" + number,
-                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR, j);
+                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_DIFFUSE_COLOUR, i);
         fpParams->setNamedAutoConstant("u_lightSpecular" + number,
-                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_SPECULAR_COLOUR, j);
+                                       ::Ogre::GpuProgramParameters::ACT_LIGHT_SPECULAR_COLOUR, i);
     }
     fpParams->addSharedParameters("RTVParams");
 
