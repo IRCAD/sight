@@ -34,7 +34,7 @@ const ::fwCom::Slots::SlotKeyType STextStatus::s_SET_STRING_PARAMETER_SLOT = "se
 STextStatus::STextStatus()
 {
     m_labelStaticText = new QLabel();
-    m_labelStaticText->setStyleSheet("font-weight: bold; color: red");
+    m_labelStaticText->setStyleSheet("font-weight: bold;");
     m_labelValue = new QLabel();
     m_labelValue->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
 
@@ -86,6 +86,20 @@ void STextStatus::configuring() throw(fwTools::Failed)
     QString txt = QString::fromStdString(txtCfg->getValue());
 
     m_labelStaticText->setText(QString(txt + ": "));
+
+    QString color = "red";
+
+    auto colorCfg = m_configuration->findConfigurationElement("color");
+    if(colorCfg)
+    {
+        QString txtColor = QString::fromStdString(colorCfg->getValue());
+        if(!txtColor.isEmpty())
+        {
+            color = txtColor;
+        }
+    }
+
+    m_labelStaticText->setStyleSheet(m_labelStaticText->styleSheet() + " color: " + color + ";");
 }
 
 //------------------------------------------------------------------------------
