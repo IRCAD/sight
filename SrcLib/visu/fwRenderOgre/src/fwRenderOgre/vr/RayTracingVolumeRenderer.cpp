@@ -183,7 +183,6 @@ const std::string s_JFAPING_COMPOSITOR      = "JFAPingComp";
 const std::string s_JFAPONG_COMPOSITOR      = "JFAPongComp";
 const std::string s_JFAFINALPING_COMPOSITOR = "JFAFinalPingComp";
 const std::string s_JFAFINALPONG_COMPOSITOR = "JFAFinalPongComp";
-const std::string S_DEFAULTRT_COMPOSITOR    = "DefaultRT";
 
 const std::string s_AO_DEFINE             = "AMBIENT_OCCLUSION=1";
 const std::string s_COLOR_BLEEDING_DEFINE = "COLOR_BLEEDING=1";
@@ -342,10 +341,6 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
     }
 
     this->createRayTracingMaterial();
-
-    // Disable the default compositor since we use the render_scene one
-    auto viewport = m_layer.lock()->getViewport();
-    ::Ogre::CompositorManager::getSingleton().setCompositorEnabled(viewport, "Default", false);
 
     this->initEntryPoints();
 
@@ -918,10 +913,6 @@ void RayTracingVolumeRenderer::initCompositors()
     ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
     auto viewport = m_layer.lock()->getViewport();
 
-    auto compositorInstance = compositorManager.addCompositor(viewport, S_DEFAULTRT_COMPOSITOR, 0);
-    SLM_ASSERT("Compositor could not be initialized", compositorInstance);
-    compositorInstance->setEnabled(true);
-
     this->buildICCompositors();
     this->getLayer()->requestRender();
 }
@@ -1387,8 +1378,7 @@ void RayTracingVolumeRenderer::cleanCompositorChain()
            targetComp->getCompositor()->getName() == s_JFAPING_COMPOSITOR ||
            targetComp->getCompositor()->getName() == s_JFAPONG_COMPOSITOR ||
            targetComp->getCompositor()->getName() == s_JFAFINALPING_COMPOSITOR ||
-           targetComp->getCompositor()->getName() == s_JFAFINALPONG_COMPOSITOR ||
-           targetComp->getCompositor()->getName() == S_DEFAULTRT_COMPOSITOR
+           targetComp->getCompositor()->getName() == s_JFAFINALPONG_COMPOSITOR
            )
         {
             removeCompositors.push_back(i);
