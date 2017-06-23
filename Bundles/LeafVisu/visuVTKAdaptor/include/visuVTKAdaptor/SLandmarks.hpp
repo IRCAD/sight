@@ -47,9 +47,14 @@ namespace visuVTKAdaptor
  *
  * @code{.xml}
         <adaptor id="..." class="::visuVTKAdaptor::Landmarks" objectId="imageKey">
-            <config renderer="default" picker="default"/>
+            <config renderer="default" picker="default" interaction="on" />
         </adaptor>
    @endcode
+ *
+ * @subsection Configuration Configuration
+ * - \b renderer: renderer used to display the landmarks
+ * - \b picker: landmarks picker
+ * - \b interaction (optional, default: on): if "on" interactions are enabled
  */
 class VISUVTKADAPTOR_CLASS_API SLandmarks : public ::fwRenderVTK::IVtkAdaptorService
 {
@@ -169,6 +174,9 @@ private:
 
     /// Counter to switch color for selected point: (even: green, odd: point default color)
     size_t m_count;
+
+    /// If true, the interactions are enabled
+    bool m_interaction;
 
 };
 
