@@ -27,7 +27,7 @@
             <object uid="matrixTL" type="::arData::MatrixTL" />
 
             <object uid="matrix" type="::fwData::TransformationMatrix3D" />
-            <object uid="extrinsic" type="::fwData::TransformationMatrix3D" />
+            <object uid="extrinsic" type="::fwData::TransformationMatrix3D" src="deferred"/>
             <object uid="identity" type="::fwData::TransformationMatrix3D" />
             <object uid="rightMat" type="::fwData::TransformationMatrix3D" />
 
@@ -199,7 +199,6 @@
                 </slots>
             </service>
 
-
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
             <service uid="CalibrationReader" type="::ioCalibration::SOpenCVReader">
                 <inout key="target" uid="cameraSeries"/>
@@ -264,9 +263,7 @@
                         <signal>tracker1/markerDetected</signal>
                         <slot>axis1/updateVisibility</slot>
                     </connect>
-
                 </scene>
-
             </service>
 
                         <!-- Scene in which the video and the 3D will be rendered -->
@@ -446,8 +443,10 @@
             <!-- to multiply matrices (here only used to inverse "matrix" )-->
             <service uid="concatenate" type="::maths::SConcatenateMatrices" >
                 <in group="matrix">
-                    <key uid="matrix" autoConnect="yes" inverse="false"/>
+
                     <key uid="extrinsic"/>
+                    <key uid="matrix" autoConnect="yes" inverse="false"/>
+
                 </in>
                 <inout key="output" uid="rightMat" />
             </service>
