@@ -92,7 +92,7 @@ void STextStatus::configuring() throw(fwTools::Failed)
     auto colorCfg = m_configuration->findConfigurationElement("color");
     if(colorCfg)
     {
-        QString txtColor = QString::fromStdString(colorCfg->getValue());
+        const QString txtColor = QString::fromStdString(colorCfg->getValue());
         if(!txtColor.isEmpty())
         {
             color = txtColor;
