@@ -22,10 +22,7 @@
         <!-- input image -->
         <object uid="${image}" type="::fwData::Image" src="ref" />
 
-        <object uid="landmarks" type="::fwData::Landmarks" />
-
         <!-- Transfer function -->
-        <object uid="TFSet" type="::fwData::Composite" src="deferred" />
         <object uid="TFSelections" type="::fwData::Composite" />
 
         <!-- optional model series -->
@@ -33,9 +30,7 @@
         <object uid="optionalModelSeries" type="::fwData::Image" src="deferred" />
 
         <!-- scene 2D -->
-        <object uid="Viewport" type="::scene2D::data::Viewport" />
         <object uid="Histogram" type="::fwData::Histogram" />
-        <object uid="HistogramPoint" type="::fwData::Point" />
 
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
@@ -49,34 +44,7 @@
                 <parent wid="${WID_PARENT}" />
                 <toolBar sid="toolBar" start="yes" />
                 <view sid="vr" start="no" />
-                <view sid="tf" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="tf" type="::gui::view::SDefaultView">
-            <gui>
-                <layout type="::fwGui::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="0" minHeight="30" />
-                    <view proportion="1" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="tfm" start="no" />
-                <view sid="tfmTab" start="yes" />
-            </registry>
-        </service>
-
-        <service uid="tfmTab" type="::gui::view::SDefaultView">
-            <gui>
-                <layout type="::fwGui::TabLayoutManager">
-                    <view caption="TF-Negato" />
-                    <view caption="TF-Scene2D" />
-                </layout>
-            </gui>
-            <registry>
-                <view wid="view_negato" />
-                <view sid="TFScene2D" start="yes" />
+                <view wid="tfEditor" />
             </registry>
         </service>
 
@@ -211,121 +179,6 @@
             </scene>
         </service>
 
-        <service uid="Scene2D" type="::scene2D::Render" autoConnect="yes">
-
-            <in key="imageKey" uid="${image}" />
-            <in key="histogram" uid="Histogram" />
-            <inout key="histogramPoint" uid="HistogramPoint" />
-            <inout key="viewport" uid="Viewport" />
-            <inout key="TFSelections" uid="TFSelections" />
-
-            <scene>
-
-                <scene x="-1100" y="-1.1" width="2400" height="1.2" antialiasing="true" />
-
-                <viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" />
-
-                <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
-                <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-
-                <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
-
-                <adaptor id="grid" class="::scene2D::adaptor::Grid2D" objectId="self">
-                    <config xMin="-1200" xMax="1500" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.25" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
-                </adaptor>
-
-                <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
-                    <config x1="-1200" x2="1500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
-                </adaptor>
-
-                <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self">
-                    <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
-                </adaptor>
-
-                <adaptor id="maxOpacity" class="::scene2D::adaptor::Line" objectId="self">
-                    <config x1="-1200" x2="1500" y1="1" y2="1" color="red" xAxis="xAxis" yAxis="yAxis" zValue="4" />
-                </adaptor>
-
-                <adaptor id="curvedHistogram" class="::scene2D::adaptor::CurvedHistogram" objectId="histogram">
-                    <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25" zValue="6" histogramPointUID="histogramPoint" borderWidth="2.0" />
-                </adaptor>
-
-                <!-- A graphic cursor that follow histogram's shape according to mouse's cursor -->
-                <adaptor id="histogramCursor" class="::scene2D::adaptor::HistogramCursor" objectId="histogram">
-                    <config xAxis="xAxis" yAxis="axeHistogramY" color="blue" borderColor="gray" zValue="9" pointSize="16" viewportUID="viewport" histogramPointUID="histogramPoint" />
-                </adaptor>
-
-                <adaptor id="histogramValue" class="::scene2D::adaptor::HistogramValue" objectId="histogram">
-                    <config xAxis="xAxis" yAxis="axeHistogramY" zValue="12" fontSize="6" viewportUID="viewport" histogramPointUID="histogramPoint" />
-                </adaptor>
-
-                <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="imageKey">
-                    <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" viewportUID="viewport" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-                </adaptor>
-
-                <adaptor id="viewportRangeUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="viewport">
-                    <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
-                </adaptor>
-
-                <adaptor id="scaleValuesLeft" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                    <config min="0.0" max="1.0" interval="0.1" fontSize="7" align="left" unit="%" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                </adaptor>
-
-                <adaptor id="axisLeft" class="::scene2D::adaptor::Axis" objectId="self">
-                    <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                </adaptor>
-
-                <adaptor id="scaleValuesBottom" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                    <config min="-1024" max="1024" interval="200" fontSize="7" align="bottom" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                </adaptor>
-
-                <adaptor id="axisBottom" class="::scene2D::adaptor::Axis" objectId="self">
-                    <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                </adaptor>
-
-            </scene>
-
-        </service>
-
-        <service uid="Scene2D_Shutter" type="::scene2D::Render" autoConnect="yes">
-            <in key="histogram" uid="Histogram" />
-            <inout key="viewport" uid="Viewport" />
-
-            <scene>
-
-                <scene x="-1100" y="-1.1" width="2400" height="1.2" />
-
-                <viewport id="view1" x="-1100" y="-1.1" width="2400" height="1.2" />
-
-                <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
-                <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-
-                <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
-
-                <adaptor id="shutterGrid" class="::scene2D::adaptor::Grid2D" objectId="self">
-                    <config xMin="-1200" xMax="1400" yMin="-0.7" yMax="1.7" xSpacing="200" ySpacing="0.2" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
-                </adaptor>
-
-                <adaptor id="shutterAbscissa" class="::scene2D::adaptor::Line" objectId="self">
-                    <config x1="-1200" x2="1400" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
-                </adaptor>
-
-                <adaptor id="shutterOrdinate" class="::scene2D::adaptor::Line" objectId="self">
-                    <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
-                </adaptor>
-
-                <adaptor id="shutterHistogram" class="::scene2D::adaptor::Histogram" objectId="histogram">
-                    <config color="green" xAxis="xAxis" yAxis="axeHistogramY" zValue="4" />
-                </adaptor>
-
-                <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="viewport">
-                    <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1200" initialPos="-700" />
-                </adaptor>
-
-            </scene>
-
-        </service>
-
         <!-- Services working on input image -->
         <service uid="LockImageSrv" type="::ctrlMemory::LockDumpSrv" >
             <in key="image" uid="${image}" />
@@ -333,17 +186,6 @@
 
         <service uid="MedicalImageSrv" type="::ctrlSelection::MedicalImageSrv" >
             <inout key="image" uid="${image}" />
-        </service>
-
-        <service uid="cfgNegato" type="::fwServices::SConfigController">
-            <appConfig id="2DNegatoWithTF" />
-            <inout key="image" uid="${image}" />
-            <inout key="TFSelections" uid="TFSelections" />
-            <inout key="landmarks" uid="landmarks" />
-            <parameter replace="selectedTFKey" by="SelectedTF" />
-            <parameter replace="patient_name" by="${patient_name}" />
-            <parameter replace="WID_PARENT" uid="view_negato" />
-            <parameter replace="CrossTypeChannel" uid="crossTypeChannel" />
         </service>
 
         <service uid="ActionHideCross" type="::uiVisu::action::CrossTypeAction">
@@ -376,18 +218,13 @@
         </service>
 
         <!-- Services working on TF -->
-
-        <!-- This manager adds/removes a field (m_transferFunctionCompositeId) on Image (image) -->
-        <service uid="fieldMgr" type="::gui::action::SPushField" >
-            <inout key="source" uid="${image}" />
-            <out key="destination" uid="TFSet" />
-            <push field="m_transferFunctionCompositeId" />
-        </service>
-
-        <service uid="tfm" type="::uiTF::TransferFunctionEditor" >
-            <inout key="transferFunctions" uid="TFSet" />
+        <service uid="tfEditor" type="::fwServices::SConfigController">
+            <appConfig id="TransferFunctionEditor" />
+            <inout key="image" uid="${image}"/>
+            <inout key="histogram" uid="Histogram"/>
             <inout key="TFSelections" uid="TFSelections" />
-            <config selectedTFKey="SelectedTF" />
+            <parameter replace="WID_PARENT" uid="tfEditor"/>
+            <parameter replace="SelectedTFKey" by="SelectedTF" />
         </service>
 
         <service uid="computeHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
@@ -396,37 +233,16 @@
             <binsWidth>5.0</binsWidth>
         </service>
 
-        <service uid="extractLandmarks" type="::ctrlCamp::SCopy" >
-            <in key="source" uid="${image}">
-                <extract from="@fields.m_landmarksId" />
-            </in>
-            <inout key="target" uid="landmarks"/>
-        </service>
-
-        <connect channel="crossTypeChannel">
-            <signal>ActionHideCross/crossTypeModified</signal>
-            <signal>ActionShowNormalCross/crossTypeModified</signal>
-            <signal>ActionShowFullCross/crossTypeModified</signal>
-        </connect>
-
         <!-- START AND STOP SERVICES -->
         <start uid="computeHistogram" />
         <start uid="LockImageSrv" />
         <start uid="MedicalImageSrv" />
         <start uid="mainView" />
-        <start uid="Scene2D_Shutter" />
-        <start uid="Scene2D" />
+        <start uid="tfEditor" />
         <start uid="vr" />
-        <start uid="cfgNegato" />
-        <start uid="fieldMgr" />
-        <start uid="extractLandmarks" />
 
         <!-- Deferred start -->
         <start uid="action_organManager" />
-        <start uid="tfm" />
-
-        <update uid="fieldMgr" />
-        <update uid="extractLandmarks" />
 
     </config>
 </extension>
