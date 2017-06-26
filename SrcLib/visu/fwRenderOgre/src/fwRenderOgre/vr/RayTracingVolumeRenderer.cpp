@@ -341,7 +341,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(std::string parentId,
         renderTexture->addViewport(m_camera);
     }
 
-    this->initRayTracingMaterials();
+    this->createRayTracingMaterial();
 
     this->initEntryPoints();
 
@@ -526,7 +526,7 @@ void RayTracingVolumeRenderer::setIlluminationVolume(SATVolumeIllumination* illu
 {
     m_illumVolume = illuminationVolume;
 
-    this->initRayTracingMaterials();
+    this->createRayTracingMaterial();
 }
 
 //-----------------------------------------------------------------------------
@@ -538,7 +538,7 @@ void RayTracingVolumeRenderer::setPreIntegratedRendering(bool preIntegratedRende
 
     m_preIntegratedRendering = preIntegratedRendering;
 
-    this->initRayTracingMaterials();
+    this->createRayTracingMaterial();
 }
 
 //-----------------------------------------------------------------------------
@@ -547,7 +547,7 @@ void RayTracingVolumeRenderer::setAmbientOcclusion(bool ambientOcclusion)
 {
     m_ambientOcclusion = ambientOcclusion;
 
-    this->initRayTracingMaterials();
+    this->createRayTracingMaterial();
     this->updateVolIllumMat();
 }
 
@@ -557,7 +557,7 @@ void RayTracingVolumeRenderer::setColorBleeding(bool colorBleeding)
 {
     m_colorBleeding = colorBleeding;
 
-    this->initRayTracingMaterials();
+    this->createRayTracingMaterial();
     this->updateVolIllumMat();
 }
 
@@ -567,7 +567,7 @@ void RayTracingVolumeRenderer::setShadows(bool shadows)
 {
     m_shadows = shadows;
 
-    this->initRayTracingMaterials();
+    this->createRayTracingMaterial();
     this->updateVolIllumMat();
 }
 
@@ -596,7 +596,7 @@ void RayTracingVolumeRenderer::setIDVRMethod(std::string method)
     SLM_ASSERT("IDVR method '" + method + "' isn't supported by the ray tracing volume renderer.", isSupported);
     m_idvrMethod = method;
 
-    this->initRayTracingMaterials();
+    this->createRayTracingMaterial();
 }
 
 //-----------------------------------------------------------------------------
@@ -672,7 +672,7 @@ void RayTracingVolumeRenderer::resizeViewport(int w, int h)
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::initRayTracingMaterials()
+void RayTracingVolumeRenderer::createRayTracingMaterial()
 {
     std::string vpPPDefines, fpPPDefines;
     size_t hash;
@@ -683,7 +683,7 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
 
     ::Ogre::MaterialManager& mm = ::Ogre::MaterialManager::getSingleton();
 
-    // Only creates material if does not exist
+    // The material needs to be created only if it doesn't exist
     if(mm.resourceExists(matName))
     {
         this->initCompositors();
@@ -804,15 +804,11 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
         m_RTVSharedParameters->setNamedConstant("u_volIllumFactor", m_volIllumFactor);
     }
 
-    const bool findMImP  = fpPPDefines.find(s_MIMP_DEFINE) != std::string::npos;
-    const bool findAImC  = fpPPDefines.find(s_AIMC_DEFINE) != std::string::npos;
-    const bool findVPImC = fpPPDefines.find(s_VPIMC_DEFINE) != std::string::npos;
-
     // Importance Compositing texture: MImP | AImC | VPImC
-    if(findMImP || findAImC || findVPImC)
+    if(m_idvrMethod != s_NONE)
     {
-        const std::string compositorRef = findMImP ? s_MIMP_COMPOSITOR :
-                                          findAImC ? s_AIMC_COMPOSITOR : s_VPIMC_COMPOSITOR;
+        const std::string compositorRef = m_idvrMethod == s_MIMP ? s_MIMP_COMPOSITOR :
+                                          m_idvrMethod == s_AIMC ? s_AIMC_COMPOSITOR : s_VPIMC_COMPOSITOR;
         texUnitState = pass->createTextureUnitState();
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
         texUnitState->setTextureAddressingMode(::Ogre::TextureUnitState::TAM_CLAMP);
@@ -825,7 +821,7 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
     }
 
     // JFA texture: MImP
-    if(findMImP)
+    if(m_idvrMethod == s_MIMP)
     {
         texUnitState = pass->createTextureUnitState();
         texUnitState->setTextureFiltering(::Ogre::TFO_BILINEAR);
@@ -839,16 +835,13 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
     }
 
     // Alpha Correction: AImC | VPImC
-    if(findAImC || findVPImC)
+    if(m_idvrMethod == s_AIMC)
     {
-        if(m_idvrMethod == s_AIMC)
-        {
-            m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
-        }
-        else
-        {
-            m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
-        }
+        m_RTVSharedParameters->setNamedConstant("u_aimcAlphaCorrection", m_idvrAImCAlphaCorrection);
+    }
+    else if(m_idvrMethod == s_VPIMC)
+    {
+        m_RTVSharedParameters->setNamedConstant("u_vpimcAlphaCorrection", m_idvrVPImCAlphaCorrection);
     }
 
     // Entry points texture
@@ -891,7 +884,6 @@ void RayTracingVolumeRenderer::initRayTracingMaterials()
         }
         else if(m_idvrMethod == s_VPIMC)
         {
-
             tech->setSchemeName("IDVR_VPImC_Mat");
             pass->setFragmentProgram("IDVR_VPImC_FP");
         }
@@ -926,9 +918,7 @@ void RayTracingVolumeRenderer::initCompositors()
     SLM_ASSERT("Compositor could not be initialized", compositorInstance);
     compositorInstance->setEnabled(true);
 
-    // Add the initial ray tracing compositor
-    this->buildCompositorChain();
-
+    this->buildICCompositors();
     this->getLayer()->requestRender();
 }
 
@@ -1281,7 +1271,7 @@ void RayTracingVolumeRenderer::setMaterialLightParams(::Ogre::MaterialPtr mtl)
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::buildCompositorChain()
+void RayTracingVolumeRenderer::buildICCompositors()
 {
     std::string vpPPDefines, fpPPDefines;
     size_t hash;
@@ -1291,13 +1281,10 @@ void RayTracingVolumeRenderer::buildCompositorChain()
     auto viewport = m_layer.lock()->getViewport();
 
     ::Ogre::CompositorInstance* compositorInstance = nullptr;
-    std::string idvrCompositorName;
 
     if(m_idvrMethod == s_MIMP)
     {
-        idvrCompositorName = s_MIMP_COMPOSITOR;
-
-        compositorInstance = compositorManager.addCompositor(viewport, idvrCompositorName, 0);
+        compositorInstance = compositorManager.addCompositor(viewport, s_MIMP_COMPOSITOR, 0);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
         compositorInstance->setEnabled(true);
 
@@ -1359,17 +1346,13 @@ void RayTracingVolumeRenderer::buildCompositorChain()
     }
     else if(m_idvrMethod == s_AIMC)
     {
-        idvrCompositorName = s_AIMC_COMPOSITOR;
-
-        compositorInstance = compositorManager.addCompositor(viewport, idvrCompositorName, 0);
+        compositorInstance = compositorManager.addCompositor(viewport, s_AIMC_COMPOSITOR, 0);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
         compositorInstance->setEnabled(true);
     }
     else if(m_idvrMethod == s_VPIMC)
     {
-        idvrCompositorName = s_VPIMC_COMPOSITOR;
-
-        compositorInstance = compositorManager.addCompositor(viewport, idvrCompositorName, 0);
+        compositorInstance = compositorManager.addCompositor(viewport, s_VPIMC_COMPOSITOR, 0);
         SLM_ASSERT("Compositor could not be initialized", compositorInstance);
         compositorInstance->setEnabled(true);
     }
@@ -1428,7 +1411,7 @@ void RayTracingVolumeRenderer::toggleIDVRCountersinkGeometry(bool CSG)
 
     if(this->m_idvrMethod == s_MIMP)
     {
-        this->initRayTracingMaterials();
+        this->createRayTracingMaterial();
     }
 }
 
@@ -1465,7 +1448,7 @@ void RayTracingVolumeRenderer::toggleIDVRCSGBorder(bool border)
 
     if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
-        this->initRayTracingMaterials();
+        this->createRayTracingMaterial();
     }
 }
 
@@ -1477,7 +1460,7 @@ void RayTracingVolumeRenderer::toggleIDVRCSGDisableContext(bool discard)
 
     if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
-        this->initRayTracingMaterials();
+        this->createRayTracingMaterial();
     }
 }
 
@@ -1517,7 +1500,7 @@ void RayTracingVolumeRenderer::toggleIDVRCSGModulation(bool modulation)
 
     if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
-        this->initRayTracingMaterials();
+        this->createRayTracingMaterial();
     }
 }
 
@@ -1529,7 +1512,7 @@ void RayTracingVolumeRenderer::setIDVRCSModulationMethod(IDVRCSGModulationMethod
 
     if(this->m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGModulation)
     {
-        this->initRayTracingMaterials();
+        this->createRayTracingMaterial();
     }
 }
 
@@ -1554,7 +1537,7 @@ void RayTracingVolumeRenderer::toggleIDVRCSGOpacityDecrease(bool opacityDecrease
 
     if(m_idvrMethod == s_MIMP && this->m_idvrCSG)
     {
-        this->initRayTracingMaterials();
+        this->createRayTracingMaterial();
     }
 }
 
@@ -1579,7 +1562,7 @@ void RayTracingVolumeRenderer::toggleIDVRDepthLines(bool depthLines)
 
     if(m_idvrMethod == s_MIMP && this->m_idvrCSG && this->m_idvrCSGBorder)
     {
-        this->initRayTracingMaterials();
+        this->createRayTracingMaterial();
     }
 }
 

@@ -179,7 +179,7 @@ public:
 private:
 
     /// When using AutoStereo compositor, initialize the raytracing material.
-    void initRayTracingMaterials();
+    void createRayTracingMaterial();
 
     /// Initialize the IDVR materials.
     void initImportanceCompositingMaterials();
@@ -217,8 +217,8 @@ private:
     /// Sets the default diffuse, specular and shininess in the material.
     void setMaterialLightParams(::Ogre::MaterialPtr mtl);
 
-    /// Appends a specific Ray-Tracing to the compositor chain
-    void buildCompositorChain();
+    /// Creates and adds importance compositing compositors to the chain (MImP + JFA, AImC or VPImC).
+    void buildICCompositors();
 
     /// Removes all listeners and compositors from the current chain.
     void cleanCompositorChain();
