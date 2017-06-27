@@ -7,7 +7,7 @@ uniform float u_passIndex;
 /* Total number of passes required log2(max(window.x), max(window.y)) */
 uniform float u_nbPasses;
 
-/* Input texture: either the initial texture of a previous ping-pong step */
+/* Input texture: one of the initial texture of a previous ping-pong step */
 /* Layout of the texture (fragCoord.x, fragCoord.y, rayPos.z, 1.0) */
 uniform sampler2D u_inputTexture;
 
@@ -47,7 +47,7 @@ void main()
             /* to the closest point we get for our neighboring sample */
             float d = length(neighborSampleValue.xy - currentSampleCoords);
 
-            /* Ensure that the current neighbor as already been initialized with a closest neighboring sample (x != 0.0 && y != 0.0) */
+            /* Ensure that the current neighbor has already been initialized with a footprint sample (x != 0.0 && y != 0.0) */
             /* And that the distance is the closest */
             if ((neighborSampleValue.x != 0.0) && (neighborSampleValue.y != 0.0) && (d < dstMin))
             {

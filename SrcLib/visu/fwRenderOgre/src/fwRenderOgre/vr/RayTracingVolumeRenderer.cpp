@@ -677,16 +677,17 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     size_t hash;
     std::tie(vpPPDefines, fpPPDefines, hash) = this->computeRayTracingDefines();
 
-    ::Ogre::String matName("RTV_Mat_" + std::to_string(hash));
+    ::Ogre::String matName("RTV_Mat_" + m_parentId);
     m_currentMtlName = matName;
 
     ::Ogre::MaterialManager& mm = ::Ogre::MaterialManager::getSingleton();
 
-    // The material needs to be created only if it doesn't exist
-    if(mm.resourceExists(matName))
+    // The material needs to be destroyed only if it already exists
+    ::Ogre::ResourcePtr matResource = mm.getResourceByName(matName,
+                                                           ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+    if(!matResource.isNull())
     {
-        this->initCompositors();
-        return;
+        mm.remove(matResource);
     }
 
     ::Ogre::HighLevelGpuProgramManager& gpm = ::Ogre::HighLevelGpuProgramManager::getSingleton();
@@ -694,29 +695,46 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     ///////////////////////////////////////////////////////////////////////////
     /// Compile vertex shader
     ::Ogre::String vpName("RTV_VP_" + std::to_string(hash));
+    ::Ogre::HighLevelGpuProgramPtr vsp;
 
-    ::Ogre::HighLevelGpuProgramPtr vsp = gpm.createProgram(vpName, "Materials", "glsl", ::Ogre::GPT_VERTEX_PROGRAM);
-    vsp->setSourceFile("RayTracedVolume_VP.glsl");
-
-    if(vpPPDefines.size() > 0)
+    if(gpm.resourceExists(vpName))
     {
-        vsp->setParameter("preprocessor_defines", vpPPDefines);
+        vsp = gpm.getByName(vpName, "Materials");
+    }
+    else
+    {
+        vsp = gpm.createProgram(vpName, "Materials", "glsl", ::Ogre::GPT_VERTEX_PROGRAM);
+        vsp->setSourceFile("RayTracedVolume_VP.glsl");
+
+        if(vpPPDefines.size() > 0)
+        {
+            vsp->setParameter("preprocessor_defines", vpPPDefines);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
     /// Compile fragment shader
     ::Ogre::String fpName("RTV_FP_" + std::to_string(hash));
-    ::Ogre::HighLevelGpuProgramPtr fsp = gpm.createProgram(fpName, "Materials", "glsl", ::Ogre::GPT_FRAGMENT_PROGRAM);
-    fsp->setSourceFile("RayTracedVolume_FP.glsl");
+    ::Ogre::HighLevelGpuProgramPtr fsp;
 
-    fsp->setParameter("attach", "TransferFunction_FP");
-    if(this->m_idvrCSGModulation)
+    if(gpm.resourceExists(fpName))
     {
-        fsp->setParameter("attach", "ColorFormats_FP");
+        fsp = gpm.getByName(fpName, "Materials");
     }
-    if(fpPPDefines.size() > 0)
+    else
     {
-        fsp->setParameter("preprocessor_defines", fpPPDefines);
+        fsp = gpm.createProgram(fpName, "Materials", "glsl", ::Ogre::GPT_FRAGMENT_PROGRAM);
+        fsp->setSourceFile("RayTracedVolume_FP.glsl");
+
+        fsp->setParameter("attach", "TransferFunction_FP");
+        if(this->m_idvrCSGModulation)
+        {
+            fsp->setParameter("attach", "ColorFormats_FP");
+        }
+        if(fpPPDefines.size() > 0)
+        {
+            fsp->setParameter("preprocessor_defines", fpPPDefines);
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -908,10 +926,6 @@ void RayTracingVolumeRenderer::initCompositors()
 {
     // Start from an empty compositor chain
     this->cleanCompositorChain();
-
-    // Setup the Default compositor, that notably handles the Widget modifying the entryPoints
-    ::Ogre::CompositorManager& compositorManager = ::Ogre::CompositorManager::getSingleton();
-    auto viewport = m_layer.lock()->getViewport();
 
     this->buildICCompositors();
     this->getLayer()->requestRender();
