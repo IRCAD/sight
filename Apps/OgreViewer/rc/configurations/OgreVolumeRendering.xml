@@ -79,7 +79,6 @@
         <service uid="vrBasicEditor" type="::guiQt::editor::SParameters" autoConnect="no">
             <parameters>
                 <param type="bool" name="Widgets" key="widgets" defaultValue="false" />
-                <param type="enum" name="stereoMode" key="stereoMode" defaultValue="None" values="None,Autostereo(5),Autostereo(8)" />
                 <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="1024" />
                 <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="1" max="200" />
                 <param type="int" name="Focal length" key="focalLength" defaultValue="50" min="0" max="100" />
