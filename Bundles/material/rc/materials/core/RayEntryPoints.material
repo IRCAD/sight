@@ -73,25 +73,6 @@ material RayEntryPoints
 {
     technique
     {
-        pass FrontFaces
-        {
-            scene_blend src_colour dest_colour
-            scene_blend_op min
-            depth_check on
-            depth_write on
-            depth_func less
-            cull_hardware anticlockwise
-            cull_software none
-
-            vertex_program_ref RayEntryPoints_VP
-            {
-            }
-
-            fragment_program_ref RayEntryPoints_FrontFaces_FP
-            {
-            }
-        }
-
         pass BackFacesMax
         {
             scene_blend src_colour dest_colour
@@ -125,6 +106,25 @@ material RayEntryPoints
             }
 
             fragment_program_ref RayEntryPoints_BackFaces_FP
+            {
+            }
+        }
+
+        pass FrontFaces
+        {
+            scene_blend src_colour dest_colour
+            scene_blend_op min
+            depth_check on
+            depth_write on
+            depth_func less
+            cull_hardware anticlockwise
+            cull_software none
+
+            vertex_program_ref RayEntryPoints_VP
+            {
+            }
+
+            fragment_program_ref RayEntryPoints_FrontFaces_FP
             {
             }
         }
