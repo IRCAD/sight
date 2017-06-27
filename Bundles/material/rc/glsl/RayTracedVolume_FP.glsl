@@ -188,7 +188,6 @@ vec4 launchRay(in vec3 rayPos, in vec3 rayDir, in float rayLength, in float samp
         float intensity = texture(u_image, rayPos).r;
 
         vec4  tfColour = sampleTransferFunction(intensity);
-        tfColour.a     = 1 - exp(-tfColour.a * u_sampleDistance);
 #endif // PREINTEGRATION
 
         if(tfColour.a > 0)
