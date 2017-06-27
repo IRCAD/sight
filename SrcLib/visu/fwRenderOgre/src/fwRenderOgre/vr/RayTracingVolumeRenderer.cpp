@@ -683,11 +683,20 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
     ::Ogre::MaterialManager& mm = ::Ogre::MaterialManager::getSingleton();
 
     // The material needs to be destroyed only if it already exists
-    ::Ogre::ResourcePtr matResource = mm.getResourceByName(matName,
-                                                           ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
-    if(!matResource.isNull())
     {
-        mm.remove(matResource);
+        ::Ogre::ResourcePtr matResource =
+            mm.getResourceByName(matName, ::Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
+        if(!matResource.isNull())
+        {
+            mm.remove(matResource);
+            // Our manual object still references the material and uses the material name to know if it should modify
+            // its pointer (see ManualObject::ManualObjectSection::setMaterialName() in OgreManualObject.cpp)
+            // So we just force it to release the pointer otherwise the material is not destroyed
+            if(m_entryPointGeometry)
+            {
+                m_entryPointGeometry->setMaterialName(0, "");
+            }
+        }
     }
 
     ::Ogre::HighLevelGpuProgramManager& gpm = ::Ogre::HighLevelGpuProgramManager::getSingleton();
@@ -891,16 +900,19 @@ void RayTracingVolumeRenderer::createRayTracingMaterial()
 
         if(m_idvrMethod == s_MIMP)
         {
+            tech->setName("IDVR_MImP_Mat");
             tech->setSchemeName("IDVR_MImP_Mat");
             pass->setFragmentProgram("IDVR_MImP_FP");
         }
         else if(m_idvrMethod == s_AIMC)
         {
+            tech->setName("IDVR_AImC_Mat");
             tech->setSchemeName("IDVR_AImC_Mat");
             pass->setFragmentProgram("IDVR_AImC_FP");
         }
         else if(m_idvrMethod == s_VPIMC)
         {
+            tech->setName("IDVR_VPImC_Mat");
             tech->setSchemeName("IDVR_VPImC_Mat");
             pass->setFragmentProgram("IDVR_VPImC_FP");
         }
