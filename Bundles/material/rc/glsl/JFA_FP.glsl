@@ -7,7 +7,7 @@ uniform float u_passIndex;
 /* Total number of passes required log2(max(window.x), max(window.y)) */
 uniform float u_nbPasses;
 
-/* Input texture: one of the initial texture of a previous ping-pong step */
+/* Input texture: one of the initial textures of a previous ping-pong step */
 /* Layout of the texture (fragCoord.x, fragCoord.y, rayPos.z, 1.0) */
 uniform sampler2D u_inputTexture;
 

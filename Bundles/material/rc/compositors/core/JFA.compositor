@@ -2,12 +2,15 @@ compositor JFAInit
 {
     technique
     {
+        // Declares textures used during the jump flooding algorithm
         texture JFAFinal target_width target_height PF_FLOAT32_RGBA pooled chain_scope
         texture JFAPing target_width target_height PF_FLOAT32_RGBA pooled chain_scope
         texture JFAPong target_width target_height PF_FLOAT32_RGBA pooled chain_scope
 
         texture_ref IC IDVR_MImP_Comp IC
 
+        // Fills render target with the footprint of the region of interest
+        // (MImP importance compositing texture)
         target JFAPing
         {
             input none
