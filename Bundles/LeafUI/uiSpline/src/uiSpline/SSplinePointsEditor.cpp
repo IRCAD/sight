@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,10 +50,11 @@ const ::fwCom::Slots::SlotKeyType SSplinePointsEditor::s_GET_INTERACTION_SLOT  =
 
 const std::string SSplinePointsEditor::s_FIELD_NAME = "PointName";
 
-
 //------------------------------------------------------------------------------
 
-SSplinePointsEditor::SSplinePointsEditor() throw() : m_numberOfPoints(0), m_countPoint(0)
+SSplinePointsEditor::SSplinePointsEditor() throw() :
+    m_numberOfPoints(0),
+    m_countPoint(0)
 {
     m_connectObj = ::navigation::ConnectPoints::New();
 
@@ -78,27 +79,23 @@ void SSplinePointsEditor::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    QWidget* container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
-    m_renamePointButton = new QPushButton(QObject::tr("Rename point"), container);
+    m_renamePointButton = new QPushButton(QObject::tr("Rename point"));
     m_renamePointButton->setEnabled(false);
 
-    m_removePointButton = new QPushButton(QObject::tr("Remove point"), container);
+    m_removePointButton = new QPushButton(QObject::tr("Remove point"));
     m_removePointButton->setEnabled(false);
 
-    m_removeAllPointsButton = new QPushButton(QObject::tr("Remove all point"), container);
+    m_removeAllPointsButton = new QPushButton(QObject::tr("Remove all point"));
 
     m_list = new QListWidget();
     m_list->setSelectionMode(QAbstractItemView::SingleSelection);
 
-    QGridLayout* layout = new QGridLayout(container);
+    QGridLayout* layout = new QGridLayout();
     layout->addWidget(m_renamePointButton, 0, 0, 1, 1);
     layout->addWidget(m_removePointButton, 0, 1, 1, 1);
     layout->addWidget(m_removeAllPointsButton, 0, 2, 1, 1);
     layout->addWidget(m_list, 1, 0, 1, 4);
-
-    container->setLayout(layout);
 
     QObject::connect(m_renamePointButton, SIGNAL(clicked()), this, SLOT(onClickRenamePoint()));
     QObject::connect(m_removePointButton, SIGNAL(clicked()), this, SLOT(onClickRemovePoint()));
@@ -127,6 +124,8 @@ void SSplinePointsEditor::starting() throw(::fwTools::Failed)
         m_connectObj->connectAllSplinePoints(pointList, this->getSptr(), "updatePointList");
         m_removeAllPointsButton->setEnabled(true);
     }
+
+    qtContainer->setLayout(layout);
 }
 
 //------------------------------------------------------------------------------
@@ -144,7 +143,6 @@ void SSplinePointsEditor::stopping() throw(::fwTools::Failed)
 
     m_connectObj->disconnectSplinePoints();
 
-    this->getContainer()->clean();
     this->destroy();
 }
 
@@ -196,7 +194,7 @@ void SSplinePointsEditor::getInteraction(::fwDataTools::PickingInfo info)
             pointList->signal< ::fwData::PointList::PointAddedSignalType >(::fwData::PointList::s_POINT_ADDED_SIG);
         sig->asyncEmit(point);
 
-        m_sigIndexPointSelected->asyncEmit (m_numberOfPoints - 1);
+        m_sigIndexPointSelected->asyncEmit(m_numberOfPoints - 1);
     }
 }
 
@@ -212,8 +210,8 @@ void SSplinePointsEditor::onClickItem(QListWidgetItem* item)
     ::fwData::Point::sptr point = pointList->getRefPoints()[index];
     this->fillVisualizePointList(index);
 
-    m_sigPointSelected->asyncEmit (point);
-    m_sigIndexPointSelected->asyncEmit (index);
+    m_sigPointSelected->asyncEmit(point);
+    m_sigIndexPointSelected->asyncEmit(index);
 }
 
 //------------------------------------------------------------------------------
@@ -336,7 +334,7 @@ void SSplinePointsEditor::fillVisualizePointList(int selectedPointIndex)
             this->addPointToVisualizePointList(pointList, selectedPointIndex + 1);
 
         }
-        else if(selectedPointIndex==0 && m_numberOfPoints > 1)
+        else if(selectedPointIndex == 0 && m_numberOfPoints > 1)
         {
             this->addPointToVisualizePointList(pointList, selectedPointIndex + 1);
         }

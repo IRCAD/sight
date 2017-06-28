@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,6 @@
 #include <qwidget.h>
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::beginnerTraining::tuto02::SStringEditor );
-
 
 namespace beginnerTraining
 {
@@ -54,11 +53,11 @@ void SStringEditor::starting() throw ( ::fwTools::Failed )
     // Retrieve Qt container
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget* container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
+
+    QWidget* const container = qtContainer->getQtContainer();
 
     // Change background color in red
-    QPalette p ( container->palette() );
+    QPalette p( container->palette() );
     p.setColor( QPalette::Background, Qt::red );
     container->setPalette(p);
     container->setAutoFillBackground( true );
@@ -68,7 +67,7 @@ void SStringEditor::starting() throw ( ::fwTools::Failed )
     m_textEditor = new QTextEdit( container );
     m_textEditor->setPlainText( "Edit text !" );
     layout->addWidget( m_textEditor );
-    container->setLayout( layout );
+    qtContainer->setLayout( layout );
 }
 
 //-----------------------------------------------------------------------------
@@ -76,8 +75,7 @@ void SStringEditor::starting() throw ( ::fwTools::Failed )
 void SStringEditor::stopping() throw ( ::fwTools::Failed )
 {
     SLM_TRACE_FUNC();
-    this->getContainer()->clean(); // Erase widget content
-    this->destroy(); // finish with this inherited function
+    this->destroy();
 }
 
 //-----------------------------------------------------------------------------
@@ -93,5 +91,4 @@ void SStringEditor::updating() throw ( ::fwTools::Failed )
 
 } // namespace tuto02
 } // namespace beginnerTraining
-
 

@@ -21,13 +21,13 @@
 
 #include <fwTools/fwID.hpp>
 
+#include <boost/lexical_cast.hpp>
+
 #include <QGridLayout>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSlider>
 #include <QWidget>
-
-#include <boost/lexical_cast.hpp>
 
 #include <functional>
 
@@ -40,8 +40,11 @@ const ::fwCom::Signals::SignalKeyType SNavigationEditor::s_SLIDER_PROGRESSED_SIG
 
 //-------------------------------------------------------------------------------------------------------------
 
-SNavigationEditor::SNavigationEditor() throw()
-    : m_sliderPosition(0), m_sliderLength(100), m_timerDuration(50), m_iterationsNumber(100)
+SNavigationEditor::SNavigationEditor() throw() :
+    m_sliderPosition(0),
+    m_sliderLength(100),
+    m_timerDuration(50),
+    m_iterationsNumber(100)
 {
     // Init
     m_sigSliderProgressed = SliderProgressedSignalType::New();
@@ -65,16 +68,14 @@ void SNavigationEditor::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    QWidget* container = qtContainer->getQtContainer();
-    SLM_ASSERT("Container not instanced", container);
 
     // Buttons
-    m_playButton = new QPushButton(QObject::tr("Play"),container);
+    m_playButton = new QPushButton(QObject::tr("Play"));
 
-    m_pauseButton = new QPushButton(QObject::tr("Pause"),container);
+    m_pauseButton = new QPushButton(QObject::tr("Pause"));
     m_pauseButton->setEnabled(false);
 
-    m_resetButton = new QPushButton(QObject::tr("Reset"), container);
+    m_resetButton = new QPushButton(QObject::tr("Reset"));
     m_resetButton->setEnabled(false);
 
     // Create the slider
@@ -93,16 +94,16 @@ void SNavigationEditor::starting() throw(::fwTools::Failed)
     QObject::connect(m_playButton, SIGNAL(clicked()), this, SLOT(onClickPlaySlotType()));
     QObject::connect(m_pauseButton, SIGNAL(clicked()), this, SLOT(onClickPauseSlotType()));
     QObject::connect(m_resetButton, SIGNAL(clicked()), this, SLOT(onClickResetSlotType()));
-    QObject::connect(m_slider, SIGNAL(valueChanged (int)), this,SLOT(onChangeValue(int)));
+    QObject::connect(m_slider, SIGNAL(valueChanged(int)), this, SLOT(onChangeValue(int)));
 
     // Create the layout
-    QGridLayout* hLayout = new QGridLayout(container);
+    QGridLayout* hLayout = new QGridLayout();
     hLayout->addWidget(m_playButton, 0, 1, 1, 1);
     hLayout->addWidget(m_pauseButton, 0, 2, 1, 1);
     hLayout->addWidget(m_resetButton, 0, 3, 1, 1);
     hLayout->addWidget(m_slider, 1, 0, 1, 3);
     hLayout->addWidget(m_progressText, 1, 3, 1, 1);
-    container->setLayout(hLayout);
+    qtContainer->setLayout(hLayout);
 
     // Timer
     SLM_ASSERT("No valid worker for fly mode", m_associatedWorker);
@@ -118,12 +119,11 @@ void SNavigationEditor::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    QObject::disconnect(m_playButton, SIGNAL(clicked()), this,SLOT(onClickPlaySlotType()));
-    QObject::disconnect(m_pauseButton, SIGNAL(clicked()), this,SLOT(onClickPauseSlotType()));
-    QObject::disconnect(m_resetButton, SIGNAL(clicked()), this,SLOT(onClickResetSlotType()));
-    QObject::disconnect(m_slider, SIGNAL(valueChanged (int)), this,SLOT(onChangeValue(int)));
+    QObject::disconnect(m_playButton, SIGNAL(clicked()), this, SLOT(onClickPlaySlotType()));
+    QObject::disconnect(m_pauseButton, SIGNAL(clicked()), this, SLOT(onClickPauseSlotType()));
+    QObject::disconnect(m_resetButton, SIGNAL(clicked()), this, SLOT(onClickResetSlotType()));
+    QObject::disconnect(m_slider, SIGNAL(valueChanged(int)), this, SLOT(onChangeValue(int)));
 
-    this->getContainer()->clean();
     this->destroy();
 }
 
