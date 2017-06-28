@@ -235,7 +235,8 @@ protected:
 
 SLandmarks::SLandmarks() throw() :
     m_noSelectionCommand(nullptr),
-    m_count(0)
+    m_count(0),
+    m_interaction(true)
 {
     this->newSlot(s_ADD_POINT_SLOT, &SLandmarks::addPoint, this);
     this->newSlot(s_INSERT_POINT_SLOT, &SLandmarks::insertPoint, this);
@@ -260,7 +261,15 @@ SLandmarks::~SLandmarks() throw()
 
 void SLandmarks::doConfigure() throw(fwTools::Failed)
 {
+    const std::string interaction = m_configuration->getAttributeValue("interaction");
 
+    if (!interaction.empty())
+    {
+        SLM_FATAL_IF("value for 'integration' must be 'on' or 'off', actual: " + interaction,
+                     interaction != "on" && interaction != "off");
+
+        m_interaction = (interaction == "on");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -680,6 +689,12 @@ vtkSmartPointer< vtkHandleWidget > SLandmarks::newHandle(const ::fwData::Landmar
 
     handle->SetInteractor( this->getInteractor() );
     handle->KeyPressActivationOff();
+
+    if (!m_interaction)
+    {
+        handle->ProcessEventsOff();
+        handle->ManagesCursorOff();
+    }
 
     handle->On();
 

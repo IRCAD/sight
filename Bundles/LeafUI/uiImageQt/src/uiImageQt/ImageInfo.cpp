@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -55,21 +55,19 @@ void ImageInfo::starting() throw(::fwTools::Failed)
     this->::fwGui::IGuiContainerSrv::create();
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
 
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
+    ::fwGuiQt::container::QtContainer::sptr qtContainer
+        = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
 
     QHBoxLayout* hLayout = new QHBoxLayout();
 
-    QLabel* staticText = new QLabel( QObject::tr("intensity:"), container);
+    QLabel* staticText = new QLabel( QObject::tr("intensity:"));
     hLayout->addWidget( staticText, 0, Qt::AlignVCenter );
 
-    m_valueText = new QLineEdit( container );
+    m_valueText = new QLineEdit();
     m_valueText->setReadOnly(true);
     hLayout->addWidget( m_valueText, 1, Qt::AlignVCenter );
 
-    container->setLayout( hLayout );
+    qtContainer->setLayout( hLayout );
 }
 
 //------------------------------------------------------------------------------
@@ -78,8 +76,7 @@ void ImageInfo::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
 
-    this->getContainer()->clean();
-    this->::fwGui::IGuiContainerSrv::destroy();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------

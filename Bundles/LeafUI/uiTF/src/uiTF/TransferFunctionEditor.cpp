@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -27,15 +27,15 @@
 #include <io/IReader.hpp>
 #include <io/IWriter.hpp>
 
+#include <boost/filesystem/convenience.hpp>
+#include <boost/filesystem/operations.hpp>
+
 #include <QBoxLayout>
 #include <QComboBox>
 #include <QIcon>
 #include <QPushButton>
 #include <QString>
 #include <QWidget>
-
-#include <boost/filesystem/convenience.hpp>
-#include <boost/filesystem/operations.hpp>
 
 namespace uiTF
 {
@@ -102,8 +102,8 @@ void TransferFunctionEditor::configuring() throw( ::fwTools::Failed )
     }
     if (useDefaultPath)
     {
-        ::boost::filesystem::path pathRoot (std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
-                                                UITF_VER) + "/tf");
+        ::boost::filesystem::path pathRoot(std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
+                                               UITF_VER) + "/tf");
         m_paths.push_back(pathRoot);
     }
 }
@@ -116,46 +116,44 @@ void TransferFunctionEditor::starting() throw( ::fwTools::Failed )
     this->create();
 
     // Get the Qt container
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer());
-    m_container = qtContainer->getQtContainer();
-    SLM_ASSERT("The qt container is not valid", m_container);
+    ::fwGuiQt::container::QtContainer::sptr qtContainer
+        = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
 
     // Buttons creation
-    m_pTransferFunctionPreset = new QComboBox(m_container);
+    m_pTransferFunctionPreset = new QComboBox();
 
-    ::boost::filesystem::path deletePath (std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
-                                              UITF_VER) + "/delete.png");
-    m_deleteButton = new QPushButton(QIcon(deletePath.string().c_str()), "", m_container);
+    ::boost::filesystem::path deletePath(std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
+                                             UITF_VER) + "/delete.png");
+    m_deleteButton = new QPushButton(QIcon(deletePath.string().c_str()), "");
     m_deleteButton->setToolTip(QString("Delete"));
 
-    ::boost::filesystem::path newPath (std::string(BUNDLE_PREFIX) +"/uiTF_" + std::string(UITF_VER) +
-                                       "/new.png");
-    m_newButton = new QPushButton(QIcon(newPath.string().c_str()), "", m_container);
+    ::boost::filesystem::path newPath(std::string(BUNDLE_PREFIX) +"/uiTF_" + std::string(UITF_VER) +
+                                      "/new.png");
+    m_newButton = new QPushButton(QIcon(newPath.string().c_str()), "");
     m_newButton->setToolTip(QString("New"));
 
-    ::boost::filesystem::path reinitializePath (std::string(BUNDLE_PREFIX) +"/uiTF_" + std::string(
-                                                    UITF_VER) + "/reinitialize.png");
-    m_reinitializeButton = new QPushButton(QIcon(reinitializePath.string().c_str()), "", m_container);
+    ::boost::filesystem::path reinitializePath(std::string(BUNDLE_PREFIX) +"/uiTF_" + std::string(
+                                                   UITF_VER) + "/reinitialize.png");
+    m_reinitializeButton = new QPushButton(QIcon(reinitializePath.string().c_str()), "");
     m_reinitializeButton->setToolTip(QString("Reinitialize"));
 
-    ::boost::filesystem::path renamePath (std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
-                                              UITF_VER) + "/rename.png");
-    m_renameButton = new QPushButton(QIcon(renamePath.string().c_str()), "", m_container);
+    ::boost::filesystem::path renamePath(std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
+                                             UITF_VER) + "/rename.png");
+    m_renameButton = new QPushButton(QIcon(renamePath.string().c_str()), "");
     m_renameButton->setToolTip(QString("Rename"));
 
-    ::boost::filesystem::path importPath (std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
-                                              UITF_VER) + "/import.png");
-    m_importButton = new QPushButton(QIcon(importPath.string().c_str()), "", m_container);
+    ::boost::filesystem::path importPath(std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
+                                             UITF_VER) + "/import.png");
+    m_importButton = new QPushButton(QIcon(importPath.string().c_str()), "");
     m_importButton->setToolTip(QString("Import"));
 
-    ::boost::filesystem::path exportPath (std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
-                                              UITF_VER) + "/export.png");
-    m_exportButton = new QPushButton(QIcon(exportPath.string().c_str()), "", m_container);
+    ::boost::filesystem::path exportPath(std::string(BUNDLE_PREFIX) + "/uiTF_" + std::string(
+                                             UITF_VER) + "/export.png");
+    m_exportButton = new QPushButton(QIcon(exportPath.string().c_str()), "");
     m_exportButton->setToolTip(QString("Export"));
 
     // Layout management
-    QBoxLayout* layout = new QBoxLayout(QBoxLayout::LeftToRight, m_container);
+    QBoxLayout* layout = new QBoxLayout(QBoxLayout::LeftToRight);
 
     layout->addWidget(m_pTransferFunctionPreset);
     layout->addWidget(m_deleteButton);
@@ -165,7 +163,7 @@ void TransferFunctionEditor::starting() throw( ::fwTools::Failed )
     layout->addWidget(m_importButton);
     layout->addWidget(m_exportButton);
 
-    m_container->setLayout(layout);
+    qtContainer->setLayout(layout);
 
     // Qt signals management ( connection to buttons )
     QObject::connect(m_pTransferFunctionPreset, SIGNAL(activated(int)), this, SLOT(presetChoice(int)));
@@ -201,11 +199,6 @@ void TransferFunctionEditor::stopping() throw( ::fwTools::Failed )
     QObject::disconnect(m_renameButton, SIGNAL(   clicked()), this, SLOT(renameTF()));
     QObject::disconnect(m_importButton, SIGNAL(   clicked()), this, SLOT(importTF()));
     QObject::disconnect(m_exportButton, SIGNAL(   clicked()), this, SLOT(exportTF()));
-
-    // deletes contained widgets
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer());
-    qtContainer->clean();
 
     this->destroy();
 }
@@ -354,7 +347,7 @@ void TransferFunctionEditor::renameTF()
     }
 
     std::string str = m_pTransferFunctionPreset->currentText().toStdString();
-    std::string newName (str);
+    std::string newName(str);
 
     fwGui::dialog::InputDialog inputDialog;
     inputDialog.setTitle("Creating transfer function");
@@ -444,7 +437,7 @@ void TransferFunctionEditor::exportTF()
 {
     SLM_TRACE_FUNC();
 
-    if (m_selectedTFKey.find("STD")!=std::string::npos)
+    if (m_selectedTFKey.find("STD") != std::string::npos)
     {
         ::fwGui::dialog::MessageDialog messageBox;
         messageBox.setTitle("Warning");
@@ -545,7 +538,6 @@ void TransferFunctionEditor::initTransferFunctions()
 }
 
 //---------------------------------------------------------------------------------------------------------------------
-
 
 void TransferFunctionEditor::updateTransferFunctionPreset()
 {

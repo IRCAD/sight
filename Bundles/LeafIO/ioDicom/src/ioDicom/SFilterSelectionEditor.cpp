@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,14 +21,14 @@
 
 #include <fwServices/macros.hpp>
 
+#include <boost/foreach.hpp>
+
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMenu>
 #include <QSignalMapper>
 #include <QVBoxLayout>
-
-#include <boost/foreach.hpp>
 
 namespace ioDicom
 {
@@ -76,10 +76,9 @@ void SFilterSelectionEditor::starting() throw(::fwTools::Failed)
     ::fwGui::IGuiContainerSrv::create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
-    QWidget* const container = qtContainer->getQtContainer();
-    QVBoxLayout* mainLayout  = new QVBoxLayout();
+    QVBoxLayout* mainLayout = new QVBoxLayout();
     mainLayout->setAlignment(Qt::AlignTop);
-    container->setLayout(mainLayout);
+    qtContainer->setLayout(mainLayout);
 
     // Size policy
     QSizePolicy policy(QSizePolicy::Maximum, QSizePolicy::Preferred);
@@ -88,7 +87,7 @@ void SFilterSelectionEditor::starting() throw(::fwTools::Failed)
     QHBoxLayout* topLayout = new QHBoxLayout();
     QWidget* topWidget     = new QWidget();
     topWidget->setLayout(topLayout);
-    topLayout->setContentsMargins(QMargins(0,0,0,0));
+    topLayout->setContentsMargins(QMargins(0, 0, 0, 0));
     mainLayout->addWidget(topWidget);
 
     // Available filter list
@@ -116,7 +115,7 @@ void SFilterSelectionEditor::starting() throw(::fwTools::Failed)
     QWidget* applyWidget     = new QWidget();
     applyWidget->setLayout(applyLayout);
     applyWidget->setSizePolicy(policy);
-    applyLayout->setContentsMargins(QMargins(0,0,0,0));
+    applyLayout->setContentsMargins(QMargins(0, 0, 0, 0));
     m_forcedApplyCheckBox = new QCheckBox("Ignore errors");
     applyLayout->addWidget(m_forcedApplyCheckBox);
     mainLayout->addWidget(applyWidget, 0, Qt::AlignRight);
@@ -125,14 +124,14 @@ void SFilterSelectionEditor::starting() throw(::fwTools::Failed)
     QHBoxLayout* bottomLayout = new QHBoxLayout();
     QWidget* bottomWidget     = new QWidget();
     bottomWidget->setLayout(bottomLayout);
-    bottomLayout->setContentsMargins(QMargins(0,0,0,0));
+    bottomLayout->setContentsMargins(QMargins(0, 0, 0, 0));
     mainLayout->addWidget(bottomWidget);
 
     QHBoxLayout* buttonLayout = new QHBoxLayout();
     QWidget* buttonWidget     = new QWidget();
     buttonWidget->setLayout(buttonLayout);
     buttonWidget->setSizePolicy(policy);
-    buttonLayout->setContentsMargins(QMargins(0,0,0,0));
+    buttonLayout->setContentsMargins(QMargins(0, 0, 0, 0));
 
     // Apply filters button
     m_applyFiltersButton = new QPushButton(QIcon(QString(BUNDLE_PREFIX) +"/media_0-1/icons/Apply.svg"),
@@ -198,7 +197,6 @@ void SFilterSelectionEditor::fillAvailableFilters()
 {
     unsigned int index = 0;
 
-
     std::vector< ::fwDicomIOFilter::IFilter::sptr > sortedFilters;
     for(const std::string& key: ::fwDicomIOFilter::registry::get()->getFactoryKeys())
     {
@@ -247,8 +245,7 @@ void SFilterSelectionEditor::stopping() throw(::fwTools::Failed)
     QObject::disconnect(m_selectedFilterListWidget, SIGNAL(customContextMenuRequested(const QPoint &)), this,
                         SLOT(showContextMenuForSelectedFilter(const QPoint &)));
 
-    this->getContainer()->clean();
-    this->::fwGui::IGuiContainerSrv::destroy();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -295,7 +292,7 @@ void SFilterSelectionEditor::addFilter(int filterTypeIndex, int position)
     m_selectedFilterListWidget->setCurrentRow(position);
 
     // Update apply button
-    m_applyFiltersButton->setEnabled(m_selectedFilterListWidget->count()>0);
+    m_applyFiltersButton->setEnabled(m_selectedFilterListWidget->count() > 0);
 }
 
 //------------------------------------------------------------------------------
@@ -480,7 +477,6 @@ void SFilterSelectionEditor::applyFilters()
 
     // Notify
     sDBhelper.notify();
-
 
 }
 

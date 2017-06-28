@@ -1,17 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-
 #include "vtkGdcmIO/SeriesDBReader.hpp"
-#include "vtkGdcmIO/helper/GdcmHelper.hpp"
 
+#include "vtkGdcmIO/helper/GdcmHelper.hpp"
 
 #include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
+
+#include <fwDataIO/reader/registry/macros.hpp>
 
 #include <fwJobs/IJob.hpp>
 #include <fwJobs/Observer.hpp>
@@ -23,31 +24,29 @@
 #include <fwMedData/SeriesDB.hpp>
 #include <fwMedData/Study.hpp>
 
-#include <fwDataIO/reader/registry/macros.hpp>
-
 #include <fwTools/dateAndTime.hpp>
 #include <fwTools/fromIsoExtendedString.hpp>
 
-#include <fwVtkIO/vtk.hpp>
 #include <fwVtkIO/helper/vtkLambdaCommand.hpp>
+#include <fwVtkIO/vtk.hpp>
 
-#include <vtkImageWriter.h>
-#include <vtkGDCMImageReader.h>
-#include <vtkImageData.h>
-#include <vtkStringArray.h>
-#include <vtkMedicalImageProperties.h>
-#include <vtkSmartPointer.h>
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/filesystem/path.hpp>
 
+#include <gdcmAttribute.h>
+#include <gdcmDataSet.h>
 #include <gdcmImageHelper.h>
 #include <gdcmIPPSorter.h>
-#include <gdcmScanner.h>
 #include <gdcmReader.h>
-#include <gdcmIPPSorter.h>
-
-
-#include <boost/filesystem/path.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/classification.hpp>
+#include <gdcmScanner.h>
+#include <gdcmSorter.h>
+#include <vtkGDCMImageReader.h>
+#include <vtkImageData.h>
+#include <vtkImageWriter.h>
+#include <vtkMedicalImageProperties.h>
+#include <vtkSmartPointer.h>
+#include <vtkStringArray.h>
 
 #include <exception>
 
@@ -75,7 +74,7 @@ SeriesDBReader::~SeriesDBReader()
 
 //------------------------------------------------------------------------------
 
-::fwMedData::SeriesDB::sptr SeriesDBReader::createSeriesDB( const ::boost::filesystem::path &dicomDir )
+::fwMedData::SeriesDB::sptr SeriesDBReader::createSeriesDB( const ::boost::filesystem::path& dicomDir )
 {
     SLM_TRACE_FUNC();
     ::fwMedData::SeriesDB::sptr seriesDB = this->getConcreteObject();
@@ -89,37 +88,49 @@ SeriesDBReader::~SeriesDBReader()
 
 //------------------------------------------------------------------------------
 
-void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB,
-                                const std::vector< std::string > &filenames)
+// Define a custom sorter based on the InstanceNumber DICOM tag.
+bool sortByInstanceNumber(const ::gdcm::DataSet& ds1, const ::gdcm::DataSet& ds2 )
+{
+    ::gdcm::Attribute<0x0020, 0x0013> at1;
+    at1.Set( ds1 );
+    ::gdcm::Attribute<0x0020, 0x0013> at2;
+    at2.Set( ds2 );
+    return at1 < at2;
+}
+
+//----------------------------------------------------------------------------------------
+
+void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr& seriesDB,
+                                const std::vector< std::string >& filenames)
 {
     //gdcm::Trace::SetDebug( 1 );
     //gdcm::Trace::SetWarning( 1 );
     //gdcm::Trace::SetError( 1 );
 
-    gdcm::Scanner scanner;
-    const gdcm::Tag seriesUIDTag(0x0020,0x000e);
-    const gdcm::Tag seriesDateTag(0x0008,0x0021);
-    const gdcm::Tag seriesTimeTag(0x0008,0x0031);
-    const gdcm::Tag seriesTypeTag(0x0008,0x0060);
-    const gdcm::Tag seriesDescriptionTag(0x0008,0x103e);
-    const gdcm::Tag seriesPhysicianNamesTag(0x0008,0x1050);
+    ::gdcm::Scanner scanner;
+    const ::gdcm::Tag seriesUIDTag(0x0020, 0x000e);
+    const ::gdcm::Tag seriesDateTag(0x0008, 0x0021);
+    const ::gdcm::Tag seriesTimeTag(0x0008, 0x0031);
+    const ::gdcm::Tag seriesTypeTag(0x0008, 0x0060);
+    const ::gdcm::Tag seriesDescriptionTag(0x0008, 0x103e);
+    const ::gdcm::Tag seriesPhysicianNamesTag(0x0008, 0x1050);
 
-    const gdcm::Tag equipmentInstitutionNameTag(0x0008,0x0080);
+    const ::gdcm::Tag equipmentInstitutionNameTag(0x0008, 0x0080);
 
-    const gdcm::Tag patientNameTag(0x0010,0x0010);
-    const gdcm::Tag patientIDTag(0x0010,0x0020);
-    const gdcm::Tag patientBirthdateTag(0x0010,0x0030);
-    const gdcm::Tag patientSexTag(0x0010,0x0040);
-    const gdcm::Tag studyUIDTag(0x0020,0x000d);
-    const gdcm::Tag studyDateTag(0x0008,0x0020);
-    const gdcm::Tag studyTimeTag(0x0008,0x0030);
-    const gdcm::Tag studyReferingPhysicianNameTag(0x0008,0x0090);
-    const gdcm::Tag studyDescriptionTag(0x0008,0x1030);
-    const gdcm::Tag studyPatientAgeTag(0x0010,0x1010);
+    const ::gdcm::Tag patientNameTag(0x0010, 0x0010);
+    const ::gdcm::Tag patientIDTag(0x0010, 0x0020);
+    const ::gdcm::Tag patientBirthdateTag(0x0010, 0x0030);
+    const ::gdcm::Tag patientSexTag(0x0010, 0x0040);
+    const ::gdcm::Tag studyUIDTag(0x0020, 0x000d);
+    const ::gdcm::Tag studyDateTag(0x0008, 0x0020);
+    const ::gdcm::Tag studyTimeTag(0x0008, 0x0030);
+    const ::gdcm::Tag studyReferingPhysicianNameTag(0x0008, 0x0090);
+    const ::gdcm::Tag studyDescriptionTag(0x0008, 0x1030);
+    const ::gdcm::Tag studyPatientAgeTag(0x0010, 0x1010);
 
-    const gdcm::Tag imageTypeTag(0x0008,0x0008);
-    const gdcm::Tag acquisitionDateTag(0x0008,0x0022);
-    const gdcm::Tag acquisitionTimeTag(0x0008,0x0032);
+    const ::gdcm::Tag imageTypeTag(0x0008, 0x0008);
+    const ::gdcm::Tag acquisitionDateTag(0x0008, 0x0022);
+    const ::gdcm::Tag acquisitionTimeTag(0x0008, 0x0032);
 
     scanner.AddTag( seriesUIDTag );
     scanner.AddTag( seriesDateTag );
@@ -143,28 +154,25 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB,
     scanner.AddTag( acquisitionDateTag );
     scanner.AddTag( acquisitionTimeTag );
 
-
     try
     {
-        bool b = scanner.Scan( filenames );
-        if( !b )
+        const bool isScanned = scanner.Scan( filenames );
+        if( !isScanned )
         {
             SLM_ERROR("Scanner failed");
             return;
         }
-        gdcm::Directory::FilenamesType keys               = scanner.GetKeys();
-        gdcm::Directory::FilenamesType::const_iterator it = keys.begin();
+        const ::gdcm::Directory::FilenamesType keys = scanner.GetKeys();
 
         typedef std::map< std::string, std::vector< std::string > > MapSeriesType;
         MapSeriesType mapSeries;
 
-        for(; it != keys.end(); ++it)
+        for(const std::string& filename : keys)
         {
-            const char *filename = it->c_str();
-            assert( scanner.IsKey( filename ) );
+            SLM_ASSERT("'"+filename+"' is not a key in the mapping table", scanner.IsKey(filename.c_str()));
 
-            const char *seriesUID = scanner.GetValue( filename, seriesUIDTag );
-            const char *acqDate   = scanner.GetValue( filename, acquisitionDateTag );
+            const char* seriesUID = scanner.GetValue( filename.c_str(), seriesUIDTag );
+            const char* acqDate   = scanner.GetValue( filename.c_str(), acquisitionDateTag );
 
             if (seriesUID)
             {
@@ -176,34 +184,24 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB,
                     fileSetId += acqDate;
                 }
 
-                const char *imageTypeStr = scanner.GetValue(filename, imageTypeTag);
-                if(imageTypeStr)
+                const char* imageType = scanner.GetValue(filename.c_str(), imageTypeTag);
+                if(imageType)
                 {
                     // Treatment of secondary capture dicom file.
-                    std::string imageType(imageTypeStr);
-                    SLM_TRACE("Image Type : " + imageType);
-
+                    SLM_TRACE("Image Type : " + std::string(imageType));
                     fileSetId += "_";
-                    fileSetId += imageTypeStr;
+                    fileSetId += imageType;
                 }
                 mapSeries[fileSetId].push_back(filename);
-
             }
             else
             {
-                OSLM_ERROR ( "Error in vtkGdcmIO : No serie name found in : " << filename );
+                SLM_ERROR("No series name found in : " + filename );
             }
-
         }
 
-        MapSeriesType::const_iterator iter    = mapSeries.begin();
-        MapSeriesType::const_iterator iterEnd = mapSeries.end();
-
-        while (iter != iterEnd)
+        for(const auto& elt : mapSeries)
         {
-            std::string seriesInstanceUID;
-            std::string studyInstanceUID;
-
             ::fwMedData::ImageSeries::sptr series  = ::fwMedData::ImageSeries::New();
             ::fwMedData::Patient::sptr patient     = series->getPatient();
             ::fwMedData::Study::sptr study         = series->getStudy();
@@ -211,89 +209,101 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB,
 
             seriesDB->getContainer().push_back(series);
 
-            OSLM_TRACE ( " Processing : " << iter->first << " file set.");
-            const MapSeriesType::mapped_type &files = iter->second;
+            SLM_TRACE( "Processing: '" + elt.first + "' file set.");
+            const MapSeriesType::mapped_type& files = elt.second;
             if ( !files.empty() )
             {
                 vtkSmartPointer< vtkStringArray > fileArray  = vtkSmartPointer< vtkStringArray >::New();
                 vtkSmartPointer< vtkGDCMImageReader > reader = vtkSmartPointer< vtkGDCMImageReader >::New();
                 reader->FileLowerLeftOn();
-                gdcm::IPPSorter s;
-                s.SetComputeZSpacing( true );
-                s.SetZSpacingTolerance( 1e-3 );
-                b = s.Sort( files );
-                double zspacing = 0;
-                // int nbSorter = 0;
-                fileArray->Initialize();
 
-                MapSeriesType::mapped_type::const_iterator filesIt  = files.begin();
-                MapSeriesType::mapped_type::const_iterator filesEnd = files.end();
+                ::gdcm::IPPSorter ippSorter;
+                ippSorter.SetComputeZSpacing( true );
+                ippSorter.SetZSpacingTolerance( 1e-3 );
+                bool isSorted = ippSorter.Sort( files );
 
-                OSLM_WARN_IF( "Failed to sort:" << iter->first, !b );
-                OSLM_TRACE  ( "Found z-spacing:" << s.GetZSpacing());
-
-                if(b)
+                std::vector<std::string> sorted;
+                double zspacing = 0.;
+                if(isSorted)
                 {
-                    const std::vector<std::string> & sorted = s.GetFilenames();
-                    OSLM_TRACE ( "Success to sort" << iter->first );
-                    zspacing = s.GetZSpacing();
-                    if (!zspacing && s.GetFilenames().size() > 1)
+                    sorted   = ippSorter.GetFilenames();
+                    zspacing = ippSorter.GetZSpacing();
+                    OSLM_TRACE("Found z-spacing:" << ippSorter.GetZSpacing());
+                }
+                else
+                {
+                    //  Else an error has been encountered.
+                    //  We fall back to a more trivial sorting based on the InstanceNumber DICOM tag.
+                    SLM_WARN("IPP Sorting failed. Falling back to Instance Number sorting.");
+                    ::gdcm::Sorter sorter;
+                    sorter.SetSortFunction(sortByInstanceNumber);
+                    isSorted = sorter.StableSort( filenames);
+                    if(isSorted)
                     {
-                        SLM_TRACE ( "Guessing zspacing ..." );
+                        // If the custom sorted returns true, it worked
+                        // and the filenames are sorted by InstanceNumber (ASC).
+                        sorted = sorter.GetFilenames();
+                    }
+                    else
+                    {
+                        // There is nothing more we can do to sort DICOM files.
+                        SLM_ERROR("Failed to sort '"+elt.first+"'");
+                    }
+                }
+
+                fileArray->Initialize();
+                if(isSorted)
+                {
+                    SLM_TRACE("Success to sort '" + elt.first+"'");
+                    if (!zspacing && sorted.size() > 1)
+                    {
+                        SLM_TRACE( "Guessing zspacing ..." );
                         if (!sorted.empty())
                         {
-                            gdcm::Reader localReader1;
-                            gdcm::Reader localReader2;
-                            const std::string &f1 = *(sorted.begin());
-                            const std::string &f2 = *(sorted.begin() + 1);
-                            OSLM_TRACE ( "Search spacing in : " << f1.c_str());
-                            OSLM_TRACE ( "Search spacing in : " << f2.c_str());
+                            ::gdcm::Reader localReader1;
+                            ::gdcm::Reader localReader2;
+                            const std::string& f1 = *(sorted.begin());
+                            const std::string& f2 = *(sorted.begin() + 1);
+                            SLM_TRACE( "Search spacing in: '" + f1 +"'");
+                            SLM_TRACE( "Search spacing in: '" + f2 +"'");
 
                             localReader1.SetFileName( f1.c_str() );
                             localReader2.SetFileName( f2.c_str() );
-                            bool canRead = localReader1.Read() && localReader2.Read();
-                            if( canRead )
+                            const bool canRead = localReader1.Read() && localReader2.Read();
+                            if(canRead)
                             {
-                                std::vector<double> vOrigin1 =
-                                    gdcm::ImageHelper::GetOriginValue(localReader1.GetFile());
-                                std::vector<double> vOrigin2 =
-                                    gdcm::ImageHelper::GetOriginValue(localReader2.GetFile());
+                                const std::vector<double> vOrigin1 =
+                                    ::gdcm::ImageHelper::GetOriginValue(localReader1.GetFile());
+                                const std::vector<double> vOrigin2 =
+                                    ::gdcm::ImageHelper::GetOriginValue(localReader2.GetFile());
                                 zspacing = vOrigin2[2] - vOrigin1[2];
-                                OSLM_TRACE (
+                                OSLM_TRACE(
                                     "Found z-spacing:" << zspacing << " from : << " << vOrigin2[2] << " | " <<
                                     vOrigin1[2]);
                             }
-
-                            OSLM_ERROR_IF( "Cannot read :" << f1 << " or : " << f2, !canRead );
+                            SLM_ERROR_IF("Cannot read: '" + f1 + "' or: '" + f2 +"'", !canRead);
                         }
-                        OSLM_DEBUG_IF ( "Failed to find z-spacing:" << s.GetZSpacing(), !zspacing);
-                        OSLM_DEBUG_IF ( "Guessed z-spacing:" << s.GetZSpacing() << " -> " << zspacing, zspacing);
                     }
-
-                    filesIt  = sorted.begin();
-                    filesEnd = sorted.end();
                 }
 
-                for(; filesIt != filesEnd; ++filesIt)
+                for(const std::string& file : sorted)
                 {
-                    const std::string &f = *filesIt;
-                    SLM_TRACE("Add '" + f + "' to vtkGdcmReader");
-                    fileArray->InsertNextValue( f.c_str() );
+                    SLM_TRACE("Add '" + file + "' to vtkGdcmReader");
+                    fileArray->InsertNextValue(file.c_str());
                 }
 
                 ::fwData::Image::sptr pDataImage = ::fwData::Image::New();
-
                 bool res = false;
                 if (fileArray->GetNumberOfValues() > 0)
                 {
                     reader->SetFileNames( fileArray );
                     try
                     {
-                        SLM_TRACE("Read Series: " + iter->first);
+                        SLM_TRACE("Read Series: '" + elt.first + "'");
 
-                        using namespace fwVtkIO::helper;
                         //add progress observation
-                        vtkSmartPointer<vtkLambdaCommand> progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
+                        vtkSmartPointer< ::fwVtkIO::helper::vtkLambdaCommand > progressCallback =
+                            vtkSmartPointer< ::fwVtkIO::helper::vtkLambdaCommand >::New();
                         progressCallback->SetCallback([this](vtkObject* caller, long unsigned int, void* )
                             {
                                 auto filter = static_cast<vtkGDCMImageReader*>(caller);
@@ -314,18 +324,18 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB,
                             ::fwVtkIO::fromVTKImage(reader->GetOutput(), pDataImage);
                             res = true;
                         }
-                        catch(std::exception &e)
+                        catch(std::exception& e)
                         {
                             OSLM_ERROR("VTKImage to fwData::Image failed : "<<e.what());
                         }
                     }
-                    catch (std::exception &e)
+                    catch (std::exception& e)
                     {
-                        OSLM_ERROR ( "Error during conversion : " << e.what() );
+                        OSLM_ERROR( "Error during conversion : " << e.what() );
                     }
                     catch (...)
                     {
-                        OSLM_ERROR ( "Unexpected error during conversion" );
+                        SLM_ERROR( "Unexpected error during conversion" );
                     }
                     m_job->finish();
                 }
@@ -336,54 +346,56 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB,
                     SLM_ASSERT("No file to read", !files.empty());
 
                     // Read medical info
-                    vtkMedicalImageProperties * medprop = reader->GetMedicalImageProperties();
+                    vtkMedicalImageProperties* medprop = reader->GetMedicalImageProperties();
 
-                    std::string patientName      = medprop->GetPatientName(); //"0010|0010"
-                    std::string patientId        = medprop->GetPatientID();
-                    std::string patientBirthdate = medprop->GetPatientBirthDate(); //"0010|0030"
-                    std::string patientSex       = medprop->GetPatientSex(); //"0010|0040"
+                    const std::string patientName      = medprop->GetPatientName(); //"0010|0010"
+                    const std::string patientId        = medprop->GetPatientID();
+                    const std::string patientBirthdate = medprop->GetPatientBirthDate(); //"0010|0030"
+                    const std::string patientSex       = medprop->GetPatientSex(); //"0010|0040"
 
-                    gdcm::Scanner::ValuesType gdcmPhysicianNames = scanner.GetValues( seriesPhysicianNamesTag );
-                    const char * seriesUIDStr                    = scanner.GetValue( files[0].c_str(), seriesUIDTag );
-                    const char * seriesTimeStr                   = scanner.GetValue( files[0].c_str(), seriesTimeTag );
-                    const char * seriesDateStr                   = scanner.GetValue( files[0].c_str(), seriesDateTag );
-                    std::string seriesModality                   = medprop->GetModality(); //"0008|0060"
-                    std::string seriesDescription                = medprop->GetSeriesDescription();
-                    std::string seriesDate                       = ( seriesDateStr ? seriesDateStr : "" );
-                    std::string seriesTime                       = ( seriesTimeStr ? seriesTimeStr : "" );
+                    const ::gdcm::Scanner::ValuesType gdcmPhysicianNames = scanner.GetValues( seriesPhysicianNamesTag );
+
+                    const char* seriesUIDStr  = scanner.GetValue( files[0].c_str(), seriesUIDTag );
+                    const char* seriesTimeStr = scanner.GetValue( files[0].c_str(), seriesTimeTag );
+                    const char* seriesDateStr = scanner.GetValue( files[0].c_str(), seriesDateTag );
+
+                    const std::string seriesModality    = medprop->GetModality(); //"0008|0060"
+                    const std::string seriesDescription = medprop->GetSeriesDescription();
+                    const std::string seriesDate        = ( seriesDateStr ? seriesDateStr : "" );
+                    const std::string seriesTime        = ( seriesTimeStr ? seriesTimeStr : "" );
 
                     ::fwMedData::DicomValuesType seriesPhysicianNames;
-                    for(const std::string &str :  gdcmPhysicianNames)
+                    for(const std::string& name :  gdcmPhysicianNames)
                     {
                         ::fwMedData::DicomValuesType result;
-                        ::boost::split( result, str, ::boost::is_any_of("\\"));
+                        ::boost::split( result, name, ::boost::is_any_of("\\"));
                         seriesPhysicianNames.reserve(seriesPhysicianNames.size() + result.size());
                         seriesPhysicianNames.insert(seriesPhysicianNames.end(), result.begin(), result.end());
                     }
 
-                    const char * studyUIDStr = scanner.GetValue( files[0].c_str(), studyUIDTag );
-                    const char * studyReferingPhysicianNameStr
-                        = scanner.GetValue( files[0].c_str(), studyReferingPhysicianNameTag );
-                    std::string studyDate        = medprop->GetStudyDate();
-                    std::string studyTime        = medprop->GetStudyTime();
-                    std::string studyDescription = medprop->GetStudyDescription();  //"0008|1030"
-                    std::string studyPatientAge  = medprop->GetPatientAge();
-                    std::string studyReferingPhysicianName
-                        = ( studyReferingPhysicianNameStr ? studyReferingPhysicianNameStr : "" );
+                    const char* studyUIDStr                   = scanner.GetValue( files[0].c_str(), studyUIDTag );
+                    const char* studyReferingPhysicianNameStr =
+                        scanner.GetValue( files[0].c_str(), studyReferingPhysicianNameTag );
 
-                    std::string equipementInstitution = medprop->GetInstitutionName(); //"0008|0080"
+                    const std::string studyDate             = medprop->GetStudyDate();
+                    const std::string studyTime             = medprop->GetStudyTime();
+                    const std::string studyDescription      = medprop->GetStudyDescription();  //"0008|1030"
+                    const std::string studyPatientAge       = medprop->GetPatientAge();
+                    const std::string equipementInstitution = medprop->GetInstitutionName(); //"0008|0080"
 
+                    const std::string studyReferingPhysicianName =
+                        ( studyReferingPhysicianNameStr ? studyReferingPhysicianNameStr : "" );
 
-                    double thickness = medprop->GetSliceThicknessAsDouble();//"0018|0050"
-                    double center    = 0.0;
-                    double width     = 0.0;
+                    const double thickness = medprop->GetSliceThicknessAsDouble();//"0018|0050"
+                    double center          = 0.0;
+                    double width           = 0.0;
                     if (medprop->GetNumberOfWindowLevelPresets())//FIXME : Multiple preset !!!
                     {
-                        medprop->GetNthWindowLevelPreset(0,&width,&center); //0028|1050,1051
+                        medprop->GetNthWindowLevelPreset(0, &width, &center); //0028|1050,1051
                     }
 
                     // Image must have 3 dimensions
-                    if(pDataImage->getNumberOfDimensions()  == 2)
+                    if(pDataImage->getNumberOfDimensions() == 2)
                     {
                         ::fwData::Image::SizeType imgSize = pDataImage->getSize();
                         imgSize.resize(3);
@@ -396,7 +408,6 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB,
                         pDataImage->setOrigin(imgOrigin);
                     }
 
-
                     ::fwData::Image::SpacingType vPixelSpacing = pDataImage->getSpacing();
                     vPixelSpacing.resize(3);
                     // assume z-spacing = 1 if not guessed
@@ -405,7 +416,7 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB,
                     pDataImage->setWindowCenter(center);
                     pDataImage->setWindowWidth(width);
 
-                    // Get the serie instance UID.
+                    // Get the series instance UID.
                     SLM_ASSERT("No series UID", seriesUIDStr);
                     series->setInstanceUID(( seriesUIDStr ? seriesUIDStr : "UNKNOWN-UID" ));
                     series->setModality( seriesModality );
@@ -429,19 +440,16 @@ void SeriesDBReader::addSeries( const ::fwMedData::SeriesDB::sptr &seriesDB,
                     patient->setSex(patientSex);
 
                     equipment->setInstitutionName(equipementInstitution);
-
                 } // if res
             } // if !files.empty()
-            ++iter;
-        } // while (iter != iterEnd)
+        }
     } // try
     catch (std::exception& e)
     {
-        OSLM_ERROR ( "Try with another reader or retry with this reader on a specific subfolder : " << e.what() );
-        std::vector< std::string >::const_iterator it = filenames.begin();
-        for(; it != filenames.end(); ++it)
+        OSLM_ERROR( "Try with another reader or retry with this reader on a specific subfolder : " << e.what() );
+        for(const auto filename : filenames)
         {
-            OSLM_ERROR ("file error : " << *it );
+            SLM_ERROR("file error : " + filename );
         }
     }
 }
@@ -475,5 +483,4 @@ void SeriesDBReader::read()
 }
 
 } //namespace vtkGdcmIO
-
 

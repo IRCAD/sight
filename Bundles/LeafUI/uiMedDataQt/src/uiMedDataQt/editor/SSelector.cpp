@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -64,7 +64,6 @@ SSelector::SSelector() :
     newSlot(s_ADD_SERIES_SLOT, &SSelector::addSeries, this);
     m_slotRemoveSeries = newSlot(s_REMOVE_SERIES_SLOT, &SSelector::removeSeries, this);
 
-
 }
 
 //------------------------------------------------------------------------------
@@ -89,8 +88,6 @@ void SSelector::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
     m_selectorWidget = new ::uiMedData::widget::Selector();
     m_selectorWidget->setSeriesIcons(m_seriesIcons);
@@ -100,7 +97,7 @@ void SSelector::starting() throw(::fwTools::Failed)
 
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(m_selectorWidget);
-    container->setLayout(layout);
+    qtContainer->setLayout(layout);
 
     QObject::connect(m_selectorWidget, SIGNAL(selectSeries(QVector< ::fwMedData::Series::sptr >,
                                                            QVector< ::fwMedData::Series::sptr >)),
@@ -127,8 +124,7 @@ void SSelector::starting() throw(::fwTools::Failed)
 
 void SSelector::stopping() throw(::fwTools::Failed)
 {
-    this->getContainer()->clean();
-    this->::fwGui::IGuiContainerSrv::destroy();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -292,7 +288,7 @@ void SSelector::onDoubleClick(const QModelIndex& index)
         ::fwMedData::Series::sptr series = ::fwMedData::Series::dynamicCast(obj);
         SLM_ASSERT("Object must be a '::fwMedData::Series'", series);
 
-        m_sigSeriesDoubleClicked->asyncEmit (series);
+        m_sigSeriesDoubleClicked->asyncEmit(series);
     }
 }
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -66,7 +66,7 @@ void SPushObject::configuring() throw( ::fwTools::Failed)
     }
     else
     {
-        std::vector < ConfigurationType > pushConfig = m_configuration->find("push","","",3);
+        std::vector < ConfigurationType > pushConfig = m_configuration->find("push", "", "", 3);
         std::string src, srcUid, srcKey, key;
         ::boost::regex re("(.*)\\[(.*)\\]");
         ::boost::smatch match;
@@ -133,8 +133,8 @@ void SPushObject::updating() throw(::fwTools::Failed)
     else
     {
         ::fwData::Composite::sptr composite = this->getObject< ::fwData::Composite >();
-        std::shared_ptr< ::fwDataTools::helper::Composite > compositeHelper ( new ::fwDataTools::helper::Composite(
-                                                                                  composite ) );
+        std::shared_ptr< ::fwDataTools::helper::Composite > compositeHelper( new ::fwDataTools::helper::Composite(
+                                                                                 composite ) );
 
         for(DestKeyMapType::value_type elt :  m_key2src )
         {
@@ -146,10 +146,9 @@ void SPushObject::updating() throw(::fwTools::Failed)
                                                                                            srcUid ) );
             SLM_ASSERT("fwData::Composite dynamicCast failed for "+srcUid, compositeSrc);
 
-
             ::fwData::Composite::const_iterator iter = compositeSrc->find(srcKey);
 
-            SLM_WARN_IF("'" + srcKey + "' not found in composite '" + srcUid + "'",iter == compositeSrc->end());
+            SLM_WARN_IF("'" + srcKey + "' not found in composite '" + srcUid + "'", iter == compositeSrc->end());
             if (iter != compositeSrc->end())
             {
                 ::fwData::Object::sptr obj = compositeSrc->getContainer()[srcKey];
@@ -181,9 +180,9 @@ void SPushObject::updateObjects()
         ::fwData::Composite::sptr compositeSrc = this->getInOut< ::fwData::Composite >(s_SOURCE_KEY);
         SLM_ASSERT( s_SOURCE_KEY + " doesn't exist or is not a composite", compositeSrc);
 
-        executable = (compositeSrc->find(m_srcKey)!= compositeSrc->end());
+        executable = (compositeSrc->find(m_srcKey) != compositeSrc->end());
         OSLM_TRACE("start check : " << compositeSrc->getID() << "[" << m_srcKey << "] : " <<
-                   (compositeSrc->find(m_srcKey)!= compositeSrc->end()) );
+                   (compositeSrc->find(m_srcKey) != compositeSrc->end()) );
     }
     else
     {
@@ -197,15 +196,18 @@ void SPushObject::updateObjects()
             OSLM_ASSERT("fwData::Composite dynamicCast failed for "<<srcUid, compositeSrc);
             for(SrcKeyMapType::key_type keyElt :  valElt.second )
             {
-                executable &= (compositeSrc->find(keyElt)!= compositeSrc->end());
+                executable &= (compositeSrc->find(keyElt) != compositeSrc->end());
                 OSLM_TRACE("start check : " << srcUid << "[" << keyElt << "] : " <<
-                           (compositeSrc->find(keyElt)!= compositeSrc->end()) );
+                           (compositeSrc->find(keyElt) != compositeSrc->end()) );
             }
         }
     }
     this->::fwGui::IActionSrv::setIsExecutable( executable );
 
-    //TODO managed active mode (objects already present in target composite)
+    if(executable && this->::fwGui::IActionSrv::getIsActive())
+    {
+        this->updating();
+    }
 }
 
 //------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -33,7 +33,6 @@ namespace uiImage
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiImage::ImageTransparency, ::fwData::Image );
 
-
 ImageTransparency::ImageTransparency() throw()
 {
 }
@@ -54,21 +53,19 @@ void ImageTransparency::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
     QHBoxLayout* hLayout = new QHBoxLayout();
 
-    QLabel* staticText = new QLabel( QObject::tr("Transparency: "), container);
+    QLabel* staticText = new QLabel( QObject::tr("Transparency: "));
     hLayout->addWidget( staticText, 0, Qt::AlignVCenter );
 
-    m_valueSlider = new QSlider( Qt::Horizontal, container );
+    m_valueSlider = new QSlider( Qt::Horizontal );
     hLayout->addWidget( m_valueSlider, 1, Qt::AlignVCenter );
     m_valueSlider->setRange(0, 100);
     m_valueSlider->setMinimumWidth(100);
 
-    m_valueCheckBox = new QCheckBox( QObject::tr("visible"), container);
-    m_action        = new QAction(container);
+    m_valueCheckBox = new QCheckBox( QObject::tr("visible"));
+    m_action        = new QAction(m_valueCheckBox);
     m_action->setCheckable(true);
     if (!m_shortcut.empty())
     {
@@ -77,7 +74,7 @@ void ImageTransparency::starting() throw(::fwTools::Failed)
     m_valueCheckBox->addAction(m_action);
     hLayout->addWidget( m_valueCheckBox, 0, Qt::AlignVCenter );
 
-    container->setLayout( hLayout );
+    qtContainer->setLayout( hLayout );
 
     QObject::connect(m_valueSlider, SIGNAL(valueChanged(int)), this, SLOT(onModifyTransparency(int)));
     QObject::connect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));
@@ -95,8 +92,7 @@ void ImageTransparency::stopping() throw(::fwTools::Failed)
     QObject::disconnect(m_valueCheckBox, SIGNAL(stateChanged(int)), this, SLOT(onModifyVisibility(int)));
     QObject::disconnect(m_action, SIGNAL(triggered(bool)), this, SLOT(onModifyVisibility(bool)));
 
-    this->getContainer()->clean();
-    this->::fwGui::IGuiContainerSrv::destroy();
+    this->destroy();
 }
 
 //------------------------------------------------------------------------------
@@ -221,7 +217,6 @@ void ImageTransparency::notifyVisibility(bool isVisible)
         sig->asyncEmit(isVisible);
     }
 }
-
 
 //------------------------------------------------------------------------------
 

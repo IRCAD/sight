@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,7 +28,6 @@
 #include <QVBoxLayout>
 
 #include <string>
-
 
 namespace guiQt
 {
@@ -70,13 +69,11 @@ void SSignalButton::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
     QVBoxLayout* layout = new QVBoxLayout();
     m_button = new QPushButton(QString::fromStdString(m_text));
     layout->addWidget(m_button);
-    container->setLayout(layout);
+    qtContainer->setLayout(layout);
 
     if (!m_icon.empty())
     {
@@ -113,12 +110,6 @@ void SSignalButton::starting() throw(::fwTools::Failed)
 
 void SSignalButton::stopping() throw(::fwTools::Failed)
 {
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer() );
-    SLM_ASSERT("container not instanced", qtContainer->getQtContainer());
-
-    // deletes contained widgets
-    qtContainer->clean();
     this->destroy();
 }
 
@@ -149,7 +140,6 @@ void SSignalButton::configuring()  throw ( ::fwTools::Failed )
     {
         m_icon = ::boost::filesystem::path(iconCfg->getValue());
     }
-
 
     ::fwRuntime::ConfigurationElement::sptr txt2Cfg = config->findConfigurationElement("text2");
     if (txt2Cfg)
@@ -241,7 +231,7 @@ void SSignalButton::updating() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SSignalButton::info( std::ostream &_sstream )
+void SSignalButton::info( std::ostream& _sstream )
 {
 }
 

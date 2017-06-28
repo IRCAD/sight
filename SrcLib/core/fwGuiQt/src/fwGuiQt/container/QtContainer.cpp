@@ -35,12 +35,48 @@ QtContainer::~QtContainer() throw()
 
 //-----------------------------------------------------------------------------
 
+void QtContainer::setLayout( QLayout* const layout )
+{
+    SLM_ASSERT("The QWidget is not yet initialized, setting a layout is thus impossible", m_container);
+
+    // Recursively delete all children
+    QLayout* oldLayout = m_container->layout();
+
+    if(nullptr != oldLayout)
+    {
+        this->clean();
+
+        // Since we will set a new layout, delete the old one as stated in Qt documentation
+        delete oldLayout;
+        oldLayout = nullptr;
+    }
+
+    // Assign the new layout manager
+    m_container->setLayout(layout);
+}
+
+//-----------------------------------------------------------------------------
+
 void QtContainer::clean()
 {
     SLM_ASSERT("The QWidget is not yet initialized, cleaning is thus impossible", m_container);
 
-    delete m_container->layout();
-    m_container->setLayout(nullptr);
+    // Recursively delete all children
+    QLayout* oldLayout = m_container->layout();
+
+    if(nullptr != oldLayout)
+    {
+        // This block layouting when there is a lot of child
+        m_container->setUpdatesEnabled(false);
+
+        for( QLayoutItem* child = oldLayout->takeAt(0); nullptr != child; child = oldLayout->takeAt(0))
+        {
+            delete child;
+        }
+
+        // Restore update
+        m_container->setUpdatesEnabled(true);
+    }
 }
 
 //-----------------------------------------------------------------------------

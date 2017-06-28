@@ -1,21 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <QTabWidget>
-#include <QBoxLayout>
-#include <QScrollArea>
-
-#include <fwCore/base.hpp>
-#include <fwGui/registry/macros.hpp>
-
 #include "fwGuiQt/layoutManager/TabLayoutManager.hpp"
 
+#include <fwCore/base.hpp>
+
+#include <fwGui/registry/macros.hpp>
+
+#include <QBoxLayout>
+#include <QScrollArea>
+#include <QTabWidget>
 
 fwGuiRegisterMacro( ::fwGui::TabLayoutManager, ::fwGui::layoutManager::TabLayoutManagerBase::REGISTRY_KEY );
-
 
 namespace fwGui
 {
@@ -40,23 +39,16 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast(parent);
     SLM_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
 
-    QWidget* qtContainer = m_parentContainer->getQtContainer();
-    m_tabWidget = new QTabWidget(qtContainer);
+    m_tabWidget = new QTabWidget();
 
-    QBoxLayout *layout = new QBoxLayout(QBoxLayout::TopToBottom);
-    if (qtContainer->layout())
-    {
-        QWidget().setLayout(qtContainer->layout());
-    }
-    qtContainer->setLayout(layout);
-
+    QBoxLayout* layout = new QBoxLayout(QBoxLayout::TopToBottom);
     layout->addWidget( m_tabWidget );
 
-    const std::list< ViewInfo> &views = this->getViewsInfo();
+    const std::list< ViewInfo>& views = this->getViewsInfo();
 
     for ( ViewInfo viewInfo : views)
     {
-        QWidget *widget = new QWidget(m_tabWidget);
+        QWidget* widget = new QWidget(m_tabWidget);
 
         ::fwGuiQt::container::QtContainer::sptr subContainer = ::fwGuiQt::container::QtContainer::New();
         subContainer->setQtContainer(widget);
@@ -65,9 +57,9 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
         int idx = 0;
         if(viewInfo.m_useScrollBar)
         {
-            QScrollArea *scrollArea = new QScrollArea(m_tabWidget);
+            QScrollArea* scrollArea = new QScrollArea(m_tabWidget);
             scrollArea->setWidget(widget);
-            scrollArea->setWidgetResizable ( true );
+            scrollArea->setWidgetResizable( true );
             idx = m_tabWidget->addTab( scrollArea, QString::fromStdString(viewInfo.m_caption));
         }
         else
@@ -79,6 +71,8 @@ void TabLayoutManager::createLayout( ::fwGui::container::fwContainer::sptr paren
             m_tabWidget->setCurrentIndex(idx);
         }
     }
+
+    m_parentContainer->setLayout(layout);
 }
 
 //-----------------------------------------------------------------------------
@@ -93,6 +87,4 @@ void TabLayoutManager::destroyLayout()
 //-----------------------------------------------------------------------------
 
 } // namespace fwGui
-
-
 

@@ -87,13 +87,9 @@ void SParameters::starting() throw (::fwTools::Failed)
 {
     this->create();
 
-    auto qtContainer   = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    QWidget* container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
+    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
 
-    QGridLayout* layout = new QGridLayout(container);
-    SLM_ASSERT("Layout is NULL", layout);
-    container->setLayout(layout);
+    QGridLayout* layout = new QGridLayout();
 
     ::fwServices::IService::ConfigType config = this->getConfigTree();
     const ::fwServices::IService::ConfigType& parametersCfg = config.get_child("service.parameters");
@@ -168,6 +164,8 @@ void SParameters::starting() throw (::fwTools::Failed)
         }
         ++row;
     }
+
+    qtContainer->setLayout(layout);
 }
 
 //-----------------------------------------------------------------------------
@@ -180,7 +178,6 @@ void SParameters::updating() throw (::fwTools::Failed)
 
 void SParameters::stopping() throw (::fwTools::Failed)
 {
-    this->getContainer()->clean();
     this->destroy();
 }
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -65,26 +65,25 @@ void Mesh::fromVTKMesh(  vtkSmartPointer<vtkPolyData> polyData, ::fwData::Mesh::
             switch (cellType)
             {
                 case VTK_VERTEX:
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==1);
+                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 1);
                     meshHelper.insertNextCell( idList->GetId(0));
                     break;
                 case VTK_LINE:
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==2);
+                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 2);
                     meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1));
                     break;
                 case VTK_TRIANGLE:
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==3);
+                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 3);
                     meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2));
                     break;
                 case VTK_QUAD:
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==4);
+                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 4);
                     meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2), idList->GetId(3));
                     break;
                 default:
                     FW_RAISE("VTK Mesh type "<<cellType<< " not supported.");
             }
         }
-
 
         if(polyData->GetPointData()->HasArray("Colors"))
         {
@@ -238,23 +237,23 @@ void Mesh::fromVTKGrid(vtkSmartPointer<vtkUnstructuredGrid> grid, ::fwData::Mesh
             switch (cellType)
             {
                 case VTK_VERTEX:
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==1);
+                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 1);
                     meshHelper.insertNextCell( idList->GetId(0));
                     break;
                 case VTK_LINE:
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==2);
+                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 2);
                     meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1));
                     break;
                 case VTK_TRIANGLE:
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==3);
+                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 3);
                     meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2));
                     break;
                 case VTK_QUAD:
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==4);
+                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 4);
                     meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2), idList->GetId(3));
                     break;
                 case VTK_TETRA:
-                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds()==4);
+                    SLM_ASSERT("Wrong number of ids: "<<idList->GetNumberOfIds(), idList->GetNumberOfIds() == 4);
                     meshHelper.insertNextCell( idList->GetId(0), idList->GetId(1), idList->GetId(2), idList->GetId(3));
                     break;
                 default:
@@ -401,7 +400,7 @@ void Mesh::toVTKMesh( const ::fwData::Mesh::csptr& mesh, vtkSmartPointer<vtkPoly
 
     vtkIdType typeVtkCell;
     vtkIdType cell[4];
-    for(unsigned int i = 0; i<nbCells; ++i )
+    for(unsigned int i = 0; i < nbCells; ++i )
     {
         ::fwData::Mesh::CellTypes cellType = cellTypes[i];
         ::fwData::Mesh::Id offset          = cellDataOffsets[i];
@@ -522,7 +521,12 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointColor(vtkSmartPointer<vtkP
 
         for (; pointColor != pointColorEnd; pointColor += nbComponents)
         {
+            // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
+#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
+            colors->InsertNextTypedTuple(pointColor);
+#else
             colors->InsertNextTupleValue(pointColor);
+#endif
         }
         polyDataDst->GetPointData()->SetScalars(colors);
         polyDataDst->Modified();
@@ -562,7 +566,12 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellColor(vtkSmartPointer<vtkPo
 
         for (; cellColor != cellColorEnd; cellColor += nbComponents)
         {
+            // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
+#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
+            colors->InsertNextTypedTuple(cellColor);
+#else
             colors->InsertNextTupleValue(cellColor);
+#endif
         }
 
         polyDataDst->GetCellData()->SetScalars(colors);
@@ -601,9 +610,13 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointNormals(vtkSmartPointer<vt
 
         for (; pointNormal != pointNormalEnd; pointNormal += nbComponents)
         {
+            // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
+#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
+            normals->InsertNextTypedTuple(pointNormal);
+#else
             normals->InsertNextTupleValue(pointNormal);
+#endif
         }
-
 
         polyDataDst->GetPointData()->SetNormals(normals);
         polyDataDst->Modified();
@@ -642,7 +655,12 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellNormals(vtkSmartPointer<vtk
 
         for (; cellNormal != cellNormalEnd; cellNormal += nbComponents)
         {
+            // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
+#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
+            normals->InsertNextTypedTuple(cellNormal);
+#else
             normals->InsertNextTupleValue(cellNormal);
+#endif
         }
 
         polyDataDst->GetCellData()->SetNormals(normals);
@@ -681,9 +699,13 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataPointTexCoords(vtkSmartPointer<
 
         for (; pointTexCoord != pointTexCoordEnd; pointTexCoord += nbComponents)
         {
+            // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
+#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
+            normals->InsertNextTypedTuple(pointTexCoord);
+#else
             normals->InsertNextTupleValue(pointTexCoord);
+#endif
         }
-
 
         polyDataDst->GetPointData()->SetTCoords(normals);
         polyDataDst->Modified();
@@ -722,7 +744,12 @@ vtkSmartPointer<vtkPolyData> Mesh::updatePolyDataCellTexCoords(vtkSmartPointer<v
 
         for (; cellTexCoord != cellTexCoordEnd; cellTexCoord += nbComponents)
         {
+            // Since VTK 7.1, InsertNextTupleValue is deprecated in favor of InsertNextTypedTuple.
+#if (VTK_MAJOR_VERSION == 7 && VTK_MINOR_VERSION >= 1) ||  VTK_MAJOR_VERSION > 7
+            normals->InsertNextTypedTuple(cellTexCoord);
+#else
             normals->InsertNextTupleValue(cellTexCoord);
+#endif
         }
 
         polyDataDst->GetCellData()->SetTCoords(normals);
@@ -752,7 +779,8 @@ double Mesh::computeVolume( const ::fwData::Mesh::csptr& mesh )
     holesFilter->SetHoleSize(2000);
     holesFilter->SetInputData(vtkMeshRaw);
     holesFilter->Update();
-    if (holesFilter->GetOutput()->GetNumberOfCells() > 0) // Filter return empty mesh when no topological holes are present
+    if (holesFilter->GetOutput()->GetNumberOfCells() > 0) // Filter return empty mesh when no topological holes are
+                                                          // present
     {
         vtkMeshRaw = holesFilter->GetOutput();
     }

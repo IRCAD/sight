@@ -18,6 +18,7 @@
 #include <QPointer>
 
 QT_BEGIN_NAMESPACE
+class QLayout;
 class QWidget;
 QT_END_NAMESPACE
 
@@ -44,11 +45,19 @@ public:
 
     FWGUIQT_API virtual ~QtContainer() throw();
 
-    FWGUIQT_API virtual void clean();
-    FWGUIQT_API virtual void destroyContainer();
-
     FWGUIQT_API virtual void setQtContainer(QWidget* container);
     FWGUIQT_API virtual QWidget* getQtContainer();
+
+    /**
+     * @brief Assign a layout to the container widget. Previous layout and its children are deleted and the container
+     *  widget take the ownership of the new layout
+     *
+     * @param The layout to set on the container widget
+     */
+    FWGUIQT_API virtual void setLayout(QLayout* const layout);
+
+    FWGUIQT_API virtual void clean();
+    FWGUIQT_API virtual void destroyContainer();
     FWGUIQT_API virtual bool isShownOnScreen();
 
     FWGUIQT_API virtual void setVisible(bool isVisible);

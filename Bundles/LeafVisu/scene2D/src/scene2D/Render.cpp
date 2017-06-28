@@ -6,14 +6,14 @@
 
 #include "scene2D/Render.hpp"
 
-#include "scene2D/Scene2DGraphicsView.hpp"
 #include "scene2D/adaptor/IAdaptor.hpp"
+#include "scene2D/Scene2DGraphicsView.hpp"
 
+#include <fwCom/helper/SigSlotConnection.hpp>
 #include <fwCom/Slot.hpp>
 #include <fwCom/Slot.hxx>
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwCom/helper/SigSlotConnection.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -437,7 +437,6 @@ void Render::stopping() throw ( ::fwTools::Failed )
 
     this->stopContext();
 
-    this->getContainer()->clean();
     this->destroy();
 }
 
@@ -447,8 +446,8 @@ void Render::startContext()
 {
     SLM_TRACE_FUNC();
 
-    SPTR(::fwGuiQt::container::QtContainer) qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer());
+    SPTR(::fwGuiQt::container::QtContainer) qtContainer
+        = ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
 
     m_scene = new QGraphicsScene( m_sceneStart.getX(), m_sceneStart.getY(), m_sceneWidth.getX(), m_sceneWidth.getY());
     m_scene->setBackgroundBrush(QBrush(QColor(0, 0, 0)));
@@ -463,7 +462,7 @@ void Render::startContext()
 
     QVBoxLayout* layout = new QVBoxLayout;
     layout->addWidget(m_view);
-    qtContainer->getQtContainer()->setLayout(layout);
+    qtContainer->setLayout(layout);
 
     m_view->updateFromViewport();
 }

@@ -1,10 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuVTKAdaptor/Transform.hpp"
+
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Material.hpp>
@@ -13,43 +16,43 @@
 #include <fwData/Reconstruction.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
-
 #include <fwServices/macros.hpp>
 
 #include <vtkCommand.h>
 #include <vtkMatrix4x4.h>
-#include <vtkTransform.h>
 #include <vtkRenderWindowInteractor.h>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <vtkTransform.h>
 
 class TransformCallback : public ::vtkCommand
 {
 public:
 
+    //------------------------------------------------------------------------------
+
     static TransformCallback* New(::visuVTKAdaptor::Transform* adaptor)
     {
-        TransformCallback *cb = new TransformCallback;
+        TransformCallback* cb = new TransformCallback;
         cb->m_adaptor = adaptor;
         return cb;
     }
 
-    TransformCallback() : m_adaptor(nullptr)
+    TransformCallback() :
+        m_adaptor(nullptr)
     {
     }
     ~TransformCallback()
     {
     }
 
+    //------------------------------------------------------------------------------
+
     virtual void Execute( ::vtkObject* pCaller, unsigned long, void* )
     {
         m_adaptor->updateFromVtk();
     }
 
-    ::visuVTKAdaptor::Transform *m_adaptor;
+    ::visuVTKAdaptor::Transform* m_adaptor;
 };
-
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Transform,
                          ::fwData::TransformationMatrix3D );
@@ -140,11 +143,11 @@ void Transform::updateFromVtk()
 
     {
         ::fwData::mt::ObjectWriteLock lock(trf);
-        for(int lt = 0; lt<4; lt++)
+        for(int lt = 0; lt < 4; lt++)
         {
-            for(int ct = 0; ct<4; ct++)
+            for(int ct = 0; ct < 4; ct++)
             {
-                trf->setCoefficient(lt,ct, mat->GetElement(lt,ct));
+                trf->setCoefficient(lt, ct, mat->GetElement(lt, ct));
             }
         }
     }
@@ -157,7 +160,6 @@ void Transform::updateFromVtk()
 
     vtkTrf->AddObserver( ::vtkCommand::ModifiedEvent, m_transformCommand );
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -178,11 +180,11 @@ void Transform::doUpdate() throw(fwTools::Failed)
 
     {
         ::fwData::mt::ObjectReadLock lock(trf);
-        for(int lt = 0; lt<4; lt++)
+        for(int lt = 0; lt < 4; lt++)
         {
-            for(int ct = 0; ct<4; ct++)
+            for(int ct = 0; ct < 4; ct++)
             {
-                mat->SetElement(lt,ct, trf->getCoefficient(lt,ct));
+                mat->SetElement(lt, ct, trf->getCoefficient(lt, ct));
             }
         }
     }
@@ -206,7 +208,7 @@ void Transform::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Transform::setTransform(vtkTransform *t)
+void Transform::setTransform(vtkTransform* t)
 {
     if ( m_transform != t )
     {
@@ -224,9 +226,9 @@ void Transform::setTransform(vtkTransform *t)
 
 //------------------------------------------------------------------------------
 
-vtkTransform * Transform::getTransform()
+vtkTransform* Transform::getTransform()
 {
-    vtkTransform *t = m_transform;
+    vtkTransform* t = m_transform;
     if (t == 0)
     {
         t = this->IVtkAdaptorService::getTransform();
@@ -245,6 +247,7 @@ void Transform::doSwap() throw(fwTools::Failed)
 
 void Transform::doStop() throw(fwTools::Failed)
 {
+    this->getTransform()->RemoveObserver(m_transformCommand);
     this->unregisterServices();
 }
 
