@@ -3,6 +3,7 @@
 uniform sampler3D u_image;
 
 uniform float u_sliceDepth;
+uniform float u_sampleDistance;
 
 in vec2 uv;
 

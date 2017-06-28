@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,12 +7,11 @@
 #ifndef __FWRENDEROGRE_UI_VRWIDGET_HPP__
 #define __FWRENDEROGRE_UI_VRWIDGET_HPP__
 
-#include <fwData/TransformationMatrix3D.hpp>
-
 #include <fwRenderOgre/registry/macros.hpp>
-
-#include <fwRenderOgre/vr/IVolumeRenderer.hpp>
 #include <fwRenderOgre/SRender.hpp>
+#include <fwRenderOgre/vr/IVolumeRenderer.hpp>
+
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreSceneNode.h>
@@ -88,12 +87,6 @@ public:
      * @param dy displacement along the vertical axis, used to compute scale factor.
      */
     FWRENDEROGRE_API void scaleClippingBox(int x, int y, int dy);
-
-    /// Hides the clipping box and widgets.
-    FWRENDEROGRE_API void hide();
-
-    /// Shows the clipping box and widgets.
-    FWRENDEROGRE_API void show();
 
     /// Returns whether the widgets are visible or hidden.
     FWRENDEROGRE_API bool getVisibility() const;

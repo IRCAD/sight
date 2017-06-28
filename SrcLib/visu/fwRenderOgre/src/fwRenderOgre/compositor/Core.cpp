@@ -167,7 +167,7 @@ void Core::setupTransparency()
         // Now, we can add the new compositor to the compositor chain
         m_compositorInstance = compositorManager.addCompositor( m_viewport,
                                                                 m_transparencyTechniqueName,
-                                                                0.);
+                                                                0);
         compositorManager.setCompositorEnabled( m_viewport, m_transparencyTechniqueName, true );
 
         // If the final compositor has been removed, we need to add it to the compositor chain

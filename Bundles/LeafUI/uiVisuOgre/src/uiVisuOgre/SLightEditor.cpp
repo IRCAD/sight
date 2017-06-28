@@ -59,13 +59,11 @@ void SLightEditor::starting() throw( ::fwTools::Failed )
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
         this->getContainer());
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instantiated", container);
 
-    m_lightNameLbl = new QLabel("No light selected", container);
+    m_lightNameLbl = new QLabel("No light selected");
     m_lightNameLbl->setAlignment(::Qt::AlignHCenter);
 
-    m_lightTypeBox = new QComboBox(container);
+    m_lightTypeBox = new QComboBox();
     m_lightTypeBox->addItems(QStringList() <<
                              ::fwRenderOgre::ILight::s_POINT_LIGHT.c_str() <<
                              ::fwRenderOgre::ILight::s_DIRECTIONAL_LIGHT.c_str() <<
@@ -74,18 +72,18 @@ void SLightEditor::starting() throw( ::fwTools::Failed )
     //TODO: enable the light type combo box when other light types are implemented.
     m_lightTypeBox->setEnabled(false);
 
-    m_diffuseColorBtn = new QPushButton("Diffuse color", container);
+    m_diffuseColorBtn = new QPushButton("Diffuse color");
     m_diffuseColorBtn->setEnabled(false);
 
-    m_specularColorBtn = new QPushButton("Specular color", container);
+    m_specularColorBtn = new QPushButton("Specular color");
     m_specularColorBtn->setEnabled(false);
 
-    m_thetaSlider = new QSlider(::Qt::Horizontal, container);
+    m_thetaSlider = new QSlider(::Qt::Horizontal);
     m_thetaSlider->setMinimum(0);
     m_thetaSlider->setMaximum(::fwRenderOgre::ILight::s_OFFSET_RANGE);
     m_thetaSlider->setEnabled(false);
 
-    m_phiSlider = new QSlider(::Qt::Horizontal, container);
+    m_phiSlider = new QSlider(::Qt::Horizontal);
     m_phiSlider->setMinimum(0);
     m_phiSlider->setMaximum(::fwRenderOgre::ILight::s_OFFSET_RANGE);
     m_phiSlider->setEnabled(false);
@@ -113,7 +111,7 @@ void SLightEditor::starting() throw( ::fwTools::Failed )
     phiLayout->addWidget(m_phiSlider);
     layout->addLayout(phiLayout);
 
-    container->setLayout(layout);
+    qtContainer->setLayout(layout);
 
     QObject::connect(m_diffuseColorBtn, SIGNAL(clicked(bool)), this, SLOT(onEditDiffuseColor(bool)));
     QObject::connect(m_specularColorBtn, SIGNAL(clicked(bool)), this, SLOT(onEditSpecularColor(bool)));
@@ -126,13 +124,6 @@ void SLightEditor::starting() throw( ::fwTools::Failed )
 
 void SLightEditor::stopping() throw( ::fwTools::Failed )
 {
-    QObject::disconnect(m_diffuseColorBtn, SIGNAL(clicked(bool)), this, SLOT(onEditDiffuseColor(bool)));
-    QObject::disconnect(m_specularColorBtn, SIGNAL(clicked(bool)), this, SLOT(onEditSpecularColor(bool)));
-
-    QObject::disconnect(m_thetaSlider, SIGNAL(valueChanged(int)), this, SLOT(onEditThetaOffset(int)));
-    QObject::disconnect(m_phiSlider, SIGNAL(valueChanged(int)), this, SLOT(onEditPhiOffset(int)));
-
-    this->getContainer()->clean();
     this->destroy();
 }
 

@@ -1,11 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "visuOgreAdaptor/SModelSeries.hpp"
 
+#include "visuOgreAdaptor/SMesh.hpp"
+#include "visuOgreAdaptor/SReconstruction.hpp"
+#include <visuOgreAdaptor/defines.hpp>
 
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
@@ -20,10 +23,6 @@
 
 #include <fwServices/macros.hpp>
 #include <fwServices/op/Add.hpp>
-
-#include <visuOgreAdaptor/defines.hpp>
-#include "visuOgreAdaptor/SMesh.hpp"
-#include "visuOgreAdaptor/SReconstruction.hpp"
 
 fwServicesRegisterMacro( ::fwRenderOgre::IAdaptor, ::visuOgreAdaptor::SModelSeries, ::fwMedData::ModelSeries);
 

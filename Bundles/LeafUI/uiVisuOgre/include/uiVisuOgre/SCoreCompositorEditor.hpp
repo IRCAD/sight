@@ -89,7 +89,6 @@ protected Q_SLOTS:
     void onEditTransparency(int index);
 
 private:
-    QWidget* m_container;
     QPointer<QButtonGroup> m_transparencyButtonGroup;
     QPointer<QButtonGroup> m_transparencyButtonGroupShading;
     QPointer<QButtonGroup> m_normalsRadioBox;

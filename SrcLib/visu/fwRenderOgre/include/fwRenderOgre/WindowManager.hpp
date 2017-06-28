@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,10 @@
 #ifndef __FWRENDEROGRE_WINDOWMANAGER_HPP__
 #define __FWRENDEROGRE_WINDOWMANAGER_HPP__
 
+#include "fwRenderOgre/config.hpp"
+
 #include <fwCore/base.hpp>
 #include <fwCore/util/LazyInstantiator.hpp>
-
-#include "fwRenderOgre/config.hpp"
 
 #include <OGRE/OgreRenderWindow.h>
 
@@ -18,7 +18,6 @@ namespace fwRenderOgre
 {
 
 /**
- * @class WindowManager
  * @brief This singleton stores all Ogre render windows and manage their deletion.
  *        The problem is that the OpenGLRendeSystem we use, somehow, needs the
  *        first window created to be deleted last.
@@ -54,8 +53,6 @@ private:
 
 };
 
-
 } // namespace fwRenderOgre
-
 
 #endif // __FWRENDEROGRE_WINDOWMANAGER_HPP__

@@ -103,27 +103,18 @@ float coneShadowQuery(in ivec3 voxelPos)
     // x is the radius of the cone at height 1.
     float x = tan(coneAngle);
 
-    // We compute the two lines making up the cone projection on the first plane.
-    // To do so we need to determine their vectors v0 and v1.
-    float coneSlope = projDir0.y / projDir0.x;
-    float a = 1 + coneSlope * coneSlope;
-    v0.y = sqrt(a) / a;
-    v0.x = -v0.y * coneSlope;
+    projDir0 = normalize(projDir0);
+    projDir1 = normalize(projDir1);
 
-    v1  = -v0;
-    v0 += projDir0;
-    v1 += projDir0;
+    vec2 orth0 = vec2(-projDir0.y, projDir0.x) * x;
+    vec2 orth1 = vec2(projDir0.y, -projDir0.x) * x;
+    v0 = projDir0 + orth0;
+    v1 = projDir0 + orth1;
 
-    // We do the same for the second plane.
-    coneSlope = projDir1.y / projDir1.x;
-    a = 1 + coneSlope * coneSlope;
-
-    v2.y = sqrt(a) / a;
-    v2.x = -v2.y * coneSlope;
-
-    v3  = -v2;
-    v2 += projDir1;
-    v3 += projDir1;
+    vec2 orth2 = vec2(-projDir1.y, projDir1.x) * x;
+    vec2 orth3 = vec2(projDir1.y, -projDir1.x) * x;
+    v2 = projDir1 + orth2;
+    v3 = projDir1 + orth3;
 
     // The way the cone is facing.
     int coneOrientation = int(sign(coneDir[primaryAxis]));

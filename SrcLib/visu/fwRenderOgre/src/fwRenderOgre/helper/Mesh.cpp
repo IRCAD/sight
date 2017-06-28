@@ -1,13 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <cstdint>
-
 #include "fwRenderOgre/helper/Mesh.hpp"
+
 #include "fwCore/spyLog.hpp"
+
+#include <cstdint>
 
 namespace fwRenderOgre
 {
@@ -39,7 +40,6 @@ void Mesh::copyColors(::Ogre::RGBA* _dest, const std::uint8_t* _src, size_t _num
         SLM_FATAL("We only support RGB or RGBA vertex color");
     }
 }
-
 
 //-----------------------------------------------------------------------------
 

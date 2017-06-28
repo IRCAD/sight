@@ -17,6 +17,8 @@
     <xi:include href="configurations/OgreVolumeRendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/ManageOgreOrganWithSeries.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/OgreLightManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/OgreHistogramManager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/OgreIDVR.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="::fwServices::registry::ServiceConfig">
         <id>MDAtomsConfig</id>
@@ -34,14 +36,10 @@
 
             <object uid="modelSeriesUID" type="::fwMedData::ModelSeries" />
             <object uid="imageUID" type="::fwData::Image" />
-            <object uid="TFPool" type="::fwData::Composite" />
+            <object uid="maskUID" type="::fwData::Image" />
             <object uid="TFSelections" type="::fwData::Composite" />
 
             <object uid="cameraTF_UID" type="::fwData::TransformationMatrix3D" />
-
-            <object uid="viewport" type="::scene2D::data::Viewport" />
-            <object uid="histogram" type="::fwData::Histogram" />
-            <object uid="histogramPoint" type="::fwData::Point" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -88,9 +86,9 @@
                 <gui>
                     <layout type="::fwGui::TabLayoutManager">
                         <view caption="VTK" selected="no" />
-                        <view caption="Ogre" selected="yes" />
+                        <view caption="Ogre" selected="no" />
                         <view caption="2D Negato Ogre" selected="no" />
-                        <view caption="Ogre VR" selected="no" />
+                        <view caption="Ogre VR" selected="yes" />
                     </layout>
                 </gui>
                 <registry>
@@ -108,33 +106,15 @@
                         <view caption="Organ manager" selected="yes" />
                         <view caption="Light manager" />
                         <view caption="Negato histogram" />
+                        <view caption="IDVR" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="compositorView" start="yes" />
                     <view wid="organView" start="yes" />
                     <view wid="lightView" start="yes" />
-                    <view sid="histogramView" start="yes" />
-                </registry>
-            </service>
-
-            <service uid="histogramView" type="::gui::view::SDefaultView" >
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager">
-                        <orientation value="vertical" />
-                        <view proportion="0" minHeight="30" />
-                        <view proportion="0" minHeight="100" />
-                        <view proportion="1" />
-                        <view proportion="0" />
-                        <view proportion="0" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="tfm" start="yes" />
-                    <view sid="Scene2D_Shutter" start="no" />
-                    <view sid="Scene2D" start="no" />
-                    <view sid="windowLevel" start="yes" />
-                    <view sid="transparencyEditor" start="yes" />
+                    <view wid="histogramView" start="yes" />
+                    <view wid="idvrView" start="yes" />
                 </registry>
             </service>
 
@@ -228,8 +208,13 @@
             <service uid="cfgOgreVolumeRendering" type="::fwServices::SConfigController" >
                 <appConfig id="OgreVolumeRendering" />
                 <inout key="imageUID" uid="imageUID" />
+                <inout key="maskUID" uid="maskUID" />
                 <inout key="TFSelections" uid="TFSelections" />
                 <parameter replace="WID_PARENT" uid="OgreVolumeRenderingView" />
+                <parameter replace="idvrEnumParamChannel" by="idvrEnumParamChannel" />
+                <parameter replace="idvrBoolParamChannel" by="idvrBoolParamChannel" />
+                <parameter replace="idvrDoubleParamChannel" by="idvrDoubleParamChannel" />
+                <parameter replace="idvrColorParamChannel" by="idvrColorParamChannel" />
             </service>
 
             <service uid="cfgOrganManagerConfig"  type="::fwServices::SConfigController">
@@ -245,6 +230,26 @@
                 <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/arMedia_0-1/icons/app.ico" />
             </service>
 
+            <service uid="cfgHistogramManager" type="::fwServices::SConfigController">
+                <appConfig id="OgreHistogramManager" />
+                <inout key="imageUID" uid="imageUID" />
+                <inout key="maskUID" uid="maskUID" />
+                <inout key="TFSelections" uid="TFSelections" />
+                <parameter replace="WID_PARENT" uid="histogramView" />
+                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/arMedia_0-1/icons/app.ico" />
+            </service>
+
+            <service uid="cfgIDVRManager"  type="::fwServices::SConfigController">
+                <appConfig id="OgreIDVR" />
+                <inout key="maskUID" uid="maskUID" />
+                <parameter replace="WID_PARENT" uid="idvrView" />
+                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/arMedia_0-1/icons/app.ico" />
+                <parameter replace="idvrEnumParamChannel" by="idvrEnumParamChannel" />
+                <parameter replace="idvrBoolParamChannel" by="idvrBoolParamChannel" />
+                <parameter replace="idvrDoubleParamChannel" by="idvrDoubleParamChannel" />
+                <parameter replace="idvrColorParamChannel" by="idvrColorParamChannel" />
+            </service>
+
             <!-- ******************************* Services ***************************************** -->
 
             <service uid="compositorSelector" type="::uiVisuOgre::SCompositorSelector"  />
@@ -256,123 +261,6 @@
 
             <service uid="CoreEditor" type="::uiVisuOgre::SCoreCompositorEditor"  />
 
-            <service uid="Scene2D_Shutter" type="::scene2D::Render" autoConnect="yes">
-                <in key="histogram" uid="histogram" />
-                <inout key="viewport" uid="viewport" />
-                <scene>
-                    <scene x="-1100" y="-1.1" width="2400" height="1.2" />
-
-                    <viewport id="view1" x="-1100" y="-1.1" width="2400" height="1.2" />
-
-                    <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
-                    <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-
-                    <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
-
-                    <adaptor id="shutterGrid" class="::scene2D::adaptor::Grid2D" objectId="self">
-                        <config xMin="-1200" xMax="1400" yMin="-0.7" yMax="1.7" xSpacing="200" ySpacing="0.2" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
-                    </adaptor>
-
-                    <adaptor id="shutterAbscissa" class="::scene2D::adaptor::Line" objectId="self">
-                        <config x1="-1200" x2="1400" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
-                    </adaptor>
-
-                    <adaptor id="shutterOrdinate" class="::scene2D::adaptor::Line" objectId="self">
-                        <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
-                    </adaptor>
-
-                    <adaptor id="shutterHistogram" class="::scene2D::adaptor::Histogram" objectId="histogram">
-                        <config color="green" xAxis="xAxis" yAxis="axeHistogramY" zValue="4" />
-                    </adaptor>
-
-                    <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="viewport">
-                        <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1200" initialPos="-700" />
-                    </adaptor>
-
-                </scene>
-            </service>
-
-            <service uid="Scene2D" type="::scene2D::Render" autoConnect="yes">
-                <in key="image" uid="imageUID" />
-                <in key="histogram" uid="histogram" />
-                <inout key="histogramPoint" uid="histogramPoint" />
-                <inout key="viewport" uid="viewport" />
-                <inout key="TFSelections" uid="TFSelections" />
-                <scene>
-                    <scene x="-1100" y="-1.1" width="2400" height="1.2" antialiasing="true" />
-
-                    <viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" />
-
-                    <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
-                    <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
-
-                    <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
-
-                    <adaptor id="grid" class="::scene2D::adaptor::Grid2D" objectId="self">
-                        <config xMin="-1200" xMax="1500" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.25" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
-                    </adaptor>
-
-                    <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
-                        <config x1="-1200" x2="1500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
-                    </adaptor>
-
-                    <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self">
-                        <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
-                    </adaptor>
-
-                    <adaptor id="maxOpacity" class="::scene2D::adaptor::Line" objectId="self">
-                        <config x1="-1200" x2="1500" y1="1" y2="1" color="red" xAxis="xAxis" yAxis="yAxis" zValue="4" />
-                    </adaptor>
-
-                    <adaptor id="curvedHistogram" class="::scene2D::adaptor::CurvedHistogram" objectId="histogram">
-                        <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25" zValue="6" histogramPointUID="histogramPoint" borderWidth="2.0" />
-                    </adaptor>
-
-                    <!-- A graphic cursor that follow histogram's shape according to mouse's cursor -->
-                    <adaptor id="histogramCursor" class="::scene2D::adaptor::HistogramCursor" objectId="histogram">
-                        <config xAxis="xAxis" yAxis="axeHistogramY" color="blue" borderColor="gray" zValue="9" pointSize="16" viewportUID="viewport" histogramPointUID="histogramPoint" />
-                    </adaptor>
-
-                    <adaptor id="histogramValue" class="::scene2D::adaptor::HistogramValue" objectId="histogram">
-                        <config xAxis="xAxis" yAxis="axeHistogramY" zValue="12" fontSize="6" viewportUID="viewport" histogramPointUID="histogramPoint" />
-                    </adaptor>
-
-                    <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
-                        <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" viewportUID="viewport" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
-                    </adaptor>
-
-                    <adaptor id="viewportRangeUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="viewport">
-                        <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
-                    </adaptor>
-
-                    <adaptor id="scaleValuesLeft" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                        <config min="0.0" max="1.0" interval="0.1" fontSize="7" align="left" unit="%" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                    </adaptor>
-
-                    <adaptor id="axisLeft" class="::scene2D::adaptor::Axis" objectId="self">
-                        <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                    </adaptor>
-
-                    <adaptor id="scaleValuesBottom" class="::scene2D::adaptor::ScaleValues" objectId="self">
-                        <config min="-1024" max="1024" interval="200" fontSize="7" align="bottom" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                    </adaptor>
-
-                    <adaptor id="axisBottom" class="::scene2D::adaptor::Axis" objectId="self">
-                        <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
-                    </adaptor>
-                </scene>
-            </service>
-
-            <service uid="windowLevel" type="::uiImage::WindowLevel" autoConnect="yes">
-                <inout key="image" uid="imageUID" autoConnect="yes" />
-                <inout key="TFSelections" uid="TFSelections" />
-                <config selectedTFKey="SelectedTF" />
-            </service>
-
-            <service uid="transparencyEditor" type="::uiImage::ImageTransparency" autoConnect="yes" >
-                <inout key="image" uid="imageUID" />
-            </service>
-
             <service uid="readerPathMeshFile" type="::uiIO::editor::SIOSelector" >
                 <in key="target" uid="modelSeriesUID" />
                 <type mode="reader" />
@@ -381,12 +269,6 @@
             <service uid="writerPathMeshFile" type="::uiIO::editor::SIOSelector" >
                 <in key="target" uid="modelSeriesUID" />
                 <type mode="writer" />
-            </service>
-
-            <service uid="tfm" type="::uiTF::TransferFunctionEditor" >
-                <inout key="transferFunctions" uid="TFPool" />
-                <inout key="TFSelections" uid="TFSelections" />
-                <config selectedTFKey="SelectedTF" />
             </service>
 
             <service uid="imageReader" type="::uiIO::editor::SIOSelector" >
@@ -398,27 +280,20 @@
                 <inout key="image" uid="imageUID" autoConnect="yes" />
             </service>
 
-            <service uid="computeHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
-                <in key="image" uid="imageUID" />
-                <inout key="histogram" uid="histogram" />
-                <binsWidth>5.0</binsWidth>
-            </service>
-
             <!-- Start/Stop services -->
             <start uid="medicalImage" />
             <start uid="ihm" />
-            <start uid="Scene2D" />
-            <start uid="Scene2D_Shutter" />
             <start uid="cfgVTKGenericScene" />
             <start uid="cfgOgreGenericScene" />
             <start uid="cfgOgreNegato2D" />
             <start uid="cfgOgreVolumeRendering" />
             <start uid="cfgOrganManagerConfig" />
             <start uid="cfgLightManager" />
+            <start uid="cfgHistogramManager" />
+            <start uid="cfgIDVRManager" />
             <start uid="compositorSelector" />
             <start uid="compositorParameters" />
             <start uid="CoreEditor" />
-            <start uid="computeHistogram" />
 
         </config>
 

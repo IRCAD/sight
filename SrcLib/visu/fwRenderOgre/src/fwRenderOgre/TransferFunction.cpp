@@ -8,9 +8,9 @@
 
 #include <fwRenderOgre/Utils.hpp>
 
-#include <OgreHardwarePixelBuffer.h>
-
 #include <OGRE/OgreTextureManager.h>
+
+#include <OgreHardwarePixelBuffer.h>
 
 #include <cstdint>  // for std::uint_8
 
@@ -19,19 +19,20 @@ namespace fwRenderOgre
 
 static const size_t TEXTURE_SIZE = 256;
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-TransferFunction::TransferFunction()
+TransferFunction::TransferFunction() :
+    m_sampleDistance(1.f)
 {
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 TransferFunction::~TransferFunction()
 {
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void TransferFunction::createTexture(const ::Ogre::String& _parentId)
 {
@@ -49,7 +50,7 @@ void TransferFunction::createTexture(const ::Ogre::String& _parentId)
     }
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void TransferFunction::removeTexture()
 {
@@ -57,7 +58,7 @@ void TransferFunction::removeTexture()
     m_texture.setNull();
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _tf)
 {
@@ -145,6 +146,6 @@ void TransferFunction::updateTexture(const ::fwData::TransferFunction::csptr& _t
     pixBuffer->unlock();
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 } // Namespace fwRenderOgre

@@ -138,13 +138,13 @@ void VRWidget::updateClippingCube()
     {
         const ::Ogre::Vector3 size = aaBox.getSize();
 
-        m_clippingMatrix->setCoefficient(0,0, static_cast<double>(size.x));
-        m_clippingMatrix->setCoefficient(1,1, static_cast<double>(size.y));
-        m_clippingMatrix->setCoefficient(2,2, static_cast<double>(size.z));
+        m_clippingMatrix->setCoefficient(0, 0, static_cast<double>(size.x));
+        m_clippingMatrix->setCoefficient(1, 1, static_cast<double>(size.y));
+        m_clippingMatrix->setCoefficient(2, 2, static_cast<double>(size.z));
 
-        m_clippingMatrix->setCoefficient(0,3, static_cast<double>(m_clippingCube[0].x));
-        m_clippingMatrix->setCoefficient(1,3, static_cast<double>(m_clippingCube[0].y));
-        m_clippingMatrix->setCoefficient(2,3, static_cast<double>(m_clippingCube[0].z));
+        m_clippingMatrix->setCoefficient(0, 3, static_cast<double>(m_clippingCube[0].x));
+        m_clippingMatrix->setCoefficient(1, 3, static_cast<double>(m_clippingCube[0].y));
+        m_clippingMatrix->setCoefficient(2, 3, static_cast<double>(m_clippingCube[0].z));
 
         auto sig = m_clippingMatrix->signal< ::fwData::Object::ModifiedSignalType >(::fwData::Object::s_MODIFIED_SIG);
         sig->asyncEmit();
@@ -255,7 +255,6 @@ void VRWidget::initWidgets()
     m_selectedFace->setRenderQueueGroup(::Ogre::RENDER_QUEUE_BACKGROUND);
 
     // Create a pickable sphere for each cube face
-//    ::Ogre::LogManager::getSingleton().getDefaultLog()->logMessage("Creating widget Spheres ...");
     for(unsigned i = 0; i < 6; ++i)
     {
         auto currentFace = static_cast< ::fwRenderOgre::vr::IVolumeRenderer::CubeFace>(i);
@@ -313,7 +312,7 @@ void VRWidget::widgetPicked(::Ogre::MovableObject* _pickedWidget, int _screenX, 
 
     auto face = m_widgets.find(_pickedWidget);
 
-    deselectFace();
+    this->deselectFace();
 
     if(face != m_widgets.end())
     {
@@ -561,20 +560,6 @@ void VRWidget::scaleClippingBox(int x, int y, int dy)
     updateWidgets();
 
     m_renderService->requestRender();
-}
-
-//-----------------------------------------------------------------------------
-
-void VRWidget::hide()
-{
-    m_widgetSceneNode->setVisible(false);
-}
-
-//-----------------------------------------------------------------------------
-
-void VRWidget::show()
-{
-    m_widgetSceneNode->setVisible(true);
 }
 
 //-----------------------------------------------------------------------------

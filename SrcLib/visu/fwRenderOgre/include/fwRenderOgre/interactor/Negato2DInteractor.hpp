@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,8 +7,8 @@
 #ifndef __FWRENDEROGRE_INTERACTOR_NEGATO2DINTERACTOR_HPP__
 #define __FWRENDEROGRE_INTERACTOR_NEGATO2DINTERACTOR_HPP__
 
-#include "fwRenderOgre/interactor/IMovementInteractor.hpp"
 #include "fwRenderOgre/config.hpp"
+#include "fwRenderOgre/interactor/IMovementInteractor.hpp"
 
 namespace fwRenderOgre
 {
@@ -17,7 +17,6 @@ namespace interactor
 {
 
 /**
- * @class Negato2DInteractor
  * @brief Manages the camera movements (zoom/displacement) over a 2D negato
  */
 class FWRENDEROGRE_CLASS_API Negato2DInteractor :
@@ -92,7 +91,6 @@ private:
     ::Ogre::Camera* m_camera;
     /// Stores the X and Y components of the camera position.
     ::Ogre::Vector3 m_cameraPos;
-
 
     /// Gets the camera. makes sure that the member pointing to the Ogre camera is initialized.
     /// This cannot be done in the constructor because we can't know for sure if the Ogre context is launched.

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,8 +10,8 @@
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <fwRenderOgre/SRender.hpp>
 #include <fwRenderOgre/registry/macros.hpp>
+#include <fwRenderOgre/SRender.hpp>
 
 #include <QDesktopWidget>
 #include <QEvent>
@@ -57,8 +57,6 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
 {
     SLM_ASSERT("Invalid parent.", _parent );
     m_parentContainer = ::fwGuiQt::container::QtContainer::dynamicCast( _parent );
-    QWidget* container = m_parentContainer->getQtContainer();
-    SLM_ASSERT("The container is not a qtContainer.", container );
 
     m_qOgreWidget = new ::visuOgreQt::Window();
     m_qOgreWidget->showOverlay(showOverlay);
@@ -71,13 +69,14 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(renderingContainer);
 
-    container->setLayout(layout);
+    m_parentContainer->setLayout(layout);
 
     if(fullscreen)
     {
         // Open fullscreen widget on secondary monitor if there is one.
-        QDesktopWidget* desktop = QApplication::desktop();
-        int screenNumber        = desktop->screenNumber(container) + 1;
+        QWidget* const container = m_parentContainer->getQtContainer();
+        QDesktopWidget* desktop  = QApplication::desktop();
+        int screenNumber         = desktop->screenNumber(container) + 1;
 
         if(screenNumber >= desktop->screenCount())
         {
@@ -86,7 +85,7 @@ void RenderWindowInteractorManager::createContainer( ::fwGui::container::fwConta
 
         QRect screenres = desktop->screenGeometry(screenNumber);
 
-        container->setParent(0);
+        container->setParent(nullptr);
         container->showFullScreen();
 
         container->setGeometry(screenres);
@@ -211,7 +210,4 @@ void RenderWindowInteractorManager::onRayCastRequested(int _x, int _y, int _w, i
 //-----------------------------------------------------------------------------
 
 } // namespace visuOgreQt
-
-
-
 

@@ -12,7 +12,7 @@ fragment_program VolIllum_FP glsl
         param_named u_nbShells int 3
         param_named u_shellRadius int 3
         param_named u_scatteringConeAngle float 0.1
-        param_named u_nbSamplesAlongCone int 50;
+        param_named u_nbSamplesAlongCone int 50
     }
 }
 
@@ -30,7 +30,7 @@ fragment_program VolIllum_AO_FP glsl
         param_named u_nbShells int 3
         param_named u_shellRadius int 3
         param_named u_scatteringConeAngle float 0.1
-        param_named u_nbSamplesAlongCone int 50;
+        param_named u_nbSamplesAlongCone int 50
     }
 }
 
@@ -48,7 +48,7 @@ fragment_program VolIllum_Shadows_FP glsl
         param_named u_nbShells int 3
         param_named u_shellRadius int 3
         param_named u_scatteringConeAngle float 0.1
-        param_named u_nbSamplesAlongCone int 50;
+        param_named u_nbSamplesAlongCone int 50
     }
 }
 
@@ -66,7 +66,7 @@ fragment_program VolIllum_AO_Shadows_FP glsl
         param_named u_nbShells int 3
         param_named u_shellRadius int 3
         param_named u_scatteringConeAngle float 0.1
-        param_named u_nbSamplesAlongCone int 50;
+        param_named u_nbSamplesAlongCone int 50
     }
 }
 

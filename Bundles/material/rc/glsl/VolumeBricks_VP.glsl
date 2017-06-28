@@ -8,6 +8,8 @@ uniform ivec3 u_gridResolution;
 out ivec3 vs_gridPos;
 #endif
 
+//-----------------------------------------------------------------------------
+
 void main()
 {
 

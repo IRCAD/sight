@@ -42,6 +42,12 @@ MaterialMgrListener::~MaterialMgrListener()
     }
 
     auto tokens = ::Ogre::StringUtil::split(_schemeName, "/");
+
+    if(tokens.size() < 2)
+    {
+        return nullptr;
+    }
+
     // DepthPeeling, DualDepthPeeling, WeightedBlended or HybridTransparency
     const auto algoName = tokens[0];
     // peel, depthMap, transmittanceBlend, etc...

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,17 +21,17 @@
 
 #include <material/Plugin.hpp>
 
+#include <OGRE/OgreMaterialManager.h>
+#include <OGRE/OgrePass.h>
+#include <OGRE/OgreResourceManager.h>
+#include <OGRE/OgreTechnique.h>
+
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QHBoxLayout>
 #include <QString>
 #include <QVBoxLayout>
 #include <QWidget>
-
-#include <OGRE/OgreMaterialManager.h>
-#include <OGRE/OgrePass.h>
-#include <OGRE/OgreResourceManager.h>
-#include <OGRE/OgreTechnique.h>
 
 namespace uiVisuOgre
 {
@@ -61,14 +61,11 @@ void SMaterialSelector::starting() throw(::fwTools::Failed)
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer() );
 
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instantiated", container);
-
     // Selection
-    QLabel* currentMaterial = new QLabel(container);
+    QLabel* currentMaterial = new QLabel();
     currentMaterial->setText("Current material : ");
 
-    m_materialBox = new QComboBox(container);
+    m_materialBox = new QComboBox();
 
     std::pair <std::string, std::string> elt;
     ::Ogre::ResourceManager::ResourceMapIterator iter = ::Ogre::MaterialManager::getSingleton().getResourceIterator();
@@ -93,7 +90,7 @@ void SMaterialSelector::starting() throw(::fwTools::Failed)
     layout->addLayout( labelLayout );
     layout->addWidget( m_reloadButton );
 
-    container->setLayout( layout );
+    qtContainer->setLayout( layout );
 
     this->updating();
 
@@ -106,11 +103,6 @@ void SMaterialSelector::starting() throw(::fwTools::Failed)
 
 void SMaterialSelector::stopping() throw(::fwTools::Failed)
 {
-    QObject::disconnect(m_materialBox, SIGNAL(activated(const QString &)), this,
-                        SLOT(onSelectedModeItem(const QString &)));
-    QObject::disconnect(m_reloadButton, SIGNAL(clicked()), this, SLOT(onReloadMaterial()));
-
-    this->getContainer()->clean();
     this->destroy();
 }
 
