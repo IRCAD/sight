@@ -8,9 +8,6 @@
 
 #include <arData/CameraSeries.hpp>
 
-#include <QBoxLayout>
-#include <QGridLayout>
-
 #include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
 
@@ -25,6 +22,9 @@
 #include <fwThread/Worker.hpp>
 
 #include <fwTools/Object.hpp>
+
+#include <QBoxLayout>
+#include <QGridLayout>
 
 #include <algorithm>
 #include <sstream>
@@ -67,11 +67,8 @@ void SCameraSeriesEditor::starting() throw (fwTools::Failed)
     fwGui::IGuiContainerSrv::create();
     fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
 
-    QWidget* container = qtContainer->getQtContainer();
-
     QBoxLayout* mainLayout = new QBoxLayout(QBoxLayout::TopToBottom);
     mainLayout->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-    container->setLayout(mainLayout);
 
     m_description = new QLabel("");
 
@@ -88,7 +85,10 @@ void SCameraSeriesEditor::starting() throw (fwTools::Failed)
             gridLayout->addWidget(label, i, j);
         }
     }
+
     mainLayout->addLayout(gridLayout);
+
+    qtContainer->setLayout(mainLayout);
 
     this->updateInformations();
 
@@ -98,8 +98,7 @@ void SCameraSeriesEditor::starting() throw (fwTools::Failed)
 
 void SCameraSeriesEditor::stopping() throw (fwTools::Failed)
 {
-    getContainer()->clean();
-    fwGui::IGuiContainerSrv::destroy();
+    this->destroy();
 }
 
 // -------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,14 +18,14 @@
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/IService.hpp>
-
-#include <QHBoxLayout>
-#include <QString>
+#include <fwServices/macros.hpp>
 
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/convenience.hpp>
+
+#include <QHBoxLayout>
+#include <QString>
 
 namespace uiTools
 {
@@ -40,8 +40,9 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiTools::editor::SShowVectorS
 
 //-----------------------------------------------------------------------------
 
-SShowVectorSize::SShowVectorSize() throw() : m_vectorSize(0),
-                                             m_textToShow("")
+SShowVectorSize::SShowVectorSize() throw() :
+    m_vectorSize(0),
+    m_textToShow("")
 {
     newSlot(s_ADD_OBJECTS_SLOT, &SShowVectorSize::addObjects, this);
     newSlot(s_REMOVE_OBJECTS_SLOT, &SShowVectorSize::removeObjects, this);
@@ -61,9 +62,8 @@ void SShowVectorSize::starting() throw(::fwTools::Failed)
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-    QWidget *container = qtContainer->getQtContainer();
 
-    QHBoxLayout * layout = new QHBoxLayout();
+    QHBoxLayout* layout = new QHBoxLayout();
 
     m_label = new QLabel();
     QString text = m_textToShow + QString::number(this->m_vectorSize);
@@ -71,17 +71,13 @@ void SShowVectorSize::starting() throw(::fwTools::Failed)
 
     layout->addWidget(m_label);
 
-    container->setLayout(layout);
+    qtContainer->setLayout(layout);
 }
 
 //------------------------------------------------------------------------------
 
 void SShowVectorSize::stopping() throw(::fwTools::Failed)
 {
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =
-        ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-
-    qtContainer->clean();
     this->destroy();
 }
 
@@ -113,7 +109,7 @@ void SShowVectorSize::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShowVectorSize::info( std::ostream &_sstream )
+void SShowVectorSize::info( std::ostream& _sstream )
 {
 }
 

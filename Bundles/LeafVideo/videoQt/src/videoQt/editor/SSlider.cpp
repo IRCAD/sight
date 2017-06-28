@@ -1,21 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "videoQt/editor/SSlider.hpp"
 
-#include <fwCore/base.hpp>
-
 #include <fwCom/Signal.hxx>
 #include <fwCom/Slots.hxx>
 
+#include <fwCore/base.hpp>
+
 #include <fwData/Object.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <fwGuiQt/container/QtContainer.hpp>
+
+#include <fwServices/macros.hpp>
 
 #include <QHBoxLayout>
 #include <QString>
@@ -37,6 +37,8 @@ const ::fwCom::Slots::SlotKeyType SSlider::s_SET_DURATION_SLIDER_SLOT = "setDura
 
 static const char* s_UNKNOWN_TIME = "--:--:--";
 
+//------------------------------------------------------------------------------
+
 QString convertMSecToHHMMSS(int64_t milliseconds)
 {
     std::chrono::milliseconds ms(milliseconds);
@@ -52,7 +54,8 @@ QString convertMSecToHHMMSS(int64_t milliseconds)
 
 //------------------------------------------------------------------------------
 
-SSlider::SSlider() throw() :  m_sliderPressed(false)
+SSlider::SSlider() throw() :
+    m_sliderPressed(false)
 {
     /// Slot to change the position of the slider
     newSlot(s_SET_POSITION_SLIDER_SLOT,  &SSlider::setPosition, this);
@@ -75,8 +78,6 @@ void SSlider::starting() throw(::fwTools::Failed)
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast(this->getContainer());
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
 
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
     m_positionSlider = new QSlider(Qt::Horizontal);
@@ -95,7 +96,7 @@ void SSlider::starting() throw(::fwTools::Failed)
     layout->addWidget(m_positionSlider);
     layout->addWidget(m_totalDuration);
 
-    container->setLayout(layout);
+    qtContainer->setLayout(layout);
     this->updating();
 }
 
@@ -103,7 +104,6 @@ void SSlider::starting() throw(::fwTools::Failed)
 
 void SSlider::stopping() throw(::fwTools::Failed)
 {
-    this->getContainer()->clean();
     this->destroy();
 }
 

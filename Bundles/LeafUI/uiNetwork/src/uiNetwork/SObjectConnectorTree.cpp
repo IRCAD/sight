@@ -1,25 +1,28 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "uiNetwork/SObjectConnectorTree.hpp"
-#include "uiNetwork/ObjectConnectorWidget.hpp"
-#include "uiNetwork/CompositeConnectorWidget.hpp"
 
-#include <fwServices/macros.hpp>
-#include <fwData/Object.hpp>
+#include "uiNetwork/CompositeConnectorWidget.hpp"
+#include "uiNetwork/ObjectConnectorWidget.hpp"
+
 #include <fwData/Composite.hpp>
+#include <fwData/Object.hpp>
 #include <fwData/Vector.hpp>
+
 #include <fwGuiQt/container/QtContainer.hpp>
 
-#include <QSize>
-#include <QLabel>
-#include <QWidget>
-#include <QPushButton>
+#include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro (::gui::editor::IEditor, ::uiNetwork::SObjectConnectorTree, ::fwData::Object);
+#include <QLabel>
+#include <QPushButton>
+#include <QSize>
+#include <QWidget>
+
+fwServicesRegisterMacro(::gui::editor::IEditor, ::uiNetwork::SObjectConnectorTree, ::fwData::Object);
 
 namespace uiNetwork
 {
@@ -68,7 +71,6 @@ void SObjectConnectorTree::starting() throw (::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-    container = qtContainer->getQtContainer();
 
     searchLayout->addWidget(searchLabel);
     searchLayout->addWidget(m_filterEditor);
@@ -76,7 +78,7 @@ void SObjectConnectorTree::starting() throw (::fwTools::Failed)
     m_layout->addLayout(searchLayout);
     m_layout->addWidget(m_objTree);
 
-    container->setLayout(m_layout);
+    qtContainer->setLayout(m_layout);
 
     m_filterEditor->setText(QString(m_filter.expression()));
     m_objTree->setHeaderLabel("Data Objects");
@@ -133,11 +135,6 @@ void SObjectConnectorTree::onFilterChange(QString const& str)
 
 void SObjectConnectorTree::stopping() throw (::fwTools::Failed)
 {
-    ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
-        this->getContainer() );
-    SLM_ASSERT("container not instanced", qtContainer->getQtContainer());
-
-    qtContainer->clean();
     this->destroy();
 }
 
@@ -159,5 +156,4 @@ void SObjectConnectorTree::swapping() throw (::fwTools::Failed)
 //-----------------------------------------------------------------------------
 
 }  //namespace uiNetwork
-
 

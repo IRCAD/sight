@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,21 +7,21 @@
 #include "uiTools/editor/SStatus.hpp"
 
 #include <fwCom/Slots.hxx>
+
 #include <fwCore/base.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 #include <fwRuntime/operations.hpp>
 
-#include <fwServices/macros.hpp>
 #include <fwServices/IService.hpp>
+#include <fwServices/macros.hpp>
 
-#include <fwGuiQt/container/QtContainer.hpp>
-
-#include <QWidget>
+#include <QColor>
 #include <QHBoxLayout>
 #include <QPalette>
-#include <QColor>
-
+#include <QWidget>
 
 namespace uiTools
 {
@@ -31,17 +31,17 @@ namespace editor
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiTools::editor::SStatus, ::fwData::Object );
 
-
-
 const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_GREEN_SLOT  = "changeToGreen";
 const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_RED_SLOT    = "changeToRed";
 const ::fwCom::Slots::SlotKeyType SStatus::s_CHANGE_TO_ORANGE_SLOT = "changeToOrange";
 const ::fwCom::Slots::SlotKeyType SStatus::s_TOGGLE_GREEN_RED_SLOT = "toggleGreenRed";
 
-
 //-----------------------------------------------------------------------------
 
-SStatus::SStatus() throw() : m_isCircular(false), m_width(20), m_height(20)
+SStatus::SStatus() throw() :
+    m_isCircular(false),
+    m_width(20),
+    m_height(20)
 {
     m_slotChangeToGreen  = ::fwCom::newSlot( &SStatus::changeToGreen,  this );
     m_slotChangeToRed    = ::fwCom::newSlot( &SStatus::changeToRed,    this );
@@ -54,9 +54,6 @@ SStatus::SStatus() throw() : m_isCircular(false), m_width(20), m_height(20)
         ( s_CHANGE_TO_ORANGE_SLOT, m_slotChangeToOrange    )
         ( s_TOGGLE_GREEN_RED_SLOT, m_slotToggleGreenRed )
     ;
-
-
-
 
     ::fwCom::HasSlots::m_slots.setWorker(m_associatedWorker);
 }
@@ -75,9 +72,8 @@ void SStatus::starting() throw(::fwTools::Failed)
 
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
         ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-    QWidget *container = qtContainer->getQtContainer();
 
-    QHBoxLayout * layout = new QHBoxLayout();
+    QHBoxLayout* layout = new QHBoxLayout();
 
     m_indicator = new QLabel();
     m_indicator->setFixedWidth(m_width);
@@ -86,7 +82,7 @@ void SStatus::starting() throw(::fwTools::Failed)
     layout->addWidget(m_indicator);
     layout->addWidget(m_labelStatus);
 
-    container->setLayout(layout);
+    qtContainer->setLayout(layout);
 
     this->changeToRed();
 }
@@ -95,10 +91,6 @@ void SStatus::starting() throw(::fwTools::Failed)
 
 void SStatus::stopping() throw(::fwTools::Failed)
 {
-    ::fwGuiQt::container::QtContainer::sptr qtContainer =
-        ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-
-    qtContainer->clean();
     this->destroy();
 }
 
@@ -170,7 +162,7 @@ void SStatus::swapping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SStatus::info( std::ostream &_sstream )
+void SStatus::info( std::ostream& _sstream )
 {
 }
 
@@ -208,7 +200,6 @@ void SStatus::toggleGreenRed(bool green)
 }
 
 //------------------------------------------------------------------------------
-
 
 } // namespace editor
 } // namespace uiTools

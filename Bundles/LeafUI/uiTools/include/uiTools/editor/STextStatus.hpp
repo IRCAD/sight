@@ -28,9 +28,12 @@ namespace editor
  * @code{.xml}
  * <service uid="..." type="::uiTools::editor::STextStatus">
  *    <label> my label </label>
+ *    <color> my color </color>
  * </service>
  * @endcode
  * - \b label (optional, by default "") : the text to show before size of the vector
+ * - \b color (optional, by default "red") : the needed color of the displayed label in a CSS style as names (ex: red),
+ * rgb/rgba (ex: rgb(0,255,137,0.3)) or hexadecimal (ex: #355C66).
  */
 class UITOOLS_CLASS_API STextStatus : public QObject,
                                       public ::gui::editor::IEditor

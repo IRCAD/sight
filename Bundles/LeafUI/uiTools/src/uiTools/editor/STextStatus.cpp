@@ -34,7 +34,7 @@ const ::fwCom::Slots::SlotKeyType STextStatus::s_SET_STRING_PARAMETER_SLOT = "se
 STextStatus::STextStatus()
 {
     m_labelStaticText = new QLabel();
-    m_labelStaticText->setStyleSheet("font-weight: bold; color: red");
+    m_labelStaticText->setStyleSheet("font-weight: bold;");
     m_labelValue = new QLabel();
     m_labelValue->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
 
@@ -56,18 +56,15 @@ STextStatus::~STextStatus()
 void STextStatus::starting() throw(::fwTools::Failed)
 {
     this->create();
-    auto qtContainer   = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-    QWidget* container = qtContainer->getQtContainer();
+    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
-    SLM_ASSERT("container not instanced", container);
     QHBoxLayout* layout = new QHBoxLayout();
-
     layout->addWidget(m_labelStaticText);
     layout->addWidget(m_labelValue);
 
     layout->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
 
-    container->setLayout(layout);
+    qtContainer->setLayout(layout);
 
 }
 
@@ -75,8 +72,6 @@ void STextStatus::starting() throw(::fwTools::Failed)
 
 void STextStatus::stopping() throw(::fwTools::Failed)
 {
-    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-    qtContainer->clean();
     this->destroy();
 }
 
@@ -91,6 +86,20 @@ void STextStatus::configuring() throw(fwTools::Failed)
     QString txt = QString::fromStdString(txtCfg->getValue());
 
     m_labelStaticText->setText(QString(txt + ": "));
+
+    QString color = "red";
+
+    auto colorCfg = m_configuration->findConfigurationElement("color");
+    if(colorCfg)
+    {
+        const QString txtColor = QString::fromStdString(colorCfg->getValue());
+        if(!txtColor.isEmpty())
+        {
+            color = txtColor;
+        }
+    }
+
+    m_labelStaticText->setStyleSheet(m_labelStaticText->styleSheet() + " color: " + color + ";");
 }
 
 //------------------------------------------------------------------------------

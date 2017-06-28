@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -13,23 +13,22 @@
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGuiQt/container/QtContainer.hpp>
+#include <fwCore/base.hpp>
 
 #include <fwData/Composite.hpp>
 
-#include <fwCore/base.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwGuiQt/container/QtContainer.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <QHBoxLayout>
 
-
 namespace uiCalibration
 {
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiCalibration::SCameraConfigLauncher, ::fwData::Composite);
-
 
 SCameraConfigLauncher::SCameraConfigLauncher() throw()
 {
@@ -52,12 +51,12 @@ void SCameraConfigLauncher::configuring() throw(fwTools::Failed)
 
     SLM_ASSERT("There must be one (and only one) <config/> element.",
                configuration.get_child("service").count("config") == 1 );
-    const ::fwServices::IService::ConfigType &srvconfig = configuration.get_child("service");
-    const ::fwServices::IService::ConfigType &config    = srvconfig.get_child("config");
+    const ::fwServices::IService::ConfigType& srvconfig = configuration.get_child("service");
+    const ::fwServices::IService::ConfigType& config    = srvconfig.get_child("config");
 
-    const ::fwServices::IService::ConfigType &intrinsic = config.get_child("intrinsic");
+    const ::fwServices::IService::ConfigType& intrinsic = config.get_child("intrinsic");
 
-    const ::fwServices::IService::ConfigType &extrinsic = config.get_child("extrinsic");
+    const ::fwServices::IService::ConfigType& extrinsic = config.get_child("extrinsic");
 
     // ConfigLauncher needs ptree configuration with service.config.appConfig
     ::fwServices::IService::ConfigType cameraConfig;
@@ -81,11 +80,9 @@ void SCameraConfigLauncher::starting() throw(::fwTools::Failed)
     m_activitySeries = this->getInOut< ::fwMedData::ActivitySeries >("activitySeries");
     SLM_ASSERT("Missing ActivitySeries: " + m_activitySeriesKey, m_activitySeries);
 
-    auto qtContainer         = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
-    QWidget* const container = qtContainer->getQtContainer();
-    SLM_ASSERT("container not instanced", container);
+    auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
 
-    QHBoxLayout* layout = new QHBoxLayout(container);
+    QHBoxLayout* layout = new QHBoxLayout();
 
     m_cameraComboBox = new QComboBox();
     layout->addWidget(m_cameraComboBox);
@@ -104,8 +101,7 @@ void SCameraConfigLauncher::starting() throw(::fwTools::Failed)
     layout->addWidget(m_extrinsicButton);
     m_extrinsicButton->setCheckable(true);
 
-    container->setLayout( layout );
-
+    qtContainer->setLayout( layout );
 
     size_t nbCam = m_cameraSeries->getNumberOfCameras();
 
@@ -118,7 +114,7 @@ void SCameraConfigLauncher::starting() throw(::fwTools::Failed)
     }
     else
     {
-        for (size_t i = 0; i<nbCam; ++i)
+        for (size_t i = 0; i < nbCam; ++i)
         {
             m_cameraComboBox->addItem(QString("Camera %1").arg(i+1));
         }
@@ -141,15 +137,9 @@ void SCameraConfigLauncher::starting() throw(::fwTools::Failed)
 
 void SCameraConfigLauncher::stopping() throw(::fwTools::Failed)
 {
-    QObject::disconnect(m_cameraComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onCameraChanged(int)));
-    QObject::disconnect(m_addButton, SIGNAL(clicked()), this, SLOT(onAddClicked()));
-    QObject::disconnect(m_removeButton, SIGNAL(clicked()), this, SLOT(onRemoveClicked()));
-    QObject::disconnect(m_extrinsicButton, SIGNAL(toggled(bool)), this, SLOT(onExtrinsicToggled(bool)));
-
     m_intrinsicLauncher->stopConfig();
     m_extrinsicLauncher->stopConfig();
 
-    this->getContainer()->clean();
     this->destroy();
 }
 
@@ -169,7 +159,8 @@ void SCameraConfigLauncher::swapping() throw(::fwTools::Failed)
 
 void SCameraConfigLauncher::onCameraChanged(int index)
 {
-    OSLM_ASSERT("Bad index: " << index, index >=0 && static_cast<size_t>(index) < m_cameraSeries->getNumberOfCameras());
+    OSLM_ASSERT("Bad index: " << index,
+                index >= 0 && static_cast<size_t>(index) < m_cameraSeries->getNumberOfCameras());
 
     if (index == 0)
     {
@@ -230,7 +221,7 @@ void SCameraConfigLauncher::onRemoveClicked()
         }
         // Renamed all items from 1 to nbCam
         m_cameraComboBox->clear();
-        for (size_t i = 0; i<nbCam; ++i)
+        for (size_t i = 0; i < nbCam; ++i)
         {
             m_cameraComboBox->addItem(QString("Camera %1").arg(i+1));
         }
@@ -250,7 +241,7 @@ void SCameraConfigLauncher::onRemoveClicked()
 void SCameraConfigLauncher::onExtrinsicToggled(bool checked)
 {
     const size_t index = static_cast<size_t>(m_cameraComboBox->currentIndex());
-    OSLM_ASSERT("Bad index: " << index, index >=0 && index < m_cameraSeries->getNumberOfCameras());
+    OSLM_ASSERT("Bad index: " << index, index >= 0 && index < m_cameraSeries->getNumberOfCameras());
     if (checked)
     {
         this->startExtrinsicConfig(index);

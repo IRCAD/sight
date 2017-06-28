@@ -21,11 +21,14 @@
 
 #include <fwServices/macros.hpp>
 
+#include <fwVtkIO/helper/TransferFunction.hpp>
 #include <fwVtkIO/vtk.hpp>
 
-#include <vtkActor.h>
 #include <vtkCamera.h>
+#include <vtkImageActor.h>
 #include <vtkImageData.h>
+#include <vtkImageMapper3D.h>
+#include <vtkImageMapToColors.h>
 #include <vtkMatrix4x4.h>
 #include <vtkPlaneSource.h>
 #include <vtkPolyDataMapper.h>
@@ -47,15 +50,17 @@ static const  ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT           = "calibrat
 
 SVideoAdapter::SVideoAdapter() throw() :
     m_imageData(vtkImageData::New()),
-    m_texture(vtkTexture::New()),
-    m_actor(vtkActor::New()),
+    m_actor(vtkImageActor::New()),
     m_isTextureInit(false),
-    m_reverse(true)
+    m_reverse(true),
+    m_lookupTable(vtkSmartPointer<vtkLookupTable>::New()),
+    m_hasTF(false)
 {
     newSlot(s_UPDATE_IMAGE_SLOT, &SVideoAdapter::updateImage, this);
     newSlot(s_UPDATE_IMAGE_OPACITY_SLOT, &SVideoAdapter::updateImageOpacity, this);
     newSlot(s_SHOW_SLOT, &SVideoAdapter::show, this);
     newSlot(s_CALIBRATE_SLOT, &SVideoAdapter::offsetOpticalCenter, this);
+    this->installTFSlots(this);
 }
 
 //------------------------------------------------------------------------------
@@ -93,16 +98,14 @@ void SVideoAdapter::doConfigure() throw(fwTools::Failed)
         m_reverse = false;
     }
     this->setPickerId(m_configuration->getAttributeValue("picker"));
+    this->parseTFConfig(m_configuration);
+    m_hasTF = !(this->getTFSelectionFwID() == "");
 }
 
 //------------------------------------------------------------------------------
 
 void SVideoAdapter::doStart() throw(fwTools::Failed)
 {
-    vtkPolyDataMapper* mapper = vtkPolyDataMapper::New();
-    vtkPlaneSource* plan      = vtkPlaneSource ::New();
-    mapper->SetInputConnection(plan->GetOutputPort());
-    m_actor->SetMapper(mapper);
     if (m_reverse)
     {
         m_actor->RotateZ(180);
@@ -119,6 +122,14 @@ void SVideoAdapter::doStart() throw(fwTools::Failed)
                               this->getSptr(), s_CALIBRATE_SLOT);
         m_connections.connect(m_camera, ::arData::Camera::s_INTRINSIC_CALIBRATED_SIG,
                               this->getSptr(), s_CALIBRATE_SLOT);
+    }
+
+    if(m_hasTF)
+    {
+        auto const& tf = this->getSafeInOut< ::fwData::Composite>(this->getTFSelectionFwID());
+        this->setTransferFunctionSelection(tf);
+        this->installTFConnections();
+        this->updatingTFPoints();
     }
 
     this->doUpdate();
@@ -155,18 +166,23 @@ void SVideoAdapter::doUpdate() throw(fwTools::Failed)
             m_actor->RotateY(180);
         }
 
-        const ::fwData::Image::SizeType size       = image->getSize();
-        const ::fwData::Image::SpacingType spacing = image->getSpacing();
+        const ::fwData::Image::SizeType size = image->getSize();
 
-        m_texture->SetInputData( m_imageData );
-        m_actor->SetScale(size[0]*spacing[0], size[1]*spacing[1], 1.);
+        if(m_hasTF)
+        {
+            auto scalarValuesToColors = vtkSmartPointer<vtkImageMapToColors>::New();
+            scalarValuesToColors->SetLookupTable(m_lookupTable);
+            scalarValuesToColors->PassAlphaToOutputOn();
+            scalarValuesToColors->SetInputData(m_imageData);
+            m_actor->GetMapper()->SetInputConnection(scalarValuesToColors->GetOutputPort());
+        }
+        else
+        {
+            m_actor->SetInputData(m_imageData);
+        }
         this->addToRenderer(m_actor);
 
         m_isTextureInit = true;
-
-        vtkProperty* property = m_actor->GetProperty();
-        property->RemoveTexture("texture");
-        property->SetTexture("texture", m_texture);
 
         this->getRenderer()->InteractiveOff();
         this->getRenderer()->GetActiveCamera()->ParallelProjectionOn();
@@ -207,7 +223,7 @@ void SVideoAdapter::updateImageOpacity()
     {
         ::fwData::Integer::sptr transparency = img->getField< ::fwData::Integer >( "TRANSPARENCY" );
         double imageOpacity = (100 - (*transparency) ) / 100.0;
-        m_actor->GetProperty()->SetOpacity(imageOpacity);
+        m_actor->SetOpacity(imageOpacity);
     }
     if(img->getField( "VISIBILITY" ) )
     {
@@ -265,6 +281,20 @@ void SVideoAdapter::offsetOpticalCenter()
             m_actor->SetPosition(-shiftX, shiftY, 0);
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SVideoAdapter::updatingTFPoints()
+{
+    ::fwVtkIO::helper::TransferFunction::toVtkLookupTable(this->getTransferFunction(), m_lookupTable);
+}
+
+//------------------------------------------------------------------------------
+
+void SVideoAdapter::updatingTFWindowing(double window, double level)
+{
+    ::fwVtkIO::helper::TransferFunction::toVtkLookupTable(this->getTransferFunction(), m_lookupTable);
 }
 
 //------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -50,7 +50,7 @@ void SPointList::doConfigure() throw(fwTools::Failed)
     m_cameraUID = m_configuration->getAttributeValue("cameraUID");
 
     SLM_ASSERT("missing 'imageId' and 'cameraUID' attribute, at least one of them is required",
-               m_imageId != "" || m_cameraUID !="");
+               m_imageId != "" || m_cameraUID != "");
 
     m_hexaColor = m_configuration->getAttributeValue("color");
 
@@ -71,7 +71,7 @@ void SPointList::doStart() throw(fwTools::Failed)
 void SPointList::doUpdate() throw(fwTools::Failed)
 {
     std::array<size_t, 2> resolution;
-    std::array<double,2 > opticalCenter;
+    std::array<double, 2 > opticalCenter;
     bool needToShift = false;
 
     if (!m_cameraUID.empty())
@@ -97,7 +97,6 @@ void SPointList::doUpdate() throw(fwTools::Failed)
         resolution[0] = image->getSize()[0];
         resolution[1] = image->getSize()[1];
     }
-
 
     this->removeAllPropFromRenderer();
 
@@ -149,8 +148,8 @@ void SPointList::doUpdate() throw(fwTools::Failed)
             //conversion from qt 2D coordinates to vtk 3D coordinates
             ::fwData::Point::PointCoordArrayType vecSrc = pt->getCoord();
             ::fwData::Point::PointCoordArrayType vecDst;
-            vecDst[0] = vecSrc[0] -  static_cast<double>(resolution[0]) / 2.;
-            vecDst[1] = -vecSrc[1] + static_cast<double>(resolution[1]) / 2.;
+            vecDst[0] = vecSrc[0];
+            vecDst[1] = -vecSrc[1];
             vecDst[2] = 0;
 
             //shift points if there
@@ -189,9 +188,7 @@ void SPointList::doStop() throw(fwTools::Failed)
     this->removeAllPropFromRenderer();
 }
 
-
 //------------------------------------------------------------------------------
 
 } //namespace visuVTKARAdaptor
-
 

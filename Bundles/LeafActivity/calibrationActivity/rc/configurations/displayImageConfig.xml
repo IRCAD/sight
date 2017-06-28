@@ -37,7 +37,7 @@
                     <config renderer="default" />
                 </adaptor>
                 <adaptor id="points" class="::visuVTKARAdaptor::SPointList" objectId="pointListKey">
-                    <config renderer="default" imageId="imageKey" color="#cb1f72" />
+                    <config renderer="default" imageId="imageKey" color="#00FF00" />
                 </adaptor>
             </scene>
         </service>

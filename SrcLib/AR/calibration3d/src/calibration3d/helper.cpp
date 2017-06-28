@@ -6,6 +6,8 @@
 
 #include "calibration3d/helper.hpp"
 
+#include "fwCore/spyLog.hpp"
+
 namespace calibration3d
 {
 namespace helper
