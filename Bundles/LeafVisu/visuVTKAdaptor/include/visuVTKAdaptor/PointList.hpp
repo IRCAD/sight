@@ -33,7 +33,7 @@ namespace visuVTKAdaptor
  *
  * @code{.xml}
       <adaptor id="..." class="::visuVTKAdaptor::PointList" objectId="self">
-        <config renderer="default" picker="..." color="#FFFFFF" radius="10"/>
+        <config renderer="default" picker="..." color="#FFFFFF" radius="10" interaction="on"/>
       </adaptor>
      @endcode
  * @subsection Configuration Configuration
@@ -41,6 +41,7 @@ namespace visuVTKAdaptor
  * - \b picker : defines the picker of the point list.
  * - \b color(#FFFFFF) : color of the point.
  * - \b radius(double) : point radius.
+ * - \b interaction (optional, default: on): if "on" interactions are enabled
  */
 
 class VISUVTKADAPTOR_CLASS_API PointList : public ::fwRenderVTK::IVtkAdaptorService
@@ -59,6 +60,8 @@ public:
     VISUVTKADAPTOR_API void setRadius(const double);
 
     VISUVTKADAPTOR_API void setColor(const fwData::Color::sptr);
+
+    VISUVTKADAPTOR_API void setInteraction(const bool);
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -105,6 +108,9 @@ private:
 
     /// Points radius
     double m_radius;
+
+    /// If true, the interactions are enabled
+    bool m_interaction;
 };
 
 } //namespace visuVTKAdaptor

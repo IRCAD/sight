@@ -176,7 +176,8 @@ protected:
 
 LabeledPointList::LabeledPointList() throw() :
     m_rightButtonCommand(nullptr),
-    m_radius(7.0)
+    m_radius(7.0),
+    m_interaction(true)
 {
 }
 
@@ -203,6 +204,14 @@ void LabeledPointList::doConfigure() throw(fwTools::Failed)
     if(!radius.empty())
     {
         m_radius = std::stod(radius);
+    }
+
+    const std::string interaction = m_configuration->getAttributeValue("interaction");
+    if(!interaction.empty())
+    {
+        SLM_FATAL_IF("value for 'intergration' must be 'on' or 'off', actual: " + interaction,
+                     interaction != "on" && interaction != "off");
+        m_interaction = (interaction == "on");
     }
 }
 
@@ -250,6 +259,7 @@ void LabeledPointList::doUpdate() throw(fwTools::Failed)
 
         pointListAdaptor->setColor(m_ptColor);
         pointListAdaptor->setRadius(m_radius);
+        pointListAdaptor->setInteraction(m_interaction);
 
         servicePointList->setPickerId( this->getPickerId() );
         servicePointList->setRenderService( this->getRenderService() );

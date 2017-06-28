@@ -22,7 +22,7 @@ namespace visuVTKAdaptor
  *
  * @code{.xml}
       <adaptor id="..." class="::visuVTKAdaptor::LabeledPointList" objectId="self">
-        <config renderer="default" picker="..." color="#FFFFFF" radius="10"/>
+        <config renderer="default" picker="..." color="#FFFFFF" radius="10" interaction="on"/>
       </adaptor>
      @endcode
  * @subsection Configuration Configuration
@@ -30,6 +30,7 @@ namespace visuVTKAdaptor
  * - \b picker : defines the picker of the labeled point list.
  * - \b color(#FFFFFF) : color of the points.
  * - \b radius(double) : points radius.
+ * - \b interaction (optional, default: on): if "on" interactions are enabled
  */
 class VISUVTKADAPTOR_CLASS_API LabeledPointList : public ::fwRenderVTK::IVtkAdaptorService
 {
@@ -70,6 +71,9 @@ protected:
 
     /// Points radius
     double m_radius;
+
+    /// If true, the interactions are enabled
+    bool m_interaction;
 };
 
 } //namespace visuVTKAdaptor
