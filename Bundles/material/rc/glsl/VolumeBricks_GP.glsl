@@ -11,7 +11,6 @@ in VertexDataIn
 uniform sampler3D u_bricksGrid;
 
 uniform ivec3 u_imageResolution;
-uniform ivec3 u_gridResolution;
 uniform ivec3 u_brickSize;
 
 uniform vec3 u_boundingBoxMin;
@@ -20,10 +19,14 @@ uniform vec3 u_boundingBoxMax;
 out vec3 oPos;
 out vec3 oNormal;
 
+//-----------------------------------------------------------------------------
+
 float getOpacity(in ivec3 voxel)
 {
     return texelFetch(u_bricksGrid, voxel, 0).r;
 }
+
+//-----------------------------------------------------------------------------
 
 bool isInsideBox(in ivec3 gridVoxel)
 {
@@ -35,11 +38,14 @@ bool isInsideBox(in ivec3 gridVoxel)
            (all(greaterThan(v1, u_boundingBoxMin)) && all(lessThan(v1, u_boundingBoxMax)));
 }
 
+//-----------------------------------------------------------------------------
+
 void main()
 {
     ivec3 gridPos = vertexIn[0].vs_gridPos;
 
-    if(getOpacity(gridPos) <= 0 || !isInsideBox(gridPos))
+    // Stop now if the current position in the brick is empty or if it is out of the clipping box.
+    if(getOpacity(gridPos) == 0 || !isInsideBox(gridPos))
     {
         return;
     }
@@ -114,7 +120,7 @@ void main()
 
         oNormal = vec3(normal);
 
-        // Discard face if it's neighbour is not empty.
+        // Discard face if its neighbour is not empty.
         // We only want to generate the outer hull.
         if(!isInsideBox(neighbour) || getOpacity(neighbour) == 0)
         {

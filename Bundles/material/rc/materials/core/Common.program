@@ -232,3 +232,8 @@ fragment_program TransferFunction_FP glsl
 }
 
 //---------------------------------------------------------------------------
+
+fragment_program ColorFormats_FP glsl
+{
+    source ColorFormats.glsl
+}

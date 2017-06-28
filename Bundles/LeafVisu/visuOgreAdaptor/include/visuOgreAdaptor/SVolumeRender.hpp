@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -37,6 +37,8 @@ namespace visuOgreAdaptor
  * @section Slots Slots
  * - \b newImage(): Called when a new image is loaded.
  * - \b updateSampling(int): Called when the sampling is changed and updates the volume renderer accordingly.
+ * - \b updateOpacityCorrection(int): Called when the opacity correction factor is changed and updates the volume
+ * renderer accordingly.
  * - \b updateAOFactor(double) : Called when the ambient occlusion factor is changed and computes the SAT.
  * - \b updateColorBleedingFactor(double) : Called when the color bleeding factor is changed and computes the SAT.
  * - \b updateSatSizeRatio(int) : Called when the SAT ratio is changed and computes it again with the new corresponding
@@ -51,10 +53,13 @@ namespace visuOgreAdaptor
  * - \b toggleShadows(bool): Toggle soft shadows.
  * - \b toggleWidgets(bool): Toggles widget visibility.
  * - \b resizeViewport(int, int): Called when the size of the viewport changes.
+ * - \b setFocalDistance(int): Called to modify focal length (only useful for stereoscopic 3D).
  * - \b setStereoMode(int): Called to modify 3D stereoscopic 3D mode.
  * - \b setBoolParameter(bool, string): Calls a bool parameter slot according to the given key.
  * - \b setIntParameter(int, string): Calls an int parameter slot according to the given key.
  * - \b setDoubleParameter(double, string): Calls a double parameter slot according to the given key.
+ * - \b setEnumParameter(string, string): Calls a double parameter slot according to the given key.
+ * - \b setColorParameter(array<uint8_t, 4>, string): Calls a color parameter slot according to the given key.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -66,12 +71,13 @@ namespace visuOgreAdaptor
                 preintegration="yes" mode="slice" ao="no" colorBleeding="no" shadows="no"
                 satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
                 aoFactor="0.5" colorBleedingFactor="0.5" selectedTFKey="SelectedTF" />
-    </adaptor>
+    </service>
    @endcode
  * @subsection Input Input
- * - \b image [::fwData::Image]: 3D image to render.
+ * - \b image [::fwData::Image]: input volume data.
  * @subsection In-Out In-Out
  * - \b TF [::fwData::Composite]: composite containing transfer functions.
+ * - \b mask [::fwData::Image]: segmented data.
  * - \b clippingMatrix [::fwData::TransformationMatrix3D]: matrix used to clip the volume.
  * @subsection Configuration Configuration
  * - \b renderer (optional): defines the renderer displaying the volume.
@@ -99,13 +105,14 @@ class VISUOGREADAPTOR_CLASS_API SVolumeRender : public ::fwRenderOgre::IAdaptor,
 {
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SVolumeRender)(::fwRenderOgre::IAdaptor) );
+    fwCoreServiceClassDefinitionsMacro( (SVolumeRender)(::fwRenderOgre::IAdaptor) );
 
     /**
      * @name Slots API
      * @{
      */
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEW_IMAGE_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_NEW_MASK_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_SAMPLING_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_AO_FACTOR_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_UPDATE_COLOR_BLEEDING_FACTOR_SLOT;
@@ -125,7 +132,17 @@ public:
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
     VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT;
+    VISUOGREADAPTOR_API static const ::fwCom::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
     /** @} */
+
+    /// Volume rendering effects.
+    typedef enum
+    {
+        VR_AMBIENT_OCCLUSION,
+        VR_COLOR_BLEEDING,
+        VR_SHADOWS
+    } VREffectType;
 
     /// Constructor.
     VISUOGREADAPTOR_API SVolumeRender() throw();
@@ -170,7 +187,9 @@ protected:
 private:
 
     void newImage();
+    void newMask();
     void updateSampling(int nbSamples);
+    void updateOpacityCorrection(int opacityCorrection);
     void updateAOFactor(double aoFactor);
     void updateColorBleedingFactor(double colorBleedingFactor);
     void updateSatSizeRatio(int sizeRatio);
@@ -184,16 +203,22 @@ private:
     void toggleShadows(bool shadows);
     void toggleWidgets(bool visible);
     void resizeViewport(int w, int h);
+    void setFocalDistance(int focalDistance);
     void setStereoMode(::fwRenderOgre::Layer::StereoModeType mode);
     void setBoolParameter(bool val, std::string key);
     void setIntParameter(int val, std::string key);
     void setDoubleParameter(double val, std::string key);
+    void setEnumParameter(std::string val, std::string key);
+    void setColorParameter(std::array<uint8_t, 4> color, std::string key);
 
     /// Creates widgets and connects its slots to interactor signals.
     void initWidgets();
 
     /// Computes the volume illumination and applies it to the ray tracing renderer
     void updateVolumeIllumination();
+
+    /// Updates or creates the illumination volume according to the given VR effect.
+    void toggleVREffect(VREffectType vrEffect);
 
     /// Rendering mode.
     enum
@@ -207,6 +232,8 @@ private:
 
     /// 3D Image texture.
     ::Ogre::TexturePtr m_3DOgreTexture;
+
+    ::Ogre::TexturePtr m_maskTexture;
 
     /// TF texture used for rendering.
     ::fwRenderOgre::TransferFunction m_gpuTF;

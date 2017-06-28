@@ -1,0 +1,195 @@
+compositor JFAInit
+{
+    technique
+    {
+        // Declares textures used during the jump flooding algorithm
+        texture JFAFinal target_width target_height PF_FLOAT32_RGBA pooled chain_scope
+        texture JFAPing target_width target_height PF_FLOAT32_RGBA pooled chain_scope
+        texture JFAPong target_width target_height PF_FLOAT32_RGBA pooled chain_scope
+
+        texture_ref IC IDVR_MImP_Comp IC
+
+        // Fills render target with the footprint of the region of interest
+        // (MImP importance compositing texture)
+        target JFAPing
+        {
+            input none
+            pass clear
+            {
+
+            }
+            pass render_quad
+            {
+                material JFA
+                input 0 IC 1
+            }
+        }
+
+        target JFAPong
+        {
+            input none
+            pass clear
+            {
+            }
+        }
+
+        target_output
+        {
+            input previous
+        }
+    }
+}
+
+//----------------------------------------------
+
+compositor JFAPingComp
+{
+    technique
+    {
+        texture_ref JFAPingLocal JFAInit JFAPing
+        texture_ref JFAPongLocal JFAInit JFAPong
+
+        target JFAPongLocal
+        {
+            input none
+            pass render_quad
+            {
+                material JFA
+                input 0 JFAPingLocal
+            }
+        }
+
+        target_output
+        {
+            input previous
+        }
+    }
+}
+
+//----------------------------------------------
+
+compositor JFAPongComp
+{
+    technique
+    {
+        texture_ref JFAPingLocal JFAInit JFAPing
+        texture_ref JFAPongLocal JFAInit JFAPong
+
+        target JFAPingLocal
+        {
+            input none
+            pass render_quad
+            {
+                material JFA
+                input 0 JFAPongLocal
+            }
+        }
+
+        target_output
+        {
+            input previous
+        }
+    }
+}
+
+//----------------------------------------------
+
+compositor JFAFinalPingComp
+{
+    technique
+    {
+        texture_ref JFAPingLocal JFAInit JFAPing
+        texture_ref JFAPongLocal JFAInit JFAPong
+        texture_ref JFAFinal JFAInit JFAFinal
+        texture JFABlurV target_width target_height PF_FLOAT32_RGBA
+
+        // Raw JFA texture
+        target JFAPongLocal
+        {
+            input none
+            pass render_quad
+            {
+                material JFA
+                input 0 JFAPingLocal
+            }
+        }
+
+        // Vertically blurred JFA texture
+        target JFABlurV
+        {
+            input none
+            pass render_quad
+            {
+                material VerticalBlur
+                input 0 JFAPongLocal
+            }
+        }
+
+        // Fully blurred JFA texture
+        target JFAFinal
+        {
+            input none
+            pass render_quad
+            {
+                material HorizontalBlur
+                input 0 JFABlurV
+            }
+        }
+
+        target_output
+        {
+            input previous
+        }
+    }
+}
+
+//----------------------------------------------
+
+compositor JFAFinalPongComp
+{
+    technique
+    {
+        texture_ref JFAPingLocal JFAInit JFAPing
+        texture_ref JFAPongLocal JFAInit JFAPong
+        texture_ref JFAFinal JFAInit JFAFinal
+        texture JFABlurV target_width target_height PF_FLOAT32_RGBA
+
+        // Raw JFA texture
+        target JFAPingLocal
+        {
+            input none
+            pass render_quad
+            {
+                material JFA
+                input 0 JFAPongLocal
+            }
+        }
+
+        // Vertically blurred JFA texture
+        target JFABlurV
+        {
+            input none
+            pass render_quad
+            {
+                material VerticalBlur
+                input 0 JFAPingLocal
+            }
+        }
+
+        // Fully blurred JFA texture
+        target JFAFinal
+        {
+            input none
+            pass render_quad
+            {
+                material HorizontalBlur
+                input 0 JFABlurV
+            }
+        }
+
+        target_output
+        {
+            input previous
+        }
+    }
+}

@@ -2,33 +2,17 @@ compositor Default
 {
     technique
     {
-
-        // temporary textures
-        // Render scene
-        texture render_target target_width target_height PF_R8G8B8A8
-
-         // Init peel buffer
-         target render_target
-         {
-             input none
-             pass clear
-             {
-             }
-
-             shadows off
-             pass render_scene
-             {
-             }
-         }
-
         // Final pass
         target_output
         {
             input none
-            pass render_quad
+            pass clear
             {
-                material RenderQuad
-                input 0 render_target
+            }
+
+            shadows off
+            pass render_scene
+            {
             }
         }
     }

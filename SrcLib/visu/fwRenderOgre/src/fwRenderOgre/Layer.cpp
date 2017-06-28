@@ -195,9 +195,12 @@ Layer::~Layer()
         m_cameraListener = nullptr;
     }
 
-    ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
-    m_sceneManager = nullptr;
-    m_camera       = nullptr;
+    if(m_sceneManager)
+    {
+        ::fwRenderOgre::Utils::getOgreRoot()->destroySceneManager(m_sceneManager);
+        m_sceneManager = nullptr;
+    }
+    m_camera = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -213,9 +216,6 @@ void Layer::setID(const std::string& id)
 {
     auto renderService = m_renderService.lock();
     SLM_ASSERT("Render service must be set before calling setID().", renderService);
-    auto root = ::fwRenderOgre::Utils::getOgreRoot();
-    m_sceneManager = root->createSceneManager(::Ogre::ST_GENERIC, renderService->getID() + "_" + id);
-    m_sceneManager->addRenderQueueListener( ::fwRenderOgre::Utils::getOverlaySystem() );
     m_id = id;
 }
 
@@ -245,6 +245,10 @@ const std::string& Layer::getLayerID() const
 void Layer::createScene()
 {
     namespace fwc = ::fwRenderOgre::compositor;
+
+    auto root = ::fwRenderOgre::Utils::getOgreRoot();
+    m_sceneManager = root->createSceneManager(::Ogre::ST_GENERIC, m_renderService.lock()->getID() + "_" + m_id);
+    m_sceneManager->addRenderQueueListener( ::fwRenderOgre::Utils::getOverlaySystem() );
 
     SLM_ASSERT("Scene manager must be initialized", m_sceneManager);
     SLM_ASSERT("Render window must be initialized", m_renderWindow);

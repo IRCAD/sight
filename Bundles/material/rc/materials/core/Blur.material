@@ -1,0 +1,92 @@
+vertex_program BlurVP glsl
+{
+    source Blur_VP.glsl
+    default_params
+    {
+        param_named_auto worldViewProj worldviewproj_matrix
+    }
+}
+
+//----------------------------------------------
+
+fragment_program HorizontalBlur_FP glsl
+{
+    source HorizontalBlur_FP.glsl
+    default_params
+    {
+        param_named u_blurWeight float 0.01
+    }
+}
+
+//----------------------------------------------
+
+fragment_program VerticalBlur_FP glsl
+{
+    source VerticalBlur_FP.glsl
+    default_params
+    {
+        param_named u_blurWeight float 0.01
+    }
+}
+
+//----------------------------------------------
+
+material HorizontalBlur
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            depth_check off
+            polygon_mode_overrideable false
+
+            vertex_program_ref BlurVP
+            {
+            }
+
+            fragment_program_ref HorizontalBlur_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering trilinear
+            }
+        }
+    }
+}
+
+//----------------------------------------------
+
+material VerticalBlur
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            depth_check off
+            polygon_mode_overrideable false
+
+            vertex_program_ref BlurVP
+            {
+            }
+
+            fragment_program_ref VerticalBlur_FP
+            {
+            }
+
+            texture_unit
+            {
+                tex_coord_set 0
+                tex_address_mode clamp
+                filtering trilinear
+            }
+        }
+    }
+}

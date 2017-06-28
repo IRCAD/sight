@@ -45,7 +45,7 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
     // Cleanng the texture forces the listener to be triggered and then to create the techniques with the new textures
     for(auto& tech : m_createdTechniques)
     {
-        ::Ogre::Material* mtl = tech->getParent();
+        ::Ogre::Material* mtl                      = tech->getParent();
         ::Ogre::Material::TechniqueIterator techIt = mtl->getTechniqueIterator();
 
         std::vector< unsigned short > removeTechniqueVector;
@@ -81,7 +81,7 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
     ::Ogre::Technique* newTech = nullptr;
     if(_schemeName.find("AutoStereo") != std::string::npos)
     {
-        const bool isRayTracedMtl = ::Ogre::StringUtil::startsWith( _originalMaterial->getName(), "RayTracedVolume");
+        const bool isRayTracedMtl = ::Ogre::StringUtil::startsWith( _originalMaterial->getName(), "RTV_");
         if(  isRayTracedMtl && m_renderTargets == nullptr )
         {
             return nullptr;
@@ -135,7 +135,7 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
             vpParams->addSharedParameters(projParamName);
             vpParams->setNamedAutoConstant("u_worldView", ::Ogre::GpuProgramParameters::ACT_WORLDVIEW_MATRIX);
 
-            if(vpBaseName == "RayTracedVolume_VP")
+            if( ::Ogre::StringUtil::startsWith( vpBaseName, "RTV_VP") )
             {
                 ::Ogre::TextureUnitState* texUnitState = pass->getTextureUnitState("entryPoints");
 
@@ -146,7 +146,7 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
         }
 
         const auto fpBaseName = pass->getFragmentProgramName();
-        if(fpBaseName == "RayTracedVolume_FP")
+        if( ::Ogre::StringUtil::startsWith( fpBaseName, "RTV_FP") )
         {
             const auto fpSourceFileName = pass->getFragmentProgram()->getSourceFile();
             const auto fpNewName        = fpBaseName + "+AutoStereo";

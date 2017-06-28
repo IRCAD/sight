@@ -1,0 +1,99 @@
+<extension implements="::fwServices::registry::AppConfig2">
+    <id>OgreIDVR</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="maskUID" />
+        <param name="ICON_PATH" />
+        <param name="idvrEnumParamChannel" />
+        <param name="idvrBoolParamChannel" />
+        <param name="idvrDoubleParamChannel" />
+        <param name="idvrColorParamChannel" />
+    </parameters>
+
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${maskUID}"  type="::fwData::Image" src="ref" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="idvrView" type="::gui::view::SDefaultView" >
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="selectMask" start="yes" />
+                <view sid="idvrMethodSelector" start="yes" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="idvrMethodSelector" type="::guiQt::editor::SParameters">
+            <parameters>
+                <param type="enum" name="Importance-driven VR Methods" key="idvrMethod" defaultValue="None" values="None,MImP,AImC,VPImC" />
+                <param type="bool" name="Enable Countersink geometry for MImP" key="idvrCSG" defaultValue="false" />
+                <param type="double" name="Countersink geometry slope" key="idvrCSGSlope" defaultValue="0.3" min="0.01" max="1.0" />
+                <param type="double" name="Countersink geometry blur weight" key="idvrCSGBlurWeight" defaultValue="0.01" min="0.001" max="0.03" />
+                <param type="bool" name="Enable Countersink geometry border for MImP" key="idvrCSGBorder" defaultValue="false" />
+                <param type="double" name="Countersink geometry border thickness" key="idvrCSGBorderThickness" defaultValue="0.05" min="0.01" max="1.0" />
+                <param type="color" name="Countersink geometry border color" key="idvrCSGBorderColor" defaultValue="#ff0000ff" />
+                <param type="bool" name="Enable Countersink geometry depth lines for MImP" key="idvrCSGDepthLines" defaultValue="false" />
+                <param type="double" name="Countersink geometry depth lines gradation threshold" key="idvrCSGDepthLinesThreshold" defaultValue="0.07" min="0.01" max="0.1" />
+                <param type="bool" name="Enable modulation for countersink geometry" key="idvrCSGModulation" defaultValue="false" />
+                <param type="enum" name="Countersink geometry modulation methods" key="idvrCSGModulationMethod" defaultValue="Brightness_increase" values="Average_grayscale,Lightness_grayscale,Luminosity_grayscale,Brightness_increase,Saturation_increase,SaturationBrightness_increase,Saturation_decrease" />
+                <param type="double" name="Countersink geometry modulation factor" key="idvrCSGModulationFactor" defaultValue="1.0" min="0.1" max="5.0" />
+                <param type="bool" name="Countersink geometry opacity decrease" key="idvrCSGOpacityDecrease" defaultValue="false" />
+                <param type="double" name="Opacity decrease factor" key="idvrCSGOpacityDecreaseFactor" defaultValue="6.0" min="2.0" max="10.0" />
+                <param type="bool" name="Disable context around countersink geometry for MImP" key="idvrCSGDisableContext" defaultValue="false" />
+                <param type="double" name="Alpha correction for AImC" key="idvrAImCAlphaCorrection" defaultValue="0.05" min="0.0" max="1.0" />
+                <param type="double" name="Alpha correction for VPImP" key="idvrVPImCAlphaCorrection" defaultValue="0.3" min="0.0" max="1.0" />
+            </parameters>
+        </service>
+
+        <service uid="selectMask" type="::guiQt::editor::SSignalButton">
+            <config>
+                <text>Mask selector</text>
+            </config>
+        </service>
+
+        <service uid="maskReader" type="::ioVTK::SImageReader" worker="w_maskReader">
+            <in key="target" uid="${maskUID}" />
+            <type mode="reader" />
+        </service>
+
+        <!-- ************************************* Actions ************************************* -->
+
+        <connect>
+            <signal>selectMask/clicked</signal>
+            <slot>maskReader/configureWithIHM</slot>
+            <slot>maskReader/update</slot>
+        </connect>
+
+        <connect channel="${idvrEnumParamChannel}">
+            <signal>idvrMethodSelector/enumChanged</signal>
+        </connect>
+
+        <connect channel="${idvrBoolParamChannel}">
+            <signal>idvrMethodSelector/boolChanged</signal>
+        </connect>
+
+        <connect channel="${idvrDoubleParamChannel}">
+            <signal>idvrMethodSelector/doubleChanged</signal>
+        </connect>
+
+        <connect channel="${idvrColorParamChannel}">
+            <signal>idvrMethodSelector/colorChanged</signal>
+        </connect>
+
+        <start uid="idvrView" />
+        <start uid="maskReader" />
+
+    </config>
+</extension>

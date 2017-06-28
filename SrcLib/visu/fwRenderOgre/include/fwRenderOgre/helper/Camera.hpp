@@ -26,7 +26,7 @@ public:
      * @param _camera[in] camera where to get the projection matrix
      * @param _angle[in] shear angle
      */
-    static FWRENDEROGRE_API Ogre::Matrix4 computeFrustumShearTransform(const Ogre::Camera &_camera, float _angle);
+    static FWRENDEROGRE_API Ogre::Matrix4 computeFrustumShearTransform(const Ogre::Camera& _camera, float _angle);
 
 };
 

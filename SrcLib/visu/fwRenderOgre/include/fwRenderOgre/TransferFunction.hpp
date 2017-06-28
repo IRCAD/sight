@@ -26,25 +26,31 @@ public:
     FWRENDEROGRE_API TransferFunction();
     FWRENDEROGRE_API virtual ~TransferFunction();
 
-    /// Initialize the textures attributes
+    /// Initialize the textures attributes.
     FWRENDEROGRE_API void createTexture(const ::Ogre::String& _parentId);
 
-    /// Destroy the texture
+    /// Destroy the texture.
     FWRENDEROGRE_API void removeTexture();
 
-    /// Update the TF texture according to the transfer function datas
+    /// Update the TF texture according to the transfer function data.
     FWRENDEROGRE_API void updateTexture(const ::fwData::TransferFunction::csptr& _tf);
 
-    /// Return the TF texture
+    /// Return the TF texture.
     FWRENDEROGRE_API ::Ogre::TexturePtr getTexture() const;
+
+    /// Sets sample distance.
+    FWRENDEROGRE_API void setSampleDistance(const float& _sampleDistance);
 
 private:
 
-    /// Texture containing the interpolated nodes of the transfer function
+    /// Texture containing the interpolated nodes of the transfer function.
     ::Ogre::TexturePtr m_texture;
+
+    /// Current sample distance used in the VR renderer.
+    float m_sampleDistance;
 };
 
-// ------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Inline functions
 
 inline ::Ogre::TexturePtr TransferFunction::getTexture() const
@@ -52,7 +58,14 @@ inline ::Ogre::TexturePtr TransferFunction::getTexture() const
     return m_texture;
 }
 
-// ------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+
+inline void TransferFunction::setSampleDistance(const float& _sampleDistance)
+{
+    m_sampleDistance = _sampleDistance;
+}
+
+//-----------------------------------------------------------------------------
 
 } // Namespace fwRenderOgre
 

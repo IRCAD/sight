@@ -1,11 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "fwRenderOgre/R2VBRenderable.hpp"
 #include "fwRenderOgre/factory/R2VBRenderable.hpp"
+#include "fwRenderOgre/R2VBRenderable.hpp"
 
 #include <OGRE/OgreRenderQueue.h>
 
@@ -76,7 +76,7 @@ void fwRenderOgre::R2VBRenderable::setOutputSettings(size_t _vertexCount, bool _
     }
     if(_hasTexCoord)
     {
-        ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_FLOAT2,::Ogre::VES_TEXTURE_COORDINATES).getSize();
+        ofst += vtxDecl->addElement(0, ofst, ::Ogre::VET_FLOAT2, ::Ogre::VES_TEXTURE_COORDINATES).getSize();
     }
 
     // Set bounds.

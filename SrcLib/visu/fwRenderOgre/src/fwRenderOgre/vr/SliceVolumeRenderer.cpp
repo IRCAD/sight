@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,8 +28,8 @@ SliceVolumeRenderer::SliceVolumeRenderer(std::string parentId,
                                          ::Ogre::TexturePtr imageTexture,
                                          TransferFunction& gpuTF,
                                          PreIntegrationTable& preintegrationTable) :
-    IVolumeRenderer        (parentId, sceneManager, parentNode, imageTexture, gpuTF, preintegrationTable),
-    m_intersectingPolygons (nullptr)
+    IVolumeRenderer(parentId, sceneManager, parentNode, imageTexture, gpuTF, preintegrationTable),
+    m_intersectingPolygons(nullptr)
 {
     m_sceneRenderQueue = m_sceneManager->getRenderQueue();
 
@@ -194,7 +194,7 @@ void SliceVolumeRenderer::updateAllSlices()
 
 //-----------------------------------------------------------------------------
 
-void SliceVolumeRenderer::updateSlice(const Polygon& _polygon,const unsigned _sliceIndex)
+void SliceVolumeRenderer::updateSlice(const Polygon& _polygon, const unsigned _sliceIndex)
 {
     const size_t nbVertices = _polygon.size();
 
@@ -274,7 +274,7 @@ SliceVolumeRenderer::Polygon SliceVolumeRenderer::cubePlaneIntersection(const ::
         { 1, 4, 5, 0, 3, 7, 2, 6 },
         { 2, 6, 0, 5, 7, 3, 1, 4 },
         { 3, 0, 6, 4, 1, 2, 7, 5 },
-        { 4, 3, 7, 1,0, 6, 5, 2 },
+        { 4, 3, 7, 1, 0, 6, 5, 2 },
         { 5, 2, 1, 7, 6, 0, 4, 3 },
         { 6, 7, 3, 2, 5, 4, 0, 1 },
         { 7, 5, 4, 6, 2, 1, 3, 0 }

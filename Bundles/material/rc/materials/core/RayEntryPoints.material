@@ -12,9 +12,55 @@ vertex_program RayEntryPoints_VP glsl
 
 //----------------------------------------------
 
-fragment_program RayEntryPoints_FP glsl
+vertex_program RayEntryPoints_NearPlane_VP glsl
+{
+    source RayEntryPoints_VP.glsl
+    preprocessor_defines NEAR_PLANE=1
+
+    default_params
+    {
+    }
+}
+
+//----------------------------------------------
+
+fragment_program RayEntryPoints_FrontFaces_FP glsl
 {
     source RayEntryPoints_FP.glsl
+    preprocessor_defines FRONT_FACES=1
+    default_params
+    {
+    }
+}
+
+//----------------------------------------------
+
+fragment_program RayEntryPoints_BackFaces_FP glsl
+{
+    source RayEntryPoints_FP.glsl
+    preprocessor_defines BACK_FACES=1
+    default_params
+    {
+    }
+}
+
+//----------------------------------------------
+
+fragment_program RayEntryPoints_BackFacesMax_FP glsl
+{
+    source RayEntryPoints_FP.glsl
+    preprocessor_defines BACK_FACES_MAX=1
+    default_params
+    {
+    }
+}
+
+//-----------------------------------------------
+
+fragment_program RayEntryPoints_NearPlane_FP glsl
+{
+    source RayEntryPoints_FP.glsl
+    preprocessor_defines NEAR_PLANE=1
 
     default_params
     {
@@ -27,20 +73,76 @@ material RayEntryPoints
 {
     technique
     {
-        pass
-        {            
+        pass BackFacesMax
+        {
             scene_blend src_colour dest_colour
             scene_blend_op min
             depth_check off
             depth_write off
-            cull_hardware none
+            cull_hardware clockwise
             cull_software none
 
             vertex_program_ref RayEntryPoints_VP
             {
             }
 
-            fragment_program_ref RayEntryPoints_FP
+            fragment_program_ref RayEntryPoints_BackFacesMax_FP
+            {
+            }
+        }
+
+        pass BackFaces
+        {
+            scene_blend src_colour dest_colour
+            scene_blend_op min
+            depth_check on
+            depth_write on
+            depth_func less
+            cull_hardware clockwise
+            cull_software none
+
+            vertex_program_ref RayEntryPoints_VP
+            {
+            }
+
+            fragment_program_ref RayEntryPoints_BackFaces_FP
+            {
+            }
+        }
+
+        pass FrontFaces
+        {
+            scene_blend src_colour dest_colour
+            scene_blend_op min
+            depth_check on
+            depth_write on
+            depth_func less
+            cull_hardware anticlockwise
+            cull_software none
+
+            vertex_program_ref RayEntryPoints_VP
+            {
+            }
+
+            fragment_program_ref RayEntryPoints_FrontFaces_FP
+            {
+            }
+        }
+
+        pass NearPlane
+        {
+            scene_blend src_colour dest_colour
+            scene_blend_op min
+            depth_check off
+            depth_write off
+            cull_hardware anticlockwise
+            cull_software none
+
+            vertex_program_ref RayEntryPoints_NearPlane_VP
+            {
+            }
+
+            fragment_program_ref RayEntryPoints_NearPlane_FP
             {
             }
         }

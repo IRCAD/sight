@@ -7,10 +7,33 @@ vertex_program Blur_VP glsl
     }
 }
 
+//----------------------------------------------
+
 fragment_program BlurH_FP glsl
 {
     source BlurH_ps20.glsl
 }
+
+//----------------------------------------------
+
+fragment_program BlurV_FP glsl
+{
+    source BlurV_ps20.glsl
+}
+
+//----------------------------------------------
+
+fragment_program Bloom2_FP glsl
+{
+    source Bloom2_ps20.glsl
+    default_params
+    {
+        param_named RT int 0
+        param_named Blur1 int 1
+    }
+}
+
+//----------------------------------------------
 
 //Blur: Horizontal Gaussian pass
 material BlurH
@@ -42,10 +65,7 @@ material BlurH
     }
 }
 
-fragment_program BlurV_FP glsl
-{
-    source BlurV_ps20.glsl
-}
+//----------------------------------------------
 
 //Blur: Vertical Gaussian pass
 material BlurV
@@ -77,15 +97,7 @@ material BlurV
     }
 }
 
-fragment_program Bloom2_FP glsl
-{
-    source Bloom2_ps20.glsl
-    default_params
-    {
-        param_named RT int 0
-        param_named Blur1 int 1
-    }
-}
+//----------------------------------------------
 
 //Final Bloom pass: Blends the blurred with the sharp image
 material BloomBlend

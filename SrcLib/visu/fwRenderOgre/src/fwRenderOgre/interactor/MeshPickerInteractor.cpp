@@ -1,16 +1,15 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/interactor/MeshPickerInteractor.hpp"
 
-#include <fwCom/Signal.hxx>
-
+#include <fwRenderOgre/interactor/IInteractor.hpp>
 #include <fwRenderOgre/registry/macros.hpp>
 
-#include <fwRenderOgre/interactor/IInteractor.hpp>
+#include <fwCom/Signal.hxx>
 
 fwRenderOgreRegisterInteractorMacro( ::fwRenderOgre::interactor::MeshPickerInteractor );
 
@@ -41,7 +40,7 @@ void MeshPickerInteractor::mouseClickEvent(int x, int y, int width, int height)
             ::Ogre::Vector3 click = m_picker->getIntersectionInWorldSpace();
 
             ::fwData::Point::sptr point                = fwData::Point::New();
-            ::fwData::Point::PointCoordArrayType cords = {{click.x,click.y,click.z}};
+            ::fwData::Point::PointCoordArrayType cords = {{click.x, click.y, click.z}};
             point->setCoord(cords);
 
             m_sigPointClicked->asyncEmit(::fwData::Object::dynamicCast(point));
@@ -57,5 +56,4 @@ void MeshPickerInteractor::mouseClickEvent(int x, int y, int width, int height)
 
 } //namespace interactor
 } //namespace fwRenderOgre
-
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,15 +14,14 @@
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreManualObject.h>
 #include <OGRE/OgreRenderToVertexBuffer.h>
+#include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSimpleRenderable.h>
 #include <OGRE/OgreSubEntity.h>
-#include <OGRE/OgreSceneManager.h>
 
 namespace fwRenderOgre
 {
 
 /**
- * @class R2VBRenderable
  * @brief This object is used to implement a render-to-vertex-buffer (r2vb) process (GL_TRANSFORM_FEEDBACK).
  *
  * This objects holds a reference to the object used as input for the render-to-vertex-buffer process.
@@ -64,7 +63,6 @@ public:
     /// Runs the R2VB process.
     void manualUpdate();
 
-
 protected:
     /// Source object of the r2vb process
     ::Ogre::SubEntity* m_srcObject;
@@ -85,7 +83,6 @@ protected:
 
 //-----------------------------------------------------------------------------
 // Inline functions
-
 
 //-----------------------------------------------------------------------------
 
@@ -121,7 +118,6 @@ inline void R2VBRenderable::manualUpdate()
 {
     m_r2vbBuffer->update(mParentSceneManager);
 }
-
 
 } // namespace fwRenderOgre
 

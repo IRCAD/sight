@@ -1,10 +1,11 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/vr/PreIntegrationTable.hpp"
+
 #include <fwRenderOgre/Utils.hpp>
 
 #include <fwCore/Profiling.hpp>
@@ -14,11 +15,11 @@
 #include <fwMemory/BufferManager.hpp>
 #include <fwMemory/BufferObject.hpp>
 
+#include <boost/algorithm/clamp.hpp>
+
 #include <OGRE/OgreHardwarePixelBuffer.h>
 #include <OGRE/OgreTextureManager.h>
 #include <OGRE/OgreVector4.h>
-
-#include <boost/algorithm/clamp.hpp>
 
 #include <algorithm>
 

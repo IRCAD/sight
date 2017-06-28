@@ -4,13 +4,19 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="imageUID" />
+        <param name="maskUID" />
         <param name="TFSelections" />
+        <param name="idvrEnumParamChannel" />
+        <param name="idvrBoolParamChannel" />
+        <param name="idvrDoubleParamChannel" />
+        <param name="idvrColorParamChannel" />
     </parameters>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${imageUID}"  type="::fwData::Image" src="ref" />
+        <object uid="${imageUID}"     type="::fwData::Image"     src="ref" />
+        <object uid="${maskUID}"      type="::fwData::Image"     src="ref" />
         <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
@@ -49,7 +55,7 @@
         <service uid="volumeRenderingScene" type="::fwRenderOgre::SRender" autoConnect="yes">
             <scene overlay="true" fullscreen="no" />
             <background topColor="#DDDDDD" bottomColor="#43958D" topScale="0.7" bottomScale="1.0" />
-            <layer id="default" depth="1"/>
+            <layer id="default" depth="1" />
 
             <adaptor uid="interactorAdaptor" start="yes" />
             <adaptor uid="volumeRender" start="yes" />
@@ -62,6 +68,7 @@
         <service uid="volumeRender" type="::visuOgreAdaptor::SVolumeRender" >
             <in key="image" uid="${imageUID}" autoConnect="yes" />
             <inout key="TF" uid="${TFSelections}" />
+            <inout key="mask" uid="${maskUID}" autoConnect="yes" />
             <config layer="default" widgets="no" preintegration="no" mode="raytracing" selectedTFKey="SelectedTF" />
         </service>
 
@@ -73,7 +80,7 @@
             <parameters>
                 <param type="bool" name="Widgets" key="widgets" defaultValue="false" />
                 <param type="int" name="Samples" key="sampling" defaultValue="512" min="128" max="1024" />
-                <param type="int" name="Focal length" key="focalLength" defaultValue="50" min="0" max="100" />
+                <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="1" max="200" />
                 <param type="bool" name="Pre-integration" key="preIntegration" defaultValue="false" />
                 <param type="bool" name="Ambient occlusion" key="ambientOcclusion" defaultValue="false" />
                 <param type="bool" name="Color bleeding" key="colorBleeding" defaultValue="false" />
@@ -101,6 +108,11 @@
         </connect>
 
         <connect>
+            <signal>vrBasicEditor/enumChanged</signal>
+            <slot>volumeRender/setEnumParameter</slot>
+        </connect>
+
+        <connect>
             <signal>vrBasicEditor/intChanged</signal>
             <slot>volumeRender/setIntParameter</slot>
         </connect>
@@ -118,6 +130,22 @@
         <connect>
             <signal>vrAdvancedEditor2/doubleChanged</signal>
             <slot>volumeRender/setDoubleParameter</slot>
+        </connect>
+
+        <connect channel="${idvrEnumParamChannel}">
+            <slot>volumeRender/setEnumParameter</slot>
+        </connect>
+
+        <connect channel="${idvrBoolParamChannel}">
+            <slot>volumeRender/setBoolParameter</slot>
+        </connect>
+
+        <connect channel="${idvrDoubleParamChannel}">
+            <slot>volumeRender/setDoubleParameter</slot>
+        </connect>
+
+        <connect channel="${idvrColorParamChannel}">
+            <slot>volumeRender/setColorParameter</slot>
         </connect>
 
         <start uid="OgreVolumeRendering" />

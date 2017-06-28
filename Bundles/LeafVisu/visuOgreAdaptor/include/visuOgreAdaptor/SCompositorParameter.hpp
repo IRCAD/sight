@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,8 @@
 #ifndef __VISUOGREADAPTOR_SCOMPOSITORPARAMETER_HPP__
 #define __VISUOGREADAPTOR_SCOMPOSITORPARAMETER_HPP__
 
-#include "visuOgreAdaptor/IParameter.hpp"
-
 #include "visuOgreAdaptor/config.hpp"
+#include "visuOgreAdaptor/IParameter.hpp"
 
 namespace visuOgreAdaptor
 {
@@ -36,7 +35,7 @@ class VISUOGREADAPTOR_CLASS_API SCompositorParameter : public ::visuOgreAdaptor:
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SCompositorParameter)(::visuOgreAdaptor::IParameter) );
+    fwCoreServiceClassDefinitionsMacro( (SCompositorParameter)(::visuOgreAdaptor::IParameter) );
 
     /// Constructor.
     VISUOGREADAPTOR_API SCompositorParameter() throw();

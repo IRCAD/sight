@@ -1,12 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRenderOgre/Plane.hpp"
-#include <fwRenderOgre/Utils.hpp>
+
 #include <fwRenderOgre/helper/Shading.hpp>
+#include <fwRenderOgre/Utils.hpp>
 
 #include <OGRE/OgreEntity.h>
 #include <OGRE/OgreMaterialManager.h>
@@ -30,7 +31,7 @@ Plane::Plane( const ::fwTools::fwID::IDType& _negatoId, ::Ogre::SceneNode* _pare
     m_orientation( _orientation ),
     m_originPosition(0.f, 0.f, 0.f),
     m_texture( _tex ),
-    m_sceneManager ( _sceneManager ),
+    m_sceneManager( _sceneManager ),
     m_parentSceneNode( _parentSceneNode ),
     m_width(0.f),
     m_height(0.f),
@@ -271,7 +272,6 @@ void Plane::moveAlongAxis()
 
     this->initializePosition();
     ::Ogre::Real distance = m_relativePosition * m_depth;
-
 
     switch(m_orientation)
     {
