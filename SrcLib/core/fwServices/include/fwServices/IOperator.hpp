@@ -8,7 +8,7 @@
 #define __FWSERVICES_IOPERATOR_HPP__
 
 #include "fwServices/config.hpp"
-#include <fwServices/IParametersService.hpp>
+#include "fwServices/IParametersService.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signals.hpp>
