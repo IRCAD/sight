@@ -80,8 +80,7 @@ void ResamplerTest::translateTest()
     ::fwData::TransformationMatrix3D::sptr transMat = ::fwData::TransformationMatrix3D::New();
     transMat->setCoefficient(0, 3, 5);
 
-    ::fwData::Image::sptr imageOut = ::itkRegistrationOp::Resampler::resample(
-        ::fwData::Image::csptr(imageIn), ::fwData::TransformationMatrix3D::csptr(transMat));
+    ::fwData::Image::sptr imageOut = ::itkRegistrationOp::Resampler::resample(imageIn, transMat);
 
     fwDataTools::helper::Image imageOutHelper(imageOut);
 
@@ -150,8 +149,7 @@ void ResamplerTest::rotateTest()
 //    rotMat->setCoefficient(1, 3, 31);
 //    rotMat->setCoefficient(2, 3, 31);
 
-    ::fwData::Image::sptr imageOut = ::itkRegistrationOp::Resampler::resample(
-        ::fwData::Image::csptr(imageIn), ::fwData::TransformationMatrix3D::csptr(rotMat));
+    ::fwData::Image::sptr imageOut = ::itkRegistrationOp::Resampler::resample(imageIn, rotMat);
 
     fwDataTools::helper::Image imageOutHelper(imageOut);
 

@@ -28,8 +28,8 @@ public:
      * @param[in] _trf the input fwData::TransformationMatrix3D.
      * @return the transformed & resampled fwData::Image
      */
-    static ITKREGISTRATIONOP_API ::fwData::Image::sptr resample(::fwData::Image::csptr& _inImg,
-                                                                ::fwData::TransformationMatrix3D::csptr& _trf);
+    static ITKREGISTRATIONOP_API ::fwData::Image::sptr resample(const ::fwData::Image::csptr& _inImg,
+                                                                const ::fwData::TransformationMatrix3D::csptr& _trf);
 
 private:
 

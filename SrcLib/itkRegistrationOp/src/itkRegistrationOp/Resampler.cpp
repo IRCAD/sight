@@ -56,8 +56,8 @@ struct Resampling
 
 //-----------------------------------------------------------------------------
 
-::fwData::Image::sptr Resampler::resample(::fwData::Image::csptr& _inImage,
-                                          ::fwData::TransformationMatrix3D::csptr& _trf)
+::fwData::Image::sptr Resampler::resample(const ::fwData::Image::csptr& _inImage,
+                                          const ::fwData::TransformationMatrix3D::csptr& _trf)
 {
     const ::fwTools::DynamicType type = _inImage->getPixelType();
     ::fwData::Image::sptr outIm = ::fwData::Image::New();
