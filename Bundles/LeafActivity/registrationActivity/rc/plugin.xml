@@ -1,0 +1,36 @@
+<plugin id="registrationActivity" version="@DASH_VERSION@" >
+
+    <requirement id="servicesReg" />
+    <requirement id="guiQt" />
+    <requirement id="visuVTKAdaptor" />
+    <requirement id="visuVTKQt" />
+    <requirement id="scene2D" />
+
+    <xi:include href="configurations/Registration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="::fwActivities::registry::Activities">
+        <id>registrationActivity</id>
+        <title>Registration</title>
+        <desc>Activity to register two images.</desc>
+        <icon>@BUNDLE_PREFIX@/media_0-1/icons/icon-blend.png</icon>
+        <requirements>
+            <requirement name="referenceSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" >
+                <desc>The object that will be transformed in order to be superimpossed to the Target.</desc>
+            </requirement>
+            <requirement name="targetSeries" type="::fwMedData::ImageSeries" minOccurs="1" maxOccurs="1" >
+                <desc>The object that is assumed to be static.</desc>
+            </requirement>
+            <requirement name="transformationMatrix" type="::fwData::TransformationMatrix3D" minOccurs="0" maxOccurs="0" >
+                <desc>The mapping that will conver one point from the Reference object space to the Target object space.</desc>
+            </requirement>
+        </requirements>
+        <builder>::fwActivities::builder::ActivitySeries</builder>
+        <appConfig id="Register">
+            <parameters>
+                <parameter replace="referenceImageUid" by="@values.referenceSeries.image" />
+                <parameter replace="targetImageUid" by="@values.targetSeries.image" />
+                <parameter replace="transformUid" by="@values.transformationMatrix" />
+            </parameters>
+        </appConfig>
+    </extension>
+</plugin>

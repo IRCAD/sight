@@ -1,0 +1,341 @@
+<extension implements="::fwServices::registry::AppConfig2">
+    <id>Register</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="GENERIC_UID" />
+        <param name="SERIESDB" />
+        <param name="AS_UID" />
+        <param name="targetImageUid" />
+        <param name="referenceImageUid" />
+        <param name="transformUid" />
+    </parameters>
+
+    <config>
+
+        <object uid="${SERIESDB}" type="::fwMedData::SeriesDB" src="ref" />
+        <object uid="${AS_UID}" type="::fwMedData::ActivitySeries" src="ref" />
+        <object uid="${referenceImageUid}" type="::fwData::Image" src="ref" />
+        <object uid="${targetImageUid}" type="::fwData::Image" src="ref" />
+        <object uid="${transformUid}" type="::fwData::TransformationMatrix3D" src="ref" />
+        <object uid="transformedImage" type="::fwData::Image" />
+        <object uid="TFSelectionComposite" type="::fwData::Composite" />
+        <object uid="TFTransformedComposite" type="::fwData::Composite" />
+        <object uid="viewport" type="::scene2D::data::Viewport" />
+        <object uid="Histogram" type="::fwData::Histogram" />
+
+        <service uid="mainView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="4" />
+                    <view proportion="1" caption="Transformed TF" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="imagesAndManagersView" start="yes"/>
+                <view sid="TFView"     start="yes"/>
+            </registry>
+        </service>
+
+        <service uid="imagesAndManagersView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="scenesView" start="yes"/>
+                <view sid="editorsView" start="yes"/>
+            </registry>
+        </service>
+
+        <service uid="scenesView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="1" caption="Target" />
+                    <view proportion="1" caption="Transformed on target" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="targetScene" start="yes"/>
+                <view sid="transformedScene" start="yes"/>
+            </registry>
+        </service>
+
+        <service uid="editorsView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="1" caption="Target editor" />
+                    <view proportion="1" caption="Transformed editor" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="targetViewEditor" start="yes"/>
+                <view sid="transformedViewEditor" start="yes"/>
+            </registry>
+        </service>
+
+        <service uid="targetViewEditor" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <spacer />
+                </layout>
+            </gui>
+            <registry>
+                <view wid="targetSceneEditor" />
+            </registry>
+        </service>
+
+        <service uid="transformedViewEditor" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view wid="transformedSceneEditor" />
+                <view sid="transformedTransparencySlider" start="yes"/>
+            </registry>
+        </service>
+
+        <service uid="TFView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="1" />
+                    <view proportion="5" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="transformedTFSelector" start="yes" />
+                <view sid="transformedTFWindow"   start="yes" />
+                <view sid="transformedTFEditor"   start="yes" />
+                <view sid="transformEditor"       start="yes" />
+            </registry>
+        </service>
+
+        <service uid="medicalImageTargetSrv" type="::ctrlSelection::MedicalImageSrv">
+            <inout key="image" uid="${targetImageUid}" />
+        </service>
+
+        <service uid="medicalImageTransformedSrv" type="::ctrlSelection::MedicalImageSrv">
+            <inout key="image" uid="transformedImage" />
+        </service>
+
+        <service uid="targetScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <inout key="TFSelectionComposite" uid="TFSelectionComposite" />
+            <in key="targetImage" uid="${targetImageUid}" />
+
+            <scene renderMode="auto">
+                <picker id="picker" vtkclass="fwVtkCellPicker" />
+
+                <renderer id="default" background="#052833" />
+
+                <adaptor uid="targetNegatoMPR" id="targetNegatoMPR" class="::visuVTKAdaptor::NegatoMPR" objectId="targetImage">
+                    <config renderer="default" picker="picker" mode="2d" slices="1"
+                            sliceIndex="axial" selectedTFKey="targetTF"
+                            tfSelectionFwID="TFSelectionComposite" />
+                </adaptor>
+
+                <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="InteractorStyle2DForNegato" />
+                </adaptor>
+            </scene>
+        </service>
+
+        <service uid="targetImageManager" type="::fwServices::SConfigController" autoConnect="no">
+            <appConfig id="ImageManager" />
+            <parameter replace="WID_PARENT" uid="targetSceneEditor" />
+            <parameter replace="IMAGE_UID" uid="${targetImageUid}" />
+            <parameter replace="TF_IMAGE" uid="TFSelectionComposite" />
+            <parameter replace="TF_KEY" by="targetTF" />
+            <parameter replace="ADAPTOR_NEGATO" uid="mixedNegatoMPR" />
+        </service>
+
+        <service uid="transformedScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <inout key="TFSelectionComposite" uid="TFSelectionComposite" />
+            <in key="targetImage" uid="${targetImageUid}" />
+            <in key="transformedImage" uid="transformedImage" />
+
+            <scene renderMode="auto">
+                <picker id="picker" vtkclass="fwVtkCellPicker" />
+                <vtkObject id="imageBlend" class="vtkImageBlend" />
+                <renderer id="default" background="#052833" />
+
+                <adaptor uid="mixedNegatoMPR" id="mixedNegatoMPR" class="::visuVTKAdaptor::NegatoMPR" objectId="targetImage">
+                    <config renderer="default" picker="picker" mode="2d" slices="1"
+                            sliceIndex="axial" vtkimagesource="imageBlend"/>
+                </adaptor>
+
+                <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
+                    <config renderer="default" style="InteractorStyle2DForNegato" />
+                </adaptor>
+
+                <!-- Adaptor to show background and front image merge in the same view. -->
+                <adaptor id="registrationImageAdaptor" class="::visuVTKAdaptor::ImagesBlend" objectId="self">
+                    <config vtkimageregister="imageBlend">
+                        <image objectId="targetImage" tfalpha="no" selectedTFKey="targetTF" tfSelectionFwID="TFSelectionComposite" />
+                        <image objectId="transformedImage" tfalpha="no" selectedTFKey="transformedTF" tfSelectionFwID="TFSelectionComposite" />
+                    </config>
+                </adaptor>
+            </scene>
+        </service>
+
+        <service uid="transformedImageManager" type="::fwServices::SConfigController" autoConnect="no">
+            <appConfig id="ImageManager" />
+            <parameter replace="WID_PARENT" uid="transformedSceneEditor" />
+            <parameter replace="IMAGE_UID" uid="transformedImage" />
+            <parameter replace="TF_IMAGE" uid="TFSelectionComposite" />
+            <parameter replace="TF_KEY" by="transformedTF" />
+            <parameter replace="ADAPTOR_NEGATO" uid="transformedNegatoMPR" />
+        </service>
+
+        <service uid="transformedTransparencySlider" type="::uiImage::ImageTransparency" autoConnect="yes">
+            <inout key="image" uid="transformedImage" />
+            <shortcut value="V" />
+        </service>
+
+        <service uid="transformedTFSelector" type="::uiTF::TransferFunctionEditor" autoConnect="yes">
+            <inout key="transferFunctions" uid="TFTransformedComposite" />
+            <inout key="TFSelections" uid="TFSelectionComposite" />
+            <config selectedTFKey="transformedTF" />
+        </service>
+
+        <service uid="transformedTFWindow" type="::scene2D::Render" autoConnect="yes">
+            <inout key="viewport" uid="viewport" />
+            <in key="Histogram" uid="Histogram" />
+            <scene>
+                <scene x="-1100" y="-1.1" width="2400" height="1.2" />
+                <viewport id="view1" x="-1100" y="-1.1" width="2400" height="1.2" />
+
+                <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
+                <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
+                <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
+
+                <adaptor id="shutterGrid" class="::scene2D::adaptor::Grid2D" objectId="self">
+                    <config xMin="-1200" xMax="1400" yMin="-0.7" yMax="1.7" xSpacing="200" ySpacing="0.2" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
+                </adaptor>
+
+                <adaptor id="shutterAbscissa" class="::scene2D::adaptor::Line" objectId="self">
+                    <config x1="-1200" x2="1400" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
+                </adaptor>
+
+                <adaptor id="shutterOrdinate" class="::scene2D::adaptor::Line" objectId="self">
+                    <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
+                </adaptor>
+
+                <adaptor id="viewportRangeSelector" class="::scene2D::adaptor::ViewportRangeSelector" objectId="viewport">
+                    <config xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="1200" initialPos="-700" />
+                </adaptor>
+
+                <adaptor id="shutterHistogram" class="::scene2D::adaptor::Histogram" objectId="Histogram">
+                    <config color="green" xAxis="xAxis" yAxis="axeHistogramY" zValue="4" />
+                </adaptor>
+
+            </scene>
+        </service>
+
+        <service uid="computetransformedHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
+            <inout key="image" uid="transformedImage" />
+            <inout key="histogram" uid="Histogram" />
+            <binsWidth>5.0</binsWidth>
+        </service>
+
+        <service uid="transformedTFEditor" type="::scene2D::Render" autoConnect="yes">
+            <in key="image" uid="transformedImage" />
+            <inout key="viewport" uid="viewport" />
+            <in key="Histogram" uid="Histogram" />
+            <inout key="TFSelections" uid="TFSelectionComposite" />
+            <scene>
+
+                <scene x="-1100" y="-1.1" width="2400" height="1.2" antialiasing="true" />
+
+                <viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" />
+
+                <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
+                <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
+
+                <axis id="axeHistogramY" origin="0.0" scale="-0.000001" scaleType="LINEAR" />
+
+                <adaptor id="grid" class="::scene2D::adaptor::Grid2D" objectId="self">
+                    <config xMin="-1200" xMax="1500" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.25" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
+                </adaptor>
+
+                <adaptor id="abscissa" class="::scene2D::adaptor::Line" objectId="self">
+                    <config x1="-1200" x2="1500" y1="0" y2="0" color="white" xAxis="xAxis" yAxis="yAxis" zValue="2" />
+                </adaptor>
+
+                <adaptor id="ordinate" class="::scene2D::adaptor::Line" objectId="self">
+                    <config x1="0" x2="0" y1="-0.1" y2="1.2" color="white" xAxis="xAxis" yAxis="yAxis" zValue="3" />
+                </adaptor>
+
+                <adaptor id="maxOpacity" class="::scene2D::adaptor::Line" objectId="self">
+                    <config x1="-1200" x2="1500" y1="1" y2="1" color="red" xAxis="xAxis" yAxis="yAxis" zValue="4" />
+                </adaptor>
+
+                <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="image">
+                    <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" viewportUID="viewport" selectedTFKey="transformedTF" tfSelectionFwID="TFSelections" />
+                </adaptor>
+
+                <adaptor id="viewportRangeUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="viewport">
+                    <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
+                </adaptor>
+
+                <adaptor id="scaleValuesLeft" class="::scene2D::adaptor::ScaleValues" objectId="self">
+                    <config min="0.0" max="1.0" interval="0.1" fontSize="7" align="left" unit="%" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                </adaptor>
+
+                <adaptor id="axisLeft" class="::scene2D::adaptor::Axis" objectId="self">
+                    <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                </adaptor>
+
+                <adaptor id="scaleValuesBottom" class="::scene2D::adaptor::ScaleValues" objectId="self">
+                    <config min="-1024" max="1024" interval="200" fontSize="7" align="bottom" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                </adaptor>
+
+                <adaptor id="axisBottom" class="::scene2D::adaptor::Axis" objectId="self">
+                    <config min="-1024" max="1024" interval="100" align="bottom" tickSize="5" viewportUID="viewport" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="11" />
+                </adaptor>
+
+                <adaptor id="curvedHistogram" class="::scene2D::adaptor::CurvedHistogram" objectId="Histogram">
+                    <config xAxis="xAxis" yAxis="axeHistogramY" borderColor="lightGray" innerColor="gray" opacity="0.25" zValue="6" borderWidth="2.0" />
+                </adaptor>
+
+            </scene>
+        </service>
+
+        <service uid="transformEditor" type="::uiData::STransformEditor" autoConnect="no">
+            <inout key="matrix" uid="${transformUid}"/>
+            <translation enabled="yes" min="-300" max="300"/>
+            <rotation enabled="yes" min="-180" max="180" />
+        </service>
+
+        <service uid="resampler" type="::opItkRegistration::SResampler" >
+            <in key="imageIn" uid="${referenceImageUid}" />
+            <in key="transform" uid="${transformUid}" />
+            <inout key="imageOut" uid="transformedImage" />
+        </service>
+
+        <!-- START AND STOP SERVICES -->
+        <start uid="mainView" />
+        <start uid="medicalImageTargetSrv" />
+        <start uid="medicalImageTransformedSrv" />
+        <start uid="transformedImageManager" />
+        <start uid="targetImageManager" />
+        <start uid="computetransformedHistogram" />
+        <start uid="resampler" />
+
+    </config>
+</extension>
+
