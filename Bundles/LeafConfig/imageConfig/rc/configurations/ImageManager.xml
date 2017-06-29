@@ -1,0 +1,61 @@
+<extension implements="::fwServices::registry::AppConfig2">
+    <id>ImageManager</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="GENERIC_UID" />
+        <param name="IMAGE_UID" />
+        <param name="TF_IMAGE" />
+        <param name="TF_KEY" default="SelectedTF"/>
+    </parameters>
+    <config>
+
+        <object uid="${IMAGE_UID}" type="::fwData::Image" src="ref" />
+        <object uid="${TF_IMAGE}" type="::fwData::Composite" src="ref" />
+
+        <service uid="ImageManagerView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                    <spacer />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="windowLevelImage" start="yes" />
+                <view sid="SliderView" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="SliderView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="selectorSliderNegatoImage" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="medicalImageConverterImage" type="::ctrlSelection::MedicalImageSrv">
+            <inout key="image" uid="${IMAGE_UID}" />
+        </service>
+
+        <service uid="selectorSliderNegatoImage" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
+            <inout key="image" uid="${IMAGE_UID}" />
+            <sliceIndex>axial</sliceIndex>
+        </service>
+
+        <service uid="windowLevelImage" type="::uiImage::WindowLevel" autoConnect="yes">
+            <inout key="image" uid="${IMAGE_UID}" />
+            <inout key="TFSelections" uid="${TF_IMAGE}" />
+            <config selectedTFKey="${TF_KEY}" />
+        </service>
+        
+        <start uid="ImageManagerView" />
+        
+    </config>
+</extension>
