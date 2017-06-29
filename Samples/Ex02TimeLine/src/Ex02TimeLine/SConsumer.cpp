@@ -1,23 +1,22 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "Ex02TimeLine/SConsumer.hpp"
+
 #include "Ex02TimeLine/MessageTL.hpp"
 
-#include <fwCom/Slots.hpp>
 #include <fwCom/Slots.hxx>
-#include <fwData/String.hpp>
+
 #include <fwServices/macros.hpp>
+
 #include <fwThread/Timer.hpp>
-#include <fwTools/Object.hpp>
 
 #include <functional>
 
-fwServicesRegisterMacro( ::fwServices::IService, ::Ex02TimeLine::SConsumer, ::Ex02TimeLine::MessageTL );
-
+fwServicesRegisterMacro( ::fwServices::IService, ::Ex02TimeLine::SConsumer );
 
 namespace Ex02TimeLine
 {
@@ -28,20 +27,26 @@ const ::fwCom::Slots::SlotKeyType SConsumer::s_CONSUME_SLOT = "consume";
 
 //------------------------------------------------------------------------------
 
-SConsumer::SConsumer() noexcept
+SConsumer::SConsumer() noexcept :
+    m_period(0)
 {
-    m_slotConsume = ::fwCom::newSlot(&SConsumer::consume, this);
-
-    ::fwCom::HasSlots::m_slots(s_CONSUME_SLOT, m_slotConsume);
-    ::fwCom::HasSlots::m_slots.setWorker( m_associatedWorker );
-
-    m_period = 0;
+    newSlot(s_CONSUME_SLOT, &SConsumer::consume, this);
 }
 
 //------------------------------------------------------------------------------
 
 SConsumer::~SConsumer() noexcept
 {
+}
+
+//------------------------------------------------------------------------------
+
+void SConsumer::configuring()
+{
+    ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
+
+    m_receiverId = config.get<unsigned int>("id");
+    m_period     = config.get<unsigned int>("period", 0);
 }
 
 //------------------------------------------------------------------------------
@@ -70,7 +75,7 @@ void SConsumer::stopping()
 
 void SConsumer::updating()
 {
-    const ::Ex02TimeLine::MessageTL::csptr timeline = this->getObject< ::Ex02TimeLine::MessageTL >();
+    ::Ex02TimeLine::MessageTL::csptr timeline = this->getInput< ::Ex02TimeLine::MessageTL >("timeline");
 
     const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
     const CSPTR(::Ex02TimeLine::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
@@ -86,37 +91,9 @@ void SConsumer::updating()
 
 //------------------------------------------------------------------------------
 
-void SConsumer::swapping( )
-{
-
-}
-
-//------------------------------------------------------------------------------
-
-void SConsumer::configuring()
-{
-    ::fwRuntime::ConfigurationElement::csptr idCfg = m_configuration->findConfigurationElement("id");
-    SLM_ASSERT("Tag 'id' not found.", idCfg);
-
-    const std::string id = idCfg->getValue();
-    SLM_ASSERT("'id' is empty", !id.empty());
-
-    m_receiverId = ::boost::lexical_cast<unsigned int>(id);
-
-    const ::fwRuntime::ConfigurationElement::sptr periodCfg = m_configuration->findConfigurationElement("period");
-    if(periodCfg)
-    {
-        const std::string period = periodCfg->getValue();
-        m_period = ::boost::lexical_cast<unsigned int>(period);
-    }
-
-}
-
-//------------------------------------------------------------------------------
-
 void SConsumer::consume(fwCore::HiResClock::HiResClockType timestamp)
 {
-    ::Ex02TimeLine::MessageTL::sptr timeline = this->getObject< ::Ex02TimeLine::MessageTL >();
+    ::Ex02TimeLine::MessageTL::csptr timeline = this->getInput< ::Ex02TimeLine::MessageTL >("timeline");
 
     const CSPTR(::Ex02TimeLine::MessageTL::BufferType) buffer = timeline->getClosestBuffer(timestamp);
 

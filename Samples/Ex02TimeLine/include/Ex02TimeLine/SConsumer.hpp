@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2014-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2014-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,9 +7,9 @@
 #ifndef __EX02TIMELINE_SCONSUMER_HPP__
 #define __EX02TIMELINE_SCONSUMER_HPP__
 
-#include <fwServices/IService.hpp>
-
 #include "Ex02TimeLine/config.hpp"
+
+#include <fwServices/IService.hpp>
 
 namespace fwThread
 {
@@ -23,46 +23,48 @@ namespace Ex02TimeLine
  * @brief   Service that consumes messages stored in a timeline. You can either connect the service slot to the timeline
  *          to display a message each time something is pushed, or you can specify a period in the configuration to
  *          display a message periodically.
+ *
+ * @section Slots Slots
+ * - \b consume() : read a message from the timeline.
+
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+        <service type="::Ex02TimeLine::SConsumer">
+            <in key="timeline" uid="..." />
+            <id>0</id>
+            <period>1000</period>
+       </service>
+   @endcode
+ * @subsection Input Input:
+ * - \b timeline [::Ex02TimeLine::MessageTL]: timeline containing messages.
+ * @subsection Configuration Configuration:
+ * - \b id : id of the receiver.
+ * - \b period (optional): time between two messages display, in milliseconds.
  */
 class EX02TIMELINE_CLASS_API SConsumer : public ::fwServices::IService
 {
 public:
-
     EX02TIMELINE_API static const ::fwCom::Slots::SlotKeyType s_CONSUME_SLOT;
-    typedef ::fwCom::Slot<void (::fwCore::HiResClock::HiResClockType)> ConsumeSlotType;
 
-    fwCoreServiceClassDefinitionsMacro ( (SConsumer)(::fwServices::IService) );
+    fwCoreServiceClassDefinitionsMacro( (SConsumer)(::fwServices::IService) );
 
     EX02TIMELINE_API SConsumer() noexcept;
     EX02TIMELINE_API virtual ~SConsumer() noexcept;
 
 protected:
 
-    /// Starts the timer if a period is defined.
-    virtual void starting();
+    /// Configure the service
+    virtual void configuring() final;
 
-    /// Stops the timer.
-    virtual void stopping();
+    /// Start the timer if a period is defined.
+    virtual void starting() final;
 
-    /// Does nothing.
-    virtual void swapping();
+    /// Stop the timer.
+    virtual void stopping() final;
 
     /// Called by the timer to consume a message periodically
-    virtual void updating();
-
-    /**
-     * @brief Configures the service.
-     *
-     * @code{.xml}
-       <service type="::fwServices::IService" impl="::Ex02TimeLine::SConsumer" autoConnect="yes">
-           <id>0</id>
-           <period>1000</period>
-       </service>
-       @endcode
-     * - \b id : id of the receiver.
-     * - \b period (optional): time between two messages display, in milliseconds.
-     */
-    virtual void configuring();
+    virtual void updating() final;
 
     /// Called by a signal to consume a message
     void consume(::fwCore::HiResClock::HiResClockType timestamp);
@@ -71,9 +73,6 @@ private:
 
     /// Timer used to read messages periodically
     SPTR( fwThread::Timer ) m_timer;
-
-    /// Slots used when the frame have been refreshed
-    ConsumeSlotType::sptr m_slotConsume;
 
     /// Id of the receiver
     unsigned int m_receiverId;

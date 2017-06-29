@@ -1,25 +1,18 @@
-
 set( NAME Ex02TimeLine )
 set( VERSION 0.1 )
 set( TYPE APP )
-set( PRIORITY 3 )
 set( DEPENDENCIES
-    fwServices
     arData
-    fwRuntime
     fwData
-    fwCom
-    fwThread
-    fwTools
-    fwCore
-
+    fwServices
 )
 set( REQUIREMENTS
-    appXml
+    appXml2
+    dataReg
     arDataReg
     servicesReg
     fwlauncher
-    dataReg
+    console
 )
 
-bundleParam(appXml PARAM_LIST config PARAM_VALUES Ex02TimeLineConfig)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex02TimeLineConfig)
