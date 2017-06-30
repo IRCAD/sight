@@ -30,7 +30,7 @@ public:
      * @param _inTrf input fwData::TransformationMatrix3D
      * @return Pointer to a itk::Matrix<double, 4, 4>
      */
-    static FWITKIO_API MatrixType convertToITK(::fwData::TransformationMatrix3D::csptr& _inTrf);
+    static FWITKIO_API MatrixType convertToITK(const ::fwData::TransformationMatrix3D::csptr& _inTrf);
 
     /**
      * @brief convert an itk::Transform<double, 4, 4> to a F4S one

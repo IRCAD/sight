@@ -13,7 +13,7 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-Transform::MatrixType Transform::convertToITK(fwData::TransformationMatrix3D::csptr& _inTrf)
+Transform::MatrixType Transform::convertToITK(const fwData::TransformationMatrix3D::csptr& _inTrf)
 {
     MatrixType itkMat;
 
