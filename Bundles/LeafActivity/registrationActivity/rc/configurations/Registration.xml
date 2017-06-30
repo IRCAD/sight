@@ -319,7 +319,7 @@
 
         <service uid="transformEditor" type="::uiData::STransformEditor" autoConnect="no">
             <inout key="matrix" uid="${transformUid}"/>
-            <translation enabled="yes" min="-300" max="300"/>
+            <translation enabled="yes" min="-1500" max="1500"/>
             <rotation enabled="yes" min="-180" max="180" />
         </service>
 
@@ -333,6 +333,7 @@
         <service uid="resampler" type="::opItkRegistration::SResampler" >
             <in key="imageIn" uid="${referenceImageUid}" />
             <in key="transform" uid="${transformUid}" />
+            <in key="target" uid="${targetImageUid}" />
             <inout key="imageOut" uid="transformedImage" />
         </service>
 

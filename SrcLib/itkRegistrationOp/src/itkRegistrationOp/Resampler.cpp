@@ -14,7 +14,9 @@
 #include <fwTools/IntrinsicTypes.hpp>
 
 #include <itkAffineTransform.h>
+#include <itkBSplineInterpolateImageFunction.h>
 #include <itkMatrix.h>
+#include <itkMinimumMaximumImageCalculator.h>
 #include <itkResampleImageFilter.h>
 
 namespace itkRegistrationOp
@@ -27,6 +29,7 @@ struct Resampling
         ::itk::AffineTransform<double, 3>::Pointer i_trf;
         ::fwData::Image::csptr i_image;
         ::fwData::Image::sptr o_image;
+        ::fwData::Image::csptr i_targetImage;
     };
 
     //------------------------------------------------------------------------------
@@ -40,11 +43,36 @@ struct Resampling
         typename ::itk::ResampleImageFilter<ImageType, ImageType>::Pointer resampler =
             ::itk::ResampleImageFilter<ImageType, ImageType>::New();
 
+        typename ::itk::MinimumMaximumImageCalculator< ImageType >::Pointer minCalculator =
+            ::itk::MinimumMaximumImageCalculator< ImageType >::New();
+
+        minCalculator->SetImage(itkImage);
+        minCalculator->ComputeMinimum();
+        resampler->SetDefaultPixelValue(minCalculator->GetMinimum());
+
         resampler->SetTransform(params.i_trf.GetPointer());
         resampler->SetInput(itkImage);
-        typename ImageType::SizeType size = itkImage->GetLargestPossibleRegion().GetSize();
+
+        typename ImageType::SizeType size           = itkImage->GetLargestPossibleRegion().GetSize();
+        typename ImageType::PointType origin        = itkImage->GetOrigin();
+        typename ImageType::SpacingType spacing     = itkImage->GetSpacing();
+        typename ImageType::DirectionType direction = itkImage->GetDirection();
+
+        if(params.i_targetImage)
+        {
+            for(std::uint8_t i = 0; i < 3; ++i)
+            {
+                // ITK uses unsigned long to store sizes.
+                size[i]    = static_cast<typename ImageType::SizeType::SizeValueType>(params.i_targetImage->getSize()[i]);
+                origin[i]  = params.i_targetImage->getOrigin()[i];
+                spacing[i] = params.i_targetImage->getSpacing()[i];
+            }
+        }
 
         resampler->SetSize(size);
+        resampler->SetOutputOrigin(origin);
+        resampler->SetOutputDirection(direction);
+        resampler->SetOutputSpacing(spacing);
 
         resampler->Update();
 
@@ -58,7 +86,8 @@ struct Resampling
 
 void Resampler::resample(const ::fwData::Image::csptr& _inImage,
                          const ::fwData::Image::sptr& _outImage,
-                         const ::fwData::TransformationMatrix3D::csptr& _trf)
+                         const ::fwData::TransformationMatrix3D::csptr& _trf,
+                         const ::fwData::Image::csptr& _targetImg)
 {
     const ::fwTools::DynamicType type          = _inImage->getPixelType();
     const itk::Matrix<double, 4, 4 > itkMatrix = ::fwItkIO::helper::Transform::convertToITK(_trf);
@@ -86,9 +115,10 @@ void Resampler::resample(const ::fwData::Image::csptr& _inImage,
     transf->SetTranslation(translation);
 
     Resampling::Parameters params;
-    params.i_image = _inImage;
-    params.o_image = _outImage;
-    params.i_trf   = transf.GetPointer();
+    params.i_image       = _inImage;
+    params.o_image       = _outImage;
+    params.i_trf         = transf.GetPointer();
+    params.i_targetImage = _targetImg;
 
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, Resampling >::invoke(type, params);
 }

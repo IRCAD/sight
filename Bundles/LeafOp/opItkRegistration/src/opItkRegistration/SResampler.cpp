@@ -21,6 +21,7 @@ fwServicesRegisterMacro(::fwServices::IOperator, ::opItkRegistration::SResampler
 static const ::fwServices::IService::KeyType s_IMAGE_IN    = "imageIn";
 static const ::fwServices::IService::KeyType s_IMAGE_INOUT = "imageOut";
 
+static const ::fwServices::IService::KeyType s_TARGET_IN    = "target";
 static const ::fwServices::IService::KeyType s_TRANSFORM_IN = "transform";
 
 //------------------------------------------------------------------------------
@@ -58,6 +59,8 @@ void SResampler::updating() throw( ::fwTools::Failed )
     ::fwData::Image::csptr inImg = this->getInput< ::fwData::Image >(s_IMAGE_IN);
     ::fwData::Image::sptr outImg = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
+    ::fwData::Image::csptr target = this->getInput< ::fwData::Image >(s_TARGET_IN);
+
     ::fwData::TransformationMatrix3D::csptr transform =
         this->getInput< ::fwData::TransformationMatrix3D >(s_TRANSFORM_IN);
 
@@ -65,7 +68,7 @@ void SResampler::updating() throw( ::fwTools::Failed )
     SLM_ASSERT("No 'imageOut' found !", outImg);
     SLM_ASSERT("No 'transform' found !", transform);
 
-    ::itkRegistrationOp::Resampler::resample(inImg, outImg, transform);
+    ::itkRegistrationOp::Resampler::resample(inImg, outImg, transform, target);
 
     m_sigComputed->asyncEmit();
 
@@ -95,6 +98,7 @@ void SResampler::stopping() throw( ::fwTools::Failed )
     connections.push(s_IMAGE_IN, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_IMAGE_IN, ::fwData::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_TRANSFORM_IN, ::fwData::TransformationMatrix3D::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TARGET_IN, ::fwData::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }

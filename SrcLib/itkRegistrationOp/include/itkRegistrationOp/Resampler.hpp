@@ -25,12 +25,14 @@ public:
     /**
      * @brief resample use itk resample image filter to tranform input image to output image using a transform
      * @param[in] _inImg the input fwData::Image.
+     * @param[out] _outImg the resulting transformed image.
      * @param[in] _trf the input fwData::TransformationMatrix3D.
-     * @return the transformed & resampled fwData::Image
+     * @param[in] _targetImg image used to set the desired origin, spacing and size.
      */
     static ITKREGISTRATIONOP_API void resample(const ::fwData::Image::csptr& _inImg,
                                                const ::fwData::Image::sptr& outImg,
-                                               const ::fwData::TransformationMatrix3D::csptr& _trf);
+                                               const ::fwData::TransformationMatrix3D::csptr& _trf,
+                                               const ::fwData::Image::csptr& _targetImg = nullptr);
 
 };
 

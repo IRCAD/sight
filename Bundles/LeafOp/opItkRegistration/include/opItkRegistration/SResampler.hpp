@@ -26,12 +26,14 @@ namespace opItkRegistration
    <service type="::opITK::SPropagator">
        <in key="imageIn" uid="..." autoConnect="yes" />
        <in key="transform" uid="..." />
+       <in key="target" uid="..." />
        <inout key="imageOut" uid="..." />
    </service>
    @endcode
  * @subsection Input Input
  * - \b imageIn [::fwData::Image]: Image to resample.
  * - \b transform [::fwData::TransformationMatrix3D]: Transform to apply.
+ * - \b target [::fwData::Image] (optionnal): target image defining the size, spacing and origin of the output.
  * @subsection In-Out In-Out
  * - \b imageOut [::fwData::Image]: New resampled image.
  */
@@ -66,6 +68,7 @@ protected:
      *
      * - Update service when the image or its buffer is modified.
      * - Update service when the transform matrix is modified.
+     * - Update service when the target image is modified.
      */
     OPITKREGISTRATION_API virtual KeyConnectionsMap getAutoConnections() const;
 
