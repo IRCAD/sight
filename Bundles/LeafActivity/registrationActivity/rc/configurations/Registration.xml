@@ -115,6 +115,7 @@
                     <view proportion="1" />
                     <view proportion="5" />
                     <view proportion="0" />
+                    <view proportion="0" />
                 </layout>
             </gui>
             <registry>
@@ -122,6 +123,7 @@
                 <view sid="transformedTFWindow"   start="yes" />
                 <view sid="transformedTFEditor"   start="yes" />
                 <view sid="transformEditor"       start="yes" />
+                <view sid="applyTransform"        start="yes" />
             </registry>
         </service>
 
@@ -195,7 +197,7 @@
         <service uid="transformedImageManager" type="::fwServices::SConfigController" autoConnect="no">
             <appConfig id="ImageManager" />
             <parameter replace="WID_PARENT" uid="transformedSceneEditor" />
-            <parameter replace="IMAGE_UID" uid="transformedImage" />
+            <parameter replace="IMAGE_UID" uid="${referenceImageUid}" />
             <parameter replace="TF_IMAGE" uid="TFSelectionComposite" />
             <parameter replace="TF_KEY" by="transformedTF" />
             <parameter replace="ADAPTOR_NEGATO" uid="transformedNegatoMPR" />
@@ -247,13 +249,13 @@
         </service>
 
         <service uid="computetransformedHistogram" type="::scene2D::processing::SComputeHistogram" autoConnect="yes" worker="COMPUTING_THREAD">
-            <inout key="image" uid="transformedImage" />
+            <inout key="image" uid="${referenceImageUid}" />
             <inout key="histogram" uid="Histogram" />
             <binsWidth>5.0</binsWidth>
         </service>
 
         <service uid="transformedTFEditor" type="::scene2D::Render" autoConnect="yes">
-            <in key="image" uid="transformedImage" />
+            <in key="image" uid="${referenceImageUid}" />
             <inout key="viewport" uid="viewport" />
             <in key="Histogram" uid="Histogram" />
             <inout key="TFSelections" uid="TFSelectionComposite" />
@@ -321,11 +323,24 @@
             <rotation enabled="yes" min="-180" max="180" />
         </service>
 
+        <service uid="applyTransform" type="::guiQt::editor::SSignalButton" >
+            <config>
+               <checkable>false</checkable>
+               <text>Apply</text>
+            </config>
+        </service>
+
         <service uid="resampler" type="::opItkRegistration::SResampler" >
             <in key="imageIn" uid="${referenceImageUid}" />
             <in key="transform" uid="${transformUid}" />
             <inout key="imageOut" uid="transformedImage" />
         </service>
+
+        <!-- Resample when the button is clicked -->
+        <connect>
+            <signal>applyTransform/clicked</signal>
+            <slot>resampler/update</slot>
+        </connect>
 
         <!-- START AND STOP SERVICES -->
         <start uid="mainView" />

@@ -55,7 +55,8 @@ void ResamplerTest::translateTest()
     const ::fwData::Image::OriginType ORIGIN   = {{ 0., 0., 0. }};
     const ::fwTools::Type TYPE                 = ::fwTools::Type::s_UINT8;
 
-    ::fwData::Image::sptr imageIn = ::fwData::Image::New();
+    ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
+    ::fwData::Image::sptr imageOut = ::fwData::Image::New();
 
     ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE);
 
@@ -80,7 +81,8 @@ void ResamplerTest::translateTest()
     ::fwData::TransformationMatrix3D::sptr transMat = ::fwData::TransformationMatrix3D::New();
     transMat->setCoefficient(0, 3, 5);
 
-    ::fwData::Image::sptr imageOut = ::itkRegistrationOp::Resampler::resample(imageIn, transMat);
+    ::itkRegistrationOp::Resampler::resample(
+        ::fwData::Image::csptr(imageIn), imageOut, ::fwData::TransformationMatrix3D::csptr(transMat));
 
     fwDataTools::helper::Image imageOutHelper(imageOut);
 
@@ -118,7 +120,8 @@ void ResamplerTest::rotateTest()
     const ::fwData::Image::OriginType ORIGIN   = {{ -32., -32., -32. }};
     const ::fwTools::Type TYPE                 = ::fwTools::Type::s_FLOAT;
 
-    ::fwData::Image::sptr imageIn = ::fwData::Image::New();
+    ::fwData::Image::sptr imageIn  = ::fwData::Image::New();
+    ::fwData::Image::sptr imageOut = ::fwData::Image::New();
 
     ::fwTest::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE);
 
@@ -149,7 +152,8 @@ void ResamplerTest::rotateTest()
 //    rotMat->setCoefficient(1, 3, 31);
 //    rotMat->setCoefficient(2, 3, 31);
 
-    ::fwData::Image::sptr imageOut = ::itkRegistrationOp::Resampler::resample(imageIn, rotMat);
+    ::itkRegistrationOp::Resampler::resample(
+        ::fwData::Image::csptr(imageIn), imageOut, ::fwData::TransformationMatrix3D::csptr(rotMat));
 
     fwDataTools::helper::Image imageOutHelper(imageOut);
 

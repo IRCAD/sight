@@ -65,12 +65,17 @@ void SResampler::updating() throw( ::fwTools::Failed )
     SLM_ASSERT("No 'imageOut' found !", outImg);
     SLM_ASSERT("No 'transform' found !", transform);
 
-    outImg = ::itkRegistrationOp::Resampler::resample(inImg, transform);
+    ::itkRegistrationOp::Resampler::resample(inImg, outImg, transform);
 
     m_sigComputed->asyncEmit();
 
-    auto imgModifSig = outImg->signal< ::fwData::Image::BufferModifiedSignalType >
-                           (::fwData::Image::s_BUFFER_MODIFIED_SIG);
+    auto imgBufModifSig = outImg->signal< ::fwData::Image::BufferModifiedSignalType >
+                              (::fwData::Image::s_BUFFER_MODIFIED_SIG);
+
+//    imgBufModifSig->asyncEmit();
+
+    auto imgModifSig = outImg->signal< ::fwData::Image::ModifiedSignalType >
+                           (::fwData::Image::s_MODIFIED_SIG);
 
     imgModifSig->asyncEmit();
 }

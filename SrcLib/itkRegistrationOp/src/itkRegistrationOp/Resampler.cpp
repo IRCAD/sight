@@ -56,11 +56,11 @@ struct Resampling
 
 //-----------------------------------------------------------------------------
 
-::fwData::Image::sptr Resampler::resample(const ::fwData::Image::csptr& _inImage,
-                                          const ::fwData::TransformationMatrix3D::csptr& _trf)
+void Resampler::resample(const ::fwData::Image::csptr& _inImage,
+                         const ::fwData::Image::sptr& _outImage,
+                         const ::fwData::TransformationMatrix3D::csptr& _trf)
 {
-    const ::fwTools::DynamicType type = _inImage->getPixelType();
-    ::fwData::Image::sptr outIm = ::fwData::Image::New();
+    const ::fwTools::DynamicType type          = _inImage->getPixelType();
     const itk::Matrix<double, 4, 4 > itkMatrix = ::fwItkIO::helper::Transform::convertToITK(_trf);
 
     // We need to extract a 3x3 matrix and a vector to set the affine transform.
@@ -87,12 +87,10 @@ struct Resampling
 
     Resampling::Parameters params;
     params.i_image = _inImage;
-    params.o_image = outIm;
+    params.o_image = _outImage;
     params.i_trf   = transf.GetPointer();
 
     ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, Resampling >::invoke(type, params);
-
-    return outIm;
 }
 
 //-----------------------------------------------------------------------------
