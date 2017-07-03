@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -98,7 +98,7 @@ void IReader::setFiles(const ::io::LocationsType& files)
 const ::boost::filesystem::path& IReader::getFolder() const
 {
     FW_RAISE_IF("This reader doesn't manage folders", !(this->getIOPathType() & ::io::FOLDER));
-    FW_RAISE_IF("Exactly one folder must be define in location", m_locations.size() !=1 );
+    FW_RAISE_IF("Exactly one folder must be define in location", m_locations.size() != 1 );
     return m_locations.front();
 }
 
@@ -140,6 +140,9 @@ void IReader::configuring() throw (fwTools::Failed)
                ( this->getIOPathType() & ::io::FILE || this->getIOPathType() & ::io::FILES ) ||
                (m_configuration->find("file").size() == 0));
 
+    ::fwRuntime::ConfigurationElement::sptr titleConfig = m_configuration->findConfigurationElement("windowTitle");
+    m_windowTitle                                       = titleConfig ? titleConfig->getValue() : "";
+
     if ( this->getIOPathType() & ::io::FILE )
     {
         FW_RAISE_IF("This reader cannot manages FILE and FILES.", this->getIOPathType() & ::io::FILES );
@@ -151,7 +154,6 @@ void IReader::configuring() throw (fwTools::Failed)
             this->setFile(::boost::filesystem::path(file));
         }
     }
-
 
     if ( this->getIOPathType() & ::io::FILES )
     {
@@ -165,7 +167,6 @@ void IReader::configuring() throw (fwTools::Failed)
         }
         this->setFiles(locations);
     }
-
 
     if ( this->getIOPathType() & ::io::FOLDER )
     {
