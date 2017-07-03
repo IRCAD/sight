@@ -58,7 +58,7 @@
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
-                    <view proportion="1" caption="Target" />
+                    <view proportion="1" caption="Reference" />
                     <view proportion="1" caption="Transformed on target" />
                 </layout>
             </gui>
@@ -113,14 +113,14 @@
             <gui>
                 <layout type="::fwGui::TabLayoutManager">
                     <view caption="Automatic" />
-                    <view caption="Landmarks" />
+                    <view caption="Landmark" />
                     <view caption="Manual" />
                     <view caption="Transfer function" />
                 </layout>
             </gui>
             <registry>
                 <view sid="automaticRegistrationView" start="yes" />
-                <view sid="landmarksRegistrationView" start="yes" />
+                <view sid="LandmarkRegistrationView" start="yes" />
                 <view sid="manualRegistrationView"    start="yes" />
                 <view sid="TFView"                    start="yes" />
             </registry>
@@ -139,7 +139,7 @@
             </registry>
         </service>
 
-        <service uid="landmarksRegistrationView" type="::gui::view::SDefaultView">
+        <service uid="LandmarkRegistrationView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -148,7 +148,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="applyLandmarksTransform" start="yes" />
+                <view sid="applyLandmarkTransform" start="yes" />
             </registry>
         </service>
 
@@ -417,7 +417,7 @@
             </scene>
         </service>
 
-        <service uid="transformEditor" type="::uiData::STransformEditor" autoConnect="no">
+        <service uid="transformEditor" type="::uiData::STransformEditor" autoConnect="yes">
             <inout key="matrix" uid="${transformUid}"/>
             <translation enabled="yes" min="-1500" max="1500"/>
             <rotation enabled="yes" min="-180" max="180" />
@@ -430,7 +430,7 @@
             </config>
         </service>
 
-        <service uid="applyLandmarksTransform" type="::guiQt::editor::SSignalButton" >
+        <service uid="applyLandmarkTransform" type="::guiQt::editor::SSignalButton" >
             <config>
                 <checkable>false</checkable>
                 <text>Apply</text>
@@ -444,12 +444,28 @@
             </config>
         </service>
 
+        <service uid="landmarkRegistration" type="::basicRegistration::SPointListRegistration">
+            <inout key="registeredPL" uid="targetPL" />
+            <inout key="referencePL" uid="referencePL" />
+            <inout key="output" uid="${transformUid}" />
+        </service>
+
         <service uid="resampler" type="::opItkRegistration::SResampler" >
             <in key="imageIn" uid="${referenceImageUid}" />
             <in key="transform" uid="${transformUid}" />
             <in key="target" uid="${targetImageUid}" />
             <inout key="imageOut" uid="transformedImage" />
         </service>
+
+        <connect>
+            <signal>applyLandmarkTransform/clicked</signal>
+            <slot>landmarkRegistration/update</slot>
+        </connect>
+
+        <connect>
+            <signal>landmarkRegistration/updated</signal>
+            <slot>resampler/update</slot>
+        </connect>
 
         <!-- Resample when the button is clicked -->
         <connect>
@@ -467,6 +483,7 @@
         <start uid="resampler" />
         <start uid="referenceLandmarkManager" />
         <start uid="targetLandmarkManager" />
+        <start uid="landmarkRegistration" />
     </config>
 </extension>
 
