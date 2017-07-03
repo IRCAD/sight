@@ -28,13 +28,13 @@
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
                     <view proportion="4" />
-                    <view proportion="1" caption="Transformed TF" />
+                    <view proportion="1" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <view sid="imagesAndManagersView" start="yes"/>
-                <view sid="TFView"     start="yes"/>
+                <view sid="ParamView"             start="yes"/>
             </registry>
         </service>
 
@@ -107,6 +107,64 @@
             </registry>
         </service>
 
+        <service uid="ParamView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::TabLayoutManager">
+                    <view caption="Automatic" />
+                    <view caption="Landmarks" />
+                    <view caption="Manual" />
+                    <view caption="Transfer function" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="automaticRegistrationView" start="yes" />
+                <view sid="landmarksRegistrationView" start="yes" />
+                <view sid="manualRegistrationView"    start="yes" />
+                <view sid="TFView"                    start="yes" />
+            </registry>
+        </service>
+
+        <service uid="automaticRegistrationView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <spacer />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="applyAutomaticTransform" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="landmarksRegistrationView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <spacer />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="applyLandmarksTransform" start="yes" />
+            </registry>
+        </service>
+
+        <service uid="manualRegistrationView" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <spacer />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="transformEditor"       start="yes" />
+                <view sid="applyManualTransform" start="yes" />
+            </registry>
+        </service>
+
         <service uid="TFView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
@@ -114,16 +172,12 @@
                     <view proportion="0" />
                     <view proportion="1" />
                     <view proportion="5" />
-                    <view proportion="0" />
-                    <view proportion="0" />
                 </layout>
             </gui>
             <registry>
                 <view sid="transformedTFSelector" start="yes" />
                 <view sid="transformedTFWindow"   start="yes" />
                 <view sid="transformedTFEditor"   start="yes" />
-                <view sid="transformEditor"       start="yes" />
-                <view sid="applyTransform"        start="yes" />
             </registry>
         </service>
 
@@ -323,7 +377,21 @@
             <rotation enabled="yes" min="-180" max="180" />
         </service>
 
-        <service uid="applyTransform" type="::guiQt::editor::SSignalButton" >
+        <service uid="applyAutomaticTransform" type="::guiQt::editor::SSignalButton" >
+            <config>
+                <checkable>false</checkable>
+                <text>Apply</text>
+            </config>
+        </service>
+
+        <service uid="applyLandmarksTransform" type="::guiQt::editor::SSignalButton" >
+            <config>
+                <checkable>false</checkable>
+                <text>Apply</text>
+            </config>
+        </service>
+
+        <service uid="applyManualTransform" type="::guiQt::editor::SSignalButton" >
             <config>
                <checkable>false</checkable>
                <text>Apply</text>
@@ -339,7 +407,7 @@
 
         <!-- Resample when the button is clicked -->
         <connect>
-            <signal>applyTransform/clicked</signal>
+            <signal>applyManualTransform/clicked</signal>
             <slot>resampler/update</slot>
         </connect>
 
