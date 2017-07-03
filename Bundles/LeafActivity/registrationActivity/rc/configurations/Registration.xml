@@ -22,6 +22,8 @@
         <object uid="TFTransformedComposite" type="::fwData::Composite" />
         <object uid="viewport" type="::scene2D::data::Viewport" />
         <object uid="Histogram" type="::fwData::Histogram" />
+        <object uid="referencePL" type="::fwData::PointList" />
+        <object uid="targetPL" type="::fwData::PointList" />
 
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
@@ -61,7 +63,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="targetScene" start="yes"/>
+                <view sid="referenceScene" start="yes"/>
                 <view sid="transformedScene" start="yes"/>
             </registry>
         </service>
@@ -70,13 +72,13 @@
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
-                    <view proportion="1" caption="Target editor" />
+                    <view proportion="1" caption="Reference editor" />
                     <view proportion="1" caption="Transformed editor" />
                 </layout>
             </gui>
             <registry>
+                <view sid="referenceViewEditor" start="yes"/>
                 <view sid="targetViewEditor" start="yes"/>
-                <view sid="transformedViewEditor" start="yes"/>
             </registry>
         </service>
 
@@ -85,25 +87,25 @@
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
-                    <spacer />
+                    <view proportion="1" />
                 </layout>
             </gui>
             <registry>
                 <view wid="targetSceneEditor" />
+                <view sid="transformedTransparencySlider" start="yes"/>
             </registry>
         </service>
 
-        <service uid="transformedViewEditor" type="::gui::view::SDefaultView">
+        <service uid="referenceViewEditor" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
-                    <view proportion="1" />
+                    <spacer />
                 </layout>
             </gui>
             <registry>
-                <view wid="transformedSceneEditor" />
-                <view sid="transformedTransparencySlider" start="yes"/>
+                <view wid="referenceSceneEditor" />
             </registry>
         </service>
 
@@ -172,12 +174,14 @@
                     <view proportion="0" />
                     <view proportion="1" />
                     <view proportion="5" />
+                    <view proportion="0" />
                 </layout>
             </gui>
             <registry>
-                <view sid="transformedTFSelector" start="yes" />
-                <view sid="transformedTFWindow"   start="yes" />
-                <view sid="transformedTFEditor"   start="yes" />
+                <view sid="transformedTFSelector"  start="yes" />
+                <view sid="transformedTFWindow"    start="yes" />
+                <view sid="transformedTFEditor"    start="yes" />
+                <view sid="transformedWindowLevel" start="yes" />
             </registry>
         </service>
 
@@ -189,40 +193,54 @@
             <inout key="image" uid="transformedImage" />
         </service>
 
-        <service uid="targetScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+        <service uid="referenceLandmarkManager" type="::uiMeasurement::SManageLandmark">
+            <in key="pointlist" uid="referencePL" />
+        </service>
+
+        <service uid="targetLandmarkManager" type="::uiMeasurement::SManageLandmark">
+            <in key="pointlist" uid="targetPL" />
+        </service>
+
+        <service uid="referenceScene" type="::fwRenderVTK::SRender" autoConnect="yes">
             <inout key="TFSelectionComposite" uid="TFSelectionComposite" />
-            <in key="targetImage" uid="${targetImageUid}" />
+            <in key="referenceImage" uid="${referenceImageUid}" />
+            <in key="pointlist" uid="referencePL" />
 
             <scene renderMode="auto">
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
 
                 <renderer id="default" background="#052833" />
 
-                <adaptor uid="targetNegatoMPR" id="targetNegatoMPR" class="::visuVTKAdaptor::NegatoMPR" objectId="targetImage">
+                <adaptor uid="referenceNegatoMPR" id="referenceNegatoMPR" class="::visuVTKAdaptor::NegatoMPR" objectId="referenceImage">
                     <config renderer="default" picker="picker" mode="2d" slices="1"
-                            sliceIndex="axial" selectedTFKey="targetTF"
+                            sliceIndex="axial" selectedTFKey="referenceTF"
                             tfSelectionFwID="TFSelectionComposite" />
                 </adaptor>
 
                 <adaptor id="interactorStyle" class="::visuVTKAdaptor::InteractorStyle" objectId="self">
                     <config renderer="default" style="InteractorStyle2DForNegato" />
                 </adaptor>
-            </scene>
-        </service>
 
-        <service uid="targetImageManager" type="::fwServices::SConfigController" autoConnect="no">
-            <appConfig id="ImageManager" />
-            <parameter replace="WID_PARENT" uid="targetSceneEditor" />
-            <parameter replace="IMAGE_UID" uid="${targetImageUid}" />
-            <parameter replace="TF_IMAGE" uid="TFSelectionComposite" />
-            <parameter replace="TF_KEY" by="targetTF" />
-            <parameter replace="ADAPTOR_NEGATO" uid="mixedNegatoMPR" />
+                <adaptor id="pickerInteractor" uid="referencePickerInteractor" class="::visuVTKAdaptor::PickerInteractor" objectId="self" >
+                    <config renderer="default" picker="picker" event="MOUSE_LEFT_UP"/>
+                </adaptor>
+
+                <adaptor id="pointListAdaptor" class="::visuVTKAdaptor::LabeledPointList" objectId="pointlist">
+                    <config renderer="default" picker="picker" color="#550066" radius="10"/>
+                </adaptor>
+
+                <connect>
+                    <signal>referencePickerInteractor/picked</signal>
+                    <slot>referenceLandmarkManager/createLandmark</slot>
+                </connect>
+            </scene>
         </service>
 
         <service uid="transformedScene" type="::fwRenderVTK::SRender" autoConnect="yes">
             <inout key="TFSelectionComposite" uid="TFSelectionComposite" />
             <in key="targetImage" uid="${targetImageUid}" />
             <in key="transformedImage" uid="transformedImage" />
+            <in key="pointlist" uid="targetPL" />
 
             <scene renderMode="auto">
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
@@ -245,16 +263,38 @@
                         <image objectId="transformedImage" tfalpha="no" selectedTFKey="transformedTF" tfSelectionFwID="TFSelectionComposite" />
                     </config>
                 </adaptor>
+
+                <adaptor id="pickerInteractor" uid="targetPickerInteractor" class="::visuVTKAdaptor::PickerInteractor" objectId="self" >
+                    <config renderer="default" picker="picker" event="MOUSE_LEFT_UP"/>
+                </adaptor>
+
+                <adaptor id="pointListAdaptor" class="::visuVTKAdaptor::LabeledPointList" objectId="pointlist">
+                    <config renderer="default" picker="picker" color="#550066" radius="10"/>
+                </adaptor>
+
+                <connect>
+                    <signal>targetPickerInteractor/picked</signal>
+                    <slot>targetLandmarkManager/createLandmark</slot>
+                </connect>
             </scene>
         </service>
 
         <service uid="transformedImageManager" type="::fwServices::SConfigController" autoConnect="no">
             <appConfig id="ImageManager" />
-            <parameter replace="WID_PARENT" uid="transformedSceneEditor" />
+            <parameter replace="WID_PARENT" uid="referenceSceneEditor" />
             <parameter replace="IMAGE_UID" uid="${referenceImageUid}" />
             <parameter replace="TF_IMAGE" uid="TFSelectionComposite" />
-            <parameter replace="TF_KEY" by="transformedTF" />
-            <parameter replace="ADAPTOR_NEGATO" uid="transformedNegatoMPR" />
+            <parameter replace="TF_KEY" by="referenceTF" />
+            <parameter replace="ADAPTOR_NEGATO" uid="referenceNegatoMPR" />
+        </service>
+
+        <service uid="targetImageManager" type="::fwServices::SConfigController" autoConnect="no">
+            <appConfig id="ImageManager" />
+            <parameter replace="WID_PARENT" uid="targetSceneEditor" />
+            <parameter replace="IMAGE_UID" uid="${targetImageUid}" />
+            <parameter replace="TF_IMAGE" uid="TFSelectionComposite" />
+            <parameter replace="TF_KEY" by="targetTF" />
+            <parameter replace="ADAPTOR_NEGATO" uid="mixedNegatoMPR" />
         </service>
 
         <service uid="transformedTransparencySlider" type="::uiImage::ImageTransparency" autoConnect="yes">
@@ -266,6 +306,12 @@
             <inout key="transferFunctions" uid="TFTransformedComposite" />
             <inout key="TFSelections" uid="TFSelectionComposite" />
             <config selectedTFKey="transformedTF" />
+        </service>
+
+        <service uid="transformedWindowLevel" type="::uiImage::WindowLevel" autoConnect="yes">
+            <inout key="image" uid="transformedImage"/>
+            <inout key="TFSelections" uid="TFSelectionComposite"/>
+            <config selectedTFKey="transformedTF"/>
         </service>
 
         <service uid="transformedTFWindow" type="::scene2D::Render" autoConnect="yes">
@@ -419,7 +465,8 @@
         <start uid="targetImageManager" />
         <start uid="computetransformedHistogram" />
         <start uid="resampler" />
-
+        <start uid="referenceLandmarkManager" />
+        <start uid="targetLandmarkManager" />
     </config>
 </extension>
 
