@@ -103,7 +103,11 @@ public:
      */
     FWDATATOOLS_API static bool hasUniqueCellType(::fwData::Mesh::sptr mesh, ::fwData::Mesh::CellTypes cell);
 
-    /// Applied a transformation 4x4 on mesh
+    /// Apply a transformation 4x4 from an input mesh to an output mesh
+    FWDATATOOLS_API static void transform(fwData::Mesh::csptr inMesh, ::fwData::Mesh::sptr outMesh,
+                                          ::fwData::TransformationMatrix3D::csptr t );
+
+    /// Apply a transformation 4x4 on a mesh
     FWDATATOOLS_API static void transform( ::fwData::Mesh::sptr mesh, ::fwData::TransformationMatrix3D::csptr t );
 
     /**
