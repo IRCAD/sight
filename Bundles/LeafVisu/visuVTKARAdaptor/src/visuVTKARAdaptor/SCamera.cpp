@@ -67,7 +67,7 @@ public:
     ::visuVTKARAdaptor::SCamera* m_adaptor;
 };
 
-static const double s_nearPlane = 0.1;
+static const double s_nearPlane = 1.;
 static const double s_farPlane  = 10000;
 
 //------------------------------------------------------------------------------
