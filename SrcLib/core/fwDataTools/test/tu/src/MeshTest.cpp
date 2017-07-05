@@ -8,10 +8,19 @@
 
 #include <fwDataTools/helper/ArrayGetter.hpp>
 #include <fwDataTools/Mesh.hpp>
+#include <fwDataTools/TransformationMatrix3D.hpp>
+
+#include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwTest/generator/Mesh.hpp>
 
 #include <fwTools/Type.hpp>
+
+#include <glm/common.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 #include <sstream>
 
@@ -357,6 +366,85 @@ void MeshTest::colorizeCellsTest()
             ++count;
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::transformTest()
+{
+    ::fwData::Mesh::sptr mesh = ::fwData::Mesh::New();
+    ::fwTest::generator::Mesh::generateTriangleMesh(mesh);
+    ::fwDataTools::Mesh::generatePointNormals(mesh);
+    ::fwDataTools::Mesh::generateCellNormals(mesh);
+
+    ::fwData::Mesh::sptr meshOrig = ::fwData::Mesh::copy(mesh);
+
+    ::glm::dmat4x4 matrix;
+    matrix = ::glm::rotate(matrix, ::glm::radians(90.), ::glm::dvec3(0., 0., 1.));
+    matrix = ::glm::translate(matrix, ::glm::dvec3(10., 20., 30.));
+    matrix = ::glm::scale(matrix, ::glm::dvec3(2., 2., 2.));
+
+    ::fwData::TransformationMatrix3D::sptr trans = ::fwData::TransformationMatrix3D::New();
+    ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(trans, matrix);
+
+    ::fwDataTools::Mesh::transform(meshOrig, mesh, trans);
+
+    const size_t numPts = mesh->getNumberOfPoints();
+
+    // Test points transform
+    {
+        ::fwDataTools::helper::ArrayGetter arrayHelper(mesh->getPointsArray());
+        ::fwDataTools::helper::ArrayGetter arrayOrigHelper(meshOrig->getPointsArray());
+        const ::fwData::Mesh::PointValueType* values     = arrayHelper.begin< ::fwData::Mesh::PointValueType >();
+        const ::fwData::Mesh::PointValueType* valuesOrig = arrayOrigHelper.begin< ::fwData::Mesh::PointValueType >();
+
+        for(size_t i = 0; i < numPts; ++i )
+        {
+            const ::glm::vec4 pt(valuesOrig[i*3], valuesOrig[i*3 + 1], valuesOrig[i*3 + 2], 1.);
+            const ::glm::vec4 transformedPt = matrix * pt;
+
+            CPPUNIT_ASSERT_EQUAL(transformedPt.x, values[i*3]);
+            CPPUNIT_ASSERT_EQUAL(transformedPt.y, values[i*3 + 1]);
+            CPPUNIT_ASSERT_EQUAL(transformedPt.z, values[i*3 + 2]);
+        }
+    }
+
+    // Test points normals transform
+    {
+        ::fwDataTools::helper::ArrayGetter arrayHelper(mesh->getPointNormalsArray());
+        ::fwDataTools::helper::ArrayGetter arrayOrigHelper(meshOrig->getPointNormalsArray());
+        const ::fwData::Mesh::PointValueType* values     = arrayHelper.begin< ::fwData::Mesh::PointValueType >();
+        const ::fwData::Mesh::PointValueType* valuesOrig = arrayOrigHelper.begin< ::fwData::Mesh::PointValueType >();
+
+        for(size_t i = 0; i < numPts; ++i )
+        {
+            const ::glm::vec4 pt(valuesOrig[i*3], valuesOrig[i*3 + 1], valuesOrig[i*3 + 2], 0.);
+            const ::glm::vec4 transformedPt = ::glm::normalize(matrix * pt);
+
+            CPPUNIT_ASSERT_EQUAL(transformedPt.x, values[i*3]);
+            CPPUNIT_ASSERT_EQUAL(transformedPt.y, values[i*3 + 1]);
+            CPPUNIT_ASSERT_EQUAL(transformedPt.z, values[i*3 + 2]);
+        }
+    }
+
+    // Test cells normals transform
+    {
+        ::fwDataTools::helper::ArrayGetter arrayHelper(mesh->getCellNormalsArray());
+        ::fwDataTools::helper::ArrayGetter arrayOrigHelper(meshOrig->getCellNormalsArray());
+        const ::fwData::Mesh::PointValueType* values     = arrayHelper.begin< ::fwData::Mesh::PointValueType >();
+        const ::fwData::Mesh::PointValueType* valuesOrig = arrayOrigHelper.begin< ::fwData::Mesh::PointValueType >();
+
+        for(size_t i = 0; i < numPts; ++i )
+        {
+            const ::glm::vec4 pt(valuesOrig[i*3], valuesOrig[i*3 + 1], valuesOrig[i*3 + 2], 0.);
+            const ::glm::vec4 transformedPt = ::glm::normalize(matrix * pt);
+
+            CPPUNIT_ASSERT_EQUAL(transformedPt.x, values[i*3]);
+            CPPUNIT_ASSERT_EQUAL(transformedPt.y, values[i*3 + 1]);
+            CPPUNIT_ASSERT_EQUAL(transformedPt.z, values[i*3 + 2]);
+        }
+    }
+
 }
 
 //------------------------------------------------------------------------------
