@@ -505,16 +505,44 @@ void Mesh::transform( ::fwData::Mesh::csptr inMesh, ::fwData::Mesh::sptr outMesh
         outPoints[i*3 + 2] = transformedPt.z;
     }
 
-    auto normalsArray = inMesh->getPointNormalsArray();
-    if(normalsArray != nullptr)
+    auto pointNormalsArray = inMesh->getPointNormalsArray();
+    if(pointNormalsArray != nullptr)
     {
-        SLM_ASSERT("in and out meshes should have the same number of normals", outMesh->getPointNormalsArray());
+        SLM_ASSERT("in and out meshes should have the same number of points normals",
+                   inMesh->getPointNormalsArray()->getSize() == outMesh->getPointNormalsArray()->getSize());
 
-        ::fwDataTools::helper::ArrayGetter normalsArrayHelper(inMesh->getPointNormalsArray());
-        const ::fwData::Mesh::NormalValueType* normals = normalsArrayHelper.begin< ::fwData::Mesh::NormalValueType >();
+        ::fwDataTools::helper::ArrayGetter pointNormalsArrayHelper(inMesh->getPointNormalsArray());
+        const ::fwData::Mesh::NormalValueType* normals =
+            pointNormalsArrayHelper.begin< ::fwData::Mesh::NormalValueType >();
 
-        ::fwDataTools::helper::Array outNormalsArrayHelper(outMesh->getPointNormalsArray());
-        ::fwData::Mesh::NormalValueType* outNormals = outNormalsArrayHelper.begin< ::fwData::Mesh::NormalValueType >();
+        ::fwDataTools::helper::Array outPointNormalsArrayHelper(outMesh->getPointNormalsArray());
+        ::fwData::Mesh::NormalValueType* outNormals =
+            outPointNormalsArrayHelper.begin< ::fwData::Mesh::NormalValueType >();
+
+        for(size_t i = 0; i < numPts; ++i )
+        {
+            const ::glm::vec4 normal(normals[i*3], normals[i*3 + 1], normals[i*3 + 2], 0.);
+            const ::glm::vec4 transformedNormal = ::glm::normalize(matrix * normal);
+
+            outNormals[i*3]     = transformedNormal.x;
+            outNormals[i*3 + 1] = transformedNormal.y;
+            outNormals[i*3 + 2] = transformedNormal.z;
+        }
+    }
+
+    auto cellNormalsArray = inMesh->getCellNormalsArray();
+    if(cellNormalsArray != nullptr)
+    {
+        SLM_ASSERT("in and out meshes should have the same number of cells normals",
+                   inMesh->getPointNormalsArray()->getSize() == outMesh->getPointNormalsArray()->getSize());
+
+        ::fwDataTools::helper::ArrayGetter cellNormalsArrayHelper(inMesh->getCellNormalsArray());
+        const ::fwData::Mesh::NormalValueType* normals =
+            cellNormalsArrayHelper.begin< ::fwData::Mesh::NormalValueType >();
+
+        ::fwDataTools::helper::Array outCellNormalsArrayHelper(outMesh->getCellNormalsArray());
+        ::fwData::Mesh::NormalValueType* outNormals =
+            outCellNormalsArrayHelper.begin< ::fwData::Mesh::NormalValueType >();
 
         for(size_t i = 0; i < numPts; ++i )
         {
