@@ -24,6 +24,7 @@ class MeshTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE( MeshTest );
 CPPUNIT_TEST( colorizePointsTest );
 CPPUNIT_TEST( colorizeCellsTest );
+CPPUNIT_TEST( transformTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -33,6 +34,7 @@ public:
 
     void colorizePointsTest();
     void colorizeCellsTest();
+    void transformTest();
 
 };
 

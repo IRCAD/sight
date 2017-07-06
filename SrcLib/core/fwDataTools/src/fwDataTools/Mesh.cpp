@@ -8,10 +8,13 @@
 
 #include "fwDataTools/helper/ArrayGetter.hpp"
 #include "fwDataTools/thread/RegionThreader.hpp"
+#include "fwDataTools/TransformationMatrix3D.hpp"
 
 #include <fwTools/NumericRoundCast.hxx>
 
+#include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 #include <cstdlib>
 #include <ctime>
@@ -478,37 +481,86 @@ void Mesh::shakePoint(::fwData::Mesh::sptr mesh)
 
 //------------------------------------------------------------------------------
 
+void Mesh::transform( ::fwData::Mesh::csptr inMesh, ::fwData::Mesh::sptr outMesh,
+                      ::fwData::TransformationMatrix3D::csptr t )
+{
+    ::fwDataTools::helper::ArrayGetter arrayHelper(inMesh->getPointsArray());
+    const ::fwData::Mesh::PointValueType* inPoints = arrayHelper.begin< ::fwData::Mesh::PointValueType >();
+
+    ::fwDataTools::helper::Array outArrayHelper(outMesh->getPointsArray());
+    ::fwData::Mesh::PointValueType* outPoints = outArrayHelper.begin< ::fwData::Mesh::PointValueType >();
+
+    const ::glm::dmat4x4 matrix = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(t);
+
+    const size_t numPts = inMesh->getNumberOfPoints();
+    SLM_ASSERT("In and out meshes should have the same number of points", numPts == outMesh->getNumberOfPoints());
+
+    for(size_t i = 0; i < numPts; ++i )
+    {
+        const ::glm::vec4 pt(inPoints[i*3], inPoints[i*3 + 1], inPoints[i*3 + 2], 1.);
+        const ::glm::vec4 transformedPt = matrix * pt;
+
+        outPoints[i*3]     = transformedPt.x;
+        outPoints[i*3 + 1] = transformedPt.y;
+        outPoints[i*3 + 2] = transformedPt.z;
+    }
+
+    auto pointNormalsArray = inMesh->getPointNormalsArray();
+    if(pointNormalsArray != nullptr)
+    {
+        SLM_ASSERT("in and out meshes should have the same number of points normals",
+                   inMesh->getPointNormalsArray()->getSize() == outMesh->getPointNormalsArray()->getSize());
+
+        ::fwDataTools::helper::ArrayGetter pointNormalsArrayHelper(inMesh->getPointNormalsArray());
+        const ::fwData::Mesh::NormalValueType* normals =
+            pointNormalsArrayHelper.begin< ::fwData::Mesh::NormalValueType >();
+
+        ::fwDataTools::helper::Array outPointNormalsArrayHelper(outMesh->getPointNormalsArray());
+        ::fwData::Mesh::NormalValueType* outNormals =
+            outPointNormalsArrayHelper.begin< ::fwData::Mesh::NormalValueType >();
+
+        for(size_t i = 0; i < numPts; ++i )
+        {
+            const ::glm::vec4 normal(normals[i*3], normals[i*3 + 1], normals[i*3 + 2], 0.);
+            const ::glm::vec4 transformedNormal = ::glm::normalize(matrix * normal);
+
+            outNormals[i*3]     = transformedNormal.x;
+            outNormals[i*3 + 1] = transformedNormal.y;
+            outNormals[i*3 + 2] = transformedNormal.z;
+        }
+    }
+
+    auto cellNormalsArray = inMesh->getCellNormalsArray();
+    if(cellNormalsArray != nullptr)
+    {
+        SLM_ASSERT("in and out meshes should have the same number of cells normals",
+                   inMesh->getPointNormalsArray()->getSize() == outMesh->getPointNormalsArray()->getSize());
+
+        ::fwDataTools::helper::ArrayGetter cellNormalsArrayHelper(inMesh->getCellNormalsArray());
+        const ::fwData::Mesh::NormalValueType* normals =
+            cellNormalsArrayHelper.begin< ::fwData::Mesh::NormalValueType >();
+
+        ::fwDataTools::helper::Array outCellNormalsArrayHelper(outMesh->getCellNormalsArray());
+        ::fwData::Mesh::NormalValueType* outNormals =
+            outCellNormalsArrayHelper.begin< ::fwData::Mesh::NormalValueType >();
+
+        for(size_t i = 0; i < numPts; ++i )
+        {
+            const ::glm::vec4 normal(normals[i*3], normals[i*3 + 1], normals[i*3 + 2], 0.);
+            const ::glm::vec4 transformedNormal = ::glm::normalize(matrix * normal);
+
+            outNormals[i*3]     = transformedNormal.x;
+            outNormals[i*3 + 1] = transformedNormal.y;
+            outNormals[i*3 + 2] = transformedNormal.z;
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void Mesh::transform( ::fwData::Mesh::sptr mesh, ::fwData::TransformationMatrix3D::csptr t )
 {
-    size_t nbPts = mesh->getNumberOfPoints();
-    ::fwDataTools::helper::Mesh meshHelper(mesh);
-    ::fwData::Mesh::PointsMultiArrayType points = meshHelper.getPoints();
-    ::fwData::Mesh::PointValueType x, y, z, xp, yp, zp, factor;
-    for(size_t i = 0; i < nbPts; ++i )
-    {
-        x  = points[i][0];
-        y  = points[i][1];
-        z  = points[i][2];
-        xp = ::fwTools::numericRoundCast< ::fwData::Mesh::PointValueType >(t->getCoefficient(0, 0) * x
-                                                                           + t->getCoefficient(0, 1) * y
-                                                                           + t->getCoefficient(0, 2) * z
-                                                                           + t->getCoefficient(0, 3));
-        yp = ::fwTools::numericRoundCast< ::fwData::Mesh::PointValueType >(t->getCoefficient(1, 0) * x
-                                                                           + t->getCoefficient(1, 1) * y
-                                                                           + t->getCoefficient(1, 2) * z
-                                                                           + t->getCoefficient(1, 3));
-        zp = ::fwTools::numericRoundCast< ::fwData::Mesh::PointValueType >(t->getCoefficient(2, 0) * x
-                                                                           + t->getCoefficient(2, 1) * y
-                                                                           + t->getCoefficient(2, 2) * z
-                                                                           + t->getCoefficient(2, 3));
-        factor = ::fwTools::numericRoundCast< ::fwData::Mesh::PointValueType >(t->getCoefficient(3, 0) * x
-                                                                               + t->getCoefficient(3, 1) * y
-                                                                               + t->getCoefficient(3, 2) * z
-                                                                               + t->getCoefficient(3, 3));
-        points[i][0] = xp/factor;
-        points[i][1] = yp/factor;
-        points[i][2] = zp/factor;
-    }
+    Mesh::transform(mesh, mesh, t);
 }
 
 //------------------------------------------------------------------------------
