@@ -51,10 +51,10 @@ public:
      * @param[out] _trf the resulting rigid transform.
      * @param[in] _metric the metric to be used for registration.
      */
-    ITKREGISTRATIONOP_API void registerImage(const ::fwData::Image::csptr& _target,
-                                             const ::fwData::Image::csptr& _reference,
-                                             const ::fwData::TransformationMatrix3D::sptr& _trf,
-                                             MetricType _metric);
+    static ITKREGISTRATIONOP_API void registerImage(const ::fwData::Image::csptr& _target,
+                                                    const ::fwData::Image::csptr& _reference,
+                                                    const ::fwData::TransformationMatrix3D::sptr& _trf,
+                                                    MetricType _metric);
 };
 
 } // itkRegistrationOp

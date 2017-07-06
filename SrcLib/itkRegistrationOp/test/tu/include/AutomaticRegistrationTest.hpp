@@ -4,8 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#ifndef __ITKREGISTRATIONOP_UT_RESAMPLERTEST_HPP__
-#define __ITKREGISTRATIONOP_UT_RESAMPLERTEST_HPP__
+#ifndef __ITKREGISTRATIONOP_UT_AUTOMATICREGISTRATIONTEST_HPP__
+#define __ITKREGISTRATIONOP_UT_AUTOMATICREGISTRATIONTEST_HPP__
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -14,12 +14,13 @@ namespace itkRegistrationOp
 namespace ut
 {
 
-class ResamplerTest : public CPPUNIT_NS::TestFixture
+class AutomaticRegistrationTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE( ResamplerTest );
+
+CPPUNIT_TEST_SUITE( AutomaticRegistrationTest );
 CPPUNIT_TEST( identityTest );
-CPPUNIT_TEST( translateTest );
-//CPPUNIT_TEST( rotateTest );//fail
+CPPUNIT_TEST( rigidTransformTest );
+CPPUNIT_TEST( rotationTransformTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -27,12 +28,12 @@ public:
     void tearDown();
 
     void identityTest();
-    void translateTest();
-    void rotateTest();
+    void rigidTransformTest();
+    void rotationTransformTest();
 
 };
 
 } //namespace ut
 } //namespace itkRegistrationOp
 
-#endif // __ITKREGISTRATIONOP_UT_RESAMPLERTEST_HPP__
+#endif // __ITKREGISTRATIONOP_UT_AUTOMATICREGISTRATIONTEST_HPP__

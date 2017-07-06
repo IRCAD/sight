@@ -212,14 +212,19 @@ struct Registrator
 
         itkTransform->SetParameters(parameters);
 
-        const ::itk::Matrix<double, 3, 3> rigidMat  = itkTransform->GetMatrix();
-        const ::itk::Vector<double, 3> translation2 = itkTransform->GetTranslation();
+        TransformType::Pointer finalTransform = TransformType::New();
+        finalTransform->SetCenter( itkTransform->GetCenter() );
+        finalTransform->SetParameters( parameters );
+        finalTransform->SetFixedParameters( itkTransform->GetFixedParameters() );
+
+        const ::itk::Matrix<double, 3, 3> rigidMat  = finalTransform->GetMatrix();
+        const ::itk::Vector<double, 3> translation2 = finalTransform->GetTranslation();
 
         // Convert ::itk::RigidTransform to f4s matrix.
-        for(int i = 0; i < 3; ++i)
+        for(std::uint8_t i = 0; i < 3; ++i)
         {
             params.o_trf->setCoefficient(i, 3, translation2[i]);
-            for(int j = 0; j < 3; ++j)
+            for(std::uint8_t j = 0; j < 3; ++j)
             {
                 params.o_trf->setCoefficient(i, j, rigidMat(i, j));
             }
