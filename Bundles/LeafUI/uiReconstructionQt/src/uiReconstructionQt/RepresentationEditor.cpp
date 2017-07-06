@@ -124,7 +124,6 @@ void RepresentationEditor::starting() throw(::fwTools::Failed)
     layout->addWidget( groupBox);
     layout->addWidget( groupBoxShading);
 
-#ifdef _DEBUG
     QGroupBox* groupBoxNormals         = new QGroupBox(tr("Normals"));
     QVBoxLayout* layoutGroupBoxNormals = new QVBoxLayout(groupBoxNormals);
     m_normalsRadioBox = new QButtonGroup();
@@ -144,8 +143,6 @@ void RepresentationEditor::starting() throw(::fwTools::Failed)
 
     QObject::connect(m_normalsRadioBox, SIGNAL(buttonClicked(int)), this, SLOT(onShowNormals(int)));
 
-#endif
-
     qtContainer->setLayout( layout );
     qtContainer->setEnabled(false);
 
@@ -164,9 +161,7 @@ void RepresentationEditor::stopping() throw(::fwTools::Failed)
     QObject::disconnect(m_buttonGroup, SIGNAL(buttonClicked( int )), this, SLOT(onChangeRepresentation(int )));
     QObject::disconnect(m_buttonGroupShading, SIGNAL(buttonClicked( int )), this, SLOT(onChangeShading(int )));
 
-#ifdef _DEBUG
     QObject::connect(m_normalsRadioBox, SIGNAL(buttonClicked(int)), this, SLOT(onShowNormals(int)));
-#endif
 
     this->destroy();
 }
@@ -362,12 +357,10 @@ void RepresentationEditor::refreshShading()
 
 void RepresentationEditor::refreshNormals()
 {
-#ifdef _DEBUG
     QAbstractButton* buttonHide = m_normalsRadioBox->button(0);
     buttonHide->setChecked(m_material->getOptionsMode() == ::fwData::Material::STANDARD);
     QAbstractButton* buttonNormals = m_normalsRadioBox->button(1);
     buttonNormals->setChecked(m_material->getOptionsMode() == ::fwData::Material::NORMALS);
-#endif
 }
 
 //------------------------------------------------------------------------------
