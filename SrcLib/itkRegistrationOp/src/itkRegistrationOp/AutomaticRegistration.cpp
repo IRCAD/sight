@@ -87,6 +87,9 @@ struct RegistratorParameters
     ::fwData::Image::csptr i_reference;
     ::fwData::TransformationMatrix3D::sptr o_trf;
     AutomaticRegistration::MetricType i_metric;
+    double i_minStep;
+    double i_maxStep;
+    unsigned long i_maxIters;
 };
 
 //------------------------------------------------------------------------------
@@ -148,7 +151,7 @@ struct Registrator
 
         TransformInitializerType::Pointer initializer = TransformInitializerType::New();
 
-        initializer->SetTransform(   itkTransform );
+        initializer->SetTransform( itkTransform );
         initializer->SetFixedImage( targetImage );
         initializer->SetMovingImage(referenceImage );
 
@@ -197,9 +200,9 @@ struct Registrator
         optimizerScales[4] = translationScale;
         optimizerScales[5] = translationScale;
         optimizer->SetScales( optimizerScales );
-        optimizer->SetMaximumStepLength( 0.2000  );
-        optimizer->SetMinimumStepLength( 0.0001 );
-        optimizer->SetNumberOfIterations( 200 );
+        optimizer->SetMaximumStepLength( params.i_maxStep  );
+        optimizer->SetMinimumStepLength( params.i_minStep );
+        optimizer->SetNumberOfIterations( params.i_maxIters );
 
 #ifdef _DEBUG
         IterationUpdateCommand::Pointer observer = IterationUpdateCommand::New();
@@ -217,13 +220,13 @@ struct Registrator
         finalTransform->SetParameters( parameters );
         finalTransform->SetFixedParameters( itkTransform->GetFixedParameters() );
 
-        const ::itk::Matrix<double, 3, 3> rigidMat  = finalTransform->GetMatrix();
-        const ::itk::Vector<double, 3> translation2 = finalTransform->GetTranslation();
+        const ::itk::Matrix<double, 3, 3> rigidMat = finalTransform->GetMatrix();
+        const ::itk::Vector<double, 3> offset      = finalTransform->GetOffset();
 
         // Convert ::itk::RigidTransform to f4s matrix.
         for(std::uint8_t i = 0; i < 3; ++i)
         {
-            params.o_trf->setCoefficient(i, 3, translation2[i]);
+            params.o_trf->setCoefficient(i, 3, offset[i]);
             for(std::uint8_t j = 0; j < 3; ++j)
             {
                 params.o_trf->setCoefficient(i, j, rigidMat(i, j));
@@ -252,16 +255,24 @@ struct RegistratorCaller
 void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
                                           const ::fwData::Image::csptr& _reference,
                                           const ::fwData::TransformationMatrix3D::sptr& _trf,
-                                          MetricType _metric)
+                                          MetricType _metric,
+                                          double _minStep,
+                                          double _maxStep,
+                                          unsigned long _maxIterations)
 {
     RegistratorParameters params;
     params.i_target    = _target;
     params.i_reference = _reference;
     params.o_trf       = _trf;
     params.i_metric    = _metric;
+    params.i_minStep   = _minStep;
+    params.i_maxStep   = _maxStep;
+    params.i_maxIters  = _maxIterations;
+
+    typedef ::boost::mpl::vector< std::int16_t > TestTypes;
 
     const ::fwTools::DynamicType targetType = _target->getPixelType();
-    ::fwTools::Dispatcher< ::fwTools::IntrinsicTypes, RegistratorCaller>::invoke(targetType, params);
+    ::fwTools::Dispatcher< TestTypes, RegistratorCaller>::invoke(targetType, params);
 }
 
 //------------------------------------------------------------------------------

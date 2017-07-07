@@ -173,6 +173,47 @@ void AutomaticRegistrationTest::rigidTransformTest()
     ::fwData::Image::sptr reference = ::fwData::Image::New();
 
     ::fwData::TransformationMatrix3D::sptr transform = ::fwData::TransformationMatrix3D::New();
+
+    //set a rotation around the Z axis
+    const double rotAngle = ::glm::radians(5.);
+    ::glm::dmat4 rot      = ::glm::rotate(::glm::dmat4(), rotAngle, ::glm::dvec3(0., 0.5, 0.5));
+    ::glm::dmat4 rigidTrf = ::glm::translate(rot, ::glm::dvec3(5., 3.2, 0.9));
+
+    ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(transform, rigidTrf);
+
+    ::itkRegistrationOp::Resampler::resample(target, reference, transform);
+
+    ::fwData::TransformationMatrix3D::sptr initTrf = ::fwData::TransformationMatrix3D::New();
+
+    itkReg::AutomaticRegistration::registerImage(target, reference, initTrf,
+                                                 itkReg::AutomaticRegistration::MEAN_SQUARES,
+                                                 0.00001, 0.3, 1000);
+
+    ::glm::dmat4 res = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(initTrf);
+    ::glm::dmat4 id  = res * rigidTrf;
+
+    // Test if we obtained the identity matrix.
+    for(std::uint8_t i = 0; i < 4; ++i)
+    {
+        for(std::uint8_t j = 0; j < 4; ++j)
+        {
+            const double expected = (i == j) ? 1. : 0.;
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected, id[i][j], 0.1);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void AutomaticRegistrationTest::translateTransformTest()
+{
+    namespace itkReg = ::itkRegistrationOp;
+
+    ::fwData::Image::sptr target = createSphereImage();
+
+    ::fwData::Image::sptr reference = ::fwData::Image::New();
+
+    ::fwData::TransformationMatrix3D::sptr transform = ::fwData::TransformationMatrix3D::New();
     //set a translation
     transform->setCoefficient(0, 3, 4.);
     transform->setCoefficient(1, 3, 12.);
@@ -183,7 +224,8 @@ void AutomaticRegistrationTest::rigidTransformTest()
     ::fwData::TransformationMatrix3D::sptr initTrf = ::fwData::TransformationMatrix3D::New();
 
     itkReg::AutomaticRegistration::registerImage(target, reference, initTrf,
-                                                 itkReg::AutomaticRegistration::NORMALIZED_CORRELATION);
+                                                 itkReg::AutomaticRegistration::NORMALIZED_CORRELATION,
+                                                 0.000001, 0.1, 500);
 
     for(size_t i = 0; i < 3; ++i)
     {
@@ -191,7 +233,7 @@ void AutomaticRegistrationTest::rigidTransformTest()
         double actual   = initTrf->getCoefficient(i, 3);
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Registration matrix does not match initial matrix",
-                                             expected, -actual, 1e-4);
+                                             expected, -actual, 1e-2);
     }
 
 }
@@ -205,48 +247,34 @@ void AutomaticRegistrationTest::rotationTransformTest()
 
     ::fwData::Image::sptr reference = ::fwData::Image::New();
 
-    ::fwData::Image::sptr registeredImage = ::fwData::Image::New();
-
     ::fwData::TransformationMatrix3D::sptr transform = ::fwData::TransformationMatrix3D::New();
-    //set a rotation on one axis
 
-    ::glm::dmat4 rot = ::glm::rotate(::glm::dmat4(), ::glm::radians(5.), ::glm::dvec3(0., 0., 1.));
+    //set a rotation around the Z axis
+    const double rotAngle = ::glm::radians(12.);
+    ::glm::dmat4 rot = ::glm::rotate(::glm::dmat4(), rotAngle, ::glm::dvec3(0., 0., 1.));
 
     ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(transform, rot);
-
-    std::cout<<"transform : "<<*transform<<std::endl;
 
     ::itkRegistrationOp::Resampler::resample(target, reference, transform);
 
     ::fwData::TransformationMatrix3D::sptr initTrf = ::fwData::TransformationMatrix3D::New();
 
     itkReg::AutomaticRegistration::registerImage(target, reference, initTrf,
-                                                 itkReg::AutomaticRegistration::MEAN_SQUARES);
+                                                 itkReg::AutomaticRegistration::MEAN_SQUARES,
+                                                 0.000001, 0.3, 1500);
 
-    ::glm::dmat4 res         = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(initTrf);
-    ::glm::dquat orientation = ::glm::toQuat(res);
-    ::glm::dvec3 axis        = ::glm::axis(orientation);
-    double angle = ::glm::angle(orientation);
+    ::glm::dmat4 res = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(initTrf);
+    ::glm::dmat4 id  = res * rot;
 
-    std::cout<<"registered matrix : "<<*initTrf<<std::endl;
-
-    ::itkRegistrationOp::Resampler::resample(reference, registeredImage, initTrf);
-    ::fwVtkIO::ImageWriter::sptr writer = ::fwVtkIO::ImageWriter::New();
-    writer->setObject(registeredImage);
-    writer->setFile("./registered.vtk");
-    writer->write();
-
-    writer->setObject(target);
-    writer->setFile("./target.vtk");
-    writer->write();
-
-    writer->setObject(reference);
-    writer->setFile("./reference.vtk");
-    writer->write();
-
-    std::cout<<"axis : ["<<axis.x<<" , "<<axis.y<<" , "<<axis.z<<" ]"<<std::endl;
-    std::cout<<"angle : "<< ::glm::degrees(angle)<<std::endl;
-
+    // Test if we obtained the identity matrix. There may be a slight translation but it can safely be ignored.
+    for(std::uint8_t i = 0; i < 3; ++i)
+    {
+        for(std::uint8_t j = 0; j < 3; ++j)
+        {
+            const double expected = (i == j) ? 1. : 0.;
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected, id[i][j], 0.1);
+        }
+    }
 }
 } // ut
 } // itkRegistrationOp

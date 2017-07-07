@@ -7,6 +7,7 @@ set( DEPENDENCIES
     fwCore
     fwData
     fwDataTools
+    fwVtkIO
     itkRegistrationOp
 )
 set( REQUIREMENTS  )

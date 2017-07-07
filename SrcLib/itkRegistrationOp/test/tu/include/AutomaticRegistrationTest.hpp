@@ -20,6 +20,7 @@ class AutomaticRegistrationTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE( AutomaticRegistrationTest );
 CPPUNIT_TEST( identityTest );
 CPPUNIT_TEST( rigidTransformTest );
+CPPUNIT_TEST( translateTransformTest );
 CPPUNIT_TEST( rotationTransformTest );
 CPPUNIT_TEST_SUITE_END();
 
@@ -29,6 +30,7 @@ public:
 
     void identityTest();
     void rigidTransformTest();
+    void translateTransformTest();
     void rotationTransformTest();
 
 };

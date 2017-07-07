@@ -54,7 +54,10 @@ public:
     static ITKREGISTRATIONOP_API void registerImage(const ::fwData::Image::csptr& _target,
                                                     const ::fwData::Image::csptr& _reference,
                                                     const ::fwData::TransformationMatrix3D::sptr& _trf,
-                                                    MetricType _metric);
+                                                    MetricType _metric,
+                                                    double _minStep = 0.0001,
+                                                    double _maxStep = 0.2,
+                                                    unsigned long _maxIterations = 200);
 };
 
 } // itkRegistrationOp
