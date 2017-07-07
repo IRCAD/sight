@@ -1,0 +1,109 @@
+/* ***** BEGIN LICENSE BLOCK *****
+ * FW4SPL - Copyright (C) IRCAD, 2017.
+ * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
+ * published by the Free Software Foundation.
+ * ****** END LICENSE BLOCK ****** */
+
+#ifndef __OPITKREGISTRATION_SAUTOMATICREGISTRATION_HPP__
+#define __OPITKREGISTRATION_SAUTOMATICREGISTRATION_HPP__
+
+#include "opItkRegistration/config.hpp"
+
+#include <fwServices/IOperator.hpp>
+
+#include <itkRegistrationOp/AutomaticRegistration.hpp>
+
+namespace opItkRegistration
+{
+
+/**
+ * @brief Service computing a rigid transform matching an image to another.
+ *
+ * @section Signals Signals
+ * - \b computed() : Signal sent after registration.
+ *
+ * @section XML XML Configuration
+ *
+ * @code{.xml}
+   <service type="::opITK::SAutomaticRegistration">
+       <in key="target" uid="..." />
+       <in key="reference" uid="..." />
+       <inout key="transform" uid="..." />
+       <minStep>0.0001</minStep>
+       <maxStep>0.2</maxStep>
+       <maxIterations>500</maxIterations>
+       <metric>MeanSquare</metric>
+   </service>
+   @endcode
+ * @subsection Input Input
+ * - \b target [::fwData::Image]: Fixed image.
+ * - \b reference [::fwData::Image]: Image that will be deformed to match the target.
+ *
+ * @subsection In-Out In-Out
+ * - \b transform [::fwData::TransformationMatrix3D]: The initial tranform used during registration, will be updated
+ * with the new value after registration.
+ *
+ * @subsection Configuration Configuration
+ * - \b minStep : smallest step that can be taken by the optimizer. A smaller step gives a more precise result but
+ * will converge slower.
+ * - \b maxStep : biggest step that can be taken by the optimizer. This value should be set according to
+ * the distance approximatly separating the two images. It affects the time needed to converge.
+ * - \b maxIterations : the maximum number of steps allowed to the optimizer. The optimizer will stop beyond this point
+ * even if it didn't find a suitable result.
+ * - \b metric : the metric used to compare the two images. Possible values are :
+ * MeanSquares : fastest metric, only works when matching images with the same intensity values.
+ * NormalizedCorrelation : works when the intensity values are within a linear transform from each other.
+ * MutualInformation : most generic metric, based on entropy. Can match images with different modalities.
+ */
+class OPITKREGISTRATION_CLASS_API SAutomaticRegistration : public ::fwServices::IOperator
+{
+public:
+
+    fwCoreServiceClassDefinitionsMacro( (SAutomaticRegistration)(::fwServices::IOperator) );
+
+    /// Constructor, does nothing.
+    OPITKREGISTRATION_API SAutomaticRegistration();
+
+    /// Destructor, does nothing.
+    OPITKREGISTRATION_API ~SAutomaticRegistration();
+
+protected:
+
+    /// Configure registration parameters.
+    OPITKREGISTRATION_API virtual void configuring() throw( ::fwTools::Failed );
+
+    /// Does nothing.
+    OPITKREGISTRATION_API virtual void starting() throw( ::fwTools::Failed );
+
+    /// Do the registration.
+    OPITKREGISTRATION_API virtual void updating() throw( ::fwTools::Failed );
+
+    /// Does nothing.
+    OPITKREGISTRATION_API virtual void stopping() throw( ::fwTools::Failed );
+
+    /**
+     * @brief Auto connections
+     *
+     * - Update service when one of the two images is modified.
+     * - Update service when the transform matrix is modified.
+     */
+    OPITKREGISTRATION_API virtual KeyConnectionsMap getAutoConnections() const;
+
+private:
+
+    /// Smallest step that can be taken by the optimizer.
+    double m_minStep;
+
+    /// Biggest step that can be taken by the optimizer.
+    double m_maxStep;
+
+    /// Maximum number of iterations allowed.
+    unsigned long m_maxIterations;
+
+    /// Metric used by the optimizer.
+    ::itkRegistrationOp::AutomaticRegistration::MetricType m_metric;
+};
+
+} // namespace opItkRegistration
+
+#endif // __OPITKREGISTRATION_SAUTOMATICREGISTRATION_HPP__
