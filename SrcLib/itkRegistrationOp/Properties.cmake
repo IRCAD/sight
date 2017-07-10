@@ -8,6 +8,7 @@ set( DEPENDENCIES
     fwCom
     fwCore
     fwDataTools
+    fwGui
     dataOp
 )
 set( REQUIREMENTS)

@@ -51,26 +51,11 @@ void SAutomaticRegistration::configuring() throw( ::fwTools::Failed )
 
     m_maxIterations = config.get< unsigned long >("service.maxIterations", 0);
 
-    OSLM_FATAL_IF("Invalid or missing number of iterations.", m_maxIterations != 0);
+    OSLM_FATAL_IF("Invalid or missing number of iterations.", m_maxIterations == 0);
 
     const std::string metric = config.get< std::string >("service.metric", "");
 
-    if(metric == "MeanSquares")
-    {
-        m_metric = ::itkRegistrationOp::AutomaticRegistration::MEAN_SQUARES;
-    }
-    else if(metric == "NormalizedCorrelation")
-    {
-        m_metric = ::itkRegistrationOp::AutomaticRegistration::NORMALIZED_CORRELATION;
-    }
-    else if(metric == "MutualInformation")
-    {
-        m_metric = ::itkRegistrationOp::AutomaticRegistration::MUTUAL_INFORMATION;
-    }
-    else
-    {
-        OSLM_FATAL("Unknown metric: " << metric);
-    }
+    setMetric(metric);
 }
 
 //------------------------------------------------------------------------------
@@ -125,5 +110,43 @@ void SAutomaticRegistration::stopping() throw( ::fwTools::Failed )
 
     return connections;
 }
+
+//------------------------------------------------------------------------------
+
+void SAutomaticRegistration::setEnumParameter(std::string val, std::string key)
+{
+    if(key == "metric")
+    {
+        setMetric(val);
+    }
+    else
+    {
+        OSLM_FATAL("Key must be 'metric', unknown key :" << key);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SAutomaticRegistration::setMetric(const std::string& metricName)
+{
+    if(metricName == "MeanSquares")
+    {
+        m_metric = ::itkRegistrationOp::AutomaticRegistration::MEAN_SQUARES;
+    }
+    else if(metricName == "NormalizedCorrelation")
+    {
+        m_metric = ::itkRegistrationOp::AutomaticRegistration::NORMALIZED_CORRELATION;
+    }
+    else if(metricName == "MutualInformation")
+    {
+        m_metric = ::itkRegistrationOp::AutomaticRegistration::MUTUAL_INFORMATION;
+    }
+    else
+    {
+        OSLM_FATAL("Unknown metric: " << metricName);
+    }
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace opItkRegistration

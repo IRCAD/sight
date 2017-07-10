@@ -152,9 +152,11 @@
                     <orientation value="vertical" />
                     <spacer />
                     <view proportion="0" />
+                    <view proportion="0" />
                 </layout>
             </gui>
             <registry>
+                <view sid="setAutoRegistrationMetric" start="yes" />
                 <view sid="applyAutomaticTransform" start="yes" />
             </registry>
         </service>
@@ -461,6 +463,12 @@
             </config>
         </service>
 
+        <service uid="setAutoRegistrationMetric" type="::guiQt::editor::SParameters" >
+            <parameters>
+                <param type="enum" name="Mode" key="metric" defaultValue="NormalizedCorrelation" values="MeanSquares,NormalizedCorrelation,MutualInformation" />
+            </parameters>
+        </service>
+
         <service uid="applyLandmarkTransform" type="::guiQt::editor::SSignalButton" >
             <config>
                 <checkable>false</checkable>
@@ -481,6 +489,16 @@
             <inout key="output" uid="${transformUid}" />
         </service>
 
+        <service uid="automaticRegistration" type="::opItkRegistration::SAutomaticRegistration" worker="REGISTRATION_WORKER">
+            <in key="target" uid="${targetImageUid}" />
+            <in key="reference" uid="${referenceImageUid}" />
+            <inout key="transform" uid="${transformUid}" />
+            <minStep>0.0001</minStep>
+            <maxStep>0.3</maxStep>
+            <maxIterations>200</maxIterations>
+            <metric>NormalizedCorrelation</metric>
+        </service>
+
         <service uid="resampler" type="::opItkRegistration::SResampler" >
             <in key="imageIn" uid="${referenceImageUid}" />
             <in key="transform" uid="${transformUid}" />
@@ -494,7 +512,22 @@
         </connect>
 
         <connect>
+            <signal>setAutoRegistrationMetric/enumChanged</signal>
+            <slot>automaticRegistration/setEnumParameter</slot>
+        </connect>
+
+        <connect>
+            <signal>applyAutomaticTransform/clicked</signal>
+            <slot>automaticRegistration/update</slot>
+        </connect>
+
+        <connect>
             <signal>landmarkRegistration/updated</signal>
+            <slot>resampler/update</slot>
+        </connect>
+
+        <connect>
+            <signal>automaticRegistration/updated</signal>
             <slot>resampler/update</slot>
         </connect>
 
@@ -515,6 +548,7 @@
         <start uid="referenceLandmarkManager" />
         <start uid="targetLandmarkManager" />
         <start uid="landmarkRegistration" />
+        <start uid="automaticRegistration" />
     </config>
 </extension>
 

@@ -8,6 +8,8 @@
 
 #include <fwDataTools/TransformationMatrix3D.hpp>
 
+#include <fwGui/dialog/ProgressDialog.hpp>
+
 #include <fwItkIO/helper/Transform.hpp>
 #include <fwItkIO/itk.hpp>
 
@@ -28,10 +30,10 @@
 #include <itkImageRegistrationMethod.h>
 #include <itkImageToImageMetric.h>
 #include <itkLinearInterpolateImageFunction.h>
+#include <itkMattesMutualInformationImageToImageMetric.h>
 #include <itkMeanReciprocalSquareDifferenceImageToImageMetric.h>
 #include <itkMeanSquaresImageToImageMetric.h>
 #include <itkMinimumMaximumImageCalculator.h>
-#include <itkMutualInformationImageToImageMetric.h>
 #include <itkNormalizedCorrelationImageToImageMetric.h>
 #include <itkVersorRigid3DTransform.h>
 #include <itkVersorRigid3DTransformOptimizer.h>
@@ -50,14 +52,20 @@ public:
 
 public:
     typedef ::itk::VersorRigid3DTransformOptimizer OptimizerType;
-    typedef   const OptimizerType*              OptimizerPointer;
 
     //------------------------------------------------------------------------------
 
     void Execute(::itk::Object* caller, const ::itk::EventObject& event) override
     {
+        if(m_stop)
+        {
+            OptimizerType* optimizer = dynamic_cast< OptimizerType* >( caller );
+
+            // Force stop the optimizer by setting the minimum step to infinity.
+            optimizer->SetMinimumStepLength(std::numeric_limits<double>::max());
+        }
+
         Execute( (const itk::Object*)caller, event);
-        Execute((const ::itk::Object* )(caller), event);
     }
 
     //------------------------------------------------------------------------------
@@ -66,8 +74,15 @@ public:
     {
         if( ::itk::IterationEvent().CheckEvent( &event ) )
         {
-            OptimizerPointer optimizer = dynamic_cast< OptimizerPointer >( object );
-            OSLM_DEBUG("Number of iterations : " << optimizer->GetCurrentIteration());
+            const OptimizerType* optimizer = dynamic_cast< const OptimizerType* >( object );
+
+            unsigned int itNum = optimizer->GetCurrentIteration();
+
+            std::string msg = "Number of iterations : " + std::to_string(itNum);
+            m_dialog(static_cast<float>(itNum)/static_cast<float>(m_maxIters), msg);
+            m_dialog.setMessage(msg);
+
+            OSLM_DEBUG("Number of iterations : " << itNum);
             OSLM_DEBUG("Current value : " << optimizer->GetValue());
             OSLM_DEBUG("Current parameters : " << optimizer->GetCurrentPosition() );
         }
@@ -75,10 +90,37 @@ public:
 
     //------------------------------------------------------------------------------
 
-protected:
-    IterationUpdateCommand()
+    void SetMaxIterations(unsigned long maxIters)
     {
+        m_maxIters = maxIters;
     }
+
+    //------------------------------------------------------------------------------
+
+    bool ForceStopped() const
+    {
+        return m_stop;
+    }
+
+    //------------------------------------------------------------------------------
+
+protected:
+
+    IterationUpdateCommand() :
+        m_dialog("Automatic Registration", "Registring, please be patient."),
+        m_stop(false)
+    {
+        m_dialog.setCancelCallback([this]()
+            {
+                this->m_stop = true;
+            });
+    }
+
+    ::fwGui::dialog::ProgressDialog m_dialog;
+
+    unsigned long m_maxIters;
+
+    bool m_stop;
 };
 
 //------------------------------------------------------------------------------
@@ -138,7 +180,12 @@ struct Registrator
                                                                              ReferenceImageType >::New();
                 break;
             case AutomaticRegistration::MUTUAL_INFORMATION:
-                metric = ::itk::MutualInformationImageToImageMetric< TargetImageType, ReferenceImageType >::New();
+                auto mutInfo =
+                    ::itk::MattesMutualInformationImageToImageMetric< TargetImageType, ReferenceImageType >::New();
+                mutInfo->SetNumberOfSpatialSamples(targetImage->GetLargestPossibleRegion().GetNumberOfPixels() * 0.5);
+                mutInfo->SetNumberOfHistogramBins(3000);
+
+                metric = mutInfo;
         }
 
         registration->SetMetric(metric);
@@ -206,32 +253,35 @@ struct Registrator
         optimizer->SetMinimumStepLength( params.i_minStep );
         optimizer->SetNumberOfIterations( params.i_maxIters );
 
-#ifdef _DEBUG
         IterationUpdateCommand::Pointer observer = IterationUpdateCommand::New();
+        observer->SetMaxIterations( params.i_maxIters );
         optimizer->AddObserver( itk::IterationEvent(), observer );
-#endif
 
         registration->Update();
 
-        auto parameters = registration->GetLastTransformParameters();
-
-        itkTransform->SetParameters(parameters);
-
-        TransformType::Pointer finalTransform = TransformType::New();
-        finalTransform->SetCenter( itkTransform->GetCenter() );
-        finalTransform->SetParameters( parameters );
-        finalTransform->SetFixedParameters( itkTransform->GetFixedParameters() );
-
-        const ::itk::Matrix<double, 3, 3> rigidMat = finalTransform->GetMatrix();
-        const ::itk::Vector<double, 3> offset      = finalTransform->GetOffset();
-
-        // Convert ::itk::RigidTransform to f4s matrix.
-        for(std::uint8_t i = 0; i < 3; ++i)
+        // Set the new transform if the registration wasn't canceled by the user.
+        if(!observer->ForceStopped())
         {
-            params.o_trf->setCoefficient(i, 3, offset[i]);
-            for(std::uint8_t j = 0; j < 3; ++j)
+            auto parameters = registration->GetLastTransformParameters();
+
+            itkTransform->SetParameters(parameters);
+
+            TransformType::Pointer finalTransform = TransformType::New();
+            finalTransform->SetCenter( itkTransform->GetCenter() );
+            finalTransform->SetParameters( parameters );
+            finalTransform->SetFixedParameters( itkTransform->GetFixedParameters() );
+
+            const ::itk::Matrix<double, 3, 3> rigidMat = finalTransform->GetMatrix();
+            const ::itk::Vector<double, 3> offset      = finalTransform->GetOffset();
+
+            // Convert ::itk::RigidTransform to f4s matrix.
+            for(std::uint8_t i = 0; i < 3; ++i)
             {
-                params.o_trf->setCoefficient(i, j, rigidMat(i, j));
+                params.o_trf->setCoefficient(i, 3, offset[i]);
+                for(std::uint8_t j = 0; j < 3; ++j)
+                {
+                    params.o_trf->setCoefficient(i, j, rigidMat(i, j));
+                }
             }
         }
     }
@@ -271,10 +321,14 @@ void AutomaticRegistration::registerImage(const ::fwData::Image::csptr& _target,
     params.i_maxStep   = _maxStep;
     params.i_maxIters  = _maxIterations;
 
-    typedef ::boost::mpl::vector< std::int16_t > TestTypes;
+    // We don't handle int64, uint64 or double images to reduce compile times.
+    typedef ::boost::mpl::vector<
+            signed char, unsigned char,
+            signed short, unsigned short,
+            signed int, unsigned int, float > RegistrationType;
 
     const ::fwTools::DynamicType targetType = _target->getPixelType();
-    ::fwTools::Dispatcher< TestTypes, RegistratorCaller>::invoke(targetType, params);
+    ::fwTools::Dispatcher< RegistrationType, RegistratorCaller>::invoke(targetType, params);
 }
 
 //------------------------------------------------------------------------------

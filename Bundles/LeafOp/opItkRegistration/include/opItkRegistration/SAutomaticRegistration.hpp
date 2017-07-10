@@ -89,7 +89,13 @@ protected:
      */
     OPITKREGISTRATION_API virtual KeyConnectionsMap getAutoConnections() const;
 
+    /// Set the metric to be used. Key must be 'metric', values are the same as for the configuration.
+    OPITKREGISTRATION_API virtual void setEnumParameter(std::string val, std::string key);
+
 private:
+
+    /// Sets the metric, possible values are : MeanSquares, NormalizedCorrelation, MutualInformation.
+    void setMetric(const std::string& metricName);
 
     /// Smallest step that can be taken by the optimizer.
     double m_minStep;
