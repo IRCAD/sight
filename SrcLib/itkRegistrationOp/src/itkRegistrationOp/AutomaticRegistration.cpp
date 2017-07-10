@@ -44,14 +44,9 @@ class IterationUpdateCommand : public ::itk::Command
 {
 public:
     typedef  IterationUpdateCommand Self;
-    typedef  itk::Command Superclass;
-    typedef itk::SmartPointer<Self>   Pointer;
+    typedef ::itk::Command Superclass;
+    typedef ::itk::SmartPointer<Self>   Pointer;
     itkNewMacro( Self );
-
-protected:
-    IterationUpdateCommand()
-    {
-    }
 
 public:
     typedef ::itk::VersorRigid3DTransformOptimizer OptimizerType;
@@ -59,23 +54,30 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void Execute(::itk::Object* caller, const ::itk::EventObject& event)
+    void Execute(::itk::Object* caller, const ::itk::EventObject& event) override
     {
         Execute( (const itk::Object*)caller, event);
+        Execute((const ::itk::Object* )(caller), event);
     }
 
     //------------------------------------------------------------------------------
 
-    void Execute(const ::itk::Object* object, const ::itk::EventObject& event)
+    void Execute(const ::itk::Object* object, const ::itk::EventObject& event) override
     {
-        OptimizerPointer optimizer = dynamic_cast< OptimizerPointer >( object );
-
         if( ::itk::IterationEvent().CheckEvent( &event ) )
         {
-            OSLM_DEBUG("Number of iterations : " << optimizer->GetCurrentIteration() << "  " << std::endl);
-            OSLM_DEBUG("Current value : " << optimizer->GetValue() << "   " << std::endl);
-            OSLM_DEBUG("Current parameters : " << optimizer->GetCurrentPosition() << std::endl << std::endl);
+            OptimizerPointer optimizer = dynamic_cast< OptimizerPointer >( object );
+            OSLM_DEBUG("Number of iterations : " << optimizer->GetCurrentIteration());
+            OSLM_DEBUG("Current value : " << optimizer->GetValue());
+            OSLM_DEBUG("Current parameters : " << optimizer->GetCurrentPosition() );
         }
+    }
+
+    //------------------------------------------------------------------------------
+
+protected:
+    IterationUpdateCommand()
+    {
     }
 };
 
@@ -116,9 +118,9 @@ struct Registrator
         const typename ReferenceImageType::Pointer referenceImage =
             ::fwItkIO::itkImageFactory< ReferenceImageType >(params.i_reference);
 
-        RegistrationType::Pointer registration = RegistrationType::New();
-        InterpolatorType::Pointer interpolator = InterpolatorType::New();
-        OptimizerType::Pointer optimizer       = OptimizerType::New();
+        typename RegistrationType::Pointer registration = RegistrationType::New();
+        typename InterpolatorType::Pointer interpolator = InterpolatorType::New();
+        OptimizerType::Pointer optimizer = OptimizerType::New();
 
         typename ::itk::ImageToImageMetric< TargetImageType, ReferenceImageType >::Pointer metric;
 
@@ -149,7 +151,7 @@ struct Registrator
         typedef itk::CenteredTransformInitializer< TransformType, TargetImageType, ReferenceImageType >
             TransformInitializerType;
 
-        TransformInitializerType::Pointer initializer = TransformInitializerType::New();
+        typename TransformInitializerType::Pointer initializer = TransformInitializerType::New();
 
         initializer->SetTransform( itkTransform );
         initializer->SetFixedImage( targetImage );
@@ -162,7 +164,7 @@ struct Registrator
         ::glm::dmat4 initMat = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(params.o_trf);
         double scale         = std::pow(::glm::determinant(initMat), 1./3.);
 
-        ::glm::quat orientation = ::glm::toQuat(initMat / scale);
+        ::glm::dquat orientation = ::glm::toQuat(initMat / scale);
 
         ::glm::dvec3 translation = ::glm::dvec3(::glm::column(initMat, 3));
         ::glm::dvec3 axis        = ::glm::axis(orientation);
@@ -191,7 +193,7 @@ struct Registrator
         registration->SetInitialTransformParameters(itkTransform->GetParameters());
 
         // Scale the step size for each parameter.
-        OptimizerType::ScalesType optimizerScales( itkTransform->GetNumberOfParameters() );
+        OptimizerType::ScalesType optimizerScales( static_cast<unsigned int>(itkTransform->GetNumberOfParameters()) );
         const double translationScale = 1.0 / 1000.0;
         optimizerScales[0] = 1.0;
         optimizerScales[1] = 1.0;
