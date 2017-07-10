@@ -8,6 +8,11 @@
 
 #include "visuVTKAdaptor/Image.hpp"
 
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
+
 #include <fwData/Boolean.hpp>
 #include <fwData/Color.hpp>
 #include <fwData/Image.hpp>
