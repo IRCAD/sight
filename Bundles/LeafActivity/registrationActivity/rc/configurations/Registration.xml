@@ -342,7 +342,7 @@
         <service uid="transformedWindowLevel" type="::uiImage::WindowLevel" autoConnect="yes">
             <inout key="image" uid="transformedImage"/>
             <inout key="TFSelections" uid="TFSelectionComposite"/>
-            <config selectedTFKey="transformedTF"/>
+            <config selectedTFKey="transformedTF" autoWindowing="yes"/>
         </service>
 
         <service uid="transformedTFWindow" type="::scene2D::Render" autoConnect="yes">
