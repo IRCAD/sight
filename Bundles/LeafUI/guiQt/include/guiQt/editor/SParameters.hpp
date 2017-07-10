@@ -168,7 +168,7 @@ private:
 
     /// Create a multi choice widget
     void createEnumWidget(QGridLayout& layout, int row, const std::string& key, const std::string& defaultValue,
-                          const std::vector< std::string>& values);
+                          const std::vector< std::string>& values, const std::vector<std::string>& data);
 
     /// Allows to connect sliders and their labels
     QPointer< QSignalMapper> m_signalMapper;

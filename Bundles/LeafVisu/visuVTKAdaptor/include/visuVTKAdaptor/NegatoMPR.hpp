@@ -137,6 +137,10 @@ private:
 
     /// Slot: set the slice cross scale. Forward the information to SliceCursor sub-adaptor.
     void setCrossScale(double scale);
+
+    /// Slot: set the VTK source image
+    void changeImageSource(std::string _value, std::string _key);
+
     /**
      * @}
      */

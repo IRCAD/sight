@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -28,9 +28,9 @@
 #include <fwVtkIO/vtk.hpp>
 
 #include <vtkImageBlend.h>
+#include <vtkImageCheckerboard.h>
 #include <vtkImageData.h>
 #include <vtkImageMapToColors.h>
-
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::NegatoOneSlice, ::fwData::Image );
 
@@ -47,7 +47,7 @@ NegatoOneSlice::NegatoOneSlice() throw() :
     m_imageSource(nullptr),
     m_allowAlphaInTF(false),
     m_interpolation(true),
-    m_actorOpacity (1.0)
+    m_actorOpacity(1.0)
 {
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &NegatoOneSlice::updateSliceType, this);
     newSlot(s_UPDATE_IMAGE_SLOT, &NegatoOneSlice::updateImage, this);
@@ -179,7 +179,8 @@ void NegatoOneSlice::cleanImageSource()
 void NegatoOneSlice::doStart() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if (!vtkImageBlend::SafeDownCast(this->getImageSource()))
+    if (nullptr == vtkImageBlend::SafeDownCast(this->getImageSource())
+        && nullptr == vtkImageCheckerboard::SafeDownCast(this->getImageSource()))
     {
         this->getImageAdaptor()->start();
     }
@@ -207,7 +208,8 @@ void NegatoOneSlice::doSwap() throw(fwTools::Failed)
 void NegatoOneSlice::doUpdate() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-    if (!vtkImageBlend::SafeDownCast(this->getImageSource()))
+    if (nullptr == vtkImageBlend::SafeDownCast(this->getImageSource())
+        && nullptr == vtkImageCheckerboard::SafeDownCast(this->getImageSource()))
     {
         this->getImageAdaptor()->update();
     }
@@ -291,6 +293,5 @@ void NegatoOneSlice::doConfigure() throw(fwTools::Failed)
 }
 
 //------------------------------------------------------------------------------
-
 
 } //namespace visuVTKAdaptor

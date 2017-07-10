@@ -150,16 +150,39 @@ void SParameters::starting() throw (::fwTools::Failed)
         else if(type == "enum")
         {
             const std::string options = cfg.get<std::string>("<xmlattr>.values");
-            //split values separated by ','
-            std::vector<std::string> strings;
+
+            //split values separated by ',', ' ', ';'
+            std::vector<std::string> values;
+            std::vector<std::string> data;
+
             const ::boost::char_separator<char> sep(", ;");
-            const ::boost::tokenizer< ::boost::char_separator<char> > tok {options, sep};
-            for(const auto& t : tok)
+            const ::boost::tokenizer< ::boost::char_separator<char> > tokens {options, sep};
+
+            for(const auto& token : tokens)
             {
-                strings.push_back(t);
+                //split again values separated by '='
+                const ::boost::char_separator<char> subsep("=");
+                const ::boost::tokenizer< ::boost::char_separator<char> > subtokens {token, subsep};
+                auto it = subtokens.begin();
+
+                if(it != subtokens.end() )
+                {
+                    values.push_back(*it);
+                    ++it;
+                }
+
+                if(it != subtokens.end() )
+                {
+                    data.push_back(*it);
+                    ++it;
+                }
+                else
+                {
+                    data.push_back(values.back());
+                }
             }
 
-            this->createEnumWidget(*layout, row, key, defaultValue, strings);
+            this->createEnumWidget(*layout, row, key, defaultValue, values, data);
 
         }
         ++row;
@@ -192,9 +215,9 @@ void SParameters::onChangeEnum(int value)
 
     SLM_ASSERT("Wrong widget type", box);
 
-    QString selection = box->itemText(value);
+    const QString data = box->itemData(value).toString();
 
-    this->signal<EnumChangedSignalType>(ENUM_CHANGED_SIG)->asyncEmit(selection.toStdString(),
+    this->signal<EnumChangedSignalType>(ENUM_CHANGED_SIG)->asyncEmit(data.toStdString(),
                                                                      key.toStdString());
 }
 
@@ -734,14 +757,23 @@ void SParameters::createIntegerSpinWidget(QGridLayout& layout, int row, const st
 
 void SParameters::createEnumWidget(QGridLayout& layout, int row, const std::string& key,
                                    const std::string& defaultValue,
-                                   const std::vector<std::string>& values)
+                                   const std::vector<std::string>& values,
+                                   const std::vector<std::string>& data)
 {
     QComboBox* menu = new QComboBox();
     menu->setProperty("key", QString(key.c_str()));
     int idx = 0;
-    for(const auto& choice : values)
+    for(const auto& value : values)
     {
-        menu->insertItem(idx, choice.c_str());
+        menu->insertItem(idx, QString::fromStdString(value));
+        ++idx;
+    }
+
+    // Add optional data
+    idx = 0;
+    for(const auto& choice : data)
+    {
+        menu->setItemData(idx, QString::fromStdString(choice));
         ++idx;
     }
 
@@ -751,7 +783,6 @@ void SParameters::createEnumWidget(QGridLayout& layout, int row, const std::stri
 
     //Set the comboBox to the default value
     menu->setCurrentText(QString::fromStdString(defaultValue));
-
 }
 
 //-----------------------------------------------------------------------------

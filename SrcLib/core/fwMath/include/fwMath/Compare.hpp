@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,11 +20,10 @@ namespace fwMath
  * @return true iff a and b are equal with 'epsilon' error margin
  */
 template < typename TYPE >
-bool isEqual(TYPE a, TYPE b, const float epsilon = 0.00001)
+bool isEqual(TYPE a, TYPE b, const float epsilon = 0.00001F)
 {
     return fabs(a - b) < epsilon;
 }
-
 
 /**
  * @brief Returns true iff container a and b are equal with 'epsilon' error margin
@@ -34,7 +33,7 @@ bool isEqual(TYPE a, TYPE b, const float epsilon = 0.00001)
  * @return true iff container a and b are equal with 'epsilon' error margin
  */
 template < typename CONTAINER >
-bool isContainerEqual(CONTAINER&  containerA, CONTAINER& containerB, const float epsilon = 0.00001)
+bool isContainerEqual(CONTAINER&  containerA, CONTAINER& containerB, const float epsilon = 0.00001F)
 {
     bool isEqual = true;
     if(containerA.size() != containerB.size())
