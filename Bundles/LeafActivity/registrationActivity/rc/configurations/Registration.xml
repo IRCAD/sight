@@ -92,7 +92,27 @@
             </gui>
             <registry>
                 <view wid="targetSceneEditor" />
+                <view sid="blendEditor" start="yes"/>
+            </registry>
+        </service>
+
+        <service uid="blendMode" type="::guiQt::editor::SParameters">
+            <parameters>
+                <param type="enum" name="Blend mode:" key="ImageSource" defaultValue="BLEND" values="BLEND=imageBlend,CHECKERBOARD=imageCheckerboard" />
+            </parameters>
+        </service>
+
+        <service uid="blendEditor" type="::gui::view::SDefaultView">
+            <gui>
+                <layout type="::fwGui::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
                 <view sid="transformedTransparencySlider" start="yes"/>
+                <view sid="blendMode" start="yes"/>
             </registry>
         </service>
 
@@ -245,6 +265,7 @@
             <scene renderMode="auto">
                 <picker id="picker" vtkclass="fwVtkCellPicker" />
                 <vtkObject id="imageBlend" class="vtkImageBlend" />
+                <vtkObject id="imageCheckerboard" class="vtkImageCheckerboard" />
                 <renderer id="default" background="#052833" />
 
                 <adaptor uid="mixedNegatoMPR" id="mixedNegatoMPR" class="::visuVTKAdaptor::NegatoMPR" objectId="targetImage">
@@ -257,8 +278,8 @@
                 </adaptor>
 
                 <!-- Adaptor to show background and front image merge in the same view. -->
-                <adaptor id="registrationImageAdaptor" class="::visuVTKAdaptor::ImagesBlend" objectId="self">
-                    <config vtkimageregister="imageBlend">
+                <adaptor id="registrationImageAdaptor" uid="registrationImageAdaptor" class="::visuVTKAdaptor::ImagesBlend" objectId="self">
+                    <config vtkimageregister="imageBlend" checkerboardDivision="10">
                         <image objectId="targetImage" tfalpha="no" selectedTFKey="targetTF" tfSelectionFwID="TFSelectionComposite" />
                         <image objectId="transformedImage" tfalpha="no" selectedTFKey="transformedTF" tfSelectionFwID="TFSelectionComposite" />
                     </config>
@@ -275,6 +296,16 @@
                 <connect>
                     <signal>targetPickerInteractor/picked</signal>
                     <slot>targetLandmarkManager/createLandmark</slot>
+                </connect>
+
+                <connect>
+                    <signal>blendMode/enumChanged</signal>
+                    <slot>registrationImageAdaptor/changeMode</slot>
+                </connect>
+
+                <connect>
+                    <signal>blendMode/enumChanged</signal>
+                    <slot>mixedNegatoMPR/changeImageSource</slot>
                 </connect>
             </scene>
         </service>
