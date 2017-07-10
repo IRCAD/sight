@@ -78,7 +78,8 @@ void ImagesBlend::doStart() throw(fwTools::Failed)
         if(nullptr != imageCheckerboard)
         {
             // Set the number of subdivision
-            imageCheckerboard->SetNumberOfDivisions(m_checkerboardDivision, m_checkerboardDivision, 1);
+            imageCheckerboard->SetNumberOfDivisions(m_checkerboardDivision, m_checkerboardDivision,
+                                                    m_checkerboardDivision);
 
             // Assign as an vtkThreadedImageAlgorithm
             m_imageAlgorithm = imageCheckerboard;
@@ -334,7 +335,8 @@ void ImagesBlend::changeMode(std::string _value, std::string _key)
             if(nullptr != imageCheckerboard)
             {
                 // Set the number of subdivision
-                imageCheckerboard->SetNumberOfDivisions(m_checkerboardDivision, m_checkerboardDivision, 1);
+                imageCheckerboard->SetNumberOfDivisions(m_checkerboardDivision, m_checkerboardDivision,
+                                                        m_checkerboardDivision);
 
                 // Assign as an vtkThreadedImageAlgorithm
                 m_imageAlgorithm = imageCheckerboard;
