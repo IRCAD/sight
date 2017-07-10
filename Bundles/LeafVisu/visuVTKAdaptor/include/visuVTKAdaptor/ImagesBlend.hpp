@@ -32,6 +32,27 @@ namespace visuVTKAdaptor
 
 /**
  * @brief Manage blend for image given in configuration.
+ *
+ * @section Slots Slots
+ * - \b changeMode(std::string _value, std::string _key): set the blending algorithm. The key must be "ImageSource"
+ *
+ * @code{.xml}
+    <adaptor id="registrationImageAdaptor" class="::visuVTKAdaptor::ImagesBlend" objectId="self">
+        <config vtkimageregister="imageBlend" checkerboardDivision="10">
+            <image objectId="image1" tfalpha="no" selectedTFKey="selected1" tfSelectionFwID="tfSelection" />
+            <image objectId="image2" tfalpha="no" selectedTFKey="selectd2" tfSelectionFwID="tfSelection" />
+        </config>
+    </adaptor>
+   @endcode
+ * - \b vtkimageregister (mandatory): VTK object name for default blending algorithm.
+ * - \b checkerboardDivision (optional): Number of division in checkerboard mode.
+ * - \b image (2..n)
+ *      - \b objectId (mandatory) Image key
+ *      - \b tfalpha (optional, yes/no, default=no): if true, the opacity of the transfer function is used in the negato
+ *      - \b selectedTFKey (optional): key of the transfer function to use in negato
+ *      - \b tfSelectionFwID (optional): fwID of the composite containing transfer functions
+ *      - \b opacity (optional, default=1.0): opacity (0.0..1.0)
+ *
  */
 class VISUVTKADAPTOR_CLASS_API ImagesBlend : public ::fwRenderVTK::IVtkAdaptorService
 {
