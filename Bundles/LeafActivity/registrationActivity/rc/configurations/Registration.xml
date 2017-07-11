@@ -122,17 +122,25 @@
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="1" />
+                    <view proportion="1" />
                 </layout>
             </gui>
             <registry>
                 <view wid="targetSceneEditor" />
                 <view sid="blendEditor" start="yes"/>
+                <view sid="checkerBoardCellSlider" start="yes" />
             </registry>
         </service>
 
         <service uid="blendMode" type="::guiQt::editor::SParameters">
             <parameters>
                 <param type="enum" name="Blend mode:" key="ImageSource" defaultValue="BLEND" values="BLEND=imageBlend,CHECKERBOARD=imageCheckerboard" />
+            </parameters>
+        </service>
+
+        <service uid="checkerBoardCellSlider" type="::guiQt::editor::SParameters" >
+            <parameters>
+                <param type="int" name="Checkerboard # of cells" key="checkerBoardSlider" defaultValue="10" min="0" max="100" />
             </parameters>
         </service>
 
@@ -145,8 +153,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="transformedTransparencySlider" start="yes"/>
-                <view sid="blendMode" start="yes"/>
+                <view sid="transformedTransparencySlider" start="yes" />
+                <view sid="blendMode" start="yes" />
             </registry>
         </service>
 
@@ -370,6 +378,10 @@
                     <signal>blendMode/enumChanged</signal>
                     <slot>mixedNegatoMPR/changeImageSource</slot>
                 </connect>
+
+                <proxy channel="checkerBoardDivision">
+                    <slot>registrationImageAdaptor/changeCheckerboardDivision</slot>
+                </proxy>
             </scene>
         </service>
 
@@ -692,6 +704,10 @@
         <connect>
             <signal>flipAxialButton/clicked</signal>
             <slot>concatenateAxial/update</slot>
+        </connect>
+
+        <connect channel="checkerBoardDivision">
+            <signal>checkerBoardCellSlider/intChanged</signal>
         </connect>
 
         <!-- START AND STOP SERVICES -->
