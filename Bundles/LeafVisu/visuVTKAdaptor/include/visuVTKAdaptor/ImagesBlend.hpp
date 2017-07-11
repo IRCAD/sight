@@ -35,6 +35,7 @@ namespace visuVTKAdaptor
  *
  * @section Slots Slots
  * - \b changeMode(std::string _value, std::string _key): set the blending algorithm. The key must be "ImageSource"
+ * - \b changeCheckerboardDivision(int division): set the number of cells to display the checkerboard
  *
  * @code{.xml}
     <adaptor id="registrationImageAdaptor" class="::visuVTKAdaptor::ImagesBlend" objectId="self">
@@ -62,6 +63,7 @@ public:
     fwCoreServiceClassDefinitionsMacro( (ImagesBlend)(::fwRenderVTK::IVtkAdaptorService) );
 
     VISUVTKADAPTOR_CLASS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_MODE_SLOT;
+    VISUVTKADAPTOR_CLASS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_CHECKERBOARD_DIVISION_SLOT;
 
     VISUVTKADAPTOR_API ImagesBlend() throw();
 
@@ -122,6 +124,9 @@ private:
 
     ///SLOT: changeMode
     void changeMode(std::string _value, std::string _key);
+
+    ///SLOT: Change number of celle in the checkerboard
+    void changeCheckerboardDivision(int division);
 
     /// Create a new image adaptor
     void addImage(::fwData::Image::csptr img, SPTR(ImageInfo) info);

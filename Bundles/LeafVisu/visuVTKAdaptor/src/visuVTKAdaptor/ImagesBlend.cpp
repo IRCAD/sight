@@ -45,7 +45,8 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Im
 namespace visuVTKAdaptor
 {
 
-const ::fwCom::Slots::SlotKeyType ImagesBlend::s_CHANGE_MODE_SLOT = "changeMode";
+const ::fwCom::Slots::SlotKeyType ImagesBlend::s_CHANGE_MODE_SLOT                  = "changeMode";
+const ::fwCom::Slots::SlotKeyType ImagesBlend::s_CHANGE_CHECKERBOARD_DIVISION_SLOT = "changeCheckerboardDivision";
 
 //------------------------------------------------------------------------------
 
@@ -54,6 +55,7 @@ ImagesBlend::ImagesBlend() throw() :
     m_checkerboardDivision(10)
 {
     newSlot(s_CHANGE_MODE_SLOT, &ImagesBlend::changeMode, this);
+    newSlot(s_CHANGE_CHECKERBOARD_DIVISION_SLOT, &ImagesBlend::changeCheckerboardDivision, this);
 }
 
 //------------------------------------------------------------------------------
@@ -378,6 +380,29 @@ void ImagesBlend::addImage(::fwData::Image::csptr img, SPTR(ImageInfo)info)
     this->registerService(imageAdaptor);
 
     imageAdaptor->start();
+}
+
+//------------------------------------------------------------------------------
+
+void ImagesBlend::changeCheckerboardDivision(const int division)
+{
+    m_checkerboardDivision = division;
+
+    // If we have no vtkImageBlend, try to downcast as an vtkImageCheckerboard
+    vtkImageCheckerboard* imageCheckerboard =
+        vtkImageCheckerboard::SafeDownCast(this->getVtkObject(m_imageRegisterId));
+
+    if(nullptr != imageCheckerboard)
+    {
+        // Set the number of subdivision
+        imageCheckerboard->SetNumberOfDivisions(m_checkerboardDivision, m_checkerboardDivision,
+                                                m_checkerboardDivision);
+
+        // Assign as an vtkThreadedImageAlgorithm
+        m_imageAlgorithm = imageCheckerboard;
+    }
+
+    this->doUpdate();
 }
 
 } //namespace visuVTKAdaptor
