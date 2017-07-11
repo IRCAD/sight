@@ -22,5 +22,6 @@ set( REQUIREMENTS
     visuVTKQt
     imageConfig
     opItkRegistration
+    maths
     )
 
