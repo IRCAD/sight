@@ -168,7 +168,7 @@ protected:
     /**
      * @brief Title of the window that will open when the `configureWithIHM` slot is called
      */
-    ::std::string m_windowTitle;
+    std::string m_windowTitle;
 
 private:
 
