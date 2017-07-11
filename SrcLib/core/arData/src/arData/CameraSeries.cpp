@@ -121,8 +121,7 @@ void CameraSeries::removeCamera(const ::arData::Camera::sptr& camera)
     CameraContainerType::iterator iter = std::find(m_cameras.begin(), m_cameras.end(), camera);
     FW_RAISE_IF("Camera not found in CameraSeries.", iter == m_cameras.end());
 
-    size_t index = std::distance(m_cameras.begin(), iter);
-    FW_RAISE_IF("Number of cameras is less than " << index, index >= m_cameras.size() );
+    size_t index                        = std::distance(m_cameras.begin(), iter);
     MatricesContainer::iterator matIter = m_extrinsicMatrices.begin() + index;
     m_extrinsicMatrices.erase(matIter);
     m_cameras.erase(iter);

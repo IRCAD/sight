@@ -50,10 +50,16 @@ public:
     /// Destructor
     ARDATA_API virtual ~CameraSeries();
 
-    /// Defines shallow copy
+    /**
+     * @brief Defines shallow copy
+     * @throws ::fwData::Exception if an errors occurs during copy
+     */
     ARDATA_API void shallowCopy( const ::fwData::Object::csptr& _source );
 
-    /// Defines deep copy
+    /**
+     * @brief Defines deep copy
+     * @throws ::fwData::Exception if an errors occurs during copy
+     */
     ARDATA_API void cachedDeepCopy(const ::fwData::Object::csptr& _source, DeepCopyCacheType& cache);
 
     /**@name Signals API
@@ -71,13 +77,22 @@ public:
 
     typedef std::vector< ::fwData::TransformationMatrix3D::sptr > MatricesContainer;
 
-    /// Adds a camera in the cameraSeries.
+    /**
+     * @brief Adds a camera in the cameraSeries.
+     * @throws ::fwCore::Exception if the camera is already present in the `CameraSeries`
+     */
     ARDATA_API void addCamera(const ::arData::Camera::sptr& camera);
 
-    /// Returns the camera at the index.
+    /**
+     * @brief Returns the camera at the index.
+     * @throws ::fwCore::Exception if the index is out of range
+     */
     ARDATA_API ::arData::Camera::sptr getCamera(size_t index) const;
 
-    /// Remove the camera with the index
+    /**
+     * @brief Remove the given camera from the series
+     * @throws ::fwCore::Exception if the camera is not found in the series
+     */
     ARDATA_API void removeCamera(const ::arData::Camera::sptr& camera);
 
     /// Returns the number of cameras
@@ -92,6 +107,7 @@ public:
      *                  transformation from camera[0] to camera[index].
      * @param[in] matrix the extrinsic matrix
      * @note By default, the first matrix (index=0) is initialized to identity.
+     * @throws ::fwCore::Exception if the index is out of range
      */
     ARDATA_API void setExtrinsicMatrix(size_t index, ::fwData::TransformationMatrix3D::sptr matrix);
 
@@ -101,6 +117,7 @@ public:
      *                  transformation from camera[0] to camera[index].
      * @return Returns the extrinsic transformation matrix, or null if not defined.
      * @note By default, the first matrix (index=0) is initialized to identity, the other are nullptr.
+     * @throws ::fwCore::Exception if the index is out of range
      */
     ARDATA_API ::fwData::TransformationMatrix3D::sptr getExtrinsicMatrix(size_t index) const;
 
