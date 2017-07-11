@@ -156,6 +156,12 @@ protected:
         <folder>/home/user/myFolder</folder>
        </service>
        @endcode
+     * You may specify the title of the modal file selection window with the `windowTitle` config attribute as such:
+     * @code{.xml}
+       <service ... >
+        <windowTitle>Example window title</windowTitle>
+       </service>
+       @endcode
      */
     IO_API virtual void configuring() throw (fwTools::Failed);
 
