@@ -18,6 +18,7 @@ set( REQUIREMENTS
     scene2D
     uiTF
     media
+    maths
     visuVTKQt
     imageConfig
     opItkRegistration

@@ -25,6 +25,9 @@
         <object uid="referencePL" type="::fwData::PointList" />
         <object uid="targetPL" type="::fwData::PointList" />
 
+        <object uid="centerTransformTarget" type="::fwData::TransformationMatrix3D" />
+        <object uid="centerTransformReference" type="::fwData::TransformationMatrix3D" />
+
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
@@ -150,12 +153,14 @@
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
+                    <view proportion="0" />
                     <spacer />
                     <view proportion="0" />
                     <view proportion="0" />
                 </layout>
             </gui>
             <registry>
+                <view sid="computeCenter" start="yes"/>
                 <view sid="setAutoRegistrationMetric" start="yes" />
                 <view sid="applyAutomaticTransform" start="yes" />
             </registry>
@@ -205,6 +210,13 @@
                 <view sid="transformedTFEditor"    start="yes" />
                 <view sid="transformedWindowLevel" start="yes" />
             </registry>
+        </service>
+
+        <service uid="computeCenter" type="::guiQt::editor::SSignalButton" >
+            <config>
+                <checkable>false</checkable>
+                <text>Fast registration</text>
+            </config>
         </service>
 
         <service uid="medicalImageTargetSrv" type="::ctrlSelection::MedicalImageSrv">
@@ -506,6 +518,35 @@
             <inout key="imageOut" uid="transformedImage" />
         </service>
 
+        <service uid="computeCenterTarget" type="::opItkRegistration::SImageCenter">
+            <in key="image" uid="${targetImageUid}"/>
+            <inout key="transform" uid="centerTransformTarget"/>
+        </service>
+
+        <service uid="computeCenterReference" type="::opItkRegistration::SImageCenter">
+            <in key="image" uid="${referenceImageUid}"/>
+            <inout key="transform" uid="centerTransformReference"/>
+        </service>
+
+        <service uid="alignCenter" type="::maths::SConcatenateMatrices">
+            <in group="matrix">
+                <key uid="centerTransformReference" autoConnect="yes"/>
+                <key uid="centerTransformTarget" inverse="true" autoConnect="yes"/>
+            </in>
+            <inout key="output" uid="${transformUid}" />
+        </service>
+
+        <connect>
+            <signal>computeCenter/clicked</signal>
+            <slot>computeCenterTarget/update</slot>
+            <slot>computeCenterReference/update</slot>
+        </connect>
+
+        <connect>
+            <signal>alignCenter/updated</signal>
+            <slot>resampler/update</slot>
+        </connect>
+
         <connect>
             <signal>applyLandmarkTransform/clicked</signal>
             <slot>landmarkRegistration/update</slot>
@@ -549,6 +590,9 @@
         <start uid="targetLandmarkManager" />
         <start uid="landmarkRegistration" />
         <start uid="automaticRegistration" />
+        <start uid="computeCenterTarget" />
+        <start uid="computeCenterReference" />
+        <start uid="alignCenter" />
     </config>
 </extension>
 
