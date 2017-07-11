@@ -35,10 +35,14 @@ namespace videoOpenCV
  * @code{.xml}
    <service type="::videoOpenCV::SFrameWriter">
        <in key="data" uid="..." autoConnect="yes" />
+       <windowTitle>Select the image file to load</windowTitle>
    </service>
    @endcode
  * @subsection Input Input
  * - \b data [::arData::FrameTL]: timeline containing the frame to save.
+ *
+ * @subsection Configuration Configuration
+ * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IWriter
  */
 class VIDEOOPENCV_CLASS_API SFrameWriter : public ::io::IWriter
 {
