@@ -296,7 +296,7 @@ void AppConfig2::collectUIDForParameterReplace(::fwRuntime::ConfigurationElement
 
         for (auto it = range.first; it != range.second; ++it)
         {
-            if(it->second == attribute.first && !::boost::regex_match(attribute.first, s_isVariable ) )
+            if(it->second == attribute.first && !::boost::regex_match(attribute.second, s_isVariable ) )
             {
                 _replaceMap.insert(attribute.second);
             }
