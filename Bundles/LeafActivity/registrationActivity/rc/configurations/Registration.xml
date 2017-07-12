@@ -24,6 +24,7 @@
         <object uid="Histogram" type="::fwData::Histogram" />
         <object uid="referencePL" type="::fwData::PointList" />
         <object uid="targetPL" type="::fwData::PointList" />
+        <object uid="inverseFinalTransform" type="::fwData::TransformationMatrix3D" />
         <object uid="flipMatrix" type="::fwData::TransformationMatrix3D" />
         <object uid="flipSagittalMatrix" type="::fwData::TransformationMatrix3D">
             <matrix>
@@ -84,11 +85,13 @@
                     <orientation value="vertical" />
                     <view proportion="1" />
                     <view proportion="0" />
+                    <view proportion="1" />
                 </layout>
             </gui>
             <registry>
                 <view sid="scenesView" start="yes"/>
                 <view sid="editorsView" start="yes"/>
+                <view sid="3dScene" start="yes"/>
             </registry>
         </service>
 
@@ -398,6 +401,41 @@
             </scene>
         </service>
 
+
+        <service uid="3dScene" type="::fwRenderVTK::SRender" autoConnect="yes">
+            <inout key="TFSelectionComposite" uid="TFSelectionComposite" />
+            <in key="targetImage" uid="${targetImageUid}" />
+            <in key="referenceImage" uid="${referenceImageUid}" />
+            <in key="transformedImage" uid="transformedImage" />
+            <in key="transform" uid="inverseFinalTransform" />
+
+            <scene renderMode="auto">
+                <picker id="picker" vtkclass="fwVtkCellPicker" />
+                <renderer id="default" background="#052833" />
+
+                <adaptor id="transformAdpt" class="::visuVTKAdaptor::Transform" objectId="transform">
+                    <config transform="registration" />
+                </adaptor>
+
+                <adaptor id="targetNegatoMPR" class="::visuVTKAdaptor::NegatoMPR" objectId="targetImage">
+                    <config renderer="default" picker="picker" mode="3d" slices="3"
+                            sliceIndex="axial" selectedTFKey="targetTF" tfSelectionFwID="TFSelectionComposite"/>
+                </adaptor>
+
+                <adaptor id="referenceNegatoMPR" class="::visuVTKAdaptor::NegatoMPR" objectId="referenceImage">
+                    <config renderer="default" picker="picker" mode="3d" slices="3"
+                            sliceIndex="axial" selectedTFKey="referenceTF" tfSelectionFwID="TFSelectionComposite" transform="registration"/>
+                </adaptor>
+
+                <adaptor id="transformedNegatoMPR" class="::visuVTKAdaptor::NegatoMPR" objectId="transformedImage">
+                    <config renderer="default" picker="picker" mode="3d" slices="3"
+                            sliceIndex="axial" selectedTFKey="transformedTF" tfSelectionFwID="TFSelectionComposite"/>
+                </adaptor>
+
+            </scene>
+
+        </service>
+
         <service uid="transformedImageManager" type="::fwServices::SConfigController" autoConnect="no">
             <appConfig id="ImageManager" />
             <parameter replace="WID_PARENT" uid="referenceSceneEditor" />
@@ -542,37 +580,6 @@
             <rotation enabled="yes" min="-180" max="180" />
         </service>
 
-        <service uid="concatenateSagittal" type="::maths::SConcatenateMatrices">
-            <in group="matrix">
-                <key uid="${transformUid}" />
-                <key uid="flipSagittalMatrix"/>
-            </in>
-            <inout key="output" uid="flipMatrix" />
-        </service>
-
-        <service uid="concatenateFrontal" type="::maths::SConcatenateMatrices">
-            <in group="matrix">
-                <key uid="${transformUid}" />
-                <key uid="flipFrontalMatrix"/>
-            </in>
-            <inout key="output" uid="flipMatrix" />
-        </service>
-
-        <service uid="concatenateAxial" type="::maths::SConcatenateMatrices">
-            <in group="matrix">
-                <key uid="${transformUid}" />
-                <key uid="flipAxialMatrix"/>
-            </in>
-            <inout key="output" uid="flipMatrix" />
-        </service>
-
-        <service uid="concatenateFlipMatrix" type="::maths::SConcatenateMatrices">
-            <in group="matrix">
-                <key uid="flipMatrix" autoConnect="yes"/>
-            </in>
-            <inout key="output" uid="${transformUid}" />
-        </service>
-
         <service uid="applyAutomaticTransform" type="::guiQt::editor::SSignalButton" >
             <config>
                 <checkable>false</checkable>
@@ -661,10 +668,17 @@
 
         <service uid="alignCenter" type="::maths::SConcatenateMatrices">
             <in group="matrix">
-                <key uid="centerTransformReference" />
                 <key uid="centerTransformTarget" inverse="true"/>
+                <key uid="centerTransformReference" />
             </in>
             <inout key="output" uid="${transformUid}" />
+        </service>
+
+        <service uid="inverseMat" type="::maths::SConcatenateMatrices">
+            <in group="matrix">
+                <key uid="${transformUid}" inverse="true" autoConnect="yes"/>
+            </in>
+            <inout key="output" uid="inverseFinalTransform" />
         </service>
 
         <service uid="resetIdentity" type="::ctrlCamp::SCopy">
@@ -677,12 +691,27 @@
             <inout key="target" uid="lastTransform" />
         </service>
 
+        <service uid="copyFlipAxial" type="::ctrlCamp::SCopy">
+            <in key="source" uid="flipAxialMatrix"/>
+            <inout key="target" uid="manualTransform" />
+        </service>
+
+        <service uid="copyFlipFrontal" type="::ctrlCamp::SCopy">
+            <in key="source" uid="flipFrontalMatrix"/>
+            <inout key="target" uid="manualTransform" />
+        </service>
+
+        <service uid="copyFlipSagittal" type="::ctrlCamp::SCopy">
+            <in key="source" uid="flipSagittalMatrix"/>
+            <inout key="target" uid="manualTransform" />
+        </service>
+
         <service uid="manualConcat" type="::maths::SConcatenateMatrices">
             <in group="matrix">
                 <key uid="lastTransform" />
-                <key uid="centerTransformResampled" inverse="true" autoConnect="yes" />
-                <key uid="manualTransform"   autoConnect="yes"/>
-                <key uid="centerTransformResampled" />
+                <key uid="centerTransformResampled" autoConnect="yes" />
+                <key uid="manualTransform" autoConnect="yes" />
+                <key uid="centerTransformResampled" inverse="true" />
             </in>
             <inout key="output" uid="${transformUid}" />
         </service>
@@ -740,17 +769,17 @@
 
         <connect>
             <signal>flipSagittalButton/clicked</signal>
-            <slot>concatenateSagittal/update</slot>
+            <slot>copyFlipSagittal/update</slot>
         </connect>
 
         <connect>
             <signal>flipFrontalButton/clicked</signal>
-            <slot>concatenateFrontal/update</slot>
+            <slot>copyFlipFrontal/update</slot>
         </connect>
 
         <connect>
             <signal>flipAxialButton/clicked</signal>
-            <slot>concatenateAxial/update</slot>
+            <slot>copyFlipAxial/update</slot>
         </connect>
 
         <connect channel="checkerBoardDivision">
@@ -769,10 +798,9 @@
         <start uid="targetLandmarkManager" />
         <start uid="landmarkRegistration" />
         <start uid="automaticRegistration" />
-        <start uid="concatenateSagittal" />
-        <start uid="concatenateFrontal" />
-        <start uid="concatenateAxial" />
-        <start uid="concatenateFlipMatrix" />
+        <start uid="copyFlipSagittal" />
+        <start uid="copyFlipFrontal" />
+        <start uid="copyFlipAxial" />
         <start uid="computeCenterTarget" />
         <start uid="computeCenterReference" />
         <start uid="computeCenterResampled" />
@@ -780,6 +808,7 @@
         <start uid="manualConcat" />
         <start uid="copyLastTransform" />
         <start uid="resetIdentity" />
+        <start uid="inverseMat" />
 
         <update uid="computeCenterTarget" />
         <update uid="computeCenterReference" />
