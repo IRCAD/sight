@@ -61,6 +61,8 @@ void SImageCenter::updating() throw( ::fwTools::Failed )
 
     ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_IN);
 
+    SLM_ASSERT("Missing image '"+ s_IMAGE_IN + "'", image);
+
     bool imageValidity = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
 
     if(!imageValidity)
@@ -71,6 +73,8 @@ void SImageCenter::updating() throw( ::fwTools::Failed )
 
     ::fwData::TransformationMatrix3D::sptr matrix =
         this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+
+    SLM_ASSERT("Missing matrix '"+ s_TRANSFORM_INOUT +"'", matrix);
 
     ::fwDataTools::TransformationMatrix3D::identity(matrix);
 
