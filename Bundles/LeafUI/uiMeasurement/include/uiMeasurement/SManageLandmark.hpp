@@ -35,7 +35,7 @@ namespace uiMeasurement
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b PointList [::fwData::PointList]: the pointlist containing the added points.
+ * - \b landmarks [::fwData::PointList]: the pointlist containing the added points.
  */
 class UIMEASUREMENT_CLASS_API SManageLandmark : public ::fwServices::IController
 {
