@@ -30,14 +30,14 @@ public:
      * @param _inTrf input fwData::TransformationMatrix3D
      * @return Pointer to a itk::Matrix<double, 4, 4>
      */
-    static FWITKIO_API MatrixType convertToITK(const ::fwData::TransformationMatrix3D::csptr& _inTrf);
+    FWITKIO_API static MatrixType convertToITK(const ::fwData::TransformationMatrix3D::csptr& _inTrf);
 
     /**
      * @brief convert an itk::Transform<double, 4, 4> to a F4S one
      * @param _inTrf Const Pointer to a itk::Transform<double, 4,4>
      * @param _outTrf output fwData::TransformationMatrix3D (needs to be allocated before)
      */
-    static FWITKIO_API void convertFromITK(const MatrixType& _inTrf,
+    FWITKIO_API static void convertFromITK(const MatrixType& _inTrf,
                                            ::fwData::TransformationMatrix3D::sptr& _outTrf );
 };
 

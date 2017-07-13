@@ -13,7 +13,7 @@ namespace helper
 
 //-----------------------------------------------------------------------------
 
-Transform::MatrixType Transform::convertToITK(const fwData::TransformationMatrix3D::csptr& _inTrf)
+Transform::MatrixType Transform::convertToITK(const ::fwData::TransformationMatrix3D::csptr& _inTrf)
 {
     MatrixType itkMat;
 
@@ -30,7 +30,7 @@ Transform::MatrixType Transform::convertToITK(const fwData::TransformationMatrix
 
 //-----------------------------------------------------------------------------
 
-void Transform::convertFromITK(const MatrixType& _inTrf, fwData::TransformationMatrix3D::sptr& _outTrf)
+void Transform::convertFromITK(const MatrixType& _inTrf, ::fwData::TransformationMatrix3D::sptr& _outTrf)
 {
     SLM_ASSERT("Input itk Matrix should be 4x4", _inTrf.ColumnDimensions == 4 && _inTrf.RowDimensions == 4);
 

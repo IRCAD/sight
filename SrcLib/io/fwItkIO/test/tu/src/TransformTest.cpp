@@ -38,7 +38,7 @@ void TransformTest::tearDown()
 
 void TransformTest::testConversion()
 {
-    itk::Matrix<double, 4, 4> mat;
+    ::itk::Matrix<double, 4, 4> mat;
     ::fwData::TransformationMatrix3D::sptr f4sMat = ::fwData::TransformationMatrix3D::New();
 
     for(std::uint8_t i = 0; i < 4; ++i)
@@ -61,7 +61,7 @@ void TransformTest::testConversion()
 
     ::fwData::TransformationMatrix3D::csptr f4sMat2 = f4sMat;
 
-    itk::Matrix<double, 4, 4> mat2 = ::fwItkIO::helper::Transform::convertToITK(f4sMat2);
+    ::itk::Matrix<double, 4, 4> mat2 = ::fwItkIO::helper::Transform::convertToITK(f4sMat2);
 
     for(std::uint8_t i = 0; i < 4; ++i)
     {
