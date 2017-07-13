@@ -15,8 +15,6 @@
 
 #include <fwDataTools/fieldHelper/Image.hpp>
 
-#include <fwRuntime/ConfigurationElement.hpp>
-
 #include <fwServices/macros.hpp>
 
 fwServicesRegisterMacro(::fwServices::IController, ::uiMeasurement::SManageLandmark, ::fwData::PointList);
@@ -68,7 +66,7 @@ void SManageLandmark::createLandmark(::fwDataTools::PickingInfo info)
     if (info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP &&
         info.m_modifierMask == ::fwDataTools::PickingInfo::CTRL )
     {
-        auto pointList = this->getInput< ::fwData::PointList >(s_LANDMARKS_INOUT);
+        auto pointList = this->getInOut< ::fwData::PointList >(s_LANDMARKS_INOUT);
 
         m_counter = pointList->getCRefPoints().size();
 

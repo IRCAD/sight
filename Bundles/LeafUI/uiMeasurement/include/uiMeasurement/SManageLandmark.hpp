@@ -11,8 +11,6 @@
 
 #include <fwCom/Slot.hpp>
 
-#include <fwCore/base.hpp>
-
 #include <fwDataTools/PickingInfo.hpp>
 
 #include <fwServices/IController.hpp>
@@ -20,7 +18,7 @@
 namespace uiMeasurement
 {
 /**
- * @brief   SManageLandmark add a point into a pointlist on ctrl-left click.
+ * @brief   SManageLandmark adds a point into a pointlist on ctrl-left click.
  *
  * @section Slots Slots
  * - \b createLandmark(::fwDataTools::PickingInfo): add a point into a pointlist on ctrl-left click using PickingInfo.
@@ -29,9 +27,9 @@ namespace uiMeasurement
  * @section XML XML Configuration
  *
  * @code{.xml}
-       <service uid="..." type="::uiMeasurement::SManageLandmark" >
+   <service uid="..." type="::uiMeasurement::SManageLandmark" >
        <inout key="landmarks" uid="..." />
-       </service>
+   </service>
    @endcode
  *
  * @subsection In-Out In-Out
@@ -81,10 +79,12 @@ protected:
 
 private:
 
-    /// Each time a point is created, adds an ID label to the point.
+    /// SLot: Each time a point is created, adds an ID label to the point.
     void createLandmark(::fwDataTools::PickingInfo info);
-    /// Clear the pointlist
+
+    /// Slot: Clear the pointlist
     void clearPointlist();
+
     size_t m_counter; ///< Counter used as point ID.
 
 };
