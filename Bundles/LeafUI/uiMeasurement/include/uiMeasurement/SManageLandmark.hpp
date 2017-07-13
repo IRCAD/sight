@@ -30,7 +30,7 @@ namespace uiMeasurement
  *
  * @code{.xml}
        <service uid="..." type="::uiMeasurement::SManageLandmark" >
-       <inout key="pointlist" uid="..." />
+       <inout key="landmarks" uid="..." />
        </service>
    @endcode
  *
