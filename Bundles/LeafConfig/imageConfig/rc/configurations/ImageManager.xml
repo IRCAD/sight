@@ -3,16 +3,16 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
-        <param name="IMAGE_UID" />
-        <param name="TF_IMAGE" />
-        <param name="TF_KEY" default="SelectedTF"/>
+        <param name="IMAGE_UID" /><!-- Image to manage -->
+        <param name="TF_IMAGE" /><!-- Composite containing the selected TransferFunction -->
+        <param name="TF_KEY" default="SelectedTF"/><!-- Key of the TransferFunction in the composite 'TF_IMAGE' -->
     </parameters>
     <config>
 
         <object uid="${IMAGE_UID}" type="::fwData::Image" src="ref" />
         <object uid="${TF_IMAGE}" type="::fwData::Composite" src="ref" />
 
-        <service uid="ImageManagerView" type="::gui::view::SDefaultView">
+        <service uid="imageManagerView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="vertical" />
@@ -24,11 +24,11 @@
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <view sid="windowLevelImage" start="yes" />
-                <view sid="SliderView" start="yes" />
+                <view sid="sliderView" start="yes" />
             </registry>
         </service>
 
-        <service uid="SliderView" type="::gui::view::SDefaultView">
+        <service uid="sliderView" type="::gui::view::SDefaultView">
             <gui>
                 <layout type="::fwGui::LineLayoutManager">
                     <orientation value="horizontal" />
@@ -40,22 +40,26 @@
             </registry>
         </service>
 
+        <!-- Service to add field used to properly display and manage image: Slice index, TransferFunction, ... -->
         <service uid="medicalImageConverterImage" type="::ctrlSelection::MedicalImageSrv">
             <inout key="image" uid="${IMAGE_UID}" />
         </service>
 
+        <!-- Editor to manage slice index and image orientation (axial, frontal, sagittal) -->
         <service uid="selectorSliderNegatoImage" type="::uiImage::SliceIndexPositionEditor" autoConnect="yes">
             <inout key="image" uid="${IMAGE_UID}" />
             <sliceIndex>axial</sliceIndex>
         </service>
 
+        <!-- Editor to manage image windowing -->
         <service uid="windowLevelImage" type="::uiImage::WindowLevel" autoConnect="yes">
             <inout key="image" uid="${IMAGE_UID}" />
             <inout key="TFSelections" uid="${TF_IMAGE}" />
             <config selectedTFKey="${TF_KEY}" />
         </service>
         
-        <start uid="ImageManagerView" />
+        <start uid="imageManagerView" />
+        <start uid="medicalImageConverterImage" />
         
     </config>
 </extension>
