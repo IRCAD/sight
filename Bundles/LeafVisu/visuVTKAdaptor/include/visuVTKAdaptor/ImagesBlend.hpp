@@ -129,7 +129,7 @@ private:
     void changeCheckerboardDivision(int division);
 
     /// Create a new image adaptor
-    void addImage(::fwData::Image::csptr img, SPTR(ImageInfo) info);
+    void addImage(::fwData::Image::csptr img, CSPTR(ImageInfo) info);
 
     std::vector<std::string> m_imageIds;
     typedef std::map< std::string, SPTR(ImageInfo) > ImageInfoMap;

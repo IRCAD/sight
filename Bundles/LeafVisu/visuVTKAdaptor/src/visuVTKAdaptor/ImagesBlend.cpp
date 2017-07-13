@@ -139,7 +139,7 @@ void ImagesBlend::doConfigure() throw(fwTools::Failed)
     // Get the default division count for checkerboard algorithm
     if(m_configuration->hasAttribute("checkerboardDivision") )
     {
-        m_checkerboardDivision = ::boost::lexical_cast<int>(m_configuration->getAttributeValue("checkerboardDivision"));
+        m_checkerboardDivision = std::stoi(m_configuration->getAttributeValue("checkerboardDivision"));
     }
 
     std::vector< ::fwRuntime::ConfigurationElement::sptr > configs = m_configuration->find("image");
@@ -357,7 +357,7 @@ void ImagesBlend::changeMode(std::string _value, std::string _key)
 
 //------------------------------------------------------------------------------
 
-void ImagesBlend::addImage(::fwData::Image::csptr img, SPTR(ImageInfo)info)
+void ImagesBlend::addImage(::fwData::Image::csptr img, CSPTR(ImageInfo)info)
 {
     ::fwRenderVTK::IVtkAdaptorService::sptr imageAdaptor;
     imageAdaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( img,

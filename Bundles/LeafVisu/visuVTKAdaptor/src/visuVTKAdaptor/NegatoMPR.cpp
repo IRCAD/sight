@@ -271,7 +271,8 @@ void NegatoMPR::setCrossScale(double scale)
     }
 }
 
-/// Slot: set the VTK source image
+//-----------------------------------------------------------------------------
+
 void NegatoMPR::changeImageSource(std::string _value, std::string _key)
 {
     if( _key == "ImageSource" )
