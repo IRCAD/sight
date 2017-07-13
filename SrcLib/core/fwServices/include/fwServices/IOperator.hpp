@@ -34,10 +34,10 @@ public:
 
 protected:
 
-    /// IOperator constructor. Do nothing.
+    /// IOperator constructor.
     FWSERVICES_API IOperator();
 
-    /// IOperator destructor. Do nothing.
+    /// IOperator destructor.
     FWSERVICES_API virtual ~IOperator();
 
     ComputedSignalType::sptr m_sigComputed; ///< Signal emitted when operator is computed.
