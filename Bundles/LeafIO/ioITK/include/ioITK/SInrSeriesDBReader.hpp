@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,14 +7,15 @@
 #ifndef __IOITK_SINRSERIESDBREADER_HPP__
 #define __IOITK_SINRSERIESDBREADER_HPP__
 
-#include <string>
-#include <boost/filesystem/path.hpp>
+#include "ioITK/config.hpp"
 
 #include <fwCore/macros.hpp>
 
 #include <io/IReader.hpp>
 
-#include "ioITK/config.hpp"
+#include <boost/filesystem/path.hpp>
+
+#include <string>
 
 namespace fwData
 {
@@ -26,19 +27,17 @@ namespace fwMedData
 class Series;
 }
 
-
 namespace ioITK
 {
 
 /**
  * @brief Reads inr files and pushes them into SeriesDB.
- * @class SInrSeriesDBReader
  */
 class IOITK_CLASS_API SInrSeriesDBReader : public ::io::IReader
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SInrSeriesDBReader)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SInrSeriesDBReader)( ::io::IReader) );
 
     IOITK_API SInrSeriesDBReader() throw();
 
@@ -55,6 +54,9 @@ protected:
     virtual void stopping() throw(::fwTools::Failed)
     {
     }
+
+    /// Calls base class implementation
+    virtual void configuring() throw(::fwTools::Failed);
 
     /// Reads inr files specified by user (configure or configureWithIHM) and pushes them into SeriesDB.
     IOITK_API virtual void updating() throw(::fwTools::Failed);

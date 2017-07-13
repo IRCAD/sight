@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,8 +12,8 @@
 #include <io/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
-#include <string>
 
+#include <string>
 
 namespace fwMedData
 {
@@ -26,7 +26,6 @@ namespace fwJobs
 class IJob;
 }
 
-
 namespace ioVtkGdcm
 {
 
@@ -38,7 +37,7 @@ public:
     typedef std::vector< ExtensionType > ExtensionsType;
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBReader)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesDBReader)( ::io::IReader) );
     /**
      * @brief   constructor
      *
@@ -59,10 +58,13 @@ protected:
     IOVTKGDCM_API virtual void stopping() throw(::fwTools::Failed);
 
     /// Override
+    IOVTKGDCM_API virtual void configuring() throw(::fwTools::Failed);
+
+    /// Override
     IOVTKGDCM_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    IOVTKGDCM_API void info(std::ostream &_sstream );
+    IOVTKGDCM_API void info(std::ostream& _sstream );
 
     /// Override
     IOVTKGDCM_API virtual ExtensionsType getSupportedExtensions();

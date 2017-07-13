@@ -1,13 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ioVtkGdcm/SSeriesDBReader.hpp"
-
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Job.hpp>
 
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
@@ -20,19 +17,21 @@
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwMedData/SeriesDB.hpp>
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Job.hpp>
+
 #include <fwMedData/Series.hpp>
+#include <fwMedData/SeriesDB.hpp>
 
 #include <fwServices/macros.hpp>
 
 #include <fwTools/ProgressToLogger.hpp>
 
-#include <io/IReader.hpp>
-
 #include <vtkGdcmIO/SeriesDBReader.hpp>
 
-#include <boost/bind.hpp>
+#include <io/IReader.hpp>
 
+#include <boost/bind.hpp>
 
 namespace ioVtkGdcm
 {
@@ -61,7 +60,7 @@ void SSeriesDBReader::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle(this->getSelectorDialogTitle());
+    dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
@@ -92,7 +91,14 @@ void SSeriesDBReader::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SSeriesDBReader::info(std::ostream &_sstream )
+void SSeriesDBReader::configuring() throw(::fwTools::Failed)
+{
+    ::io::IReader::configuring();
+}
+
+//------------------------------------------------------------------------------
+
+void SSeriesDBReader::info(std::ostream& _sstream )
 {
     _sstream << "SSeriesDBReader::info";
 }
@@ -112,7 +118,6 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
     return "Choose a directory with DICOM images";
 }
 
-
 //------------------------------------------------------------------------------
 
 ::fwMedData::SeriesDB::sptr SSeriesDBReader::createSeriesDB(const ::boost::filesystem::path& dicomDir)
@@ -129,7 +134,7 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
     {
         reader->read();
     }
-    catch (const std::exception & e)
+    catch (const std::exception& e)
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();
@@ -173,7 +178,7 @@ void SSeriesDBReader::updating() throw(::fwTools::Failed)
         else
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Image Reader","This file can not be read. Retry with another file reader.",
+                "Image Reader", "This file can not be read. Retry with another file reader.",
                 ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }

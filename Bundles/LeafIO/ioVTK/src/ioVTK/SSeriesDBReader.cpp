@@ -61,7 +61,7 @@ void SSeriesDBReader::configureWithIHM()
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setType(::fwGui::dialog::ILocationDialog::MULTI_FILES);
-    dialogFile.setTitle("Choose vtk files to load Series");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose vtk files to load Series" : m_windowTitle);
     dialogFile.addFilter("Vtk", "*.vtk *.vti *.mhd *.vtu");
     dialogFile.addFilter("Vtk files", "*.vtk");
     dialogFile.addFilter("Vti files", "*.vti");
@@ -100,6 +100,13 @@ void SSeriesDBReader::starting() throw(::fwTools::Failed)
 void SSeriesDBReader::stopping() throw(::fwTools::Failed)
 {
     SLM_TRACE_FUNC();
+}
+
+//------------------------------------------------------------------------------
+
+void SSeriesDBReader::configuring() throw(::fwTools::Failed)
+{
+    ::io::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------

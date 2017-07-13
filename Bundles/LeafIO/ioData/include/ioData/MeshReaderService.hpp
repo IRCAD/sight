@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,18 +7,16 @@
 #ifndef __IODATA_MESHREADERSERVICE_HPP__
 #define __IODATA_MESHREADERSERVICE_HPP__
 
-#include <io/IReader.hpp>
-#include <boost/filesystem/path.hpp>
-
 #include "ioData/config.hpp"
+
+#include <io/IReader.hpp>
+
+#include <boost/filesystem/path.hpp>
 
 namespace ioData
 {
 /**
  * @brief   Mesh reader service.
- * @class   MeshReaderService
- *
- * @date    2009.
  *
  * Service reading a trian file into a fwData::Mesh object.
  * @li This service has no specified start and stop method.
@@ -33,11 +31,10 @@ class IODATA_CLASS_API MeshReaderService : public ::io::IReader
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (MeshReaderService)(::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (MeshReaderService)(::io::IReader) );
 
     /// Super class of reader services
     typedef ::io::IReader SuperClass;
-
 
     /** @name Specified reader service methods ( override from ::io::IReader )
      * @{
@@ -84,6 +81,10 @@ protected:
     {
     }
 
+    /**
+     * @brief Configuring method : calls implementation from `io::IReader`
+     */
+    IODATA_API virtual void configuring() throw(::fwTools::Failed);
 
     /**
      * @brief Updating method. This method is called by update() from base service ( ::fwServices::IService )
@@ -102,7 +103,7 @@ protected:
      *
      * @param[out] _sstream output stream
      */
-    IODATA_API virtual void info(std::ostream &_sstream );
+    IODATA_API virtual void info(std::ostream& _sstream );
     /// @}
 
 };

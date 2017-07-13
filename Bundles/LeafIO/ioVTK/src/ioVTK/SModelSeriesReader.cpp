@@ -1,11 +1,12 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ioVTK/SMeshWriter.hpp"
 #include "ioVTK/SModelSeriesReader.hpp"
+
+#include "ioVTK/SMeshWriter.hpp"
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -39,7 +40,6 @@
 
 #include <boost/filesystem/operations.hpp>
 
-
 namespace ioVTK
 {
 
@@ -70,8 +70,8 @@ void SModelSeriesReader::configureWithIHM()
     ::fwGui::dialog::LocationDialog dialogFile;
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setType(::fwGui::dialog::ILocationDialog::MULTI_FILES);
-    dialogFile.setTitle("Choose vtk files to load Series");
-    dialogFile.addFilter("Vtk files","*.vtk");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose vtk files to load Series" : m_windowTitle);
+    dialogFile.addFilter("Vtk files", "*.vtk");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
@@ -109,7 +109,14 @@ void SModelSeriesReader::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesReader::info(std::ostream &_sstream )
+void SModelSeriesReader::configuring() throw(::fwTools::Failed)
+{
+    ::io::IReader::configuring();
+}
+
+//------------------------------------------------------------------------------
+
+void SModelSeriesReader::info(std::ostream& _sstream )
 {
     _sstream << "SModelSeriesReader::info";
 }
@@ -168,7 +175,7 @@ void SModelSeriesReader::loadMesh( const ::boost::filesystem::path file, ::fwDat
         ::fwData::mt::ObjectWriteLock lock(mesh);
         reader->read();
     }
-    catch (const std::exception & e)
+    catch (const std::exception& e)
     {
         std::stringstream stream;
         stream << "Warning during loading : " << e.what();

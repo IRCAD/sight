@@ -1,12 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ioData/MeshReaderService.hpp"
-
-#include <io/IReader.hpp>
 
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
@@ -25,10 +23,12 @@
 
 #include <fwServices/macros.hpp>
 
+#include <io/IReader.hpp>
+
 #include <boost/filesystem/operations.hpp>
 
-#include <iostream>
 #include <fstream>
+#include <iostream>
 
 fwServicesRegisterMacro( ::io::IReader, ::ioData::MeshReaderService, ::fwData::Mesh );
 
@@ -37,7 +37,7 @@ namespace ioData
 
 //-----------------------------------------------------------------------------
 
-void MeshReaderService::info(std::ostream &_sstream )
+void MeshReaderService::info(std::ostream& _sstream )
 {
     this->SuperClass::info( _sstream );
     _sstream << std::endl << "Trian file reader";
@@ -61,15 +61,22 @@ std::vector< std::string > MeshReaderService::getSupportedExtensions()
 
 //------------------------------------------------------------------------------
 
+void MeshReaderService::configuring() throw(::fwTools::Failed)
+{
+    ::io::IReader::configuring();
+}
+
+//------------------------------------------------------------------------------
+
 void MeshReaderService::configureWithIHM()
 {
     SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose a trian file");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a trian file" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("Trian file","*.trian");
+    dialogFile.addFilter("Trian file", "*.trian");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
 
     ::fwData::location::SingleFile::sptr result;
@@ -113,7 +120,7 @@ void MeshReaderService::updating() throw(::fwTools::Failed)
                 sig->asyncEmit();
             }
         }
-        catch (const std::exception & e)
+        catch (const std::exception& e)
         {
             std::stringstream ss;
             ss << "Warning during loading : " << e.what();

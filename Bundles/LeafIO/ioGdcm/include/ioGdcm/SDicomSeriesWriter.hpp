@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -25,7 +25,6 @@ namespace fwMedData
 class DicomSeries;
 }
 
-
 namespace ioGdcm
 {
 
@@ -38,7 +37,7 @@ class IOGDCM_CLASS_API SDicomSeriesWriter : public ::io::IWriter
 public:
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignal;
 
-    fwCoreServiceClassDefinitionsMacro ( (SDicomSeriesWriter)( ::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (SDicomSeriesWriter)( ::io::IWriter) );
 
     /**
      * @brief   constructor
@@ -53,7 +52,6 @@ public:
     /// Propose select a directory where to save the DICOM files.
     IOGDCM_API virtual void configureWithIHM();
 
-
 protected:
 
     /// Does nothing
@@ -61,6 +59,9 @@ protected:
 
     /// Does nothing
     IOGDCM_API virtual void stopping() throw(::fwTools::Failed);
+
+    /// Does nothing
+    IOGDCM_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Write the DicomSeries in DICOM format.
     IOGDCM_API void updating() throw(::fwTools::Failed);

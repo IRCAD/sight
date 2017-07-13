@@ -1,30 +1,30 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ioData/TransformationMatrix3DWriterService.hpp"
 
+#include <fwCom/Signal.hpp>
+#include <fwCom/Signal.hxx>
+
 #include <fwCore/base.hpp>
 
-#include <fwData/TransformationMatrix3D.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
+
+#include <fwDataIO/writer/TransformationMatrix3DWriter.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 
 #include <fwServices/macros.hpp>
 
-#include <fwDataIO/writer/TransformationMatrix3DWriter.hpp>
-
-#include <fwCom/Signal.hpp>
-#include <fwCom/Signal.hxx>
+#include <boost/filesystem/operations.hpp>
 
 #include <fstream>
 #include <iostream>
-
-#include <boost/filesystem/operations.hpp>
 
 namespace ioData
 {
@@ -34,10 +34,9 @@ namespace ioData
 fwServicesRegisterMacro( ::io::IWriter, ::ioData::TransformationMatrix3DWriterService,
                          ::fwData::TransformationMatrix3D );
 
-
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DWriterService::info(std::ostream &_sstream )
+void TransformationMatrix3DWriterService::info(std::ostream& _sstream )
 {
     this->SuperClass::info( _sstream );
     _sstream << std::endl << " TransformationMatrix3D object writer";
@@ -59,7 +58,6 @@ void TransformationMatrix3DWriterService::starting( ) throw(::fwTools::Failed)
     SLM_TRACE_FUNC();
 }
 
-
 //------------------------------------------------------------------------------
 
 ::io::IOPathType TransformationMatrix3DWriterService::getIOPathType() const
@@ -69,15 +67,22 @@ void TransformationMatrix3DWriterService::starting( ) throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
+void TransformationMatrix3DWriterService::configuring() throw(::fwTools::Failed)
+{
+    ::io::IWriter::configuring();
+}
+
+//------------------------------------------------------------------------------
+
 void TransformationMatrix3DWriterService::configureWithIHM()
 {
     SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose a file to save a transformation matrix");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to save a transformation matrix" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("TRF files","*.trf");
+    dialogFile.addFilter("TRF files", "*.trf");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr result;

@@ -66,7 +66,7 @@ void SImageReader::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose a file to load an image");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load an image" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
@@ -105,6 +105,13 @@ void SImageReader::starting() throw ( ::fwTools::Failed )
 
 void SImageReader::stopping() throw ( ::fwTools::Failed )
 {
+}
+
+//------------------------------------------------------------------------------
+
+void SImageReader::configuring() throw ( ::fwTools::Failed )
+{
+    ::io::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------

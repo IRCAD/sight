@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -10,6 +10,7 @@
 #include "ioGdcm/config.hpp"
 
 #include <fwGdcmIO/writer/Series.hpp>
+
 #include <io/IWriter.hpp>
 
 #include <boost/filesystem/path.hpp>
@@ -31,7 +32,7 @@ class IOGDCM_CLASS_API SSeriesDBWriter : public ::io::IWriter
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBWriter)( ::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesDBWriter)( ::io::IWriter) );
 
     /**
      * @brief Constructor
@@ -53,6 +54,9 @@ protected:
 
     /// Does nothing
     IOGDCM_API virtual void stopping() throw(::fwTools::Failed);
+
+    /// Does nothing
+    IOGDCM_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Write the ImageSeries in DICOM format.
     IOGDCM_API void updating() throw(::fwTools::Failed);

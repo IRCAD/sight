@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,7 +26,6 @@
 #include <fwServices/macros.hpp>
 
 #include <fwVtkIO/MeshWriter.hpp>
-
 
 namespace ioVTK
 {
@@ -57,9 +56,9 @@ void SMeshWriter::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose a vtk file to save Mesh");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a vtk file to save Mesh" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("Vtk","*.vtk");
+    dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr result;
@@ -93,7 +92,14 @@ void SMeshWriter::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SMeshWriter::info(std::ostream &_sstream )
+void SMeshWriter::configuring() throw(::fwTools::Failed)
+{
+    ::io::IWriter::configuring();
+}
+
+//------------------------------------------------------------------------------
+
+void SMeshWriter::info(std::ostream& _sstream )
 {
     _sstream << "SMeshWriter::info";
 }
@@ -124,7 +130,7 @@ void SMeshWriter::updating() throw(::fwTools::Failed)
         {
             writer->write();
         }
-        catch (const std::exception & e)
+        catch (const std::exception& e)
         {
             std::stringstream ss;
             ss << "Warning during saving : " << e.what();

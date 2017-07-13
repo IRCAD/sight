@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -40,7 +40,7 @@ public:
     {
     }
 
-    fwCoreServiceClassDefinitionsMacro ( (SImageReader)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SImageReader)( ::io::IReader) );
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
@@ -66,6 +66,9 @@ protected:
     /// Method called when the service is stopped, does nothing.
     IOVTK_API virtual void stopping() throw ( ::fwTools::Failed );
 
+    /// Method called when the service is stopped, does nothing.
+    IOVTK_API virtual void configuring() throw ( ::fwTools::Failed );
+
     /**
      * @brief Updating method execute the read process.
      *
@@ -75,7 +78,7 @@ protected:
     IOVTK_API void updating() throw(::fwTools::Failed);
 
     /// Info method gives some informations on service.
-    IOVTK_API void info(std::ostream &_sstream );
+    IOVTK_API void info(std::ostream& _sstream );
 
 private:
 
