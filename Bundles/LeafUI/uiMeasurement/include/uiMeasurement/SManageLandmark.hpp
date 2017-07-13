@@ -79,7 +79,7 @@ protected:
 
 private:
 
-    /// SLot: Each time a point is created, adds an ID label to the point.
+    /// Slot: Each time a point is created, adds an ID label to the point.
     void createLandmark(::fwDataTools::PickingInfo info);
 
     /// Slot: Clear the pointlist
