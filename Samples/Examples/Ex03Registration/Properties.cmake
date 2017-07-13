@@ -4,30 +4,29 @@ set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
 set( REQUIREMENTS
-    servicesReg
+    appXml2
+    basicRegistration
+    ctrlSelection
     dataReg
+    fwlauncher
     gui
     guiQt
     io
-    fwlauncher
-    uiIO
-    visuVTK
-    visuVTKQt
-    visuVTKAdaptor
-    visuVTKVRAdaptor
-    ioVTK
-    ioITK
+    ioAtoms
     ioData
+    ioITK
+    ioVTK
+    servicesReg
     uiGenericQt
+    uiIO
     uiImageQt
+    uiMeasurement
     uiVisu
     uiVisuQt
-    ctrlSelection
-    uiMeasurement
-    uiMeasurementQt
-    appXml2
-    basicRegistration
-    ioAtoms
+    visuVTK
+    visuVTKAdaptor
+    visuVTKQt
+
 )
 
 bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex03RegistrationConfig)
