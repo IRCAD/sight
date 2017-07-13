@@ -83,6 +83,7 @@ SMatricesReader::~SMatricesReader() throw()
 void SMatricesReader::configuring() throw(::fwTools::Failed)
 {
     ::io::IReader::configuring();
+
     ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
 
     m_fps = config.get<unsigned int>("fps", 30);
@@ -106,7 +107,7 @@ void SMatricesReader::configureWithIHM()
 {
     static ::boost::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle((m_windowTitle.size() != 0) ? m_windowTitle : "Choose a csv file to read");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a csv file to read" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);

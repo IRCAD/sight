@@ -80,7 +80,7 @@ void SFrameWriter::configureWithIHM()
 {
     static ::boost::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle((m_windowTitle.size() != 0) ? m_windowTitle : "Choose a folder to save the frames");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the frames" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);

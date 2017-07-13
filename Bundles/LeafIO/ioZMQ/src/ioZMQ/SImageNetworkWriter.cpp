@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,12 +8,13 @@
 
 #include <fwData/Image.hpp>
 #include <fwData/String.hpp>
-#include <fwServices/macros.hpp>
+
 #include <fwGui/dialog/InputDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-fwServicesRegisterMacro (::io::IWriter, ::ioZMQ::SImageNetworkWriter, ::fwData::Image);
+#include <fwServices/macros.hpp>
 
+fwServicesRegisterMacro(::io::IWriter, ::ioZMQ::SImageNetworkWriter, ::fwData::Image);
 
 namespace ioZMQ
 {
@@ -32,6 +33,7 @@ SImageNetworkWriter::~SImageNetworkWriter() throw()
 
 void SImageNetworkWriter::configuring() throw (::fwTools::Failed)
 {
+    ::io::IWriter::configuring();
 }
 
 //-----------------------------------------------------------------------------
@@ -71,7 +73,7 @@ void SImageNetworkWriter::updating() throw (::fwTools::Failed)
         {
             m_socket->stop();
         }
-        msgDialog.showMessageDialog ("Error", std::string(err.what()));
+        msgDialog.showMessageDialog("Error", std::string(err.what()));
     }
 }
 
@@ -81,7 +83,7 @@ void SImageNetworkWriter::configureWithIHM()
 {
     ::fwGui::dialog::InputDialog inputDialog;
 
-    inputDialog.setTitle("Configure server");
+    inputDialog.setTitle(m_windowTitle.empty() ? "Configure server" : m_windowTitle);
     m_host = inputDialog.getInput();
 }
 
@@ -104,5 +106,4 @@ void SImageNetworkWriter::swapping() throw (::fwTools::Failed)
 //-----------------------------------------------------------------------------
 
 } // namespace ioZMQ
-
 
