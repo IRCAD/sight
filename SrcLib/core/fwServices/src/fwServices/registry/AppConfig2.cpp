@@ -396,7 +396,9 @@ std::string AppConfig2::adaptField( const std::string& _str, const FieldAdaptorT
     if(!_str.empty())
     {
         // Discriminate first variable expressions only, looking through all keys of the replace map is not for free
-        if ( ::boost::regex_match(_str, s_isVariable ) )
+        // However we look inside the whole string instead of only at the beginning because we want  to replace "inner"
+        // variables as well, i.e. not only ${uid} but also uid${suffix}
+        if ( ::boost::regex_search(_str, s_isVariable ) )
         {
             // Iterate over all variables
             for(const auto& fieldAdaptor : _variablesMap )
