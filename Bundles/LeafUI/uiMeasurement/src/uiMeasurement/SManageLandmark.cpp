@@ -23,6 +23,7 @@ fwServicesRegisterMacro(::fwServices::IController, ::uiMeasurement::SManageLandm
 
 namespace uiMeasurement
 {
+const ::fwServices::IService::KeyType s_LANDMARKS_INOUT = "landmarks";
 
 const ::fwCom::Slots::SlotKeyType SManageLandmark::s_CREATE_LANDMARK_SLOT = "createLandmark";
 const ::fwCom::Slots::SlotKeyType SManageLandmark::s_CLEAR_SLOT           = "clearPointlist";
@@ -67,7 +68,7 @@ void SManageLandmark::createLandmark(::fwDataTools::PickingInfo info)
     if (info.m_eventId == ::fwDataTools::PickingInfo::Event::MOUSE_LEFT_UP &&
         info.m_modifierMask == ::fwDataTools::PickingInfo::CTRL )
     {
-        ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList >();
+        auto pointList = this->getInput< ::fwData::PointList >(s_LANDMARKS_INOUT);
 
         m_counter = pointList->getCRefPoints().size();
 
@@ -88,7 +89,8 @@ void SManageLandmark::createLandmark(::fwDataTools::PickingInfo info)
 
 void SManageLandmark::clearPointlist()
 {
-    ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList >();
+    auto pointList = this->getInOut< ::fwData::PointList >(s_LANDMARKS_INOUT);
+
     if (pointList)
     {
         pointList->getRefPoints().clear();
