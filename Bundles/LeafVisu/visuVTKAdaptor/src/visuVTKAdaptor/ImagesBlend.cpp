@@ -359,27 +359,27 @@ void ImagesBlend::changeMode(std::string _value, std::string _key)
 
 void ImagesBlend::addImage(::fwData::Image::csptr img, CSPTR(ImageInfo)info)
 {
-    ::fwRenderVTK::IVtkAdaptorService::sptr imageAdaptor;
-    imageAdaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( img,
-                                                                           "::visuVTKAdaptor::Image");
-    imageAdaptor->setRenderService(this->getRenderService());
-    imageAdaptor->setRenderId( this->getRenderId() );
-    imageAdaptor->setPickerId( this->getPickerId() );
-    imageAdaptor->setTransformId( this->getTransformId() );
-    imageAdaptor->setAutoRender( this->getAutoRender() );
+    ::fwRenderVTK::IVtkAdaptorService::sptr imageAdaptorService
+        = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( img, "::visuVTKAdaptor::Image");
 
-    ::visuVTKAdaptor::Image::sptr IA;
-    IA = ::visuVTKAdaptor::Image::dynamicCast(imageAdaptor);
-    IA->setVtkImageRegister(m_imageAlgorithm);
-    IA->setImageOpacity(info->m_imageOpacity);
-    IA->setAllowAlphaInTF(info->m_useTFAlfa);
-    IA->setSelectedTFKey( info->m_selectedTFKey );
-    IA->setTFSelectionFwID( info->m_tfSelectionFwID );
+    imageAdaptorService->setRenderService(this->getRenderService());
+    imageAdaptorService->setRenderId( this->getRenderId() );
+    imageAdaptorService->setPickerId( this->getPickerId() );
+    imageAdaptorService->setTransformId( this->getTransformId() );
+    imageAdaptorService->setAutoRender( this->getAutoRender() );
 
-    m_registeredImages[img->getID()] = imageAdaptor;
-    this->registerService(imageAdaptor);
+    ::visuVTKAdaptor::Image::sptr imageAdaptor = ::visuVTKAdaptor::Image::dynamicCast(imageAdaptorService);
 
-    imageAdaptor->start();
+    imageAdaptor->setVtkImageRegister(m_imageAlgorithm);
+    imageAdaptor->setImageOpacity(info->m_imageOpacity);
+    imageAdaptor->setAllowAlphaInTF(info->m_useTFAlfa);
+    imageAdaptor->setSelectedTFKey( info->m_selectedTFKey );
+    imageAdaptor->setTFSelectionFwID( info->m_tfSelectionFwID );
+
+    m_registeredImages[img->getID()] = imageAdaptorService;
+    this->registerService(imageAdaptorService);
+
+    imageAdaptorService->start();
 }
 
 //------------------------------------------------------------------------------
