@@ -43,11 +43,14 @@ namespace editor
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::videoQt::editor::SCamera );
 
+const ::fwCom::Signals::SignalKeyType SCamera::s_CONFIGURED_CAMERAS_SIG = "configuredCameras";
+
 //------------------------------------------------------------------------------
 
 SCamera::SCamera() noexcept :
     m_bVideoSupport(false),
-    m_numCreateCameras(0)
+    m_numCreateCameras(0),
+    m_sigConfiguredCameras(newSignal<ConfiguredCamerasSignalType>(s_CONFIGURED_CAMERAS_SIG))
 {
 }
 
@@ -225,6 +228,7 @@ void SCamera::onChooseFile()
             sig->asyncEmit();
         }
     }
+    m_sigConfiguredCameras->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
@@ -252,6 +256,7 @@ void SCamera::onChooseStream()
             sig->asyncEmit();
         }
     }
+    m_sigConfiguredCameras->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
@@ -275,6 +280,7 @@ void SCamera::onChooseDevice()
             sig->asyncEmit();
         }
     }
+    m_sigConfiguredCameras->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
