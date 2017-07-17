@@ -212,6 +212,19 @@ void LabeledPointList::doConfigure() throw(fwTools::Failed)
         SLM_FATAL_IF("value for 'intergration' must be 'on' or 'off', actual: " + interaction,
                      interaction != "on" && interaction != "off");
         m_interaction = (interaction == "on");
+
+        if(!m_interaction)
+        {
+            try
+            {
+                this->doStop();
+            }
+            catch(::fwTools::Failed& e)
+            {
+                OSLM_ERROR("Error : " << e.what());
+                FW_RAISE_EXCEPTION(e);
+            }
+        }
     }
 }
 
@@ -220,10 +233,12 @@ void LabeledPointList::doConfigure() throw(fwTools::Failed)
 void LabeledPointList::doStart() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-
-    m_rightButtonCommand = vtkLabeledPointDeleteCallBack::New(this);
-    this->getInteractor()->AddObserver( "RightButtonPressEvent", m_rightButtonCommand, 1 );
-    this->getInteractor()->AddObserver( "RightButtonReleaseEvent", m_rightButtonCommand, 1 );
+    if(m_interaction)
+    {
+        m_rightButtonCommand = vtkLabeledPointDeleteCallBack::New(this);
+        this->getInteractor()->AddObserver( "RightButtonPressEvent", m_rightButtonCommand, 1 );
+        this->getInteractor()->AddObserver( "RightButtonReleaseEvent", m_rightButtonCommand, 1 );
+    }
 
     this->doUpdate();
 }

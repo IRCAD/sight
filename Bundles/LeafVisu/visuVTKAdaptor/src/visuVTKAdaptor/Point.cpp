@@ -203,7 +203,7 @@ void Point::doConfigure() throw(fwTools::Failed)
     const std::string interaction = m_configuration->getAttributeValue("interaction");
     if(!interaction.empty())
     {
-        SLM_FATAL_IF("value for 'intergration' must be 'on' or 'off', actual: " + interaction,
+        SLM_FATAL_IF("value for 'interaction' must be 'on' or 'off', actual: " + interaction,
                      interaction != "on" && interaction != "off");
         m_interaction = (interaction == "on");
     }
@@ -267,11 +267,8 @@ void Point::doUpdate() throw(fwTools::Failed)
                                          m_ptSelectedColor->blue());
     rep->GetSelectedProperty()->SetOpacity(m_ptSelectedColor->alpha());
 
-    if(!m_interaction)
-    {
-        m_handle->ProcessEventsOff();
-        m_handle->ManagesCursorOff();
-    }
+    m_handle->SetProcessEvents(m_interaction);
+    m_handle->SetManagesCursor(m_interaction);
 
     this->setVtkPipelineModified();
 }

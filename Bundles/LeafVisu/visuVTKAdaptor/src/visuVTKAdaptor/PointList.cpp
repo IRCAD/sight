@@ -78,7 +78,7 @@ void PointList::doConfigure() throw(fwTools::Failed)
 
     if (!interaction.empty())
     {
-        SLM_FATAL_IF("value for 'integration' must be 'on' or 'off', actual: " + interaction,
+        SLM_FATAL_IF("value for 'interaction' must be 'on' or 'off', actual: " + interaction,
                      interaction != "on" && interaction != "off");
 
         m_interaction = (interaction == "on");
