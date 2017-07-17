@@ -49,9 +49,10 @@ Detail of the ToolBar
  Step 1 : The user loads a mesh or/and image in the first tab by using the button (actionOpenFile)
           The first button is for loading an image (actionOpenFile) and the second is for loading a mesh (actionOpenMesh1).
  Step 2 : The user loads a mesh in the second Tab by using the button with a face and a two on the icon (actionOpenMesh2).
- Step 3 : The user put at least 3 points in the first tab named Point list 1 (on ctrl+click on the image or mesh).
- Step 4 : The user put at least 3 points in the second tab named Point list 2 (on ctrl+click on the mesh).
- Step 5 : The user click on the register button (Yin_Yang symbol) to do the registration and visualize the result on the third tab (RegisterAction).
+ Step 3 : The user puts at least 3 points in the first tab named Point list 1 (on ctrl+click on the image or mesh).
+ Step 4 : The user puts at least 3 points in the second tab named Point list 2 (on ctrl+click on the mesh).
+ Step 5 : The user clicks on the register button (Yin_Yang symbol) to do the registration and visualize the result on the 
+          third tab (RegisterAction).
  -->
 <plugin id="Ex03Registration" version="@DASH_VERSION@" >
 
@@ -355,7 +356,7 @@ Detail of the ToolBar
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
             </service>
 
-            <!-- Services to add a point in the pointlist when the user clic in the scene -->
+            <!-- Services to add a point in the pointlist when the user clicks in the scene -->
             <service uid="addLAndmarksInPL1" type="::uiMeasurement::SManageLandmark">
                 <inout key="landmarks" uid="pointList1" />
             </service>
