@@ -49,9 +49,10 @@ Detail of the ToolBar
  Step 1 : The user loads a mesh or/and image in the first tab by using the button (actionOpenFile)
           The first button is for loading an image (actionOpenFile) and the second is for loading a mesh (actionOpenMesh1).
  Step 2 : The user loads a mesh in the second Tab by using the button with a face and a two on the icon (actionOpenMesh2).
- Step 3 : The user put at least 3 points in the first tab named Point list 1 (ActionNewLandmarkPL1).
- Step 4 : The user put at least 3 points in the second tab named Point list 2 (The numeber of points must be the same in the two Tabs) (ActionNewLandmarkPL2).
- Step 5 : The user click on the register button (Yin_Yang symbol) to do the registration and visualize the result on the third tab (RegisterAction).
+ Step 3 : The user puts at least 3 points in the first tab named Point list 1 (on ctrl+click on the image or mesh).
+ Step 4 : The user puts at least 3 points in the second tab named Point list 2 (on ctrl+click on the mesh).
+ Step 5 : The user clicks on the register button (Yin_Yang symbol) to do the registration and visualize the result on the 
+          third tab (RegisterAction).
  -->
 <plugin id="Ex03Registration" version="@DASH_VERSION@" >
 
@@ -110,9 +111,6 @@ Detail of the ToolBar
                         <separator />
                         <menuItem name="Load Mesh2" icon="@BUNDLE_PREFIX@/Ex03Registration_0-1/icons/icon-load2.png" />
                         <separator />
-                        <menuItem name="New landmark PL1" icon="@BUNDLE_PREFIX@/Ex03Registration_0-1/icons/Add-landmark.png" />
-                        <menuItem name="New landmark PL2" icon="@BUNDLE_PREFIX@/Ex03Registration_0-1/icons/Add-landmark.png" />
-                        <separator />
                         <menuItem name="Register" icon="@BUNDLE_PREFIX@/Ex03Registration_0-1/icons/Fusion-tmp.png" />
                         <menuItem name="Quit" icon="@BUNDLE_PREFIX@/Ex03Registration_0-1/icons/unreadable.png"/>
                     </layout>
@@ -121,8 +119,6 @@ Detail of the ToolBar
                     <menuItem sid="actionOpenFile" start="yes" />
                     <menuItem sid="actionOpenMesh1" start="yes" />
                     <menuItem sid="actionOpenMesh2" start="yes" />
-                    <menuItem sid="ActionNewLandmarkPL1" start="yes" />
-                    <menuItem sid="ActionNewLandmarkPL2" start="yes" />
                     <menuItem sid="RegisterAction" start="yes" />
                     <menuItem sid="actionQuit" start="yes" />
                 </registry>
@@ -190,8 +186,10 @@ Detail of the ToolBar
             </service>
 
             <!-- Action to do the registration -->
-            <service uid="RegisterAction" type="::gui::action::SStarter" >
-                <start uid="PLRegistration" />
+            <service uid="RegisterAction" type="::gui::action::SSlotCaller" >
+                <slots>
+                    <slot>PLRegistration/update</slot>
+                </slots>
             </service>
 
             <!-- Action to do Quit -->
@@ -225,7 +223,7 @@ Detail of the ToolBar
                     </adaptor>
 
                     <adaptor id="MPRNegato1" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
-                        <config renderer="default" picker="negato1default" slices="3" sliceIndex="axial" useColorTF="no" />
+                        <config renderer="default" picker="negato1default" mode="3d" slices="3" sliceIndex="axial" useColorTF="no" />
                     </adaptor>
 
                     <adaptor id="text" class="::visuVTKAdaptor::ImageText" objectId="image">
@@ -237,8 +235,17 @@ Detail of the ToolBar
                     </adaptor>
 
                     <adaptor id="pl1" class="::visuVTKAdaptor::LabeledPointList" objectId="pointList">
-                        <config renderer="default" picker="negato1default" />
+                        <config renderer="default" picker="negato1default" color="#00ff00" />
                     </adaptor>
+
+                    <adaptor id="pickerInteractor" uid="pickerInteractor1" class="::visuVTKAdaptor::PickerInteractor" objectId="self" >
+                        <config renderer="default" picker="negato1default" event="MOUSE_LEFT_UP"/>
+                    </adaptor>
+
+                    <connect>
+                        <signal>pickerInteractor1/picked</signal>
+                        <slot>addLAndmarksInPL1/createLandmark</slot>
+                    </connect>
 
                     <connect>
                         <signal>snapshotNegato1Editor/snapped</signal>
@@ -266,8 +273,17 @@ Detail of the ToolBar
                     </adaptor>
 
                     <adaptor id="pl2" class="::visuVTKAdaptor::LabeledPointList" objectId="pointList">
-                        <config renderer="default" picker="negato2default" />
+                        <config renderer="default" picker="negato2default" color="#00ff00" />
                     </adaptor>
+
+                    <adaptor id="pickerInteractor" uid="pickerInteractor2" class="::visuVTKAdaptor::PickerInteractor" objectId="self" >
+                        <config renderer="default" picker="negato2default" event="MOUSE_LEFT_UP"/>
+                    </adaptor>
+
+                    <connect>
+                        <signal>pickerInteractor2/picked</signal>
+                        <slot>addLAndmarksInPL2/createLandmark</slot>
+                    </connect>
 
                 </scene>
             </service>
@@ -295,7 +311,7 @@ Detail of the ToolBar
                     </adaptor>
 
                     <adaptor id="Tool2" class="::visuVTKAdaptor::Mesh" objectId="meshOnNegato1">
-                        <config renderer="default" transform="vtkRegisterMatrix" />
+                        <config renderer="default" />
                     </adaptor>
 
                     <adaptor id="MPRNegato3" class="::visuVTKAdaptor::NegatoMPR" objectId="image">
@@ -340,18 +356,22 @@ Detail of the ToolBar
                 <addSelection service="::ioXML::FwXMLGenericReaderService" />
             </service>
 
-            <service uid="ActionNewLandmarkPL1" type="::uiMeasurement::action::SAddLabeledPoint" >
-                <inout key="pointList" uid="pointList1" />
+            <!-- Services to add a point in the pointlist when the user clicks in the scene -->
+            <service uid="addLAndmarksInPL1" type="::uiMeasurement::SManageLandmark">
+                <inout key="landmarks" uid="pointList1" />
             </service>
 
-            <service uid="ActionNewLandmarkPL2" type="::uiMeasurement::action::SAddLabeledPoint" >
-                <inout key="pointList" uid="pointList2" />
+            <service uid="addLAndmarksInPL2" type="::uiMeasurement::SManageLandmark">
+                <inout key="landmarks" uid="pointList2" />
             </service>
 
             <!-- START AND STOP SERVICES -->
             <start uid="mainFrame" />
             <start uid="medicalImageSrv" />
             <start uid="sliderNegato1" />
+            <start uid="PLRegistration" />
+            <start uid="addLAndmarksInPL1" />
+            <start uid="addLAndmarksInPL2" />
 
         </config>
     </extension>

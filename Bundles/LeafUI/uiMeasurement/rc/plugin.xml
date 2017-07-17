@@ -66,6 +66,12 @@
         <service>::uiMeasurement::action::SAddLabeledPoint</service>
         <object>::fwData::PointList</object>
     </extension>
+
+    <extension implements="::fwServices::registry::ServiceFactory">
+        <type>::fwServices::IController</type>
+        <service>::uiMeasurement::SManageLandmark</service>
+        <object>::fwData::PointList</object>
+    </extension>
     
      <extension implements="::fwServices::registry::AppConfig">
         <id>LoadLandmark</id>
