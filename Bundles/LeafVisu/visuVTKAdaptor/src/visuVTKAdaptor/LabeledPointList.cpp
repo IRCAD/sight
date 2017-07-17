@@ -209,7 +209,7 @@ void LabeledPointList::doConfigure() throw(fwTools::Failed)
     const std::string interaction = m_configuration->getAttributeValue("interaction");
     if(!interaction.empty())
     {
-        SLM_FATAL_IF("value for 'intergration' must be 'on' or 'off', actual: " + interaction,
+        SLM_FATAL_IF("value for 'interaction' must be 'on' or 'off', actual: " + interaction,
                      interaction != "on" && interaction != "off");
         m_interaction = (interaction == "on");
 
