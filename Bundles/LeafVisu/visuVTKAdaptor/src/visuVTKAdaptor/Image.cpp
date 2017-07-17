@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -26,9 +26,9 @@
 #include <fwVtkIO/vtk.hpp>
 
 #include <vtkImageBlend.h>
+#include <vtkImageCheckerboard.h>
 #include <vtkImageData.h>
 #include <vtkImageMapToColors.h>
-
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Image, ::fwData::Image );
 
@@ -159,10 +159,9 @@ void Image::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-
 void Image::updateImage( ::fwData::Image::sptr image  )
 {
-    ::fwVtkIO::toVTKImage(image,m_imageData);
+    ::fwVtkIO::toVTKImage(image, m_imageData);
 
     this->updateImageInfos(image);
     this->setVtkPipelineModified();
@@ -198,7 +197,7 @@ void Image::updateImageTransferFunction( ::fwData::Image::sptr image )
 
 void Image::updateImageOpacity()
 {
-    if (m_imagePortId>= 0)
+    if (m_imagePortId >= 0)
     {
         ::fwData::Image::sptr img = this->getObject< ::fwData::Image >();
         if(img->getField( "TRANSPARENCY" ) )
@@ -211,10 +210,15 @@ void Image::updateImageOpacity()
             ::fwData::Boolean::sptr visible = img->getField< ::fwData::Boolean >( "VISIBILITY" );
             m_imageOpacity                  = (*visible) ? m_imageOpacity : 0.0;
         }
+
         vtkImageBlend* imageBlend = vtkImageBlend::SafeDownCast(m_imageRegister);
-        imageBlend->SetOpacity(m_imagePortId, m_imageOpacity);
-        OSLM_TRACE(
-            "vtkImageBlend " << this->m_imageRegisterId << " opacity :" << m_imagePortId << "," << m_imageOpacity );
+        if(nullptr != imageBlend )
+        {
+            imageBlend->SetOpacity(m_imagePortId, m_imageOpacity);
+            OSLM_TRACE(
+                "vtkImageBlend " << this->m_imageRegisterId << " opacity :" << m_imagePortId << "," << m_imageOpacity );
+        }
+
         this->setVtkPipelineModified();
         this->requestRender();
     }
@@ -234,11 +238,12 @@ void Image::buildPipeline( )
         m_imageRegister = this->getVtkObject(m_imageRegisterId);
     }
 
-    vtkImageAlgorithm* algorithm = vtkImageAlgorithm::SafeDownCast(m_imageRegister);
-    vtkImageData* imageData      = vtkImageData::SafeDownCast(m_imageRegister);
-    vtkImageBlend* imageBlend    = vtkImageBlend::SafeDownCast(m_imageRegister);
+    vtkImageAlgorithm* algorithm       = vtkImageAlgorithm::SafeDownCast(m_imageRegister);
+    vtkImageData* imageData            = vtkImageData::SafeDownCast(m_imageRegister);
+    vtkImageBlend* imageBlend          = vtkImageBlend::SafeDownCast(m_imageRegister);
+    vtkImageCheckerboard* imageChecker = vtkImageCheckerboard::SafeDownCast(m_imageRegister);
 
-    SLM_ASSERT("Invalid vtk image register", algorithm||imageData||imageBlend );
+    SLM_ASSERT("Invalid vtk image register", algorithm||imageData||imageBlend||imageChecker );
     if (imageBlend)
     {
         SLM_TRACE("Register is a vtkImageBlend");
@@ -247,6 +252,16 @@ void Image::buildPipeline( )
             m_imagePortId = imageBlend->GetNumberOfInputConnections(0);
             imageBlend->AddInputConnection(m_map2colors->GetOutputPort());
             OSLM_TRACE(this->getID() << ": Added image " << m_imagePortId << " on vtkImageBlend");
+        }
+    }
+    else if (imageChecker)
+    {
+        SLM_TRACE("Register is a vtkImageCheckerboard");
+        if (m_imagePortId < 0)
+        {
+            m_imagePortId = imageChecker->GetNumberOfInputConnections(0);
+            imageChecker->SetInputConnection(m_imagePortId, m_map2colors->GetOutputPort());
+            OSLM_TRACE(this->getID() << ": Added image " << m_imagePortId << " on vtkImageCheckerboard");
         }
     }
     else if (algorithm)
@@ -268,9 +283,10 @@ void Image::buildPipeline( )
 
 void Image::destroyPipeline( )
 {
-    vtkImageAlgorithm* algorithm = vtkImageAlgorithm::SafeDownCast(m_imageRegister);
-    vtkImageData* imageData      = vtkImageData::SafeDownCast(m_imageRegister);
-    vtkImageBlend* imageBlend    = vtkImageBlend::SafeDownCast(m_imageRegister);
+    vtkImageAlgorithm* algorithm       = vtkImageAlgorithm::SafeDownCast(m_imageRegister);
+    vtkImageData* imageData            = vtkImageData::SafeDownCast(m_imageRegister);
+    vtkImageBlend* imageBlend          = vtkImageBlend::SafeDownCast(m_imageRegister);
+    vtkImageCheckerboard* imageChecker = vtkImageCheckerboard::SafeDownCast(m_imageRegister);
 
     if (imageBlend)
     {
@@ -278,6 +294,15 @@ void Image::destroyPipeline( )
         {
             //Warning : only the removal of the last input connection in the image blend is safe.
             imageBlend->RemoveInputConnection(0, m_map2colors->GetOutputPort());
+            m_imagePortId = -1;
+        }
+    }
+    else if(imageChecker)
+    {
+        if (m_imagePortId >= 0)
+        {
+            //Warning : only the removal of the last input connection in the image blend is safe.
+            imageChecker->RemoveInputConnection(0, m_map2colors->GetOutputPort());
             m_imagePortId = -1;
         }
     }
@@ -307,6 +332,5 @@ void Image::destroyPipeline( )
 }
 
 //------------------------------------------------------------------------------
-
 
 } //namespace visuVTKAdaptor

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,10 +36,11 @@ fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::Ne
 
 namespace visuVTKAdaptor
 {
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT = "updateSliceType";
-static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_MODE_SLOT = "updateSliceMode";
-static const ::fwCom::Slots::SlotKeyType s_SHOW_SLICE_SLOT        = "showSlice";
-static const ::fwCom::Slots::SlotKeyType s_SET_CROSS_SCALE_SLOT   = "setCrossScale";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT   = "updateSliceType";
+static const ::fwCom::Slots::SlotKeyType s_UPDATE_SLICE_MODE_SLOT   = "updateSliceMode";
+static const ::fwCom::Slots::SlotKeyType s_SHOW_SLICE_SLOT          = "showSlice";
+static const ::fwCom::Slots::SlotKeyType s_SET_CROSS_SCALE_SLOT     = "setCrossScale";
+static const ::fwCom::Slots::SlotKeyType S_CHANGE_IMAGE_SOURCE_SLOT = "changeImageSource";
 
 static const std::string s_slicingStartingProxy = "slicingStartingProxy";
 static const std::string s_slicingStoppingProxy = "slicingStoppingProxy";
@@ -50,7 +51,7 @@ NegatoMPR::NegatoMPR() throw() :
     m_allowAlphaInTF(false),
     m_interpolation(false),
     m_actorOpacity(1.0),
-    m_3dModeEnabled ( ::boost::logic::indeterminate ),
+    m_3dModeEnabled( ::boost::logic::indeterminate ),
     m_sliceMode(THREE_SLICES),
     m_backupedSliceMode(THREE_SLICES)
 {
@@ -58,6 +59,7 @@ NegatoMPR::NegatoMPR() throw() :
     newSlot(s_UPDATE_SLICE_MODE_SLOT, &NegatoMPR::updateSliceMode, this);
     newSlot(s_SHOW_SLICE_SLOT, &NegatoMPR::showSlice, this);
     newSlot(s_SET_CROSS_SCALE_SLOT, &NegatoMPR::setCrossScale, this);
+    newSlot(S_CHANGE_IMAGE_SOURCE_SLOT, &NegatoMPR::changeImageSource, this);
 }
 
 //------------------------------------------------------------------------------
@@ -98,7 +100,6 @@ void NegatoMPR::doStop() throw(fwTools::Failed)
         {
             proxy->disconnect(m_slicingStartingProxy, sliceCursor->slot(
                                   SlicesCursor::s_SHOW_FULL_CROSS_SLOT));
-
 
             proxy->disconnect(m_slicingStoppingProxy, sliceCursor->slot(
                                   SlicesCursor::s_SHOW_NORMAL_CROSS_SLOT));
@@ -270,6 +271,19 @@ void NegatoMPR::setCrossScale(double scale)
     }
 }
 
+//-----------------------------------------------------------------------------
+
+void NegatoMPR::changeImageSource(std::string _value, std::string _key)
+{
+    if( _key == "ImageSource" )
+    {
+        // Select the right algorithm
+        m_imageSourceId = _value;
+
+        this->doUpdate();
+    }
+}
+
 //------------------------------------------------------------------------------
 
 void NegatoMPR::doConfigure() throw(fwTools::Failed)
@@ -390,7 +404,6 @@ void NegatoMPR::set3dMode( bool enabled )
         service = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( image, adaptor );
         SLM_ASSERT("service not instanced", service);
     }
-
 
     ::visuVTKAdaptor::NegatoOneSlice::sptr negatoAdaptor;
     negatoAdaptor = ::visuVTKAdaptor::NegatoOneSlice::dynamicCast(service);

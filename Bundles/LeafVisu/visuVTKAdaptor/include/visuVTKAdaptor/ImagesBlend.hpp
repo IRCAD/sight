@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -17,7 +17,6 @@
 
 #include <fwRenderVTK/IVtkAdaptorService.hpp>
 
-
 class vtkImageActor;
 class vtkLookupTable;
 class vtkImageMapToColors;
@@ -25,24 +24,52 @@ class vtkImageData;
 class vtkPolyDataMapper;
 class vtkPolyData;
 class vtkActor;
-class vtkImageBlend;
+class vtkImageCheckerboard;
+class vtkThreadedImageAlgorithm;
 
 namespace visuVTKAdaptor
 {
 
 /**
  * @brief Manage blend for image given in configuration.
+ *
+ * @section Slots Slots
+ * - \b changeMode(std::string _value, std::string _key): set the blending algorithm. The key must be "ImageSource"
+ * - \b changeCheckerboardDivision(int division): set the number of cells to display the checkerboard
+ *
+ * @code{.xml}
+    <adaptor id="registrationImageAdaptor" class="::visuVTKAdaptor::ImagesBlend" objectId="self">
+        <config vtkimageregister="imageBlend" checkerboardDivision="10">
+            <image objectId="image1" tfalpha="no" selectedTFKey="selected1" tfSelectionFwID="tfSelection" />
+            <image objectId="image2" tfalpha="no" selectedTFKey="selectd2" tfSelectionFwID="tfSelection" />
+        </config>
+    </adaptor>
+   @endcode
+ * - \b vtkimageregister (mandatory): VTK object name for default blending algorithm.
+ * - \b checkerboardDivision (optional): Number of division in checkerboard mode.
+ * - \b image (2..n)
+ *      - \b objectId (mandatory) Image key
+ *      - \b tfalpha (optional, yes/no, default=no): if true, the opacity of the transfer function is used in the negato
+ *      - \b selectedTFKey (optional): key of the transfer function to use in negato
+ *      - \b tfSelectionFwID (optional): fwID of the composite containing transfer functions
+ *      - \b opacity (optional, default=1.0): opacity (0.0..1.0)
+ *
  */
 class VISUVTKADAPTOR_CLASS_API ImagesBlend : public ::fwRenderVTK::IVtkAdaptorService
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (ImagesBlend)(::fwRenderVTK::IVtkAdaptorService) );
+    fwCoreServiceClassDefinitionsMacro( (ImagesBlend)(::fwRenderVTK::IVtkAdaptorService) );
+
+    VISUVTKADAPTOR_CLASS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_MODE_SLOT;
+    VISUVTKADAPTOR_CLASS_API static const ::fwCom::Slots::SlotKeyType s_CHANGE_CHECKERBOARD_DIVISION_SLOT;
 
     VISUVTKADAPTOR_API ImagesBlend() throw();
 
     VISUVTKADAPTOR_API virtual ~ImagesBlend() throw();
+
+    //------------------------------------------------------------------------------
 
     void setVtkImageRegisterId(const std::string& id)
     {
@@ -89,8 +116,20 @@ protected:
     void addImageAdaptors();
     void removeImageAdaptors();
 
-    /// Return true if images to blend have the same spacing, origin and size. Else show a message dialog and return false
+    /// Return true if images to blend have the same spacing, origin and size. Else show a message dialog and return
+    // false
     bool checkImageInformations();
+
+private:
+
+    ///SLOT: changeMode
+    void changeMode(std::string _value, std::string _key);
+
+    ///SLOT: Change number of celle in the checkerboard
+    void changeCheckerboardDivision(int division);
+
+    /// Create a new image adaptor
+    void addImage(::fwData::Image::csptr img, CSPTR(ImageInfo) info);
 
     std::vector<std::string> m_imageIds;
     typedef std::map< std::string, SPTR(ImageInfo) > ImageInfoMap;
@@ -100,12 +139,14 @@ protected:
     typedef std::map< std::string, ::fwRenderVTK::IVtkAdaptorService::sptr > RegisteredImageMap;
     RegisteredImageMap m_registeredImages;
 
+    /// Holds the vtkImageblend or vtkimageCheckerboard algorithms
+    vtkThreadedImageAlgorithm* m_imageAlgorithm;
 
-    vtkImageBlend* m_imageBlend;
     std::string m_imageRegisterId;
 
+    /// Number of division in checkerboard mode
+    int m_checkerboardDivision;
 };
-
 
 } //namespace visuVTKAdaptor
 
