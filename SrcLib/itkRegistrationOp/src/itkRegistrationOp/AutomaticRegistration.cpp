@@ -208,13 +208,13 @@ struct Registrator
         initializer->InitializeTransform();
 
         // Extract rotation and translation from the f4s matrix.
-        ::glm::dmat4 initMat = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(params.o_trf);
-        double scale         = std::pow(::glm::determinant(initMat), 1./3.);
+        const ::glm::dmat4 initMat = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(params.o_trf);
+        const double scale         = std::pow(::glm::determinant(initMat), 1./3.);
 
-        ::glm::dquat orientation = ::glm::toQuat(initMat / scale);
+        const ::glm::dquat orientation = ::glm::toQuat(initMat / scale);
 
-        ::glm::dvec3 translation = ::glm::dvec3(::glm::column(initMat, 3));
-        ::glm::dvec3 axis        = ::glm::axis(orientation);
+        const ::glm::dvec3 translation = ::glm::dvec3(::glm::column(initMat, 3));
+        const ::glm::dvec3 axis        = ::glm::axis(orientation);
 
         typedef TransformType::VersorType VersorType;
         typedef VersorType::VectorType VectorType;

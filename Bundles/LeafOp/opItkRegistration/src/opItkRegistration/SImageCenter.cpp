@@ -10,6 +10,8 @@
 #include <fwCom/Signal.hxx>
 
 #include <fwData/Image.hpp>
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
 #include <fwData/TransformationMatrix3D.hpp>
 
 #include <fwDataTools/fieldHelper/MedicalImageHelpers.hpp>
@@ -60,10 +62,11 @@ void SImageCenter::updating() throw( ::fwTools::Failed )
 {
 
     ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(s_IMAGE_IN);
+    ::fwData::mt::ObjectReadLock imLock(image);
 
     SLM_ASSERT("Missing image '"+ s_IMAGE_IN + "'", image);
 
-    bool imageValidity = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
+    const bool imageValidity = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity(image);
 
     if(!imageValidity)
     {
@@ -76,12 +79,14 @@ void SImageCenter::updating() throw( ::fwTools::Failed )
 
     SLM_ASSERT("Missing matrix '"+ s_TRANSFORM_INOUT +"'", matrix);
 
+    ::fwData::mt::ObjectWriteLock matLock(matrix);
+
     ::fwDataTools::TransformationMatrix3D::identity(matrix);
 
     //compute the center
-    ::fwData::Image::SizeType size       = image->getSize();
-    ::fwData::Image::SpacingType spacing = image->getSpacing();
-    ::fwData::Image::OriginType origin   = image->getOrigin();
+    const ::fwData::Image::SizeType size       = image->getSize();
+    const ::fwData::Image::SpacingType spacing = image->getSpacing();
+    const ::fwData::Image::OriginType origin   = image->getOrigin();
 
     SLM_ASSERT("Image should be in 3 Dimensions", size.size() == 3);
 

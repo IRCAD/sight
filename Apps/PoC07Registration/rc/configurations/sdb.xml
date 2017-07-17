@@ -27,9 +27,6 @@
         <service uid="selector" type="::uiMedData::editor::SSelector" autoConnect="yes">
             <inout key="seriesDB" uid="${SERIESDB}" />
             <inout key="selection" uid="selections" />
-            <icons>
-                <icon series="::fwMedData::AttachmentSeries" icon="@BUNDLE_PREFIX@/media_0-1/icons/AttachmentSeries.svg" />
-            </icons>
         </service>
 
         <service uid="action_newActivity" type="::activities::action::SActivityLauncher" autoConnect="yes">
@@ -43,16 +40,16 @@
                 </parameters>
             </config>
         </service>
-        
+
         <connect>
             <signal>selector/seriesDoubleClicked</signal>
             <slot>action_newActivity/launchSeries</slot>
         </connect>
-        
+
         <connect channel="${DYNAMICVIEW_CHANNEL}">
             <signal>action_newActivity/activityLaunched</signal>
         </connect>
-        
+
         <start uid="mainview" />
         <start uid="action_newActivity" />
 

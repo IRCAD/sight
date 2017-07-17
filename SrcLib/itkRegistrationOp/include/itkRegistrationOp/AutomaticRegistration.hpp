@@ -50,6 +50,9 @@ public:
      * @param[in] _reference reference, i.e. the image that will be transformed into the target.
      * @param[out] _trf the resulting rigid transform.
      * @param[in] _metric the metric to be used for registration.
+     * @param[in] _minStep minimum step for used by optimizer for each iteration.
+     * @param[in] _maxStep maximum step for used by optimizer for each iteration.
+     * @param[in] _maxIterations the maximum number of iterations
      */
     static ITKREGISTRATIONOP_API void registerImage(const ::fwData::Image::csptr& _target,
                                                     const ::fwData::Image::csptr& _reference,

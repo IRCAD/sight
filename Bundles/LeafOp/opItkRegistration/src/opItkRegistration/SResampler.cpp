@@ -9,6 +9,9 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <itkRegistrationOp/Resampler.hpp>
@@ -57,9 +60,16 @@ void SResampler::starting() throw( ::fwTools::Failed )
 void SResampler::updating() throw( ::fwTools::Failed )
 {
     ::fwData::Image::csptr inImg = this->getInput< ::fwData::Image >(s_IMAGE_IN);
+
+    ::fwData::mt::ObjectReadLock inImLock(inImg);
+
     ::fwData::Image::sptr outImg = this->getInOut< ::fwData::Image >(s_IMAGE_INOUT);
 
+    ::fwData::mt::ObjectWriteLock outImLock(outImg);
+
     ::fwData::Image::csptr target = this->getInput< ::fwData::Image >(s_TARGET_IN);
+
+    ::fwData::mt::ObjectReadLock targetLock(target);
 
     ::fwData::TransformationMatrix3D::csptr transform =
         this->getInput< ::fwData::TransformationMatrix3D >(s_TRANSFORM_IN);
@@ -75,7 +85,7 @@ void SResampler::updating() throw( ::fwTools::Failed )
     auto imgBufModifSig = outImg->signal< ::fwData::Image::BufferModifiedSignalType >
                               (::fwData::Image::s_BUFFER_MODIFIED_SIG);
 
-//    imgBufModifSig->asyncEmit();
+    imgBufModifSig->asyncEmit();
 
     auto imgModifSig = outImg->signal< ::fwData::Image::ModifiedSignalType >
                            (::fwData::Image::s_MODIFIED_SIG);

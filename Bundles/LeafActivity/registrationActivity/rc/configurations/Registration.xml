@@ -301,11 +301,11 @@
         </service>
 
         <service uid="referenceLandmarkManager" type="::uiMeasurement::SManageLandmark">
-            <in key="pointlist" uid="referencePL" />
+            <inout key="landmarks" uid="referencePL" />
         </service>
 
         <service uid="targetLandmarkManager" type="::uiMeasurement::SManageLandmark">
-            <in key="pointlist" uid="targetPL" />
+            <inout key="landmarks" uid="targetPL" />
         </service>
 
         <service uid="referenceScene" type="::fwRenderVTK::SRender" autoConnect="yes">

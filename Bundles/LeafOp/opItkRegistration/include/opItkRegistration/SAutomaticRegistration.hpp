@@ -47,7 +47,7 @@ namespace opItkRegistration
  * - \b minStep : smallest step that can be taken by the optimizer. A smaller step gives a more precise result but
  * will converge slower.
  * - \b maxStep : biggest step that can be taken by the optimizer. This value should be set according to
- * the distance approximatly separating the two images. It affects the time needed to converge.
+ * the distance approximately separating the two images. It affects the time needed to converge.
  * - \b maxIterations : the maximum number of steps allowed to the optimizer. The optimizer will stop beyond this point
  * even if it didn't find a suitable result.
  * - \b metric : the metric used to compare the two images. Possible values are :
@@ -89,10 +89,10 @@ protected:
      */
     OPITKREGISTRATION_API virtual KeyConnectionsMap getAutoConnections() const;
 
-    /// Set the metric to be used. Key must be 'metric', values are the same as for the configuration.
-    OPITKREGISTRATION_API virtual void setEnumParameter(std::string val, std::string key);
-
 private:
+
+    /// Set the metric to be used. Key must be 'metric', values are the same as for the configuration.
+    virtual void setEnumParameter(std::string val, std::string key);
 
     /// Sets the metric, possible values are : MeanSquares, NormalizedCorrelation, MutualInformation.
     void setMetric(const std::string& metricName);

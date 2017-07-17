@@ -9,6 +9,9 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
+#include <fwData/mt/ObjectReadLock.hpp>
+#include <fwData/mt/ObjectWriteLock.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <itkRegistrationOp/AutomaticRegistration.hpp>
@@ -72,8 +75,13 @@ void SAutomaticRegistration::updating() throw( ::fwTools::Failed )
     ::fwData::Image::csptr target    = this->getInput< ::fwData::Image >(s_TARGET_IN);
     ::fwData::Image::csptr reference = this->getInput< ::fwData::Image >(s_REFERENCE_IN);
 
+    ::fwData::mt::ObjectReadLock targetLock(target);
+    ::fwData::mt::ObjectReadLock refLock(reference);
+
     ::fwData::TransformationMatrix3D::sptr transform =
         this->getInOut< ::fwData::TransformationMatrix3D >(s_TRANSFORM_INOUT);
+
+    ::fwData::mt::ObjectWriteLock trfLock(transform);
 
     SLM_ASSERT("No 'target' found !", target);
     SLM_ASSERT("No 'reference' found !", reference);

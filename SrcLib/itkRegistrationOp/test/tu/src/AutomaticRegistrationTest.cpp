@@ -148,7 +148,7 @@ void AutomaticRegistrationTest::identityTest()
         for(size_t j = 0; j < 4; ++j)
         {
 
-            double coef = mat->getCoefficient(i, j);
+            const double coef = mat->getCoefficient(i, j);
             if(i == j) //diagonal
             {
                 CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Diagonal value is not equal to '1' ", 1., coef, 1e-8);
@@ -168,16 +168,16 @@ void AutomaticRegistrationTest::rigidTransformTest()
 {
     namespace itkReg = ::itkRegistrationOp;
 
-    ::fwData::Image::sptr target = createSphereImage();
+    ::fwData::Image::csptr target = createSphereImage();
 
     ::fwData::Image::sptr reference = ::fwData::Image::New();
 
     ::fwData::TransformationMatrix3D::sptr transform = ::fwData::TransformationMatrix3D::New();
 
     //set a rotation around the Z axis
-    const double rotAngle = ::glm::radians(5.);
-    ::glm::dmat4 rot      = ::glm::rotate(::glm::dmat4(), rotAngle, ::glm::dvec3(0., 0.5, 0.5));
-    ::glm::dmat4 rigidTrf = ::glm::translate(rot, ::glm::dvec3(5., 3.2, 0.9));
+    const double rotAngle       = ::glm::radians(5.);
+    const ::glm::dmat4 rot      = ::glm::rotate(::glm::dmat4(), rotAngle, ::glm::dvec3(0., 0.5, 0.5));
+    const ::glm::dmat4 rigidTrf = ::glm::translate(rot, ::glm::dvec3(5., 3.2, 0.9));
 
     ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(transform, rigidTrf);
 
@@ -189,8 +189,8 @@ void AutomaticRegistrationTest::rigidTransformTest()
                                                  itkReg::AutomaticRegistration::MEAN_SQUARES,
                                                  0.00001, 0.3, 1000);
 
-    ::glm::dmat4 res = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(initTrf);
-    ::glm::dmat4 id  = res * rigidTrf;
+    const ::glm::dmat4 res = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(initTrf);
+    const ::glm::dmat4 id  = res * rigidTrf;
 
     // Test if we obtained the identity matrix.
     for(std::uint8_t i = 0; i < 4; ++i)
@@ -209,7 +209,7 @@ void AutomaticRegistrationTest::translateTransformTest()
 {
     namespace itkReg = ::itkRegistrationOp;
 
-    ::fwData::Image::sptr target = createSphereImage();
+    ::fwData::Image::csptr target = createSphereImage();
 
     ::fwData::Image::sptr reference = ::fwData::Image::New();
 
@@ -229,8 +229,8 @@ void AutomaticRegistrationTest::translateTransformTest()
 
     for(size_t i = 0; i < 3; ++i)
     {
-        double expected = transform->getCoefficient(i, 3);
-        double actual   = initTrf->getCoefficient(i, 3);
+        const double expected = transform->getCoefficient(i, 3);
+        const double actual   = initTrf->getCoefficient(i, 3);
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Registration matrix does not match initial matrix",
                                              expected, -actual, 1e-2);
@@ -243,15 +243,15 @@ void AutomaticRegistrationTest::rotationTransformTest()
 {
     namespace itkReg = ::itkRegistrationOp;
 
-    ::fwData::Image::sptr target = createSphereImage();
+    ::fwData::Image::csptr target = createSphereImage();
 
     ::fwData::Image::sptr reference = ::fwData::Image::New();
 
     ::fwData::TransformationMatrix3D::sptr transform = ::fwData::TransformationMatrix3D::New();
 
     //set a rotation around the Z axis
-    const double rotAngle = ::glm::radians(12.);
-    ::glm::dmat4 rot = ::glm::rotate(::glm::dmat4(), rotAngle, ::glm::dvec3(0., 0., 1.));
+    const double rotAngle  = ::glm::radians(12.);
+    const ::glm::dmat4 rot = ::glm::rotate(::glm::dmat4(), rotAngle, ::glm::dvec3(0., 0., 1.));
 
     ::fwDataTools::TransformationMatrix3D::setTF3DFromMatrix(transform, rot);
 
@@ -263,8 +263,8 @@ void AutomaticRegistrationTest::rotationTransformTest()
                                                  itkReg::AutomaticRegistration::MEAN_SQUARES,
                                                  0.000001, 0.3, 1500);
 
-    ::glm::dmat4 res = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(initTrf);
-    ::glm::dmat4 id  = res * rot;
+    const ::glm::dmat4 res = ::fwDataTools::TransformationMatrix3D::getMatrixFromTF3D(initTrf);
+    const ::glm::dmat4 id  = res * rot;
 
     // Test if we obtained the identity matrix. There may be a slight translation but it can safely be ignored.
     for(std::uint8_t i = 0; i < 3; ++i)
