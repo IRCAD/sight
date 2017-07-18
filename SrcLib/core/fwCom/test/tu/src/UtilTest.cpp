@@ -1,21 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/type_traits/is_same.hpp>
-#include <boost/function.hpp>
-#include <boost/bind.hpp>
-#include <boost/typeof/typeof.hpp>
+#include "UtilTest.hpp"
 
 #include <fwCom/util/AutoBind.hpp>
 #include <fwCom/util/AutoBind.hxx>
 #include <fwCom/util/convert_function_type.hpp>
 #include <fwCom/util/remove_last_arg.hpp>
 
-#include "UtilTest.hpp"
+#include <boost/bind.hpp>
+#include <boost/type_traits/is_same.hpp>
+#include <boost/typeof/typeof.hpp>
 
+#include <functional>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwCom::ut::UtilTest );
@@ -25,11 +25,15 @@ namespace fwCom
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void UtilTest::setUp()
 {
     // Set up context before running a test.
 
 }
+//------------------------------------------------------------------------------
+
 void UtilTest::tearDown()
 {
     // Clean up after the test run.
@@ -37,23 +41,25 @@ void UtilTest::tearDown()
 
 //-----------------------------------------------------------------------------
 
-
 int f (int a, int b)
 {
     return a+b;
 }
 
-std::string g (const std::string &a, const std::string &b, const std::string &c)
+//------------------------------------------------------------------------------
+
+std::string g (const std::string& a, const std::string& b, const std::string& c)
 {
     return a+b+c;
 }
 
+//------------------------------------------------------------------------------
 
 void UtilTest::autoBindTest ()
 {
-    CPPUNIT_ASSERT_EQUAL( 10, ::fwCom::util::autobind(&f)(4,6) );
+    CPPUNIT_ASSERT_EQUAL( 10, ::fwCom::util::autobind(&f)(4, 6) );
     CPPUNIT_ASSERT_EQUAL( 42, (::fwCom::util::AutoBind< int (int), 1 >::wrap( f, 40 )(2)) );
-    CPPUNIT_ASSERT_EQUAL( std::string("abc"), ::fwCom::util::autobind(&g)("a","b","c") );
+    CPPUNIT_ASSERT_EQUAL( std::string("abc"), ::fwCom::util::autobind(&g)("a", "b", "c") );
 }
 
 //-----------------------------------------------------------------------------
@@ -67,7 +73,7 @@ void UtilTest::convertFunctionTypeTest ()
     typedef void (C::* CM2C)(int, float) const;
     typedef void (C::* CM2) (int, float);
 
-    typedef ::boost::function< void (int, float) > BF2;
+    typedef std::function< void (int, float) > BF2;
 
     typedef void F2 (int, float);
 
@@ -78,7 +84,6 @@ void UtilTest::convertFunctionTypeTest ()
 }
 
 //-----------------------------------------------------------------------------
-
 
 void UtilTest::removeLastArgTest ()
 {
@@ -92,7 +97,6 @@ void UtilTest::removeLastArgTest ()
     typedef long long F2 (int*, double);
     typedef long long F1 (int*);
     typedef long long F0 ();
-
 
     CPPUNIT_ASSERT( ( boost::is_same< F8, ::fwCom::util::remove_last_arg< F9 >::type >::value ) );
     CPPUNIT_ASSERT( ( boost::is_same< F7, ::fwCom::util::remove_last_arg< F8 >::type >::value ) );
@@ -108,7 +112,6 @@ void UtilTest::removeLastArgTest ()
 }
 
 //-----------------------------------------------------------------------------
-
 
 } //namespace ut
 } //namespace fwCom

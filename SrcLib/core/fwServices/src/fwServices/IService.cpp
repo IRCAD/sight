@@ -25,6 +25,8 @@
 #include <boost/property_tree/ptree.hpp>
 #include <boost/regex.hpp>
 
+#include <functional>
+
 namespace fwServices
 {
 
@@ -292,24 +294,21 @@ IService::SharedFutureType IService::start()
 
         this->connectToConfig();
 
-        PackagedTaskType task( ::boost::bind(&IService::starting, this) );
+        PackagedTaskType task( std::bind(&IService::starting, this) );
         UniqueFutureType ufuture = task.get_future();
 
         m_globalState = STARTING;
         task();
         m_globalState = STARTED;
 
-        if ( ufuture.has_exception() )
-        {
-            ufuture.get();
-        }
+        ufuture.get();
 
         this->autoConnect();
 
         auto sig = this->signal<StartedSignalType>(s_STARTED_SIG);
         sig->asyncEmit();
 
-        return ::boost::move(ufuture);
+        return std::move(ufuture);
     }
     else
     {
@@ -327,24 +326,21 @@ IService::SharedFutureType IService::stop()
 
         this->autoDisconnect();
 
-        PackagedTaskType task( ::boost::bind(&IService::stopping, this) );
+        PackagedTaskType task( std::bind(&IService::stopping, this) );
         UniqueFutureType ufuture = task.get_future();
 
         m_globalState = STOPPING;
         task();
         m_globalState = STOPPED;
 
-        if ( ufuture.has_exception() )
-        {
-            ufuture.get();
-        }
+        ufuture.get();
 
         auto sig = this->signal<StoppedSignalType>(s_STOPPED_SIG);
         sig->asyncEmit();
 
         this->disconnectFromConfig();
 
-        return ::boost::move(ufuture);
+        return std::move(ufuture);
     }
     else
     {
@@ -363,22 +359,19 @@ IService::SharedFutureType IService::update()
         OSLM_ASSERT("INVOKING update WHILE NOT IDLE ("<<m_updatingState<<") on service '" << this->getID() <<
                     "' of type '" << this->getClassname() << "'", m_updatingState == NOTUPDATING );
 
-        PackagedTaskType task( ::boost::bind(&IService::updating, this) );
+        PackagedTaskType task( std::bind(&IService::updating, this) );
         UniqueFutureType ufuture = task.get_future();
 
         m_updatingState = UPDATING;
         task();
         m_updatingState = NOTUPDATING;
 
-        if ( ufuture.has_exception() )
-        {
-            ufuture.get();
-        }
+        ufuture.get();
 
         auto sig = this->signal<StartedSignalType>(s_UPDATED_SIG);
         sig->asyncEmit();
 
-        return ::boost::move(ufuture);
+        return std::move(ufuture);
     }
     else
     {
@@ -398,7 +391,7 @@ IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj )
             "Service "<< this->getID() << " is not STARTED, no swapping with Object " << _obj->getID(),
             m_globalState != STARTED);
 
-        PackagedTaskType task( ::boost::bind(&IService::swapping, this) );
+        PackagedTaskType task( std::bind(static_cast<void (IService::*)()>(&IService::swapping), this) );
         UniqueFutureType ufuture = task.get_future();
 
         m_globalState = SWAPPING;
@@ -406,12 +399,9 @@ IService::SharedFutureType IService::swap( ::fwData::Object::sptr _obj )
         task();
         m_globalState = STARTED;
 
-        if ( ufuture.has_exception() )
-        {
-            ufuture.get();
-        }
+        ufuture.get();
 
-        return ::boost::move(ufuture);
+        return std::move(ufuture);
     }
     else
     {
@@ -430,18 +420,17 @@ IService::SharedFutureType IService::swapKey(const IService::KeyType& _key, fwDa
             (_obj ? _obj->getID() : "nullptr"),
             m_globalState != STARTED);
 
-        PackagedTaskType task( ::boost::bind(&IService::swapping, this, _key) );
+        auto fn = std::bind(static_cast<void (IService::*)(const KeyType&)>(&IService::swapping), this, _key);
+        PackagedTaskType task( fn );
         UniqueFutureType ufuture = task.get_future();
 
         m_globalState = SWAPPING;
         task();
         m_globalState = STARTED;
 
-        if ( ufuture.has_exception() )
-        {
-            ufuture.get();
-        }
-        return ::boost::move(ufuture);
+        ufuture.get();
+
+        return std::move(ufuture);
     }
     else
     {

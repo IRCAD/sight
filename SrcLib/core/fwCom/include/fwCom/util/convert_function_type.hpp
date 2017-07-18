@@ -1,22 +1,20 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 #ifndef __FWCOM_UTIL_CONVERT_FUNCTION_TYPE_HPP__
 #define __FWCOM_UTIL_CONVERT_FUNCTION_TYPE_HPP__
 
-#include <boost/function.hpp>
 #include <boost/type_traits/remove_pointer.hpp>
 
+#include <functional>
 
 namespace fwCom
 {
 
-
 namespace util
 {
-
 
 template <typename F>
 struct convert_function_type;
@@ -37,7 +35,7 @@ struct convert_function_type< R (C::*)( Args ... ) const  >
 
 /// Extract function type from a boost function.
 template <typename F>
-struct convert_function_type< ::boost::function< F > >
+struct convert_function_type< std::function< F > >
 {
     typedef F type;
 };
@@ -48,7 +46,6 @@ struct convert_function_type
 {
     typedef typename ::boost::remove_pointer<F>::type type;
 };
-
 
 } //namespace util
 

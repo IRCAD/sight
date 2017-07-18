@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -20,16 +20,19 @@
 namespace fwJobs
 {
 
-Job::sptr Job::New(const std::string &name, Job::Task task, const ::fwThread::Worker::sptr &worker)
+//------------------------------------------------------------------------------
+
+Job::sptr Job::New(const std::string& name, Job::Task task, const ::fwThread::Worker::sptr& worker)
 {
     return std::make_shared<Job>( name, task, worker );
 }
 
 //------------------------------------------------------------------------------
 
-Job::Job(const std::string &name, Job::Task task, const ::fwThread::Worker::sptr &worker) : IJob(name),
-                                                                                            m_task(task),
-                                                                                            m_worker(worker)
+Job::Job(const std::string& name, Job::Task task, const ::fwThread::Worker::sptr& worker) :
+    IJob(name),
+    m_task(task),
+    m_worker(worker)
 {
     m_totalWorkUnits = 100;
 }
@@ -70,11 +73,10 @@ IJob::SharedFuture Job::runImpl()
         this->finish();
     }
 
-    return ::boost::move(::boost::async( []()
+    return std::move(::std::async( []()
         {
         } ));
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -98,7 +100,6 @@ Job::ProgressCallback Job::progressCallback()
                this->doneWork(doneWork);
            };
 }
-
 
 //------------------------------------------------------------------------------
 

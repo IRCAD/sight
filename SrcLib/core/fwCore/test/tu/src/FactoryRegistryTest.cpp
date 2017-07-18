@@ -1,21 +1,21 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "FactoryRegistryTest.hpp"
 
-#include <fwCore/util/LazyInstantiator.hpp>
-#include <fwCore/util/FactoryRegistry.hpp>
 #include <fwCore/mt/types.hpp>
 #include <fwCore/spyLog.hpp>
+#include <fwCore/util/FactoryRegistry.hpp>
+#include <fwCore/util/LazyInstantiator.hpp>
 
+#include <chrono>
+#include <exception>
 #include <functional>
 #include <iostream>
-#include <exception>
 #include <thread>
-#include <chrono>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwCore::ut::FactoryRegistryTest );
@@ -25,11 +25,15 @@ namespace fwCore
 namespace ut
 {
 
+//------------------------------------------------------------------------------
+
 void FactoryRegistryTest::setUp()
 {
     // Set up context before running a test.
 
 }
+//------------------------------------------------------------------------------
+
 void FactoryRegistryTest::tearDown()
 {
     // Clean up after the test run.
@@ -42,19 +46,22 @@ class ObjectTest
 public:
     typedef std::shared_ptr< ObjectTest > sptr;
 
-    ObjectTest() : m_name("ObjectTest")
+    ObjectTest() :
+        m_name("ObjectTest")
     {
         ::fwCore::mt::ScopedLock lock(s_mutex);
         ++s_counter;
     }
 
-    ObjectTest(const std::string& name) : m_name(name)
+    ObjectTest(const std::string& name) :
+        m_name(name)
     {
         ::fwCore::mt::ScopedLock lock(s_mutex);
         ++s_counter;
     }
 
-    ObjectTest(int msec) : m_name("ObjectTest+sleep")
+    ObjectTest(int msec) :
+        m_name("ObjectTest+sleep")
     {
         ::fwCore::mt::ScopedLock lock(s_mutex);
         std::this_thread::sleep_for( std::chrono::milliseconds(msec));
@@ -64,6 +71,8 @@ public:
     virtual ~ObjectTest()
     {
     }
+
+    //------------------------------------------------------------------------------
 
     virtual std::string getName() const
     {
@@ -83,16 +92,19 @@ class DerivedObjectTest : public ObjectTest
 public:
     typedef std::shared_ptr< DerivedObjectTest > sptr;
 
-    DerivedObjectTest() : ObjectTest()
+    DerivedObjectTest() :
+        ObjectTest()
     {
         m_name = "DerivedObjectTest";
     }
 
-    DerivedObjectTest(const std::string& name)  : ObjectTest(name)
+    DerivedObjectTest(const std::string& name)  :
+        ObjectTest(name)
     {
     }
 
-    DerivedObjectTest(int msec)  : ObjectTest(msec)
+    DerivedObjectTest(int msec)  :
+        ObjectTest(msec)
     {
     }
 };
@@ -120,7 +132,6 @@ void FactoryRegistryTest::pointerTest()
     std::sort(vectKeys.begin(), vectKeys.end());
     CPPUNIT_ASSERT(keys == vectKeys);
 
-
     ObjectTest::sptr objectTest1 = objectTestFactory.create("ObjectTest");
     CPPUNIT_ASSERT_EQUAL(1, ObjectTest::s_counter);
 
@@ -129,8 +140,6 @@ void FactoryRegistryTest::pointerTest()
 
     CPPUNIT_ASSERT_EQUAL(std::string("ObjectTest"), objectTest1->getName());
     CPPUNIT_ASSERT_EQUAL(std::string("ObjectTest"), objectTest2->getName());
-
-
 
     ObjectTest::sptr derivedObjectTest1 = objectTestFactory.create("DerivedObjectTest");
     CPPUNIT_ASSERT_EQUAL(3, ObjectTest::s_counter);
@@ -167,7 +176,6 @@ void FactoryRegistryTest::valueTest()
 
     CPPUNIT_ASSERT_EQUAL(std::string("ObjectTest"), objectTest1.getName());
     CPPUNIT_ASSERT_EQUAL(std::string("ObjectTest"), objectTest2.getName());
-
 
     ObjectTest derivedObjectTest1 = objectTestFactory.create("DerivedObjectTest");
     CPPUNIT_ASSERT_EQUAL(3, ObjectTest::s_counter);
@@ -217,7 +225,6 @@ void FactoryRegistryTest::argTest()
     ObjectTest::s_counter = 0;
 }
 
-
 //-----------------------------------------------------------------------------
 
 typedef ::fwCore::util::FactoryRegistry< ObjectTest::sptr(int) > ThreadSafetyTestFactoryType;
@@ -228,15 +235,18 @@ struct UseFactoryThread
     typedef std::shared_ptr< UseFactoryThread > sptr;
     typedef std::vector< ObjectTest::sptr > ObjectVectorType;
 
-    UseFactoryThread( const ThreadSafetyTestFactoryType &factory, std::string objType = "ObjectTest" ) :
-        m_factory(factory), m_objectType(objType)
+    UseFactoryThread( const ThreadSafetyTestFactoryType& factory, std::string objType = "ObjectTest" ) :
+        m_factory(factory),
+        m_objectType(objType)
     {
     }
+
+    //------------------------------------------------------------------------------
 
     void run()
     {
         int duration = 20;
-        for (int i = 0; i< s_NBOBJECTS; ++i)
+        for (int i = 0; i < s_NBOBJECTS; ++i)
         {
             OSLM_WARN( "building 1 " << m_objectType << "... " );
             m_objects.push_back( m_factory.create(m_objectType, duration) );
@@ -244,7 +254,7 @@ struct UseFactoryThread
         }
     }
 
-    const ThreadSafetyTestFactoryType &m_factory;
+    const ThreadSafetyTestFactoryType& m_factory;
     ObjectVectorType m_objects;
     std::string m_objectType;
     static const int s_NBOBJECTS;
@@ -252,20 +262,21 @@ struct UseFactoryThread
 
 const int UseFactoryThread::s_NBOBJECTS = 10;
 
-
 struct PopulateRegistryThread
 {
     typedef std::shared_ptr< PopulateRegistryThread > sptr;
     typedef std::vector< ObjectTest::sptr > ObjectVectorType;
 
-    PopulateRegistryThread( ThreadSafetyTestFactoryType &factory ) :
+    PopulateRegistryThread( ThreadSafetyTestFactoryType& factory ) :
         m_factory(factory)
     {
     }
 
+    //------------------------------------------------------------------------------
+
     void run()
     {
-        for (int i = 0; i< s_NBREGISTRYITEMS; ++i)
+        for (int i = 0; i < s_NBREGISTRYITEMS; ++i)
         {
             std::stringstream ss;
             ss << "PopulateFactoryThreadObject-" << std::this_thread::get_id() <<"-" << i;
@@ -281,12 +292,13 @@ struct PopulateRegistryThread
 
     }
 
-    ThreadSafetyTestFactoryType &m_factory;
+    ThreadSafetyTestFactoryType& m_factory;
     static const int s_NBREGISTRYITEMS;
 };
 
 const int PopulateRegistryThread::s_NBREGISTRYITEMS = 1000;
 
+//------------------------------------------------------------------------------
 
 void FactoryRegistryTest::threadSafetyTest()
 {
@@ -325,7 +337,7 @@ void FactoryRegistryTest::threadSafetyTest()
     {
         PopulateRegistryThread::sptr pft;
 
-        pft = std::make_shared<PopulateRegistryThread>(::boost::ref(objectTestFactory));
+        pft = std::make_shared<PopulateRegistryThread>(std::ref(objectTestFactory));
         tg.push_back(std::thread(std::bind(&PopulateRegistryThread::run, pft) ));
     }
 

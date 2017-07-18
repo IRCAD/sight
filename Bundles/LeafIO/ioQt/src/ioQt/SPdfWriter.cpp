@@ -124,14 +124,14 @@ void SPdfWriter::updating()
 
         // Adding fwImage from generic scene to the list of images to scale
         ImagesScaledListType imagesToScale;
-        std::vector< ::std::shared_future< QImage > > futuresQImage;
+        std::vector< std::shared_future< QImage > > futuresQImage;
         for( const ::fwData::Image::sptr& fwImage : m_imagesToExport )
         {
             std::shared_future< QImage > future;
             future = pool.post(&SPdfWriter::convertFwImageToQImage, fwImage);
             futuresQImage.push_back( future );
         }
-        std::for_each(futuresQImage.begin(), futuresQImage.end(), std::mem_fn(&::std::shared_future< QImage >::wait));
+        std::for_each(futuresQImage.begin(), futuresQImage.end(), std::mem_fn(&std::shared_future< QImage >::wait));
         for (auto& future : futuresQImage)
         {
             QImage imageToDraw = future.get();
@@ -146,7 +146,7 @@ void SPdfWriter::updating()
         }
 
         // Scales images to fit the A4 format
-        std::vector< ::std::shared_future< void > > futures;
+        std::vector< std::shared_future< void > > futures;
         const size_t sizeImagesToScale = imagesToScale.size();
         for( size_t idx = 0; idx < sizeImagesToScale; ++idx )
         {
@@ -154,7 +154,7 @@ void SPdfWriter::updating()
             future = pool.post(&SPdfWriter::scaleQImage, std::ref(imagesToScale[idx]), scale);
             futures.push_back( future );
         }
-        std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+        std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 
         // Draws images onto the PDF.
         for( QImage& qImage : imagesToScale )

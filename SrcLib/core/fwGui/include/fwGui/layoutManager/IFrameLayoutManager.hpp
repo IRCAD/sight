@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,18 +7,18 @@
 #ifndef __FWGUI_LAYOUTMANAGER_IFRAMELAYOUTMANAGER_HPP__
 #define __FWGUI_LAYOUTMANAGER_IFRAMELAYOUTMANAGER_HPP__
 
-#include <list>
-
-#include <boost/function.hpp>
-#include <boost/filesystem/path.hpp>
+#include "fwGui/config.hpp"
+#include "fwGui/container/fwContainer.hpp"
+#include "fwGui/GuiBaseObject.hpp"
 
 #include <fwData/Composite.hpp>
 
 #include <fwRuntime/ConfigurationElement.hpp>
 
-#include "fwGui/GuiBaseObject.hpp"
-#include "fwGui/container/fwContainer.hpp"
-#include "fwGui/config.hpp"
+#include <boost/filesystem/path.hpp>
+
+#include <functional>
+#include <list>
 
 namespace fwGui
 {
@@ -67,11 +67,11 @@ public:
     public:
 
         FrameInfo() :
-            m_name (""),
-            m_minSize (std::make_pair(-1,-1)),
-            m_style (DEFAULT),
-            m_size (std::make_pair(-1,-1)),
-            m_position (std::make_pair(-1,-1)),
+            m_name(""),
+            m_minSize(std::make_pair(-1, -1)),
+            m_style(DEFAULT),
+            m_size(std::make_pair(-1, -1)),
+            m_position(std::make_pair(-1, -1)),
             m_state(UNKNOWN)
         {
         }
@@ -127,10 +127,8 @@ public:
         return m_container;
     }
 
-
-    typedef ::boost::function0< void > CloseCallback;
+    typedef std::function< void () > CloseCallback;
     FWGUI_API virtual void setCloseCallback(CloseCallback fct);
-
 
 protected:
 
@@ -142,10 +140,14 @@ protected:
         return m_frameInfo;
     }
 
+    //------------------------------------------------------------------------------
+
     FrameInfo& getRefFrameInfo()
     {
         return m_frameInfo;
     }
+
+    //------------------------------------------------------------------------------
 
     void setFrameInfo(const FrameInfo& frameInfo)
     {
@@ -165,7 +167,6 @@ protected:
 
 private:
 
-
     void defaultCloseCallback();
 
     /// Save frame configuration definition
@@ -177,5 +178,4 @@ private:
 } // namespace fwGui
 
 #endif /*__FWGUI_LAYOUTMANAGER_IFRAMELAYOUTMANAGER_HPP__*/
-
 

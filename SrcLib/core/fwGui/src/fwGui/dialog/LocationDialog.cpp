@@ -17,7 +17,7 @@ namespace dialog
 LocationDialog::LocationDialog()
 {
 
-    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(::boost::function< void() >(
+    ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< void >(std::function< void() >(
                                                                                     [&] {
                 ::fwGui::GuiBaseObject::sptr guiObj = ::fwGui::factory::New(ILocationDialog::REGISTRY_KEY);
                 m_implementation = ::fwGui::dialog::ILocationDialog::dynamicCast(guiObj);
@@ -37,8 +37,8 @@ LocationDialog::~LocationDialog()
 {
     typedef SPTR (::fwData::location::ILocation) R;
 
-    ::boost::function< R() > func = ::boost::bind(&ILocationDialog::show, m_implementation);
-    ::boost::shared_future< R > f = ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< R >(func);
+    std::function< R() > func = std::bind(&ILocationDialog::show, m_implementation);
+    std::shared_future< R > f = ::fwServices::registry::ActiveWorkers::getDefaultWorker()->postTask< R >(func);
 
     f.wait();
     return f.get();

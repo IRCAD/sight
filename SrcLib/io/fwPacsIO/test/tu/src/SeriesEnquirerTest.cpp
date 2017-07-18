@@ -140,7 +140,7 @@ void SeriesEnquirerTest::pullSeriesUsingMoveRetrieveMethod()
     m_seriesRetriever = ::fwPacsIO::SeriesRetriever::New();
     m_seriesRetriever->initialize(m_moveApplicationTitle, m_moveApplicationPort);
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
-    worker->post(::boost::bind(&::fwPacsIO::SeriesRetriever::start, m_seriesRetriever));
+    worker->post(std::bind(&::fwPacsIO::SeriesRetriever::start, m_seriesRetriever));
 
     // Create the series enquirer
     m_seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();
@@ -196,7 +196,7 @@ void SeriesEnquirerTest::pullInstanceUsingMoveRetrieveMethod()
     m_seriesRetriever = ::fwPacsIO::SeriesRetriever::New();
     m_seriesRetriever->initialize(m_moveApplicationTitle, m_moveApplicationPort);
     ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
-    worker->post(::boost::bind(&::fwPacsIO::SeriesRetriever::start, m_seriesRetriever));
+    worker->post(std::bind(&::fwPacsIO::SeriesRetriever::start, m_seriesRetriever));
 
     // Create the series enquirer
     m_seriesEnquirer = ::fwPacsIO::SeriesEnquirer::New();

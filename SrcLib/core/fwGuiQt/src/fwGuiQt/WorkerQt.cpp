@@ -217,11 +217,11 @@ WorkerQt::~WorkerQt()
         SLM_ASSERT("WorkerQt loop shall be created and ran from main thread ",
                    !m_future.valid() && ::fwThread::getCurrentThreadId() == this->getThreadId() );
 
-        ::boost::packaged_task< ExitReturnType > task( std::bind(&QApplication::exec) );
+        std::packaged_task< ExitReturnType() > task( std::bind(&QApplication::exec) );
 
-        ::boost::future< ExitReturnType > ufuture = task.get_future();
+        std::future< ExitReturnType > ufuture = task.get_future();
 
-        m_future = ::boost::move(ufuture);
+        m_future = std::move(ufuture);
 
         task();
     }

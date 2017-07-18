@@ -261,7 +261,7 @@ void SSliceIndexDicomPullerEditor::triggerNewSlice()
     {
         if(m_pacsConfiguration)
         {
-            m_pullSeriesWorker->post(::boost::bind(&::ioPacs::SSliceIndexDicomPullerEditor::pullInstance, this));
+            m_pullSeriesWorker->post(std::bind(&::ioPacs::SSliceIndexDicomPullerEditor::pullInstance, this));
         }
         else
         {

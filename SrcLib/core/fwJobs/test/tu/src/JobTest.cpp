@@ -1,30 +1,32 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-// for boost::async to use lambda's return types
+// for std::async to use lambda's return types
 #define BOOST_RESULT_OF_USE_DECLTYPE
 
 #include "JobTest.hpp"
 
-#include <fwCore/spyLog.hpp>
-#include <fwJobs/Job.hpp>
-#include <fwJobs/IJob.hpp>
 #include <fwJobs/Aggregator.hpp>
 #include <fwJobs/exception/Waiting.hpp>
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Job.hpp>
 #include <fwJobs/Observer.hpp>
+
+#include <fwCore/spyLog.hpp>
+
 #include <fwTest/Exception.hpp>
+
 #include <fwThread/Worker.hpp>
 
 #include <boost/chrono/duration.hpp>
-#include <boost/thread/future.hpp>
 
 #include <exception>
 #include <functional>
+#include <future>
 #include <string>
-
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION( ::fwJobs::ut::JobTest );
@@ -33,6 +35,8 @@ namespace fwJobs
 {
 namespace ut
 {
+
+//------------------------------------------------------------------------------
 
 void JobTest::setUp()
 {
@@ -47,11 +51,11 @@ void JobTest::tearDown()
 //------------------------------------------------------------------------------
 
 void algoMockGenericCallback(int n, std::function< void(int) > progress, std::function< bool() > shouldCancel,
-                             std::function< void(const std::string &) > log = nullptr )
+                             std::function< void(const std::string&) > log = nullptr )
 {
     auto div = n/15;
 
-    for(std::uint64_t i = 0; i<n; ++i)
+    for(std::uint64_t i = 0; i < n; ++i)
     {
         // algo ...
 
@@ -74,7 +78,7 @@ void algoMockGenericCallback(int n, std::function< void(int) > progress, std::fu
 void JobTest::APIAndStateTest()
 {
     {
-        ::fwJobs::Job job( "Job", [](::fwJobs::Job &runningJob)
+        ::fwJobs::Job job( "Job", [](::fwJobs::Job& runningJob)
                 {
                 } );
         CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::WAITING, job.getState() );
@@ -98,7 +102,7 @@ void JobTest::APIAndStateTest()
     }
 
     {
-        ::fwJobs::Job job( "Job", [](::fwJobs::Job &runningJob)
+        ::fwJobs::Job job( "Job", [](::fwJobs::Job& runningJob)
                 {
                     CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::RUNNING, runningJob.getState() );
                 } );
@@ -116,7 +120,7 @@ void JobTest::APIAndStateTest()
 
     {
         ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
-        ::fwJobs::Job job( "Job", [](::fwJobs::Job &runningJob)
+        ::fwJobs::Job job( "Job", [](::fwJobs::Job& runningJob)
                 {
                     ::boost::this_thread::sleep_for( ::boost::chrono::milliseconds(30) );
                     CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::CANCELING, runningJob.getState() );
@@ -139,7 +143,7 @@ void JobTest::APIAndStateTest()
         ::fwJobs::Observer job( "Observer" );
         CPPUNIT_ASSERT_EQUAL( ::fwJobs::IJob::RUNNING, job.getState() );
 
-        auto future = ::boost::async(
+        auto future = ::std::async(
             [&job]() -> bool
                 {
                     bool except = true;
@@ -148,7 +152,7 @@ void JobTest::APIAndStateTest()
                         job.wait();
                         except = false;
                     }
-                    catch ( ::fwJobs::exception::Waiting & )
+                    catch ( ::fwJobs::exception::Waiting& )
                     {
                         except = true;
                     }
@@ -193,7 +197,7 @@ void JobTest::APIAndStateTest()
 
 void JobTest::GenericCallbackTest()
 {
-    for (int i = 0; i< 10; ++i)
+    for (int i = 0; i < 10; ++i)
     {
         int loops = 100;
         {
@@ -212,7 +216,7 @@ void JobTest::GenericCallbackTest()
         }
 
         {
-            ::fwJobs::Job::Task func = [loops](::fwJobs::Job &runningJob)
+            ::fwJobs::Job::Task func = [loops](::fwJobs::Job& runningJob)
                                        {
                                            algoMockGenericCallback(loops,
                                                                    runningJob.progressCallback(),
@@ -232,7 +236,7 @@ void JobTest::GenericCallbackTest()
 
             loops = 1 << 30;
             ::fwJobs::Job job( "GenericCallbackJob",
-                               [loops](::fwJobs::Job &runningJob)
+                               [loops](::fwJobs::Job& runningJob)
                     {
                         algoMockGenericCallback(loops,
                                                 runningJob.progressCallback(), runningJob.cancelRequestedCallback());
@@ -259,9 +263,8 @@ void JobTest::AggregationTest()
 {
     int loops = 100;
 
-
     { // Job aggregation test
-        ::fwJobs::Job::Task func = [loops](::fwJobs::Job &runningJob)
+        ::fwJobs::Job::Task func = [loops](::fwJobs::Job& runningJob)
                                    {
                                        algoMockGenericCallback(loops,
                                                                runningJob.progressCallback(),
@@ -287,7 +290,7 @@ void JobTest::AggregationTest()
     }
 
     { // Job and aggregator aggregation test
-        ::fwJobs::Job::Task func = [loops](::fwJobs::Job &runningJob)
+        ::fwJobs::Job::Task func = [loops](::fwJobs::Job& runningJob)
                                    {
                                        algoMockGenericCallback(loops,
                                                                runningJob.progressCallback(),
@@ -311,13 +314,11 @@ void JobTest::AggregationTest()
         jobs2->run();
         jobs2->wait();
 
-
         CPPUNIT_ASSERT_EQUAL( std::uint64_t(100), job1->getDoneWorkUnits());
 
         CPPUNIT_ASSERT_EQUAL( std::uint64_t(200), jobs2->getTotalWorkUnits());
         CPPUNIT_ASSERT_EQUAL( std::uint64_t(200), jobs2->getDoneWorkUnits());
     }
-
 
     { // total work units update test
         auto funcGen = []( int progressSteps ) -> ::fwJobs::Job::Task
@@ -334,7 +335,6 @@ void JobTest::AggregationTest()
         auto job2 = ::fwJobs::Job::New( "GenericCallbackJob2", funcGen(145) );
         auto job3 = ::fwJobs::Job::New( "GenericCallbackJob3", funcGen(9999) );
         auto job4 = ::fwJobs::Job::New( "GenericCallbackJob4", funcGen(3) );
-
 
         auto jobs1 = ::fwJobs::Aggregator::New( "Aggregator1" );
         auto jobs2 = ::fwJobs::Aggregator::New( "Aggregator2" );
@@ -385,15 +385,13 @@ void JobTest::AggregationTest()
 
         CPPUNIT_ASSERT_EQUAL( std::uint64_t(300), jobs1->getDoneWorkUnits());
 
-
         CPPUNIT_ASSERT_EQUAL( std::uint64_t(200), jobs2->getDoneWorkUnits());
     }
-
 
     {
         ::fwThread::Worker::sptr worker = ::fwThread::Worker::New();
 
-        ::fwJobs::Job::Task func = [loops](::fwJobs::Job &runningJob)
+        ::fwJobs::Job::Task func = [loops](::fwJobs::Job& runningJob)
                                    {
                                        algoMockGenericCallback(loops,
                                                                runningJob.progressCallback(),
@@ -404,9 +402,8 @@ void JobTest::AggregationTest()
         auto job2 = ::fwJobs::Job::New( "GenericCallbackJob2", func, worker );
         auto job3 = ::fwJobs::Job::New( "GenericCallbackJob3", func, worker );
 
-
         loops = 1 << 30;
-        func  = [loops](::fwJobs::Job &runningJob)
+        func  = [loops](::fwJobs::Job& runningJob)
                 {
                     algoMockGenericCallback(loops, runningJob.progressCallback(), runningJob.cancelRequestedCallback());
                 };
@@ -442,19 +439,19 @@ void JobTest::AggregationTest()
 
         int index = -1;
 
-        ::fwJobs::Job::Task func1 = [&index](::fwJobs::Job &runningJob)
+        ::fwJobs::Job::Task func1 = [&index](::fwJobs::Job& runningJob)
                                     {
                                         CPPUNIT_ASSERT_EQUAL(-1, index);
                                         index = 0;
                                     };
 
-        ::fwJobs::Job::Task func2 = [&index](::fwJobs::Job &runningJob)
+        ::fwJobs::Job::Task func2 = [&index](::fwJobs::Job& runningJob)
                                     {
                                         CPPUNIT_ASSERT_EQUAL(0, index);
                                         index = 1;
                                     };
 
-        ::fwJobs::Job::Task func3 = [&index](::fwJobs::Job &runningJob)
+        ::fwJobs::Job::Task func3 = [&index](::fwJobs::Job& runningJob)
                                     {
                                         CPPUNIT_ASSERT_EQUAL(1, index);
                                         index = 2;
@@ -463,7 +460,6 @@ void JobTest::AggregationTest()
         auto job1 = std::make_shared< ::fwJobs::Job >( "GenericCallbackJob1", func1, worker );
         auto job2 = std::make_shared< ::fwJobs::Job >( "GenericCallbackJob2", func2, worker );
         auto job3 = std::make_shared< ::fwJobs::Job >( "GenericCallbackJob3", func3, worker );
-
 
         auto jobs1 = std::make_shared< ::fwJobs::Aggregator >( "Aggregator1" );
         jobs1->add(job1);
@@ -502,13 +498,13 @@ void JobTest::AggregationTest()
         auto jobs1 = ::fwJobs::Aggregator::New( "Aggregator1" );
         auto jobs2 = ::fwJobs::Aggregator::New( "Aggregator2" );
 
-        jobs1->add(job1,w1);
+        jobs1->add(job1, w1);
         CPPUNIT_ASSERT_EQUAL( std::uint64_t(w1*norm), jobs1->getTotalWorkUnits());
 
-        jobs1->add(job2,w2);
+        jobs1->add(job2, w2);
         CPPUNIT_ASSERT_EQUAL( std::uint64_t((w2+w1)*norm), jobs1->getTotalWorkUnits());
 
-        jobs2->add(job3,w3);
+        jobs2->add(job3, w3);
         CPPUNIT_ASSERT_EQUAL( std::uint64_t(norm*w3), jobs2->getTotalWorkUnits());
 
         wu2 = 145;
@@ -545,11 +541,12 @@ public:
     }
 };
 
-
 class algoMockObserver
 {
 public:
-    algoMockObserver( ProgressObserver *obs ) : m_obs(obs), m_canceled(false)
+    algoMockObserver( ProgressObserver* obs ) :
+        m_obs(obs),
+        m_canceled(false)
     {
     }
 
@@ -561,9 +558,11 @@ public:
         }
     }
 
+    //------------------------------------------------------------------------------
+
     void run(int n)
     {
-        for(int i = 0; i<n; i++)
+        for(int i = 0; i < n; i++)
         {
             // algo ...
             if (m_obs)
@@ -583,6 +582,8 @@ public:
         }
     }
 
+    //------------------------------------------------------------------------------
+
     void cancel()
     {
         m_canceled = true;
@@ -590,7 +591,7 @@ public:
 
 protected:
 
-    ProgressObserver *m_obs;
+    ProgressObserver* m_obs;
     bool m_canceled;
 
 };
@@ -602,10 +603,14 @@ struct JobObserver : public ProgressObserver
     {
     }
 
+    //------------------------------------------------------------------------------
+
     void progressNotify( double p )
     {
         m_callback( p );
     }
+
+    //------------------------------------------------------------------------------
 
     bool canceled()
     {
@@ -617,18 +622,20 @@ struct JobObserver : public ProgressObserver
 
 struct JobObserverCanceler : public JobObserver
 {
-    JobObserverCanceler( std::function< void ( double ) > func, const bool &canceled = false) :
+    JobObserverCanceler( std::function< void ( double ) > func, const bool& canceled = false) :
         JobObserver(func),
         m_canceled( canceled )
     {
     }
+
+    //------------------------------------------------------------------------------
 
     bool canceled()
     {
         return m_canceled;
     }
 
-    const bool &m_canceled;
+    const bool& m_canceled;
 };
 
 //------------------------------------------------------------------------------
@@ -636,13 +643,13 @@ struct JobObserverCanceler : public JobObserver
 void JobTest::ObserverTest()
 {
     std::uint64_t progress(100);
-    for (int i = 0; i< 10; ++i)
+    for (int i = 0; i < 10; ++i)
     {
         int loops = 100;
         {
             ::fwJobs::Observer job( "GenericCallbackJob" );
 
-            auto f = [ =,&job](double d)
+            auto f = [ =, &job](double d)
                      {
                          job.doneWork(std::uint64_t(d * progress));
                      };
@@ -654,12 +661,11 @@ void JobTest::ObserverTest()
             CPPUNIT_ASSERT_EQUAL( progress, job.getDoneWorkUnits() );
         }
 
-
         {
             ::fwJobs::Job job( "GenericCallbackJob",
-                               [ = ](::fwJobs::Job &job)
+                               [ = ](::fwJobs::Job& job)
                     {
-                        auto f = [ =,&job](double d)
+                        auto f = [ =, &job](double d)
                                  {
                                      job.doneWork(std::uint64_t(d * progress));
                                  };
@@ -675,9 +681,9 @@ void JobTest::ObserverTest()
 
             loops = 1 << 30;
             ::fwJobs::Job job( "GenericCallbackJob",
-                               [ = ](::fwJobs::Job &runningJob)
+                               [ = ](::fwJobs::Job& runningJob)
                     {
-                        auto f = [ =,&runningJob](double d)
+                        auto f = [ =, &runningJob](double d)
                                  {
                                      runningJob.doneWork(std::uint64_t(d * progress));
                                  };
@@ -702,9 +708,9 @@ void JobTest::ObserverTest()
 
             loops = 1 << 30;
             ::fwJobs::Job job( "GenericCallbackJob",
-                               [ = ](::fwJobs::Job &runningJob)
+                               [ = ](::fwJobs::Job& runningJob)
                     {
-                        auto f = [ =,&runningJob](double d)
+                        auto f = [ =, &runningJob](double d)
                                  {
                                      runningJob.doneWork(std::uint64_t(d * progress));
                                  };
@@ -732,7 +738,7 @@ void JobTest::LogTest()
 
         job.log("Test of GenericCallbackJob1");
         algoMockGenericCallback(loops, job.progressCallback(), job.cancelRequestedCallback(),
-                                [&job](const std::string &message)
+                                [&job](const std::string& message)
                 {
                     job.log(message);
                 });
@@ -741,12 +747,12 @@ void JobTest::LogTest()
     }
 
     {
-        ::fwJobs::Job::Task func = [loops](::fwJobs::Job &runningJob)
+        ::fwJobs::Job::Task func = [loops](::fwJobs::Job& runningJob)
                                    {
                                        algoMockGenericCallback(loops,
                                                                runningJob.progressCallback(),
                                                                runningJob.cancelRequestedCallback(),
-                                                               [&runningJob](const std::string &message)
+                                                               [&runningJob](const std::string& message)
                     {
                         runningJob.log(message);
                     });
@@ -759,12 +765,12 @@ void JobTest::LogTest()
     }
 
     {
-        ::fwJobs::Job::Task func = [loops](::fwJobs::Job &runningJob)
+        ::fwJobs::Job::Task func = [loops](::fwJobs::Job& runningJob)
                                    {
                                        algoMockGenericCallback(loops,
                                                                runningJob.progressCallback(),
                                                                runningJob.cancelRequestedCallback(),
-                                                               [&runningJob](const std::string &message)
+                                                               [&runningJob](const std::string& message)
                     {
                         runningJob.log(message);
                     });
@@ -790,10 +796,8 @@ void JobTest::LogTest()
         job3->log("Log test of GenericCallbackJob3");
         job4->log("Log test of GenericCallbackJob4");
 
-
         jobs1->log("Aggregator1");
         jobs2->log("Aggregator2");
-
 
         jobs2->run();
         jobs2->wait();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,10 +7,13 @@
 #include "fwDataCamp/visitor/CompareObjects.hpp"
 
 #include <fwCore/Exception.hpp>
+
 #include <fwData/camp/mapper.hpp>
+
 #include <fwMemory/BufferObject.hpp>
 
 #include <boost/functional/hash.hpp>
+
 #include <string>
 
 namespace fwDataCamp
@@ -28,44 +31,60 @@ struct PropertyVisitor : public camp::ValueVisitor< PropType >
     std::string m_prefix;
     SPTR(CompareObjects::PropsMapType) m_props;
 
-    PropertyVisitor(std::string prefix) : m_prefix(prefix)
+    PropertyVisitor(std::string prefix) :
+        m_prefix(prefix)
     {
     }
 
-    PropertyVisitor(std::string prefix, SPTR(CompareObjects::PropsMapType)props)
-        : m_prefix(prefix), m_props(props)
+    PropertyVisitor(std::string prefix, SPTR(CompareObjects::PropsMapType)props) :
+        m_prefix(prefix),
+        m_props(props)
     {
     }
+
+    //------------------------------------------------------------------------------
 
     PropType operator()(camp::NoType value)
     {
         return std::make_pair("", "");
     }
 
+    //------------------------------------------------------------------------------
+
     PropType operator()(bool value)
     {
         return std::make_pair(m_prefix, value ? "true" : "false");
     }
+
+    //------------------------------------------------------------------------------
 
     PropType operator()(long value)
     {
         return std::make_pair(m_prefix, ::boost::lexical_cast<std::string>(value));
     }
 
+    //------------------------------------------------------------------------------
+
     PropType operator()(double value)
     {
         return std::make_pair(m_prefix, ::boost::lexical_cast<std::string>(value));
     }
+
+    //------------------------------------------------------------------------------
 
     PropType operator()(const std::string& value)
     {
         return std::make_pair(m_prefix, value);
     }
 
+    //------------------------------------------------------------------------------
+
     PropType operator()(const camp::EnumObject& value)
     {
         return std::make_pair(m_prefix, value.name());
     }
+
+    //------------------------------------------------------------------------------
 
     PropType operator()(const camp::UserObject& value)
     {
@@ -125,8 +144,10 @@ CompareObjects::CompareObjects()
 //-----------------------------------------------------------------------------
 
 CompareObjects::CompareObjects(
-    const ::camp::UserObject& obj, const std::string& prefix, SPTR(PropsMapType)props)
-    : m_campObj(obj), m_prefix(prefix), m_props(props)
+    const ::camp::UserObject& obj, const std::string& prefix, SPTR(PropsMapType)props) :
+    m_campObj(obj),
+    m_prefix(prefix),
+    m_props(props)
 {
 }
 
@@ -141,7 +162,7 @@ CompareObjects::~CompareObjects()
 void CompareObjects::visit(const camp::SimpleProperty& property)
 {
     SLM_TRACE_FUNC();
-    const std::string name ( property.name() );
+    const std::string name( property.name() );
     OSLM_DEBUG("SimpleProperty name = " << name);
     ::camp::Value elemValue = property.get(m_campObj);
     PropertyVisitor visitor(getPath(name), m_props);
@@ -157,7 +178,7 @@ void CompareObjects::visit(const camp::SimpleProperty& property)
 void CompareObjects::visit(const camp::EnumProperty& property)
 {
     SLM_TRACE_FUNC();
-    const std::string name ( property.name() );
+    const std::string name( property.name() );
     ::camp::Value elemValue = property.get(m_campObj);
 
     PropertyVisitor visitor(getPath(name), m_props);
@@ -218,7 +239,7 @@ void CompareObjects::visit(const camp::ArrayProperty& property)
 void CompareObjects::visit(const camp::UserProperty& property)
 {
     SLM_TRACE_FUNC();
-    const std::string name ( property.name() );
+    const std::string name( property.name() );
     OSLM_DEBUG( "UserProperty name =" << name );
     ::camp::Value elemValue = property.get( m_campObj );
 
@@ -264,16 +285,16 @@ void CompareObjects::compare(SPTR(::fwData::Object)objRef, SPTR(::fwData::Object
 
     SLM_ASSERT("Reference object not defined", m_objRef);
     m_campObj = ::camp::UserObject(m_objRef.get());
-    const ::camp::Class & classRef = ::camp::classByName(m_objRef->getClassname());
+    const ::camp::Class& classRef = ::camp::classByName(m_objRef->getClassname());
     classRef.visit(*this);
-    m_propsRef = ::boost::move(*m_props);
+    m_propsRef = std::move(*m_props);
     m_props->clear();
 
     SLM_ASSERT("Reference object not defined", m_objComp);
     m_campObj = ::camp::UserObject(m_objComp.get());
-    const ::camp::Class & classComp = ::camp::classByName(m_objComp->getClassname());
+    const ::camp::Class& classComp = ::camp::classByName(m_objComp->getClassname());
     classComp.visit(*this);
-    m_propsComp = ::boost::move(*m_props);
+    m_propsComp = std::move(*m_props);
     m_props->clear();
 
     for(PropsMapType::value_type prop :  m_propsComp)
