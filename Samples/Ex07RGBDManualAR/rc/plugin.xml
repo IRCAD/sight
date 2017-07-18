@@ -1,4 +1,4 @@
-<plugin id="Ex06ManualAR" version="@DASH_VERSION@">
+<plugin id="Ex07RGBDManualAR" version="@DASH_VERSION@">
 
     <requirement id="dataReg" />
     <requirement id="arDataReg" />
@@ -8,7 +8,7 @@
     <requirement id="preferences" />
 
     <extension implements="::fwServices::registry::AppConfig2">
-        <id>Ex06ManualARConfig</id>
+        <id>Ex07RGBDManualARConfig</id>
         <config>
 
             <!-- objects declarations -->
@@ -33,8 +33,8 @@
             <service uid="mainFrame" type="::gui::frame::SDefaultFrame" >
                 <gui>
                     <frame>
-                        <name>Ex06ManualAR</name>
-                        <icon>@BUNDLE_PREFIX@/Ex06ManualAR_0-1/app.ico</icon>
+                        <name>Ex07RGBDManualAR</name>
+                        <icon>@BUNDLE_PREFIX@/Ex07RGBDManualAR_0-1/app.ico</icon>
                     </frame>
                     <menuBar />
                     <toolBar />
@@ -177,6 +177,8 @@
                 <inout key="target" uid="cameraSeries"/>
             </service>
 
+            <!-- Matrix (trf format) reader -->
+            <!-- This matrix is used to staticaly register the model onto the video -->
             <service uid="TransformReader" type="::uiIO::editor::SIOSelector">
                 <inout key="target" uid="matrix" />
                 <type mode="reader" /><!-- mode is optional (by default it is "reader") -->
@@ -194,18 +196,19 @@
                 </preference>
             </service>
 
-            <!-- extract a ::arData::Camera from the ::arData::CameraSeries -->
+            <!-- extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a::arData::CameraSeries -->
             <service uid="Extractor" type="::ctrlCamp::SExtractObj" >
                <inout key="source" uid="cameraSeries">
 
-                   <extract from="@cameras.0" /><!-- Camp path of the first camera in cameraSeries -->
-                   <extract from="@cameras.1" />
-                   <extract from="@extrinsic_matrices.1" />
+                   <extract from="@cameras.0" /><!-- Camp path of the first camera in cameraSeries (Depth) -->
+                   <extract from="@cameras.1" /><!-- Camp path of the second camera in cameraSeries (RGB) -->
+                   <extract from="@extrinsic_matrices.1" /><!-- Camp path of the extrincis matrix in cameraSeries going from Depth to RGB coordinate system -->
                </inout>
+               <!-- destination -->
                <out group="target">
                    <key uid="cameraDepth"/>
                    <key uid="cameraRGB" />
-                   <key uid="extrinsic"/> <!-- destination -->
+                   <key uid="extrinsic"/>
                </out>
             </service>
 
@@ -255,7 +258,6 @@
 
             </service>
 
-
             <!-- GUI to select camera (device, file, or stream) -->
             <service uid="CameraSelector" type="::videoQt::editor::SCamera" >
                 <inout key="camera" uid="cameraRGB" />
@@ -268,17 +270,16 @@
                 <inout key="frameTL" uid="frameTL" />
             </service>
 
-
-            <!-- to multiply matrices (here only used to inverse "matrix" )-->
+            <!-- Use the extrinsic matrix to get back in the RGB space -->
             <service uid="concatenate" type="::maths::SConcatenateMatrices" >
                 <in group="matrix">
-                    <key uid="extrinsic" autoConnect="yes" inverse="false"/>
-                    <key uid="matrix" autoConnect="yes" inverse="false"/>
+                    <key uid="extrinsic" autoConnect="yes" />
+                    <key uid="matrix" autoConnect="yes" />
                 </in>
                 <inout key="output" uid="inverseMat" />
             </service>
 
-                        <!-- To synchronize matrix, frame and detection -->
+            <!-- To synchronize matrix, frame and detection -->
             <service uid="synchronizer" type="::videoTools::SFrameMatrixSynchronizer"  worker="videoWorker">
                 <in group="frameTL">
                     <key uid="frameTL" />
@@ -293,7 +294,7 @@
 
             <!-- signal/slot connection -->
 
-        <!-- Extract the model series when it is added to SDB -->
+            <!-- Extract the model series when it is added to SDB -->
             <connect>
                 <signal>seriesDB/modified</signal>
                 <signal>seriesDB/addedSeries</signal>

@@ -1,5 +1,5 @@
 
-set( NAME Ex06ManualAR )
+set( NAME Ex07RGBDManualAR )
 set( VERSION 0.1 )
 set( TYPE APP )
 set( DEPENDENCIES  )
@@ -20,11 +20,8 @@ set( REQUIREMENTS
     maths
     preferences
     servicesReg
-    trackerAruco
-    registrationARL
     videoQt
     videoTools
-    videoCalibration
     visuVTK
     visuVTKAdaptor
     visuVTKARAdaptor
@@ -34,9 +31,8 @@ set( REQUIREMENTS
     uiIO
     ioVTK
     ioAtoms
-    3DVisualizationActivity2
     uiMedDataQt
 
     )
 
-bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex06ManualARConfig)
+bundleParam(appXml2 PARAM_LIST config PARAM_VALUES Ex07RGBDManualARConfig)
