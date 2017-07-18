@@ -1,7 +1,5 @@
 fwLoadProperties()
 
-find_package (Boost COMPONENTS chrono REQUIRED)
-
 find_package (OpenNI2 REQUIRED)
 
 fwInclude(
@@ -9,7 +7,6 @@ fwInclude(
 )
 fwLink(
     ${OPENNI2_LIBRARY}
-    ${Boost_CHRONO_LIBRARY}
 )
 
 if(WIN32)
