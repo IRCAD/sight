@@ -1,9 +1,9 @@
 fwLoadProperties()
-find_package(CppUnit)
 
 find_library(VNL_LIBRARY vnl)
 find_library(VNL_ALGO_LIBRARY vnl_algo)
 find_library(VCL_LIBRARY vcl )
+find_package(CppUnit)
 
 
 fwInclude(
