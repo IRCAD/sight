@@ -41,7 +41,8 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLINE_SLOT = "updateSpline";
 //------------------------------------------------------------------------------
 
 PointList::PointList() throw() :
-    m_radius(7.0)
+    m_radius(7.0),
+    m_interaction(true)
 {
     newSlot(s_ADD_POINT_SLOT, &PointList::addPoint, this);
     newSlot(s_UPDATE_SPLINE_SLOT, &PointList::updateSpline, this);
@@ -71,6 +72,16 @@ void PointList::doConfigure() throw(fwTools::Failed)
     if(!radius.empty())
     {
         m_radius = std::stod(radius);
+    }
+
+    const std::string interaction = m_configuration->getAttributeValue("interaction");
+
+    if (!interaction.empty())
+    {
+        SLM_FATAL_IF("value for 'interaction' must be 'on' or 'off', actual: " + interaction,
+                     interaction != "on" && interaction != "off");
+
+        m_interaction = (interaction == "on");
     }
 }
 
@@ -156,6 +167,7 @@ void PointList::createServices(WeakPointListType& wPtList)
 
         pointAdaptor->setColor(m_ptColor->red(), m_ptColor->green(), m_ptColor->blue(), m_ptColor->alpha());
         pointAdaptor->setRadius(m_radius);
+        pointAdaptor->setInteraction(m_interaction);
 
         this->registerService(service);
     }
@@ -227,6 +239,13 @@ void PointList::setRadius(const double radius)
 void PointList::setColor(const fwData::Color::sptr ptColor)
 {
     m_ptColor = ptColor;
+}
+
+//------------------------------------------------------------------------------
+
+void PointList::setInteraction(const bool interaction)
+{
+    m_interaction = interaction;
 }
 
 //------------------------------------------------------------------------------

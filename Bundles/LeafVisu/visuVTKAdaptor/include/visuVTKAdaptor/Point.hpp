@@ -33,7 +33,7 @@ namespace visuVTKAdaptor
  *
  * @code{.xml}
       <adaptor id="..." class="::visuVTKAdaptor::Point" objectId="self">
-        <config renderer="default" picker="..." color="#FFFFFF" selectedColor="#FFFFFF" radius="10"/>
+        <config renderer="default" picker="..." color="#FFFFFF" selectedColor="#FFFFFF" radius="10" interaction="on"/>
       </adaptor>
      @endcode
  * @subsection Configuration Configuration
@@ -42,6 +42,7 @@ namespace visuVTKAdaptor
  * - \b color(#FFFFFF) : color of the point.
  * - \b selectedColor(#FFFFFF) : color when the point is selected.
  * - \b radius(double) : point radius.
+ * - \b interaction (optional, default: on): if "on" interactions are enabled
  */
 
 class VISUVTKADAPTOR_CLASS_API Point : public ::fwRenderVTK::IVtkAdaptorService
@@ -55,11 +56,14 @@ public:
 
     VISUVTKADAPTOR_API virtual ~Point() throw();
 
-    VISUVTKADAPTOR_API void setRadius(double radius);
+    VISUVTKADAPTOR_API void setRadius(const double radius);
 
-    VISUVTKADAPTOR_API void setColor(double red, double green, double blue, double alpha = 1.0);
+    VISUVTKADAPTOR_API void setColor(const double red, const double green, const double blue, const double alpha = 1.0);
 
-    VISUVTKADAPTOR_API void setSelectedColor(double red, double green, double blue, double alpha = 1.0);
+    VISUVTKADAPTOR_API void setSelectedColor(const double red, const double green, const double blue,
+                                             const double alpha = 1.0);
+
+    VISUVTKADAPTOR_API void setInteraction(const bool interaction = true);
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -96,6 +100,9 @@ private:
     ::fwData::Color::sptr m_ptColor;
     ::fwData::Color::sptr m_ptSelectedColor;
     double m_radius;
+
+    /// If true, the interactions are enabled
+    bool m_interaction;
 };
 
 } //namespace visuVTKAdaptor
