@@ -4,9 +4,6 @@ find_package(LibXml2)
 fwInclude(${LIBXML2_INCLUDE_DIR})
 fwLink(${LIBXML2_LIBRARIES})
 
-find_package(Boost REQUIRED)
-fwForwardInclude(${Boost_INCLUDE_DIRS})
-
 find_package(CryptoPP REQUIRED)
 fwInclude(${CryptoPP_INCLUDE_DIR})
 fwLink(${CryptoPP_LIBRARIES})
