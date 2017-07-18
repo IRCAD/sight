@@ -1,8 +1,6 @@
 fwLoadProperties()
 
-
-find_package(Boost COMPONENTS filesystem program_options REQUIRED)
-fwForwardInclude(${Boost_INCLUDE_DIRS})
+find_package(Boost COMPONENTS program_options REQUIRED)
 fwLink(${Boost_LIBRARIES})
 
 find_package(DCMTK REQUIRED)

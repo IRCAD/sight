@@ -1,13 +1,7 @@
 fwLoadProperties()
 
-find_package (Boost COMPONENTS filesystem system program_options REQUIRED)
-
-fwInclude(
-    ${Boost_INCLUDE_DIRS}
-)
+find_package (Boost COMPONENTS program_options REQUIRED)
 
 fwLink(
     ${Boost_PROGRAM_OPTIONS_LIBRARY}
-    ${Boost_FILESYSTEM_LIBRARY}
-    ${Boost_SYSTEM_LIBRARY}
 )

@@ -1,9 +1,5 @@
 fwLoadProperties()
 
-
-find_package (Boost REQUIRED)
-fwForwardInclude(${Boost_INCLUDE_DIRS})
-
 find_package(GDCM REQUIRED)
 include(${GDCM_USE_FILE})
 fwForwardInclude(${GDCM_INCLUDE_DIRS})

@@ -1,10 +1,6 @@
 fwLoadProperties()
 
-
-#racy compatibility
-
-find_package(Boost COMPONENTS filesystem regex REQUIRED)
-fwForwardInclude( ${Boost_INCLUDE_DIRS} )
+find_package(Boost COMPONENTS regex REQUIRED)
 fwLink( ${Boost_REGEX_LIBRARY} )
 
 find_package(DCMTK REQUIRED)
