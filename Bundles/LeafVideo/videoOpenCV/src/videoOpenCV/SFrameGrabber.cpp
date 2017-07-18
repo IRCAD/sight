@@ -302,6 +302,9 @@ void SFrameGrabber::readImages(const ::boost::filesystem::path& folder, const st
             size_t h = static_cast<size_t>(height);
             switch (type)
             {
+                case CV_8UC1:
+                    frameTL->initPoolSize(w, h, ::fwTools::Type::s_UINT8, 1);
+                    break;
                 case CV_8UC3:
                     frameTL->initPoolSize(w, h, ::fwTools::Type::s_UINT8, 3);
                     break;
@@ -408,6 +411,9 @@ void SFrameGrabber::grabVideo()
 
                 switch (image.type())
                 {
+                    case CV_8UC1:
+                        frameTL->initPoolSize(width, height, ::fwTools::Type::s_UINT8, 1);
+                        break;
                     case CV_8UC3:
                         frameTL->initPoolSize(width, height, ::fwTools::Type::s_UINT8, 3);
                         break;
