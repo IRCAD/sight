@@ -170,7 +170,7 @@ private:
     std::string generateNewGroupName() const;
 
     /// Generate a new random color
-    static std::array<float, 4> generateNewColor();
+    std::array<float, 4> generateNewColor();
 
     /// Converts a landmark color to a QColor.
     static QColor convertToQColor(const ::fwData::Landmarks::ColorType& color);
@@ -199,6 +199,9 @@ private:
 
     /// Used to set the default landmarks size
     float m_defaultPointSize;
+
+    /// Used to set the default landmarks transparency
+    float m_defaultPointTransparency;
 
 };
 } // namespace editor

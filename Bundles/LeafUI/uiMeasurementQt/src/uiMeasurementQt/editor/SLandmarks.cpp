@@ -83,8 +83,9 @@ void SLandmarks::configuring()
 
     const ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
 
-    const std::string defaultPointSize = config.get_optional<std::string>("size").get_value_or("10.0");
-    const std::string advancedMode     = config.get_optional<std::string>("advanced").get_value_or("no");
+    const std::string defaultPointSize         = config.get_optional<std::string>("size").get_value_or("10.0");
+    const std::string defaultPointTransparency = config.get_optional<std::string>("transparency").get_value_or("1.0");
+    const std::string advancedMode             = config.get_optional<std::string>("advanced").get_value_or("no");
 
     SLM_FATAL_IF("'advanced' value must be 'yes' or 'no', here : '" + advancedMode + "'.",
                  advancedMode != "yes" && advancedMode != "no");
@@ -94,8 +95,24 @@ void SLandmarks::configuring()
     }
     catch(const std::invalid_argument& ia)
     {
-        SLM_FATAL("'size' value must be a positive number between 1 and 100");
+        OSLM_FATAL("'size' conversion to float failed : " << ia.what());
     }
+
+    OSLM_FATAL_IF("'size' value must be a positive number greater than 0 (current value: " << m_defaultPointSize << ")",
+                  m_defaultPointSize <= 0.f);
+
+    try
+    {
+        m_defaultPointTransparency = std::stof(defaultPointTransparency);
+    }
+    catch(const std::invalid_argument& ia)
+    {
+        OSLM_FATAL("'transparency' conversion to float failed : " << ia.what());
+    }
+
+    OSLM_FATAL_IF(
+        "'transparency' value must be a number between 0.0 and 1.0 (current value: " << m_defaultPointTransparency << ")",
+        m_defaultPointTransparency < 0.f || m_defaultPointTransparency > 1.f);
 
     m_advancedMode = (advancedMode == "yes");
 }
@@ -863,7 +880,7 @@ std::string SLandmarks::generateNewGroupName() const
 
 std::array<float, 4> SLandmarks::generateNewColor()
 {
-    std::array<float, 4> color = {{rand()%255/255.f, rand()%255/255.f, rand()%255/255.f, 1.f}};
+    std::array<float, 4> color = {{rand()%255/255.f, rand()%255/255.f, rand()%255/255.f, m_defaultPointTransparency}};
     return color;
 }
 
