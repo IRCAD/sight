@@ -41,7 +41,7 @@ STimestampSlotCaller::~STimestampSlotCaller()
 
 //-----------------------------------------------------------------------------
 
-void STimestampSlotCaller::configuring() throw( ::fwTools::Failed )
+void STimestampSlotCaller::configuring()
 {
     this->initialize();
 
@@ -72,14 +72,14 @@ void STimestampSlotCaller::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void STimestampSlotCaller::starting() throw( ::fwTools::Failed )
+void STimestampSlotCaller::starting()
 {
     this->actionServiceStarting();
 }
 
 //-----------------------------------------------------------------------------
 
-void STimestampSlotCaller::updating() throw( ::fwTools::Failed )
+void STimestampSlotCaller::updating()
 {
     ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();
 
@@ -103,7 +103,7 @@ void STimestampSlotCaller::updating() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void STimestampSlotCaller::stopping() throw( ::fwTools::Failed )
+void STimestampSlotCaller::stopping()
 {
     this->actionServiceStopping();
 }

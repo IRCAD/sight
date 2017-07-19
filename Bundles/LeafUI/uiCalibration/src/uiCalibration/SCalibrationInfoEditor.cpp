@@ -35,7 +35,7 @@ static const std::string s_CALIBRATION_INFO_2 = "calInfo2";
 
 // ----------------------------------------------------------------------------
 
-SCalibrationInfoEditor::SCalibrationInfoEditor() throw ()
+SCalibrationInfoEditor::SCalibrationInfoEditor() noexcept
 {
     newSlot(s_REMOVE_SLOT, &SCalibrationInfoEditor::remove, this);
     newSlot(s_RESET_SLOT, &SCalibrationInfoEditor::reset, this);
@@ -44,7 +44,7 @@ SCalibrationInfoEditor::SCalibrationInfoEditor() throw ()
 
 // ----------------------------------------------------------------------------
 
-void SCalibrationInfoEditor::updating() throw (fwTools::Failed)
+void SCalibrationInfoEditor::updating()
 {
     ::arData::CalibrationInfo::sptr calInfo1 = this->getInOut< ::arData::CalibrationInfo >(s_CALIBRATION_INFO_1);
     SLM_ASSERT("Object "+s_CALIBRATION_INFO_1+" is not a CalibrationInfo !", calInfo1);
@@ -92,14 +92,14 @@ void SCalibrationInfoEditor::updating() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SCalibrationInfoEditor::configuring() throw (fwTools::Failed)
+void SCalibrationInfoEditor::configuring()
 {
     fwGui::IGuiContainerSrv::initialize();
 }
 
 // ----------------------------------------------------------------------------
 
-void SCalibrationInfoEditor::starting() throw (fwTools::Failed)
+void SCalibrationInfoEditor::starting()
 {
     fwGui::IGuiContainerSrv::create();
     fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
@@ -136,7 +136,7 @@ void SCalibrationInfoEditor::starting() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SCalibrationInfoEditor::stopping() throw (fwTools::Failed)
+void SCalibrationInfoEditor::stopping()
 {
     ::fwGui::IGuiContainerSrv::destroy();
 }

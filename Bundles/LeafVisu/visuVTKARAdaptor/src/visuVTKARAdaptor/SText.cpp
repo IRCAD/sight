@@ -35,7 +35,7 @@ SText::SText() :
 
 //-----------------------------------------------------------------------------
 
-SText::~SText() throw()
+SText::~SText() noexcept
 {
     m_actor->Delete();
     m_actor = nullptr;
@@ -46,7 +46,7 @@ SText::~SText() throw()
 
 //-----------------------------------------------------------------------------
 
-void SText::doConfigure() throw(::fwTools::Failed)
+void SText::doConfigure()
 {
     SLM_ASSERT("Required 'config' element is missing.", m_configuration->getName() == "config");
     this->setRenderId( m_configuration->getAttributeValue("renderer") );
@@ -176,7 +176,7 @@ void SText::doConfigure() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SText::doStart() throw(::fwTools::Failed)
+void SText::doStart()
 {
     this->addToRenderer(m_actor);
     this->doUpdate();
@@ -184,14 +184,14 @@ void SText::doStart() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SText::doStop() throw(::fwTools::Failed)
+void SText::doStop()
 {
     this->removeAllPropFromRenderer();
 }
 
 //------------------------------------------------------------------------------
 
-void SText::doSwap() throw(fwTools::Failed)
+void SText::doSwap()
 {
     this->doStop();
     this->doStart();
@@ -199,7 +199,7 @@ void SText::doSwap() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SText::doUpdate() throw(::fwTools::Failed)
+void SText::doUpdate()
 {
     this->updateStyle();
     this->updateText();

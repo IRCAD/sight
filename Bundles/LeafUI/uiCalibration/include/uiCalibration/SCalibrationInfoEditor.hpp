@@ -60,34 +60,34 @@ public:
     /**
      * @brief Constructor.
      */
-    UICALIBRATION_API SCalibrationInfoEditor() throw ();
+    UICALIBRATION_API SCalibrationInfoEditor() noexcept;
 
     /**
      * @brief Destructor.
      */
-    UICALIBRATION_API ~SCalibrationInfoEditor() throw ()
+    UICALIBRATION_API ~SCalibrationInfoEditor() noexcept
     {
     }
 
 protected:
 
     /// Initializes the editor
-    UICALIBRATION_API void configuring() throw (fwTools::Failed);
+    UICALIBRATION_API void configuring();
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    UICALIBRATION_API void starting() throw (fwTools::Failed);
+    UICALIBRATION_API void starting();
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    UICALIBRATION_API void stopping() throw (fwTools::Failed);
+    UICALIBRATION_API void stopping();
 
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    UICALIBRATION_API void updating() throw (fwTools::Failed);
+    UICALIBRATION_API void updating();
 
     /**
      * @brief Slot: removes the current selected image.

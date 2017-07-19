@@ -36,13 +36,13 @@ SObjectConnectorTree::SObjectConnectorTree() :
 
 //-----------------------------------------------------------------------------
 
-SObjectConnectorTree::~SObjectConnectorTree() throw()
+SObjectConnectorTree::~SObjectConnectorTree() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SObjectConnectorTree::configuring() throw (::fwTools::Failed)
+void SObjectConnectorTree::configuring()
 {
     this->initialize();
     m_model.initialize(m_configuration, this->getObject());
@@ -54,7 +54,7 @@ void SObjectConnectorTree::configuring() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SObjectConnectorTree::starting() throw (::fwTools::Failed)
+void SObjectConnectorTree::starting()
 {
     QHBoxLayout* searchLayout;
     QPushButton* refreshButton;
@@ -133,20 +133,20 @@ void SObjectConnectorTree::onFilterChange(QString const& str)
 
 //-----------------------------------------------------------------------------
 
-void SObjectConnectorTree::stopping() throw (::fwTools::Failed)
+void SObjectConnectorTree::stopping()
 {
     this->destroy();
 }
 
 //-----------------------------------------------------------------------------
 
-void SObjectConnectorTree::updating() throw (::fwTools::Failed)
+void SObjectConnectorTree::updating()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SObjectConnectorTree::swapping() throw (::fwTools::Failed)
+void SObjectConnectorTree::swapping()
 {
     // Classic default approach to update service when oject change
     this->stopping();

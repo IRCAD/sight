@@ -33,22 +33,22 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SConsumer)(::fwServices::IService) );
 
-    EX02TIMELINE_API SConsumer() throw();
-    EX02TIMELINE_API virtual ~SConsumer() throw();
+    EX02TIMELINE_API SConsumer() noexcept;
+    EX02TIMELINE_API virtual ~SConsumer() noexcept;
 
 protected:
 
     /// Starts the timer if a period is defined.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Stops the timer.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Does nothing.
-    virtual void swapping() throw ( ::fwTools::Failed );
+    virtual void swapping();
 
     /// Called by the timer to consume a message periodically
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /**
      * @brief Configures the service.
@@ -62,7 +62,7 @@ protected:
      * - \b id : id of the receiver.
      * - \b period (optional): time between two messages display, in milliseconds.
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Called by a signal to consume a message
     void consume(::fwCore::HiResClock::HiResClockType timestamp);

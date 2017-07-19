@@ -42,10 +42,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SCamera)(::fwRenderVTK::IVtkAdaptorService) );
 
     /// Constructor
-    SCamera() throw();
+    SCamera() noexcept;
 
     /// Destructor
-    virtual ~SCamera() throw();
+    virtual ~SCamera() noexcept;
 
     /**
      * @name Signals API
@@ -69,7 +69,7 @@ public:
 protected:
 
     /// Initializes the camera position and image connections
-    VISUVTKARADAPTOR_API void doStart() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doStart();
 
     /**
      * @code{.xml}
@@ -80,16 +80,16 @@ protected:
      * - \b renderer : defines the renderer to show the arrow. It must be different from the 3D objects renderer.
      * - \b cameraUID (optional): defines the uid of the camera (used to calibrate the vtk camera)
      */
-    VISUVTKARADAPTOR_API void doConfigure() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doConfigure();
 
     /// Calls doStop() and doStart()
-    VISUVTKARADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doSwap();
 
     /// Does nothing
-    VISUVTKARADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doUpdate();
 
     /// Removes camera observers and connections
-    VISUVTKARADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doStop();
 
 private:
 

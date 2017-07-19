@@ -33,7 +33,7 @@ static const ::fwCom::Slots::SlotKeyType s_WRITE        = "write";
 
 //------------------------------------------------------------------------------
 
-SMatrixWriter::SMatrixWriter() throw() :
+SMatrixWriter::SMatrixWriter() noexcept :
     m_isRecording(false),
     m_filestream(nullptr)
 {
@@ -45,7 +45,7 @@ SMatrixWriter::SMatrixWriter() throw() :
 
 //------------------------------------------------------------------------------
 
-SMatrixWriter::~SMatrixWriter() throw()
+SMatrixWriter::~SMatrixWriter() noexcept
 {
     if(nullptr != m_filestream)
     {
@@ -63,14 +63,14 @@ SMatrixWriter::~SMatrixWriter() throw()
 
 //------------------------------------------------------------------------------
 
-void SMatrixWriter::configuring() throw(::fwTools::Failed)
+void SMatrixWriter::configuring()
 {
     ::io::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
 
-void SMatrixWriter::starting() throw(::fwTools::Failed)
+void SMatrixWriter::starting()
 {
 }
 
@@ -110,14 +110,14 @@ void SMatrixWriter::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SMatrixWriter::stopping() throw(::fwTools::Failed)
+void SMatrixWriter::stopping()
 {
     this->stopRecord();
 }
 
 //------------------------------------------------------------------------------
 
-void SMatrixWriter::updating() throw(::fwTools::Failed)
+void SMatrixWriter::updating()
 {
 
     ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();

@@ -46,7 +46,7 @@ const ::fwServices::IService::KeyType s_TAGTL_INOUT_GROUP = "tagTL";
 
 //-----------------------------------------------------------------------------
 
-SArucoTracker::SArucoTracker() throw () :
+SArucoTracker::SArucoTracker() noexcept :
     m_arUcoTracker(nullptr),
     m_camParameters(nullptr),
     m_threshold("auto"),
@@ -72,13 +72,13 @@ SArucoTracker::SArucoTracker() throw () :
 
 //-----------------------------------------------------------------------------
 
-SArucoTracker::~SArucoTracker() throw ()
+SArucoTracker::~SArucoTracker() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SArucoTracker::configuring() throw (::fwTools::Failed)
+void SArucoTracker::configuring()
 {
     this->::arServices::ITracker::configuring();
 
@@ -164,7 +164,7 @@ void SArucoTracker::configuring() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SArucoTracker::starting() throw (::fwTools::Failed)
+void SArucoTracker::starting()
 {
     // initialized marker timeline matrix (4*2D points)
     const size_t numTagTL = this->getKeyGroupSize(s_TAGTL_INOUT_GROUP);
@@ -178,7 +178,7 @@ void SArucoTracker::starting() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SArucoTracker::stopping() throw (::fwTools::Failed)
+void SArucoTracker::stopping()
 {
     delete m_camParameters;
     delete m_arUcoTracker;
@@ -188,7 +188,7 @@ void SArucoTracker::stopping() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SArucoTracker::updating() throw (::fwTools::Failed)
+void SArucoTracker::updating()
 {
 }
 

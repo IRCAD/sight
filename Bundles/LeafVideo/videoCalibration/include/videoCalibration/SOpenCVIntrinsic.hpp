@@ -44,27 +44,27 @@ public:
     fwCoreServiceClassDefinitionsMacro((SOpenCVIntrinsic)(::videoCalibration::ICalibration));
 
     /// Constructor.
-    VIDEOCALIBRATION_API SOpenCVIntrinsic() throw ();
+    VIDEOCALIBRATION_API SOpenCVIntrinsic() noexcept;
 
     /// Destructor.
-    VIDEOCALIBRATION_API virtual ~SOpenCVIntrinsic() throw ();
+    VIDEOCALIBRATION_API virtual ~SOpenCVIntrinsic() noexcept;
 
 protected:
 
     /// Configures the service.
-    VIDEOCALIBRATION_API void configuring() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void configuring();
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void starting() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void starting();
 
     /// Calls stopping and starting.
-    VIDEOCALIBRATION_API void swapping() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void swapping();
 
     /// Computes intrinsic calibration
-    VIDEOCALIBRATION_API void updating() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void updating();
 
     /// Removes connections
-    VIDEOCALIBRATION_API void stopping() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void stopping();
 
     /**
      * @brief SLOT: update the chessboard size.

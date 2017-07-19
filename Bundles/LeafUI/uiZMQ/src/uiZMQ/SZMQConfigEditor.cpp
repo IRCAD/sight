@@ -34,13 +34,13 @@ SZMQConfigEditor::SZMQConfigEditor()
 
 //-----------------------------------------------------------------------------
 
-SZMQConfigEditor::~SZMQConfigEditor() throw()
+SZMQConfigEditor::~SZMQConfigEditor() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SZMQConfigEditor::configuring() throw (::fwTools::Failed)
+void SZMQConfigEditor::configuring()
 {
     QVBoxLayout* mainLayout;
     QFormLayout* formLayout;
@@ -101,20 +101,20 @@ void SZMQConfigEditor::configuring() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SZMQConfigEditor::starting() throw (::fwTools::Failed)
+void SZMQConfigEditor::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SZMQConfigEditor::stopping() throw (::fwTools::Failed)
+void SZMQConfigEditor::stopping()
 {
     m_dialog.close();
 }
 
 //-----------------------------------------------------------------------------
 
-void SZMQConfigEditor::updating() throw (::fwTools::Failed)
+void SZMQConfigEditor::updating()
 {
     m_dialog.show();
 }
@@ -162,7 +162,7 @@ void SZMQConfigEditor::onValidate()
 
 //-----------------------------------------------------------------------------
 
-void SZMQConfigEditor::swapping() throw (::fwTools::Failed)
+void SZMQConfigEditor::swapping()
 {
     // Classic default approach to update service when oject change
     this->stopping();

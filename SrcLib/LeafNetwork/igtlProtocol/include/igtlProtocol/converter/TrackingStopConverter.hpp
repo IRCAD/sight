@@ -29,8 +29,7 @@ public:
 
     /// convert a igtl::MessageBase to a ::fwData::Object
     IGTLPROTOCOL_API void fromIgtlMessage (::igtl::MessageBase::Pointer const src,
-                                           ::fwData::Object::sptr& dest) const
-    throw (::igtlProtocol::exception::Conversion);
+                                           ::fwData::Object::sptr& dest) const;
 
     /**
      * @brief convert a fwData::Composite to a igtl::TrackingDataMessage

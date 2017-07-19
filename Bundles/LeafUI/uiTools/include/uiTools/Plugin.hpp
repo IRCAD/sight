@@ -21,16 +21,16 @@ namespace uiTools
 struct UITOOLS_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
     /// Destructor. Do nothing.
-    UITOOLS_API ~Plugin() throw();
+    UITOOLS_API ~Plugin() noexcept;
 
     /**
      * @brief Overrides start method. Object declarations.
      * @todo All data are not register in this method, what data must be registered ?
      */
-    UITOOLS_API void start() throw( ::fwRuntime::RuntimeException );
+    UITOOLS_API void start();
 
     /// Overrides stop method. Do nothing
-    UITOOLS_API void stop() throw();
+    UITOOLS_API void stop() noexcept;
 
 };
 

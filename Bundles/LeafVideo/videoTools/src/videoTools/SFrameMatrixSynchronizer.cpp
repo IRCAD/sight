@@ -44,7 +44,7 @@ const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrices";
 
 // ----------------------------------------------------------------------------
 
-SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() throw () :
+SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() noexcept :
     m_tolerance(500.),
     m_imagesInitialized(false),
     m_timeStep(33),
@@ -56,7 +56,7 @@ SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() throw () :
 
 // ----------------------------------------------------------------------------
 
-void SFrameMatrixSynchronizer::configuring() throw (::fwTools::Failed)
+void SFrameMatrixSynchronizer::configuring()
 {
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
@@ -124,7 +124,7 @@ void SFrameMatrixSynchronizer::configuring() throw (::fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SFrameMatrixSynchronizer::starting() throw (fwTools::Failed)
+void SFrameMatrixSynchronizer::starting()
 {
     if(this->isVersion2())
     {
@@ -202,7 +202,7 @@ void SFrameMatrixSynchronizer::starting() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SFrameMatrixSynchronizer::stopping() throw (fwTools::Failed)
+void SFrameMatrixSynchronizer::stopping()
 {
     m_timer->stop();
 
@@ -409,7 +409,7 @@ void SFrameMatrixSynchronizer::synchronize()
 
 // ----------------------------------------------------------------------------
 
-void SFrameMatrixSynchronizer::updating() throw (fwTools::Failed)
+void SFrameMatrixSynchronizer::updating()
 {
 }
 

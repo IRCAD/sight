@@ -31,13 +31,13 @@ SAtomNetworkReader::SAtomNetworkReader()
 
 //-----------------------------------------------------------------------------
 
-SAtomNetworkReader::~SAtomNetworkReader() throw()
+SAtomNetworkReader::~SAtomNetworkReader() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SAtomNetworkReader::configuring() throw (::fwTools::Failed)
+void SAtomNetworkReader::configuring()
 {
     ::io::IReader::configuring();
 }
@@ -54,19 +54,19 @@ void SAtomNetworkReader::configureWithIHM()
 
 //-----------------------------------------------------------------------------
 
-void SAtomNetworkReader::starting() throw (::fwTools::Failed)
+void SAtomNetworkReader::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SAtomNetworkReader::stopping() throw (::fwTools::Failed)
+void SAtomNetworkReader::stopping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SAtomNetworkReader::updating() throw (::fwTools::Failed)
+void SAtomNetworkReader::updating()
 {
     ::fwData::String::sptr request;
     ::fwGui::dialog::MessageDialog msgDialog;
@@ -111,7 +111,7 @@ void SAtomNetworkReader::updating() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SAtomNetworkReader::swapping() throw (::fwTools::Failed)
+void SAtomNetworkReader::swapping()
 {
     // Classic default approach to update service when oject change
     this->stopping();

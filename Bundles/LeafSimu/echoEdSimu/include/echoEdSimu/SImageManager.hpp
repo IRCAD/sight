@@ -27,10 +27,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SImageManager)(::arServices::ISimulator) );
 
     /// Constructor. Do nothing.
-    ECHOEDSIMU_API SImageManager() throw();
+    ECHOEDSIMU_API SImageManager() noexcept;
 
     /// Destructor. Do nothing.
-    ECHOEDSIMU_API virtual ~SImageManager() throw();
+    ECHOEDSIMU_API virtual ~SImageManager() noexcept;
 
     /**
      * @name Slots API
@@ -44,19 +44,19 @@ public:
 protected:
 
     /// Do nothing
-    ECHOEDSIMU_API virtual void configuring() throw(fwTools::Failed);
+    ECHOEDSIMU_API virtual void configuring();
 
     /// Grab the input echographic and CT images
-    ECHOEDSIMU_API virtual void starting() throw(::fwTools::Failed);
+    ECHOEDSIMU_API virtual void starting();
 
     /// Do nothing
-    ECHOEDSIMU_API virtual void stopping() throw(::fwTools::Failed);
+    ECHOEDSIMU_API virtual void stopping();
 
     /// Do nothing
-    ECHOEDSIMU_API virtual void updating() throw(::fwTools::Failed);
+    ECHOEDSIMU_API virtual void updating();
 
     /// Do nothing
-    ECHOEDSIMU_API virtual void swapping() throw(::fwTools::Failed);
+    ECHOEDSIMU_API virtual void swapping();
 
 private:
 

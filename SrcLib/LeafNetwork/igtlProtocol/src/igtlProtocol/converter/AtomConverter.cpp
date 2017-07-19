@@ -57,7 +57,7 @@ AtomConverter::~AtomConverter()
 //-----------------------------------------------------------------------------
 
 void AtomConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
-                                    ::fwData::Object::sptr& dest) const throw (::igtlProtocol::exception::Conversion)
+                                    ::fwData::Object::sptr& dest) const
 {
     typedef ::igtlProtocol::archiver::MemoryReadArchive MemoryReadArchiveType;
 

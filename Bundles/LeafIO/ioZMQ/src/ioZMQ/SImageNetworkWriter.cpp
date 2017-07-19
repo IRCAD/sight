@@ -25,33 +25,33 @@ SImageNetworkWriter::SImageNetworkWriter()
 
 //-----------------------------------------------------------------------------
 
-SImageNetworkWriter::~SImageNetworkWriter() throw()
+SImageNetworkWriter::~SImageNetworkWriter() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageNetworkWriter::configuring() throw (::fwTools::Failed)
+void SImageNetworkWriter::configuring()
 {
     ::io::IWriter::configuring();
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageNetworkWriter::starting() throw (::fwTools::Failed)
+void SImageNetworkWriter::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageNetworkWriter::stopping() throw (::fwTools::Failed)
+void SImageNetworkWriter::stopping()
 {
     m_socket->stop();
 }
 
 //-----------------------------------------------------------------------------
 
-void SImageNetworkWriter::updating() throw (::fwTools::Failed)
+void SImageNetworkWriter::updating()
 {
     ::fwGui::dialog::MessageDialog msgDialog;
     ::fwData::Image::sptr img;
@@ -96,7 +96,7 @@ void SImageNetworkWriter::configureWithIHM()
 
 //-----------------------------------------------------------------------------
 
-void SImageNetworkWriter::swapping() throw (::fwTools::Failed)
+void SImageNetworkWriter::swapping()
 {
     // Classic default approach to update service when oject change
     this->stopping();

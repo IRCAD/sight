@@ -41,7 +41,7 @@ const int s_maxJ = 259;
 
 //-----------------------------------------------------------------------------
 
-SImageManager::SImageManager() throw() :
+SImageManager::SImageManager() noexcept :
     m_cranioCaudalIndex(s_minI),
     m_radialIndex(s_minJ)
 {
@@ -52,19 +52,19 @@ SImageManager::SImageManager() throw() :
 
 //------------------------------------------------------------------------------
 
-SImageManager::~SImageManager() throw()
+SImageManager::~SImageManager() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SImageManager::configuring() throw(fwTools::Failed)
+void SImageManager::configuring()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SImageManager::starting() throw(::fwTools::Failed)
+void SImageManager::starting()
 {
     m_ctImage   = this->getInOut< ::fwData::Image >(s_ctImageKey);
     m_echoImage = this->getInOut< ::fwData::Image >(s_echoImageKey);
@@ -72,7 +72,7 @@ void SImageManager::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SImageManager::stopping() throw(::fwTools::Failed)
+void SImageManager::stopping()
 {
 }
 
@@ -126,13 +126,13 @@ void SImageManager::load(::boost::filesystem::path dir, ImagesVecType & images)
 
 //------------------------------------------------------------------------------
 
-void SImageManager::updating() throw(::fwTools::Failed)
+void SImageManager::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SImageManager::swapping() throw(::fwTools::Failed)
+void SImageManager::swapping()
 {
 }
 

@@ -43,8 +43,7 @@ MessageFactory::CreatorContainer MessageFactory::initFactory()
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer MessageFactory::create(std::string const& type) throw (::igtlProtocol::exception::
-                                                                                    Conversion)
+::igtl::MessageBase::Pointer MessageFactory::create(std::string const& type)
 {
     CreatorContainer::const_iterator it;
 

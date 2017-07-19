@@ -54,7 +54,6 @@ DataConverter::~DataConverter()
 //-----------------------------------------------------------------------------
 
 ::igtl::MessageBase::Pointer DataConverter::fromFwObject(::fwData::Object::sptr src) const
-throw (::igtlProtocol::exception::Conversion)
 {
     SLM_TRACE_FUNC();
 
@@ -73,7 +72,7 @@ throw (::igtlProtocol::exception::Conversion)
 //-----------------------------------------------------------------------------
 
 void DataConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const& src,
-                                    ::fwData::Object::sptr& dest) const throw (::igtlProtocol::exception::Conversion)
+                                    ::fwData::Object::sptr& dest) const
 {
     SLM_TRACE_FUNC();
 

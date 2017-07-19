@@ -56,27 +56,27 @@ public:
     /**
      * @brief Constructor.
      */
-    MATHS_API SConcatenateMatrices() throw ();
+    MATHS_API SConcatenateMatrices() noexcept;
 
     /**
      * @brief Destructor.
      */
-    virtual ~SConcatenateMatrices() throw ()
+    virtual ~SConcatenateMatrices() noexcept
     {
     }
 
 protected:
     /// This method is used to configure the service.
-    MATHS_API void configuring() throw (fwTools::Failed);
+    MATHS_API void configuring();
 
     /// This method is used to initialize the service.
-    MATHS_API void starting() throw (fwTools::Failed);
+    MATHS_API void starting();
 
     /// Does nothing.
-    MATHS_API void stopping() throw (fwTools::Failed);
+    MATHS_API void stopping();
 
     /// Does nothing.
-    MATHS_API void updating() throw (fwTools::Failed);
+    MATHS_API void updating();
 
 private:
 

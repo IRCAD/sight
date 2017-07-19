@@ -60,13 +60,13 @@ public:
 protected:
 
     /// Configure port and device name
-    IOIGTL_API virtual void configuring() throw ( ::fwTools::Failed );
+    IOIGTL_API virtual void configuring();
 
     /// Start the server.
-    IOIGTL_API virtual void starting() throw ( ::fwTools::Failed );
+    IOIGTL_API virtual void starting();
 
     /// Stop the server
-    IOIGTL_API virtual void stopping() throw ( ::fwTools::Failed );
+    IOIGTL_API virtual void stopping();
 
 private:
     /**

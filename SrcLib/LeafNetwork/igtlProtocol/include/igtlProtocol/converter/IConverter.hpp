@@ -41,8 +41,7 @@ public:
 
      */
     IGTLPROTOCOL_API virtual void fromIgtlMessage (::igtl::MessageBase::Pointer const src,
-                                                   ::fwData::Object::sptr& dest) const
-    throw (::igtlProtocol::exception::Conversion) = 0;
+                                                   ::fwData::Object::sptr& dest) const = 0;
 
     /**
      * @brief method to implement conversion fwData object to igtl message

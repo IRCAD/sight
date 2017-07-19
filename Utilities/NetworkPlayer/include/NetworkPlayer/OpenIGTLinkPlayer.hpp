@@ -51,13 +51,13 @@ public:
      * @param[in] argc number of arguments
      * @param[in] argv arguments
      */
-    void configure(int argc, char** argv) throw (std::runtime_error);
+    void configure(int argc, char** argv);
 
     /**
      * @brief play the matrix sequence in the input stream
      *
      */
-    void play(std::istream& inputStream) throw (std::runtime_error);
+    void play(std::istream& inputStream);
 
     /**
      * @brief create a OpenIGTLinkPlayer with a player user-defined function(play is like a incomplete method which user have to complete with the playFunction)

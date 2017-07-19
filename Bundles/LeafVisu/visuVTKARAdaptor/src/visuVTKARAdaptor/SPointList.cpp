@@ -29,19 +29,19 @@ namespace visuVTKARAdaptor
 
 //------------------------------------------------------------------------------
 
-SPointList::SPointList() throw()
+SPointList::SPointList() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SPointList::~SPointList() throw()
+SPointList::~SPointList() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SPointList::doConfigure() throw(fwTools::Failed)
+void SPointList::doConfigure()
 {
     SLM_TRACE_FUNC();
 
@@ -60,7 +60,7 @@ void SPointList::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPointList::doStart() throw(fwTools::Failed)
+void SPointList::doStart()
 {
 
     this->doUpdate();
@@ -68,7 +68,7 @@ void SPointList::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPointList::doUpdate() throw(fwTools::Failed)
+void SPointList::doUpdate()
 {
     std::array<size_t, 2> resolution;
     std::array<double, 2 > opticalCenter;
@@ -175,7 +175,7 @@ void SPointList::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPointList::doSwap() throw(fwTools::Failed)
+void SPointList::doSwap()
 {
     this->doStop();
     this->doStart();
@@ -183,7 +183,7 @@ void SPointList::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPointList::doStop() throw(fwTools::Failed)
+void SPointList::doStop()
 {
     this->removeAllPropFromRenderer();
 }

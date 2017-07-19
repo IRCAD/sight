@@ -21,13 +21,13 @@ struct UINETWORK_CLASS_API Plugin :
 {
 
     /// Destructor
-    UINETWORK_API ~Plugin() throw();
+    UINETWORK_API ~Plugin() noexcept;
 
     /// Overrides
-    UINETWORK_API void start() throw(::fwRuntime::RuntimeException);
+    UINETWORK_API void start();
 
     /// Overrides
-    UINETWORK_API void stop() throw();
+    UINETWORK_API void stop() noexcept;
 
 };
 

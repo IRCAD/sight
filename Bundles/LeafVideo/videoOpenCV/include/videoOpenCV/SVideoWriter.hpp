@@ -43,10 +43,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SVideoWriter)(::io::IWriter) );
 
     /// Constructor.
-    VIDEOOPENCV_API SVideoWriter() throw();
+    VIDEOOPENCV_API SVideoWriter() noexcept;
 
     /// Destructor. Does nothing
-    VIDEOOPENCV_API virtual ~SVideoWriter() throw();
+    VIDEOOPENCV_API virtual ~SVideoWriter() noexcept;
 
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
     VIDEOOPENCV_API virtual ::fwServices::IService::KeyConnectionsMap getAutoConnections() const;
@@ -60,16 +60,16 @@ public:
 protected:
 
     /// Does nothing
-    VIDEOOPENCV_API virtual void configuring()  throw ( ::fwTools::Failed );
+    VIDEOOPENCV_API virtual void configuring();
 
     /// Does nothing
-    VIDEOOPENCV_API virtual void starting()  throw ( ::fwTools::Failed );
+    VIDEOOPENCV_API virtual void starting();
 
     /// Does nothing
-    VIDEOOPENCV_API virtual void stopping()  throw ( ::fwTools::Failed );
+    VIDEOOPENCV_API virtual void stopping();
 
     /// Does nothing
-    VIDEOOPENCV_API virtual void updating() throw ( ::fwTools::Failed );
+    VIDEOOPENCV_API virtual void updating();
 
 private:
 

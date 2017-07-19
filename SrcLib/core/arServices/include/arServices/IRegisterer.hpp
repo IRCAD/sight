@@ -36,12 +36,12 @@ public:
     /**
      * @brief Constructor.
      */
-    ARSERVICES_API IRegisterer() throw ();
+    ARSERVICES_API IRegisterer() noexcept;
 
     /**
      * @brief Destructor.
      */
-    ARSERVICES_API virtual ~IRegisterer() throw ();
+    ARSERVICES_API virtual ~IRegisterer() noexcept;
 
 protected:
 

@@ -30,7 +30,7 @@ namespace uiCalibration
 
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiCalibration::SCameraConfigLauncher, ::fwData::Composite);
 
-SCameraConfigLauncher::SCameraConfigLauncher() throw()
+SCameraConfigLauncher::SCameraConfigLauncher() noexcept
 {
     m_intrinsicLauncher = ::fwServices::helper::ConfigLauncher::New();
     m_extrinsicLauncher = ::fwServices::helper::ConfigLauncher::New();
@@ -38,13 +38,13 @@ SCameraConfigLauncher::SCameraConfigLauncher() throw()
 
 //------------------------------------------------------------------------------
 
-SCameraConfigLauncher::~SCameraConfigLauncher() throw()
+SCameraConfigLauncher::~SCameraConfigLauncher() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCameraConfigLauncher::configuring() throw(fwTools::Failed)
+void SCameraConfigLauncher::configuring()
 {
     this->initialize();
     ::fwServices::IService::ConfigType configuration = this->getConfigTree();
@@ -70,7 +70,7 @@ void SCameraConfigLauncher::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCameraConfigLauncher::starting() throw(::fwTools::Failed)
+void SCameraConfigLauncher::starting()
 {
     this->create();
 
@@ -135,7 +135,7 @@ void SCameraConfigLauncher::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCameraConfigLauncher::stopping() throw(::fwTools::Failed)
+void SCameraConfigLauncher::stopping()
 {
     m_intrinsicLauncher->stopConfig();
     m_extrinsicLauncher->stopConfig();
@@ -145,13 +145,13 @@ void SCameraConfigLauncher::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCameraConfigLauncher::updating() throw(::fwTools::Failed)
+void SCameraConfigLauncher::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCameraConfigLauncher::swapping() throw(::fwTools::Failed)
+void SCameraConfigLauncher::swapping()
 {
 }
 

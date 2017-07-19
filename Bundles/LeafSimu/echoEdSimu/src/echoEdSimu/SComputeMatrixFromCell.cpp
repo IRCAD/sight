@@ -33,7 +33,7 @@ const ::fwCom::Slots::SlotKeyType SComputeMatrixFromCell::s_UPDATE_SINGLE_SLOT =
 const ::fwCom::Slots::SlotKeyType SComputeMatrixFromCell::s_UPDATE_BOTH_SLOT   = "updateBoth";
 
 //------------------------------------------------------------------------------
-SComputeMatrixFromCell::SComputeMatrixFromCell() throw() :
+SComputeMatrixFromCell::SComputeMatrixFromCell() noexcept :
     m_nbCellsPerLine(0),
     m_cranioCaudalIndex(0),
     m_radialIndex(0)
@@ -44,13 +44,13 @@ SComputeMatrixFromCell::SComputeMatrixFromCell() throw() :
 
 //------------------------------------------------------------------------------
 
-SComputeMatrixFromCell::~SComputeMatrixFromCell() throw()
+SComputeMatrixFromCell::~SComputeMatrixFromCell() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SComputeMatrixFromCell::starting() throw(::fwTools::Failed)
+void SComputeMatrixFromCell::starting()
 {
     m_mesh = this->getInput< ::fwData::Mesh>("radialMesh");
     SLM_ASSERT("Key 'radialMesh' is not a ::fwData::Mesh", m_mesh);
@@ -105,19 +105,19 @@ void SComputeMatrixFromCell::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SComputeMatrixFromCell::stopping() throw(::fwTools::Failed)
+void SComputeMatrixFromCell::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SComputeMatrixFromCell::configuring() throw(::fwTools::Failed)
+void SComputeMatrixFromCell::configuring()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SComputeMatrixFromCell::updating() throw(::fwTools::Failed)
+void SComputeMatrixFromCell::updating()
 {
 }
 

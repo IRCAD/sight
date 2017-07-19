@@ -35,7 +35,7 @@ MemoryArchiveSink::~MemoryArchiveSink()
 
 //-----------------------------------------------------------------------------
 
-void MemoryArchiveSink::archive() throw (::fwZip::exception::Write)
+void MemoryArchiveSink::archive()
 {
     size_t size;
 
@@ -138,7 +138,7 @@ MemoryWriteArchive::~MemoryWriteArchive()
 
 //-----------------------------------------------------------------------------
 
-void MemoryWriteArchive::writeArchive() throw (::fwZip::exception::Write)
+void MemoryWriteArchive::writeArchive()
 {
     std::vector<StreamSPtr>::iterator it;
 
@@ -172,7 +172,7 @@ SPTR(std::ostream) MemoryWriteArchive::createFile(const ::boost::filesystem::pat
 //-----------------------------------------------------------------------------
 
 void MemoryWriteArchive::putFile(const ::boost::filesystem::path& sourceFile,
-                                 const ::boost::filesystem::path& archiveFile) throw(::fwZip::exception::Write)
+                                 const ::boost::filesystem::path& archiveFile)
 {
     SPTR(std::ostream)  os;
     std::ifstream is(sourceFile.string().c_str(), std::ios::binary);

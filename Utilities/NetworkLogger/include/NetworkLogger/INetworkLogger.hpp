@@ -33,7 +33,7 @@ public:
     /**
      * @brief log receive object from network in ouput stream
      */
-    virtual void log(std::ostream& outputStream) throw (std::runtime_error) = 0;
+    virtual void log(std::ostream& outputStream) = 0;
 
     /**
      * @brief configure the network logger
@@ -41,7 +41,7 @@ public:
      * @param[in] argc number of arguments
      * @param[in] argv arguments
      */
-    virtual void configure(int argc, char** argv) throw (std::runtime_error) = 0;
+    virtual void configure(int argc, char** argv) = 0;
 };
 }
 

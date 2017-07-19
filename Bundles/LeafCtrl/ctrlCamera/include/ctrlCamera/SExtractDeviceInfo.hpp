@@ -77,16 +77,16 @@ public:
 protected:
 
     /// Does nothing
-    CTRLCAMERA_API virtual void starting() throw( ::fwTools::Failed );
+    CTRLCAMERA_API virtual void starting();
 
     /// Configure the service
-    CTRLCAMERA_API virtual void configuring() throw( ::fwTools::Failed );
+    CTRLCAMERA_API virtual void configuring();
 
     /// Does nothing
-    CTRLCAMERA_API virtual void stopping() throw( ::fwTools::Failed );
+    CTRLCAMERA_API virtual void stopping();
 
     /// Does nothing
-    CTRLCAMERA_API virtual void updating() throw( ::fwTools::Failed );
+    CTRLCAMERA_API virtual void updating();
 
 private:
 

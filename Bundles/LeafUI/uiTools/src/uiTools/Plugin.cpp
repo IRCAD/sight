@@ -13,15 +13,15 @@ namespace uiTools
 
 static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::uiTools::Plugin");
 
-Plugin::~Plugin() throw()
+Plugin::~Plugin() noexcept
 {
 }
 
-void Plugin::start() throw(::fwRuntime::RuntimeException)
+void Plugin::start()
 {
 }
 
-void Plugin::stop() throw()
+void Plugin::stop() noexcept
 {
 }
 

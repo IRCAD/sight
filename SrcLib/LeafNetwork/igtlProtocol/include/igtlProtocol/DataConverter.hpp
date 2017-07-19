@@ -60,13 +60,11 @@ public:
      * @return a ::igtl::MessageBase smart pointer
      */
     IGTLPROTOCOL_API ::igtl::MessageBase::Pointer fromFwObject(
-        ::fwData::Object::sptr src) const throw(::igtlProtocol::exception::Conversion);
+        ::fwData::Object::sptr src) const;
     /**
      * @brief convert a ::igtl::MessageBase to a ::fwData::Object
      */
-    IGTLPROTOCOL_API void fromIgtlMessage(::igtl::MessageBase::Pointer const& src,
-                                          ::fwData::Object::sptr& dest) const
-    throw(::igtlProtocol::exception::Conversion);
+    IGTLPROTOCOL_API void fromIgtlMessage(::igtl::MessageBase::Pointer const& src, ::fwData::Object::sptr& dest) const;
 
     /**
      * @brief get status message

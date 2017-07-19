@@ -47,7 +47,7 @@ Camera::Camera( ::fwData::Object::Key key ) :
 
 // -------------------------------------------------------------------------
 
-Camera::~Camera() throw()
+Camera::~Camera() noexcept
 {
 }
 

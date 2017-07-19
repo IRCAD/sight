@@ -30,7 +30,7 @@ namespace videoTools
 const ::fwCom::Slots::SlotKeyType SFrameUpdater::s_UPDATE_FRAME_SLOT        = "updateFrame";
 const ::fwCom::Signals::SignalKeyType SFrameUpdater::s_RENDER_REQUESTED_SIG = "renderRequested";
 
-SFrameUpdater::SFrameUpdater() throw() :
+SFrameUpdater::SFrameUpdater() noexcept :
     m_lastTimestamp(0),
     m_lastMatrixUpdatedKey(""),
     m_imageInitialized(false)
@@ -46,7 +46,7 @@ SFrameUpdater::SFrameUpdater() throw() :
 
 //-----------------------------------------------------------------------------
 
-SFrameUpdater::~SFrameUpdater() throw()
+SFrameUpdater::~SFrameUpdater() noexcept
 {
 }
 
@@ -64,7 +64,7 @@ SFrameUpdater::~SFrameUpdater() throw()
 
 //-----------------------------------------------------------------------------
 
-void SFrameUpdater::starting() throw(fwTools::Failed)
+void SFrameUpdater::starting()
 {
     m_imageInitialized = false;
 
@@ -91,7 +91,7 @@ void SFrameUpdater::starting() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SFrameUpdater::configuring() throw(::fwTools::Failed)
+void SFrameUpdater::configuring()
 {
     if(!this->isVersion2())
     {
@@ -115,14 +115,14 @@ void SFrameUpdater::configuring() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SFrameUpdater::stopping() throw(::fwTools::Failed)
+void SFrameUpdater::stopping()
 {
     m_connections.disconnect();
 }
 
 //-----------------------------------------------------------------------------
 
-void SFrameUpdater::updating() throw(::fwTools::Failed)
+void SFrameUpdater::updating()
 {
 }
 

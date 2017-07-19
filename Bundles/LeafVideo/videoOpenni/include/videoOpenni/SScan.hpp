@@ -62,10 +62,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SScan)(::arServices::IGrabber) );
 
     /// Constructor. Creates/Connects slots and creates a worker for the frame grabber slot.
-    VIDEOOPENNI_API SScan() throw();
+    VIDEOOPENNI_API SScan() noexcept;
 
     /// Destructor. Does nothing.
-    VIDEOOPENNI_API virtual ~SScan() throw();
+    VIDEOOPENNI_API virtual ~SScan() noexcept;
 
     /**
      * @name Slots API
@@ -77,16 +77,16 @@ public:
 protected:
 
     /// Do nothing.
-    VIDEOOPENNI_API virtual void configuring() throw( ::fwTools::Failed );
+    VIDEOOPENNI_API virtual void configuring();
 
     /// Initialize the layout and the cameras.
-    VIDEOOPENNI_API virtual void starting() throw( ::fwTools::Failed );
+    VIDEOOPENNI_API virtual void starting();
 
     /// Destroy the layout. Shutdowns the streams.
-    VIDEOOPENNI_API virtual void stopping() throw( ::fwTools::Failed );
+    VIDEOOPENNI_API virtual void stopping();
 
     /// Do nothing.
-    VIDEOOPENNI_API virtual void updating() throw(::fwTools::Failed);
+    VIDEOOPENNI_API virtual void updating();
 
 private:
 

@@ -32,37 +32,37 @@ fwServicesRegisterMacro(::fwServices::IController, ::videoCalibration::SFixedPoi
 
 // ----------------------------------------------------------------------------
 
-SFixedPointRegistration::SFixedPointRegistration() throw ()
+SFixedPointRegistration::SFixedPointRegistration() noexcept
 {
 }
 
 // ----------------------------------------------------------------------------
 
-SFixedPointRegistration::~SFixedPointRegistration() throw ()
+SFixedPointRegistration::~SFixedPointRegistration() noexcept
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SFixedPointRegistration::configuring() throw (fwTools::Failed)
+void SFixedPointRegistration::configuring()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SFixedPointRegistration::starting() throw (fwTools::Failed)
+void SFixedPointRegistration::starting()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SFixedPointRegistration::swapping() throw (fwTools::Failed)
+void SFixedPointRegistration::swapping()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SFixedPointRegistration::updating() throw (fwTools::Failed)
+void SFixedPointRegistration::updating()
 {
     auto pointList         = this->getInput< ::fwData::PointList >("pointList");
     auto calibrationMatrix = this->getInOut< ::fwData::TransformationMatrix3D >("matrix");
@@ -115,7 +115,7 @@ void SFixedPointRegistration::updating() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SFixedPointRegistration::stopping() throw (fwTools::Failed)
+void SFixedPointRegistration::stopping()
 {
 }
 

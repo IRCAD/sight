@@ -117,12 +117,12 @@ public:
     /**
      * @brief Constructor.
      */
-    VIDEOTOOLS_API SFrameMatrixSynchronizer() throw ();
+    VIDEOTOOLS_API SFrameMatrixSynchronizer() noexcept;
 
     /**
      * @brief Destructor.
      */
-    VIDEOTOOLS_API virtual ~SFrameMatrixSynchronizer() throw ()
+    VIDEOTOOLS_API virtual ~SFrameMatrixSynchronizer() noexcept
     {
     }
 
@@ -141,19 +141,19 @@ protected:
     /**
      * @brief This method is used to configure the service.
      */
-    VIDEOTOOLS_API void configuring() throw (fwTools::Failed);
+    VIDEOTOOLS_API void configuring();
 
     /// This method is used to initialize the timer and get the TLs & Matrixes.
-    VIDEOTOOLS_API void starting() throw (fwTools::Failed);
+    VIDEOTOOLS_API void starting();
 
     /// Stops timer and clear TLs & Matrixes.
-    VIDEOTOOLS_API void stopping() throw (fwTools::Failed);
+    VIDEOTOOLS_API void stopping();
 
     /// Synchronizes TLs
     VIDEOTOOLS_API void synchronize();
 
     /// Do nothing.
-    VIDEOTOOLS_API void updating() throw (fwTools::Failed);
+    VIDEOTOOLS_API void updating();
 
 private:
 

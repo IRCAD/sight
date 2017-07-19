@@ -21,15 +21,15 @@ namespace ctrlCamera
 struct CTRLCAMERA_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
     /// Destructor. Do nothing.
-    CTRLCAMERA_API ~Plugin() throw();
+    CTRLCAMERA_API ~Plugin() noexcept;
 
     /**
      * @brief Overrides start method. Object declarations.
      */
-    CTRLCAMERA_API void start() throw( ::fwRuntime::RuntimeException );
+    CTRLCAMERA_API void start();
 
     /// Overrides stop method. Do nothing
-    CTRLCAMERA_API void stop() throw();
+    CTRLCAMERA_API void stop() noexcept;
 
 };
 

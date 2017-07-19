@@ -45,7 +45,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::videoQt::editor::SCamera );
 
 //------------------------------------------------------------------------------
 
-SCamera::SCamera() throw() :
+SCamera::SCamera() noexcept :
     m_bVideoSupport(false),
     m_numCreateCameras(0)
 {
@@ -53,13 +53,13 @@ SCamera::SCamera() throw() :
 
 //------------------------------------------------------------------------------
 
-SCamera::~SCamera() throw()
+SCamera::~SCamera() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::configuring() throw(fwTools::Failed)
+void SCamera::configuring()
 {
     ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
 
@@ -71,7 +71,7 @@ void SCamera::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCamera::starting() throw(::fwTools::Failed)
+void SCamera::starting()
 {
     this->create();
 
@@ -128,20 +128,20 @@ void SCamera::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCamera::stopping() throw(::fwTools::Failed)
+void SCamera::stopping()
 {
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::updating() throw(::fwTools::Failed)
+void SCamera::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::swapping() throw(::fwTools::Failed)
+void SCamera::swapping()
 {
     this->updating();
 }

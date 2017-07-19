@@ -54,27 +54,27 @@ public:
 
 
     /// Constructor
-    VIDEOCALIBRATION_API SMarkerToPoint() throw ();
+    VIDEOCALIBRATION_API SMarkerToPoint() noexcept;
 
     /// Destructor
-    VIDEOCALIBRATION_API ~SMarkerToPoint() throw ();
+    VIDEOCALIBRATION_API ~SMarkerToPoint() noexcept;
 
 protected:
 
     /// Does nothing
-    VIDEOCALIBRATION_API void configuring() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void configuring();
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void starting() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void starting();
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void swapping() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void swapping();
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void updating() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void updating();
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void stopping() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void stopping();
 
     /// Slot called to extract position from the latest matrix of the MatrixTL and push it in the pointList
     VIDEOCALIBRATION_API void addPoint();

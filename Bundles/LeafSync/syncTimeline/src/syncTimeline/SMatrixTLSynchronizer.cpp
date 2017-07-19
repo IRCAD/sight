@@ -35,31 +35,31 @@ static const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrices";
 
 // ----------------------------------------------------------------------------
 
-SMatrixTLSynchronizer::SMatrixTLSynchronizer() throw ()
+SMatrixTLSynchronizer::SMatrixTLSynchronizer() noexcept
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SMatrixTLSynchronizer::configuring() throw (::fwTools::Failed)
+void SMatrixTLSynchronizer::configuring()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SMatrixTLSynchronizer::starting() throw (::fwTools::Failed)
+void SMatrixTLSynchronizer::starting()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SMatrixTLSynchronizer::stopping() throw (::fwTools::Failed)
+void SMatrixTLSynchronizer::stopping()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SMatrixTLSynchronizer::updating() throw (::fwTools::Failed)
+void SMatrixTLSynchronizer::updating()
 {
     this->synchronize();
 }

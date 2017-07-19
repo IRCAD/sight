@@ -69,24 +69,24 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SFrameGrabber)(::arServices::IGrabber) );
 
     /// Constructor. Do nothing.
-    VIDEOPCL_API SFrameGrabber() throw();
+    VIDEOPCL_API SFrameGrabber() noexcept;
 
     /// Destructor. Do nothing.
-    VIDEOPCL_API virtual ~SFrameGrabber() throw();
+    VIDEOPCL_API virtual ~SFrameGrabber() noexcept;
 
 protected:
 
     /// Initialize the layout and the camera.
-    VIDEOPCL_API virtual void starting() throw( ::fwTools::Failed );
+    VIDEOPCL_API virtual void starting();
 
     /// Destroy the layout.
-    VIDEOPCL_API virtual void stopping() throw( ::fwTools::Failed );
+    VIDEOPCL_API virtual void stopping();
 
     /// Do nothing.
-    VIDEOPCL_API virtual void updating() throw(::fwTools::Failed);
+    VIDEOPCL_API virtual void updating();
 
     /// Do nothing.
-    VIDEOPCL_API virtual void configuring() throw( ::fwTools::Failed );
+    VIDEOPCL_API virtual void configuring();
 
     /// SLOT : Initialize and start camera (restart camera if is already started)
     virtual void startCamera();

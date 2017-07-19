@@ -21,16 +21,16 @@ namespace echoEdSimu
 struct ECHOEDSIMU_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
     /// Destructor. Do nothing.
-    ECHOEDSIMU_API ~Plugin() throw();
+    ECHOEDSIMU_API ~Plugin() noexcept;
 
     /**
      * @brief Overrides start method. Object declarations.
      * @todo All data are not register in this method, what data must be registered ?
      */
-    ECHOEDSIMU_API void start() throw( ::fwRuntime::RuntimeException );
+    ECHOEDSIMU_API void start();
 
     /// Overrides stop method. Do nothing
-    ECHOEDSIMU_API void stop() throw();
+    ECHOEDSIMU_API void stop() noexcept;
 
 };
 

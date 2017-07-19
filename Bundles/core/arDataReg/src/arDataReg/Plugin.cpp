@@ -21,13 +21,13 @@ namespace arDataReg
 
 static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("::arDataReg::Plugin");
 
-Plugin::~Plugin() throw()
+Plugin::~Plugin() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Plugin::start() throw(::fwRuntime::RuntimeException)
+void Plugin::start()
 {
     //Hack: force link with arData
     ::arData::Camera::sptr obj = ::arData::Camera::New();
@@ -45,7 +45,7 @@ void Plugin::start() throw(::fwRuntime::RuntimeException)
 
 //------------------------------------------------------------------------------
 
-void Plugin::stop() throw()
+void Plugin::stop() noexcept
 {
 }
 

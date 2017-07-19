@@ -42,22 +42,22 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SCameraConfigLauncher)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UICALIBRATION_API SCameraConfigLauncher() throw();
+    UICALIBRATION_API SCameraConfigLauncher() noexcept;
 
     /// Destructor. Do nothing.
-    UICALIBRATION_API virtual ~SCameraConfigLauncher() throw();
+    UICALIBRATION_API virtual ~SCameraConfigLauncher() noexcept;
 
 protected:
 
     ///This method launches the IEditor::starting method.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     ///This method launches the IEditor::stopping method.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
     /**
      * @brief This method is used to configure the service parameters:
@@ -101,7 +101,7 @@ protected:
      *
      * @see fwServices::helper::ConfigLauncher
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
 private Q_SLOTS:
     void onAddClicked();

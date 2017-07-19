@@ -60,7 +60,7 @@ void Client::throwExceptionIfFailed (const std::string& msg, bool result)
 
 //------------------------------------------------------------------------------
 
-void Client::connect (const std::string& addr, ::boost::uint16_t port) throw (::fwCore::Exception)
+void Client::connect (const std::string& addr, ::boost::uint16_t port)
 {
     int result;
     std::string portStr;
@@ -73,7 +73,7 @@ void Client::connect (const std::string& addr, ::boost::uint16_t port) throw (::
 //------------------------------------------------------------------------------
 
 
-void Client::disconnect() throw (::fwCore::Exception)
+void Client::disconnect()
 {
     m_socket->CloseSocket();
 }

@@ -40,7 +40,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiTools::editor::SShowVectorS
 
 //-----------------------------------------------------------------------------
 
-SShowVectorSize::SShowVectorSize() throw() :
+SShowVectorSize::SShowVectorSize() noexcept :
     m_vectorSize(0),
     m_textToShow("")
 {
@@ -51,13 +51,13 @@ SShowVectorSize::SShowVectorSize() throw() :
 
 //------------------------------------------------------------------------------
 
-SShowVectorSize::~SShowVectorSize() throw()
+SShowVectorSize::~SShowVectorSize() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SShowVectorSize::starting() throw(::fwTools::Failed)
+void SShowVectorSize::starting()
 {
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
@@ -76,14 +76,14 @@ void SShowVectorSize::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShowVectorSize::stopping() throw(::fwTools::Failed)
+void SShowVectorSize::stopping()
 {
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void SShowVectorSize::configuring() throw(fwTools::Failed)
+void SShowVectorSize::configuring()
 {
     this->initialize();
     if(m_configuration->findConfigurationElement("text"))
@@ -96,13 +96,13 @@ void SShowVectorSize::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SShowVectorSize::updating() throw(::fwTools::Failed)
+void SShowVectorSize::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SShowVectorSize::swapping() throw(::fwTools::Failed)
+void SShowVectorSize::swapping()
 {
 
 }

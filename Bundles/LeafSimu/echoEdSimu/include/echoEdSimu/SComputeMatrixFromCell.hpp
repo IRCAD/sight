@@ -47,10 +47,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SComputeMatrixFromCell)(::arServices::ISimulator) );
 
     /// Constructor.
-    ECHOEDSIMU_API SComputeMatrixFromCell() throw();
+    ECHOEDSIMU_API SComputeMatrixFromCell() noexcept;
 
     /// Destructor. Do nothing
-    ECHOEDSIMU_API virtual ~SComputeMatrixFromCell() throw();
+    ECHOEDSIMU_API virtual ~SComputeMatrixFromCell() noexcept;
 
     /**
      * @name Slots API
@@ -63,16 +63,16 @@ public:
 protected:
 
     /// Configure the service
-    ECHOEDSIMU_API virtual void configuring()  throw ( ::fwTools::Failed );
+    ECHOEDSIMU_API virtual void configuring();
 
     /// Get objects and calcute the number of cells per line and the number of line in the skin mesh.
-    ECHOEDSIMU_API virtual void starting()  throw ( ::fwTools::Failed );
+    ECHOEDSIMU_API virtual void starting();
 
     /// Do nothing
-    ECHOEDSIMU_API virtual void stopping()  throw ( ::fwTools::Failed );
+    ECHOEDSIMU_API virtual void stopping();
 
     /// Grab the mesh and compute the 2D grid
-    ECHOEDSIMU_API virtual void updating() throw ( ::fwTools::Failed );
+    ECHOEDSIMU_API virtual void updating();
 
 private:
 

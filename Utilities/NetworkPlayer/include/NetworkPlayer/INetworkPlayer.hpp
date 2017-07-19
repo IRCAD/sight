@@ -39,12 +39,12 @@ public:
      * @param[in] argc number of arguments
      * @param[in] argv arguments contain like port to bind
      */
-    virtual void configure(int argc, char** argv) throw(std::runtime_error) = 0;
+    virtual void configure(int argc, char** argv) = 0;
 
     /**
      * @brief play a sequence of matrix in the inputStream
      */
-    virtual void play(std::istream& inputStream) throw(std::runtime_error) = 0;
+    virtual void play(std::istream& inputStream) = 0;
 };
 }
 

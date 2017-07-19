@@ -21,16 +21,16 @@ class ARDATAREG_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 public:
     /// Destructor. Do nothing.
-    ARDATAREG_API ~Plugin() throw();
+    ARDATAREG_API ~Plugin() noexcept;
 
     /**
      * @brief Overrides start method. Object declarations.
      * @todo All data are not register in this method, what data must be registered ?
      */
-    ARDATAREG_API void start() throw( ::fwRuntime::RuntimeException );
+    ARDATAREG_API void start();
 
     /// Overrides stop method. Do nothing
-    ARDATAREG_API void stop() throw();
+    ARDATAREG_API void stop() noexcept;
 
 private:
     /// Dummy variable members used to force link with fwDataCamp, fwMedDataCamp and arDataCamp bundles

@@ -26,27 +26,27 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SProbeMesh)(::arServices::ISimulator) );
 
     /// Constructor. Do nothing.
-    ECHOEDSIMU_API SProbeMesh() throw();
+    ECHOEDSIMU_API SProbeMesh() noexcept;
 
     /// Destructor. Do nothing.
-    ECHOEDSIMU_API virtual ~SProbeMesh() throw();
+    ECHOEDSIMU_API virtual ~SProbeMesh() noexcept;
 
 protected:
 
     /// Do nothing
-    ECHOEDSIMU_API virtual void starting() throw(::fwTools::Failed);
+    ECHOEDSIMU_API virtual void starting();
 
     /// Do nothing
-    ECHOEDSIMU_API virtual void stopping() throw(::fwTools::Failed);
+    ECHOEDSIMU_API virtual void stopping();
 
     /// Generate the mesh
-    ECHOEDSIMU_API virtual void updating() throw(::fwTools::Failed);
+    ECHOEDSIMU_API virtual void updating();
 
     /// Do nothing
-    ECHOEDSIMU_API virtual void swapping() throw(::fwTools::Failed);
+    ECHOEDSIMU_API virtual void swapping();
 
     /// Do nothing
-    ECHOEDSIMU_API virtual void configuring() throw(fwTools::Failed);
+    ECHOEDSIMU_API virtual void configuring();
 
 };
 

@@ -29,7 +29,7 @@ public:
     IOZMQ_API SAtomNetworkReader();
 
     /// Destructor
-    IOZMQ_API virtual ~SAtomNetworkReader() throw();
+    IOZMQ_API virtual ~SAtomNetworkReader() noexcept;
 
     /**
      * @brief Show a input message box with you can enter host in zeromq format
@@ -43,21 +43,21 @@ public:
 
 protected:
     /// Overrides
-    IOZMQ_API virtual void configuring() throw (::fwTools::Failed);
+    IOZMQ_API virtual void configuring();
 
     /// Overrides
-    IOZMQ_API virtual void starting() throw (::fwTools::Failed);
+    IOZMQ_API virtual void starting();
 
     /// Overrides
-    IOZMQ_API virtual void stopping() throw (::fwTools::Failed);
+    IOZMQ_API virtual void stopping();
 
     /**
      * @brief receive atom from an another program
      */
-    IOZMQ_API virtual void updating() throw (::fwTools::Failed);
+    IOZMQ_API virtual void updating();
 
     /// Overrides
-    IOZMQ_API virtual void swapping() throw (::fwTools::Failed);
+    IOZMQ_API virtual void swapping();
 
 private:
     /// Socket to receive image data

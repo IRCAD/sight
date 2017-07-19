@@ -40,7 +40,7 @@ fwServicesRegisterMacro( ::arServices::IGrabber, ::videoQt::SFrameGrabber, ::arD
 
 //-----------------------------------------------------------------------------
 
-SFrameGrabber::SFrameGrabber() throw() :
+SFrameGrabber::SFrameGrabber() noexcept :
     m_loopVideo(false),
     m_videoPlayer(nullptr),
     m_horizontallyFlip(false),
@@ -51,27 +51,27 @@ SFrameGrabber::SFrameGrabber() throw() :
 
 //-----------------------------------------------------------------------------
 
-SFrameGrabber::~SFrameGrabber() throw()
+SFrameGrabber::~SFrameGrabber() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SFrameGrabber::starting() throw(::fwTools::Failed)
+void SFrameGrabber::starting()
 {
     SLM_ASSERT("m_videoPlayer must be null - have you called starting() twice ?", nullptr == m_videoPlayer);
 }
 
 //-----------------------------------------------------------------------------
 
-void SFrameGrabber::stopping() throw(::fwTools::Failed)
+void SFrameGrabber::stopping()
 {
     this->stopCamera();
 }
 
 //-----------------------------------------------------------------------------
 
-void SFrameGrabber::configuring()  throw ( ::fwTools::Failed )
+void SFrameGrabber::configuring()
 {
     if(!this->isVersion2())
     {
@@ -84,7 +84,7 @@ void SFrameGrabber::configuring()  throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SFrameGrabber::updating() throw ( ::fwTools::Failed )
+void SFrameGrabber::updating()
 {
 }
 

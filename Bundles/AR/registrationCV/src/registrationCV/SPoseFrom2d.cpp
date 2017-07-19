@@ -34,7 +34,7 @@ const ::fwServices::IService::KeyType s_MATRIXTL_INOUT  = "matrixTL";
 
 //-----------------------------------------------------------------------------
 
-SPoseFrom2d::SPoseFrom2d() throw () :
+SPoseFrom2d::SPoseFrom2d() noexcept :
     m_lastTimestamp(0),
     m_patternWidth(80),
     m_isInitialized(false)
@@ -44,13 +44,13 @@ SPoseFrom2d::SPoseFrom2d() throw () :
 
 //-----------------------------------------------------------------------------
 
-SPoseFrom2d::~SPoseFrom2d() throw ()
+SPoseFrom2d::~SPoseFrom2d() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2d::configuring() throw (::fwTools::Failed)
+void SPoseFrom2d::configuring()
 {
     ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
     m_patternWidth                            = config.get<double>("patternWidth", 80);
@@ -59,7 +59,7 @@ void SPoseFrom2d::configuring() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2d::starting() throw (::fwTools::Failed)
+void SPoseFrom2d::starting()
 {
     //3D Points
     const float halfWidth = static_cast<float>(m_patternWidth) * .5f;
@@ -72,7 +72,7 @@ void SPoseFrom2d::starting() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2d::stopping() throw (::fwTools::Failed)
+void SPoseFrom2d::stopping()
 {
 
     m_cameras.clear();
@@ -83,7 +83,7 @@ void SPoseFrom2d::stopping() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2d::updating() throw (::fwTools::Failed)
+void SPoseFrom2d::updating()
 {
 }
 

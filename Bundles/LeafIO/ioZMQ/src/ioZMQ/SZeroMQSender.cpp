@@ -50,7 +50,7 @@ SZeroMQSender::~SZeroMQSender()
 
 //-----------------------------------------------------------------------------
 
-void SZeroMQSender::configuring() throw (::fwTools::Failed)
+void SZeroMQSender::configuring()
 {
     try
     {
@@ -69,7 +69,7 @@ void SZeroMQSender::configuring() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SZeroMQSender::setPort (boost::uint16_t const port) throw (::fwTools::Failed)
+void SZeroMQSender::setPort (boost::uint16_t const port)
 {
     std::string newHost;
     std::stringstream stream;
@@ -85,7 +85,7 @@ void SZeroMQSender::setPort (boost::uint16_t const port) throw (::fwTools::Faile
 
 //-----------------------------------------------------------------------------
 
-void SZeroMQSender::starting() throw (::fwTools::Failed)
+void SZeroMQSender::starting()
 {
     ::fwGui::dialog::MessageDialog msgDialog;
 
@@ -115,7 +115,7 @@ void SZeroMQSender::updateConfiguration (::zmqNetwork::Socket::PatternMode const
 
 //-----------------------------------------------------------------------------
 
-void SZeroMQSender::stopping() throw (::fwTools::Failed)
+void SZeroMQSender::stopping()
 {
     m_socket->stop();
     ::ioNetwork::INetworkSender::stopping();

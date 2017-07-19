@@ -40,25 +40,25 @@ INetworkListener::~INetworkListener()
 
 //-----------------------------------------------------------------------------
 
-void INetworkListener::configuring() throw (::fwTools::Failed)
+void INetworkListener::configuring()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void INetworkListener::starting() throw (::fwTools::Failed)
+void INetworkListener::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void INetworkListener::stopping() throw (::fwTools::Failed)
+void INetworkListener::stopping()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void INetworkListener::updating() throw (::fwTools::Failed)
+void INetworkListener::updating()
 {
 }
 
@@ -77,7 +77,7 @@ void INetworkListener::notifyObjectUpdated()
 
 //-----------------------------------------------------------------------------
 
-void INetworkListener::swapping() throw (::fwTools::Failed)
+void INetworkListener::swapping()
 {
     // Classic default approach to update service when oject change
     this->stopping();

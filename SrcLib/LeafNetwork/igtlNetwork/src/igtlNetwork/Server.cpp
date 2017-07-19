@@ -112,7 +112,7 @@ void Server::broadcast(::igtl::MessageBase::Pointer msg)
 
 //------------------------------------------------------------------------------
 
-void Server::start (::boost::uint16_t port) throw (::fwCore::Exception)
+void Server::start (::boost::uint16_t port)
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
     int result;
@@ -149,7 +149,7 @@ Client::sptr Server::waitForConnection (int msec)
 
 //------------------------------------------------------------------------------
 
-void Server::stop() throw (::fwCore::Exception)
+void Server::stop()
 {
     ::fwCore::mt::ScopedLock lock(m_mutex);
     if (!m_isStarted)
@@ -248,7 +248,6 @@ std::vector< ::igtl::MessageHeader::Pointer > Server::receiveHeader()
 //------------------------------------------------------------------------------
 
 ::igtl::MessageBase::Pointer Server::receiveBody (::igtl::MessageHeader::Pointer const headerMsg, unsigned int client)
-throw (::fwCore::Exception)
 {
     int unpackResult;
     int result;

@@ -19,20 +19,20 @@ struct Plugin : public ::fwRuntime::Plugin
     /**
      * @brief Destructor
      */
-    ~Plugin() throw();
+    ~Plugin() noexcept;
 
     /**
      * @brief Start method.
      * @exception ::fwRuntime::RuntimeException.
      * This method is used by runtime in order to initialize the bundle.
      */
-    void start() throw(::fwRuntime::RuntimeException);
+    void start();
 
     /**
      * @brief Stop method.
      * This method is used by runtime in order to close the bundle.
      */
-    void stop() throw();
+    void stop() noexcept;
 };
 
 } // namespace videoCalibration

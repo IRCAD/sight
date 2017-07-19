@@ -76,12 +76,12 @@ public:
     /**
      * @brief Constructor.
      */
-    ARSERVICES_API IGrabber() throw ();
+    ARSERVICES_API IGrabber() noexcept;
 
     /**
      * @brief Destructor.
      */
-    ARSERVICES_API virtual ~IGrabber() throw ();
+    ARSERVICES_API virtual ~IGrabber() noexcept;
 
 protected:
     /**

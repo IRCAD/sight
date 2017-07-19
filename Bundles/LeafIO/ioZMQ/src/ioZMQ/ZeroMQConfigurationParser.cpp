@@ -27,7 +27,7 @@ ZeroMQConfigurationParser::~ZeroMQConfigurationParser()
 //-----------------------------------------------------------------------------
 
 void ZeroMQConfigurationParser::parse (
-    Patterns::SupportedPatternMapType const& supportedPatterns) throw (::fwTools::Failed)
+    Patterns::SupportedPatternMapType const& supportedPatterns)
 {
 
     ::fwRuntime::ConfigurationElement::sptr protocolElement;
@@ -49,7 +49,7 @@ void ZeroMQConfigurationParser::parse (
 //-----------------------------------------------------------------------------
 
 void ZeroMQConfigurationParser::parseProtocol(
-    ::fwRuntime::ConfigurationElement::sptr protocolElement) throw (::fwTools::Failed)
+    ::fwRuntime::ConfigurationElement::sptr protocolElement)
 {
     std::string protocol;
 
@@ -79,10 +79,7 @@ void ZeroMQConfigurationParser::parseProtocol(
 //-----------------------------------------------------------------------------
 
 void ZeroMQConfigurationParser::parsePatternMode(std::string const& key,
-                                                 Patterns::SupportedPatternMapType const& supportedPatterns) throw (::
-                                                                                                                    fwTools
-                                                                                                                    ::
-                                                                                                                    Failed)
+                                                 Patterns::SupportedPatternMapType const& supportedPatterns)
 {
     Patterns::SupportedPatternMapType::const_iterator it;
 
@@ -99,7 +96,7 @@ void ZeroMQConfigurationParser::parsePatternMode(std::string const& key,
 //-----------------------------------------------------------------------------
 
 void ZeroMQConfigurationParser::parseTcp (
-    ::fwRuntime::ConfigurationElement::sptr protocolElement) throw (::fwTools::Failed)
+    ::fwRuntime::ConfigurationElement::sptr protocolElement)
 {
     ::fwRuntime::ConfigurationElement::sptr hostElement;
     ::fwRuntime::ConfigurationElement::sptr portElement;
@@ -140,7 +137,7 @@ void ZeroMQConfigurationParser::parseTcp (
 //-----------------------------------------------------------------------------
 
 void ZeroMQConfigurationParser::parseIpc (
-    ::fwRuntime::ConfigurationElement::sptr protocolElement) throw (::fwTools::Failed)
+    ::fwRuntime::ConfigurationElement::sptr protocolElement)
 {
     ::fwRuntime::ConfigurationElement::sptr modeElement;
     ::fwRuntime::ConfigurationElement::sptr fileElement;

@@ -25,22 +25,22 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SProducer)(::fwServices::IService) );
 
-    EX02TIMELINE_API SProducer() throw();
-    EX02TIMELINE_API virtual ~SProducer() throw();
+    EX02TIMELINE_API SProducer() noexcept;
+    EX02TIMELINE_API virtual ~SProducer() noexcept;
 
 protected:
 
     /// Starts the timer.
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Stops the timer.
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Does nothing.
-    virtual void swapping() throw ( ::fwTools::Failed );
+    virtual void swapping();
 
     /// Called by the timer to send messages periodically
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /**
      * @brief Configures the service.
@@ -57,7 +57,7 @@ protected:
      * - \b period : time between two messages, in milliseconds.
      * - \b timelineSize (optional): maximum number of messages inside the timeline.
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
 private:
 

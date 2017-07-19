@@ -59,23 +59,23 @@ protected:
     /**
      * @brief Configure the service
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /**
      * @brief Install the layout.
      */
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /**
      * @brief Destroy the layout.
      */
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Does nothing
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Does nothing
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
 private:
 

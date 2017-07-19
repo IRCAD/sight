@@ -38,7 +38,7 @@ SOpenIGTLinkSender::~SOpenIGTLinkSender()
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkSender::configuring() throw (::fwTools::Failed)
+void SOpenIGTLinkSender::configuring()
 {
     ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
 
@@ -48,7 +48,7 @@ void SOpenIGTLinkSender::configuring() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkSender::starting() throw (::fwTools::Failed)
+void SOpenIGTLinkSender::starting()
 {
     ::ioNetwork::INetworkSender::starting();
 
@@ -73,7 +73,7 @@ void SOpenIGTLinkSender::starting() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SOpenIGTLinkSender::stopping() throw (::fwTools::Failed)
+void SOpenIGTLinkSender::stopping()
 {
     ::fwGui::dialog::MessageDialog msgDialog;
 

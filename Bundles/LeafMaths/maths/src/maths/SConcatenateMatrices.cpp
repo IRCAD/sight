@@ -25,13 +25,13 @@ namespace maths
 
 // ----------------------------------------------------------------------------
 
-SConcatenateMatrices::SConcatenateMatrices() throw ()
+SConcatenateMatrices::SConcatenateMatrices() noexcept
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SConcatenateMatrices::configuring() throw (::fwTools::Failed)
+void SConcatenateMatrices::configuring()
 {
     if(this->isVersion2())
     {
@@ -97,7 +97,7 @@ void SConcatenateMatrices::configuring() throw (::fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SConcatenateMatrices::starting() throw (fwTools::Failed)
+void SConcatenateMatrices::starting()
 {
     if(!this->isVersion2())
     {
@@ -119,7 +119,7 @@ void SConcatenateMatrices::starting() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SConcatenateMatrices::stopping() throw (fwTools::Failed)
+void SConcatenateMatrices::stopping()
 {
     if(!this->isVersion2())
     {
@@ -129,7 +129,7 @@ void SConcatenateMatrices::stopping() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SConcatenateMatrices::updating() throw (fwTools::Failed)
+void SConcatenateMatrices::updating()
 {
     if(this->isVersion2())
     {

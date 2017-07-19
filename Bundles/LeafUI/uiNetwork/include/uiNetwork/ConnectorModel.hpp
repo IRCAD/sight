@@ -44,7 +44,7 @@ public:
      * registered
      */
     void initialize(::fwRuntime::ConfigurationElement::csptr configElement,
-                    ::fwData::Object::csptr obj) throw (::fwTools::Failed);
+                    ::fwData::Object::csptr obj);
 
     /**
      * @brief getter for registered ioNetwork::INetworkListener in a F4S app

@@ -71,13 +71,13 @@ public:
 protected:
 
     /// Configure port, hostname and device name
-    IOIGTL_API virtual void configuring() throw ( ::fwTools::Failed );
+    IOIGTL_API virtual void configuring();
 
     /// Start the client and try to connect to the server specify in configuration
-    IOIGTL_API virtual void starting() throw ( ::fwTools::Failed );
+    IOIGTL_API virtual void starting();
 
     /// Disconnect the client from the server
-    IOIGTL_API virtual void stopping() throw ( ::fwTools::Failed );
+    IOIGTL_API virtual void stopping();
 
 private:
 
@@ -90,7 +90,7 @@ private:
      * @brief method contain a loop with receive and when we receive we emit m_sigReceiveObject
      *        this method run in a thread
      */
-    void runClient() throw ( ::fwTools::Failed );
+    void runClient();
 
     /// Future used to wait for the client
     std::future<void> m_clientFuture;

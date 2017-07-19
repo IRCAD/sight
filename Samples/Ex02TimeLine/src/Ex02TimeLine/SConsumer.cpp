@@ -28,7 +28,7 @@ const ::fwCom::Slots::SlotKeyType SConsumer::s_CONSUME_SLOT = "consume";
 
 //------------------------------------------------------------------------------
 
-SConsumer::SConsumer() throw()
+SConsumer::SConsumer() noexcept
 {
     m_slotConsume = ::fwCom::newSlot(&SConsumer::consume, this);
 
@@ -40,13 +40,13 @@ SConsumer::SConsumer() throw()
 
 //------------------------------------------------------------------------------
 
-SConsumer::~SConsumer() throw()
+SConsumer::~SConsumer() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SConsumer::starting() throw( ::fwTools::Failed )
+void SConsumer::starting()
 {
     SLM_TRACE_FUNC();
 
@@ -61,14 +61,14 @@ void SConsumer::starting() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SConsumer::stopping() throw( ::fwTools::Failed )
+void SConsumer::stopping()
 {
     m_timer.reset();
 }
 
 //------------------------------------------------------------------------------
 
-void SConsumer::updating() throw( ::fwTools::Failed )
+void SConsumer::updating()
 {
     const ::Ex02TimeLine::MessageTL::csptr timeline = this->getObject< ::Ex02TimeLine::MessageTL >();
 
@@ -86,14 +86,14 @@ void SConsumer::updating() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SConsumer::swapping( ) throw( ::fwTools::Failed )
+void SConsumer::swapping( )
 {
 
 }
 
 //------------------------------------------------------------------------------
 
-void SConsumer::configuring() throw( ::fwTools::Failed )
+void SConsumer::configuring()
 {
     ::fwRuntime::ConfigurationElement::csptr idCfg = m_configuration->findConfigurationElement("id");
     SLM_ASSERT("Tag 'id' not found.", idCfg);

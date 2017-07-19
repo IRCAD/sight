@@ -69,27 +69,27 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SCamera)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    VIDEOQT_API SCamera() throw();
+    VIDEOQT_API SCamera() noexcept;
 
     /// Destructor. Do nothing.
-    VIDEOQT_API virtual ~SCamera() throw();
+    VIDEOQT_API virtual ~SCamera() noexcept;
 
 protected:
 
     /// Configure the service
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Installs the layout
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /// Destroys the layout
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Does nothing
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Does nothing
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
 protected Q_SLOTS:
 

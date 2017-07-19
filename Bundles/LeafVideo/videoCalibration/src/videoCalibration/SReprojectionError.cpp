@@ -64,7 +64,7 @@ SReprojectionError::~SReprojectionError()
 
 //-----------------------------------------------------------------------------
 
-void SReprojectionError::configuring() throw (::fwTools::Failed)
+void SReprojectionError::configuring()
 {
     // gets pattern width
     ::fwRuntime::ConfigurationElement::sptr cfgPatternWidth = m_configuration->findConfigurationElement("patternWidth");
@@ -76,7 +76,7 @@ void SReprojectionError::configuring() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SReprojectionError::starting() throw(::fwTools::Failed)
+void SReprojectionError::starting()
 {
     //3D Points
     const float halfWidth = static_cast<float>(m_patternWidth) * .5f;
@@ -107,7 +107,7 @@ void SReprojectionError::starting() throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SReprojectionError::stopping() throw(::fwTools::Failed)
+void SReprojectionError::stopping()
 {
 
 }
@@ -232,7 +232,7 @@ void SReprojectionError::setColorParameter(std::array<uint8_t, 4> _val, std::str
 
 //-----------------------------------------------------------------------------
 
-void SReprojectionError::updating() throw(::fwTools::Failed)
+void SReprojectionError::updating()
 {
 
 }

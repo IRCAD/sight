@@ -48,7 +48,7 @@ static const  ::fwCom::Slots::SlotKeyType s_CALIBRATE_SLOT           = "calibrat
 
 //------------------------------------------------------------------------------
 
-SVideoAdapter::SVideoAdapter() throw() :
+SVideoAdapter::SVideoAdapter() noexcept :
     m_imageData(vtkImageData::New()),
     m_actor(vtkImageActor::New()),
     m_isTextureInit(false),
@@ -65,7 +65,7 @@ SVideoAdapter::SVideoAdapter() throw() :
 
 //------------------------------------------------------------------------------
 
-SVideoAdapter::~SVideoAdapter() throw()
+SVideoAdapter::~SVideoAdapter() noexcept
 {
     m_actor->Delete();
     m_actor = nullptr;
@@ -86,7 +86,7 @@ SVideoAdapter::~SVideoAdapter() throw()
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::doConfigure() throw(fwTools::Failed)
+void SVideoAdapter::doConfigure()
 {
     assert(m_configuration->getName() == "config");
 
@@ -104,7 +104,7 @@ void SVideoAdapter::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::doStart() throw(fwTools::Failed)
+void SVideoAdapter::doStart()
 {
     if (m_reverse)
     {
@@ -142,7 +142,7 @@ void SVideoAdapter::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::doUpdate() throw(fwTools::Failed)
+void SVideoAdapter::doUpdate()
 {
     ::fwData::Image::sptr image = this->getObject< ::fwData::Image >();
     const bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( image );
@@ -197,14 +197,14 @@ void SVideoAdapter::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::doSwap() throw(fwTools::Failed)
+void SVideoAdapter::doSwap()
 {
     this->doUpdate();
 }
 
 //------------------------------------------------------------------------------
 
-void SVideoAdapter::doStop() throw(fwTools::Failed)
+void SVideoAdapter::doStop()
 {
     this->unregisterServices();
     this->removeAllPropFromRenderer();

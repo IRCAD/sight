@@ -18,7 +18,7 @@ OpenIGTLinkPlayer::~OpenIGTLinkPlayer()
 
 }
 
-void OpenIGTLinkPlayer::configure(int argc, char** argv) throw (std::runtime_error)
+void OpenIGTLinkPlayer::configure(int argc, char** argv)
 {
     if (argc == 0)
     {
@@ -38,7 +38,7 @@ INetworkPlayer::sptr OpenIGTLinkPlayer::create(FunctionType const& playFunction)
     return INetworkPlayer::sptr(player);
 }
 
-void OpenIGTLinkPlayer::play(std::istream& stream) throw (std::runtime_error)
+void OpenIGTLinkPlayer::play(std::istream& stream)
 {
     ::igtlNetwork::Client::sptr client;
 

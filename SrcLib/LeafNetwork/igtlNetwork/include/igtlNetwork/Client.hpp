@@ -58,12 +58,12 @@ public:
      * @param[in] port port of server
      */
     IGTLNETWORK_API void connect (const std::string& addr,
-                                  ::boost::uint16_t port) throw (::fwCore::Exception);
+                                  ::boost::uint16_t port);
 
     /**
      * @brief method to disconnect client
      */
-    IGTLNETWORK_API void disconnect() throw (::fwCore::Exception);
+    IGTLNETWORK_API void disconnect();
 
     /**
      * @brief method to check if the client is connected

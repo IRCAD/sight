@@ -54,21 +54,21 @@ public:
     /**
      * @brief create gui interface
      */
-    UIZMQ_API virtual void configuring() throw (::fwTools::Failed);
+    UIZMQ_API virtual void configuring();
 
     /// Overrides
-    UIZMQ_API virtual void starting() throw (::fwTools::Failed);
+    UIZMQ_API virtual void starting();
 
     /// Overrides
-    UIZMQ_API virtual void stopping() throw (::fwTools::Failed);
+    UIZMQ_API virtual void stopping();
 
     /**
      * @brief show the dialog
      */
-    UIZMQ_API virtual void updating() throw (::fwTools::Failed);
+    UIZMQ_API virtual void updating();
 
     /// Overrides
-    UIZMQ_API virtual void swapping() throw (::fwTools::Failed);
+    UIZMQ_API virtual void swapping();
 
     /// Constructor
     UIZMQ_API SZMQConfigEditor();
@@ -80,7 +80,7 @@ public:
     UIZMQ_API virtual void initPatternBox() = 0;
 
     /// Destructor
-    UIZMQ_API virtual ~SZMQConfigEditor() throw();
+    UIZMQ_API virtual ~SZMQConfigEditor() noexcept;
 
 private Q_SLOTS:
     /**

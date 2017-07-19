@@ -11,13 +11,13 @@ namespace videoCalibration
 
 // ----------------------------------------------------------------------------
 
-ICalibration::ICalibration() throw ()
+ICalibration::ICalibration() noexcept
 {
 }
 
 // ----------------------------------------------------------------------------
 
-ICalibration::~ICalibration() throw ()
+ICalibration::~ICalibration() noexcept
 {
 }
 

@@ -27,7 +27,7 @@ namespace Ex02TimeLine
 
 //------------------------------------------------------------------------------
 
-SProducer::SProducer() throw()
+SProducer::SProducer() noexcept
 {
     m_msgCount     = 0;
     m_timelineSize = 0;
@@ -35,13 +35,13 @@ SProducer::SProducer() throw()
 
 //------------------------------------------------------------------------------
 
-SProducer::~SProducer() throw()
+SProducer::~SProducer() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SProducer::starting() throw( ::fwTools::Failed )
+void SProducer::starting()
 {
     SLM_TRACE_FUNC();
     m_timer = m_associatedWorker->createTimer();
@@ -68,14 +68,14 @@ void SProducer::starting() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SProducer::stopping() throw( ::fwTools::Failed )
+void SProducer::stopping()
 {
     m_timer.reset();
 }
 
 //------------------------------------------------------------------------------
 
-void SProducer::updating() throw( ::fwTools::Failed )
+void SProducer::updating()
 {
     ::Ex02TimeLine::MessageTL::sptr timeline = this->getObject< ::Ex02TimeLine::MessageTL >();
 
@@ -99,7 +99,7 @@ void SProducer::updating() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SProducer::configuring() throw( ::fwTools::Failed )
+void SProducer::configuring()
 {
     const ::fwRuntime::ConfigurationElement::csptr msgCfg = m_configuration->findConfigurationElement("message");
     SLM_ASSERT("Tag 'message' not found.", msgCfg);
@@ -136,7 +136,7 @@ void SProducer::configuring() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SProducer::swapping( ) throw( ::fwTools::Failed )
+void SProducer::swapping( )
 {
 
 }

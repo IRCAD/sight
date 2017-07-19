@@ -59,10 +59,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SVideoAdapter)(::fwRenderVTK::IVtkAdaptorService) );
 
     /// Constructor
-    SVideoAdapter() throw();
+    SVideoAdapter() noexcept;
 
     /// Destructor
-    virtual ~SVideoAdapter() throw();
+    virtual ~SVideoAdapter() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -78,19 +78,19 @@ public:
 protected:
 
     /// Create the actor and mapper used to show the video frame.
-    VISUVTKARADAPTOR_API void doStart() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doStart();
 
     /// Configure the adaptor.
-    VISUVTKARADAPTOR_API void doConfigure() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doConfigure();
 
     /// Calls doUpdate()
-    VISUVTKARADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doSwap();
 
     /// Updated the frame from the current Image.
-    VISUVTKARADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doUpdate();
 
     /// Removes the actor from the renderer
-    VISUVTKARADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doStop();
 
     /**
      *  @brief Called when transfer function points are modified.

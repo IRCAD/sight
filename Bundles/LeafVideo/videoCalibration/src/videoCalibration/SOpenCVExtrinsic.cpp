@@ -40,7 +40,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_CHESSBOARD_SIZE_SLOT = "update
 
 // ----------------------------------------------------------------------------
 
-SOpenCVExtrinsic::SOpenCVExtrinsic() throw () : m_width(11),
+SOpenCVExtrinsic::SOpenCVExtrinsic() noexcept : m_width(11),
                                                 m_height(8),
                                                 m_squareSize(20.0),
                                                 m_camIndex(1)
@@ -50,13 +50,13 @@ SOpenCVExtrinsic::SOpenCVExtrinsic() throw () : m_width(11),
 
 // ----------------------------------------------------------------------------
 
-SOpenCVExtrinsic::~SOpenCVExtrinsic() throw ()
+SOpenCVExtrinsic::~SOpenCVExtrinsic() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SOpenCVExtrinsic::configuring() throw (fwTools::Failed)
+void SOpenCVExtrinsic::configuring()
 {
     ::fwRuntime::ConfigurationElement::sptr cfgIdx = m_configuration->findConfigurationElement("camIndex");
     if(cfgIdx)
@@ -86,20 +86,20 @@ void SOpenCVExtrinsic::configuring() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVExtrinsic::starting() throw (fwTools::Failed)
+void SOpenCVExtrinsic::starting()
 {
     this->updateChessboardSize();
 }
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVExtrinsic::stopping() throw (fwTools::Failed)
+void SOpenCVExtrinsic::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SOpenCVExtrinsic::swapping() throw (fwTools::Failed)
+void SOpenCVExtrinsic::swapping()
 {
     this->stopping();
     this->starting();
@@ -107,7 +107,7 @@ void SOpenCVExtrinsic::swapping() throw (fwTools::Failed)
 
 //--------------------------------------------------------------------- ---------
 
-void SOpenCVExtrinsic::updating() throw (fwTools::Failed)
+void SOpenCVExtrinsic::updating()
 {
     ::arData::CameraSeries::sptr camSeries = this->getInOut< ::arData::CameraSeries >("cameraSeries");
 

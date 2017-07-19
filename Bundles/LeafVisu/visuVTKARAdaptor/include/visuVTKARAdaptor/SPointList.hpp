@@ -37,17 +37,17 @@ public:
 
     fwCoreServiceClassDefinitionsMacro ( (SPointList)(::fwRenderVTK::IVtkAdaptorService) );
 
-    VISUVTKARADAPTOR_API SPointList() throw();
+    VISUVTKARADAPTOR_API SPointList() noexcept;
 
-    VISUVTKARADAPTOR_API virtual ~SPointList() throw();
+    VISUVTKARADAPTOR_API virtual ~SPointList() noexcept;
 
 protected:
 
     /// Copy point list and create adaptors
-    VISUVTKARADAPTOR_API void doStart() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doStart();
 
     /// Unregister adaptors and clears local point list
-    VISUVTKARADAPTOR_API void doStop() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doStop();
 
     /**
      * @code{.xml}
@@ -61,13 +61,13 @@ protected:
      * - \b color(optional) : color used to display the points.
      * - \b radius (optional) : size of the point beeing displayed.
      */
-    VISUVTKARADAPTOR_API void doConfigure() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doConfigure();
 
     /// Restart the service (stop-start)
-    VISUVTKARADAPTOR_API void doSwap() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doSwap();
 
     /// Create adaptors
-    VISUVTKARADAPTOR_API void doUpdate() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API void doUpdate();
 
 private:
 

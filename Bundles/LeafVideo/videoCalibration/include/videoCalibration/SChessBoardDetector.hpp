@@ -90,24 +90,24 @@ public:
 
 
     /// Constructor
-    VIDEOCALIBRATION_API SChessBoardDetector() throw ();
+    VIDEOCALIBRATION_API SChessBoardDetector() noexcept;
 
     /// Destructor
-    VIDEOCALIBRATION_API ~SChessBoardDetector() throw ();
+    VIDEOCALIBRATION_API ~SChessBoardDetector() noexcept;
 
 protected:
 
     /// Configure the service.
-    VIDEOCALIBRATION_API void configuring() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void configuring();
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void starting() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void starting();
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void updating() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void updating();
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void stopping() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void stopping();
 
 
 private:

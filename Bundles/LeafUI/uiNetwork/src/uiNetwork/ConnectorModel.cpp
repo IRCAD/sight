@@ -55,7 +55,7 @@ bool ConnectorModel::isRegisteredService(std::string const& serviceName) const
 //-----------------------------------------------------------------------------
 
 void ConnectorModel::initialize (::fwRuntime::ConfigurationElement::csptr configElement,
-                                 ::fwData::Object::csptr obj) throw (::fwTools::Failed)
+                                 ::fwData::Object::csptr obj)
 {
     std::string serviceName;
     ::fwServices::registry::ServiceFactory::sptr serviceFactory;

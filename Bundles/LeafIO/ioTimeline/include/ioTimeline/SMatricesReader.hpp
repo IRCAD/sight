@@ -71,10 +71,10 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SMatricesReader)(::io::IReader) );
 
     /// Constructor.
-    IOTIMELINE_API SMatricesReader() throw();
+    IOTIMELINE_API SMatricesReader() noexcept;
 
     /// Destructor. Does nothing
-    IOTIMELINE_API virtual ~SMatricesReader() throw();
+    IOTIMELINE_API virtual ~SMatricesReader() noexcept;
 
     /// Display a location dialog allowing to select the video file to save
     IOTIMELINE_API virtual void configureWithIHM();
@@ -96,16 +96,16 @@ public:
 protected:
 
     /// Does nothing
-    IOTIMELINE_API virtual void configuring()  throw ( ::fwTools::Failed );
+    IOTIMELINE_API virtual void configuring();
 
     /// Does nothing
-    IOTIMELINE_API virtual void starting()  throw ( ::fwTools::Failed );
+    IOTIMELINE_API virtual void starting();
 
     /// Does nothing
-    IOTIMELINE_API virtual void stopping()  throw ( ::fwTools::Failed );
+    IOTIMELINE_API virtual void stopping();
 
     /// Does nothing
-    IOTIMELINE_API virtual void updating() throw ( ::fwTools::Failed );
+    IOTIMELINE_API virtual void updating();
 
 private:
 

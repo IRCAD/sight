@@ -85,21 +85,21 @@ public:
     VISUVTKARADAPTOR_API SText();
 
     /// Destructor
-    VISUVTKARADAPTOR_API virtual ~SText() throw();
+    VISUVTKARADAPTOR_API virtual ~SText() noexcept;
 
 protected:
 
     /// starts the adaptor
-    virtual void doStart() throw(::fwTools::Failed);
+    virtual void doStart();
 
     /// stops the adaptor
-    virtual void doStop() throw(::fwTools::Failed);
+    virtual void doStop();
 
     /// Calls doStop() and doStart()
-    virtual void doSwap() throw(::fwTools::Failed);
+    virtual void doSwap();
 
     /// updates the shown text and its properties.
-    virtual void doUpdate() throw(::fwTools::Failed);
+    virtual void doUpdate();
 
     /**
      * @brief Configure the adaptor
@@ -138,7 +138,7 @@ protected:
      *       (not mandatory, default value is set to 1.0)
      *     - shadow : enable/disable text shadow (not mandatory, default value is set to false)
      */
-    VISUVTKARADAPTOR_API virtual void doConfigure() throw(fwTools::Failed);
+    VISUVTKARADAPTOR_API virtual void doConfigure();
 
 
 private:

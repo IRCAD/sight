@@ -37,10 +37,10 @@ public:
     typedef ::fwCom::Signal<void (int,int)> PositionModifiedSignalType;
 
     /// Constructor.
-    ECHOEDSIMU_API SProbePosition() throw();
+    ECHOEDSIMU_API SProbePosition() noexcept;
 
     /// Destructor. Does nothing
-    ECHOEDSIMU_API virtual ~SProbePosition() throw();
+    ECHOEDSIMU_API virtual ~SProbePosition() noexcept;
 
 protected:
 
@@ -50,16 +50,16 @@ protected:
         <service uid="SProbePositionInstance" impl="::echoEdSimu::SProbePosition" type="::arServices::ISimulator" />
        @endcode
      */
-    ECHOEDSIMU_API virtual void configuring() throw ( ::fwTools::Failed );
+    ECHOEDSIMU_API virtual void configuring();
 
     /// Do nothing.
-    ECHOEDSIMU_API virtual void starting() throw ( ::fwTools::Failed );
+    ECHOEDSIMU_API virtual void starting();
 
     /// Do nothing.
-    ECHOEDSIMU_API virtual void stopping() throw ( ::fwTools::Failed );
+    ECHOEDSIMU_API virtual void stopping();
 
     /// Generate the indices (i,j) corresponding to the translation of the matrix.
-    ECHOEDSIMU_API virtual void updating() throw ( ::fwTools::Failed );
+    ECHOEDSIMU_API virtual void updating();
 
 private:
     /// Key of the matrix in the composite

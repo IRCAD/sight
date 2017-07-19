@@ -46,7 +46,7 @@ STDataListener::~STDataListener()
 
 //-----------------------------------------------------------------------------
 
-void STDataListener::configuring() throw (::fwTools::Failed)
+void STDataListener::configuring()
 {
     SLM_ASSERT("Configuration not found", m_configuration != NULL);
     if (m_configuration->findConfigurationElement("server"))
@@ -94,7 +94,7 @@ void STDataListener::configuring() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void STDataListener::runClient() throw (::fwTools::Failed)
+void STDataListener::runClient()
 {
     ::fwGui::dialog::MessageDialog msgDialog;
 
@@ -160,7 +160,7 @@ void STDataListener::runClient() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void STDataListener::starting() throw (::fwTools::Failed)
+void STDataListener::starting()
 {
     ::arData::MatrixTL::sptr matTL = this->getInOut< ::arData::MatrixTL>(s_TIMELINE_KEY);
     matTL->setMaximumSize(10);
@@ -171,7 +171,7 @@ void STDataListener::starting() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void STDataListener::stopping() throw (::fwTools::Failed)
+void STDataListener::stopping()
 {
     m_client.disconnect();
     m_clientFuture.wait();

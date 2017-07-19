@@ -42,7 +42,7 @@ static const ::fwCom::Slots::SlotKeyType s_READ_PREVIOUS = "readPrevious";
 
 //------------------------------------------------------------------------------
 
-SMatricesReader::SMatricesReader() throw() :
+SMatricesReader::SMatricesReader() noexcept :
     m_isPlaying(false),
     m_filestream(nullptr),
     m_tsMatricesCount(0),
@@ -62,7 +62,7 @@ SMatricesReader::SMatricesReader() throw() :
 
 //------------------------------------------------------------------------------
 
-SMatricesReader::~SMatricesReader() throw()
+SMatricesReader::~SMatricesReader() noexcept
 {
     if(nullptr != m_filestream)
     {
@@ -80,7 +80,7 @@ SMatricesReader::~SMatricesReader() throw()
 
 //------------------------------------------------------------------------------
 
-void SMatricesReader::configuring() throw(::fwTools::Failed)
+void SMatricesReader::configuring()
 {
     ::io::IReader::configuring();
 
@@ -96,7 +96,7 @@ void SMatricesReader::configuring() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SMatricesReader::starting() throw(::fwTools::Failed)
+void SMatricesReader::starting()
 {
 
 }
@@ -137,14 +137,14 @@ void SMatricesReader::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SMatricesReader::stopping() throw(::fwTools::Failed)
+void SMatricesReader::stopping()
 {
     this->stopReading();
 }
 
 //------------------------------------------------------------------------------
 
-void SMatricesReader::updating() throw(::fwTools::Failed)
+void SMatricesReader::updating()
 {
 }
 

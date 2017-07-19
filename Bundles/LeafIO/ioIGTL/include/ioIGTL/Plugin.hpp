@@ -21,13 +21,13 @@ struct IOIGTL_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
     /// Destructor
-    IOIGTL_API ~Plugin() throw();
+    IOIGTL_API ~Plugin() noexcept;
 
     /// Overrides
-    IOIGTL_API void start() throw (::fwRuntime::RuntimeException);
+    IOIGTL_API void start();
 
     /// Overrides
-    IOIGTL_API void stop() throw();
+    IOIGTL_API void stop() noexcept;
 
 };
 

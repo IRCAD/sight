@@ -41,7 +41,7 @@ const ::fwServices::IService::KeyType s_CALIBRATION_INOUT = "calInfo";
 
 // ----------------------------------------------------------------------------
 
-SChessBoardDetector::SChessBoardDetector() throw () :
+SChessBoardDetector::SChessBoardDetector() noexcept :
     m_width(11),
     m_height(8),
     m_isDetected(false),
@@ -57,13 +57,13 @@ SChessBoardDetector::SChessBoardDetector() throw () :
 
 // ----------------------------------------------------------------------------
 
-SChessBoardDetector::~SChessBoardDetector() throw ()
+SChessBoardDetector::~SChessBoardDetector() noexcept
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SChessBoardDetector::configuring() throw (fwTools::Failed)
+void SChessBoardDetector::configuring()
 {
     SLM_ASSERT("You must have the same number of 'timeline' keys and 'calInfo' keys",
                this->getKeyGroupSize(s_TIMELINE_INPUT) == this->getKeyGroupSize(s_CALIBRATION_INOUT));
@@ -82,7 +82,7 @@ void SChessBoardDetector::configuring() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SChessBoardDetector::starting() throw (fwTools::Failed)
+void SChessBoardDetector::starting()
 {
     m_pointsLists.resize( this->getKeyGroupSize(s_TIMELINE_INPUT) );
     this->updateChessboardSize();
@@ -90,13 +90,13 @@ void SChessBoardDetector::starting() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SChessBoardDetector::updating() throw (fwTools::Failed)
+void SChessBoardDetector::updating()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SChessBoardDetector::stopping() throw (fwTools::Failed)
+void SChessBoardDetector::stopping()
 {
 }
 

@@ -32,7 +32,7 @@ ImageTypeConverter::TypeConverterMap ImageTypeConverter::initTypeConverterMap()
 //-----------------------------------------------------------------------------
 
 ::fwTools::Type const &
-ImageTypeConverter::getFwToolsType(::boost::uint8_t igtlType) throw (::igtlProtocol::exception::Conversion)
+ImageTypeConverter::getFwToolsType(::boost::uint8_t igtlType)
 {
     ImageTypeConverter::TypeConverterMap::const_iterator it;
 
@@ -50,8 +50,7 @@ ImageTypeConverter::getFwToolsType(::boost::uint8_t igtlType) throw (::igtlProto
 
 //-----------------------------------------------------------------------------
 
-::boost::uint8_t ImageTypeConverter::getIgtlType (::fwTools::Type const& type) throw (::igtlProtocol::exception::
-                                                                                      Conversion)
+::boost::uint8_t ImageTypeConverter::getIgtlType (::fwTools::Type const& type)
 {
     ImageTypeConverter::TypeConverterMap::const_iterator it;
 

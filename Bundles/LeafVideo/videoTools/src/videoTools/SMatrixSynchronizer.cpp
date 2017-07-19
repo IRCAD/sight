@@ -40,7 +40,7 @@ const ::fwCom::Slots::SlotKeyType SMatrixSynchronizer::s_UPDATE_MATRIX_SLOT = "u
 
 // ----------------------------------------------------------------------------
 
-SMatrixSynchronizer::SMatrixSynchronizer() throw () : m_lastTimestamp(0)
+SMatrixSynchronizer::SMatrixSynchronizer() noexcept : m_lastTimestamp(0)
 {
     m_slotUpdateMatrix = ::fwCom::newSlot(&SMatrixSynchronizer::updateMatrix, this);
 
@@ -50,19 +50,19 @@ SMatrixSynchronizer::SMatrixSynchronizer() throw () : m_lastTimestamp(0)
 
 // ----------------------------------------------------------------------------
 
-void SMatrixSynchronizer::configuring() throw (::fwTools::Failed)
+void SMatrixSynchronizer::configuring()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SMatrixSynchronizer::starting() throw (fwTools::Failed)
+void SMatrixSynchronizer::starting()
 {
 }
 
 // ----------------------------------------------------------------------------
 
-void SMatrixSynchronizer::stopping() throw (fwTools::Failed)
+void SMatrixSynchronizer::stopping()
 {
 }
 

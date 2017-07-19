@@ -39,7 +39,7 @@ const ::fwCom::Slots::SlotKeyType SImagesSelector::s_RESET_SLOT  = "reset";
 const ::fwServices::IService::KeyType s_SELECTION_INOUT = "selection";
 
 //------------------------------------------------------------------------------
-SImagesSelector::SImagesSelector() throw() :
+SImagesSelector::SImagesSelector() noexcept :
     m_captureIdx(0)
 {
     newSlot( s_ADD_SLOT, &SImagesSelector::add, this );
@@ -49,20 +49,20 @@ SImagesSelector::SImagesSelector() throw() :
 
 //------------------------------------------------------------------------------
 
-SImagesSelector::~SImagesSelector() throw()
+SImagesSelector::~SImagesSelector() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SImagesSelector::configuring() throw(::fwTools::Failed)
+void SImagesSelector::configuring()
 {
     fwGui::IGuiContainerSrv::initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SImagesSelector::starting() throw(::fwTools::Failed)
+void SImagesSelector::starting()
 {
     m_frameTL = this->getInput< ::arData::FrameTL>("frameTL");
     SLM_ASSERT("Frame timeline is not found.", m_frameTL);
@@ -98,14 +98,14 @@ void SImagesSelector::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SImagesSelector::stopping() throw(::fwTools::Failed)
+void SImagesSelector::stopping()
 {
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void SImagesSelector::updating() throw(::fwTools::Failed)
+void SImagesSelector::updating()
 {
     ::fwData::Vector::sptr vector = this->getInOut< ::fwData::Vector >(s_SELECTION_INOUT);
 

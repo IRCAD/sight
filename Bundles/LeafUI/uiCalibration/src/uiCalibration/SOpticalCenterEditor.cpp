@@ -30,26 +30,26 @@ static const ::fwServices::IService::KeyType s_MATRIX_INOUT = "matrix";
 fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiCalibration::SOpticalCenterEditor, ::arData::Camera);
 
 //------------------------------------------------------------------------------
-SOpticalCenterEditor::SOpticalCenterEditor() throw()
+SOpticalCenterEditor::SOpticalCenterEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SOpticalCenterEditor::~SOpticalCenterEditor() throw()
+SOpticalCenterEditor::~SOpticalCenterEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SOpticalCenterEditor::configuring() throw(::fwTools::Failed)
+void SOpticalCenterEditor::configuring()
 {
     this->initialize();
 }
 
 //------------------------------------------------------------------------------
 
-void SOpticalCenterEditor::starting() throw(::fwTools::Failed)
+void SOpticalCenterEditor::starting()
 {
     this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer =
@@ -99,14 +99,14 @@ void SOpticalCenterEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SOpticalCenterEditor::stopping() throw(::fwTools::Failed)
+void SOpticalCenterEditor::stopping()
 {
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void SOpticalCenterEditor::updating() throw(::fwTools::Failed)
+void SOpticalCenterEditor::updating()
 {
     ::arData::Camera::csptr camera = this->getInput< ::arData::Camera >(s_CAMERA_INPUT);
     SLM_ASSERT("object '" + s_CAMERA_INPUT + "' is not defined.", camera);

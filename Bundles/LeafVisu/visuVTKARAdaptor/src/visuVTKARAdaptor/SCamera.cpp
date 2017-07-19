@@ -78,7 +78,7 @@ const ::fwCom::Slots::SlotKeyType SCamera::s_CALIBRATE_SLOT = "calibrate";
 
 //------------------------------------------------------------------------------
 
-SCamera::SCamera() throw() :
+SCamera::SCamera() noexcept :
     m_transOrig(nullptr),
     m_cameraCommand(CameraCallback::New(this))
 {
@@ -88,13 +88,13 @@ SCamera::SCamera() throw() :
 
 //------------------------------------------------------------------------------
 
-SCamera::~SCamera() throw()
+SCamera::~SCamera() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::doConfigure() throw(fwTools::Failed)
+void SCamera::doConfigure()
 {
     SLM_TRACE_FUNC();
     SLM_ASSERT("Configuration must begin with <config>", m_configuration->getName() == "config");
@@ -103,7 +103,7 @@ void SCamera::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCamera::doStart() throw(fwTools::Failed)
+void SCamera::doStart()
 {
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
 
@@ -139,14 +139,14 @@ void SCamera::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCamera::doUpdate() throw(fwTools::Failed)
+void SCamera::doUpdate()
 {
     this->updateFromTMatrix3D();
 }
 
 //------------------------------------------------------------------------------
 
-void SCamera::doSwap() throw(fwTools::Failed)
+void SCamera::doSwap()
 {
     this->doStop();
     this->doStart();
@@ -154,7 +154,7 @@ void SCamera::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SCamera::doStop() throw(fwTools::Failed)
+void SCamera::doStop()
 {
     vtkCamera* camera = this->getRenderer()->GetActiveCamera();
     camera->RemoveObserver(m_cameraCommand);

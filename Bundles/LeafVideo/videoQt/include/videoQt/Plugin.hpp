@@ -22,13 +22,13 @@ struct VIDEOQT_CLASS_API Plugin : public ::fwRuntime::Plugin
     /**
      * @brief   destructor
      */
-    ~Plugin() throw();
+    ~Plugin() noexcept;
 
     // Overrides
-    VIDEOQT_API void start() throw(::fwRuntime::RuntimeException);
+    VIDEOQT_API void start();
 
     // Overrides
-    VIDEOQT_API void stop() throw();
+    VIDEOQT_API void stop() noexcept;
 
 };
 

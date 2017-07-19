@@ -27,7 +27,7 @@ SZMQSenderConfigEditor::SZMQSenderConfigEditor() :
 
 //-----------------------------------------------------------------------------
 
-SZMQSenderConfigEditor::~SZMQSenderConfigEditor() throw()
+SZMQSenderConfigEditor::~SZMQSenderConfigEditor() noexcept
 {
 }
 

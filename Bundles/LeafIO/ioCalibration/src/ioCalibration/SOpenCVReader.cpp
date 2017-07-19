@@ -40,14 +40,14 @@ SOpenCVReader::~SOpenCVReader()
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVReader::configuring() throw (::fwTools::Failed)
+void SOpenCVReader::configuring()
 {
     ::io::IReader::configuring();
 }
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVReader::configureWithIHM() throw (::fwTools::Failed)
+void SOpenCVReader::configureWithIHM()
 {
     this->defineLocationGUI();
 }
@@ -88,21 +88,21 @@ bool SOpenCVReader::defineLocationGUI()
 
 //----------------------------------------------------------------------------
 
-void SOpenCVReader::starting() throw (::fwTools::Failed)
+void SOpenCVReader::starting()
 {
 
 }
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVReader::stopping() throw (::fwTools::Failed)
+void SOpenCVReader::stopping()
 {
 
 }
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVReader::updating() throw (::fwTools::Failed)
+void SOpenCVReader::updating()
 {
 
     ::arData::CameraSeries::sptr camSeries = this->getInOut< ::arData::CameraSeries >("target");
@@ -224,7 +224,7 @@ void SOpenCVReader::updating() throw (::fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SOpenCVReader::swapping() throw (::fwTools::Failed)
+void SOpenCVReader::swapping()
 {
     this->stop();
     this->start();

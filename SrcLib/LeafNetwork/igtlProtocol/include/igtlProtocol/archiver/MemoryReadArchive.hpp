@@ -52,8 +52,7 @@ public:
      * @throw ::fwZip::exception::Read if file doesn't exist in archive.
      * @throw ::fwZip::exception::Read if cannot retrieve file in archive.
      */
-    IGTLPROTOCOL_API SPTR(std::istream) getFile (const ::boost::filesystem::path& path)
-    throw (fwZip::exception::Read);
+    IGTLPROTOCOL_API SPTR(std::istream) getFile (const ::boost::filesystem::path& path);
 
     /**
      * @brief Returns archive path.

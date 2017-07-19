@@ -85,19 +85,19 @@ public:
 protected:
 
     /// Overrides
-    IONETWORK_API virtual void configuring() throw (::fwTools::Failed);
+    IONETWORK_API virtual void configuring();
 
     /// Make connection like autoConnect enable message reception
-    IONETWORK_API virtual void starting() throw (::fwTools::Failed);
+    IONETWORK_API virtual void starting();
 
     /// Disconnect connection to bypass the OSLM_FATAL_IF when service receives a message
-    IONETWORK_API virtual void stopping() throw (::fwTools::Failed);
+    IONETWORK_API virtual void stopping();
 
     /// Sends the object
-    IONETWORK_API virtual void updating() throw (::fwTools::Failed);
+    IONETWORK_API virtual void updating();
 
     /// Calls stopping and starting
-    IONETWORK_API virtual void swapping() throw (::fwTools::Failed);
+    IONETWORK_API virtual void swapping();
 
     /**
      * @brief SLOT: called to send obj

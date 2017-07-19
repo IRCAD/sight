@@ -46,7 +46,7 @@ ITracker::~ITracker()
 
 //-----------------------------------------------------------------------------
 
-void ITracker::configuring() throw (::fwTools::Failed)
+void ITracker::configuring()
 {
     const ::fwServices::IService::ConfigType config = this->getConfigTree().get_child("service");
     if (config.count("dropObj"))

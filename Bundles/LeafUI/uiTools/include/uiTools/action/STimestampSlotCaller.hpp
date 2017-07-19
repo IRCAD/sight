@@ -52,7 +52,7 @@ protected:
     typedef std::vector< SlotInfoType > SlotInfoContainerType;
 
     /// Does nothing
-    UITOOLS_API virtual void starting() throw( ::fwTools::Failed );
+    UITOOLS_API virtual void starting();
 
     /**
      * @brief Configure the service
@@ -69,13 +69,13 @@ protected:
      *   - \b hasSlotsId : fwId of the HasSlots (usually a service)
      *   - \b slotKey : the identifier of the slot in the HasSlots
      */
-    UITOOLS_API virtual void configuring() throw( ::fwTools::Failed );
+    UITOOLS_API virtual void configuring();
 
     /// Does nothing
-    UITOOLS_API virtual void stopping() throw( ::fwTools::Failed );
+    UITOOLS_API virtual void stopping();
 
     /// This method run the specified slots.
-    UITOOLS_API virtual void updating() throw( ::fwTools::Failed );
+    UITOOLS_API virtual void updating();
 
     /// vector representing slots
     SlotInfoContainerType m_slotInfos;

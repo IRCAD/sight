@@ -40,20 +40,20 @@ namespace visuVTKARAdaptor
 
 //------------------------------------------------------------------------------
 
-SPointList3D::SPointList3D() throw() :
+SPointList3D::SPointList3D() noexcept :
     m_radius(3.)
 {
 }
 
 //------------------------------------------------------------------------------
 
-SPointList3D::~SPointList3D() throw()
+SPointList3D::~SPointList3D() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SPointList3D::doConfigure() throw(fwTools::Failed)
+void SPointList3D::doConfigure()
 {
 
     SLM_TRACE_FUNC();
@@ -79,7 +79,7 @@ void SPointList3D::doConfigure() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPointList3D::doStart() throw(fwTools::Failed)
+void SPointList3D::doStart()
 {
     ::fwData::PointList::sptr pl = this->getObject< ::fwData::PointList >();
 
@@ -119,7 +119,7 @@ void SPointList3D::doStart() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPointList3D::doUpdate() throw(fwTools::Failed)
+void SPointList3D::doUpdate()
 {
     m_points->Reset();
 
@@ -141,7 +141,7 @@ void SPointList3D::doUpdate() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPointList3D::doSwap() throw(fwTools::Failed)
+void SPointList3D::doSwap()
 {
     this->doStop();
     this->doStart();
@@ -149,7 +149,7 @@ void SPointList3D::doSwap() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SPointList3D::doStop() throw(fwTools::Failed)
+void SPointList3D::doStop()
 {
     this->removeAllPropFromRenderer();
 }

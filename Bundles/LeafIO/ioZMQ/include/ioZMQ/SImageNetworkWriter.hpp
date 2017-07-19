@@ -28,7 +28,7 @@ public:
     IOZMQ_API SImageNetworkWriter();
 
     /// Destructor
-    IOZMQ_API virtual ~SImageNetworkWriter() throw();
+    IOZMQ_API virtual ~SImageNetworkWriter() noexcept;
 
     /// Overrides
     IOZMQ_API ::io::IOPathType getIOPathType() const;
@@ -41,19 +41,19 @@ public:
 protected:
 
     /// Overrides
-    IOZMQ_API virtual void configuring() throw (::fwTools::Failed);
+    IOZMQ_API virtual void configuring();
 
     /// Overrides
-    IOZMQ_API virtual void starting() throw (::fwTools::Failed);
+    IOZMQ_API virtual void starting();
 
     /// Overrides
-    IOZMQ_API virtual void stopping() throw (::fwTools::Failed);
+    IOZMQ_API virtual void stopping();
 
     /// Overrides
-    IOZMQ_API virtual void updating() throw (::fwTools::Failed);
+    IOZMQ_API virtual void updating();
 
     /// Overrides
-    IOZMQ_API virtual void swapping() throw (::fwTools::Failed);
+    IOZMQ_API virtual void swapping();
 
 
 private:

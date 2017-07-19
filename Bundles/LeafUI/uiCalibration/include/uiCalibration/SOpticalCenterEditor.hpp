@@ -52,24 +52,24 @@ public:
     fwCoreServiceClassDefinitionsMacro( (SOpticalCenterEditor)(::gui::editor::IEditor) );
 
     /// Constructor.
-    UICALIBRATION_API SOpticalCenterEditor() throw();
+    UICALIBRATION_API SOpticalCenterEditor() noexcept;
 
     /// Destructor. Does nothing
-    UICALIBRATION_API virtual ~SOpticalCenterEditor() throw();
+    UICALIBRATION_API virtual ~SOpticalCenterEditor() noexcept;
 
 protected:
 
     /// Does nothing
-    UICALIBRATION_API virtual void configuring()  throw ( ::fwTools::Failed );
+    UICALIBRATION_API virtual void configuring();
 
     /// Create UI.
-    UICALIBRATION_API virtual void starting()  throw ( ::fwTools::Failed );
+    UICALIBRATION_API virtual void starting();
 
     /// Destroy UI.
-    UICALIBRATION_API virtual void stopping()  throw ( ::fwTools::Failed );
+    UICALIBRATION_API virtual void stopping();
 
     /// Does nothing.
-    UICALIBRATION_API virtual void updating() throw ( ::fwTools::Failed );
+    UICALIBRATION_API virtual void updating();
 
     /// Defines the connection betwwen camera and matrix and this editor
     UICALIBRATION_API virtual KeyConnectionsMap getAutoConnections() const;

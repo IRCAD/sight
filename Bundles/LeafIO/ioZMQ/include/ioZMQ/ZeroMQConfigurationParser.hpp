@@ -55,7 +55,7 @@ public:
      *
      * @param[in] supportedPattern supportedPattern by the service
      */
-    IOZMQ_API void parse(Patterns::SupportedPatternMapType const& supportedPattern) throw (::fwTools::Failed);
+    IOZMQ_API void parse(Patterns::SupportedPatternMapType const& supportedPattern);
 
     /**
      * @brief get pattern mode
@@ -83,23 +83,22 @@ private:
     /**
      * @brief parse pattern mode for a string value given
      */
-    void parsePatternMode(std::string const& key,
-                          Patterns::SupportedPatternMapType const& supportedPattern) throw (::fwTools::Failed);
+    void parsePatternMode(std::string const& key, Patterns::SupportedPatternMapType const& supportedPattern);
 
     /**
      * @brief parsing for tcp protocol
      */
-    void parseTcp(::fwRuntime::ConfigurationElement::sptr protocolElement) throw (::fwTools::Failed);
+    void parseTcp(::fwRuntime::ConfigurationElement::sptr protocolElement);
 
     /**
      * @brief parsing for ipc protocol
      */
-    void parseIpc(::fwRuntime::ConfigurationElement::sptr protocolElement)  throw (::fwTools::Failed);
+    void parseIpc(::fwRuntime::ConfigurationElement::sptr protocolElement);
 
     /**
      * @brief get type and parse protocol type
      */
-    void parseProtocol(::fwRuntime::ConfigurationElement::sptr protocolElement) throw (::fwTools::Failed);
+    void parseProtocol(::fwRuntime::ConfigurationElement::sptr protocolElement);
 
     /// configuration element
     ::fwRuntime::ConfigurationElement::sptr m_configuration;

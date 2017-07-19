@@ -54,27 +54,27 @@ public:
     fwCoreServiceClassDefinitionsMacro((SFixedPointRegistration)(::fwServices::IController));
 
     /// Constructor
-    VIDEOCALIBRATION_API SFixedPointRegistration() throw ();
+    VIDEOCALIBRATION_API SFixedPointRegistration() noexcept;
 
     /// Destructor
-    VIDEOCALIBRATION_API ~SFixedPointRegistration() throw ();
+    VIDEOCALIBRATION_API ~SFixedPointRegistration() noexcept;
 
 protected:
 
     /// Does nothing
-    VIDEOCALIBRATION_API void configuring() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void configuring();
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void starting() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void starting();
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void swapping() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void swapping();
 
     ///Compute the center of the sphere
-    VIDEOCALIBRATION_API void updating() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void updating();
 
     /// Does nothing.
-    VIDEOCALIBRATION_API void stopping() throw (fwTools::Failed);
+    VIDEOCALIBRATION_API void stopping();
 
 };
 

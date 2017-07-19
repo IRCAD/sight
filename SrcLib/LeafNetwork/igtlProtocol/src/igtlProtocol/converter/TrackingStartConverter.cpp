@@ -53,7 +53,6 @@ TrackingStartConverter::~TrackingStartConverter()
 
 void TrackingStartConverter::fromIgtlMessage(::igtl::MessageBase::Pointer const src,
                                              ::fwData::Object::sptr& destObj) const
-throw (::igtlProtocol::exception::Conversion)
 {
     FW_RAISE_EXCEPTION_IF(exception::Conversion("Incompatible destination object type must be a "
                                                 "::fwData::Composite"),

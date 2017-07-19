@@ -35,7 +35,7 @@ static const ::fwCom::Slots::SlotKeyType s_STOP_RECORD  = "stopRecord";
 
 //------------------------------------------------------------------------------
 
-SVideoWriter::SVideoWriter() throw() :
+SVideoWriter::SVideoWriter() noexcept :
     m_imageType(0)
 {
     newSlot(s_SAVE_FRAME, &SVideoWriter::saveFrame, this);
@@ -45,7 +45,7 @@ SVideoWriter::SVideoWriter() throw() :
 
 //------------------------------------------------------------------------------
 
-SVideoWriter::~SVideoWriter() throw()
+SVideoWriter::~SVideoWriter() noexcept
 {
 }
 
@@ -58,14 +58,14 @@ SVideoWriter::~SVideoWriter() throw()
 
 //------------------------------------------------------------------------------
 
-void SVideoWriter::configuring() throw(::fwTools::Failed)
+void SVideoWriter::configuring()
 {
     ::io::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
 
-void SVideoWriter::starting() throw(::fwTools::Failed)
+void SVideoWriter::starting()
 {
 }
 
@@ -100,7 +100,7 @@ void SVideoWriter::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SVideoWriter::stopping() throw(::fwTools::Failed)
+void SVideoWriter::stopping()
 {
     if (m_writer)
     {
@@ -110,7 +110,7 @@ void SVideoWriter::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SVideoWriter::updating() throw(::fwTools::Failed)
+void SVideoWriter::updating()
 {
 }
 

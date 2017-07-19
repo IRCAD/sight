@@ -43,7 +43,7 @@ public:
      * @param[in] igtlType
      * @return a fwTools::Type
      */
-    static ::fwTools::Type const& getFwToolsType(::boost::uint8_t igtlType) throw(::igtlProtocol::exception::Conversion);
+    static ::fwTools::Type const& getFwToolsType(::boost::uint8_t igtlType);
 
     /**
      * @brief get igtlType from a fwTools::Type
@@ -51,7 +51,7 @@ public:
      * @param[in] type
      * @return uint8 value correspond to an type enum in igtl::ImageMessage2
      */
-    static ::boost::uint8_t getIgtlType(::fwTools::Type const& type) throw(::igtlProtocol::exception::Conversion);
+    static ::boost::uint8_t getIgtlType(::fwTools::Type const& type);
 
 private:
 

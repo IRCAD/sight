@@ -40,7 +40,7 @@ static const std::string s_CALIBRATION_INFO_2 = "calInfo2";
 
 //------------------------------------------------------------------------------
 
-SDisplayCalibrationInfo::SDisplayCalibrationInfo() throw ()
+SDisplayCalibrationInfo::SDisplayCalibrationInfo() noexcept
 {
     newSlot( s_DISPLAY_IMAGE_SLOT, &SDisplayCalibrationInfo::displayImage, this );
     newSlot(s_STOP_CONFIG_SLOT, &SDisplayCalibrationInfo::stopConfig, this);
@@ -48,20 +48,20 @@ SDisplayCalibrationInfo::SDisplayCalibrationInfo() throw ()
 
 //------------------------------------------------------------------------------
 
-SDisplayCalibrationInfo::~SDisplayCalibrationInfo() throw ()
+SDisplayCalibrationInfo::~SDisplayCalibrationInfo() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDisplayCalibrationInfo::starting() throw (::fwTools::Failed)
+void SDisplayCalibrationInfo::starting()
 {
     m_proxychannel = this->getID() + "_stopConfig";
 }
 
 //------------------------------------------------------------------------------
 
-void SDisplayCalibrationInfo::stopping() throw (::fwTools::Failed)
+void SDisplayCalibrationInfo::stopping()
 {
     if (m_configMgr)
     {
@@ -74,13 +74,13 @@ void SDisplayCalibrationInfo::stopping() throw (::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SDisplayCalibrationInfo::configuring() throw (fwTools::Failed)
+void SDisplayCalibrationInfo::configuring()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SDisplayCalibrationInfo::updating() throw (::fwTools::Failed)
+void SDisplayCalibrationInfo::updating()
 {
 }
 

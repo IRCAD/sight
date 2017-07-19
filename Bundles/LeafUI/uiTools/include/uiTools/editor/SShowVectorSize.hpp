@@ -39,10 +39,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SShowVectorSize)(::gui::editor::IEditor) );
 
     /// Constructor. Do nothing.
-    UITOOLS_API SShowVectorSize() throw();
+    UITOOLS_API SShowVectorSize() noexcept;
 
     /// Destructor. Do nothing.
-    UITOOLS_API virtual ~SShowVectorSize() throw();
+    UITOOLS_API virtual ~SShowVectorSize() noexcept;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -60,18 +60,18 @@ protected:
     /**
      * @brief Install the layout.
      */
-    virtual void starting() throw(::fwTools::Failed);
+    virtual void starting();
 
     /**
      * @brief Destroy the layout.
      */
-    virtual void stopping() throw(::fwTools::Failed);
+    virtual void stopping();
 
     /// Does nothing
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void updating();
 
     /// Does nothing
-    virtual void swapping() throw(::fwTools::Failed);
+    virtual void swapping();
 
     /**
      * @brief Configure the service
@@ -84,7 +84,7 @@ protected:
      * - \b text (optional, by default "") : the text to show before size of the vector
      * - \b
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Overrides
     virtual void info( std::ostream &_sstream );

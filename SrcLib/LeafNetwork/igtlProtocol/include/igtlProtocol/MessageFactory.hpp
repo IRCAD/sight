@@ -37,8 +37,7 @@ public:
      * @param[in] type
      * @return a smart pointer to a igtl message
      */
-    static IGTLPROTOCOL_API ::igtl::MessageBase::Pointer create(std::string const& type) throw (::igtlProtocol::
-                                                                                                exception::Conversion);
+    static IGTLPROTOCOL_API ::igtl::MessageBase::Pointer create(std::string const& type);;
 private:
 
     MessageFactory();

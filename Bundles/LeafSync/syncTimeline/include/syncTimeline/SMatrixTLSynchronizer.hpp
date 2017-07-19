@@ -64,12 +64,12 @@ public:
     /**
      * @brief Constructor.
      */
-    SYNCTIMELINE_API SMatrixTLSynchronizer() throw ();
+    SYNCTIMELINE_API SMatrixTLSynchronizer() noexcept;
 
     /**
      * @brief Destructor.
      */
-    virtual ~SMatrixTLSynchronizer() throw ()
+    virtual ~SMatrixTLSynchronizer() noexcept
     {
     }
 
@@ -78,16 +78,16 @@ public:
 protected:
 
     /// Does nothing
-    SYNCTIMELINE_API void configuring() throw (::fwTools::Failed);
+    SYNCTIMELINE_API void configuring();
 
     /// This method is used to initialize the service.
-    SYNCTIMELINE_API void starting() throw (::fwTools::Failed);
+    SYNCTIMELINE_API void starting();
 
     /// Does nothing.
-    SYNCTIMELINE_API void stopping() throw (::fwTools::Failed);
+    SYNCTIMELINE_API void stopping();
 
     /// Does nothing.
-    SYNCTIMELINE_API void updating() throw (::fwTools::Failed);
+    SYNCTIMELINE_API void updating();
 
     /// Synchronize
     SYNCTIMELINE_API void synchronize();

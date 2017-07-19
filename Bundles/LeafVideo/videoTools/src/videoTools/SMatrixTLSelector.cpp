@@ -33,7 +33,7 @@ namespace videoTools
 
 // ----------------------------------------------------------------------------
 
-SMatrixTLSelector::SMatrixTLSelector() throw () :
+SMatrixTLSelector::SMatrixTLSelector() noexcept :
     m_lastTimestamp(0),
     m_tolerance(500),
     m_imagesInitialized(false),
@@ -43,7 +43,7 @@ SMatrixTLSelector::SMatrixTLSelector() throw () :
 
 // ----------------------------------------------------------------------------
 
-void SMatrixTLSelector::configuring() throw (::fwTools::Failed)
+void SMatrixTLSelector::configuring()
 {
     typedef ::fwRuntime::ConfigurationElement::sptr ConfigurationType;
 
@@ -103,7 +103,7 @@ void SMatrixTLSelector::configuring() throw (::fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SMatrixTLSelector::starting() throw (fwTools::Failed)
+void SMatrixTLSelector::starting()
 {
     ::fwData::Composite::sptr comp = this->getObject< ::fwData::Composite >();
     for(FrameKeysType::value_type elt : m_frameKeys)
@@ -136,7 +136,7 @@ void SMatrixTLSelector::starting() throw (fwTools::Failed)
 
 // ----------------------------------------------------------------------------
 
-void SMatrixTLSelector::stopping() throw (fwTools::Failed)
+void SMatrixTLSelector::stopping()
 {
     m_timer->stop();
 

@@ -83,7 +83,7 @@ void SIntrinsicEdition::updateCalibration()
 
 // -------------------------------------------------------------------------
 
-void SIntrinsicEdition::configuring() throw (fwTools::Failed)
+void SIntrinsicEdition::configuring()
 {
     this->readCalibration();
 
@@ -117,20 +117,20 @@ void SIntrinsicEdition::readCalibration()
 
 // -------------------------------------------------------------------------
 
-void SIntrinsicEdition::starting() throw (fwTools::Failed)
+void SIntrinsicEdition::starting()
 {
 }
 
 // -------------------------------------------------------------------------
 
-void SIntrinsicEdition::stopping() throw (fwTools::Failed)
+void SIntrinsicEdition::stopping()
 {
 
 }
 
 // -------------------------------------------------------------------------
 
-void SIntrinsicEdition::swapping() throw (::fwTools::Failed)
+void SIntrinsicEdition::swapping()
 {
     this->stopping();
     this->starting();
@@ -138,7 +138,7 @@ void SIntrinsicEdition::swapping() throw (::fwTools::Failed)
 
 // -------------------------------------------------------------------------
 
-void SIntrinsicEdition::updating() throw (::fwTools::Failed)
+void SIntrinsicEdition::updating()
 {
     this->readCalibration();
     m_dialog->setParameters(m_calibration);

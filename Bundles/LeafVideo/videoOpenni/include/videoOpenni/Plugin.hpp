@@ -19,13 +19,13 @@ namespace videoOpenni
 struct VIDEOOPENNI_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
     /// Destructor
-    VIDEOOPENNI_API ~Plugin() throw();
+    VIDEOOPENNI_API ~Plugin() noexcept;
 
     // Overrides
-    VIDEOOPENNI_API void start() throw(::fwRuntime::RuntimeException);
+    VIDEOOPENNI_API void start();
 
     // Overrides
-    VIDEOOPENNI_API void stop() throw();
+    VIDEOOPENNI_API void stop() noexcept;
 
 };
 

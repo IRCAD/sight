@@ -53,7 +53,7 @@ STextStatus::~STextStatus()
 
 //------------------------------------------------------------------------------
 
-void STextStatus::starting() throw(::fwTools::Failed)
+void STextStatus::starting()
 {
     this->create();
     auto qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast( this->getContainer() );
@@ -70,14 +70,14 @@ void STextStatus::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void STextStatus::stopping() throw(::fwTools::Failed)
+void STextStatus::stopping()
 {
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void STextStatus::configuring() throw(fwTools::Failed)
+void STextStatus::configuring()
 {
     this->initialize();
 
@@ -137,13 +137,13 @@ void STextStatus::setStringParameter(std::string _val)
 
 //------------------------------------------------------------------------------
 
-void STextStatus::updating() throw(::fwTools::Failed)
+void STextStatus::updating()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void STextStatus::swapping() throw(::fwTools::Failed)
+void STextStatus::swapping()
 {
 
 }

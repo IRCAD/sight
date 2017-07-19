@@ -65,29 +65,29 @@ public:
      * - \b config (optional): specific configuration of the listener/sender service to create
      *   - \b impl: implementation of service to configure
      */
-    UINETWORK_API void configuring() throw (::fwTools::Failed);
+    UINETWORK_API void configuring();
 
     /**
      * @brief construct the IHM and the Data object tree
      */
-    UINETWORK_API void starting() throw (::fwTools::Failed);
+    UINETWORK_API void starting();
 
     /**
      * @brief destruct the IHM
      */
-    UINETWORK_API void stopping() throw (::fwTools::Failed);
+    UINETWORK_API void stopping();
 
     /// Overrides
-    UINETWORK_API void updating() throw (::fwTools::Failed);
+    UINETWORK_API void updating();
 
     /// Overrides
-    UINETWORK_API void swapping() throw (::fwTools::Failed);
+    UINETWORK_API void swapping();
 
     /// Constructor
     UINETWORK_API SObjectConnectorTree();
 
     /// Destructor
-    UINETWORK_API ~SObjectConnectorTree() throw();
+    UINETWORK_API ~SObjectConnectorTree() noexcept;
 
 private:
 

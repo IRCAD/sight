@@ -49,7 +49,7 @@ public:
      *
      * @param[in] port the port to listen
      */
-    IGTLNETWORK_API void start(::boost::uint16_t port) throw (::fwCore::Exception);
+    IGTLNETWORK_API void start(::boost::uint16_t port);
 
     /**
      * @brief method to wait a connection
@@ -61,7 +61,7 @@ public:
     /**
      * @brief method to stop the server
      */
-    IGTLNETWORK_API void stop() throw (::fwCore::Exception);
+    IGTLNETWORK_API void stop();
 
     /**
      * @brief method to test if the server started
@@ -110,7 +110,7 @@ public:
      *  @return Message
      */
     IGTLNETWORK_API ::igtl::MessageBase::Pointer receiveBody (::igtl::MessageHeader::Pointer header,
-                                                              unsigned int client) throw (::fwCore::Exception);
+                                                              unsigned int client);
 
     /**
      * @brief set the device name when a message is sended

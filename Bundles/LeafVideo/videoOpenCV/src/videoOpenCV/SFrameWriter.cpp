@@ -38,7 +38,7 @@ static const ::fwCom::Slots::SlotKeyType s_WRITE        = "write";
 
 //------------------------------------------------------------------------------
 
-SFrameWriter::SFrameWriter() throw() :
+SFrameWriter::SFrameWriter() noexcept :
     m_imageType(0),
     m_isRecording(false)
 {
@@ -50,7 +50,7 @@ SFrameWriter::SFrameWriter() throw() :
 
 //------------------------------------------------------------------------------
 
-SFrameWriter::~SFrameWriter() throw()
+SFrameWriter::~SFrameWriter() noexcept
 {
 }
 
@@ -63,14 +63,14 @@ SFrameWriter::~SFrameWriter() throw()
 
 //------------------------------------------------------------------------------
 
-void SFrameWriter::configuring() throw(::fwTools::Failed)
+void SFrameWriter::configuring()
 {
     ::io::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
 
-void SFrameWriter::starting() throw(::fwTools::Failed)
+void SFrameWriter::starting()
 {
 }
 
@@ -102,14 +102,14 @@ void SFrameWriter::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SFrameWriter::stopping() throw(::fwTools::Failed)
+void SFrameWriter::stopping()
 {
     this->stopRecord();
 }
 
 //------------------------------------------------------------------------------
 
-void SFrameWriter::updating() throw(::fwTools::Failed)
+void SFrameWriter::updating()
 {
 
     ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();

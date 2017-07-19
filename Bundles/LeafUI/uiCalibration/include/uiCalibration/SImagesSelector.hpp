@@ -57,10 +57,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SImagesSelector)(::gui::editor::IEditor) );
 
     /// Constructor.
-    UICALIBRATION_API SImagesSelector() throw();
+    UICALIBRATION_API SImagesSelector() noexcept;
 
     /// Destructor. Does nothing
-    UICALIBRATION_API virtual ~SImagesSelector() throw();
+    UICALIBRATION_API virtual ~SImagesSelector() noexcept;
 
     /**
      * @name Slots API
@@ -79,16 +79,16 @@ public:
 protected:
 
     /// Configure the editor.
-    UICALIBRATION_API virtual void configuring()  throw ( ::fwTools::Failed );
+    UICALIBRATION_API virtual void configuring();
 
     /// Initialize the widgets.
-    UICALIBRATION_API virtual void starting()  throw ( ::fwTools::Failed );
+    UICALIBRATION_API virtual void starting();
 
     /// destroy the widgets.
-    UICALIBRATION_API virtual void stopping()  throw ( ::fwTools::Failed );
+    UICALIBRATION_API virtual void stopping();
 
     /// FILL ME.
-    UICALIBRATION_API virtual void updating() throw ( ::fwTools::Failed );
+    UICALIBRATION_API virtual void updating();
 
 protected:
 

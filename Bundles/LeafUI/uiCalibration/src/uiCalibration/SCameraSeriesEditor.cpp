@@ -36,7 +36,7 @@ fwServicesRegisterMacro( ::gui::editor::IEditor, ::uiCalibration::SCameraSeriesE
 const ::fwCom::Slots::SlotKeyType SCameraSeriesEditor::s_UPDATE_INFOS_SLOT = "updateInfos";
 // -------------------------------------------------------------------------
 
-SCameraSeriesEditor::SCameraSeriesEditor() throw () :
+SCameraSeriesEditor::SCameraSeriesEditor() noexcept :
     m_camIndex(1)
 {
     m_slotUpdateInfos = ::fwCom::newSlot(&SCameraSeriesEditor::updateInformations, this);
@@ -47,7 +47,7 @@ SCameraSeriesEditor::SCameraSeriesEditor() throw () :
 
 // -------------------------------------------------------------------------
 
-void SCameraSeriesEditor::configuring() throw (fwTools::Failed)
+void SCameraSeriesEditor::configuring()
 {
     fwGui::IGuiContainerSrv::initialize();
 
@@ -62,7 +62,7 @@ void SCameraSeriesEditor::configuring() throw (fwTools::Failed)
 
 // -------------------------------------------------------------------------
 
-void SCameraSeriesEditor::starting() throw (fwTools::Failed)
+void SCameraSeriesEditor::starting()
 {
     fwGui::IGuiContainerSrv::create();
     fwGuiQt::container::QtContainer::sptr qtContainer = fwGuiQt::container::QtContainer::dynamicCast(getContainer());
@@ -96,14 +96,14 @@ void SCameraSeriesEditor::starting() throw (fwTools::Failed)
 
 // -------------------------------------------------------------------------
 
-void SCameraSeriesEditor::stopping() throw (fwTools::Failed)
+void SCameraSeriesEditor::stopping()
 {
     this->destroy();
 }
 
 // -------------------------------------------------------------------------
 
-void SCameraSeriesEditor::swapping() throw (::fwTools::Failed)
+void SCameraSeriesEditor::swapping()
 {
     updateInformations();
 }
