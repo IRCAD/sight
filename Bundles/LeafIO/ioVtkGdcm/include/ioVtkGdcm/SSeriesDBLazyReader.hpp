@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,8 +11,9 @@
 
 #include <io/IReader.hpp>
 
-#include <string>
 #include <boost/filesystem/path.hpp>
+
+#include <string>
 
 namespace fwMedData
 {
@@ -37,7 +38,7 @@ public:
     typedef std::string ExtensionType;
     typedef std::vector< ExtensionType > ExtensionsType;
 
-    fwCoreServiceClassDefinitionsMacro ( (SSeriesDBLazyReader)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SSeriesDBLazyReader)( ::io::IReader) );
 
     /// constructor
     IOVTKGDCM_API SSeriesDBLazyReader() throw();
@@ -54,10 +55,13 @@ protected:
     IOVTKGDCM_API virtual void stopping() throw(::fwTools::Failed);
 
     /// Override
+    IOVTKGDCM_API virtual void configuring() throw(::fwTools::Failed);
+
+    /// Override
     IOVTKGDCM_API void updating() throw(::fwTools::Failed);
 
     /// Override
-    IOVTKGDCM_API void info(std::ostream &_sstream );
+    IOVTKGDCM_API void info(std::ostream& _sstream );
 
     /// Override
     IOVTKGDCM_API virtual ExtensionsType getSupportedExtensions();

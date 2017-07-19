@@ -13,8 +13,8 @@
   |                           |         |                 |
   |      genericScene2        |         |                 |
   |                           | negato2 |     Scene2D     |
-  |===========================|         |================ |
-  | multiView_scene1_bottom   |         |  windowLevel    |
+  |===========================|         |                 |
+  | multiView_scene1_editors  |         |                 |
   =========================================================
 Comment: Name inside the drawing are the uid of the service defined below.
 
@@ -161,22 +161,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
                 </gui>
                 <registry>
                     <view sid="genericScene2" start="yes" />
-                    <view sid="multiView_scene1_bottom" start="yes" />
-                </registry>
-            </service>
-            <service uid="multiView_scene1_bottom" type="::gui::view::SDefaultView">
-                <gui>
-                    <layout type="::fwGui::LineLayoutManager" >
-                        <orientation value="horizontal" />
-                        <view proportion="0" minWidth="30" />
-                        <view proportion="0" minWidth="50" />
-                        <view proportion="1" />
-                    </layout>
-                </gui>
-                <registry>
-                    <view sid="sliceListEditor" start="yes" />
-                    <view sid="showScanEditor" start="yes" />
-                    <view sid="sliderIndexEditor" start="yes" />
+                    <view wid="multiView_scene1_editors" />
                 </registry>
             </service>
 
@@ -187,7 +172,6 @@ Comment: Name inside the drawing are the uid of the service defined below.
                         <view proportion ="0" />
                         <view proportion="0" />
                         <view proportion="0" />
-                        <view proportion ="0" />
                     </layout>
 
                 </gui>
@@ -195,7 +179,6 @@ Comment: Name inside the drawing are the uid of the service defined below.
                     <view sid="TFEditor" start="no" />
                     <view sid="Scene2D_Shutter" start="yes" />
                     <view sid="Scene2D" start="yes" />
-                    <view sid="windowLevel" start="yes" />
                 </registry>
             </service>
 
@@ -209,12 +192,6 @@ Comment: Name inside the drawing are the uid of the service defined below.
             <service uid="writerPathFile" type="::uiIO::editor::SIOSelector">
                 <inout key="image" uid="imageUID" />
                 <type mode="writer" />
-            </service>
-
-            <service uid="windowLevel" type="::uiImage::WindowLevel" >
-                <inout key="image" uid="imageUID" autoConnect="yes"/>
-                <inout key="TFSelections" uid="TFSelectionsUID" />
-                <config selectedTFKey="SelectedTF" />
             </service>
 
             <service uid="sliceListEditor" type="::guiQt::editor::SSelectionMenuButton">
@@ -461,6 +438,14 @@ Comment: Name inside the drawing are the uid of the service defined below.
                 </scene>
             </service>
 
+            <service uid="imageEditorsManager" type="::fwServices::SConfigController">
+                <appConfig id="ImageManager" />
+                <parameter replace="WID_PARENT" uid="multiView_scene1_editors" />
+                <parameter replace="IMAGE_UID" uid="imageUID" />
+                <parameter replace="TF_IMAGE" uid="TFSelectionsUID" />
+                <parameter replace="TF_KEY" by="SelectedTF" />
+            </service>
+
             <connect>
                 <signal>imageUID/modified</signal>
                 <slot>fieldMgr/update</slot>
@@ -473,6 +458,7 @@ Comment: Name inside the drawing are the uid of the service defined below.
 
             <start uid="fieldMgr" />
             <start uid="IHM" />
+            <start uid="imageEditorsManager" />
 
             <!-- Deferred start -->
             <start uid="TFEditor" />

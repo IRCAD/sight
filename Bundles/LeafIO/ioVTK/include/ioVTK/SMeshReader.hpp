@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -14,6 +14,7 @@
 #include <io/IReader.hpp>
 
 #include <boost/filesystem/path.hpp>
+
 #include <string>
 
 namespace fwJobs
@@ -48,7 +49,7 @@ public:
     {
     }
 
-    fwCoreServiceClassDefinitionsMacro ( (SMeshReader)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SMeshReader)( ::io::IReader) );
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
@@ -62,7 +63,6 @@ public:
      * the file path  using a file selector.
      */
     IOVTK_API virtual void configureWithIHM();
-
 
 protected:
 
@@ -83,6 +83,13 @@ protected:
     IOVTK_API virtual void stopping() throw(::fwTools::Failed);
 
     /**
+     * @brief Configuring method.
+     *
+     * The configuring method only calls the configuring method from the base class
+     */
+    IOVTK_API virtual void configuring() throw(::fwTools::Failed);
+
+    /**
      * @brief Updating method.
      *
      * This method is used to update the service.
@@ -97,7 +104,6 @@ protected:
      * informations about the service.
      */
     IOVTK_API void info(std::ostream& _sstream );
-
 
 private:
 

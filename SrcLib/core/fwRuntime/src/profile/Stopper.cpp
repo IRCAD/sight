@@ -1,19 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include "fwRuntime/profile/Stopper.hpp"
 
-#include <iostream>
-#include <sstream>
-
-#include "fwRuntime/Runtime.hpp"
 #include "fwRuntime/Bundle.hpp"
+#include "fwRuntime/Runtime.hpp"
 
 #include <fwCore/base.hpp>
 
-#include "fwRuntime/profile/Stopper.hpp"
+#include <iostream>
+#include <sstream>
 
 namespace fwRuntime
 {
@@ -23,8 +22,9 @@ namespace profile
 
 //------------------------------------------------------------------------------
 
-Stopper::Stopper( const std::string & identifier )
-    : m_identifier( identifier )
+Stopper::Stopper( const std::string& identifier, const Version& version) :
+    m_identifier( identifier ),
+    m_version( version )
 {
 }
 
@@ -32,17 +32,16 @@ Stopper::Stopper( const std::string & identifier )
 
 void Stopper::apply()
 {
-    SLM_TRACE_FUNC();
-    std::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findBundle(m_identifier);
-    OSLM_FATAL_IF("Unable to stop bundle " << m_identifier << ". Not found.", bundle == 0);
+    std::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findEnabledBundle(m_identifier, m_version);
+    SLM_FATAL_IF("Unable to stop bundle " + m_identifier + "_" + m_version.string() + ". Not found.", bundle == 0);
     try
     {
-        OSLM_INFO("Stopping bundle : " << m_identifier);
+        SLM_INFO("Stopping bundle : " + m_identifier + "_" + m_version.string());
         bundle->stop();
     }
-    catch( const std::exception & e )
+    catch( const std::exception& e )
     {
-        OSLM_ERROR("Unable to stop bundle " << m_identifier << ". " << e.what());
+        SLM_ERROR("Unable to stop bundle " + m_identifier + "_" + m_version.string() + ". " + e.what());
     }
 }
 

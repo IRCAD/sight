@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -58,29 +58,28 @@ ImageTagReader::~ImageTagReader()
 
     //param angle1: LAO/RAO     DICOM IOD (0018, 1510) Positioner Primary Angle
     OFString primaryAngle;
-    dataset->findAndGetOFString(DCM_PositionerPrimaryAngle,primaryAngle);
-    SLM_WARN_IF("Missing Tag (0018,1510) 'DCM_PositionerPrimaryAngle'", !primaryAngle.empty());
+    dataset->findAndGetOFString(DCM_PositionerPrimaryAngle, primaryAngle);
+    SLM_WARN_IF("Missing Tag (0018,1510) 'DCM_PositionerPrimaryAngle'", primaryAngle.empty());
 
     if(!primaryAngle.empty())
     {
-        series->addComputedTagValue("PositionerPrimaryAngle",std::string(primaryAngle.c_str()));
+        series->addComputedTagValue("PositionerPrimaryAngle", std::string(primaryAngle.c_str()));
     }
-
 
     //param angle2: CRA/CAU     DICOM IOD (0018, 1511) Positioner Secondary Angle
     OFString secondaryAngle;
-    dataset->findAndGetOFString(DCM_PositionerSecondaryAngle,secondaryAngle);
-    SLM_WARN_IF("Missing Tag (0018,1511) 'DCM_PositionerSecondaryAngle'", !secondaryAngle.empty());
+    dataset->findAndGetOFString(DCM_PositionerSecondaryAngle, secondaryAngle);
+    SLM_WARN_IF("Missing Tag (0018,1511) 'DCM_PositionerSecondaryAngle'", secondaryAngle.empty());
 
     if(!secondaryAngle.empty())
     {
-        series->addComputedTagValue("PositionerSecondaryAngle",std::string(secondaryAngle.c_str()));
+        series->addComputedTagValue("PositionerSecondaryAngle", std::string(secondaryAngle.c_str()));
     }
 
     //param dap:                DICOM IOD (0018, 115e) Image and Fluoroscopy Area Dose Pro DS: '0.022'
     OFString doseProduct;
-    dataset->findAndGetOFString(DCM_ImageAndFluoroscopyAreaDoseProduct,doseProduct);
-    SLM_WARN_IF("Missing Tag (0018,115e) 'DCM_ImageAndFluoroscopyAreaDoseProduct'", !doseProduct.empty());
+    dataset->findAndGetOFString(DCM_ImageAndFluoroscopyAreaDoseProduct, doseProduct);
+    SLM_WARN_IF("Missing Tag (0018,115e) 'DCM_ImageAndFluoroscopyAreaDoseProduct'", doseProduct.empty());
 
     if(!doseProduct.empty())
     {
@@ -89,8 +88,8 @@ ImageTagReader::~ImageTagReader()
 
     //param dist_src_iso: Distance source to iso-center DICOM IOD (0021, 1017) [Source to Isocenter] SL: 785
     OFString distSrcIso;
-    dataset->findAndGetOFString(DcmTagKey(0021,1017),distSrcIso);
-    SLM_WARN_IF("Missing Tag (0021,1017) 'Distance source iso'", !distSrcIso.empty());
+    dataset->findAndGetOFString(DcmTagKey(0x0021, 0x1017), distSrcIso);
+    SLM_WARN_IF("Missing Tag (0021,10017) 'Distance source iso'", distSrcIso.empty());
 
     if(!distSrcIso.empty())
     {
@@ -99,18 +98,19 @@ ImageTagReader::~ImageTagReader()
 
     //param dist_src_det: Distance source to detector   DICOM IOD (0018, 1110) Distance Source to Detector   DS: '1200'
     OFString distSrcDetector;
-    dataset->findAndGetOFString(DCM_DistanceSourceToDetector,distSrcDetector);
-    SLM_WARN_IF("Missing Tag (0018, 1110) 'DCM_DistanceSourceToDetector'", !distSrcDetector.empty());
+    dataset->findAndGetOFString(DCM_DistanceSourceToDetector, distSrcDetector);
+    SLM_WARN_IF("Missing Tag (0018, 1110) 'DCM_DistanceSourceToDetector'", distSrcDetector.empty());
 
     if(!distSrcDetector.empty())
     {
         series->addComputedTagValue("DistanceSourceToDetector", std::string(distSrcDetector.c_str()));
     }
 
-    //param det_diam: diameter of the detector ( diagonal of the square) #TODO checkit DICOM IOD  0018, 1162) Intensifier Size  DS: '420'
+    //param det_diam: diameter of the detector ( diagonal of the square) #TODO checkit DICOM IOD  0018, 1162)
+    // Intensifier Size  DS: '420'
     OFString intensifierSize;
-    dataset->findAndGetOFString(DCM_IntensifierSize,intensifierSize);
-    SLM_WARN_IF("Missing Tag (0018, 1110) 'DCM_IntensifierSize'", !intensifierSize.empty());
+    dataset->findAndGetOFString(DCM_IntensifierSize, intensifierSize);
+    SLM_WARN_IF("Missing Tag (0018, 1110) 'DCM_IntensifierSize'", intensifierSize.empty());
 
     if(!intensifierSize.empty())
     {
@@ -118,8 +118,8 @@ ImageTagReader::~ImageTagReader()
     }
 
     OFString acqTime;
-    dataset->findAndGetOFString(DCM_AcquisitionTime,acqTime);
-    SLM_WARN_IF("Missing Tag (0008, 0032) 'DCM_AcquisitionTime'", !acqTime.empty());
+    dataset->findAndGetOFString(DCM_AcquisitionTime, acqTime);
+    SLM_WARN_IF("Missing Tag (0008, 0032) 'DCM_AcquisitionTime'", acqTime.empty());
 
     if(!acqTime.empty())
     {
@@ -127,8 +127,8 @@ ImageTagReader::~ImageTagReader()
     }
 
     OFString acqDate;
-    dataset->findAndGetOFString(DCM_AcquisitionDate,acqDate);
-    SLM_WARN_IF("Missing Tag (0008, 0022) 'DCM_AcquisitionDate'", !acqDate.empty());
+    dataset->findAndGetOFString(DCM_AcquisitionDate, acqDate);
+    SLM_WARN_IF("Missing Tag (0008, 0022) 'DCM_AcquisitionDate'", acqDate.empty());
 
     if(!acqTime.empty())
     {

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -31,7 +31,7 @@ class IODCMTK_CLASS_API SDicomSeriesDBReader : public ::io::IReader
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SDicomSeriesDBReader)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SDicomSeriesDBReader)( ::io::IReader) );
     /**
      * @brief   constructor
      *
@@ -50,6 +50,9 @@ protected:
 
     /// Override
     IODCMTK_API virtual void stopping() throw(::fwTools::Failed);
+
+    /// Override
+    IODCMTK_API virtual void configuring() throw(::fwTools::Failed);
 
     /// Override
     IODCMTK_API void updating() throw(::fwTools::Failed);

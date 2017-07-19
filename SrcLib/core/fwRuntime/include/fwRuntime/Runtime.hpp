@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,14 @@
 #ifndef __FWRUNTIME_RUNTIME_HPP__
 #define __FWRUNTIME_RUNTIME_HPP__
 
-#include <boost/filesystem/path.hpp>
-#include <set>
-#include <vector>
-
 #include "fwRuntime/config.hpp"
 #include "fwRuntime/RuntimeException.hpp"
 #include "fwRuntime/Version.hpp"
+
+#include <boost/filesystem/path.hpp>
+
+#include <set>
+#include <vector>
 
 namespace fwRuntime
 {
@@ -31,8 +32,6 @@ namespace fwRuntime
 
 /**
  * @brief   Defines the runtime class.
- * @struct  Runtime
- * @date    2004-2009
  *
  */
 struct Runtime
@@ -41,32 +40,33 @@ struct Runtime
      * @name    Type Definitions
      */
     //@{
-    typedef std::set< std::shared_ptr<Bundle> >     BundleContainer;    ///< Defines the bundle container type.
-    typedef BundleContainer::iterator BundleIterator;                       ///< Defines the bundle container iterator type.
+    /// Defines the bundle container type.
+    typedef std::set< std::shared_ptr<Bundle> >     BundleContainer;
 
-    typedef std::set< std::shared_ptr<Extension> >  ExtensionContainer; ///< Defines the extension container type.
-    typedef ExtensionContainer::iterator ExtensionIterator;                 ///< Defines the extension container type.
+    /// Defines the bundle container iterator type.
+    typedef BundleContainer::iterator BundleIterator;
+    /// Defines the extension container type.
+    typedef std::set< std::shared_ptr<Extension> >  ExtensionContainer;
+    /// Defines the extension container type.
+    typedef ExtensionContainer::iterator ExtensionIterator;
     //@}
-
 
     /**
      * @brief   Retrieves the default runtime instance.
      */
     FWRUNTIME_API static Runtime* getDefault();
 
-
     /**
      * @brief   Destructor : does nothing.
      */
     ~Runtime();
-
 
     /**
      * @brief       Set the working path where Bundles and share folder are located.
      *
      * @param[in]   workingPath a boost path.
      */
-    FWRUNTIME_API void setWorkingPath(const ::boost::filesystem::path &workingPath);
+    FWRUNTIME_API void setWorkingPath(const ::boost::filesystem::path& workingPath);
 
     /**
      * @brief       Get the path where Bundles and share folder are located.
@@ -101,7 +101,7 @@ struct Runtime
      *
      * @param[in]   repository  a path that may containing bundles
      */
-    FWRUNTIME_API void addBundles( const ::boost::filesystem::path & repository ) throw( RuntimeException );
+    FWRUNTIME_API void addBundles( const ::boost::filesystem::path& repository ) throw( RuntimeException );
 
     /**
      * @brief   Retrieves the iterator on the begining of the bundle collection.
@@ -125,11 +125,21 @@ struct Runtime
      *
      * @return      a shared pointer to the found bundle or null if none
      */
-    FWRUNTIME_API std::shared_ptr< Bundle > findBundle( const std::string & identifier,
-                                                        const Version & version = Version() ) const;
+    FWRUNTIME_API std::shared_ptr< Bundle > findBundle( const std::string& identifier,
+                                                        const Version& version = Version() ) const;
+
+    /**
+     * @brief       Retrieves the enabled bundle for the specified idenfier.
+     *
+     * @param[in]   identifier  a string containing a bundle identifier
+     * @param[in]   version     the version of the bundle (undefined by default)
+     *
+     * @return      a shared pointer to the found bundle or null if none
+     */
+    FWRUNTIME_API std::shared_ptr< Bundle > findEnabledBundle( const std::string& identifier,
+                                                               const Version& version = Version() ) const;
 
     //@}
-
 
     /**
      * @name    Executable, Executable Factories & Dynamic Executable Instanciation
@@ -163,7 +173,7 @@ struct Runtime
      *
      * @return      a pointer to the created executable instance
      */
-    FWRUNTIME_API IExecutable * createExecutableInstance( const std::string & type ) throw( RuntimeException );
+    FWRUNTIME_API IExecutable* createExecutableInstance( const std::string& type ) throw( RuntimeException );
 
     /**
      * @brief   Create an instance of the given executable object type and configuration element.
@@ -175,12 +185,13 @@ struct Runtime
      * instantiation procedure goes further.
      *
      * @param[in]   type                    a string containing an executable type
-     * @param[in]   configurationElement    a shared pointer to the configuration element to use for the executable initialization
+     * @param[in]   configurationElement    a shared pointer to the configuration element to use for the executable
+     * initialization
      *
      * @return  a pointer to the created executable instance
      */
-    FWRUNTIME_API IExecutable * createExecutableInstance( const std::string & type,
-                                                          std::shared_ptr< ConfigurationElement > configurationElement )
+    FWRUNTIME_API IExecutable* createExecutableInstance( const std::string& type,
+                                                         std::shared_ptr< ConfigurationElement > configurationElement )
     throw( RuntimeException );
 
     /**
@@ -190,7 +201,7 @@ struct Runtime
      *
      * @return      a sgared pointer to the found executable factory or null of none
      */
-    FWRUNTIME_API std::shared_ptr< ExecutableFactory > findExecutableFactory( const std::string & type ) const;
+    FWRUNTIME_API std::shared_ptr< ExecutableFactory > findExecutableFactory( const std::string& type ) const;
 
     /**
      * @brief       Retrieves the plugin instance for the specified bundle.
@@ -202,7 +213,6 @@ struct Runtime
     FWRUNTIME_API std::shared_ptr< IPlugin > getPlugin( const std::shared_ptr< Bundle > bundle ) const;
 
     //@}
-
 
     /**
      * @name    Extensions
@@ -245,10 +255,9 @@ struct Runtime
      *
      * @return      a shared pointer to the found extension instance or null if none
      */
-    FWRUNTIME_API std::shared_ptr< Extension > findExtension( const std::string & identifier ) const;
+    FWRUNTIME_API std::shared_ptr< Extension > findExtension( const std::string& identifier ) const;
 
     //@}
-
 
     /**
      * @name    Extension Points
@@ -275,25 +284,29 @@ struct Runtime
      *
      * @return      a shared pointer to the found extension point instance or null if none
      */
-    FWRUNTIME_API std::shared_ptr< ExtensionPoint > findExtensionPoint( const std::string & identifier ) const;
+    FWRUNTIME_API std::shared_ptr< ExtensionPoint > findExtensionPoint( const std::string& identifier ) const;
     //@}
 
     private:
 
-        typedef std::set< std::shared_ptr< ExecutableFactory > > ExecutableFactoryContainer; ///< Defines the executable factory container type.
-        typedef std::set< std::shared_ptr<ExtensionPoint> > ExtensionPointContainer;        ///< Defines the extension point container type.
-        typedef std::vector< std::shared_ptr<IPlugin> > PluginContainer;                    ///< Defines the plugin container type.
+        ///< Defines the executable factory container type.
+        typedef std::set< std::shared_ptr< ExecutableFactory > > ExecutableFactoryContainer;
+
+        ///< Defines the extension point container type.
+        typedef std::set< std::shared_ptr<ExtensionPoint> > ExtensionPointContainer;
+
+        ///< Defines the plugin container type.
+        typedef std::vector< std::shared_ptr<IPlugin> > PluginContainer;
 
         static std::shared_ptr<Runtime> m_instance; ///< The runtime instance.
 
-        ExecutableFactoryContainer m_executableFactories;               ///< Contains all executable factories.
-        ExtensionContainer m_extensions;                                ///< Contains all registered extensions.
-        ExtensionPointContainer m_extensionPoints;                      ///< Contains all registered extension points.
-        BundleContainer m_bundles;                                      ///< Contains all bundles.
-        PluginContainer m_plugins;                                      ///< Contains all plugins.
+        ExecutableFactoryContainer m_executableFactories; ///< Contains all executable factories.
+        ExtensionContainer m_extensions;                  ///< Contains all registered extensions.
+        ExtensionPointContainer m_extensionPoints;        ///< Contains all registered extension points.
+        BundleContainer m_bundles;                        ///< Contains all bundles.
+        PluginContainer m_plugins;                        ///< Contains all plugins.
 
         ::boost::filesystem::path m_workingPath; ///< Path wehre Bundles and share folder are located.
-
 
         /**
          * @brief   Constructor.
@@ -301,8 +314,6 @@ struct Runtime
         Runtime();
 };
 
-
 } // namespace fwRuntime
-
 
 #endif // __FWRUNTIME_RUNTIME_HPP__

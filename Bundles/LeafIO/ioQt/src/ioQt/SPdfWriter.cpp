@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,9 +11,9 @@
 
 #include <fwDataTools/helper/Image.hpp>
 
-#include <fwGui/GuiRegistry.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/GuiRegistry.hpp>
 
 #include <fwGuiQt/container/QtContainer.hpp>
 
@@ -106,7 +106,7 @@ void SPdfWriter::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose an external data file");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose an external data file" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.addFilter("pdf", "*.pdf");
 

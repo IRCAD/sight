@@ -1,17 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRuntime/Runtime.hpp"
+
 #include "fwRuntime/ConfigurationElement.hpp"
+#include "fwRuntime/ExecutableFactory.hpp"
 #include "fwRuntime/Extension.hpp"
 #include "fwRuntime/ExtensionPoint.hpp"
 #include "fwRuntime/IExecutable.hpp"
-#include "fwRuntime/ExecutableFactory.hpp"
-#include "fwRuntime/IPlugin.hpp"
 #include "fwRuntime/io/BundleDescriptorReader.hpp"
+#include "fwRuntime/IPlugin.hpp"
 
 #include <boost/filesystem/operations.hpp>
 
@@ -61,7 +62,7 @@ void Runtime::unregisterBundle( std::shared_ptr< Bundle > bundle )
 
 //------------------------------------------------------------------------------
 
-void Runtime::addBundles( const ::boost::filesystem::path & repository ) throw(RuntimeException)
+void Runtime::addBundles( const ::boost::filesystem::path& repository ) throw(RuntimeException)
 {
     try
     {
@@ -116,7 +117,7 @@ void Runtime::unregisterExecutableFactory( std::shared_ptr< ExecutableFactory > 
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< ExecutableFactory > Runtime::findExecutableFactory( const std::string & type ) const
+std::shared_ptr< ExecutableFactory > Runtime::findExecutableFactory( const std::string& type ) const
 {
     std::shared_ptr< ExecutableFactory > resFactory;
     for(const ExecutableFactoryContainer::value_type& factory : m_executableFactories)
@@ -198,7 +199,7 @@ void Runtime::unregisterExtensionPoint( std::shared_ptr<ExtensionPoint> point)
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr< Bundle > Runtime::findBundle( const std::string & identifier, const Version & version ) const
+std::shared_ptr< Bundle > Runtime::findBundle( const std::string& identifier, const Version& version ) const
 {
     std::shared_ptr<Bundle> resBundle;
     for(const std::shared_ptr<Bundle>& bundle :  m_bundles)
@@ -214,7 +215,23 @@ std::shared_ptr< Bundle > Runtime::findBundle( const std::string & identifier, c
 
 //------------------------------------------------------------------------------
 
-Runtime * Runtime::getDefault()
+std::shared_ptr< Bundle > Runtime::findEnabledBundle( const std::string& identifier, const Version& version ) const
+{
+    std::shared_ptr<Bundle> resBundle;
+    for(const std::shared_ptr<Bundle>& bundle :  m_bundles)
+    {
+        if(bundle->getIdentifier() == identifier && bundle->getVersion() == version && bundle->isEnable())
+        {
+            resBundle = bundle;
+            break;
+        }
+    }
+    return resBundle;
+}
+
+//------------------------------------------------------------------------------
+
+Runtime* Runtime::getDefault()
 {
     if(m_instance.get() == 0)
     {
@@ -225,7 +242,7 @@ Runtime * Runtime::getDefault()
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Extension> Runtime::findExtension( const std::string & identifier ) const
+std::shared_ptr<Extension> Runtime::findExtension( const std::string& identifier ) const
 {
     std::shared_ptr<Extension> resExtension;
     for(const ExtensionContainer::value_type& extension :  m_extensions)
@@ -241,7 +258,7 @@ std::shared_ptr<Extension> Runtime::findExtension( const std::string & identifie
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<ExtensionPoint> Runtime::findExtensionPoint( const std::string & identifier ) const
+std::shared_ptr<ExtensionPoint> Runtime::findExtensionPoint( const std::string& identifier ) const
 {
     std::shared_ptr<ExtensionPoint> resExtensionPoint;
     for(const ExtensionPointContainer::value_type& extensionPoint :  m_extensionPoints)
@@ -257,7 +274,7 @@ std::shared_ptr<ExtensionPoint> Runtime::findExtensionPoint( const std::string &
 
 //------------------------------------------------------------------------------
 
-IExecutable * Runtime::createExecutableInstance( const std::string & type ) throw( RuntimeException )
+IExecutable* Runtime::createExecutableInstance( const std::string& type ) throw( RuntimeException )
 {
     std::shared_ptr< ExecutableFactory > factory;
 
@@ -278,8 +295,8 @@ IExecutable * Runtime::createExecutableInstance( const std::string & type ) thro
 
 //------------------------------------------------------------------------------
 
-IExecutable * Runtime::createExecutableInstance( const std::string & type,
-                                                 ConfigurationElement::sptr configurationElement ) throw(
+IExecutable* Runtime::createExecutableInstance( const std::string& type,
+                                                ConfigurationElement::sptr configurationElement ) throw(
     RuntimeException )
 {
     std::shared_ptr< ExecutableFactory > factory;
@@ -313,7 +330,7 @@ IExecutable * Runtime::createExecutableInstance( const std::string & type,
         result->setBundle( factory->getBundle() );
         result->setInitializationData( configurationElement );
     }
-    catch( const std::exception & e )
+    catch( const std::exception& e )
     {
         std::string message( "Unable to create an executable instance. " );
         throw RuntimeException( message + e.what() );
@@ -324,7 +341,7 @@ IExecutable * Runtime::createExecutableInstance( const std::string & type,
 
 //------------------------------------------------------------------------------
 
-void Runtime::setWorkingPath(const ::boost::filesystem::path &workingPath)
+void Runtime::setWorkingPath(const ::boost::filesystem::path& workingPath)
 {
     m_workingPath = workingPath;
 }

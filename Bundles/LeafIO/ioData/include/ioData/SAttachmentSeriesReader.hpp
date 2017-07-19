@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -35,7 +35,7 @@ class IODATA_CLASS_API SAttachmentSeriesReader : public ::io::IReader
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SAttachmentSeriesReader)(::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (SAttachmentSeriesReader)(::io::IReader) );
 
     /// Super class of reader services
     typedef ::io::IReader SuperClass;
@@ -85,6 +85,10 @@ protected:
     {
     }
 
+    /**
+     * @brief Configuring method : calls implementation from `io::IReader`
+     */
+    IODATA_API virtual void configuring() throw(::fwTools::Failed);
 
     /**
      * @brief Updating method. This method is called by update() from base service ( ::fwServices::IService )

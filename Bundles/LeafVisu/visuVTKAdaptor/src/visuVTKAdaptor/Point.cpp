@@ -134,7 +134,8 @@ Point::Point() throw() :
     m_handle( vtkHandleWidget::New() ),
     m_representation( ::fwRenderVTK::vtk::MarkedSphereHandleRepresentation::New() ),
     m_pointUpdateCommand(nullptr),
-    m_radius(7.0)
+    m_radius(7.0),
+    m_interaction(true)
 {
     m_ptColor         = ::fwData::Color::New();
     m_ptSelectedColor = ::fwData::Color::New();
@@ -198,6 +199,14 @@ void Point::doConfigure() throw(fwTools::Failed)
     {
         m_radius = std::stod(radius);
     }
+
+    const std::string interaction = m_configuration->getAttributeValue("interaction");
+    if(!interaction.empty())
+    {
+        SLM_FATAL_IF("value for 'interaction' must be 'on' or 'off', actual: " + interaction,
+                     interaction != "on" && interaction != "off");
+        m_interaction = (interaction == "on");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -258,6 +267,9 @@ void Point::doUpdate() throw(fwTools::Failed)
                                          m_ptSelectedColor->blue());
     rep->GetSelectedProperty()->SetOpacity(m_ptSelectedColor->alpha());
 
+    m_handle->SetProcessEvents(m_interaction);
+    m_handle->SetManagesCursor(m_interaction);
+
     this->setVtkPipelineModified();
 }
 
@@ -278,7 +290,7 @@ void Point::doStop() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void Point::setRadius(double radius)
+void Point::setRadius(const double radius)
 {
     m_radius = radius;
     doUpdate();
@@ -286,7 +298,7 @@ void Point::setRadius(double radius)
 
 //------------------------------------------------------------------------------
 
-void Point::setColor(double red, double green, double blue, double alpha)
+void Point::setColor(const double red, const double green, const double blue, const double alpha)
 {
     m_ptColor->setRGBA(red, green, blue, alpha);
     doUpdate();
@@ -294,9 +306,17 @@ void Point::setColor(double red, double green, double blue, double alpha)
 
 //------------------------------------------------------------------------------
 
-void Point::setSelectedColor(double red, double green, double blue, double alpha)
+void Point::setSelectedColor(const double red, const double green, const double blue, const double alpha)
 {
     m_ptSelectedColor->setRGBA(red, green, blue, alpha);
+    doUpdate();
+}
+
+//------------------------------------------------------------------------------
+
+void Point::setInteraction(const bool interaction)
+{
+    m_interaction = interaction;
     doUpdate();
 }
 

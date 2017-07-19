@@ -1,13 +1,14 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #ifndef ANDROID
 
-#include "ioVTK/SMeshWriter.hpp"
 #include "ioVTK/SModelSeriesObjWriter.hpp"
+
+#include "ioVTK/SMeshWriter.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -60,7 +61,7 @@ void SModelSeriesObjWriter::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialog;
-    dialog.setTitle("Choose a directory to save meshes");
+    dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save meshes" : m_windowTitle);
     dialog.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialog.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialog.setType(::fwGui::dialog::ILocationDialog::FOLDER);
@@ -114,7 +115,14 @@ void SModelSeriesObjWriter::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesObjWriter::info(std::ostream &_sstream )
+void SModelSeriesObjWriter::configuring() throw(::fwTools::Failed)
+{
+    ::io::IWriter::configuring();
+}
+
+//------------------------------------------------------------------------------
+
+void SModelSeriesObjWriter::info(std::ostream& _sstream )
 {
     _sstream << "SModelSeriesObjWriter::info";
 }
@@ -143,7 +151,7 @@ void SModelSeriesObjWriter::updating() throw(::fwTools::Failed)
             m_sigJobCreated->emit(writer->getJob());
             writer->write();
         }
-        catch (const std::exception & e)
+        catch (const std::exception& e)
         {
             std::stringstream ss;
             ss << "Warning during saving : " << e.what();

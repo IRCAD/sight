@@ -176,7 +176,8 @@ protected:
 
 LabeledPointList::LabeledPointList() throw() :
     m_rightButtonCommand(nullptr),
-    m_radius(7.0)
+    m_radius(7.0),
+    m_interaction(true)
 {
 }
 
@@ -204,6 +205,27 @@ void LabeledPointList::doConfigure() throw(fwTools::Failed)
     {
         m_radius = std::stod(radius);
     }
+
+    const std::string interaction = m_configuration->getAttributeValue("interaction");
+    if(!interaction.empty())
+    {
+        SLM_FATAL_IF("value for 'interaction' must be 'on' or 'off', actual: " + interaction,
+                     interaction != "on" && interaction != "off");
+        m_interaction = (interaction == "on");
+
+        if(!m_interaction)
+        {
+            try
+            {
+                this->doStop();
+            }
+            catch(::fwTools::Failed& e)
+            {
+                OSLM_ERROR("Error : " << e.what());
+                FW_RAISE_EXCEPTION(e);
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -211,10 +233,12 @@ void LabeledPointList::doConfigure() throw(fwTools::Failed)
 void LabeledPointList::doStart() throw(fwTools::Failed)
 {
     SLM_TRACE_FUNC();
-
-    m_rightButtonCommand = vtkLabeledPointDeleteCallBack::New(this);
-    this->getInteractor()->AddObserver( "RightButtonPressEvent", m_rightButtonCommand, 1 );
-    this->getInteractor()->AddObserver( "RightButtonReleaseEvent", m_rightButtonCommand, 1 );
+    if(m_interaction)
+    {
+        m_rightButtonCommand = vtkLabeledPointDeleteCallBack::New(this);
+        this->getInteractor()->AddObserver( "RightButtonPressEvent", m_rightButtonCommand, 1 );
+        this->getInteractor()->AddObserver( "RightButtonReleaseEvent", m_rightButtonCommand, 1 );
+    }
 
     this->doUpdate();
 }
@@ -250,6 +274,7 @@ void LabeledPointList::doUpdate() throw(fwTools::Failed)
 
         pointListAdaptor->setColor(m_ptColor);
         pointListAdaptor->setRadius(m_radius);
+        pointListAdaptor->setInteraction(m_interaction);
 
         servicePointList->setPickerId( this->getPickerId() );
         servicePointList->setRenderService( this->getRenderService() );

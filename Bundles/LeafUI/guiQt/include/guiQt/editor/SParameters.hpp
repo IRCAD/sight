@@ -66,6 +66,9 @@ namespace editor
  * - \b widget: choose the type of the widget, if relevant for the data type. Currently the only type that provides
  * a choice is 'int' : you can choose either "spin" or "slider".
  * - \b values: list of possible values separated by a comma ',' a space ' ' or a semicolon ';' (only for enum type).
+ * The actual displayed value and the returned one in the signal can be different using '=' to separate the two. For
+ * example 'values="BLEND=imageBlend,CHECKERBOARD=imageCheckerboard"' means the combo will display BLEND, CHECKBOARD
+ * and will send 'imageBlend' or 'imageCheckerboard'.
  */
 class GUIQT_CLASS_API SParameters : public QObject,
                                     public ::gui::editor::IEditor
@@ -168,7 +171,7 @@ private:
 
     /// Create a multi choice widget
     void createEnumWidget(QGridLayout& layout, int row, const std::string& key, const std::string& defaultValue,
-                          const std::vector< std::string>& values);
+                          const std::vector< std::string>& values, const std::vector<std::string>& data);
 
     /// Allows to connect sliders and their labels
     QPointer< QSignalMapper> m_signalMapper;

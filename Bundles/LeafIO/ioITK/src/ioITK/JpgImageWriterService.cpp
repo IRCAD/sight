@@ -1,13 +1,10 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwServices/macros.hpp>
-
-
-#include <io/IWriter.hpp>
+#include "ioITK/JpgImageWriterService.hpp"
 
 #include <fwCore/base.hpp>
 
@@ -15,14 +12,15 @@
 #include <fwData/location/Folder.hpp>
 
 #include <fwGui/Cursor.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
 
 #include <fwItkIO/JpgImageWriter.hpp>
 
-#include "ioITK/JpgImageWriterService.hpp"
+#include <fwServices/macros.hpp>
 
+#include <io/IWriter.hpp>
 
 namespace ioITK
 {
@@ -50,13 +48,20 @@ JpgImageWriterService::~JpgImageWriterService() throw()
 
 //------------------------------------------------------------------------------
 
+void JpgImageWriterService::configuring() throw(::fwTools::Failed)
+{
+    ::io::IWriter::configuring();
+}
+
+//------------------------------------------------------------------------------
+
 void JpgImageWriterService::configureWithIHM()
 {
     SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose a directory to save image");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory to save image" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::FOLDER);
@@ -91,7 +96,7 @@ void JpgImageWriterService::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void JpgImageWriterService::info(std::ostream &_sstream )
+void JpgImageWriterService::info(std::ostream& _sstream )
 {
     _sstream << "JpgImageWriterService::info";
 }
@@ -115,7 +120,7 @@ void JpgImageWriterService::saveImage(const ::boost::filesystem::path& imgPath, 
         writer->write();
 
     }
-    catch (const std::exception & e)
+    catch (const std::exception& e)
     {
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();
@@ -145,11 +150,10 @@ void JpgImageWriterService::updating() throw(::fwTools::Failed)
 
         ::fwGui::Cursor cursor;
         cursor.setCursor(::fwGui::ICursor::BUSY);
-        saveImage(this->getFolder(),associatedImage);
+        saveImage(this->getFolder(), associatedImage);
         cursor.setDefaultCursor();
     }
 }
-
 
 //------------------------------------------------------------------------------
 

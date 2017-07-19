@@ -1,23 +1,23 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <boost/filesystem/operations.hpp>
+#include "ioData/MeshWriterService.hpp"
 
-#include <fwServices/macros.hpp>
-
-#include <fwData/Mesh.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
+#include <fwData/Mesh.hpp>
+
+#include <fwDataIO/writer/MeshWriter.hpp>
 
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-#include <fwDataIO/writer/MeshWriter.hpp>
+#include <fwServices/macros.hpp>
 
-#include "ioData/MeshWriterService.hpp"
+#include <boost/filesystem/operations.hpp>
 
 fwServicesRegisterMacro( ::io::IWriter, ::ioData::MeshWriterService, ::fwData::Mesh );
 
@@ -30,7 +30,7 @@ MeshWriterService::MeshWriterService()
 
 //-----------------------------------------------------------------------------
 
-void MeshWriterService::info(std::ostream &_sstream )
+void MeshWriterService::info(std::ostream& _sstream )
 {
     this->SuperClass::info( _sstream );
     _sstream << std::endl << " Mesh writer";
@@ -60,15 +60,22 @@ MeshWriterService::~MeshWriterService() throw()
 
 //------------------------------------------------------------------------------
 
+void MeshWriterService::configuring() throw(::fwTools::Failed)
+{
+    ::io::IWriter::configuring();
+}
+
+//------------------------------------------------------------------------------
+
 void MeshWriterService::configureWithIHM()
 {
     SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose a TrianMesh file");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a TrianMesh file" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("TrianMesh","*.trian");
+    dialogFile.addFilter("TrianMesh", "*.trian");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr result;
@@ -104,7 +111,7 @@ void MeshWriterService::updating() throw(::fwTools::Failed)
         {
             writer->write();
         }
-        catch (const std::exception & e)
+        catch (const std::exception& e)
         {
             std::stringstream ss;
             ss << "Warning during writing Mesh : " << e.what();

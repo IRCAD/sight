@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,8 +8,8 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwData/Vector.hpp>
 #include <fwData/location/Folder.hpp>
+#include <fwData/Vector.hpp>
 
 #include <fwGdcmIO/helper/Fiducial.hpp>
 #include <fwGdcmIO/writer/SeriesDB.hpp>
@@ -30,7 +30,6 @@
 #include <fwTools/ProgressToLogger.hpp>
 
 #include <io/IWriter.hpp>
-
 
 namespace ioGdcm
 {
@@ -57,7 +56,7 @@ void SSeriesDBWriter::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose a directory for DICOM images");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
@@ -86,6 +85,13 @@ void SSeriesDBWriter::starting() throw(::fwTools::Failed)
 
 void SSeriesDBWriter::stopping() throw(::fwTools::Failed)
 {
+}
+
+//------------------------------------------------------------------------------
+
+void SSeriesDBWriter::configuring() throw(::fwTools::Failed)
+{
+    ::io::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -131,7 +137,6 @@ void SSeriesDBWriter::updating() throw(::fwTools::Failed)
         cursor.setDefaultCursor();
     }
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -230,7 +235,6 @@ bool SSeriesDBWriter::selectFiducialsExportMode()
         {
             m_fiducialsExportMode = ::fwGdcmIO::writer::Series::COMPREHENSIVE_3D_SR;
         }
-
 
         return !modeSelectionIsCanceled;
     }

@@ -1,18 +1,18 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "fwRuntime/profile/Starter.hpp"
 
-#include <iostream>
-#include <sstream>
-
-#include "fwRuntime/Runtime.hpp"
 #include "fwRuntime/Bundle.hpp"
+#include "fwRuntime/Runtime.hpp"
 
 #include <fwCore/base.hpp>
+
+#include <iostream>
+#include <sstream>
 
 namespace fwRuntime
 {
@@ -22,8 +22,9 @@ namespace profile
 
 //------------------------------------------------------------------------------
 
-Starter::Starter( const std::string & identifier )
-    : m_identifier( identifier )
+Starter::Starter( const std::string& identifier, const Version& version) :
+    m_identifier( identifier ),
+    m_version( version )
 {
 }
 
@@ -31,8 +32,9 @@ Starter::Starter( const std::string & identifier )
 
 void Starter::apply()
 {
-    std::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findBundle(m_identifier);
-    OSLM_FATAL_IF("Unable to start bundle " << m_identifier << ". Not found.", bundle == 0);
+    std::shared_ptr< Bundle >  bundle = Runtime::getDefault()->findEnabledBundle(m_identifier, m_version);
+    SLM_FATAL_IF("Unable to start bundle " + m_identifier + "_"  + m_version.string() + ". Not found.",
+                 bundle == 0);
     try
     {
         if(!bundle->isStarted())
@@ -41,12 +43,12 @@ void Starter::apply()
         }
         else
         {
-            SLM_WARN("bundle " + m_identifier + " already started");
+            SLM_WARN("bundle " + m_identifier + "_" + m_version.string() + " already started");
         }
     }
-    catch( const std::exception & e )
+    catch( const std::exception& e )
     {
-        OSLM_FATAL("Unable to start bundle " << m_identifier << ". " << e.what());
+        SLM_FATAL("Unable to start bundle " + m_identifier + "_"  + m_version.string() + ". " + e.what());
     }
 }
 

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,9 +12,9 @@
 
 #include <fwCore/base.hpp>
 
-#include <fwData/String.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/mt/ObjectWriteLock.hpp>
+#include <fwData/String.hpp>
 
 #include <fwGdcmIO/reader/SeriesDB.hpp>
 
@@ -85,7 +85,7 @@ void SSeriesDBReader::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle(this->getSelectorDialogTitle());
+    dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
@@ -363,6 +363,5 @@ void SSeriesDBReader::updating() throw(::fwTools::Failed)
 }
 
 //------------------------------------------------------------------------------
-
 
 } // namespace ioGdcm

@@ -1,17 +1,19 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ioVTK/SMeshWriter.hpp"
 #include "ioVTK/SModelSeriesWriter.hpp"
+
+#include "ioVTK/SMeshWriter.hpp"
 
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
 #include <fwCore/base.hpp>
+
 #include <fwData/location/Folder.hpp>
 #include <fwData/Mesh.hpp>
 #include <fwData/Reconstruction.hpp>
@@ -33,15 +35,12 @@
 
 #include <boost/filesystem/operations.hpp>
 
-
 namespace ioVTK
 {
 
 fwServicesRegisterMacro( ::io::IWriter, ::ioVTK::SModelSeriesWriter, ::fwMedData::ModelSeries );
 
-
 static const ::fwCom::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated";
-
 
 //------------------------------------------------------------------------------
 
@@ -65,7 +64,7 @@ void SModelSeriesWriter::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialog;
-    dialog.setTitle("Choose a directory to save meshes");
+    dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save meshes" : m_windowTitle);
     dialog.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialog.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialog.setType(::fwGui::dialog::ILocationDialog::FOLDER);
@@ -119,7 +118,14 @@ void SModelSeriesWriter::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesWriter::info(std::ostream &_sstream )
+void SModelSeriesWriter::configuring() throw(::fwTools::Failed)
+{
+    ::io::IWriter::configuring();
+}
+
+//------------------------------------------------------------------------------
+
+void SModelSeriesWriter::info(std::ostream& _sstream )
 {
     _sstream << "SModelSeriesWriter::info";
 }
@@ -156,7 +162,7 @@ void SModelSeriesWriter::updating() throw(::fwTools::Failed)
             {
                 writer->write();
             }
-            catch (const std::exception & e)
+            catch (const std::exception& e)
             {
                 std::stringstream ss;
                 ss << "Warning during saving : " << e.what();

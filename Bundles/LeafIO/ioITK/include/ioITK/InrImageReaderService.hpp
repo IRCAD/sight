@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,13 @@
 #ifndef __IOITK_INRIMAGEREADERSERVICE_HPP__
 #define __IOITK_INRIMAGEREADERSERVICE_HPP__
 
-#include <boost/filesystem/path.hpp>
+#include "ioITK/config.hpp"
 
 #include <fwCore/macros.hpp>
 
 #include <io/IReader.hpp>
 
-#include "ioITK/config.hpp"
+#include <boost/filesystem/path.hpp>
 
 namespace fwData
 {
@@ -27,7 +27,7 @@ class IOITK_CLASS_API InrImageReaderService : public ::io::IReader
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (InrImageReaderService)( ::io::IReader) );
+    fwCoreServiceClassDefinitionsMacro( (InrImageReaderService)( ::io::IReader) );
 
     IOITK_API InrImageReaderService() throw();
 
@@ -45,10 +45,14 @@ protected:
     {
     }
 
+    /// Override
+    IOITK_API virtual void configuring() throw(::fwTools::Failed);
+
+    /// Override
     IOITK_API virtual void updating() throw(::fwTools::Failed);
 
     /// Override
-    IOITK_API void info(std::ostream &_sstream );
+    IOITK_API void info(std::ostream& _sstream );
 
     /// Override
     IOITK_API virtual void configureWithIHM();
@@ -60,7 +64,7 @@ private:
 
     void notificationOfDBUpdate();
 
-    bool createImage( const ::boost::filesystem::path &inrFileDir, const SPTR(::fwData::Image) &_pImg );
+    bool createImage( const ::boost::filesystem::path& inrFileDir, const SPTR(::fwData::Image)& _pImg );
 };
 
 } // namespace ioITK

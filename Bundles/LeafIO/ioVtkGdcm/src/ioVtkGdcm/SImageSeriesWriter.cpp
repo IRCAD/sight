@@ -1,33 +1,34 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ioVtkGdcm/SImageSeriesWriter.hpp"
 
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Job.hpp>
-
-#include <fwCore/base.hpp>
-
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
-#include <fwServices/macros.hpp>
+#include <fwCore/base.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
-#include <fwGui/Cursor.hpp>
-#include <fwGui/backend.hpp>
-
-#include <io/IWriter.hpp>
-
-#include <fwMedData/ImageSeries.hpp>
 #include <fwData/location/Folder.hpp>
 
+#include <fwGui/backend.hpp>
+#include <fwGui/Cursor.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Job.hpp>
+
+#include <fwMedData/ImageSeries.hpp>
+
+#include <fwServices/macros.hpp>
+
 #include <vtkGdcmIO/ImageSeriesWriter.hpp>
+
+#include <io/IWriter.hpp>
 
 namespace ioVtkGdcm
 {
@@ -56,7 +57,7 @@ void SImageSeriesWriter::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose a directory for DICOM images");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a directory for DICOM images" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
@@ -85,6 +86,13 @@ void SImageSeriesWriter::starting() throw(::fwTools::Failed)
 
 void SImageSeriesWriter::stopping() throw(::fwTools::Failed)
 {
+}
+
+//------------------------------------------------------------------------------
+
+void SImageSeriesWriter::configuring() throw(::fwTools::Failed)
+{
+    ::io::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -152,7 +160,7 @@ void SImageSeriesWriter::saveImageSeries( const ::boost::filesystem::path folder
     {
         writer->write();
     }
-    catch (const std::exception & e)
+    catch (const std::exception& e)
     {
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();

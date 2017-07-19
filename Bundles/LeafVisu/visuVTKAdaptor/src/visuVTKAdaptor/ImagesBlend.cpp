@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,6 +7,11 @@
 #include "visuVTKAdaptor/ImagesBlend.hpp"
 
 #include "visuVTKAdaptor/Image.hpp"
+
+#include <fwCom/Slot.hpp>
+#include <fwCom/Slot.hxx>
+#include <fwCom/Slots.hpp>
+#include <fwCom/Slots.hxx>
 
 #include <fwData/Boolean.hpp>
 #include <fwData/Color.hpp>
@@ -27,29 +32,37 @@
 
 #include <fwVtkIO/vtk.hpp>
 
+#include <boost/foreach.hpp>
+
 #include <vtkImageBlend.h>
+#include <vtkImageCheckerboard.h>
 #include <vtkImageData.h>
 #include <vtkImageMapToColors.h>
 #include <vtkLookupTable.h>
-
-#include <boost/foreach.hpp>
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::visuVTKAdaptor::ImagesBlend, ::fwData::Composite );
 
 namespace visuVTKAdaptor
 {
 
+const ::fwCom::Slots::SlotKeyType ImagesBlend::s_CHANGE_MODE_SLOT                  = "changeMode";
+const ::fwCom::Slots::SlotKeyType ImagesBlend::s_CHANGE_CHECKERBOARD_DIVISION_SLOT = "changeCheckerboardDivision";
+
 //------------------------------------------------------------------------------
 
-ImagesBlend::ImagesBlend() throw() : m_imageBlend(nullptr)
+ImagesBlend::ImagesBlend() throw() :
+    m_imageAlgorithm(nullptr),
+    m_checkerboardDivision(10)
 {
+    newSlot(s_CHANGE_MODE_SLOT, &ImagesBlend::changeMode, this);
+    newSlot(s_CHANGE_CHECKERBOARD_DIVISION_SLOT, &ImagesBlend::changeCheckerboardDivision, this);
 }
 
 //------------------------------------------------------------------------------
 
 ImagesBlend::~ImagesBlend() throw()
 {
-    m_imageBlend = nullptr;
+    m_imageAlgorithm = nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -59,7 +72,30 @@ void ImagesBlend::doStart() throw(fwTools::Failed)
     SLM_TRACE_FUNC();
 
     SLM_ASSERT("Image register is empty", !m_imageRegisterId.empty());
-    m_imageBlend = vtkImageBlend::SafeDownCast(this->getVtkObject(m_imageRegisterId));
+
+    // Try to downcast as an vtkImageBlend first
+    m_imageAlgorithm = vtkImageBlend::SafeDownCast(this->getVtkObject(m_imageRegisterId));
+
+    if(nullptr == m_imageAlgorithm)
+    {
+        // If we have no vtkImageBlend, try to downcast as an vtkImageCheckerboard
+        vtkImageCheckerboard* imageCheckerboard =
+            vtkImageCheckerboard::SafeDownCast(this->getVtkObject(m_imageRegisterId));
+
+        if(nullptr != imageCheckerboard)
+        {
+            // Set the number of subdivision
+            imageCheckerboard->SetNumberOfDivisions(m_checkerboardDivision, m_checkerboardDivision,
+                                                    m_checkerboardDivision);
+
+            // Assign as an vtkThreadedImageAlgorithm
+            m_imageAlgorithm = imageCheckerboard;
+        }
+    }
+
+    // If we have a null m_imageAlgorithm, then we have a problem Houston
+    SLM_ASSERT("Stored image algorithm doesn't contain a vtkImageBlend or vtkImageCheckerboard",
+               nullptr != m_imageAlgorithm);
 
     this->addImageAdaptors();
 }
@@ -95,9 +131,15 @@ void ImagesBlend::doConfigure() throw(fwTools::Failed)
 {
     assert(m_configuration->getName() == "config");
 
-    if(m_configuration->hasAttribute("vtkimageregister") )
+    if(m_configuration->hasAttribute("vtkimageregister"))
     {
-        this->setVtkImageRegisterId( m_configuration->getAttributeValue("vtkimageregister") );
+        this->setVtkImageRegisterId(m_configuration->getAttributeValue("vtkimageregister"));
+    }
+
+    // Get the default division count for checkerboard algorithm
+    if(m_configuration->hasAttribute("checkerboardDivision") )
+    {
+        m_checkerboardDivision = std::stoi(m_configuration->getAttributeValue("checkerboardDivision"));
     }
 
     std::vector< ::fwRuntime::ConfigurationElement::sptr > configs = m_configuration->find("image");
@@ -125,7 +167,6 @@ void ImagesBlend::doConfigure() throw(fwTools::Failed)
             info->m_tfSelectionFwID = element->getAttributeValue("tfSelectionFwID");
         }
 
-        typedef std::pair< std::string, std::string > ImagesIdPair;
         m_imageIds.push_back(objectId);
         m_imagesInfo[objectId] = info;
     }
@@ -210,6 +251,10 @@ void ImagesBlend::addImageAdaptors()
 
     this->checkImageInformations();
 
+    int addedImageCount = 0;
+    ::fwData::Image::csptr lastValidImage;
+    SPTR(ImageInfo) lastValidInfo;
+
     for(std::string id :  m_imageIds)
     {
         ::fwData::Image::csptr img;
@@ -237,29 +282,18 @@ void ImagesBlend::addImageAdaptors()
             bool imageIsValid = ::fwDataTools::fieldHelper::MedicalImageHelpers::checkImageValidity( img );
             if (imageIsValid)
             {
-                ::fwRenderVTK::IVtkAdaptorService::sptr imageAdaptor;
-                imageAdaptor = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( img,
-                                                                                       "::visuVTKAdaptor::Image");
-                imageAdaptor->setRenderService(this->getRenderService());
-                imageAdaptor->setRenderId( this->getRenderId() );
-                imageAdaptor->setPickerId( this->getPickerId() );
-                imageAdaptor->setTransformId( this->getTransformId() );
-                imageAdaptor->setAutoRender( this->getAutoRender() );
+                this->addImage(img, info);
 
-                ::visuVTKAdaptor::Image::sptr IA;
-                IA = ::visuVTKAdaptor::Image::dynamicCast(imageAdaptor);
-                IA->setVtkImageRegister(m_imageBlend);
-                IA->setImageOpacity(info->m_imageOpacity);
-                IA->setAllowAlphaInTF(info->m_useTFAlfa);
-                IA->setSelectedTFKey( info->m_selectedTFKey );
-                IA->setTFSelectionFwID( info->m_tfSelectionFwID );
-
-                m_registeredImages[img->getID()] = imageAdaptor;
-                this->registerService(imageAdaptor);
-
-                imageAdaptor->start();
+                ++addedImageCount;
+                lastValidImage = img;
+                lastValidInfo  = info;
             }
         }
+    }
+
+    if(addedImageCount == 1 && nullptr != vtkImageCheckerboard::SafeDownCast(this->getVtkObject(m_imageRegisterId)))
+    {
+        this->addImage(lastValidImage, lastValidInfo);
     }
 }
 
@@ -289,5 +323,86 @@ void ImagesBlend::removeImageAdaptors()
 
 //------------------------------------------------------------------------------
 
+void ImagesBlend::changeMode(std::string _value, std::string _key)
+{
+    if( _key == "ImageSource" )
+    {
+        // Select the right algorithm
+        m_imageRegisterId = _value;
+
+        // Try to downcast as an vtkImageBlend first
+        m_imageAlgorithm = vtkImageBlend::SafeDownCast(this->getVtkObject(m_imageRegisterId));
+
+        if(nullptr == m_imageAlgorithm)
+        {
+            // If we have no vtkImageBlend, try to downcast as an vtkImageCheckerboard
+            vtkImageCheckerboard* imageCheckerboard =
+                vtkImageCheckerboard::SafeDownCast(this->getVtkObject(m_imageRegisterId));
+
+            if(nullptr != imageCheckerboard)
+            {
+                // Set the number of subdivision
+                imageCheckerboard->SetNumberOfDivisions(m_checkerboardDivision, m_checkerboardDivision,
+                                                        m_checkerboardDivision);
+
+                // Assign as an vtkThreadedImageAlgorithm
+                m_imageAlgorithm = imageCheckerboard;
+            }
+        }
+
+        // Update
+        this->doUpdate();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ImagesBlend::addImage(::fwData::Image::csptr img, CSPTR(ImageInfo)info)
+{
+    ::fwRenderVTK::IVtkAdaptorService::sptr imageAdaptorService
+        = ::fwServices::add< ::fwRenderVTK::IVtkAdaptorService >( img, "::visuVTKAdaptor::Image");
+
+    imageAdaptorService->setRenderService(this->getRenderService());
+    imageAdaptorService->setRenderId( this->getRenderId() );
+    imageAdaptorService->setPickerId( this->getPickerId() );
+    imageAdaptorService->setTransformId( this->getTransformId() );
+    imageAdaptorService->setAutoRender( this->getAutoRender() );
+
+    ::visuVTKAdaptor::Image::sptr imageAdaptor = ::visuVTKAdaptor::Image::dynamicCast(imageAdaptorService);
+
+    imageAdaptor->setVtkImageRegister(m_imageAlgorithm);
+    imageAdaptor->setImageOpacity(info->m_imageOpacity);
+    imageAdaptor->setAllowAlphaInTF(info->m_useTFAlfa);
+    imageAdaptor->setSelectedTFKey( info->m_selectedTFKey );
+    imageAdaptor->setTFSelectionFwID( info->m_tfSelectionFwID );
+
+    m_registeredImages[img->getID()] = imageAdaptorService;
+    this->registerService(imageAdaptorService);
+
+    imageAdaptorService->start();
+}
+
+//------------------------------------------------------------------------------
+
+void ImagesBlend::changeCheckerboardDivision(const int division)
+{
+    m_checkerboardDivision = division;
+
+    // If we have no vtkImageBlend, try to downcast as an vtkImageCheckerboard
+    vtkImageCheckerboard* imageCheckerboard =
+        vtkImageCheckerboard::SafeDownCast(this->getVtkObject(m_imageRegisterId));
+
+    if(nullptr != imageCheckerboard)
+    {
+        // Set the number of subdivision
+        imageCheckerboard->SetNumberOfDivisions(m_checkerboardDivision, m_checkerboardDivision,
+                                                m_checkerboardDivision);
+
+        // Assign as an vtkThreadedImageAlgorithm
+        m_imageAlgorithm = imageCheckerboard;
+    }
+
+    this->doUpdate();
+}
 
 } //namespace visuVTKAdaptor
