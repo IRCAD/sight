@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -21,8 +21,7 @@
 
 #include <boost/type.hpp>
 
-fwServicesRegisterMacro (::io::IReader, ::ioIGTL::SImageNetworkReader, ::fwData::Image);
-
+fwServicesRegisterMacro(::io::IReader, ::ioIGTL::SImageNetworkReader, ::fwData::Image);
 
 namespace ioIGTL
 {
@@ -43,6 +42,7 @@ SImageNetworkReader::~SImageNetworkReader() throw()
 
 void SImageNetworkReader::configuring() throw (::fwTools::Failed)
 {
+    ::io::IReader::configuring();
 }
 
 //-----------------------------------------------------------------------------
@@ -55,17 +55,17 @@ void SImageNetworkReader::configureWithIHM() throw (::fwTools::Failed)
     std::string::size_type splitPosition;
     ::fwGui::dialog::InputDialog inputDialog;
 
-    inputDialog.setTitle ("Enter server address");
+    inputDialog.setTitle(m_windowTitle.empty() ? "Enter server address" : m_windowTitle);
     addr          = inputDialog.getInput();
-    splitPosition = addr.find (':');
+    splitPosition = addr.find(':');
     if (splitPosition == std::string::npos)
     {
-        msgDialog.showMessageDialog ("Error", "Server address is not formatted correctly hostname:port");
+        msgDialog.showMessageDialog("Error", "Server address is not formatted correctly hostname:port");
     }
     else
     {
-        m_hostname = addr.substr (0, splitPosition);
-        portStr    = addr.substr (splitPosition + 1, addr.size());
+        m_hostname = addr.substr(0, splitPosition);
+        portStr    = addr.substr(splitPosition + 1, addr.size());
         m_port     = ::boost::lexical_cast<boost::uint16_t> (portStr);
     }
 }
@@ -91,7 +91,7 @@ void SImageNetworkReader::updating() throw (::fwTools::Failed)
 
     try
     {
-        m_client.connect (m_hostname, m_port);
+        m_client.connect(m_hostname, m_port);
         obj = this->getObject();
         m_client.receiveObject(obj);
         m_client.disconnect();
@@ -105,7 +105,7 @@ void SImageNetworkReader::updating() throw (::fwTools::Failed)
     }
     catch (std::exception& err)
     {
-        msgDialog.showMessageDialog ("Error", err.what());
+        msgDialog.showMessageDialog("Error", err.what());
     }
 
 }
@@ -129,5 +129,4 @@ void SImageNetworkReader::swapping() throw (::fwTools::Failed)
 //-----------------------------------------------------------------------------
 
 } // namespace ioIGTL
-
 

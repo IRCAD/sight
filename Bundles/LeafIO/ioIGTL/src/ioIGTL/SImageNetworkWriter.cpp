@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,13 +7,15 @@
 #include "ioIGTL/SImageNetworkWriter.hpp"
 
 #include <fwData/Image.hpp>
-#include <fwServices/macros.hpp>
+
 #include <fwGui/dialog/InputDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
+#include <fwServices/macros.hpp>
+
 #include <boost/lexical_cast.hpp>
 
-fwServicesRegisterMacro (::io::IWriter, ::ioIGTL::SImageNetworkWriter, ::fwData::Image);
+fwServicesRegisterMacro(::io::IWriter, ::ioIGTL::SImageNetworkWriter, ::fwData::Image);
 
 namespace ioIGTL
 {
@@ -34,6 +36,7 @@ SImageNetworkWriter::~SImageNetworkWriter() throw()
 
 void SImageNetworkWriter::configuring() throw (::fwTools::Failed)
 {
+    ::io::IWriter::configuring();
 }
 
 //-----------------------------------------------------------------------------
@@ -60,8 +63,7 @@ void SImageNetworkWriter::configureWithIHM()
     ::fwGui::dialog::MessageDialog msgDialog;
     ::fwGui::dialog::InputDialog inputDialog;
 
-
-    inputDialog.setTitle ("Enter server port");
+    inputDialog.setTitle(m_windowTitle.empty() ? "Enter server port" : m_windowTitle);
     portStr = inputDialog.getInput();
     try
     {
@@ -88,17 +90,17 @@ void SImageNetworkWriter::updating() throw (::fwTools::Failed)
         img = this->getObject< ::fwData::Image >();
         try
         {
-            m_server.start (m_port);
+            m_server.start(m_port);
             newClient = m_server.waitForConnection();
             if (newClient != NULL)
             {
-                newClient->sendObject (img);
+                newClient->sendObject(img);
             }
             newClient->disconnect();
         }
         catch (boost::bad_lexical_cast&)
         {
-            msgDialog.showMessageDialog ("Bad port", "port is incorrect");
+            msgDialog.showMessageDialog("Bad port", "port is incorrect");
         }
         catch (::fwCore::Exception& err)
         {
@@ -126,5 +128,4 @@ void SImageNetworkWriter::swapping() throw (::fwTools::Failed)
 //-----------------------------------------------------------------------------
 
 } // namespace ioIGTL
-
 

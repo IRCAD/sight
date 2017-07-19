@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -18,8 +18,7 @@
 
 #include <fwServices/macros.hpp>
 
-fwServicesRegisterMacro (::io::IReader, ::ioZMQ::SAtomNetworkReader, ::fwData::Object);
-
+fwServicesRegisterMacro(::io::IReader, ::ioZMQ::SAtomNetworkReader, ::fwData::Object);
 
 namespace ioZMQ
 {
@@ -40,6 +39,7 @@ SAtomNetworkReader::~SAtomNetworkReader() throw()
 
 void SAtomNetworkReader::configuring() throw (::fwTools::Failed)
 {
+    ::io::IReader::configuring();
 }
 
 //-----------------------------------------------------------------------------
@@ -48,7 +48,7 @@ void SAtomNetworkReader::configureWithIHM()
 {
     ::fwGui::dialog::InputDialog inputDialog;
 
-    inputDialog.setTitle("Enter hostname");
+    inputDialog.setTitle(m_windowTitle.empty() ? "Enter hostname" : m_windowTitle);
     m_host = inputDialog.getInput();
 }
 
@@ -121,5 +121,4 @@ void SAtomNetworkReader::swapping() throw (::fwTools::Failed)
 //-----------------------------------------------------------------------------
 
 } // namespace ioZMQ
-
 

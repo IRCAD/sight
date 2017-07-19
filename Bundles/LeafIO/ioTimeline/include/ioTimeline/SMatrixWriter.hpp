@@ -34,10 +34,14 @@ namespace ioTimeline
  * @code{.xml}
    <service type="::ioTimeline::SMatrixWriter">
        <in key="data" uid="..." autoConnect="yes" />
+       <windowTitle>Select the file to save the matrix timeline to</windowTitle>
    </service>
    @endcode
  * @subsection Input Input
  * - \b data [::arData::MatrixTL]: timeline containing the matrices to save.
+ *
+ * @subsection Configuration Configuration
+ * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IWriter
  */
 class IOTIMELINE_CLASS_API SMatrixWriter : public ::io::IWriter
 {

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,12 +8,13 @@
 
 #include <fwData/Object.hpp>
 #include <fwData/String.hpp>
-#include <fwServices/macros.hpp>
+
 #include <fwGui/dialog/InputDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
-fwServicesRegisterMacro (::io::IWriter, ::ioZMQ::SAtomNetworkWriter, ::fwData::Object);
+#include <fwServices/macros.hpp>
 
+fwServicesRegisterMacro(::io::IWriter, ::ioZMQ::SAtomNetworkWriter, ::fwData::Object);
 
 namespace ioZMQ
 {
@@ -34,6 +35,7 @@ SAtomNetworkWriter::~SAtomNetworkWriter() throw()
 
 void SAtomNetworkWriter::configuring() throw (::fwTools::Failed)
 {
+    ::io::IWriter::configuring();
 }
 
 //-----------------------------------------------------------------------------
@@ -48,7 +50,7 @@ void SAtomNetworkWriter::configureWithIHM()
 {
     ::fwGui::dialog::InputDialog inputDialog;
 
-    inputDialog.setTitle("Configure server");
+    inputDialog.setTitle(m_windowTitle.empty() ? "Configure server" : m_windowTitle);
     m_host = inputDialog.getInput();
 }
 
@@ -81,7 +83,7 @@ void SAtomNetworkWriter::updating() throw (::fwTools::Failed)
     catch (std::exception& err)
     {
         m_socket->stop();
-        msgDialog.showMessageDialog ("Error", std::string(err.what()));
+        msgDialog.showMessageDialog("Error", std::string(err.what()));
     }
 }
 
@@ -104,5 +106,4 @@ void SAtomNetworkWriter::swapping() throw (::fwTools::Failed)
 //-----------------------------------------------------------------------------
 
 } // namespace ioZMQ
-
 

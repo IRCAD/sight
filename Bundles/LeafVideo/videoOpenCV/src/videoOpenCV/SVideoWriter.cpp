@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2016.
+ * FW4SPL - Copyright (C) IRCAD, 2016-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -15,14 +15,14 @@
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
-#include <fwServices/macros.hpp>
-
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 
+#include <fwServices/macros.hpp>
+
 #include <opencv2/core.hpp>
-#include <opencv2/opencv.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/opencv.hpp>
 
 namespace videoOpenCV
 {
@@ -60,6 +60,7 @@ SVideoWriter::~SVideoWriter() throw()
 
 void SVideoWriter::configuring() throw(::fwTools::Failed)
 {
+    ::io::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -74,12 +75,12 @@ void SVideoWriter::configureWithIHM()
 {
     static ::boost::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose an file to save the video");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose an file to save the video" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("avi","*.avi");
-    dialogFile.addFilter("mp4","*.mp4");
-    dialogFile.addFilter("m4v","*.m4v");
-    dialogFile.addFilter("mkv","*.mkv");
+    dialogFile.addFilter("avi", "*.avi");
+    dialogFile.addFilter("mp4", "*.mp4");
+    dialogFile.addFilter("m4v", "*.m4v");
+    dialogFile.addFilter("mkv", "*.mkv");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr result;
@@ -188,7 +189,7 @@ void SVideoWriter::startRecord()
         }
 
         m_writer = std::unique_ptr< ::cv::VideoWriter >(
-            new ::cv::VideoWriter(path.string(), CV_FOURCC('M','J','P','G'), 30, cvSize(width, height), true));
+            new ::cv::VideoWriter(path.string(), CV_FOURCC('M', 'J', 'P', 'G'), 30, cvSize(width, height), true));
 
         if (!m_writer->isOpened())
         {

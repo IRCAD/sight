@@ -45,6 +45,7 @@ namespace ioTimeline
        <oneShot>false</oneShot>
        <fps>30</fps>
        <createTimestamp>false</createTimestamp>
+       <windowTitle>Select the matrix timeline to load</windowTitle>
    </service>
    @endcode
  * @subsection In-Out In-Out
@@ -58,6 +59,8 @@ namespace ioTimeline
  *  only used if oneShot is off.
  * - \b createTimestamp(optionnal): create a new timestamp instead of using csv file (default: false).
  *
+ * @subsection Configuration Configuration
+ * - \b windowTitle: allow overriding the default title of the modal file selection window. \see io::IReader
  */
 
 class IOTIMELINE_CLASS_API SMatricesReader : public ::io::IReader

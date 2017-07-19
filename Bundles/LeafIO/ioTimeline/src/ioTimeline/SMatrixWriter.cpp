@@ -65,6 +65,7 @@ SMatrixWriter::~SMatrixWriter() throw()
 
 void SMatrixWriter::configuring() throw(::fwTools::Failed)
 {
+    ::io::IWriter::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -79,7 +80,7 @@ void SMatrixWriter::configureWithIHM()
 {
     static ::boost::filesystem::path _sDefaultPath("");
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose a folder to save the csv file");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a folder to save the csv file" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialogFile.setType(::fwGui::dialog::ILocationDialog::SINGLE_FILE);
