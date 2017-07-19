@@ -1,9 +1,10 @@
 <extension implements="::fwServices::registry::AppConfig2">
-    <id>TransferFunctionEditor</id>
+    <id>TransferFunctionWithNegatoEditor</id>
     <parameters>
         <param name="WID_PARENT" />
         <param name="image" />
         <param name="histogram" />
+        <param name="landmarks" />
         <param name="TFSelections" />
         <param name="SelectedTFKey" />
         <param name="TFPath" default="@BUNDLE_PREFIX@/uiTF_0-1/tf"/>
@@ -16,10 +17,9 @@
         <object uid="${image}"     type="::fwData::Image"     src="ref" />
         <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
         <object uid="${histogram}" type="::fwData::Histogram" src="ref"/>
+        <object uid="${landmarks}" type="::fwData::Landmarks" src="ref"/>
 
         <object uid="TFSet" type="::fwData::Composite" src="deferred" />
-
-        <object uid="landmarks" type="::fwData::Landmarks" />
 
         <service uid="tfEditor" type="::gui::view::SDefaultView">
             <gui>
@@ -55,7 +55,7 @@
             <gui>
                 <layout type="::fwGui::TabLayoutManager">
                     <view caption="TF-Negato" />
-                    <view caption="TF-Scene2D" />
+                    <view caption="TF-Editor" />
                 </layout>
             </gui>
             <registry>
@@ -68,7 +68,7 @@
             <appConfig id="2DNegatoWithTF" />
             <inout key="image" uid="${image}" />
             <inout key="TFSelections" uid="${TFSelections}" />
-            <inout key="landmarks" uid="landmarks" />
+            <inout key="landmarks" uid="${landmarks}" />
             <parameter replace="WID_PARENT" uid="negatoView" />
             <parameter replace="selectedTFKey" by="${SelectedTFKey}" />
         </service>
@@ -82,13 +82,6 @@
             <parameter replace="SelectedTFKey" by="${SelectedTFKey}" />
         </service>
 
-        <service uid="extractLandmarks" type="::ctrlCamp::SCopy" >
-            <in key="source" uid="${image}">
-                <extract from="@fields.m_landmarksId" />
-            </in>
-            <inout key="target" uid="landmarks"/>
-        </service>
-
         <connect>
             <signal>${image}/modified</signal>
             <slot>fieldMgr/update</slot>
@@ -96,13 +89,11 @@
 
         <start uid="tfEditor" />
         <start uid="fieldMgr" />
-        <start uid="extractLandmarks" />
         <start uid="tfWidget" />
         <start uid="cfgNegato" />
         <start uid="tfm" />
 
         <update uid="fieldMgr" />
-        <update uid="extractLandmarks" />
 
     </config>
 </extension>

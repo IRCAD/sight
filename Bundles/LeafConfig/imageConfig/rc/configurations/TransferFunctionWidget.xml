@@ -16,8 +16,6 @@
         <object uid="${TFSelections}" type="::fwData::Composite" src="ref" />
         <object uid="${histogram}" type="::fwData::Histogram" src="ref"/>
 
-        <object uid="TFPool" type="::fwData::Composite" />
-
         <object uid="viewport" type="::scene2D::data::Viewport" />
         <object uid="HistogramPoint" type="::fwData::Point" />
 
@@ -34,6 +32,7 @@
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <view sid="Scene2D_Shutter" start="yes" />
+                <!-- Ensure the shutter starts first so the scene starts with the correct viewport. -->
                 <view sid="Scene2D" start="no" />
             </registry>
         </service>
@@ -123,7 +122,7 @@
                 </adaptor>
 
                 <adaptor id="tf2" class="::scene2D::adaptor::TransferFunction" objectId="imageKey">
-                    <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" viewportUID="viewport" selectedTFKey="SelectedTF" tfSelectionFwID="TFSelections" />
+                    <config lineColor="lightGray" circleColor="lightGray" xAxis="xAxis" yAxis="yAxis" zValue="7" viewportUID="viewport" selectedTFKey="${SelectedTFKey}" tfSelectionFwID="TFSelections" />
                 </adaptor>
 
                 <adaptor id="viewportRangeUpdater" class="::scene2D::adaptor::ViewportUpdater" objectId="viewport">

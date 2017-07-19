@@ -29,8 +29,9 @@
         <object uid="${optionalModelSeriesComposite}" type="::fwData::Composite" src="ref" />
         <object uid="optionalModelSeries" type="::fwData::Image" src="deferred" />
 
-        <!-- scene 2D -->
+        <!-- TF editor -->
         <object uid="Histogram" type="::fwData::Histogram" />
+        <object uid="landmarks" type="::fwData::Landmarks" />
 
         <service uid="mainView" type="::gui::view::SDefaultView">
             <gui>
@@ -219,9 +220,10 @@
 
         <!-- Services working on TF -->
         <service uid="tfEditor" type="::fwServices::SConfigController">
-            <appConfig id="TransferFunctionEditor" />
+            <appConfig id="TransferFunctionWithNegatoEditor" />
             <inout key="image" uid="${image}"/>
             <inout key="histogram" uid="Histogram"/>
+            <inout key="landmarks" uid="landmarks" />
             <inout key="TFSelections" uid="TFSelections" />
             <parameter replace="WID_PARENT" uid="tfEditor"/>
             <parameter replace="SelectedTFKey" by="SelectedTF" />
@@ -233,6 +235,14 @@
             <binsWidth>5.0</binsWidth>
         </service>
 
+        <!-- If the image has landmarks, extract them and display them in the TF editor -->
+        <service uid="extractLandmarks" type="::ctrlCamp::SCopy" >
+            <in key="source" uid="${image}">
+                <extract from="@fields.m_landmarksId" />
+            </in>
+            <inout key="target" uid="landmarks"/>
+        </service>
+
         <!-- START AND STOP SERVICES -->
         <start uid="computeHistogram" />
         <start uid="LockImageSrv" />
@@ -240,9 +250,12 @@
         <start uid="mainView" />
         <start uid="tfEditor" />
         <start uid="vr" />
+        <start uid="extractLandmarks" />
 
         <!-- Deferred start -->
         <start uid="action_organManager" />
+
+        <update uid="extractLandmarks" />
 
     </config>
 </extension>
