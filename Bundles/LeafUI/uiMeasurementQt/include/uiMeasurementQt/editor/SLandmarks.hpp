@@ -49,6 +49,7 @@ namespace editor
         <service uid="..." type="::uiMeasurementQt::editor::SLandmarks" >
            <inout key="landmarks" uid="..." />
            <size>10.0</size>
+           <transparency>0.5</transparency>
            <advanced>yes</advanced>
         </service>
        @endcode
@@ -57,6 +58,7 @@ namespace editor
  *
  * @subsection Configuration Configuration
  * - \b size (optional, default="10.0") : default size of created landmarks
+ * - \b transparency (optional, default="1.0") : default transparency of created landmarks
  * - \b advanced (optional, default="no") : if "yes", use the advanced mode displaying point information
  * and groups with multiple points.
  */
