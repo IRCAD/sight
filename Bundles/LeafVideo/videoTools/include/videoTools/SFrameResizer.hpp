@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -11,7 +11,7 @@
 
 #include <arData/FrameTL.hpp>
 
-#include <arServices/IOperator.hpp>
+#include <fwServices/IOperator.hpp>
 
 namespace videoTools
 {
@@ -20,12 +20,12 @@ namespace videoTools
  * @brief   Operator that resizes buffer coming from an input arData::FrameTL and pushes them into an output timeline.
  *          This service uses OpenCV to perform the resize processing.
  */
-class VIDEOTOOLS_CLASS_API SFrameResizer : public ::arServices::IOperator
+class VIDEOTOOLS_CLASS_API SFrameResizer : public ::fwServices::IOperator
 {
 
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (SFrameResizer)(::arServices::IOperator) );
+    fwCoreServiceClassDefinitionsMacro( (SFrameResizer)(::fwServices::IOperator) );
 
     /// Constructor.
     VIDEOTOOLS_API SFrameResizer() throw();
@@ -38,7 +38,7 @@ protected:
     /**
      * @brief method description:
      * @code{.xml}
-        <service uid="SFrameResizerInstance" impl="::videoTools::SFrameResizer" type="::arServices::IOperator">
+        <service uid="SFrameResizerInstance" impl="::videoTools::SFrameResizer" type="::fwServices::IOperator">
              <input>frameTL</input>
              <output>resizedFrameTL</output>
              <ratio x="50" y="50" />

@@ -27,7 +27,7 @@
     </extension>
 
     <extension implements="::fwServices::registry::ServiceFactory">
-        <type>::arServices::IOperator</type>
+        <type>::fwServices::IOperator</type>
         <service>::videoTools::SFrameResizer</service>
         <object>::fwData::Composite</object>
         <desc>service description</desc>

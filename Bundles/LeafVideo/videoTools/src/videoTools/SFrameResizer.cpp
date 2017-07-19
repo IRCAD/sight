@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2015-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2015-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,17 +7,19 @@
 #include "videoTools/SFrameResizer.hpp"
 
 #include <fwCom/Signal.hxx>
+
 #include <fwData/Composite.hpp>
+
 #include <fwServices/macros.hpp>
 
 #include <opencv2/core.hpp>
-#include <opencv2/opencv.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/opencv.hpp>
 
 namespace videoTools
 {
 
-fwServicesRegisterMacro( ::arServices::IOperator, ::videoTools::SFrameResizer, ::fwData::Composite);
+fwServicesRegisterMacro( ::fwServices::IOperator, ::videoTools::SFrameResizer, ::fwData::Composite);
 
 //------------------------------------------------------------------------------
 SFrameResizer::SFrameResizer() throw()
@@ -146,7 +148,6 @@ void SFrameResizer::updating() throw(::fwTools::Failed)
         m_outputTL->signal< ::arData::TimeLine::ObjectPushedSignalType >(::arData::TimeLine::s_OBJECT_PUSHED_SIG);
     sig->asyncEmit(timestamp);
 }
-
 
 //------------------------------------------------------------------------------
 

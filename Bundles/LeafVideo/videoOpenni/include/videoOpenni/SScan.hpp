@@ -29,6 +29,9 @@ namespace videoOpenni
  * together.
  *
  * @section Slots Slots
+ * - \b startCamera(): Start capturing frames from the camera.
+ * - \b stopCamera(): Stop capturing frames from the camera.
+ * - \b pauseCamera(): Pause frame capture (the device is still opened though).
  * - \b takeSnapshot(): Push a frame inside each of the configured snapshot timelines.
  *
  * @section XML XML Configuration
@@ -147,6 +150,8 @@ private:
     mutable ::fwCore::mt::ReadWriteMutex m_videoFrameMutex; ///< Mutex to protect concurrent access of m_videoFrame.
 
     bool m_capture; ///< Whether we are capturing frames.
+
+    bool m_pause; ///< Whether we are in pause
 };
 }
 

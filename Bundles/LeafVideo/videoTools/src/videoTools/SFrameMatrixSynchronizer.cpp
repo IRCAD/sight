@@ -18,6 +18,8 @@
 
 #include <fwDataTools/helper/Array.hpp>
 
+#include <fwMath/Compare.hpp>
+
 #include <fwRuntime/ConfigurationElement.hpp>
 
 #include <fwServices/macros.hpp>
@@ -43,9 +45,10 @@ const ::fwServices::IService::KeyType s_MATRICES_INOUT = "matrices";
 // ----------------------------------------------------------------------------
 
 SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() throw () :
-    m_tolerance(500),
+    m_tolerance(500.),
     m_imagesInitialized(false),
-    m_timeStep(33)
+    m_timeStep(33),
+    m_lastTimestamp(0.)
 {
     m_sigSynchronizationDone = newSignal<SynchronizationDoneSignalType>(s_SYNCHRONIZATION_DONE_SIG);
     m_sigAllMatricesFound    = newSignal<AllMatricesFoundSignalType>(s_ALL_MATRICES_FOUND_SIG);
@@ -262,6 +265,7 @@ void SFrameMatrixSynchronizer::synchronize()
         }
     }
 
+    // Now we compute the time stamp available in the matrix timelines starting from the frame timestamp
     ::fwCore::HiResClock::HiResClockType matrixTimestamp = frameTimestamp;
 
     MatrixTimelineType availableMatricesTL;
@@ -282,6 +286,13 @@ void SFrameMatrixSynchronizer::synchronize()
             SLM_INFO("no available matrix for timeline '" + elt.first + "'.");
         }
     }
+
+    // Skip synchzonization if nothing has changed
+    if( ::fwMath::isEqual(matrixTimestamp, m_lastTimestamp) )
+    {
+        return;
+    }
+    m_lastTimestamp = matrixTimestamp;
 
     for(TimelineType::value_type key : availableFramesTL)
     {
@@ -390,7 +401,7 @@ void SFrameMatrixSynchronizer::synchronize()
 
     if (matrixFound)
     {
-        m_sigSynchronizationDone->asyncEmit(frameTimestamp);
+        m_sigSynchronizationDone->asyncEmit(matrixTimestamp);
     }
     m_sigAllMatricesFound->asyncEmit(m_totalOutputMatrices == syncMatricesNbr);
 

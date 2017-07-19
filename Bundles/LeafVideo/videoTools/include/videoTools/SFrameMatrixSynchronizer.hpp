@@ -190,6 +190,9 @@ private:
     /// Signal emitted when the synchronization is done, contains a boolean to signal if all the matrices
     ///  are synchronized.
     AllMatricesFoundSignalType::sptr m_sigAllMatricesFound;
+
+    /// Remember last time stamp to skip synchronization if nothing has changed
+    ::fwCore::HiResClock::HiResClockType m_lastTimestamp;
 };
 
 } // namespace videoTools

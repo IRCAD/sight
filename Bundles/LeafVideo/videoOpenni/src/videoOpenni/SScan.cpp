@@ -31,7 +31,8 @@ const ::fwCom::Slots::SlotKeyType SScan::s_TAKE_SNAPSHOT_FRAME = "takeSnapshot";
 
 SScan::SScan() throw() :
     m_streams(nullptr),
-    m_capture(false)
+    m_capture(false),
+    m_pause(false)
 {
     newSlot( s_TAKE_SNAPSHOT_FRAME, &SScan::takeSnapshot, this );
 
@@ -311,13 +312,15 @@ void SScan::stopCamera()
     {
         m_irStream.stop();
     }
+
+    m_pause = false;
 }
 
 // -----------------------------------------------------------------------------
 
 void SScan::pauseCamera()
 {
-    // TODO
+    m_pause = !m_pause;
 }
 
 //------------------------------------------------------------------------------
@@ -391,6 +394,11 @@ void SScan::presentFrame()
     while (::openni::OpenNI::waitForAnyStream(m_streams, static_cast<int>(m_streamMap.size()), &changedIndex, 1000) ==
            ::openni::STATUS_OK)
     {
+        if(m_pause)
+        {
+            continue;
+        }
+
         const ::openni::VideoStream* const changedVideoStream = m_streamMap[static_cast<size_t>(changedIndex)];
 
         const ::fwCore::HiResClock::HiResClockType timestamp = ::fwCore::HiResClock::getTimeInMilliSec();

@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -12,12 +12,13 @@
 
 #include <fwData/Image.hpp>
 #include <fwData/String.hpp>
-#include <fwServices/macros.hpp>
-#include <fwGui/dialog/MessageDialog.hpp>
+
 #include <fwGui/dialog/InputDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 
-fwServicesRegisterMacro (::io::IReader, ::ioZMQ::SImageNetworkReader, ::fwData::Image);
+#include <fwServices/macros.hpp>
 
+fwServicesRegisterMacro(::io::IReader, ::ioZMQ::SImageNetworkReader, ::fwData::Image);
 
 namespace ioZMQ
 {
@@ -38,6 +39,7 @@ SImageNetworkReader::~SImageNetworkReader() throw()
 
 void SImageNetworkReader::configuring() throw (::fwTools::Failed)
 {
+    ::io::IReader::configuring();
 }
 
 //-----------------------------------------------------------------------------
@@ -46,7 +48,7 @@ void SImageNetworkReader::configureWithIHM()
 {
     ::fwGui::dialog::InputDialog inputDialog;
 
-    inputDialog.setTitle("Enter hostname");
+    inputDialog.setTitle(m_windowTitle.empty() ? "Enter hostname" : m_windowTitle);
     m_host = inputDialog.getInput();
 }
 
@@ -118,5 +120,4 @@ void SImageNetworkReader::swapping() throw (::fwTools::Failed)
 //-----------------------------------------------------------------------------
 
 } // namespace ioZMQ
-
 
