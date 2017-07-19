@@ -492,7 +492,7 @@ void SLandmarks::onShapeChanged(const QString& shape)
     if(currentSelection(groupName))
     {
         SLM_ASSERT("Shape must be 'Cube' or 'Sphere'.", shape == "Cube" || shape == "Sphere");
-        ::fwData::Landmarks::Shape s
+        const ::fwData::Landmarks::Shape s
             = (shape == "Cube") ? ::fwData::Landmarks::Shape::CUBE : ::fwData::Landmarks::Shape::SPHERE;
 
         landmarks->setGroupShape(groupName, s);
@@ -726,8 +726,8 @@ void SLandmarks::renameGroup(std::string oldName, std::string newName)
 {
     m_treeWidget->blockSignals(true);
 
-    QString qtNewName     = QString::fromStdString(newName);
-    QTreeWidgetItem* item = getGroupItem(oldName);
+    const QString qtNewName = QString::fromStdString(newName);
+    QTreeWidgetItem* item   = getGroupItem(oldName);
     item->setData(0, s_GROUP_NAME_ROLE, qtNewName);
     QWidget* widget = m_treeWidget->itemWidget(item, 1);
     widget->setProperty(s_GROUP_PROPERTY_NAME, qtNewName);
@@ -772,10 +772,10 @@ void SLandmarks::modifyGroup(std::string name)
         m_sizeSlider->setValue(static_cast<int>(group.m_size));
         m_visibilityCheckbox->setChecked(group.m_visibility);
 
-        QString shapeText = group.m_shape == ::fwData::Landmarks::Shape::CUBE ? "Cube" : "Sphere";
+        const QString shapeText = group.m_shape == ::fwData::Landmarks::Shape::CUBE ? "Cube" : "Sphere";
         m_shapeSelector->setCurrentText(shapeText);
 
-        float transparency = group.m_color[3];
+        const float transparency = group.m_color[3];
         m_transparencySlider->setValue(static_cast<int>(transparency * m_transparencySlider->maximum()));
     }
 
@@ -838,7 +838,7 @@ void SLandmarks::selectPoint(std::string groupName, size_t index)
     const QString shapeText = group.m_shape == ::fwData::Landmarks::Shape::CUBE ? "Cube" : "Sphere";
     m_shapeSelector->setCurrentText(shapeText);
 
-    float transparency = group.m_color[3];
+    const float transparency = group.m_color[3];
     m_transparencySlider->setValue(static_cast<int>(transparency * m_transparencySlider->maximum()));
 
     m_groupEditorWidget->show();
@@ -861,9 +861,9 @@ std::string SLandmarks::generateNewGroupName() const
 {
     static size_t groupCount = 0;
 
-    ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
+    const ::fwData::Landmarks::sptr landmarks = this->getInOut< ::fwData::Landmarks >(s_LANDMARKS_INOUT);
 
-    ::fwData::Landmarks::GroupNameContainer groupNames = landmarks->getGroupNames();
+    const ::fwData::Landmarks::GroupNameContainer groupNames = landmarks->getGroupNames();
 
     const std::string newGroupNamePrefix = m_advancedMode ? "Group_" : "Point_";
 
@@ -880,7 +880,8 @@ std::string SLandmarks::generateNewGroupName() const
 
 std::array<float, 4> SLandmarks::generateNewColor()
 {
-    std::array<float, 4> color = {{rand()%255/255.f, rand()%255/255.f, rand()%255/255.f, m_defaultPointTransparency}};
+    const std::array<float,
+                     4> color = {{rand()%255/255.f, rand()%255/255.f, rand()%255/255.f, m_defaultPointTransparency}};
     return color;
 }
 
