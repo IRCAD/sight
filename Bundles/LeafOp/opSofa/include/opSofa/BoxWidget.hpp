@@ -26,19 +26,19 @@ public:
 
     fwCoreServiceClassDefinitionsMacro( (BoxWidget)(::fwRenderVTK::IVtkAdaptorService) );
 
-    BoxWidget() throw();
-    virtual ~BoxWidget() throw();
+    BoxWidget() noexcept;
+    virtual ~BoxWidget() noexcept;
 
     void updateFromVtk();
 
 protected:
 
-    virtual void configuring() throw( ::fwTools::Failed );
-    virtual void doStart()     throw( ::fwTools::Failed );
-    virtual void doStop()      throw( ::fwTools::Failed );
-    virtual void doSwap()      throw( ::fwTools::Failed );
-    virtual void doUpdate()    throw( ::fwTools::Failed );
-    virtual void doReceive( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed );
+    virtual void configuring();
+    virtual void doStart();
+    virtual void doStop();
+    virtual void doSwap();
+    virtual void doUpdate();
+    virtual void doReceive( ::fwServices::ObjectMsg::csptr msg );
 
     vtkTransform* m_transform;
     WPTR(::visuVTKAdaptor::Transform) m_transformService;

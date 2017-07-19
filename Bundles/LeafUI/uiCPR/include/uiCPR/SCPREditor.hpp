@@ -51,8 +51,8 @@ public:
     /**
      * @name Constructor/Destructor.
      * @{ */
-    UICPR_API SCPREditor () throw();
-    UICPR_API virtual ~SCPREditor () throw();
+    UICPR_API SCPREditor () noexcept;
+    UICPR_API virtual ~SCPREditor () noexcept;
     /**  @} */
 
     /**
@@ -76,9 +76,9 @@ protected:
     /**
      * @name Overrides
      * @{ */
-    virtual void starting() throw(::fwTools::Failed);
-    virtual void stopping() throw(::fwTools::Failed);
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void starting();
+    virtual void stopping();
+    virtual void updating();
     /**  @} */
 
 
@@ -86,7 +86,7 @@ protected:
      * @brief Overrides IService::configuring().
      * @throw fwTools::Failed
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Signal emitted when the height value changes.
     HeightChangedSignalType::sptr m_sigHeightChanged;

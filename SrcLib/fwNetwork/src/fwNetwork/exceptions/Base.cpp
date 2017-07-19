@@ -17,7 +17,7 @@ Base::Base(const std::string& message) : ::fwCore::Exception(message)
 {
 }
 
-Base::~Base() throw ()
+Base::~Base() noexcept
 {
 }
 

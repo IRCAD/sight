@@ -52,16 +52,16 @@ public:
 protected:
 
     /// Does nothing.
-    OPITKREGISTRATION_API virtual void configuring() throw( ::fwTools::Failed );
+    OPITKREGISTRATION_API virtual void configuring();
 
     /// Does nothing.
-    OPITKREGISTRATION_API virtual void starting() throw( ::fwTools::Failed );
+    OPITKREGISTRATION_API virtual void starting();
 
     /// Does nothing.
-    OPITKREGISTRATION_API virtual void stopping() throw( ::fwTools::Failed );
+    OPITKREGISTRATION_API virtual void stopping();
 
     /// Apply the transform and resample.
-    OPITKREGISTRATION_API virtual void updating() throw( ::fwTools::Failed );
+    OPITKREGISTRATION_API virtual void updating();
 
     /**
      * @brief Auto connections

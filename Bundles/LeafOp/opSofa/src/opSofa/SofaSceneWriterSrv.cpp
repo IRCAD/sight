@@ -43,7 +43,7 @@ fwServicesRegisterMacro( ::io::IWriter, ::opSofa::SofaSceneWriterSrv, ::fwMedDat
 /**
  * @brief Constructor
  */
-SofaSceneWriterSrv::SofaSceneWriterSrv() throw()
+SofaSceneWriterSrv::SofaSceneWriterSrv() noexcept
 {
     writeTrian      = false;
     m_sceneTemplate = "";
@@ -53,14 +53,14 @@ SofaSceneWriterSrv::SofaSceneWriterSrv() throw()
 /**
  * @brief Destructor
  */
-SofaSceneWriterSrv::~SofaSceneWriterSrv() throw()
+SofaSceneWriterSrv::~SofaSceneWriterSrv() noexcept
 {
 }
 
 /**
  * @brief Used to define the service parameters and analyze its configuration.
  */
-void SofaSceneWriterSrv::configuring() throw ( ::fwTools::Failed )
+void SofaSceneWriterSrv::configuring()
 {
     if(m_configuration->findConfigurationElement("writeTrian"))
     {
@@ -88,21 +88,21 @@ void SofaSceneWriterSrv::configuring() throw ( ::fwTools::Failed )
 /**
  * @brief Used to launch the service.
  */
-void SofaSceneWriterSrv::starting() throw ( ::fwTools::Failed )
+void SofaSceneWriterSrv::starting()
 {
 }
 
 /**
  * @brief Used to stop the service.
  */
-void SofaSceneWriterSrv::stopping() throw ( ::fwTools::Failed )
+void SofaSceneWriterSrv::stopping()
 {
 }
 
 /**
  * @brief Called to do an action on the data associated to the service.
  */
-void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
+void SofaSceneWriterSrv::updating()
 {
     // Ask folder destination
     QString folder;
@@ -249,7 +249,7 @@ void SofaSceneWriterSrv::updating() throw ( ::fwTools::Failed )
  *
  * @param msg : Incoming message
  */
-void SofaSceneWriterSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
+void SofaSceneWriterSrv::receiving( ::fwServices::ObjectMsg::csptr msg )
 {
 }
 

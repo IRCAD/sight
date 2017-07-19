@@ -25,19 +25,19 @@ fwServicesRegisterMacro( ::io::IWriter, ::ioMidas::SModelSeriesWriter, ::fwMedDa
 
 //------------------------------------------------------------------------------
 
-SModelSeriesWriter::SModelSeriesWriter() throw()
+SModelSeriesWriter::SModelSeriesWriter() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-SModelSeriesWriter::~SModelSeriesWriter() throw()
+SModelSeriesWriter::~SModelSeriesWriter() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesWriter::configuring() throw(::fwTools::Failed)
+void SModelSeriesWriter::configuring()
 {
     ::io::IWriter::configuring();
 
@@ -136,13 +136,13 @@ void SModelSeriesWriter::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesWriter::starting() throw(::fwTools::Failed)
+void SModelSeriesWriter::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesWriter::stopping() throw(::fwTools::Failed)
+void SModelSeriesWriter::stopping()
 {
 }
 
@@ -177,7 +177,7 @@ std::string SModelSeriesWriter::getSelectorDialogTitle()
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesWriter::updating() throw(::fwTools::Failed)
+void SModelSeriesWriter::updating()
 {
 }
 

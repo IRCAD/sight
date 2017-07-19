@@ -47,7 +47,7 @@ fwServicesRegisterMacro( ::fwServices::IController, ::ctrlSplineNavigation::SMov
 
 //-------------------------------------------------------------------------------------------------------------
 
-SMoveAlongSpline::SMoveAlongSpline() throw() :
+SMoveAlongSpline::SMoveAlongSpline() noexcept :
     m_currentSliderPosition(0.0),
     m_previousSliderPosition(0.0),
     m_nbSplinePoints(0),
@@ -77,19 +77,19 @@ SMoveAlongSpline::SMoveAlongSpline() throw() :
 
 //-------------------------------------------------------------------------------------------------------------
 
-SMoveAlongSpline::~SMoveAlongSpline() throw()
+SMoveAlongSpline::~SMoveAlongSpline() noexcept
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------
 
-void SMoveAlongSpline::configuring()  throw ( ::fwTools::Failed )
+void SMoveAlongSpline::configuring()
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------
 
-void SMoveAlongSpline::starting()  throw ( ::fwTools::Failed )
+void SMoveAlongSpline::starting()
 {
     ::fwData::PointList::csptr pointList = this->getInput< ::fwData::PointList>(S_POINTS_KEY);
     m_nbSplinePoints                     = pointList->getCRefPoints().size();
@@ -109,13 +109,13 @@ void SMoveAlongSpline::starting()  throw ( ::fwTools::Failed )
 
 //-------------------------------------------------------------------------------------------------------------
 
-void SMoveAlongSpline::stopping()  throw ( ::fwTools::Failed )
+void SMoveAlongSpline::stopping()
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------
 
-void SMoveAlongSpline::updating() throw ( ::fwTools::Failed )
+void SMoveAlongSpline::updating()
 {
 }
 

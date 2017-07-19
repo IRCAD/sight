@@ -31,40 +31,40 @@ const ::fwCom::Slots::SlotKeyType SJumpToPointController::s_CHANGE_DIRECT_TARGET
 
 //-----------------------------------------------------------------------------
 
-SJumpToPointController::SJumpToPointController() throw ()
+SJumpToPointController::SJumpToPointController() noexcept
 {
     newSlot(s_CHANGE_DIRECT_TARGET_SLOT, &SJumpToPointController::jumpToViewPoint, this);
 }
 
 //-----------------------------------------------------------------------------
 
-SJumpToPointController::~SJumpToPointController() throw ()
+SJumpToPointController::~SJumpToPointController() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SJumpToPointController::starting() throw (::fwTools::Failed)
+void SJumpToPointController::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SJumpToPointController::stopping() throw (::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-}
-
-//------------------------------------------------------------------------------
-
-void SJumpToPointController::configuring() throw (fwTools::Failed)
+void SJumpToPointController::stopping()
 {
     SLM_TRACE_FUNC();
 }
 
 //------------------------------------------------------------------------------
 
-void SJumpToPointController::updating() throw (::fwTools::Failed)
+void SJumpToPointController::configuring()
+{
+    SLM_TRACE_FUNC();
+}
+
+//------------------------------------------------------------------------------
+
+void SJumpToPointController::updating()
 {
 }
 

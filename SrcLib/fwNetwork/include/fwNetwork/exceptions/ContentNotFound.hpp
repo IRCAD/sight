@@ -25,7 +25,7 @@ public:
      * @name Constructor/Destructor.
      * @{ */
     ContentNotFound(const std::string& message);
-    virtual ~ContentNotFound() throw();
+    virtual ~ContentNotFound() noexcept;
     /**  @} */
 };
 

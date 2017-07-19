@@ -47,7 +47,7 @@ const ::fwCom::Slots::SlotKeyType SComputeCPR2D::s_UPDATE_SPLINE_SLOT  = "update
 
 //----------------------------------------------------------------------------------------------------------------
 
-SComputeCPR2D::SComputeCPR2D() throw () : m_selectedPointIndex(0),
+SComputeCPR2D::SComputeCPR2D() noexcept : m_selectedPointIndex(0),
                                           m_nbSplinePoints(0),
                                           m_height(50.0),
                                           m_spacing(0.0),
@@ -64,13 +64,13 @@ SComputeCPR2D::SComputeCPR2D() throw () : m_selectedPointIndex(0),
 
 //----------------------------------------------------------------------------------------------------------------
 
-SComputeCPR2D::~SComputeCPR2D() throw ()
+SComputeCPR2D::~SComputeCPR2D() noexcept
 {
 }
 
 //----------------------------------------------------------------------------------------------------------------
 
-void SComputeCPR2D::starting() throw (::fwTools::Failed)
+void SComputeCPR2D::starting()
 {
     // Get the source image to set the height and spacing of the CPR.
     ::fwData::Image::csptr image = this->getInput< ::fwData::Image >(S_SOURCE_IMAGE_KEY);
@@ -81,21 +81,21 @@ void SComputeCPR2D::starting() throw (::fwTools::Failed)
 
 //----------------------------------------------------------------------------------------------------------------
 
-void SComputeCPR2D::stopping() throw (::fwTools::Failed)
+void SComputeCPR2D::stopping()
 {
     SLM_TRACE_FUNC();
 }
 
 //----------------------------------------------------------------------------------------------------------------
 
-void SComputeCPR2D::configuring() throw (fwTools::Failed)
+void SComputeCPR2D::configuring()
 {
     SLM_TRACE_FUNC();
 }
 
 //----------------------------------------------------------------------------------------------------------------
 
-void SComputeCPR2D::updating() throw (::fwTools::Failed)
+void SComputeCPR2D::updating()
 {
 }
 

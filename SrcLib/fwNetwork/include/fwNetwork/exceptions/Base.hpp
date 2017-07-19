@@ -22,7 +22,7 @@ class Base : public fwCore::Exception
 {
 public:
     Base(const std::string& message);
-    virtual ~Base() throw ();
+    virtual ~Base() noexcept;
 };
 
 

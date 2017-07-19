@@ -33,13 +33,13 @@ Q_OBJECT
 public:
     fwCoreServiceClassDefinitionsMacro ( (SofaMeshEditorSrv)(::gui::editor::IEditor) );
 
-    SofaMeshEditorSrv() throw();
-    virtual ~SofaMeshEditorSrv() throw();
-    void configuring() throw ( ::fwTools::Failed );
-    void starting() throw ( ::fwTools::Failed );
-    void stopping() throw ( ::fwTools::Failed );
-    void updating() throw ( ::fwTools::Failed );
-    void receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed );
+    SofaMeshEditorSrv() noexcept;
+    virtual ~SofaMeshEditorSrv() noexcept;
+    void configuring();
+    void starting();
+    void stopping();
+    void updating();
+    void receiving( ::fwServices::ObjectMsg::csptr msg );
 
 protected Q_SLOTS:
     void onStrengthSlider(int value);

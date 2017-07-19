@@ -36,7 +36,7 @@ fwServicesRegisterMacro(::gui::editor::IEditor, ::opSofa::SofaMeshEditorSrv, ::f
 /**
  * @brief Constructor
  */
-SofaMeshEditorSrv::SofaMeshEditorSrv() throw()
+SofaMeshEditorSrv::SofaMeshEditorSrv() noexcept
 {
 }
 
@@ -44,7 +44,7 @@ SofaMeshEditorSrv::SofaMeshEditorSrv() throw()
 /**
  * @brief Destructor
  */
-SofaMeshEditorSrv::~SofaMeshEditorSrv() throw()
+SofaMeshEditorSrv::~SofaMeshEditorSrv() noexcept
 {
 }
 
@@ -52,7 +52,7 @@ SofaMeshEditorSrv::~SofaMeshEditorSrv() throw()
 /**
  * @brief Used to define the service parameters and analyze its configuration.
  */
-void SofaMeshEditorSrv::configuring() throw ( ::fwTools::Failed )
+void SofaMeshEditorSrv::configuring()
 {
     this->initialize();
 }
@@ -61,7 +61,7 @@ void SofaMeshEditorSrv::configuring() throw ( ::fwTools::Failed )
 /**
  * @brief Used to launch the service.
  */
-void SofaMeshEditorSrv::starting() throw ( ::fwTools::Failed )
+void SofaMeshEditorSrv::starting()
 {
     //this->create();
     ::fwGuiQt::container::QtContainer::sptr qtContainer = ::fwGuiQt::container::QtContainer::dynamicCast(
@@ -92,7 +92,7 @@ void SofaMeshEditorSrv::starting() throw ( ::fwTools::Failed )
 /**
  * @brief Used to stop the service.
  */
-void SofaMeshEditorSrv::stopping() throw ( ::fwTools::Failed )
+void SofaMeshEditorSrv::stopping()
 {
     this->getContainer()->clean();
     //this->destroy();
@@ -102,7 +102,7 @@ void SofaMeshEditorSrv::stopping() throw ( ::fwTools::Failed )
 /**
  * @brief Called to do an action on the data associated to the service.
  */
-void SofaMeshEditorSrv::updating() throw ( ::fwTools::Failed )
+void SofaMeshEditorSrv::updating()
 {
 }
 
@@ -112,7 +112,7 @@ void SofaMeshEditorSrv::updating() throw ( ::fwTools::Failed )
  *
  * @param msg : Incoming message
  */
-void SofaMeshEditorSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
+void SofaMeshEditorSrv::receiving( ::fwServices::ObjectMsg::csptr msg )
 {
     if (msg->hasEvent("NEW_RECONSTRUCTION_SELECTED"))
     {

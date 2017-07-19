@@ -21,19 +21,19 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::uiPython::action::Test, ::fwData
 
 //-----------------------------------------------------------------------------
 
-Test::Test() throw()
+Test::Test() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-Test::~Test() throw()
+Test::~Test() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void Test::configuring() throw( ::fwTools::Failed )
+void Test::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -41,7 +41,7 @@ void Test::configuring() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Test::starting() throw( ::fwTools::Failed )
+void Test::starting()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
@@ -49,7 +49,7 @@ void Test::starting() throw( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void Test::stopping() throw( ::fwTools::Failed )
+void Test::stopping()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStopping();
@@ -64,7 +64,7 @@ void Test::info(std::ostream& _sstream )
 
 //-----------------------------------------------------------------------------
 
-void Test::updating() throw( ::fwTools::Failed )
+void Test::updating()
 {
     ::fwPython::Interpreter python;
     python.execute("print \"Hello fw4spl world\"");

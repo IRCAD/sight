@@ -38,25 +38,25 @@ fwServicesRegisterMacro( ::fwRender::IRender, ::devForum::tuto02::ImageViewerSer
 
 //-----------------------------------------------------------------------------
 
-ImageViewerService::ImageViewerService() throw()
+ImageViewerService::ImageViewerService() noexcept
     :   ::devForum::tuto01::ImageViewerService()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-ImageViewerService::~ImageViewerService() throw()
+ImageViewerService::~ImageViewerService() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
-void ImageViewerService::configuring() throw ( ::fwTools::Failed )
+void ImageViewerService::configuring()
 {
     ::devForum::tuto01::ImageViewerService::configuring();
 }
 
 //-----------------------------------------------------------------------------
-void ImageViewerService::updating() throw ( ::fwTools::Failed )
+void ImageViewerService::updating()
 {
     updateVTKPipeline();
 }
@@ -88,7 +88,7 @@ void ImageViewerService::updateVTKPipeline()
 }
 
 //-----------------------------------------------------------------------------
-void ImageViewerService::stopping() throw ( ::fwTools::Failed )
+void ImageViewerService::stopping()
 {
     ::devForum::tuto01::ImageViewerService::stopping();
 }

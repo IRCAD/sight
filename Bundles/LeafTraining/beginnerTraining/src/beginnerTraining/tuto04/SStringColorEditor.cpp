@@ -39,13 +39,13 @@ SStringColorEditor::SStringColorEditor()
 
 //-----------------------------------------------------------------------------
 
-SStringColorEditor::~SStringColorEditor() throw()
+SStringColorEditor::~SStringColorEditor() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SStringColorEditor::configuring() throw ( ::fwTools::Failed )
+void SStringColorEditor::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize(); // start with this inherited function
@@ -53,7 +53,7 @@ void SStringColorEditor::configuring() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SStringColorEditor::starting() throw ( ::fwTools::Failed )
+void SStringColorEditor::starting()
 {
     SLM_TRACE_FUNC();
     this->create(); // start with this inherited function
@@ -81,7 +81,7 @@ void SStringColorEditor::starting() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SStringColorEditor::stopping() throw ( ::fwTools::Failed )
+void SStringColorEditor::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -94,7 +94,7 @@ void SStringColorEditor::stopping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SStringColorEditor::updating() throw ( ::fwTools::Failed )
+void SStringColorEditor::updating()
 {
     // Update your textEditor from your associated object
     ::fwData::String::sptr myAssociatedData = this->getInOut< ::fwData::String >(s_EDIT_STRING_KEY);

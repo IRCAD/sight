@@ -37,16 +37,16 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (ImageReaderService)(::io::IReader) );
 
     /// Constructor, does nothing.
-    DEVFORUM_API ImageReaderService() throw();
+    DEVFORUM_API ImageReaderService() noexcept;
 
     /// Destructor, does nothing.
-    DEVFORUM_API virtual ~ImageReaderService() throw();
+    DEVFORUM_API virtual ~ImageReaderService() noexcept;
 
 
 protected:
 
     /// This method executes the read process and notify listeners
-    DEVFORUM_API virtual void updating() throw(fwTools::Failed);
+    DEVFORUM_API virtual void updating();
 
     /// This method notifies other image services that a new image has been loaded.
     DEVFORUM_API virtual void notifyMessage();

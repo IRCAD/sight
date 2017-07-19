@@ -20,35 +20,35 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::opSofa::SofaStartSrv, ::fwMedDat
 /**
  * @brief Constructor
  */
-SofaStartSrv::SofaStartSrv() throw()
+SofaStartSrv::SofaStartSrv() noexcept
 {
 }
 
 /**
  * @brief Destructor
  */
-SofaStartSrv::~SofaStartSrv() throw()
+SofaStartSrv::~SofaStartSrv() noexcept
 {
 }
 
 /**
  * @brief Used to define the service parameters and analyze its configuration.
  */
-void SofaStartSrv::configuring() throw ( ::fwTools::Failed )
+void SofaStartSrv::configuring()
 {
 }
 
 /**
  * @brief Used to launch the service.
  */
-void SofaStartSrv::starting() throw ( ::fwTools::Failed )
+void SofaStartSrv::starting()
 {
 }
 
 /**
  * @brief Used to stop the service.
  */
-void SofaStartSrv::stopping() throw ( ::fwTools::Failed )
+void SofaStartSrv::stopping()
 {
 }
 
@@ -57,14 +57,14 @@ void SofaStartSrv::stopping() throw ( ::fwTools::Failed )
  *
  * @param msg : Incoming message
  */
-void SofaStartSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
+void SofaStartSrv::receiving( ::fwServices::ObjectMsg::csptr msg )
 {
 }
 
 /**
  * @brief Called to do an action on the data associated to the service.
  */
-void SofaStartSrv::updating() throw ( ::fwTools::Failed )
+void SofaStartSrv::updating()
 {
     ::fwMedData::ModelSeries::sptr ms = this->getObject< ::fwMedData::ModelSeries >();
     SLM_ASSERT("Invalid object", ms);

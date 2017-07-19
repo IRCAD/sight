@@ -31,42 +31,42 @@ fwServicesRegisterMacro( ::io::IReader, ::opSofa::SofaSceneReaderSrv, ::fwMedDat
 /**
  * @brief Constructor
  */
-SofaSceneReaderSrv::SofaSceneReaderSrv() throw()
+SofaSceneReaderSrv::SofaSceneReaderSrv() noexcept
 {
 }
 
 /**
  * @brief Destructor
  */
-SofaSceneReaderSrv::~SofaSceneReaderSrv() throw()
+SofaSceneReaderSrv::~SofaSceneReaderSrv() noexcept
 {
 }
 
 /**
  * @brief Used to define the service parameters and analyze its configuration.
  */
-void SofaSceneReaderSrv::configuring() throw ( ::fwTools::Failed )
+void SofaSceneReaderSrv::configuring()
 {
 }
 
 /**
  * @brief Used to launch the service.
  */
-void SofaSceneReaderSrv::starting() throw ( ::fwTools::Failed )
+void SofaSceneReaderSrv::starting()
 {
 }
 
 /**
  * @brief Used to stop the service.
  */
-void SofaSceneReaderSrv::stopping() throw ( ::fwTools::Failed )
+void SofaSceneReaderSrv::stopping()
 {
 }
 
 /**
  * @brief Called to do an action on the data associated to the service.
  */
-void SofaSceneReaderSrv::updating() throw ( ::fwTools::Failed )
+void SofaSceneReaderSrv::updating()
 {
     ::fwMedData::ModelSeries::sptr ms = this->getObject< ::fwMedData::ModelSeries >();
     SLM_ASSERT("Invalid object", ms);
@@ -99,7 +99,7 @@ void SofaSceneReaderSrv::updating() throw ( ::fwTools::Failed )
  *
  * @param msg : Incoming message
  */
-void SofaSceneReaderSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
+void SofaSceneReaderSrv::receiving( ::fwServices::ObjectMsg::csptr msg )
 {
 }
 

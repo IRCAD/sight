@@ -43,7 +43,7 @@ static const ::fwCom::Slots::SlotKeyType SET_BOOLEAN_SLOT = "setBoolean";
 
 //-----------------------------------------------------------------------------
 
-CGoGNMesher::CGoGNMesher() throw () :
+CGoGNMesher::CGoGNMesher() noexcept :
     m_valueMin(127),
     m_valueMax(127),
     m_adapt(50),
@@ -58,27 +58,27 @@ CGoGNMesher::CGoGNMesher() throw () :
 
 //-----------------------------------------------------------------------------
 
-CGoGNMesher::~CGoGNMesher() throw ()
+CGoGNMesher::~CGoGNMesher() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void CGoGNMesher::starting() throw (::fwTools::Failed)
-{
-    SLM_TRACE_FUNC();
-}
-
-//-----------------------------------------------------------------------------
-
-void CGoGNMesher::stopping() throw (::fwTools::Failed)
+void CGoGNMesher::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void CGoGNMesher::configuring() throw (::fwTools::Failed)
+void CGoGNMesher::stopping()
+{
+    SLM_TRACE_FUNC();
+}
+
+//-----------------------------------------------------------------------------
+
+void CGoGNMesher::configuring()
 {
     const ::fwServices::IService::ConfigType& srvConfig = this->getConfigTree();
     SLM_ASSERT("You must have one <config/> element.", srvConfig.get_child("service").count("config") == 1 );
@@ -122,7 +122,7 @@ void CGoGNMesher::configuring() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void CGoGNMesher::updating() throw (::fwTools::Failed)
+void CGoGNMesher::updating()
 {
     SLM_TRACE_FUNC();
 

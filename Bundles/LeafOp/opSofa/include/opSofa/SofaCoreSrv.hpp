@@ -27,37 +27,37 @@ class SofaCoreSrv : public ::fwGui::IActionSrv
 public:
     fwCoreServiceClassDefinitionsMacro ( (SofaCoreSrv)(::fwGui::IActionSrv) );
 
-    SofaCoreSrv() throw();
-    virtual ~SofaCoreSrv() throw();
+    SofaCoreSrv() noexcept;
+    virtual ~SofaCoreSrv() noexcept;
 
 protected:
 
     /**
      * @brief Used to define the service parameters and analyze its configuration.
      */
-    void configuring() throw ( ::fwTools::Failed );
+    void configuring();
 
     /**
      * @brief Used to launch the service.
      */
-    void starting() throw ( ::fwTools::Failed );
+    void starting();
 
     /**
      * @brief Used to stop the service.
      */
-    void stopping() throw ( ::fwTools::Failed );
+    void stopping();
 
     /**
      * @brief Called to do an action on the data associated to the service.
      */
-    void updating() throw ( ::fwTools::Failed );
+    void updating();
 
     /**
      * @brief Called by a data to notify a service.
      *
      * @param _pMsg : Incoming message
      */
-    void receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed );
+    void receiving( ::fwServices::ObjectMsg::csptr _pMsg );
 
     /**
      * @brief info of the class

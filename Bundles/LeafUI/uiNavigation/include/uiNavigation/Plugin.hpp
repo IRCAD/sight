@@ -23,13 +23,13 @@ struct UINAVIGATION_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
     /// Destructor
-    UINAVIGATION_API ~Plugin() throw();
+    UINAVIGATION_API ~Plugin() noexcept;
 
     /// Overrides
-    UINAVIGATION_API void start() throw(::fwRuntime::RuntimeException);
+    UINAVIGATION_API void start();
 
     /// Overrides
-    UINAVIGATION_API void stop() throw();
+    UINAVIGATION_API void stop() noexcept;
 
 };
 

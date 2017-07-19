@@ -38,27 +38,27 @@ fwServicesRegisterMacro( ::fwRender::IRender, ::devForum::tuto01::ImageViewerSer
 
 //-----------------------------------------------------------------------------
 
-ImageViewerService::ImageViewerService() throw()
+ImageViewerService::ImageViewerService() noexcept
     : m_render( 0 )
 {
 }
 
 //-----------------------------------------------------------------------------
 
-ImageViewerService::~ImageViewerService() throw()
+ImageViewerService::~ImageViewerService() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ImageViewerService::configuring() throw ( ::fwTools::Failed )
+void ImageViewerService::configuring()
 {
     this->initialize();
 }
 
 //-----------------------------------------------------------------------------
 
-void ImageViewerService::starting() throw ( ::fwTools::Failed )
+void ImageViewerService::starting()
 {
     // Method of abstract class : use in our case to find wxWindow instance for this service
     // created by an IView or a IFrame service.
@@ -87,7 +87,7 @@ void ImageViewerService::starting() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void ImageViewerService::stopping() throw ( ::fwTools::Failed )
+void ImageViewerService::stopping()
 {
     if( m_render == 0 )
     {
@@ -110,7 +110,7 @@ void ImageViewerService::stopping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void ImageViewerService::updating() throw ( ::fwTools::Failed )
+void ImageViewerService::updating()
 {
 }
 

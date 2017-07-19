@@ -38,21 +38,21 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (ImageViewerService)(::fwRender::IRender) );
 
     /// Constructor, does nothing.
-    DEVFORUM_API ImageViewerService() throw();
+    DEVFORUM_API ImageViewerService() noexcept;
 
     /// Destructor, does nothing.
-    DEVFORUM_API virtual ~ImageViewerService() throw();
+    DEVFORUM_API virtual ~ImageViewerService() noexcept;
 
 
 protected:
 
     /// Try to retrieve the guiContainerId defines in the service configuration
-    DEVFORUM_API virtual void configuring() throw(::fwTools::Failed);
+    DEVFORUM_API virtual void configuring();
 
     /// This method refreshes the pipeline with the current image and update the vtk render.
-    DEVFORUM_API virtual void updating() throw(fwTools::Failed);
+    DEVFORUM_API virtual void updating();
 
-    DEVFORUM_API virtual void stopping() throw(fwTools::Failed);
+    DEVFORUM_API virtual void stopping();
 
     /// This method get the new associated image and update the VTK pipeline
     DEVFORUM_API void updateVTKPipeline();

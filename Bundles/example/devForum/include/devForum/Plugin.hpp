@@ -26,13 +26,13 @@ class Plugin : public ::fwRuntime::Plugin
 public:
 
     /// Destructor, does nothing.
-    ~Plugin() throw();
+    ~Plugin() noexcept;
 
     /// This method is used by runtime to initialize the bundle and register his services in OSR.
-    void start() throw ( ::fwRuntime::RuntimeException );
+    void start();
 
     /// This method is used by runtime to stop the bundle, does nothing.
-    void stop() throw();
+    void stop() noexcept;
 
 };
 

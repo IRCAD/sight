@@ -20,13 +20,13 @@ namespace opItkRegistration
 struct OPITKREGISTRATION_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
     /// Destructor. Do nothing.
-    OPITKREGISTRATION_API ~Plugin() throw();
+    OPITKREGISTRATION_API ~Plugin() noexcept;
 
     /// Overrides start method. Object declarations.
-    OPITKREGISTRATION_API void start() throw( ::fwRuntime::RuntimeException );
+    OPITKREGISTRATION_API void start();
 
     /// Overrides stop method. Do nothing
-    OPITKREGISTRATION_API void stop() throw();
+    OPITKREGISTRATION_API void stop() noexcept;
 
 };
 

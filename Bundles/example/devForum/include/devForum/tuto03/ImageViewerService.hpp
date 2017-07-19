@@ -38,15 +38,15 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (ImageViewerService)(::fwRender::IRender) );
 
     /// Constructor, does nothing.
-    DEVFORUM_API ImageViewerService() throw();
+    DEVFORUM_API ImageViewerService() noexcept;
 
     /// Destructor, does nothing.
-    DEVFORUM_API virtual ~ImageViewerService() throw();
+    DEVFORUM_API virtual ~ImageViewerService() noexcept;
 
 protected:
 
-    DEVFORUM_API virtual void configuring() throw(::fwTools::Failed);
-    DEVFORUM_API virtual void stopping() throw(::fwTools::Failed);
+    DEVFORUM_API virtual void configuring();
+    DEVFORUM_API virtual void stopping();
 
 };
 

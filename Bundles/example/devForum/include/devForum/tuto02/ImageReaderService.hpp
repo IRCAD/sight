@@ -35,19 +35,19 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (ImageReaderService)(::io::IReader) );
 
     /// Constructor, does nothing.
-    DEVFORUM_API ImageReaderService() throw();
+    DEVFORUM_API ImageReaderService() noexcept;
 
     /// Destructor, does nothing.
-    DEVFORUM_API virtual ~ImageReaderService() throw();
+    DEVFORUM_API virtual ~ImageReaderService() noexcept;
 
 
 protected:
 
     /// This method is called when the service start, here does nothing.
-    DEVFORUM_API virtual void starting() throw(fwTools::Failed);
+    DEVFORUM_API virtual void starting();
 
     /// This method is called when the service start, here does nothing.
-    DEVFORUM_API virtual void stopping() throw(fwTools::Failed);
+    DEVFORUM_API virtual void stopping();
 
     /**
      * @brief Configure the reader service.
@@ -55,13 +55,13 @@ protected:
      * This method is used to configure the service. It search in a configure element
      * the definition of image path. XML configuration sample:
      */
-    DEVFORUM_API virtual void configuring() throw(::fwTools::Failed);
+    DEVFORUM_API virtual void configuring();
 
     /// This method is used to configure service with an IHM, here does nothing.
     DEVFORUM_API virtual void configureWithIHM();
 
     /// This method executes the read process.
-    DEVFORUM_API virtual void updating() throw(fwTools::Failed);
+    DEVFORUM_API virtual void updating();
 
     /// Image path, location of image on filesystem.
     ::boost::filesystem::path m_fsImgPath;

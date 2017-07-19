@@ -34,7 +34,7 @@ static const ::fwCom::Slots::SlotKeyType s_UPDATE_SPLINE_SLOT = "updateSpline";
 
 //-----------------------------------------------------------------------------------
 
-SSplineAdaptor::SSplineAdaptor() throw()
+SSplineAdaptor::SSplineAdaptor() noexcept
     : m_numberOfPoints(0), m_splineLength(0.0)
 {
     m_parametricSpline = vtkSmartPointer<vtkParametricSpline>::New();
@@ -48,13 +48,13 @@ SSplineAdaptor::SSplineAdaptor() throw()
 
 //-----------------------------------------------------------------------------------
 
-SSplineAdaptor::~SSplineAdaptor() throw()
+SSplineAdaptor::~SSplineAdaptor() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------------
 
-void SSplineAdaptor::doStart() throw(fwTools::Failed)
+void SSplineAdaptor::doStart()
 {
     ::fwData::PointList::sptr pointList = this->getObject< ::fwData::PointList>();
     SLM_ASSERT("Invalid pointList object", pointList);
@@ -69,14 +69,14 @@ void SSplineAdaptor::doStart() throw(fwTools::Failed)
 
 //-----------------------------------------------------------------------------------
 
-void SSplineAdaptor::doStop() throw(fwTools::Failed)
+void SSplineAdaptor::doStop()
 {
     this->removeAllPropFromRenderer();
 }
 
 //-----------------------------------------------------------------------------------
 
-void SSplineAdaptor::doConfigure() throw(fwTools::Failed)
+void SSplineAdaptor::doConfigure()
 {
 }
 
@@ -114,7 +114,7 @@ void SSplineAdaptor::updateSpline()
 
 //-----------------------------------------------------------------------------------
 
-void SSplineAdaptor::doUpdate() throw (fwTools::Failed)
+void SSplineAdaptor::doUpdate()
 {
     SLM_ASSERT("No valid spline", m_parametricSpline);
 

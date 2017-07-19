@@ -19,9 +19,9 @@ namespace opSofa
  */
 struct Plugin : public ::fwRuntime::Plugin
 {
-    ~Plugin() throw();
-    void start() throw(::fwRuntime::RuntimeException);
-    void stop() throw();
+    ~Plugin() noexcept;
+    void start();
+    void stop() noexcept;
 };
 
 

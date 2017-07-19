@@ -47,10 +47,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (SViewPointsEditor)(::gui::editor::IEditor) );
 
     /// Constructor.
-    UIVIEWPOINTS_API SViewPointsEditor() throw();
+    UIVIEWPOINTS_API SViewPointsEditor() noexcept;
 
     /// Destructor.
-    UIVIEWPOINTS_API virtual ~SViewPointsEditor() throw();
+    UIVIEWPOINTS_API virtual ~SViewPointsEditor() noexcept;
 
     /**
      * @name Signal type and key.
@@ -66,9 +66,9 @@ protected:
     /**
      * @name Overrides.
      * @{ */
-    virtual void starting() throw(::fwTools::Failed);
-    virtual void stopping() throw(::fwTools::Failed);
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void starting();
+    virtual void stopping();
+    virtual void updating();
     /**  @} */
 
     /**
@@ -82,7 +82,7 @@ protected:
      *
      * @throw fwTools::Failed
      */
-    virtual void configuring() throw(fwTools::Failed);
+    virtual void configuring();
 
     /// Signal triggered when a view point is double clicked.
     DirectTargetChangedSignalType::sptr m_sigDirectTargetChanged;

@@ -18,15 +18,15 @@ namespace opKinect
  */
 struct Plugin : public ::fwRuntime::Plugin
 {
-    ~Plugin() throw();
+    ~Plugin() noexcept;
     /**
      * @brief start plugin
      */
-    void start() throw(::fwRuntime::RuntimeException);
+    void start();
     /**
      * @brief stop plugin
      */
-    void stop() throw();
+    void stop() noexcept;
 };
 
 

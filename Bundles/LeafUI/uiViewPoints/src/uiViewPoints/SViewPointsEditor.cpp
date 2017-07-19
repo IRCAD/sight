@@ -44,7 +44,7 @@ const std::string SViewPointsEditor::s_FIELD_NAME                               
 
 //------------------------------------------------------------------------------
 
-SViewPointsEditor::SViewPointsEditor() throw() :
+SViewPointsEditor::SViewPointsEditor() noexcept :
     m_nbViewPoints(0)
 {
     m_sigDirectTargetChanged = DirectTargetChangedSignalType::New();
@@ -53,13 +53,13 @@ SViewPointsEditor::SViewPointsEditor() throw() :
 
 //------------------------------------------------------------------------------
 
-SViewPointsEditor::~SViewPointsEditor() throw()
+SViewPointsEditor::~SViewPointsEditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SViewPointsEditor::starting() throw(::fwTools::Failed)
+void SViewPointsEditor::starting()
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -118,7 +118,7 @@ void SViewPointsEditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SViewPointsEditor::stopping() throw(::fwTools::Failed)
+void SViewPointsEditor::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -127,7 +127,7 @@ void SViewPointsEditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SViewPointsEditor::configuring() throw(fwTools::Failed)
+void SViewPointsEditor::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -144,7 +144,7 @@ void SViewPointsEditor::configuring() throw(fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SViewPointsEditor::updating() throw(::fwTools::Failed)
+void SViewPointsEditor::updating()
 {
 }
 

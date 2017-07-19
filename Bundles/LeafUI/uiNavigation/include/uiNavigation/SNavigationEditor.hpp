@@ -45,10 +45,10 @@ public:
     fwCoreServiceClassDefinitionsMacro((SNavigationEditor)(::gui::editor::IEditor));
 
     /// Constructor.
-    UINAVIGATION_API SNavigationEditor() throw();
+    UINAVIGATION_API SNavigationEditor() noexcept;
 
     /// Destructor.
-    UINAVIGATION_API virtual ~SNavigationEditor() throw();
+    UINAVIGATION_API virtual ~SNavigationEditor() noexcept;
 
     /**
      * @name Signal key and type for slider changes.
@@ -62,9 +62,9 @@ protected:
     /**
      * @name Overrides.
      * @{ */
-    virtual void starting() throw(::fwTools::Failed);
-    virtual void stopping() throw(::fwTools::Failed);
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void starting();
+    virtual void stopping();
+    virtual void updating();
     /**  @} */
 
     /**
@@ -80,7 +80,7 @@ protected:
      *
      * @throw fwTools::Failed
      */
-    virtual void configuring() throw(::fwTools::Failed);
+    virtual void configuring();
 
     /// Function called by the timer.
     void callBackTimer();

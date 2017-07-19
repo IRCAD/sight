@@ -25,20 +25,20 @@ fwServicesRegisterMacro( ::io::IReader, ::devForum::tuto02::ImageReaderService, 
 
 //-----------------------------------------------------------------------------
 
-ImageReaderService::ImageReaderService() throw()
+ImageReaderService::ImageReaderService() noexcept
     : m_fsImgPath("")
 {
 }
 
 //-----------------------------------------------------------------------------
 
-ImageReaderService::~ImageReaderService() throw()
+ImageReaderService::~ImageReaderService() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ImageReaderService::configuring() throw ( ::fwTools::Failed )
+void ImageReaderService::configuring()
 {
     // Test if in the service configuration the tag filename is defined. If it is defined, the image path is initialized and we tag the service as configured.
     if( m_configuration->findConfigurationElement("filename") )
@@ -56,13 +56,13 @@ void ImageReaderService::configureWithIHM()
 
 //-----------------------------------------------------------------------------
 
-void ImageReaderService::starting() throw ( ::fwTools::Failed )
+void ImageReaderService::starting()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ImageReaderService::stopping() throw ( ::fwTools::Failed )
+void ImageReaderService::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -70,7 +70,7 @@ void ImageReaderService::stopping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void ImageReaderService::updating() throw ( ::fwTools::Failed )
+void ImageReaderService::updating()
 {
     // Retrieve dataStruct associated with this service
     ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();

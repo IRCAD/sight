@@ -42,8 +42,8 @@ public:
     /**
      * @name Constructor/Destructor
      * @{ */
-    CTRLSPLINENAVIGATION_API SMoveAlongSpline() throw();
-    CTRLSPLINENAVIGATION_API virtual ~SMoveAlongSpline() throw();
+    CTRLSPLINENAVIGATION_API SMoveAlongSpline() noexcept;
+    CTRLSPLINENAVIGATION_API virtual ~SMoveAlongSpline() noexcept;
     /**  @} */
 
     /**
@@ -95,10 +95,10 @@ protected:
     /**
      * @name Overrides.
      * @{ */
-    virtual void starting() throw(::fwTools::Failed);
-    virtual void stopping() throw(::fwTools::Failed);
-    virtual void configuring() throw(::fwTools::Failed);
-    virtual void updating() throw(::fwTools::Failed);
+    virtual void starting();
+    virtual void stopping();
+    virtual void configuring();
+    virtual void updating();
     /**  @} */
 
     /**

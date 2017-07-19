@@ -43,7 +43,7 @@ public:
 
     BEGINNERTRAINING_API SStringEditor();
 
-    BEGINNERTRAINING_API virtual ~SStringEditor() throw();
+    BEGINNERTRAINING_API virtual ~SStringEditor() noexcept;
 
 protected Q_SLOTS:
 
@@ -52,16 +52,16 @@ protected Q_SLOTS:
 protected:
 
     /// Overrides
-    BEGINNERTRAINING_API virtual void configuring() throw ( ::fwTools::Failed );
+    BEGINNERTRAINING_API virtual void configuring();
 
     /// Overrides
-    BEGINNERTRAINING_API virtual void starting() throw ( ::fwTools::Failed );
+    BEGINNERTRAINING_API virtual void starting();
 
     /// Overrides
-    BEGINNERTRAINING_API virtual void stopping() throw ( ::fwTools::Failed );
+    BEGINNERTRAINING_API virtual void stopping();
 
     /// Overrides
-    BEGINNERTRAINING_API virtual void updating() throw ( ::fwTools::Failed );
+    BEGINNERTRAINING_API virtual void updating();
 
     /// Method to notify modification on data
     BEGINNERTRAINING_API void notifyMessage();

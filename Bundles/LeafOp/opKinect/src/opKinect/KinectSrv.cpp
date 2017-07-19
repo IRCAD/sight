@@ -24,26 +24,26 @@ fwServicesRegisterMacro(::fwGui::IActionSrv, ::opKinect::KinectSrv, ::fwMedData:
 
 //---------------------------------------------------------------------------------------
 
-KinectSrv::KinectSrv() throw()
+KinectSrv::KinectSrv() noexcept
 {
 }
 
 //---------------------------------------------------------------------------------------
 
-KinectSrv::~KinectSrv() throw()
+KinectSrv::~KinectSrv() noexcept
 {
 }
 
 //---------------------------------------------------------------------------------------
 
-void KinectSrv::configuring() throw ( ::fwTools::Failed )
+void KinectSrv::configuring()
 {
     SLM_TRACE_FUNC();
 }
 
 //---------------------------------------------------------------------------------------
 
-void KinectSrv::starting() throw ( ::fwTools::Failed )
+void KinectSrv::starting()
 {
     ::fwMedData::ModelSeries::sptr ms = this->getObject< ::fwMedData::ModelSeries >();
     SLM_ASSERT("Invalid object", ms);
@@ -55,7 +55,7 @@ void KinectSrv::starting() throw ( ::fwTools::Failed )
 
 //---------------------------------------------------------------------------------------
 
-void KinectSrv::stopping() throw ( ::fwTools::Failed )
+void KinectSrv::stopping()
 {
     // Stop Kinect thread
     m_kinect->stop();
@@ -63,13 +63,13 @@ void KinectSrv::stopping() throw ( ::fwTools::Failed )
 
 //---------------------------------------------------------------------------------------
 
-void KinectSrv::receiving( fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
+void KinectSrv::receiving( fwServices::ObjectMsg::csptr msg )
 {
 }
 
 //---------------------------------------------------------------------------------------
 
-void KinectSrv::updating() throw ( ::fwTools::Failed )
+void KinectSrv::updating()
 {
 }
 

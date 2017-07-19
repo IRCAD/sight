@@ -42,7 +42,7 @@ SAutomaticRegistration::~SAutomaticRegistration()
 
 //------------------------------------------------------------------------------
 
-void SAutomaticRegistration::configuring() throw( ::fwTools::Failed )
+void SAutomaticRegistration::configuring()
 {
     ::fwServices::IService::ConfigType config = this->getConfigTree();
 
@@ -63,14 +63,14 @@ void SAutomaticRegistration::configuring() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SAutomaticRegistration::starting() throw( ::fwTools::Failed )
+void SAutomaticRegistration::starting()
 {
 
 }
 
 //------------------------------------------------------------------------------
 
-void SAutomaticRegistration::updating() throw( ::fwTools::Failed )
+void SAutomaticRegistration::updating()
 {
     ::fwData::Image::csptr target    = this->getInput< ::fwData::Image >(s_TARGET_IN);
     ::fwData::Image::csptr reference = this->getInput< ::fwData::Image >(s_REFERENCE_IN);
@@ -100,7 +100,7 @@ void SAutomaticRegistration::updating() throw( ::fwTools::Failed )
 
 //------------------------------------------------------------------------------
 
-void SAutomaticRegistration::stopping() throw( ::fwTools::Failed )
+void SAutomaticRegistration::stopping()
 {
 
 }

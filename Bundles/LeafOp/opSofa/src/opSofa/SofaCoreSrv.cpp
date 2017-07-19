@@ -27,15 +27,15 @@ namespace opSofa
 
 fwServicesRegisterMacro( ::fwGui::IActionSrv, ::opSofa::SofaCoreSrv, ::fwMedData::ModelSeries );
 
-SofaCoreSrv::SofaCoreSrv() throw()
+SofaCoreSrv::SofaCoreSrv() noexcept
 {
 }
 
-SofaCoreSrv::~SofaCoreSrv() throw()
+SofaCoreSrv::~SofaCoreSrv() noexcept
 {
 }
 
-void SofaCoreSrv::configuring() throw ( ::fwTools::Failed )
+void SofaCoreSrv::configuring()
 {
     if(m_configuration->findConfigurationElement("addTools"))
     {
@@ -47,17 +47,17 @@ void SofaCoreSrv::configuring() throw ( ::fwTools::Failed )
     }
 }
 
-void SofaCoreSrv::starting() throw ( ::fwTools::Failed )
+void SofaCoreSrv::starting()
 {
     SLM_TRACE_FUNC();
 }
 
-void SofaCoreSrv::stopping() throw ( ::fwTools::Failed )
+void SofaCoreSrv::stopping()
 {
     SLM_TRACE_FUNC();
 }
 
-void SofaCoreSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed )
+void SofaCoreSrv::receiving( ::fwServices::ObjectMsg::csptr msg )
 {
     if (msg->hasEvent("NEW_SOFA_SCENE"))
     {
@@ -174,7 +174,7 @@ void SofaCoreSrv::receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTo
     }
 }
 
-void SofaCoreSrv::updating() throw ( ::fwTools::Failed )
+void SofaCoreSrv::updating()
 {
 }
 

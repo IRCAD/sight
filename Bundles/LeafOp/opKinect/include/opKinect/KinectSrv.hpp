@@ -23,37 +23,37 @@ class KinectSrv : public ::fwGui::IActionSrv
 public:
     fwCoreServiceClassDefinitionsMacro ( (KinectSrv)(::fwGui::IActionSrv) );
 
-    KinectSrv() throw();
-    virtual ~KinectSrv() throw();
+    KinectSrv() noexcept;
+    virtual ~KinectSrv() noexcept;
 
 protected:
 
     /**
      * @brief Used to define the service parameters and analyze its configuration.
      */
-    void configuring() throw ( ::fwTools::Failed );
+    void configuring();
 
     /**
      * @brief Used to launch the service.
      */
-    void starting() throw ( ::fwTools::Failed );
+    void starting();
 
     /**
      * @brief Used to stop the service.
      */
-    void stopping() throw ( ::fwTools::Failed );
+    void stopping();
 
     /**
      * @brief Called to do an action on the data associated to the service.
      */
-    void updating() throw ( ::fwTools::Failed );
+    void updating();
 
     /**
      * @brief Called by a data to notify a service.
      *
      * @param msg : Incoming message
      */
-    void receiving( fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed );
+    void receiving( fwServices::ObjectMsg::csptr msg );
 
     /**
      * @brief info of the class

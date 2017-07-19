@@ -39,8 +39,8 @@ public:
     /**
      * @name Constructor/Destructor
      * @{ */
-    VISUNAVIGATION_API SSplineAdaptor() throw();
-    VISUNAVIGATION_API virtual ~SSplineAdaptor() throw();
+    VISUNAVIGATION_API SSplineAdaptor() noexcept;
+    VISUNAVIGATION_API virtual ~SSplineAdaptor() noexcept;
     /**  @} */
 
     /**
@@ -58,13 +58,13 @@ protected:
     /**
      * @name Overrides.
      * @{ */
-    VISUNAVIGATION_API void doStart() throw(fwTools::Failed);
-    VISUNAVIGATION_API void doStop() throw(fwTools::Failed);
-    void doSwap() throw(fwTools::Failed)
+    VISUNAVIGATION_API void doStart();
+    VISUNAVIGATION_API void doStop();
+    void doSwap()
     {
     }
-    VISUNAVIGATION_API void doUpdate() throw(fwTools::Failed);
-    VISUNAVIGATION_API void doConfigure() throw(fwTools::Failed);
+    VISUNAVIGATION_API void doUpdate();
+    VISUNAVIGATION_API void doConfigure();
     /**  @} */
 
 private:

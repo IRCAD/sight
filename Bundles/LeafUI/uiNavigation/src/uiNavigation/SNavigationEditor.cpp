@@ -40,7 +40,7 @@ const ::fwCom::Signals::SignalKeyType SNavigationEditor::s_SLIDER_PROGRESSED_SIG
 
 //-------------------------------------------------------------------------------------------------------------
 
-SNavigationEditor::SNavigationEditor() throw() :
+SNavigationEditor::SNavigationEditor() noexcept :
     m_sliderPosition(0),
     m_sliderLength(100),
     m_timerDuration(50),
@@ -55,13 +55,13 @@ SNavigationEditor::SNavigationEditor() throw() :
 
 //-------------------------------------------------------------------------------------------------------------
 
-SNavigationEditor::~SNavigationEditor() throw ()
+SNavigationEditor::~SNavigationEditor() noexcept
 {
 }
 
 //-------------------------------------------------------------------------------------------------------------
 
-void SNavigationEditor::starting() throw(::fwTools::Failed)
+void SNavigationEditor::starting()
 {
     SLM_TRACE_FUNC();
     this->create();
@@ -115,7 +115,7 @@ void SNavigationEditor::starting() throw(::fwTools::Failed)
 
 //-------------------------------------------------------------------------------------------------------------
 
-void SNavigationEditor::stopping() throw(::fwTools::Failed)
+void SNavigationEditor::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -129,7 +129,7 @@ void SNavigationEditor::stopping() throw(::fwTools::Failed)
 
 //-------------------------------------------------------------------------------------------------------------
 
-void SNavigationEditor::configuring() throw(fwTools::Failed)
+void SNavigationEditor::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -168,7 +168,7 @@ void SNavigationEditor::configuring() throw(fwTools::Failed)
 
 //-------------------------------------------------------------------------------------------------------------
 
-void SNavigationEditor::updating() throw(::fwTools::Failed)
+void SNavigationEditor::updating()
 {
 }
 

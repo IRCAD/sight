@@ -35,28 +35,28 @@ SStringReader::SStringReader()
 
 //-----------------------------------------------------------------------------
 
-SStringReader::~SStringReader() throw()
+SStringReader::~SStringReader() noexcept
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void SStringReader::starting() throw ( ::fwTools::Failed )
+void SStringReader::starting()
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void SStringReader::stopping() throw ( ::fwTools::Failed )
+void SStringReader::stopping()
 {
     SLM_TRACE_FUNC();
 }
 
 //-----------------------------------------------------------------------------
 
-void SStringReader::updating() throw ( ::fwTools::Failed )
+void SStringReader::updating()
 {
     SLM_TRACE_FUNC();
 

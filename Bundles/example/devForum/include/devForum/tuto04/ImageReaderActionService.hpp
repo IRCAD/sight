@@ -32,24 +32,24 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (ImageReaderActionService)(::fwGui::IActionSrv) );
 
     /// Constructor, just called parent constructor to initialize standart IAction parameters.
-    DEVFORUM_API ImageReaderActionService() throw();
+    DEVFORUM_API ImageReaderActionService() noexcept;
 
     /// Destructor, does nothing.
-    DEVFORUM_API virtual ~ImageReaderActionService() throw();
+    DEVFORUM_API virtual ~ImageReaderActionService() noexcept;
 
 protected:
 
     /// Called parent method to retrieve action parameters defined in the service configuration
-    DEVFORUM_API virtual void configuring() throw(::fwTools::Failed);
+    DEVFORUM_API virtual void configuring();
 
     /// Called parent method to create item menu and append it in the application menu
-    DEVFORUM_API virtual void starting() throw(fwTools::Failed);
+    DEVFORUM_API virtual void starting();
 
     // Uses parent method to remove item menu of the application
-    DEVFORUM_API virtual void stopping() throw(fwTools::Failed);
+    DEVFORUM_API virtual void stopping();
 
     /// This method does nothing here.
-    DEVFORUM_API virtual void updating() throw(fwTools::Failed);
+    DEVFORUM_API virtual void updating();
 
 };
 

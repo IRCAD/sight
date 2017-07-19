@@ -88,7 +88,7 @@ public:
     MIDASIO_API SPTR(::midasIO::IResponseHandler) uploadFile(
         const ::boost::filesystem::path& filePath,
         const std::string& targetDirId,
-        const int& licenseId = IConfiguration::PRIVATE_ARR) throw(::fwCore::Exception);
+        const int& licenseId = IConfiguration::PRIVATE_ARR);
 
 private:
 

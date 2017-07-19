@@ -34,20 +34,20 @@ static const ::fwCom::Signals::SignalKeyType TRIGGERED_SIG = "triggered";
 
 //-----------------------------------------------------------------------------
 
-SButton::SButton() throw ()
+SButton::SButton() noexcept
 {
     m_sigTriggered = newSignal<TrigerredSignalType>(TRIGGERED_SIG);
 }
 
 //-----------------------------------------------------------------------------
 
-SButton::~SButton() throw ()
+SButton::~SButton() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SButton::starting() throw (::fwTools::Failed)
+void SButton::starting()
 {
     this->create();
 
@@ -84,14 +84,14 @@ void SButton::starting() throw (::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
-void SButton::stopping() throw (::fwTools::Failed)
+void SButton::stopping()
 {
     this->destroy();
 }
 
 //-----------------------------------------------------------------------------
 
-void SButton::updating() throw (::fwTools::Failed)
+void SButton::updating()
 {
     m_sigTriggered->asyncEmit();
 }
@@ -105,7 +105,7 @@ void SButton::onClick()
 
 //-----------------------------------------------------------------------------
 
-void SButton::configuring() throw (::fwTools::Failed)
+void SButton::configuring()
 {
     this->initialize();
 

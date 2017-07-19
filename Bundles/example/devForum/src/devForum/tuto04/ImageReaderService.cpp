@@ -28,14 +28,14 @@ fwServicesRegisterMacro( ::io::IReader, ::devForum::tuto04::ImageReaderService, 
 
 //-----------------------------------------------------------------------------
 
-ImageReaderService::ImageReaderService() throw()
+ImageReaderService::ImageReaderService() noexcept
     : ::devForum::tuto03::ImageReaderService()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-ImageReaderService::~ImageReaderService() throw()
+ImageReaderService::~ImageReaderService() noexcept
 {
 }
 

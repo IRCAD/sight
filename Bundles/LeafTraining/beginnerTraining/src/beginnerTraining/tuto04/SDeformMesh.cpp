@@ -37,13 +37,13 @@ SDeformMesh::SDeformMesh()
 
 //-----------------------------------------------------------------------------
 
-SDeformMesh::~SDeformMesh() throw()
+SDeformMesh::~SDeformMesh() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void SDeformMesh::configuring() throw ( ::fwTools::Failed )
+void SDeformMesh::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize(); // start with this inherited function
@@ -51,7 +51,7 @@ void SDeformMesh::configuring() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SDeformMesh::starting() throw ( ::fwTools::Failed )
+void SDeformMesh::starting()
 {
     SLM_TRACE_FUNC();
     this->create(); // start with this inherited function
@@ -80,7 +80,7 @@ void SDeformMesh::starting() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SDeformMesh::stopping() throw ( ::fwTools::Failed )
+void SDeformMesh::stopping()
 {
     SLM_TRACE_FUNC();
 
@@ -93,7 +93,7 @@ void SDeformMesh::stopping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void SDeformMesh::updating() throw ( ::fwTools::Failed )
+void SDeformMesh::updating()
 {
     // Update your textEditor from your associated object
     ::fwData::String::sptr myAssociatedData = this->getInOut< ::fwData::String >(s_EDIT_STRING_KEY);

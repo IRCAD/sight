@@ -152,7 +152,7 @@ SPTR(::midasIO::IResponseHandler) RequestHandler::createFolder(
 SPTR(::midasIO::IResponseHandler) RequestHandler::uploadFile(
     const ::boost::filesystem::path& filePath,
     const std::string& targetDirId,
-    const int& licenseId) throw( ::fwCore::Exception)
+    const int& licenseId)
 {
     SLM_DEBUG("Uploading file '" + filePath.string() + "' to remote directory '" + targetDirId + "'");
     const std::string filename = filePath.filename().string();

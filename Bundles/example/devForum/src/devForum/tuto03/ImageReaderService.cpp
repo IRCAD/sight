@@ -30,20 +30,20 @@ fwServicesRegisterMacro( ::io::IReader, ::devForum::tuto03::ImageReaderService, 
 
 //-----------------------------------------------------------------------------
 
-ImageReaderService::ImageReaderService() throw()
+ImageReaderService::ImageReaderService() noexcept
     : ::devForum::tuto02::ImageReaderService()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-ImageReaderService::~ImageReaderService() throw()
+ImageReaderService::~ImageReaderService() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ImageReaderService::updating() throw ( ::fwTools::Failed )
+void ImageReaderService::updating()
 {
     // First, called updating of ::devForum::tuto02::ImageReaderService::updating to
     // process reading

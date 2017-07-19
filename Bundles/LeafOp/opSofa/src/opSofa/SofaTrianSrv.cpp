@@ -23,21 +23,21 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::opSofa::SofaTrianSrv, ::fwData::
 /**
  * Constructor
  */
-SofaTrianSrv::SofaTrianSrv() throw() : m_meshUID("")
+SofaTrianSrv::SofaTrianSrv() noexcept : m_meshUID("")
 {
 }
 
 /**
  * Destructor
  */
-SofaTrianSrv::~SofaTrianSrv() throw()
+SofaTrianSrv::~SofaTrianSrv() noexcept
 {
 }
 
 /**
  * configuring() method is used to define the service parameters and analyze its configuration.
  */
-void SofaTrianSrv::configuring() throw ( ::fwTools::Failed )
+void SofaTrianSrv::configuring()
 {
     SLM_TRACE_FUNC();
     this->initialize();
@@ -52,7 +52,7 @@ void SofaTrianSrv::configuring() throw ( ::fwTools::Failed )
 /**
  * starting() method is used to launch the service.
  */
-void SofaTrianSrv::starting() throw ( ::fwTools::Failed )
+void SofaTrianSrv::starting()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStarting();
@@ -61,7 +61,7 @@ void SofaTrianSrv::starting() throw ( ::fwTools::Failed )
 /**
  * stopping() method is used to stop the service.
  */
-void SofaTrianSrv::stopping() throw ( ::fwTools::Failed )
+void SofaTrianSrv::stopping()
 {
     SLM_TRACE_FUNC();
     this->actionServiceStopping();
@@ -71,14 +71,14 @@ void SofaTrianSrv::stopping() throw ( ::fwTools::Failed )
  * updating(_pMsg) is called by a data to notify a service.
  * @param _pMsg : Incoming message
  */
-void SofaTrianSrv::receiving( ::fwServices::ObjectMsg::csptr _pMsg ) throw ( ::fwTools::Failed )
+void SofaTrianSrv::receiving( ::fwServices::ObjectMsg::csptr _pMsg )
 {
 }
 
 /**
  * updating() method is called to do an action on the data associated to the service.
  */
-void SofaTrianSrv::updating() throw ( ::fwTools::Failed )
+void SofaTrianSrv::updating()
 {
     int static etat = 1;
 

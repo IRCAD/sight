@@ -58,34 +58,34 @@ public:
     /**
      * @brief Constructor. Initializes slots.
      */
-    OPPOCMESHER_API CGoGNMesher() throw ();
+    OPPOCMESHER_API CGoGNMesher() noexcept;
 
     /**
      * @brief Destructor. Does nothing.
      */
-    OPPOCMESHER_API virtual ~CGoGNMesher() throw ();
+    OPPOCMESHER_API virtual ~CGoGNMesher() noexcept;
 
 protected:
 
     /**
      * @brief This method starts the operator. Does nothing.
      */
-    OPPOCMESHER_API void starting() throw (::fwTools::Failed);
+    OPPOCMESHER_API void starting();
 
     /**
      * @brief This method stops the operator. Does nothing.
      */
-    OPPOCMESHER_API void stopping() throw (::fwTools::Failed);
+    OPPOCMESHER_API void stopping();
 
     /**
      * @brief Declare the configuration to define percent of reduction, image source and ModelSeries destination.
      */
-    OPPOCMESHER_API void configuring() throw (::fwTools::Failed);
+    OPPOCMESHER_API void configuring();
 
     /**
      * @brief This method is used to update services. Does nothing.
      */
-    OPPOCMESHER_API void updating() throw (::fwTools::Failed);
+    OPPOCMESHER_API void updating();
 
 private:
 

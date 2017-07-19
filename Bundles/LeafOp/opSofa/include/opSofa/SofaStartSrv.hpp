@@ -26,13 +26,13 @@ class SofaStartSrv : public ::fwGui::IActionSrv
 public:
     fwCoreServiceClassDefinitionsMacro ( (SofaStartSrv)(::fwGui::IActionSrv ) );
 
-    SofaStartSrv() throw();
-    virtual ~SofaStartSrv() throw();
-    void configuring() throw ( ::fwTools::Failed );
-    void starting() throw ( ::fwTools::Failed );
-    void stopping() throw ( ::fwTools::Failed );
-    void updating() throw ( ::fwTools::Failed );
-    void receiving( ::fwServices::ObjectMsg::csptr msg ) throw ( ::fwTools::Failed );
+    SofaStartSrv() noexcept;
+    virtual ~SofaStartSrv() noexcept;
+    void configuring();
+    void starting();
+    void stopping();
+    void updating();
+    void receiving( ::fwServices::ObjectMsg::csptr msg );
     void info( std::ostream & ostr );
 
 };

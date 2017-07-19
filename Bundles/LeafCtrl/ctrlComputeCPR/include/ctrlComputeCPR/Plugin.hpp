@@ -22,13 +22,13 @@ struct CTRLCOMPUTECPR_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
     /// Destructor
-    CTRLCOMPUTECPR_API ~Plugin() throw();
+    CTRLCOMPUTECPR_API ~Plugin() noexcept;
 
     /// Overrides
-    CTRLCOMPUTECPR_API void start() throw(::fwRuntime::RuntimeException);
+    CTRLCOMPUTECPR_API void start();
 
     /// Overrides
-    CTRLCOMPUTECPR_API void stop() throw();
+    CTRLCOMPUTECPR_API void stop() noexcept;
 
 };
 

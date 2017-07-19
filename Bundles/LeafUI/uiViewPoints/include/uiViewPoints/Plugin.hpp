@@ -23,13 +23,13 @@ struct UIVIEWPOINTS_CLASS_API Plugin : public ::fwRuntime::Plugin
 {
 
     /// Destructor
-    UIVIEWPOINTS_API ~Plugin() throw();
+    UIVIEWPOINTS_API ~Plugin() noexcept;
 
     /// Overrides
-    UIVIEWPOINTS_API void start() throw(::fwRuntime::RuntimeException);
+    UIVIEWPOINTS_API void start();
 
     /// Overrides
-    UIVIEWPOINTS_API void stop() throw();
+    UIVIEWPOINTS_API void stop() noexcept;
 
 };
 

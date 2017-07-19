@@ -64,18 +64,18 @@ public:
 
 fwServicesRegisterMacro( ::fwRenderVTK::IVtkAdaptorService, ::opSofa::BoxWidget, ::fwData::TransformationMatrix3D );
 
-BoxWidget::BoxWidget() throw()
+BoxWidget::BoxWidget() noexcept
     : ::fwRenderVTK::IVtkAdaptorService(),
       m_vtkBoxWidget( 0 ), m_scaleFactor(1.0), m_enableScaling(true)
 {
     m_boxWidgetCommand = BoxClallback::New(this);
 }
 
-BoxWidget::~BoxWidget() throw()
+BoxWidget::~BoxWidget() noexcept
 {
 }
 
-void BoxWidget::configuring() throw( ::fwTools::Failed )
+void BoxWidget::configuring()
 {
     setRenderId( m_configuration->getAttributeValue( "renderer" ) );
     this->setTransformId( m_configuration->getAttributeValue("transform") );
@@ -96,7 +96,7 @@ void BoxWidget::configuring() throw( ::fwTools::Failed )
     m_idMesh = m_configuration->getAttributeValue("idMesh");
 }
 
-void BoxWidget::doStart() throw( ::fwTools::Failed )
+void BoxWidget::doStart()
 {
     m_transform = getTransform();
     SLM_ASSERT("BoxWidget need a vtkTransform", m_transform);
@@ -121,7 +121,7 @@ void BoxWidget::doStart() throw( ::fwTools::Failed )
     m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
 }
 
-void BoxWidget::doStop() throw( ::fwTools::Failed )
+void BoxWidget::doStop()
 {
     unregisterServices();
 
@@ -133,7 +133,7 @@ void BoxWidget::doStop() throw( ::fwTools::Failed )
 
 }
 
-void BoxWidget::doSwap() throw( ::fwTools::Failed )
+void BoxWidget::doSwap()
 {
 }
 
@@ -197,12 +197,12 @@ void BoxWidget::updateFromVtk()
     m_vtkBoxWidget->AddObserver( ::vtkCommand::InteractionEvent, m_boxWidgetCommand );
 }
 
-void BoxWidget::doUpdate() throw( ::fwTools::Failed )
+void BoxWidget::doUpdate()
 {
 
 }
 
-void BoxWidget::doReceive( ::fwServices::ObjectMsg::csptr msg ) throw( ::fwTools::Failed )
+void BoxWidget::doReceive( ::fwServices::ObjectMsg::csptr msg )
 {
 
 }

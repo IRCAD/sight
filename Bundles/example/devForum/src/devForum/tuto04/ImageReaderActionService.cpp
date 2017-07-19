@@ -25,18 +25,18 @@ fwServicesRegisterMacro( ::fwGui::IActionSrv, ::devForum::tuto04::ImageReaderAct
 
 //-----------------------------------------------------------------------------
 
-ImageReaderActionService::ImageReaderActionService() throw()
+ImageReaderActionService::ImageReaderActionService() noexcept
 {
 }
 //-----------------------------------------------------------------------------
 
-ImageReaderActionService::~ImageReaderActionService() throw()
+ImageReaderActionService::~ImageReaderActionService() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-void ImageReaderActionService::configuring() throw ( ::fwTools::Failed )
+void ImageReaderActionService::configuring()
 {
     // Uses parent method to parse the service configuration and retrieves
     // the name of action in Menu, his shortcut, and some others parameters that
@@ -46,7 +46,7 @@ void ImageReaderActionService::configuring() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void ImageReaderActionService::starting() throw ( ::fwTools::Failed )
+void ImageReaderActionService::starting()
 {
     // Uses parent method to create item menu and append it in the application menu
     this->actionServiceStarting();
@@ -54,7 +54,7 @@ void ImageReaderActionService::starting() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void ImageReaderActionService::stopping() throw ( ::fwTools::Failed )
+void ImageReaderActionService::stopping()
 {
     // Uses parent method to remove item menu of the application
     this->actionServiceStopping();
@@ -62,7 +62,7 @@ void ImageReaderActionService::stopping() throw ( ::fwTools::Failed )
 
 //-----------------------------------------------------------------------------
 
-void ImageReaderActionService::updating() throw ( ::fwTools::Failed )
+void ImageReaderActionService::updating()
 {
     // Get object associated to this service
     ::fwData::Image::sptr associatedImage = this->getObject< ::fwData::Image >();

@@ -17,21 +17,21 @@ static ::fwRuntime::utils::GenericExecutableFactoryRegistrar<Plugin> registrar("
 /**
  * @brief destructor
  */
-Plugin::~Plugin() throw()
+Plugin::~Plugin() noexcept
 {
 }
 
 /**
  * @brief start plugin
  */
-void Plugin::start() throw( ::fwRuntime::RuntimeException )
+void Plugin::start()
 {
 }
 
 /**
  * @brief stop plugin
  */
-void Plugin::stop() throw()
+void Plugin::stop() noexcept
 {
 }
 

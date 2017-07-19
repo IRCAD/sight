@@ -25,25 +25,25 @@ fwServicesRegisterMacro( ::fwRender::IRender, ::devForum::tuto03::ImageViewerSer
 
 //-----------------------------------------------------------------------------
 
-ImageViewerService::ImageViewerService() throw()
+ImageViewerService::ImageViewerService() noexcept
     : ::devForum::tuto02::ImageViewerService()
 {
 }
 
 //-----------------------------------------------------------------------------
 
-ImageViewerService::~ImageViewerService() throw()
+ImageViewerService::~ImageViewerService() noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
-void ImageViewerService::configuring() throw ( ::fwTools::Failed )
+void ImageViewerService::configuring()
 {
     ::devForum::tuto02::ImageViewerService::configuring();
 }
 //-----------------------------------------------------------------------------
 
-void ImageViewerService::stopping() throw ( ::fwTools::Failed )
+void ImageViewerService::stopping()
 {
     ::devForum::tuto02::ImageViewerService::stopping();
 }

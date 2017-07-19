@@ -46,7 +46,7 @@ const ::fwCom::Signals::SignalKeyType SCPREditor:: s_HEIGHT_CHANGED_SIG    = "he
 const ::fwCom::Signals::SignalKeyType SCPREditor:: s_SPACING_CHANGED_SIG   = "spacingChanged";
 const ::fwCom::Signals::SignalKeyType SCPREditor:: s_SLIDER_PROGRESSED_SIG = "sliderProgressed";
 
-SCPREditor::SCPREditor() throw() :
+SCPREditor::SCPREditor() noexcept :
     m_angle(0.),
     m_spacing(0.5),
     m_minSpacing(0.5),
@@ -61,13 +61,13 @@ SCPREditor::SCPREditor() throw() :
 
 //------------------------------------------------------------------------------------------------------
 
-SCPREditor::~SCPREditor() throw()
+SCPREditor::~SCPREditor() noexcept
 {
 }
 
 //------------------------------------------------------------------------------------------------------
 
-void SCPREditor::starting() throw(::fwTools::Failed)
+void SCPREditor::starting()
 {
     this->create();
 
@@ -126,7 +126,7 @@ void SCPREditor::starting() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------------------------------
 
-void SCPREditor::stopping() throw(::fwTools::Failed)
+void SCPREditor::stopping()
 {
     QObject::disconnect(m_heightSpinBox, SIGNAL(valueChanged(double)), this, SLOT(onChangeHeightValue(double)));
     QObject::disconnect(m_spacingSpinBox, SIGNAL(valueChanged(double)), this, SLOT(onChangeSpacingValue(double)));
@@ -138,14 +138,14 @@ void SCPREditor::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------------------------------
 
-void SCPREditor::configuring() throw(fwTools::Failed)
+void SCPREditor::configuring()
 {
     this->initialize();
 }
 
 //------------------------------------------------------------------------------------------------------
 
-void SCPREditor::updating() throw(::fwTools::Failed)
+void SCPREditor::updating()
 {
     // Send the signals to update the CPR mesh when the view debug is launched
     m_sigSpacingChanged->asyncEmit(m_spacing);

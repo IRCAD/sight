@@ -20,13 +20,13 @@ struct Plugin : public ::fwRuntime::Plugin
 {
 
     /// destructor
-    ~Plugin() throw();
+    ~Plugin() noexcept;
 
     // Overrides
-    void start() throw(::fwRuntime::RuntimeException);
+    void start();
 
     // Overrides
-    void stop() throw();
+    void stop() noexcept;
 
 };
 

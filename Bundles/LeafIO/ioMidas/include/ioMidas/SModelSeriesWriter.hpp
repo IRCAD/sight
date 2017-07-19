@@ -34,12 +34,12 @@ public:
     /**
      * @brief Constructor
      */
-    IOMIDAS_API SModelSeriesWriter() throw();
+    IOMIDAS_API SModelSeriesWriter() noexcept;
 
     /**
      * @brief Destructor
      */
-    IOMIDAS_API virtual ~SModelSeriesWriter() throw();
+    IOMIDAS_API virtual ~SModelSeriesWriter() noexcept;
 
 protected:
 
@@ -67,14 +67,14 @@ protected:
      * - rootFolder : main folder in Midas community where files are uploaded.
      *   This folder is automatically created if it doesn't exists.
      */
-    IOMIDAS_API virtual void configuring() throw(::fwTools::Failed);
+    IOMIDAS_API virtual void configuring();
 
     /**
      * @name Overrides ::fwServices::IService
      * @{ */
-    IOMIDAS_API virtual void starting() throw(::fwTools::Failed);
-    IOMIDAS_API virtual void stopping() throw(::fwTools::Failed);
-    IOMIDAS_API void updating() throw(::fwTools::Failed);
+    IOMIDAS_API virtual void starting();
+    IOMIDAS_API virtual void stopping();
+    IOMIDAS_API void updating();
     IOMIDAS_API void info(std::ostream &_sstream );
     IOMIDAS_API virtual std::vector< std::string > getSupportedExtensions();
     IOMIDAS_API virtual std::string getSelectorDialogTitle();

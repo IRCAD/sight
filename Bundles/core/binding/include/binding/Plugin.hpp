@@ -25,13 +25,13 @@ public:
     /**
      * @brief   destructor
      */
-    BINDING_API ~Plugin() throw();
+    BINDING_API ~Plugin() noexcept;
 
     // Overrides
-    BINDING_API void start() throw(::fwRuntime::RuntimeException);
+    BINDING_API void start();
 
     // Overrides
-    BINDING_API void stop() throw();
+    BINDING_API void stop() noexcept;
 
 };
 

@@ -37,10 +37,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (ImageReaderService)(::io::IReader) );
 
     /// Constructor, does nothing.
-    DEVFORUM_API ImageReaderService() throw();
+    DEVFORUM_API ImageReaderService() noexcept;
 
     /// Destructor, does nothing.
-    DEVFORUM_API virtual ~ImageReaderService() throw();
+    DEVFORUM_API virtual ~ImageReaderService() noexcept;
 
     /// This method is used to configure service with an IHM, open a dialog box to select vtk image path.
     DEVFORUM_API virtual void configureWithIHM();

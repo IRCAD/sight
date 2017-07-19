@@ -41,10 +41,10 @@ public:
     fwCoreServiceClassDefinitionsMacro ( (ImageViewerService)(::fwRender::IRender) );
 
     /// Constructor, does nothing.
-    DEVFORUM_API ImageViewerService() throw();
+    DEVFORUM_API ImageViewerService() noexcept;
 
     /// Destructor, does nothing.
-    DEVFORUM_API virtual ~ImageViewerService() throw();
+    DEVFORUM_API virtual ~ImageViewerService() noexcept;
 
 
 protected:
@@ -55,20 +55,20 @@ protected:
      * This method builds le layout manager of panel, create the vtk render and the vtk interactor and create a vtk pipeline to visualizate associated image in the vtk render.
      * @post if the associated image was not allocated, then an synthetic image is created.
      */
-    DEVFORUM_API virtual void starting() throw(fwTools::Failed);
+    DEVFORUM_API virtual void starting();
 
     /**
      * @brief This method is called when the service stops.
      *
      * This method destroys vtk components and wxWidget containers
      */
-    DEVFORUM_API virtual void stopping() throw(fwTools::Failed);
+    DEVFORUM_API virtual void stopping();
 
     /// This method does nothing here.
-    DEVFORUM_API virtual void updating() throw(fwTools::Failed);
+    DEVFORUM_API virtual void updating();
 
     /// Try to retrieve the guiContainerId defines in the service configuration
-    DEVFORUM_API virtual void configuring() throw(::fwTools::Failed);
+    DEVFORUM_API virtual void configuring();
 
     /// Initialize image with a synthetic image which represents a sphere.
     DEVFORUM_API void createSyntheticImage( ::fwData::Image::sptr _pImage );
