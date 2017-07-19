@@ -4,7 +4,6 @@
     <requirement id="arDataReg" />
     <requirement id="servicesReg" />
     <requirement id="visuVTKQt" />
-    <requirement id="trackerAruco" />
     <requirement id="preferences" />
 
     <extension implements="::fwServices::registry::AppConfig2">
@@ -153,7 +152,7 @@
             <service uid="organManager" type="::gui::action::SConfigLauncher">
                 <appConfig id="OrganManagerWithSeries" />
                 <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelseries" />
-                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/Ex06ManualAR_0-1/app.ico" />
+                <parameter replace="ICON_PATH" by="@BUNDLE_PREFIX@/Ex07RGBDManualAR_0-1/app.ico" />
                 <parameter replace="ModelRepresentationChannel" uid="ModelRepresentationChannel" />
                 <parameter replace="ModelDisplayChannel" uid="ModelDisplayChannel" />
             </service>

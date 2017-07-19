@@ -32,6 +32,7 @@ set( REQUIREMENTS
     ioVTK
     ioAtoms
     uiMedDataQt
+    3DVisualizationActivity2
 
     )
 
