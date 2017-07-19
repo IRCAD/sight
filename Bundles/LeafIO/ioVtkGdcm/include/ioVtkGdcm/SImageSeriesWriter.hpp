@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -8,9 +8,11 @@
 #define __IOVTKGDCM_SIMAGESERIESWRITER_HPP__
 
 #include "ioVtkGdcm/config.hpp"
+
 #include <io/IWriter.hpp>
 
 #include <boost/filesystem/path.hpp>
+
 #include <string>
 
 namespace fwMedData
@@ -28,13 +30,12 @@ namespace ioVtkGdcm
 
 /**
  * @brief Services to write an ImageSeries in DICOM format.
- * @class SImageSeriesWriter
  */
 class IOVTKGDCM_CLASS_API SImageSeriesWriter : public ::io::IWriter
 {
 
 public:
-    fwCoreServiceClassDefinitionsMacro ( (SImageSeriesWriter)( ::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (SImageSeriesWriter)( ::io::IWriter) );
 
     typedef ::fwCom::Signal< void ( SPTR(::fwJobs::IJob) ) > JobCreatedSignalType;
 
@@ -59,9 +60,11 @@ protected:
     /// Does nothing
     IOVTKGDCM_API virtual void stopping() throw(::fwTools::Failed);
 
+    /// Does nothing
+    IOVTKGDCM_API virtual void configuring() throw(::fwTools::Failed);
+
     /// Write the ImageSeries in DICOM format.
     IOVTKGDCM_API void updating() throw(::fwTools::Failed);
-
 
     /// Return path type managed by the service, here FOLDER
     IOVTKGDCM_API ::io::IOPathType getIOPathType() const;

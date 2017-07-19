@@ -1,29 +1,28 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fwServices/macros.hpp>
+#include "ioITK/SJpgImageSeriesWriter.hpp"
 
-
-#include <io/IWriter.hpp>
+#include "ioITK/JpgImageWriterService.hpp"
 
 #include <fwCore/base.hpp>
 
 #include <fwData/Image.hpp>
 #include <fwData/location/Folder.hpp>
 
-#include <fwMedData/ImageSeries.hpp>
-
 #include <fwGui/Cursor.hpp>
+#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
 
-#include "ioITK/JpgImageWriterService.hpp"
-#include "ioITK/SJpgImageSeriesWriter.hpp"
+#include <fwMedData/ImageSeries.hpp>
 
+#include <fwServices/macros.hpp>
+
+#include <io/IWriter.hpp>
 
 namespace ioITK
 {
@@ -51,13 +50,20 @@ SJpgImageSeriesWriter::~SJpgImageSeriesWriter() throw()
 
 //------------------------------------------------------------------------------
 
+void SJpgImageSeriesWriter::configuring() throw(::fwTools::Failed)
+{
+    ::io::IWriter::configuring();
+}
+
+//------------------------------------------------------------------------------
+
 void SJpgImageSeriesWriter::configureWithIHM()
 {
     SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialog;
-    dialog.setTitle("Choose a directory to save image");
+    dialog.setTitle(m_windowTitle.empty() ? "Choose a directory to save image" : m_windowTitle);
     dialog.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialog.setOption(::fwGui::dialog::ILocationDialog::WRITE);
     dialog.setType(::fwGui::dialog::ILocationDialog::FOLDER);
@@ -111,7 +117,7 @@ void SJpgImageSeriesWriter::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SJpgImageSeriesWriter::info(std::ostream &_sstream )
+void SJpgImageSeriesWriter::info(std::ostream& _sstream )
 {
     _sstream << "SJpgImageSeriesWriter::info";
 }
@@ -135,7 +141,6 @@ void SJpgImageSeriesWriter::updating() throw(::fwTools::Failed)
         cursor.setDefaultCursor();
     }
 }
-
 
 //------------------------------------------------------------------------------
 

@@ -1,43 +1,44 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "ioVTK/SImageWriter.hpp"
 #include "ioVTK/SImageSeriesWriter.hpp"
 
-#include <fwJobs/IJob.hpp>
-#include <fwJobs/Job.hpp>
-
-#include <fwTools/Failed.hpp>
-
-#include <fwServices/macros.hpp>
-
-#include <io/IWriter.hpp>
-
-#include <fwCore/base.hpp>
+#include "ioVTK/SImageWriter.hpp"
 
 #include <fwCom/HasSignals.hpp>
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 
+#include <fwCore/base.hpp>
+
 #include <fwData/Image.hpp>
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
-#include <fwMedData/ImageSeries.hpp>
+#include <fwDataIO/reader/IObjectReader.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
-#include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/Cursor.hpp>
-
+#include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
 
-#include <fwDataIO/reader/IObjectReader.hpp>
+#include <fwJobs/IJob.hpp>
+#include <fwJobs/Job.hpp>
+
+#include <fwMedData/ImageSeries.hpp>
+
+#include <fwServices/macros.hpp>
+
+#include <fwTools/Failed.hpp>
+
 #include <fwVtkIO/ImageWriter.hpp>
 #include <fwVtkIO/MetaImageWriter.hpp>
 #include <fwVtkIO/VtiImageWriter.hpp>
+
+#include <io/IWriter.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -70,11 +71,11 @@ void SImageSeriesWriter::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose an file to save an image");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose an file to save an image" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("Vtk","*.vtk");
-    dialogFile.addFilter("Vti","*.vti");
-    dialogFile.addFilter("MetaImage","*.mhd");
+    dialogFile.addFilter("Vtk", "*.vtk");
+    dialogFile.addFilter("Vti", "*.vti");
+    dialogFile.addFilter("MetaImage", "*.mhd");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr result;
@@ -108,7 +109,14 @@ void SImageSeriesWriter::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SImageSeriesWriter::info(std::ostream &_sstream )
+void SImageSeriesWriter::configuring() throw(::fwTools::Failed)
+{
+    ::io::IWriter::configuring();
+}
+
+//------------------------------------------------------------------------------
+
+void SImageSeriesWriter::info(std::ostream& _sstream )
 {
     _sstream << "SImageSeriesWriter::info";
 }

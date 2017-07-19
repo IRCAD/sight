@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2015.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -7,18 +7,16 @@
 #ifndef __IODATA_MESHWRITERSERVICE_HPP__
 #define __IODATA_MESHWRITERSERVICE_HPP__
 
-#include <io/IWriter.hpp>
-#include <boost/filesystem/path.hpp>
-
 #include "ioData/config.hpp"
+
+#include <io/IWriter.hpp>
+
+#include <boost/filesystem/path.hpp>
 
 namespace ioData
 {
 /**
  * @brief   Mesh writer service.
- * @class   MeshWriterService
- *
- * @date    2011.
  *
  * Service writing a mesh object.
  * @li This service has no specified start and stop method.
@@ -31,10 +29,9 @@ namespace ioData
 class IODATA_CLASS_API MeshWriterService : public ::io::IWriter
 {
 
-
 public:
 
-    fwCoreServiceClassDefinitionsMacro ( (MeshWriterService)(::io::IWriter) );
+    fwCoreServiceClassDefinitionsMacro( (MeshWriterService)(::io::IWriter) );
 
     /// Super class of writer services
     typedef ::io::IWriter SuperClass;
@@ -95,6 +92,11 @@ protected:
     }
 
     /**
+     * @brief Configuring method : calls implementation from `io::IWriter`
+     */
+    IODATA_API virtual void configuring() throw(::fwTools::Failed);
+
+    /**
      * @brief Updating method. This method is called by update() from base service ( ::fwServices::IService )
      *
      * This method is used to update the service.
@@ -111,7 +113,7 @@ protected:
      *
      * @param[out] _sstream output stream
      */
-    IODATA_API virtual void info(std::ostream &_sstream );
+    IODATA_API virtual void info(std::ostream& _sstream );
     /// @}
 
 };

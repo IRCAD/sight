@@ -10,8 +10,8 @@
 
 #include <fwAtomConversion/convert.hpp>
 
-#include <fwAtomsBoostIO/Writer.hpp>
 #include <fwAtomsBoostIO/types.hpp>
+#include <fwAtomsBoostIO/Writer.hpp>
 
 #include <fwAtomsPatch/PatchingManager.hpp>
 #include <fwAtomsPatch/VersionsGraph.hpp>
@@ -411,7 +411,7 @@ void SWriter::configureWithIHM()
     if( !m_useAtomsPatcher || versionSelection() )
     {
         ::fwGui::dialog::LocationDialog dialogFile;
-        dialogFile.setTitle("Enter file name");
+        dialogFile.setTitle(m_windowTitle.empty() ? "Enter file name" : m_windowTitle);
         dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
         dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
         dialogFile.setType(::fwGui::dialog::LocationDialog::SINGLE_FILE);

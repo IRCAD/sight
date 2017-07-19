@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -22,8 +22,8 @@
 
 #include <fwServices/macros.hpp>
 
-#include <fwTools/UUID.hpp>
 #include <fwTools/dateAndTime.hpp>
+#include <fwTools/UUID.hpp>
 
 #include <io/IReader.hpp>
 
@@ -34,6 +34,8 @@ fwServicesRegisterMacro( ::io::IReader, ::ioData::SAttachmentSeriesReader, ::fwM
 
 namespace ioData
 {
+
+//------------------------------------------------------------------------------
 
 std::string getMediaType(const ::boost::filesystem::path& media)
 {
@@ -60,6 +62,8 @@ std::string getMediaType(const ::boost::filesystem::path& media)
     }
     return mediaType;
 }
+
+//------------------------------------------------------------------------------
 
 void  initSeries(::fwMedData::Series::sptr series, const std::string& instanceUID)
 {
@@ -120,14 +124,21 @@ std::vector< std::string > SAttachmentSeriesReader::getSupportedExtensions()
 
 //------------------------------------------------------------------------------
 
+void SAttachmentSeriesReader::configuring() throw(::fwTools::Failed)
+{
+    ::io::IReader::configuring();
+}
+
+//------------------------------------------------------------------------------
+
 void SAttachmentSeriesReader::configureWithIHM()
 {
     static ::boost::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose a attachment file");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a attachment file" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("Attachment file","*.*");
+    dialogFile.addFilter("Attachment file", "*.*");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
 
     ::fwData::location::SingleFile::sptr result;

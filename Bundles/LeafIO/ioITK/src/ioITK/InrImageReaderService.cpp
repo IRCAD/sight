@@ -1,17 +1,13 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
 #include "ioITK/InrImageReaderService.hpp"
 
-#include <fwServices/macros.hpp>
-
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
-
-#include <io/IReader.hpp>
 
 #include <fwCore/base.hpp>
 
@@ -19,12 +15,16 @@
 #include <fwData/location/Folder.hpp>
 #include <fwData/location/SingleFile.hpp>
 
-#include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/Cursor.hpp>
-#include <fwGui/dialog/ProgressDialog.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
+#include <fwGui/dialog/MessageDialog.hpp>
+#include <fwGui/dialog/ProgressDialog.hpp>
 
 #include <fwItkIO/ImageReader.hpp>
+
+#include <fwServices/macros.hpp>
+
+#include <io/IReader.hpp>
 
 namespace ioITK
 {
@@ -43,12 +43,18 @@ InrImageReaderService::~InrImageReaderService() throw()
 {
 }
 
-
 //------------------------------------------------------------------------------
 
 ::io::IOPathType InrImageReaderService::getIOPathType() const
 {
     return ::io::FILE;
+}
+//
+//------------------------------------------------------------------------------
+
+void InrImageReaderService::configuring() throw(::fwTools::Failed)
+{
+    ::io::IReader::configuring();
 }
 
 //------------------------------------------------------------------------------
@@ -59,9 +65,9 @@ void InrImageReaderService::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose an Inrimage file");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose an Inrimage file" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("Inrimage","*.inr.gz");
+    dialogFile.addFilter("Inrimage", "*.inr.gz");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::FILE_MUST_EXIST);
 
@@ -81,15 +87,15 @@ void InrImageReaderService::configureWithIHM()
 
 //------------------------------------------------------------------------------
 
-void InrImageReaderService::info(std::ostream &_sstream )
+void InrImageReaderService::info(std::ostream& _sstream )
 {
     _sstream << "InrImageReaderService::info";
 }
 
 //------------------------------------------------------------------------------
 
-bool InrImageReaderService::createImage( const ::boost::filesystem::path &inrFileDir,
-                                         const ::fwData::Image::sptr &_pImg )
+bool InrImageReaderService::createImage( const ::boost::filesystem::path& inrFileDir,
+                                         const ::fwData::Image::sptr& _pImg )
 {
     SLM_TRACE_FUNC();
     ::fwItkIO::ImageReader::sptr myLoader = ::fwItkIO::ImageReader::New();
@@ -104,7 +110,7 @@ bool InrImageReaderService::createImage( const ::boost::filesystem::path &inrFil
         myLoader->addHandler( progressMeterGUI );
         myLoader->read();
     }
-    catch (const std::exception & e)
+    catch (const std::exception& e)
     {
         std::stringstream ss;
         ss << "Warning during loading : " << e.what();

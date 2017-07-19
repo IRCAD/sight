@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -36,15 +36,14 @@
 
 #include <io/IReader.hpp>
 
-#include <QPointer>
-#include <QPushButton>
-
 #include <boost/bind.hpp>
 #include <boost/foreach.hpp>
 
+#include <QPointer>
+#include <QPushButton>
+
 #include <string>
 #include <vector>
-
 
 namespace ioGdcm
 {
@@ -143,7 +142,7 @@ void SDicomSeriesDBReader::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle(this->getSelectorDialogTitle());
+    dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
@@ -187,8 +186,6 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
 }
 
 //------------------------------------------------------------------------------
-
-
 
 ::fwMedData::SeriesDB::sptr SDicomSeriesDBReader::createSeriesDB(bool checkIsDicom,
                                                                  const ::boost::filesystem::path& dicomDir)
@@ -376,9 +373,8 @@ void SDicomSeriesDBReader::updating() throw(::fwTools::Failed)
                 // Notify SeriesDB
                 sDBhelper.notify();
 
-
                 // Notify added files
-                m_sigFilesAdded->asyncEmit(mustCopy,files);
+                m_sigFilesAdded->asyncEmit(mustCopy, files);
             }
             else
             {
@@ -401,6 +397,5 @@ void SDicomSeriesDBReader::updating() throw(::fwTools::Failed)
 }
 
 //------------------------------------------------------------------------------
-
 
 } // namespace ioGdcm

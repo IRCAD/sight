@@ -1,28 +1,29 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include <fstream>
-#include <iostream>
-#include <boost/filesystem/operations.hpp>
-
-#include <fwDataIO/reader/TransformationMatrix3DReader.hpp>
-#include <io/IReader.hpp>
-
-#include <fwServices/macros.hpp>
-
-#include <fwData/TransformationMatrix3D.hpp>
-#include <fwData/location/Folder.hpp>
-#include <fwData/location/SingleFile.hpp>
-
-#include <fwGui/dialog/LocationDialog.hpp>
+#include "ioData/TransformationMatrix3DReaderService.hpp"
 
 #include <fwCore/base.hpp>
 
+#include <fwData/location/Folder.hpp>
+#include <fwData/location/SingleFile.hpp>
+#include <fwData/TransformationMatrix3D.hpp>
 
-#include "ioData/TransformationMatrix3DReaderService.hpp"
+#include <fwDataIO/reader/TransformationMatrix3DReader.hpp>
+
+#include <fwGui/dialog/LocationDialog.hpp>
+
+#include <fwServices/macros.hpp>
+
+#include <io/IReader.hpp>
+
+#include <boost/filesystem/operations.hpp>
+
+#include <fstream>
+#include <iostream>
 
 namespace ioData
 {
@@ -41,7 +42,7 @@ fwServicesRegisterMacro( ::io::IReader, ::ioData::TransformationMatrix3DReaderSe
 
 //-----------------------------------------------------------------------------
 
-void TransformationMatrix3DReaderService::info(std::ostream &_sstream )
+void TransformationMatrix3DReaderService::info(std::ostream& _sstream )
 {
     this->SuperClass::info( _sstream );
     _sstream << std::endl << " TransformationMatrix3D object reader";
@@ -65,15 +66,22 @@ void TransformationMatrix3DReaderService::starting( ) throw(::fwTools::Failed)
 
 //-----------------------------------------------------------------------------
 
+void TransformationMatrix3DReaderService::configuring() throw(::fwTools::Failed)
+{
+    ::io::IReader::configuring();
+}
+
+//------------------------------------------------------------------------------
+
 void TransformationMatrix3DReaderService::configureWithIHM()
 {
     SLM_TRACE_FUNC();
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose a file to load a transformation matrix");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose a file to load a transformation matrix" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("TRF files","*.trf");
+    dialogFile.addFilter("TRF files", "*.trf");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
 
     ::fwData::location::SingleFile::sptr result;

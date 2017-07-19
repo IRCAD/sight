@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -63,11 +63,11 @@ void SImageWriter::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath("");
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle("Choose an file to save an image");
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose an file to save an image" : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
-    dialogFile.addFilter("Vtk","*.vtk");
-    dialogFile.addFilter("Vti","*.vti");
-    dialogFile.addFilter("MetaImage","*.mhd");
+    dialogFile.addFilter("Vtk", "*.vtk");
+    dialogFile.addFilter("Vti", "*.vti");
+    dialogFile.addFilter("MetaImage", "*.mhd");
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::WRITE);
 
     ::fwData::location::SingleFile::sptr result;
@@ -101,7 +101,14 @@ void SImageWriter::stopping() throw(::fwTools::Failed)
 
 //------------------------------------------------------------------------------
 
-void SImageWriter::info(std::ostream &_sstream )
+void SImageWriter::configuring() throw(::fwTools::Failed)
+{
+    ::io::IWriter::configuring();
+}
+
+//------------------------------------------------------------------------------
+
+void SImageWriter::info(std::ostream& _sstream )
 {
     _sstream << "SImageWriter::info";
 }
@@ -153,7 +160,7 @@ bool SImageWriter::saveImage( const ::boost::filesystem::path& imgFile,
         // Launch writing process
         myWriter->write();
     }
-    catch (const std::exception & e)
+    catch (const std::exception& e)
     {
         std::stringstream ss;
         ss << "Warning during saving : " << e.what();

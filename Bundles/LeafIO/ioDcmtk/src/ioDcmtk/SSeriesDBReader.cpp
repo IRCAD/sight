@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -57,7 +57,7 @@ void SSeriesDBReader::configureWithIHM()
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle(this->getSelectorDialogTitle());
+    dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
@@ -172,7 +172,6 @@ std::string SSeriesDBReader::getSelectorDialogTitle()
     return "Choose a directory with DICOM images";
 }
 
-
 //------------------------------------------------------------------------------
 
 ::fwMedData::SeriesDB::sptr SSeriesDBReader::createSeriesDB(const ::boost::filesystem::path& dicomDir)
@@ -252,7 +251,7 @@ void SSeriesDBReader::updating() throw(::fwTools::Failed)
         else
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Image Reader","This file can not be read. Retry with another file reader.",
+                "Image Reader", "This file can not be read. Retry with another file reader.",
                 ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
@@ -274,7 +273,6 @@ void SSeriesDBReader::notificationOfDBUpdate()
     }
 
     SLM_ASSERT("Unable to get seriesDB", seriesDB);
-
 
     ::fwMedData::SeriesDB::ContainerType addedSeries;
     for(const ::fwMedData::Series::sptr& s :  seriesDB->getContainer() )

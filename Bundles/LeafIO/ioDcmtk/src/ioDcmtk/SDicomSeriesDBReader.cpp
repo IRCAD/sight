@@ -1,5 +1,5 @@
 /* ***** BEGIN LICENSE BLOCK *****
- * FW4SPL - Copyright (C) IRCAD, 2009-2016.
+ * FW4SPL - Copyright (C) IRCAD, 2009-2017.
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
@@ -9,15 +9,22 @@
 #include <fwCom/Signal.hpp>
 #include <fwCom/Signal.hxx>
 #include <fwCom/Signals.hpp>
+
 #include <fwCore/base.hpp>
+
 #include <fwDcmtkIO/SeriesDBReader.hpp>
+
 #include <fwGui/Cursor.hpp>
 #include <fwGui/dialog/LocationDialog.hpp>
 #include <fwGui/dialog/MessageDialog.hpp>
 #include <fwGui/dialog/ProgressDialog.hpp>
+
 #include <fwMedData/SeriesDB.hpp>
+
 #include <fwServices/macros.hpp>
+
 #include <fwTools/ProgressToLogger.hpp>
+
 #include <io/IReader.hpp>
 
 #include <boost/bind.hpp>
@@ -41,12 +48,19 @@ SDicomSeriesDBReader::~SDicomSeriesDBReader() throw()
 
 //------------------------------------------------------------------------------
 
+void SDicomSeriesDBReader::configuring() throw(::fwTools::Failed)
+{
+    ::io::IReader::configuring();
+}
+
+//------------------------------------------------------------------------------
+
 void SDicomSeriesDBReader::configureWithIHM()
 {
     static ::boost::filesystem::path _sDefaultPath;
 
     ::fwGui::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle(this->getSelectorDialogTitle());
+    dialogFile.setTitle(m_windowTitle.empty() ? this->getSelectorDialogTitle() : m_windowTitle);
     dialogFile.setDefaultLocation( ::fwData::location::Folder::New(_sDefaultPath) );
     dialogFile.setOption(::fwGui::dialog::ILocationDialog::READ);
     dialogFile.setType(::fwGui::dialog::LocationDialog::FOLDER);
@@ -88,7 +102,6 @@ std::string SDicomSeriesDBReader::getSelectorDialogTitle()
 {
     return "Choose a directory with DICOM images";
 }
-
 
 //------------------------------------------------------------------------------
 
@@ -159,7 +172,7 @@ void SDicomSeriesDBReader::updating() throw(::fwTools::Failed)
         else
         {
             ::fwGui::dialog::MessageDialog::showMessageDialog(
-                "Image Reader","This file can not be read. Retry with another file reader.",
+                "Image Reader", "This file can not be read. Retry with another file reader.",
                 ::fwGui::dialog::IMessageDialog::WARNING);
         }
     }
